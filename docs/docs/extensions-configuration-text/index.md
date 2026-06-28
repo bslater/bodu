@@ -12,8 +12,10 @@ Configuration file (or stream, or pre-parsed document) as a configuration source
 environment variables.
 
 The overload set deliberately mirrors `Microsoft.Extensions.Configuration.Json`'s `AddJsonFile` / `AddJsonStream`
-shape, so consumers familiar with the JSON provider can swap in this provider without learning a new API. Once added,
-keys are exposed in the canonical colon-delimited form that `IConfiguration` consumes:
+shape, so consumers familiar with the JSON provider can swap in this provider without learning a new API. A second,
+read-only TOML bridge (`AddTomlFile` / `AddTomlStream`) layers [`Bodu.Text.Toml`](../serialization/toml/index.md)
+through the same pipeline. Once added, keys are exposed in the canonical colon-delimited form that `IConfiguration`
+consumes:
 
 ```csharp
 configuration["logging:level:default"]   // "Warning"
@@ -55,7 +57,8 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> | Static class. The `AddTextConfiguration*` overload family: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed `IniDocumentBase`. |
+| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> | Static class. The `AddTextConfiguration*` overload family: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed <xref:Bodu.Text.Ini.IniDocumentBase>. |
+| <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions> | Static class. The read-only TOML bridge: `AddTomlFile(path, optional)` and `AddTomlStream(stream)`. Read-once, read-only, no reload-on-change. |
 
 ### Sources and providers
 
@@ -67,7 +70,9 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> | `FileConfigurationProvider` subclass. Reads the file via the standard MEC pipeline and projects the resolved view into `Data`. |
 | <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> | `StreamConfigurationSource` subclass. One-shot: no reload-on-change. |
 | <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> | The matching stream provider. |
-| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> | Internal helper that parses + resolves a stream into a flat key/value dictionary; reused by both providers. |
+| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> | Internal helper that parses + resolves a stream into a flat key/value dictionary; reused by both `Text*` providers. |
+| <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource> | `FileConfigurationSource`-shaped source for TOML. Carries `Path`, `Optional`, `Stream`. Read-only — no `ReloadOnChange`. |
+| <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationProvider> | The matching TOML provider. Flattens the TOML table hierarchy into colon-delimited keys. |
 
 ### Options binding
 
@@ -91,6 +96,8 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 | Wire up everything via a configure callback | `builder.AddTextConfigurationFile(src => { src.Path = …; src.TargetPath = …; src.ReloadOnChange = true; })` |
 | Bind a section to an options class | `services.AddConfigurationOptions<MyOptions>(configuration, "service")` |
 | Pre-parsed document (already loaded elsewhere) | `builder.AddTextConfigurationDocument(document, targetPath: …)` |
+| Add a read-only TOML file | `builder.AddTomlFile("appsettings.toml", optional: true)` |
+| Add a read-only TOML stream | `builder.AddTomlStream(stream)` |
 
 ## Conventional file probe
 
@@ -114,10 +121,30 @@ a reparse + reload, and any reload tokens issued through `IConfiguration` fire.
 `TextStreamConfigurationSource` does **not** support reload-on-change — it parses the stream once when `Build` is
 called, and the stream lifetime ends with that parse. For dynamic stream-backed inputs, rebuild the configuration.
 
+The TOML bridge (`AddTomlFile` / `AddTomlStream`) is read-once and read-only by design — it attaches no file watcher
+even for the file overload, so there is no `reloadOnChange` parameter on either method.
+
+## How keys are projected
+
+The provider hands its parsed document to the resolver and copies the resulting
+<xref:Bodu.Text.Configuration.ConfigurationView> into the inherited `Data` dictionary. Under the default
+<xref:Bodu.Text.Configuration.ConfigurationKeyOptions.Default> key options, the
+<xref:Bodu.Text.Configuration.ConfigurationKeyMapping.DotToColon> mapping rewrites dotted file keys to the colon
+delimiter `IConfiguration` expects — `logging.level.default` becomes `logging:level:default`. Keys are stored under
+`StringComparer.OrdinalIgnoreCase`, matching the JSON and INI providers, so `configuration["Logging:Level"]` and
+`configuration["logging:level"]` resolve to the same value.
+
+The projection is intentionally lossy relative to the richer document model. Comments, source locations
+(line/column/path), and duplicate-section provenance are preserved on the parsed
+<xref:Bodu.Text.Configuration.ConfigurationDocument> but discarded during the flatten. A literal colon inside a key
+segment cannot survive — once flattened, the colon is the hierarchy delimiter. Consumers who need any of that metadata
+should depend on <xref:Bodu.Text.Configuration.ConfigurationDocument> directly rather than going through the bridge.
+
 ## Where to go next
 
 - **[Core concepts](concepts.md)** — vocabulary: source vs provider, target path, parse / resolve option propagation, reload-on-change, options binding.
 - **[Getting started](getting-started.md)** — install + minimal samples for the file overload, the stream overload, conventional probe, options binding.
+- **[Bodu.Extensions.Configuration.Text guides](../../guides/extensions-configuration-text/index.md)** — worked patterns, including [configuration sources](../../guides/extensions-configuration-text/configuration-sources.md).
 - **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view model.
 - **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.
 - **[Configuration topic](../topics/configuration.md)** — this package and its sibling Bodu.Text.Configuration side by side.

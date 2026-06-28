@@ -27,6 +27,18 @@ Because the keystream is XORed in, every stream cipher here is **self-inverse**:
 > [!NOTE]
 > A 64-bit nonce (Salsa20, Rabbit) is **too short to choose randomly** without collision risk. Use a strict counter, or prefer an extended-nonce cipher.
 
+## Nonce vs IV — and how to manage it
+
+A stream cipher takes a `Nonce`, not a block-cipher `IV`. The two play the same role — both randomise the keystream so the same key encrypts different messages safely — but the requirements differ. A CBC IV must be *unpredictable*; a stream-cipher nonce only has to be *unique* under the key. The size dictates how you should generate it:
+
+| Nonce width | Safe to pick at random? | Recommended source |
+|---|---|---|
+| 96-bit (ChaCha20) | Borderline — a counter is safer | A monotonic 96-bit counter, or a sequence number per session |
+| 64-bit (Salsa20, Rabbit) | **No** — collisions at ~2³² messages | A strict counter; never `RandomNumberGenerator` |
+| 192-bit (XChaCha20, XSalsa20) | **Yes** — collision risk negligible | `GenerateNonce()` / `RandomNumberGenerator` |
+
+The birthday bound is why width matters: random 96-bit nonces reach a ~50 % collision probability near 2⁴⁸ messages, and 64-bit nonces near 2³². A single collision under a fixed key XORs two keystreams together and exposes the XOR of the two plaintexts — there is no recovery. When you cannot guarantee a counter never repeats (distributed senders, restarts that lose state), prefer an extended-nonce cipher and choose the nonce at random, or move to an AEAD that is misuse-resistant.
+
 ## Encrypt and decrypt — ChaCha20
 
 ```csharp

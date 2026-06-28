@@ -40,6 +40,8 @@ byte[] signature = signer.SignData(message);   // 3309 bytes
 bool valid = signer.VerifyData(message, signature);   // true
 ```
 
+`SignData` and `VerifyData` each have a context-string overload (next section) and a span overload — `SignData(data, context, destination)` writes the signature into a caller-supplied buffer of exactly `SignatureSizeInBytes`. `HasPrivateKey` / `HasPublicKey` report which halves an instance holds, exactly as for [Ed25519](signatures-ed25519.md).
+
 ## Key distribution
 
 The signer keeps the private key (or the compact 32-byte seed) secret; the public key is distributed to every verifier. Importing the seed regenerates the full key pair; importing a public key onto an instance discards any private key it held, leaving a verify-only instance.

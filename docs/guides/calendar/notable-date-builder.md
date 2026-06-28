@@ -72,20 +72,26 @@ builder
 
 ## Importing the common catalogues
 
-`AddImport` pulls concepts from the bundled common catalogues; `Use` cherry-picks and re-scopes them:
+`AddImport` pulls concepts from the bundled common catalogues; `Use` cherry-picks and re-scopes them. <xref:Bodu.Globalization.Calendar.Builder.ImportUseBuilder> exposes `As(alias)` (re-id the imported concept), `ForTerritory`, `WithCategory`, `AsNonWorking`, and `WithAdjustment`:
 
 ```csharp
 builder.AddImport("global-core", i => i
-    .Use("new-years-day", u => u.ForTerritory("US").WithAdjustment("weekend-to-monday")));
+    .Use("new-years-day", u => u
+        .As("us-new-years-day")           // re-id to avoid clashing with a local concept
+        .ForTerritory("US")
+        .WithAdjustment("weekend-to-monday")));
 ```
+
+An `AddImport` with no `Use` calls imports every concept the catalogue defines. Because the JSON subset cannot model imports, a document that calls `AddImport` serializes only as XML — see the note under [Materializing](#materializing-serializing-and-saving).
 
 ## Overrides
 
-`AddOverride` authors ID-targeted edits applied at load time:
+`AddOverride` authors ID-targeted edits applied at load time. <xref:Bodu.Globalization.Calendar.Builder.OverrideBuilder> offers three operations — `AddRule` (add a rule to an existing concept), `PatchRule` (replace an existing rule), and `RemoveRule` (suppress one):
 
 ```csharp
 builder.AddOverride(o => o
     .RemoveRule("boxing-day", "default")
+    .PatchRule("anzac-day", "default", r => r.ForTerritory("AU").Fixed(4, 25).WithAdjustment("weekend-to-monday"))
     .AddRule("company-founding-day", "hq", r => r.ForTerritory("US").Fixed(6, 15)));
 ```
 
@@ -116,6 +122,9 @@ string json = builder.ToJson();     // also ToJsonObject()
 // 4. Straight to a file (format inferred from the extension).
 builder.Save("holidays.xml");
 builder.Save("holidays.json");
+
+// …or pin the format explicitly when the extension does not imply it:
+builder.Save("holidays.txt", NotableDateDocumentFormat.Xml);
 ```
 
 `Build()` serializes to XML and loads through <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>, so the built resource is exactly what the runtime would load — and the same validation applies (`Build()` throws <xref:Bodu.Globalization.Calendar.NotableDateValidationException> on an invalid document).

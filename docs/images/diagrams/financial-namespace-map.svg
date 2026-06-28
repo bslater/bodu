@@ -47,10 +47,10 @@
       <rect class="fin-card" width="246" height="168" rx="7"/>
       <text class="fin-name" x="14" y="22">Bodu.Financial.Currencies</text>
       <text class="fin-ns" x="14" y="37">ISO 4217 tag catalogue</text>
-      <text class="fin-role" x="14" y="58">~150 active currencies</text>
+      <text class="fin-role" x="14" y="58">155 active currencies</text>
       <text class="fin-type" x="14" y="76">USD · EUR · GBP · JPY · AUD</text>
       <text class="fin-type" x="14" y="94">CAD · CHF · CNY · NZD · …</text>
-      <text class="fin-role" x="14" y="116">~30 historic currencies</text>
+      <text class="fin-role" x="14" y="116">29 historic currencies</text>
       <text class="fin-type" x="14" y="134">ATS · DEM · FRF · ITL · ESP</text>
       <text class="fin-type" x="14" y="152">IsHistoric · DemonetizedOn</text>
     </g>

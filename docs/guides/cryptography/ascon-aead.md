@@ -12,11 +12,28 @@ been altered since the sender encrypted it.
 NIST SP 800-232. It uses a 128-bit key, a 128-bit nonce, and appends a 128-bit authentication
 tag to every encrypted message.
 
-| Constant | Value | Meaning |
+| Member | Value | Meaning |
 |---|---|---|
-| `AsconAead128.KeyBytes` | 16 | Key length in bytes (128 bits). |
-| `AsconAead128.NonceBytes` | 16 | Nonce length in bytes (128 bits). Must be unique per message. |
-| `AsconAead128.TagBytes` | 16 | Authentication tag length in bytes (128 bits). |
+| `AsconAead128.KeySize` | 128 | Key length in **bits**. Divide by 8 for the 16-byte buffer size. |
+| `AsconAead128.NonceSize` | 128 | Nonce length in **bits** (16 bytes). Must be unique per message. |
+| `TagSize` (instance property) | 128 | Authentication tag length in **bits** (16 bytes), from <xref:Bodu.Security.Cryptography.IAeadTransform>. |
+
+> [!NOTE]
+> The public size surface is expressed in **bits** — `KeySize` and `NonceSize` are `public const int` (both `128`), and `TagSize` is an instance property inherited from <xref:Bodu.Security.Cryptography.IAeadTransform>. Size your byte buffers as `KeySize / 8`, `NonceSize / 8`, and `TagSize / 8`. The examples below use those expressions; the literal value in every case is `16`.
+
+## A standalone AEAD — no block cipher required
+
+`AsconAead128` is a *complete* AEAD primitive in its own right. Unlike the [AES-based AEAD modes](aead-modes.md) — where you pair an <xref:Bodu.Security.Cryptography.AesBlockCipher> with a separate mode transform (<xref:Bodu.Security.Cryptography.GcmModeTransform>, <xref:Bodu.Security.Cryptography.OcbModeTransform>, …) — `AsconAead128` needs no companion cipher. Confidentiality, integrity, and authenticity all come from the single Ascon-p permutation over the 320-bit sponge.
+
+It still implements the shared <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> contract, so the call shape (`ProcessAssociatedData` then `Encrypt`/`Decrypt`) and the single-use lifecycle are identical to the AES modes, and the [extension helpers](aead-modes.md#prerequisites--the-extension-methods) on `Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions` work on it too:
+
+```csharp
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var enc = new AsconAead128(key, nonce);
+byte[] cipherWithTag = enc.Encrypt(plaintext, associatedData: header);  // sizes the buffer for you
+```
 
 ## How it works
 
@@ -54,21 +71,20 @@ using System.Security.Cryptography;
 using System.Text;
 using Bodu.Security.Cryptography;
 
-byte[] key       = RandomNumberGenerator.GetBytes(AsconAead128.KeyBytes);
-byte[] nonce     = RandomNumberGenerator.GetBytes(AsconAead128.NonceBytes);
+byte[] key       = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);
+byte[] nonce     = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);
 byte[] plaintext = Encoding.UTF8.GetBytes("secret payload");
-
-// Output buffer: ciphertext is the same length as plaintext, tag follows immediately.
-byte[] cipherWithTag = new byte[plaintext.Length + AsconAead128.TagBytes];
 
 using (var enc = new AsconAead128(key, nonce))
 {
+    // Output buffer: ciphertext is the same length as plaintext, tag follows immediately.
+    byte[] cipherWithTag = new byte[plaintext.Length + enc.TagSize / 8];
     enc.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
     enc.Encrypt(plaintext, cipherWithTag);
 }
 ```
 
-`Encrypt` returns the total number of bytes written (`plaintext.Length + TagBytes`).
+`Encrypt` returns the total number of bytes written (`plaintext.Length + TagSize / 8`).
 
 ## Pattern 2 — decrypt and verify
 
@@ -77,21 +93,18 @@ tag does not match. The output buffer is zeroed before the exception is thrown, 
 unauthenticated bytes can escape the method.
 
 ```csharp
-byte[] recovered = new byte[cipherWithTag.Length - AsconAead128.TagBytes];
-
 try
 {
-    using (var dec = new AsconAead128(key, nonce))
-    {
-        dec.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
-        dec.Decrypt(cipherWithTag, recovered);
-    }
+    using var dec = new AsconAead128(key, nonce);
+    byte[] recovered = new byte[cipherWithTag.Length - dec.TagSize / 8];
+    dec.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
+    dec.Decrypt(cipherWithTag, recovered);
     // recovered == original plaintext
 }
 catch (CryptographicException)
 {
     // Tag did not verify — the ciphertext, tag, or AAD has been tampered with.
-    // recovered is zeroed. Do not use it.
+    // The output buffer is zeroed. Do not use it.
 }
 ```
 
@@ -111,15 +124,15 @@ types, user IDs, protocol framing.
 using System.Text;
 using Bodu.Security.Cryptography;
 
-byte[] key       = RandomNumberGenerator.GetBytes(AsconAead128.KeyBytes);
-byte[] nonce     = RandomNumberGenerator.GetBytes(AsconAead128.NonceBytes);
+byte[] key       = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);
+byte[] nonce     = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);
 byte[] aad       = Encoding.UTF8.GetBytes("user-id:42|record-type:invoice");
 byte[] plaintext = GetInvoiceBytes();
 
-byte[] cipherWithTag = new byte[plaintext.Length + AsconAead128.TagBytes];
-
+byte[] cipherWithTag;
 using (var enc = new AsconAead128(key, nonce))
 {
+    cipherWithTag = new byte[plaintext.Length + enc.TagSize / 8];
     enc.ProcessAssociatedData(aad);
     enc.Encrypt(plaintext, cipherWithTag);
 }
@@ -146,19 +159,19 @@ length.
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
-byte[] key   = RandomNumberGenerator.GetBytes(AsconAead128.KeyBytes);
-byte[] nonce = RandomNumberGenerator.GetBytes(AsconAead128.NonceBytes);
+byte[] key   = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);
+byte[] nonce = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);
 
 // 537 bytes — 33 full 16-byte blocks plus a 9-byte final partial block.
 byte[] plaintext = new byte[537];
 RandomNumberGenerator.Fill(plaintext);
 
-byte[] cipherWithTag = new byte[plaintext.Length + AsconAead128.TagBytes];
 using (var enc = new AsconAead128(key, nonce))
 {
+    byte[] cipherWithTag = new byte[plaintext.Length + enc.TagSize / 8];
     enc.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
     int written = enc.Encrypt(plaintext, cipherWithTag);
-    // written == plaintext.Length + AsconAead128.TagBytes
+    // written == plaintext.Length + enc.TagSize / 8
 }
 ```
 
@@ -169,10 +182,9 @@ An empty plaintext produces only the 16-byte authentication tag:
 ```csharp
 using Bodu.Security.Cryptography;
 
-byte[] tag = new byte[AsconAead128.TagBytes];
-
 using (var enc = new AsconAead128(key, nonce))
 {
+    byte[] tag = new byte[enc.TagSize / 8];   // 16 bytes — output is the tag alone
     enc.ProcessAssociatedData(aad);
     enc.Encrypt(ReadOnlySpan<byte>.Empty, tag);
 }
@@ -189,18 +201,20 @@ using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
 // Generated once (per session, per record, or per application — depends on your key management).
-byte[] key = RandomNumberGenerator.GetBytes(AsconAead128.KeyBytes);
+byte[] key = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);
 
 // Generated fresh for every message. Never reuse a (key, nonce) pair.
-byte[] nonce = RandomNumberGenerator.GetBytes(AsconAead128.NonceBytes);
+byte[] nonce = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);
 ```
 
 A 128-bit random nonce has negligible collision probability for fewer than approximately 2⁶⁴
 messages under the same key. For higher message volumes, use a counter instead:
 
 ```csharp
+using System.Buffers.Binary;
+
 // 128-bit counter encoded into the nonce. Increment for every message; never wrap.
-byte[] nonce = new byte[AsconAead128.NonceBytes];
+byte[] nonce = new byte[AsconAead128.NonceSize / 8];
 BinaryPrimitives.WriteUInt64LittleEndian(nonce, messageCounter++);
 ```
 
@@ -217,13 +231,13 @@ managed arrays:
 using Bodu.Security.Cryptography;
 
 // Span constructor — no defensive copy of a managed array.
-ReadOnlySpan<byte> keySpan   = stackalloc byte[AsconAead128.KeyBytes];
-ReadOnlySpan<byte> nonceSpan = stackalloc byte[AsconAead128.NonceBytes];
+ReadOnlySpan<byte> keySpan   = stackalloc byte[AsconAead128.KeySize / 8];
+ReadOnlySpan<byte> nonceSpan = stackalloc byte[AsconAead128.NonceSize / 8];
 using var enc = new AsconAead128(keySpan, nonceSpan);
 
 // Array constructor — null-check included; a span is taken from the array internally.
-byte[] keyArr   = new byte[AsconAead128.KeyBytes];
-byte[] nonceArr = new byte[AsconAead128.NonceBytes];
+byte[] keyArr   = new byte[AsconAead128.KeySize / 8];
+byte[] nonceArr = new byte[AsconAead128.NonceSize / 8];
 using var enc2  = new AsconAead128(keyArr, nonceArr);
 ```
 

@@ -89,6 +89,22 @@ The static abstract members of `INumber<TSelf>` — `TSelf.Zero`,
 predicates — all resolve to the `Fraction<T>` implementations, so nothing
 in the generic body special-cases the rational type.
 
+A handful of these are worth knowing when you write the generic body:
+
+| Generic-math member | `Fraction<T>` behaviour |
+|---|---|
+| `TSelf.Zero` / `TSelf.One` | `0/1` and `1/1`. |
+| `TSelf.AdditiveIdentity` / `TSelf.MultiplicativeIdentity` | `Zero` and `One`. |
+| `TSelf.CreateChecked<TOther>(x)` | Exact for integer and `decimal` `x`; via nearest `double` otherwise; non-finite `x` is rejected; overflow throws. |
+| `TSelf.CreateSaturating` / `CreateTruncating` | As checked, but clamp to `MinValue` / `MaxValue` on overflow instead of throwing. |
+| `TSelf.IsFinite` / `IsNaN` / `IsInfinity` | `true` / `false` / `false` — a rational is always a finite real. |
+| `TSelf.Abs` / `MaxMagnitude` / `MinMagnitude` | Magnitude operations; the magnitude helpers break a tie by sign per the BCL convention. |
+
+`CreateChecked` over a non-bounded backing type never overflows from the
+conversion — `Fraction<BigInteger>.CreateChecked(anyInteger)` always
+succeeds — which is another reason a routine that must accept arbitrary
+magnitudes should be left parameterised over `T`.
+
 `Fraction<T>` additionally implements `ISignedNumber<Fraction<T>>`, so a
 method that needs a signed-only operation (for example
 `TSelf.NegativeOne`) can tighten the constraint to

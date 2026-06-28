@@ -4,24 +4,27 @@ title: Using Fletcher
 
 # Using Fletcher
 
-The Fletcher checksum family maintains two running accumulators, **A** and **B**, both reduced modulo a prime near 2^(N ⁄ 2). Each input word updates `A = (A + word) mod M`, then `B = (B + A) mod M`. The final output is `B ‖ A` truncated to the chosen width. Because `B` depends on the running `A`, Fletcher catches transpositions — swapping two words changes `B` even though the sum is unchanged — which a simple additive checksum misses.
+The Fletcher checksum family maintains two running accumulators, **A** and **B**, reduced modulo `M = 2^(N ⁄ 2) − 1` (255 for Fletcher-16, 65535 for Fletcher-32, 4294967295 for Fletcher-64). Each input **byte** updates `A = (A + byte) mod M`, then `B = (B + A) mod M`. The final output is `B ‖ A` written **big-endian**. Because `B` depends on the running `A`, Fletcher catches transpositions — swapping two bytes changes `B` even though the simple sum `A` is unchanged — which a plain additive checksum misses.
 
 ![Fletcher twin-accumulator structure](../../images/diagrams/fletcher-accumulators.svg)
 
-**Bodu.IO.Hashing** provides three widths: <xref:Bodu.IO.Hashing.Checksums.Fletcher16>, <xref:Bodu.IO.Hashing.Checksums.Fletcher32>, and <xref:Bodu.IO.Hashing.Checksums.Fletcher64>. All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>.
+**Bodu.IO.Hashing** provides three widths: <xref:Bodu.IO.Hashing.Checksums.Fletcher16>, <xref:Bodu.IO.Hashing.Checksums.Fletcher32>, and <xref:Bodu.IO.Hashing.Checksums.Fletcher64>. All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, share a CRTP `Fletcher<TSelf>` base, and live in the `Bodu.IO.Hashing.Checksums` namespace.
+
+> [!NOTE]
+> Bodu's modulus is `2^(N ⁄ 2) − 1`, not a prime. Some descriptions of Fletcher use a prime modulus; this implementation uses the original `2^k − 1` form, which reduces with a fast fold rather than a division. All three widths consume input **one byte at a time** regardless of *N* — there is no word-size blocking.
 
 ## Pattern 1 — compute a digest in one call
 
 ```csharp
 using System.Text;
-using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Checksums;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
 using var fletcher = new Fletcher32();
 fletcher.Append(data);
 byte[] digest = fletcher.GetCurrentHash();
-string hex = Convert.ToHexString(digest);  // 4 bytes, 8 hex characters
+string hex = Convert.ToHexString(digest);  // 4 bytes, 8 hex characters, big-endian B‖A
 ```
 
 Swap `Fletcher32` for `Fletcher16` or `Fletcher64` depending on how much collision space you need.
@@ -31,7 +34,7 @@ Swap `Fletcher32` for `Fletcher16` or `Fletcher64` depending on how much collisi
 The BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> exposes three methods that Fletcher honors verbatim:
 
 ```csharp
-using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Checksums;
 
 using var fletcher = new Fletcher64();
 
@@ -49,7 +52,7 @@ fletcher.Reset();                         // back to zeroed A and B
 ## Pattern 3 — streaming over a file
 
 ```csharp
-using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Checksums;
 
 using var fletcher = new Fletcher32();
 
@@ -66,15 +69,25 @@ using (FileStream fs = File.OpenRead("archive.bin"))
 byte[] fingerprint = fletcher.GetCurrentHash();
 ```
 
-Fletcher's block size is fixed by the width (Fletcher-16 works in 1-byte words, Fletcher-32 in 2-byte words, Fletcher-64 in 4-byte words). Partial final blocks are zero-padded before the last update — the algorithm handles this internally.
+All three widths consume input one byte at a time, so any chunk boundary is safe — `Append` over a 64 KB buffer and `Append` 65 536 times byte-by-byte produce the same digest. The width affects only the modulus and the output size, not how input is fed in.
 
 ## Picking a width
 
-| Width | Use when | Notes |
-|---|---|---|
-| <xref:Bodu.IO.Hashing.Checksums.Fletcher16> | Tiny frames, embedded protocols, when 16 bits of collision space is enough. | 1-byte blocks, fastest; same collision properties as CRC-16 for short inputs. |
-| <xref:Bodu.IO.Hashing.Checksums.Fletcher32> | General-purpose file and buffer checksums; the most common choice. | 2-byte blocks; comparable to CRC-32 for error detection on uncorrelated noise, cheaper to compute. |
-| <xref:Bodu.IO.Hashing.Checksums.Fletcher64> | Large buffers where a 32-bit space is uncomfortable. | 4-byte blocks; rarely needed, but useful for very long streams. |
+| Width | Modulus | Use when | Notes |
+|---|---|---|---|
+| <xref:Bodu.IO.Hashing.Checksums.Fletcher16> | 255 | Tiny frames, embedded protocols, when 16 bits of collision space is enough. | Fastest; comparable to a CRC-16 for accidental noise on short inputs. |
+| <xref:Bodu.IO.Hashing.Checksums.Fletcher32> | 65535 | General-purpose file and buffer checksums; the most common choice. | Cheaper to compute than CRC-32; weaker burst guarantee. |
+| <xref:Bodu.IO.Hashing.Checksums.Fletcher64> | 4294967295 | Large buffers where a 32-bit space is uncomfortable. | Rarely needed, but useful for very long streams. |
+
+## What Fletcher catches — and what it misses
+
+Fletcher detects every single-bit error and every adjacent-byte transposition, at a fraction of CRC's per-byte cost. It does not match a CRC's burst guarantee, and the `2^k − 1` modulus introduces a documented blind spot:
+
+- Because `0` and `M` are congruent under the modulus, a byte that should drive an accumulator to `M` leaves it at `0` instead. A run of bytes whose contribution is a multiple of `M` can therefore go undetected.
+- A block of all-`0x00` bytes is indistinguishable from an absent block of the same length — both leave `A` and `B` unchanged. Fletcher cannot detect the insertion or deletion of zero bytes.
+- There is no per-position burst guarantee of the kind a polynomial CRC provides.
+
+These are acceptable when you control both endpoints and the channel is benign; they are why a wire format that must survive an arbitrary physical link specifies a CRC instead.
 
 ## Fletcher vs CRC
 

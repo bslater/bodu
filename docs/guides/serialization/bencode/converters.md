@@ -30,6 +30,21 @@ public sealed class PointConverter : BencodeConverter<Point>
 }
 ```
 
+On entry to `Read`, the reader is already positioned on the value's first token; `Write` is called with the writer positioned to emit a value. A converter for a *structural* type (a list or dictionary) walks or emits the framing tokens itself — see [Polymorphic converters](polymorphic-converters.md) for the dictionary case. The members each side exposes:
+
+| <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> | Purpose |
+|---|---|
+| `TokenType` | The current token's <xref:Bodu.Text.Bencode.BencodeTokenType> — check it before calling a typed getter. |
+| `GetString()` / `GetBytes()` | The current byte-string (or property-name) token as UTF-8 text or raw bytes. |
+| `GetInt32()` / `GetInt64()` / `GetUInt64()` and the `TryGet…` overloads | The current integer token, range-checked; the `TryGet…` forms return `false` rather than throwing. |
+| `Read()` / `Skip()` | Advance to the next token; step over the current value including a nested subtree. |
+
+| <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> | Purpose |
+|---|---|
+| `WriteInteger(long)` / `WriteInteger(ulong)` | Emit an integer (`i…e`). |
+| `WriteString(string)` / `WriteByteString(ReadOnlySpan<byte>)` | Emit a byte string — UTF-8 text or raw bytes. |
+| `WriteStartList()` / `WriteEndList()`, `WriteStartDictionary()` / `WriteEndDictionary()`, `WritePropertyName(…)` | Frame a structural value and its keys; the writer re-sorts dictionary keys into canonical order on close. |
+
 ## Pattern 2 — Register it
 
 Two ways, highest precedence first:

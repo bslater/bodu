@@ -15,6 +15,21 @@ The library ships four asymmetric types, split across two generations and two ro
 
 The classic curve algorithms are battle-tested, compact, and fast; they are *not* believed secure against a future large-scale quantum computer. The post-quantum (PQC) algorithms are the NIST-standardized lattice schemes designed to survive that threat, at the cost of much larger keys and ciphertexts. For data that must stay confidential for years — the "harvest now, decrypt later" risk — pair the two (see the [hybrid note in the ML-KEM guide](ml-kem.md#hybrid-with-x25519)).
 
+> [!NOTE]
+> **Harvest now, decrypt later.** An adversary cannot break X25519 or ML-KEM today, but it can *record* an exchange today and decrypt it the moment a cryptographically relevant quantum computer exists. A signature only needs to be quantum-resistant when it is *verified* in that future; a *confidentiality* exchange must be quantum-resistant the moment it is *captured*. That asymmetry is why long-lived secrets motivate ML-KEM (or an X25519 + ML-KEM hybrid) now, while signatures can migrate to ML-DSA more gradually.
+
+## Three roles, two generations
+
+The four types fill three distinct roles. Knowing which role you need is the first cut; the generation (classic vs post-quantum) is the second.
+
+| Role | What it gives you | Classic | Post-quantum |
+|---|---|---|---|
+| **Signature** | Integrity and authenticity — the private-key holder signs, anyone with the public key verifies. No shared secret. | <xref:Bodu.Security.Cryptography.Ed25519> | <xref:Bodu.Security.Cryptography.MLDsa> |
+| **Key agreement** | A shared secret both parties derive, each contributing a public key (ECDH). | <xref:Bodu.Security.Cryptography.X25519> | — (use a KEM instead) |
+| **Key encapsulation (KEM)** | A shared secret one party encapsulates *to* the other's public key, transmitting a ciphertext. | — | <xref:Bodu.Security.Cryptography.MLKem> |
+
+A signature establishes *who*; key agreement and a KEM establish a *secret*. Neither secret-establishing role authenticates the peer on its own — combine it with a signature, a pre-shared key, or an authenticated channel (HPKE's auth modes do exactly this).
+
 ## The shared `AsymmetricAlgorithm` base
 
 Every type derives from <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType> and follows the same conventions, so once you know one, you know the surface of all four:
@@ -24,6 +39,8 @@ Every type derives from <xref:System.Security.Cryptography.AsymmetricAlgorithm?d
 - `Import*` / `Export*` members move **raw** key bytes in and out (see below).
 - `Has*` properties report which key halves are currently present.
 - The type is `IDisposable` — private key material is zeroed on dispose, so always wrap instances in `using`.
+
+The lifecycle is uniform: **`Create()` → `GenerateKey()` (or `Import*`) → use → dispose.** "Use" is the one step that differs by role — sign/verify, agree, or encapsulate/decapsulate.
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -38,7 +55,39 @@ For ML-KEM and ML-DSA the reported `KeySize` is **not** a bit length — it is t
 
 ## Raw key encodings only
 
-These types expose **only** the raw byte encodings defined by their specifications — the fixed-width RFC 7748 / RFC 8032 keys for the curve algorithms, and the FIPS 203 / FIPS 204 byte strings (and seeds) for the lattice algorithms. The PKCS#8 / SubjectPublicKeyInfo (DER / PEM) members inherited from `AsymmetricAlgorithm` are **not** implemented and retain their base throwing behavior. If you need to persist or interchange a key, store the raw bytes from the `Export*` method directly.
+These types expose **only** the raw byte encodings defined by their specifications — the fixed-width RFC 7748 / RFC 8032 keys for the curve algorithms, and the FIPS 203 / FIPS 204 byte strings (and seeds) for the lattice algorithms. The PKCS#8 / SubjectPublicKeyInfo (DER / PEM) members inherited from `AsymmetricAlgorithm` are **not** implemented and retain their base throwing behaviour. If you need to persist or interchange a key, store the raw bytes from the `Export*` method directly.
+
+The seed-bearing lattice types (`ImportPrivateSeed`) let you store the compact seed — 32 bytes for ML-DSA, 64 for ML-KEM — instead of the full multi-kilobyte private key, and regenerate the whole key pair on import. The curve algorithms re-derive the public key from the 32-byte private seed the same way.
+
+## Which key half is present
+
+Each type reports the halves it holds through its own `Has*` pair. A freshly created instance has neither; `GenerateKey()` sets both; importing only a public key sets the public half and discards the private. The naming follows each role's vocabulary:
+
+| Type | Private half | Public half |
+|---|---|---|
+| <xref:Bodu.Security.Cryptography.X25519> / <xref:Bodu.Security.Cryptography.Ed25519> | `HasPrivateKey` | `HasPublicKey` |
+| <xref:Bodu.Security.Cryptography.MLDsa> | `HasPrivateKey` | `HasPublicKey` |
+| <xref:Bodu.Security.Cryptography.MLKem> | `HasDecapsulationKey` | `HasEncapsulationKey` |
+
+## Verify-or-fail discipline
+
+For the two signature schemes, `VerifyData` returns a `bool` and **never** throws on a bad signature — a wrong length, a tampered message, a non-canonical encoding, or a mismatched ML-DSA context all return `false`. Treat the boolean as the *only* signal and reject on `false` without inspecting why:
+
+```csharp
+if (!verifier.VerifyData(message, signature))
+    throw new InvalidOperationException("Signature verification failed.");
+```
+
+`VerifyData` throws only on a *configuration* error — the instance holds no public key (<xref:System.Security.Cryptography.CryptographicException>), or an ML-DSA context exceeds 255 bytes (<xref:System.ArgumentException>). The secret-establishing roles fail differently and deliberately: X25519 throws on a low-order peer point, while ML-KEM's `Decapsulate` *succeeds* on a tampered ciphertext but yields an unrelated secret (implicit rejection) — so a successful decapsulation is never proof the ciphertext was genuine. Confirm the secret downstream through an AEAD or MAC. Each detail page covers its own failure contract.
+
+## Recording a signature's wire format
+
+A raw signature is just bytes; the same mathematical signature can circulate in incompatible encodings (the classic ECDSA DER-vs-P1363 split). When a signature crosses a boundary where the encoding is ambiguous, <xref:Bodu.Security.Cryptography.SignatureValue> pairs the bytes with a <xref:Bodu.Security.Cryptography.SignatureFormat> tag so a downstream verifier branches on the recorded format instead of guessing. Ed25519 and ML-DSA both emit `SignatureFormat.Raw`, so this matters only at interop seams with DER/P1363 ECDSA.
+
+```csharp
+SignatureValue value = SignatureValue.FromBytes(signature, SignatureFormat.Raw);
+// value.FixedTimeEquals(other) compares bytes in fixed time; value.Format carries the encoding.
+```
 
 ## Choosing a type
 
@@ -72,4 +121,5 @@ All four types are disposable and hold sensitive key material. The rules are uni
 - [Bodu.Security.Cryptography guides](index.md) — the full guide index for the library.
 - [Encryption basics](encryption-basics.md) — key material, randomness, and disposal for the symmetric side.
 - [Key agreement with X25519](key-agreement-x25519.md), [Signatures with Ed25519](signatures-ed25519.md), [ML-KEM](ml-kem.md), [ML-DSA](ml-dsa.md) — the four detail pages.
-- <xref:Bodu.Security.Cryptography.X25519>, <xref:Bodu.Security.Cryptography.Ed25519>, <xref:Bodu.Security.Cryptography.MLKem>, <xref:Bodu.Security.Cryptography.MLDsa> — API reference.
+- [Hybrid public key encryption with HPKE](hpke.md) — the standardized scheme that composes the X25519 KEM, [HKDF](hkdf.md), and an AEAD.
+- <xref:Bodu.Security.Cryptography.X25519>, <xref:Bodu.Security.Cryptography.Ed25519>, <xref:Bodu.Security.Cryptography.MLKem>, <xref:Bodu.Security.Cryptography.MLDsa>, <xref:Bodu.Security.Cryptography.SignatureValue> — API reference.

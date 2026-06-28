@@ -123,7 +123,7 @@ public sealed class Endpoint
 }
 ```
 
-Without the attribute the serializer prefers a public parameterless constructor, then a single declared constructor, then the constructor with the most parameters.
+Without the attribute the serializer resolves the constructor in this order: a constructor carrying `[BencodeConstructor]`, then a public parameterless constructor (or, for a value type, default construction), then the public constructor with the most parameters. The chosen constructor's parameters are bound to members by matching parameter name to member name **case-insensitively**, so a `host`/`port` constructor binds the `Host`/`Port` members above.
 
 ## Pattern 8 — Capture unknown keys
 
@@ -139,7 +139,7 @@ public sealed class ServerConfig
 }
 ```
 
-The member must be a `BencodeObject` or an `(I)Dictionary<string, BencodeNode>`, and a type may declare at most one.
+The member must be a <xref:Bodu.Text.Bencode.Nodes.BencodeObject>, an `IDictionary<string, BencodeNode>`, or a `Dictionary<string, BencodeNode>`, and a type may declare at most one. Because the writer re-sorts dictionary entries on close, the captured extension keys merge into the correct canonical position alongside the mapped members on the way back out.
 
 ## Pattern 9 — Reject unknown keys
 
@@ -212,7 +212,9 @@ When several settings could govern the same member, the closest one wins:
 
 1. a member-level attribute (`[BencodePropertyName]`, `[BencodeIgnore]`, `[BencodeConverter]`, `[BencodeObjectCreationHandling]`, …);
 2. a type-level attribute (`[BencodeNamingPolicy]`, `[BencodeConverter]`, `[BencodeUnmappedMemberHandling]`, `[BencodeObjectCreationHandling]`);
-3. the serializer options (`PropertyNamingPolicy`, `Converters`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, `IncludeFields`).
+3. the serializer options (`PropertyNamingPolicy`, `PropertyNameCaseInsensitive`, `Converters`, `DefaultIgnoreCondition`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, `IncludeFields`).
+
+A member with no explicit `[BencodeIgnore]` falls back to the options-level `DefaultIgnoreCondition` (default `Never`); an absent `[BencodeNamingPolicy]` falls back to `PropertyNamingPolicy`. The `[BencodePropertyName]` name always wins over every policy at any level.
 
 ## See also
 

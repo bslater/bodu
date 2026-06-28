@@ -19,7 +19,7 @@ HKDF is two steps that you can call separately or together:
 | Expand | <xref:Bodu.Security.Cryptography.Hkdf.Expand(System.Security.Cryptography.HashAlgorithmName,System.ReadOnlySpan{System.Byte},System.Int32,System.ReadOnlySpan{System.Byte})> | Stretch the PRK into output keying material of any length, bound to an optional `info` context. |
 | Both | <xref:Bodu.Security.Cryptography.Hkdf.DeriveKey(System.Security.Cryptography.HashAlgorithmName,System.ReadOnlySpan{System.Byte},System.Int32,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})> | Extract then Expand in one call — the common case. |
 
-The supported hash algorithms are SHA-1, SHA-256, SHA-384, and SHA-512. The maximum output of a single Expand is `255 × HashLen` bytes.
+The supported hash algorithms are SHA-1, SHA-256, SHA-384, and SHA-512; any other `HashAlgorithmName` throws <xref:System.ArgumentException>. The PRK is one hash length long (32 bytes for SHA-256), and the maximum output of a single Expand is `255 × HashLen` bytes — requesting more throws <xref:System.ArgumentOutOfRangeException>. SHA-256 is the right default; SHA-1 is accepted only for interoperating with legacy schemes that mandate it, not for new designs.
 
 ## Pattern 1 — derive a key in one call
 

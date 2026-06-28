@@ -18,7 +18,10 @@ using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead("rates.xls");
 Console.WriteLine($"{workbook.Worksheets.Count} sheet(s), {workbook.DateSystem} date system");
 ```
 
-`OpenRead` opens the file, verifies it is a BIFF8 compound file, and parses the globals. The returned workbook is <xref:System.IDisposable>; the `using` declaration disposes it and closes the underlying file.
+`OpenRead` opens the file, verifies it is a BIFF8 compound file, and parses the globals. The returned workbook is <xref:System.IDisposable>; the `using` declaration disposes it and closes the underlying file. A <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.IO.FileInfo)> overload accepts a <xref:System.IO.FileInfo> when you already have one in hand and want the same path-owning behaviour.
+
+> [!IMPORTANT]
+> The workbook owns the open compound-file container and seeks back into it every time you open a sheet. Keep the workbook alive for as long as you read its sheets, and do not dispose it until every <xref:Bodu.Formats.Excel.ExcelWorksheetReader> over it is finished — a reader returned by `OpenWorksheet` decodes from a buffer it captured at open, but `OpenWorksheet` / `ReadWorksheet` themselves seek into the live container and throw <xref:System.ObjectDisposedException> after the workbook is disposed.
 
 ## Pattern 2 — open from a stream you own
 
@@ -53,6 +56,21 @@ foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
 ```
 
 <xref:Bodu.Formats.Excel.ExcelWorksheetInfo> describes each sheet without reading its cells: its `Name`, zero-based `Index`, <xref:Bodu.Formats.Excel.ExcelSheetVisibility>, <xref:Bodu.Formats.Excel.ExcelSheetType>, and the <xref:Bodu.Formats.Excel.ExcelWorksheetDimensions> declared by its `DIMENSIONS` record. The used range is an upper bound on the populated region, not a tight fit. `IsVisible` is a shortcut for `Visibility == ExcelSheetVisibility.Visible`.
+
+Only a <xref:Bodu.Formats.Excel.ExcelSheetType.Worksheet> carries the tabular cell records this reader surfaces. A workbook may also list `Chart`, `MacroSheet`, `VbaModule`, or `Unknown` entries; opening one of those yields no cells, and its `Dimensions` is the zero-count default. Filter by type before reading when you only want data sheets, and skip hidden sheets by visibility if your workflow should ignore them:
+
+```csharp
+foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
+{
+    if (sheet.Type != ExcelSheetType.Worksheet || sheet.Visibility == ExcelSheetVisibility.VeryHidden)
+        continue;
+
+    using ExcelWorksheetReader reader = workbook.OpenWorksheet(sheet.Index);
+    // ... read the data sheet ...
+}
+```
+
+The workbook's declared date system is available up front through <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.DateSystem> (read from the `DATEMODE` record); pass it to <xref:Bodu.Formats.Excel.ExcelSerialDate> when converting date-formatted cells rather than assuming the 1900 default — see [Cell values and dates](cell-values-and-dates.md).
 
 ## Pattern 4 — skip optional work for throughput
 

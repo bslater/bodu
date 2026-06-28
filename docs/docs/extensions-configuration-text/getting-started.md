@@ -112,6 +112,42 @@ int port = configuration.GetValue<int>("service:port");
 Stream sources are one-shot — no reload-on-change. Useful for tests, embedded resources, and HTTP-fetched
 configuration.
 
+### Add a TOML file or stream
+
+```csharp
+using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTomlFile("appsettings.toml", optional: true)
+    .Build();
+
+string? level = configuration["logging:level"];   // from [logging] level = "..."
+```
+
+The TOML bridge flattens the table hierarchy into the same colon-delimited key space — `[logging.console]` with
+`includeScopes = true` surfaces as `configuration["logging:console:includeScopes"]`. It is read-once and read-only, so
+there is no `reloadOnChange` parameter; for stream input use `AddTomlStream(stream)`.
+
+### Add a pre-parsed document
+
+```csharp
+using Bodu.Extensions.Configuration.Text;
+using Bodu.Text.Configuration;
+
+ConfigurationDocument document = ConfigurationDocument.Parse("""
+    service.name = Bodu
+    service.port = 8080
+    """);
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationDocument(document)
+    .Build();
+```
+
+`AddTextConfigurationDocument` resolves the document once and adds the flattened pairs in-memory. It takes a one-shot
+snapshot — later edits to the document do not flow into the built configuration, and there is no reload-on-change.
+
 ### Bind to a POCO via DI
 
 ```csharp

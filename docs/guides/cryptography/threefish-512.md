@@ -114,6 +114,20 @@ byte[] EncryptRecord(byte[] key, byte[] iv, long recordId, byte[] plaintext)
 }
 ```
 
+The 8-byte little-endian record ID fills the low half of the 16-byte tweak; the high half stays zero, leaving room to encode a second discriminator (a table ID, a tenant ID) if you need it. Because the tweak is mixed into every round's subkey, two records with different IDs are cryptographically unrelated even under the same key and IV — see [Threefish-256](threefish-256.md#what-the-tweak-is--and-why-it-is-not-an-iv) for the mechanism.
+
+## Why 512 is the general-purpose pick
+
+Of the three Threefish variants, Threefish-512 is the one used as the core of the standard Skein-512 hash (<xref:Bodu.Security.Cryptography.Skein512>) and is the recommended general-purpose choice:
+
+- Its 64-byte block is wide enough to keep CBC's birthday bound irrelevant and large enough to amortise per-block overhead, yet its key schedule is far cheaper than Threefish-1024's.
+- Throughput is roughly double Threefish-1024 on the same CPU for the same data.
+- Padding waste rounds up to 64 bytes rather than 128 — material when records are a few hundred bytes.
+
+Choose [Threefish-256](threefish-256.md) when ciphertext size on short messages matters most, and [Threefish-1024](threefish-1024.md) only when you specifically want the widest block.
+
+The raw primitive is `Threefish512Cipher`, an <xref:Bodu.Security.Cryptography.IBlockCipher> taking a 64-byte key and 16-byte tweak — use it for hand-composed pipelines ([Composing primitives](composing-primitives.md)).
+
 ## Where to go next
 
 - [Encryption basics](encryption-basics.md) — the Key/IV/Tweak lifecycle.

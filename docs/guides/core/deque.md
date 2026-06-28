@@ -12,6 +12,11 @@ For a single-ended FIFO buffer with eviction-on-full semantics, see [Circular bu
 
 `Head` and `Tail` index into a contiguous backing array but advance modulo `Capacity`, so the logical sequence may wrap past the end of the array. `AddFirst` / `RemoveFirst` operate at the head end; `AddLast` / `RemoveLast` operate at the tail end. The indexer `this[i]` reads in logical order, hiding the wrap from callers.
 
+`Deque<T>` and <xref:Bodu.Collections.Generic.CircularBuffer`1> share the <xref:Bodu.Collections.Generic.RingBackedCollection`1> base, so they share enumeration, copy, indexer, and trim behaviour. Adds and removes at either end are **amortised O(1)** (the amortisation absorbs the occasional array-doubling pass in growable mode), and the indexer is an O(1) random read. The type accepts `null` for reference `T` and permits duplicates.
+
+> [!NOTE]
+> Enumeration is **fail-fast**: the deque carries a structural-version counter, and a `struct` enumerator created by `foreach` throws <xref:System.InvalidOperationException> on the next `MoveNext` if the deque is structurally mutated — including `Clear`, `TrimExcess`, or any add/remove — while the enumerator is live. The struct enumerator means `foreach` allocates nothing.
+
 ## Pattern 1 — growable double-ended queue (default)
 
 `new Deque<T>()` and `new Deque<T>(capacity)` both produce a growable deque. The capacity argument is a hint — the backing array doubles automatically when filled.
@@ -120,6 +125,19 @@ deque.EnsureCapacity(10_000);   // pre-allocate; AllowGrow stays false
 
 for (int i = 0; i < 10_000; i++)
     deque.AddLast(i);            // no throws — capacity already covers it
+```
+
+## Growth and seeding
+
+In growable mode the backing array doubles on overflow — the new capacity is `max(MinGrowCapacity, Capacity × 2)` (with a small floor for tiny deques), capped at <xref:System.Array.MaxLength>. Doubling keeps the per-element cost amortised O(1) over a run of appends.
+
+A deque can be seeded from a sequence. When the source is longer than the supplied capacity, growable mode bumps the capacity to fit the whole source (nothing is dropped), whereas `allowGrow: false` with an over-long source throws `InvalidOperationException`. The default capacity is `16` and the default `allowGrow` is `true` on every constructor overload:
+
+```csharp
+using Bodu.Collections.Generic;
+
+var grown  = new Deque<int>(new[] { 1, 2, 3, 4, 5 }, capacity: 2);             // grows to fit: holds all 5
+// var fail = new Deque<int>(new[] { 1, 2, 3 }, capacity: 2, allowGrow: false); // InvalidOperationException
 ```
 
 ## API summary

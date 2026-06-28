@@ -70,6 +70,14 @@ Construction and arithmetic default to <xref:System.MidpointRounding.ToEven> —
 
 `Money<T>.ToFraction()` returns a <xref:Bodu.Numerics.Fraction`1> over <xref:System.Numerics.BigInteger>, and `Money<T>.FromFraction(...)` snaps a fraction back to settlement precision in one rounding event. `Money<T>.MultiplyExact(Fraction<BigInteger>)` is the single-step shortcut. Use it for amortisation schedules, multi-rate FX chains, and any compound calculation where drift across hundreds of rounding events is unacceptable.
 
+## `CalculatedMoney`
+
+<xref:Bodu.Financial.CalculatedMoney> is the middle precision tier between settlement-grade <xref:Bodu.Financial.Money`1> and exact <xref:Bodu.Numerics.Fraction`1>. It is a runtime-tagged `readonly struct` that carries the full `decimal` precision (28–29 significant digits) through `+`, `-`, `*`, `/`, and the named `Multiply` / `Divide`, deferring rounding until `RoundToMoney()` settles it to a <xref:Bodu.Financial.Money> in a single event. `ToCalculated()` materialises one from either money type; mixing two currencies throws <xref:System.InvalidOperationException> at runtime. Reach for it when `decimal` precision is enough and a full `Fraction` round-trip is heavier than the calculation warrants.
+
+## `MonetaryContext`
+
+<xref:Bodu.Financial.MonetaryContext> bundles the rounding strategy (<xref:Bodu.Financial.IRoundingStrategy>), the <xref:Bodu.Financial.ScalePolicy>, the <xref:Bodu.Financial.CashRoundingPolicy>, the <xref:Bodu.Financial.AllocationPolicy>, and the <xref:Bodu.Financial.ConversionRoundingPolicy> into one immutable record, so a settlement regime can be configured once and carried by name through the DI container. It governs *operation* boundaries — multiplication, division, conversion, and `CalculatedMoney.RoundToMoney()` — not allocation residual distribution, which is fixed. `MonetaryContext.Default` is banker's rounding at currency minor-unit scale.
+
 ## Fair allocation
 
 Splitting `$1.00` into three shares cannot return `[0.33, 0.33, 0.33]` — that loses a cent. `Money<T>.Allocate(int parts)` distributes the residual minor units one per share from the start of the array so the sum equals the original exactly:
@@ -83,12 +91,12 @@ new Money<USD>(-10m).Allocate(3);    // [-3.34, -3.33, -3.33]
 
 ## Currency catalogue
 
-`Bodu.Financial.Currencies` ships approximately 185 sealed `ICurrency` tag classes — one per ISO 4217 code — split between active and historic:
+`Bodu.Financial.Currencies` ships 184 sealed `ICurrency` tag classes — one per ISO 4217 code — split between active and historic:
 
-- **Active**: USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, INR, BRL, MXN, ZAR, … (around 150 codes).
-- **Historic**: every Euro-zone predecessor (ATS, BEF, CYP, DEM, EEK, ESP, FIM, FRF, GRD, IEP, ITL, LTL, LUF, LVL, MTL, NLG, PTE, SIT, SKK) plus other notable replacements (AZM, GHC, MZM, ROL, SRG, TMM, VEB, VEF, ZWL). Each historic tag declares `IsHistoric => true`, the `DemonetizedOn` date, and the `SuccessorIsoCode`.
+- **Active** (155 codes): USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, INR, BRL, MXN, ZAR, …
+- **Historic** (29 codes): the Euro-zone predecessors (ATS, BEF, CYP, DEM, EEK, ESP, FIM, FRF, GRD, HRK, IEP, ITL, LTL, LUF, LVL, MTL, NLG, PTE, SIT, SKK) plus other notable replacements (AZM, GHC, MZM, ROL, SRG, TMM, VEB, VEF, ZWL). Each historic tag declares `IsHistoric => true`, the `DemonetizedOn` date, and the `SuccessorIsoCode`.
 
-Tag types are source-generated from `currencies.json`, and the runtime catalogue is built from the same generated data — no runtime reflection scans the assembly.
+Tag types are source-generated from `currencies.json`, and the runtime catalogue is built from the same generated data — no runtime reflection scans the assembly. The <xref:Bodu.Financial.Currencies.CurrencyCode> enum carries the same 184 codes plus a `None = 0` sentinel; `CurrencyCode.GetStatus()` / `IsActive()` / `IsHistoric()` read the per-member <xref:Bodu.Financial.Currencies.CurrencyStatus> tag.
 
 ## `CurrencyRegistry`
 
@@ -132,19 +140,17 @@ The series is **immutable**. Use the companion <xref:Bodu.Financial.ExchangeRate
 
 ## Provenance
 
-A dated lookup returns an <xref:Bodu.Financial.ExchangeRateLookupResult> with everything required to reconstruct the conversion later:
+A dated lookup returns an <xref:Bodu.Financial.ExchangeRateLookupResult> — a `readonly record struct` with five properties — plus a family of derived convenience members. The properties:
 
-| Field | Meaning |
+| Property | Meaning |
 |---|---|
-| `Rate.Provider` | The publishing source's identifier. |
-| `Rate.Date` | The date the returned rate was observed (may differ from the request). |
-| `Rate.IsInverted` | Whether the rate was derived from the reverse-direction pair. |
+| `Rate` | The resolved <xref:Bodu.Financial.ExchangeRate>: `Rate.Provider`, `Rate.Date` (the observed date, may differ from the request), `Rate.Rate` (the multiplier), and `Rate.IsInverted` (derived from the reverse-direction pair). |
 | `RequestedDate` | The date the caller originally asked for. |
-| `Resolution` | The <xref:Bodu.Financial.ExchangeRateDateResolution> policy that fired (`Exact`, `PreviousOnOrBefore`, `NextOnOrAfter`, `Nearest`, …). |
+| `Resolution` | The <xref:Bodu.Financial.ExchangeRateDateResolution> policy that fired (`Exact`, `PreviousOnOrBefore`, `NextOnOrAfter`, `Nearest`, `NearestPreferPrevious`, `NearestPreferNext`). |
 | `OffsetDays` | Absolute day distance between `RequestedDate` and `Rate.Date`. |
-| `IsExactDate` | Convenience flag — `true` when `OffsetDays == 0`. |
+| `Provenance` | The <xref:Bodu.Financial.ExchangeRateProvenance> — provider, <xref:Bodu.Financial.ExchangeRateOrigin> (`Live` / `Cache`), backend label, and cache age when served from a cache. |
 
-That set is what lets accounting and tax workflows answer "which observed rate produced this number, and how far off the requested date was it?" without re-querying the table.
+The derived members live on <xref:Bodu.Financial.Extensions> rather than on the record — `ResolvedDate` (`== Rate.Date`), `SignedOffsetDays` (negative when the resolved date is earlier), `IsExactDate` (`OffsetDays == 0`), `IsPreviousDate`, and `IsFutureDate` — emitted as C# extension *properties* or classic extension *methods* depending on the build. That set is what lets accounting and tax workflows answer "which observed rate produced this number, and how far off the requested date was it?" without re-querying the table.
 
 ## Aggregating provider
 
@@ -181,7 +187,7 @@ The bag is the type that models the **aggregate-then-convert** pattern: accumula
 | `Lenient` | Same shape as `Strict`, but also normalises lowercase ISO codes to uppercase and trims surrounding whitespace before validation. | Import workflows that ingest spreadsheets and external feeds. Not suitable as a canonical storage shape. |
 | `Compact` | Single JSON string `"19.99 USD"` for money; flat object `{ "USD": 19.99, "EUR": 12.34 }` for bags. Reads accept either ISO-prefix or ISO-suffix string forms. | Wire-size-sensitive APIs and human-readable logs. |
 
-Register a policy via `options.AddFinancialJsonConverters(policy)`; converters added to <xref:System.Text.Json.JsonSerializerOptions.Converters> take precedence over the type-level `[JsonConverter]` attribute that defaults to `Strict`.
+Register a policy via `options.AddFinancialJsonConverters(policy)`; this installs the five financial converters — for `Money<TCurrency>` (through a `JsonConverterFactory`), `Money`, `MoneyBag`, <xref:Bodu.Financial.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRatePair>. Converters added to <xref:System.Text.Json.JsonSerializerOptions.Converters> take precedence over the type-level `[JsonConverter]` attribute that defaults to `Strict`.
 
 ## Demonetisation
 

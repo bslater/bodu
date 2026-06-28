@@ -14,12 +14,13 @@ A `TerritoryCode` carries two pieces of information:
 
 | Member | Description |
 |---|---|
-| `Country` | The ISO 3166-1 alpha-2 country code (`AU`, `GB`, `US`). Always upper-case in canonical form. |
+| `Country` | The ISO 3166-1 alpha-2 country code (`AU`, `GB`, `US`). Always upper-case in canonical form; the empty string for the default value. |
 | `Subdivision` | The optional ISO 3166-2 subdivision suffix (`NSW`, `SCT`, `CA`). `null` when the territory refers to the whole country. |
 | `IsSubdivision` | `true` when `Subdivision` is non-null — the code names a subdivision rather than a whole country. |
-| `Parent` | The containing country-level `TerritoryCode` for a subdivision (e.g. `AU-NSW` → `AU`); the value itself for a country-level code. |
+| `IsEmpty` | `true` for the default `TerritoryCode` (the `default(TerritoryCode)` value, with an empty `Country`). |
+| `Parent` | The containing country-level `TerritoryCode` for a subdivision (e.g. `AU-NSW` → `AU`); the value itself for a country-level code; the default value when this code is empty. |
 
-The canonical string form is `Country` for a country-level code and `Country-Subdivision` (with a hyphen) for a subdivision-level code. `TerritoryCode` converts implicitly to `string`, so a value flows straight into a service call:
+The canonical string form is `Country` for a country-level code and `Country-Subdivision` (with a hyphen) for a subdivision-level code. `TerritoryCode` converts **implicitly** to `string` (so a value flows straight into a service call) and **explicitly** from `string` (the explicit cast `(TerritoryCode)"AU"` throws on a malformed code, matching `Parse`):
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -28,7 +29,11 @@ TerritoryCode auNsw = TerritoryCode.Parse("AU-NSW");
 string code = auNsw;                 // implicit → "AU-NSW"
 TerritoryCode au = auNsw.Parent;     // → AU
 bool isSub = auNsw.IsSubdivision;    // → true
+
+TerritoryCode gb = (TerritoryCode)"GB-SCT";   // explicit cast — throws on a malformed code
 ```
+
+`TerritoryCode` is a value type with full `==` / `!=` equality, so two codes parsed from `"AU-NSW"` and `"  au-nsw "` compare equal.
 
 ## Parsing
 

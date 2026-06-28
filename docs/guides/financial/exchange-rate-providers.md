@@ -93,6 +93,15 @@ is not re-fetched. This is distinct from the [rate cache](exchange-rate-caching.
 the on-disk payload cache avoids re-downloading the source file, while the rate
 cache stores parsed, resolved rates in front of the provider.
 
+**Shared options.** Yahoo and OFX options derive from the abstract
+<xref:Bodu.Financial.WebExchangeRateProviderOptions>, so they share its surface — the
+`BaseAddress`, `HttpTimeout` (default 30s), `UserAgent`, `AllowSynchronousNetworkAccess`,
+`DefaultLookback` (default 7 days), a `CurrencyAliases` map for non-ISO source symbols,
+and the per-event `*LogLevel` knobs. RBA, ECB, and BoE carry their own option types
+(`RbaExchangeRateOptions` and friends) with source-specific settings such as the RBA's
+era list. The DI registration's `configureResilience` parameter tunes the standard
+Polly handler (`HttpStandardResilienceOptions`) wrapped around the named `HttpClient`.
+
 ## Reserve Bank of Australia (AUD)
 
 [`RbaExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.RbaExchangeRateProvider)

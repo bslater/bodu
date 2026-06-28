@@ -12,11 +12,13 @@ The type is <xref:Bodu.Security.Cryptography.CubeHash>, and it derives from <xre
 
 | Property | Default | Range | Notes |
 |---|---|---|---|
-| `HashSize` | 512 bits | 8–512, multiple of 8 (`CubeHash.MinHashSize` / `MaxHashSize`) | Output width. |
+| `HashSize` | 512 bits | One of **224, 256, 384, 512** (`CubeHash.MinHashSize` = 224, `MaxHashSize` = 512) | Output width — a discrete set, not any multiple of 8. |
 | `TransformBlockSize` | 32 bytes | 1–128 (`MinInputBlockSize` / `MaxInputBlockSize`) | Bytes absorbed per permutation call. Larger = faster per byte. |
 | `Rounds` | 16 | 1–4096 (`MinRounds` / `MaxRounds`) | Permutation rounds between blocks. More rounds = more margin, slower. |
 | `InitializationRounds` | 16 | 1–4096 | Permutation rounds during init. |
 | `FinalizationRounds` | 32 | 1–4096 | Permutation rounds after the last block. |
+
+`CubeHash` derives directly from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, so the standard `ComputeHash` / `TransformBlock` lifecycle applies. A `HashSize` outside the permitted set throws `ArgumentOutOfRangeException` at construction (or when the setter runs).
 
 The published naming convention is **CubeHash `r+b`/`w+f`-`h`** — initialization rounds `i`, transform rounds `r`, block size `b`, finalization rounds `f`, output bits `h`. `AlgorithmName` reflects the current configuration, e.g. `"CubeHash16+16/32+32-512"`.
 
@@ -45,7 +47,7 @@ using var cube = new CubeHash { HashSize = 256 };   // 32-byte digest
 byte[] digest = cube.ComputeHash(data);
 ```
 
-`HashSize` must be a multiple of 8 between 8 and 512. It is only settable before the first `ComputeHash` / `TransformBlock` — changing it mid-stream would invalidate the state, so the setter throws once hashing has started.
+`HashSize` must be one of 224, 256, 384, or 512 bits — the same discrete set the SHA-3 submission defined, not an arbitrary multiple of 8. It is only settable before the first `ComputeHash` / `TransformBlock` — changing it mid-stream would invalidate the state, so the setter throws once hashing has started.
 
 ## Pattern 3 — trading speed for margin
 
@@ -111,6 +113,12 @@ using var cube = new CubeHash
     HashSize             = 256,
 };
 ```
+
+## Security caveats
+
+- **Status.** CubeHash was a first-round SHA-3 *submission* — it did not advance to the final round (the finalists were BLAKE, Grøstl, JH, Keccak, and Skein). The default `16/32` configuration is unbroken but conservative parameterizations exist precisely because the low-round variants have a thinner margin; do not reduce `Rounds` below the default for security-sensitive use.
+- **Output size vs security level.** As with any digest, an n-bit output gives ≈ n-bit pre-image resistance but only ≈ n/2-bit collision resistance. The 224-bit minimum therefore offers 112-bit collision resistance — pick 256 or wider when collisions matter.
+- **Length extension.** CubeHash is a sponge construction, so it is immune to length extension and is safe to use as a keyed MAC by prepending the key (HMAC is unnecessary) — but no native MAC mode is exposed here; for a built-in keyed mode reach for [Skein](skein.md) or [BLAKE2b](blake.md).
 
 ## When to use CubeHash
 

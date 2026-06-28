@@ -26,7 +26,7 @@ Every extension method lives on <xref:Bodu.Globalization.Calendar.NotableDateSer
 | `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>)` | The same, but the resource is produced from the container — e.g. loaded from configuration or a data pack resolved through DI. |
 | `AddReloadableNotableDateService(IServiceCollection, NotableDateResource)` | A singleton `INotableDateService` (a `ReloadableNotableDateService`) **and** a singleton `MutableNotableDateResourceProvider` you inject to call `Reload(...)`. |
 
-`INotableDateService` is always registered as a singleton.
+`INotableDateService` is always registered as a singleton. The fixed registration (`AddNotableDateService`) offers both a resource and a `Func<IServiceProvider, NotableDateResource>` factory overload; the reloadable registration takes the initial resource only — load it eagerly (typically from a data pack) and swap it later through the provider.
 
 ## Register a resource
 
@@ -101,6 +101,31 @@ public sealed class CalendarReloader
 ```
 
 The provider is also registered as <xref:Bodu.Globalization.Calendar.INotableDateResourceProvider>, so a component that only needs to read the current resource can inject the interface instead of the concrete provider.
+
+## Registering a service with custom collaborators
+
+`AddNotableDateService` builds a plain `NotableDateService` over the resource — it does not take an algorithm registry, collision resolver, or adjustment handlers. When the service needs those collaborators (see [Building and extending the service](building-the-service.md)), construct the service yourself in the factory overload and register the instance as the interface:
+
+```csharp
+using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+using Microsoft.Extensions.DependencyInjection;
+
+builder.Services.AddSingleton<INotableDateService>(sp =>
+{
+    var registry = new NotableDateAlgorithmRegistry()
+        .Register("pi-day", new PiDayAlgorithm());
+
+    NotableDateResource resource = NotableDateResourceLoader.Load(
+        sp.GetRequiredService<IConfiguration>()["Calendar:Document"]!,
+        CommonNotableDateResources.Resolver,
+        registry);
+
+    return new NotableDateService(resource, registry);
+});
+```
+
+This is the standard escape hatch: anything `AddNotableDateService` cannot express is just a hand-built `NotableDateService` registered as a singleton `INotableDateService`.
 
 ## Service lifetime
 

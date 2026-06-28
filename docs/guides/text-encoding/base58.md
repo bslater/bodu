@@ -155,6 +155,23 @@ byte[] randomBytes = RandomNumberGenerator.GetBytes(8);
 string shortId = Base58.Encode(randomBytes);  // ≈ 11 characters, no ambiguity
 ```
 
+### Encode a GUID as an ambiguity-free token
+
+`Base58` encodes a <xref:System.Guid> directly — a ~22-character token with none of the visually confusable
+`0`/`O`/`I`/`l` characters, ideal for an identifier a human might read aloud or transcribe:
+
+```csharp
+Guid id = Guid.NewGuid();
+
+string token = Base58.Encode(id);                       // no encode-side options — Base58 has no formatting flags
+Guid back    = Base58.DecodeGuid(token);                // FormatException unless it decodes to 16 bytes
+bool ok      = Base58.TryDecodeGuid(token, out Guid parsed);
+```
+
+The 16 bytes are the GUID's native mixed-endian layout (matching `Guid.TryWriteBytes`), so the round trip is exact.
+Because Base58 preserves leading-zero bytes as leading `1` characters, a GUID whose first bytes are zero still
+round-trips losslessly.
+
 ## Base58Check — checksum-protected payloads
 
 <xref:Bodu.Text.Encoding.Base58Check> wraps Base58 with the Bitcoin-style 4-byte checksum: `Encode` appends a

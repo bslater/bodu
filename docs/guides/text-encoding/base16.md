@@ -82,6 +82,8 @@ relax specific rules:
 | `None` | Strict mode — exact even-length hex digits, nothing else |
 | `AllowPrefix` | Tolerate a leading `0x` / `0X` |
 | `IgnoreWhitespace` | Strip ASCII space, tab, CR, LF anywhere in the input |
+| `AllowMissingPadding` | No-op — Base16 has no padding character |
+| `RequireCanonicalEncoding` | No-op — every byte maps to exactly two characters, so there are no unused terminal bits to constrain |
 
 ```csharp
 // All three of these recover the same bytes when the matching flags are set:
@@ -139,6 +141,31 @@ var status = Base16.DecodeFromUtf8(
 
 `Base16.DecodeFromUtf8` with `isFinalBlock: false` returns `OperationStatus.NeedMoreData` when the chunk ends on
 an odd nibble — the partial pair is left unconsumed for the next call.
+
+> [!TIP]
+> The `TryToHexString` / `TryToHexStringLower` overloads come in both a `Span<char>` and a `Span<byte>` (UTF-8)
+> destination form, so the BCL-style alias surface covers the same zero-allocation paths as `TryEncode` /
+> `TryEncodeToUtf8`.
+
+## Encoding a GUID
+
+`Base16` encodes a <xref:System.Guid> directly — handy for a stable, lower-case hex identifier without round-tripping
+through `Guid.ToString("N")`:
+
+```csharp
+Guid id = Guid.NewGuid();
+
+string hex   = Base16.Encode(id);                                 // 32 lower-case hex chars, no dashes
+string upper = Base16.Encode(id, BaseFormattingOptions.UpperCase);
+
+Guid back    = Base16.DecodeGuid(hex);                            // FormatException unless it decodes to 16 bytes
+bool ok      = Base16.TryDecodeGuid(hex, out Guid parsed);        // non-throwing
+```
+
+The bytes are the GUID's native mixed-endian layout (matching `Guid.TryWriteBytes`), so `DecodeGuid(Encode(id))`
+reconstructs `id` exactly. This differs from `Guid.ToString("N")`, which renders the first three fields in
+big-endian text order — the two forms are *not* interchangeable byte-for-byte, so decode hex produced by `Encode`
+with `DecodeGuid`, not by re-parsing a `ToString("N")` result.
 
 ## Validation and sizing helpers
 

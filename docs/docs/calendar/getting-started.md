@@ -135,8 +135,11 @@ public sealed class PiDayAlgorithm : INotableDateAlgorithm
 
 var registry = new NotableDateAlgorithmRegistry().Register("pi-day", new PiDayAlgorithm());
 NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ => null, registry);  // xml has <Algorithm key="pi-day" />
-NotableDateService  service  = new NotableDateService(resource, registry);
+NotableDateService  service  = new NotableDateService(
+    resource, new NotableDateServiceOptions { Algorithms = registry });
 ```
+
+Custom collaborators — algorithm registry, collision resolver, adjustment / trigger handlers, and code-first providers — are supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> (an object with `init`-only properties); there is no positional-collaborator constructor. The single-argument `new NotableDateService(resource)` covers the built-in path.
 
 Built-in keys (`western-easter`, `orthodox-easter`, `qingming`, `vesak`, `losar`, `matariki`, the Hindu-festival keys, …) need no registration. See [Date calculation algorithms](../../guides/calendar/algorithms.md).
 

@@ -83,16 +83,22 @@ using Bodu.Text.Delimited;
 using var reader = new StreamReader("transactions.csv");
 using var dlm = Delimited.CreateReader(reader, new DelimitedParseOptions { HasHeader = true });
 
+// Resolve column ordinals once, from the header exposed after the first Read().
+int idCol = 0, amountCol = 1;
+
 while (dlm.Read())
 {
-    string id     = dlm.Fields[dlm.Headers.IndexOf("id")];
-    decimal value = decimal.Parse(dlm.Fields[dlm.Headers.IndexOf("amount")], CultureInfo.InvariantCulture);
+    string id     = dlm.Fields[idCol];
+    decimal value = decimal.Parse(dlm.Fields[amountCol], CultureInfo.InvariantCulture);
 
     Console.WriteLine($"Line {dlm.LineNumber} / Row {dlm.RowNumber}: {id} -> {value}");
 }
 ```
 
-`DelimitedReader` is a forward-only buffered reader (4096-character internal buffer by default) for files that do not fit in memory. After each successful `Read()` the `Fields` property exposes the current row; `Headers` is populated after the first read when the options declare `HasHeader: true`. The reader strips a leading UTF-8 BOM if present, supports multiline quoted fields, and tracks `LineNumber` (1-based source line) and `RowNumber` (data-row count, excluding the header and skipped blanks / comments).
+`DelimitedReader` is a forward-only buffered reader (4096-character internal buffer by default; a constructor overload accepts a different `bufferSize`) for files that do not fit in memory. After each successful `Read()` the `Fields` property (`IReadOnlyList<string>`) exposes the current row; `Headers` is populated after the first read when the options declare `HasHeader: true`. The reader strips a leading UTF-8 BOM if present, supports multiline quoted fields, and tracks `LineNumber` (1-based source line) and `RowNumber` (data-row count, excluding the header and skipped blanks / comments).
+
+> [!NOTE]
+> `Fields` and `Headers` are `IReadOnlyList<string>`, so they have no `IndexOf`. To resolve a column ordinal from its name on the streaming reader, build a `Dictionary<string,int>` from `Headers` once after the first read (or use the in-memory `DelimitedDocument`, whose `DelimitedRow` indexer accepts a column name directly).
 
 `DelimitedWriter` is the symmetrical writer:
 
@@ -105,7 +111,7 @@ dlm.WriteRow(new[] { "T-1001", "19.95" });
 dlm.WriteRow(new[] { "T-1002", "5.10"  });
 ```
 
-`WriteRow` applies RFC 4180 quoting automatically — fields containing the delimiter, the quote character, or a line terminator are emitted with surrounding quotes and embedded quotes doubled.
+`WriteRow` applies RFC 4180 quoting automatically — a field is quoted when it is empty or contains the delimiter, the quote character, `\n`, or `\r`; embedded quote characters are doubled. Empty fields are quoted as `""` so a leading or trailing empty field survives a round trip. Each row is terminated with a bare line feed (`\n`), not `\r\n`. `WriteHeader` should be called once, before the first `WriteRow`; `RowsWritten` counts data rows only (the header is excluded). A `null` element in the `fields` enumerable raises `ArgumentException`.
 
 ## Pattern 6 — round-trip through `Format`
 
@@ -143,7 +149,17 @@ The headline `DelimitedParseOptions` fields control the format dialect:
 | Member | Effect |
 |---|---|
 | `Strict` *(default)* | Throws `DelimitedFormatException` with the offending line number. |
-| `Ragged` | Tolerates ragged rows; missing fields return the empty string via the column-name indexer. |
+| `Ragged` | Tolerates ragged rows; a short row's missing trailing fields return the empty string via the column-name indexer, and a long row keeps its extra fields accessible by ordinal. |
+
+The count is checked only against a declared header, so `FieldCountBehavior` has no effect when `HasHeader` is `false` — there is no reference width to compare against.
+
+```csharp
+var ragged = new DelimitedParseOptions { FieldCountBehavior = DelimitedFieldCountBehavior.Ragged };
+
+DelimitedDocument doc = Delimited.Parse("a,b,c\n1,2\n4,5,6,7", ragged);
+// Row 0: "1","2" — doc.Rows[0]["c"] is "" (missing trailing field)
+// Row 1: "4","5","6","7" — the extra field 7 is reachable via doc.Rows[1].Fields[3]
+```
 
 ### Duplicate header behaviour
 

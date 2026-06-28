@@ -84,9 +84,9 @@ in `Bodu.Financial.ExchangeRates.Caching`.
 ```csharp
 ExchangeRate[] observations =
 {
-    new("USD", "EUR", new DateOnly(2024, 6, 14), 0.928m, "ECB"),
-    new("USD", "EUR", new DateOnly(2024, 6, 17), 0.931m, "ECB"),
-    new("USD", "EUR", new DateOnly(2024, 6, 18), 0.930m, "ECB"),
+    new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 14), 0.928m, "ECB"),
+    new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 17), 0.931m, "ECB"),
+    new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 18), 0.930m, "ECB"),
 };
 FixedDatedExchangeRateProvider table = new(observations);
 
@@ -145,7 +145,7 @@ dates; rejects in-batch duplicates). Both apply atomic rollback: a
 mid-batch validation failure leaves the builder unchanged.
 
 ```csharp
-ExchangeRatePair pair = new("USD", "AUD");
+ExchangeRatePair pair = new(CurrencyCode.USD, CurrencyCode.AUD);
 ExchangeRateSeriesBuilder builder = new(pair, "RBA");
 
 builder.Add(new DateOnly(2026, 6, 1), 1.50m);
@@ -262,6 +262,32 @@ Money<USD> totalUsd = wallet.ConvertTo<USD>(periodEnd);
 
 The adapter delegates to the inner provider and returns only the raw
 rate. To preserve provenance, call the dated provider directly.
+
+## Direction-typed rates: `ExchangeRate<TBase, TQuote>`
+
+When both ends of a conversion are known at the call site, the
+compile-time-typed <xref:Bodu.Financial.ExchangeRate`2> encodes the
+direction in its type parameters, so applying a rate the wrong way
+round is a build error rather than a runtime surprise. It pairs with
+the typed `Money<TCurrency>.Convert<TQuote>(ExchangeRate<TCurrency, TQuote>)`
+overload:
+
+```csharp
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+
+var typed = new ExchangeRate<USD, EUR>(0.928m, new DateOnly(2024, 6, 14), "ECB");
+
+Money<EUR> eur = new Money<USD>(100m).Convert(typed);   // EUR 92.80
+ExchangeRate<EUR, USD> reverse = typed.Inverse();       // reciprocal, still typed
+
+ExchangeRate runtime = typed.ToRuntime();               // erase to the runtime form
+var back = ExchangeRate<USD, EUR>.FromRuntime(runtime); // throws on ISO mismatch
+```
+
+`Convert(Money<USD>)` on the typed rate and `Money<USD>.Convert(typed)`
+are equivalent; both round to the destination minor-unit precision
+(`MidpointRounding.ToEven` by default).
 
 ## Audit-grade conversion through `Money<TCurrency>`
 

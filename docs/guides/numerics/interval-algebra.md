@@ -30,9 +30,11 @@ Two conventions thread through everything below.
 ## Chained intersection
 
 `Intersect` is associative and commutative, so a sequence of constraints
-folds cleanly. The intersection narrows monotonically — each operand can
-only shrink the running result — and collapses to `Empty` the moment two
-constraints disagree:
+folds cleanly. It is also idempotent (`a.Intersect(a) == a`) and has
+`Empty` as its absorbing element (`a.Intersect(Empty) == Empty`), which
+together make any fold order valid. The intersection narrows
+monotonically — each operand can only shrink the running result — and
+collapses to `Empty` the moment two constraints disagree:
 
 ```csharp
 using Bodu.Numerics;
@@ -124,6 +126,15 @@ an open interval over the same bounds yields the closed result:
 Interval<int>.Closed(1, 5).TryUnion(Interval<int>.Open(1, 5), out var u);
 // u == [1, 5] — inclusive wins on both ends
 ```
+
+Unlike `Intersect`, `TryUnion` is *partial*: it is defined only when the
+result is a single contiguous interval. `Empty` is its identity (a union
+with `Empty` returns the other operand and `true`), but because the
+operation can fail on a gap, folding a list of intervals into a minimal
+cover requires sorting first — see the worked example below. This is the
+structural reason `TryUnion` returns `bool` rather than an
+`Interval<T>`: there is no contiguous value to return for a disjoint
+pair.
 
 ## Containment and overlap
 

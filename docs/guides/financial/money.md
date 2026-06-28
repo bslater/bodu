@@ -39,8 +39,8 @@ public sealed class USD : ICurrency
 }
 ```
 
-The shipped catalogue covers ~150 active ISO 4217 currencies,
-including all three minor-unit categories:
+The shipped catalogue covers 155 active ISO 4217 currencies (plus 29
+historic ones), including all three minor-unit categories:
 
 - `MinorUnits = 0` — `JPY`, `KRW`, `CLP`, `ISK`, `VND`, `XAF`, `XOF`, etc.
 - `MinorUnits = 2` — `USD`, `EUR`, `GBP`, `AUD`, `CAD`, `CHF`, and the
@@ -537,7 +537,7 @@ intermediate step.
 
 ## Historic currencies
 
-The shipped catalogue includes ~29 demonetized currencies — the
+The shipped catalogue includes 29 demonetized currencies — the
 twenty Euro-zone predecessors (ATS, BEF, CYP, DEM, EEK, ESP, FIM,
 FRF, GRD, HRK, IEP, ITL, LTL, LUF, LVL, MTL, NLG, PTE, SIT, SKK) plus
 nine other notable replacements (AZM, GHC, MZM, ROL, SRG, TMM, VEB,
@@ -758,6 +758,27 @@ code in the payload throws rather than deserialising.
 Amounts are emitted as JSON numbers; the reader also accepts string
 amounts to round-trip large values through systems that lack
 arbitrary-precision number support.
+
+To switch the wire shape, register the converters under an explicit
+<xref:Bodu.Financial.Serialization.FinancialJsonPolicy>. The `Compact`
+policy collapses each money to a single string and a bag to a flat
+ISO-keyed object — smaller on the wire and readable in a log line:
+
+```csharp
+using Bodu.Financial.Serialization;
+
+var options = new JsonSerializerOptions();
+options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
+
+JsonSerializer.Serialize(new Money<USD>(19.99m), options);   // "19.99 USD"
+JsonSerializer.Serialize(wallet, options);                   // { "USD": 100.00, "EUR": 50.00 }
+```
+
+`Lenient` keeps the `Strict` shape but normalises lowercase ISO codes
+to uppercase and trims surrounding whitespace before validation — for
+ingesting spreadsheets and external feeds, not as a canonical storage
+shape. The same call registers converters for <xref:Bodu.Financial.ExchangeRate>
+and <xref:Bodu.Financial.ExchangeRatePair> too.
 
 ## When not to use `Money<TCurrency>`
 

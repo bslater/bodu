@@ -77,6 +77,30 @@ Money<USD> balance = Money<USD>.FromFraction(exact);   // one rounding event
 
 Single-step variant: `principal.MultiplyExact(growth)`.
 
+### Deferred rounding with `CalculatedMoney`
+
+When you only need to defer rounding across a chain of `decimal` steps
+— not full rational exactness — `Money<T>.ToCalculated()` returns a
+runtime-tagged <xref:Bodu.Financial.CalculatedMoney> that carries the
+full `decimal` precision through arithmetic and rounds once, at the
+settlement boundary:
+
+```csharp
+CalculatedMoney running = new Money<USD>(100m).ToCalculated();
+running = running * 1.05m / 3m;              // no rounding yet
+Money settled = running.RoundToMoney();      // single rounding event → Money
+```
+
+### Integer minor-unit storage
+
+`Money<T>.ToMinorUnits()` and `FromMinorUnits(long)` bridge to the
+integer-cent representation ledgers and wire formats use:
+
+```csharp
+long cents = new Money<USD>(19.99m).ToMinorUnits();    // 1999
+Money<USD> back = Money<USD>.FromMinorUnits(1999);     // USD 19.99
+```
+
 ### Runtime-tagged amounts (`Money`)
 
 ```csharp
@@ -119,15 +143,24 @@ Money<USD> totalInUsd = wallet.ConvertTo<USD>(table);
 ### Dated FX lookup with audit metadata
 
 ```csharp
+using Bodu.Financial.Extensions;   // IsExactDate / ResolvedDate extension members
+
 IDatedExchangeRateProvider provider = …;
 ExchangeRateLookupResult lookup = provider.GetRate(
-    from: "USD", to: "EUR",
-    date: new DateOnly(2024, 6, 15),
-    options: ExchangeRateLookupOptions.NearestWithin(7));
+    "USD", "EUR",
+    new DateOnly(2024, 6, 15),
+    ExchangeRateLookupOptions.NearestWithin(7));
 
-Console.WriteLine($"Used {lookup.ExchangeRate.Date} from {lookup.ExchangeRate.Provider}");
-Console.WriteLine($"Offset: {lookup.OffsetDays} day(s), exact: {lookup.IsExactDate}");
+Console.WriteLine($"Used {lookup.Rate.Date} from {lookup.Rate.Provider}");
+Console.WriteLine($"Offset: {lookup.OffsetDays} day(s), exact: {lookup.IsExactDate()}");
 ```
+
+The lookup result is a `readonly record struct` carrying the resolved
+`Rate` (an <xref:Bodu.Financial.ExchangeRate>), the `RequestedDate`, the
+`Resolution` policy that fired, the absolute `OffsetDays`, and the
+`Provenance`. `IsExactDate`, `ResolvedDate`, `SignedOffsetDays`,
+`IsPreviousDate`, and `IsFutureDate` are extension members in
+<xref:Bodu.Financial.Extensions> rather than properties on the record.
 
 ### Cash rounding
 

@@ -79,7 +79,10 @@ foreach (IniSection section in document.Sections)
 }
 ```
 
-By default (`PreserveComments: true`), full-line comments before a section header attach to the section's `LeadingComments`; comments before an entry attach to the entry's `LeadingComments`; a `#` or `;` on the same line as an entry attaches as the entry's `InlineComment`. Both prefix characters are recognised and the original prefix is preserved.
+By default (`PreserveComments: true`), full-line comments before a section header attach to the section's `LeadingComments`, and full-line comments before an entry attach to the entry's `LeadingComments`. Both `#` and `;` are recognised and the original prefix character is preserved.
+
+> [!IMPORTANT]
+> The parser does **not** split a trailing inline comment out of a value. Everything after the first `=` / `:` separator (trimmed) becomes the entry's `Value`, so `host = localhost ; primary` parses to the value `localhost ; primary`. The `IniEntry.InlineComment` property is write-side only: set it yourself to have `Ini.Format` emit a trailing comment on the entry's line. The example below reads `InlineComment`, which is therefore populated only when you assigned it.
 
 ## Pattern 4 — programmatic mutation
 
@@ -106,10 +109,10 @@ Many real-world INI files have the same section name in multiple places. The beh
 
 | Member | Effect |
 |---|---|
-| `Merge` / `MergeAll` *(default)* | Later occurrences merge into the first under the active `DuplicateKeyBehavior`. |
+| `Merge` *(default)* | Every later occurrence merges into the **first** section of that name, under the active `DuplicateKeyBehavior`. |
 | `Disallowed` | Duplicate section name raises `IniFormatException`. |
 | `Preserve` | Duplicates are retained as separate `IniSection` objects in source order. |
-| `MergeAdjacent` | Merge only consecutive duplicates; otherwise preserve as separate sections. |
+| `MergeAdjacent` | Merge only when the duplicate immediately follows the same section; a non-adjacent repeat starts a new section. |
 
 Combine with `DuplicateKeyBehavior` to control the within-section semantics:
 
@@ -128,7 +131,7 @@ IniDocument document = Ini.Parse(input);
 string roundTrip = Ini.Format(document);
 ```
 
-`Format` writes the document back to text: global entries first (when present), then a blank line, then each section with a blank line separator. Leading comments precede their owning entry or section; inline comments are appended on the same line as their entry. Keys and values are trimmed of surrounding whitespace on parse, so the formatted output does not preserve original padding — pin to the original bytes if byte-stable round-tripping matters.
+`Format` writes the document back to text: global entries first (when present), then each named section, separated by a blank line. Entries are written as `key = value` (one space either side of `=`). Leading comments precede their owning entry or section; a programmatically set inline comment is appended after the value on the same line, with its prefix. Keys and values are trimmed of surrounding whitespace on parse, so the formatted output does not preserve original padding or the original separator character (a `:` separator re-emits as `=`) — pin to the original bytes if byte-stable round-tripping matters. Each line is terminated with the platform `Environment.NewLine`.
 
 ## Behaviour options
 
@@ -145,7 +148,35 @@ The `IniParseOptions` fields control the format dialect:
 
 ## Separators and comment markers
 
-The parser accepts both `=` and `:` as the key / value separator. Comment lines may start with either `#` or `;` — both are recognised, and the prefix is preserved on the `IniComment` value struct so a round trip retains the original convention.
+The parser accepts both `=` and `:` as the key / value separator — whichever appears **first** on the line wins, so `path = C:\tmp` splits on the `=` and keeps `C:\tmp` as the value. Key and value are each trimmed of surrounding whitespace. A non-comment line with no separator is treated as a key with an empty value (`flag` ⇒ key `flag`, value `""`); a line whose key trims to empty raises `IniFormatException`.
+
+Comment lines may start with either `#` or `;` — both are recognised, and the prefix is preserved on the `IniComment` value struct so a round trip retains the original convention. Section and key name comparisons are ordinal-ignore-case by default; set `CaseSensitiveSections` / `CaseSensitiveKeys` for ordinal matching.
+
+## Duplicate-section merge in practice
+
+```csharp
+using Bodu.Text.Ini;
+
+string source = """
+    [server]
+    host = a
+
+    [other]
+    x = 1
+
+    [server]
+    port = 9000
+    """;
+
+// Default Merge: the second [server] folds into the first.
+IniDocument merged = Ini.Parse(source);
+// merged.Sections has 2 sections; [server] carries both host and port.
+
+// MergeAdjacent: the [server] blocks are not adjacent, so they stay separate.
+IniDocument split = Ini.Parse(source,
+    new IniParseOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.MergeAdjacent });
+// split.Sections has 3 sections: [server], [other], [server].
+```
 
 ## Exceptions
 

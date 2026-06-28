@@ -174,6 +174,22 @@ string id = Base62.Encode(random);
 byte[] bytes = Base62.Decode(id);
 ```
 
+### Encode a GUID as a compact token
+
+```csharp
+using Bodu.Text.Encoding;
+
+// Each core family (Base16/32/58/64/85) encodes a Guid directly — no manual 16-byte buffer.
+Guid id = Guid.NewGuid();
+
+string b58 = Base58.Encode(id);                  // ~22 chars, no 0/O/I/l ambiguity
+string b64 = Base64.Encode(id, Base64Variant.UrlSafe); // 22 chars, URL-safe, unpadded
+
+Guid back = Base58.DecodeGuid(b58);              // FormatException unless it decodes to 16 bytes
+bool ok   = Base64.TryDecodeGuid(b64, out Guid parsed,
+                Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
+```
+
 ### Encode an address with Bech32 / Bech32m
 
 ```csharp

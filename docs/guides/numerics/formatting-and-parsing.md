@@ -15,7 +15,7 @@ This guide covers what each specifier renders, what the parser accepts, and how 
 | `G` (default) | improper ratio | `7/3` |
 | `M` | mixed number | `2 1/3` |
 | `U` | Unicode vulgar fraction with mixed-number fallback | `2⅓` |
-| `P` | percentage | `233 1/3%` |
+| `P` | percentage (ratio form) | `700/3%` |
 
 Specifiers are case-insensitive — `Format` uppercases the first character — and the format string `null`, `""`, or `"G"` all select the general form. Any other specifier throws <xref:System.FormatException>.
 
@@ -73,6 +73,23 @@ Fraction<int>.Create(5, 9).ToString("U");    // "5/9"    — no 5/9 glyph: falls
 ```
 
 The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToUnicodeString(provider)` is an alias for `ToString("U", provider)`.
+
+> [!NOTE]
+> A glyph is emitted only when the proper-fraction remainder has denominator at most 16 *and* matches one of the 18 shipped pairs. `5/9` has no glyph and falls back to mixed form even though its denominator is under 16; the table — not the denominator alone — is the gate.
+
+## Percentage form
+
+`ToString("P")` scales the value by 100, reduces the result to lowest terms, and renders it as a ratio with a trailing `%`. It is **not** a mixed number: a non-whole percentage prints as `numerator/denominator%`, and a whole one prints as `numerator%`:
+
+```csharp
+Fraction<int>.Create(3, 4).ToString("P");    // "75%"     — 300/4 reduces to 75/1
+Fraction<int>.Create(7, 4).ToString("P");    // "175%"    — 700/4 reduces to 175/1
+Fraction<int>.Create(7, 3).ToString("P");    // "700/3%"  — 700/3 already in lowest terms
+Fraction<int>.Create(1, 3).ToString("P");    // "100/3%"
+Fraction<int>.Zero.ToString("P");            // "0%"
+```
+
+The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToPercentString(provider)` is an alias for `ToString("P", provider)`. The parser accepts the same form on input — a trailing `%` divides the parsed denominator by 100 — so `"75%"` round-trips to `3/4` and `"100/3%"` to `1/3`.
 
 ## Parsing
 
@@ -138,18 +155,18 @@ Fraction<int> parsed = Fraction<int>.Parse("3/4"u8, null);
 
 ## Round-tripping JSON
 
-`Fraction<T>` carries `[JsonConverter(typeof(FractionJsonConverterFactory))]`, so `System.Text.Json.JsonSerializer` picks up the converter automatically. The wire shape is the general form rendered with <xref:System.Globalization.CultureInfo>.`InvariantCulture` — a single JSON string token, `"numerator/denominator"`, or a bare integer string for whole values:
+`Fraction<T>` carries `[JsonConverter(typeof(FractionJsonConverterFactory))]`, so `System.Text.Json.JsonSerializer` picks up the converter automatically. The attribute path defaults to the `Strict` policy, which emits the canonical *object* form:
 
 ```csharp
 using System.Text.Json;
 
 string json = JsonSerializer.Serialize(Fraction<int>.Create(3, 4));
-// "3/4"
+// {"numerator":3,"denominator":4}
 
 Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json);
 ```
 
-The converter reads via `Fraction<T>.Parse(text, CultureInfo.InvariantCulture)`; non-string tokens, null strings, and unparseable text raise <xref:System.Text.Json.JsonException>. See the [Working with `Fraction<T>`](fraction.md) guide for the equivalent XML helpers `ToXml()` / `FromXml(string)`.
+The compact single-string form documented above (`"3/4"`) is the wire shape of the `Compact` *policy*, opt-in via `AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`; its read path delegates to `Fraction<T>.TryParse(text, CultureInfo.InvariantCulture, …)`, and the percentage and mixed-number text forms feed back through that same parser. See [JSON serialization](json-serialization.md) for the policy table and failure modes, and the [Working with `Fraction<T>`](fraction.md) guide for the equivalent XML helpers `ToXml()` / `FromXml(string)`.
 
 ## See also
 

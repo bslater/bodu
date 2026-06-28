@@ -91,6 +91,19 @@ All three subfamilies derive from the same base type, but they are tuned for dif
 
 **Checksums** produce a short tag engineered to catch the error patterns of a transmission or storage channel — single-bit flips, burst errors, adjacent transpositions. Two structural shapes: *polynomial-remainder* (CRC — divides the input as a polynomial over GF(2) by a generator polynomial) and *twin-accumulator* (Fletcher and Adler — two running sums whose cross-position coupling catches transpositions a simple sum misses).
 
+The two shapes differ in the guarantees they offer, which is the axis to choose on:
+
+| Property | CRC | Fletcher / Adler |
+|---|---|---|
+| Single-bit error | Always detected | Always detected |
+| Adjacent transposition | Always detected | Always detected |
+| Burst error of length ≤ width | **Always detected** | No per-position guarantee |
+| Odd number of bit-flips | Always detected (most polynomials) | Not guaranteed |
+| Per-byte cost | Higher (table lookup + XOR) | Lower (two adds + a fold) |
+| Documented blind spots | None for accidental noise | Zero-byte runs (Fletcher); short inputs (Adler) |
+
+Reach for CRC when you must match a wire format or need the published burst guarantee; reach for Fletcher or Adler when you control both endpoints and want the cheapest position-dependent checksum. The [concepts page](concepts.md#crc-error-detection-guarantees) carries the full guarantee tables.
+
 **Check digits** operate on a *printed identifier* — a short, human-readable string — and append one or two characters so a later reader can confirm it was not mis-typed. Five mathematical subfamilies trade off error coverage:
 
 | Subfamily | Detects | Bodu types |

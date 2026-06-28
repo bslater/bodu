@@ -35,16 +35,18 @@ ServerConfig fromBytes = YamlSerializer.Deserialize<ServerConfig>(utf8)!;
 | .NET | YAML |
 |---|---|
 | `string` / `char` / `Guid` / `Uri` | string scalar |
-| integer family | integer scalar |
-| `double` / `float` | float scalar |
+| integer family (`byte` … `long`, `nint`/`nuint`; `ulong` above `long.MaxValue` as a quoted string) | integer scalar |
+| `double` / `float` | float scalar (`.nan` / `.inf` / `-.inf` for the special values) |
+| `decimal` | quoted string of the exact text |
+| `DateTime` / `DateTimeOffset` / `TimeSpan` | string scalar (ISO-8601 round-trip for the date kinds) |
 | `bool` | Boolean scalar (`true` / `false`) |
-| `null` | the null scalar |
+| `null` / `Nullable<T>` when null | the null scalar |
 | `enum` | string (member name), or integer when `WriteEnumsAsStrings = false` |
 | arrays, lists, sets, collections | sequence |
 | objects, dictionaries | mapping, in insertion order |
-| `object` members | runtime type on write, <xref:Bodu.Text.Yaml.Document.YamlElement> on read |
+| `object` members | runtime type on write; a loosely-typed graph (`Dictionary<string, object?>` / `List<object?>` / scalars) on read |
 
-Public fields join in when `IncludeFields` is set on the options. The full per-type catalog is in the [built-in converter catalog](builtin-converters.md). A nested object becomes an indented block mapping and a collection of objects becomes a block sequence:
+Public fields join in when `IncludeFields` is set on the options. The full per-type catalog — including the radix forms (`0x`, `0o`) accepted on read and the quoting rules — is in the [built-in converter catalog](builtin-converters.md). A nested object becomes an indented block mapping and a collection of objects becomes a block sequence:
 
 ```csharp
 public sealed class AppConfig
@@ -111,7 +113,9 @@ root["server"]!["port"] = YamlValue.Create(9090);
 string updated = root.ToYamlString();
 ```
 
-`YamlValue.Create` has overloads for `string`, `long`, `double`, and `bool`; read a value back with `GetValue<T>()`. `YamlObject` exposes `Count`, `Keys`, `Add`, `ContainsKey`, `Remove`, and `TryGetValue`; `YamlArray` implements `IList<YamlNode?>`. `WriteTo(ref Utf8YamlWriter)` drives the writer directly when you need control over indentation.
+`YamlValue.Create` has overloads for `string`, `long`, `double`, and `bool` — those four kinds are the entire scalar model, so build an `int` as `YamlValue.Create((long)42)` and a `float` as a `double`. `GetValue<T>()` reads a value back out, returning a stored value of the matching CLR type directly and otherwise coercing through `Convert.ChangeType` with `CultureInfo.InvariantCulture` (so `GetValue<string>()` always succeeds, and `GetValue<int>()` narrows a stored `long`); an impossible conversion raises `InvalidOperationException`. <xref:Bodu.Text.Yaml.Nodes.YamlValue.ValueKind> reports which of the four kinds a scalar holds.
+
+The `YamlNode` tree is fully mutable and re-entrant: `AsObject()` / `AsArray()` / `AsValue()` cast a node to its concrete shape (throwing `InvalidOperationException` on a mismatch). <xref:Bodu.Text.Yaml.Nodes.YamlObject> preserves insertion order and exposes `Count`, `Keys`, `Add` (which throws on a duplicate key, unlike the adding `[string]` setter), `ContainsKey`, `Remove`, and `TryGetValue`; <xref:Bodu.Text.Yaml.Nodes.YamlArray> implements `IList<YamlNode?>` (`Add`, `Insert`, `RemoveAt`, `IndexOf`, the `[int]` indexer). A node may appear at most once in a tree. `WriteTo(ref Utf8YamlWriter)` drives the writer directly when you need control over indentation or the newline sequence; `ToYamlString()` is the convenience wrapper over it.
 
 ## Pattern 5 — Inspect a document with the read-only DOM
 
@@ -125,7 +129,10 @@ YamlElement port = doc.RootElement.GetProperty("server").GetProperty("port");
 // port.GetInt64() → 8080
 ```
 
-Typed access goes through `GetString` / `GetInt64` / `GetDouble` / `GetBoolean`, with `TryGetProperty`, the `[int]` indexer, `GetSequenceLength`, and the `EnumerateMapping` / `EnumerateSequence` enumerators. `ValueKind` reports the <xref:Bodu.Text.Yaml.YamlValueKind>; `ScalarStyle` records the original <xref:Bodu.Text.Yaml.YamlScalarStyle> of a parsed scalar.
+Typed access goes through `GetString` / `GetInt64` / `GetDouble` / `GetBoolean`, each of which throws `InvalidOperationException` on a kind mismatch — gate them on `ValueKind` first. `GetProperty(name)` throws `KeyNotFoundException` when the key is absent; `TryGetProperty(name, out value)` is the non-throwing form. The `[int]` indexer and `GetSequenceLength` address a sequence, and `EnumerateMapping` / `EnumerateSequence` walk a container. `GetInt64` reads only an integer scalar, while `GetDouble` accepts an integer *or* float scalar (so a whole number bound to a `double` member needs no float marker). `ValueKind` reports the <xref:Bodu.Text.Yaml.YamlValueKind>; `ScalarStyle` records the original <xref:Bodu.Text.Yaml.YamlScalarStyle> of a parsed scalar, or `Any` for a non-scalar node.
+
+> [!IMPORTANT]
+> A <xref:Bodu.Text.Yaml.Document.YamlDocument> owns its parsed buffer and every <xref:Bodu.Text.Yaml.Document.YamlElement> is a struct view back onto it. Reading an element after the document is disposed raises `ObjectDisposedException`, so do not let an element (or a value pulled from one lazily) outlive the `using` block.
 
 ```csharp
 foreach (YamlProperty property in doc.RootElement.GetProperty("server").EnumerateMapping())
@@ -193,14 +200,61 @@ using YamlDocument doc = YamlDocument.Parse(Encoding.UTF8.GetBytes(text));
 // With Expand, production resolves to { retries: 3, timeout: 60 }.
 ```
 
-`Expand` (default) merges the referenced mapping in place; `Disabled` treats `<<` as an ordinary key; `PreserveAsNormalKey` keeps `<<` literally without merging. Duplicate mapping keys are governed separately by <xref:Bodu.Text.Yaml.YamlDuplicateKeyBehavior> (`Throw` by default, or `UseFirst` / `UseLast`).
+`Expand` (default) merges the referenced mapping in place, with **keys already present in the target taking precedence** over the merged ones — so `production`'s explicit `timeout: 60` overrides the merged `timeout: 30`. `Disabled` and `PreserveAsNormalKey` both retain `<<` as an ordinary mapping key without expanding it; the two are equivalent in the produced tree and differ only in expressed intent. Merge keys are gated on `SpecVersion = V1_1`: they are not part of the 1.2 core schema, so under the default `V1_2` a `<<` key is an ordinary key regardless of `MergeKeyBehavior`.
+
+Anchors and aliases work under either spec version — they are structural, not implicit-typing, features. The reader composes the tree before any token surfaces, so an alias presents the same resolved value as its anchor; a cyclic anchor or an alias that names no anchor is rejected as a <xref:Bodu.Text.Yaml.YamlFormatException>. Duplicate mapping keys are governed separately by <xref:Bodu.Text.Yaml.YamlDuplicateKeyBehavior> (`Throw` by default — the only specification-conformant mode — or the lenient `UseFirst` / `UseLast`). The duplicate-key and merge-key policies apply equally to the serializer, both DOMs, and the raw reader, because all four parse through the same <xref:Bodu.Text.Yaml.Reader.YamlReaderOptions>.
+
+## Pattern 9 — Drive the low-level reader and writer
+
+Below the serializer and the DOMs sit the `ref struct` token machines. <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader> walks a parsed document as a token stream, and <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter> emits one. Because YAML's anchors, aliases, merge keys, and indentation require a composed tree, the reader is **buffered**: its constructor copies the UTF-8 source and parses it fully, then `Read()` walks the in-memory store. This is unlike `Utf8JsonReader`'s single-pass scan, so the reader is not a streaming reader over a growing buffer — feed it the whole document.
+
+```csharp
+using Bodu.Text.Yaml;
+using Bodu.Text.Yaml.Reader;
+
+var reader = new Utf8YamlReader(Encoding.UTF8.GetBytes("host: localhost\nport: 8080\n"));
+while (reader.Read())
+{
+    switch (reader.TokenType)
+    {
+        case YamlTokenType.PropertyName:
+            string key = reader.GetString();          // "host", then "port"
+            break;
+        case YamlTokenType.String:
+            string s = reader.GetString();            // "localhost"
+            break;
+        case YamlTokenType.Integer:
+            long n = reader.GetInt64();               // 8080
+            break;
+    }
+}
+```
+
+`TokenType` reports the current <xref:Bodu.Text.Yaml.YamlTokenType> (the `StartMapping` / `EndMapping` / `StartSequence` / `EndSequence` brackets, `PropertyName`, and the `Null` / `String` / `Integer` / `Float` / `Boolean` scalar tokens), `CurrentDepth` the nesting level, and `ValueTextEquals(ReadOnlySpan<byte>)` compares the current key against UTF-8 text without allocating. The scalar getters throw `InvalidOperationException` if the current token is the wrong kind. <xref:Bodu.Text.Yaml.Reader.YamlReaderOptions> carries the same `SpecVersion`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, and `MaxDepth` the document layer uses.
+
+The writer's surface is `WriteStartMapping` / `WriteEndMapping`, `WriteStartSequence` / `WriteEndSequence`, `WritePropertyName`, and the scalar writers `WriteString` / `WriteInt64` / `WriteDouble` / `WriteBoolean` / `WriteNull`. It always emits **block** collections, quoting a string scalar only when a plain rendering would be ambiguous (it would resolve as a non-string, begin with an indicator character, contain `": "`, and so on) and falling back to a double-quoted, escaped form otherwise. Empty mappings and sequences are written as flow `{}` / `[]` so they round-trip as empty rather than null. <xref:Bodu.Text.Yaml.Writer.YamlWriterOptions> sets `IndentSize` (default 2, capped at 16), `NewLine` (only `"\n"` or `"\r\n"`), and `MaxDepth`:
+
+```csharp
+using Bodu.Text.Yaml.Writer;
+using System.Buffers;
+
+var buffer = new ArrayBufferWriter<byte>();
+var writer = new Utf8YamlWriter(buffer, new YamlWriterOptions { IndentSize = 4 });
+writer.WriteStartMapping();
+writer.WritePropertyName("host");
+writer.WriteString("localhost");
+writer.WriteEndMapping();
+string yaml = Encoding.UTF8.GetString(buffer.WrittenSpan);
+```
+
+Both types are `ref struct`s — they cannot be boxed, stored on the heap, or captured by a lambda, and the writer enforces a well-formed call sequence (a value without a pending key, a mismatched end, or a second root all throw `InvalidOperationException`).
 
 ## Error handling
 
 Two exception types separate "the text is not YAML" from "the YAML does not fit your type":
 
-- <xref:Bodu.Text.Yaml.YamlFormatException> — malformed input. Because YAML is edited by hand, the exception carries `LineNumber`, `ColumnNumber`, and byte `Offset`. Tabs used as indentation are rejected here.
-- <xref:Bodu.Text.Yaml.YamlSerializationException> — the document parsed, but a value cannot bind: a kind mismatch, a value the format cannot represent on write, or an unmapped member when `UnmappedMemberHandling` is `Disallow`. It carries `Offset`, `LineNumber`, `ColumnNumber`, and a dotted member `Path`.
+- <xref:Bodu.Text.Yaml.YamlFormatException> — malformed input. A subtype of `FormatException`. Because YAML is edited by hand, the exception carries `LineNumber`, `ColumnNumber`, and byte `Offset` (each nullable when no position applies; the offset and column count UTF-8 bytes). It is raised for inconsistent indentation, a tab used as indentation, an unterminated quoted scalar, an invalid escape, a cyclic or dangling alias, a duplicate mapping key under `Throw`, and nesting beyond `MaxDepth`.
+- <xref:Bodu.Text.Yaml.YamlSerializationException> — the document parsed, but a value cannot bind: a kind mismatch, an out-of-range or non-integral number under `Strict`, a multi-character `char`, a duplicate dictionary key on write, or an unmapped member when `UnmappedMemberHandling` is `Disallow`. It carries `Offset`, `LineNumber`, `ColumnNumber`, and a dotted member `Path` such as `server.endpoints[0].timeout` that pinpoints the offending member, index, or key.
 
 ```csharp
 try

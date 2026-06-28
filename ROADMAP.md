@@ -76,9 +76,13 @@ proposals can be closed quickly.
 - **Wrapping or replacing `bc-csharp`.** The vendored Bouncy Castle
   source lives under `bc-csharp/` purely as a KAT reference for the
   cryptography test suites. It is not redistributed.
-- **Asymmetric cryptography.** `Bodu.Security.Cryptography` stays
-  symmetric/AEAD/hash. RSA, ECDSA, Ed25519, key exchange — out of scope.
-  Consumers should use `System.Security.Cryptography` directly.
+- **Classical prime-curve and RSA public-key cryptography.**
+  `Bodu.Security.Cryptography` ships the curve25519 / edwards25519 and
+  post-quantum public-key primitives the BCL lacked on `net8.0` —
+  Ed25519 (RFC 8032), X25519 (RFC 7748), ML-KEM (FIPS 203), ML-DSA
+  (FIPS 204), and HPKE (RFC 9180). What stays out of scope is RSA, DSA,
+  and prime-curve ECDSA / ECDH: those are well covered by
+  `System.Security.Cryptography`, so consumers should use it directly.
 - **A full IANA timezone database.** `Bodu.Globalization.Calendar`
   defers to `TimeZoneInfo`; it does not ship its own zone data.
 - **General JSON / YAML / XML parsers.** `Bodu.Text.Formats` is for

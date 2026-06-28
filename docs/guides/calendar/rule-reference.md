@@ -10,6 +10,45 @@ A rule is authored as XML or JSON and loaded into an immutable <xref:Bodu.Global
 
 ---
 
+## `<NotableDateResource>` — the document root
+
+The root element declares the schema namespace, version, and id, and contains its child sections **in this order**: `<Metadata>`, `<ResolutionPolicy>`, `<AdjustmentPolicies>`, `<Imports>`, `<NotableDates>`, `<Overrides>` (all optional). The root maps to <xref:Bodu.Globalization.Calendar.NotableDateResource>.
+
+| Attribute | Required | Type | Description |
+|---|---|---|---|
+| `xmlns` | Yes | namespace | Always `urn:bodu:globalization:calendar`. |
+| `schemaVersion` | Yes | string | The document's schema version, e.g. `1.0`. Surfaces as `NotableDateResource.SchemaVersion`. |
+| `resourceId` | Yes | identifier | Stable resource id (lowercase, digits, hyphens, dots — e.g. `data.au`). Surfaces as `NotableDateResource.ResourceId` and as the `ResourceId` part of every <xref:Bodu.Globalization.Calendar.NotableDateRuleIdentity>. |
+
+### `<Metadata>` — descriptive provenance
+
+`<Metadata>` is optional and carries an optional `<Name>`, an optional `<Description>`, and zero or more `<Source>` string entries. It is documentation only — it does not affect resolution.
+
+### `<ResolutionPolicy>` — resource-level reconciliation
+
+`<ResolutionPolicy>` is optional; an absent element means <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy>`.Default`. It maps to the loaded `ResolutionPolicy` and decides how the resource reconciles duplicates and collisions and which date controls range inclusion.
+
+| Attribute | Type | Default | Description |
+|---|---|---|---|
+| `duplicatePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> | `Error` | Reconciles *identical* occurrences: `Error`, `KeepFirst`, `KeepLast`, `Merge`. |
+| `sameDayCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | Settles *distinct* rules on the same day: `KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`. |
+| `spanCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | Settles overlapping multi-day spans (same value set). |
+| `priorityDirection` | <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection> | `HigherWins` | Whether a larger or smaller `Priority` wins a tie: `HigherWins`, `LowerWins`. |
+| `observedDateRangePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> | `ObservedOccurrenceControlsInclusion` | Which occurrence date governs range-query inclusion: `ObservedOccurrenceControlsInclusion`, `ActualOccurrenceControlsInclusion`, `BothOccurrencesControlInclusion`. |
+| `workingDays` | week pattern | Mon–Fri | The working week the weekend-related triggers and working-day arithmetic interpret, as a seven-character Sunday-first mask (e.g. `0111110` = Mon–Fri). Maps to `ResolutionPolicy.WorkingWeek` (a `Bodu.Core` `WeekPattern`). |
+
+An optional `<CategoryPrecedence>` child orders categories for `CollisionPolicy.CategoryPriority`. See [Rule identity, priority, and observed-date resolution](identity-and-resolution.md) for the settlement semantics.
+
+```xml
+<ResolutionPolicy duplicatePolicy="KeepFirst"
+                  sameDayCollisionPolicy="HighestPriorityOnly"
+                  priorityDirection="HigherWins"
+                  observedDateRangePolicy="ObservedOccurrenceControlsInclusion"
+                  workingDays="0111110" />
+```
+
+---
+
 ## `<NotableDate>` — the concept
 
 `<NotableDate>` declares one notable-date concept. It carries an optional `<Tags>` block and a required `<Rules>` block of one or more `<Rule>` elements.
@@ -281,8 +320,8 @@ A weekend substitution or "move to next working day" shift is declared once in `
 |---|---|
 | `ActualOnly` | Only the nominal (actual) date. |
 | `ObservedOnly` | Only the shifted (observed) date — the single occurrence moves. |
-| `ActualAndObserved` | Both, as one occurrence pair. |
-| `ObservedAsAdditional` | The actual date **and** an additional observed occurrence (e.g. a substitute Monday granted on top of a remembrance day kept on its fixed date). |
+| `ActualAndObserved` | Both the nominal and the observed dates, as two occurrences. |
+| `ObservedAsAdditional` | `[Obsolete]` — behaves identically to `ActualAndObserved` and is normalised to it at load time. Author `ActualAndObserved` for the "keep the actual date **and** add a substitute" pattern. |
 | `Suppress` | Nothing — drops the occurrence. |
 
 ### `<Parameters>` — handler inputs

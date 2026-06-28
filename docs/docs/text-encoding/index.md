@@ -94,6 +94,8 @@ and [Bech32](../../guides/text-encoding/bech32.md).
 | "Read a Bitcoin address" | `Base58.Decode(address)` |
 | "Hex dump with `0x` and spacing" | `Base16.Encode(bytes, BaseFormattingOptions.IncludePrefix \| BaseFormattingOptions.InsertSpacing \| BaseFormattingOptions.UpperCase)` |
 | "Validate a UUID-like hex string" | `Base16.IsValid(s)` |
+| "Turn a `Guid` into a short token" | `Base58.Encode(id)` / `Base58.DecodeGuid(token)` |
+| "Reject non-canonical Base64 on a signature input" | `Base64.Decode(s, Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding)` |
 | "Stream-decode hex from a network buffer" | `Base16.DecodeFromUtf8(buffer, dst, out int read, out int wrote, BaseFormatStyles.None, isFinalBlock: false)` |
 | "Pick the encoding from configuration at runtime" | `var enc = BinaryEncodings.Get(configName); enc.Encode(bytes);` |
 | "Encode a MIME message body" | `QuotedPrintable.Encode(body)` |
@@ -140,7 +142,7 @@ content-dependent and mode-driven. They are intentionally **not** <xref:Bodu.Tex
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Text.Encoding.BaseFormattingOptions> | Encode-side flags: `UpperCase`, `InsertLineBreaks`, `IncludePrefix`, `InsertSpacing`, `OmitPadding` |
-| <xref:Bodu.Text.Encoding.BaseFormatStyles> | Decode-side flags: `AllowPrefix`, `IgnoreWhitespace`, `AllowMissingPadding` |
+| <xref:Bodu.Text.Encoding.BaseFormatStyles> | Decode-side flags: `AllowPrefix`, `IgnoreWhitespace`, `AllowMissingPadding`, plus the tightening `RequireCanonicalEncoding` |
 
 ## Where to go next
 

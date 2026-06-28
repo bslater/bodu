@@ -32,6 +32,9 @@ while (reader.TryReadCell(out ExcelCell cell))
 
 <xref:Bodu.Formats.Excel.ExcelWorksheetReader.TryReadCell(Bodu.Formats.Excel.ExcelCell@)> decodes one cell at a time in record order, without building an intermediate map. The reader is <xref:System.IDisposable> — dispose it (the `using` declaration does) before opening the next sheet. <xref:Bodu.Formats.Excel.ExcelWorksheetReader.ReadCells> wraps the same loop as a lazy `IEnumerable<ExcelCell>` for LINQ.
 
+> [!NOTE]
+> The reader is forward-only and single-pass: `TryReadCell`, `ReadCells`, and `ReadRows` all draw from one shared cursor that advances and never rewinds. Drive a given reader through exactly one of them — once the cursor reaches the worksheet's end it yields nothing further, and there is no reset. To scan a sheet a second time, open a fresh reader with `OpenWorksheet`, or materialise it once with `ReadWorksheet` and revisit the buffered cells.
+
 ## Pattern 2 — group cells into rows
 
 ```csharp

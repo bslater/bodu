@@ -23,11 +23,11 @@ different padding, line-wrap, or shortcut rules:
 
 | Family | Variants in this library |
 |---|---|
-| Base16 | lower-case (default), upper-case (via `BaseFormattingOptions.UpperCase`) |
+| Base16 | `Lower` (default), `Upper` — via the `Base16Variant` enum, or equivalently `BaseFormattingOptions.UpperCase` |
 | Base32 | `Standard` (RFC 4648 §6), `HexExtended` (RFC 4648 §7), `Crockford`, `ZBase32` |
 | Base64 | `Standard` (RFC 4648 §4), `UrlSafe` (RFC 4648 §5), `Mime` (RFC 2045) |
 | Base58 | `BitcoinFlickr` (default), `Ripple` |
-| Base85 | `Ascii85` (Adobe Tech Note 5045), `Z85` (RFC 32 ZeroMQ) |
+| Base85 | `Ascii85` (Adobe Tech Note 5045), `Z85` (RFC 32 ZeroMQ), `GitCompact` (Git `base85.c`) |
 | Base45 | RFC 9285 (single alphabet) |
 | Base62 | GMP-style (single alphabet) |
 | Bech32 | `Bech32` (BIP 173, default), `Bech32m` (BIP 350) — selected by `Bech32Encoding` |
@@ -66,6 +66,21 @@ Base85 uses **4-byte blocks** packed into a 32-bit unsigned integer, then divide
 characters. Base45 packs each **2-byte group** into a base-45 triple (a trailing single byte becomes 2 characters).
 Bech32 is a 5-bit (base-32) bit-stream like Base32, but wrapped with a human-readable part, a `1` separator, and a
 six-symbol checksum computed over the whole data part.
+
+The **quantum** is the smallest whole number of input bytes that maps to a whole number of output characters — the
+unit the encoder and decoder repeat across the stream. For the power-of-two radices it is the least common multiple
+of the byte (8 bits) and the symbol width:
+
+| Family | Quantum | Bits | Output symbols | Why |
+|---|---|---|---|---|
+| Base16 | 1 byte | 8 | 2 | 8 ÷ 4 = 2, no remainder — every byte is self-contained |
+| Base32 | 5 bytes | 40 | 8 | lcm(8, 5) = 40 → 40 ÷ 5 = 8 |
+| Base64 | 3 bytes | 24 | 4 | lcm(8, 6) = 24 → 24 ÷ 6 = 4 |
+| Base85 | 4 bytes | 32 | 5 | a 32-bit block is the natural unit; 85⁵ ≥ 2³² |
+| Base45 | 2 bytes | 16 | 3 | 45³ = 91 125 ≥ 2¹⁶ = 65 536 |
+
+Base58 and Base62 have **no quantum** — big-integer divmod runs over the whole input at once, so there is no
+repeating block and no exact per-block ratio (only the data-dependent `GetMaxEncodedLength` bound applies).
 
 ## Terminal quantum
 
@@ -138,14 +153,40 @@ strict mode (BaseFormatStyles.None)
   • valid terminal-quantum length
 
 lenient mode (one or more BaseFormatStyles flags)
-  AllowPrefix         → tolerate "0x" / "0X" prefix at the start
-  IgnoreWhitespace    → strip ASCII space, tab, CR, LF anywhere
-  AllowMissingPadding → accept inputs without the trailing "=" characters
+  AllowPrefix              → tolerate "0x" / "0X" prefix at the start
+  IgnoreWhitespace         → strip ASCII space, tab, CR, LF anywhere
+  AllowMissingPadding      → accept inputs without the trailing "=" characters
+
+stricter mode (a flag that tightens, not relaxes)
+  RequireCanonicalEncoding → reject a non-canonical terminal symbol whose unused
+                             trailing bits are non-zero
 ```
 
 The `Decode` overloads throw `FormatException` on validation failure. The `TryDecode` overloads return
 `false` instead. The `IsValid` predicate returns `true` only for inputs that the strict decoder would accept
 (when no leniency flags are passed).
+
+### Canonical-form enforcement
+
+`BaseFormatStyles.AllowPrefix`, `IgnoreWhitespace`, and `AllowMissingPadding` all *relax* the decoder.
+<xref:Bodu.Text.Encoding.BaseFormatStyles> carries one flag that goes the other way —
+`RequireCanonicalEncoding` *tightens* it. For a partial terminal quantum the spec only fills some of the bits a
+symbol can carry; RFC 4648 §3.5 leaves the unused trailing bits unconstrained, so several distinct encoded strings
+can decode to the same bytes. The Base64 pair `QQ==` and `QR==` both yield the single byte `0x41`; only `QQ==` is
+canonical (its 4 unused trailing bits are zero). Passing `RequireCanonicalEncoding` rejects every form whose unused
+bits are non-zero, so each byte sequence has exactly one accepted encoding:
+
+```csharp
+Base64.Decode("QR==", Base64Variant.Standard);                                          // ok — non-canonical tolerated, → 0x41
+Base64.Decode("QR==", Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding); // FormatException
+```
+
+The flag applies to <xref:Bodu.Text.Encoding.Base32> and <xref:Bodu.Text.Encoding.Base64> — the bit-stream
+families with unused terminal bits. It is a no-op for <xref:Bodu.Text.Encoding.Base16> (no unused bits per
+character), <xref:Bodu.Text.Encoding.Base58> (canonicity is leading-zero preservation, enforced unconditionally),
+and <xref:Bodu.Text.Encoding.Base85> (block-based, with its own tail convention). Reach for it on a decode path
+where a single canonical representation is a security or comparison requirement — content-addressed identifiers,
+deduplication keys, signature inputs.
 
 ## UTF-8 path
 
@@ -164,6 +205,23 @@ decode:  FromBase{N}String(ReadOnlySpan<byte> utf8Source, Span<byte> dst, out in
 Because every encoding alphabet is ASCII, the UTF-8 byte form is bit-identical to the character form. This path is
 the natural choice when bytes come from a network / file pipeline and you want to avoid allocating a `string` or
 `char[]` between stages.
+
+## GUID convenience surface
+
+Each of the five core families ships an overload pair that encodes a <xref:System.Guid> directly, so you never have
+to materialise the 16-byte buffer yourself:
+
+```csharp
+string id  = Base58.Encode(Guid.NewGuid());            // compact, ambiguity-free GUID token
+Guid value = Base58.DecodeGuid(id);                    // throws FormatException unless it decodes to 16 bytes
+bool ok    = Base58.TryDecodeGuid(id, out Guid parsed); // non-throwing form
+```
+
+The members are `Encode(Guid, …)`, `DecodeGuid(ReadOnlySpan<char>, …)`, and
+`TryDecodeGuid(ReadOnlySpan<char>, out Guid, …)`, each carrying the same `variant` / `options` / `styles`
+arguments as the byte overloads (Base16 takes no variant; Base58 has no encode-side `options`). The bytes are the
+GUID's native mixed-endian layout — identical to `Guid.TryWriteBytes` — so `DecodeGuid(Encode(g))` reconstructs `g`
+exactly, and `DecodeGuid` raises `FormatException` if the input does not decode to precisely 16 bytes.
 
 ## OperationStatus and streaming
 

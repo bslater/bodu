@@ -9,6 +9,15 @@ title: Composing primitives — direct use vs. SymmetricAlgorithm
 1. The **raw block primitive** — `SkipjackBlockCipher`, `BlowfishBlockCipher`, `CamelliaBlockCipher`, `TwofishBlockCipher`, `Serpent128Cipher`, `Serpent256Cipher`, `Serpent512Cipher`, `Serpent1024Cipher`, `Threefish256Cipher`, `Threefish512Cipher`, `Threefish1024Cipher`, `AesBlockCipher`. Each implements <xref:Bodu.Security.Cryptography.IBlockCipher>: encrypt and decrypt one fixed-size block. Compose with <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> and <xref:Bodu.Security.Cryptography.PaddingFactory> when you need the full mode + padding pipeline visible at the call site.
 2. The **`SymmetricAlgorithm`** wrappers — <xref:Bodu.Security.Cryptography.Skipjack>, <xref:Bodu.Security.Cryptography.Blowfish>, <xref:Bodu.Security.Cryptography.Camellia>, <xref:Bodu.Security.Cryptography.Twofish>, <xref:Bodu.Security.Cryptography.Serpent128>, <xref:Bodu.Security.Cryptography.Serpent256>, <xref:Bodu.Security.Cryptography.Serpent512>, <xref:Bodu.Security.Cryptography.Serpent1024>, <xref:Bodu.Security.Cryptography.Threefish256>, <xref:Bodu.Security.Cryptography.Threefish512>, <xref:Bodu.Security.Cryptography.Threefish1024>. These derive from <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> (with the tweakable variants extending <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm>) and integrate with `CryptoStream`, `ICryptoTransform`, and the `Encrypt` / `Decrypt` extension methods. AES is the exception — it is exposed only at the primitive level via <xref:Bodu.Security.Cryptography.AesBlockCipher>; use the BCL <xref:System.Security.Cryptography.Aes?displayProperty=nameWithType> when you want the `SymmetricAlgorithm` shape for AES.
 
+### The `IBlockCipher` contract
+
+<xref:Bodu.Security.Cryptography.IBlockCipher> is deliberately minimal — it is the *raw block primitive* and nothing more:
+
+- `int BlockSize { get; }` — the block size **in bits** (so a byte buffer is `BlockSize / 8` long; 64 for Skipjack/Blowfish, 128 for the AES family, 256/512/1024 for Threefish).
+- `void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)` and `void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)` — transform exactly one block; the spans must each be `BlockSize / 8` bytes.
+
+There is no chaining, no IV, no padding, and no nonce on this surface — those all live in the mode transform (<xref:Bodu.Security.Cryptography.IBlockCipherModeTransform>) and the padding strategy (<xref:Bodu.Security.Cryptography.IPaddingStrategy>) that wrap it. The factories assemble the three layers: a cipher, a mode keyed on <xref:Bodu.Security.Cryptography.CipherModeKind>, and a padding strategy keyed on <xref:System.Security.Cryptography.PaddingMode> or <xref:Bodu.Security.Cryptography.PaddingModeKind>. A mode transform's `Transform(input, output, encrypt)` returns the number of bytes written.
+
 Both levels produce **byte-for-byte identical ciphertext** for the same Key, IV, (Tweak), Mode, and Padding. Pick the level that matches your use case:
 
 | Use the primitive when… | Use the SymmetricAlgorithm when… |
@@ -19,7 +28,9 @@ Both levels produce **byte-for-byte identical ciphertext** for the same Key, IV,
 
 ## A note on AEAD modes
 
-The five AEAD mode transforms (`GcmModeTransform`, `CcmModeTransform`, `OcbModeTransform`, `SivModeTransform`, `GcmSivModeTransform`) are designed for **128-bit-block ciphers** — their counter formats, GHASH/POLYVAL field, and offset schedules all assume 16-byte blocks. Skipjack and Blowfish have 8-byte blocks; the Threefish family starts at 32 bytes. Only <xref:Bodu.Security.Cryptography.AesBlockCipher> fits, which is why the [AEAD modes guide](aead-modes.md) is exclusively AES-based. The classic modes shown here (CBC / CTR / CFB / OFB / ECB) work with any block size and so cover the rest of the cipher family.
+The AEAD mode transforms (`GcmModeTransform`, `CcmModeTransform`, `OcbModeTransform`, `EaxModeTransform`, `SivModeTransform`, `GcmSivModeTransform`) are designed for **128-bit-block ciphers** — their counter formats, GHASH/POLYVAL field, and offset schedules all assume 16-byte blocks. Skipjack and Blowfish have 8-byte blocks; the Threefish family starts at 32 bytes. Of the raw primitives here only <xref:Bodu.Security.Cryptography.AesBlockCipher> — and, equally, the other 128-bit ciphers `CamelliaBlockCipher` / `TwofishBlockCipher` / `Serpent128Cipher` — has the right block width to drive them, which is why the [AEAD modes guide](aead-modes.md) is AES-based. The classic modes shown here (CBC / CTR / CFB / OFB / CTS / ECB) work with any block size and so cover the rest of the cipher family.
+
+This is the one place the two-level split earns its keep: pairing AES with an AEAD transform requires an <xref:Bodu.Security.Cryptography.IBlockCipher>, and `AesBlockCipher` is exactly that bridge. The `SymmetricAlgorithm` wrappers never expose the underlying `IBlockCipher`, so AEAD composition is a primitive-level operation only.
 
 ## Pattern 1 — direct primitive composition
 

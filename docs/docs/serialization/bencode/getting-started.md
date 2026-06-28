@@ -75,6 +75,21 @@ long   length = info.GetProperty("piece length").GetInt64(); // 262144
 
 `BencodeDocument` is disposable — wrap it in `using` and copy out any values that must outlive it, since disposal returns its pooled buffer.
 
+## Bridge a model to a DOM without re-encoding
+
+When you have a model but want to inspect or edit its shape before writing bytes, the serializer projects it straight into either DOM — no intermediate `byte[]` round trip — and binds back from a node tree:
+
+```csharp
+using Bodu.Text.Bencode;
+using Bodu.Text.Bencode.Nodes;
+
+BencodeNode? node = BencodeSerializer.SerializeToNode(entry);   // model → mutable tree
+node!["Length"] = 4096;                                          // edit in place
+FileEntry edited = BencodeSerializer.Deserialize<FileEntry>(node!); // node → model
+```
+
+`SerializeToDocument` produces the read-only <xref:Bodu.Text.Bencode.Document.BencodeDocument> for inspection instead; like any deserialized document it is caller-owned and must be disposed.
+
 ## Round-trip through a Stream
 
 The serializer reads and writes `Stream` directly, with async variants, so a payload never has to materialize as a `byte[]` first:

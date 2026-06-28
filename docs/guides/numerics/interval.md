@@ -17,6 +17,14 @@ The type works with any numeric backing type that implements
 `INumber<T>`: `int`, `long`, `double`, `decimal`, `BigInteger`, and
 consumer-defined numeric types built on the generic-math interfaces.
 
+Internally an `Interval<T>` is a `readonly struct` holding the two `T`
+endpoints plus a single inclusivity byte (the two flags packed as bits
+0 and 1), so for a fixed-width endpoint type it is allocation-free and
+copies by value. The set operations — `Contains`, `Overlaps`,
+`Intersect`, `TryUnion` — are a few `T` comparisons each and allocate
+nothing. Endpoints are stored at full `T` precision with no widening or
+narrowing.
+
 ## Creating intervals
 
 Use the static factory methods on `Interval<T>` directly when the
@@ -106,6 +114,24 @@ outer.Contains(Interval<int>.Empty);          // True — every set contains ∅
 
 The empty interval is a subset of every interval, so any interval
 contains the empty interval.
+
+The membership test is exactly the inclusivity-aware boundary check: the
+lower side uses `>=` when `LowerInclusive` and `>` otherwise, and the
+upper side mirrors it. Reading off all four shapes at the boundary makes
+the contract concrete:
+
+| Shape | Lower-boundary value | Upper-boundary value |
+|---|:---:|:---:|
+| `[a, b]` (closed-closed) | in | in |
+| `[a, b)` (closed-open) | in | out |
+| `(a, b]` (open-closed) | out | in |
+| `(a, b)` (open-open) | out | out |
+
+Because `Interval<T>` is a *set* rather than a scalar, it deliberately
+implements neither `IComparable<Interval<T>>` nor the ordering
+operators — there is no total order on sets. Use the subset
+(`Contains`) and overlap (`Overlaps`) relations instead, or order a
+collection of intervals by an endpoint explicitly (`OrderBy(i => i.Lower)`).
 
 ## Overlap and intersection
 
@@ -255,7 +281,24 @@ if (Interval<int>.TryParse("(0, 100]", CultureInfo.InvariantCulture, out var r))
 
 Whitespace around brackets and endpoints is ignored. Malformed inputs
 return `false` from `TryParse` and throw `FormatException` from
-`Parse`.
+`Parse`. The grammar is precise:
+
+- The first character must be `[` or `(` and the last `]` or `)`; the
+  bracket style on each side selects that endpoint's inclusivity.
+- Exactly one comma separates the two endpoints; both endpoint texts
+  must be non-empty.
+- The single-character empty-set glyph `∅` parses to `Empty` regardless
+  of culture; the shortest non-empty form is five characters (`"[a,b]"`).
+- Each endpoint is parsed by `T.TryParse(..., NumberStyles.Any, provider, …)`,
+  so the endpoints honour the supplied culture and accept whatever
+  numeric shapes `T` accepts (decimal points, signs, group separators).
+  A `null` provider falls back to <xref:System.Globalization.CultureInfo>.`CurrentCulture`.
+
+Unlike `Fraction<T>`, interval parsing forwards the *full*
+`NumberStyles.Any` to each endpoint, so culture-specific group
+separators and decimal points in the endpoints are accepted — pass
+`CultureInfo.InvariantCulture` explicitly when you need a stable,
+machine-independent round-trip.
 
 ## Equality and hashing
 

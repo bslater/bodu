@@ -21,7 +21,7 @@ Both key halves are 32 bytes; the public key is the little-endian u-coordinate o
 
 ## The two-party exchange
 
-Each party calls <xref:Bodu.Security.Cryptography.X25519.GenerateKey>, sends its public key over the (untrusted) wire, and calls <xref:Bodu.Security.Cryptography.X25519.DeriveSharedSecret(System.ReadOnlySpan{System.Byte})> with the *peer's* public key. The two derivations produce identical bytes.
+Each party calls <xref:Bodu.Security.Cryptography.X25519.GenerateKey>, sends its public key over the (untrusted) wire, and calls <xref:Bodu.Security.Cryptography.X25519.DeriveSharedSecret(System.ReadOnlySpan{System.Byte})> with the *peer's* public key. The two derivations produce identical bytes. A span overload, `DeriveSharedSecret(peerPublicKey, destination)`, writes the 32-byte secret into a caller-supplied buffer without allocating — and zeroes that buffer if the peer point is rejected (below).
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -57,7 +57,7 @@ local.GenerateKey();
 byte[] shared = local.DeriveSharedSecret(peerPublic);
 ```
 
-If you do hold the peer key as a separate instance — for example to keep it pinned — import it with <xref:Bodu.Security.Cryptography.X25519.ImportPublicKey(System.ReadOnlySpan{System.Byte})>. Importing a public key onto an instance discards any private key it held, leaving a public-only instance that can export but cannot derive.
+If you do hold the peer key as a separate instance — for example to keep it pinned — import it with <xref:Bodu.Security.Cryptography.X25519.ImportPublicKey(System.ReadOnlySpan{System.Byte})>. Importing a public key onto an instance discards any private key it held, leaving a public-only instance (`HasPublicKey` true, `HasPrivateKey` false) that can export but cannot derive — calling `DeriveSharedSecret` on it throws <xref:System.Security.Cryptography.CryptographicException>.
 
 ```csharp
 using var peer = X25519.Create();
@@ -92,12 +92,12 @@ bob.GenerateKey();
 byte[] shared = alice.DeriveSharedSecret(bob.ExportPublicKey());
 
 // Stretch the raw secret into a 32-byte session key with HKDF-SHA256.
-byte[] sessionKey = HKDF.DeriveKey(
+byte[] sessionKey = Hkdf.DeriveKey(
     HashAlgorithmName.SHA256,
-    ikm: shared,
+    inputKeyingMaterial: shared,
     outputLength: 32,
-    salt: null,
-    info: "myapp v1 session key"u8.ToArray());
+    salt: default,
+    info: "myapp v1 session key"u8);
 
 // 'sessionKey' is now safe to use with a symmetric AEAD (e.g. ChaCha20-Poly1305).
 CryptographicOperations.ZeroMemory(shared);   // wipe the raw secret once stretched
@@ -118,5 +118,5 @@ A small set of low-order peer public keys force the shared secret to an all-zero
 - [Asymmetric algorithms overview](asymmetric-overview.md) — where X25519 sits in the family.
 - [Signatures with Ed25519](signatures-ed25519.md) — authenticate the exchange.
 - [ML-KEM post-quantum key encapsulation](ml-kem.md) — the post-quantum replacement and the hybrid pattern.
-- [Using Argon2](argon2.md) — a memory-hard KDF for stretching the shared secret.
-- <xref:Bodu.Security.Cryptography.X25519> — API reference.
+- [Using HKDF](hkdf.md) — the extract-and-expand KDF that turns the raw secret into usable key material.
+- <xref:Bodu.Security.Cryptography.X25519>, <xref:Bodu.Security.Cryptography.Hkdf> — API reference.
