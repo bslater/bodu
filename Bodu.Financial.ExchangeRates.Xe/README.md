@@ -30,11 +30,15 @@ ExchangeRateRangeResult series =
 ## Authorization
 
 The XE charting-rates endpoint requires an `Authorization: Basic` token that XE does not
-publish as a stable credential. The provider acquires it automatically by inspecting the
-XE website's application script bundle (an `IXeAuthTokenProvider`), caches it, and
-refreshes it once when the endpoint rejects it (`401`/`403`). This depends on the XE
-website's current structure and is therefore **inherently brittle**; the package carries
-no affiliation with or endorsement by XE.
+publish as a stable credential. The provider acquires it automatically (an
+`IXeAuthTokenProvider`): it fetches the bootstrap page, scans the `_next` script chunks it
+references for a credential built by a `btoa(...)` call next to a `Basic ` literal — for
+example `e.set("Authorization", `` `Basic ${btoa("user:secret")}` `` `)` — and base64-encodes
+it. When no referenced chunk matches, lazily-loaded chunk URLs reconstructed from the
+webpack runtime's chunk map are scanned as a fallback. The token is cached and refreshed
+once when the endpoint rejects it (`401`/`403`). This depends on the XE website's current
+structure and is therefore **inherently brittle**; the package carries no affiliation with
+or endorsement by XE.
 
 ## Behaviour
 
@@ -76,8 +80,8 @@ The provider is `IDisposable` and offers two construction styles:
 |---|---|---|
 | `BaseAddress` | `https://www.xe.com/` | The API host. |
 | `ChartingRatesPath` | `api/protected/charting-rates/` | The charting-rates endpoint path. |
-| `AuthBootstrapUrl` | `https://www.xe.com/currencycharts` | Page naming the current XE script bundle. |
-| `AuthChunkBaseUrl` | `https://www.xe.com/_next/static/chunks/pages/` | Base URL for the script bundle. |
+| `AuthBootstrapUrl` | `https://www.xe.com/currencycharts` | Page whose referenced script chunks are scanned for the token. |
+| `AuthScriptBaseUrl` | `https://www.xe.com/_next/` | Base URL for reconstructed lazily-loaded chunk names. |
 | `UserAgent` | browser-like | XE rejects requests without a recognizable user agent. |
 | `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates, or by the DI registration. |
 | `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |

@@ -88,7 +88,7 @@ namespace Bodu.Financial.ExchangeRates {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Unable to acquire an XE authorization token from the XE website..
+        ///   Looks up a localized string similar to Unable to acquire an XE authorization token after scanning {0} script chunk(s) from the XE website..
         /// </summary>
         internal static string Op_Invalid_XeAuthTokenUnavailable {
             get {
@@ -115,11 +115,11 @@ namespace Bodu.Financial.ExchangeRates {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The XE options authorization chunk base URL must be specified..
+        ///   Looks up a localized string similar to The XE options authorization script base URL must be specified..
         /// </summary>
-        internal static string Arg_Invalid_XeOptionsAuthChunkBaseUrl {
+        internal static string Arg_Invalid_XeOptionsAuthScriptBaseUrl {
             get {
-                return ResourceManager.GetString("Arg_Invalid_XeOptionsAuthChunkBaseUrl", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_XeOptionsAuthScriptBaseUrl", resourceCulture);
             }
         }
     }

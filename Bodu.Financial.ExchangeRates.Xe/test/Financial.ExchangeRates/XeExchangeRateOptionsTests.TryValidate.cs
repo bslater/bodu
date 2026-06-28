@@ -67,12 +67,12 @@ public partial class XeExchangeRateOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a null authorization chunk base URL is rejected.
+    /// Verifies that a null authorization script base URL is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenAuthChunkBaseUrlIsNull_ShouldReturnFalse()
+    public void TryValidate_WhenAuthScriptBaseUrlIsNull_ShouldReturnFalse()
     {
-        XeExchangeRateOptions options = new() { AuthChunkBaseUrl = null! };
+        XeExchangeRateOptions options = new() { AuthScriptBaseUrl = null! };
 
         bool valid = options.TryValidate(out string? error);
 

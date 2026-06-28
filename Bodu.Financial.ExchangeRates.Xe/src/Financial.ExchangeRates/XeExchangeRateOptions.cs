@@ -15,8 +15,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// This type derives from <see cref="WebExchangeRateProviderOptions" />, which supplies the endpoint base address, the
 /// HTTP contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log
 /// levels. The members declared here are XE-specific: the <see cref="ChartingRatesPath" /> queried for a pair, and the
-/// two URLs (<see cref="AuthBootstrapUrl" /> and <see cref="AuthChunkBaseUrl" />) from which the
-/// <c>Authorization: Basic</c> token is discovered by inspecting the XE website's published script bundle. XE serves a
+/// two URLs (<see cref="AuthBootstrapUrl" /> and <see cref="AuthScriptBaseUrl" />) used to discover the
+/// <c>Authorization: Basic</c> token by scanning the script chunks the XE website publishes. XE serves a
 /// server-determined window per request rather than honouring an explicit date range, so the response is range-filtered
 /// to the requested dates.
 /// </para>
@@ -46,18 +46,19 @@ public sealed class XeExchangeRateOptions
     public string ChartingRatesPath { get; set; } = "api/protected/charting-rates/";
 
     /// <summary>
-    /// Gets or sets the page URL from which the name of the current XE application script bundle is discovered while
-    /// acquiring the authorization token.
+    /// Gets or sets the page URL whose referenced script chunks are scanned to discover the authorization token. The
+    /// chunk references it carries are resolved against this URL's origin.
     /// </summary>
     /// <value>The bootstrap page URL; defaults to <c>https://www.xe.com/currencycharts</c>.</value>
     public Uri AuthBootstrapUrl { get; set; } = new Uri("https://www.xe.com/currencycharts");
 
     /// <summary>
-    /// Gets or sets the base URL under which the discovered XE application script bundle is downloaded while acquiring
-    /// the authorization token. The discovered script file name is appended to this URL.
+    /// Gets or sets the base URL against which lazily-loaded script chunk names, reconstructed from the webpack runtime
+    /// chunk's identifier-to-hash map, are resolved when no bootstrap-referenced chunk yields the token. Must end with
+    /// a trailing slash so relative <c>static/chunks/…</c> names resolve under it.
     /// </summary>
-    /// <value>The chunk base URL; defaults to <c>https://www.xe.com/_next/static/chunks/pages/</c>.</value>
-    public Uri AuthChunkBaseUrl { get; set; } = new Uri("https://www.xe.com/_next/static/chunks/pages/");
+    /// <value>The script base URL; defaults to <c>https://www.xe.com/_next/</c>.</value>
+    public Uri AuthScriptBaseUrl { get; set; } = new Uri("https://www.xe.com/_next/");
 
     /// <summary>
     /// Validates the XE-specific options, ensuring the charting-rates path and the two token-acquisition URLs are
@@ -84,9 +85,9 @@ public sealed class XeExchangeRateOptions
             return false;
         }
 
-        if (AuthChunkBaseUrl is null)
+        if (AuthScriptBaseUrl is null)
         {
-            error = XeResourceStrings.Arg_Invalid_XeOptionsAuthChunkBaseUrl;
+            error = XeResourceStrings.Arg_Invalid_XeOptionsAuthScriptBaseUrl;
             return false;
         }
 

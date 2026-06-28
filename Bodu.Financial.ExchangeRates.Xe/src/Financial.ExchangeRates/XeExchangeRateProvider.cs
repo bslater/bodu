@@ -23,9 +23,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// <strong>Authorization.</strong> The charting-rates endpoint requires an <c>Authorization: Basic</c> token that is
-/// not published as a stable credential. The provider acquires it automatically by inspecting the XE website's
-/// application script bundle, caches it, and refreshes it when the endpoint rejects it. This depends on the XE
-/// website's current structure and is inherently brittle.
+/// not published as a stable credential. The provider acquires it automatically by scanning the script chunks the XE
+/// website publishes for the credential, caches it, and refreshes it when the endpoint rejects it. This depends on the
+/// XE website's current structure and is inherently brittle.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an

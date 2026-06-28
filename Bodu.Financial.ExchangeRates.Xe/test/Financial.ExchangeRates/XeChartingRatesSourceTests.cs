@@ -110,7 +110,16 @@ public class XeChartingRatesSourceTests
         ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
 
         Assert.AreEqual(0.6828m, result.Rate.Rate);
-        Assert.IsTrue(handler.Requests.Any(r => r.RequestUri!.AbsolutePath.Contains("charting-rates", StringComparison.Ordinal)), "the charting-rates endpoint was requested");
+
+        HttpRequestMessage? chartingRequest = handler.Requests
+            .FirstOrDefault(r => r.RequestUri!.AbsolutePath.Contains("charting-rates", StringComparison.Ordinal));
+        Assert.IsNotNull(chartingRequest, "the charting-rates endpoint was requested");
+
+        // The token scraped from the _app chunk fixture is btoa("lodestar:pugsnax").
+        string expectedToken = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("lodestar:pugsnax"));
+        Assert.IsNotNull(chartingRequest.Headers.Authorization);
+        Assert.AreEqual("Basic", chartingRequest.Headers.Authorization!.Scheme);
+        Assert.AreEqual(expectedToken, chartingRequest.Headers.Authorization.Parameter);
     }
 
     private static HttpResponseMessage Route(HttpRequestMessage request, byte[] fixture)
