@@ -30,6 +30,28 @@ using CompoundFile streaming = CompoundFile.Open(source, buffered: false);
 
 The default suits the common case — a few-kilobyte `.xls` or `.msg` — where reading it all up front is simplest and lets you drop the file handle right away. Reach for streaming when the file is large enough that holding it whole is undesirable and you can keep the source open.
 
+## Letting the reader decide — the Auto strategy
+
+The `buffered` flag is the two-value shorthand; the full control is <xref:Bodu.IO.Compound.CompoundReadStrategy> on <xref:Bodu.IO.Compound.CompoundFileOptions>, which adds a third option that picks per source size:
+
+```csharp
+using Bodu.IO.Compound;
+
+var options = new CompoundFileOptions
+{
+    ReadStrategy = CompoundReadStrategy.Auto,
+    MaxBufferedBytes = 32L * 1024 * 1024,   // buffer at/under 32 MiB, stream above it
+};
+
+using FileStream source = File.OpenRead(path);
+using CompoundFile file = CompoundFile.Open(source, options, leaveOpen: true);
+```
+
+<xref:Bodu.IO.Compound.CompoundReadStrategy.Auto> compares a seekable source's length against <xref:Bodu.IO.Compound.CompoundFileOptions.MaxBufferedBytes> (64 MiB by default): small files are buffered, large ones streamed. A non-seekable source can only be buffered, so `Auto` and `Buffered` both read it whole, while `Streaming` over a non-seekable source throws <xref:System.ArgumentException>.
+
+> [!NOTE]
+> Even under a streaming file, a stream whose size is below the **mini-stream cutoff** (typically 4096 bytes) is materialised whole rather than walked sector by sector — its bytes live in the in-memory mini-stream that the reader builds at open time. Streaming bounds memory for the *large* streams; the small ones are already resident.
+
 ## The CompoundStream cursor
 
 `CompoundStorage.OpenStream` returns a `CompoundStream`, a standard read-only, seekable <xref:System.IO.Stream> — `CanRead` and `CanSeek` are `true`, `CanWrite` is `false`. Because it is a `Stream`, it composes with the BCL surfaces that consume one:
@@ -49,24 +71,26 @@ stream.ReadExactly(header);
 
 Under a buffered file the cursor's payload was materialized into a `byte[]` at open time, and `Read` / `Seek` work over that array. Under a streaming file the same cursor instead walks the stream's sector chain in the source: each `Read` locates the sector for the current `Position`, copies only the bytes within that sector, and advances — so the full payload is never resident. The two behave identically from the caller's side; only the memory profile differs.
 
+`Write` and `SetLength` throw <xref:System.NotSupportedException> on this read-only cursor. Seeking past the end is allowed (the `Stream` contract); the next `Read` returns zero. The cursor's <xref:Bodu.IO.Compound.CompoundStream.Stat> property exposes the entry's <xref:Bodu.IO.Compound.CompoundEntryInfo> metadata snapshot, and `Length` reports the declared payload size.
+
 > A single cursor is not safe for concurrent use — its `Position` advances as you read. Open one cursor per reader.
 
 ## AsMemory vs chunked Read
 
 ```csharp
-using CompoundStream stream = entry.Open();
+using CompoundStream stream = file.RootStorage.OpenStream("Workbook");
 
 // Whole-payload view — convenient for small streams.
 ReadOnlyMemory<byte> all = stream.AsMemory();
 ushort magic = BinaryPrimitives.ReadUInt16LittleEndian(all.Span);
 ```
 
-`AsMemory` returns a read-only view over the entire payload. For a buffered stream this is a view over the already-materialized bytes with no copy; for a streaming stream it reads the whole chain into memory on request. It does not depend on or advance `Position`.
+`AsMemory` returns a read-only view over the entire payload. For a buffered stream this is a view over the already-materialized bytes with no copy; for a streaming stream it reads the whole chain into memory on request. It does not depend on or advance `Position`. `ReadAllBytes` is the copying sibling — it returns a fresh `byte[]` of the whole payload, mirroring `File.ReadAllBytes`.
 
 Prefer chunked `Read` over `AsMemory` for large streaming payloads — `AsMemory` defeats the point of streaming by pulling the whole thing into memory:
 
 ```csharp
-using CompoundStream stream = entry.Open();
+using CompoundStream stream = file.RootStorage.OpenStream("LargeBlob");
 
 byte[] buffer = ArrayPool<byte>.Shared.Rent(64 * 1024);
 try

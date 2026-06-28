@@ -57,7 +57,31 @@ foreach (CompoundStorage child in file.RootStorage.EnumerateStorages())
     Console.WriteLine($"[{child.Name}]");
 ```
 
-`EnumerateEntries` yields a metadata snapshot for every direct child; `EnumerateStorages` and `EnumerateStreams` yield the navigable child storages and stream entries.
+`EnumerateEntries` yields a metadata snapshot for every direct child; `EnumerateStorages` and `EnumerateStreams` yield the navigable child storages and stream entries. All three enumerate in **directory (canonical) order** — the in-order traversal of each storage's red-black child tree — and are scoped to direct children only. Names carry their control prefixes verbatim, so a lookup of a summary-information stream must pass the literal `\x05`-prefixed name.
+
+## Walk the whole tree recursively
+
+```csharp
+using Bodu.IO.Compound;
+
+static void Walk(CompoundStorage storage, int depth = 0)
+{
+    string indent = new(' ', depth * 2);
+    foreach (CompoundEntryInfo info in storage.EnumerateStreams())
+        Console.WriteLine($"{indent}{info.Name} ({info.Length} bytes)");
+
+    foreach (CompoundStorage child in storage.EnumerateStorages())
+    {
+        Console.WriteLine($"{indent}[{child.Name}]");
+        Walk(child, depth + 1);
+    }
+}
+
+using CompoundFile file = CompoundFile.OpenRead("message.msg");
+Walk(file.RootStorage);
+```
+
+`EnumerateStorages` returns navigable <xref:Bodu.IO.Compound.CompoundStorage> objects, so descending into a `.msg` attachment or a Word formatting storage is just a recursive call — there is no path syntax, you walk one storage at a time.
 
 ## Read a large stream incrementally
 
@@ -94,9 +118,48 @@ if (file.TryGetSummaryInformation(out SummaryInformation? summary))
 
 `TryGetSummaryInformation` returns `false` when the file has no summary-information stream, and every property is nullable, so it is safe to call on any file.
 
+## Tune the read strategy and validation level
+
+The parameterless overloads buffer the whole file and validate at <xref:Bodu.IO.Compound.CompoundValidationLevel.Compatible>. Pass a <xref:Bodu.IO.Compound.CompoundFileOptions> to choose another <xref:Bodu.IO.Compound.CompoundReadStrategy> or validation level:
+
+```csharp
+using Bodu.IO.Compound;
+
+var options = new CompoundFileOptions
+{
+    ReadStrategy = CompoundReadStrategy.Auto,   // buffer small files, stream large ones
+    MaxBufferedBytes = 16L * 1024 * 1024,       // the buffer/stream threshold for Auto
+    ValidationLevel = CompoundValidationLevel.Strict,
+};
+
+using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"), options);
+```
+
+`Strict` rejects individually malformed directory entries and unsorted siblings that `Compatible` tolerates; <xref:Bodu.IO.Compound.CompoundValidationLevel.Minimal> recovers from structural corruption instead of throwing. See [Core concepts](concepts.md#validation-level) for the full matrix.
+
+## Handle a malformed file
+
+```csharp
+using Bodu.IO.Compound;
+
+try
+{
+    using CompoundFile file = CompoundFile.OpenRead(path);
+    // ...
+}
+catch (CompoundFileFormatException ex)
+{
+    // ex.Category is a stable CompoundFileError — InvalidSignature, TruncatedFile,
+    // FatCycle, DirectoryCycle, StreamChainTooShort, and so on.
+    Console.WriteLine($"Not a usable compound file: {ex.Category}");
+}
+```
+
+A modern `.xlsx` / `.docx` (a ZIP archive, not OLE2) fails the signature check and surfaces `CompoundFileError.InvalidSignature`. Probe first with `CompoundFile.IsCompoundFile` when a non-compound input is an expected outcome rather than an error.
+
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — the vocabulary behind these samples.
+- **[Core concepts](concepts.md)** — the vocabulary behind these samples: header, FAT/mini-FAT, the red-black directory, validation levels, and the error categories.
 - **[Introduction](index.md)** — headline types and common scenarios.
 - **[Bodu.IO.Compound guides](../../guides/io-compound/index.md)** — reading files, buffered vs streaming access, and property sets.
 - **API reference** — [Bodu.IO.Compound](xref:Bodu.IO.Compound).
