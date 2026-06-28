@@ -15,7 +15,7 @@ byte[] payload = BencodeSerializer.Serialize(new FileEntry { Name = "ubuntu.iso"
 FileEntry entry = BencodeSerializer.Deserialize<FileEntry>(payload);
 ```
 
-`Serialize` also writes to an `IBufferWriter<byte>` or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `ReadOnlySpan<byte>`, a `byte[]`, or a `Stream` (with `DeserializeAsync`). See [Pattern 8](#pattern-8--streams-and-async) for the stream surface.
+`Serialize` also writes to an `IBufferWriter<byte>` or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `ReadOnlySpan<byte>`, a `byte[]`, or a `Stream` (with `DeserializeAsync`). See [Pattern 8](#pattern-8--streams-and-async) for the stream surface. To project a model into a DOM without re-encoding to bytes, `SerializeToNode` / `SerializeToDocument` go straight to the mutable and read-only trees, and `Deserialize<T>(BencodeNode, …)` binds a node tree back to a type — see [Pattern 7](#pattern-7--use-a-document-model-instead-of-a-type).
 
 ## Pattern 2 — Know the type mapping
 
@@ -208,6 +208,14 @@ BencodeElement name = doc.RootElement.GetProperty("info").GetProperty("name");
 
 A deserialized `BencodeDocument` is caller-owned — dispose it (the `using` above) to return its pooled buffer. Elements obtained through the serializer's `object` mapping need no disposal.
 
+The serializer also bridges a model to either DOM directly, skipping the `byte[]` round trip — and binds a node tree back to a model:
+
+```csharp
+BencodeNode? node = BencodeSerializer.SerializeToNode(torrent);     // model → mutable tree
+using BencodeDocument doc = BencodeSerializer.SerializeToDocument(torrent); // model → read-only DOM
+Torrent back = BencodeSerializer.Deserialize<Torrent>(node!);       // node tree → model
+```
+
 ## Pattern 8 — Streams and async
 
 Both directions work over a `Stream`, synchronously and asynchronously, so a payload never has to materialize as a `byte[]` first:
@@ -226,14 +234,59 @@ The synchronous `Serialize(Stream, …)` / `Deserialize<T>(Stream, …)` overloa
 
 ## Pattern 9 — Process tokens by hand
 
-For full control with no allocations, drive the <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> / <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> ref-struct pair directly. The reader accepts only canonical BEP 3 (no leading or negative zeros, ascending unique dictionary keys, a single root with no trailing bytes). This is the same surface a [converter](converters.md) receives.
+For full control with no allocations, drive the <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> / <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> ref-struct pair directly. This is the same surface a [converter](converters.md) receives.
+
+The reader is a forward-only cursor over a `ReadOnlySpan<byte>`: `Read()` advances to the next token and returns `false` at the end, `TokenType` (a <xref:Bodu.Text.Bencode.BencodeTokenType>) classifies it, and a typed getter reads the current token without moving. A dictionary appears as alternating `PropertyName` and value tokens between `StartDictionary` and `EndDictionary`:
+
+```csharp
+using Bodu.Text.Bencode.Reader;
+
+var reader = new Utf8BencodeReader(payload);
+while (reader.Read())
+{
+    switch (reader.TokenType)
+    {
+        case BencodeTokenType.PropertyName:
+            string key = reader.GetString();
+            break;
+        case BencodeTokenType.Integer:
+            long n = reader.GetInt64();   // or TryGetInt64(out …) to avoid throwing
+            break;
+        case BencodeTokenType.ByteString:
+            byte[] bytes = reader.GetBytes();
+            break;
+        // StartList / EndList / StartDictionary / EndDictionary frame the structure;
+        // reader.Skip() steps over the current value (including a nested subtree).
+    }
+}
+```
+
+The writer is the dual, emitting to an `IBufferWriter<byte>`. Structural pairs frame lists and dictionaries; `WritePropertyName` writes a key; `WriteInteger`, `WriteByteString`, and `WriteString` (UTF-8) write scalars; and `WriteRawValue` splices a pre-encoded fragment:
+
+```csharp
+using Bodu.Text.Bencode.Writer;
+
+var buffer = new ArrayBufferWriter<byte>();
+var writer = new Utf8BencodeWriter(buffer);
+
+writer.WriteStartDictionary();
+writer.WritePropertyName("name");   writer.WriteString("ubuntu.iso");
+writer.WritePropertyName("length"); writer.WriteInteger(1_048_576);
+writer.WriteEndDictionary();
+// buffer.WrittenSpan → d6:lengthi1048576e4:name10:ubuntu.isoe  (keys re-sorted on close)
+```
+
+The reader accepts only canonical BEP 3 (no leading or negative zeros, ascending unique dictionary keys, a single root with no trailing bytes) unless constructed with a <xref:Bodu.Text.Bencode.Reader.BencodeReaderOptions> that sets `AllowUnsortedKeys` or `AllowDuplicateKeys`. The writer re-sorts each dictionary's keys into canonical order when it closes, so the order keys are presented does not affect the bytes.
 
 ## Error handling
 
 Two exception types separate "the bytes are not Bencode" from "the Bencode does not fit your type":
 
 - <xref:Bodu.Text.Bencode.BencodeFormatException> — malformed input: truncated data, non-canonical integers, out-of-order or duplicate dictionary keys, trailing bytes. Carries the byte `Offset` where parsing failed.
-- <xref:Bodu.Text.Bencode.BencodeSerializationException> — the document parsed, but a value cannot bind: a kind mismatch, a missing required member, or a value out of range for the target type.
+- <xref:Bodu.Text.Bencode.BencodeSerializationException> — the document parsed, but a value cannot bind: a kind mismatch, a missing required member, or a value out of range for the target type. Carries the byte `BytesOffset` of the failing value where one is known.
+
+> [!TIP]
+> When a feed is known to come from an older, looser encoder, set `AllowUnsortedKeys` or `AllowDuplicateKeys` on the options so out-of-order or repeated keys parse (last occurrence wins) instead of raising the format exception. Both switches relax the read path only; the writer stays canonical.
 
 ```csharp
 try

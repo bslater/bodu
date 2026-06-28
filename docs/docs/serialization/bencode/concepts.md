@@ -10,13 +10,38 @@ Part of the **[Text & Serialization](../../topics/text-and-serialization.md)** t
 
 ## The serializer
 
-The static <xref:Bodu.Text.Bencode.BencodeSerializer> is the high-level entry point. `Serialize<T>` writes an object graph to Bencode; `Deserialize<T>` binds Bencode back to a type. Each has overloads over the format's natural surfaces: `Serialize` to `byte[]` / `IBufferWriter<byte>` / `Stream`, and `Deserialize<T>` from `ReadOnlySpan<byte>` / `byte[]` / `Stream`. Async stream variants are provided.
+The static <xref:Bodu.Text.Bencode.BencodeSerializer> is the high-level entry point. `Serialize<T>` writes an object graph to Bencode; `Deserialize<T>` binds Bencode back to a type. Each has overloads over the format's natural surfaces:
+
+| Direction | Overloads |
+|---|---|
+| `Serialize<T>` | to `byte[]` (the return value), `IBufferWriter<byte>`, and `Stream`, plus `SerializeAsync<T>(Stream, …)`. |
+| `Deserialize<T>` | from `ReadOnlySpan<byte>`, `byte[]`, and `Stream`, plus `DeserializeAsync<T>(Stream, …)`. |
+| DOM bridges | `SerializeToNode<T>` (to a mutable <xref:Bodu.Text.Bencode.Nodes.BencodeNode>), `SerializeToDocument<T>` (to a read-only <xref:Bodu.Text.Bencode.Document.BencodeDocument>), and `Deserialize<T>(BencodeNode, …)` (bind straight from a node tree). |
+
+Every overload accepts an optional <xref:Bodu.Text.Bencode.BencodeSerializerOptions>; the async pair takes it before the `CancellationToken`. There are no `TryDeserialize`-style members — wrap a call in a `try`/`catch` over the two exception types when reading untrusted input.
 
 ## Options
 
-<xref:Bodu.Text.Bencode.BencodeSerializerOptions> configures the serializer. It holds the converter list (`Converters`), the property naming policy (`PropertyNamingPolicy`), the `DefaultIgnoreCondition`, the unmapped-member policy, and the maximum depth (`MaxDepth`, default 64). Construct one from a <xref:Bodu.Text.Bencode.BencodeSerializerDefaults> value (for example the `Web` preset) to start from a scenario's conventions.
+<xref:Bodu.Text.Bencode.BencodeSerializerOptions> configures the serializer:
 
-An options instance becomes read-only the first time it is used — or eagerly via `MakeReadOnly()` — and then caches its resolved converters and type metadata. Configure one options object and reuse it across many operations.
+| Member | Default | Governs |
+|---|---|---|
+| `Converters` | empty | The user converter list, searched ahead of the built-ins. |
+| `PropertyNamingPolicy` | `null` | The <xref:Bodu.Text.Bencode.BencodeNamingPolicy> applied to member names with no explicit `[BencodePropertyName]`. |
+| `PropertyNameCaseInsensitive` | `false` | Whether a document key matches a member name ignoring case on read. |
+| `IncludeFields` | `false` | Whether public fields join properties as serializable members. |
+| `DefaultIgnoreCondition` | `Never` | The fallback <xref:Bodu.Text.Bencode.Serialization.BencodeIgnoreCondition> for members with no explicit `[BencodeIgnore]`. |
+| `UnmappedMemberHandling` | `Skip` | Whether an unmapped key is skipped or rejected on read (<xref:Bodu.Text.Bencode.Serialization.BencodeUnmappedMemberHandling>). |
+| `PreferredObjectCreationHandling` | `Replace` | Whether a member is replaced or populated on read (<xref:Bodu.Text.Bencode.Serialization.BencodeObjectCreationHandling>). |
+| `AllowUnsortedKeys` | `false` | Read-only leniency: accept dictionaries whose keys are not in ascending bytewise order. |
+| `AllowDuplicateKeys` | `false` | Read-only leniency: accept repeated keys (last occurrence wins). |
+| `MaxDepth` | `64` (`DefaultMaxDepth`) | The maximum nesting depth before a depth guard trips. |
+
+Construct one from a <xref:Bodu.Text.Bencode.BencodeSerializerDefaults> value to start from a scenario's conventions: `General` leaves names unchanged with default-case matching; `Web` applies camel-case naming and case-insensitive matching.
+
+`AllowUnsortedKeys` and `AllowDuplicateKeys` relax only the *read* path — the writer is unconditionally canonical, so anything written is byte-for-byte BEP 3 regardless of how lenient the read was.
+
+An options instance becomes read-only the first time it is used — or eagerly via `MakeReadOnly()` (`IsReadOnly` reports the state) — and then caches its resolved converters and type metadata. Mutating a frozen instance throws `InvalidOperationException`. Configure one options object and reuse it across many operations.
 
 ## Converters and resolution
 
@@ -44,12 +69,24 @@ The full serialization surface lives in the `Bodu.Text.Bencode.Serialization` na
 
 When you do not want a model, the library offers two DOMs:
 
-- **Mutable** — <xref:Bodu.Text.Bencode.Nodes.BencodeNode> / `BencodeObject` / `BencodeArray` / `BencodeValue`. `Parse` a document, index into it, mutate values, and write it back (`ToByteArray()`).
-- **Read-only** — <xref:Bodu.Text.Bencode.Document.BencodeDocument> / `BencodeElement` / `BencodeProperty`. A low-allocation view over a parsed buffer, walked through `RootElement`.
+- **Mutable** — <xref:Bodu.Text.Bencode.Nodes.BencodeNode> with the concrete `BencodeObject` (a keyed dictionary node), `BencodeArray` (a list node), and `BencodeValue` (a scalar node). `Parse` a document into a tree, index into it with `node["key"]` / `node[index]`, mutate it, and write it back with `ToByteArray()`. Scalars convert with implicit operators (`string`, `long`, `int`, `ulong`, `byte[]` → `BencodeNode`) and explicit operators back the other way, and the tree supports `DeepClone()`, `DeepEquals(…)`, `ReplaceWith(…)`, and `GetPath()`. `Parse` returns `null` for an empty document.
+- **Read-only** — <xref:Bodu.Text.Bencode.Document.BencodeDocument> with `BencodeElement` and `BencodeProperty`. A low-allocation view over a parsed buffer, walked through `RootElement`: `GetProperty` / `TryGetProperty`, the integer indexer for lists, `EnumerateObject()` / `EnumerateArray()`, and typed getters (`GetString`, `GetBytes`, `GetInt64`, `GetUInt64`, and the `TryGet…` pair). Each element's kind is a <xref:Bodu.Text.Bencode.BencodeValueKind> (`Object`, `Array`, `ByteString`, `Integer`). `BencodeDocument` is disposable — it owns a pooled buffer, so wrap it in `using` and `Clone()` out any element that must outlive it.
 
 ## The low-level reader and writer
 
-<xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> and <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> are forward-only, allocation-free `ref struct` token machines. The reader exposes the current token through a <xref:Bodu.Text.Bencode.BencodeTokenType>; the serializer and every converter are built on this pair. Reach for it directly when you want to process tokens without binding to a model.
+<xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> and <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> are forward-only, allocation-free `ref struct` token machines over `ReadOnlySpan<byte>` and `IBufferWriter<byte>` respectively. The serializer and every converter are built on this pair; reach for it directly to process tokens without binding to a model.
+
+The reader is positioned on a token by `Read()` (which returns `false` at the end), and the token is classified by `TokenType` — a <xref:Bodu.Text.Bencode.BencodeTokenType> with the values `None`, `StartList`, `EndList`, `StartDictionary`, `EndDictionary`, `PropertyName`, `Integer`, and `ByteString`. A Bencode dictionary surfaces as alternating `PropertyName` and value tokens between `StartDictionary` and `EndDictionary`. Once positioned, value getters read the current token without advancing:
+
+| Reader member | Reads |
+|---|---|
+| `GetString()` / `GetBytes()` | The current byte-string or property-name token as UTF-8 text or raw bytes. |
+| `GetInt32()` / `GetInt64()` / `GetUInt64()` | The current integer token, range-checked to the target width; the `TryGet…` overloads return `false` instead of throwing. |
+| `ValueSpan` / `ValueTextEquals(…)` | The raw token bytes, or a zero-allocation comparison against UTF-8/`char`/`string` text. |
+| `Skip()` / `TrySkip()` | Step over the current value in full, including a nested list or dictionary subtree. |
+| `BytesConsumed` / `CurrentDepth` / `TokenStartIndex` | Diagnostic position state. |
+
+The writer is the dual: structural pairs `WriteStartList()` / `WriteEndList()` and `WriteStartDictionary()` / `WriteEndDictionary()`, dictionary keys via `WritePropertyName(…)`, and scalars via `WriteInteger(long)` / `WriteInteger(ulong)`, `WriteByteString(ReadOnlySpan<byte>)`, and `WriteString(string)` (UTF-8). Convenience `name`-plus-value overloads (for example `WriteString(name, value)`) write a key and its value in one call, and `WriteRawValue(…)` splices a pre-encoded fragment. The writer re-sorts each dictionary's entries into ascending bytewise key order when the dictionary closes, so canonical output is automatic regardless of the order keys are presented.
 
 ## Value mapping
 
@@ -59,7 +96,7 @@ Bencode maps the BCL types it can represent natively and rejects the rest unless
 
 ## Errors
 
-A malformed document raises <xref:Bodu.Text.Bencode.BencodeFormatException> (carrying the byte `Offset` where parsing failed). A document that parses but cannot bind to your type — a type mismatch, a missing required member, a value the format cannot represent — raises <xref:Bodu.Text.Bencode.BencodeSerializationException>.
+A malformed document raises <xref:Bodu.Text.Bencode.BencodeFormatException> (carrying the byte `Offset` where parsing failed) — truncated data, non-canonical integers, trailing bytes, and, unless the matching leniency option is set, out-of-order or duplicate dictionary keys. A document that parses but cannot bind to your type — a type mismatch, a missing required member, a value out of range for the target — raises <xref:Bodu.Text.Bencode.BencodeSerializationException> (carrying the byte `BytesOffset` of the failing value where one is known).
 
 ## Where to go next
 
