@@ -93,10 +93,27 @@ Blowfish's key schedule is intentionally expensive: it derives the P-array and f
 
 The practical implication is that you should **not** build a new `Blowfish` instance per message if you're re-using the same key. Cache the instance and call `CreateEncryptor()` / `CreateDecryptor()` per message instead.
 
+## Dropping to the raw primitive
+
+`Blowfish` is the `SymmetricAlgorithm` wrapper; underneath it is `BlowfishBlockCipher`, a raw <xref:Bodu.Security.Cryptography.IBlockCipher>. Reach for the primitive when you want to share one keyed engine across several mode transforms, or to compose a custom pipeline — the wrapper and the primitive produce byte-for-byte identical ciphertext for the same key, IV, mode, and padding. See [Composing primitives](composing-primitives.md) for the full pattern.
+
+```csharp
+using IBlockCipher cipher = new BlowfishBlockCipher(key);
+IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv);
+IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
+```
+
+Because the key schedule is the expensive part, constructing one `BlowfishBlockCipher` and reusing it across messages amortises that cost — exactly the same caching argument as for the wrapper.
+
+> [!IMPORTANT]
+> Blowfish is unbroken at the round-function level, but its **64-bit block** caps its safe data volume per key (SWEET32) and its design predates authenticated encryption. For new work, prefer a 128-bit-block cipher ([AES family](aes-family.md)) under an [AEAD mode](aead-modes.md), or [Threefish](threefish-256.md) when you need a tweak.
+
 ## Where to go next
 
 - [Encryption basics](encryption-basics.md) — the Key/IV lifecycle.
 - [Cipher block modes](cipher-modes.md) — CFB, OFB, ECB also work with Blowfish.
 - [Padding](padding.md) — which padding scheme pairs with which mode.
+- [Composing primitives](composing-primitives.md) — `BlowfishBlockCipher` + mode + padding by hand.
+- [AES-family block ciphers](aes-family.md) — the 128-bit-block successors to prefer for new work.
 - [Using Skipjack](skipjack.md) — the other 64-bit-block cipher in the library.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

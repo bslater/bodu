@@ -21,6 +21,11 @@ For the historical and legacy ciphers — Blowfish, Skipjack — see their own g
 
 All four implement the BCL `SymmetricAlgorithm` or `IBlockCipher` contract, so they slot into the standard cipher-mode + padding pipeline without bespoke wrappers.
 
+> [!NOTE]
+> **Two surface shapes in this family.** <xref:Bodu.Security.Cryptography.Twofish> and <xref:Bodu.Security.Cryptography.Serpent128> are full `SymmetricAlgorithm` wrappers — set `BlockMode` / `BlockPadding`, call `CreateEncryptor()`, or use the `Encrypt` / `Decrypt` extensions. <xref:Bodu.Security.Cryptography.AesBlockCipher> and `CamelliaBlockCipher` are raw <xref:Bodu.Security.Cryptography.IBlockCipher> primitives — one block in, one block out — so you compose them with a mode transform and padding strategy yourself (or via <xref:Bodu.Security.Cryptography.BlockCipherModeFactory>), as shown in [Composing primitives](composing-primitives.md). All four share the 128-bit block, so all four can drive the AEAD transforms.
+
+The shared 128-bit block is also why this family does **not** suffer the SWEET32 birthday-bound exposure that limits the 64-bit-block legacy ciphers ([Blowfish](blowfish.md), [Skipjack](skipjack.md)): a 128-bit block pushes the birthday bound to ~2⁶⁴ blocks, far beyond any practical workload under a single key.
+
 ## When to pick which
 
 - **Pick AES** unless you have a specific reason to deviate. It is the standard, has hardware acceleration on commodity CPUs, and is the cipher every interoperator already speaks.

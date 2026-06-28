@@ -4,7 +4,7 @@ title: Cipher block modes
 
 # Cipher block modes
 
-This page walks through the five classic block cipher modes exposed via <xref:Bodu.Security.Cryptography.CipherModeKind> — plus the specialized **XTS** disk-encryption mode — shows a complete encrypt-and-decrypt round-trip for each, and calls out the IV rules and security trade-offs.
+This page walks through the classic block-cipher modes exposed via <xref:Bodu.Security.Cryptography.CipherModeKind> — CBC, CTR, CFB, OFB, ECB, the no-expansion **CTS** variant, and the specialized **XTS** disk-encryption mode — shows a complete encrypt-and-decrypt round-trip for each, and calls out the IV rules and security trade-offs. The same enum also names the authenticated modes (`OCB`, `EAX`, `SIV`, and GCM / GCM-SIV via the transforms); those are covered in [AEAD modes](aead-modes.md).
 
 For the data-flow visualization, see the panels on the <xref:Bodu.Security.Cryptography.CipherModeKind> API page. Each panel in that diagram corresponds to one section below.
 
@@ -136,6 +136,33 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 
 ECB encrypts every block independently. That means identical plaintext blocks encrypt to identical ciphertext blocks — an attacker can see the structure of your message without breaking the cipher. The classic *Tux the penguin* demonstration shows why this matters. Do not use ECB for real messages.
 
+## CTS — ciphertext stealing, no expansion
+
+**Use for:** CBC-style chaining where the ciphertext must be *exactly* as long as the plaintext even when the final block is partial — for example fixed-width on-disk records.
+
+**IV:** same length as the block, unpredictable (it is CBC underneath).
+
+**Padding:** none — CTS *is* the no-expansion alternative to padding. It rearranges the final two ciphertext blocks so the output length matches the input.
+
+```csharp
+using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.CTS,
+    Padding   = PaddingMode.None,
+};
+alg.GenerateKey();
+alg.GenerateIV();
+alg.GenerateTweak();
+
+byte[] ciphertext = alg.Encrypt(plaintext);   // same length as plaintext
+byte[] recovered  = alg.Decrypt(ciphertext);
+```
+
+`CTS` mirrors the BCL <xref:System.Security.Cryptography.CipherMode>.`CTS` value, so it casts directly between the two enums. It is *not* an authenticated mode — pair it with a MAC if the ciphertext crosses a trust boundary.
+
+> [!NOTE]
+> CTS needs at least one full block of input. A plaintext shorter than the block size has nothing to steal from, so use CBC + PKCS7 (which expands) or a stream-shaped mode (CTR) for sub-block messages.
+
 ## XTS — sector-level disk encryption
 
 **Use for:** encrypting fixed-size storage sectors — full-disk and file-container encryption. XTS is the IEEE 1619-2007 / NIST SP 800-38E standard for the random-access setting where the ciphertext cannot grow; BitLocker, FileVault, dm-crypt/LUKS, and VeraCrypt all use it.
@@ -185,8 +212,24 @@ Each `XtsModeTransform` is bound to a single sector number — construct a fresh
 | Seekable, parallelisable, stream-shaped encryption | **CTR** | Keystream depends only on counter; blocks are independent. |
 | Byte-level streaming with self-healing on errors | **CFB** | Error propagates for one block then resynchronizes. |
 | Bit-exact error isolation on an unreliable channel | **OFB** | Keystream is plaintext-independent. |
+| CBC chaining with no ciphertext expansion on a partial final block | **CTS** | Steals ciphertext; output length equals input. |
 | Sector-addressable disk or file-container encryption | **XTS** | Per-sector tweak; no ciphertext expansion; two keys. |
 | A cipher primitive for something you're building | **ECB** | The lowest level; you must add your own chaining. |
+| Authenticated encryption (confidentiality **and** integrity) | **GCM / OCB / EAX / SIV / GCM-SIV** | See [AEAD modes](aead-modes.md) — none of the modes above authenticate. |
+
+## Which direction uses the decrypt primitive
+
+A subtle but load-bearing property: the *stream-shaped* modes never call the underlying cipher's decrypt operation.
+
+| Mode | Decryption calls the cipher's… |
+|---|---|
+| ECB, CBC, CTS, XTS | **decrypt** primitive |
+| CFB, OFB, CTR | **encrypt** primitive (both directions) |
+
+This matters if you wire a custom <xref:Bodu.Security.Cryptography.IBlockCipher> and have only implemented the encrypt path — CFB / OFB / CTR will still round-trip, but ECB / CBC / CTS / XTS will not.
+
+> [!IMPORTANT]
+> **None of the modes on this page authenticate.** CBC, CTR, CFB, OFB, CTS, and XTS all provide confidentiality only — an attacker who cannot read the plaintext can still flip ciphertext bits and corrupt the decrypted output undetected. CTR and OFB are especially malleable (a flipped ciphertext bit flips the same plaintext bit). When ciphertext crosses a trust boundary, either pair the mode with a MAC over the ciphertext (encrypt-then-MAC) or, preferably, use an [AEAD mode](aead-modes.md), which bundles both in one pass.
 
 ## Where to go next
 
