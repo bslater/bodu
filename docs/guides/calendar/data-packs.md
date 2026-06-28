@@ -10,7 +10,7 @@ Each pack is a thin static facade: it loads a territory's embedded `region-<cc>.
 
 ## Available packs
 
-All five packs ship as `Bodu.Globalization.Calendar.Data.*` packages (their factory types live in the `Bodu.Globalization.Calendar` namespace) and expose the same shape.
+All five packs ship as `Bodu.Globalization.Calendar.<Region>` packages — `Bodu.Globalization.Calendar.Americas`, `.AsiaPacific`, `.Europe`, `.MiddleEast`, `.Africa` (note: no `.Data` infix in the package id). Their factory types all live in the `Bodu.Globalization.Calendar` namespace, and every pack exposes the same shape.
 
 | Package | Type | Territories |
 |---|---|---|
@@ -38,15 +38,31 @@ dotnet add package Bodu.Globalization.Calendar.Africa
 
 ## The pack surface
 
-Each `<Region>CalendarData` type is `static` and exposes exactly three members:
+Each `<Region>CalendarData` type is `static`, lives in the `Bodu.Globalization.Calendar` namespace (not a `.Data` sub-namespace), and exposes exactly three members:
 
 | Member | Description |
 |---|---|
-| `static IReadOnlyList<string> SupportedCountries { get; }` | The country codes the pack carries. |
+| `static IReadOnlyList<string> SupportedCountries { get; }` | The ISO 3166-1 alpha-2 country codes the pack carries. |
 | `static NotableDateResource LoadResource(string territory)` | Load the immutable resource for a country **or one of its subdivisions** (e.g. `"US"`, `"CA-ON"`, `"AU-WA"`, `"GB-SCT"`). Throws `ArgumentException` when the country is not in the pack. |
 | `static NotableDateService CreateService(string territory)` | Equivalent to `new NotableDateService(LoadResource(territory))` — a ready-to-query service. |
 
 A subdivision argument selects its country's resource; because the full territory string is honoured when you *query*, national and subdivision rules compose. Passing `"AU-WA"` to `LoadResource` loads Australia's resource, and querying `"AU-WA"` then returns the national `AU` rules plus the Western Australia (`AU-WA`) rules.
+
+`SupportedCountries` lists only the country-level codes the pack ships; subdivisions are not enumerated. Probe it before loading to keep a query inside the pack's coverage:
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+if (AmericasCalendarData.SupportedCountries.Contains("US"))
+{
+    NotableDateResource us = AmericasCalendarData.LoadResource("US");
+}
+
+// Loading a country the pack does not carry throws ArgumentException:
+//   AmericasCalendarData.LoadResource("FR");   // → ArgumentException
+```
+
+Each embedded rule set is stored as a `region-<cc>.xml` document (`region-us.xml`, `region-ca.xml`, …); `LoadResource` resolves its `<Imports>` against the bundled common catalogues automatically, so you never wire a resolver by hand for a pack territory.
 
 ## Wire one pack into a service
 
@@ -127,29 +143,47 @@ To extend a pack resource with your own computed date, register a custom <xref:B
 
 ## Per-pack reference
 
+Every factory type lives in the `Bodu.Globalization.Calendar` namespace — the package and assembly keep the region suffix, but the namespace is flattened to the runtime's domain so a `using Bodu.Globalization.Calendar;` brings the factory and the service into scope together.
+
 ### Americas — `AmericasCalendarData` {#americas}
 
 **Package:** `Bodu.Globalization.Calendar.Americas`
-**Namespace:** `Bodu.Globalization.Calendar.Data`
+**Namespace:** `Bodu.Globalization.Calendar`
 **Type:** <xref:Bodu.Globalization.Calendar.AmericasCalendarData>
 
-`SupportedCountries` = `CA`, `US`. National rules cover the federal calendar; subdivision rules (e.g. `US-CA` for California, `CA-ON` for Ontario) follow ISO 3166-2 conventions where present in the resource. All dates resolve through built-in strategies (`Fixed`, `DayOfWeekInMonth`, Easter via `Algorithm`), so no custom algorithm registration is required.
+`SupportedCountries` = `AR`, `BR`, `CA`, `CL`, `CO`, `MX`, `PE`, `US`. National rules cover the federal calendar; subdivision rules (e.g. `US-CA` for California, `CA-ON` for Ontario) follow ISO 3166-2 conventions where present in the resource. All dates resolve through built-in strategies (`Fixed`, `DayOfWeekInMonth`, Easter via `Algorithm`), so no custom algorithm registration is required.
 
 ### Asia-Pacific — `AsiaPacificCalendarData` {#asia-pacific}
 
 **Package:** `Bodu.Globalization.Calendar.AsiaPacific`
-**Namespace:** `Bodu.Globalization.Calendar.Data`
+**Namespace:** `Bodu.Globalization.Calendar`
 **Type:** <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData>
 
-`SupportedCountries` = `AU`, `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`. Many of these resources delegate to the built-in lunar, solar-term, and Hindu-festival algorithms described above; those keys ship with the base library, so the pack resolves without additional setup.
+`SupportedCountries` = `AU`, `CN`, `HK`, `ID`, `IN`, `JP`, `KR`, `MY`, `NZ`, `PH`, `SG`, `TH`, `TW`, `VN`. Many of these resources delegate to the built-in lunar, solar-term, and Hindu-festival algorithms described above; those keys ship with the base library, so the pack resolves without additional setup.
 
 ### Europe — `EuropeCalendarData` {#europe}
 
 **Package:** `Bodu.Globalization.Calendar.Europe`
-**Namespace:** `Bodu.Globalization.Calendar.Data`
+**Namespace:** `Bodu.Globalization.Calendar`
 **Type:** <xref:Bodu.Globalization.Calendar.EuropeCalendarData>
 
 `SupportedCountries` = the 28 EU/EEA territories listed above (`AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK`). National rules typically cover the federal calendar plus the major regional variants (`GB-SCT`, `GB-NIR`, `DE-BY` for Bavaria, …). All dates resolve through built-in strategies (most commonly Gregorian Easter via `Algorithm`), so no custom algorithm registration is required.
+
+### Middle East — `MiddleEastCalendarData` {#middle-east}
+
+**Package:** `Bodu.Globalization.Calendar.MiddleEast`
+**Namespace:** `Bodu.Globalization.Calendar`
+**Type:** <xref:Bodu.Globalization.Calendar.MiddleEastCalendarData>
+
+`SupportedCountries` = `AE`, `IL`, `JO`, `QA`, `SA`, `TR`. These resources lean on the non-Gregorian calendar systems and lunar projection: the Gulf states import the Saudi-aligned `global-islamic-umm-al-qura` catalogue, while Israel resolves the Hebrew-calendar festivals. Several rules carry a Sunday–Thursday (or Saturday–Thursday) working week and weekend-substitution adjustments — query with the matching <xref:Bodu.WeekPattern> preset when computing working days. See [Working with non-Gregorian calendars](non-gregorian-calendars.md).
+
+### Africa — `AfricaCalendarData` {#africa}
+
+**Package:** `Bodu.Globalization.Calendar.Africa`
+**Namespace:** `Bodu.Globalization.Calendar`
+**Type:** <xref:Bodu.Globalization.Calendar.AfricaCalendarData>
+
+`SupportedCountries` = `EG`, `ET`, `GH`, `KE`, `MA`, `NG`, `ZA`. Coverage mixes Gregorian civil holidays, Western and (for Ethiopia) Orthodox Christian dates via the Easter `Algorithm` keys, and Islamic dates imported from the tabular `global-islamic` catalogue. No custom registration is required.
 
 ## Where to go next
 

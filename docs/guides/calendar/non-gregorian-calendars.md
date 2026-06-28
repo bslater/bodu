@@ -182,6 +182,7 @@ Built-in festival keys include:
 | `diwali` | Diwali (Deepavali). |
 | `holi` | Holi. |
 | `ram-navami`, `janmashtami`, `ganesh-chaturthi`, `navaratri`, `dussehra`, `karva-chauth`, `vasant-panchami`, `maha-shivaratri`, `raksha-bandhan` | Hindu festivals computed against the Hindu lunisolar panchanga. |
+| `maun-agiyaras` | Jain observance computed against the same panchanga. |
 
 See [Date calculation algorithms](algorithms.md) for the complete key catalogue and for writing a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm>.
 

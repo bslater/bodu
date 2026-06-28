@@ -117,6 +117,27 @@ For dates that cannot be expressed as calendar arithmetic. The `key` attribute n
 </Rule>
 ```
 
+### Constructing a strategy directly
+
+Each strategy is a public, sealed type with a constructor mirroring its `<Strategy>` attributes, so you can evaluate one outside a document — useful for unit tests or ad-hoc calculation. `Calculate(year, context)` takes a <xref:Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext>; pass one built over the resource the strategy resolves against (or, for the year-only strategies that never follow a reference, any context):
+
+```csharp
+using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+
+var context = new StrategyResolutionContext(resource);
+
+// Fourth Thursday in November 2026 (US Thanksgiving).
+var thanksgiving = new DayOfWeekInMonthStrategy(11, DayOfWeek.Thursday, WeekOrdinal.Fourth);
+DateOnly? date = thanksgiving.Calculate(2026, context);   // → 2026-11-26
+
+// Western Easter Sunday 2026, resolved through the key dispatcher.
+var easter = new AlgorithmDateStrategy(AlgorithmDateStrategy.WesternEasterKey);
+DateOnly? easter2026 = easter.Calculate(2026, context);   // → 2026-04-05
+```
+
+<xref:Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy> additionally exposes `IReadOnlyList<DateOnly> CalculateAll(int year, StrategyResolutionContext context)`, which returns *every* occurrence in the Gregorian year — the surface that surfaces a short Hijri month landing twice. The single-date `Calculate` returns the chronologically first. See [Working with non-Gregorian calendars](non-gregorian-calendars.md).
+
 ---
 
 ## Built-in algorithm keys
@@ -149,6 +170,9 @@ The two Easter keys are also exposed as constants on <xref:Bodu.Globalization.Ca
 | `vasant-panchami` | Vasant Panchami. |
 | `maha-shivaratri` | Maha Shivaratri. |
 | `holi` | Holi. |
+| `maun-agiyaras` | Maun Agiyaras — the Jain observance on Margashirsha shukla 11. |
+
+The equinox and Qingming keys are computed astronomically and resolved in a specific time zone: `vernal-equinox` / `autumnal-equinox` use UTC, `jp-vernal-equinox` / `jp-autumnal-equinox` use Japan Standard Time (UTC+9), and `qingming` uses China Standard Time (UTC+8). The Hindu-festival keys are computed against the Hindu lunisolar *panchanga* by the engine's internal `HinduLunarCalculator`; `vesak` and `asalha-puja` resolve full-moon dates; `losar` and `matariki` come from gazetted-date tables.
 
 `AlgorithmDateStrategy.IsKnownKey(key)` reports whether a key is built in:
 

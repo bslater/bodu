@@ -86,13 +86,13 @@ int span         = today.WorkingDaysBetween(inFive, service, "AU-NSW");
 
 ## Enumeration
 
-Each enumeration returns a lazily-evaluated `IEnumerable<DateOnly>` (or `IEnumerable<NotableDate>`) over the inclusive range from the receiver to `end`. They are safe to combine with LINQ.
+The day enumerations return a lazily-evaluated `IEnumerable<DateOnly>` over the inclusive range from the receiver to `end`, so they compose naturally with LINQ and stop early when you do. `EnumerateNotableDates` returns an already-materialized `IReadOnlyList<NotableDate>` — a notable-date enumeration resolves the whole range up front rather than streaming.
 
 | Method | Yields |
 |---|---|
-| `EnumerateWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)` | Every working day in the inclusive range. |
-| `EnumerateNonWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)` | Every non-working day in the inclusive range. |
-| `EnumerateNotableDates(DateOnly end, service, territory, NotableDateFilter? filter = null)` | Every notable date in the inclusive range. |
+| `EnumerateWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)` | `IEnumerable<DateOnly>` — every working day in the inclusive range (lazy). |
+| `EnumerateNonWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)` | `IEnumerable<DateOnly>` — every non-working day in the inclusive range (lazy). |
+| `EnumerateNotableDates(DateOnly end, service, territory, NotableDateFilter? filter = null)` | `IReadOnlyList<NotableDate>` — every notable date in the inclusive range (eager). |
 
 ```csharp
 DateOnly start = new DateOnly(2026, 1, 1);
@@ -127,10 +127,15 @@ The optional trailing `WeekPattern? workingWeek` argument overrides the default 
 | Preset | Working days | Weekend days |
 |---|---|---|
 | `WeekPattern.MondayToFriday` *(default)* | Mon–Fri | Saturday + Sunday (most western territories). |
-| `WeekPattern.SundayToThursday` | Sun–Thu | Friday + Saturday (parts of the Middle East). |
-| `WeekPattern.MondayToSaturday` | Mon–Sat | Sunday only. |
+| `WeekPattern.SundayToThursday` | Sun–Thu | Friday + Saturday (much of the Middle East). |
+| `WeekPattern.SundayToFriday` | Sun–Fri | Saturday only. |
 | `WeekPattern.SaturdayToThursday` | Sat–Thu | Friday only. |
+| `WeekPattern.SaturdayToWednesday` | Sat–Wed | Thursday + Friday. |
+| `WeekPattern.MondayToSaturday` | Mon–Sat | Sunday only. |
+| `WeekPattern.MondayToThursdayAndSaturday` | Mon–Thu + Sat | Friday + Sunday. |
 | `WeekPattern.AllDays` | Every day | No weekend — every day is working unless a non-working notable date applies. |
+
+`WeekPattern` is composable beyond these presets — see [WeekPattern](../core/week-pattern.md) for building a custom selection from arbitrary days.
 
 ```csharp
 using Bodu;                 // WeekPattern
