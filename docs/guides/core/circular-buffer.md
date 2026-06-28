@@ -133,7 +133,7 @@ The concurrent type differs from the single-threaded one in several contractual 
 - **Reference types only.** Its type constraint is `where T : class?`; value-type elements are not supported. The single-threaded `CircularBuffer<T>` has no constraint.
 - **Minimum capacity 2.** The Vyukov sequence protocol needs two distinct per-slot marks, so a capacity of 1 is rejected; the constructor throws `ArgumentOutOfRangeException` below 2.
 - **`Count` is approximate.** Under concurrency the head and tail are read independently, so `Count` is a point-in-time estimate. For a coherent view of the contents, call `ToArray`, which captures a true FIFO snapshot.
-- **Snapshot enumeration.** `foreach` (and `ToArray`) iterate a snapshot taken when the enumerator is created; the enumerator never throws on concurrent modification — there is no fail-fast token. It implements <xref:System.Collections.Concurrent.IProducerConsumerCollection`1>, so it can be wrapped by <xref:System.Collections.Concurrent.BlockingCollection`1>.
+- **Snapshot enumeration.** `foreach` (and `ToArray`) iterate a snapshot taken when the enumerator is created; the enumerator never throws on concurrent modification — there is no fail-fast token. It implements <xref:System.Collections.Concurrent.IProducerConsumerCollection`1>, so it can be wrapped by `BlockingCollection<T>`.
 - **`SyncRoot` throws.** Matching the BCL `ConcurrentQueue<T>`, the explicit `ICollection.SyncRoot` throws `NotSupportedException` — there is nothing meaningful to lock on.
 
 > [!TIP]

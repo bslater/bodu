@@ -46,7 +46,7 @@ if (ring.TryPeek(out Message? p)) { … }     // Safe variant
 ring.Clear();                                // Acquires all slots; expensive
 ```
 
-Single-element operations (`Enqueue`, `Dequeue`, `Peek`, and their `Try…` variants) are individually atomic and lock-free on the hot path. The buffer also implements <xref:System.Collections.Concurrent.IProducerConsumerCollection`1> (`TryAdd` / `TryTake` forward to `TryEnqueue` / `TryDequeue`), so it can back a <xref:System.Collections.Concurrent.BlockingCollection`1>.
+Single-element operations (`Enqueue`, `Dequeue`, `Peek`, and their `Try…` variants) are individually atomic and lock-free on the hot path. The buffer also implements <xref:System.Collections.Concurrent.IProducerConsumerCollection`1> (`TryAdd` / `TryTake` forward to `TryEnqueue` / `TryDequeue`), so it can back a `BlockingCollection<T>`.
 
 > [!IMPORTANT]
 > `Count` is **approximate** under concurrency — the head and tail positions are read independently (no lock), so the value is a point-in-time estimate that can momentarily disagree with the true contents. `ToArray` is the way to obtain a *coherent* FIFO snapshot: it uses a per-slot seqlock that restarts on churn, falling back to a sequence-validated best-effort snapshot only after an internal retry budget is exhausted. `Clear` drains at most the count observed at the call (bounded so a continuous producer cannot livelock it) and does **not** raise `ItemEvicted`.
