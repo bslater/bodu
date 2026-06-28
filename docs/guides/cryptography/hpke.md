@@ -21,7 +21,9 @@ A <xref:Bodu.Security.Cryptography.HpkeSuite> fixes the KEM, the KDF, and the AE
 | <xref:Bodu.Security.Cryptography.HpkeSuite.X25519_HkdfSha256_Aes256Gcm> | AES-256-GCM | 32 B | 256-bit key margin. |
 | <xref:Bodu.Security.Cryptography.HpkeSuite.X25519_HkdfSha256_ChaCha20Poly1305> | ChaCha20Poly1305 | 32 B | Fast in software / constant-time without AES-NI. |
 
-The KEM always uses X25519 (32-byte keys, 32-byte encapsulated key) and HKDF-SHA256; `HpkeKdf.HkdfSha384` / `HkdfSha512` are also accepted. An export-only suite (`HpkeAead.ExportOnly`) derives secrets but refuses to seal or open.
+The KEM always uses `DHKEM(X25519, HKDF-SHA256)` — 32-byte public keys and a 32-byte encapsulated key. The suite's *KDF* is independent of the KEM's internal HKDF and selects the key schedule's hash: `HpkeKdf.HkdfSha256` (the default in all three pre-configured suites), `HkdfSha384`, or `HkdfSha512`. Constructing a suite with any other KEM, KDF, or AEAD value throws <xref:System.ArgumentOutOfRangeException>.
+
+A suite is immutable and exposes the lengths RFC 9180 derives from its choices — `AeadKeySizeInBytes` (`Nk`), `AeadNonceSizeInBytes` (`Nn`), `AeadTagSizeInBytes` (`Nt`), and `EncapsulationSizeInBytes` (`Nenc`) — so you can size buffers without hard-coding constants. An export-only suite (`HpkeAead.ExportOnly`) reports zero for the AEAD lengths, derives secrets through `Export`, and refuses to seal or open.
 
 ## The single-shot façade
 

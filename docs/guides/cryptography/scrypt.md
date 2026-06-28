@@ -8,6 +8,9 @@ scrypt is a password-based key-derivation function designed by Colin Percival an
 
 **Bodu.Security.Cryptography** ships scrypt as a single type, <xref:Bodu.Security.Cryptography.Scrypt>, configured by three cost parameters.
 
+> [!IMPORTANT]
+> scrypt, like Argon2, is for **low-entropy** inputs — passwords. For a **high-entropy** secret (a key-agreement or KEM output, a master key), reach for [HKDF](hkdf.md) instead: it is fast and purpose-built for that, whereas scrypt's deliberate slowness buys nothing on an already-random input.
+
 > [!NOTE]
 > This type is not independently audited and offers best-effort, not guaranteed, side-channel resistance. The platform already ships PBKDF2 (`Rfc2898DeriveBytes.Pbkdf2`) and HKDF; scrypt fills the memory-hard gap they do not.
 
@@ -21,7 +24,7 @@ scrypt's cost is set by <xref:Bodu.Security.Cryptography.ScryptParameters>:
 | `BlockSizeR` (`r`) | Block size | **Required.** Tunes the memory/bandwidth mix; 8 is the conventional value. |
 | `Parallelization` (`p`) | Independent iterations | **Required.** Usually 1. |
 
-Peak memory is approximately `128 * N * r` bytes. RFC 7914, Section 2 suggests **`N = 16384`, `r = 8`, `p = 1`** (about 16 MiB) for interactive logins, scaling `N` up for more sensitive secrets. The key-derivation envelope uses PBKDF2-HMAC-SHA256, supplied by the platform.
+Peak memory is approximately `128 * N * r` bytes. RFC 7914, Section 2 suggests **`N = 16384`, `r = 8`, `p = 1`** (about 16 MiB) for interactive logins, scaling `N` up for more sensitive secrets. The key-derivation envelope uses PBKDF2-HMAC-SHA256, supplied by the platform. Construction validates the parameters and throws <xref:System.ArgumentOutOfRangeException> when `CostN` is not a power of two greater than one, or `BlockSizeR` / `Parallelization` is below 1.
 
 ## Pattern 1 — derive a key (static one-shot)
 

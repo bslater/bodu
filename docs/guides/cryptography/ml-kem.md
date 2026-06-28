@@ -51,7 +51,9 @@ byte[] receiverSecret = receiver.Decapsulate(ciphertext);
 // senderSecret and receiverSecret are identical (32 bytes each).
 ```
 
-As with ECDH, run the 32-byte shared secret through a KDF (HKDF, or <xref:Bodu.Security.Cryptography.Blake2b> in keyed mode) before using it as a symmetric key, binding it to an application-specific context.
+As with ECDH, run the 32-byte shared secret through a KDF ([HKDF](hkdf.md), or <xref:Bodu.Security.Cryptography.Blake2b> in keyed mode) before using it as a symmetric key, binding it to an application-specific context.
+
+Both `Encapsulate` and `Decapsulate` have span overloads — `Encapsulate(ciphertext, sharedSecret)` and `Decapsulate(ciphertext, sharedSecret)` — that write into caller-supplied buffers (the ciphertext span must be exactly `CiphertextSizeInBytes`, the secret span exactly 32 bytes). Query `HasEncapsulationKey` / `HasDecapsulationKey` to see which halves an instance holds: a sender that imported only the public key has `HasEncapsulationKey` true and `HasDecapsulationKey` false, and so can encapsulate but not decapsulate.
 
 ## Persisting and restoring keys
 
@@ -101,12 +103,12 @@ byte[] combined = new byte[classicSecret.Length + pqSecret.Length];
 classicSecret.CopyTo(combined, 0);
 pqSecret.CopyTo(combined, classicSecret.Length);
 
-byte[] sessionKey = HKDF.DeriveKey(
+byte[] sessionKey = Hkdf.DeriveKey(
     HashAlgorithmName.SHA256,
-    ikm: combined,
+    inputKeyingMaterial: combined,
     outputLength: 32,
-    salt: null,
-    info: "myapp v1 hybrid session key"u8.ToArray());
+    salt: default,
+    info: "myapp v1 hybrid session key"u8);
 
 CryptographicOperations.ZeroMemory(classicSecret);
 CryptographicOperations.ZeroMemory(pqSecret);
@@ -115,9 +117,12 @@ CryptographicOperations.ZeroMemory(combined);
 
 The sender transmits both the X25519 public key and the ML-KEM ciphertext; the receiver performs the matching X25519 derivation and ML-KEM decapsulation and runs the identical KDF.
 
+Fix the concatenation order (here classic, then post-quantum) and keep it identical on both sides — the KDF is order-sensitive, so a swapped order yields a different, mismatched key. The same `info` label must also match. This is the pattern standardized as X25519MLKEM768 for TLS hybrid key exchange; the principle is the same here.
+
 ## See also
 
 - [Asymmetric algorithms overview](asymmetric-overview.md) — where ML-KEM sits in the family.
 - [Key agreement with X25519](key-agreement-x25519.md) — the classic counterpart and the hybrid partner.
 - [ML-DSA post-quantum signatures](ml-dsa.md) — the post-quantum signature companion.
+- [Using HKDF](hkdf.md) — the KDF that binds the shared secret to a context before use.
 - <xref:Bodu.Security.Cryptography.MLKem>, <xref:Bodu.Security.Cryptography.MLKem512>, <xref:Bodu.Security.Cryptography.MLKem768>, <xref:Bodu.Security.Cryptography.MLKem1024> — API reference.

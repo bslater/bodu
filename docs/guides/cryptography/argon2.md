@@ -16,6 +16,9 @@ Argon2 is the winner of the 2015 Password Hashing Competition and the algorithm 
 
 The three are sealed types deriving from a shared `Argon2` base. Cost is supplied once through an <xref:Bodu.Security.Cryptography.Argon2Parameters> record.
 
+> [!IMPORTANT]
+> Argon2 is for **low-entropy** inputs — passwords, PINs, passphrases — where the slowness *is* the defence. For a **high-entropy** secret (a Diffie-Hellman or KEM output, a master key), Argon2 only wastes resources: use [HKDF](hkdf.md) instead, which is fast by design. Feeding a password to HKDF, or a high-entropy key to Argon2, is the classic KDF mismatch.
+
 > [!NOTE]
 > These types are not independently audited and offer best-effort, not guaranteed, side-channel resistance. Where the platform already covers your need — `Rfc2898DeriveBytes.Pbkdf2` (PBKDF2) or `HKDF` — prefer it. Argon2 and scrypt exist because the BCL ships neither.
 
@@ -33,7 +36,7 @@ The three are sealed types deriving from a shared `Argon2` base. Cost is supplie
 | `Secret` (`K`) | Optional server-side pepper | Not stored in the PHC string — supply it again at verification. |
 | `AssociatedData` (`X`) | Optional associated data | Stored in the PHC string as `data=`. |
 
-RFC 9106, Section 4 gives two uniformly-safe starting points: **Argon2id with `t=1`, `p=4`, `m=2^21` (2 GiB)** for general use, or **`t=3`, `p=4`, `m=2^16` (64 MiB)** for memory-constrained environments. The salt should be at least 8 bytes (16 is recommended).
+RFC 9106, Section 4 gives two uniformly-safe starting points: **Argon2id with `t=1`, `p=4`, `m=2^21` (2 GiB)** for general use, or **`t=3`, `p=4`, `m=2^16` (64 MiB)** for memory-constrained environments. `MemoryKiB` is the peak working memory a single derivation allocates — `65536` is a literal 64 MiB — so multiply by your expected concurrent logins when sizing a server. `MemoryKiB` must be at least `8 * Parallelism`; `Parallelism` and `Iterations` must each be at least 1, and `TagLength` at least 4, or construction throws <xref:System.ArgumentOutOfRangeException>. The salt should be at least 8 bytes (16 is recommended); a shorter salt throws <xref:System.ArgumentException>.
 
 ## Pattern 1 — derive a key (static one-shot)
 
