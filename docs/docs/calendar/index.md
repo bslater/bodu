@@ -140,6 +140,7 @@ Region-specific holiday rules ship separately in the `Bodu.Globalization.Calenda
 
 | Type | Purpose |
 |---|---|
+| <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> | Carries the optional service collaborators (`Algorithms`, `CollisionResolver`, `Handlers`, `TriggerHandlers`, `Providers`) as `init`-only slots — passed to the second `NotableDateService` constructor. |
 | <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm>, <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> | Pluggable algorithm contract and registry, backing `<Algorithm key="…">` rules. |
 | <xref:Bodu.Globalization.Calendar.INotableDateProvider> | Code-first contribution of finished occurrences. |
 | <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider>, <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService> | Runtime resource swap on a live service. |

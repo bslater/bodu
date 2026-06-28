@@ -73,7 +73,7 @@ Every rule carries a `Priority` that flows onto the resolved `NotableDate.Priori
 | `CategoryPriority` | Occurrences are ranked by category precedence first, then by priority. |
 | `Custom` | A supplied <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> decides. |
 
-Same-day collisions are governed by `SameDayCollisionPolicy` and overlapping multi-day spans by `SpanCollisionPolicy`; both default to `KeepAll`. The policies are authored on the resource's `<ResolutionPolicy>` element:
+Same-day collisions are governed by `SameDayCollisionPolicy` and overlapping multi-day spans by `SpanCollisionPolicy` — two **independent** <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> knobs on the same resource, both defaulting to `KeepAll`. Single-day events that share one day are reconciled by `SameDayCollisionPolicy`; multi-day occurrences whose `[Date, EndDate]` ranges overlap are reconciled by `SpanCollisionPolicy`. The policies are authored on the resource's `<ResolutionPolicy>` element:
 
 ```xml
 <ResolutionPolicy duplicatePolicy="KeepFirst"
@@ -83,6 +83,24 @@ Same-day collisions are governed by `SameDayCollisionPolicy` and overlapping mul
                   observedDateRangePolicy="ObservedOccurrenceControlsInclusion"
                   workingDays="0111110" />   <!-- Sunday-first; Mon–Fri working -->
 ```
+
+The runtime <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> carries these as `SameDayCollisionPolicy`, `SpanCollisionPolicy`, `PriorityDirection`, `DuplicatePolicy`, `ObservedDateRangePolicy`, a `WorkingWeek` (a `Bodu.Core` `WeekPattern`), and a `CategoryPrecedence` list; `ResolutionPolicy.Default` is the all-defaults instance (`DuplicatePolicy.Error`, `CollisionPolicy.KeepAll` on both axes, `PriorityDirection.HigherWins`, Monday–Friday working week).
+
+### Category precedence (`CategoryPriority`)
+
+`CollisionPolicy.CategoryPriority` ranks colliding occurrences by **category** first and only falls back to `Priority` within a category. The ranking is the resource's `CategoryPrecedence` list — authored as a `<CategoryPrecedence>` child of `<ResolutionPolicy>` whose `<Category value="…"/>` entries are ordered most-important-first:
+
+```xml
+<ResolutionPolicy sameDayCollisionPolicy="CategoryPriority" priorityDirection="HigherWins">
+  <CategoryPrecedence>
+    <Category value="PublicHoliday" />
+    <Category value="BankHoliday" />
+    <Category value="Cultural" />
+  </CategoryPrecedence>
+</ResolutionPolicy>
+```
+
+It maps to `ResolutionPolicy.CategoryPrecedence`, an ordered read-only list of <xref:Bodu.Globalization.Calendar.NotableDateCategory> values; earlier entries outrank later ones. This is the policy to reach for when, say, a `PublicHoliday` should always win a shared day over a `Cultural` observance regardless of the numeric priorities the two rules happen to carry. `PriorityDirection` still breaks ties between two occurrences of the *same* category.
 
 ### Custom collision resolution
 
@@ -102,13 +120,13 @@ public sealed class HighestPriorityResolver : INotableDateCollisionResolver
     }
 }
 
-var service = new NotableDateService(
-    resource,
-    algorithms:        null,
-    collisionResolver: new HighestPriorityResolver());
+var service = new NotableDateService(resource, new NotableDateServiceOptions
+{
+    CollisionResolver = new HighestPriorityResolver(),
+});
 ```
 
-The resolver is consulted **only** when a `CollisionPolicy` resolves to `Custom`; for the built-in policies the engine settles the day itself.
+The collaborator slots (`Algorithms`, `CollisionResolver`, `Handlers`, `TriggerHandlers`, `Providers`) live on <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>, not as positional constructor parameters. The resolver is consulted **only** when a `CollisionPolicy` resolves to `Custom`; for the built-in policies the engine settles the day itself.
 
 ---
 
@@ -140,7 +158,7 @@ The policy's `<Emission mode="…">` selects an <xref:Bodu.Globalization.Calenda
 | `ActualOnly` | Only the nominal date; the substitute is discarded. |
 | `ObservedOnly` | Only the observed (adjusted) date; the nominal is not emitted separately. |
 | `ActualAndObserved` | Both, as two occurrences. |
-| `ObservedAsAdditional` | The nominal date plus an additional observed occurrence (the substitute). |
+| `ObservedAsAdditional` | `[Obsolete]` — normalised to `ActualAndObserved` at load time; behaves identically. |
 | `Suppress` | Nothing — the occurrence is dropped. |
 
 `EmissionMode` is a property of the *adjustment policy*, authored per policy in `<Emission>` — it is not a service-wide option and not a per-query argument. See [Observance adjustment rules](adjustment-rules.md).
