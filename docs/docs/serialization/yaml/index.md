@@ -32,13 +32,13 @@ The same kinds drive the token stream (<xref:Bodu.Text.Yaml.YamlTokenType>) that
 
 YAML carries presentation information a JSON-style tree does not. Bodu.Text.Yaml resolves it on read and chooses it on write rather than exposing each variant as a distinct value kind:
 
-- **Scalar styles** — plain, single- and double-quoted, literal (`|`) and folded (`>`) block scalars, with `Clip` / `Strip` / `Keep` chomping. The styles are enumerated by <xref:Bodu.Text.Yaml.YamlScalarStyle>; <xref:Bodu.Text.Yaml.Document.YamlElement.ScalarStyle> records the original style of a parsed scalar.
-- **Block vs. flow** — the writer emits block-style collections for readability, falling back to flow `[]` / `{}` only for empty containers.
-- **Anchors and aliases** — `&a` defines an anchor, `*a` references it; the reader resolves aliases transparently (they must be unique and acyclic).
+- **Scalar styles** — plain, single- and double-quoted, literal (`|`) and folded (`>`) block scalars. The five presentations plus the `Any` "writer chooses" sentinel are enumerated by <xref:Bodu.Text.Yaml.YamlScalarStyle>; <xref:Bodu.Text.Yaml.Document.YamlElement.ScalarStyle> records the original style of a parsed scalar (and reports `Any` for a non-scalar node). Block scalars carry a chomping indicator — `Clip` / `Strip` / `Keep` — modelled by <xref:Bodu.Text.Yaml.YamlBlockChomping>.
+- **Block vs. flow** — the writer emits block-style collections for readability, falling back to flow `[]` / `{}` only for empty containers, and writes a scalar plain unless plain rendering would change its meaning, in which case it double-quotes and escapes. There is no public scalar-style control on the write path.
+- **Anchors and aliases** — `&a` defines an anchor, `*a` references it; the reader resolves aliases transparently into the composed tree (they must be unique and acyclic, or a <xref:Bodu.Text.Yaml.YamlFormatException> is raised).
 
 ## Spec versions: 1.2 core, opt-in 1.1
 
-Parsing defaults to the strict **1.2 core schema**, where only `true` / `false` are Booleans. Setting <xref:Bodu.Text.Yaml.YamlSerializerOptions.SpecVersion> to <xref:Bodu.Text.Yaml.YamlSpecVersion.V1_1> additionally accepts the `yes` / `no` / `on` / `off` Boolean spellings and sexagesimal (base-60) numbers, and enables YAML 1.1 **merge keys** (`<<`) through <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior>. A `%YAML` directive overrides the typing per document.
+Parsing defaults to the strict **1.2 core schema**, where only `true` / `false` are Booleans — this sidesteps the well-known "Norway problem", in which YAML 1.1 silently reads unquoted `no` as `false`. Setting <xref:Bodu.Text.Yaml.YamlSerializerOptions.SpecVersion> to <xref:Bodu.Text.Yaml.YamlSpecVersion.V1_1> additionally accepts the `yes` / `no` / `on` / `off` / `y` / `n` Boolean spellings, leading-zero octal integers, and sexagesimal (base-60) numbers, and enables YAML 1.1 **merge keys** (`<<`) through <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior>. The version controls only *implicit scalar typing*; anchors, aliases, and the hex (`0x`) and `0o`-octal integer forms are recognised under both. A `%YAML` directive overrides the typing per document.
 
 ## Multi-document streams
 
@@ -58,7 +58,7 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 | <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> | Base class for a custom per-type converter, reading a <xref:Bodu.Text.Yaml.Document.YamlElement> and writing through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>. |
 | <xref:Bodu.Text.Yaml.Nodes.YamlNode> | Mutable DOM — `Parse`, index, mutate, write back with `ToYamlString()`. |
 | <xref:Bodu.Text.Yaml.Document.YamlDocument> | Read-only, low-allocation DOM walked through `RootElement`; `ParseAllDocuments` for multi-document streams. |
-| <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader> / <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter> | Forward-only `ref struct` token machines. The reader is **buffered** (it parses into an in-memory node store); the writer emits block-style YAML. |
+| <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader> / <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter> | Forward-only `ref struct` token machines. The reader is **buffered** (it parses into an in-memory node store, then `Read()` walks it; `ValueTextEquals` compares keys allocation-free); the writer emits block-style YAML and enforces a well-formed call sequence. |
 | <xref:Bodu.Text.Yaml.YamlFormatException> / <xref:Bodu.Text.Yaml.YamlSerializationException> | Malformed input (line/column/offset) vs a value that cannot bind. |
 
 ## Common scenarios

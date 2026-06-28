@@ -50,6 +50,9 @@ max_retry_count: 5
 
 On the read path, <xref:Bodu.Text.Yaml.YamlSerializerOptions.PropertyNameCaseInsensitive> lets mapping keys match members regardless of case.
 
+> [!NOTE]
+> If two members resolve to the same wire key under the active policy and attributes — for example a `[YamlPropertyName("name")]` that collides with another member's policy-derived `name` — serialization throws `InvalidOperationException` rather than silently emitting a duplicate key. Choose keys that stay unique after the policy is applied.
+
 ## Pattern 3 — Exclude a member
 
 <xref:Bodu.Text.Yaml.Serialization.YamlIgnoreAttribute> drops a member unconditionally — it is never written and never read:
@@ -95,7 +98,7 @@ var options = new YamlSerializerOptions
 };
 ```
 
-With `IncludeFields` set, a public field maps exactly like a property — it honors the naming policy and `[YamlPropertyName]` / `[YamlIgnore]`:
+With `IncludeFields` set, a public field maps exactly like a property — it honours the naming policy and `[YamlPropertyName]` / `[YamlIgnore]`:
 
 ```csharp
 public sealed class Counter
@@ -104,6 +107,8 @@ public sealed class Counter
     public int Retries;   // included when IncludeFields is true
 }
 ```
+
+A property is **written** whenever it has a public getter, but it is only **read back** when it also has a public setter — a get-only property serialises out and is silently skipped on deserialisation. Members are emitted properties-first (in reflection order) and then fields, so a field never interleaves with the properties even when `IncludeFields` is set.
 
 ## What YAML deliberately leaves out
 

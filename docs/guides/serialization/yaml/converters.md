@@ -54,12 +54,20 @@ Because there is no `[YamlConverter]` attribute, the options list is the only re
 
 ## Pattern 3 — Understand resolution order
 
-For a given type the serializer selects a converter by checking, in order:
+For a given value the serializer selects a converter by scanning `options.Converters` for the first whose `CanConvert` returns `true`, then falling back to the built-in handling when none matches. On the **write** path it looks up the value's runtime type first and the declared member type second, so a converter for a concrete type still fires when the value is held in an `object` or interface member. The first match wins.
 
-1. the first matching converter in `options.Converters`;
-2. the built-in converters.
+`CanConvert` defaults to an **exact** type check — `typeof(T) == typeToConvert` — so a `YamlConverter<Animal>` does not apply to a `Dog` subclass. Override `CanConvert` if you need a converter to cover an inheritance hierarchy or an open generic:
 
-The first match wins, and the result is cached on the options.
+```csharp
+public sealed class EnumAsLowerConverter<TEnum> : YamlConverter<TEnum>
+    where TEnum : struct, Enum
+{
+    public override bool CanConvert(Type typeToConvert) => typeToConvert.IsEnum;
+    // … Read / Write …
+}
+```
+
+The <xref:Bodu.Text.Yaml.Serialization.YamlConverter> non-generic base exists only so the options collection can hold mixed converters; always derive from the generic `YamlConverter<T>`, which implements the boxed read/write bridge for you.
 
 ## Pattern 4 — A type read from a mapping
 
