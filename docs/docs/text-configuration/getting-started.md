@@ -108,7 +108,7 @@ ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(tex
 
 foreach (ConfigurationDiagnostic d in result.Diagnostics)
 {
-    Console.WriteLine($"{d.Severity} {d.Code} at line {d.Location.Line}: {d.Message}");
+    Console.WriteLine($"{d.Severity} {d.Code} at line {d.Location.LineNumber}: {d.Message}");
 }
 
 if (result.Diagnostics.Length == 0)
@@ -150,6 +150,28 @@ ConfigurationResolveOptions options = new()
 
 ConfigurationView view = doc.Resolve("src/Bodu/Foo.cs", options);
 ```
+
+> [!IMPORTANT]
+> A target path is required for glob sections to match. `doc.Resolve()` with no path (or `null`) skips every named
+> section and returns a preamble-only view. Always pass the file you are evaluating — `doc.Resolve("src/Foo.cs")` — when
+> you want section rules to apply.
+
+### Trace where a value came from
+
+```csharp
+ConfigurationView view = doc.Resolve("src/Foo.cs");
+
+ConfigurationResolvedEntry? entry = view.GetEntry("format:indent:size");
+if (entry is not null)
+{
+    Console.WriteLine($"{entry.Key} = {entry.Value}");
+    Console.WriteLine($"  won from section: {entry.SectionPattern ?? "<preamble>"}");
+    Console.WriteLine($"  source line:      {entry.SourceLocation.LineNumber}");
+}
+```
+
+`GetEntry` returns the <xref:Bodu.Text.Configuration.ConfigurationResolvedEntry> that won under last-wins precedence;
+`view.Entries` enumerates the same metadata for every resolved key.
 
 ### Save (round-trip)
 
