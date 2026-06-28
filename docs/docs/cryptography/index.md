@@ -4,7 +4,7 @@ title: Bodu.Security.Cryptography — Introduction
 
 # Bodu.Security.Cryptography
 
-**Bodu.Security.Cryptography** is the cryptographic primitives package of the Bodu suite, and one half of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic — managed block ciphers, authenticated encryption, keyed hashes, and cryptographic digests with a formal adversary model. Everything plugs into the standard BCL contracts (<xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType>, <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, and Bodu's own `IBlockCipher` / `TweakableSymmetricAlgorithm`), so any code that already speaks .NET cryptography can adopt these types without changes.
+**Bodu.Security.Cryptography** is the cryptographic primitives package of the Bodu suite, and one half of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic — managed block ciphers, authenticated encryption, keyed hashes, cryptographic digests, elliptic-curve and post-quantum public-key primitives, and password-hashing and key-derivation functions, all with a formal adversary model. Everything plugs into the standard BCL contracts (<xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType>, <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType>, and Bodu's own `IBlockCipher` / `TweakableSymmetricAlgorithm`), so any code that already speaks .NET cryptography can adopt these types without changes.
 
 The library lives in two namespaces: `Bodu.Security.Cryptography` for primitives, and `Bodu.Security.Cryptography.Extensions` for ergonomic helpers.
 
@@ -16,6 +16,8 @@ The library lives in two namespaces: `Bodu.Security.Cryptography` for primitives
 > - **Compare tags and digests in constant time.** Use `CryptographicOperations.FixedTimeEquals` or the BCL constant-time helpers when checking MAC equality.
 > - **Prefer AEAD over encrypt-then-MAC-by-hand.** Authenticated modes (GCM, OCB, EAX, SIV) bundle confidentiality and authenticity in a single primitive with fewer pitfalls.
 > - **Prefer the BCL where it covers your case.** `System.Security.Cryptography` ships hardware-accelerated AES, AES-GCM, and SHA-2/3 implementations. Reach for the Bodu primitives when you need an algorithm the BCL does not ship (Threefish, Camellia, Ascon, BLAKE2/3, Skein, …).
+> - **Hash passwords with a memory-hard KDF**, never a bare digest. Use `Argon2id` (or `Scrypt`) with a per-password salt for stored passwords; reserve `Hkdf` for stretching *high-entropy* inputs such as a Diffie-Hellman shared secret or a KEM output.
+> - **Treat every verification failure as fatal.** A failed signature check, KEM decapsulation, or HPKE open must abort the operation — do not fall back to the unverified data. Import only public keys you obtained over a trusted channel.
 >
 > See the [Core concepts](concepts.md) page for the full safety vocabulary and the [cipher-modes](../../guides/cryptography/cipher-modes.md) and [AEAD-modes](../../guides/cryptography/aead-modes.md) guides for worked-example walkthroughs.
 
@@ -25,13 +27,15 @@ The library lives in two namespaces: `Bodu.Security.Cryptography` for primitives
 
 Every algorithm here is designed against a formal **adversary model**: it must be computationally infeasible for an attacker — even one who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively — to forge, invert, or find collisions. That is the line between this package and [Bodu.IO.Hashing](../io-hashing/index.md), whose fingerprints and checksums carry *no* adversary model and must never be used where an attacker can choose the input.
 
-The package contains six subfamilies. They share BCL base classes but differ structurally in what they consume and produce:
+The package spans five families. They share BCL base classes but differ structurally in what they consume and produce:
 
 ![Structural input and output comparison across the cryptographic families](../../images/diagrams/algorithm-io-model.svg)
 
 - **Cryptographic hash** — a one-way function compressing arbitrary input to a fixed digest, with pre-image, second-pre-image, and collision resistance. Three structural shapes: *plain digest* (fixed output), *extendable output* (XOF — squeeze any number of bytes), and *tree* (parallel leaves combined into a verifiable root). Use for content addressing, integrity verification, and signature inputs — not for authentication on its own.
 - **Keyed hash / MAC** — a secret key plus a message yields an authentication tag that no one can forge without the key. Two subtypes: a reusable *PRF* (SipHash — one key authenticates many messages) and a *one-time authenticator* (Poly1305 — the key must never be reused).
 - **Symmetric cipher** — reversible encryption under a key, in four subtypes: a *standard block cipher*; a *tweakable block cipher*, where a public **tweak** gives per-record or per-sector domain separation without re-keying; a *stream cipher*, which XORs a key/nonce-derived keystream over data of any length (raw confidentiality, no authentication); and *AEAD*, which encrypts and authenticates in a single pass.
+- **Asymmetric (public-key)** — a key *pair*, where one half is published and the other kept secret, in four roles: a *signature* scheme (sign with the private key, verify with the public key — Ed25519 and the post-quantum ML-DSA); *key agreement* (two public keys derive a shared secret — X25519); a *KEM* (encapsulate a fresh secret to a public key — the post-quantum ML-KEM); and *HPKE*, which seals a message to a recipient's public key by combining a KEM, a KDF, and an AEAD.
+- **Key derivation & password hashing** — turns one secret into key material. A *memory-hard password hash* (Argon2id, scrypt) stretches a low-entropy password so offline guessing is expensive; an *extract-and-expand KDF* (HKDF) derives one or more context-bound keys from a high-entropy input.
 
 > **Keyed hash vs cipher.** Both take a key, but they serve opposite purposes. A cipher transforms plaintext to ciphertext and back without summarizing; a MAC summarizes a message into a fixed-size tag without encrypting. Use both together — encrypt-then-MAC, or an AEAD mode — when you need confidentiality *and* integrity.
 
@@ -52,6 +56,13 @@ A compact decision table for the most common requirements. The "BCL alternative"
 | **Keyed hash / MAC** (reusable PRF) | `SipHash64`, `SipHash128` | 64 / 128 bits | Aumasson & Bernstein SipHash paper | `HMACSHA256` (BCL) |
 | **One-time message authenticator** (key + message — never reuse key) | `Poly1305` | 128 bits | RFC 8439 | None — paired with `ChaCha20` in BCL `ChaCha20Poly1305` |
 | **Verifiable tree hashing** (Merkle root + inclusion proofs) | `MerkleTreeHash`, `ParallelMerkleTreeHash` | Configurable leaf hash | Merkle 1979 / Certificate Transparency | None |
+| **Digital signature** (classical, sign / verify) | `Ed25519` | 64-byte deterministic signature | RFC 8032 | None on `net8.0` |
+| **Digital signature** (post-quantum) | `MLDsa44`, `MLDsa65`, `MLDsa87` | 2420 – 4627-byte signature | FIPS 204 | None on `net8.0` |
+| **Key agreement** (derive a shared secret from two public keys) | `X25519` | 32-byte shared secret | RFC 7748 | None on `net8.0` |
+| **Key encapsulation** (post-quantum, seal a fresh secret to a public key) | `MLKem512`, `MLKem768`, `MLKem1024` | 32-byte secret + ciphertext | FIPS 203 | None on `net8.0` |
+| **Seal a message to a recipient's public key** (hybrid PKE) | `Hpke` | Encapsulated key + ciphertext + tag | RFC 9180 | None on `net8.0` |
+| **Password hashing / storage** (memory-hard) | `Argon2id`, `Argon2i`, `Argon2d`, `Scrypt` | Salted derived tag | RFC 9106 / RFC 7914 | None on `net8.0` |
+| **Derive keys from a high-entropy secret** (extract-and-expand) | `Hkdf` | Configurable | RFC 5869 | `HKDF` (BCL — preferred where it covers your hash) |
 
 Cryptographic digests in this table provide **integrity only when the digest itself is transmitted via an authenticated channel**. For integrity + authenticity in a single primitive, pick a MAC or an AEAD mode. See the [Core concepts](concepts.md) page for the full safety vocabulary.
 
@@ -138,6 +149,31 @@ Cryptographic digests in this table provide **integrity only when the digest its
 | <xref:Bodu.Security.Cryptography.SipHash128> | 128 bits | PRF; wider output for routing / sharding. |
 | <xref:Bodu.Security.Cryptography.Poly1305> | 128 bits | One-time authenticator (RFC 8439). |
 
+### Asymmetric primitives — signatures, key agreement, KEM, HPKE
+*Public-key schemes over <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType>. Raw key encodings only — PKCS#8 / SPKI (DER / PEM) are deliberately out of scope. Lifecycle: `Create()`, `GenerateKey()`, export the public half, then sign / verify, agree, or encapsulate.*
+
+| Type | Role | Standard | Notes |
+|---|---|---|---|
+| <xref:Bodu.Security.Cryptography.Ed25519> | Signature | RFC 8032 | Deterministic EdDSA over edwards25519; 32-byte keys, 64-byte signature, 128-bit security. `SignData` / `VerifyData`. |
+| <xref:Bodu.Security.Cryptography.MLDsa44> / <xref:Bodu.Security.Cryptography.MLDsa65> / <xref:Bodu.Security.Cryptography.MLDsa87> | Signature (post-quantum) | FIPS 204 | Module-lattice ML-DSA; `MLDsa65` the default. Signatures 2420 – 4627 bytes; API mirrors `Ed25519`. |
+| <xref:Bodu.Security.Cryptography.X25519> | Key agreement | RFC 7748 | ECDH over Curve25519; 32-byte keys and 32-byte shared secret. `DeriveSharedSecret(peerPublicKey)`. |
+| <xref:Bodu.Security.Cryptography.MLKem512> / <xref:Bodu.Security.Cryptography.MLKem768> / <xref:Bodu.Security.Cryptography.MLKem1024> | KEM (post-quantum) | FIPS 203 | Module-lattice ML-KEM; `MLKem768` the default. `Encapsulate()` / `Decapsulate(ciphertext)` / `ExportEncapsulationKey()`. |
+| <xref:Bodu.Security.Cryptography.Hpke>, <xref:Bodu.Security.Cryptography.HpkeSender>, <xref:Bodu.Security.Cryptography.HpkeReceiver>, <xref:Bodu.Security.Cryptography.HpkeSuite> | Hybrid PKE | RFC 9180 | `DHKEM(X25519, HKDF-SHA256)` + HKDF + AEAD. `Hpke.Seal` / `Hpke.Open`; suites `X25519_HkdfSha256_Aes128Gcm` / `_Aes256Gcm` / `_ChaCha20Poly1305`. |
+| <xref:Bodu.Security.Cryptography.SignatureFormat>, <xref:Bodu.Security.Cryptography.SignatureValue> | — | — | Signature-encoding selector and value type shared by the signature schemes. |
+
+See the [asymmetric overview](../../guides/cryptography/asymmetric-overview.md) and [HPKE](../../guides/cryptography/hpke.md) guides for worked walk-throughs.
+
+### Key derivation & password hashing
+*Turn one secret into key material. Memory-hard password hashes stretch low-entropy passwords; HKDF expands a high-entropy secret into context-bound keys.*
+
+| Type | Standard | Notes |
+|---|---|---|
+| <xref:Bodu.Security.Cryptography.Argon2id> / <xref:Bodu.Security.Cryptography.Argon2i> / <xref:Bodu.Security.Cryptography.Argon2d> | RFC 9106 | Memory-hard password hash; `Argon2id` the recommended default. <xref:Bodu.Security.Cryptography.Argon2Parameters> carries `MemoryKiB`, `Iterations`, `Parallelism`, `TagLength`. One-shot `Argon2id.DeriveKey(password, salt, parameters)`. |
+| <xref:Bodu.Security.Cryptography.Scrypt> | RFC 7914 | Memory-hard password hash; <xref:Bodu.Security.Cryptography.ScryptParameters> carries `CostN`, `BlockSizeR`, `Parallelization`. Peak memory ≈ `128 · N · r` bytes. |
+| <xref:Bodu.Security.Cryptography.Hkdf> | RFC 5869 | HMAC extract-and-expand over SHA-1/256/384/512; `Extract` / `Expand` / `DeriveKey`. Backs the HPKE labeled KDF. **Not** a password hash — feed it high-entropy input only. |
+
+See the [Argon2](../../guides/cryptography/argon2.md), [scrypt](../../guides/cryptography/scrypt.md), and [HKDF](../../guides/cryptography/hkdf.md) guides.
+
 ### ASCON family — multi-role
 *Spans hash, XOF, and AEAD under a single sponge permutation. NIST SP 800-232.*
 
@@ -178,12 +214,18 @@ Random key/IV/tweak generation, padding helpers, and secure-clear helpers ship a
 | Cryptographic digest for content addressing | `Tiger`, `CubeHash`, `AsconHash256`, `Blake2b`, `Whirlpool`, `Skein512` |
 | Variable-length output | `AsconXof128`, `AsconCxof128`, `Shake`, `Blake3` |
 | Tree / Merkle hashing for verifiable inclusion proofs | `MerkleTreeHash`, `ParallelMerkleTreeHash` |
+| Sign a message and verify it with a distributed public key | `Ed25519` (classical), `MLDsa65` (post-quantum) |
+| Establish a shared secret between two parties | `X25519` (classical), `MLKem768` (post-quantum) |
+| Encrypt a payload so only a given public key can read it | `Hpke` |
+| Store a password so offline guessing is expensive | `Argon2id`, `Scrypt` |
+| Derive session / traffic keys from a shared secret | `Hkdf` |
 
 ## Where to go next
 
 - **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install + minimal sample for a cipher, an AEAD round-trip, a keyed hash, and a digest.
 - **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** — recipe-style walk-throughs.
+- **[Asymmetric cryptography overview](../../guides/cryptography/asymmetric-overview.md)** — signatures, key agreement, KEM, and the [HPKE](../../guides/cryptography/hpke.md) seal-to-public-key recipe.
 - **[Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography)** — full type-by-type docs.
 - **For non-cryptographic checksums and fingerprints** (CRC, Fletcher, Adler, FNV, CityHash, MurmurHash3), see [Bodu.IO.Hashing](../io-hashing/index.md).
 - **[Hashing & Cryptography topic](../topics/hashing-and-cryptography.md)** — this package and its sibling Bodu.IO.Hashing side by side.

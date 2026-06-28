@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="900" height="375" viewBox="0 0 900 375" xmlns="http://www.w3.org/2000/svg">
+<svg width="900" height="524" viewBox="0 0 900 524" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <style>
       text { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; }
@@ -111,11 +111,52 @@
   <text x="759" y="276" font-size="9" fill="#333">ASCON-AEAD128</text>
 
   <!-- ═══ Vertical separator ═══ -->
-  <line x1="445" y1="56" x2="445" y2="305" stroke="#ccc" stroke-width="1" stroke-dasharray="5,3"/>
+  <line x1="445" y1="56" x2="445" y2="470" stroke="#ccc" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- ═══ Band divider ═══ -->
+  <line x1="10" y1="300" x2="890" y2="300" stroke="#ddd" stroke-width="0.8"/>
+
+  <!-- ═══ Second band — Public-key & key derivation (crypto-only) ═══ -->
+  <rect x="470" y="310" width="418" height="26" rx="4" fill="#ede8f8" stroke="#5030a0" stroke-width="1.5"/>
+  <text x="679" y="327" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#30106a">Public-key &amp; key derivation</text>
+
+  <!-- band connector rails -->
+  <line x1="679" y1="336" x2="679" y2="348" stroke="#5030a0" stroke-width="1.2"/>
+  <line x1="572" y1="348" x2="786" y2="348" stroke="#5030a0" stroke-width="1.2"/>
+  <line x1="572" y1="348" x2="572" y2="358" stroke="#5030a0" stroke-width="1.2"/>
+  <line x1="786" y1="348" x2="786" y2="358" stroke="#5030a0" stroke-width="1.2"/>
+
+  <!-- Asymmetric family box -->
+  <rect x="470" y="358" width="204" height="44" rx="3" fill="#f8f4ff" stroke="#5030a0" stroke-width="1"/>
+  <text x="572" y="377" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#30106a">Asymmetric (public-key)</text>
+  <text x="572" y="392" text-anchor="middle" font-size="9" fill="#5030a0">signatures · agreement · KEM · HPKE</text>
+
+  <!-- Key Derivation family box -->
+  <rect x="684" y="358" width="204" height="44" rx="3" fill="#f8f4ff" stroke="#5030a0" stroke-width="1"/>
+  <text x="786" y="377" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#30106a">Key Derivation</text>
+  <text x="786" y="392" text-anchor="middle" font-size="9" fill="#5030a0">password hashing · HKDF</text>
+
+  <!-- Asymmetric type list -->
+  <text x="473" y="420" font-size="9" fill="#333">Ed25519 · X25519</text>
+  <text x="473" y="434" font-size="9" fill="#333">ML-DSA-44 / 65 / 87 ◇</text>
+  <text x="473" y="448" font-size="9" fill="#333">ML-KEM-512 / 768 / 1024 ◇</text>
+  <text x="473" y="462" font-size="9" fill="#333">HPKE  (X25519 + HKDF + AEAD)</text>
+
+  <!-- Key Derivation type list -->
+  <text x="687" y="420" font-size="9" fill="#333">Argon2id / Argon2i / Argon2d ★</text>
+  <text x="687" y="434" font-size="9" fill="#333">scrypt ★</text>
+  <text x="687" y="448" font-size="9" fill="#333">HKDF  (extract-and-expand)</text>
+
+  <!-- ═══ Left-side note — crypto-only families ═══ -->
+  <text x="15" y="362" font-size="9.5" font-weight="bold" fill="#5030a0">Cryptographic-only families</text>
+  <text x="15" y="380" font-size="9" fill="#666" font-style="italic">The public-key and key-derivation</text>
+  <text x="15" y="394" font-size="9" fill="#666" font-style="italic">families have no non-cryptographic</text>
+  <text x="15" y="408" font-size="9" fill="#666" font-style="italic">counterpart — Bodu.IO.Hashing</text>
+  <text x="15" y="422" font-size="9" fill="#666" font-style="italic">carries no adversary model.</text>
 
   <!-- ═══ Footnotes ═══ -->
-  <line x1="10" y1="310" x2="890" y2="310" stroke="#ddd" stroke-width="0.8"/>
-  <text x="10" y="326" font-size="8.5" fill="#666" font-style="italic">◆  Tweakable block cipher — Threefish accepts a public 128-bit tweak that domain-separates encryption contexts without changing the key.</text>
-  <text x="10" y="342" font-size="8.5" fill="#666" font-style="italic">ASCON is a multi-role family: Hash256/HashA256 are one-way digests; XOF128/CXOF128 are extendable-output functions; AEAD128 is an authenticated cipher.</text>
-  <text x="10" y="358" font-size="8.5" fill="#666" font-style="italic">Snefru-128 and Snefru-256 are cryptanalytically broken; listed for interoperability only.</text>
+  <line x1="10" y1="478" x2="890" y2="478" stroke="#ddd" stroke-width="0.8"/>
+  <text x="10" y="492" font-size="8.5" fill="#666" font-style="italic">◇  Post-quantum (FIPS 203 ML-KEM / FIPS 204 ML-DSA).    ★  Memory-hard password hash (Argon2 / scrypt) — deliberately slow and RAM-bound.</text>
+  <text x="10" y="506" font-size="8.5" fill="#666" font-style="italic">◆  Tweakable block cipher — Threefish accepts a public 128-bit tweak that domain-separates encryption contexts without changing the key.</text>
+  <text x="10" y="520" font-size="8.5" fill="#666" font-style="italic">ASCON is multi-role (digest / XOF / AEAD); Snefru-128/256 are cryptanalytically broken and listed for interoperability only.</text>
 </svg>

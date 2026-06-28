@@ -156,6 +156,31 @@ Input is split into fixed-size **leaves**; each leaf is hashed; pairs of digests
 
 See the [Merkle trees guide](../../guides/cryptography/merkle-trees.md) for the inclusion-proof protocol and the parallel construction.
 
+## Public-key (asymmetric) cryptography
+
+Everything above uses a **single secret key** shared by both parties. **Public-key** (asymmetric) primitives instead use a **key pair**: a *public key* that can be published freely and a *private key* that never leaves its owner. This splits cleanly into three roles:
+
+- **Signature** — the holder of the private key signs a message; anyone with the public key verifies it. Provides integrity and authenticity *without* a shared secret. <xref:Bodu.Security.Cryptography.Ed25519> is the classical scheme (RFC 8032); <xref:Bodu.Security.Cryptography.MLDsa65> is its post-quantum counterpart (FIPS 204).
+- **Key agreement** — two parties exchange public keys and each derives the *same* shared secret, which is never transmitted. <xref:Bodu.Security.Cryptography.X25519> is the elliptic-curve Diffie-Hellman function (RFC 7748).
+- **Key encapsulation (KEM)** — the sender generates a fresh secret and encapsulates it to the recipient's public key, transmitting a ciphertext the recipient decapsulates back to the same secret. <xref:Bodu.Security.Cryptography.MLKem768> is the post-quantum module-lattice KEM (FIPS 203).
+
+The post-quantum schemes (ML-DSA, ML-KEM) defend against the **"harvest now, decrypt later"** threat: an adversary who records today's traffic could decrypt it once a large-scale quantum computer exists. Data with a long confidentiality horizon should be protected with a post-quantum (or hybrid) scheme now, even though no such computer exists yet.
+
+These primitives produce and consume **raw key encodings only** — the fixed-length byte arrays defined by their standards. PKCS#8 / SPKI (DER / PEM) container formats are deliberately not implemented.
+
+## Hybrid public-key encryption (HPKE)
+
+A KEM establishes a *secret*, not an encrypted *message*. **HPKE** (Hybrid Public Key Encryption, RFC 9180) composes the three building blocks — a KEM, a KDF, and an AEAD — into a single "seal this payload so only the holder of a given public key can read it" operation. The sender needs only the recipient's public key; the output is an **encapsulated key** plus an AEAD ciphertext and tag. <xref:Bodu.Security.Cryptography.Hpke> implements the base mode; <xref:Bodu.Security.Cryptography.HpkeSuite> selects the KEM / KDF / AEAD combination. It is the encryption layer beneath TLS Encrypted Client Hello, MLS, and Oblivious HTTP.
+
+## Key derivation and password hashing
+
+A **key-derivation function (KDF)** turns one secret into usable key material. The right KDF depends entirely on the *entropy* of the input:
+
+- **High-entropy input** — a Diffie-Hellman shared secret, a KEM output, a master key. Use an **extract-and-expand KDF**: <xref:Bodu.Security.Cryptography.Hkdf> (RFC 5869) stretches it into one or more context-bound keys, each labelled with application-specific `info`. HKDF is fast *by design* and must never be fed a password.
+- **Low-entropy input** — a human-chosen password. Use a **memory-hard password hash**: <xref:Bodu.Security.Cryptography.Argon2id> (RFC 9106, the current recommendation) or <xref:Bodu.Security.Cryptography.Scrypt> (RFC 7914). These are deliberately *slow and memory-hungry* so that offline guessing on custom hardware (GPUs, FPGAs, ASICs) is expensive. Always combine with a per-password salt.
+
+Reaching for the wrong one is a security bug: an HKDF over a raw password offers almost no protection against guessing, and a memory-hard hash over a high-entropy secret only wastes resources.
+
 ## BCL surface
 
 Every primitive plugs into the standard BCL contracts so existing crypto code adopts these types without changes:
@@ -163,6 +188,7 @@ Every primitive plugs into the standard BCL contracts so existing crypto code ad
 - <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> — base class for block ciphers, tweakable ciphers, and stream ciphers. Lifecycle: configure `Key`, `IV`, mode and padding; call `CreateEncryptor()` / `CreateDecryptor()` or the Bodu `Encrypt` / `Decrypt` extension methods.
 - <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> — base class for cryptographic digests and XOFs. Lifecycle: `Append` / `TransformBlock`, then `GetHashAndReset()` (or BCL `ComputeHash`).
 - <xref:System.Security.Cryptography.KeyedHashAlgorithm?displayProperty=nameWithType> — base class for MACs (SipHash, Poly1305); a `HashAlgorithm` with a required `Key` property.
+- <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType> — base class for the public-key schemes (Ed25519, X25519, ML-KEM, ML-DSA). Lifecycle: `Create()`, `GenerateKey()`, export the public half, then sign / verify, agree, or encapsulate. These types work in **raw key encodings only** — PKCS#8 / SPKI (DER / PEM) are deliberately not implemented.
 
 Bodu extends the BCL surface in two places:
 

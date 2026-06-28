@@ -40,6 +40,22 @@ The tag types only ever exist statically — every one has a `private` construct
 
 `System.Text.Json` converters and the <xref:Bodu.Financial.Serialization.FinancialJsonPolicy> enum (`Strict`, `Lenient`, `Compact`). Register all converters at once via `FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(options, policy)`.
 
+## Exchange-rate providers and caching
+
+The exchange-rate core (`IExchangeRateProvider` / `IDatedExchangeRateProvider`, `ExchangeRate`, the in-memory tables) lives in `Bodu.Financial`. Live feeds ship as separate per-source packages, each isolating one feed's HTTP and parsing dependencies behind the shared `WebExchangeRateProvider` base (a named `HttpClient` plus Polly resilience, registered through the generic `AddWebExchangeRateProvider` machinery). Every provider type and its DI registration extension share the single flattened `Bodu.Financial.ExchangeRates` namespace.
+
+| Source (package) | Provider type | Coverage | DI registration |
+|---|---|---|---|
+| Reserve Bank of Australia (`…ExchangeRates.Rba`) | <xref:Bodu.Financial.ExchangeRates.RbaExchangeRateProvider> | base AUD, historical | `AddRbaHistoricalRates()` |
+| European Central Bank (`…ExchangeRates.Ecb`) | <xref:Bodu.Financial.ExchangeRates.EcbExchangeRateProvider> | base EUR, reference | `AddEcbReferenceRates()` |
+| Bank of England (`…ExchangeRates.Boe`) | <xref:Bodu.Financial.ExchangeRates.BoeExchangeRateProvider> | base GBP, reference | `AddBoeReferenceRates()` |
+| Yahoo (`…ExchangeRates.Yahoo`) | <xref:Bodu.Financial.ExchangeRates.YahooExchangeRateProvider> | any pair | `AddYahooExchangeRates()` |
+| OFX (`…ExchangeRates.Ofx`) | <xref:Bodu.Financial.ExchangeRates.OfxExchangeRateProvider> | any pair | `AddOfxExchangeRates()` |
+
+A provider-agnostic caching layer in `Bodu.Financial.ExchangeRates.Caching` wraps any of these. <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider> is a read-through decorator over an `IExchangeRateCache`, and <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider> fronts several sources at once (priority / average strategies, per-pair routing). The core caching package ships in-memory and TOML-file caches; durable backends add on as <xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache> (`…Caching.Sqlite`) and <xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache> (`…Caching.Distributed`, e.g. Redis through `IDistributedCache`). Each package ships its own registration extensions — `AddCachedExchangeRateProvider`, `AddAggregatedExchangeRateProvider`, `AddSqliteRateCache`, and `AddDistributedRateCache` / `AddRedisRateCache` — all declared in the root `Bodu.Financial.ExchangeRates` namespace.
+
+See the [exchange-rate providers](../../guides/financial/exchange-rate-providers.md), [caching](../../guides/financial/exchange-rate-caching.md), and [lookups](../../guides/financial/exchange-rate-lookups.md) guides for the full provider, cache, and dated-lookup workflows.
+
 ## Allocation
 
 Splitting `$1.00` into three shares cannot return `[0.33, 0.33, 0.33]` — that loses a cent. `Money<T>.Allocate(int parts)` splits an amount into shares whose sum equals the original exactly: the residual minor units are distributed one per share from the start of the array, and the rule is sign-stable, so a negative amount distributes the residual in the same direction. `Allocate(ReadOnlySpan<decimal> ratios)` weights the shares proportionally:
