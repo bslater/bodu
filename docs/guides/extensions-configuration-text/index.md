@@ -32,7 +32,7 @@ sections to typed POCO classes through the standard `Microsoft.Extensions.Depend
 
 <div class="bodu-card">
   <h3><a href="configuration-sources.md">Configuration sources</a></h3>
-  <p>Every <code>AddTextConfiguration*</code> overload — file, stream, pre-parsed document, convention-based discovery, fluent source configuration — plus reload-on-change, <code>IOptions&lt;T&gt;</code> binding, and layering alongside JSON and environment-variable sources.</p>
+  <p>Every <code>AddTextConfiguration*</code> overload — file, stream, pre-parsed document, convention-based discovery, fluent source configuration — plus the read-only <code>AddTomlFile</code> / <code>AddTomlStream</code> bridge, reload-on-change, <code>IOptions&lt;T&gt;</code> binding, and layering alongside JSON and environment-variable sources.</p>
 </div>
 
 <div class="bodu-card">
@@ -66,7 +66,7 @@ applies unchanged to values consumed through `IConfiguration`.
 
 | Namespace | What lives here | Static docs |
 |---|---|---|
-| `Bodu.Extensions.Configuration.Text` | Builder extensions (`TextConfigurationExtensions`), file source / provider (`TextConfigurationSource`, `TextConfigurationProvider`), stream source / provider (`TextStreamConfigurationSource`, `TextStreamConfigurationProvider`), DI options helpers (`ConfigurationOptionsExtensions`). | [Introduction](../../docs/extensions-configuration-text/index.md) · [Core concepts](../../docs/extensions-configuration-text/concepts.md) · [Getting started](../../docs/extensions-configuration-text/getting-started.md) |
+| `Bodu.Extensions.Configuration.Text` | Builder extensions (`TextConfigurationExtensions`), file source / provider (`TextConfigurationSource`, `TextConfigurationProvider`), stream source / provider (`TextStreamConfigurationSource`, `TextStreamConfigurationProvider`), the read-only TOML bridge (`TomlConfigurationExtensions`, `TomlConfigurationSource`, `TomlConfigurationProvider`), DI options helpers (`ConfigurationOptionsExtensions`). | [Introduction](../../docs/extensions-configuration-text/index.md) · [Core concepts](../../docs/extensions-configuration-text/concepts.md) · [Getting started](../../docs/extensions-configuration-text/getting-started.md) |
 
 ## Where to go next
 
