@@ -75,6 +75,10 @@ Three registration surfaces exist; pick the narrowest one that covers your need:
 
 `AddNumericsJsonConverters` returns the same `JsonSerializerOptions` instance for inline chaining. It throws `ArgumentNullException` for a null options instance, `ArgumentOutOfRangeException` for an undefined policy value, and `InvalidOperationException` when the options instance has already been used for (de)serialization and its `Converters` collection has become read-only — configure options before first use.
 
+## Trimming and AOT
+
+The instance helpers <xref:Bodu.Numerics.Fraction`1>.`ToJson()` and `Fraction<T>.FromJson(string)` call the reflection-based `JsonSerializer` directly and are annotated `[RequiresUnreferencedCode]` / `[RequiresDynamicCode]` — using them in a trimmed or native-AOT app produces the standard analyzer warnings. The converters themselves are reflection-free at the value level: `AddNumericsJsonConverters` registers the factory pair, and you point a source-generated `JsonSerializerContext` at your DTO so the trimmer can see the closed types. Prefer that path over `ToJson()` / `FromJson()` whenever trimming or AOT is in play.
+
 ## How the converters resolve the generic parameter
 
 `Fraction<T>` and `Interval<T>` are open generics, so the registered entries are *factories* (<xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory>, <xref:Bodu.Numerics.Serialization.IntervalJsonConverterFactory>) that bind the concrete `T` per request and produce the matching <xref:Bodu.Numerics.Serialization.FractionJsonConverter`1> / <xref:Bodu.Numerics.Serialization.IntervalJsonConverter`1>. You never instantiate the closed converters directly — register the factory (or rely on the type-level attribute) and serialize as normal.

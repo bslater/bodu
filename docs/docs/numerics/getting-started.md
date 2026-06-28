@@ -45,6 +45,20 @@ for (int i = 0; i < 360; i++) balance *= growth;     // exact 30-year amortizati
 
 Backed by `BigInteger`, intermediate results never overflow. Reach for `Fraction<BigInteger>` whenever a calculation chains several multiplications or divisions and you need a single, deferred rounding boundary.
 
+> [!TIP]
+> Three construction calls have defined failure modes worth knowing up front: `Create(n, 0)` throws <xref:System.DivideByZeroException>; a canonical result that does not fit a fixed-width `T` throws <xref:System.OverflowException>; and `FromDouble(double.NaN)` (or any non-finite `double`) throws <xref:System.ArgumentException>. Each has a non-throwing partner — `TryCreate`, `TryFromBigInteger`, `TryFromDouble`, `TryFromDecimal` — that reports the same condition with a `false` return.
+
+### Exact versus best-fit conversion from `double`
+
+`FromDouble` is exact in the IEEE-754 sense — it decomposes the `double`'s mantissa and exponent, so a value that looks "round" in base 10 can produce a fraction with an enormous denominator:
+
+```csharp
+Fraction<BigInteger>.FromDouble(0.1);
+// 3602879701896397/36028797018963968 — the exact bits of the double 0.1, not 1/10
+```
+
+When you want the *intended* rational rather than the bit-exact one, reach for `Approximate` with a denominator bound (below), which recovers `1/10` from `0.1`.
+
 ### Best rational approximation
 
 ```csharp
@@ -62,7 +76,7 @@ var seven_thirds = Fraction<int>.Create(7, 3);
 seven_thirds.ToString("G");   // "7/3"
 seven_thirds.ToString("M");   // "2 1/3"
 seven_thirds.ToString("U");   // "2⅓"
-seven_thirds.ToString("P");   // "233/1%" (percentage form)
+seven_thirds.ToString("P");   // "700/3%" (percentage = value × 100, re-reduced)
 
 Fraction<int>.Parse("2 1/3");                 // 7/3
 Fraction<int>.Parse("⅗");                     // 3/5
@@ -73,16 +87,21 @@ Fraction<int>.Parse("75%");                   // 3/4
 
 ### JSON
 
-`Fraction<T>` is decorated with `[JsonConverter(typeof(FractionJsonConverterFactory))]`, so `System.Text.Json` round-trips without extra wiring. The wire shape is the string form:
+`Fraction<T>` is decorated with `[JsonConverter(typeof(FractionJsonConverterFactory))]`, so `System.Text.Json` round-trips without extra wiring. The default (`Strict`) wire shape is the canonical object form; opt into the compact `"3/4"` string with `AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`:
 
 ```csharp
 using System.Text.Json;
 using Bodu.Numerics;
+using Bodu.Numerics.Serialization;
 
 string json = JsonSerializer.Serialize(Fraction<int>.Create(3, 4));
-// "3/4"
+// {"numerator":3,"denominator":4}
 
 Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json);
+
+// Compact policy — the single-string form.
+var compact = new JsonSerializerOptions().AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
+JsonSerializer.Serialize(Fraction<int>.Create(3, 4), compact);   // "3/4"
 ```
 
 ### Bounded intervals (`Interval<T>`)

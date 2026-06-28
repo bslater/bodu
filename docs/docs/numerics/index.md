@@ -19,7 +19,29 @@ title: Bodu.Numerics — Introduction
 | <xref:Bodu.Numerics.Fraction`1> | Immutable canonical rational over any `IBinaryInteger<T>` backing type. Auto-reduces to GCD-normalised form on construction, raises overflow to `BigInteger` precision internally, and implements the full `INumber<T>` / `ISignedNumber<T>` surface. |
 | <xref:Bodu.Numerics.Interval`1> | Immutable bounded interval over any `INumber<T>` endpoint type. Endpoint inclusivity is independent on each side so a single type expresses closed-closed, open-open, closed-open, and open-closed forms. |
 | <xref:Bodu.Numerics.Interval> | Non-generic helper class with factory methods (`Closed`, `Open`, `ClosedOpen`, `OpenClosed`) that infer the endpoint type from the arguments. |
-| <xref:Bodu.Numerics.Serialization.FractionJsonConverter`1>, <xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory> | `System.Text.Json` converters auto-registered via `[JsonConverter]` on `Fraction<T>` — wire shape is the string `"numerator/denominator"`. |
+| <xref:Bodu.Numerics.Serialization.FractionJsonConverter`1>, <xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory> | `System.Text.Json` converters auto-registered via `[JsonConverter]` on `Fraction<T>`. The attribute path defaults to the `Strict` object shape `{ "numerator": …, "denominator": … }`; the compact `"numerator/denominator"` string is opt-in via `AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`. |
+
+### `Bodu.Numerics.Serialization`
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Numerics.Serialization.NumericsJsonPolicy> | Selects the wire shape and read strictness for both converters — `Strict` (canonical object), `Lenient` (object + import aliases), or `Compact` (single string). |
+| <xref:Bodu.Numerics.Serialization.IntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.IntervalJsonConverterFactory> | `System.Text.Json` converters auto-registered via `[JsonConverter]` on `Interval<T>`. |
+| <xref:Bodu.Numerics.Serialization.NumericsJsonSerializerOptionsExtensions> | `AddNumericsJsonConverters(this JsonSerializerOptions, NumericsJsonPolicy)` — registers a coherent converter pair for both numeric types from one policy value. |
+
+### Interface surface
+
+Both value types are wide `readonly struct`s that opt into the relevant BCL contracts, so they substitute into generic-math, comparison, parsing, formatting, and span/UTF-8 pipelines without adapters.
+
+| Interface | `Fraction<T>` | `Interval<T>` | What it unlocks |
+|---|:---:|:---:|---|
+| <xref:System.Numerics.INumber`1> | ✓ | — | First-class number — `Sum`, `Aggregate`, any `INumber`-constrained algorithm. |
+| <xref:System.Numerics.ISignedNumber`1> | ✓ | — | `NegativeOne`, signed-only generic constraints. |
+| <xref:System.IEquatable`1> | ✓ | ✓ | Structural value equality; safe hash-set / dictionary keys. |
+| <xref:System.IComparable`1> / <xref:System.IComparable> | ✓ | — | Ordering, `OrderBy`, `SortedSet`. (`Interval<T>` is a set, not a scalar — it does not order.) |
+| <xref:System.IParsable`1> / <xref:System.ISpanParsable`1> | ✓ | ✓ | `Parse` / `TryParse` over `string` and `ReadOnlySpan<char>`. |
+| <xref:System.IUtf8SpanParsable`1> | ✓ | — | `Parse` directly from a UTF-8 byte span. |
+| <xref:System.IFormattable> / <xref:System.ISpanFormattable> / <xref:System.IUtf8SpanFormattable> | ✓ | ✓ | `ToString(format, provider)` plus allocation-free `TryFormat` into char and UTF-8 buffers. |
 
 ## Formatting and parsing
 
@@ -30,7 +52,10 @@ title: Bodu.Numerics — Introduction
 | `G` (default) | improper ratio | `7/3` |
 | `M` | mixed number | `2 1/3` |
 | `U` | Unicode vulgar fraction, mixed-number fallback | `2⅓` |
-| `P` | percentage | `233 1/3%` |
+| `P` | percentage | `700/3%` |
+
+> [!NOTE]
+> The `P` specifier scales the value by 100 and re-reduces, then renders the result as a *ratio* `numerator/denominator%` (or a bare `numerator%` when the scaled value is whole) — it does **not** switch to mixed-number form. So `7/3` formats as `700/3%`, `7/4` as `175%`, and `3/4` as `75%`. Specifiers are case-insensitive; any specifier other than `G`/`M`/`U`/`P` throws <xref:System.FormatException>.
 
 The `"U"` specifier emits one of the 18 Unicode "Number Forms" vulgar-fraction glyphs (`½`, `⅓`, `⅗`, `¾`, …) when one exists for the proper-fraction part, falling back to the mixed-number form otherwise. The parser accepts whole integers, ratios, mixed numbers, the glyph forms (including whole + glyph, `"2⅜"`), and percentage syntax:
 
@@ -68,13 +93,13 @@ Approximation complements the exact converters: `FromDouble` is exact in the IEE
 
 ## JSON serialization
 
-Both value types carry type-level `[JsonConverter]` attributes (<xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory>, <xref:Bodu.Numerics.Serialization.IntervalJsonConverterFactory>), so `System.Text.Json` round-trips them with the default options — no registration required. The fraction wire form is written and parsed under the invariant culture, so payloads remain stable regardless of the ambient culture:
+Both value types carry type-level `[JsonConverter]` attributes (<xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory>, <xref:Bodu.Numerics.Serialization.IntervalJsonConverterFactory>), so `System.Text.Json` round-trips them with the default options — no registration required. The attribute path defaults to the `Strict` policy, which emits the canonical object shape; each component is written as a *raw* JSON number under the invariant culture, so a `Fraction<BigInteger>` survives at any magnitude and payloads remain stable regardless of the ambient culture:
 
 ```csharp
 using System.Text.Json;
 
 string json = JsonSerializer.Serialize(Fraction<int>.Create(3, 4));
-// "3/4"
+// {"numerator":3,"denominator":4}
 
 Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json);
 ```
@@ -99,10 +124,18 @@ To select a different wire shape across a whole `JsonSerializerOptions` instance
 
 ## Design choices
 
-- **Canonical form on construction.** Every `Fraction<T>` is GCD-reduced with the sign on the numerator and the denominator strictly positive. There is no unreduced form, and `2/4` and `1/2` are indistinguishable after construction.
-- **`BigInteger` intermediates.** Arithmetic operations promote operands to `BigInteger`, evaluate exactly, then narrow back to `T`. Overflow on narrowing raises `OverflowException`. `Fraction<BigInteger>` eliminates the narrowing step entirely.
-- **One empty interval.** `Interval<T>` honours the mathematical fact that there is one empty set: any inverted-bounds or equal-bounds-with-open-endpoint interval compares equal to `Interval<T>.Empty` and shares its hash code.
+- **Canonical form on construction.** Every `Fraction<T>` is GCD-reduced with the sign on the numerator and the denominator strictly positive. There is no unreduced form, and `2/4` and `1/2` are indistinguishable after construction. The benefit is that equality, comparison, and hashing are all structural — `Equals` compares the stored components directly, `GetHashCode` combines them, and there is no separate "normalise then compare" step.
+- **`BigInteger` intermediates.** Arithmetic operations promote operands to `BigInteger`, evaluate exactly, reduce, then narrow back to `T`. The intermediate magnitude can exceed `T`'s range freely; only the final canonical components must fit. Overflow on narrowing raises `OverflowException` — never a silent wrap, saturation, or truncation. `Fraction<BigInteger>` eliminates the narrowing step entirely.
+- **No NaN, no infinity.** `Fraction<T>` models only the rationals: division by zero throws <xref:System.DivideByZeroException>, non-finite `double` input to `FromDouble` throws <xref:System.ArgumentException>, and the `INumber` predicates report this honestly — `IsNaN` and the `IsInfinity` family are always `false`, `IsFinite` and `IsRealNumber` always `true`. If you need IEEE 754 propagation semantics, stay with `double`.
+- **One empty interval.** `Interval<T>` honours the mathematical fact that there is one empty set: any inverted-bounds or equal-bounds-with-open-endpoint interval compares equal to `Interval<T>.Empty`, shares its hash code (zero), and reads identically through every set operation. `default(Interval<T>)` is therefore the empty interval, not a malformed value — a struct field that was never assigned is well-formed.
 - **Generic-math first.** Both types implement the relevant `INumber`-style interfaces so they slot into algorithms written against the generic-math abstractions without bespoke wrappers.
+
+## Cost and allocation model
+
+- **`Fraction<T>` is a wide `readonly struct`** holding two `T` components (the numerator and the canonical denominator). For a fixed-width `T` (`int`, `long`, `Int128`) the value lives entirely on the stack and copies by value — no heap traffic. `Fraction<BigInteger>` carries two `BigInteger`s, each of which heap-allocates for magnitudes beyond a machine word.
+- **Every arithmetic operation promotes to `BigInteger`** to evaluate exactly, so even `Fraction<int>` arithmetic allocates the transient `BigInteger` operands. Construction additionally runs one `BigInteger.GreatestCommonDivisor` (Euclidean, `O(log min(|n|, |d|))` divisions). This is the price of exactness; for hot inner loops over bounded `int` values where rounding is acceptable, plain `int` arithmetic is faster.
+- **`Interval<T>` stores two `T` endpoints plus a one-byte inclusivity flag.** Its operations — `Contains`, `Overlaps`, `Intersect`, `TryUnion` — are a handful of `T` comparisons and allocate nothing; the whole type is allocation-free over a fixed-width endpoint type.
+- **Formatting allocates a `string`; `TryFormat` does not.** The `ISpanFormattable` / `IUtf8SpanFormattable` surfaces let both types render into a caller-supplied `Span<char>` / `Span<byte>` without an intermediate `string`, and the span/UTF-8 parse surfaces read without allocating one.
 
 ## Where to go next
 

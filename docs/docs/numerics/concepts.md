@@ -44,6 +44,28 @@ The constraint is what unlocks `Fraction<BigInteger>` as a first-class backing �
 
 <xref:Bodu.Numerics.Interval`1> uses the lighter <xref:System.Numerics.INumber`1> constraint on its endpoint type so non-integer endpoints (`double`, `decimal`, fixed-point types) are accepted.
 
+## `INumber` classification predicates
+
+Implementing <xref:System.Numerics.INumberBase`1> obliges `Fraction<T>` to answer the full battery of static classification predicates — and because a rational is always a finite real, most have constant answers:
+
+| Predicate | Result for `Fraction<T>` | Why |
+|---|---|---|
+| `IsNaN`, `IsInfinity`, `IsPositiveInfinity`, `IsNegativeInfinity`, `IsSubnormal`, `IsComplexNumber`, `IsImaginaryNumber` | always `false` | A rational has no non-finite, subnormal, or complex states; division by zero throws rather than yielding a non-finite value. |
+| `IsFinite`, `IsRealNumber` | always `true` | Every representable value is a finite real. |
+| `IsNormal` | `true` unless zero | Mirrors the floating-point convention that zero is not "normal". |
+| `IsCanonical` | always `true` | The type maintains canonical form as an invariant. |
+| `IsInteger`, `IsEvenInteger`, `IsOddInteger`, `IsZero`, `IsNegative`, `IsPositive` | value-dependent | Computed from the canonical components. |
+| `Radix` | `2` | Inherited from the binary-integer backing component. |
+
+The practical consequence is that an `INumber`-generic algorithm guarding on `TSelf.IsFinite(x)` or `TSelf.IsNaN(x)` behaves correctly over `Fraction<T>` without special-casing — the guards simply never trip the non-finite paths.
+
+## Cross-type conversion (`CreateChecked` / `CreateSaturating` / `CreateTruncating`)
+
+The `INumberBase<TSelf>.TryConvertFrom*` / `TryConvertTo*` hooks let `Fraction<T>` participate in `TSelf.CreateChecked<TOther>(value)`-style generic conversions:
+
+- **From another numeric type:** integer and `decimal` sources convert *exactly*; any other finite source converts through its nearest `double` and then to the exact rational of that `double` (so `Create*<Fraction<int>>(0.1)` yields the rational of the IEEE-754 `double` `0.1`, not `1/10`). Non-finite sources fail the conversion. The *checked* path raises <xref:System.OverflowException> when the result does not fit `T`; the *saturating* path clamps to `MinValue` / `MaxValue` instead; the *truncating* path shares the saturating clamp.
+- **To another numeric type:** an integer-valued fraction converts from its exact numerator; a non-integer fraction converts through `ToDecimal` (checked, for `decimal` targets) or `ToDouble` (otherwise). The checked / saturating / truncating distinction is forwarded to the destination type's own `Create*`.
+
 ## Mixed-number formatting
 
 A **mixed number** is the `whole + proper-fraction` form — `2 1/3` instead of the improper ratio `7/3`. <xref:Bodu.Numerics.Fraction`1>.`ToString("M")` produces this representation, with the sign on the whole part and the fractional part suppressed when zero. The improper-ratio form is the default (`G` specifier).
@@ -165,6 +187,9 @@ outer.Contains(Interval<int>.Empty);                  // True — ∅ ⊆ every 
 `Intersect(other)` returns the interval of shared values; when the operands share none, the result is `Empty`. On endpoint ties, the **stricter** (open) inclusivity wins so the result is a true subset of both.
 
 `TryUnion(other, out result)` succeeds when the union is itself a single contiguous interval — that is, when the operands either overlap or are *adjacent*. Two intervals are **adjacent** when one's upper endpoint equals the other's lower endpoint and at least one of those endpoints is inclusive. On endpoint ties in the union, the **looser** (closed) inclusivity wins. When the operands are disjoint with a true gap, `TryUnion` returns `false` rather than synthesising a two-piece union.
+
+> [!NOTE]
+> The two tie-break rules are duals chosen to keep each operation total and exact. On an endpoint tie, `Intersect` keeps the **stricter** (open) side so the result is a genuine *subset* of both operands (`AND` of the inclusivity flags); `TryUnion` keeps the **looser** (closed) side so the result is a genuine *superset* of both (`OR` of the flags). This is why `[1, 5] ∩ (1, 5) = (1, 5)` while `[1, 5] ∪ (1, 5) = [1, 5]`.
 
 ```csharp
 var a = Interval<int>.Closed(1, 5);
