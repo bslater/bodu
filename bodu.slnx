@@ -101,6 +101,10 @@
     <Project Path="Bodu.Financial.ExchangeRates.Rba/src/Bodu.Financial.ExchangeRates.Rba.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Rba/test/Bodu.Financial.ExchangeRates.Rba.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Xe/">
+    <Project Path="Bodu.Financial.ExchangeRates.Xe/src/Bodu.Financial.ExchangeRates.Xe.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Xe/test/Bodu.Financial.ExchangeRates.Xe.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Yahoo/">
     <Project Path="Bodu.Financial.ExchangeRates.Yahoo/src/Bodu.Financial.ExchangeRates.Yahoo.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Yahoo/test/Bodu.Financial.ExchangeRates.Yahoo.Test.csproj" />

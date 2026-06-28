@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — XE Exchange Rates</Title>
+    <Description>XE.com exchange-rate provider for Bodu.Financial. Fetches and parses the XE charting-rates JSON service and serves the results as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API over arbitrary currency pairs. The authorization token required by the endpoint is acquired automatically from the XE website. Includes the dependency-injection registration extensions (AddXeExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>
+    <PackageTags>$(PackageTags);financial;xe;exchange-rate;forex;fx;rest;json;dependency-injection;options</PackageTags>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Financial.ExchangeRates.Xe.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- External package dependencies. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="Financial.ExchangeRates\XeResourceStrings.resx">
+      <LastGenOutput>XeResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="Financial.ExchangeRates\XeResourceStrings.Designer.cs">
+      <DependentUpon>XeResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>
