@@ -160,11 +160,11 @@ internal static class Program
 
         outputDirectory = output!;
 
-        // A directory argument is expanded to its top-level *.json children for convenience.
+        // A directory argument is expanded to every *.json file beneath it, recursing into subfolders.
         foreach (string input in inputs)
         {
             if (Directory.Exists(input))
-                inputFiles.AddRange(Directory.EnumerateFiles(input, "*.json", SearchOption.TopDirectoryOnly));
+                inputFiles.AddRange(Directory.EnumerateFiles(input, "*.json", SearchOption.AllDirectories));
             else
                 inputFiles.Add(input);
         }

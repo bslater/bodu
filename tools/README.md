@@ -24,7 +24,8 @@ dotnet run --project tools/ExchangeRateDataImporter -- \
 - `--as-of <iso8601>` (optional) — the import instant stamped as each row's
   `CachedAtUtc` and the coverage window's `FetchedAtUtc`; defaults to now. The
   source carries no timestamps, so `ObservedAtUtc` is left unset.
-- A directory argument is expanded to its top-level `*.json` children.
+- A directory argument is expanded recursively to every `*.json` file beneath it,
+  including subfolders.
 
 The resulting directory can be pointed at a `TomlFileExchangeRateCache` /
 `CachingExchangeRateProvider` (or aggregated across providers via
