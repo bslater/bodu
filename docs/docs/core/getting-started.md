@@ -74,6 +74,55 @@ WeekPattern allDays  = weekdays | weekend;
 bool monday = weekdays.Contains(DayOfWeek.Monday); // true
 ```
 
+`WeekPattern` is an immutable `readonly struct`, so `With` / `Without` and the `|`, `&`, `^`, `~` operators each return a new value. Presets `WeekPattern.Empty`, `WeekPattern.Weekdays`, and `WeekPattern.Weekend` cover the common cases.
+
+### Sequenced dictionary (`SequencedDictionary<TKey, TValue>`)
+
+An insertion- (or access-) ordered map with O(1) access to and removal of either end — the .NET analogue of Java's `LinkedHashMap`:
+
+```csharp
+using Bodu.Collections.Generic;
+
+var lru = new SequencedDictionary<string, byte[]>(accessOrder: true);
+
+lru["a"] = LoadFromDisk("a");
+_ = lru.TryGetValue("a", out _);   // access-order: moves "a" to the most-recent end
+
+// Trim the least-recently-used entry in O(1).
+if (lru.Count > 100)
+    lru.TryRemoveFirst(out _);
+```
+
+### Indexed priority queue (`IndexedPriorityQueue<TElement, TPriority>`)
+
+A min-heap that supports O(log n) priority updates by element identity — the shape Dijkstra and A* need:
+
+```csharp
+using Bodu.Collections.Generic;
+
+var pq = new IndexedPriorityQueue<string, double>();
+pq.Enqueue("source", 0);
+pq.EnqueueOrUpdate("a", 7);    // add, or update if already queued
+pq.EnqueueOrUpdate("a", 3);    // O(log n) decrease-key, no duplicate
+
+var (element, priority) = pq.Dequeue();   // ("source", 0) — smallest priority first
+```
+
+### Pooled buffer (`PooledBufferBuilder<T>`)
+
+An `ArrayPool<T>`-backed `IBufferWriter<T>` for assembling a span without per-append allocation:
+
+```csharp
+using Bodu.Buffers;
+
+using var builder = new PooledBufferBuilder<byte>(initialCapacity: 256);
+builder.Append((byte)'{');
+builder.AppendRange("\"ok\":true"u8);
+builder.Append((byte)'}');
+
+byte[] json = builder.ToArrayAndDispose();   // snapshot, then return the rental
+```
+
 ### Date arithmetic (`DateTimeExtensions`)
 
 ```csharp
@@ -81,11 +130,13 @@ using Bodu.Extensions;
 
 DateTime today = DateTime.Today;
 
-DateTime startOfWeek    = today.GetFirstDateOfWeek(DayOfWeek.Monday);
-DateTime nextFriday     = today.NextOccurrence(DayOfWeek.Friday);
-DateTime endOfQuarter   = today.LastDateOfQuarter();
-int isoWeek             = today.IsoWeekOfYear;
+DateTime startOfWeek  = today.FirstDateOfWeek();                 // culture's first day of the current week
+DateTime nextFriday   = today.NextDateOfWeek(DayOfWeek.Friday);  // strictly after today
+DateTime endOfQuarter = today.LastDateOfQuarter();              // calendar Q-end
+int isoWeek           = today.IsoWeekOfYear();                  // ISO 8601 week number (method, not property)
 ```
+
+`FirstDateOfWeek` has overloads taking a `CultureInfo` or a <xref:Bodu.WorkingDaysOfWeek> preset; `LastDateOfQuarter` accepts a <xref:Bodu.Extensions.CalendarQuarterDefinition> (e.g. `AprilToMarch`, `April6ToApril5` for the UK tax year) so the same call covers fiscal calendars. The `DateOnly` equivalents live on <xref:Bodu.Extensions.DateOnlyExtensions>, which adds an `Age` calculation.
 
 ### Centralized argument validation (`ThrowHelper`)
 

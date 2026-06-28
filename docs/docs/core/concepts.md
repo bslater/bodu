@@ -28,7 +28,9 @@ A **ring-backed** collection stores its elements in a single contiguous array wi
 
 <xref:Bodu.Collections.Generic.RingBackedCollection`1> is the shared abstract base. It owns the storage, the wrap arithmetic, the structural-version counter that powers fail-fast enumeration, and the protected primitives (`AddTail`, `AddHead`, `RemoveHead`, `RemoveTail`, `PeekHead`, `PeekTail`, `Resize`) that the concrete types build on. <xref:Bodu.Collections.Generic.CircularBuffer`1> layers a single-ended FIFO surface on top; <xref:Bodu.Collections.Generic.Deque`1> layers a double-ended surface. Both share enumeration, copy, indexer, and trim behaviour through the base.
 
-Derived types skip capacity and emptiness checks on the protected mutators — the public surface enforces those contracts before calling — so the hot path stays branch-free.
+Derived types skip capacity and emptiness checks on the protected mutators — the public surface enforces those contracts before calling — so the hot path stays branch-free. Because elements are never shifted, every add, remove, and peek is O(1), and the head-relative indexer `this[i]` is an O(1) random read (index `0` is the oldest element).
+
+Enumeration over the ring-backed types is **fail-fast**: the base owns a structural-version counter that every mutator bumps, and the `struct` enumerator captures that token at creation. A structural change while an enumerator is live — including `Clear` and `TrimExcess` — makes the next `MoveNext` (or `Reset`) throw <xref:System.InvalidOperationException>. This is the BCL collection contract; the concurrent peer, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, deliberately drops it in favour of snapshot enumeration that never throws.
 
 ## Bounded vs. growing
 
@@ -52,7 +54,12 @@ An <xref:Bodu.Collections.Generic.EvictingDictionary`2> is bounded by a capacity
 | `RandomReplacement` | A uniformly randomly chosen entry. |
 | `SecondChance` | A FIFO scan that skips entries flagged as recently accessed (the flag clears on skip), evicting the first unflagged entry. |
 
-All policies share the same `IDictionary<TKey, TValue>` surface and the same overflow trigger; the policy only changes the selection.
+All policies share the same `IDictionary<TKey, TValue>` surface and the same overflow trigger; the policy only changes the selection. `SecondChance` is the *clock* algorithm — a low-overhead LRU approximation that swaps the per-access list-splice for a single reference bit — and `MostRecentlyUsed` is the scan-resistant inverse of LRU, evicting the just-touched entry to preserve the older working set.
+
+Two `Action<TKey, TValue>` events bracket each eviction — `ItemEvicting` (before) and `ItemEvicted` (after) — so a backing store can be flushed or a resource counter decremented as entries leave. Handlers must not mutate the dictionary; a re-entrant `Add`, `Remove`, `Clear`, or indexer set from inside a handler throws <xref:System.InvalidOperationException>. `PeekEvictionCandidate()` reports the next victim without disturbing the policy metadata, and the running `EvictionCount` / `TotalTouches` totals support cache-effectiveness telemetry.
+
+> [!NOTE]
+> A successful read through the `this[key]` getter or `TryGetValue` **counts as an access** and updates the recency / frequency metadata for LRU, MRU, LFU, and SecondChance — so even concurrent read-read is unsafe without external synchronisation. `ContainsKey` and `PeekEvictionCandidate` are pure reads. `Add(key, value)` is add-*or-replace* and does not throw on a duplicate key (there is no `TryAdd` / `GetOrAdd`).
 
 ## WeekPattern
 
