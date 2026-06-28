@@ -44,10 +44,13 @@ The `BinaryEncodings` static class exposes thread-safe singleton instances for e
 | `BinaryEncodings.Base64` | `Base64.Encode(bytes, Base64Variant.Standard)` |
 | `BinaryEncodings.Base64UrlSafe` | `Base64.Encode(bytes, Base64Variant.UrlSafe)` |
 | `BinaryEncodings.Base64Mime` | `Base64.Encode(bytes, Base64Variant.Mime)` |
+| `BinaryEncodings.Base45` | `Base45.Encode(bytes)` |
 | `BinaryEncodings.Base58` | `Base58.Encode(bytes, Base58Variant.BitcoinFlickr)` |
 | `BinaryEncodings.Base58Ripple` | `Base58.Encode(bytes, Base58Variant.Ripple)` |
+| `BinaryEncodings.Base62` | `Base62.Encode(bytes)` |
 | `BinaryEncodings.Ascii85` | `Base85.Encode(bytes, Base85Variant.Ascii85)` |
 | `BinaryEncodings.Z85` | `Base85.Encode(bytes, Base85Variant.Z85)` |
+| `BinaryEncodings.Base85Git` | `Base85.Encode(bytes, Base85Variant.GitCompact)` |
 
 ```csharp
 using Bodu.Text.Encoding;
@@ -74,9 +77,12 @@ names include canonical forms and common aliases:
 | `base64` | — |
 | `base64-urlsafe` | `base64url` |
 | `base64-mime` | — |
+| `base45` | — |
 | `base58` | `base58-bitcoin`, `base58-flickr` |
 | `base58-ripple` | — |
+| `base62` | — |
 | `ascii85` | `base85` |
+| `base85-git` | `git-base85`, `b85` |
 | `z85` | — |
 
 ```csharp

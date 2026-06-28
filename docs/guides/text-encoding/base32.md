@@ -100,9 +100,34 @@ byte[]  back       = Base32.Decode(withoutPad, Base32Variant.Standard, BaseForma
 | `BaseFormatStyles.IgnoreWhitespace` | Strip ASCII space, tab, CR, LF (handy for line-wrapped output) |
 | `BaseFormatStyles.AllowMissingPadding` | Accept inputs that omit the trailing `=` characters |
 | `BaseFormatStyles.AllowPrefix` | No-op for Base32 (no standard prefix) |
+| `BaseFormatStyles.RequireCanonicalEncoding` | **Tightens** the decoder — rejects a terminal symbol with non-zero unused bits |
 
 `BaseFormattingOptions.InsertLineBreaks` is supported on encode and wraps at 64 characters — the same convention
 as Base16.
+
+### Canonical form and the 5-byte quantum
+
+Base32 repeats a **5-byte → 8-character** quantum (40 bits = lcm of the 8-bit byte and the 5-bit symbol). A
+partial tail does not fill every bit of its final symbol — a 1-byte tail leaves 2 unused bits, a 2-byte tail
+leaves 4, and so on — and RFC 4648 §3.5 lets a decoder accept the result whatever those leftover bits are. Two
+encoded strings that differ only in those unused trailing bits therefore decode to the *same* bytes. By default
+the decoder tolerates the non-canonical form; `RequireCanonicalEncoding` rejects it, so every byte sequence has a
+single accepted spelling:
+
+```csharp
+byte[] bytes = { 0xDE, 0xAD };
+
+string canonical = Base32.Encode(bytes, Base32Variant.Standard);   // the one form the encoder ever emits
+Base32.Decode(canonical, Base32Variant.Standard);                  // ok
+
+// A hand-edited tail whose unused bits are non-zero still decodes to { 0xDE, 0xAD } by default …
+Base32.Decode(canonical, Base32Variant.Standard,
+    BaseFormatStyles.RequireCanonicalEncoding);                    // … but is rejected under canonical enforcement
+```
+
+Pass `RequireCanonicalEncoding` when each byte sequence must have exactly one accepted spelling — content-addressed
+keys, deduplication, or a value that feeds a signature. The flag is a no-op for the leftover-bit-free families
+(Base16) and the non-bit-stream families (Base58, Base85).
 
 ## Span and UTF-8 paths
 
@@ -139,6 +164,22 @@ Base32.GetEncodedLength(20);                  // 32 (5-byte groups → 8-char gr
 Base32.GetEncodedLength(20, Base32Variant.Crockford); // 32 (still 32 chars without padding fits)
 Base32.GetMaxDecodedLength(32);               // 20
 ```
+
+## Encoding a GUID
+
+`Base32` encodes a <xref:System.Guid> into a 26-character (padless) or 32-character (padded) token — denser than
+hex and case-insensitive, so it survives shouting down a phone line in Crockford form:
+
+```csharp
+Guid id = Guid.NewGuid();
+
+string token = Base32.Encode(id, Base32Variant.Crockford);    // 26 chars, no padding, no I/L/O/U ambiguity
+Guid back    = Base32.DecodeGuid(token, Base32Variant.Crockford);
+bool ok      = Base32.TryDecodeGuid(token, out Guid parsed, Base32Variant.Crockford);
+```
+
+The 16 GUID bytes are written in their native mixed-endian layout (matching `Guid.TryWriteBytes`), so the round
+trip is exact for whichever variant you encode and decode with.
 
 ## Common patterns
 

@@ -86,13 +86,17 @@ byte[] headerBytes = Base64.Decode(
 
 ### The dedicated `Base64Url` helper
 
-When URL-safe is *all* you need, <xref:Bodu.Text.Encoding.Base64Url> is a focused static class — RFC 4648 §5, unpadded — that skips the variant argument entirely. It offers `string`, span, and UTF-8 surfaces with `Encode` / `Decode` / `EncodeToUtf8` and `GetEncodedLength`:
+When URL-safe is *all* you need, <xref:Bodu.Text.Encoding.Base64Url> is a focused static class — RFC 4648 §5, unpadded — that skips the variant argument entirely. It offers `string`, span (`char` and UTF-8 `byte`) surfaces with `Encode` / `Decode` / `EncodeToUtf8`, the non-throwing `TryEncode` / `TryEncodeToUtf8` / `TryDecode`, the `IsValid` predicate, and the `GetEncodedLength` / `GetMaxDecodedLength` sizing pair:
 
 ```csharp
-string token = Base64Url.Encode(payload);              // unpadded URL-safe
-byte[] back  = Base64Url.Decode(token);                // string or ReadOnlySpan<char>
-byte[] utf8  = Base64Url.EncodeToUtf8(payload);        // straight to UTF-8 bytes
+string token = Base64Url.Encode(payload);                       // unpadded URL-safe
+byte[] back  = Base64Url.Decode(token);                         // string, ReadOnlySpan<char>, or UTF-8 ReadOnlySpan<byte>
+byte[] utf8  = Base64Url.EncodeToUtf8(payload);                 // straight to UTF-8 bytes
 int   length = Base64Url.GetEncodedLength(payload.Length);
+
+Span<char> buffer = stackalloc char[length];
+if (Base64Url.TryEncode(payload, buffer, out int written)) { … } // zero-allocation
+bool valid = Base64Url.IsValid(token);
 ```
 
 Reach for `Base64.Encode(..., Base64Variant.UrlSafe, ...)` when you need the full formatting-options surface (padding control, lenient styles); reach for `Base64Url` when you just want canonical unpadded URL-safe Base64.
@@ -122,6 +126,22 @@ contains whitespace.
 | `BaseFormatStyles.IgnoreWhitespace` | Strip ASCII space / tab / CR / LF anywhere |
 | `BaseFormatStyles.AllowMissingPadding` | Accept inputs without trailing `=` |
 | `BaseFormatStyles.AllowPrefix` | No-op for Base64 (no standard prefix) |
+| `BaseFormatStyles.RequireCanonicalEncoding` | **Tightens** the decoder — rejects a two- or three-character tail whose unused bits are non-zero |
+
+### Canonical form and the 3-byte quantum
+
+Base64's quantum is **3 bytes → 4 characters** (24 bits). A two-byte tail leaves 2 unused bits in its last symbol
+and a one-byte tail leaves 4 — RFC 4648 §3.5 lets the decoder accept any value for those bits, so non-canonical
+encodings exist. `RequireCanonicalEncoding` rejects them, giving each byte sequence a single accepted spelling:
+
+```csharp
+Base64.Decode("QQ==", Base64Variant.Standard);                                       // ok — { 0x41 }
+Base64.Decode("QR==", Base64Variant.Standard);                                       // ok by default — same byte, non-canonical
+Base64.Decode("QR==", Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding); // FormatException
+```
+
+Reach for it on inputs that are compared, deduplicated, or fed to a signature, where two spellings of the same
+bytes would be a bug.
 
 ## Span and UTF-8 paths
 
@@ -151,6 +171,22 @@ Base64.GetEncodedLength(6, Base64Variant.Standard);     // 8 (padded)
 Base64.GetEncodedLength(6, Base64Variant.UrlSafe);      // 8 (no padding needed for 6 bytes)
 Base64.GetMaxDecodedLength(8);                           // 6
 ```
+
+## Encoding a GUID
+
+`Base64` encodes a <xref:System.Guid> into a 24-character padded (or 22-character unpadded URL-safe) token — the
+densest of the core families for a 16-byte value:
+
+```csharp
+Guid id = Guid.NewGuid();
+
+string token = Base64.Encode(id, Base64Variant.UrlSafe);     // 22 chars, URL-safe, unpadded
+Guid back    = Base64.DecodeGuid(token, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
+bool ok      = Base64.TryDecodeGuid(token, out Guid parsed, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
+```
+
+The 16 bytes use the GUID's native mixed-endian layout (matching `Guid.TryWriteBytes`), so the round trip is exact
+for the variant and styles you encode and decode with.
 
 ## Common patterns
 

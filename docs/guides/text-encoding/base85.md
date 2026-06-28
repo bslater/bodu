@@ -184,8 +184,35 @@ int written = Base85.Encode(data, buffer);
 ReadOnlySpan<char> result = buffer.AsSpan(0, written);
 ```
 
+`GetMaxEncodedLength(int)` is an upper bound because the Ascii85 `z` shortcut compresses a four-zero group to one
+character, so the *actual* Ascii85 output can be shorter than the worst case. When you need the exact length, pass
+the data span to the `GetEncodedLength(ReadOnlySpan<byte>, …)` overload, which scans for `z`-eligible groups:
+
+```csharp
+Base85.GetMaxEncodedLength(8, Base85Variant.Ascii85);                 // worst case (no shortcuts)
+Base85.GetEncodedLength(new byte[8], Base85Variant.Ascii85);          // exact — counts the two 'z' shortcuts
+Base85.GetEncodedLength(data, Base85Variant.Z85);                     // exact — Z85 has no shortcut, so equals the bound
+```
+
 Like Base58, Base85 is not streamable: the `EncodeToUtf8` / `DecodeFromUtf8` overloads exist for API consistency
 with the other encodings but treat the input as a single block.
+
+## Encoding a GUID
+
+`Base85` encodes a <xref:System.Guid> directly. A 16-byte value is a whole number of 4-byte groups, so Ascii85
+emits 20 characters with no partial-group tail:
+
+```csharp
+Guid id = Guid.NewGuid();
+
+string token = Base85.Encode(id);                       // 20 Ascii85 characters
+Guid back    = Base85.DecodeGuid(token);                // FormatException unless it decodes to 16 bytes
+bool ok      = Base85.TryDecodeGuid(token, out Guid parsed);
+```
+
+The bytes use the GUID's native mixed-endian layout (matching `Guid.TryWriteBytes`). A GUID whose bytes happen to
+contain a four-zero group encodes with a `z` shortcut, so the token can be shorter than 20 characters and still
+round-trips exactly.
 
 ## Validation and sizing
 
