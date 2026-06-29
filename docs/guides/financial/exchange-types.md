@@ -29,6 +29,7 @@ behaviour, see [Working with exchange rates](exchange-rates.md) and
 | A dated lookup with audit metadata | [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider) + [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider) | contract + impl |
 | A primary feed with fallbacks | [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider) | aggregator (caching package) |
 | To expose a dated source as timeless | [`DatedExchangeRateProviderAdapter`](xref:Bodu.Financial.DatedExchangeRateProviderAdapter) | adapter |
+| How far back a provider serves rates | [`ExchangeRateHistoryAvailability`](xref:Bodu.Financial.ExchangeRateHistoryAvailability) | value (readonly record struct) |
 | The rules applied on a date miss | [`ExchangeRateLookupOptions`](xref:Bodu.Financial.ExchangeRateLookupOptions) | options |
 | The outcome of a dated lookup | [`ExchangeRateLookupResult`](xref:Bodu.Financial.ExchangeRateLookupResult) | value (record struct) |
 | A converted amount + its rate provenance | [`MoneyConversionResult<,>`](xref:Bodu.Financial.MoneyConversionResult`2) | value (record struct) |
@@ -236,6 +237,20 @@ consumer — such as `MoneyBag.ConvertTo<TTarget>(IExchangeRateProvider)`
 — accepts only the timeless contract but the rates must come from a
 dated source resolved with one consistent policy (a reporting-period
 end-date, say).
+
+### `ExchangeRateHistoryAvailability` — how deep a provider's history goes
+
+[`ExchangeRateHistoryAvailability`](xref:Bodu.Financial.ExchangeRateHistoryAvailability)
+is a small immutable value a provider exposes through
+[`WebExchangeRateProvider.HistoryAvailability`](xref:Bodu.Financial.WebExchangeRateProvider.HistoryAvailability)
+to declare how far back it can serve rates, in one of three shapes (the
+[`ExchangeRateHistoryAvailabilityKind`](xref:Bodu.Financial.ExchangeRateHistoryAvailabilityKind)):
+`Unbounded` (no known floor), `Since(earliest)` (a fixed inception date),
+or `RollingDays(n)` (only the most recent *n* days — for example OANDA's
+anonymous endpoint exposes roughly the last 180). **Reach for it** to find
+the earliest date worth requesting before a lookup: `GetEarliestAvailable(asOf)`
+resolves the floor against a reference date (`null` when unbounded), and
+`IsAvailable(date, asOf)` reports whether a given date falls within it.
 
 ## Lookup configuration and outcome
 
