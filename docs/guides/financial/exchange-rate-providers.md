@@ -4,7 +4,7 @@ title: Built-in exchange-rate providers
 
 # Built-in exchange-rate providers
 
-Bodu ships five exchange-rate providers, one per published source. Each is a thin
+Bodu ships seven exchange-rate providers, one per published source. Each is a thin
 **fetcher** that downloads and parses its source and serves the result through the
 same [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider)
 and timeless [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)
@@ -22,10 +22,12 @@ caching; that is added in front (see the caching guide).
 | Bank of England | `Bodu.Financial.ExchangeRates.Boe` | GBP | CSV over a date **window** | `AddBoeReferenceRates()` |
 | Yahoo Finance | `Bodu.Financial.ExchangeRates.Yahoo` | *any pair* | per-**ticker** chart JSON | `AddYahooExchangeRates()` |
 | OFX (ofx.com) | `Bodu.Financial.ExchangeRates.Ofx` | *any pair* | per-**pair** spot-rate-history JSON | `AddOfxExchangeRates()` |
+| XE.com | `Bodu.Financial.ExchangeRates.Xe` | *any pair* | per-**pair** charting-rates JSON | `AddXeExchangeRates()` |
+| OANDA | `Bodu.Financial.ExchangeRates.Oanda` | *any pair* | per-**pair** rate-history JSON | `AddOandaExchangeRates()` |
 
 RBA, ECB, and BoE quote one base currency against many others; direct (`BASE→X`)
-and inverse (`X→BASE`) lookups are supported, cross pairs are not. Yahoo and OFX
-fetch a distinct series per pair, so they serve arbitrary pairs directly.
+and inverse (`X→BASE`) lookups are supported, cross pairs are not. Yahoo, OFX, XE,
+and OANDA fetch a distinct series per pair, so they serve arbitrary pairs directly.
 
 ## What every provider shares
 
@@ -193,6 +195,49 @@ await ofx.LoadPairAsync("USD", "AUD", new DateOnly(2023, 1, 1), new DateOnly(202
 ExchangeRateLookupResult aud = ofx.GetRate("USD", "AUD", new DateOnly(2023, 1, 3));
 ```
 
+## XE.com (any pair)
+
+[`XeExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.XeExchangeRateProvider)
+fetches the XE.com charting-rates JSON service per currency pair, so like Yahoo and
+OFX it serves arbitrary pairs rather than one base currency. Warm a pair over a
+window with `LoadPairAsync`. The authorization token the endpoint requires is
+acquired automatically from the XE website, so no API key or manual setup is needed.
+Options are
+[`XeExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.XeExchangeRateOptions).
+
+```csharp
+using Bodu.Financial.ExchangeRates;
+
+using var xe = new XeExchangeRateProvider(new XeExchangeRateOptions());
+await xe.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+ExchangeRateLookupResult usd = xe.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+```
+
+## OANDA (any pair)
+
+[`OandaExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.OandaExchangeRateProvider)
+fetches the OANDA Historical Currency Converter rate-history JSON service per
+currency pair, so like Yahoo and OFX it serves arbitrary pairs rather than one base
+currency. Warm a pair over a window with `LoadPairAsync`. Options are
+[`OandaExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.OandaExchangeRateOptions).
+
+The anonymous endpoint serves only a rolling recent window — roughly the last 180
+days — so a request for an earlier start date returns just what the feed publishes.
+The provider advertises this through
+[`HistoryAvailability`](xref:Bodu.Financial.WebExchangeRateProvider.HistoryAvailability),
+so a caller can resolve the earliest date worth requesting before issuing a lookup.
+
+```csharp
+using Bodu.Financial.ExchangeRates;
+
+using var oanda = new OandaExchangeRateProvider(new OandaExchangeRateOptions());
+var today = DateOnly.FromDateTime(DateTime.UtcNow);
+await oanda.LoadPairAsync("AUD", "USD", today.AddDays(-30), today);
+
+ExchangeRateLookupResult usd = oanda.GetRate("AUD", "USD", today.AddDays(-1));
+```
+
 ## Registering a provider with dependency injection
 
 Each provider package ships its own DI registration — there is no separate
@@ -213,7 +258,8 @@ services.AddFinancialService()
         .AddRbaHistoricalRates(builder.Configuration)    // section Financial:Rba
         .AddEcbReferenceRates(builder.Configuration);     // section Financial:Ecb
 
-// AddBoeReferenceRates() and AddYahooExchangeRates() register the other two.
+// AddBoeReferenceRates(), AddYahooExchangeRates(), AddOfxExchangeRates(),
+// AddXeExchangeRates(), and AddOandaExchangeRates() register the others.
 ```
 
 ## Adding caching in front
@@ -244,7 +290,8 @@ fallback or averaging strategy, group them with the
 | Official AUD rates with deep history | RBA |
 | Official EUR reference rates | ECB |
 | Official GBP spot rates | BoE |
-| An arbitrary pair not quoted by a central bank | Yahoo or OFX |
+| An arbitrary pair not quoted by a central bank | Yahoo, OFX, XE, or OANDA |
+| Recent rates for an arbitrary pair (rolling ~180-day window) | OANDA |
 | One pair from several sources, with fallback or an average | the [aggregator](exchange-rate-caching.md) over any mix |
 
 ## See also
@@ -258,4 +305,6 @@ fallback or averaging strategy, group them with the
   [`EcbExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.EcbExchangeRateProvider),
   [`BoeExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.BoeExchangeRateProvider),
   [`YahooExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.YahooExchangeRateProvider),
-  [`OfxExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.OfxExchangeRateProvider)
+  [`OfxExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.OfxExchangeRateProvider),
+  [`XeExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.XeExchangeRateProvider),
+  [`OandaExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.OandaExchangeRateProvider)
