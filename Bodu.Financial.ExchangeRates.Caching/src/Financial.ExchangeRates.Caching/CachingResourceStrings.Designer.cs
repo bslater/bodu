@@ -194,5 +194,23 @@ namespace Bodu.Financial.ExchangeRates.Caching {
                 return ResourceManager.GetString("Arg_Invalid_ProviderBlank", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The file cache layout must not be null..
+        /// </summary>
+        internal static string Arg_Invalid_LayoutNull {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_LayoutNull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A partitioned layout stores a pair across multiple files; use ResolveDirectory or ResolvePartitionPath instead of ResolveFilePath..
+        /// </summary>
+        internal static string Op_Invalid_PartitionedNoSingleFile {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PartitionedNoSingleFile", resourceCulture);
+            }
+        }
     }
 }

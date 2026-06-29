@@ -14,18 +14,28 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// miss.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Use this to add read-through caching to one rate source. To group several cached sources behind a single entry point
 /// — with priority-fallback, averaging, or per-pair routing — compose them with an
 /// <see cref="AggregatingExchangeRateProvider" />.
+/// </para>
+/// <para>
+/// The provider is storage-agnostic: it does not choose or construct a cache, so the storage structure — TOML or JSON
+/// files, the on-disk layout and date partitioning, an in-memory cache, SQLite, or a distributed cache — is the
+/// caller's decision. Supply any <see cref="IExchangeRateCache" />, already bound to its provider, to the constructor.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Wrap the RBA source with read-through caching backed by a TOML file cache under /var/cache/fx/RBA.
-/// var options = new CachingExchangeRateOptions { CacheDirectory = "/var/cache/fx" };
-/// IDatedExchangeRateProvider cachedRba = new CachingExchangeRateProvider("RBA", rba, options);
+/// var options = new CachingExchangeRateOptions { DefaultExpiry = TimeSpan.FromHours(12) };
 ///
-/// // Or supply any IExchangeRateCache (for example an in-memory cache) explicitly.
+/// // Read-through caching over a TOML file cache (the caller picks the storage).
+/// var fileCache = new TomlFileExchangeRateCache(
+///     new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
+/// IDatedExchangeRateProvider cachedRba = new CachingExchangeRateProvider(rba, fileCache, options);
+///
+/// // Or any other IExchangeRateCache — for example an in-memory cache.
 /// IDatedExchangeRateProvider cachedEcb = new CachingExchangeRateProvider(ecb, new InMemoryExchangeRateCache("ECB"), options);
 ///]]>
 /// </code>
@@ -73,61 +83,6 @@ public sealed class CachingExchangeRateProvider
         _inner = inner;
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CachingExchangeRateProvider" /> class wrapping
-    /// <paramref name="inner" /> over a new <see cref="TomlFileExchangeRateCache" /> bound to
-    /// <paramref name="providerName" /> and configured from <paramref name="options" />.
-    /// </summary>
-    /// <param name="providerName">The name the inner provider's rates are cached under.</param>
-    /// <param name="inner">The inner provider consulted on a cache miss.</param>
-    /// <param name="options">The options carrying the cache location, caching durations, and lookup options.</param>
-    /// <param name="timeProvider">
-    /// The time source used to evaluate freshness and stamp newly cached rows. <see langword="null" /> selects
-    /// <see cref="TimeProvider.System" />.
-    /// </param>
-    /// <param name="logger">
-    /// The logger that records cache diagnostics, or <see langword="null" /> to disable logging.
-    /// </param>
-    /// <param name="ownsInner">
-    /// <see langword="true" /> to dispose <paramref name="inner" /> (when it is <see cref="IDisposable" />) as part of
-    /// disposing this provider; otherwise <see langword="false" /> to leave the inner's lifetime to its owner.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="inner" /> or <paramref name="options" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="providerName" /> is empty or white space, or when <paramref name="options" /> fails
-    /// validation.
-    /// </exception>
-    public CachingExchangeRateProvider(
-        string providerName,
-        IDatedExchangeRateProvider inner,
-        CachingExchangeRateOptions options,
-        TimeProvider? timeProvider = null,
-        ILogger? logger = null,
-        bool ownsInner = false)
-        : this(inner, CreateFileCache(providerName, options), options, timeProvider, logger, ownsInner)
-    {
-    }
-
     /// <inheritdoc />
     protected override IDatedExchangeRateProvider Inner => _inner;
-
-    /// <summary>
-    /// Builds a TOML file cache bound to a provider name from the supplied options.
-    /// </summary>
-    /// <param name="providerName">The provider name the cache is bound to.</param>
-    /// <param name="options">The options carrying the cache directory.</param>
-    /// <returns>A new <see cref="TomlFileExchangeRateCache" />.</returns>
-    private static TomlFileExchangeRateCache CreateFileCache(string providerName, CachingExchangeRateOptions options)
-    {
-        ThrowHelper.ThrowIfNull(options);
-        ThrowHelper.ThrowIfNullOrWhiteSpace(providerName);
-
-        return new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions
-        {
-            Provider = providerName,
-            CacheDirectory = options.CacheDirectory,
-        });
-    }
 }

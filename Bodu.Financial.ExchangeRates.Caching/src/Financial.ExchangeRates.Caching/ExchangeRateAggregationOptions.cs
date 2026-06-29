@@ -20,9 +20,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <code language="csharp">
 ///<![CDATA[
 /// var options = new ExchangeRateAggregationOptions();
-/// options.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
-/// options.Routes[new ExchangeRatePair("USD", "GBP")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
-/// options.Routes[new ExchangeRatePair("EUR", "USD")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
+/// options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
+/// options.Routes[new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+/// options.Routes[new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
 ///]]>
 /// </code>
 /// </example>

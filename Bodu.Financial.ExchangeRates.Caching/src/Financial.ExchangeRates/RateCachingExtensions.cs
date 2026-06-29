@@ -39,6 +39,12 @@ public static class RateCachingExtensions
     /// The configuration section name. Defaults to <c>Financial:ExchangeRateCache</c>.
     /// </param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
+    /// <param name="cacheFactory">
+    /// An optional factory producing the <see cref="IExchangeRateCache" /> from the service provider and the provider
+    /// name. When <see langword="null" />, a default <see cref="TomlFileExchangeRateCache" /> bound to
+    /// <paramref name="providerName" /> under the options' <c>CacheDirectory</c> is used. Supply a factory to choose
+    /// the storage structure — for example a JSON cache, a partitioned file layout, or a SQLite or distributed cache.
+    /// </param>
     /// <returns>The builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="builder" /> is <see langword="null" />.
@@ -70,7 +76,8 @@ public static class RateCachingExtensions
         string providerName,
         IConfiguration? configuration = null,
         string sectionName = DefaultCacheSection,
-        Action<CachingExchangeRateOptions>? configure = null)
+        Action<CachingExchangeRateOptions>? configure = null,
+        Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = null)
         where TProvider : class, IDatedExchangeRateProvider
     {
         ThrowHelper.ThrowIfNull(builder);
@@ -82,7 +89,7 @@ public static class RateCachingExtensions
 
         services.TryAddSingleton<TProvider>();
         services.AddSingleton(serviceProvider =>
-            CreateCachingProvider(serviceProvider, providerName, serviceProvider.GetRequiredService<TProvider>()));
+            CreateCachingProvider(serviceProvider, providerName, serviceProvider.GetRequiredService<TProvider>(), cacheFactory));
         services.AddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<CachingExchangeRateProvider>());
         services.AddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<CachingExchangeRateProvider>());
 
@@ -120,8 +127,8 @@ public static class RateCachingExtensions
     ///         .AddAggregatedExchangeRateProvider(agg => agg
     ///             .AddCachedChild<RbaExchangeRateProvider>("RBA")
     ///             .AddCachedChild<EcbExchangeRateProvider>("ECB")
-    ///             .MapPair(new ExchangeRatePair("AUD", "USD"), "RBA", "ECB")
-    ///             .MapPair(new ExchangeRatePair("USD", "GBP"), "ECB", "RBA"));
+    ///             .MapPair(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "RBA", "ECB")
+    ///             .MapPair(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP), "ECB", "RBA"));
     ///
     /// // Resolve the aggregate, or a specific source by name:
     /// var aggregate = provider.GetRequiredService<IDatedExchangeRateProvider>();
@@ -147,17 +154,18 @@ public static class RateCachingExtensions
         BindCacheOptions(services, configuration, sectionName, configureCache);
 
         // Register each child keyed by name so a specific cached source is resolvable through the service catalog.
-        foreach (KeyValuePair<string, Func<IServiceProvider, IDatedExchangeRateProvider>> child in aggregateBuilder.Children)
+        foreach ((string Name, Func<IServiceProvider, IDatedExchangeRateProvider> Factory, Func<IServiceProvider, string, IExchangeRateCache>? CacheFactory) child in aggregateBuilder.Children)
         {
-            Func<IServiceProvider, IDatedExchangeRateProvider> factory = child.Value;
+            Func<IServiceProvider, IDatedExchangeRateProvider> factory = child.Factory;
+            Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = child.CacheFactory;
             services.TryAddKeyedSingleton<IDatedExchangeRateProvider>(
-                child.Key,
-                (serviceProvider, key) => CreateCachingProvider(serviceProvider, (string)key!, factory(serviceProvider)));
+                child.Name,
+                (serviceProvider, key) => CreateCachingProvider(serviceProvider, (string)key!, factory(serviceProvider), cacheFactory));
         }
 
         string[] childNames = new string[aggregateBuilder.Children.Count];
         for (int i = 0; i < childNames.Length; i++)
-            childNames[i] = aggregateBuilder.Children[i].Key;
+            childNames[i] = aggregateBuilder.Children[i].Name;
 
         IReadOnlyList<(ExchangeRatePair Pair, string[] ProviderOrder, IExchangeRateAggregationStrategy? Strategy)> routes = aggregateBuilder.Routes;
         IExchangeRateAggregationStrategy? defaultStrategy = aggregateBuilder.DefaultStrategy;
@@ -215,18 +223,45 @@ public static class RateCachingExtensions
     }
 
     /// <summary>
-    /// Builds a caching provider that wraps <paramref name="inner" /> under <paramref name="name" /> using the shared
-    /// cache options and ambient time provider and logger.
+    /// Builds a caching provider that wraps <paramref name="inner" /> under <paramref name="name" /> over the cache the
+    /// <paramref name="cacheFactory" /> produces (or a default file cache), using the shared cache options and ambient
+    /// time provider and logger.
     /// </summary>
     /// <param name="serviceProvider">The service provider to resolve dependencies from.</param>
     /// <param name="name">The name the source is cached under.</param>
     /// <param name="inner">The source provider to wrap.</param>
+    /// <param name="cacheFactory">
+    /// An optional factory producing the cache; when <see langword="null" />, a default file cache is built.
+    /// </param>
     /// <returns>A new <see cref="CachingExchangeRateProvider" />.</returns>
-    private static CachingExchangeRateProvider CreateCachingProvider(IServiceProvider serviceProvider, string name, IDatedExchangeRateProvider inner) =>
-        new(
-            name,
+    private static CachingExchangeRateProvider CreateCachingProvider(
+        IServiceProvider serviceProvider,
+        string name,
+        IDatedExchangeRateProvider inner,
+        Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory)
+    {
+        CachingExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<CachingExchangeRateOptions>>().Value;
+        IExchangeRateCache cache = cacheFactory?.Invoke(serviceProvider, name) ?? CreateDefaultCache(name, options);
+
+        return new CachingExchangeRateProvider(
             inner,
-            serviceProvider.GetRequiredService<IOptions<CachingExchangeRateOptions>>().Value,
+            cache,
+            options,
             serviceProvider.GetService<TimeProvider>(),
             serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<CachingExchangeRateProvider>());
+    }
+
+    /// <summary>
+    /// Builds the default cache for a named source: a <see cref="TomlFileExchangeRateCache" /> bound to
+    /// <paramref name="name" /> under the options' cache directory.
+    /// </summary>
+    /// <param name="name">The provider name the cache is bound to.</param>
+    /// <param name="options">The shared cache options carrying the cache directory.</param>
+    /// <returns>A new default <see cref="IExchangeRateCache" />.</returns>
+    private static IExchangeRateCache CreateDefaultCache(string name, CachingExchangeRateOptions options) =>
+        new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions
+        {
+            Provider = name,
+            CacheDirectory = options.CacheDirectory,
+        });
 }

@@ -174,6 +174,27 @@ public sealed partial class RateCachingExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that a supplied <c>cacheFactory</c> chooses the storage, writing a JSON file rather than the default
+    /// TOML file.
+    /// </summary>
+    [TestMethod]
+    public void AddCachedExchangeRateProvider_WhenCacheFactoryProvided_ShouldUseChosenCache()
+    {
+        ServiceProvider provider = BuildProvider(builder =>
+            builder.AddCachedExchangeRateProvider<StubRbaProvider>(
+                "RBA",
+                configure: o => o.CacheDirectory = _directory,
+                cacheFactory: (_, name) => new JsonFileExchangeRateCache(
+                    new FileExchangeRateCacheOptions { Provider = name, CacheDirectory = _directory })));
+        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
+
+        _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+
+        Assert.IsTrue(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.json")), "the supplied JSON cache is used");
+        Assert.IsFalse(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.toml")), "the default TOML cache is not used");
+    }
+
+    /// <summary>
     /// Builds a service provider after applying the supplied registration against a fresh financial builder.
     /// </summary>
     /// <param name="register">The registration callback.</param>

@@ -38,7 +38,9 @@ providers, or compose them as above.
   owns expiry: callers pass a duration, and the cache returns only fresh rows and
   prunes stale ones on write. Shipped stores are
   [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache)
-  (on disk), [`InMemoryExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache),
+  and [`JsonFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.JsonFileExchangeRateCache)
+  (on disk, with a configurable [layout and date partitioning](#file-layouts-and-date-partitioning)),
+  [`InMemoryExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache),
   and the no-op [`NullExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache).
 - **Options** — [`CachingExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateOptions)
   carries the cache **location** (`CacheDirectory`), the **default expiry**
@@ -54,31 +56,26 @@ providers, or compose them as above.
 
 ## Caching one provider
 
-`CachingExchangeRateProvider` caches exactly one source. The convenience
-constructor builds a TOML file cache for you from the options; the provider name
-is the subdirectory the source's files land under.
+`CachingExchangeRateProvider` caches exactly one source. It is **storage-agnostic**:
+it never chooses or constructs a cache, so you supply the
+[`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache)
+— and therefore the storage structure (TOML or JSON files, the on-disk layout and
+partitioning, in-memory, SQLite, or distributed) — at the composition root. The
+provider classes never learn they are being cached.
 
 ```csharp
-using Bodu.Financial;
-using Bodu.Financial.ExchangeRates.Caching;
-
 var options = new CachingExchangeRateOptions
 {
-    CacheDirectory = "/var/cache/fx",       // null/blank → a bodu-exchange-rates temp folder
     DefaultExpiry = TimeSpan.FromHours(12),
 };
 options.ProviderExpiry["RBA"] = TimeSpan.FromDays(7);   // RBA publishes daily; cache longer
 
-// Wrap the RBA source. Cache files land under /var/cache/fx/RBA/.
-IDatedExchangeRateProvider cachedRba = new CachingExchangeRateProvider("RBA", rba, options);
-```
+// Pick the cache explicitly. Cache files land under /var/cache/fx/RBA/.
+var rbaCache = new TomlFileExchangeRateCache(
+    new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
+IDatedExchangeRateProvider cachedRba = new CachingExchangeRateProvider(rba, rbaCache, options);
 
-The provider name lives at the composition root — the provider classes never learn
-they are being cached. A second constructor accepts an explicit
-[`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache),
-so you can choose the in-memory store or supply your own:
-
-```csharp
+// Or any other IExchangeRateCache — for example the in-memory store.
 IDatedExchangeRateProvider cachedEcb =
     new CachingExchangeRateProvider(ecb, new InMemoryExchangeRateCache("ECB"), options);
 ```
@@ -91,7 +88,10 @@ own `HttpClient`):
 
 ```csharp
 using var cached = new CachingExchangeRateProvider(
-    "RBA", new RbaExchangeRateProvider(rbaOptions), options, ownsInner: true);
+    new RbaExchangeRateProvider(rbaOptions),
+    new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }),
+    options,
+    ownsInner: true);
 ```
 
 The decorator also implements the timeless surface, which resolves the current UTC
@@ -165,17 +165,25 @@ The cache is deliberately layered so you can plug in at whichever level fits:
 |---|---|---|
 | Contract | [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache) | Single-provider store: a bound `Provider`; rate rows via `GetRates`/`Store`, fetch coverage via `GetCoverage`/`RecordCoverage`, and the atomic `StoreFetchedRange` that writes both together. |
 | Core | [`ExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase`1) | Per-pair locking + row/coverage freshness filtering, merge, and prune. **No physical layout.** |
-| File seam | [`IFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IFileExchangeRateCache) / [`FileExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1) | Directory + per-pair file-name resolution, best-effort IO. |
-| Leaf | [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache) | The TOML serialization format only. |
+| File seam | [`IFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IFileExchangeRateCache) / [`FileExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1) | Layout-driven directory + file-name resolution, date partitioning, best-effort IO. |
+| Leaf | [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache) / [`JsonFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.JsonFileExchangeRateCache) | The TOML or JSON serialization format only. |
 
-### The on-disk TOML format
+### The on-disk format
 
 A cache bound to provider `RBA` stores `AUD/USD` as `<directory>/RBA/AUDUSD.toml`
-— a per-provider subdirectory with one file per pair. Each dated rate is a TOML
-table; the `decimal` rate is written as a **quoted string** so its full precision
-and scale round-trip exactly, and the dates use TOML's native RFC 3339 forms:
+— a per-provider subdirectory with one file per pair (this default layout, and how
+to change it, is covered under [File layouts and date partitioning](#file-layouts-and-date-partitioning)).
+Each file opens with a **self-describing header** — the bound `Provider` and the
+pair's `From`/`To` currency codes — so a file carries its own identity rather than
+relying on its name and folder. Each dated rate is then a TOML table; the `decimal`
+rate is written as a **quoted string** so its full precision and scale round-trip
+exactly, and the dates use TOML's native RFC 3339 forms:
 
 ```toml
+Provider = "RBA"
+From = "AUD"
+To = "USD"
+
 [[Entries]]
 Date = 2023-01-03
 Rate = "0.5000"
@@ -188,10 +196,11 @@ CachedAtUtc = 2023-01-04T09:15:00+00:00
 ```
 
 The serializer is [`Bodu.Text.Toml`](xref:Bodu.Text.Toml.TomlSerializer) with
-`TomlDecimalHandling.String`. The file is **best-effort**: any I/O or TOML error
-on read yields an empty result, and a failed write is swallowed, so a cache
-problem never breaks rate retrieval. You can use a cache directly — note there is
-no provider argument; the cache is bound to its provider at construction:
+`TomlDecimalHandling.String`. A file written before the header existed simply has
+no `Provider`/`From`/`To` keys and still reads. The file is **best-effort**: any
+I/O or TOML error on read yields an empty result, and a failed write is swallowed,
+so a cache problem never breaks rate retrieval. You can use a cache directly — note
+there is no provider argument; the cache is bound to its provider at construction:
 
 <!-- compile -->
 ```csharp
@@ -206,6 +215,96 @@ cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD),
 IReadOnlyList<CachedExchangeRate> fresh =
     cache.GetRates(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now);
 ```
+
+### The JSON format
+
+[`JsonFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.JsonFileExchangeRateCache)
+is the same cache with a JSON body instead of TOML — same `.json` files, same
+self-describing header, same layouts and partitioning, same best-effort IO. It is
+a drop-in swap when you want a format other tools read natively; decimals are
+written as JSON numbers, which `System.Text.Json` round-trips losslessly to
+`decimal`:
+
+```json
+{
+  "Provider": "RBA",
+  "From": "AUD",
+  "To": "USD",
+  "Entries": [
+    { "Date": "2023-01-03", "Rate": 0.5000, "CachedAtUtc": "2023-01-04T09:15:00+00:00" }
+  ],
+  "Coverage": []
+}
+```
+
+<!-- compile -->
+```csharp
+var cache = new JsonFileExchangeRateCache(
+    new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
+```
+
+### File layouts and date partitioning
+
+The [`Layout`](xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheOptions.Layout)
+option decides **where** a pair's rows are stored: the folder hierarchy, the file
+name, and whether the rows are **split across files by date**. It defaults to
+[`ExchangeRateCacheFileLayout.SingleFile`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheFileLayout)
+— the `<directory>/<provider>/<from><to>.toml` layout shown above. The built-in
+partitioned layouts isolate each pair in its own folder and write one file per
+calendar period, keyed by the period:
+
+| Layout | Files for `AUD/USD` under provider `RBA` |
+|---|---|
+| `SingleFile` (default) | `RBA/AUDUSD.toml` |
+| `Yearly` | `RBA/AUDUSD/2023.toml`, `RBA/AUDUSD/2024.toml`, … |
+| `Monthly` | `RBA/AUDUSD/2023-01.toml`, `RBA/AUDUSD/2023-02.toml`, … |
+| `Daily` | `RBA/AUDUSD/2023-01-03.toml`, … |
+
+Each rate is routed to the file for its observation date, and a recorded coverage
+window that crosses a period boundary is split at the boundary so each file carries
+only its own period; a read concatenates every file in the pair's folder and the
+shared cache rules re-merge the halves, so the split is lossless.
+
+<!-- compile -->
+```csharp
+// One file per month for each pair.
+var monthly = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions
+{
+    Provider = "RBA",
+    CacheDirectory = "/var/cache/fx",
+    Layout = ExchangeRateCacheFileLayout.Monthly,
+});
+```
+
+For a layout the built-ins do not cover, build one with
+[`ExchangeRateCacheFileLayout.Create`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheFileLayout.Create):
+supply a partition strategy (one of `Single`/`Yearly`/`Monthly`/`Daily`, or
+[`ExchangeRateCachePartitionStrategy.Custom`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCachePartitionStrategy.Custom)
+for an arbitrary period such as fiscal quarters) and optional delegates that decide
+the directory and the file name:
+
+<!-- compile -->
+```csharp
+var custom = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions
+{
+    Provider = "RBA",
+    CacheDirectory = "/var/cache/fx",
+    Layout = ExchangeRateCacheFileLayout.Create(
+        ExchangeRateCachePartitionStrategy.Yearly,
+        directory: ctx => System.IO.Path.Combine(ctx.Root, "fx", ctx.Provider, $"{ctx.Pair.From}{ctx.Pair.To}"),
+        fileName: ctx => $"{ctx.PartitionKey}{ctx.FileExtension}"),
+});
+```
+
+A partitioned layout has no single backing file, so `ResolveFilePath` throws for it;
+use `ResolveDirectory(pair)` for the pair's folder or `ResolvePartitionPath(pair, date)`
+for the file a given date lands in. `CachingExchangeRateProvider` takes whatever
+`IExchangeRateCache` you hand it, so a custom layout, the JSON format, or a SQLite or
+distributed cache is simply the cache you construct and pass to its
+`(inner, cache, options)` constructor. Under dependency injection, pass a
+`cacheFactory` to `AddCachedExchangeRateProvider` (or `AddCachedChild`) to choose the
+storage; when omitted, a default single-file TOML cache under the options'
+`CacheDirectory` is used.
 
 ### Custom cache stores
 
@@ -224,7 +323,7 @@ without its rows.
 
 The in-box [`ExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase`1)
 and [`FileExchangeRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1)
-are internal scaffolding for the in-memory and TOML caches — they own the per-pair
+are internal scaffolding for the in-memory, TOML, and JSON caches — they own the per-pair
 locking and the read-modify-write sequencing over a `CachePairState` — and their
 storage seam is not a public subclassing point. Implement `IExchangeRateCache`
 directly, as the SQLite and distributed backends do.
@@ -265,7 +364,7 @@ The choice is one of reach and durability:
 |---|---|---|---|
 | [`NullExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache) | tests / disabling the cache | any reuse | stores nothing; every lookup is a miss |
 | [`InMemoryExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache) | a single, long-lived process | restarts; multiple processes | process-local; lost on restart |
-| [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache) | simple durable local cache | high multi-process write concurrency | atomic temp-and-move per file; best-effort |
+| [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache) / [`JsonFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.JsonFileExchangeRateCache) | simple durable local cache; inspectable files | high multi-process write concurrency | atomic temp-and-move per file; best-effort |
 | [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache) | durable single-host cache | a cache shared across hosts | strongest shipped local option; one transaction per write |
 | [`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache) | a warm cache shared across processes/hosts | an authoritative multi-writer store | last-write-wins per pair across processes |
 
@@ -281,7 +380,7 @@ the shared
 so they differ only in *where the bytes live* and *how a concurrent write is
 ordered* — never in what counts as a hit.
 
-| | `Null` | `InMemory` | `TomlFile` | `Sqlite` | `Distributed` |
+| | `Null` | `InMemory` | `TomlFile` / `JsonFile` | `Sqlite` | `Distributed` |
 |---|---|---|---|---|---|
 | Package | core | core | core | `.Caching.Sqlite` | `.Caching.Distributed` |
 | Scope | none | one process | one host | one host | many hosts |
@@ -309,10 +408,13 @@ or neither, so a reader never sees coverage without its rows and reports a false
 range hit. Each backend honours that differently:
 
 - [`InMemoryExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache)
-  and [`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache)
-  serialize per-pair writes under an in-process lock; the file cache additionally
-  writes through a temp-and-move so a half-written file is never observed. Two
-  *processes* writing the same `AUDUSD.toml` are last-write-wins.
+  and the file caches ([`TomlFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache)
+  and [`JsonFileExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.JsonFileExchangeRateCache))
+  serialize per-pair writes under an in-process lock; the file caches additionally
+  write each file through a temp-and-move so a half-written file is never observed.
+  Two *processes* writing the same file (for example `AUDUSD.toml`) are
+  last-write-wins; under a partitioned layout each per-period file is written that
+  same atomic way.
 - [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache)
   wraps each `StoreFetchedRange` in a single transaction over its `rates` and
   `coverage` tables, so the all-or-nothing guarantee holds even when several
@@ -344,8 +446,10 @@ through a strategy. Build the children (typically each wrapped in its own cache)
 then group them:
 
 ```csharp
-var rba = new CachingExchangeRateProvider("RBA", rbaSource, options);
-var ecb = new CachingExchangeRateProvider("ECB", ecbSource, options);
+var rba = new CachingExchangeRateProvider(
+    rbaSource, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }), options);
+var ecb = new CachingExchangeRateProvider(
+    ecbSource, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "ECB", CacheDirectory = "/var/cache/fx" }), options);
 
 IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
     new[]
@@ -478,3 +582,5 @@ var rbaOnly = provider.GetRequiredKeyedService<IDatedExchangeRateProvider>("RBA"
 - [`CachingExchangeRateProvider` API reference](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider)
 - [`AggregatingExchangeRateProvider` API reference](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
 - [`TomlFileExchangeRateCache` API reference](xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache)
+- [`JsonFileExchangeRateCache` API reference](xref:Bodu.Financial.ExchangeRates.Caching.JsonFileExchangeRateCache)
+- [`ExchangeRateCacheFileLayout` API reference](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheFileLayout)

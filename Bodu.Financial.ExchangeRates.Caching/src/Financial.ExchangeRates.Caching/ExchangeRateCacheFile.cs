@@ -14,6 +14,35 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed class ExchangeRateCacheFile
 {
     /// <summary>
+    /// Gets or sets the name of the provider whose rates the file holds.
+    /// </summary>
+    /// <value>
+    /// The provider identifier, or <see langword="null" /> in a file written before this field was recorded.
+    /// </value>
+    /// <remarks>
+    /// Recorded as a top-level key so a file identifies its own provider and currency pair, rather than relying solely
+    /// on the file name and directory layout. A cache file written before these keys were recorded simply has none of
+    /// them and deserializes them to <see langword="null" />, so older caches remain readable.
+    /// </remarks>
+    public string? Provider { get; set; }
+
+    /// <summary>
+    /// Gets or sets the source currency of the pair the file holds.
+    /// </summary>
+    /// <value>
+    /// The source currency code, or <see langword="null" /> in a file written before this field was recorded.
+    /// </value>
+    public string? From { get; set; }
+
+    /// <summary>
+    /// Gets or sets the destination currency of the pair the file holds.
+    /// </summary>
+    /// <value>
+    /// The destination currency code, or <see langword="null" /> in a file written before this field was recorded.
+    /// </value>
+    public string? To { get; set; }
+
+    /// <summary>
     /// Gets or sets the cached rate rows, serialized as a TOML array of tables.
     /// </summary>
     /// <value>The cached rate rows.</value>
