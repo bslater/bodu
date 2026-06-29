@@ -35,9 +35,15 @@ public interface IAggregatedExchangeRateBuilder
     /// </summary>
     /// <typeparam name="TProvider">The concrete provider type to resolve and cache.</typeparam>
     /// <param name="name">The name the child is referenced and cached under.</param>
+    /// <param name="cacheFactory">
+    /// An optional factory producing the child's <see cref="IExchangeRateCache" /> from the service provider and the
+    /// child name. When <see langword="null" />, the registration's default cache is used.
+    /// </param>
     /// <returns>The same builder, for chaining.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is empty or white space.</exception>
-    IAggregatedExchangeRateBuilder AddCachedChild<TProvider>(string name)
+    IAggregatedExchangeRateBuilder AddCachedChild<TProvider>(
+        string name,
+        Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = null)
         where TProvider : class, IDatedExchangeRateProvider;
 
     /// <summary>
@@ -45,12 +51,19 @@ public interface IAggregatedExchangeRateBuilder
     /// </summary>
     /// <param name="name">The name the child is referenced and cached under.</param>
     /// <param name="factory">A factory that resolves the child source from the service provider.</param>
+    /// <param name="cacheFactory">
+    /// An optional factory producing the child's <see cref="IExchangeRateCache" /> from the service provider and the
+    /// child name. When <see langword="null" />, the registration's default cache is used.
+    /// </param>
     /// <returns>The same builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="factory" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is empty or white space.</exception>
-    IAggregatedExchangeRateBuilder AddCachedChild(string name, Func<IServiceProvider, IDatedExchangeRateProvider> factory);
+    IAggregatedExchangeRateBuilder AddCachedChild(
+        string name,
+        Func<IServiceProvider, IDatedExchangeRateProvider> factory,
+        Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = null);
 
     /// <summary>
     /// Sets the strategy applied to pairs without a route-specific strategy.

@@ -56,31 +56,26 @@ providers, or compose them as above.
 
 ## Caching one provider
 
-`CachingExchangeRateProvider` caches exactly one source. The convenience
-constructor builds a TOML file cache for you from the options; the provider name
-is the subdirectory the source's files land under.
+`CachingExchangeRateProvider` caches exactly one source. It is **storage-agnostic**:
+it never chooses or constructs a cache, so you supply the
+[`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache)
+— and therefore the storage structure (TOML or JSON files, the on-disk layout and
+partitioning, in-memory, SQLite, or distributed) — at the composition root. The
+provider classes never learn they are being cached.
 
 ```csharp
-using Bodu.Financial;
-using Bodu.Financial.ExchangeRates.Caching;
-
 var options = new CachingExchangeRateOptions
 {
-    CacheDirectory = "/var/cache/fx",       // null/blank → a bodu-exchange-rates temp folder
     DefaultExpiry = TimeSpan.FromHours(12),
 };
 options.ProviderExpiry["RBA"] = TimeSpan.FromDays(7);   // RBA publishes daily; cache longer
 
-// Wrap the RBA source. Cache files land under /var/cache/fx/RBA/.
-IDatedExchangeRateProvider cachedRba = new CachingExchangeRateProvider("RBA", rba, options);
-```
+// Pick the cache explicitly. Cache files land under /var/cache/fx/RBA/.
+var rbaCache = new TomlFileExchangeRateCache(
+    new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
+IDatedExchangeRateProvider cachedRba = new CachingExchangeRateProvider(rba, rbaCache, options);
 
-The provider name lives at the composition root — the provider classes never learn
-they are being cached. A second constructor accepts an explicit
-[`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache),
-so you can choose the in-memory store or supply your own:
-
-```csharp
+// Or any other IExchangeRateCache — for example the in-memory store.
 IDatedExchangeRateProvider cachedEcb =
     new CachingExchangeRateProvider(ecb, new InMemoryExchangeRateCache("ECB"), options);
 ```
@@ -93,7 +88,10 @@ own `HttpClient`):
 
 ```csharp
 using var cached = new CachingExchangeRateProvider(
-    "RBA", new RbaExchangeRateProvider(rbaOptions), options, ownsInner: true);
+    new RbaExchangeRateProvider(rbaOptions),
+    new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }),
+    options,
+    ownsInner: true);
 ```
 
 The decorator also implements the timeless surface, which resolves the current UTC
@@ -300,11 +298,13 @@ var custom = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions
 
 A partitioned layout has no single backing file, so `ResolveFilePath` throws for it;
 use `ResolveDirectory(pair)` for the pair's folder or `ResolvePartitionPath(pair, date)`
-for the file a given date lands in. The convenience
-`CachingExchangeRateProvider("RBA", inner, options)` constructor uses the default
-single-file TOML layout; to use a custom layout or the JSON format, construct the
-file cache yourself and pass it to the
-`CachingExchangeRateProvider(inner, cache, options)` constructor.
+for the file a given date lands in. `CachingExchangeRateProvider` takes whatever
+`IExchangeRateCache` you hand it, so a custom layout, the JSON format, or a SQLite or
+distributed cache is simply the cache you construct and pass to its
+`(inner, cache, options)` constructor. Under dependency injection, pass a
+`cacheFactory` to `AddCachedExchangeRateProvider` (or `AddCachedChild`) to choose the
+storage; when omitted, a default single-file TOML cache under the options'
+`CacheDirectory` is used.
 
 ### Custom cache stores
 
@@ -446,8 +446,10 @@ through a strategy. Build the children (typically each wrapped in its own cache)
 then group them:
 
 ```csharp
-var rba = new CachingExchangeRateProvider("RBA", rbaSource, options);
-var ecb = new CachingExchangeRateProvider("ECB", ecbSource, options);
+var rba = new CachingExchangeRateProvider(
+    rbaSource, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }), options);
+var ecb = new CachingExchangeRateProvider(
+    ecbSource, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "ECB", CacheDirectory = "/var/cache/fx" }), options);
 
 IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
     new[]

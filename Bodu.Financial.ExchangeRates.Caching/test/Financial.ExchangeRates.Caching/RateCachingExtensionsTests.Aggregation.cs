@@ -71,6 +71,27 @@ public sealed partial class RateCachingExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that a per-child <c>cacheFactory</c> chooses that child's storage, writing a JSON file for the child
+    /// that supplied the factory.
+    /// </summary>
+    [TestMethod]
+    public void AddAggregatedExchangeRateProvider_WhenChildCacheFactoryProvided_ShouldUseChosenCache()
+    {
+        ServiceProvider provider = BuildProvider(builder =>
+            builder.AddAggregatedExchangeRateProvider(
+                agg => agg
+                    .AddCachedChild("RBA", _ => Fixed("RBA", 0.50m), (_, name) => new JsonFileExchangeRateCache(
+                        new FileExchangeRateCacheOptions { Provider = name, CacheDirectory = _directory }))
+                    .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m)),
+                configureCache: o => o.CacheDirectory = _directory));
+
+        IDatedExchangeRateProvider rba = provider.GetRequiredKeyedService<IDatedExchangeRateProvider>("RBA");
+        _ = rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+
+        Assert.IsTrue(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.json")), "the RBA child uses its supplied JSON cache");
+    }
+
+    /// <summary>
     /// Verifies that a per-pair route configured through the builder is honoured, overriding the child order.
     /// </summary>
     [TestMethod]

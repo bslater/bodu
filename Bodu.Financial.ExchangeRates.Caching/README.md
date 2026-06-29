@@ -92,8 +92,11 @@ through a pluggable `IExchangeRateAggregationStrategy`, with optional **per-FX-p
 - `TryGetProvider(name, out provider)` resolves a specific child directly.
 
 ```csharp
-var rba = new CachingExchangeRateProvider("RBA", rbaSource, options);
-var ecb = new CachingExchangeRateProvider("ECB", ecbSource, options);
+// The caching provider is storage-agnostic — you supply the IExchangeRateCache.
+var rba = new CachingExchangeRateProvider(
+    rbaSource, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }), options);
+var ecb = new CachingExchangeRateProvider(
+    ecbSource, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "ECB", CacheDirectory = "/var/cache/fx" }), options);
 
 var agg = new ExchangeRateAggregationOptions();
 agg.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });

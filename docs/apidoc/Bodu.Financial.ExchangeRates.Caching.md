@@ -73,9 +73,11 @@ var options = new CachingExchangeRateOptions
 };
 options.ProviderExpiry["RBA"] = TimeSpan.FromDays(7);
 
-// One cache per provider.
-var rbaCached = new CachingExchangeRateProvider("RBA", rba, options);
-var ecbCached = new CachingExchangeRateProvider("ECB", ecb, options);
+// One cache per provider — the provider is storage-agnostic, so you pick the cache.
+var rbaCached = new CachingExchangeRateProvider(
+    rba, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }), options);
+var ecbCached = new CachingExchangeRateProvider(
+    ecb, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "ECB", CacheDirectory = "/var/cache/fx" }), options);
 
 // Group them with per-FX-pair routing.
 var aggregation = new ExchangeRateAggregationOptions();

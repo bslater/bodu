@@ -15,8 +15,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 internal sealed class AggregatedExchangeRateBuilder
     : IAggregatedExchangeRateBuilder
 {
-    /// <summary>The accumulated named child factories, in insertion order.</summary>
-    private readonly List<KeyValuePair<string, Func<IServiceProvider, IDatedExchangeRateProvider>>> _children = new();
+    /// <summary>The accumulated named children, in insertion order: a source factory and an optional cache factory each.</summary>
+    private readonly List<(string Name, Func<IServiceProvider, IDatedExchangeRateProvider> Factory, Func<IServiceProvider, string, IExchangeRateCache>? CacheFactory)> _children = new();
 
     /// <summary>The accumulated per-pair routes, in insertion order.</summary>
     private readonly List<(ExchangeRatePair Pair, string[] ProviderOrder, IExchangeRateAggregationStrategy? Strategy)> _routes = new();
@@ -25,10 +25,10 @@ internal sealed class AggregatedExchangeRateBuilder
     private IExchangeRateAggregationStrategy? _defaultStrategy;
 
     /// <summary>
-    /// Gets the accumulated named child factories, in insertion order.
+    /// Gets the accumulated named children, in insertion order.
     /// </summary>
-    /// <value>The named child factories.</value>
-    public IReadOnlyList<KeyValuePair<string, Func<IServiceProvider, IDatedExchangeRateProvider>>> Children => _children;
+    /// <value>The named children, each carrying a source factory and an optional per-child cache factory.</value>
+    public IReadOnlyList<(string Name, Func<IServiceProvider, IDatedExchangeRateProvider> Factory, Func<IServiceProvider, string, IExchangeRateCache>? CacheFactory)> Children => _children;
 
     /// <summary>
     /// Gets the accumulated per-pair routes, in insertion order.
@@ -43,19 +43,24 @@ internal sealed class AggregatedExchangeRateBuilder
     public IExchangeRateAggregationStrategy? DefaultStrategy => _defaultStrategy;
 
     /// <inheritdoc />
-    public IAggregatedExchangeRateBuilder AddCachedChild(string name, Func<IServiceProvider, IDatedExchangeRateProvider> factory)
+    public IAggregatedExchangeRateBuilder AddCachedChild(
+        string name,
+        Func<IServiceProvider, IDatedExchangeRateProvider> factory,
+        Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(name);
         ThrowHelper.ThrowIfNull(factory);
 
-        _children.Add(new KeyValuePair<string, Func<IServiceProvider, IDatedExchangeRateProvider>>(name, factory));
+        _children.Add((name, factory, cacheFactory));
         return this;
     }
 
     /// <inheritdoc />
-    public IAggregatedExchangeRateBuilder AddCachedChild<TProvider>(string name)
+    public IAggregatedExchangeRateBuilder AddCachedChild<TProvider>(
+        string name,
+        Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = null)
         where TProvider : class, IDatedExchangeRateProvider =>
-        AddCachedChild(name, static serviceProvider => serviceProvider.GetRequiredService<TProvider>());
+        AddCachedChild(name, static serviceProvider => serviceProvider.GetRequiredService<TProvider>(), cacheFactory);
 
     /// <inheritdoc />
     public IAggregatedExchangeRateBuilder UseDefaultStrategy(IExchangeRateAggregationStrategy strategy)

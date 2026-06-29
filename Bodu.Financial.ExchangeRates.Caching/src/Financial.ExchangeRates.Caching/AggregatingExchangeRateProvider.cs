@@ -33,8 +33,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <code language="csharp">
 ///<![CDATA[
 /// // Wrap each source in its own cache, then group them with per-FX-pair routing.
-/// var rba = new CachingExchangeRateProvider("RBA", rbaSource, options);
-/// var ecb = new CachingExchangeRateProvider("ECB", ecbSource, options);
+/// var rba = new CachingExchangeRateProvider(rbaSource, new TomlFileExchangeRateCache(
+///     new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }), options);
+/// var ecb = new CachingExchangeRateProvider(ecbSource, new InMemoryExchangeRateCache("ECB"), options);
 ///
 /// var aggregation = new ExchangeRateAggregationOptions();
 /// aggregation.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
