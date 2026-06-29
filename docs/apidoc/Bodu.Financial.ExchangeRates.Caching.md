@@ -13,13 +13,13 @@ uid: Bodu.Financial.ExchangeRates.Caching
 
 The cache owns expiry: each provider has its own caching duration with a global default, the cache returns only fresh rows, and it prunes stale rows on write. Both single-date lookups and range lookups (`GetRatesAsync`) flow through the cache.
 
-Alongside the in-memory and TOML-file caches, two persistent backends now live in this same namespace: <xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache> (a SQLite database) and <xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache> (any `Microsoft.Extensions.Caching.Distributed.IDistributedCache`, including Redis). Both are behaviourally identical to the built-in caches — the same freshness, merge, coverage, and validation semantics, asserted against the same shared cache contract tests — so each drops in anywhere an `IExchangeRateCache` is expected, behind a <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider>.
+Alongside the in-memory, TOML-file, and JSON-file caches, two persistent backends now live in this same namespace: <xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache> (a SQLite database) and <xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache> (any `Microsoft.Extensions.Caching.Distributed.IDistributedCache`, including Redis). Both are behaviourally identical to the built-in caches — the same freshness, merge, coverage, and validation semantics, asserted against the same shared cache contract tests — so each drops in anywhere an `IExchangeRateCache` is expected, behind a <xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider>.
 
 All dependency-injection registration lives in the `Bodu.Financial.ExchangeRates` namespace, so a single `using Bodu.Financial.ExchangeRates;` makes `AddCachedExchangeRateProvider`, `AddAggregatedExchangeRateProvider`, `AddSqliteRateCache`, `AddDistributedRateCache`, and `AddRedisRateCache` available. The SQLite and distributed backends ship their registration inside their own runtime packages; there are no separate `*.DependencyInjection` packages.
 
 ## Static documentation
 
-- **[Caching and aggregating exchange rates guide](~/guides/financial/exchange-rate-caching.md)** — the cache cascade, one-cache-per-provider read-through, the aggregator's strategies and per-pair routing, the on-disk TOML format, custom storage, and dependency injection.
+- **[Caching and aggregating exchange rates guide](~/guides/financial/exchange-rate-caching.md)** — the cache cascade, one-cache-per-provider read-through, the aggregator's strategies and per-pair routing, the on-disk TOML and JSON formats, file layouts and date partitioning, custom storage, and dependency injection.
 
 ## Key types
 
@@ -27,17 +27,21 @@ All dependency-injection registration lives in the `Bodu.Financial.ExchangeRates
 
 - <xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache> — the single-provider cache contract: a bound `Provider`, and `GetRates`/`Store` keyed by currency pair.
 - <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheBase`1> — the storage-agnostic core: read-time freshness filtering and write-time merge-and-prune, prescribing no physical layout. Extend it for a non-file store.
-- <xref:Bodu.Financial.ExchangeRates.Caching.IFileExchangeRateCache>, <xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1> — the file-storage seam and its plumbing: per-provider subdirectory layout, file-name resolution, and best-effort IO. Extend the base for a new file format.
-- <xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache> — the sealed TOML leaf (`<directory>/<provider>/<from><to>.toml`; decimals quoted for lossless round-trips).
+- <xref:Bodu.Financial.ExchangeRates.Caching.IFileExchangeRateCache>, <xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheBase`1> — the file-storage seam and its plumbing: layout-driven directory and file-name resolution, optional date partitioning, and best-effort IO. Extend the base for a new file format; it exposes `ResolveFilePath`, `ResolveDirectory`, and `ResolvePartitionPath`.
+- <xref:Bodu.Financial.ExchangeRates.Caching.TomlFileExchangeRateCache> — the sealed TOML leaf (`<directory>/<provider>/<from><to>.toml` by default; decimals quoted for lossless round-trips; a self-describing `Provider`/`From`/`To` header).
+- <xref:Bodu.Financial.ExchangeRates.Caching.JsonFileExchangeRateCache> — the sealed JSON leaf (`<directory>/<provider>/<from><to>.json` by default; decimals as JSON numbers; the same self-describing header). Both file leaves honour the configured layout, including date partitioning.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheFileLayout> — describes where a pair's rows are stored: the folder hierarchy, the file name, and (through its partition strategy) whether the rows split across files by date. Built-ins `SingleFile` (default), `Yearly`, `Monthly`, `Daily`, plus `Create(strategy, directoryFunc?, fileNameFunc?)` for custom folder and file-name rules.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCachePartitionStrategy> — decides how a pair's rows split across files by date: `Single`, `Yearly`, `Monthly`, `Daily`, or `Custom(keySelector, rangeSelector)` for arbitrary periods.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheDirectoryContext>, <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheFileContext> — the inputs passed to a custom layout's directory and file-name delegates.
 - <xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache> — an in-memory cache reusing the same expiry mechanism; nothing is persisted.
 - <xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache>, <xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCacheOptions> — a persistent SQLite-backed cache (one provider's rates and coverage windows in a SQLite database) and its options (bound `Provider`, `DatabaseFilePath`). Registered with `AddSqliteRateCache`.
 - <xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache>, <xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCacheOptions> — a shared cache over any `IDistributedCache` (Redis-capable), so several application instances share one warm cache, and its options (bound `Provider`, key-prefix settings). Registered with `AddDistributedRateCache` or the Redis convenience `AddRedisRateCache`.
 - <xref:Bodu.Financial.ExchangeRates.Caching.NullExchangeRateCache> — the no-op cache (`NullExchangeRateCache.Create(provider)`), for when caching is disabled.
-- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheOptions>, <xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheOptions> — the storage-agnostic options (bound `Provider`) and the file options (adds `CacheDirectory`).
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheOptions>, <xref:Bodu.Financial.ExchangeRates.Caching.FileExchangeRateCacheOptions> — the storage-agnostic options (bound `Provider`) and the file options (adds `CacheDirectory` and the `Layout`).
 - <xref:Bodu.Financial.ExchangeRates.Caching.CachedExchangeRate> — one cached row: observation `Date`, `Rate`, and the `CachedAtUtc` instant that drives expiry.
 - <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheEntry> — the serializable on-disk row model: observation `Date`, `Rate`, `CachedAtUtc`, and optional `ObservedAtUtc`.
 - <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheCoverageEntry> — a persisted coverage window: the inclusive `Start` / `End` dates fetched and the `FetchedAtUtc` instant they were retrieved.
-- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheFile> — the per-pair file document the file backends serialize: an `Entries` list of rows plus a `Coverage` list of fetched windows.
+- <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheFile> — the file document the file backends serialize: a self-describing `Provider`/`From`/`To` header plus an `Entries` list of rows and a `Coverage` list of fetched windows.
 - <xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheWriteStatus> — the outcome of a cache write (`Stored`, `Skipped`, `Failed`).
 
 **Read-through caching decorator**

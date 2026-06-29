@@ -103,4 +103,10 @@
   <data name="Arg_Invalid_ProviderBlank" xml:space="preserve">
     <value>The cache provider name must be a non-blank value.</value>
   </data>
+  <data name="Arg_Invalid_LayoutNull" xml:space="preserve">
+    <value>The file cache layout must not be null.</value>
+  </data>
+  <data name="Op_Invalid_PartitionedNoSingleFile" xml:space="preserve">
+    <value>A partitioned layout stores a pair across multiple files; use ResolveDirectory or ResolvePartitionPath instead of ResolveFilePath.</value>
+  </data>
 </root>
