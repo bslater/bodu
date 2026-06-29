@@ -22,8 +22,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 ///             .AddCachedChild<RbaExchangeRateProvider>("RBA")
 ///             .AddCachedChild<EcbExchangeRateProvider>("ECB")
 ///             .UseDefaultStrategy(new PriorityFallbackStrategy())
-///             .MapPair(new ExchangeRatePair("AUD", "USD"), "RBA", "ECB")
-///             .MapPair(new ExchangeRatePair("EUR", "USD"), new AverageStrategy(), "ECB", "RBA"));
+///             .MapPair(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "RBA", "ECB")
+///             .MapPair(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD), new AverageStrategy(), "ECB", "RBA"));
 ///]]>
 /// </code>
 /// </example>

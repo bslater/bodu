@@ -127,8 +127,8 @@ public static class RateCachingExtensions
     ///         .AddAggregatedExchangeRateProvider(agg => agg
     ///             .AddCachedChild<RbaExchangeRateProvider>("RBA")
     ///             .AddCachedChild<EcbExchangeRateProvider>("ECB")
-    ///             .MapPair(new ExchangeRatePair("AUD", "USD"), "RBA", "ECB")
-    ///             .MapPair(new ExchangeRatePair("USD", "GBP"), "ECB", "RBA"));
+    ///             .MapPair(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "RBA", "ECB")
+    ///             .MapPair(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP), "ECB", "RBA"));
     ///
     /// // Resolve the aggregate, or a specific source by name:
     /// var aggregate = provider.GetRequiredService<IDatedExchangeRateProvider>();

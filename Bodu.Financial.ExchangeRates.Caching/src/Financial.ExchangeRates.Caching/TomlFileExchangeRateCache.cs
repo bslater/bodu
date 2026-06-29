@@ -9,7 +9,8 @@ using Bodu.Text.Toml;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IExchangeRateCache" /> that persists a single provider's rates as one TOML file per currency pair.
+/// An <see cref="IExchangeRateCache" /> that persists a provider's rates as TOML files, one file per currency pair (or,
+/// under a partitioned layout, per pair and calendar period).
 /// </summary>
 /// <remarks>
 /// <para>
