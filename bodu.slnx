@@ -93,6 +93,10 @@
     <Project Path="Bodu.Financial.ExchangeRates.Ecb/src/Bodu.Financial.ExchangeRates.Ecb.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Ecb/test/Bodu.Financial.ExchangeRates.Ecb.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Oanda/">
+    <Project Path="Bodu.Financial.ExchangeRates.Oanda/src/Bodu.Financial.ExchangeRates.Oanda.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Oanda/test/Bodu.Financial.ExchangeRates.Oanda.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Ofx/">
     <Project Path="Bodu.Financial.ExchangeRates.Ofx/src/Bodu.Financial.ExchangeRates.Ofx.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Ofx/test/Bodu.Financial.ExchangeRates.Ofx.Test.csproj" />
