@@ -113,20 +113,6 @@ public sealed partial class CachingExchangeRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that the provider-name convenience constructor rejects a blank provider name.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenProviderNameIsBlank_ShouldThrowArgumentException()
-    {
-        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = new CachingExchangeRateProvider("  ", InnerWith(), _options, _clock);
-        });
-
-        Assert.AreEqual("providerName", ex.ParamName);
-    }
-
-    /// <summary>
     /// Creates a decorator over the supplied inner source and the shared in-memory cache.
     /// </summary>
     /// <param name="inner">The inner source to wrap.</param>

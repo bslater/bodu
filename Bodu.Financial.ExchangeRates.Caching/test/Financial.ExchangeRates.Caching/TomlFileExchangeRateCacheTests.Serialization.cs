@@ -67,6 +67,59 @@ public sealed partial class TomlFileExchangeRateCacheTests
     }
 
     /// <summary>
+    /// Verifies that the on-disk file records the bound provider and the pair's currency codes as top-level keys, making
+    /// the file self-describing rather than identified only by its name and folder.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenWritten_ShouldRecordProviderAndPairInBody()
+    {
+        TomlFileExchangeRateCache cache = CreateCache();
+        var cachedAt = new DateTimeOffset(2023, 1, 4, 9, 15, 0, TimeSpan.Zero);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, cachedAt) }, Duration, cachedAt);
+
+        string text = File.ReadAllText(PairFilePath);
+
+        StringAssert.Contains(text, "Provider = \"Yahoo\"", StringComparison.Ordinal);
+        StringAssert.Contains(text, "From = \"AUD\"", StringComparison.Ordinal);
+        StringAssert.Contains(text, "To = \"USD\"", StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Verifies that the self-describing header keys precede the <c>[[Entries]]</c> array, keeping the document a valid
+    /// TOML table where root scalar keys are written before any array of tables.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenWritten_ShouldWriteHeaderKeysBeforeEntries()
+    {
+        TomlFileExchangeRateCache cache = CreateCache();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
+
+        string text = File.ReadAllText(PairFilePath);
+
+        Assert.IsTrue(
+            text.IndexOf("Provider = ", StringComparison.Ordinal) < text.IndexOf("[[Entries]]", StringComparison.Ordinal),
+            "the header keys must precede the first array of tables for the TOML to be valid");
+    }
+
+    /// <summary>
+    /// Verifies that the self-describing header round-trips so a reopened cache reads the same rows, confirming the added
+    /// header keys do not disturb deserialization.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenWrittenWithHeader_ShouldRoundTripAcrossReopen()
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        CreateCache().Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, Duration, now);
+
+        TomlFileExchangeRateCache reopened = new(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });
+        IReadOnlyList<CachedExchangeRate> read = reopened.GetRates(Pair, Duration, now);
+
+        Assert.HasCount(1, read);
+        Assert.AreEqual(0.5m, read[0].Rate);
+    }
+
+    /// <summary>
     /// Verifies that a corrupt TOML file is treated as an empty cache rather than throwing.
     /// </summary>
     [TestMethod]

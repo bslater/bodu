@@ -82,4 +82,22 @@ public class PairWebExchangeRateProviderTests
 
         Assert.AreEqual(0, source.CallCount);
     }
+
+    /// <summary>
+    /// Verifies that the provider surfaces the history availability declared on its options rather than the base
+    /// unbounded default.
+    /// </summary>
+    [TestMethod]
+    public void HistoryAvailability_ShouldForwardOptionsValue()
+    {
+        StubPairSource source = new();
+        TestWebExchangeRateProviderOptions options = new()
+        {
+            HistoryAvailability = ExchangeRateHistoryAvailability.RollingDays(90),
+        };
+        TestPairWebExchangeRateProvider provider = new(source, options);
+
+        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Rolling, provider.HistoryAvailability.Kind);
+        Assert.AreEqual(90, provider.HistoryAvailability.WindowDays);
+    }
 }

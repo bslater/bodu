@@ -93,6 +93,9 @@ public abstract class PairWebExchangeRateProvider<TSeries>
     }
 
     /// <inheritdoc />
+    public override ExchangeRateHistoryAvailability HistoryAvailability => _options.HistoryAvailability;
+
+    /// <inheritdoc />
     protected sealed override bool AllowSynchronousNetworkAccess => _options.AllowSynchronousNetworkAccess;
 
     /// <inheritdoc />

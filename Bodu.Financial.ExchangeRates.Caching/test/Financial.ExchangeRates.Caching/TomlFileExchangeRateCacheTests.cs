@@ -71,6 +71,15 @@ public sealed partial class TomlFileExchangeRateCacheTests
         new(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory });
 
     /// <summary>
+    /// Creates a cache bound to <see cref="Provider" /> rooted at the test's temporary directory and using the supplied
+    /// file layout.
+    /// </summary>
+    /// <param name="layout">The file layout the cache should use.</param>
+    /// <returns>A new cache instance.</returns>
+    private TomlFileExchangeRateCache CreateCache(ExchangeRateCacheFileLayout layout) =>
+        new(new FileExchangeRateCacheOptions { Provider = Provider, CacheDirectory = _directory, Layout = layout });
+
+    /// <summary>
     /// Verifies that a stored rate round-trips through the file system preserving its date, rate, and caching instant.
     /// </summary>
     [TestMethod]

@@ -122,6 +122,15 @@ public abstract class WebExchangeRateProvider
     protected abstract string ProviderId { get; }
 
     /// <summary>
+    /// Gets the history depth this provider advertises: how far back it can serve rates.
+    /// </summary>
+    /// <value>
+    /// The advertised availability; the base reports <see cref="ExchangeRateHistoryAvailability.Unbounded" />. A
+    /// derived type whose feed publishes only a bounded window overrides this to declare it.
+    /// </value>
+    public virtual ExchangeRateHistoryAvailability HistoryAvailability => ExchangeRateHistoryAvailability.Unbounded;
+
+    /// <summary>
     /// Gets a value indicating whether a synchronous lookup may block to fetch a missing window on demand.
     /// </summary>
     /// <value>

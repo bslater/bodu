@@ -34,9 +34,12 @@ The cache is bound to a single provider, so its surface carries no provider argu
 |---|---|
 | `IExchangeRateCache` | Single-provider cache contract (`Provider`; `GetRates`/`Store` by pair). |
 | `ExchangeRateCacheBase<TOptions>` | Storage-agnostic core: freshness filtering + merge/prune. No physical layout. |
-| `IFileExchangeRateCache` | File-storage seam (`CacheDirectory`, `ResolveFilePath`). |
-| `FileExchangeRateCacheBase<TOptions>` | File plumbing: per-provider subdirectory, file-name resolution, best-effort IO. |
-| `TomlFileExchangeRateCache` | Sealed TOML leaf — `<dir>/<provider>/<from><to>.toml`, decimals quoted for lossless round-trips. |
+| `IFileExchangeRateCache` | File-storage seam (`CacheDirectory`, `ResolveFilePath`, `ResolveDirectory`, `ResolvePartitionPath`). |
+| `FileExchangeRateCacheBase<TOptions>` | File plumbing: layout-driven directory + file-name resolution, date partitioning, best-effort IO. |
+| `TomlFileExchangeRateCache` | Sealed TOML leaf — `<dir>/<provider>/<from><to>.toml`, decimals quoted for lossless round-trips, self-describing `Provider`/`From`/`To` header. |
+| `JsonFileExchangeRateCache` | Sealed JSON leaf — `<dir>/<provider>/<from><to>.json`, decimals as JSON numbers, the same self-describing header. |
+| `ExchangeRateCacheFileLayout` | Where a pair's files live and whether they split by date: `SingleFile` (default), `Yearly`, `Monthly`, `Daily`, or `Create(strategy, directoryFunc?, fileNameFunc?)`. |
+| `ExchangeRateCachePartitionStrategy` | The date split a layout applies: `Single`, `Yearly`, `Monthly`, `Daily`, or `Custom(...)`. |
 | `InMemoryExchangeRateCache` | In-memory cache reusing the same expiry mechanism; nothing persisted. |
 | `NullExchangeRateCache` | No-op cache (`NullExchangeRateCache.Create(provider)`). |
 | `CachingExchangeRateProvider` | Read-through caching decorator over one source + one cache. |
@@ -45,6 +48,35 @@ The cache is bound to a single provider, so its surface carries no provider argu
 Craft your own storage by implementing `IExchangeRateCache`, extending
 `ExchangeRateCacheBase<TOptions>` (storage-agnostic), or extending
 `FileExchangeRateCacheBase<TOptions>` (a new file format).
+
+### File layout and date partitioning
+
+Both file caches store one file per pair by default
+(`<dir>/<provider>/<from><to>.toml` or `.json`) and write a self-describing
+`Provider`/`From`/`To` header into each file, so a file no longer depends on its
+name or folder for identity. Set `FileExchangeRateCacheOptions.Layout` to control
+the folder hierarchy, file name, and whether a pair's rows split across files by
+date — `ExchangeRateCacheFileLayout.Yearly` / `.Monthly` / `.Daily` write one file
+per calendar period under a per-pair folder (for example
+`<dir>/RBA/AUDUSD/2023-01.toml`), and `ExchangeRateCacheFileLayout.Create(...)`
+builds a custom layout from a partition strategy and optional directory/file-name
+delegates:
+
+```csharp
+var monthly = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions
+{
+    Provider = "RBA",
+    CacheDirectory = "/var/cache/fx",
+    Layout = ExchangeRateCacheFileLayout.Monthly,
+});
+
+// JSON instead of TOML, same layout/partitioning surface.
+var json = new JsonFileExchangeRateCache(new FileExchangeRateCacheOptions
+{
+    Provider = "RBA",
+    CacheDirectory = "/var/cache/fx",
+});
+```
 
 ## Aggregation (group many providers behind one entry point)
 
@@ -60,12 +92,15 @@ through a pluggable `IExchangeRateAggregationStrategy`, with optional **per-FX-p
 - `TryGetProvider(name, out provider)` resolves a specific child directly.
 
 ```csharp
-var rba = new CachingExchangeRateProvider("RBA", rbaSource, options);
-var ecb = new CachingExchangeRateProvider("ECB", ecbSource, options);
+// The caching provider is storage-agnostic — you supply the IExchangeRateCache.
+var rba = new CachingExchangeRateProvider(
+    rbaSource, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }), options);
+var ecb = new CachingExchangeRateProvider(
+    ecbSource, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "ECB", CacheDirectory = "/var/cache/fx" }), options);
 
 var agg = new ExchangeRateAggregationOptions();
-agg.Routes[new ExchangeRatePair("AUD", "USD")] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
-agg.Routes[new ExchangeRatePair("USD", "GBP")] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+agg.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
+agg.Routes[new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
 
 IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
     new[]
@@ -123,8 +158,9 @@ Two ages travel with a cache-served rate and are deliberately distinct:
   serves, so a cache-served rate reports the **original** fetch instant. Data age is `now - ExchangeRate.FetchedAtUtc`,
   independent of how recently the row happened to be (re)written to the cache.
 
-`FetchedAtUtc` is excluded from `ExchangeRate` equality. The TOML file cache persists it as an optional `ObservedAtUtc`
-entry key per row; an entry written before the instant was tracked (or whose source never supplied one) has no key and
-reads back `null`. The SQLite and distributed caches persist it the same way through their own additive fields.
+`FetchedAtUtc` is excluded from `ExchangeRate` equality. The TOML and JSON file caches persist it as an optional
+`ObservedAtUtc` entry key per row; an entry written before the instant was tracked (or whose source never supplied one)
+has no key and reads back `null`. The SQLite and distributed caches persist it the same way through their own additive
+fields.
 
 Part of the [Bodu](https://github.com/bodu/bodu) utility library.

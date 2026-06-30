@@ -81,6 +81,16 @@ public abstract class WebExchangeRateProviderOptions
     public TimeSpan DefaultLookback { get; set; } = TimeSpan.FromDays(7);
 
     /// <summary>
+    /// Gets or sets the history depth the provider advertises: how far back it can serve rates. A caller can consult it
+    /// before requesting an old date.
+    /// </summary>
+    /// <value>
+    /// The advertised availability; defaults to <see cref="ExchangeRateHistoryAvailability.Unbounded" />. A source
+    /// whose feed publishes only the recent past sets a rolling window in its constructor.
+    /// </value>
+    public ExchangeRateHistoryAvailability HistoryAvailability { get; set; } = ExchangeRateHistoryAvailability.Unbounded;
+
+    /// <summary>
     /// Gets or sets the map from ISO 4217 codes to the symbol component the source uses, applied while building a
     /// request. Codes absent from the map pass through unchanged.
     /// </summary>
