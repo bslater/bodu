@@ -37,6 +37,13 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// them with an <see cref="AggregatingExchangeRateProvider" />.
 /// </para>
 /// <para>
+/// Because this provider is itself an <see cref="IDatedExchangeRateProvider" /> and accepts one as its inner source,
+/// caching providers also <em>stack</em>: wrapping a cached provider in a second caching provider forms a tiered
+/// read-through — a fast outer cache (for example in-memory) over a durable inner one (for example SQLite) over the
+/// origin — where each layer is consulted in turn and only a miss falls through. Bind every layer's cache to the same
+/// <see cref="IExchangeRateCache.Provider" /> so a served rate is tagged with the correct source.
+/// </para>
+/// <para>
 /// Both the single-date and range surfaces additionally emit a provenance record alongside each hit/miss diagnostic,
 /// recording whether the rate was resolved live or from the cache, the cache backend that served it, and — for a cache
 /// serve — the age of the served data. The provenance event is logged at

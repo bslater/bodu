@@ -44,14 +44,47 @@ using var cache = new SqliteExchangeRateCache(options);
 IDatedExchangeRateProvider cached = new CachingExchangeRateProvider(rba, cache, new CachingExchangeRateOptions());
 ```
 
-Or, through dependency injection (the package ships its own `AddSqliteRateCache` registration in the `Bodu.Financial.ExchangeRates` namespace):
+One cache instance serves **every currency pair** for its provider — the store is keyed by
+`(provider, from_code, to_code, obs_date)`, so a single `SqliteExchangeRateCache` holds `AUD/USD`, `GBP/USD`, and any
+other pair the provider returns. There is never a cache per pair.
+
+### Several providers in one database (without DI)
+
+Because `provider` is the leading key column, several single-provider caches can share **one** database file with no
+collisions — each provider's series stays partitioned. Construct one cache per provider over the same
+`DatabaseFilePath` and wrap each in its own `CachingExchangeRateProvider`:
+
+```csharp
+using Bodu.Financial.ExchangeRates.Caching;
+
+var options = new CachingExchangeRateOptions { DefaultExpiry = TimeSpan.FromHours(24) };
+
+// One shared .db file, one cache per provider; each cache covers all of that provider's pairs.
+using var rbaCache = new SqliteExchangeRateCache("RBA", "/var/cache/fx.db");
+using var ofxCache = new SqliteExchangeRateCache("OFX", "/var/cache/fx.db");
+
+IDatedExchangeRateProvider rba = new CachingExchangeRateProvider(rbaSource, rbaCache, options);
+IDatedExchangeRateProvider ofx = new CachingExchangeRateProvider(ofxSource, ofxCache, options);
+```
+
+Each cache holds its own keep-alive connection and per-pair locks, so dispose every cache you create. To group several
+sources behind one entry point with fallback / averaging / per-pair routing, or to stack a fast in-memory tier in front
+of the SQLite tier, see the
+[exchange-rate caching guide](../docs/guides/financial/exchange-rate-caching.md) (*Stacking providers* and *Grouping
+providers with the aggregator*).
+
+### Through dependency injection
+
+The package ships its own `AddSqliteRateCache` registration in the `Bodu.Financial.ExchangeRates` namespace; call it
+once per provider, pointing each at the same file to share one database:
 
 ```csharp
 using Bodu.Financial;
 using Bodu.Financial.ExchangeRates;
 
 services.AddFinancialService()
-        .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
+        .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/fx.db")
+        .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = "/var/cache/fx.db");
 ```
 
 A `SqliteExchangeRateCache` holds one keep-alive connection open for its lifetime so a shared in-memory database
