@@ -68,5 +68,14 @@ namespace Bodu.Financial.ExchangeRates.Caching {
                 return ResourceManager.GetString("Arg_Invalid_DatabaseLocationMissing", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The busy timeout must not be negative..
+        /// </summary>
+        internal static string Arg_OutOfRange_BusyTimeoutNegative {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_BusyTimeoutNegative", resourceCulture);
+            }
+        }
     }
 }

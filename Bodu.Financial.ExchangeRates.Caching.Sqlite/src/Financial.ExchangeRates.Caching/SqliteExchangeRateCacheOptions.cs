@@ -9,9 +9,9 @@ using Microsoft.Data.Sqlite;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Configures a SQLite-backed <see cref="IExchangeRateCache" />: the single provider inherited from
+/// Configures a SQLite-backed <see cref="IExchangeRateCache" />: the provider inherited from
 /// <see cref="ExchangeRateCacheOptions" /> together with the location of the SQLite database its rates and coverage
-/// windows are persisted in.
+/// windows are persisted in, and the connection-level concurrency settings applied on open.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -21,8 +21,14 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <see cref="ConnectionString" /> takes precedence when both are supplied.
 /// </para>
 /// <para>
+/// A single database file may be shared by several caches: each cache stores exactly one provider, and the provider is
+/// the leading column of the rate and coverage keys, so multiple single-provider caches pointed at the same file keep
+/// their series partitioned with no collisions. <see cref="UseWriteAheadLogging" /> and <see cref="BusyTimeout" />
+/// govern how concurrent writers — multiple cache instances, or separate processes — sharing one file behave.
+/// </para>
+/// <para>
 /// Expiry is not a storage concern — it is supplied per call by the caching provider — so this type carries only the
-/// storage location in addition to the bound provider.
+/// storage location and connection settings in addition to the bound provider.
 /// </para>
 /// </remarks>
 public class SqliteExchangeRateCacheOptions
@@ -61,6 +67,40 @@ public class SqliteExchangeRateCacheOptions
     public string? ConnectionString { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the cache enables SQLite write-ahead logging (WAL) on the database.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to switch a file database to WAL journal mode on open; otherwise
+    /// <see langword="false" /> to leave the journal mode unchanged. The default is <see langword="true" />.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// WAL lets readers run concurrently with a writer and lifts write throughput when several caches or processes
+    /// share one file, which is the recommended mode for a database holding more than one provider's series. The
+    /// setting is applied best-effort: a database that does not support WAL — notably an in-memory database — is left
+    /// in its native journal mode rather than failing.
+    /// </para>
+    /// <para>
+    /// Disable it for storage where WAL is unsupported or undesirable, such as some network file systems.
+    /// </para>
+    /// </remarks>
+    public bool UseWriteAheadLogging { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the time a connection waits for a held database lock to clear before reporting a busy error.
+    /// </summary>
+    /// <value>
+    /// The busy-wait duration applied as the SQLite <c>busy_timeout</c> pragma on every connection. The default is five
+    /// seconds; <see cref="TimeSpan.Zero" /> disables waiting, so a contended write fails immediately.
+    /// </value>
+    /// <remarks>
+    /// When multiple cache instances or processes write to one shared file, a non-zero timeout lets a writer wait for a
+    /// peer's transaction to commit instead of failing the write outright, which the best-effort cache would otherwise
+    /// swallow as a silently dropped write.
+    /// </remarks>
+    public TimeSpan BusyTimeout { get; set; } = TimeSpan.FromSeconds(5);
+
+    /// <summary>
     /// Validates the option values, throwing when a rule is violated.
     /// </summary>
     /// <exception cref="ArgumentNullException">
@@ -70,6 +110,7 @@ public class SqliteExchangeRateCacheOptions
     /// Thrown when <see cref="ExchangeRateCacheOptions.Provider" /> is empty or white space, or when neither
     /// <see cref="DatabaseFilePath" /> nor <see cref="ConnectionString" /> is supplied.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <see cref="BusyTimeout" /> is negative.</exception>
     public override void Validate()
     {
         base.Validate();
@@ -77,6 +118,11 @@ public class SqliteExchangeRateCacheOptions
         if (string.IsNullOrWhiteSpace(ConnectionString) && string.IsNullOrWhiteSpace(DatabaseFilePath))
         {
             throw new ArgumentException(CachingSqliteResourceStrings.Arg_Invalid_DatabaseLocationMissing, nameof(DatabaseFilePath));
+        }
+
+        if (BusyTimeout < TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(BusyTimeout), BusyTimeout, CachingSqliteResourceStrings.Arg_OutOfRange_BusyTimeoutNegative);
         }
     }
 
@@ -89,6 +135,12 @@ public class SqliteExchangeRateCacheOptions
         if (string.IsNullOrWhiteSpace(ConnectionString) && string.IsNullOrWhiteSpace(DatabaseFilePath))
         {
             error = CachingSqliteResourceStrings.Arg_Invalid_DatabaseLocationMissing;
+            return false;
+        }
+
+        if (BusyTimeout < TimeSpan.Zero)
+        {
+            error = CachingSqliteResourceStrings.Arg_OutOfRange_BusyTimeoutNegative;
             return false;
         }
 

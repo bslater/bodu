@@ -61,4 +61,7 @@
   <data name="Arg_Invalid_DatabaseLocationMissing" xml:space="preserve">
     <value>A SQLite database location must be supplied through either a database file path or a connection string.</value>
   </data>
+  <data name="Arg_OutOfRange_BusyTimeoutNegative" xml:space="preserve">
+    <value>The busy timeout must not be negative.</value>
+  </data>
 </root>
