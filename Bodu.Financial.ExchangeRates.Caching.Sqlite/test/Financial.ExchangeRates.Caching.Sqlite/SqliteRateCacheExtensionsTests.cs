@@ -109,6 +109,24 @@ public sealed class SqliteRateCacheExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that registering the same provider twice is idempotent: the keyed registration is added once, so a
+    /// single cache instance resolves for that provider.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenSameProviderRegisteredTwice_ShouldResolveSingleInstance()
+    {
+        ServiceProvider provider = BuildProvider(builder => builder
+            .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
+            .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
+
+        IExchangeRateCache first = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+        IExchangeRateCache second = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+
+        Assert.AreSame(first, second);
+        Assert.AreEqual("RBA", first.Provider);
+    }
+
+    /// <summary>
     /// Verifies that, with several providers registered, the default <see cref="IExchangeRateCache" /> resolution serves
     /// the first-registered provider's cache.
     /// </summary>
