@@ -52,18 +52,22 @@ public sealed partial class SqliteExchangeRateCacheTests
 
         foreach (string file in _files)
         {
-            try
+            // Remove the database and any WAL sidecar files (-wal / -shm) left when write-ahead logging is enabled.
+            foreach (string candidate in new[] { file, file + "-wal", file + "-shm" })
             {
-                if (File.Exists(file))
-                    File.Delete(file);
-            }
-            catch (IOException)
-            {
-                // Best-effort cleanup.
-            }
-            catch (UnauthorizedAccessException)
-            {
-                // Best-effort cleanup.
+                try
+                {
+                    if (File.Exists(candidate))
+                        File.Delete(candidate);
+                }
+                catch (IOException)
+                {
+                    // Best-effort cleanup.
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // Best-effort cleanup.
+                }
             }
         }
     }

@@ -7,6 +7,7 @@
 using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
@@ -38,18 +39,22 @@ public sealed class SqliteRateCacheExtensionsTests
     [TestCleanup]
     public void Cleanup()
     {
-        try
+        // Remove the database and any WAL sidecar files (-wal / -shm) left when write-ahead logging is enabled.
+        foreach (string candidate in new[] { _databasePath, _databasePath + "-wal", _databasePath + "-shm" })
         {
-            if (File.Exists(_databasePath))
-                File.Delete(_databasePath);
-        }
-        catch (IOException)
-        {
-            // Best-effort cleanup.
-        }
-        catch (UnauthorizedAccessException)
-        {
-            // Best-effort cleanup.
+            try
+            {
+                if (File.Exists(candidate))
+                    File.Delete(candidate);
+            }
+            catch (IOException)
+            {
+                // Best-effort cleanup.
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Best-effort cleanup.
+            }
         }
     }
 
@@ -83,6 +88,111 @@ public sealed class SqliteRateCacheExtensionsTests
         IExchangeRateCache byKey = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
 
         Assert.AreSame(byDefault, byKey);
+    }
+
+    /// <summary>
+    /// Verifies that registering two providers against one shared database file resolves a distinct keyed cache for each,
+    /// so several providers can be wired side by side over a single file.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenTwoProvidersShareOneFile_ShouldResolveDistinctKeyedCaches()
+    {
+        ServiceProvider provider = BuildProvider(builder => builder
+            .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
+            .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = _databasePath));
+
+        IExchangeRateCache rba = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+        IExchangeRateCache ofx = provider.GetRequiredKeyedService<IExchangeRateCache>("OFX");
+
+        Assert.AreEqual("RBA", rba.Provider);
+        Assert.AreEqual("OFX", ofx.Provider);
+        Assert.AreNotSame(rba, ofx);
+    }
+
+    /// <summary>
+    /// Verifies that registering the same provider twice is idempotent: the keyed registration is added once, so a
+    /// single cache instance resolves for that provider.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenSameProviderRegisteredTwice_ShouldResolveSingleInstance()
+    {
+        ServiceProvider provider = BuildProvider(builder => builder
+            .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
+            .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
+
+        IExchangeRateCache first = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+        IExchangeRateCache second = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+
+        Assert.AreSame(first, second);
+        Assert.AreEqual("RBA", first.Provider);
+    }
+
+    /// <summary>
+    /// Verifies that, with several providers registered, the default <see cref="IExchangeRateCache" /> resolution serves
+    /// the first-registered provider's cache.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenMultipleProvidersRegistered_ShouldResolveFirstAsDefault()
+    {
+        ServiceProvider provider = BuildProvider(builder => builder
+            .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
+            .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = _databasePath));
+
+        IExchangeRateCache byDefault = provider.GetRequiredService<IExchangeRateCache>();
+
+        Assert.AreEqual("RBA", byDefault.Provider);
+    }
+
+    /// <summary>
+    /// Verifies that two providers sharing one file keep their series partitioned: a rate stored through one provider's
+    /// cache is invisible to the other provider's cache.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenTwoProvidersShareOneFile_ShouldIsolateSeriesByProvider()
+    {
+        ServiceProvider provider = BuildProvider(builder => builder
+            .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
+            .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = _databasePath));
+        var pair = new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD);
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        provider.GetRequiredKeyedService<IExchangeRateCache>("RBA")
+            .Store(pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+
+        IReadOnlyList<CachedExchangeRate> ofxRows = provider.GetRequiredKeyedService<IExchangeRateCache>("OFX")
+            .GetRates(pair, TimeSpan.FromHours(24), now);
+
+        Assert.IsEmpty(ofxRows);
+    }
+
+    /// <summary>
+    /// Verifies that a cache resolved through dependency injection logs its best-effort degradation through the
+    /// container's logger, confirming the registration wires an <see cref="ILogger" /> into the cache.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenResolvedCacheDegrades_ShouldLogThroughContainerLogger()
+    {
+        // A file whose contents are not a valid SQLite database makes the cache's schema initialization fail and degrade.
+        File.WriteAllText(_databasePath, "this is not a sqlite database file");
+        var loggerProvider = new CapturingLoggerProvider();
+
+        var services = new ServiceCollection();
+        services.AddLogging(builder => builder.AddProvider(loggerProvider));
+        services.AddFinancialService().AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath);
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        // Resolving constructs the cache over the corrupt file, whose swallowed failure is logged at Warning.
+        _ = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+
+        bool loggedWarning = false;
+        foreach ((LogLevel Level, EventId EventId, string Message, Exception? Exception) entry in loggerProvider.Logger.Entries)
+        {
+            if (entry.Level == LogLevel.Warning && entry.EventId.Id == 4520)
+                loggedWarning = true;
+        }
+
+        Assert.IsTrue(loggedWarning, "the DI-resolved cache reports degradation through the container logger");
     }
 
     /// <summary>

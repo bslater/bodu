@@ -57,4 +57,28 @@ public sealed partial class SqliteExchangeRateCacheOptionsTests
 
         options.Validate();
     }
+
+    /// <summary>
+    /// Verifies that validation rejects a negative busy timeout.
+    /// </summary>
+    [TestMethod]
+    public void Validate_WhenBusyTimeoutIsNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        var options = new SqliteExchangeRateCacheOptions { Provider = "RBA", DatabaseFilePath = "cache.db", BusyTimeout = TimeSpan.FromSeconds(-1) };
+
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
+            () => options.Validate(),
+            "BusyTimeout");
+    }
+
+    /// <summary>
+    /// Verifies that validation accepts a zero busy timeout, which disables waiting on a held lock.
+    /// </summary>
+    [TestMethod]
+    public void Validate_WhenBusyTimeoutIsZero_ShouldNotThrow()
+    {
+        var options = new SqliteExchangeRateCacheOptions { Provider = "RBA", DatabaseFilePath = "cache.db", BusyTimeout = TimeSpan.Zero };
+
+        options.Validate();
+    }
 }
