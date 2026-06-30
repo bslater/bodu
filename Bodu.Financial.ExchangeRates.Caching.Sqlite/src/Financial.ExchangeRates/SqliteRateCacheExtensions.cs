@@ -44,19 +44,33 @@ public static class SqliteRateCacheExtensions
     /// Thrown when <paramref name="providerName" /> or <paramref name="sectionName" /> is empty or white space.
     /// </exception>
     /// <remarks>
-    /// The cache is registered as a singleton so its keep-alive connection and per-pair write locks are shared across
-    /// resolutions and the container disposes it on shutdown. The bound provider name is also applied to the options so
-    /// a configuration section need not repeat it. Options are validated through <c>ValidateOnStart</c>, so
-    /// misconfiguration fails fast at application startup.
+    /// <para>
+    /// The cache is registered as a singleton keyed by <paramref name="providerName" /> so its keep-alive connection
+    /// and per-pair write locks are shared across resolutions and the container disposes it on shutdown. The bound
+    /// provider name is also applied to the options so a configuration section need not repeat it. Options are
+    /// validated through <c>ValidateOnStart</c>, so misconfiguration fails fast at application startup.
+    /// </para>
+    /// <para>
+    /// Call this once per provider to register several caches side by side. Point them at distinct
+    /// <see cref="SqliteExchangeRateCacheOptions.DatabaseFilePath" /> values to isolate each provider in its own file,
+    /// or at one shared file to hold every provider's series in a single database — the provider is the leading key
+    /// column, so the series stay partitioned with no collisions. The first registration also backs the default
+    /// <see cref="IExchangeRateCache" /> resolution; resolve a specific provider's cache by its key.
+    /// </para>
     /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
+    /// // One shared database file holding several providers' series, each cache keyed by its provider name.
     /// services.AddFinancialService()
-    ///         .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/rba.db");
+    ///         .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/fx.db")
+    ///         .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = "/var/cache/fx.db")
+    ///         .AddSqliteRateCache("XE",  configure: o => o.DatabaseFilePath = "/var/cache/fx.db")
+    ///         .AddCachedExchangeRateProvider<OfxExchangeRateProvider>("OFX",
+    ///             cacheFactory: (sp, name) => sp.GetRequiredKeyedService<IExchangeRateCache>(name));
     ///
-    /// // Resolve the cache, or wrap a source provider with a CachingExchangeRateProvider over it.
-    /// var cache = provider.GetRequiredService<IExchangeRateCache>();
+    /// // Resolve a specific provider's cache by key, or the first-registered one by default.
+    /// var ofxCache = provider.GetRequiredKeyedService<IExchangeRateCache>("OFX");
     ///]]>
     /// </code>
     /// </example>
@@ -90,19 +104,22 @@ public static class SqliteRateCacheExtensions
         // fails the start rather than the first lookup. The probe runs through the same ValidateOnStart wiring.
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<SqliteExchangeRateCacheOptions>, SqliteCacheStorageStartupValidator>());
 
-        // Register the concrete cache once as a singleton so a single instance — and its single keep-alive connection
-        // and per-pair locks — backs every resolution and the container disposes it on shutdown.
-        services.TryAddSingleton(serviceProvider =>
+        // Register the concrete cache as a singleton keyed by the provider name so each provider added gets its own
+        // instance — its own keep-alive connection and per-pair locks — and the container disposes each on shutdown.
+        // Keying is what lets several providers be registered side by side, including over one shared database file
+        // where the leading provider column keeps their series partitioned.
+        services.TryAddKeyedSingleton(providerName, (serviceProvider, key) =>
         {
             SqliteExchangeRateCacheOptions options =
-                serviceProvider.GetRequiredService<IOptionsMonitor<SqliteExchangeRateCacheOptions>>().Get(providerName);
+                serviceProvider.GetRequiredService<IOptionsMonitor<SqliteExchangeRateCacheOptions>>().Get((string)key!);
             return new SqliteExchangeRateCache(options);
         });
 
-        // Expose the same singleton on both the default and the keyed IExchangeRateCache surface so a specific cached
-        // provider is resolvable by name without creating a second instance over the same database.
-        services.TryAddSingleton<IExchangeRateCache>(static serviceProvider => serviceProvider.GetRequiredService<SqliteExchangeRateCache>());
-        services.TryAddKeyedSingleton<IExchangeRateCache>(providerName, static (serviceProvider, _) => serviceProvider.GetRequiredService<SqliteExchangeRateCache>());
+        // Expose the provider's cache on the keyed IExchangeRateCache surface so a specific cached provider is resolvable
+        // by name, and on the default surface for the single-provider convenience case where the first registered cache
+        // wins (TryAdd leaves any earlier default in place).
+        services.TryAddKeyedSingleton<IExchangeRateCache>(providerName, static (serviceProvider, key) => serviceProvider.GetRequiredKeyedService<SqliteExchangeRateCache>((string)key!));
+        services.TryAddSingleton<IExchangeRateCache>(serviceProvider => serviceProvider.GetRequiredKeyedService<SqliteExchangeRateCache>(providerName));
 
         return builder;
     }

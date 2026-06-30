@@ -110,6 +110,7 @@ public sealed class SqliteExchangeRateCache
         try
         {
             _keepAlive.Open();
+            ConfigureConnection(_keepAlive);
             EnsureSchema(_keepAlive);
         }
         catch (SqliteException) when (!_options.ValidateStorageOnStart && !_options.ThrowOnStorageFailure)
@@ -703,7 +704,36 @@ public sealed class SqliteExchangeRateCache
     {
         SqliteConnection connection = new(_connectionString);
         connection.Open();
+        ConfigureConnection(connection);
         return connection;
+    }
+
+    /// <summary>
+    /// Applies the connection-level concurrency settings — the <c>busy_timeout</c> wait and, when enabled, write-ahead
+    /// logging — to a freshly opened connection.
+    /// </summary>
+    /// <param name="connection">The open connection to configure.</param>
+    /// <remarks>
+    /// The <c>busy_timeout</c> pragma is per-connection, so it is set on every open; write-ahead logging is a
+    /// persistent database-level mode that is harmless to re-assert. Setting WAL is best-effort: a database that cannot
+    /// honor it — notably an in-memory database, which reports back its native mode — is left unchanged rather than
+    /// failing. The pragmas run outside any transaction so the journal-mode change is permitted.
+    /// </remarks>
+    private void ConfigureConnection(SqliteConnection connection)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+
+        command.CommandText = string.Format(
+            CultureInfo.InvariantCulture,
+            "PRAGMA busy_timeout = {0};",
+            (long)_options.BusyTimeout.TotalMilliseconds);
+        command.ExecuteNonQuery();
+
+        if (_options.UseWriteAheadLogging)
+        {
+            command.CommandText = "PRAGMA journal_mode = WAL;";
+            command.ExecuteNonQuery();
+        }
     }
 
     /// <summary>

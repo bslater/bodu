@@ -38,18 +38,22 @@ public sealed class SqliteRateCacheExtensionsTests
     [TestCleanup]
     public void Cleanup()
     {
-        try
+        // Remove the database and any WAL sidecar files (-wal / -shm) left when write-ahead logging is enabled.
+        foreach (string candidate in new[] { _databasePath, _databasePath + "-wal", _databasePath + "-shm" })
         {
-            if (File.Exists(_databasePath))
-                File.Delete(_databasePath);
-        }
-        catch (IOException)
-        {
-            // Best-effort cleanup.
-        }
-        catch (UnauthorizedAccessException)
-        {
-            // Best-effort cleanup.
+            try
+            {
+                if (File.Exists(candidate))
+                    File.Delete(candidate);
+            }
+            catch (IOException)
+            {
+                // Best-effort cleanup.
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Best-effort cleanup.
+            }
         }
     }
 
@@ -83,6 +87,63 @@ public sealed class SqliteRateCacheExtensionsTests
         IExchangeRateCache byKey = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
 
         Assert.AreSame(byDefault, byKey);
+    }
+
+    /// <summary>
+    /// Verifies that registering two providers against one shared database file resolves a distinct keyed cache for each,
+    /// so several providers can be wired side by side over a single file.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenTwoProvidersShareOneFile_ShouldResolveDistinctKeyedCaches()
+    {
+        ServiceProvider provider = BuildProvider(builder => builder
+            .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
+            .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = _databasePath));
+
+        IExchangeRateCache rba = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+        IExchangeRateCache ofx = provider.GetRequiredKeyedService<IExchangeRateCache>("OFX");
+
+        Assert.AreEqual("RBA", rba.Provider);
+        Assert.AreEqual("OFX", ofx.Provider);
+        Assert.AreNotSame(rba, ofx);
+    }
+
+    /// <summary>
+    /// Verifies that, with several providers registered, the default <see cref="IExchangeRateCache" /> resolution serves
+    /// the first-registered provider's cache.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenMultipleProvidersRegistered_ShouldResolveFirstAsDefault()
+    {
+        ServiceProvider provider = BuildProvider(builder => builder
+            .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
+            .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = _databasePath));
+
+        IExchangeRateCache byDefault = provider.GetRequiredService<IExchangeRateCache>();
+
+        Assert.AreEqual("RBA", byDefault.Provider);
+    }
+
+    /// <summary>
+    /// Verifies that two providers sharing one file keep their series partitioned: a rate stored through one provider's
+    /// cache is invisible to the other provider's cache.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenTwoProvidersShareOneFile_ShouldIsolateSeriesByProvider()
+    {
+        ServiceProvider provider = BuildProvider(builder => builder
+            .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
+            .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = _databasePath));
+        var pair = new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD);
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        provider.GetRequiredKeyedService<IExchangeRateCache>("RBA")
+            .Store(pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+
+        IReadOnlyList<CachedExchangeRate> ofxRows = provider.GetRequiredKeyedService<IExchangeRateCache>("OFX")
+            .GetRates(pair, TimeSpan.FromHours(24), now);
+
+        Assert.IsEmpty(ofxRows);
     }
 
     /// <summary>

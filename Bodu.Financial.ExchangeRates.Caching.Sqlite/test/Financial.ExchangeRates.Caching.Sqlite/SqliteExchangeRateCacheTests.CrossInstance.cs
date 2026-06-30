@@ -54,4 +54,34 @@ public sealed partial class SqliteExchangeRateCacheTests
         Assert.IsTrue(rows[0].Rate == 0.5000m || rows[0].Rate == 0.6000m, "the surviving rate is one writer's, not a mix");
         Assert.IsTrue(coverage.Contains(date, date), "coverage is present with its row, never recorded without it");
     }
+
+    /// <summary>
+    /// Verifies that two caches bound to different providers but sharing one database file keep their series partitioned:
+    /// each reads back only its own provider's rate for the same pair and date, confirming the provider key column
+    /// isolates the series with no cross-contamination.
+    /// </summary>
+    [TestMethod]
+    public void GetRates_WhenTwoProvidersShareOneFile_ShouldKeepSeriesPartitioned()
+    {
+        string path = NewDatabasePath();
+        var rba = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = "RBA", DatabaseFilePath = path });
+        var ofx = new SqliteExchangeRateCache(new SqliteExchangeRateCacheOptions { Provider = "OFX", DatabaseFilePath = path });
+        _caches.Add(rba);
+        _caches.Add(ofx);
+
+        var date = new DateOnly(2023, 1, 3);
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        // Both providers store the same pair and date with different rates into the one shared file.
+        rba.Store(Pair, new[] { new CachedExchangeRate(date, 0.5000m, now) }, Duration, now);
+        ofx.Store(Pair, new[] { new CachedExchangeRate(date, 0.6000m, now) }, Duration, now);
+
+        IReadOnlyList<CachedExchangeRate> rbaRows = rba.GetRates(Pair, Duration, now);
+        IReadOnlyList<CachedExchangeRate> ofxRows = ofx.GetRates(Pair, Duration, now);
+
+        Assert.HasCount(1, rbaRows, "the RBA cache sees exactly its own row, not the OFX row");
+        Assert.HasCount(1, ofxRows, "the OFX cache sees exactly its own row, not the RBA row");
+        Assert.AreEqual(0.5000m, rbaRows[0].Rate, "the RBA cache reads back only its own provider's rate");
+        Assert.AreEqual(0.6000m, ofxRows[0].Rate, "the OFX cache reads back only its own provider's rate");
+    }
 }
