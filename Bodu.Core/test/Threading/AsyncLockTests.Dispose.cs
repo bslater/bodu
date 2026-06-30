@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncLockTests.Dispose.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,9 +28,9 @@ public sealed partial class AsyncLockTests
     public async Task Dispose_WhenWaiterPending_ShouldFaultWaiter()
     {
         var sut = new AsyncLock();
-        using var held = await sut.LockAsync();
+        using AsyncLock.Releaser held = await sut.LockAsync();
 
-        var pending = sut.LockAsync();
+        ValueTask<AsyncLock.Releaser> pending = sut.LockAsync();
         Assert.IsFalse(pending.IsCompleted);
 
         sut.Dispose();
@@ -45,7 +45,7 @@ public sealed partial class AsyncLockTests
     public async Task Dispose_WhenHeld_ShouldAllowHolderReleaseAsNoOp()
     {
         var sut = new AsyncLock();
-        var held = await sut.LockAsync();
+        AsyncLock.Releaser held = await sut.LockAsync();
 
         sut.Dispose();
 

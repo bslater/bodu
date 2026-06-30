@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlDocumentTests.MergeKeys.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class YamlDocumentTests
     {
         using var doc = YamlDocument.Parse(
             "defaults: &d\n  size: medium\n  color: red\nitem:\n  <<: *d\n  color: blue\n");
-        var item = doc.RootElement.GetProperty("item");
+        YamlElement item = doc.RootElement.GetProperty("item");
         Assert.AreEqual("medium", item.GetProperty("size").GetString());
         Assert.AreEqual("blue", item.GetProperty("color").GetString());
         Assert.IsFalse(item.TryGetProperty("<<", out _));
@@ -32,7 +32,7 @@ public partial class YamlDocumentTests
     {
         using var doc = YamlDocument.Parse(
             "a: &a {x: 1, y: 1}\nb: &b {y: 2, z: 2}\nc:\n  <<: [*a, *b]\n");
-        var c = doc.RootElement.GetProperty("c");
+        YamlElement c = doc.RootElement.GetProperty("c");
         Assert.AreEqual(1L, c.GetProperty("x").GetInt64());
         Assert.AreEqual(1L, c.GetProperty("y").GetInt64()); // first source wins
         Assert.AreEqual(2L, c.GetProperty("z").GetInt64());

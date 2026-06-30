@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateHistoryAvailabilityTests.IsAvailable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class ExchangeRateHistoryAvailabilityTests
     [TestMethod]
     public void IsAvailable_WhenRolling_ShouldGateOnTheFloor()
     {
-        ExchangeRateHistoryAvailability availability = ExchangeRateHistoryAvailability.RollingDays(180);
+        var availability = ExchangeRateHistoryAvailability.RollingDays(180);
         var asOf = new DateOnly(2026, 6, 28);
         DateOnly floor = asOf.AddDays(-180);
 
@@ -30,7 +30,7 @@ public partial class ExchangeRateHistoryAvailabilityTests
     public void IsAvailable_WhenSince_ShouldGateOnEarliestDate()
     {
         var earliest = new DateOnly(1999, 1, 1);
-        ExchangeRateHistoryAvailability availability = ExchangeRateHistoryAvailability.Since(earliest);
+        var availability = ExchangeRateHistoryAvailability.Since(earliest);
         var asOf = new DateOnly(2026, 6, 28);
 
         Assert.IsTrue(availability.IsAvailable(earliest, asOf));

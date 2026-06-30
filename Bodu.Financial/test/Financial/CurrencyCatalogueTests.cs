@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Reflection;
-using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 

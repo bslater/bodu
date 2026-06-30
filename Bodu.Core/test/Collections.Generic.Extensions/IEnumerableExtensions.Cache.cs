@@ -272,10 +272,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
         IEnumerable<int> actual = YieldingSequence().Cache();
         IEnumerator<int> enumerator = actual.GetEnumerator();
 
-        Assert.ThrowsExactly<NotSupportedException>(() =>
-        {
-            enumerator.Reset();
-        });
+        Assert.ThrowsExactly<NotSupportedException>(enumerator.Reset);
     }
 
     private static IEnumerable<int> ThrowingSequence()

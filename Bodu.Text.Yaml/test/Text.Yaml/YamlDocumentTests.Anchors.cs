@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlDocumentTests.Anchors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public partial class YamlDocumentTests
     public void Parse_WhenAliasToMapping_ShouldResolveSubtree()
     {
         using var doc = YamlDocument.Parse("base: &b\n  x: 1\n  y: 2\nuse: *b\n");
-        var use = doc.RootElement.GetProperty("use");
+        YamlElement use = doc.RootElement.GetProperty("use");
         Assert.AreEqual(YamlValueKind.Mapping, use.ValueKind);
         Assert.AreEqual(1L, use.GetProperty("x").GetInt64());
         Assert.AreEqual(2L, use.GetProperty("y").GetInt64());
@@ -48,7 +48,7 @@ public partial class YamlDocumentTests
     [TestMethod]
     public void Parse_WhenUndefinedAlias_ShouldThrow()
     {
-        var ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        YamlFormatException ex = Assert.ThrowsExactly<YamlFormatException>(() =>
         {
             using var doc = YamlDocument.Parse("a: *missing\n");
         });

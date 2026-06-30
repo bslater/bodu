@@ -1,11 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDatePluginLoaderTests.RegisterAlgorithms.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Reflection;
-using Bodu.Globalization.Calendar.Plugins;
 
 namespace Bodu.Globalization.Calendar.Plugins;
 

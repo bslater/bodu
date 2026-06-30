@@ -18,9 +18,6 @@ public partial class AsconXof128Tests
         var sut = new AsconXof128();
         sut.Dispose();
 
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            sut.Initialize();
-        });
+        Assert.ThrowsExactly<ObjectDisposedException>(sut.Initialize);
     }
 }

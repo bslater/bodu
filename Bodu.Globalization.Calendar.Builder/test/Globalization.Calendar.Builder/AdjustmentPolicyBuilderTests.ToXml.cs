@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentPolicyBuilderTests.ToXml.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,6 +19,6 @@ public partial class AdjustmentPolicyBuilderTests
             .AddAdjustmentPolicy("incomplete", a => a.WithPriority(1))
             .AddNotableDate("d", "D", NotableDateCategory.Observance, def => def.AddRule("default", r => r.Fixed(1, 1)));
 
-        _ = Assert.ThrowsExactly<InvalidOperationException>(() => builder.ToXml());
+        _ = Assert.ThrowsExactly<InvalidOperationException>(builder.ToXml);
     }
 }

@@ -61,7 +61,7 @@ public ref struct Utf8YamlReader
     /// <exception cref="YamlFormatException">The source is not valid YAML.</exception>
     public Utf8YamlReader(ReadOnlySpan<byte> utf8Yaml, YamlReaderOptions options)
     {
-        var buffer = utf8Yaml.ToArray();
+        byte[] buffer = utf8Yaml.ToArray();
         var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth, options.DuplicateKeyBehavior, options.MergeKeyBehavior);
         _rows = parser.Parse();
         _strings = parser.Strings.ToArray();
@@ -101,7 +101,7 @@ public ref struct Utf8YamlReader
 
         while (_depth > 0)
         {
-            ref var frame = ref _stack[_depth - 1];
+            ref Frame frame = ref _stack[_depth - 1];
             if (frame.IsMapping)
             {
                 if (frame.AwaitingValue)
@@ -110,7 +110,7 @@ public ref struct Utf8YamlReader
                     return BeginNode(frame.Current);
                 }
 
-                var next = frame.Current < 0 ? FirstChild(frame.Container) : NextSibling(frame.Current);
+                int next = frame.Current < 0 ? FirstChild(frame.Container) : NextSibling(frame.Current);
                 if (next < 0)
                 {
                     _tokenType = YamlTokenType.EndMapping;
@@ -128,7 +128,7 @@ public ref struct Utf8YamlReader
             }
             else
             {
-                var next = frame.Current < 0 ? FirstChild(frame.Container) : NextSibling(frame.Current);
+                int next = frame.Current < 0 ? FirstChild(frame.Container) : NextSibling(frame.Current);
                 if (next < 0)
                 {
                     _tokenType = YamlTokenType.EndSequence;
@@ -184,7 +184,7 @@ public ref struct Utf8YamlReader
     /// <exception cref="InvalidOperationException">The current token is not a numeric scalar.</exception>
     public readonly double GetDouble()
     {
-        var r = _rows[_currentRow];
+        YamlReaderRow r = _rows[_currentRow];
         return _tokenType switch
         {
             YamlTokenType.Float => r.AsDouble(),
@@ -219,7 +219,7 @@ public ref struct Utf8YamlReader
         // The decoded UTF-16 length never exceeds the UTF-8 byte length, so a property name of typical size is compared
         // without allocating; only an unusually long key falls back to the heap.
         Span<char> chars = utf8Text.Length <= 256 ? stackalloc char[256] : new char[utf8Text.Length];
-        var written = Encoding.UTF8.GetChars(utf8Text, chars);
+        int written = Encoding.UTF8.GetChars(utf8Text, chars);
         return _key.AsSpan().SequenceEqual(chars[..written]);
     }
 
@@ -230,8 +230,8 @@ public ref struct Utf8YamlReader
     /// <returns>Always <see langword="true" />.</returns>
     private bool BeginNode(int row)
     {
-        var index = Resolve(row);
-        var r = _rows[index];
+        int index = Resolve(row);
+        YamlReaderRow r = _rows[index];
         _currentRow = index;
 
         switch (r.Kind)
@@ -266,7 +266,7 @@ public ref struct Utf8YamlReader
     /// <returns>The resolved row index.</returns>
     private readonly int Resolve(int index)
     {
-        var r = _rows[index];
+        YamlReaderRow r = _rows[index];
         return r.Kind == YamlReaderNodeKind.Alias && r.AliasTarget >= 0 ? r.AliasTarget : index;
     }
 

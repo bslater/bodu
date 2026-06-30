@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageBuilderLoadTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public class CompoundStorageBuilderLoadTests
     {
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
 
-        CompoundStorageBuilder root = CompoundStorageBuilder.Load(source);
+        var root = CompoundStorageBuilder.Load(source);
 
         Assert.AreEqual(CompoundEntryType.RootStorage, root.EntryType);
         Assert.IsTrue(root.TryGetStorage("Storage 1", out CompoundStorageBuilder? storage));
@@ -47,7 +47,7 @@ public class CompoundStorageBuilderLoadTests
     public void Load_WhenValidFixture_ShouldMatchReaderStreamHashes(CompoundReferenceFixtureKat kat)
     {
         using MemoryStream source = CompoundFixtures.OpenReference(kat.RelativePath);
-        CompoundStorageBuilder root = CompoundStorageBuilder.Load(source);
+        var root = CompoundStorageBuilder.Load(source);
 
         Dictionary<string, string> actual = new(StringComparer.Ordinal);
         Collect(root, string.Empty, actual);

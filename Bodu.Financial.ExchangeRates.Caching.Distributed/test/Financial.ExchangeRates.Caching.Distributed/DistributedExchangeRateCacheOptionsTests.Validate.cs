@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedExchangeRateCacheOptionsTests.Validate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class DistributedExchangeRateCacheOptionsTests
         var options = new DistributedExchangeRateCacheOptions { Provider = "  " };
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
-            () => options.Validate(),
+            options.Validate,
             "Provider");
     }
 
@@ -32,7 +32,7 @@ public sealed partial class DistributedExchangeRateCacheOptionsTests
         var options = new DistributedExchangeRateCacheOptions { Provider = "RBA", KeyPrefix = "   " };
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
-            () => options.Validate(),
+            options.Validate,
             "KeyPrefix");
     }
 

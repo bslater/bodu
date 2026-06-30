@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Bencode;
-
 namespace Bodu.Text.Bencode.Nodes;
 
 /// <summary>

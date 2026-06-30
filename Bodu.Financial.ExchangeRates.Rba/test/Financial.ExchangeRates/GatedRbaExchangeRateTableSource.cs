@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GatedRbaExchangeRateTableSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -67,7 +67,7 @@ internal sealed class GatedRbaExchangeRateTableSource
         await _gate.Task.ConfigureAwait(false);
 
         using MemoryStream stream = RbaFixtures.OpenStream(_fileName);
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
+        using var workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
         return RbaExchangeRateWorkbookParser.Parse(workbook, _options);
     }
 }

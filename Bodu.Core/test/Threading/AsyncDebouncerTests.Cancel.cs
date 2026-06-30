@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncDebouncerTests.Cancel.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class AsyncDebouncerTests
     public void Cancel_WhenPending_ShouldNotRunCallback()
     {
         var time = new FakeTimeProvider();
-        var runs = 0;
+        int runs = 0;
         using var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), _ =>
         {
             Interlocked.Increment(ref runs);
@@ -50,7 +50,7 @@ public sealed partial class AsyncDebouncerTests
         var time = new FakeTimeProvider();
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var ended = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var canceledObserved = false;
+        bool canceledObserved = false;
 
         using var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), async ct =>
         {
@@ -89,6 +89,6 @@ public sealed partial class AsyncDebouncerTests
         var sut = new AsyncDebouncer(TimeSpan.FromSeconds(1), _ => ValueTask.CompletedTask);
         sut.Dispose();
 
-        Assert.ThrowsExactly<ObjectDisposedException>(() => sut.Cancel());
+        Assert.ThrowsExactly<ObjectDisposedException>(sut.Cancel);
     }
 }

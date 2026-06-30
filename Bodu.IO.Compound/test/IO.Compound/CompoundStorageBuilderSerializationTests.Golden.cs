@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.IO.Compound.Builders;
-using Bodu.Test;
 using Bodu.Test.Kat;
 
 namespace Bodu.IO.Compound;

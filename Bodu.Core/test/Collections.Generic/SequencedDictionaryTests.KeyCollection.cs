@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.KeyCollection.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void KeyCollection_WhenQueried_ShouldReportDictionaryCount()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.AreEqual(3, dictionary.Keys.Count);
     }
@@ -27,7 +27,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void KeyCollection_WhenContainsCalled_ShouldReportMembership()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.IsTrue(dictionary.Keys.Contains("b"));
         Assert.IsFalse(dictionary.Keys.Contains("missing"));
@@ -50,8 +50,8 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void KeyCollection_WhenCopyToWithOffset_ShouldCopyKeysInOrder()
     {
-        var dictionary = CreatePopulated();
-        var array = new string[4];
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
+        string[] array = new string[4];
 
         dictionary.Keys.CopyTo(array, 1);
 
@@ -65,7 +65,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void KeyCollection_WhenCopyToNullArray_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -79,8 +79,8 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void KeyCollection_WhenNonGenericCopyTo_ShouldCopyKeysInOrder()
     {
-        ICollection keys = (ICollection)CreatePopulated().Keys;
-        var array = new object[3];
+        var keys = (ICollection)CreatePopulated().Keys;
+        object[] array = new object[3];
 
         keys.CopyTo(array, 0);
 
@@ -93,7 +93,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void KeyCollection_WhenSyncRootAccessed_ShouldMatchDictionarySyncRoot()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.AreSame(((ICollection)dictionary).SyncRoot, ((ICollection)dictionary.Keys).SyncRoot);
     }
@@ -106,10 +106,7 @@ public partial class SequencedDictionaryTests
     {
         ICollection<string> keys = CreatePopulated().Keys;
 
-        Assert.ThrowsExactly<NotSupportedException>(() =>
-        {
-            keys.Clear();
-        });
+        Assert.ThrowsExactly<NotSupportedException>(keys.Clear);
     }
 
     /// <summary>
@@ -132,7 +129,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void KeyCollection_WhenDictionaryMutatedDuringEnumeration_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -151,12 +148,9 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void KeyCollection_WhenResetCalled_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         IEnumerator<string> enumerator = dictionary.Keys.GetEnumerator();
 
-        Assert.ThrowsExactly<NotSupportedException>(() =>
-        {
-            enumerator.Reset();
-        });
+        Assert.ThrowsExactly<NotSupportedException>(enumerator.Reset);
     }
 }

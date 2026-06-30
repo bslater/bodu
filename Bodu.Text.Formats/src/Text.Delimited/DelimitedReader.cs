@@ -419,7 +419,7 @@ public sealed class DelimitedReader
             {
                 if (sb is null)
                 {
-                    string value = new string(_buffer, _pos, end - _pos);
+                    string value = new(_buffer, _pos, end - _pos);
                     _pos = end;
                     return value;
                 }

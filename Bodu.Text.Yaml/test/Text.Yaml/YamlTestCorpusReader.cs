@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlTestCorpusReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -190,11 +190,11 @@ internal static class YamlTestCorpusReader
     /// <returns>One tuple per case: identifier, suite kind, and classification category.</returns>
     internal static IEnumerable<(string Id, string Kind, string Category)> EnumerateCases()
     {
-        foreach (var id in EnumerateCaseIds())
+        foreach (string id in EnumerateCaseIds())
         {
-            var dir = VectorDirectory(id);
-            var hasError = File.Exists(Path.Combine(dir, "error"));
-            var hasJson = File.Exists(Path.Combine(dir, "in.json"));
+            string dir = VectorDirectory(id);
+            bool hasError = File.Exists(Path.Combine(dir, "error"));
+            bool hasJson = File.Exists(Path.Combine(dir, "in.json"));
 
             yield return (id, KindOf(hasError, hasJson), Classify(id, hasError, hasJson));
         }
@@ -207,7 +207,7 @@ internal static class YamlTestCorpusReader
     /// <returns>One vector per case in the category.</returns>
     internal static IEnumerable<YamlTestVector> LoadByCategory(string category)
     {
-        foreach (var (id, kind, cat) in EnumerateCases())
+        foreach ((string? id, string? kind, string? cat) in EnumerateCases())
         {
             if (string.Equals(cat, category, StringComparison.Ordinal))
                 yield return Load(id, kind, cat);
@@ -257,13 +257,13 @@ internal static class YamlTestCorpusReader
     /// <returns>The loaded vector.</returns>
     internal static YamlTestVector Load(string id, string kind, string category)
     {
-        var dir = VectorDirectory(id);
+        string dir = VectorDirectory(id);
 
-        var descriptionPath = Path.Combine(dir, "===");
-        var description = File.Exists(descriptionPath) ? File.ReadAllText(descriptionPath).Trim() : string.Empty;
+        string descriptionPath = Path.Combine(dir, "===");
+        string description = File.Exists(descriptionPath) ? File.ReadAllText(descriptionPath).Trim() : string.Empty;
 
-        var jsonPath = Path.Combine(dir, "in.json");
-        var json = File.Exists(jsonPath) ? File.ReadAllBytes(jsonPath) : null;
+        string jsonPath = Path.Combine(dir, "in.json");
+        byte[]? json = File.Exists(jsonPath) ? File.ReadAllBytes(jsonPath) : null;
 
         return new YamlTestVector
         {

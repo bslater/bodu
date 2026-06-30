@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncLazyTests.Value.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public sealed partial class AsyncLazyTests
     [TestMethod]
     public async Task Value_WhenAwaitedMultipleTimes_ShouldInvokeFactoryOnce()
     {
-        var invocations = 0;
+        int invocations = 0;
         var sut = new AsyncLazy<int>(() =>
         {
             Interlocked.Increment(ref invocations);

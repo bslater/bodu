@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar.Algorithms;
-
 namespace Bodu.Globalization.Calendar;
 
 public partial class CalendarAlgorithmEdgeTests

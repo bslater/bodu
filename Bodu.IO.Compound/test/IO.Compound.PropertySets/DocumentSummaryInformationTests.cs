@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Compound;
-
 namespace Bodu.IO.Compound.PropertySets;
 
 /// <summary>
@@ -22,7 +20,7 @@ public class DocumentSummaryInformationTests
     /// <returns>The parsed document summary information.</returns>
     private static DocumentSummaryInformation Read(string relativePath)
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference(relativePath));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference(relativePath));
         Assert.IsTrue(file.TryGetDocumentSummaryInformation(out DocumentSummaryInformation? summary));
         return summary;
     }

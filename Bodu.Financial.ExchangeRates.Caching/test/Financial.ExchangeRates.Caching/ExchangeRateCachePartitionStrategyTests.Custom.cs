@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateCachePartitionStrategyTests.Custom.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class ExchangeRateCachePartitionStrategyTests
     [TestMethod]
     public void Custom_WhenGivenSelectors_ShouldUseThem()
     {
-        ExchangeRateCachePartitionStrategy quarterly = ExchangeRateCachePartitionStrategy.Custom(
+        var quarterly = ExchangeRateCachePartitionStrategy.Custom(
             date => $"{date.Year}-Q{((date.Month - 1) / 3) + 1}",
             date =>
             {

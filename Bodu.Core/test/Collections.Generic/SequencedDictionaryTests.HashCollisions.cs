@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.HashCollisions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public partial class SequencedDictionaryTests
     public void HashCollisions_WhenAllKeysCollide_ShouldPreserveOrderAndResolveLookups()
     {
         var dictionary = new SequencedDictionary<string, int>(new ConstantHashComparer());
-        var keys = Enumerable.Range(0, 64).Select(i => $"key-{i}").ToArray();
+        string[] keys = Enumerable.Range(0, 64).Select(i => $"key-{i}").ToArray();
 
         for (int i = 0; i < keys.Length; i++)
             dictionary.Add(keys[i], i);
@@ -51,7 +51,7 @@ public partial class SequencedDictionaryTests
     public void HashCollisions_WhenCollidingKeysRemoved_ShouldPreserveOrderOfRemainder()
     {
         var dictionary = new SequencedDictionary<string, int>(new ConstantHashComparer());
-        var keys = Enumerable.Range(0, 32).Select(i => $"key-{i}").ToArray();
+        string[] keys = Enumerable.Range(0, 32).Select(i => $"key-{i}").ToArray();
 
         foreach (string key in keys)
             dictionary.Add(key, 0);
@@ -60,7 +60,7 @@ public partial class SequencedDictionaryTests
         for (int i = 0; i < keys.Length; i += 2)
             Assert.IsTrue(dictionary.Remove(keys[i]));
 
-        var expected = keys.Where((_, i) => i % 2 == 1).ToArray();
+        string[] expected = keys.Where((_, i) => i % 2 == 1).ToArray();
         CollectionAssert.AreEqual(expected, dictionary.Keys.ToArray());
     }
 }

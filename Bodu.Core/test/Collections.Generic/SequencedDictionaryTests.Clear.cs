@@ -1,8 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Clear.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
 
 namespace Bodu.Collections.Generic;
 
@@ -14,7 +15,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Clear_WhenPopulated_ShouldRemoveAllEntries()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         dictionary.Clear();
 
@@ -29,7 +30,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Clear_WhenFollowedByAdd_ShouldResumeFromEmpty()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         dictionary.Clear();
         dictionary.Add("x", 10);

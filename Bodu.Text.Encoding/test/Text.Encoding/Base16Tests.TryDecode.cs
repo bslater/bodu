@@ -37,7 +37,7 @@ public sealed partial class Base16Tests
     [DataRow(2048)]
     public void TryDecode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(int charCount)
     {
-        string input = new string('a', charCount);
+        string input = new('a', charCount);
         byte[] destination = new byte[charCount / 2];
 
         bool ok = Base16.TryDecode(input.AsSpan(), destination, out int bytesWritten);
@@ -58,7 +58,7 @@ public sealed partial class Base16Tests
     [DataRow(128)]
     public void TryDecode_WhenDestinationOneByteShort_ShouldReturnFalseAndZeroBytesWritten(int charCount)
     {
-        string input = new string('a', charCount);
+        string input = new('a', charCount);
         byte[] destination = new byte[(charCount / 2) - 1];
 
         bool ok = Base16.TryDecode(input.AsSpan(), destination, out int bytesWritten);

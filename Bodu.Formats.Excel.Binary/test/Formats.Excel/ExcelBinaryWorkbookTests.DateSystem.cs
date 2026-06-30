@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelBinaryWorkbookTests.DateSystem.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public partial class ExcelBinaryWorkbookTests
             [Biff8TestWorkbook.DateMode(is1904: true)],
             new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, [Biff8TestWorkbook.Dimensions(0, 1, 0, 1)]));
 
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(xls);
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
 
         Assert.AreEqual(ExcelDateSystem.Excel1904, workbook.DateSystem);
     }

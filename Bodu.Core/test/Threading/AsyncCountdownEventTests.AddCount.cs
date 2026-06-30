@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncCountdownEventTests.AddCount.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public sealed partial class AsyncCountdownEventTests
         var sut = new AsyncCountdownEvent(1);
         sut.Signal();
 
-        Assert.ThrowsExactly<InvalidOperationException>(() => sut.AddCount());
+        Assert.ThrowsExactly<InvalidOperationException>(sut.AddCount);
     }
 
     /// <summary>

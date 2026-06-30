@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Biff8TestWorkbook.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -326,7 +326,7 @@ internal static class Biff8TestWorkbook
     public static MemoryStream WrapInCompoundFile(byte[] workbookStream, string streamName)
     {
         MemoryStream container = new();
-        using (CompoundFile file = CompoundFile.Create(container, leaveOpen: true))
+        using (var file = CompoundFile.Create(container, leaveOpen: true))
         {
             file.RootStorage.CreateStream(streamName, workbookStream);
             file.Commit();

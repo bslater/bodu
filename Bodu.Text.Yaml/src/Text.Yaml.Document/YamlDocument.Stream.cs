@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlDocument.Stream.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,12 +32,12 @@ public sealed partial class YamlDocument
     /// <exception cref="YamlFormatException">The source is not valid YAML.</exception>
     public static IReadOnlyList<YamlDocument> ParseAllDocuments(ReadOnlySpan<byte> utf8Yaml, YamlDocumentOptions options)
     {
-        var buffer = utf8Yaml.ToArray();
+        byte[] buffer = utf8Yaml.ToArray();
         var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth, options.DuplicateKeyBehavior, options.MergeKeyBehavior);
-        var documents = parser.ParseStream();
+        List<(List<YamlReaderRow> Rows, string[] Strings)> documents = parser.ParseStream();
 
         var result = new List<YamlDocument>(documents.Count);
-        foreach (var (rows, strings) in documents)
+        foreach ((List<YamlReaderRow>? rows, string[]? strings) in documents)
             result.Add(new YamlDocument(rows, strings));
 
         return result;

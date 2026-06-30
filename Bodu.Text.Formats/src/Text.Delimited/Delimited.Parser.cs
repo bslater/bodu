@@ -327,7 +327,7 @@ public static partial class Delimited
                 len++;
             }
 
-            string field = new string(_remaining[..len]);
+            string field = new(_remaining[..len]);
             _remaining = _remaining[len..];
             return field;
         }

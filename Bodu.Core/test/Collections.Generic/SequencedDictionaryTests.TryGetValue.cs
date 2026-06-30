@@ -1,8 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.TryGetValue.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
 
 namespace Bodu.Collections.Generic;
 
@@ -14,7 +15,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void TryGetValue_WhenKeyExists_ShouldReturnTrueAndValue()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         bool found = dictionary.TryGetValue("b", out int value);
 
@@ -28,7 +29,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void TryGetValue_WhenKeyMissing_ShouldReturnFalseAndDefault()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         bool found = dictionary.TryGetValue("missing", out int value);
 
@@ -42,7 +43,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void TryGetValue_WhenInsertionOrder_ShouldNotChangeOrder()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         _ = dictionary.TryGetValue("a", out _);
 

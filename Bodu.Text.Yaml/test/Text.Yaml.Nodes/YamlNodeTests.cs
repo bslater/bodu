@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Yaml;
-using Bodu.Text.Yaml.Nodes;
-
 namespace Bodu.Text.Yaml.Nodes;
 
 /// <summary>
@@ -19,8 +16,8 @@ public partial class YamlNodeTests
     [TestMethod]
     public void Parse_WhenMapping_ShouldBuildObject()
     {
-        var node = YamlNode.Parse("a: 1\nb: hello\nc: true\n")!;
-        var obj = node.AsObject();
+        YamlNode node = YamlNode.Parse("a: 1\nb: hello\nc: true\n")!;
+        YamlObject obj = node.AsObject();
 
         Assert.AreEqual(1L, obj["a"]!.AsValue().GetValue<long>());
         Assert.AreEqual("hello", obj["b"]!.AsValue().GetValue<string>());
@@ -31,7 +28,7 @@ public partial class YamlNodeTests
     [TestMethod]
     public void Parse_WhenSequence_ShouldBuildArray()
     {
-        var array = YamlNode.Parse("- 1\n- 2\n- 3\n")!.AsArray();
+        YamlArray array = YamlNode.Parse("- 1\n- 2\n- 3\n")!.AsArray();
 
         Assert.AreEqual(3, array.Count);
         Assert.AreEqual(2L, array[1]!.AsValue().GetValue<long>());
@@ -41,8 +38,8 @@ public partial class YamlNodeTests
     [TestMethod]
     public void Parse_WhenNested_ShouldNavigate()
     {
-        var node = YamlNode.Parse("server:\n  hosts:\n    - a\n    - b\n  port: 80\n")!;
-        var server = node["server"]!;
+        YamlNode node = YamlNode.Parse("server:\n  hosts:\n    - a\n    - b\n  port: 80\n")!;
+        YamlNode server = node["server"]!;
 
         Assert.AreEqual("b", server["hosts"]![1]!.AsValue().GetValue<string>());
         Assert.AreEqual(80L, server["port"]!.AsValue().GetValue<long>());

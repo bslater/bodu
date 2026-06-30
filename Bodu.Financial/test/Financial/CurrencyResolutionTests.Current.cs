@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
-
 namespace Bodu.Financial;
 
 public sealed partial class CurrencyResolutionTests

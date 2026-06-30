@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.Currencies;
-using Bodu.Test;
-using Bodu.Test.Assertions;
 
 namespace Bodu.Financial;
 

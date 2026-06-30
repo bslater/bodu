@@ -40,7 +40,7 @@ public partial class PooledBufferBuilderTests
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.DangerousGetArray(); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Sort(); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Sort((a, b) => a.CompareTo(b)); });
-        Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Reset(); });
+        Assert.ThrowsExactly<ObjectDisposedException>(builder.Reset);
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.TryCopyFrom(new System.Collections.Generic.List<int>()); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = ((System.Buffers.IMemoryOwner<int>)builder).Memory; });
     }
@@ -86,7 +86,7 @@ public partial class PooledBufferBuilderTests
 
             for (int i = 0; i < refs.Length; i++)
             {
-                object item = new object();
+                object item = new();
                 refs[i] = new WeakReference(item);
                 builder.Append(item);
             }
@@ -131,7 +131,7 @@ public partial class PooledBufferBuilderTests
 
             for (int i = 0; i < refs.Length; i++)
             {
-                object item = new object();
+                object item = new();
                 refs[i] = new WeakReference(item);
                 b.Append(item);
             }

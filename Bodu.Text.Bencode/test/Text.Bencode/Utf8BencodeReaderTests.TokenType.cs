@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Text;
-using Bodu.Test.Assertions;
-using Bodu.Test.Kat;
 using Bodu.Text.Bencode.Reader;
 
 namespace Bodu.Text.Bencode;

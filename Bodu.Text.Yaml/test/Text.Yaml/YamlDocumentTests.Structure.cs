@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlDocumentTests.Structure.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -69,7 +69,7 @@ public partial class YamlDocumentTests
     public void Parse_WhenBlockMapping_ShouldResolveScalarKinds()
     {
         using var doc = YamlDocument.Parse("a: 1\nb: two\nc: true\nd: 3.5\ne: null\nf: ~");
-        var root = doc.RootElement;
+        YamlElement root = doc.RootElement;
 
         Assert.AreEqual(YamlValueKind.Mapping, root.ValueKind);
         Assert.AreEqual(1L, root.GetProperty("a").GetInt64());
@@ -85,7 +85,7 @@ public partial class YamlDocumentTests
     public void Parse_WhenNestedMapping_ShouldNest()
     {
         using var doc = YamlDocument.Parse("server:\n  host: localhost\n  port: 8080\n");
-        var server = doc.RootElement.GetProperty("server");
+        YamlElement server = doc.RootElement.GetProperty("server");
 
         Assert.AreEqual(YamlValueKind.Mapping, server.ValueKind);
         Assert.AreEqual("localhost", server.GetProperty("host").GetString());
@@ -97,7 +97,7 @@ public partial class YamlDocumentTests
     public void Parse_WhenBlockSequence_ShouldYieldElements()
     {
         using var doc = YamlDocument.Parse("- one\n- two\n- 3\n");
-        var root = doc.RootElement;
+        YamlElement root = doc.RootElement;
 
         Assert.AreEqual(YamlValueKind.Sequence, root.ValueKind);
         Assert.AreEqual(3, root.GetSequenceLength());
@@ -111,9 +111,9 @@ public partial class YamlDocumentTests
     public void Parse_WhenMappingOfSequence_ShouldParse()
     {
         using var doc = YamlDocument.Parse("items:\n  - a\n  - b\nname: list\n");
-        var root = doc.RootElement;
+        YamlElement root = doc.RootElement;
 
-        var items = root.GetProperty("items");
+        YamlElement items = root.GetProperty("items");
         Assert.AreEqual(YamlValueKind.Sequence, items.ValueKind);
         Assert.AreEqual(2, items.GetSequenceLength());
         Assert.AreEqual("a", items[0].GetString());
@@ -125,7 +125,7 @@ public partial class YamlDocumentTests
     public void Parse_WhenSequenceOfMappings_ShouldParse()
     {
         using var doc = YamlDocument.Parse("- name: a\n  age: 1\n- name: b\n  age: 2\n");
-        var root = doc.RootElement;
+        YamlElement root = doc.RootElement;
 
         Assert.AreEqual(2, root.GetSequenceLength());
         Assert.AreEqual("a", root[0].GetProperty("name").GetString());

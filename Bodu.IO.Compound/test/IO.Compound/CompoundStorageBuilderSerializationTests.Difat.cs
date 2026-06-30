@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageBuilderSerializationTests.Difat.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public partial class CompoundStorageBuilderSerializationTests
 
         byte[] bytes = builder.ToArray(new CompoundBuildOptions { Version = CompoundFileVersion.V3 });
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
+        using var file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Big", out CompoundStream? entry));
         Assert.AreEqual(payload.Length, entry.Length);
         Assert.AreEqual(expected, Convert.ToHexString(SHA256.HashData(entry.AsMemory().Span)).ToLowerInvariant());

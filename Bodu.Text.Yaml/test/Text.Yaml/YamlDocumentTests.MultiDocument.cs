@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlDocumentTests.MultiDocument.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class YamlDocumentTests
     [TestMethod]
     public void ParseAllDocuments_WhenMultipleDocuments_ShouldYieldEach()
     {
-        var docs = YamlDocument.ParseAllDocuments("---\na: 1\n---\nb: 2\n...\n");
+        IReadOnlyList<YamlDocument> docs = YamlDocument.ParseAllDocuments("---\na: 1\n---\nb: 2\n...\n");
         Assert.AreEqual(2, docs.Count);
         Assert.AreEqual(1L, docs[0].RootElement.GetProperty("a").GetInt64());
         Assert.AreEqual(2L, docs[1].RootElement.GetProperty("b").GetInt64());
@@ -27,7 +27,7 @@ public partial class YamlDocumentTests
     [TestMethod]
     public void ParseAllDocuments_WhenSingleDocument_ShouldYieldOne()
     {
-        var docs = YamlDocument.ParseAllDocuments("key: value\n");
+        IReadOnlyList<YamlDocument> docs = YamlDocument.ParseAllDocuments("key: value\n");
         Assert.AreEqual(1, docs.Count);
         Assert.AreEqual("value", docs[0].RootElement.GetProperty("key").GetString());
     }
@@ -37,7 +37,7 @@ public partial class YamlDocumentTests
     [TestCategory("Regression")]
     public void ParseAllDocuments_WhenDocumentsSeparatedByMarkers_ShouldYieldInOrder()
     {
-        var docs = YamlDocument.ParseAllDocuments("---\nkey1: value1\n---\nkey2: value2\n");
+        IReadOnlyList<YamlDocument> docs = YamlDocument.ParseAllDocuments("---\nkey1: value1\n---\nkey2: value2\n");
         Assert.AreEqual(2, docs.Count);
         Assert.AreEqual("value1", docs[0].RootElement.GetProperty("key1").GetString());
         Assert.AreEqual("value2", docs[1].RootElement.GetProperty("key2").GetString());

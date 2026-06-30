@@ -165,7 +165,7 @@ public readonly partial struct Money<TCurrency> :
             && trimmed.StartsWith(isoCode, StringComparison.Ordinal)
             && trimmed[isoCode.Length] == ' ')
         {
-            numericPart = trimmed[(isoCode.Length + 1) ..];
+            numericPart = trimmed[(isoCode.Length + 1)..];
             return true;
         }
 

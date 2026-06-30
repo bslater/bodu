@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlValueTests.GetValue.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class YamlValueTests
     {
         var value = YamlValue.Create("not-a-number");
 
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() => value.GetValue<int>());
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() => value.GetValue<int>());
         Assert.IsNotNull(ex.InnerException);
     }
 }

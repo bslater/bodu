@@ -94,8 +94,8 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void GetCoverage_WhenTwoProvidersShareOneFile_ShouldKeepCoveragePartitioned()
     {
         string path = NewDatabasePath();
-        var rba = CreateFileCache("RBA", path);
-        var ofx = CreateFileCache("OFX", path);
+        SqliteExchangeRateCache rba = CreateFileCache("RBA", path);
+        SqliteExchangeRateCache ofx = CreateFileCache("OFX", path);
 
         var start = new DateOnly(2023, 1, 3);
         var end = new DateOnly(2023, 1, 10);
@@ -115,8 +115,8 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void StoreFetchedRange_WhenTwoProvidersShareOneFile_ShouldKeepBothHalvesPartitioned()
     {
         string path = NewDatabasePath();
-        var rba = CreateFileCache("RBA", path);
-        var ofx = CreateFileCache("OFX", path);
+        SqliteExchangeRateCache rba = CreateFileCache("RBA", path);
+        SqliteExchangeRateCache ofx = CreateFileCache("OFX", path);
 
         var date = new DateOnly(2023, 1, 3);
         DateTimeOffset now = DateTimeOffset.UtcNow;
@@ -143,8 +143,8 @@ public sealed partial class SqliteExchangeRateCacheTests
     public void GetRates_WhenProvidersDifferOnlyByCase_ShouldTreatAsDistinctSeries()
     {
         string path = NewDatabasePath();
-        var lower = CreateFileCache("ofx", path);
-        var upper = CreateFileCache("OFX", path);
+        SqliteExchangeRateCache lower = CreateFileCache("ofx", path);
+        SqliteExchangeRateCache upper = CreateFileCache("OFX", path);
 
         var date = new DateOnly(2023, 1, 3);
         DateTimeOffset now = DateTimeOffset.UtcNow;
@@ -166,8 +166,8 @@ public sealed partial class SqliteExchangeRateCacheTests
     public async Task StoreFetchedRange_WhenDifferentProvidersWriteSamePairConcurrently_ShouldKeepBothSeries()
     {
         string path = NewDatabasePath();
-        var rba = CreateFileCache("RBA", path);
-        var ofx = CreateFileCache("OFX", path);
+        SqliteExchangeRateCache rba = CreateFileCache("RBA", path);
+        SqliteExchangeRateCache ofx = CreateFileCache("OFX", path);
 
         var date = new DateOnly(2023, 1, 3);
         DateTimeOffset now = DateTimeOffset.UtcNow;

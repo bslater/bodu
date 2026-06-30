@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncSemaphoreTests.LockAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,7 +34,7 @@ public sealed partial class AsyncSemaphoreTests
     {
         var sut = new AsyncSemaphore(0);
 
-        var pending = sut.LockAsync();
+        ValueTask<AsyncSemaphore.Releaser> pending = sut.LockAsync();
         Assert.IsFalse(pending.IsCompleted);
 
         sut.Release();
@@ -57,8 +57,8 @@ public sealed partial class AsyncSemaphoreTests
         var sut = new AsyncSemaphore(0);
         using var cts = new CancellationTokenSource();
 
-        var canceled = sut.LockAsync(cts.Token);
-        var live = sut.LockAsync();
+        ValueTask<AsyncSemaphore.Releaser> canceled = sut.LockAsync(cts.Token);
+        ValueTask<AsyncSemaphore.Releaser> live = sut.LockAsync();
 
         cts.Cancel();
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceled);

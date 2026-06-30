@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateCacheFileLayoutTests.Create.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public sealed partial class ExchangeRateCacheFileLayoutTests
     [TestMethod]
     public void Create_WhenGivenDelegates_ShouldUseThem()
     {
-        ExchangeRateCacheFileLayout layout = ExchangeRateCacheFileLayout.Create(
+        var layout = ExchangeRateCacheFileLayout.Create(
             ExchangeRateCachePartitionStrategy.Single,
             directory: ctx => Path.Combine(ctx.Root, "fx", ctx.Provider),
             fileName: ctx => $"{ctx.Pair.From}-{ctx.Pair.To}{ctx.FileExtension}");
@@ -29,7 +29,7 @@ public sealed partial class ExchangeRateCacheFileLayoutTests
     [TestMethod]
     public void Create_WhenNoDelegates_ShouldUsePartitionedDefaults()
     {
-        ExchangeRateCacheFileLayout layout = ExchangeRateCacheFileLayout.Create(ExchangeRateCachePartitionStrategy.Yearly);
+        var layout = ExchangeRateCacheFileLayout.Create(ExchangeRateCachePartitionStrategy.Yearly);
 
         Assert.IsTrue(layout.IsPartitioned);
         Assert.AreEqual(Path.Combine("root", "RBA", "AUDUSD"), layout.ResolveDirectory("root", "RBA", Pair));

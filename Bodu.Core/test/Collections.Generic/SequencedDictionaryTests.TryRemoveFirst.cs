@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.TryRemoveFirst.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void TryRemoveFirst_WhenPopulated_ShouldRemoveAndReturnHeadEntry()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         bool removed = dictionary.TryRemoveFirst(out KeyValuePair<string, int> entry);
 
@@ -44,7 +44,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void TryRemoveFirst_WhenCalledRepeatedly_ShouldDrainInOrder()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         var drained = new List<string>();
         while (dictionary.TryRemoveFirst(out KeyValuePair<string, int> entry))

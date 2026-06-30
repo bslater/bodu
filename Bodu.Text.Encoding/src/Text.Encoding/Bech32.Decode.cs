@@ -206,7 +206,7 @@ public static partial class Bech32
             values[i] = (byte)value;
         }
 
-        string hrpString = new string(hrpPart);
+        string hrpString = new(hrpPart);
         if (!VerifyChecksum(hrpString, values, out encoding))
         {
             error = EncodingResourceStrings.Format_Invalid_Bech32Checksum;

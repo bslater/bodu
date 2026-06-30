@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundConformanceTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,7 +52,7 @@ public class CompoundConformanceTests
         storage.ClassId = storageClassId;
 
         byte[] bytes = root.ToArray();
-        CfbHeader header = CfbHeader.Parse(bytes);
+        var header = CfbHeader.Parse(bytes);
 
         int streamEntry = FindEntryOffset(bytes, header, "Data");
         Assert.AreEqual(Guid.Empty, new Guid(bytes.AsSpan(streamEntry + ClassIdOffset, 16)), "stream clsid");

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlTestCorpusTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,12 +32,12 @@ public partial class YamlTestCorpusTests
         if (Encoding.UTF8.GetString(kat.Json!).Trim().Length == 0)
             return;
 
-        var expectedValues = CorpusCompare.SplitJsonValues(kat.Json!);
+        List<JsonElement> expectedValues = CorpusCompare.SplitJsonValues(kat.Json!);
         if (expectedValues.Count != 1)
             return;
 
-        var value = YamlSerializer.Deserialize<object>(kat.Yaml);
-        var reemitted = YamlSerializer.Serialize(value);
+        object? value = YamlSerializer.Deserialize<object>(kat.Yaml);
+        string reemitted = YamlSerializer.Serialize(value);
 
         using var doc = YamlDocument.Parse(reemitted);
         Assert.IsTrue(CorpusCompare.Matches(expectedValues[0], doc.RootElement), $"{kat.Id}\n--- re-emitted ---\n{reemitted}");
@@ -54,7 +54,7 @@ public partial class YamlTestCorpusTests
     public void Reader_WhenSupportedValidCase_ShouldReadAllTokens(YamlTestVector kat)
     {
         var reader = new Utf8YamlReader(kat.Yaml);
-        var depth = 0;
+        int depth = 0;
         while (reader.Read())
         {
             switch (reader.TokenType)
@@ -84,9 +84,9 @@ public partial class YamlTestCorpusTests
     [TestCategory("Regression")]
     public void RoundTrip_WhenParseOnlyCase_ShouldProduceStableGraph(YamlTestVector kat)
     {
-        var first = YamlSerializer.Deserialize<object>(kat.Yaml);
-        var reemitted = YamlSerializer.Serialize(first);
-        var second = YamlSerializer.Deserialize<object>(reemitted);
+        object? first = YamlSerializer.Deserialize<object>(kat.Yaml);
+        string reemitted = YamlSerializer.Serialize(first);
+        object? second = YamlSerializer.Deserialize<object>(reemitted);
 
         Assert.AreEqual(
             JsonSerializer.Serialize(first),

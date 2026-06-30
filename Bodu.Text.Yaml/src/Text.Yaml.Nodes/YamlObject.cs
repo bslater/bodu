@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlObject.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ public sealed class YamlObject : YamlNode, IEnumerable<KeyValuePair<string, Yaml
         get
         {
             Bodu.ThrowHelper.ThrowIfNull(key);
-            return _entries.TryGetValue(key, out var node) ? node : null;
+            return _entries.TryGetValue(key, out YamlNode? node) ? node : null;
         }
 
         set
@@ -105,7 +105,7 @@ public sealed class YamlObject : YamlNode, IEnumerable<KeyValuePair<string, Yaml
     /// <returns>The entry enumerator.</returns>
     public IEnumerator<KeyValuePair<string, YamlNode?>> GetEnumerator()
     {
-        foreach (var key in _order)
+        foreach (string key in _order)
             yield return new KeyValuePair<string, YamlNode?>(key, _entries[key]);
     }
 
@@ -116,7 +116,7 @@ public sealed class YamlObject : YamlNode, IEnumerable<KeyValuePair<string, Yaml
     public override void WriteTo(ref Utf8YamlWriter writer)
     {
         writer.WriteStartMapping();
-        foreach (var key in _order)
+        foreach (string key in _order)
         {
             writer.WritePropertyName(key);
             WriteChild(ref writer, _entries[key]);

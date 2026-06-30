@@ -28,7 +28,7 @@ public class PropertySetWriterTests
         var set = new OlePropertySet(TestFormatId, Guid.Empty, 1252);
         set.AddSection(section);
 
-        OlePropertySet parsed = OlePropertySet.Parse(set.ToArray());
+        var parsed = OlePropertySet.Parse(set.ToArray());
         Assert.IsNotNull(parsed[10]);
         return parsed[10]!;
     }
@@ -122,7 +122,7 @@ public class PropertySetWriterTests
         var set = new OlePropertySet(TestFormatId, Guid.Empty, 1252);
         set.AddSection(section);
 
-        OlePropertySet parsed = OlePropertySet.Parse(set.ToArray());
+        var parsed = OlePropertySet.Parse(set.ToArray());
 
         Assert.AreEqual(1252, parsed.Sections[0].CodePage);
         Assert.AreEqual(TestFormatId, parsed.FormatId);

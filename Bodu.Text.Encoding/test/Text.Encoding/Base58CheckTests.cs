@@ -53,7 +53,7 @@ public sealed class Base58CheckTests
         // Flip the last character of the Genesis address — almost certainly invalidates the checksum.
         char[] tampered = GenesisAddress.ToCharArray();
         tampered[^1] = tampered[^1] == 'a' ? 'b' : 'a';
-        string tamperedAddress = new string(tampered);
+        string tamperedAddress = new(tampered);
 
         FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {

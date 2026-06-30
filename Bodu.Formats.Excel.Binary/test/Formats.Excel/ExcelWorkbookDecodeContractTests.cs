@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorkbookDecodeContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public sealed class ExcelWorkbookDecodeContractTests
         using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
             [],
             new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, body));
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(xls);
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
 
         ExcelWorksheet sheet = workbook.ReadWorksheet(0);
         Dictionary<(int Row, int Column), ExcelCell> grid = new();

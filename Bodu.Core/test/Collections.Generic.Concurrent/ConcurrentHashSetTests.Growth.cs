@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSetTests.Growth.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,11 +18,11 @@ public partial class ConcurrentHashSetTests
         var set = new ConcurrentHashSet<int>(capacity: 4);
 
         const int count = 2000;
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
             Assert.IsTrue(set.Add(i));
 
         Assert.AreEqual(count, set.Count);
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
             Assert.IsTrue(set.Contains(i), $"Element {i} must survive table growth.");
     }
 }

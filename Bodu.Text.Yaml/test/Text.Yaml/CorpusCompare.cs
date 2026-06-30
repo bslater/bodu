@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CorpusCompare.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,14 +57,14 @@ internal static class CorpusCompare
             return false;
 
         var entries = new Dictionary<string, YamlElement>(StringComparer.Ordinal);
-        foreach (var property in actual.EnumerateMapping())
+        foreach (YamlProperty property in actual.EnumerateMapping())
             entries[property.Name] = property.Value;
 
-        var expectedCount = 0;
-        foreach (var property in expected.EnumerateObject())
+        int expectedCount = 0;
+        foreach (JsonProperty property in expected.EnumerateObject())
         {
             expectedCount++;
-            if (!entries.TryGetValue(property.Name, out var child) || !Matches(property.Value, child))
+            if (!entries.TryGetValue(property.Name, out YamlElement child) || !Matches(property.Value, child))
                 return false;
         }
 
@@ -76,9 +76,9 @@ internal static class CorpusCompare
         if (actual.ValueKind != YamlValueKind.Sequence)
             return false;
 
-        var index = 0;
-        var length = actual.GetSequenceLength();
-        foreach (var element in expected.EnumerateArray())
+        int index = 0;
+        int length = actual.GetSequenceLength();
+        foreach (JsonElement element in expected.EnumerateArray())
         {
             if (index >= length || !Matches(element, actual[index]))
                 return false;
@@ -98,10 +98,10 @@ internal static class CorpusCompare
         switch (actual.ValueKind)
         {
             case YamlValueKind.Integer:
-                return expected.TryGetInt64(out var expectedInt) && actual.GetInt64() == expectedInt;
+                return expected.TryGetInt64(out long expectedInt) && actual.GetInt64() == expectedInt;
 
             case YamlValueKind.Float:
-                return expected.TryGetDouble(out var expectedDouble) && NumbersEqual(actual.GetDouble(), expectedDouble);
+                return expected.TryGetDouble(out double expectedDouble) && NumbersEqual(actual.GetDouble(), expectedDouble);
 
             default:
                 return false;
@@ -124,7 +124,7 @@ internal static class CorpusCompare
 
         while (true)
         {
-            var skip = 0;
+            int skip = 0;
             while (skip < remaining.Length && remaining[skip] is (byte)' ' or (byte)'\t' or (byte)'\n' or (byte)'\r')
                 skip++;
 
@@ -132,7 +132,7 @@ internal static class CorpusCompare
             if (remaining.IsEmpty)
                 break;
 
-            var consumed = MeasureFirstValue(remaining);
+            int consumed = MeasureFirstValue(remaining);
 
             using var document = JsonDocument.Parse(remaining[..consumed].ToArray());
             result.Add(document.RootElement.Clone());
@@ -156,7 +156,7 @@ internal static class CorpusCompare
             reader.Read();
         }
 
-        var depth = 0;
+        int depth = 0;
         do
         {
             switch (reader.TokenType)

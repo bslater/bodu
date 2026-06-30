@@ -155,7 +155,7 @@ public class Ed25519PointTests
             random.NextBytes(pointScalar);
 
             // Derive an arbitrary prime-order point P = [pointScalar]B as the variable point.
-            Ed25519Point point = Ed25519Point.ScalarMultBase(pointScalar);
+            var point = Ed25519Point.ScalarMultBase(pointScalar);
 
             byte[] expected = new byte[Ed25519Point.EncodedSizeInBytes];
             byte[] actual = new byte[Ed25519Point.EncodedSizeInBytes];

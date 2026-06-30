@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.References.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class SequencedDictionaryTests
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static WeakReference AddValueAndGetWeakReference(SequencedDictionary<string, object> dictionary, string key)
     {
-        var value = new object();
+        object value = new();
         dictionary[key] = value;
         return new WeakReference(value);
     }

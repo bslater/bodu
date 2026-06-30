@@ -61,7 +61,7 @@ public static partial class Hpke
     public static (byte[] Encapsulation, byte[] Ciphertext) Seal(
         HpkeSuite suite, ReadOnlySpan<byte> recipientPublicKey, ReadOnlySpan<byte> info, ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> plaintext)
     {
-        using HpkeSender sender = HpkeSender.SetupBase(suite, recipientPublicKey, info, out byte[] encapsulation);
+        using var sender = HpkeSender.SetupBase(suite, recipientPublicKey, info, out byte[] encapsulation);
         byte[] ciphertext = sender.Seal(associatedData, plaintext);
         return (encapsulation, ciphertext);
     }
@@ -91,7 +91,7 @@ public static partial class Hpke
     public static byte[] Open(
         HpkeSuite suite, X25519 recipientKey, ReadOnlySpan<byte> encapsulation, ReadOnlySpan<byte> info, ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> ciphertext)
     {
-        using HpkeReceiver receiver = HpkeReceiver.SetupBase(suite, recipientKey, encapsulation, info);
+        using var receiver = HpkeReceiver.SetupBase(suite, recipientKey, encapsulation, info);
         return receiver.Open(associatedData, ciphertext);
     }
 }

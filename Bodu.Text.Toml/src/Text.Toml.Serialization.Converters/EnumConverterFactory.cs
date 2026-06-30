@@ -26,6 +26,6 @@ internal sealed class EnumConverterFactory
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type converterType = typeof(EnumConverter<>).MakeGenericType(typeToConvert);
-        return (TomlConverter)Activator.CreateInstance(converterType, new object?[] { null, true }) !;
+        return (TomlConverter)Activator.CreateInstance(converterType, new object?[] { null, true })!;
     }
 }

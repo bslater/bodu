@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncLockTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,10 +19,10 @@ public sealed partial class AsyncLockTests
     /// <param name="value">The candidate maximum.</param>
     private static void InterlockedMax(ref int target, int value)
     {
-        var current = Volatile.Read(ref target);
+        int current = Volatile.Read(ref target);
         while (value > current)
         {
-            var prior = Interlocked.CompareExchange(ref target, value, current);
+            int prior = Interlocked.CompareExchange(ref target, value, current);
             if (prior == current)
                 return;
 

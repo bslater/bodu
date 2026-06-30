@@ -40,7 +40,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         Assert.IsNotNull(keyValueField, $"Unable to locate KeyValue field on {typeof(TAlgorithm).Name}.");
         keyValueField!.SetValue(algo, null);
 
-        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() => algo.Initialize());
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(algo.Initialize);
         Assert.IsTrue(
             ex.Message.Contains("key", StringComparison.OrdinalIgnoreCase),
             $"Expected exception message to mention 'key'. Actual: '{ex.Message}'");

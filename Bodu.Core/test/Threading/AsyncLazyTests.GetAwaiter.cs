@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncLazyTests.GetAwaiter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public sealed partial class AsyncLazyTests
     [TestMethod]
     public async Task GetAwaiter_WhenFactoryThrows_ShouldCacheAndRethrow()
     {
-        var invocations = 0;
+        int invocations = 0;
         var sut = new AsyncLazy<int>((Func<Task<int>>)(() =>
         {
             Interlocked.Increment(ref invocations);

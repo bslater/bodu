@@ -102,7 +102,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         IEnumerator<int> enumerator = collection.GetEnumerator();
         AddToTail(collection, 2);
 
-        Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.Reset());
+        Assert.ThrowsExactly<InvalidOperationException>(enumerator.Reset);
     }
 
     /// <summary>

@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test.Assertions;
-using Bodu.Text.Bencode;
 
 namespace Bodu.Text.Bencode.Nodes;
 

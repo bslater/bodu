@@ -2353,7 +2353,7 @@ public partial class ConcurrentCircularBufferTests
         // Serialise successful generation publication with enqueue. This ensures generation
         // order matches insertion order and prevents failed TryEnqueue attempts from creating
         // artificial generation gaps in the allowOverwrite:false case.
-        object writerLock = new object();
+        object writerLock = new();
 
         // Start from a full buffer so overwrite mode immediately exercises eviction and
         // non-overwrite mode begins from the pressure point where writers must wait for consumers.

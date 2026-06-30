@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeEndpointOptionsTests.ProviderOptionsValidate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,6 +17,6 @@ public partial class BoeEndpointOptionsTests
         BoeExchangeRateOptions options = new();
         options.Endpoint.BaseUrl = null!;
 
-        _ = Assert.ThrowsExactly<ArgumentException>(() => options.Validate());
+        _ = Assert.ThrowsExactly<ArgumentException>(options.Validate);
     }
 }

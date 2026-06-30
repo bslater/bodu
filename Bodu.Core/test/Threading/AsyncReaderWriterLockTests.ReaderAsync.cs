@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncReaderWriterLockTests.ReaderAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,8 +34,8 @@ public sealed partial class AsyncReaderWriterLockTests
     {
         var sut = new AsyncReaderWriterLock();
 
-        var first = await sut.ReaderAsync();
-        var second = sut.ReaderAsync();
+        AsyncReaderWriterLock.Releaser first = await sut.ReaderAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> second = sut.ReaderAsync();
 
         Assert.IsTrue(second.IsCompleted, "A second reader must not wait behind an active reader.");
 
@@ -50,9 +50,9 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task ReaderAsync_WhenWriterActive_ShouldWaitUntilWriterReleases()
     {
         var sut = new AsyncReaderWriterLock();
-        var writer = await sut.WriterAsync();
+        AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
 
-        var reader = sut.ReaderAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> reader = sut.ReaderAsync();
         Assert.IsFalse(reader.IsCompleted, "A reader must wait while a writer is active.");
 
         writer.Dispose();
@@ -66,10 +66,10 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task ReaderAsync_WhenWriterQueued_ShouldWaitForWriterPreference()
     {
         var sut = new AsyncReaderWriterLock();
-        var reader = await sut.ReaderAsync();
+        AsyncReaderWriterLock.Releaser reader = await sut.ReaderAsync();
 
-        var queuedWriter = sut.WriterAsync();
-        var laterReader = sut.ReaderAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> queuedWriter = sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> laterReader = sut.ReaderAsync();
 
         Assert.IsFalse(laterReader.IsCompleted, "A reader must defer to a queued writer.");
 

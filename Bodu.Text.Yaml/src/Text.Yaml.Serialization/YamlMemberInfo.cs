@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlMemberInfo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -67,7 +67,7 @@ internal sealed class YamlMemberInfo
     public static void EnsureUniqueWireNames(YamlMemberInfo[] members, YamlSerializerOptions options, Type type)
     {
         var seen = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var member in members)
+        foreach (YamlMemberInfo member in members)
         {
             if (!seen.Add(member.WireName(options)))
             {
@@ -87,7 +87,7 @@ internal sealed class YamlMemberInfo
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
         bool includeFields)
     {
-        var all = s_cache.GetOrAdd(type, static t => Discover(t));
+        YamlMemberInfo[] all = s_cache.GetOrAdd(type, static t => Discover(t));
         if (includeFields)
             return all;
 
@@ -110,7 +110,7 @@ internal sealed class YamlMemberInfo
     {
         var members = new List<YamlMemberInfo>();
 
-        foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
             if (property.GetIndexParameters().Length > 0 || property.GetMethod is null)
                 continue;
@@ -118,7 +118,7 @@ internal sealed class YamlMemberInfo
             if (property.IsDefined(typeof(YamlIgnoreAttribute), inherit: true))
                 continue;
 
-            var explicitName = property.GetCustomAttribute<YamlPropertyNameAttribute>(inherit: true)?.Name;
+            string? explicitName = property.GetCustomAttribute<YamlPropertyNameAttribute>(inherit: true)?.Name;
             Action<object, object?>? setter = null;
             if (property.SetMethod is { IsPublic: true })
                 setter = property.SetValue;
@@ -134,12 +134,12 @@ internal sealed class YamlMemberInfo
             });
         }
 
-        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+        foreach (FieldInfo field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
         {
             if (field.IsDefined(typeof(YamlIgnoreAttribute), inherit: true))
                 continue;
 
-            var explicitName = field.GetCustomAttribute<YamlPropertyNameAttribute>(inherit: true)?.Name;
+            string? explicitName = field.GetCustomAttribute<YamlPropertyNameAttribute>(inherit: true)?.Name;
             members.Add(new YamlMemberInfo
             {
                 MemberName = field.Name,

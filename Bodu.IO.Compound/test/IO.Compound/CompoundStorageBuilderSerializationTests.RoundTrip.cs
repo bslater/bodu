@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageBuilderSerializationTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,7 +57,7 @@ public partial class CompoundStorageBuilderSerializationTests
 
         byte[] bytes = builder.ToArray(new CompoundBuildOptions { Version = kat.Version });
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
+        using var file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Data", out CompoundStream? entry));
         Assert.AreEqual(kat.Size, entry.Length);
         CollectionAssert.AreEqual(payload, entry.ReadAllBytes());
@@ -74,7 +74,7 @@ public partial class CompoundStorageBuilderSerializationTests
         for (int i = 0; i < 100; i++)
             _ = builder.AddStream($"Stream{i:D3}", CreatePayload(i));
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(builder.ToArray()));
+        using var file = CompoundFile.Open(new MemoryStream(builder.ToArray()));
 
         for (int i = 0; i < 100; i++)
         {
@@ -97,7 +97,7 @@ public partial class CompoundStorageBuilderSerializationTests
 
         _ = current.AddStream("Leaf", CreatePayload(200));
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(builder.ToArray()));
+        using var file = CompoundFile.Open(new MemoryStream(builder.ToArray()));
         CompoundStorage storage = file.RootStorage;
         for (int depth = 0; depth < 8; depth++)
             storage = storage.OpenStorage($"Level{depth}");

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializerTests.Dictionary.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public partial class YamlSerializerTests
     {
         var value = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
 
-        var yaml = YamlSerializer.Serialize(value);
+        string yaml = YamlSerializer.Serialize(value);
 
         Assert.AreEqual("a: 1\nb: 2\n", yaml);
     }

@@ -20,7 +20,7 @@ public sealed class Argon2ParametersTests
     {
         Argon2Parameters parameters = new() { Parallelism = 1, MemoryKiB = 64, Iterations = 0 };
 
-        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => parameters.Validate());
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(parameters.Validate);
 
         Assert.AreEqual(nameof(Argon2Parameters.Iterations), ex.ParamName);
     }
@@ -33,7 +33,7 @@ public sealed class Argon2ParametersTests
     {
         Argon2Parameters parameters = new() { Parallelism = 1, MemoryKiB = 64, Iterations = 1, TagLength = 2 };
 
-        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => parameters.Validate());
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(parameters.Validate);
 
         Assert.AreEqual(nameof(Argon2Parameters.TagLength), ex.ParamName);
     }
@@ -46,7 +46,7 @@ public sealed class Argon2ParametersTests
     {
         Argon2Parameters parameters = new() { Parallelism = 1, MemoryKiB = 64, Iterations = 1, Version = 0x99 };
 
-        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => parameters.Validate());
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(parameters.Validate);
 
         Assert.AreEqual(nameof(Argon2Parameters.Version), ex.ParamName);
     }

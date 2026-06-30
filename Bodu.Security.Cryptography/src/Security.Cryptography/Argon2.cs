@@ -297,7 +297,7 @@ public abstract class Argon2
                 throw PhcString.Invalid();
 
             string key = part[..eq];
-            string value = part[(eq + 1) ..];
+            string value = part[(eq + 1)..];
 
             switch (key)
             {

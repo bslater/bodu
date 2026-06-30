@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Enumerator.VersionCheck.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Enumerator_WhenDictionaryMutatedDuringEnumeration_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -49,7 +49,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Enumerator_WhenNotMutated_ShouldYieldAllEntries()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         var seen = new List<string>();
         foreach (KeyValuePair<string, int> kvp in dictionary)
@@ -90,7 +90,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Enumerator_WhenExhausted_ShouldReturnFalseFromMoveNext()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         using IEnumerator<KeyValuePair<string, int>> enumerator = dictionary.GetEnumerator();
         while (enumerator.MoveNext())

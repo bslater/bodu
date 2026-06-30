@@ -42,7 +42,7 @@ internal sealed partial class YamlParser
     /// <returns>The byte at the offset, or zero.</returns>
     private byte PeekAt(int offset)
     {
-        var i = _pos + offset;
+        int i = _pos + offset;
         return i < _length ? _source[i] : (byte)0;
     }
 
@@ -60,7 +60,7 @@ internal sealed partial class YamlParser
         if (_pos >= _length)
             return;
 
-        var b = _source[_pos];
+        byte b = _source[_pos];
         if (b == (byte)'\n')
         {
             _pos++;
@@ -103,7 +103,7 @@ internal sealed partial class YamlParser
     {
         while (_pos < _length)
         {
-            var b = _source[_pos];
+            byte b = _source[_pos];
             if (b is (byte)' ' or (byte)'\t')
                 _pos++;
             else
@@ -155,7 +155,7 @@ internal sealed partial class YamlParser
     {
         while (!AtEnd)
         {
-            var tabOffset = -1;
+            int tabOffset = -1;
             while (_pos < _length && _source[_pos] is (byte)' ' or (byte)'\t')
             {
                 if (_source[_pos] == (byte)'\t' && tabOffset < 0)
@@ -164,7 +164,7 @@ internal sealed partial class YamlParser
                 _pos++;
             }
 
-            var c = Peek();
+            byte c = Peek();
             if (c == (byte)'#')
             {
                 while (!IsBreakOrEnd(Peek()))
@@ -203,11 +203,11 @@ internal sealed partial class YamlParser
     /// </exception>
     private void ValidateSource()
     {
-        var span = _source.AsSpan(0, _length);
-        var offset = 0;
+        Span<byte> span = _source.AsSpan(0, _length);
+        int offset = 0;
         while (offset < span.Length)
         {
-            var status = Rune.DecodeFromUtf8(span[offset..], out var rune, out var consumed);
+            OperationStatus status = Rune.DecodeFromUtf8(span[offset..], out Rune rune, out int consumed);
             if (status != OperationStatus.Done)
                 throw ErrorAt(offset, YamlResourceStrings.Format_Invalid_YamlInvalidUtf8);
 
@@ -229,7 +229,7 @@ internal sealed partial class YamlParser
     /// </remarks>
     private static bool IsYamlPrintable(Rune rune)
     {
-        var v = rune.Value;
+        int v = rune.Value;
         return v is 0x09 or 0x0A or 0x0D or 0x85
             || (v >= 0x20 && v <= 0x7E)
             || (v >= 0xA0 && v <= 0xD7FF)
@@ -245,10 +245,10 @@ internal sealed partial class YamlParser
     /// <returns>The exception to throw.</returns>
     private YamlFormatException ErrorAt(int offset, string message)
     {
-        var line = 0;
-        var lineStart = 0;
-        var limit = Math.Min(offset, _length);
-        for (var i = 0; i < limit; i++)
+        int line = 0;
+        int lineStart = 0;
+        int limit = Math.Min(offset, _length);
+        for (int i = 0; i < limit; i++)
         {
             if (_source[i] == (byte)'\n')
             {
@@ -306,8 +306,8 @@ internal sealed partial class YamlParser
         // Each document starts from the requested baseline version; a %YAML directive then overrides it for this
         // document only (the directive is honored over the configured option).
         _version = _optionVersion;
-        var yamlDirectiveSeen = false;
-        var directiveSeen = false;
+        bool yamlDirectiveSeen = false;
+        bool directiveSeen = false;
 
         while (true)
         {
@@ -352,14 +352,14 @@ internal sealed partial class YamlParser
     /// <exception cref="YamlFormatException">The directive is malformed or repeated.</exception>
     private void ProcessDirective(ref bool yamlDirectiveSeen)
     {
-        var lineStart = _pos;
+        int lineStart = _pos;
         Advance(); // '%'
 
-        var nameStart = _pos;
+        int nameStart = _pos;
         while (!IsBlankOrBreakOrEnd(Peek()))
             _pos++;
 
-        var name = Utf8(nameStart, _pos - nameStart);
+        string name = Utf8(nameStart, _pos - nameStart);
 
         if (name == "YAML")
         {
@@ -367,7 +367,7 @@ internal sealed partial class YamlParser
                 throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
 
             yamlDirectiveSeen = true;
-            var version = ReadDirectiveParameter();
+            string version = ReadDirectiveParameter();
             if (version is not ("1.1" or "1.2"))
                 throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
 
@@ -376,8 +376,8 @@ internal sealed partial class YamlParser
         }
         else if (name == "TAG")
         {
-            var handle = ReadDirectiveParameter();
-            var prefix = ReadDirectiveParameter();
+            string handle = ReadDirectiveParameter();
+            string prefix = ReadDirectiveParameter();
             if (!IsValidTagHandle(handle) || prefix.Length == 0)
                 throw ErrorAt(lineStart, YamlResourceStrings.Format_Invalid_YamlInvalidDirective);
 
@@ -409,7 +409,7 @@ internal sealed partial class YamlParser
     private string ReadDirectiveParameter()
     {
         SkipSpaces();
-        var start = _pos;
+        int start = _pos;
         while (!IsBlankOrBreakOrEnd(Peek()))
             _pos++;
 
@@ -430,9 +430,9 @@ internal sealed partial class YamlParser
         if (handle.Length < 3 || handle[0] != '!' || handle[^1] != '!')
             return false;
 
-        for (var i = 1; i < handle.Length - 1; i++)
+        for (int i = 1; i < handle.Length - 1; i++)
         {
-            var c = handle[i];
+            char c = handle[i];
             if (!char.IsLetterOrDigit(c) && c != '-')
                 return false;
         }
@@ -465,9 +465,9 @@ internal sealed partial class YamlParser
     private bool TryDetectBlockMapping(int indent)
     {
         _ = indent;
-        var savePos = _pos;
-        var saveLine = _line;
-        var saveLineStart = _lineStart;
+        int savePos = _pos;
+        int saveLine = _line;
+        int saveLineStart = _lineStart;
         try
         {
             return ScanSimpleKeyHasColon();
@@ -486,7 +486,7 @@ internal sealed partial class YamlParser
     /// <returns><see langword="true" /> when a <c>:</c> value indicator terminates the key on this line.</returns>
     private bool ScanSimpleKeyHasColon()
     {
-        var c = Peek();
+        byte c = Peek();
 
         // An explicit key indicator '?' introduces a mapping entry even without a colon on the same line.
         if (c == (byte)'?' && IsBlankOrBreakOrEnd(PeekAt(1)))
@@ -525,7 +525,7 @@ internal sealed partial class YamlParser
         _pos++; // opening quote
         while (!IsBreakOrEnd(Peek()))
         {
-            var b = Peek();
+            byte b = Peek();
             if (quote == (byte)'\'' && b == (byte)'\'')
             {
                 if (PeekAt(1) == (byte)'\'')
@@ -569,15 +569,15 @@ internal sealed partial class YamlParser
             SkipSpaces();
         }
 
-        var c = Peek();
+        byte c = Peek();
 
         // An alias cannot serve as an implicit mapping key.
         if (c == (byte)'*')
             throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
         if (c == (byte)'"' || c == (byte)'\'')
         {
-            var startLine = _line;
-            var quoted = c == (byte)'"' ? ReadDoubleQuoted(-1) : ReadSingleQuoted(-1);
+            int startLine = _line;
+            string quoted = c == (byte)'"' ? ReadDoubleQuoted(-1) : ReadSingleQuoted(-1);
 
             // An implicit key must occupy a single line.
             if (_line != startLine)
@@ -586,8 +586,8 @@ internal sealed partial class YamlParser
             return quoted;
         }
 
-        var start = _pos;
-        var end = _pos;
+        int start = _pos;
+        int end = _pos;
         while (!IsBreakOrEnd(Peek()))
         {
             if (Peek() == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1)))
@@ -624,7 +624,7 @@ internal sealed partial class YamlParser
             else
                 SkipSpaces();
 
-            var c = Peek();
+            byte c = Peek();
 
             // In block context, an anchor or tag that begins a mapping-entry line is the entry key's property, not a
             // property of the node being read.
@@ -657,8 +657,8 @@ internal sealed partial class YamlParser
     /// <returns>The row index of the alias.</returns>
     private int ParseAlias()
     {
-        var offset = _pos;
-        var name = ReadName(1);
+        int offset = _pos;
+        string name = ReadName(1);
         var row = new YamlReaderRow
         {
             Kind = YamlReaderNodeKind.Alias,
@@ -687,10 +687,10 @@ internal sealed partial class YamlParser
     /// <returns>The decoded name.</returns>
     private string ReadName(int skip)
     {
-        for (var i = 0; i < skip; i++)
+        for (int i = 0; i < skip; i++)
             Advance();
 
-        var start = _pos;
+        int start = _pos;
         while (!IsBlankOrBreakOrEnd(Peek()) && Peek() is not ((byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}'))
             _pos++;
 
@@ -703,7 +703,7 @@ internal sealed partial class YamlParser
     /// <returns>The captured tag text.</returns>
     private string ReadTag()
     {
-        var start = _pos;
+        int start = _pos;
         while (!IsBlankOrBreakOrEnd(Peek()) && Peek() is not ((byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}'))
             _pos++;
 
@@ -717,7 +717,7 @@ internal sealed partial class YamlParser
     /// <param name="child">The child row index.</param>
     private void AppendChild(int parent, int child)
     {
-        var p = _rows[parent];
+        YamlReaderRow p = _rows[parent];
         if (p.FirstChild < 0)
         {
             p.FirstChild = child;
@@ -725,7 +725,7 @@ internal sealed partial class YamlParser
         }
         else
         {
-            var last = _rows[p.LastChild];
+            YamlReaderRow last = _rows[p.LastChild];
             last.NextSibling = child;
             _rows[p.LastChild] = last;
             p.LastChild = child;
@@ -780,7 +780,7 @@ internal sealed partial class YamlParser
     /// <returns>The row index of the scalar.</returns>
     private int NewString(string value, YamlScalarStyle style, int offset, string? anchor, string? tag)
     {
-        var index = _strings.Count;
+        int index = _strings.Count;
         _strings.Add(value);
         return NewScalar(YamlValueKind.String, index, style, offset, anchor, tag);
     }

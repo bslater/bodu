@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageBuilder.Serialization.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public sealed partial class CompoundStorageBuilder
     {
         ThrowHelper.ThrowIfNull(source);
 
-        using CompoundFile file = CompoundFile.Open(source, leaveOpen: true);
+        using var file = CompoundFile.Open(source, leaveOpen: true);
         return FromFile(file, lazy: false);
     }
 

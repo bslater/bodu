@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializerOptionsTests.Converters.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -47,7 +47,7 @@ public partial class YamlSerializerOptionsTests
 
         _ = YamlSerializer.Deserialize<int>("1\n", options);
 
-        Assert.ThrowsExactly<InvalidOperationException>(() => options.Converters.Clear());
+        Assert.ThrowsExactly<InvalidOperationException>(options.Converters.Clear);
     }
 
     /// <summary>Verifies that converters can still be added before the options instance is used.</summary>

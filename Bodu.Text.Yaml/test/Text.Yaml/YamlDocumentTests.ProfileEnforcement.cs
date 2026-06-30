@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlDocumentTests.ProfileEnforcement.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -136,7 +136,7 @@ public partial class YamlDocumentTests
     [TestMethod]
     public void Parse_WhenInvalidUtf8_ShouldThrow()
     {
-        var bytes = new byte[] { (byte)'a', (byte)':', (byte)' ', 0xFF };
+        byte[] bytes = new byte[] { (byte)'a', (byte)':', (byte)' ', 0xFF };
 
         Assert.ThrowsExactly<YamlFormatException>(() =>
         {
@@ -150,7 +150,7 @@ public partial class YamlDocumentTests
     [TestMethod]
     public void Parse_WhenControlCharacter_ShouldThrow()
     {
-        var bytes = new byte[] { (byte)'a', (byte)':', (byte)' ', 0x01 };
+        byte[] bytes = new byte[] { (byte)'a', (byte)':', (byte)' ', 0x01 };
 
         Assert.ThrowsExactly<YamlFormatException>(() =>
         {
@@ -188,7 +188,7 @@ public partial class YamlDocumentTests
     [TestMethod]
     public void Parse_WhenNestingExceedsMaxDepth_ShouldThrow()
     {
-        var deep = string.Concat(Enumerable.Repeat("[", 200)) + "x" + string.Concat(Enumerable.Repeat("]", 200));
+        string deep = string.Concat(Enumerable.Repeat("[", 200)) + "x" + string.Concat(Enumerable.Repeat("]", 200));
         Assert.ThrowsExactly<YamlFormatException>(() =>
         {
             using var doc = YamlDocument.Parse("root: " + deep + "\n");

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncSemaphoreTests.Releaser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public sealed partial class AsyncSemaphoreTests
     {
         var sut = new AsyncSemaphore(1);
 
-        var releaser = await sut.LockAsync();
+        AsyncSemaphore.Releaser releaser = await sut.LockAsync();
         Assert.AreEqual(0, sut.CurrentCount);
 
         releaser.Dispose();
@@ -44,11 +44,11 @@ public sealed partial class AsyncSemaphoreTests
     {
         var sut = new AsyncSemaphore(1, 1);
 
-        var releaser = await sut.LockAsync();
-        var copy = releaser;
+        AsyncSemaphore.Releaser releaser = await sut.LockAsync();
+        AsyncSemaphore.Releaser copy = releaser;
 
         releaser.Dispose();
 
-        Assert.ThrowsExactly<InvalidOperationException>(() => copy.Dispose());
+        Assert.ThrowsExactly<InvalidOperationException>(copy.Dispose);
     }
 }

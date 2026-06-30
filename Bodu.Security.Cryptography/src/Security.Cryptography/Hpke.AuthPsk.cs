@@ -35,7 +35,7 @@ public static partial class Hpke
     public static (byte[] Encapsulation, byte[] Ciphertext) SealAuthPsk(
         HpkeSuite suite, ReadOnlySpan<byte> recipientPublicKey, ReadOnlySpan<byte> info, X25519 senderKey, ReadOnlySpan<byte> psk, ReadOnlySpan<byte> pskId, ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> plaintext)
     {
-        using HpkeSender sender = HpkeSender.SetupAuthPsk(suite, recipientPublicKey, info, senderKey, psk, pskId, out byte[] encapsulation);
+        using var sender = HpkeSender.SetupAuthPsk(suite, recipientPublicKey, info, senderKey, psk, pskId, out byte[] encapsulation);
         byte[] ciphertext = sender.Seal(associatedData, plaintext);
         return (encapsulation, ciphertext);
     }
@@ -69,7 +69,7 @@ public static partial class Hpke
     public static byte[] OpenAuthPsk(
         HpkeSuite suite, X25519 recipientKey, ReadOnlySpan<byte> encapsulation, ReadOnlySpan<byte> info, ReadOnlySpan<byte> senderPublicKey, ReadOnlySpan<byte> psk, ReadOnlySpan<byte> pskId, ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> ciphertext)
     {
-        using HpkeReceiver receiver = HpkeReceiver.SetupAuthPsk(suite, recipientKey, encapsulation, info, senderPublicKey, psk, pskId);
+        using var receiver = HpkeReceiver.SetupAuthPsk(suite, recipientKey, encapsulation, info, senderPublicKey, psk, pskId);
         return receiver.Open(associatedData, ciphertext);
     }
 }

@@ -39,7 +39,7 @@ public sealed class HashAlgorithmFactoryTests
     [TestMethod]
     public void From_WhenBuilderProvided_ShouldReturnFactoryThatYieldsFreshInstancesOnCreate()
     {
-        DelegateHashAlgorithmFactory<MD5> factory = HashAlgorithmFactory.From(() => MD5.Create());
+        DelegateHashAlgorithmFactory<MD5> factory = HashAlgorithmFactory.From(MD5.Create);
 
         Assert.IsNotNull(factory);
         Assert.IsInstanceOfType<DelegateHashAlgorithmFactory<MD5>>(factory);

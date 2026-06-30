@@ -43,7 +43,7 @@ internal sealed class FixtureRbaExchangeRateTableSource
         GetTableCallCount++;
 
         using MemoryStream stream = RbaFixtures.OpenStream(_fileName);
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
+        using var workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
         return ValueTask.FromResult(RbaExchangeRateWorkbookParser.Parse(workbook, _options));
     }
 }

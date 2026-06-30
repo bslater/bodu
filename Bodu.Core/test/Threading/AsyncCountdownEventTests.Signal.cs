@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncCountdownEventTests.Signal.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class AsyncCountdownEventTests
     public async Task Signal_WhenCountReachesZero_ShouldReleaseWaiters()
     {
         var sut = new AsyncCountdownEvent(2);
-        var pending = sut.WaitAsync();
+        ValueTask pending = sut.WaitAsync();
 
         Assert.IsFalse(sut.Signal());
         Assert.IsFalse(pending.IsCompleted);

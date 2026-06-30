@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncReaderWriterLockTests.Cancellation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class AsyncReaderWriterLockTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var reader = sut.ReaderAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> reader = sut.ReaderAsync(cts.Token);
 
         Assert.IsTrue(reader.IsCompletedSuccessfully);
         reader.Result.Dispose();
@@ -33,11 +33,11 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task ReaderAsync_WhenTokenAlreadyCanceledAndWriterActive_ShouldCancelSynchronously()
     {
         var sut = new AsyncReaderWriterLock();
-        var writer = await sut.WriterAsync();
+        AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var reader = sut.ReaderAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> reader = sut.ReaderAsync(cts.Token);
 
         Assert.IsTrue(reader.IsCanceled);
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await reader);
@@ -59,7 +59,7 @@ public sealed partial class AsyncReaderWriterLockTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var writer = sut.WriterAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> writer = sut.WriterAsync(cts.Token);
 
         Assert.IsTrue(writer.IsCompletedSuccessfully);
         writer.Result.Dispose();
@@ -73,11 +73,11 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task WriterAsync_WhenTokenAlreadyCanceledAndWriterActive_ShouldCancelSynchronously()
     {
         var sut = new AsyncReaderWriterLock();
-        var active = await sut.WriterAsync();
+        AsyncReaderWriterLock.Releaser active = await sut.WriterAsync();
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var writer = sut.WriterAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> writer = sut.WriterAsync(cts.Token);
 
         Assert.IsTrue(writer.IsCanceled);
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await writer);
@@ -96,10 +96,10 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task ReaderAsync_WhenCanceledWhileWaiting_ShouldCancelOnlyThatReader()
     {
         var sut = new AsyncReaderWriterLock();
-        var writer = await sut.WriterAsync();
+        AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
         using var cts = new CancellationTokenSource();
 
-        var canceledReader = sut.ReaderAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> canceledReader = sut.ReaderAsync(cts.Token);
         Assert.IsFalse(canceledReader.IsCompleted);
 
         cts.Cancel();
@@ -120,11 +120,11 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task WriterAsync_WhenCanceledWhileWaiting_ShouldCancelOnlyThatWriter()
     {
         var sut = new AsyncReaderWriterLock();
-        var activeWriter = await sut.WriterAsync();
+        AsyncReaderWriterLock.Releaser activeWriter = await sut.WriterAsync();
         using var cts = new CancellationTokenSource();
 
-        var canceledWriter = sut.WriterAsync(cts.Token);
-        var liveWriter = sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> canceledWriter = sut.WriterAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> liveWriter = sut.WriterAsync();
         Assert.IsFalse(canceledWriter.IsCompleted);
         Assert.IsFalse(liveWriter.IsCompleted);
 
@@ -145,11 +145,11 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task WriterAsync_WhenCanceled_ShouldReleaseDeferringReaders()
     {
         var sut = new AsyncReaderWriterLock();
-        var activeWriter = await sut.WriterAsync();
+        AsyncReaderWriterLock.Releaser activeWriter = await sut.WriterAsync();
         using var cts = new CancellationTokenSource();
 
-        var canceledWriter = sut.WriterAsync(cts.Token);
-        var deferringReader = sut.ReaderAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> canceledWriter = sut.WriterAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> deferringReader = sut.ReaderAsync();
         Assert.IsFalse(deferringReader.IsCompleted);
 
         cts.Cancel();

@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Reflection;
-
 namespace Bodu.Financial.Currencies;
 
 public partial class CurrencyCatalogueTests

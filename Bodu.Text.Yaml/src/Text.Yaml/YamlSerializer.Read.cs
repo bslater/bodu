@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializer.Read.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
@@ -62,7 +61,7 @@ public static partial class YamlSerializer
         YamlSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(returnType);
-        var o = options ?? s_defaultOptions;
+        YamlSerializerOptions o = options ?? s_defaultOptions;
         o.MakeReadOnly();
         using var document = YamlDocument.Parse(utf8Yaml, new YamlDocumentOptions
         {
@@ -87,13 +86,13 @@ public static partial class YamlSerializer
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
         YamlSerializerOptions options)
     {
-        var underlying = Nullable.GetUnderlyingType(type);
+        Type? underlying = Nullable.GetUnderlyingType(type);
         if (underlying is not null)
         {
             return element.ValueKind == YamlValueKind.Null ? null : BindValue(element, underlying, options);
         }
 
-        var converter = options.GetConverter(type);
+        YamlConverter? converter = options.GetConverter(type);
         if (converter is not null)
             return converter.ReadAsObject(element, options);
 
@@ -142,10 +141,10 @@ public static partial class YamlSerializer
         if (type.IsArray)
             return BindArray(element, type, options);
 
-        if (TryGetDictionaryValueType(type, out var valueType))
+        if (TryGetDictionaryValueType(type, out Type? valueType))
             return BindDictionary(element, type, valueType, options);
 
-        if (TryGetEnumerableElementType(type, out var elementType))
+        if (TryGetEnumerableElementType(type, out Type? elementType))
             return BindList(element, type, elementType, options);
 
         return BindObject(element, type, options);
@@ -210,13 +209,13 @@ public static partial class YamlSerializer
                 return element.GetString();
             case YamlValueKind.Sequence:
                 var list = new List<object?>();
-                foreach (var item in element.EnumerateSequence())
+                foreach (YamlElement item in element.EnumerateSequence())
                     list.Add(BindDynamic(item, options));
 
                 return list;
             default:
                 var map = new Dictionary<string, object?>(StringComparer.Ordinal);
-                foreach (var pair in element.EnumerateMapping())
+                foreach (YamlProperty pair in element.EnumerateMapping())
                     map[pair.Name] = BindDynamic(pair.Value, options);
 
                 return map;
@@ -238,7 +237,7 @@ public static partial class YamlSerializer
     {
         if (element.ValueKind == YamlValueKind.Float)
         {
-            var d = element.GetDouble();
+            double d = element.GetDouble();
             if (options.NumberHandling == YamlNumberHandling.AllowFloatToInteger)
                 return Convert.ChangeType(Math.Truncate(d), type, CultureInfo.InvariantCulture);
 
@@ -249,7 +248,7 @@ public static partial class YamlSerializer
             }
         }
 
-        var text = ElementToString(element);
+        string text = ElementToString(element);
         try
         {
             return Convert.ChangeType(text, type, CultureInfo.InvariantCulture);
@@ -269,7 +268,7 @@ public static partial class YamlSerializer
     /// <exception cref="YamlSerializationException">The source is not exactly one character.</exception>
     private static char BindChar(YamlElement element)
     {
-        var s = ElementToString(element);
+        string s = ElementToString(element);
         if (s.Length != 1)
         {
             throw new YamlSerializationException(string.Format(

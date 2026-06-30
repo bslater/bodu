@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Contains.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Contains_WhenKeyAndValueMatch_ShouldReturnTrue()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.IsTrue(dictionary.Contains(new KeyValuePair<string, int>("b", 2)));
     }
@@ -25,7 +25,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Contains_WhenValueDiffers_ShouldReturnFalse()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.IsFalse(dictionary.Contains(new KeyValuePair<string, int>("b", 999)));
     }
@@ -36,7 +36,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Contains_WhenKeyMissing_ShouldReturnFalse()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.IsFalse(dictionary.Contains(new KeyValuePair<string, int>("missing", 1)));
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlParser.Flow.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ internal sealed partial class YamlParser
     /// <returns>The row index of the parsed node.</returns>
     private int ParseFlowNodeFromBlock(int parentIndent)
     {
-        var previous = _flowIndent;
+        int previous = _flowIndent;
         _flowIndent = parentIndent;
         try
         {
@@ -58,10 +58,10 @@ internal sealed partial class YamlParser
     private int ParseFlowNodeCore()
     {
         SkipFlowWhitespace();
-        var anchor = TryReadAnchorAndTag(out var tag);
+        string? anchor = TryReadAnchorAndTag(out string? tag);
         SkipFlowWhitespace();
 
-        var c = Peek();
+        byte c = Peek();
         int row;
         if (c == (byte)'[')
             row = ParseFlowSequence();
@@ -82,7 +82,7 @@ internal sealed partial class YamlParser
     /// <returns>The row index of the sequence.</returns>
     private int ParseFlowSequence()
     {
-        var sequence = NewContainer(YamlReaderNodeKind.Sequence, _pos, null, null);
+        int sequence = NewContainer(YamlReaderNodeKind.Sequence, _pos, null, null);
         Advance(); // '['
         SkipFlowWhitespace();
 
@@ -98,8 +98,8 @@ internal sealed partial class YamlParser
             if (Peek() == (byte)',')
                 throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidFlow);
 
-            var element = ParseFlowNode();
-            var elementLine = _line;
+            int element = ParseFlowNode();
+            int elementLine = _line;
             SkipFlowWhitespace();
 
             // An implicit single-pair mapping element: `key: value` inside the sequence.
@@ -111,15 +111,15 @@ internal sealed partial class YamlParser
 
                 Advance();
                 SkipFlowWhitespace();
-                var pair = NewContainer(YamlReaderNodeKind.Mapping, _rows[element].Offset, null, null);
-                var key = KeyTextOf(element);
+                int pair = NewContainer(YamlReaderNodeKind.Mapping, _rows[element].Offset, null, null);
+                string key = KeyTextOf(element);
                 int value;
                 if (Peek() is (byte)',' or (byte)']')
                     value = NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
                 else
                     value = ParseFlowNode();
 
-                var v = _rows[value];
+                YamlReaderRow v = _rows[value];
                 v.Key = key;
                 _rows[value] = v;
                 AppendChild(pair, value);
@@ -129,7 +129,7 @@ internal sealed partial class YamlParser
 
             AppendChild(sequence, element);
 
-            var c = Peek();
+            byte c = Peek();
             if (c == (byte)',')
             {
                 Advance();
@@ -161,7 +161,7 @@ internal sealed partial class YamlParser
     /// <returns>The row index of the mapping.</returns>
     private int ParseFlowMapping()
     {
-        var mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, null, null);
+        int mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, null, null);
         var keyIndex = new Dictionary<string, int>(StringComparer.Ordinal);
         Advance(); // '{'
         SkipFlowWhitespace();
@@ -181,8 +181,8 @@ internal sealed partial class YamlParser
                 SkipFlowWhitespace();
             }
 
-            var keyNode = ParseFlowNode();
-            var key = KeyTextOf(keyNode);
+            int keyNode = ParseFlowNode();
+            string key = KeyTextOf(keyNode);
             SkipFlowWhitespace();
 
             int value;
@@ -202,7 +202,7 @@ internal sealed partial class YamlParser
             AddMappingChild(mapping, value, key, keyIndex);
 
             SkipFlowWhitespace();
-            var c = Peek();
+            byte c = Peek();
             if (c == (byte)',')
             {
                 Advance();
@@ -234,8 +234,8 @@ internal sealed partial class YamlParser
     /// <returns>The row index of the scalar.</returns>
     private int ParseFlowScalar()
     {
-        var offset = _pos;
-        var c = Peek();
+        int offset = _pos;
+        byte c = Peek();
         if (c == (byte)'"')
             return NewString(ReadDoubleQuoted(-1), YamlScalarStyle.DoubleQuoted, offset, null, null);
 
@@ -246,11 +246,11 @@ internal sealed partial class YamlParser
         if (Peek() == (byte)'-' && (IsBlankOrBreakOrEnd(PeekAt(1)) || PeekAt(1) is (byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}'))
             throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
-        var start = _pos;
-        var end = _pos;
+        int start = _pos;
+        int end = _pos;
         while (!IsBreakOrEnd(Peek()))
         {
-            var b = Peek();
+            byte b = Peek();
             if (b is (byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}')
                 break;
 
@@ -266,7 +266,7 @@ internal sealed partial class YamlParser
         }
 
         ReadOnlySpan<byte> span = _source.AsSpan(start, end - start);
-        var kind = YamlScalarResolver.Resolve(span, _version, out var bits);
+        YamlValueKind kind = YamlScalarResolver.Resolve(span, _version, out long bits);
         return kind != YamlValueKind.String
             ? NewScalar(kind, bits, YamlScalarStyle.Plain, offset, null, null)
             : NewString(Utf8(start, end - start), YamlScalarStyle.Plain, offset, null, null);
@@ -285,10 +285,10 @@ internal sealed partial class YamlParser
     /// </summary>
     private void SkipFlowWhitespace()
     {
-        var crossed = false;
+        bool crossed = false;
         while (!AtEnd)
         {
-            var b = Peek();
+            byte b = Peek();
             if (b is (byte)' ' or (byte)'\t')
             {
                 _pos++;
@@ -303,7 +303,7 @@ internal sealed partial class YamlParser
                 // A tab cannot indent a non-empty flow continuation line (a blank tab-only line is immaterial).
                 if (Peek() == (byte)'\t')
                 {
-                    var q = _pos;
+                    int q = _pos;
                     while (q < _length && _source[q] is (byte)' ' or (byte)'\t')
                         q++;
 

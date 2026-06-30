@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlFileExchangeRateCacheTests.Layout.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
     [TestMethod]
     public void ResolveFilePath_WhenCustomLayout_ShouldUseDelegatePath()
     {
-        ExchangeRateCacheFileLayout layout = ExchangeRateCacheFileLayout.Create(
+        var layout = ExchangeRateCacheFileLayout.Create(
             ExchangeRateCachePartitionStrategy.Single,
             directory: ctx => Path.Combine(ctx.Root, "fx", ctx.Provider),
             fileName: ctx => $"{ctx.Pair.From}-{ctx.Pair.To}{ctx.FileExtension}");

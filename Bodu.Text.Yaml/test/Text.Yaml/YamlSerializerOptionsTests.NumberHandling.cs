@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializerOptionsTests.NumberHandling.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class YamlSerializerOptionsTests
     {
         var options = new YamlSerializerOptions { NumberHandling = YamlNumberHandling.AllowFloatToInteger };
 
-        var value = YamlSerializer.Deserialize<int>("3.9\n", options);
+        int value = YamlSerializer.Deserialize<int>("3.9\n", options);
 
         Assert.AreEqual(3, value);
     }

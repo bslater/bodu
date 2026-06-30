@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlNamingPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
 using System.Text;
 
 namespace Bodu.Text.Yaml;
@@ -51,7 +50,7 @@ public abstract class YamlNamingPolicy
             if (string.IsNullOrEmpty(name) || !char.IsUpper(name[0]))
                 return name;
 
-            var chars = name.ToCharArray();
+            char[] chars = name.ToCharArray();
             chars[0] = char.ToLowerInvariant(chars[0]);
             return new string(chars);
         }
@@ -83,9 +82,9 @@ public abstract class YamlNamingPolicy
                 return name;
 
             var sb = new StringBuilder(name.Length + 4);
-            for (var i = 0; i < name.Length; i++)
+            for (int i = 0; i < name.Length; i++)
             {
-                var c = name[i];
+                char c = name[i];
                 if (char.IsUpper(c) && i > 0 && (char.IsLower(name[i - 1]) || char.IsDigit(name[i - 1])))
                     sb.Append(_separator);
 

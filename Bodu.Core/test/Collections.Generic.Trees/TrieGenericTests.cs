@@ -22,7 +22,7 @@ public sealed class TrieGenericTests
         var sut = new Trie<int>();
         sut.Add("one", 1);
 
-        Assert.IsTrue(sut.TryGetValue("one", out var value));
+        Assert.IsTrue(sut.TryGetValue("one", out int value));
         Assert.AreEqual(1, value);
         Assert.AreEqual(1, sut.Count);
     }
@@ -163,7 +163,7 @@ public sealed class TrieGenericTests
         var sut = new Trie<string?>();
         sut.Add("k", null);
 
-        Assert.IsTrue(sut.TryGetValue("k", out var value));
+        Assert.IsTrue(sut.TryGetValue("k", out string? value));
         Assert.IsNull(value);
         Assert.IsTrue(sut.ContainsKey("k"));
     }
@@ -192,7 +192,7 @@ public sealed class TrieGenericTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (var _ in sut)
+            foreach (KeyValuePair<string, int> _ in sut)
                 sut.Set("c", 3);
         });
     }

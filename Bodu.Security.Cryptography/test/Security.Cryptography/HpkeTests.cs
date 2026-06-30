@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HpkeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,7 +52,7 @@ public sealed partial class HpkeTests
         recipient.GenerateKey();
         HpkeSuite suite = HpkeSuite.X25519_HkdfSha256_Aes128Gcm;
 
-        var (encapsulation, ciphertext) = Hpke.Seal(suite, recipient.ExportPublicKey(), Info, Aad, Plaintext);
+        (byte[]? encapsulation, byte[]? ciphertext) = Hpke.Seal(suite, recipient.ExportPublicKey(), Info, Aad, Plaintext);
         byte[] recovered = Hpke.Open(suite, recipient, encapsulation, Info, Aad, ciphertext);
 
         CollectionAssert.AreEqual(Plaintext, recovered);
@@ -81,7 +81,7 @@ public sealed partial class HpkeTests
     {
         var suite = new HpkeSuite(HpkeKem.X25519HkdfSha256, HpkeKdf.HkdfSha256, aead);
 
-        var (sender, receiver) = CreatePair(suite, mode);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(suite, mode);
         try
         {
             byte[] ciphertext = sender.Seal(Aad, Plaintext);
@@ -102,7 +102,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void SealAndOpen_WhenMultipleMessages_ShouldRoundTripInSequence()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             byte[][] messages =
@@ -131,7 +131,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Open_WhenMessagesOpenedOutOfOrder_ShouldThrowCryptographicException()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             byte[] first = sender.Seal(Aad, Plaintext);
@@ -167,7 +167,7 @@ public sealed partial class HpkeTests
     {
         var suite = new HpkeSuite(HpkeKem.X25519HkdfSha256, HpkeKdf.HkdfSha256, aead);
 
-        var (sender, receiver) = CreatePair(suite, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(suite, HpkeMode.Base);
         try
         {
             byte[] ciphertext = sender.Seal(Aad, Plaintext);
@@ -191,7 +191,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Open_WhenAssociatedDataDiffers_ShouldThrowCryptographicException()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             byte[] ciphertext = sender.Seal(Aad, Plaintext);
@@ -214,7 +214,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Export_WhenSenderAndReceiverAgree_ShouldProduceIdenticalSecret()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             byte[] context = Encoding.ASCII.GetBytes("exporter context");
@@ -237,7 +237,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Export_WhenLengthIsZero_ShouldReturnEmptySecret()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             Assert.AreEqual(0, sender.Export(ExporterContext, 0).Length);
@@ -255,7 +255,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Export_WhenLengthIsMaximum_ShouldReturnThatManyBytes()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             Assert.AreEqual(MaxExportLength, sender.Export(ExporterContext, MaxExportLength).Length);
@@ -274,7 +274,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Export_WhenLengthExceedsMaximum_ShouldThrowArgumentOutOfRangeException()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { _ = sender.Export(ExporterContext, MaxExportLength + 1); });
@@ -292,7 +292,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Export_WhenLengthIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => { _ = sender.Export(ExporterContext, -1); });
@@ -310,7 +310,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Seal_WhenSequenceAtLimit_ShouldThrowInvalidOperationException()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             SetSequence(sender, ulong.MaxValue);
@@ -330,7 +330,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Seal_WhenSequenceAtPenultimateValue_ShouldSucceed()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             SetSequence(sender, ulong.MaxValue - 1);
@@ -351,7 +351,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Open_WhenSequenceLimitReached_ShouldThrowInvalidOperationExceptionBeforeAuthenticating()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             byte[] ciphertext = sender.Seal(Aad, Plaintext);
@@ -377,7 +377,7 @@ public sealed partial class HpkeTests
     {
         var suite = new HpkeSuite(HpkeKem.X25519HkdfSha256, HpkeKdf.HkdfSha256, HpkeAead.ExportOnly);
 
-        var (sender, receiver) = CreatePair(suite, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(suite, HpkeMode.Base);
         try
         {
             Assert.ThrowsExactly<NotSupportedException>(() =>
@@ -538,7 +538,7 @@ public sealed partial class HpkeTests
     {
         var suite = new HpkeSuite(HpkeKem.X25519HkdfSha256, kdf, HpkeAead.Aes256Gcm);
 
-        var (sender, receiver) = CreatePair(suite, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(suite, HpkeMode.Base);
         try
         {
             CollectionAssert.AreEqual(Plaintext, receiver.Open(Aad, sender.Seal(Aad, Plaintext)));
@@ -562,7 +562,7 @@ public sealed partial class HpkeTests
     {
         var suite = new HpkeSuite(HpkeKem.X25519HkdfSha256, kdf, HpkeAead.Aes256Gcm);
 
-        var (sender, receiver) = CreatePair(suite, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(suite, HpkeMode.Base);
         try
         {
             CollectionAssert.AreEqual(sender.Export(ExporterContext, 64), receiver.Export(ExporterContext, 64));
@@ -580,7 +580,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void SealAndOpen_WhenPlaintextAndAadAreEmpty_ShouldRoundTrip()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             byte[] ciphertext = sender.Seal(ReadOnlySpan<byte>.Empty, ReadOnlySpan<byte>.Empty);
@@ -600,7 +600,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void SealAndOpen_WhenAadAndPlaintextAreLarge_ShouldRoundTrip()
     {
-        var (sender, receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
+        (HpkeSender? sender, HpkeReceiver? receiver) = CreatePair(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, HpkeMode.Base);
         try
         {
             byte[] largeAad = new byte[4096];
@@ -628,8 +628,8 @@ public sealed partial class HpkeTests
         using var recipientKey = X25519.Create();
         recipientKey.GenerateKey();
 
-        HpkeSender sender = HpkeSender.SetupBase(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, recipientKey.ExportPublicKey(), ReadOnlySpan<byte>.Empty, out byte[] encapsulation);
-        HpkeReceiver receiver = HpkeReceiver.SetupBase(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, recipientKey, encapsulation, ReadOnlySpan<byte>.Empty);
+        var sender = HpkeSender.SetupBase(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, recipientKey.ExportPublicKey(), ReadOnlySpan<byte>.Empty, out byte[] encapsulation);
+        var receiver = HpkeReceiver.SetupBase(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, recipientKey, encapsulation, ReadOnlySpan<byte>.Empty);
         try
         {
             CollectionAssert.AreEqual(Plaintext, receiver.Open(Aad, sender.Seal(Aad, Plaintext)));
@@ -647,7 +647,7 @@ public sealed partial class HpkeTests
     [TestMethod]
     public void Seal_WhenSenderDisposed_ShouldThrowObjectDisposedException()
     {
-        HpkeSender sender = HpkeSender.SetupBase(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, NewRecipientPublicKey(), Info, out _);
+        var sender = HpkeSender.SetupBase(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, NewRecipientPublicKey(), Info, out _);
         sender.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -664,7 +664,7 @@ public sealed partial class HpkeTests
     {
         using var sender = X25519.Create();
         sender.GenerateKey();
-        var (encapsulation, _) = Hpke.Seal(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, sender.ExportPublicKey(), Info, Aad, Plaintext);
+        (byte[]? encapsulation, byte[] _) = Hpke.Seal(HpkeSuite.X25519_HkdfSha256_Aes128Gcm, sender.ExportPublicKey(), Info, Aad, Plaintext);
 
         using var publicOnly = X25519.Create();
         publicOnly.ImportPublicKey(sender.ExportPublicKey());

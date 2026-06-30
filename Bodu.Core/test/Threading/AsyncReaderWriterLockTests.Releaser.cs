@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncReaderWriterLockTests.Releaser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,9 +27,9 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task Releaser_WhenReaderDisposed_ShouldReleaseReadAccess()
     {
         var sut = new AsyncReaderWriterLock();
-        var reader = await sut.ReaderAsync();
+        AsyncReaderWriterLock.Releaser reader = await sut.ReaderAsync();
 
-        var writer = sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> writer = sut.WriterAsync();
         Assert.IsFalse(writer.IsCompleted);
 
         reader.Dispose();
@@ -44,9 +44,9 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task Releaser_WhenWriterDisposed_ShouldReleaseWriteAccess()
     {
         var sut = new AsyncReaderWriterLock();
-        var writer = await sut.WriterAsync();
+        AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
 
-        var reader = sut.ReaderAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> reader = sut.ReaderAsync();
         Assert.IsFalse(reader.IsCompleted);
 
         writer.Dispose();
@@ -62,10 +62,10 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task Releaser_WhenReaderDisposedTwice_ShouldNotUnderflowReaderCount()
     {
         var sut = new AsyncReaderWriterLock();
-        var reader1 = await sut.ReaderAsync();
-        var reader2 = await sut.ReaderAsync();
+        AsyncReaderWriterLock.Releaser reader1 = await sut.ReaderAsync();
+        AsyncReaderWriterLock.Releaser reader2 = await sut.ReaderAsync();
 
-        var writer = sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> writer = sut.WriterAsync();
         Assert.IsFalse(writer.IsCompleted);
 
         reader1.Dispose();
@@ -86,11 +86,11 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task Releaser_WhenCopiedReaderDisposed_ShouldReleaseAccessOnce()
     {
         var sut = new AsyncReaderWriterLock();
-        var reader = await sut.ReaderAsync();
-        var reader2 = await sut.ReaderAsync();
-        var copy = reader;
+        AsyncReaderWriterLock.Releaser reader = await sut.ReaderAsync();
+        AsyncReaderWriterLock.Releaser reader2 = await sut.ReaderAsync();
+        AsyncReaderWriterLock.Releaser copy = reader;
 
-        var writer = sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> writer = sut.WriterAsync();
         Assert.IsFalse(writer.IsCompleted);
 
         reader.Dispose();
@@ -110,14 +110,14 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task Releaser_WhenWriterDisposedTwice_ShouldNotGrantOverlappingWriters()
     {
         var sut = new AsyncReaderWriterLock();
-        var writer1 = await sut.WriterAsync();
-        var writer2 = sut.WriterAsync();
-        var writer3 = sut.WriterAsync();
+        AsyncReaderWriterLock.Releaser writer1 = await sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> writer2 = sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> writer3 = sut.WriterAsync();
 
         writer1.Dispose();
         writer1.Dispose();
 
-        var granted2 = await writer2;
+        AsyncReaderWriterLock.Releaser granted2 = await writer2;
 
         // The third writer must remain queued; a double-dispose must not grant it concurrently.
         Assert.IsFalse(writer3.IsCompleted, "Double-dispose must not grant a second writer.");

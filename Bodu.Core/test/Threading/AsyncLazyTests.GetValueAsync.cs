@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncLazyTests.GetValueAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed partial class AsyncLazyTests
         var sut = new AsyncLazy<int>(() => gate.Task);
         using var cts = new CancellationTokenSource();
 
-        var caller = sut.GetValueAsync(cts.Token);
+        Task<int> caller = sut.GetValueAsync(cts.Token);
         cts.Cancel();
 
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await caller);

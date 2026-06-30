@@ -5,18 +5,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
-using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
-using System.Reflection;
 using System.Text;
 using Bodu.Test.Assertions;
-using Bodu.Test.IO;
 using Bodu.Test.Kat;
 using Bodu.Text.Bencode.Document;
-using Bodu.Text.Bencode.Nodes;
-using Bodu.Text.Bencode.Reader;
-using Bodu.Text.Bencode.Serialization;
-using Bodu.Text.Bencode.Writer;
 
 namespace Bodu.Text.Bencode;
 
@@ -60,10 +52,7 @@ public partial class BencodeSerializerTests
     [DynamicData(nameof(UnsupportedTypeCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void Serialize_WhenMemberTypeHasNoBuiltInConverter_ShouldThrowNotSupportedException(UnsupportedTypeKat kat)
     {
-        Assert.ThrowsExactly<NotSupportedException>(() =>
-        {
-            kat.Serialize();
-        });
+        Assert.ThrowsExactly<NotSupportedException>(kat.Serialize);
     }
     /// <summary>
     /// Verifies that an <see cref="object" />-typed member serializes through its runtime type's converter across the

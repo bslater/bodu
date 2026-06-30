@@ -206,10 +206,7 @@ public partial class ArrayExtensionsTests
     public void Clear_NonGeneric_WhenArrayIsMultidimensional_ShouldThrowExactly()
     {
         Array array = new int[2, 2];
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            array.Clear();
-        });
+        Assert.ThrowsExactly<ArgumentException>(array.Clear);
     }
 
     /// <summary>
@@ -232,10 +229,7 @@ public partial class ArrayExtensionsTests
     public void Clear_NonGeneric_WhenArrayIsNotZeroBased_ShouldThrowExactly()
     {
         var array = Array.CreateInstance(typeof(int), [3], [5]);
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            array.Clear();
-        });
+        Assert.ThrowsExactly<ArgumentException>(array.Clear);
     }
 
     /// <summary>

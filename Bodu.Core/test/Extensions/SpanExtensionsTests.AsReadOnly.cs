@@ -15,8 +15,8 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void AsReadOnly_WhenCalled_ForReferenceTypeSpan_ShouldPreserveElementIdentity()
     {
-        object a = new object();
-        object b = new object();
+        object a = new();
+        object b = new();
         object[] buffer = [a, b];
 
         Span<object> source = buffer;

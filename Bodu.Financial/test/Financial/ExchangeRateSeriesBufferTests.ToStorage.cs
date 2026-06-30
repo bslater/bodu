@@ -17,7 +17,7 @@ public partial class ExchangeRateSeriesBufferTests
     {
         ExchangeRateSeriesBuffer buffer = NewBuffer();
 
-        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() => buffer.ToStorage());
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(buffer.ToStorage);
         Assert.AreEqual(FinancialResourceStrings.Op_Invalid_RateSeriesBuilderEmpty, ex.Message);
     }
 

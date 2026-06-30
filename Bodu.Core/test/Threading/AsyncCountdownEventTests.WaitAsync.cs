@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncCountdownEventTests.WaitAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class AsyncCountdownEventTests
     {
         var sut = new AsyncCountdownEvent(1);
 
-        var pending = sut.WaitAsync();
+        ValueTask pending = sut.WaitAsync();
         Assert.IsFalse(pending.IsCompleted);
 
         sut.Signal();
@@ -33,7 +33,7 @@ public sealed partial class AsyncCountdownEventTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var wait = sut.WaitAsync(cts.Token);
+        ValueTask wait = sut.WaitAsync(cts.Token);
 
         Assert.IsTrue(wait.IsCanceled);
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await wait);
@@ -48,8 +48,8 @@ public sealed partial class AsyncCountdownEventTests
         var sut = new AsyncCountdownEvent(1);
         using var cts = new CancellationTokenSource();
 
-        var canceled = sut.WaitAsync(cts.Token);
-        var live = sut.WaitAsync();
+        ValueTask canceled = sut.WaitAsync(cts.Token);
+        ValueTask live = sut.WaitAsync();
 
         cts.Cancel();
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceled);

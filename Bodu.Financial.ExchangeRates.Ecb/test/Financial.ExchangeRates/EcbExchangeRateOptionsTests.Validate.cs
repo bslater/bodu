@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateOptionsTests.Validate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,9 +16,6 @@ public partial class EcbExchangeRateOptionsTests
     {
         EcbExchangeRateOptions options = new() { Feeds = [] };
 
-        _ = Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            options.Validate();
-        });
+        _ = Assert.ThrowsExactly<ArgumentException>(options.Validate);
     }
 }

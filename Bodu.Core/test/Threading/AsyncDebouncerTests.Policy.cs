@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncDebouncerTests.Policy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public sealed partial class AsyncDebouncerTests
     {
         var time = new FakeTimeProvider();
         var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var started = 0;
+        int started = 0;
         using var sut = new AsyncDebouncer(
             TimeSpan.FromMilliseconds(100),
             async _ =>
@@ -30,7 +30,7 @@ public sealed partial class AsyncDebouncerTests
 
         sut.Invoke();
         time.Advance(TimeSpan.FromMilliseconds(100));
-        var run1 = sut.CurrentExecution;
+        Task? run1 = sut.CurrentExecution;
         Assert.AreEqual(1, started);
 
         sut.Invoke();
@@ -52,7 +52,7 @@ public sealed partial class AsyncDebouncerTests
     {
         var time = new FakeTimeProvider();
         var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var started = 0;
+        int started = 0;
         using var sut = new AsyncDebouncer(
             TimeSpan.FromMilliseconds(100),
             async _ =>
@@ -89,8 +89,8 @@ public sealed partial class AsyncDebouncerTests
     {
         var time = new FakeTimeProvider();
         var firstStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var firstCanceled = false;
-        var starts = 0;
+        bool firstCanceled = false;
+        int starts = 0;
         using var sut = new AsyncDebouncer(
             TimeSpan.FromMilliseconds(100),
             async ct =>
@@ -134,7 +134,7 @@ public sealed partial class AsyncDebouncerTests
     {
         var time = new FakeTimeProvider();
         var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var started = 0;
+        int started = 0;
         using var sut = new AsyncDebouncer(
             TimeSpan.FromMilliseconds(100),
             async _ =>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelBinaryWorkbookTests.Properties.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class ExcelBinaryWorkbookTests
     [TestMethod]
     public void Properties_WhenReadDocumentPropertiesDisabled_ShouldReturnEmptyView()
     {
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.Open(
+        using var workbook = ExcelBinaryWorkbook.Open(
             ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8),
             new ExcelBinaryReaderOptions { ReadDocumentProperties = false });
 

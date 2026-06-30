@@ -162,10 +162,7 @@ public partial class MultiValueDictionaryTests
 
         mvd.Add("b", 2);
 
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            enumerator.Reset();
-        });
+        Assert.ThrowsExactly<InvalidOperationException>(enumerator.Reset);
     }
 
     /// <summary>

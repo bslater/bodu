@@ -17,7 +17,7 @@ public partial class MonetaryContextTests
     {
         MonetaryContext context = MonetaryContext.Default with { ScalePolicy = (ScalePolicy)99 };
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => context.Validate());
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(context.Validate);
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ public partial class MonetaryContextTests
     {
         MonetaryContext context = MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom, CustomScale = 99 };
 
-        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => context.Validate());
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(context.Validate);
         Assert.AreEqual("CustomScale", ex.ParamName);
     }
 
@@ -40,6 +40,6 @@ public partial class MonetaryContextTests
     {
         MonetaryContext context = MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom, CustomScale = null };
 
-        Assert.ThrowsExactly<ArgumentException>(() => context.Validate());
+        Assert.ThrowsExactly<ArgumentException>(context.Validate);
     }
 }

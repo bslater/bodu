@@ -103,7 +103,7 @@ public partial class NotableDateDocumentBuilderTests
             .AddNotableDate("x", "X", NotableDateCategory.Observance, d => d
                 .AddRule("default", r => r.Fixed(1, 1)));
 
-        _ = Assert.ThrowsExactly<InvalidOperationException>(() => builder.Build());
+        _ = Assert.ThrowsExactly<InvalidOperationException>(builder.Build);
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ public partial class NotableDateDocumentBuilderTests
         NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("demo.x")
             .AddNotableDate("x", "X", NotableDateCategory.Observance, d => { });
 
-        _ = Assert.ThrowsExactly<InvalidOperationException>(() => builder.Build());
+        _ = Assert.ThrowsExactly<InvalidOperationException>(builder.Build);
     }
 
     /// <summary>
@@ -128,6 +128,6 @@ public partial class NotableDateDocumentBuilderTests
             .AddNotableDate("x", "X", NotableDateCategory.Observance, d => d
                 .AddRule("default", r => r.WithPriority(1)));
 
-        _ = Assert.ThrowsExactly<InvalidOperationException>(() => builder.Build());
+        _ = Assert.ThrowsExactly<InvalidOperationException>(builder.Build);
     }
 }

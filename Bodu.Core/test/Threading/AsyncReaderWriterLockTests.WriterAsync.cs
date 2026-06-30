@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncReaderWriterLockTests.WriterAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,9 +15,9 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task WriterAsync_WhenReaderActive_ShouldWaitUntilReaderReleases()
     {
         var sut = new AsyncReaderWriterLock();
-        var reader = await sut.ReaderAsync();
+        AsyncReaderWriterLock.Releaser reader = await sut.ReaderAsync();
 
-        var writer = sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> writer = sut.WriterAsync();
         Assert.IsFalse(writer.IsCompleted, "A writer must wait while a reader is active.");
 
         reader.Dispose();
@@ -31,9 +31,9 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task WriterAsync_WhenWriterActive_ShouldWaitUntilWriterReleases()
     {
         var sut = new AsyncReaderWriterLock();
-        var first = await sut.WriterAsync();
+        AsyncReaderWriterLock.Releaser first = await sut.WriterAsync();
 
-        var second = sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> second = sut.WriterAsync();
         Assert.IsFalse(second.IsCompleted, "A writer must wait while another writer is active.");
 
         first.Dispose();
@@ -47,10 +47,10 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task WriterAsync_WhenReleasedWithReadersQueued_ShouldAdmitAllReaders()
     {
         var sut = new AsyncReaderWriterLock();
-        var writer = await sut.WriterAsync();
+        AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
 
-        var firstReader = sut.ReaderAsync();
-        var secondReader = sut.ReaderAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> firstReader = sut.ReaderAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> secondReader = sut.ReaderAsync();
         Assert.IsFalse(firstReader.IsCompleted);
         Assert.IsFalse(secondReader.IsCompleted);
 

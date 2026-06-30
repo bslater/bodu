@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
-using Bodu.Text.Bencode;
 
 namespace Bodu.Text.Bencode.Nodes;
 

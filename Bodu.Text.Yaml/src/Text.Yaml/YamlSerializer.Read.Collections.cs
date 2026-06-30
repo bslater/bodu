@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializer.Read.Collections.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,16 +27,16 @@ public static partial class YamlSerializer
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
     private static Array BindArray(YamlElement element, Type arrayType, YamlSerializerOptions options)
     {
-        var elementType = arrayType.GetElementType()!;
+        Type elementType = arrayType.GetElementType()!;
         RequireSequence(element);
 
         var items = new List<object?>();
-        var index = 0;
-        foreach (var item in element.EnumerateSequence())
+        int index = 0;
+        foreach (YamlElement item in element.EnumerateSequence())
             items.Add(BindChild(item, elementType, options, $"[{index++}]"));
 
         var array = Array.CreateInstance(elementType, items.Count);
-        for (var i = 0; i < items.Count; i++)
+        for (int i = 0; i < items.Count; i++)
             array.SetValue(items[i], i);
 
         return array;
@@ -59,10 +59,10 @@ public static partial class YamlSerializer
     {
         RequireSequence(element);
 
-        var listType = typeof(List<>).MakeGenericType(elementType);
+        Type listType = typeof(List<>).MakeGenericType(elementType);
         var list = (IList)Activator.CreateInstance(listType)!;
-        var index = 0;
-        foreach (var item in element.EnumerateSequence())
+        int index = 0;
+        foreach (YamlElement item in element.EnumerateSequence())
             list.Add(BindChild(item, elementType, options, $"[{index++}]"));
 
         if (type.IsAssignableFrom(listType))
@@ -70,7 +70,7 @@ public static partial class YamlSerializer
 
         // A concrete collection with a parameterless constructor and an Add method.
         var target = (IList)Activator.CreateInstance(type)!;
-        foreach (var item in list)
+        foreach (object? item in list)
             target.Add(item);
 
         return target;
@@ -89,13 +89,13 @@ public static partial class YamlSerializer
     {
         RequireMapping(element);
 
-        var keyType = type.IsGenericType ? type.GetGenericArguments()[0] : typeof(string);
-        var dictType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
+        Type keyType = type.IsGenericType ? type.GetGenericArguments()[0] : typeof(string);
+        Type dictType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
         var dict = (IDictionary)Activator.CreateInstance(dictType)!;
 
-        foreach (var pair in element.EnumerateMapping())
+        foreach (YamlProperty pair in element.EnumerateMapping())
         {
-            var key = keyType == typeof(string)
+            object key = keyType == typeof(string)
                 ? pair.Name
                 : keyType.IsEnum
                     ? Enum.Parse(keyType, pair.Name, ignoreCase: true)
@@ -122,17 +122,17 @@ public static partial class YamlSerializer
     {
         RequireMapping(element);
 
-        var instance = Activator.CreateInstance(type)
+        object instance = Activator.CreateInstance(type)
             ?? throw new YamlSerializationException($"The type '{type}' could not be instantiated.");
 
-        var members = YamlMemberInfo.ForType(type, options.IncludeFields);
+        YamlMemberInfo[] members = YamlMemberInfo.ForType(type, options.IncludeFields);
         YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
-        var comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        foreach (var pair in element.EnumerateMapping())
+        foreach (YamlProperty pair in element.EnumerateMapping())
         {
-            var matched = false;
-            foreach (var member in members)
+            bool matched = false;
+            foreach (YamlMemberInfo member in members)
             {
                 if (!string.Equals(member.WireName(options), pair.Name, comparison))
                     continue;
@@ -162,11 +162,11 @@ public static partial class YamlSerializer
     /// <returns><see langword="true" /> when the type is a dictionary.</returns>
     private static bool TryGetDictionaryValueType(Type type, out Type valueType)
     {
-        foreach (var i in type.GetInterfaces().Append(type))
+        foreach (Type? i in type.GetInterfaces().Append(type))
         {
             if (i.IsGenericType)
             {
-                var def = i.GetGenericTypeDefinition();
+                Type def = i.GetGenericTypeDefinition();
                 if (def == typeof(IDictionary<,>) || def == typeof(IReadOnlyDictionary<,>))
                 {
                     valueType = i.GetGenericArguments()[1];
@@ -187,7 +187,7 @@ public static partial class YamlSerializer
     /// <returns><see langword="true" /> when the type is an enumerable.</returns>
     private static bool TryGetEnumerableElementType(Type type, out Type elementType)
     {
-        foreach (var i in type.GetInterfaces().Append(type))
+        foreach (Type? i in type.GetInterfaces().Append(type))
         {
             if (i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {

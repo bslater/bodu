@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Ctor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -86,7 +86,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Ctor_WhenSourceProvided_ShouldCopyEntriesInOrder()
     {
-        var source = new[]
+        KeyValuePair<string, int>[] source = new[]
         {
             new KeyValuePair<string, int>("a", 1),
             new KeyValuePair<string, int>("b", 2),
@@ -116,7 +116,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Ctor_WhenSourceHasDuplicateKeys_ShouldThrowExactly()
     {
-        var source = new[]
+        KeyValuePair<string, int>[] source = new[]
         {
             new KeyValuePair<string, int>("a", 1),
             new KeyValuePair<string, int>("a", 2),
@@ -173,7 +173,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Ctor_WhenSourceAndComparer_ShouldUseComparer()
     {
-        var source = new[] { new KeyValuePair<string, int>("Key", 1) };
+        KeyValuePair<string, int>[] source = new[] { new KeyValuePair<string, int>("Key", 1) };
 
         var dictionary = new SequencedDictionary<string, int>(source, StringComparer.OrdinalIgnoreCase);
 
@@ -186,7 +186,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Ctor_WhenSourceAccessOrderAndComparer_ShouldCopyAndReorderOnAccess()
     {
-        var source = new[]
+        KeyValuePair<string, int>[] source = new[]
         {
             new KeyValuePair<string, int>("a", 1),
             new KeyValuePair<string, int>("b", 2),

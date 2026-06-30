@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlDocumentTests.Flow.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,13 +19,13 @@ public partial class YamlDocumentTests
     public void Parse_WhenFlowCollections_ShouldParse()
     {
         using var doc = YamlDocument.Parse("nums: [1, 2, 3]\npoint: {x: 10, y: 20}\n");
-        var root = doc.RootElement;
+        YamlElement root = doc.RootElement;
 
-        var nums = root.GetProperty("nums");
+        YamlElement nums = root.GetProperty("nums");
         Assert.AreEqual(3, nums.GetSequenceLength());
         Assert.AreEqual(2L, nums[1].GetInt64());
 
-        var point = root.GetProperty("point");
+        YamlElement point = root.GetProperty("point");
         Assert.AreEqual(10L, point.GetProperty("x").GetInt64());
         Assert.AreEqual(20L, point.GetProperty("y").GetInt64());
     }
@@ -36,7 +36,7 @@ public partial class YamlDocumentTests
     public void Parse_WhenNestedFlowCollections_ShouldParse()
     {
         using var doc = YamlDocument.Parse("data: [{x: 1}, {x: 2}]\n");
-        var data = doc.RootElement.GetProperty("data");
+        YamlElement data = doc.RootElement.GetProperty("data");
         Assert.AreEqual(2, data.GetSequenceLength());
         Assert.AreEqual(1L, data[0].GetProperty("x").GetInt64());
         Assert.AreEqual(2L, data[1].GetProperty("x").GetInt64());

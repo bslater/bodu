@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundReferenceRoundTripTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public class CompoundReferenceRoundTripTests
 
         byte[] rewritten = builder.ToArray();
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(rewritten));
+        using var file = CompoundFile.Open(new MemoryStream(rewritten));
         Dictionary<string, string> actual = new(StringComparer.Ordinal);
         Collect(file.RootStorage, string.Empty, actual);
 

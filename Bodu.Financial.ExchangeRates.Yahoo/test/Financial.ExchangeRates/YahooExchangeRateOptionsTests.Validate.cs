@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooExchangeRateOptionsTests.Validate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,9 +16,6 @@ public partial class YahooExchangeRateOptionsTests
     {
         YahooExchangeRateOptions options = new() { ChartPath = "no-placeholder" };
 
-        _ = Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            options.Validate();
-        });
+        _ = Assert.ThrowsExactly<ArgumentException>(options.Validate);
     }
 }

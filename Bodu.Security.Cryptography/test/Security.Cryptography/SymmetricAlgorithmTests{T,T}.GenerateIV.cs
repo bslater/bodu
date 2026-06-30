@@ -33,9 +33,6 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            algorithm.GenerateIV();
-        });
+        Assert.ThrowsExactly<ObjectDisposedException>(algorithm.GenerateIV);
     }
 }

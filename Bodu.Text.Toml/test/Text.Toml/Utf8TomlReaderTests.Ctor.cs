@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
-using System.Globalization;
 using System.Text;
 using Bodu.Text.Toml.Reader;
 

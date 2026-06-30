@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.CopyTo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void CopyTo_WhenArrayIsLargeEnough_ShouldCopyEntriesInOrder()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         var array = new KeyValuePair<string, int>[3];
 
         dictionary.CopyTo(array, 0);
@@ -35,7 +35,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void CopyTo_WhenArrayIndexIsNonZero_ShouldCopyFromIndex()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         var array = new KeyValuePair<string, int>[4];
 
         dictionary.CopyTo(array, 1);
@@ -50,7 +50,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void CopyTo_WhenArrayIsNull_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -64,7 +64,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void CopyTo_WhenArrayTooSmall_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         var array = new KeyValuePair<string, int>[2];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -79,7 +79,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void CopyTo_WhenArrayIndexIsNegative_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         var array = new KeyValuePair<string, int>[3];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -94,7 +94,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void CopyTo_WhenArrayIndexEqualsLengthAndNotEmpty_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         var array = new KeyValuePair<string, int>[3];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -123,7 +123,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void CopyTo_WhenArrayLargerThanCount_ShouldLeaveTrailingSlotsUntouched()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         var array = new KeyValuePair<string, int>[5];
 
         dictionary.CopyTo(array, 0);

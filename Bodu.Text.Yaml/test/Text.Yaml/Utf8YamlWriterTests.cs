@@ -6,7 +6,6 @@
 
 using System.Buffers;
 using System.Text;
-using Bodu.Text.Yaml.Document;
 using Bodu.Text.Yaml.Writer;
 
 namespace Bodu.Text.Yaml;

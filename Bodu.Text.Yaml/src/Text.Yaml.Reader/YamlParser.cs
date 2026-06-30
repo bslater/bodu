@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -217,18 +217,18 @@ internal sealed partial class YamlParser
         SkipBlankCommentLines();
 
         // In block context the anchor and tag node properties may be spread across line breaks before the node.
-        var anchor = TryReadAnchorAndTag(out var tag, crossLines: true);
+        string? anchor = TryReadAnchorAndTag(out string? tag, crossLines: true);
 
         SkipBlankCommentLines();
 
         if (AtStreamEnd() || AtDocumentBoundary())
             return Finish(NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, anchor, tag), anchor);
 
-        var col = CurrentColumn();
+        int col = CurrentColumn();
         if (col < minIndent)
             return Finish(NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, anchor, tag), anchor);
 
-        var c = Peek();
+        byte c = Peek();
 
         // A block sequence entry: '-' followed by a space, a line break, or end of input.
         if (c == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
@@ -243,7 +243,7 @@ internal sealed partial class YamlParser
         // A flow collection introducer.
         if (c == (byte)'[' || c == (byte)'{')
         {
-            var flow = ParseFlowNodeFromBlock(-1);
+            int flow = ParseFlowNodeFromBlock(-1);
             ApplyProperties(flow, anchor, tag);
             SkipLineTrailing();
             return Finish(flow, anchor);
@@ -255,7 +255,7 @@ internal sealed partial class YamlParser
             if (anchor is not null || tag is not null)
                 throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
-            var alias = ParseAlias();
+            int alias = ParseAlias();
             SkipLineTrailing();
             return Finish(alias, anchor);
         }
@@ -269,7 +269,7 @@ internal sealed partial class YamlParser
         if (TryDetectBlockMapping(col))
             return Finish(ParseBlockMapping(col, anchor, tag), anchor);
 
-        var scalar = ParseBlockScalarPlainOrQuoted(minIndent);
+        int scalar = ParseBlockScalarPlainOrQuoted(minIndent);
         ApplyProperties(scalar, anchor, tag);
         return Finish(scalar, anchor);
     }
@@ -284,7 +284,7 @@ internal sealed partial class YamlParser
     {
         if (anchor is not null)
         {
-            var r = _rows[row];
+            YamlReaderRow r = _rows[row];
 
             // A node already carrying a different anchor would mean two anchors were written for one node.
             if (r.Anchor is not null && !string.Equals(r.Anchor, anchor, StringComparison.Ordinal))
@@ -306,7 +306,7 @@ internal sealed partial class YamlParser
     /// <param name="tag">The tag, or <see langword="null" />.</param>
     private void ApplyProperties(int row, string? anchor, string? tag)
     {
-        var r = _rows[row];
+        YamlReaderRow r = _rows[row];
         if (anchor is not null)
         {
             r.Anchor = anchor;
@@ -328,7 +328,7 @@ internal sealed partial class YamlParser
     /// <returns>The row index of the mapping.</returns>
     private int ParseBlockMapping(int indent, string? anchor, string? tag)
     {
-        var mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, anchor, tag);
+        int mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, anchor, tag);
         var keyIndex = new Dictionary<string, int>(StringComparer.Ordinal);
 
         while (true)
@@ -341,11 +341,11 @@ internal sealed partial class YamlParser
                 break;
 
             // Explicit key indicator '? key' / ': value'. Handle the common explicit-key form.
-            var keyRow = ParseMappingKey(indent, out var keyText);
+            int keyRow = ParseMappingKey(indent, out string? keyText);
 
             ExpectValueIndicator();
 
-            var valueRow = ParseMappingValue(indent);
+            int valueRow = ParseMappingValue(indent);
 
             AddMappingChild(mapping, valueRow, keyText, keyIndex);
 
@@ -370,7 +370,7 @@ internal sealed partial class YamlParser
         {
             Advance();
             SkipSpaces();
-            var keyNode = ParseBlockNode(indent + 1);
+            int keyNode = ParseBlockNode(indent + 1);
             keyText = KeyTextOf(keyNode);
             SkipBlankCommentLines();
             return keyNode;
@@ -400,7 +400,7 @@ internal sealed partial class YamlParser
         if (AtStreamEnd() || AtDocumentBoundary())
             return NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
 
-        var col = CurrentColumn();
+        int col = CurrentColumn();
         if (col <= keyIndent)
             return NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
 
@@ -415,10 +415,10 @@ internal sealed partial class YamlParser
     /// <returns>The row index of the value node.</returns>
     private int ParseInlineOrBlockValue(int keyIndent)
     {
-        var anchor = TryReadAnchorAndTag(out var tag);
+        string? anchor = TryReadAnchorAndTag(out string? tag);
         SkipSpaces();
 
-        var c = Peek();
+        byte c = Peek();
         if (IsBreakOrEnd(c) || c == (byte)'#')
         {
             SkipLineTrailing();
@@ -443,7 +443,7 @@ internal sealed partial class YamlParser
 
         if (c == (byte)'[' || c == (byte)'{')
         {
-            var flow = ParseFlowNodeFromBlock(keyIndent);
+            int flow = ParseFlowNodeFromBlock(keyIndent);
             ApplyProperties(flow, anchor, tag);
             SkipLineTrailing();
             return Finish(flow, anchor);
@@ -454,7 +454,7 @@ internal sealed partial class YamlParser
             if (anchor is not null || tag is not null)
                 throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
-            var alias = ParseAlias();
+            int alias = ParseAlias();
             SkipLineTrailing();
             return Finish(alias, anchor);
         }
@@ -462,7 +462,7 @@ internal sealed partial class YamlParser
         if (c == (byte)'|' || c == (byte)'>')
             return Finish(ParseBlockScalar(keyIndent, anchor, tag), anchor);
 
-        var scalar = ParseBlockScalarPlainOrQuoted(keyIndent + 1);
+        int scalar = ParseBlockScalarPlainOrQuoted(keyIndent + 1);
         ApplyProperties(scalar, anchor, tag);
         return Finish(scalar, anchor);
     }
@@ -476,7 +476,7 @@ internal sealed partial class YamlParser
     /// <returns>The row index of the sequence.</returns>
     private int ParseBlockSequence(int indent, string? anchor, string? tag)
     {
-        var sequence = NewContainer(YamlReaderNodeKind.Sequence, _pos, anchor, tag);
+        int sequence = NewContainer(YamlReaderNodeKind.Sequence, _pos, anchor, tag);
 
         while (true)
         {
@@ -488,9 +488,9 @@ internal sealed partial class YamlParser
                 break;
 
             Advance(); // consume '-'
-            var entryColumn = CurrentColumn();
+            int entryColumn = CurrentColumn();
 
-            var separationHasTab = false;
+            bool separationHasTab = false;
             while (Peek() is (byte)' ' or (byte)'\t')
             {
                 if (Peek() == (byte)'\t')
@@ -532,7 +532,7 @@ internal sealed partial class YamlParser
     /// <returns>The decoded key text, or a synthesized representation for non-scalar keys.</returns>
     private string KeyTextOf(int row)
     {
-        var r = _rows[row];
+        YamlReaderRow r = _rows[row];
         if (r.Kind == YamlReaderNodeKind.Scalar && r.ValueKind == YamlValueKind.String)
             return MaterializeString(r);
 
@@ -562,11 +562,11 @@ internal sealed partial class YamlParser
     /// </exception>
     private void AddMappingChild(int mapping, int valueRow, string keyText, Dictionary<string, int> index)
     {
-        var v = _rows[valueRow];
+        YamlReaderRow v = _rows[valueRow];
         v.Key = keyText;
         _rows[valueRow] = v;
 
-        if (index.TryGetValue(keyText, out var existing))
+        if (index.TryGetValue(keyText, out int existing))
         {
             switch (_duplicateKeyBehavior)
             {
@@ -593,14 +593,14 @@ internal sealed partial class YamlParser
     /// <param name="child">The child row index to remove.</param>
     private void RemoveChild(int parent, int child)
     {
-        var first = _rows[parent].FirstChild;
+        int first = _rows[parent].FirstChild;
         if (first == child)
         {
             UnlinkChild(parent, child, -1);
             return;
         }
 
-        var previous = first;
+        int previous = first;
         while (previous >= 0 && _rows[previous].NextSibling != child)
             previous = _rows[previous].NextSibling;
 

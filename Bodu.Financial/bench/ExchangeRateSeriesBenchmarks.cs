@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 
 namespace Bodu.Financial.Benchmarks;

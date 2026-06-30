@@ -4,6 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+global using Bodu.Extensions;
 global using Bodu.Globalization.Calendar.Algorithms;
 global using Bodu.Globalization.Calendar.RangeResolution;
-global using Bodu.Extensions;

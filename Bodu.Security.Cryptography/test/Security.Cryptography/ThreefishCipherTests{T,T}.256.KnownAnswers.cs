@@ -4,9 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test;
-
 using Bodu.Security.Cryptography.Infrastructure;
+using Bodu.Test;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>

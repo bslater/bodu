@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundSynthesizedCorruptionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,12 +43,12 @@ public class CompoundSynthesizedCorruptionTests
     {
         // A 5000-byte stream is a regular (non-mini) stream; inflating its size keeps it on the regular-chain path.
         byte[] bytes = BuildSingleStream("Big", 5000);
-        CfbHeader header = CfbHeader.Parse(bytes);
+        var header = CfbHeader.Parse(bytes);
         int entry = FindEntryOffset(bytes, header, "Big");
 
         BinaryPrimitives.WriteUInt64LittleEndian(bytes.AsSpan(entry + SizeOffset), 200_000);
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
+        using var file = CompoundFile.Open(new MemoryStream(bytes));
         CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(
             () => _ = file.RootStorage.OpenStream("Big").ReadAllBytes());
 
@@ -65,7 +65,7 @@ public class CompoundSynthesizedCorruptionTests
     {
         // A 100-byte stream is stored in the mini stream, so it is resolved through the mini-FAT.
         byte[] bytes = BuildSingleStream("Small", 100);
-        CfbHeader header = CfbHeader.Parse(bytes);
+        var header = CfbHeader.Parse(bytes);
         int entry = FindEntryOffset(bytes, header, "Small");
 
         uint startMiniSector = BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(entry + StartSectorOffset));
@@ -74,7 +74,7 @@ public class CompoundSynthesizedCorruptionTests
         // Point the stream's first mini-sector at itself, forming a cycle.
         BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan((int)(miniFatOffset + (startMiniSector * sizeof(uint)))), startMiniSector);
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
+        using var file = CompoundFile.Open(new MemoryStream(bytes));
         CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(
             () => _ = file.RootStorage.OpenStream("Small").ReadAllBytes());
 

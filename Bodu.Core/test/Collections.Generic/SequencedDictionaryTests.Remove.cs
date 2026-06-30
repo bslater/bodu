@@ -1,8 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Remove.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
 
 namespace Bodu.Collections.Generic;
 
@@ -14,7 +15,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Remove_WhenKeyExists_ShouldRemoveAndReturnTrue()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         bool removed = dictionary.Remove("b");
 
@@ -29,7 +30,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Remove_WhenKeyMissing_ShouldReturnFalse()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         bool removed = dictionary.Remove("missing");
 
@@ -43,7 +44,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Remove_WhenPairValueDiffers_ShouldReturnFalse()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         bool removed = dictionary.Remove(new KeyValuePair<string, int>("a", 999));
 
@@ -57,7 +58,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Remove_WhenKeyReadded_ShouldAppendAtEnd()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         dictionary.Remove("a");
         dictionary.Add("a", 1);

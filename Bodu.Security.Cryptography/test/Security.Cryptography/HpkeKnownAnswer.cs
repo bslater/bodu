@@ -84,7 +84,7 @@ public sealed record HpkeKnownAnswer : CryptoKnownAnswer
     /// <returns>The parsed vectors in file order.</returns>
     public static IEnumerable<HpkeKnownAnswer> Read(Stream stream)
     {
-        using JsonDocument document = JsonDocument.Parse(stream);
+        using var document = JsonDocument.Parse(stream);
 
         foreach (JsonElement vector in document.RootElement.GetProperty("vectors").EnumerateArray())
         {

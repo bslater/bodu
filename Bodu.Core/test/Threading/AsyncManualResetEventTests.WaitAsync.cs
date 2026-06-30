@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncManualResetEventTests.WaitAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public sealed partial class AsyncManualResetEventTests
     {
         var sut = new AsyncManualResetEvent();
 
-        var pending = sut.WaitAsync();
+        ValueTask pending = sut.WaitAsync();
         Assert.IsFalse(pending.IsCompleted);
 
         sut.Set();
@@ -60,7 +60,7 @@ public sealed partial class AsyncManualResetEventTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var wait = sut.WaitAsync(cts.Token);
+        ValueTask wait = sut.WaitAsync(cts.Token);
 
         Assert.IsTrue(wait.IsCanceled);
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await wait);
@@ -75,8 +75,8 @@ public sealed partial class AsyncManualResetEventTests
         var sut = new AsyncManualResetEvent();
         using var cts = new CancellationTokenSource();
 
-        var canceled = sut.WaitAsync(cts.Token);
-        var live = sut.WaitAsync();
+        ValueTask canceled = sut.WaitAsync(cts.Token);
+        ValueTask live = sut.WaitAsync();
 
         cts.Cancel();
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceled);

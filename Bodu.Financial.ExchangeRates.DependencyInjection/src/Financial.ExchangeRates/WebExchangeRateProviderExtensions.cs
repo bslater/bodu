@@ -1,11 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WebExchangeRateProviderExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu;
-using Bodu.Financial;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -250,7 +248,7 @@ public static class WebExchangeRateProviderExtensions
             {
                 TOptions options = serviceProvider.GetRequiredService<IOptions<TOptions>>().Value;
                 client.Timeout = Timeout.InfiniteTimeSpan;
-                var userAgent = getUserAgent(options);
+                string? userAgent = getUserAgent(options);
                 if (!string.IsNullOrWhiteSpace(userAgent))
                     client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", userAgent);
             })

@@ -32,7 +32,7 @@ public partial class EvictingDictionaryTests
     {
         var dictionary = new EvictingDictionary<string, int>(3);
         ICollection<int> values = dictionary.Values;
-        Assert.ThrowsExactly<NotSupportedException>(() => values.Clear());
+        Assert.ThrowsExactly<NotSupportedException>(values.Clear);
     }
 
     /// <summary>

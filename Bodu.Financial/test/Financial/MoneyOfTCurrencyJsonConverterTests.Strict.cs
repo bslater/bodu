@@ -6,7 +6,6 @@
 
 using System.Text.Json;
 using Bodu.Financial.Currencies;
-using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
 

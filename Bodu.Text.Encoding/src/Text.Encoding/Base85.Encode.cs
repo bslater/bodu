@@ -389,7 +389,7 @@ public static partial class Base85
                 value /= 85;
             }
 
-            group[.. (remaining + 1)].CopyTo(destination[position..]);
+            group[..(remaining + 1)].CopyTo(destination[position..]);
             position += remaining + 1;
         }
 

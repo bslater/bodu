@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncSemaphoreTests.WaitAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class AsyncSemaphoreTests
     {
         var sut = new AsyncSemaphore(1);
 
-        var wait = sut.WaitAsync();
+        ValueTask wait = sut.WaitAsync();
 
         Assert.IsTrue(wait.IsCompletedSuccessfully);
         Assert.AreEqual(0, sut.CurrentCount);
@@ -31,7 +31,7 @@ public sealed partial class AsyncSemaphoreTests
         var sut = new AsyncSemaphore(1);
         await sut.WaitAsync();
 
-        var pending = sut.WaitAsync();
+        ValueTask pending = sut.WaitAsync();
         Assert.IsFalse(pending.IsCompleted);
 
         sut.Release();
@@ -49,7 +49,7 @@ public sealed partial class AsyncSemaphoreTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var wait = sut.WaitAsync(cts.Token);
+        ValueTask wait = sut.WaitAsync(cts.Token);
 
         Assert.IsTrue(wait.IsCompletedSuccessfully);
         Assert.AreEqual(0, sut.CurrentCount);
@@ -66,7 +66,7 @@ public sealed partial class AsyncSemaphoreTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var wait = sut.WaitAsync(cts.Token);
+        ValueTask wait = sut.WaitAsync(cts.Token);
 
         Assert.IsTrue(wait.IsCanceled);
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await wait);
@@ -82,8 +82,8 @@ public sealed partial class AsyncSemaphoreTests
         var sut = new AsyncSemaphore(0);
         using var cts = new CancellationTokenSource();
 
-        var canceled = sut.WaitAsync(cts.Token);
-        var live = sut.WaitAsync();
+        ValueTask canceled = sut.WaitAsync(cts.Token);
+        ValueTask live = sut.WaitAsync();
 
         cts.Cancel();
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceled);

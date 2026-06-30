@@ -48,9 +48,6 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         TAlgorithm cipher = CreateAlgorithm();
         cipher.Dispose();
 
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            cipher.GenerateNonce();
-        });
+        Assert.ThrowsExactly<ObjectDisposedException>(cipher.GenerateNonce);
     }
 }

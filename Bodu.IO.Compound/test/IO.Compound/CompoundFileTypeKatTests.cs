@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundFileTypeKatTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,7 +57,7 @@ public class CompoundFileTypeKatTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void RootStorage_WhenWellKnownFileType_ShouldExposePublishedClassId(CompoundFileTypeKat kat)
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference(kat.RelativePath));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference(kat.RelativePath));
 
         Assert.AreEqual(kat.RootClsid, file.RootStorage.Stat.ClassId);
     }

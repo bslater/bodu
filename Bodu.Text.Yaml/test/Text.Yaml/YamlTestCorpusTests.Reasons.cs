@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlTestCorpusTests.Reasons.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -46,12 +46,12 @@ public partial class YamlTestCorpusTests
     [TestCategory("Regression")]
     public void Parse_WhenUnsupportedFeatureCase_ShouldRejectForRecognizedReason(YamlTestVector kat)
     {
-        var ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        YamlFormatException ex = Assert.ThrowsExactly<YamlFormatException>(() =>
         {
             using var _ = YamlDocument.Parse(kat.Yaml);
         });
 
-        var reason = DeriveUnsupportedReason(ex.Message);
+        string reason = DeriveUnsupportedReason(ex.Message);
         Assert.IsTrue(
             KnownUnsupportedReasons.Contains(reason),
             $"{kat.Id}: rejection reason '{reason}' is not a recognized profile reason (message: {ex.Message}).");

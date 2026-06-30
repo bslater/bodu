@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using System.Text;
 using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.Configuration;

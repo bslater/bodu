@@ -7,6 +7,7 @@
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
+
 public static partial class Hpke
 {
     /// <summary>
@@ -29,7 +30,7 @@ public static partial class Hpke
     public static (byte[] Encapsulation, byte[] Ciphertext) SealPsk(
         HpkeSuite suite, ReadOnlySpan<byte> recipientPublicKey, ReadOnlySpan<byte> info, ReadOnlySpan<byte> psk, ReadOnlySpan<byte> pskId, ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> plaintext)
     {
-        using HpkeSender sender = HpkeSender.SetupPsk(suite, recipientPublicKey, info, psk, pskId, out byte[] encapsulation);
+        using var sender = HpkeSender.SetupPsk(suite, recipientPublicKey, info, psk, pskId, out byte[] encapsulation);
         byte[] ciphertext = sender.Seal(associatedData, plaintext);
         return (encapsulation, ciphertext);
     }
@@ -61,7 +62,7 @@ public static partial class Hpke
     public static byte[] OpenPsk(
         HpkeSuite suite, X25519 recipientKey, ReadOnlySpan<byte> encapsulation, ReadOnlySpan<byte> info, ReadOnlySpan<byte> psk, ReadOnlySpan<byte> pskId, ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> ciphertext)
     {
-        using HpkeReceiver receiver = HpkeReceiver.SetupPsk(suite, recipientKey, encapsulation, info, psk, pskId);
+        using var receiver = HpkeReceiver.SetupPsk(suite, recipientKey, encapsulation, info, psk, pskId);
         return receiver.Open(associatedData, ciphertext);
     }
 }

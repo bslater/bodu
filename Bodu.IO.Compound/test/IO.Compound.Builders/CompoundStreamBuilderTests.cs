@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStreamBuilderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public class CompoundStreamBuilderTests
     [TestMethod]
     public void Create_WhenFromText_ShouldEncodePayload()
     {
-        CompoundStreamBuilder stream = CompoundStreamBuilder.Create("Data", "hello", Encoding.ASCII);
+        var stream = CompoundStreamBuilder.Create("Data", "hello", Encoding.ASCII);
 
         CollectionAssert.AreEqual(Encoding.ASCII.GetBytes("hello"), stream.Content.ToArray());
         Assert.AreEqual(5, stream.Length);
@@ -34,7 +34,7 @@ public class CompoundStreamBuilderTests
     {
         using MemoryStream source = new(new byte[] { 9, 8, 7, 6 });
 
-        CompoundStreamBuilder stream = CompoundStreamBuilder.Create("Data", source);
+        var stream = CompoundStreamBuilder.Create("Data", source);
 
         CollectionAssert.AreEqual(new byte[] { 9, 8, 7, 6 }, stream.Content.ToArray());
     }
@@ -45,7 +45,7 @@ public class CompoundStreamBuilderTests
     [TestMethod]
     public void SetContent_WhenCalled_ShouldReplacePayload()
     {
-        CompoundStreamBuilder stream = CompoundStreamBuilder.Create("Data", new byte[] { 1 });
+        var stream = CompoundStreamBuilder.Create("Data", new byte[] { 1 });
 
         stream.SetContent(new byte[] { 2, 3 });
 
@@ -59,7 +59,7 @@ public class CompoundStreamBuilderTests
     public void Create_WhenDeferred_ShouldReportLengthWithoutOpening()
     {
         int opens = 0;
-        CompoundStreamBuilder node = CompoundStreamBuilder.Create("Data", () =>
+        var node = CompoundStreamBuilder.Create("Data", () =>
         {
             opens++;
             return new MemoryStream(new byte[] { 1, 2, 3 });
@@ -75,7 +75,7 @@ public class CompoundStreamBuilderTests
     [TestMethod]
     public void Content_WhenDeferred_ShouldMaterializeSource()
     {
-        CompoundStreamBuilder node = CompoundStreamBuilder.Create("Data", () => new MemoryStream(new byte[] { 4, 5, 6 }), 3);
+        var node = CompoundStreamBuilder.Create("Data", () => new MemoryStream(new byte[] { 4, 5, 6 }), 3);
 
         CollectionAssert.AreEqual(new byte[] { 4, 5, 6 }, node.Content.ToArray());
     }
@@ -87,7 +87,7 @@ public class CompoundStreamBuilderTests
     public void DeepClone_WhenDeferred_ShouldRemainDeferred()
     {
         int opens = 0;
-        CompoundStreamBuilder node = CompoundStreamBuilder.Create("Data", () =>
+        var node = CompoundStreamBuilder.Create("Data", () =>
         {
             opens++;
             return new MemoryStream(new byte[] { 7, 8 });
@@ -107,7 +107,7 @@ public class CompoundStreamBuilderTests
     [TestMethod]
     public void DeepClone_WhenCalled_ShouldCopyContentAndMetadata()
     {
-        CompoundStreamBuilder stream = CompoundStreamBuilder.Create("Data", new byte[] { 1, 2 });
+        var stream = CompoundStreamBuilder.Create("Data", new byte[] { 1, 2 });
         stream.ClassId = Guid.NewGuid();
         stream.StateBits = 7;
 

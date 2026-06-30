@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlScalarResolver.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -40,19 +40,19 @@ internal static class YamlScalarResolver
         if (IsNull(text))
             return YamlValueKind.Null;
 
-        if (TryResolveBoolean(text, version, out var boolValue))
+        if (TryResolveBoolean(text, version, out bool boolValue))
         {
             bits = boolValue ? 1L : 0L;
             return YamlValueKind.Boolean;
         }
 
-        if (TryResolveInteger(text, version, out var longValue))
+        if (TryResolveInteger(text, version, out long longValue))
         {
             bits = longValue;
             return YamlValueKind.Integer;
         }
 
-        if (TryResolveFloat(text, version, out var doubleValue))
+        if (TryResolveFloat(text, version, out double doubleValue))
         {
             bits = BitConverter.DoubleToInt64Bits(doubleValue);
             return YamlValueKind.Float;
@@ -126,20 +126,20 @@ internal static class YamlScalarResolver
     {
         value = 0;
 
-        var s = AsAscii(text);
+        string? s = AsAscii(text);
         if (s is null)
             return false;
 
-        var allowUnderscore = version == YamlSpecVersion.V1_1;
+        bool allowUnderscore = version == YamlSpecVersion.V1_1;
         if (allowUnderscore)
             s = StripUnderscores(s);
 
         if (s.Length == 0)
             return false;
 
-        var negative = false;
-        var hasSign = false;
-        var body = s;
+        bool negative = false;
+        bool hasSign = false;
+        string body = s;
         if (s[0] == '+' || s[0] == '-')
         {
             hasSign = true;
@@ -186,7 +186,7 @@ internal static class YamlScalarResolver
     {
         value = 0;
 
-        var s = AsAscii(text);
+        string? s = AsAscii(text);
         if (s is null)
             return false;
 
@@ -196,8 +196,8 @@ internal static class YamlScalarResolver
         if (s.Length == 0)
             return false;
 
-        var sign = 1.0;
-        var body = s;
+        double sign = 1.0;
+        string body = s;
         if (s[0] == '+' || s[0] == '-')
         {
             sign = s[0] == '-' ? -1.0 : 1.0;
@@ -232,9 +232,9 @@ internal static class YamlScalarResolver
     /// </returns>
     private static bool HasFloatShape(string body)
     {
-        var hasDigit = false;
-        var hasMarker = false;
-        foreach (var c in body)
+        bool hasDigit = false;
+        bool hasMarker = false;
+        foreach (char c in body)
         {
             if (c is >= '0' and <= '9')
                 hasDigit = true;
@@ -264,13 +264,13 @@ internal static class YamlScalarResolver
             return false;
 
         ulong acc = 0;
-        foreach (var c in digits)
+        foreach (char c in digits)
         {
-            var d = DigitValue(c);
+            int d = DigitValue(c);
             if (d < 0 || d >= radix)
                 return false;
 
-            var next = acc * (ulong)radix + (ulong)d;
+            ulong next = acc * (ulong)radix + (ulong)d;
             if (next < acc)
                 return false;
 
@@ -316,9 +316,9 @@ internal static class YamlScalarResolver
     /// </returns>
     private static bool IsAllDigits(string s, int radix)
     {
-        foreach (var c in s)
+        foreach (char c in s)
         {
-            var d = DigitValue(c);
+            int d = DigitValue(c);
             if (d < 0 || d >= radix)
                 return false;
         }
@@ -342,7 +342,7 @@ internal static class YamlScalarResolver
     /// <returns>The ASCII string, or <see langword="null" /> when a non-ASCII byte is present.</returns>
     private static string? AsAscii(ReadOnlySpan<byte> text)
     {
-        foreach (var b in text)
+        foreach (byte b in text)
         {
             if (b >= 0x80)
                 return null;
@@ -362,7 +362,7 @@ internal static class YamlScalarResolver
         if (text.Length != token.Length)
             return false;
 
-        for (var i = 0; i < token.Length; i++)
+        for (int i = 0; i < token.Length; i++)
         {
             if (text[i] != (byte)token[i])
                 return false;
@@ -381,7 +381,7 @@ internal static class YamlScalarResolver
     /// </returns>
     private static bool MatchesAny(ReadOnlySpan<byte> text, params string[] tokens)
     {
-        foreach (var token in tokens)
+        foreach (string token in tokens)
         {
             if (Matches(text, token))
                 return true;

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using System.Text.Json;
 using Bodu.Test.Kat;
 using Bodu.Text.Yaml.Document;
 
@@ -76,7 +77,7 @@ public sealed partial class YamlTestCorpusTests
             return;
         }
 
-        var expectedValues = CorpusCompare.SplitJsonValues(kat.Json!);
+        List<JsonElement> expectedValues = CorpusCompare.SplitJsonValues(kat.Json!);
         if (expectedValues.Count == 1)
         {
             using var doc = YamlDocument.Parse(kat.Yaml);
@@ -84,9 +85,9 @@ public sealed partial class YamlTestCorpusTests
             return;
         }
 
-        var documents = YamlDocument.ParseAllDocuments(kat.Yaml);
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments(kat.Yaml);
         Assert.AreEqual(expectedValues.Count, documents.Count, $"{kat.Id}: document count.");
-        for (var i = 0; i < documents.Count; i++)
+        for (int i = 0; i < documents.Count; i++)
             Assert.IsTrue(CorpusCompare.Matches(expectedValues[i], documents[i].RootElement), $"{kat.Id}[{i}]");
     }
 
@@ -161,7 +162,7 @@ public sealed partial class YamlTestCorpusTests
             yield break;
         }
 
-        foreach (var vector in YamlTestCorpusReader.LoadByCategory(category))
+        foreach (YamlTestVector vector in YamlTestCorpusReader.LoadByCategory(category))
             yield return [vector];
     }
 

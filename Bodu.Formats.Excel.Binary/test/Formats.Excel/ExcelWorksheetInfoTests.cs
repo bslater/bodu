@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorksheetInfoTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -50,7 +50,7 @@ public class ExcelWorksheetInfoTests
     [TestMethod]
     public void Dimensions_WhenSampleDataSheet_ShouldReportDeclaredUsedRange()
     {
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8));
 
         ExcelWorksheetDimensions dimensions = workbook.Worksheets[0].Dimensions;
 
@@ -66,7 +66,7 @@ public class ExcelWorksheetInfoTests
     [TestMethod]
     public void Dimensions_WhenSampleNotesSheet_ShouldReportDeclaredUsedRange()
     {
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8));
 
         ExcelWorksheetDimensions dimensions = workbook.Worksheets[1].Dimensions;
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncLazyTests.IsValueFactoryCompleted.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed partial class AsyncLazyTests
         var gate = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
         var sut = new AsyncLazy<int>(() => gate.Task);
 
-        var pending = sut.GetValueAsync(CancellationToken.None);
+        Task<int> pending = sut.GetValueAsync(CancellationToken.None);
         Assert.IsFalse(sut.IsValueFactoryCompleted);
 
         gate.SetResult(5);

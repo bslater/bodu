@@ -99,14 +99,14 @@ public sealed class GraphAlgorithmsTests
     public void ShortestPath_WhenQueried_ShouldReturnExpectedPath(ShortestPathKat kat)
     {
         var graph = new Graph<string>(kat.Directed ? GraphKind.Directed : GraphKind.Undirected);
-        foreach (var (from, to, weight) in kat.Edges)
+        foreach ((string? from, string? to, double weight) in kat.Edges)
             graph.AddEdge(from, to, weight);
 
-        var path = GraphAlgorithms.ShortestPath(graph, kat.Source, kat.Target);
+        IReadOnlyList<string> path = GraphAlgorithms.ShortestPath(graph, kat.Source, kat.Target);
 
         CollectionAssert.AreEqual(kat.ExpectedPath, path.ToArray());
 
-        var lengths = GraphAlgorithms.ShortestPathLengths(graph, kat.Source);
+        IReadOnlyDictionary<string, double> lengths = GraphAlgorithms.ShortestPathLengths(graph, kat.Source);
         if (kat.ExpectedPath.Length == 0)
         {
             Assert.IsFalse(lengths.ContainsKey(kat.Target));
@@ -131,10 +131,10 @@ public sealed class GraphAlgorithmsTests
     public void TryShortestPath_WhenQueried_ShouldReportFoundDistanceAndPath(ShortestPathKat kat)
     {
         var graph = new Graph<string>(kat.Directed ? GraphKind.Directed : GraphKind.Undirected);
-        foreach (var (from, to, weight) in kat.Edges)
+        foreach ((string? from, string? to, double weight) in kat.Edges)
             graph.AddEdge(from, to, weight);
 
-        var result = GraphAlgorithms.TryShortestPath(graph, kat.Source, kat.Target);
+        ShortestPathResult<string> result = GraphAlgorithms.TryShortestPath(graph, kat.Source, kat.Target);
 
         if (kat.ExpectedPath.Length == 0)
         {
@@ -162,7 +162,7 @@ public sealed class GraphAlgorithmsTests
         graph.AddEdge(2, 3);
 
         IReadOnlyGraph<int> readOnly = graph;
-        var visited = GraphAlgorithms.BreadthFirstSearch(readOnly, 1).ToArray();
+        int[] visited = GraphAlgorithms.BreadthFirstSearch(readOnly, 1).ToArray();
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, visited);
     }
@@ -180,18 +180,18 @@ public sealed class GraphAlgorithmsTests
     public void TopologicalSort_WhenApplied_ShouldRespectEdgesOrReportCycle(TopologicalSortKat kat)
     {
         var graph = new Graph<string>(GraphKind.Directed);
-        foreach (var vertex in kat.Vertices)
+        foreach (string vertex in kat.Vertices)
             graph.AddVertex(vertex);
-        foreach (var (from, to) in kat.Edges)
+        foreach ((string? from, string? to) in kat.Edges)
             graph.AddEdge(from, to);
 
         if (kat.IsAcyclic)
         {
-            Assert.IsTrue(GraphAlgorithms.TryTopologicalSort(graph, out var order));
+            Assert.IsTrue(GraphAlgorithms.TryTopologicalSort(graph, out IReadOnlyList<string>? order));
             Assert.HasCount(graph.VertexCount, order);
 
             var position = order.Select((v, i) => (v, i)).ToDictionary(p => p.v, p => p.i);
-            foreach (var (from, to) in kat.Edges)
+            foreach ((string? from, string? to) in kat.Edges)
                 Assert.IsLessThan(position[to], position[from], $"Edge {from}->{to} violates ordering");
         }
         else
@@ -225,7 +225,7 @@ public sealed class GraphAlgorithmsTests
         graph.AddEdge(10, 11);
         graph.AddVertex(20); // isolated
 
-        var components = GraphAlgorithms.ConnectedComponents(graph)
+        int[][] components = GraphAlgorithms.ConnectedComponents(graph)
             .Select(c => c.OrderBy(x => x).ToArray())
             .OrderBy(c => c[0])
             .ToArray();
@@ -256,7 +256,7 @@ public sealed class GraphAlgorithmsTests
     {
         var graph = new Graph<int>(GraphKind.Directed);
         const int n = 100_000;
-        for (var i = 1; i < n; i++)
+        for (int i = 1; i < n; i++)
             graph.AddEdge(i - 1, i);
 
         Assert.HasCount(n, GraphAlgorithms.DepthFirstSearch(graph, 0));

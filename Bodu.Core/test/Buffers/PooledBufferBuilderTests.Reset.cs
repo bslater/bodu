@@ -78,10 +78,7 @@ public partial class PooledBufferBuilderTests
         var builder = new PooledBufferBuilder<int>();
         builder.Dispose();
 
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            builder.Reset();
-        });
+        Assert.ThrowsExactly<ObjectDisposedException>(builder.Reset);
     }
 
     /// <summary>

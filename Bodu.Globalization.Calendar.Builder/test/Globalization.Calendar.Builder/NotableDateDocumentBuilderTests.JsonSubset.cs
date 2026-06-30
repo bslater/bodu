@@ -93,7 +93,7 @@ public partial class NotableDateDocumentBuilderTests
         _ = scenario;
         NotableDateDocumentBuilder builder = build();
 
-        _ = Assert.ThrowsExactly<NotSupportedException>(() => builder.ToJson());
+        _ = Assert.ThrowsExactly<NotSupportedException>(builder.ToJson);
     }
 
     /// <summary>
@@ -123,7 +123,7 @@ public partial class NotableDateDocumentBuilderTests
 
         var builder = NotableDateDocumentBuilder.FromXml(xml);
 
-        _ = Assert.ThrowsExactly<NotSupportedException>(() => builder.ToJson());
+        _ = Assert.ThrowsExactly<NotSupportedException>(builder.ToJson);
     }
 
     /// <summary>
@@ -175,7 +175,7 @@ public partial class NotableDateDocumentBuilderTests
         NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("demo.norules")
             .AddNotableDate("nd", "ND", NotableDateCategory.Observance, d => { });
 
-        _ = Assert.ThrowsExactly<InvalidOperationException>(() => builder.ToJson());
+        _ = Assert.ThrowsExactly<InvalidOperationException>(builder.ToJson);
     }
 
     /// <summary>
@@ -188,7 +188,7 @@ public partial class NotableDateDocumentBuilderTests
             .AddNotableDate("nd", "ND", NotableDateCategory.Observance, d => d
                 .AddRule("r", x => { }));
 
-        _ = Assert.ThrowsExactly<InvalidOperationException>(() => builder.ToJson());
+        _ = Assert.ThrowsExactly<InvalidOperationException>(builder.ToJson);
     }
 
     /// <summary>
@@ -266,6 +266,6 @@ public partial class NotableDateDocumentBuilderTests
     {
         var builder = NotableDateDocumentBuilder.FromJson(JsonWithRule(ruleJson));
 
-        _ = Assert.ThrowsExactly<InvalidOperationException>(() => builder.ToXml());
+        _ = Assert.ThrowsExactly<InvalidOperationException>(builder.ToXml);
     }
 }

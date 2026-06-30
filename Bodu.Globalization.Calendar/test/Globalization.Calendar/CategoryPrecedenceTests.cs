@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar.RangeResolution;
-
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>

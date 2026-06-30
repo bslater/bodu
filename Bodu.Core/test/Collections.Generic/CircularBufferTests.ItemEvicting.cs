@@ -87,7 +87,7 @@ public partial class CircularBufferTests
     {
         var evictedItems = new List<string>();
         var buffer = new CircularBuffer<string>(2, allowOverwrite: true);
-        buffer.ItemEvicting += item => evictedItems.Add(item);
+        buffer.ItemEvicting += evictedItems.Add;
 
         buffer.Enqueue("A");
         buffer.Enqueue("B");

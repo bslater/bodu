@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgorithm>

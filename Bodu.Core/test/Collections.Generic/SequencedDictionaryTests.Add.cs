@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Add.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Add_WhenKeyIsNew_ShouldAppendToEnd()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         dictionary.Add("d", 4);
 
@@ -27,7 +27,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Add_WhenKeyAlreadyExists_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -43,7 +43,7 @@ public partial class SequencedDictionaryTests
     {
         var dictionary = new SequencedDictionary<string, int>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             dictionary.Add(null!, 1);
         });

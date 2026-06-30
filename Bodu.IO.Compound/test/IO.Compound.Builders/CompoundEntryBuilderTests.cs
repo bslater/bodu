@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundEntryBuilderTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public class CompoundEntryBuilderTests
     [TestCategory(TestCategories.Smoke)]
     public void Build_WhenAuthoringTree_ShouldReportTypesAndParents()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
         CompoundStorageBuilder storage = root.AddStorage("Storage 1");
         CompoundStreamBuilder stream = storage.AddStream("Stream 1", new byte[] { 1, 2, 3 });
 
@@ -42,7 +42,7 @@ public class CompoundEntryBuilderTests
         CompoundEntryBuilder node = CompoundStorageBuilder.CreateRoot();
 
         Assert.IsNotNull(node.AsStorage());
-        _ = Assert.ThrowsExactly<InvalidOperationException>(() => node.AsStream());
+        _ = Assert.ThrowsExactly<InvalidOperationException>(node.AsStream);
     }
 
     /// <summary>
@@ -55,6 +55,6 @@ public class CompoundEntryBuilderTests
         CompoundEntryBuilder node = CompoundStreamBuilder.Create("Stream 1", new byte[] { 1 });
 
         Assert.IsNotNull(node.AsStream());
-        _ = Assert.ThrowsExactly<InvalidOperationException>(() => node.AsStorage());
+        _ = Assert.ThrowsExactly<InvalidOperationException>(node.AsStorage);
     }
 }

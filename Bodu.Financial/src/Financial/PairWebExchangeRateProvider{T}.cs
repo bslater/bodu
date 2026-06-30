@@ -6,7 +6,6 @@
 
 namespace Bodu.Financial;
 
-using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 

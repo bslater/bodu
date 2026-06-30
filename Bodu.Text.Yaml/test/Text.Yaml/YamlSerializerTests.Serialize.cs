@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializerTests.Serialize.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Serialize_WhenPoco_ShouldEmitBlock()
     {
-        var yaml = YamlSerializer.Serialize(new Person { Name = "Ada", Age = 36, Active = true });
+        string yaml = YamlSerializer.Serialize(new Person { Name = "Ada", Age = 36, Active = true });
         Assert.AreEqual("Name: Ada\nAge: 36\nActive: true\n", yaml);
     }
 
@@ -29,7 +29,7 @@ public partial class YamlSerializerTests
     public void Serialize_WhenNamingPolicyAndAttributes_ShouldApply()
     {
         var options = new YamlSerializerOptions { PropertyNamingPolicy = YamlNamingPolicy.SnakeCaseLower };
-        var yaml = YamlSerializer.Serialize(new Config { ServerHost = "h", ServerPort = 8080, Secret = "x" }, options);
+        string yaml = YamlSerializer.Serialize(new Config { ServerHost = "h", ServerPort = 8080, Secret = "x" }, options);
 
         Assert.AreEqual("server_host: h\nport: 8080\n", yaml);
     }
@@ -39,7 +39,7 @@ public partial class YamlSerializerTests
     public void Serialize_WhenIgnoreNullValues_ShouldOmit()
     {
         var options = new YamlSerializerOptions { IgnoreNullValues = true };
-        var yaml = YamlSerializer.Serialize(new Person { Name = null, Age = 5, Active = true }, options);
+        string yaml = YamlSerializer.Serialize(new Person { Name = null, Age = 5, Active = true }, options);
         Assert.AreEqual("Age: 5\nActive: true\n", yaml);
     }
 
@@ -49,7 +49,7 @@ public partial class YamlSerializerTests
     {
         var options = new YamlSerializerOptions();
         options.Converters.Add(new UpperConverter());
-        var yaml = YamlSerializer.Serialize("hello", options);
+        string yaml = YamlSerializer.Serialize("hello", options);
         Assert.AreEqual("HELLO\n", yaml);
     }
 

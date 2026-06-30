@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelCellTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public class ExcelCellTests
     [TestMethod]
     public void Text_WhenCreated_ShouldExposeStringValueOnly()
     {
-        ExcelCell cell = ExcelCell.Text(1, 2, "hello", formatIndex: 5);
+        var cell = ExcelCell.Text(1, 2, "hello", formatIndex: 5);
 
         Assert.AreEqual(1, cell.RowIndex);
         Assert.AreEqual(2, cell.ColumnIndex);
@@ -39,7 +39,7 @@ public class ExcelCellTests
     [TestMethod]
     public void Number_WhenCreatedDateFormatted_ShouldExposeNumberValueAndDateFlag()
     {
-        ExcelCell cell = ExcelCell.Number(3, 4, 44929.0, formatIndex: 14, isDateFormatted: true);
+        var cell = ExcelCell.Number(3, 4, 44929.0, formatIndex: 14, isDateFormatted: true);
 
         Assert.AreEqual(ExcelCellKind.Number, cell.Kind);
         Assert.AreEqual(44929.0, cell.NumberValue!.Value, 0.0);
@@ -56,7 +56,7 @@ public class ExcelCellTests
     [TestMethod]
     public void Boolean_WhenCreated_ShouldExposeBooleanValueOnly()
     {
-        ExcelCell cell = ExcelCell.Boolean(0, 0, true);
+        var cell = ExcelCell.Boolean(0, 0, true);
 
         Assert.AreEqual(ExcelCellKind.Boolean, cell.Kind);
         Assert.IsTrue(cell.BooleanValue!.Value);
@@ -71,7 +71,7 @@ public class ExcelCellTests
     [TestMethod]
     public void Error_WhenCreated_ShouldExposeErrorValueOnly()
     {
-        ExcelCell cell = ExcelCell.Error(0, 0, ExcelErrorCode.DivideByZero);
+        var cell = ExcelCell.Error(0, 0, ExcelErrorCode.DivideByZero);
 
         Assert.AreEqual(ExcelCellKind.Error, cell.Kind);
         Assert.AreEqual(ExcelErrorCode.DivideByZero, cell.ErrorValue!.Value);
@@ -86,8 +86,8 @@ public class ExcelCellTests
     [TestMethod]
     public void Equality_WhenSameContent_ShouldBeEqual()
     {
-        ExcelCell first = ExcelCell.Number(2, 3, 1.5);
-        ExcelCell second = ExcelCell.Number(2, 3, 1.5);
+        var first = ExcelCell.Number(2, 3, 1.5);
+        var second = ExcelCell.Number(2, 3, 1.5);
 
         Assert.AreEqual(first, second);
         Assert.IsTrue(first == second);
@@ -100,8 +100,8 @@ public class ExcelCellTests
     [TestMethod]
     public void Equality_WhenDifferentValue_ShouldNotBeEqual()
     {
-        ExcelCell first = ExcelCell.Number(2, 3, 1.5);
-        ExcelCell second = ExcelCell.Number(2, 3, 2.5);
+        var first = ExcelCell.Number(2, 3, 1.5);
+        var second = ExcelCell.Number(2, 3, 2.5);
 
         Assert.AreNotEqual(first, second);
         Assert.IsTrue(first != second);
