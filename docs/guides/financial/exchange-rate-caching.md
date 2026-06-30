@@ -277,9 +277,9 @@ var monthly = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions
 ```
 
 For a layout the built-ins do not cover, build one with
-[`ExchangeRateCacheFileLayout.Create`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheFileLayout.Create):
+[`ExchangeRateCacheFileLayout.Create`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCacheFileLayout.Create*):
 supply a partition strategy (one of `Single`/`Yearly`/`Monthly`/`Daily`, or
-[`ExchangeRateCachePartitionStrategy.Custom`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCachePartitionStrategy.Custom)
+[`ExchangeRateCachePartitionStrategy.Custom`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateCachePartitionStrategy.Custom*)
 for an arbitrary period such as fiscal quarters) and optional delegates that decide
 the directory and the file name:
 
