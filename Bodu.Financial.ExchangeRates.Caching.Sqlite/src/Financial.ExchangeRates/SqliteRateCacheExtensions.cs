@@ -10,6 +10,7 @@ using Bodu.Financial.ExchangeRates.Caching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates;
@@ -112,7 +113,10 @@ public static class SqliteRateCacheExtensions
         {
             SqliteExchangeRateCacheOptions options =
                 serviceProvider.GetRequiredService<IOptionsMonitor<SqliteExchangeRateCacheOptions>>().Get((string)key!);
-            return new SqliteExchangeRateCache(options);
+            return new SqliteExchangeRateCache(
+                options,
+                serviceProvider.GetService<TimeProvider>(),
+                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<SqliteExchangeRateCache>());
         });
 
         // Expose the provider's cache on the keyed IExchangeRateCache surface so a specific cached provider is resolvable

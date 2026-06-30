@@ -7,6 +7,8 @@
 using System.Collections.Concurrent;
 using System.Globalization;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
@@ -44,6 +46,14 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// validation still throws.
 /// </para>
 /// <para>
+/// So that this graceful degradation is not silent, each swallowed storage failure is logged at
+/// <see cref="LogLevel.Warning" /> through the optional logger supplied at construction. The first failure is logged
+/// immediately and subsequent failures are rate-limited to at most one warning per minute, each carrying the count of
+/// failures suppressed since the previous warning, so a sustained outage is visible to operators without flooding the
+/// log. With no logger the degradation is unreported; set <see cref="ExchangeRateCacheOptions.ThrowOnStorageFailure" />
+/// instead when a failure must surface as an exception.
+/// </para>
+/// <para>
 /// A single keep-alive connection is held open for the instance lifetime so that a shared in-memory database (
 /// <c>Mode=Memory;Cache=Shared</c>) survives between operations, which would otherwise be torn down when the last
 /// connection closes. Per-operation connections are still opened and closed normally and are pooled by
@@ -78,10 +88,33 @@ public sealed class SqliteExchangeRateCache
     /// <summary>Tracks whether the instance has been disposed, as <c>0</c> for live and <c>1</c> for disposed. Stored as an <see cref="int" /> so <see cref="Interlocked.Exchange(ref int, int)" /> can make <see cref="Dispose" /> idempotent: only the first caller observes the transition and releases the keep-alive connection.</summary>
     private int _disposed;
 
+    /// <summary>The logger that receives the rate-limited degradation warnings, or <see cref="NullLogger.Instance" /> when none was supplied.</summary>
+    private readonly ILogger _logger;
+
+    /// <summary>The time source the degradation-warning cooldown is measured against.</summary>
+    private readonly TimeProvider _timeProvider;
+
+    /// <summary>The minimum interval between two emitted degradation warnings; failures inside the window are suppressed and counted.</summary>
+    private static readonly TimeSpan WarnCooldown = TimeSpan.FromMinutes(1);
+
+    /// <summary>The <see cref="DateTimeOffset.UtcTicks" /> of the last emitted degradation warning, or <see cref="long.MinValue" /> when none has been emitted. Read and updated with <see cref="Interlocked" /> so concurrent swallows agree on a single warning per window.</summary>
+    private long _lastWarnUtcTicks = long.MinValue;
+
+    /// <summary>The number of swallowed failures suppressed since the last emitted warning, reported with the next warning and then reset.</summary>
+    private int _suppressedSinceLastWarn;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="SqliteExchangeRateCache" /> class.
     /// </summary>
     /// <param name="options">The options carrying the bound provider and the database location.</param>
+    /// <param name="timeProvider">
+    /// The time source the degradation-warning cooldown is measured against, or <see langword="null" /> to use
+    /// <see cref="TimeProvider.System" />.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives the rate-limited best-effort degradation warnings, or <see langword="null" /> to leave
+    /// the degradation unreported.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="options" /> is <see langword="null" />.
     /// </exception>
@@ -89,19 +122,22 @@ public sealed class SqliteExchangeRateCache
     /// <remarks>
     /// The schema is created if it does not already exist, and a pre-existing <c>rates</c> table is migrated to add the
     /// <c>observed_at</c> column when it is absent, in one transaction, when the instance is constructed. A failure to
-    /// create or migrate the schema is swallowed so a transiently unwritable database surfaces later as empty reads and
-    /// skipped writes rather than a construction-time exception, unless
+    /// create or migrate the schema is swallowed — and logged at <see cref="LogLevel.Warning" /> through
+    /// <paramref name="logger" /> — so a transiently unwritable database surfaces later as empty reads and skipped
+    /// writes rather than a construction-time exception, unless
     /// <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> or
     /// <see cref="ExchangeRateCacheOptions.ThrowOnStorageFailure" /> is set, in which case the failure propagates from
     /// the constructor.
     /// </remarks>
-    public SqliteExchangeRateCache(SqliteExchangeRateCacheOptions options)
+    public SqliteExchangeRateCache(SqliteExchangeRateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
         _options = options;
         _connectionString = options.ResolveConnectionString();
+        _timeProvider = timeProvider ?? TimeProvider.System;
+        _logger = logger ?? NullLogger.Instance;
 
         // Hold one connection open for the instance lifetime so a shared in-memory database is not destroyed between
         // operations. For a file database this is a harmless idle handle.
@@ -113,15 +149,17 @@ public sealed class SqliteExchangeRateCache
             ConfigureConnection(_keepAlive);
             EnsureSchema(_keepAlive);
         }
-        catch (SqliteException) when (!_options.ValidateStorageOnStart && !_options.ThrowOnStorageFailure)
+        catch (SqliteException ex) when (!_options.ValidateStorageOnStart && !_options.ThrowOnStorageFailure)
         {
             // Best-effort cache: a database that cannot be opened or initialized now degrades to empty reads and
             // skipped writes rather than failing construction. When either strict flag is set the failure propagates
             // from the constructor instead.
+            OnStorageFailureSwallowed("schema initialization", ex);
         }
-        catch (IOException) when (!_options.ValidateStorageOnStart && !_options.ThrowOnStorageFailure)
+        catch (IOException ex) when (!_options.ValidateStorageOnStart && !_options.ThrowOnStorageFailure)
         {
             // Best-effort cache: see above.
+            OnStorageFailureSwallowed("schema initialization", ex);
         }
     }
 
@@ -154,6 +192,39 @@ public sealed class SqliteExchangeRateCache
     /// <see langword="false" />, so the failure propagates.
     /// </value>
     private bool ShouldSwallowStorageFailure => !_options.ThrowOnStorageFailure;
+
+    /// <summary>
+    /// Reports a swallowed best-effort storage failure to the logger at <see cref="LogLevel.Warning" />, rate-limited
+    /// so at most one warning is emitted per <see cref="WarnCooldown" /> window.
+    /// </summary>
+    /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>
+    /// <param name="exception">The swallowed storage exception.</param>
+    /// <remarks>
+    /// The first failure after construction, and the first after each cooldown elapses, is logged immediately and
+    /// carries the count of failures suppressed since the previous warning; failures inside the window only increment
+    /// that count. A single warning slot is claimed with
+    /// <see cref="Interlocked.CompareExchange(ref long, long, long)" /> so that under concurrent swallows exactly one
+    /// caller logs per window. The cooldown is measured against the injected <see cref="TimeProvider" /> so the
+    /// rate-limiting is deterministic under test.
+    /// </remarks>
+    private void OnStorageFailureSwallowed(string operation, Exception exception)
+    {
+        long now = _timeProvider.GetUtcNow().UtcTicks;
+        long last = Interlocked.Read(ref _lastWarnUtcTicks);
+
+        // Emit when no warning has been logged yet, or the cooldown has elapsed since the last one. The MinValue sentinel
+        // is checked before the subtraction so a never-warned instance does not underflow the elapsed comparison.
+        bool due = last == long.MinValue || (now - last) >= WarnCooldown.Ticks;
+        if (due && Interlocked.CompareExchange(ref _lastWarnUtcTicks, now, last) == last)
+        {
+            int suppressed = Interlocked.Exchange(ref _suppressedSinceLastWarn, 0);
+            Log.StorageFailureSwallowed(_logger, _options.Provider, operation, suppressed, exception);
+        }
+        else
+        {
+            Interlocked.Increment(ref _suppressedSinceLastWarn);
+        }
+    }
 
     /// <inheritdoc />
     public IReadOnlyList<CachedExchangeRate> GetRates(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
@@ -421,12 +492,14 @@ public sealed class SqliteExchangeRateCache
                 }
             }
         }
-        catch (SqliteException) when (ShouldSwallowStorageFailure)
+        catch (SqliteException ex) when (ShouldSwallowStorageFailure)
         {
+            OnStorageFailureSwallowed("read", ex);
             return Array.Empty<CachedExchangeRate>();
         }
-        catch (IOException) when (ShouldSwallowStorageFailure)
+        catch (IOException ex) when (ShouldSwallowStorageFailure)
         {
+            OnStorageFailureSwallowed("read", ex);
             return Array.Empty<CachedExchangeRate>();
         }
 
@@ -454,13 +527,15 @@ public sealed class SqliteExchangeRateCache
 
             transaction.Commit();
         }
-        catch (SqliteException) when (ShouldSwallowStorageFailure)
+        catch (SqliteException ex) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
+            OnStorageFailureSwallowed("store", ex);
         }
-        catch (IOException) when (ShouldSwallowStorageFailure)
+        catch (IOException ex) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
+            OnStorageFailureSwallowed("store", ex);
         }
     }
 
@@ -553,12 +628,14 @@ public sealed class SqliteExchangeRateCache
                 }
             }
         }
-        catch (SqliteException) when (ShouldSwallowStorageFailure)
+        catch (SqliteException ex) when (ShouldSwallowStorageFailure)
         {
+            OnStorageFailureSwallowed("read", ex);
             return Array.Empty<(DateOnly, DateOnly, DateTimeOffset)>();
         }
-        catch (IOException) when (ShouldSwallowStorageFailure)
+        catch (IOException ex) when (ShouldSwallowStorageFailure)
         {
+            OnStorageFailureSwallowed("read", ex);
             return Array.Empty<(DateOnly, DateOnly, DateTimeOffset)>();
         }
 
@@ -586,13 +663,15 @@ public sealed class SqliteExchangeRateCache
 
             transaction.Commit();
         }
-        catch (SqliteException) when (ShouldSwallowStorageFailure)
+        catch (SqliteException ex) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
+            OnStorageFailureSwallowed("coverage record", ex);
         }
-        catch (IOException) when (ShouldSwallowStorageFailure)
+        catch (IOException ex) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
+            OnStorageFailureSwallowed("coverage record", ex);
         }
     }
 
@@ -671,15 +750,17 @@ public sealed class SqliteExchangeRateCache
             transaction.Commit();
             return true;
         }
-        catch (SqliteException) when (ShouldSwallowStorageFailure)
+        catch (SqliteException ex) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval. Report the failure so the caller can
             // refetch rather than trust coverage that was never persisted.
+            OnStorageFailureSwallowed("range store", ex);
             return false;
         }
-        catch (IOException) when (ShouldSwallowStorageFailure)
+        catch (IOException ex) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: see above.
+            OnStorageFailureSwallowed("range store", ex);
             return false;
         }
     }

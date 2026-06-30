@@ -7,6 +7,7 @@
 using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
@@ -162,6 +163,36 @@ public sealed class SqliteRateCacheExtensionsTests
             .GetRates(pair, TimeSpan.FromHours(24), now);
 
         Assert.IsEmpty(ofxRows);
+    }
+
+    /// <summary>
+    /// Verifies that a cache resolved through dependency injection logs its best-effort degradation through the
+    /// container's logger, confirming the registration wires an <see cref="ILogger" /> into the cache.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenResolvedCacheDegrades_ShouldLogThroughContainerLogger()
+    {
+        // A file whose contents are not a valid SQLite database makes the cache's schema initialization fail and degrade.
+        File.WriteAllText(_databasePath, "this is not a sqlite database file");
+        var loggerProvider = new CapturingLoggerProvider();
+
+        var services = new ServiceCollection();
+        services.AddLogging(builder => builder.AddProvider(loggerProvider));
+        services.AddFinancialService().AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath);
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        // Resolving constructs the cache over the corrupt file, whose swallowed failure is logged at Warning.
+        _ = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+
+        bool loggedWarning = false;
+        foreach ((LogLevel Level, EventId EventId, string Message, Exception? Exception) entry in loggerProvider.Logger.Entries)
+        {
+            if (entry.Level == LogLevel.Warning && entry.EventId.Id == 4520)
+                loggedWarning = true;
+        }
+
+        Assert.IsTrue(loggedWarning, "the DI-resolved cache reports degradation through the container logger");
     }
 
     /// <summary>
