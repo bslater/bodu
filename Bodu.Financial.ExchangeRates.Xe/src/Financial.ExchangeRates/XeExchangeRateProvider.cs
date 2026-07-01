@@ -19,7 +19,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// tracking, single-flight coalescing, fetch-and-accumulate orchestration, and diagnostic logging shared by every
 /// pair-based web source; this type contributes only the XE identity and the XE-specific exception text. XE serves
 /// arbitrary pairs through its charting-rates endpoint, so any pair of ISO codes can be requested directly. Use
-/// <see cref="PairWebExchangeRateProvider{TSeries}.LoadPairAsync" /> to warm a pair's in-memory store.
+/// <see cref="WebExchangeRateProvider.LoadPairAsync" /> to warm a pair's in-memory store.
 /// </para>
 /// <para>
 /// <strong>Authorization.</strong> The charting-rates endpoint requires an <c>Authorization: Basic</c> token that is

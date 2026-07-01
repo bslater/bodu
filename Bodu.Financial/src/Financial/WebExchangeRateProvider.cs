@@ -66,7 +66,7 @@ namespace Bodu.Financial;
 /// </example>
 /// </remarks>
 public abstract class WebExchangeRateProvider
-    : IDatedExchangeRateProvider, IExchangeRateProvider, IDisposable
+    : IDatedExchangeRateProvider, IExchangeRateProvider, IExchangeRatePairLoader, IDisposable
 {
     /// <summary>The tolerance, in days, used to resolve the most recent rate for the undated surfaces; large enough to reach any rate fetched into the store from the current date.</summary>
     private const int LatestRateToleranceDays = 100_000;
@@ -270,6 +270,43 @@ public abstract class WebExchangeRateProvider
         await EnsureLoadedAsync(pair, startDate, endDate, cancellationToken).ConfigureAwait(false);
 
         return _snapshot.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The load is delegated to the feed-specific
+    /// <see cref="EnsureLoadedAsync(ExchangeRatePair, DateOnly, DateOnly, CancellationToken)" />, so it warms whatever
+    /// unit the provider downloads — a single pair, an era, a feed, or a date range — to cover the requested window.
+    /// </remarks>
+    public Task LoadPairAsync(
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly startDate,
+        DateOnly endDate,
+        CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(fromIsoCode);
+        FinancialThrowHelper.ThrowIfNotValidIsoCode(toIsoCode);
+        if (endDate < startDate)
+            throw CreateRangeInvertedException(startDate, endDate);
+        ValidateRangeRequest(fromIsoCode, toIsoCode, startDate, endDate);
+
+        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+        return EnsureLoadedAsync(pair, startDate, endDate, cancellationToken).AsTask();
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<ExchangeRatePair> GetLoadedPairs()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        ExchangeRateBook book = _book;
+        HashSet<ExchangeRatePair> pairs = new();
+        foreach (ExchangeRateSeries series in book.EnumerateSeries())
+            pairs.Add(series.Pair);
+
+        return pairs;
     }
 
     /// <inheritdoc />

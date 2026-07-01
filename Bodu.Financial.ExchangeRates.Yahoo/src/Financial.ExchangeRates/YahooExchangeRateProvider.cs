@@ -20,7 +20,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// pair-based web source; this type contributes only the Yahoo identity, the ticker-based log label, and the
 /// Yahoo-specific exception text. Yahoo serves arbitrary pairs through the <c>{FROM}{TO}=X</c> ticker convention, so
 /// any pair of ISO codes can be requested directly. Use
-/// <see cref="PairWebExchangeRateProvider{TSeries}.LoadPairAsync" /> to warm a pair's in-memory store.
+/// <see cref="WebExchangeRateProvider.LoadPairAsync" /> to warm a pair's in-memory store.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an

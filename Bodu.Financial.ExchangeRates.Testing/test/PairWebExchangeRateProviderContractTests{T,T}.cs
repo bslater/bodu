@@ -9,7 +9,7 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// <summary>
 /// Provides the shared contract every pair-based web provider built on <see cref="PairWebExchangeRateProvider{TSeries}" />
 /// must satisfy, layered on top of the general <see cref="DatedExchangeRateProviderContractTests{TProvider}" />. It
-/// exercises the per-pair warm-up surface — <see cref="PairWebExchangeRateProvider{TSeries}.LoadPairAsync" /> and
+/// exercises the per-pair warm-up surface — <see cref="WebExchangeRateProvider.LoadPairAsync" /> and
 /// <see cref="PairWebExchangeRateProvider{TSeries}.GetAvailablePairs" /> — that the shared base contributes, so each
 /// concrete source (Yahoo, OFX, …) proves the inherited machinery against its own fixture by deriving a
 /// <see langword="sealed" /> <c>[TestClass]</c> from this base.
