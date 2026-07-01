@@ -2,6 +2,11 @@
 
 A distributed (Redis-capable) cache for `Bodu.Financial` exchange-rate providers.
 
+> One `IExchangeRateCache` backend among several. For the composition model, the
+> [`SqliteExchangeRateCache`](../Bodu.Financial.ExchangeRates.Caching.Sqlite/README.md)
+> alternative, and "when to use which", see the
+> [Caching and aggregating exchange rates guide](../docs/guides/financial/exchange-rate-caching.md).
+
 `DistributedExchangeRateCache` implements the `IExchangeRateCache` contract over a
 `Microsoft.Extensions.Caching.Distributed.IDistributedCache`, persisting one provider's dated rates and fetch-coverage
 windows so they need not be re-fetched while fresh. It is behaviourally identical to the in-memory, TOML, and SQLite

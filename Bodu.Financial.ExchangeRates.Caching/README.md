@@ -2,6 +2,10 @@
 
 A caching and composition layer for `Bodu.Financial` exchange-rate providers.
 
+> For the full walkthrough — quickstart, stacking (tiered read-through), aggregation,
+> "when to use which", observability, and troubleshooting — see the
+> [Caching and aggregating exchange rates guide](../docs/guides/financial/exchange-rate-caching.md).
+
 The provider classes (Yahoo, RBA, ECB, BoE) are pure fetchers — they know nothing
 of caching. This package adds two orthogonal pieces that each implement the same
 `IDatedExchangeRateProvider` contract (and the timeless `IExchangeRateProvider`), so
@@ -134,6 +138,13 @@ configurable on `CachingExchangeRateOptions`:
 
 The aggregator's route-selected, aggregated, and unresolved diagnostics are configurable on
 `ExchangeRateAggregationOptions`.
+
+Persistent backends may add their own diagnostics. The SQLite cache logs best-effort **storage
+degradation** at `Warning` under **`EventId 4520`** (first failure immediately, then rate-limited
+to one per minute) so a silently-degrading cache is visible — see the
+[`Bodu.Financial.ExchangeRates.Caching.Sqlite`](../Bodu.Financial.ExchangeRates.Caching.Sqlite/README.md)
+package and the observability section of the
+[caching guide](../docs/guides/financial/exchange-rate-caching.md#observability-seeing-hits-misses-and-degradation).
 
 ## Served-rate provenance & data age
 

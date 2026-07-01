@@ -2,6 +2,13 @@
 
 A SQLite-backed persistent cache for `Bodu.Financial` exchange-rate providers.
 
+> For the full composition walkthrough (quickstart, stacking, aggregation,
+> observability, troubleshooting) see the
+> [Caching and aggregating exchange rates guide](../docs/guides/financial/exchange-rate-caching.md); for a
+> cross-host cache, see the
+> [`Bodu.Financial.ExchangeRates.Caching.Distributed`](../Bodu.Financial.ExchangeRates.Caching.Distributed/README.md)
+> backend.
+
 `SqliteExchangeRateCache` implements the `IExchangeRateCache` contract over a SQLite database, persisting one
 provider's dated rates and fetch-coverage windows so they need not be re-fetched while fresh. It is behaviourally
 identical to the in-memory and TOML caches in `Bodu.Financial.ExchangeRates.Caching` — the same freshness, merge,
