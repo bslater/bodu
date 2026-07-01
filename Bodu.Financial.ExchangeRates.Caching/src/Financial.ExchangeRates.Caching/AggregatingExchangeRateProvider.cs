@@ -23,6 +23,13 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// Same-currency identity is handled here before any strategy is consulted.
 /// </para>
 /// <para>
+/// Aggregation combines <em>distinct sources</em> — children that differ in who published the rate — for resilience and
+/// coverage, and is orthogonal to the tiered read-through that a <see cref="CachingExchangeRateProvider" /> forms by
+/// stacking caches over a <em>single</em> source. The two nest: an aggregator child can itself be a stacked cache over
+/// a source. Reach for aggregation for fallback, an averaged rate, or per-pair routing across providers; reach for
+/// stacking to cut latency and survive restarts on one provider.
+/// </para>
+/// <para>
 /// To target a specific source rather than the routed result, resolve it by name through <see cref="TryGetProvider" />
 /// (or, under dependency injection, a keyed service); the lookup methods always apply the configured strategy and
 /// routing.

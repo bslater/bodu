@@ -11,17 +11,7 @@ fetchers that know nothing of caching; each piece implements the same
 contract (and the timeless [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)),
 so they drop in transparently:
 
-```text
-Caller
-  │  IDatedExchangeRateProvider / IExchangeRateProvider
-  ▼
-AggregatingExchangeRateProvider     ── groups named children; routes per FX pair and
-  │                                    combines them with a strategy (priority / average)
-  ├── CachingExchangeRateProvider("RBA")  ── read-through cache over ONE source + ONE cache
-  │        └── RbaExchangeRateProvider
-  └── CachingExchangeRateProvider("ECB")
-           └── EcbExchangeRateProvider
-```
+![The caller talks to an AggregatingExchangeRateProvider, which routes each FX pair to a CachingExchangeRateProvider; each caching provider reads through its own cache (SQLite, in-memory, …) and calls its concrete source only on a miss.](../../images/exchange-rate-caching-architecture.svg)
 
 The two pieces are orthogonal: use the cache alone to add read-through caching to
 a single source, the aggregator alone to group already-cached (or uncached)
@@ -54,6 +44,59 @@ providers, or compose them as above.
   is one cached row: the observation `Date`, the `Rate`, and the `CachedAtUtc`
   instant that drives expiry.
 
+## Quickstart
+
+A durable SQLite cache in front of the RBA source, end to end. Both snippets are
+self-contained — nothing is assumed to exist beforehand.
+
+**Dependency injection** (recommended — the container owns the `HttpClient`, logger,
+and disposal):
+
+```csharp
+using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;          // AddRbaHistoricalRates, RbaExchangeRateProvider
+using Bodu.Financial.ExchangeRates.Caching;  // IExchangeRateCache
+using Microsoft.Extensions.DependencyInjection;
+
+var services = new ServiceCollection();
+
+services.AddFinancialService()
+        .AddRbaHistoricalRates()                                   // the concrete RBA source
+        .AddSqliteRateCache("RBA",                                 // a durable cache bound to it
+            configure: o => o.DatabaseFilePath = "/var/cache/fx.db")
+        .AddCachedExchangeRateProvider<RbaExchangeRateProvider>(   // read-through over that cache
+            "RBA",
+            cacheFactory: (sp, name) => sp.GetRequiredKeyedService<IExchangeRateCache>(name));
+
+using var host = services.BuildServiceProvider();
+var rates = host.GetRequiredService<IDatedExchangeRateProvider>();
+
+ExchangeRateLookupResult aud = rates.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
+// aud.Rate is served from SQLite when fresh, otherwise fetched from the RBA source and cached.
+```
+
+**Manual** (new up every piece yourself — useful outside a DI container):
+
+```csharp
+using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;          // RbaExchangeRateProvider, RbaExchangeRateOptions
+using Bodu.Financial.ExchangeRates.Caching;  // SqliteExchangeRateCache, CachingExchangeRateProvider
+
+// The concrete source. This overload builds and owns an HttpClient, so dispose the provider.
+using var source = new RbaExchangeRateProvider(new RbaExchangeRateOptions());
+
+// A durable cache for it, wrapped in a read-through provider.
+using var cache = new SqliteExchangeRateCache("RBA", "/var/cache/fx.db");
+var rates = new CachingExchangeRateProvider(source, cache, new CachingExchangeRateOptions());
+
+ExchangeRateLookupResult aud = rates.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
+```
+
+From here: add [more providers behind one file](#sqlite-concurrency-durability-and-the-shared-file),
+[stack a faster tier](#stacking-providers-tiered-read-through),
+[group several sources](#grouping-providers-with-the-aggregator), or wire the
+[degradation logging](#observability-seeing-hits-misses-and-degradation).
+
 ## Caching one provider
 
 `CachingExchangeRateProvider` caches exactly one source. It is **storage-agnostic**:
@@ -62,6 +105,24 @@ it never chooses or constructs a cache, so you supply the
 — and therefore the storage structure (TOML or JSON files, the on-disk layout and
 partitioning, in-memory, SQLite, or distributed) — at the composition root. The
 provider classes never learn they are being cached.
+
+```mermaid
+sequenceDiagram
+    participant Caller
+    participant Provider as CachingExchangeRateProvider
+    participant Cache as IExchangeRateCache
+    participant Source as Source provider
+    Caller->>Provider: GetRate(AUD, USD, date)
+    Provider->>Cache: fresh cached rate?
+    alt cache hit
+        Cache-->>Provider: fresh rate
+    else cache miss
+        Provider->>Source: fetch
+        Source-->>Provider: rate
+        Provider->>Cache: store (merge + prune)
+    end
+    Provider-->>Caller: ExchangeRateLookupResult
+```
 
 ```csharp
 var options = new CachingExchangeRateOptions
@@ -438,6 +499,96 @@ nature as a performance hint rather than an authoritative store; when correctnes
 under concurrent writers matters across a fleet, front a real database with your
 own [`IExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache).
 
+## SQLite: concurrency, durability, and the shared file
+
+[`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache)
+is the strongest shipped *local* backend: durable across restarts, and safe when
+several caches — even several processes on one host — share a single database file.
+
+**One file, many providers.** Construct one cache per provider, all pointed at the same
+`DatabaseFilePath`. Every row is keyed by `(provider, from_code, to_code, obs_date)`, so
+each provider's series stays partitioned with no collisions — and one cache already
+covers *all* of its provider's currency pairs, so there is never a cache per pair:
+
+```csharp
+using var rba = new SqliteExchangeRateCache("RBA", "/var/cache/fx.db");
+using var ofx = new SqliteExchangeRateCache("OFX", "/var/cache/fx.db");
+```
+
+**Why it is safe under concurrency.**
+
+- Each [`StoreFetchedRange`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache)
+  writes the merged rows and the covered window in **one transaction**, so a reader
+  never sees coverage without its rows.
+- **Write-ahead logging** (`UseWriteAheadLogging`, on by default) lets readers run
+  concurrently with a writer, lifting throughput when caches or processes share the
+  file. It creates `.db-wal` and `.db-shm` sidecar files next to the database — normal,
+  and managed by SQLite.
+- **`BusyTimeout`** (default 5 s) is how long a connection waits for a peer's write lock
+  before failing. The best-effort cache would otherwise swallow a contended write as a
+  silently dropped one, so a non-zero timeout is what makes multi-writer sharing
+  reliable.
+- Each instance holds its own keep-alive connection and per-pair in-process locks;
+  SQLite's own file locking serialises writes across processes.
+
+**When to tune or disable.** Raise `BusyTimeout` under heavy multi-process write
+contention; lower it (or `TimeSpan.Zero`) where a fast failure beats waiting. Disable
+`UseWriteAheadLogging` on storage that cannot honour WAL — notably some **network file
+systems** (NFS/SMB) — where the cache falls back to the default rollback journal.
+
+## Stacking providers (tiered read-through)
+
+A [`CachingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateProvider)
+*is* an [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider),
+and its constructor takes one as its `inner` source — so caching providers
+**stack**. Wrap a source in a durable cache, then wrap *that* in a faster cache, to
+build a tiered read-through where each layer is consulted in turn and only a miss
+falls through to the next:
+
+```mermaid
+flowchart TD
+    L([Lookup]) --> L1["L1 · CachingExchangeRateProvider<br/>InMemoryExchangeRateCache — short expiry"]
+    L1 -- miss --> L2["L2 · CachingExchangeRateProvider<br/>SqliteExchangeRateCache — long expiry"]
+    L2 -- miss --> O["Origin · RbaExchangeRateProvider<br/>network source of record"]
+    O -. "writes back" .-> L2
+    L2 -. "writes back" .-> L1
+```
+
+On the way back, the fetched rate is written into L2 and then L1, so both tiers
+warm up; a process restart loses L1 but L2 still serves without hitting the origin.
+
+```csharp
+using Bodu.Financial.ExchangeRates.Caching;
+
+// L2 short-circuits the network; L1 short-circuits even the SQLite read.
+var l2Options = new CachingExchangeRateOptions { DefaultExpiry = TimeSpan.FromDays(7) };
+var l1Options = new CachingExchangeRateOptions { DefaultExpiry = TimeSpan.FromMinutes(5) };
+
+IDatedExchangeRateProvider durable = new CachingExchangeRateProvider(
+    rbaSource, new SqliteExchangeRateCache("RBA", "/var/cache/fx.db"), l2Options);
+
+IDatedExchangeRateProvider tiered = new CachingExchangeRateProvider(
+    durable, new InMemoryExchangeRateCache("RBA"), l1Options);
+```
+
+Two rules make a stack behave:
+
+- **Bind every cache in the stack to the *same* provider name.** A served rate is
+  tagged with the serving cache's [`Provider`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateCache),
+  so mismatched names would mislabel the source.
+- **Give the outer (faster) tier a *shorter* expiry than the inner (durable) tier.**
+  L1 is a hot buffer; L2 is the longer-lived store of record. Each layer's
+  [`CachingExchangeRateOptions.DefaultExpiry`](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateOptions)
+  (or per-provider override) is evaluated independently.
+
+The L1 tier can be process-local
+([`InMemoryExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache))
+or cross-process
+([`DistributedExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.DistributedExchangeRateCache),
+e.g. Redis), and an aggregator child (below) can itself be a stack — the patterns
+compose freely. Each [`ExchangeRateLookupResult.Provenance`](xref:Bodu.Financial.ExchangeRateLookupResult)
+reports which backend served the request, so you can see which tier answered.
+
 ## Grouping providers with the aggregator
 
 [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)
@@ -457,6 +608,31 @@ IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
         new NamedDatedExchangeRateProvider("RBA", rba),
         new NamedDatedExchangeRateProvider("ECB", ecb),
     });
+```
+
+A child is just an `IDatedExchangeRateProvider`, so each can be a concrete source
+wrapped in any cache — including a `SqliteExchangeRateCache`, or a full stack from
+the previous section. Here the aggregator fronts two SQLite-cached sources sharing
+one database file, with `AUD/USD` preferring RBA and falling back to ECB:
+
+```csharp
+var options = new CachingExchangeRateOptions { DefaultExpiry = TimeSpan.FromHours(24) };
+
+IDatedExchangeRateProvider rba = new CachingExchangeRateProvider(
+    rbaSource, new SqliteExchangeRateCache("RBA", "/var/cache/fx.db"), options);
+IDatedExchangeRateProvider ecb = new CachingExchangeRateProvider(
+    ecbSource, new SqliteExchangeRateCache("ECB", "/var/cache/fx.db"), options);
+
+var aggregation = new ExchangeRateAggregationOptions();
+aggregation.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
+
+IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
+    new[]
+    {
+        new NamedDatedExchangeRateProvider("RBA", rba),
+        new NamedDatedExchangeRateProvider("ECB", ecb),
+    },
+    aggregation);
 ```
 
 ### Strategies
@@ -495,6 +671,15 @@ aggregation.Routes[new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD)] = n
 var provider = new AggregatingExchangeRateProvider(children, aggregation);
 ```
 
+```mermaid
+flowchart TD
+    Q["GetRate(pair)"] --> AGG{"AggregatingExchangeRateProvider<br/>route by FX pair"}
+    AGG -- "AUD/USD" --> P1["RBA, fallback ECB"]
+    AGG -- "USD/GBP" --> P2["ECB, fallback RBA"]
+    AGG -- "EUR/USD" --> P3["ECB + RBA, AverageStrategy"]
+    AGG -- "unrouted" --> PD["DefaultProviderOrder + DefaultStrategy"]
+```
+
 A pair without a route uses `DefaultProviderOrder` (or the supplied child order)
 and `DefaultStrategy`. When inversion is allowed, an inverse-pair route is also
 consulted.
@@ -514,6 +699,37 @@ if (((AggregatingExchangeRateProvider)provider).TryGetProvider("RBA", out IDated
 
 Under dependency injection the same access is available through a keyed service
 (below).
+
+## When to use which: single cache, stacking, or aggregation
+
+These three compositions answer different questions and combine freely — pick by
+what you are trying to improve:
+
+| Composition | Shape | Use it to | Reach for when |
+|---|---|---|---|
+| **Single cache** | one source → one cache | avoid re-fetching one source | a single provider and one store is enough |
+| **Stacking** (tiered read-through) | one source → cache over cache | cut latency *and* survive restarts on one source | a hot in-memory (or shared) tier in front of a durable SQLite tier, both over the same source |
+| **Aggregation** | many sources → one entry point | get resilience and coverage across *different* sources | fallback when a source is down, an averaged rate, or per-pair routing to the best source |
+
+The distinction that matters: **stacking layers caches over a *single* source**
+(the layers differ in speed and durability, not in where the rate comes from),
+while **aggregation combines *distinct* sources** (the children differ in *who*
+published the rate). They are orthogonal and nest: an aggregator child can be a
+stacked, SQLite-then-memory cached source, so a fleet can route `AUD/USD` to a
+fast-but-durable RBA stack and fall back to an ECB stack.
+
+A quick decision path:
+
+- One source, one process, restarts acceptable → **single cache** with
+  [`InMemoryExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.InMemoryExchangeRateCache).
+- One source, restarts must stay warm → **single cache** with
+  [`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache),
+  or **stack** memory over SQLite to also cut the per-lookup read cost.
+- Several sources, want fallback / averaging / per-pair preference →
+  **aggregation**, each child cached (and optionally stacked) as above.
+
+For *where the bytes live* within any one cache layer, see the backend decision
+table under [Persistent and shared backends](#persistent-and-shared-backends).
 
 ## Dependency injection
 
@@ -570,6 +786,85 @@ var rbaOnly = provider.GetRequiredKeyedService<IDatedExchangeRateProvider>("RBA"
   served only when the still-fresh coverage windows contain the whole request, and a
   range fetch writes its rows and covered window together through `StoreFetchedRange`.
   Coverage windows expire on the same `duration` and are pruned on write.
+
+## Observability: seeing hits, misses, and degradation
+
+Two log channels tell you what the cache is doing.
+
+**Caching-decorator events.** `CachingExchangeRateProvider` logs each hit, miss,
+refetch, and a served-rate provenance record, at levels you set on
+[`CachingExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateOptions):
+
+| Event | Default level | Option |
+|---|---|---|
+| Single-date hit | `Trace` | `CacheHitLogLevel` |
+| Single-date miss (resolved and cached) | `Trace` | `CacheMissLogLevel` |
+| Range hit | `Debug` | `CacheRangeHitLogLevel` |
+| Range refetch | `Debug` | `CacheRangeRefetchLogLevel` |
+| Served-rate provenance | `Debug` | `RateProvenanceLogLevel` |
+
+**SQLite degradation.** The SQLite cache is best-effort: a storage failure degrades to
+an empty read or a skipped write rather than throwing. So the degradation is not silent,
+[`SqliteExchangeRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache)
+logs each swallowed failure at **`Warning`** under **`EventId 4520`** — naming the
+provider and the failing operation and attaching the exception. The first failure is
+logged immediately; further failures are **rate-limited to at most one warning per
+minute**, each carrying the count suppressed since the previous warning, so a sustained
+outage is visible without flooding the log.
+
+Under dependency injection the logger is wired automatically. Constructing by hand, pass
+one to the constructor:
+
+```csharp
+var cache = new SqliteExchangeRateCache(
+    new SqliteExchangeRateCacheOptions { Provider = "RBA", DatabaseFilePath = "/var/cache/fx.db" },
+    timeProvider: null,
+    logger: loggerFactory.CreateLogger<SqliteExchangeRateCache>());
+```
+
+Surface it with an ordinary logging filter — the category is the cache's full type name:
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Bodu.Financial.ExchangeRates.Caching.SqliteExchangeRateCache": "Warning"
+    }
+  }
+}
+```
+
+If you would rather a storage failure surface as an exception than degrade, set
+`ThrowOnStorageFailure` (or `ValidateStorageOnStart` to fail fast at startup) on the
+options instead.
+
+## Troubleshooting
+
+**The cache is cold after every restart.** Only in-memory caches lose state on restart.
+Use a durable backend (`SqliteExchangeRateCache` or a file cache) to survive restarts,
+and **dispose the cache** so its keep-alive connection is released cleanly. A tiered
+stack keeps a hot in-memory L1 *and* a durable L2 — see [Stacking
+providers](#stacking-providers-tiered-read-through).
+
+**"database is locked".** Several writers are contending for one file. Keep
+`UseWriteAheadLogging` on (it lets readers run during a writer) and raise `BusyTimeout`
+so a writer waits for the lock instead of failing; confirm every cache over the file
+uses WAL and that the storage supports it — see [SQLite
+concurrency](#sqlite-concurrency-durability-and-the-shared-file).
+
+**I can't tell whether the cache is degrading.** Wire a logger and watch for **`EventId
+4520`** at `Warning` — see [Observability](#observability-seeing-hits-misses-and-degradation).
+The message names the failing operation and carries the exception, and the suppressed
+count tells you the failure is sustained rather than a one-off. To make failures loud
+instead, set `ThrowOnStorageFailure`.
+
+**Stray `.db-wal` / `.db-shm` files.** These are SQLite's write-ahead-log sidecars,
+created next to the database when WAL is on. They are normal; leave them for SQLite to
+manage, and copy them alongside the `.db` file if you move the database.
+
+**Which backend, and when to stack vs. aggregate?** See the [backend decision
+table](#persistent-and-shared-backends) and [single cache vs. stacking vs.
+aggregation](#when-to-use-which-single-cache-stacking-or-aggregation).
 
 ## See also
 

@@ -70,6 +70,22 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 ///]]>
 /// </code>
 /// </example>
+/// <example>
+/// Several providers can share one database file: the leading <c>provider</c> key column keeps each provider's series
+/// partitioned, and one cache covers all of that provider's currency pairs, so there is never a cache per pair.
+/// <code language="csharp">
+///<![CDATA[
+/// var options = new CachingExchangeRateOptions { DefaultExpiry = TimeSpan.FromHours(24) };
+///
+/// // One shared .db file, one cache per provider; each cache covers all of that provider's pairs.
+/// using var rbaCache = new SqliteExchangeRateCache("RBA", "/var/cache/fx.db");
+/// using var ofxCache = new SqliteExchangeRateCache("OFX", "/var/cache/fx.db");
+///
+/// IDatedExchangeRateProvider rba = new CachingExchangeRateProvider(rbaSource, rbaCache, options);
+/// IDatedExchangeRateProvider ofx = new CachingExchangeRateProvider(ofxSource, ofxCache, options);
+///]]>
+/// </code>
+/// </example>
 public sealed class SqliteExchangeRateCache
     : IExchangeRateCache, IDisposable
 {
