@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundReferenceFixtureTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ public class CompoundReferenceFixtureTests
         using MemoryStream source = CompoundFixtures.OpenReference(kat.RelativePath);
         Assert.IsTrue(CompoundFile.IsCompoundFile(source));
 
-        using CompoundFile file = CompoundFile.Open(source);
+        using var file = CompoundFile.Open(source);
         Dictionary<string, CompoundEntryInfo> actual = Flatten(file.RootStorage);
 
         foreach (CompoundManifestEntry expected in kat.Entries)
@@ -56,7 +56,7 @@ public class CompoundReferenceFixtureTests
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void OpenStream_WhenReferenceFixtureIsValid_ShouldMatchExpectedHashes(CompoundReferenceFixtureKat kat)
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference(kat.RelativePath));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference(kat.RelativePath));
         Dictionary<string, string> streams = HashStreams(file.RootStorage);
 
         foreach (CompoundManifestEntry expected in kat.Entries)

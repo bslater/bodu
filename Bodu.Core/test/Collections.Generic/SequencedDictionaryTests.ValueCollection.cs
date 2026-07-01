@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.ValueCollection.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void ValueCollection_WhenQueried_ShouldReportDictionaryCount()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.AreEqual(3, dictionary.Values.Count);
     }
@@ -38,8 +38,8 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void ValueCollection_WhenCopyToWithOffset_ShouldCopyValuesInOrder()
     {
-        var dictionary = CreatePopulated();
-        var array = new int[4];
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
+        int[] array = new int[4];
 
         dictionary.Values.CopyTo(array, 1);
 
@@ -52,8 +52,8 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void ValueCollection_WhenNonGenericCopyTo_ShouldCopyValuesInOrder()
     {
-        ICollection values = (ICollection)CreatePopulated().Values;
-        var array = new object[3];
+        var values = (ICollection)CreatePopulated().Values;
+        object[] array = new object[3];
 
         values.CopyTo(array, 0);
 
@@ -66,7 +66,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void ValueCollection_WhenSyncRootAccessed_ShouldMatchDictionarySyncRoot()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.AreSame(((ICollection)dictionary).SyncRoot, ((ICollection)dictionary.Values).SyncRoot);
     }
@@ -93,10 +93,7 @@ public partial class SequencedDictionaryTests
     {
         ICollection<int> values = CreatePopulated().Values;
 
-        Assert.ThrowsExactly<NotSupportedException>(() =>
-        {
-            values.Clear();
-        });
+        Assert.ThrowsExactly<NotSupportedException>(values.Clear);
     }
 
     /// <summary>
@@ -105,7 +102,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void ValueCollection_WhenDictionaryMutatedDuringEnumeration_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -124,12 +121,9 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void ValueCollection_WhenResetCalled_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         IEnumerator<int> enumerator = dictionary.Values.GetEnumerator();
 
-        Assert.ThrowsExactly<NotSupportedException>(() =>
-        {
-            enumerator.Reset();
-        });
+        Assert.ThrowsExactly<NotSupportedException>(enumerator.Reset);
     }
 }

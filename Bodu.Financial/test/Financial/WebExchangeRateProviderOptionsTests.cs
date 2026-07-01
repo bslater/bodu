@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WebExchangeRateProviderOptionsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -122,9 +122,6 @@ public class WebExchangeRateProviderOptionsTests
     {
         TestWebExchangeRateProviderOptions options = new() { CoreValid = false };
 
-        _ = Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            options.Validate();
-        });
+        _ = Assert.ThrowsExactly<ArgumentException>(options.Validate);
     }
 }

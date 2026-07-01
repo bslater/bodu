@@ -36,7 +36,7 @@ internal sealed class CollectionConverterFactory
         _ = TryGetInfo(typeToConvert, out Type? elementType, out CollectionStrategy strategy);
         TomlConverter elementConverter = options.GetConverter(elementType!);
         Type converterType = typeof(CollectionConverter<,>).MakeGenericType(typeToConvert, elementType!);
-        return (TomlConverter)Activator.CreateInstance(converterType, elementConverter, strategy) !;
+        return (TomlConverter)Activator.CreateInstance(converterType, elementConverter, strategy)!;
     }
 
     /// <summary>

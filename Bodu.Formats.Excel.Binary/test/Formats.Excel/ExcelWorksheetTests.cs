@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
-
 namespace Bodu.Formats.Excel;
 
 /// <summary>
@@ -72,7 +70,7 @@ public class ExcelWorksheetTests
     {
         ExcelWorksheet sheet = CreateWorksheet();
 
-        List<int> rowIndexes = sheet.Rows.Select(r => r.RowIndex).ToList();
+        var rowIndexes = sheet.Rows.Select(r => r.RowIndex).ToList();
 
         CollectionAssert.AreEqual(new[] { 0, 2 }, rowIndexes);
         Assert.HasCount(2, sheet.Rows[0].Cells);

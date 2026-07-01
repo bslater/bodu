@@ -1,8 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Values.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
 
 namespace Bodu.Collections.Generic;
 
@@ -14,7 +15,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Values_WhenEnumerated_ShouldYieldValuesInOrder()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, dictionary.Values.ToArray());
     }
@@ -25,7 +26,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Values_WhenAccessedRepeatedly_ShouldReturnCachedInstance()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.AreSame(dictionary.Values, dictionary.Values);
     }
@@ -36,7 +37,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Values_WhenContainsCalled_ShouldReportMembership()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.IsTrue(dictionary.Values.Contains(2));
         Assert.IsFalse(dictionary.Values.Contains(99));
@@ -48,7 +49,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Values_WhenRemoveCalled_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         ICollection<int> values = dictionary.Values;
 
         Assert.ThrowsExactly<NotSupportedException>(() =>

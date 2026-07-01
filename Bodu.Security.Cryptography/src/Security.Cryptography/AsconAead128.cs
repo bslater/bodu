@@ -285,10 +285,10 @@ public sealed class AsconAead128
             while (cOff + Rate <= ciphertext.Length)
             {
                 ulong c0 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[cOff..]);
-                ulong c1 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[(cOff + 8) ..]);
+                ulong c1 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[(cOff + 8)..]);
 
                 BinaryPrimitives.WriteUInt64LittleEndian(output[pOff..], _state.S0 ^ c0);
-                BinaryPrimitives.WriteUInt64LittleEndian(output[(pOff + 8) ..], _state.S1 ^ c1);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[(pOff + 8)..], _state.S1 ^ c1);
 
                 _state.S0 = c0;
                 _state.S1 = c1;
@@ -376,10 +376,10 @@ public sealed class AsconAead128
             while (inOff + Rate <= plaintext.Length)
             {
                 ulong p0 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[inOff..]);
-                ulong p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[(inOff + 8) ..]);
+                ulong p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[(inOff + 8)..]);
 
                 BinaryPrimitives.WriteUInt64LittleEndian(output[outOff..], _state.S0 ^ p0);
-                BinaryPrimitives.WriteUInt64LittleEndian(output[(outOff + 8) ..], _state.S1 ^ p1);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[(outOff + 8)..], _state.S1 ^ p1);
 
                 _state.S0 ^= p0;
                 _state.S1 ^= p1;

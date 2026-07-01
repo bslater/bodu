@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlTestCorpusTests.Governance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -33,7 +33,7 @@ public sealed partial class YamlTestCorpusTests
     public void Corpus_EveryCaseResolvesToExactlyOneKnownCategory()
     {
         var seen = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var (id, _, category) in YamlTestCorpusReader.EnumerateCases())
+        foreach ((string? id, string _, string? category) in YamlTestCorpusReader.EnumerateCases())
         {
             Assert.IsTrue(seen.Add(id), $"The case '{id}' was enumerated more than once.");
             Assert.IsTrue(
@@ -50,7 +50,7 @@ public sealed partial class YamlTestCorpusTests
     public void Corpus_EveryProfileClassifiedIdResolvesToACase()
     {
         var corpus = new HashSet<string>(YamlTestCorpusReader.EnumerateCaseIds(), StringComparer.Ordinal);
-        foreach (var id in YamlTestCorpusReader.ProfileClassifiedIds)
+        foreach (string id in YamlTestCorpusReader.ProfileClassifiedIds)
         {
             Assert.IsTrue(
                 corpus.Contains(id),
@@ -64,7 +64,7 @@ public sealed partial class YamlTestCorpusTests
     [TestMethod]
     public void Corpus_EverySupportedValidCaseHasAJsonExpectation()
     {
-        foreach (var (id, _, category) in YamlTestCorpusReader.EnumerateCases())
+        foreach ((string? id, string _, string? category) in YamlTestCorpusReader.EnumerateCases())
         {
             if (!string.Equals(category, "SupportedPass", StringComparison.Ordinal))
                 continue;
@@ -82,7 +82,7 @@ public sealed partial class YamlTestCorpusTests
     [TestMethod]
     public void Corpus_EveryCaseHasUpstreamDescriptionFile()
     {
-        foreach (var id in YamlTestCorpusReader.EnumerateCaseIds())
+        foreach (string id in YamlTestCorpusReader.EnumerateCaseIds())
         {
             Assert.IsTrue(
                 File.Exists(Path.Combine(YamlTestCorpusReader.VectorDirectory(id), "===")),
@@ -98,8 +98,8 @@ public sealed partial class YamlTestCorpusTests
     public void Corpus_MatchesPinnedCounts()
     {
         var counts = new Dictionary<string, int>(StringComparer.Ordinal);
-        var total = 0;
-        foreach (var (_, _, category) in YamlTestCorpusReader.EnumerateCases())
+        int total = 0;
+        foreach ((string _, string _, string? category) in YamlTestCorpusReader.EnumerateCases())
         {
             counts[category] = counts.GetValueOrDefault(category) + 1;
             total++;
@@ -107,7 +107,7 @@ public sealed partial class YamlTestCorpusTests
 
         Assert.AreEqual(YamlTestCorpusReader.ExpectedCaseCount, total, "The vendored case count drifted from the pinned expectation.");
 
-        foreach (var (category, expected) in YamlTestCorpusReader.ExpectedCategoryCounts)
+        foreach ((string? category, int expected) in YamlTestCorpusReader.ExpectedCategoryCounts)
         {
             Assert.AreEqual(
                 expected,

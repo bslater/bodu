@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncLockTests.Releaser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,8 +28,8 @@ public sealed partial class AsyncLockTests
     {
         var sut = new AsyncLock();
 
-        var releaser = await sut.LockAsync();
-        var contended = sut.LockAsync();
+        AsyncLock.Releaser releaser = await sut.LockAsync();
+        ValueTask<AsyncLock.Releaser> contended = sut.LockAsync();
         Assert.IsFalse(contended.IsCompleted);
 
         releaser.Dispose();

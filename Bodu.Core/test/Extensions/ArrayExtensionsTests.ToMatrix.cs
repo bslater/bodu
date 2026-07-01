@@ -143,10 +143,10 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WithReferenceTypes_ShouldPreserveElementIdentity()
     {
-        object a = new object();
-        object b = new object();
-        object c = new object();
-        object d = new object();
+        object a = new();
+        object b = new();
+        object c = new();
+        object d = new();
 
         object[][] source =
         [

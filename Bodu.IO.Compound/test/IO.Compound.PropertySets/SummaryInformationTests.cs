@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SummaryInformationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Compound;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound.PropertySets;
@@ -22,7 +21,7 @@ public class SummaryInformationTests
     /// <returns>The parsed summary information.</returns>
     private static SummaryInformation Read(string relativePath)
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference(relativePath));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference(relativePath));
         Assert.IsTrue(file.TryGetSummaryInformation(out SummaryInformation? summary));
         return summary;
     }
@@ -71,7 +70,7 @@ public class SummaryInformationTests
     [TestMethod]
     public void TryGetSummaryInformation_WhenStreamAbsent_ShouldReturnFalse()
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/clean.dat"));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/clean.dat"));
 
         Assert.IsFalse(file.TryGetSummaryInformation(out _));
     }

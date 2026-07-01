@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializerTests.RoundTrip.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ public partial class YamlSerializerTests
     public void SerializeDeserialize_WhenPoco_ShouldPreserveValues()
     {
         var original = new Person { Name = "Grace", Age = 45, Active = false };
-        var yaml = YamlSerializer.Serialize(original);
-        var restored = YamlSerializer.Deserialize<Person>(yaml)!;
+        string yaml = YamlSerializer.Serialize(original);
+        Person restored = YamlSerializer.Deserialize<Person>(yaml)!;
 
         Assert.AreEqual("Grace", restored.Name);
         Assert.AreEqual(45, restored.Age);
@@ -36,8 +36,8 @@ public partial class YamlSerializerTests
             Counts = new Dictionary<string, int> { ["files"] = 12, ["lines"] = 900 },
         };
 
-        var yaml = YamlSerializer.Serialize(project);
-        var restored = YamlSerializer.Deserialize<Project>(yaml)!;
+        string yaml = YamlSerializer.Serialize(project);
+        Project restored = YamlSerializer.Deserialize<Project>(yaml)!;
 
         Assert.AreEqual("Bodu", restored.Title);
         CollectionAssert.AreEqual(new[] { "yaml", "parser" }, restored.Tags);
@@ -49,7 +49,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenEnum_ShouldUseNames()
     {
-        var yaml = YamlSerializer.Serialize(Color.Green);
+        string yaml = YamlSerializer.Serialize(Color.Green);
         Assert.AreEqual("Green\n", yaml);
         Assert.AreEqual(Color.Green, YamlSerializer.Deserialize<Color>(yaml));
     }
@@ -64,8 +64,8 @@ public partial class YamlSerializerTests
             new() { Name = "b", Age = 2, Active = false },
         };
 
-        var yaml = YamlSerializer.Serialize(people);
-        var restored = YamlSerializer.Deserialize<List<Person>>(yaml)!;
+        string yaml = YamlSerializer.Serialize(people);
+        List<Person> restored = YamlSerializer.Deserialize<List<Person>>(yaml)!;
 
         Assert.AreEqual(2, restored.Count);
         Assert.AreEqual("b", restored[1].Name);

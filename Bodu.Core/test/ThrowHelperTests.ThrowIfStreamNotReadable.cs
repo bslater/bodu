@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfStreamNotReadable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.IO;
 
 namespace Bodu;
 
@@ -45,7 +43,7 @@ public partial class ThrowHelperTests
         var stream = new MemoryStream();
         stream.Dispose();
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => ThrowHelper.ThrowIfStreamNotReadable(stream));
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => ThrowHelper.ThrowIfStreamNotReadable(stream));
         Assert.AreEqual("stream", ex.ParamName);
     }
 }

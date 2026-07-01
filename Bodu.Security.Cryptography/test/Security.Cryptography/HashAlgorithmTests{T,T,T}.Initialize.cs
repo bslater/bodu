@@ -92,10 +92,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         algorithm.Dispose();
 
         // Act & Assert
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            algorithm.Initialize();
-        });
+        Assert.ThrowsExactly<ObjectDisposedException>(algorithm.Initialize);
     }
 
     /// <summary>
@@ -203,10 +200,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         using TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Dispose();
 
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            algorithm.Initialize();
-        });
+        Assert.ThrowsExactly<ObjectDisposedException>(algorithm.Initialize);
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundFileTests.Parent.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ public partial class CompoundFileTests
     public void Parent_WhenNestedStorage_ShouldBeEnclosingStorage()
     {
         var destination = new MemoryStream();
-        using CompoundFile file = CompoundFile.Create(destination, leaveOpen: true);
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
 
         CompoundStorage child = file.RootStorage.CreateStorage("Storage 1");
 
@@ -54,7 +54,7 @@ public partial class CompoundFileTests
     public void Parent_WhenWritableStreamCreated_ShouldBeOwningStorage()
     {
         var destination = new MemoryStream();
-        using CompoundFile file = CompoundFile.Create(destination, leaveOpen: true);
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
         CompoundStorage child = file.RootStorage.CreateStorage("Storage 1");
 
         using CompoundStream stream = child.CreateStream("Nested");

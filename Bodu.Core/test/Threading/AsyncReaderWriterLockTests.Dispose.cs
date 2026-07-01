@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncReaderWriterLockTests.Dispose.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,9 +15,9 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task Dispose_WhenWaiterPending_ShouldFaultWaiter()
     {
         var sut = new AsyncReaderWriterLock();
-        using var writer = await sut.WriterAsync();
+        using AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
 
-        var pending = sut.ReaderAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> pending = sut.ReaderAsync();
         sut.Dispose();
 
         await Assert.ThrowsExactlyAsync<ObjectDisposedException>(async () => await pending);
@@ -30,10 +30,10 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task Dispose_WhenReaderAndWriterPending_ShouldFaultBoth()
     {
         var sut = new AsyncReaderWriterLock();
-        using var writer = await sut.WriterAsync();
+        using AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
 
-        var pendingReader = sut.ReaderAsync();
-        var pendingWriter = sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> pendingReader = sut.ReaderAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> pendingWriter = sut.WriterAsync();
 
         sut.Dispose();
 

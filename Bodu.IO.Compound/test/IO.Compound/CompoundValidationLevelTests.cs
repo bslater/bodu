@@ -35,7 +35,7 @@ public class CompoundValidationLevelTests
     {
         byte[] bytes = BuildWithOrphanEntry();
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
+        using var file = CompoundFile.Open(new MemoryStream(bytes));
 
         Assert.IsTrue(file.RootStorage.TryOpenStream("Doc", out _));
     }
@@ -65,7 +65,7 @@ public class CompoundValidationLevelTests
     {
         byte[] bytes = BuildOverlongStream();
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
+        using var file = CompoundFile.Open(new MemoryStream(bytes));
         CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(
             () => _ = file.RootStorage.OpenStream("Big").ReadAllBytes());
 
@@ -82,7 +82,7 @@ public class CompoundValidationLevelTests
         byte[] bytes = BuildOverlongStream();
         var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Minimal };
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes), options);
+        using var file = CompoundFile.Open(new MemoryStream(bytes), options);
         byte[] payload = file.RootStorage.OpenStream("Big").ReadAllBytes();
 
         Assert.HasCount(200_000, payload);
@@ -98,7 +98,7 @@ public class CompoundValidationLevelTests
         byte[] bytes = BuildSingleStream("Doc", 4000);
         var options = new CompoundFileOptions { ReadStrategy = CompoundReadStrategy.Auto, MaxBufferedBytes = 16 };
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes), options);
+        using var file = CompoundFile.Open(new MemoryStream(bytes), options);
         byte[] payload = file.RootStorage.OpenStream("Doc").ReadAllBytes();
 
         Assert.HasCount(4000, payload);
@@ -112,11 +112,11 @@ public class CompoundValidationLevelTests
     public void Open_WhenColorFlagInvalid_ForStrict_ShouldThrowInvalidDirectory()
     {
         byte[] bytes = BuildSingleStream("Doc", 100);
-        CfbHeader header = CfbHeader.Parse(bytes);
+        var header = CfbHeader.Parse(bytes);
         int entry = FindEntryOffset(bytes, header, "Doc");
         bytes[entry + 67] = 5; // color flag must be 0 (red) or 1 (black)
 
-        using (CompoundFile tolerated = CompoundFile.Open(new MemoryStream(bytes)))
+        using (var tolerated = CompoundFile.Open(new MemoryStream(bytes)))
             Assert.IsTrue(tolerated.RootStorage.TryOpenStream("Doc", out _));
 
         var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
@@ -137,7 +137,7 @@ public class CompoundValidationLevelTests
     {
         byte[] bytes = BuildWithUnsortedSiblings();
 
-        using (CompoundFile tolerated = CompoundFile.Open(new MemoryStream(bytes)))
+        using (var tolerated = CompoundFile.Open(new MemoryStream(bytes)))
             Assert.IsNotEmpty(tolerated.RootStorage.EnumerateStreams());
 
         var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
@@ -178,7 +178,7 @@ public class CompoundValidationLevelTests
         _ = root.AddStream("B", new byte[] { 2 });
         byte[] bytes = root.ToArray();
 
-        CfbHeader header = CfbHeader.Parse(bytes);
+        var header = CfbHeader.Parse(bytes);
         int a = FindEntryOffset(bytes, header, "A");
         int b = FindEntryOffset(bytes, header, "B");
 
@@ -223,7 +223,7 @@ public class CompoundValidationLevelTests
     private static byte[] BuildWithOrphanEntry()
     {
         byte[] bytes = BuildSingleStream("Doc", 100);
-        CfbHeader header = CfbHeader.Parse(bytes);
+        var header = CfbHeader.Parse(bytes);
 
         // Slots 0 (root) and 1 (Doc) are in use; slot 2 is free padding (name length 0, type 0).
         int dirOffset = (int)(((long)header.FirstDirectorySector + 1) * header.SectorSize);
@@ -241,7 +241,7 @@ public class CompoundValidationLevelTests
     private static byte[] BuildOverlongStream()
     {
         byte[] bytes = BuildSingleStream("Big", 5000);
-        CfbHeader header = CfbHeader.Parse(bytes);
+        var header = CfbHeader.Parse(bytes);
 
         int dirOffset = (int)(((long)header.FirstDirectorySector + 1) * header.SectorSize);
         int perSector = header.SectorSize / DirectoryEntrySize;

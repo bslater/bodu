@@ -134,7 +134,7 @@ public sealed class DocumentationSnippetCompileTests
             "} } }";
 
         SyntaxTree tree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest));
-        CSharpCompilation compilation = CSharpCompilation.Create(
+        var compilation = CSharpCompilation.Create(
             "Bodu.DocSnippets",
             new[] { tree },
             references,
@@ -152,7 +152,7 @@ public sealed class DocumentationSnippetCompileTests
     /// <returns>The metadata references for snippet compilation.</returns>
     private static List<MetadataReference> LoadTrustedPlatformReferences()
     {
-        var trusted = (string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") ?? string.Empty;
+        string trusted = (string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") ?? string.Empty;
 
         return trusted
             .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries)

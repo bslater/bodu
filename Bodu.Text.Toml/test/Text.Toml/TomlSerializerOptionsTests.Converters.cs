@@ -105,10 +105,7 @@ public partial class TomlSerializerOptionsTests
         options.Converters.Add(new TomlStringEnumConverter());
         options.MakeReadOnly();
 
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            options.Converters.Clear();
-        });
+        Assert.ThrowsExactly<InvalidOperationException>(options.Converters.Clear);
     }
 
     /// <summary>

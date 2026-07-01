@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.AccessOrder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void AccessOrder_WhenTryGetValue_ShouldMoveEntryToEnd()
     {
-        var dictionary = CreateAccessOrdered();
+        SequencedDictionary<string, int> dictionary = CreateAccessOrdered();
 
         _ = dictionary.TryGetValue("a", out _);
 
@@ -48,7 +48,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void AccessOrder_WhenPeekingEnds_ShouldNotReorder()
     {
-        var dictionary = CreateAccessOrdered();
+        SequencedDictionary<string, int> dictionary = CreateAccessOrdered();
 
         _ = dictionary.TryGetFirst(out _);
         _ = dictionary.TryGetLast(out _);
@@ -62,7 +62,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void AccessOrder_WhenTailReadDuringEnumeration_ShouldNotInvalidateEnumerator()
     {
-        var dictionary = CreateAccessOrdered();
+        SequencedDictionary<string, int> dictionary = CreateAccessOrdered();
 
         var seen = new List<string>();
         foreach (KeyValuePair<string, int> kvp in dictionary)
@@ -84,7 +84,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void AccessOrder_WhenEnumerated_ShouldNotReorderEntries()
     {
-        var dictionary = CreateAccessOrdered();
+        SequencedDictionary<string, int> dictionary = CreateAccessOrdered();
 
         foreach (KeyValuePair<string, int> _ in dictionary)
         {
@@ -100,7 +100,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void AccessOrder_WhenValuesContains_ShouldNotReorder()
     {
-        var dictionary = CreateAccessOrdered();
+        SequencedDictionary<string, int> dictionary = CreateAccessOrdered();
 
         _ = dictionary.Values.Contains(1);
 
@@ -113,7 +113,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void AccessOrder_WhenContainsPair_ShouldNotReorder()
     {
-        var dictionary = CreateAccessOrdered();
+        SequencedDictionary<string, int> dictionary = CreateAccessOrdered();
 
         _ = dictionary.Contains(new KeyValuePair<string, int>("a", 1));
 

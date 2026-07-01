@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json;
-using Bodu.Financial;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 using Microsoft.Extensions.Configuration;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlDocumentTests.DirectivesAndAliases.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -126,7 +126,7 @@ public partial class YamlDocumentTests
     {
         using var doc = YamlDocument.Parse("base: &b\n  a: 1\n  c: 3\nobj:\n  <<: *b\n  a: 2\n");
 
-        var obj = doc.RootElement.GetProperty("obj");
+        YamlElement obj = doc.RootElement.GetProperty("obj");
         Assert.AreEqual(2L, obj.GetProperty("a").GetInt64());
         Assert.AreEqual(3L, obj.GetProperty("c").GetInt64());
     }
@@ -141,7 +141,7 @@ public partial class YamlDocumentTests
             Encoding.UTF8.GetBytes("base: &b\n  a: 1\nobj:\n  <<: *b\n  z: 9\n"),
             new YamlDocumentOptions { MergeKeyBehavior = YamlMergeKeyBehavior.Disabled });
 
-        var obj = doc.RootElement.GetProperty("obj");
+        YamlElement obj = doc.RootElement.GetProperty("obj");
         Assert.IsTrue(obj.TryGetProperty("<<", out _));
         Assert.IsFalse(obj.TryGetProperty("a", out _));
     }

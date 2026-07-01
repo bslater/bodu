@@ -68,7 +68,7 @@ internal static partial class MLKemEngine
         counterByte[0] = counter;
 
         Span<byte> stream = stackalloc byte[64 * 3];
-        Span<byte> bytes = stream[.. (64 * eta)];
+        Span<byte> bytes = stream[..(64 * eta)];
         KeccakSponge.Shake256(seed, counterByte, bytes);
 
         for (int i = 0; i < N; i++)

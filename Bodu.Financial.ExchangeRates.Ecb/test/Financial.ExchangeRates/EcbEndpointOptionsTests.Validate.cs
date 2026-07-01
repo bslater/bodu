@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbEndpointOptionsTests.Validate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,6 +16,6 @@ public partial class EcbEndpointOptionsTests
     {
         EcbEndpointOptions endpoint = new() { BaseUrl = null! };
 
-        _ = Assert.ThrowsExactly<ArgumentException>(() => endpoint.Validate());
+        _ = Assert.ThrowsExactly<ArgumentException>(endpoint.Validate);
     }
 }

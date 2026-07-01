@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
-
 namespace Bodu.IO.Compound;
 
 /// <summary>
@@ -29,7 +27,7 @@ public class CompoundStorageTests
     {
         using CompoundFile file = OpenNested();
 
-        List<CompoundStorage> storages = file.RootStorage.EnumerateStorages().ToList();
+        var storages = file.RootStorage.EnumerateStorages().ToList();
 
         Assert.HasCount(1, storages);
         Assert.AreEqual("Storage 1", storages[0].Name);
@@ -44,7 +42,7 @@ public class CompoundStorageTests
         using CompoundFile file = OpenNested();
 
         CompoundStorage storage1 = file.RootStorage.OpenStorage("Storage 1");
-        List<CompoundEntryInfo> streams = storage1.EnumerateStreams().ToList();
+        var streams = storage1.EnumerateStreams().ToList();
 
         Assert.HasCount(1, streams);
         Assert.AreEqual("Stream 1", streams[0].Name);
@@ -111,7 +109,7 @@ public class CompoundStorageTests
     [TestMethod]
     public void EnumerateStreams_WhenWorkbookFixture_ShouldExposeWorkbookStream()
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.xls"));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.xls"));
 
         Assert.IsTrue(file.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook));
         Assert.IsNotNull(workbook);
@@ -125,10 +123,10 @@ public class CompoundStorageTests
     [TestMethod]
     public void EnumerateStreams_WhenStorageHasTwoStreams_ShouldReturnBoth()
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/example2.dat"));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/example2.dat"));
 
         CompoundStorage storage1 = file.RootStorage.OpenStorage("Storage 1");
-        List<string> names = storage1.EnumerateStreams().Select(s => s.Name).OrderBy(n => n, StringComparer.Ordinal).ToList();
+        var names = storage1.EnumerateStreams().Select(s => s.Name).OrderBy(n => n, StringComparer.Ordinal).ToList();
 
         CollectionAssert.AreEqual(new[] { "Stream 1", "Stream 2" }, names);
     }

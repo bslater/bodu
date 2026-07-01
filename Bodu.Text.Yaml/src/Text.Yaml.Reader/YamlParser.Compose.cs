@@ -49,10 +49,10 @@ internal sealed partial class YamlParser
     /// <exception cref="YamlFormatException">A cycle is detected.</exception>
     private void VisitForCycle(int index, AliasVisitState[] state)
     {
-        var resolved = Resolve(index);
+        int resolved = Resolve(index);
         if (state[resolved] == AliasVisitState.Visiting)
         {
-            var anchor = _rows[resolved].Anchor ?? string.Empty;
+            string anchor = _rows[resolved].Anchor ?? string.Empty;
             throw new YamlFormatException(string.Format(
                 CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlCyclicAlias, anchor));
         }
@@ -62,7 +62,7 @@ internal sealed partial class YamlParser
 
         state[resolved] = AliasVisitState.Visiting;
 
-        var child = _rows[resolved].FirstChild;
+        int child = _rows[resolved].FirstChild;
         while (child >= 0)
         {
             VisitForCycle(child, state);
@@ -79,9 +79,9 @@ internal sealed partial class YamlParser
     private void ResolveAliases()
     {
         var anchors = new Dictionary<string, int>(StringComparer.Ordinal);
-        for (var i = 0; i < _rows.Count; i++)
+        for (int i = 0; i < _rows.Count; i++)
         {
-            var r = _rows[i];
+            YamlReaderRow r = _rows[i];
             if (r.Anchor is not null && !anchors.TryAdd(r.Anchor, i))
             {
                 throw new YamlFormatException(string.Format(
@@ -90,7 +90,7 @@ internal sealed partial class YamlParser
 
             if (r.Kind == YamlReaderNodeKind.Alias && r.Tag is not null)
             {
-                if (!anchors.TryGetValue(r.Tag, out var target))
+                if (!anchors.TryGetValue(r.Tag, out int target))
                 {
                     throw new YamlFormatException(string.Format(
                         CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlUndefinedAlias, r.Tag));
@@ -110,8 +110,8 @@ internal sealed partial class YamlParser
         if (_mergeKeyBehavior != YamlMergeKeyBehavior.Expand)
             return;
 
-        var count = _rows.Count;
-        for (var i = 0; i < count; i++)
+        int count = _rows.Count;
+        for (int i = 0; i < count; i++)
         {
             if (_rows[i].Kind == YamlReaderNodeKind.Mapping)
                 ExpandMappingMerge(i);
@@ -125,14 +125,14 @@ internal sealed partial class YamlParser
     private void ExpandMappingMerge(int mapping)
     {
         var keys = new HashSet<string>(StringComparer.Ordinal);
-        var mergeChild = -1;
-        var mergePrev = -1;
-        var prev = -1;
-        var child = _rows[mapping].FirstChild;
+        int mergeChild = -1;
+        int mergePrev = -1;
+        int prev = -1;
+        int child = _rows[mapping].FirstChild;
 
         while (child >= 0)
         {
-            var key = _rows[child].Key;
+            string? key = _rows[child].Key;
             if (key == "<<" && mergeChild < 0)
             {
                 mergeChild = child;
@@ -153,15 +153,15 @@ internal sealed partial class YamlParser
         UnlinkChild(mapping, mergeChild, mergePrev);
 
         var sources = new List<int>();
-        var value = Resolve(mergeChild);
-        var valueRow = _rows[value];
+        int value = Resolve(mergeChild);
+        YamlReaderRow valueRow = _rows[value];
         if (valueRow.Kind == YamlReaderNodeKind.Mapping)
         {
             sources.Add(value);
         }
         else if (valueRow.Kind == YamlReaderNodeKind.Sequence)
         {
-            var element = valueRow.FirstChild;
+            int element = valueRow.FirstChild;
             while (element >= 0)
             {
                 sources.Add(Resolve(element));
@@ -169,15 +169,15 @@ internal sealed partial class YamlParser
             }
         }
 
-        foreach (var source in sources)
+        foreach (int source in sources)
         {
             if (_rows[source].Kind != YamlReaderNodeKind.Mapping)
                 continue;
 
-            var pair = _rows[source].FirstChild;
+            int pair = _rows[source].FirstChild;
             while (pair >= 0)
             {
-                var key = _rows[pair].Key;
+                string? key = _rows[pair].Key;
                 if (key is not null && keys.Add(key))
                     AppendChild(mapping, NewMergeAlias(key, Resolve(pair)));
 
@@ -194,14 +194,14 @@ internal sealed partial class YamlParser
     /// <param name="previous">The child's predecessor row index, or <c>-1</c> when it is the first child.</param>
     private void UnlinkChild(int parent, int child, int previous)
     {
-        var p = _rows[parent];
-        var next = _rows[child].NextSibling;
+        YamlReaderRow p = _rows[parent];
+        int next = _rows[child].NextSibling;
 
         if (previous < 0)
             p.FirstChild = next;
         else
         {
-            var prevRow = _rows[previous];
+            YamlReaderRow prevRow = _rows[previous];
             prevRow.NextSibling = next;
             _rows[previous] = prevRow;
         }
@@ -252,16 +252,16 @@ internal sealed partial class YamlParser
     /// </remarks>
     private void CoerceTags()
     {
-        for (var i = 0; i < _rows.Count; i++)
+        for (int i = 0; i < _rows.Count; i++)
         {
-            var r = _rows[i];
+            YamlReaderRow r = _rows[i];
 
             // Alias rows reuse the tag field to carry the alias name, so they are never tag-coerced.
             if (r.Tag is null || r.Kind == YamlReaderNodeKind.Alias)
                 continue;
 
-            var expanded = ExpandTagHandle(r.Tag);
-            var tag = NormalizeCoreTag(expanded);
+            string expanded = ExpandTagHandle(r.Tag);
+            string? tag = NormalizeCoreTag(expanded);
 
             if (tag is null)
             {
@@ -284,7 +284,7 @@ internal sealed partial class YamlParser
             if (r.Kind != YamlReaderNodeKind.Scalar)
             {
                 // A collection accepts only its matching core collection tag.
-                var matches = (tag == "map" && r.Kind == YamlReaderNodeKind.Mapping)
+                bool matches = (tag == "map" && r.Kind == YamlReaderNodeKind.Mapping)
                     || (tag == "seq" && r.Kind == YamlReaderNodeKind.Sequence);
                 if (!matches)
                     throw ErrorAt(r.Offset, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
@@ -296,7 +296,7 @@ internal sealed partial class YamlParser
             if (tag is "map" or "seq")
                 throw ErrorAt(r.Offset, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
 
-            var text = ScalarText(r);
+            string text = ScalarText(r);
             switch (tag)
             {
                 case "str":
@@ -335,7 +335,7 @@ internal sealed partial class YamlParser
                     break;
 
                 case "float":
-                    var resolved = ResolveTagged(text);
+                    (YamlValueKind Kind, long Bits) resolved = ResolveTagged(text);
                     if (resolved.Kind == YamlValueKind.Float)
                     {
                         r.ValueKind = YamlValueKind.Float;
@@ -367,8 +367,8 @@ internal sealed partial class YamlParser
     /// <returns>The resolved value kind and its packed payload.</returns>
     private (YamlValueKind Kind, long Bits) ResolveTagged(string text)
     {
-        var bytes = Encoding.UTF8.GetBytes(text);
-        var kind = YamlScalarResolver.Resolve(bytes, _version, out var bits);
+        byte[] bytes = Encoding.UTF8.GetBytes(text);
+        YamlValueKind kind = YamlScalarResolver.Resolve(bytes, _version, out long bits);
         return (kind, bits);
     }
 
@@ -415,17 +415,17 @@ internal sealed partial class YamlParser
         if (tag.StartsWith("!!", StringComparison.Ordinal))
             return ResolveHandlePrefix("!!", "tag:yaml.org,2002:") + tag[2..];
 
-        var secondBang = tag.IndexOf('!', 1);
+        int secondBang = tag.IndexOf('!', 1);
         if (secondBang > 0)
         {
-            var handle = tag[..(secondBang + 1)];
-            if (_tagHandles is not null && _tagHandles.TryGetValue(handle, out var prefix))
+            string handle = tag[..(secondBang + 1)];
+            if (_tagHandles is not null && _tagHandles.TryGetValue(handle, out string? prefix))
                 return prefix + tag[(secondBang + 1)..];
 
             return tag;
         }
 
-        if (_tagHandles is not null && _tagHandles.TryGetValue("!", out var primaryPrefix))
+        if (_tagHandles is not null && _tagHandles.TryGetValue("!", out string? primaryPrefix))
             return primaryPrefix + tag[1..];
 
         return tag;
@@ -438,7 +438,7 @@ internal sealed partial class YamlParser
     /// <param name="fallback">The default prefix when the handle is not redefined.</param>
     /// <returns>The resolved prefix.</returns>
     private string ResolveHandlePrefix(string handle, string fallback) =>
-        _tagHandles is not null && _tagHandles.TryGetValue(handle, out var prefix) ? prefix : fallback;
+        _tagHandles is not null && _tagHandles.TryGetValue(handle, out string? prefix) ? prefix : fallback;
 
     /// <summary>
     /// Normalizes a tag to its core-schema short name when it is a recognized core tag.
@@ -447,7 +447,7 @@ internal sealed partial class YamlParser
     /// <returns>The core short name (for example <c>int</c>), or <see langword="null" /> when not a core tag.</returns>
     private static string? NormalizeCoreTag(string tag)
     {
-        var name = tag switch
+        string? name = tag switch
         {
             "!!str" or "tag:yaml.org,2002:str" or "!<tag:yaml.org,2002:str>" => "str",
             "!!null" or "tag:yaml.org,2002:null" or "!<tag:yaml.org,2002:null>" => "null",
@@ -469,7 +469,7 @@ internal sealed partial class YamlParser
     /// <returns>The resolved row index.</returns>
     private int Resolve(int index)
     {
-        var r = _rows[index];
+        YamlReaderRow r = _rows[index];
         return r.Kind == YamlReaderNodeKind.Alias && r.AliasTarget >= 0 ? r.AliasTarget : index;
     }
 

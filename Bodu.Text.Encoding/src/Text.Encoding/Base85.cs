@@ -327,7 +327,7 @@ public static partial class Base85
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     private static void EnsureValidVariant(Base85Variant variant)
     {
-        if (variant is not(Base85Variant.Ascii85 or Base85Variant.Z85 or Base85Variant.GitCompact))
+        if (variant is not (Base85Variant.Ascii85 or Base85Variant.Z85 or Base85Variant.GitCompact))
             throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base85Variant);
     }
 

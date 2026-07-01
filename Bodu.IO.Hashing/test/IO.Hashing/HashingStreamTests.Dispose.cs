@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashingStreamTests.Dispose.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -101,9 +101,6 @@ public sealed partial class HashingStreamTests
             _ = stream.GetHashAndReset();
         });
 
-        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            stream.Flush();
-        });
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(stream.Flush);
     }
 }

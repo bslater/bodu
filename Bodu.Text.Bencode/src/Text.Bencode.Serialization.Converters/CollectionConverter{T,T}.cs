@@ -67,7 +67,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
 
         List<TElement> items = [];
         while (reader.Read() && reader.TokenType != BencodeTokenType.EndList)
-            items.Add((TElement)_elementConverter.ReadAsObject(ref reader, typeof(TElement), options) !);
+            items.Add((TElement)_elementConverter.ReadAsObject(ref reader, typeof(TElement), options)!);
 
         return Materialize(items);
     }
@@ -126,7 +126,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized collection.</returns>
     private static TCollection MaterializeConcrete(List<TElement> items)
     {
-        TCollection instance = Activator.CreateInstance<TCollection>() !;
+        TCollection instance = Activator.CreateInstance<TCollection>()!;
         var collection = (ICollection<TElement>)instance;
         foreach (TElement element in items)
             collection.Add(element);
@@ -141,7 +141,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized queue.</returns>
     private static TCollection MaterializeQueue(List<TElement> items)
     {
-        TCollection instance = Activator.CreateInstance<TCollection>() !;
+        TCollection instance = Activator.CreateInstance<TCollection>()!;
         var queue = (Queue<TElement>)(object)instance;
         foreach (TElement element in items)
             queue.Enqueue(element);
@@ -157,7 +157,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized stack.</returns>
     private static TCollection MaterializeStack(List<TElement> items)
     {
-        TCollection instance = Activator.CreateInstance<TCollection>() !;
+        TCollection instance = Activator.CreateInstance<TCollection>()!;
         var stack = (Stack<TElement>)(object)instance;
         foreach (TElement element in items)
             stack.Push(element);
@@ -173,7 +173,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized queue.</returns>
     private static TCollection MaterializeConcurrentQueue(List<TElement> items)
     {
-        TCollection instance = Activator.CreateInstance<TCollection>() !;
+        TCollection instance = Activator.CreateInstance<TCollection>()!;
         var queue = (System.Collections.Concurrent.ConcurrentQueue<TElement>)(object)instance;
         foreach (TElement element in items)
             queue.Enqueue(element);
@@ -189,7 +189,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized stack.</returns>
     private static TCollection MaterializeConcurrentStack(List<TElement> items)
     {
-        TCollection instance = Activator.CreateInstance<TCollection>() !;
+        TCollection instance = Activator.CreateInstance<TCollection>()!;
         var stack = (System.Collections.Concurrent.ConcurrentStack<TElement>)(object)instance;
         foreach (TElement element in items)
             stack.Push(element);
@@ -205,7 +205,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
     /// <returns>The materialized bag.</returns>
     private static TCollection MaterializeConcurrentBag(List<TElement> items)
     {
-        TCollection instance = Activator.CreateInstance<TCollection>() !;
+        TCollection instance = Activator.CreateInstance<TCollection>()!;
         var bag = (System.Collections.Concurrent.ConcurrentBag<TElement>)(object)instance;
         foreach (TElement element in items)
             bag.Add(element);

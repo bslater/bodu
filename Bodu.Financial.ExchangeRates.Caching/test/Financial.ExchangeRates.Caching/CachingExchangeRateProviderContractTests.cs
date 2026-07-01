@@ -1,13 +1,11 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial;
-using Bodu.Financial.ExchangeRates.Testing;
-
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates.Testing;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 

@@ -115,10 +115,7 @@ public sealed class TweakableSymmetricAlgorithmProtectedHelperTests
             new KeySizes(128, 128, 0),
         ]);
 
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            algorithm.PublicThrowIfTweakNotSet();
-        });
+        Assert.ThrowsExactly<CryptographicException>(algorithm.PublicThrowIfTweakNotSet);
     }
 
     /// <summary>
@@ -134,10 +131,7 @@ public sealed class TweakableSymmetricAlgorithmProtectedHelperTests
         ]);
         algorithm.AssignTweak([]);
 
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            algorithm.PublicThrowIfTweakNotSet();
-        });
+        Assert.ThrowsExactly<CryptographicException>(algorithm.PublicThrowIfTweakNotSet);
     }
 
     /// <summary>

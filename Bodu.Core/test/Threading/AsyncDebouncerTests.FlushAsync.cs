@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncDebouncerTests.FlushAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class AsyncDebouncerTests
     public async Task FlushAsync_WhenPending_ShouldRunCallbackImmediately()
     {
         var time = new FakeTimeProvider();
-        var runs = 0;
+        int runs = 0;
         using var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), _ =>
         {
             Interlocked.Increment(ref runs);
@@ -35,14 +35,14 @@ public sealed partial class AsyncDebouncerTests
     public void FlushAsync_WhenNothingPending_ShouldCompleteSynchronously()
     {
         var time = new FakeTimeProvider();
-        var runs = 0;
+        int runs = 0;
         using var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), _ =>
         {
             Interlocked.Increment(ref runs);
             return ValueTask.CompletedTask;
         }, timeProvider: time);
 
-        var flush = sut.FlushAsync();
+        ValueTask flush = sut.FlushAsync();
 
         Assert.IsTrue(flush.IsCompleted);
         Assert.AreEqual(0, runs);
@@ -55,7 +55,7 @@ public sealed partial class AsyncDebouncerTests
     public async Task FlushAsync_WhenPending_ShouldNotRunCallbackAgainOnTimerElapsed()
     {
         var time = new FakeTimeProvider();
-        var runs = 0;
+        int runs = 0;
         using var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), _ =>
         {
             Interlocked.Increment(ref runs);
@@ -92,7 +92,7 @@ public sealed partial class AsyncDebouncerTests
     {
         var time = new FakeTimeProvider();
         var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var completed = false;
+        bool completed = false;
         using var sut = new AsyncDebouncer(
             TimeSpan.FromMilliseconds(100),
             async _ =>
@@ -106,7 +106,7 @@ public sealed partial class AsyncDebouncerTests
         sut.Invoke();
         time.Advance(TimeSpan.FromMilliseconds(100));
 
-        var flush = sut.FlushAsync();
+        ValueTask flush = sut.FlushAsync();
         Assert.IsFalse(flush.IsCompleted, "Flush should await the in-flight callback.");
 
         gate.SetResult();

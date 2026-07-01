@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -138,7 +138,7 @@ public sealed partial class CompoundStorageBuilder
     /// </exception>
     public CompoundStreamBuilder AddStream(string name, ReadOnlyMemory<byte> content)
     {
-        CompoundStreamBuilder stream = CompoundStreamBuilder.Create(name, content);
+        var stream = CompoundStreamBuilder.Create(name, content);
         AddCore(name, stream);
         return stream;
     }
@@ -155,7 +155,7 @@ public sealed partial class CompoundStorageBuilder
     /// </exception>
     public CompoundStreamBuilder AddStream(string name, Func<Stream> openRead, long length)
     {
-        CompoundStreamBuilder stream = CompoundStreamBuilder.Create(name, openRead, length);
+        var stream = CompoundStreamBuilder.Create(name, openRead, length);
         AddCore(name, stream);
         return stream;
     }
@@ -171,7 +171,7 @@ public sealed partial class CompoundStorageBuilder
     /// </exception>
     public CompoundStreamBuilder AddStreamFromFile(string name, string path)
     {
-        CompoundStreamBuilder stream = CompoundStreamBuilder.CreateFromFile(name, path);
+        var stream = CompoundStreamBuilder.CreateFromFile(name, path);
         AddCore(name, stream);
         return stream;
     }

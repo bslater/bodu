@@ -89,7 +89,7 @@ public partial class NotableDateDocumentBuilderTests
         NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("demo.import")
             .AddImport("global-core", i => i.Use("new-years-day", u => u.ForTerritory("US")));
 
-        _ = Assert.ThrowsExactly<NotSupportedException>(() => builder.ToJson());
+        _ = Assert.ThrowsExactly<NotSupportedException>(builder.ToJson);
     }
 
     /// <summary>
@@ -103,6 +103,6 @@ public partial class NotableDateDocumentBuilderTests
             .AddNotableDate("eid", "Eid", NotableDateCategory.Religious, d => d
                 .AddRule("default", r => r.ForCalendar(CalendarSystem.Hijri).Fixed(10, 1)));
 
-        _ = Assert.ThrowsExactly<NotSupportedException>(() => builder.ToJson());
+        _ = Assert.ThrowsExactly<NotSupportedException>(builder.ToJson);
     }
 }

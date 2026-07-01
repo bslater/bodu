@@ -201,7 +201,7 @@ public partial struct WeekPattern
             char startDayChar = format[0];
             char specChar = format[1];
 
-            if (startDayChar is not('S' or 'M'))
+            if (startDayChar is not ('S' or 'M'))
                 return false;
 
             char unselected = specChar switch

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SecretBytesTests.Dispose.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -86,10 +86,7 @@ public sealed partial class SecretBytesTests
         var secret = SecretBytes.CopyFrom([0x01]);
         secret.Dispose();
 
-        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            secret.Clear();
-        });
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(secret.Clear);
     }
 
     /// <summary>

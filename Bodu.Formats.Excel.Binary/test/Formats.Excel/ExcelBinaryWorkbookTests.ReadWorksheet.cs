@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelBinaryWorkbookTests.ReadWorksheet.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using System.Linq;
 
 namespace Bodu.Formats.Excel;
 
@@ -49,12 +47,12 @@ public partial class ExcelBinaryWorkbookTests
         using ExcelBinaryWorkbook workbook = OpenSample();
 
         ExcelWorksheet sheet = workbook.ReadWorksheet("Data");
-        List<int> rowIndexes = sheet.Rows.Select(r => r.RowIndex).ToList();
+        var rowIndexes = sheet.Rows.Select(r => r.RowIndex).ToList();
 
         CollectionAssert.AreEqual(rowIndexes.OrderBy(r => r).ToList(), rowIndexes);
         foreach (ExcelRow row in sheet.Rows)
         {
-            List<int> columns = row.Cells.Select(c => c.ColumnIndex).ToList();
+            var columns = row.Cells.Select(c => c.ColumnIndex).ToList();
             CollectionAssert.AreEqual(columns.OrderBy(c => c).ToList(), columns);
             Assert.IsTrue(row.Cells.All(c => c.RowIndex == row.RowIndex));
         }

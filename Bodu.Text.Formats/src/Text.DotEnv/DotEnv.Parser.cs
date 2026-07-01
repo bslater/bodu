@@ -165,7 +165,7 @@ public static partial class DotEnv
                 while (keyLen < _remaining.Length && IsKeyContinue(_remaining[keyLen]))
                     keyLen++;
 
-                string key = new string(_remaining[..keyLen]);
+                string key = new(_remaining[..keyLen]);
                 _remaining = _remaining[keyLen..];
 
                 // Expect '='
@@ -321,8 +321,8 @@ public static partial class DotEnv
 
                 if (c == '\'')
                 {
-                    string value = new string(_remaining[..i]);
-                    _remaining = _remaining[(i + 1) ..];
+                    string value = new(_remaining[..i]);
+                    _remaining = _remaining[(i + 1)..];
                     return value;
                 }
 

@@ -175,7 +175,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
             0, 0, 0,
             (a, x) => a + x,
             (a, _) => a + 1,
-            (a, x) => Math.Max(a, x));
+            Math.Max);
         Assert.AreEqual(1, enumerationCount3);
     }
 
@@ -228,7 +228,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
             seed3: int.MinValue,
             func1: (acc, x) => acc + x,
             func2: (acc, _) => acc + 1,
-            func3: (acc, x) => Math.Max(acc, x));
+            func3: Math.Max);
 
         Assert.AreEqual(31, sum);
         Assert.AreEqual(8, count);
@@ -292,8 +292,8 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         (int min, int max) = source.Aggregate(
             seed1: int.MaxValue,
             seed2: int.MinValue,
-            func1: (acc, x) => Math.Min(acc, x),
-            func2: (acc, x) => Math.Max(acc, x));
+            func1: Math.Min,
+            func2: Math.Max);
 
         Assert.AreEqual(1, min);
         Assert.AreEqual(9, max);

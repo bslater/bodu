@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Yaml;
-using Bodu.Text.Yaml.Nodes;
-
 namespace Bodu.Text.Yaml.Nodes;
 
 /// <summary>
@@ -18,7 +15,7 @@ public partial class YamlNodeTests
     [TestMethod]
     public void Mutate_WhenEditingValue_ShouldReflect()
     {
-        var node = YamlNode.Parse("a: 1\n")!.AsObject();
+        YamlObject node = YamlNode.Parse("a: 1\n")!.AsObject();
         node["a"] = YamlValue.Create(99L);
         node["b"] = YamlValue.Create("new");
 

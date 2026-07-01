@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlArray.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -104,7 +104,7 @@ public sealed class YamlArray : YamlNode, IList<YamlNode?>
     public override void WriteTo(ref Utf8YamlWriter writer)
     {
         writer.WriteStartSequence();
-        foreach (var item in _items)
+        foreach (YamlNode? item in _items)
             WriteChild(ref writer, item);
 
         writer.WriteEndSequence();

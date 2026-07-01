@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8YamlWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -102,7 +102,7 @@ public ref struct Utf8YamlWriter
         if (_depth == 0 || !_stack[_depth - 1].IsMapping)
             throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterPropertyNameOutsideMapping);
 
-        ref var frame = ref _stack[_depth - 1];
+        ref Frame frame = ref _stack[_depth - 1];
         if (frame.PendingKey is not null)
             throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterPropertyNamePending);
 
@@ -166,7 +166,7 @@ public ref struct Utf8YamlWriter
                     CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
             }
 
-            ref var parent = ref _stack[_depth - 1];
+            ref Frame parent = ref _stack[_depth - 1];
             EnsureStarted(_depth - 1);
             child = new Frame
             {
@@ -204,12 +204,12 @@ public ref struct Utf8YamlWriter
         if (_stack[_depth - 1].PendingKey is not null)
             throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterPropertyNameWithoutValue);
 
-        var frame = _stack[_depth - 1];
+        Frame frame = _stack[_depth - 1];
         _depth--;
 
         if (!frame.Started)
         {
-            var empty = isMapping ? "{}" : "[]";
+            string empty = isMapping ? "{}" : "[]";
             if (frame.IsRoot)
             {
                 WriteRaw(empty);
@@ -251,10 +251,10 @@ public ref struct Utf8YamlWriter
         }
 
         EnsureStarted(_depth - 1);
-        ref var frame = ref _stack[_depth - 1];
+        ref Frame frame = ref _stack[_depth - 1];
         if (frame.IsMapping)
         {
-            var key = frame.PendingKey ?? throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterValueWithoutKey);
+            string key = frame.PendingKey ?? throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterValueWithoutKey);
             frame.PendingKey = null;
             WriteIndent(frame.EntryIndent);
             WriteRaw(key);
@@ -277,7 +277,7 @@ public ref struct Utf8YamlWriter
     /// <param name="frameIndex">The stack index of the container.</param>
     private void EnsureStarted(int frameIndex)
     {
-        ref var frame = ref _stack[frameIndex];
+        ref Frame frame = ref _stack[frameIndex];
         if (frame.Started)
             return;
 
@@ -319,9 +319,9 @@ public ref struct Utf8YamlWriter
     /// <exception cref="ArgumentException"><paramref name="value" /> contains an unpaired surrogate.</exception>
     private static void ValidateNoUnpairedSurrogates(string value)
     {
-        for (var i = 0; i < value.Length; i++)
+        for (int i = 0; i < value.Length; i++)
         {
-            var c = value[i];
+            char c = value[i];
             if (char.IsHighSurrogate(c))
             {
                 if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))
@@ -358,14 +358,14 @@ public ref struct Utf8YamlWriter
             return false;
         }
 
-        var first = value[0];
+        char first = value[0];
         if (first is '-' or '?' or ':' or ',' or '[' or ']' or '{' or '}' or '#' or '&' or '*'
             or '!' or '|' or '>' or '\'' or '"' or '%' or '@' or '`' or ' ')
         {
             return false;
         }
 
-        foreach (var c in value)
+        foreach (char c in value)
         {
             // Non-printable characters (C0 controls, DEL, and C1 controls) force quoting so they can be escaped.
             if (c < 0x20 || (c >= 0x7F && c <= 0x9F))
@@ -379,7 +379,7 @@ public ref struct Utf8YamlWriter
         }
 
         // A plain scalar that would resolve to a non-string type must be quoted to preserve its string value.
-        var bytes = Encoding.UTF8.GetBytes(value);
+        byte[] bytes = Encoding.UTF8.GetBytes(value);
         return YamlScalarResolver.Resolve(bytes, YamlSpecVersion.V1_1, out _) == YamlValueKind.String;
     }
 
@@ -392,7 +392,7 @@ public ref struct Utf8YamlWriter
     {
         var sb = new StringBuilder(value.Length + 2);
         sb.Append('"');
-        foreach (var c in value)
+        foreach (char c in value)
         {
             switch (c)
             {
@@ -444,7 +444,7 @@ public ref struct Utf8YamlWriter
         if (count <= 0)
             return;
 
-        var span = _output.GetSpan(count);
+        Span<byte> span = _output.GetSpan(count);
         span[..count].Fill((byte)' ');
         _output.Advance(count);
     }
@@ -460,9 +460,9 @@ public ref struct Utf8YamlWriter
     /// <param name="text">The text to write.</param>
     private readonly void WriteRaw(string text)
     {
-        var count = Encoding.UTF8.GetByteCount(text);
-        var span = _output.GetSpan(count);
-        var written = Encoding.UTF8.GetBytes(text, span);
+        int count = Encoding.UTF8.GetByteCount(text);
+        Span<byte> span = _output.GetSpan(count);
+        int written = Encoding.UTF8.GetBytes(text, span);
         _output.Advance(written);
     }
 

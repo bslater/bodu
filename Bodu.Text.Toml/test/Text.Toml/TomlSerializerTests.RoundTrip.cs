@@ -4,19 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers;
-using System.Globalization;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Bodu.Test.Assertions;
-using Bodu.Test.IO;
 using Bodu.Test.Kat;
 using Bodu.Text.Toml.Document;
 using Bodu.Text.Toml.Nodes;
-using Bodu.Text.Toml.Reader;
 using Bodu.Text.Toml.Serialization;
-using Bodu.Text.Toml.Writer;
 
 namespace Bodu.Text.Toml;
 
@@ -803,7 +794,7 @@ public partial class TomlSerializerTests
 
         for (byte scale = 0; scale <= 28; scale++)
         {
-            decimal value = new decimal(987654321, 123456789, 0, isNegative: false, scale);
+            decimal value = new(987654321, 123456789, 0, isNegative: false, scale);
             string text = TomlSerializer.Serialize(new ValueModel<decimal> { Value = value }, options);
             decimal actual = TomlSerializer.Deserialize<ValueModel<decimal>>(text, options).Value;
 

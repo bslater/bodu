@@ -33,9 +33,9 @@ public sealed class SegmentedBufferTests
     public void Add_WhenStoringReferenceTypes_ShouldPreserveReferenceIdentity()
     {
         var buffer = new SegmentedBuffer<string>(2);
-        string a = new string('a', 3);
-        string b = new string('b', 3);
-        string c = new string('c', 3);
+        string a = new('a', 3);
+        string b = new('b', 3);
+        string c = new('c', 3);
 
         buffer.Add(a);
         buffer.Add(b);

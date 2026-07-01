@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncLockTests.LockAsync.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -33,9 +33,9 @@ public sealed partial class AsyncLockTests
     public async Task LockAsync_WhenHeld_ShouldBlockUntilReleased()
     {
         var sut = new AsyncLock();
-        var releaser = await sut.LockAsync();
+        AsyncLock.Releaser releaser = await sut.LockAsync();
 
-        var contended = sut.LockAsync();
+        ValueTask<AsyncLock.Releaser> contended = sut.LockAsync();
         Assert.IsFalse(contended.IsCompleted, "The second acquisition must not complete while the lock is held.");
 
         releaser.Dispose();
@@ -52,9 +52,9 @@ public sealed partial class AsyncLockTests
     public async Task LockAsync_WhenContended_ShouldResolveAfterRelease()
     {
         var sut = new AsyncLock();
-        var first = await sut.LockAsync();
+        AsyncLock.Releaser first = await sut.LockAsync();
 
-        var second = sut.LockAsync();
+        ValueTask<AsyncLock.Releaser> second = sut.LockAsync();
         Assert.IsFalse(second.IsCompleted);
 
         first.Dispose();
@@ -80,7 +80,7 @@ public sealed partial class AsyncLockTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var acquire = sut.LockAsync(cts.Token);
+        ValueTask<AsyncLock.Releaser> acquire = sut.LockAsync(cts.Token);
 
         Assert.IsTrue(acquire.IsCompletedSuccessfully);
         acquire.Result.Dispose();
@@ -93,7 +93,7 @@ public sealed partial class AsyncLockTests
     public async Task LockAsync_WhenTokenAlreadyCanceledAndHeld_ShouldThrowTaskCanceled()
     {
         var sut = new AsyncLock();
-        using var held = await sut.LockAsync();
+        using AsyncLock.Releaser held = await sut.LockAsync();
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
@@ -114,8 +114,8 @@ public sealed partial class AsyncLockTests
         var sut = new AsyncLock();
         using var cts = new CancellationTokenSource();
 
-        using var held = await sut.LockAsync();
-        var pending = sut.LockAsync(cts.Token);
+        using AsyncLock.Releaser held = await sut.LockAsync();
+        ValueTask<AsyncLock.Releaser> pending = sut.LockAsync(cts.Token);
 
         cts.Cancel();
 
@@ -131,8 +131,8 @@ public sealed partial class AsyncLockTests
         var sut = new AsyncLock();
         using var cts = new CancellationTokenSource();
 
-        var held = await sut.LockAsync();
-        var canceled = sut.LockAsync(cts.Token);
+        AsyncLock.Releaser held = await sut.LockAsync();
+        ValueTask<AsyncLock.Releaser> canceled = sut.LockAsync(cts.Token);
 
         cts.Cancel();
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceled);
@@ -168,16 +168,16 @@ public sealed partial class AsyncLockTests
     public async Task LockAsync_WhenManyTasksContend_ShouldMaintainMutualExclusion()
     {
         var sut = new AsyncLock();
-        var concurrent = 0;
-        var maxObserved = 0;
+        int concurrent = 0;
+        int maxObserved = 0;
 
         async Task Worker()
         {
-            for (var i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
                 using (await sut.LockAsync())
                 {
-                    var current = Interlocked.Increment(ref concurrent);
+                    int current = Interlocked.Increment(ref concurrent);
                     InterlockedMax(ref maxObserved, current);
                     await Task.Yield();
                     Interlocked.Decrement(ref concurrent);

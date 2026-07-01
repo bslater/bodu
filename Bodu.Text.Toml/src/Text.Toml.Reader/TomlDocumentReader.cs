@@ -409,7 +409,7 @@ public ref struct TomlDocumentReader
         if (_tokenType == TomlTokenType.PropertyName)
             _ = Read();
 
-        if (_tokenType is not(TomlTokenType.StartTable or TomlTokenType.StartArray))
+        if (_tokenType is not (TomlTokenType.StartTable or TomlTokenType.StartArray))
             return;
 
         int depth = _depth;

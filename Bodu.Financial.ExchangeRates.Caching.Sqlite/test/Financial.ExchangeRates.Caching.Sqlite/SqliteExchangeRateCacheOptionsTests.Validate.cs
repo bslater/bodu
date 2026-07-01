@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteExchangeRateCacheOptionsTests.Validate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class SqliteExchangeRateCacheOptionsTests
         var options = new SqliteExchangeRateCacheOptions { Provider = "  ", DatabaseFilePath = "cache.db" };
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
-            () => options.Validate(),
+            options.Validate,
             "Provider");
     }
 
@@ -32,7 +32,7 @@ public sealed partial class SqliteExchangeRateCacheOptionsTests
         var options = new SqliteExchangeRateCacheOptions { Provider = "RBA" };
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
-            () => options.Validate(),
+            options.Validate,
             "DatabaseFilePath");
     }
 
@@ -67,7 +67,7 @@ public sealed partial class SqliteExchangeRateCacheOptionsTests
         var options = new SqliteExchangeRateCacheOptions { Provider = "RBA", DatabaseFilePath = "cache.db", BusyTimeout = TimeSpan.FromSeconds(-1) };
 
         ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
-            () => options.Validate(),
+            options.Validate,
             "BusyTimeout");
     }
 

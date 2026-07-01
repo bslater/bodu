@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Last.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Last_WhenPopulated_ShouldReturnTailEntry()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.AreEqual(new KeyValuePair<string, int>("c", 3), dictionary.Last);
     }
@@ -39,7 +39,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void TryGetLast_WhenPopulated_ShouldReturnTrueAndTailEntry()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         bool found = dictionary.TryGetLast(out KeyValuePair<string, int> entry);
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageBuilderLazyLoadTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,9 +24,9 @@ public class CompoundStorageBuilderLazyLoadTests
     public void FromFile_WhenLazy_ShouldProduceDeferredNodes()
     {
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
-        using CompoundFile file = CompoundFile.Open(source, buffered: false);
+        using var file = CompoundFile.Open(source, buffered: false);
 
-        CompoundStorageBuilder root = CompoundStorageBuilder.FromFile(file, lazy: true);
+        var root = CompoundStorageBuilder.FromFile(file, lazy: true);
 
         bool sawStream = false;
         foreach (CompoundStreamBuilder stream in EnumerateStreams(root))
@@ -45,13 +45,13 @@ public class CompoundStorageBuilderLazyLoadTests
     public void FromFile_WhenLazyThenSaved_ShouldReproduceStreamContent()
     {
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
-        using CompoundFile file = CompoundFile.Open(source, buffered: false);
+        using var file = CompoundFile.Open(source, buffered: false);
 
         Dictionary<string, string> expected = HashStreams(file.RootStorage);
 
         byte[] rewritten = CompoundStorageBuilder.FromFile(file, lazy: true).ToArray();
 
-        using CompoundFile reopened = CompoundFile.Open(new MemoryStream(rewritten));
+        using var reopened = CompoundFile.Open(new MemoryStream(rewritten));
         Dictionary<string, string> actual = HashStreams(reopened.RootStorage);
 
         CollectionAssert.AreEquivalent(expected.Keys.ToList(), actual.Keys.ToList());
@@ -78,14 +78,14 @@ public class CompoundStorageBuilderLazyLoadTests
             authored.Save(inputPath);
 
             using (FileStream read = File.OpenRead(inputPath))
-            using (CompoundFile file = CompoundFile.Open(read, buffered: false))
+            using (var file = CompoundFile.Open(read, buffered: false))
             {
-                CompoundStorageBuilder lazy = CompoundStorageBuilder.FromFile(file, lazy: true);
+                var lazy = CompoundStorageBuilder.FromFile(file, lazy: true);
                 lazy.Save(outputPath);
             }
 
             using FileStream verify = File.OpenRead(outputPath);
-            using CompoundFile copy = CompoundFile.Open(verify, buffered: false);
+            using var copy = CompoundFile.Open(verify, buffered: false);
             Assert.IsTrue(copy.RootStorage.TryOpenStream("Big", out CompoundStream? bigEntry));
             Assert.AreEqual(Hash(big), Hash(bigEntry.AsMemory().Span));
         }

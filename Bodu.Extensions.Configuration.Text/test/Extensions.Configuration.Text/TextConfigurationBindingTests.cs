@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Text;
-using Microsoft.Extensions.Configuration;
-
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>

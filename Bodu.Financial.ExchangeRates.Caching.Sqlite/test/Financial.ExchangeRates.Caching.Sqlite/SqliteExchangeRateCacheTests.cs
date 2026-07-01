@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial;
 using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;

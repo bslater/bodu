@@ -35,7 +35,7 @@ public partial class ExchangeRateSeriesBuilderTests
     {
         ExchangeRateSeriesBuilder builder = new(s_usdAud, "RBA");
 
-        Assert.ThrowsExactly<InvalidOperationException>(() => builder.ToSeries());
+        Assert.ThrowsExactly<InvalidOperationException>(builder.ToSeries);
     }
 
     /// <summary>

@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Compound;
-
 namespace Bodu.IO.Compound.PropertySets;
 
 /// <summary>
@@ -24,10 +22,10 @@ public class OlePropertySetTests
     [TestMethod]
     public void Read_WhenSummaryInformationStream_ShouldExposeFormatIdAndTitle()
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.doc"));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.doc"));
         using CompoundStream entry = file.RootStorage.OpenStream(SummaryInformation.StreamName);
 
-        OlePropertySet set = OlePropertySet.Read(entry);
+        var set = OlePropertySet.Read(entry);
 
         Assert.AreEqual(SummaryInformationFormatId, set.FormatId);
         Assert.IsGreaterThanOrEqualTo(1, set.Sections.Count);

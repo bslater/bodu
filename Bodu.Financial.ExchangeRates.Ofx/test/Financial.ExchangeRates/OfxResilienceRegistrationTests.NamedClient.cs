@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial;
 using Microsoft.Extensions.DependencyInjection;
 using Polly.CircuitBreaker;
 

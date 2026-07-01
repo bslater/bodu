@@ -33,9 +33,9 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Slice_WhenCalled_ForReferenceTypeArray_ShouldReturnSegmentWithSharedElementReferences()
     {
-        object a = new object();
-        object b = new object();
-        object c = new object();
+        object a = new();
+        object b = new();
+        object c = new();
         object[] source = [a, b, c];
 
         object[] result = source.Slice(1, 2);

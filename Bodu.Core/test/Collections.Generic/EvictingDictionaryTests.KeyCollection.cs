@@ -20,7 +20,7 @@ public partial class EvictingDictionaryTests
     {
         var dictionary = new EvictingDictionary<string, int>(3);
         ICollection<string> keys = dictionary.Keys;
-        Assert.ThrowsExactly<NotSupportedException>(() => keys.Clear());
+        Assert.ThrowsExactly<NotSupportedException>(keys.Clear);
     }
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.KeyCollection.Contains" /> returns <see langword="true" /> for keys

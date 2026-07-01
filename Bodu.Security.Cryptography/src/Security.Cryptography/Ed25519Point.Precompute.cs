@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519Point.Precompute.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ internal partial struct Ed25519Point
         Ed25519Point windowBase = s_basePoint;
         for (int i = 0; i < WindowCount; i++)
         {
-            Ed25519Point[] row = new Ed25519Point[WindowSize];
+            var row = new Ed25519Point[WindowSize];
             row[0] = Identity;
             for (int d = 1; d < WindowSize; d++)
                 row[d] = row[d - 1].Add(windowBase);
@@ -99,7 +99,7 @@ internal partial struct Ed25519Point
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(pointScalar, 32);
 
         // pointTable[d] = [d]·point; the base multiples reuse window 0 of the fixed-base table (s_baseTable[0][d] = d·B).
-        Ed25519Point[] pointTable = new Ed25519Point[WindowSize];
+        var pointTable = new Ed25519Point[WindowSize];
         pointTable[0] = Identity;
         for (int d = 1; d < WindowSize; d++)
             pointTable[d] = pointTable[d - 1].Add(point);

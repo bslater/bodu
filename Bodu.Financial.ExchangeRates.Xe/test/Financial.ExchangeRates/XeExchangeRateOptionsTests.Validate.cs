@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XeExchangeRateOptionsTests.Validate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,10 +16,7 @@ public partial class XeExchangeRateOptionsTests
     {
         XeExchangeRateOptions options = new() { ChartingRatesPath = string.Empty };
 
-        _ = Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            options.Validate();
-        });
+        _ = Assert.ThrowsExactly<ArgumentException>(options.Validate);
     }
 
     /// <summary>

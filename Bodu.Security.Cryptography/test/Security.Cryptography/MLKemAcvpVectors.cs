@@ -138,10 +138,7 @@ public static class MLKemAcvpVectors
         }
         else
         {
-            Assert.ThrowsExactly<ArgumentException>(() =>
-            {
-                Import();
-            });
+            Assert.ThrowsExactly<ArgumentException>(Import);
         }
     }
 

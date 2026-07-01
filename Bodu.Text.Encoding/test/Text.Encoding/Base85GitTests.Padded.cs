@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85GitTests.Padded.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -110,7 +110,7 @@ public sealed partial class Base85GitTests
     [TestMethod]
     public void DecodeGitPadded_WhenLengthNotMultipleOfFive_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Base85.DecodeGitPadded("0RjU".AsSpan(), 3);
         });
@@ -125,7 +125,7 @@ public sealed partial class Base85GitTests
     [TestMethod]
     public void DecodeGitPadded_WhenDecodedLengthNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = Base85.DecodeGitPadded("0RjUA".AsSpan(), -1);
         });
@@ -144,7 +144,7 @@ public sealed partial class Base85GitTests
     public void DecodeGitPadded_WhenDecodedLengthInconsistent_ShouldThrowArgumentException(int decodedLength)
     {
         // "0RjUA" is a single five-character group → at most four bytes.
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = Base85.DecodeGitPadded("0RjUA".AsSpan(), decodedLength);
         });

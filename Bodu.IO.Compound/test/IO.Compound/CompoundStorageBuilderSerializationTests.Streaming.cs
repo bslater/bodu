@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageBuilderSerializationTests.Streaming.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public partial class CompoundStorageBuilderSerializationTests
             builder.Save(outputPath);
 
             using FileStream reopen = File.OpenRead(outputPath);
-            using CompoundFile file = CompoundFile.Open(reopen);
+            using var file = CompoundFile.Open(reopen);
             Assert.IsTrue(file.RootStorage.TryOpenStream("Big", out CompoundStream? entry));
             Assert.AreEqual(payload.Length, entry.Length);
             Assert.AreEqual(Hash(payload), Hash(entry.AsMemory().Span));
@@ -63,7 +63,7 @@ public partial class CompoundStorageBuilderSerializationTests
         byte[] bytes = builder.ToArray();
 
         Assert.AreEqual(1, opens, "source not opened exactly once");
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
+        using var file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Data", out CompoundStream? entry));
         CollectionAssert.AreEqual(payload, entry.ReadAllBytes());
     }
@@ -98,7 +98,7 @@ public partial class CompoundStorageBuilderSerializationTests
     [TestMethod]
     public void ToArray_WhenMixedDeferredAndInline_ShouldRoundTrip()
     {
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(BuildMixedTree().ToArray()));
+        using var file = CompoundFile.Open(new MemoryStream(BuildMixedTree().ToArray()));
 
         Assert.IsTrue(file.RootStorage.TryOpenStream("Mini", out CompoundStream? mini));
         Assert.AreEqual(10, mini.Length);

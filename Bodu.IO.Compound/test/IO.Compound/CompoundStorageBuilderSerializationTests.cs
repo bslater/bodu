@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorageBuilderSerializationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public partial class CompoundStorageBuilderSerializationTests
 
         byte[] bytes = builder.ToArray();
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
+        using var file = CompoundFile.Open(new MemoryStream(bytes));
         Assert.IsTrue(file.RootStorage.TryOpenStream("Workbook", out CompoundStream? workbook));
         CollectionAssert.AreEqual(new byte[] { 0x09, 0x08, 0x10, 0x00 }, workbook.ReadAllBytes());
         Assert.IsTrue(file.RootStorage.OpenStorage("Storage 1").TryOpenStream("Nested", out _));
@@ -46,7 +46,7 @@ public partial class CompoundStorageBuilderSerializationTests
         builder.ClassId = clsid;
         _ = builder.AddStream("Workbook", new byte[] { 1 });
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(builder.ToArray()));
+        using var file = CompoundFile.Open(new MemoryStream(builder.ToArray()));
 
         Assert.AreEqual(clsid, file.RootStorage.Stat.ClassId);
     }

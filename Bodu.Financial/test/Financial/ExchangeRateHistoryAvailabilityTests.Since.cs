@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateHistoryAvailabilityTests.Since.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class ExchangeRateHistoryAvailabilityTests
     {
         var earliest = new DateOnly(1999, 1, 1);
 
-        ExchangeRateHistoryAvailability availability = ExchangeRateHistoryAvailability.Since(earliest);
+        var availability = ExchangeRateHistoryAvailability.Since(earliest);
 
         Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Since, availability.Kind);
         Assert.AreEqual(earliest, availability.EarliestDate);

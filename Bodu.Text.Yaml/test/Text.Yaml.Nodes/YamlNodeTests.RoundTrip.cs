@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Yaml;
-using Bodu.Text.Yaml.Nodes;
-
 namespace Bodu.Text.Yaml.Nodes;
 
 /// <summary>
@@ -19,8 +16,8 @@ public partial class YamlNodeTests
     public void RoundTrip_WhenParsedAndReserialized_ShouldMatch()
     {
         const string yaml = "name: test\nitems:\n  - 1\n  - 2\n";
-        var node = YamlNode.Parse(yaml)!;
-        var reparsed = YamlNode.Parse(node.ToYamlString())!;
+        YamlNode node = YamlNode.Parse(yaml)!;
+        YamlNode reparsed = YamlNode.Parse(node.ToYamlString())!;
 
         Assert.AreEqual("test", reparsed["name"]!.AsValue().GetValue<string>());
         Assert.AreEqual(2L, reparsed["items"]![1]!.AsValue().GetValue<long>());

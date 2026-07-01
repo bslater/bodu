@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using Bodu.Test.Kat;
 
 namespace Bodu.Financial.ExchangeRates;

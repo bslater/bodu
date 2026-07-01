@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
-
 namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
@@ -20,9 +18,9 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void AddStorage_WhenNodeAlreadyHasParent_ShouldThrowInvalidOperationException()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
         CompoundStreamBuilder stream = root.AddStream("Stream 1", new byte[] { 1 });
-        CompoundStorageBuilder other = CompoundStorageBuilder.CreateRoot();
+        var other = CompoundStorageBuilder.CreateRoot();
 
         _ = Assert.ThrowsExactly<InvalidOperationException>(() => other.Add("Stream 1", stream));
     }
@@ -33,7 +31,7 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void AddStream_WhenNameDuplicated_ShouldThrowCompoundFileSerializationException()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
         _ = root.AddStream("Stream 1", new byte[] { 1 });
 
         _ = Assert.ThrowsExactly<CompoundFileSerializationException>(() => root.AddStream("Stream 1", new byte[] { 2 }));
@@ -45,7 +43,7 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void AddStream_WhenNameDiffersOnlyByCase_ShouldCollideByDefault()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
         _ = root.AddStream("Workbook", new byte[] { 1 });
 
         _ = Assert.ThrowsExactly<CompoundFileSerializationException>(() => root.AddStream("WORKBOOK", new byte[] { 2 }));
@@ -57,7 +55,7 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void AddStorage_WhenNameTooLong_ShouldThrowCompoundFileSerializationException()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
 
         _ = Assert.ThrowsExactly<CompoundFileSerializationException>(() => root.AddStorage(new string('x', 32)));
     }
@@ -68,7 +66,7 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void AddStorage_WhenNameContainsReservedCharacter_ShouldThrowCompoundFileSerializationException()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
 
         _ = Assert.ThrowsExactly<CompoundFileSerializationException>(() => root.AddStorage("a/b"));
     }
@@ -79,7 +77,7 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void AddStream_WhenNameIsControlPrefixed_ShouldBeAllowed()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
 
         CompoundStreamBuilder stream = root.AddStream("SummaryInformation", new byte[] { 1 });
 
@@ -93,7 +91,7 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void Remove_WhenChildExists_ShouldDetachFromParent()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
         CompoundStreamBuilder stream = root.AddStream("Stream 1", new byte[] { 1 });
 
         bool removed = root.Remove("Stream 1");
@@ -109,7 +107,7 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void Clear_WhenCalled_ShouldDetachAllChildren()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
         CompoundStreamBuilder a = root.AddStream("a", new byte[] { 1 });
         CompoundStreamBuilder b = root.AddStream("b", new byte[] { 2 });
 
@@ -126,11 +124,11 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void Remove_WhenChildReadded_ShouldAllowReparenting()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
         CompoundStreamBuilder stream = root.AddStream("Stream 1", new byte[] { 1 });
         _ = root.Remove("Stream 1");
 
-        CompoundStorageBuilder other = CompoundStorageBuilder.CreateRoot();
+        var other = CompoundStorageBuilder.CreateRoot();
         other.Add("Renamed", stream);
 
         Assert.AreSame(other, stream.Parent);
@@ -143,7 +141,7 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void Rename_WhenChildExists_ShouldUpdateNameAndKey()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
         CompoundStreamBuilder stream = root.AddStream("Old", new byte[] { 1 });
 
         root.Rename("Old", "New");
@@ -161,7 +159,7 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void Enumerate_WhenMixedChildren_ShouldPartitionByKind()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
         _ = root.AddStorage("S");
         _ = root.AddStream("a", new byte[] { 1 });
         _ = root.AddStream("b", new byte[] { 2 });
@@ -176,7 +174,7 @@ public class CompoundStorageBuilderTests
     [TestMethod]
     public void DeepClone_WhenCalled_ShouldCopySubtreeWithoutParent()
     {
-        CompoundStorageBuilder root = CompoundStorageBuilder.CreateRoot();
+        var root = CompoundStorageBuilder.CreateRoot();
         CompoundStorageBuilder storage = root.AddStorage("Storage 1");
         _ = storage.AddStream("Stream 1", new byte[] { 1, 2, 3 });
 

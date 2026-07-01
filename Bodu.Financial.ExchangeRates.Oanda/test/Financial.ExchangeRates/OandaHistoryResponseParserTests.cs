@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OandaHistoryResponseParserTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -45,7 +45,7 @@ public class OandaHistoryResponseParserTests
         PairRateData<OandaSeriesInfo> data = OandaHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
 
         // The feed returns rows newest-first and the parser preserves that order, so assert by date rather than index.
-        Dictionary<DateOnly, decimal> byDate = data.Observations.ToDictionary(o => o.Date, o => o.Rate);
+        var byDate = data.Observations.ToDictionary(o => o.Date, o => o.Rate);
 
         Assert.HasCount(2, data.Observations);
         Assert.AreEqual(0.6800m, byDate[new DateOnly(2023, 1, 2)]);

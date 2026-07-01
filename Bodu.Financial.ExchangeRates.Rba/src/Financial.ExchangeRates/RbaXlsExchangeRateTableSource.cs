@@ -49,7 +49,7 @@ internal sealed class RbaXlsExchangeRateTableSource
         byte[] bytes = await GetWorkbookBytesAsync(era, cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
+        using var workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
         return RbaExchangeRateWorkbookParser.Parse(workbook, _options);
     }
 

@@ -75,7 +75,7 @@ internal static class XeChartingRatesResponseParser
         var observations = new List<ExchangeRateObservation>(count);
 
         DateTime point = DateTimeOffset.FromUnixTimeMilliseconds(startTimeMs).UtcDateTime;
-        TimeSpan interval = TimeSpan.FromMilliseconds(intervalMs);
+        var interval = TimeSpan.FromMilliseconds(intervalMs);
 
         // The first element is the baseline offset, not a data point; the published series starts at the second element.
         for (int i = 1; i < count; i++)

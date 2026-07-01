@@ -198,7 +198,7 @@ public sealed class YamlSerializerOptions
     /// <returns>The matching converter, or <see langword="null" /> when none applies.</returns>
     internal YamlConverter? GetConverter(Type type)
     {
-        foreach (var converter in Converters)
+        foreach (YamlConverter converter in Converters)
         {
             if (converter.CanConvert(type))
                 return converter;

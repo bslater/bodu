@@ -554,7 +554,7 @@ public ref partial struct Utf8TomlReader
             _ = Read();
         }
 
-        if (TokenType is not(TomlTokenType.StartArray or TomlTokenType.StartInlineTable))
+        if (TokenType is not (TomlTokenType.StartArray or TomlTokenType.StartInlineTable))
             return;
 
         int depth = _containerCount;
@@ -604,7 +604,7 @@ public ref partial struct Utf8TomlReader
             }
         }
 
-        if (TokenType is not(TomlTokenType.StartArray or TomlTokenType.StartInlineTable))
+        if (TokenType is not (TomlTokenType.StartArray or TomlTokenType.StartInlineTable))
             return true;
 
         int depth = _containerCount;
@@ -631,7 +631,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     public readonly bool ValueTextEquals(ReadOnlySpan<byte> utf8Text)
     {
-        if (_tokenType is not(TomlTokenType.String or TomlTokenType.Key))
+        if (_tokenType is not (TomlTokenType.String or TomlTokenType.Key))
             throw new InvalidOperationException();
 
         if (!_hasEscapes)
@@ -665,7 +665,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     public readonly bool ValueTextEquals(ReadOnlySpan<char> text)
     {
-        if (_tokenType is not(TomlTokenType.String or TomlTokenType.Key))
+        if (_tokenType is not (TomlTokenType.String or TomlTokenType.Key))
             throw new InvalidOperationException();
 
         if (_hasEscapes)

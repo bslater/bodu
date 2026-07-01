@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStreamTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,7 +41,7 @@ public class CompoundStreamTests
     public void ReadSpan_WhenReadInChunks_ShouldReturnFullPayload(bool buffered)
     {
         byte[] bytes = BuildContainer(out byte[] payload);
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes), buffered: buffered);
+        using var file = CompoundFile.Open(new MemoryStream(bytes), buffered: buffered);
         using CompoundStream stream = file.RootStorage.OpenStream("Data");
 
         byte[] result = new byte[payload.Length];
@@ -66,7 +66,7 @@ public class CompoundStreamTests
     public async Task ReadAsyncMemory_WhenReadInChunks_ShouldReturnFullPayload(bool buffered)
     {
         byte[] bytes = BuildContainer(out byte[] payload);
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes), buffered: buffered);
+        using var file = CompoundFile.Open(new MemoryStream(bytes), buffered: buffered);
         using CompoundStream stream = file.RootStorage.OpenStream("Data");
 
         byte[] result = new byte[payload.Length];
@@ -90,7 +90,7 @@ public class CompoundStreamTests
     public void ReadAsyncMemory_WhenTokenCanceled_ShouldReturnCanceled()
     {
         byte[] bytes = BuildContainer(out _);
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
+        using var file = CompoundFile.Open(new MemoryStream(bytes));
         using CompoundStream stream = file.RootStorage.OpenStream("Data");
 
         using var cts = new CancellationTokenSource();
@@ -108,7 +108,7 @@ public class CompoundStreamTests
     public void ReadSpan_WhenAtEnd_ShouldReturnZero()
     {
         byte[] bytes = BuildContainer(out byte[] payload);
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(bytes));
+        using var file = CompoundFile.Open(new MemoryStream(bytes));
         using CompoundStream stream = file.RootStorage.OpenStream("Data");
 
         stream.Position = payload.Length;

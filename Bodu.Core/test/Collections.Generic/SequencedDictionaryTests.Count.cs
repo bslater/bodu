@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Count.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,7 +39,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Count_WhenExistingKeyUpdated_ShouldNotChange()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         dictionary["a"] = 99;
 
@@ -52,7 +52,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Count_WhenEntryRemoved_ShouldDecrease()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         dictionary.Remove("b");
 
@@ -65,7 +65,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Count_WhenCleared_ShouldBeZero()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         dictionary.Clear();
 

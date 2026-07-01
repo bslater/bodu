@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test;
-using Bodu.Test.Assertions;
-
 namespace Bodu.Financial;
 
 public partial class ExchangeRateBookTests

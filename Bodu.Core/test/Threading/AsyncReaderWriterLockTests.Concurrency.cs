@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncReaderWriterLockTests.Concurrency.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,13 +16,13 @@ public sealed partial class AsyncReaderWriterLockTests
     public async Task ReaderWriter_WhenContended_ShouldNeverOverlap()
     {
         var sut = new AsyncReaderWriterLock();
-        var readers = 0;
-        var writers = 0;
-        var violations = 0;
+        int readers = 0;
+        int writers = 0;
+        int violations = 0;
 
         async Task Reader()
         {
-            for (var i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
                 using (await sut.ReaderAsync())
                 {
@@ -37,7 +37,7 @@ public sealed partial class AsyncReaderWriterLockTests
 
         async Task Writer()
         {
-            for (var i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
                 using (await sut.WriterAsync())
                 {
@@ -51,9 +51,9 @@ public sealed partial class AsyncReaderWriterLockTests
         }
 
         var tasks = new List<Task>();
-        for (var i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
             tasks.Add(Task.Run(Reader));
-        for (var i = 0; i < 2; i++)
+        for (int i = 0; i < 2; i++)
             tasks.Add(Task.Run(Writer));
 
         await Task.WhenAll(tasks);

@@ -16,7 +16,7 @@ public partial class CompoundFileTests
     public void Create_WhenStreamSupplied_ShouldReportWritableAndNotDirty()
     {
         using var destination = new MemoryStream();
-        using CompoundFile file = CompoundFile.Create(destination, leaveOpen: true);
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
 
         Assert.IsTrue(file.CanWrite);
         Assert.IsTrue(file.RootStorage.CanWrite);
@@ -30,7 +30,7 @@ public partial class CompoundFileTests
     public void CreateStream_WhenContentWritten_ShouldMarkFileDirty()
     {
         using var destination = new MemoryStream();
-        using CompoundFile file = CompoundFile.Create(destination, leaveOpen: true);
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
 
         using (CompoundStream stream = file.RootStorage.CreateStream("Data"))
             stream.Write([1, 2, 3, 4], 0, 4);
@@ -48,7 +48,7 @@ public partial class CompoundFileTests
         byte[] payload = [10, 20, 30, 40, 50];
         var destination = new MemoryStream();
 
-        using (CompoundFile file = CompoundFile.Create(destination, leaveOpen: true))
+        using (var file = CompoundFile.Create(destination, leaveOpen: true))
         {
             using (CompoundStream stream = file.RootStorage.CreateStream("Workbook"))
                 stream.Write(payload, 0, payload.Length);
@@ -58,7 +58,7 @@ public partial class CompoundFileTests
         }
 
         destination.Position = 0;
-        using CompoundFile reopened = CompoundFile.Open(destination);
+        using var reopened = CompoundFile.Open(destination);
         using CompoundStream read = reopened.RootStorage.OpenStream("Workbook");
 
         CollectionAssert.AreEqual(payload, read.ReadAllBytes());
@@ -72,7 +72,7 @@ public partial class CompoundFileTests
     {
         var destination = new MemoryStream();
 
-        using (CompoundFile file = CompoundFile.Create(destination, leaveOpen: true))
+        using (var file = CompoundFile.Create(destination, leaveOpen: true))
         {
             file.RootStorage.CreateStream("Root", new byte[] { 1 });
             CompoundStorage child = file.RootStorage.CreateStorage("Storage 1");
@@ -81,7 +81,7 @@ public partial class CompoundFileTests
         }
 
         destination.Position = 0;
-        using CompoundFile reopened = CompoundFile.Open(destination);
+        using var reopened = CompoundFile.Open(destination);
 
         using CompoundStream root = reopened.RootStorage.OpenStream("Root");
         CollectionAssert.AreEqual(new byte[] { 1 }, root.ReadAllBytes());
@@ -99,7 +99,7 @@ public partial class CompoundFileTests
     {
         var destination = new MemoryStream();
 
-        using (CompoundFile file = CompoundFile.Create(destination, leaveOpen: true))
+        using (var file = CompoundFile.Create(destination, leaveOpen: true))
         {
             file.RootStorage.CreateStream("Keep", new byte[] { 1 });
             file.RootStorage.CreateStream("Remove", new byte[] { 2 });
@@ -109,7 +109,7 @@ public partial class CompoundFileTests
         }
 
         destination.Position = 0;
-        using CompoundFile reopened = CompoundFile.Open(destination);
+        using var reopened = CompoundFile.Open(destination);
 
         Assert.IsTrue(reopened.RootStorage.TryOpenStream("Keep", out _));
         Assert.IsFalse(reopened.RootStorage.TryOpenStream("Remove", out _));
@@ -123,7 +123,7 @@ public partial class CompoundFileTests
     {
         var destination = new MemoryStream();
 
-        using (CompoundFile file = CompoundFile.Create(destination, leaveOpen: true))
+        using (var file = CompoundFile.Create(destination, leaveOpen: true))
         {
             file.RootStorage.CreateStream("OldName", new byte[] { 9 });
             file.RootStorage.Rename("OldName", "NewName");
@@ -131,7 +131,7 @@ public partial class CompoundFileTests
         }
 
         destination.Position = 0;
-        using CompoundFile reopened = CompoundFile.Open(destination);
+        using var reopened = CompoundFile.Open(destination);
 
         Assert.IsFalse(reopened.RootStorage.TryOpenStream("OldName", out _));
         using CompoundStream renamed = reopened.RootStorage.OpenStream("NewName");
@@ -145,7 +145,7 @@ public partial class CompoundFileTests
     public void Revert_WhenEditsStaged_ShouldDiscardChanges()
     {
         using var destination = new MemoryStream();
-        using CompoundFile file = CompoundFile.Create(destination, leaveOpen: true);
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
 
         file.RootStorage.CreateStream("Temp", new byte[] { 1, 2 });
         Assert.IsTrue(file.IsDirty);
@@ -165,7 +165,7 @@ public partial class CompoundFileTests
     {
         var destination = new MemoryStream();
 
-        using (CompoundFile file = CompoundFile.Create(destination, leaveOpen: true))
+        using (var file = CompoundFile.Create(destination, leaveOpen: true))
         {
             using (CompoundStream first = file.RootStorage.CreateStream("Data"))
                 first.Write([1, 2], 0, 2);
@@ -180,7 +180,7 @@ public partial class CompoundFileTests
         }
 
         destination.Position = 0;
-        using CompoundFile reopened = CompoundFile.Open(destination);
+        using var reopened = CompoundFile.Open(destination);
         using CompoundStream read = reopened.RootStorage.OpenStream("Data");
 
         CollectionAssert.AreEqual(new byte[] { 1, 2, 3, 4 }, read.ReadAllBytes());
@@ -224,10 +224,7 @@ public partial class CompoundFileTests
     {
         using CompoundFile file = OpenSample();
 
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            file.Commit();
-        });
+        Assert.ThrowsExactly<InvalidOperationException>(file.Commit);
     }
 
     /// <summary>
@@ -239,7 +236,7 @@ public partial class CompoundFileTests
     {
         using var destination = new MemoryStream();
 
-        using (CompoundFile file = CompoundFile.Create(destination, leaveOpen: true))
+        using (var file = CompoundFile.Create(destination, leaveOpen: true))
             file.RootStorage.CreateStream("Data", new byte[] { 1, 2, 3 });
 
         Assert.AreEqual(0, destination.Length);
@@ -251,10 +248,10 @@ public partial class CompoundFileTests
     [TestMethod]
     public void Open_WhenExistingFileOpenedForUpdate_ShouldLoadContent()
     {
-        var destination = CreateContainer(("Existing", [7, 8, 9]));
+        MemoryStream destination = CreateContainer(("Existing", [7, 8, 9]));
 
         destination.Position = 0;
-        using CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
 
         Assert.IsTrue(file.CanWrite);
         Assert.IsFalse(file.IsDirty);
@@ -269,16 +266,16 @@ public partial class CompoundFileTests
     [TestMethod]
     public void Commit_WhenExistingFileUpdated_ShouldPreserveAndAddStreams()
     {
-        var destination = CreateContainer(("Original", [1, 1, 1]));
+        MemoryStream destination = CreateContainer(("Original", [1, 1, 1]));
 
-        using (CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true))
+        using (var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true))
         {
             file.RootStorage.CreateStream("Added", new byte[] { 2, 2 });
             file.Commit();
         }
 
         destination.Position = 0;
-        using CompoundFile reopened = CompoundFile.Open(destination);
+        using var reopened = CompoundFile.Open(destination);
 
         using CompoundStream original = reopened.RootStorage.OpenStream("Original");
         CollectionAssert.AreEqual(new byte[] { 1, 1, 1 }, original.ReadAllBytes());
@@ -292,9 +289,9 @@ public partial class CompoundFileTests
     [TestMethod]
     public void Commit_WhenExistingStreamOverwritten_ShouldReplaceContent()
     {
-        var destination = CreateContainer(("Data", [1, 2, 3, 4]));
+        MemoryStream destination = CreateContainer(("Data", [1, 2, 3, 4]));
 
-        using (CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true))
+        using (var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true))
         {
             using (CompoundStream stream = file.RootStorage.OpenStream("Data", FileMode.Create, FileAccess.Write))
                 stream.Write([9, 9], 0, 2);
@@ -303,7 +300,7 @@ public partial class CompoundFileTests
         }
 
         destination.Position = 0;
-        using CompoundFile reopened = CompoundFile.Open(destination);
+        using var reopened = CompoundFile.Open(destination);
         using CompoundStream read = reopened.RootStorage.OpenStream("Data");
 
         CollectionAssert.AreEqual(new byte[] { 9, 9 }, read.ReadAllBytes());
@@ -317,7 +314,7 @@ public partial class CompoundFileTests
     {
         using var destination = new MemoryStream();
 
-        using CompoundFile file = CompoundFile.Open(destination, FileMode.OpenOrCreate, FileAccess.ReadWrite, leaveOpen: true);
+        using var file = CompoundFile.Open(destination, FileMode.OpenOrCreate, FileAccess.ReadWrite, leaveOpen: true);
 
         Assert.IsTrue(file.CanWrite);
         Assert.IsEmpty(file.RootStorage.EnumerateEntries());
@@ -333,7 +330,7 @@ public partial class CompoundFileTests
         byte[] payload = [11, 22, 33, 44];
         var destination = new MemoryStream();
 
-        using (CompoundFile file = CompoundFile.Create(destination, leaveOpen: true))
+        using (var file = CompoundFile.Create(destination, leaveOpen: true))
         {
             await using (CompoundStream stream = file.RootStorage.CreateStream("Async"))
             {
@@ -345,7 +342,7 @@ public partial class CompoundFileTests
         }
 
         destination.Position = 0;
-        using CompoundFile reopened = CompoundFile.Open(destination);
+        using var reopened = CompoundFile.Open(destination);
         using CompoundStream read = reopened.RootStorage.OpenStream("Async");
 
         CollectionAssert.AreEqual(payload, read.ReadAllBytes());
@@ -376,7 +373,7 @@ public partial class CompoundFileTests
     private static MemoryStream CreateContainer(params (string Name, byte[] Content)[] streams)
     {
         var destination = new MemoryStream();
-        using (CompoundFile file = CompoundFile.Create(destination, leaveOpen: true))
+        using (var file = CompoundFile.Create(destination, leaveOpen: true))
         {
             foreach ((string name, byte[] content) in streams)
                 file.RootStorage.CreateStream(name, content);

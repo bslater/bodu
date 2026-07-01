@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncManualResetEventTests.Set.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class AsyncManualResetEventTests
     public async Task Set_WhenMultipleWaiters_ShouldReleaseAll()
     {
         var sut = new AsyncManualResetEvent();
-        var waiters = Enumerable.Range(0, 5).Select(_ => sut.WaitAsync().AsTask()).ToArray();
+        Task[] waiters = Enumerable.Range(0, 5).Select(_ => sut.WaitAsync().AsTask()).ToArray();
 
         sut.Set();
 

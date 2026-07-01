@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EnumsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed class EnumsTests
     [TestCategory("Smoke")]
     public void GetValues_WhenQueried_ShouldReturnDeclaredValues()
     {
-        var first = Enums.GetValues<DescribedStatus>();
+        DescribedStatus[] first = Enums.GetValues<DescribedStatus>();
 
         CollectionAssert.AreEqual(
             new[] { DescribedStatus.Active, DescribedStatus.Pending, DescribedStatus.Plain, DescribedStatus.Cancelled },
@@ -33,7 +33,7 @@ public sealed class EnumsTests
     [TestMethod]
     public void GetValues_WhenReturnedArrayMutated_ShouldNotAffectSubsequentCalls()
     {
-        var values = Enums.GetValues<DescribedStatus>();
+        DescribedStatus[] values = Enums.GetValues<DescribedStatus>();
         values[0] = (DescribedStatus)999;
 
         CollectionAssert.AreEqual(
@@ -47,7 +47,7 @@ public sealed class EnumsTests
     [TestMethod]
     public void GetNames_WhenQueried_ShouldReturnDeclaredNames()
     {
-        var names = Enums.GetNames<DescribedStatus>();
+        string[] names = Enums.GetNames<DescribedStatus>();
 
         CollectionAssert.AreEqual(new[] { "Active", "Pending", "Plain", "Cancelled" }, names);
         Assert.AreNotSame(names, Enums.GetNames<DescribedStatus>());
@@ -59,7 +59,7 @@ public sealed class EnumsTests
     [TestMethod]
     public void GetNames_WhenReturnedArrayMutated_ShouldNotAffectSubsequentCalls()
     {
-        var names = Enums.GetNames<DescribedStatus>();
+        string[] names = Enums.GetNames<DescribedStatus>();
         names[0] = "Corrupted";
 
         CollectionAssert.AreEqual(new[] { "Active", "Pending", "Plain", "Cancelled" }, Enums.GetNames<DescribedStatus>());
@@ -71,7 +71,7 @@ public sealed class EnumsTests
     [TestMethod]
     public void TryParse_WhenTextValidOrInvalid_ShouldReportOutcome()
     {
-        Assert.IsTrue(Enums.TryParse<DescribedStatus>("Pending", out var parsed));
+        Assert.IsTrue(Enums.TryParse<DescribedStatus>("Pending", out DescribedStatus parsed));
         Assert.AreEqual(DescribedStatus.Pending, parsed);
 
         Assert.IsFalse(Enums.TryParse<DescribedStatus>("Nope", out _));
@@ -83,7 +83,7 @@ public sealed class EnumsTests
     [TestMethod]
     public void TryParse_WhenIgnoreCase_ShouldMatchRegardlessOfCase()
     {
-        Assert.IsTrue(Enums.TryParse<DescribedStatus>("active", ignoreCase: true, out var parsed));
+        Assert.IsTrue(Enums.TryParse<DescribedStatus>("active", ignoreCase: true, out DescribedStatus parsed));
         Assert.AreEqual(DescribedStatus.Active, parsed);
 
         Assert.IsFalse(Enums.TryParse<DescribedStatus>("active", ignoreCase: false, out _));
@@ -96,10 +96,10 @@ public sealed class EnumsTests
     [TestMethod]
     public void TryParseDescription_WhenTextMatches_ShouldResolveValue()
     {
-        Assert.IsTrue(Enums.TryParseDescription<DescribedStatus>("Is Active", out var byDescription));
+        Assert.IsTrue(Enums.TryParseDescription<DescribedStatus>("Is Active", out DescribedStatus byDescription));
         Assert.AreEqual(DescribedStatus.Active, byDescription);
 
-        Assert.IsTrue(Enums.TryParseDescription<DescribedStatus>("Pend", out var byDisplay));
+        Assert.IsTrue(Enums.TryParseDescription<DescribedStatus>("Pend", out DescribedStatus byDisplay));
         Assert.AreEqual(DescribedStatus.Pending, byDisplay);
 
         Assert.IsFalse(Enums.TryParseDescription<DescribedStatus>("unknown", out _));
@@ -112,7 +112,7 @@ public sealed class EnumsTests
     [TestMethod]
     public void TryParseDescription_WhenDescriptionIsDuplicated_ShouldResolveFirstDeclaringValue()
     {
-        Assert.IsTrue(Enums.TryParseDescription<DuplicateDescribed>("Shared", out var resolved));
+        Assert.IsTrue(Enums.TryParseDescription<DuplicateDescribed>("Shared", out DuplicateDescribed resolved));
         Assert.AreEqual(DuplicateDescribed.First, resolved);
     }
 }

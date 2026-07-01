@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncDebouncerTests.Dispose.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public sealed partial class AsyncDebouncerTests
     public void Dispose_WhenPending_ShouldNotRunCallback()
     {
         var time = new FakeTimeProvider();
-        var runs = 0;
+        int runs = 0;
         var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), _ =>
         {
             Interlocked.Increment(ref runs);
@@ -50,7 +50,7 @@ public sealed partial class AsyncDebouncerTests
         var time = new FakeTimeProvider();
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var ended = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var canceledObserved = false;
+        bool canceledObserved = false;
 
         var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), async ct =>
         {

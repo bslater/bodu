@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TrieSetTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -193,7 +193,7 @@ public sealed class TrieSetTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (var _ in sut)
+            foreach (string _ in sut)
                 sut.Add("c");
         });
     }
@@ -223,7 +223,7 @@ public sealed class TrieSetTests
         var sut = new Trie();
         const int n = 20_000;
 
-        for (var i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
             Assert.IsTrue(sut.Add($"key-{i:D6}"));
 
         Assert.AreEqual(n, sut.Count);

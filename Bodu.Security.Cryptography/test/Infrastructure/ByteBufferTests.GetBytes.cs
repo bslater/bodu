@@ -42,7 +42,7 @@ public partial class ByteBufferTests
     {
         var buffer = new ByteBuffer(3);
         buffer.Add([1], 0, 1);
-        Assert.ThrowsExactly<InvalidOperationException>(() => buffer.GetBytes());
+        Assert.ThrowsExactly<InvalidOperationException>(buffer.GetBytes);
     }
 
     /// <summary>
@@ -54,6 +54,6 @@ public partial class ByteBufferTests
         var buffer = new ByteBuffer(2);
         buffer.Add([1, 2], 0, 2);
         byte[] _ = buffer.GetBytes(); // OK
-        Assert.ThrowsExactly<InvalidOperationException>(() => buffer.GetBytes());
+        Assert.ThrowsExactly<InvalidOperationException>(buffer.GetBytes);
     }
 }

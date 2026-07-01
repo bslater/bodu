@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Indexer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Indexer_WhenKeyExists_ShouldReturnValue()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.AreEqual(2, dictionary["b"]);
     }
@@ -25,7 +25,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Indexer_WhenKeyMissing_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
@@ -39,7 +39,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Indexer_WhenAssigningNewKey_ShouldAppendToEnd()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         dictionary["d"] = 4;
 
@@ -52,7 +52,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Indexer_WhenAssigningExistingKey_ForInsertionOrder_ShouldUpdateValueInPlace()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         dictionary["a"] = 99;
 
@@ -68,7 +68,7 @@ public partial class SequencedDictionaryTests
     {
         var dictionary = new SequencedDictionary<string, int>();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             dictionary[null!] = 1;
         });

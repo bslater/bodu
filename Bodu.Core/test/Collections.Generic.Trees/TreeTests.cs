@@ -26,9 +26,9 @@ public sealed class TreeTests
     private static Tree<int> BuildSample()
     {
         var root = new Tree<int>(1);
-        var two = root.AddChild(2);
+        Tree<int> two = root.AddChild(2);
         root.AddChild(3);
-        var four = root.AddChild(4);
+        Tree<int> four = root.AddChild(4);
         two.AddChild(5);
         two.AddChild(6);
         four.AddChild(7);
@@ -44,7 +44,7 @@ public sealed class TreeTests
     {
         var root = new Tree<string>("root");
 
-        var child = root.AddChild("child");
+        Tree<string> child = root.AddChild("child");
 
         Assert.AreEqual(1, root.ChildCount);
         Assert.AreSame(root, child.Parent);
@@ -80,7 +80,7 @@ public sealed class TreeTests
     [TestMethod]
     public void PreOrder_WhenTraversed_ShouldVisitNodeBeforeChildren()
     {
-        var root = BuildSample();
+        Tree<int> root = BuildSample();
 
         CollectionAssert.AreEqual(new[] { 1, 2, 5, 6, 3, 4, 7 }, root.PreOrder().Select(n => n.Value).ToArray());
     }
@@ -91,7 +91,7 @@ public sealed class TreeTests
     [TestMethod]
     public void PostOrder_WhenTraversed_ShouldVisitChildrenBeforeNode()
     {
-        var root = BuildSample();
+        Tree<int> root = BuildSample();
 
         CollectionAssert.AreEqual(new[] { 5, 6, 2, 3, 7, 4, 1 }, root.PostOrder().Select(n => n.Value).ToArray());
     }
@@ -102,7 +102,7 @@ public sealed class TreeTests
     [TestMethod]
     public void LevelOrder_WhenTraversed_ShouldVisitBreadthFirst()
     {
-        var root = BuildSample();
+        Tree<int> root = BuildSample();
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5, 6, 7 }, root.LevelOrder().Select(n => n.Value).ToArray());
     }
@@ -113,7 +113,7 @@ public sealed class TreeTests
     [TestMethod]
     public void Descendants_WhenEnumerated_ShouldExcludeSelf()
     {
-        var root = BuildSample();
+        Tree<int> root = BuildSample();
 
         CollectionAssert.AreEqual(new[] { 2, 5, 6, 3, 4, 7 }, root.Descendants().Select(n => n.Value).ToArray());
     }
@@ -124,8 +124,8 @@ public sealed class TreeTests
     [TestMethod]
     public void Ancestors_WhenEnumerated_ShouldWalkToRoot()
     {
-        var root = BuildSample();
-        var seven = root.PreOrder().First(n => n.Value == 7);
+        Tree<int> root = BuildSample();
+        Tree<int> seven = root.PreOrder().First(n => n.Value == 7);
 
         CollectionAssert.AreEqual(new[] { 4, 1 }, seven.Ancestors().Select(n => n.Value).ToArray());
     }
@@ -136,7 +136,7 @@ public sealed class TreeTests
     [TestMethod]
     public void Leaves_WhenEnumerated_ShouldReturnChildlessNodes()
     {
-        var root = BuildSample();
+        Tree<int> root = BuildSample();
 
         CollectionAssert.AreEqual(new[] { 5, 6, 3, 7 }, root.Leaves().Select(n => n.Value).ToArray());
     }
@@ -147,8 +147,8 @@ public sealed class TreeTests
     [TestMethod]
     public void Root_WhenCalledOnDescendant_ShouldReturnTopmostAncestor()
     {
-        var root = BuildSample();
-        var seven = root.PreOrder().First(n => n.Value == 7);
+        Tree<int> root = BuildSample();
+        Tree<int> seven = root.PreOrder().First(n => n.Value == 7);
 
         Assert.AreSame(root, seven.Root());
     }
@@ -159,9 +159,9 @@ public sealed class TreeTests
     [TestMethod]
     public void DepthAndHeight_WhenQueried_ShouldCountEdges()
     {
-        var root = BuildSample();
-        var seven = root.PreOrder().First(n => n.Value == 7);
-        var five = root.PreOrder().First(n => n.Value == 5);
+        Tree<int> root = BuildSample();
+        Tree<int> seven = root.PreOrder().First(n => n.Value == 7);
+        Tree<int> five = root.PreOrder().First(n => n.Value == 5);
 
         Assert.AreEqual(0, root.Depth);
         Assert.AreEqual(2, seven.Depth);
@@ -175,8 +175,8 @@ public sealed class TreeTests
     [TestMethod]
     public void IsRootAndIsLeaf_WhenQueried_ShouldReflectPosition()
     {
-        var root = BuildSample();
-        var three = root.PreOrder().First(n => n.Value == 3);
+        Tree<int> root = BuildSample();
+        Tree<int> three = root.PreOrder().First(n => n.Value == 3);
 
         Assert.IsTrue(root.IsRoot);
         Assert.IsFalse(root.IsLeaf);
@@ -234,7 +234,7 @@ public sealed class TreeTests
     public void AddChild_WhenCreatingCycle_ShouldThrowInvalidOperationException()
     {
         var root = new Tree<int>(1);
-        var child = root.AddChild(2);
+        Tree<int> child = root.AddChild(2);
 
         Assert.ThrowsExactly<InvalidOperationException>(() => child.AddChild(root));
         Assert.ThrowsExactly<InvalidOperationException>(() => root.AddChild(root));
@@ -247,7 +247,7 @@ public sealed class TreeTests
     public void RemoveChild_WhenChildPresent_ShouldDetachAndClearParent()
     {
         var root = new Tree<int>(1);
-        var child = root.AddChild(2);
+        Tree<int> child = root.AddChild(2);
 
         Assert.IsTrue(root.RemoveChild(child));
         Assert.IsNull(child.Parent);
@@ -273,7 +273,7 @@ public sealed class TreeTests
     public void Remove_WhenNodeHasParent_ShouldDetachOtherwiseReturnFalse()
     {
         var root = new Tree<int>(1);
-        var child = root.AddChild(2);
+        Tree<int> child = root.AddChild(2);
 
         Assert.IsTrue(child.Remove());
         Assert.IsNull(child.Parent);
@@ -287,8 +287,8 @@ public sealed class TreeTests
     [TestMethod]
     public void Clear_WhenChildrenPresent_ShouldDetachAll()
     {
-        var root = BuildSample();
-        var children = root.Children.ToArray();
+        Tree<int> root = BuildSample();
+        Tree<int>[] children = root.Children.ToArray();
 
         root.Clear();
 
@@ -305,8 +305,8 @@ public sealed class TreeTests
     {
         const int depth = 100_000;
         var root = new Tree<int>(0);
-        var current = root;
-        for (var i = 1; i <= depth; i++)
+        Tree<int> current = root;
+        for (int i = 1; i <= depth; i++)
             current = current.AddChild(i);
 
         Assert.HasCount(depth + 1, root.PreOrder());
@@ -335,9 +335,9 @@ public sealed class TreeTests
     public void Children_WhenChildrenChange_ShouldReflectLiveState()
     {
         var root = new Tree<int>(0);
-        var children = root.Children;
+        IReadOnlyList<Tree<int>> children = root.Children;
 
-        var child = root.AddChild(1);
+        Tree<int> child = root.AddChild(1);
         Assert.HasCount(1, children);
 
         root.RemoveChild(child);

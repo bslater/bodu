@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
-using System.Text;
 using Bodu.Text.Yaml.Document;
 using Bodu.Text.Yaml.Writer;
 
@@ -28,7 +27,7 @@ public partial class Utf8YamlWriterTests
     [DataRow("--- n")]
     public void WriteString_WhenResemblesDocumentMarker_ShouldQuoteSoItRoundTrips(string value)
     {
-        var yaml = Write((ref Utf8YamlWriter w) => w.WriteString(value));
+        string yaml = Write((ref Utf8YamlWriter w) => w.WriteString(value));
 
         using var doc = YamlDocument.Parse(yaml);
         Assert.AreEqual(YamlValueKind.String, doc.RootElement.ValueKind, yaml);
@@ -39,7 +38,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteString_WhenAmbiguous_ShouldQuote()
     {
-        var yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((ref Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("a");
@@ -58,7 +57,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteString_WhenSpecialCharacters_ShouldEscape()
     {
-        var yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((ref Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("text");
@@ -104,8 +103,8 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteString_WhenControlCharacter_ShouldEscapeAsHex()
     {
-        var value = "a" + (char)0x01 + "b";
-        var yaml = Write((ref Utf8YamlWriter w) =>
+        string value = "a" + (char)0x01 + "b";
+        string yaml = Write((ref Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("c");

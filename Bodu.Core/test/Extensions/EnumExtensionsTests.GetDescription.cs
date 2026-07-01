@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EnumExtensionsTests.GetDescription.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,10 +44,10 @@ public partial class EnumExtensionsTests
     [TestMethod]
     public void TryGetDescription_WhenAttributePresentOrAbsent_ShouldReportOutcome()
     {
-        Assert.IsTrue(DescribedStatus.Active.TryGetDescription(out var described));
+        Assert.IsTrue(DescribedStatus.Active.TryGetDescription(out string? described));
         Assert.AreEqual("Is Active", described);
 
-        Assert.IsFalse(DescribedStatus.Plain.TryGetDescription(out var fallback));
+        Assert.IsFalse(DescribedStatus.Plain.TryGetDescription(out string? fallback));
         Assert.AreEqual("Plain", fallback);
     }
 
@@ -61,7 +61,7 @@ public partial class EnumExtensionsTests
         Assert.AreEqual("Can Read", DescribedFlags.Read.GetDescription());
         Assert.AreEqual("Everything", DescribedFlags.All.GetDescription());
 
-        var composite = DescribedFlags.Read | DescribedFlags.Write;
+        DescribedFlags composite = DescribedFlags.Read | DescribedFlags.Write;
         Assert.AreEqual(composite.ToString(), composite.GetDescription());
     }
 
@@ -72,7 +72,7 @@ public partial class EnumExtensionsTests
     [TestMethod]
     public void GetDisplayName_WhenUndeclaredCompositeFlags_ShouldFallBackToToString()
     {
-        var composite = DescribedFlags.Read | DescribedFlags.Execute;
+        DescribedFlags composite = DescribedFlags.Read | DescribedFlags.Execute;
 
         Assert.AreEqual(composite.ToString(), composite.GetDisplayName());
     }

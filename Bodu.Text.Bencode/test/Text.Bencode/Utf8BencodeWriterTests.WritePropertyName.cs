@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
-using System.Text;
 using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Writer;
 

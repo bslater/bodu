@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundFileTests.Streaming.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,11 +26,11 @@ public partial class CompoundFileTests
     {
         Dictionary<string, string> buffered;
         using (MemoryStream bufferedSource = CompoundFixtures.OpenReference(kat.RelativePath))
-        using (CompoundFile file = CompoundFile.Open(bufferedSource))
+        using (var file = CompoundFile.Open(bufferedSource))
             buffered = HashStreams(file.RootStorage);
 
         using MemoryStream streamingSource = CompoundFixtures.OpenReference(kat.RelativePath);
-        using CompoundFile streaming = CompoundFile.Open(streamingSource, buffered: false);
+        using var streaming = CompoundFile.Open(streamingSource, buffered: false);
         Dictionary<string, string> actual = HashStreams(streaming.RootStorage);
 
         CollectionAssert.AreEquivalent(buffered.Keys.ToList(), actual.Keys.ToList());
@@ -46,7 +46,7 @@ public partial class CompoundFileTests
     public void Open_WhenStreamingAndReadInChunks_ShouldMatchMaterialized()
     {
         using MemoryStream source = CompoundFixtures.OpenReference("valid/clean.dat");
-        using CompoundFile file = CompoundFile.Open(source, buffered: false);
+        using var file = CompoundFile.Open(source, buffered: false);
 
         foreach ((CompoundStorage storage, CompoundEntryInfo info) in EnumerateAllStreams(file.RootStorage))
         {

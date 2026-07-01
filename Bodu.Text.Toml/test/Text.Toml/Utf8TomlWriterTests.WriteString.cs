@@ -5,9 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
-using System.Text;
 using Bodu.Test.Assertions;
-using Bodu.Text.Toml.Reader;
 using Bodu.Text.Toml.Writer;
 
 namespace Bodu.Text.Toml;

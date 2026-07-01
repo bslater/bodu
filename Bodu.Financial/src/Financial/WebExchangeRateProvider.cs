@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 

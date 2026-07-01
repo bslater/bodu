@@ -6,7 +6,6 @@
 
 using System.Text;
 using Bodu.Text.Configuration;
-using Bodu.Text.Ini;
 using Microsoft.Extensions.Configuration;
 
 namespace Bodu.Extensions.Configuration.Text;

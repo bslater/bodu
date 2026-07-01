@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Bodu.Financial.DependencyInjection;
 
 /// <summary>

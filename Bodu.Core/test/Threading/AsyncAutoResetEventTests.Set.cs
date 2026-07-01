@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncAutoResetEventTests.Set.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,12 +16,12 @@ public sealed partial class AsyncAutoResetEventTests
     public async Task Set_WhenTwoWaiters_ShouldReleaseExactlyOne()
     {
         var sut = new AsyncAutoResetEvent();
-        var first = sut.WaitAsync().AsTask();
-        var second = sut.WaitAsync().AsTask();
+        Task first = sut.WaitAsync().AsTask();
+        Task second = sut.WaitAsync().AsTask();
 
         sut.Set();
 
-        var completed = await Task.WhenAny(first, second);
+        Task completed = await Task.WhenAny(first, second);
         await completed;
 
         Assert.AreEqual(1, (first.IsCompleted ? 1 : 0) + (second.IsCompleted ? 1 : 0));
@@ -74,9 +74,9 @@ public sealed partial class AsyncAutoResetEventTests
             }
         }
 
-        var first = Waiter(1);
+        Task first = Waiter(1);
         await Task.Delay(20);
-        var second = Waiter(2);
+        Task second = Waiter(2);
         await Task.Delay(20);
 
         sut.Set();
@@ -96,9 +96,9 @@ public sealed partial class AsyncAutoResetEventTests
         var sut = new AsyncAutoResetEvent();
         using var cts = new CancellationTokenSource();
 
-        var canceled = sut.WaitAsync(cts.Token);
+        ValueTask canceled = sut.WaitAsync(cts.Token);
         await Task.Delay(20);
-        var live = sut.WaitAsync();
+        ValueTask live = sut.WaitAsync();
 
         cts.Cancel();
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceled);

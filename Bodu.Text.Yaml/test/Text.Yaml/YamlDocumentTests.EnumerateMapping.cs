@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlDocumentTests.EnumerateMapping.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class YamlDocumentTests
     {
         using var doc = YamlDocument.Parse("a: 1\nb: 2\nc: 3\n");
         var keys = new List<string>();
-        foreach (var pair in doc.RootElement.EnumerateMapping())
+        foreach (YamlProperty pair in doc.RootElement.EnumerateMapping())
             keys.Add(pair.Name);
 
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, keys);

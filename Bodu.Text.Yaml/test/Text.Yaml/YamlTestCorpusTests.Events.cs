@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlTestCorpusTests.Events.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,10 +32,10 @@ public partial class YamlTestCorpusTests
     [TestCategory("Regression")]
     public void Events_WhenSupportedValidCase_ShouldMatchEventShape(YamlTestVector kat)
     {
-        if (!TryGetComparableEventShape(kat, out var expectedShape))
+        if (!TryGetComparableEventShape(kat, out List<string>? expectedShape))
             return;
 
-        var actualShape = ReaderShape(kat.Yaml);
+        List<string> actualShape = ReaderShape(kat.Yaml);
         CollectionAssert.AreEqual(
             expectedShape,
             actualShape,
@@ -50,7 +50,7 @@ public partial class YamlTestCorpusTests
     [TestCategory("Regression")]
     public void Events_ComparableSubset_ShouldCoverMostSupportedCases()
     {
-        var comparable = YamlTestCorpusReader.LoadByCategory("SupportedPass")
+        int comparable = YamlTestCorpusReader.LoadByCategory("SupportedPass")
             .Count(kat => TryGetComparableEventShape(kat, out _));
 
         Assert.IsTrue(
@@ -69,7 +69,7 @@ public partial class YamlTestCorpusTests
     {
         shape = [];
 
-        var eventPath = Path.Combine(YamlTestCorpusReader.VectorDirectory(kat.Id), "test.event");
+        string eventPath = Path.Combine(YamlTestCorpusReader.VectorDirectory(kat.Id), "test.event");
         if (!File.Exists(eventPath))
             return false;
 
@@ -77,11 +77,11 @@ public partial class YamlTestCorpusTests
         if (kat.Json is null || Encoding.UTF8.GetString(kat.Json).Trim().Length == 0)
             return false;
 
-        var hasAlias = false;
-        var documentCount = 0;
-        foreach (var raw in File.ReadLines(eventPath))
+        bool hasAlias = false;
+        int documentCount = 0;
+        foreach (string raw in File.ReadLines(eventPath))
         {
-            var line = raw.AsSpan().Trim();
+            ReadOnlySpan<char> line = raw.AsSpan().Trim();
             if (line.Length == 0)
                 continue;
 

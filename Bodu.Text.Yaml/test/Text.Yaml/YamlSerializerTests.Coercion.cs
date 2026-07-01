@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializerTests.Coercion.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenIntegralFloatIntoInteger_ShouldSucceed()
     {
-        var value = YamlSerializer.Deserialize<int>("3.0\n");
+        int value = YamlSerializer.Deserialize<int>("3.0\n");
 
         Assert.AreEqual(3, value);
     }
@@ -42,10 +42,10 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenDecimal_ShouldRoundTripExactly()
     {
-        var original = decimal.MaxValue;
+        decimal original = decimal.MaxValue;
 
-        var yaml = YamlSerializer.Serialize(original);
-        var value = YamlSerializer.Deserialize<decimal>(yaml);
+        string yaml = YamlSerializer.Serialize(original);
+        decimal value = YamlSerializer.Deserialize<decimal>(yaml);
 
         Assert.AreEqual(original, value);
     }
@@ -58,8 +58,8 @@ public partial class YamlSerializerTests
     {
         const decimal Original = 0.1m + 0.2m;
 
-        var yaml = YamlSerializer.Serialize(Original);
-        var value = YamlSerializer.Deserialize<decimal>(yaml);
+        string yaml = YamlSerializer.Serialize(Original);
+        decimal value = YamlSerializer.Deserialize<decimal>(yaml);
 
         Assert.AreEqual(0.3m, value);
     }
@@ -70,10 +70,10 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenLargeUInt64_ShouldRoundTripExactly()
     {
-        var original = ulong.MaxValue;
+        ulong original = ulong.MaxValue;
 
-        var yaml = YamlSerializer.Serialize(original);
-        var value = YamlSerializer.Deserialize<ulong>(yaml);
+        string yaml = YamlSerializer.Serialize(original);
+        ulong value = YamlSerializer.Deserialize<ulong>(yaml);
 
         Assert.AreEqual(original, value);
     }
@@ -97,7 +97,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenSingleCharIntoChar_ShouldSucceed()
     {
-        var value = YamlSerializer.Deserialize<char>("a\n");
+        char value = YamlSerializer.Deserialize<char>("a\n");
 
         Assert.AreEqual('a', value);
     }

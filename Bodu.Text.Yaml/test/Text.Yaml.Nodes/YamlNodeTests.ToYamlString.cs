@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Yaml;
-using Bodu.Text.Yaml.Nodes;
-
 namespace Bodu.Text.Yaml.Nodes;
 
 /// <summary>

@@ -51,7 +51,7 @@ logging.level.default = Debug
         using ManualResetEventSlim signal = new(initialState: false);
         using IDisposable registration = Microsoft.Extensions.Primitives.ChangeToken.OnChange(
             configuration.GetReloadToken,
-            () => signal.Set());
+            signal.Set);
 
         // Ensure the next write has a clearly newer mtime than the original.
         Thread.Sleep(50);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.TryRemoveLast.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void TryRemoveLast_WhenPopulated_ShouldRemoveAndReturnTailEntry()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         bool removed = dictionary.TryRemoveLast(out KeyValuePair<string, int> entry);
 
@@ -44,7 +44,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void TryRemoveLast_WhenCalledRepeatedly_ShouldDrainInReverseOrder()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         var drained = new List<string>();
         while (dictionary.TryRemoveLast(out KeyValuePair<string, int> entry))

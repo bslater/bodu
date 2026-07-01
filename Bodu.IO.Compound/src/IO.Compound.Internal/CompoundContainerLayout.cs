@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundContainerLayout.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -200,7 +200,7 @@ internal static class CompoundContainerLayout
     /// <exception cref="CompoundFileSerializationException">Thrown when the nesting depth is exceeded.</exception>
     private static void AssignChildren(CompoundStorageBuilder storage, int sid, int depth, int maxDepth, List<Entry> entries)
     {
-        List<CompoundEntryBuilder> children = storage.Values.ToList();
+        var children = storage.Values.ToList();
         if (children.Count == 0)
             return;
 

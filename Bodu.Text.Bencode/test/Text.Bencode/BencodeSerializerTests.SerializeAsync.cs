@@ -4,19 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers;
-using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
-using System.Reflection;
-using System.Text;
-using Bodu.Test.Assertions;
 using Bodu.Test.IO;
-using Bodu.Test.Kat;
-using Bodu.Text.Bencode.Document;
-using Bodu.Text.Bencode.Nodes;
-using Bodu.Text.Bencode.Reader;
-using Bodu.Text.Bencode.Serialization;
-using Bodu.Text.Bencode.Writer;
 
 namespace Bodu.Text.Bencode;
 

@@ -41,14 +41,14 @@ internal sealed class FakeTimeProvider
         {
             _ticks += delta.Ticks;
             now = _ticks;
-            foreach (var timer in _timers)
+            foreach (FakeTimer timer in _timers)
             {
                 if (timer.IsScheduled && timer.DueTicks <= now)
                     due.Add(timer);
             }
         }
 
-        foreach (var timer in due)
+        foreach (FakeTimer timer in due)
             timer.Fire();
     }
 

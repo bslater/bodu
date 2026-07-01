@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncDebouncerTests.Ctor.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public sealed partial class AsyncDebouncerTests
     public void Ctor_WhenDelayIsZero_ShouldRunCallbackOnTimerElapsed()
     {
         var time = new FakeTimeProvider();
-        var runs = 0;
+        int runs = 0;
         using var sut = new AsyncDebouncer(TimeSpan.Zero, _ =>
         {
             Interlocked.Increment(ref runs);

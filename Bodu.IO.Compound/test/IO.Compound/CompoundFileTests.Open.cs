@@ -111,7 +111,7 @@ public partial class CompoundFileTests
             using (MemoryStream source = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound))
                 File.WriteAllBytes(path, source.ToArray());
 
-            using CompoundFile file = CompoundFile.OpenRead(path);
+            using var file = CompoundFile.OpenRead(path);
 
             Assert.AreEqual(FileAccess.Read, file.Access);
             Assert.IsNotEmpty(file.RootStorage.EnumerateEntries());
@@ -145,7 +145,7 @@ public partial class CompoundFileTests
             using (MemoryStream source = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound))
                 File.WriteAllBytes(path, source.ToArray());
 
-            using CompoundFile file = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
+            using var file = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
 
             Assert.AreEqual(FileAccess.Read, file.Access);
             Assert.IsNotEmpty(file.RootStorage.EnumerateEntries());
@@ -167,7 +167,7 @@ public partial class CompoundFileTests
         byte[] payload = [1, 2, 3, 4, 5];
         try
         {
-            using (CompoundFile file = CompoundFile.Open(path, FileMode.Create, FileAccess.ReadWrite))
+            using (var file = CompoundFile.Open(path, FileMode.Create, FileAccess.ReadWrite))
             {
                 using (CompoundStream stream = file.RootStorage.CreateStream("Data"))
                     stream.Write(payload, 0, payload.Length);
@@ -175,7 +175,7 @@ public partial class CompoundFileTests
                 file.Commit();
             }
 
-            using CompoundFile reopened = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
+            using var reopened = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
             using CompoundStream read = reopened.RootStorage.OpenStream("Data");
 
             CollectionAssert.AreEqual(payload, read.ReadAllBytes());
@@ -196,19 +196,19 @@ public partial class CompoundFileTests
         string path = Path.Combine(Path.GetTempPath(), $"bodu-updatepath-{Guid.NewGuid():N}.cfb");
         try
         {
-            using (CompoundFile file = CompoundFile.Open(path, FileMode.Create, FileAccess.ReadWrite))
+            using (var file = CompoundFile.Open(path, FileMode.Create, FileAccess.ReadWrite))
             {
                 file.RootStorage.CreateStream("Original", new byte[] { 9 });
                 file.Commit();
             }
 
-            using (CompoundFile file = CompoundFile.Open(path, FileMode.Open, FileAccess.ReadWrite))
+            using (var file = CompoundFile.Open(path, FileMode.Open, FileAccess.ReadWrite))
             {
                 file.RootStorage.CreateStream("Added", new byte[] { 8 });
                 file.Commit();
             }
 
-            using CompoundFile reopened = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
+            using var reopened = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);
             Assert.IsTrue(reopened.RootStorage.TryOpenStream("Original", out _));
             Assert.IsTrue(reopened.RootStorage.TryOpenStream("Added", out _));
         }

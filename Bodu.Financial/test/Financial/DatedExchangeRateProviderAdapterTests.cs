@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test.Assertions;
-
 namespace Bodu.Financial;
 
 [TestClass]

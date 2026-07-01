@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HpkeSender.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -61,7 +61,7 @@ public sealed class HpkeSender : IDisposable
         ThrowHelper.ThrowIfNull(suite);
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, suite.KemAlgorithm.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
 
-        var (sharedSecret, enc) = suite.KemAlgorithm.Encapsulate(recipientPublicKey);
+        (byte[]? sharedSecret, byte[]? enc) = suite.KemAlgorithm.Encapsulate(recipientPublicKey);
 
         try
         {
@@ -95,7 +95,7 @@ public sealed class HpkeSender : IDisposable
         ThrowHelper.ThrowIfNull(suite);
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, suite.KemAlgorithm.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
 
-        var (sharedSecret, enc) = suite.KemAlgorithm.Encapsulate(recipientPublicKey);
+        (byte[]? sharedSecret, byte[]? enc) = suite.KemAlgorithm.Encapsulate(recipientPublicKey);
 
         try
         {
@@ -132,7 +132,7 @@ public sealed class HpkeSender : IDisposable
         ThrowHelper.ThrowIfNull(senderKey);
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, suite.KemAlgorithm.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
 
-        var (sharedSecret, enc) = AuthEncapsulate(suite, recipientPublicKey, senderKey);
+        (byte[]? sharedSecret, byte[]? enc) = AuthEncapsulate(suite, recipientPublicKey, senderKey);
 
         try
         {
@@ -172,7 +172,7 @@ public sealed class HpkeSender : IDisposable
         ThrowHelper.ThrowIfNull(senderKey);
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(recipientPublicKey, suite.KemAlgorithm.PublicKeySizeInBytes, "X25519 public", nameof(recipientPublicKey));
 
-        var (sharedSecret, enc) = AuthEncapsulate(suite, recipientPublicKey, senderKey);
+        (byte[]? sharedSecret, byte[]? enc) = AuthEncapsulate(suite, recipientPublicKey, senderKey);
 
         try
         {

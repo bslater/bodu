@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlNode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -127,13 +127,13 @@ public abstract class YamlNode
                 return YamlValue.Create(element.GetString());
             case YamlValueKind.Sequence:
                 var array = new YamlArray();
-                foreach (var item in element.EnumerateSequence())
+                foreach (YamlElement item in element.EnumerateSequence())
                     array.Add(FromElement(item));
 
                 return array;
             default:
                 var obj = new YamlObject();
-                foreach (var pair in element.EnumerateMapping())
+                foreach (YamlProperty pair in element.EnumerateMapping())
                     obj[pair.Name] = FromElement(pair.Value);
 
                 return obj;

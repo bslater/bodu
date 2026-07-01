@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Ini;
-
 namespace Bodu.Text.Configuration;
 
 /// <summary>

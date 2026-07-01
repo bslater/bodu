@@ -82,10 +82,7 @@ public partial class MultiValueDictionaryTests
 
         if (view is ICollection<int> collection)
         {
-            Assert.ThrowsExactly<NotSupportedException>(() =>
-            {
-                collection.Clear();
-            });
+            Assert.ThrowsExactly<NotSupportedException>(collection.Clear);
         }
 
         Assert.AreEqual(1, mvd.Count);

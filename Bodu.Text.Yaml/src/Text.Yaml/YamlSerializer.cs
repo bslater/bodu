@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -50,7 +50,7 @@ public static partial class YamlSerializer
     public static string Serialize(object? value, Type inputType, YamlSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(inputType);
-        var o = options ?? s_defaultOptions;
+        YamlSerializerOptions o = options ?? s_defaultOptions;
         o.MakeReadOnly();
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8YamlWriter(buffer);
@@ -81,8 +81,8 @@ public static partial class YamlSerializer
                 CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlNestingTooDeep, options.EffectiveMaxDepth));
         }
 
-        var runtimeType = value.GetType();
-        var converter = options.GetConverter(runtimeType) ?? options.GetConverter(declaredType);
+        Type runtimeType = value.GetType();
+        YamlConverter? converter = options.GetConverter(runtimeType) ?? options.GetConverter(declaredType);
         if (converter is not null)
         {
             converter.WriteAsObject(ref writer, value, options);
@@ -169,7 +169,7 @@ public static partial class YamlSerializer
         var seen = new HashSet<string>(StringComparer.Ordinal);
         foreach (DictionaryEntry entry in dictionary)
         {
-            var key = Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty;
+            string key = Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty;
             if (!seen.Add(key))
             {
                 throw new YamlSerializationException(string.Format(
@@ -194,7 +194,7 @@ public static partial class YamlSerializer
     private static void WriteSequence(ref Utf8YamlWriter writer, IEnumerable enumerable, YamlSerializerOptions options, int depth)
     {
         writer.WriteStartSequence();
-        foreach (var item in enumerable)
+        foreach (object? item in enumerable)
             WriteValue(ref writer, item, item?.GetType() ?? typeof(object), options, depth + 1);
 
         writer.WriteEndSequence();
@@ -216,13 +216,13 @@ public static partial class YamlSerializer
         YamlSerializerOptions options,
         int depth)
     {
-        var members = YamlMemberInfo.ForType(type, options.IncludeFields);
+        YamlMemberInfo[] members = YamlMemberInfo.ForType(type, options.IncludeFields);
         YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
 
         writer.WriteStartMapping();
-        foreach (var member in members)
+        foreach (YamlMemberInfo member in members)
         {
-            var memberValue = member.Get(value);
+            object? memberValue = member.Get(value);
             if (options.IgnoreNullValues && memberValue is null)
                 continue;
 

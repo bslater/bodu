@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
-
 namespace Bodu.Formats.Excel;
 
 public partial class ExcelWorksheetReaderTests
@@ -21,7 +19,7 @@ public partial class ExcelWorksheetReaderTests
             Biff8TestWorkbook.Number(0, 1, 2.0),
             Biff8TestWorkbook.Number(1, 0, 3.0));
 
-        List<ExcelRow> rows = reader.ReadRows().ToList();
+        var rows = reader.ReadRows().ToList();
 
         Assert.HasCount(2, rows);
         Assert.AreEqual(0, rows[0].RowIndex);

@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Text.Json;
-using Bodu.Financial.Currencies;
-
 namespace Bodu.Financial;
 
 /// <summary>

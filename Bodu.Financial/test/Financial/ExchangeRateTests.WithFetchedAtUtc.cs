@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.Currencies;
-using Bodu.Test;
-using Bodu.Test.Assertions;
 
 namespace Bodu.Financial;
 
@@ -71,7 +69,7 @@ public partial class ExchangeRateTests
     {
         // An inverted rate divides by the original reverse-pair rate; 1/3 is not exactly representable, so a recompute
         // from the rounded public multiplier would drift. The copy must convert identically to the original.
-        ExchangeRate inverted = ExchangeRate.FromObservedRate(CurrencyCode.AUD, CurrencyCode.USD, s_sampleDate, 3m, "RBA", isInverted: true);
+        var inverted = ExchangeRate.FromObservedRate(CurrencyCode.AUD, CurrencyCode.USD, s_sampleDate, 3m, "RBA", isInverted: true);
 
         ExchangeRate copy = inverted.WithFetchedAtUtc(new DateTimeOffset(2024, 1, 3, 9, 30, 0, TimeSpan.Zero));
 

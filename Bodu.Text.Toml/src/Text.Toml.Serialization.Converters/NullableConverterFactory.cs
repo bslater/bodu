@@ -25,9 +25,9 @@ internal sealed class NullableConverterFactory
         ThrowHelper.ThrowIfNull(typeToConvert);
         ThrowHelper.ThrowIfNull(options);
 
-        Type underlying = Nullable.GetUnderlyingType(typeToConvert) !;
+        Type underlying = Nullable.GetUnderlyingType(typeToConvert)!;
         TomlConverter inner = options.GetConverter(underlying);
         Type converterType = typeof(NullableConverter<>).MakeGenericType(underlying);
-        return (TomlConverter)Activator.CreateInstance(converterType, inner) !;
+        return (TomlConverter)Activator.CreateInstance(converterType, inner)!;
     }
 }

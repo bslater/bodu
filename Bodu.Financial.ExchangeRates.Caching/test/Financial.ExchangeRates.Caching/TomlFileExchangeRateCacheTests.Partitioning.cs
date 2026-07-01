@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlFileExchangeRateCacheTests.Partitioning.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -126,7 +126,7 @@ public sealed partial class TomlFileExchangeRateCacheTests
 
         // Store a February row well past the January row's 24-hour freshness, so the merge prunes the stale January row
         // and the reconcile deletes its now-empty partition file.
-        var februaryCachedAt = januaryCachedAt.AddDays(40);
+        DateTimeOffset februaryCachedAt = januaryCachedAt.AddDays(40);
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 2, 6), 0.51m, februaryCachedAt) }, Duration, februaryCachedAt);
 
         Assert.IsFalse(File.Exists(Path.Combine(PairDirectory, "2023-01.toml")), "the pruned January partition file is removed");

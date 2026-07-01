@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncManualResetEventTests.Reset.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public sealed partial class AsyncManualResetEventTests
     public void Reset_WhenAlreadyUnsignaled_ShouldRemainUnsignaled()
     {
         var sut = new AsyncManualResetEvent();
-        var pending = sut.WaitAsync();
+        ValueTask pending = sut.WaitAsync();
 
         sut.Reset();
 
@@ -48,9 +48,9 @@ public sealed partial class AsyncManualResetEventTests
     {
         var sut = new AsyncManualResetEvent();
 
-        for (var i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
-            var pending = sut.WaitAsync();
+            ValueTask pending = sut.WaitAsync();
             Assert.IsFalse(pending.IsCompleted);
 
             sut.Set();

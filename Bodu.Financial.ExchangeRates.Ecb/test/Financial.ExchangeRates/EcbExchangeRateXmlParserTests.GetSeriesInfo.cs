@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.ExchangeRates;

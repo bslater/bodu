@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncSemaphoreTests.Release.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,11 +27,11 @@ public sealed partial class AsyncSemaphoreTests
             order.Add(id);
         }
 
-        var first = Waiter(1);
+        Task first = Waiter(1);
         await Task.Delay(20);
-        var second = Waiter(2);
+        Task second = Waiter(2);
         await Task.Delay(20);
-        var third = Waiter(3);
+        Task third = Waiter(3);
         await Task.Delay(20);
 
         sut.Release();
@@ -52,8 +52,8 @@ public sealed partial class AsyncSemaphoreTests
     {
         var sut = new AsyncSemaphore(0);
 
-        var first = sut.WaitAsync().AsTask();
-        var second = sut.WaitAsync().AsTask();
+        Task first = sut.WaitAsync().AsTask();
+        Task second = sut.WaitAsync().AsTask();
 
         sut.Release(2);
 
@@ -71,8 +71,8 @@ public sealed partial class AsyncSemaphoreTests
         var sut = new AsyncSemaphore(0);
         using var cts = new CancellationTokenSource();
 
-        var canceled = sut.WaitAsync(cts.Token);
-        var live = sut.WaitAsync();
+        ValueTask canceled = sut.WaitAsync(cts.Token);
+        ValueTask live = sut.WaitAsync();
 
         cts.Cancel();
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceled);
@@ -104,7 +104,7 @@ public sealed partial class AsyncSemaphoreTests
     {
         var sut = new AsyncSemaphore(1, 1);
 
-        Assert.ThrowsExactly<InvalidOperationException>(() => sut.Release());
+        Assert.ThrowsExactly<InvalidOperationException>(sut.Release);
     }
 
     /// <summary>

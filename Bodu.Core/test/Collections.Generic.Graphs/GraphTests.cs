@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GraphTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -86,7 +86,7 @@ public sealed class GraphTests
 
         sut.AddEdge(1, 2, 9.0);
 
-        Assert.IsTrue(sut.TryGetEdgeWeight(1, 2, out var weight));
+        Assert.IsTrue(sut.TryGetEdgeWeight(1, 2, out double weight));
         Assert.AreEqual(9.0, weight);
         Assert.AreEqual(1, sut.EdgeCount);
     }
@@ -101,7 +101,7 @@ public sealed class GraphTests
         sut.AddEdge(1, 2, 1.0);
 
         Assert.IsFalse(sut.TryAddEdge(1, 2, 5.0));
-        Assert.IsTrue(sut.TryGetEdgeWeight(1, 2, out var weight));
+        Assert.IsTrue(sut.TryGetEdgeWeight(1, 2, out double weight));
         Assert.AreEqual(1.0, weight);
     }
 
@@ -272,7 +272,7 @@ public sealed class GraphTests
 
         sut.AddEdge(1, 2, 0.0);
 
-        Assert.IsTrue(sut.TryGetEdgeWeight(1, 2, out var weight));
+        Assert.IsTrue(sut.TryGetEdgeWeight(1, 2, out double weight));
         Assert.AreEqual(0.0, weight);
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Scale.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,7 +41,7 @@ public partial class SequencedDictionaryTests
         for (int i = 0; i < count; i += 2)
             Assert.IsTrue(dictionary.Remove(i));
 
-        var expected = Enumerable.Range(0, count).Where(i => i % 2 == 1).ToArray();
+        int[] expected = Enumerable.Range(0, count).Where(i => i % 2 == 1).ToArray();
         CollectionAssert.AreEqual(expected, dictionary.Keys.ToArray());
     }
 

@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Linq;
 using Bodu.IO.Compound;
 using Bodu.Test;
 
@@ -83,7 +82,7 @@ public partial class ExcelBinaryWorkbookTests
 
         try
         {
-            using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(path);
+            using var workbook = ExcelBinaryWorkbook.OpenRead(path);
             Assert.HasCount(2, workbook.Worksheets);
         }
         finally
@@ -100,7 +99,7 @@ public partial class ExcelBinaryWorkbookTests
     {
         MemoryStream source = ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8);
 
-        using (ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(source, leaveOpen: true))
+        using (var workbook = ExcelBinaryWorkbook.OpenRead(source, leaveOpen: true))
             Assert.HasCount(2, workbook.Worksheets);
 
         // A disposed MemoryStream throws on access; reading the length confirms it is still open.
@@ -116,7 +115,7 @@ public partial class ExcelBinaryWorkbookTests
     {
         MemoryStream source = ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8);
 
-        using (ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(source))
+        using (var workbook = ExcelBinaryWorkbook.OpenRead(source))
             Assert.HasCount(2, workbook.Worksheets);
 
         _ = Assert.ThrowsExactly<ObjectDisposedException>(() => _ = source.Length);
@@ -161,7 +160,7 @@ public partial class ExcelBinaryWorkbookTests
             new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, [Biff8TestWorkbook.Dimensions(0, 1, 0, 1), Biff8TestWorkbook.LabelSst(0, 0, 0)]));
 
         MemoryStream container = new();
-        using (CompoundFile file = CompoundFile.Create(container, leaveOpen: true))
+        using (var file = CompoundFile.Create(container, leaveOpen: true))
         {
             file.RootStorage.CreateStream("Book", new byte[] { 0x09, 0x08, 0x00, 0x00 });
             file.RootStorage.CreateStream("Workbook", workbookBytes);
@@ -169,7 +168,7 @@ public partial class ExcelBinaryWorkbookTests
         }
 
         container.Position = 0;
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(container);
+        using var workbook = ExcelBinaryWorkbook.OpenRead(container);
         Dictionary<(int Row, int Column), ExcelCell> grid = ReadCellGrid(workbook, "Sheet1");
 
         Assert.AreEqual("Only", grid[(0, 0)].StringValue);
@@ -183,7 +182,7 @@ public partial class ExcelBinaryWorkbookTests
     public void OpenRead_WhenNoWorkbookStream_ShouldThrowWorkbookStreamNotFoundException()
     {
         MemoryStream container = new();
-        using (CompoundFile file = CompoundFile.Create(container, leaveOpen: true))
+        using (var file = CompoundFile.Create(container, leaveOpen: true))
         {
             file.RootStorage.CreateStream("NotAWorkbook", new byte[] { 1, 2, 3, 4 });
             file.Commit();

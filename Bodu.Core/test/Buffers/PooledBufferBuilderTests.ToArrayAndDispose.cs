@@ -114,7 +114,7 @@ public partial class PooledBufferBuilderTests
 
             for (int i = 0; i < refs.Length; i++)
             {
-                object item = new object();
+                object item = new();
                 refs[i] = new WeakReference(item);
                 builder.Append(item);
             }

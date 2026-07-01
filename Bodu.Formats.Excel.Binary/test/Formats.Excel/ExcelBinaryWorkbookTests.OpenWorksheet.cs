@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelBinaryWorkbookTests.OpenWorksheet.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -88,7 +88,7 @@ public partial class ExcelBinaryWorkbookTests
             [Biff8TestWorkbook.Sst("Alpha", "Beta")],
             new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, body));
 
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(xls);
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
         Dictionary<(int Row, int Column), ExcelCell> grid = ReadCellGrid(workbook, "Sheet1");
 
         Assert.AreEqual("Beta", grid[(0, 0)].StringValue);
@@ -133,7 +133,7 @@ public partial class ExcelBinaryWorkbookTests
     [TestMethod]
     public void OpenWorksheet_WhenDateDetectionDisabled_ShouldNotFlagDateColumn()
     {
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.Open(
+        using var workbook = ExcelBinaryWorkbook.Open(
             ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8),
             new ExcelBinaryReaderOptions { DetectDateFormats = false });
 

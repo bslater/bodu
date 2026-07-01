@@ -50,7 +50,7 @@ public class CompoundMalformedFixtureTests
     public void Open_WhenFixtureIsRecoverable_ShouldOpenAndEnumerateSafely(CompoundMalformedKat kat)
     {
         using MemoryStream source = CompoundFixtures.OpenReference(kat.RelativePath);
-        using CompoundFile file = CompoundFile.Open(source);
+        using var file = CompoundFile.Open(source);
 
         int count = Enumerate(file.RootStorage);
 

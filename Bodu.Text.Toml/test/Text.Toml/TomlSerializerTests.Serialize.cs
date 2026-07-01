@@ -5,18 +5,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
-using System.Globalization;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Bodu.Test.Assertions;
-using Bodu.Test.IO;
 using Bodu.Test.Kat;
 using Bodu.Text.Toml.Document;
-using Bodu.Text.Toml.Nodes;
-using Bodu.Text.Toml.Reader;
-using Bodu.Text.Toml.Serialization;
-using Bodu.Text.Toml.Writer;
 
 namespace Bodu.Text.Toml;
 

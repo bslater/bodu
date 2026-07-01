@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlElement.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -106,7 +106,7 @@ public readonly partial struct YamlElement
     /// <exception cref="KeyNotFoundException">The key is not present.</exception>
     public YamlElement GetProperty(string propertyName)
     {
-        if (!TryGetProperty(propertyName, out var value))
+        if (!TryGetProperty(propertyName, out YamlElement value))
             throw new KeyNotFoundException();
 
         return value;
@@ -125,7 +125,7 @@ public readonly partial struct YamlElement
         if (ValueKind != YamlValueKind.Mapping)
             throw new InvalidOperationException();
 
-        if (_document.TryGetProperty(_document.Resolve(_index), propertyName, out var row))
+        if (_document.TryGetProperty(_document.Resolve(_index), propertyName, out int row))
         {
             value = new YamlElement(_document, row);
             return true;

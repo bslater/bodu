@@ -1,8 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.Keys.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
 
 namespace Bodu.Collections.Generic;
 
@@ -14,7 +15,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Keys_WhenEnumerated_ShouldYieldKeysInOrder()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, dictionary.Keys.ToArray());
     }
@@ -25,7 +26,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Keys_WhenAccessedRepeatedly_ShouldReturnCachedInstance()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.AreSame(dictionary.Keys, dictionary.Keys);
     }
@@ -36,7 +37,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Keys_WhenDictionaryMutated_ShouldReflectChange()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         ICollection<string> keys = dictionary.Keys;
 
         dictionary.Add("d", 4);
@@ -50,7 +51,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void Keys_WhenAddCalled_ShouldThrowExactly()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
         ICollection<string> keys = dictionary.Keys;
 
         Assert.ThrowsExactly<NotSupportedException>(() =>

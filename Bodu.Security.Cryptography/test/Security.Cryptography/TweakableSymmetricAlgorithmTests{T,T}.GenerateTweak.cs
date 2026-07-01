@@ -32,9 +32,6 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            algorithm.GenerateTweak();
-        });
+        Assert.ThrowsExactly<ObjectDisposedException>(algorithm.GenerateTweak);
     }
 }

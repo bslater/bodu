@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DisjointSetTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -56,11 +56,11 @@ public sealed class DisjointSetTests
     {
         var sut = new DisjointSet(kat.Count);
 
-        foreach (var (a, b) in kat.Unions)
+        foreach ((int a, int b) in kat.Unions)
             sut.Union(a, b);
 
         Assert.AreEqual(kat.ExpectedSetCount, sut.SetCount);
-        foreach (var (a, b, connected) in kat.Connectivity)
+        foreach ((int a, int b, bool connected) in kat.Connectivity)
             Assert.AreEqual(connected, sut.AreConnected(a, b), $"AreConnected({a}, {b})");
     }
 
@@ -74,7 +74,7 @@ public sealed class DisjointSetTests
 
         Assert.AreEqual(5, sut.Count);
         Assert.AreEqual(5, sut.SetCount);
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
             Assert.AreEqual(1, sut.SizeOf(i));
     }
 
@@ -198,7 +198,7 @@ public sealed class DisjointSetTests
         const int n = 200_000;
         var sut = new DisjointSet(n);
 
-        for (var i = 1; i < n; i++)
+        for (int i = 1; i < n; i++)
             sut.Union(i - 1, i);
 
         Assert.AreEqual(1, sut.SetCount);

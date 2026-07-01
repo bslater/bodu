@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="QuotedPrintableTests.IsValid.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -109,7 +109,7 @@ public sealed partial class QuotedPrintableTests
     [TestMethod]
     public void Decode_ShouldRecoverOverlongLine_ThatIsValidRejects()
     {
-        string overlong = new string('A', 200);
+        string overlong = new('A', 200);
 
         byte[] decoded = QuotedPrintable.Decode(overlong.AsSpan());
 

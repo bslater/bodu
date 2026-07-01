@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DisjointSetGenericTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -99,7 +99,7 @@ public sealed class DisjointSetGenericTests
         var sut = new DisjointSet<int>([1, 2]);
         sut.Union(1, 2);
 
-        Assert.IsTrue(sut.TryFind(2, out var rep));
+        Assert.IsTrue(sut.TryFind(2, out int rep));
         Assert.AreEqual(sut.Find(1), rep);
         Assert.IsFalse(sut.TryFind(3, out _));
     }

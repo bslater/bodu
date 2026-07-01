@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CfbDirectory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -89,7 +89,7 @@ internal sealed class CfbDirectory
     private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header, CompoundValidationLevel level)
     {
         int count = directory.Length / DirectoryEntrySize;
-        CfbDirectoryEntry?[] entries = new CfbDirectoryEntry?[count];
+        var entries = new CfbDirectoryEntry?[count];
         bool strict = level == CompoundValidationLevel.Strict;
 
         for (int sid = 0; sid < count; sid++)

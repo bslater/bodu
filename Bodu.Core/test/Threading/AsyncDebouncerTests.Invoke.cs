@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsyncDebouncerTests.Invoke.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class AsyncDebouncerTests
     public void Invoke_WhenQuietPeriodElapses_ShouldRunCallbackOnce()
     {
         var time = new FakeTimeProvider();
-        var runs = 0;
+        int runs = 0;
         using var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), _ =>
         {
             Interlocked.Increment(ref runs);
@@ -38,7 +38,7 @@ public sealed partial class AsyncDebouncerTests
     public void Invoke_WhenTriggeredRepeatedly_ShouldCoalesceIntoOneRun()
     {
         var time = new FakeTimeProvider();
-        var runs = 0;
+        int runs = 0;
         using var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), _ =>
         {
             Interlocked.Increment(ref runs);
@@ -65,7 +65,7 @@ public sealed partial class AsyncDebouncerTests
     public void Invoke_WhenTriggeredAfterRun_ShouldRunCallbackAgain()
     {
         var time = new FakeTimeProvider();
-        var runs = 0;
+        int runs = 0;
         using var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), _ =>
         {
             Interlocked.Increment(ref runs);
@@ -90,6 +90,6 @@ public sealed partial class AsyncDebouncerTests
         var sut = new AsyncDebouncer(TimeSpan.FromSeconds(1), _ => ValueTask.CompletedTask);
         sut.Dispose();
 
-        Assert.ThrowsExactly<ObjectDisposedException>(() => sut.Invoke());
+        Assert.ThrowsExactly<ObjectDisposedException>(sut.Invoke);
     }
 }

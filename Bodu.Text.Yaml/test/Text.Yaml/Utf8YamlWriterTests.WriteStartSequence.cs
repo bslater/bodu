@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers;
-using System.Text;
-using Bodu.Text.Yaml.Document;
 using Bodu.Text.Yaml.Writer;
 
 namespace Bodu.Text.Yaml;
@@ -20,7 +17,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteStartSequence_WhenSequence_ShouldEmitDashes()
     {
-        var yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((ref Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("items");

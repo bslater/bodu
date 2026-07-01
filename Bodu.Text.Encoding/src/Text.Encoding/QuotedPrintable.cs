@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="QuotedPrintable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -224,7 +224,7 @@ public static partial class QuotedPrintable
         string newLine = options.NewLine ?? CrLf;
         normalized = new QuotedPrintableEncodingOptions(options.Mode, maxLineLength, newLine);
 
-        if (options.Mode is not(QuotedPrintableEncodingMode.Binary or QuotedPrintableEncodingMode.Text))
+        if (options.Mode is not (QuotedPrintableEncodingMode.Binary or QuotedPrintableEncodingMode.Text))
         {
             failure = FailureMode;
             return false;
@@ -236,7 +236,7 @@ public static partial class QuotedPrintable
             return false;
         }
 
-        if (newLine is not(CrLf or Lf))
+        if (newLine is not (CrLf or Lf))
         {
             failure = FailureNewLine;
             return false;

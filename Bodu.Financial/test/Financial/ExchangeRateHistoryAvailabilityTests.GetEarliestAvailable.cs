@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateHistoryAvailabilityTests.GetEarliestAvailable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class ExchangeRateHistoryAvailabilityTests
     [TestMethod]
     public void GetEarliestAvailable_WhenRolling_ShouldSubtractWindowFromAsOf()
     {
-        ExchangeRateHistoryAvailability availability = ExchangeRateHistoryAvailability.RollingDays(180);
+        var availability = ExchangeRateHistoryAvailability.RollingDays(180);
         var asOf = new DateOnly(2026, 6, 28);
 
         Assert.AreEqual(asOf.AddDays(-180), availability.GetEarliestAvailable(asOf));
@@ -29,7 +29,7 @@ public partial class ExchangeRateHistoryAvailabilityTests
     public void GetEarliestAvailable_WhenSince_ShouldReturnFixedDate()
     {
         var earliest = new DateOnly(1999, 1, 1);
-        ExchangeRateHistoryAvailability availability = ExchangeRateHistoryAvailability.Since(earliest);
+        var availability = ExchangeRateHistoryAvailability.Since(earliest);
 
         Assert.AreEqual(earliest, availability.GetEarliestAvailable(new DateOnly(2026, 6, 28)));
     }

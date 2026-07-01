@@ -152,7 +152,7 @@ internal static partial class MLDsaEngine
         int[][] hints = CreatePolyVector(k);
         int[] c = new int[N];
         int[] product = new int[N];
-        Span<byte> commitmentHash = signature[.. (parameters.Lambda / 4)];
+        Span<byte> commitmentHash = signature[..(parameters.Lambda / 4)];
         byte[] w1Encoded = new byte[32 * parameters.W1Bits * k];
 
         for (int kappa = 0; ; kappa += l)
@@ -290,9 +290,9 @@ internal static partial class MLDsaEngine
         int zBytes = 32 * parameters.Gamma1Bits;
 
         ReadOnlySpan<byte> rho = publicKey[..32];
-        ReadOnlySpan<byte> commitmentHash = signature[.. (parameters.Lambda / 4)];
+        ReadOnlySpan<byte> commitmentHash = signature[..(parameters.Lambda / 4)];
         ReadOnlySpan<byte> zPacked = signature.Slice(parameters.Lambda / 4, l * zBytes);
-        ReadOnlySpan<byte> hintPacked = signature[((parameters.Lambda / 4) + (l * zBytes)) ..];
+        ReadOnlySpan<byte> hintPacked = signature[((parameters.Lambda / 4) + (l * zBytes))..];
 
         // Decode z and reject ‖z‖∞ ≥ γ₁ − β; reject non-canonical hint encodings.
         int[][] z = CreatePolyVector(l);
@@ -359,10 +359,10 @@ internal static partial class MLDsaEngine
         W1Encode(parameters, w1, w1Encoded);
 
         Span<byte> expectedHash = stackalloc byte[64];
-        KeccakSponge.Shake256(mu, w1Encoded, expectedHash[.. (parameters.Lambda / 4)]);
+        KeccakSponge.Shake256(mu, w1Encoded, expectedHash[..(parameters.Lambda / 4)]);
 
         return System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(
-            commitmentHash, expectedHash[.. (parameters.Lambda / 4)]);
+            commitmentHash, expectedHash[..(parameters.Lambda / 4)]);
     }
 
     /// <summary>
@@ -558,7 +558,7 @@ internal static partial class MLDsaEngine
         rho.CopyTo(privateKey[..32]);
         capK.CopyTo(privateKey.Slice(32, 32));
 
-        Span<byte> t0Section = privateKey[(128 + ((k + l) * etaBytes)) ..];
+        Span<byte> t0Section = privateKey[(128 + ((k + l) * etaBytes))..];
         for (int i = 0; i < k; i++)
         {
             for (int j = 0; j < N; j++)
@@ -633,7 +633,7 @@ internal static partial class MLDsaEngine
             valid &= TryBitUnpackSigned(parameters.EtaBits, parameters.Eta, maxEncoded, privateKey.Slice(128 + ((l + r) * etaBytes), etaBytes), s2[r]);
 
         t0 = CreatePolyVector(k);
-        ReadOnlySpan<byte> t0Section = privateKey[(128 + ((k + l) * etaBytes)) ..];
+        ReadOnlySpan<byte> t0Section = privateKey[(128 + ((k + l) * etaBytes))..];
         for (int r = 0; r < k; r++)
             BitUnpackSigned(13, 1 << (D - 1), t0Section.Slice(r * 32 * 13, 32 * 13), t0[r]);
 
@@ -656,7 +656,7 @@ internal static partial class MLDsaEngine
         for (int r = 0; r < parameters.L; r++)
             BitPackSigned(parameters.Gamma1Bits, parameters.Gamma1, z[r], zSection.Slice(r * zBytes, zBytes));
 
-        HintBitPack(parameters, hints, signature[((parameters.Lambda / 4) + (parameters.L * zBytes)) ..]);
+        HintBitPack(parameters, hints, signature[((parameters.Lambda / 4) + (parameters.L * zBytes))..]);
     }
 
     /// <summary>

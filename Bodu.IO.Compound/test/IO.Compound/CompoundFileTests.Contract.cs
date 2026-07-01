@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundFileTests.Contract.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class CompoundFileTests
         MemoryStream destination = CreateContainer(("A", [1]), ("B", [2]));
         destination.Position = 0;
 
-        using CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
         file.RootStorage.CreateStream("C", new byte[] { 3 });
         Assert.IsTrue(file.RootStorage.Delete("A"));
 
@@ -39,7 +39,7 @@ public partial class CompoundFileTests
         MemoryStream destination = CreateContainer(("Data", [1, 2, 3]));
         destination.Position = 0;
 
-        using CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
         using (CompoundStream overwrite = file.RootStorage.OpenStream("Data", FileMode.Create, FileAccess.Write))
             overwrite.Write([9, 9], 0, 2);
 
@@ -59,7 +59,7 @@ public partial class CompoundFileTests
         MemoryStream destination = CreateContainer(("Keep", [7]));
         destination.Position = 0;
 
-        using (CompoundFile file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true))
+        using (var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true))
         {
             file.RootStorage.CreateStream("Extra", new byte[] { 8 });
             file.Revert();
@@ -67,7 +67,7 @@ public partial class CompoundFileTests
         }
 
         destination.Position = 0;
-        using CompoundFile reopened = CompoundFile.Open(destination);
+        using var reopened = CompoundFile.Open(destination);
         Assert.IsTrue(reopened.RootStorage.TryOpenStream("Keep", out _));
         Assert.IsFalse(reopened.RootStorage.TryOpenStream("Extra", out _));
     }
@@ -81,7 +81,7 @@ public partial class CompoundFileTests
     public void TryOpenStream_WhenWritableAndMissingWithModeOpen_ShouldReturnFalse()
     {
         using var destination = new MemoryStream();
-        using CompoundFile file = CompoundFile.Create(destination, leaveOpen: true);
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
 
         Assert.IsFalse(file.RootStorage.TryOpenStream("Nope", FileMode.Open, FileAccess.ReadWrite, out CompoundStream? stream));
         Assert.IsNull(stream);
@@ -95,7 +95,7 @@ public partial class CompoundFileTests
     public void TryOpenStream_WhenCreateNewAndExisting_ShouldReturnFalse()
     {
         using var destination = new MemoryStream();
-        using CompoundFile file = CompoundFile.Create(destination, leaveOpen: true);
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
         file.RootStorage.CreateStream("X", new byte[] { 1 });
 
         Assert.IsFalse(file.RootStorage.TryOpenStream("X", FileMode.CreateNew, FileAccess.Write, out _));
@@ -109,7 +109,7 @@ public partial class CompoundFileTests
     public void TryOpenStream_WhenEntryIsStorage_ShouldReturnFalse()
     {
         using var destination = new MemoryStream();
-        using CompoundFile file = CompoundFile.Create(destination, leaveOpen: true);
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
         _ = file.RootStorage.CreateStorage("S");
 
         Assert.IsFalse(file.RootStorage.TryOpenStream("S", FileMode.Open, FileAccess.ReadWrite, out _));
@@ -139,7 +139,7 @@ public partial class CompoundFileTests
     {
         using var destination = new MemoryStream();
 
-        using CompoundFile file = CompoundFile.Open(destination, FileMode.Create, FileAccess.Write, leaveOpen: true);
+        using var file = CompoundFile.Open(destination, FileMode.Create, FileAccess.Write, leaveOpen: true);
 
         Assert.IsTrue(file.CanWrite);
         Assert.IsFalse(file.CanRead);

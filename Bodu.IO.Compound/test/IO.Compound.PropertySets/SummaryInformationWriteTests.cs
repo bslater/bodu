@@ -1,10 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SummaryInformationWriteTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Compound;
 using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 
@@ -51,7 +50,7 @@ public class SummaryInformationWriteTests
         builder.WriteTo(stream);
         stream.Position = 0;
 
-        SummaryInformation summary = SummaryInformation.Read(stream);
+        var summary = SummaryInformation.Read(stream);
 
         Assert.AreEqual("Streamed", summary.Title);
         Assert.AreEqual("Grace", summary.Author);
@@ -67,7 +66,7 @@ public class SummaryInformationWriteTests
         var compound = CompoundStorageBuilder.CreateRoot();
         _ = compound.AddStream(SummaryInformation.StreamName, builder.ToArray());
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(compound.ToArray()));
+        using var file = CompoundFile.Open(new MemoryStream(compound.ToArray()));
 
         Assert.IsTrue(file.TryGetSummaryInformation(out SummaryInformation? summary));
         Assert.AreEqual("Report", summary.Title);
@@ -87,7 +86,7 @@ public class SummaryInformationWriteTests
         var compound = CompoundStorageBuilder.CreateRoot();
         _ = compound.AddStream(DocumentSummaryInformation.StreamName, builder.ToArray());
 
-        using CompoundFile file = CompoundFile.Open(new MemoryStream(compound.ToArray()));
+        using var file = CompoundFile.Open(new MemoryStream(compound.ToArray()));
 
         Assert.IsTrue(file.TryGetDocumentSummaryInformation(out DocumentSummaryInformation? summary));
         Assert.AreEqual("Bodu", summary.Company);

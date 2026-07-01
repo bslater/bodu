@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlDocument.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,9 +57,9 @@ public sealed partial class YamlDocument : IDisposable
     /// <exception cref="YamlFormatException">The source is not valid YAML.</exception>
     public static YamlDocument Parse(ReadOnlySpan<byte> utf8Yaml, YamlDocumentOptions options)
     {
-        var buffer = utf8Yaml.ToArray();
+        byte[] buffer = utf8Yaml.ToArray();
         var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth, options.DuplicateKeyBehavior, options.MergeKeyBehavior);
-        var rows = parser.Parse();
+        List<YamlReaderRow> rows = parser.Parse();
         return new YamlDocument(rows, parser.Strings.ToArray());
     }
 
@@ -103,8 +103,8 @@ public sealed partial class YamlDocument : IDisposable
     /// <returns>The resolved row index.</returns>
     internal int Resolve(int index)
     {
-        var rows = Rows;
-        var r = rows[index];
+        List<YamlReaderRow> rows = Rows;
+        YamlReaderRow r = rows[index];
         return r.Kind == YamlReaderNodeKind.Alias && r.AliasTarget >= 0 ? r.AliasTarget : index;
     }
 
@@ -115,8 +115,8 @@ public sealed partial class YamlDocument : IDisposable
     /// <returns>The value kind.</returns>
     internal YamlValueKind GetKind(int index)
     {
-        var rows = Rows;
-        var r = rows[Resolve(index)];
+        List<YamlReaderRow> rows = Rows;
+        YamlReaderRow r = rows[Resolve(index)];
         return r.Kind switch
         {
             YamlReaderNodeKind.Sequence => YamlValueKind.Sequence,
@@ -141,7 +141,7 @@ public sealed partial class YamlDocument : IDisposable
     /// <exception cref="InvalidOperationException">The node is not a string scalar.</exception>
     internal string GetString(int index)
     {
-        var r = Rows[Resolve(index)];
+        YamlReaderRow r = Rows[Resolve(index)];
         if (r.Kind != YamlReaderNodeKind.Scalar || r.ValueKind != YamlValueKind.String)
             throw new InvalidOperationException();
 
@@ -156,7 +156,7 @@ public sealed partial class YamlDocument : IDisposable
     /// <exception cref="InvalidOperationException">The node is not an integer scalar.</exception>
     internal long GetInt64(int index)
     {
-        var r = Rows[Resolve(index)];
+        YamlReaderRow r = Rows[Resolve(index)];
         if (r.ValueKind != YamlValueKind.Integer)
             throw new InvalidOperationException();
 
@@ -171,7 +171,7 @@ public sealed partial class YamlDocument : IDisposable
     /// <exception cref="InvalidOperationException">The node is not a numeric scalar.</exception>
     internal double GetDouble(int index)
     {
-        var r = Rows[Resolve(index)];
+        YamlReaderRow r = Rows[Resolve(index)];
         return r.ValueKind switch
         {
             YamlValueKind.Float => r.AsDouble(),
@@ -188,7 +188,7 @@ public sealed partial class YamlDocument : IDisposable
     /// <exception cref="InvalidOperationException">The node is not a boolean scalar.</exception>
     internal bool GetBoolean(int index)
     {
-        var r = Rows[Resolve(index)];
+        YamlReaderRow r = Rows[Resolve(index)];
         if (r.ValueKind != YamlValueKind.Boolean)
             throw new InvalidOperationException();
 
@@ -203,7 +203,7 @@ public sealed partial class YamlDocument : IDisposable
     /// <exception cref="InvalidOperationException">The node is not a sequence.</exception>
     internal int GetSequenceLength(int index)
     {
-        var r = Rows[Resolve(index)];
+        YamlReaderRow r = Rows[Resolve(index)];
         if (r.Kind != YamlReaderNodeKind.Sequence)
             throw new InvalidOperationException();
 
@@ -232,7 +232,7 @@ public sealed partial class YamlDocument : IDisposable
     /// <exception cref="InvalidOperationException">The node is not a mapping.</exception>
     internal int GetMappingCount(int index)
     {
-        var r = Rows[Resolve(index)];
+        YamlReaderRow r = Rows[Resolve(index)];
         if (r.Kind != YamlReaderNodeKind.Mapping)
             throw new InvalidOperationException();
 
@@ -258,8 +258,8 @@ public sealed partial class YamlDocument : IDisposable
         if (elementIndex < 0)
             throw new ArgumentOutOfRangeException(nameof(elementIndex));
 
-        var child = FirstChild(index);
-        var i = 0;
+        int child = FirstChild(index);
+        int i = 0;
         while (child >= 0)
         {
             if (i == elementIndex)
@@ -281,7 +281,7 @@ public sealed partial class YamlDocument : IDisposable
     /// <returns><see langword="true" /> when the key is present; otherwise <see langword="false" />.</returns>
     internal bool TryGetProperty(int index, string name, out int valueRow)
     {
-        var child = FirstChild(index);
+        int child = FirstChild(index);
         while (child >= 0)
         {
             if (string.Equals(Rows[child].Key, name, StringComparison.Ordinal))

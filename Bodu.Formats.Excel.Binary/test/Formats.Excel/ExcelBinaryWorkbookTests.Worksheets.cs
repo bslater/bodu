@@ -24,7 +24,7 @@ public partial class ExcelBinaryWorkbookTests
             new Biff8TestWorkbook.SheetSpec("Chart", 0x02, 0x00, body),
             new Biff8TestWorkbook.SheetSpec("Macro", 0x01, 0x00, body));
 
-        using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(xls);
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
 
         Assert.AreEqual(ExcelSheetVisibility.Visible, workbook.Worksheets[0].Visibility);
         Assert.AreEqual(ExcelSheetVisibility.Hidden, workbook.Worksheets[1].Visibility);

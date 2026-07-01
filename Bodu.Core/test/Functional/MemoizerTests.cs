@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MemoizerTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,8 +19,8 @@ public sealed class MemoizerTests
     [TestCategory("Smoke")]
     public void Memoize_WhenCalledRepeatedly_ShouldComputeOncePerArgument()
     {
-        var invocations = 0;
-        var memoized = Memoizer.Memoize<int, int>(x =>
+        int invocations = 0;
+        Func<int, int> memoized = Memoizer.Memoize<int, int>(x =>
         {
             invocations++;
             return x * x;
@@ -39,8 +39,8 @@ public sealed class MemoizerTests
     [TestMethod]
     public void Memoize_WhenFunctionThrows_ShouldNotCacheAndShouldRetry()
     {
-        var attempts = 0;
-        var memoized = Memoizer.Memoize<int, int>(x =>
+        int attempts = 0;
+        Func<int, int> memoized = Memoizer.Memoize<int, int>(x =>
         {
             attempts++;
             if (attempts == 1)
@@ -60,8 +60,8 @@ public sealed class MemoizerTests
     [TestMethod]
     public void Memoize_WhenResultIsNull_ShouldCacheNull()
     {
-        var invocations = 0;
-        var memoized = Memoizer.Memoize<int, string?>(_ =>
+        int invocations = 0;
+        Func<int, string?> memoized = Memoizer.Memoize<int, string?>(_ =>
         {
             invocations++;
             return null;
@@ -78,8 +78,8 @@ public sealed class MemoizerTests
     [TestMethod]
     public void Memoize_WhenComparerSupplied_ShouldTreatEquivalentArgumentsAsOne()
     {
-        var invocations = 0;
-        var memoized = Memoizer.Memoize<string, int>(
+        int invocations = 0;
+        Func<string, int> memoized = Memoizer.Memoize<string, int>(
             s =>
             {
                 invocations++;
@@ -98,8 +98,8 @@ public sealed class MemoizerTests
     [TestMethod]
     public void Memoize_WhenTwoArguments_ShouldCacheOnArgumentPair()
     {
-        var invocations = 0;
-        var memoized = Memoizer.Memoize<int, int, int>((a, b) =>
+        int invocations = 0;
+        Func<int, int, int> memoized = Memoizer.Memoize<int, int, int>((a, b) =>
         {
             invocations++;
             return a + b;
@@ -130,15 +130,15 @@ public sealed class MemoizerTests
     [TestCategory("Stress")]
     public void Memoize_WhenCalledConcurrently_ShouldReturnCorrectResults()
     {
-        var memoized = Memoizer.Memoize<int, int>(x => x * 2);
+        Func<int, int> memoized = Memoizer.Memoize<int, int>(x => x * 2);
 
-        var results = new int[1000];
+        int[] results = new int[1000];
         Parallel.For(0, results.Length, i =>
         {
             results[i] = memoized(i % 10);
         });
 
-        for (var i = 0; i < results.Length; i++)
+        for (int i = 0; i < results.Length; i++)
             Assert.AreEqual((i % 10) * 2, results[i]);
     }
 }

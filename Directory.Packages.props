@@ -1,5 +1,4 @@
 <Project>
-
   <!--
     Central Package Management for the bodu.slnx solution. Every external package version lives here
     as a <PackageVersion>; project files and the shared build logic (Directory.Build.targets and
@@ -17,7 +16,6 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
-
   <!--
     ============================================================================================
     Runtime dependency wave.
@@ -29,14 +27,11 @@
   -->
   <ItemGroup>
     <!-- Benchmark harness. -->
-    <PackageVersion Include="BenchmarkDotNet" Version="0.15.2" />
-
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
     <!-- Data access. -->
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.11" />
-
     <!-- Roslyn (consumed as a runtime dependency by the caching test-support surface). -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
-
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
     <!-- Microsoft.Extensions.* configuration / dependency-injection / caching / HTTP family. -->
     <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
@@ -57,11 +52,9 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Primitives" Version="8.0.0" />
-
     <!-- BCL out-of-band package. -->
     <PackageVersion Include="System.IO.Hashing" Version="10.0.7" />
   </ItemGroup>
-
   <!--
     ============================================================================================
     Test & analyzer tooling wave.
@@ -75,22 +68,18 @@
   <ItemGroup>
     <!-- Bodu's own XML-documentation analyzer (restored from the bodu-local source). -->
     <PackageVersion Include="Bodu.CodeStyle.XmlDocumentation" Version="1.0.0" />
-
     <!-- Source-analyzer stack (Directory.Build.targets: full coverage + formatting). -->
     <PackageVersion Include="AsyncFixer" Version="2.1.0" />
-    <PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
+    <PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="18.7.23" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.15.0" />
     <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
-
     <!-- MSTest analyzer for test projects. -->
-    <PackageVersion Include="MSTest.Analyzers" Version="4.2.2" />
-
+    <PackageVersion Include="MSTest.Analyzers" Version="4.2.3" />
     <!-- Test harness (Directory.Build.targets). -->
     <PackageVersion Include="coverlet.collector" Version="10.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.0" />
-    <PackageVersion Include="MSTest.TestAdapter" Version="4.2.1" />
-    <PackageVersion Include="MSTest.TestFramework" Version="4.2.1" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="4.2.3" />
+    <PackageVersion Include="MSTest.TestFramework" Version="4.2.3" />
   </ItemGroup>
-
 </Project>

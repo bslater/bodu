@@ -110,7 +110,7 @@ internal sealed partial class ConfigurationReader
         // Full-line comment: capture and defer until we see the next section or property.
         if (first is '#' or ';')
         {
-            string commentText = line[(firstNonWs + 1) ..];
+            string commentText = line[(firstNonWs + 1)..];
             _pendingLeadingComments.Add(new IniComment(first, commentText, lineNumber));
             return currentSection;
         }
@@ -255,7 +255,7 @@ internal sealed partial class ConfigurationReader
                 break;
 
             case IniDuplicateSectionBehavior.MergeAdjacent:
-                {
+            {
                 IEqualityComparer<string> comparer = _options.KeyOptions.CaseSensitive
                     ? StringComparer.Ordinal
                     : StringComparer.OrdinalIgnoreCase;
@@ -263,7 +263,7 @@ internal sealed partial class ConfigurationReader
                     return document.Sections[^1];
             }
 
-                break;
+            break;
         }
 
         IniSection created = new(name, [], _options.KeyOptions.CaseSensitive);
@@ -309,7 +309,7 @@ internal sealed partial class ConfigurationReader
         }
 
         string keyText = line[firstNonWs..equalsIndex];
-        string valueText = line[(equalsIndex + 1) ..];
+        string valueText = line[(equalsIndex + 1)..];
 
         if (_options.TrimKeysAndValues)
         {

@@ -58,7 +58,7 @@ public static class CurrencyCodeExtensions
         var map = new Dictionary<CurrencyCode, CurrencyStatus>();
         foreach (FieldInfo field in typeof(CurrencyCode).GetFields(BindingFlags.Public | BindingFlags.Static))
         {
-            var code = (CurrencyCode)field.GetValue(null) !;
+            var code = (CurrencyCode)field.GetValue(null)!;
             CurrencyStatusAttribute? attribute = field.GetCustomAttribute<CurrencyStatusAttribute>();
             map[code] = attribute?.Status ?? CurrencyStatus.None;
         }

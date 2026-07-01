@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeEndpointOptionsTests.Validate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class BoeEndpointOptionsTests
     {
         BoeEndpointOptions endpoint = new() { BaseUrl = null! };
 
-        _ = Assert.ThrowsExactly<ArgumentException>(() => endpoint.Validate());
+        _ = Assert.ThrowsExactly<ArgumentException>(endpoint.Validate);
     }
 
     /// <summary>
@@ -27,6 +27,6 @@ public partial class BoeEndpointOptionsTests
     {
         BoeEndpointOptions endpoint = new() { QueryPath = "   " };
 
-        _ = Assert.ThrowsExactly<ArgumentException>(() => endpoint.Validate());
+        _ = Assert.ThrowsExactly<ArgumentException>(endpoint.Validate);
     }
 }

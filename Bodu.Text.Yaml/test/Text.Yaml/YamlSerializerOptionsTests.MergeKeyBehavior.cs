@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializerOptionsTests.MergeKeyBehavior.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class YamlSerializerOptionsTests
     {
         var options = new YamlSerializerOptions { MergeKeyBehavior = YamlMergeKeyBehavior.Disabled };
 
-        var value = YamlSerializer.Deserialize<Dictionary<string, object>>("base: &b\n  a: 1\nobj:\n  <<: *b\n", options)!;
+        Dictionary<string, object> value = YamlSerializer.Deserialize<Dictionary<string, object>>("base: &b\n  a: 1\nobj:\n  <<: *b\n", options)!;
 
         var obj = (Dictionary<string, object?>)value["obj"]!;
         Assert.IsTrue(obj.ContainsKey("<<"));
@@ -33,7 +33,7 @@ public partial class YamlSerializerOptionsTests
     [TestMethod]
     public void Deserialize_WhenMergeKeyDefault_ShouldExpand()
     {
-        var value = YamlSerializer.Deserialize<Dictionary<string, object>>("base: &b\n  a: 1\nobj:\n  <<: *b\n")!;
+        Dictionary<string, object> value = YamlSerializer.Deserialize<Dictionary<string, object>>("base: &b\n  a: 1\nobj:\n  <<: *b\n")!;
 
         var obj = (Dictionary<string, object?>)value["obj"]!;
         Assert.IsFalse(obj.ContainsKey("<<"));

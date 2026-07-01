@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundOleFileCrossValidationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -85,7 +85,7 @@ public class CompoundOleFileCrossValidationTests
     {
         try
         {
-            using Process? probe = Process.Start(new ProcessStartInfo("python3", "-c \"import olefile\"")
+            using var probe = Process.Start(new ProcessStartInfo("python3", "-c \"import olefile\"")
             {
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.First.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void First_WhenPopulated_ShouldReturnHeadEntry()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.AreEqual(new KeyValuePair<string, int>("a", 1), dictionary.First);
     }
@@ -56,7 +56,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void TryGetFirst_WhenPopulated_ShouldReturnTrueAndHeadEntry()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         bool found = dictionary.TryGetFirst(out KeyValuePair<string, int> entry);
 

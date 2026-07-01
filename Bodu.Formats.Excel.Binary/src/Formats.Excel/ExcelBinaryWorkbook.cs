@@ -384,14 +384,14 @@ public sealed class ExcelBinaryWorkbook
         ThrowHelper.ThrowIfNull(stream);
         ThrowHelper.ThrowIfNull(options);
 
-        CompoundFile compound = CompoundFile.Open(stream, leaveOpen: leaveOpen, buffered: false);
+        var compound = CompoundFile.Open(stream, leaveOpen: leaveOpen, buffered: false);
         try
         {
             CompoundStorage root = compound.RootStorage;
             string streamName = ResolveWorkbookStreamName(root);
 
             byte[] globalsBytes = ReadGlobalsSubstream(root, streamName);
-            Biff8WorkbookGlobals globals = Biff8WorkbookGlobals.Parse(globalsBytes, options);
+            var globals = Biff8WorkbookGlobals.Parse(globalsBytes, options);
 
             ExcelWorksheetInfo[] worksheets = DescribeWorksheets(root, streamName, globals);
             ExcelWorkbookProperties properties = options.ReadDocumentProperties

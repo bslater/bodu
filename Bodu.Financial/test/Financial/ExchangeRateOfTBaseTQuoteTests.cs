@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial.Currencies;
-
 namespace Bodu.Financial;
 
 /// <summary>

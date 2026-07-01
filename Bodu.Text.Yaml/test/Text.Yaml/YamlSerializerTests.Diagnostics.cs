@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializerTests.Diagnostics.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenNestedMemberConversionFails_ShouldReportMemberPath()
     {
-        var ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
         {
             _ = YamlSerializer.Deserialize<Outer>("Inner:\n  Port: not-a-number\n");
         });
@@ -32,7 +32,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Deserialize_WhenSequenceElementConversionFails_ShouldReportIndexPath()
     {
-        var ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
         {
             _ = YamlSerializer.Deserialize<List<int>>("[1, x, 3]\n");
         });

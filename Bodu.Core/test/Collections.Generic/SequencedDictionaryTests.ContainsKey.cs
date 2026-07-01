@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequencedDictionaryTests.ContainsKey.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void ContainsKey_WhenKeyExists_ShouldReturnTrue()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.IsTrue(dictionary.ContainsKey("b"));
     }
@@ -25,7 +25,7 @@ public partial class SequencedDictionaryTests
     [TestMethod]
     public void ContainsKey_WhenKeyMissing_ShouldReturnFalse()
     {
-        var dictionary = CreatePopulated();
+        SequencedDictionary<string, int> dictionary = CreatePopulated();
 
         Assert.IsFalse(dictionary.ContainsKey("missing"));
     }

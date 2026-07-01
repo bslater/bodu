@@ -21,7 +21,7 @@ public class CompoundEntryInfoTests
     [TestMethod]
     public void ClassId_WhenWordDocumentRoot_ShouldExposeWordClsid()
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.doc"));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.doc"));
 
         Assert.AreEqual(WordDocumentClsid, file.RootStorage.Stat.ClassId);
     }
@@ -32,7 +32,7 @@ public class CompoundEntryInfoTests
     [TestMethod]
     public void Stat_WhenStreamEntry_ShouldReportStreamMetadata()
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.xls"));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.xls"));
 
         CompoundEntryInfo info = file.RootStorage.OpenStream("Workbook").Stat;
 
@@ -48,7 +48,7 @@ public class CompoundEntryInfoTests
     [TestMethod]
     public void Stat_WhenRootStorage_ShouldExposeOptionalTimeStamps()
     {
-        using CompoundFile file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.doc"));
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference("valid/sample1.doc"));
 
         CompoundEntryInfo info = file.RootStorage.Stat;
 

@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
-using System.Text;
 using Bodu.Text.Yaml.Document;
 using Bodu.Text.Yaml.Writer;
 
@@ -20,7 +19,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteStartMapping_WhenMappingOfScalars_ShouldEmitBlock()
     {
-        var yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((ref Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("a");
@@ -37,7 +36,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteStartMapping_WhenNested_ShouldIndent()
     {
-        var yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((ref Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("server");
@@ -55,7 +54,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteStartMapping_WhenEmptyCollections_ShouldEmitFlowEmpty()
     {
-        var yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((ref Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("list");
@@ -74,7 +73,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteStartMapping_WhenComplexDocument_ShouldRoundTrip()
     {
-        var yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((ref Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("name");
@@ -93,7 +92,7 @@ public partial class Utf8YamlWriterTests
 
         using var doc = YamlDocument.Parse(yaml);
         Assert.AreEqual("test", doc.RootElement.GetProperty("name").GetString());
-        var servers = doc.RootElement.GetProperty("servers");
+        YamlElement servers = doc.RootElement.GetProperty("servers");
         Assert.AreEqual(1, servers.GetSequenceLength());
         Assert.AreEqual("a", servers[0].GetProperty("host").GetString());
         Assert.AreEqual(80L, servers[0].GetProperty("port").GetInt64());
