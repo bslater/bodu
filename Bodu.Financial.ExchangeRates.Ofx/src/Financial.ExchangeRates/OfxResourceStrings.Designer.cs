@@ -79,7 +79,7 @@ namespace Bodu.Financial.ExchangeRates {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The OFX options history path must be specified and contain the '{interval}', '{from}', and '{to}' placeholders..
+        ///   Looks up a localized string similar to The OFX options history path must be specified and contain the '{from}', '{to}', '{start}', and '{end}' placeholders..
         /// </summary>
         internal static string Arg_Invalid_OfxOptionsHistoryPath {
             get {
