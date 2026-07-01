@@ -19,7 +19,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// tracking, single-flight coalescing, fetch-and-accumulate orchestration, and diagnostic logging shared by every
 /// pair-based web source; this type contributes only the OANDA identity and the OANDA-specific exception text. OANDA
 /// serves arbitrary pairs through its rate-history endpoint, so any pair of ISO codes can be requested directly. Use
-/// <see cref="PairWebExchangeRateProvider{TSeries}.LoadPairAsync" /> to warm a pair's in-memory store.
+/// <see cref="WebExchangeRateProvider.LoadPairAsync" /> to warm a pair's in-memory store.
 /// </para>
 /// <para>
 /// <strong>History depth.</strong> The anonymous endpoint serves only a rolling recent window (roughly the last 180

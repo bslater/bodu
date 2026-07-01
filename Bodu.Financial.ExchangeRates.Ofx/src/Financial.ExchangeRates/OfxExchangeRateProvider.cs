@@ -19,7 +19,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// tracking, single-flight coalescing, fetch-and-accumulate orchestration, and diagnostic logging shared by every
 /// pair-based web source; this type contributes only the OFX identity and the OFX-specific exception text. OFX serves
 /// arbitrary pairs through its spot-rate-history endpoint, so any pair of ISO codes can be requested directly. Use
-/// <see cref="PairWebExchangeRateProvider{TSeries}.LoadPairAsync" /> to warm a pair's in-memory store.
+/// <see cref="WebExchangeRateProvider.LoadPairAsync" /> to warm a pair's in-memory store.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an

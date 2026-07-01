@@ -65,6 +65,26 @@ force callers onto the asynchronous surface or an explicit preload. Concurrent
 loads of the same span are coalesced, so a burst of misses triggers at most one
 download.
 
+**A common warm-up surface across every provider.** Each provider also carries
+source-specific warm-up methods shaped to its feed (`LoadRangeAsync` and
+`PreloadAsync` for the bulk feeds; `LoadPairAsync` for the pair feeds). On top of
+those, every provider implements
+<xref:Bodu.Financial.IExchangeRatePairLoader> — `LoadPairAsync(from, to, start, end)`
+and `GetLoadedPairs()` — so a consumer can warm a pair's window and enumerate the
+loaded pairs uniformly without knowing whether the source fetches by pair, era,
+feed, or range. On a single-base feed such as RBA the pair must involve its base
+currency (for example AUD); an unsupported pair is rejected before any download.
+
+```csharp
+IExchangeRatePairLoader loader = provider;
+await loader.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+
+foreach (ExchangeRatePair pair in loader.GetLoadedPairs())
+{
+    // pair.From, pair.To
+}
+```
+
 **Lookups behave identically across providers.** Dated and timeless lookups,
 `TryGetRate`, range reads, date-resolution policies, and inverse fallback all work
 the same way described in [Working with exchange rates](exchange-rates.md):

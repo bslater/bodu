@@ -101,28 +101,6 @@ public abstract class PairWebExchangeRateProvider<TSeries>
     protected sealed override TimeSpan DefaultLookback => _options.DefaultLookback;
 
     /// <summary>
-    /// Fetches and loads a pair's rates for the inclusive date range, unless that window is already covered.
-    /// </summary>
-    /// <param name="fromIsoCode">The source-currency ISO code.</param>
-    /// <param name="toIsoCode">The destination-currency ISO code.</param>
-    /// <param name="startDate">The inclusive start of the range.</param>
-    /// <param name="endDate">The inclusive end of the range.</param>
-    /// <param name="cancellationToken">A token to observe while awaiting the fetch.</param>
-    /// <returns>A task that completes when the pair's window has been loaded.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when an ISO code is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">Thrown when an ISO code is invalid or the range is inverted.</exception>
-    public Task LoadPairAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
-    {
-        ThrowHelper.ThrowIfNull(fromIsoCode);
-        ThrowHelper.ThrowIfNull(toIsoCode);
-        if (endDate < startDate)
-            throw CreateRangeInvertedException(startDate, endDate);
-
-        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
-        return EnsureLoadedAsync(pair, startDate, endDate, cancellationToken).AsTask();
-    }
-
-    /// <summary>
     /// Gets the currency pairs fetched so far.
     /// </summary>
     /// <returns>A snapshot of the discovered series, one per currency pair.</returns>
