@@ -39,7 +39,7 @@ public partial class OfxExchangeRateOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a history path missing the interval placeholder is rejected.
+    /// Verifies that a history path missing a required range placeholder is rejected.
     /// </summary>
     [TestMethod]
     public void TryValidate_WhenHistoryPathMissingPlaceholder_ShouldReturnFalse()

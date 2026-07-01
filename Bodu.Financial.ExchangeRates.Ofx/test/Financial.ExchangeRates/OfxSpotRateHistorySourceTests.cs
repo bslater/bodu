@@ -14,9 +14,9 @@ namespace Bodu.Financial.ExchangeRates;
 public class OfxSpotRateHistorySourceTests
 {
     /// <summary>
-    /// Verifies that the provider issues a request to the configured history path with the interval and currency codes,
-    /// the documented query parameters, and then resolves the parsed rate, with the Unix-millisecond timestamp mapped to
-    /// the expected calendar date.
+    /// Verifies that the provider issues a request to the configured history path with the currency codes and the
+    /// inclusive range expressed as Unix-millisecond bounds, the documented query parameters, and then resolves the
+    /// parsed rate, with the Unix-millisecond timestamp mapped to the expected calendar date.
     /// </summary>
     [TestMethod]
     public async Task LoadPairAsync_WhenBackedByHttp_ShouldRequestHistoryPathAndResolveRate()
@@ -28,11 +28,14 @@ public class OfxSpotRateHistorySourceTests
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
+        long expectedStart = new DateTimeOffset(2023, 1, 1, 0, 0, 0, TimeSpan.Zero).ToUnixTimeMilliseconds();
+        long expectedEnd = new DateTimeOffset(2023, 1, 31, 23, 59, 59, 999, TimeSpan.Zero).ToUnixTimeMilliseconds();
+
         Assert.AreEqual(1, handler.RequestCount);
         Assert.IsNotNull(handler.LastRequestUri);
         Assert.AreEqual("api.ofx.com", handler.LastRequestUri!.Host);
         Assert.IsTrue(
-            handler.LastRequestUri.AbsolutePath.EndsWith("/SpotRateHistory/daily/AUD/USD", StringComparison.Ordinal),
+            handler.LastRequestUri.AbsolutePath.EndsWith($"/SpotRateHistory/AUD/USD/{expectedStart}/{expectedEnd}", StringComparison.Ordinal),
             handler.LastRequestUri.AbsolutePath);
         Assert.IsTrue(handler.LastRequestUri.Query.Contains("DecimalPlaces=6", StringComparison.Ordinal), handler.LastRequestUri.Query);
         Assert.IsTrue(handler.LastRequestUri.Query.Contains("ReportingInterval=daily", StringComparison.Ordinal), handler.LastRequestUri.Query);

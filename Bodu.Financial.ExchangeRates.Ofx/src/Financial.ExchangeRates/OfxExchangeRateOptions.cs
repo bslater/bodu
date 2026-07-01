@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
@@ -14,9 +16,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// This type derives from <see cref="WebExchangeRateProviderOptions" />, which supplies the endpoint base address, the
 /// HTTP contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log
-/// levels. The members declared here are OFX-specific: the <see cref="HistoryPath" /> template into which the reporting
-/// interval and currency codes are substituted, the requested decimal precision, and the reporting interval. OFX serves
-/// a server-determined historical window per request, so the response is range-filtered to the requested dates.
+/// levels. The members declared here are OFX-specific: the <see cref="HistoryPath" /> template into which the currency
+/// codes and the requested inclusive date range (as Unix-millisecond bounds) are substituted, the requested decimal
+/// precision, and the reporting interval sent as the <c>ReportingInterval</c> query parameter. The response is
+/// additionally range-filtered to the requested dates as a defensive measure.
 /// </para>
 /// <para>
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and
@@ -33,8 +36,11 @@ public sealed class OfxExchangeRateOptions
     /// <summary>The placeholder token replaced by the destination-currency code when building a path from <see cref="HistoryPath" />.</summary>
     internal const string ToPlaceholder = "{to}";
 
-    /// <summary>The placeholder token replaced by the reporting interval when building a path from <see cref="HistoryPath" />.</summary>
-    internal const string IntervalPlaceholder = "{interval}";
+    /// <summary>The placeholder token replaced by the inclusive range start (Unix milliseconds) when building a path from <see cref="HistoryPath" />.</summary>
+    internal const string StartPlaceholder = "{start}";
+
+    /// <summary>The placeholder token replaced by the inclusive range end (Unix milliseconds) when building a path from <see cref="HistoryPath" />.</summary>
+    internal const string EndPlaceholder = "{end}";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OfxExchangeRateOptions" /> class with the OFX API host as its base
@@ -46,13 +52,14 @@ public sealed class OfxExchangeRateOptions
     }
 
     /// <summary>
-    /// Gets or sets the relative spot-rate-history path template. The <c>{interval}</c>, <c>{from}</c>, and <c>{to}</c>
-    /// placeholders are replaced by the reporting interval and the currency codes before the request is issued.
+    /// Gets or sets the relative spot-rate-history path template. The <c>{from}</c>, <c>{to}</c>, <c>{start}</c>, and
+    /// <c>{end}</c> placeholders are replaced by the currency codes and the inclusive request range (as
+    /// Unix-millisecond bounds) before the request is issued.
     /// </summary>
     /// <value>
-    /// The history path template; defaults to <c>PublicSite.ApiService/SpotRateHistory/{interval}/{from}/{to}</c>.
+    /// The history path template; defaults to <c>PublicSite.ApiService/SpotRateHistory/{from}/{to}/{start}/{end}</c>.
     /// </value>
-    public string HistoryPath { get; set; } = "PublicSite.ApiService/SpotRateHistory/{interval}/{from}/{to}";
+    public string HistoryPath { get; set; } = "PublicSite.ApiService/SpotRateHistory/{from}/{to}/{start}/{end}";
 
     /// <summary>
     /// Gets or sets the number of decimal places requested from the OFX endpoint.
@@ -81,9 +88,10 @@ public sealed class OfxExchangeRateOptions
     protected override bool TryValidateCore(out string? error)
     {
         if (string.IsNullOrWhiteSpace(HistoryPath)
-            || !HistoryPath.Contains(IntervalPlaceholder, StringComparison.Ordinal)
             || !HistoryPath.Contains(FromPlaceholder, StringComparison.Ordinal)
-            || !HistoryPath.Contains(ToPlaceholder, StringComparison.Ordinal))
+            || !HistoryPath.Contains(ToPlaceholder, StringComparison.Ordinal)
+            || !HistoryPath.Contains(StartPlaceholder, StringComparison.Ordinal)
+            || !HistoryPath.Contains(EndPlaceholder, StringComparison.Ordinal))
         {
             error = OfxResourceStrings.Arg_Invalid_OfxOptionsHistoryPath;
             return false;
@@ -106,17 +114,20 @@ public sealed class OfxExchangeRateOptions
     }
 
     /// <summary>
-    /// Builds the relative spot-rate-history path for a currency pair from <see cref="HistoryPath" />, applying the
-    /// reporting interval and any configured currency aliases.
+    /// Builds the relative spot-rate-history path for a currency pair and inclusive date range from
+    /// <see cref="HistoryPath" />, applying any configured currency aliases.
     /// </summary>
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="startUnixMilliseconds">The inclusive range start, expressed as Unix milliseconds.</param>
+    /// <param name="endUnixMilliseconds">The inclusive range end, expressed as Unix milliseconds.</param>
     /// <returns>
-    /// The relative request path, for example <c>PublicSite.ApiService/SpotRateHistory/daily/USD/AUD</c>.
+    /// The relative request path, for example one ending in <c>USD/AUD/1672531200000/1675209599999</c>.
     /// </returns>
-    internal string BuildPath(string fromIsoCode, string toIsoCode) =>
+    internal string BuildPath(string fromIsoCode, string toIsoCode, long startUnixMilliseconds, long endUnixMilliseconds) =>
         HistoryPath
-            .Replace(IntervalPlaceholder, ReportingInterval, StringComparison.Ordinal)
             .Replace(FromPlaceholder, MapCurrency(fromIsoCode), StringComparison.Ordinal)
-            .Replace(ToPlaceholder, MapCurrency(toIsoCode), StringComparison.Ordinal);
+            .Replace(ToPlaceholder, MapCurrency(toIsoCode), StringComparison.Ordinal)
+            .Replace(StartPlaceholder, startUnixMilliseconds.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace(EndPlaceholder, endUnixMilliseconds.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
 }

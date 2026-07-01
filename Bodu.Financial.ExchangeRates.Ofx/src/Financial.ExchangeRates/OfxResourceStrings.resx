@@ -65,7 +65,7 @@
     <value>No OFX exchange rate is available for {0}/{1} on {2}.</value>
   </data>
   <data name="Arg_Invalid_OfxOptionsHistoryPath" xml:space="preserve">
-    <value>The OFX options history path must be specified and contain the '{interval}', '{from}', and '{to}' placeholders.</value>
+    <value>The OFX options history path must be specified and contain the '{from}', '{to}', '{start}', and '{end}' placeholders.</value>
   </data>
   <data name="Arg_Invalid_OfxOptionsDecimalPlaces" xml:space="preserve">
     <value>The OFX options decimal places must be between 0 and 15.</value>
