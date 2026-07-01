@@ -95,6 +95,20 @@ public partial class OfxExchangeRateOptionsTests
     }
 
     /// <summary>
+    /// Verifies that a negative future-clamp skew is rejected.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenFutureClampSkewNegative_ShouldReturnFalse()
+    {
+        OfxExchangeRateOptions options = new() { FutureClampSkew = TimeSpan.FromMinutes(-1) };
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
     /// Verifies that a non-positive HTTP timeout is rejected.
     /// </summary>
     [TestMethod]

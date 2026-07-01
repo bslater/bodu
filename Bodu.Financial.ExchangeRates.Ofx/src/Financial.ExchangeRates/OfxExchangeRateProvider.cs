@@ -85,7 +85,7 @@ public sealed class OfxExchangeRateProvider
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public OfxExchangeRateProvider(HttpClient httpClient, OfxExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
-        : this(CreateSource(httpClient, options), options, ownedHttpClient: null, logger, timeProvider)
+        : this(CreateSource(httpClient, options, timeProvider), options, ownedHttpClient: null, logger, timeProvider)
     {
     }
 
@@ -117,7 +117,7 @@ public sealed class OfxExchangeRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private OfxExchangeRateProvider(OfxExchangeRateOptions options, HttpClient ownedHttpClient, ILogger? logger, TimeProvider? timeProvider)
-        : this(new OfxSpotRateHistorySource(ownedHttpClient, options), options, ownedHttpClient, logger, timeProvider)
+        : this(new OfxSpotRateHistorySource(ownedHttpClient, options, timeProvider), options, ownedHttpClient, logger, timeProvider)
     {
     }
 
@@ -152,14 +152,15 @@ public sealed class OfxExchangeRateProvider
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue history requests.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="timeProvider">The time source passed to the source, or <see langword="null" /> for the system clock.</param>
     /// <returns>A new history source.</returns>
-    private static OfxSpotRateHistorySource CreateSource(HttpClient httpClient, OfxExchangeRateOptions options)
+    private static OfxSpotRateHistorySource CreateSource(HttpClient httpClient, OfxExchangeRateOptions options, TimeProvider? timeProvider)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        return new OfxSpotRateHistorySource(httpClient, options);
+        return new OfxSpotRateHistorySource(httpClient, options, timeProvider);
     }
 
     /// <summary>

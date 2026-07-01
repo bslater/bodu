@@ -38,6 +38,13 @@ internal static class OfxSpotRateHistoryResponseParser
         using JsonDocument document = ParseDocument(json, request);
         JsonElement root = document.RootElement;
 
+        if (root.ValueKind == JsonValueKind.Object
+            && root.TryGetProperty("ErrorCode", out JsonElement errorCode)
+            && errorCode.ValueKind == JsonValueKind.String)
+        {
+            throw OfxError(request, root);
+        }
+
         if (root.ValueKind != JsonValueKind.Object
             || !root.TryGetProperty("HistoricalPoints", out JsonElement points)
             || points.ValueKind != JsonValueKind.Array)
@@ -137,4 +144,20 @@ internal static class OfxSpotRateHistoryResponseParser
     /// <returns>The exception to throw.</returns>
     private static ExchangeRateFormatException NoData(ExchangeRatePairRequest request) =>
         new(string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.Format_Invalid_OfxNoData, request.Pair.From.ToString(), request.Pair.To.ToString()));
+
+    /// <summary>
+    /// Builds the format exception for an OFX error envelope, surfacing the endpoint's own message.
+    /// </summary>
+    /// <param name="request">The originating request.</param>
+    /// <param name="root">The parsed error-envelope root object.</param>
+    /// <returns>The exception to throw.</returns>
+    private static ExchangeRateFormatException OfxError(ExchangeRatePairRequest request, JsonElement root)
+    {
+        string message = root.TryGetProperty("Message", out JsonElement messageElement) && messageElement.ValueKind == JsonValueKind.String
+            ? messageElement.GetString() ?? string.Empty
+            : root.GetProperty("ErrorCode").GetString() ?? string.Empty;
+
+        return new ExchangeRateFormatException(
+            string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.Format_Invalid_OfxError, request.Pair.From.ToString(), request.Pair.To.ToString(), message));
+    }
 }

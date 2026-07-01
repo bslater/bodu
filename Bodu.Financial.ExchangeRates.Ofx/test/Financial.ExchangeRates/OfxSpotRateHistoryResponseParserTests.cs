@@ -91,6 +91,34 @@ public class OfxSpotRateHistoryResponseParserTests
     }
 
     /// <summary>
+    /// Verifies that an OFX error envelope (for example the future-<c>ToDate</c> rejection) throws
+    /// <see cref="ExchangeRateFormatException" /> surfacing the endpoint's own message rather than the generic no-data
+    /// message.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenResponseIsOfxErrorEnvelope_ShouldThrowExchangeRateFormatException()
+    {
+        byte[] json = Utf8(
+            """
+            {
+              "ErrorCode": "PS:spotratehistoryrange:0005",
+              "Message": "ToDate can not be in the future",
+              "SystemMessage": "ToDate can not be in the future",
+              "Errors": [
+                { "ErrorCode": "PS:spotratehistoryrange:0005", "FieldName": "ToDate", "Message": "ToDate can not be in the future" }
+              ]
+            }
+            """);
+
+        var ex = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = OfxSpotRateHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("ToDate can not be in the future", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that points with a missing or non-positive rate are skipped.
     /// </summary>
     [TestMethod]

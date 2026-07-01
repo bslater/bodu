@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// parses the response.
 /// </summary>
 [TestClass]
-public class OfxSpotRateHistorySourceTests
+public partial class OfxSpotRateHistorySourceTests
 {
     /// <summary>
     /// Verifies that the provider issues a request to the configured history path with the currency codes and the

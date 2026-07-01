@@ -61,6 +61,9 @@
   <data name="Format_Invalid_OfxNoData" xml:space="preserve">
     <value>The OFX response for {0}/{1} did not contain any historical rate data.</value>
   </data>
+  <data name="Format_Invalid_OfxError" xml:space="preserve">
+    <value>The OFX request for {0}/{1} failed: {2}.</value>
+  </data>
   <data name="IO_KeyNotFound_OfxRate" xml:space="preserve">
     <value>No OFX exchange rate is available for {0}/{1} on {2}.</value>
   </data>
@@ -72,5 +75,8 @@
   </data>
   <data name="Arg_Invalid_OfxOptionsReportingInterval" xml:space="preserve">
     <value>The OFX options reporting interval must be specified.</value>
+  </data>
+  <data name="Arg_OutOfRange_OfxOptionsFutureClampSkew" xml:space="preserve">
+    <value>The OFX options future-clamp skew must not be negative.</value>
   </data>
 </root>

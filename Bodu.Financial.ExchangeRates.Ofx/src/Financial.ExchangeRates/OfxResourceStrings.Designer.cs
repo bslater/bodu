@@ -70,6 +70,15 @@ namespace Bodu.Financial.ExchangeRates {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The OFX request for {0}/{1} failed: {2}..
+        /// </summary>
+        internal static string Format_Invalid_OfxError {
+            get {
+                return ResourceManager.GetString("Format_Invalid_OfxError", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to No OFX exchange rate is available for {0}/{1} on {2}..
         /// </summary>
         internal static string IO_KeyNotFound_OfxRate {
@@ -102,6 +111,15 @@ namespace Bodu.Financial.ExchangeRates {
         internal static string Arg_Invalid_OfxOptionsReportingInterval {
             get {
                 return ResourceManager.GetString("Arg_Invalid_OfxOptionsReportingInterval", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The OFX options future-clamp skew must not be negative..
+        /// </summary>
+        internal static string Arg_OutOfRange_OfxOptionsFutureClampSkew {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_OfxOptionsFutureClampSkew", resourceCulture);
             }
         }
     }

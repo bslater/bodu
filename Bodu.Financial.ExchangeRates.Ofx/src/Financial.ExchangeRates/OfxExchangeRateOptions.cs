@@ -75,8 +75,21 @@ public sealed class OfxExchangeRateOptions
     public string ReportingInterval { get; set; } = "daily";
 
     /// <summary>
+    /// Gets or sets the safety margin subtracted from the current instant when capping a request's end bound, guarding
+    /// against a server clock that trails UTC.
+    /// </summary>
+    /// <remarks>
+    /// The OFX endpoint rejects a <c>ToDate</c> that lies in its future, so the provider never requests beyond the
+    /// present. The end bound is capped at the current instant less this margin; the default of
+    /// <see cref="TimeSpan.Zero" /> keeps maximum recency, and a small positive value compensates for an OFX server
+    /// clock observed to sit behind UTC.
+    /// </remarks>
+    /// <value>The clamp safety margin; defaults to <see cref="TimeSpan.Zero" />.</value>
+    public TimeSpan FutureClampSkew { get; set; } = TimeSpan.Zero;
+
+    /// <summary>
     /// Validates the OFX-specific options, ensuring the history path carries its placeholders, the decimal precision is
-    /// in range, and the reporting interval is specified.
+    /// in range, the reporting interval is specified, and the future-clamp margin is non-negative.
     /// </summary>
     /// <param name="error">
     /// When this method returns <see langword="false" />, a message describing the violated invariant; otherwise
@@ -106,6 +119,12 @@ public sealed class OfxExchangeRateOptions
         if (string.IsNullOrWhiteSpace(ReportingInterval))
         {
             error = OfxResourceStrings.Arg_Invalid_OfxOptionsReportingInterval;
+            return false;
+        }
+
+        if (FutureClampSkew < TimeSpan.Zero)
+        {
+            error = OfxResourceStrings.Arg_OutOfRange_OfxOptionsFutureClampSkew;
             return false;
         }
 
