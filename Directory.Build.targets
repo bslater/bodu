@@ -127,6 +127,24 @@
   </ItemGroup>
 
   <!--
+    Default runsettings for test projects. `dotnet test` and vstest.console do NOT auto-discover a
+    file named `.runsettings` the way Visual Studio Test Explorer does, so a bare `dotnet test`
+    (with no settings switch) applies no filter and runs every tier, including the long-running
+    [TestCategory("Stress")] loops the repo-root `.runsettings` is meant to exclude. Wiring
+    RunSettingsFilePath here makes that default file the one VSTest reads when the caller does not
+    pass one, so the everyday local run excludes Stress by default (TestCategory!=Stress).
+
+    This only sets a default: an explicit settings switch (dotnet test -s bvt.runsettings) populates
+    VSTestSetting, which takes precedence over RunSettingsFilePath, and an explicit
+    -p:RunSettingsFilePath=... is respected because the property is only assigned when still empty.
+    MSBuildThisFileDirectory is the repository root (where this file lives), so the path resolves to
+    the root `.runsettings`.
+  -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true' and '$(RunSettingsFilePath)' == '' and '$(VSTestSetting)' == ''">
+    <RunSettingsFilePath>$(MSBuildThisFileDirectory).runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+
+  <!--
     Test-project rule relaxations. These rules are noisy and carry no value in non-shipping test
     assemblies: argument-null guarding of framework-supplied DynamicData/KAT rows (CA1062), the
     s_/_ field-prefix and underscore-method-name naming conventions (IDE1006, CA1707) that the
