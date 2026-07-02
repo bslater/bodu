@@ -376,47 +376,7 @@ public sealed class SqliteExchangeRateCache
             command.ExecuteNonQuery();
         }
 
-        // Bring a pre-C rates table up to the current schema: a table created before observed_at was added is otherwise
-        // missing the column the INSERT and SELECT reference. Probe with PRAGMA table_info and add it once if absent.
-        if (!HasObservedColumn(connection, transaction))
-        {
-            using SqliteCommand alter = connection.CreateCommand();
-            alter.Transaction = transaction;
-            alter.CommandText = "ALTER TABLE rates ADD COLUMN observed_at TEXT NULL;";
-            alter.ExecuteNonQuery();
-        }
-
         transaction.Commit();
-    }
-
-    /// <summary>
-    /// Reports whether the <c>rates</c> table already declares the <c>observed_at</c> column.
-    /// </summary>
-    /// <param name="connection">The open connection the probe runs on.</param>
-    /// <param name="transaction">The transaction the probe participates in.</param>
-    /// <returns>
-    /// <see langword="true" /> when <c>rates</c> carries an <c>observed_at</c> column; otherwise
-    /// <see langword="false" />.
-    /// </returns>
-    /// <remarks>
-    /// The <c>PRAGMA table_info(rates)</c> reader is fully read and closed before the caller issues the conditional
-    /// <c>ALTER</c>, so the schema change does not run while a reader is open over the same table.
-    /// </remarks>
-    private static bool HasObservedColumn(SqliteConnection connection, SqliteTransaction transaction)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.Transaction = transaction;
-        command.CommandText = "PRAGMA table_info(rates);";
-
-        using SqliteDataReader reader = command.ExecuteReader();
-        int nameOrdinal = reader.GetOrdinal("name");
-        while (reader.Read())
-        {
-            if (string.Equals(reader.GetString(nameOrdinal), "observed_at", StringComparison.Ordinal))
-                return true;
-        }
-
-        return false;
     }
 
     /// <summary>

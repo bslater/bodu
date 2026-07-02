@@ -173,6 +173,7 @@ slnx.sqlite
 # Local / experimental folders
 # -----------------------------
 /ConsoleApp2/
+/data/
 /bc-csharp/
 **/.cr/personal/
 
