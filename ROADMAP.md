@@ -742,14 +742,29 @@ No project sets `IsAotCompatible` or `IsTrimmable` today. Target state:
 ### API-stability tiers
 
 **Done.** Every packable project now carries a single tier label as a
-blockquote directly under its README title. The assignment follows the
-policy below: all packages are **Stable** except `Bodu.Text.Yaml`
-(**Preview** — the serializer is read-first and its write surface is still
-being rounded out) and `Bodu.Financial.ExchangeRates.Xe` (**Experimental**
-— it depends on a scraped auth token). **Preview** / **Experimental**
-remain available for any future package whose surface is still settling.
-Revisit the tier of the newest, network-dependent provider packages before
-their first release if their endpoints prove unstable.
+blockquote directly under its README title. The assignment:
+
+- **Stable** — the mature core of the solution: `Bodu.Core`,
+  `Bodu.Numerics`, `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
+  `Bodu.Text.Encoding`, `Bodu.Security.Cryptography`, the text-format and
+  configuration libraries (`Bodu.Text.Bencode` / `.Toml` / `.Formats` /
+  `.Configuration`, `Bodu.Extensions.Configuration.Text`),
+  `Bodu.Formats.Excel.Binary`, `Bodu.Financial` (+ its DI package), the
+  whole `Bodu.Globalization.Calendar` family (core, Builder, DI, Plugins,
+  and the five data packs), and the shared
+  `Bodu.Financial.ExchangeRates.DependencyInjection` plumbing.
+- **Preview** — `Bodu.Text.Yaml` (the serializer is read-first and its
+  write surface is still being rounded out) and the network-dependent
+  exchange-rate family: the six web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda}`
+  and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.
+  These are held at Preview until they have shipped and been exercised
+  against their live upstream endpoints; the public API is largely settled,
+  but behaviour against third-party feeds is not yet battle-tested.
+- **Experimental** — `Bodu.Financial.ExchangeRates.Xe`, which depends on a
+  scraped auth token and can break without notice.
+
+Promote the Preview providers to Stable per package as each proves reliable
+against its endpoint across a release cycle.
 
 ### Source generators
 

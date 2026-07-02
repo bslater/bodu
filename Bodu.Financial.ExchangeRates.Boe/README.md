@@ -1,6 +1,6 @@
 # Bodu.Financial.ExchangeRates.Boe
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **Bank of
 England's** daily spot exchange rates, queried from the Bank's Interactive Statistical
