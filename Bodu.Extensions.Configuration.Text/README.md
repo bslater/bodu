@@ -1,5 +1,7 @@
 # Bodu.Extensions.Configuration.Text
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 The EditorConfig-compatible `Microsoft.Extensions.Configuration` provider. This package bridges
 [`Bodu.Text.Configuration`](../Bodu.Text.Configuration) into the standard
 [`Microsoft.Extensions.Configuration`](https://learn.microsoft.com/dotnet/core/extensions/configuration)

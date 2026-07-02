@@ -1,5 +1,7 @@
 # Bodu.Text.Configuration
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 An EditorConfig-inspired, INI-backed configuration document model with parse, resolve, and write phases
 that consumers can compose independently.
 

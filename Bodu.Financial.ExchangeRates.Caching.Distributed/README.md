@@ -1,5 +1,7 @@
 # Bodu.Financial.ExchangeRates.Caching.Distributed
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 A distributed (Redis-capable) cache for `Bodu.Financial` exchange-rate providers.
 
 > One `IExchangeRateCache` backend among several. For the composition model, the

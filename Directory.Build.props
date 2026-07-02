@@ -21,13 +21,17 @@
   <Import Project="$(MSBuildThisFileDirectory)bld/Bodu.props" />
 
   <!--
-    Optional API/package validation. Leave disabled by default so normal inner-loop builds do
-    not gain a new packaging gate. Enable in CI, release builds, or selected packable projects
-    by setting <BoduEnablePackageValidation>true</BoduEnablePackageValidation>.
+    API/package validation is on by default for every shipping (non-test, non-benchmark) package, so
+    the packaging gate runs in CI, release, and local pack builds. A project (or a one-off build) opts
+    out with <BoduEnablePackageValidation>false</BoduEnablePackageValidation>. Only the default is set
+    here; the gate itself is applied in Directory.Build.targets, where IsTestProject and the benchmark
+    flag are resolved — they are set in the project body, which MSBuild evaluates after this file is
+    imported but before the targets file, so a props-time gate on them (or on the SDK-defaulted
+    IsPackable) never fires. Package validation is inert during an ordinary `dotnet build` — it engages
+    at pack time — so the normal inner loop is unaffected.
   -->
-  <PropertyGroup Condition="'$(BoduEnablePackageValidation)' == 'true' and '$(IsPackable)' == 'true' and '$(IsTestProject)' != 'true'">
-    <EnablePackageValidation>true</EnablePackageValidation>
-    <ApiCompatStrictMode>true</ApiCompatStrictMode>
+  <PropertyGroup>
+    <BoduEnablePackageValidation Condition="'$(BoduEnablePackageValidation)' == ''">true</BoduEnablePackageValidation>
   </PropertyGroup>
 
 </Project>

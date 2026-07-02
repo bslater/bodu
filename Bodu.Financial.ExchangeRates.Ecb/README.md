@@ -1,5 +1,7 @@
 # Bodu.Financial.ExchangeRates.Ecb
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **European
 Central Bank's** published euro foreign-exchange reference rates.
 

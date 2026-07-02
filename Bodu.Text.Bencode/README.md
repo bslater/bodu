@@ -1,5 +1,7 @@
 # Bodu.Text.Bencode
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 A Bencode (BEP 3) serializer for .NET 8. It maps plain CLR objects to and from Bencode through a configurable converter model, over a low-level, forward-only token reader and writer.
 
 ## Installation

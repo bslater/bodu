@@ -1,5 +1,7 @@
 # Bodu.Financial.ExchangeRates.Caching.Sqlite
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 A SQLite-backed persistent cache for `Bodu.Financial` exchange-rate providers.
 
 > For the full composition walkthrough (quickstart, stacking, aggregation,

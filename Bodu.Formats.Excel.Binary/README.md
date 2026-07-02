@@ -1,5 +1,7 @@
 # Bodu.Formats.Excel.Binary
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 A narrow, read-only reader for the **Excel 97-2003 binary workbook format** (BIFF8 /
 `.xls`). It exposes the raw cell values of each worksheet — strings, numbers, booleans,
 and errors — and nothing more. There is no formula evaluation, styling, charting, or

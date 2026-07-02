@@ -1,5 +1,7 @@
 # Bodu.Text.Formats
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 Parsers and serializers for common text document formats on .NET 8 — delimited text (RFC 4180 CSV / TSV), DotEnv, and INI. Each format follows the same shape: a static convenience entry point (`Parse` / `Format` / `TryParse`), a low-level `Reader` / `Writer` pair, an immutable document model, and an options struct that controls parsing behaviour and round-trip fidelity.
 
 ## Installation

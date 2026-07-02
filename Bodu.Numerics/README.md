@@ -1,5 +1,7 @@
 # Bodu.Numerics
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 Numeric value primitives for .NET. Ships two header types:
 
 - **`Fraction<T>`** — an immutable, exact-rational value type generic over any `IBinaryInteger<T>` backing component.

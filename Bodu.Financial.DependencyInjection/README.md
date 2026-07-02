@@ -1,5 +1,7 @@
 # Bodu.Financial.DependencyInjection
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 `Microsoft.Extensions.DependencyInjection` integration for `Bodu.Financial`. Registers currency lookup, financial options, exchange-rate providers, named monetary contexts, and the JSON converter set behind a small fluent builder.
 
 ## Installation

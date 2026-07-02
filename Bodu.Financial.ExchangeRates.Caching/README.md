@@ -1,5 +1,7 @@
 # Bodu.Financial.ExchangeRates.Caching
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 A caching and composition layer for `Bodu.Financial` exchange-rate providers.
 
 > For the full walkthrough — quickstart, stacking (tiered read-through), aggregation,

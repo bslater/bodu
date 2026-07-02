@@ -1,5 +1,7 @@
 # Bodu.Financial.ExchangeRates.Xe
 
+> **API stability — Experimental.** The public API surface and behaviour are still evolving and may change or be removed without a major-version bump.
+
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **XE.com**
 charting-rates JSON service.
 
