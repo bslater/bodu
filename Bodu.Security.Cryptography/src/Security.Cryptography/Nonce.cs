@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -126,8 +128,16 @@ public readonly struct Nonce
     /// <returns>
     /// <see langword="true" /> if both values contain identical bytes; otherwise, <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// The comparison runs through
+    /// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> for a uniform,
+    /// content-independent duration across the secret-bearing value types, though a nonce is not itself a secret. A
+    /// length mismatch returns <see langword="false" /> immediately. No dedicated <c>FixedTimeEquals</c> member is
+    /// offered: a nonce is a public, non-repeating value and is not verified against attacker-supplied input, so
+    /// exposing one would wrongly imply a secret-comparison contract.
+    /// </remarks>
     public bool Equals(Nonce other) =>
-        AsSpan().SequenceEqual(other.AsSpan());
+        CryptographicOperations.FixedTimeEquals(AsSpan(), other.AsSpan());
 
     /// <summary>
     /// Determines whether this nonce equals the specified object.

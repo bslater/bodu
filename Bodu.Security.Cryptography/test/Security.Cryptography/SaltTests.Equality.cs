@@ -45,4 +45,28 @@ public sealed partial class SaltTests
     {
         Assert.IsTrue(default(Salt) == Salt.FromBytes([]));
     }
+
+    /// <summary>
+    /// Verifies that salts of different lengths compare unequal, pinning that the constant-time comparison returns
+    /// <see langword="false" /> on a length mismatch.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenLengthsDiffer_ShouldBeUnequal()
+    {
+        var left = Salt.FromBytes([0x01, 0x02, 0x03]);
+        var right = Salt.FromBytes([0x01, 0x02, 0x03, 0x04]);
+
+        Assert.IsFalse(left.Equals(right));
+        Assert.IsTrue(left != right);
+    }
+
+    /// <summary>
+    /// Verifies that the default (empty) instance compares unequal to a non-empty salt.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenComparingDefaultAndNonEmpty_ShouldBeUnequal()
+    {
+        Assert.IsFalse(default(Salt) == Salt.FromBytes([0x01]));
+        Assert.IsTrue(default(Salt) != Salt.FromBytes([0x01]));
+    }
 }

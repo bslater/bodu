@@ -161,11 +161,14 @@ public readonly struct HashValue
     /// <see langword="true" /> if both values contain identical bytes; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// This is an ordinary, short-circuiting comparison; use <see cref="FixedTimeEquals(HashValue)" /> when the
-    /// comparison is security-relevant.
+    /// The byte comparison is constant-time in content — it runs through
+    /// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />, so its
+    /// duration depends only on the operand length, not on where the bytes first differ. A length mismatch returns
+    /// <see langword="false" /> immediately (the length is not secret). <see cref="FixedTimeEquals(HashValue)" />
+    /// remains available and behaves identically.
     /// </remarks>
     public bool Equals(HashValue other) =>
-        AsSpan().SequenceEqual(other.AsSpan());
+        CryptographicOperations.FixedTimeEquals(AsSpan(), other.AsSpan());
 
     /// <summary>
     /// Determines whether this hash value equals the specified object.

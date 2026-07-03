@@ -49,4 +49,18 @@ public sealed partial class SignatureValueTests
 
         Assert.IsFalse(left.Equals(right));
     }
+
+    /// <summary>
+    /// Verifies that signatures with the same format but different lengths compare unequal, pinning that the
+    /// constant-time byte comparison returns <see langword="false" /> on a length mismatch.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenLengthsDiffer_ShouldBeUnequal()
+    {
+        var left = SignatureValue.FromBytes([0x01, 0x02, 0x03], SignatureFormat.Raw);
+        var right = SignatureValue.FromBytes([0x01, 0x02, 0x03, 0x04], SignatureFormat.Raw);
+
+        Assert.IsFalse(left.Equals(right));
+        Assert.IsTrue(left != right);
+    }
 }
