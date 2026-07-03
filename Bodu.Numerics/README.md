@@ -1,11 +1,14 @@
 # Bodu.Numerics
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability — Preview / Release Candidate.** The rational and interval algebra is functionally complete and suitable for trial use. `Fraction<T>` is a stable candidate; the interval-set and discrete-interval APIs may still receive source-breaking refinement before the 1.0 stable release. Breaking changes are otherwise reserved for a major-version bump per [SemVer](https://semver.org).
 
-Numeric value primitives for .NET. Ships two header types:
+Numeric value primitives for .NET. The public model is exact rational numbers plus an interval algebra:
 
 - **`Fraction<T>`** — an immutable, exact-rational value type generic over any `IBinaryInteger<T>` backing component.
-- **`Interval<T>`** — an immutable bounded interval generic over any `INumber<T>` endpoint type, with independent open/closed endpoints and set algebra.
+- **`Interval<T>`** — an immutable connected interval over any `INumber<T>` endpoint type, with independent open/closed (and unbounded) endpoints and set algebra.
+- **`DiscreteInterval<T>`** — a connected integer-domain interval over `IBinaryInteger<T>`, with successor/predecessor-aware emptiness and adjacency.
+- **`IntervalSet<T>`** — a normalized set of disconnected `Interval<T>` pieces, with N-ary union / intersection / difference / complement.
+- **`IntervalPair<T>`** / **`DiscreteIntervalPair<T>`** — allocation-conscious results of a binary difference / symmetric-difference (zero, one, or two disjoint pieces), each convertible to an `IntervalSet<T>`.
 
 > Money, currency, and foreign-exchange types ship in the companion **[Bodu.Financial](https://www.nuget.org/packages/Bodu.Financial)** package. Keeping them separate means a consumer of just `Fraction<T>` does not pull in the ~185-currency ISO 4217 catalogue and FX provider stack.
 

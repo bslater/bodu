@@ -3,13 +3,17 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-07-03. Since the previous revision the
+*Last updated: 2026-07-04. Since the previous revision the
 `Bodu.Security.Cryptography` interop wave has merged — RFC 7468 **PEM**
 key wrapping for Ed25519 / X25519 (closing the key-encoding story), the
 `Bodu.Security.Cryptography.DisableSimd` **AVX-512 opt-out** and capability
 contract, and the **`Hotp` / `Totp`** one-time-password codes — and the
 next engineering wave is set to **Numerics growth** (`Interval<T>`
-extensions, `BigDecimal`, running-statistics; see Active focus). The
+extensions, `BigDecimal`, running-statistics; see Active focus). A
+release-discipline pass has since moved `Bodu.Numerics` from Stable back
+to **Preview** until its serialization, result-type, and documentation
+conventions catch up with the expanded interval model (see *API-stability
+tiers*). The
 broader landed-surface summary from the prior rewrite still stands: (1) a
 **Bodu.Core** structural expansion — the
 `Collections.Generic.Graphs` / `Collections.Generic.Trees` pillars
@@ -813,7 +817,7 @@ No project sets `IsAotCompatible` or `IsTrimmable` today. Target state:
 blockquote directly under its README title. The assignment:
 
 - **Stable** — the mature core of the solution: `Bodu.Core`,
-  `Bodu.Numerics`, `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
+  `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
   `Bodu.Text.Encoding`, `Bodu.Security.Cryptography`, the text-format and
   configuration libraries (`Bodu.Text.Bencode` / `.Toml` / `.Formats` /
   `.Configuration`, `Bodu.Extensions.Configuration.Text`),
@@ -821,7 +825,11 @@ blockquote directly under its README title. The assignment:
   whole `Bodu.Globalization.Calendar` family (core, Builder, DI, Plugins,
   and the five data packs), and the shared
   `Bodu.Financial.ExchangeRates.DependencyInjection` plumbing.
-- **Preview** — `Bodu.Text.Yaml` (the serializer is read-first and its
+- **Preview** — `Bodu.Numerics` (the interval algebra expanded quickly —
+  `DiscreteInterval<T>`, `IntervalSet<T>`, and the pair result types are
+  still settling their serialization and result-type conventions, and the
+  `BigDecimal` wave is incoming; `Fraction<T>` is a stable candidate),
+  `Bodu.Text.Yaml` (the serializer is read-first and its
   write surface is still being rounded out) and the network-dependent
   exchange-rate family: the six web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda}`
   and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.
