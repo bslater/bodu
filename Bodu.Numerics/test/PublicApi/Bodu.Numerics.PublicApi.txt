@@ -1,3 +1,52 @@
+struct Bodu.Numerics.BigDecimal
+    constructor Void .ctor(System.Numerics.BigInteger)
+    constructor Void .ctor(System.Numerics.BigInteger, Int32)
+    field Int32 DefaultDivisionScale
+    method Bodu.Numerics.BigDecimal Abs(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Add(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Divide(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Divide(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal, Int32, System.MidpointRounding)
+    method Bodu.Numerics.BigDecimal Max(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Min(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Multiply(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Negate(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Pow(Bodu.Numerics.BigDecimal, Int32)
+    method Bodu.Numerics.BigDecimal Remainder(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Subtract(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Addition(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Decrement(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Division(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Increment(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Modulus(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Multiply(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Subtraction(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_UnaryNegation(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_UnaryPlus(Bodu.Numerics.BigDecimal)
+    method Boolean Equals(Bodu.Numerics.BigDecimal)
+    method Boolean Equals(System.Object)
+    method Boolean op_Equality(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Boolean op_GreaterThan(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Boolean op_GreaterThanOrEqual(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Boolean op_Inequality(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Boolean op_LessThan(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Boolean op_LessThanOrEqual(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Int32 CompareTo(Bodu.Numerics.BigDecimal)
+    method Int32 CompareTo(System.Object)
+    method Int32 GetHashCode()
+    method System.String ToString()
+    method Void Deconstruct(System.Numerics.BigInteger ByRef, Int32 ByRef)
+    property Bodu.Numerics.BigDecimal MinusOne
+    property Bodu.Numerics.BigDecimal One
+    property Bodu.Numerics.BigDecimal Ten
+    property Bodu.Numerics.BigDecimal Zero
+    property Boolean IsInteger
+    property Boolean IsNegative
+    property Boolean IsPositive
+    property Boolean IsZero
+    property Int32 Precision
+    property Int32 Scale
+    property Int32 Sign
+    property System.Numerics.BigInteger UnscaledValue
 class Bodu.Numerics.DiscreteInterval
     method Bodu.Numerics.DiscreteInterval`1[T] AtLeast[T](T)
     method Bodu.Numerics.DiscreteInterval`1[T] AtMost[T](T)
