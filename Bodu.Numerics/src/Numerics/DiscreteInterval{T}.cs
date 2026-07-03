@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DiscreteInterval{T}.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -17,15 +17,15 @@ namespace Bodu.Numerics;
 /// <remarks>
 /// <para>
 /// <see cref="DiscreteInterval{T}" /> is the discrete counterpart to the continuous <see cref="Interval{T}" />. Where
-/// <see cref="Interval{T}" /> models a continuum of real coordinates, <see cref="DiscreteInterval{T}" /> models the set of
-/// representable integers between its bounds, which changes two behaviours fundamentally:
+/// <see cref="Interval{T}" /> models a continuum of real coordinates, <see cref="DiscreteInterval{T}" /> models the set
+/// of representable integers between its bounds, which changes two behaviours fundamentally:
 /// </para>
 /// <list type="bullet">
 /// <item>
 /// <description>
 /// <b>Emptiness reflects representable membership.</b> An open interval whose bounds are consecutive integers — for
-/// example <c>(1, 2)</c> — contains no integer and is therefore empty, unlike the non-empty continuous interval over the
-/// same bounds.
+/// example <c>(1, 2)</c> — contains no integer and is therefore empty, unlike the non-empty continuous interval over
+/// the same bounds.
 /// </description>
 /// </item>
 /// <item>
@@ -38,8 +38,9 @@ namespace Bodu.Numerics;
 /// <para>
 /// Every interval is canonicalized to inclusive <c>[First, Last]</c> integer bounds at construction (an open bound is
 /// shifted inward by one), so all equal integer sets share one representation and the default value is the empty set.
-/// Unbounded and half-bounded intervals (<c>[a, +&#x221E;)</c>, <c>(-&#x221E;, b]</c>, <c>(-&#x221E;, +&#x221E;)</c>) are
-/// supported through the <see cref="AtLeast(T)" />, <see cref="AtMost(T)" />, and <see cref="All" /> factory family.
+/// Unbounded and half-bounded intervals (<c>[a, +&#x221E;)</c>, <c>(-&#x221E;, b]</c>, <c>(-&#x221E;, +&#x221E;)</c>)
+/// are supported through the <see cref="AtLeast(T)" />, <see cref="AtMost(T)" />, and <see cref="All" /> factory
+/// family.
 /// </para>
 /// </remarks>
 /// <example>
@@ -61,15 +62,6 @@ namespace Bodu.Numerics;
 public readonly partial struct DiscreteInterval<T>
     where T : IBinaryInteger<T>
 {
-    /// <summary>The inclusive lower bound (canonical), or <see cref="INumberBase{TSelf}.Zero" /> when lower-unbounded or empty.</summary>
-    private readonly T _first;
-
-    /// <summary>The inclusive upper bound (canonical), or <see cref="INumberBase{TSelf}.Zero" /> when upper-unbounded or empty.</summary>
-    private readonly T _last;
-
-    /// <summary>Packed flags. Bit 0 marks the lower side unbounded; bit 1 the upper side unbounded; bit 2 marks a populated bounded body. The empty interval has no bits set, so <c>default</c> is empty.</summary>
-    private readonly byte _flags;
-
     /// <summary>Flag bit marking the lower side as unbounded (<c>-&#x221E;</c>).</summary>
     private const byte LowerUnboundedFlag = 0b001;
 
@@ -81,6 +73,15 @@ public readonly partial struct DiscreteInterval<T>
 
     /// <summary>Combined mask of every flag that denotes a non-empty interval.</summary>
     private const byte NonEmptyMask = LowerUnboundedFlag | UpperUnboundedFlag | PopulatedFlag;
+
+    /// <summary>The inclusive lower bound (canonical), or <see cref="INumberBase{TSelf}.Zero" /> when lower-unbounded or empty.</summary>
+    private readonly T _first;
+
+    /// <summary>The inclusive upper bound (canonical), or <see cref="INumberBase{TSelf}.Zero" /> when upper-unbounded or empty.</summary>
+    private readonly T _last;
+
+    /// <summary>Packed flags. Bit 0 marks the lower side unbounded; bit 1 the upper side unbounded; bit 2 marks a populated bounded body. The empty interval has no bits set, so <c>default</c> is empty.</summary>
+    private readonly byte _flags;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DiscreteInterval{T}" /> struct from canonical inclusive bounds and
@@ -97,8 +98,8 @@ public readonly partial struct DiscreteInterval<T>
     }
 
     /// <summary>
-    /// Creates a bounded interval from inclusive integer bounds, collapsing to <see cref="Empty" /> when the bounds do not
-    /// admit any integer.
+    /// Creates a bounded interval from inclusive integer bounds, collapsing to <see cref="Empty" /> when the bounds do
+    /// not admit any integer.
     /// </summary>
     /// <param name="first">The inclusive lower bound.</param>
     /// <param name="last">The inclusive upper bound.</param>

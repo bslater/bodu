@@ -137,7 +137,7 @@ public sealed class IntervalJsonConverter<T>
                     typeof(T).Name));
         }
 
-        string text = reader.GetString()!;
+        string text = reader.GetString() !;
         return !Interval<T>.TryParse(text, CultureInfo.InvariantCulture, out Interval<T> result)
             ? throw new JsonException(
                 string.Format(
@@ -183,7 +183,7 @@ public sealed class IntervalJsonConverter<T>
             if (reader.TokenType != JsonTokenType.PropertyName)
                 throw new JsonException(NumericsResourceStrings.Json_Invalid_ExpectedPropertyName);
 
-            string propertyName = reader.GetString()!;
+            string propertyName = reader.GetString() !;
             if (!reader.Read())
                 throw new JsonException(NumericsResourceStrings.Json_Invalid_UnexpectedEnd);
 

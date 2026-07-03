@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DiscreteInterval{T}.IEquatable.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -9,11 +9,13 @@ namespace Bodu.Numerics;
 public readonly partial struct DiscreteInterval<T> : IEquatable<DiscreteInterval<T>>
 {
     /// <summary>
-    /// Determines whether this interval equals <paramref name="other" /> as a set of integers. Because every interval is
-    /// canonicalized to a single representation, equal sets compare equal by their stored fields.
+    /// Determines whether this interval equals <paramref name="other" /> as a set of integers. Because every interval
+    /// is canonicalized to a single representation, equal sets compare equal by their stored fields.
     /// </summary>
     /// <param name="other">The interval to compare against.</param>
-    /// <returns><see langword="true" /> when the two describe the same integer set; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the two describe the same integer set; otherwise <see langword="false" />.
+    /// </returns>
     public bool Equals(DiscreteInterval<T> other) =>
         _flags == other._flags && _first == other._first && _last == other._last;
 
@@ -21,7 +23,10 @@ public readonly partial struct DiscreteInterval<T> : IEquatable<DiscreteInterval
     /// Determines whether this interval equals the boxed <paramref name="obj" />.
     /// </summary>
     /// <param name="obj">The object to compare against.</param>
-    /// <returns><see langword="true" /> when <paramref name="obj" /> is an equal <see cref="DiscreteInterval{T}" />; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="obj" /> is an equal <see cref="DiscreteInterval{T}" />; otherwise
+    /// <see langword="false" />.
+    /// </returns>
     public override bool Equals(object? obj) =>
         obj is DiscreteInterval<T> other && Equals(other);
 

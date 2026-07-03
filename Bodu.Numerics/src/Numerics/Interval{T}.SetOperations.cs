@@ -129,7 +129,9 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <param name="a">The interval contributing the lower endpoint.</param>
     /// <param name="b">The interval contributing the upper endpoint.</param>
-    /// <returns><see langword="true" /> when <paramref name="a" />'s lower is below <paramref name="b" />'s upper.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="a" />'s lower is below <paramref name="b" />'s upper.
+    /// </returns>
     private static bool LowerBelowUpper(Interval<T> a, Interval<T> b)
     {
         if (a.LowerUnbounded || b.UpperUnbounded)
@@ -188,8 +190,8 @@ public readonly partial struct Interval<T>
     /// <param name="other">The interval whose values are removed from this one.</param>
     /// <returns>
     /// An <see cref="IntervalPair{T}" /> holding the remainder: empty when this interval is empty or wholly covered by
-    /// <paramref name="other" />; a single interval when <paramref name="other" /> is disjoint or trims one side; and two
-    /// disjoint intervals when <paramref name="other" /> lies strictly inside this interval.
+    /// <paramref name="other" />; a single interval when <paramref name="other" /> is disjoint or trims one side; and
+    /// two disjoint intervals when <paramref name="other" /> lies strictly inside this interval.
     /// </returns>
     /// <remarks>
     /// The endpoint at each cut flips inclusivity: removing a closed bound leaves an open bound on the remainder, and
@@ -240,8 +242,8 @@ public readonly partial struct Interval<T>
     }
 
     /// <summary>
-    /// Returns the symmetric difference of this interval and <paramref name="other" /> — the values in exactly one of the
-    /// two, <c>(this \ other) &#x222A; (other \ this)</c> — as zero, one, or two disjoint intervals.
+    /// Returns the symmetric difference of this interval and <paramref name="other" /> — the values in exactly one of
+    /// the two, <c>(this \ other) &#x222A; (other \ this)</c> — as zero, one, or two disjoint intervals.
     /// </summary>
     /// <param name="other">The interval to symmetric-difference with.</param>
     /// <returns>An <see cref="IntervalPair{T}" /> holding the values covered by exactly one operand.</returns>
@@ -369,9 +371,9 @@ public readonly partial struct Interval<T>
         || (!other.UpperUnbounded && !LowerUnbounded && other._upper == _lower && (other.UpperInclusive || LowerInclusive));
 
     /// <summary>
-    /// Compares this interval's lower endpoint with <paramref name="other" />'s, ordering an unbounded lower below every
-    /// finite lower and, on a value tie, an inclusive (closed) lower below an open one — so a smaller result denotes the
-    /// endpoint that admits the leftmost values.
+    /// Compares this interval's lower endpoint with <paramref name="other" />'s, ordering an unbounded lower below
+    /// every finite lower and, on a value tie, an inclusive (closed) lower below an open one — so a smaller result
+    /// denotes the endpoint that admits the leftmost values.
     /// </summary>
     /// <param name="other">The interval whose lower endpoint is compared.</param>
     /// <returns>A negative value when this lower is further left, zero when equivalent, otherwise positive.</returns>
@@ -396,9 +398,9 @@ public readonly partial struct Interval<T>
         CompareLowerWith(other);
 
     /// <summary>
-    /// Compares this interval's upper endpoint with <paramref name="other" />'s, ordering an unbounded upper above every
-    /// finite upper and, on a value tie, an inclusive (closed) upper above an open one — so a larger result denotes the
-    /// endpoint that admits the rightmost values.
+    /// Compares this interval's upper endpoint with <paramref name="other" />'s, ordering an unbounded upper above
+    /// every finite upper and, on a value tie, an inclusive (closed) upper above an open one — so a larger result
+    /// denotes the endpoint that admits the rightmost values.
     /// </summary>
     /// <param name="other">The interval whose upper endpoint is compared.</param>
     /// <returns>A negative value when this upper is further left, zero when equivalent, otherwise positive.</returns>
@@ -417,7 +419,9 @@ public readonly partial struct Interval<T>
     /// Returns the lower half of this interval as an endpoint value and its packed lower flag, for reassembling a new
     /// interval from selected endpoints.
     /// </summary>
-    /// <returns>The lower endpoint value (<see cref="INumberBase{TSelf}.Zero" /> when unbounded) and its flag bits.</returns>
+    /// <returns>
+    /// The lower endpoint value (<see cref="INumberBase{TSelf}.Zero" /> when unbounded) and its flag bits.
+    /// </returns>
     private (T Value, byte Flag) LowerPart() =>
         LowerUnbounded ? (T.Zero, LowerUnboundedFlag) : (_lower, (byte)(LowerInclusive ? LowerInclusiveFlag : 0));
 
@@ -425,7 +429,9 @@ public readonly partial struct Interval<T>
     /// Returns the upper half of this interval as an endpoint value and its packed upper flag, for reassembling a new
     /// interval from selected endpoints.
     /// </summary>
-    /// <returns>The upper endpoint value (<see cref="INumberBase{TSelf}.Zero" /> when unbounded) and its flag bits.</returns>
+    /// <returns>
+    /// The upper endpoint value (<see cref="INumberBase{TSelf}.Zero" /> when unbounded) and its flag bits.
+    /// </returns>
     private (T Value, byte Flag) UpperPart() =>
         UpperUnbounded ? (T.Zero, UpperUnboundedFlag) : (_upper, (byte)(UpperInclusive ? UpperInclusiveFlag : 0));
 }

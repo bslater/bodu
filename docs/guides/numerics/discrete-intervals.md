@@ -50,16 +50,20 @@ DiscreteInterval<int>.Closed(1, 2)
 
 `DiscreteInterval<T>` offers `First` / `Last` / `IsBounded` / `IsEmpty` /
 `Count` (which throws for an unbounded interval), `Contains`, `Overlaps`,
-`Intersect`, and `TryUnion`; the `Closed` / `Open` / `ClosedOpen` /
-`OpenClosed` / `Singleton` / `Empty` factories and the unbounded `All` /
-`AtLeast` / `GreaterThan` / `AtMost` / `LessThan` family (with type-inferring
-`DiscreteInterval.*` helpers); equality; and `ToInterval()` /
-`FromInterval(...)` conversions to and from the continuous type.
+`Intersect`, `TryUnion`, `Difference`, and `SymmetricDifference` (the last two
+returning a <xref:Bodu.Numerics.DiscreteIntervalPair`1> of up to two runs); the
+`Closed` / `Open` / `ClosedOpen` / `OpenClosed` / `Singleton` / `Empty`
+factories and the unbounded `All` / `AtLeast` / `GreaterThan` / `AtMost` /
+`LessThan` family (with type-inferring `DiscreteInterval.*` helpers); equality;
+and `ToInterval()` / `FromInterval(...)` conversions to and from the continuous
+type.
 
-> [!NOTE]
-> `Difference` / `SymmetricDifference` on the discrete type, and a first-class
-> N-ary interval-set type, are planned additions; today the continuous
-> `Interval<T>` carries the difference surface.
+```csharp
+DiscreteInterval<int>.Closed(0, 10).Difference(DiscreteInterval<int>.Closed(3, 5));   // [0, 2] ∪ [6, 10]
+```
+
+For an arbitrary union of ranges over the continuous domain, see
+[`IntervalSet<T>`](interval-algebra.md#disconnected-sets-with-intervalsett).
 
 ## See also
 

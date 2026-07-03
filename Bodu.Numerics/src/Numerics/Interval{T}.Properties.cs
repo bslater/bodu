@@ -48,7 +48,10 @@ public readonly partial struct Interval<T>
     /// Gets a value indicating whether the lower side is unbounded — the interval extends to <c>-&#x221E;</c> with no
     /// finite lower limit.
     /// </summary>
-    /// <value><see langword="true" /> when the interval is lower-unbounded (i.e. <c>(-&#x221E;, ...</c>); otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> when the interval is lower-unbounded (i.e. <c>(-&#x221E;, ...</c>); otherwise
+    /// <see langword="false" />.
+    /// </value>
     public bool LowerUnbounded =>
         (_flags & LowerUnboundedFlag) != 0;
 
@@ -56,7 +59,10 @@ public readonly partial struct Interval<T>
     /// Gets a value indicating whether the upper side is unbounded — the interval extends to <c>+&#x221E;</c> with no
     /// finite upper limit.
     /// </summary>
-    /// <value><see langword="true" /> when the interval is upper-unbounded (i.e. <c>..., +&#x221E;)</c>); otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> when the interval is upper-unbounded (i.e. <c>..., +&#x221E;)</c>); otherwise
+    /// <see langword="false" />.
+    /// </value>
     public bool UpperUnbounded =>
         (_flags & UpperUnboundedFlag) != 0;
 
@@ -137,7 +143,9 @@ public readonly partial struct Interval<T>
     /// </para>
     /// </remarks>
     /// <value>The non-negative length of the interval, or <see cref="INumberBase{TSelf}.Zero" /> when empty.</value>
-    /// <exception cref="InvalidOperationException">The interval is unbounded (<see cref="IsBounded" /> is <see langword="false" />).</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The interval is unbounded (<see cref="IsBounded" /> is <see langword="false" />).
+    /// </exception>
     public T Length =>
         IsEmpty ? T.Zero
         : IsBounded ? _upper - _lower

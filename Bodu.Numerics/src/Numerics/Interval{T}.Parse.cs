@@ -153,7 +153,7 @@ public readonly partial struct Interval<T> :
         }
 
         ReadOnlySpan<char> lowerText = body[..separatorIndex].Trim();
-        ReadOnlySpan<char> upperText = body[(separatorIndex + 1)..].Trim();
+        ReadOnlySpan<char> upperText = body[(separatorIndex + 1) ..].Trim();
 
         if (lowerText.IsEmpty || upperText.IsEmpty)
         {

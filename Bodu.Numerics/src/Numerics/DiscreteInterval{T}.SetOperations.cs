@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DiscreteInterval{T}.SetOperations.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -12,7 +12,9 @@ public readonly partial struct DiscreteInterval<T>
     /// Determines whether <paramref name="value" /> is an integer of this interval.
     /// </summary>
     /// <param name="value">The integer to test.</param>
-    /// <returns><see langword="true" /> when the interval contains <paramref name="value" />; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the interval contains <paramref name="value" />; otherwise <see langword="false" />.
+    /// </returns>
     public bool Contains(T value)
     {
         if (IsEmpty)
@@ -27,7 +29,9 @@ public readonly partial struct DiscreteInterval<T>
     /// Determines whether this interval shares any integer with <paramref name="other" />.
     /// </summary>
     /// <param name="other">The interval to test for overlap.</param>
-    /// <returns><see langword="true" /> when the two share at least one integer; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the two share at least one integer; otherwise <see langword="false" />.
+    /// </returns>
     public bool Overlaps(DiscreteInterval<T> other)
     {
         if (IsEmpty || other.IsEmpty)
@@ -67,10 +71,12 @@ public readonly partial struct DiscreteInterval<T>
     /// integers, treating successor-adjacent intervals (no integer between them) as contiguous.
     /// </summary>
     /// <param name="other">The interval to union with.</param>
-    /// <param name="result">When this method returns <see langword="true" />, the contiguous union; otherwise <see cref="Empty" />.</param>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the contiguous union; otherwise <see cref="Empty" />.
+    /// </param>
     /// <returns>
-    /// <see langword="true" /> when the two intervals overlap or are successor-adjacent; <see langword="false" /> when an
-    /// integer gap separates them so their union needs two runs.
+    /// <see langword="true" /> when the two intervals overlap or are successor-adjacent; <see langword="false" /> when
+    /// an integer gap separates them so their union needs two runs.
     /// </returns>
     /// <example>
     /// <code language="csharp">
@@ -118,28 +124,36 @@ public readonly partial struct DiscreteInterval<T>
     /// </summary>
     /// <param name="a">The interval contributing the lower bound.</param>
     /// <param name="b">The interval contributing the upper bound.</param>
-    /// <returns><see langword="true" /> when <paramref name="a" />'s lower is at or below <paramref name="b" />'s upper.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="a" />'s lower is at or below <paramref name="b" />'s upper.
+    /// </returns>
     private static bool FirstAtMostLast(DiscreteInterval<T> a, DiscreteInterval<T> b) =>
         a.LowerUnbounded || b.UpperUnbounded || a._first <= b._last;
 
     /// <summary>
-    /// Determines whether this interval and <paramref name="other" /> are successor-adjacent — the successor of one's last
-    /// integer is the other's first integer, leaving no integer between them.
+    /// Determines whether this interval and <paramref name="other" /> are successor-adjacent — the successor of one's
+    /// last integer is the other's first integer, leaving no integer between them.
     /// </summary>
     /// <param name="other">The interval to test.</param>
-    /// <returns><see langword="true" /> when the intervals are successor-adjacent; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the intervals are successor-adjacent; otherwise <see langword="false" />.
+    /// </returns>
     private bool IsSuccessorAdjacent(DiscreteInterval<T> other) =>
         (!UpperUnbounded && !other.LowerUnbounded && _last + T.One == other._first)
         || (!other.UpperUnbounded && !LowerUnbounded && other._last + T.One == _first);
 
-    /// <summary>Returns the greater of two integers.</summary>
+    /// <summary>
+    /// Returns the greater of two integers.
+    /// </summary>
     /// <param name="a">The first integer.</param>
     /// <param name="b">The second integer.</param>
     /// <returns>The greater value.</returns>
     private static T Max(T a, T b) =>
         a >= b ? a : b;
 
-    /// <summary>Returns the lesser of two integers.</summary>
+    /// <summary>
+    /// Returns the lesser of two integers.
+    /// </summary>
     /// <param name="a">The first integer.</param>
     /// <param name="b">The second integer.</param>
     /// <returns>The lesser value.</returns>

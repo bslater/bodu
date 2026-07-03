@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IntervalPair{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="DiscreteIntervalPair{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,58 +9,42 @@ using System.Numerics;
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Represents the result of a binary interval set operation as zero, one, or two disjoint intervals in ascending order
-/// — the maximum number of pieces that subtracting or symmetric-differencing two intervals can produce.
+/// Represents the result of a binary <see cref="DiscreteInterval{T}" /> set operation as zero, one, or two disjoint,
+/// non-adjacent intervals in ascending order — the discrete counterpart to <see cref="IntervalPair{T}" />.
 /// </summary>
-/// <typeparam name="T">The numeric type used for the intervals' endpoints.</typeparam>
+/// <typeparam name="T">The integer type used for the intervals' endpoints.</typeparam>
 /// <remarks>
-/// <para>
-/// <see cref="Interval{T}.Difference(Interval{T})" /> and <see cref="Interval{T}.SymmetricDifference(Interval{T})" />
-/// return this type. Because removing one interval from another leaves at most a left and a right remainder, the result
-/// never needs more than two pieces, so this allocation-free value type stores them inline rather than in a heap
-/// collection. When fewer than two pieces are present the surplus slots are the empty interval and are not enumerated.
-/// </para>
-/// <para>
-/// The pieces are ordered lowest-first and are guaranteed disjoint and non-adjacent. Enumerate with a <c>foreach</c>
-/// loop, index them via <see cref="this[int]" /> (0-based, bounded by <see cref="Count" />), or read
-/// <see cref="First" /> and <see cref="Second" /> directly.
-/// </para>
+/// Returned by <see cref="DiscreteInterval{T}.Difference(DiscreteInterval{T})" /> and
+/// <see cref="DiscreteInterval{T}.SymmetricDifference(DiscreteInterval{T})" />. Because subtracting one integer
+/// interval from another leaves at most a left and a right remainder, the result never needs more than two pieces, so
+/// this allocation-free value type stores them inline.
 /// </remarks>
-/// <example>
-/// <code language="csharp">
-///<![CDATA[
-/// IntervalPair<int> diff = Interval<int>.Closed(0, 10).Difference(Interval<int>.Closed(3, 5));
-/// diff.Count;          // 2
-/// foreach (var piece in diff)
-///     Console.WriteLine(piece);   // "[0, 3)" then "(5, 10]"
-///]]>
-/// </code>
-/// </example>
-public readonly struct IntervalPair<T>
-    where T : INumber<T>
+public readonly struct DiscreteIntervalPair<T>
+    where T : IBinaryInteger<T>
 {
     /// <summary>
-    /// The first (lower) piece; only meaningful when <see cref="_count" /> is at least one.
+    /// The first (lower) run; only meaningful when <see cref="_count" /> is at least one.
     /// </summary>
-    private readonly Interval<T> _first;
+    private readonly DiscreteInterval<T> _first;
 
     /// <summary>
-    /// The second (upper) piece; only meaningful when <see cref="_count" /> is two.
+    /// The second (upper) run; only meaningful when <see cref="_count" /> is two.
     /// </summary>
-    private readonly Interval<T> _second;
+    private readonly DiscreteInterval<T> _second;
 
     /// <summary>
-    /// The number of non-empty disjoint pieces this pair holds (0, 1, or 2).
+    /// The number of non-empty disjoint runs this pair holds (0, 1, or 2).
     /// </summary>
     private readonly int _count;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IntervalPair{T}" /> struct from already-packed, ordered pieces.
+    /// Initializes a new instance of the <see cref="DiscreteIntervalPair{T}" /> struct from already-packed, ordered
+    /// pieces.
     /// </summary>
     /// <param name="first">The first (lower) piece.</param>
     /// <param name="second">The second (upper) piece.</param>
     /// <param name="count">The number of non-empty pieces.</param>
-    private IntervalPair(Interval<T> first, Interval<T> second, int count)
+    private DiscreteIntervalPair(DiscreteInterval<T> first, DiscreteInterval<T> second, int count)
     {
         _first = first;
         _second = second;
@@ -70,8 +54,8 @@ public readonly struct IntervalPair<T>
     /// <summary>
     /// Gets the empty result — zero pieces.
     /// </summary>
-    /// <value>An <see cref="IntervalPair{T}" /> whose <see cref="Count" /> is zero.</value>
-    public static IntervalPair<T> Empty =>
+    /// <value>A <see cref="DiscreteIntervalPair{T}" /> whose <see cref="Count" /> is zero.</value>
+    public static DiscreteIntervalPair<T> Empty =>
         default;
 
     /// <summary>
@@ -89,17 +73,18 @@ public readonly struct IntervalPair<T>
         _count == 0;
 
     /// <summary>
-    /// Gets the first (lower) piece, or <see cref="Interval{T}.Empty" /> when the result is empty.
+    /// Gets the first (lower) piece, or <see cref="DiscreteInterval{T}.Empty" /> when the result is empty.
     /// </summary>
     /// <value>The lowest interval in the result.</value>
-    public Interval<T> First =>
+    public DiscreteInterval<T> First =>
         _first;
 
     /// <summary>
-    /// Gets the second (upper) piece, or <see cref="Interval{T}.Empty" /> when the result has fewer than two pieces.
+    /// Gets the second (upper) piece, or <see cref="DiscreteInterval{T}.Empty" /> when the result has fewer than two
+    /// pieces.
     /// </summary>
     /// <value>The higher interval in the result.</value>
-    public Interval<T> Second =>
+    public DiscreteInterval<T> Second =>
         _second;
 
     /// <summary>
@@ -110,7 +95,7 @@ public readonly struct IntervalPair<T>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or not less than <see cref="Count" />.
     /// </exception>
-    public Interval<T> this[int index] =>
+    public DiscreteInterval<T> this[int index] =>
         index switch
         {
             0 when _count > 0 => _first,
@@ -125,14 +110,14 @@ public readonly struct IntervalPair<T>
     /// <param name="first">The lower candidate piece (may be empty).</param>
     /// <param name="second">The upper candidate piece (may be empty).</param>
     /// <returns>The packed result.</returns>
-    internal static IntervalPair<T> Create(Interval<T> first, Interval<T> second)
+    internal static DiscreteIntervalPair<T> Create(DiscreteInterval<T> first, DiscreteInterval<T> second)
     {
         if (second.IsEmpty)
-            return first.IsEmpty ? default : new IntervalPair<T>(first, Interval<T>.Empty, 1);
+            return first.IsEmpty ? default : new DiscreteIntervalPair<T>(first, DiscreteInterval<T>.Empty, 1);
 
         return first.IsEmpty
-            ? new IntervalPair<T>(second, Interval<T>.Empty, 1)
-            : new IntervalPair<T>(first, second, 2);
+            ? new DiscreteIntervalPair<T>(second, DiscreteInterval<T>.Empty, 1)
+            : new DiscreteIntervalPair<T>(first, second, 2);
     }
 
     /// <summary>
@@ -143,8 +128,7 @@ public readonly struct IntervalPair<T>
         new(this);
 
     /// <summary>
-    /// Returns a set-notation string representation of the result — the empty-set glyph when empty, otherwise the
-    /// pieces joined by the union symbol.
+    /// Returns a set-notation string representation of the result.
     /// </summary>
     /// <returns>The formatted result.</returns>
     public override string ToString() =>
@@ -156,17 +140,17 @@ public readonly struct IntervalPair<T>
         };
 
     /// <summary>
-    /// Enumerates the non-empty pieces of an <see cref="IntervalPair{T}" /> without allocating.
+    /// Enumerates the non-empty pieces of a <see cref="DiscreteIntervalPair{T}" /> without allocating.
     /// </summary>
     public struct Enumerator
     {
         /// <summary>
         /// The pair being enumerated.
         /// </summary>
-        private readonly IntervalPair<T> _pair;
+        private readonly DiscreteIntervalPair<T> _pair;
 
         /// <summary>
-        /// The zero-based index of the current piece, or -1 before the first <see cref="MoveNext" />.
+        /// The zero-based index of the current run, or -1 before the first <see cref="MoveNext" />.
         /// </summary>
         private int _index;
 
@@ -174,7 +158,7 @@ public readonly struct IntervalPair<T>
         /// Initializes a new instance of the <see cref="Enumerator" /> struct positioned before the first piece.
         /// </summary>
         /// <param name="pair">The result to enumerate.</param>
-        internal Enumerator(IntervalPair<T> pair)
+        internal Enumerator(DiscreteIntervalPair<T> pair)
         {
             _pair = pair;
             _index = -1;
@@ -184,7 +168,7 @@ public readonly struct IntervalPair<T>
         /// Gets the piece at the current position.
         /// </summary>
         /// <value>The current interval.</value>
-        public readonly Interval<T> Current =>
+        public readonly DiscreteInterval<T> Current =>
             _index == 0 ? _pair._first : _pair._second;
 
         /// <summary>

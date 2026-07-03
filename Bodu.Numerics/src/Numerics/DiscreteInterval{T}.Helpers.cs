@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DiscreteInterval{T}.Helpers.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -9,8 +9,8 @@ using System.Numerics;
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Provides type-inferring factory methods for <see cref="DiscreteInterval{T}" />, mirroring the static factories on the
-/// type but inferring the endpoint type from the arguments.
+/// Provides type-inferring factory methods for <see cref="DiscreteInterval{T}" />, mirroring the static factories on
+/// the type but inferring the endpoint type from the arguments.
 /// </summary>
 public static class DiscreteInterval
 {
@@ -48,7 +48,8 @@ public static class DiscreteInterval
         DiscreteInterval<T>.ClosedOpen(lower, upper);
 
     /// <summary>
-    /// Creates an open-closed interval <c>(lower, upper]</c> with <typeparamref name="T" /> inferred from the arguments.
+    /// Creates an open-closed interval <c>(lower, upper]</c> with <typeparamref name="T" /> inferred from the
+    /// arguments.
     /// </summary>
     /// <typeparam name="T">The integer endpoint type, inferred at the call site.</typeparam>
     /// <param name="lower">The exclusive lower bound.</param>
@@ -59,7 +60,8 @@ public static class DiscreteInterval
         DiscreteInterval<T>.OpenClosed(lower, upper);
 
     /// <summary>
-    /// Creates a single-integer interval <c>[value, value]</c> with <typeparamref name="T" /> inferred from the argument.
+    /// Creates a single-integer interval <c>[value, value]</c> with <typeparamref name="T" /> inferred from the
+    /// argument.
     /// </summary>
     /// <typeparam name="T">The integer endpoint type, inferred at the call site.</typeparam>
     /// <param name="value">The single integer.</param>
@@ -69,7 +71,8 @@ public static class DiscreteInterval
         DiscreteInterval<T>.Singleton(value);
 
     /// <summary>
-    /// Creates a lower-bounded interval <c>[lower, +&#x221E;)</c> with <typeparamref name="T" /> inferred from the argument.
+    /// Creates a lower-bounded interval <c>[lower, +&#x221E;)</c> with <typeparamref name="T" /> inferred from the
+    /// argument.
     /// </summary>
     /// <typeparam name="T">The integer endpoint type, inferred at the call site.</typeparam>
     /// <param name="lower">The inclusive lower bound.</param>
@@ -79,7 +82,8 @@ public static class DiscreteInterval
         DiscreteInterval<T>.AtLeast(lower);
 
     /// <summary>
-    /// Creates a lower-bounded interval <c>(lower, +&#x221E;)</c> with <typeparamref name="T" /> inferred from the argument.
+    /// Creates a lower-bounded interval <c>(lower, +&#x221E;)</c> with <typeparamref name="T" /> inferred from the
+    /// argument.
     /// </summary>
     /// <typeparam name="T">The integer endpoint type, inferred at the call site.</typeparam>
     /// <param name="lower">The exclusive lower bound.</param>
@@ -89,7 +93,8 @@ public static class DiscreteInterval
         DiscreteInterval<T>.GreaterThan(lower);
 
     /// <summary>
-    /// Creates an upper-bounded interval <c>(-&#x221E;, upper]</c> with <typeparamref name="T" /> inferred from the argument.
+    /// Creates an upper-bounded interval <c>(-&#x221E;, upper]</c> with <typeparamref name="T" /> inferred from the
+    /// argument.
     /// </summary>
     /// <typeparam name="T">The integer endpoint type, inferred at the call site.</typeparam>
     /// <param name="upper">The inclusive upper bound.</param>
@@ -99,7 +104,8 @@ public static class DiscreteInterval
         DiscreteInterval<T>.AtMost(upper);
 
     /// <summary>
-    /// Creates an upper-bounded interval <c>(-&#x221E;, upper)</c> with <typeparamref name="T" /> inferred from the argument.
+    /// Creates an upper-bounded interval <c>(-&#x221E;, upper)</c> with <typeparamref name="T" /> inferred from the
+    /// argument.
     /// </summary>
     /// <typeparam name="T">The integer endpoint type, inferred at the call site.</typeparam>
     /// <param name="upper">The exclusive upper bound.</param>

@@ -202,8 +202,10 @@ public readonly partial struct Interval<T>
     /// Gets the unbounded interval <c>(-&#x221E;, +&#x221E;)</c> — the interval that contains every value of
     /// <typeparamref name="T" />.
     /// </summary>
-    /// <value>An interval with both sides unbounded; <see cref="IsBounded" /> is <see langword="false" /> and
-    /// <see cref="Contains(T)" /> is <see langword="true" /> for every value.</value>
+    /// <value>
+    /// An interval with both sides unbounded; <see cref="IsBounded" /> is <see langword="false" /> and
+    /// <see cref="Contains(T)" /> is <see langword="true" /> for every value.
+    /// </value>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[

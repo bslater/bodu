@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DiscreteInterval{T}.Formatting.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -11,8 +11,8 @@ namespace Bodu.Numerics;
 public readonly partial struct DiscreteInterval<T>
 {
     /// <summary>
-    /// Returns the canonical bracket-notation string representation — always closed on a finite side, using the infinity
-    /// glyphs on an unbounded side, and the empty-set glyph for the empty interval.
+    /// Returns the canonical bracket-notation string representation — always closed on a finite side, using the
+    /// infinity glyphs on an unbounded side, and the empty-set glyph for the empty interval.
     /// </summary>
     /// <returns>
     /// <c>"[first, last]"</c> for a bounded interval, <c>"[first, +&#x221E;)"</c> / <c>"(-&#x221E;, last]"</c> /

@@ -63,6 +63,11 @@ that ship in .NET 8+.
 </div>
 
 <div class="bodu-card">
+  <h3><a href="interval-algebra.md#disconnected-sets-with-intervalsett">Disconnected sets</a></h3>
+  <p><code>IntervalSet&lt;T&gt;</code> — a normalized union of disjoint intervals with N-ary union, intersection, difference, and complement over the whole line.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="generic-math-constraints.md">Generic math constraints</a></h3>
   <p>Writing code generic over <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code> through the .NET <code>INumber&lt;T&gt;</code> / <code>IBinaryInteger&lt;T&gt;</code> abstractions.</p>
 </div>

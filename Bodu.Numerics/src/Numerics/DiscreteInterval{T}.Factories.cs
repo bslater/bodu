@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DiscreteInterval{T}.Factories.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -29,7 +29,9 @@ public readonly partial struct DiscreteInterval<T>
     /// </summary>
     /// <param name="lower">The inclusive lower bound.</param>
     /// <param name="upper">The inclusive upper bound.</param>
-    /// <returns>The interval, or <see cref="Empty" /> when <paramref name="lower" /> exceeds <paramref name="upper" />.</returns>
+    /// <returns>
+    /// The interval, or <see cref="Empty" /> when <paramref name="lower" /> exceeds <paramref name="upper" />.
+    /// </returns>
     public static DiscreteInterval<T> Closed(T lower, T upper) =>
         FromInclusive(lower, upper);
 
@@ -44,8 +46,8 @@ public readonly partial struct DiscreteInterval<T>
         FromInclusive(lower + T.One, upper - T.One);
 
     /// <summary>
-    /// Creates the closed-open interval <c>[lower, upper)</c> — every integer from <paramref name="lower" /> inclusive up
-    /// to but excluding <paramref name="upper" />.
+    /// Creates the closed-open interval <c>[lower, upper)</c> — every integer from <paramref name="lower" /> inclusive
+    /// up to but excluding <paramref name="upper" />.
     /// </summary>
     /// <param name="lower">The inclusive lower bound.</param>
     /// <param name="upper">The exclusive upper bound.</param>
@@ -81,7 +83,8 @@ public readonly partial struct DiscreteInterval<T>
         new(lower, T.Zero, UpperUnboundedFlag);
 
     /// <summary>
-    /// Creates the lower-bounded interval <c>(lower, +&#x221E;)</c> — every integer greater than <paramref name="lower" />.
+    /// Creates the lower-bounded interval <c>(lower, +&#x221E;)</c> — every integer greater than
+    /// <paramref name="lower" />.
     /// </summary>
     /// <param name="lower">The exclusive lower bound.</param>
     /// <returns>An upper-unbounded interval.</returns>

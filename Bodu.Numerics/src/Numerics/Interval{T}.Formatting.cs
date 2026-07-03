@@ -133,8 +133,9 @@ public readonly partial struct Interval<T> :
     }
 
     /// <summary>
-    /// Returns the endpoint separator for the given culture. A semicolon is used when the culture's decimal separator is
-    /// a comma, so that a decimal interval such as <c>[1,5; 2,5]</c> parses back unambiguously; otherwise a comma is used.
+    /// Returns the endpoint separator for the given culture. A semicolon is used when the culture's decimal separator
+    /// is a comma, so that a decimal interval such as <c>[1,5; 2,5]</c> parses back unambiguously; otherwise a comma is
+    /// used.
     /// </summary>
     /// <param name="provider">The culture used to render the endpoints.</param>
     /// <returns><c>"; "</c> for comma-decimal cultures; otherwise <c>", "</c>.</returns>

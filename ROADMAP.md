@@ -210,9 +210,11 @@ is now:
      operators. The architecture review's continuous-vs-discrete finding was
      also resolved by adding **`DiscreteInterval<T>`** (integer domain,
      successor-aware emptiness and adjacency), plus hardening (NaN rejection,
-     culture-safe text) and an exhaustive membership-law test harness.
-     *Follow-ups:* `DiscreteInterval<T>` `Difference` / `SymmetricDifference`,
-     and a first-class N-ary `IntervalSet<T>`.
+     culture-safe text) and an exhaustive membership-law test harness. The
+     `DiscreteInterval<T>` `Difference` / `SymmetricDifference` follow-up (via
+     `DiscreteIntervalPair<T>`) and the first-class N-ary `IntervalSet<T>`
+     (normalized disconnected ranges with N-ary union / intersection /
+     `Except` / `Complement`) have since landed as well.
    - **`BigDecimal`** — an arbitrary-precision decimal (`BigInteger`
      mantissa + scale) with the `INumber<BigDecimal>` generic-math surface,
      parse/format, and a JSON converter following the existing
@@ -451,8 +453,9 @@ to the Bodu text stack. The read-only **TOML source has landed**
 Current state: new. Ships `Fraction<T>` (exact rationals over
 `IBinaryInteger<T>`), the continuous `Interval<T>` (open/closed/unbounded
 endpoints over `INumber<T>`) with full set algebra, the `DiscreteInterval<T>`
-integer-domain interval, and the `IntervalPair<T>` result type — each with
-JSON converters where applicable. Money/currency/FX live in the companion
+integer-domain interval, the `IntervalPair<T>` / `DiscreteIntervalPair<T>`
+binary-result types, and the N-ary `IntervalSet<T>` — each with JSON
+converters where applicable. Money/currency/FX live in the companion
 `Bodu.Financial`.
 
 This is the **active next engineering wave** (see *Active focus*), taken in
@@ -468,10 +471,11 @@ three sequenced steps, smallest first:
    emptiness (`Open(1,2)` is empty) and adjacency (`[1,2] ∪ [3,4] == [1,4]`).
    Review hardening folded in: NaN-endpoint rejection and a culture-safe
    endpoint separator, with an exhaustive finite-domain membership-law test
-   harness. *Remaining follow-ups:* `DiscreteInterval<T>` `Difference` /
-   `SymmetricDifference` (+ a `DiscreteIntervalPair<T>`) and a first-class
-   N-ary `IntervalSet<T>` (normalized disconnected ranges, `Complement` /
-   `Except`).
+   harness. The follow-ups have since landed too: `DiscreteInterval<T>`
+   `Difference` / `SymmetricDifference` (via `DiscreteIntervalPair<T>`) and a
+   first-class N-ary `IntervalSet<T>` — a normalized disconnected-range value
+   with N-ary union / intersection / `Except` / `Complement` (taken over the
+   whole line, so the double complement is the identity).
 2. **Add `BigDecimal`** — an arbitrary-precision decimal (a `BigInteger`
    mantissa plus an `int` scale) with the full `INumber<BigDecimal>` /
    `INumberBase<BigDecimal>` generic-math surface, span/UTF-8 parse and

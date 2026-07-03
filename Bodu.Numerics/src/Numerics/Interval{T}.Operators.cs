@@ -26,8 +26,8 @@ public readonly partial struct Interval<T>
         left.Intersect(right);
 
     /// <summary>
-    /// Returns the contiguous union of two intervals as an operator alias for <see cref="TryUnion(Interval{T}, out Interval{T})" />,
-    /// for operands whose union is a single interval.
+    /// Returns the contiguous union of two intervals as an operator alias for
+    /// <see cref="TryUnion(Interval{T}, out Interval{T})" />, for operands whose union is a single interval.
     /// </summary>
     /// <param name="left">The first interval.</param>
     /// <param name="right">The second interval.</param>

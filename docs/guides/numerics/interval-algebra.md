@@ -325,6 +325,32 @@ foreach (var piece in gap)
 Interval<double>.All.Difference(Interval<double>.Closed(3, 5));   // (-∞, 3) ∪ (5, +∞)
 ```
 
+## Disconnected sets with `IntervalSet<T>`
+
+`IntervalPair<T>` covers the at-most-two pieces of a *binary* operation. When a
+union or complement can produce arbitrarily many disjoint ranges, use
+<xref:Bodu.Numerics.IntervalSet`1> — an immutable, normalized collection of
+disjoint, non-adjacent intervals. Overlapping and adjacent inputs coalesce on
+construction, so equal sets share a canonical form.
+
+```csharp
+var set = IntervalSet<int>.Of(
+    Interval<int>.Closed(1, 3),
+    Interval<int>.Closed(2, 5),
+    Interval<int>.Closed(8, 9));
+set.Count;                 // 2 — [1, 5] and [8, 9]
+set.Contains(4);           // True
+
+// N-ary algebra a single interval cannot express as one value:
+set.Except(Interval<int>.Closed(4, 4));   // [1, 3] ∪ (4, 5] ∪ [8, 9]  (three pieces)
+set.Complement();                          // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)
+```
+
+`IntervalSet<T>` offers `Union`, `Intersect`, `Except`, and `Complement` over
+both an `Interval<T>` and another `IntervalSet<T>`, plus `Contains`,
+`Encloses`, indexing, and enumeration. `Complement` is taken over the whole
+line, so `set.Complement().Complement()` returns `set`.
+
 ## Operators
 
 `&` is intersection and `|` is the contiguous union, for the common case
