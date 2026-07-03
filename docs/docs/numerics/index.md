@@ -23,15 +23,19 @@ title: Bodu.Numerics — Introduction
 | <xref:Bodu.Numerics.DiscreteInterval> | Non-generic helper class mirroring the `DiscreteInterval<T>` factories with type inference. |
 | <xref:Bodu.Numerics.IntervalPair`1>, <xref:Bodu.Numerics.DiscreteIntervalPair`1> | Allocation-free results of a binary `Difference` / `SymmetricDifference` — zero, one, or two disjoint pieces, indexable and enumerable. |
 | <xref:Bodu.Numerics.IntervalSet`1> | Immutable normalized union of disjoint, non-adjacent intervals — the N-ary home for `Union` / `Intersect` / `Except` / `Complement` when a result can be a disconnected range. |
-| <xref:Bodu.Numerics.Serialization.FractionJsonConverter`1>, <xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory> | `System.Text.Json` converters auto-registered via `[JsonConverter]` on `Fraction<T>`. The attribute path defaults to the `Strict` object shape `{ "numerator": …, "denominator": … }`; the compact `"numerator/denominator"` string is opt-in via `AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`. |
 
-### `Bodu.Numerics.Serialization`
+The core value types are serialization-agnostic — they carry no `[JsonConverter]` attribute. JSON support ships in the companion **`Bodu.Numerics.Serialization.Json`** package (below), which you register with `options.ConfigureForBoduNumerics()`.
+
+### `Bodu.Numerics.Serialization.Json`
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Numerics.Serialization.NumericsJsonPolicy> | Selects the wire shape and read strictness for both converters — `Strict` (canonical object), `Lenient` (object + import aliases), or `Compact` (single string). |
-| <xref:Bodu.Numerics.Serialization.IntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.IntervalJsonConverterFactory> | `System.Text.Json` converters auto-registered via `[JsonConverter]` on `Interval<T>`. |
-| <xref:Bodu.Numerics.Serialization.NumericsJsonSerializerOptionsExtensions> | `AddNumericsJsonConverters(this JsonSerializerOptions, NumericsJsonPolicy)` — registers a coherent converter pair for both numeric types from one policy value. |
+| <xref:Bodu.Numerics.Serialization.Json.NumericsJsonSerializerOptionsExtensions> | `ConfigureForBoduNumerics(this JsonSerializerOptions, NumericsJsonPolicy)` — registers a coherent converter set for every numeric value type from one policy value. |
+| <xref:Bodu.Numerics.Serialization.Json.NumericsJsonPolicy> | Selects the wire shape and read strictness — `Strict` (canonical object), `Lenient` (object + import aliases), or `Compact` (single string). |
+| <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory> | Converters for `Fraction<T>` — `Strict` object shape `{ "numerator": …, "denominator": … }` or the compact `"numerator/denominator"` string. |
+| <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory> | Converters for `Interval<T>`, including the `lowerUnbounded` / `upperUnbounded` markers for infinite sides. |
+| <xref:Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter`1> | Converters for `DiscreteInterval<T>` (through the interval wire shape) and `IntervalSet<T>` (a JSON array of pieces), each with a matching factory. |
+| <xref:Bodu.Numerics.Serialization.Json.FractionJsonExtensions> | `ToJson()` / `FromJson<T>(string)` convenience helpers over the registered converters. |
 
 ### Interface surface
 
@@ -97,18 +101,21 @@ Approximation complements the exact converters: `FromDouble` is exact in the IEE
 
 ## JSON serialization
 
-Both value types carry type-level `[JsonConverter]` attributes (<xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory>, <xref:Bodu.Numerics.Serialization.IntervalJsonConverterFactory>), so `System.Text.Json` round-trips them with the default options — no registration required. The attribute path defaults to the `Strict` policy, which emits the canonical object shape; each component is written as a *raw* JSON number under the invariant culture, so a `Fraction<BigInteger>` survives at any magnitude and payloads remain stable regardless of the ambient culture:
+The core value types are serialization-agnostic; JSON support ships in the companion **`Bodu.Numerics.Serialization.Json`** package. Register the converters with `ConfigureForBoduNumerics`, then serialize as normal. The default `Strict` policy emits the canonical object shape; each component is written as a *raw* JSON number under the invariant culture, so a `Fraction<BigInteger>` survives at any magnitude and payloads remain stable regardless of the ambient culture:
 
 ```csharp
 using System.Text.Json;
+using Bodu.Numerics.Serialization.Json;
 
-string json = JsonSerializer.Serialize(Fraction<int>.Create(3, 4));
+var options = new JsonSerializerOptions().ConfigureForBoduNumerics();
+
+string json = JsonSerializer.Serialize(new Fraction<int>(3, 4), options);
 // {"numerator":3,"denominator":4}
 
-Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json);
+Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json, options);
 ```
 
-To select a different wire shape across a whole `JsonSerializerOptions` instance, register the converters with a <xref:Bodu.Numerics.Serialization.NumericsJsonPolicy> via `AddNumericsJsonConverters` — `Strict` (explicit object shape), `Lenient` (`Strict` plus import-friendly aliases and defaulted inclusivity), or `Compact` (string forms: `"3/4"` for fractions, ISO 31-11 bracket notation `"[1, 5)"` for intervals). A converter registered on `JsonSerializerOptions.Converters` takes precedence over the type-level attribute. See [JSON serialization](../../guides/numerics/json-serialization.md) for the policy table and worked examples.
+Select a different wire shape by passing a <xref:Bodu.Numerics.Serialization.Json.NumericsJsonPolicy> — `Strict` (explicit object shape), `Lenient` (`Strict` plus import-friendly aliases and defaulted inclusivity), or `Compact` (string forms: `"3/4"` for fractions, ISO 31-11 bracket notation `"[1, 5)"` for intervals). `DiscreteInterval<T>` and `IntervalSet<T>` are covered by the same call. See [JSON serialization](../../guides/numerics/json-serialization.md) for the policy table and worked examples.
 
 ## Scenarios this library covers
 
@@ -127,7 +134,7 @@ To select a different wire shape across a whole `JsonSerializerOptions` instance
 | Mixed-number and Unicode-vulgar-fraction formatting | `Fraction<T>.ToString("M")` / `.ToString("U")` |
 | Round-trippable text for intervals (ISO 31-11 bracket notation) | `Interval<T>.ToString()` / `Parse` |
 | Generic-math algorithms (`Sum`, `Aggregate`, linear algebra) over exact rationals | `Fraction<T>` as `INumber<Fraction<T>>` |
-| Selecting a JSON wire shape (object, import-lenient, compact string) | `AddNumericsJsonConverters(NumericsJsonPolicy.…)` |
+| Selecting a JSON wire shape (object, import-lenient, compact string) | `ConfigureForBoduNumerics(NumericsJsonPolicy.…)` |
 | Sub-minor-unit-precise monetary calculations | <xref:Bodu.Numerics.Fraction`1> via [`Money<TCurrency>.ToFraction()`](xref:Bodu.Financial.Money`1) |
 
 ## Design choices

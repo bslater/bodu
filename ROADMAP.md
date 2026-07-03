@@ -98,7 +98,8 @@ exercised on the smallest self-contained units first.
 | Package | Notes |
 | --- | --- |
 | `Bodu.Core` | The dependency root — buffers, collections (incl. the new graphs/trees pillars), threading primitives, sequences, `WeekPattern`, `ThrowHelper`, text-encoding utilities. |
-| `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and `Interval<T>` over `INumber<T>`, with JSON converters. |
+| `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and the interval algebra (`Interval<T>` / `DiscreteInterval<T>` / `IntervalSet<T>`) over `INumber<T>`. Serialization-agnostic — no `System.Text.Json` dependency. |
+| `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`ConfigureForBoduNumerics`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
 | `Bodu.IO.Hashing` | Non-cryptographic hashing + the full RevEng CRC catalogue + the check-digit family. |
 | `Bodu.Text.Encoding` | Base16/32/58/62/64/85 + Base45 + Bech32/Bech32m. |
 | `Bodu.Security.Cryptography` | Block/stream ciphers, AEAD, keyed/crypto hashes, the asymmetric family, KDFs, HPKE. |
@@ -827,9 +828,11 @@ blockquote directly under its README title. The assignment:
   `Bodu.Financial.ExchangeRates.DependencyInjection` plumbing.
 - **Preview** — `Bodu.Numerics` (the interval algebra expanded quickly —
   `DiscreteInterval<T>`, `IntervalSet<T>`, and the pair result types are
-  still settling their serialization and result-type conventions, and the
-  `BigDecimal` wave is incoming; `Fraction<T>` is a stable candidate),
-  `Bodu.Text.Yaml` (the serializer is read-first and its
+  still settling their conventions, and the `BigDecimal` wave is incoming;
+  `Fraction<T>` is a stable candidate) and its companion
+  `Bodu.Numerics.Serialization.Json` (the JSON contract is new — the core
+  types are now serialization-agnostic and support is opt-in via
+  `ConfigureForBoduNumerics`), `Bodu.Text.Yaml` (the serializer is read-first and its
   write surface is still being rounded out) and the network-dependent
   exchange-rate family: the six web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda}`
   and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.
