@@ -204,6 +204,9 @@
   <data name="Op_Invalid_IntervalUnboundedLength" xml:space="preserve">
     <value>The length of an unbounded interval is infinite and cannot be represented.</value>
   </data>
+  <data name="Op_Invalid_DiscreteIntervalUnboundedCount" xml:space="preserve">
+    <value>The count of an unbounded discrete interval is infinite and cannot be represented.</value>
+  </data>
   <data name="Op_Invalid_IntervalNonContiguousUnion" xml:space="preserve">
     <value>The union of two disjoint, non-adjacent intervals is not a single contiguous interval; use Difference or accumulate the pieces instead.</value>
   </data>

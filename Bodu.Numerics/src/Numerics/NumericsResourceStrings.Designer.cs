@@ -484,6 +484,15 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The count of an unbounded discrete interval is infinite and cannot be represented..
+        /// </summary>
+        internal static string Op_Invalid_DiscreteIntervalUnboundedCount {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DiscreteIntervalUnboundedCount", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The union of two disjoint, non-adjacent intervals is not a single contiguous interval; use Difference or accumulate the pieces instead..
         /// </summary>
         internal static string Op_Invalid_IntervalNonContiguousUnion {
