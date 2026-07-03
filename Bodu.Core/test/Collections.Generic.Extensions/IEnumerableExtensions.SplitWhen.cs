@@ -150,10 +150,12 @@ public sealed partial class IEnumerableExtensionsTests_SplitWhen
     {
         IEnumerable<int> source = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.SplitWhen((previous, current) => previous > current);
         });
+
+        Assert.AreEqual("source", ex.ParamName);
     }
 
     /// <summary>
@@ -165,9 +167,11 @@ public sealed partial class IEnumerableExtensionsTests_SplitWhen
     {
         Func<int, int, bool> shouldSplit = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new[] { 1, 2 }.SplitWhen(shouldSplit);
         });
+
+        Assert.AreEqual("shouldSplit", ex.ParamName);
     }
 }

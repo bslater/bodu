@@ -125,10 +125,12 @@ public sealed partial class IEnumerableExtensionsTests_Scan
     {
         IEnumerable<int> source = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Scan(0, (sum, x) => sum + x);
         });
+
+        Assert.AreEqual("source", ex.ParamName);
     }
 
     /// <summary>
@@ -140,10 +142,12 @@ public sealed partial class IEnumerableExtensionsTests_Scan
     {
         Func<int, int, int> accumulator = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new[] { 1, 2 }.Scan(0, accumulator);
         });
+
+        Assert.AreEqual("accumulator", ex.ParamName);
     }
 
     /// <summary>
@@ -154,9 +158,11 @@ public sealed partial class IEnumerableExtensionsTests_Scan
     {
         Func<int, int> selector = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new[] { 1, 2 }.Scan(0, (sum, x) => sum + x, selector);
         });
+
+        Assert.AreEqual("selector", ex.ParamName);
     }
 }

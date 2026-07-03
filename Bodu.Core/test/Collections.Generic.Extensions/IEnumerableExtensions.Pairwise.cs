@@ -111,10 +111,12 @@ public sealed partial class IEnumerableExtensionsTests_Pairwise
     {
         IEnumerable<int> source = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Pairwise();
         });
+
+        Assert.AreEqual("source", ex.ParamName);
     }
 
     /// <summary>
@@ -126,10 +128,12 @@ public sealed partial class IEnumerableExtensionsTests_Pairwise
     {
         Func<int, int, int> selector = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new[] { 1, 2 }.Pairwise(selector);
         });
+
+        Assert.AreEqual("selector", ex.ParamName);
     }
 
     private static IEnumerable<int> Naturals()

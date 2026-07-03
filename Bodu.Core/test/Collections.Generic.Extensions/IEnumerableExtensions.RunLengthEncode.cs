@@ -140,10 +140,12 @@ public sealed partial class IEnumerableExtensionsTests_RunLengthEncode
     {
         IEnumerable<int> source = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.RunLengthEncode();
         });
+
+        Assert.AreEqual("source", ex.ParamName);
     }
 
     /// <summary>
