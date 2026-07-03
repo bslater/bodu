@@ -1,0 +1,50 @@
+class Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverterFactory
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Boolean CanConvert(System.Type)
+    method System.Text.Json.Serialization.JsonConverter CreateConverter(System.Type, System.Text.Json.JsonSerializerOptions)
+class Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter`1
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Bodu.Numerics.DiscreteInterval`1[T] Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Numerics.DiscreteInterval`1[T], System.Text.Json.JsonSerializerOptions)
+class Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Boolean CanConvert(System.Type)
+    method System.Text.Json.Serialization.JsonConverter CreateConverter(System.Type, System.Text.Json.JsonSerializerOptions)
+class Bodu.Numerics.Serialization.Json.FractionJsonConverter`1
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Bodu.Numerics.Fraction`1[T] Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Numerics.Fraction`1[T], System.Text.Json.JsonSerializerOptions)
+class Bodu.Numerics.Serialization.Json.FractionJsonExtensions
+    method Bodu.Numerics.Fraction`1[T] FromJson[T](System.String, Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method System.String ToJson[T](Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+class Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Boolean CanConvert(System.Type)
+    method System.Text.Json.Serialization.JsonConverter CreateConverter(System.Type, System.Text.Json.JsonSerializerOptions)
+class Bodu.Numerics.Serialization.Json.IntervalJsonConverter`1
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Bodu.Numerics.Interval`1[T] Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Numerics.Interval`1[T], System.Text.Json.JsonSerializerOptions)
+class Bodu.Numerics.Serialization.Json.IntervalSetJsonConverterFactory
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Boolean CanConvert(System.Type)
+    method System.Text.Json.Serialization.JsonConverter CreateConverter(System.Type, System.Text.Json.JsonSerializerOptions)
+class Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter`1
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Bodu.Numerics.IntervalSet`1[T] Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Numerics.IntervalSet`1[T], System.Text.Json.JsonSerializerOptions)
+enum Bodu.Numerics.Serialization.Json.NumericsJsonPolicy
+    field Bodu.Numerics.Serialization.Json.NumericsJsonPolicy Compact
+    field Bodu.Numerics.Serialization.Json.NumericsJsonPolicy Lenient
+    field Bodu.Numerics.Serialization.Json.NumericsJsonPolicy Strict
+    field Int32 value__
+class Bodu.Numerics.Serialization.Json.NumericsJsonSerializerOptionsExtensions
+    method System.Text.Json.JsonSerializerOptions ConfigureForBoduNumerics(System.Text.Json.JsonSerializerOptions, Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
