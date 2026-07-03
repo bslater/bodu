@@ -121,6 +121,10 @@
     <Project Path="Bodu.Numerics\src\Bodu.Numerics.csproj" />
     <Project Path="Bodu.Numerics\test\Bodu.Numerics.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Numerics.Serialization.Json/">
+    <Project Path="Bodu.Numerics.Serialization.Json\src\Bodu.Numerics.Serialization.Json.csproj" />
+    <Project Path="Bodu.Numerics.Serialization.Json\test\Bodu.Numerics.Serialization.Json.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Financial/">
     <Project Path="Bodu.Financial\bench\Bodu.Financial.Benchmarks.csproj">
       <Build Solution="Debug|*" Project="false" />

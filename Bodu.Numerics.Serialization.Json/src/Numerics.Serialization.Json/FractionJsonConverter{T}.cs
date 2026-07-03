@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Bodu.Numerics.Serialization;
+namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
 /// Converts a <see cref="Fraction{T}" /> to and from JSON using the policy supplied at construction.
@@ -119,7 +119,7 @@ public sealed class FractionJsonConverter<T>
             throw new JsonException(
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    NumericsResourceStrings.Json_Invalid_ExpectedCompactString_Fraction,
+                    NumericsJsonResourceStrings.Json_Invalid_ExpectedCompactString_Fraction,
                     typeof(T).Name));
         }
 
@@ -128,7 +128,7 @@ public sealed class FractionJsonConverter<T>
             ? throw new JsonException(
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    NumericsResourceStrings.Json_Invalid_CompactFractionForm,
+                    NumericsJsonResourceStrings.Json_Invalid_CompactFractionForm,
                     text,
                     typeof(T).Name))
             : result;
@@ -146,7 +146,7 @@ public sealed class FractionJsonConverter<T>
     private static Fraction<T> ReadObject(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
-            throw new JsonException(NumericsResourceStrings.Json_Invalid_ExpectedObject_Fraction);
+            throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_ExpectedObject_Fraction);
 
         T? numerator = default;
         T? denominator = default;
@@ -159,27 +159,27 @@ public sealed class FractionJsonConverter<T>
                 break;
 
             if (reader.TokenType != JsonTokenType.PropertyName)
-                throw new JsonException(NumericsResourceStrings.Json_Invalid_ExpectedPropertyName);
+                throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_ExpectedPropertyName);
 
             string propertyName = reader.GetString() !;
             if (!reader.Read())
-                throw new JsonException(NumericsResourceStrings.Json_Invalid_UnexpectedEnd);
+                throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_UnexpectedEnd);
 
             if (string.Equals(propertyName, "numerator", StringComparison.OrdinalIgnoreCase))
             {
                 if (numeratorSeen)
-                    throw new JsonException(NumericsResourceStrings.Json_Invalid_DuplicateNumerator);
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DuplicateNumerator);
                 numeratorSeen = true;
 
-                numerator = ReadIntegerValue(ref reader, NumericsResourceStrings.Json_Invalid_NumeratorMustBeNumber);
+                numerator = ReadIntegerValue(ref reader, NumericsJsonResourceStrings.Json_Invalid_NumeratorMustBeNumber);
             }
             else if (string.Equals(propertyName, "denominator", StringComparison.OrdinalIgnoreCase))
             {
                 if (denominatorSeen)
-                    throw new JsonException(NumericsResourceStrings.Json_Invalid_DuplicateDenominator);
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DuplicateDenominator);
                 denominatorSeen = true;
 
-                denominator = ReadIntegerValue(ref reader, NumericsResourceStrings.Json_Invalid_DenominatorMustBeNumber);
+                denominator = ReadIntegerValue(ref reader, NumericsJsonResourceStrings.Json_Invalid_DenominatorMustBeNumber);
             }
             else
             {
@@ -188,13 +188,13 @@ public sealed class FractionJsonConverter<T>
         }
 
         if (!numeratorSeen)
-            throw new JsonException(NumericsResourceStrings.Json_Invalid_MissingNumerator);
+            throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_MissingNumerator);
 
         if (!denominatorSeen)
-            throw new JsonException(NumericsResourceStrings.Json_Invalid_MissingDenominator);
+            throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_MissingDenominator);
 
         return T.IsZero(denominator!)
-            ? throw new JsonException(NumericsResourceStrings.Json_Invalid_DenominatorZero)
+            ? throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DenominatorZero)
             : new Fraction<T>(numerator!, denominator!);
     }
 

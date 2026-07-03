@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Bodu.Numerics.Serialization;
+namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
 /// Converts an <see cref="Interval{T}" /> to and from JSON using the policy supplied at construction.
@@ -26,8 +26,11 @@ namespace Bodu.Numerics.Serialization;
 /// <description>
 /// <see cref="NumericsJsonPolicy.Strict" /> — canonical object form
 /// <c>{ "lower": 1, "upper": 5, "lowerInclusive": true, "upperInclusive": true }</c>; the empty interval emits as the
-/// single-property object <c>{ "empty": true }</c>. All four endpoint properties are required for non-empty intervals,
-/// duplicate properties are rejected, and an <c>"empty": true</c> marker rejects any sibling endpoint property.
+/// single-property object <c>{ "empty": true }</c>. A bounded side requires its endpoint value and inclusion flag; an
+/// unbounded side emits the marker <c>"lowerUnbounded": true</c> / <c>"upperUnbounded": true</c> in place of both (for
+/// example <c>{ "lower": 1, "upperUnbounded": true, "lowerInclusive": true }</c> for <c>[1, +&#x221E;)</c>, or
+/// <c>{ "lowerUnbounded": true, "upperUnbounded": true }</c> for the whole line). Duplicate properties are rejected, and
+/// an <c>"empty": true</c> marker rejects any sibling endpoint or unbounded property.
 /// </description>
 /// </item>
 /// <item>
@@ -108,12 +111,36 @@ public sealed class IntervalJsonConverter<T>
         }
 
         writer.WriteStartObject();
-        writer.WritePropertyName("lower");
-        WriteEndpointValue(writer, value.Lower);
-        writer.WritePropertyName("upper");
-        WriteEndpointValue(writer, value.Upper);
-        writer.WriteBoolean("lowerInclusive", value.LowerInclusive);
-        writer.WriteBoolean("upperInclusive", value.UpperInclusive);
+
+        // Endpoint values (or the unbounded marker) come first; the inclusivity flags trail them so a fully bounded
+        // interval keeps the original lower/upper/lowerInclusive/upperInclusive property order. An unbounded side emits
+        // only its marker — an infinite endpoint has no value and no inclusion.
+        if (value.LowerUnbounded)
+        {
+            writer.WriteBoolean("lowerUnbounded", true);
+        }
+        else
+        {
+            writer.WritePropertyName("lower");
+            WriteEndpointValue(writer, value.Lower);
+        }
+
+        if (value.UpperUnbounded)
+        {
+            writer.WriteBoolean("upperUnbounded", true);
+        }
+        else
+        {
+            writer.WritePropertyName("upper");
+            WriteEndpointValue(writer, value.Upper);
+        }
+
+        if (!value.LowerUnbounded)
+            writer.WriteBoolean("lowerInclusive", value.LowerInclusive);
+
+        if (!value.UpperUnbounded)
+            writer.WriteBoolean("upperInclusive", value.UpperInclusive);
+
         writer.WriteEndObject();
     }
 
@@ -133,7 +160,7 @@ public sealed class IntervalJsonConverter<T>
             throw new JsonException(
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    NumericsResourceStrings.Json_Invalid_ExpectedCompactString_Interval,
+                    NumericsJsonResourceStrings.Json_Invalid_ExpectedCompactString_Interval,
                     typeof(T).Name));
         }
 
@@ -142,7 +169,7 @@ public sealed class IntervalJsonConverter<T>
             ? throw new JsonException(
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    NumericsResourceStrings.Json_Invalid_CompactIntervalForm,
+                    NumericsJsonResourceStrings.Json_Invalid_CompactIntervalForm,
                     text,
                     typeof(T).Name))
             : result;
@@ -162,17 +189,21 @@ public sealed class IntervalJsonConverter<T>
     private Interval<T> ReadObject(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
-            throw new JsonException(NumericsResourceStrings.Json_Invalid_ExpectedObject_Interval);
+            throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_ExpectedObject_Interval);
 
         T? lower = default;
         T? upper = default;
         bool lowerInclusive = false;
         bool upperInclusive = false;
+        bool lowerUnbounded = false;
+        bool upperUnbounded = false;
         bool empty = false;
         bool lowerSeen = false;
         bool upperSeen = false;
         bool lowerInclusiveSeen = false;
         bool upperInclusiveSeen = false;
+        bool lowerUnboundedSeen = false;
+        bool upperUnboundedSeen = false;
         bool emptySeen = false;
 
         while (reader.Read())
@@ -181,44 +212,58 @@ public sealed class IntervalJsonConverter<T>
                 break;
 
             if (reader.TokenType != JsonTokenType.PropertyName)
-                throw new JsonException(NumericsResourceStrings.Json_Invalid_ExpectedPropertyName);
+                throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_ExpectedPropertyName);
 
             string propertyName = reader.GetString() !;
             if (!reader.Read())
-                throw new JsonException(NumericsResourceStrings.Json_Invalid_UnexpectedEnd);
+                throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_UnexpectedEnd);
 
             if (IsLowerPropertyName(propertyName))
             {
                 if (lowerSeen)
-                    throw new JsonException(NumericsResourceStrings.Json_Invalid_DuplicateLower);
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DuplicateLower);
                 lowerSeen = true;
-                lower = ReadEndpointValue(ref reader, NumericsResourceStrings.Json_Invalid_LowerMustBeNumber);
+                lower = ReadEndpointValue(ref reader, NumericsJsonResourceStrings.Json_Invalid_LowerMustBeNumber);
             }
             else if (IsUpperPropertyName(propertyName))
             {
                 if (upperSeen)
-                    throw new JsonException(NumericsResourceStrings.Json_Invalid_DuplicateUpper);
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DuplicateUpper);
                 upperSeen = true;
-                upper = ReadEndpointValue(ref reader, NumericsResourceStrings.Json_Invalid_UpperMustBeNumber);
+                upper = ReadEndpointValue(ref reader, NumericsJsonResourceStrings.Json_Invalid_UpperMustBeNumber);
             }
             else if (string.Equals(propertyName, "lowerInclusive", StringComparison.OrdinalIgnoreCase))
             {
                 if (lowerInclusiveSeen)
-                    throw new JsonException(NumericsResourceStrings.Json_Invalid_DuplicateLowerInclusive);
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DuplicateLowerInclusive);
                 lowerInclusiveSeen = true;
                 lowerInclusive = ReadBooleanValue(ref reader, "lowerInclusive");
             }
             else if (string.Equals(propertyName, "upperInclusive", StringComparison.OrdinalIgnoreCase))
             {
                 if (upperInclusiveSeen)
-                    throw new JsonException(NumericsResourceStrings.Json_Invalid_DuplicateUpperInclusive);
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DuplicateUpperInclusive);
                 upperInclusiveSeen = true;
                 upperInclusive = ReadBooleanValue(ref reader, "upperInclusive");
+            }
+            else if (string.Equals(propertyName, "lowerUnbounded", StringComparison.OrdinalIgnoreCase))
+            {
+                if (lowerUnboundedSeen)
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DuplicateLowerUnbounded);
+                lowerUnboundedSeen = true;
+                lowerUnbounded = ReadBooleanValue(ref reader, "lowerUnbounded");
+            }
+            else if (string.Equals(propertyName, "upperUnbounded", StringComparison.OrdinalIgnoreCase))
+            {
+                if (upperUnboundedSeen)
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DuplicateUpperUnbounded);
+                upperUnboundedSeen = true;
+                upperUnbounded = ReadBooleanValue(ref reader, "upperUnbounded");
             }
             else if (string.Equals(propertyName, "empty", StringComparison.OrdinalIgnoreCase))
             {
                 if (emptySeen)
-                    throw new JsonException(NumericsResourceStrings.Json_Invalid_DuplicateEmpty);
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DuplicateEmpty);
                 emptySeen = true;
                 empty = ReadBooleanValue(ref reader, "empty");
             }
@@ -228,35 +273,63 @@ public sealed class IntervalJsonConverter<T>
             }
         }
 
+        // An "unbounded": false marker is treated as "this side is not unbounded"; an unbounded side takes precedence
+        // over any endpoint value that accompanies it.
+        bool lowerIsUnbounded = lowerUnboundedSeen && lowerUnbounded;
+        bool upperIsUnbounded = upperUnboundedSeen && upperUnbounded;
+
         if (emptySeen && empty)
         {
-            return lowerSeen || upperSeen || lowerInclusiveSeen || upperInclusiveSeen
-                ? throw new JsonException(NumericsResourceStrings.Json_Invalid_EmptyIntervalExtraProperties)
+            return lowerSeen || upperSeen || lowerInclusiveSeen || upperInclusiveSeen || lowerIsUnbounded || upperIsUnbounded
+                ? throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_EmptyIntervalExtraProperties)
                 : Interval<T>.Empty;
         }
 
-        if (!lowerSeen)
-            throw new JsonException(NumericsResourceStrings.Json_Invalid_MissingLower);
+        if (!lowerIsUnbounded && !lowerSeen)
+            throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_MissingLower);
 
-        if (!upperSeen)
-            throw new JsonException(NumericsResourceStrings.Json_Invalid_MissingUpper);
+        if (!upperIsUnbounded && !upperSeen)
+            throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_MissingUpper);
 
-        bool resolvedLowerInclusive;
-        bool resolvedUpperInclusive;
-        if (_policy == NumericsJsonPolicy.Lenient)
+        bool resolvedLowerInclusive = false;
+        bool resolvedUpperInclusive = false;
+
+        if (!lowerIsUnbounded)
         {
-            resolvedLowerInclusive = lowerInclusiveSeen ? lowerInclusive : true;
-            resolvedUpperInclusive = upperInclusiveSeen ? upperInclusive : true;
+            if (_policy == NumericsJsonPolicy.Lenient)
+            {
+                resolvedLowerInclusive = !lowerInclusiveSeen || lowerInclusive;
+            }
+            else
+            {
+                if (!lowerInclusiveSeen)
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_MissingLowerInclusive);
+                resolvedLowerInclusive = lowerInclusive;
+            }
         }
-        else
+
+        if (!upperIsUnbounded)
         {
-            if (!lowerInclusiveSeen)
-                throw new JsonException(NumericsResourceStrings.Json_Invalid_MissingLowerInclusive);
-            if (!upperInclusiveSeen)
-                throw new JsonException(NumericsResourceStrings.Json_Invalid_MissingUpperInclusive);
-            resolvedLowerInclusive = lowerInclusive;
-            resolvedUpperInclusive = upperInclusive;
+            if (_policy == NumericsJsonPolicy.Lenient)
+            {
+                resolvedUpperInclusive = !upperInclusiveSeen || upperInclusive;
+            }
+            else
+            {
+                if (!upperInclusiveSeen)
+                    throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_MissingUpperInclusive);
+                resolvedUpperInclusive = upperInclusive;
+            }
         }
+
+        if (lowerIsUnbounded && upperIsUnbounded)
+            return Interval<T>.All;
+
+        if (lowerIsUnbounded)
+            return resolvedUpperInclusive ? Interval<T>.AtMost(upper!) : Interval<T>.LessThan(upper!);
+
+        if (upperIsUnbounded)
+            return resolvedLowerInclusive ? Interval<T>.AtLeast(lower!) : Interval<T>.GreaterThan(lower!);
 
         return new Interval<T>(lower!, upper!, resolvedLowerInclusive, resolvedUpperInclusive);
     }
@@ -337,7 +410,7 @@ public sealed class IntervalJsonConverter<T>
             : throw new JsonException(
             string.Format(
                 CultureInfo.CurrentCulture,
-                NumericsResourceStrings.Json_Invalid_PropertyMustBeBoolean,
+                NumericsJsonResourceStrings.Json_Invalid_PropertyMustBeBoolean,
                 propertyName));
     }
 

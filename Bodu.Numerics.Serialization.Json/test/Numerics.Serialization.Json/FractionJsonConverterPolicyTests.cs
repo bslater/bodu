@@ -8,7 +8,7 @@ using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Bodu.Numerics.Serialization;
+namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
 /// Verifies that <see cref="FractionJsonConverter{T}" /> honours each <see cref="NumericsJsonPolicy" /> on both the
@@ -24,30 +24,30 @@ public class FractionJsonConverterPolicyTests
     /// <param name="policy">The policy under test.</param>
     /// <returns>The configured options.</returns>
     private static JsonSerializerOptions Options(NumericsJsonPolicy policy) =>
-        new JsonSerializerOptions().AddNumericsJsonConverters(policy);
+        new JsonSerializerOptions().ConfigureForBoduNumerics(policy);
 
     /// <summary>
-    /// Verifies that the attribute-driven default serializer emits the canonical object form.
+    /// Verifies that the registered Strict converter emits the canonical object form.
     /// </summary>
     [TestMethod]
-    public void DefaultAttribute_WhenSerializing_ShouldEmitCanonicalObjectShape()
+    public void StrictPolicy_WhenSerializing_ShouldEmitCanonicalObjectShape()
     {
         var fraction = new Fraction<int>(3, 4);
 
-        string json = JsonSerializer.Serialize(fraction);
+        string json = JsonSerializer.Serialize(fraction, Options(NumericsJsonPolicy.Strict));
 
         Assert.AreEqual("{\"numerator\":3,\"denominator\":4}", json);
     }
 
     /// <summary>
-    /// Verifies that the shipped <c>[JsonConverter]</c> attribute remains present so default (no-options)
-    /// serialization picks the strict shape with no consumer configuration.
+    /// Verifies that the core <see cref="Fraction{T}" /> type carries no <c>[JsonConverter]</c> attribute — the library
+    /// is serialization-agnostic, so JSON support requires registering the converters from this package.
     /// </summary>
     [TestMethod]
-    public void Fraction_WhenInspected_ShouldStillDeclareJsonConverterAttribute()
+    public void Fraction_WhenInspected_ShouldNotDeclareJsonConverterAttribute()
     {
-        Assert.IsTrue(typeof(Fraction<int>).IsDefined(typeof(JsonConverterAttribute), inherit: false));
-        Assert.IsTrue(typeof(Fraction<BigInteger>).IsDefined(typeof(JsonConverterAttribute), inherit: false));
+        Assert.IsFalse(typeof(Fraction<int>).IsDefined(typeof(JsonConverterAttribute), inherit: false));
+        Assert.IsFalse(typeof(Fraction<BigInteger>).IsDefined(typeof(JsonConverterAttribute), inherit: false));
     }
 
     /// <summary>

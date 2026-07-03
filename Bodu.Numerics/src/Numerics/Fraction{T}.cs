@@ -8,8 +8,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
 using System.Reflection;
-using System.Text.Json.Serialization;
-using Bodu.Numerics.Serialization;
 
 namespace Bodu.Numerics;
 
@@ -57,7 +55,6 @@ namespace Bodu.Numerics;
 /// </code>
 /// </example>
 [DebuggerDisplay("{ToString(),nq}")]
-[JsonConverter(typeof(FractionJsonConverterFactory))]
 public readonly partial struct Fraction<T>
     where T : IBinaryInteger<T>
 {

@@ -63,4 +63,27 @@ public sealed class IntervalPairTests
             _ = single[1];
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="IntervalPair{T}.ToIntervalSet" /> lifts a two-piece result into the equivalent
+    /// <see cref="IntervalSet{T}" />.
+    /// </summary>
+    [TestMethod]
+    public void ToIntervalSet_WhenTwoPieces_ShouldYieldEquivalentSet()
+    {
+        IntervalPair<int> pair = Interval<int>.Closed(0, 10).Difference(Interval<int>.Closed(3, 5));
+
+        IntervalSet<int> set = pair.ToIntervalSet();
+
+        Assert.AreEqual(IntervalSet<int>.Of(Interval<int>.ClosedOpen(0, 3), Interval<int>.OpenClosed(5, 10)), set);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IntervalPair{T}.ToIntervalSet" /> on the empty result yields the empty set.
+    /// </summary>
+    [TestMethod]
+    public void ToIntervalSet_WhenEmpty_ShouldYieldEmptySet()
+    {
+        Assert.IsTrue(IntervalPair<int>.Empty.ToIntervalSet().IsEmpty);
+    }
 }
