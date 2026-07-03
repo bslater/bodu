@@ -25,9 +25,9 @@ public static partial class IEnumerableExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method uses deferred execution and enumerates each sequence exactly once, disposing both enumerators. Unlike
-    /// <see cref="System.Linq.Enumerable.Zip{TFirst, TSecond}(IEnumerable{TFirst}, IEnumerable{TSecond})" />, which stops
-    /// at the shorter input, this method continues until both inputs are exhausted.
+    /// This method uses deferred execution and enumerates each sequence exactly once, disposing both enumerators.
+    /// Unlike <see cref="System.Linq.Enumerable.Zip{TFirst, TSecond}(IEnumerable{TFirst}, IEnumerable{TSecond})" />,
+    /// which stops at the shorter input, this method continues until both inputs are exhausted.
     /// </para>
     /// <para>
     /// This overload pads with <c>default(TFirst)</c> and <c>default(TSecond)</c>, which is <see langword="null" /> for
@@ -38,6 +38,18 @@ public static partial class IEnumerableExtensions
     /// <see cref="System.Linq.Enumerable.Take{TSource}(IEnumerable{TSource}, int)" /> when zipping an unbounded source.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Zip continues to the longer input; the exhausted side is padded with default(T).
+    /// foreach (var (number, letter) in new[] { 1, 2, 3 }.ZipLongest(new[] { "a" }))
+    ///     Console.WriteLine($"{number}:{letter ?? "<null>"}");
+    /// // => 1:a
+    /// // => 2:<null>
+    /// // => 3:<null>
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<(TFirst First, TSecond Second)> ZipLongest<TFirst, TSecond>(
         this IEnumerable<TFirst> first,
         IEnumerable<TSecond> second) =>
@@ -51,8 +63,12 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="TSecond">The type of elements in the second sequence.</typeparam>
     /// <param name="first">The first sequence to zip.</param>
     /// <param name="second">The second sequence to zip.</param>
-    /// <param name="firstDefault">The value substituted for the first side once <paramref name="first" /> is exhausted.</param>
-    /// <param name="secondDefault">The value substituted for the second side once <paramref name="second" /> is exhausted.</param>
+    /// <param name="firstDefault">
+    /// The value substituted for the first side once <paramref name="first" /> is exhausted.
+    /// </param>
+    /// <param name="secondDefault">
+    /// The value substituted for the second side once <paramref name="second" /> is exhausted.
+    /// </param>
     /// <returns>
     /// A sequence of <c>(First, Second)</c> tuples whose length equals the longer of the two inputs, padding the
     /// exhausted side with the corresponding supplied default.
@@ -63,6 +79,15 @@ public static partial class IEnumerableExtensions
     /// <remarks>
     /// This method uses deferred execution and enumerates each sequence exactly once, disposing both enumerators.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Supply explicit padding values used once a side is exhausted.
+    /// var result = new[] { 1 }.ZipLongest(new[] { "a", "b" }, firstDefault: -1, secondDefault: "?").ToArray();
+    /// // => result == [ (1, "a"), (-1, "b") ]
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<(TFirst First, TSecond Second)> ZipLongest<TFirst, TSecond>(
         this IEnumerable<TFirst> first,
         IEnumerable<TSecond> second,
@@ -79,8 +104,12 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="TResult">The type of the projected result.</typeparam>
     /// <param name="first">The first sequence to zip.</param>
     /// <param name="second">The second sequence to zip.</param>
-    /// <param name="firstDefault">The value substituted for the first side once <paramref name="first" /> is exhausted.</param>
-    /// <param name="secondDefault">The value substituted for the second side once <paramref name="second" /> is exhausted.</param>
+    /// <param name="firstDefault">
+    /// The value substituted for the first side once <paramref name="first" /> is exhausted.
+    /// </param>
+    /// <param name="secondDefault">
+    /// The value substituted for the second side once <paramref name="second" /> is exhausted.
+    /// </param>
     /// <param name="selector">A projection applied to each pair of first and second elements.</param>
     /// <returns>
     /// A sequence containing the result of <paramref name="selector" /> applied to each pair, whose length equals the

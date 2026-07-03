@@ -21,9 +21,7 @@ public static partial class IEnumerableExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="size" /> is less than 1.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size" /> is less than 1.</exception>
     /// <remarks>
     /// <para>
     /// This method uses deferred execution and enumerates the source exactly once, buffering at most
@@ -35,6 +33,18 @@ public static partial class IEnumerableExtensions
     /// non-overlapping groups, whereas this method returns overlapping sliding windows.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Slide a window of three across the sequence, advancing one element at a time.
+    /// foreach (var window in new[] { 1, 2, 3, 4, 5 }.Windowed(3))
+    ///     Console.WriteLine(string.Join(", ", window));
+    /// // => 1, 2, 3
+    /// // => 2, 3, 4
+    /// // => 3, 4, 5
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<IReadOnlyList<TSource>> Windowed<TSource>(
         this IEnumerable<TSource> source,
         int size) =>
@@ -51,15 +61,13 @@ public static partial class IEnumerableExtensions
     /// <param name="selector">A projection applied to each complete window.</param>
     /// <returns>
     /// A sequence containing the result of <paramref name="selector" /> applied to each complete window of exactly
-    /// <paramref name="size" /> consecutive elements. The result is empty when <paramref name="source" /> contains fewer
-    /// than <paramref name="size" /> elements.
+    /// <paramref name="size" /> consecutive elements. The result is empty when <paramref name="source" /> contains
+    /// fewer than <paramref name="size" /> elements.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="selector" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="size" /> is less than 1.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size" /> is less than 1.</exception>
     /// <remarks>
     /// <para>
     /// This method uses deferred execution and enumerates the source exactly once, buffering at most
@@ -67,10 +75,19 @@ public static partial class IEnumerableExtensions
     /// been consumed; each subsequent result consumes one additional element.
     /// </para>
     /// <para>
-    /// The window passed to <paramref name="selector" /> is a stable snapshot; retaining it is safe after the enumerator
-    /// advances.
+    /// The window passed to <paramref name="selector" /> is a stable snapshot; retaining it is safe after the
+    /// enumerator advances.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Compute a rolling sum over each window of two adjacent elements.
+    /// int[] rollingSums = new[] { 1, 2, 3, 4 }.Windowed(2, window => window[0] + window[1]).ToArray();
+    /// // => rollingSums == [ 3, 5, 7 ]
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<TResult> Windowed<TSource, TResult>(
         this IEnumerable<TSource> source,
         int size,

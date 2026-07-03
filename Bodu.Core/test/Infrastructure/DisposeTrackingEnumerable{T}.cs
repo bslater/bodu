@@ -13,6 +13,23 @@ namespace Bodu.Infrastructure;
 /// disposed, so iterator operators can be asserted to be single-pass and to dispose their enumerator.
 /// </summary>
 /// <typeparam name="T">The type of elements in the sequence.</typeparam>
+/// <remarks>
+/// Unlike <see cref="TrackingEnumerable{T}" />, which enforces single enumeration and counts item access, this helper
+/// exposes explicit <see cref="GetEnumeratorCallCount" />, <see cref="MoveNextCallCount" />, and
+/// <see cref="DisposeCallCount" /> counters so a test can assert an operator disposed the enumerator exactly once.
+/// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Assert that an operator enumerates its source once and disposes the enumerator.
+/// var source = new DisposeTrackingEnumerable<int>(new[] { 1, 2, 3 });
+/// _ = source.Pairwise().ToArray();
+///
+/// Assert.AreEqual(1, source.GetEnumeratorCallCount);
+/// Assert.AreEqual(1, source.DisposeCallCount);
+///]]>
+/// </code>
+/// </example>
 public sealed class DisposeTrackingEnumerable<T>
     : IEnumerable<T>
 {

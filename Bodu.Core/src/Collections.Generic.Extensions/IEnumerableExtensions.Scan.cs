@@ -29,10 +29,20 @@ public static partial class IEnumerableExtensions
     /// enumerated, and it is enumerated exactly once in a single forward pass using only O(1) working memory.
     /// </para>
     /// <para>
-    /// This method differs from <see cref="System.Linq.Enumerable.Aggregate{TSource, TAccumulate}(IEnumerable{TSource}, TAccumulate, Func{TAccumulate, TSource, TAccumulate})" />:
+    /// This method differs from
+    /// <see cref="System.Linq.Enumerable.Aggregate{TSource, TAccumulate}(IEnumerable{TSource}, TAccumulate, Func{TAccumulate, TSource, TAccumulate})" />:
     /// <c>Aggregate</c> returns only the final accumulator value, whereas this method streams each intermediate state.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Emit the running sum after folding each element (the seed itself is not emitted).
+    /// int[] runningTotals = Enumerable.Range(1, 4).Scan(0, (sum, x) => sum + x).ToArray();
+    /// // => runningTotals == [ 1, 3, 6, 10 ]
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<TAccumulate> Scan<TSource, TAccumulate>(
         this IEnumerable<TSource> source,
         TAccumulate seed,
@@ -64,7 +74,8 @@ public static partial class IEnumerableExtensions
     /// enumerated, and it is enumerated exactly once in a single forward pass using only O(1) working memory.
     /// </para>
     /// <para>
-    /// <paramref name="accumulator" /> and <paramref name="selector" /> are each invoked exactly once per source element.
+    /// <paramref name="accumulator" /> and <paramref name="selector" /> are each invoked exactly once per source
+    /// element.
     /// </para>
     /// </remarks>
     public static IEnumerable<TResult> Scan<TSource, TAccumulate, TResult>(

@@ -9,14 +9,14 @@ namespace Bodu.Collections.Generic.Extensions;
 public static partial class IEnumerableExtensions
 {
     /// <summary>
-    /// Emits each adjacent pair of elements from the source sequence as a
-    /// <c>(Previous, Current)</c> tuple.
+    /// Emits each adjacent pair of elements from the source sequence as a <c>(Previous, Current)</c> tuple.
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the source sequence.</typeparam>
     /// <param name="source">The source sequence to pair.</param>
     /// <returns>
     /// A sequence of <c>(Previous, Current)</c> tuples, one for every adjacent pair of elements in
-    /// <paramref name="source" />. The result is empty when <paramref name="source" /> contains fewer than two elements.
+    /// <paramref name="source" />. The result is empty when <paramref name="source" /> contains fewer than two
+    /// elements.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
@@ -32,6 +32,17 @@ public static partial class IEnumerableExtensions
     /// <see cref="System.Linq.Enumerable.Take{TSource}(IEnumerable{TSource}, int)" />.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Emit each adjacent (previous, current) pair.
+    /// foreach (var (previous, current) in new[] { 10, 13, 9 }.Pairwise())
+    ///     Console.WriteLine($"{previous} -> {current}");
+    /// // => 10 -> 13
+    /// // => 13 -> 9
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<(TSource Previous, TSource Current)> Pairwise<TSource>(this IEnumerable<TSource> source) =>
         source.Pairwise(static (previous, current) => (previous, current));
 
@@ -41,10 +52,13 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="TSource">The type of elements in the source sequence.</typeparam>
     /// <typeparam name="TResult">The type of the projected result.</typeparam>
     /// <param name="source">The source sequence to pair.</param>
-    /// <param name="selector">A projection applied to each adjacent pair, receiving the previous and current elements.</param>
+    /// <param name="selector">
+    /// A projection applied to each adjacent pair, receiving the previous and current elements.
+    /// </param>
     /// <returns>
     /// A sequence containing the result of <paramref name="selector" /> applied to every adjacent pair of elements in
-    /// <paramref name="source" />. The result is empty when <paramref name="source" /> contains fewer than two elements.
+    /// <paramref name="source" />. The result is empty when <paramref name="source" /> contains fewer than two
+    /// elements.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="selector" /> is <see langword="null" />.
@@ -59,6 +73,15 @@ public static partial class IEnumerableExtensions
     /// single-element source.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Project each adjacent pair into the delta between the two values.
+    /// int[] deltas = new[] { 10, 13, 9 }.Pairwise((previous, current) => current - previous).ToArray();
+    /// // => deltas == [ 3, -4 ]
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<TResult> Pairwise<TSource, TResult>(
         this IEnumerable<TSource> source,
         Func<TSource, TSource, TResult> selector)

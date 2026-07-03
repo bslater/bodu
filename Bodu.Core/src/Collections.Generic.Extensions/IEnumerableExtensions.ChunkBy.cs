@@ -27,6 +27,18 @@ public static partial class IEnumerableExtensions
     /// This method uses deferred execution and enumerates the source exactly once. Keys are compared with
     /// <see cref="EqualityComparer{T}.Default" />.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Group adjacent runs by key; a repeated key separated by another key starts a new group.
+    /// foreach (var (key, items) in new[] { 1, 1, 2, 1 }.ChunkBy(x => x))
+    ///     Console.WriteLine($"{key}: [{string.Join(", ", items)}]");
+    /// // => 1: [1, 1]
+    /// // => 2: [2]
+    /// // => 1: [1]
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<(TKey Key, IReadOnlyList<TSource> Items)> ChunkBy<TSource, TKey>(
         this IEnumerable<TSource> source,
         Func<TSource, TKey> keySelector) =>
@@ -58,13 +70,15 @@ public static partial class IEnumerableExtensions
     /// yielded group is a stable snapshot that is not modified when the enumerator advances.
     /// </para>
     /// <para>
-    /// This method differs from <see cref="System.Linq.Enumerable.GroupBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />:
+    /// This method differs from
+    /// <see cref="System.Linq.Enumerable.GroupBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />:
     /// <c>GroupBy</c> gathers all elements sharing a key across the whole sequence, whereas this method uses adjacent
     /// equality only, so the same key value separated by a different key produces separate groups.
     /// </para>
     /// <para>
     /// When bounded over an infinite source, a group whose key never changes never yields; combine with
-    /// <see cref="System.Linq.Enumerable.Take{TSource}(IEnumerable{TSource}, int)" /> only when keys are known to change.
+    /// <see cref="System.Linq.Enumerable.Take{TSource}(IEnumerable{TSource}, int)" /> only when keys are known to
+    /// change.
     /// </para>
     /// </remarks>
     public static IEnumerable<(TKey Key, IReadOnlyList<TSource> Items)> ChunkBy<TSource, TKey>(

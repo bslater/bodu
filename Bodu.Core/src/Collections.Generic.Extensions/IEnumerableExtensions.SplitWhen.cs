@@ -19,8 +19,8 @@ public static partial class IEnumerableExtensions
     /// <see langword="true" />, the current element starts a new chunk.
     /// </param>
     /// <returns>
-    /// A sequence of chunks, each a stable snapshot, that together preserve every source element in order. The result is
-    /// empty when <paramref name="source" /> is empty.
+    /// A sequence of chunks, each a stable snapshot, that together preserve every source element in order. The result
+    /// is empty when <paramref name="source" /> is empty.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="shouldSplit" /> is <see langword="null" />.
@@ -31,14 +31,26 @@ public static partial class IEnumerableExtensions
     /// only the current chunk. This detects transitions between adjacent elements, not separator values.
     /// </para>
     /// <para>
-    /// <paramref name="shouldSplit" /> is invoked exactly once per adjacent pair — that is,
-    /// <c>count - 1</c> times. Each yielded chunk is a stable snapshot and is not modified when the enumerator advances.
+    /// <paramref name="shouldSplit" /> is invoked exactly once per adjacent pair — that is, <c>count - 1</c> times.
+    /// Each yielded chunk is a stable snapshot and is not modified when the enumerator advances.
     /// </para>
     /// <para>
     /// When bounded over an infinite source, a chunk whose boundary never occurs never yields; combine with
-    /// <see cref="System.Linq.Enumerable.Take{TSource}(IEnumerable{TSource}, int)" /> only when splits are known to occur.
+    /// <see cref="System.Linq.Enumerable.Take{TSource}(IEnumerable{TSource}, int)" /> only when splits are known to
+    /// occur.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Start a new chunk whenever the value drops (a descending transition).
+    /// foreach (var chunk in new[] { 1, 2, 3, 1, 2 }.SplitWhen((previous, current) => previous > current))
+    ///     Console.WriteLine(string.Join(", ", chunk));
+    /// // => 1, 2, 3
+    /// // => 1, 2
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<IReadOnlyList<TSource>> SplitWhen<TSource>(
         this IEnumerable<TSource> source,
         Func<TSource, TSource, bool> shouldSplit)

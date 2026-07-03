@@ -9,8 +9,8 @@ namespace Bodu.Collections.Generic.Extensions;
 public static partial class IEnumerableExtensions
 {
     /// <summary>
-    /// Compresses each maximal run of consecutive equal elements in the source sequence into a
-    /// <c>(Value, Count)</c> tuple, using the default equality comparer.
+    /// Compresses each maximal run of consecutive equal elements in the source sequence into a <c>(Value, Count)</c>
+    /// tuple, using the default equality comparer.
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the source sequence.</typeparam>
     /// <param name="source">The source sequence to encode.</param>
@@ -25,12 +25,24 @@ public static partial class IEnumerableExtensions
     /// This method uses deferred execution and enumerates the source exactly once in a single forward pass using only
     /// O(1) working memory. Equality is compared with <see cref="EqualityComparer{T}.Default" />.
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// // Compress each maximal run of adjacent equal characters into a (Value, Count) pair.
+    /// foreach (var (value, count) in "aaabbc".RunLengthEncode())
+    ///     Console.WriteLine($"{value} x {count}");
+    /// // => a x 3
+    /// // => b x 2
+    /// // => c x 1
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<(TSource Value, int Count)> RunLengthEncode<TSource>(this IEnumerable<TSource> source) =>
         source.RunLengthEncode(null);
 
     /// <summary>
-    /// Compresses each maximal run of consecutive equal elements in the source sequence into a
-    /// <c>(Value, Count)</c> tuple, using the specified equality comparer.
+    /// Compresses each maximal run of consecutive equal elements in the source sequence into a <c>(Value, Count)</c>
+    /// tuple, using the specified equality comparer.
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the source sequence.</typeparam>
     /// <param name="source">The source sequence to encode.</param>
@@ -56,7 +68,8 @@ public static partial class IEnumerableExtensions
     /// </para>
     /// <para>
     /// When bounded over an infinite source, a run that never ends never yields; combine with
-    /// <see cref="System.Linq.Enumerable.Take{TSource}(IEnumerable{TSource}, int)" /> only when runs are known to change.
+    /// <see cref="System.Linq.Enumerable.Take{TSource}(IEnumerable{TSource}, int)" /> only when runs are known to
+    /// change.
     /// </para>
     /// </remarks>
     public static IEnumerable<(TSource Value, int Count)> RunLengthEncode<TSource>(
