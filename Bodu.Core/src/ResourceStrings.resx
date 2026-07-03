@@ -639,6 +639,9 @@
   <data name="Overflow_Invalid_NegatingTwosComplement" xml:space="preserve">
     <value>Negating the minimum value of a twos complement number is invalid.</value>
   </data>
+  <data name="Overflow_Invalid_RunLengthExceedsMaxValue" xml:space="preserve">
+    <value>The length of a single run exceeded Int32.MaxValue.</value>
+  </data>
   <data name="Serial_Invalid_State" xml:space="preserve">
     <value>Insufficient or invalid serialized state for {0}.</value>
   </data>

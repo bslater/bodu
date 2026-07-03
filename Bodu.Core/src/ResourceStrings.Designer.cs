@@ -1625,7 +1625,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Overflow_Invalid_NegatingTwosComplement", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The length of a single run exceeded Int32.MaxValue..
+        /// </summary>
+        internal static string Overflow_Invalid_RunLengthExceedsMaxValue {
+            get {
+                return ResourceManager.GetString("Overflow_Invalid_RunLengthExceedsMaxValue", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Insufficient or invalid serialized state for {0}..
         /// </summary>
