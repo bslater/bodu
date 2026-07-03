@@ -48,6 +48,11 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
   <p>AES, Twofish, Camellia, Serpent-128 — the four 128-bit-block ciphers compared, with selection guidance and BCL-vs-Bodu trade-offs.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="hardware-acceleration.md">Hardware acceleration &amp; SIMD opt-out</a></h3>
+  <p>Which primitives ship an AVX-512 fast path (BLAKE2/3, Threefish, CubeHash), when it engages, and the <code>Bodu.Security.Cryptography.DisableSimd</code> switch to force the scalar path.</p>
+</div>
+
 </div>
 
 ## Symmetric ciphers — Standard

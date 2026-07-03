@@ -8,6 +8,9 @@ title: Using Threefish-256
 
 ![Threefish round function — MIX, word permutation, and subkey injection](../../images/diagrams/threefish-round.svg)
 
+> [!NOTE]
+> Encrypt/decrypt ships an AVX-512 fast path that engages automatically on supporting hardware. See [Hardware acceleration & SIMD opt-out](hardware-acceleration.md) for when it runs and how to force the scalar path.
+
 ## Fixed sizes at a glance
 
 | Parameter | Size | Notes |

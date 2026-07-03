@@ -110,6 +110,12 @@ Non-cryptographic hashes and checksums — FNV-1a, Adler-32, CRC-3 through CRC-6
 - **`Blake3`** clears each `uint[]` on the chunk-CV stack on Dispose so per-subtree chaining values do not survive in heap memory.
 - **GCM** rejects message lengths that would force its 32-bit `inc32` counter to wrap past `0xFFFFFFFF` while another block remains to be processed.
 
+## Hardware acceleration
+
+`Blake2b`, `Blake2s`, `Blake3`, `Threefish256` / `Threefish512` / `Threefish1024`, and `CubeHash` ship an AVX-512 vectorised path alongside a scalar reference implementation, and dispatch to it automatically when the host CPU supports it. The two produce bit-identical output.
+
+Set the process-wide feature switch **`Bodu.Security.Cryptography.DisableSimd`** to `true` to force the scalar path — useful for reproducibility, differential testing, or audit. It is read once, before first use of any accelerated primitive, so set it via `runtimeconfig.json` / a `<RuntimeHostConfigurationOption>` item or an early `AppContext.SetSwitch(...)`. The paths are equivalent (BLAKE2/3 and Threefish are ARX and constant-time in both forms); the switch is not a security control. See the [hardware-acceleration guide](https://github.com/bodu/bodu) for details.
+
 ## Reusable infrastructure
 
 | Helper | Purpose |

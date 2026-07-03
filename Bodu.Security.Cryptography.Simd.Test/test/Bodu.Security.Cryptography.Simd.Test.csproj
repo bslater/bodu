@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Dedicated test assembly that runs the accelerated primitives with the SIMD opt-out engaged. The
+    Bodu.Security.Cryptography.DisableSimd feature switch is process-wide and read once at type init
+    (see SimdCapabilities), and the main test assembly runs in parallel, so the switch cannot be
+    toggled in-process without a data race. Isolating the switched-off run in its own assembly — with
+    the switch set through runtimeconfig.template.json — is the parallel-safe way to prove the scalar
+    fallback stays correct when SIMD is forced off.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
+  </ItemGroup>
+
+</Project>
