@@ -628,7 +628,7 @@ public sealed class CubeHash
     /// <param name="roundCount">The number of rounds to perform.</param>
     private void PerformRounds(int roundCount)
     {
-        if (Avx512F.IsSupported)
+        if (SimdCapabilities.Avx512F)
             PerformRoundsAvx512(roundCount);
         else
             PerformRoundsScalar(roundCount);

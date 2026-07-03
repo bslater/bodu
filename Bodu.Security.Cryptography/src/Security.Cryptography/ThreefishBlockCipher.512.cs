@@ -164,8 +164,9 @@ public sealed partial class Threefish512Cipher
     /// </exception>
     /// <remarks>
     /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a scalar
-    /// register-resident implementation otherwise. <see cref="Avx512F.IsSupported" /> is a JIT intrinsic that folds to
-    /// a compile-time constant, so the branch carries no runtime cost.
+    /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512F" />, which
+    /// combines the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
+    /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
     /// </remarks>
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
@@ -176,7 +177,7 @@ public sealed partial class Threefish512Cipher
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, 64));
         }
 
-        if (Avx512F.IsSupported)
+        if (SimdCapabilities.Avx512F)
         {
             DecryptAvx512(input, output);
             return;
@@ -309,8 +310,9 @@ public sealed partial class Threefish512Cipher
     /// </exception>
     /// <remarks>
     /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a scalar
-    /// register-resident implementation otherwise. <see cref="Avx512F.IsSupported" /> is a JIT intrinsic that folds to
-    /// a compile-time constant, so the branch carries no runtime cost.
+    /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512F" />, which
+    /// combines the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
+    /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
     /// </remarks>
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
@@ -321,7 +323,7 @@ public sealed partial class Threefish512Cipher
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_BlockLength, 64));
         }
 
-        if (Avx512F.IsSupported)
+        if (SimdCapabilities.Avx512F)
         {
             EncryptAvx512(input, output);
             return;

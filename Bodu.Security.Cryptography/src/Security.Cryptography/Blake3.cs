@@ -333,12 +333,13 @@ public sealed partial class Blake3
     /// </returns>
     /// <remarks>
     /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
-    /// reference implementation otherwise. <see cref="Avx512F.VL.IsSupported" /> is a JIT intrinsic that folds to a
-    /// compile-time constant, so the branch carries no runtime cost.
+    /// reference implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" />, which combines
+    /// the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
+    /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint[] Compress(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags) =>
-         Avx512F.VL.IsSupported
+         SimdCapabilities.Avx512FVL
             ? CompressAvx512(cv, blockWords, counter, blockLen, flags)
             : CompressScalar(cv, blockWords, counter, blockLen, flags);
 

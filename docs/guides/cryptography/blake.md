@@ -10,6 +10,9 @@ The BLAKE family is the modern alternative to SHA-2 and SHA-3 for general-purpos
 - **BLAKE2s** — 32-bit-platform-optimised; 128–256-bit output; built-in MAC mode.
 - **BLAKE3** — high-throughput, tree-structured; 256-bit fixed output; parallelisable across cores on long inputs.
 
+> [!NOTE]
+> All three ship an AVX-512 fast path that engages automatically on supporting hardware. See [Hardware acceleration & SIMD opt-out](hardware-acceleration.md) for when it runs and how to force the scalar path.
+
 This guide covers all three on one page. For the broader "which hash do I pick?" framing, see [Hashing](hashing.md). For Merkle-tree hashing built on BLAKE3, see [Merkle trees](merkle-trees.md).
 
 ## At a glance

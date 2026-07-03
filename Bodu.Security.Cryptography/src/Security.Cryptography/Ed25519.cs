@@ -37,9 +37,11 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// <strong>Scope.</strong> Only pure Ed25519 is implemented. The pre-hash (Ed25519ph) and context (Ed25519ctx) variants
-/// of RFC 8032 are deliberately out of scope for this version. Only the raw RFC 8032 32-byte key encodings are
-/// supported; the PKCS#8 / SubjectPublicKeyInfo / PEM / XML members inherited from <see cref="AsymmetricAlgorithm" />
-/// are not supported and throw <see cref="NotSupportedException" />.
+/// of RFC 8032 are deliberately out of scope for this version. The raw RFC 8032 32-byte key encodings, the RFC 8410
+/// PKCS#8 / SubjectPublicKeyInfo DER containers (OID 1.3.101.112), and the RFC 7468 PEM helpers inherited from
+/// <see cref="AsymmetricAlgorithm" /> (<c>ImportFromPem</c>, <c>ExportPkcs8PrivateKeyPem</c>,
+/// <c>ExportSubjectPublicKeyInfoPem</c>) are all supported; the XML members and encrypted PKCS#8 are out of scope and
+/// throw <see cref="NotSupportedException" />.
 /// </para>
 /// <para>
 /// <strong>Verification policy.</strong> <see cref="VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> applies the

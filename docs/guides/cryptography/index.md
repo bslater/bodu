@@ -48,6 +48,11 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
   <p>AES, Twofish, Camellia, Serpent-128 — the four 128-bit-block ciphers compared, with selection guidance and BCL-vs-Bodu trade-offs.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="hardware-acceleration.md">Hardware acceleration &amp; SIMD opt-out</a></h3>
+  <p>Which primitives ship an AVX-512 fast path (BLAKE2/3, Threefish, CubeHash), when it engages, and the <code>Bodu.Security.Cryptography.DisableSimd</code> switch to force the scalar path.</p>
+</div>
+
 </div>
 
 ## Symmetric ciphers — Standard
@@ -186,6 +191,17 @@ The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256`
 <div class="bodu-card">
   <h3><a href="scrypt.md">Using scrypt</a></h3>
   <p><code>Scrypt</code> (RFC 7914) — the established memory-hard password KDF, with PHC encoded-hash <code>Hash</code> / <code>Verify</code>.</p>
+</div>
+
+</div>
+
+## One-time passwords
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="one-time-passwords.md">Using HOTP and TOTP</a></h3>
+  <p><code>Hotp</code> (RFC 4226) and <code>Totp</code> (RFC 6238) — the counter- and time-based one-time-password codes used for two-factor authentication, with constant-time verification and clock-drift windows.</p>
 </div>
 
 </div>

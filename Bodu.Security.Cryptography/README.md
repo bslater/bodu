@@ -102,6 +102,15 @@ PKCS#7, ANSI X9.23, ISO 7816-4, ISO 10126, zero-padding, and `None`. All are exe
 
 Non-cryptographic hashes and checksums — FNV-1a, Adler-32, CRC-3 through CRC-64, and Fletcher-16/32/64 — live in the sibling `Bodu.IO.Hashing` package.
 
+### One-time passwords
+
+| Algorithm | Type | Standard | Notes |
+|---|---|---|---|
+| `Hotp` | counter-based OTP | RFC 4226 | `GenerateCode` / `VerifyCode`; look-ahead resynchronization |
+| `Totp` | time-based OTP | RFC 6238 | Time-derived counter over `Hotp`; clock-drift verification window |
+
+Static, span-based, and built on the BCL one-shot HMAC (`OtpHashAlgorithm` selects SHA-1/256/512). Verification is constant-time. Secrets are raw bytes — decode a Base32 `otpauth://` secret with `Bodu.Text.Encoding.Base32` first. See the [HOTP/TOTP guide](https://github.com/bodu/bodu).
+
 ## Lifecycle and disposal guarantees
 
 - **AEAD transforms** (`IAeadBlockCipherModeTransform`) are single-use per message. Each implementation tracks `_completed`, `_aadProcessed`, `_disposed`, rejects double-Encrypt/Decrypt with `InvalidOperationException`, rejects post-disposal access with `ObjectDisposedException`, compares tags with `CryptographicOperations.FixedTimeEquals`, and clears the plaintext destination on tag-verification failure.
@@ -109,6 +118,12 @@ Non-cryptographic hashes and checksums — FNV-1a, Adler-32, CRC-3 through CRC-6
 - **`Poly1305`** is a one-time MAC; the same instance throws `CryptographicException` on a second `ComputeHash` unless `Key` is explicitly reassigned. Disposing clears `_acc`, `_r`, `_s`, and `_key`.
 - **`Blake3`** clears each `uint[]` on the chunk-CV stack on Dispose so per-subtree chaining values do not survive in heap memory.
 - **GCM** rejects message lengths that would force its 32-bit `inc32` counter to wrap past `0xFFFFFFFF` while another block remains to be processed.
+
+## Hardware acceleration
+
+`Blake2b`, `Blake2s`, `Blake3`, `Threefish256` / `Threefish512` / `Threefish1024`, and `CubeHash` ship an AVX-512 vectorised path alongside a scalar reference implementation, and dispatch to it automatically when the host CPU supports it. The two produce bit-identical output.
+
+Set the process-wide feature switch **`Bodu.Security.Cryptography.DisableSimd`** to `true` to force the scalar path — useful for reproducibility, differential testing, or audit. It is read once, before first use of any accelerated primitive, so set it via `runtimeconfig.json` / a `<RuntimeHostConfigurationOption>` item or an early `AppContext.SetSwitch(...)`. The paths are equivalent (BLAKE2/3 and Threefish are ARX and constant-time in both forms); the switch is not a security control. See the [hardware-acceleration guide](https://github.com/bodu/bodu) for details.
 
 ## Reusable infrastructure
 

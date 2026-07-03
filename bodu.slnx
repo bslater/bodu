@@ -136,6 +136,7 @@
     <Project Path="Bodu.Security.Cryptography\bench\Bodu.Security.Cryptography.Benchmarks.csproj" />
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
     <Project Path="Bodu.Security.Cryptography\test\Bodu.Security.Cryptography.Test.csproj" />
+    <Project Path="Bodu.Security.Cryptography.Simd.Test\test\Bodu.Security.Cryptography.Simd.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Text.Encoding/">
     <Project Path="Bodu.Text.Encoding/bench/Bodu.Text.Encoding.Benchmarks.csproj">
