@@ -66,6 +66,17 @@ Highlights:
 - `IsEmpty`, `IsDegenerate`, and `Length`. All empty intervals compare equal to `Empty`.
 - ISO 31-11 bracket-notation formatting and parsing (`IFormattable` / `ISpanFormattable` / `IUtf8SpanFormattable` / `IParsable` / `ISpanParsable`). Empty intervals render as the U+2205 EMPTY SET glyph.
 
+### When to use `Interval<T>` vs `DiscreteInterval<T>`
+
+Use **`Interval<T>`** when the endpoints are coordinates in an ordered numeric *continuum* — even when `T` is an integer coordinate type — so the values between the bounds matter. Use **`DiscreteInterval<T>`** (over `IBinaryInteger<T>`) when the interval represents the *set of integers* between its bounds. The distinction is observable:
+
+```csharp
+Interval<int>.Open(1, 2).IsEmpty;          // False — the real coordinates between 1 and 2
+DiscreteInterval<int>.Open(1, 2).IsEmpty;  // True  — no integer lies strictly between 1 and 2
+```
+
+`DiscreteInterval<T>` is integer-only; it is not a general discrete-domain abstraction over `DateOnly`, `char`, or enum ranges. Reach for `IntervalSet<T>` when a set operation can produce a disconnected result.
+
 ## Documentation
 
 See the [Bodu.Numerics guide](https://github.com/bslater/bodu/blob/master/docs/guides/numerics/index.md), including the dedicated [`Interval<T>` article](https://github.com/bslater/bodu/blob/master/docs/guides/numerics/interval.md).

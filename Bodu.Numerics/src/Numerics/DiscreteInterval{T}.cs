@@ -42,6 +42,12 @@ namespace Bodu.Numerics;
 /// are supported through the <see cref="AtLeast(T)" />, <see cref="AtMost(T)" />, and <see cref="All" /> factory
 /// family.
 /// </para>
+/// <para>
+/// <b>Domain scope.</b> This type is deliberately integer-only — its domain is <see cref="IBinaryInteger{TSelf}" />. It
+/// is not a general discrete-domain abstraction: ranges over <see cref="System.DateOnly" />, <see cref="char" />, enum
+/// values, or a custom successor domain are out of scope. For a disconnected result — the union of several runs — use
+/// <see cref="IntervalSet{T}" />.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

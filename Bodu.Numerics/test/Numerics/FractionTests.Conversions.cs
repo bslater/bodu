@@ -22,13 +22,15 @@ public partial class FractionTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fraction{T}.FromDecimal" /> produces the exact rational value.
+    /// Verifies that <see cref="Fraction{T}.FromDecimal" /> produces the exact <em>decimal</em> rational value — so a
+    /// human-decimal such as <c>0.1m</c> becomes exactly <c>1/10</c>, unlike the binary <see cref="double" /> path.
     /// </summary>
     [TestMethod]
     [DataRow("0.75", 3, 4)]
     [DataRow("0.25", 1, 4)]
     [DataRow("-0.5", -1, 2)]
     [DataRow("2.5", 5, 2)]
+    [DataRow("0.1", 1, 10)]
     public void FromDecimal_WhenGivenDecimal_ShouldProduceExactValue(string text, int expectedNumerator, int expectedDenominator)
     {
         decimal input = decimal.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
@@ -46,6 +48,35 @@ public partial class FractionTests
     {
         Assert.AreEqual(new Fraction<int>(1, 2), Fraction<int>.FromDouble(0.5));
         Assert.AreEqual(new Fraction<int>(-3, 8), Fraction<int>.FromDouble(-0.375));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.FromDouble" /> captures the <em>exact IEEE 754 binary</em> value — so
+    /// <c>0.1d</c> (which is not exactly one tenth in binary) is <em>not</em> <c>1/10</c>, yet its best rational
+    /// approximation within a denominator of ten recovers <c>1/10</c>. This locks the exact-binary contract and its
+    /// contrast with <see cref="Fraction{T}.FromDecimal" />.
+    /// </summary>
+    [TestMethod]
+    public void FromDouble_WhenGivenDecimalNotRepresentableInBinary_ShouldProduceExactBinaryRational()
+    {
+        var oneTenthFromDouble = Fraction<BigInteger>.FromDouble(0.1);
+
+        Assert.AreNotEqual(new Fraction<BigInteger>(1, 10), oneTenthFromDouble);
+        Assert.AreEqual(new Fraction<BigInteger>(1, 10), oneTenthFromDouble.LimitDenominator(10));
+        Assert.AreEqual(new Fraction<BigInteger>(1, 10), Fraction<BigInteger>.FromDecimal(0.1m));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.FromDouble" /> maps negative zero to the canonical zero — the fraction model
+    /// has a single zero and does not carry a sign on it.
+    /// </summary>
+    [TestMethod]
+    public void FromDouble_WhenGivenNegativeZero_ShouldEqualZero()
+    {
+        var value = Fraction<int>.FromDouble(-0.0);
+
+        Assert.AreEqual(Fraction<int>.Zero, value);
+        Assert.IsFalse(value.IsNegative);
     }
 
     /// <summary>
