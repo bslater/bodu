@@ -42,7 +42,36 @@ public readonly partial struct Interval<T>
     /// <see langword="false" /> when open (i.e. <c>..., Upper)</c>).
     /// </value>
     public bool UpperInclusive =>
-        (_flags & 2) != 0;
+        (_flags & UpperInclusiveFlag) != 0;
+
+    /// <summary>
+    /// Gets a value indicating whether the lower side is unbounded — the interval extends to <c>-&#x221E;</c> with no
+    /// finite lower limit.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when the interval is lower-unbounded (i.e. <c>(-&#x221E;, ...</c>); otherwise
+    /// <see langword="false" />.
+    /// </value>
+    public bool LowerUnbounded =>
+        (_flags & LowerUnboundedFlag) != 0;
+
+    /// <summary>
+    /// Gets a value indicating whether the upper side is unbounded — the interval extends to <c>+&#x221E;</c> with no
+    /// finite upper limit.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when the interval is upper-unbounded (i.e. <c>..., +&#x221E;)</c>); otherwise
+    /// <see langword="false" />.
+    /// </value>
+    public bool UpperUnbounded =>
+        (_flags & UpperUnboundedFlag) != 0;
+
+    /// <summary>
+    /// Gets a value indicating whether both endpoints are finite — the interval has a concrete lower and upper limit.
+    /// </summary>
+    /// <value><see langword="true" /> when neither side is unbounded; otherwise <see langword="false" />.</value>
+    public bool IsBounded =>
+        (_flags & (LowerUnboundedFlag | UpperUnboundedFlag)) == 0;
 
     /// <summary>
     /// Gets a value indicating whether the interval contains no values.
@@ -79,7 +108,7 @@ public readonly partial struct Interval<T>
     /// </code>
     /// </example>
     public bool IsEmpty =>
-        _lower > _upper || (_lower == _upper && (!LowerInclusive || !UpperInclusive));
+        IsBounded && (_lower > _upper || (_lower == _upper && (!LowerInclusive || !UpperInclusive)));
 
     /// <summary>
     /// Gets a value indicating whether the interval represents a single point — a closed-closed interval whose lower
@@ -91,7 +120,7 @@ public readonly partial struct Interval<T>
     /// <see langword="false" />.
     /// </value>
     public bool IsDegenerate =>
-        _lower == _upper && LowerInclusive && UpperInclusive;
+        IsBounded && _lower == _upper && LowerInclusive && UpperInclusive;
 
     /// <summary>
     /// Gets the algebraic length of the interval — the difference between its upper and lower endpoints.
@@ -109,10 +138,16 @@ public readonly partial struct Interval<T>
     /// it.
     /// </para>
     /// <para>
-    /// For empty intervals, the length is <see cref="INumberBase{TSelf}.Zero" />.
+    /// For empty intervals, the length is <see cref="INumberBase{TSelf}.Zero" />. For unbounded intervals the length is
+    /// infinite and not representable in <typeparamref name="T" />, so this property throws.
     /// </para>
     /// </remarks>
     /// <value>The non-negative length of the interval, or <see cref="INumberBase{TSelf}.Zero" /> when empty.</value>
+    /// <exception cref="InvalidOperationException">
+    /// The interval is unbounded (<see cref="IsBounded" /> is <see langword="false" />).
+    /// </exception>
     public T Length =>
-        IsEmpty ? T.Zero : _upper - _lower;
+        IsEmpty ? T.Zero
+        : IsBounded ? _upper - _lower
+        : throw new InvalidOperationException(NumericsResourceStrings.Op_Invalid_IntervalUnboundedLength);
 }

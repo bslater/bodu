@@ -398,6 +398,8 @@
           href: numerics/json-serialization.md
         - name: Interval algebra
           href: numerics/interval-algebra.md
+        - name: Discrete integer intervals
+          href: numerics/discrete-intervals.md
         - name: Generic math constraints
           href: numerics/generic-math-constraints.md
     - name: Bodu.Financial

@@ -473,5 +473,41 @@ namespace Bodu.Numerics {
                 return ResourceManager.GetString("Format_Invalid_FractionText", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The length of an unbounded interval is infinite and cannot be represented..
+        /// </summary>
+        internal static string Op_Invalid_IntervalUnboundedLength {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IntervalUnboundedLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The count of an unbounded discrete interval is infinite and cannot be represented..
+        /// </summary>
+        internal static string Op_Invalid_DiscreteIntervalUnboundedCount {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DiscreteIntervalUnboundedCount", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The union of two disjoint, non-adjacent intervals is not a single contiguous interval; use Difference or accumulate the pieces instead..
+        /// </summary>
+        internal static string Op_Invalid_IntervalNonContiguousUnion {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IntervalNonContiguousUnion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An interval endpoint must be a number; NaN is not a valid endpoint..
+        /// </summary>
+        internal static string Arg_Invalid_IntervalNaNEndpoint {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IntervalNaNEndpoint", resourceCulture);
+            }
+        }
     }
 }

@@ -141,16 +141,19 @@ public readonly partial struct Interval<T> :
                 return false;
         }
 
+        // The endpoint separator mirrors the formatter: a semicolon under comma-decimal cultures, otherwise a comma.
+        char separator = NumberFormatInfo.GetInstance(provider).NumberDecimalSeparator == "," ? ';' : ',';
+
         ReadOnlySpan<char> body = trimmed[1..^1];
-        int commaIndex = body.IndexOf(',');
-        if (commaIndex < 0)
+        int separatorIndex = body.IndexOf(separator);
+        if (separatorIndex < 0)
         {
             result = default;
             return false;
         }
 
-        ReadOnlySpan<char> lowerText = body[..commaIndex].Trim();
-        ReadOnlySpan<char> upperText = body[(commaIndex + 1)..].Trim();
+        ReadOnlySpan<char> lowerText = body[..separatorIndex].Trim();
+        ReadOnlySpan<char> upperText = body[(separatorIndex + 1) ..].Trim();
 
         if (lowerText.IsEmpty || upperText.IsEmpty)
         {
@@ -159,14 +162,83 @@ public readonly partial struct Interval<T> :
         }
 
         IFormatProvider effectiveProvider = provider ?? CultureInfo.CurrentCulture;
-        if (!T.TryParse(lowerText, NumberStyles.Any, effectiveProvider, out T? lower)
-            || !T.TryParse(upperText, NumberStyles.Any, effectiveProvider, out T? upper))
+        byte flags = 0;
+        T lower = T.Zero;
+        T upper = T.Zero;
+
+        // An unbounded side is written with an infinity token and must carry the open bracket ('(' / ')').
+        if (IsNegativeInfinityToken(lowerText))
         {
-            result = default;
-            return false;
+            if (lowerInclusive)
+            {
+                result = default;
+                return false;
+            }
+
+            flags |= LowerUnboundedFlag;
+        }
+        else
+        {
+            if (!T.TryParse(lowerText, NumberStyles.Any, effectiveProvider, out T? parsedLower))
+            {
+                result = default;
+                return false;
+            }
+
+            lower = parsedLower;
+            if (lowerInclusive)
+                flags |= LowerInclusiveFlag;
         }
 
-        result = new Interval<T>(lower, upper, lowerInclusive, upperInclusive);
+        if (IsPositiveInfinityToken(upperText))
+        {
+            if (upperInclusive)
+            {
+                result = default;
+                return false;
+            }
+
+            flags |= UpperUnboundedFlag;
+        }
+        else
+        {
+            if (!T.TryParse(upperText, NumberStyles.Any, effectiveProvider, out T? parsedUpper))
+            {
+                result = default;
+                return false;
+            }
+
+            upper = parsedUpper;
+            if (upperInclusive)
+                flags |= UpperInclusiveFlag;
+        }
+
+        result = new Interval<T>(lower, upper, flags);
         return true;
     }
+
+    /// <summary>
+    /// Determines whether <paramref name="s" /> is a negative-infinity token (<c>-&#x221E;</c>, <c>-Infinity</c>, or
+    /// <c>-inf</c>, case-insensitive).
+    /// </summary>
+    /// <param name="s">The endpoint text.</param>
+    /// <returns><see langword="true" /> when the text denotes negative infinity.</returns>
+    private static bool IsNegativeInfinityToken(ReadOnlySpan<char> s) =>
+        s.SequenceEqual(NegativeInfinityText)
+        || s.Equals("-Infinity", StringComparison.OrdinalIgnoreCase)
+        || s.Equals("-inf", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Determines whether <paramref name="s" /> is a positive-infinity token (<c>+&#x221E;</c>, <c>&#x221E;</c>,
+    /// <c>Infinity</c>, or <c>inf</c>, case-insensitive).
+    /// </summary>
+    /// <param name="s">The endpoint text.</param>
+    /// <returns><see langword="true" /> when the text denotes positive infinity.</returns>
+    private static bool IsPositiveInfinityToken(ReadOnlySpan<char> s) =>
+        s.SequenceEqual(PositiveInfinityText)
+        || s.SequenceEqual("∞")
+        || s.Equals("+Infinity", StringComparison.OrdinalIgnoreCase)
+        || s.Equals("Infinity", StringComparison.OrdinalIgnoreCase)
+        || s.Equals("+inf", StringComparison.OrdinalIgnoreCase)
+        || s.Equals("inf", StringComparison.OrdinalIgnoreCase);
 }

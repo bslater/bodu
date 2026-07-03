@@ -50,11 +50,13 @@ namespace Bodu.Numerics;
 /// than as a malformed value.
 /// </para>
 /// <para>
-/// Unbounded intervals (intervals with no lower or no upper limit, conventionally written <c>(-&#x221E;, b]</c> or
-/// <c>[a, +&#x221E;)</c>) are <b>not</b> directly representable; both <see cref="Lower" /> and <see cref="Upper" /> are
-/// always concrete values of <typeparamref name="T" />. Consumers requiring half-infinite or doubly-infinite ranges
-/// should use the floating-point infinity constants of <typeparamref name="T" /> when supported (e.g.
-/// <see cref="double.NegativeInfinity" />), or model the unbounded case at a higher level.
+/// Unbounded intervals — those with no lower limit, no upper limit, or neither, written <c>(-&#x221E;, b]</c>,
+/// <c>[a, +&#x221E;)</c>, or <c>(-&#x221E;, +&#x221E;)</c> — are representable through the <see cref="AtLeast(T)" />,
+/// <see cref="GreaterThan(T)" />, <see cref="AtMost(T)" />, <see cref="LessThan(T)" />, and <see cref="All" />
+/// factories. An unbounded endpoint carries no concrete value and is always open (infinity is never a member);
+/// <see cref="LowerUnbounded" /> and <see cref="UpperUnbounded" /> report which sides, if any, are unbounded, and
+/// <see cref="IsBounded" /> is <see langword="true" /> only when both sides are finite. An unbounded interval is never
+/// empty, and <see cref="Length" /> is undefined for it.
 /// </para>
 /// <para>
 /// Instances are immutable, structurally equatable, and safe to share. They format using ISO 31-11 interval notation
@@ -91,13 +93,25 @@ namespace Bodu.Numerics;
 public readonly partial struct Interval<T>
     where T : INumber<T>
 {
+    /// <summary>Flag bit marking the lower endpoint as inclusive (closed).</summary>
+    private const byte LowerInclusiveFlag = 0b0001;
+
+    /// <summary>Flag bit marking the upper endpoint as inclusive (closed).</summary>
+    private const byte UpperInclusiveFlag = 0b0010;
+
+    /// <summary>Flag bit marking the lower side as unbounded (extending to <c>-&#x221E;</c>).</summary>
+    private const byte LowerUnboundedFlag = 0b0100;
+
+    /// <summary>Flag bit marking the upper side as unbounded (extending to <c>+&#x221E;</c>).</summary>
+    private const byte UpperUnboundedFlag = 0b1000;
+
     /// <summary>The lower endpoint backing field. Read through <see cref="Lower" />.</summary>
     private readonly T _lower;
 
     /// <summary>The upper endpoint backing field. Read through <see cref="Upper" />.</summary>
     private readonly T _upper;
 
-    /// <summary>Packed endpoint inclusion flags. Bit 0 is <see cref="LowerInclusive" />; bit 1 is <see cref="UpperInclusive" />. Storing both flags in a single byte keeps the struct size at <c>2 * sizeof(T) + 1</c> with the JIT supplying the trailing alignment padding.</summary>
+    /// <summary>Packed endpoint flags. Bit 0 is <see cref="LowerInclusive" />; bit 1 is <see cref="UpperInclusive" />; bit 2 marks the lower side unbounded (<c>-&#x221E;</c>); bit 3 marks the upper side unbounded (<c>+&#x221E;</c>). Storing all four flags in a single byte keeps the struct size at <c>2 * sizeof(T) + 1</c> with the JIT supplying the trailing alignment padding.</summary>
     private readonly byte _flags;
 
     /// <summary>
@@ -125,8 +139,30 @@ public readonly partial struct Interval<T>
     /// </remarks>
     public Interval(T lower, T upper, bool lowerInclusive, bool upperInclusive)
     {
+        if (T.IsNaN(lower)) throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_IntervalNaNEndpoint, nameof(lower));
+        if (T.IsNaN(upper)) throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_IntervalNaNEndpoint, nameof(upper));
+
         _lower = lower;
         _upper = upper;
-        _flags = (byte)((lowerInclusive ? 1 : 0) | (upperInclusive ? 2 : 0));
+        _flags = (byte)((lowerInclusive ? LowerInclusiveFlag : 0) | (upperInclusive ? UpperInclusiveFlag : 0));
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Interval{T}" /> struct from raw endpoint values and a packed flag
+    /// byte. Used by the factories to construct unbounded and half-bounded intervals, where an unbounded side stores
+    /// <see cref="INumberBase{TSelf}.Zero" /> as its (ignored) endpoint value.
+    /// </summary>
+    /// <param name="lower">
+    /// The lower endpoint value, or <see cref="INumberBase{TSelf}.Zero" /> when the lower side is unbounded.
+    /// </param>
+    /// <param name="upper">
+    /// The upper endpoint value, or <see cref="INumberBase{TSelf}.Zero" /> when the upper side is unbounded.
+    /// </param>
+    /// <param name="flags">The packed endpoint flags (inclusivity bits 0/1 and unbounded bits 2/3).</param>
+    private Interval(T lower, T upper, byte flags)
+    {
+        _lower = lower;
+        _upper = upper;
+        _flags = flags;
     }
 }

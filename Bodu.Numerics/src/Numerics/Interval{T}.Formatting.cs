@@ -17,6 +17,12 @@ public readonly partial struct Interval<T> :
     /// <summary>The string representation used for any empty interval.</summary>
     private const string EmptyText = "∅";
 
+    /// <summary>The token rendered for an unbounded lower endpoint (<c>-&#x221E;</c>).</summary>
+    private const string NegativeInfinityText = "-∞";
+
+    /// <summary>The token rendered for an unbounded upper endpoint (<c>+&#x221E;</c>).</summary>
+    private const string PositiveInfinityText = "+∞";
+
     /// <summary>
     /// Returns the default string representation of this interval using ISO 31-11 bracket notation.
     /// </summary>
@@ -121,8 +127,18 @@ public readonly partial struct Interval<T> :
 
         char lowerBracket = LowerInclusive ? '[' : '(';
         char upperBracket = UpperInclusive ? ']' : ')';
-        string lowerText = ((IFormattable)_lower).ToString(format, provider);
-        string upperText = ((IFormattable)_upper).ToString(format, provider);
-        return $"{lowerBracket}{lowerText}, {upperText}{upperBracket}";
+        string lowerText = LowerUnbounded ? NegativeInfinityText : ((IFormattable)_lower).ToString(format, provider);
+        string upperText = UpperUnbounded ? PositiveInfinityText : ((IFormattable)_upper).ToString(format, provider);
+        return $"{lowerBracket}{lowerText}{ElementSeparator(provider)}{upperText}{upperBracket}";
     }
+
+    /// <summary>
+    /// Returns the endpoint separator for the given culture. A semicolon is used when the culture's decimal separator
+    /// is a comma, so that a decimal interval such as <c>[1,5; 2,5]</c> parses back unambiguously; otherwise a comma is
+    /// used.
+    /// </summary>
+    /// <param name="provider">The culture used to render the endpoints.</param>
+    /// <returns><c>"; "</c> for comma-decimal cultures; otherwise <c>", "</c>.</returns>
+    private static string ElementSeparator(IFormatProvider? provider) =>
+        NumberFormatInfo.GetInstance(provider).NumberDecimalSeparator == "," ? "; " : ", ";
 }

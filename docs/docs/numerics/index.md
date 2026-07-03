@@ -4,7 +4,7 @@ title: Bodu.Numerics — Introduction
 
 # Bodu.Numerics
 
-**Bodu.Numerics** is the numeric-primitives package of the Bodu suite. It ships two value types — `Fraction<T>` for exact rational arithmetic and `Interval<T>` for bounded intervals — both built on the generic-math interfaces (`INumber<T>`, `ISignedNumber<T>`) so they compose with anything that targets the .NET 7+ numeric abstractions. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
+**Bodu.Numerics** is the numeric-primitives package of the Bodu suite. It centers on two value types — `Fraction<T>` for exact rational arithmetic and `Interval<T>` for intervals over ordered numeric coordinates — both built on the generic-math interfaces (`INumber<T>`, `ISignedNumber<T>`) so they compose with anything that targets the .NET 7+ numeric abstractions. Around `Interval<T>` sit its set-algebra companions: the integer-domain `DiscreteInterval<T>`, the binary-result `IntervalPair<T>` / `DiscreteIntervalPair<T>`, and the N-ary `IntervalSet<T>`. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
 
 `Bodu.Numerics` is the dependency that `Bodu.Financial` reaches for when an accounting workflow needs sub-minor-unit precision: `Money<TCurrency>.ToFraction()` round-trips through `Fraction<BigInteger>` for compound interest, percentage-of-percentage, and other chains where deferred rounding matters.
 
@@ -17,8 +17,12 @@ title: Bodu.Numerics — Introduction
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Numerics.Fraction`1> | Immutable canonical rational over any `IBinaryInteger<T>` backing type. Auto-reduces to GCD-normalised form on construction, raises overflow to `BigInteger` precision internally, and implements the full `INumber<T>` / `ISignedNumber<T>` surface. |
-| <xref:Bodu.Numerics.Interval`1> | Immutable bounded interval over any `INumber<T>` endpoint type. Endpoint inclusivity is independent on each side so a single type expresses closed-closed, open-open, closed-open, and open-closed forms. |
-| <xref:Bodu.Numerics.Interval> | Non-generic helper class with factory methods (`Closed`, `Open`, `ClosedOpen`, `OpenClosed`) that infer the endpoint type from the arguments. |
+| <xref:Bodu.Numerics.Interval`1> | Immutable continuous interval over any `INumber<T>` endpoint type. Endpoint inclusivity is independent on each side (closed-closed, open-open, closed-open, open-closed), each side may be unbounded (`All` / `AtLeast` / `AtMost` …), and the full set algebra — `Intersect`, `TryUnion`, `Difference`, `SymmetricDifference`, `&` / `|` — is provided. |
+| <xref:Bodu.Numerics.Interval> | Non-generic helper class with factory methods (`Closed`, `Open`, `ClosedOpen`, `OpenClosed`, `AtLeast`, `AtMost`, …) that infer the endpoint type from the arguments. |
+| <xref:Bodu.Numerics.DiscreteInterval`1> | Immutable integer-domain interval over any `IBinaryInteger<T>` type. Canonicalizes every shape to closed integer bounds, so an open interval over consecutive integers is empty and successor-adjacent runs merge — the discrete counterpart to `Interval<T>`. |
+| <xref:Bodu.Numerics.DiscreteInterval> | Non-generic helper class mirroring the `DiscreteInterval<T>` factories with type inference. |
+| <xref:Bodu.Numerics.IntervalPair`1>, <xref:Bodu.Numerics.DiscreteIntervalPair`1> | Allocation-free results of a binary `Difference` / `SymmetricDifference` — zero, one, or two disjoint pieces, indexable and enumerable. |
+| <xref:Bodu.Numerics.IntervalSet`1> | Immutable normalized union of disjoint, non-adjacent intervals — the N-ary home for `Union` / `Intersect` / `Except` / `Complement` when a result can be a disconnected range. |
 | <xref:Bodu.Numerics.Serialization.FractionJsonConverter`1>, <xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory> | `System.Text.Json` converters auto-registered via `[JsonConverter]` on `Fraction<T>`. The attribute path defaults to the `Strict` object shape `{ "numerator": …, "denominator": … }`; the compact `"numerator/denominator"` string is opt-in via `AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`. |
 
 ### `Bodu.Numerics.Serialization`
@@ -115,7 +119,11 @@ To select a different wire shape across a whole `JsonSerializerOptions` instance
 | Best rational approximation to a `double` or `decimal` within a denominator bound | `Fraction<T>.Approximate(value, maxDenominator)` |
 | Continued-fraction expansion and reconstruction | `Fraction<T>.ToContinuedFraction()` / `FromContinuedFraction(coeffs)` |
 | Closed / open / half-open numeric intervals | <xref:Bodu.Numerics.Interval`1> |
+| Unbounded or half-bounded ranges (`(-∞, 5]`, `[0, +∞)`, the whole line) | `Interval<T>.All` / `AtLeast` / `GreaterThan` / `AtMost` / `LessThan` |
 | Membership tests, intersection, union, adjacency over numeric intervals | `Interval<T>.Contains`, `Intersect`, `TryUnion`, `Overlaps` |
+| Difference and symmetric difference of two intervals (≤ 2 pieces) | `Interval<T>.Difference` / `SymmetricDifference` → <xref:Bodu.Numerics.IntervalPair`1> |
+| Discrete integer intervals — successor-aware emptiness and adjacency | <xref:Bodu.Numerics.DiscreteInterval`1> |
+| An arbitrary union of disjoint ranges, with complement over the line | <xref:Bodu.Numerics.IntervalSet`1> (`Union` / `Intersect` / `Except` / `Complement`) |
 | Mixed-number and Unicode-vulgar-fraction formatting | `Fraction<T>.ToString("M")` / `.ToString("U")` |
 | Round-trippable text for intervals (ISO 31-11 bracket notation) | `Interval<T>.ToString()` / `Parse` |
 | Generic-math algorithms (`Sum`, `Aggregate`, linear algebra) over exact rationals | `Fraction<T>` as `INumber<Fraction<T>>` |
@@ -143,6 +151,8 @@ To select a different wire shape across a whole `JsonSerializerOptions` instance
 - **[Getting started](getting-started.md)** — install the package and run minimal samples for `Fraction<T>` and `Interval<T>`.
 - **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing, formatting, continued fractions, rational approximation.
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
+- **[Interval algebra](../../guides/numerics/interval-algebra.md)** — unbounded endpoints, difference / symmetric difference, the `&` / `|` operators, and the N-ary `IntervalSet<T>`.
+- **[Discrete integer intervals](../../guides/numerics/discrete-intervals.md)** — the integer-domain `DiscreteInterval<T>` and how it differs from the continuous type.
 - **[Formatting and parsing `Fraction<T>`](../../guides/numerics/formatting-and-parsing.md)** — specifiers, the parsing grammar, culture handling, span / UTF-8 surfaces.
 - **[JSON serialization](../../guides/numerics/json-serialization.md)** — the converter factories and the `NumericsJsonPolicy` wire shapes.
 - **[Numerics & Financial topic overview](../topics/numerics-and-financial.md)** — how this package and `Bodu.Financial` fit together.

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public readonly partial struct Interval<T>
@@ -36,8 +38,8 @@ public readonly partial struct Interval<T>
         if (IsEmpty)
             return false;
 
-        bool lowerOk = LowerInclusive ? value >= _lower : value > _lower;
-        bool upperOk = UpperInclusive ? value <= _upper : value < _upper;
+        bool lowerOk = LowerUnbounded || (LowerInclusive ? value >= _lower : value > _lower);
+        bool upperOk = UpperUnbounded || (UpperInclusive ? value <= _upper : value < _upper);
         return lowerOk && upperOk;
     }
 
@@ -77,8 +79,8 @@ public readonly partial struct Interval<T>
         if (IsEmpty)
             return false;
 
-        bool lowerOk = CompareLowerEndpoint(_lower, LowerInclusive, other._lower, other.LowerInclusive) <= 0;
-        bool upperOk = CompareUpperEndpoint(_upper, UpperInclusive, other._upper, other.UpperInclusive) >= 0;
+        bool lowerOk = CompareLowerWith(other) <= 0;
+        bool upperOk = CompareUpperWith(other) >= 0;
         return lowerOk && upperOk;
     }
 
@@ -115,11 +117,28 @@ public readonly partial struct Interval<T>
         if (IsEmpty || other.IsEmpty)
             return false;
 
-        // Two non-empty intervals overlap iff this.Lower < other.Upper (respecting inclusivity) and
-        // other.Lower < this.Upper. We collapse the four cases into endpoint comparisons.
-        bool aBelowB = _lower < other._upper || (_lower == other._upper && LowerInclusive && other.UpperInclusive);
-        bool bBelowA = other._lower < _upper || (other._lower == _upper && other.LowerInclusive && UpperInclusive);
-        return aBelowB && bBelowA;
+        // Two non-empty intervals overlap iff each one's lower endpoint lies below the other's upper endpoint
+        // (respecting inclusivity), where an unbounded side is always below/above any finite endpoint.
+        return LowerBelowUpper(this, other) && LowerBelowUpper(other, this);
+    }
+
+    /// <summary>
+    /// Determines whether the lower endpoint of <paramref name="a" /> lies below the upper endpoint of
+    /// <paramref name="b" />, treating an unbounded lower as below every value and an unbounded upper as above every
+    /// value. Equal finite endpoints count as below only when both include the shared value.
+    /// </summary>
+    /// <param name="a">The interval contributing the lower endpoint.</param>
+    /// <param name="b">The interval contributing the upper endpoint.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="a" />'s lower is below <paramref name="b" />'s upper.
+    /// </returns>
+    private static bool LowerBelowUpper(Interval<T> a, Interval<T> b)
+    {
+        if (a.LowerUnbounded || b.UpperUnbounded)
+            return true;
+
+        int cmp = a._lower.CompareTo(b._upper);
+        return cmp < 0 || (cmp == 0 && a.LowerInclusive && b.UpperInclusive);
     }
 
     /// <summary>
@@ -152,47 +171,107 @@ public readonly partial struct Interval<T>
         if (IsEmpty || other.IsEmpty || !Overlaps(other))
             return Empty;
 
-        // Pick the larger of the two lower endpoints (and the stricter inclusivity when the values tie).
-        T newLower;
-        bool newLowerInclusive;
-        int lowerCmp = _lower.CompareTo(other._lower);
-        if (lowerCmp > 0)
+        // The intersection takes the tighter endpoint on each side: the greater lower and the smaller upper. On a value
+        // tie the stricter (open) inclusivity wins, which the endpoint comparisons already encode.
+        Interval<T> lowerSource = CompareLowerWith(other) >= 0 ? this : other;
+        Interval<T> upperSource = CompareUpperWith(other) <= 0 ? this : other;
+
+        (T lowerValue, byte lowerFlag) = lowerSource.LowerPart();
+        (T upperValue, byte upperFlag) = upperSource.UpperPart();
+
+        var result = new Interval<T>(lowerValue, upperValue, (byte)(lowerFlag | upperFlag));
+        return result.IsEmpty ? Empty : result;
+    }
+
+    /// <summary>
+    /// Returns this interval with the values of <paramref name="other" /> removed — the set difference
+    /// <c>this \ other</c> — as zero, one, or two disjoint intervals.
+    /// </summary>
+    /// <param name="other">The interval whose values are removed from this one.</param>
+    /// <returns>
+    /// An <see cref="IntervalPair{T}" /> holding the remainder: empty when this interval is empty or wholly covered by
+    /// <paramref name="other" />; a single interval when <paramref name="other" /> is disjoint or trims one side; and
+    /// two disjoint intervals when <paramref name="other" /> lies strictly inside this interval.
+    /// </returns>
+    /// <remarks>
+    /// The endpoint at each cut flips inclusivity: removing a closed bound leaves an open bound on the remainder, and
+    /// vice versa. Unbounded operands are handled naturally — for example the difference of <see cref="All" /> and a
+    /// finite interval yields the two half-lines around it.
+    /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// Interval<int>.Closed(0, 10).Difference(Interval<int>.Closed(3, 5));   // [0, 3) ∪ (5, 10]
+    /// Interval<int>.Closed(0, 10).Difference(Interval<int>.Closed(8, 20));  // [0, 8)
+    /// Interval<double>.All.Difference(Interval<double>.Closed(3, 5));       // (-∞, 3) ∪ (5, +∞)
+    ///]]>
+    /// </code>
+    /// </example>
+    public IntervalPair<T> Difference(Interval<T> other)
+    {
+        if (IsEmpty)
+            return IntervalPair<T>.Empty;
+
+        if (other.IsEmpty || !Overlaps(other))
+            return IntervalPair<T>.Create(this, Interval<T>.Empty);
+
+        // Left remainder: the part of this interval strictly below other's lower endpoint (which is finite here, since
+        // this extends left of it). The cut bound at other.Lower is open when other includes it, closed when it excludes it.
+        Interval<T> left = Interval<T>.Empty;
+        if (CompareLowerWith(other) < 0)
         {
-            newLower = _lower;
-            newLowerInclusive = LowerInclusive;
-        }
-        else if (lowerCmp < 0)
-        {
-            newLower = other._lower;
-            newLowerInclusive = other.LowerInclusive;
-        }
-        else
-        {
-            newLower = _lower;
-            newLowerInclusive = LowerInclusive && other.LowerInclusive;
+            (T lowerValue, byte lowerFlag) = LowerPart();
+            byte cutUpperFlag = other.LowerInclusive ? (byte)0 : UpperInclusiveFlag;
+            var candidate = new Interval<T>(lowerValue, other._lower, (byte)(lowerFlag | cutUpperFlag));
+            if (!candidate.IsEmpty)
+                left = candidate;
         }
 
-        // Pick the smaller of the two upper endpoints (and the stricter inclusivity when the values tie).
-        T newUpper;
-        bool newUpperInclusive;
-        int upperCmp = _upper.CompareTo(other._upper);
-        if (upperCmp < 0)
+        // Right remainder: the part of this interval strictly above other's upper endpoint.
+        Interval<T> right = Interval<T>.Empty;
+        if (CompareUpperWith(other) > 0)
         {
-            newUpper = _upper;
-            newUpperInclusive = UpperInclusive;
-        }
-        else if (upperCmp > 0)
-        {
-            newUpper = other._upper;
-            newUpperInclusive = other.UpperInclusive;
-        }
-        else
-        {
-            newUpper = _upper;
-            newUpperInclusive = UpperInclusive && other.UpperInclusive;
+            (T upperValue, byte upperFlag) = UpperPart();
+            byte cutLowerFlag = other.UpperInclusive ? (byte)0 : LowerInclusiveFlag;
+            var candidate = new Interval<T>(other._upper, upperValue, (byte)(cutLowerFlag | upperFlag));
+            if (!candidate.IsEmpty)
+                right = candidate;
         }
 
-        return new Interval<T>(newLower, newUpper, newLowerInclusive, newUpperInclusive);
+        return IntervalPair<T>.Create(left, right);
+    }
+
+    /// <summary>
+    /// Returns the symmetric difference of this interval and <paramref name="other" /> — the values in exactly one of
+    /// the two, <c>(this \ other) &#x222A; (other \ this)</c> — as zero, one, or two disjoint intervals.
+    /// </summary>
+    /// <param name="other">The interval to symmetric-difference with.</param>
+    /// <returns>An <see cref="IntervalPair{T}" /> holding the values covered by exactly one operand.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// Interval<int>.Closed(0, 5).SymmetricDifference(Interval<int>.Closed(3, 8));   // [0, 3) ∪ (5, 8]
+    /// Interval<int>.Closed(0, 5).SymmetricDifference(Interval<int>.Closed(0, 5));   // ∅ (equal sets)
+    ///]]>
+    /// </code>
+    /// </example>
+    public IntervalPair<T> SymmetricDifference(Interval<T> other)
+    {
+        IntervalPair<T> thisMinusOther = Difference(other);
+        IntervalPair<T> otherMinusThis = other.Difference(this);
+
+        // When one operand lies inside the other, that side contributes two pieces and the other contributes none;
+        // otherwise each side contributes at most one, and the two are ordered lowest-first.
+        if (otherMinusThis.Count == 0)
+            return thisMinusOther;
+        if (thisMinusOther.Count == 0)
+            return otherMinusThis;
+
+        Interval<T> p = thisMinusOther.First;
+        Interval<T> q = otherMinusThis.First;
+        return p.CompareStartTo(q) <= 0
+            ? IntervalPair<T>.Create(p, q)
+            : IntervalPair<T>.Create(q, p);
     }
 
     /// <summary>
@@ -268,45 +347,15 @@ public readonly partial struct Interval<T>
             return false;
         }
 
-        T newLower;
-        bool newLowerInclusive;
-        int lowerCmp = _lower.CompareTo(other._lower);
-        if (lowerCmp < 0)
-        {
-            newLower = _lower;
-            newLowerInclusive = LowerInclusive;
-        }
-        else if (lowerCmp > 0)
-        {
-            newLower = other._lower;
-            newLowerInclusive = other.LowerInclusive;
-        }
-        else
-        {
-            newLower = _lower;
-            newLowerInclusive = LowerInclusive || other.LowerInclusive;
-        }
+        // The contiguous union takes the looser endpoint on each side: the smaller lower and the greater upper. On a
+        // value tie the looser (closed) inclusivity wins, which the endpoint comparisons already encode.
+        Interval<T> lowerSource = CompareLowerWith(other) <= 0 ? this : other;
+        Interval<T> upperSource = CompareUpperWith(other) >= 0 ? this : other;
 
-        T newUpper;
-        bool newUpperInclusive;
-        int upperCmp = _upper.CompareTo(other._upper);
-        if (upperCmp > 0)
-        {
-            newUpper = _upper;
-            newUpperInclusive = UpperInclusive;
-        }
-        else if (upperCmp < 0)
-        {
-            newUpper = other._upper;
-            newUpperInclusive = other.UpperInclusive;
-        }
-        else
-        {
-            newUpper = _upper;
-            newUpperInclusive = UpperInclusive || other.UpperInclusive;
-        }
+        (T lowerValue, byte lowerFlag) = lowerSource.LowerPart();
+        (T upperValue, byte upperFlag) = upperSource.UpperPart();
 
-        result = new Interval<T>(newLower, newUpper, newLowerInclusive, newUpperInclusive);
+        result = new Interval<T>(lowerValue, upperValue, (byte)(lowerFlag | upperFlag));
         return true;
     }
 
@@ -318,40 +367,71 @@ public readonly partial struct Interval<T>
     /// <param name="other">The interval to test for adjacency.</param>
     /// <returns><see langword="true" /> when the intervals are adjacent; otherwise <see langword="false" />.</returns>
     private bool IsAdjacentTo(Interval<T> other) =>
-        (_upper == other._lower && (UpperInclusive || other.LowerInclusive))
-        || (other._upper == _lower && (other.UpperInclusive || LowerInclusive));
+        (!UpperUnbounded && !other.LowerUnbounded && _upper == other._lower && (UpperInclusive || other.LowerInclusive))
+        || (!other.UpperUnbounded && !LowerUnbounded && other._upper == _lower && (other.UpperInclusive || LowerInclusive));
 
     /// <summary>
-    /// Compares two lower endpoints, treating an inclusive lower endpoint as less than an open one at the same value
-    /// (because an inclusive lower endpoint admits the value itself).
+    /// Compares this interval's lower endpoint with <paramref name="other" />'s, ordering an unbounded lower below
+    /// every finite lower and, on a value tie, an inclusive (closed) lower below an open one — so a smaller result
+    /// denotes the endpoint that admits the leftmost values.
     /// </summary>
-    /// <param name="aLower">The first lower endpoint.</param>
-    /// <param name="aInclusive">Whether the first lower endpoint is inclusive.</param>
-    /// <param name="bLower">The second lower endpoint.</param>
-    /// <param name="bInclusive">Whether the second lower endpoint is inclusive.</param>
-    /// <returns>
-    /// A negative value if the first endpoint admits a strictly smaller set, zero if equivalent, otherwise positive.
-    /// </returns>
-    private static int CompareLowerEndpoint(T aLower, bool aInclusive, T bLower, bool bInclusive)
+    /// <param name="other">The interval whose lower endpoint is compared.</param>
+    /// <returns>A negative value when this lower is further left, zero when equivalent, otherwise positive.</returns>
+    private int CompareLowerWith(Interval<T> other)
     {
-        int cmp = aLower.CompareTo(bLower);
-        return cmp != 0 ? cmp : aInclusive == bInclusive ? 0 : aInclusive ? -1 : 1;
+        if (LowerUnbounded)
+            return other.LowerUnbounded ? 0 : -1;
+        if (other.LowerUnbounded)
+            return 1;
+
+        int cmp = _lower.CompareTo(other._lower);
+        return cmp != 0 ? cmp : LowerInclusive == other.LowerInclusive ? 0 : LowerInclusive ? -1 : 1;
     }
 
     /// <summary>
-    /// Compares two upper endpoints, treating an inclusive upper endpoint as greater than an open one at the same value
-    /// (because an inclusive upper endpoint admits the value itself).
+    /// Compares the starting (lower) position of this interval with <paramref name="other" /> for ordering disjoint
+    /// pieces lowest-first.
     /// </summary>
-    /// <param name="aUpper">The first upper endpoint.</param>
-    /// <param name="aInclusive">Whether the first upper endpoint is inclusive.</param>
-    /// <param name="bUpper">The second upper endpoint.</param>
-    /// <param name="bInclusive">Whether the second upper endpoint is inclusive.</param>
-    /// <returns>
-    /// A negative value if the first endpoint admits a strictly smaller set, zero if equivalent, otherwise positive.
-    /// </returns>
-    private static int CompareUpperEndpoint(T aUpper, bool aInclusive, T bUpper, bool bInclusive)
+    /// <param name="other">The interval to compare against.</param>
+    /// <returns>A negative value when this interval starts earlier, zero when equal, otherwise positive.</returns>
+    internal int CompareStartTo(Interval<T> other) =>
+        CompareLowerWith(other);
+
+    /// <summary>
+    /// Compares this interval's upper endpoint with <paramref name="other" />'s, ordering an unbounded upper above
+    /// every finite upper and, on a value tie, an inclusive (closed) upper above an open one — so a larger result
+    /// denotes the endpoint that admits the rightmost values.
+    /// </summary>
+    /// <param name="other">The interval whose upper endpoint is compared.</param>
+    /// <returns>A negative value when this upper is further left, zero when equivalent, otherwise positive.</returns>
+    private int CompareUpperWith(Interval<T> other)
     {
-        int cmp = aUpper.CompareTo(bUpper);
-        return cmp != 0 ? cmp : aInclusive == bInclusive ? 0 : aInclusive ? 1 : -1;
+        if (UpperUnbounded)
+            return other.UpperUnbounded ? 0 : 1;
+        if (other.UpperUnbounded)
+            return -1;
+
+        int cmp = _upper.CompareTo(other._upper);
+        return cmp != 0 ? cmp : UpperInclusive == other.UpperInclusive ? 0 : UpperInclusive ? 1 : -1;
     }
+
+    /// <summary>
+    /// Returns the lower half of this interval as an endpoint value and its packed lower flag, for reassembling a new
+    /// interval from selected endpoints.
+    /// </summary>
+    /// <returns>
+    /// The lower endpoint value (<see cref="INumberBase{TSelf}.Zero" /> when unbounded) and its flag bits.
+    /// </returns>
+    private (T Value, byte Flag) LowerPart() =>
+        LowerUnbounded ? (T.Zero, LowerUnboundedFlag) : (_lower, (byte)(LowerInclusive ? LowerInclusiveFlag : 0));
+
+    /// <summary>
+    /// Returns the upper half of this interval as an endpoint value and its packed upper flag, for reassembling a new
+    /// interval from selected endpoints.
+    /// </summary>
+    /// <returns>
+    /// The upper endpoint value (<see cref="INumberBase{TSelf}.Zero" /> when unbounded) and its flag bits.
+    /// </returns>
+    private (T Value, byte Flag) UpperPart() =>
+        UpperUnbounded ? (T.Zero, UpperUnboundedFlag) : (_upper, (byte)(UpperInclusive ? UpperInclusiveFlag : 0));
 }
