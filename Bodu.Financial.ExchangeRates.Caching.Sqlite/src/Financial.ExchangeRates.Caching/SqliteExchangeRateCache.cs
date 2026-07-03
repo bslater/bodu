@@ -376,7 +376,48 @@ public sealed class SqliteExchangeRateCache
             command.ExecuteNonQuery();
         }
 
+        // A rates table created by a pre-C build lacks the observed_at column, so CREATE TABLE IF NOT EXISTS leaves it
+        // untouched. Probe for the column and add it as nullable when it is absent, preserving every existing row with a
+        // null upstream fetch instant. A freshly created table already carries observed_at from the CREATE above.
+        if (!RatesTableHasObservedAt(connection, transaction))
+        {
+            using SqliteCommand alter = connection.CreateCommand();
+            alter.Transaction = transaction;
+            alter.CommandText = "ALTER TABLE rates ADD COLUMN observed_at TEXT NULL;";
+            alter.ExecuteNonQuery();
+        }
+
         transaction.Commit();
+    }
+
+    /// <summary>
+    /// Determines whether the <c>rates</c> table already carries the <c>observed_at</c> column.
+    /// </summary>
+    /// <param name="connection">An open connection to probe the schema on.</param>
+    /// <param name="transaction">The transaction the probe participates in.</param>
+    /// <returns>
+    /// <see langword="true" /> when the <c>rates</c> table declares an <c>observed_at</c> column; otherwise
+    /// <see langword="false" />, indicating a pre-C table that still needs the migrating <c>ALTER TABLE</c>.
+    /// </returns>
+    /// <remarks>
+    /// Reads <c>PRAGMA table_info(rates)</c>, whose second projected column is the column name, and matches
+    /// <c>observed_at</c> ordinally.
+    /// </remarks>
+    private static bool RatesTableHasObservedAt(SqliteConnection connection, SqliteTransaction transaction)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = "PRAGMA table_info(rates);";
+
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // The second column of a table_info row is the column name.
+            if (string.Equals(reader.GetString(1), "observed_at", StringComparison.Ordinal))
+                return true;
+        }
+
+        return false;
     }
 
     /// <summary>

@@ -12,5 +12,12 @@
 
     <!-- Optional: Set results directory -->
     <!-- <ResultsDirectory>.\TestResults</ResultsDirectory> -->
+
+    <!--
+      Legacy alias for regression.runsettings: runs the Smoke, BVT, and Regression tiers — every test except the
+      Stress tier and the on-demand Census artifact generator, which are excluded and run via their own settings
+      files (stress.runsettings / a developer-triggered Census run).
+    -->
+    <TestCaseFilter>TestCategory!=Stress&amp;TestCategory!=Census</TestCaseFilter>
   </RunConfiguration>
 </RunSettings>
