@@ -102,6 +102,9 @@
   <data name="Arg_Invalid_NonFiniteToFraction" xml:space="preserve">
     <value>Only finite values can be converted to a fraction.</value>
   </data>
+  <data name="Arg_Invalid_NonFiniteToBigDecimal" xml:space="preserve">
+    <value>Only finite values can be converted to a decimal.</value>
+  </data>
   <data name="Arg_Invalid_ContinuedFractionEmpty" xml:space="preserve">
     <value>At least one coefficient is required.</value>
   </data>
@@ -113,6 +116,9 @@
   </data>
   <data name="Format_Invalid_FractionText" xml:space="preserve">
     <value>The input string '{0}' was not in a correct fraction format.</value>
+  </data>
+  <data name="Format_Invalid_BigDecimalText" xml:space="preserve">
+    <value>The input string '{0}' was not in a correct decimal format.</value>
   </data>
   <data name="Op_Invalid_IntervalUnboundedLength" xml:space="preserve">
     <value>The length of an unbounded interval is infinite and cannot be represented.</value>

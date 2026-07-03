@@ -178,6 +178,15 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Only finite values can be converted to a decimal..
+        /// </summary>
+        internal static string Arg_Invalid_NonFiniteToBigDecimal {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_NonFiniteToBigDecimal", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to At least one coefficient is required..
         /// </summary>
         internal static string Arg_Invalid_ContinuedFractionEmpty {
@@ -210,6 +219,15 @@ namespace Bodu.Numerics {
         internal static string Format_Invalid_FractionText {
             get {
                 return ResourceManager.GetString("Format_Invalid_FractionText", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The input string &apos;{0}&apos; was not in a correct decimal format..
+        /// </summary>
+        internal static string Format_Invalid_BigDecimalText {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BigDecimalText", resourceCulture);
             }
         }
 
