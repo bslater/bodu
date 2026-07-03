@@ -158,10 +158,12 @@ public sealed partial class IEnumerableExtensionsTests_ChunkBy
     {
         IEnumerable<int> source = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.ChunkBy(x => x);
         });
+
+        Assert.AreEqual("source", ex.ParamName);
     }
 
     /// <summary>
@@ -173,9 +175,11 @@ public sealed partial class IEnumerableExtensionsTests_ChunkBy
     {
         Func<int, int> keySelector = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new[] { 1, 2 }.ChunkBy(keySelector);
         });
+
+        Assert.AreEqual("keySelector", ex.ParamName);
     }
 }

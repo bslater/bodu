@@ -15,15 +15,17 @@ public sealed partial class IEnumerableExtensionsTests_Windowed
     /// Verifies that <c>Windowed</c> throws <see cref="ArgumentOutOfRangeException" /> when the window size is less than
     /// one.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0)]
     [DataRow(-1)]
     public void Windowed_WhenSizeIsLessThanOne_ShouldThrowExactly(int size)
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new[] { 1, 2, 3 }.Windowed(size);
         });
+
+        Assert.AreEqual("size", ex.ParamName);
     }
 
     /// <summary>
@@ -182,10 +184,12 @@ public sealed partial class IEnumerableExtensionsTests_Windowed
     {
         IEnumerable<int> source = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Windowed(2);
         });
+
+        Assert.AreEqual("source", ex.ParamName);
     }
 
     /// <summary>
@@ -197,10 +201,12 @@ public sealed partial class IEnumerableExtensionsTests_Windowed
     {
         Func<IReadOnlyList<int>, int> selector = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new[] { 1, 2 }.Windowed(2, selector);
         });
+
+        Assert.AreEqual("selector", ex.ParamName);
     }
 
     private static IEnumerable<int> Naturals()

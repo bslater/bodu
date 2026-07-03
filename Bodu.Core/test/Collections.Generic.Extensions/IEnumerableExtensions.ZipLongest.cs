@@ -137,10 +137,12 @@ public sealed partial class IEnumerableExtensionsTests_ZipLongest
     {
         IEnumerable<int> first = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = first.ZipLongest(new[] { "a" });
         });
+
+        Assert.AreEqual("first", ex.ParamName);
     }
 
     /// <summary>
@@ -152,10 +154,12 @@ public sealed partial class IEnumerableExtensionsTests_ZipLongest
     {
         IEnumerable<string> second = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new[] { 1 }.ZipLongest(second);
         });
+
+        Assert.AreEqual("second", ex.ParamName);
     }
 
     /// <summary>
@@ -167,10 +171,12 @@ public sealed partial class IEnumerableExtensionsTests_ZipLongest
     {
         Func<int, string, string> selector = null!;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new[] { 1 }.ZipLongest(new[] { "a" }, 0, "_", selector);
         });
+
+        Assert.AreEqual("selector", ex.ParamName);
     }
 
     private static IEnumerable<int> Naturals()
