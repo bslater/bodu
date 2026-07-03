@@ -102,6 +102,15 @@ PKCS#7, ANSI X9.23, ISO 7816-4, ISO 10126, zero-padding, and `None`. All are exe
 
 Non-cryptographic hashes and checksums — FNV-1a, Adler-32, CRC-3 through CRC-64, and Fletcher-16/32/64 — live in the sibling `Bodu.IO.Hashing` package.
 
+### One-time passwords
+
+| Algorithm | Type | Standard | Notes |
+|---|---|---|---|
+| `Hotp` | counter-based OTP | RFC 4226 | `GenerateCode` / `VerifyCode`; look-ahead resynchronization |
+| `Totp` | time-based OTP | RFC 6238 | Time-derived counter over `Hotp`; clock-drift verification window |
+
+Static, span-based, and built on the BCL one-shot HMAC (`OtpHashAlgorithm` selects SHA-1/256/512). Verification is constant-time. Secrets are raw bytes — decode a Base32 `otpauth://` secret with `Bodu.Text.Encoding.Base32` first. See the [HOTP/TOTP guide](https://github.com/bodu/bodu).
+
 ## Lifecycle and disposal guarantees
 
 - **AEAD transforms** (`IAeadBlockCipherModeTransform`) are single-use per message. Each implementation tracks `_completed`, `_aadProcessed`, `_disposed`, rejects double-Encrypt/Decrypt with `InvalidOperationException`, rejects post-disposal access with `ObjectDisposedException`, compares tags with `CryptographicOperations.FixedTimeEquals`, and clears the plaintext destination on tag-verification failure.

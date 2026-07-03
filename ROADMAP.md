@@ -263,21 +263,32 @@ the asymmetric family (X25519, Ed25519, ML-KEM 512/768/1024, ML-DSA
 44/65/87), the password KDFs (Argon2d/i/id, scrypt) and HKDF, and **HPKE
 (RFC 9180)** with the DH-KEM-X25519 KEM and preset suites.
 
+Also shipped: **one-time-password codes** — `Hotp` (RFC 4226) and `Totp`
+(RFC 6238) sit in the flat namespace beside the KDFs.
+
 Forward-looking:
 
-- **PEM key wrapping.** DER encodings (PKCS#8, SubjectPublicKeyInfo,
-  encrypted PKCS#8 with `PbeParameters`) are fully implemented across the
-  asymmetric types via their `*.KeyFormats.cs` partials; **PEM
-  (`ImportFromPem` / `ExportPem`) is the one remaining key-encoding
-  format** and closes the interop story.
-- **AVX-512 capability-detection contract.** Document when the SIMD fast
-  paths on BLAKE2/BLAKE3/Threefish engage and how to disable them in
-  constant-time-sensitive contexts.
-- **One-time-password codes (RFC 6238 TOTP / RFC 4226 HOTP).** A genuine
-  BCL gap, near-universally pulled in as a third-party dependency
-  (Otp.NET). Small, well-specified, and a natural companion to the KDF
-  work — a candidate for a `Security.Otp` surface or a small sibling
-  package.
+- **PEM key wrapping has landed.** ✅ Ed25519 / X25519 round-trip the
+  RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER containers and, through the
+  inherited `AsymmetricAlgorithm` helpers, RFC 7468 PEM (`ImportFromPem`,
+  `ExportPkcs8PrivateKeyPem`, `ExportSubjectPublicKeyInfoPem`), pinned by
+  exact canonical golden-string vectors so raw → DER → PEM is fully
+  verified. ML-KEM / ML-DSA stay raw-encoding only; XML and encrypted
+  PKCS#8 remain out of scope. This closes the key-encoding interop story.
+- **The AVX-512 capability-detection contract has landed.** ✅
+  `SimdCapabilities` gates the BLAKE2 / BLAKE3 / Threefish / CubeHash fast
+  paths behind the hardware intrinsic plus a process-wide
+  `Bodu.Security.Cryptography.DisableSimd` `AppContext` switch, documented
+  in `docs/guides/cryptography/hardware-acceleration.md` and exercised by a
+  dedicated SIMD-off test assembly. Because the paths are ARX and
+  bit-identical, the switch is for determinism / reproducibility / audit,
+  not leakage.
+- **One-time-password codes have landed.** ✅ `Hotp` (RFC 4226) and `Totp`
+  (RFC 6238) ship as static, span-based surfaces over the BCL one-shot
+  HMAC, with constant-time verification, HOTP resync / TOTP drift windows,
+  and **no new dependency** (raw-byte secrets; Base32 / `otpauth://`
+  provisioning left to the consumer). Validated against the RFC 4226
+  Appendix D and RFC 6238 Appendix B vectors.
 
 ### `Bodu.IO.Hashing`
 
@@ -676,9 +687,11 @@ patterns (see *Architectural patterns*). Listed roughly by leverage.
   (arbitrary-precision decimal, no BCL equivalent), generic `Complex<T>`,
   and running-statistics aggregates. These extend the existing generic-math
   project rather than needing a new one.
-- **One-time-password codes (TOTP/HOTP)** — RFC 6238 / RFC 4226, either
-  in `Bodu.Security.Cryptography` or a small `Bodu.Security.Otp` sibling.
-  A well-specified, universally-needed gap.
+- ~~**One-time-password codes (TOTP/HOTP)**~~ — **shipped.** `Hotp` /
+  `Totp` landed inside `Bodu.Security.Cryptography` (flat namespace, no new
+  package or dependency), not the `Bodu.Security.Otp` sibling that was
+  floated — the raw-byte-secret design kept it dependency-free, so a
+  sibling was not warranted.
 - **Probabilistic data structures** — Bloom filter, Count-Min sketch,
   HyperLogLog. Could extend `Bodu.Core`'s collections pillar or form a
   focused `Bodu.Collections.Probabilistic` package.
