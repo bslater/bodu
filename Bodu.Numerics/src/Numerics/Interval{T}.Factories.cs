@@ -242,6 +242,15 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <param name="lower">The exclusive lower endpoint.</param>
     /// <returns>An open-below, upper-unbounded interval.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var positive = Interval<double>.GreaterThan(0.0);   // (0, +∞)
+    /// positive.Contains(0.0);                             // False — open lower
+    /// positive.ToString();                                // "(0, +∞)"
+    ///]]>
+    /// </code>
+    /// </example>
     public static Interval<T> GreaterThan(T lower) =>
         new(lower, T.Zero, UpperUnboundedFlag);
 
@@ -251,6 +260,15 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <param name="upper">The inclusive upper endpoint.</param>
     /// <returns>A lower-unbounded, closed-above interval.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var capped = Interval<double>.AtMost(5.0);   // (-∞, 5]
+    /// capped.Contains(5.0);                        // True — closed upper
+    /// capped.ToString();                           // "(-∞, 5]"
+    ///]]>
+    /// </code>
+    /// </example>
     public static Interval<T> AtMost(T upper) =>
         new(T.Zero, upper, (byte)(LowerUnboundedFlag | UpperInclusiveFlag));
 
@@ -260,6 +278,15 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <param name="upper">The exclusive upper endpoint.</param>
     /// <returns>A lower-unbounded, open-above interval.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var belowFive = Interval<double>.LessThan(5.0);   // (-∞, 5)
+    /// belowFive.Contains(5.0);                          // False — open upper
+    /// belowFive.ToString();                             // "(-∞, 5)"
+    ///]]>
+    /// </code>
+    /// </example>
     public static Interval<T> LessThan(T upper) =>
         new(T.Zero, upper, LowerUnboundedFlag);
 }

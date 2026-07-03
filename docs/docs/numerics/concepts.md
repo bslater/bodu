@@ -220,12 +220,32 @@ var q3 = Interval<int>.ClosedOpen(181, 273);
 var q4 = Interval<int>.ClosedOpen(273, 365);
 ```
 
+## Unbounded and half-bounded endpoints
+
+A side of an <xref:Bodu.Numerics.Interval`1> may be **unbounded** — extending to `-∞` or `+∞` — rather than bounded by a concrete `T`. Boundedness is tracked as explicit endpoint metadata (spare flag bits), *not* as a floating-point infinity sentinel, so it works uniformly for `int`, `decimal`, and `BigInteger` endpoints. An unbounded side is always open (infinity is never a member) and never makes the interval empty.
+
+The factories are `Interval<T>.AtLeast(a)` = `[a, +∞)`, `GreaterThan(a)` = `(a, +∞)`, `AtMost(b)` = `(-∞, b]`, `LessThan(b)` = `(-∞, b)`, and `All` = `(-∞, +∞)`. `IsBounded` reports whether both sides are finite; `Length` throws for an unbounded interval because the extent is infinite.
+
+## Difference and symmetric difference
+
+`Interval<T>.Difference(other)` is the set difference `this \ other` — the members of this interval not in `other`. Removing an interior slice leaves a **left** and a **right** remainder, so the result is zero, one, or two disjoint intervals, returned as an allocation-free <xref:Bodu.Numerics.IntervalPair`1>. `SymmetricDifference(other)` returns the members in exactly one operand. The `&` operator is `Intersect`; the `|` operator is the contiguous union (it throws when the operands are disjoint with a gap, since the result would not be a single interval).
+
+## Disconnected sets (`IntervalSet<T>`)
+
+`IntervalPair<T>` covers the at-most-two pieces of a *binary* operation. When a union or complement can produce arbitrarily many disjoint ranges, an <xref:Bodu.Numerics.IntervalSet`1> models the result: a **normalized** collection of disjoint, non-adjacent intervals in ascending order. Overlapping and adjacent inputs coalesce on construction, so equal sets share a canonical form and set equality is piecewise equality. It offers N-ary `Union`, `Intersect`, `Except`, and `Complement` (taken over the whole line, so the double complement is the identity) over both an `Interval<T>` and another `IntervalSet<T>`.
+
+## Continuous versus discrete (`DiscreteInterval<T>`)
+
+`Interval<T>` is a **continuous** interval over ordered coordinates: `Interval<int>.Open(1, 2)` is non-empty even though no *integer* lies strictly between 1 and 2. When the domain is the representable integers, use <xref:Bodu.Numerics.DiscreteInterval`1> (constrained to `IBinaryInteger<T>`). It canonicalizes every shape to closed integer bounds, so `DiscreteInterval<int>.Open(1, 2)` **is** empty and successor-adjacent runs — `[1, 2]` and `[3, 4]` — union into `[1, 4]`. Its binary `Difference` / `SymmetricDifference` return a <xref:Bodu.Numerics.DiscreteIntervalPair`1>, and `ToInterval()` / `FromInterval(...)` convert to and from the continuous type.
+
 ## Where to go next
 
 - **[Introduction](index.md)** — the high-level shape of the library.
 - **[Getting started](getting-started.md)** — install + runnable minimal samples.
 - **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing, formatting, continued fractions, rational approximation.
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
+- **[Interval algebra](../../guides/numerics/interval-algebra.md)** — unbounded endpoints, difference / symmetric difference, operators, and `IntervalSet<T>`.
+- **[Discrete integer intervals](../../guides/numerics/discrete-intervals.md)** — the integer-domain `DiscreteInterval<T>`.
 - **[Numerics & Financial topic overview](../topics/numerics-and-financial.md)** — how this package and `Bodu.Financial` fit together.
 - **[Numerics & Financial topic concepts](../topics/numerics-and-financial-concepts.md)** — the vocabulary shared across both libraries.
 - **[Bodu.Numerics API reference](xref:Bodu.Numerics)** — full type-by-type docs.

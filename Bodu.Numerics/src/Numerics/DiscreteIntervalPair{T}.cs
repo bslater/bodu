@@ -14,27 +14,39 @@ namespace Bodu.Numerics;
 /// </summary>
 /// <typeparam name="T">The integer type used for the intervals' endpoints.</typeparam>
 /// <remarks>
-/// Returned by <see cref="DiscreteInterval{T}.Difference(DiscreteInterval{T})" /> and
-/// <see cref="DiscreteInterval{T}.SymmetricDifference(DiscreteInterval{T})" />. Because subtracting one integer
-/// interval from another leaves at most a left and a right remainder, the result never needs more than two pieces, so
-/// this allocation-free value type stores them inline.
+/// <para>
+/// <see cref="DiscreteInterval{T}.Difference(DiscreteInterval{T})" /> and
+/// <see cref="DiscreteInterval{T}.SymmetricDifference(DiscreteInterval{T})" /> return this type. Because subtracting
+/// one integer interval from another leaves at most a left and a right remainder, the result never needs more than two
+/// runs, so this allocation-free value type stores them inline rather than in a heap collection. When fewer than two
+/// runs are present the surplus slots are the empty interval and are not enumerated.
+/// </para>
+/// <para>
+/// The runs are ordered lowest-first and are guaranteed disjoint and non-adjacent. Enumerate with a <c>foreach</c>
+/// loop, index them via <see cref="this[int]" /> (0-based, bounded by <see cref="Count" />), or read
+/// <see cref="First" /> and <see cref="Second" /> directly.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// DiscreteIntervalPair<int> diff = DiscreteInterval<int>.Closed(0, 10).Difference(DiscreteInterval<int>.Closed(3, 5));
+/// diff.Count;          // 2
+/// foreach (var run in diff)
+///     Console.WriteLine(run);   // "[0, 2]" then "[6, 10]"
+///]]>
+/// </code>
+/// </example>
 public readonly struct DiscreteIntervalPair<T>
     where T : IBinaryInteger<T>
 {
-    /// <summary>
-    /// The first (lower) run; only meaningful when <see cref="_count" /> is at least one.
-    /// </summary>
+    /// <summary>The first (lower) run; only meaningful when <see cref="_count" /> is at least one.</summary>
     private readonly DiscreteInterval<T> _first;
 
-    /// <summary>
-    /// The second (upper) run; only meaningful when <see cref="_count" /> is two.
-    /// </summary>
+    /// <summary>The second (upper) run; only meaningful when <see cref="_count" /> is two.</summary>
     private readonly DiscreteInterval<T> _second;
 
-    /// <summary>
-    /// The number of non-empty disjoint runs this pair holds (0, 1, or 2).
-    /// </summary>
+    /// <summary>The number of non-empty disjoint runs this pair holds (0, 1, or 2).</summary>
     private readonly int _count;
 
     /// <summary>
@@ -144,14 +156,10 @@ public readonly struct DiscreteIntervalPair<T>
     /// </summary>
     public struct Enumerator
     {
-        /// <summary>
-        /// The pair being enumerated.
-        /// </summary>
+        /// <summary>The pair being enumerated.</summary>
         private readonly DiscreteIntervalPair<T> _pair;
 
-        /// <summary>
-        /// The zero-based index of the current run, or -1 before the first <see cref="MoveNext" />.
-        /// </summary>
+        /// <summary>The zero-based index of the current run, or -1 before the first <see cref="MoveNext" />.</summary>
         private int _index;
 
         /// <summary>

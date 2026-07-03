@@ -53,6 +53,19 @@ public partial class DiscreteIntervalTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DiscreteInterval{T}.Overlaps(DiscreteInterval{T})" /> reports a shared integer, and that
+    /// successor-adjacent runs (which share no integer) do not overlap.
+    /// </summary>
+    [TestMethod]
+    public void Overlaps_WhenSharingAnInteger_ShouldReturnTrue()
+    {
+        Assert.IsTrue(DiscreteInterval<int>.Closed(1, 5).Overlaps(DiscreteInterval<int>.Closed(3, 7)));
+        Assert.IsFalse(DiscreteInterval<int>.Closed(1, 2).Overlaps(DiscreteInterval<int>.Closed(3, 4)));
+        Assert.IsFalse(DiscreteInterval<int>.Closed(1, 5).Overlaps(DiscreteInterval<int>.Empty));
+        Assert.IsTrue(DiscreteInterval<int>.AtLeast(0).Overlaps(DiscreteInterval<int>.Closed(5, 10)));
+    }
+
+    /// <summary>
     /// Verifies that overlapping intervals union into their span.
     /// </summary>
     [TestMethod]

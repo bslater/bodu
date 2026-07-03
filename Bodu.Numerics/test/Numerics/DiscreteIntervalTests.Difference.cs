@@ -22,14 +22,46 @@ public partial class DiscreteIntervalTests
     }
 
     /// <summary>
-    /// Verifies that trimming one side yields a single run and that a covering subtrahend yields nothing.
+    /// Verifies that removing a run that overhangs one end trims this interval to a single flanking run.
     /// </summary>
     [TestMethod]
-    public void Difference_WhenTrimmedOrCovered_ShouldReturnExpectedCount()
+    public void Difference_WhenOtherTrimsOneSide_ShouldReturnOneRun()
     {
-        Assert.AreEqual(DiscreteInterval<int>.Closed(0, 7), DiscreteInterval<int>.Closed(0, 10).Difference(DiscreteInterval<int>.Closed(8, 20))[0]);
+        DiscreteIntervalPair<int> result = DiscreteInterval<int>.Closed(0, 10).Difference(DiscreteInterval<int>.Closed(8, 20));
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual(DiscreteInterval<int>.Closed(0, 7), result[0]);
+    }
+
+    /// <summary>
+    /// Verifies that subtracting a covering (or equal) run yields no runs.
+    /// </summary>
+    [TestMethod]
+    public void Difference_WhenOtherCoversThis_ShouldReturnEmpty()
+    {
         Assert.AreEqual(0, DiscreteInterval<int>.Closed(0, 10).Difference(DiscreteInterval<int>.Closed(0, 10)).Count);
-        Assert.AreEqual(DiscreteInterval<int>.Closed(0, 5), DiscreteInterval<int>.Closed(0, 5).Difference(DiscreteInterval<int>.Closed(10, 20))[0]);
+        Assert.AreEqual(0, DiscreteInterval<int>.Closed(2, 8).Difference(DiscreteInterval<int>.Closed(0, 10)).Count);
+    }
+
+    /// <summary>
+    /// Verifies that subtracting a disjoint run leaves this interval unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Difference_WhenDisjoint_ShouldReturnThisUnchanged()
+    {
+        DiscreteIntervalPair<int> result = DiscreteInterval<int>.Closed(0, 5).Difference(DiscreteInterval<int>.Closed(10, 20));
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual(DiscreteInterval<int>.Closed(0, 5), result[0]);
+    }
+
+    /// <summary>
+    /// Verifies that the difference of an empty interval is empty.
+    /// </summary>
+    [TestMethod]
+    public void Difference_WhenThisIsEmpty_ShouldReturnEmpty()
+    {
+        Assert.AreEqual(0, DiscreteInterval<int>.Empty.Difference(DiscreteInterval<int>.Closed(0, 10)).Count);
     }
 
     /// <summary>
@@ -56,6 +88,42 @@ public partial class DiscreteIntervalTests
         Assert.AreEqual(2, result.Count);
         Assert.AreEqual(DiscreteInterval<int>.Closed(0, 2), result[0]);
         Assert.AreEqual(DiscreteInterval<int>.Closed(6, 8), result[1]);
+    }
+
+    /// <summary>
+    /// Verifies that the symmetric difference of equal integer intervals is empty.
+    /// </summary>
+    [TestMethod]
+    public void SymmetricDifference_WhenEqual_ShouldReturnEmpty()
+    {
+        Assert.AreEqual(0, DiscreteInterval<int>.Closed(0, 5).SymmetricDifference(DiscreteInterval<int>.Closed(0, 5)).Count);
+    }
+
+    /// <summary>
+    /// Verifies that the symmetric difference with an interior run matches the plain difference (the interior
+    /// contributes nothing of its own).
+    /// </summary>
+    [TestMethod]
+    public void SymmetricDifference_WhenOtherIsInterior_ShouldMatchDifference()
+    {
+        DiscreteIntervalPair<int> result = DiscreteInterval<int>.Closed(0, 10).SymmetricDifference(DiscreteInterval<int>.Closed(3, 5));
+
+        Assert.AreEqual(2, result.Count);
+        Assert.AreEqual(DiscreteInterval<int>.Closed(0, 2), result[0]);
+        Assert.AreEqual(DiscreteInterval<int>.Closed(6, 10), result[1]);
+    }
+
+    /// <summary>
+    /// Verifies that the symmetric difference of two disjoint runs is both runs, ordered lowest-first.
+    /// </summary>
+    [TestMethod]
+    public void SymmetricDifference_WhenDisjoint_ShouldReturnBothOrdered()
+    {
+        DiscreteIntervalPair<int> result = DiscreteInterval<int>.Closed(5, 7).SymmetricDifference(DiscreteInterval<int>.Closed(0, 2));
+
+        Assert.AreEqual(2, result.Count);
+        Assert.AreEqual(DiscreteInterval<int>.Closed(0, 2), result[0]);
+        Assert.AreEqual(DiscreteInterval<int>.Closed(5, 7), result[1]);
     }
 
     /// <summary>

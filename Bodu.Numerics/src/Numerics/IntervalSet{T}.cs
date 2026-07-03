@@ -42,9 +42,7 @@ namespace Bodu.Numerics;
 public readonly partial struct IntervalSet<T>
     where T : INumber<T>
 {
-    /// <summary>
-    /// The normalized, disjoint, sorted pieces, or <see langword="null" /> for the empty set.
-    /// </summary>
+    /// <summary>The normalized, disjoint, sorted pieces, or <see langword="null" /> for the empty set.</summary>
     private readonly Interval<T>[]? _intervals;
 
     /// <summary>
@@ -111,7 +109,8 @@ public readonly partial struct IntervalSet<T>
     /// <exception cref="ArgumentNullException"><paramref name="intervals" /> is <see langword="null" />.</exception>
     public static IntervalSet<T> From(IEnumerable<Interval<T>> intervals)
     {
-        ArgumentNullException.ThrowIfNull(intervals);
+        ThrowHelper.ThrowIfNull(intervals);
+
         return new IntervalSet<T>(Normalize(intervals));
     }
 
@@ -221,14 +220,10 @@ public readonly partial struct IntervalSet<T>
     /// </summary>
     public struct Enumerator
     {
-        /// <summary>
-        /// The pieces being enumerated, or <see langword="null" /> for the empty set.
-        /// </summary>
+        /// <summary>The pieces being enumerated, or <see langword="null" /> for the empty set.</summary>
         private readonly Interval<T>[]? _intervals;
 
-        /// <summary>
-        /// The zero-based index of the current piece, or -1 before the first <see cref="MoveNext" />.
-        /// </summary>
+        /// <summary>The zero-based index of the current piece, or -1 before <see cref="MoveNext" />.</summary>
         private int _index;
 
         /// <summary>

@@ -7,10 +7,11 @@
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Verifies the <see cref="IntervalSet{T}" /> normalized disconnected-range type and its N-ary set algebra.
+/// Verifies the <see cref="IntervalSet{T}" /> normalized disconnected-range type — its construction, membership,
+/// enumeration, and formatting. The N-ary set algebra and equality are covered in the sibling partials.
 /// </summary>
 [TestClass]
-public sealed class IntervalSetTests
+public partial class IntervalSetTests
 {
     /// <summary>
     /// Verifies that overlapping and adjacent inputs are coalesced into disjoint, non-adjacent pieces on construction.
@@ -43,10 +44,72 @@ public sealed class IntervalSetTests
     }
 
     /// <summary>
-    /// Verifies membership and enclosure across the disconnected pieces.
+    /// Verifies that empty inputs are dropped and an all-empty input yields the empty set.
     /// </summary>
     [TestMethod]
-    public void ContainsAndEncloses_ShouldReflectMembers()
+    public void Of_WhenInputsAreEmpty_ShouldIgnoreThem()
+    {
+        Assert.IsTrue(IntervalSet<int>.Of(Interval<int>.Empty, Interval<int>.Empty).IsEmpty);
+        Assert.AreEqual(
+            IntervalSet<int>.Of(Interval<int>.Closed(1, 5)),
+            IntervalSet<int>.Of(Interval<int>.Empty, Interval<int>.Closed(1, 5)));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IntervalSet{T}.From(IEnumerable{Interval{T}})" /> normalizes a sequence the same way as
+    /// the params overload.
+    /// </summary>
+    [TestMethod]
+    public void From_WhenGivenSequence_ShouldNormalizeLikeOf()
+    {
+        var pieces = new List<Interval<int>>
+        {
+            Interval<int>.Closed(8, 9),
+            Interval<int>.Closed(1, 3),
+            Interval<int>.Closed(2, 5),
+        };
+
+        Assert.AreEqual(
+            IntervalSet<int>.Of(Interval<int>.Closed(1, 5), Interval<int>.Closed(8, 9)),
+            IntervalSet<int>.From(pieces));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IntervalSet{T}.Of(Interval{T}[])" /> throws <see cref="ArgumentNullException" /> for a
+    /// <see langword="null" /> array.
+    /// </summary>
+    [TestMethod]
+    public void Of_WhenIntervalsNull_ShouldThrowArgumentNullException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = IntervalSet<int>.Of(null!);
+        });
+
+        Assert.AreEqual("intervals", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IntervalSet{T}.From(IEnumerable{Interval{T}})" /> throws
+    /// <see cref="ArgumentNullException" /> for a <see langword="null" /> sequence.
+    /// </summary>
+    [TestMethod]
+    public void From_WhenSequenceNull_ShouldThrowArgumentNullException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = IntervalSet<int>.From(null!);
+        });
+
+        Assert.AreEqual("intervals", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IntervalSet{T}.Contains(T)" /> and <see cref="IntervalSet{T}.Encloses(Interval{T})" />
+    /// reflect membership across the disconnected pieces.
+    /// </summary>
+    [TestMethod]
+    public void ContainsAndEncloses_WhenAcrossPieces_ShouldReflectMembership()
     {
         IntervalSet<int> set = IntervalSet<int>.Of(Interval<int>.Closed(1, 5), Interval<int>.Closed(8, 9));
 
@@ -54,69 +117,60 @@ public sealed class IntervalSetTests
         Assert.IsFalse(set.Contains(6));
         Assert.IsTrue(set.Encloses(Interval<int>.Closed(2, 4)));
         Assert.IsFalse(set.Encloses(Interval<int>.Closed(4, 8)));   // spans the gap
+        Assert.IsTrue(set.Encloses(Interval<int>.Empty));            // the empty interval is enclosed by any set
     }
 
     /// <summary>
-    /// Verifies the difference of a set and an interval splits the affected piece.
+    /// Verifies that the indexer returns pieces lowest-first and throws for an out-of-range index.
     /// </summary>
     [TestMethod]
-    public void Except_WhenRemovingInterior_ShouldSplitThePiece()
+    public void Indexer_WhenIndexOutOfRange_ShouldThrowArgumentOutOfRangeException()
     {
-        IntervalSet<int> set = IntervalSet<int>.Of(Interval<int>.Closed(1, 10)).Except(Interval<int>.Closed(3, 5));
+        IntervalSet<int> set = IntervalSet<int>.Of(Interval<int>.Closed(1, 5), Interval<int>.Closed(8, 9));
 
-        Assert.AreEqual(2, set.Count);
-        Assert.AreEqual(Interval<int>.ClosedOpen(1, 3), set[0]);
-        Assert.AreEqual(Interval<int>.OpenClosed(5, 10), set[1]);
+        Assert.AreEqual(Interval<int>.Closed(1, 5), set[0]);
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = set[2];
+        });
     }
 
     /// <summary>
-    /// Verifies that the complement of a bounded set is the two surrounding half-lines.
+    /// Verifies that enumeration yields the disjoint pieces in ascending order.
     /// </summary>
     [TestMethod]
-    public void Complement_WhenBoundedSet_ShouldReturnHalfLines()
+    public void GetEnumerator_WhenEnumerated_ShouldYieldPiecesInOrder()
     {
-        IntervalSet<int> complement = IntervalSet<int>.Of(Interval<int>.Closed(1, 5)).Complement();
+        IntervalSet<int> set = IntervalSet<int>.Of(Interval<int>.Closed(8, 9), Interval<int>.Closed(1, 5));
 
-        Assert.AreEqual(2, complement.Count);
-        Assert.AreEqual(Interval<int>.LessThan(1), complement[0]);
-        Assert.AreEqual(Interval<int>.GreaterThan(5), complement[1]);
+        var enumerated = new List<Interval<int>>();
+        foreach (Interval<int> piece in set)
+            enumerated.Add(piece);
+
+        CollectionAssert.AreEqual(new[] { Interval<int>.Closed(1, 5), Interval<int>.Closed(8, 9) }, enumerated);
     }
 
     /// <summary>
-    /// Verifies that the double complement returns the original set.
+    /// Verifies that the empty set reports zero pieces and the empty-set glyph.
     /// </summary>
     [TestMethod]
-    public void Complement_WhenAppliedTwice_ShouldReturnOriginal()
-    {
-        IntervalSet<int> set = IntervalSet<int>.Of(Interval<int>.Closed(1, 5), Interval<int>.Closed(10, 20));
-
-        Assert.AreEqual(set, set.Complement().Complement());
-    }
-
-    /// <summary>
-    /// Verifies union and intersection across two sets.
-    /// </summary>
-    [TestMethod]
-    public void UnionAndIntersect_AcrossSets_ShouldNormalize()
-    {
-        IntervalSet<int> a = IntervalSet<int>.Of(Interval<int>.Closed(1, 5));
-        IntervalSet<int> b = IntervalSet<int>.Of(Interval<int>.Closed(4, 8));
-
-        Assert.AreEqual(IntervalSet<int>.Of(Interval<int>.Closed(1, 8)), a.Union(b));
-        Assert.AreEqual(IntervalSet<int>.Of(Interval<int>.Closed(4, 5)), a.Intersect(b));
-    }
-
-    /// <summary>
-    /// Verifies the empty set and its identities.
-    /// </summary>
-    [TestMethod]
-    public void Empty_ShouldBehaveAsIdentity()
+    public void Empty_WhenInspected_ShouldReportNoPieces()
     {
         IntervalSet<int> empty = IntervalSet<int>.Empty;
 
         Assert.IsTrue(empty.IsEmpty);
         Assert.AreEqual(0, empty.Count);
         Assert.AreEqual("∅", empty.ToString());
-        Assert.AreEqual(IntervalSet<int>.Of(Interval<int>.Closed(1, 5)), empty.Union(Interval<int>.Closed(1, 5)));
+    }
+
+    /// <summary>
+    /// Verifies that a non-empty set renders its pieces joined by the union symbol.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenNonEmpty_ShouldJoinPiecesWithUnionSymbol()
+    {
+        IntervalSet<int> set = IntervalSet<int>.Of(Interval<int>.Closed(1, 5), Interval<int>.Closed(8, 9));
+
+        Assert.AreEqual("[1, 5] ∪ [8, 9]", set.ToString());
     }
 }

@@ -4,7 +4,7 @@ title: Numerics & Financial guides
 
 # Numerics & Financial guides
 
-Recipe-style walk-throughs for the **Numerics & Financial** topic — [`Bodu.Numerics`](../numerics/index.md), the exact-arithmetic value types `Fraction<T>` and `Interval<T>`, and [`Bodu.Financial`](../financial/index.md), the money, currency, and exchange-rate stack built on top of them.
+Recipe-style walk-throughs for the **Numerics & Financial** topic — [`Bodu.Numerics`](../numerics/index.md), the exact-arithmetic value types `Fraction<T>` and `Interval<T>` (with its set-algebra family: `DiscreteInterval<T>`, `IntervalPair<T>`, and `IntervalSet<T>`), and [`Bodu.Financial`](../financial/index.md), the money, currency, and exchange-rate stack built on top of them.
 
 If you are new to the topic, start with the [Numerics & Financial overview](../../docs/topics/numerics-and-financial.md) for the package boundaries and decision table, and the [Numerics & Financial concepts](../../docs/topics/numerics-and-financial-concepts.md) glossary for the shared vocabulary (canonical form, deferred rounding, `BigInteger` promotion, endpoint inclusivity, minor unit, allocation, provenance).
 
@@ -41,7 +41,12 @@ Exact rational arithmetic and first-class numeric ranges over the .NET generic-m
 
 <div class="bodu-card">
   <h3><a href="../numerics/interval-algebra.md">Interval algebra</a></h3>
-  <p>The set-algebra surface of <code>Interval&lt;T&gt;</code> — intersection, union, difference, adjacency, and the empty-interval rules.</p>
+  <p>The set-algebra surface of <code>Interval&lt;T&gt;</code> — intersection, union, difference and symmetric difference, unbounded endpoints, the <code>&amp;</code> / <code>|</code> operators, and the N-ary <code>IntervalSet&lt;T&gt;</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../numerics/discrete-intervals.md">Discrete integer intervals</a></h3>
+  <p><code>DiscreteInterval&lt;T&gt;</code> — the integer-domain interval with successor-aware emptiness and adjacency, distinct from the continuous <code>Interval&lt;T&gt;</code>.</p>
 </div>
 
 <div class="bodu-card">

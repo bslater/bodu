@@ -13,6 +13,14 @@ public readonly partial struct IntervalSet<T> : IEquatable<IntervalSet<T>>
     /// </summary>
     /// <param name="interval">The interval to add.</param>
     /// <returns>The normalized union.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IntervalSet<int>.Of(Interval<int>.Closed(1, 3), Interval<int>.Closed(8, 9))
+    ///     .Union(Interval<int>.Closed(2, 5));   // [1, 5] ∪ [8, 9]
+    ///]]>
+    /// </code>
+    /// </example>
     public IntervalSet<T> Union(Interval<T> interval)
     {
         if (interval.IsEmpty)
@@ -48,6 +56,14 @@ public readonly partial struct IntervalSet<T> : IEquatable<IntervalSet<T>>
     /// </summary>
     /// <param name="interval">The interval to intersect with.</param>
     /// <returns>The normalized intersection.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IntervalSet<int>.Of(Interval<int>.Closed(1, 5), Interval<int>.Closed(8, 12))
+    ///     .Intersect(Interval<int>.Closed(4, 10));   // [4, 5] ∪ [8, 10]
+    ///]]>
+    /// </code>
+    /// </example>
     public IntervalSet<T> Intersect(Interval<T> interval)
     {
         if (_intervals is null)
@@ -93,6 +109,14 @@ public readonly partial struct IntervalSet<T> : IEquatable<IntervalSet<T>>
     /// </summary>
     /// <param name="interval">The interval to subtract.</param>
     /// <returns>The normalized difference.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// IntervalSet<int>.Of(Interval<int>.Closed(1, 10))
+    ///     .Except(Interval<int>.Closed(3, 5));   // [1, 3) ∪ (5, 10]
+    ///]]>
+    /// </code>
+    /// </example>
     public IntervalSet<T> Except(Interval<T> interval)
     {
         if (_intervals is null || interval.IsEmpty)

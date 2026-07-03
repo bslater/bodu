@@ -323,18 +323,26 @@ Console.WriteLine(a.GetHashCode() == b.GetHashCode());  // True
 
 ## When *not* to use `Interval<T>`
 
-- **Unbounded ranges.** Both endpoints are always concrete values of
-  `T`. To represent ranges with no lower or no upper bound, either
-  use floating-point infinity (`double.NegativeInfinity` /
-  `double.PositiveInfinity`) when `T` is `double`, or model the
-  unbounded case at a higher level — `Interval<T>?` plus null for
-  "no bound on this side", or a dedicated `RangeBound<T>` discriminated
-  union.
-- **Disjoint-union semantics.** `TryUnion` returns `false` for
-  disjoint operands rather than producing two intervals. If you
-  need a set type that can hold multiple disjoint intervals (e.g.
-  "all dates in Q1 and Q3"), build an `IntervalSet<T>` on top — it
-  is intentionally out of scope for the 1.0 type.
+Two former limitations have since been lifted: unbounded and half-bounded
+ranges are supported through the `All` / `AtLeast` / `GreaterThan` / `AtMost` /
+`LessThan` factories (see [Interval algebra](interval-algebra.md)), and an
+arbitrary union of disjoint ranges is modeled by
+[`IntervalSet<T>`](interval-algebra.md#disconnected-sets-with-intervalsett).
+The genuine mismatches that remain:
+
+- **Discrete integer semantics.** `Interval<T>` is a *continuous* range over
+  ordered coordinates: `Interval<int>.Open(1, 2)` is non-empty even though no
+  integer lies strictly between 1 and 2. When you need integer-set semantics —
+  an open interval over consecutive integers is empty, and `[1, 2]` and
+  `[3, 4]` are adjacent and merge — use
+  [`DiscreteInterval<T>`](discrete-intervals.md).
+- **A single value holding many disjoint pieces.** A binary `Difference` /
+  `SymmetricDifference` returns an `IntervalPair<T>` (at most two pieces), and
+  `TryUnion` returns `false` for a gapped pair rather than producing two
+  intervals. When the result can be an arbitrary union of disjoint ranges
+  (e.g. "all dates in Q1 and Q3"), reach for
+  [`IntervalSet<T>`](interval-algebra.md#disconnected-sets-with-intervalsett)
+  instead of a single `Interval<T>`.
 - **Cyclic / wrap-around ranges.** `Interval<T>` assumes the natural
   total ordering of `T`. Wrap-around ranges such as `[Mon, Wed]` on
   a `DayOfWeek` cycle, or `[23:00, 02:00]` on the clock, do not fit
@@ -342,6 +350,8 @@ Console.WriteLine(a.GetHashCode() == b.GetHashCode());  // True
 
 ## See also
 
+- [Interval algebra](interval-algebra.md) — unbounded endpoints, difference, the `&` / `|` operators, and `IntervalSet<T>`.
+- [Discrete integer intervals](discrete-intervals.md) — the integer-domain `DiscreteInterval<T>`.
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1)
 - [`Interval` static factory helpers](xref:Bodu.Numerics.Interval)
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)

@@ -39,19 +39,13 @@ namespace Bodu.Numerics;
 public readonly struct IntervalPair<T>
     where T : INumber<T>
 {
-    /// <summary>
-    /// The first (lower) piece; only meaningful when <see cref="_count" /> is at least one.
-    /// </summary>
+    /// <summary>The first (lower) piece; only meaningful when <see cref="_count" /> is at least one.</summary>
     private readonly Interval<T> _first;
 
-    /// <summary>
-    /// The second (upper) piece; only meaningful when <see cref="_count" /> is two.
-    /// </summary>
+    /// <summary>The second (upper) piece; only meaningful when <see cref="_count" /> is two.</summary>
     private readonly Interval<T> _second;
 
-    /// <summary>
-    /// The number of non-empty disjoint pieces this pair holds (0, 1, or 2).
-    /// </summary>
+    /// <summary>The number of non-empty disjoint pieces this pair holds (0, 1, or 2).</summary>
     private readonly int _count;
 
     /// <summary>
@@ -160,14 +154,10 @@ public readonly struct IntervalPair<T>
     /// </summary>
     public struct Enumerator
     {
-        /// <summary>
-        /// The pair being enumerated.
-        /// </summary>
+        /// <summary>The pair being enumerated.</summary>
         private readonly IntervalPair<T> _pair;
 
-        /// <summary>
-        /// The zero-based index of the current piece, or -1 before the first <see cref="MoveNext" />.
-        /// </summary>
+        /// <summary>The zero-based index of the current piece, or -1 before <see cref="MoveNext" />.</summary>
         private int _index;
 
         /// <summary>

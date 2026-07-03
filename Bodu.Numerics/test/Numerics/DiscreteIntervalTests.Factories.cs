@@ -56,4 +56,20 @@ public partial class DiscreteIntervalTests
         Assert.IsTrue(DiscreteInterval<int>.AtLeast(0).UpperUnbounded);
         Assert.IsTrue(DiscreteInterval<int>.AtMost(0).LowerUnbounded);
     }
+
+    /// <summary>
+    /// Verifies that the strict unbounded factories snap the exclusive bound to the next integer, matching the
+    /// inclusive form one integer inward.
+    /// </summary>
+    [TestMethod]
+    public void GreaterThanAndLessThan_WhenConstructed_ShouldSnapToNextInteger()
+    {
+        Assert.AreEqual(DiscreteInterval<int>.AtLeast(2), DiscreteInterval<int>.GreaterThan(1));
+        Assert.AreEqual(2, DiscreteInterval<int>.GreaterThan(1).First);
+        Assert.IsFalse(DiscreteInterval<int>.GreaterThan(1).Contains(1));
+
+        Assert.AreEqual(DiscreteInterval<int>.AtMost(4), DiscreteInterval<int>.LessThan(5));
+        Assert.AreEqual(4, DiscreteInterval<int>.LessThan(5).Last);
+        Assert.IsFalse(DiscreteInterval<int>.LessThan(5).Contains(5));
+    }
 }

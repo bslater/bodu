@@ -243,6 +243,56 @@ Interval<int> defaulted = default;
 none == inverted && none == collapsed && none == defaulted;  // True
 ```
 
+#### Unbounded ranges, difference, and operators
+
+A side of an interval can be unbounded, and the set algebra includes difference and operators:
+
+```csharp
+Interval<double> nonNegative = Interval<double>.AtLeast(0.0);   // [0, +∞)
+Interval<double> capped      = Interval<double>.AtMost(100.0);  // (-∞, 100]
+
+nonNegative.Contains(1e300);                 // True
+Interval<double> band = nonNegative & capped;   // & is Intersect → [0, 100]
+
+// Difference yields at most two pieces (an IntervalPair<T>).
+IntervalPair<int> gap = Interval<int>.Closed(0, 10).Difference(Interval<int>.Closed(3, 5));
+gap.Count;                                    // 2
+foreach (var piece in gap)
+    Console.WriteLine(piece);                 // "[0, 3)" then "(5, 10]"
+
+// | is the contiguous union; it throws on a gapped pair.
+var merged = Interval<int>.ClosedOpen(1, 5) | Interval<int>.Closed(5, 10);   // [1, 10]
+```
+
+#### Disconnected sets (`IntervalSet<T>`)
+
+When a result can be an arbitrary union of disjoint ranges, use `IntervalSet<T>`:
+
+```csharp
+IntervalSet<int> set = IntervalSet<int>.Of(
+    Interval<int>.Closed(1, 3),
+    Interval<int>.Closed(2, 5),
+    Interval<int>.Closed(8, 9));   // coalesces to [1, 5] ∪ [8, 9]
+
+set.Contains(4);                    // True
+set.Except(Interval<int>.Closed(4, 4));   // [1, 4) ∪ (4, 5] ∪ [8, 9]
+set.Complement();                   // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)
+```
+
+#### Discrete integer intervals (`DiscreteInterval<T>`)
+
+`Interval<T>` is continuous; `DiscreteInterval<T>` models the set of representable integers, so an open interval over consecutive integers is empty and successor-adjacent runs merge:
+
+```csharp
+DiscreteInterval<int>.Open(1, 2).IsEmpty;   // True — no integer strictly between 1 and 2
+
+var a = DiscreteInterval<int>.Closed(1, 2);
+var b = DiscreteInterval<int>.Closed(3, 4);
+a.TryUnion(b, out var run);                  // run = [1, 4] — 2 and 3 are successors
+
+DiscreteInterval<int>.Closed(1, 10).Count;   // 10
+```
+
 ### Cross-package: Fraction-backed monetary arithmetic
 
 `Bodu.Financial.Money<TCurrency>` round-trips through `Fraction<BigInteger>` for exact intermediate calculations:
@@ -267,5 +317,7 @@ Money<USD> balance = Money<USD>.FromFraction(exact);   // one rounding event
 - **[Bodu.Numerics introduction](index.md)** — namespaces, headline types, scenarios.
 - **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing/formatting, continued fractions, rational approximation.
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
+- **[Interval algebra](../../guides/numerics/interval-algebra.md)** — unbounded endpoints, difference / symmetric difference, operators, and `IntervalSet<T>`.
+- **[Discrete integer intervals](../../guides/numerics/discrete-intervals.md)** — the integer-domain `DiscreteInterval<T>`.
 - **[Bodu.Financial getting started](../financial/getting-started.md)** — for monetary primitives built on `Fraction<BigInteger>`.
 - **[Bodu.Numerics API reference](xref:Bodu.Numerics)** — full type-by-type docs.

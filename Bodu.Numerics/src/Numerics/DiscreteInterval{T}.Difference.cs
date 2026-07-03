@@ -57,6 +57,13 @@ public readonly partial struct DiscreteInterval<T>
     /// </summary>
     /// <param name="other">The interval to symmetric-difference with.</param>
     /// <returns>The integers covered by exactly one operand as a <see cref="DiscreteIntervalPair{T}" />.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// DiscreteInterval<int>.Closed(0, 5).SymmetricDifference(DiscreteInterval<int>.Closed(3, 8));   // [0, 2] ∪ [6, 8]
+    ///]]>
+    /// </code>
+    /// </example>
     public DiscreteIntervalPair<T> SymmetricDifference(DiscreteInterval<T> other)
     {
         DiscreteIntervalPair<T> thisMinusOther = Difference(other);
