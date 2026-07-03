@@ -280,9 +280,79 @@ enough: once the list is ordered, any interval that can merge with the
 current run will appear before any interval that cannot, so the algorithm
 never has to look back.
 
+## Unbounded and half-bounded intervals
+
+An interval need not have two finite endpoints. The factories
+<xref:Bodu.Numerics.Interval`1.AtLeast(`0)> (`[a, +∞)`),
+<xref:Bodu.Numerics.Interval`1.GreaterThan(`0)> (`(a, +∞)`),
+<xref:Bodu.Numerics.Interval`1.AtMost(`0)> (`(-∞, b]`),
+<xref:Bodu.Numerics.Interval`1.LessThan(`0)> (`(-∞, b)`), and
+<xref:Bodu.Numerics.Interval`1.All> (`(-∞, +∞)`) build the half-bounded and
+unbounded shapes. The unbounded side is carried as explicit metadata — read
+it with `LowerUnbounded` / `UpperUnbounded` / `IsBounded` — **not** as a
+floating-point infinity, so the same model works for `int`, `decimal`, and
+`BigInteger`, none of which have an infinity value.
+
+```csharp
+var nonNegative = Interval<double>.AtLeast(0.0);   // [0, +∞)
+nonNegative.Contains(1e308);                        // True
+nonNegative.IsBounded;                              // False
+
+// Set algebra composes with unbounded operands.
+Interval<int>.AtLeast(0) & Interval<int>.AtMost(10);   // [0, 10]
+```
+
+An unbounded interval is never empty; its `Length` is infinite, so reading
+`Length` throws <xref:System.InvalidOperationException>. Unbounded intervals
+format with the `±∞` glyphs (`[0, +∞)`, `(-∞, 5]`) and parse back from the
+same text.
+
+## Difference and symmetric difference
+
+Subtracting one interval from another can leave two pieces, so
+<xref:Bodu.Numerics.Interval`1.Difference(Bodu.Numerics.Interval{`0})> and
+<xref:Bodu.Numerics.Interval`1.SymmetricDifference(Bodu.Numerics.Interval{`0})>
+return an <xref:Bodu.Numerics.IntervalPair`1> — an allocation-free value
+holding zero, one, or two disjoint intervals, lowest-first.
+
+```csharp
+IntervalPair<int> gap = Interval<int>.Closed(0, 10).Difference(Interval<int>.Closed(3, 5));
+gap.Count;                       // 2
+foreach (var piece in gap)
+    Console.WriteLine(piece);    // "[0, 3)" then "(5, 10]"
+
+// The complement of a finite interval within the whole line is two half-lines.
+Interval<double>.All.Difference(Interval<double>.Closed(3, 5));   // (-∞, 3) ∪ (5, +∞)
+```
+
+## Operators
+
+`&` is intersection and `|` is the contiguous union, for the common case
+where the two operands form a single interval:
+
+```csharp
+var shared = Interval<int>.Closed(1, 5) & Interval<int>.Closed(3, 7);   // [3, 5]
+var merged = Interval<int>.ClosedOpen(1, 5) | Interval<int>.Closed(5, 10);   // [1, 10]
+```
+
+`|` throws <xref:System.InvalidOperationException> when the operands are
+disjoint with a gap, since their union is not a single interval — reach for
+`Difference` or accumulate the pieces when a multi-interval result is
+possible.
+
+## Continuous versus discrete
+
+`Interval<T>` is a **continuous** interval over ordered numeric coordinates —
+`Interval<int>.Open(1, 2)` is a non-empty continuous range even though it
+contains no integer. When you need the *discrete* integer semantics (an open
+interval over consecutive integers is empty; `[1, 2]` and `[3, 4]` are
+adjacent and merge), use [`DiscreteInterval<T>`](discrete-intervals.md)
+instead.
+
 ## See also
 
 - [Working with `Interval<T>`](interval.md) — single-operation basics: construction, membership, formatting, parsing.
+- [Discrete integer intervals](discrete-intervals.md) — `DiscreteInterval<T>` and successor-aware emptiness and adjacency.
 - [Generic math with `Fraction<T>` and `Interval<T>`](generic-math-constraints.md) — writing range and ratio code against the `INumber<T>` abstractions.
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1) and the [`Interval` static factory helpers](xref:Bodu.Numerics.Interval).
 - **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.

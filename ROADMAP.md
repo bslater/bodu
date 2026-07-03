@@ -203,11 +203,16 @@ is now:
 1. **The Numerics growth wave *(next engineering wave)*.** Round out
    `Bodu.Numerics` toward a stronger 1.0 in three sequenced steps, smallest
    first (details in the `Bodu.Numerics` section):
-   - **`Interval<T>` extensions** — unbounded / half-bounded endpoints,
-     `Difference` / `SymmetricDifference` returning disjoint-interval sets,
-     and `|` / `&` operators for guaranteed-contiguous operands. Extends the
-     already-shipped type; the 1.0 surface ships only the contiguous-result
-     subset.
+   - **`Interval<T>` extensions have landed.** ✅ Unbounded / half-bounded
+     endpoints (explicit metadata, not float sentinels; `AtLeast` / `AtMost`
+     / `All` …), `Difference` / `SymmetricDifference` returning the
+     allocation-free `IntervalPair<T>` (≤2 disjoint pieces), and the `&` / `|`
+     operators. The architecture review's continuous-vs-discrete finding was
+     also resolved by adding **`DiscreteInterval<T>`** (integer domain,
+     successor-aware emptiness and adjacency), plus hardening (NaN rejection,
+     culture-safe text) and an exhaustive membership-law test harness.
+     *Follow-ups:* `DiscreteInterval<T>` `Difference` / `SymmetricDifference`,
+     and a first-class N-ary `IntervalSet<T>`.
    - **`BigDecimal`** — an arbitrary-precision decimal (`BigInteger`
      mantissa + scale) with the `INumber<BigDecimal>` generic-math surface,
      parse/format, and a JSON converter following the existing
@@ -443,21 +448,30 @@ to the Bodu text stack. The read-only **TOML source has landed**
 
 ### `Bodu.Numerics`
 
-Current state: new; ~31 src / ~33 test files. Ships `Fraction<T>` (exact
-rationals over `IBinaryInteger<T>`, with continued-fraction, generic-math,
-UTF-8, and parse/format surfaces) and `Interval<T>` (open/closed-endpoint
-intervals over `INumber<T>`), each with JSON converters. Money/currency/FX
-live in the companion `Bodu.Financial`.
+Current state: new. Ships `Fraction<T>` (exact rationals over
+`IBinaryInteger<T>`), the continuous `Interval<T>` (open/closed/unbounded
+endpoints over `INumber<T>`) with full set algebra, the `DiscreteInterval<T>`
+integer-domain interval, and the `IntervalPair<T>` result type — each with
+JSON converters where applicable. Money/currency/FX live in the companion
+`Bodu.Financial`.
 
 This is the **active next engineering wave** (see *Active focus*), taken in
 three sequenced steps, smallest first:
 
-1. **Extend `Interval<T>`** — unbounded / half-bounded intervals (the
-   current type is always bounded), `Difference` / `SymmetricDifference`
-   returning disjoint-interval sets, and algebraic `|` (union) / `&`
-   (intersection) operators for guaranteed-contiguous operands. Extends the
-   already-shipped type; the 1.0 surface ships only the contiguous-result
-   subset.
+1. **`Interval<T>` extensions — shipped.** ✅ Unbounded / half-bounded
+   endpoints (explicit metadata, not float sentinels), `Difference` /
+   `SymmetricDifference` returning the allocation-free `IntervalPair<T>`
+   (≤2 disjoint pieces), and the `&` / `|` operators (`|` throws on a
+   non-contiguous union). The architecture review's continuous-vs-discrete
+   contradiction was resolved by adding **`DiscreteInterval<T>`** over
+   `IBinaryInteger<T>` — canonical closed-integer form with successor-aware
+   emptiness (`Open(1,2)` is empty) and adjacency (`[1,2] ∪ [3,4] == [1,4]`).
+   Review hardening folded in: NaN-endpoint rejection and a culture-safe
+   endpoint separator, with an exhaustive finite-domain membership-law test
+   harness. *Remaining follow-ups:* `DiscreteInterval<T>` `Difference` /
+   `SymmetricDifference` (+ a `DiscreteIntervalPair<T>`) and a first-class
+   N-ary `IntervalSet<T>` (normalized disconnected ranges, `Complement` /
+   `Except`).
 2. **Add `BigDecimal`** — an arbitrary-precision decimal (a `BigInteger`
    mantissa plus an `int` scale) with the full `INumber<BigDecimal>` /
    `INumberBase<BigDecimal>` generic-math surface, span/UTF-8 parse and

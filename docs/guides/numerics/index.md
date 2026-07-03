@@ -54,7 +54,12 @@ that ship in .NET 8+.
 
 <div class="bodu-card">
   <h3><a href="interval-algebra.md">Interval algebra</a></h3>
-  <p>The set-algebra surface of <code>Interval&lt;T&gt;</code> — intersection, union, difference, adjacency, and the empty-interval rules that make the operations total.</p>
+  <p>The set-algebra surface of <code>Interval&lt;T&gt;</code> — intersection, union, difference, symmetric difference, unbounded bounds, the <code>&amp;</code> / <code>|</code> operators, and the empty-interval rules that make the operations total.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="discrete-intervals.md">Discrete integer intervals</a></h3>
+  <p><code>DiscreteInterval&lt;T&gt;</code> — the integer-domain interval with successor-aware emptiness and adjacency, distinct from the continuous <code>Interval&lt;T&gt;</code>.</p>
 </div>
 
 <div class="bodu-card">
