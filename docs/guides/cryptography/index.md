@@ -190,6 +190,17 @@ The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256`
 
 </div>
 
+## One-time passwords
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="one-time-passwords.md">Using HOTP and TOTP</a></h3>
+  <p><code>Hotp</code> (RFC 4226) and <code>Totp</code> (RFC 6238) — the counter- and time-based one-time-password codes used for two-factor authentication, with constant-time verification and clock-drift windows.</p>
+</div>
+
+</div>
+
 ## Asymmetric algorithms
 
 <div class="bodu-cards">
