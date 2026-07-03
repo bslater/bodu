@@ -10,27 +10,12 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Behaviours specific to <see cref="ParallelMerkleTreeHash" /> that the sequential class does
-/// not share — specifically, empty-input handling (throws
-/// <see cref="InvalidOperationException" />) and post-dispose access (throws
-/// <see cref="ObjectDisposedException" />).
+/// not share — specifically, post-dispose access (throws <see cref="ObjectDisposedException" />).
+/// Empty-input handling is shared and lives in
+/// <see cref="MerkleTreeHashTestsBase{THasher}" />'s domain-separation partial.
 /// </summary>
 public partial class ParallelMerkleTreeHashTests
 {
-    // ─── Empty input ──────────────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that an empty span raises <see cref="InvalidOperationException" /> — no leaves
-    /// can be produced from zero bytes, so the implementation rejects the call rather than
-    /// returning an arbitrary "zero-leaves" hash.
-    /// </summary>
-    [TestMethod]
-    public void ComputeHash_WhenInputIsEmpty_ShouldThrowExactly()
-    {
-        using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-            hasher.ComputeHash([]));
-    }
-
     // ─── Post-dispose access ──────────────────────────────────────────────────────────────────
 
     /// <summary>

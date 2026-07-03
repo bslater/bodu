@@ -36,4 +36,27 @@ public partial class MerkleTreeHashTests
             _ = new MerkleTreeHash((IHashAlgorithmFactory<HashAlgorithm>)null!, blockSize: 4, fanOut: 2);
         });
     }
+
+    /// <summary>
+    /// Verifies that the sequential <see cref="MerkleTreeHash" /> invokes its factory exactly once and reuses that
+    /// single <see cref="HashAlgorithm" /> across every leaf and internal node, rather than creating a distinct
+    /// instance per node. The one-shot hashing path resets the algorithm between nodes, so no state bleeds.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenTreeHasManyNodes_ShouldReuseSingleFactoryInstance()
+    {
+        int factoryCalls = 0;
+        Func<HashAlgorithm> countingFactory = () =>
+        {
+            factoryCalls++;
+            return new MonitoringHashAlgorithm();
+        };
+
+        // Three full blocks with fanOut=2 build three leaves and three internal nodes — six nodes in all.
+        using var hasher = new MerkleTreeHash(countingFactory, blockSize: 4, fanOut: 2);
+        hasher.ComputeHash(MerkleTestData.MakeData(12));
+
+        Assert.AreEqual(1, factoryCalls,
+            "MerkleTreeHash must reuse a single hash-algorithm instance across all nodes (one factory call).");
+    }
 }

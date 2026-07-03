@@ -321,13 +321,13 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
 
     /// <summary>
     /// Vector B — two full blocks, fanOut=2.
-    /// Data {1..8} → leaves 10,26 → root = sum({10,0,0,0,26,0,0,0}) = 36 → { 0x24, 0x00, 0x00, 0x00 }.
+    /// Data {1..8} → leaves 10,26 → root = 0x01 + sum({10,0,0,0,26,0,0,0}) = 1 + 36 = 37 → { 0x25, 0x00, 0x00, 0x00 }.
     /// </summary>
     [TestMethod]
     public void ComputeHash_WhenTwoFullBlocks_ShouldCombineIntoRoot()
     {
         byte[] data = [1, 2, 3, 4, 5, 6, 7, 8];
-        byte[] expected = BitConverter.GetBytes((uint)36);
+        byte[] expected = BitConverter.GetBytes((uint)37);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
@@ -335,13 +335,13 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
 
     /// <summary>
     /// Vector C — one full + one partial block, fanOut=2.
-    /// Data {1..5} → leaves 10, 5 (padded) → root = 15.
+    /// Data {1..5} → leaves 10, 5 (tail hashed at actual length) → root = 0x01 + 15 = 16.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenPartialTailBlock_ShouldZeroPadAndProduceCorrectRoot()
+    public void ComputeHash_WhenPartialTailBlock_ShouldHashActualLengthAndProduceCorrectRoot()
     {
         byte[] data = [1, 2, 3, 4, 5];
-        byte[] expected = BitConverter.GetBytes((uint)15);
+        byte[] expected = BitConverter.GetBytes((uint)16);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
@@ -349,13 +349,13 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
 
     /// <summary>
     /// Vector D — three full blocks, fanOut=2 (uneven: 3 leaves → 2 internal nodes).
-    /// Data {1..12} → leaves 10,26,42 → level1 groups produce 36 and 42 → root 78.
+    /// Data {1..12} → leaves 10,26,42 → level1 nodes 0x01+36=37 and 0x01+42=43 → root 0x01+37+43 = 81.
     /// </summary>
     [TestMethod]
     public void ComputeHash_WhenThreeLeavesWithFanOutTwo_ShouldProduceCorrectTwoLevelRoot()
     {
         byte[] data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-        byte[] expected = BitConverter.GetBytes((uint)78);
+        byte[] expected = BitConverter.GetBytes((uint)81);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
@@ -363,13 +363,13 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
 
     /// <summary>
     /// Vector E — three full blocks, fanOut=3 (all three fit in one group).
-    /// Data {1..12} → leaves 10,26,42 → root 78 in a single reduction step.
+    /// Data {1..12} → leaves 10,26,42 → root 0x01 + 78 = 79 in a single reduction step.
     /// </summary>
     [TestMethod]
     public void ComputeHash_WhenThreeLeavesWithFanOutThree_ShouldReduceInOneStep()
     {
         byte[] data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-        byte[] expected = BitConverter.GetBytes((uint)78);
+        byte[] expected = BitConverter.GetBytes((uint)79);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 3);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
@@ -377,24 +377,25 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
 
     /// <summary>
     /// Vector F — blockSize=1, every byte is its own leaf.
-    /// Data {10,20,30,40} → root 100 → { 0x64, 0x00, 0x00, 0x00 }.
+    /// Data {10,20,30,40} → leaves 10,20,30,40 → level1 nodes 0x01+30=31 and 0x01+70=71 →
+    /// root 0x01+31+71 = 103 → { 0x67, 0x00, 0x00, 0x00 }.
     /// </summary>
     [TestMethod]
     public void ComputeHash_WhenBlockSizeIsOne_ShouldTreatEachByteAsLeaf()
     {
         byte[] data = [10, 20, 30, 40];
-        byte[] expected = BitConverter.GetBytes((uint)100);
+        byte[] expected = BitConverter.GetBytes((uint)103);
 
         using THasher hasher = Construct(Factory, blockSize: 1, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
     /// <summary>
-    /// Vector G — single byte, partial block only.
-    /// Data {7} → padded {7,0,0,0} → root 7.
+    /// Vector G — single byte, single-leaf tree.
+    /// Data {7} → one leaf H(0x00 || {7}) with additive value 7 → root passes through unchanged (no internal node).
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenSingleByteInput_ShouldZeroPadAndReturnLeafAsRoot()
+    public void ComputeHash_WhenSingleByteInput_ShouldHashActualLengthAndReturnLeafAsRoot()
     {
         byte[] data = [7];
         byte[] expected = BitConverter.GetBytes((uint)7);
@@ -405,13 +406,13 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
 
     /// <summary>
     /// Vector H — two full + one partial block, fanOut=3.
-    /// Data {1..9} → leaves 10,26,9 → root 45.
+    /// Data {1..9} → leaves 10,26,9 (tail hashed at actual length) → root 0x01 + 45 = 46.
     /// </summary>
     [TestMethod]
     public void ComputeHash_WhenNineBytesWithFanOutThree_ShouldReduceAllThreeLeavesInOneStep()
     {
         byte[] data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        byte[] expected = BitConverter.GetBytes((uint)45);
+        byte[] expected = BitConverter.GetBytes((uint)46);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 3);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));

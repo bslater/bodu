@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/merkle-tree.svg" alt="Merkle tree construction — the input is sliced into blocks, each block is hashed to a leaf, leaves are grouped by fan-out F and reduced level-by-level until a single root hash remains; a partial tail block is zero-padded to the full block size before hashing."/>
+/// <img src="../images/diagrams/merkle-tree.svg" alt="Merkle tree construction — the input is sliced into blocks, each block is hashed to a leaf, leaves are grouped by fan-out F and reduced level-by-level until a single root hash remains."/>
 /// </para>
 /// <para>
 /// Input bytes are divided into fixed-size blocks — the top row of the diagram above, with <c>blockSize</c> labeled <b>
@@ -26,11 +26,13 @@ namespace Bodu.Security.Cryptography;
 /// until a single root hash remains at the top.
 /// </para>
 /// <para>
-/// When the input length is not a multiple of <c>blockSize</c>, the partial tail (the dashed orange <b>B₇</b> block in
-/// the diagram) is zero-padded up to a full block before hashing, so every leaf is the same width regardless of input
-/// alignment. If the final group at any internal level contains fewer than <c>fanOut</c> children, that short group is
-/// promoted with its surviving children only — shown in the diagram as the single-edged reduction of <b>L₇</b> into <b>
-/// N₃</b>.
+/// <strong>Domain separation and length binding.</strong> Following RFC 6962 §2.1, a leaf is hashed as
+/// <c>H(0x00 || block)</c> and an internal node as <c>H(0x01 || child₀ || … || child_{k-1})</c>; the distinct prefix
+/// bytes stop an internal node's concatenated child hashes from being replayed as leaf data. The partial tail (the
+/// dashed <b>B₇</b> block in the diagram) is hashed at its <em>actual</em> byte length rather than zero-padded, so the
+/// exact input length is bound into every leaf and inputs differing only by trailing zeros produce distinct roots. If
+/// the final group at any internal level contains fewer than <c>fanOut</c> children, that short group is promoted with
+/// its surviving children only — shown in the diagram as the single-edged reduction of <b>L₇</b> into <b>N₃</b>.
 /// </para>
 /// <para>
 /// Each call to a <c>ComputeHash</c> overload resets internal state, so the same instance may be reused across multiple
@@ -58,7 +60,8 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <description>
-/// Tail handling: partial final blocks are zero-padded; short final groups at internal levels promote without padding.
+/// Tail handling: the partial final block is hashed at its actual length (length-bound, not zero-padded); short final
+/// groups at internal levels promote with their surviving children only.
 /// </description>
 /// </item>
 /// </list>
@@ -96,8 +99,11 @@ public sealed class MerkleTreeHash
     /// <summary>The number of child nodes combined into each parent node during tree reduction.</summary>
     private readonly int _fanOut;
 
-    /// <summary>The factory invoked once per leaf and internal node to obtain a fresh, independent hash algorithm.</summary>
+    /// <summary>The factory invoked once to obtain the reused hash algorithm for every leaf and internal node.</summary>
     private readonly Func<HashAlgorithm> _algorithmFactory;
+
+    /// <summary>The lazily-created hash algorithm reused for every leaf and internal node; owned and disposed by this instance.</summary>
+    private HashAlgorithm? _hasher;
 
     /// <summary>Accumulates raw bytes for the current partial block; reused across <c>ComputeHash</c> calls.</summary>
     private readonly MemoryStream _buffer;
@@ -110,10 +116,10 @@ public sealed class MerkleTreeHash
     /// block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
-    /// A typed factory whose <see cref="IHashAlgorithmFactory{T}.Create" /> method is invoked once per hash operation
-    /// to obtain a fresh, independent <see cref="HashAlgorithm" /> instance. Must not be <see langword="null" />. A
-    /// distinct instance is created for each leaf and internal node so that no algorithm state is shared across
-    /// operations.
+    /// A typed factory whose <see cref="IHashAlgorithmFactory{T}.Create" /> method is invoked once to obtain the
+    /// <see cref="HashAlgorithm" /> instance reused for every leaf and internal node. Must not be
+    /// <see langword="null" />. The one-shot hashing path resets the algorithm between nodes, so a single instance
+    /// is sufficient and no state is shared across concurrent operations.
     /// </param>
     /// <param name="blockSize">
     /// The size in bytes of each leaf block. Must be greater than zero. Defaults to 1024.
@@ -137,9 +143,9 @@ public sealed class MerkleTreeHash
     /// delegate, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
-    /// Factory delegate that returns a fresh <see cref="HashAlgorithm" /> per hash operation. Must not be
-    /// <see langword="null" />. A distinct instance is created for each leaf and internal node so that no algorithm
-    /// state is shared across operations.
+    /// Factory delegate invoked once to obtain the <see cref="HashAlgorithm" /> reused for every leaf and internal
+    /// node. Must not be <see langword="null" />. The one-shot hashing path resets the algorithm between nodes, so a
+    /// single instance is sufficient and no state is shared across concurrent operations.
     /// </param>
     /// <param name="blockSize">
     /// The size in bytes of each leaf block. Must be greater than zero. Defaults to 1024.
@@ -256,7 +262,7 @@ public sealed class MerkleTreeHash
 
             if (_buffer.Length == _blockSize)
             {
-                _currentLevel.Add(ComputeLeafHash(_buffer));
+                _currentLevel.Add(HashNode(MerkleTreeFormat.LeafPrefix, _buffer.GetBuffer().AsSpan(0, (int)_buffer.Length)));
                 _buffer.SetLength(0);
             }
         }
@@ -266,17 +272,19 @@ public sealed class MerkleTreeHash
     /// Finalizes any trailing partial leaf, combines intermediate node hashes up the tree, and returns the root hash.
     /// </summary>
     /// <returns>The root Merkle-tree hash bytes.</returns>
+    /// <exception cref="InvalidOperationException">No input data was provided (zero leaves).</exception>
     private byte[] ComputeFinalHash()
     {
-        // Zero-pad the partial tail block to a full block size before hashing, so that every
-        // leaf is the same width regardless of input alignment. MemoryStream.SetLength fills
-        // the extended region with zeros when growing.
+        // Hash the trailing partial leaf at its actual length — no zero padding. Binding the real byte count
+        // into the leaf (via the RFC 6962 leaf-domain prefix in HashNode) prevents trailing-zero collisions.
         if (_buffer.Length > 0)
         {
-            _buffer.SetLength(_blockSize);
-            _currentLevel.Add(ComputeLeafHash(_buffer));
+            _currentLevel.Add(HashNode(MerkleTreeFormat.LeafPrefix, _buffer.GetBuffer().AsSpan(0, (int)_buffer.Length)));
             _buffer.SetLength(0);
         }
+
+        if (_currentLevel.Count == 0)
+            throw new InvalidOperationException(CryptoResourceStrings.Op_Invalid_NoInputData);
 
         // Reduce level by level until a single root hash remains.
         while (_currentLevel.Count > 1)
@@ -288,11 +296,12 @@ public sealed class MerkleTreeHash
             {
                 int groupSize = Math.Min(_fanOut, _currentLevel.Count - i);
 
+                // Concatenate the group's child hashes; HashNode prepends the internal-node domain prefix.
                 using var bufferBuilder = new PooledBufferBuilder<byte>(hashLength * groupSize);
                 for (int j = 0; j < groupSize; j++)
                     bufferBuilder.AppendRange(_currentLevel[i + j].AsSpan());
 
-                nextLevel.Add(ComputeLeafHash(bufferBuilder.WrittenSpan));
+                nextLevel.Add(HashNode(MerkleTreeFormat.InternalNodePrefix, bufferBuilder.WrittenSpan));
             }
 
             _currentLevel = nextLevel;
@@ -306,36 +315,42 @@ public sealed class MerkleTreeHash
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Computes the leaf hash over the full contents of <paramref name="stream" /> using the configured
-    /// factory-produced <see cref="HashAlgorithm" />.
+    /// Computes a node hash as <c>H(<paramref name="prefix" /> || <paramref name="payload" />)</c> using the
+    /// instance's reused <see cref="HashAlgorithm" />, applying RFC 6962 leaf/internal-node domain separation.
     /// </summary>
-    /// <param name="stream">The memory stream containing the leaf bytes.</param>
-    /// <returns>The leaf hash bytes.</returns>
-    private byte[] ComputeLeafHash(MemoryStream stream)
+    /// <param name="prefix">The domain-separation prefix byte (leaf or internal node).</param>
+    /// <param name="payload">The node payload — raw leaf bytes, or the concatenated child hashes.</param>
+    /// <returns>The node hash bytes.</returns>
+    /// <remarks>
+    /// A single <see cref="HashAlgorithm" /> is created lazily and reused for every leaf and internal node; the
+    /// one-shot <see cref="HashAlgorithm.TryComputeHash(ReadOnlySpan{byte}, Span{byte}, out int)" /> resets the
+    /// algorithm's state on each call, so no per-node instance is required.
+    /// </remarks>
+    private byte[] HashNode(byte prefix, ReadOnlySpan<byte> payload)
     {
-        stream.Position = 0;
-        using HashAlgorithm hasher = _algorithmFactory();
-        return hasher.ComputeHash(stream);
-    }
+        HashAlgorithm hasher = _hasher ??= _algorithmFactory();
 
-    /// <summary>
-    /// Computes the leaf hash over <paramref name="span" /> using the configured factory-produced
-    /// <see cref="HashAlgorithm" />.
-    /// </summary>
-    /// <param name="span">The leaf bytes.</param>
-    /// <returns>The leaf hash bytes.</returns>
-    private byte[] ComputeLeafHash(ReadOnlySpan<byte> span)
-    {
-        using HashAlgorithm hasher = _algorithmFactory();
-        byte[] result = new byte[hasher.HashSize >> 3];
-        CryptographyThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
-            hasher.TryComputeHash(span, result, out int bytesWritten));
-        if (bytesWritten == result.Length)
-            return result;
+        int total = 1 + payload.Length;
+        byte[] rented = ArrayPool<byte>.Shared.Rent(total);
+        try
+        {
+            rented[0] = prefix;
+            payload.CopyTo(rented.AsSpan(1));
 
-        byte[] trimmed = new byte[bytesWritten];
-        Buffer.BlockCopy(result, 0, trimmed, 0, bytesWritten);
-        return trimmed;
+            byte[] result = new byte[hasher.HashSize >> 3];
+            CryptographyThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
+                hasher.TryComputeHash(rented.AsSpan(0, total), result, out int bytesWritten));
+            if (bytesWritten == result.Length)
+                return result;
+
+            byte[] trimmed = new byte[bytesWritten];
+            Buffer.BlockCopy(result, 0, trimmed, 0, bytesWritten);
+            return trimmed;
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(rented, clearArray: true);
+        }
     }
 
     // -----------------------------------------------------------------------------------------
@@ -343,5 +358,9 @@ public sealed class MerkleTreeHash
     // -----------------------------------------------------------------------------------------
 
     /// <inheritdoc />
-    public void Dispose() => _buffer.Dispose();
+    public void Dispose()
+    {
+        _buffer.Dispose();
+        _hasher?.Dispose();
+    }
 }

@@ -36,4 +36,32 @@ public partial class ParallelMerkleTreeHashTests
             _ = new ParallelMerkleTreeHash((IHashAlgorithmFactory<HashAlgorithm>)null!, blockSize: 4, fanOut: 2);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ParallelMerkleTreeHash" /> invokes its factory per node, producing a distinct
+    /// algorithm instance for each concurrent leaf and internal-node computation so no algorithm state bleeds
+    /// between the parallel workers.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenFactoryInvokedRepeatedly_ShouldReturnDistinctInstances()
+    {
+        HashAlgorithm? first = null;
+        HashAlgorithm? second = null;
+
+        Func<HashAlgorithm> trackingFactory = () =>
+        {
+            var instance = new MonitoringHashAlgorithm();
+            if (first is null) first = instance;
+            else if (second is null) second = instance;
+            return instance;
+        };
+
+        // Two full blocks with fanOut=2 forces at least two leaf-algorithm constructions.
+        using var hasher = new ParallelMerkleTreeHash(trackingFactory, blockSize: 4, fanOut: 2);
+        hasher.ComputeHash(MerkleTestData.MakeData(8));
+
+        Assert.IsNotNull(first);
+        Assert.IsNotNull(second);
+        Assert.AreNotSame(first, second);
+    }
 }

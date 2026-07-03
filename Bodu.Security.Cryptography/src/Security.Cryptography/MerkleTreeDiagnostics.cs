@@ -291,6 +291,10 @@ public sealed class MerkleTreeDiagnostics
     private static byte[] CombineHashes(IReadOnlyList<byte[]> hashes, Func<HashAlgorithm> factory)
     {
         using HashAlgorithm hasher = factory();
+
+        // Internal-node domain separation: recompute H(0x01 || child₀ || … ) to match both hasher implementations.
+        byte[] prefix = [MerkleTreeFormat.InternalNodePrefix];
+        hasher.TransformBlock(prefix, 0, prefix.Length, null, 0);
         for (int i = 0; i < hashes.Count - 1; i++)
             hasher.TransformBlock(hashes[i], 0, hashes[i].Length, null, 0);
         hasher.TransformFinalBlock(hashes[^1], 0, hashes[^1].Length);

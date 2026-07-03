@@ -244,9 +244,10 @@ public partial class ParallelMerkleTreeHashTests
 
         Assert.AreEqual(1, internalHashFinalCount,
             "The internal node hasher must call HashFinal exactly once.");
-        Assert.AreEqual(2, internalHashCoreCount,
-            "The internal node hasher must call HashCore(byte[]) twice: " +
-            "once via TransformBlock for child 0, once via TransformFinalBlock for child 1.");
+        Assert.AreEqual(3, internalHashCoreCount,
+            "The internal node hasher must call HashCore(byte[]) three times: " +
+            "once via TransformBlock for the 0x01 domain prefix, once for child 0, " +
+            "once via TransformFinalBlock for child 1.");
         Assert.AreEqual(0, internalTryHashFinalCount,
             "Internal node hashers must never call TryHashFinal.");
         Assert.AreEqual(0, internalHashCoreSpanCount,
@@ -299,17 +300,24 @@ public partial class ParallelMerkleTreeHashTests
     // ═══════════════════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Verifies that each leaf hasher processes exactly <c>blockSize</c> bytes, confirming
-    /// that partial tail blocks are zero-padded to the full block size before hashing.
+    /// Verifies that each leaf hasher processes exactly <c>1 + actualBlockLength</c> bytes — the one-byte
+    /// <c>0x00</c> leaf-domain prefix plus the block's real length — confirming the partial tail is hashed at its
+    /// actual length rather than zero-padded to the full block size.
     /// </summary>
-    [TestMethod]
-    [DataRow(4, 2, 8, 4)]   // 2 full blocks — both leaves process 4 bytes
-    [DataRow(4, 2, 5, 4)]   // 1 full + 1 partial (padded) — both leaves process 4 bytes
-    [DataRow(4, 2, 1, 4)]   // single-byte input padded to 4 — leaf processes 4 bytes
-    [DataRow(8, 2, 17, 8)]  // 2 full + 1 partial padded to 8
-    public void MonitoringAlgorithm_LeafHashers_ShouldEachProcessExactlyBlockSizeBytes(
-        int blockSize, int fanOut, int dataLength, int expectedLeafBytes)
+    [DataTestMethod]
+    [DataRow(4, 2, 8)]   // 2 full blocks → each leaf processes 1 + 4 = 5 bytes
+    [DataRow(4, 2, 5)]   // 1 full + 1 partial → leaves process 5 and 1 + 1 = 2 bytes
+    [DataRow(4, 2, 1)]   // single 1-byte input → leaf processes 1 + 1 = 2 bytes (no padding)
+    [DataRow(8, 2, 17)]  // 2 full + 1 partial → leaves process 9, 9, and 1 + 1 = 2 bytes
+    public void MonitoringAlgorithm_LeafHashers_ShouldEachProcessPrefixPlusActualBlockLength(
+        int blockSize, int fanOut, int dataLength)
     {
+        // Expected per-leaf byte counts: one leaf per block, each processing 1 (prefix) + the block's real length.
+        var expected = new List<long>();
+        for (int offset = 0; offset < dataLength; offset += blockSize)
+            expected.Add(1 + Math.Min(blockSize, dataLength - offset));
+        expected.Sort();
+
         var leafBytesObserved = new ConcurrentBag<long>();
 
         Func<HashAlgorithm> factory = () =>
@@ -323,10 +331,12 @@ public partial class ParallelMerkleTreeHashTests
         using var hasher = new ParallelMerkleTreeHash(factory, blockSize, fanOut);
         hasher.ComputeHash(MakeData(dataLength));
 
-        foreach (long bytes in leafBytesObserved)
-            Assert.AreEqual(expectedLeafBytes, bytes,
-                $"Leaf hasher processed {bytes} bytes but expected {expectedLeafBytes} " +
-                $"(blockSize={blockSize}, dataLength={dataLength}).");
+        var actual = new List<long>(leafBytesObserved);
+        actual.Sort();
+
+        CollectionAssert.AreEqual(expected, actual,
+            $"Leaf byte counts mismatch (blockSize={blockSize}, dataLength={dataLength}). " +
+            $"Expected [{string.Join(",", expected)}], got [{string.Join(",", actual)}].");
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════════════════
@@ -334,17 +344,16 @@ public partial class ParallelMerkleTreeHashTests
     // ═══════════════════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Verifies that each internal node hasher processes exactly the number of bytes equal to
-    /// its child count multiplied by the hash output size (4 bytes for
-    /// <see cref="MonitoringHashAlgorithm" />), confirming that child hashes are fed in full
-    /// without truncation or padding.
+    /// Verifies that each internal node hasher processes exactly <c>1 + childCount × hashOutputSize</c> bytes — the
+    /// one-byte <c>0x01</c> internal-node prefix plus every child hash in full — confirming that child hashes are
+    /// fed without truncation or padding.
     /// </summary>
     [TestMethod]
-    public void MonitoringAlgorithm_InternalHashers_WhenTwoFullBlocks_ShouldProcessEightBytes()
+    public void MonitoringAlgorithm_InternalHashers_WhenTwoFullBlocks_ShouldProcessNineBytes()
     {
-        // 2 full blocks, fanOut=2 → 1 internal hasher combining 2 child hashes × 4 bytes = 8.
+        // 2 full blocks, fanOut=2 → 1 internal hasher over the 0x01 prefix + 2 child hashes × 4 bytes = 1 + 8 = 9.
         const int hashOutputSize = 4; // sizeof(uint) for MonitoringHashAlgorithm
-        const int expectedBytes = 2 * hashOutputSize;
+        const int expectedBytes = 1 + (2 * hashOutputSize);
         var internalBytesObserved = new ConcurrentBag<long>();
 
         Func<HashAlgorithm> factory = () =>
@@ -361,21 +370,21 @@ public partial class ParallelMerkleTreeHashTests
         Assert.HasCount(1, internalBytesObserved,
             "Exactly one internal hasher should have been created.");
         Assert.AreEqual(expectedBytes, internalBytesObserved.ToArray()[0],
-            "The internal hasher must process 2 × 4 = 8 bytes (two child hashes).");
+            "The internal hasher must process 1 + 2 × 4 = 9 bytes (0x01 prefix + two child hashes).");
     }
 
     /// <summary>
-    /// Verifies that when three leaves produce a single-child remainder node at level 1, that
-    /// remainder node's hasher processes exactly one hash-output-size worth of bytes (4 bytes),
-    /// not the full fan-out width.
+    /// Verifies that when three leaves produce a single-child remainder node at level 1, that remainder node's
+    /// hasher processes exactly <c>1 + hashOutputSize</c> bytes (the 0x01 prefix plus one child hash), not the full
+    /// fan-out width.
     /// </summary>
     [TestMethod]
-    public void MonitoringAlgorithm_InternalHashers_WhenSingleChildRemainder_ShouldProcessFourBytes()
+    public void MonitoringAlgorithm_InternalHashers_WhenSingleChildRemainder_ShouldProcessPrefixPlusOneChild()
     {
-        // 3 blocks, fanOut=2:
-        //   internal0 (L0,L1): BytesProcessed = 8
-        //   internal1 (L2 alone — remainder): BytesProcessed = 4  ← the assertion target
-        //   internal2 (I0,I1): BytesProcessed = 8
+        // 3 blocks, fanOut=2 (every internal node adds the 1-byte 0x01 domain prefix):
+        //   internal0 (L0,L1): BytesProcessed = 1 + 8 = 9
+        //   internal1 (L2 alone — remainder): BytesProcessed = 1 + 4 = 5  ← the assertion target
+        //   internal2 (I0,I1): BytesProcessed = 1 + 8 = 9
         const int hashOutputSize = 4;
         var internalBytes = new ConcurrentBag<long>();
 
@@ -393,11 +402,11 @@ public partial class ParallelMerkleTreeHashTests
         var sorted = new System.Collections.Generic.List<long>(internalBytes);
         sorted.Sort();
 
-        // Expected: one internal with 4 bytes (single-child), two with 8 bytes (two children).
+        // Expected: one internal with 1 + 4 = 5 bytes (single-child), two with 1 + 8 = 9 bytes (two children).
         Assert.HasCount(3, sorted, "Expected three internal node hashers.");
-        Assert.AreEqual(hashOutputSize, sorted[0], "Smallest internal should be 4 bytes (single-child remainder).");
-        Assert.AreEqual(2 * hashOutputSize, sorted[1], "Second internal should be 8 bytes (two children).");
-        Assert.AreEqual(2 * hashOutputSize, sorted[2], "Third internal should be 8 bytes (two children).");
+        Assert.AreEqual(1 + hashOutputSize, sorted[0], "Smallest internal should be 5 bytes (prefix + single child).");
+        Assert.AreEqual(1 + (2 * hashOutputSize), sorted[1], "Second internal should be 9 bytes (prefix + two children).");
+        Assert.AreEqual(1 + (2 * hashOutputSize), sorted[2], "Third internal should be 9 bytes (prefix + two children).");
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════════════════
@@ -406,14 +415,14 @@ public partial class ParallelMerkleTreeHashTests
 
     /// <summary>
     /// Verifies that an internal hasher combining a full fan-out group calls
-    /// <c>HashCore(byte[], int, int)</c> exactly <c>fanOut</c> times (once per child via
-    /// <c>TransformBlock</c> or <c>TransformFinalBlock</c>).
+    /// <c>HashCore(byte[], int, int)</c> exactly <c>fanOut + 1</c> times — once for the 0x01 domain prefix and once
+    /// per child via <c>TransformBlock</c> or <c>TransformFinalBlock</c>.
     /// </summary>
     [TestMethod]
     [DataRow(2)]
     [DataRow(3)]
     [DataRow(4)]
-    public void MonitoringAlgorithm_InternalHashers_WhenFullGroup_ShouldCallHashCoreOncePerChild(int fanOut)
+    public void MonitoringAlgorithm_InternalHashers_WhenFullGroup_ShouldCallHashCoreOncePerChildPlusPrefix(int fanOut)
     {
         // Produce exactly fanOut leaves so there is one internal node covering all of them.
         int dataLength = 4 * fanOut; // fanOut complete blocks
@@ -432,8 +441,8 @@ public partial class ParallelMerkleTreeHashTests
 
         Assert.HasCount(1, hashCoreCounts,
             $"Expected exactly one internal node for fanOut={fanOut} exact leaves.");
-        Assert.AreEqual(fanOut, hashCoreCounts.ToArray()[0],
-            $"Internal hasher must call HashCore exactly {fanOut} times (once per child).");
+        Assert.AreEqual(fanOut + 1, hashCoreCounts.ToArray()[0],
+            $"Internal hasher must call HashCore exactly {fanOut + 1} times (0x01 prefix + once per child).");
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════════════════
@@ -512,11 +521,11 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public void MonitoringAlgorithm_WhenTwoFullBlocks_RootShouldEqualAdditiveHashOfLeafHashes()
     {
-        // Expected derivation:
+        // Expected derivation (0x00 leaf prefix adds 0; 0x01 internal prefix adds 1):
         //   Data:   { 1,2,3,4, 5,6,7,8 }
-        //   Leaf 0: sum=10 → { 10,0,0,0 }
-        //   Leaf 1: sum=26 → { 26,0,0,0 }
-        //   Root:   sum({ 10,0,0,0, 26,0,0,0 }) = 36 → { 36,0,0,0 }
+        //   Leaf 0: 0x00 + sum=10 → { 10,0,0,0 }
+        //   Leaf 1: 0x00 + sum=26 → { 26,0,0,0 }
+        //   Root:   0x01 + sum({ 10,0,0,0, 26,0,0,0 }) = 1 + 36 = 37 → { 37,0,0,0 }
         byte[] data = [1, 2, 3, 4, 5, 6, 7, 8];
 
         var capturedLeafHashes = new ConcurrentBag<uint>();
@@ -553,38 +562,37 @@ public partial class ParallelMerkleTreeHashTests
         Assert.HasCount(2, capturedLeafHashes, "Expected two leaf hashers.");
         Assert.HasCount(1, capturedInternalSums, "Expected one internal node hasher.");
 
-        // The root hash must equal the hand-computed expected value.
-        byte[] expected = BitConverter.GetBytes((uint)36);
+        // The root hash must equal the hand-computed expected value (1 + 36 with the internal-node prefix).
+        byte[] expected = BitConverter.GetBytes((uint)37);
         CollectionAssert.AreEqual(expected, root,
             $"Root hash mismatch. Expected {Convert.ToHexString(expected)}, " +
             $"got {Convert.ToHexString(root)}.");
     }
 
     /// <summary>
-    /// Verifies that a partial tail block contributes only its actual data bytes to the leaf
-    /// sum — the zero padding does not add to the hash value — producing a root equal to the
-    /// sum of all non-padded input bytes.
+    /// Verifies that a partial tail block is hashed at its actual length — no zero padding — so its leaf sum equals
+    /// only its real data bytes, and the root equals the sum of all input bytes plus the single internal-node prefix.
     /// </summary>
     [TestMethod]
-    public void MonitoringAlgorithm_WhenPartialTailBlock_ZeroPaddingShouldNotAlterSum()
+    public void MonitoringAlgorithm_WhenPartialTailBlock_ShouldHashActualLengthOnly()
     {
         // Data: { 1,2,3,4,  5 }
-        //   Leaf 0: { 1,2,3,4 } → sum=10
-        //   Leaf 1: { 5,0,0,0 } padded → sum=5 (padding contributes 0)
-        //   Root: hash({ 10,0,0,0, 5,0,0,0 }) = 15 → { 15,0,0,0 }
+        //   Leaf 0: 0x00 + { 1,2,3,4 } → sum=10
+        //   Leaf 1: 0x00 + { 5 }       → sum=5 (tail hashed at actual length, no padding)
+        //   Root:   0x01 + { 10,0,0,0, 5,0,0,0 } = 1 + 15 = 16 → { 16,0,0,0 }
         byte[] data = [1, 2, 3, 4, 5];
-        byte[] expected = BitConverter.GetBytes((uint)15);
+        byte[] expected = BitConverter.GetBytes((uint)16);
 
         int totalInputByteSum = 1 + 2 + 3 + 4 + 5;
 
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
         byte[] root = hasher.ComputeHash(data);
 
-        // The root value (as uint32-LE) must equal the sum of the input bytes.
+        // The root value (as uint32-LE) must equal the sum of the input bytes plus the one internal-node prefix.
         uint rootValue = BitConverter.ToUInt32(root);
-        Assert.AreEqual((uint)totalInputByteSum, rootValue,
-            $"Root value {rootValue} should equal the sum of all input bytes {totalInputByteSum}. " +
-            "Zero padding must not increase the hash value.");
+        Assert.AreEqual((uint)(totalInputByteSum + MerkleTreeFormat.InternalNodePrefix), rootValue,
+            $"Root value {rootValue} should equal the input-byte sum {totalInputByteSum} plus the 0x01 prefix. " +
+            "The tail must be hashed at its actual length without padding.");
 
         CollectionAssert.AreEqual(expected, root);
     }

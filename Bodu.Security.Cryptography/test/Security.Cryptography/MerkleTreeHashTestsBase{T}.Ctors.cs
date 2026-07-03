@@ -74,30 +74,8 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         Assert.IsNotNull(hasher);
     }
 
-    /// <summary>
-    /// Verifies that each factory invocation produces a distinct algorithm instance so no
-    /// algorithm state bleeds between leaf computations.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenFactoryInvokedRepeatedly_ShouldReturnDistinctInstances()
-    {
-        HashAlgorithm? first = null;
-        HashAlgorithm? second = null;
-
-        Func<HashAlgorithm> trackingFactory = () =>
-        {
-            var instance = new MonitoringHashAlgorithm();
-            if (first is null) first = instance;
-            else if (second is null) second = instance;
-            return instance;
-        };
-
-        // Two full blocks with fanOut=2 forces at least two leaf-algorithm constructions.
-        using THasher hasher = Construct(trackingFactory, blockSize: 4, fanOut: 2);
-        ComputeHash(hasher, MakeData(8));
-
-        Assert.IsNotNull(first);
-        Assert.IsNotNull(second);
-        Assert.AreNotSame(first, second);
-    }
+    // Note: the per-node algorithm-instantiation contract differs between the two implementations —
+    // ParallelMerkleTreeHash creates a distinct instance per concurrent node, whereas MerkleTreeHash reuses a single
+    // instance across nodes (the one-shot hashing path resets state between nodes). Each contract is therefore pinned
+    // in its own implementation-specific test rather than here in the shared base.
 }
