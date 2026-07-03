@@ -113,4 +113,43 @@ public sealed partial class X25519Tests
             vector.ExceptionType,
             vector.ParamName);
     }
+
+    /// <summary>
+    /// The canonical RFC 7468 SubjectPublicKeyInfo PEM encoding of the RFC 7748 §6.1 Alice public key — the DER of
+    /// <see cref="ValidSubjectPublicKeyInfoVectors" /> Base64-wrapped under the <c>PUBLIC KEY</c> label.
+    /// </summary>
+    private const string Rfc7748SpkiPem =
+        "-----BEGIN PUBLIC KEY-----\n" +
+        "MCowBQYDK2VuAyEAhSDwCYkwp1R0i33ctD73Wg2/Og0mOBr066SpjqqbTmo=\n" +
+        "-----END PUBLIC KEY-----";
+
+    /// <summary>
+    /// Verifies that exporting the imported RFC 7748 §6.1 public key as SubjectPublicKeyInfo PEM produces the exact
+    /// canonical RFC 7468 text (correct label, 64-column Base64 body).
+    /// </summary>
+    [TestMethod]
+    public void ExportSubjectPublicKeyInfoPem_WhenImportedFromValidVector_ShouldProduceCanonicalPem()
+    {
+        using var x25519 = new X25519();
+        x25519.ImportSubjectPublicKeyInfo(
+            Convert.FromHexString("302a300506032b656e0321008520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a"),
+            out _);
+
+        Assert.AreEqual(Rfc7748SpkiPem, x25519.ExportSubjectPublicKeyInfoPem());
+    }
+
+    /// <summary>
+    /// Verifies that importing the canonical SubjectPublicKeyInfo PEM through the inherited <c>ImportFromPem</c> recovers
+    /// the raw public key, confirming the PEM round-trip layered over the DER key format.
+    /// </summary>
+    [TestMethod]
+    public void ImportFromPem_WhenGivenSubjectPublicKeyInfoPem_ShouldRecoverRawPublicKey()
+    {
+        using var x25519 = new X25519();
+        x25519.ImportFromPem(Rfc7748SpkiPem);
+
+        CollectionAssert.AreEqual(
+            Convert.FromHexString("8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a"),
+            x25519.ExportPublicKey());
+    }
 }

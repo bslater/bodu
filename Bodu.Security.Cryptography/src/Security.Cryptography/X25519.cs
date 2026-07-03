@@ -48,8 +48,10 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>Key formats.</strong> Only the raw RFC 7748 32-byte key encodings are supported via
 /// <see cref="ImportPrivateKey" />, <see cref="ImportPublicKey" />, <see cref="ExportPrivateKey" />, and
-/// <see cref="ExportPublicKey" />. The PKCS#8 / SubjectPublicKeyInfo / PEM / XML import and export members inherited
-/// from <see cref="AsymmetricAlgorithm" /> are not supported and throw <see cref="NotSupportedException" />.
+/// <see cref="ExportPublicKey" />, plus the RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER containers (OID 1.3.101.110) and
+/// the RFC 7468 PEM helpers inherited from <see cref="AsymmetricAlgorithm" /> (<c>ImportFromPem</c>,
+/// <c>ExportPkcs8PrivateKeyPem</c>, <c>ExportSubjectPublicKeyInfoPem</c>). The XML members and encrypted PKCS#8 are out
+/// of scope and throw <see cref="NotSupportedException" />.
 /// </para>
 /// <para>
 /// Scalar multiplication runs in constant time with respect to the private key. Private key material is zeroed when the

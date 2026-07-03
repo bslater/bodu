@@ -114,4 +114,43 @@ public sealed partial class Ed25519Tests
             vector.ExceptionType,
             vector.ParamName);
     }
+
+    /// <summary>
+    /// The canonical RFC 7468 PKCS#8 PEM encoding of the RFC 8410 §10.3 Ed25519 private key — the DER of
+    /// <see cref="ValidPkcs8Vectors" /> Base64-wrapped under the <c>PRIVATE KEY</c> label.
+    /// </summary>
+    private const string Rfc8410Pkcs8Pem =
+        "-----BEGIN PRIVATE KEY-----\n" +
+        "MC4CAQAwBQYDK2VwBCIEINTuctv5E1hK1bbY8fdp+K06/nwoy/HU++CXqI9EdVhC\n" +
+        "-----END PRIVATE KEY-----";
+
+    /// <summary>
+    /// Verifies that exporting the imported RFC 8410 §10.3 private key as PKCS#8 PEM produces the exact canonical
+    /// RFC 7468 text (correct label, 64-column Base64 body).
+    /// </summary>
+    [TestMethod]
+    public void ExportPkcs8PrivateKeyPem_WhenImportedFromValidVector_ShouldProduceCanonicalPem()
+    {
+        using var ed25519 = new Ed25519();
+        ed25519.ImportPkcs8PrivateKey(
+            Convert.FromHexString("302e020100300506032b657004220420d4ee72dbf913584ad5b6d8f1f769f8ad3afe7c28cbf1d4fbe097a88f44755842"),
+            out _);
+
+        Assert.AreEqual(Rfc8410Pkcs8Pem, ed25519.ExportPkcs8PrivateKeyPem());
+    }
+
+    /// <summary>
+    /// Verifies that importing the canonical PKCS#8 PEM through the inherited <c>ImportFromPem</c> recovers the raw
+    /// seed, confirming the PEM round-trip layered over the DER key format.
+    /// </summary>
+    [TestMethod]
+    public void ImportFromPem_WhenGivenPkcs8Pem_ShouldRecoverRawSeed()
+    {
+        using var ed25519 = new Ed25519();
+        ed25519.ImportFromPem(Rfc8410Pkcs8Pem);
+
+        CollectionAssert.AreEqual(
+            Convert.FromHexString("d4ee72dbf913584ad5b6d8f1f769f8ad3afe7c28cbf1d4fbe097a88f44755842"),
+            ed25519.ExportPrivateKey());
+    }
 }

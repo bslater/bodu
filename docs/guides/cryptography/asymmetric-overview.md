@@ -53,11 +53,29 @@ alg.GenerateKey();                 // now holds a private + public key
 
 For ML-KEM and ML-DSA the reported `KeySize` is **not** a bit length — it is the FIPS parameter-set designator (512 / 768 / 1024 for ML-KEM; 44 / 65 / 87 for ML-DSA), because module-lattice keys have no single meaningful bit-length.
 
-## Raw key encodings only
+## Key encodings
 
-These types expose **only** the raw byte encodings defined by their specifications — the fixed-width RFC 7748 / RFC 8032 keys for the curve algorithms, and the FIPS 203 / FIPS 204 byte strings (and seeds) for the lattice algorithms. The PKCS#8 / SubjectPublicKeyInfo (DER / PEM) members inherited from `AsymmetricAlgorithm` are **not** implemented and retain their base throwing behaviour. If you need to persist or interchange a key, store the raw bytes from the `Export*` method directly.
+Every type exposes the raw byte encodings defined by its specification — the fixed-width RFC 7748 / RFC 8032 keys for the curve algorithms, and the FIPS 203 / FIPS 204 byte strings (and seeds) for the lattice algorithms. Beyond that, support for the standard ASN.1 containers inherited from `AsymmetricAlgorithm` differs by family:
 
-The seed-bearing lattice types (`ImportPrivateSeed`) let you store the compact seed — 32 bytes for ML-DSA, 64 for ML-KEM — instead of the full multi-kilobyte private key, and regenerate the whole key pair on import. The curve algorithms re-derive the public key from the 32-byte private seed the same way.
+| Family | Raw bytes | PKCS#8 / SubjectPublicKeyInfo (DER) | PEM | Encrypted PKCS#8 |
+|---|---|---|---|---|
+| <xref:Bodu.Security.Cryptography.Ed25519> / <xref:Bodu.Security.Cryptography.X25519> | ✅ | ✅ (RFC 8410) | ✅ (RFC 7468) | ❌ throws |
+| <xref:Bodu.Security.Cryptography.MLDsa> / <xref:Bodu.Security.Cryptography.MLKem> | ✅ | ❌ throws | ❌ throws | ❌ throws |
+
+For the curve algorithms, `ImportPkcs8PrivateKey` / `ExportPkcs8PrivateKey` and `ImportSubjectPublicKeyInfo` / `ExportSubjectPublicKeyInfo` carry the RFC 8410 DER containers (OIDs `1.3.101.112` for Ed25519, `1.3.101.110` for X25519), and the **PEM** helpers inherited from the base (`ImportFromPem`, `ExportPkcs8PrivateKeyPem`, `ExportSubjectPublicKeyInfoPem`) work on top of them — so an Ed25519 or X25519 key round-trips through the `-----BEGIN PRIVATE KEY-----` / `-----BEGIN PUBLIC KEY-----` text that OpenSSL and `System.Security.Cryptography` interchange. Encrypted PKCS#8 is intentionally out of scope and throws.
+
+```csharp
+using var ed25519 = new Ed25519();
+ed25519.GenerateKey();
+
+string privatePem = ed25519.ExportPkcs8PrivateKeyPem();          // -----BEGIN PRIVATE KEY-----
+string publicPem  = ed25519.ExportSubjectPublicKeyInfoPem();     // -----BEGIN PUBLIC KEY-----
+
+using var imported = new Ed25519();
+imported.ImportFromPem(privatePem);                              // dispatches on the PEM label
+```
+
+The lattice types expose **only** their raw FIPS encodings; the ASN.1 container members retain their base throwing behaviour, so persist the raw bytes from the `Export*` method directly. The seed-bearing lattice types (`ImportPrivateSeed`) let you store the compact seed — 32 bytes for ML-DSA, 64 for ML-KEM — instead of the full multi-kilobyte private key, and regenerate the whole key pair on import. The curve algorithms re-derive the public key from the 32-byte private seed the same way.
 
 ## Which key half is present
 
