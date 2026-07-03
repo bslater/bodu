@@ -26,7 +26,9 @@ public static class FractionJsonExtensions
     /// </summary>
     /// <typeparam name="T">The backing integer type of the fraction.</typeparam>
     /// <param name="value">The rational value to serialize.</param>
-    /// <param name="policy">The serialization shape to apply. Defaults to <see cref="NumericsJsonPolicy.Strict" />.</param>
+    /// <param name="policy">
+    /// The serialization shape to apply. Defaults to <see cref="NumericsJsonPolicy.Strict" />.
+    /// </param>
     /// <returns>The JSON text representing <paramref name="value" />.</returns>
     [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("JSON serialization of Fraction<T> uses the reflection-based JsonSerializer. Use a source-generated JsonSerializerContext for trimming and AOT.")]
     [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("JSON serialization of Fraction<T> uses the reflection-based JsonSerializer. Use a source-generated JsonSerializerContext for trimming and AOT.")]
@@ -43,10 +45,14 @@ public static class FractionJsonExtensions
     /// </summary>
     /// <typeparam name="T">The backing integer type of the fraction.</typeparam>
     /// <param name="json">The JSON text to deserialize.</param>
-    /// <param name="policy">The serialization shape to expect. Defaults to <see cref="NumericsJsonPolicy.Strict" />.</param>
+    /// <param name="policy">
+    /// The serialization shape to expect. Defaults to <see cref="NumericsJsonPolicy.Strict" />.
+    /// </param>
     /// <returns>The rational value the JSON text represents.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="json" /> is <see langword="null" />.</exception>
-    /// <exception cref="JsonException"><paramref name="json" /> is not a valid fraction under <paramref name="policy" />.</exception>
+    /// <exception cref="JsonException">
+    /// <paramref name="json" /> is not a valid fraction under <paramref name="policy" />.
+    /// </exception>
     [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("JSON deserialization of Fraction<T> uses the reflection-based JsonSerializer. Use a source-generated JsonSerializerContext for trimming and AOT.")]
     [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("JSON deserialization of Fraction<T> uses the reflection-based JsonSerializer. Use a source-generated JsonSerializerContext for trimming and AOT.")]
     public static Fraction<T> FromJson<T>(string json, NumericsJsonPolicy policy = NumericsJsonPolicy.Strict)

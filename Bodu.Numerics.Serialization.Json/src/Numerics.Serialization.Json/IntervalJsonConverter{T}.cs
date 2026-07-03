@@ -29,8 +29,8 @@ namespace Bodu.Numerics.Serialization.Json;
 /// single-property object <c>{ "empty": true }</c>. A bounded side requires its endpoint value and inclusion flag; an
 /// unbounded side emits the marker <c>"lowerUnbounded": true</c> / <c>"upperUnbounded": true</c> in place of both (for
 /// example <c>{ "lower": 1, "upperUnbounded": true, "lowerInclusive": true }</c> for <c>[1, +&#x221E;)</c>, or
-/// <c>{ "lowerUnbounded": true, "upperUnbounded": true }</c> for the whole line). Duplicate properties are rejected, and
-/// an <c>"empty": true</c> marker rejects any sibling endpoint or unbounded property.
+/// <c>{ "lowerUnbounded": true, "upperUnbounded": true }</c> for the whole line). Duplicate properties are rejected,
+/// and an <c>"empty": true</c> marker rejects any sibling endpoint or unbounded property.
 /// </description>
 /// </item>
 /// <item>

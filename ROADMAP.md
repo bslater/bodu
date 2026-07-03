@@ -798,13 +798,21 @@ consumer ask. The dead `netstandard2.0` `ItemGroup` conditionals in a few
 
 ### AOT and trim readiness
 
-No project sets `IsAotCompatible` or `IsTrimmable` today. Target state:
+Target state:
 
 - **AOT-clean (achievable now):** `Bodu.Core`, `Bodu.Numerics`,
   `Bodu.IO.Hashing`, `Bodu.IO.Compound`, `Bodu.Text.Encoding`,
   `Bodu.Security.Cryptography`, and the three `Utf8*` text libraries
   (`Bodu.Text.Bencode` / `.Toml` / `.Yaml`) — the ref-struct readers are
-  reflection-free on the token path.
+  reflection-free on the token path. **`Bodu.Numerics` is now verified**
+  by a NativeAOT smoke app (`Bodu.Numerics/aot`, published + run in the
+  `numerics-aot-smoke` CI workflow): it surfaced that `Fraction<T>`'s
+  bounded-type probe used `MakeGenericMethod` (which throws under AOT
+  despite the IL3050 suppressions), so that path was replaced with a
+  reflection-free type matrix over the built-in bounded integer types.
+  The companion `Bodu.Numerics.Serialization.Json` uses the standard
+  reflection-based `JsonConverterFactory` pattern (annotated), so its
+  consumers pair it with a source-generated `JsonSerializerContext` for AOT.
 - **AOT-clean with work:** `Bodu.Text.Formats` and the `*Serializer`
   reflection paths (need the source-generator binding), `Bodu.Financial`
   and `Bodu.Formats.Excel.Binary` (audit the property-mapping paths).

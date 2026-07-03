@@ -1,0 +1,46 @@
+name: Bodu.Numerics NativeAOT smoke
+
+# Publishes the Bodu.Numerics AOT smoke app with NativeAOT and runs the native binary, so the
+# reflection-based bounded-type probe in Fraction<T> is proven to survive trimming and native
+# compilation rather than relying on the IL2026 / IL3050 suppressions alone.
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'Bodu.Numerics/**'
+      - 'Bodu.Core/**'
+      - '.github/workflows/numerics-aot-smoke.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'Bodu.Numerics/**'
+      - 'Bodu.Core/**'
+      - '.github/workflows/numerics-aot-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  aot-smoke:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Dotnet Setup
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+          8.x
+          10.x
+
+    - name: Install NativeAOT prerequisites
+      run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
+
+    - name: Publish AOT smoke app
+      run: dotnet publish Bodu.Numerics/aot/Bodu.Numerics.AotSmoke.csproj -c Release -r linux-x64 -p:PublishAot=true
+
+    - name: Run the native binary
+      run: ./Bodu.Numerics/aot/bin/Release/net8.0/linux-x64/publish/Bodu.Numerics.AotSmoke

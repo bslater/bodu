@@ -18,10 +18,11 @@ namespace Bodu.Numerics.Serialization.Json;
 /// <remarks>
 /// <para>
 /// An <see cref="IntervalSet{T}" /> serializes as a JSON <b>array</b> of its normalized <see cref="Interval{T}" />
-/// pieces, each written through <see cref="IntervalJsonConverter{T}" /> under the same <see cref="NumericsJsonPolicy" />.
-/// The empty set is the empty array <c>[]</c>; a two-piece set under <see cref="NumericsJsonPolicy.Compact" /> is, for
-/// example, <c>["[1, 3]", "(5, 8]"]</c>. On read the pieces are collected and re-normalized through
-/// <see cref="IntervalSet{T}.From(IEnumerable{Interval{T}})" />, so overlapping or adjacent input coalesces.
+/// pieces, each written through <see cref="IntervalJsonConverter{T}" /> under the same
+/// <see cref="NumericsJsonPolicy" />. The empty set is the empty array <c>[]</c>; a two-piece set under
+/// <see cref="NumericsJsonPolicy.Compact" /> is, for example, <c>["[1, 3]", "(5, 8]"]</c>. On read the pieces are
+/// collected and re-normalized through <see cref="IntervalSet{T}.From(IEnumerable{Interval{T}})" />, so overlapping or
+/// adjacent input coalesces.
 /// </para>
 /// </remarks>
 public sealed class IntervalSetJsonConverter<T>

@@ -115,6 +115,23 @@ public partial class FractionTests
     }
 
     /// <summary>
+    /// Verifies that the reflection-free bounded-type matrix reports the correct bounds across the full set of built-in
+    /// bounded backing types, not just <see cref="int" /> — guarding the AOT-safe <c>TryGetBounds</c> matrix against a
+    /// dropped entry.
+    /// </summary>
+    [TestMethod]
+    public void MinMaxValue_ForEveryBuiltInBoundedBackingType_ShouldReportBackingTypeBounds()
+    {
+        Assert.AreEqual(new Fraction<byte>(byte.MinValue), Fraction<byte>.MinValue);
+        Assert.AreEqual(new Fraction<byte>(byte.MaxValue), Fraction<byte>.MaxValue);
+        Assert.AreEqual(new Fraction<long>(long.MinValue), Fraction<long>.MinValue);
+        Assert.AreEqual(new Fraction<long>(long.MaxValue), Fraction<long>.MaxValue);
+        Assert.AreEqual(new Fraction<ulong>(ulong.MaxValue), Fraction<ulong>.MaxValue);
+        Assert.AreEqual(new Fraction<Int128>(Int128.MinValue), Fraction<Int128>.MinValue);
+        Assert.AreEqual(new Fraction<Int128>(Int128.MaxValue), Fraction<Int128>.MaxValue);
+    }
+
+    /// <summary>
     /// Verifies that MinValue throws NotSupportedException for an unbounded backing type.
     /// </summary>
     [TestMethod]

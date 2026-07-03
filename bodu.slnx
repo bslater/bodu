@@ -118,6 +118,9 @@
     <Project Path="Bodu.Formats.Excel.Binary/test/Bodu.Formats.Excel.Binary.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Numerics/">
+    <Project Path="Bodu.Numerics\aot\Bodu.Numerics.AotSmoke.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="Bodu.Numerics\src\Bodu.Numerics.csproj" />
     <Project Path="Bodu.Numerics\test\Bodu.Numerics.Test.csproj" />
   </Folder>

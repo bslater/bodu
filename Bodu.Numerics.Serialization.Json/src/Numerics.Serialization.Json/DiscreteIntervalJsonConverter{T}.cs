@@ -17,12 +17,12 @@ namespace Bodu.Numerics.Serialization.Json;
 /// <remarks>
 /// <para>
 /// A <see cref="DiscreteInterval{T}" /> is canonically a closed integer interval, so it serializes through the
-/// continuous <see cref="Interval{T}" /> converter over its <see cref="DiscreteInterval{T}.ToInterval" /> projection and
-/// is read back with <see cref="DiscreteInterval{T}.FromInterval(Interval{T})" />, which snaps any open bounds inward to
-/// the contained integers. The wire shape therefore matches <see cref="IntervalJsonConverter{T}" /> under the same
-/// <see cref="NumericsJsonPolicy" /> — the <see cref="NumericsJsonPolicy.Compact" /> form of <c>[1, 5]</c>, the object
-/// form for <see cref="NumericsJsonPolicy.Strict" /> / <see cref="NumericsJsonPolicy.Lenient" />, the unbounded markers,
-/// and the empty-set representation.
+/// continuous <see cref="Interval{T}" /> converter over its <see cref="DiscreteInterval{T}.ToInterval" /> projection
+/// and is read back with <see cref="DiscreteInterval{T}.FromInterval(Interval{T})" />, which snaps any open bounds
+/// inward to the contained integers. The wire shape therefore matches <see cref="IntervalJsonConverter{T}" /> under the
+/// same <see cref="NumericsJsonPolicy" /> — the <see cref="NumericsJsonPolicy.Compact" /> form of <c>[1, 5]</c>, the
+/// object form for <see cref="NumericsJsonPolicy.Strict" /> / <see cref="NumericsJsonPolicy.Lenient" />, the unbounded
+/// markers, and the empty-set representation.
 /// </para>
 /// </remarks>
 public sealed class DiscreteIntervalJsonConverter<T>

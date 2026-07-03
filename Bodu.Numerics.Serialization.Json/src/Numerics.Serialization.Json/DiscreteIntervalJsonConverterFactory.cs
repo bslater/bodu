@@ -11,13 +11,12 @@ using System.Text.Json.Serialization;
 namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
-/// Creates <see cref="DiscreteIntervalJsonConverter{T}" /> instances for closed <see cref="DiscreteInterval{T}" /> types,
-/// applying a configurable <see cref="NumericsJsonPolicy" /> to every closed converter the factory produces.
+/// Creates <see cref="DiscreteIntervalJsonConverter{T}" /> instances for closed <see cref="DiscreteInterval{T}" />
+/// types, applying a configurable <see cref="NumericsJsonPolicy" /> to every closed converter the factory produces.
 /// </summary>
 /// <remarks>
-/// Register this factory through
-/// <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" />; the core
-/// <see cref="DiscreteInterval{T}" /> type carries no <see cref="JsonConverterAttribute" /> so that
+/// Register this factory through <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" />; the
+/// core <see cref="DiscreteInterval{T}" /> type carries no <see cref="JsonConverterAttribute" /> so that
 /// <c>Bodu.Numerics</c> stays serialization-agnostic.
 /// </remarks>
 public sealed class DiscreteIntervalJsonConverterFactory
@@ -54,8 +53,8 @@ public sealed class DiscreteIntervalJsonConverterFactory
     /// </summary>
     /// <param name="typeToConvert">The candidate type.</param>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="typeToConvert" /> is a closed <see cref="DiscreteInterval{T}" /> type;
-    /// otherwise, <see langword="false" />.
+    /// <see langword="true" /> if <paramref name="typeToConvert" /> is a closed <see cref="DiscreteInterval{T}" />
+    /// type; otherwise, <see langword="false" />.
     /// </returns>
     public override bool CanConvert(Type typeToConvert) =>
         typeToConvert is { IsGenericType: true }

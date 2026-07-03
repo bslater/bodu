@@ -11,14 +11,13 @@ using System.Text.Json.Serialization;
 namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
-/// Creates <see cref="IntervalSetJsonConverter{T}" /> instances for closed <see cref="IntervalSet{T}" /> types, applying
-/// a configurable <see cref="NumericsJsonPolicy" /> to every closed converter the factory produces.
+/// Creates <see cref="IntervalSetJsonConverter{T}" /> instances for closed <see cref="IntervalSet{T}" /> types,
+/// applying a configurable <see cref="NumericsJsonPolicy" /> to every closed converter the factory produces.
 /// </summary>
 /// <remarks>
-/// Register this factory through
-/// <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" />; the core
-/// <see cref="IntervalSet{T}" /> type carries no <see cref="JsonConverterAttribute" /> so that <c>Bodu.Numerics</c> stays
-/// serialization-agnostic.
+/// Register this factory through <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" />; the
+/// core <see cref="IntervalSet{T}" /> type carries no <see cref="JsonConverterAttribute" /> so that
+/// <c>Bodu.Numerics</c> stays serialization-agnostic.
 /// </remarks>
 public sealed class IntervalSetJsonConverterFactory
     : JsonConverterFactory
@@ -36,8 +35,8 @@ public sealed class IntervalSetJsonConverterFactory
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IntervalSetJsonConverterFactory" /> class configured for the supplied
-    /// <paramref name="policy" />.
+    /// Initializes a new instance of the <see cref="IntervalSetJsonConverterFactory" /> class configured for the
+    /// supplied <paramref name="policy" />.
     /// </summary>
     /// <param name="policy">The policy applied to every closed converter the factory produces.</param>
     /// <exception cref="ArgumentOutOfRangeException">

@@ -18,8 +18,8 @@ namespace Bodu.Numerics.Serialization.Json;
 /// converters on a <see cref="System.Text.Json.JsonSerializerOptions" />.
 /// </para>
 /// <para>
-/// The core <c>Bodu.Numerics</c> types carry no <c>[JsonConverter]</c> attribute, so a policy takes effect only once the
-/// converters are registered. <see cref="Strict" /> is the default supplied by
+/// The core <c>Bodu.Numerics</c> types carry no <c>[JsonConverter]</c> attribute, so a policy takes effect only once
+/// the converters are registered. <see cref="Strict" /> is the default supplied by
 /// <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" />.
 /// </para>
 /// </remarks>
