@@ -3,9 +3,15 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-07-02. A large amount of net-new surface has landed
-since the previous revision, and this roadmap is rewritten to match. The
-headline additions: (1) a **Bodu.Core** structural expansion — the
+*Last updated: 2026-07-03. Since the previous revision the
+`Bodu.Security.Cryptography` interop wave has merged — RFC 7468 **PEM**
+key wrapping for Ed25519 / X25519 (closing the key-encoding story), the
+`Bodu.Security.Cryptography.DisableSimd` **AVX-512 opt-out** and capability
+contract, and the **`Hotp` / `Totp`** one-time-password codes — and the
+next engineering wave is set to **Numerics growth** (`Interval<T>`
+extensions, `BigDecimal`, running-statistics; see Active focus). The
+broader landed-surface summary from the prior rewrite still stands: (1) a
+**Bodu.Core** structural expansion — the
 `Collections.Generic.Graphs` / `Collections.Generic.Trees` pillars
 (`Graph<T>`, `GraphAlgorithms`, `DisjointSet`, `Tree<T>`, `Trie` /
 `Trie<TValue>`), a full `Threading` async-primitive suite (`AsyncLock`,
@@ -188,27 +194,45 @@ proposals can be closed quickly.
 
 The Bodu.Core hardening pass is closed and Core has since grown two new
 structural pillars (graphs/trees) and the threading async-primitive suite.
-The active focus is now:
+The `Bodu.Security.Cryptography` interop wave has also landed — RFC 7468
+**PEM** wrapping for Ed25519 / X25519 (closing the key-encoding story), the
+`Bodu.Security.Cryptography.DisableSimd` **AVX-512 opt-out** and capability
+contract, and the **HOTP / TOTP** one-time-password codes. The active focus
+is now:
 
-1. **Cut Wave 1–2 packages** (Core, Numerics, IO.Hashing, Text.Encoding,
+1. **The Numerics growth wave *(next engineering wave)*.** Round out
+   `Bodu.Numerics` toward a stronger 1.0 in three sequenced steps, smallest
+   first (details in the `Bodu.Numerics` section):
+   - **`Interval<T>` extensions** — unbounded / half-bounded endpoints,
+     `Difference` / `SymmetricDifference` returning disjoint-interval sets,
+     and `|` / `&` operators for guaranteed-contiguous operands. Extends the
+     already-shipped type; the 1.0 surface ships only the contiguous-result
+     subset.
+   - **`BigDecimal`** — an arbitrary-precision decimal (`BigInteger`
+     mantissa + scale) with the `INumber<BigDecimal>` generic-math surface,
+     parse/format, and a JSON converter following the existing
+     `Fraction<T>` / `Interval<T>` converter pattern. No BCL equivalent —
+     the highest-leverage gap-filler.
+   - **Running-statistics aggregates** — online mean / variance (Welford),
+     min / max / count, and a streaming quantile (P²), as struct
+     accumulators. (`Complex<T>` is a later follow-on, not part of this
+     wave.)
+2. **Advertise history windows uniformly across FX providers.**
+   `HistoryAvailability` is wired only for OANDA today; the other six
+   providers should declare their earliest resolvable date so the caching
+   / aggregation layer can reason about coverage. This is the concrete
+   first step toward promoting the nine Preview exchange-rate packages
+   (six providers + three caching backends) to Stable.
+3. **Cut Wave 1–2 packages** (Core, Numerics, IO.Hashing, Text.Encoding,
    Security.Cryptography, then the self-contained text/format libraries)
    to exercise package-validation on brand-new package IDs before the
    coordinated Calendar/Financial waves.
-2. **Consolidate the two text-format tiers.** The repository now has two
+4. **Consolidate the two text-format tiers.** The repository has two
    parallel shapes: the modern `Utf8*` ref-struct quartet
    (Bencode/Toml/Yaml) and the older `*Reader`/`*Writer`/`*Document`
    trio (Delimited/DotEnv/INI). Decide and document whether the older
    trio is retrofitted onto the quartet or the two tiers are an explicit
    API-design choice (see *Architectural patterns*).
-3. **Close the remaining crypto key-encoding gap.** DER (PKCS#8 /
-   SubjectPublicKeyInfo, incl. encrypted PKCS#8) already ships across the
-   asymmetric family; **PEM text wrapping is the one remaining format**
-   (`ImportFromPem` / `ExportPem`). Finalise it, then land the AVX-512
-   capability-detection contract.
-4. **Advertise history windows uniformly across FX providers.**
-   `HistoryAvailability` is wired only for OANDA today; the other six
-   providers should declare their earliest resolvable date so the caching
-   / aggregation layer can reason about coverage.
 
 ## Per-project roadmap
 
@@ -425,16 +449,28 @@ UTF-8, and parse/format surfaces) and `Interval<T>` (open/closed-endpoint
 intervals over `INumber<T>`), each with JSON converters. Money/currency/FX
 live in the companion `Bodu.Financial`.
 
-- **Extend `Interval<T>`** — unbounded / half-bounded intervals,
-  `Difference` / `SymmetricDifference` returning disjoint-interval sets,
-  and algebraic `|` / `&` operators for guaranteed-contiguous operands.
-  The 1.0 surface ships only the contiguous-result subset.
-- **Grow the generic-math value-type catalogue.** The project is
-  positioned as a home for `INumber<T>`-style building blocks; the
-  strongest gap-fillers are a **`BigDecimal`** (arbitrary-precision
-  decimal — no BCL equivalent), a **generic `Complex<T>`** (the BCL
-  `Complex` is `double`-only), and small **running-statistics** aggregates
-  (mean/variance/quantile). See *New library candidates*.
+This is the **active next engineering wave** (see *Active focus*), taken in
+three sequenced steps, smallest first:
+
+1. **Extend `Interval<T>`** — unbounded / half-bounded intervals (the
+   current type is always bounded), `Difference` / `SymmetricDifference`
+   returning disjoint-interval sets, and algebraic `|` (union) / `&`
+   (intersection) operators for guaranteed-contiguous operands. Extends the
+   already-shipped type; the 1.0 surface ships only the contiguous-result
+   subset.
+2. **Add `BigDecimal`** — an arbitrary-precision decimal (a `BigInteger`
+   mantissa plus an `int` scale) with the full `INumber<BigDecimal>` /
+   `INumberBase<BigDecimal>` generic-math surface, span/UTF-8 parse and
+   format, and a JSON converter reusing the `Fraction<T>` / `Interval<T>`
+   converter pattern in `Bodu.Numerics/src/Numerics.Serialization/`. No BCL
+   equivalent exists — the highest-leverage gap-filler.
+3. **Add running-statistics aggregates** — online mean / variance (Welford),
+   min / max / count, and a streaming quantile (P²), shaped as `struct`
+   accumulators that compose with the `INumber<T>`-constrained code.
+
+A generic **`Complex<T>`** (the BCL `Complex` is `double`-only) is the
+natural follow-on after this wave, not part of it. See also *New library
+candidates*.
 
 ### `Bodu.Financial`
 
@@ -683,10 +719,11 @@ patterns (see *Architectural patterns*). Listed roughly by leverage.
   `Either<TLeft,TRight>` and the railway-oriented combinators into a
   dedicated package rather than bloating Core. This is the single
   most-reached-for independently-built .NET surface.
-- **Numeric value types in `Bodu.Numerics`** — `BigDecimal`
-  (arbitrary-precision decimal, no BCL equivalent), generic `Complex<T>`,
-  and running-statistics aggregates. These extend the existing generic-math
-  project rather than needing a new one.
+- **Numeric value types in `Bodu.Numerics`** — `BigDecimal`,
+  running-statistics aggregates, and (later) a generic `Complex<T>`. These
+  extend the existing generic-math project rather than needing a new one;
+  `BigDecimal` and running-statistics are now the **active Numerics wave**
+  (see *Active focus*), with `Complex<T>` the follow-on.
 - ~~**One-time-password codes (TOTP/HOTP)**~~ — **shipped.** `Hotp` /
   `Totp` landed inside `Bodu.Security.Cryptography` (flat namespace, no new
   package or dependency), not the `Bodu.Security.Otp` sibling that was
