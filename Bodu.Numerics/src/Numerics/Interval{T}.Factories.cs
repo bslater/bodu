@@ -197,4 +197,67 @@ public readonly partial struct Interval<T>
     /// </example>
     public static Interval<T> Singleton(T value) =>
         new(value, value, lowerInclusive: true, upperInclusive: true);
+
+    /// <summary>
+    /// Gets the unbounded interval <c>(-&#x221E;, +&#x221E;)</c> — the interval that contains every value of
+    /// <typeparamref name="T" />.
+    /// </summary>
+    /// <value>An interval with both sides unbounded; <see cref="IsBounded" /> is <see langword="false" /> and
+    /// <see cref="Contains(T)" /> is <see langword="true" /> for every value.</value>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var all = Interval<double>.All;
+    /// all.Contains(double.MinValue);   // True
+    /// all.ToString();                  // "(-∞, +∞)"
+    ///]]>
+    /// </code>
+    /// </example>
+    public static Interval<T> All =>
+        new(T.Zero, T.Zero, (byte)(LowerUnboundedFlag | UpperUnboundedFlag));
+
+    /// <summary>
+    /// Creates the lower-bounded interval <c>[lower, +&#x221E;)</c> — every value greater than or equal to
+    /// <paramref name="lower" />.
+    /// </summary>
+    /// <param name="lower">The inclusive lower endpoint.</param>
+    /// <returns>A closed-below, upper-unbounded interval.</returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// var nonNegative = Interval<double>.AtLeast(0.0);   // [0, +∞)
+    /// nonNegative.Contains(0.0);                         // True
+    /// nonNegative.ToString();                            // "[0, +∞)"
+    ///]]>
+    /// </code>
+    /// </example>
+    public static Interval<T> AtLeast(T lower) =>
+        new(lower, T.Zero, (byte)(LowerInclusiveFlag | UpperUnboundedFlag));
+
+    /// <summary>
+    /// Creates the lower-bounded interval <c>(lower, +&#x221E;)</c> — every value strictly greater than
+    /// <paramref name="lower" />.
+    /// </summary>
+    /// <param name="lower">The exclusive lower endpoint.</param>
+    /// <returns>An open-below, upper-unbounded interval.</returns>
+    public static Interval<T> GreaterThan(T lower) =>
+        new(lower, T.Zero, UpperUnboundedFlag);
+
+    /// <summary>
+    /// Creates the upper-bounded interval <c>(-&#x221E;, upper]</c> — every value less than or equal to
+    /// <paramref name="upper" />.
+    /// </summary>
+    /// <param name="upper">The inclusive upper endpoint.</param>
+    /// <returns>A lower-unbounded, closed-above interval.</returns>
+    public static Interval<T> AtMost(T upper) =>
+        new(T.Zero, upper, (byte)(LowerUnboundedFlag | UpperInclusiveFlag));
+
+    /// <summary>
+    /// Creates the upper-bounded interval <c>(-&#x221E;, upper)</c> — every value strictly less than
+    /// <paramref name="upper" />.
+    /// </summary>
+    /// <param name="upper">The exclusive upper endpoint.</param>
+    /// <returns>A lower-unbounded, open-above interval.</returns>
+    public static Interval<T> LessThan(T upper) =>
+        new(T.Zero, upper, LowerUnboundedFlag);
 }

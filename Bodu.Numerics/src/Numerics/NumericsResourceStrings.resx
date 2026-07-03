@@ -201,4 +201,13 @@
   <data name="Format_Invalid_FractionText" xml:space="preserve">
     <value>The input string '{0}' was not in a correct fraction format.</value>
   </data>
+  <data name="Op_Invalid_IntervalUnboundedLength" xml:space="preserve">
+    <value>The length of an unbounded interval is infinite and cannot be represented.</value>
+  </data>
+  <data name="Op_Invalid_IntervalNonContiguousUnion" xml:space="preserve">
+    <value>The union of two disjoint, non-adjacent intervals is not a single contiguous interval; use Difference or accumulate the pieces instead.</value>
+  </data>
+  <data name="Arg_Invalid_IntervalNaNEndpoint" xml:space="preserve">
+    <value>An interval endpoint must be a number; NaN is not a valid endpoint.</value>
+  </data>
 </root>

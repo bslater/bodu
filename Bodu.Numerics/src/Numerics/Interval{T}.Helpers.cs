@@ -101,4 +101,48 @@ public static class Interval
     public static Interval<T> Singleton<T>(T value)
         where T : INumber<T> =>
         Interval<T>.Singleton(value);
+
+    /// <summary>
+    /// Creates the lower-bounded interval <c>[lower, +&#x221E;)</c> with <typeparamref name="T" /> inferred from the
+    /// argument.
+    /// </summary>
+    /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
+    /// <param name="lower">The inclusive lower endpoint.</param>
+    /// <returns>A closed-below, upper-unbounded interval.</returns>
+    public static Interval<T> AtLeast<T>(T lower)
+        where T : INumber<T> =>
+        Interval<T>.AtLeast(lower);
+
+    /// <summary>
+    /// Creates the lower-bounded interval <c>(lower, +&#x221E;)</c> with <typeparamref name="T" /> inferred from the
+    /// argument.
+    /// </summary>
+    /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
+    /// <param name="lower">The exclusive lower endpoint.</param>
+    /// <returns>An open-below, upper-unbounded interval.</returns>
+    public static Interval<T> GreaterThan<T>(T lower)
+        where T : INumber<T> =>
+        Interval<T>.GreaterThan(lower);
+
+    /// <summary>
+    /// Creates the upper-bounded interval <c>(-&#x221E;, upper]</c> with <typeparamref name="T" /> inferred from the
+    /// argument.
+    /// </summary>
+    /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
+    /// <param name="upper">The inclusive upper endpoint.</param>
+    /// <returns>A lower-unbounded, closed-above interval.</returns>
+    public static Interval<T> AtMost<T>(T upper)
+        where T : INumber<T> =>
+        Interval<T>.AtMost(upper);
+
+    /// <summary>
+    /// Creates the upper-bounded interval <c>(-&#x221E;, upper)</c> with <typeparamref name="T" /> inferred from the
+    /// argument.
+    /// </summary>
+    /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
+    /// <param name="upper">The exclusive upper endpoint.</param>
+    /// <returns>A lower-unbounded, open-above interval.</returns>
+    public static Interval<T> LessThan<T>(T upper)
+        where T : INumber<T> =>
+        Interval<T>.LessThan(upper);
 }
