@@ -1,5 +1,7 @@
 # Bodu.Core
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 Foundational building blocks for the Bodu solution and for general .NET 8 use: specialized generic collections, pooled buffers, a broad extension-method surface, text-encoding utilities, the `WeekPattern` value type, and the `ThrowHelper` argument-validation catalogue that the rest of the solution validates against. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL interfaces (`IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `ISet<T>`, `IList<T>`) so the types drop into existing code.
 
 ## Installation

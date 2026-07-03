@@ -1,5 +1,7 @@
 # Bodu.Globalization.Calendar.Europe
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 Holiday and observance data for the EU / EEA territories, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack — national rules plus ISO 3166-2 subdivisions — that imports the shared Western, Orthodox, and Catholic Christian catalogues through the `europe-common` hub.
 
 ## Installation

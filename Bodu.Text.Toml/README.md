@@ -1,5 +1,7 @@
 # Bodu.Text.Toml
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 A TOML (v1.0.0 / v1.1.0) library for .NET 8. It maps plain CLR objects to and from TOML through a configurable converter model, over a low-level forward-only token reader and writer, with both a mutable and a read-only document object model.
 
 ## Installation

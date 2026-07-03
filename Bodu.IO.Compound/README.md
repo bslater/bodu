@@ -1,5 +1,7 @@
 # Bodu.IO.Compound
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 A small, dependency-free reader for the **OLE2 / Compound File Binary (CFB)** container
 format — the structured-storage envelope behind legacy Microsoft Office files such as
 `.xls`, `.doc`, `.ppt`, and `.msg`.

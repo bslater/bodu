@@ -1,5 +1,7 @@
 # Bodu.Financial
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 Financial primitives for .NET — runtime-tagged and strongly-typed money, the full ISO 4217 currency catalogue (with numeric codes and an active-currency enum), multi-currency aggregates, and a foreign-exchange provider stack with both runtime and typed rate forms.
 
 References **[Bodu.Numerics](https://www.nuget.org/packages/Bodu.Numerics)** for the exact-arithmetic escape hatch (`Money<T>.ToFraction()` / `FromFraction` / `MultiplyExact`) through `Fraction<BigInteger>`.

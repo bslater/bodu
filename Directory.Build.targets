@@ -49,6 +49,23 @@
   </Target>
 
   <!--
+    Package-validation gate. On by default (the BoduEnablePackageValidation default is set in
+    Directory.Build.props) for every shipping package; the gate is applied here — not in props —
+    because IsTestProject and BoduIsBenchmarkProject are set in the project body, which MSBuild
+    evaluates before this targets file but after Directory.Build.props, and the SDK's IsPackable
+    default is likewise not resolved at props time. EnablePackageValidation is inert without a
+    published baseline (PackageValidationBaselineVersion), so leaving it on ahead of the first
+    release is safe and costs nothing during an ordinary build; once a baseline is set it begins
+    catching accidental breaking changes at pack time. ApiCompatStrictMode makes that comparison
+    strict. A project opts out with <BoduEnablePackageValidation>false</BoduEnablePackageValidation>
+    or <IsPackable>false</IsPackable>.
+  -->
+  <PropertyGroup Condition="'$(BoduEnablePackageValidation)' == 'true' and '$(IsTestProject)' != 'true' and '$(BoduIsBenchmarkProject)' != 'true' and '$(IsPackable)' != 'false'">
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <ApiCompatStrictMode>true</ApiCompatStrictMode>
+  </PropertyGroup>
+
+  <!--
     Define BODU_EXTENSION_MEMBERS when the building SDK is .NET 10 or later, which ships the C# 14
     compiler that supports extension members. Combined with LangVersion=latest (bld/Bodu.props), this
     lets sources express convenience members as C# 14 extension properties; older SDKs fall back to

@@ -1,5 +1,7 @@
 # Bodu.Text.Encoding
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 Binary-to-text encodings for .NET 8 — Base16, Base32, Base45, Base58, Base62, Base64, Base85, and Bech32 — with a uniform static API, variant selection, encode-time formatting options, and decode-time leniency styles. Every encoding exposes span, string, UTF-8, and `IBufferWriter<>` surfaces with `Try*` and length-calculation overloads for allocation-free use.
 
 ## Installation

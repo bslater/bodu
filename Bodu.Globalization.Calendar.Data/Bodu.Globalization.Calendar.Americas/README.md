@@ -1,5 +1,7 @@
 # Bodu.Globalization.Calendar.Americas
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 Holiday and observance data for the Americas, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack — national rules plus ISO 3166-2 subdivisions — that imports the shared faith and civil catalogues through the `americas-common` hub.
 
 ## Installation

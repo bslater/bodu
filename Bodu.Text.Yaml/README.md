@@ -1,5 +1,7 @@
 # Bodu.Text.Yaml
 
+> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+
 A YAML library for .NET 8. It maps plain CLR objects to and from YAML through a configurable converter model, over a token reader and writer, with both a mutable and a read-only document object model. The public surface matches the sibling `Bodu.Text.Toml` and `Bodu.Text.Bencode` libraries, so the patterns transfer directly between them.
 
 ## Installation

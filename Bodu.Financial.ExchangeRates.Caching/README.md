@@ -1,5 +1,7 @@
 # Bodu.Financial.ExchangeRates.Caching
 
+> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+
 A caching and composition layer for `Bodu.Financial` exchange-rate providers.
 
 > For the full walkthrough — quickstart, stacking (tiered read-through), aggregation,

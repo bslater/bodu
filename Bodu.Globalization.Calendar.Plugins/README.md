@@ -1,5 +1,7 @@
 # Bodu.Globalization.Calendar.Plugins
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 Trust-gated loading of external `Bodu.Globalization.Calendar` algorithm plugins. Third-party assemblies can contribute custom `INotableDateAlgorithm` implementations, but only after passing an explicit trust policy — loading executes attacker-controlled code, so the gate is opt-in and fails closed.
 
 ## Installation

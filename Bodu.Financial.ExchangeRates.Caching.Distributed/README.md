@@ -1,5 +1,7 @@
 # Bodu.Financial.ExchangeRates.Caching.Distributed
 
+> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+
 A distributed (Redis-capable) cache for `Bodu.Financial` exchange-rate providers.
 
 > One `IExchangeRateCache` backend among several. For the composition model, the

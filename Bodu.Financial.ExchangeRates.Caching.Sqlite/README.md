@@ -1,5 +1,7 @@
 # Bodu.Financial.ExchangeRates.Caching.Sqlite
 
+> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+
 A SQLite-backed persistent cache for `Bodu.Financial` exchange-rate providers.
 
 > For the full composition walkthrough (quickstart, stacking, aggregation,

@@ -1,5 +1,7 @@
 # Bodu.Globalization.Calendar
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 A resource-driven notable-date (holiday / observance) engine for .NET 8. Calendars are described as declarative, importable documents — concepts, rules, calculation strategies, adjustment policies, and resolution policies — that the engine resolves into concrete occurrences for a territory and date range. The package ships the calculation strategies, astronomical algorithms, range-resolution machinery, and working-day extensions; the regional holiday data ships in the companion `Bodu.Globalization.Calendar.<Region>` data packages.
 
 ## Installation

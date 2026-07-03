@@ -1,5 +1,7 @@
 # Bodu.Globalization.Calendar.AsiaPacific
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 Holiday and observance data for the Asia-Pacific region, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack — national rules plus ISO 3166-2 subdivisions — that imports the shared faith and civil catalogues (including the lunar, Hindu, Buddhist, and Islamic calendars).
 
 ## Installation
