@@ -24,8 +24,9 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// That independence is also where the sharpest pitfall lives. To protect against keystream reuse, the transform tracks
-/// counter wrap-around: if the counter increments back to its initial value, the next call to <see cref="Transform" />
-/// throws <see cref="CryptographicException" />. Reusing a <c>(key, nonce)</c> pair across messages is catastrophic —
+/// counter wrap-around: once the block-width counter rolls over its full 2^n value space back to zero, the next call to
+/// <see cref="Transform" /> throws <see cref="CryptographicException" />. Reusing a <c>(key, nonce)</c> pair across
+/// messages is catastrophic —
 /// the XOR of two ciphertexts recovers the XOR of the two plaintexts — so callers must ensure each counter value is
 /// used at most once per key.
 /// </para>
@@ -69,13 +70,10 @@ public sealed class CtrModeTransform
     /// <summary>The underlying block cipher whose encrypt primitive generates the keystream.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>The starting counter block, retained to detect wrap-around back to the initial value.</summary>
-    private readonly byte[] _initialCounter;
-
     /// <summary>The current counter block, incremented after each keystream block is produced.</summary>
     private readonly byte[] _counter;
 
-    /// <summary>Indicates whether the counter has wrapped around to its initial value.</summary>
+    /// <summary>Indicates whether the block-width counter has rolled over its full 2^n value space back to zero.</summary>
     private bool _counterWrapped;
 
     /// <summary>Indicates whether this instance has been disposed.</summary>
@@ -100,7 +98,6 @@ public sealed class CtrModeTransform
         CryptographyThrowHelper.ThrowIfIvLengthInvalid(initialCounter, cipher.BlockSize);
 
         _cipher = cipher;
-        _initialCounter = (byte[])initialCounter.Clone();
         _counter = (byte[])initialCounter.Clone();
     }
 
@@ -143,7 +140,6 @@ public sealed class CtrModeTransform
             return;
 
         CryptographyHelper.Clear(_counter);
-        CryptographyHelper.Clear(_initialCounter);
         _disposed = true;
         GC.SuppressFinalize(this);
     }
@@ -151,16 +147,24 @@ public sealed class CtrModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Increments the counter in big-endian (rightmost-byte-first) order, matching NIST SP 800-38A, then detects
-    /// wrap-around.
+    /// Increments the counter in big-endian (rightmost-byte-first) order, matching NIST SP 800-38A, and latches the
+    /// wrap flag when the increment carries out past the most significant byte (a full 2^n rollover to zero).
     /// </summary>
+    /// <remarks>
+    /// The counter spans the entire cipher block, so a carry propagating off the top byte means all 2^n counter
+    /// values have been consumed and the counter has returned to zero. Latching on that carry-out is O(1) and
+    /// detects the true keystream-reuse boundary; it fires at or before any return to the (possibly non-zero)
+    /// initial value, so it never permits reuse.
+    /// </remarks>
     private void IncrementCounter()
     {
-        for (int i = _counter.Length - 1; i >= 0; i--)
-            if (++_counter[i] != 0) break;
+        int i = _counter.Length - 1;
+        while (i >= 0 && ++_counter[i] == 0)
+            i--;
 
-        // Wrap detected: counter has returned to its initial value.
-        if (_counter.AsSpan().SequenceEqual(_initialCounter))
+        // Carry propagated past the most significant byte: the counter has consumed all 2^n block values and rolled
+        // over to zero. Latch to prevent keystream reuse.
+        if (i < 0)
             _counterWrapped = true;
     }
 }

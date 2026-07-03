@@ -11,12 +11,11 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class CtrModeTransformTests
 {
     /// <summary>
-    /// Verifies that <see cref="CtrModeTransform.Dispose" /> zeroes both the running counter and
-    /// the retained initial-counter copy so that key-equivalent counter state does not linger in
-    /// memory after disposal.
+    /// Verifies that <see cref="CtrModeTransform.Dispose" /> zeroes the running counter so that key-equivalent
+    /// counter state does not linger in memory after disposal.
     /// </summary>
     [TestMethod]
-    public void Dispose_WhenCalled_ShouldZeroCounterAndInitialCounter()
+    public void Dispose_WhenCalled_ShouldZeroCounter()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         byte[] initialCounter = new byte[ExpectedBlockSize];
@@ -33,16 +32,11 @@ public sealed partial class CtrModeTransformTests
 
         FieldInfo counterField = typeof(CtrModeTransform).GetField(
             "_counter", BindingFlags.Instance | BindingFlags.NonPublic)!;
-        FieldInfo initialField = typeof(CtrModeTransform).GetField(
-            "_initialCounter", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
         byte[] counter = (byte[])counterField.GetValue(transform)!;
-        byte[] initial = (byte[])initialField.GetValue(transform)!;
 
         CollectionAssert.AreEqual(new byte[ExpectedBlockSize], counter,
             "CtrModeTransform.Dispose must zero the running counter.");
-        CollectionAssert.AreEqual(new byte[ExpectedBlockSize], initial,
-            "CtrModeTransform.Dispose must zero the retained initial counter.");
     }
 
     /// <summary>
