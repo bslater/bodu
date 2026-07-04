@@ -144,8 +144,12 @@ internal static class CalendarSystems
     /// <param name="alias">The Hebrew month alias whose position shifts in leap years.</param>
     /// <param name="isLeapYear"><see langword="true" /> when the Hebrew year has thirteen months.</param>
     /// <returns>The one-based month number, or <c>-1</c> when the month does not exist that year.</returns>
-    public static int ResolveHebrewMonthAlias(string alias, bool isLeapYear) =>
-        alias switch
+    /// <exception cref="ArgumentNullException"><paramref name="alias" /> is <see langword="null" />.</exception>
+    public static int ResolveHebrewMonthAlias(string alias, bool isLeapYear)
+    {
+        ThrowHelper.ThrowIfNull(alias);
+
+        return alias switch
         {
             "AdarII" => isLeapYear ? 7 : -1,
             "LastAdar" => isLeapYear ? 7 : 6,
@@ -157,6 +161,7 @@ internal static class CalendarSystems
             "Elul" => isLeapYear ? 13 : 12,
             _ => -1,
         };
+    }
 
     /// <summary>
     /// Projects a non-Gregorian month and day by treating the Gregorian year as the calendar year, used when neither a
@@ -174,6 +179,15 @@ internal static class CalendarSystems
 
         try
         {
+            // Pre-check month and day so an out-of-range value returns "no such date" via a branch rather than by
+            // provoking and catching an ArgumentOutOfRangeException from ToDateTime. The catch is retained as a
+            // backstop for boundary cases these checks do not cover.
+            if (month > calendar.GetMonthsInYear(gregorianYear))
+                return null;
+
+            if (day > calendar.GetDaysInMonth(gregorianYear, month))
+                return null;
+
             return DateOnly.FromDateTime(calendar.ToDateTime(gregorianYear, month, day, 0, 0, 0, 0));
         }
         catch (ArgumentOutOfRangeException)
@@ -235,6 +249,12 @@ internal static class CalendarSystems
             {
                 monthNumber = month;
             }
+
+            // Pre-check the month against the year's month count so an out-of-range month skips via a branch rather
+            // than by provoking and catching an ArgumentOutOfRangeException from GetDaysInMonth. SafeGetMonthsInYear
+            // is itself guarded, and the GetDaysInMonth catch is retained as a backstop.
+            if (monthNumber > SafeGetMonthsInYear(calendar, calendarYear))
+                continue;
 
             int daysInMonth;
             try
@@ -303,6 +323,12 @@ internal static class CalendarSystems
     /// <returns>The number of months, or 12 when the year is unsupported.</returns>
     private static int SafeGetMonthsInYear(System.Globalization.Calendar calendar, int year)
     {
+        // Pre-check the year against the calendar's supported era so an out-of-range year returns the 12-month
+        // default via a branch rather than by provoking and catching an ArgumentOutOfRangeException. GetYear on the
+        // Min/Max supported dates is always valid; the catch is retained as a backstop.
+        if (year < calendar.GetYear(calendar.MinSupportedDateTime) || year > calendar.GetYear(calendar.MaxSupportedDateTime))
+            return 12;
+
         try
         {
             return calendar.GetMonthsInYear(year);
