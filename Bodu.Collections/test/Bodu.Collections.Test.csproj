@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+
+    <!-- Test data factories deliberately pass null where production type is non-nullable. -->
+    <NoWarn>$(NoWarn);CS8600;CS8601;CS8602;CS8604;CS8618;CS8625</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Static-import ExceptionAssert so unqualified AssertGuard(...) calls resolve. -->
+    <Using Include="Bodu.Test.Assertions.ExceptionAssert" Static="true" />
+    <!-- Shared test-double namespaces promoted to Bodu.Test. -->
+    <Using Include="Bodu.Test.Collections" />
+    <Using Include="Bodu.Test.Comparers" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\Bodu.Collections.csproj" />
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+    <Title>Bodu — Collections</Title>
+    <Description>Specialized generic collections for .NET 8: circular buffer, deque, evicting dictionary, sequenced dictionary, indexed and ordered sets, indexed priority queue, multi-value dictionary, multiset, range set and range dictionary, segmented buffer, concurrent circular buffer and concurrent hash set, graphs (adjacency-list graph, traversal and shortest-path algorithms, disjoint set), and trees (n-ary tree, tries). Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL collection interfaces.</Description>
+    <PackageTags>$(PackageTags);collections;circular-buffer;deque;evicting-dictionary;priority-queue;graph;trie;concurrent-collections</PackageTags>
+  </PropertyGroup>
+
+  <!--
+    InternalsVisibleTo grants:
+      - Bodu.Collections.Test : test project (OrderedSetStorage, EvictingDictionary internal coverage,
+                                ConcurrentHashSet internal ctor / ClampDefaultConcurrencyLevel, TrieCore, etc.).
+    Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
+  -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Collections.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+  </ItemGroup>
+
+</Project>
