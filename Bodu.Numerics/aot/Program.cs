@@ -47,6 +47,13 @@ Check(!Fraction<int>.TryCreate(int.MinValue, -1, out _), "Fraction<int>.TryCreat
 Check((new Fraction<int>(1, 3) + new Fraction<int>(1, 6)) == new Fraction<int>(1, 2), "Fraction<int> arithmetic");
 Check(Interval<int>.Closed(1, 5).Contains(3), "Interval<int>.Contains");
 
+// BigDecimal exercises its generic-math conversion factories (TryConvertFrom/To use TOther.Create*), which must
+// resolve without MakeGenericMethod under AOT. Exact arithmetic, precision-controlled division, and parsing too.
+Check(BigDecimal.Add(0.1m, 0.2m) == BigDecimal.FromDecimal(0.3m), "BigDecimal.Add exact");
+Check(BigDecimal.Divide(10m, 3m, 2, MidpointRounding.ToEven) == BigDecimal.FromDecimal(3.33m), "BigDecimal.Divide scaled");
+Check(CreateChecked<BigDecimal, int>(5) == BigDecimal.FromDecimal(5m), "BigDecimal.CreateChecked");
+Check(int.CreateTruncating(BigDecimal.Parse("3.5", System.Globalization.CultureInfo.InvariantCulture)) == 3, "BigDecimal int.CreateTruncating");
+
 if (failures == 0)
 {
     Console.WriteLine("Bodu.Numerics AOT smoke: all checks passed.");
@@ -55,3 +62,10 @@ if (failures == 0)
 
 Console.Error.WriteLine($"Bodu.Numerics AOT smoke: {failures} check(s) failed.");
 return 1;
+
+// Reaches the INumberBase<T>.CreateChecked static-abstract member through a generic constraint (it is an explicit
+// interface implementation, so it is not callable off the concrete type name).
+static T CreateChecked<T, TSource>(TSource value)
+    where T : INumberBase<T>
+    where TSource : INumberBase<TSource> =>
+    T.CreateChecked(value);

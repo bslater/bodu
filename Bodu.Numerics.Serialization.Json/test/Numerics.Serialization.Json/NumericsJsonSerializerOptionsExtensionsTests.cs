@@ -25,11 +25,12 @@ public class NumericsJsonSerializerOptionsExtensionsTests
 
         options.ConfigureForBoduNumerics();
 
-        Assert.HasCount(4, options.Converters);
+        Assert.HasCount(5, options.Converters);
         Assert.Contains(c => c is FractionJsonConverterFactory, options.Converters);
         Assert.Contains(c => c is IntervalJsonConverterFactory, options.Converters);
         Assert.Contains(c => c is DiscreteIntervalJsonConverterFactory, options.Converters);
         Assert.Contains(c => c is IntervalSetJsonConverterFactory, options.Converters);
+        Assert.Contains(c => c is BigDecimalJsonConverter, options.Converters);
     }
 
     /// <summary>

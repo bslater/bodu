@@ -4,7 +4,7 @@ title: Bodu.Numerics — Introduction
 
 # Bodu.Numerics
 
-**Bodu.Numerics** is the numeric-primitives package of the Bodu suite. It centers on two value types — `Fraction<T>` for exact rational arithmetic and `Interval<T>` for intervals over ordered numeric coordinates — both built on the generic-math interfaces (`INumber<T>`, `ISignedNumber<T>`) so they compose with anything that targets the .NET 7+ numeric abstractions. Around `Interval<T>` sit its set-algebra companions: the integer-domain `DiscreteInterval<T>`, the binary-result `IntervalPair<T>` / `DiscreteIntervalPair<T>`, and the N-ary `IntervalSet<T>`. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
+**Bodu.Numerics** is the numeric-primitives package of the Bodu suite. It centers on three value types — `Fraction<T>` for exact rational arithmetic, `Interval<T>` for intervals over ordered numeric coordinates, and `BigDecimal` for arbitrary-precision decimals beyond `System.Decimal`'s range — all built on the generic-math interfaces (`INumber<T>`, `ISignedNumber<T>`) so they compose with anything that targets the .NET 7+ numeric abstractions. Around `Interval<T>` sit its set-algebra companions: the integer-domain `DiscreteInterval<T>`, the binary-result `IntervalPair<T>` / `DiscreteIntervalPair<T>`, and the N-ary `IntervalSet<T>`. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
 
 `Bodu.Numerics` is the dependency that `Bodu.Financial` reaches for when an accounting workflow needs sub-minor-unit precision: `Money<TCurrency>.ToFraction()` round-trips through `Fraction<BigInteger>` for compound interest, percentage-of-percentage, and other chains where deferred rounding matters.
 
@@ -23,6 +23,7 @@ title: Bodu.Numerics — Introduction
 | <xref:Bodu.Numerics.DiscreteInterval> | Non-generic helper class mirroring the `DiscreteInterval<T>` factories with type inference. |
 | <xref:Bodu.Numerics.IntervalPair`1>, <xref:Bodu.Numerics.DiscreteIntervalPair`1> | Allocation-free results of a binary `Difference` / `SymmetricDifference` — zero, one, or two disjoint pieces, indexable and enumerable. |
 | <xref:Bodu.Numerics.IntervalSet`1> | Immutable normalized union of disjoint, non-adjacent intervals — the N-ary home for `Union` / `Intersect` / `Except` / `Complement` when a result can be a disconnected range. |
+| <xref:Bodu.Numerics.BigDecimal> | Immutable arbitrary-precision decimal — a `BigInteger` unscaled value paired with an `int` scale. Unbounded (no overflow), with exact add / subtract / multiply, precision-controlled division, value-based equality across scales, and the full `INumber<BigDecimal>` / `ISignedNumber<BigDecimal>` surface. |
 
 The core value types are serialization-agnostic — they carry no `[JsonConverter]` attribute. JSON support ships in the companion **`Bodu.Numerics.Serialization.Json`** package (below), which you register with `options.ConfigureForBoduNumerics()`.
 
@@ -35,6 +36,7 @@ The core value types are serialization-agnostic — they carry no `[JsonConverte
 | <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory> | Converters for `Fraction<T>` — `Strict` object shape `{ "numerator": …, "denominator": … }` or the compact `"numerator/denominator"` string. |
 | <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory> | Converters for `Interval<T>`, including the `lowerUnbounded` / `upperUnbounded` markers for infinite sides. |
 | <xref:Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter`1> | Converters for `DiscreteInterval<T>` (through the interval wire shape) and `IntervalSet<T>` (a JSON array of pieces), each with a matching factory. |
+| <xref:Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter> | Converter for `BigDecimal` — `Strict` object shape `{ "unscaledValue": …, "scale": … }` or the compact decimal string `"12.340"`. Non-generic, so it registers directly without a factory. |
 | <xref:Bodu.Numerics.Serialization.Json.FractionJsonExtensions> | `ToJson()` / `FromJson<T>(string)` convenience helpers over the registered converters. |
 
 ### Interface surface

@@ -159,4 +159,22 @@
   <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
     <value>Unable to create a JSON converter for '{0}'.</value>
   </data>
+  <data name="Json_Invalid_ExpectedObject_BigDecimal" xml:space="preserve">
+    <value>Expected a JSON object containing a BigDecimal.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedCompactString_BigDecimal" xml:space="preserve">
+    <value>Expected a JSON string in compact BigDecimal form (e.g. "12.34").</value>
+  </data>
+  <data name="Json_Invalid_CompactBigDecimalForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact BigDecimal form.</value>
+  </data>
+  <data name="Json_Invalid_MissingProperty" xml:space="preserve">
+    <value>The JSON object is missing the required '{0}' property.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateProperty" xml:space="preserve">
+    <value>The JSON object contains a duplicate '{0}' property.</value>
+  </data>
+  <data name="Json_Invalid_PropertyMustBeNumber" xml:space="preserve">
+    <value>The '{0}' property must be a number or a numeric string.</value>
+  </data>
 </root>

@@ -347,5 +347,59 @@ namespace Bodu.Numerics.Serialization.Json {
                 return ResourceManager.GetString("Op_Invalid_UnableToCreateConverter", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON object containing a BigDecimal..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedObject_BigDecimal {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedObject_BigDecimal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON string in compact BigDecimal form (e.g. "12.34")..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedCompactString_BigDecimal {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_BigDecimal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The JSON string '{0}' is not a valid compact BigDecimal form..
+        /// </summary>
+        internal static string Json_Invalid_CompactBigDecimalForm {
+            get {
+                return ResourceManager.GetString("Json_Invalid_CompactBigDecimalForm", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The JSON object is missing the required '{0}' property..
+        /// </summary>
+        internal static string Json_Invalid_MissingProperty {
+            get {
+                return ResourceManager.GetString("Json_Invalid_MissingProperty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The JSON object contains a duplicate '{0}' property..
+        /// </summary>
+        internal static string Json_Invalid_DuplicateProperty {
+            get {
+                return ResourceManager.GetString("Json_Invalid_DuplicateProperty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The '{0}' property must be a number or a numeric string..
+        /// </summary>
+        internal static string Json_Invalid_PropertyMustBeNumber {
+            get {
+                return ResourceManager.GetString("Json_Invalid_PropertyMustBeNumber", resourceCulture);
+            }
+        }
     }
 }

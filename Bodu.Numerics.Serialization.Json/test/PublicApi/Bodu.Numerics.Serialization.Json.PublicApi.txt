@@ -1,3 +1,8 @@
+class Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Bodu.Numerics.BigDecimal Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Numerics.BigDecimal, System.Text.Json.JsonSerializerOptions)
 class Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverterFactory
     constructor Void .ctor()
     constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)

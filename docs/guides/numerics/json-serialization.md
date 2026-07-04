@@ -4,7 +4,7 @@ title: JSON serialization
 
 # JSON serialization
 
-`Bodu.Numerics.Serialization.Json` is the companion package that round-trips the `Bodu.Numerics` value types through `System.Text.Json`. It covers <xref:Bodu.Numerics.Fraction`1>, <xref:Bodu.Numerics.Interval`1>, <xref:Bodu.Numerics.DiscreteInterval`1>, and <xref:Bodu.Numerics.IntervalSet`1>.
+`Bodu.Numerics.Serialization.Json` is the companion package that round-trips the `Bodu.Numerics` value types through `System.Text.Json`. It covers <xref:Bodu.Numerics.Fraction`1>, <xref:Bodu.Numerics.Interval`1>, <xref:Bodu.Numerics.DiscreteInterval`1>, <xref:Bodu.Numerics.IntervalSet`1>, and <xref:Bodu.Numerics.BigDecimal>.
 
 The core `Bodu.Numerics` library is deliberately **serialization-agnostic** — the value types carry no `[JsonConverter]` attribute and take no dependency on `System.Text.Json`. JSON support is opt-in through this package, so a consumer of just `Fraction<T>` pays nothing for the serializer. Install it alongside the core package:
 
@@ -48,6 +48,8 @@ var compact = new JsonSerializerOptions()
 | `Compact` | string `"3/4"` | ISO 31-11 bracket string `"[1, 5)"`, or `"∅"` for empty | Compact payloads where size matters. |
 
 `DiscreteInterval<T>` serializes through the `Interval<T>` shape over its canonical closed integer bounds (compact form `"[1, 5]"`), and `IntervalSet<T>` serializes as a JSON **array** of its `Interval<T>` pieces (empty set → `[]`). Both honour the selected policy.
+
+`BigDecimal` serializes as the canonical object `{ "unscaledValue": 12340, "scale": 3 }` under `Strict` (the unscaled value is a raw JSON number, so an arbitrary-magnitude mantissa round-trips exactly) and as the plain decimal string `"12.340"` under `Compact`. `Lenient` reads either shape. The string form is used for `Compact` — rather than a bare JSON number — because many consumers narrow long numbers to IEEE-754 `double`.
 
 Under `Strict` and `Lenient`, property names compare case-insensitively, duplicate properties are rejected, and unknown properties are ignored. `Lenient` writes the same shape as `Strict` — it only differs on *read*, where it is an *import* convenience; persist with `Strict` or `Compact`. Compact reads delegate to each type's `TryParse` path under the invariant culture, so payloads are stable regardless of the ambient culture.
 
@@ -107,7 +109,7 @@ The converters are reflection-free at the value level: `ConfigureForBoduNumerics
 
 ## How the converters resolve the generic parameter
 
-`Fraction<T>`, `Interval<T>`, `DiscreteInterval<T>`, and `IntervalSet<T>` are open generics, so the registered entries are *factories* that bind the concrete `T` per request and produce the matching closed converter. You never instantiate the closed converters directly — register the factory (via `ConfigureForBoduNumerics` or by adding it to `Converters`) and serialize as normal.
+`Fraction<T>`, `Interval<T>`, `DiscreteInterval<T>`, and `IntervalSet<T>` are open generics, so the registered entries are *factories* that bind the concrete `T` per request and produce the matching closed converter. You never instantiate the closed converters directly — register the factory (via `ConfigureForBoduNumerics` or by adding it to `Converters`) and serialize as normal. `BigDecimal` is non-generic, so it registers as a single <xref:Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter> rather than a factory.
 
 ## Custom backing types — `Fraction<BigInteger>` without precision loss
 
