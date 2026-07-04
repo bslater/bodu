@@ -87,21 +87,23 @@ Fraction<int>.Parse("75%");                   // 3/4
 
 ### JSON
 
-`Fraction<T>` is decorated with `[JsonConverter(typeof(FractionJsonConverterFactory))]`, so `System.Text.Json` round-trips without extra wiring. The default (`Strict`) wire shape is the canonical object form; opt into the compact `"3/4"` string with `AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`:
+JSON support ships in the companion **`Bodu.Numerics.Serialization.Json`** package — the core library is serialization-agnostic. Register the converters on a `JsonSerializerOptions` with `ConfigureForBoduNumerics`; the default (`Strict`) wire shape is the canonical object form, and `NumericsJsonPolicy.Compact` selects the `"3/4"` string:
 
 ```csharp
 using System.Text.Json;
 using Bodu.Numerics;
-using Bodu.Numerics.Serialization;
+using Bodu.Numerics.Serialization.Json;
 
-string json = JsonSerializer.Serialize(Fraction<int>.Create(3, 4));
+var options = new JsonSerializerOptions().ConfigureForBoduNumerics();
+
+string json = JsonSerializer.Serialize(new Fraction<int>(3, 4), options);
 // {"numerator":3,"denominator":4}
 
-Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json);
+Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json, options);
 
 // Compact policy — the single-string form.
-var compact = new JsonSerializerOptions().AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
-JsonSerializer.Serialize(Fraction<int>.Create(3, 4), compact);   // "3/4"
+var compact = new JsonSerializerOptions().ConfigureForBoduNumerics(NumericsJsonPolicy.Compact);
+JsonSerializer.Serialize(new Fraction<int>(3, 4), compact);   // "3/4"
 ```
 
 ### Bounded intervals (`Interval<T>`)
@@ -207,24 +209,25 @@ Interval<int>.TryParse("∅", CultureInfo.InvariantCulture, out var none);  // n
 
 #### JSON
 
-`Interval<T>` is wired to `System.Text.Json` via `[JsonConverter(typeof(IntervalJsonConverterFactory))]`, so values round-trip without explicit converter registration. The default policy is `Strict` and produces an explicit object shape; pass a different `NumericsJsonPolicy` to the factory when you want the bracket-notation string form on the wire.
+`Interval<T>` serializes through the companion `Bodu.Numerics.Serialization.Json` package. Register the converters with `ConfigureForBoduNumerics`; the default policy is `Strict` and produces an explicit object shape (with `lowerUnbounded` / `upperUnbounded` markers for infinite sides), while `NumericsJsonPolicy.Compact` selects the bracket-notation string form.
 
 ```csharp
 using System.Text.Json;
 using Bodu.Numerics;
-using Bodu.Numerics.Serialization;
+using Bodu.Numerics.Serialization.Json;
 
-// Default (Strict) — explicit object shape, all four fields required on read.
-string json = JsonSerializer.Serialize(Interval<int>.ClosedOpen(0, 100));
+// Default (Strict) — explicit object shape, both bounded sides required on read.
+JsonSerializerOptions options = new JsonSerializerOptions().ConfigureForBoduNumerics();
+string json = JsonSerializer.Serialize(Interval<int>.ClosedOpen(0, 100), options);
 // {"lower":0,"upper":100,"lowerInclusive":true,"upperInclusive":false}
 
-Interval<int> roundTrip = JsonSerializer.Deserialize<Interval<int>>(json);
+Interval<int> roundTrip = JsonSerializer.Deserialize<Interval<int>>(json, options);
 
 // Compact policy — string form using ISO 31-11 bracket notation.
-JsonSerializerOptions options = new JsonSerializerOptions()
-    .AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
+JsonSerializerOptions compactOptions = new JsonSerializerOptions()
+    .ConfigureForBoduNumerics(NumericsJsonPolicy.Compact);
 
-string compact = JsonSerializer.Serialize(Interval<int>.ClosedOpen(0, 100), options);
+string compact = JsonSerializer.Serialize(Interval<int>.ClosedOpen(0, 100), compactOptions);
 // "[0, 100)"
 ```
 

@@ -428,19 +428,22 @@ Helper convenience methods:
 
 ## JSON
 
-`Fraction<T>` carries
-`[JsonConverter(typeof(FractionJsonConverterFactory))]`, so
-`System.Text.Json` round-trips without registration. The attribute
-path defaults to the `Strict` policy, which emits the canonical
-**object** form:
+JSON support ships in the companion
+`Bodu.Numerics.Serialization.Json` package — the core library is
+serialization-agnostic. Register the converters with
+`ConfigureForBoduNumerics`; the default `Strict` policy emits the
+canonical **object** form:
 
 ```csharp
 using System.Text.Json;
+using Bodu.Numerics.Serialization.Json;
 
-string json = JsonSerializer.Serialize(Fraction<int>.Create(3, 4));
+var options = new JsonSerializerOptions().ConfigureForBoduNumerics();
+
+string json = JsonSerializer.Serialize(new Fraction<int>(3, 4), options);
 // {"numerator":3,"denominator":4}
 
-Fraction<int> r = JsonSerializer.Deserialize<Fraction<int>>(json);
+Fraction<int> r = JsonSerializer.Deserialize<Fraction<int>>(json, options);
 ```
 
 Each component is written as a *raw* JSON number, so a
@@ -448,24 +451,25 @@ Each component is written as a *raw* JSON number, so a
 precision through the writer's `Int64` / `decimal` primitives. On read,
 a component may be either a JSON number or a numeric string token.
 
-To switch to the compact single-string form `"3/4"`, register the
-converters with `AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`
-on a `JsonSerializerOptions`; the `Compact` read path delegates to
+To switch to the compact single-string form `"3/4"`, register with
+`ConfigureForBoduNumerics(NumericsJsonPolicy.Compact)`; the `Compact`
+read path delegates to
 `Fraction<T>.TryParse(text, CultureInfo.InvariantCulture, …)`. See
 [JSON serialization](json-serialization.md) for the full policy table
 and failure modes.
 
-Instance helpers `ToJson()` and `Fraction<T>.FromJson(string)`
-delegate to `JsonSerializer` under the default (`Strict`) policy.
-Equivalent XML helpers `ToXml()` / `FromXml(string)` wrap the
+Convenience helpers `FractionJsonExtensions.ToJson()` and
+`FractionJsonExtensions.FromJson<T>(string)` (in the companion package)
+wrap `JsonSerializer` under a chosen policy. The core type keeps the
+XML helpers `ToXml()` / `FromXml(string)`, which wrap the
 invariant-culture *general* text form in
 `<fraction>numerator/denominator</fraction>`.
 
 > [!NOTE]
-> `ToJson()` / `FromJson()` use the reflection-based `JsonSerializer`
-> and are annotated `RequiresUnreferencedCode` / `RequiresDynamicCode`.
-> For trimming or AOT, register the converters via
-> `AddNumericsJsonConverters` against a source-generated
+> The `ToJson()` / `FromJson()` helpers use the reflection-based
+> `JsonSerializer` and are annotated `RequiresUnreferencedCode` /
+> `RequiresDynamicCode`. For trimming or AOT, register the converters
+> via `ConfigureForBoduNumerics` against a source-generated
 > `JsonSerializerContext` instead.
 
 ## Equality, hashing, and `Equals(object?)`
@@ -501,8 +505,8 @@ same rational value compare equal. Equal fractions share a hash code.
 ## See also
 
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
-- [`FractionJsonConverter<T>` API reference](xref:Bodu.Numerics.Serialization.FractionJsonConverter`1)
-- [`FractionJsonConverterFactory`](xref:Bodu.Numerics.Serialization.FractionJsonConverterFactory)
+- [`FractionJsonConverter<T>` API reference](xref:Bodu.Numerics.Serialization.Json.FractionJsonConverter`1)
+- [`FractionJsonConverterFactory`](xref:Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory)
 - [`Interval<T>` guide](interval.md) — the other `Bodu.Numerics` value type.
 - [`Money<TCurrency>` guide](../financial/money.md) — uses `Fraction<BigInteger>` as the precision escape hatch via `ToFraction()` / `FromFraction()` / `MultiplyExact()`.
 - **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.

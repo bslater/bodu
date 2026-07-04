@@ -17,9 +17,14 @@ types covering common but missing gaps in the .NET BCL:
   independent open or closed endpoints on each side and full set
   algebra. Use it for guarded numeric ranges, validation predicates,
   bucketing, and reservation-style overlap checks.
+- **[`BigDecimal`](xref:Bodu.Numerics.BigDecimal)** — an immutable
+  arbitrary-precision decimal (`BigInteger` unscaled value plus an
+  `int` scale). Use it for exact decimal values that exceed
+  `System.Decimal`'s 28–29 digit precision or its exponent range, or
+  that must preserve trailing-zero scale.
 
-Both types are `readonly struct`, value-equatable, allocation-free in
-their common paths, and integrate with the generic-math interfaces
+All three types are `readonly struct`, value-equatable, allocation-free
+in their common paths, and integrate with the generic-math interfaces
 that ship in .NET 8+.
 
 > **Looking for `Money<TCurrency>`, currencies, or FX?** Those now
@@ -45,6 +50,11 @@ that ship in .NET 8+.
 <div class="bodu-card">
   <h3><a href="interval.md">Working with <code>Interval&lt;T&gt;</code></a></h3>
   <p>Endpoint inclusivity, the empty interval, membership and overlap, intersection and union, ISO 31-11 parsing and formatting.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="bigdecimal.md">Working with <code>BigDecimal</code></a></h3>
+  <p>Arbitrary-precision decimal arithmetic — the unscaled-value/scale model, exact add/subtract/multiply, division precision, rounding, and generic-math composition.</p>
 </div>
 
 <div class="bodu-card">
@@ -89,6 +99,7 @@ that ship in .NET 8+.
 - [Numerics & Financial topic overview](../../docs/topics/numerics-and-financial.md) — package boundaries and the decision table.
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1)
+- [`BigDecimal` API reference](xref:Bodu.Numerics.BigDecimal)
 - [`Interval` static factory helpers](xref:Bodu.Numerics.Interval)
 - [`Bodu.Financial` overview](../financial/index.md) — money,
   currency, FX.

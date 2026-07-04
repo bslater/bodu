@@ -7,9 +7,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
-using System.Reflection;
-using System.Text.Json.Serialization;
-using Bodu.Numerics.Serialization;
 
 namespace Bodu.Numerics;
 
@@ -57,7 +54,6 @@ namespace Bodu.Numerics;
 /// </code>
 /// </example>
 [DebuggerDisplay("{ToString(),nq}")]
-[JsonConverter(typeof(FractionJsonConverterFactory))]
 public readonly partial struct Fraction<T>
     where T : IBinaryInteger<T>
 {
@@ -450,71 +446,48 @@ public readonly partial struct Fraction<T>
     /// <param name="minValue">On return, the minimum value of <typeparamref name="T" />.</param>
     /// <param name="maxValue">On return, the maximum value of <typeparamref name="T" />.</param>
     /// <returns><see langword="true" /> if the backing type is bounded; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// Boundedness is resolved from a fixed matrix of the built-in bounded <see cref="IBinaryInteger{TSelf}" /> types
+    /// rather than by reflecting over <typeparamref name="T" />'s interfaces, so the probe is reflection-free and
+    /// NativeAOT-safe. An unbounded backing type such as <see cref="BigInteger" /> — or any custom integer type outside
+    /// this matrix — is reported as unbounded and therefore has no <see cref="MinValue" /> / <see cref="MaxValue" />.
+    /// </remarks>
     private static bool TryGetBounds(out T minValue, out T maxValue)
     {
-        // The IMinMaxValue<T> constraint cannot be placed on Fraction<T> without excluding unbounded backing types,
-        // so boundedness is detected by scanning T's implemented interfaces rather than by catching a constraint
-        // violation. The reflective MinValue/MaxValue read below runs only once T is known to implement the
-        // interface, so the constrained MakeGenericMethod call can no longer throw.
-        if (!ImplementsMinMaxValue())
-        {
-            minValue = default!;
-            maxValue = default!;
-            return false;
-        }
+        if (typeof(T) == typeof(byte)) return SetBounds(byte.MinValue, byte.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(sbyte)) return SetBounds(sbyte.MinValue, sbyte.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(short)) return SetBounds(short.MinValue, short.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(ushort)) return SetBounds(ushort.MinValue, ushort.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(char)) return SetBounds((int)char.MinValue, (int)char.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(int)) return SetBounds(int.MinValue, int.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(uint)) return SetBounds(uint.MinValue, uint.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(long)) return SetBounds(long.MinValue, long.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(ulong)) return SetBounds(ulong.MinValue, ulong.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(nint)) return SetBounds(nint.MinValue, nint.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(nuint)) return SetBounds(nuint.MinValue, nuint.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(Int128)) return SetBounds(Int128.MinValue, Int128.MaxValue, out minValue, out maxValue);
+        if (typeof(T) == typeof(UInt128)) return SetBounds(UInt128.MinValue, UInt128.MaxValue, out minValue, out maxValue);
 
-        minValue = InvokeExtreme(nameof(MinValueOf));
-        maxValue = InvokeExtreme(nameof(MaxValueOf));
-        return true;
-    }
-
-    /// <summary>
-    /// Determines whether <typeparamref name="T" /> implements <see cref="IMinMaxValue{TSelf}" /> and therefore exposes
-    /// a finite range.
-    /// </summary>
-    /// <returns><see langword="true" /> when <typeparamref name="T" /> is a bounded type.</returns>
-    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2090", Justification = "Feature-detects IMinMaxValue<T> on the backing type T; the interface list of the value types used to construct Fraction<T> is preserved.")]
-    private static bool ImplementsMinMaxValue()
-    {
-        foreach (Type contract in typeof(T).GetInterfaces())
-        {
-            if (contract.IsGenericType && contract.GetGenericTypeDefinition() == typeof(IMinMaxValue<>))
-                return true;
-        }
-
+        minValue = default!;
+        maxValue = default!;
         return false;
     }
 
     /// <summary>
-    /// Invokes the named generic extreme-value helper for the backing type <typeparamref name="T" />.
+    /// Converts the bounds of a built-in integer type to <typeparamref name="T" /> and reports that the type is
+    /// bounded.
     /// </summary>
-    /// <param name="methodName">The name of the bounded-type extreme-value helper to invoke.</param>
-    /// <returns>The extreme value of <typeparamref name="T" /> yielded by the helper.</returns>
-    /// <exception cref="ArgumentException">Thrown if <typeparamref name="T" /> is not a bounded type.</exception>
-    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "Invokes a private generic helper instantiated with the backing type T, which is already present in the constructed Fraction<T>.")]
-    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Aot", "IL3050", Justification = "MakeGenericMethod instantiates a private helper with the backing type T, already used as a generic argument elsewhere in the assembly, so no new code is generated at run time.")]
-    private static T InvokeExtreme(string methodName)
+    /// <typeparam name="TBounded">The built-in integer type whose bounds match <typeparamref name="T" />.</typeparam>
+    /// <param name="min">The minimum value of the matched built-in type.</param>
+    /// <param name="max">The maximum value of the matched built-in type.</param>
+    /// <param name="minValue">On return, <paramref name="min" /> converted to <typeparamref name="T" />.</param>
+    /// <param name="maxValue">On return, <paramref name="max" /> converted to <typeparamref name="T" />.</param>
+    /// <returns>Always <see langword="true" />.</returns>
+    private static bool SetBounds<TBounded>(TBounded min, TBounded max, out T minValue, out T maxValue)
+        where TBounded : INumberBase<TBounded>
     {
-        MethodInfo? definition = typeof(Fraction<T>).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
-        object? extreme = definition!.MakeGenericMethod(typeof(T)).Invoke(null, null);
-        return (T)extreme!;
+        minValue = T.CreateTruncating(min);
+        maxValue = T.CreateTruncating(max);
+        return true;
     }
-
-    /// <summary>
-    /// Returns the smallest value a bounded integer type can represent.
-    /// </summary>
-    /// <typeparam name="TBounded">A bounded integer type.</typeparam>
-    /// <returns>The minimum value of <typeparamref name="TBounded" />.</returns>
-    private static TBounded MinValueOf<TBounded>()
-        where TBounded : IMinMaxValue<TBounded> =>
-        TBounded.MinValue;
-
-    /// <summary>
-    /// Returns the largest value a bounded integer type can represent.
-    /// </summary>
-    /// <typeparam name="TBounded">A bounded integer type.</typeparam>
-    /// <returns>The maximum value of <typeparamref name="TBounded" />.</returns>
-    private static TBounded MaxValueOf<TBounded>()
-        where TBounded : IMinMaxValue<TBounded> =>
-        TBounded.MaxValue;
 }

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NumericsJsonSerializerOptionsExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -6,17 +6,16 @@
 
 using System.Text.Json;
 
-namespace Bodu.Numerics.Serialization;
+namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
-/// Extension methods that register the <see cref="Bodu.Numerics" /> JSON converters on a
-/// <see cref="JsonSerializerOptions" />, picking a coherent shape for every shipped numeric type from a single
-/// <see cref="NumericsJsonPolicy" /> value.
+/// Extension methods that register the <c>Bodu.Numerics</c> JSON converters on a <see cref="JsonSerializerOptions" />,
+/// picking a coherent shape for every shipped numeric type from a single <see cref="NumericsJsonPolicy" /> value.
 /// </summary>
 public static class NumericsJsonSerializerOptionsExtensions
 {
     /// <summary>
-    /// Adds the <see cref="Fraction{T}" /> and <see cref="Interval{T}" /> JSON converters to
+    /// Registers the JSON converters for every serializable <c>Bodu.Numerics</c> value type on
     /// <paramref name="options" />, configured for the supplied <paramref name="policy" />.
     /// </summary>
     /// <param name="options">The serializer options to extend.</param>
@@ -35,9 +34,12 @@ public static class NumericsJsonSerializerOptionsExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Converters registered on <see cref="JsonSerializerOptions.Converters" /> take precedence over the
-    /// <c>[JsonConverter]</c> attribute that ships on the numeric types, so calling this method overrides the default
-    /// attribute-driven policy for the lifetime of <paramref name="options" />.
+    /// The core <c>Bodu.Numerics</c> types carry no <c>[JsonConverter]</c> attribute — the library is
+    /// serialization-agnostic — so this call is required for <see cref="Fraction{T}" />, <see cref="Interval{T}" />,
+    /// <see cref="DiscreteInterval{T}" />, <see cref="IntervalSet{T}" />, and <see cref="BigDecimal" /> to round-trip
+    /// through their canonical shapes. The <see cref="IntervalPair{T}" /> and <see cref="DiscreteIntervalPair{T}" />
+    /// result types are transient and are not serializable; convert them with <c>ToIntervalSet()</c> and serialize the
+    /// resulting <see cref="IntervalSet{T}" /> instead.
     /// </para>
     /// <para>
     /// Use <see cref="NumericsJsonPolicy.Strict" /> for canonical persistence shapes,
@@ -46,7 +48,7 @@ public static class NumericsJsonSerializerOptionsExtensions
     /// <c>"3/4"</c>, <c>"[1, 5)"</c>, <c>"∅"</c>).
     /// </para>
     /// </remarks>
-    public static JsonSerializerOptions AddNumericsJsonConverters(
+    public static JsonSerializerOptions ConfigureForBoduNumerics(
         this JsonSerializerOptions options,
         NumericsJsonPolicy policy = NumericsJsonPolicy.Strict)
     {
@@ -55,6 +57,9 @@ public static class NumericsJsonSerializerOptionsExtensions
 
         options.Converters.Add(new FractionJsonConverterFactory(policy));
         options.Converters.Add(new IntervalJsonConverterFactory(policy));
+        options.Converters.Add(new DiscreteIntervalJsonConverterFactory(policy));
+        options.Converters.Add(new IntervalSetJsonConverterFactory(policy));
+        options.Converters.Add(new BigDecimalJsonConverter(policy));
 
         return options;
     }

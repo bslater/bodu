@@ -155,23 +155,26 @@ Fraction<int> parsed = Fraction<int>.Parse("3/4"u8, null);
 
 ## Round-tripping JSON
 
-`Fraction<T>` carries `[JsonConverter(typeof(FractionJsonConverterFactory))]`, so `System.Text.Json.JsonSerializer` picks up the converter automatically. The attribute path defaults to the `Strict` policy, which emits the canonical *object* form:
+JSON support ships in the companion `Bodu.Numerics.Serialization.Json` package (the core library is serialization-agnostic). Register the converters with `ConfigureForBoduNumerics`; the default `Strict` policy emits the canonical *object* form:
 
 ```csharp
 using System.Text.Json;
+using Bodu.Numerics.Serialization.Json;
 
-string json = JsonSerializer.Serialize(Fraction<int>.Create(3, 4));
+var options = new JsonSerializerOptions().ConfigureForBoduNumerics();
+
+string json = JsonSerializer.Serialize(new Fraction<int>(3, 4), options);
 // {"numerator":3,"denominator":4}
 
-Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json);
+Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json, options);
 ```
 
-The compact single-string form documented above (`"3/4"`) is the wire shape of the `Compact` *policy*, opt-in via `AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`; its read path delegates to `Fraction<T>.TryParse(text, CultureInfo.InvariantCulture, …)`, and the percentage and mixed-number text forms feed back through that same parser. See [JSON serialization](json-serialization.md) for the policy table and failure modes, and the [Working with `Fraction<T>`](fraction.md) guide for the equivalent XML helpers `ToXml()` / `FromXml(string)`.
+The compact single-string form documented above (`"3/4"`) is the wire shape of the `Compact` *policy*, opt-in via `ConfigureForBoduNumerics(NumericsJsonPolicy.Compact)`; its read path delegates to `Fraction<T>.TryParse(text, CultureInfo.InvariantCulture, …)`, and the percentage and mixed-number text forms feed back through that same parser. See [JSON serialization](json-serialization.md) for the policy table and failure modes, and the [Working with `Fraction<T>`](fraction.md) guide for the equivalent XML helpers `ToXml()` / `FromXml(string)`.
 
 ## See also
 
 - [Working with `Fraction<T>`](fraction.md) — construction, arithmetic, continued fractions, approximation.
 - [Bodu.Numerics core concepts](../../docs/numerics/concepts.md) — canonical form, mixed-number, Unicode vulgar fraction.
 - <xref:Bodu.Numerics.Fraction`1> — API reference.
-- <xref:Bodu.Numerics.Serialization.FractionJsonConverter`1> — JSON converter reference.
+- <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverter`1> — JSON converter reference.
 - **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.

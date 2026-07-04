@@ -1,11 +1,15 @@
 # Bodu.Numerics
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability — Preview / Release Candidate.** The rational and interval algebra is functionally complete and suitable for trial use. `Fraction<T>` is a stable candidate; the interval-set and discrete-interval APIs may still receive source-breaking refinement before the 1.0 stable release. Breaking changes are otherwise reserved for a major-version bump per [SemVer](https://semver.org).
 
-Numeric value primitives for .NET. Ships two header types:
+Numeric value primitives for .NET. The public model is exact rational numbers plus an interval algebra:
 
 - **`Fraction<T>`** — an immutable, exact-rational value type generic over any `IBinaryInteger<T>` backing component.
-- **`Interval<T>`** — an immutable bounded interval generic over any `INumber<T>` endpoint type, with independent open/closed endpoints and set algebra.
+- **`Interval<T>`** — an immutable connected interval over any `INumber<T>` endpoint type, with independent open/closed (and unbounded) endpoints and set algebra.
+- **`DiscreteInterval<T>`** — a connected integer-domain interval over `IBinaryInteger<T>`, with successor/predecessor-aware emptiness and adjacency.
+- **`IntervalSet<T>`** — a normalized set of disconnected `Interval<T>` pieces, with N-ary union / intersection / difference / complement.
+- **`IntervalPair<T>`** / **`DiscreteIntervalPair<T>`** — allocation-conscious results of a binary difference / symmetric-difference (zero, one, or two disjoint pieces), each convertible to an `IntervalSet<T>`.
+- **`BigDecimal`** — an immutable arbitrary-precision decimal (a `BigInteger` unscaled value plus an `int` scale), for exact decimal values beyond `System.Decimal`'s precision or exponent range.
 
 > Money, currency, and foreign-exchange types ship in the companion **[Bodu.Financial](https://www.nuget.org/packages/Bodu.Financial)** package. Keeping them separate means a consumer of just `Fraction<T>` does not pull in the ~185-currency ISO 4217 catalogue and FX provider stack.
 
@@ -62,6 +66,38 @@ Highlights:
 - Set algebra: `Contains(T)`, `Contains(Interval<T>)`, `Overlaps`, `Intersect`, and `TryUnion` (which succeeds only when the result is a single contiguous interval).
 - `IsEmpty`, `IsDegenerate`, and `Length`. All empty intervals compare equal to `Empty`.
 - ISO 31-11 bracket-notation formatting and parsing (`IFormattable` / `ISpanFormattable` / `IUtf8SpanFormattable` / `IParsable` / `ISpanParsable`). Empty intervals render as the U+2205 EMPTY SET glyph.
+
+### When to use `Interval<T>` vs `DiscreteInterval<T>`
+
+Use **`Interval<T>`** when the endpoints are coordinates in an ordered numeric *continuum* — even when `T` is an integer coordinate type — so the values between the bounds matter. Use **`DiscreteInterval<T>`** (over `IBinaryInteger<T>`) when the interval represents the *set of integers* between its bounds. The distinction is observable:
+
+```csharp
+Interval<int>.Open(1, 2).IsEmpty;          // False — the real coordinates between 1 and 2
+DiscreteInterval<int>.Open(1, 2).IsEmpty;  // True  — no integer lies strictly between 1 and 2
+```
+
+`DiscreteInterval<T>` is integer-only; it is not a general discrete-domain abstraction over `DateOnly`, `char`, or enum ranges. Reach for `IntervalSet<T>` when a set operation can produce a disconnected result.
+
+## `BigDecimal`
+
+`BigDecimal` is an unbounded decimal: a `BigInteger` unscaled value paired with a non-negative `int` scale, so the value is `unscaledValue × 10^-scale`. It grows to whatever precision a value needs — there is no `MinValue`/`MaxValue` and arithmetic never overflows. Add, subtract, and multiply are exact; division computes to a default 50-digit working precision (half-to-even) unless you pass an explicit scale and rounding mode.
+
+```csharp
+using Bodu.Numerics;
+
+BigDecimal a = BigDecimal.Add(0.1m, 0.2m);     // 0.3 exactly
+BigDecimal b = BigDecimal.Divide(10m, 3m, scale: 2, MidpointRounding.ToEven); // 3.33
+BigDecimal big = BigDecimal.Parse("123456789012345678901234567890.123456789",
+    System.Globalization.CultureInfo.InvariantCulture);
+```
+
+Highlights:
+
+- Exact `Add` / `Subtract` / `Multiply` / `Negate` / `Abs` / `Pow`; `Divide` with a default precision or an explicit scale and `MidpointRounding`; `Remainder`.
+- Value-based equality and ordering (`1.0` equals `1.00`), scale-preserving formatting until you `Round` / `Floor` / `Ceiling` / `Truncate`.
+- Implicit lifts from `int`, `long`, `BigInteger`, and `decimal`; explicit conversions to/from `double` and to `BigInteger` / `decimal`.
+- Parsing of plain and scientific decimal text across `string`, `ReadOnlySpan<char>`, and UTF-8; `G` and `F` formatting through `IFormattable` / `ISpanFormattable` / `IUtf8SpanFormattable`.
+- The full generic-math surface — `INumber<BigDecimal>`, `ISignedNumber<BigDecimal>` (`Radix` 10) — so it composes with `INumber<T>`-constrained code.
 
 ## Documentation
 

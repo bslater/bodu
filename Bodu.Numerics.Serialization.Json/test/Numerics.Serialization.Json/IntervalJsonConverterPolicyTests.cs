@@ -7,7 +7,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Bodu.Numerics.Serialization;
+namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
 /// Verifies that <see cref="IntervalJsonConverter{T}" /> honours each <see cref="NumericsJsonPolicy" /> on both the
@@ -23,42 +23,42 @@ public class IntervalJsonConverterPolicyTests
     /// <param name="policy">The policy under test.</param>
     /// <returns>The configured options.</returns>
     private static JsonSerializerOptions Options(NumericsJsonPolicy policy) =>
-        new JsonSerializerOptions().AddNumericsJsonConverters(policy);
+        new JsonSerializerOptions().ConfigureForBoduNumerics(policy);
 
     /// <summary>
-    /// Verifies that the attribute-driven default serializer emits the canonical object form for a non-empty interval.
+    /// Verifies that the registered Strict converter emits the canonical object form for a non-empty interval.
     /// </summary>
     [TestMethod]
-    public void DefaultAttribute_WhenSerializing_ShouldEmitCanonicalObjectShape()
+    public void StrictPolicy_WhenSerializing_ShouldEmitCanonicalObjectShape()
     {
         var interval = Interval.ClosedOpen(1, 5);
 
-        string json = JsonSerializer.Serialize(interval);
+        string json = JsonSerializer.Serialize(interval, Options(NumericsJsonPolicy.Strict));
 
         Assert.AreEqual("{\"lower\":1,\"upper\":5,\"lowerInclusive\":true,\"upperInclusive\":false}", json);
     }
 
     /// <summary>
-    /// Verifies that the attribute-driven default serializer emits the single-property empty marker for
+    /// Verifies that the registered Strict converter emits the single-property empty marker for
     /// <see cref="Interval{T}.Empty" />.
     /// </summary>
     [TestMethod]
-    public void DefaultAttribute_WhenSerializingEmpty_ShouldEmitEmptyMarker()
+    public void StrictPolicy_WhenSerializingEmpty_ShouldEmitEmptyMarker()
     {
-        string json = JsonSerializer.Serialize(Interval<int>.Empty);
+        string json = JsonSerializer.Serialize(Interval<int>.Empty, Options(NumericsJsonPolicy.Strict));
 
         Assert.AreEqual("{\"empty\":true}", json);
     }
 
     /// <summary>
-    /// Verifies that the shipped <c>[JsonConverter]</c> attribute remains present so default (no-options)
-    /// serialization picks the strict shape with no consumer configuration.
+    /// Verifies that the core <see cref="Interval{T}" /> type carries no <c>[JsonConverter]</c> attribute — the library
+    /// is serialization-agnostic, so JSON support requires registering the converters from this package.
     /// </summary>
     [TestMethod]
-    public void Interval_WhenInspected_ShouldStillDeclareJsonConverterAttribute()
+    public void Interval_WhenInspected_ShouldNotDeclareJsonConverterAttribute()
     {
-        Assert.IsTrue(typeof(Interval<int>).IsDefined(typeof(JsonConverterAttribute), inherit: false));
-        Assert.IsTrue(typeof(Interval<decimal>).IsDefined(typeof(JsonConverterAttribute), inherit: false));
+        Assert.IsFalse(typeof(Interval<int>).IsDefined(typeof(JsonConverterAttribute), inherit: false));
+        Assert.IsFalse(typeof(Interval<decimal>).IsDefined(typeof(JsonConverterAttribute), inherit: false));
     }
 
     /// <summary>

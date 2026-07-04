@@ -130,6 +130,19 @@ public readonly struct IntervalPair<T>
     }
 
     /// <summary>
+    /// Returns an <see cref="IntervalSet{T}" /> containing the pieces of this result.
+    /// </summary>
+    /// <returns>The equivalent normalized set — empty, or the one or two disjoint pieces this pair holds.</returns>
+    /// <remarks>
+    /// <see cref="IntervalPair{T}" /> is the allocation-free result of a binary <see cref="Interval{T}.Difference" />
+    /// or <see cref="Interval{T}.SymmetricDifference" /> and holds at most two pieces; <see cref="IntervalSet{T}" /> is
+    /// the general disconnected-range model. Lift a transient pair into a set when the result must compose with further
+    /// N-ary set algebra or be persisted. Empty slots are dropped, so the result has <see cref="Count" /> pieces.
+    /// </remarks>
+    public IntervalSet<T> ToIntervalSet() =>
+        IntervalSet<T>.Of(_first, _second);
+
+    /// <summary>
     /// Returns an enumerator that iterates the non-empty pieces in ascending order.
     /// </summary>
     /// <returns>A struct enumerator over the pieces.</returns>

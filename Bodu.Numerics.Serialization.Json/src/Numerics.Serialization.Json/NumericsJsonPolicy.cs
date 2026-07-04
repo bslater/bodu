@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Numerics.Serialization;
+namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
 /// Selects the JSON serialization shape and parsing strictness applied by the <see cref="Bodu.Numerics" /> JSON
@@ -14,14 +14,13 @@ namespace Bodu.Numerics.Serialization;
 /// <para>
 /// The policy is supplied either by constructing a converter directly (e.g.
 /// <c>new FractionJsonConverter&lt;int&gt;(NumericsJsonPolicy.Compact)</c>) or, more commonly, through
-/// <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" /> which registers a coherent set of
+/// <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" /> which registers a coherent set of
 /// converters on a <see cref="System.Text.Json.JsonSerializerOptions" />.
 /// </para>
 /// <para>
-/// The shipped <c>[JsonConverter]</c> attributes on <see cref="Fraction{T}" /> and <see cref="Interval{T}" /> default
-/// to <see cref="Strict" />. Consumers who need a different shape register their own policy through
-/// <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" />; converters registered on
-/// <see cref="System.Text.Json.JsonSerializerOptions.Converters" /> take precedence over the type-level attribute.
+/// The core <c>Bodu.Numerics</c> types carry no <c>[JsonConverter]</c> attribute, so a policy takes effect only once
+/// the converters are registered. <see cref="Strict" /> is the default supplied by
+/// <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" />.
 /// </para>
 /// </remarks>
 public enum NumericsJsonPolicy

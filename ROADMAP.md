@@ -3,13 +3,17 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-07-03. Since the previous revision the
+*Last updated: 2026-07-04. Since the previous revision the
 `Bodu.Security.Cryptography` interop wave has merged — RFC 7468 **PEM**
 key wrapping for Ed25519 / X25519 (closing the key-encoding story), the
 `Bodu.Security.Cryptography.DisableSimd` **AVX-512 opt-out** and capability
 contract, and the **`Hotp` / `Totp`** one-time-password codes — and the
 next engineering wave is set to **Numerics growth** (`Interval<T>`
-extensions, `BigDecimal`, running-statistics; see Active focus). The
+extensions, `BigDecimal`, running-statistics; see Active focus). A
+release-discipline pass has since moved `Bodu.Numerics` from Stable back
+to **Preview** until its serialization, result-type, and documentation
+conventions catch up with the expanded interval model (see *API-stability
+tiers*). The
 broader landed-surface summary from the prior rewrite still stands: (1) a
 **Bodu.Core** structural expansion — the
 `Collections.Generic.Graphs` / `Collections.Generic.Trees` pillars
@@ -94,7 +98,8 @@ exercised on the smallest self-contained units first.
 | Package | Notes |
 | --- | --- |
 | `Bodu.Core` | The dependency root — buffers, collections (incl. the new graphs/trees pillars), threading primitives, sequences, `WeekPattern`, `ThrowHelper`, text-encoding utilities. |
-| `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and `Interval<T>` over `INumber<T>`, with JSON converters. |
+| `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and the interval algebra (`Interval<T>` / `DiscreteInterval<T>` / `IntervalSet<T>`) over `INumber<T>`. Serialization-agnostic — no `System.Text.Json` dependency. |
+| `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`ConfigureForBoduNumerics`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
 | `Bodu.IO.Hashing` | Non-cryptographic hashing + the full RevEng CRC catalogue + the check-digit family. |
 | `Bodu.Text.Encoding` | Base16/32/58/62/64/85 + Base45 + Bech32/Bech32m. |
 | `Bodu.Security.Cryptography` | Block/stream ciphers, AEAD, keyed/crypto hashes, the asymmetric family, KDFs, HPKE. |
@@ -793,13 +798,21 @@ consumer ask. The dead `netstandard2.0` `ItemGroup` conditionals in a few
 
 ### AOT and trim readiness
 
-No project sets `IsAotCompatible` or `IsTrimmable` today. Target state:
+Target state:
 
 - **AOT-clean (achievable now):** `Bodu.Core`, `Bodu.Numerics`,
   `Bodu.IO.Hashing`, `Bodu.IO.Compound`, `Bodu.Text.Encoding`,
   `Bodu.Security.Cryptography`, and the three `Utf8*` text libraries
   (`Bodu.Text.Bencode` / `.Toml` / `.Yaml`) — the ref-struct readers are
-  reflection-free on the token path.
+  reflection-free on the token path. **`Bodu.Numerics` is now verified**
+  by a NativeAOT smoke app (`Bodu.Numerics/aot`, published + run in the
+  `numerics-aot-smoke` CI workflow): it surfaced that `Fraction<T>`'s
+  bounded-type probe used `MakeGenericMethod` (which throws under AOT
+  despite the IL3050 suppressions), so that path was replaced with a
+  reflection-free type matrix over the built-in bounded integer types.
+  The companion `Bodu.Numerics.Serialization.Json` uses the standard
+  reflection-based `JsonConverterFactory` pattern (annotated), so its
+  consumers pair it with a source-generated `JsonSerializerContext` for AOT.
 - **AOT-clean with work:** `Bodu.Text.Formats` and the `*Serializer`
   reflection paths (need the source-generator binding), `Bodu.Financial`
   and `Bodu.Formats.Excel.Binary` (audit the property-mapping paths).
@@ -813,7 +826,7 @@ No project sets `IsAotCompatible` or `IsTrimmable` today. Target state:
 blockquote directly under its README title. The assignment:
 
 - **Stable** — the mature core of the solution: `Bodu.Core`,
-  `Bodu.Numerics`, `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
+  `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
   `Bodu.Text.Encoding`, `Bodu.Security.Cryptography`, the text-format and
   configuration libraries (`Bodu.Text.Bencode` / `.Toml` / `.Formats` /
   `.Configuration`, `Bodu.Extensions.Configuration.Text`),
@@ -821,7 +834,13 @@ blockquote directly under its README title. The assignment:
   whole `Bodu.Globalization.Calendar` family (core, Builder, DI, Plugins,
   and the five data packs), and the shared
   `Bodu.Financial.ExchangeRates.DependencyInjection` plumbing.
-- **Preview** — `Bodu.Text.Yaml` (the serializer is read-first and its
+- **Preview** — `Bodu.Numerics` (the interval algebra expanded quickly —
+  `DiscreteInterval<T>`, `IntervalSet<T>`, and the pair result types are
+  still settling their conventions, and the `BigDecimal` wave is incoming;
+  `Fraction<T>` is a stable candidate) and its companion
+  `Bodu.Numerics.Serialization.Json` (the JSON contract is new — the core
+  types are now serialization-agnostic and support is opt-in via
+  `ConfigureForBoduNumerics`), `Bodu.Text.Yaml` (the serializer is read-first and its
   write surface is still being rounded out) and the network-dependent
   exchange-rate family: the six web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda}`
   and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.

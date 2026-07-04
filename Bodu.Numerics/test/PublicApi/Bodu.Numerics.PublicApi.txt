@@ -1,0 +1,354 @@
+struct Bodu.Numerics.BigDecimal
+    constructor Void .ctor(System.Numerics.BigInteger)
+    constructor Void .ctor(System.Numerics.BigInteger, Int32)
+    field Int32 DefaultDivisionScale
+    method Bodu.Numerics.BigDecimal Abs(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Add(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Ceiling(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Divide(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Divide(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal, Int32, System.MidpointRounding)
+    method Bodu.Numerics.BigDecimal Floor(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal FromDecimal(System.Decimal)
+    method Bodu.Numerics.BigDecimal FromDouble(Double)
+    method Bodu.Numerics.BigDecimal Max(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Min(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Multiply(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Negate(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Parse(System.ReadOnlySpan`1[System.Byte], System.IFormatProvider)
+    method Bodu.Numerics.BigDecimal Parse(System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Bodu.Numerics.BigDecimal Parse(System.String)
+    method Bodu.Numerics.BigDecimal Parse(System.String, System.IFormatProvider)
+    method Bodu.Numerics.BigDecimal Pow(Bodu.Numerics.BigDecimal, Int32)
+    method Bodu.Numerics.BigDecimal Remainder(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Round(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Round(Bodu.Numerics.BigDecimal, Int32)
+    method Bodu.Numerics.BigDecimal Round(Bodu.Numerics.BigDecimal, Int32, System.MidpointRounding)
+    method Bodu.Numerics.BigDecimal Subtract(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal Truncate(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Addition(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Decrement(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Division(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Explicit(Double)
+    method Bodu.Numerics.BigDecimal op_Implicit(Int32)
+    method Bodu.Numerics.BigDecimal op_Implicit(Int64)
+    method Bodu.Numerics.BigDecimal op_Implicit(System.Decimal)
+    method Bodu.Numerics.BigDecimal op_Implicit(System.Numerics.BigInteger)
+    method Bodu.Numerics.BigDecimal op_Increment(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Modulus(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Multiply(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_Subtraction(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_UnaryNegation(Bodu.Numerics.BigDecimal)
+    method Bodu.Numerics.BigDecimal op_UnaryPlus(Bodu.Numerics.BigDecimal)
+    method Boolean Equals(Bodu.Numerics.BigDecimal)
+    method Boolean Equals(System.Object)
+    method Boolean TryFormat(System.Span`1[System.Byte], Int32 ByRef, System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Boolean TryFormat(System.Span`1[System.Char], Int32 ByRef, System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Boolean TryParse(System.ReadOnlySpan`1[System.Byte], System.IFormatProvider, Bodu.Numerics.BigDecimal ByRef)
+    method Boolean TryParse(System.ReadOnlySpan`1[System.Char], System.IFormatProvider, Bodu.Numerics.BigDecimal ByRef)
+    method Boolean TryParse(System.String, System.IFormatProvider, Bodu.Numerics.BigDecimal ByRef)
+    method Boolean op_Equality(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Boolean op_GreaterThan(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Boolean op_GreaterThanOrEqual(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Boolean op_Inequality(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Boolean op_LessThan(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Boolean op_LessThanOrEqual(Bodu.Numerics.BigDecimal, Bodu.Numerics.BigDecimal)
+    method Double ToDouble()
+    method Double op_Explicit(Bodu.Numerics.BigDecimal)
+    method Int32 CompareTo(Bodu.Numerics.BigDecimal)
+    method Int32 CompareTo(System.Object)
+    method Int32 GetHashCode()
+    method System.Decimal ToDecimal()
+    method System.Decimal op_Explicit(Bodu.Numerics.BigDecimal)
+    method System.Numerics.BigInteger ToBigInteger()
+    method System.Numerics.BigInteger op_Explicit(Bodu.Numerics.BigDecimal)
+    method System.String ToString()
+    method System.String ToString(System.String, System.IFormatProvider)
+    method Void Deconstruct(System.Numerics.BigInteger ByRef, Int32 ByRef)
+    property Bodu.Numerics.BigDecimal MinusOne
+    property Bodu.Numerics.BigDecimal One
+    property Bodu.Numerics.BigDecimal Ten
+    property Bodu.Numerics.BigDecimal Zero
+    property Boolean IsInteger
+    property Boolean IsNegative
+    property Boolean IsPositive
+    property Boolean IsZero
+    property Int32 Precision
+    property Int32 Scale
+    property Int32 Sign
+    property System.Numerics.BigInteger UnscaledValue
+class Bodu.Numerics.DiscreteInterval
+    method Bodu.Numerics.DiscreteInterval`1[T] AtLeast[T](T)
+    method Bodu.Numerics.DiscreteInterval`1[T] AtMost[T](T)
+    method Bodu.Numerics.DiscreteInterval`1[T] ClosedOpen[T](T, T)
+    method Bodu.Numerics.DiscreteInterval`1[T] Closed[T](T, T)
+    method Bodu.Numerics.DiscreteInterval`1[T] GreaterThan[T](T)
+    method Bodu.Numerics.DiscreteInterval`1[T] LessThan[T](T)
+    method Bodu.Numerics.DiscreteInterval`1[T] OpenClosed[T](T, T)
+    method Bodu.Numerics.DiscreteInterval`1[T] Open[T](T, T)
+    method Bodu.Numerics.DiscreteInterval`1[T] Singleton[T](T)
+struct Bodu.Numerics.DiscreteIntervalPair`1
+    method Bodu.Numerics.IntervalSet`1[T] ToIntervalSet()
+    method Enumerator GetEnumerator()
+    method System.String ToString()
+    nestedtype Bodu.Numerics.DiscreteIntervalPair`1+Enumerator[T]
+    property Bodu.Numerics.DiscreteIntervalPair`1[T] Empty
+    property Bodu.Numerics.DiscreteInterval`1[T] First
+    property Bodu.Numerics.DiscreteInterval`1[T] Item [Int32]
+    property Bodu.Numerics.DiscreteInterval`1[T] Second
+    property Boolean IsEmpty
+    property Int32 Count
+struct Bodu.Numerics.DiscreteIntervalPair`1+Enumerator
+    method Boolean MoveNext()
+    property Bodu.Numerics.DiscreteInterval`1[T] Current
+struct Bodu.Numerics.DiscreteInterval`1
+    method Bodu.Numerics.DiscreteIntervalPair`1[T] Difference(Bodu.Numerics.DiscreteInterval`1[T])
+    method Bodu.Numerics.DiscreteIntervalPair`1[T] SymmetricDifference(Bodu.Numerics.DiscreteInterval`1[T])
+    method Bodu.Numerics.DiscreteInterval`1[T] AtLeast(T)
+    method Bodu.Numerics.DiscreteInterval`1[T] AtMost(T)
+    method Bodu.Numerics.DiscreteInterval`1[T] Closed(T, T)
+    method Bodu.Numerics.DiscreteInterval`1[T] ClosedOpen(T, T)
+    method Bodu.Numerics.DiscreteInterval`1[T] FromInterval(Bodu.Numerics.Interval`1[T])
+    method Bodu.Numerics.DiscreteInterval`1[T] GreaterThan(T)
+    method Bodu.Numerics.DiscreteInterval`1[T] Intersect(Bodu.Numerics.DiscreteInterval`1[T])
+    method Bodu.Numerics.DiscreteInterval`1[T] LessThan(T)
+    method Bodu.Numerics.DiscreteInterval`1[T] Open(T, T)
+    method Bodu.Numerics.DiscreteInterval`1[T] OpenClosed(T, T)
+    method Bodu.Numerics.DiscreteInterval`1[T] Singleton(T)
+    method Bodu.Numerics.Interval`1[T] ToInterval()
+    method Boolean Contains(T)
+    method Boolean Equals(Bodu.Numerics.DiscreteInterval`1[T])
+    method Boolean Equals(System.Object)
+    method Boolean Overlaps(Bodu.Numerics.DiscreteInterval`1[T])
+    method Boolean TryUnion(Bodu.Numerics.DiscreteInterval`1[T], Bodu.Numerics.DiscreteInterval`1[T] ByRef)
+    method Boolean op_Equality(Bodu.Numerics.DiscreteInterval`1[T], Bodu.Numerics.DiscreteInterval`1[T])
+    method Boolean op_Inequality(Bodu.Numerics.DiscreteInterval`1[T], Bodu.Numerics.DiscreteInterval`1[T])
+    method Int32 GetHashCode()
+    method System.String ToString()
+    property Bodu.Numerics.DiscreteInterval`1[T] All
+    property Bodu.Numerics.DiscreteInterval`1[T] Empty
+    property Boolean IsBounded
+    property Boolean IsEmpty
+    property Boolean LowerUnbounded
+    property Boolean UpperUnbounded
+    property T Count
+    property T First
+    property T Last
+struct Bodu.Numerics.Fraction`1
+    constructor Void .ctor(T)
+    constructor Void .ctor(T, T)
+    method Bodu.Numerics.Fraction`1[TOther] As[TOther]()
+    method Bodu.Numerics.Fraction`1[T] Abs()
+    method Bodu.Numerics.Fraction`1[T] Add(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] Approximate(Double, T)
+    method Bodu.Numerics.Fraction`1[T] Approximate(System.Decimal, T)
+    method Bodu.Numerics.Fraction`1[T] Approximate(System.String, T, System.IFormatProvider)
+    method Bodu.Numerics.Fraction`1[T] Ceiling()
+    method Bodu.Numerics.Fraction`1[T] Clamp(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] Create(T, T)
+    method Bodu.Numerics.Fraction`1[T] Cubed()
+    method Bodu.Numerics.Fraction`1[T] Divide(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] Floor()
+    method Bodu.Numerics.Fraction`1[T] FromBigInteger(System.Numerics.BigInteger, System.Numerics.BigInteger)
+    method Bodu.Numerics.Fraction`1[T] FromContinuedFraction(T[])
+    method Bodu.Numerics.Fraction`1[T] FromDecimal(System.Decimal)
+    method Bodu.Numerics.Fraction`1[T] FromDouble(Double)
+    method Bodu.Numerics.Fraction`1[T] FromXml(System.String)
+    method Bodu.Numerics.Fraction`1[T] GetFractionalPart()
+    method Bodu.Numerics.Fraction`1[T] Invert()
+    method Bodu.Numerics.Fraction`1[T] LimitDenominator(T)
+    method Bodu.Numerics.Fraction`1[T] Max(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] Min(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] Multiply(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] Negate()
+    method Bodu.Numerics.Fraction`1[T] Parse(System.ReadOnlySpan`1[System.Byte], System.IFormatProvider)
+    method Bodu.Numerics.Fraction`1[T] Parse(System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Bodu.Numerics.Fraction`1[T] Parse(System.String)
+    method Bodu.Numerics.Fraction`1[T] Parse(System.String, System.IFormatProvider)
+    method Bodu.Numerics.Fraction`1[T] Pow(Int32)
+    method Bodu.Numerics.Fraction`1[T] Reciprocal()
+    method Bodu.Numerics.Fraction`1[T] Reduce()
+    method Bodu.Numerics.Fraction`1[T] Remainder(Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] Round()
+    method Bodu.Numerics.Fraction`1[T] Round(System.MidpointRounding)
+    method Bodu.Numerics.Fraction`1[T] Squared()
+    method Bodu.Numerics.Fraction`1[T] Subtract(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] Truncate()
+    method Bodu.Numerics.Fraction`1[T] op_Addition(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] op_Decrement(Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] op_Division(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] op_Explicit(Double)
+    method Bodu.Numerics.Fraction`1[T] op_Explicit(System.Decimal)
+    method Bodu.Numerics.Fraction`1[T] op_Implicit(T)
+    method Bodu.Numerics.Fraction`1[T] op_Increment(Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] op_Modulus(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] op_Multiply(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] op_Subtraction(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] op_UnaryNegation(Bodu.Numerics.Fraction`1[T])
+    method Bodu.Numerics.Fraction`1[T] op_UnaryPlus(Bodu.Numerics.Fraction`1[T])
+    method Boolean Equals(Bodu.Numerics.Fraction`1[T])
+    method Boolean Equals(System.Object)
+    method Boolean TryCreate(T, T, Bodu.Numerics.Fraction`1[T] ByRef)
+    method Boolean TryFormat(System.Span`1[System.Byte], Int32 ByRef, System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Boolean TryFormat(System.Span`1[System.Char], Int32 ByRef, System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Boolean TryFromBigInteger(System.Numerics.BigInteger, System.Numerics.BigInteger, Bodu.Numerics.Fraction`1[T] ByRef)
+    method Boolean TryFromDecimal(System.Decimal, Bodu.Numerics.Fraction`1[T] ByRef)
+    method Boolean TryFromDouble(Double, Bodu.Numerics.Fraction`1[T] ByRef)
+    method Boolean TryParse(System.ReadOnlySpan`1[System.Byte], System.IFormatProvider, Bodu.Numerics.Fraction`1[T] ByRef)
+    method Boolean TryParse(System.ReadOnlySpan`1[System.Char], System.IFormatProvider, Bodu.Numerics.Fraction`1[T] ByRef)
+    method Boolean TryParse(System.String, Bodu.Numerics.Fraction`1[T] ByRef)
+    method Boolean TryParse(System.String, System.IFormatProvider, Bodu.Numerics.Fraction`1[T] ByRef)
+    method Boolean TryToBigInteger(System.Numerics.BigInteger ByRef)
+    method Boolean TryToDecimal(System.Decimal ByRef)
+    method Boolean TryToDouble(Double ByRef)
+    method Boolean TryToInteger(T ByRef)
+    method Boolean TryToSingle(Single ByRef)
+    method Boolean op_Equality(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Boolean op_GreaterThan(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Boolean op_GreaterThanOrEqual(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Boolean op_Inequality(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Boolean op_LessThan(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Boolean op_LessThanOrEqual(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Double ToDouble()
+    method Double op_Explicit(Bodu.Numerics.Fraction`1[T])
+    method Int32 Compare(Bodu.Numerics.Fraction`1[T], Bodu.Numerics.Fraction`1[T])
+    method Int32 CompareTo(Bodu.Numerics.Fraction`1[T])
+    method Int32 CompareTo(System.Object)
+    method Int32 GetHashCode()
+    method Single ToSingle()
+    method Single op_Explicit(Bodu.Numerics.Fraction`1[T])
+    method System.Decimal ToDecimal()
+    method System.Decimal op_Explicit(Bodu.Numerics.Fraction`1[T])
+    method System.Numerics.BigInteger ToBigInteger()
+    method System.String ToMixedNumberString(System.IFormatProvider)
+    method System.String ToMixedString(System.IFormatProvider)
+    method System.String ToPercentString(System.IFormatProvider)
+    method System.String ToString()
+    method System.String ToString(System.String)
+    method System.String ToString(System.String, System.IFormatProvider)
+    method System.String ToUnicodeString(System.IFormatProvider)
+    method System.String ToXml()
+    method System.ValueTuple`2[T,Bodu.Numerics.Fraction`1[T]] ToMixedParts()
+    method T GetWholePart()
+    method T GreatestCommonDivisor(T, T)
+    method T LeastCommonMultiple(T, T)
+    method T ToInteger()
+    method T[] ToContinuedFraction()
+    method Void Deconstruct(T ByRef, T ByRef)
+    method Void Deconstruct(T ByRef, T ByRef, T ByRef)
+    property Bodu.Numerics.Fraction`1[T] MaxValue
+    property Bodu.Numerics.Fraction`1[T] MinValue
+    property Bodu.Numerics.Fraction`1[T] MinusOne
+    property Bodu.Numerics.Fraction`1[T] One
+    property Bodu.Numerics.Fraction`1[T] Zero
+    property Boolean IsCanonical
+    property Boolean IsEvenInteger
+    property Boolean IsImproper
+    property Boolean IsInteger
+    property Boolean IsNegative
+    property Boolean IsOddInteger
+    property Boolean IsPositive
+    property Boolean IsProper
+    property Boolean IsReducible
+    property Boolean IsUnit
+    property Boolean IsWhole
+    property Boolean IsZero
+    property Int32 Sign
+    property T Denominator
+    property T Numerator
+class Bodu.Numerics.Interval
+    method Bodu.Numerics.Interval`1[T] AtLeast[T](T)
+    method Bodu.Numerics.Interval`1[T] AtMost[T](T)
+    method Bodu.Numerics.Interval`1[T] ClosedOpen[T](T, T)
+    method Bodu.Numerics.Interval`1[T] Closed[T](T, T)
+    method Bodu.Numerics.Interval`1[T] GreaterThan[T](T)
+    method Bodu.Numerics.Interval`1[T] LessThan[T](T)
+    method Bodu.Numerics.Interval`1[T] OpenClosed[T](T, T)
+    method Bodu.Numerics.Interval`1[T] Open[T](T, T)
+    method Bodu.Numerics.Interval`1[T] Singleton[T](T)
+struct Bodu.Numerics.IntervalPair`1
+    method Bodu.Numerics.IntervalSet`1[T] ToIntervalSet()
+    method Enumerator GetEnumerator()
+    method System.String ToString()
+    nestedtype Bodu.Numerics.IntervalPair`1+Enumerator[T]
+    property Bodu.Numerics.IntervalPair`1[T] Empty
+    property Bodu.Numerics.Interval`1[T] First
+    property Bodu.Numerics.Interval`1[T] Item [Int32]
+    property Bodu.Numerics.Interval`1[T] Second
+    property Boolean IsEmpty
+    property Int32 Count
+struct Bodu.Numerics.IntervalPair`1+Enumerator
+    method Boolean MoveNext()
+    property Bodu.Numerics.Interval`1[T] Current
+struct Bodu.Numerics.IntervalSet`1
+    method Bodu.Numerics.IntervalSet`1[T] Complement()
+    method Bodu.Numerics.IntervalSet`1[T] Except(Bodu.Numerics.IntervalSet`1[T])
+    method Bodu.Numerics.IntervalSet`1[T] Except(Bodu.Numerics.Interval`1[T])
+    method Bodu.Numerics.IntervalSet`1[T] From(System.Collections.Generic.IEnumerable`1[Bodu.Numerics.Interval`1[T]])
+    method Bodu.Numerics.IntervalSet`1[T] Intersect(Bodu.Numerics.IntervalSet`1[T])
+    method Bodu.Numerics.IntervalSet`1[T] Intersect(Bodu.Numerics.Interval`1[T])
+    method Bodu.Numerics.IntervalSet`1[T] Of(Bodu.Numerics.Interval`1[T][])
+    method Bodu.Numerics.IntervalSet`1[T] Union(Bodu.Numerics.IntervalSet`1[T])
+    method Bodu.Numerics.IntervalSet`1[T] Union(Bodu.Numerics.Interval`1[T])
+    method Boolean Contains(T)
+    method Boolean Encloses(Bodu.Numerics.Interval`1[T])
+    method Boolean Equals(Bodu.Numerics.IntervalSet`1[T])
+    method Boolean Equals(System.Object)
+    method Boolean op_Equality(Bodu.Numerics.IntervalSet`1[T], Bodu.Numerics.IntervalSet`1[T])
+    method Boolean op_Inequality(Bodu.Numerics.IntervalSet`1[T], Bodu.Numerics.IntervalSet`1[T])
+    method Enumerator GetEnumerator()
+    method Int32 GetHashCode()
+    method System.String ToString()
+    nestedtype Bodu.Numerics.IntervalSet`1+Enumerator[T]
+    property Bodu.Numerics.IntervalSet`1[T] Empty
+    property Bodu.Numerics.Interval`1[T] Item [Int32]
+    property Boolean IsEmpty
+    property Int32 Count
+struct Bodu.Numerics.IntervalSet`1+Enumerator
+    method Boolean MoveNext()
+    property Bodu.Numerics.Interval`1[T] Current
+struct Bodu.Numerics.Interval`1
+    constructor Void .ctor(T, T, Boolean, Boolean)
+    method Bodu.Numerics.IntervalPair`1[T] Difference(Bodu.Numerics.Interval`1[T])
+    method Bodu.Numerics.IntervalPair`1[T] SymmetricDifference(Bodu.Numerics.Interval`1[T])
+    method Bodu.Numerics.Interval`1[T] AtLeast(T)
+    method Bodu.Numerics.Interval`1[T] AtMost(T)
+    method Bodu.Numerics.Interval`1[T] Closed(T, T)
+    method Bodu.Numerics.Interval`1[T] ClosedOpen(T, T)
+    method Bodu.Numerics.Interval`1[T] GreaterThan(T)
+    method Bodu.Numerics.Interval`1[T] Intersect(Bodu.Numerics.Interval`1[T])
+    method Bodu.Numerics.Interval`1[T] LessThan(T)
+    method Bodu.Numerics.Interval`1[T] Open(T, T)
+    method Bodu.Numerics.Interval`1[T] OpenClosed(T, T)
+    method Bodu.Numerics.Interval`1[T] Parse(System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Bodu.Numerics.Interval`1[T] Parse(System.String, System.IFormatProvider)
+    method Bodu.Numerics.Interval`1[T] Singleton(T)
+    method Bodu.Numerics.Interval`1[T] op_BitwiseAnd(Bodu.Numerics.Interval`1[T], Bodu.Numerics.Interval`1[T])
+    method Bodu.Numerics.Interval`1[T] op_BitwiseOr(Bodu.Numerics.Interval`1[T], Bodu.Numerics.Interval`1[T])
+    method Boolean Contains(Bodu.Numerics.Interval`1[T])
+    method Boolean Contains(T)
+    method Boolean Equals(Bodu.Numerics.Interval`1[T])
+    method Boolean Equals(System.Object)
+    method Boolean Overlaps(Bodu.Numerics.Interval`1[T])
+    method Boolean TryFormat(System.Span`1[System.Byte], Int32 ByRef, System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Boolean TryFormat(System.Span`1[System.Char], Int32 ByRef, System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Boolean TryParse(System.ReadOnlySpan`1[System.Char], System.IFormatProvider, Bodu.Numerics.Interval`1[T] ByRef)
+    method Boolean TryParse(System.String, System.IFormatProvider, Bodu.Numerics.Interval`1[T] ByRef)
+    method Boolean TryUnion(Bodu.Numerics.Interval`1[T], Bodu.Numerics.Interval`1[T] ByRef)
+    method Boolean op_Equality(Bodu.Numerics.Interval`1[T], Bodu.Numerics.Interval`1[T])
+    method Boolean op_Inequality(Bodu.Numerics.Interval`1[T], Bodu.Numerics.Interval`1[T])
+    method Int32 GetHashCode()
+    method System.String ToString()
+    method System.String ToString(System.String)
+    method System.String ToString(System.String, System.IFormatProvider)
+    property Bodu.Numerics.Interval`1[T] All
+    property Bodu.Numerics.Interval`1[T] Empty
+    property Boolean IsBounded
+    property Boolean IsDegenerate
+    property Boolean IsEmpty
+    property Boolean LowerInclusive
+    property Boolean LowerUnbounded
+    property Boolean UpperInclusive
+    property Boolean UpperUnbounded
+    property T Length
+    property T Lower
+    property T Upper

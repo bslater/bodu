@@ -64,4 +64,27 @@ public sealed class DiscreteIntervalPairTests
             _ = single[1];
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DiscreteIntervalPair{T}.ToIntervalSet" /> lifts a two-run result into the equivalent
+    /// continuous <see cref="IntervalSet{T}" /> covering the same integer runs.
+    /// </summary>
+    [TestMethod]
+    public void ToIntervalSet_WhenTwoRuns_ShouldYieldEquivalentSet()
+    {
+        DiscreteIntervalPair<int> pair = DiscreteInterval<int>.Closed(0, 10).Difference(DiscreteInterval<int>.Closed(3, 5));
+
+        IntervalSet<int> set = pair.ToIntervalSet();
+
+        Assert.AreEqual(IntervalSet<int>.Of(Interval<int>.Closed(0, 2), Interval<int>.Closed(6, 10)), set);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DiscreteIntervalPair{T}.ToIntervalSet" /> on the empty result yields the empty set.
+    /// </summary>
+    [TestMethod]
+    public void ToIntervalSet_WhenEmpty_ShouldYieldEmptySet()
+    {
+        Assert.IsTrue(DiscreteIntervalPair<int>.Empty.ToIntervalSet().IsEmpty);
+    }
 }

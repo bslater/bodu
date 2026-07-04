@@ -133,6 +133,19 @@ public readonly struct DiscreteIntervalPair<T>
     }
 
     /// <summary>
+    /// Returns an <see cref="IntervalSet{T}" /> covering the same integers as the pieces of this result.
+    /// </summary>
+    /// <returns>The equivalent normalized set — empty, or the one or two disjoint runs this pair holds.</returns>
+    /// <remarks>
+    /// There is deliberately no <c>DiscreteIntervalSet&lt;T&gt;</c>; a discrete result is lifted into the continuous
+    /// <see cref="IntervalSet{T}" /> through each run's <see cref="DiscreteInterval{T}.ToInterval" /> so it composes
+    /// with the single N-ary set model. The continuous pieces cover the same integers plus the coordinates between
+    /// them, so use this as a set of integer runs rather than for continuous membership tests. Empty slots are dropped.
+    /// </remarks>
+    public IntervalSet<T> ToIntervalSet() =>
+        IntervalSet<T>.Of(_first.ToInterval(), _second.ToInterval());
+
+    /// <summary>
     /// Returns an enumerator that iterates the non-empty pieces in ascending order.
     /// </summary>
     /// <returns>A struct enumerator over the pieces.</returns>

@@ -12,8 +12,9 @@
     <ProjectReference Include="..\src\Bodu.Numerics.csproj" />
   </ItemGroup>
 
+  <!-- Public-API snapshot baselines, copied next to the test host for the PublicApiSnapshot gate. -->
   <ItemGroup>
-    <Folder Include="Numerics.Serialization\" />
+    <None Include="PublicApi\**\*.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

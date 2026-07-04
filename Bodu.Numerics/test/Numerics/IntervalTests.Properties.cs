@@ -95,4 +95,17 @@ public partial class IntervalTests
 
         Assert.IsTrue(interval.IsEmpty);
     }
+
+    /// <summary>
+    /// Verifies the continuous-vs-discrete distinction: an open <see cref="Interval{T}" /> over consecutive integer
+    /// coordinates is <em>not</em> empty (it holds the real coordinates between them), whereas the discrete
+    /// <c>DiscreteInterval&lt;int&gt;.Open(1, 2)</c> is empty because no integer lies strictly between the bounds. This
+    /// doc-lock protects the key architectural decision behind the two interval types.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenBoundsAreConsecutiveIntegers_ShouldNotBeEmpty()
+    {
+        Assert.IsFalse(Interval<int>.Open(1, 2).IsEmpty);
+        Assert.IsTrue(DiscreteInterval<int>.Open(1, 2).IsEmpty);
+    }
 }
