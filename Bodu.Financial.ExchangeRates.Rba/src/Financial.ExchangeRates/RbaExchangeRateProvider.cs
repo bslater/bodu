@@ -357,9 +357,15 @@ public sealed class RbaExchangeRateProvider
         {
             // Only the failures a fetch is expected to produce — transport, stream, and malformed-feed errors
             // (ExchangeRateFormatException derives from FormatException) — are logged as era-load failures.
-            // Anything else indicates a bug and propagates untouched; cancellation (including HttpClient
-            // timeouts, which surface as TaskCanceledException) is likewise never logged as a failure.
             Log.EraLoadFailed(_logger, _options.DownloadFailedLogLevel, era.Label, ex);
+            throw;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // Anything else indicates a probable bug: log it under a distinct event id at Error so it stays
+            // visible in telemetry without being relabelled as an era failure, then rethrow. Cancellation
+            // (including HttpClient timeouts, which surface as TaskCanceledException) is never logged.
+            Log.EraLoadUnexpectedError(_logger, era.Label, ex);
             throw;
         }
 

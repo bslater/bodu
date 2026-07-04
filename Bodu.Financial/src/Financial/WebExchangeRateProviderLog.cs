@@ -68,4 +68,14 @@ internal static partial class WebExchangeRateProviderLog
     /// <param name="date">The date around which a window was fetched synchronously.</param>
     [LoggerMessage(EventId = 4404, Message = "Performed synchronous network fetch to resolve a rate for {date}")]
     public static partial void SynchronousNetworkFetch(ILogger logger, LogLevel level, DateOnly date);
+
+    /// <summary>
+    /// Logs that a pair download threw an exception type the fetch is not expected to produce, indicating a probable
+    /// bug rather than a transport or data failure.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="pair">A human-readable label for the pair whose download failed.</param>
+    /// <param name="exception">The unexpected exception.</param>
+    [LoggerMessage(EventId = 4406, Level = LogLevel.Error, Message = "Unexpected error downloading exchange-rate pair '{pair}'")]
+    public static partial void PairLoadUnexpectedError(ILogger logger, string pair, Exception exception);
 }

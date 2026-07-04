@@ -59,4 +59,14 @@ internal static partial class Log
     /// <param name="exception">The exception that caused the failure.</param>
     [LoggerMessage(EventId = 4303, Message = "Failed to download RBA era '{era}'")]
     public static partial void EraLoadFailed(ILogger logger, LogLevel level, string era, Exception exception);
+
+    /// <summary>
+    /// Logs that an era download threw an exception type the fetch is not expected to produce, indicating a probable
+    /// bug rather than a transport or data failure.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="era">The label of the era whose download failed.</param>
+    /// <param name="exception">The unexpected exception.</param>
+    [LoggerMessage(EventId = 4306, Level = LogLevel.Error, Message = "Unexpected error downloading RBA era '{era}'")]
+    public static partial void EraLoadUnexpectedError(ILogger logger, string era, Exception exception);
 }

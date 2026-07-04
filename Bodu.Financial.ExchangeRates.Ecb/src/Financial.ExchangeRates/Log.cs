@@ -68,4 +68,14 @@ internal static partial class Log
     /// <param name="date">The date whose covering feed was fetched synchronously.</param>
     [LoggerMessage(EventId = 4104, Message = "Performed synchronous ECB network fetch to resolve a rate for {date}")]
     public static partial void SynchronousNetworkFetch(ILogger logger, LogLevel level, DateOnly date);
+
+    /// <summary>
+    /// Logs that a feed download threw an exception type the fetch is not expected to produce, indicating a probable
+    /// bug rather than a transport or data failure.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="feed">The name of the feed whose download failed.</param>
+    /// <param name="exception">The unexpected exception.</param>
+    [LoggerMessage(EventId = 4106, Level = LogLevel.Error, Message = "Unexpected error downloading ECB feed '{feed}'")]
+    public static partial void FeedLoadUnexpectedError(ILogger logger, string feed, Exception exception);
 }

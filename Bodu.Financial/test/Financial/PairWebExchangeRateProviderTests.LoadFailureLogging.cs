@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Net.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial;
 
@@ -12,6 +13,9 @@ public partial class PairWebExchangeRateProviderTests
 {
     /// <summary>The event id of the <c>PairLoadFailed</c> diagnostic emitted when a pair download fails.</summary>
     private const int PairLoadFailedEventId = 4403;
+
+    /// <summary>The event id of the <c>PairLoadUnexpectedError</c> diagnostic emitted when a pair download throws an unexpected exception type.</summary>
+    private const int PairLoadUnexpectedErrorEventId = 4406;
 
     /// <summary>
     /// Creates a provider whose source throws the supplied exception, capturing its log output.
@@ -28,10 +32,11 @@ public partial class PairWebExchangeRateProviderTests
 
     /// <summary>
     /// Verifies that an unexpected exception type thrown by the source — indicating a provider bug rather than a
-    /// transport or data failure — propagates without being logged as a pair-load failure.
+    /// transport or data failure — is logged as a distinct unexpected error at <see cref="LogLevel.Error" /> and
+    /// rethrown, without being relabelled as an ordinary pair-load failure.
     /// </summary>
     [TestMethod]
-    public async Task LoadPairAsync_WhenSourceThrowsUnexpectedException_ShouldPropagateWithoutFailureLog()
+    public async Task LoadPairAsync_WhenSourceThrowsUnexpectedException_ShouldLogUnexpectedErrorAndRethrow()
     {
         (TestPairWebExchangeRateProvider provider, CapturingLogger logger) = CreateThrowing(new NullReferenceException());
 
@@ -43,6 +48,10 @@ public partial class PairWebExchangeRateProviderTests
         Assert.IsFalse(
             logger.Entries.Any(entry => entry.EventId.Id == PairLoadFailedEventId),
             "An unexpected exception type must not be relabelled as a pair-load failure.");
+        Assert.AreEqual(
+            1,
+            logger.Entries.Count(entry => entry.EventId.Id == PairLoadUnexpectedErrorEventId && entry.Level == LogLevel.Error),
+            "An unexpected exception type must be logged once as an unexpected error before rethrowing.");
     }
 
     /// <summary>
@@ -90,6 +99,6 @@ public partial class PairWebExchangeRateProviderTests
             await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
         });
 
-        Assert.IsFalse(logger.Entries.Any(entry => entry.EventId.Id == PairLoadFailedEventId));
+        Assert.IsFalse(logger.Entries.Any(entry => entry.EventId.Id is PairLoadFailedEventId or PairLoadUnexpectedErrorEventId));
     }
 }
