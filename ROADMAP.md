@@ -778,7 +778,29 @@ filter were added to *Non-goals* instead.
   is the highest-leverage reuse of the existing container: it inherits
   the full CFB read stack and only adds MAPI property-name decoding.
   Independently, `.msg` reading is served almost entirely by commercial
-  libraries or `MsgReader`; there is no first-party option.
+  libraries or `MsgReader`; there is no first-party option. The
+  namespace should flatten to **`Bodu.Formats.Outlook`** (the
+  `Bodu.Formats.Excel` convention) so the MAPI property surface —
+  property tags / types, named-property resolution, the recipient and
+  attachment tables, and the message / folder value types — is shared
+  with the `.pst` candidate below rather than owned by either package.
+- **`Bodu.Formats.Outlook.Pst`** (over a new low-level **`Bodu.IO.Pst`**
+  container) — a read-only `.pst` / `.ost` mailbox-archive reader:
+  folder hierarchy, message enumeration, recipients, and attachments
+  (including nested attached messages). Deliberately **not** built on
+  `Bodu.IO.Compound`: MS-PST is its own three-layer container — the NDB
+  block / B-tree layer (with the "compressible encryption" byte
+  permutation), the LTP heap-on-node / property-context / table-context
+  layer, and the messaging layer — with no CFB inside, so it adds a
+  third low-level container to the container + format-reader split
+  (`Bodu.IO.Compound` for CFB, the proposed `Bodu.IO.Packaging` for
+  OPC, `Bodu.IO.Pst` for NDB/LTP). What it *does* reuse is the
+  flattened `Bodu.Formats.Outlook` MAPI value model shared with the
+  `.msg` reader. Java: `java-libpst`; Python: `libpff` / `readpst`;
+  .NET: XstReader or commercial suites (Aspose.Email) — one of the
+  least-served document formats in the ecosystem. Initial scope:
+  Unicode-format PST (the post-2003 default), with the legacy ANSI
+  variant and OST deltas as demand-driven follow-ons.
 - **`Bodu.Formats.Excel.OpenXml`** — a read-only `.xlsx` value reader over
   an OPC/ZIP container, **sharing the flattened `Bodu.Formats.Excel`
   value model** (`ExcelCell` / `ExcelWorksheet` / `ExcelWorkbookProperties`).
