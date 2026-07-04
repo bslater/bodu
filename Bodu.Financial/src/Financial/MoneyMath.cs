@@ -91,6 +91,12 @@ internal static class MoneyMath
     /// </remarks>
     internal static decimal[] AllocateByRatios(decimal amount, int minorUnits, ReadOnlySpan<decimal> ratios)
     {
+        // Defense-in-depth: guard the invariants this kernel relies on (non-empty, non-negative, non-zero total)
+        // at the point of use rather than trusting every caller. Without this, an all-zero or sign-cancelling ratio
+        // set would surface as a DivideByZeroException instead of a clear domain error, and negatives would produce
+        // a non-reconciling allocation.
+        FinancialThrowHelper.ThrowIfAllocationRatiosInvalid(ratios);
+
         decimal totalWeight = 0m;
         for (int i = 0; i < ratios.Length; i++)
             totalWeight += ratios[i];
@@ -165,9 +171,15 @@ internal static class MoneyMath
 
         BigInteger significand = ((BigInteger)(uint)bits[2] << 64) | ((BigInteger)(uint)bits[1] << 32) | (uint)bits[0];
 
-        // amount = significand * 10^-scale; the minor-unit count is significand * 10^(minorUnits - scale). A
-        // value at minor-unit precision always has scale <= minorUnits, so the exponent is non-negative; the
-        // defensive divide handles any value carrying spurious trailing-zero scale.
+        // amount = significand * 10^-scale; the minor-unit count is significand * 10^(minorUnits - scale). Callers
+        // always pass a value already rounded to minorUnits precision, so scale <= minorUnits and the exponent is
+        // non-negative. The divide branch only fires for a value carrying spurious trailing-zero scale and would
+        // truncate excess precision, so this assert documents (and, in debug builds, enforces) the invariant that
+        // the value is pre-rounded — a violation is a caller bug, not a silently-truncated wrong answer.
+        System.Diagnostics.Debug.Assert(
+            scale <= minorUnits,
+            "ToMinorUnits expects an amount already rounded to minorUnits precision (scale <= minorUnits).");
+
         BigInteger minor = scale <= minorUnits
             ? significand * BigInteger.Pow(10, minorUnits - scale)
             : significand / BigInteger.Pow(10, scale - minorUnits);

@@ -57,6 +57,20 @@ public partial class SequenceGeneratorTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.Fibonacci" /> terminates exactly at the largest Fibonacci number
+    /// representable in a <see cref="long" /> (7540113804746346429), pinning that the overflow pre-check stops at the
+    /// same boundary the previous checked arithmetic did.
+    /// </summary>
+    [TestMethod]
+    public void Fibonacci_WhenMaxIsLongMaxValue_ShouldTerminateAtLargestRepresentableFibonacci()
+    {
+        var values = SequenceGenerator.Fibonacci(0, long.MaxValue).ToList();
+
+        Assert.AreEqual(7540113804746346429L, values[^1],
+            "The final term must be the largest Fibonacci number that fits in a long.");
+    }
+
+    /// <summary>
     /// Verifies that <see cref="SequenceGenerator.Fibonacci" /> throws ArgumentException when minimum is greater than maximum.
     /// </summary>
     [TestMethod]

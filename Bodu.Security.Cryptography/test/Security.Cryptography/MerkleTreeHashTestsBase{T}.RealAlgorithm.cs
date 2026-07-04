@@ -35,6 +35,120 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     private static Func<HashAlgorithm> Sha256Factory => SHA256.Create;
 
     // ═══════════════════════════════════════════════════════════════════════════════════════════
+    // Alternative real hash algorithms — cross-check accuracy and consistency across digest sizes
+    // ═══════════════════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Verifies that the tree produces the exact root computed by an independent reference reduction across several
+    /// real hash algorithms of differing digest sizes (SHA-1 = 20 bytes, SHA-384 = 48, SHA-512 = 64). This confirms
+    /// the domain-separation prefixing and length-bound leaf handling are algorithm-agnostic and that the reported
+    /// root width tracks the backing algorithm's <see cref="HashAlgorithm.HashSize" /> rather than a fixed size.
+    /// </summary>
+    /// <param name="algorithm">The algorithm identifier selecting the factory and expected digest length.</param>
+    [TestMethod]
+    [DataRow("SHA1", 20)]
+    [DataRow("SHA384", 48)]
+    [DataRow("SHA512", 64)]
+    public void ComputeHash_WhenAlternativeAlgorithmUsed_ShouldMatchReferenceReductionAndDigestSize(
+        string algorithm, int expectedDigestLength)
+    {
+        Func<HashAlgorithm> factory = AlgorithmFactory(algorithm);
+        byte[] data = MakeData(50);
+
+        byte[] expected = ComputeReferenceMerkleRoot(factory, data, blockSize: 4, fanOut: 3);
+
+        using THasher hasher = Construct(factory, blockSize: 4, fanOut: 3);
+        byte[] actual = ComputeHash(hasher, data);
+
+        Assert.HasCount(expectedDigestLength, actual,
+            $"{algorithm} root should be {expectedDigestLength} bytes (its HashSize).");
+        CollectionAssert.AreEqual(expected, actual,
+            $"{algorithm} root diverged from the independent reference reduction.");
+    }
+
+    /// <summary>
+    /// Verifies that the trailing-zero length-binding guarantee holds under an alternative algorithm (SHA-512):
+    /// appending a zero byte to a single-leaf input changes the root, confirming the leaf-prefix and actual-length
+    /// hashing are not an artifact of SHA-256.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenAlternativeAlgorithmUsed_ShouldStillLengthBindLeaves()
+    {
+        Func<HashAlgorithm> factory = SHA512.Create;
+
+        using THasher h1 = Construct(factory, blockSize: 8, fanOut: 2);
+        using THasher h2 = Construct(factory, blockSize: 8, fanOut: 2);
+
+        CollectionAssert.AreNotEqual(
+            ComputeHash(h1, [0x41]),
+            ComputeHash(h2, [0x41, 0x00]),
+            "SHA-512 leaves are not length-bound — trailing-zero inputs collided.");
+    }
+
+    /// <summary>
+    /// Returns the <see cref="HashAlgorithm" /> factory for the named algorithm.
+    /// </summary>
+    /// <param name="algorithm">The algorithm identifier.</param>
+    /// <returns>A factory producing fresh instances of the requested algorithm.</returns>
+    private static Func<HashAlgorithm> AlgorithmFactory(string algorithm) =>
+        algorithm switch
+        {
+            "SHA1" => SHA1.Create,
+            "SHA384" => SHA384.Create,
+            "SHA512" => SHA512.Create,
+            _ => SHA256.Create,
+        };
+
+    /// <summary>
+    /// Independent reference Merkle reduction over an arbitrary <see cref="HashAlgorithm" /> factory, applying the
+    /// RFC 6962 leaf (<c>0x00</c>) and internal-node (<c>0x01</c>) domain prefixes with actual-length leaves.
+    /// </summary>
+    /// <param name="factory">The hash algorithm factory.</param>
+    /// <param name="data">The raw input bytes. Must not be empty.</param>
+    /// <param name="blockSize">The byte-count per leaf block; the tail is hashed at its actual length.</param>
+    /// <param name="fanOut">The maximum children combined into each parent node.</param>
+    /// <returns>The reference root hash.</returns>
+    private static byte[] ComputeReferenceMerkleRoot(Func<HashAlgorithm> factory, byte[] data, int blockSize, int fanOut)
+    {
+        using HashAlgorithm hasher = factory();
+
+        var level = new List<byte[]>();
+        for (int offset = 0; offset < data.Length; offset += blockSize)
+        {
+            int len = Math.Min(blockSize, data.Length - offset);
+            byte[] leaf = new byte[1 + len];
+            leaf[0] = MerkleTreeFormat.LeafPrefix;
+            Array.Copy(data, offset, leaf, 1, len);
+            level.Add(hasher.ComputeHash(leaf));
+        }
+
+        while (level.Count > 1)
+        {
+            var next = new List<byte[]>();
+            for (int i = 0; i < level.Count; i += fanOut)
+            {
+                int groupSize = Math.Min(fanOut, level.Count - i);
+
+                int totalLen = 1;
+                for (int j = 0; j < groupSize; j++) totalLen += level[i + j].Length;
+                byte[] combined = new byte[totalLen];
+                combined[0] = MerkleTreeFormat.InternalNodePrefix;
+                int cursor = 1;
+                for (int j = 0; j < groupSize; j++)
+                {
+                    Buffer.BlockCopy(level[i + j], 0, combined, cursor, level[i + j].Length);
+                    cursor += level[i + j].Length;
+                }
+
+                next.Add(hasher.ComputeHash(combined));
+            }
+            level = next;
+        }
+
+        return level[0];
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════════════════
     // Order sensitivity — the central property a real hash exposes
     // ═══════════════════════════════════════════════════════════════════════════════════════════
 
@@ -211,27 +325,28 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     /// <summary>
     /// Reference SHA-256 Merkle reduction used to cross-validate implementation output.
     /// Mirrors the structure of <see cref="MerkleTestData.ComputeAdditiveRoot" /> but uses
-    /// SHA-256 for both leaf and internal nodes.
+    /// SHA-256 for both leaf and internal nodes, applying the RFC 6962 domain-separation prefixes.
     /// </summary>
     /// <param name="data">The raw input bytes. Must not be empty.</param>
-    /// <param name="blockSize">The byte-count per leaf block; partial tails are zero-padded to this.</param>
+    /// <param name="blockSize">The byte-count per leaf block; the partial tail is hashed at its actual length.</param>
     /// <param name="fanOut">The maximum children combined into each parent node.</param>
     /// <returns>A 32-byte SHA-256 root hash computed by full tree reduction.</returns>
     private static byte[] ComputeSha256MerkleRoot(byte[] data, int blockSize, int fanOut)
     {
         using var sha = SHA256.Create();
 
-        // Leaves: zero-padded blocks hashed individually.
+        // Leaves: H(0x00 || chunk), each chunk at its actual length (the tail is not zero-padded).
         var level = new List<byte[]>();
         for (int offset = 0; offset < data.Length; offset += blockSize)
         {
             int len = Math.Min(blockSize, data.Length - offset);
-            byte[] block = new byte[blockSize];
-            Array.Copy(data, offset, block, 0, len);
+            byte[] block = new byte[1 + len];
+            block[0] = MerkleTreeFormat.LeafPrefix;
+            Array.Copy(data, offset, block, 1, len);
             level.Add(sha.ComputeHash(block));
         }
 
-        // Reduce: concatenate each group of up to fanOut child hashes and hash the combination.
+        // Reduce: hash H(0x01 || child₀ || … ) for each group of up to fanOut child hashes.
         while (level.Count > 1)
         {
             var next = new List<byte[]>();
@@ -239,11 +354,11 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
             {
                 int groupSize = Math.Min(fanOut, level.Count - i);
 
-                // Concatenate child hashes into a single buffer, then hash.
-                int totalLen = 0;
+                int totalLen = 1;
                 for (int j = 0; j < groupSize; j++) totalLen += level[i + j].Length;
                 byte[] combined = new byte[totalLen];
-                int cursor = 0;
+                combined[0] = MerkleTreeFormat.InternalNodePrefix;
+                int cursor = 1;
                 for (int j = 0; j < groupSize; j++)
                 {
                     Buffer.BlockCopy(level[i + j], 0, combined, cursor, level[i + j].Length);

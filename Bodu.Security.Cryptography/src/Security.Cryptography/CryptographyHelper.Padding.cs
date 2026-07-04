@@ -55,6 +55,21 @@ internal static partial class CryptographyHelper
     /// The padding is invalid, <paramref name="source" /> byte length is not a positive multiple of
     /// <paramref name="blockSize" /> / 8, or the padding mode is unsupported.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The uniform-byte pad check is constant-time in content: it scans the whole candidate pad region without a
+    /// data-dependent early exit, so it does not leak the position of the first bad byte through timing or control
+    /// flow.
+    /// </para>
+    /// <para>
+    /// This is <b>not</b>, on its own, a full padding-oracle defence — the returned length still varies with the
+    /// declared pad count, and an invalid block signals through a thrown <see cref="CryptographicException" />.
+    /// Callers must <b>authenticate the ciphertext</b> (a MAC verified with
+    /// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />, or an AEAD
+    /// mode) <b>before</b> depadding, so a padding failure is never observable to an attacker. Prefer the AEAD modes
+    /// for new designs; raw CBC with strippable padding requires caller-supplied authentication.
+    /// </para>
+    /// </remarks>
     public static int DepadBlock(
         PaddingMode padding,
         int blockSize,
@@ -475,12 +490,14 @@ internal static partial class CryptographyHelper
     /// </returns>
     private static bool IsUniformPadding(ReadOnlySpan<byte> span, byte expected)
     {
+        // Accumulate a difference mask over the entire candidate pad region with no data-dependent early exit, so
+        // the check's duration and control flow do not reveal where the first mismatched byte sits. Returning a
+        // single boolean at the end keeps pad validation from leaking a byte-position timing signal (the classic
+        // CBC padding-oracle vector). The scanned region is at most one block, so the full pass is negligible.
+        int diff = 0;
         foreach (byte b in span)
-        {
-            if (b != expected)
-                return false;
-        }
+            diff |= b ^ expected;
 
-        return true;
+        return diff == 0;
     }
 }

@@ -57,6 +57,31 @@ public partial class IndexedPriorityQueueTests
     }
 
     /// <summary>
+    /// Verifies that copying into an array whose element type is incompatible with the pair type throws
+    /// <see cref="ArgumentException" /> without writing any element — the incompatible element type is validated up
+    /// front, so the destination is left untouched. (The pair type is a sealed struct, so a mismatch already faults
+    /// on the first element; this pins the fail-fast, no-partial-write contract.)
+    /// </summary>
+    [TestMethod]
+    public void ICollection_CopyTo_WhenDestinationElementTypeIsIncompatible_ShouldLeaveDestinationUntouched()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+        queue.Enqueue("a", 1);
+        queue.Enqueue("b", 2);
+        ICollection collection = queue;
+
+        var destination = new string?[4];
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            collection.CopyTo(destination, 0);
+        });
+
+        foreach (string? slot in destination)
+            Assert.IsNull(slot, "CopyTo must not write any element before it faults on an incompatible type.");
+    }
+
+    /// <summary>
     /// Verifies that <c>CopyTo</c> writes element-priority pairs into a destination typed as
     /// <see cref="object" /> (the non-generic <c>SetValue</c> branch).
     /// </summary>

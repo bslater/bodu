@@ -30,8 +30,12 @@ namespace Bodu.Security.Cryptography;
 /// CBC requires plaintext to be a multiple of the block size, so it is almost always paired with
 /// <see cref="Pkcs7Padding" />. For new designs prefer <see cref="GcmModeTransform" /> or
 /// <see cref="EaxModeTransform" />, both of which authenticate as well as encrypt; CBC plus a separate MAC is fragile
-/// and easy to misuse. Decryption with strippable padding is vulnerable to padding-oracle attacks unless the padding
-/// check is performed in constant time and never leaks via timing or error messages.
+/// and easy to misuse. Decryption with strippable padding is vulnerable to padding-oracle attacks. The pad-byte
+/// comparison here is constant-time (see <see cref="CryptographyHelper" />'s depad path), but that alone is not a
+/// complete defence — the depadded length still varies with the pad count and an invalid block throws. Callers must
+/// authenticate the ciphertext (a MAC verified with
+/// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />,
+/// or an AEAD mode) <b>before</b> depadding, so a padding failure is never observable to an attacker.
 /// </para>
 /// <para>
 /// CBC is sequential — neither encryption nor decryption parallelizes across blocks within a single message. Random

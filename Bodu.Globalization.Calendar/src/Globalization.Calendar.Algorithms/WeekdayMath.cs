@@ -54,6 +54,13 @@ internal static class WeekdayMath
     /// </remarks>
     public static DateOnly? SeekOrNull(DateOnly anchor, DayOfWeek dayOfWeek, WeekdayProximity proximity)
     {
+        // A proximity seek moves the anchor by at most seven days. When the anchor sits at least a week inside the
+        // representable range the seek cannot overflow, so take the fast path with no exception handling. Only in the
+        // first or last representable week — where a roll past DateOnly.Min/MaxValue is possible — do we fall back to
+        // catching the boundary overflow and reporting "no occurrence".
+        if (anchor.DayNumber >= DateOnly.MinValue.DayNumber + 7 && anchor.DayNumber <= DateOnly.MaxValue.DayNumber - 7)
+            return Seek(anchor, dayOfWeek, proximity);
+
         try
         {
             return Seek(anchor, dayOfWeek, proximity);

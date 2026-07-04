@@ -90,6 +90,30 @@ public partial class MultisetTests
         });
     }
 
+    /// <summary>
+    /// Verifies that when a later element is incompatible with the destination array's element type, the non-generic
+    /// <c>ICollection.CopyTo</c> throws <see cref="ArgumentException"/> without partially populating the destination —
+    /// the incompatible element type is validated before any element is written.
+    /// </summary>
+    [TestMethod]
+    public void ICollectionCopyTo_WhenLaterElementIncompatible_ShouldThrowAndLeaveDestinationUntouched()
+    {
+        var multiset = new Multiset<object>();
+        multiset.Add("alpha");   // assignable to string[]
+        multiset.Add(42);        // not assignable to string[]
+        ICollection mvd = multiset;
+
+        var destination = new string?[4];
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            mvd.CopyTo(destination, 0);
+        });
+
+        foreach (string? slot in destination)
+            Assert.IsNull(slot, "CopyTo must not write any element before it faults on an incompatible type.");
+    }
+
     // --------------------------------------------------------
     // ICollection.CopyTo — negative index
     // --------------------------------------------------------

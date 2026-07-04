@@ -46,4 +46,28 @@ public sealed partial class AuthenticationTagTests
     {
         Assert.IsTrue(default(AuthenticationTag) == AuthenticationTag.FromBytes([]));
     }
+
+    /// <summary>
+    /// Verifies that tags of different lengths compare unequal, pinning that the constant-time comparison returns
+    /// <see langword="false" /> on a length mismatch (the length is not concealed).
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenLengthsDiffer_ShouldBeUnequal()
+    {
+        var left = AuthenticationTag.FromBytes([0x01, 0x02, 0x03]);
+        var right = AuthenticationTag.FromBytes([0x01, 0x02, 0x03, 0x04]);
+
+        Assert.IsFalse(left.Equals(right));
+        Assert.IsTrue(left != right);
+    }
+
+    /// <summary>
+    /// Verifies that the default (empty) instance compares unequal to a non-empty tag.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenComparingDefaultAndNonEmpty_ShouldBeUnequal()
+    {
+        Assert.IsFalse(default(AuthenticationTag) == AuthenticationTag.FromBytes([0x01]));
+        Assert.IsTrue(default(AuthenticationTag) != AuthenticationTag.FromBytes([0x01]));
+    }
 }

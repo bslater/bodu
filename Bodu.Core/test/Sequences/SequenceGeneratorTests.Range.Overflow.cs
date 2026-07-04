@@ -36,6 +36,32 @@ public partial class SequenceGeneratorTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.Range(int, int, int)" /> includes an endpoint that lands exactly on
+    /// <see cref="int.MaxValue" /> and then terminates cleanly on the next (overflowing) step.
+    /// </summary>
+    [TestMethod]
+    public void Range_WhenStepLandsExactlyOnIntMaxValue_ShouldIncludeEndpointAndTerminate()
+    {
+        int[] actual = SequenceGenerator.Range(int.MaxValue - 4, int.MaxValue, 4).ToArray();
+
+        // Emits MaxValue-4, then MaxValue (== stop, included), then MaxValue + 4 would overflow so iteration ends.
+        CollectionAssert.AreEqual(new[] { int.MaxValue - 4, int.MaxValue }, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.Range(int, int, int)" /> includes an endpoint that lands exactly on
+    /// <see cref="int.MinValue" /> and then terminates cleanly on the next (underflowing) step.
+    /// </summary>
+    [TestMethod]
+    public void Range_WhenStepLandsExactlyOnIntMinValue_ShouldIncludeEndpointAndTerminate()
+    {
+        int[] actual = SequenceGenerator.Range(int.MinValue + 4, int.MinValue, -4).ToArray();
+
+        // Emits MinValue+4, then MinValue (== stop, included), then MinValue - 4 would underflow so iteration ends.
+        CollectionAssert.AreEqual(new[] { int.MinValue + 4, int.MinValue }, actual);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="SequenceGenerator.Range(long, int)" /> emitted at <see cref="long.MaxValue" /> with count zero produces an empty sequence.
     /// </summary>
     [TestMethod]

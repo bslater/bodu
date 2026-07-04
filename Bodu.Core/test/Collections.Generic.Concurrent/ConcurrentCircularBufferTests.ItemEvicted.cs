@@ -84,6 +84,27 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that an <see cref="OutOfMemoryException" /> thrown by an
+    /// <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handler propagates out of
+    /// <see cref="ConcurrentCircularBuffer{T}.Enqueue" /> rather than being swallowed — a process-fatal condition
+    /// must not be masked as a successful eviction.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicted_WhenHandlerThrowsOutOfMemoryException_ShouldPropagate()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+
+        buffer.ItemEvicted += _ => throw new OutOfMemoryException();
+
+        Assert.ThrowsExactly<OutOfMemoryException>(() =>
+        {
+            buffer.Enqueue(new TestItem(3)); // evicts 1 → handler throws a fatal exception
+        });
+    }
+
+    /// <summary>
     /// Verifies that a handler unsubscribed from <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> receives no further eviction callbacks.
     /// </summary>
     [TestMethod]

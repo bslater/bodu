@@ -45,7 +45,8 @@ public sealed partial class Multiset<T>
     /// <exception cref="ArgumentException">
     /// <paramref name="array" /> is multidimensional, not zero-based, or has an incompatible element type; or the
     /// number of elements in the multiset exceeds the available space from <paramref name="index" /> to the end of
-    /// <paramref name="array" />.
+    /// <paramref name="array" />. When thrown for an incompatible element type, <paramref name="array" /> is left
+    /// unmodified (no elements are written).
     /// </exception>
     void ICollection.CopyTo(Array array, int index)
     {
@@ -54,6 +55,20 @@ public sealed partial class Multiset<T>
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfLessThan(index, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _count);
+
+        // When the destination element type is not guaranteed to accept every T, validate each element up front so
+        // an incompatible element faults before any write — fail-fast, leaving the destination untouched rather than
+        // partially populated. The assignable-from case (e.g. object[] or T[]) skips the scan and copies directly,
+        // preserving the BCL-lenient behaviour of copying, say, a Multiset<object> of strings into a string[].
+        Type elementType = array.GetType().GetElementType()!;
+        if (!elementType.IsAssignableFrom(typeof(T)))
+        {
+            foreach (KeyValuePair<T, int> pair in _items)
+            {
+                if (pair.Key is not null && !elementType.IsInstanceOfType(pair.Key))
+                    throw new ArgumentException(ResourceStrings.Arg_Invalid_ArrayType, nameof(array));
+            }
+        }
 
         try
         {

@@ -119,6 +119,9 @@ namespace Bodu.Security.Cryptography;
 public sealed class ParallelMerkleTreeHash
     : IDisposable
 {
+    /// <summary>The single-byte internal-node domain-separation prefix, reused across all node combinations.</summary>
+    private static readonly byte[] s_internalNodePrefix = [MerkleTreeFormat.InternalNodePrefix];
+
     /// <summary>The size in bytes of each leaf block.</summary>
     private readonly int _blockSize;
 
@@ -616,13 +619,11 @@ public sealed class ParallelMerkleTreeHash
     /// <exception cref="InvalidOperationException">No input data was provided.</exception>
     private async Task<byte[]> FinalizeAsync()
     {
-        // Zero-pad the partial tail block to a full block size before hashing, so that every
-        // leaf is the same width regardless of input alignment. The bytes beyond _bufferLength
-        // in _blockBuffer are cleared explicitly since the buffer is reused across calls.
+        // Hash the trailing partial leaf at its actual length — no zero padding. The leaf-domain prefix in
+        // HashSpan binds the real byte count, so trailing-zero variations do not collide.
         if (_bufferLength > 0)
         {
-            CryptographyHelper.Clear(_blockBuffer.AsSpan(_bufferLength, _blockSize - _bufferLength));
-            SubmitLeaf(_blockBuffer, _blockSize);
+            SubmitLeaf(_blockBuffer, _bufferLength);
             _bufferLength = 0;
         }
 
@@ -690,10 +691,24 @@ public sealed class ParallelMerkleTreeHash
     private byte[] HashSpan(ReadOnlySpan<byte> data)
     {
         using HashAlgorithm hasher = _algorithmFactory();
-        byte[] result = new byte[hasher.HashSize / 8];
-        CryptographyThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
-            hasher.TryComputeHash(data, result, out _));
-        return result;
+
+        // Leaf domain separation: hash H(0x00 || data). The tail leaf arrives at its actual length (no zero
+        // padding), so the exact input byte count is bound into the leaf hash.
+        byte[] rented = ArrayPool<byte>.Shared.Rent(1 + data.Length);
+        try
+        {
+            rented[0] = MerkleTreeFormat.LeafPrefix;
+            data.CopyTo(rented.AsSpan(1));
+
+            byte[] result = new byte[hasher.HashSize / 8];
+            CryptographyThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
+                hasher.TryComputeHash(rented.AsSpan(0, 1 + data.Length), result, out _));
+            return result;
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(rented, clearArray: true);
+        }
     }
 
     /// <summary>
@@ -719,7 +734,9 @@ public sealed class ParallelMerkleTreeHash
     {
         using HashAlgorithm hasher = _algorithmFactory();
 
-        // Feed all but the last child via TransformBlock — purely state accumulation, no output.
+        // Internal-node domain separation: hash H(0x01 || child₀ || … ). Feed the prefix, then all but the last
+        // child, via TransformBlock — purely state accumulation, no output.
+        hasher.TransformBlock(s_internalNodePrefix, 0, s_internalNodePrefix.Length, null, 0);
         for (int i = 0; i < hashes.Count - 1; i++)
             hasher.TransformBlock(hashes[i], 0, hashes[i].Length, null, 0);
 

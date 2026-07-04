@@ -119,11 +119,15 @@ public readonly struct AuthenticationTag
     /// <see langword="true" /> if both tags contain identical bytes; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// This is an ordinary, short-circuiting comparison; tag verification must use
-    /// <see cref="FixedTimeEquals(AuthenticationTag)" /> instead.
+    /// The byte comparison is constant-time in content — it runs through
+    /// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />, so its
+    /// duration depends only on the operand length, not on where the bytes first differ. A length mismatch returns
+    /// <see langword="false" /> immediately (the length is not secret). The span-based
+    /// <see cref="FixedTimeEquals(ReadOnlySpan{byte})" /> overload remains available for verifying a received tag
+    /// against a raw buffer.
     /// </remarks>
     public bool Equals(AuthenticationTag other) =>
-        AsSpan().SequenceEqual(other.AsSpan());
+        CryptographicOperations.FixedTimeEquals(AsSpan(), other.AsSpan());
 
     /// <summary>
     /// Determines whether this tag equals the specified object.

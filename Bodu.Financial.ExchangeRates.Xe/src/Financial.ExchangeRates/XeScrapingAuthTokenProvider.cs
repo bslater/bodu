@@ -30,7 +30,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// This strategy depends on the XE website's current structure and is therefore inherently brittle; it carries no
-/// affiliation with or endorsement by XE.
+/// affiliation with or endorsement by XE. It is best-effort only: a change to the site's markup or bundling can cause
+/// acquisition to yield no token (and the provider to return empty results) with no error, so it must not be relied on
+/// as the sole rate source for production-critical use without an out-of-band health check or a stable fallback feed.
 /// </para>
 /// </remarks>
 internal sealed partial class XeScrapingAuthTokenProvider

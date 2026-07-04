@@ -28,6 +28,14 @@ namespace Bodu.Financial.ExchangeRates;
 /// XE website's current structure and is inherently brittle.
 /// </para>
 /// <para>
+/// <strong>Reliability — best-effort, not for production-critical sourcing.</strong> Because the provider reconstructs
+/// lazy-loaded script-chunk URLs from an unversioned public page to recover the token, any change to the XE website's
+/// markup or bundling can silently degrade it to empty results — a broken scraper is not distinguishable from "no rate
+/// for this pair" without an out-of-band health check. Treat this provider as best-effort: do not depend on it as a
+/// sole source for production-critical rates. Pair it with a stable primary feed (for example the ECB, Bank of England,
+/// or RBA providers) through the aggregating provider, or gate it behind your own availability check.
+/// </para>
+/// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
 /// <see cref="HttpClient" /> configured with the options' <see cref="WebExchangeRateProviderOptions.UserAgent" /> and
 /// <see cref="WebExchangeRateProviderOptions.HttpTimeout" />, disposing it with the provider. The constructor that

@@ -42,6 +42,14 @@ once when the endpoint rejects it (`401`/`403`). This depends on the XE website'
 structure and is therefore **inherently brittle**; the package carries no affiliation with
 or endorsement by XE.
 
+> **Best-effort — not for production-critical sourcing.** Because the token is recovered by
+> scraping an unversioned public page, a change to XE's markup or bundling can silently
+> reduce the provider to empty results — a broken scraper looks the same as "no rate for
+> this pair". Do not rely on this provider as your sole rate source in production. Pair it
+> with a stable primary feed (for example ECB, Bank of England, or RBA) via the aggregating
+> provider, or gate it behind your own health check that distinguishes "scraper broke" from
+> "no rate".
+
 ## Behaviour
 
 - **Arbitrary pairs.** XE serves any pair directly through the `fromCurrency` /

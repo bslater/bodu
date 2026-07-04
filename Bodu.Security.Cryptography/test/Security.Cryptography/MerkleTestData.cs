@@ -81,28 +81,32 @@ internal static class MerkleTestData
     /// <remarks>
     /// <list type="bullet">
     /// <item><description>
-    /// <b>Leaf nodes</b> — each input chunk is zero-padded to a full <paramref name="blockSize" /> and
-    /// hashed, matching the implementation's <c>HashSpan</c> / padded-block path.
+    /// <b>Leaf nodes</b> — each input chunk is hashed as <c>H(0x00 || chunk)</c> at its actual length (the partial
+    /// tail is not zero-padded), matching the implementation's leaf path.
     /// </description></item>
     /// <item><description>
-    /// <b>Internal nodes</b> — child hashes within a fan-out group are concatenated and hashed,
+    /// <b>Internal nodes</b> — child hashes within a fan-out group are hashed as <c>H(0x01 || child₀ || … )</c>,
     /// matching the implementation's <c>CombineAndHash</c> / streaming <c>TransformBlock</c> path.
     /// </description></item>
     /// </list>
+    /// <para>
+    /// The additive hash is commutative and blind to the <c>0x00</c> leaf prefix and to dropped zero padding (both
+    /// add 0 to the byte-sum); it is sensitive only to the <c>0x01</c> internal-node prefix, which adds 1 per node.
+    /// Order- and format-sensitive coverage lives in the SHA-256 tests
+    /// (<c>MerkleTreeHashTestsBase{T}.RealAlgorithm.cs</c> and the domain-separation partial).
+    /// </para>
     /// </remarks>
     internal static byte[] ComputeAdditiveRoot(byte[] data, int blockSize, int fanOut)
     {
         if (data.Length == 0)
             throw new ArgumentException("Data must be non-empty.", nameof(data));
 
-        // Level 0: one leaf hash per block. Partial tail blocks are zero-padded to blockSize.
+        // Level 0: one leaf hash per block. The partial tail block is hashed at its actual length (no padding).
         var level = new List<byte[]>();
         for (int offset = 0; offset < data.Length; offset += blockSize)
         {
             int len = Math.Min(blockSize, data.Length - offset);
-            byte[] block = new byte[blockSize];              // zero-initialised; tail bytes remain 0
-            Array.Copy(data, offset, block, 0, len);
-            level.Add(AdditiveHash(block));
+            level.Add(AdditiveHash(data.AsSpan(offset, len)));
         }
 
         // Reduce each level by grouping nodes in slices of fanOut until only the root remains.
@@ -122,31 +126,32 @@ internal static class MerkleTestData
     }
 
     /// <summary>
-    /// Returns the additive hash of <paramref name="block" /> as a 4-byte little-endian
-    /// <see cref="uint" /> — matching the leaf-hashing path in both implementations.
+    /// Returns the additive leaf hash <c>H(0x00 || block)</c> as a 4-byte little-endian
+    /// <see cref="uint" /> — matching the length-bound, domain-prefixed leaf path in both implementations.
     /// </summary>
-    /// <param name="block">The zero-padded leaf block to hash.</param>
-    internal static byte[] AdditiveHash(byte[] block)
+    /// <param name="block">The actual-length leaf bytes (not zero-padded).</param>
+    internal static byte[] AdditiveHash(ReadOnlySpan<byte> block)
     {
-        uint sum = 0;
+        // Leaf-domain prefix contributes 0x00 → adds nothing to the byte-sum.
+        uint sum = MerkleTreeFormat.LeafPrefix;
         foreach (byte b in block)
             sum += b;
         return BitConverter.GetBytes(sum);
     }
 
     /// <summary>
-    /// Returns the additive hash of the concatenated bytes of all <paramref name="hashes" /> as
-    /// a 4-byte little-endian <see cref="uint" /> — matching the internal-node hashing path.
+    /// Returns the additive internal-node hash <c>H(0x01 || child₀ || … )</c> as a 4-byte little-endian
+    /// <see cref="uint" /> — matching the domain-prefixed internal-node hashing path.
     /// </summary>
     /// <param name="hashes">The child hashes to combine, in order.</param>
     /// <remarks>
     /// The additive hash is commutative across input boundaries, so iterating the flat byte
     /// sequence produces the same result as streaming each child via separate
-    /// <see cref="HashAlgorithm.TransformBlock" /> calls.
+    /// <see cref="HashAlgorithm.TransformBlock" /> calls. The internal-node prefix contributes 0x01 → adds 1.
     /// </remarks>
     internal static byte[] AdditiveHashConcat(List<byte[]> hashes)
     {
-        uint sum = 0;
+        uint sum = MerkleTreeFormat.InternalNodePrefix;
         foreach (byte[] h in hashes)
             foreach (byte b in h)
                 sum += b;

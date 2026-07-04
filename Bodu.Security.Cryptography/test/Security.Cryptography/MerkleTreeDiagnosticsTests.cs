@@ -151,7 +151,7 @@ public sealed class MerkleTreeDiagnosticsTests
 
         byte[] leaf0 = new byte[] { 0x01 };
         byte[] leaf1 = new byte[] { 0x02 };
-        byte[] expectedParent = ComputeSha256(Concat(leaf0, leaf1));
+        byte[] expectedParent = ComputeInternalNode(leaf0, leaf1);
 
         diagnostics.RecordLeaf(0, leaf0);
         diagnostics.RecordLeaf(1, leaf1);
@@ -266,7 +266,7 @@ public sealed class MerkleTreeDiagnosticsTests
         diagnostics.RecordLeaf(0, leaf0);
         diagnostics.RecordLeaf(1, leaf1);
         diagnostics.RecordInternal(level: 1, index: 0, childHashes: [leaf0, leaf1],
-            hash: ComputeSha256(Concat(leaf0, leaf1)));
+            hash: ComputeInternalNode(leaf0, leaf1));
 
         var writer = new StringWriter();
         diagnostics.WriteTo(writer, SHA256.Create);
@@ -345,11 +345,19 @@ public sealed class MerkleTreeDiagnosticsTests
         return sha.ComputeHash(input);
     }
 
-    private static byte[] Concat(byte[] a, byte[] b)
+    /// <summary>
+    /// Computes the expected internal-node hash <c>SHA256(0x01 || a || b)</c>, applying the RFC 6962
+    /// internal-node domain-separation prefix that <see cref="MerkleTreeDiagnostics.Validate" /> recomputes.
+    /// </summary>
+    /// <param name="a">The first child hash.</param>
+    /// <param name="b">The second child hash.</param>
+    /// <returns>The prefixed internal-node hash.</returns>
+    private static byte[] ComputeInternalNode(byte[] a, byte[] b)
     {
-        byte[] result = new byte[a.Length + b.Length];
-        Buffer.BlockCopy(a, 0, result, 0, a.Length);
-        Buffer.BlockCopy(b, 0, result, a.Length, b.Length);
-        return result;
+        byte[] prefixed = new byte[1 + a.Length + b.Length];
+        prefixed[0] = MerkleTreeFormat.InternalNodePrefix;
+        Buffer.BlockCopy(a, 0, prefixed, 1, a.Length);
+        Buffer.BlockCopy(b, 0, prefixed, 1 + a.Length, b.Length);
+        return ComputeSha256(prefixed);
     }
 }

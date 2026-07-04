@@ -47,7 +47,8 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority> :
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is negative.</exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="array" /> is multidimensional, not zero-based, has an incompatible element type, or has
-    /// insufficient room from <paramref name="index" /> onward.
+    /// insufficient room from <paramref name="index" /> onward. When thrown for an incompatible element type,
+    /// <paramref name="array" /> is left unmodified (no elements are written).
     /// </exception>
     void ICollection.CopyTo(Array array, int index)
     {
@@ -56,6 +57,13 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority> :
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfNegative(index);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _size);
+
+        // The element type is the sealed KeyValuePair<TElement, TPriority> struct, so compatibility is exact:
+        // validate it up front and fail before any write, leaving the destination untouched rather than partially
+        // populated. The per-element catches below remain as a backstop.
+        Type elementType = array.GetType().GetElementType()!;
+        if (!elementType.IsAssignableFrom(typeof(KeyValuePair<TElement, TPriority>)))
+            throw new ArgumentException(ResourceStrings.Arg_Invalid_ArrayType, nameof(array));
 
         try
         {
