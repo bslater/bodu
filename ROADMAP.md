@@ -223,6 +223,15 @@ proposals can be closed quickly.
   MapStruct or pydantic / Hibernate-Validator analogue — mapping is
   application code, and DataAnnotations / FluentValidation own the
   validation space.
+- **A Disruptor-style ring buffer / sequencer.** The LMAX Disruptor
+  niche (pre-allocated slots, sequence-claimed publishing, batch
+  consumers, wait strategies) is not a utility building block — it is a
+  specialized messaging engine with its own .NET port (Disruptor-net).
+  For bounded concurrent streaming the first-party
+  `System.Threading.Channels` already covers the space (bounded
+  capacity, `DropOldest` / `DropNewest` full modes, single-reader /
+  single-writer fast paths), and Bodu ships
+  `ConcurrentCircularBuffer<T>` for the simple concurrent-ring case.
 
 ## Active focus
 
@@ -366,6 +375,15 @@ Forward-looking:
   `ahocorasick`, Python `pyahocorasick`; .NET pulls independent ports)
   and PATRICIA / radix compression as siblings of the existing `Trie` /
   `Trie<TValue>`.
+- **An evict-on-overflow mode for the bounded `Deque<T>`** — Python's
+  `deque(maxlen=N)` silently discards from the *opposite* end when an
+  add overflows a full deque; Bodu's fixed-capacity mode
+  (`AllowGrow = false`) currently only rejects. A small overflow-policy
+  addition (reject vs evict-opposite-end) closes the one `deque(maxlen)`
+  behaviour the ring family does not yet express — no new type needed.
+  (The single-ended equivalents are already covered: overwrite-on-full
+  vs reject-when-full is `CircularBuffer<T>`'s existing
+  `AllowOverwrite` switch, i.e. the Boost `circular_buffer` niche.)
 
 ### `Bodu.Security.Cryptography`
 
@@ -571,6 +589,14 @@ three sequenced steps, smallest first:
 3. **Add running-statistics aggregates** — online mean / variance (Welford),
    min / max / count, and a streaming quantile (P²), shaped as `struct`
    accumulators that compose with the `INumber<T>`-constrained code.
+   A **windowed / rolling companion set** layers on the same shapes:
+   moving sum / mean and monotonic-deque moving min / max over the last
+   N samples — the finance / telemetry "rolling window" idiom — using
+   `CircularBuffer<T>`'s overwrite mode as the storage. A bare
+   `RollingWindow<T>` *collection* is deliberately not added to Core:
+   the overwrite-mode `CircularBuffer<T>` already is one (oldest-to-
+   newest enumeration included); the gap is the aggregates, so they
+   live here with the statistics.
 
 A generic **`Complex<T>`** (the BCL `Complex` is `double`-only) is the
 natural follow-on after this wave, not part of it. See also *New library
