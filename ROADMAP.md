@@ -13,7 +13,13 @@ extensions, `BigDecimal`, running-statistics; see Active focus). A
 release-discipline pass has since moved `Bodu.Numerics` from Stable back
 to **Preview** until its serialization, result-type, and documentation
 conventions catch up with the expanded interval model (see *API-stability
-tiers*). The
+tiers*). This revision also folds in a **cross-ecosystem gap review** —
+Bodu's surface compared against the highest-adoption Java (Guava, Apache
+Commons, libphonenumber, ical4j / Quartz, Caffeine) and Python (stdlib
+`difflib` / `email`, `dateutil`, `rapidfuzz`, `phonenumbers`, `pint`)
+utility staples that .NET consumers currently obtain from
+independently-built packages — expanding *New library candidates*, the
+`Bodu.Core` forward list, and *Non-goals* accordingly. The
 broader landed-surface summary from the prior rewrite still stands: (1) a
 **Bodu.Core** structural expansion — the
 `Collections.Generic.Graphs` / `Collections.Generic.Trees` pillars
@@ -194,6 +200,29 @@ proposals can be closed quickly.
   `System.Buffers.Text.Base64` / `Base64Url`; `Convert.ToHexString` /
   `FromHexString`; `System.Formats.Cbor` / `System.Formats.Asn1`. Bodu
   only takes on algorithms with a genuine BCL gap.
+- **HTML parsing or sanitization.** The jsoup / BeautifulSoup niche is
+  deliberately out: the full WHATWG parsing algorithm is an enormous
+  grammar surface, and AngleSharp / HtmlAgilityPack already serve it
+  well.
+- **Template engines.** The Jinja2 / Freemarker / Mustache space is
+  served by Scriban and Fluid; a text-templating language is a product,
+  not a utility building block.
+- **A date-time model replacement.** No Joda-Time / NodaTime analogue:
+  `DateOnly` / `TimeOnly` / `DateTimeOffset` / `TimeZoneInfo` plus
+  NodaTime cover the space. Bodu stays at the layer above — notable
+  dates, working days, and (proposed) recurrence.
+- **DataFrames, ndarrays, and scientific computing.** The pandas / NumPy
+  space belongs to Microsoft.Data.Analysis, ML.NET, and TorchSharp;
+  `Bodu.Numerics` stays at value-type scalars, intervals, and
+  accumulators.
+- **New compression codecs.** No zstd / LZ4 / xz reimplementation (the
+  commons-compress niche): these are performance-critical formats where
+  the existing bindings (ZstdSharp, K4os.Compression.LZ4) are the right
+  answer, and the BCL covers deflate / gzip / Brotli / ZIP / TAR.
+- **Object mappers and validation frameworks.** No AutoMapper /
+  MapStruct or pydantic / Hibernate-Validator analogue — mapping is
+  application code, and DataAnnotations / FluentValidation own the
+  validation space.
 
 ## Active focus
 
@@ -285,6 +314,22 @@ Forward-looking:
 - **Probabilistic / sketch data structures** — Bloom filter, Count-Min
   sketch, HyperLogLog. Commonly built independently, absent from the BCL,
   and a clean fit for the collections pillar.
+- **Sequence-operator extras** — the `more-itertools` / Guava
+  `Iterables` / MoreLINQ shapes the BCL still lacks: windowed / pairwise
+  projection, cartesian product, permutations / combinations,
+  interleave / round-robin, run-length encoding. Strictly additive to
+  LINQ: anything the BCL has since shipped (`Chunk`, `CountBy`,
+  `AggregateBy`, `Index`) is excluded, and each candidate operator must
+  be re-checked against the current BCL before landing.
+- **Expiring / frequency-aware cache variants** — a TTL cache and an LFU
+  (or W-TinyLFU) sibling alongside the recency-based
+  `EvictingDictionary<,>`, covering the `cachetools` / Guava Cache /
+  Caffeine niche that .NET consumers currently fill with
+  BitFaster.Caching.
+- **A natural-order string comparer** — numeric-aware ordering
+  (`file10` sorts after `file2`; Python's `natsort`, the Explorer
+  `StrCmpLogicalW` behaviour) exposed as an `IComparer<string>` beside
+  the existing extension surfaces.
 
 ### `Bodu.Security.Cryptography`
 
@@ -718,6 +763,16 @@ targets functionality that today is pulled in as an independently-developed
 GitHub dependency, and reuses one of the repository's proven architectural
 patterns (see *Architectural patterns*). Listed roughly by leverage.
 
+The 2026-07 additions come from a systematic gap review against the
+highest-adoption Java and Python utility ecosystems (Guava / Apache
+Commons / libphonenumber / ical4j / Quartz on the Java side; the Python
+stdlib plus `dateutil`, `rapidfuzz`, `phonenumbers`, `pint` on the Python
+side). Only functionality passing all three of the section's criteria was
+kept: (a) no `net8.0`+ BCL equivalent, (b) demonstrably reached for in
+.NET today via an independently-built package, and (c) a clean mapping
+onto one of the proven architectural patterns. Proposals that failed the
+filter were added to *Non-goals* instead.
+
 - **`Bodu.Formats.Outlook.Msg`** — a read-only `.msg` (Outlook message)
   reader over `Bodu.IO.Compound`. The `.msg` container *is* CFB, so this
   is the highest-leverage reuse of the existing container: it inherits
@@ -731,17 +786,93 @@ patterns (see *Architectural patterns*). Listed roughly by leverage.
   likely sit on a new **`Bodu.IO.Packaging`** (Open Packaging Convention
   over `System.IO.Compression`) container — the ZIP-era sibling to
   `Bodu.IO.Compound`.
+- **`Bodu.Text.Similarity`** — string distance and phonetic matching: the
+  edit-distance family (Levenshtein, Damerau-Levenshtein, Jaro-Winkler,
+  longest-common-subsequence, n-gram / cosine similarity) plus the
+  phonetic encoders (Soundex, Metaphone / Double Metaphone, NYSIIS,
+  Caverphone). The Java analogue is `commons-text` similarity +
+  `commons-codec` language; Python's is `rapidfuzz` / `jellyfish`; .NET
+  consumers currently pull FuzzySharp or Fastenshtein. Span-based,
+  allocation-free, KAT-driven — the same profile as the check-digit
+  family it conceptually neighbours.
+- **`Bodu.Globalization.Recurrence`** — recurrence-rule evaluation:
+  RFC 5545 `RRULE` parse + occurrence enumeration, and cron-expression
+  parsing with next / previous-occurrence queries. Java: ical4j and
+  Quartz's cron; Python: `dateutil.rrule` and `croniter`; .NET reaches
+  for Ical.Net, Cronos, or NCrontab. A natural sibling of the calendar
+  rule engine — the date-calculation strategy seam and working-day
+  extensions already exist, and `NotableDateService` consumers ask
+  "when is the next occurrence" in exactly this shape. Recurrence
+  evaluation only; a read-only `.ics` (iCalendar) reader reusing the
+  STJ-quartet pattern is a possible follow-on, not initial scope.
 - **`Bodu.Identifiers`** — ULID, Snowflake, NanoID, KSUID generation and
   parsing. Ubiquitous independently-built functionality with no BCL home,
   and a natural consumer of the existing Crockford Base32 support (in
   `Bodu.IO.Hashing`) and the `Bodu.Text.Encoding` alphabets. Pairs
   naturally with **Sqids** (reversible short-ID encoding), which could
-  live here or in `Bodu.Text.Encoding`.
+  live here or in `Bodu.Text.Encoding`. (Note: `Guid.CreateVersion7`
+  ships in the BCL from `net9.0`, so the candidate's durable value
+  concentrates in ULID / Snowflake / NanoID / KSUID and their string
+  encodings, not UUIDv7 generation itself.)
+- **`Bodu.Text.Diff`** — sequence and text differencing: Myers O(ND)
+  diff over generic sequences, line / word / char inline diff, and
+  unified-diff (`@@`-hunk) read / write. Python ships this *in the
+  stdlib* (`difflib`); Java uses `java-diff-utils`; .NET has no BCL
+  story and pulls DiffPlex. Self-contained and purely algorithmic — the
+  same profile as `Bodu.IO.Hashing`. Three-way merge is a possible later
+  layer, not initial scope.
+- **`Bodu.IO.FileSignatures`** — content-type detection from leading
+  magic bytes (ZIP / OLE2 / PDF / PNG / ELF / …), exposed through a
+  name-resolvable registry like `BinaryEncodings`. Python:
+  `python-magic` / `filetype`; Java: Tika's detector (commonly pulled
+  for this alone); .NET: MimeDetective / FileSignatures. Complements
+  `EncodingDetection` in Core (text sniffing) with the binary side, and
+  gives `Bodu.IO.Compound` / `Bodu.Formats.*` a shared front door for
+  "what is this file?".
+- **`Bodu.Formats.Mime`** — a read-only RFC 5322 / MIME (`.eml`) message
+  reader: header parsing with encoded-word (RFC 2047) decoding, the
+  multipart body tree, and attachment extraction. Python ships `email`
+  in the stdlib; Java has jakarta.mail; .NET's only real option is
+  MimeKit. Pairs with the `.msg` candidate above so the two email
+  containers share one reading story, and consumes `QuotedPrintable` /
+  `Base64` from `Bodu.Text.Encoding`. Read-only — composing and sending
+  mail stay out of scope.
+- **`Bodu.Globalization.PhoneNumbers`** — E.164 phone-number parse /
+  validate / format with per-region metadata packs mirroring the
+  `Calendar.Data.<Region>` pattern. Google's libphonenumber is among the
+  most-adopted utility libraries in the Java world and `phonenumbers`
+  its Python twin; .NET consumers use the `libphonenumber-csharp` port.
+  The honest cost is metadata upkeep (numbering plans change
+  constantly) — scope discipline is parse / format / validate only, no
+  carrier lookup or geocoding, and the pack split keeps the data out of
+  the core assembly.
+- **`Bodu.Text.Transliteration`** — Unicode-to-ASCII folding (the
+  `unidecode` operation) and slug generation. Python: `unidecode` +
+  `python-slugify`; Java: ICU4J's `Transliterator` (often pulled for
+  this alone); .NET: Slugify.Core / Unidecode.NET. Data-driven mapping
+  tables and span-based transforms — the `Bodu.Text.Encoding` profile
+  applied to text normalization.
 - **`Bodu.Functional`** — if the `Bodu.Core/Functional` seam grows beyond
   a couple of types, extract `Result<T>` / `Option<T>` /
   `Either<TLeft,TRight>` and the railway-oriented combinators into a
   dedicated package rather than bloating Core. This is the single
   most-reached-for independently-built .NET surface.
+- **`Bodu.Units`** — dimensioned quantities and unit conversion over
+  generic math (length / mass / duration / data size / …, with
+  compile-time dimension safety on the `Money<TCurrency>` model).
+  Python: `pint`; Java: JSR-385 / Indriya; .NET: UnitsNet, one of the
+  most-depended-on community packages. The unit catalogue would be
+  generated by an out-of-band tool exactly like the ISO 4217
+  `CurrencyCode` pipeline. Large surface — needs an explicit scoping
+  pass before adoption.
+- **`Bodu.Globalization.Humanize`** — human-readable rendering: relative
+  time ("3 hours ago"), byte sizes, ordinals, number-to-words, English
+  pluralization. Python: `humanize` / `inflection`; Java: spread across
+  `commons-lang` and one-off helpers; .NET: Humanizer — a top-tier
+  community package. The scope risk is localization sprawl: an
+  invariant-English core with per-culture packs (the data-pack pattern
+  again) is the only shape worth shipping; without that discipline this
+  stays a candidate, not a commitment.
 - **Numeric value types in `Bodu.Numerics`** — `BigDecimal`,
   running-statistics aggregates, and (later) a generic `Complex<T>`. These
   extend the existing generic-math project rather than needing a new one;
