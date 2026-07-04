@@ -317,8 +317,12 @@ public sealed class BoeExchangeRateProvider
         {
             table = await _source.GetTableAsync(startDate, endDate, cancellationToken).ConfigureAwait(false);
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
         {
+            // Only the failures a fetch is expected to produce — transport, stream, and malformed-feed errors
+            // (ExchangeRateFormatException derives from FormatException) — are logged as feed-load failures.
+            // Anything else indicates a bug and propagates untouched; cancellation (including HttpClient
+            // timeouts, which surface as TaskCanceledException) is likewise never logged as a failure.
             Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, startDate, endDate, ex);
             throw;
         }

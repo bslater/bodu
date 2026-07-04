@@ -183,8 +183,12 @@ public abstract class PairWebExchangeRateProvider<TSeries>
         {
             data = await _source.GetPairAsync(request, cancellationToken).ConfigureAwait(false);
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
         {
+            // Only the failures a fetch is expected to produce — transport, stream, and malformed-feed errors
+            // (ExchangeRateFormatException derives from FormatException) — are logged as pair-load failures.
+            // Anything else indicates a bug and propagates untouched; cancellation (including HttpClient
+            // timeouts, which surface as TaskCanceledException) is likewise never logged as a failure.
             WebExchangeRateProviderLog.PairLoadFailed(_logger, _options.DownloadFailedLogLevel, label, ex);
             throw;
         }

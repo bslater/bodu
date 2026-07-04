@@ -82,6 +82,30 @@ internal sealed class StubPairSource
 }
 
 /// <summary>
+/// A pair source that throws a supplied exception from every fetch, used to observe the provider's failure-logging and
+/// rethrow behavior.
+/// </summary>
+internal sealed class ThrowingPairSource
+    : IExchangeRatePairSource<string>
+{
+    /// <summary>The exception thrown by every fetch.</summary>
+    private readonly Exception _exception;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ThrowingPairSource" /> class.
+    /// </summary>
+    /// <param name="exception">The exception to throw from every fetch.</param>
+    public ThrowingPairSource(Exception exception)
+    {
+        _exception = exception;
+    }
+
+    /// <inheritdoc />
+    public ValueTask<PairRateData<string>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default) =>
+        throw _exception;
+}
+
+/// <summary>
 /// A minimal <see cref="PairWebExchangeRateProvider{TSeries}" /> over a <see cref="StubPairSource" /> for exercising the
 /// shared base behaviour directly.
 /// </summary>
@@ -93,8 +117,9 @@ internal sealed class TestPairWebExchangeRateProvider
     /// </summary>
     /// <param name="source">The pair source.</param>
     /// <param name="options">The provider options.</param>
-    public TestPairWebExchangeRateProvider(IExchangeRatePairSource<string> source, WebExchangeRateProviderOptions options)
-        : base(source, options, logger: null, ownedHttpClient: null, timeProvider: null)
+    /// <param name="logger">An optional logger receiving the provider diagnostics.</param>
+    public TestPairWebExchangeRateProvider(IExchangeRatePairSource<string> source, WebExchangeRateProviderOptions options, Microsoft.Extensions.Logging.ILogger? logger = null)
+        : base(source, options, logger, ownedHttpClient: null, timeProvider: null)
     {
     }
 
