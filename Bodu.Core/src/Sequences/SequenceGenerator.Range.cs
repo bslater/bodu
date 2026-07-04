@@ -108,14 +108,12 @@ public static partial class SequenceGenerator
         {
             yield return i;
 
-            try
-            {
-                i = checked(i + step);
-            }
-            catch (OverflowException)
-            {
+            // Terminate cleanly when the next step would overflow int, using an explicit pre-check rather than
+            // catching an exception per sequence end (the terminating condition is data, not control flow).
+            if (step > 0 ? i > int.MaxValue - step : i < int.MinValue - step)
                 yield break;
-            }
+
+            i += step;
         }
     }
 

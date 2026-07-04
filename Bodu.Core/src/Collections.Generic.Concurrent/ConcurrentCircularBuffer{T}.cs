@@ -29,8 +29,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// </para>
 /// <para>
 /// When <see cref="AllowOverwrite" /> is <see langword="true" />, enqueuing into a full buffer evicts the oldest
-/// element and raises the <see cref="ItemEvicted" /> event (after removal). Handler exceptions are caught and
-/// suppressed; this differs intentionally from the non-concurrent <see cref="CircularBuffer{T}" />, which propagates
+/// element and raises the <see cref="ItemEvicted" /> event (after removal). Ordinary handler exceptions are caught and
+/// suppressed (a process-fatal <see cref="OutOfMemoryException" /> still propagates); this differs intentionally from
+/// the non-concurrent <see cref="CircularBuffer{T}" />, which propagates
 /// handler exceptions. Under MPMC the eviction has already been committed by the time the event fires (the head counter
 /// has advanced and the slot has been freed by another consumer or producer running in parallel), so propagating a
 /// handler exception cannot abort the eviction and would only obscure the cause of failure for unrelated callers.
@@ -197,7 +198,9 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Exceptions thrown by handlers are caught and suppressed. Each subscriber's invocation is guarded independently
+    /// Ordinary exceptions thrown by handlers are caught and suppressed; a process-fatal
+    /// <see cref="OutOfMemoryException" /> is allowed to propagate to the caller of <see cref="Enqueue" /> rather than
+    /// being masked. Each subscriber's invocation is guarded independently
     /// so that a throwing handler cannot prevent later handlers from receiving the notification.
     /// </para>
     /// <para>
@@ -205,6 +208,16 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// exceptions to the caller of <see cref="Enqueue" />. Under MPMC the eviction has already been committed by the
     /// time this event fires, so propagating the exception would block the caller for a failure unrelated to their own
     /// write and could not undo the eviction.
+    /// </para>
+    /// <para>
+    /// <strong>Count under contention.</strong> When multiple producers overwrite a full buffer concurrently, a
+    /// single logical "enqueue into a full buffer" can trigger more than one eviction: a producer may evict the
+    /// oldest element to free a slot, lose that freed slot to another producer before it can claim it, and evict
+    /// again. Each eviction still removes a distinct real element in FIFO order and fires this event exactly once, so
+    /// data is never lost or duplicated — but the total number of firings is an <em>upper bound</em> on the number of
+    /// admissions, not a one-to-one signal. A subscriber counting evictions against enqueues will see them diverge
+    /// under write pressure. In the uncontended (single-producer) case the ratio is exactly one eviction per
+    /// overflow admission. Handlers run inside the lock-free dequeue path, so they must not perform heavy work.
     /// </para>
     /// </remarks>
     public event Action<T>? ItemEvicted;
@@ -605,7 +618,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
     /// <summary>
     /// Evicts exactly one item from the head (used when overwriting). Fires <see cref="ItemEvicted" /> after removal.
-    /// Handler exceptions are swallowed.
+    /// Ordinary handler exceptions are isolated per handler and suppressed; a process-fatal
+    /// <see cref="OutOfMemoryException" /> is allowed to propagate.
     /// </summary>
     /// <returns>
     /// <see langword="true" /> if an item was evicted; <see langword="false" /> if the buffer was empty.
@@ -648,8 +662,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
                         {
                             handler(value!);
                         }
-                        catch
-                        { /* swallow */
+                        catch (Exception ex) when (ex is not OutOfMemoryException)
+                        { /* isolate ordinary handler failures; let process-fatal exceptions propagate */
                         }
                     }
                 }
@@ -885,49 +899,52 @@ public sealed partial class ConcurrentCircularBuffer<T>
     }
 
     /// <summary>
-    /// Ring slot holding a coordination sequence number and a stored value, padded to a full cache line to prevent
-    /// false sharing between adjacent slots on multi-core hardware.
+    /// Ring slot holding a coordination sequence number and a stored value, with trailing padding to prevent false
+    /// sharing between adjacent slots on multi-core hardware.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Each <see cref="Slot" /> is sized to 64 bytes — a typical CPU cache line — via sequential layout with explicit
-    /// padding fields. This eliminates false sharing between concurrently accessed producer and consumer slots, which
-    /// would otherwise cause unnecessary cache coherence traffic and reduce throughput on multi-core systems.
+    /// The two hot fields — <see cref="Sequence" /> (written on every enqueue and dequeue) and <see cref="Value" />
+    /// (written on every enqueue) — are declared first, followed by seven <see cref="long" /> padding fields. Under
+    /// <see cref="LayoutKind.Sequential" /> the declaration order is the memory order, so the padding trails the hot
+    /// fields and isolates them from the <em>next</em> slot's hot fields, pushing the struct past a 64-byte cache
+    /// line. Padding placed ahead of the hot fields would not achieve this — it would only separate them from the
+    /// slot's own cold prefix while leaving them adjacent to the following slot.
     /// </para>
     /// <para>
     /// <see cref="LayoutKind.Explicit" /> cannot be used here because the CLR prohibits explicit layout on structs
-    /// nested within generic types. <see cref="LayoutKind.Sequential" /> with padding fields is the correct alternative
-    /// and produces an equivalent in-memory footprint.
+    /// nested within generic types. <see cref="LayoutKind.Sequential" /> with trailing padding fields is the correct
+    /// alternative.
     /// </para>
     /// </remarks>
     [StructLayout(LayoutKind.Sequential)]
     private struct Slot
     {
-        /// <summary>Aligns <see cref="Value" /> to an 8-byte boundary on all supported platforms.</summary>
-        private readonly int _sequencePadding;
-
-        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing. Together with the other padding fields, pads the struct to 64 bytes: 4 (Sequence) + 4 (pad) + 8 (Value ref) + 6×8 (pad) = 64.</summary>
-        private readonly long _pad0;
-
-        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing.</summary>
-        private readonly long _pad1;
-
-        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing.</summary>
-        private readonly long _pad2;
-
-        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing.</summary>
-        private readonly long _pad3;
-
-        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing.</summary>
-        private readonly long _pad4;
-
-        /// <summary>Padding to isolate the slot onto its own cache line and avoid false sharing.</summary>
-        private readonly long _pad5;
-
         /// <summary>The Vyukov sequence number used to coordinate producers and consumers for this slot.</summary>
         public int Sequence;
 
         /// <summary>The stored element. Written by the producer, cleared by the consumer.</summary>
         public T? Value;
+
+        /// <summary>Trailing padding to isolate this slot's hot fields from the next slot's, avoiding false sharing.</summary>
+        private readonly long _pad0;
+
+        /// <summary>Trailing padding to isolate this slot's hot fields from the next slot's, avoiding false sharing.</summary>
+        private readonly long _pad1;
+
+        /// <summary>Trailing padding to isolate this slot's hot fields from the next slot's, avoiding false sharing.</summary>
+        private readonly long _pad2;
+
+        /// <summary>Trailing padding to isolate this slot's hot fields from the next slot's, avoiding false sharing.</summary>
+        private readonly long _pad3;
+
+        /// <summary>Trailing padding to isolate this slot's hot fields from the next slot's, avoiding false sharing.</summary>
+        private readonly long _pad4;
+
+        /// <summary>Trailing padding to isolate this slot's hot fields from the next slot's, avoiding false sharing.</summary>
+        private readonly long _pad5;
+
+        /// <summary>Trailing padding to isolate this slot's hot fields from the next slot's, avoiding false sharing.</summary>
+        private readonly long _pad6;
     }
 }

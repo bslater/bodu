@@ -65,18 +65,13 @@ public static partial class SequenceGenerator
 
         while (true)
         {
-            long sum;
-            try
-            {
-                checked
-                {
-                    sum = prev + next;
-                }
-            }
-            catch (OverflowException)
-            {
-                yield break; // stop gracefully on overflow
-            }
+            // Terminate cleanly when the next term would overflow long, using an explicit pre-check rather than
+            // catching an exception per sequence end. From the second term onward both operands are non-negative, so
+            // the guard is exact; the initial prev = -1 (with next = 1) cannot overflow.
+            if (prev > 0 && next > long.MaxValue - prev)
+                yield break;
+
+            long sum = prev + next;
 
             if (sum >= max)
                 yield break;
