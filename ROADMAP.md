@@ -330,6 +330,42 @@ Forward-looking:
   (`file10` sorts after `file2`; Python's `natsort`, the Explorer
   `StrCmpLogicalW` behaviour) exposed as an `IComparer<string>` beside
   the existing extension surfaces.
+- **Navigable / order-statistic sorted collections** — the largest
+  remaining collection gap versus Java and Python: a sorted set and
+  sorted dictionary supporting *nearest-neighbour* queries (floor /
+  ceiling / higher / lower), *rank / select* (index-of-element, k-th
+  smallest), and cheap range views. Java's `TreeMap` / `NavigableMap` /
+  `NavigableSet` and Python's `sortedcontainers` (`SortedList` /
+  `SortedDict`, top-tier PyPI adoption) make these table stakes; the
+  BCL's `SortedSet<T>` offers only `GetViewBetween` (no floor/ceiling,
+  no rank) and `SortedList<,>` pays O(n) inserts for its indexer.
+  Working names `NavigableSet<T>` / `NavigableDictionary<,>`; a
+  skip-list backing would also open the door to a concurrent sorted map
+  (Java's `ConcurrentSkipListMap`), which has no BCL analogue at all.
+- **`BiDictionary<TKey,TValue>`** — a bidirectional one-to-one map with
+  an inverse view and configurable duplicate-value policy. Guava's
+  `BiMap`, Python's `bidict`, Commons Collections' `BidiMap`; in .NET
+  it is perpetually hand-rolled as two dictionaries.
+- **`Table<TRow,TColumn,TValue>`** — a two-key map with first-class row
+  and column views (Guava `Table`). `Dictionary<(R,C),V>` covers plain
+  lookup, so the candidate's value is precisely the row / column
+  projections and per-row iteration; adopt only with those views.
+- **Layered and defaulting dictionary utilities** — a read-through
+  `ChainMap`-style view over an ordered list of dictionaries (Python
+  stdlib `ChainMap`, Commons `CompositeMap`; precedence semantics
+  aligned with `Bodu.Text.Configuration`'s resolver), and a
+  `defaultdict`-style value-factory wrapper for the miss-populate
+  idiom.
+- **A growable bit set** — Java's `BitSet` semantics: auto-growing,
+  `NextSetBit` / set-bit enumeration, cardinality, and in-place logical
+  ops. The BCL's `BitArray` is fixed-size, exposes none of the query
+  surface, and its enumerator boxes per bit; Python fills the same gap
+  with the `bitarray` package.
+- **Trie-family extensions in `Collections.Generic.Trees`** — an
+  Aho-Corasick automaton for multi-pattern string search (Java
+  `ahocorasick`, Python `pyahocorasick`; .NET pulls independent ports)
+  and PATRICIA / radix compression as siblings of the existing `Trie` /
+  `Trie<TValue>`.
 
 ### `Bodu.Security.Cryptography`
 
