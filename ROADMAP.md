@@ -276,7 +276,10 @@ is now:
 3. **Cut Wave 1–2 packages** (Core, Numerics, IO.Hashing, Text.Encoding,
    Security.Cryptography, then the self-contained text/format libraries)
    to exercise package-validation on brand-new package IDs before the
-   coordinated Calendar/Financial waves.
+   coordinated Calendar/Financial waves. Gate: decide the
+   `Bodu.Collections` package-split question (see the `Bodu.Core`
+   section) before Core's first package is tagged — it is free now and
+   breaking afterwards.
 4. **Consolidate the two text-format tiers.** The repository has two
    parallel shapes: the modern `Utf8*` ref-struct quartet
    (Bencode/Toml/Yaml) and the older `*Reader`/`*Writer`/`*Document`
@@ -311,6 +314,23 @@ buffers/collections/extensions base, it now carries:
 
 Forward-looking:
 
+- **Decide the `Bodu.Collections` package split — before Wave 1.** The
+  collections pillar (`Collections.Generic` + `.Concurrent` + `.Graphs`
+  + `.Trees`, plus the gap items below) is now the bulk of Core and
+  still growing, while every other Bodu package depends on Core mainly
+  for `ThrowHelper`, the buffers, and the extension surfaces. Extracting
+  the pillar into a **`Bodu.Collections`** package would leave Core as
+  the small always-referenced primitive layer and make the
+  data-structure catalogue an opt-in dependency — the same motive as the
+  `WeekPattern` extraction below. Namespaces (`Bodu.Collections.*`)
+  would not change, only the assembly/package boundary. Nothing has
+  been published yet, so the split is free today and a breaking change
+  the day after `Bodu.Core/v1.0.0` is tagged — this must be decided
+  before the Wave 1 cut. Naming inside the pillar stays BCL-style
+  regardless (`MultiValueDictionary`, `RangeDictionary`,
+  `BiDictionary`, `Multiset`, `EvictingDictionary`) rather than the
+  Java-style `MultiMap` / `RangeMap` / `BiMap` / `MultiSet` /
+  `LruCache` synonyms.
 - **Extract `WeekPattern` to `Bodu.Globalization.WeekPattern`** now that
   it is a `readonly partial struct` with a struct enumerator, so
   globalization-adjacent packages can depend on the pattern without
@@ -330,11 +350,13 @@ Forward-looking:
   LINQ: anything the BCL has since shipped (`Chunk`, `CountBy`,
   `AggregateBy`, `Index`) is excluded, and each candidate operator must
   be re-checked against the current BCL before landing.
-- **Expiring / frequency-aware cache variants** — a TTL cache and an LFU
-  (or W-TinyLFU) sibling alongside the recency-based
-  `EvictingDictionary<,>`, covering the `cachetools` / Guava Cache /
-  Caffeine niche that .NET consumers currently fill with
-  BitFaster.Caching.
+- **A time-based expiry layer for `EvictingDictionary<,>`** — the
+  policy enum already covers FIFO / LRU / LFU / MRU / random /
+  second-chance, so capacity-triggered eviction is done; the remaining
+  `cachetools` / Guava Cache / Caffeine niche is *time-to-live*
+  (per-entry TTL and sliding expiration), plus optionally a W-TinyLFU
+  admission policy. .NET consumers currently reach for
+  BitFaster.Caching for both.
 - **A natural-order string comparer** — numeric-aware ordering
   (`file10` sorts after `file2`; Python's `natsort`, the Explorer
   `StrCmpLogicalW` behaviour) exposed as an `IComparer<string>` beside
@@ -375,6 +397,23 @@ Forward-looking:
   `ahocorasick`, Python `pyahocorasick`; .NET pulls independent ports)
   and PATRICIA / radix compression as siblings of the existing `Trie` /
   `Trie<TValue>`.
+- **A set-backed value-collection option for
+  `MultiValueDictionary<,>`** — the type is list-backed today
+  (duplicates per key allowed, `IReadOnlyList<TValue>` views), which is
+  Guava's `ListMultimap`. Guava's other half, `SetMultimap`
+  (deduplicated per-key values), has no Bodu or BCL expression — a
+  backing-semantics option (list vs set, with the comparer plumbed
+  through) closes it without a second type.
+- **`IntervalTree<T>` / `IntervalTree<T,TValue>`** — *overlapping*
+  intervals with stabbing ("all intervals containing x") and
+  overlap-window queries in O(log n + k). Genuinely distinct from the
+  existing range family: `RangeSet<T>` / `RangeDictionary<,>` are
+  sorted non-overlapping maps that throw on overlapping inserts, and
+  `Bodu.Numerics`' `IntervalSet<T>` normalizes to disjoint ranges.
+  Java has no in-box analogue (Guava `RangeMap` coalesces too); Python
+  consumers pull `intervaltree`; .NET ports are scattered one-off
+  packages. Scheduling-conflict, genomics, and time-series overlap
+  queries are the driving use cases.
 - **An evict-on-overflow mode for the bounded `Deque<T>`** — Python's
   `deque(maxlen=N)` silently discards from the *opposite* end when an
   add overflows a full deque; Bodu's fixed-capacity mode
