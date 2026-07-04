@@ -62,4 +62,15 @@ internal static partial class Log
     /// <param name="exception">The exception that caused the failure.</param>
     [LoggerMessage(EventId = 4203, Message = "Failed to download BoE range '{startDate}'..'{endDate}'")]
     public static partial void FeedLoadFailed(ILogger logger, LogLevel level, DateOnly startDate, DateOnly endDate, Exception exception);
+
+    /// <summary>
+    /// Logs that a range download threw an exception type the fetch is not expected to produce, indicating a probable
+    /// bug rather than a transport or data failure.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="startDate">The inclusive start of the range whose download failed.</param>
+    /// <param name="endDate">The inclusive end of the range whose download failed.</param>
+    /// <param name="exception">The unexpected exception.</param>
+    [LoggerMessage(EventId = 4206, Level = LogLevel.Error, Message = "Unexpected error downloading BoE range '{startDate}'..'{endDate}'")]
+    public static partial void FeedLoadUnexpectedError(ILogger logger, DateOnly startDate, DateOnly endDate, Exception exception);
 }

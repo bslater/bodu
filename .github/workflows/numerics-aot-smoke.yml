@@ -40,7 +40,11 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
 
     - name: Publish AOT smoke app
-      run: dotnet publish Bodu.Numerics/aot/Bodu.Numerics.AotSmoke.csproj -c Release -r linux-x64 -p:PublishAot=true
+      # PublishAot is set inside the AotSmoke csproj rather than passed with -p: a command-line
+      # -p:PublishAot=true is a global MSBuild property that propagates to every project in the
+      # restore graph — including the netstandard2.0 Bodu.CodeStyle analyzer projects wired in as
+      # analyzer-only ProjectReferences — which fails restore with NETSDK1207.
+      run: dotnet publish Bodu.Numerics/aot/Bodu.Numerics.AotSmoke.csproj -c Release -r linux-x64
 
     - name: Run the native binary
       run: ./Bodu.Numerics/aot/bin/Release/net8.0/linux-x64/publish/Bodu.Numerics.AotSmoke

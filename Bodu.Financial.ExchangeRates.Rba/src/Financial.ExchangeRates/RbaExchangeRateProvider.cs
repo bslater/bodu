@@ -353,9 +353,19 @@ public sealed class RbaExchangeRateProvider
         {
             table = await _source.GetTableAsync(era, cancellationToken).ConfigureAwait(false);
         }
+        catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
+        {
+            // Only the failures a fetch is expected to produce — transport, stream, and malformed-feed errors
+            // (ExchangeRateFormatException derives from FormatException) — are logged as era-load failures.
+            Log.EraLoadFailed(_logger, _options.DownloadFailedLogLevel, era.Label, ex);
+            throw;
+        }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.EraLoadFailed(_logger, _options.DownloadFailedLogLevel, era.Label, ex);
+            // Anything else indicates a probable bug: log it under a distinct event id at Error so it stays
+            // visible in telemetry without being relabelled as an era failure, then rethrow. Cancellation
+            // (including HttpClient timeouts, which surface as TaskCanceledException) is never logged.
+            Log.EraLoadUnexpectedError(_logger, era.Label, ex);
             throw;
         }
 

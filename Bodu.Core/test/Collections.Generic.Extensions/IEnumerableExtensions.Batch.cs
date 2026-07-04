@@ -126,6 +126,49 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     }
 
     /// <summary>
+    /// Verifies that a <see langword="null" /> source throws <see cref="ArgumentNullException" /> eagerly at the call
+    /// site, before the result is enumerated, matching the eager argument validation of the BCL LINQ operators. The
+    /// result is deliberately not enumerated so a deferred check could not satisfy this test.
+    /// </summary>
+    [TestMethod]
+    public void Batch_WhenSourceIsNull_ShouldThrowExactlyWithoutEnumerating()
+    {
+        IEnumerable<int>? source = null!;
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.Batch(2);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> source passed to the projecting overload throws
+    /// <see cref="ArgumentNullException" /> eagerly at the call site, before the result is enumerated.
+    /// </summary>
+    [TestMethod]
+    public void Batch_WithSelector_WhenSourceIsNull_ShouldThrowExactlyWithoutEnumerating()
+    {
+        IEnumerable<int>? source = null!;
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.Batch(2, static item => item);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> source passed to the indexed projecting overload throws
+    /// <see cref="ArgumentNullException" /> eagerly at the call site, before the result is enumerated.
+    /// </summary>
+    [TestMethod]
+    public void Batch_WithIndexSelector_WhenSourceIsNull_ShouldThrowExactlyWithoutEnumerating()
+    {
+        IEnumerable<int>? source = null!;
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.Batch(2, static (item, _) => item);
+        });
+    }
+
+    /// <summary>
     /// Verifies that batching an empty source produces an empty sequence with no batches.
     /// </summary>
     [TestMethod]

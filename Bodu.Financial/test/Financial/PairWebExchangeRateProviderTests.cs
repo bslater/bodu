@@ -11,7 +11,7 @@ namespace Bodu.Financial;
 /// tracking, idempotent loading, pair discovery, and the rate stamping carried out by the base.
 /// </summary>
 [TestClass]
-public class PairWebExchangeRateProviderTests
+public partial class PairWebExchangeRateProviderTests
 {
     private static readonly DateOnly RangeStart = new(2023, 1, 1);
     private static readonly DateOnly RangeEnd = new(2023, 1, 31);
