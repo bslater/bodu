@@ -135,6 +135,13 @@ public abstract class WebExchangeRateProvider
     /// <value>
     /// <see langword="true" /> when synchronous getters may block on the network; otherwise <see langword="false" />.
     /// </value>
+    /// <remarks>
+    /// When enabled, the synchronous getters block on the async fetch, which can deadlock if invoked on a thread
+    /// carrying a captured <see cref="SynchronizationContext" /> (classic ASP.NET, a WPF/WinForms UI thread). The
+    /// synchronous path guards against this by throwing <see cref="InvalidOperationException" /> when
+    /// <see cref="SynchronizationContext.Current" /> is non-null; enable this only for code that calls the getters
+    /// from a thread-pool thread (or use the asynchronous API).
+    /// </remarks>
     protected abstract bool AllowSynchronousNetworkAccess { get; }
 
     /// <summary>
@@ -519,8 +526,18 @@ public abstract class WebExchangeRateProvider
     /// <param name="pair">The currency pair to fetch.</param>
     /// <param name="startDate">The inclusive start of the window.</param>
     /// <param name="endDate">The inclusive end of the window.</param>
+    /// <exception cref="InvalidOperationException">
+    /// The current thread has a captured <see cref="SynchronizationContext" />, on which blocking the async load can
+    /// deadlock.
+    /// </exception>
     private void BlockingLoad(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate)
     {
+        // Blocking on async I/O from a thread with a captured SynchronizationContext (classic ASP.NET, a WPF/WinForms
+        // UI thread) can deadlock if any awaited continuation posts back to that context. Convert that hang into an
+        // immediate, diagnosable failure rather than letting the caller wedge.
+        if (SynchronizationContext.Current is not null)
+            throw new InvalidOperationException(FinancialResourceStrings.Op_Invalid_SynchronousNetworkAccessOnCapturedContext);
+
 #pragma warning disable VSTHRD002 // Intentional opt-in synchronous fetch, gated by AllowSynchronousNetworkAccess.
         EnsureLoadedAsync(pair, startDate, endDate, CancellationToken.None).AsTask().GetAwaiter().GetResult();
 #pragma warning restore VSTHRD002

@@ -261,6 +261,9 @@
   <data name="Op_Invalid_CurrencyMismatchInAs" xml:space="preserve">
     <value>Cannot convert Money with currency '{0}' to Money&lt;{1}&gt; (currency '{2}').</value>
   </data>
+  <data name="Op_Invalid_SynchronousNetworkAccessOnCapturedContext" xml:space="preserve">
+    <value>Synchronous network access must not be invoked on a thread with a captured SynchronizationContext, which can deadlock; call the asynchronous API or invoke this from a thread-pool thread.</value>
+  </data>
   <data name="Op_Invalid_CurrencyCashRoundingNegative" xml:space="preserve">
     <value>{0}.{1} must be non-negative, but reported {2}.</value>
   </data>

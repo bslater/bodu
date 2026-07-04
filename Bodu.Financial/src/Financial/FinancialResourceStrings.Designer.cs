@@ -68,6 +68,15 @@ namespace Bodu.Financial {
                 return ResourceManager.GetString("Arg_Invalid_AllocationRatiosAllZero", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Synchronous network access must not be invoked on a thread with a captured SynchronizationContext, which can deadlock; call the asynchronous API or invoke this from a thread-pool thread..
+        /// </summary>
+        internal static string Op_Invalid_SynchronousNetworkAccessOnCapturedContext {
+            get {
+                return ResourceManager.GetString("Op_Invalid_SynchronousNetworkAccessOnCapturedContext", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to At least one ratio must be supplied..
