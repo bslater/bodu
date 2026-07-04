@@ -344,6 +344,74 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that deserializing a dictionary key whose text overflows the key type into an <see cref="int" />-keyed
+    /// dictionary throws <see cref="BencodeSerializationException" /> naming the offending key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerKeyTextOverflows_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d20:99999999999999999999i1ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<Dictionary<int, int>>(bytes);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'99999999999999999999'", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a dictionary key that names no member of the enumeration into an enum-keyed
+    /// dictionary throws <see cref="BencodeSerializationException" /> naming the offending key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenEnumKeyTextUndefined_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d6:Purplei1ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<Dictionary<Color, int>>(bytes);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Purple'", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a dictionary key that is not a valid boolean into a <see cref="bool" />-keyed
+    /// dictionary throws <see cref="BencodeSerializationException" /> naming the offending key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenBoolKeyTextInvalid_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:maybei1ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<Dictionary<bool, int>>(bytes);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'maybe'", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a dictionary key that is not a single character into a <see cref="char" />-keyed
+    /// dictionary throws <see cref="BencodeSerializationException" /> naming the offending key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenCharKeyTextNotSingleCharacter_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d3:abci1ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<Dictionary<char, int>>(bytes);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'abc'", StringComparison.Ordinal));
+    }
+
+    /// <summary>
     /// Verifies that a dictionary keyed by an unsupported type (a plain object) is not mapped to a Bencode dictionary
     /// but falls through to the collection path, producing a Bencode list of two-entry key/value dictionaries.
     /// </summary>

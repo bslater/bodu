@@ -397,6 +397,51 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that deserializing a table key whose text overflows the key type into an <see cref="int" />-keyed
+    /// dictionary throws <see cref="TomlSerializationException" /> naming the offending key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerKeyTextOverflows_ShouldThrowTomlSerializationException()
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<Dictionary<int, int>>("99999999999999999999 = 1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'99999999999999999999'", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a table key that is not a valid boolean into a <see cref="bool" />-keyed dictionary
+    /// throws <see cref="TomlSerializationException" /> naming the offending key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenBoolKeyTextInvalid_ShouldThrowTomlSerializationException()
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<Dictionary<bool, int>>("maybe = 1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'maybe'", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a table key that is not a single character into a <see cref="char" />-keyed
+    /// dictionary throws <see cref="TomlSerializationException" /> naming the offending key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenCharKeyTextNotSingleCharacter_ShouldThrowTomlSerializationException()
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<Dictionary<char, int>>("\" abc \" = 1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("abc", StringComparison.Ordinal));
+    }
+
+    /// <summary>
     /// Verifies that a dictionary member keyed by an unsupported type (here <see cref="double" />) is written as a
     /// TOML array of key/value tables rather than a single table, because such a key has no round-trippable table-key
     /// form and the dictionary is treated as a sequence of pairs.

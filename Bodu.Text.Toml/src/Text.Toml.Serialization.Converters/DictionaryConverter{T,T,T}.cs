@@ -171,39 +171,57 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     /// </exception>
     private TKey ParseKey(string text)
     {
-        try
+        switch (_keyKind)
         {
-            switch (_keyKind)
-            {
-                case DictionaryKeyKind.String:
-                    return (TKey)(object)text;
+            case DictionaryKeyKind.String:
+                return (TKey)(object)text;
 
-                case DictionaryKeyKind.Integer:
+            case DictionaryKeyKind.Integer:
+                // Scope the catch to the single conversion known to throw on malformed/overflowing input; an
+                // InvalidCastException or ArgumentException here would indicate a converter-configuration bug and is
+                // deliberately left to propagate rather than being relabelled as a bad-key input error.
+                try
+                {
                     return (TKey)Convert.ChangeType(text, typeof(TKey), CultureInfo.InvariantCulture);
+                }
+                catch (Exception ex) when (ex is FormatException or OverflowException)
+                {
+                    throw KeyParseException(text, ex);
+                }
 
-                case DictionaryKeyKind.Enum:
-                    return (TKey)Enum.Parse(typeof(TKey), text, ignoreCase: true);
+            case DictionaryKeyKind.Enum:
+                return Enum.TryParse(typeof(TKey), text, ignoreCase: true, out object? parsedEnum)
+                    ? (TKey)parsedEnum
+                    : throw KeyParseException(text);
 
-                case DictionaryKeyKind.Guid:
-                    return (TKey)(object)Guid.ParseExact(text, "D");
+            case DictionaryKeyKind.Guid:
+                return Guid.TryParseExact(text, "D", out Guid parsedGuid)
+                    ? (TKey)(object)parsedGuid
+                    : throw KeyParseException(text);
 
-                case DictionaryKeyKind.Boolean:
-                    return (TKey)(object)bool.Parse(text);
+            case DictionaryKeyKind.Boolean:
+                return bool.TryParse(text, out bool parsedBool)
+                    ? (TKey)(object)parsedBool
+                    : throw KeyParseException(text);
 
-                default:
-                    if (text.Length != 1)
-                        throw new FormatException();
-
-                    return (TKey)(object)text[0];
-            }
-        }
-        catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException)
-        {
-            throw new TomlSerializationException(
-                string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_DictionaryKeyParse, text, typeof(TKey)),
-                ex);
+            default:
+                return text.Length == 1
+                    ? (TKey)(object)text[0]
+                    : throw KeyParseException(text);
         }
     }
+
+    /// <summary>
+    /// Builds a <see cref="TomlSerializationException" /> reporting that <paramref name="text" /> is not a valid
+    /// representation of <typeparamref name="TKey" />.
+    /// </summary>
+    /// <param name="text">The offending key text.</param>
+    /// <param name="inner">The underlying parse failure, when one is available.</param>
+    /// <returns>The serialization exception to throw.</returns>
+    private static TomlSerializationException KeyParseException(string text, Exception? inner = null) =>
+        new(
+            string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_DictionaryKeyParse, text, typeof(TKey)),
+            inner);
 
     /// <summary>
     /// Materializes the declared dictionary type from the read entries.
