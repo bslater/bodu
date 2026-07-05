@@ -59,6 +59,10 @@
           items:
             - name: WeekPattern
               href: core/week-pattern.md
+        - name: Bodu.Extensions
+          items:
+            - name: Natural string comparer
+              href: core/natural-string-comparer.md
 - name: Hashing & Cryptography
   href: topics/hashing-and-cryptography.md
   items:
