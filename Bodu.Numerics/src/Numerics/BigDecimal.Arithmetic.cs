@@ -127,13 +127,26 @@ public readonly partial struct BigDecimal
     /// <exception cref="DivideByZeroException">
     /// <paramref name="value" /> is zero and <paramref name="exponent" /> is negative.
     /// </exception>
+    /// <exception cref="OverflowException">
+    /// The resulting scale (<c><paramref name="value" />.Scale × <paramref name="exponent" /></c>) does not fit in an
+    /// <see cref="int" />.
+    /// </exception>
     public static BigDecimal Pow(BigDecimal value, int exponent)
     {
         if (exponent == 0)
             return One;
 
         if (exponent > 0)
-            return new BigDecimal(BigInteger.Pow(value._mantissa, exponent), value._scale * exponent);
+        {
+            // The result scale is scale × exponent. Compute it in 64-bit and reject an out-of-range result before
+            // constructing, so a power-of-ten base (mantissa ±1, where BigInteger.Pow returns cheaply) cannot silently
+            // overflow the scale to a wrong value.
+            long scale = (long)value._scale * exponent;
+            if (scale > int.MaxValue || scale < int.MinValue)
+                throw new OverflowException(NumericsResourceStrings.Overflow_ExponentMagnitude);
+
+            return new BigDecimal(BigInteger.Pow(value._mantissa, exponent), (int)scale);
+        }
 
         return Divide(One, Pow(value, -exponent));
     }
