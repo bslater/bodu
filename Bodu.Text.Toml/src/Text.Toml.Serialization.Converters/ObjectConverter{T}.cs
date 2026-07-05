@@ -92,12 +92,16 @@ internal sealed class ObjectConverter<T>
             }
         }
 
-        var instance = (T)BareConstruct(metadata, values);
-        (instance as ITomlOnDeserializing)?.OnDeserializing();
-        AssignSettableMembers(metadata, values, instance!, options);
-        PopulateExtensionData(metadata, instance, extensionEntries);
-        (instance as ITomlOnDeserialized)?.OnDeserialized();
-        return instance;
+        // Keep the constructed instance boxed through every mutation. For a value type, unboxing to a local T and
+        // then passing it to the reflection-based assignment helpers re-boxes a throwaway copy, so all settable-member
+        // and extension-data writes (and any mutating deserialization callback) would be silently lost. Threading the
+        // single box through and unboxing only at the return preserves those writes.
+        object boxed = BareConstruct(metadata, values);
+        (boxed as ITomlOnDeserializing)?.OnDeserializing();
+        AssignSettableMembers(metadata, values, boxed, options);
+        PopulateExtensionData(metadata, boxed, extensionEntries);
+        (boxed as ITomlOnDeserialized)?.OnDeserialized();
+        return (T)boxed;
     }
 
     /// <inheritdoc />
@@ -212,7 +216,7 @@ internal sealed class ObjectConverter<T>
     /// <param name="metadata">The type metadata.</param>
     /// <param name="instance">The constructed instance.</param>
     /// <param name="entries">The captured unmatched entries, or <see langword="null" /> when none were read.</param>
-    private static void PopulateExtensionData(TypeMetadata metadata, T instance, Dictionary<string, TomlNode?>? entries)
+    private static void PopulateExtensionData(TypeMetadata metadata, object instance, Dictionary<string, TomlNode?>? entries)
     {
         if (entries is null || entries.Count == 0 || metadata.ExtensionData is not { } member)
             return;
@@ -222,11 +226,11 @@ internal sealed class ObjectConverter<T>
             object materialized = member.PropertyType == typeof(TomlObject)
                 ? new TomlObject(entries)
                 : entries;
-            member.SetValue(instance!, materialized);
+            member.SetValue(instance, materialized);
             return;
         }
 
-        if (member.GetValue(instance!) is IDictionary<string, TomlNode?> existing)
+        if (member.GetValue(instance) is IDictionary<string, TomlNode?> existing)
         {
             foreach (KeyValuePair<string, TomlNode?> entry in entries)
                 existing[entry.Key] = entry.Value;
