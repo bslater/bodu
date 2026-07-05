@@ -147,7 +147,7 @@ public sealed partial class Trie<TValue>
     {
         TrieNode<TValue> node = TrieCore.GetOrAddNode(_root, key, Comparer);
         if (node.IsTerminal)
-            throw new ArgumentException(ResourceStrings.Arg_Invalid_DuplicateDictionaryKey, nameof(key));
+            throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_DuplicateDictionaryKey, nameof(key));
 
         node.IsTerminal = true;
         node.Key = new string(key);

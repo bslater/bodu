@@ -176,12 +176,12 @@ public sealed partial class Tree<T>
         ThrowHelper.ThrowIfNull(child);
 
         if (child._parent is not null)
-            throw new InvalidOperationException(ResourceStrings.Op_Invalid_NodeAlreadyHasParent);
+            throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_NodeAlreadyHasParent);
 
         for (Tree<T>? node = this; node is not null; node = node._parent)
         {
             if (ReferenceEquals(node, child))
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_Invalid_CircularReference, child.Value));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.Op_Invalid_CircularReference, child.Value));
         }
 
         child._parent = this;

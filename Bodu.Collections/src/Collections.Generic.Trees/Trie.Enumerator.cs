@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Trie{TValue}.Enumerator.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Trie.Enumerator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,52 +8,51 @@ using System.Collections;
 
 namespace Bodu.Collections.Generic.Trees;
 
-public sealed partial class Trie<TValue>
+public sealed partial class Trie
 {
     /// <summary>
-    /// Enumerates the key/value pairs of a <see cref="Trie{TValue}" /> over a snapshot captured when the enumerator is
-    /// created.
+    /// Enumerates the keys of a <see cref="Trie" /> over a snapshot captured when the enumerator is created.
     /// </summary>
     /// <remarks>
     /// The enumerator is fail-fast: if the trie is modified after the enumerator is created, the next call to
     /// <see cref="MoveNext" /> or <see cref="Reset" /> throws <see cref="InvalidOperationException" />.
     /// </remarks>
     public struct Enumerator
-        : IEnumerator<KeyValuePair<string, TValue>>
+        : IEnumerator<string>
     {
         /// <summary>The trie being enumerated, used to detect modification through its version counter.</summary>
-        private readonly Trie<TValue> _owner;
+        private readonly Trie _owner;
 
         /// <summary>The owner's version captured when the enumerator was created, used for fail-fast checks.</summary>
         private readonly int _version;
 
-        /// <summary>The snapshot of key/value pairs captured when the enumerator was created.</summary>
-        private readonly KeyValuePair<string, TValue>[] _items;
+        /// <summary>The snapshot of keys captured when the enumerator was created.</summary>
+        private readonly string[] _items;
 
         /// <summary>The index of the current element, or <c>-1</c> before the first move.</summary>
         private int _index;
 
-        /// <summary>The key/value pair at the current position, or the default value when not on an element.</summary>
-        private KeyValuePair<string, TValue> _current;
+        /// <summary>The key at the current position, or <see langword="null" /> when not on an element.</summary>
+        private string? _current;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Enumerator" /> struct bound to the specified trie.
         /// </summary>
-        /// <param name="owner">The trie whose entries are enumerated.</param>
-        internal Enumerator(Trie<TValue> owner)
+        /// <param name="owner">The trie whose keys are enumerated.</param>
+        internal Enumerator(Trie owner)
         {
             _owner = owner;
             _version = owner._version;
             _items = owner.ToArrayInternal();
             _index = -1;
-            _current = default;
+            _current = null;
         }
 
         /// <inheritdoc />
-        public readonly KeyValuePair<string, TValue> Current => _current;
+        public readonly string Current => _current!;
 
         /// <inheritdoc />
-        readonly object IEnumerator.Current => _current;
+        readonly object IEnumerator.Current => _current!;
 
         /// <inheritdoc />
         /// <exception cref="InvalidOperationException">
@@ -62,7 +61,7 @@ public sealed partial class Trie<TValue>
         public bool MoveNext()
         {
             if (_version != _owner._version)
-                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
+                throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified);
 
             if (_index + 1 < _items.Length)
             {
@@ -71,7 +70,7 @@ public sealed partial class Trie<TValue>
                 return true;
             }
 
-            _current = default;
+            _current = null;
             return false;
         }
 
@@ -82,10 +81,10 @@ public sealed partial class Trie<TValue>
         public void Reset()
         {
             if (_version != _owner._version)
-                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
+                throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified);
 
             _index = -1;
-            _current = default;
+            _current = null;
         }
 
         /// <inheritdoc />
