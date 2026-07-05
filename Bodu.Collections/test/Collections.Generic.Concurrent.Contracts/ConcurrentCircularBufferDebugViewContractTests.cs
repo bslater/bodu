@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Collections.Generic.Contracts;
-
 namespace Bodu.Collections.Generic.Concurrent.Contracts;
 
 /// <summary>

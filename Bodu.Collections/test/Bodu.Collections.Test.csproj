@@ -21,6 +21,8 @@
     <!-- Shared test-double namespaces promoted to Bodu.Test. -->
     <Using Include="Bodu.Test.Collections" />
     <Using Include="Bodu.Test.Comparers" />
+    <!-- Shared contract-test bases promoted to Bodu.Test. -->
+    <Using Include="Bodu.Test.Contracts" />
   </ItemGroup>
 
   <ItemGroup>
