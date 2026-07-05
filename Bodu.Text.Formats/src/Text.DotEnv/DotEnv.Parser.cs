@@ -106,6 +106,10 @@ public static partial class DotEnv
         {
             List<DotEnvEntry> entries = new();
             Dictionary<string, DotEnvEntry> lookup = new(StringComparer.Ordinal);
+
+            // Tracks each key's index in the entry list so LastWins replaces in O(1) instead of scanning the list,
+            // which made a document of many duplicate keys O(n²).
+            Dictionary<string, int> positions = new(StringComparer.Ordinal);
             List<DotEnvComment>? pendingComments = null;
 
             while (!IsEmpty)
@@ -198,7 +202,7 @@ public static partial class DotEnv
 
                         case DuplicateKeyPolicy.LastWins:
                             DotEnvEntry replacement = new(key, value, leadingComments);
-                            int idx = entries.IndexOf(existing);
+                            int idx = positions[key];
                             entries[idx] = replacement;
                             lookup[key] = replacement;
                             break;
@@ -207,6 +211,7 @@ public static partial class DotEnv
                 else
                 {
                     DotEnvEntry entry = new(key, value, leadingComments);
+                    positions[key] = entries.Count;
                     entries.Add(entry);
                     lookup[key] = entry;
                 }
