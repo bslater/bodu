@@ -12,7 +12,7 @@ The container, <xref:Bodu.Collections.Generic.Graphs.Graph`1>, stores an adjacen
 
 ## Static documentation
 
-- **[Core foundations](~/docs/core/index.md)** — the headline collections and where the graph types sit among them.
+- **[Bodu.Collections introduction](~/docs/collections/index.md)** — the headline collections and where the graph types sit among them.
 - **[Graphs and graph algorithms](~/guides/core/graphs.md)** — build a graph, run a traversal or shortest path, sort topologically, find components, and use union-find.
 
 ## Key types
@@ -65,4 +65,4 @@ ShortestPathResult<string> result = GraphAlgorithms.TryShortestPath(graph, "A", 
 - **Topological sort is directed-only.** `TopologicalSort` / `TryTopologicalSort` throw <xref:System.InvalidOperationException> on an undirected graph; `TopologicalSort` additionally throws on a cycle, while `TryTopologicalSort` returns `false` and an empty list.
 - **Connected components are weakly connected.** `ConnectedComponents` treats every edge as undirected and partitions with a <xref:Bodu.Collections.Generic.Graphs.DisjointSet`1>; for a directed graph the result is the weakly connected components.
 - **Not thread-safe.** A <xref:Bodu.Collections.Generic.Graphs.Graph`1> is not safe for concurrent mutation; coordinate writes externally.
-- **See also:** the [core foundations](~/docs/core/index.md) overview and the [graphs guide](~/guides/core/graphs.md).
+- **See also:** the [Bodu.Collections introduction](~/docs/collections/index.md) and the [graphs guide](~/guides/core/graphs.md).

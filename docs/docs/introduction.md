@@ -16,7 +16,9 @@ The foundation every other package builds on — collections, buffers, extension
 
 | Package | What it provides | Target framework |
 |---|---|---|
-| **[Bodu.Core](core/index.md)** | Bounded collections (`CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`), a day-of-week `WeekPattern` value type, pooled buffers, and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized `ThrowHelper`. | `net8.0` |
+| **[Bodu.Core](core/index.md)** | The foundation package — a day-of-week `WeekPattern` value type, pooled buffers, async coordination primitives, railway outcomes (`Option<T>` / `Result<T>` / `Either<TLeft,TRight>`), and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized `ThrowHelper`. | `net8.0` |
+| **[Bodu.Collections](collections/index.md)** | The specialized collection catalogue (depends on `Bodu.Core`; namespaces unchanged) — fixed-capacity rings (`CircularBuffer<T>`, `Deque<T>`), policy-driven caches (`EvictingDictionary<TKey,TValue>` with TTL expiry), navigable sets/dictionaries with rank/select, range-keyed lookups and overlap-storing interval trees, graphs, tries and multi-pattern text search, and the probabilistic sketches. | `net8.0` |
+| **[Bodu.Collections.Concurrent](collections-concurrent/index.md)** | The thread-safe collection companion (depends on `Bodu.Collections`) — the lock-free `ConcurrentCircularBuffer<T>` (Vyukov MPMC, `IProducerConsumerCollection<T>`) and the lock-striped `ConcurrentHashSet<T>` with lock-free reads and snapshot enumeration. | `net8.0` |
 | **[Bodu.Text](text/index.md)** *(namespace in Bodu.Core)* | Encoding-detection and text / byte conversion helpers over `System.Text.Encoding` — BOM-based `EncodingDetection`, plus `EncodingExtensions` and `StringEncodingExtensions` for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. | `net8.0` |
 
 ### [Hashing & Cryptography](topics/hashing-and-cryptography.md)
@@ -73,7 +75,7 @@ Read-only readers for legacy binary container and document formats — a general
 | **[Bodu.IO.Compound](io-compound/index.md)** | A read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (`.xls`, `.doc`, `.ppt`, `.msg`). Navigates the `RootStorage` hierarchy, reads each named stream through a seekable `CompoundStream` cursor (buffered or on-demand), and parses the OLE summary-information property sets. | `net8.0` |
 | **[Bodu.Formats.Excel.Binary](excel/index.md)** | A narrow, read-only BIFF8 (`.xls`) reader built on `Bodu.IO.Compound` that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `net8.0` |
 
-Each package is versioned and released independently — take the one you need and ignore the others. The only shared runtime dependency is `Bodu.Core`, whose `ThrowHelper` provides argument validation for `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Configuration`, `Bodu.Extensions.Configuration.Text`, `Bodu.Text`, `Bodu.Numerics`, `Bodu.Financial`, and `Bodu.IO.Compound`. Beyond that, `Bodu.Text.Formats` references `Bodu.Text.Encoding`; `Bodu.Text.Configuration` builds on `Bodu.Text.Formats`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration` plus `Microsoft.Extensions.Configuration`; and `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch; and `Bodu.Formats.Excel.Binary` builds on `Bodu.IO.Compound` to read BIFF8 `.xls` workbooks.
+Each package is versioned and released independently — take the one you need and ignore the others. The only shared runtime dependency is `Bodu.Core`, whose `ThrowHelper` provides argument validation for `Bodu.Collections`, `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Configuration`, `Bodu.Extensions.Configuration.Text`, `Bodu.Text`, `Bodu.Numerics`, `Bodu.Financial`, and `Bodu.IO.Compound`. Beyond that, `Bodu.Collections` builds on `Bodu.Core`, and `Bodu.Collections.Concurrent` builds on `Bodu.Collections`; `Bodu.Text.Formats` references `Bodu.Text.Encoding`; `Bodu.Text.Configuration` builds on `Bodu.Text.Formats`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration` plus `Microsoft.Extensions.Configuration`; `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch; and `Bodu.Formats.Excel.Binary` builds on `Bodu.IO.Compound` to read BIFF8 `.xls` workbooks.
 
 ## Library introductions
 
@@ -85,12 +87,34 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="core/index.md">Bodu.Core</a></h3>
-  <p>Bounded collections, eviction-aware caches, day-of-week patterns, pooled buffers, and date / numeric / span extensions. Useful in almost any application; depended on internally by the hashing and cryptography packages.</p>
+  <p>Day-of-week patterns, pooled buffers, async coordination and railway primitives, and date / numeric / span extensions. Useful in almost any application; depended on internally by every other Bodu package.</p>
   <div class="bodu-card-links">
     <a href="core/index.md">Introduction</a>
     <a href="core/getting-started.md">Getting started</a>
     <a href="../guides/core/index.md">Guides</a>
+    <a href="xref:Bodu">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="collections/index.md">Bodu.Collections</a></h3>
+  <p>The specialized collection catalogue — bounded rings, eviction-aware caches with TTL expiry, navigable and range-keyed lookups, interval trees, graphs, tries, and probabilistic sketches. Depends on <code>Bodu.Core</code>; namespaces unchanged.</p>
+  <div class="bodu-card-links">
+    <a href="collections/index.md">Introduction</a>
+    <a href="collections/getting-started.md">Getting started</a>
+    <a href="../guides/core/index.md">Guides</a>
     <a href="xref:Bodu.Collections.Generic">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="collections-concurrent/index.md">Bodu.Collections.Concurrent</a></h3>
+  <p>The thread-safe collection companion — a lock-free MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> and a lock-striped <code>ConcurrentHashSet&lt;T&gt;</code>, both with snapshot enumeration. Depends on <code>Bodu.Collections</code>.</p>
+  <div class="bodu-card-links">
+    <a href="collections-concurrent/index.md">Introduction</a>
+    <a href="collections-concurrent/getting-started.md">Getting started</a>
+    <a href="../guides/core/concurrent-collections.md">Guides</a>
+    <a href="xref:Bodu.Collections.Generic.Concurrent">API reference</a>
   </div>
 </div>
 
@@ -290,5 +314,5 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md).
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
 - **[Package matrix](package-matrix.md)** — the authoritative package list with status, dependencies, and install commands.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md).
 - **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel).

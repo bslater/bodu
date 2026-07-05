@@ -7,6 +7,30 @@
       items:
         - name: Overview
           href: core/index.md
+        - name: Bodu.Functional
+          items:
+            - name: Memoization
+              href: core/memoization.md
+            - name: Options, results, and eithers
+              href: core/functional-results.md
+        - name: Bodu.Threading
+          items:
+            - name: Async coordination primitives
+              href: core/async-primitives.md
+        - name: Bodu.Buffers
+          items:
+            - name: Pooled buffer builder
+              href: core/pooled-buffer-builder.md
+        - name: Bodu (root namespace)
+          items:
+            - name: WeekPattern
+              href: core/week-pattern.md
+        - name: Bodu.Extensions
+          items:
+            - name: Natural string comparer
+              href: core/natural-string-comparer.md
+    - name: Bodu.Collections
+      items:
         - name: Choosing a collection
           href: core/choosing-a-collection.md
         - name: Bodu.Collections.Generic
@@ -23,8 +47,6 @@
               href: core/bi-dictionary.md
             - name: Indexed priority queue
               href: core/indexed-priority-queue.md
-            - name: Graphs and graph algorithms
-              href: core/graphs.md
             - name: Indexed and ordered sets
               href: core/ordered-sets.md
             - name: Multiset
@@ -47,40 +69,22 @@
               href: core/layered-and-defaulting-dictionaries.md
             - name: Table (two-key map)
               href: core/table.md
-        - name: Bodu.Collections.Generic.Trees
-          items:
-            - name: Tries and text search
-              href: core/trie.md
-        - name: Bodu.Functional
-          items:
-            - name: Memoization
-              href: core/memoization.md
-            - name: Options, results, and eithers
-              href: core/functional-results.md
-        - name: Bodu.Collections.Generic.Concurrent
-          items:
-            - name: Concurrent collections
-              href: core/concurrent-collections.md
         - name: Bodu.Collections.Probabilistic
           items:
             - name: Probabilistic collections (sketches)
               href: core/probabilistic-collections.md
-        - name: Bodu.Threading
+        - name: Bodu.Collections.Generic.Graphs
           items:
-            - name: Async coordination primitives
-              href: core/async-primitives.md
-        - name: Bodu.Buffers
+            - name: Graphs and graph algorithms
+              href: core/graphs.md
+        - name: Bodu.Collections.Generic.Trees
           items:
-            - name: Pooled buffer builder
-              href: core/pooled-buffer-builder.md
-        - name: Bodu (root namespace)
-          items:
-            - name: WeekPattern
-              href: core/week-pattern.md
-        - name: Bodu.Extensions
-          items:
-            - name: Natural string comparer
-              href: core/natural-string-comparer.md
+            - name: Tries and text search
+              href: core/trie.md
+    - name: Bodu.Collections.Concurrent
+      items:
+        - name: Concurrent collections
+          href: core/concurrent-collections.md
 - name: Hashing & Cryptography
   href: topics/hashing-and-cryptography.md
   items:

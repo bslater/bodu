@@ -13,7 +13,7 @@ The error each sketch carries is one-sided and quantified, which makes the types
 ## Static documentation
 
 - **[Probabilistic collections (sketches)](~/guides/core/probabilistic-collections.md)** — the three usage patterns, the accuracy contracts, sizing guidance, and the when-to-use-which table.
-- **[Introduction](~/docs/core/index.md)** — where the sketches sit among the exact-semantics collections.
+- **[Introduction](~/docs/collections/index.md)** — where the sketches sit among the exact-semantics collections.
 
 ## Key types
 

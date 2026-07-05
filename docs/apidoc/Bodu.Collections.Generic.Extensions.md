@@ -36,5 +36,5 @@ IEnumerable<DirectoryInfo> allDirs = root.EnumerateDirectories()
 
 - **Lazy where possible.** Helpers like `Batch`, `RecursiveSelect`, and `Cache` are lazy. Materialise to `ToList()` / `ToArray()` when you need a stable snapshot.
 - **Argument validation.** Every public extension method validates its arguments via <xref:Bodu.ThrowHelper>.
-- **Packaging.** This extension namespace ships in the `Bodu.Core` package; the concrete collection types in the sibling `Bodu.Collections.*` namespaces ship in the `Bodu.Collections` package.
+- **Packaging.** This extension namespace ships in the `Bodu.Core` package; the concrete collection types in the sibling `Bodu.Collections.*` namespaces ship in the `Bodu.Collections` package, except the thread-safe `Bodu.Collections.Generic.Concurrent` variants, which ship in `Bodu.Collections.Concurrent`.
 - **See also:** the [Bodu.Core introduction](~/docs/core/index.md), the companion <xref:Bodu.Collections.Extensions> namespace, the <xref:Bodu.Sequences> sequence generators, the [Bodu.Extensions](xref:Bodu.Extensions) date / numeric / string extension surface.

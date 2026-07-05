@@ -1,24 +1,24 @@
 ---
-title: Bodu.Core guides
+title: Core Foundations guides
 ---
 
-# Bodu.Core guides
+# Core Foundations guides
 
-Recipe-style walk-throughs for **Bodu.Core**, organized by namespace. Each guide on this page is a focused walk-through of one headline type.
+Recipe-style walk-throughs for the **Core Foundations** package family — **Bodu.Core**, **Bodu.Collections**, and **Bodu.Collections.Concurrent** — organized by namespace. Each guide on this page is a focused walk-through of one headline type.
 
-If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Core introduction](../../docs/core/index.md) and the [getting-started page](../../docs/core/getting-started.md). New to the many collection types? Read **[Choosing a collection](choosing-a-collection.md)** — a decision guide that maps requirements to the correct type. For the auto-generated API reference, see the [Bodu.Collections.Generic namespace page](xref:Bodu.Collections.Generic).
+If you have not yet installed the packages or want the high-level shape of each library, start with the [Bodu.Core](../../docs/core/index.md), [Bodu.Collections](../../docs/collections/index.md), and [Bodu.Collections.Concurrent](../../docs/collections-concurrent/index.md) introductions and their getting-started pages. New to the many collection types? Read **[Choosing a collection](choosing-a-collection.md)** — a decision guide that maps requirements to the correct type. For the auto-generated API reference, see the [Bodu.Collections.Generic namespace page](xref:Bodu.Collections.Generic).
 
-Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../topics/core-foundations.md) places these guides alongside the rest of the topic, and the [topic overview](../../docs/topics/core-foundations.md) carries the package map and install command.
+These guides anchor the **Core Foundations** topic: the [topic guide landing](../topics/core-foundations.md) places them alongside the rest of the topic, and the [topic overview](../../docs/topics/core-foundations.md) carries the package map and install commands.
 
 > [!NOTE]
-> The specialized collection catalogue — the `Bodu.Collections.Generic`, `.Concurrent`, `.Graphs`, `.Trees`, and `Bodu.Collections.Probabilistic` namespaces below — ships in the **`Bodu.Collections`** package (which depends on `Bodu.Core`). The namespaces are unchanged; only the package boundary moved. Install with `dotnet add package Bodu.Collections`. The remaining namespaces on this page ship in `Bodu.Core` itself.
+> Three packages share this page. The specialized collection catalogue — the `Bodu.Collections.Generic`, `.Graphs`, `.Trees`, and `Bodu.Collections.Probabilistic` namespaces below — ships in the **`Bodu.Collections`** package (which depends on `Bodu.Core`); the thread-safe `Bodu.Collections.Generic.Concurrent` namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`). The namespaces are unchanged; only the package boundaries moved. Install with `dotnet add package Bodu.Collections` / `dotnet add package Bodu.Collections.Concurrent`. The remaining namespaces on this page ship in **`Bodu.Core`** itself.
 
 ## Namespace map
 
 | Namespace | What lives here | Guides |
 |---|---|---|
 | `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, bit sets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `BiDictionary<TKey,TValue>`, `LayeredDictionary<TKey,TValue>`, `DefaultingDictionary<TKey,TValue>`, `Table<TRow,TColumn,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `NavigableSet<T>`, `NavigableDictionary<TKey,TValue>`, `Multiset<T>`, `BitSet`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `IntervalTree<T>`, `IntervalTree<TKey,TValue>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Bidirectional dictionary](bi-dictionary.md) · [Layered and defaulting dictionaries](layered-and-defaulting-dictionaries.md) · [Table (two-key map)](table.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Navigable set](navigable-set.md) · [Navigable dictionary](navigable-dictionary.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Interval tree](interval-tree.md) · [Segmented buffer](segmented-buffer.md) · [Bit set](bit-set.md) |
-| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`. | [Concurrent collections](concurrent-collections.md) |
+| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>` (ships in the `Bodu.Collections.Concurrent` package). | [Concurrent collections](concurrent-collections.md) |
 | `Bodu.Collections.Probabilistic` | Approximate sketch structures with quantified error bounds — `BloomFilter<T>` (membership, no false negatives), `CountMinSketch<T>` (frequencies, never underestimates), `HyperLogLog<T>` (distinct counts, ~1.04/√m standard error). | [Probabilistic collections (sketches)](probabilistic-collections.md) |
 | `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms — `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T,T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet` / `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
 | `Bodu.Collections.Generic.Trees` | The trie family and an n-ary tree — `Trie` / `Trie<TValue>`, the path-compressed `RadixTrie` / `RadixTrie<TValue>`, the multi-pattern `AhoCorasickAutomaton` / `AhoCorasickAutomaton<TValue>`, and `Tree<T>`. | [Tries and text search](trie.md) |
@@ -223,8 +223,10 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 ## Where to go next
 
 - [Core Foundations guides](../topics/core-foundations.md) — these guides in the context of the full topic.
-- [Core Foundations topic overview](../../docs/topics/core-foundations.md) — package map and install command.
-- [Bodu.Core introduction](../../docs/core/index.md) — namespaces, headline types, scenarios.
-- [Bodu.Core getting started](../../docs/core/getting-started.md) — install and minimal samples.
-- [Project introduction](../../docs/introduction.md) — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries.
+- [Core Foundations topic overview](../../docs/topics/core-foundations.md) — package map and install commands.
+- [Bodu.Core introduction](../../docs/core/index.md) — the foundation package's namespaces, headline types, scenarios.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — the collection catalogue's namespaces and headline types.
+- [Bodu.Collections.Concurrent introduction](../../docs/collections-concurrent/index.md) — the thread-safe collection companion.
+- [Bodu.Core getting started](../../docs/core/getting-started.md) · [Bodu.Collections getting started](../../docs/collections/getting-started.md) — install and minimal samples.
+- [Project introduction](../../docs/introduction.md) — how the Core Foundations packages relate to the hashing, cryptography, calendar, and text libraries.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.

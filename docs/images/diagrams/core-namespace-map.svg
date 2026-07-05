@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 404" role="img" aria-labelledby="cnm-t cnm-d">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 448" role="img" aria-labelledby="cnm-t cnm-d">
   <title id="cnm-t">Bodu.Core — namespace map</title>
-  <desc id="cnm-d">Bodu.Core is organised into eight focused namespaces. Bodu holds top-level primitives including WeekPattern, ThrowHelper, and the random-generator abstraction. Bodu.Buffers provides pooled buffer infrastructure. Bodu.Collections.Generic hosts the ring-backed and evicting collections. Bodu.Collections.Generic.Concurrent adds thread-safe variants. The Collections extension namespaces add sequence-shaping helpers. Bodu.Extensions covers date, numeric, span, and array helpers. Bodu.Text and Bodu.Xml.Linq provide text and XML helpers.</desc>
+  <desc id="cnm-d">Bodu.Core is organised into eight focused namespaces. Bodu holds top-level primitives including WeekPattern, ThrowHelper, and the random-generator abstraction. Bodu.Buffers provides pooled buffer infrastructure. Bodu.Threading provides async coordination primitives. Bodu.Functional provides memoization and the railway primitives Option, Result, and Either. The Collections extension namespaces add sequence-shaping helpers. Bodu.Extensions covers date, numeric, span, and array helpers. Bodu.Text and Bodu.Xml.Linq provide text and XML helpers. The specialized collection catalogue ships separately in the Bodu.Collections package, with thread-safe variants in Bodu.Collections.Concurrent.</desc>
 
   <defs>
     <style>
@@ -13,13 +13,16 @@
       .cnm-ns   { fill: #5EEAD4; font: 700 12px/1 "Consolas",Menlo,monospace; }
       .cnm-role { fill: #E2E8F0; font: 700 11px/1 "Segoe UI",Arial,sans-serif; }
       .cnm-type { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .cnm-aux  { fill: #2E1065; stroke: #A78BFA; stroke-width: 1; }
+      .cnm-auxt { fill: #C4B5FD; font: 700 11px/1 "Segoe UI",Arial,sans-serif; }
+      .cnm-auxs { fill: #CBD5E1; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
     </style>
   </defs>
 
-  <rect class="cnm-bg" width="840" height="404"/>
+  <rect class="cnm-bg" width="840" height="448"/>
 
   <g transform="translate(10 10)">
-    <rect class="cnm-pan" width="820" height="384" rx="8"/>
+    <rect class="cnm-pan" width="820" height="428" rx="8"/>
     <rect class="cnm-hdr" width="820" height="46" rx="8"/>
     <rect class="cnm-hdr" y="38" width="820" height="8"/>
     <text class="cnm-ttl" x="16" y="29">Bodu.Core — eight focused namespaces</text>
@@ -46,23 +49,21 @@
     </g>
     <g transform="translate(416 60)">
       <rect class="cnm-card" width="189" height="148" rx="7"/>
-      <text class="cnm-ns" x="12" y="22">Bodu.Collections</text>
-      <text class="cnm-ns" x="12" y="37">.Generic</text>
-      <text class="cnm-role" x="12" y="57">Bounded collections</text>
-      <text class="cnm-type" x="12" y="77">CircularBuffer&lt;T&gt;</text>
-      <text class="cnm-type" x="12" y="95">Deque&lt;T&gt;</text>
-      <text class="cnm-type" x="12" y="113">EvictingDictionary&lt;K,V&gt;</text>
-      <text class="cnm-type" x="12" y="131">IndexedSet · RangeSet</text>
+      <text class="cnm-ns" x="12" y="22">Bodu.Threading</text>
+      <text class="cnm-role" x="12" y="42">Async coordination</text>
+      <text class="cnm-type" x="12" y="62">AsyncLock · AsyncSemaphore</text>
+      <text class="cnm-type" x="12" y="80">AsyncReaderWriterLock</text>
+      <text class="cnm-type" x="12" y="98">AsyncLazy&lt;T&gt; · reset events</text>
+      <text class="cnm-type" x="12" y="116">AsyncDebouncer · RateGate</text>
     </g>
     <g transform="translate(617 60)">
       <rect class="cnm-card" width="189" height="148" rx="7"/>
-      <text class="cnm-ns" x="12" y="22">Bodu.Collections</text>
-      <text class="cnm-ns" x="12" y="37">.Generic.Concurrent</text>
-      <text class="cnm-role" x="12" y="57">Thread-safe variants</text>
-      <text class="cnm-type" x="12" y="77">ConcurrentCircular-</text>
-      <text class="cnm-type" x="12" y="95">Buffer&lt;T&gt;</text>
-      <text class="cnm-type" x="12" y="113">Vyukov MPMC,</text>
-      <text class="cnm-type" x="12" y="131">IProducerConsumer</text>
+      <text class="cnm-ns" x="12" y="22">Bodu.Functional</text>
+      <text class="cnm-role" x="12" y="42">Railway primitives</text>
+      <text class="cnm-type" x="12" y="62">Option&lt;T&gt; · Result&lt;T&gt;</text>
+      <text class="cnm-type" x="12" y="80">Either&lt;L,R&gt; · ResultError</text>
+      <text class="cnm-type" x="12" y="98">Memoizer</text>
+      <text class="cnm-type" x="12" y="116">async companions</text>
     </g>
 
     <!-- Row 2 -->
@@ -83,16 +84,16 @@
       <text class="cnm-type" x="12" y="62">DateTimeExtensions</text>
       <text class="cnm-type" x="12" y="80">DateOnlyExtensions</text>
       <text class="cnm-type" x="12" y="98">NumericExtensions</text>
-      <text class="cnm-type" x="12" y="116">SpanExtensions · arrays</text>
+      <text class="cnm-type" x="12" y="116">NaturalStringComparer</text>
     </g>
     <g transform="translate(416 220)">
       <rect class="cnm-card" width="189" height="148" rx="7"/>
       <text class="cnm-ns" x="12" y="22">Bodu.Text</text>
       <text class="cnm-role" x="12" y="42">Text helpers</text>
-      <text class="cnm-type" x="12" y="62">String and character</text>
-      <text class="cnm-type" x="12" y="80">helpers used across</text>
-      <text class="cnm-type" x="12" y="98">the Bodu suite —</text>
-      <text class="cnm-type" x="12" y="116">public when needed</text>
+      <text class="cnm-type" x="12" y="62">EncodingDetection,</text>
+      <text class="cnm-type" x="12" y="80">span- and UTF-8-friendly</text>
+      <text class="cnm-type" x="12" y="98">transcoding and</text>
+      <text class="cnm-type" x="12" y="116">preamble handling</text>
     </g>
     <g transform="translate(617 220)">
       <rect class="cnm-card" width="189" height="148" rx="7"/>
@@ -103,5 +104,10 @@
       <text class="cnm-type" x="12" y="98">other packages —</text>
       <text class="cnm-type" x="12" y="116">available publicly</text>
     </g>
+
+    <!-- Annotation: the collection catalogue ships separately -->
+    <rect class="cnm-aux" x="14" y="380" width="792" height="34" rx="6"/>
+    <text class="cnm-auxt" x="28" y="401">Collection catalogue</text>
+    <text class="cnm-auxs" x="168" y="401">Bodu.Collections.Generic · .Graphs · .Trees · Probabilistic ship in the Bodu.Collections package; thread-safe variants in Bodu.Collections.Concurrent</text>
   </g>
 </svg>

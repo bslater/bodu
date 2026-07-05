@@ -20,6 +20,22 @@
           href: core/concepts.md
         - name: Getting started
           href: core/getting-started.md
+    - name: Bodu.Collections
+      items:
+        - name: Introduction
+          href: collections/index.md
+        - name: Core concepts
+          href: collections/concepts.md
+        - name: Getting started
+          href: collections/getting-started.md
+    - name: Bodu.Collections.Concurrent
+      items:
+        - name: Introduction
+          href: collections-concurrent/index.md
+        - name: Core concepts
+          href: collections-concurrent/concepts.md
+        - name: Getting started
+          href: collections-concurrent/getting-started.md
     - name: Bodu.Text (namespace)
       items:
         - name: Introduction

@@ -4,7 +4,7 @@ title: Core Foundations — Concepts
 
 # Core Foundations — Concepts
 
-This page covers the vocabulary that spans the Core Foundations topic — the conventions shared by `Bodu.Core`'s collections, buffers, and guards, and by the `Bodu.Text` character-encoding helpers that ship in the same package. Read the [topic overview](core-foundations.md) first for the package map; come back here whenever a term feels imprecise.
+This page covers the vocabulary that spans the Core Foundations topic — the conventions shared by `Bodu.Core`'s buffers and guards, the `Bodu.Collections` catalogue and its `Bodu.Collections.Concurrent` thread-safe companion, and the `Bodu.Text` character-encoding helpers that ship inside `Bodu.Core`. Read the [topic overview](core-foundations.md) first for the package map; come back here whenever a term feels imprecise.
 
 ## The guard convention
 
@@ -59,7 +59,9 @@ The distinction worth internalizing: `Bodu.Text` handles **character encodings**
 
 | Member | Concepts coverage |
 |---|---|
-| Bodu.Core | [Bodu.Core — Core concepts](../core/concepts.md) — fixed-capacity and ring-backed collections, eviction policies, `WeekPattern`, pooled buffers, `ThrowHelper`, the random-generator abstraction, multi-value / multiset semantics, range-keyed lookups, and the calendar-shape extensions. |
+| Bodu.Core | [Bodu.Core — Core concepts](../core/concepts.md) — `WeekPattern`, pooled buffers, railway-oriented outcomes, natural ordering, async coordination, `ThrowHelper`, the random-generator abstraction, and the calendar-shape extensions. |
+| Bodu.Collections | [Bodu.Collections — Core concepts](../collections/concepts.md) — fixed-capacity and ring-backed collections, overflow policies, eviction policies and time-based expiry, navigation and rank/select, overlap-storing intervals, approximate sketches, multi-value / multiset semantics, range-keyed lookups, and index-aware collections. |
+| Bodu.Collections.Concurrent | [Bodu.Collections.Concurrent — Core concepts](../collections-concurrent/concepts.md) — lock-free MPMC rings, lock striping, snapshot enumeration, approximate vs. coherent counts, and eviction events under contention. |
 | Bodu.Text | No separate concepts page — the [Bodu.Text introduction](../text/index.md) covers the encoding-detection and transcoding vocabulary alongside its type map. |
 
 For the topic-level package map and decision table, return to the [Core Foundations overview](core-foundations.md); for hands-on walk-throughs, see the [Core Foundations guides](../../guides/topics/core-foundations.md).

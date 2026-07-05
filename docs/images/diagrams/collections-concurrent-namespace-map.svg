@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 348" role="img" aria-labelledby="ccm-t ccm-d">
+  <title id="ccm-t">Bodu.Collections.Concurrent — type map</title>
+  <desc id="ccm-d">Bodu.Collections.Concurrent ships two thread-safe collections in the Bodu.Collections.Generic.Concurrent namespace. ConcurrentCircularBuffer&lt;T&gt; is a lock-free multi-producer multi-consumer ring using the Vyukov per-slot sequence protocol, implementing IProducerConsumerCollection&lt;T&gt; with overwrite-on-full semantics and snapshot enumeration. ConcurrentHashSet&lt;T&gt; is a lock-striped set of unique elements with lock-free Contains, approximate and coherent counts, and snapshot enumeration. The package depends on Bodu.Collections, which depends on Bodu.Core.</desc>
+
+  <defs>
+    <style>
+      .ccm-bg   { fill: #0F172A; }
+      .ccm-pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .ccm-hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ccm-ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .ccm-form { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .ccm-base { fill: #1E1B4B; stroke: #818CF8; stroke-width: 1.4; }
+      .ccm-bttl { fill: #C7D2FE; font: 700 12px/1 "Consolas",Menlo,monospace; text-anchor: middle; }
+      .ccm-bsub { fill: #94A3B8; font: 400 10px/1 "Consolas",Menlo,monospace; text-anchor: middle; }
+      .ccm-card { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1; }
+      .ccm-name { fill: #5EEAD4; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .ccm-ns   { fill: #94A3B8; font: 400 9.5px/1 "Consolas",Menlo,monospace; }
+      .ccm-type { fill: #E2E8F0; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .ccm-use  { fill: #FBBF24; font: italic 10px/1 "Segoe UI",Arial,sans-serif; }
+      .ccm-aux  { fill: #2E1065; stroke: #A78BFA; stroke-width: 1; }
+      .ccm-auxt { fill: #C4B5FD; font: 700 11px/1 "Segoe UI",Arial,sans-serif; }
+      .ccm-auxs { fill: #CBD5E1; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+    </style>
+    <marker id="ccm-arr" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,0 L5,10 Z" fill="#64748B"/>
+    </marker>
+  </defs>
+
+  <rect class="ccm-bg" width="820" height="348"/>
+
+  <g transform="translate(10 10)">
+    <rect class="ccm-pan" width="800" height="328" rx="8"/>
+    <rect class="ccm-hdr" width="800" height="46" rx="8"/>
+    <rect class="ccm-hdr" y="38" width="800" height="8"/>
+    <text class="ccm-ttl" x="16" y="29">Bodu.Collections.Concurrent — two thread-safe collections</text>
+    <text class="ccm-form" x="784" y="29" text-anchor="end">namespace Bodu.Collections.Generic.Concurrent</text>
+
+    <!-- dependency chain -->
+    <rect class="ccm-base" x="226" y="58" width="348" height="40" rx="7"/>
+    <text class="ccm-bttl" x="400" y="76">Bodu.Core ← Bodu.Collections ← this package</text>
+    <text class="ccm-bsub" x="400" y="91">non-concurrent peers · shared guards · one dependency chain</text>
+
+    <!-- connectors -->
+    <g stroke="#64748B" stroke-width="1.6" fill="none">
+      <path d="M400,98 L400,112 L146,112 L146,128" marker-end="url(#ccm-arr)"/>
+      <path d="M400,98 L400,112 L654,112 L654,128" marker-end="url(#ccm-arr)"/>
+    </g>
+
+    <!-- type 1: ConcurrentCircularBuffer<T> -->
+    <g transform="translate(20 130)">
+      <rect class="ccm-card" width="378" height="142" rx="7"/>
+      <text class="ccm-name" x="14" y="22">ConcurrentCircularBuffer&lt;T&gt;</text>
+      <text class="ccm-ns" x="14" y="37">lock-free MPMC ring · T : class?</text>
+      <text class="ccm-type" x="14" y="58">Vyukov per-slot sequence protocol, padded slots</text>
+      <text class="ccm-type" x="14" y="76">IProducerConsumerCollection&lt;T&gt; · overwrite-on-full</text>
+      <text class="ccm-type" x="14" y="94">snapshot enumeration · seqlock-coherent ToArray</text>
+      <text class="ccm-type" x="14" y="112">approximate Count · ItemEvicted telemetry</text>
+      <text class="ccm-use" x="14" y="132">producer-consumer pipelines · telemetry windows</text>
+    </g>
+
+    <!-- type 2: ConcurrentHashSet<T> -->
+    <g transform="translate(408 130)">
+      <rect class="ccm-card" width="378" height="142" rx="7"/>
+      <text class="ccm-name" x="14" y="22">ConcurrentHashSet&lt;T&gt;</text>
+      <text class="ccm-ns" x="14" y="37">lock-striped set · T : notnull</text>
+      <text class="ccm-type" x="14" y="58">region-guarded buckets — disjoint writers in parallel</text>
+      <text class="ccm-type" x="14" y="76">lock-free Contains · ISet&lt;T&gt; surface</text>
+      <text class="ccm-type" x="14" y="94">snapshot enumeration and ToArray</text>
+      <text class="ccm-type" x="14" y="112">ApproximateCount (hot path) · coherent Count</text>
+      <text class="ccm-use" x="14" y="132">dedup of concurrent streams · active-id tracking</text>
+    </g>
+
+    <!-- aux bar: peers -->
+    <rect class="ccm-aux" x="20" y="282" width="378" height="32" rx="6"/>
+    <text class="ccm-auxt" x="34" y="302">Non-concurrent peer</text>
+    <text class="ccm-auxs" x="176" y="302">CircularBuffer&lt;T&gt; — fail-fast, single-threaded</text>
+
+    <rect class="ccm-aux" x="408" y="282" width="378" height="32" rx="6"/>
+    <text class="ccm-auxt" x="422" y="302">Non-concurrent peer</text>
+    <text class="ccm-auxs" x="564" y="302">HashSet&lt;T&gt; (BCL) · OrderedSet&lt;T&gt;</text>
+  </g>
+</svg>

@@ -13,8 +13,8 @@ For the high-level shape of each library, follow the **Intro** link in the table
 | Category | Package | Status | Depends on | Intro | Get started |
 |---|---|---|---|---|---|
 | **Foundation** | <xref:Bodu> · `Bodu.Core` | Stable | (BCL only) | [Bodu.Core](core/index.md) | [Get started](core/getting-started.md) |
-| **Collections** | `Bodu.Collections` | Stable | `Bodu.Core` | [Bodu.Core](core/index.md) | [Get started](core/getting-started.md) |
-| **Concurrent collections** | `Bodu.Collections.Concurrent` | Stable | `Bodu.Collections` | [Bodu.Core](core/index.md) | [Get started](core/getting-started.md) |
+| **Collections** | `Bodu.Collections` | Stable | `Bodu.Core` | [Bodu.Collections](collections/index.md) | [Get started](collections/getting-started.md) |
+| **Concurrent collections** | `Bodu.Collections.Concurrent` | Stable | `Bodu.Collections` | [Bodu.Collections.Concurrent](collections-concurrent/index.md) | [Get started](collections-concurrent/getting-started.md) |
 | **Hashing** | `Bodu.IO.Hashing` | Stable | `Bodu.Core`, `System.IO.Hashing` | [Bodu.IO.Hashing](io-hashing/index.md) | [Get started](io-hashing/getting-started.md) |
 | **Cryptography** | `Bodu.Security.Cryptography` | Stable | `Bodu.Core`, `System.Security.Cryptography` | [Bodu.Security.Cryptography](cryptography/index.md) | [Get started](cryptography/getting-started.md) |
 | **Calendar runtime** | `Bodu.Globalization.Calendar` | Stable | `Bodu.Core` | [Bodu.Globalization.Calendar](calendar/index.md) | [Get started](calendar/getting-started.md) |

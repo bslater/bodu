@@ -37,7 +37,7 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 
 ## Guides
 
-- **[Bodu.Core guides](../guides/core/index.md)** — circular buffer, deque, evicting dictionary, week pattern.
+- **[Core Foundations guides](../guides/core/index.md)** — circular buffer, deque, evicting dictionary, week pattern.
 - **[Bodu.IO.Hashing guides](../guides/io-hashing/index.md)** — fingerprints (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), checksums (CRC, Fletcher, Adler), and check digits.
 - **[Bodu.Security.Cryptography guides](../guides/cryptography/index.md)** — encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.
 - **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** — `NotableDateService`, built-in date-calculation algorithms, rule authoring (XML / JSON / [fluent builder](../guides/calendar/notable-date-builder.md)), working-day arithmetic, and [data packs](../guides/calendar/data-packs.md).
