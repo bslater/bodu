@@ -1366,7 +1366,27 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_OptionHasNoValue", resourceCulture);
             }
         }
-        
+
+
+        /// <summary>
+        ///   Looks up a localized string similar to The result does not represent a failure..
+        /// </summary>
+        internal static string Op_Invalid_ResultNotFailure {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ResultNotFailure", resourceCulture);
+            }
+        }
+
+
+        /// <summary>
+        ///   Looks up a localized string similar to The result does not represent a success..
+        /// </summary>
+        internal static string Op_Invalid_ResultNotSuccess {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ResultNotSuccess", resourceCulture);
+            }
+        }
+
 
         /// <summary>
         ///   Looks up a localized string similar to The release count would cause the semaphore count to exceed its maximum..

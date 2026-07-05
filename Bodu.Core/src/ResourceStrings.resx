@@ -546,6 +546,12 @@
   <data name="Op_Invalid_NotInitialized" xml:space="preserve">
     <value>The instance has not been initialized.</value>
   </data>
+  <data name="Op_Invalid_ResultNotFailure" xml:space="preserve">
+    <value>The result does not represent a failure.</value>
+  </data>
+  <data name="Op_Invalid_ResultNotSuccess" xml:space="preserve">
+    <value>The result does not represent a success.</value>
+  </data>
   <data name="Op_Invalid_SemaphoreReleaseExceedsMax" xml:space="preserve">
     <value>The release count would cause the semaphore count to exceed its maximum.</value>
   </data>
