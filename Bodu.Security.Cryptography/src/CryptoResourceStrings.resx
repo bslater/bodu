@@ -319,6 +319,9 @@
   <data name="Arg_OutOfRange_Argon2Memory" xml:space="preserve">
     <value>Argon2 memory must be at least {0} kibibytes (8 * parallelism).</value>
   </data>
+  <data name="Arg_OutOfRange_Argon2MemoryMax" xml:space="preserve">
+    <value>Argon2 memory must not exceed {0} kibibytes.</value>
+  </data>
   <data name="Arg_Invalid_Argon2Version" xml:space="preserve">
     <value>Unsupported Argon2 version: 0x{0}. Supported versions are 0x10 and 0x13.</value>
   </data>
@@ -339,6 +342,9 @@
   </data>
   <data name="Arg_OutOfRange_ScryptCostNotPowerOfTwo" xml:space="preserve">
     <value>The scrypt cost parameter N must be greater than 1 and a power of two.</value>
+  </data>
+  <data name="Arg_OutOfRange_ScryptMemoryMax" xml:space="preserve">
+    <value>The scrypt memory footprint (128 * N * r) must not exceed {0} bytes.</value>
   </data>
   <data name="Arg_OutOfRange_ScryptBlockSize" xml:space="preserve">
     <value>The scrypt block size r must be at least 1.</value>

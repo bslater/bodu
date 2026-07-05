@@ -191,6 +191,10 @@ public sealed class Scrypt
 
         (int costN, int blockSizeR, int parallelization, byte[]? salt, byte[]? hash) = Decode(encoded);
 
+        // Validate the decoded cost parameters before deriving, so an untrusted encoded hash cannot drive an
+        // unbounded (multi-gigabyte) allocation through the memory-hard core.
+        new ScryptParameters { CostN = costN, BlockSizeR = blockSizeR, Parallelization = parallelization }.Validate();
+
         byte[] computed = new byte[hash.Length];
         ScryptCore.DeriveKey(password, salt, costN, blockSizeR, parallelization, computed);
 

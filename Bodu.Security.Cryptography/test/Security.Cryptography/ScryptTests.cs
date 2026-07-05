@@ -103,6 +103,29 @@ public class ScryptTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Scrypt.Verify" /> rejects an untrusted encoded hash whose cost parameters request a
+    /// memory footprint beyond <see cref="ScryptParameters.MaxMemoryBytes" />, before deriving, rather than driving an
+    /// unbounded (multi-gigabyte) allocation through the memory-hard core.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Verify_WhenCostParametersExceedMemoryLimit_ShouldThrowArgumentOutOfRangeException()
+    {
+        // A valid small-cost hash (N = 16384 => ln=14), then substitute an oversized N (ln=30 => N = 2^30) so the
+        // decoded footprint 128 * N * r far exceeds the ceiling. Only the cost field changes; the string stays
+        // structurally valid so Decode succeeds and validation runs before any derivation.
+        string encoded = Scrypt.Hash(Ascii("hunter2"), Ascii("seasalt"), 16384, 8, 1, 32)
+            .Replace("ln=14", "ln=30", StringComparison.Ordinal);
+
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Scrypt.Verify(encoded, Ascii("hunter2"));
+        });
+
+        Assert.AreEqual(nameof(ScryptParameters.CostN), ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that a constructor rejects a cost parameter <c>N</c> that is not a power of two.
     /// </summary>
     [TestMethod]

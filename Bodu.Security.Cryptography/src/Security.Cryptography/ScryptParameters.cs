@@ -19,6 +19,17 @@ namespace Bodu.Security.Cryptography;
 public sealed record ScryptParameters
 {
     /// <summary>
+    /// The maximum memory footprint, in bytes, permitted for a single derivation: 2 GiB. Internal so tests can
+    /// validate it.
+    /// </summary>
+    /// <remarks>
+    /// scrypt fills <c>128 · N · r</c> bytes. A verification against an untrusted encoded hash must not let
+    /// attacker-supplied cost parameters drive an unbounded allocation; this ceiling sits far above any realistic
+    /// password-hashing cost while bounding the worst-case footprint.
+    /// </remarks>
+    internal const long MaxMemoryBytes = 1L << 31;
+
+    /// <summary>
     /// Gets the CPU/memory cost parameter <c>N</c> — a power of two greater than one.
     /// </summary>
     /// <value>The cost parameter <c>N</c>.</value>
@@ -55,6 +66,16 @@ public sealed record ScryptParameters
         {
             throw new ArgumentOutOfRangeException(
                 nameof(CostN), CostN, CryptoResourceStrings.Arg_OutOfRange_ScryptCostNotPowerOfTwo);
+        }
+
+        // Bound the memory footprint (128 * N * r bytes) so an untrusted encoded hash cannot request an unbounded
+        // allocation during verification. The comparison is arranged to avoid overflowing the product: BlockSizeR is
+        // already validated as >= 1, so the divisor is non-zero.
+        long costLimit = MaxMemoryBytes / (128L * BlockSizeR);
+        if (CostN > costLimit)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(CostN), CostN, string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_ScryptMemoryMax, MaxMemoryBytes));
         }
 
         // p <= ((2^32 - 1) * 32) / (128 * r) (RFC 7914 Section 6).
