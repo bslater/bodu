@@ -21,6 +21,15 @@ namespace Bodu.Collections.Generic;
 /// A single key can have multiple associated values, and values for the same key are retained in insertion order.
 /// </para>
 /// <para>
+/// The value storage is selected at construction through <see cref="MultiValueBacking" /> and reported by
+/// <see cref="Backing" />. The default, <see cref="MultiValueBacking.List" />, is a list multimap: every added value is
+/// retained, including per-key duplicates. <see cref="MultiValueBacking.Set" /> is an order-preserving set multimap:
+/// values are deduplicated per key using <see cref="ValueComparer" />, and the insertion order of each value's first
+/// occurrence is preserved. Under <see cref="MultiValueBacking.Set" /> backing, each add performs a linear scan of the
+/// key's existing values — a trade-off that keeps the values ordered and preserves the <see cref="IReadOnlyList{T}" />
+/// view contract.
+/// </para>
+/// <para>
 /// The <see cref="Count" /> property returns the total number of key-value entries across all keys. Use
 /// <see cref="KeyCount" /> to obtain the number of distinct keys currently held.
 /// </para>
@@ -81,11 +90,17 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// <summary>Shared empty read-only list returned when a key is absent.</summary>
     private static readonly IReadOnlyList<TValue> s_emptyValues = Array.AsReadOnly(Array.Empty<TValue>());
 
+    /// <summary>The backing selected at construction, controlling whether per-key values are deduplicated.</summary>
+    private readonly MultiValueBacking _backing;
+
     /// <summary>The equality comparer used to determine key equality.</summary>
     private readonly IEqualityComparer<TKey> _comparer;
 
     /// <summary>The backing dictionary mapping each key to its value bucket.</summary>
     private readonly Dictionary<TKey, ValueBucket> _map;
+
+    /// <summary>The equality comparer used to determine value equality under <see cref="MultiValueBacking.Set" /> backing.</summary>
+    private readonly IEqualityComparer<TValue> _valueComparer;
 
     /// <summary>The total number of value entries across all keys.</summary>
     private int _count;
@@ -108,16 +123,87 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// </summary>
     /// <param name="comparer">The equality comparer used to compare keys.</param>
     public MultiValueDictionary(IEqualityComparer<TKey>? comparer)
+        : this(MultiValueBacking.List, comparer, null)
     {
-        _comparer = comparer ?? EqualityComparer<TKey>.Default;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}" /> class that is empty, uses
+    /// the specified value backing, and uses the default equality comparers for keys and values.
+    /// </summary>
+    /// <param name="backing">The backing that controls how values are stored per key.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="backing" /> is not a defined <see cref="MultiValueBacking" /> value.
+    /// </exception>
+    public MultiValueDictionary(MultiValueBacking backing)
+        : this(backing, null, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}" /> class that is empty, uses
+    /// the specified value backing and key comparer, and uses the default equality comparer for values.
+    /// </summary>
+    /// <param name="backing">The backing that controls how values are stored per key.</param>
+    /// <param name="keyComparer">The equality comparer used to compare keys.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="backing" /> is not a defined <see cref="MultiValueBacking" /> value.
+    /// </exception>
+    public MultiValueDictionary(MultiValueBacking backing, IEqualityComparer<TKey>? keyComparer)
+        : this(backing, keyComparer, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}" /> class that is empty and uses
+    /// the specified value backing, key comparer, and value comparer.
+    /// </summary>
+    /// <param name="backing">The backing that controls how values are stored per key.</param>
+    /// <param name="keyComparer">The equality comparer used to compare keys.</param>
+    /// <param name="valueComparer">The equality comparer used to compare values.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="backing" /> is not a defined <see cref="MultiValueBacking" /> value.
+    /// </exception>
+    /// <remarks>
+    /// The backing and value comparer are immutable after construction. The value comparer is consulted only under
+    /// <see cref="MultiValueBacking.Set" /> backing; under <see cref="MultiValueBacking.List" /> backing it is stored
+    /// and reported by <see cref="ValueComparer" /> but value operations use the default equality comparer.
+    /// </remarks>
+    public MultiValueDictionary(MultiValueBacking backing, IEqualityComparer<TKey>? keyComparer, IEqualityComparer<TValue>? valueComparer)
+    {
+        ThrowHelper.ThrowIfEnumValueIsUndefined(backing);
+
+        _backing = backing;
+        _comparer = keyComparer ?? EqualityComparer<TKey>.Default;
+        _valueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
         _map = new Dictionary<TKey, ValueBucket>(_comparer);
     }
+
+    /// <summary>
+    /// Gets the backing that controls how values are stored per key.
+    /// </summary>
+    /// <value>The <see cref="MultiValueBacking" /> value selected at construction.</value>
+    public MultiValueBacking Backing => _backing;
 
     /// <summary>
     /// Gets the equality comparer used to determine equality of keys.
     /// </summary>
     /// <value>The <see cref="IEqualityComparer{T}" /> instance used to compare keys.</value>
     public IEqualityComparer<TKey> Comparer => _comparer;
+
+    /// <summary>
+    /// Gets the equality comparer used to determine equality of values.
+    /// </summary>
+    /// <value>
+    /// The <see cref="IEqualityComparer{T}" /> instance supplied at construction, or the default comparer.
+    /// </value>
+    /// <remarks>
+    /// The comparer is consulted only under <see cref="MultiValueBacking.Set" /> backing, where it drives duplicate
+    /// suppression in <see cref="Add" /> and <see cref="AddRange" /> and value matching in <see cref="Remove" /> and
+    /// <see cref="ContainsValue" />. Under <see cref="MultiValueBacking.List" /> backing the property still reports the
+    /// construction value, but value operations use the default equality comparer.
+    /// </remarks>
+    public IEqualityComparer<TValue> ValueComparer => _valueComparer;
 
     /// <summary>
     /// Gets the total number of key-value entries stored across all keys.
@@ -175,13 +261,19 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Appends <paramref name="value" /> to the list of values associated with <paramref name="key" />.
+    /// Appends <paramref name="value" /> to the values associated with <paramref name="key" />.
     /// </summary>
     /// <param name="key">The key to add the value under.</param>
     /// <param name="value">The value to append.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// Under <see cref="MultiValueBacking.Set" /> backing, a value already associated with <paramref name="key" />
+    /// according to <see cref="ValueComparer" /> is ignored: the dictionary is left unchanged and active enumerators
+    /// remain valid. Under <see cref="MultiValueBacking.List" /> backing, every value is appended, including
+    /// duplicates.
+    /// </remarks>
     public void Add(TKey key, TValue value)
     {
         ThrowHelper.ThrowIfNull(key);
@@ -191,6 +283,11 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
             bucket = new ValueBucket();
             _map[key] = bucket;
         }
+        else if (_backing == MultiValueBacking.Set && IndexOfValue(bucket, value) >= 0)
+        {
+            // Duplicate under set backing: no structural change, so enumerators stay valid.
+            return;
+        }
 
         bucket.Values.Add(value);
         _count++;
@@ -198,7 +295,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Appends each element of <paramref name="values" /> to the list associated with <paramref name="key" />.
+    /// Appends each element of <paramref name="values" /> to the values associated with <paramref name="key" />.
     /// </summary>
     /// <param name="key">The key to add the values under.</param>
     /// <param name="values">The values to append.</param>
@@ -206,9 +303,17 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// Thrown when <paramref name="key" /> or <paramref name="values" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// The operation is atomic with respect to this dictionary. If the source sequence throws while being enumerated,
     /// the dictionary is left unchanged. An empty source is treated as a no-op and does not invalidate active
     /// enumerators.
+    /// </para>
+    /// <para>
+    /// Under <see cref="MultiValueBacking.Set" /> backing, values already associated with <paramref name="key" />
+    /// according to <see cref="ValueComparer" /> are skipped, and duplicates within <paramref name="values" /> itself
+    /// collapse to their first occurrence. A source whose values are all duplicates is treated as a no-op and does not
+    /// invalidate active enumerators.
+    /// </para>
     /// </remarks>
     public void AddRange(TKey key, IEnumerable<TValue> values)
     {
@@ -220,7 +325,17 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
         if (items.Length == 0)
             return;
 
-        if (!_map.TryGetValue(key, out ValueBucket? bucket))
+        _map.TryGetValue(key, out ValueBucket? bucket);
+
+        if (_backing == MultiValueBacking.Set)
+        {
+            items = FilterNovelValues(bucket, items);
+
+            if (items.Length == 0)
+                return;
+        }
+
+        if (bucket is null)
         {
             bucket = new ValueBucket(items.Length);
             _map[key] = bucket;
@@ -279,12 +394,21 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// Under <see cref="MultiValueBacking.Set" /> backing, values are matched using <see cref="ValueComparer" />; under
+    /// <see cref="MultiValueBacking.List" /> backing, the default equality comparer for <typeparamref name="TValue" />
+    /// is used.
+    /// </remarks>
     public bool ContainsValue(TKey key, TValue value)
     {
         ThrowHelper.ThrowIfNull(key);
 
-        return _map.TryGetValue(key, out ValueBucket? bucket) &&
-            bucket.Values.Contains(value);
+        if (!_map.TryGetValue(key, out ValueBucket? bucket))
+            return false;
+
+        return _backing == MultiValueBacking.Set
+            ? IndexOfValue(bucket, value) >= 0
+            : bucket.Values.Contains(value);
     }
 
     /// <summary>
@@ -333,7 +457,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Removes one occurrence of <paramref name="value" /> from the list associated with <paramref name="key" />.
+    /// Removes one occurrence of <paramref name="value" /> from the values associated with <paramref name="key" />.
     /// </summary>
     /// <param name="key">The key under which to remove the value.</param>
     /// <param name="value">The value to remove.</param>
@@ -341,6 +465,11 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// Under <see cref="MultiValueBacking.Set" /> backing, the value to remove is matched using
+    /// <see cref="ValueComparer" />; under <see cref="MultiValueBacking.List" /> backing, the default equality comparer
+    /// for <typeparamref name="TValue" /> is used.
+    /// </remarks>
     public bool Remove(TKey key, TValue value)
     {
         ThrowHelper.ThrowIfNull(key);
@@ -348,8 +477,19 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
         if (!_map.TryGetValue(key, out ValueBucket? bucket))
             return false;
 
-        if (!bucket.Values.Remove(value))
+        if (_backing == MultiValueBacking.Set)
+        {
+            int index = IndexOfValue(bucket, value);
+
+            if (index < 0)
+                return false;
+
+            bucket.Values.RemoveAt(index);
+        }
+        else if (!bucket.Values.Remove(value))
+        {
             return false;
+        }
 
         _count--;
         _version++;
@@ -412,6 +552,66 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
                 ThrowIfModified(version);
             }
         }
+    }
+
+    /// <summary>
+    /// Returns the values from <paramref name="items" /> that are novel under <see cref="MultiValueBacking.Set" />
+    /// backing, skipping values already present in <paramref name="bucket" /> and collapsing duplicates within the
+    /// batch to their first occurrence.
+    /// </summary>
+    /// <param name="bucket">The existing bucket for the key, or <see langword="null" /> when the key is absent.</param>
+    /// <param name="items">The candidate values, in source order.</param>
+    /// <returns>The novel values in first-occurrence order; empty when every candidate is a duplicate.</returns>
+    private TValue[] FilterNovelValues(ValueBucket? bucket, TValue[] items)
+    {
+        var novel = new List<TValue>(items.Length);
+
+        foreach (TValue item in items)
+        {
+            if (bucket is not null && IndexOfValue(bucket, item) >= 0)
+                continue;
+
+            var seenInBatch = false;
+
+            for (var i = 0; i < novel.Count; i++)
+            {
+                if (_valueComparer.Equals(novel[i], item))
+                {
+                    seenInBatch = true;
+                    break;
+                }
+            }
+
+            if (!seenInBatch)
+                novel.Add(item);
+        }
+
+        return [.. novel];
+    }
+
+    /// <summary>
+    /// Returns the index of the first value in <paramref name="bucket" /> equal to <paramref name="value" /> according
+    /// to <see cref="ValueComparer" />, or -1 when no match exists.
+    /// </summary>
+    /// <param name="bucket">The bucket whose values are scanned.</param>
+    /// <param name="value">The value to locate.</param>
+    /// <returns>The zero-based index of the first match, or -1 when the value is absent.</returns>
+    /// <remarks>
+    /// The linear scan is the documented trade-off of <see cref="MultiValueBacking.Set" /> backing: it preserves
+    /// insertion order and the <see cref="IReadOnlyList{T}" /> view contract at the cost of O(n) duplicate detection
+    /// per operation within a key's values.
+    /// </remarks>
+    private int IndexOfValue(ValueBucket bucket, TValue value)
+    {
+        List<TValue> values = bucket.Values;
+
+        for (var i = 0; i < values.Count; i++)
+        {
+            if (_valueComparer.Equals(values[i], value))
+                return i;
+        }
+
+        return -1;
     }
 
     /// <summary>
