@@ -540,6 +540,9 @@
   <data name="Op_Invalid_NoInputData" xml:space="preserve">
     <value>No input data was provided.</value>
   </data>
+  <data name="Op_Invalid_OptionHasNoValue" xml:space="preserve">
+    <value>The option does not contain a value.</value>
+  </data>
   <data name="Op_Invalid_NotInitialized" xml:space="preserve">
     <value>The instance has not been initialized.</value>
   </data>

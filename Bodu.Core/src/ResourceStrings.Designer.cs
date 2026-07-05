@@ -1359,6 +1359,16 @@ namespace Bodu {
         
 
         /// <summary>
+        ///   Looks up a localized string similar to The option does not contain a value..
+        /// </summary>
+        internal static string Op_Invalid_OptionHasNoValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_OptionHasNoValue", resourceCulture);
+            }
+        }
+        
+
+        /// <summary>
         ///   Looks up a localized string similar to The release count would cause the semaphore count to exceed its maximum..
         /// </summary>
         internal static string Op_Invalid_SemaphoreReleaseExceedsMax {
