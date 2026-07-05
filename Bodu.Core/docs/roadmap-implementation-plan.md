@@ -1,7 +1,7 @@
 # Bodu.Core roadmap — implementation plan
 
 **Date:** 2026-07-04
-**Status:** Proposed
+**Status:** T0 executed (2026-07-05); T1–T6 proposed
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *Per-project roadmap → `Bodu.Core`*
 
 This plan turns every item in the `Bodu.Core` section of the repository
@@ -131,6 +131,29 @@ without a third package.
 ---
 
 ## 2. T0 — Structural gate (must land before Wave 1)
+
+> **Executed 2026-07-05** across the commit sequence beginning
+> "Scaffold Bodu.Collections src and test projects". Two deviations
+> from the sketch below, both discovered during the move:
+>
+> 1. **`ShuffleHelpers` (and `SequenceUtility`) stayed in Core.** The
+>    staying `IEnumerableExtensions` partials (`Randomize`,
+>    `ContainsAll`, `ContainsAny`) depend on them, and a partial class
+>    cannot span assemblies. Core therefore retains small
+>    `Collections.Generic/` and `Collections.Generic.Internal/` folders
+>    (a namespace legally spans assemblies).
+> 2. **Move order was inverted and partially merged.** Trees and Graphs
+>    moved first (their code depends on `Deque<T>` /
+>    `IndexedPriorityQueue<,>`, still resolvable in Core through the
+>    project reference), while `Collections.Generic` and `.Concurrent`
+>    moved together in one commit — their XML-doc crefs reference each
+>    other in both directions, so splitting them would have broken doc
+>    resolution mid-sequence.
+>
+> The resx question was resolved as its own `CollectionsResourceStrings`
+> pair (28 keys; 24 pruned from Core, 4 retained as shared), no
+> cross-package `InternalsVisibleTo` was needed, and combined BVT
+> counts match the pre-split baseline exactly (25,679).
 
 ### T0.a Execute the `Bodu.Collections` split
 

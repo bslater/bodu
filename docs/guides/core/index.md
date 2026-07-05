@@ -10,6 +10,9 @@ If you have not yet installed the package or want the high-level shape of the li
 
 Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../topics/core-foundations.md) places these guides alongside the rest of the topic, and the [topic overview](../../docs/topics/core-foundations.md) carries the package map and install command.
 
+> [!NOTE]
+> The specialized collection catalogue — the `Bodu.Collections.Generic`, `.Concurrent`, `.Graphs`, and `.Trees` namespaces below — ships in the **`Bodu.Collections`** package (which depends on `Bodu.Core`). The namespaces are unchanged; only the package boundary moved. Install with `dotnet add package Bodu.Collections`. The remaining namespaces on this page ship in `Bodu.Core` itself.
+
 ## Namespace map
 
 | Namespace | What lives here | Guides |

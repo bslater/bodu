@@ -3,7 +3,13 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-07-04. Since the previous revision the
+*Last updated: 2026-07-05. Since the previous revision the
+**`Bodu.Collections` package split has been executed** (the
+collections pillar — `Collections.Generic` / `.Concurrent` / `.Graphs`
+/ `.Trees` — now ships as its own package referencing Core, namespaces
+unchanged) and the `WeekPattern` extraction was retired as unnecessary
+post-split; both decisions are recorded in
+`Bodu.Core/docs/roadmap-implementation-plan.md`. Before that, the
 `Bodu.Security.Cryptography` interop wave has merged — RFC 7468 **PEM**
 key wrapping for Ed25519 / X25519 (closing the key-encoding story), the
 `Bodu.Security.Cryptography.DisableSimd` **AVX-512 opt-out** and capability
@@ -103,7 +109,8 @@ exercised on the smallest self-contained units first.
 
 | Package | Notes |
 | --- | --- |
-| `Bodu.Core` | The dependency root — buffers, collections (incl. the new graphs/trees pillars), threading primitives, sequences, `WeekPattern`, `ThrowHelper`, text-encoding utilities. |
+| `Bodu.Core` | The dependency root — buffers, extension surfaces, threading primitives, sequences, `WeekPattern`, `ThrowHelper`, text-encoding utilities. |
+| `Bodu.Collections` | The specialized collection catalogue (incl. the graphs/trees pillars), split out of Core; references `Bodu.Core`. Namespaces unchanged (`Bodu.Collections.*`). |
 | `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and the interval algebra (`Interval<T>` / `DiscreteInterval<T>` / `IntervalSet<T>`) over `INumber<T>`. Serialization-agnostic — no `System.Text.Json` dependency. |
 | `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`ConfigureForBoduNumerics`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
 | `Bodu.IO.Hashing` | Non-cryptographic hashing + the full RevEng CRC catalogue + the check-digit family. |
@@ -276,10 +283,10 @@ is now:
 3. **Cut Wave 1–2 packages** (Core, Numerics, IO.Hashing, Text.Encoding,
    Security.Cryptography, then the self-contained text/format libraries)
    to exercise package-validation on brand-new package IDs before the
-   coordinated Calendar/Financial waves. Gate: decide the
-   `Bodu.Collections` package-split question (see the `Bodu.Core`
-   section) before Core's first package is tagged — it is free now and
-   breaking afterwards.
+   coordinated Calendar/Financial waves. The Wave 1 gate is cleared: the
+   `Bodu.Collections` package split has been executed (see the
+   `Bodu.Core` section), so Core's first package can tag against the
+   final assembly boundary. `Bodu.Collections` joins the Wave 1 set.
 4. **Consolidate the two text-format tiers.** The repository has two
    parallel shapes: the modern `Utf8*` ref-struct quartet
    (Bencode/Toml/Yaml) and the older `*Reader`/`*Writer`/`*Document`
@@ -289,10 +296,14 @@ is now:
 
 ## Per-project roadmap
 
-### `Bodu.Core`
+### `Bodu.Core` (and `Bodu.Collections`)
 
-Current state: mature and broad; ~485 src / ~937 test files. Beyond the
-buffers/collections/extensions base, it now carries:
+Current state: mature and broad. The collections pillar now ships as
+the separate **`Bodu.Collections`** package (split executed — see the
+first forward-looking item), leaving `Bodu.Core` as the primitive
+layer (buffers, extensions, threading, sequences, functional seam,
+text utilities, `ThrowHelper`, `WeekPattern`). Across the pair the
+surface carries:
 
 - **`Collections.Generic.Graphs`** — `Graph<T>` (directed/undirected
   adjacency-list), the read-only graph interfaces, `GraphAlgorithms`
@@ -314,27 +325,30 @@ buffers/collections/extensions base, it now carries:
 
 Forward-looking:
 
-- **Decide the `Bodu.Collections` package split — before Wave 1.** The
-  collections pillar (`Collections.Generic` + `.Concurrent` + `.Graphs`
-  + `.Trees`, plus the gap items below) is now the bulk of Core and
-  still growing, while every other Bodu package depends on Core mainly
-  for `ThrowHelper`, the buffers, and the extension surfaces. Extracting
-  the pillar into a **`Bodu.Collections`** package would leave Core as
-  the small always-referenced primitive layer and make the
-  data-structure catalogue an opt-in dependency — the same motive as the
-  `WeekPattern` extraction below. Namespaces (`Bodu.Collections.*`)
-  would not change, only the assembly/package boundary. Nothing has
-  been published yet, so the split is free today and a breaking change
-  the day after `Bodu.Core/v1.0.0` is tagged — this must be decided
-  before the Wave 1 cut. Naming inside the pillar stays BCL-style
-  regardless (`MultiValueDictionary`, `RangeDictionary`,
-  `BiDictionary`, `Multiset`, `EvictingDictionary`) rather than the
-  Java-style `MultiMap` / `RangeMap` / `BiMap` / `MultiSet` /
-  `LruCache` synonyms.
-- **Extract `WeekPattern` to `Bodu.Globalization.WeekPattern`** now that
-  it is a `readonly partial struct` with a struct enumerator, so
-  globalization-adjacent packages can depend on the pattern without
-  pulling all of Core.
+- **The `Bodu.Collections` package split has landed.** ✅ The collections
+  pillar (`Collections.Generic` + `.Concurrent` + `.Graphs` + `.Trees`)
+  now ships as the **`Bodu.Collections`** package (referencing Core),
+  leaving Core as the small always-referenced primitive layer.
+  Namespaces did not change — only the assembly/package boundary moved.
+  `ShuffleHelpers` and the internal `SequenceUtility` stayed in Core
+  because the staying `IEnumerableExtensions` partials
+  (`Randomize` / `ContainsAll` / `ContainsAny`) depend on them, and
+  `Bodu.Collections` carries its own `CollectionsResourceStrings` resx
+  per the per-project resource convention. New collection-type work
+  below lands in `Bodu.Collections`; naming stays BCL-style
+  (`MultiValueDictionary`, `RangeDictionary`, `BiDictionary`,
+  `Multiset`, `EvictingDictionary`) rather than the Java-style
+  `MultiMap` / `RangeMap` / `BiMap` / `MultiSet` / `LruCache` synonyms.
+  See `Bodu.Core/docs/roadmap-implementation-plan.md` (T0) for the full
+  decision record.
+- **`WeekPattern` stays in `Bodu.Core` — extraction retired.** With the
+  collections split done, Core *is* the small always-referenced
+  primitive layer the proposed `Bodu.Globalization.WeekPattern`
+  extraction was meant to enable, so the extraction buys nothing while
+  costing a package boundary. Recorded as final before the Wave 1 cut
+  (moving the type after `Bodu.Core/v1.0.0` tags would be breaking);
+  revisit only if an external consumer emerges that cannot reference
+  Core at all.
 - **Grow the `Functional` seam** — it currently holds only `Memoizer`.
   A `Result<T>` / `Option<T>` / `Either<TLeft,TRight>` railway-oriented
   set is the most-requested independently-built .NET surface (LanguageExt,

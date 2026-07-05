@@ -13,6 +13,7 @@ For the high-level shape of each library, follow the **Intro** link in the table
 | Category | Package | Status | Depends on | Intro | Get started |
 |---|---|---|---|---|---|
 | **Foundation** | <xref:Bodu> · `Bodu.Core` | Stable | (BCL only) | [Bodu.Core](core/index.md) | [Get started](core/getting-started.md) |
+| **Collections** | `Bodu.Collections` | Stable | `Bodu.Core` | [Bodu.Core](core/index.md) | [Get started](core/getting-started.md) |
 | **Hashing** | `Bodu.IO.Hashing` | Stable | `Bodu.Core`, `System.IO.Hashing` | [Bodu.IO.Hashing](io-hashing/index.md) | [Get started](io-hashing/getting-started.md) |
 | **Cryptography** | `Bodu.Security.Cryptography` | Stable | `Bodu.Core`, `System.Security.Cryptography` | [Bodu.Security.Cryptography](cryptography/index.md) | [Get started](cryptography/getting-started.md) |
 | **Calendar runtime** | `Bodu.Globalization.Calendar` | Stable | `Bodu.Core` | [Bodu.Globalization.Calendar](calendar/index.md) | [Get started](calendar/getting-started.md) |
@@ -86,6 +87,7 @@ The standard `dotnet add package` invocation for each shipped package:
 ```bash
 # Primary libraries
 dotnet add package Bodu.Core
+dotnet add package Bodu.Collections
 dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
