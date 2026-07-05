@@ -69,6 +69,9 @@
   <data name="Arg_OutOfRange_ContinuedFractionTerm" xml:space="preserve">
     <value>Coefficients after the first must be strictly positive.</value>
   </data>
+  <data name="Arg_OutOfRange_BigDecimalScale" xml:space="preserve">
+    <value>The scale magnitude is too large to represent; a negative scale may not exceed {0} in magnitude.</value>
+  </data>
   <data name="DivideByZero_DenominatorZero" xml:space="preserve">
     <value>The denominator of a fraction must not be zero.</value>
   </data>

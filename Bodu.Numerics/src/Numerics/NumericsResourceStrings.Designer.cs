@@ -79,6 +79,15 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The scale magnitude is too large to represent; a negative scale may not exceed {0} in magnitude..
+        /// </summary>
+        internal static string Arg_OutOfRange_BigDecimalScale {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_BigDecimalScale", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The denominator of a fraction must not be zero..
         /// </summary>
         internal static string DivideByZero_DenominatorZero {

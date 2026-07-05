@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Globalization;
 using System.Numerics;
 
 namespace Bodu.Numerics;
@@ -49,6 +50,15 @@ public readonly partial struct BigDecimal
 {
     /// <summary>The default number of fractional decimal places produced by the <c>/</c> operator and <see cref="Divide(BigDecimal, BigDecimal)" />.</summary>
     public const int DefaultDivisionScale = 50;
+
+    /// <summary>The maximum magnitude permitted for a negative scale before it is rejected as unrepresentable.</summary>
+    /// <remarks>
+    /// A negative scale is folded into the unscaled value as <c>mantissa &#215; 10<sup>-scale</sup></c>. Left
+    /// unbounded, an attacker-supplied scale or parse exponent drives <see cref="BigInteger.Pow(BigInteger, int)" />
+    /// with an arbitrarily large exponent, producing a multi-gigabyte value that exhausts memory or hangs. Capping
+    /// the magnitude keeps the widening bounded while still admitting any realistic value.
+    /// </remarks>
+    private const int MaxNegativeScaleMagnitude = 1_000_000;
 
     /// <summary>The unscaled integer significand; the value is <see cref="_mantissa" /> &#215; 10<sup>-<see cref="_scale" /></sup>.</summary>
     private readonly BigInteger _mantissa;
@@ -165,10 +175,20 @@ public readonly partial struct BigDecimal
             return;
         }
 
-        // A negative scale is folded into the unscaled value so the canonical scale is always non-negative.
+        // A negative scale is folded into the unscaled value so the canonical scale is always non-negative. Bound
+        // the widening exponent first: -scale is computed as a long so scale == int.MinValue does not overflow, and
+        // an excessive magnitude is rejected rather than driving an unbounded BigInteger.Pow.
         if (scale < 0)
         {
-            mantissa *= BigInteger.Pow(BigInteger.CreateChecked(10), -scale);
+            long power = -(long)scale;
+            if (power > MaxNegativeScaleMagnitude)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(scale),
+                    string.Format(CultureInfo.CurrentCulture, NumericsResourceStrings.Arg_OutOfRange_BigDecimalScale, MaxNegativeScaleMagnitude));
+            }
+
+            mantissa *= BigInteger.Pow(BigInteger.CreateChecked(10), (int)power);
             scale = 0;
             return;
         }
