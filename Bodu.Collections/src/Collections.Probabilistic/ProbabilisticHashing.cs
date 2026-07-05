@@ -9,9 +9,10 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Collections.Probabilistic;
 
 /// <summary>
-/// Provides the shared hash-derivation routine used by the probabilistic sketch types (<see cref="BloomFilter{T}" />
-/// and future sketches) to expand an element's comparer-supplied hash code into the two 64-bit values required for
-/// Kirsch–Mitzenmacher double hashing.
+/// Provides the shared hash-derivation routine used by the probabilistic sketch types (<see cref="BloomFilter{T}" />,
+/// <see cref="CountMinSketch{T}" />, and <see cref="HyperLogLog{T}" />) to expand an element's comparer-supplied hash
+/// code into the two 64-bit values required for Kirsch–Mitzenmacher double hashing. Sketches that need only a single
+/// 64-bit hash (<see cref="HyperLogLog{T}" />) consume the first value and discard the second.
 /// </summary>
 /// <remarks>
 /// <para>

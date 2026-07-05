@@ -151,6 +151,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The source data is not a valid HyperLogLog export..
+        /// </summary>
+        internal static string Arg_Invalid_HyperLogLogImportData {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_HyperLogLogImportData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The HyperLogLog export format version {0} is not supported..
+        /// </summary>
+        internal static string Arg_Invalid_HyperLogLogImportVersion {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_HyperLogLogImportVersion", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The Bloom filters are incompatible; both filters must have the same bit count, hash count, and equality comparer..
         /// </summary>
         internal static string Arg_Invalid_IncompatibleBloomFilter {
@@ -165,6 +183,15 @@ namespace Bodu {
         internal static string Arg_Invalid_IncompatibleCountMinSketch {
             get {
                 return ResourceManager.GetString("Arg_Invalid_IncompatibleCountMinSketch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The HyperLogLog sketches are incompatible; both sketches must have the same precision and equality comparer..
+        /// </summary>
+        internal static string Arg_Invalid_IncompatibleHyperLogLog {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IncompatibleHyperLogLog", resourceCulture);
             }
         }
 
