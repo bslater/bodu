@@ -75,6 +75,12 @@
   <data name="DivideByZero_DenominatorZero" xml:space="preserve">
     <value>The denominator of a fraction must not be zero.</value>
   </data>
+  <data name="DivideByZero_BigDecimalDivision" xml:space="preserve">
+    <value>Cannot divide a BigDecimal by zero.</value>
+  </data>
+  <data name="DivideByZero_BigDecimalRemainder" xml:space="preserve">
+    <value>Cannot take the remainder of a BigDecimal divided by zero.</value>
+  </data>
   <data name="DivideByZero_Division" xml:space="preserve">
     <value>Cannot divide a fraction by zero.</value>
   </data>

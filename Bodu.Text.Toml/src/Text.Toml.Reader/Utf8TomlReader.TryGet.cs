@@ -19,7 +19,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="byte" />.</exception>
     public readonly byte GetByte() =>
-        TryGetByte(out byte value) ? value : throw new FormatException();
+        TryGetByte(out byte value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
     /// Attempts to read the current token as an 8-bit unsigned integer.
@@ -53,7 +53,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in an <see cref="sbyte" />.</exception>
     public readonly sbyte GetSByte() =>
-        TryGetSByte(out sbyte value) ? value : throw new FormatException();
+        TryGetSByte(out sbyte value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
     /// Attempts to read the current token as an 8-bit signed integer.
@@ -87,7 +87,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="short" />.</exception>
     public readonly short GetInt16() =>
-        TryGetInt16(out short value) ? value : throw new FormatException();
+        TryGetInt16(out short value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
     /// Attempts to read the current token as a 16-bit signed integer.
@@ -121,7 +121,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in an <see cref="int" />.</exception>
     public readonly int GetInt32() =>
-        TryGetInt32(out int value) ? value : throw new FormatException();
+        TryGetInt32(out int value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
     /// Attempts to read the current token as a 32-bit signed integer.
@@ -155,7 +155,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="ushort" />.</exception>
     public readonly ushort GetUInt16() =>
-        TryGetUInt16(out ushort value) ? value : throw new FormatException();
+        TryGetUInt16(out ushort value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
     /// Attempts to read the current token as a 16-bit unsigned integer.
@@ -189,7 +189,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value does not fit in a <see cref="uint" />.</exception>
     public readonly uint GetUInt32() =>
-        TryGetUInt32(out uint value) ? value : throw new FormatException();
+        TryGetUInt32(out uint value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
     /// Attempts to read the current token as a 32-bit unsigned integer.
@@ -223,7 +223,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the value is negative.</exception>
     public readonly ulong GetUInt64() =>
-        TryGetUInt64(out ulong value) ? value : throw new FormatException();
+        TryGetUInt64(out ulong value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
     /// Attempts to read the current token as a 64-bit unsigned integer.
@@ -260,7 +260,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.Float" />.
     /// </exception>
     public readonly float GetSingle() =>
-        TryGetSingle(out float value) ? value : throw new FormatException();
+        TryGetSingle(out float value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
     /// Attempts to read the current token as an IEEE 754 binary32 floating-point value.
@@ -298,7 +298,7 @@ public ref partial struct Utf8TomlReader
     /// <see cref="decimal" /> range.
     /// </exception>
     public readonly decimal GetDecimal() =>
-        TryGetDecimal(out decimal value) ? value : throw new FormatException();
+        TryGetDecimal(out decimal value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
     /// Attempts to read the current token as a decimal, parsed exactly from the raw float literal.
@@ -336,7 +336,7 @@ public ref partial struct Utf8TomlReader
     /// </exception>
     /// <exception cref="FormatException">Thrown when the string is not a GUID in the <c>D</c> format.</exception>
     public readonly Guid GetGuid() =>
-        TryGetGuid(out Guid value) ? value : throw new FormatException();
+        TryGetGuid(out Guid value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
     /// Attempts to read the current token as a <see cref="Guid" /> in the 36-character hyphenated (<c>D</c>) format.

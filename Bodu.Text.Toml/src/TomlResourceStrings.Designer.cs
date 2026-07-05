@@ -801,5 +801,32 @@ namespace Bodu {
                 return ResourceManager.GetString("IO_KeyNotFound_Property", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The current token cannot be read as the requested value type..
+        /// </summary>
+        internal static string Op_Invalid_TomlReaderValueType {
+            get {
+                return ResourceManager.GetString("Op_Invalid_TomlReaderValueType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Skipping is not supported on partial data; use TrySkip instead..
+        /// </summary>
+        internal static string Op_Invalid_TomlReaderSkipPartial {
+            get {
+                return ResourceManager.GetString("Op_Invalid_TomlReaderSkipPartial", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The current token cannot be converted to the requested numeric type..
+        /// </summary>
+        internal static string Format_Invalid_TomlReaderValue {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlReaderValue", resourceCulture);
+            }
+        }
     }
 }

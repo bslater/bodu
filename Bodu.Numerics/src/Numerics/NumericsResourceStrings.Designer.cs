@@ -97,6 +97,24 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Cannot divide a BigDecimal by zero..
+        /// </summary>
+        internal static string DivideByZero_BigDecimalDivision {
+            get {
+                return ResourceManager.GetString("DivideByZero_BigDecimalDivision", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot take the remainder of a BigDecimal divided by zero..
+        /// </summary>
+        internal static string DivideByZero_BigDecimalRemainder {
+            get {
+                return ResourceManager.GetString("DivideByZero_BigDecimalRemainder", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Cannot divide a fraction by zero..
         /// </summary>
         internal static string DivideByZero_Division {

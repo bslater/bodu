@@ -407,7 +407,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.Boolean" />.
     /// </exception>
     public readonly bool GetBoolean() =>
-        _tokenType == TomlTokenType.Boolean ? _boolValue : throw new InvalidOperationException();
+        _tokenType == TomlTokenType.Boolean ? _boolValue : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as a comment, returning the text after the <c>#</c> to the end of the line.
@@ -417,7 +417,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.Comment" />.
     /// </exception>
     public readonly string GetComment() =>
-        _tokenType == TomlTokenType.Comment ? Encoding.UTF8.GetString(ValueSpan) : throw new InvalidOperationException();
+        _tokenType == TomlTokenType.Comment ? Encoding.UTF8.GetString(ValueSpan) : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as a local date.
@@ -427,7 +427,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.LocalDate" />.
     /// </exception>
     public readonly DateOnly GetDateOnly() =>
-        _tokenType == TomlTokenType.LocalDate ? _dateOnlyValue : throw new InvalidOperationException();
+        _tokenType == TomlTokenType.LocalDate ? _dateOnlyValue : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as a local date-time.
@@ -440,7 +440,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.LocalDateTime" />.
     /// </exception>
     public readonly DateTime GetDateTime() =>
-        _tokenType == TomlTokenType.LocalDateTime ? _dateTimeValue : throw new InvalidOperationException();
+        _tokenType == TomlTokenType.LocalDateTime ? _dateTimeValue : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as an offset date-time.
@@ -450,7 +450,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not an <see cref="TomlTokenType.OffsetDateTime" />.
     /// </exception>
     public readonly DateTimeOffset GetDateTimeOffset() =>
-        _tokenType == TomlTokenType.OffsetDateTime ? _dateTimeOffsetValue : throw new InvalidOperationException();
+        _tokenType == TomlTokenType.OffsetDateTime ? _dateTimeOffsetValue : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as an IEEE 754 binary64 floating-point value.
@@ -460,7 +460,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.Float" />.
     /// </exception>
     public readonly double GetDouble() =>
-        _tokenType == TomlTokenType.Float ? _doubleValue : throw new InvalidOperationException();
+        _tokenType == TomlTokenType.Float ? _doubleValue : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as a 64-bit signed integer.
@@ -470,7 +470,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not an <see cref="TomlTokenType.Integer" />.
     /// </exception>
     public readonly long GetInt64() =>
-        _tokenType == TomlTokenType.Integer ? _longValue : throw new InvalidOperationException();
+        _tokenType == TomlTokenType.Integer ? _longValue : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token's text as a string, decoding escape sequences when present.
@@ -483,7 +483,7 @@ public ref partial struct Utf8TomlReader
     public readonly string GetString()
     {
         if (_textKind == TomlScalarTextKind.None)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
         if (!_hasEscapes)
             return Encoding.UTF8.GetString(ValueSpan);
@@ -499,7 +499,7 @@ public ref partial struct Utf8TomlReader
     /// Thrown when the current token is not a <see cref="TomlTokenType.LocalTime" />.
     /// </exception>
     public readonly TimeOnly GetTimeOnly() =>
-        _tokenType == TomlTokenType.LocalTime ? _timeOnlyValue : throw new InvalidOperationException();
+        _tokenType == TomlTokenType.LocalTime ? _timeOnlyValue : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Advances the reader to the next token.
@@ -545,7 +545,7 @@ public ref partial struct Utf8TomlReader
     public void Skip()
     {
         if (!_isFinalBlock)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderSkipPartial);
 
         if (TokenType == TomlTokenType.Key)
         {
@@ -632,7 +632,7 @@ public ref partial struct Utf8TomlReader
     public readonly bool ValueTextEquals(ReadOnlySpan<byte> utf8Text)
     {
         if (_tokenType is not (TomlTokenType.String or TomlTokenType.Key))
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
         if (!_hasEscapes)
             return ValueSpan.SequenceEqual(utf8Text);
@@ -666,7 +666,7 @@ public ref partial struct Utf8TomlReader
     public readonly bool ValueTextEquals(ReadOnlySpan<char> text)
     {
         if (_tokenType is not (TomlTokenType.String or TomlTokenType.Key))
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
         if (_hasEscapes)
             return GetString().AsSpan().SequenceEqual(text);
