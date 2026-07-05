@@ -56,7 +56,7 @@ public readonly partial struct YamlElement
         get
         {
             if (ValueKind != YamlValueKind.Sequence)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
             return new YamlElement(_document, _document.GetSequenceElement(_document.Resolve(_index), index));
         }
@@ -107,7 +107,7 @@ public readonly partial struct YamlElement
     public YamlElement GetProperty(string propertyName)
     {
         if (!TryGetProperty(propertyName, out YamlElement value))
-            throw new KeyNotFoundException();
+            throw new KeyNotFoundException(string.Format(System.Globalization.CultureInfo.CurrentCulture, YamlResourceStrings.IO_KeyNotFound_YamlProperty, propertyName));
 
         return value;
     }
@@ -123,7 +123,7 @@ public readonly partial struct YamlElement
     {
         Bodu.ThrowHelper.ThrowIfNull(propertyName);
         if (ValueKind != YamlValueKind.Mapping)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
         if (_document.TryGetProperty(_document.Resolve(_index), propertyName, out int row))
         {
@@ -143,7 +143,7 @@ public readonly partial struct YamlElement
     public SequenceEnumerator EnumerateSequence()
     {
         if (ValueKind != YamlValueKind.Sequence)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
         return new SequenceEnumerator(_document, _document.Resolve(_index));
     }
@@ -156,7 +156,7 @@ public readonly partial struct YamlElement
     public MappingEnumerator EnumerateMapping()
     {
         if (ValueKind != YamlValueKind.Mapping)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
         return new MappingEnumerator(_document, _document.Resolve(_index));
     }

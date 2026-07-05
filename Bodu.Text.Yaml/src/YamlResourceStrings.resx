@@ -67,4 +67,7 @@
   <data name="Op_Invalid_YamlDuplicateDictionaryKey" xml:space="preserve"><value>The dictionary maps more than one entry to the YAML key '{0}'.</value></data>
   <data name="Arg_OutOfRange_YamlWriterIndentSize" xml:space="preserve"><value>The writer indentation size must be between 1 and 16.</value></data>
   <data name="Arg_Invalid_YamlWriterNewLine" xml:space="preserve"><value>The writer newline must be null, a line feed, or a carriage-return line feed.</value></data>
+  <data name="Op_Invalid_YamlValueKind" xml:space="preserve"><value>The YAML value is not of the expected kind for this operation.</value></data>
+  <data name="Op_Invalid_YamlReaderValueType" xml:space="preserve"><value>The current token cannot be read as the requested value type.</value></data>
+  <data name="IO_KeyNotFound_YamlProperty" xml:space="preserve"><value>No property named '{0}' was found.</value></data>
 </root>
