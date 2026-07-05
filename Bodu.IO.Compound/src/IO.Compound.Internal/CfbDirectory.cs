@@ -210,23 +210,42 @@ internal sealed class CfbDirectory
     /// </exception>
     private void CollectChildren(uint sid, List<int> children, bool[] visited)
     {
-        if (sid == CfbHeader.NoStream)
-            return;
+        // Iterative in-order traversal with an explicit stack. A crafted directory can chain sibling links
+        // arbitrarily deep (the entry count is attacker-controlled via the directory stream length), which
+        // would overflow the call stack under a recursive walk and crash the process with an uncatchable
+        // StackOverflowException. The explicit stack keeps the walk on the heap so a degenerate/deep tree is
+        // handled — or rejected as a catchable CompoundFileFormatException — regardless of depth.
+        Stack<uint> pending = new();
+        uint current = sid;
 
-        if (sid >= (uint)_entries.Length || _entries[sid] is null || visited[sid])
+        while (current != CfbHeader.NoStream || pending.Count > 0)
         {
-            // A tolerant level prunes the offending subtree instead of rejecting the whole directory.
-            if (_level == CompoundValidationLevel.Minimal)
-                return;
+            // Descend the left spine, pushing each node so it can be emitted in order on the way back up.
+            while (current != CfbHeader.NoStream)
+            {
+                if (current >= (uint)_entries.Length || _entries[current] is null || visited[current])
+                {
+                    // A tolerant level prunes the offending subtree instead of rejecting the whole directory.
+                    if (_level == CompoundValidationLevel.Minimal)
+                    {
+                        current = CfbHeader.NoStream;
+                        break;
+                    }
 
-            CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundDirectoryTree, CompoundFileError.DirectoryCycle);
+                    CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundDirectoryTree, CompoundFileError.DirectoryCycle);
+                }
+
+                visited[current] = true;
+                pending.Push(current);
+                current = _entries[current]!.LeftSiblingId;
+            }
+
+            if (pending.Count == 0)
+                break;
+
+            uint node = pending.Pop();
+            children.Add((int)node);
+            current = _entries[node]!.RightSiblingId;
         }
-
-        visited[sid] = true;
-        CfbDirectoryEntry entry = _entries[sid]!;
-
-        CollectChildren(entry.LeftSiblingId, children, visited);
-        children.Add((int)sid);
-        CollectChildren(entry.RightSiblingId, children, visited);
     }
 }
