@@ -17,6 +17,7 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Format_Invalid_YamlAliasExpansionTooLarge" xml:space="preserve"><value>The document's alias expansion exceeds the maximum of {0} nodes.</value></data>
   <data name="Format_Invalid_YamlComplexKeyUnsupported" xml:space="preserve"><value>A mapping key must resolve to a scalar; complex sequence, mapping, or alias keys are not supported by this profile.</value></data>
   <data name="Format_Invalid_YamlContentAfterDocumentEnd" xml:space="preserve"><value>Content is not permitted after the end of a document.</value></data>
   <data name="Format_Invalid_YamlControlCharacter" xml:space="preserve"><value>A control character is not permitted in this context.</value></data>

@@ -47,6 +47,14 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The document's alias expansion exceeds the maximum of {0} nodes..
+        /// </summary>
+        internal static string Format_Invalid_YamlAliasExpansionTooLarge {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlAliasExpansionTooLarge", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to Content is not permitted after the end of a document..
         /// </summary>
         internal static string Format_Invalid_YamlContentAfterDocumentEnd {
