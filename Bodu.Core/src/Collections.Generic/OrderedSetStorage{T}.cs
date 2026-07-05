@@ -559,18 +559,8 @@ internal sealed class OrderedSetStorage<T>
     /// </summary>
     /// <param name="minimum">The minimum required capacity.</param>
     /// <returns>The chosen capacity.</returns>
-    private int GrowCapacity(int minimum)
-    {
-        int capacity = _items.Length == 0 ? DefaultCapacity : _items.Length * 2;
-
-        if ((uint)capacity > Array.MaxLength)
-            capacity = Array.MaxLength;
-
-        if (capacity < minimum)
-            capacity = minimum;
-
-        return capacity;
-    }
+    private int GrowCapacity(int minimum) =>
+        CollectionCapacity.Grow(_items.Length, DefaultCapacity, minimum);
 
     /// <summary>
     /// Computes the bucket index for <paramref name="item" />.

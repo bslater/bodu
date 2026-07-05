@@ -464,16 +464,6 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// </summary>
     /// <param name="minimum">The minimum acceptable capacity.</param>
     /// <returns>The chosen capacity.</returns>
-    private int GrowCapacity(int minimum)
-    {
-        int capacity = _starts.Length == 0 ? DefaultCapacity : _starts.Length * 2;
-
-        if ((uint)capacity > Array.MaxLength)
-            capacity = Array.MaxLength;
-
-        if (capacity < minimum)
-            capacity = minimum;
-
-        return capacity;
-    }
+    private int GrowCapacity(int minimum) =>
+        CollectionCapacity.Grow(_starts.Length, DefaultCapacity, minimum);
 }
