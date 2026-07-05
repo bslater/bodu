@@ -79,6 +79,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The source data is not a valid BloomFilter export..
+        /// </summary>
+        internal static string Arg_Invalid_BloomFilterImportData {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_BloomFilterImportData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The BloomFilter export format version {0} is not supported..
+        /// </summary>
+        internal static string Arg_Invalid_BloomFilterImportVersion {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_BloomFilterImportVersion", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The collection is empty..
         /// </summary>
         internal static string Arg_Invalid_CollectionIsEmpty {
@@ -115,6 +133,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The Bloom filters are incompatible; both filters must have the same bit count, hash count, and equality comparer..
+        /// </summary>
+        internal static string Arg_Invalid_IncompatibleBloomFilter {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IncompatibleBloomFilter", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The specified range overlaps an existing range..
         /// </summary>
         internal static string Arg_Invalid_RangeOverlap {
@@ -138,6 +165,15 @@ namespace Bodu {
         internal static string Arg_Invalid_VertexNotInGraph {
             get {
                 return ResourceManager.GetString("Arg_Invalid_VertexNotInGraph", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The combination of expected items and false-positive rate requires more than {0} bits..
+        /// </summary>
+        internal static string Arg_OutOfRange_BloomFilterTooLarge {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_BloomFilterTooLarge", resourceCulture);
             }
         }
 

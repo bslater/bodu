@@ -123,6 +123,12 @@
   <data name="Arg_Invalid_ArrayType" xml:space="preserve">
     <value>Target array type is not compatible with the type of items in the collection.</value>
   </data>
+  <data name="Arg_Invalid_BloomFilterImportData" xml:space="preserve">
+    <value>The source data is not a valid BloomFilter export.</value>
+  </data>
+  <data name="Arg_Invalid_BloomFilterImportVersion" xml:space="preserve">
+    <value>The BloomFilter export format version {0} is not supported.</value>
+  </data>
   <data name="Arg_Invalid_CollectionIsEmpty" xml:space="preserve">
     <value>The collection is empty.</value>
   </data>
@@ -135,6 +141,9 @@
   <data name="Arg_Invalid_ElementNotInSet" xml:space="preserve">
     <value>The specified element is not a member of any set.</value>
   </data>
+  <data name="Arg_Invalid_IncompatibleBloomFilter" xml:space="preserve">
+    <value>The Bloom filters are incompatible; both filters must have the same bit count, hash count, and equality comparer.</value>
+  </data>
   <data name="Arg_Invalid_RangeOverlap" xml:space="preserve">
     <value>The specified range overlaps an existing range.</value>
   </data>
@@ -143,6 +152,9 @@
   </data>
   <data name="Arg_Invalid_VertexNotInGraph" xml:space="preserve">
     <value>The specified vertex does not exist in the graph.</value>
+  </data>
+  <data name="Arg_OutOfRange_BloomFilterTooLarge" xml:space="preserve">
+    <value>The combination of expected items and false-positive rate requires more than {0} bits.</value>
   </data>
   <data name="Arg_OutOfRange_GraphWeightNotFinite" xml:space="preserve">
     <value>The edge weight must be a finite, non-negative number.</value>
