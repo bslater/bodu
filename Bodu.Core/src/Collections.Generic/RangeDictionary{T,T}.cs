@@ -396,46 +396,16 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// </summary>
     /// <param name="value">The endpoint to locate.</param>
     /// <returns>The lower-bound index for <paramref name="value" />.</returns>
-    private int LowerBound(TKey value)
-    {
-        int low = 0;
-        int high = _count;
-
-        while (low < high)
-        {
-            int middle = low + ((high - low) >> 1);
-
-            if (_comparer.Compare(_starts[middle], value) < 0)
-                low = middle + 1;
-            else
-                high = middle;
-        }
-
-        return low;
-    }
+    private int LowerBound(TKey value) =>
+        SortedRangeSearch.LowerBound(_starts, _count, value, _comparer);
 
     /// <summary>
     /// Returns the lowest index whose start endpoint is greater than <paramref name="value" />.
     /// </summary>
     /// <param name="value">The endpoint to locate.</param>
     /// <returns>The upper-bound index for <paramref name="value" />.</returns>
-    private int UpperBound(TKey value)
-    {
-        int low = 0;
-        int high = _count;
-
-        while (low < high)
-        {
-            int middle = low + ((high - low) >> 1);
-
-            if (_comparer.Compare(_starts[middle], value) <= 0)
-                low = middle + 1;
-            else
-                high = middle;
-        }
-
-        return low;
-    }
+    private int UpperBound(TKey value) =>
+        SortedRangeSearch.UpperBound(_starts, _count, value, _comparer);
 
     /// <summary>
     /// Throws <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is not within
