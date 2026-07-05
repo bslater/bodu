@@ -1,7 +1,7 @@
 # Bodu.Core roadmap — implementation plan
 
 **Date:** 2026-07-04
-**Status:** T0–T5 executed (2026-07-05); T6 proposed
+**Status:** T0–T6 executed (2026-07-05) — all tranches complete
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *Per-project roadmap → `Bodu.Core`*
 
 This plan turns every item in the `Bodu.Core` section of the repository
@@ -664,6 +664,27 @@ performance contract must be documented honestly.
 ---
 
 ## 8. T6 — Algorithmic heavyweights
+
+> **Executed 2026-07-05** as five incremental commits (design note +
+> NavigableSet; NavigableDictionary; IntervalTree pair; Aho-Corasick +
+> RadixTrie), each preceded or accompanied by its design note under
+> `Bodu.Collections/docs/`. Key recorded decisions/deviations:
+>
+> 1. **Backing:** order-statistic red-black trees with subtree-size
+>    augmentation and parent pointers (skip list rejected for the
+>    sequential types; the concurrent sorted map explicitly not
+>    foreclosed). The dictionary duplicates the node core rather than
+>    genericizing the set's private nodes — both cores independently
+>    pinned by 20,000-op differential sweeps.
+> 2. **IntervalTree** guards low <= high on every pair-taking member
+>    (not just Add/QueryOverlaps) and implements duplicates as
+>    multiplicity counts (unkeyed) / per-node value lists (keyed).
+> 3. **Aho-Corasick is ordinal-only** (a char comparer would govern
+>    failure-link construction); the match order is pinned as
+>    ascending end index then ascending pattern length; lazy string
+>    enumeration pairs with eager span-based Count/Has conveniences.
+> 4. **Null elements/keys are rejected** across the new types (a
+>    documented divergence from SortedSet<T> for family consistency).
 
 The three largest items. Each warrants its own short design note
 (assessment-style, following this document's precedent) before

@@ -400,18 +400,15 @@ Forward-looking:
   `Create(culture, ignoreCase)`), overflow-free digit-run comparison,
   and an equality/hash contract — scope deliberately excludes sign,
   decimal, and version-tuple semantics.
-- **Navigable / order-statistic sorted collections** — the largest
-  remaining collection gap versus Java and Python: a sorted set and
-  sorted dictionary supporting *nearest-neighbour* queries (floor /
-  ceiling / higher / lower), *rank / select* (index-of-element, k-th
-  smallest), and cheap range views. Java's `TreeMap` / `NavigableMap` /
-  `NavigableSet` and Python's `sortedcontainers` (`SortedList` /
-  `SortedDict`, top-tier PyPI adoption) make these table stakes; the
-  BCL's `SortedSet<T>` offers only `GetViewBetween` (no floor/ceiling,
-  no rank) and `SortedList<,>` pays O(n) inserts for its indexer.
-  Working names `NavigableSet<T>` / `NavigableDictionary<,>`; a
-  skip-list backing would also open the door to a concurrent sorted map
-  (Java's `ConcurrentSkipListMap`), which has no BCL analogue at all.
+- **The navigable / order-statistic sorted collections have
+  landed.** ✅ `NavigableSet<T>` and `NavigableDictionary<,>` ship
+  floor / ceiling / higher / lower navigation, rank (`IndexOf`) and
+  select (`GetAt`), O(log n) `CountInRange`, and live fail-fast
+  ascending / descending / range views over order-statistic red-black
+  trees with subtree-size augmentation (design note in
+  `Bodu.Collections/docs/navigable-collections-design.md`; the
+  skip-list-based concurrent sorted map remains an explicitly
+  unforeclosed follow-on).
 - **`BiDictionary<TKey,TValue>` has landed.** ✅ A bidirectional
   one-to-one map over two shared dictionary indexes with O(1) lookups
   both ways, a live reference-stable `Inverse` view, independent key
@@ -435,11 +432,13 @@ Forward-looking:
   insensitive to trailing zero words, and a non-boxing struct
   enumerator over set-bit indices — closing the fixed-size,
   query-free, boxing-enumerator gaps of the BCL `BitArray`.
-- **Trie-family extensions in `Collections.Generic.Trees`** — an
-  Aho-Corasick automaton for multi-pattern string search (Java
-  `ahocorasick`, Python `pyahocorasick`; .NET pulls independent ports)
-  and PATRICIA / radix compression as siblings of the existing `Trie` /
-  `Trie<TValue>`.
+- **The trie-family extensions have landed.** ✅
+  `AhoCorasickAutomaton` (+ `<TValue>`) provides immutable
+  build-then-match multi-pattern search with a pinned deterministic
+  match order and span-based eager conveniences, and `RadixTrie` /
+  `RadixTrie<TValue>` are member-for-member path-compressed drop-in
+  siblings of `Trie` / `Trie<TValue>`, differentially tested against
+  the uncompressed tries as oracles.
 - **The set-backed `MultiValueDictionary<,>` option has landed.** ✅
   `MultiValueBacking.Set` deduplicates per-key values through an
   injectable value comparer (first-occurrence order preserved, the
@@ -447,16 +446,12 @@ Forward-looking:
   `SetMultimap` half as a construction-time option rather than a second
   type; `List` remains the default with its historical behaviour
   unchanged.
-- **`IntervalTree<T>` / `IntervalTree<T,TValue>`** — *overlapping*
-  intervals with stabbing ("all intervals containing x") and
-  overlap-window queries in O(log n + k). Genuinely distinct from the
-  existing range family: `RangeSet<T>` / `RangeDictionary<,>` are
-  sorted non-overlapping maps that throw on overlapping inserts, and
-  `Bodu.Numerics`' `IntervalSet<T>` normalizes to disjoint ranges.
-  Java has no in-box analogue (Guava `RangeMap` coalesces too); Python
-  consumers pull `intervaltree`; .NET ports are scattered one-off
-  packages. Scheduling-conflict, genomics, and time-series overlap
-  queries are the driving use cases.
+- **`IntervalTree<T>` / `IntervalTree<T,TValue>` have landed.** ✅
+  Closed-interval overlap storage with O(log n + k) stabbing and
+  window queries over max-endpoint augmented red-black trees,
+  first-class duplicates, and the family boundary documented: only
+  this type stores overlaps (`RangeSet` / `RangeDictionary` reject
+  them; Numerics' `IntervalSet` normalizes them).
 - **The `Deque<T>` overflow policy has landed.** ✅
   `DequeOverflowPolicy.EvictOpposite` gives the fixed-capacity deque
   Python's `deque(maxlen=N)` silently-discard-opposite-end behaviour
