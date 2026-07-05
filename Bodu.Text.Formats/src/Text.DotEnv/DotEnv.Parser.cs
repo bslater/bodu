@@ -25,6 +25,17 @@ public static partial class DotEnv
             string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_DotEnvDuplicateKey, key, lineNumber), lineNumber);
 
     /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> for a streaming entry that exceeds the maximum buffered length
+    /// before it resolves, bounding the work an oversized or unterminated construct can force on the reader.
+    /// </summary>
+    /// <param name="maxLength">The maximum number of characters a single streaming entry may occupy.</param>
+    /// <param name="lineNumber">The 1-based line number on which the oversized entry begins.</param>
+    [DoesNotReturn]
+    internal static void ThrowEntryTooLong(int maxLength, int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_DotEnvEntryTooLong, maxLength, lineNumber), lineNumber);
+
+    /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for an invalid key name.
     /// </summary>
     /// <param name="key">The offending key text.</param>

@@ -38,6 +38,18 @@ public sealed class DotEnvReader
     /// <summary>The default size of the internal character buffer in characters used when no buffer size is supplied.</summary>
     public const int DefaultBufferSize = 4096;
 
+    /// <summary>
+    /// The maximum number of characters a single entry may occupy in the pending buffer before it resolves. Internal so
+    /// tests can validate the bound.
+    /// </summary>
+    /// <remarks>
+    /// The reader re-parses the pending buffer from its start on every refill, so an oversized or unterminated
+    /// construct (for example a double-quoted value with no closing quote) drives quadratic work as it grows without
+    /// bound. Capping the unresolved span bounds that work against untrusted input while admitting any realistic entry
+    /// (this is far larger than any legitimate DotEnv value).
+    /// </remarks>
+    internal const int MaxPendingLength = 1 << 20;
+
     /// <summary>The underlying text reader supplying the DotEnv input. Owned by this instance.</summary>
     private readonly TextReader _reader;
 
@@ -162,7 +174,12 @@ public sealed class DotEnvReader
             if (result == ReadResult.End)
                 return false;
 
-            // NeedMore: pull another chunk; mark EOF when the reader is drained.
+            // NeedMore: reject an entry that has outgrown the cap before pulling more input, so an oversized or
+            // unterminated construct cannot drive unbounded quadratic re-parsing.
+            if (_pending.Length > MaxPendingLength)
+                DotEnv.ThrowEntryTooLong(MaxPendingLength, 1 + _consumedLines);
+
+            // Pull another chunk; mark EOF when the reader is drained.
             int n = _reader.Read(_buffer, 0, _buffer.Length);
             if (n == 0)
                 _eof = true;
@@ -199,6 +216,11 @@ public sealed class DotEnvReader
 
             if (result == ReadResult.End)
                 return false;
+
+            // NeedMore: reject an entry that has outgrown the cap before pulling more input, so an oversized or
+            // unterminated construct cannot drive unbounded quadratic re-parsing.
+            if (_pending.Length > MaxPendingLength)
+                DotEnv.ThrowEntryTooLong(MaxPendingLength, 1 + _consumedLines);
 
             int n = await _reader.ReadAsync(_buffer.AsMemory(), cancellationToken).ConfigureAwait(false);
             if (n == 0)
