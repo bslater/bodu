@@ -4,79 +4,116 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 public sealed partial class CcmModeTransformTests
 {
-    // ── NIST SP 800-38C Appendix C / NIST CAVP AES-CCM ───────────────────────────────────────
+    // ── AES-CCM cross-checked against the BCL AesCcm (a NIST-validated CCM implementation) ────────
     //
-    // Our fixed parameters: Nlen=12, q=3, T=16 (128-bit tag).
-    // Vectors are from the NIST CAVP CCM test data for these parameters.
-    //
-    // All output is CT || Tag (ciphertext then 16-byte tag), matching IAeadBlockCipherModeTransform.
+    // CcmModeTransform fixes Nlen = 12, q = 3, T = 16 — exactly the AES-128 / 12-byte-nonce /
+    // 16-byte-tag parameters System.Security.Cryptography.AesCcm supports. Using AesCcm as an
+    // authoritative oracle pins the exact ciphertext+tag across a range of AAD/plaintext lengths,
+    // exercising the real data path (which a symmetric encrypt/decrypt round-trip cannot).
 
-    private static IEnumerable<object[]> CcmKatVectors()
+    /// <summary>
+    /// Yields (aadLength, plaintextLength) pairs spanning empty, partial, block-aligned, and multi-block CCM inputs.
+    /// </summary>
+    /// <returns>One row per (aadLength, plaintextLength) shape.</returns>
+    public static IEnumerable<object[]> CcmCrossCheckShapes()
     {
-        // NIST CAVP AES-CCM-16 (T=16 bytes), Nlen=12, no AAD.
-        // From NIST test vector file: DVPT128.rsp, Alen=0, Plen=0.
-        //
-        // Key   = c0c1c2c3c4c5c6c7c8c9cacbcccdcecf
-        // Nonce = 00000003020100a0a1a2a3a4a5
-        //   → First 12 bytes used: 00000003020100a0a1a2a3a4
-        // PT    = (empty)
-        // CT+Tag = (16-byte tag only)
-        // Tag   = 3610a7b0df47ea0b0ae5afac (from NIST DVPT, 12-byte tag case)
-        //
-        // NOTE: NIST DVPT uses T=8, T=10, T=16 with many Nlen values. For Nlen=12, T=16:
-        // Using the RFC 3610 example adjusted for our formatting:
-
-        // RFC 3610 Test Vector #1 (adapted — note RFC uses Nlen=13, T=8; our impl uses Nlen=12, T=16)
-        // Providing NIST CAVP vectors directly for Nlen=12, T=16 (128-bit tag), Alen=0:
-
-        // NIST AES-CCM CAVP: VNT128.rsp, Nlen=12, Tlen=16, Alen=0, Plen=24
-        // Key   = fe36d24b9b3842fcbf6e4c7e5987a37d
-        // Nonce = fc6eb6f5ec6c09c06a4b94d4
-        // PT    = 3a1bce7e22b1f5cd38b4302fe0e1b0ce
-        //         e4e5e5e5e5e5e500 (24 bytes)
-        // — Using a well-known published test case below —
-
-        // From NIST CAVP AES-CCM test vectors (AEAD mode), Key128, T=16, Nlen=12, Alen=0, Plen=0:
-        yield return new object[]
-        {
-            "feffe9928665731c6d6a8f9467308308",  // key
-            "cafebabefacedbaddecaf88800000000",  // IV (first 12 bytes = nonce, last 4 ignored)
-string.Empty,                                  // AAD
-string.Empty,                                  // plaintext (empty)
-            // Tag for empty message, no AAD, with this nonce and key (computed from standard):
-            // (Placeholder — replace with NIST CAVP verified value after implementation test)
-            "PLACEHOLDER_TAG_32HEX_CHARS_HERE"
-        };
-
-        // NIST CAVP AES-CCM, Key=128-bit, T=16, Nlen=12, Alen=16, Plen=24 (representative):
-        // Using a known-correct vector from the NIST CAVP test data:
-        // Key   = c0c1c2c3c4c5c6c7c8c9cacbcccdcecf
-        // Nonce = a0a1a2a3a4a5a6a7a8a9aaab (first 12 bytes of IV)
-        // AAD   = 00010203040506070809
-        // PT    = 08090a0b0c0d0e0f101112131415161718191a1b1c1d1e
-        // — The exact CT+Tag depends on the formatting function being used —
+        int[] plaintextLengths = [0, 1, 15, 16, 17, 31, 32, 48];
+        foreach (int aad in new[] { 0, 1, 16, 20 })
+            foreach (int pt in plaintextLengths)
+                yield return new object[] { aad, pt };
     }
 
-    // Provide only round-trip tests until NIST CAVP vectors are confirmed against the implementation.
-    // The base class Transform_WithRealAesCipher_RandomKey_ShouldRoundTrip covers this automatically.
+    /// <summary>Builds a deterministic AES-128 CCM case (key, 12-byte nonce, AAD, plaintext).</summary>
+    private static (byte[] Key, byte[] Nonce, byte[] Aad, byte[] Plaintext) BuildCcmCase(int aadLength, int plaintextLength)
+    {
+        byte[] key = new byte[16];
+        byte[] nonce = new byte[12];
+        for (int i = 0; i < key.Length; i++) key[i] = (byte)((i * 7) + 1);
+        for (int i = 0; i < nonce.Length; i++) nonce[i] = (byte)((i * 5) + 3);
 
-    // Once the implementation is verified, add:
-    //   [TestMethod][DynamicData(nameof(CcmKatVectors))]
-    //   public void Encrypt_WithNistVector_ShouldMatchExpected(...) => AssertKatEncrypt(...);
-    //
-    //   [TestMethod][DynamicData(nameof(CcmKatVectors))]
-    //   public void Decrypt_WithNistVector_ShouldRecoverPlaintext(...) => AssertKatDecrypt(...);
+        byte[] aad = new byte[aadLength];
+        for (int i = 0; i < aadLength; i++) aad[i] = (byte)(i + 0xA0);
+        byte[] plaintext = new byte[plaintextLength];
+        for (int i = 0; i < plaintextLength; i++) plaintext[i] = (byte)(i + 0x10);
 
-    // ── RFC 3610 Section 2.8 — Example #1 (adapted for our Nlen=12, T=16 parameters) ─────────
-    //
-    // RFC 3610 uses Nlen=13, T=8. We adapt by using first 12 of the 13-byte nonce and
-    // accept that our T=16 produces a longer tag than the RFC example.
-    // True conformance testing requires NIST CAVP data; the round-trip test from the base
-    // class is the primary correctness gate until CAVP vectors are integrated.
+        return (key, nonce, aad, plaintext);
+    }
+
+    /// <summary>Seals a case with the BCL <see cref="AesCcm" /> oracle, returning ciphertext concatenated with the 16-byte tag.</summary>
+    private static byte[] BclCcmSeal(byte[] key, byte[] nonce, byte[] aad, byte[] plaintext)
+    {
+        using var oracle = new AesCcm(key);
+        byte[] ciphertext = new byte[plaintext.Length];
+        byte[] tag = new byte[16];
+        oracle.Encrypt(nonce, plaintext, ciphertext, tag, aad);
+
+        byte[] result = new byte[ciphertext.Length + tag.Length];
+        ciphertext.CopyTo(result, 0);
+        tag.CopyTo(result, ciphertext.Length);
+        return result;
+    }
+
+    private static CcmModeTransform MakeCcm(byte[] key, byte[] nonce, byte[] aad)
+    {
+        byte[] iv = new byte[16];
+        nonce.CopyTo(iv, 0);
+        var transform = new CcmModeTransform(new AesBlockCipherFixture(key), iv);
+        if (aad.Length > 0) transform.ProcessAssociatedData(aad);
+        return transform;
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CcmModeTransform.Encrypt" /> produces exactly the ciphertext and tag of the BCL
+    /// <see cref="AesCcm" /> oracle across a range of AAD and plaintext lengths, confirming RFC 3610 / NIST SP 800-38C
+    /// conformance on the real data path.
+    /// </summary>
+    /// <param name="aadLength">The associated-data length in bytes.</param>
+    /// <param name="plaintextLength">The plaintext length in bytes.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(nameof(CcmCrossCheckShapes))]
+    public void Encrypt_AgainstBclAesCcm_ShouldMatch(int aadLength, int plaintextLength)
+    {
+        (byte[] key, byte[] nonce, byte[] aad, byte[] plaintext) = BuildCcmCase(aadLength, plaintextLength);
+        byte[] expected = BclCcmSeal(key, nonce, aad, plaintext);
+
+        CcmModeTransform transform = MakeCcm(key, nonce, aad);
+        byte[] actual = new byte[plaintext.Length + 16];
+        transform.Encrypt(plaintext, actual);
+
+        CollectionAssert.AreEqual(expected, actual,
+            $"CCM encrypt diverged from BCL AesCcm at aadLength={aadLength}, plaintextLength={plaintextLength}.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CcmModeTransform.Decrypt" /> recovers the plaintext of a message sealed by the BCL
+    /// <see cref="AesCcm" /> oracle across a range of AAD and plaintext lengths (a divergent tag would fail
+    /// authentication here).
+    /// </summary>
+    /// <param name="aadLength">The associated-data length in bytes.</param>
+    /// <param name="plaintextLength">The plaintext length in bytes.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(nameof(CcmCrossCheckShapes))]
+    public void Decrypt_AgainstBclAesCcm_ShouldRecoverPlaintext(int aadLength, int plaintextLength)
+    {
+        (byte[] key, byte[] nonce, byte[] aad, byte[] plaintext) = BuildCcmCase(aadLength, plaintextLength);
+        byte[] sealedBytes = BclCcmSeal(key, nonce, aad, plaintext);
+
+        CcmModeTransform transform = MakeCcm(key, nonce, aad);
+        byte[] recovered = new byte[plaintext.Length];
+        int written = transform.Decrypt(sealedBytes, recovered);
+
+        Assert.AreEqual(plaintext.Length, written);
+        CollectionAssert.AreEqual(plaintext, recovered,
+            $"CCM decrypt of BCL-sealed data failed at aadLength={aadLength}, plaintextLength={plaintextLength}.");
+    }
 
     /// <summary>
     /// Verifies that <see cref="CcmModeTransform.Encrypt" />, EmptyPlaintextAndAad, TagShouldBe16Bytes, returns the expected value.
