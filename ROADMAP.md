@@ -366,13 +366,13 @@ Forward-looking:
 - **Probabilistic / sketch data structures** — Bloom filter, Count-Min
   sketch, HyperLogLog. Commonly built independently, absent from the BCL,
   and a clean fit for the collections pillar.
-- **Sequence-operator extras** — the `more-itertools` / Guava
-  `Iterables` / MoreLINQ shapes the BCL still lacks: windowed / pairwise
-  projection, cartesian product, permutations / combinations,
-  interleave / round-robin, run-length encoding. Strictly additive to
-  LINQ: anything the BCL has since shipped (`Chunk`, `CountBy`,
-  `AggregateBy`, `Index`) is excluded, and each candidate operator must
-  be re-checked against the current BCL before landing.
+- **Sequence-operator extras have landed.** ✅ `CartesianProduct`,
+  `Permutations` / `Combinations`, and `Interleave` (skip-exhausted
+  round-robin) joined the already-shipped `Pairwise` / `Windowed` /
+  `RunLengthEncode` / `ZipLongest` / `Batch` operators, each verified
+  absent from System.Linq against the installed .NET 10 ref assembly
+  before landing (`Chunk`, `CountBy`, `AggregateBy`, `Index`, `Shuffle`
+  remain excluded as BCL-shipped).
 - **A time-based expiry layer for `EvictingDictionary<,>`** — the
   policy enum already covers FIFO / LRU / LFU / MRU / random /
   second-chance, so capacity-triggered eviction is done; the remaining
@@ -380,10 +380,13 @@ Forward-looking:
   (per-entry TTL and sliding expiration), plus optionally a W-TinyLFU
   admission policy. .NET consumers currently reach for
   BitFaster.Caching for both.
-- **A natural-order string comparer** — numeric-aware ordering
-  (`file10` sorts after `file2`; Python's `natsort`, the Explorer
-  `StrCmpLogicalW` behaviour) exposed as an `IComparer<string>` beside
-  the existing extension surfaces.
+- **The natural-order string comparer has landed.** ✅
+  `NaturalStringComparer` (`Bodu.Extensions`) ships the numeric-aware
+  `file2` < `file10` ordering with StringComparer-shaped statics
+  (Ordinal / OrdinalIgnoreCase / CurrentCulture variants plus
+  `Create(culture, ignoreCase)`), overflow-free digit-run comparison,
+  and an equality/hash contract — scope deliberately excludes sign,
+  decimal, and version-tuple semantics.
 - **Navigable / order-statistic sorted collections** — the largest
   remaining collection gap versus Java and Python: a sorted set and
   sorted dictionary supporting *nearest-neighbour* queries (floor /
@@ -420,13 +423,13 @@ Forward-looking:
   `ahocorasick`, Python `pyahocorasick`; .NET pulls independent ports)
   and PATRICIA / radix compression as siblings of the existing `Trie` /
   `Trie<TValue>`.
-- **A set-backed value-collection option for
-  `MultiValueDictionary<,>`** — the type is list-backed today
-  (duplicates per key allowed, `IReadOnlyList<TValue>` views), which is
-  Guava's `ListMultimap`. Guava's other half, `SetMultimap`
-  (deduplicated per-key values), has no Bodu or BCL expression — a
-  backing-semantics option (list vs set, with the comparer plumbed
-  through) closes it without a second type.
+- **The set-backed `MultiValueDictionary<,>` option has landed.** ✅
+  `MultiValueBacking.Set` deduplicates per-key values through an
+  injectable value comparer (first-occurrence order preserved, the
+  `IReadOnlyList<TValue>` live-view contract intact), closing Guava's
+  `SetMultimap` half as a construction-time option rather than a second
+  type; `List` remains the default with its historical behaviour
+  unchanged.
 - **`IntervalTree<T>` / `IntervalTree<T,TValue>`** — *overlapping*
   intervals with stabbing ("all intervals containing x") and
   overlap-window queries in O(log n + k). Genuinely distinct from the
@@ -437,15 +440,13 @@ Forward-looking:
   consumers pull `intervaltree`; .NET ports are scattered one-off
   packages. Scheduling-conflict, genomics, and time-series overlap
   queries are the driving use cases.
-- **An evict-on-overflow mode for the bounded `Deque<T>`** — Python's
-  `deque(maxlen=N)` silently discards from the *opposite* end when an
-  add overflows a full deque; Bodu's fixed-capacity mode
-  (`AllowGrow = false`) currently only rejects. A small overflow-policy
-  addition (reject vs evict-opposite-end) closes the one `deque(maxlen)`
-  behaviour the ring family does not yet express — no new type needed.
-  (The single-ended equivalents are already covered: overwrite-on-full
-  vs reject-when-full is `CircularBuffer<T>`'s existing
-  `AllowOverwrite` switch, i.e. the Boost `circular_buffer` niche.)
+- **The `Deque<T>` overflow policy has landed.** ✅
+  `DequeOverflowPolicy.EvictOpposite` gives the fixed-capacity deque
+  Python's `deque(maxlen=N)` silently-discard-opposite-end behaviour
+  (default remains `Reject`, preserving the historical throw/false
+  contract), raising the same `ItemEvicting` / `ItemEvicted` pair as
+  `CircularBuffer<T>`'s overwrite mode so the ring family stays
+  consistent.
 
 ### `Bodu.Security.Cryptography`
 

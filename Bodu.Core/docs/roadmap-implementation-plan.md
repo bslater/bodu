@@ -1,7 +1,7 @@
 # Bodu.Core roadmap — implementation plan
 
 **Date:** 2026-07-04
-**Status:** T0 and T1 executed (2026-07-05); T2–T6 proposed
+**Status:** T0–T2 executed (2026-07-05); T3–T6 proposed
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *Per-project roadmap → `Bodu.Core`*
 
 This plan turns every item in the `Bodu.Core` section of the repository
@@ -299,6 +299,28 @@ ecosystem and gratuitous divergence will hurt adoption.
 ---
 
 ## 4. T2 — Small additive wins on existing types
+
+> **Executed 2026-07-05** as four incremental commits (one per item).
+> Deviations from the sketches below:
+>
+> 1. **T2.a** additionally mirrors `CircularBuffer<T>`'s `ItemEvicting`
+>    (veto-by-throwing) / `ItemEvicted` event pair on the eviction
+>    path, keeping the ring-backed family consistent, and refactors the
+>    four add members onto a shared `TryAddInternal` core.
+> 2. **T2.b** keeps the single `List<TValue>` bucket with a
+>    comparer-aware O(n) duplicate scan under `Set` backing — the
+>    documented trade-off that preserves the `IReadOnlyList<TValue>`
+>    live-view contract, insertion order, and a bit-identical `List`
+>    path.
+> 3. **T2.c** scopes to ASCII digit runs with a deferred
+>    leading-zero tiebreak keeping the order total; culture instances
+>    read `CultureInfo.CurrentCulture` per comparison (the
+>    `StringComparer` semantic).
+> 4. **T2.d** ships `Interleave` only (skip-exhausted round-robin) —
+>    no `RoundRobin` alias, since the repo has no alias precedent —
+>    and the size parameter is named `size` for consistency with
+>    `Windowed`. The BCL-overlap gate ran against the installed
+>    .NET 10 ref assembly and is recorded in the commit message.
 
 Four independent items; land in any order after T0.
 
