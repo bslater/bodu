@@ -19,6 +19,8 @@
               href: core/evicting-dictionary.md
             - name: Sequenced dictionary
               href: core/sequenced-dictionary.md
+            - name: Bidirectional dictionary
+              href: core/bi-dictionary.md
             - name: Indexed priority queue
               href: core/indexed-priority-queue.md
             - name: Graphs and graph algorithms
@@ -33,18 +35,36 @@
               href: core/segmented-buffer.md
             - name: Range-keyed lookups
               href: core/range-dictionary.md
+            - name: Interval tree
+              href: core/interval-tree.md
+            - name: Bit set
+              href: core/bit-set.md
+            - name: Navigable set
+              href: core/navigable-set.md
+            - name: Navigable dictionary
+              href: core/navigable-dictionary.md
+            - name: Layered and defaulting dictionaries
+              href: core/layered-and-defaulting-dictionaries.md
+            - name: Table (two-key map)
+              href: core/table.md
         - name: Bodu.Collections.Generic.Trees
           items:
-            - name: Trie (prefix tree)
+            - name: Tries and text search
               href: core/trie.md
         - name: Bodu.Functional
           items:
             - name: Memoization
               href: core/memoization.md
+            - name: Options, results, and eithers
+              href: core/functional-results.md
         - name: Bodu.Collections.Generic.Concurrent
           items:
             - name: Concurrent collections
               href: core/concurrent-collections.md
+        - name: Bodu.Collections.Probabilistic
+          items:
+            - name: Probabilistic collections (sketches)
+              href: core/probabilistic-collections.md
         - name: Bodu.Threading
           items:
             - name: Async coordination primitives
@@ -57,6 +77,10 @@
           items:
             - name: WeekPattern
               href: core/week-pattern.md
+        - name: Bodu.Extensions
+          items:
+            - name: Natural string comparer
+              href: core/natural-string-comparer.md
 - name: Hashing & Cryptography
   href: topics/hashing-and-cryptography.md
   items:

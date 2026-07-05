@@ -8,11 +8,14 @@ title: Bodu.Core — Getting started
 
 ```bash
 dotnet add package Bodu.Core
+dotnet add package Bodu.Collections
 ```
 
-Targets `net8.0`. No external runtime dependencies.
+Targets `net8.0`. No external runtime dependencies. The specialized collection catalogue (`Bodu.Collections.Generic` and its `.Concurrent` / `.Graphs` / `.Trees` / `Bodu.Collections.Probabilistic` siblings) ships in the `Bodu.Collections` package (namespaces unchanged; it depends on `Bodu.Core`); `Bodu.Core` alone suffices for the buffers, extensions, threading, and functional surfaces.
 
 ## Minimal samples
+
+The collection samples below (`CircularBuffer<T>`, `EvictingDictionary<TKey, TValue>`, `Deque<T>`, `SequencedDictionary<TKey, TValue>`, `IndexedPriorityQueue<TElement, TPriority>`) need the `Bodu.Collections` package; the remaining samples (`WeekPattern`, `PooledBufferBuilder<T>`, the date extensions, `ThrowHelper`) need only `Bodu.Core`.
 
 ### Circular buffer (`CircularBuffer<T>`)
 

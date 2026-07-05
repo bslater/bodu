@@ -3,7 +3,13 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-07-04. Since the previous revision the
+*Last updated: 2026-07-05. Since the previous revision the
+**`Bodu.Collections` package split has been executed** (the
+collections pillar — `Collections.Generic` / `.Concurrent` / `.Graphs`
+/ `.Trees` — now ships as its own package referencing Core, namespaces
+unchanged) and the `WeekPattern` extraction was retired as unnecessary
+post-split; both decisions are recorded in
+`Bodu.Core/docs/roadmap-implementation-plan.md`. Before that, the
 `Bodu.Security.Cryptography` interop wave has merged — RFC 7468 **PEM**
 key wrapping for Ed25519 / X25519 (closing the key-encoding story), the
 `Bodu.Security.Cryptography.DisableSimd` **AVX-512 opt-out** and capability
@@ -103,7 +109,8 @@ exercised on the smallest self-contained units first.
 
 | Package | Notes |
 | --- | --- |
-| `Bodu.Core` | The dependency root — buffers, collections (incl. the new graphs/trees pillars), threading primitives, sequences, `WeekPattern`, `ThrowHelper`, text-encoding utilities. |
+| `Bodu.Core` | The dependency root — buffers, extension surfaces, threading primitives, sequences, `WeekPattern`, `ThrowHelper`, text-encoding utilities. |
+| `Bodu.Collections` | The specialized collection catalogue (incl. the graphs/trees pillars), split out of Core; references `Bodu.Core`. Namespaces unchanged (`Bodu.Collections.*`). |
 | `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and the interval algebra (`Interval<T>` / `DiscreteInterval<T>` / `IntervalSet<T>`) over `INumber<T>`. Serialization-agnostic — no `System.Text.Json` dependency. |
 | `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`ConfigureForBoduNumerics`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
 | `Bodu.IO.Hashing` | Non-cryptographic hashing + the full RevEng CRC catalogue + the check-digit family. |
@@ -276,10 +283,10 @@ is now:
 3. **Cut Wave 1–2 packages** (Core, Numerics, IO.Hashing, Text.Encoding,
    Security.Cryptography, then the self-contained text/format libraries)
    to exercise package-validation on brand-new package IDs before the
-   coordinated Calendar/Financial waves. Gate: decide the
-   `Bodu.Collections` package-split question (see the `Bodu.Core`
-   section) before Core's first package is tagged — it is free now and
-   breaking afterwards.
+   coordinated Calendar/Financial waves. The Wave 1 gate is cleared: the
+   `Bodu.Collections` package split has been executed (see the
+   `Bodu.Core` section), so Core's first package can tag against the
+   final assembly boundary. `Bodu.Collections` joins the Wave 1 set.
 4. **Consolidate the two text-format tiers.** The repository has two
    parallel shapes: the modern `Utf8*` ref-struct quartet
    (Bencode/Toml/Yaml) and the older `*Reader`/`*Writer`/`*Document`
@@ -289,10 +296,14 @@ is now:
 
 ## Per-project roadmap
 
-### `Bodu.Core`
+### `Bodu.Core` (and `Bodu.Collections`)
 
-Current state: mature and broad; ~485 src / ~937 test files. Beyond the
-buffers/collections/extensions base, it now carries:
+Current state: mature and broad. The collections pillar now ships as
+the separate **`Bodu.Collections`** package (split executed — see the
+first forward-looking item), leaving `Bodu.Core` as the primitive
+layer (buffers, extensions, threading, sequences, functional seam,
+text utilities, `ThrowHelper`, `WeekPattern`). Across the pair the
+surface carries:
 
 - **`Collections.Generic.Graphs`** — `Graph<T>` (directed/undirected
   adjacency-list), the read-only graph interfaces, `GraphAlgorithms`
@@ -314,115 +325,140 @@ buffers/collections/extensions base, it now carries:
 
 Forward-looking:
 
-- **Decide the `Bodu.Collections` package split — before Wave 1.** The
-  collections pillar (`Collections.Generic` + `.Concurrent` + `.Graphs`
-  + `.Trees`, plus the gap items below) is now the bulk of Core and
-  still growing, while every other Bodu package depends on Core mainly
-  for `ThrowHelper`, the buffers, and the extension surfaces. Extracting
-  the pillar into a **`Bodu.Collections`** package would leave Core as
-  the small always-referenced primitive layer and make the
-  data-structure catalogue an opt-in dependency — the same motive as the
-  `WeekPattern` extraction below. Namespaces (`Bodu.Collections.*`)
-  would not change, only the assembly/package boundary. Nothing has
-  been published yet, so the split is free today and a breaking change
-  the day after `Bodu.Core/v1.0.0` is tagged — this must be decided
-  before the Wave 1 cut. Naming inside the pillar stays BCL-style
-  regardless (`MultiValueDictionary`, `RangeDictionary`,
-  `BiDictionary`, `Multiset`, `EvictingDictionary`) rather than the
-  Java-style `MultiMap` / `RangeMap` / `BiMap` / `MultiSet` /
-  `LruCache` synonyms.
-- **Extract `WeekPattern` to `Bodu.Globalization.WeekPattern`** now that
-  it is a `readonly partial struct` with a struct enumerator, so
-  globalization-adjacent packages can depend on the pattern without
-  pulling all of Core.
-- **Grow the `Functional` seam** — it currently holds only `Memoizer`.
-  A `Result<T>` / `Option<T>` / `Either<TLeft,TRight>` railway-oriented
-  set is the most-requested independently-built .NET surface (LanguageExt,
-  CSharpFunctionalExtensions) and a natural fit for the seam. See
-  *New library candidates* for the extraction option.
-- **Probabilistic / sketch data structures** — Bloom filter, Count-Min
-  sketch, HyperLogLog. Commonly built independently, absent from the BCL,
-  and a clean fit for the collections pillar.
-- **Sequence-operator extras** — the `more-itertools` / Guava
-  `Iterables` / MoreLINQ shapes the BCL still lacks: windowed / pairwise
-  projection, cartesian product, permutations / combinations,
-  interleave / round-robin, run-length encoding. Strictly additive to
-  LINQ: anything the BCL has since shipped (`Chunk`, `CountBy`,
-  `AggregateBy`, `Index`) is excluded, and each candidate operator must
-  be re-checked against the current BCL before landing.
-- **A time-based expiry layer for `EvictingDictionary<,>`** — the
-  policy enum already covers FIFO / LRU / LFU / MRU / random /
-  second-chance, so capacity-triggered eviction is done; the remaining
-  `cachetools` / Guava Cache / Caffeine niche is *time-to-live*
-  (per-entry TTL and sliding expiration), plus optionally a W-TinyLFU
-  admission policy. .NET consumers currently reach for
-  BitFaster.Caching for both.
-- **A natural-order string comparer** — numeric-aware ordering
-  (`file10` sorts after `file2`; Python's `natsort`, the Explorer
-  `StrCmpLogicalW` behaviour) exposed as an `IComparer<string>` beside
-  the existing extension surfaces.
-- **Navigable / order-statistic sorted collections** — the largest
-  remaining collection gap versus Java and Python: a sorted set and
-  sorted dictionary supporting *nearest-neighbour* queries (floor /
-  ceiling / higher / lower), *rank / select* (index-of-element, k-th
-  smallest), and cheap range views. Java's `TreeMap` / `NavigableMap` /
-  `NavigableSet` and Python's `sortedcontainers` (`SortedList` /
-  `SortedDict`, top-tier PyPI adoption) make these table stakes; the
-  BCL's `SortedSet<T>` offers only `GetViewBetween` (no floor/ceiling,
-  no rank) and `SortedList<,>` pays O(n) inserts for its indexer.
-  Working names `NavigableSet<T>` / `NavigableDictionary<,>`; a
-  skip-list backing would also open the door to a concurrent sorted map
-  (Java's `ConcurrentSkipListMap`), which has no BCL analogue at all.
-- **`BiDictionary<TKey,TValue>`** — a bidirectional one-to-one map with
-  an inverse view and configurable duplicate-value policy. Guava's
-  `BiMap`, Python's `bidict`, Commons Collections' `BidiMap`; in .NET
-  it is perpetually hand-rolled as two dictionaries.
-- **`Table<TRow,TColumn,TValue>`** — a two-key map with first-class row
-  and column views (Guava `Table`). `Dictionary<(R,C),V>` covers plain
-  lookup, so the candidate's value is precisely the row / column
-  projections and per-row iteration; adopt only with those views.
-- **Layered and defaulting dictionary utilities** — a read-through
-  `ChainMap`-style view over an ordered list of dictionaries (Python
-  stdlib `ChainMap`, Commons `CompositeMap`; precedence semantics
-  aligned with `Bodu.Text.Configuration`'s resolver), and a
-  `defaultdict`-style value-factory wrapper for the miss-populate
-  idiom.
-- **A growable bit set** — Java's `BitSet` semantics: auto-growing,
-  `NextSetBit` / set-bit enumeration, cardinality, and in-place logical
-  ops. The BCL's `BitArray` is fixed-size, exposes none of the query
-  surface, and its enumerator boxes per bit; Python fills the same gap
-  with the `bitarray` package.
-- **Trie-family extensions in `Collections.Generic.Trees`** — an
-  Aho-Corasick automaton for multi-pattern string search (Java
-  `ahocorasick`, Python `pyahocorasick`; .NET pulls independent ports)
-  and PATRICIA / radix compression as siblings of the existing `Trie` /
-  `Trie<TValue>`.
-- **A set-backed value-collection option for
-  `MultiValueDictionary<,>`** — the type is list-backed today
-  (duplicates per key allowed, `IReadOnlyList<TValue>` views), which is
-  Guava's `ListMultimap`. Guava's other half, `SetMultimap`
-  (deduplicated per-key values), has no Bodu or BCL expression — a
-  backing-semantics option (list vs set, with the comparer plumbed
-  through) closes it without a second type.
-- **`IntervalTree<T>` / `IntervalTree<T,TValue>`** — *overlapping*
-  intervals with stabbing ("all intervals containing x") and
-  overlap-window queries in O(log n + k). Genuinely distinct from the
-  existing range family: `RangeSet<T>` / `RangeDictionary<,>` are
-  sorted non-overlapping maps that throw on overlapping inserts, and
-  `Bodu.Numerics`' `IntervalSet<T>` normalizes to disjoint ranges.
-  Java has no in-box analogue (Guava `RangeMap` coalesces too); Python
-  consumers pull `intervaltree`; .NET ports are scattered one-off
-  packages. Scheduling-conflict, genomics, and time-series overlap
-  queries are the driving use cases.
-- **An evict-on-overflow mode for the bounded `Deque<T>`** — Python's
-  `deque(maxlen=N)` silently discards from the *opposite* end when an
-  add overflows a full deque; Bodu's fixed-capacity mode
-  (`AllowGrow = false`) currently only rejects. A small overflow-policy
-  addition (reject vs evict-opposite-end) closes the one `deque(maxlen)`
-  behaviour the ring family does not yet express — no new type needed.
-  (The single-ended equivalents are already covered: overwrite-on-full
-  vs reject-when-full is `CircularBuffer<T>`'s existing
-  `AllowOverwrite` switch, i.e. the Boost `circular_buffer` niche.)
+- **The `Bodu.Collections` package split has landed.** ✅ The collections
+  pillar (`Collections.Generic` + `.Concurrent` + `.Graphs` + `.Trees`)
+  now ships as the **`Bodu.Collections`** package (referencing Core),
+  leaving Core as the small always-referenced primitive layer.
+  Namespaces did not change — only the assembly/package boundary moved.
+  `ShuffleHelpers` and the internal `SequenceUtility` stayed in Core
+  because the staying `IEnumerableExtensions` partials
+  (`Randomize` / `ContainsAll` / `ContainsAny`) depend on them, and
+  `Bodu.Collections` carries its own `CollectionsResourceStrings` resx
+  per the per-project resource convention. New collection-type work
+  below lands in `Bodu.Collections`; naming stays BCL-style
+  (`MultiValueDictionary`, `RangeDictionary`, `BiDictionary`,
+  `Multiset`, `EvictingDictionary`) rather than the Java-style
+  `MultiMap` / `RangeMap` / `BiMap` / `MultiSet` / `LruCache` synonyms.
+  See `Bodu.Core/docs/roadmap-implementation-plan.md` (T0) for the full
+  decision record.
+- **`WeekPattern` stays in `Bodu.Core` — extraction retired.** With the
+  collections split done, Core *is* the small always-referenced
+  primitive layer the proposed `Bodu.Globalization.WeekPattern`
+  extraction was meant to enable, so the extraction buys nothing while
+  costing a package boundary. Recorded as final before the Wave 1 cut
+  (moving the type after `Bodu.Core/v1.0.0` tags would be breaking);
+  revisit only if an external consumer emerges that cannot reference
+  Core at all.
+- **The `Functional` seam has grown — railway primitives shipped.** ✅
+  `Option<T>` (plus the non-generic `Option` companion), `Result` /
+  `Result<T>` / `ResultError`, and `Either<TLeft,TRight>` landed as
+  readonly structs with `Map` / `Bind` / `Match` combinators and
+  Task-based async extensions (`OptionAsyncExtensions` /
+  `ResultAsyncExtensions`) — the most-requested independently-built
+  .NET surface (LanguageExt, CSharpFunctionalExtensions). Present
+  values are strictly non-null (lenient null→`None` lifts are
+  explicit), each type documents its `default` contract (`None` /
+  empty-error failure / uninitialized-throwing `Either`), and
+  `ValueTask` combinator variants are a deferred follow-up. The seam
+  now sits at the `Bodu.Functional` extraction trigger recorded under
+  *New library candidates* — grow it further only alongside that
+  decision.
+- **Probabilistic / sketch data structures have landed.** ✅
+  `BloomFilter<T>` answers approximate membership with no false
+  negatives, sized from an expected item count and design
+  false-positive rate. `CountMinSketch<T>` estimates per-element
+  frequencies and never underestimates — with probability at least
+  `1 − δ` an estimate is at most the true count plus `ε · TotalCount`.
+  `HyperLogLog<T>` estimates distinct-element cardinality at ~`1.04/√m`
+  relative standard error in one byte per register. All three hash via
+  the element's `IEqualityComparer<T>` (SplitMix64-avalanched,
+  Kirsch–Mitzenmacher double hashing), merge parameter-compatible
+  instances, and round-trip state through an opaque version-checked
+  export/import. They ship in the `Bodu.Collections` package under the
+  `Bodu.Collections.Probabilistic` namespace per decision D4 — no
+  separate package.
+- **Sequence-operator extras have landed.** ✅ `CartesianProduct`,
+  `Permutations` / `Combinations`, and `Interleave` (skip-exhausted
+  round-robin) joined the already-shipped `Pairwise` / `Windowed` /
+  `RunLengthEncode` / `ZipLongest` / `Batch` operators, each verified
+  absent from System.Linq against the installed .NET 10 ref assembly
+  before landing (`Chunk`, `CountBy`, `AggregateBy`, `Index`, `Shuffle`
+  remain excluded as BCL-shipped).
+- **The time-based expiry layer for `EvictingDictionary<,>` has
+  landed.** ✅ `EvictingDictionaryExpiration` (default TTL, absolute vs
+  sliding, `TimeProvider`-driven) composes orthogonally with all six
+  capacity policies: per-entry TTL `Add`/`TryAdd` overloads, lazy purge
+  on access plus explicit `RemoveExpired()`, expired entries invisible
+  to reads and preferred as capacity-eviction victims, a documented
+  O(1) raw `Count` contract, and a zero-overhead path when expiry is
+  not configured. No background timers; W-TinyLFU admission remains the
+  recorded stretch follow-up.
+- **The natural-order string comparer has landed.** ✅
+  `NaturalStringComparer` (`Bodu.Extensions`) ships the numeric-aware
+  `file2` < `file10` ordering with StringComparer-shaped statics
+  (Ordinal / OrdinalIgnoreCase / CurrentCulture variants plus
+  `Create(culture, ignoreCase)`), overflow-free digit-run comparison,
+  and an equality/hash contract — scope deliberately excludes sign,
+  decimal, and version-tuple semantics.
+- **The navigable / order-statistic sorted collections have
+  landed.** ✅ `NavigableSet<T>` and `NavigableDictionary<,>` ship
+  floor / ceiling / higher / lower navigation, rank (`IndexOf`) and
+  select (`GetAt`), O(log n) `CountInRange`, and live fail-fast
+  ascending / descending / range views over order-statistic red-black
+  trees with subtree-size augmentation (design note in
+  `Bodu.Collections/docs/navigable-collections-design.md`; the
+  skip-list-based concurrent sorted map remains an explicitly
+  unforeclosed follow-on).
+- **`BiDictionary<TKey,TValue>` has landed.** ✅ A bidirectional
+  one-to-one map over two shared dictionary indexes with O(1) lookups
+  both ways, a live reference-stable `Inverse` view, independent key
+  and value comparers, and a construction-time duplicate-value policy
+  (`Throw` — Guava `BiMap.put` — or `Replace` — `forcePut`).
+- **`Table<TRow,TColumn,TValue>` has landed.** ✅ The two-key map
+  adopted precisely for its projections: live `Row` / `Column`
+  read-only views, `RowKeys` / `ColumnKeys`, and per-row `RowMap()`
+  iteration over row-major nested dictionaries, with the O(rows)
+  column-view cost documented as the v1 trade-off.
+- **The layered and defaulting dictionary utilities have landed.** ✅
+  `LayeredDictionary<,>` is the Python-`ChainMap` first-layer-wins live
+  view (writes to layer 0, documented unshadowing, precedence aligned
+  with `Bodu.Text.Configuration`'s resolver) and
+  `DefaultingDictionary<,>` is the `defaultdict` store-on-indexer-miss
+  wrapper, distinct from the per-call-site `GetOrAdd` extension.
+- **The growable bit set has landed.** ✅ `BitSet` ships Java
+  `BitSet` semantics — auto-grow, single-bit and range `Set` / `Clear`
+  / `Flip`, `NextSetBit` / `NextClearBit`, PopCount `Cardinality`,
+  in-place logical ops over mismatched lengths, value equality
+  insensitive to trailing zero words, and a non-boxing struct
+  enumerator over set-bit indices — closing the fixed-size,
+  query-free, boxing-enumerator gaps of the BCL `BitArray`.
+- **The trie-family extensions have landed.** ✅
+  `AhoCorasickAutomaton` (+ `<TValue>`) provides immutable
+  build-then-match multi-pattern search with a pinned deterministic
+  match order and span-based eager conveniences, and `RadixTrie` /
+  `RadixTrie<TValue>` are member-for-member path-compressed drop-in
+  siblings of `Trie` / `Trie<TValue>`, differentially tested against
+  the uncompressed tries as oracles.
+- **The set-backed `MultiValueDictionary<,>` option has landed.** ✅
+  `MultiValueBacking.Set` deduplicates per-key values through an
+  injectable value comparer (first-occurrence order preserved, the
+  `IReadOnlyList<TValue>` live-view contract intact), closing Guava's
+  `SetMultimap` half as a construction-time option rather than a second
+  type; `List` remains the default with its historical behaviour
+  unchanged.
+- **`IntervalTree<T>` / `IntervalTree<T,TValue>` have landed.** ✅
+  Closed-interval overlap storage with O(log n + k) stabbing and
+  window queries over max-endpoint augmented red-black trees,
+  first-class duplicates, and the family boundary documented: only
+  this type stores overlaps (`RangeSet` / `RangeDictionary` reject
+  them; Numerics' `IntervalSet` normalizes them).
+- **The `Deque<T>` overflow policy has landed.** ✅
+  `DequeOverflowPolicy.EvictOpposite` gives the fixed-capacity deque
+  Python's `deque(maxlen=N)` silently-discard-opposite-end behaviour
+  (default remains `Reject`, preserving the historical throw/false
+  contract), raising the same `ItemEvicting` / `ItemEvicted` pair as
+  `CircularBuffer<T>`'s overwrite mode so the ring family stays
+  consistent.
 
 ### `Bodu.Security.Cryptography`
 
@@ -975,11 +1011,15 @@ filter were added to *Non-goals* instead.
   this alone); .NET: Slugify.Core / Unidecode.NET. Data-driven mapping
   tables and span-based transforms — the `Bodu.Text.Encoding` profile
   applied to text normalization.
-- **`Bodu.Functional`** — if the `Bodu.Core/Functional` seam grows beyond
-  a couple of types, extract `Result<T>` / `Option<T>` /
-  `Either<TLeft,TRight>` and the railway-oriented combinators into a
-  dedicated package rather than bloating Core. This is the single
-  most-reached-for independently-built .NET surface.
+- **`Bodu.Functional`** — the railway set (`Result<T>` / `Option<T>` /
+  `Either<TLeft,TRight>` plus the async combinators) has now **shipped
+  inside the `Bodu.Core/Functional` seam**, deliberately not as a
+  package (the HOTP/TOTP restraint precedent). The extraction trigger
+  stands: if the seam grows further — `Validation`-style error
+  accumulation, `ValueTask` combinator variants, applicative
+  surfaces — extract the whole seam into this dedicated package rather
+  than bloating Core. Decide before `Bodu.Core/v1.0.0` tags if such
+  growth is imminent; afterwards the move is breaking.
 - **`Bodu.Units`** — dimensioned quantities and unit conversion over
   generic math (length / mass / duration / data size / …, with
   compile-time dimension safety on the `Money<TCurrency>` model).
@@ -1006,9 +1046,12 @@ filter were added to *Non-goals* instead.
   package or dependency), not the `Bodu.Security.Otp` sibling that was
   floated — the raw-byte-secret design kept it dependency-free, so a
   sibling was not warranted.
-- **Probabilistic data structures** — Bloom filter, Count-Min sketch,
-  HyperLogLog. Could extend `Bodu.Core`'s collections pillar or form a
-  focused `Bodu.Collections.Probabilistic` package.
+- ~~**Probabilistic data structures**~~ — **shipped.** `BloomFilter<T>`,
+  `CountMinSketch<T>`, and `HyperLogLog<T>` landed inside the
+  `Bodu.Collections` package as the `Bodu.Collections.Probabilistic`
+  namespace — no separate package was warranted (the comparer-based
+  hashing kept the types dependency-free beyond Core). See the
+  `Bodu.Core` section above for the shipped contracts.
 
 ## Cross-cutting themes
 
@@ -1080,6 +1123,9 @@ Target state:
 blockquote directly under its README title. The assignment:
 
 - **Stable** — the mature core of the solution: `Bodu.Core`,
+  `Bodu.Collections` (the specialized collection catalogue split out of
+  `Bodu.Core` with namespaces unchanged; the tranche additions shipped
+  with settled APIs per the implementation plan),
   `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
   `Bodu.Text.Encoding`, `Bodu.Security.Cryptography`, the text-format and
   configuration libraries (`Bodu.Text.Bencode` / `.Toml` / `.Formats` /

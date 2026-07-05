@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Arg_Invalid_ArrayLengthExceedsCapacity" xml:space="preserve">
+    <value>The number of elements to copy exceeds the capacity available.</value>
+  </data>
+  <data name="Arg_Invalid_ArrayType" xml:space="preserve">
+    <value>Target array type is not compatible with the type of items in the collection.</value>
+  </data>
+  <data name="Arg_Invalid_BloomFilterImportData" xml:space="preserve">
+    <value>The source data is not a valid BloomFilter export.</value>
+  </data>
+  <data name="Arg_Invalid_BloomFilterImportVersion" xml:space="preserve">
+    <value>The BloomFilter export format version {0} is not supported.</value>
+  </data>
+  <data name="Arg_Invalid_CollectionIsEmpty" xml:space="preserve">
+    <value>The collection is empty.</value>
+  </data>
+  <data name="Arg_Invalid_CountMinSketchImportData" xml:space="preserve">
+    <value>The source data is not a valid CountMinSketch export.</value>
+  </data>
+  <data name="Arg_Invalid_CountMinSketchImportVersion" xml:space="preserve">
+    <value>The CountMinSketch export format version {0} is not supported.</value>
+  </data>
+  <data name="Arg_Invalid_DuplicateBiDictionaryValue" xml:space="preserve">
+    <value>The bidirectional dictionary cannot contain duplicate values; the value is already bound to a different key.</value>
+  </data>
+  <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
+    <value>The dictionary cannot contain duplicate keys.</value>
+  </data>
+  <data name="Arg_Invalid_DuplicateSetValue" xml:space="preserve">
+    <value>The set already contains the specified value.</value>
+  </data>
+  <data name="Arg_Invalid_DuplicateTableCell" xml:space="preserve">
+    <value>The table already contains a value at the specified row and column.</value>
+  </data>
+  <data name="Arg_Invalid_ElementNotInSet" xml:space="preserve">
+    <value>The specified element is not a member of any set.</value>
+  </data>
+  <data name="Arg_Invalid_EmptyPattern" xml:space="preserve">
+    <value>The pattern collection cannot contain an empty pattern.</value>
+  </data>
+  <data name="Arg_Invalid_HyperLogLogImportData" xml:space="preserve">
+    <value>The source data is not a valid HyperLogLog export.</value>
+  </data>
+  <data name="Arg_Invalid_HyperLogLogImportVersion" xml:space="preserve">
+    <value>The HyperLogLog export format version {0} is not supported.</value>
+  </data>
+  <data name="Arg_Invalid_IncompatibleBloomFilter" xml:space="preserve">
+    <value>The Bloom filters are incompatible; both filters must have the same bit count, hash count, and equality comparer.</value>
+  </data>
+  <data name="Arg_Invalid_IncompatibleCountMinSketch" xml:space="preserve">
+    <value>The count-min sketches are incompatible; both sketches must have the same width, depth, and equality comparer.</value>
+  </data>
+  <data name="Arg_Invalid_IncompatibleHyperLogLog" xml:space="preserve">
+    <value>The HyperLogLog sketches are incompatible; both sketches must have the same precision and equality comparer.</value>
+  </data>
+  <data name="Arg_Invalid_NullCollectionElement" xml:space="preserve">
+    <value>The collection cannot contain null elements.</value>
+  </data>
+  <data name="Arg_Invalid_RangeLowerBoundExceedsUpperBound" xml:space="preserve">
+    <value>The inclusive lower bound must not be greater than the inclusive upper bound.</value>
+  </data>
+  <data name="Arg_Invalid_RangeOverlap" xml:space="preserve">
+    <value>The specified range overlaps an existing range.</value>
+  </data>
+  <data name="Arg_Invalid_RangeStartNotLessThanEnd" xml:space="preserve">
+    <value>The range start must be less than the range end.</value>
+  </data>
+  <data name="Arg_Invalid_VertexNotInGraph" xml:space="preserve">
+    <value>The specified vertex does not exist in the graph.</value>
+  </data>
+  <data name="Arg_OutOfRange_BloomFilterTooLarge" xml:space="preserve">
+    <value>The combination of expected items and false-positive rate requires more than {0} bits.</value>
+  </data>
+  <data name="Arg_OutOfRange_CountMinSketchTooLarge" xml:space="preserve">
+    <value>The combination of epsilon and delta requires more than {0} counter cells.</value>
+  </data>
+  <data name="Arg_OutOfRange_GraphWeightNotFinite" xml:space="preserve">
+    <value>The edge weight must be a finite, non-negative number.</value>
+  </data>
+  <data name="KeyNotFound_Dictionary" xml:space="preserve">
+    <value>The given key '{0}' was not present in the dictionary.</value>
+  </data>
+  <data name="KeyNotFound_Range" xml:space="preserve">
+    <value>The specified key was not contained in any range.</value>
+  </data>
+  <data name="Op_Invalid_CapacityExhausted" xml:space="preserve">
+    <value>The capacity has been exhausted.</value>
+  </data>
+  <data name="Op_Invalid_CircularDependency" xml:space="preserve">
+    <value>Circular dependency detected for '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_CircularReference" xml:space="preserve">
+    <value>Circular reference detected for '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_CollectionEmpty" xml:space="preserve">
+    <value>The collection is empty.</value>
+  </data>
+  <data name="Op_Invalid_CollectionModified" xml:space="preserve">
+    <value>The collection was modified; enumerator operations may not execute.</value>
+  </data>
+  <data name="Op_Invalid_ConcurrentSnapshotUnstable" xml:space="preserve">
+    <value>The collection could not produce a stable snapshot under sustained concurrent modification.</value>
+  </data>
+  <data name="Op_Invalid_EmptySequence" xml:space="preserve">
+    <value>The sequence is empty.</value>
+  </data>
+  <data name="Op_Invalid_EnumeratorNotOnElement" xml:space="preserve">
+    <value>Enumeration has either not started or has already finished.</value>
+  </data>
+  <data name="Op_Invalid_EvictionProducedNoCandidate" xml:space="preserve">
+    <value>Eviction policy '{0}' produced no candidate while the dictionary is at capacity.</value>
+  </data>
+  <data name="Op_Invalid_ExpirationNotConfigured" xml:space="preserve">
+    <value>A per-entry time-to-live requires an expiration configuration; construct the dictionary with an EvictingDictionaryExpiration.</value>
+  </data>
+  <data name="Op_Invalid_GraphNotDirected" xml:space="preserve">
+    <value>The operation requires a directed graph.</value>
+  </data>
+  <data name="Op_Invalid_NodeAlreadyHasParent" xml:space="preserve">
+    <value>The node is already attached to a parent and must be detached before it can be added elsewhere.</value>
+  </data>
+  <data name="Op_Invalid_ReentrancyNotAllowed" xml:space="preserve">
+    <value>Cannot modify the collection during a change notification event.</value>
+  </data>
+  <data name="Op_Invalid_UnknownEvictionPolicy" xml:space="preserve">
+    <value>Unknown eviction policy '{0}'.</value>
+  </data>
+  <data name="Op_NotSupported_ConcurrentSyncRoot" xml:space="preserve">
+    <value>The SyncRoot property may not be used for the synchronization of concurrent collections.</value>
+  </data>
+  <data name="Op_NotSupported_DictionaryKeysMutation" xml:space="preserve">
+    <value>Mutating the dictionary through the Keys collection is not supported.</value>
+  </data>
+  <data name="Op_NotSupported_DictionaryValuesMutation" xml:space="preserve">
+    <value>Mutating the dictionary through the Values collection is not supported.</value>
+  </data>
+</root>

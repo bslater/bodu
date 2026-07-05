@@ -41,9 +41,17 @@ Bounded and ordered collections built around a shared ring-backed primitive.
 | <xref:Bodu.Collections.Generic.EvictingDictionary`2> | Capacity-bounded dictionary with FIFO, LRU, LFU, MRU, Random, or Second-Chance eviction. Drop-in cache primitive with standard dictionary semantics. |
 | <xref:Bodu.Collections.Generic.EvictingDictionaryPolicy> | Enum selecting the eviction policy: `FirstInFirstOut`, `LeastRecentlyUsed`, `LeastFrequentlyUsed`, `MostRecentlyUsed`, `RandomReplacement`, `SecondChance`. |
 | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Unbounded insertion- or access-ordered dictionary (Java `LinkedHashMap` shape) with O(1) access to and removal of the first and last entries. Optional access-order mode underpins hand-built LRU caches. |
+| <xref:Bodu.Collections.Generic.BiDictionary`2> | Bidirectional one-to-one map (Guava `BiMap` shape) with O(1) lookup in both directions and a live `Inverse` view sharing the same storage. Duplicate-value conflicts resolve by a construction-time `Throw` / `Replace` policy. |
+| <xref:Bodu.Collections.Generic.LayeredDictionary`2> | Live read-through view over an ordered list of dictionaries (Python `ChainMap` shape): the first layer containing a key wins on read, all writes go to the first layer only, and removing a shadowing entry unshadows the deeper value. |
+| <xref:Bodu.Collections.Generic.DefaultingDictionary`2> | Dictionary with a construction-time value factory (Python `defaultdict` shape): the indexer getter materializes, stores, and returns a default for a missing key; every other member sees only actually-stored entries. |
+| <xref:Bodu.Collections.Generic.Table`3> | Two-key row/column map (Guava `Table` shape) whose point is the projections: live `Row` / `Column` read-only dictionary views, `RowKeys` / `ColumnKeys`, and per-row `RowMap()` iteration over a row-major store. Column-axis operations scan every row (O(rows)); empty rows are pruned automatically. |
 | <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | Index-aware set and priority-queue variants for lookup-by-position and key-based priority updates. |
 | <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1> | Multi-map and multi-set semantics over `IEqualityComparer<TKey>`. |
+| <xref:Bodu.Collections.Generic.BitSet> | Growable packed bit set with Java `BitSet` semantics: auto-grow on `Set`/`Flip`, reads beyond capacity return `false`, `NextSetBit` / `NextClearBit` / `Cardinality` queries, in-place `And` / `Or` / `Xor` / `AndNot`, and a non-boxing enumerator over set-bit indices. |
+| <xref:Bodu.Collections.Generic.NavigableSet`1> | Comparer-ordered set over an order-statistic red-black tree: O(log n) nearest-neighbour queries (`TryGetFloor` / `TryGetCeiling` / `TryGetHigher` / `TryGetLower`), rank/select (`IndexOf` / `GetAt`), `CountInRange`, `Min`/`Max`, and live fail-fast `Ascending` / `Descending` / `Range` views. |
+| <xref:Bodu.Collections.Generic.NavigableDictionary`2> | Key-sorted dictionary over the same order-statistic red-black tree: O(log n) nearest-neighbour entry queries (`TryGetFloorEntry` / `TryGetCeilingEntry` / `TryGetHigherEntry` / `TryGetLowerEntry`, plus key-only variants), rank/select (`IndexOfKey` / `GetAt`), `CountInRange`, `MinEntry`/`MaxEntry`, and live fail-fast `Ascending` / `Descending` / `Range` entry views. Null keys rejected; null values allowed. |
 | <xref:Bodu.Collections.Generic.Range`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1> | Range-keyed lookups for ordered or interval-valued keys. |
+| <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2> | Overlap-storing interval trees over a max-endpoint augmented red-black tree: closed `[low, high]` intervals that may freely overlap, O(log n + k) stabbing (`QueryPoint`) and window (`QueryOverlaps`) queries, O(log n) `Intersects` / `IntersectsPoint`, duplicate intervals permitted (per-node count / per-node value list). The only member of the range family that stores overlaps. |
 
 ### `Bodu.Collections.Generic.Concurrent`
 Lock-free / thread-safe variants.
@@ -51,6 +59,15 @@ Lock-free / thread-safe variants.
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> | Thread-safe variant of `CircularBuffer<T>`; implements `IProducerConsumerCollection<T>` over the Vyukov MPMC algorithm. |
+
+### `Bodu.Collections.Probabilistic`
+Approximate "sketch" structures that trade exactness for a fixed memory footprint — each is sized once from its constructor arguments and carries a quantified, one-sided error bound. See the [Probabilistic collections](../../guides/core/probabilistic-collections.md) guide and the <xref:Bodu.Collections.Probabilistic> overview.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Collections.Probabilistic.BloomFilter`1> | Approximate set membership sized from an expected item count and target false-positive rate. No false negatives — added elements are always reported present; never-added elements are misreported at roughly the design rate. Supports `UnionWith` merging and version-checked export/import. |
+| <xref:Bodu.Collections.Probabilistic.CountMinSketch`1> | Approximate per-element frequency counting sized from `epsilon` / `delta`. Never underestimates; with probability at least `1 − δ` an estimate is at most the true count plus `ε · TotalCount`. Supports `MergeWith` (cell-wise sum) and export/import. |
+| <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> | Approximate distinct-element (cardinality) counting in `2^precision` one-byte registers with ~`1.04/√m` relative standard error. `MergeWith` (register-wise max) is lossless and never double-counts shared elements. |
 
 ### `Bodu.Collections.Generic.Graphs`
 Graphs and graph algorithms. See the [Graphs and graph algorithms](../../guides/core/graphs.md) guide and the <xref:Bodu.Collections.Generic.Graphs> overview.
@@ -62,11 +79,13 @@ Graphs and graph algorithms. See the [Graphs and graph algorithms](../../guides/
 | <xref:Bodu.Collections.Generic.Graphs.DisjointSet`1> | Union-find (disjoint-set) with path compression for connectivity and components. |
 
 ### `Bodu.Collections.Generic.Trees`
-Prefix trees and an n-ary tree. See the [Trie (prefix tree)](../../guides/core/trie.md) guide and the <xref:Bodu.Collections.Generic.Trees> overview.
+The trie family and an n-ary tree. See the [Tries and text search](../../guides/core/trie.md) guide and the <xref:Bodu.Collections.Generic.Trees> overview.
 
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Collections.Generic.Trees.Trie>, <xref:Bodu.Collections.Generic.Trees.Trie`1> | A string set and a string-keyed map with prefix queries (`StartsWith`, `KeysWithPrefix`). |
+| <xref:Bodu.Collections.Generic.Trees.RadixTrie>, <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> | Path-compressed (PATRICIA-style) siblings of the tries with the identical member-for-member surface: string edge labels split on insert and re-fuse on remove, so node count tracks key count — the better fit for long keys with sparse branching (URLs, paths, identifiers). |
+| <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton>, <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> | Immutable multi-pattern text matchers built once from a pattern set: `EnumerateMatches` reports every (overlapping, nested) occurrence of every pattern in one O(text + matches) pass, in a pinned (end index, pattern length) order, with span-based `CountMatches` / `HasMatch` conveniences; the keyed variant carries a value per pattern onto each match. |
 | <xref:Bodu.Collections.Generic.Trees.Tree`1> | A mutable n-ary tree node with stack-safe pre-/post-/level-order traversals. |
 
 ### `Bodu.Threading`
@@ -79,11 +98,16 @@ Async coordination primitives — the async-friendly peers of the BCL synchroniz
 | <xref:Bodu.Threading.AsyncLazy`1>, <xref:Bodu.Threading.AsyncDebouncer>, <xref:Bodu.Threading.RateGate> | One-time async initialization, trailing-edge debouncing, and rate limiting. |
 
 ### `Bodu.Functional`
-Functional helpers. See the [Memoization](../../guides/core/memoization.md) guide and the <xref:Bodu.Functional> overview.
+Functional helpers and railway primitives. See the [Memoization](../../guides/core/memoization.md) and [Options, results, and eithers](../../guides/core/functional-results.md) guides and the <xref:Bodu.Functional> overview.
 
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Functional.Memoizer> | Wraps a pure function in a thread-safe caching delegate (single- and multi-argument). |
+| <xref:Bodu.Functional.Option`1> | An optional value — `Some(value)` or `None` — with `Map` / `Bind` / `Filter` / `Match` combinators; `default` equals `None`. |
+| <xref:Bodu.Functional.Result>, <xref:Bodu.Functional.Result`1> | Success-or-failure outcomes carrying a value or a <xref:Bodu.Functional.ResultError>; `default` is a failure with an empty error. |
+| <xref:Bodu.Functional.ResultError> | The failure descriptor — optional code, never-null message, optional captured exception. |
+| <xref:Bodu.Functional.Either`2> | A symmetric disjoint union with `MapLeft` / `MapRight` / `Match` / `Swap`; `default` is an explicit uninitialized state. |
+| <xref:Bodu.Functional.OptionAsyncExtensions>, <xref:Bodu.Functional.ResultAsyncExtensions> | Task-based `MapAsync` / `BindAsync` / `MatchAsync` (and `TapAsync`) companions for async pipelines. |
 
 ### `Bodu.Collections.Extensions` and `Bodu.Collections.Generic.Extensions`
 Sequence-shaping helpers that compose on top of `IEnumerable<T>` and `IList<T>`.
@@ -105,6 +129,7 @@ Date, numeric, span, and array extension methods. Larger surface than the others
 | <xref:Bodu.Extensions.BufferConverter> | Byte / structure conversion helpers. |
 | <xref:Bodu.Extensions.SpanExtensions> | Span-friendly helpers. |
 | <xref:Bodu.Extensions.ComparableExtensions>, <xref:Bodu.Extensions.ComparableHelper> | `Min`, `Max`, `Clamp`, `IsGreaterThan` / `IsGreaterThanOrEqual`. |
+| <xref:Bodu.Extensions.NaturalStringComparer> | Numeric-aware ("natural") string comparer — `file2` sorts before `file10` — with ordinal, case-insensitive, and culture-aware modes. See the [Natural string comparer](../../guides/core/natural-string-comparer.md) guide. |
 | <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.WorkingDaysOfWeek>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.WeekOrdinal> | Calendar-shape enums and injection seams for quarter, weekend, fiscal-week, and week-ordinal computations. |
 
 ### `Bodu.Globalization.Extensions`

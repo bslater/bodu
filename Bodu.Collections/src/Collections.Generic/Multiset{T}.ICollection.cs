@@ -1,0 +1,86 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Multiset{T}.ICollection.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Collections;
+
+namespace Bodu.Collections.Generic;
+
+public sealed partial class Multiset<T>
+    : System.Collections.ICollection
+{
+    /// <summary>Lazily initialized synchronization root for <see cref="System.Collections.ICollection.SyncRoot" />.</summary>
+    [NonSerialized]
+    private object? _syncRoot;
+
+    /// <summary>
+    /// Gets a value indicating whether access to the <see cref="Multiset{T}" /> is synchronized (thread-safe). Always
+    /// returns <see langword="false" />; <see cref="Multiset{T}" /> is not thread-safe.
+    /// </summary>
+    /// <value>Always <see langword="false" />.</value>
+    /// <remarks>
+    /// External synchronization is the caller's responsibility.
+    /// </remarks>
+    bool ICollection.IsSynchronized => false;
+
+    /// <summary>
+    /// Gets a lazily-initialized object that can be used to synchronize access to the <see cref="Multiset{T}" />.
+    /// </summary>
+    /// <value>A non-null object suitable as a <see cref="Monitor" /> target.</value>
+    object ICollection.SyncRoot =>
+        _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
+
+    /// <summary>
+    /// Copies all elements of the <see cref="Multiset{T}" /> to a one-dimensional <see cref="Array" />, starting at the
+    /// specified index. Each element is copied as many times as its occurrence count.
+    /// </summary>
+    /// <param name="array">
+    /// The destination array. Must be a single-dimensional, zero-based array of a compatible type.
+    /// </param>
+    /// <param name="index">The zero-based starting index in <paramref name="array" />.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than zero.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="array" /> is multidimensional, not zero-based, or has an incompatible element type; or the
+    /// number of elements in the multiset exceeds the available space from <paramref name="index" /> to the end of
+    /// <paramref name="array" />. When thrown for an incompatible element type, <paramref name="array" /> is left
+    /// unmodified (no elements are written).
+    /// </exception>
+    void ICollection.CopyTo(Array array, int index)
+    {
+        ThrowHelper.ThrowIfNull(array);
+        ThrowHelper.ThrowIfArrayMultidimensional(array);
+        ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
+        ThrowHelper.ThrowIfLessThan(index, 0);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _count);
+
+        // When the destination element type is not guaranteed to accept every T, validate each element up front so
+        // an incompatible element faults before any write — fail-fast, leaving the destination untouched rather than
+        // partially populated. The assignable-from case (e.g. object[] or T[]) skips the scan and copies directly,
+        // preserving the BCL-lenient behaviour of copying, say, a Multiset<object> of strings into a string[].
+        Type elementType = array.GetType().GetElementType()!;
+        if (!elementType.IsAssignableFrom(typeof(T)))
+        {
+            foreach (KeyValuePair<T, int> pair in _items)
+            {
+                if (pair.Key is not null && !elementType.IsInstanceOfType(pair.Key))
+                    throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_ArrayType, nameof(array));
+            }
+        }
+
+        try
+        {
+            foreach (KeyValuePair<T, int> pair in _items)
+            {
+                for (int i = 0; i < pair.Value; i++)
+                    array.SetValue(pair.Key, index++);
+            }
+        }
+        catch (InvalidCastException ex)
+        {
+            throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_ArrayType, nameof(array), ex);
+        }
+    }
+}

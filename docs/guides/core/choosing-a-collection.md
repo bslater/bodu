@@ -13,6 +13,11 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
    - Unbounded but iterate in insertion (or access) order, with O(1) first/last → <xref:Bodu.Collections.Generic.SequencedDictionary`2>.
    - Keys are ranges (`[start, end)`) → <xref:Bodu.Collections.Generic.RangeDictionary`2>.
    - One key maps to many values → <xref:Bodu.Collections.Generic.MultiValueDictionary`2>.
+   - One-to-one in both directions, with O(1) value-to-key lookup → <xref:Bodu.Collections.Generic.BiDictionary`2>.
+   - Overrides layered over defaults, first layer wins, writes to the first layer → <xref:Bodu.Collections.Generic.LayeredDictionary`2>.
+   - Missing keys should materialize a stored default on indexer read → <xref:Bodu.Collections.Generic.DefaultingDictionary`2>.
+   - Two independent keys (row + column) with live row/column projections → <xref:Bodu.Collections.Generic.Table`3>. For flat two-key lookup alone, prefer `Dictionary<(TRow, TColumn), TValue>` — adopt `Table` only for the views.
+   - Key-sorted, with floor/ceiling/rank/select and range counting → <xref:Bodu.Collections.Generic.NavigableDictionary`2>.
 2. **Do you need a sequence (FIFO / LIFO / two-ended)?**
    - Fixed capacity, single-threaded, overwrite-or-throw on full → <xref:Bodu.Collections.Generic.CircularBuffer`1>.
    - Fixed capacity, multi-threaded → <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>.
@@ -24,7 +29,15 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
    - Unordered, unique, multi-threaded → <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>.
    - Duplicates retained as multiplicity → <xref:Bodu.Collections.Generic.Multiset`1>.
    - Set of disjoint half-open intervals → <xref:Bodu.Collections.Generic.RangeSet`1>.
-4. **Do you need a priority queue with key-based updates?** → <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>.
+   - Overlapping intervals, queried by "what covers this point/window?" → <xref:Bodu.Collections.Generic.IntervalTree`1> (or <xref:Bodu.Collections.Generic.IntervalTree`2> to carry a value per interval).
+   - Dense set of non-negative integers as packed bits → <xref:Bodu.Collections.Generic.BitSet>.
+   - Sorted, with floor/ceiling/rank/select and range counting → <xref:Bodu.Collections.Generic.NavigableSet`1>.
+4. **Do you need string-keyed prefix lookups or multi-pattern text search?**
+   - Membership and prefix queries over string keys → <xref:Bodu.Collections.Generic.Trees.Trie> (or <xref:Bodu.Collections.Generic.Trees.Trie`1> to carry a value per key).
+   - The same surface over long keys with sparse branching (URLs, paths, identifiers) → <xref:Bodu.Collections.Generic.Trees.RadixTrie> / <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> — path-compressed, drop-in interchangeable with the tries.
+   - Find every occurrence of many patterns inside a text in one pass → <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> (or <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> to carry a value per pattern).
+5. **Do you need a priority queue with key-based updates?** → <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>.
+6. **Can the answer be approximate?** When the exact structure no longer fits in memory and a quantified error is acceptable → the `Bodu.Collections.Probabilistic` sketches; see [Approximate (probabilistic) collections](#approximate-probabilistic-collections) below.
 
 If none of the above fit, the BCL types (`List<T>`, `Dictionary<TKey,TValue>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`) are the right choice. Bodu.Core does not duplicate BCL primitives — every type below adds a contract the BCL does not provide.
 
@@ -42,9 +55,18 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 | Min-heap priority queue with O(1) lookup-by-element | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | Required by Dijkstra, Prim, A* — the `Update` / `EnqueueOrUpdate` calls the BCL `PriorityQueue<TElement,TPriority>` cannot perform. |
 | Range-keyed lookup (interval → value) | <xref:Bodu.Collections.Generic.RangeDictionary`2> | O(log n) lookup; rejects overlapping inserts. |
 | Range membership (in any interval?) | <xref:Bodu.Collections.Generic.RangeSet`1> | Merges adjacent and overlapping intervals on insertion. |
+| Overlap-storing interval index (stabbing / window queries) | <xref:Bodu.Collections.Generic.IntervalTree`1> / <xref:Bodu.Collections.Generic.IntervalTree`2> | The only range type that **stores** overlapping intervals — `RangeDictionary` rejects overlapping inserts, `RangeSet` merges them, and `Bodu.Numerics`' `IntervalSet<T>` normalizes to disjoint ranges. Closed `[low, high]` endpoints; O(log n + k) `QueryPoint` / `QueryOverlaps`, O(log n) `Intersects`. |
 | Cache with policy-driven eviction | <xref:Bodu.Collections.Generic.EvictingDictionary`2> | FIFO, LRU, LFU, MRU, Random, or Second-Chance. |
 | Ordered key-value store with O(1) first/last access | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Insertion order by default; opt into access order for LRU-style reordering. O(1) `First` / `Last` / `TryRemoveFirst` / `TryRemoveLast`. |
 | One key → many values | <xref:Bodu.Collections.Generic.MultiValueDictionary`2> | Indexer returns an empty live view, never `null`. |
+| One-to-one map, O(1) lookup in both directions | <xref:Bodu.Collections.Generic.BiDictionary`2> | Live `Inverse` view shares storage; duplicate-value conflicts follow the `Throw` / `Replace` policy. |
+| Layered lookup with first-wins precedence | <xref:Bodu.Collections.Generic.LayeredDictionary`2> | Python `ChainMap` semantics: a live view over ordered layers, writes to the first layer only; removing a shadowing entry unshadows the deeper value. `Count`/enumeration walk every layer. |
+| Two-key map with row/column projections | <xref:Bodu.Collections.Generic.Table`3> | Guava `Table` shape: live `Row` / `Column` views over a row-major store. Column-axis operations are O(rows) — no second index. A plain `Dictionary<(TRow, TColumn), TValue>` covers lookup-only use. |
+| Auto-materializing defaults on indexer read | <xref:Bodu.Collections.Generic.DefaultingDictionary`2> | Python `defaultdict` semantics: only the indexer getter invokes the value factory and stores the result — `TryGetValue`/`ContainsKey` never materialize. The `GetOrAdd` extension stays the per-call-site option. |
+| Dense integer membership as packed bits | <xref:Bodu.Collections.Generic.BitSet> | Java `BitSet` semantics. Prefer over the BCL `BitArray`, which is fixed-size, has no set-bit query surface (`NextSetBit` / `NextClearBit` / `Cardinality`), and enumerates boxed `bool` values instead of set-bit indices. |
+| String-keyed prefix lookup (autocomplete, routing) | <xref:Bodu.Collections.Generic.Trees.Trie> / <xref:Bodu.Collections.Generic.Trees.Trie`1> | Membership and prefix queries cost O(key length), independent of key count. Configurable `IEqualityComparer<char>`. |
+| Prefix lookup over long, sparsely branching keys | <xref:Bodu.Collections.Generic.Trees.RadixTrie> / <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> | Same member-for-member surface as the tries over path-compressed string edges — node count tracks key count, not total key length. |
+| Multi-pattern text search (all occurrences, one pass) | <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> / <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> | Built once from the pattern set, immutable after. O(text + matches) regardless of pattern count; matches reported ascending by end index, then pattern length. |
 
 ### By capacity and lifecycle
 
@@ -75,10 +97,12 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 | Unique elements, no order | <xref:System.Collections.Generic.HashSet`1> (BCL) | Bodu does not duplicate this. |
 | Unique elements, insertion-ordered, indexable | <xref:Bodu.Collections.Generic.IndexedSet`1> | Implements `IList<T>` over an open-addressing hash table; O(1) `Contains`, `IndexOf`, indexed read. |
 | Unique elements, insertion-ordered, set surface | <xref:Bodu.Collections.Generic.OrderedSet`1> | Same engine as `IndexedSet<T>`; exposes indices only as a read-only view. |
+| Unique elements, comparer-sorted, positional queries | <xref:Bodu.Collections.Generic.NavigableSet`1> | Order-statistic sorted set: O(log n) `TryGetFloor` / `TryGetCeiling` / `TryGetHigher` / `TryGetLower`, rank/select (`IndexOf` / `GetAt`), and `CountInRange`. The BCL `SortedSet<T>` offers only `GetViewBetween` (no navigation or rank surface), and `SortedList<TKey,TValue>` pays O(n) per insert. |
 | Duplicates retained with count | <xref:Bodu.Collections.Generic.Multiset`1> | `Count` includes multiplicity; `DistinctCount` does not. |
 | Sorted by priority, unique elements, mutable priorities | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | `Enqueue` of an existing element throws — use `EnqueueOrUpdate`. |
 | Sorted by interval | <xref:Bodu.Collections.Generic.RangeSet`1> | Half-open intervals over any `IComparable<T>`. |
 | Key-value pairs, insertion- or access-ordered | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Preserves a stable encounter order; access-order mode moves an entry to the tail on read. Unbounded — does not evict. |
+| Key-value pairs, key-sorted, positional queries | <xref:Bodu.Collections.Generic.NavigableDictionary`2> | Order-statistic sorted dictionary: O(log n) `TryGetFloorEntry` / `TryGetCeilingEntry` / `TryGetHigherEntry` / `TryGetLowerEntry`, rank/select (`IndexOfKey` / `GetAt`), and `CountInRange`. The BCL `SortedDictionary<TKey,TValue>` offers no navigation or rank surface, and `SortedList<TKey,TValue>` pays O(n) per insert. |
 
 ### By failure mode on overflow
 
@@ -88,9 +112,24 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 | Overwrites the oldest element. | <xref:Bodu.Collections.Generic.CircularBuffer`1> with `AllowOverwrite = true`. |
 | Doubles the backing array. | <xref:Bodu.Collections.Generic.Deque`1> with `AllowGrow = true`. |
 | Evicts a policy-selected entry. | <xref:Bodu.Collections.Generic.EvictingDictionary`2>. |
-| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
+| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.NavigableSet`1>, <xref:Bodu.Collections.Generic.NavigableDictionary`2>, <xref:Bodu.Collections.Generic.LayeredDictionary`2>, <xref:Bodu.Collections.Generic.DefaultingDictionary`2>, <xref:Bodu.Collections.Generic.Table`3>, <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
 
 The `Try…` overloads on the bounded ring-backed types substitute a `false` return for the throw, so callers can stay non-throwing without changing the toggle.
+
+## Approximate (probabilistic) collections
+
+The `Bodu.Collections.Probabilistic` namespace trades exactness for a fixed memory footprint: each sketch is sized once at construction and answers queries over arbitrarily long streams in O(1) space, with an error bound you choose up front.
+
+> [!WARNING]
+> These types are **approximate — do not use them for exact membership or exact counting.** A Bloom filter can report a never-added element as present, a count-min estimate can exceed the true count, and a HyperLogLog cardinality is a statistical estimate. When the answer must be exact, stay with the exact types above.
+
+| Reach for | When… | Error contract |
+|---|---|---|
+| <xref:Bodu.Collections.Probabilistic.BloomFilter`1> | You need "have I seen this?" over a stream too large for a `HashSet<T>`, and a definitive *no* plus a probabilistic *yes* is enough. | No false negatives; false positives at the design rate `p` when filled to `ExpectedItems` (`EstimatedFalsePositiveRate` tracks the current fill). |
+| <xref:Bodu.Collections.Probabilistic.CountMinSketch`1> | You need per-element frequencies (heavy hitters, rate estimates) over high-cardinality streams where a counting dictionary would grow without bound. | Never underestimates; overestimates by at most `ε · TotalCount` with probability at least `1 − δ`. |
+| <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> | You need a distinct-element count (unique visitors, distinct keys) in kilobytes rather than one entry per element. | Relative standard error ≈ `1.04/√m` for `m = 2^precision` one-byte registers (~0.81% at precision 14). |
+
+All three hash through the element's <xref:System.Collections.Generic.IEqualityComparer`1>, merge with parameter-compatible instances (`UnionWith` / `MergeWith`), and round-trip state through an opaque, version-checked export/import. None is thread-safe. See the [Probabilistic collections guide](probabilistic-collections.md) for the full contracts, including the comparer-entropy and randomized-string-hash caveats.
 
 ## Common scenarios
 
@@ -104,14 +143,26 @@ The `Try…` overloads on the bounded ring-backed types substitute a `false` ret
 | Track session liveness without reading the value. | <xref:Bodu.Collections.Generic.EvictingDictionary`2>.Touch. |
 | Build a lookup from IP ranges to country codes. | <xref:Bodu.Collections.Generic.RangeDictionary`2>. |
 | Maintain a set of free disk extents that merges on insert. | <xref:Bodu.Collections.Generic.RangeSet`1>. |
+| Find every booking that clashes with a proposed meeting slot. | <xref:Bodu.Collections.Generic.IntervalTree`2> — overlaps are stored, `QueryOverlaps` lists the clashes. |
 | Run Dijkstra's algorithm on a weighted graph. | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>. |
 | Group log entries by correlation id. | <xref:Bodu.Collections.Generic.MultiValueDictionary`2>. |
 | Keep a dictionary you can iterate in insertion order. | <xref:Bodu.Collections.Generic.SequencedDictionary`2>. |
+| Layer request-scoped overrides over shared defaults. | <xref:Bodu.Collections.Generic.LayeredDictionary`2> — overrides first, defaults behind. |
+| Pivot values by two keys and slice by either axis. | <xref:Bodu.Collections.Generic.Table`3> — `Row` / `Column` live projections; keep the most-sliced axis on the row side. |
+| Group items into lists without seeding empty lists. | <xref:Bodu.Collections.Generic.DefaultingDictionary`2> with `_ => new List<T>()`, or <xref:Bodu.Collections.Generic.MultiValueDictionary`2> for a dedicated multi-map surface. |
 | Build an unbounded LRU and evict the oldest yourself. | <xref:Bodu.Collections.Generic.SequencedDictionary`2> with `accessOrder: true` + `TryRemoveFirst`. |
+| Find the nearest price at or below a limit, or the k-th smallest sample. | <xref:Bodu.Collections.Generic.NavigableSet`1> — `TryGetFloor` / `GetAt` in O(log n). |
+| Look up the tax bracket, tier, or time-series entry in effect at a key. | <xref:Bodu.Collections.Generic.NavigableDictionary`2> — `TryGetFloorEntry` / `Range` in O(log n). |
 | Count occurrences of tokens in a corpus. | <xref:Bodu.Collections.Generic.Multiset`1>. |
+| Suggest completions for a typed prefix. | <xref:Bodu.Collections.Generic.Trees.Trie`1> — `ItemsWithPrefix` in O(prefix + matches). |
+| Route requests by longest shared path segments. | <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> — compressed edges keep URL/path tables compact. |
+| Flag every banned keyword in a document in one pass. | <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> — `EnumerateMatches` reports all (overlapping) occurrences; `HasMatch` for a quick yes/no. |
 | Maintain a list of items in entry order while ensuring uniqueness. | <xref:Bodu.Collections.Generic.IndexedSet`1>. |
 | Track a thread-safe set of active correlation ids. | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
 | Stream-build a payload whose total length is unknown. | <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, or <xref:Bodu.Buffers.PooledBufferBuilder`1> for an `ArrayPool<T>`-backed builder. |
+| Skip re-crawling URLs already visited, tolerating rare false skips. | <xref:Bodu.Collections.Probabilistic.BloomFilter`1> — approximate; never misses a visited URL. |
+| Find the most frequent requests in a high-cardinality stream. | <xref:Bodu.Collections.Probabilistic.CountMinSketch`1> — approximate; never undercounts. |
+| Count unique visitors without storing every id. | <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> — approximate; ~1.04/√m standard error. |
 
 ## Anti-patterns
 
@@ -129,5 +180,6 @@ The `Try…` overloads on the bounded ring-backed types substitute a `false` ret
 - [Bodu.Core concepts](../../docs/core/concepts.md) — vocabulary: fixed-capacity, ring-backed, eviction policy, range-keyed.
 - [Circular buffer](circular-buffer.md), [Deque](deque.md), [Evicting dictionary](evicting-dictionary.md), [Range dictionary](range-dictionary.md), [Indexed priority queue](indexed-priority-queue.md) — per-type walk-throughs.
 - [Concurrent collections](concurrent-collections.md) — the thread-safe variants in detail.
+- [Probabilistic collections (sketches)](probabilistic-collections.md) — the approximate `BloomFilter<T>` / `CountMinSketch<T>` / `HyperLogLog<T>` trio.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
 - **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

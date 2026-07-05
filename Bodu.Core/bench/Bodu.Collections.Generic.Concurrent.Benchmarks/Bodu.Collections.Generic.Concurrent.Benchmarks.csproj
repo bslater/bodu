@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Bodu.Core.csproj" />
+    <ProjectReference Include="../../../Bodu.Collections/src/Bodu.Collections.csproj" />
   </ItemGroup>
 
 </Project>

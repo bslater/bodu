@@ -94,6 +94,29 @@ headers.Add("accept", "application/json");
 IReadOnlyList<string> accept = headers["ACCEPT"];   // both values, case-insensitive key
 ```
 
+## Choosing a backing: List vs Set
+
+By default the dictionary is a *list* multimap (Guava's `ListMultimap`): every added value is retained, including per-key duplicates. Passing `MultiValueBacking.Set` at construction switches it to an order-preserving *set* multimap (Guava's `SetMultimap`): values are deduplicated per key using an optional `IEqualityComparer<TValue>`, and each value keeps the position of its **first** occurrence.
+
+```csharp
+var tags = new MultiValueDictionary<string, string>(
+    MultiValueBacking.Set,
+    StringComparer.OrdinalIgnoreCase,    // key comparer
+    StringComparer.OrdinalIgnoreCase);   // value comparer — drives deduplication
+
+tags.Add("doc-1", "Draft");
+tags.Add("doc-1", "DRAFT");     // duplicate per the value comparer — ignored
+tags.Add("doc-1", "review");
+
+Console.WriteLine(tags.Count);        // 2
+Console.WriteLine(tags["doc-1"][0]);  // "Draft" — first occurrence and its casing win
+Console.WriteLine(tags.Backing);      // Set
+```
+
+Under `Set` backing the value comparer also drives `Remove(key, value)` and `ContainsValue(key, value)` — `tags.Remove("doc-1", "draft")` removes `"Draft"`. Suppressed duplicate adds are not structural changes, so they do not invalidate active enumerators. Under `List` backing the value comparer is stored and reported by `ValueComparer` but not consulted; value operations use default equality, exactly as before the option existed.
+
+The backing and value comparer are fixed at construction. Ordering guarantee: per-key values are always exposed in insertion order (first-occurrence order under `Set`), through the same `IReadOnlyList<TValue>` views as `List` backing. The trade-off is that each `Set`-backed add scans the key's existing values linearly to detect duplicates — the cost that keeps the values ordered and the list-typed view contract intact, and a good fit for the typically small per-key buckets of a multimap.
+
 ## API summary
 
 | Member | Description |
@@ -110,6 +133,8 @@ IReadOnlyList<string> accept = headers["ACCEPT"];   // both values, case-insensi
 | `Count` | Total number of values across all keys. |
 | `KeyCount` | Number of distinct keys. |
 | `Comparer` | The active key `IEqualityComparer<TKey>`. |
+| `Backing` | The `MultiValueBacking` (List or Set) selected at construction. |
+| `ValueComparer` | The value `IEqualityComparer<TValue>`; consulted only under Set backing. |
 | `Clear()` | Removes all keys and values. |
 
 ## Where to go next
