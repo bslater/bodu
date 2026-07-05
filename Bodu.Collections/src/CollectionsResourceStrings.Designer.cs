@@ -106,6 +106,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The source data is not a valid CountMinSketch export..
+        /// </summary>
+        internal static string Arg_Invalid_CountMinSketchImportData {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CountMinSketchImportData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The CountMinSketch export format version {0} is not supported..
+        /// </summary>
+        internal static string Arg_Invalid_CountMinSketchImportVersion {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CountMinSketchImportVersion", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The dictionary cannot contain duplicate keys..
         /// </summary>
         internal static string Arg_Invalid_DuplicateDictionaryKey {
@@ -142,6 +160,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The count-min sketches are incompatible; both sketches must have the same width, depth, and equality comparer..
+        /// </summary>
+        internal static string Arg_Invalid_IncompatibleCountMinSketch {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IncompatibleCountMinSketch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The specified range overlaps an existing range..
         /// </summary>
         internal static string Arg_Invalid_RangeOverlap {
@@ -174,6 +201,15 @@ namespace Bodu {
         internal static string Arg_OutOfRange_BloomFilterTooLarge {
             get {
                 return ResourceManager.GetString("Arg_OutOfRange_BloomFilterTooLarge", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The combination of epsilon and delta requires more than {0} counter cells..
+        /// </summary>
+        internal static string Arg_OutOfRange_CountMinSketchTooLarge {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CountMinSketchTooLarge", resourceCulture);
             }
         }
 

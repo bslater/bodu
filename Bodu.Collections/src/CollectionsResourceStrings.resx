@@ -132,6 +132,12 @@
   <data name="Arg_Invalid_CollectionIsEmpty" xml:space="preserve">
     <value>The collection is empty.</value>
   </data>
+  <data name="Arg_Invalid_CountMinSketchImportData" xml:space="preserve">
+    <value>The source data is not a valid CountMinSketch export.</value>
+  </data>
+  <data name="Arg_Invalid_CountMinSketchImportVersion" xml:space="preserve">
+    <value>The CountMinSketch export format version {0} is not supported.</value>
+  </data>
   <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain duplicate keys.</value>
   </data>
@@ -144,6 +150,9 @@
   <data name="Arg_Invalid_IncompatibleBloomFilter" xml:space="preserve">
     <value>The Bloom filters are incompatible; both filters must have the same bit count, hash count, and equality comparer.</value>
   </data>
+  <data name="Arg_Invalid_IncompatibleCountMinSketch" xml:space="preserve">
+    <value>The count-min sketches are incompatible; both sketches must have the same width, depth, and equality comparer.</value>
+  </data>
   <data name="Arg_Invalid_RangeOverlap" xml:space="preserve">
     <value>The specified range overlaps an existing range.</value>
   </data>
@@ -155,6 +164,9 @@
   </data>
   <data name="Arg_OutOfRange_BloomFilterTooLarge" xml:space="preserve">
     <value>The combination of expected items and false-positive rate requires more than {0} bits.</value>
+  </data>
+  <data name="Arg_OutOfRange_CountMinSketchTooLarge" xml:space="preserve">
+    <value>The combination of epsilon and delta requires more than {0} counter cells.</value>
   </data>
   <data name="Arg_OutOfRange_GraphWeightNotFinite" xml:space="preserve">
     <value>The edge weight must be a finite, non-negative number.</value>
