@@ -17,6 +17,7 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
    - Overrides layered over defaults, first layer wins, writes to the first layer → <xref:Bodu.Collections.Generic.LayeredDictionary`2>.
    - Missing keys should materialize a stored default on indexer read → <xref:Bodu.Collections.Generic.DefaultingDictionary`2>.
    - Two independent keys (row + column) with live row/column projections → <xref:Bodu.Collections.Generic.Table`3>. For flat two-key lookup alone, prefer `Dictionary<(TRow, TColumn), TValue>` — adopt `Table` only for the views.
+   - Key-sorted, with floor/ceiling/rank/select and range counting → <xref:Bodu.Collections.Generic.NavigableDictionary`2>.
 2. **Do you need a sequence (FIFO / LIFO / two-ended)?**
    - Fixed capacity, single-threaded, overwrite-or-throw on full → <xref:Bodu.Collections.Generic.CircularBuffer`1>.
    - Fixed capacity, multi-threaded → <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>.
@@ -92,6 +93,7 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 | Sorted by priority, unique elements, mutable priorities | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | `Enqueue` of an existing element throws — use `EnqueueOrUpdate`. |
 | Sorted by interval | <xref:Bodu.Collections.Generic.RangeSet`1> | Half-open intervals over any `IComparable<T>`. |
 | Key-value pairs, insertion- or access-ordered | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Preserves a stable encounter order; access-order mode moves an entry to the tail on read. Unbounded — does not evict. |
+| Key-value pairs, key-sorted, positional queries | <xref:Bodu.Collections.Generic.NavigableDictionary`2> | Order-statistic sorted dictionary: O(log n) `TryGetFloorEntry` / `TryGetCeilingEntry` / `TryGetHigherEntry` / `TryGetLowerEntry`, rank/select (`IndexOfKey` / `GetAt`), and `CountInRange`. The BCL `SortedDictionary<TKey,TValue>` offers no navigation or rank surface, and `SortedList<TKey,TValue>` pays O(n) per insert. |
 
 ### By failure mode on overflow
 
@@ -101,7 +103,7 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 | Overwrites the oldest element. | <xref:Bodu.Collections.Generic.CircularBuffer`1> with `AllowOverwrite = true`. |
 | Doubles the backing array. | <xref:Bodu.Collections.Generic.Deque`1> with `AllowGrow = true`. |
 | Evicts a policy-selected entry. | <xref:Bodu.Collections.Generic.EvictingDictionary`2>. |
-| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.NavigableSet`1>, <xref:Bodu.Collections.Generic.LayeredDictionary`2>, <xref:Bodu.Collections.Generic.DefaultingDictionary`2>, <xref:Bodu.Collections.Generic.Table`3>, <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
+| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.NavigableSet`1>, <xref:Bodu.Collections.Generic.NavigableDictionary`2>, <xref:Bodu.Collections.Generic.LayeredDictionary`2>, <xref:Bodu.Collections.Generic.DefaultingDictionary`2>, <xref:Bodu.Collections.Generic.Table`3>, <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
 
 The `Try…` overloads on the bounded ring-backed types substitute a `false` return for the throw, so callers can stay non-throwing without changing the toggle.
 
@@ -140,6 +142,7 @@ All three hash through the element's <xref:System.Collections.Generic.IEqualityC
 | Group items into lists without seeding empty lists. | <xref:Bodu.Collections.Generic.DefaultingDictionary`2> with `_ => new List<T>()`, or <xref:Bodu.Collections.Generic.MultiValueDictionary`2> for a dedicated multi-map surface. |
 | Build an unbounded LRU and evict the oldest yourself. | <xref:Bodu.Collections.Generic.SequencedDictionary`2> with `accessOrder: true` + `TryRemoveFirst`. |
 | Find the nearest price at or below a limit, or the k-th smallest sample. | <xref:Bodu.Collections.Generic.NavigableSet`1> — `TryGetFloor` / `GetAt` in O(log n). |
+| Look up the tax bracket, tier, or time-series entry in effect at a key. | <xref:Bodu.Collections.Generic.NavigableDictionary`2> — `TryGetFloorEntry` / `Range` in O(log n). |
 | Count occurrences of tokens in a corpus. | <xref:Bodu.Collections.Generic.Multiset`1>. |
 | Maintain a list of items in entry order while ensuring uniqueness. | <xref:Bodu.Collections.Generic.IndexedSet`1>. |
 | Track a thread-safe set of active correlation ids. | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |

@@ -1,7 +1,7 @@
 # Navigable collections — design note
 
 **Date:** 2026-07-05
-**Status:** Executed alongside implementation — `NavigableSet<T>` ships with this note; `NavigableDictionary<TKey,TValue>` follows on the same node machinery.
+**Status:** Executed alongside implementation — `NavigableSet<T>` ships with this note; `NavigableDictionary<TKey,TValue>` has shipped as the follow-on (see §7 for the shared-core decision).
 **Relates to:** [`roadmap-implementation-plan.md`](../../Bodu.Core/docs/roadmap-implementation-plan.md) §8 T6.a; [`ROADMAP.md`](../../ROADMAP.md) — *Per-project roadmap → `Bodu.Core`*
 
 This note records the backing-structure decision for the navigable / order-statistic sorted
@@ -113,3 +113,29 @@ pair of fields on the node); nothing in this design is set-specific except the e
 identity. The navigation surface transposes to keys (`TryGetFloorEntry` etc.); rank/select transposes
 to `IndexOfKey` / `GetAt(rank)`. It ships separately, second, per the plan's
 "set-before-dictionary" sequencing.
+
+**Shared-core decision (executed with the dictionary):** the rotation/fixup/bulk-build core is
+**duplicated** into `NavigableDictionary<TKey,TValue>` with a key/value pair of fields on the node,
+rather than extracting a shared generic tree the two types would parameterize. The set's `Node` is a
+private nested class whose payload is accessed directly throughout the fixups; genericizing it would
+either box the payload access behind an abstraction the JIT must see through or force the committed
+set through a churny refactor for two consumers with a stable, ~500-line, differentially-swept core.
+The duplication is deliberate and bounded: both cores are pinned by their own 20,000-operation
+differential sweeps (`NavigableSetTests.DifferentialSweep` / `NavigableDictionaryTests.DifferentialSweep`),
+so a fix to one core that misses the other is caught by the mirrored oracle, and the committed set's
+implementation stays byte-for-byte untouched. Revisit extraction only if a third consumer of the
+order-statistic core emerges.
+
+Dictionary-specific contracts layered on the shared design:
+
+- **Duplicate keys throw.** `Add` and the bulk-load constructor follow the strict
+  `Dictionary<TKey,TValue>` contract (`ArgumentException`, reusing `Arg_Invalid_DuplicateDictionaryKey`);
+  `TryAdd` is the non-throwing form and the indexer upserts.
+- **Null keys are rejected; null values are allowed** (`ContainsValue` handles `null` via
+  `EqualityComparer<TValue>.Default`). `ContainsValue` is an honest, documented O(n) walk.
+- **Value overwrite is not a structural mutation.** Assigning an existing key through the indexer
+  updates the node's value without bumping the version, matching `Dictionary<TKey,TValue>` —
+  in-flight enumerators survive an overwrite but fail fast on add/remove/clear.
+- `Keys` / `Values` are cached, live, read-only, key-sorted views (the `SequencedDictionary`
+  key/value-collection shape minus the non-generic `ICollection`, which the dictionary — like the
+  set — does not implement).

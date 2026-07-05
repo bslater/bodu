@@ -23,7 +23,7 @@ Contract points worth keeping in mind:
 - `Min` / `Max` throw `InvalidOperationException` on an empty set; `TryGetMin` / `TryGetMax` are the non-throwing forms.
 - Not thread-safe.
 
-The backing-structure decision (order-statistic red-black tree with parent pointers, versus a skip list) is recorded in the design note at `Bodu.Collections/docs/navigable-collections-design.md`. A `NavigableDictionary<TKey,TValue>` over the same node machinery is the planned follow-on.
+The backing-structure decision (order-statistic red-black tree with parent pointers, versus a skip list) is recorded in the design note at `Bodu.Collections/docs/navigable-collections-design.md`. [`NavigableDictionary<TKey,TValue>`](navigable-dictionary.md) is the key-value counterpart over the same node machinery.
 
 ## Pattern 1 — nearest-neighbour queries
 
@@ -98,6 +98,7 @@ Console.WriteLine(morning.Count());      // 3 — 09:00, 10:30, 11:15
 
 ## See also
 
+- [Navigable dictionary](navigable-dictionary.md) — the key-value counterpart with the same query family.
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide.
 - [Indexed and ordered sets](ordered-sets.md) — insertion-ordered (not comparer-ordered) unique collections.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
