@@ -41,6 +41,8 @@
           items:
             - name: Memoization
               href: core/memoization.md
+            - name: Options, results, and eithers
+              href: core/functional-results.md
         - name: Bodu.Collections.Generic.Concurrent
           items:
             - name: Concurrent collections
