@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileSystemRbaWorkbookCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,11 +23,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 public sealed class FileSystemRbaWorkbookCache
-    : IRbaWorkbookCache
+    : FileSystemByteCache<RbaEra>, IRbaWorkbookCache
 {
-    /// <summary>The directory in which cached workbooks are stored.</summary>
-    private readonly string _directory;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="FileSystemRbaWorkbookCache" /> class.
     /// </summary>
@@ -36,53 +33,14 @@ public sealed class FileSystemRbaWorkbookCache
     /// path is used.
     /// </param>
     public FileSystemRbaWorkbookCache(string? directory)
-    {
-        _directory = string.IsNullOrWhiteSpace(directory)
-            ? Path.Combine(Path.GetTempPath(), "bodu-rba")
-            : directory;
-    }
-
-    /// <summary>
-    /// Gets the directory in which cached workbooks are stored.
-    /// </summary>
-    /// <value>The absolute or relative cache directory path.</value>
-    public string Directory => _directory;
+        : base(directory, "bodu-rba") { }
 
     /// <inheritdoc />
     public bool TryGet(RbaEra era, TimeSpan currentEraRefreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
     {
         ThrowHelper.ThrowIfNull(era);
 
-        string path = Path.Combine(_directory, era.FileName);
-
-        try
-        {
-            if (!File.Exists(path))
-            {
-                bytes = null;
-                return false;
-            }
-
-            // The open-ended current era expires; fixed eras are immutable and never expire.
-            if (era.End is null && DateTime.UtcNow - File.GetLastWriteTimeUtc(path) > currentEraRefreshInterval)
-            {
-                bytes = null;
-                return false;
-            }
-
-            bytes = File.ReadAllBytes(path);
-            return true;
-        }
-        catch (IOException)
-        {
-            bytes = null;
-            return false;
-        }
-        catch (UnauthorizedAccessException)
-        {
-            bytes = null;
-            return false;
-        }
+        return TryGetCore(era, currentEraRefreshInterval, out bytes);
     }
 
     /// <inheritdoc />
@@ -91,18 +49,15 @@ public sealed class FileSystemRbaWorkbookCache
         ThrowHelper.ThrowIfNull(era);
         ThrowHelper.ThrowIfNull(bytes);
 
-        try
-        {
-            System.IO.Directory.CreateDirectory(_directory);
-            File.WriteAllBytes(Path.Combine(_directory, era.FileName), bytes);
-        }
-        catch (IOException)
-        {
-            // Best-effort cache: a failed write must not break rate retrieval.
-        }
-        catch (UnauthorizedAccessException)
-        {
-            // Best-effort cache: a failed write must not break rate retrieval.
-        }
+        StoreCore(era, bytes);
     }
+
+    /// <inheritdoc />
+    protected override string GetFileName(RbaEra key) =>
+        key.FileName;
+
+    /// <inheritdoc />
+    /// <remarks>The open-ended current era expires on the refresh interval; fixed eras are immutable and never expire.</remarks>
+    protected override bool IsFresh(RbaEra key, TimeSpan age, TimeSpan refreshInterval) =>
+        key.End is not null || age <= refreshInterval;
 }

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileSystemBoeResponseCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,11 +24,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 public sealed class FileSystemBoeResponseCache
-    : IBoeResponseCache
+    : FileSystemByteCache<(DateOnly StartDate, DateOnly EndDate)>, IBoeResponseCache
 {
-    /// <summary>The directory in which cached responses are stored.</summary>
-    private readonly string _directory;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="FileSystemBoeResponseCache" /> class.
     /// </summary>
@@ -37,82 +34,21 @@ public sealed class FileSystemBoeResponseCache
     /// path is used.
     /// </param>
     public FileSystemBoeResponseCache(string? directory)
-    {
-        _directory = string.IsNullOrWhiteSpace(directory)
-            ? Path.Combine(Path.GetTempPath(), "bodu-boe")
-            : directory;
-    }
-
-    /// <summary>
-    /// Gets the directory in which cached responses are stored.
-    /// </summary>
-    /// <value>The absolute or relative cache directory path.</value>
-    public string Directory => _directory;
+        : base(directory, "bodu-boe") { }
 
     /// <inheritdoc />
-    public bool TryGet(DateOnly startDate, DateOnly endDate, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
-    {
-        string path = Path.Combine(_directory, FileName(startDate, endDate));
-
-        try
-        {
-            if (!File.Exists(path))
-            {
-                bytes = null;
-                return false;
-            }
-
-            if (DateTime.UtcNow - File.GetLastWriteTimeUtc(path) > refreshInterval)
-            {
-                bytes = null;
-                return false;
-            }
-
-            bytes = File.ReadAllBytes(path);
-            return true;
-        }
-        catch (IOException)
-        {
-            bytes = null;
-            return false;
-        }
-        catch (UnauthorizedAccessException)
-        {
-            bytes = null;
-            return false;
-        }
-    }
+    public bool TryGet(DateOnly startDate, DateOnly endDate, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes) =>
+        TryGetCore((startDate, endDate), refreshInterval, out bytes);
 
     /// <inheritdoc />
-    public void Store(DateOnly startDate, DateOnly endDate, byte[] bytes)
-    {
-        ThrowHelper.ThrowIfNull(bytes);
+    public void Store(DateOnly startDate, DateOnly endDate, byte[] bytes) =>
+        StoreCore((startDate, endDate), bytes);
 
-        try
-        {
-            System.IO.Directory.CreateDirectory(_directory);
-            File.WriteAllBytes(Path.Combine(_directory, FileName(startDate, endDate)), bytes);
-        }
-        catch (IOException)
-        {
-            // Best-effort cache: a failed write must not break rate retrieval.
-        }
-        catch (UnauthorizedAccessException)
-        {
-            // Best-effort cache: a failed write must not break rate retrieval.
-        }
-    }
-
-    /// <summary>
-    /// Derives the cache file name for an inclusive date range.
-    /// </summary>
-    /// <param name="startDate">The inclusive start of the range.</param>
-    /// <param name="endDate">The inclusive end of the range.</param>
-    /// <returns>The cache file name.</returns>
-    private static string FileName(DateOnly startDate, DateOnly endDate) =>
+    /// <inheritdoc />
+    protected override string GetFileName((DateOnly StartDate, DateOnly EndDate) key) =>
         string.Format(
             CultureInfo.InvariantCulture,
             "boe_{0:yyyyMMdd}_{1:yyyyMMdd}.csv",
-            startDate,
-            endDate);
+            key.StartDate,
+            key.EndDate);
 }

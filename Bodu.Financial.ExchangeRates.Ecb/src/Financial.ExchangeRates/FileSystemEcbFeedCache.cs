@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileSystemEcbFeedCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,11 +23,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 public sealed class FileSystemEcbFeedCache
-    : IEcbFeedCache
+    : FileSystemByteCache<EcbExchangeRateFeed>, IEcbFeedCache
 {
-    /// <summary>The directory in which cached feeds are stored.</summary>
-    private readonly string _directory;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="FileSystemEcbFeedCache" /> class.
     /// </summary>
@@ -36,52 +33,14 @@ public sealed class FileSystemEcbFeedCache
     /// path is used.
     /// </param>
     public FileSystemEcbFeedCache(string? directory)
-    {
-        _directory = string.IsNullOrWhiteSpace(directory)
-            ? Path.Combine(Path.GetTempPath(), "bodu-ecb")
-            : directory;
-    }
-
-    /// <summary>
-    /// Gets the directory in which cached feeds are stored.
-    /// </summary>
-    /// <value>The absolute or relative cache directory path.</value>
-    public string Directory => _directory;
+        : base(directory, "bodu-ecb") { }
 
     /// <inheritdoc />
     public bool TryGet(EcbExchangeRateFeed feed, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
     {
         ThrowHelper.ThrowIfNull(feed);
 
-        string path = Path.Combine(_directory, feed.FileName);
-
-        try
-        {
-            if (!File.Exists(path))
-            {
-                bytes = null;
-                return false;
-            }
-
-            if (DateTime.UtcNow - File.GetLastWriteTimeUtc(path) > refreshInterval)
-            {
-                bytes = null;
-                return false;
-            }
-
-            bytes = File.ReadAllBytes(path);
-            return true;
-        }
-        catch (IOException)
-        {
-            bytes = null;
-            return false;
-        }
-        catch (UnauthorizedAccessException)
-        {
-            bytes = null;
-            return false;
-        }
+        return TryGetCore(feed, refreshInterval, out bytes);
     }
 
     /// <inheritdoc />
@@ -90,18 +49,10 @@ public sealed class FileSystemEcbFeedCache
         ThrowHelper.ThrowIfNull(feed);
         ThrowHelper.ThrowIfNull(bytes);
 
-        try
-        {
-            System.IO.Directory.CreateDirectory(_directory);
-            File.WriteAllBytes(Path.Combine(_directory, feed.FileName), bytes);
-        }
-        catch (IOException)
-        {
-            // Best-effort cache: a failed write must not break rate retrieval.
-        }
-        catch (UnauthorizedAccessException)
-        {
-            // Best-effort cache: a failed write must not break rate retrieval.
-        }
+        StoreCore(feed, bytes);
     }
+
+    /// <inheritdoc />
+    protected override string GetFileName(EcbExchangeRateFeed key) =>
+        key.FileName;
 }
