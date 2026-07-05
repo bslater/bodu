@@ -35,6 +35,8 @@
               href: core/segmented-buffer.md
             - name: Range-keyed lookups
               href: core/range-dictionary.md
+            - name: Bit set
+              href: core/bit-set.md
         - name: Bodu.Collections.Generic.Trees
           items:
             - name: Trie (prefix tree)
