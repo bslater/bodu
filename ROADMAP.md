@@ -412,25 +412,29 @@ Forward-looking:
   Working names `NavigableSet<T>` / `NavigableDictionary<,>`; a
   skip-list backing would also open the door to a concurrent sorted map
   (Java's `ConcurrentSkipListMap`), which has no BCL analogue at all.
-- **`BiDictionary<TKey,TValue>`** — a bidirectional one-to-one map with
-  an inverse view and configurable duplicate-value policy. Guava's
-  `BiMap`, Python's `bidict`, Commons Collections' `BidiMap`; in .NET
-  it is perpetually hand-rolled as two dictionaries.
-- **`Table<TRow,TColumn,TValue>`** — a two-key map with first-class row
-  and column views (Guava `Table`). `Dictionary<(R,C),V>` covers plain
-  lookup, so the candidate's value is precisely the row / column
-  projections and per-row iteration; adopt only with those views.
-- **Layered and defaulting dictionary utilities** — a read-through
-  `ChainMap`-style view over an ordered list of dictionaries (Python
-  stdlib `ChainMap`, Commons `CompositeMap`; precedence semantics
-  aligned with `Bodu.Text.Configuration`'s resolver), and a
-  `defaultdict`-style value-factory wrapper for the miss-populate
-  idiom.
-- **A growable bit set** — Java's `BitSet` semantics: auto-growing,
-  `NextSetBit` / set-bit enumeration, cardinality, and in-place logical
-  ops. The BCL's `BitArray` is fixed-size, exposes none of the query
-  surface, and its enumerator boxes per bit; Python fills the same gap
-  with the `bitarray` package.
+- **`BiDictionary<TKey,TValue>` has landed.** ✅ A bidirectional
+  one-to-one map over two shared dictionary indexes with O(1) lookups
+  both ways, a live reference-stable `Inverse` view, independent key
+  and value comparers, and a construction-time duplicate-value policy
+  (`Throw` — Guava `BiMap.put` — or `Replace` — `forcePut`).
+- **`Table<TRow,TColumn,TValue>` has landed.** ✅ The two-key map
+  adopted precisely for its projections: live `Row` / `Column`
+  read-only views, `RowKeys` / `ColumnKeys`, and per-row `RowMap()`
+  iteration over row-major nested dictionaries, with the O(rows)
+  column-view cost documented as the v1 trade-off.
+- **The layered and defaulting dictionary utilities have landed.** ✅
+  `LayeredDictionary<,>` is the Python-`ChainMap` first-layer-wins live
+  view (writes to layer 0, documented unshadowing, precedence aligned
+  with `Bodu.Text.Configuration`'s resolver) and
+  `DefaultingDictionary<,>` is the `defaultdict` store-on-indexer-miss
+  wrapper, distinct from the per-call-site `GetOrAdd` extension.
+- **The growable bit set has landed.** ✅ `BitSet` ships Java
+  `BitSet` semantics — auto-grow, single-bit and range `Set` / `Clear`
+  / `Flip`, `NextSetBit` / `NextClearBit`, PopCount `Cardinality`,
+  in-place logical ops over mismatched lengths, value equality
+  insensitive to trailing zero words, and a non-boxing struct
+  enumerator over set-bit indices — closing the fixed-size,
+  query-free, boxing-enumerator gaps of the BCL `BitArray`.
 - **Trie-family extensions in `Collections.Generic.Trees`** — an
   Aho-Corasick automaton for multi-pattern string search (Java
   `ahocorasick`, Python `pyahocorasick`; .NET pulls independent ports)

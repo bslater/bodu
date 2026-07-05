@@ -1,7 +1,7 @@
 # Bodu.Core roadmap — implementation plan
 
 **Date:** 2026-07-04
-**Status:** T0–T4 executed (2026-07-05); T5–T6 proposed
+**Status:** T0–T5 executed (2026-07-05); T6 proposed
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *Per-project roadmap → `Bodu.Core`*
 
 This plan turns every item in the `Bodu.Core` section of the repository
@@ -575,6 +575,27 @@ than a seventh policy value.
 ---
 
 ## 7. T5 — New map / table / bit types
+
+> **Executed 2026-07-05** as four incremental commits (BiDictionary,
+> BitSet, Layered/Defaulting pair, Table). Deviations from the
+> sketches below:
+>
+> 1. **BiDictionary** implements the full non-generic `IDictionary` /
+>    `ICollection` surface (required by the family's contract-test
+>    bases) and inherits BCL `Dictionary` enumeration-invalidation
+>    semantics instead of a bespoke version counter.
+> 2. **BitSet** exposes a copy constructor rather than a `Copy()`
+>    method, summarises in `ToString()` rather than set-builder
+>    rendering, and pins a documented `Set`/`Clear` guard asymmetry at
+>    the `MaxBitCount` ceiling.
+> 3. **LayeredDictionary** resolved the open write-surface question as
+>    full ChainMap semantics (writes to layer 0; `Remove`/`Clear` are
+>    layer-0-only with pinned unshadowing); the defaultdict wrapper's
+>    reentrancy contract is factory-return-wins.
+> 4. **Table** reuses the dictionary key-not-found message for cell
+>    lookups but adds a dedicated duplicate-cell resource key; the
+>    column view is per-access O(rows) with no second index, as
+>    sketched.
 
 Four independent items; each is a standalone type (or pair) in
 `Bodu.Collections/src/Collections.Generic/` with the standard
