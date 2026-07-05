@@ -35,6 +35,8 @@
               href: core/segmented-buffer.md
             - name: Range-keyed lookups
               href: core/range-dictionary.md
+            - name: Interval tree
+              href: core/interval-tree.md
             - name: Bit set
               href: core/bit-set.md
             - name: Navigable set

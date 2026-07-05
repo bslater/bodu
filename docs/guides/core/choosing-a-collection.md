@@ -29,6 +29,7 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
    - Unordered, unique, multi-threaded → <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>.
    - Duplicates retained as multiplicity → <xref:Bodu.Collections.Generic.Multiset`1>.
    - Set of disjoint half-open intervals → <xref:Bodu.Collections.Generic.RangeSet`1>.
+   - Overlapping intervals, queried by "what covers this point/window?" → <xref:Bodu.Collections.Generic.IntervalTree`1> (or <xref:Bodu.Collections.Generic.IntervalTree`2> to carry a value per interval).
    - Dense set of non-negative integers as packed bits → <xref:Bodu.Collections.Generic.BitSet>.
    - Sorted, with floor/ceiling/rank/select and range counting → <xref:Bodu.Collections.Generic.NavigableSet`1>.
 4. **Do you need a priority queue with key-based updates?** → <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>.
@@ -50,6 +51,7 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 | Min-heap priority queue with O(1) lookup-by-element | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | Required by Dijkstra, Prim, A* — the `Update` / `EnqueueOrUpdate` calls the BCL `PriorityQueue<TElement,TPriority>` cannot perform. |
 | Range-keyed lookup (interval → value) | <xref:Bodu.Collections.Generic.RangeDictionary`2> | O(log n) lookup; rejects overlapping inserts. |
 | Range membership (in any interval?) | <xref:Bodu.Collections.Generic.RangeSet`1> | Merges adjacent and overlapping intervals on insertion. |
+| Overlap-storing interval index (stabbing / window queries) | <xref:Bodu.Collections.Generic.IntervalTree`1> / <xref:Bodu.Collections.Generic.IntervalTree`2> | The only range type that **stores** overlapping intervals — `RangeDictionary` rejects overlapping inserts, `RangeSet` merges them, and `Bodu.Numerics`' `IntervalSet<T>` normalizes to disjoint ranges. Closed `[low, high]` endpoints; O(log n + k) `QueryPoint` / `QueryOverlaps`, O(log n) `Intersects`. |
 | Cache with policy-driven eviction | <xref:Bodu.Collections.Generic.EvictingDictionary`2> | FIFO, LRU, LFU, MRU, Random, or Second-Chance. |
 | Ordered key-value store with O(1) first/last access | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Insertion order by default; opt into access order for LRU-style reordering. O(1) `First` / `Last` / `TryRemoveFirst` / `TryRemoveLast`. |
 | One key → many values | <xref:Bodu.Collections.Generic.MultiValueDictionary`2> | Indexer returns an empty live view, never `null`. |
@@ -103,7 +105,7 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 | Overwrites the oldest element. | <xref:Bodu.Collections.Generic.CircularBuffer`1> with `AllowOverwrite = true`. |
 | Doubles the backing array. | <xref:Bodu.Collections.Generic.Deque`1> with `AllowGrow = true`. |
 | Evicts a policy-selected entry. | <xref:Bodu.Collections.Generic.EvictingDictionary`2>. |
-| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.NavigableSet`1>, <xref:Bodu.Collections.Generic.NavigableDictionary`2>, <xref:Bodu.Collections.Generic.LayeredDictionary`2>, <xref:Bodu.Collections.Generic.DefaultingDictionary`2>, <xref:Bodu.Collections.Generic.Table`3>, <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
+| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.NavigableSet`1>, <xref:Bodu.Collections.Generic.NavigableDictionary`2>, <xref:Bodu.Collections.Generic.LayeredDictionary`2>, <xref:Bodu.Collections.Generic.DefaultingDictionary`2>, <xref:Bodu.Collections.Generic.Table`3>, <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
 
 The `Try…` overloads on the bounded ring-backed types substitute a `false` return for the throw, so callers can stay non-throwing without changing the toggle.
 
@@ -134,6 +136,7 @@ All three hash through the element's <xref:System.Collections.Generic.IEqualityC
 | Track session liveness without reading the value. | <xref:Bodu.Collections.Generic.EvictingDictionary`2>.Touch. |
 | Build a lookup from IP ranges to country codes. | <xref:Bodu.Collections.Generic.RangeDictionary`2>. |
 | Maintain a set of free disk extents that merges on insert. | <xref:Bodu.Collections.Generic.RangeSet`1>. |
+| Find every booking that clashes with a proposed meeting slot. | <xref:Bodu.Collections.Generic.IntervalTree`2> — overlaps are stored, `QueryOverlaps` lists the clashes. |
 | Run Dijkstra's algorithm on a weighted graph. | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>. |
 | Group log entries by correlation id. | <xref:Bodu.Collections.Generic.MultiValueDictionary`2>. |
 | Keep a dictionary you can iterate in insertion order. | <xref:Bodu.Collections.Generic.SequencedDictionary`2>. |
