@@ -503,9 +503,11 @@ public sealed class SqliteExchangeRateCache
                         ParseInstant(reader.GetString(2)),
                         observedAt));
                 }
-                catch (FormatException)
+                catch (Exception ex) when (ex is FormatException or OverflowException)
                 {
-                    // Skip a single malformed row rather than failing the whole read.
+                    // Skip a single malformed row rather than failing the whole read. An out-of-range decimal rate
+                    // parses as an OverflowException, which must be swallowed alongside FormatException so a poisoned
+                    // value cannot break the documented best-effort read contract.
                 }
             }
         }
