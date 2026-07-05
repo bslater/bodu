@@ -56,6 +56,57 @@ public class CompoundSynthesizedCorruptionTests
     }
 
     /// <summary>
+    /// Verifies that a stream declaring a payload far larger than the container (and beyond <see cref="int" /> range) is
+    /// recovered to a bounded size under <see cref="CompoundValidationLevel.Minimal" /> rather than driving an unbounded
+    /// or <see cref="OverflowException" />-throwing <c>new byte[size]</c> allocation.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    public void OpenStream_WhenDeclaredSizeIsAbsurdlyLarge_ForMinimal_ShouldRecoverBoundedPayload()
+    {
+        byte[] bytes = BuildSingleStream("Big", 5000);
+        var header = CfbHeader.Parse(bytes);
+        int entry = FindEntryOffset(bytes, header, "Big");
+
+        // ~3 GB — larger than the container and larger than int.MaxValue. Before the bound, Minimal padded to this via
+        // `new byte[size]`, throwing OverflowException instead of the reader's CompoundFileFormatException contract.
+        BinaryPrimitives.WriteUInt64LittleEndian(bytes.AsSpan(entry + SizeOffset), 3_000_000_000UL);
+
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Minimal };
+        using var file = CompoundFile.Open(new MemoryStream(bytes), options);
+
+        byte[] payload = file.RootStorage.OpenStream("Big").ReadAllBytes();
+
+        // The recovered payload is bounded (never the declared ~3 GB); the container is a few KB, so the ceiling is the
+        // 1 MiB floor.
+        Assert.IsTrue(payload.Length <= 1 << 20, $"Recovered payload was unexpectedly large: {payload.Length} bytes.");
+    }
+
+    /// <summary>
+    /// Verifies that a stream declaring an absurd payload is rejected with the reader's
+    /// <see cref="CompoundFileError.StreamChainTooShort" /> contract (not an <see cref="OverflowException" />) under a
+    /// strict validation level.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    public void OpenStream_WhenDeclaredSizeIsAbsurdlyLarge_ForStrict_ShouldThrowStreamChainTooShort()
+    {
+        byte[] bytes = BuildSingleStream("Big", 5000);
+        var header = CfbHeader.Parse(bytes);
+        int entry = FindEntryOffset(bytes, header, "Big");
+
+        BinaryPrimitives.WriteUInt64LittleEndian(bytes.AsSpan(entry + SizeOffset), 3_000_000_000UL);
+
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+        using var file = CompoundFile.Open(new MemoryStream(bytes), options);
+
+        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(
+            () => _ = file.RootStorage.OpenStream("Big").ReadAllBytes());
+
+        Assert.AreEqual(CompoundFileError.StreamChainTooShort, ex.Category);
+    }
+
+    /// <summary>
     /// Verifies that a streaming (unbuffered) cursor whose declared size exceeds its sector chain is rejected with
     /// <see cref="CompoundFileError.StreamChainTooShort" /> rather than an <see cref="IndexOutOfRangeException" />
     /// escaping the <see cref="System.IO.Stream" /> read contract.

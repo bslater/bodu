@@ -78,6 +78,27 @@ internal sealed class CfbSectorReader
         return true;
     }
 
+    /// <summary>The minimum size a short sector chain may be zero-padded to under a tolerant validation level.</summary>
+    private const long MinRecoveredStreamBytes = 1L << 20;
+
+    /// <summary>
+    /// Bounds a declared payload size before it is used to size a zero-padded allocation, so a corrupt oversized size
+    /// field cannot drive a huge (or <see cref="int" />-overflowing) allocation on the recovery path.
+    /// </summary>
+    /// <param name="size">The declared payload size, taken from an untrusted directory entry or header field.</param>
+    /// <returns>The bounded size to allocate.</returns>
+    /// <remarks>
+    /// A valid stream's payload never exceeds the container, so this ceiling never affects a well-formed read (which
+    /// returns its chain directly rather than padding). The ceiling is the larger of a 1 MiB floor and the container
+    /// length, capped at <see cref="Array.MaxLength" />; a size beyond it is rejected under a strict level and clamped
+    /// under a tolerant one.
+    /// </remarks>
+    private long BoundPaddedSize(long size)
+    {
+        long ceiling = Math.Min(Array.MaxLength, Math.Max(MinRecoveredStreamBytes, _source.Length));
+        return StopOrThrow(size > ceiling, CompoundFileError.StreamChainTooShort) ? ceiling : size;
+    }
+
     /// <summary>
     /// Gets the regular sector size, in bytes.
     /// </summary>
@@ -100,6 +121,8 @@ internal sealed class CfbSectorReader
     {
         if (size <= 0 || startSector == CfbHeader.EndOfChain)
             return [];
+
+        size = BoundPaddedSize(size);
 
         byte[] chain = ReadChainToEnd(startSector);
         if (chain.Length < size && !StopOrThrow(true, CompoundFileError.StreamChainTooShort))
@@ -233,6 +256,8 @@ internal sealed class CfbSectorReader
     {
         if (size <= 0 || startMiniSector == CfbHeader.EndOfChain)
             return [];
+
+        size = BoundPaddedSize(size);
 
         if (_miniFat is null || _miniStream is null)
         {
