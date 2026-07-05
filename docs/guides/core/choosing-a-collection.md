@@ -25,6 +25,7 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
    - Duplicates retained as multiplicity → <xref:Bodu.Collections.Generic.Multiset`1>.
    - Set of disjoint half-open intervals → <xref:Bodu.Collections.Generic.RangeSet`1>.
 4. **Do you need a priority queue with key-based updates?** → <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>.
+5. **Can the answer be approximate?** When the exact structure no longer fits in memory and a quantified error is acceptable → the `Bodu.Collections.Probabilistic` sketches; see [Approximate (probabilistic) collections](#approximate-probabilistic-collections) below.
 
 If none of the above fit, the BCL types (`List<T>`, `Dictionary<TKey,TValue>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`) are the right choice. Bodu.Core does not duplicate BCL primitives — every type below adds a contract the BCL does not provide.
 
@@ -92,6 +93,21 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 
 The `Try…` overloads on the bounded ring-backed types substitute a `false` return for the throw, so callers can stay non-throwing without changing the toggle.
 
+## Approximate (probabilistic) collections
+
+The `Bodu.Collections.Probabilistic` namespace trades exactness for a fixed memory footprint: each sketch is sized once at construction and answers queries over arbitrarily long streams in O(1) space, with an error bound you choose up front.
+
+> [!WARNING]
+> These types are **approximate — do not use them for exact membership or exact counting.** A Bloom filter can report a never-added element as present, a count-min estimate can exceed the true count, and a HyperLogLog cardinality is a statistical estimate. When the answer must be exact, stay with the exact types above.
+
+| Reach for | When… | Error contract |
+|---|---|---|
+| <xref:Bodu.Collections.Probabilistic.BloomFilter`1> | You need "have I seen this?" over a stream too large for a `HashSet<T>`, and a definitive *no* plus a probabilistic *yes* is enough. | No false negatives; false positives at the design rate `p` when filled to `ExpectedItems` (`EstimatedFalsePositiveRate` tracks the current fill). |
+| <xref:Bodu.Collections.Probabilistic.CountMinSketch`1> | You need per-element frequencies (heavy hitters, rate estimates) over high-cardinality streams where a counting dictionary would grow without bound. | Never underestimates; overestimates by at most `ε · TotalCount` with probability at least `1 − δ`. |
+| <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> | You need a distinct-element count (unique visitors, distinct keys) in kilobytes rather than one entry per element. | Relative standard error ≈ `1.04/√m` for `m = 2^precision` one-byte registers (~0.81% at precision 14). |
+
+All three hash through the element's <xref:System.Collections.Generic.IEqualityComparer`1>, merge with parameter-compatible instances (`UnionWith` / `MergeWith`), and round-trip state through an opaque, version-checked export/import. None is thread-safe. See the [Probabilistic collections guide](probabilistic-collections.md) for the full contracts, including the comparer-entropy and randomized-string-hash caveats.
+
 ## Common scenarios
 
 | I want to… | Reach for |
@@ -112,6 +128,9 @@ The `Try…` overloads on the bounded ring-backed types substitute a `false` ret
 | Maintain a list of items in entry order while ensuring uniqueness. | <xref:Bodu.Collections.Generic.IndexedSet`1>. |
 | Track a thread-safe set of active correlation ids. | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
 | Stream-build a payload whose total length is unknown. | <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, or <xref:Bodu.Buffers.PooledBufferBuilder`1> for an `ArrayPool<T>`-backed builder. |
+| Skip re-crawling URLs already visited, tolerating rare false skips. | <xref:Bodu.Collections.Probabilistic.BloomFilter`1> — approximate; never misses a visited URL. |
+| Find the most frequent requests in a high-cardinality stream. | <xref:Bodu.Collections.Probabilistic.CountMinSketch`1> — approximate; never undercounts. |
+| Count unique visitors without storing every id. | <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> — approximate; ~1.04/√m standard error. |
 
 ## Anti-patterns
 
@@ -129,5 +148,6 @@ The `Try…` overloads on the bounded ring-backed types substitute a `false` ret
 - [Bodu.Core concepts](../../docs/core/concepts.md) — vocabulary: fixed-capacity, ring-backed, eviction policy, range-keyed.
 - [Circular buffer](circular-buffer.md), [Deque](deque.md), [Evicting dictionary](evicting-dictionary.md), [Range dictionary](range-dictionary.md), [Indexed priority queue](indexed-priority-queue.md) — per-type walk-throughs.
 - [Concurrent collections](concurrent-collections.md) — the thread-safe variants in detail.
+- [Probabilistic collections (sketches)](probabilistic-collections.md) — the approximate `BloomFilter<T>` / `CountMinSketch<T>` / `HyperLogLog<T>` trio.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
 - **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

@@ -1,7 +1,7 @@
 # Bodu.Core roadmap — implementation plan
 
 **Date:** 2026-07-04
-**Status:** T0–T2 executed (2026-07-05); T3–T6 proposed
+**Status:** T0–T3 executed (2026-07-05); T4–T6 proposed
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *Per-project roadmap → `Bodu.Core`*
 
 This plan turns every item in the `Bodu.Core` section of the repository
@@ -449,6 +449,27 @@ ordering.
 ---
 
 ## 5. T3 — Probabilistic sketches
+
+> **Executed 2026-07-05** as three incremental commits (one per type:
+> BloomFilter → CountMinSketch → HyperLogLog). Hashing landed as the
+> shared internal `ProbabilisticHashing` helper — a SplitMix64-style
+> avalanche of the comparer's 32-bit hash into the two 64-bit values
+> consumed by Kirsch–Mitzenmacher double hashing (HyperLogLog uses the
+> first value only). Deviations from the sketch below:
+>
+> 1. **BloomFilter** ships `EstimatedFalsePositiveRate` (computed from
+>    the current bit density) rather than the sketched
+>    `ExpectedFalsePositiveRate` name, and an `ApproximateCount` /
+>    element-count estimator was deliberately omitted from the surface.
+> 2. **HyperLogLog** deliberately omits the original paper's
+>    large-range correction — it compensates for collisions in a
+>    32-bit hash space, whereas the register pipeline here ranks a
+>    64-bit hash (the practical ceiling is instead the 32-bit comparer
+>    entropy, documented on the type).
+> 3. **HyperLogLog `Import`** additionally validates each register
+>    against the rank ceiling for the recorded precision
+>    (`64 − b + 1`), rejecting corrupt snapshots that would silently
+>    skew every subsequent estimate.
 
 **Scope.** Three approximate-membership/frequency/cardinality
 structures: `BloomFilter<T>`, `CountMinSketch<T>`, `HyperLogLog<T>`.

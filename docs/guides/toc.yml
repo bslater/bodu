@@ -47,6 +47,10 @@
           items:
             - name: Concurrent collections
               href: core/concurrent-collections.md
+        - name: Bodu.Collections.Probabilistic
+          items:
+            - name: Probabilistic collections (sketches)
+              href: core/probabilistic-collections.md
         - name: Bodu.Threading
           items:
             - name: Async coordination primitives

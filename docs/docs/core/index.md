@@ -52,6 +52,15 @@ Lock-free / thread-safe variants.
 |---|---|
 | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> | Thread-safe variant of `CircularBuffer<T>`; implements `IProducerConsumerCollection<T>` over the Vyukov MPMC algorithm. |
 
+### `Bodu.Collections.Probabilistic`
+Approximate "sketch" structures that trade exactness for a fixed memory footprint — each is sized once from its constructor arguments and carries a quantified, one-sided error bound. See the [Probabilistic collections](../../guides/core/probabilistic-collections.md) guide and the <xref:Bodu.Collections.Probabilistic> overview.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Collections.Probabilistic.BloomFilter`1> | Approximate set membership sized from an expected item count and target false-positive rate. No false negatives — added elements are always reported present; never-added elements are misreported at roughly the design rate. Supports `UnionWith` merging and version-checked export/import. |
+| <xref:Bodu.Collections.Probabilistic.CountMinSketch`1> | Approximate per-element frequency counting sized from `epsilon` / `delta`. Never underestimates; with probability at least `1 − δ` an estimate is at most the true count plus `ε · TotalCount`. Supports `MergeWith` (cell-wise sum) and export/import. |
+| <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> | Approximate distinct-element (cardinality) counting in `2^precision` one-byte registers with ~`1.04/√m` relative standard error. `MergeWith` (register-wise max) is lossless and never double-counts shared elements. |
+
 ### `Bodu.Collections.Generic.Graphs`
 Graphs and graph algorithms. See the [Graphs and graph algorithms](../../guides/core/graphs.md) guide and the <xref:Bodu.Collections.Generic.Graphs> overview.
 

@@ -363,9 +363,20 @@ Forward-looking:
   now sits at the `Bodu.Functional` extraction trigger recorded under
   *New library candidates* — grow it further only alongside that
   decision.
-- **Probabilistic / sketch data structures** — Bloom filter, Count-Min
-  sketch, HyperLogLog. Commonly built independently, absent from the BCL,
-  and a clean fit for the collections pillar.
+- **Probabilistic / sketch data structures have landed.** ✅
+  `BloomFilter<T>` answers approximate membership with no false
+  negatives, sized from an expected item count and design
+  false-positive rate. `CountMinSketch<T>` estimates per-element
+  frequencies and never underestimates — with probability at least
+  `1 − δ` an estimate is at most the true count plus `ε · TotalCount`.
+  `HyperLogLog<T>` estimates distinct-element cardinality at ~`1.04/√m`
+  relative standard error in one byte per register. All three hash via
+  the element's `IEqualityComparer<T>` (SplitMix64-avalanched,
+  Kirsch–Mitzenmacher double hashing), merge parameter-compatible
+  instances, and round-trip state through an opaque version-checked
+  export/import. They ship in the `Bodu.Collections` package under the
+  `Bodu.Collections.Probabilistic` namespace per decision D4 — no
+  separate package.
 - **Sequence-operator extras have landed.** ✅ `CartesianProduct`,
   `Permutations` / `Combinations`, and `Interleave` (skip-exhausted
   round-robin) joined the already-shipped `Pairwise` / `Windowed` /
@@ -1034,9 +1045,12 @@ filter were added to *Non-goals* instead.
   package or dependency), not the `Bodu.Security.Otp` sibling that was
   floated — the raw-byte-secret design kept it dependency-free, so a
   sibling was not warranted.
-- **Probabilistic data structures** — Bloom filter, Count-Min sketch,
-  HyperLogLog. Could extend `Bodu.Core`'s collections pillar or form a
-  focused `Bodu.Collections.Probabilistic` package.
+- ~~**Probabilistic data structures**~~ — **shipped.** `BloomFilter<T>`,
+  `CountMinSketch<T>`, and `HyperLogLog<T>` landed inside the
+  `Bodu.Collections` package as the `Bodu.Collections.Probabilistic`
+  namespace — no separate package was warranted (the comparer-based
+  hashing kept the types dependency-free beyond Core). See the
+  `Bodu.Core` section above for the shipped contracts.
 
 ## Cross-cutting themes
 

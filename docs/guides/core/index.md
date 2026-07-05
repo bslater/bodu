@@ -11,7 +11,7 @@ If you have not yet installed the package or want the high-level shape of the li
 Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../topics/core-foundations.md) places these guides alongside the rest of the topic, and the [topic overview](../../docs/topics/core-foundations.md) carries the package map and install command.
 
 > [!NOTE]
-> The specialized collection catalogue — the `Bodu.Collections.Generic`, `.Concurrent`, `.Graphs`, and `.Trees` namespaces below — ships in the **`Bodu.Collections`** package (which depends on `Bodu.Core`). The namespaces are unchanged; only the package boundary moved. Install with `dotnet add package Bodu.Collections`. The remaining namespaces on this page ship in `Bodu.Core` itself.
+> The specialized collection catalogue — the `Bodu.Collections.Generic`, `.Concurrent`, `.Graphs`, `.Trees`, and `Bodu.Collections.Probabilistic` namespaces below — ships in the **`Bodu.Collections`** package (which depends on `Bodu.Core`). The namespaces are unchanged; only the package boundary moved. Install with `dotnet add package Bodu.Collections`. The remaining namespaces on this page ship in `Bodu.Core` itself.
 
 ## Namespace map
 
@@ -19,6 +19,7 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 |---|---|---|
 | `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `Multiset<T>`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Segmented buffer](segmented-buffer.md) |
 | `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`. | [Concurrent collections](concurrent-collections.md) |
+| `Bodu.Collections.Probabilistic` | Approximate sketch structures with quantified error bounds — `BloomFilter<T>` (membership, no false negatives), `CountMinSketch<T>` (frequencies, never underestimates), `HyperLogLog<T>` (distinct counts, ~1.04/√m standard error). | [Probabilistic collections (sketches)](probabilistic-collections.md) |
 | `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms — `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T,T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet` / `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
 | `Bodu.Collections.Generic.Trees` | Prefix trees and an n-ary tree — `Trie`, `Trie<TValue>`, and `Tree<T>`. | [Trie (prefix tree)](trie.md) |
 | `Bodu.Threading` | Async coordination primitives — `AsyncLock`, `AsyncSemaphore`, `AsyncReaderWriterLock`, `AsyncAutoResetEvent` / `AsyncManualResetEvent` / `AsyncCountdownEvent`, `AsyncLazy<T>`, `AsyncDebouncer`, and `RateGate`. | [Async coordination primitives](async-primitives.md) |
@@ -98,6 +99,17 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 <div class="bodu-card">
   <h3><a href="concurrent-collections.md">Concurrent collections</a></h3>
   <p>Thread-safe peers — lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring) and lock-striped <code>ConcurrentHashSet&lt;T&gt;</code>.</p>
+</div>
+
+</div>
+
+### `Bodu.Collections.Probabilistic`
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="probabilistic-collections.md">Probabilistic collections (sketches)</a></h3>
+  <p>Approximate sketches in fixed memory — <code>BloomFilter&lt;T&gt;</code> (membership, no false negatives), <code>CountMinSketch&lt;T&gt;</code> (frequencies, never underestimates), and <code>HyperLogLog&lt;T&gt;</code> (distinct counts, ~1.04/√m standard error), each with parameter-compatible merging and version-checked export/import.</p>
 </div>
 
 </div>
