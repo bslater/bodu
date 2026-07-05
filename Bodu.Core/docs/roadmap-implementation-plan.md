@@ -1,7 +1,7 @@
 # Bodu.Core roadmap — implementation plan
 
 **Date:** 2026-07-04
-**Status:** T0–T3 executed (2026-07-05); T4–T6 proposed
+**Status:** T0–T4 executed (2026-07-05); T5–T6 proposed
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *Per-project roadmap → `Bodu.Core`*
 
 This plan turns every item in the `Bodu.Core` section of the repository
@@ -517,6 +517,22 @@ Regression tier only.
 ---
 
 ## 6. T4 — Time-based expiry for `EvictingDictionary<TKey,TValue>`
+
+> **Executed 2026-07-05** as a single commit. Deviations from the
+> sketch below:
+>
+> 1. **The separate behaviour-neutral `CacheItem` refactor commit was
+>    collapsed into the feature commit** — a timestamp field with no
+>    consumer is dead code the analyzers reject, so no independently
+>    buildable neutral precursor existed.
+> 2. **`RemoveExpired()` returns `int`** (entries removed), not the
+>    sketched `bool`.
+> 3. **`Remove(TKey)` stays physical** — it removes an expired-but-
+>    unpurged entry and returns `true` (consistent with the raw-`Count`
+>    model); the sliding set is exactly `TryGetValue` / indexer get /
+>    `ContainsKey`, and `Touch` deliberately does not slide.
+> 4. **Expiry removals raise the capacity path's `ItemEvicting` /
+>    `ItemEvicted` events** and honour its re-entrancy protocol.
 
 **Scope.** The policy enum already covers the capacity-triggered family
 (FIFO / LRU / LFU / MRU / Random / SecondChance); this adds the

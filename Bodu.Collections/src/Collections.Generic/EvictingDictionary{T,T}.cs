@@ -35,6 +35,16 @@ namespace Bodu.Collections.Generic;
 /// entry's eviction metadata.
 /// </para>
 /// <para>
+/// Supplying an <see cref="EvictingDictionaryExpiration" /> at construction adds time-based expiry orthogonal to the
+/// capacity policy: entries carry a time-to-live (a per-dictionary default and/or per-entry overrides), expired entries
+/// are invisible to lookups and enumeration even before they are physically removed, and removal happens lazily — when
+/// an access touches an expired key, when capacity pressure purges expired entries ahead of a policy eviction, or when
+/// <see cref="EvictingDictionary{TKey, TValue}.RemoveExpired" /> is called explicitly. Note that
+/// <see cref="EvictingDictionary{TKey, TValue}.Count" /> reports the raw stored count <em>including</em>
+/// expired-but-unpurged entries; call <see cref="EvictingDictionary{TKey, TValue}.RemoveExpired" /> to reconcile.
+/// Without an expiration configuration the dictionary performs no clock reads.
+/// </para>
+/// <para>
 /// <see cref="EvictingDictionary{TKey, TValue}" /> is not thread-safe. Concurrent reads and writes (including reads,
 /// which mutate eviction metadata for some policies) require external synchronization.
 /// </para>
@@ -114,7 +124,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <see cref="EqualityComparer{TKey}.Default" />).
     /// </remarks>
     public EvictingDictionary()
-        : this(DefaultCapacity, DefaultPolicy, null) { }
+        : this(DefaultCapacity, DefaultPolicy, null, null) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the specified
@@ -131,7 +141,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// capacity is exceeded, and the default key comparer ( <see cref="EqualityComparer{TKey}.Default" />).
     /// </remarks>
     public EvictingDictionary(int capacity)
-        : this(capacity, DefaultPolicy, null) { }
+        : this(capacity, DefaultPolicy, null, null) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the specified
@@ -149,7 +159,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// key comparer ( <see cref="EqualityComparer{TKey}.Default" />).
     /// </remarks>
     public EvictingDictionary(int capacity, EvictingDictionaryPolicy policy)
-        : this(capacity, policy, null) { }
+        : this(capacity, policy, null, null) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the specified
@@ -197,12 +207,89 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </para>
     /// </remarks>
     public EvictingDictionary(int capacity, EvictingDictionaryPolicy policy, IEqualityComparer<TKey>? comparer)
+        : this(capacity, policy, comparer, null) { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the specified
+    /// capacity and time-based expiration, using the default eviction policy and key comparer.
+    /// </summary>
+    /// <param name="capacity">
+    /// The maximum number of key/value pairs the dictionary can contain. Must be positive.
+    /// </param>
+    /// <param name="expiration">
+    /// The time-based expiration configuration, or <see langword="null" /> to disable expiry.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// </exception>
+    /// <remarks>
+    /// Creates an empty dictionary with the specified capacity and expiration configuration, using
+    /// <see cref="DefaultPolicy" /> for eviction when capacity is exceeded and the default key comparer.
+    /// </remarks>
+    public EvictingDictionary(int capacity, EvictingDictionaryExpiration? expiration)
+        : this(capacity, DefaultPolicy, null, expiration) { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the specified
+    /// capacity, eviction policy, and time-based expiration, using the default key comparer.
+    /// </summary>
+    /// <param name="capacity">
+    /// The maximum number of key/value pairs the dictionary can contain. Must be positive.
+    /// </param>
+    /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
+    /// <param name="expiration">
+    /// The time-based expiration configuration, or <see langword="null" /> to disable expiry.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// </exception>
+    /// <remarks>
+    /// Creates an empty dictionary with the specified capacity, eviction policy, and expiration configuration, using
+    /// the default key comparer ( <see cref="EqualityComparer{TKey}.Default" />).
+    /// </remarks>
+    public EvictingDictionary(int capacity, EvictingDictionaryPolicy policy, EvictingDictionaryExpiration? expiration)
+        : this(capacity, policy, null, expiration) { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the specified
+    /// capacity, eviction policy, key comparer, and time-based expiration.
+    /// </summary>
+    /// <param name="capacity">
+    /// The maximum number of key/value pairs the dictionary can contain. Must be positive.
+    /// </param>
+    /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
+    /// <param name="comparer">
+    /// The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.
+    /// </param>
+    /// <param name="expiration">
+    /// The time-based expiration configuration, or <see langword="null" /> to disable expiry.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Creates an empty dictionary with the specified capacity, eviction policy, key comparer, and expiration
+    /// configuration.
+    /// </para>
+    /// <para>
+    /// Initializes the internal storage for key/value pairs, and, where applicable, the eviction tracking structure:
+    /// FIFO, LRU, MRU, and SecondChance use a linked list; LFU uses a sorted dictionary of frequency lists;
+    /// RandomReplacement does not require additional tracking. When <paramref name="expiration" /> is
+    /// <see langword="null" /> the dictionary performs no clock reads and behaves as a capacity-only cache.
+    /// </para>
+    /// </remarks>
+    public EvictingDictionary(int capacity, EvictingDictionaryPolicy policy, IEqualityComparer<TKey>? comparer, EvictingDictionaryExpiration? expiration)
     {
         ThrowHelper.ThrowIfZeroOrNegative(capacity);
 
         Capacity = capacity;
         Policy = policy;
         _comparer = comparer ?? EqualityComparer<TKey>.Default;
+
+        Expiration = expiration;
+        _timeProvider = expiration?.TimeProvider;
+        _slidingExpiration = expiration?.Kind == EvictingDictionaryExpirationKind.Sliding;
 
         _store = new Dictionary<TKey, CacheItem>(_comparer);
 
@@ -323,7 +410,35 @@ public partial class EvictingDictionary<TKey, TValue>
     /// more elements are provided than the capacity allows, entries are evicted according to the policy.
     /// </remarks>
     public EvictingDictionary(int capacity, IEnumerable<KeyValuePair<TKey, TValue>> source, EvictingDictionaryPolicy policy, IEqualityComparer<TKey>? comparer)
-        : this(capacity, policy, comparer)
+        : this(capacity, source, policy, comparer, null) { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with elements copied
+    /// from the specified sequence, using the specified capacity, eviction policy, key comparer, and time-based
+    /// expiration.
+    /// </summary>
+    /// <param name="capacity">
+    /// The maximum number of key/value pairs the dictionary can contain. Must be positive.
+    /// </param>
+    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
+    /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
+    /// <param name="comparer">
+    /// The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.
+    /// </param>
+    /// <param name="expiration">
+    /// The time-based expiration configuration, or <see langword="null" /> to disable expiry.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// </exception>
+    /// <remarks>
+    /// Uses the specified capacity, eviction policy, key comparer, and expiration configuration. Copied entries receive
+    /// the default <see cref="EvictingDictionaryExpiration.TimeToLive" /> (when configured); if more elements are
+    /// provided than the capacity allows, entries are evicted according to the policy.
+    /// </remarks>
+    public EvictingDictionary(int capacity, IEnumerable<KeyValuePair<TKey, TValue>> source, EvictingDictionaryPolicy policy, IEqualityComparer<TKey>? comparer, EvictingDictionaryExpiration? expiration)
+        : this(capacity, policy, comparer, expiration)
     {
         ThrowHelper.ThrowIfNull(source);
 
@@ -444,6 +559,10 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </description>
     /// </item>
     /// </list>
+    /// <para>
+    /// This is a pure read that never touches the clock: when time-based expiration is configured it may return an
+    /// expired-but-unpurged key, even though capacity pressure purges expired entries before consulting the policy.
+    /// </para>
     /// </remarks>
     public TKey? PeekEvictionCandidate()
     {
@@ -476,9 +595,15 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <returns>
     /// <see langword="true" /> if the key exists and was marked as accessed; otherwise, <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// When time-based expiration is configured, an expired entry counts as absent: it is lazily removed (raising the
+    /// eviction events) and <see langword="false" /> is returned. <see cref="Touch" /> affects only the capacity-policy
+    /// metadata — it does not refresh a sliding expiration deadline; use a read access ( <see cref="TryGetValue" />,
+    /// the indexer getter, or <see cref="ContainsKey" />) to slide.
+    /// </remarks>
     public bool Touch(TKey key)
     {
-        if (_store.TryGetValue(key, out CacheItem? item))
+        if (TryGetLiveItem(key, slide: false, out CacheItem? item))
         {
             TouchInternal(key, item);
             TotalTouches++;
@@ -644,12 +769,23 @@ public partial class EvictingDictionary<TKey, TValue>
     /// The eviction policy is unrecognized or unsupported for ordering.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// This method is used primarily for diagnostics, testing, or enumeration purposes, and reflects the internal
     /// priority used for eviction, not insertion order.
+    /// </para>
+    /// <para>
+    /// When time-based expiration is configured, the clock is read once when enumeration starts and expired entries are
+    /// filtered out (never removed) against that snapshot, so a single enumeration observes a stable set and never
+    /// refreshes sliding deadlines.
+    /// </para>
     /// </remarks>
     private IEnumerable<KeyValuePair<TKey, TValue>> GetOrderedItems()
     {
         int version = _version;
+
+        // Snapshot the clock once per enumeration; no clock reads occur when expiration is disabled.
+        bool checkExpiry = _timeProvider is not null;
+        long nowTicks = checkExpiry ? GetNowTicks() : 0L;
 
         switch (Policy)
         {
@@ -663,7 +799,7 @@ public partial class EvictingDictionary<TKey, TValue>
                 {
                     ThrowIfVersionChanged(version);
 
-                    if (_store.TryGetValue(key, out CacheItem? item))
+                    if (_store.TryGetValue(key, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
                         yield return new KeyValuePair<TKey, TValue>(key, item.Value);
                 }
 
@@ -677,7 +813,7 @@ public partial class EvictingDictionary<TKey, TValue>
                 {
                     ThrowIfVersionChanged(version);
 
-                    if (_store.TryGetValue(node.Value, out CacheItem? item))
+                    if (_store.TryGetValue(node.Value, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
                         yield return new KeyValuePair<TKey, TValue>(node.Value, item.Value);
                 }
 
@@ -693,7 +829,7 @@ public partial class EvictingDictionary<TKey, TValue>
                     {
                         ThrowIfVersionChanged(version);
 
-                        if (_store.TryGetValue(key, out CacheItem? item))
+                        if (_store.TryGetValue(key, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
                             yield return new KeyValuePair<TKey, TValue>(key, item.Value);
                     }
                 }
@@ -705,13 +841,17 @@ public partial class EvictingDictionary<TKey, TValue>
                 foreach (var pair in _store)
                 {
                     ThrowIfVersionChanged(version);
-                    yield return new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value);
+
+                    if (!(checkExpiry && pair.Value.ExpiresAtTicks <= nowTicks))
+                        yield return new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value);
                 }
 #else
                 foreach ((TKey key, CacheItem item) in _store)
                 {
                     ThrowIfVersionChanged(version);
-                    yield return new KeyValuePair<TKey, TValue>(key, item.Value);
+
+                    if (!(checkExpiry && item.ExpiresAtTicks <= nowTicks))
+                        yield return new KeyValuePair<TKey, TValue>(key, item.Value);
                 }
 #endif
                 break;

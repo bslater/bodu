@@ -73,6 +73,9 @@ public partial class EvictingDictionary<TKey, TValue>
         /// <inheritdoc />
         public void CopyTo(TValue[] array, int arrayIndex)
         {
+            // Purge expired entries first so the raw count used for validation matches the elements written.
+            _dictionary.PurgeExpired();
+
             ThrowHelper.ThrowIfNull(array);
             ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
             ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, arrayIndex, Count);
@@ -94,6 +97,9 @@ public partial class EvictingDictionary<TKey, TValue>
         /// <inheritdoc />
         void ICollection.CopyTo(Array array, int index)
         {
+            // Purge expired entries first so the raw count used for validation matches the elements written.
+            _dictionary.PurgeExpired();
+
             ThrowHelper.ThrowIfNull(array);
             ThrowHelper.ThrowIfArrayMultidimensional(array);
             ThrowHelper.ThrowIfArrayIsNotZeroBased(array);

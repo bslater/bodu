@@ -349,6 +349,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A per-entry time-to-live requires an expiration configuration; construct the dictionary with an EvictingDictionaryExpiration..
+        /// </summary>
+        internal static string Op_Invalid_ExpirationNotConfigured {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpirationNotConfigured", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The operation requires a directed graph..
         /// </summary>
         internal static string Op_Invalid_GraphNotDirected {

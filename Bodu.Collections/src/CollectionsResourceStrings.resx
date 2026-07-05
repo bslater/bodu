@@ -213,6 +213,9 @@
   <data name="Op_Invalid_EvictionProducedNoCandidate" xml:space="preserve">
     <value>Eviction policy '{0}' produced no candidate while the dictionary is at capacity.</value>
   </data>
+  <data name="Op_Invalid_ExpirationNotConfigured" xml:space="preserve">
+    <value>A per-entry time-to-live requires an expiration configuration; construct the dictionary with an EvictingDictionaryExpiration.</value>
+  </data>
   <data name="Op_Invalid_GraphNotDirected" xml:space="preserve">
     <value>The operation requires a directed graph.</value>
   </data>

@@ -171,6 +171,74 @@ cache.ItemEvicting += (key, doc) =>
 > [!IMPORTANT]
 > Event handlers must not mutate the dictionary. `Add`, `Remove`, `Clear`, and the indexer setter are guarded against re-entry from inside an eviction handler and throw `InvalidOperationException` if called there. Keep handlers side-effect-only with respect to the dictionary itself.
 
+## Time-based expiration (TTL)
+
+Capacity policies answer *"which entry is least worth keeping?"*; expiration answers *"which entries are too old to serve?"*. The two are orthogonal — supplying an `EvictingDictionaryExpiration` at construction adds a time dimension on top of **any** of the six policies:
+
+```csharp
+using Bodu.Collections.Generic;
+
+var cache = new EvictingDictionary<string, Session>(
+    capacity: 1000,
+    EvictingDictionaryPolicy.LeastRecentlyUsed,
+    new EvictingDictionaryExpiration(
+        timeToLive: TimeSpan.FromMinutes(20),
+        kind: EvictingDictionaryExpirationKind.Sliding));
+```
+
+The options type is immutable and carries three settings:
+
+| Setting | Meaning |
+|---|---|
+| `TimeToLive` (`TimeSpan?`) | Default lifetime for entries added without a per-entry override. `null` means such entries never expire (only per-entry TTLs apply). Must be positive when non-null. |
+| `Kind` | `Absolute` — the entry expires `TimeToLive` after it was added or last updated; reads never extend it. `Sliding` — every successful read access restarts the countdown. |
+| `TimeProvider` | The clock (defaults to `TimeProvider.System`). Inject a fake provider to drive expiry deterministically in tests. |
+
+Without an expiration configuration (`Expiration == null`) the dictionary never reads a clock and behaves exactly as the capacity-only cache described above.
+
+### Which members slide
+
+Under `Sliding`, the deadline is refreshed by the members that *return the entry's value or confirm the key*: `TryGetValue`, the indexer getter, and `ContainsKey`. Enumeration does **not** slide, and neither does `Touch` — `Touch` promotes the entry in the capacity policy only.
+
+### Per-entry TTL overrides
+
+`Add(key, value, timeToLive)` and `TryAdd(key, value, timeToLive)` give one entry its own lifetime, overriding the default. Both throw `InvalidOperationException` if the dictionary was constructed without an `EvictingDictionaryExpiration` (the feature needs a clock), and `ArgumentOutOfRangeException` for a non-positive TTL. `TryAdd` returns `false` without modifying anything when a live entry already exists; an expired-but-unpurged entry does not block it.
+
+A later plain `Add(key, value)` or indexer assignment is a *fresh lease*: it restarts the lifetime using the dictionary default and discards any per-entry override the entry previously carried.
+
+```csharp
+cache.Add("otp:42", oneTimeCode, TimeSpan.FromSeconds(30));   // short-lived override
+bool added = cache.TryAdd("otp:42", other, TimeSpan.FromSeconds(30)); // false while alive
+```
+
+### Visibility, lazy removal, and the `Count` contract
+
+Expired entries become invisible immediately — `ContainsKey`, `TryGetValue`, the indexer getter, `Values.Contains`, and enumeration all treat them as absent even before they are physically removed. Removal is lazy:
+
+- a key-directed access (`TryGetValue`, `ContainsKey`, indexer, `Touch`) that hits an expired entry removes it on the spot and reports a miss;
+- capacity pressure purges **all** expired entries before the policy picks a victim — expired entries are always the preferred victims, so live entries are never evicted while an expired one exists;
+- `RemoveExpired()` purges everything expired right now and returns the number removed (`0` when expiry is not configured).
+
+`Count` deliberately reports the **raw stored count, including expired-but-unpurged entries** — it stays an O(1) read that never touches the clock (the cachetools model). Enumeration may therefore yield fewer pairs than `Count` reports; call `RemoveExpired()` to reconcile. `Remove(key)` likewise operates on the physical entry and returns `true` for an expired-but-unpurged key.
+
+Every expiry removal raises the same `ItemEvicting` / `ItemEvicted` events and increments the same `EvictionCount` as a capacity eviction.
+
+> [!NOTE]
+> There is **no background timer** — the dictionary only removes expired entries when something touches it. A cache that can sit idle for long periods holds expired entries (and their values) until the next access; schedule a periodic `RemoveExpired()` call if timely reclamation matters.
+
+### Testing with a fake clock
+
+```csharp
+var clock = new FakeTimeProvider();           // any TimeProvider test double
+var cache = new EvictingDictionary<string, int>(
+    8, new EvictingDictionaryExpiration(TimeSpan.FromMinutes(5),
+        EvictingDictionaryExpirationKind.Absolute, clock));
+
+cache.Add("A", 1);
+clock.Advance(TimeSpan.FromMinutes(6));
+bool alive = cache.ContainsKey("A");          // false — no real waiting
+```
+
 ## Inspecting the next victim
 
 `PeekEvictionCandidate` returns the key that *would* be evicted on the next overflow, or `default` when the dictionary is empty. It is a pure read — it does not touch recency or frequency metadata — so it is safe to call in a monitoring loop:
@@ -183,7 +251,7 @@ The `EvictionCount` and `TotalTouches` properties expose running totals of how m
 
 ## Pattern 9 — assignment semantics
 
-Unlike `Dictionary<TKey, TValue>.Add`, assigning to an existing key replaces the value **and** resets its eviction metadata. Note that `Add(key, value)` here is also add-*or-replace* — it does **not** throw on a duplicate key the way `Dictionary<TKey, TValue>.Add` does. There is no `TryAdd` or `GetOrAdd`; use the indexer or `Add`:
+Unlike `Dictionary<TKey, TValue>.Add`, assigning to an existing key replaces the value **and** resets its eviction metadata. Note that `Add(key, value)` here is also add-*or-replace* — it does **not** throw on a duplicate key the way `Dictionary<TKey, TValue>.Add` does. There is no plain `TryAdd` or `GetOrAdd`; use the indexer or `Add` (the only `TryAdd` overload is the TTL-taking one described under [Time-based expiration](#time-based-expiration-ttl)):
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -232,9 +300,13 @@ var cache = new EvictingDictionary<string, int>(
 |---|---|
 | `this[TKey]` (get) | Returns the value; throws `KeyNotFoundException` if absent. Counts as an access (promotes in LRU / MRU / LFU / SecondChance). |
 | `this[TKey]` (set) | Adds or replaces the entry, resetting its eviction metadata. Evicts the policy's victim if capacity is exceeded. |
-| `Add(TKey, TValue)` | Add-or-replace; does **not** throw on a duplicate key. |
-| `TryGetValue(TKey, out TValue)` | Returns the value without throwing; counts as an access. |
-| `ContainsKey(TKey)` | Returns `true` without counting as an access. |
+| `Add(TKey, TValue)` | Add-or-replace; does **not** throw on a duplicate key. Restarts the entry's lifetime when expiry is configured. |
+| `Add(TKey, TValue, TimeSpan)` | Add-or-replace with a per-entry TTL override. Requires an expiration configuration. |
+| `TryAdd(TKey, TValue, TimeSpan)` | Adds with a per-entry TTL only if no live entry exists; returns `false` otherwise. Requires an expiration configuration. |
+| `TryGetValue(TKey, out TValue)` | Returns the value without throwing; counts as an access. Slides the deadline under sliding expiry. |
+| `ContainsKey(TKey)` | Returns `true` without counting as an access. Slides the deadline under sliding expiry. |
+| `RemoveExpired()` | Purges all expired entries now; returns the number removed (`0` when expiry is not configured). |
+| `Expiration` | The `EvictingDictionaryExpiration` configuration, or `null` when expiry is disabled (get only). |
 | `Touch(TKey)` | Promotes the key without reading the value; returns `false` if absent. |
 | `TouchOrThrow(TKey)` | As `Touch`, but throws `KeyNotFoundException` when the key is absent. |
 | `PeekEvictionCandidate()` | Returns the key that would be evicted next, or `default` when empty. Pure read. |

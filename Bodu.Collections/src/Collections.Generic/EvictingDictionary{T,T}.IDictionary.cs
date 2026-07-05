@@ -12,7 +12,23 @@ public partial class EvictingDictionary<TKey, TValue> :
     System.Collections.Generic.IDictionary<TKey, TValue>,
     System.Collections.IDictionary
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the number of key/value pairs physically stored in the dictionary.
+    /// </summary>
+    /// <value>The raw stored count, including expired entries that have not yet been purged.</value>
+    /// <remarks>
+    /// <para>
+    /// When time-based expiration is configured, this property deliberately reports the raw stored count — <em>including</em>
+    /// expired-but-unpurged entries — so it remains an O(1) read that never touches the clock. Expired entries are
+    /// invisible to <see cref="ContainsKey" />, <see cref="TryGetValue" />, the indexer getter, and enumeration, so
+    /// <see cref="Count" /> may exceed the number of entries those members observe.
+    /// </para>
+    /// <para>
+    /// Call <see cref="EvictingDictionary{TKey, TValue}.RemoveExpired" /> to purge expired entries and reconcile
+    /// <see cref="Count" /> with the live set. Without an expiration configuration the raw count and the live count are
+    /// always identical.
+    /// </para>
+    /// </remarks>
     public int Count => _store.Count;
 
     /// <inheritdoc />
@@ -78,29 +94,68 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// Thrown if invoked from within an <see cref="ItemEvicting" /> or <see cref="ItemEvicted" /> event handler.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// When an entry for <paramref name="key" /> already exists its value is updated in place without disturbing
     /// eviction metadata: position in the order list, LFU frequency, and the SecondChance reference flag are all
     /// preserved. This differs from
     /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}.Add(TKey, TValue)" />, which throws on duplicate
     /// keys.
+    /// </para>
+    /// <para>
+    /// When time-based expiration is configured, each write is a fresh lease: the entry's lifetime restarts using the
+    /// dictionary default <see cref="EvictingDictionaryExpiration.TimeToLive" /> (any per-entry override from a
+    /// previous <see cref="EvictingDictionary{TKey, TValue}.Add(TKey, TValue, TimeSpan)" /> is discarded). If the
+    /// existing entry has expired it is lazily removed first and the new entry is added with fresh eviction metadata.
+    /// On capacity pressure, expired entries are purged before the policy selects a victim.
+    /// </para>
     /// </remarks>
     public void Add(TKey key, TValue value)
     {
         ThrowHelper.ThrowIfNull(key);
         ThrowIfEvicting();
 
+        AddCore(key, value, null);
+    }
+
+    /// <summary>
+    /// Implements the shared add-or-replace path for <see cref="Add(TKey, TValue)" /> and the time-to-live overloads.
+    /// </summary>
+    /// <param name="key">The key of the element to add or update.</param>
+    /// <param name="value">The value to associate with <paramref name="key" />.</param>
+    /// <param name="ttlOverride">
+    /// The per-entry time-to-live, or <see langword="null" /> to apply the dictionary default.
+    /// </param>
+    private void AddCore(TKey key, TValue value, TimeSpan? ttlOverride)
+    {
         if (_store.TryGetValue(key, out CacheItem? existing))
         {
-            existing.Value = value;
-            TouchInternal(key, existing);
-            _version++;
-            return;
+            if (_timeProvider is not null && existing.ExpiresAtTicks <= GetNowTicks())
+            {
+                // The existing entry has expired: remove it as an expiry eviction and fall through to a fresh add so
+                // the new entry starts with fresh eviction metadata.
+                RemoveExpiredEntry(key, existing);
+            }
+            else
+            {
+                existing.Value = value;
+                SetExpiration(existing, ttlOverride);
+                TouchInternal(key, existing);
+                _version++;
+                return;
+            }
         }
 
         if (_store.Count >= Capacity)
-            EvictOne();
+        {
+            // Expired entries are preferred victims: purge them before consulting the capacity policy.
+            PurgeExpired();
+
+            if (_store.Count >= Capacity)
+                EvictOne();
+        }
 
         var item = new CacheItem(value);
+        SetExpiration(item, ttlOverride);
 
         if (Policy is
             EvictingDictionaryPolicy.FirstInFirstOut or
@@ -154,11 +209,25 @@ public partial class EvictingDictionary<TKey, TValue> :
         TryGetValue(item.Key, out TValue? val) && EqualityComparer<TValue>.Default.Equals(val, item.Value);
 
     /// <inheritdoc />
-    public bool ContainsKey(TKey key) => _store.ContainsKey(key);
+    /// <remarks>
+    /// This is a pure read with respect to the capacity policy — it does not update recency or frequency metadata. When
+    /// time-based expiration is configured, an expired entry counts as absent (it is lazily removed and
+    /// <see langword="false" /> is returned), and a hit refreshes the deadline under
+    /// <see cref="EvictingDictionaryExpirationKind.Sliding" />.
+    /// </remarks>
+    public bool ContainsKey(TKey key) => TryGetLiveItem(key, slide: true, out _);
 
     /// <inheritdoc />
+    /// <remarks>
+    /// When time-based expiration is configured, expired entries are purged (raising the eviction events) before the
+    /// copy, so <see cref="Count" /> read <em>after</em> the call matches the number of elements written. Callers that
+    /// size a destination from <see cref="Count" /> before invoking this method (as LINQ's <c>ToArray</c> does) should
+    /// call <see cref="EvictingDictionary{TKey, TValue}.RemoveExpired" /> first to avoid trailing default slots.
+    /// </remarks>
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
+        PurgeExpired();
+
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
@@ -176,6 +245,11 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// <exception cref="InvalidOperationException">
     /// Thrown if invoked from within an <see cref="ItemEvicting" /> or <see cref="ItemEvicted" /> event handler.
     /// </exception>
+    /// <remarks>
+    /// <see cref="Remove(TKey)" /> operates on physically stored entries: when time-based expiration is configured it
+    /// also removes an expired-but-unpurged entry and returns <see langword="true" />, without raising the eviction
+    /// events (consistent with <see cref="Count" /> reporting the raw stored count).
+    /// </remarks>
     public bool Remove(TKey key)
     {
         ThrowIfEvicting();
@@ -225,10 +299,15 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> is incremented on every successful lookup
     /// regardless of policy.
     /// </para>
+    /// <para>
+    /// When time-based expiration is configured, an expired entry counts as absent: it is lazily removed (raising the
+    /// eviction events) and <see langword="false" /> is returned. A hit refreshes the entry's deadline under
+    /// <see cref="EvictingDictionaryExpirationKind.Sliding" />.
+    /// </para>
     /// </remarks>
     public bool TryGetValue(TKey key, out TValue value)
     {
-        if (_store.TryGetValue(key, out CacheItem? item))
+        if (TryGetLiveItem(key, slide: true, out CacheItem? item))
         {
             value = item.Value;
             TouchInternal(key, item);

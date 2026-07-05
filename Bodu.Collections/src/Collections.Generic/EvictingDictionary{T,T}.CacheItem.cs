@@ -43,6 +43,21 @@ public partial class EvictingDictionary<TKey, TValue>
         public bool SecondChance { get; set; }
 
         /// <summary>
+        /// Gets or sets the absolute expiration deadline for the entry, expressed as UTC ticks from the owning
+        /// dictionary's time provider. <see cref="long.MaxValue" /> means the entry never expires. Only meaningful when
+        /// the dictionary has an expiration configuration.
+        /// </summary>
+        public long ExpiresAtTicks { get; set; } = long.MaxValue;
+
+        /// <summary>
+        /// Gets or sets the effective time-to-live for the entry in ticks (the per-entry override when supplied,
+        /// otherwise the dictionary default). Zero means the entry has no lifetime. Used to recompute
+        /// <see cref="ExpiresAtTicks" /> on sliding refresh. Only meaningful when the dictionary has an expiration
+        /// configuration.
+        /// </summary>
+        public long TtlTicks { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CacheItem" /> class with the specified value.
         /// </summary>
         /// <param name="value">The value to store in the cache entry.</param>

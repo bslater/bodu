@@ -384,13 +384,15 @@ Forward-looking:
   absent from System.Linq against the installed .NET 10 ref assembly
   before landing (`Chunk`, `CountBy`, `AggregateBy`, `Index`, `Shuffle`
   remain excluded as BCL-shipped).
-- **A time-based expiry layer for `EvictingDictionary<,>`** — the
-  policy enum already covers FIFO / LRU / LFU / MRU / random /
-  second-chance, so capacity-triggered eviction is done; the remaining
-  `cachetools` / Guava Cache / Caffeine niche is *time-to-live*
-  (per-entry TTL and sliding expiration), plus optionally a W-TinyLFU
-  admission policy. .NET consumers currently reach for
-  BitFaster.Caching for both.
+- **The time-based expiry layer for `EvictingDictionary<,>` has
+  landed.** ✅ `EvictingDictionaryExpiration` (default TTL, absolute vs
+  sliding, `TimeProvider`-driven) composes orthogonally with all six
+  capacity policies: per-entry TTL `Add`/`TryAdd` overloads, lazy purge
+  on access plus explicit `RemoveExpired()`, expired entries invisible
+  to reads and preferred as capacity-eviction victims, a documented
+  O(1) raw `Count` contract, and a zero-overhead path when expiry is
+  not configured. No background timers; W-TinyLFU admission remains the
+  recorded stretch follow-up.
 - **The natural-order string comparer has landed.** ✅
   `NaturalStringComparer` (`Bodu.Extensions`) ships the numeric-aware
   `file2` < `file10` ordering with StringComparer-shaped statics
