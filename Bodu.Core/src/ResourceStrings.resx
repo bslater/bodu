@@ -519,6 +519,9 @@
   <data name="Op_Invalid_DuplicateKey" xml:space="preserve">
     <value>An item with the key '{0}' has already been added.</value>
   </data>
+  <data name="Op_Invalid_EitherUninitialized" xml:space="preserve">
+    <value>The Either has not been initialized with a left or right value.</value>
+  </data>
   <data name="Op_Invalid_EmptySequence" xml:space="preserve">
     <value>The sequence is empty.</value>
   </data>

@@ -1281,7 +1281,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_DuplicateKey", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Either has not been initialized with a left or right value..
+        /// </summary>
+        internal static string Op_Invalid_EitherUninitialized {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EitherUninitialized", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The sequence is empty..
         /// </summary>
