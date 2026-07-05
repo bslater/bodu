@@ -351,7 +351,7 @@ public ref partial struct Utf8TomlReader
     public readonly bool TryGetGuid(out Guid value)
     {
         if (_tokenType != TomlTokenType.String)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
         return Guid.TryParseExact(GetString(), "D", out value);
     }
