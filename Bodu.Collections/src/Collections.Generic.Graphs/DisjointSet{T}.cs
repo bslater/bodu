@@ -181,7 +181,7 @@ public sealed class DisjointSet<T>
         ThrowHelper.ThrowIfNull(item);
 
         if (!_indices.TryGetValue(item, out int slot))
-            throw new ArgumentException(ResourceStrings.Arg_Invalid_ElementNotInSet, nameof(item));
+            throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_ElementNotInSet, nameof(item));
 
         return _elements[FindRoot(slot)];
     }
@@ -321,7 +321,7 @@ public sealed class DisjointSet<T>
     private int GetSlot(T item, string paramName)
     {
         if (!_indices.TryGetValue(item, out int slot))
-            throw new ArgumentException(ResourceStrings.Arg_Invalid_ElementNotInSet, paramName);
+            throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_ElementNotInSet, paramName);
 
         return slot;
     }

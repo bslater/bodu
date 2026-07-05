@@ -70,6 +70,42 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The specified element is not a member of any set..
+        /// </summary>
+        internal static string Arg_Invalid_ElementNotInSet {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ElementNotInSet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The specified vertex does not exist in the graph..
+        /// </summary>
+        internal static string Arg_Invalid_VertexNotInGraph {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_VertexNotInGraph", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The edge weight must be a finite, non-negative number..
+        /// </summary>
+        internal static string Arg_OutOfRange_GraphWeightNotFinite {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_GraphWeightNotFinite", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Circular dependency detected for &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_CircularDependency {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CircularDependency", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Circular reference detected for &apos;{0}&apos;..
         /// </summary>
         internal static string Op_Invalid_CircularReference {
@@ -84,6 +120,15 @@ namespace Bodu {
         internal static string Op_Invalid_CollectionModified {
             get {
                 return ResourceManager.GetString("Op_Invalid_CollectionModified", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The operation requires a directed graph..
+        /// </summary>
+        internal static string Op_Invalid_GraphNotDirected {
+            get {
+                return ResourceManager.GetString("Op_Invalid_GraphNotDirected", resourceCulture);
             }
         }
 

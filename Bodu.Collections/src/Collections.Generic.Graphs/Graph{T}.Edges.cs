@@ -228,6 +228,6 @@ public sealed partial class Graph<T>
     private static void ValidateWeight(double weight)
     {
         if (!double.IsFinite(weight) || weight < 0.0)
-            throw new ArgumentOutOfRangeException(nameof(weight), ResourceStrings.Arg_OutOfRange_GraphWeightNotFinite);
+            throw new ArgumentOutOfRangeException(nameof(weight), CollectionsResourceStrings.Arg_OutOfRange_GraphWeightNotFinite);
     }
 }

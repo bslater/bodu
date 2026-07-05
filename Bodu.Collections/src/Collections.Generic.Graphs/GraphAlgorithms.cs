@@ -28,6 +28,6 @@ public static partial class GraphAlgorithms
         where T : notnull
     {
         if (!graph.ContainsVertex(vertex))
-            throw new ArgumentException(ResourceStrings.Arg_Invalid_VertexNotInGraph, paramName);
+            throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_VertexNotInGraph, paramName);
     }
 }

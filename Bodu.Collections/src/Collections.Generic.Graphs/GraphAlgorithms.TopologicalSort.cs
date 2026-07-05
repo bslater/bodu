@@ -35,7 +35,7 @@ public static partial class GraphAlgorithms
         where T : notnull
     {
         if (!TryTopologicalSortCore(graph, out IReadOnlyList<T>? order, out T? offending))
-            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_Invalid_CircularDependency, offending));
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.Op_Invalid_CircularDependency, offending));
 
         return order;
     }
@@ -91,7 +91,7 @@ public static partial class GraphAlgorithms
         ThrowHelper.ThrowIfNull(graph);
 
         if (!graph.IsDirected)
-            throw new InvalidOperationException(ResourceStrings.Op_Invalid_GraphNotDirected);
+            throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_GraphNotDirected);
 
         var inDegree = new Dictionary<T, int>(graph.Comparer);
         foreach (T vertex in graph.Vertices)

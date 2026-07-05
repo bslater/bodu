@@ -129,4 +129,19 @@
   <data name="Op_Invalid_NodeAlreadyHasParent" xml:space="preserve">
     <value>The node is already attached to a parent and must be detached before it can be added elsewhere.</value>
   </data>
+  <data name="Arg_Invalid_ElementNotInSet" xml:space="preserve">
+    <value>The specified element is not a member of any set.</value>
+  </data>
+  <data name="Arg_Invalid_VertexNotInGraph" xml:space="preserve">
+    <value>The specified vertex does not exist in the graph.</value>
+  </data>
+  <data name="Arg_OutOfRange_GraphWeightNotFinite" xml:space="preserve">
+    <value>The edge weight must be a finite, non-negative number.</value>
+  </data>
+  <data name="Op_Invalid_CircularDependency" xml:space="preserve">
+    <value>Circular dependency detected for '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_GraphNotDirected" xml:space="preserve">
+    <value>The operation requires a directed graph.</value>
+  </data>
 </root>

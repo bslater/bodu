@@ -204,7 +204,7 @@ public sealed partial class Graph<T>
     private Dictionary<T, double> RequireVertex(T vertex, string paramName)
     {
         if (!_adjacency.TryGetValue(vertex, out Dictionary<T, double>? edges))
-            throw new ArgumentException(ResourceStrings.Arg_Invalid_VertexNotInGraph, paramName);
+            throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_VertexNotInGraph, paramName);
 
         return edges;
     }
