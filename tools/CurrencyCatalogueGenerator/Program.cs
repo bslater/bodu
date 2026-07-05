@@ -324,19 +324,19 @@ internal static class Program
         builder.AppendLine("    /// <summary>");
         builder.AppendLine("    /// Gets the ISO 4217 alphabetic code for the currency.");
         builder.AppendLine("    /// </summary>");
-        builder.AppendLine("    /// <returns>The three-letter ISO 4217 code.</returns>");
+        builder.AppendLine("    /// <value>The three-letter ISO 4217 code.</value>");
         builder.Append("    public static string IsoCode => \"").Append(currency.Iso).AppendLine("\";");
         builder.AppendLine();
         builder.AppendLine("    /// <summary>");
         builder.AppendLine("    /// Gets the ISO 4217 three-digit numeric code for the currency.");
         builder.AppendLine("    /// </summary>");
-        builder.AppendLine("    /// <returns>The three-digit ISO 4217 numeric code.</returns>");
+        builder.AppendLine("    /// <value>The three-digit ISO 4217 numeric code.</value>");
         builder.Append("    public static int NumericCode => ").Append(currency.Numeric.ToString(CultureInfo.InvariantCulture)).AppendLine(";");
         builder.AppendLine();
         builder.AppendLine("    /// <summary>");
         builder.AppendLine("    /// Gets the number of fractional digits in the currency's minor unit.");
         builder.AppendLine("    /// </summary>");
-        builder.AppendLine("    /// <returns>The currency's minor-unit precision.</returns>");
+        builder.AppendLine("    /// <value>The currency's minor-unit precision.</value>");
         builder.Append("    public static int MinorUnits => ").Append(currency.MinorUnits.ToString(CultureInfo.InvariantCulture)).AppendLine(";");
 
         if (currency.CashRoundingIncrement is { } increment && increment != 0m)
@@ -345,7 +345,7 @@ internal static class Program
             builder.AppendLine("    /// <summary>");
             builder.AppendLine("    /// Gets the smallest cash denomination of the currency, in the major unit.");
             builder.AppendLine("    /// </summary>");
-            builder.AppendLine("    /// <returns>The cash-rounding increment.</returns>");
+            builder.AppendLine("    /// <value>The cash-rounding increment.</value>");
             builder.Append("    public static decimal CashRoundingIncrement => ")
                 .Append(increment.ToString("0.################", CultureInfo.InvariantCulture))
                 .AppendLine("m;");
@@ -357,7 +357,7 @@ internal static class Program
             builder.AppendLine("    /// <summary>");
             builder.AppendLine("    /// Gets a value indicating that the currency has been demonetized.");
             builder.AppendLine("    /// </summary>");
-            builder.AppendLine("    /// <returns><see langword=\"true\" /> — this is a historic currency.</returns>");
+            builder.AppendLine("    /// <value><see langword=\"true\" /> — this is a historic currency.</value>");
             builder.AppendLine("    public static bool IsHistoric => true;");
 
             if (!string.IsNullOrEmpty(currency.DemonetizedOn))
@@ -366,7 +366,7 @@ internal static class Program
                 builder.AppendLine("    /// <summary>");
                 builder.AppendLine("    /// Gets the date the currency was withdrawn from circulation.");
                 builder.AppendLine("    /// </summary>");
-                builder.AppendLine("    /// <returns>The demonetization date.</returns>");
+                builder.AppendLine("    /// <value>The demonetization date.</value>");
                 builder.Append("    public static global::System.DateOnly? DemonetizedOn => new global::System.DateOnly(");
                 var date = global::System.DateOnly.ParseExact(currency.DemonetizedOn, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 builder.Append(date.Year.ToString(CultureInfo.InvariantCulture))
@@ -383,7 +383,7 @@ internal static class Program
                 builder.AppendLine("    /// <summary>");
                 builder.AppendLine("    /// Gets the ISO 4217 alphabetic code of the currency that replaced this one.");
                 builder.AppendLine("    /// </summary>");
-                builder.AppendLine("    /// <returns>The successor currency's ISO code.</returns>");
+                builder.AppendLine("    /// <value>The successor currency's ISO code.</value>");
                 builder.Append("    public static string? SuccessorIsoCode => \"")
                     .Append(currency.SuccessorIsoCode)
                     .AppendLine("\";");
@@ -394,7 +394,7 @@ internal static class Program
         builder.AppendLine("    /// <summary>");
         builder.AppendLine("    /// Gets the English-language name of the currency.");
         builder.AppendLine("    /// </summary>");
-        builder.AppendLine("    /// <returns>The currency's English name in singular Title Case.</returns>");
+        builder.AppendLine("    /// <value>The currency's English name in singular Title Case.</value>");
         builder.Append("    public static string EnglishName => ")
             .Append(ToCSharpStringLiteral(currency.Name))
             .AppendLine(";");
