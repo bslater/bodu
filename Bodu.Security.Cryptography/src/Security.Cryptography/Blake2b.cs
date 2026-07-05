@@ -178,6 +178,12 @@ public sealed partial class Blake2b
             CryptographyThrowHelper.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
 
             HashSizeValue = value;
+
+            // The digest length is encoded into the parameter block during state initialization, which the base
+            // performs at construction and after each completed hash — but not on a HashSize change. Rebuild the
+            // state now so the next hash uses the new digest length; otherwise it would run with the stale parameter
+            // block baked at construction and produce a wrong digest.
+            Initialize();
         }
     }
 

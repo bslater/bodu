@@ -311,12 +311,34 @@ internal sealed class CfbSectorReader
     /// <exception cref="CompoundFileFormatException">Thrown when the DIFAT chain is circular or malformed.</exception>
     private uint[] BuildFat()
     {
+        // A FAT sector is referenced exactly once and there can be no more FAT sectors than physical sectors in
+        // the file. Deduplicating the DIFAT entries and capping the count against the source length prevents a
+        // crafted DIFAT (duplicate or inflated entries) from amplifying the FAT allocation ~127x and overflowing
+        // the array-size arithmetic.
+        long maxFatSectors = _header.SectorSize > 0 ? _source.Length / _header.SectorSize : 0;
         List<uint> fatSectors = new();
+        HashSet<uint> seen = new();
+        bool stop = false;
+
+        bool TryAddFatSector(uint id)
+        {
+            if (!IsRegularSector(id) || !seen.Add(id))
+                return true;
+
+            if (StopOrThrow(fatSectors.Count >= maxFatSectors, CompoundFileError.InvalidDifat))
+                return false;
+
+            fatSectors.Add(id);
+            return true;
+        }
 
         foreach (uint id in _header.Difat)
         {
-            if (IsRegularSector(id))
-                fatSectors.Add(id);
+            if (!TryAddFatSector(id))
+            {
+                stop = true;
+                break;
+            }
         }
 
         uint difatSector = _header.FirstDifatSector;
@@ -324,7 +346,7 @@ internal sealed class CfbSectorReader
         int guard = 0;
         Span<byte> scratch = stackalloc byte[_header.SectorSize];
 
-        while (difatSector != CfbHeader.EndOfChain && difatSector != CfbHeader.FreeSector)
+        while (!stop && difatSector != CfbHeader.EndOfChain && difatSector != CfbHeader.FreeSector)
         {
             if (StopOrThrow(guard++ > (_source.Length / _header.SectorSize) + 1, CompoundFileError.InvalidDifat))
                 break;
@@ -333,8 +355,11 @@ internal sealed class CfbSectorReader
             for (int i = 0; i < perSector - 1; i++)
             {
                 uint id = BinaryPrimitives.ReadUInt32LittleEndian(sector.Slice(i * sizeof(uint)));
-                if (IsRegularSector(id))
-                    fatSectors.Add(id);
+                if (!TryAddFatSector(id))
+                {
+                    stop = true;
+                    break;
+                }
             }
 
             difatSector = BinaryPrimitives.ReadUInt32LittleEndian(sector.Slice((perSector - 1) * sizeof(uint)));

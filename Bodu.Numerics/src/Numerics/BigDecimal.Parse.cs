@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Globalization;
 using System.Numerics;
 
@@ -117,15 +118,37 @@ public readonly partial struct BigDecimal
         if (!IsAllDigits(integerPart) || !IsAllDigits(fractionPart))
             return false;
 
-        Span<char> digits = stackalloc char[integerPart.Length + fractionPart.Length];
-        integerPart.CopyTo(digits);
-        fractionPart.CopyTo(digits[integerPart.Length..]);
+        // The canonical scale folds the parsed exponent into the fractional length. A negative scale widens the
+        // value by 10^-scale during construction, so reject an exponent that would drive an unbounded widening here
+        // rather than letting the constructor throw (TryParse must not throw on malformed input).
+        long scale = (long)fractionPart.Length - exponent;
+        if (scale is < -MaxNegativeScaleMagnitude or > int.MaxValue)
+            return false;
 
-        BigInteger magnitude = digits.IsEmpty ? BigInteger.Zero : BigInteger.Parse(digits, NumberStyles.None, CultureInfo.InvariantCulture);
-        int scale = fractionPart.Length - exponent;
+        // Concatenate the integer and fraction digits without the separator. The scratch buffer is sized from the
+        // (attacker-controlled) input length, so it must not be a stackalloc — rent from the pool for large inputs
+        // to avoid a stack overflow while still supporting arbitrarily long values.
+        int totalDigits = integerPart.Length + fractionPart.Length;
+        char[]? rented = null;
+        Span<char> digits = totalDigits <= 256
+            ? stackalloc char[256]
+            : (rented = ArrayPool<char>.Shared.Rent(totalDigits));
 
-        result = new BigDecimal(sign < 0 ? -magnitude : magnitude, scale);
-        return true;
+        try
+        {
+            Span<char> target = digits[..totalDigits];
+            integerPart.CopyTo(target);
+            fractionPart.CopyTo(target[integerPart.Length..]);
+
+            BigInteger magnitude = target.IsEmpty ? BigInteger.Zero : BigInteger.Parse(target, NumberStyles.None, CultureInfo.InvariantCulture);
+            result = new BigDecimal(sign < 0 ? -magnitude : magnitude, (int)scale);
+            return true;
+        }
+        finally
+        {
+            if (rented is not null)
+                ArrayPool<char>.Shared.Return(rented);
+        }
     }
 
     /// <summary>

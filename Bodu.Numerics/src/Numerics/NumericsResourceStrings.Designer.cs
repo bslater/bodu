@@ -79,11 +79,38 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The scale magnitude is too large to represent; a negative scale may not exceed {0} in magnitude..
+        /// </summary>
+        internal static string Arg_OutOfRange_BigDecimalScale {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_BigDecimalScale", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The denominator of a fraction must not be zero..
         /// </summary>
         internal static string DivideByZero_DenominatorZero {
             get {
                 return ResourceManager.GetString("DivideByZero_DenominatorZero", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot divide a BigDecimal by zero..
+        /// </summary>
+        internal static string DivideByZero_BigDecimalDivision {
+            get {
+                return ResourceManager.GetString("DivideByZero_BigDecimalDivision", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot take the remainder of a BigDecimal divided by zero..
+        /// </summary>
+        internal static string DivideByZero_BigDecimalRemainder {
+            get {
+                return ResourceManager.GetString("DivideByZero_BigDecimalRemainder", resourceCulture);
             }
         }
 

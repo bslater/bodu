@@ -55,4 +55,46 @@ public partial class BigDecimalTests
             _ = BigDecimal.Parse((string)null!, CultureInfo.InvariantCulture);
         });
     }
+
+    /// <summary>
+    /// Verifies that a very long digit string is parsed from a pooled buffer without overflowing the call stack,
+    /// which the previous input-length-sized <c>stackalloc</c> would have done.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void TryParse_WhenInputHasManyDigits_ShouldParseWithoutStackOverflow()
+    {
+        string manyDigits = new string('9', 2_000_000);
+
+        Assert.IsTrue(BigDecimal.TryParse(manyDigits, CultureInfo.InvariantCulture, out BigDecimal value));
+        Assert.AreNotEqual(BigDecimal.Zero, value);
+    }
+
+    /// <summary>
+    /// Verifies that an extreme positive exponent, which would fold into a huge negative scale and drive an unbounded
+    /// <see cref="System.Numerics.BigInteger.Pow(System.Numerics.BigInteger, int)" />, is rejected by
+    /// <see cref="BigDecimal.TryParse(string, IFormatProvider, out BigDecimal)" /> rather than exhausting memory.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void TryParse_WhenExponentDrivesUnboundedWidening_ShouldReturnFalse()
+    {
+        Assert.IsFalse(BigDecimal.TryParse("1e2000000000", CultureInfo.InvariantCulture, out _));
+    }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="BigDecimal" /> with a negative scale of excessive magnitude throws
+    /// <see cref="ArgumentOutOfRangeException" /> rather than driving an unbounded widening.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Ctor_WhenNegativeScaleMagnitudeExcessive_ShouldThrowArgumentOutOfRangeException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new BigDecimal(System.Numerics.BigInteger.One, int.MinValue);
+        });
+
+        Assert.AreEqual("scale", ex.ParamName);
+    }
 }

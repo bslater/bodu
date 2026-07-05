@@ -161,7 +161,7 @@ public ref struct Utf8YamlReader
         if (_tokenType == YamlTokenType.String)
             return _strings[(int)_rows[_currentRow].ScalarBits];
 
-        throw new InvalidOperationException();
+        throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlReaderValueType);
     }
 
     /// <summary>
@@ -172,7 +172,7 @@ public ref struct Utf8YamlReader
     public readonly long GetInt64()
     {
         if (_tokenType != YamlTokenType.Integer)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlReaderValueType);
 
         return _rows[_currentRow].AsInt64();
     }
@@ -189,7 +189,7 @@ public ref struct Utf8YamlReader
         {
             YamlTokenType.Float => r.AsDouble(),
             YamlTokenType.Integer => r.AsInt64(),
-            _ => throw new InvalidOperationException(),
+            _ => throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlReaderValueType),
         };
     }
 
@@ -201,7 +201,7 @@ public ref struct Utf8YamlReader
     public readonly bool GetBoolean()
     {
         if (_tokenType != YamlTokenType.Boolean)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlReaderValueType);
 
         return _rows[_currentRow].AsBoolean();
     }

@@ -11,6 +11,15 @@ namespace Bodu.Text.Encoding;
 public static partial class Base62
 {
     /// <summary>
+    /// The maximum number of characters accepted by a single decode. Internal so tests can validate the bound.
+    /// </summary>
+    /// <remarks>
+    /// Base62 decode accumulates into a growing <see cref="System.Numerics.BigInteger" />, making it O(n²) in the
+    /// input length. The cap bounds the worst-case cost against untrusted input while admitting any realistic payload.
+    /// </remarks>
+    internal const int MaxDecodeInputLength = 65536;
+
+    /// <summary>
     /// Decodes a Base62 string into a byte array.
     /// </summary>
     /// <param name="s">The Base62 input.</param>
@@ -112,6 +121,15 @@ public static partial class Base62
     {
         result = null;
         error = null;
+
+        // Base62 decoding accumulates into a growing BigInteger, so a naive decode is O(n²) in the input length — an
+        // algorithmic-complexity denial-of-service on untrusted input. Cap the input length so the worst-case cost
+        // stays bounded while still admitting any realistic encoded payload.
+        if (chars.Length > MaxDecodeInputLength)
+        {
+            error = string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Format_Invalid_BaseDecodeInputTooLong, MaxDecodeInputLength);
+            return false;
+        }
 
         bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 

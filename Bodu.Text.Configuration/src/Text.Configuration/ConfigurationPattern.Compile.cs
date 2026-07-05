@@ -377,11 +377,15 @@ public sealed partial class ConfigurationPattern
         if (left > right)
             (left, right) = (right, left);
 
-        // Cap expansion to keep pathological ranges (e.g. {1..1000000000}) from allocating gigabytes of regex
-        // text. Long.Subtract is safe here because the range was just normalized so right >= left.
-        long count = right - left + 1;
-        if (count > MaxNumericRangeExpansion)
+        // Cap expansion to keep pathological ranges (e.g. {1..1000000000}) from allocating gigabytes of regex text.
+        // The range is normalized so right >= left, but the signed difference can still overflow (for example
+        // {-9223372036854775808..9223372036854775807}), wrapping negative and slipping past the cap into a ~2^64
+        // iteration loop. Compute the difference in unsigned space, which holds the true value exactly, then compare
+        // the entry count (difference + 1) against the cap without overflowing.
+        ulong span = unchecked((ulong)(right - left));
+        if (span >= (ulong)MaxNumericRangeExpansion)
         {
+            long count = span >= long.MaxValue ? long.MaxValue : (long)(span + 1);
             throw new ConfigurationParseException(new ConfigurationDiagnostic(
                 ConfigurationDiagnosticSeverity.Error,
                 ConfigurationDiagnosticCode.NumericRangeTooLarge,

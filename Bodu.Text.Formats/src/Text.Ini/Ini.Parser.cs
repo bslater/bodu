@@ -102,10 +102,15 @@ public static partial class Ini
 
             List<IniEntry> globalEntries = new();
             Dictionary<string, IniEntry> globalLookup = new(keyComparer);
+            Dictionary<string, int> globalPositions = new(keyComparer);
             List<IniComment> globalLeadingComments = new();
 
             List<IniEntry> currentEntries = globalEntries;
             Dictionary<string, IniEntry> currentLookup = globalLookup;
+
+            // Tracks each key's index within the active section's entry list, so LastWins can replace an existing
+            // entry in O(1) instead of scanning the list (which made a section of many duplicate keys O(n²)).
+            Dictionary<string, int> currentPositions = globalPositions;
             bool inGlobal = true;
 
             // Named section builders — kept as mutable lists/dicts until IniSection is constructed at the end
@@ -158,7 +163,8 @@ public static partial class Ini
                         // New builder.
                         currentEntries = new List<IniEntry>();
                         currentLookup = new Dictionary<string, IniEntry>(keyComparer);
-                        SectionBuilder builder = new(sectionName, currentEntries, currentLookup);
+                        currentPositions = new Dictionary<string, int>(keyComparer);
+                        SectionBuilder builder = new(sectionName, currentEntries, currentLookup, currentPositions);
 
                         if (pendingComments.Count > 0)
                         {
@@ -180,6 +186,7 @@ public static partial class Ini
                         SectionBuilder existing = namedData[targetIdx];
                         currentEntries = existing.Entries;
                         currentLookup = existing.Lookup;
+                        currentPositions = existing.Positions;
 
                         // Append any pending comments to the existing section's leading comments.
                         if (pendingComments.Count > 0)
@@ -216,7 +223,7 @@ public static partial class Ini
                         // No-op: globalLeadingComments are seeded once and not consumed per-entry.
                     }
 
-                    AddEntry(line, currentEntries, currentLookup, entryComments);
+                    AddEntry(line, currentEntries, currentLookup, currentPositions, entryComments);
                 }
             }
 
@@ -296,11 +303,13 @@ public static partial class Ini
             /// <param name="name">The section name.</param>
             /// <param name="entries">The ordered entry list backing the section.</param>
             /// <param name="lookup">The case-resolved key lookup backing the section.</param>
-            internal SectionBuilder(string name, List<IniEntry> entries, Dictionary<string, IniEntry> lookup)
+            /// <param name="positions">The case-resolved key-to-index map parallel to <paramref name="entries" />.</param>
+            internal SectionBuilder(string name, List<IniEntry> entries, Dictionary<string, IniEntry> lookup, Dictionary<string, int> positions)
             {
                 Name = name;
                 Entries = entries;
                 Lookup = lookup;
+                Positions = positions;
                 LeadingComments = [];
             }
 
@@ -323,6 +332,12 @@ public static partial class Ini
             internal Dictionary<string, IniEntry> Lookup { get; }
 
             /// <summary>
+            /// Gets the key-to-index map used to locate an entry's position for in-place replacement in O(1).
+            /// </summary>
+            /// <value>The key-to-position map, parallel to <see cref="Entries" />.</value>
+            internal Dictionary<string, int> Positions { get; }
+
+            /// <summary>
             /// Gets or sets the comments that precede the section header.
             /// </summary>
             /// <value>The leading comments associated with the section.</value>
@@ -336,6 +351,7 @@ public static partial class Ini
         /// <param name="line">The trimmed source line (not a comment, not a section header, not empty).</param>
         /// <param name="entries">The ordered entry list for the active section.</param>
         /// <param name="lookup">The key-to-entry lookup for the active section.</param>
+        /// <param name="positions">The key-to-index map for the active section, used for O(1) in-place replacement.</param>
         /// <param name="leadingComments">
         /// The trivia comments accumulated before this entry, or <see langword="null" /> when none were pending.
         /// </param>
@@ -343,6 +359,7 @@ public static partial class Ini
             ReadOnlySpan<char> line,
             List<IniEntry> entries,
             Dictionary<string, IniEntry> lookup,
+            Dictionary<string, int> positions,
             IReadOnlyList<IniComment>? leadingComments)
         {
             // Find the first = or : separator.
@@ -386,8 +403,9 @@ public static partial class Ini
                         return;
 
                     case DuplicateKeyPolicy.LastWins:
-                        // Replace the existing entry in-place so its original position is preserved.
-                        int idx = entries.IndexOf(existing);
+                        // Replace the existing entry in-place so its original position is preserved. The position is
+                        // read from the parallel index in O(1) rather than scanning the entry list.
+                        int idx = positions[key];
                         IniEntry replacement = new(key, value, _lineNumber, leadingComments);
                         entries[idx] = replacement;
                         lookup[key] = replacement;
@@ -396,6 +414,7 @@ public static partial class Ini
             }
 
             IniEntry entry = new(key, value, _lineNumber, leadingComments);
+            positions[key] = entries.Count;
             entries.Add(entry);
             lookup[key] = entry;
         }

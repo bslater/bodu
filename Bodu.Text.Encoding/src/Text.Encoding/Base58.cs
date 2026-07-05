@@ -116,13 +116,19 @@ public static partial class Base58
     /// <param name="variant">The variant.</param>
     /// <param name="styles">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect.</param>
     /// <returns>
-    /// <see langword="true" /> when every retained character is in the variant alphabet; otherwise
-    /// <see langword="false" />.
+    /// <see langword="true" /> when the input is no longer than <see cref="MaxDecodeInputLength" /> and every retained
+    /// character is in the variant alphabet; otherwise <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         sbyte[] lookup = GetLookup(variant);
+
+        // Agree with Decode, which rejects input past this length to bound its O(n²) cost: an over-length input is not
+        // decodable, so it is not valid.
+        if (source.Length > MaxDecodeInputLength)
+            return false;
+
         bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
         foreach (char c in source)

@@ -50,6 +50,16 @@ public sealed record Argon2Parameters
     /// <summary>The exclusive upper bound on the degree of parallelism (2^24).</summary>
     internal const int MaxParallelism = (1 << 24) - 1;
 
+    /// <summary>
+    /// The maximum memory, in kibibytes, permitted for a single derivation: 2 GiB. Internal so tests can validate it.
+    /// </summary>
+    /// <remarks>
+    /// RFC 9106 allows <c>m</c> up to <c>2³² − 1</c> KiB, but a verification against an untrusted PHC string must not
+    /// let an attacker-supplied <c>m</c> drive an unbounded allocation. This ceiling sits far above any realistic
+    /// interactive or server-side password-hashing cost while bounding the worst-case footprint.
+    /// </remarks>
+    internal const int MaxMemoryKiB = 1 << 21;
+
     /// <summary>The Argon2 version 1.0 code (0x10).</summary>
     internal const int Version10 = 0x10;
 
@@ -117,6 +127,15 @@ public sealed record Argon2Parameters
                 nameof(MemoryKiB),
                 MemoryKiB,
                 string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_Argon2Memory, minMemory));
+        }
+
+        // Bound the memory above so an untrusted PHC string cannot request an unbounded allocation during verify.
+        if (MemoryKiB > MaxMemoryKiB)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(MemoryKiB),
+                MemoryKiB,
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_OutOfRange_Argon2MemoryMax, MaxMemoryKiB));
         }
 
         if (Version is not (Version10 or Version13))

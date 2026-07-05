@@ -56,6 +56,32 @@ public class CompoundSynthesizedCorruptionTests
     }
 
     /// <summary>
+    /// Verifies that a streaming (unbuffered) cursor whose declared size exceeds its sector chain is rejected with
+    /// <see cref="CompoundFileError.StreamChainTooShort" /> rather than an <see cref="IndexOutOfRangeException" />
+    /// escaping the <see cref="System.IO.Stream" /> read contract.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    public void OpenStream_WhenDeclaredSizeExceedsChainOnStreamingCursor_ShouldThrowStreamChainTooShort()
+    {
+        byte[] bytes = BuildSingleStream("Big", 5000);
+        var header = CfbHeader.Parse(bytes);
+        int entry = FindEntryOffset(bytes, header, "Big");
+
+        BinaryPrimitives.WriteUInt64LittleEndian(bytes.AsSpan(entry + SizeOffset), 200_000);
+
+        // buffered: false walks the sector chain on demand, indexing the chain by the current read position.
+        using var file = CompoundFile.Open(new MemoryStream(bytes), leaveOpen: false, buffered: false);
+        using var stream = file.RootStorage.OpenStream("Big");
+        byte[] destination = new byte[200_000];
+
+        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(
+            () => stream.ReadExactly(destination));
+
+        Assert.AreEqual(CompoundFileError.StreamChainTooShort, ex.Category);
+    }
+
+    /// <summary>
     /// Verifies that a mini-FAT entry that points at itself is rejected with
     /// <see cref="CompoundFileError.InvalidMiniFat" /> rather than looping forever.
     /// </summary>

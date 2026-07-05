@@ -130,4 +130,31 @@ public sealed partial class DistributedExchangeRateCacheTests
         Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
         Assert.AreEqual(0.6000m, rows[0].Rate);
     }
+
+    /// <summary>
+    /// Verifies that a row carrying a rate value beyond the range of <see cref="decimal" /> is skipped rather than
+    /// letting the resulting <see cref="OverflowException" /> escape the documented best-effort read contract.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void GetRates_WhenRowHasOutOfRangeDecimalRate_ShouldSkipOnlyThatRow()
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        string cachedAt = now.ToString("O", System.Globalization.CultureInfo.InvariantCulture);
+        MemoryDistributedCache backingStore = CreateBackingStore();
+
+        // The first row's rate has more digits than decimal can represent (OverflowException on parse).
+        string json =
+            $$"""
+            {"rates":[{"date":"2023-01-02","rate":"99999999999999999999999999999999","cachedAtUtc":"{{cachedAt}}"},{"date":"2023-01-03","rate":"0.6000","cachedAtUtc":"{{cachedAt}}"}],"coverage":[]}
+            """;
+        backingStore.Set("Test:AUDUSD", Encoding.UTF8.GetBytes(json));
+        DistributedExchangeRateCache cache = CreateCache(backingStore);
+
+        IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
+
+        Assert.HasCount(1, rows);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), rows[0].Date);
+        Assert.AreEqual(0.6000m, rows[0].Rate);
+    }
 }

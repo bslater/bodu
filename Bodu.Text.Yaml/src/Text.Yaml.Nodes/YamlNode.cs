@@ -37,8 +37,8 @@ public abstract class YamlNode
     /// <exception cref="InvalidOperationException">The node is not a sequence.</exception>
     public virtual YamlNode? this[int index]
     {
-        get => throw new InvalidOperationException();
-        set => throw new InvalidOperationException();
+        get => throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
+        set => throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
     }
 
     /// <summary>
@@ -49,8 +49,8 @@ public abstract class YamlNode
     /// <exception cref="InvalidOperationException">The node is not a mapping.</exception>
     public virtual YamlNode? this[string key]
     {
-        get => throw new InvalidOperationException();
-        set => throw new InvalidOperationException();
+        get => throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
+        set => throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
     }
 
     /// <summary>
@@ -72,21 +72,21 @@ public abstract class YamlNode
     /// </summary>
     /// <returns>The node typed as a mapping.</returns>
     /// <exception cref="InvalidOperationException">The node is not a mapping.</exception>
-    public YamlObject AsObject() => this as YamlObject ?? throw new InvalidOperationException();
+    public YamlObject AsObject() => this as YamlObject ?? throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
     /// <summary>
     /// Returns this node as a <see cref="YamlArray" />.
     /// </summary>
     /// <returns>The node typed as a sequence.</returns>
     /// <exception cref="InvalidOperationException">The node is not a sequence.</exception>
-    public YamlArray AsArray() => this as YamlArray ?? throw new InvalidOperationException();
+    public YamlArray AsArray() => this as YamlArray ?? throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
     /// <summary>
     /// Returns this node as a <see cref="YamlValue" />.
     /// </summary>
     /// <returns>The node typed as a scalar.</returns>
     /// <exception cref="InvalidOperationException">The node is not a scalar.</exception>
-    public YamlValue AsValue() => this as YamlValue ?? throw new InvalidOperationException();
+    public YamlValue AsValue() => this as YamlValue ?? throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
     /// <summary>
     /// Serializes the node tree to YAML text.

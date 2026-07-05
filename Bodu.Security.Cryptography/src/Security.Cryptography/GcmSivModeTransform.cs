@@ -572,6 +572,12 @@ public sealed class GcmSivModeTransform
             int len = Math.Min(blockSize, data.Length - offset);
             data.Slice(offset, len).CopyTo(block);
 
+            // RFC 8452 §4 zero-pads the final partial block. The scratch buffer is reused across iterations, so the
+            // tail beyond `len` must be cleared explicitly; leaving the previous block's bytes there corrupts the
+            // POLYVAL tag for any AAD or plaintext whose length is not a multiple of the block size.
+            if (len < blockSize)
+                block[len..].Clear();
+
             // state ^= block, then multiply by H (authKey) via POLYVAL.
             Xor(state, block, state);
             PolyvalMultiply(state, _authKey, state);

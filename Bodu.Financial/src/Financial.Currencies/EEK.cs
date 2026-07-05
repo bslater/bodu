@@ -19,43 +19,43 @@ public sealed class EEK : ICurrency
     /// <summary>
     /// Gets the ISO 4217 alphabetic code for the currency.
     /// </summary>
-    /// <returns>The three-letter ISO 4217 code.</returns>
+    /// <value>The three-letter ISO 4217 code.</value>
     public static string IsoCode => "EEK";
 
     /// <summary>
     /// Gets the ISO 4217 three-digit numeric code for the currency.
     /// </summary>
-    /// <returns>The three-digit ISO 4217 numeric code.</returns>
+    /// <value>The three-digit ISO 4217 numeric code.</value>
     public static int NumericCode => 233;
 
     /// <summary>
     /// Gets the number of fractional digits in the currency's minor unit.
     /// </summary>
-    /// <returns>The currency's minor-unit precision.</returns>
+    /// <value>The currency's minor-unit precision.</value>
     public static int MinorUnits => 2;
 
     /// <summary>
     /// Gets a value indicating that the currency has been demonetized.
     /// </summary>
-    /// <returns><see langword="true" /> — this is a historic currency.</returns>
+    /// <value><see langword="true" /> — this is a historic currency.</value>
     public static bool IsHistoric => true;
 
     /// <summary>
     /// Gets the date the currency was withdrawn from circulation.
     /// </summary>
-    /// <returns>The demonetization date.</returns>
+    /// <value>The demonetization date.</value>
     public static global::System.DateOnly? DemonetizedOn => new global::System.DateOnly(2011, 1, 14);
 
     /// <summary>
     /// Gets the ISO 4217 alphabetic code of the currency that replaced this one.
     /// </summary>
-    /// <returns>The successor currency's ISO code.</returns>
+    /// <value>The successor currency's ISO code.</value>
     public static string? SuccessorIsoCode => "EUR";
 
     /// <summary>
     /// Gets the English-language name of the currency.
     /// </summary>
-    /// <returns>The currency's English name in singular Title Case.</returns>
+    /// <value>The currency's English name in singular Title Case.</value>
     public static string EnglishName => "Estonian Kroon";
 
     /// <summary>

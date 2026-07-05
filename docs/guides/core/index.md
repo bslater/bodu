@@ -26,7 +26,7 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 | `Bodu.Functional` | Functional helpers — `Memoizer`, and the railway primitives `Option<T>`, `Result` / `Result<T>` / `ResultError`, `Either<TLeft,TRight>` with Task-based async combinators. | [Memoization](memoization.md) · [Options, results, and eithers](functional-results.md) |
 | `Bodu` | Root namespace primitives — `WeekPattern`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) |
 | `Bodu.Buffers` | Pooled buffer infrastructure — `PooledBufferBuilder<T>`. | [Pooled buffer builder](pooled-buffer-builder.md) |
-| `Bodu.Extensions` | Date, numeric, span, array, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `IComparableExtensions`. | (no dedicated guide yet — see API reference) |
+| `Bodu.Extensions` | Date, numeric, span, array, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `ComparableExtensions`. | (no dedicated guide yet — see API reference) |
 | `Bodu.Text`, `Bodu.Xml.Linq` | Small text and XML helpers used internally. | — |
 
 ## Guides

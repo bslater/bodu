@@ -128,7 +128,7 @@ Date, numeric, span, and array extension methods. Larger surface than the others
 | <xref:Bodu.Extensions.ArrayExtensions> | `Reverse`, `Clear`, and other in-place array helpers. |
 | <xref:Bodu.Extensions.BufferConverter> | Byte / structure conversion helpers. |
 | <xref:Bodu.Extensions.SpanExtensions> | Span-friendly helpers. |
-| <xref:Bodu.Extensions.IComparableExtensions>, <xref:Bodu.Extensions.ComparableHelper> | `Min`, `Max`, `Clamp`, `IsGreaterThan` / `IsGreaterThanOrEqual`. |
+| <xref:Bodu.Extensions.ComparableExtensions>, <xref:Bodu.Extensions.ComparableHelper> | `Min`, `Max`, `Clamp`, `IsGreaterThan` / `IsGreaterThanOrEqual`. |
 | <xref:Bodu.Extensions.NaturalStringComparer> | Numeric-aware ("natural") string comparer — `file2` sorts before `file10` — with ordinal, case-insensitive, and culture-aware modes. See the [Natural string comparer](../../guides/core/natural-string-comparer.md) guide. |
 | <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.WorkingDaysOfWeek>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.WeekOrdinal> | Calendar-shape enums and injection seams for quarter, weekend, fiscal-week, and week-ordinal computations. |
 

@@ -95,6 +95,35 @@ public sealed partial class SqliteExchangeRateCacheTests
     }
 
     /// <summary>
+    /// Verifies that a persisted rate row whose value is beyond the range of <see cref="decimal" /> is skipped on
+    /// read, returning empty rather than letting the resulting <see cref="OverflowException" /> escape the documented
+    /// best-effort read contract.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void GetRates_WhenRowHasOutOfRangeDecimalRate_ShouldReturnEmptyNotThrow()
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        string path = NewDatabasePath();
+        SqliteExchangeRateCache cache = CreateFileCache(path);
+        cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
+
+        // Poison the stored rate with a value that has more digits than decimal can represent, so ParseRate throws
+        // OverflowException when the row is read back.
+        using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={path}"))
+        {
+            connection.Open();
+            using Microsoft.Data.Sqlite.SqliteCommand command = connection.CreateCommand();
+            command.CommandText = "UPDATE rates SET rate = '99999999999999999999999999999999';";
+            command.ExecuteNonQuery();
+        }
+
+        IReadOnlyList<CachedExchangeRate> rows = cache.GetRates(Pair, Duration, now);
+
+        Assert.IsEmpty(rows);
+    }
+
+    /// <summary>
     /// Creates a temporary file whose contents are deliberately not a valid SQLite database, tracking it for cleanup.
     /// </summary>
     /// <returns>The path to a corrupt database file.</returns>

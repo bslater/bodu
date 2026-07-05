@@ -72,7 +72,11 @@ internal static class YahooChartResponseParser
             if (!close.TryGetDecimal(out decimal rate) || rate <= 0m)
                 continue;
 
-            var date = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeSeconds(timestamps[i].GetInt64()).UtcDateTime);
+            // A non-numeric or out-of-range Unix timestamp must be skipped like any other malformed point, rather
+            // than crashing the fetch with an InvalidOperationException / ArgumentOutOfRangeException.
+            if (!timestamps[i].TryGetInt64(out long unixSeconds) || !TryUnixSecondsToDate(unixSeconds, out DateOnly date))
+                continue;
+
             if (date < request.StartDate || date > request.EndDate)
                 continue;
 
@@ -144,6 +148,26 @@ internal static class YahooChartResponseParser
         }
 
         closes = close;
+        return true;
+    }
+
+    /// <summary>
+    /// Converts a Unix timestamp in seconds to a UTC date, returning <see langword="false" /> when the value lies
+    /// outside the range representable by <see cref="DateTimeOffset" />.
+    /// </summary>
+    /// <param name="unixSeconds">The Unix timestamp, in seconds.</param>
+    /// <param name="date">When this method returns, the corresponding UTC date when conversion succeeded.</param>
+    /// <returns><see langword="true" /> when the timestamp was converted; otherwise <see langword="false" />.</returns>
+    private static bool TryUnixSecondsToDate(long unixSeconds, out DateOnly date)
+    {
+        // DateTimeOffset.FromUnixTimeSeconds accepts -62,135,596,800 .. 253,402,300,799; anything else is malformed.
+        if (unixSeconds is < -62_135_596_800 or > 253_402_300_799)
+        {
+            date = default;
+            return false;
+        }
+
+        date = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeSeconds(unixSeconds).UtcDateTime);
         return true;
     }
 

@@ -50,4 +50,25 @@ public sealed class Argon2ParametersTests
 
         Assert.AreEqual(nameof(Argon2Parameters.Version), ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that a memory cost above <see cref="Argon2Parameters.MaxMemoryKiB" /> is rejected, so an untrusted
+    /// PHC string cannot drive an unbounded allocation during verification.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Validate_WhenMemoryExceedsMaximum_ShouldThrowArgumentOutOfRangeException()
+    {
+        Argon2Parameters parameters = new()
+        {
+            Parallelism = 1,
+            Iterations = 1,
+            TagLength = 32,
+            MemoryKiB = Argon2Parameters.MaxMemoryKiB + 1,
+        };
+
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(parameters.Validate);
+
+        Assert.AreEqual(nameof(Argon2Parameters.MemoryKiB), ex.ParamName);
+    }
 }
