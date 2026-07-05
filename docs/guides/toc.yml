@@ -39,6 +39,8 @@
               href: core/bit-set.md
             - name: Layered and defaulting dictionaries
               href: core/layered-and-defaulting-dictionaries.md
+            - name: Table (two-key map)
+              href: core/table.md
         - name: Bodu.Collections.Generic.Trees
           items:
             - name: Trie (prefix tree)

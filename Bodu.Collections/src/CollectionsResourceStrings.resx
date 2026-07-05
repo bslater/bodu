@@ -147,6 +147,9 @@
   <data name="Arg_Invalid_DuplicateSetValue" xml:space="preserve">
     <value>The set already contains the specified value.</value>
   </data>
+  <data name="Arg_Invalid_DuplicateTableCell" xml:space="preserve">
+    <value>The table already contains a value at the specified row and column.</value>
+  </data>
   <data name="Arg_Invalid_ElementNotInSet" xml:space="preserve">
     <value>The specified element is not a member of any set.</value>
   </data>

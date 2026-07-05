@@ -16,6 +16,7 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
    - One-to-one in both directions, with O(1) value-to-key lookup → <xref:Bodu.Collections.Generic.BiDictionary`2>.
    - Overrides layered over defaults, first layer wins, writes to the first layer → <xref:Bodu.Collections.Generic.LayeredDictionary`2>.
    - Missing keys should materialize a stored default on indexer read → <xref:Bodu.Collections.Generic.DefaultingDictionary`2>.
+   - Two independent keys (row + column) with live row/column projections → <xref:Bodu.Collections.Generic.Table`3>. For flat two-key lookup alone, prefer `Dictionary<(TRow, TColumn), TValue>` — adopt `Table` only for the views.
 2. **Do you need a sequence (FIFO / LIFO / two-ended)?**
    - Fixed capacity, single-threaded, overwrite-or-throw on full → <xref:Bodu.Collections.Generic.CircularBuffer`1>.
    - Fixed capacity, multi-threaded → <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>.
@@ -52,6 +53,7 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 | One key → many values | <xref:Bodu.Collections.Generic.MultiValueDictionary`2> | Indexer returns an empty live view, never `null`. |
 | One-to-one map, O(1) lookup in both directions | <xref:Bodu.Collections.Generic.BiDictionary`2> | Live `Inverse` view shares storage; duplicate-value conflicts follow the `Throw` / `Replace` policy. |
 | Layered lookup with first-wins precedence | <xref:Bodu.Collections.Generic.LayeredDictionary`2> | Python `ChainMap` semantics: a live view over ordered layers, writes to the first layer only; removing a shadowing entry unshadows the deeper value. `Count`/enumeration walk every layer. |
+| Two-key map with row/column projections | <xref:Bodu.Collections.Generic.Table`3> | Guava `Table` shape: live `Row` / `Column` views over a row-major store. Column-axis operations are O(rows) — no second index. A plain `Dictionary<(TRow, TColumn), TValue>` covers lookup-only use. |
 | Auto-materializing defaults on indexer read | <xref:Bodu.Collections.Generic.DefaultingDictionary`2> | Python `defaultdict` semantics: only the indexer getter invokes the value factory and stores the result — `TryGetValue`/`ContainsKey` never materialize. The `GetOrAdd` extension stays the per-call-site option. |
 | Dense integer membership as packed bits | <xref:Bodu.Collections.Generic.BitSet> | Java `BitSet` semantics. Prefer over the BCL `BitArray`, which is fixed-size, has no set-bit query surface (`NextSetBit` / `NextClearBit` / `Cardinality`), and enumerates boxed `bool` values instead of set-bit indices. |
 
@@ -97,7 +99,7 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 | Overwrites the oldest element. | <xref:Bodu.Collections.Generic.CircularBuffer`1> with `AllowOverwrite = true`. |
 | Doubles the backing array. | <xref:Bodu.Collections.Generic.Deque`1> with `AllowGrow = true`. |
 | Evicts a policy-selected entry. | <xref:Bodu.Collections.Generic.EvictingDictionary`2>. |
-| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.LayeredDictionary`2>, <xref:Bodu.Collections.Generic.DefaultingDictionary`2>, <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
+| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.LayeredDictionary`2>, <xref:Bodu.Collections.Generic.DefaultingDictionary`2>, <xref:Bodu.Collections.Generic.Table`3>, <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
 
 The `Try…` overloads on the bounded ring-backed types substitute a `false` return for the throw, so callers can stay non-throwing without changing the toggle.
 
@@ -132,6 +134,7 @@ All three hash through the element's <xref:System.Collections.Generic.IEqualityC
 | Group log entries by correlation id. | <xref:Bodu.Collections.Generic.MultiValueDictionary`2>. |
 | Keep a dictionary you can iterate in insertion order. | <xref:Bodu.Collections.Generic.SequencedDictionary`2>. |
 | Layer request-scoped overrides over shared defaults. | <xref:Bodu.Collections.Generic.LayeredDictionary`2> — overrides first, defaults behind. |
+| Pivot values by two keys and slice by either axis. | <xref:Bodu.Collections.Generic.Table`3> — `Row` / `Column` live projections; keep the most-sliced axis on the row side. |
 | Group items into lists without seeding empty lists. | <xref:Bodu.Collections.Generic.DefaultingDictionary`2> with `_ => new List<T>()`, or <xref:Bodu.Collections.Generic.MultiValueDictionary`2> for a dedicated multi-map surface. |
 | Build an unbounded LRU and evict the oldest yourself. | <xref:Bodu.Collections.Generic.SequencedDictionary`2> with `accessOrder: true` + `TryRemoveFirst`. |
 | Count occurrences of tokens in a corpus. | <xref:Bodu.Collections.Generic.Multiset`1>. |

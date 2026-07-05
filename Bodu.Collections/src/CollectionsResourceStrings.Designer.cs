@@ -151,6 +151,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The table already contains a value at the specified row and column..
+        /// </summary>
+        internal static string Arg_Invalid_DuplicateTableCell {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DuplicateTableCell", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The specified element is not a member of any set..
         /// </summary>
         internal static string Arg_Invalid_ElementNotInSet {
