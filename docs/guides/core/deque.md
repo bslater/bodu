@@ -52,9 +52,34 @@ bool full  = bounded.IsFull;          // true
 // bounded.AddLast(8);                // InvalidOperationException
 ```
 
+## Overflow policy — evict from the opposite end
+
+Rejecting is only the default. `OverflowPolicy` selects what a full, fixed-capacity deque does with the next add: `DequeOverflowPolicy.Reject` (throw / return `false`, as above) or `DequeOverflowPolicy.EvictOpposite`, which silently discards the element at the *opposite* end to make room — `AddFirst` drops the tail element, `AddLast` drops the head element, and `Count` stays at `Capacity`. This is the double-ended analogue of Python's `collections.deque(maxlen=N)`:
+
+```csharp
+using Bodu.Collections.Generic;
+
+var recent = new Deque<int>(capacity: 3, allowGrow: false)
+{
+    OverflowPolicy = DequeOverflowPolicy.EvictOpposite,
+};
+
+recent.AddLast(1);
+recent.AddLast(2);
+recent.AddLast(3);          // full: 1, 2, 3
+recent.AddLast(4);          // evicts 1 → 2, 3, 4
+recent.AddFirst(0);         // evicts 4 → 0, 2, 3
+
+bool added = recent.TryAddLast(5);   // true — evicts 0 → 2, 3, 5
+```
+
+`EvictOpposite` is the deque counterpart of `CircularBuffer<T>.AllowOverwrite` — the same overwrite-on-full idea, generalised to both ends — and mirrors its event pair: `ItemEvicting` fires immediately before each eviction (a handler that throws vetoes the eviction in place, leaving the deque unchanged) and `ItemEvicted` fires immediately after, both carrying the discarded element.
+
+The policy is consulted only when the deque is full and `AllowGrow` is `false`. While `AllowGrow` is `true`, growth always wins and nothing is ever evicted, regardless of the configured policy. Assigning a value that is not a defined `DequeOverflowPolicy` member throws `ArgumentOutOfRangeException`.
+
 ## Pattern 3 — sliding window from both ends
 
-Use `AddFirst` / `AddLast` together with `RemoveFirst` / `RemoveLast` to build a sliding window or undo/redo buffer:
+Use `AddFirst` / `AddLast` together with `RemoveFirst` / `RemoveLast` to build a sliding window or undo/redo buffer. (The drop-the-oldest step below is exactly what `OverflowPolicy = DequeOverflowPolicy.EvictOpposite` automates — shown here in its manual form for when the eviction needs custom logic.)
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -144,9 +169,9 @@ var grown  = new Deque<int>(new[] { 1, 2, 3, 4, 5 }, capacity: 2);             /
 
 | Member | Description |
 |---|---|
-| `AddFirst(T)` | Adds an element at the head. Throws if `AllowGrow` is `false` and the deque is full. |
-| `AddLast(T)` | Adds an element at the tail. Throws if `AllowGrow` is `false` and the deque is full. |
-| `TryAddFirst(T)` / `TryAddLast(T)` | Non-throwing variants. Always return `true` when `AllowGrow` is `true`; return `false` on full when `AllowGrow` is `false`. |
+| `AddFirst(T)` | Adds an element at the head. On a full fixed-capacity deque, throws under `Reject` or evicts the tail element under `EvictOpposite`. |
+| `AddLast(T)` | Adds an element at the tail. On a full fixed-capacity deque, throws under `Reject` or evicts the head element under `EvictOpposite`. |
+| `TryAddFirst(T)` / `TryAddLast(T)` | Non-throwing variants. Return `false` only when full, `AllowGrow` is `false`, and `OverflowPolicy` is `Reject`; otherwise `true` (growing or evicting as configured). |
 | `RemoveFirst()` / `RemoveLast()` | Removes and returns the head or tail element. Throws if empty. |
 | `TryRemoveFirst(out T)` / `TryRemoveLast(out T)` | Non-throwing remove variants; return `false` if empty. |
 | `PeekFirst()` / `PeekLast()` | Reads the head or tail element without removing it. Throws if empty. |
@@ -155,7 +180,9 @@ var grown  = new Deque<int>(new[] { 1, 2, 3, 4, 5 }, capacity: 2);             /
 | `Capacity` | The current backing-array length. Mutable in growable mode. |
 | `IsEmpty` | `true` when `Count == 0`. |
 | `IsFull` | `true` when `Count == Capacity`. |
-| `AllowGrow` | Whether the backing array expands automatically when full. Settable at runtime. |
+| `AllowGrow` | Whether the backing array expands automatically when full. Settable at runtime. While `true`, growth wins and `OverflowPolicy` is never consulted. |
+| `OverflowPolicy` | How a full fixed-capacity deque handles adds: `Reject` (default — throw / `false`) or `EvictOpposite` (Python `deque(maxlen=N)` semantics). |
+| `ItemEvicting` / `ItemEvicted` | Events raised around each `EvictOpposite` eviction with the discarded element. A throwing `ItemEvicting` handler vetoes the eviction in place. |
 | `EnsureCapacity(int)` | Expands the backing array to hold at least the requested capacity. Ignores `AllowGrow`. |
 | `Clear()` | Removes all elements; capacity unchanged. |
 | `TrimExcess()` | Shrinks the backing array to `Count` (or 1 when empty). |

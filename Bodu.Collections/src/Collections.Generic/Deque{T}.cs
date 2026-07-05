@@ -33,9 +33,14 @@ namespace Bodu.Collections.Generic;
 /// </item>
 /// <item>
 /// <description>
-/// <c>AllowGrow = false</c> — the deque is fixed at its current capacity. <see cref="AddFirst(T)" /> and
-/// <see cref="AddLast(T)" /> throw <see cref="InvalidOperationException" /> when full; <see cref="TryAddFirst(T)" />
-/// and <see cref="TryAddLast(T)" /> return <see langword="false" /> without modifying state.
+/// <c>AllowGrow = false</c> — the deque is fixed at its current capacity and <see cref="OverflowPolicy" /> selects the
+/// behavior of adds on a full deque. Under <see cref="DequeOverflowPolicy.Reject" /> (the default),
+/// <see cref="AddFirst(T)" /> and <see cref="AddLast(T)" /> throw <see cref="InvalidOperationException" /> when full
+/// while <see cref="TryAddFirst(T)" /> and <see cref="TryAddLast(T)" /> return <see langword="false" /> without
+/// modifying state. Under <see cref="DequeOverflowPolicy.EvictOpposite" />, adds silently discard the element at the
+/// opposite end to make room — the Python <c>deque(maxlen=N)</c> semantics, analogous to
+/// <see cref="CircularBuffer{T}.AllowOverwrite" /> — raising <see cref="ItemEvicting" /> before and
+/// <see cref="ItemEvicted" /> after each eviction.
 /// </description>
 /// </item>
 /// </list>
@@ -118,6 +123,9 @@ public sealed class Deque<T>
 
     /// <summary>Sentinel value passed to the private ctor to indicate that the (IEnumerable) overload should derive its capacity as <c>max(items.Length, DefaultCapacity)</c>.</summary>
     private const int UseFloorCapacity = -1;
+
+    /// <summary>The policy applied when an add targets a full, fixed-capacity deque. Defaults to <see cref="DequeOverflowPolicy.Reject" />.</summary>
+    private DequeOverflowPolicy _overflowPolicy;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Deque{T}" /> class with the default initial capacity and auto-grow
@@ -229,20 +237,96 @@ public sealed class Deque<T>
     }
 
     /// <summary>
+    /// Occurs immediately <b>after</b> an item has been evicted from the opposite end of the <see cref="Deque{T}" /> to
+    /// make room for a new element.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This event is raised only when the deque is full, <see cref="AllowGrow" /> is <see langword="false" />, and
+    /// <see cref="OverflowPolicy" /> is <see cref="DequeOverflowPolicy.EvictOpposite" />.
+    /// </para>
+    /// <para>
+    /// <b>Important:</b> Exceptions thrown by event handlers are not caught and will propagate to the caller of
+    /// <see cref="AddFirst(T)" />, <see cref="AddLast(T)" />, <see cref="TryAddFirst(T)" />, or
+    /// <see cref="TryAddLast(T)" />. Consumers should ensure event handlers are exception-safe.
+    /// </para>
+    /// </remarks>
+    public event Action<T>? ItemEvicted;
+
+    /// <summary>
+    /// Occurs immediately <b>before</b> an item is evicted from the opposite end of the <see cref="Deque{T}" /> to make
+    /// room for a new element.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This event is raised only when the deque is full, <see cref="AllowGrow" /> is <see langword="false" />, and
+    /// <see cref="OverflowPolicy" /> is <see cref="DequeOverflowPolicy.EvictOpposite" />.
+    /// </para>
+    /// <para>
+    /// <b>Important:</b> Any exception thrown from a handler vetoes the eviction in place — the opposite-end element is
+    /// not removed, the new element is not stored, the count, head, and tail indices are unchanged, and the exception
+    /// propagates to the caller of <see cref="AddFirst(T)" />, <see cref="AddLast(T)" />, <see cref="TryAddFirst(T)" />,
+    /// or <see cref="TryAddLast(T)" />. Event handlers should therefore avoid throwing unless the veto is intentional.
+    /// </para>
+    /// </remarks>
+    public event Action<T>? ItemEvicting;
+
+    /// <summary>
     /// Gets or sets a value indicating whether the deque expands its backing array when an add operation would overflow
     /// the current capacity.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> to grow on demand; <see langword="false" /> to throw
-    /// <see cref="InvalidOperationException" /> from <see cref="AddFirst(T)" /> and <see cref="AddLast(T)" /> and
-    /// return <see langword="false" /> from their <c>Try*</c> variants once full.
+    /// <see langword="true" /> to grow on demand; <see langword="false" /> to apply <see cref="OverflowPolicy" /> once
+    /// full — by default rejecting the add (throw from <see cref="AddFirst(T)" /> and <see cref="AddLast(T)" />,
+    /// <see langword="false" /> from their <c>Try*</c> variants).
     /// </value>
     /// <remarks>
+    /// <para>
     /// This property may be toggled at runtime to switch the deque between fixed and growable modes. Switching from
     /// <see langword="true" /> to <see langword="false" /> does not shrink the existing backing array; call
     /// <see cref="RingBackedCollection{T}.TrimExcess" /> if a smaller footprint is desired.
+    /// </para>
+    /// <para>
+    /// While this property is <see langword="true" />, growth always wins and <see cref="OverflowPolicy" /> is never
+    /// consulted — no element is evicted regardless of the configured policy.
+    /// </para>
     /// </remarks>
     public bool AllowGrow { get; set; }
+
+    /// <summary>
+    /// Gets or sets the policy applied when an add operation targets a full, fixed-capacity deque.
+    /// </summary>
+    /// <value>
+    /// One of the <see cref="DequeOverflowPolicy" /> values. The default is <see cref="DequeOverflowPolicy.Reject" />,
+    /// which preserves the historical throw / return-<see langword="false" /> behavior.
+    /// </value>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The assigned value is not a defined <see cref="DequeOverflowPolicy" /> member.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The policy is consulted only when <see cref="AllowGrow" /> is <see langword="false" /> and the deque is full.
+    /// When <see cref="AllowGrow" /> is <see langword="true" /> the backing array grows instead — growth always wins,
+    /// rendering the policy irrelevant on a growable deque.
+    /// </para>
+    /// <para>
+    /// Under <see cref="DequeOverflowPolicy.EvictOpposite" />, <see cref="AddFirst(T)" /> discards the tail element and
+    /// <see cref="AddLast(T)" /> discards the head element before storing the new item, keeping
+    /// <see cref="RingBackedCollection{T}.Count" /> at <see cref="RingBackedCollection{T}.Capacity" /> — the Python
+    /// <c>deque(maxlen=N)</c> semantics. Each eviction raises <see cref="ItemEvicting" /> beforehand and
+    /// <see cref="ItemEvicted" /> afterwards.
+    /// </para>
+    /// </remarks>
+    public DequeOverflowPolicy OverflowPolicy
+    {
+        get => _overflowPolicy;
+        set
+        {
+            ThrowHelper.ThrowIfEnumValueIsUndefined(value);
+
+            _overflowPolicy = value;
+        }
+    }
 
     /// <summary>
     /// Throws when <paramref name="allowGrow" /> is <see langword="false" /> and the supplied collection size exceeds
@@ -292,90 +376,131 @@ public sealed class Deque<T>
     /// </summary>
     /// <param name="item">The element to add. May be <see langword="null" /> for reference types.</param>
     /// <exception cref="InvalidOperationException">
-    /// <see cref="AllowGrow" /> is <see langword="false" /> and the deque is already at capacity.
+    /// <see cref="AllowGrow" /> is <see langword="false" />, <see cref="OverflowPolicy" /> is
+    /// <see cref="DequeOverflowPolicy.Reject" />, and the deque is already at capacity.
     /// </exception>
-    public void AddFirst(T item)
-    {
-        if (Count == Capacity)
-        {
-            if (!AllowGrow) throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CapacityExhausted);
-
-            Grow(Count + 1);
-        }
-
-        AddHead(item);
-    }
+    /// <remarks>
+    /// On a full, fixed-capacity deque with <see cref="OverflowPolicy" /> set to
+    /// <see cref="DequeOverflowPolicy.EvictOpposite" />, the tail element is silently discarded (raising
+    /// <see cref="ItemEvicting" /> and <see cref="ItemEvicted" />) and the new item is stored at the head, leaving
+    /// <see cref="RingBackedCollection{T}.Count" /> unchanged.
+    /// </remarks>
+    public void AddFirst(T item) => _ = TryAddInternal(item, atHead: true, throwIfFull: true);
 
     /// <summary>
     /// Adds <paramref name="item" /> to the tail of the deque.
     /// </summary>
     /// <param name="item">The element to add. May be <see langword="null" /> for reference types.</param>
     /// <exception cref="InvalidOperationException">
-    /// <see cref="AllowGrow" /> is <see langword="false" /> and the deque is already at capacity.
+    /// <see cref="AllowGrow" /> is <see langword="false" />, <see cref="OverflowPolicy" /> is
+    /// <see cref="DequeOverflowPolicy.Reject" />, and the deque is already at capacity.
     /// </exception>
-    public void AddLast(T item)
-    {
-        if (Count == Capacity)
-        {
-            if (!AllowGrow) throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CapacityExhausted);
-
-            Grow(Count + 1);
-        }
-
-        AddTail(item);
-    }
+    /// <remarks>
+    /// On a full, fixed-capacity deque with <see cref="OverflowPolicy" /> set to
+    /// <see cref="DequeOverflowPolicy.EvictOpposite" />, the head element is silently discarded (raising
+    /// <see cref="ItemEvicting" /> and <see cref="ItemEvicted" />) and the new item is stored at the tail, leaving
+    /// <see cref="RingBackedCollection{T}.Count" /> unchanged.
+    /// </remarks>
+    public void AddLast(T item) => _ = TryAddInternal(item, atHead: false, throwIfFull: true);
 
     /// <summary>
     /// Attempts to add <paramref name="item" /> to the head of the deque without throwing.
     /// </summary>
     /// <param name="item">The element to add. May be <see langword="null" /> for reference types.</param>
     /// <returns>
-    /// <see langword="true" /> if the item was added; <see langword="false" /> if the deque was fixed-capacity and
-    /// full.
+    /// <see langword="true" /> if the item was added (including after growing or evicting the tail element);
+    /// <see langword="false" /> if the deque was fixed-capacity, full, and <see cref="OverflowPolicy" /> is
+    /// <see cref="DequeOverflowPolicy.Reject" />.
     /// </returns>
     /// <remarks>
-    /// Returns <see langword="true" /> after auto-growing when <see cref="AllowGrow" /> is <see langword="true" />.
-    /// Returns <see langword="false" /> without modifying state when <see cref="AllowGrow" /> is
-    /// <see langword="false" /> and the deque is full.
+    /// Returns <see langword="true" /> after auto-growing when <see cref="AllowGrow" /> is <see langword="true" />, and
+    /// after evicting the tail element when <see cref="OverflowPolicy" /> is
+    /// <see cref="DequeOverflowPolicy.EvictOpposite" /> on a full, fixed-capacity deque. Returns
+    /// <see langword="false" /> without modifying state only when the deque is full, <see cref="AllowGrow" /> is
+    /// <see langword="false" />, and <see cref="OverflowPolicy" /> is <see cref="DequeOverflowPolicy.Reject" />.
     /// </remarks>
-    public bool TryAddFirst(T item)
-    {
-        if (Count == Capacity)
-        {
-            if (!AllowGrow)
-                return false;
-
-            Grow(Count + 1);
-        }
-
-        AddHead(item);
-        return true;
-    }
+    public bool TryAddFirst(T item) => TryAddInternal(item, atHead: true, throwIfFull: false);
 
     /// <summary>
     /// Attempts to add <paramref name="item" /> to the tail of the deque without throwing.
     /// </summary>
     /// <param name="item">The element to add. May be <see langword="null" /> for reference types.</param>
     /// <returns>
-    /// <see langword="true" /> if the item was added; <see langword="false" /> if the deque was fixed-capacity and
-    /// full.
+    /// <see langword="true" /> if the item was added (including after growing or evicting the head element);
+    /// <see langword="false" /> if the deque was fixed-capacity, full, and <see cref="OverflowPolicy" /> is
+    /// <see cref="DequeOverflowPolicy.Reject" />.
     /// </returns>
     /// <remarks>
-    /// Returns <see langword="true" /> after auto-growing when <see cref="AllowGrow" /> is <see langword="true" />.
-    /// Returns <see langword="false" /> without modifying state when <see cref="AllowGrow" /> is
-    /// <see langword="false" /> and the deque is full.
+    /// Returns <see langword="true" /> after auto-growing when <see cref="AllowGrow" /> is <see langword="true" />, and
+    /// after evicting the head element when <see cref="OverflowPolicy" /> is
+    /// <see cref="DequeOverflowPolicy.EvictOpposite" /> on a full, fixed-capacity deque. Returns
+    /// <see langword="false" /> without modifying state only when the deque is full, <see cref="AllowGrow" /> is
+    /// <see langword="false" />, and <see cref="OverflowPolicy" /> is <see cref="DequeOverflowPolicy.Reject" />.
     /// </remarks>
-    public bool TryAddLast(T item)
+    public bool TryAddLast(T item) => TryAddInternal(item, atHead: false, throwIfFull: false);
+
+    /// <summary>
+    /// Single internal add implementation shared by <see cref="AddFirst(T)" />, <see cref="AddLast(T)" />,
+    /// <see cref="TryAddFirst(T)" />, and <see cref="TryAddLast(T)" />.
+    /// </summary>
+    /// <param name="item">The element to add.</param>
+    /// <param name="atHead">
+    /// <see langword="true" /> to add at the head (evicting from the tail when applicable); <see langword="false" /> to
+    /// add at the tail (evicting from the head when applicable).
+    /// </param>
+    /// <param name="throwIfFull">
+    /// If <see langword="true" />, throws when the add is rejected on a full deque; otherwise returns
+    /// <see langword="false" />.
+    /// </param>
+    /// <returns><see langword="true" /> when the item was added (including after growth or eviction).</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="throwIfFull" /> is <see langword="true" />, the deque is full, <see cref="AllowGrow" /> is
+    /// <see langword="false" />, and <see cref="OverflowPolicy" /> is <see cref="DequeOverflowPolicy.Reject" />.
+    /// </exception>
+    private bool TryAddInternal(T item, bool atHead, bool throwIfFull)
     {
         if (Count == Capacity)
         {
-            if (!AllowGrow)
-                return false;
+            if (AllowGrow)
+            {
+                Grow(Count + 1);
+            }
+            else if (_overflowPolicy == DequeOverflowPolicy.EvictOpposite)
+            {
+                // Capture the opposite-end victim before raising ItemEvicting so a handler exception vetoes the
+                // eviction in place — nothing is removed, the new element is not stored.
+                T evicted = atHead ? PeekTail() : PeekHead();
+                ItemEvicting?.Invoke(evicted);
 
-            Grow(Count + 1);
+                if (atHead)
+                {
+                    _ = RemoveTail();
+                    AddHead(item);
+                }
+                else
+                {
+                    _ = RemoveHead();
+                    AddTail(item);
+                }
+
+                ItemEvicted?.Invoke(evicted);
+                return true;
+            }
+            else
+            {
+                return throwIfFull ? throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CapacityExhausted) : false;
+            }
         }
 
-        AddTail(item);
+        if (atHead)
+        {
+            AddHead(item);
+        }
+        else
+        {
+            AddTail(item);
+        }
+
         return true;
     }
 
