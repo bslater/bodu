@@ -205,6 +205,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The collection cannot contain null elements..
+        /// </summary>
+        internal static string Arg_Invalid_NullCollectionElement {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_NullCollectionElement", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The specified range overlaps an existing range..
         /// </summary>
         internal static string Arg_Invalid_RangeOverlap {

@@ -17,7 +17,7 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, bit sets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `BiDictionary<TKey,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `Multiset<T>`, `BitSet`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Bidirectional dictionary](bi-dictionary.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Segmented buffer](segmented-buffer.md) · [Bit set](bit-set.md) |
+| `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, bit sets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `BiDictionary<TKey,TValue>`, `LayeredDictionary<TKey,TValue>`, `DefaultingDictionary<TKey,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `Multiset<T>`, `BitSet`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Bidirectional dictionary](bi-dictionary.md) · [Layered and defaulting dictionaries](layered-and-defaulting-dictionaries.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Segmented buffer](segmented-buffer.md) · [Bit set](bit-set.md) |
 | `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`. | [Concurrent collections](concurrent-collections.md) |
 | `Bodu.Collections.Probabilistic` | Approximate sketch structures with quantified error bounds — `BloomFilter<T>` (membership, no false negatives), `CountMinSketch<T>` (frequencies, never underestimates), `HyperLogLog<T>` (distinct counts, ~1.04/√m standard error). | [Probabilistic collections (sketches)](probabilistic-collections.md) |
 | `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms — `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T,T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet` / `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
@@ -98,6 +98,11 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 <div class="bodu-card">
   <h3><a href="bit-set.md">Bit set</a></h3>
   <p>Growable packed bit set (Java <code>BitSet</code> shape) with <code>NextSetBit</code> / <code>NextClearBit</code>, in-place logical ops, and a non-boxing enumerator over set-bit indices.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="layered-and-defaulting-dictionaries.md">Layered and defaulting dictionaries</a></h3>
+  <p>Python-shaped dictionary utilities — <code>LayeredDictionary&lt;TKey,TValue&gt;</code> (a first-wins <code>ChainMap</code> view over ordered layers) and <code>DefaultingDictionary&lt;TKey,TValue&gt;</code> (a <code>defaultdict</code> whose indexer materializes and stores factory defaults).</p>
 </div>
 
 </div>

@@ -165,6 +165,9 @@
   <data name="Arg_Invalid_IncompatibleHyperLogLog" xml:space="preserve">
     <value>The HyperLogLog sketches are incompatible; both sketches must have the same precision and equality comparer.</value>
   </data>
+  <data name="Arg_Invalid_NullCollectionElement" xml:space="preserve">
+    <value>The collection cannot contain null elements.</value>
+  </data>
   <data name="Arg_Invalid_RangeOverlap" xml:space="preserve">
     <value>The specified range overlaps an existing range.</value>
   </data>
