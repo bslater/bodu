@@ -126,9 +126,6 @@
   <data name="Arg_Invalid_ArrayLength" xml:space="preserve">
     <value>The array length must be exactly {0}.</value>
   </data>
-  <data name="Arg_Invalid_ArrayLengthExceedsCapacity" xml:space="preserve">
-    <value>The number of elements to copy exceeds the capacity available.</value>
-  </data>
   <data name="Arg_Invalid_ArrayLengthMultipleOf" xml:space="preserve">
     <value>The length of the array must be a multiple of {0}.</value>
   </data>
@@ -179,15 +176,6 @@
   </data>
   <data name="Arg_Invalid_DestinationTooSmallForEncoded" xml:space="preserve">
     <value>Destination is too small to receive the encoded characters.</value>
-  </data>
-  <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
-    <value>The dictionary cannot contain duplicate keys.</value>
-  </data>
-  <data name="Arg_Invalid_DuplicateSetValue" xml:space="preserve">
-    <value>The set already contains the specified value.</value>
-  </data>
-  <data name="Arg_Invalid_ElementNotInSet" xml:space="preserve">
-    <value>The specified element is not a member of any set.</value>
   </data>
   <data name="Arg_Invalid_EmptyCollectionElement" xml:space="preserve">
     <value>The collection cannot contain empty elements.</value>
@@ -258,12 +246,6 @@
   <data name="Arg_Invalid_ProviderInterface" xml:space="preserve">
     <value>Custom definitions require an external provider that implements {0}.</value>
   </data>
-  <data name="Arg_Invalid_RangeOverlap" xml:space="preserve">
-    <value>The specified range overlaps an existing range.</value>
-  </data>
-  <data name="Arg_Invalid_RangeStartNotLessThanEnd" xml:space="preserve">
-    <value>The range start must be less than the range end.</value>
-  </data>
   <data name="Arg_Invalid_RankMultiDimensionArray" xml:space="preserve">
     <value>Only single-dimension arrays are supported.</value>
   </data>
@@ -321,9 +303,6 @@
   <data name="Arg_Invalid_ValuesNotEqual" xml:space="preserve">
     <value>The value must equal {0}.</value>
   </data>
-  <data name="Arg_Invalid_VertexNotInGraph" xml:space="preserve">
-    <value>The specified vertex does not exist in the graph.</value>
-  </data>
   <data name="Arg_Invalid_WrongAction2ForCtor" xml:space="preserve">
     <value>Constructor supports only the '{0}' or '{1}' actions.</value>
   </data>
@@ -356,9 +335,6 @@
   </data>
   <data name="Arg_OutOfRange_FiscalYearUndeterminable" xml:space="preserve">
     <value>Unable to determine the fiscal year for date '{0:yyyy-MM-dd}'.</value>
-  </data>
-  <data name="Arg_OutOfRange_GraphWeightNotFinite" xml:space="preserve">
-    <value>The edge weight must be a finite, non-negative number.</value>
   </data>
   <data name="Arg_OutOfRange_IndexValidRange" xml:space="preserve">
     <value>The index must be non-negative and less than the size of {0}.</value>
@@ -507,12 +483,6 @@
   <data name="IO_NotSupported_StreamWrite" xml:space="preserve">
     <value>The stream is not writable.</value>
   </data>
-  <data name="KeyNotFound_Dictionary" xml:space="preserve">
-    <value>The given key '{0}' was not present in the dictionary.</value>
-  </data>
-  <data name="KeyNotFound_Range" xml:space="preserve">
-    <value>The specified key was not contained in any range.</value>
-  </data>
   <data name="Op_Invalid_ActivatorReturnedNull" xml:space="preserve">
     <value>Activator.CreateInstance returned null for type '{0}'.</value>
   </data>
@@ -533,24 +503,6 @@
   </data>
   <data name="Op_Invalid_AttributeValue" xml:space="preserve">
     <value>Invalid value '{0}' for attribute '{1}'.</value>
-  </data>
-  <data name="Op_Invalid_CapacityExhausted" xml:space="preserve">
-    <value>The capacity has been exhausted.</value>
-  </data>
-  <data name="Op_Invalid_CircularDependency" xml:space="preserve">
-    <value>Circular dependency detected for '{0}'.</value>
-  </data>
-  <data name="Op_Invalid_CircularReference" xml:space="preserve">
-    <value>Circular reference detected for '{0}'.</value>
-  </data>
-  <data name="Op_Invalid_CollectionEmpty" xml:space="preserve">
-    <value>The collection is empty.</value>
-  </data>
-  <data name="Op_Invalid_CollectionModified" xml:space="preserve">
-    <value>The collection was modified; enumerator operations may not execute.</value>
-  </data>
-  <data name="Op_Invalid_ConcurrentSnapshotUnstable" xml:space="preserve">
-    <value>The collection could not produce a stable snapshot under sustained concurrent modification.</value>
   </data>
   <data name="Op_Invalid_Conversion" xml:space="preserve">
     <value>Unable to convert type {0} to {1}.</value>
@@ -576,14 +528,8 @@
   <data name="Op_Invalid_EnumeratorNotOnElement" xml:space="preserve">
     <value>Enumeration has either not started or has already finished.</value>
   </data>
-  <data name="Op_Invalid_EvictionProducedNoCandidate" xml:space="preserve">
-    <value>Eviction policy '{0}' produced no candidate while the dictionary is at capacity.</value>
-  </data>
   <data name="Op_Invalid_FactoryReturnedNull" xml:space="preserve">
     <value>The factory returned null for type '{0}'.</value>
-  </data>
-  <data name="Op_Invalid_GraphNotDirected" xml:space="preserve">
-    <value>The operation requires a directed graph.</value>
   </data>
   <data name="Op_Invalid_MemoryStreamBufferInaccessible" xml:space="preserve">
     <value>The MemoryStream does not expose its underlying buffer.</value>
@@ -594,14 +540,8 @@
   <data name="Op_Invalid_NoInputData" xml:space="preserve">
     <value>No input data was provided.</value>
   </data>
-  <data name="Op_Invalid_NodeAlreadyHasParent" xml:space="preserve">
-    <value>The node is already attached to a parent and must be detached before it can be added elsewhere.</value>
-  </data>
   <data name="Op_Invalid_NotInitialized" xml:space="preserve">
     <value>The instance has not been initialized.</value>
-  </data>
-  <data name="Op_Invalid_ReentrancyNotAllowed" xml:space="preserve">
-    <value>Cannot modify the collection during a change notification event.</value>
   </data>
   <data name="Op_Invalid_SemaphoreReleaseExceedsMax" xml:space="preserve">
     <value>The release count would cause the semaphore count to exceed its maximum.</value>
@@ -615,23 +555,11 @@
   <data name="Op_Invalid_TimeoutAlreadyEstablished" xml:space="preserve">
     <value>The timeout cannot be changed after the lock has already been established.</value>
   </data>
-  <data name="Op_Invalid_UnknownEvictionPolicy" xml:space="preserve">
-    <value>Unknown eviction policy '{0}'.</value>
-  </data>
   <data name="Op_Invalid_UnsupportedNumericType" xml:space="preserve">
     <value>Type '{0}' is not a supported numeric type.</value>
   </data>
   <data name="Op_Invalid_XmlMissingNamespace" xml:space="preserve">
     <value>Missing XML namespace on root element.</value>
-  </data>
-  <data name="Op_NotSupported_ConcurrentSyncRoot" xml:space="preserve">
-    <value>The SyncRoot property may not be used for the synchronization of concurrent collections.</value>
-  </data>
-  <data name="Op_NotSupported_DictionaryKeysMutation" xml:space="preserve">
-    <value>Mutating the dictionary through the Keys collection is not supported.</value>
-  </data>
-  <data name="Op_NotSupported_DictionaryValuesMutation" xml:space="preserve">
-    <value>Mutating the dictionary through the Values collection is not supported.</value>
   </data>
   <data name="Op_NotSupported_FiscalYearRequired" xml:space="preserve">
     <value>A fiscal year must be provided. Use {0}.</value>

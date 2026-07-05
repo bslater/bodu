@@ -87,14 +87,6 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The number of elements to copy exceeds the capacity available..
-        /// </summary>
-        internal static string Arg_Invalid_ArrayLengthExceedsCapacity {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_ArrayLengthExceedsCapacity", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to The length of the array must be a multiple of {0}..
@@ -249,32 +241,8 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The dictionary cannot contain duplicate keys..
-        /// </summary>
-        internal static string Arg_Invalid_DuplicateDictionaryKey {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_DuplicateDictionaryKey", resourceCulture);
-            }
-        }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The set already contains the specified value..
-        /// </summary>
-        internal static string Arg_Invalid_DuplicateSetValue {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_DuplicateSetValue", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The specified element is not a member of any set..
-        /// </summary>
-        internal static string Arg_Invalid_ElementNotInSet {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_ElementNotInSet", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The collection cannot contain empty elements..
@@ -483,23 +451,7 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The specified range overlaps an existing range..
-        /// </summary>
-        internal static string Arg_Invalid_RangeOverlap {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_RangeOverlap", resourceCulture);
-            }
-        }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The range start must be less than the range end..
-        /// </summary>
-        internal static string Arg_Invalid_RangeStartNotLessThanEnd {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_RangeStartNotLessThanEnd", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Only single-dimension arrays are supported..
@@ -672,14 +624,6 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The specified vertex does not exist in the graph..
-        /// </summary>
-        internal static string Arg_Invalid_VertexNotInGraph {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_VertexNotInGraph", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to Constructor supports only the &apos;{0}&apos; or &apos;{1}&apos; actions..
@@ -780,14 +724,6 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The edge weight must be a finite, non-negative number..
-        /// </summary>
-        internal static string Arg_OutOfRange_GraphWeightNotFinite {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_GraphWeightNotFinite", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The index must be non-negative and less than the size of {0}..
@@ -1230,23 +1166,7 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The given key &apos;{0}&apos; was not present in the dictionary..
-        /// </summary>
-        internal static string KeyNotFound_Dictionary {
-            get {
-                return ResourceManager.GetString("KeyNotFound_Dictionary", resourceCulture);
-            }
-        }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The specified key was not contained in any range..
-        /// </summary>
-        internal static string KeyNotFound_Range {
-            get {
-                return ResourceManager.GetString("KeyNotFound_Range", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Activator.CreateInstance returned null for type &apos;{0}&apos;..
@@ -1311,59 +1231,11 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The capacity has been exhausted..
-        /// </summary>
-        internal static string Op_Invalid_CapacityExhausted {
-            get {
-                return ResourceManager.GetString("Op_Invalid_CapacityExhausted", resourceCulture);
-            }
-        }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Circular dependency detected for &apos;{0}&apos;..
-        /// </summary>
-        internal static string Op_Invalid_CircularDependency {
-            get {
-                return ResourceManager.GetString("Op_Invalid_CircularDependency", resourceCulture);
-            }
-        }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Circular reference detected for &apos;{0}&apos;..
-        /// </summary>
-        internal static string Op_Invalid_CircularReference {
-            get {
-                return ResourceManager.GetString("Op_Invalid_CircularReference", resourceCulture);
-            }
-        }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The collection is empty..
-        /// </summary>
-        internal static string Op_Invalid_CollectionEmpty {
-            get {
-                return ResourceManager.GetString("Op_Invalid_CollectionEmpty", resourceCulture);
-            }
-        }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The collection was modified; enumerator operations may not execute..
-        /// </summary>
-        internal static string Op_Invalid_CollectionModified {
-            get {
-                return ResourceManager.GetString("Op_Invalid_CollectionModified", resourceCulture);
-            }
-        }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The collection could not produce a stable snapshot under sustained concurrent modification..
-        /// </summary>
-        internal static string Op_Invalid_ConcurrentSnapshotUnstable {
-            get {
-                return ResourceManager.GetString("Op_Invalid_ConcurrentSnapshotUnstable", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Unable to convert type {0} to {1}..
@@ -1437,14 +1309,6 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Eviction policy &apos;{0}&apos; produced no candidate while the dictionary is at capacity..
-        /// </summary>
-        internal static string Op_Invalid_EvictionProducedNoCandidate {
-            get {
-                return ResourceManager.GetString("Op_Invalid_EvictionProducedNoCandidate", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to The factory returned null for type &apos;{0}&apos;..
@@ -1455,14 +1319,6 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The operation requires a directed graph..
-        /// </summary>
-        internal static string Op_Invalid_GraphNotDirected {
-            get {
-                return ResourceManager.GetString("Op_Invalid_GraphNotDirected", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The MemoryStream does not expose its underlying buffer..
@@ -1491,14 +1347,6 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The node is already attached to a parent and must be detached before it can be added elsewhere..
-        /// </summary>
-        internal static string Op_Invalid_NodeAlreadyHasParent {
-            get {
-                return ResourceManager.GetString("Op_Invalid_NodeAlreadyHasParent", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The instance has not been initialized..
@@ -1509,14 +1357,6 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot modify the collection during a change notification event..
-        /// </summary>
-        internal static string Op_Invalid_ReentrancyNotAllowed {
-            get {
-                return ResourceManager.GetString("Op_Invalid_ReentrancyNotAllowed", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The release count would cause the semaphore count to exceed its maximum..
@@ -1554,14 +1394,6 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Unknown eviction policy &apos;{0}&apos;..
-        /// </summary>
-        internal static string Op_Invalid_UnknownEvictionPolicy {
-            get {
-                return ResourceManager.GetString("Op_Invalid_UnknownEvictionPolicy", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Type &apos;{0}&apos; is not a supported numeric type..
@@ -1581,32 +1413,8 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The SyncRoot property may not be used for the synchronization of concurrent collections..
-        /// </summary>
-        internal static string Op_NotSupported_ConcurrentSyncRoot {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_ConcurrentSyncRoot", resourceCulture);
-            }
-        }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Mutating the dictionary through the Keys collection is not supported..
-        /// </summary>
-        internal static string Op_NotSupported_DictionaryKeysMutation {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_DictionaryKeysMutation", resourceCulture);
-            }
-        }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Mutating the dictionary through the Values collection is not supported..
-        /// </summary>
-        internal static string Op_NotSupported_DictionaryValuesMutation {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_DictionaryValuesMutation", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to A fiscal year must be provided. Use {0}..
