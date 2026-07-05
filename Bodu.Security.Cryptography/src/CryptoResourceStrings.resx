@@ -295,6 +295,9 @@
   <data name="Crypt_Invalid_GcmPlaintextLengthExceeded" xml:space="preserve">
     <value>GCM plaintext length {0} exceeds the SP 800-38D §5.2.1.1 limit of {1} bytes per (key, nonce) pair.</value>
   </data>
+  <data name="Crypt_Invalid_CcmPlaintextLengthExceeded" xml:space="preserve">
+    <value>CCM plaintext length {0} exceeds the maximum of {1} bytes encodable in the 3-byte length field.</value>
+  </data>
   <data name="Op_Invalid_Blake3CvStackDepth" xml:space="preserve">
     <value>BLAKE3 CV stack exceeded its {0}-level maximum tree depth.</value>
   </data>

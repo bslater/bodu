@@ -545,7 +545,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Crypt_Invalid_GcmPlaintextLengthExceeded", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to CCM plaintext length {0} exceeds the maximum of {1} bytes encodable in the 3-byte length field..
+        /// </summary>
+        internal static string Crypt_Invalid_CcmPlaintextLengthExceeded {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_CcmPlaintextLengthExceeded", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The hash algorithm&apos;s destination buffer was too small..
         /// </summary>
