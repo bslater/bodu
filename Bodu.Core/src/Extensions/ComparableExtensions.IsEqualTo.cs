@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IComparableExtensions.IsEqualTo.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ComparableExtensions.IsEqualTo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Extensions;
 
-public static partial class IComparableExtensions
+public static partial class ComparableExtensions
 {
     /// <summary>
     /// Determines whether two values are equal under the ordering defined by a custom <see cref="IComparer{T}" />.

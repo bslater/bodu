@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IComparableExtensionsTests.AtLeast.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ComparableExtensionsTests.AtLeast.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Extensions;
 
-public partial class IComparableExtensionsTests
+public partial class ComparableExtensionsTests
 {
 
     /// <summary>

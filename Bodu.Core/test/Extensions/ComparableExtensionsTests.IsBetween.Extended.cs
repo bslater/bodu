@@ -1,16 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IComparableExtensionsTests.IsBetween.Extended.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ComparableExtensionsTests.IsBetween.Extended.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Extensions;
 
-public partial class IComparableExtensionsTests
+public partial class ComparableExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that the comparer overload of <see cref="IComparableExtensions.IsBetween{T}(T, T?, T?, IComparer{T})" /> returns
+    /// Verifies that the comparer overload of <see cref="ComparableExtensions.IsBetween{T}(T, T?, T?, IComparer{T})" /> returns
     /// <see langword="true" /> when the value lies within the inclusive range under the default comparer.
     /// </summary>
     [TestMethod]
@@ -27,7 +27,7 @@ public partial class IComparableExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the comparer overload of <see cref="IComparableExtensions.IsBetween{T}(T, T?, T?, IComparer{T})" /> returns
+    /// Verifies that the comparer overload of <see cref="ComparableExtensions.IsBetween{T}(T, T?, T?, IComparer{T})" /> returns
     /// <see langword="false" /> when either boundary is <see langword="null" />.
     /// </summary>
     [TestMethod]
@@ -40,7 +40,7 @@ public partial class IComparableExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IComparableExtensions.IsBetween{T}(T, T?, T?)" /> returns <see langword="false" /> when either boundary
+    /// Verifies that <see cref="ComparableExtensions.IsBetween{T}(T, T?, T?)" /> returns <see langword="false" /> when either boundary
     /// is <see langword="null" /> for reference-type values where the nullability annotation has runtime effect.
     /// </summary>
     [TestMethod]
@@ -51,7 +51,7 @@ public partial class IComparableExtensionsTests
         Assert.IsFalse("banana".IsBetween(null, null));
     }
     /// <summary>
-    /// Verifies that <see cref="IComparableExtensions.IsBetween{T}(T, T?, T?)" /> returns the expected truth value for value inside,
+    /// Verifies that <see cref="ComparableExtensions.IsBetween{T}(T, T?, T?)" /> returns the expected truth value for value inside,
     /// on-boundary, outside, reversed-boundary, and equal-boundary cases when called with integer arguments.
     /// </summary>
     [TestMethod]

@@ -1,15 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IComparableExtensions.IsGreaterThanOrEqual.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ComparableExtensions.IsLessThanOrEqual.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Extensions;
 
-public static partial class IComparableExtensions
+public static partial class ComparableExtensions
 {
     /// <summary>
-    /// Determines whether a value is greater than or equal to a specified reference value.
+    /// Determines whether a value is less than or equal to a specified reference value.
     /// </summary>
     /// <typeparam name="T">
     /// The type of the value to compare, which must implement <see cref="IComparable{T}" />.
@@ -17,18 +17,18 @@ public static partial class IComparableExtensions
     /// <param name="value">The value to test.</param>
     /// <param name="other">The reference value to compare against.</param>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="value" /> is greater than or equal to <paramref name="other" />;
+    /// <see langword="true" /> if <paramref name="value" /> is less than or equal to <paramref name="other" />;
     /// otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// If <paramref name="other" /> is <see langword="null" />, the method returns <see langword="false" />.
     /// </remarks>
-    public static bool IsGreaterThanOrEqual<T>(this T value, T? other)
+    public static bool IsLessThanOrEqual<T>(this T value, T? other)
         where T : IComparable<T> =>
-            other is not null && value.CompareTo(other) >= 0;
+            other is not null && value.CompareTo(other) <= 0;
 
     /// <summary>
-    /// Determines whether a value is greater than or equal to a specified reference value using a custom
+    /// Determines whether a value is less than or equal to a specified reference value using a custom
     /// <see cref="IComparer{T}" />.
     /// </summary>
     /// <typeparam name="T">The type of the value to compare.</typeparam>
@@ -36,8 +36,8 @@ public static partial class IComparableExtensions
     /// <param name="other">The reference value to compare against.</param>
     /// <param name="comparer">The comparer to use for comparing values.</param>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="value" /> is greater than or equal to <paramref name="other" /> based
-    /// on the specified comparer; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if <paramref name="value" /> is less than or equal to <paramref name="other" /> based on
+    /// the specified comparer; otherwise, <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="comparer" /> is <see langword="null" />.
@@ -45,11 +45,11 @@ public static partial class IComparableExtensions
     /// <remarks>
     /// If <paramref name="other" /> is <see langword="null" />, the method returns <see langword="false" />.
     /// </remarks>
-    public static bool IsGreaterThanOrEqual<T>(this T value, T? other, IComparer<T> comparer)
+    public static bool IsLessThanOrEqual<T>(this T value, T? other, IComparer<T> comparer)
         where T : struct
     {
         ThrowHelper.ThrowIfNull(comparer);
 
-        return other is not null && comparer.Compare(value, other.Value) >= 0;
+        return other is not null && comparer.Compare(value, other.Value) <= 0;
     }
 }

@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IComparableExtensions.AtMost.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ComparableExtensions.AtMost.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Extensions;
 
-public static partial class IComparableExtensions
+public static partial class ComparableExtensions
 {
     /// <summary>
     /// Lowers a value to a specified inclusive upper bound, returning the bound when the value exceeds it.

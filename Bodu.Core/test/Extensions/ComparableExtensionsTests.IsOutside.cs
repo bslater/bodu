@@ -1,18 +1,18 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IComparableExtensionsTests.IsOutside.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ComparableExtensionsTests.IsOutside.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Extensions;
 
-public partial class IComparableExtensionsTests
+public partial class ComparableExtensionsTests
 {
     // =========================================================================
     // IsOutside<T>(T?, T?, T?)
     // =========================================================================
 
-    //TOFIX: Error(active)  CS1929	'int' does not contain a definition for 'IsOutside' and the best extension method overload 'IComparableExtensions.IsOutside<int?>(int?, int?, int?)' requires a receiver of type 'int?'	Bodu.Core.Test C:\Users\bslater\OneDrive\Code\Git\Bodu\Bodu.Core\test\Extensions\IComparableExtensionsTests.IsOutside.cs	38	
+    //TOFIX: Error(active)  CS1929	'int' does not contain a definition for 'IsOutside' and the best extension method overload 'ComparableExtensions.IsOutside<int?>(int?, int?, int?)' requires a receiver of type 'int?'	Bodu.Core.Test C:\Users\bslater\OneDrive\Code\Git\Bodu\Bodu.Core\test\Extensions\ComparableExtensionsTests.IsOutside.cs	38	
     ///// <summary>
     ///// Verifies that <c>IsOutside</c> returns the correct complement of <c>IsBetween</c>
     ///// for in-range, on-boundary, outside, reversed-boundary, and null-input cases.
@@ -43,14 +43,14 @@ public partial class IComparableExtensionsTests
 
     /* TOFIX:
      *  IsOutside_WhenUsingReverseComparer_ShouldReturnExpectedResult
-         Source: IComparableExtensionsTests.IsOutside.cs line 53
+         Source: ComparableExtensionsTests.IsOutside.cs line 53
          Duration: 1 ms
 
         Message: 
         Assert.IsTrue failed. 
 
         Stack Trace: 
-        IComparableExtensionsTests.IsOutside_WhenUsingReverseComparer_ShouldReturnExpectedResult() line 59
+        ComparableExtensionsTests.IsOutside_WhenUsingReverseComparer_ShouldReturnExpectedResult() line 59
         RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
         MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
 

@@ -1,16 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IComparableExtensionsTests.IsOutside.Extended.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ComparableExtensionsTests.IsOutside.Extended.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Extensions;
 
-public partial class IComparableExtensionsTests
+public partial class ComparableExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that the comparer overload of <see cref="IComparableExtensions.IsOutside{T}(T, T?, T?, IComparer{T})" /> matches
+    /// Verifies that the comparer overload of <see cref="ComparableExtensions.IsOutside{T}(T, T?, T?, IComparer{T})" /> matches
     /// <c>IsBetween</c>'s complement under the default comparer for inside, on-boundary, outside, and reversed-boundary cases.
     /// </summary>
     [TestMethod]
@@ -33,7 +33,7 @@ public partial class IComparableExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the comparer overload of <see cref="IComparableExtensions.IsOutside{T}(T, T?, T?, IComparer{T})" /> returns
+    /// Verifies that the comparer overload of <see cref="ComparableExtensions.IsOutside{T}(T, T?, T?, IComparer{T})" /> returns
     /// <see langword="false" /> when either boundary is <see langword="null" />.
     /// </summary>
     [TestMethod]
@@ -45,7 +45,7 @@ public partial class IComparableExtensionsTests
         Assert.IsFalse(5.IsOutside((int?)null, (int?)null, comparer));
     }
     /// <summary>
-    /// Verifies that <see cref="IComparableExtensions.IsOutside{T}(T, T?, T?)" /> returns the expected truth value for value inside,
+    /// Verifies that <see cref="ComparableExtensions.IsOutside{T}(T, T?, T?)" /> returns the expected truth value for value inside,
     /// on-boundary, outside, reversed-boundary, and equal-boundary cases when called with integer arguments.
     /// </summary>
     [TestMethod]
@@ -62,7 +62,7 @@ public partial class IComparableExtensionsTests
         int value, int lower, int upper, bool expected) => Assert.AreEqual(expected, value.IsOutside(lower, upper));
 
     /// <summary>
-    /// Verifies that <see cref="IComparableExtensions.IsOutside{T}(T, T?, T?)" /> returns <see langword="false" /> when either boundary
+    /// Verifies that <see cref="ComparableExtensions.IsOutside{T}(T, T?, T?)" /> returns <see langword="false" /> when either boundary
     /// is <see langword="null" /> for reference-type values where the nullability annotation has runtime effect.
     /// </summary>
     [TestMethod]
