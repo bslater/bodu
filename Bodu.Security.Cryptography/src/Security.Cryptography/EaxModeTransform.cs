@@ -407,6 +407,13 @@ public sealed class EaxModeTransform
 
             return mac;
         }
+        catch
+        {
+            // On a mid-MAC cipher fault, zero the partially computed accumulator before it escapes;
+            // mirrors SivModeTransform.ComputeCmac so both CMAC paths clear secret state on failure.
+            CryptographyHelper.Clear(mac);
+            throw;
+        }
         finally
         {
             CryptographyHelper.Clear(lastBlock);

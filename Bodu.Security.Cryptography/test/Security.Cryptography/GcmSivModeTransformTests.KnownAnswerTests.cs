@@ -171,4 +171,58 @@ public sealed partial class GcmSivModeTransformTests
         CollectionAssert.AreEqual(plaintext, recovered,
             "GCM-SIV round-trip must recover the original plaintext.");
     }
+
+    /// <summary>
+    /// Verifies that GCM-SIV encrypt/decrypt round-trips and authenticates for plaintext lengths that straddle the
+    /// 16-byte POLYVAL block boundary — exercising the partial-final-block padding path — and that a single-bit tag
+    /// tamper is rejected at each length. Deterministic (no RNG) so the boundary coverage is stable.
+    /// </summary>
+    /// <param name="plaintextLength">The plaintext length in bytes.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(7)]
+    [DataRow(8)]
+    [DataRow(15)]
+    [DataRow(16)]
+    [DataRow(17)]
+    [DataRow(31)]
+    [DataRow(33)]
+    public void EncryptThenDecrypt_AtPolyvalBlockBoundaries_ShouldRoundTripAndAuthenticate(int plaintextLength)
+    {
+        byte[] key = new byte[16];
+        byte[] iv = new byte[16];
+        for (int i = 0; i < key.Length; i++) key[i] = (byte)(i + 1);
+        for (int i = 0; i < 12; i++) iv[i] = (byte)(0x30 + i);
+
+        byte[] plaintext = new byte[plaintextLength];
+        for (int i = 0; i < plaintextLength; i++) plaintext[i] = (byte)i;
+
+        // Use a partial (non-aligned) AAD block whenever the plaintext is block-aligned, so the partial-block padding
+        // path is exercised on at least one of the two POLYVAL inputs at every length.
+        byte[] aad = new byte[plaintextLength % 16 == 0 ? 5 : 0];
+        for (int i = 0; i < aad.Length; i++) aad[i] = (byte)(0xA0 + i);
+
+        var enc = new GcmSivModeTransform(new AesBlockCipherFixture(key), k => new AesBlockCipherFixture(k), iv);
+        if (aad.Length > 0) enc.ProcessAssociatedData(aad);
+        byte[] ciphertext = new byte[plaintextLength + (enc.TagSize / 8)];
+        enc.Encrypt(plaintext, ciphertext);
+
+        var dec = new GcmSivModeTransform(new AesBlockCipherFixture(key), k => new AesBlockCipherFixture(k), iv);
+        if (aad.Length > 0) dec.ProcessAssociatedData(aad);
+        byte[] recovered = new byte[plaintextLength];
+        dec.Decrypt(ciphertext, recovered);
+
+        CollectionAssert.AreEqual(plaintext, recovered, $"GCM-SIV round-trip failed at plaintext length {plaintextLength}.");
+
+        // A single-bit tag tamper must fail authentication at every length.
+        ciphertext[^1] ^= 0x01;
+        var tampered = new GcmSivModeTransform(new AesBlockCipherFixture(key), k => new AesBlockCipherFixture(k), iv);
+        if (aad.Length > 0) tampered.ProcessAssociatedData(aad);
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            tampered.Decrypt(ciphertext, new byte[plaintextLength]);
+        });
+    }
 }

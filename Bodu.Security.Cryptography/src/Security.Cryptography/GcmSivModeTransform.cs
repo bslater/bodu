@@ -359,30 +359,42 @@ public sealed class GcmSivModeTransform
         // not escape to the managed heap — stack allocation ensures it is reclaimed with the frame.
         Span<byte> z = stackalloc byte[16];
         Span<byte> v = stackalloc byte[16];
-        h.CopyTo(v);
 
-        for (int i = 0; i < 16; i++)
+        try
         {
-            byte xi = x[i];
-            for (int bit = 7; bit >= 0; bit--)
+            h.CopyTo(v);
+
+            // Constant-time bit-serial multiply: every iteration touches z and v unconditionally.
+            // The two secret-dependent decisions — whether bit i of x is set, and whether the bit
+            // shifted out of v is set — are folded in through 0x00/0xFF masks instead of branches,
+            // so neither control flow nor memory-access pattern depends on x, h, or the running state.
+            // Both operands here are secret (reflected POLYVAL state and reflected auth key), so this
+            // mirrors the hardened GCM/GHASH multiply and must stay branchless.
+            for (int i = 0; i < 128; i++)
             {
-                if (((xi >> bit) & 1) == 1)
-                    Xor(z, v, z);
+                // bit i of x in big-endian bit order; bitMask is 0xFF when set, 0x00 otherwise.
+                byte bitMask = (byte)(-((x[i >> 3] >> (7 - (i & 7))) & 1));
+                for (int j = 0; j < 16; j++)
+                    z[j] ^= (byte)(v[j] & bitMask);
 
-                bool lsb = (v[15] & 1) == 1;
+                // lsbMask is 0xFF when the bit about to be shifted out of v is set, 0x00 otherwise.
+                byte lsbMask = (byte)(-(v[15] & 0x01));
 
-                // Right-shift v by 1.
                 for (int j = 15; j > 0; j--)
-                    v[j] = (byte)((v[j] >> 1) | (v[j - 1] << 7));
-
+                    v[j] = (byte)((v[j] >> 1) | ((v[j - 1] & 0x01) << 7));
                 v[0] >>= 1;
 
-                // Reduce: if LSB was set, XOR with 0xE1 in MSByte (x^128 + x^7 + x^2 + x + 1).
-                if (lsb) v[0] ^= 0xE1;
+                // Reduce by R = 0xE1 || 0…0 (x^128 + x^7 + x^2 + x + 1) when that bit was set.
+                v[0] ^= (byte)(0xE1 & lsbMask);
             }
-        }
 
-        z.CopyTo(result);
+            z.CopyTo(result);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(v);
+            CryptographyHelper.Clear(z);
+        }
     }
 
     /// <summary>
