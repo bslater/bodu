@@ -79,11 +79,16 @@ Async coordination primitives — the async-friendly peers of the BCL synchroniz
 | <xref:Bodu.Threading.AsyncLazy`1>, <xref:Bodu.Threading.AsyncDebouncer>, <xref:Bodu.Threading.RateGate> | One-time async initialization, trailing-edge debouncing, and rate limiting. |
 
 ### `Bodu.Functional`
-Functional helpers. See the [Memoization](../../guides/core/memoization.md) guide and the <xref:Bodu.Functional> overview.
+Functional helpers and railway primitives. See the [Memoization](../../guides/core/memoization.md) and [Options, results, and eithers](../../guides/core/functional-results.md) guides and the <xref:Bodu.Functional> overview.
 
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Functional.Memoizer> | Wraps a pure function in a thread-safe caching delegate (single- and multi-argument). |
+| <xref:Bodu.Functional.Option`1> | An optional value — `Some(value)` or `None` — with `Map` / `Bind` / `Filter` / `Match` combinators; `default` equals `None`. |
+| <xref:Bodu.Functional.Result>, <xref:Bodu.Functional.Result`1> | Success-or-failure outcomes carrying a value or a <xref:Bodu.Functional.ResultError>; `default` is a failure with an empty error. |
+| <xref:Bodu.Functional.ResultError> | The failure descriptor — optional code, never-null message, optional captured exception. |
+| <xref:Bodu.Functional.Either`2> | A symmetric disjoint union with `MapLeft` / `MapRight` / `Match` / `Swap`; `default` is an explicit uninitialized state. |
+| <xref:Bodu.Functional.OptionAsyncExtensions>, <xref:Bodu.Functional.ResultAsyncExtensions> | Task-based `MapAsync` / `BindAsync` / `MatchAsync` (and `TapAsync`) companions for async pipelines. |
 
 ### `Bodu.Collections.Extensions` and `Bodu.Collections.Generic.Extensions`
 Sequence-shaping helpers that compose on top of `IEnumerable<T>` and `IList<T>`.

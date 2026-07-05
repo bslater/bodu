@@ -1,7 +1,7 @@
 # Bodu.Core roadmap — implementation plan
 
 **Date:** 2026-07-04
-**Status:** T0 executed (2026-07-05); T1–T6 proposed
+**Status:** T0 and T1 executed (2026-07-05); T2–T6 proposed
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *Per-project roadmap → `Bodu.Core`*
 
 This plan turns every item in the `Bodu.Core` section of the repository
@@ -229,6 +229,28 @@ roadmap-update PR as T0.a's doc changes.
 ---
 
 ## 3. T1 — Functional seam: `Result<T>` / `Option<T>` / `Either<TLeft,TRight>`
+
+> **Executed 2026-07-05** as five incremental commits (Option → Result
+> family → Either → async extensions → docs). Deviations from the
+> sketch below, each a deliberate design-review outcome:
+>
+> 1. **`ValueTask` combinator variants deferred** — the async surface
+>    is Task-only in v1 (`OptionAsyncExtensions` /
+>    `ResultAsyncExtensions`), with no `CancellationToken` parameters
+>    (the combinators perform no I/O; cancellation belongs inside the
+>    caller's delegates).
+> 2. **`Either<TLeft,TRight>` default is an uninitialized-throwing
+>    state**, not a value: with no privileged side, `default` reports
+>    neither `IsLeft` nor `IsRight` and side-requiring operations throw
+>    (the `ImmutableArray<T>.IsDefault` precedent). Option and Result
+>    keep total defaults (`None`; failure with empty error).
+> 3. **No right-biased `Map`/`Bind` on `Either`** — it exposes only the
+>    explicit `MapLeft` / `MapRight`, keeping the railway bias on
+>    `Result<T>`.
+> 4. **Additions over the sketch:** a non-generic `Result` (void
+>    success/failure carrying the factories), the `Option` companion
+>    class with `FromNullable`, and a strict non-null rule for all
+>    present values with explicitly-documented lenient lifts.
 
 **Scope.** Railway-oriented primitives as `readonly struct`s in
 namespace `Bodu.Functional`. In scope: the three value types, their

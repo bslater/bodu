@@ -22,7 +22,7 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 | `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms — `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T,T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet` / `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
 | `Bodu.Collections.Generic.Trees` | Prefix trees and an n-ary tree — `Trie`, `Trie<TValue>`, and `Tree<T>`. | [Trie (prefix tree)](trie.md) |
 | `Bodu.Threading` | Async coordination primitives — `AsyncLock`, `AsyncSemaphore`, `AsyncReaderWriterLock`, `AsyncAutoResetEvent` / `AsyncManualResetEvent` / `AsyncCountdownEvent`, `AsyncLazy<T>`, `AsyncDebouncer`, and `RateGate`. | [Async coordination primitives](async-primitives.md) |
-| `Bodu.Functional` | Functional helpers — `Memoizer`. | [Memoization](memoization.md) |
+| `Bodu.Functional` | Functional helpers — `Memoizer`, and the railway primitives `Option<T>`, `Result` / `Result<T>` / `ResultError`, `Either<TLeft,TRight>` with Task-based async combinators. | [Memoization](memoization.md) · [Options, results, and eithers](functional-results.md) |
 | `Bodu` | Root namespace primitives — `WeekPattern`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) |
 | `Bodu.Buffers` | Pooled buffer infrastructure — `PooledBufferBuilder<T>`. | [Pooled buffer builder](pooled-buffer-builder.md) |
 | `Bodu.Extensions` | Date, numeric, span, array, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `IComparableExtensions`. | (no dedicated guide yet — see API reference) |
@@ -142,6 +142,11 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 <div class="bodu-card">
   <h3><a href="memoization.md">Memoization</a></h3>
   <p><code>Memoizer</code> wraps a pure function in a thread-safe caching delegate — single- and multi-argument, with an optional key comparer.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="functional-results.md">Options, results, and eithers</a></h3>
+  <p><code>Option&lt;T&gt;</code>, <code>Result&lt;T&gt;</code>, and <code>Either&lt;TLeft,TRight&gt;</code> — allocation-free railway primitives with Map/Bind/Match combinators and async companions.</p>
 </div>
 
 </div>

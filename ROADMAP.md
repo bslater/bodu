@@ -349,11 +349,20 @@ Forward-looking:
   (moving the type after `Bodu.Core/v1.0.0` tags would be breaking);
   revisit only if an external consumer emerges that cannot reference
   Core at all.
-- **Grow the `Functional` seam** — it currently holds only `Memoizer`.
-  A `Result<T>` / `Option<T>` / `Either<TLeft,TRight>` railway-oriented
-  set is the most-requested independently-built .NET surface (LanguageExt,
-  CSharpFunctionalExtensions) and a natural fit for the seam. See
-  *New library candidates* for the extraction option.
+- **The `Functional` seam has grown — railway primitives shipped.** ✅
+  `Option<T>` (plus the non-generic `Option` companion), `Result` /
+  `Result<T>` / `ResultError`, and `Either<TLeft,TRight>` landed as
+  readonly structs with `Map` / `Bind` / `Match` combinators and
+  Task-based async extensions (`OptionAsyncExtensions` /
+  `ResultAsyncExtensions`) — the most-requested independently-built
+  .NET surface (LanguageExt, CSharpFunctionalExtensions). Present
+  values are strictly non-null (lenient null→`None` lifts are
+  explicit), each type documents its `default` contract (`None` /
+  empty-error failure / uninitialized-throwing `Either`), and
+  `ValueTask` combinator variants are a deferred follow-up. The seam
+  now sits at the `Bodu.Functional` extraction trigger recorded under
+  *New library candidates* — grow it further only alongside that
+  decision.
 - **Probabilistic / sketch data structures** — Bloom filter, Count-Min
   sketch, HyperLogLog. Commonly built independently, absent from the BCL,
   and a clean fit for the collections pillar.
@@ -989,11 +998,15 @@ filter were added to *Non-goals* instead.
   this alone); .NET: Slugify.Core / Unidecode.NET. Data-driven mapping
   tables and span-based transforms — the `Bodu.Text.Encoding` profile
   applied to text normalization.
-- **`Bodu.Functional`** — if the `Bodu.Core/Functional` seam grows beyond
-  a couple of types, extract `Result<T>` / `Option<T>` /
-  `Either<TLeft,TRight>` and the railway-oriented combinators into a
-  dedicated package rather than bloating Core. This is the single
-  most-reached-for independently-built .NET surface.
+- **`Bodu.Functional`** — the railway set (`Result<T>` / `Option<T>` /
+  `Either<TLeft,TRight>` plus the async combinators) has now **shipped
+  inside the `Bodu.Core/Functional` seam**, deliberately not as a
+  package (the HOTP/TOTP restraint precedent). The extraction trigger
+  stands: if the seam grows further — `Validation`-style error
+  accumulation, `ValueTask` combinator variants, applicative
+  surfaces — extract the whole seam into this dedicated package rather
+  than bloating Core. Decide before `Bodu.Core/v1.0.0` tags if such
+  growth is imminent; afterwards the move is breaking.
 - **`Bodu.Units`** — dimensioned quantities and unit conversion over
   generic math (length / mass / duration / data size / …, with
   compile-time dimension safety on the `Money<TCurrency>` model).
