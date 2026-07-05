@@ -59,6 +59,18 @@ public readonly partial struct CalculatedMoney
 
         decimal rounded = effective.Rounding.Round(_amount, scale);
 
+        // Apply the context's cash-rounding policy at settlement: when the caller opts into cash rounding and the
+        // currency declares a physical cash increment, snap the settled amount to the nearest multiple of that
+        // increment using the context's rounding strategy. The default (CashRoundingPolicy.None) leaves the amount
+        // untouched, preserving existing behaviour.
+        if (registered
+            && effective.CashRounding == CashRoundingPolicy.CurrencyCashIncrement
+            && info!.CashRoundingIncrement > 0m)
+        {
+            decimal increment = info.CashRoundingIncrement;
+            rounded = effective.Rounding.Round(rounded / increment, 0) * increment;
+        }
+
         return registered && scale == currencyMinorUnits
             ? new Money(rounded, Code)
             : Money.FromExplicitScale(rounded, Code, scale);
