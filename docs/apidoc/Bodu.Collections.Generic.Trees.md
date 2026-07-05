@@ -6,7 +6,7 @@ uid: Bodu.Collections.Generic.Trees
 
 ## Purpose
 
-**Bodu.Collections.Generic.Trees** provides tree-shaped collections for `Bodu.Core`. Its headline types are the prefix trees (tries): <xref:Bodu.Collections.Generic.Trees.Trie> stores a set of string keys, and <xref:Bodu.Collections.Generic.Trees.Trie`1> maps string keys to values. Both keep keys as paths of characters, so membership and prefix queries cost time proportional to the length of the key rather than to the number of stored keys — the natural fit for autocomplete, routing tables, and dictionary lookups where a prefix narrows the search.
+**Bodu.Collections.Generic.Trees** provides the tree-shaped collections of the `Bodu.Collections` package (which depends on `Bodu.Core`). Its headline types are the prefix trees (tries): <xref:Bodu.Collections.Generic.Trees.Trie> stores a set of string keys, and <xref:Bodu.Collections.Generic.Trees.Trie`1> maps string keys to values. Both keep keys as paths of characters, so membership and prefix queries cost time proportional to the length of the key rather than to the number of stored keys — the natural fit for autocomplete, routing tables, and dictionary lookups where a prefix narrows the search.
 
 The tries have two sibling families. <xref:Bodu.Collections.Generic.Trees.RadixTrie> and <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> mirror the trie surfaces member-for-member over path-compressed string edges — the better fit for long keys with sparse branching (URLs, paths, identifiers). <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> and <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> invert the question: built once from a pattern set, they report every occurrence of every pattern in a searched text in a single O(text + matches) pass.
 
@@ -14,7 +14,7 @@ Alongside the tries, <xref:Bodu.Collections.Generic.Trees.Tree`1> is a mutable n
 
 ## Static documentation
 
-- **[Introduction](~/docs/core/index.md)** — where the tree collections sit in the wider `Bodu.Core` surface.
+- **[Introduction](~/docs/core/index.md)** — where the tree collections sit in the wider collection catalogue.
 - **[Tries and text search](~/guides/core/trie.md)** — building a string set or string-keyed map, prefix queries, removal, enumeration, the radix-trie variants, and Aho-Corasick multi-pattern matching.
 
 ## Key types

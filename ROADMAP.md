@@ -1123,6 +1123,9 @@ Target state:
 blockquote directly under its README title. The assignment:
 
 - **Stable** — the mature core of the solution: `Bodu.Core`,
+  `Bodu.Collections` (the specialized collection catalogue split out of
+  `Bodu.Core` with namespaces unchanged; the tranche additions shipped
+  with settled APIs per the implementation plan),
   `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
   `Bodu.Text.Encoding`, `Bodu.Security.Cryptography`, the text-format and
   configuration libraries (`Bodu.Text.Bencode` / `.Toml` / `.Formats` /

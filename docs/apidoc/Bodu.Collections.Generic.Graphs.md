@@ -6,13 +6,13 @@ uid: Bodu.Collections.Generic.Graphs
 
 ## Purpose
 
-**Bodu.Collections.Generic.Graphs** is a small, self-contained graph toolkit in `Bodu.Core`: a vertex-and-edge container, a static catalogue of classic graph algorithms, and two union-find (disjoint-set) structures. It is built for in-memory adjacency-list graphs of arbitrary vertex types — integers, strings, or your own value/reference types — with optional non-negative edge weights.
+**Bodu.Collections.Generic.Graphs** is a small, self-contained graph toolkit in the `Bodu.Collections` package (which depends on `Bodu.Core`): a vertex-and-edge container, a static catalogue of classic graph algorithms, and two union-find (disjoint-set) structures. It is built for in-memory adjacency-list graphs of arbitrary vertex types — integers, strings, or your own value/reference types — with optional non-negative edge weights.
 
 The container, <xref:Bodu.Collections.Generic.Graphs.Graph`1>, stores an adjacency map and is fixed as either directed or undirected at construction via <xref:Bodu.Collections.Generic.Graphs.GraphKind>. The algorithms in <xref:Bodu.Collections.Generic.Graphs.GraphAlgorithms> — breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components — are decoupled from the container: they accept the read-only interfaces <xref:Bodu.Collections.Generic.Graphs.IReadOnlyGraph`1> and <xref:Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph`2>, so they run over any conforming representation. The algorithms reuse the library's own primitives — <xref:Bodu.Collections.Generic.Deque`1> for breadth-first frontiers and Kahn's ready queue, and <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> for Dijkstra relaxation — and evaluate iteratively so they do not overflow the stack on deep graphs.
 
 ## Static documentation
 
-- **[Core foundations](~/docs/core/index.md)** — the headline `Bodu.Core` collections and where the graph types sit among them.
+- **[Core foundations](~/docs/core/index.md)** — the headline collections and where the graph types sit among them.
 - **[Graphs and graph algorithms](~/guides/core/graphs.md)** — build a graph, run a traversal or shortest path, sort topologically, find components, and use union-find.
 
 ## Key types

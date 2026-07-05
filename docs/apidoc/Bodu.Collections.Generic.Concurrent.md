@@ -2,11 +2,11 @@
 uid: Bodu.Collections.Generic.Concurrent
 ---
 
-![Bodu.Core](~/images/hero-core.svg)
+![Bodu.Collections.Generic.Concurrent](~/images/hero-core.svg)
 
 ## Purpose
 
-**Bodu.Collections.Generic.Concurrent** ships the thread-safe / lock-free variants of the `Bodu.Collections.Generic` collections. Reach for this namespace when the same collection is accessed by multiple producers and consumers and you need predictable concurrent semantics rather than an external lock.
+**Bodu.Collections.Generic.Concurrent** ships the thread-safe / lock-free variants of the `Bodu.Collections.Generic` collections, in the `Bodu.Collections` package (which depends on `Bodu.Core`). Reach for this namespace when the same collection is accessed by multiple producers and consumers and you need predictable concurrent semantics rather than an external lock.
 
 ## Key types
 

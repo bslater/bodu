@@ -2,11 +2,11 @@
 uid: Bodu.Collections.Generic
 ---
 
-![Bodu.Core](~/images/hero-core.svg)
+![Bodu.Collections.Generic](~/images/hero-core.svg)
 
 ## Purpose
 
-**Bodu.Core** provides the foundational collection and utility types that the rest of the Bodu solution builds on. This namespace is the headline home of `Bodu.Core`: bounded and ordered collections that behave predictably under memory pressure, with companions for buffer conversion, base encoding, day-of-week patterns, and argument validation in the adjacent namespaces.
+**Bodu.Collections.Generic** is the headline namespace of the **`Bodu.Collections`** package (which depends on `Bodu.Core`): bounded and ordered collections that behave predictably under memory pressure, with companions for buffer conversion, base encoding, day-of-week patterns, and argument validation in the adjacent `Bodu.Core` namespaces.
 
 Reach for this library when you need a fixed-capacity FIFO queue, a deque with O(1) ends, a size-limited key/value cache with a real eviction policy (not just an ad-hoc `Dictionary` plus a bolted-on timer), a range-keyed lookup, or helpers that keep ceremony out of hot paths.
 
@@ -41,7 +41,7 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 - <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1> — multi-map and multi-set semantics over `IEqualityComparer<TKey>`.
 - <xref:Bodu.Collections.Generic.Range`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.ValueRange`2> — range-keyed lookups for ordered or interval-valued keys.
 
-**Related namespaces in `Bodu.Core`**
+**Related namespaces** (these ship in the `Bodu.Core` package, which `Bodu.Collections` depends on)
 
 - <xref:Bodu> — `WeekPattern` (day-of-week bitmask), `IRandomGenerator` / `XorShiftRandom`, and `ThrowHelper` centralized argument validation.
 - <xref:Bodu.Buffers> — `PooledBufferBuilder<T>` for `ArrayPool<T>`-backed zero-allocation building.

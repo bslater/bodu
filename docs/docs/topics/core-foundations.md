@@ -4,7 +4,7 @@ title: Core Foundations — Overview
 
 # Core Foundations
 
-**Bodu.Core** is the foundation of the entire Bodu suite. Every other Bodu package depends on it — `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, the text and serialization packages, `Bodu.Numerics`, and `Bodu.Financial` all reference it for shared primitives such as the centralized <xref:Bodu.ThrowHelper> argument-validation catalogue, <xref:Bodu.WeekPattern>, the calendar-shape enums, and pooled buffers. It is also a useful library in its own right: bounded and specialized collections, a writer-style pooled buffer builder, and a large set of date, numeric, span, and array extensions.
+**Bodu.Core** is the foundation of the entire Bodu suite. Every other Bodu package depends on it — `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, the text and serialization packages, `Bodu.Numerics`, and `Bodu.Financial` all reference it for shared primitives such as the centralized <xref:Bodu.ThrowHelper> argument-validation catalogue, <xref:Bodu.WeekPattern>, the calendar-shape enums, and pooled buffers. It is also a useful library in its own right: a writer-style pooled buffer builder and a large set of date, numeric, span, and array extensions. The specialized collection catalogue — the bounded, ordered, graph, tree, and probabilistic collections — ships in the companion **`Bodu.Collections`** package (namespaces unchanged; it depends on `Bodu.Core`).
 
 The package additionally ships the **`Bodu.Text`** namespace — character-encoding helpers over <xref:System.Text.Encoding?displayProperty=nameWithType> that add byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, and validation. `Bodu.Text` is a namespace inside the `Bodu.Core` package, not a separate package; installing `Bodu.Core` gives you both surfaces.
 
@@ -12,7 +12,8 @@ The package additionally ships the **`Bodu.Text`** namespace — character-encod
 
 | Package | Status | What it provides | Docs |
 |---|---|---|---|
-| **Bodu.Core** | Stable | Bounded collections (`CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`), the insertion/access-ordered `SequencedDictionary<TKey,TValue>`, index-aware sets and priority queues, range-keyed lookups, the `WeekPattern` value type, `PooledBufferBuilder<T>`, date / numeric / span extensions, and the `ThrowHelper` validation catalogue. | [Introduction](../core/index.md) · [Concepts](../core/concepts.md) · [Getting started](../core/getting-started.md) |
+| **Bodu.Core** | Stable | The `WeekPattern` value type, `PooledBufferBuilder<T>`, date / numeric / span extensions, the enumerable / dictionary / list extension surfaces, threading and functional primitives, and the `ThrowHelper` validation catalogue. | [Introduction](../core/index.md) · [Concepts](../core/concepts.md) · [Getting started](../core/getting-started.md) |
+| **Bodu.Collections** | Stable | The specialized collection catalogue (namespaces unchanged; depends on `Bodu.Core`): bounded collections (`CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`), the insertion/access-ordered `SequencedDictionary<TKey,TValue>`, index-aware sets and priority queues, range-keyed lookups, the `.Concurrent`, `.Graphs`, and `.Trees` sub-namespaces, and the `Bodu.Collections.Probabilistic` sketches. | [Introduction](../core/index.md) · [Getting started](../core/getting-started.md) |
 | **Bodu.Text** *(namespace — ships inside the `Bodu.Core` package)* | Stable | BOM-based `EncodingDetection`, plus `EncodingExtensions` and `StringEncodingExtensions` for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation over `System.Text.Encoding`. | [Introduction](../text/index.md) |
 
 ## The shape of the topic
@@ -20,7 +21,7 @@ The package additionally ships the **`Bodu.Text`** namespace — character-encod
 `Bodu.Core` is organized into focused namespaces, each with a clear responsibility. The four you will reach for most often:
 
 - **`Bodu`** — root-namespace primitives: <xref:Bodu.ThrowHelper> (the argument-validation catalogue every Bodu library calls into), <xref:Bodu.WeekPattern> (an immutable day-of-week bitmask), and the <xref:Bodu.IRandomGenerator> abstraction with its <xref:Bodu.XorShiftRandom> implementation.
-- **`Bodu.Collections.Generic`** (plus `.Concurrent`) — bounded ring-backed collections (<xref:Bodu.Collections.Generic.CircularBuffer`1>, <xref:Bodu.Collections.Generic.Deque`1>), the policy-driven <xref:Bodu.Collections.Generic.EvictingDictionary`2> cache, the insertion/access-ordered <xref:Bodu.Collections.Generic.SequencedDictionary`2>, index-aware sets (<xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>), the heap-backed <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, multi-map / multi-set types, and range-keyed lookups. The thread-safe <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> lives in the `.Concurrent` sub-namespace.
+- **`Bodu.Collections.Generic`** (plus `.Concurrent`; these namespaces ship in the `Bodu.Collections` package) — bounded ring-backed collections (<xref:Bodu.Collections.Generic.CircularBuffer`1>, <xref:Bodu.Collections.Generic.Deque`1>), the policy-driven <xref:Bodu.Collections.Generic.EvictingDictionary`2> cache, the insertion/access-ordered <xref:Bodu.Collections.Generic.SequencedDictionary`2>, index-aware sets (<xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>), the heap-backed <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, multi-map / multi-set types, and range-keyed lookups. The thread-safe <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> lives in the `.Concurrent` sub-namespace.
 - **`Bodu.Buffers`** — <xref:Bodu.Buffers.PooledBufferBuilder`1>, an `ArrayPool<T>`-backed builder that assembles byte or character spans without allocation and slots into standard `IBufferWriter<T>` pipelines.
 - **`Bodu.Text`** — <xref:Bodu.Text.EncodingDetection>, <xref:Bodu.Text.EncodingExtensions>, and <xref:Bodu.Text.StringEncodingExtensions>: the character-encoding surface that turns bytes into text and back through `System.Text.Encoding`, correctly and efficiently.
 
@@ -73,9 +74,10 @@ The same conventions that govern the rest of the suite start here:
 
 ```bash
 dotnet add package Bodu.Core
+dotnet add package Bodu.Collections
 ```
 
-Targets `net8.0`. No external runtime dependencies. The `Bodu.Text` namespace is included — no separate install.
+Targets `net8.0`. No external runtime dependencies. The `Bodu.Text` namespace is included in `Bodu.Core` — no separate install. Add `Bodu.Collections` for the specialized collection catalogue (it depends on `Bodu.Core`); `Bodu.Core` alone suffices for the guards, buffers, extensions, and encoding surfaces.
 
 A taste of the two surfaces together:
 
