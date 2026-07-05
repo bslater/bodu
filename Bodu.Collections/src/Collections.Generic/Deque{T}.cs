@@ -84,9 +84,9 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <para>
 /// For a single-ended FIFO buffer with eviction-on-full semantics, see <see cref="CircularBuffer{T}" />. For
-/// thread-safe concurrent FIFO access, see
-/// <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}" />. <see cref="Deque{T}" /> itself is
-/// not thread-safe; concurrent reads and writes require external synchronization.
+/// thread-safe concurrent FIFO access, see <c>ConcurrentCircularBuffer&lt;T&gt;</c> in the Bodu.Collections.Concurrent
+/// package. <see cref="Deque{T}" /> itself is not thread-safe; concurrent reads and writes require external
+/// synchronization.
 /// </para>
 /// <para>
 /// <see cref="Deque{T}" /> accepts <see langword="null" /> values for reference types and allows duplicate elements.

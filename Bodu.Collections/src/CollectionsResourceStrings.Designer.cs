@@ -358,15 +358,6 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The collection could not produce a stable snapshot under sustained concurrent modification..
-        /// </summary>
-        internal static string Op_Invalid_ConcurrentSnapshotUnstable {
-            get {
-                return ResourceManager.GetString("Op_Invalid_ConcurrentSnapshotUnstable", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The sequence is empty..
         /// </summary>
         internal static string Op_Invalid_EmptySequence {
@@ -435,15 +426,6 @@ namespace Bodu {
         internal static string Op_Invalid_UnknownEvictionPolicy {
             get {
                 return ResourceManager.GetString("Op_Invalid_UnknownEvictionPolicy", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The SyncRoot property may not be used for the synchronization of concurrent collections..
-        /// </summary>
-        internal static string Op_NotSupported_ConcurrentSyncRoot {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_ConcurrentSyncRoot", resourceCulture);
             }
         }
 

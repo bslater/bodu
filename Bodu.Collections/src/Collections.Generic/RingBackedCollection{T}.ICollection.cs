@@ -25,7 +25,7 @@ public abstract partial class RingBackedCollection<T>
     /// <value>Always <see langword="false" />.</value>
     /// <remarks>
     /// External synchronization is the caller's responsibility. For a thread-safe FIFO buffer, see
-    /// <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}" />.
+    /// <c>ConcurrentCircularBuffer&lt;T&gt;</c> in the Bodu.Collections.Concurrent package.
     /// </remarks>
     bool ICollection.IsSynchronized => false;
 
