@@ -61,6 +61,11 @@ internal static class OandaHistoryResponseParser
                 if (!TryReadUnixMilliseconds(row[0], out long unixMs) || !TryReadRate(row[1], out decimal rate))
                     continue;
 
+                // Skip a timestamp outside the range representable by DateTimeOffset rather than crashing on the
+                // ArgumentOutOfRangeException it would raise (FromUnixTimeMilliseconds accepts this window only).
+                if (unixMs is < -62_135_596_800_000 or > 253_402_300_799_999)
+                    continue;
+
                 var date = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(unixMs).UtcDateTime);
                 if (date < request.StartDate || date > request.EndDate)
                     continue;
