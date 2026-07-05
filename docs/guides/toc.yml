@@ -19,6 +19,8 @@
               href: core/evicting-dictionary.md
             - name: Sequenced dictionary
               href: core/sequenced-dictionary.md
+            - name: Bidirectional dictionary
+              href: core/bi-dictionary.md
             - name: Indexed priority queue
               href: core/indexed-priority-queue.md
             - name: Graphs and graph algorithms

@@ -13,6 +13,7 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
    - Unbounded but iterate in insertion (or access) order, with O(1) first/last → <xref:Bodu.Collections.Generic.SequencedDictionary`2>.
    - Keys are ranges (`[start, end)`) → <xref:Bodu.Collections.Generic.RangeDictionary`2>.
    - One key maps to many values → <xref:Bodu.Collections.Generic.MultiValueDictionary`2>.
+   - One-to-one in both directions, with O(1) value-to-key lookup → <xref:Bodu.Collections.Generic.BiDictionary`2>.
 2. **Do you need a sequence (FIFO / LIFO / two-ended)?**
    - Fixed capacity, single-threaded, overwrite-or-throw on full → <xref:Bodu.Collections.Generic.CircularBuffer`1>.
    - Fixed capacity, multi-threaded → <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>.
@@ -46,6 +47,7 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 | Cache with policy-driven eviction | <xref:Bodu.Collections.Generic.EvictingDictionary`2> | FIFO, LRU, LFU, MRU, Random, or Second-Chance. |
 | Ordered key-value store with O(1) first/last access | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Insertion order by default; opt into access order for LRU-style reordering. O(1) `First` / `Last` / `TryRemoveFirst` / `TryRemoveLast`. |
 | One key → many values | <xref:Bodu.Collections.Generic.MultiValueDictionary`2> | Indexer returns an empty live view, never `null`. |
+| One-to-one map, O(1) lookup in both directions | <xref:Bodu.Collections.Generic.BiDictionary`2> | Live `Inverse` view shares storage; duplicate-value conflicts follow the `Throw` / `Replace` policy. |
 
 ### By capacity and lifecycle
 

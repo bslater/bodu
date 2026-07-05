@@ -138,6 +138,9 @@
   <data name="Arg_Invalid_CountMinSketchImportVersion" xml:space="preserve">
     <value>The CountMinSketch export format version {0} is not supported.</value>
   </data>
+  <data name="Arg_Invalid_DuplicateBiDictionaryValue" xml:space="preserve">
+    <value>The bidirectional dictionary cannot contain duplicate values; the value is already bound to a different key.</value>
+  </data>
   <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain duplicate keys.</value>
   </data>

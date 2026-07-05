@@ -124,6 +124,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The bidirectional dictionary cannot contain duplicate values; the value is already bound to a different key..
+        /// </summary>
+        internal static string Arg_Invalid_DuplicateBiDictionaryValue {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DuplicateBiDictionaryValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The dictionary cannot contain duplicate keys..
         /// </summary>
         internal static string Arg_Invalid_DuplicateDictionaryKey {
