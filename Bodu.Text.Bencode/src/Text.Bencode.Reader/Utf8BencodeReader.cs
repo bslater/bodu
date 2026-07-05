@@ -724,15 +724,78 @@ public ref struct Utf8BencodeReader
         if (!_allowDuplicateKeys)
         {
             // Without an ordering guarantee duplicates can appear anywhere, so the frame remembers every key seen.
+            // A small dictionary scans its seen-key list directly (allocation-free); once it grows past the threshold
+            // the keys are grouped by a content hash so each subsequent duplicate check compares only same-hash keys,
+            // keeping a large dictionary O(1) average per key instead of the O(n²) full scan.
             top.SeenKeys ??= [];
-            foreach ((int start, int length) in top.SeenKeys)
+
+            if (top.SeenKeys.Count >= UnsortedKeyIndexThreshold)
             {
-                if (length == _valueLength && key.SequenceEqual(_data.Slice(start, length)))
-                    throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);
+                if (top.SeenByHash is null)
+                {
+                    top.SeenByHash = [];
+                    foreach ((int start, int length) in top.SeenKeys)
+                        AddToHashBucket(top.SeenByHash, HashKey(_data.Slice(start, length)), start, length);
+                }
+
+                int hash = HashKey(key);
+                if (top.SeenByHash.TryGetValue(hash, out List<(int Start, int Length)>? bucket))
+                {
+                    foreach ((int start, int length) in bucket)
+                    {
+                        if (length == _valueLength && key.SequenceEqual(_data.Slice(start, length)))
+                            throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);
+                    }
+                }
+
+                AddToHashBucket(top.SeenByHash, hash, _valueStart, _valueLength);
+            }
+            else
+            {
+                foreach ((int start, int length) in top.SeenKeys)
+                {
+                    if (length == _valueLength && key.SequenceEqual(_data.Slice(start, length)))
+                        throw Error(BencodeResourceStrings.Format_Invalid_BencodeDuplicateDictionaryKeys, _valueStart);
+                }
             }
 
             top.SeenKeys.Add((_valueStart, _valueLength));
         }
+    }
+
+    /// <summary>The seen-key count at which a dictionary switches from a linear duplicate scan to a hashed index.</summary>
+    private const int UnsortedKeyIndexThreshold = 64;
+
+    /// <summary>
+    /// Computes a stable content hash of a key's bytes (FNV-1a), used to bucket seen keys for O(1) duplicate lookup.
+    /// </summary>
+    /// <param name="key">The key bytes.</param>
+    /// <returns>The 32-bit content hash.</returns>
+    private static int HashKey(ReadOnlySpan<byte> key)
+    {
+        uint hash = 2166136261u;
+        foreach (byte b in key)
+            hash = (hash ^ b) * 16777619u;
+
+        return (int)hash;
+    }
+
+    /// <summary>
+    /// Appends a key's source coordinates to the bucket for its content hash.
+    /// </summary>
+    /// <param name="byHash">The hash-bucket map.</param>
+    /// <param name="hash">The key's content hash.</param>
+    /// <param name="start">The key's start offset.</param>
+    /// <param name="length">The key's length.</param>
+    private static void AddToHashBucket(Dictionary<int, List<(int Start, int Length)>> byHash, int hash, int start, int length)
+    {
+        if (!byHash.TryGetValue(hash, out List<(int Start, int Length)>? bucket))
+        {
+            bucket = [];
+            byHash[hash] = bucket;
+        }
+
+        bucket.Add((start, length));
     }
 
     /// <summary>
@@ -782,5 +845,12 @@ public ref struct Utf8BencodeReader
         /// </summary>
         /// <returns>The keys seen so far, or <see langword="null" /> when tracking is not required.</returns>
         internal List<(int Start, int Length)>? SeenKeys { get; set; }
+
+        /// <summary>
+        /// Gets or sets the seen keys grouped by a content hash, built lazily once the dictionary grows past the
+        /// linear-scan threshold so a large dictionary's duplicate check stays O(1) average instead of O(n) per key.
+        /// </summary>
+        /// <value>The hash-bucketed seen keys, or <see langword="null" /> while the linear scan is still in use.</value>
+        internal Dictionary<int, List<(int Start, int Length)>>? SeenByHash { get; set; }
     }
 }

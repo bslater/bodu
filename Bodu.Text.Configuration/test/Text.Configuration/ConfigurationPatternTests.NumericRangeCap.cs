@@ -39,6 +39,24 @@ public partial class ConfigurationPatternTests
     }
 
     /// <summary>
+    /// Verifies that a numeric range whose endpoints span the full <see cref="long" /> domain is rejected with
+    /// <see cref="ConfigurationDiagnosticCode.NumericRangeTooLarge" /> rather than overflowing the signed
+    /// entry-count arithmetic and running a ~2^64 iteration expansion loop.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Compile_WhenNumericRangeOverflowsSignedCount_ShouldThrowWithNumericRangeTooLargeCode()
+    {
+        ConfigurationParseException ex = Assert.ThrowsExactly<ConfigurationParseException>(() =>
+        {
+            _ = ConfigurationPattern.Compile("file-{-9223372036854775808..9223372036854775807}.txt");
+        });
+
+        Assert.IsNotNull(ex.Diagnostic);
+        Assert.AreEqual(ConfigurationDiagnosticCode.NumericRangeTooLarge, ex.Diagnostic!.Code);
+    }
+
+    /// <summary>
     /// Verifies that a modest numeric range continues to compile and match every integer in the range.
     /// </summary>
     [TestMethod]

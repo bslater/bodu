@@ -87,6 +87,17 @@ public sealed class CcmModeTransform
     /// <summary>Length of the CCM authentication tag is 128 bits (16 bytes). Byte length is derived inline via <see cref="TagSizeBits" /> / 8.</summary>
     private const int TagSizeBits = 128;
 
+    /// <summary>
+    /// The maximum message length, in bytes, encodable in the 3-byte length field (<c>q = 3</c>): <c>2²⁴ − 1</c>.
+    /// Internal so tests can validate the constant.
+    /// </summary>
+    /// <remarks>
+    /// The B0 length field occupies only bytes 13–15 and the CTR counter is likewise 3 bytes wide. A longer message
+    /// would silently truncate the encoded length (corrupting the CBC-MAC) and wrap the counter (reusing keystream),
+    /// so a message at or beyond this ceiling must be rejected rather than transformed.
+    /// </remarks>
+    internal const int MaxPlaintextBytes = (1 << 24) - 1;
+
     /// <summary>The first byte of every CTR counter block A_i.</summary>
     /// <remarks>
     /// Encodes <c>L' = q - 1 = 2</c>.
@@ -169,6 +180,8 @@ public sealed class CcmModeTransform
         ThrowIfDisposed();
         ThrowIfCompleted();
 
+        ValidatePlaintextLength(plaintext.Length);
+
         int required = plaintext.Length + (TagSizeBits / 8);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
 
@@ -198,6 +211,7 @@ public sealed class CcmModeTransform
         CryptographyThrowHelper.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
         int plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
+        ValidatePlaintextLength(plaintextLength);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, plaintextLength);
 
         EnsureAadProcessed();
@@ -239,6 +253,21 @@ public sealed class CcmModeTransform
     /// </summary>
     private void ThrowIfCompleted() =>
         CryptographyThrowHelper.ThrowIfAlreadyCompleted(_completed);
+
+    /// <summary>
+    /// Validates that a message length fits the 3-byte CCM length field, rejecting a longer message that would
+    /// silently truncate the CBC-MAC length encoding and wrap the CTR counter.
+    /// </summary>
+    /// <param name="length">The plaintext (or ciphertext) length, in bytes.</param>
+    /// <exception cref="CryptographicException">The length exceeds <see cref="MaxPlaintextBytes" />.</exception>
+    internal static void ValidatePlaintextLength(long length)
+    {
+        if (length > MaxPlaintextBytes)
+        {
+            throw new CryptographicException(
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_CcmPlaintextLengthExceeded, length, MaxPlaintextBytes));
+        }
+    }
 
     /// <summary>
     /// Releases the resources used by this instance.

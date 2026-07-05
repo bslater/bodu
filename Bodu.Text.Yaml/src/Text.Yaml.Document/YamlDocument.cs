@@ -143,7 +143,7 @@ public sealed partial class YamlDocument : IDisposable
     {
         YamlReaderRow r = Rows[Resolve(index)];
         if (r.Kind != YamlReaderNodeKind.Scalar || r.ValueKind != YamlValueKind.String)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
         return _strings[(int)r.ScalarBits];
     }
@@ -158,7 +158,7 @@ public sealed partial class YamlDocument : IDisposable
     {
         YamlReaderRow r = Rows[Resolve(index)];
         if (r.ValueKind != YamlValueKind.Integer)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
         return r.AsInt64();
     }
@@ -176,7 +176,7 @@ public sealed partial class YamlDocument : IDisposable
         {
             YamlValueKind.Float => r.AsDouble(),
             YamlValueKind.Integer => r.AsInt64(),
-            _ => throw new InvalidOperationException(),
+            _ => throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind),
         };
     }
 
@@ -190,7 +190,7 @@ public sealed partial class YamlDocument : IDisposable
     {
         YamlReaderRow r = Rows[Resolve(index)];
         if (r.ValueKind != YamlValueKind.Boolean)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
         return r.AsBoolean();
     }
@@ -205,7 +205,7 @@ public sealed partial class YamlDocument : IDisposable
     {
         YamlReaderRow r = Rows[Resolve(index)];
         if (r.Kind != YamlReaderNodeKind.Sequence)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
         return r.ChildCount;
     }
@@ -234,7 +234,7 @@ public sealed partial class YamlDocument : IDisposable
     {
         YamlReaderRow r = Rows[Resolve(index)];
         if (r.Kind != YamlReaderNodeKind.Mapping)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
 
         return r.ChildCount;
     }

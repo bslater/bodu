@@ -107,8 +107,17 @@ public sealed record CurrencyInfo(
     /// <see cref="CurrencyCode.None" /> sentinel and any code outside the shipped catalogue surface here as
     /// <see langword="false" />.
     /// </remarks>
-    public static bool TryGetCurrencyCode(string isoCode, out CurrencyCode code) =>
-        Enum.TryParse(isoCode, ignoreCase: false, out code) && code != CurrencyCode.None && Enum.IsDefined(code);
+    public static bool TryGetCurrencyCode(string isoCode, out CurrencyCode code)
+    {
+        code = CurrencyCode.None;
+
+        // Enum.TryParse also accepts the underlying numeric value (for example "840" for USD), which would bypass the
+        // documented three-letter ISO shape and silently resolve to a currency. Require the alphabetic shape first.
+        return FinancialThrowHelper.IsValidIsoCodeShape(isoCode)
+            && Enum.TryParse(isoCode, ignoreCase: false, out code)
+            && code != CurrencyCode.None
+            && Enum.IsDefined(code);
+    }
 
     /// <summary>
     /// Resolves an ISO 4217 alphabetic code to the matching <see cref="CurrencyCode" /> enum member.

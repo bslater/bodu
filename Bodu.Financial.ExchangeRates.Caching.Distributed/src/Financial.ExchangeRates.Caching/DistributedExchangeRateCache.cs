@@ -282,9 +282,11 @@ public sealed class DistributedExchangeRateCache
                 DateTimeOffset? observedAt = rate.ObservedAtUtc is { } s ? ParseInstant(s) : (DateTimeOffset?)null;
                 rows.Add(new CachedExchangeRate(ParseDate(rate.Date), ParseRate(rate.Rate), ParseInstant(rate.CachedAtUtc), observedAt));
             }
-            catch (FormatException)
+            catch (Exception ex) when (ex is FormatException or OverflowException)
             {
-                // Skip a single malformed row rather than failing the whole read.
+                // Skip a single malformed row rather than failing the whole read. An out-of-range decimal rate
+                // parses as an OverflowException, which must be swallowed alongside FormatException so a poisoned
+                // value cannot break the documented best-effort read contract.
             }
         }
 

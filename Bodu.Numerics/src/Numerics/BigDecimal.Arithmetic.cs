@@ -66,7 +66,7 @@ public readonly partial struct BigDecimal
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="scale" /> is negative.</exception>
     public static BigDecimal Divide(BigDecimal left, BigDecimal right, int scale, MidpointRounding mode)
     {
-        if (right.IsZero) throw new DivideByZeroException();
+        if (right.IsZero) throw new DivideByZeroException(NumericsResourceStrings.DivideByZero_BigDecimalDivision);
         ThrowHelper.ThrowIfNegative(scale);
 
         // left / right rounded to `scale` decimals: quotient Q = round( m_l / m_r * 10^(s_r - s_l + scale) ).
@@ -93,7 +93,7 @@ public readonly partial struct BigDecimal
     /// <exception cref="DivideByZeroException"><paramref name="right" /> is zero.</exception>
     public static BigDecimal Remainder(BigDecimal left, BigDecimal right)
     {
-        if (right.IsZero) throw new DivideByZeroException();
+        if (right.IsZero) throw new DivideByZeroException(NumericsResourceStrings.DivideByZero_BigDecimalRemainder);
 
         BigDecimal integralQuotient = Divide(left, right, 0, MidpointRounding.ToZero);
         return Subtract(left, Multiply(integralQuotient, right));

@@ -292,8 +292,12 @@ public sealed partial class Tiger
     /// <inheritdoc />
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
+        // Tiger processes the message as little-endian 64-bit words. Read them explicitly rather than reinterpreting
+        // the raw bytes, so the digest is correct on big-endian hosts too (a host-endian cast would byte-swap there).
         Span<ulong> blockWords = stackalloc ulong[8];
-        MemoryMarshal.Cast<byte, ulong>(block).CopyTo(blockWords);
+        for (int i = 0; i < 8; i++)
+            blockWords[i] = BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8));
+
         TransformBlock(blockWords);
     }
 

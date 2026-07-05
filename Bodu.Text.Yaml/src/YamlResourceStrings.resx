@@ -17,6 +17,7 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Format_Invalid_YamlAliasExpansionTooLarge" xml:space="preserve"><value>The document's alias expansion exceeds the maximum of {0} nodes.</value></data>
   <data name="Format_Invalid_YamlComplexKeyUnsupported" xml:space="preserve"><value>A mapping key must resolve to a scalar; complex sequence, mapping, or alias keys are not supported by this profile.</value></data>
   <data name="Format_Invalid_YamlContentAfterDocumentEnd" xml:space="preserve"><value>Content is not permitted after the end of a document.</value></data>
   <data name="Format_Invalid_YamlControlCharacter" xml:space="preserve"><value>A control character is not permitted in this context.</value></data>
@@ -66,4 +67,7 @@
   <data name="Op_Invalid_YamlDuplicateDictionaryKey" xml:space="preserve"><value>The dictionary maps more than one entry to the YAML key '{0}'.</value></data>
   <data name="Arg_OutOfRange_YamlWriterIndentSize" xml:space="preserve"><value>The writer indentation size must be between 1 and 16.</value></data>
   <data name="Arg_Invalid_YamlWriterNewLine" xml:space="preserve"><value>The writer newline must be null, a line feed, or a carriage-return line feed.</value></data>
+  <data name="Op_Invalid_YamlValueKind" xml:space="preserve"><value>The YAML value is not of the expected kind for this operation.</value></data>
+  <data name="Op_Invalid_YamlReaderValueType" xml:space="preserve"><value>The current token cannot be read as the requested value type.</value></data>
+  <data name="IO_KeyNotFound_YamlProperty" xml:space="preserve"><value>No property named '{0}' was found.</value></data>
 </root>

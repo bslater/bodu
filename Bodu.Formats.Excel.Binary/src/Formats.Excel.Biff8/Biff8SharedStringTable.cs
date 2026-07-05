@@ -129,7 +129,11 @@ internal static class Biff8SharedStringTable
             {
                 block++;
                 offset = 0;
-                if (block >= blocks.Count)
+
+                // A continued string re-reads its compression flag from the first byte of the next block. A crafted
+                // zero-length CONTINUE block would index an empty span; reject it as a catchable format error rather
+                // than letting an IndexOutOfRangeException escape the documented ExcelBinaryFormatException contract.
+                if (block >= blocks.Count || blocks[block].Length == 0)
                     throw Malformed();
 
                 high = (blocks[block].Span[offset] & 0x01) != 0;

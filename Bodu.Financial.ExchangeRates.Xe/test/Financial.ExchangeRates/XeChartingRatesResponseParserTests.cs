@@ -74,6 +74,30 @@ public class XeChartingRatesResponseParserTests
     }
 
     /// <summary>
+    /// Verifies that a <c>startTime</c> that is a valid <see cref="long" /> but outside the range representable by
+    /// <see cref="DateTimeOffset" /> surfaces as <see cref="ExchangeRateFormatException" /> rather than crashing the
+    /// fetch with an uncaught <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenStartTimeOutOfRange_ShouldThrowFormatException()
+    {
+        byte[] json = Utf8(
+            """
+            {
+              "batchList": [
+                { "startTime": 9000000000000000, "interval": 86400000, "rates": [100, 100.68] }
+              ]
+            }
+            """);
+
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = XeChartingRatesResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+        });
+    }
+
+    /// <summary>
     /// Verifies that a response with an empty <c>batchList</c> array throws <see cref="ExchangeRateFormatException" />.
     /// </summary>
     [TestMethod]

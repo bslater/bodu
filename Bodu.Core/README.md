@@ -48,7 +48,7 @@ The `Bodu.Extensions` and `Bodu.Collections.*.Extensions` namespaces add focused
 - **Strings** — `Slug`, `TitleCase`, `SentenceCase`, `ReplaceMany`, `RemovePunctuation`, `IsOneOf`, with `SlugOptions` / `WordCasingOptions`.
 - **Dates** — `DateOnlyExtensions` / `DateTimeExtensions` for week, month, quarter, and fiscal-period math; `IWeekendDefinitionProvider` / `IQuarterDefinitionProvider` abstractions.
 - **Numerics & spans** — `ReverseBits`, bit rotation, power-of-two helpers, and `Span<T>` / `ReadOnlySpan<T>` utilities.
-- **Comparison** — `IComparableExtensions` (`Min`, `Max`, `Clamp`, `IsBetween`) with custom-comparer overloads.
+- **Comparison** — `ComparableExtensions` (`Min`, `Max`, `Clamp`, `IsBetween`) with custom-comparer overloads.
 - **Sequences** — `RecursiveSelect` for pre-order descent over tree-shaped sequences.
 - **Randomness** — `IRandomGenerator` with `XorShiftRandom` and a `SystemRandomAdapter`.
 - **XML** — `XmlNamespaceResolver` (`Bodu.Xml.Linq`) for namespace-qualified `XElement` / `XName` lookups.

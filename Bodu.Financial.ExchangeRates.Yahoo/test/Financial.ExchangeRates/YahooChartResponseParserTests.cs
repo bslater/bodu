@@ -65,4 +65,36 @@ public class YahooChartResponseParserTests
             _ = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
         });
     }
+
+    /// <summary>
+    /// Verifies that a Unix timestamp outside the range representable by <see cref="DateTimeOffset" /> causes only
+    /// that point to be skipped, rather than crashing the fetch with an uncaught
+    /// <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenTimestampOutOfRange_ShouldSkipThatPointNotThrow()
+    {
+        byte[] json = Encoding.UTF8.GetBytes(
+            """
+            {
+              "chart": {
+                "result": [
+                  {
+                    "meta": { "currency": "USD" },
+                    "timestamp": [ 999999999999, 1672704000 ],
+                    "indicators": { "quote": [ { "close": [ 0.5, 0.6828 ] } ] }
+                  }
+                ],
+                "error": null
+              }
+            }
+            """);
+
+        YahooExchangeRateChart chart = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
+
+        Assert.HasCount(1, chart.Observations);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), chart.Observations[0].Date);
+        Assert.AreEqual(0.6828m, chart.Observations[0].Rate);
+    }
 }

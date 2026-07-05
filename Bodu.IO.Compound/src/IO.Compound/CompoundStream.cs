@@ -304,9 +304,18 @@ public sealed class CompoundStream
         while (want > 0)
         {
             int sectorIndex = (int)(_position / _sectorSize);
+
+            // A crafted directory can declare a stream size larger than its actual sector chain covers. Guard
+            // the chain index so an over-declared size surfaces as a catchable CompoundFileFormatException rather
+            // than an IndexOutOfRangeException escaping the Stream.Read contract.
+            CompoundThrowHelper.ThrowFormatIf(
+                (uint)sectorIndex >= (uint)_chain!.Length,
+                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+                CompoundFileError.StreamChainTooShort);
+
             int within = (int)(_position % _sectorSize);
             int n = Math.Min(want, _sectorSize - within);
-            _sectors!.ReadWithinSector(_chain![sectorIndex], within, buffer.Slice(total, n));
+            _sectors!.ReadWithinSector(_chain[sectorIndex], within, buffer.Slice(total, n));
             want -= n;
             total += n;
             _position += n;

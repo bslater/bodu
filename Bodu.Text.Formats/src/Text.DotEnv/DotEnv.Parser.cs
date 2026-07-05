@@ -25,6 +25,17 @@ public static partial class DotEnv
             string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_DotEnvDuplicateKey, key, lineNumber), lineNumber);
 
     /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> for a streaming entry that exceeds the maximum buffered length
+    /// before it resolves, bounding the work an oversized or unterminated construct can force on the reader.
+    /// </summary>
+    /// <param name="maxLength">The maximum number of characters a single streaming entry may occupy.</param>
+    /// <param name="lineNumber">The 1-based line number on which the oversized entry begins.</param>
+    [DoesNotReturn]
+    internal static void ThrowEntryTooLong(int maxLength, int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.CurrentCulture, FormatsResourceStrings.Format_Invalid_DotEnvEntryTooLong, maxLength, lineNumber), lineNumber);
+
+    /// <summary>
     /// Throws a <see cref="DotEnvFormatException" /> for an invalid key name.
     /// </summary>
     /// <param name="key">The offending key text.</param>
@@ -106,6 +117,10 @@ public static partial class DotEnv
         {
             List<DotEnvEntry> entries = new();
             Dictionary<string, DotEnvEntry> lookup = new(StringComparer.Ordinal);
+
+            // Tracks each key's index in the entry list so LastWins replaces in O(1) instead of scanning the list,
+            // which made a document of many duplicate keys O(n²).
+            Dictionary<string, int> positions = new(StringComparer.Ordinal);
             List<DotEnvComment>? pendingComments = null;
 
             while (!IsEmpty)
@@ -198,7 +213,7 @@ public static partial class DotEnv
 
                         case DuplicateKeyPolicy.LastWins:
                             DotEnvEntry replacement = new(key, value, leadingComments);
-                            int idx = entries.IndexOf(existing);
+                            int idx = positions[key];
                             entries[idx] = replacement;
                             lookup[key] = replacement;
                             break;
@@ -207,6 +222,7 @@ public static partial class DotEnv
                 else
                 {
                     DotEnvEntry entry = new(key, value, leadingComments);
+                    positions[key] = entries.Count;
                     entries.Add(entry);
                     lookup[key] = entry;
                 }

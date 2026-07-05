@@ -47,6 +47,14 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The document's alias expansion exceeds the maximum of {0} nodes..
+        /// </summary>
+        internal static string Format_Invalid_YamlAliasExpansionTooLarge {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlAliasExpansionTooLarge", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to Content is not permitted after the end of a document..
         /// </summary>
         internal static string Format_Invalid_YamlContentAfterDocumentEnd {
@@ -436,6 +444,33 @@ namespace Bodu {
         internal static string Arg_Invalid_YamlWriterNewLine {
             get {
                 return ResourceManager.GetString("Arg_Invalid_YamlWriterNewLine", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The YAML value is not of the expected kind for this operation..
+        /// </summary>
+        internal static string Op_Invalid_YamlValueKind {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlValueKind", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The current token cannot be read as the requested value type..
+        /// </summary>
+        internal static string Op_Invalid_YamlReaderValueType {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlReaderValueType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No property named '{0}' was found..
+        /// </summary>
+        internal static string IO_KeyNotFound_YamlProperty {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_YamlProperty", resourceCulture);
             }
         }
     }

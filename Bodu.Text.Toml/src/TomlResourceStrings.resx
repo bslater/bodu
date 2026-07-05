@@ -101,4 +101,7 @@
   <data name="Op_Invalid_DefaultElement" xml:space="preserve"><value>The operation is not valid on a default TomlElement that belongs to no document.</value></data>
   <data name="Op_NotSupported_NullDocument" xml:space="preserve"><value>A null document cannot be written to TOML.</value></data>
   <data name="Op_Invalid_CycleDetected" xml:space="preserve"><value>A possible object cycle was detected while serializing type '{0}'.</value></data>
+  <data name="Op_Invalid_TomlReaderValueType" xml:space="preserve"><value>The current token cannot be read as the requested value type.</value></data>
+  <data name="Op_Invalid_TomlReaderSkipPartial" xml:space="preserve"><value>Skipping is not supported on partial data; use TrySkip instead.</value></data>
+  <data name="Format_Invalid_TomlReaderValue" xml:space="preserve"><value>The current token cannot be converted to the requested numeric type.</value></data>
 </root>

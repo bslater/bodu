@@ -124,6 +124,46 @@ public sealed class DotEnvReaderTests
     }
 
     /// <summary>
+    /// Verifies that a single entry that grows past <see cref="DotEnvReader.MaxPendingLength" /> before it resolves is
+    /// rejected with <see cref="DotEnvFormatException" /> rather than driving unbounded quadratic re-parsing of the
+    /// pending buffer.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Read_WhenSingleEntryExceedsMaxPendingLength_ShouldThrowEntryTooLong()
+    {
+        // An unterminated double-quoted value longer than the pending cap. Without the cap the reader buffers and
+        // re-scans the whole run on every refill before finally reporting an unterminated quote at end of stream.
+        string source = "KEY=\"" + new string('a', DotEnvReader.MaxPendingLength + 16);
+
+        using DotEnvReader reader = new(new StringReader(source), DotEnvParseOptions.Default, 4096);
+
+        DotEnvFormatException ex = Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = reader.Read();
+        });
+
+        Assert.IsTrue(ex.Message.Contains("exceeds the maximum streaming length", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that a large double-quoted value comfortably below <see cref="DotEnvReader.MaxPendingLength" /> still
+    /// streams to its exact value, confirming the cap does not reject legitimate large entries.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Read_WhenLargeValueUnderMaxPendingLength_ShouldParse()
+    {
+        string value = new string('a', DotEnvReader.MaxPendingLength / 4);
+        string source = "KEY=\"" + value + "\"\n";
+
+        using DotEnvReader reader = new(new StringReader(source), DotEnvParseOptions.Default, 4096);
+
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(("KEY", value), (reader.Key, reader.Value));
+    }
+
+    /// <summary>
     /// Verifies that a malformed entry line (no <c>=</c>) throws <see cref="DotEnvFormatException" />.
     /// </summary>
     [TestMethod]

@@ -83,4 +83,35 @@ public sealed partial class Base62Tests
         Assert.IsFalse(success);
         Assert.AreEqual(0, written);
     }
+
+    /// <summary>
+    /// Verifies that an input longer than <see cref="Base62.MaxDecodeInputLength" /> is rejected with
+    /// <see cref="FormatException" /> rather than driving the O(n²) BigInteger decode as an
+    /// algorithmic-complexity denial-of-service.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Decode_WhenInputExceedsMaxLength_ShouldThrowFormatException()
+    {
+        // '0' is the zero symbol of the Base62 alphabet, so the input is otherwise well-formed.
+        string tooLong = new string('0', Base62.MaxDecodeInputLength + 1);
+
+        Assert.ThrowsExactly<FormatException>(() => _ = Base62.Decode(tooLong));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base62.IsValid(ReadOnlySpan{char}, BaseFormatStyles)" /> returns
+    /// <see langword="false" /> for input longer than <see cref="Base62.MaxDecodeInputLength" />, so it agrees with
+    /// <see cref="Base62.Decode(string, BaseFormatStyles)" />, which rejects the same over-length input to bound the
+    /// O(n²) decode.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void IsValid_WhenInputExceedsMaxLength_ShouldReturnFalse()
+    {
+        // '0' is the zero symbol of the Base62 alphabet, so the input is otherwise well-formed.
+        string tooLong = new string('0', Base62.MaxDecodeInputLength + 1);
+
+        Assert.IsFalse(Base62.IsValid(tooLong.AsSpan()));
+    }
 }

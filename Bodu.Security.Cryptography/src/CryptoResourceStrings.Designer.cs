@@ -338,6 +338,15 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_OutOfRange_Argon2Memory", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Argon2 memory must not exceed {0} kibibytes..
+        /// </summary>
+        internal static string Arg_OutOfRange_Argon2MemoryMax {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_Argon2MemoryMax", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Argon2 parallelism must be between 1 and {0}..
@@ -401,7 +410,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_OutOfRange_ScryptCostNotPowerOfTwo", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The scrypt memory footprint (128 * N * r) must not exceed {0} bytes..
+        /// </summary>
+        internal static string Arg_OutOfRange_ScryptMemoryMax {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ScryptMemoryMax", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The scrypt output length must be between 1 and {0}..
         /// </summary>
@@ -545,7 +563,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Crypt_Invalid_GcmPlaintextLengthExceeded", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to CCM plaintext length {0} exceeds the maximum of {1} bytes encodable in the 3-byte length field..
+        /// </summary>
+        internal static string Crypt_Invalid_CcmPlaintextLengthExceeded {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_CcmPlaintextLengthExceeded", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The hash algorithm&apos;s destination buffer was too small..
         /// </summary>

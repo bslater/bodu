@@ -198,6 +198,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The entry starting on line {1} exceeds the maximum streaming length of {0} characters..
+        /// </summary>
+        internal static string Format_Invalid_DotEnvEntryTooLong {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DotEnvEntryTooLong", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Invalid key '{0}' on line {1}. Keys must start with a letter or underscore and contain only letters, digits, and underscores..
         /// </summary>
         internal static string Format_Invalid_DotEnvInvalidKey {

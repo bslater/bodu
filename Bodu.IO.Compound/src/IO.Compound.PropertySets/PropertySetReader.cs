@@ -43,6 +43,14 @@ internal static class PropertySetReader
     /// <summary>The mask isolating the base type from the type-and-modifier word.</summary>
     private const ushort TypeMask = 0x0FFF;
 
+    /// <summary>The maximum nesting depth permitted for self-describing <c>VT_VARIANT</c> values.</summary>
+    /// <remarks>
+    /// A property value of type <see cref="OlePropertyType.Variant" /> can itself hold a variant, and a crafted
+    /// property set can nest them without bound. Capping the depth converts a would-be
+    /// <see cref="StackOverflowException" /> into a catchable <see cref="CompoundFileFormatException" />.
+    /// </remarks>
+    private const int MaxVariantDepth = 32;
+
     /// <summary>
     /// Reads and parses an OLE property set from its serialized bytes.
     /// </summary>
@@ -99,8 +107,17 @@ internal static class PropertySetReader
     {
         Ensure(data, sectionOffset, 8);
         int sectionSize = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(sectionOffset)));
-        int propertyCount = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(sectionOffset + 4)));
+        uint rawPropertyCount = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(sectionOffset + 4));
         Ensure(data, sectionOffset, sectionSize);
+
+        // Each property contributes an 8-byte (pid, offset) pair immediately after the section header. Bound the
+        // declared count against the bytes actually present before allocating, so a crafted count cannot drive a
+        // multi-gigabyte allocation (and OutOfMemoryException) from a tiny stream.
+        CompoundThrowHelper.ThrowFormatIf(
+            rawPropertyCount > (uint)((data.Length - (sectionOffset + 8)) / 8),
+            CompoundResourceStrings.Format_Invalid_CompoundPropertySet,
+            CompoundFileError.InvalidPropertySet);
+        int propertyCount = (int)rawPropertyCount;
 
         (int pid, int offset)[] pairs = new (int, int)[propertyCount];
         int pairCursor = sectionOffset + 8;
@@ -183,17 +200,25 @@ internal static class PropertySetReader
 
         if (!isVector)
         {
-            (object? value, _) = ReadScalar(data, valueOffset, type, encoding);
+            (object? value, _) = ReadScalar(data, valueOffset, type, encoding, 0);
             return new OlePropertyValue { Type = type, IsVector = false, Value = value };
         }
 
         Ensure(data, valueOffset, 4);
-        int count = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(valueOffset)));
+        uint rawCount = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(valueOffset));
+
+        // Every vector element consumes at least one byte, so a count exceeding the remaining bytes is malformed;
+        // bound it before allocating so a crafted count cannot drive a huge allocation from a tiny stream.
+        CompoundThrowHelper.ThrowFormatIf(
+            rawCount > (uint)(data.Length - (valueOffset + 4)),
+            CompoundResourceStrings.Format_Invalid_CompoundPropertySet,
+            CompoundFileError.InvalidPropertySet);
+        int count = (int)rawCount;
         object?[] items = new object?[count];
         int cursor = valueOffset + 4;
         for (int i = 0; i < count; i++)
         {
-            (object? value, int consumed) = ReadScalar(data, cursor, type, encoding);
+            (object? value, int consumed) = ReadScalar(data, cursor, type, encoding, 0);
             CompoundThrowHelper.ThrowFormatIf(consumed <= 0, CompoundResourceStrings.Format_Invalid_CompoundPropertySet, CompoundFileError.InvalidPropertySet);
             items[i] = value;
             cursor += Align4(consumed);
@@ -209,11 +234,12 @@ internal static class PropertySetReader
     /// <param name="offset">The byte offset of the scalar value.</param>
     /// <param name="type">The base scalar type to decode.</param>
     /// <param name="encoding">The encoding used to decode ANSI strings.</param>
+    /// <param name="depth">The current <c>VT_VARIANT</c> nesting depth used to bound recursion.</param>
     /// <returns>The decoded value and the number of bytes consumed (before vector alignment).</returns>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the value is malformed or of an unsupported type.
     /// </exception>
-    private static (object? Value, int Consumed) ReadScalar(ReadOnlySpan<byte> data, int offset, OlePropertyType type, Encoding encoding)
+    private static (object? Value, int Consumed) ReadScalar(ReadOnlySpan<byte> data, int offset, OlePropertyType type, Encoding encoding, int depth)
     {
         switch (type)
         {
@@ -289,7 +315,7 @@ internal static class PropertySetReader
                 return ReadBlob(data, offset);
 
             case OlePropertyType.Variant:
-                return ReadVariant(data, offset, encoding);
+                return ReadVariant(data, offset, encoding, depth);
 
             default:
                 CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundPropertySet, CompoundFileError.InvalidPropertySet);
@@ -303,14 +329,23 @@ internal static class PropertySetReader
     /// <param name="data">The property-set bytes.</param>
     /// <param name="offset">The byte offset of the variant's inner type word.</param>
     /// <param name="encoding">The encoding used to decode ANSI strings.</param>
+    /// <param name="depth">The current nesting depth used to bound self-describing variant recursion.</param>
     /// <returns>
     /// The decoded inner value and the number of bytes consumed, including the four-byte type prefix.
     /// </returns>
-    private static (object? Value, int Consumed) ReadVariant(ReadOnlySpan<byte> data, int offset, Encoding encoding)
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the value is malformed or the variant nesting exceeds <see cref="MaxVariantDepth" />.
+    /// </exception>
+    private static (object? Value, int Consumed) ReadVariant(ReadOnlySpan<byte> data, int offset, Encoding encoding, int depth)
     {
+        CompoundThrowHelper.ThrowFormatIf(
+            depth >= MaxVariantDepth,
+            CompoundResourceStrings.Format_Invalid_CompoundPropertySet,
+            CompoundFileError.InvalidPropertySet);
+
         Ensure(data, offset, 4);
         var innerType = (OlePropertyType)(BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(offset)) & TypeMask);
-        (object? value, int consumed) = ReadScalar(data, offset + 4, innerType, encoding);
+        (object? value, int consumed) = ReadScalar(data, offset + 4, innerType, encoding, depth + 1);
         return (value, 4 + consumed);
     }
 

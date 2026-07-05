@@ -175,6 +175,9 @@
   <data name="Format_Invalid_Base58CharacterNotInAlphabet" xml:space="preserve">
     <value>Input contains a character outside the Base58 variant alphabet: '{0}'.</value>
   </data>
+  <data name="Format_Invalid_BaseDecodeInputTooLong" xml:space="preserve">
+    <value>The encoded input exceeds the maximum decodable length of {0} characters.</value>
+  </data>
   <data name="Format_Invalid_Base62CharacterNotInAlphabet" xml:space="preserve">
     <value>Input contains a character outside the Base62 alphabet: '{0}'.</value>
   </data>

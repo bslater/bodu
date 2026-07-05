@@ -74,22 +74,32 @@ internal static class XeChartingRatesResponseParser
         int count = rates.GetArrayLength();
         var observations = new List<ExchangeRateObservation>(count);
 
-        DateTime point = DateTimeOffset.FromUnixTimeMilliseconds(startTimeMs).UtcDateTime;
-        var interval = TimeSpan.FromMilliseconds(intervalMs);
-
-        // The first element is the baseline offset, not a data point; the published series starts at the second element.
-        for (int i = 1; i < count; i++)
+        // An attacker-controlled startTime or interval can drive the timestamp arithmetic out of the representable
+        // DateTime/TimeSpan range (ArgumentOutOfRangeException / OverflowException). Map any such out-of-range value
+        // to the documented no-data failure rather than letting it crash the fetch.
+        try
         {
-            if (rates[i].TryGetDecimal(out decimal value))
+            DateTime point = DateTimeOffset.FromUnixTimeMilliseconds(startTimeMs).UtcDateTime;
+            var interval = TimeSpan.FromMilliseconds(intervalMs);
+
+            // The first element is the baseline offset, not a data point; the published series starts at the second element.
+            for (int i = 1; i < count; i++)
             {
-                decimal rate = DecodeRate(value, baseline);
-                var date = DateOnly.FromDateTime(point);
+                if (rates[i].TryGetDecimal(out decimal value))
+                {
+                    decimal rate = DecodeRate(value, baseline);
+                    var date = DateOnly.FromDateTime(point);
 
-                if (rate > 0m && date >= request.StartDate && date <= request.EndDate)
-                    observations.Add(new ExchangeRateObservation(date, rate));
+                    if (rate > 0m && date >= request.StartDate && date <= request.EndDate)
+                        observations.Add(new ExchangeRateObservation(date, rate));
+                }
+
+                point += interval;
             }
-
-            point += interval;
+        }
+        catch (Exception ex) when (ex is ArgumentOutOfRangeException or OverflowException)
+        {
+            throw NoData(request);
         }
 
         XeSeriesInfo series = new(request.Pair, request.Pair.To.ToString());

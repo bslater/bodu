@@ -56,4 +56,26 @@ public partial class Blake2sTests
         Assert.AreEqual(originalSize, algorithm.HashSize,
             "Failed assignment must not mutate HashSize.");
     }
+
+    /// <summary>
+    /// Verifies that changing <see cref="Blake2s.HashSize" /> after construction re-encodes the RFC 7693 parameter
+    /// block, so the next digest matches the one produced by constructing the algorithm at the new size directly.
+    /// Before the fix the setter left the parameter block baked at construction, yielding a wrong digest.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void HashSize_WhenChangedAfterConstruction_ShouldProduceDigestForNewSize()
+    {
+        byte[] message = System.Text.Encoding.ASCII.GetBytes("abc");
+
+        using var reference = new Blake2s(256);
+        byte[] expected = reference.ComputeHash(message);
+
+        using var resized = new Blake2s(128);
+        resized.HashSize = 256;
+        byte[] actual = resized.ComputeHash(message);
+
+        CollectionAssert.AreEqual(expected, actual,
+            "A digest after a HashSize change must match one produced at that size directly.");
+    }
 }

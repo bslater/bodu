@@ -90,4 +90,19 @@ public sealed partial class Base58Tests
         // "rpshn" are the first five Ripple alphabet symbols.
         Assert.IsTrue(Base58.IsValid("rpshn".AsSpan(), Base58Variant.Ripple));
 
+    /// <summary>
+    /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="false" /> for input longer than
+    /// <see cref="Base58.MaxDecodeInputLength" />, so it agrees with
+    /// <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" />, which rejects the same over-length input
+    /// to bound the O(n²) decode.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void IsValid_WhenInputExceedsMaxLength_ShouldReturnFalse()
+    {
+        // '1' is the zero symbol of the Bitcoin/Flickr alphabet, so the input is otherwise well-formed.
+        string tooLong = new string('1', Base58.MaxDecodeInputLength + 1);
+
+        Assert.IsFalse(Base58.IsValid(tooLong.AsSpan(), Base58Variant.BitcoinFlickr));
+    }
 }

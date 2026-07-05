@@ -31,16 +31,34 @@ internal static partial class FinancialThrowHelper
     {
         ThrowHelper.ThrowIfNull(value, paramName);
 
-        if (value.Length != 3 ||
-            !char.IsAsciiLetterUpper(value[0]) ||
-            !char.IsAsciiLetterUpper(value[1]) ||
-            !char.IsAsciiLetterUpper(value[2]))
+        if (!IsValidIsoCodeShape(value))
         {
             throw new ArgumentException(
                 FinancialResourceStrings.Arg_Invalid_IsoCodeShape,
                 paramName);
         }
     }
+
+    /// <summary>
+    /// Determines whether <paramref name="value" /> has the canonical ISO 4217 alphabetic shape: exactly three
+    /// uppercase ASCII letters.
+    /// </summary>
+    /// <param name="value">The candidate currency code.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="value" /> is exactly three uppercase ASCII letters; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The single shape predicate shared by the throwing <see cref="ThrowIfNotValidIsoCode(string, string?)" /> guard
+    /// and the non-throwing lookup paths, so the ISO-shape rule is defined once. In particular it excludes the numeric
+    /// underlying-value form (for example <c>"840"</c>) that <see cref="System.Enum.TryParse{TEnum}(string, out TEnum)" />
+    /// would otherwise accept.
+    /// </remarks>
+    internal static bool IsValidIsoCodeShape([NotNullWhen(true)] string? value) =>
+        value is { Length: 3 }
+        && char.IsAsciiLetterUpper(value[0])
+        && char.IsAsciiLetterUpper(value[1])
+        && char.IsAsciiLetterUpper(value[2]);
 
     /// <summary>
     /// Throws when <paramref name="value" /> is the <see cref="CurrencyCode.None" /> sentinel or is not a defined

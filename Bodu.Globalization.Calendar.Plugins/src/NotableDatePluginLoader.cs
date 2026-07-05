@@ -90,26 +90,7 @@ public static class NotableDatePluginLoader
         byte[]? hash = path is not null && File.Exists(path) ? ComputeHash(path) : null;
         string? token = FormatPublicKeyToken(assemblyName.GetPublicKeyToken());
 
-        PluginTrustResult trust = trustPolicy.Evaluate(new PluginTrustContext(name, path, hash, token));
-        if (!trust.IsTrusted)
-        {
-            Log.PluginTrustRejected(log, name, trust.Reason ?? string.Empty);
-            throw new PluginNotTrustedException(
-                string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_NotTrusted_Plugin, name, trust.Reason ?? string.Empty),
-                name,
-                trust.Reason);
-        }
-
-        Log.PluginTrusted(log, name);
-
-        NotableDatePluginAttribute? attribute = assembly.GetCustomAttribute<NotableDatePluginAttribute>() ?? throw new PluginMissingAttributeException(
-                string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Missing_PluginAttribute, name),
-                name);
-
-        INotableDatePlugin plugin = Activate(attribute.PluginType);
-        Log.PluginActivated(log, name, attribute.PluginType.FullName ?? attribute.PluginType.Name);
-
-        return plugin;
+        return EvaluateTrustAndActivate(assembly, new PluginTrustContext(name, path, hash, token), trustPolicy, log);
     }
 
     /// <summary>
@@ -135,11 +116,36 @@ public static class NotableDatePluginLoader
         ThrowHelper.ThrowIfNull(assemblyPath);
         ThrowHelper.ThrowIfNull(trustPolicy);
 
-        string fullPath = Path.GetFullPath(assemblyPath);
-        AssemblyLoadContext context = new($"NotableDatePlugin:{Path.GetFileNameWithoutExtension(fullPath)}", isCollectible: false);
-        Assembly assembly = context.LoadFromAssemblyPath(fullPath);
+        ILogger log = logger ?? NullLogger.Instance;
 
-        return LoadFrom(assembly, trustPolicy, logger);
+        string fullPath = Path.GetFullPath(assemblyPath);
+
+        // Read the image exactly once and hash those same bytes, so the digest the trust policy verifies is the digest
+        // of the bytes that are loaded. Hashing a re-read of the file (as an already-loaded assembly must) would open a
+        // time-of-check/time-of-use gap an attacker could use to swap the file between the load and the hash.
+        byte[] image = File.ReadAllBytes(fullPath);
+        byte[] hash = SHA256.HashData(image);
+
+        // Use a collectible context so a rejected — or failed — plugin can be unloaded rather than pinned for the life
+        // of the process. Mapping the image into the context does not run plugin code; activation, which does, happens
+        // only after the trust check below passes.
+        AssemblyLoadContext context = new($"NotableDatePlugin:{Path.GetFileNameWithoutExtension(fullPath)}", isCollectible: true);
+        try
+        {
+            using MemoryStream stream = new(image, writable: false);
+            Assembly assembly = context.LoadFromStream(stream);
+
+            AssemblyName assemblyName = assembly.GetName();
+            string name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
+            string? token = FormatPublicKeyToken(assemblyName.GetPublicKeyToken());
+
+            return EvaluateTrustAndActivate(assembly, new PluginTrustContext(name, fullPath, hash, token), trustPolicy, log);
+        }
+        catch
+        {
+            context.Unload();
+            throw;
+        }
     }
 
     /// <summary>
@@ -173,6 +179,46 @@ public static class NotableDatePluginLoader
         Log.PluginAlgorithmsRegistered(logger ?? NullLogger.Instance, count, plugin.GetType().FullName ?? plugin.GetType().Name);
 
         return count;
+    }
+
+    /// <summary>
+    /// Evaluates the trust policy against the supplied context and, when trusted, activates the assembly's declared
+    /// plugin.
+    /// </summary>
+    /// <param name="assembly">The candidate assembly whose plugin attribute is read after the trust check passes.</param>
+    /// <param name="trustContext">The metadata the trust policy evaluates.</param>
+    /// <param name="trustPolicy">The policy that must trust the assembly before its plugin is activated.</param>
+    /// <param name="log">The logger that receives diagnostics for the load.</param>
+    /// <returns>The activated plugin.</returns>
+    /// <exception cref="PluginNotTrustedException">The trust policy rejected the assembly.</exception>
+    /// <exception cref="PluginMissingAttributeException">The assembly does not declare a plugin attribute.</exception>
+    /// <exception cref="PluginActivationException">
+    /// The plugin type could not be activated or is not a plugin.
+    /// </exception>
+    private static INotableDatePlugin EvaluateTrustAndActivate(Assembly assembly, PluginTrustContext trustContext, IPluginTrustPolicy trustPolicy, ILogger log)
+    {
+        string name = trustContext.AssemblyName;
+
+        PluginTrustResult trust = trustPolicy.Evaluate(trustContext);
+        if (!trust.IsTrusted)
+        {
+            Log.PluginTrustRejected(log, name, trust.Reason ?? string.Empty);
+            throw new PluginNotTrustedException(
+                string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_NotTrusted_Plugin, name, trust.Reason ?? string.Empty),
+                name,
+                trust.Reason);
+        }
+
+        Log.PluginTrusted(log, name);
+
+        NotableDatePluginAttribute? attribute = assembly.GetCustomAttribute<NotableDatePluginAttribute>() ?? throw new PluginMissingAttributeException(
+                string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Missing_PluginAttribute, name),
+                name);
+
+        INotableDatePlugin plugin = Activate(attribute.PluginType);
+        Log.PluginActivated(log, name, attribute.PluginType.FullName ?? attribute.PluginType.Name);
+
+        return plugin;
     }
 
     /// <summary>

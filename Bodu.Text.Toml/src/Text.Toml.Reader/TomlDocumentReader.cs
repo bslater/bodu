@@ -305,7 +305,7 @@ public ref struct TomlDocumentReader
             return Utf8TomlReader.DecodeString(_source.Slice(row.StringContentStart, row.StringContentLength), row.StringHasEscapes);
         }
 
-        throw new InvalidOperationException();
+        throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
     }
 
     /// <summary>
@@ -318,7 +318,7 @@ public ref struct TomlDocumentReader
     public readonly long GetInt64() =>
         _tokenType == TomlTokenType.Integer
             ? _rows[_currentRow].AsInt64()
-            : throw new InvalidOperationException();
+            : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as an IEEE 754 binary64 floating-point value.
@@ -330,7 +330,7 @@ public ref struct TomlDocumentReader
     public readonly double GetDouble() =>
         _tokenType == TomlTokenType.Float
             ? _rows[_currentRow].AsDouble()
-            : throw new InvalidOperationException();
+            : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as a Boolean.
@@ -342,7 +342,7 @@ public ref struct TomlDocumentReader
     public readonly bool GetBoolean() =>
         _tokenType == TomlTokenType.Boolean
             ? _rows[_currentRow].AsBoolean()
-            : throw new InvalidOperationException();
+            : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as an offset date-time.
@@ -354,7 +354,7 @@ public ref struct TomlDocumentReader
     public readonly DateTimeOffset GetDateTimeOffset() =>
         _tokenType == TomlTokenType.OffsetDateTime
             ? _rows[_currentRow].AsDateTimeOffset()
-            : throw new InvalidOperationException();
+            : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as a local date-time.
@@ -368,7 +368,7 @@ public ref struct TomlDocumentReader
     public readonly DateTime GetDateTime() =>
         _tokenType == TomlTokenType.LocalDateTime
             ? _rows[_currentRow].AsDateTime()
-            : throw new InvalidOperationException();
+            : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as a local date.
@@ -380,7 +380,7 @@ public ref struct TomlDocumentReader
     public readonly DateOnly GetDateOnly() =>
         _tokenType == TomlTokenType.LocalDate
             ? _rows[_currentRow].AsDateOnly()
-            : throw new InvalidOperationException();
+            : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Reads the current token as a local time.
@@ -392,7 +392,7 @@ public ref struct TomlDocumentReader
     public readonly TimeOnly GetTimeOnly() =>
         _tokenType == TomlTokenType.LocalTime
             ? _rows[_currentRow].AsTimeOnly()
-            : throw new InvalidOperationException();
+            : throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_TomlReaderValueType);
 
     /// <summary>
     /// Skips the current value, including the entire subtree when the reader is positioned on a

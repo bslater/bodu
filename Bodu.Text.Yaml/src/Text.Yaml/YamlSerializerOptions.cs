@@ -181,10 +181,16 @@ public sealed class YamlSerializerOptions
     }
 
     /// <summary>
-    /// Gets the effective maximum depth, applying the default when unset.
+    /// Gets the effective maximum depth, applying the default when unset and clamping to the absolute ceiling.
     /// </summary>
     /// <value>The maximum depth used by the serializer.</value>
-    internal int EffectiveMaxDepth => _maxDepth <= 0 ? YamlLimits.DefaultMaxDepth : _maxDepth;
+    /// <remarks>
+    /// A caller-supplied maximum is clamped to <see cref="YamlLimits.AbsoluteMaxDepth" /> — matching the reader and
+    /// writer option types — so a large configured depth cannot defeat the recursion ceiling that guards against a
+    /// <see cref="StackOverflowException" /> on deeply nested graphs.
+    /// </remarks>
+    internal int EffectiveMaxDepth =>
+        _maxDepth <= 0 ? YamlLimits.DefaultMaxDepth : Math.Min(_maxDepth, YamlLimits.AbsoluteMaxDepth);
 
     /// <summary>
     /// Marks the options instance as read-only so that its settable properties can no longer be changed.

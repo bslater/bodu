@@ -24,9 +24,9 @@ namespace Bodu.Extensions;
 /// callers can supply comparers that throw on <see langword="null" /> input without guarding separately.
 /// </para>
 /// <para>
-/// These helpers complement <see cref="IComparableExtensions" />, which provides instance-style comparison predicates (
+/// These helpers complement <see cref="ComparableExtensions" />, which provides instance-style comparison predicates (
 /// <c>IsBetween</c>, <c>IsGreaterThan</c>, and so on). <see cref="ComparableHelper" /> is the static surface for
-/// combining two operands; <see cref="IComparableExtensions" /> is the surface for testing a single operand against
+/// combining two operands; <see cref="ComparableExtensions" /> is the surface for testing a single operand against
 /// bounds.
 /// </para>
 /// </remarks>

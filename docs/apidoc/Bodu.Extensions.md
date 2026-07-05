@@ -52,7 +52,7 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 
 **Comparable**
 
-- <xref:Bodu.Extensions.IComparableExtensions> — `AtLeast`, `AtMost`, `Clamp`, `IsBetween`, `IsGreaterThan`, `Max`, `Min`, …
+- <xref:Bodu.Extensions.ComparableExtensions> — `AtLeast`, `AtMost`, `Clamp`, `IsBetween`, `IsGreaterThan`, `Max`, `Min`, …
 - <xref:Bodu.Extensions.ComparableHelper> — `Coalesce`, `Max`, `Min` over nullable comparables.
 
 **Enums**

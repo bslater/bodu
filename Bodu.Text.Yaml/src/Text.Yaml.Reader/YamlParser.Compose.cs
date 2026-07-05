@@ -22,8 +22,95 @@ internal sealed partial class YamlParser
     {
         ResolveAliases();
         DetectAliasCycles();
+        EnforceExpansionBudget();
         CoerceTags();
         ExpandMergeKeys();
+    }
+
+    /// <summary>
+    /// Rejects a document whose resolved alias graph would expand to more than
+    /// <see cref="YamlLimits.AbsoluteMaxExpandedNodes" /> nodes when materialized into a tree.
+    /// </summary>
+    /// <remarks>
+    /// Aliases are stored as shared references, so the parsed row graph is linear in the input size, but every
+    /// consumer that walks the graph (the node DOM, the read-only document, and the serializer) expands each alias
+    /// into a full copy of its target. Chained aliases amplify exponentially — the "billion laughs" attack. This
+    /// pass computes the materialized node count once, memoized over the (already acyclic) graph, and rejects the
+    /// document before any consumer can exhaust memory. It runs after <see cref="DetectAliasCycles" /> so the walk
+    /// is guaranteed to terminate.
+    /// </remarks>
+    /// <exception cref="YamlFormatException">The expanded node count exceeds the permitted maximum.</exception>
+    private void EnforceExpansionBudget()
+    {
+        if (_rows.Count == 0)
+            return;
+
+        // Memoized expanded-node count per resolved row; 0 marks "not yet computed" (a real count is always >= 1).
+        // The walk is an explicit-stack post-order traversal rather than native recursion: chained aliases can make
+        // the materialized tree far deeper than the parser's physical nesting clamp, so a recursive counter would
+        // itself risk a StackOverflowException on a long alias chain.
+        var counts = new long[_rows.Count];
+        var nodes = new Stack<int>();
+        var nextChild = new Stack<int>();
+        var accumulated = new Stack<long>();
+
+        int root = Resolve(0);
+        nodes.Push(root);
+        nextChild.Push(_rows[root].FirstChild);
+        accumulated.Push(1);
+
+        while (nodes.Count > 0)
+        {
+            int child = nextChild.Pop();
+
+            if (child < 0)
+            {
+                // Every child of the current node has been counted: finalize and fold into the parent's total.
+                int done = nodes.Pop();
+                long total = accumulated.Pop();
+                counts[done] = total;
+
+                if (nodes.Count > 0)
+                    accumulated.Push(CheckedAdd(accumulated.Pop(), total));
+
+                continue;
+            }
+
+            // Advance the current node to its next sibling before descending into (or folding) this child.
+            nextChild.Push(_rows[child].NextSibling);
+
+            int resolvedChild = Resolve(child);
+            if (counts[resolvedChild] != 0)
+            {
+                // A shared target already measured: add its cached expansion without re-walking it.
+                accumulated.Push(CheckedAdd(accumulated.Pop(), counts[resolvedChild]));
+            }
+            else
+            {
+                nodes.Push(resolvedChild);
+                nextChild.Push(_rows[resolvedChild].FirstChild);
+                accumulated.Push(1);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Adds two expanded-node counts, throwing once the sum exceeds the permitted maximum.
+    /// </summary>
+    /// <param name="current">The running total.</param>
+    /// <param name="addition">The count to add.</param>
+    /// <returns>The new running total.</returns>
+    /// <exception cref="YamlFormatException">The total exceeds <see cref="YamlLimits.AbsoluteMaxExpandedNodes" />.</exception>
+    private static long CheckedAdd(long current, long addition)
+    {
+        long total = current + addition;
+        if (total > YamlLimits.AbsoluteMaxExpandedNodes)
+        {
+            throw new YamlFormatException(string.Format(
+                CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlAliasExpansionTooLarge, YamlLimits.AbsoluteMaxExpandedNodes));
+        }
+
+        return total;
     }
 
     /// <summary>

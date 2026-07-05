@@ -156,6 +156,9 @@
   <data name="Format_Invalid_DotEnvDuplicateKey" xml:space="preserve">
     <value>Duplicate key '{0}' on line {1}.</value>
   </data>
+  <data name="Format_Invalid_DotEnvEntryTooLong" xml:space="preserve">
+    <value>The entry starting on line {1} exceeds the maximum streaming length of {0} characters.</value>
+  </data>
   <data name="Format_Invalid_DotEnvInvalidKey" xml:space="preserve">
     <value>Invalid key '{0}' on line {1}. Keys must start with a letter or underscore and contain only letters, digits, and underscores.</value>
   </data>
