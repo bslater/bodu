@@ -102,10 +102,16 @@ public static partial class Base62
     /// <param name="source">The character span.</param>
     /// <param name="styles">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect.</param>
     /// <returns>
-    /// <see langword="true" /> when every retained character is in the alphabet; otherwise <see langword="false" />.
+    /// <see langword="true" /> when the input is no longer than <see cref="MaxDecodeInputLength" /> and every retained
+    /// character is in the alphabet; otherwise <see langword="false" />.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {
+        // Agree with Decode, which rejects input past this length to bound its O(n²) cost: an over-length input is not
+        // decodable, so it is not valid.
+        if (source.Length > MaxDecodeInputLength)
+            return false;
+
         bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
         foreach (char c in source)
