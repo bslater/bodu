@@ -49,7 +49,7 @@
               href: core/table.md
         - name: Bodu.Collections.Generic.Trees
           items:
-            - name: Trie (prefix tree)
+            - name: Tries and text search
               href: core/trie.md
         - name: Bodu.Functional
           items:

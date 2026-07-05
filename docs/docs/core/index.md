@@ -79,11 +79,13 @@ Graphs and graph algorithms. See the [Graphs and graph algorithms](../../guides/
 | <xref:Bodu.Collections.Generic.Graphs.DisjointSet`1> | Union-find (disjoint-set) with path compression for connectivity and components. |
 
 ### `Bodu.Collections.Generic.Trees`
-Prefix trees and an n-ary tree. See the [Trie (prefix tree)](../../guides/core/trie.md) guide and the <xref:Bodu.Collections.Generic.Trees> overview.
+The trie family and an n-ary tree. See the [Tries and text search](../../guides/core/trie.md) guide and the <xref:Bodu.Collections.Generic.Trees> overview.
 
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Collections.Generic.Trees.Trie>, <xref:Bodu.Collections.Generic.Trees.Trie`1> | A string set and a string-keyed map with prefix queries (`StartsWith`, `KeysWithPrefix`). |
+| <xref:Bodu.Collections.Generic.Trees.RadixTrie>, <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> | Path-compressed (PATRICIA-style) siblings of the tries with the identical member-for-member surface: string edge labels split on insert and re-fuse on remove, so node count tracks key count — the better fit for long keys with sparse branching (URLs, paths, identifiers). |
+| <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton>, <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> | Immutable multi-pattern text matchers built once from a pattern set: `EnumerateMatches` reports every (overlapping, nested) occurrence of every pattern in one O(text + matches) pass, in a pinned (end index, pattern length) order, with span-based `CountMatches` / `HasMatch` conveniences; the keyed variant carries a value per pattern onto each match. |
 | <xref:Bodu.Collections.Generic.Trees.Tree`1> | A mutable n-ary tree node with stack-safe pre-/post-/level-order traversals. |
 
 ### `Bodu.Threading`

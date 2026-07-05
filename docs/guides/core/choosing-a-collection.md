@@ -32,8 +32,12 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
    - Overlapping intervals, queried by "what covers this point/window?" → <xref:Bodu.Collections.Generic.IntervalTree`1> (or <xref:Bodu.Collections.Generic.IntervalTree`2> to carry a value per interval).
    - Dense set of non-negative integers as packed bits → <xref:Bodu.Collections.Generic.BitSet>.
    - Sorted, with floor/ceiling/rank/select and range counting → <xref:Bodu.Collections.Generic.NavigableSet`1>.
-4. **Do you need a priority queue with key-based updates?** → <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>.
-5. **Can the answer be approximate?** When the exact structure no longer fits in memory and a quantified error is acceptable → the `Bodu.Collections.Probabilistic` sketches; see [Approximate (probabilistic) collections](#approximate-probabilistic-collections) below.
+4. **Do you need string-keyed prefix lookups or multi-pattern text search?**
+   - Membership and prefix queries over string keys → <xref:Bodu.Collections.Generic.Trees.Trie> (or <xref:Bodu.Collections.Generic.Trees.Trie`1> to carry a value per key).
+   - The same surface over long keys with sparse branching (URLs, paths, identifiers) → <xref:Bodu.Collections.Generic.Trees.RadixTrie> / <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> — path-compressed, drop-in interchangeable with the tries.
+   - Find every occurrence of many patterns inside a text in one pass → <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> (or <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> to carry a value per pattern).
+5. **Do you need a priority queue with key-based updates?** → <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>.
+6. **Can the answer be approximate?** When the exact structure no longer fits in memory and a quantified error is acceptable → the `Bodu.Collections.Probabilistic` sketches; see [Approximate (probabilistic) collections](#approximate-probabilistic-collections) below.
 
 If none of the above fit, the BCL types (`List<T>`, `Dictionary<TKey,TValue>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`) are the right choice. Bodu.Core does not duplicate BCL primitives — every type below adds a contract the BCL does not provide.
 
@@ -60,6 +64,9 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 | Two-key map with row/column projections | <xref:Bodu.Collections.Generic.Table`3> | Guava `Table` shape: live `Row` / `Column` views over a row-major store. Column-axis operations are O(rows) — no second index. A plain `Dictionary<(TRow, TColumn), TValue>` covers lookup-only use. |
 | Auto-materializing defaults on indexer read | <xref:Bodu.Collections.Generic.DefaultingDictionary`2> | Python `defaultdict` semantics: only the indexer getter invokes the value factory and stores the result — `TryGetValue`/`ContainsKey` never materialize. The `GetOrAdd` extension stays the per-call-site option. |
 | Dense integer membership as packed bits | <xref:Bodu.Collections.Generic.BitSet> | Java `BitSet` semantics. Prefer over the BCL `BitArray`, which is fixed-size, has no set-bit query surface (`NextSetBit` / `NextClearBit` / `Cardinality`), and enumerates boxed `bool` values instead of set-bit indices. |
+| String-keyed prefix lookup (autocomplete, routing) | <xref:Bodu.Collections.Generic.Trees.Trie> / <xref:Bodu.Collections.Generic.Trees.Trie`1> | Membership and prefix queries cost O(key length), independent of key count. Configurable `IEqualityComparer<char>`. |
+| Prefix lookup over long, sparsely branching keys | <xref:Bodu.Collections.Generic.Trees.RadixTrie> / <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> | Same member-for-member surface as the tries over path-compressed string edges — node count tracks key count, not total key length. |
+| Multi-pattern text search (all occurrences, one pass) | <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> / <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> | Built once from the pattern set, immutable after. O(text + matches) regardless of pattern count; matches reported ascending by end index, then pattern length. |
 
 ### By capacity and lifecycle
 
@@ -147,6 +154,9 @@ All three hash through the element's <xref:System.Collections.Generic.IEqualityC
 | Find the nearest price at or below a limit, or the k-th smallest sample. | <xref:Bodu.Collections.Generic.NavigableSet`1> — `TryGetFloor` / `GetAt` in O(log n). |
 | Look up the tax bracket, tier, or time-series entry in effect at a key. | <xref:Bodu.Collections.Generic.NavigableDictionary`2> — `TryGetFloorEntry` / `Range` in O(log n). |
 | Count occurrences of tokens in a corpus. | <xref:Bodu.Collections.Generic.Multiset`1>. |
+| Suggest completions for a typed prefix. | <xref:Bodu.Collections.Generic.Trees.Trie`1> — `ItemsWithPrefix` in O(prefix + matches). |
+| Route requests by longest shared path segments. | <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> — compressed edges keep URL/path tables compact. |
+| Flag every banned keyword in a document in one pass. | <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> — `EnumerateMatches` reports all (overlapping) occurrences; `HasMatch` for a quick yes/no. |
 | Maintain a list of items in entry order while ensuring uniqueness. | <xref:Bodu.Collections.Generic.IndexedSet`1>. |
 | Track a thread-safe set of active correlation ids. | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
 | Stream-build a payload whose total length is unknown. | <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, or <xref:Bodu.Buffers.PooledBufferBuilder`1> for an `ArrayPool<T>`-backed builder. |

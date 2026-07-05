@@ -153,6 +153,9 @@
   <data name="Arg_Invalid_ElementNotInSet" xml:space="preserve">
     <value>The specified element is not a member of any set.</value>
   </data>
+  <data name="Arg_Invalid_EmptyPattern" xml:space="preserve">
+    <value>The pattern collection cannot contain an empty pattern.</value>
+  </data>
   <data name="Arg_Invalid_HyperLogLogImportData" xml:space="preserve">
     <value>The source data is not a valid HyperLogLog export.</value>
   </data>

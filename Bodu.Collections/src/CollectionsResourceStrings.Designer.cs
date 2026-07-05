@@ -169,6 +169,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The pattern collection cannot contain an empty pattern..
+        /// </summary>
+        internal static string Arg_Invalid_EmptyPattern {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_EmptyPattern", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The source data is not a valid HyperLogLog export..
         /// </summary>
         internal static string Arg_Invalid_HyperLogLogImportData {

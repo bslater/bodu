@@ -21,7 +21,7 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 | `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`. | [Concurrent collections](concurrent-collections.md) |
 | `Bodu.Collections.Probabilistic` | Approximate sketch structures with quantified error bounds — `BloomFilter<T>` (membership, no false negatives), `CountMinSketch<T>` (frequencies, never underestimates), `HyperLogLog<T>` (distinct counts, ~1.04/√m standard error). | [Probabilistic collections (sketches)](probabilistic-collections.md) |
 | `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms — `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T,T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet` / `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
-| `Bodu.Collections.Generic.Trees` | Prefix trees and an n-ary tree — `Trie`, `Trie<TValue>`, and `Tree<T>`. | [Trie (prefix tree)](trie.md) |
+| `Bodu.Collections.Generic.Trees` | The trie family and an n-ary tree — `Trie` / `Trie<TValue>`, the path-compressed `RadixTrie` / `RadixTrie<TValue>`, the multi-pattern `AhoCorasickAutomaton` / `AhoCorasickAutomaton<TValue>`, and `Tree<T>`. | [Tries and text search](trie.md) |
 | `Bodu.Threading` | Async coordination primitives — `AsyncLock`, `AsyncSemaphore`, `AsyncReaderWriterLock`, `AsyncAutoResetEvent` / `AsyncManualResetEvent` / `AsyncCountdownEvent`, `AsyncLazy<T>`, `AsyncDebouncer`, and `RateGate`. | [Async coordination primitives](async-primitives.md) |
 | `Bodu.Functional` | Functional helpers — `Memoizer`, and the railway primitives `Option<T>`, `Result` / `Result<T>` / `ResultError`, `Either<TLeft,TRight>` with Task-based async combinators. | [Memoization](memoization.md) · [Options, results, and eithers](functional-results.md) |
 | `Bodu` | Root namespace primitives — `WeekPattern`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) |
@@ -165,8 +165,8 @@ Bodu.Core anchors the **Core Foundations** topic: the [topic guide landing](../t
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="trie.md">Trie (prefix tree)</a></h3>
-  <p>The <code>Trie</code> string set and <code>Trie&lt;TValue&gt;</code> map with prefix queries (autocomplete-style), plus the n-ary <code>Tree&lt;T&gt;</code> with stack-safe traversals.</p>
+  <h3><a href="trie.md">Tries and text search</a></h3>
+  <p>The <code>Trie</code> string set and <code>Trie&lt;TValue&gt;</code> map with prefix queries (autocomplete-style), the path-compressed <code>RadixTrie</code> pair with the same surface, the <code>AhoCorasickAutomaton</code> pair for single-pass multi-pattern text search, plus the n-ary <code>Tree&lt;T&gt;</code> with stack-safe traversals.</p>
 </div>
 
 </div>
