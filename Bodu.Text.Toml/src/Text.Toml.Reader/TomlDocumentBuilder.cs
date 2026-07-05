@@ -33,6 +33,20 @@ internal sealed class TomlDocumentBuilder
     /// <summary>The flat row store, with the document root table at index 0.</summary>
     private readonly List<TomlReaderRow> _rows = [];
 
+    /// <summary>The child count at which a table switches from a linear sibling scan to a hashed key index.</summary>
+    /// <remarks>
+    /// Small tables scan their sibling chain directly, so a typical document allocates neither collection below. Only
+    /// a table that grows past this threshold builds an index, converting an otherwise O(n²) large-flat-table parse
+    /// (a linear key scan per inserted key) into O(n) while leaving small-document allocation unchanged.
+    /// </remarks>
+    private const int ChildIndexThreshold = 1024;
+
+    /// <summary>Maps each keyed child of an indexed table to its row index by (parent row, key); lazily allocated.</summary>
+    private Dictionary<(int Parent, string Key), int>? _childIndex;
+
+    /// <summary>The parent rows whose children are tracked in <see cref="_childIndex" />; lazily allocated.</summary>
+    private HashSet<int>? _indexedParents;
+
     /// <summary>Per-depth scratch lists reused to collect the segments of a key path without allocating a list per key. Indexed by the current nesting <see cref="_depth" />, so an outer key path is never overwritten by an inner path read while the outer value is being materialized.</summary>
     private readonly List<List<string>> _pathScratch = [];
 
@@ -548,6 +562,37 @@ internal sealed class TomlDocumentBuilder
         p.LastChild = child;
         p.ChildCount++;
         _rows[parent] = p;
+
+        // Array elements (null key) are never looked up by key. Small tables stay on the linear scan; once a table
+        // grows past the threshold it is indexed so subsequent key lookups are O(1).
+        if (key is not null && p.ChildCount >= ChildIndexThreshold)
+        {
+            _indexedParents ??= [];
+            _childIndex ??= [];
+
+            if (_indexedParents.Add(parent))
+                BuildChildIndex(parent);
+            else
+                _childIndex[(parent, key)] = child;
+        }
+    }
+
+    /// <summary>
+    /// Populates <see cref="_childIndex" /> with every keyed child of <paramref name="parent" />, called once when a
+    /// table first crosses <see cref="ChildIndexThreshold" />.
+    /// </summary>
+    /// <param name="parent">The row index of the table to index.</param>
+    private void BuildChildIndex(int parent)
+    {
+        int child = _rows[parent].FirstChild;
+        while (child >= 0)
+        {
+            string? childKey = _rows[child].Key;
+            if (childKey is not null)
+                _childIndex![(parent, childKey)] = child;
+
+            child = _rows[child].NextSibling;
+        }
     }
 
     /// <summary>
@@ -558,6 +603,10 @@ internal sealed class TomlDocumentBuilder
     /// <returns>The row index of the matching child, or <c>-1</c> when none matches.</returns>
     private int FindChild(int table, string key)
     {
+        // An indexed (large) table resolves the key from the hash index; a small table scans its sibling chain.
+        if (_indexedParents is not null && _indexedParents.Contains(table))
+            return _childIndex!.TryGetValue((table, key), out int indexed) ? indexed : -1;
+
         int child = _rows[table].FirstChild;
         while (child >= 0)
         {
