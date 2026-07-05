@@ -48,6 +48,7 @@ Bounded and ordered collections built around a shared ring-backed primitive.
 | <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | Index-aware set and priority-queue variants for lookup-by-position and key-based priority updates. |
 | <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1> | Multi-map and multi-set semantics over `IEqualityComparer<TKey>`. |
 | <xref:Bodu.Collections.Generic.BitSet> | Growable packed bit set with Java `BitSet` semantics: auto-grow on `Set`/`Flip`, reads beyond capacity return `false`, `NextSetBit` / `NextClearBit` / `Cardinality` queries, in-place `And` / `Or` / `Xor` / `AndNot`, and a non-boxing enumerator over set-bit indices. |
+| <xref:Bodu.Collections.Generic.NavigableSet`1> | Comparer-ordered set over an order-statistic red-black tree: O(log n) nearest-neighbour queries (`TryGetFloor` / `TryGetCeiling` / `TryGetHigher` / `TryGetLower`), rank/select (`IndexOf` / `GetAt`), `CountInRange`, `Min`/`Max`, and live fail-fast `Ascending` / `Descending` / `Range` views. |
 | <xref:Bodu.Collections.Generic.Range`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1> | Range-keyed lookups for ordered or interval-valued keys. |
 
 ### `Bodu.Collections.Generic.Concurrent`

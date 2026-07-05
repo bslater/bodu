@@ -171,6 +171,9 @@
   <data name="Arg_Invalid_NullCollectionElement" xml:space="preserve">
     <value>The collection cannot contain null elements.</value>
   </data>
+  <data name="Arg_Invalid_RangeLowerBoundExceedsUpperBound" xml:space="preserve">
+    <value>The inclusive lower bound must not be greater than the inclusive upper bound.</value>
+  </data>
   <data name="Arg_Invalid_RangeOverlap" xml:space="preserve">
     <value>The specified range overlaps an existing range.</value>
   </data>

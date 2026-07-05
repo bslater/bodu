@@ -37,6 +37,8 @@
               href: core/range-dictionary.md
             - name: Bit set
               href: core/bit-set.md
+            - name: Navigable set
+              href: core/navigable-set.md
             - name: Layered and defaulting dictionaries
               href: core/layered-and-defaulting-dictionaries.md
             - name: Table (two-key map)

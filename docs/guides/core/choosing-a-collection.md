@@ -29,6 +29,7 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
    - Duplicates retained as multiplicity → <xref:Bodu.Collections.Generic.Multiset`1>.
    - Set of disjoint half-open intervals → <xref:Bodu.Collections.Generic.RangeSet`1>.
    - Dense set of non-negative integers as packed bits → <xref:Bodu.Collections.Generic.BitSet>.
+   - Sorted, with floor/ceiling/rank/select and range counting → <xref:Bodu.Collections.Generic.NavigableSet`1>.
 4. **Do you need a priority queue with key-based updates?** → <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>.
 5. **Can the answer be approximate?** When the exact structure no longer fits in memory and a quantified error is acceptable → the `Bodu.Collections.Probabilistic` sketches; see [Approximate (probabilistic) collections](#approximate-probabilistic-collections) below.
 
@@ -86,6 +87,7 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 | Unique elements, no order | <xref:System.Collections.Generic.HashSet`1> (BCL) | Bodu does not duplicate this. |
 | Unique elements, insertion-ordered, indexable | <xref:Bodu.Collections.Generic.IndexedSet`1> | Implements `IList<T>` over an open-addressing hash table; O(1) `Contains`, `IndexOf`, indexed read. |
 | Unique elements, insertion-ordered, set surface | <xref:Bodu.Collections.Generic.OrderedSet`1> | Same engine as `IndexedSet<T>`; exposes indices only as a read-only view. |
+| Unique elements, comparer-sorted, positional queries | <xref:Bodu.Collections.Generic.NavigableSet`1> | Order-statistic sorted set: O(log n) `TryGetFloor` / `TryGetCeiling` / `TryGetHigher` / `TryGetLower`, rank/select (`IndexOf` / `GetAt`), and `CountInRange`. The BCL `SortedSet<T>` offers only `GetViewBetween` (no navigation or rank surface), and `SortedList<TKey,TValue>` pays O(n) per insert. |
 | Duplicates retained with count | <xref:Bodu.Collections.Generic.Multiset`1> | `Count` includes multiplicity; `DistinctCount` does not. |
 | Sorted by priority, unique elements, mutable priorities | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | `Enqueue` of an existing element throws — use `EnqueueOrUpdate`. |
 | Sorted by interval | <xref:Bodu.Collections.Generic.RangeSet`1> | Half-open intervals over any `IComparable<T>`. |
@@ -99,7 +101,7 @@ The non-concurrent types are **not** thread-safe even for concurrent reads — <
 | Overwrites the oldest element. | <xref:Bodu.Collections.Generic.CircularBuffer`1> with `AllowOverwrite = true`. |
 | Doubles the backing array. | <xref:Bodu.Collections.Generic.Deque`1> with `AllowGrow = true`. |
 | Evicts a policy-selected entry. | <xref:Bodu.Collections.Generic.EvictingDictionary`2>. |
-| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.LayeredDictionary`2>, <xref:Bodu.Collections.Generic.DefaultingDictionary`2>, <xref:Bodu.Collections.Generic.Table`3>, <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
+| Cannot happen (collection always grows). | <xref:Bodu.Collections.Generic.NavigableSet`1>, <xref:Bodu.Collections.Generic.LayeredDictionary`2>, <xref:Bodu.Collections.Generic.DefaultingDictionary`2>, <xref:Bodu.Collections.Generic.Table`3>, <xref:Bodu.Collections.Generic.SegmentedBuffer`1>, <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.SequencedDictionary`2>, <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |
 
 The `Try…` overloads on the bounded ring-backed types substitute a `false` return for the throw, so callers can stay non-throwing without changing the toggle.
 
@@ -137,6 +139,7 @@ All three hash through the element's <xref:System.Collections.Generic.IEqualityC
 | Pivot values by two keys and slice by either axis. | <xref:Bodu.Collections.Generic.Table`3> — `Row` / `Column` live projections; keep the most-sliced axis on the row side. |
 | Group items into lists without seeding empty lists. | <xref:Bodu.Collections.Generic.DefaultingDictionary`2> with `_ => new List<T>()`, or <xref:Bodu.Collections.Generic.MultiValueDictionary`2> for a dedicated multi-map surface. |
 | Build an unbounded LRU and evict the oldest yourself. | <xref:Bodu.Collections.Generic.SequencedDictionary`2> with `accessOrder: true` + `TryRemoveFirst`. |
+| Find the nearest price at or below a limit, or the k-th smallest sample. | <xref:Bodu.Collections.Generic.NavigableSet`1> — `TryGetFloor` / `GetAt` in O(log n). |
 | Count occurrences of tokens in a corpus. | <xref:Bodu.Collections.Generic.Multiset`1>. |
 | Maintain a list of items in entry order while ensuring uniqueness. | <xref:Bodu.Collections.Generic.IndexedSet`1>. |
 | Track a thread-safe set of active correlation ids. | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>. |

@@ -223,6 +223,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The inclusive lower bound must not be greater than the inclusive upper bound..
+        /// </summary>
+        internal static string Arg_Invalid_RangeLowerBoundExceedsUpperBound {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RangeLowerBoundExceedsUpperBound", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The specified range overlaps an existing range..
         /// </summary>
         internal static string Arg_Invalid_RangeOverlap {
