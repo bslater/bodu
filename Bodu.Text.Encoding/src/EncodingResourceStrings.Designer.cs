@@ -409,6 +409,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The encoded input exceeds the maximum decodable length of {0} characters..
+        /// </summary>
+        internal static string Format_Invalid_BaseDecodeInputTooLong {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BaseDecodeInputTooLong", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Base58Check checksum verification failed..
         /// </summary>
         internal static string Format_Invalid_Base58CheckChecksumFailed {

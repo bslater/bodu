@@ -11,6 +11,16 @@ namespace Bodu.Text.Encoding;
 public static partial class Base58
 {
     /// <summary>
+    /// The maximum number of characters accepted by a single decode. Internal so tests can validate the bound.
+    /// </summary>
+    /// <remarks>
+    /// Base58 decode accumulates into a growing <see cref="System.Numerics.BigInteger" />, making it O(n²) in the
+    /// input length. The cap bounds the worst-case cost against untrusted input while admitting any realistic
+    /// payload (65,536 Base58 characters decode to roughly 48 KB).
+    /// </remarks>
+    internal const int MaxDecodeInputLength = 65536;
+
+    /// <summary>
     /// Decodes a Base58 string into a byte array using the supplied variant.
     /// </summary>
     /// <param name="s">The Base58 input.</param>
@@ -126,6 +136,15 @@ public static partial class Base58
     {
         result = null;
         error = null;
+
+        // Base58 decoding accumulates into a BigInteger whose size grows with the input, so a naive decode is O(n²)
+        // in the input length — an algorithmic-complexity denial-of-service on untrusted input. Cap the input length
+        // so the worst-case cost stays bounded while still admitting any realistic encoded payload.
+        if (chars.Length > MaxDecodeInputLength)
+        {
+            error = string.Format(System.Globalization.CultureInfo.CurrentCulture, EncodingResourceStrings.Format_Invalid_BaseDecodeInputTooLong, MaxDecodeInputLength);
+            return false;
+        }
 
         bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
