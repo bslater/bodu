@@ -40,6 +40,7 @@ Legend for **Loading**:
 | HC-128 | HC-128 spec Appendix A (Hongjun Wu) | `Hc128SpecKatReader` | 3 |
 | ChaCha20 | RFC 8439 Appendix A.2 (encryption) | `Rfc8439VectorReader` | 3 |
 | Salsa20 (Set 6 xor-digest) | ECRYPT Set 6 verified vectors (Go transcription) | `Salsa20EcryptGoVectorReader` | 4 |
+| XSalsa20 | golang.org/x/crypto NaCl xsalsa20 vectors | `XSalsa20GoVectorReader` | 2 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -82,7 +83,7 @@ inline is the natural form.
 | Algorithm | Needed | Status |
 |---|---|---|
 | Salsa20 (Set 1 keystream) | eSTREAM Set 1 first-64-byte vectors | Still inline (no file supplied) |
-| XChaCha20 / XSalsa20 | draft-irtf-cfrg-xchacha / NaCl / DJB | To assess (some inline) |
+| XChaCha20 | draft-irtf-cfrg-xchacha test vectors | To assess (some inline) |
 | FNV1a, Adler (Bodu.IO.Hashing) | reference vectors | Separate package — to assess |
 | CRC catalogue (Bodu.IO.Hashing) | RevEng catalogue check values | Separate package — likely already catalogue-driven |
 

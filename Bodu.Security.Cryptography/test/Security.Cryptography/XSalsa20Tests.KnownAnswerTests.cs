@@ -6,7 +6,8 @@
 
 
 using System.Security.Cryptography;
-using System.Text;
+using Bodu.Security.Cryptography.Infrastructure;
+using Bodu.Test.Kat;
 
 namespace Bodu.Security.Cryptography;
 /// <summary>
@@ -44,25 +45,41 @@ public sealed partial class XSalsa20Tests
         CollectionAssert.AreEqual(expected, subkey, "HSalsa20 subkey mismatch for the NaCl core vector.");
     }
 
+    /// <summary>Resource name of the embedded Go (NaCl) XSalsa20 vector file.</summary>
+    private const string XSalsa20GoResourceName = "Bodu.Security.Cryptography.Salsa20.go-test-vectors.txt";
+
     /// <summary>
-    /// Verifies that <see cref="XSalsa20" /> reproduces the NaCl-derived keystream vector (the ASCII
-    /// <c>"this is 32-byte key for xsalsa20"</c> / <c>"24-byte nonce for xsalsa"</c> case), recovered as the ciphertext
-    /// of an all-zero plaintext.
+    /// Yields the golang.org/x/crypto XSalsa20 encryption vectors, loaded from the embedded Go test source, as
+    /// <see cref="DynamicDataAttribute" /> rows.
     /// </summary>
-    [TestMethod]
-    public void CreateEncryptor_WhenGivenNaClKeystreamVector_ShouldMatchExpected()
+    /// <returns>One row per vector.</returns>
+    /// <exception cref="InvalidOperationException">The embedded resource cannot be located.</exception>
+    private static IEnumerable<object[]> XSalsa20KatData()
     {
-        byte[] key = Encoding.ASCII.GetBytes("this is 32-byte key for xsalsa20");
-        byte[] nonce = Encoding.ASCII.GetBytes("24-byte nonce for xsalsa");
-        byte[] expected = Convert.FromHexString(
-            "4848297feb1fb52fb66d81609bd547fabcbe7026edc8b5e5e449d088bfa69c08" +
-            "8f5d8da1d791267c2c195a7f8cae9c4b4050d08ce6d3a151ec265f3a58e47648");
+        using Stream stream = typeof(XSalsa20Tests).Assembly.GetManifestResourceStream(XSalsa20GoResourceName)
+            ?? throw new InvalidOperationException($"Embedded resource '{XSalsa20GoResourceName}' is missing.");
 
+        foreach (StreamCipherKnownAnswer vector in XSalsa20GoVectorReader.Read(stream))
+            yield return new object[] { vector };
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XSalsa20" /> encrypts each golang.org/x/crypto NaCl XSalsa20 vector — spanning the
+    /// short-message and 64-byte-keystream cases — to its published ciphertext.
+    /// </summary>
+    /// <param name="vector">The XSalsa20 encryption vector under test.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(XSalsa20KatData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void CreateEncryptor_WhenGivenNaClKeystreamVector_ShouldMatchExpected(StreamCipherKnownAnswer vector)
+    {
         using var cipher = new XSalsa20();
-        using ICryptoTransform encryptor = cipher.CreateEncryptor(key, nonce);
-        byte[] keystream = encryptor.TransformFinalBlock(new byte[expected.Length], 0, expected.Length);
+        using ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Nonce);
+        byte[] actual = encryptor.TransformFinalBlock(vector.Plaintext, 0, vector.Plaintext.Length);
 
-        CollectionAssert.AreEqual(expected, keystream, "XSalsa20 keystream mismatch for the NaCl vector.");
+        CollectionAssert.AreEqual(vector.Ciphertext, actual, $"XSalsa20 ciphertext mismatch for {vector.Name}.");
     }
 
     /// <summary>
