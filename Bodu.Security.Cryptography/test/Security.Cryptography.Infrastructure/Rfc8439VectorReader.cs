@@ -100,10 +100,21 @@ public static partial class Rfc8439VectorReader
             if (field is null)
                 continue;
 
+            // Two hex-value layouts appear in the appendices: the offset-prefixed dump with a trailing ASCII gutter
+            // (Key/Nonce/Plaintext/…), and bare space-separated hex lines with no offset (the R/S/data/tag edge-case
+            // vectors). Try the offset form first, then fall back to the bare form.
             Match dump = HexDumpPattern().Match(line);
-            if (dump.Success)
+            string? hex = dump.Success ? dump.Groups[1].Value : null;
+            if (hex is null)
             {
-                foreach (string token in dump.Groups[1].Value.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                Match bare = BareHexPattern().Match(trimmed);
+                if (bare.Success)
+                    hex = bare.Groups[1].Value;
+            }
+
+            if (hex is not null)
+            {
+                foreach (string token in hex.Split(' ', StringSplitOptions.RemoveEmptyEntries))
                     fields[field].Add(byte.Parse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture));
             }
         }
@@ -132,6 +143,9 @@ public static partial class Rfc8439VectorReader
 
     [GeneratedRegex(@"^\s*\d+\s+([0-9a-fA-F]{2}(?:\s[0-9a-fA-F]{2})*)\s{2,}")]
     private static partial Regex HexDumpPattern();
+
+    [GeneratedRegex(@"^([0-9a-fA-F]{2}(?:\s[0-9a-fA-F]{2})*)$")]
+    private static partial Regex BareHexPattern();
 
     [GeneratedRegex(@"^[A-Z]\.\d+\.\s")]
     private static partial Regex SectionHeadingPattern();

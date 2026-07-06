@@ -41,6 +41,7 @@ Legend for **Loading**:
 | ChaCha20 | RFC 8439 Appendix A.2 (encryption) | `Rfc8439VectorReader` | 3 |
 | Salsa20 (Set 6 xor-digest) | ECRYPT Set 6 verified vectors (Go transcription) | `Salsa20EcryptGoVectorReader` | 4 |
 | XSalsa20 | golang.org/x/crypto NaCl xsalsa20 vectors | `XSalsa20GoVectorReader` | 2 |
+| Poly1305 | RFC 8439 Appendix A.3 (MAC) | `Rfc8439VectorReader` | 11 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -63,7 +64,7 @@ inline is the natural form.
 | Tiger-192 | — | **Converted (see §1)** |
 | Threefish 256/512/1024 | Crypto++ `threefish.txt` (Skein golden KAT) | Yes — Crypto++ vector file |
 | SHAKE128/256 | FIPS 202 / CAVP | Yes — NIST CAVP `.rsp` |
-| Poly1305 | RFC 8439 §2.8.2 | RFC table |
+| Poly1305 | — | **Converted (see §1)** — RFC 8439 Appendix A.3 |
 | Whirlpool | — | **Converted (see §1)** — OpenSSL ISO evptests file |
 | AES-GCM-SIV | RFC 8452 Appendix C.1 | RFC table |
 | AES-CCM | Cross-checked vs BCL `AesCcm` oracle | Oracle, not a file |
