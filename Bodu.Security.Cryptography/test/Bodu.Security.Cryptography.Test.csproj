@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Security.Cryptography\AsconAead128.LWC_AEAD_KAT_128_128.txt" />
+    <EmbeddedResource Include="Security.Cryptography\AsconXof128.LWC_XOF_KAT_128_512.txt" />
+    <EmbeddedResource Include="Security.Cryptography\AsconCxof128.LWC_CXOF_KAT_128_512.txt" />
     <EmbeddedResource Include="Security.Cryptography\X25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\Ed25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyGen.txt" />

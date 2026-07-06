@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Security.Cryptography.Infrastructure;
+
 namespace Bodu.Security.Cryptography;
 
 public partial class AsconXof128Tests
@@ -97,61 +99,53 @@ public partial class AsconXof128Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="AsconXof128.HashData" /> reproduces the expected digest for
-    /// sequential-byte inputs of various lengths, validated against the NIST SP 800-232 algorithm.
+    /// Resource name of the embedded ascon-c <c>LWC_XOF_KAT_128_512</c> reference file.
     /// </summary>
-    /// <param name="inputLength">Length of the sequential input message <c>[0x00, 0x01, …]</c>.</param>
-    /// <param name="outputLength">Requested output length in bytes.</param>
-    /// <param name="expectedHex">Expected digest as an uppercase hex string.</param>
-    [TestMethod]
+    private const string KatResourceName = "Bodu.Security.Cryptography.AsconXof128.LWC_XOF_KAT_128_512.txt";
 
-    [DataRow(0, 32, "473D5E6164F58B39DFD84AACDB8AE42EC2D91FED33388EE0D960D9B3993295C6")]
-    [DataRow(1, 32, "51430E0438ECDF642B393630D977625F5F337656BA58AB1E960784AC32A16E0D")]
-    [DataRow(7, 32, "7AE562DB37212A9ACD2673ECFD5B4F1C5CB2E6F64EBF00AA7F6EF8DC82C448D5")]
-    [DataRow(8, 32, "8D1886F5D3EC4AF8D15B44BC62B74DA6EA91BC28FB82F9C34079B5ED6E38B6C9")]
-    [DataRow(9, 32, "DB3013BFBBD132DC1D3152FD955ED48F7CBB675E9AD2A2FECF92B74C957592E0")]
-    [DataRow(16, 32, "10BFEDC5F6442D3E1D8C324878CE1DDF73B01CAFC365589283AC4CBB98E48DE3")]
-    [DataRow(17, 32, "233AF64F97CA9BD97BAE06270571E57215C5CB5BA4038536C5C128DA1D3A379A")]
-    [DataRow(0, 64, "473D5E6164F58B39DFD84AACDB8AE42EC2D91FED33388EE0D960D9B3993295C6AD77855A5D3B13FE6AD9E6098988373AF7D0956D05A8F1665D2C67D1A3AD10FF")]
-    public void HashData_WhenGivenKnownInput_ShouldMatchReferenceDigest(
-        int inputLength, int outputLength, string expectedHex)
+    /// <summary>Citation propagated into each emitted vector for diagnostic output on failure.</summary>
+    private const string KatSource = "NIST SP 800-232 / ascon-c LWC_XOF_KAT_128_512";
+
+    /// <summary>
+    /// Loads every Ascon-XOF128 known-answer vector embedded in the test assembly and yields them as
+    /// <see cref="DynamicDataAttribute" />-compatible rows.
+    /// </summary>
+    /// <returns>One row per KAT vector; each row contains a single <see cref="XofKnownAnswer" /> object.</returns>
+    /// <exception cref="InvalidOperationException">The embedded KAT resource cannot be located.</exception>
+    private static IEnumerable<object[]> AsconXof128ReferenceVectors()
     {
-        byte[] message = new byte[inputLength];
-        for (int i = 0; i < inputLength; i++) message[i] = (byte)i;
+        using Stream stream = typeof(AsconXof128Tests).Assembly.GetManifestResourceStream(KatResourceName)
+            ?? throw new InvalidOperationException(
+                $"Embedded resource '{KatResourceName}' is not present in the test assembly. " +
+                "Check the <EmbeddedResource> entry in Bodu.Security.Cryptography.Test.csproj.");
 
-        byte[] actual = AsconXof128.HashData(message, outputLength);
-
-        Assert.AreEqual(
-            expectedHex,
-            Convert.ToHexString(actual),
-            $"HashData({inputLength} bytes, {outputLength}-byte output) must match the reference digest.");
+        foreach (XofKnownAnswer vector in NistLwcXofKatReader.Read(stream, KatSource))
+            yield return new object[] { vector };
     }
 
     /// <summary>
-    /// Verifies that <see cref="AsconXof128.HashData" /> reproduces, byte-for-byte, the exact 512-bit
-    /// output published in the ascon-c <c>LWC_XOF_KAT_128_512.txt</c> reference file for the given
-    /// message — pinning the full data path to an external published KAT rather than a derived oracle.
+    /// Produces a human-readable display name for a KAT row so failures trace back to the source file's <c>Count</c>.
     /// </summary>
-    /// <param name="messageHex">The message bytes as taken from the reference file's <c>Msg</c> field.</param>
-    /// <param name="expectedHex">The reference file's 512-bit <c>MD</c> output.</param>
+    /// <param name="methodInfo">The test method's reflection info (provided by the test runner).</param>
+    /// <param name="data">The row data (a single <see cref="XofKnownAnswer" />).</param>
+    /// <returns>A short label identifying this KAT vector.</returns>
+    public static string GetKatVectorDisplayName(System.Reflection.MethodInfo methodInfo, object[] data) =>
+        data[0] is XofKnownAnswer v ? v.Name : methodInfo.Name;
+
+    /// <summary>
+    /// Verifies that <see cref="AsconXof128.HashData" /> reproduces, byte-for-byte, the exact output of every vector in
+    /// the official ascon-c <c>LWC_XOF_KAT_128_512</c> reference file — the full 1025-row corpus, loaded dynamically
+    /// from the embedded resource, pinning the entire data path to the published NIST SP 800-232 KAT.
+    /// </summary>
+    /// <param name="vector">The XOF known-answer vector under test.</param>
     [TestMethod]
+    [DynamicData(nameof(AsconXof128ReferenceVectors), DynamicDataDisplayName = nameof(GetKatVectorDisplayName))]
     [TestCategory("Regression")]
-    [DataRow("", "473D5E6164F58B39DFD84AACDB8AE42EC2D91FED33388EE0D960D9B3993295C6AD77855A5D3B13FE6AD9E6098988373AF7D0956D05A8F1665D2C67D1A3AD10FF")]
-    [DataRow("00", "51430E0438ECDF642B393630D977625F5F337656BA58AB1E960784AC32A16E0D446405551F5469384F8EA283CF12E64FA72C426BFEBAEA3AA1529E2C4AB23A2F")]
-    [DataRow("00010203040506", "7AE562DB37212A9ACD2673ECFD5B4F1C5CB2E6F64EBF00AA7F6EF8DC82C448D5FE11CD91F4368C37690D79E5DE0CA8AD419E1918CE8DAB2D42363E9476638A7B")]
-    [DataRow("0001020304050607", "8D1886F5D3EC4AF8D15B44BC62B74DA6EA91BC28FB82F9C34079B5ED6E38B6C951803D7DFB3C5E512A0EF5E4060062A6FD067F9C73EF9BEE527411BDA67FC896")]
-    [DataRow("000102030405060708", "DB3013BFBBD132DC1D3152FD955ED48F7CBB675E9AD2A2FECF92B74C957592E0C89959E81C16FD07EAD9EEB8E40359C497AA20258B43D87EC69AD0BB0993FD38")]
-    [DataRow("000102030405060708090A0B0C0D0E0F", "10BFEDC5F6442D3E1D8C324878CE1DDF73B01CAFC365589283AC4CBB98E48DE3CEDA8A41BB0983D539E4D90F6458C5C781724FAD641ED3CDB4779931097440B3")]
-    [DataRow("000102030405060708090A0B0C0D0E0F10", "233AF64F97CA9BD97BAE06270571E57215C5CB5BA4038536C5C128DA1D3A379AE13DA3E54546A1499014CA03F2EEE10B7AA930FAA58A3994FD4BCC71F6CB1927")]
-    [DataRow("000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F", "2E5F3403F4171471CC7934B51982CECE8D6628435DB70E89880F3BE4E0B7B05232DFE63C44A836D771337C9C5A2688D1B71ECABE0D5C2006FEF36EF3186138AD")]
-    [DataRow("000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20", "FEF74B7EBD183BA1D87BF414000B29258D6A2233A2A03ED519C646B351BC008464CB725C2922E77A5E2B71F2D48E8D1AB34B45C3DA91F5D46C9C3D9AE9057E02")]
-    public void HashData_WithAsconCReferenceVector_ShouldMatchPublishedOutput(string messageHex, string expectedHex)
+    public void HashData_WhenGivenNistXofKatVector_ShouldMatchReferenceOutput(XofKnownAnswer vector)
     {
-        byte[] message = Convert.FromHexString(messageHex);
+        byte[] actual = AsconXof128.HashData(vector.Message, vector.Digest.Length);
 
-        byte[] actual = AsconXof128.HashData(message, expectedHex.Length / 2);
-
-        Assert.AreEqual(expectedHex, Convert.ToHexString(actual),
-            "Ascon-XOF128 output must match the ascon-c LWC_XOF_KAT_128_512 published vector.");
+        CollectionAssert.AreEqual(vector.Digest, actual,
+            $"{vector}: Ascon-XOF128 output must match the {KatSource} reference vector.");
     }
 }
