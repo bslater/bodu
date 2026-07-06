@@ -27,6 +27,7 @@ Legend for **Loading**:
 | SipHash-2-4 (64-bit) | veorq/SipHash `vectors.h` (`vectors_sip64`) | `SipHashReferenceVectorsReader` | 64 |
 | Snefru-128 (8-pass) | Merkle 2.5a `testSnefru` / `correctSnefruOutput` | `MerkleSnefruKatReader` | 11 |
 | Snefru-256 (8-pass) | Merkle 2.5a `testSnefru256` / `correctSnefru256Output` | `MerkleSnefruKatReader` | 11 |
+| Tiger-192 | NESSIE `test-vectors-nessie-format.dat` | `NessieHashKatReader` | 650 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -46,7 +47,7 @@ inline is the natural form.
 | Blowfish | Schneier / Eric Young `vectors-2.txt` | Yes — designer vector file exists |
 | Twofish | Designer KAT set | Yes — designer `ecb_tbl.txt` |
 | Camellia | RFC 3713 / RFC 5528 | RFC tables (+ NESSIE file exists) |
-| Tiger-192 | NESSIE `test-vectors-nessie-format.dat` | **Yes — file already fetched this session** |
+| Tiger-192 | — | **Converted (see §1)** |
 | Threefish 256/512/1024 | Crypto++ `threefish.txt` (Skein golden KAT) | Yes — Crypto++ vector file |
 | SHAKE128/256 | FIPS 202 / CAVP | Yes — NIST CAVP `.rsp` |
 | Poly1305 | RFC 8439 §2.8.2 | RFC table |
@@ -68,7 +69,6 @@ inline is the natural form.
 
 | Algorithm | Needed | Status |
 |---|---|---|
-| Tiger-192 → **file conversion** | NESSIE `.dat` (already fetched) | Ready to convert (inline today) |
 | Tiger2 (0x80 pad) | Tiger2 vectors (Crypto++/OpenSSL) | Needs file |
 | CubeHash (standard 16+16/32) | SHA-3 Round 2 `ShortMsgKAT_{224,256,384,512}` | Needs file (NIST host blocked) |
 | Blake2b / Blake2s | RFC 7693 + BLAKE2 KAT (`blake2-kat.json`) | To assess |
