@@ -33,6 +33,7 @@ Legend for **Loading**:
 | Skein 256/512/1024 (hash) | Skein 1.3 `skein_golden_kat_short` | `SkeinGoldenKatReader` | 13 |
 | BLAKE2b / BLAKE2s | official `blake2-kat.json` (keyed + unkeyed) | `Blake2KatReader` | 1024 |
 | BLAKE3 (unkeyed hash) | official `test_vectors.json` (github.com/BLAKE3-team/BLAKE3) | `Blake3KatReader` | 35 |
+| Whirlpool (ISO/IEC 10118-3) | OpenSSL `evpmd_whirlpool.txt` (ISO test-message set) | `OpenSslDigestKatReader` | 9 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -56,7 +57,7 @@ inline is the natural form.
 | Threefish 256/512/1024 | Crypto++ `threefish.txt` (Skein golden KAT) | Yes — Crypto++ vector file |
 | SHAKE128/256 | FIPS 202 / CAVP | Yes — NIST CAVP `.rsp` |
 | Poly1305 | RFC 8439 §2.8.2 | RFC table |
-| Whirlpool | ISO/IEC 10118-3 / NESSIE | Yes — NESSIE file |
+| Whirlpool | — | **Converted (see §1)** — OpenSSL ISO evptests file |
 | AES-GCM-SIV | RFC 8452 Appendix C.1 | RFC table |
 | AES-CCM | Cross-checked vs BCL `AesCcm` oracle | Oracle, not a file |
 | AES-SIV | RFC 5297 Appendix A.1 | RFC table |
@@ -74,7 +75,6 @@ inline is the natural form.
 
 | Algorithm | Needed | Status |
 |---|---|---|
-| Whirlpool | NESSIE Whirlpool file | Inline today; convertible |
 | Twofish / Blowfish | designer vector files | Inline today; convertible |
 | ChaCha20 / XChaCha20 / Salsa20 / XSalsa20 | RFC 8439 / RFC 7539 / NaCl / DJB | To assess (some inline) |
 | Rabbit | RFC 4503 test vectors | To assess |
