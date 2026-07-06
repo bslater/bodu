@@ -26,6 +26,9 @@
     <EmbeddedResource Include="Security.Cryptography\Blake2.blake2-kat.json" />
     <EmbeddedResource Include="Security.Cryptography\Blake3.test_vectors.json" />
     <EmbeddedResource Include="Security.Cryptography\Whirlpool.openssl-evptests.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Twofish.ecb_vk.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Twofish.ecb_vt.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Twofish.ecb_tbl.txt" />
     <EmbeddedResource Include="Security.Cryptography\X25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\Ed25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyGen.txt" />

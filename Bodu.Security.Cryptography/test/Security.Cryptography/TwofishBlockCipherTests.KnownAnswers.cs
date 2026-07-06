@@ -1,198 +1,43 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishBlockCipherTests.KnownAnswers.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Security.Cryptography.Infrastructure;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Curated <see cref="TwofishBlockCipher" /> known-answer test vectors. Transcribed from the Twofish AES
-/// submission ECB intermediate-values test vectors (<c>ecb_ival.txt</c>) hosted on Bruce Schneier's site. Each
-/// per-variant collection covers the canonical iteration steps <c>I=1..5</c> plus the I=10 marker — sufficient
-/// to detect any divergence in the key schedule, MDS matrix, or whitening logic against the reference
-/// implementation.
+/// <see cref="TwofishBlockCipher" /> known-answer test vectors, loaded dynamically from the official Twofish AES
+/// submission ECB known-answer test files shipped as embedded resources: the variable-key (<c>ecb_vk.txt</c>),
+/// variable-text (<c>ecb_vt.txt</c>), and tables (<c>ecb_tbl.txt</c>) suites. Together these exercise every key bit,
+/// every plaintext bit, and the chained MDS / permutation-table sequence across all three key sizes.
 /// </summary>
 /// <remarks>
-/// All vectors target single-block Twofish ECB encryption with no padding or IV. The intermediate-values format
-/// chains plaintext and key material across iterations: each row's plaintext is the previous row's ciphertext,
-/// and for 192- and 256-bit key sizes the key is rotated with prior ciphertext bytes per the AES KAT
-/// specification.
+/// All vectors target single-block Twofish ECB encryption with no padding or IV. Each row carries its own key,
+/// plaintext, and expected ciphertext, so the harness constructs a fresh engine per row. Vectors are partitioned by
+/// key size (128 / 192 / 256 bits) to feed the corresponding <see cref="BlockCipherKeyVariant" />.
 /// </remarks>
-/// <seealso href="https://www.schneier.com/wp-content/uploads/2015/12/ecb_ival.txt">ecb_ival.txt — Twofish ECB intermediate-values vectors</seealso>
+/// <seealso href="https://www.schneier.com/wp-content/uploads/2015/12/twofish-1.zip">Twofish AES submission test-vector diskette (ecb_vk / ecb_vt / ecb_tbl)</seealso>
 internal sealed partial class TwofishBlockCipherTests
 {
-    private const string TwofishZeroBlock = "00000000000000000000000000000000";
+    private static readonly KatProvenance ProfileAesSubmission = KatProvenance.ReferenceImplementation("Twofish AES submission ECB KAT (ecb_vk/ecb_vt/ecb_tbl)");
 
-    private const string TwofishZeroKey128 = "00000000000000000000000000000000";
+    private static readonly BlockCipherKnownAnswer[] AllKnownAnswers = LoadAllKnownAnswers();
 
-    private const string TwofishZeroKey192 = "000000000000000000000000000000000000000000000000";
+    private static readonly BlockCipherKnownAnswer[] Key128KnownAnswers = FilterByKeyLength(16);
 
-    private const string TwofishZeroKey256 = "0000000000000000000000000000000000000000000000000000000000000000";
+    private static readonly BlockCipherKnownAnswer[] Key192KnownAnswers = FilterByKeyLength(24);
 
-    private static readonly KatProvenance ProfileAesSubmission = KatProvenance.ReferenceImplementation("Twofish AES submission ecb_ival.txt");
-
-    private static readonly BlockCipherKnownAnswer[] Key128KnownAnswers =
-    [
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish128_I1_ZeroKeyZeroPlaintext",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString(TwofishZeroBlock),
-            Ciphertext = Convert.FromHexString("9F589F5CF6122C32B6BFEC2F2AE8C35A"),
-            Key = Convert.FromHexString(TwofishZeroKey128),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish128_I2",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("9F589F5CF6122C32B6BFEC2F2AE8C35A"),
-            Ciphertext = Convert.FromHexString("D491DB16E7B1C39E86CB086B789F5419"),
-            Key = Convert.FromHexString(TwofishZeroKey128),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish128_I3",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("D491DB16E7B1C39E86CB086B789F5419"),
-            Ciphertext = Convert.FromHexString("019F9809DE1711858FAAC3A3BA20FBC3"),
-            Key = Convert.FromHexString("9F589F5CF6122C32B6BFEC2F2AE8C35A"),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish128_I4",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("019F9809DE1711858FAAC3A3BA20FBC3"),
-            Ciphertext = Convert.FromHexString("6363977DE839486297E661C6C9D668EB"),
-            Key = Convert.FromHexString("D491DB16E7B1C39E86CB086B789F5419"),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish128_I5",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("6363977DE839486297E661C6C9D668EB"),
-            Ciphertext = Convert.FromHexString("816D5BD0FAE35342BF2A7412C246F752"),
-            Key = Convert.FromHexString("019F9809DE1711858FAAC3A3BA20FBC3"),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish128_I10",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("28530B358C1B42EF277DE6D4407FC591"),
-            Ciphertext = Convert.FromHexString("8A8AB983310ED78C8C0ECDE030B8DCA4"),
-            Key = Convert.FromHexString("34C8A5FB2D3D08A170D120AC6D26DBFA"),
-        },
-    ];
-
-    private static readonly BlockCipherKnownAnswer[] Key192KnownAnswers =
-    [
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish192_I1_ZeroKeyZeroPlaintext",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString(TwofishZeroBlock),
-            Ciphertext = Convert.FromHexString("EFA71F788965BD4453F860178FC19101"),
-            Key = Convert.FromHexString(TwofishZeroKey192),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish192_I2",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("EFA71F788965BD4453F860178FC19101"),
-            Ciphertext = Convert.FromHexString("88B2B2706B105E36B446BB6D731A1E88"),
-            Key = Convert.FromHexString(TwofishZeroKey192),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish192_I3",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("88B2B2706B105E36B446BB6D731A1E88"),
-            Ciphertext = Convert.FromHexString("39DA69D6BA4997D585B6DC073CA341B2"),
-            Key = Convert.FromHexString("EFA71F788965BD4453F860178FC191010000000000000000"),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish192_I4",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("39DA69D6BA4997D585B6DC073CA341B2"),
-            Ciphertext = Convert.FromHexString("182B02D81497EA45F9DAACDC29193A65"),
-            Key = Convert.FromHexString("88B2B2706B105E36B446BB6D731A1E88EFA71F788965BD44"),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish192_I5",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("182B02D81497EA45F9DAACDC29193A65"),
-            Ciphertext = Convert.FromHexString("7AFF7A70CA2FF28AC31DD8AE5DAAAB63"),
-            Key = Convert.FromHexString("39DA69D6BA4997D585B6DC073CA341B288B2B2706B105E36"),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish192_I10",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("893FD67B98C550073571BD631263FC78"),
-            Ciphertext = Convert.FromHexString("16434FC9C8841A63D58700B5578E8F67"),
-            Key = Convert.FromHexString("AE8109BFDA85C1F2C5038B34ED691BFF3AF6F7CE5BD35EF1"),
-        },
-    ];
-
-    private static readonly BlockCipherKnownAnswer[] Key256KnownAnswers =
-    [
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish256_I1_ZeroKeyZeroPlaintext",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString(TwofishZeroBlock),
-            Ciphertext = Convert.FromHexString("57FF739D4DC92C1BD7FC01700CC8216F"),
-            Key = Convert.FromHexString(TwofishZeroKey256),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish256_I2",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("57FF739D4DC92C1BD7FC01700CC8216F"),
-            Ciphertext = Convert.FromHexString("D43BB7556EA32E46F2A282B7D45B4E0D"),
-            Key = Convert.FromHexString(TwofishZeroKey256),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish256_I3",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("D43BB7556EA32E46F2A282B7D45B4E0D"),
-            Ciphertext = Convert.FromHexString("90AFE91BB288544F2C32DC239B2635E6"),
-            Key = Convert.FromHexString("57FF739D4DC92C1BD7FC01700CC8216F00000000000000000000000000000000"),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish256_I4",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("90AFE91BB288544F2C32DC239B2635E6"),
-            Ciphertext = Convert.FromHexString("6CB4561C40BF0A9705931CB6D408E7FA"),
-            Key = Convert.FromHexString("D43BB7556EA32E46F2A282B7D45B4E0D57FF739D4DC92C1BD7FC01700CC8216F"),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish256_I5",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("6CB4561C40BF0A9705931CB6D408E7FA"),
-            Ciphertext = Convert.FromHexString("3059D6D61753B958D92F4781C8640E58"),
-            Key = Convert.FromHexString("90AFE91BB288544F2C32DC239B2635E6D43BB7556EA32E46F2A282B7D45B4E0D"),
-        },
-        new BlockCipherKnownAnswer
-        {
-            Name = "Twofish256_I10",
-            Provenance = ProfileAesSubmission,
-            Plaintext = Convert.FromHexString("C5A3E7CEE0F1B7260528A68FB4EA05F2"),
-            Ciphertext = Convert.FromHexString("43D5CEC327B24AB90AD34A79D0469151"),
-            Key = Convert.FromHexString("DC096BCD99FC72F79936D4C748E75AF75AB67A5F8539A4A5FD9F0373BA463466"),
-        },
-    ];
+    private static readonly BlockCipherKnownAnswer[] Key256KnownAnswers = FilterByKeyLength(32);
 
     /// <summary>
-    /// Returns the curated KAT vectors for <paramref name="variant" />. Each key size carries six vectors drawn
-    /// from iteration steps 1–5 and 10 of the Twofish AES submission corpus.
+    /// Returns the curated KAT vectors for <paramref name="variant" /> — the full official AES-submission ECB suite
+    /// for that key size.
     /// </summary>
+    /// <param name="variant">The key-size variant to source vectors for.</param>
+    /// <returns>The vectors whose key length matches <paramref name="variant" />.</returns>
     private static IReadOnlyList<BlockCipherKnownAnswer> KnownAnswersFor(BlockCipherKeyVariant variant) => variant switch
     {
         BlockCipherKeyVariant.Key128 => Key128KnownAnswers,
@@ -200,4 +45,33 @@ internal sealed partial class TwofishBlockCipherTests
         BlockCipherKeyVariant.Key256 => Key256KnownAnswers,
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
+
+    /// <summary>Loads and concatenates the three embedded AES-submission ECB KAT files.</summary>
+    /// <returns>Every Twofish ECB vector across the variable-key, variable-text, and tables suites.</returns>
+    private static BlockCipherKnownAnswer[] LoadAllKnownAnswers()
+    {
+        (string Resource, string Label)[] files =
+        [
+            ("Bodu.Security.Cryptography.Twofish.ecb_vk.txt", "VK"),
+            ("Bodu.Security.Cryptography.Twofish.ecb_vt.txt", "VT"),
+            ("Bodu.Security.Cryptography.Twofish.ecb_tbl.txt", "TBL"),
+        ];
+
+        var vectors = new List<BlockCipherKnownAnswer>();
+        foreach ((string resource, string label) in files)
+        {
+            using Stream stream = typeof(TwofishBlockCipherTests).Assembly.GetManifestResourceStream(resource)
+                ?? throw new InvalidOperationException($"Embedded resource '{resource}' is missing.");
+
+            vectors.AddRange(AesSubmissionKatReader.Read(stream, ProfileAesSubmission, label));
+        }
+
+        return [.. vectors];
+    }
+
+    /// <summary>Filters <see cref="AllKnownAnswers" /> to the rows whose key is <paramref name="keyLength" /> bytes.</summary>
+    /// <param name="keyLength">The key length, in bytes, to select.</param>
+    /// <returns>The matching vectors.</returns>
+    private static BlockCipherKnownAnswer[] FilterByKeyLength(int keyLength) =>
+        [.. AllKnownAnswers.Where(answer => answer.Key!.Length == keyLength)];
 }

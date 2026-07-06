@@ -34,6 +34,7 @@ Legend for **Loading**:
 | BLAKE2b / BLAKE2s | official `blake2-kat.json` (keyed + unkeyed) | `Blake2KatReader` | 1024 |
 | BLAKE3 (unkeyed hash) | official `test_vectors.json` (github.com/BLAKE3-team/BLAKE3) | `Blake3KatReader` | 35 |
 | Whirlpool (ISO/IEC 10118-3) | OpenSSL `evpmd_whirlpool.txt` (ISO test-message set) | `OpenSslDigestKatReader` | 9 |
+| Twofish 128/192/256 | Twofish AES submission `ecb_vk`/`ecb_vt`/`ecb_tbl` | `AesSubmissionKatReader` | 1107 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -51,7 +52,7 @@ inline is the natural form.
 | AES (block) | FIPS-197 Appendix C | No separate file — FIPS table |
 | Skipjack | FIPS-185 §8 + NSA reference | No separate file |
 | Blowfish | Schneier / Eric Young `vectors-2.txt` | Yes — designer vector file exists |
-| Twofish | Designer KAT set | Yes — designer `ecb_tbl.txt` |
+| Twofish | — | **Converted (see §1)** — AES-submission ecb_vk/vt/tbl |
 | Camellia | RFC 3713 / RFC 5528 | RFC tables (+ NESSIE file exists) |
 | Tiger-192 | — | **Converted (see §1)** |
 | Threefish 256/512/1024 | Crypto++ `threefish.txt` (Skein golden KAT) | Yes — Crypto++ vector file |
@@ -75,7 +76,7 @@ inline is the natural form.
 
 | Algorithm | Needed | Status |
 |---|---|---|
-| Twofish / Blowfish | designer vector files | Inline today; convertible |
+| Blowfish | Schneier / Eric Young `vectors-2.txt` | Inline today; convertible |
 | ChaCha20 / XChaCha20 / Salsa20 / XSalsa20 | RFC 8439 / RFC 7539 / NaCl / DJB | To assess (some inline) |
 | Rabbit | RFC 4503 test vectors | To assess |
 | HC-128 | eSTREAM test vectors | To assess |
