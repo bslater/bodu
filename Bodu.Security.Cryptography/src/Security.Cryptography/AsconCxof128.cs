@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -58,7 +60,7 @@ namespace Bodu.Security.Cryptography;
 /// <description>State: 320-bit sponge; rate: 8 bytes (64 bits).</description>
 /// </item>
 /// <item>
-/// <description>Permutation: Ascon-p12 for transitions; Ascon-p8 between absorption rounds.</description>
+/// <description>Permutation: Ascon-p12 for every absorption, transition, and squeeze round.</description>
 /// </item>
 /// <item>
 /// <description>Specification: NIST SP 800-232 (ASCON family).</description>
@@ -89,22 +91,23 @@ public sealed class AsconCxof128
 {
     /// <summary>The pre-computed initial state word 0 for Ascon-CXOF128.</summary>
     /// <remarks>
-    /// The five IV words are the result of applying Ascon-p12 to <c>[raw_IV, 0, 0, 0, 0]</c>. Source: NIST SP 800-232 /
-    /// ascon-c opt64/constants.h (ASCON_CXOF128_IV0..IV4).
+    /// The five IV words are the result of applying Ascon-p12 to <c>[0x0000080000cc0004, 0, 0, 0, 0]</c> — the raw
+    /// Ascon-CXOF128 IV defined in NIST SP 800-232. The values are verified against the ascon-c
+    /// <c>LWC_CXOF_KAT_128_512</c> reference vectors (all 1089 rows).
     /// </remarks>
-    private const ulong Iv0 = 0x3e228512a6849c43UL;
+    private const ulong Iv0 = 0x675527c2a0e8de03UL;
 
     /// <summary>The pre-computed initial state word 1 for Ascon-CXOF128.</summary>
-    private const ulong Iv1 = 0x3b0e9f7a5e1f9a92UL;
+    private const ulong Iv1 = 0x43d12d7dc0377bbcUL;
 
     /// <summary>The pre-computed initial state word 2 for Ascon-CXOF128.</summary>
-    private const ulong Iv2 = 0x77be5ee5826c2fc0UL;
+    private const ulong Iv2 = 0xe9901dec426e81b5UL;
 
     /// <summary>The pre-computed initial state word 3 for Ascon-CXOF128.</summary>
-    private const ulong Iv3 = 0x1eca27ad2e7e3636UL;
+    private const ulong Iv3 = 0x2ab14907720780b6UL;
 
     /// <summary>The pre-computed initial state word 4 for Ascon-CXOF128.</summary>
-    private const ulong Iv4 = 0x7d0765b2c5a6d428UL;
+    private const ulong Iv4 = 0x8f3f1d02d432bc46UL;
 
     /// <summary>Indicates whether a customization string has been absorbed via <see cref="Customize" />.</summary>
     private bool _customized;
@@ -116,7 +119,7 @@ public sealed class AsconCxof128
     /// Initializes a new instance of the <see cref="AsconCxof128" /> class.
     /// </summary>
     public AsconCxof128()
-        : base(Iv0, Iv1, Iv2, Iv3, Iv4, 8, "ASCON-CXOF128")
+        : base(Iv0, Iv1, Iv2, Iv3, Iv4, 12, "ASCON-CXOF128")
     { }
 
     /// <summary>
@@ -129,9 +132,10 @@ public sealed class AsconCxof128
     /// </param>
     /// <remarks>
     /// <para>
-    /// Per NIST SP 800-232, the customization string is absorbed into the sponge using the standard Ascon padding rule,
-    /// followed by a domain-separation constant (XOR of 1 into state word S4) that distinguishes the customized initial
-    /// state from the un-customized one.
+    /// Per NIST SP 800-232, the customization phase absorbs the bit length of <c>Z</c> encoded as a 64-bit
+    /// little-endian integer, immediately followed by the bytes of <c>Z</c>, through the standard Ascon rate-8 sponge
+    /// pipeline. The phase is then closed with Ascon padding and the full 12-round permutation before message
+    /// absorption begins.
     /// </para>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -145,14 +149,17 @@ public sealed class AsconCxof128
         if (_customized || _absorbed)
             throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_XofCustomizationAfterAbsorb);
 
-        // Absorb Z through the standard sponge pipeline, then finalize the customization
-        // phase with Ascon padding and pb rounds to close the customization domain.
+        // NIST SP 800-232 prefixes the customization string with its bit length as a 64-bit
+        // little-endian integer, absorbed into the same sponge stream as Z. Absorbing the length
+        // first is what domain-separates one customization from another.
+        Span<byte> lengthPrefix = stackalloc byte[sizeof(ulong)];
+        BinaryPrimitives.WriteUInt64LittleEndian(lengthPrefix, (ulong)customization.Length * 8);
+        base.Absorb(lengthPrefix);
         base.Absorb(customization);
-        FinalizeAbsorptionPhase();
 
-        // Domain separation: XOR 1 into S4 to distinguish the customized initial state
-        // from the message-absorption state (per NIST SP 800-232 Section 2.3).
-        XorS4(1UL);
+        // Close the customization phase with Ascon padding and the p12 transition so that message
+        // absorption starts from a fully mixed state.
+        FinalizeAbsorptionPhase();
 
         _customized = true;
     }

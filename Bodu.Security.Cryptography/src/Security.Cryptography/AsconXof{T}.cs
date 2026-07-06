@@ -367,14 +367,6 @@ public abstract class AsconXof<T>
     }
 
     /// <summary>
-    /// XORs <paramref name="value" /> into state word 4 (<c>S4</c>). Used by <see cref="AsconCxof128" /> to inject the
-    /// customization domain-separation constant after the customization absorption phase is finalized.
-    /// </summary>
-    /// <param name="value">The value to XOR into <c>S4</c>.</param>
-    protected void XorS4(ulong value) =>
-        _state.S4 ^= value;
-
-    /// <summary>
     /// Accumulates <paramref name="data" /> into the residual buffer, flushing complete 8-byte blocks into the state.
     /// </summary>
     /// <param name="data">The bytes to absorb.</param>

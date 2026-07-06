@@ -8,15 +8,14 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Computes a variable-length output using the <c>Ascon-XOF128</c> extendable output function (XOF) as defined in NIST
-/// SP 800-232. Uses the Ascon-p8 permutation during absorption and squeezing over a 320-bit sponge state. This class
-/// cannot be inherited.
+/// SP 800-232. Uses the Ascon-p12 permutation for every absorption and squeeze round over a 320-bit sponge state. This
+/// class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Ascon-XOF128 is the NIST SP 800-232 standardized extendable output function. It uses an 8-byte (64-bit) rate,
-/// Ascon-p12 for the absorption-to-squeeze transition, and Ascon-p8 between absorption and squeeze blocks. This
-/// provides a security strength of 128 bits against collision, preimage, and second-preimage attacks (for output
-/// lengths ≥ 32 bytes).
+/// Ascon-XOF128 is the NIST SP 800-232 standardized extendable output function. It uses an 8-byte (64-bit) rate and the
+/// full 12-round Ascon-p12 permutation for every absorption, transition, and squeeze round. This provides a security
+/// strength of 128 bits against collision, preimage, and second-preimage attacks (for output lengths ≥ 32 bytes).
 /// </para>
 /// <para>
 /// For a fixed-length 256-bit digest, consider <see cref="AsconHash256" />. For output with a customization string, use
@@ -33,7 +32,7 @@ namespace Bodu.Security.Cryptography;
 /// <description>State: 320-bit sponge; rate: 8 bytes (64 bits).</description>
 /// </item>
 /// <item>
-/// <description>Permutation: Ascon-p12 for absorption-to-squeeze transition; Ascon-p8 elsewhere.</description>
+/// <description>Permutation: Ascon-p12 for every absorption, transition, and squeeze round.</description>
 /// </item>
 /// <item>
 /// <description>Security level: 128 bits (for outputs ≥ 32 bytes).</description>
@@ -67,27 +66,28 @@ public sealed class AsconXof128
 {
     /// <summary>The first word of the pre-computed Ascon-XOF128 initial sponge state.</summary>
     /// <remarks>
-    /// The five <c>Iv*</c> words are the result of applying Ascon-p12 to <c>[raw_IV, 0, 0, 0, 0]</c>, taken from NIST
-    /// SP 800-232 / ascon-c <c>opt64/constants.h</c> (<c>ASCON_XOF128_IV0..IV4</c>).
+    /// The five <c>Iv*</c> words are the result of applying Ascon-p12 to <c>[0x0000080000cc0003, 0, 0, 0, 0]</c> — the
+    /// raw Ascon-XOF128 IV defined in NIST SP 800-232. The values are verified against the ascon-c
+    /// <c>LWC_XOF_KAT_128_512</c> reference vectors (all 1025 rows).
     /// </remarks>
-    private const ulong Iv0 = 0xb57e273b814cd416UL;
+    private const ulong Iv0 = 0xda82ce768d9447ebUL;
 
     /// <summary>The second word of the pre-computed Ascon-XOF128 initial sponge state.</summary>
-    private const ulong Iv1 = 0x2b51042562ae2420UL;
+    private const ulong Iv1 = 0xcc7ce6c75f1ef969UL;
 
     /// <summary>The third word of the pre-computed Ascon-XOF128 initial sponge state.</summary>
-    private const ulong Iv2 = 0x66a3a7768ddf2218UL;
+    private const ulong Iv2 = 0xe7508fd780085631UL;
 
     /// <summary>The fourth word of the pre-computed Ascon-XOF128 initial sponge state.</summary>
-    private const ulong Iv3 = 0x5aad0a7a8153650cUL;
+    private const ulong Iv3 = 0x0ee0ea53416b58ccUL;
 
     /// <summary>The fifth word of the pre-computed Ascon-XOF128 initial sponge state.</summary>
-    private const ulong Iv4 = 0x4f3e0e32539493b6UL;
+    private const ulong Iv4 = 0xe0547524db6f0bdeUL;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AsconXof128" /> class.
     /// </summary>
     public AsconXof128()
-        : base(Iv0, Iv1, Iv2, Iv3, Iv4, 8, "ASCON-XOF128")
+        : base(Iv0, Iv1, Iv2, Iv3, Iv4, 12, "ASCON-XOF128")
     { }
 }

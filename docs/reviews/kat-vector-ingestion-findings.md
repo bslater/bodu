@@ -41,32 +41,39 @@ variant harness did not cover (`0x00`, `0x00010203`, lowercase `"abc"`) and, for
 SHAKE256, the 512-bit output length. All expected outputs recomputed from the
 FIPS 202 SHAKE definitions.
 
-## Ascon-CXOF128 — UNRESOLVED (open item)
+## Ascon-XOF128 and Ascon-CXOF128 — BUG FOUND AND FIXED
 
-The user-supplied ascon-c `LWC_CXOF_KAT_128_512` vectors (customization `Z`
-beginning at `0x10`) were **not pinned**. An independent SP 800-232 Ascon
-implementation was built and **validated against the official `Ascon-Hash256("")`
-vector** (`0B3BE585…`, exact match), confirming the permutation, little-endian
-byte order, rate, and padding. Under the standard length-prefixed customization
-(`LE64(|Z|·8) || Z`), that verified reference reproduced **neither** the
-user-supplied vectors **nor** Bodu's runtime output.
+Once the raw ascon-c `LWC_XOF_KAT_128_512` and `LWC_CXOF_KAT_128_512` files
+became available, an independent SP 800-232 Ascon reference — validated against
+the official `Ascon-Hash256("")` vector (`0B3BE585…`, exact match) — was used to
+adjudicate. That reference reproduces **all 1025 XOF and all 1089 CXOF** reference
+rows, and it exposed that Bodu's `AsconXof128` / `AsconCxof128` were **entirely
+non-compliant** with NIST SP 800-232. Their previously pinned "reference" digests
+were **self-captured from the broken implementation** (e.g. the XOF empty-message
+digest `D2AE52E6…` is the exact output of the buggy code), so the existing tests
+were green over wrong answers — the same masking pattern as the GCM-SIV and
+CBC-CTS bugs.
 
-Two facts stand unreconciled and need an authoritative CXOF vector to resolve:
+Three independent defects, each sufficient to break interop:
 
-1. **The user flagged these vectors as low-confidence** (the raw ascon-c KAT
-   file body could not be retrieved; values came from partial snippets), so they
-   are not reliable ground truth and were not pinned (pinning them would assert a
-   red test on unverified data).
-2. **Bodu's `AsconCxof128.Customize` omits any customization length-prefix** — it
-   absorbs `Z` directly, pads, permutes, then XORs `1` into state word S4 for
-   domain separation. That "XOR-1-into-S4" scheme matches an older Ascon draft
-   rather than the NIST SP 800-232 length-prefixed construction. Whether this is
-   a genuine non-compliance cannot be confirmed from memory of the customization
-   encoding alone; the exact SP 800-232 CXOF customization procedure must be
-   cross-checked against an authoritative published CXOF KAT before either
-   pinning vectors or changing the implementation.
+1. **Wrong permutation round count.** Both XOFs passed `absorptionRounds = 8` to
+   the sponge base. SP 800-232 Ascon-XOF128 / CXOF128 use the full 12-round
+   `Ascon-p[12]` for every absorption and squeeze round (the reduced-round "a"
+   variants from Ascon v1.2 were dropped from the standard). Fixed to `12`.
+2. **Wrong IV constants.** The pre-computed initial-state words for both XOF128
+   and CXOF128 did not correspond to `p12` of the SP 800-232 raw IVs
+   (`0x0000080000cc0003` for XOF128, `0x0000080000cc0004` for CXOF128). Replaced
+   with the correct post-`p12` states (verified against the reference files).
+3. **Wrong CXOF customization construction.** `Customize` absorbed `Z` directly,
+   padded, and XORed `1` into state word S4 — an older Ascon draft's domain
+   separation. SP 800-232 instead absorbs `LE64(bitlength(Z)) || Z` as a
+   length-prefixed stream, then closes the phase with padding and `p12` (no
+   S4 XOR). Rewritten accordingly; the now-dead `XorS4` base helper was removed.
 
-**Ascon-XOF128** remains without officially-verified vectors as well (the ascon-c
-`LWC_XOF_KAT_128_512` file body was likewise unretrievable). Both CXOF128 and
-XOF128 should be revisited once a NIST SP 800-232 XOF/CXOF example or the raw
-ascon-c KAT file is available.
+The fix pins the exact official ascon-c vectors (both the corrected in-tree
+sequential-input digests and a verbatim batch of file rows whose customization
+`Z` begins at `0x10`). Full crypto regression is green.
+
+**Note on the earlier interim provenance note:** the user's first hand-transcribed
+CXOF snippets could not be reconciled and were correctly *not* pinned at that
+point; the authoritative raw KAT files resolved it decisively.
