@@ -30,6 +30,7 @@ Legend for **Loading**:
 | Tiger-192 | NESSIE `test-vectors-nessie-format.dat` | `NessieHashKatReader` | 650 |
 | Tiger / Tiger2 (extra) | Biham + NESSIE `m:/h:` reference file | `TigerReferenceKatReader` | 25 |
 | CubeHash 224/256/384/512 | SHA-3 Round 2 `ShortMsgKAT` (CubeHash16/32 = 160/16/32/160) | `Sha3ShortMsgKatReader` | 1024 |
+| Skein 256/512/1024 (hash) | Skein 1.3 `skein_golden_kat_short` | `SkeinGoldenKatReader` | 13 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -73,7 +74,6 @@ inline is the natural form.
 |---|---|---|
 | Blake2b / Blake2s | RFC 7693 + BLAKE2 KAT (`blake2-kat.json`) | To assess |
 | Blake3 | official `test_vectors.json` | To assess |
-| Skein 256/512/1024 | Skein 1.3 NIST CD (`*_golden_kat`) | To assess (hash path may already be pinned) |
 | Whirlpool | NESSIE Whirlpool file | Inline today; convertible |
 | Twofish / Blowfish | designer vector files | Inline today; convertible |
 | ChaCha20 / XChaCha20 / Salsa20 / XSalsa20 | RFC 8439 / RFC 7539 / NaCl / DJB | To assess (some inline) |
