@@ -42,6 +42,7 @@ Legend for **Loading**:
 | Salsa20 128/256 (all sets) | ECRYPT verified vectors (fragments + xor-digest) | `Salsa20EcryptVerifiedReader` | 192 |
 | XSalsa20 | golang.org/x/crypto NaCl xsalsa20 vectors | `XSalsa20GoVectorReader` | 2 |
 | Poly1305 | RFC 8439 Appendix A.3 (MAC) | `Rfc8439VectorReader` | 11 |
+| XChaCha20 | draft-arciszewski-xchacha-03 (2.2.1 + A.3.2) | `XChaChaDraftVectorReader` | 2 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -83,7 +84,6 @@ inline is the natural form.
 
 | Algorithm | Needed | Status |
 |---|---|---|
-| XChaCha20 | draft-irtf-cfrg-xchacha test vectors | To assess (some inline) |
 | FNV1a, Adler (Bodu.IO.Hashing) | reference vectors | Separate package — to assess |
 | CRC catalogue (Bodu.IO.Hashing) | RevEng catalogue check values | Separate package — likely already catalogue-driven |
 
@@ -96,7 +96,7 @@ other hosts return a hard 403 at the gateway, so for those, upload the file or p
 - **CubeHash (standard)**: SHA-3 Round 2 submission KATs `ShortMsgKAT_{224,256,384,512}.txt` for **CubeHash16+16/32+32**
   (init 16 / per-block 16 / finalization 32, 32-byte block). The exotic-round Bodu configs are unpinnable — skip.
 - **Skein**: Skein 1.3 NIST submission `skein_golden_kat` / `skein_golden_kat_internals`.
-- **Salsa20/XSalsa20 family**: the eSTREAM / NaCl / DJB Salsa20 / XSalsa20 vectors. **XChaCha20**: draft-irtf-cfrg-xchacha test vectors.
+- **Salsa20/XSalsa20 family**: the eSTREAM / NaCl / DJB Salsa20 / XSalsa20 vectors.
 
 ---
 
