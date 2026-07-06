@@ -36,6 +36,7 @@ Legend for **Loading**:
 | Whirlpool (ISO/IEC 10118-3) | OpenSSL `evpmd_whirlpool.txt` (ISO test-message set) | `OpenSslDigestKatReader` | 9 |
 | Twofish 128/192/256 | Twofish AES submission `ecb_vk`/`ecb_vt`/`ecb_tbl` | `AesSubmissionKatReader` | 1107 |
 | Rabbit | RFC 4503 Appendix A (octet form) | `Rfc4503RabbitKatReader` | 6 |
+| Blowfish (16-round) | Eric Young reference vectors (ECB + set_key) | `BlowfishEricYoungKatReader` | 55 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -52,7 +53,7 @@ inline is the natural form.
 |---|---|---|
 | AES (block) | FIPS-197 Appendix C | No separate file — FIPS table |
 | Skipjack | FIPS-185 §8 + NSA reference | No separate file |
-| Blowfish | Schneier / Eric Young `vectors-2.txt` | Yes — designer vector file exists |
+| Blowfish | — | **Converted (see §1)** — Eric Young vectors |
 | Twofish | — | **Converted (see §1)** — AES-submission ecb_vk/vt/tbl |
 | Camellia | RFC 3713 / RFC 5528 | RFC tables (+ NESSIE file exists) |
 | Tiger-192 | — | **Converted (see §1)** |
@@ -77,7 +78,6 @@ inline is the natural form.
 
 | Algorithm | Needed | Status |
 |---|---|---|
-| Blowfish | Schneier / Eric Young `vectors-2.txt` | Inline today; convertible |
 | ChaCha20 / XChaCha20 / Salsa20 / XSalsa20 | RFC 8439 / RFC 7539 / NaCl / DJB | To assess (some inline) |
 | HC-128 | eSTREAM test vectors | To assess |
 | FNV1a, Adler (Bodu.IO.Hashing) | reference vectors | Separate package — to assess |
