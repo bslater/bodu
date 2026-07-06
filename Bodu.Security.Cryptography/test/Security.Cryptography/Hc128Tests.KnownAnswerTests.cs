@@ -9,7 +9,6 @@ using System.Buffers.Binary;
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography.Infrastructure;
 using Bodu.Test.Kat;
-using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 /// <summary>
@@ -37,47 +36,23 @@ public sealed partial class Hc128Tests
 
     // ── HC-128 specification Appendix A keystream vectors (first 512 bits) ────────────────────
     //
-    // Source: Hongjun Wu, "The Stream Cipher HC-128", Appendix A. Words are emitted little-endian per the spec, so
-    // the byte keystream is the little-endian serialization of the printed 32-bit words.
-    private static readonly StreamCipherKnownAnswer[] KeystreamKnownAnswers =
-    [
-        new StreamCipherKnownAnswer
-        {
-            Name = "HC-128 Appendix A.1 key = 0, IV = 0",
-            Provenance = KatProvenance.ReferenceImplementation("Hongjun Wu, The Stream Cipher HC-128, Appendix A.1"),
-            Key = Hex("00000000000000000000000000000000"),
-            Nonce = Hex("00000000000000000000000000000000"),
-            IsKeystream = true,
-            Plaintext = [],
-            Ciphertext = Hex(
-                "82001573a003fd3b7fd72ffb0eaf63aac62f12deb629dca72785a66268ec758b" +
-                "1edb36900560898178e0ad009abf1f491330dc1c246e3d6cb264f6900271d59c"),
-        },
-        new StreamCipherKnownAnswer
-        {
-            Name = "HC-128 Appendix A.2 key = 0, IV0 = 1",
-            Provenance = KatProvenance.ReferenceImplementation("Hongjun Wu, The Stream Cipher HC-128, Appendix A.2"),
-            Key = Hex("00000000000000000000000000000000"),
-            Nonce = Hex("01000000000000000000000000000000"),
-            IsKeystream = true,
-            Plaintext = [],
-            Ciphertext = Hex(
-                "d59318c058e9dbb798ec658f046617642467fc36ec6e2cc8a7381c1b952ab4c9" +
-                "23f13e328b906a0a687b75cebbf7149f11e0cde43f17b5ae948c6089ca46cfb5"),
-        },
-        new StreamCipherKnownAnswer
-        {
-            Name = "HC-128 Appendix A.3 K0 = 0x55, IV = 0",
-            Provenance = KatProvenance.ReferenceImplementation("Hongjun Wu, The Stream Cipher HC-128, Appendix A.3"),
-            Key = Hex("55000000000000000000000000000000"),
-            Nonce = Hex("00000000000000000000000000000000"),
-            IsKeystream = true,
-            Plaintext = [],
-            Ciphertext = Hex(
-                "a45182510a93b40431f92ab032f039067aa4b4bc0b482257729ff92b66e5c0cd" +
-                "560c0f31e883ccd3efb83d667fe0df6290173e599caacec56f8003aba0e5a6c9"),
-        },
-    ];
+    // Loaded dynamically from the embedded HC-128 specification Appendix A vector file (Hongjun Wu, "The Stream Cipher
+    // HC-128"). Words are emitted little-endian per the spec, so the reader serializes each printed 32-bit word
+    // little-endian to recover the byte keystream.
+    private const string Hc128SpecResourceName = "Bodu.Security.Cryptography.Hc128.spec-appendix-a.txt";
+
+    private static readonly StreamCipherKnownAnswer[] KeystreamKnownAnswers = LoadKeystreamKnownAnswers();
+
+    /// <summary>Loads the HC-128 Appendix A keystream vectors from the embedded specification vector file.</summary>
+    /// <returns>The three Appendix A keystream vectors.</returns>
+    /// <exception cref="InvalidOperationException">The embedded resource cannot be located.</exception>
+    private static StreamCipherKnownAnswer[] LoadKeystreamKnownAnswers()
+    {
+        using Stream stream = typeof(Hc128Tests).Assembly.GetManifestResourceStream(Hc128SpecResourceName)
+            ?? throw new InvalidOperationException($"Embedded resource '{Hc128SpecResourceName}' is missing.");
+
+        return [.. Hc128SpecKatReader.Read(stream)];
+    }
 
     /// <summary>
     /// Yields the HC-128 keystream known-answer vectors as <see cref="DynamicDataAttribute" /> rows.

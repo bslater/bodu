@@ -37,6 +37,7 @@ Legend for **Loading**:
 | Twofish 128/192/256 | Twofish AES submission `ecb_vk`/`ecb_vt`/`ecb_tbl` | `AesSubmissionKatReader` | 1107 |
 | Rabbit | RFC 4503 Appendix A (octet form) | `Rfc4503RabbitKatReader` | 6 |
 | Blowfish (16-round) | Eric Young reference vectors (ECB + set_key) | `BlowfishEricYoungKatReader` | 55 |
+| HC-128 | HC-128 spec Appendix A (Hongjun Wu) | `Hc128SpecKatReader` | 3 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -79,7 +80,6 @@ inline is the natural form.
 | Algorithm | Needed | Status |
 |---|---|---|
 | ChaCha20 / XChaCha20 / Salsa20 / XSalsa20 | RFC 8439 / RFC 7539 / NaCl / DJB | To assess (some inline) |
-| HC-128 | eSTREAM test vectors | To assess |
 | FNV1a, Adler (Bodu.IO.Hashing) | reference vectors | Separate package — to assess |
 | CRC catalogue (Bodu.IO.Hashing) | RevEng catalogue check values | Separate package — likely already catalogue-driven |
 
@@ -93,7 +93,6 @@ other hosts return a hard 403 at the gateway, so for those, upload the file or p
   (init 16 / per-block 16 / finalization 32, 32-byte block). The exotic-round Bodu configs are unpinnable — skip.
 - **Skein**: Skein 1.3 NIST submission `skein_golden_kat` / `skein_golden_kat_internals`.
 - **ChaCha20/Salsa20 family**: RFC 8439 §2.3.2 (ChaCha20 block) + the NaCl / DJB Salsa20 / XSalsa20 vectors.
-- **HC-128**: eSTREAM test vectors.
 
 ---
 

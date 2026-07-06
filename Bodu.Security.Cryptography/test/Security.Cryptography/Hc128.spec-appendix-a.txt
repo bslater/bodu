@@ -1,0 +1,26 @@
+The Stream Cipher HC-128 (Hongjun Wu) — Appendix A: Test Vectors
+
+Let K = K0||K1||K2||K3 and IV = IV0||IV1||IV2||IV3. The first 512 bits of
+keystream are given for different values of key and IV. Note that for each
+32-bit output given below, the least significant byte leads the most
+significant byte in the keystream. For example, if S = s3||s2||s1||s0 where
+each si is one byte and s0 is the least significant, then the 32-bit word S
+appears in the byte keystream as s0, s1, s2, s3.
+
+1. The key and IV are set as 0.
+73150082 3bfd03a0 fb2fd77f aa63af0e
+de122fc6 a7dc29b6 62a68527 8b75ec68
+9036db1e 81896005 00ade078 491fbf9a
+1cdc3013 6c3d6e24 90f664b2 9cd57102
+
+2. The key is set as 0, the IV is set as 0 except that IV0 = 1.
+c01893d5 b7dbe958 8f65ec98 64176604
+36fc6724 c82c6eec 1b1c38a7 c9b42a95
+323ef123 0a6a908b ce757b68 9f14f7bb
+e4cde011 aeb5173f 89608c94 b5cf46ca
+
+3. The IV is set as 0, the key is set as 0 except that K0 = 0x55.
+518251a4 04b4930a b02af931 0639f032
+bcb4a47a 5722480b 2bf99f72 cdc0e566
+310f0c56 d3cc83e8 663db8ef 62dfe07f
+593e1790 c5ceaa9c ab03806f c9a6e5a0
