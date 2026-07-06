@@ -16,13 +16,14 @@ namespace Bodu.Security.Cryptography;
 /// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> — an all-zero
 /// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> — the
 /// harness's incremental-byte default (key bytes 0x10..0x4F, tweak bytes 0x00..0x0F, descending plaintext
-/// FF..C0). Equivalence with the Skein 1.3 / NIST SHA-3 submission reference was verified at the Threefish-256
-/// layer (see <see cref="Threefish256CipherTests" />); the wider-block 512-bit variant uses the identical
-/// Threefish round structure so the same byte-stream / word-value mapping applies here.
+/// FF..C0). The non-zero row is confirmed byte-for-byte against the Skein/Threefish golden KAT as mirrored in
+/// Crypto++ <c>threefish.txt</c> (Test Vector 8), little-endian word64 decode; the all-zero baseline row is an
+/// in-tree regression capture.
 /// </remarks>
 internal sealed partial class Threefish512CipherTests
 {
     private static readonly KatProvenance ProfileInTreeRegression = KatProvenance.InternalRegression("Skein 1.3 / NIST SHA-3 reference (verified equivalent at Threefish-256 layer)");
+    private static readonly KatProvenance ProfileCryptoPpMirror = KatProvenance.ReferenceImplementation("Crypto++ threefish.txt (Skein golden KAT, Test Vector 8); little-endian word64 decode, verified byte-for-byte");
 
     private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweakKnownAnswers =
     [
@@ -44,7 +45,7 @@ internal sealed partial class Threefish512CipherTests
         new BlockCipherKnownAnswer
         {
             Name = "Threefish512_IncrementalKey_IncrementalTweak_DescendingPlaintext",
-            Provenance = ProfileInTreeRegression,
+            Provenance = ProfileCryptoPpMirror,
             Plaintext = Convert.FromHexString(
                 "FFFEFDFCFBFAF9F8F7F6F5F4F3F2F1F0EFEEEDECEBEAE9E8E7E6E5E4E3E2E1E0" +
                 "DFDEDDDCDBDAD9D8D7D6D5D4D3D2D1D0CFCECDCCCBCAC9C8C7C6C5C4C3C2C1C0"),
