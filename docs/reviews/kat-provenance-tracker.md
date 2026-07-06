@@ -38,6 +38,7 @@ Legend for **Loading**:
 | Rabbit | RFC 4503 Appendix A (octet form) | `Rfc4503RabbitKatReader` | 6 |
 | Blowfish (16-round) | Eric Young reference vectors (ECB + set_key) | `BlowfishEricYoungKatReader` | 55 |
 | HC-128 | HC-128 spec Appendix A (Hongjun Wu) | `Hc128SpecKatReader` | 3 |
+| ChaCha20 | RFC 8439 Appendix A.2 (encryption) | `Rfc8439VectorReader` | 3 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -79,7 +80,7 @@ inline is the natural form.
 
 | Algorithm | Needed | Status |
 |---|---|---|
-| ChaCha20 / XChaCha20 / Salsa20 / XSalsa20 | RFC 8439 / RFC 7539 / NaCl / DJB | To assess (some inline) |
+| XChaCha20 / Salsa20 / XSalsa20 | draft-irtf-cfrg-xchacha / NaCl / DJB | To assess (some inline) |
 | FNV1a, Adler (Bodu.IO.Hashing) | reference vectors | Separate package — to assess |
 | CRC catalogue (Bodu.IO.Hashing) | RevEng catalogue check values | Separate package — likely already catalogue-driven |
 
@@ -92,7 +93,7 @@ other hosts return a hard 403 at the gateway, so for those, upload the file or p
 - **CubeHash (standard)**: SHA-3 Round 2 submission KATs `ShortMsgKAT_{224,256,384,512}.txt` for **CubeHash16+16/32+32**
   (init 16 / per-block 16 / finalization 32, 32-byte block). The exotic-round Bodu configs are unpinnable — skip.
 - **Skein**: Skein 1.3 NIST submission `skein_golden_kat` / `skein_golden_kat_internals`.
-- **ChaCha20/Salsa20 family**: RFC 8439 §2.3.2 (ChaCha20 block) + the NaCl / DJB Salsa20 / XSalsa20 vectors.
+- **Salsa20/XSalsa20 family**: the eSTREAM / NaCl / DJB Salsa20 / XSalsa20 vectors. **XChaCha20**: draft-irtf-cfrg-xchacha test vectors.
 
 ---
 
