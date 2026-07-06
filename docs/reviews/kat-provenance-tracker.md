@@ -24,6 +24,7 @@ Legend for **Loading**:
 | Ascon-XOF128 | NIST SP 800-232 / ascon-c `LWC_XOF_KAT_128_512` | `NistLwcXofKatReader` | 1025 |
 | Ascon-CXOF128 | NIST SP 800-232 / ascon-c `LWC_CXOF_KAT_128_512` | `NistLwcXofKatReader` | 1089 |
 | SipHash-2-4-128 | veorq/SipHash `vectors.h` (`vectors_sip128`) | `SipHashReferenceVectorsReader` | 64 |
+| SipHash-2-4 (64-bit) | veorq/SipHash `vectors.h` (`vectors_sip64`) | `SipHashReferenceVectorsReader` | 64 |
 | Snefru-128 (8-pass) | Merkle 2.5a `testSnefru` / `correctSnefruOutput` | `MerkleSnefruKatReader` | 11 |
 | Snefru-256 (8-pass) | Merkle 2.5a `testSnefru256` / `correctSnefru256Output` | `MerkleSnefruKatReader` | 11 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
@@ -69,7 +70,6 @@ inline is the natural form.
 |---|---|---|
 | Tiger-192 → **file conversion** | NESSIE `.dat` (already fetched) | Ready to convert (inline today) |
 | Tiger2 (0x80 pad) | Tiger2 vectors (Crypto++/OpenSSL) | Needs file |
-| SipHash-64 | veorq `vectors.h` `vectors_sip64` | **File already embedded — quick convert** |
 | CubeHash (standard 16+16/32) | SHA-3 Round 2 `ShortMsgKAT_{224,256,384,512}` | Needs file (NIST host blocked) |
 | Blake2b / Blake2s | RFC 7693 + BLAKE2 KAT (`blake2-kat.json`) | To assess |
 | Blake3 | official `test_vectors.json` | To assess |
