@@ -17,6 +17,7 @@
     <EmbeddedResource Include="Security.Cryptography\Snefru.testSnefru256.txt" />
     <EmbeddedResource Include="Security.Cryptography\Snefru.correctSnefru256Output.txt" />
     <EmbeddedResource Include="Security.Cryptography\Tiger.test-vectors-nessie-format.dat" />
+    <EmbeddedResource Include="Security.Cryptography\Tiger.biham-tiger2-vectors.txt" />
     <EmbeddedResource Include="Security.Cryptography\X25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\Ed25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyGen.txt" />

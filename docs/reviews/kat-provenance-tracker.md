@@ -28,6 +28,7 @@ Legend for **Loading**:
 | Snefru-128 (8-pass) | Merkle 2.5a `testSnefru` / `correctSnefruOutput` | `MerkleSnefruKatReader` | 11 |
 | Snefru-256 (8-pass) | Merkle 2.5a `testSnefru256` / `correctSnefru256Output` | `MerkleSnefruKatReader` | 11 |
 | Tiger-192 | NESSIE `test-vectors-nessie-format.dat` | `NessieHashKatReader` | 650 |
+| Tiger / Tiger2 (extra) | Biham + NESSIE `m:/h:` reference file | `TigerReferenceKatReader` | 25 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -69,7 +70,6 @@ inline is the natural form.
 
 | Algorithm | Needed | Status |
 |---|---|---|
-| Tiger2 (0x80 pad) | Tiger2 vectors (Crypto++/OpenSSL) | Needs file |
 | CubeHash (standard 16+16/32) | SHA-3 Round 2 `ShortMsgKAT_{224,256,384,512}` | Needs file (NIST host blocked) |
 | Blake2b / Blake2s | RFC 7693 + BLAKE2 KAT (`blake2-kat.json`) | To assess |
 | Blake3 | official `test_vectors.json` | To assess |
