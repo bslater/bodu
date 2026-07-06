@@ -14,10 +14,10 @@ Part of the **[Core Foundations](../topics/core-foundations.md)** topic. The gen
 
 Two consequences of the protocol surface in the API:
 
-- **Reference types only.** The constraint is `T : class?` because slot publication relies on `Volatile` reads and writes of object references for atomic visibility. For a concurrent queue of value types, use the BCL <xref:System.Collections.Concurrent.ConcurrentQueue`1>.
+- **Reference types only.** The constraint is `T : class?` because slot publication relies on `Volatile` reads and writes of object references for atomic visibility. For a concurrent queue of value types, use the BCL [`ConcurrentQueue<T>`](https://learn.microsoft.com/dotnet/api/system.collections.concurrent.concurrentqueue-1).
 - **Capacity minimum of 2.** On a single-slot ring the protocol cannot distinguish "data published" from "slot released", so smaller capacities are rejected at construction.
 
-Single-element operations (`Enqueue` / `Dequeue` / `Peek` and their `Try…` variants) are individually atomic and lock-free on the hot path. The buffer implements <xref:System.Collections.Concurrent.IProducerConsumerCollection`1> (`TryAdd` / `TryTake`), so it composes with <xref:System.Collections.Concurrent.BlockingCollection`1> when consumers should block until an item arrives — neither type has blocking operations of its own.
+Single-element operations (`Enqueue` / `Dequeue` / `Peek` and their `Try…` variants) are individually atomic and lock-free on the hot path. The buffer implements <xref:System.Collections.Concurrent.IProducerConsumerCollection`1> (`TryAdd` / `TryTake`), so it composes with [`BlockingCollection<T>`](https://learn.microsoft.com/dotnet/api/system.collections.concurrent.blockingcollection-1) when consumers should block until an item arrives — neither type has blocking operations of its own.
 
 ## Lock striping
 
