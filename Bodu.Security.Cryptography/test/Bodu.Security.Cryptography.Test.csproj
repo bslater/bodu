@@ -12,6 +12,10 @@
     <EmbeddedResource Include="Security.Cryptography\AsconXof128.LWC_XOF_KAT_128_512.txt" />
     <EmbeddedResource Include="Security.Cryptography\AsconCxof128.LWC_CXOF_KAT_128_512.txt" />
     <EmbeddedResource Include="Security.Cryptography\SipHash.vectors.h" />
+    <EmbeddedResource Include="Security.Cryptography\Snefru.testSnefru.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Snefru.correctSnefruOutput.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Snefru.testSnefru256.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Snefru.correctSnefru256Output.txt" />
     <EmbeddedResource Include="Security.Cryptography\X25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\Ed25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyGen.txt" />
