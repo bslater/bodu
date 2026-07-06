@@ -32,6 +32,7 @@ Legend for **Loading**:
 | CubeHash 224/256/384/512 | SHA-3 Round 2 `ShortMsgKAT` (CubeHash16/32 = 160/16/32/160) | `Sha3ShortMsgKatReader` | 1024 |
 | Skein 256/512/1024 (hash) | Skein 1.3 `skein_golden_kat_short` | `SkeinGoldenKatReader` | 13 |
 | BLAKE2b / BLAKE2s | official `blake2-kat.json` (keyed + unkeyed) | `Blake2KatReader` | 1024 |
+| BLAKE3 (unkeyed hash) | official `test_vectors.json` (github.com/BLAKE3-team/BLAKE3) | `Blake3KatReader` | 35 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -73,8 +74,6 @@ inline is the natural form.
 
 | Algorithm | Needed | Status |
 |---|---|---|
-| Blake2b / Blake2s | RFC 7693 + BLAKE2 KAT (`blake2-kat.json`) | To assess |
-| Blake3 | official `test_vectors.json` | To assess |
 | Whirlpool | NESSIE Whirlpool file | Inline today; convertible |
 | Twofish / Blowfish | designer vector files | Inline today; convertible |
 | ChaCha20 / XChaCha20 / Salsa20 / XSalsa20 | RFC 8439 / RFC 7539 / NaCl / DJB | To assess (some inline) |
@@ -91,8 +90,6 @@ other hosts return a hard 403 at the gateway, so for those, upload the file or p
 - **Tiger2**: `0x80`-padding variant, 192-bit. Crypto++ `TestVectors/` or OpenSSL. (Tiger uses `0x01`; Tiger2 uses `0x80`.)
 - **CubeHash (standard)**: SHA-3 Round 2 submission KATs `ShortMsgKAT_{224,256,384,512}.txt` for **CubeHash16+16/32+32**
   (init 16 / per-block 16 / finalization 32, 32-byte block). The exotic-round Bodu configs are unpinnable — skip.
-- **BLAKE2**: RFC 7693 + the official `blake2-kat.json` (github.com/BLAKE2/BLAKE2). Keyed and unkeyed.
-- **BLAKE3**: official `test_vectors.json` (github.com/BLAKE3-team/BLAKE3).
 - **Skein**: Skein 1.3 NIST submission `skein_golden_kat` / `skein_golden_kat_internals`.
 - **ChaCha20/Salsa20 family**: RFC 8439 §2.3.2 (ChaCha20 block) + the NaCl / DJB Salsa20 / XSalsa20 vectors.
 - **Rabbit**: RFC 4503 Appendix A. **HC-128**: eSTREAM test vectors.
