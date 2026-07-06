@@ -31,6 +31,7 @@ Legend for **Loading**:
 | Tiger / Tiger2 (extra) | Biham + NESSIE `m:/h:` reference file | `TigerReferenceKatReader` | 25 |
 | CubeHash 224/256/384/512 | SHA-3 Round 2 `ShortMsgKAT` (CubeHash16/32 = 160/16/32/160) | `Sha3ShortMsgKatReader` | 1024 |
 | Skein 256/512/1024 (hash) | Skein 1.3 `skein_golden_kat_short` | `SkeinGoldenKatReader` | 13 |
+| BLAKE2b / BLAKE2s | official `blake2-kat.json` (keyed + unkeyed) | `Blake2KatReader` | 1024 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |

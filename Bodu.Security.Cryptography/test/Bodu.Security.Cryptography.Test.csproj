@@ -23,6 +23,7 @@
     <EmbeddedResource Include="Security.Cryptography\CubeHash.ShortMsgKAT_384.txt" />
     <EmbeddedResource Include="Security.Cryptography\CubeHash.ShortMsgKAT_512.txt" />
     <EmbeddedResource Include="Security.Cryptography\Skein.skein_golden_kat_short.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Blake2.blake2-kat.json" />
     <EmbeddedResource Include="Security.Cryptography\X25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\Ed25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyGen.txt" />
