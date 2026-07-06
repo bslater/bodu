@@ -33,6 +33,7 @@
     <EmbeddedResource Include="Security.Cryptography\Blowfish.eric-young-vectors.txt" />
     <EmbeddedResource Include="Security.Cryptography\Hc128.spec-appendix-a.txt" />
     <EmbeddedResource Include="Security.Cryptography\Rfc8439.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Salsa20.go-test-vectors.txt" />
     <EmbeddedResource Include="Security.Cryptography\X25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\Ed25519.Wycheproof.txt" />
     <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyGen.txt" />

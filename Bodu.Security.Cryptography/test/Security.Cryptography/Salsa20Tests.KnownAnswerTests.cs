@@ -106,32 +106,49 @@ public sealed partial class Salsa20Tests
         CollectionAssert.AreEqual(expected, keystream, $"Salsa20 keystream mismatch for {vector.Name}.");
     }
 
+    /// <summary>Resource name of the embedded ECRYPT Salsa20 Set 6 (Go transcription) vector file.</summary>
+    private const string Salsa20EcryptResourceName = "Bodu.Security.Cryptography.Salsa20.go-test-vectors.txt";
+
     /// <summary>
-    /// Verifies that <see cref="Salsa20" /> reproduces the eSTREAM long-stream digest vector — the XOR of all 2,048
-    /// keystream blocks over 131,072 bytes — confirming correct 64-bit block-counter progression across many blocks.
+    /// Yields the ECRYPT Salsa20 Set 6 XOR-digest vectors, loaded from the embedded Go test source, as
+    /// <see cref="DynamicDataAttribute" /> rows.
     /// </summary>
+    /// <returns>One row per Set 6 vector.</returns>
+    /// <exception cref="InvalidOperationException">The embedded resource cannot be located.</exception>
+    private static IEnumerable<object[]> Salsa20XorDigestKatData()
+    {
+        using Stream stream = typeof(Salsa20Tests).Assembly.GetManifestResourceStream(Salsa20EcryptResourceName)
+            ?? throw new InvalidOperationException($"Embedded resource '{Salsa20EcryptResourceName}' is missing.");
+
+        foreach (Salsa20XorDigestVector vector in Salsa20EcryptGoVectorReader.Read(stream))
+            yield return new object[] { vector };
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Salsa20" /> reproduces each ECRYPT Set 6 long-stream digest vector — the XOR of all
+    /// 2,048 keystream blocks over 131,072 bytes — confirming correct 64-bit block-counter progression across many
+    /// blocks.
+    /// </summary>
+    /// <param name="vector">The XOR-digest vector under test.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    public void CreateEncryptor_WhenGeneratingLongStream_ShouldMatchEcryptXorDigest()
+    [DynamicData(
+        nameof(Salsa20XorDigestKatData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void CreateEncryptor_WhenGeneratingLongStream_ShouldMatchEcryptXorDigest(Salsa20XorDigestVector vector)
     {
-        byte[] key = Convert.FromHexString("0053a6f94c9ff24598eb3e91e4378add3083d6297ccf2275c81b6ec11467ba0d");
-        byte[] nonce = Convert.FromHexString("0d74db42a91077de");
-        byte[] expected = Convert.FromHexString(
-            "c349b6a51a3ec9b712eaed3f90d8bcee69b7628645f251a996f55260c62ef31f" +
-            "d6c6b0aea94e136c9d984ad2df3578f78e457527b03a0450580dd874f63b1ab9");
-
-        const int total = 131072;
         byte[] keystream;
-        using (var cipher = new Salsa20())
-        using (ICryptoTransform encryptor = cipher.CreateEncryptor(key, nonce))
-            keystream = encryptor.TransformFinalBlock(new byte[total], 0, total);
+        using (var cipher = new Salsa20 { KeySize = vector.Key.Length * 8 })
+        using (ICryptoTransform encryptor = cipher.CreateEncryptor(vector.Key, vector.Iv))
+            keystream = encryptor.TransformFinalBlock(new byte[vector.NumBytes], 0, vector.NumBytes);
 
         byte[] digest = new byte[64];
-        for (int offset = 0; offset < total; offset += 64)
+        for (int offset = 0; offset < vector.NumBytes; offset += 64)
             for (int i = 0; i < 64; i++)
                 digest[i] ^= keystream[offset + i];
 
-        CollectionAssert.AreEqual(expected, digest, "Salsa20 long-stream XOR digest mismatch.");
+        CollectionAssert.AreEqual(vector.XorDigest, digest, $"Salsa20 long-stream XOR digest mismatch for {vector.Name}.");
     }
 
     /// <summary>

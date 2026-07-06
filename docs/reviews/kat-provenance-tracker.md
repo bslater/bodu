@@ -39,6 +39,7 @@ Legend for **Loading**:
 | Blowfish (16-round) | Eric Young reference vectors (ECB + set_key) | `BlowfishEricYoungKatReader` | 55 |
 | HC-128 | HC-128 spec Appendix A (Hongjun Wu) | `Hc128SpecKatReader` | 3 |
 | ChaCha20 | RFC 8439 Appendix A.2 (encryption) | `Rfc8439VectorReader` | 3 |
+| Salsa20 (Set 6 xor-digest) | ECRYPT Set 6 verified vectors (Go transcription) | `Salsa20EcryptGoVectorReader` | 4 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
@@ -80,7 +81,8 @@ inline is the natural form.
 
 | Algorithm | Needed | Status |
 |---|---|---|
-| XChaCha20 / Salsa20 / XSalsa20 | draft-irtf-cfrg-xchacha / NaCl / DJB | To assess (some inline) |
+| Salsa20 (Set 1 keystream) | eSTREAM Set 1 first-64-byte vectors | Still inline (no file supplied) |
+| XChaCha20 / XSalsa20 | draft-irtf-cfrg-xchacha / NaCl / DJB | To assess (some inline) |
 | FNV1a, Adler (Bodu.IO.Hashing) | reference vectors | Separate package — to assess |
 | CRC catalogue (Bodu.IO.Hashing) | RevEng catalogue check values | Separate package — likely already catalogue-driven |
 
