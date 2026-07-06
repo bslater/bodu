@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 448" role="img" aria-labelledby="clm-t clm-d">
+  <title id="clm-t">Bodu.Collections — namespace map</title>
+  <desc id="clm-d">Bodu.Collections ships the specialized collection catalogue across four namespaces. Bodu.Collections.Generic holds the bounded ring-backed collections, the evicting and sequenced dictionaries, navigable sets and dictionaries with rank and select, bidirectional, layered, and defaulting dictionaries, the two-key table, bit set, and the range-keyed lookups and overlap-storing interval trees. Bodu.Collections.Probabilistic holds the approximate sketches: BloomFilter, CountMinSketch, and HyperLogLog. Bodu.Collections.Generic.Graphs holds the graph container, graph algorithms, and union-find. Bodu.Collections.Generic.Trees holds the trie family, radix tries, the Aho-Corasick multi-pattern matcher, and the n-ary tree. The package depends on Bodu.Core, and the thread-safe variants ship in Bodu.Collections.Concurrent.</desc>
+
+  <defs>
+    <style>
+      .clm-bg   { fill: #0F172A; }
+      .clm-pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .clm-hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .clm-ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .clm-form { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .clm-card { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1; }
+      .clm-ns   { fill: #5EEAD4; font: 700 12px/1 "Consolas",Menlo,monospace; }
+      .clm-role { fill: #E2E8F0; font: 700 11px/1 "Segoe UI",Arial,sans-serif; }
+      .clm-type { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .clm-aux  { fill: #2E1065; stroke: #A78BFA; stroke-width: 1; }
+      .clm-auxt { fill: #C4B5FD; font: 700 11px/1 "Segoe UI",Arial,sans-serif; }
+      .clm-auxs { fill: #CBD5E1; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="clm-bg" width="840" height="448"/>
+
+  <g transform="translate(10 10)">
+    <rect class="clm-pan" width="820" height="428" rx="8"/>
+    <rect class="clm-hdr" width="820" height="46" rx="8"/>
+    <rect class="clm-hdr" y="38" width="820" height="8"/>
+    <text class="clm-ttl" x="16" y="29">Bodu.Collections — the specialized collection catalogue</text>
+    <text class="clm-form" x="804" y="29" text-anchor="end">namespaces unchanged · split out of Bodu.Core</text>
+
+    <!-- Wide card: Bodu.Collections.Generic -->
+    <g transform="translate(14 60)">
+      <rect class="clm-card" width="792" height="146" rx="7"/>
+      <text class="clm-ns" x="12" y="22">Bodu.Collections.Generic</text>
+      <text class="clm-role" x="12" y="42">Bounded, ordered, navigable, and range-keyed collections</text>
+      <text class="clm-type" x="12" y="64">CircularBuffer&lt;T&gt; · Deque&lt;T&gt; · SegmentedBuffer&lt;T&gt;</text>
+      <text class="clm-type" x="12" y="82">EvictingDictionary&lt;K,V&gt; (policies + TTL expiry)</text>
+      <text class="clm-type" x="12" y="100">SequencedDictionary&lt;K,V&gt; · BiDictionary&lt;K,V&gt;</text>
+      <text class="clm-type" x="12" y="118">LayeredDictionary&lt;K,V&gt; · DefaultingDictionary&lt;K,V&gt;</text>
+      <text class="clm-type" x="12" y="136">Table&lt;R,C,V&gt; · BitSet · Multiset&lt;T&gt;</text>
+      <text class="clm-type" x="412" y="64">NavigableSet&lt;T&gt; · NavigableDictionary&lt;K,V&gt; (rank/select)</text>
+      <text class="clm-type" x="412" y="82">IndexedSet&lt;T&gt; · OrderedSet&lt;T&gt; · IndexedPriorityQueue&lt;T,P&gt;</text>
+      <text class="clm-type" x="412" y="100">RangeDictionary&lt;K,V&gt; · RangeSet&lt;T&gt;</text>
+      <text class="clm-type" x="412" y="118">IntervalTree&lt;T&gt; · IntervalTree&lt;K,V&gt; (overlap-storing)</text>
+      <text class="clm-type" x="412" y="136">MultiValueDictionary&lt;K,V&gt; · RingBackedCollection&lt;T&gt;</text>
+    </g>
+
+    <!-- Row 2: three sibling namespaces -->
+    <g transform="translate(14 218)">
+      <rect class="clm-card" width="256" height="146" rx="7"/>
+      <text class="clm-ns" x="12" y="22">Bodu.Collections</text>
+      <text class="clm-ns" x="12" y="37">.Probabilistic</text>
+      <text class="clm-role" x="12" y="57">Approximate sketches</text>
+      <text class="clm-type" x="12" y="77">BloomFilter&lt;T&gt;</text>
+      <text class="clm-type" x="12" y="95">CountMinSketch&lt;T&gt;</text>
+      <text class="clm-type" x="12" y="113">HyperLogLog&lt;T&gt;</text>
+      <text class="clm-type" x="12" y="131">one-sided error contracts</text>
+    </g>
+    <g transform="translate(282 218)">
+      <rect class="clm-card" width="256" height="146" rx="7"/>
+      <text class="clm-ns" x="12" y="22">Bodu.Collections</text>
+      <text class="clm-ns" x="12" y="37">.Generic.Graphs</text>
+      <text class="clm-role" x="12" y="57">Graphs and algorithms</text>
+      <text class="clm-type" x="12" y="77">Graph&lt;T&gt; (weighted / directed)</text>
+      <text class="clm-type" x="12" y="95">GraphAlgorithms — BFS · DFS ·</text>
+      <text class="clm-type" x="12" y="113">shortest path · topo sort</text>
+      <text class="clm-type" x="12" y="131">DisjointSet&lt;T&gt; union-find</text>
+    </g>
+    <g transform="translate(550 218)">
+      <rect class="clm-card" width="256" height="146" rx="7"/>
+      <text class="clm-ns" x="12" y="22">Bodu.Collections</text>
+      <text class="clm-ns" x="12" y="37">.Generic.Trees</text>
+      <text class="clm-role" x="12" y="57">Tries and text search</text>
+      <text class="clm-type" x="12" y="77">Trie · Trie&lt;V&gt;</text>
+      <text class="clm-type" x="12" y="95">RadixTrie (path-compressed)</text>
+      <text class="clm-type" x="12" y="113">AhoCorasickAutomaton</text>
+      <text class="clm-type" x="12" y="131">Tree&lt;T&gt; n-ary traversals</text>
+    </g>
+
+    <!-- Annotation: dependencies -->
+    <rect class="clm-aux" x="14" y="380" width="792" height="34" rx="6"/>
+    <text class="clm-auxt" x="28" y="401">Depends on Bodu.Core</text>
+    <text class="clm-auxs" x="182" y="401">ThrowHelper guards · IRandomGenerator — thread-safe variants (ConcurrentCircularBuffer&lt;T&gt;, ConcurrentHashSet&lt;T&gt;) ship in Bodu.Collections.Concurrent</text>
+  </g>
+</svg>

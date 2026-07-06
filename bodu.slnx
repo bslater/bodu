@@ -35,6 +35,10 @@
     <Project Path="Bodu.Collections\src\Bodu.Collections.csproj" />
     <Project Path="Bodu.Collections\test\Bodu.Collections.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Collections.Concurrent/">
+    <Project Path="Bodu.Collections.Concurrent\src\Bodu.Collections.Concurrent.csproj" />
+    <Project Path="Bodu.Collections.Concurrent\test\Bodu.Collections.Concurrent.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Core/">
     <Project Path="Bodu.Core\src\Bodu.Core.csproj" />
     <Project Path="Bodu.Core\test\Bodu.Core.Test.csproj" />

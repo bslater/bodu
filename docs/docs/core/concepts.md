@@ -8,58 +8,7 @@ This page is the vocabulary the rest of the documentation assumes. Read it once 
 
 Part of the **[Core Foundations](../topics/core-foundations.md)** topic.
 
-For the high-level shape of the library and the namespace map, start with the [introduction](index.md).
-
-## Fixed-capacity collection
-
-A **fixed-capacity** collection sizes its backing storage once and never grows. Once `Count` reaches `Capacity`, the collection has to choose between two behaviours: reject the next add, or evict an existing element to make room. Bodu's ring-backed types expose that choice as a single boolean toggle rather than two separate classes.
-
-| Type | Toggle | Add when full |
-|---|---|---|
-| <xref:Bodu.Collections.Generic.CircularBuffer`1> | `AllowOverwrite` | `true` evicts the head; `false` throws <xref:System.InvalidOperationException>. |
-| <xref:Bodu.Collections.Generic.Deque`1> | `AllowGrow` | `true` doubles the backing array; `false` throws <xref:System.InvalidOperationException>. |
-| <xref:Bodu.Collections.Generic.EvictingDictionary`2> | (always evicting) | Removes the entry selected by the configured <xref:Bodu.Collections.Generic.EvictingDictionaryPolicy>. |
-
-The `Try…` variants (`TryEnqueue`, `TryAddFirst`, `TryAddLast`) substitute a `false` return for the throw, so callers can prefer non-throwing code paths without changing the toggle.
-
-## Ring-backed collection
-
-A **ring-backed** collection stores its elements in a single contiguous array with `head` and `tail` indices that wrap modulo `Capacity`. This gives O(1) add and remove at either end without shifting elements, at the cost of a fixed capacity (or, for growable variants, an occasional array-doubling pass).
-
-<xref:Bodu.Collections.Generic.RingBackedCollection`1> is the shared abstract base. It owns the storage, the wrap arithmetic, the structural-version counter that powers fail-fast enumeration, and the protected primitives (`AddTail`, `AddHead`, `RemoveHead`, `RemoveTail`, `PeekHead`, `PeekTail`, `Resize`) that the concrete types build on. <xref:Bodu.Collections.Generic.CircularBuffer`1> layers a single-ended FIFO surface on top; <xref:Bodu.Collections.Generic.Deque`1> layers a double-ended surface. Both share enumeration, copy, indexer, and trim behaviour through the base.
-
-Derived types skip capacity and emptiness checks on the protected mutators — the public surface enforces those contracts before calling — so the hot path stays branch-free. Because elements are never shifted, every add, remove, and peek is O(1), and the head-relative indexer `this[i]` is an O(1) random read (index `0` is the oldest element).
-
-Enumeration over the ring-backed types is **fail-fast**: the base owns a structural-version counter that every mutator bumps, and the `struct` enumerator captures that token at creation. A structural change while an enumerator is live — including `Clear` and `TrimExcess` — makes the next `MoveNext` (or `Reset`) throw <xref:System.InvalidOperationException>. This is the BCL collection contract; the concurrent peer, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, deliberately drops it in favour of snapshot enumeration that never throws.
-
-## Bounded vs. growing
-
-The `AllowGrow` flag on <xref:Bodu.Collections.Generic.Deque`1> picks between two modes at runtime:
-
-- **Growing** (`AllowGrow = true`, the default) — the backing array doubles on overflow, capped at <xref:System.Array.MaxLength>. The deque behaves like a `List<T>` with O(1) ends.
-- **Bounded** (`AllowGrow = false`) — the deque is fixed at its current capacity. Overflow throws <xref:System.InvalidOperationException>; the `Try…` variants return `false` instead.
-
-The toggle can be flipped at runtime — useful when a deque starts in growable mode during warm-up and is then locked down for steady-state. Switching to `false` does not shrink the backing array; call `TrimExcess` afterwards if a smaller footprint is wanted. `EnsureCapacity(int)` can pre-grow even when `AllowGrow` is `false`.
-
-## Eviction policy
-
-An <xref:Bodu.Collections.Generic.EvictingDictionary`2> is bounded by a capacity and an <xref:Bodu.Collections.Generic.EvictingDictionaryPolicy> that decides which entry leaves when a new key triggers overflow:
-
-| Policy | Evicts |
-|---|---|
-| `FirstInFirstOut` | The entry that was added earliest, regardless of access. |
-| `LeastRecentlyUsed` | The entry with the oldest last-access timestamp. |
-| `LeastFrequentlyUsed` | The entry with the lowest cumulative access count. |
-| `MostRecentlyUsed` | The entry with the newest last-access timestamp. |
-| `RandomReplacement` | A uniformly randomly chosen entry. |
-| `SecondChance` | A FIFO scan that skips entries flagged as recently accessed (the flag clears on skip), evicting the first unflagged entry. |
-
-All policies share the same `IDictionary<TKey, TValue>` surface and the same overflow trigger; the policy only changes the selection. `SecondChance` is the *clock* algorithm — a low-overhead LRU approximation that swaps the per-access list-splice for a single reference bit — and `MostRecentlyUsed` is the scan-resistant inverse of LRU, evicting the just-touched entry to preserve the older working set.
-
-Two `Action<TKey, TValue>` events bracket each eviction — `ItemEvicting` (before) and `ItemEvicted` (after) — so a backing store can be flushed or a resource counter decremented as entries leave. Handlers must not mutate the dictionary; a re-entrant `Add`, `Remove`, `Clear`, or indexer set from inside a handler throws <xref:System.InvalidOperationException>. `PeekEvictionCandidate()` reports the next victim without disturbing the policy metadata, and the running `EvictionCount` / `TotalTouches` totals support cache-effectiveness telemetry.
-
-> [!NOTE]
-> A successful read through the `this[key]` getter or `TryGetValue` **counts as an access** and updates the recency / frequency metadata for LRU, MRU, LFU, and SecondChance — so even concurrent read-read is unsafe without external synchronisation. `ContainsKey` and `PeekEvictionCandidate` are pure reads. `Add(key, value)` is add-*or-replace* and does not throw on a duplicate key (there is no `TryAdd` / `GetOrAdd`).
+For the high-level shape of the library and the namespace map, start with the [introduction](index.md). The collection vocabulary — fixed capacity, ring backing, eviction policies, navigation, sketches — lives on the [Bodu.Collections concepts page](../collections/concepts.md), and the concurrency vocabulary on the [Bodu.Collections.Concurrent concepts page](../collections-concurrent/concepts.md).
 
 ## WeekPattern
 
@@ -84,6 +33,40 @@ Ownership semantics:
 
 The builder implements <xref:System.Buffers.IBufferWriter`1> and <xref:System.Buffers.IMemoryOwner`1>, so it slots into standard `Span<T>` / `Memory<T>` pipelines.
 
+## Railway-oriented outcomes
+
+The `Bodu.Functional` namespace models "this might not produce a value" as data rather than control flow. Three value types cover the three shapes of the problem:
+
+- <xref:Bodu.Functional.Option`1> — a value that may be absent: `Some(value)` or `None`. Reach for it when absence is *normal* and carries no explanation (a cache miss, an optional setting).
+- <xref:Bodu.Functional.Result> / <xref:Bodu.Functional.Result`1> — success or failure, where failure carries a <xref:Bodu.Functional.ResultError> (optional code, never-null message, optional captured exception). Reach for it when the caller needs to know *why* an operation failed without paying for a thrown exception.
+- <xref:Bodu.Functional.Either`2> — a symmetric disjoint union of two equally valid alternatives, with no success/failure bias.
+
+The **railway** style chains these through combinators instead of `if`/`throw` ladders: `Map` transforms the value on the success track, `Bind` sequences a fallible step, `Filter` demotes a `Some` to `None`, and `Match` forces both tracks to be handled at the exit. Task-based companions (`MapAsync` / `BindAsync` / `MatchAsync` / `TapAsync` on <xref:Bodu.Functional.OptionAsyncExtensions> and <xref:Bodu.Functional.ResultAsyncExtensions>) keep the chain flowing through async steps.
+
+Because all three are `readonly struct`s, each defines its **default contract** — what an unassigned field means:
+
+| Type | `default` means |
+|---|---|
+| `Option<T>` | `None` — absence, safely. |
+| `Result<T>` | A **failure** carrying an empty error — never a phantom success. |
+| `Either<TLeft,TRight>` | An explicit **uninitialized** state — neither side is fabricated. |
+
+## Natural ordering
+
+Ordinal string comparison sorts `file10` before `file2` because `'1' < '2'` — correct for code, wrong for humans. **Natural ordering** compares embedded digit runs *numerically* while comparing the surrounding text as text, so `file2` sorts before `file10`.
+
+<xref:Bodu.Extensions.NaturalStringComparer> implements this as a standard `IComparer<string>` with ordinal, case-insensitive, and culture-aware modes, so it drops into `OrderBy`, `SortedSet<string>`, `Array.Sort`, or any API that accepts a comparer. Its companions <xref:Bodu.Extensions.ComparableExtensions> and <xref:Bodu.Extensions.ComparableHelper> round out ordering ergonomics for any `IComparable<T>` — `Min`, `Max`, `Clamp`, and readable comparison predicates (`IsGreaterThan`, `IsGreaterThanOrEqual`). See the [Natural string comparer](../../guides/core/natural-string-comparer.md) guide.
+
+## Async coordination
+
+The `Bodu.Threading` namespace provides the **async-friendly peers of the BCL synchronization types**: where `lock`, `Monitor`, and `ManualResetEvent` block a thread, these primitives return awaitables, so a waiting caller yields its thread back to the pool.
+
+- **Mutual exclusion and gating** — <xref:Bodu.Threading.AsyncLock> (an awaitable mutex whose `LockAsync` result releases on dispose), <xref:Bodu.Threading.AsyncSemaphore> (bounded concurrency), and <xref:Bodu.Threading.AsyncReaderWriterLock> (many readers / one writer).
+- **Signalling** — <xref:Bodu.Threading.AsyncManualResetEvent>, <xref:Bodu.Threading.AsyncAutoResetEvent>, and <xref:Bodu.Threading.AsyncCountdownEvent> re-express the BCL event types as awaitables.
+- **Flow shaping** — <xref:Bodu.Threading.AsyncLazy`1> (one-time async initialization with a single shared invocation), <xref:Bodu.Threading.AsyncDebouncer> (trailing-edge coalescing of bursts), and <xref:Bodu.Threading.RateGate> (N-operations-per-window rate limiting).
+
+The common contract: waiting never blocks a thread, cancellation is honoured through `CancellationToken` parameters, and lock releases are scoped by `IDisposable` so a `using` guarantees the release path. See the [Async coordination primitives](../../guides/core/async-primitives.md) guide.
+
 ## ThrowHelper
 
 <xref:Bodu.ThrowHelper> centralises the `ArgumentException` family for the entire Bodu suite — every Bodu library calls into it rather than rolling its own checks. The pattern is:
@@ -99,11 +82,11 @@ public static double Average(IReadOnlyList<int> values)
 
 The helpers are partitioned by concern across partial files: `Null`, `Numeric`, `Comparison`, `Equality`, `Array`, `Collection`, `Span`, `Type`, `String`, `Ascii`. Each helper accepts a `[CallerArgumentExpression(nameof(value))] string? paramName = null` parameter, so the call site does not need to repeat the argument name. Two parallel partial-class sets target the modern (.NET 8) and netstandard runtimes; the public surface is identical across both.
 
-Centralising the guards means the exception messages, parameter-name capture, and `[StackTraceHidden]` behaviour stay consistent across every Bodu library — and `ThrowHelper` is the sole dependency the other Bodu packages take on `Bodu.Core`.
+Centralising the guards means the exception messages, parameter-name capture, and `[StackTraceHidden]` behaviour stay consistent across every Bodu library — and `ThrowHelper` is the primary dependency the other Bodu packages take on `Bodu.Core`.
 
 ## Random generator abstraction
 
-Several collection and extension helpers — shuffles, sampling, randomised access — depend on a pluggable random source rather than a hard-coded <xref:System.Random>. The seam is <xref:Bodu.IRandomGenerator>, a one-method interface (`int Next(int maxValue)`).
+Several extension helpers — shuffles, sampling, randomised access — and the `Bodu.Collections` catalogue depend on a pluggable random source rather than a hard-coded <xref:System.Random>. The seam is <xref:Bodu.IRandomGenerator>, a one-method interface (`int Next(int maxValue)`).
 
 Two implementations ship in `Bodu.Core`:
 
@@ -113,35 +96,6 @@ Two implementations ship in `Bodu.Core`:
 | <xref:Bodu.Collections.Generic.Extensions.SystemRandomAdapter> | An existing `System.Random` instance must be reused — for example a seeded `Random` shared across multiple helpers. Wraps the `Random` and forwards calls. |
 
 Neither implementation is cryptographically secure; both are deterministic given a seed. Callers that need cryptographic randomness should use <xref:System.Security.Cryptography.RandomNumberGenerator> directly. Helpers that accept an `IRandomGenerator` make the dependency explicit so tests can supply a deterministic generator without monkey-patching globals.
-
-## Multi-value and multi-set semantics
-
-A **multi-** prefix in this library means *duplicate-aware*:
-
-- <xref:Bodu.Collections.Generic.MultiValueDictionary`2> — sometimes called a multimap. A single key maps to zero or more values; values for the same key are retained in insertion order. `Count` is the total number of key-value entries; `KeyCount` is the number of distinct keys. The indexer returns a live read-only view that reflects later mutations to the same key, and an empty list (not `null`) when the key is absent.
-- <xref:Bodu.Collections.Generic.Multiset`1> — a set that tracks the *multiplicity* of each element. `Count` includes multiplicity (`{a, a, b}` has count 3); `DistinctCount` does not. Set-theoretic operations (`Union`, `Intersect`, `Except`, `Sum`) return new multisets and follow multiset algebra — `Union` is element-wise `max(a, b)`, `Intersect` is `min(a, b)`, `Except` is `max(0, a − b)`, and `Sum` is `a + b`.
-
-Both types are not thread-safe and require external synchronisation under concurrent mutation.
-
-## Range-keyed lookup
-
-A <xref:Bodu.Collections.Generic.Range`1> is an immutable half-open interval `[StartInclusive, EndExclusive)` over any `IComparable<T>` endpoint. The half-open convention matches .NET span slicing and <xref:System.Range>: adjacent ranges (`[0, 5)` followed by `[5, 10)`) abut without overlapping, which is the property the collection types rely on for internal consistency.
-
-Two range-keyed collections build on it:
-
-| Type | Backing | Behaviour on overlap |
-|---|---|---|
-| <xref:Bodu.Collections.Generic.RangeDictionary`2> | Sorted parallel arrays of start, end, and value | Rejects overlapping insertions with <xref:System.ArgumentException>. |
-| <xref:Bodu.Collections.Generic.RangeSet`1> | Sorted parallel arrays of start and end | Merges adjacent and overlapping ranges on insertion. |
-
-Both use binary search across the start endpoints for O(log n) lookup. The constructor of `Range<T>` validates that `start < end` and rejects degenerate or inverted ranges.
-
-## Index-aware collections
-
-An **index-aware** collection exposes positional access alongside its primary semantic. Two types in `Bodu.Collections.Generic` carry the prefix:
-
-- <xref:Bodu.Collections.Generic.IndexedSet`1> — an insertion-ordered set that implements the full `IList<T>` contract. Duplicates are rejected on add (`Add` returns `false`), positional mutation works through `Insert`, `RemoveAt`, `Move`, and the indexer setter. Backed by a contiguous element array plus an open-addressing hash table, giving O(1) `Contains`, `IndexOf`, and indexed read. <xref:Bodu.Collections.Generic.OrderedSet`1> is the conceptually-a-set sibling that shares the same engine but exposes indices only as a read-only view.
-- <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> — a binary min-heap that maintains an element-to-slot map alongside the heap. The map turns `Contains`, `TryGetPriority`, `Update`, `Remove`, and `EnqueueOrUpdate` into O(1) lookup plus O(log n) heap repair — the operations Dijkstra's algorithm, Prim's algorithm, and A* require. Elements are unique; `Enqueue` of an existing element throws.
 
 ## Calendar-shape extensions
 
@@ -161,6 +115,7 @@ These types are pure data carriers. The actual algorithms live on the extension 
 
 - **[Introduction](index.md)** — the namespace map and headline types.
 - **[Getting started](getting-started.md)** — install + runnable minimal samples for each scenario.
-- **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for circular buffers, deques, evicting dictionaries, and `WeekPattern`.
-- **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full type-by-type docs.
-- **[Core Foundations topic](../topics/core-foundations.md)** — Bodu.Core alongside the `Bodu.Text` namespace utilities; the [topic concepts](../topics/core-foundations-concepts.md) page collects the shared vocabulary.
+- **[Core Foundations guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
+- **[Bodu.Collections concepts](../collections/concepts.md)** — the collection vocabulary (fixed capacity, eviction, navigation, sketches).
+- **[Bodu.Collections.Concurrent concepts](../collections-concurrent/concepts.md)** — the concurrency vocabulary for the thread-safe collections.
+- **[Core Foundations topic](../topics/core-foundations.md)** — Bodu.Core alongside the collection packages and the `Bodu.Text` namespace utilities; the [topic concepts](../topics/core-foundations-concepts.md) page collects the shared vocabulary.

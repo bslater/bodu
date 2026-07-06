@@ -341,6 +341,13 @@ Forward-looking:
   `MultiMap` / `RangeMap` / `BiMap` / `MultiSet` / `LruCache` synonyms.
   See `Bodu.Core/docs/roadmap-implementation-plan.md` (T0) for the full
   decision record.
+- **The concurrent variants now ship as `Bodu.Collections.Concurrent`.** ✅
+  A follow-on split (post-plan decision D5): `ConcurrentCircularBuffer<T>`
+  and `ConcurrentHashSet<T>` moved to their own opt-in package
+  referencing `Bodu.Collections` (namespace unchanged), with the shared
+  contract-test bases promoted to `Bodu.Test.Contracts` per the
+  documented second-consumer rule and the package carrying its own
+  resource strings.
 - **`WeekPattern` stays in `Bodu.Core` — extraction retired.** With the
   collections split done, Core *is* the small always-referenced
   primitive layer the proposed `Bodu.Globalization.WeekPattern`
@@ -1123,6 +1130,7 @@ Target state:
 blockquote directly under its README title. The assignment:
 
 - **Stable** — the mature core of the solution: `Bodu.Core`,
+  `Bodu.Collections.Concurrent`,
   `Bodu.Collections` (the specialized collection catalogue split out of
   `Bodu.Core` with namespaces unchanged; the tranche additions shipped
   with settled APIs per the implementation plan),

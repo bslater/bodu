@@ -4,11 +4,14 @@ title: Bodu.Core — Introduction
 
 # Bodu.Core
 
-**Bodu.Core** is the foundation package of the Bodu suite and of the **[Core Foundations](../topics/core-foundations.md)** topic — a collection of high-performance, framework-style building blocks for .NET applications. Several other Bodu packages share its primitives: `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `WeekPattern`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
+**Bodu.Core** is the foundation package of the Bodu suite and of the **[Core Foundations](../topics/core-foundations.md)** topic — a collection of high-performance, framework-style building blocks for .NET applications. Every other Bodu package shares its primitives: `Bodu.Collections`, `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `WeekPattern`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
+
+> [!NOTE]
+> The specialized generic-collection catalogue — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, the navigable and range-keyed types, graphs, tries, and the probabilistic sketches — ships in the companion **[Bodu.Collections](../collections/index.md)** package (namespaces unchanged; it depends on `Bodu.Core`), and the thread-safe variants ship in **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** (which depends on `Bodu.Collections`). This page covers what remains in `Bodu.Core` itself.
 
 The library is organized around a family of focused namespaces, each with a clear responsibility.
 
-![Bodu.Core namespace map — focused namespaces and their headline types](../../images/diagrams/core-namespace-map.svg)
+![Bodu.Core namespace map — the foundation namespaces and their headline types, with the collection catalogue shipping in Bodu.Collections](../../images/diagrams/core-namespace-map.svg)
 
 ## Namespaces and headline types
 
@@ -18,7 +21,7 @@ Top-level primitives that don't fit into a sub-namespace.
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.WeekPattern> | Immutable bitmask value type for sets of days of the week. Supports composition (`MTuW`), bitwise operators, parsing, and enumeration. |
-| <xref:Bodu.IRandomGenerator> | Abstraction over random number generators — used by collections that need pluggable randomness. |
+| <xref:Bodu.IRandomGenerator> | Abstraction over random number generators — used by helpers (and the `Bodu.Collections` catalogue) that need pluggable randomness. |
 | <xref:Bodu.XorShiftRandom> | Fast non-cryptographic xor-shift PRNG implementing `IRandomGenerator`. |
 | <xref:Bodu.ThrowHelper> | Centralized parameter validation: `ThrowIfNull`, `ThrowIfOutOfRange`, `ThrowIfArrayLengthIsInsufficient`, `ThrowIfEnumValueIsUndefined`, and many more. Uses `[CallerArgumentExpression]` so call sites stay compact. |
 
@@ -28,65 +31,6 @@ Pooled buffer infrastructure.
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Buffers.PooledBufferBuilder`1> | `ArrayPool<T>`-backed builder for assembling byte or character spans without allocation. |
-
-### `Bodu.Collections.Generic`
-Bounded and ordered collections built around a shared ring-backed primitive.
-
-| Type | Purpose |
-|---|---|
-| <xref:Bodu.Collections.Generic.CircularBuffer`1> | Fixed-capacity FIFO ring. Configurable to either silently overwrite or throw when full. |
-| <xref:Bodu.Collections.Generic.Deque`1> | Double-ended queue with O(1) `AddFirst` / `AddLast` / `RemoveFirst` / `RemoveLast`. The `AllowGrow` flag toggles between auto-resize and fixed-capacity-throw modes. |
-| <xref:Bodu.Collections.Generic.SegmentedBuffer`1> | Segmented buffer for streaming scenarios where total length is not known up front. |
-| <xref:Bodu.Collections.Generic.RingBackedCollection`1> | Abstract base shared by `CircularBuffer<T>` and `Deque<T>`. Extension point for new ring-backed collections. |
-| <xref:Bodu.Collections.Generic.EvictingDictionary`2> | Capacity-bounded dictionary with FIFO, LRU, LFU, MRU, Random, or Second-Chance eviction. Drop-in cache primitive with standard dictionary semantics. |
-| <xref:Bodu.Collections.Generic.EvictingDictionaryPolicy> | Enum selecting the eviction policy: `FirstInFirstOut`, `LeastRecentlyUsed`, `LeastFrequentlyUsed`, `MostRecentlyUsed`, `RandomReplacement`, `SecondChance`. |
-| <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Unbounded insertion- or access-ordered dictionary (Java `LinkedHashMap` shape) with O(1) access to and removal of the first and last entries. Optional access-order mode underpins hand-built LRU caches. |
-| <xref:Bodu.Collections.Generic.BiDictionary`2> | Bidirectional one-to-one map (Guava `BiMap` shape) with O(1) lookup in both directions and a live `Inverse` view sharing the same storage. Duplicate-value conflicts resolve by a construction-time `Throw` / `Replace` policy. |
-| <xref:Bodu.Collections.Generic.LayeredDictionary`2> | Live read-through view over an ordered list of dictionaries (Python `ChainMap` shape): the first layer containing a key wins on read, all writes go to the first layer only, and removing a shadowing entry unshadows the deeper value. |
-| <xref:Bodu.Collections.Generic.DefaultingDictionary`2> | Dictionary with a construction-time value factory (Python `defaultdict` shape): the indexer getter materializes, stores, and returns a default for a missing key; every other member sees only actually-stored entries. |
-| <xref:Bodu.Collections.Generic.Table`3> | Two-key row/column map (Guava `Table` shape) whose point is the projections: live `Row` / `Column` read-only dictionary views, `RowKeys` / `ColumnKeys`, and per-row `RowMap()` iteration over a row-major store. Column-axis operations scan every row (O(rows)); empty rows are pruned automatically. |
-| <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> | Index-aware set and priority-queue variants for lookup-by-position and key-based priority updates. |
-| <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1> | Multi-map and multi-set semantics over `IEqualityComparer<TKey>`. |
-| <xref:Bodu.Collections.Generic.BitSet> | Growable packed bit set with Java `BitSet` semantics: auto-grow on `Set`/`Flip`, reads beyond capacity return `false`, `NextSetBit` / `NextClearBit` / `Cardinality` queries, in-place `And` / `Or` / `Xor` / `AndNot`, and a non-boxing enumerator over set-bit indices. |
-| <xref:Bodu.Collections.Generic.NavigableSet`1> | Comparer-ordered set over an order-statistic red-black tree: O(log n) nearest-neighbour queries (`TryGetFloor` / `TryGetCeiling` / `TryGetHigher` / `TryGetLower`), rank/select (`IndexOf` / `GetAt`), `CountInRange`, `Min`/`Max`, and live fail-fast `Ascending` / `Descending` / `Range` views. |
-| <xref:Bodu.Collections.Generic.NavigableDictionary`2> | Key-sorted dictionary over the same order-statistic red-black tree: O(log n) nearest-neighbour entry queries (`TryGetFloorEntry` / `TryGetCeilingEntry` / `TryGetHigherEntry` / `TryGetLowerEntry`, plus key-only variants), rank/select (`IndexOfKey` / `GetAt`), `CountInRange`, `MinEntry`/`MaxEntry`, and live fail-fast `Ascending` / `Descending` / `Range` entry views. Null keys rejected; null values allowed. |
-| <xref:Bodu.Collections.Generic.Range`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1> | Range-keyed lookups for ordered or interval-valued keys. |
-| <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2> | Overlap-storing interval trees over a max-endpoint augmented red-black tree: closed `[low, high]` intervals that may freely overlap, O(log n + k) stabbing (`QueryPoint`) and window (`QueryOverlaps`) queries, O(log n) `Intersects` / `IntersectsPoint`, duplicate intervals permitted (per-node count / per-node value list). The only member of the range family that stores overlaps. |
-
-### `Bodu.Collections.Generic.Concurrent`
-Lock-free / thread-safe variants.
-
-| Type | Purpose |
-|---|---|
-| <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> | Thread-safe variant of `CircularBuffer<T>`; implements `IProducerConsumerCollection<T>` over the Vyukov MPMC algorithm. |
-
-### `Bodu.Collections.Probabilistic`
-Approximate "sketch" structures that trade exactness for a fixed memory footprint — each is sized once from its constructor arguments and carries a quantified, one-sided error bound. See the [Probabilistic collections](../../guides/core/probabilistic-collections.md) guide and the <xref:Bodu.Collections.Probabilistic> overview.
-
-| Type | Purpose |
-|---|---|
-| <xref:Bodu.Collections.Probabilistic.BloomFilter`1> | Approximate set membership sized from an expected item count and target false-positive rate. No false negatives — added elements are always reported present; never-added elements are misreported at roughly the design rate. Supports `UnionWith` merging and version-checked export/import. |
-| <xref:Bodu.Collections.Probabilistic.CountMinSketch`1> | Approximate per-element frequency counting sized from `epsilon` / `delta`. Never underestimates; with probability at least `1 − δ` an estimate is at most the true count plus `ε · TotalCount`. Supports `MergeWith` (cell-wise sum) and export/import. |
-| <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> | Approximate distinct-element (cardinality) counting in `2^precision` one-byte registers with ~`1.04/√m` relative standard error. `MergeWith` (register-wise max) is lossless and never double-counts shared elements. |
-
-### `Bodu.Collections.Generic.Graphs`
-Graphs and graph algorithms. See the [Graphs and graph algorithms](../../guides/core/graphs.md) guide and the <xref:Bodu.Collections.Generic.Graphs> overview.
-
-| Type | Purpose |
-|---|---|
-| <xref:Bodu.Collections.Generic.Graphs.Graph`1> | Directed or undirected graph with optional non-negative edge weights. |
-| <xref:Bodu.Collections.Generic.Graphs.GraphAlgorithms> | BFS / DFS traversal, shortest path, topological sort, and connected components over the read-only graph views. |
-| <xref:Bodu.Collections.Generic.Graphs.DisjointSet`1> | Union-find (disjoint-set) with path compression for connectivity and components. |
-
-### `Bodu.Collections.Generic.Trees`
-The trie family and an n-ary tree. See the [Tries and text search](../../guides/core/trie.md) guide and the <xref:Bodu.Collections.Generic.Trees> overview.
-
-| Type | Purpose |
-|---|---|
-| <xref:Bodu.Collections.Generic.Trees.Trie>, <xref:Bodu.Collections.Generic.Trees.Trie`1> | A string set and a string-keyed map with prefix queries (`StartsWith`, `KeysWithPrefix`). |
-| <xref:Bodu.Collections.Generic.Trees.RadixTrie>, <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> | Path-compressed (PATRICIA-style) siblings of the tries with the identical member-for-member surface: string edge labels split on insert and re-fuse on remove, so node count tracks key count — the better fit for long keys with sparse branching (URLs, paths, identifiers). |
-| <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton>, <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> | Immutable multi-pattern text matchers built once from a pattern set: `EnumerateMatches` reports every (overlapping, nested) occurrence of every pattern in one O(text + matches) pass, in a pinned (end index, pattern length) order, with span-based `CountMatches` / `HasMatch` conveniences; the keyed variant carries a value per pattern onto each match. |
-| <xref:Bodu.Collections.Generic.Trees.Tree`1> | A mutable n-ary tree node with stack-safe pre-/post-/level-order traversals. |
 
 ### `Bodu.Threading`
 Async coordination primitives — the async-friendly peers of the BCL synchronization types. See the [Async coordination primitives](../../guides/core/async-primitives.md) guide and the <xref:Bodu.Threading> overview.
@@ -110,7 +54,7 @@ Functional helpers and railway primitives. See the [Memoization](../../guides/co
 | <xref:Bodu.Functional.OptionAsyncExtensions>, <xref:Bodu.Functional.ResultAsyncExtensions> | Task-based `MapAsync` / `BindAsync` / `MatchAsync` (and `TapAsync`) companions for async pipelines. |
 
 ### `Bodu.Collections.Extensions` and `Bodu.Collections.Generic.Extensions`
-Sequence-shaping helpers that compose on top of `IEnumerable<T>` and `IList<T>`.
+Sequence-shaping helpers that compose on top of `IEnumerable<T>` and `IList<T>`. These extension namespaces ship in `Bodu.Core`; the concrete collection types in the sibling `Bodu.Collections.*` namespaces ship in the [Bodu.Collections](../collections/index.md) package.
 
 | Type | Purpose |
 |---|---|
@@ -152,36 +96,36 @@ Text and XML helpers used internally by the other Bodu packages; available publi
 
 | Scenario | Reach for |
 |---|---|
-| Fixed-capacity FIFO ring buffer (single-threaded) | <xref:Bodu.Collections.Generic.CircularBuffer`1> |
-| Fixed-capacity FIFO ring buffer (multi-threaded) | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> |
-| Double-ended queue with O(1) ends | <xref:Bodu.Collections.Generic.Deque`1> |
-| LRU / LFU / FIFO / MRU / Random / Second-Chance cache | <xref:Bodu.Collections.Generic.EvictingDictionary`2> + <xref:Bodu.Collections.Generic.EvictingDictionaryPolicy> |
-| Index-aware set with O(1) lookup-by-position | <xref:Bodu.Collections.Generic.IndexedSet`1> |
-| Range-keyed lookup table | <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1> |
-| Multi-map / multi-set semantics | <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1> |
 | Day-of-week set you can union / intersect / parse | <xref:Bodu.WeekPattern> |
 | Pooled byte / char buffer for zero-allocation building | <xref:Bodu.Buffers.PooledBufferBuilder`1> |
+| Async mutual exclusion, signalling, debouncing, rate limiting | <xref:Bodu.Threading.AsyncLock>, <xref:Bodu.Threading.AsyncSemaphore>, <xref:Bodu.Threading.AsyncDebouncer>, <xref:Bodu.Threading.RateGate> |
+| Optional values and success-or-failure outcomes without exceptions | <xref:Bodu.Functional.Option`1>, <xref:Bodu.Functional.Result`1>, <xref:Bodu.Functional.Either`2> |
+| Caching a pure function's results | <xref:Bodu.Functional.Memoizer> |
 | Date arithmetic — first Monday, ISO week-of-year, age | <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions> |
 | Bit / byte rotation and reversal | <xref:Bodu.Extensions.NumericExtensions> |
+| Sorting `file2` before `file10` | <xref:Bodu.Extensions.NaturalStringComparer> |
+| Sliding windows, batching, recursive selection over sequences | <xref:Bodu.Collections.Extensions.IEnumerableExtensions>, <xref:Bodu.Collections.Generic.Extensions.IEnumerableExtensions> |
 | Base16 / Base32 / Base58 / Base64 / Base85 encoding | <xref:Bodu.Text.Encoding.Base16>, <xref:Bodu.Text.Encoding.Base32>, <xref:Bodu.Text.Encoding.Base58>, <xref:Bodu.Text.Encoding.Base64>, <xref:Bodu.Text.Encoding.Base85> (in `Bodu.Text.Encoding`) |
 | Centralized argument validation in your own code | <xref:Bodu.ThrowHelper> |
+| Fixed-capacity, evicting, navigable, graph, trie, and sketch collections | The [Bodu.Collections](../collections/index.md) package |
+| Thread-safe FIFO ring and unique set | The [Bodu.Collections.Concurrent](../collections-concurrent/index.md) package |
 
 ## Design principles
 
 A handful of conventions run through the whole package; knowing them up front explains why the types look the way they do.
 
-- **One toggle, not two classes.** Where a collection has to choose between *reject* and *make room* on overflow, that choice is a single settable property — `AllowOverwrite` on <xref:Bodu.Collections.Generic.CircularBuffer`1>, `AllowGrow` on <xref:Bodu.Collections.Generic.Deque`1> — rather than two parallel types. The toggle can be flipped at runtime (grow during warm-up, lock down for steady state), and every throwing operation has a `Try…` peer that substitutes a `false` return.
-- **Fail-fast where it is cheap, snapshot where it is not.** The single-threaded collections detect concurrent structural mutation with a version counter and throw <xref:System.InvalidOperationException> from the enumerator — the BCL contract. The lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> instead enumerates a coherent snapshot and never throws, because a fail-fast token cannot be maintained without a lock.
-- **Struct enumerators.** Every collection's `GetEnumerator()` returns a `struct`, so a `foreach` over a concrete-typed variable allocates nothing; enumerating through an `IEnumerable<T>` reference boxes as usual.
-- **Reads can mutate.** Recency-based caches (<xref:Bodu.Collections.Generic.EvictingDictionary`2> under LRU/MRU/LFU/SecondChance, <xref:Bodu.Collections.Generic.SequencedDictionary`2> in access-order mode) update ordering metadata on a successful lookup. That is why even concurrent read-read on these types needs external synchronisation.
-- **Validation flows through one helper.** Every public entry point validates its arguments through <xref:Bodu.ThrowHelper>, so exception type, message, and parameter-name capture stay uniform across the suite. `ThrowHelper` is also the only dependency the other Bodu packages take on `Bodu.Core`.
+- **Validation flows through one helper.** Every public entry point validates its arguments through <xref:Bodu.ThrowHelper>, so exception type, message, and parameter-name capture stay uniform across the suite. `ThrowHelper` is also the primary dependency the other Bodu packages take on `Bodu.Core`.
+- **Honest default values.** The railway primitives define what `default` means rather than leaving it undefined: `default(Option<T>)` is `None`, `default(Result<T>)` is a failure carrying an empty error, and `default(Either<L,R>)` is an explicit uninitialized state — a struct field that was never assigned is well-formed, never a landmine.
+- **Async primitives are awaitable peers, not wrappers.** The `Bodu.Threading` types re-express the BCL synchronization vocabulary (`lock`, `SemaphoreSlim`, `ManualResetEvent`) as first-class awaitables, so coordination composes with `async`/`await` without thread blocking.
 - **Pluggable randomness, never a global.** Helpers that need randomness accept an <xref:Bodu.IRandomGenerator> rather than reaching for a static <xref:System.Random>, so tests can inject a deterministic source. Neither shipped implementation is cryptographically secure.
+- **Span-first surfaces.** The buffer builder, the `Bodu.Text` encoding helpers, and the extension surfaces prefer `Span<T>` / `ReadOnlySpan<T>` overloads with UTF-8 fast paths, so the common cases avoid intermediate allocations.
 
 ## Where to go next
 
 - **[Core concepts](concepts.md)** — glossary the rest of the documentation assumes.
 - **[Getting started](getting-started.md)** — install the package and run a minimal sample for each scenario above.
-- **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
-- **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full namespace overview.
+- **[Core Foundations guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
+- **[Bodu.Collections introduction](../collections/index.md)** — the specialized collection catalogue that builds on this package.
+- **[Bodu.Collections.Concurrent introduction](../collections-concurrent/index.md)** — the thread-safe collection companion.
 - **[Project introduction](../introduction.md)** — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries (its `ThrowHelper` underpins them all).
-- **[Core Foundations topic](../topics/core-foundations.md)** — Bodu.Core alongside its sibling member, the `Bodu.Text` namespace utilities.
+- **[Core Foundations topic](../topics/core-foundations.md)** — Bodu.Core alongside its sibling members, the collection packages and the `Bodu.Text` namespace utilities.

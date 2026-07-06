@@ -6,7 +6,7 @@ title: Circular buffer
 
 `CircularBuffer<T>` is a fixed-capacity, first-in first-out (FIFO) ring buffer. It is allocation-free after construction: elements overwrite the oldest slot when the buffer is full (if overwrite is enabled), or throw / return `false` when the buffer is full and overwrite is disabled.
 
-For concurrent access, use `ConcurrentCircularBuffer<T>` — a thread-safe variant that uses a lock-free multi-producer/multi-consumer (Vyukov) algorithm internally.
+For concurrent access, use `ConcurrentCircularBuffer<T>` — a thread-safe variant that uses a lock-free multi-producer/multi-consumer (Vyukov) algorithm internally; it ships in the companion `Bodu.Collections.Concurrent` package.
 
 ![CircularBuffer ring with Head, Tail, and overwrite/reject behavior](../../images/diagrams/circular-buffer.svg)
 

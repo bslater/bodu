@@ -31,5 +31,5 @@ IEnumerable<Node> visible = root.RecursiveSelect(
 ## Notes
 
 - **Counterpart to the generic surface.** Sequence helpers parameterised on `T` live in <xref:Bodu.Collections.Generic.Extensions>; this namespace covers the cases where the source is shape-agnostic.
-- **Packaging.** This extension namespace ships in the `Bodu.Core` package; the concrete collection types in the sibling `Bodu.Collections.*` namespaces ship in the `Bodu.Collections` package.
+- **Packaging.** This extension namespace ships in the `Bodu.Core` package; the concrete collection types in the sibling `Bodu.Collections.*` namespaces ship in the `Bodu.Collections` package, except the thread-safe `Bodu.Collections.Generic.Concurrent` variants, which ship in `Bodu.Collections.Concurrent`.
 - **See also:** the [Bodu.Core introduction](~/docs/core/index.md), the companion <xref:Bodu.Collections.Generic.Extensions> namespace.

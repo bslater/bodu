@@ -12,16 +12,16 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 
 ## Static documentation
 
-- **[Bodu.Core introduction](~/docs/core/index.md)** — namespaces, headline types, scenarios.
-- **[Bodu.Core getting started](~/docs/core/getting-started.md)** — install and minimal samples for the headline types.
-- **[Bodu.Core guides](~/guides/core/index.md)** — recipe-style walk-throughs: [choosing a collection](~/guides/core/choosing-a-collection.md), [circular buffer](~/guides/core/circular-buffer.md), [deque](~/guides/core/deque.md), [evicting dictionary](~/guides/core/evicting-dictionary.md), [sequenced dictionary](~/guides/core/sequenced-dictionary.md), [indexed priority queue](~/guides/core/indexed-priority-queue.md), [indexed and ordered sets](~/guides/core/ordered-sets.md), [multiset](~/guides/core/multiset.md), [multi-value dictionary](~/guides/core/multi-value-dictionary.md), [range-keyed lookups](~/guides/core/range-dictionary.md), [segmented buffer](~/guides/core/segmented-buffer.md), [concurrent collections](~/guides/core/concurrent-collections.md), [`WeekPattern`](~/guides/core/week-pattern.md).
+- **[Bodu.Collections introduction](~/docs/collections/index.md)** — namespaces, headline types, scenarios.
+- **[Bodu.Collections getting started](~/docs/collections/getting-started.md)** — install and minimal samples for the headline types.
+- **[Core Foundations guides](~/guides/core/index.md)** — recipe-style walk-throughs: [choosing a collection](~/guides/core/choosing-a-collection.md), [circular buffer](~/guides/core/circular-buffer.md), [deque](~/guides/core/deque.md), [evicting dictionary](~/guides/core/evicting-dictionary.md), [sequenced dictionary](~/guides/core/sequenced-dictionary.md), [indexed priority queue](~/guides/core/indexed-priority-queue.md), [indexed and ordered sets](~/guides/core/ordered-sets.md), [multiset](~/guides/core/multiset.md), [multi-value dictionary](~/guides/core/multi-value-dictionary.md), [range-keyed lookups](~/guides/core/range-dictionary.md), [segmented buffer](~/guides/core/segmented-buffer.md), [concurrent collections](~/guides/core/concurrent-collections.md), [`WeekPattern`](~/guides/core/week-pattern.md).
 
 ## Key types
 
 **Ring-backed collections**
 
 - <xref:Bodu.Collections.Generic.CircularBuffer`1> — a fixed-capacity FIFO collection. With `allowOverwrite: true` it silently drops the oldest element when full; with `allowOverwrite: false` it throws on overflow.
-- <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> — a lock-free multi-producer / multi-consumer circular buffer using the Vyukov MPMC algorithm, with the same overwrite semantics.
+- <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> — a lock-free multi-producer / multi-consumer circular buffer using the Vyukov MPMC algorithm, with the same overwrite semantics (ships in the companion `Bodu.Collections.Concurrent` package).
 - <xref:Bodu.Collections.Generic.Deque`1> — double-ended queue with O(1) `AddFirst` / `AddLast` / `RemoveFirst` / `RemoveLast`; growable or fixed-capacity.
 - <xref:Bodu.Collections.Generic.RingBackedCollection`1> — abstract base shared by `CircularBuffer<T>` and `Deque<T>` (extension point for new ring-backed collections).
 - <xref:Bodu.Collections.Generic.SegmentedBuffer`1> — segmented backing buffer for streaming scenarios where the total length is not known up front.
@@ -73,8 +73,8 @@ if (!cache.TryGetValue(id, out User user))
 
 ## Notes
 
-- **Thread safety.** `CircularBuffer<T>`, `Deque<T>`, and `EvictingDictionary<TKey, TValue>` are **not** thread-safe; external synchronization is required if accessed concurrently. For a concurrent FIFO, use <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, which is designed for multi-producer / multi-consumer scenarios under the Vyukov algorithm.
+- **Thread safety.** `CircularBuffer<T>`, `Deque<T>`, and `EvictingDictionary<TKey, TValue>` are **not** thread-safe; external synchronization is required if accessed concurrently. For a concurrent FIFO, use <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> from the companion `Bodu.Collections.Concurrent` package, which is designed for multi-producer / multi-consumer scenarios under the Vyukov algorithm.
 - **Capacity is fixed.** Both `CircularBuffer<T>` and `EvictingDictionary<TKey, TValue>` reject a non-positive capacity at construction time. Allocation happens once, up front, not incrementally — this is a deliberate choice for predictable memory behavior in long-running services.
 - **Eviction policies differ in cost.** `FirstInFirstOut` and `RandomReplacement` are O(1); `LeastRecentlyUsed` and `MostRecentlyUsed` maintain a linked recency list and are O(1) per access; `LeastFrequentlyUsed` and `SecondChance` carry a small bookkeeping overhead on access. Pick the policy that matches your workload rather than defaulting to LRU.
 - **Enumeration is snapshot-stable** for non-concurrent types — iterating while mutating throws, per the usual .NET contract.
-- **See also:** the [circular buffer guide](~/guides/core/circular-buffer.md), the [evicting dictionary guide](~/guides/core/evicting-dictionary.md), and the [Bodu.Core introduction](~/docs/core/index.md) for the full scenario table.
+- **See also:** the [circular buffer guide](~/guides/core/circular-buffer.md), the [evicting dictionary guide](~/guides/core/evicting-dictionary.md), and the [Bodu.Collections introduction](~/docs/collections/index.md) for the full scenario table.

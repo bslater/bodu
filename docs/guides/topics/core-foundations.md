@@ -4,17 +4,17 @@ title: Core Foundations — Guides
 
 # Core Foundations — Guides
 
-Recipe-style walk-throughs for the **Core Foundations** topic — the `Bodu.Core` package and the `Bodu.Text` namespace it ships. These are the building blocks the rest of the suite stands on: bounded collections, eviction-aware caches, pooled buffers, day-of-week patterns, argument guards, and character-encoding helpers.
+Recipe-style walk-throughs for the **Core Foundations** topic — the `Bodu.Core`, `Bodu.Collections`, and `Bodu.Collections.Concurrent` packages, plus the `Bodu.Text` namespace that ships inside `Bodu.Core`. These are the building blocks the rest of the suite stands on: bounded collections, eviction-aware caches, pooled buffers, day-of-week patterns, argument guards, and character-encoding helpers.
 
-If you have not yet installed the package, start with the [topic overview](../../docs/topics/core-foundations.md) for the package map and install command, and the [topic concepts page](../../docs/topics/core-foundations-concepts.md) for the shared vocabulary.
+If you have not yet installed the packages, start with the [topic overview](../../docs/topics/core-foundations.md) for the package map and install commands, and the [topic concepts page](../../docs/topics/core-foundations-concepts.md) for the shared vocabulary.
 
-## Bodu.Core guides
+## Guides for the package family
 
 <div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="../core/index.md">Overview</a></h3>
-  <p>The full guide index for <code>Bodu.Core</code>, organized by namespace — every collection, buffer, and root-namespace primitive, and which guide covers each.</p>
+  <p>The full guide index for the Core Foundations packages, organized by namespace — every collection, buffer, and root-namespace primitive, which guide covers each, and which package ships it.</p>
 </div>
 
 <div class="bodu-card">
@@ -24,7 +24,7 @@ If you have not yet installed the package, start with the [topic overview](../..
 
 <div class="bodu-card">
   <h3><a href="../core/circular-buffer.md">Circular buffer</a></h3>
-  <p>Fixed-capacity FIFO ring buffer — single-threaded <code>CircularBuffer&lt;T&gt;</code> and thread-safe <code>ConcurrentCircularBuffer&lt;T&gt;</code>, overwrite mode, peek / dequeue / try-enqueue patterns.</p>
+  <p>Fixed-capacity FIFO ring buffer — single-threaded <code>CircularBuffer&lt;T&gt;</code> (in <code>Bodu.Collections</code>) and thread-safe <code>ConcurrentCircularBuffer&lt;T&gt;</code> (in <code>Bodu.Collections.Concurrent</code>), overwrite mode, peek / dequeue / try-enqueue patterns.</p>
 </div>
 
 <div class="bodu-card">
@@ -50,7 +50,7 @@ The `Bodu.Text` character-encoding helpers (BOM detection, span- and UTF-8-frien
 
 ## Start here
 
-1. **[Topic overview](../../docs/topics/core-foundations.md)** — what ships in the package, the dependency map, and the "which do I need?" table.
+1. **[Topic overview](../../docs/topics/core-foundations.md)** — what ships in each package, the dependency map, and the "which do I need?" table.
 2. **[Topic concepts](../../docs/topics/core-foundations-concepts.md)** — the guard convention, bounded vs. growable capacity, eviction policies, pooled buffers, and the encoding vocabulary.
 3. **[Choosing a collection](../core/choosing-a-collection.md)** — pick the right type before writing code against the wrong one.
 4. **The walk-through for your type** — [circular buffer](../core/circular-buffer.md), [evicting dictionary](../core/evicting-dictionary.md), [pooled buffer builder](../core/pooled-buffer-builder.md), or [WeekPattern](../core/week-pattern.md); the [guide overview](../core/index.md) lists the rest (deque, indexed priority queue, ordered sets, multiset, multi-value dictionary, range-keyed lookups, segmented buffer, concurrent collections).
@@ -60,4 +60,5 @@ The `Bodu.Text` character-encoding helpers (BOM detection, span- and UTF-8-frien
 - **[Core Foundations overview](../../docs/topics/core-foundations.md)** — the topic landing page on the docs side.
 - **[Core Foundations concepts](../../docs/topics/core-foundations-concepts.md)** — cross-member vocabulary.
 - **[Bodu.Core introduction](../../docs/core/index.md)** and **[getting started](../../docs/core/getting-started.md)** — namespace map and minimal samples.
+- **[Bodu.Collections introduction](../../docs/collections/index.md)** and **[Bodu.Collections.Concurrent introduction](../../docs/collections-concurrent/index.md)** — the collection packages' namespace maps.
 - **API reference:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.Text](xref:Bodu.Text).

@@ -187,7 +187,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
         T[] items = collection as T[] ?? collection.ToArray();
 
         if (!allowOverwrite && items.Length > capacity)
-            throw new InvalidOperationException(CollectionsResourceStrings.Arg_Invalid_ArrayLengthExceedsCapacity);
+            throw new InvalidOperationException(ConcurrentCollectionsResourceStrings.Arg_Invalid_ArrayLengthExceedsCapacity);
 
         InitialFill(items);
     }
@@ -298,7 +298,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 spinner.SpinOnce();
             }
 
-            throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_ConcurrentSnapshotUnstable);
+            throw new InvalidOperationException(ConcurrentCollectionsResourceStrings.Op_Invalid_ConcurrentSnapshotUnstable);
         }
     }
 
@@ -421,7 +421,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     public T Dequeue()
         => TryDequeue(out T? item)
             ? item!
-            : throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionEmpty);
+            : throw new InvalidOperationException(ConcurrentCollectionsResourceStrings.Op_Invalid_CollectionEmpty);
 
     /// <summary>
     /// Adds an element to the end of the buffer, throwing when full if overwriting is disabled.
@@ -440,7 +440,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     public T Peek()
         => TryPeek(out T? item)
             ? item!
-            : throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionEmpty);
+            : throw new InvalidOperationException(ConcurrentCollectionsResourceStrings.Op_Invalid_CollectionEmpty);
 
     /// <summary>
     /// Returns a snapshot of the buffer's contents in FIFO order.
@@ -758,7 +758,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 // empty
                 item = default;
                 return throwIfEmpty
-                    ? throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionEmpty)
+                    ? throw new InvalidOperationException(ConcurrentCollectionsResourceStrings.Op_Invalid_CollectionEmpty)
                     : false;
             }
             else
@@ -813,7 +813,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 if (!AllowOverwrite)
                 {
                     return throwIfFull
-                        ? throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CapacityExhausted)
+                        ? throw new InvalidOperationException(ConcurrentCollectionsResourceStrings.Op_Invalid_CapacityExhausted)
                         : false;
                 }
 

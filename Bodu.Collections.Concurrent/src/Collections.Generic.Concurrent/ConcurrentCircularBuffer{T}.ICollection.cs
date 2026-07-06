@@ -70,7 +70,7 @@ public partial class ConcurrentCircularBuffer<T>
     /// <see cref="System.Collections.Concurrent.ConcurrentQueue{T}" /> and other BCL concurrent collections.
     /// </remarks>
     object ICollection.SyncRoot =>
-        throw new NotSupportedException(CollectionsResourceStrings.Op_NotSupported_ConcurrentSyncRoot);
+        throw new NotSupportedException(ConcurrentCollectionsResourceStrings.Op_NotSupported_ConcurrentSyncRoot);
 
     /// <summary>
     /// Copies the elements of the <see cref="ConcurrentCircularBuffer{T}" /> to a one-dimensional, zero-based
@@ -114,7 +114,7 @@ public partial class ConcurrentCircularBuffer<T>
         }
         catch (ArrayTypeMismatchException ex)
         {
-            throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_ArrayType, nameof(array), ex);
+            throw new ArgumentException(ConcurrentCollectionsResourceStrings.Arg_Invalid_ArrayType, nameof(array), ex);
         }
     }
 }

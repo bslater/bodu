@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Generic.Contracts;
+namespace Bodu.Test.Contracts;
 
 /// <summary>
 /// Reusable behavioural contract test base for types that expose the <see cref="IReadOnlyCollection{T}" />

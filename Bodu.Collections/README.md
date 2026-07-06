@@ -17,7 +17,6 @@ Targets `net8.0`. Depends on `Bodu.Core`.
 | Type | Namespace | Summary |
 |---|---|---|
 | `CircularBuffer<T>` | `Bodu.Collections.Generic` | Fixed-capacity FIFO ring buffer with optional overwrite-on-full |
-| `ConcurrentCircularBuffer<T>` | `Bodu.Collections.Generic.Concurrent` | Thread-safe bounded FIFO buffer with optional overwrite |
 | `Deque<T>` | `Bodu.Collections.Generic` | Double-ended queue over a circular array; O(1) at either end |
 | `EvictingDictionary<TKey,TValue>` | `Bodu.Collections.Generic` | Fixed-capacity dictionary with FIFO / LRU / LFU eviction |
 | `SequencedDictionary<TKey,TValue>` | `Bodu.Collections.Generic` | Insertion- or access-ordered dictionary with O(1) first/last access and removal |
@@ -36,7 +35,6 @@ Targets `net8.0`. Depends on `Bodu.Core`.
 | `Table<TRow,TColumn,TValue>` | `Bodu.Collections.Generic` | Two-dimensional map keyed by a row/column pair with live row and column projections |
 | `BitSet` | `Bodu.Collections.Generic` | Growable packed bit array with Java `BitSet` semantics and bulk logical operations |
 | `SegmentedBuffer<T>` | `Bodu.Collections.Generic` | Append-only chunked buffer that grows without copying existing elements |
-| `ConcurrentHashSet<T>` | `Bodu.Collections.Generic.Concurrent` | Thread-safe unordered set of unique elements |
 
 ## Graphs
 
@@ -55,6 +53,8 @@ The `Bodu.Collections.Probabilistic` namespace ships three fixed-footprint appro
 - `HyperLogLog<T>` — approximate distinct counts with a relative standard error of about `1.04/√m` for `m = 2^precision` one-byte registers.
 
 All three hash through an `IEqualityComparer<T>`, merge with parameter-compatible instances, and round-trip their state through an opaque, version-checked export format. None is thread-safe.
+
+The thread-safe variants (`ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`) ship separately in the `Bodu.Collections.Concurrent` package.
 
 ## Testing
 

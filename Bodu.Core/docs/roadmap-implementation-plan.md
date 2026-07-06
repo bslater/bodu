@@ -820,3 +820,21 @@ demand.
 - **`ROADMAP.md` upkeep** — as tranches land, retire the corresponding
   bullets in the `Bodu.Core` section (directional edits, per that
   file's contribution note).
+
+---
+
+## Addendum — post-plan decision D5 (2026-07-05)
+
+**`Bodu.Collections.Concurrent` split.** After the plan's tranches
+completed, the thread-safe variants (`ConcurrentCircularBuffer<T>`,
+`ConcurrentHashSet<T>`) were extracted from `Bodu.Collections` into
+their own opt-in package referencing `Bodu.Collections`, mirroring the
+T0 mechanics: namespace unchanged; the four reverse doc-crefs in
+`Bodu.Collections` became plain-text mentions (the dependency now
+points the other way); the package carries its own
+`ConcurrentCollectionsResourceStrings` pair (two exclusive keys pruned
+from `CollectionsResourceStrings`, four shared keys duplicated); the
+enumerator-immutability sweep was replicated per assembly; and — the
+promotion trigger having fired with a second consumer — the six shared
+contract-test bases moved to `Bodu.Test.Contracts`. Test counts
+reconciled exactly (3,442 + 556 = 3,998).

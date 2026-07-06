@@ -23,6 +23,8 @@ Each package is versioned and released independently; install only the ones you 
 ```bash
 # Core Foundations
 dotnet add package Bodu.Core
+dotnet add package Bodu.Collections
+dotnet add package Bodu.Collections.Concurrent
 
 # Hashing & Cryptography
 dotnet add package Bodu.IO.Hashing
@@ -62,7 +64,25 @@ The foundation of the suite — see the **[Core Foundations overview](topics/cor
 
 ### Bodu.Core
 
-**Bodu.Core** is the foundation package — bounded collections, eviction-aware caches, the `WeekPattern` value type, pooled buffers, and date / numeric / span extensions sitting on a centralized `ThrowHelper`. It is the one package every other Bodu library depends on.
+**Bodu.Core** is the foundation package — the `WeekPattern` value type, pooled buffers, async coordination primitives, railway outcomes (`Option<T>` / `Result<T>`), and date / numeric / span extensions sitting on a centralized `ThrowHelper`. It is the one package every other Bodu library depends on.
+
+```csharp
+using Bodu;
+
+WeekPattern weekdays = WeekPattern.Parse("MTuWThF");
+WeekPattern weekend  = WeekPattern.Parse("SaSu");
+WeekPattern allDays  = weekdays | weekend;
+
+bool monday = weekdays.Contains(DayOfWeek.Monday); // true
+```
+
+`WeekPattern` is an immutable 7-bit bitmask value type for sets of days of the week — compose with the bitwise operators, parse from compact text, and enumerate the selected days in order.
+
+→ **[Introduction](core/index.md)** · **[Getting started](core/getting-started.md)** · **[Guides](../guides/core/index.md)**
+
+### Bodu.Collections
+
+**Bodu.Collections** is the specialized collection catalogue (it depends on `Bodu.Core`; the namespaces are unchanged) — fixed-capacity rings, policy-driven caches with TTL expiry, navigable and range-keyed lookups, interval trees, graphs, tries, and probabilistic sketches.
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -80,7 +100,27 @@ int oldest = buffer.Dequeue(); // 2
 
 `CircularBuffer<T>` is a fixed-capacity FIFO collection. With `allowOverwrite: true` it silently drops the oldest item when full; with `allowOverwrite: false` it throws instead.
 
-→ **[Introduction](core/index.md)** · **[Getting started](core/getting-started.md)** · **[Guides](../guides/core/index.md)**
+→ **[Introduction](collections/index.md)** · **[Getting started](collections/getting-started.md)** · **[Guides](../guides/core/index.md)**
+
+### Bodu.Collections.Concurrent
+
+**Bodu.Collections.Concurrent** ships the thread-safe members of the catalogue (it depends on `Bodu.Collections`) — the lock-free `ConcurrentCircularBuffer<T>` and the lock-striped `ConcurrentHashSet<T>`, both with snapshot enumeration that never throws on concurrent modification.
+
+```csharp
+using Bodu.Collections.Generic.Concurrent;
+
+var seen = new ConcurrentHashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+Parallel.ForEach(events, e =>
+{
+    if (seen.Add(e.CorrelationId))   // true only for the first arrival
+        ProcessFirstOccurrence(e);
+});
+```
+
+`Contains` is lock-free — readers never block writers — and disjoint writers proceed in parallel across independently locked bucket regions.
+
+→ **[Introduction](collections-concurrent/index.md)** · **[Getting started](collections-concurrent/getting-started.md)** · **[Guides](../guides/core/concurrent-collections.md)**
 
 ### Bodu.Text
 
@@ -374,5 +414,5 @@ Open with `buffered: false` to read sectors on demand for large files; `OpenStre
 
 - **[Introduction](introduction.md)** — what each library is for and how they fit together.
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md).
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
 - **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial).

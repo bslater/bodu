@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+    <Title>Bodu — Concurrent Collections</Title>
+    <Description>Thread-safe collection variants for .NET 8: a lock-free Vyukov MPMC ConcurrentCircularBuffer&lt;T&gt; and a lock-striped ConcurrentHashSet&lt;T&gt;. Split out of Bodu.Collections with namespaces unchanged; references Bodu.Collections.</Description>
+    <PackageTags>$(PackageTags);concurrent-collections;lock-free;circular-buffer;hash-set;thread-safe</PackageTags>
+  </PropertyGroup>
+
+  <!--
+    InternalsVisibleTo grants:
+      - Bodu.Collections.Concurrent.Test : test project (ConcurrentHashSet internal ctor /
+                                           ClampDefaultConcurrencyLevel, slot-layout coverage, etc.).
+    Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
+  -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Collections.Concurrent.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Collections\src\Bodu.Collections.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="ConcurrentCollectionsResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConcurrentCollectionsResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="ConcurrentCollectionsResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ConcurrentCollectionsResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

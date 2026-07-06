@@ -14,7 +14,7 @@ Alongside the tries, <xref:Bodu.Collections.Generic.Trees.Tree`1> is a mutable n
 
 ## Static documentation
 
-- **[Introduction](~/docs/core/index.md)** — where the tree collections sit in the wider collection catalogue.
+- **[Introduction](~/docs/collections/index.md)** — where the tree collections sit in the wider collection catalogue.
 - **[Tries and text search](~/guides/core/trie.md)** — building a string set or string-keyed map, prefix queries, removal, enumeration, the radix-trie variants, and Aho-Corasick multi-pattern matching.
 
 ## Key types

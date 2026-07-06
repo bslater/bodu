@@ -4,7 +4,7 @@ title: Concurrent collections
 
 # Concurrent collections
 
-`Bodu.Collections.Generic.Concurrent` ships two thread-safe collections that pair with their non-concurrent peers in `Bodu.Collections.Generic`: `ConcurrentCircularBuffer<T>` for fixed-capacity FIFO under multi-producer / multi-consumer load, and `ConcurrentHashSet<T>` for an unordered set of unique elements under concurrent add / remove / lookup.
+`Bodu.Collections.Generic.Concurrent` ships two thread-safe collections that pair with their non-concurrent peers in `Bodu.Collections.Generic`: `ConcurrentCircularBuffer<T>` for fixed-capacity FIFO under multi-producer / multi-consumer load, and `ConcurrentHashSet<T>` for an unordered set of unique elements under concurrent add / remove / lookup. The namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`) — install with `dotnet add package Bodu.Collections.Concurrent`.
 
 Reach for them when the same collection is accessed by multiple producers and consumers — external locking around `CircularBuffer<T>` or `HashSet<T>` works, but it serialises every operation behind a single monitor. The concurrent variants split contention across slots (Vyukov MPMC for the buffer) or bucket regions (lock striping for the set), so disjoint operations proceed in parallel.
 

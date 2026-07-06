@@ -38,11 +38,33 @@ A family of focused primary libraries organized into **seven topics** — alongs
 <div class="bodu-card">
   <img src="images/hero-core.svg" alt="Bodu.Core" />
   <h3>Bodu.Core</h3>
-  <p>Fixed-capacity collections (<code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>, <code>EvictingDictionary&lt;TKey,TValue&gt;</code>), a day-of-week <code>WeekPattern</code> value type, pooled buffers, date / numeric / span / array extensions, and a centralized <code>ThrowHelper</code>.</p>
+  <p>The foundation package — a day-of-week <code>WeekPattern</code> value type, pooled buffers, async coordination primitives (<code>AsyncLock</code>, <code>RateGate</code>), railway outcomes (<code>Option&lt;T&gt;</code>, <code>Result&lt;T&gt;</code>), date / numeric / span / array extensions, and a centralized <code>ThrowHelper</code>.</p>
   <div class="bodu-card-links">
     <a href="docs/core/index.md">Introduction</a>
     <a href="guides/core/index.md">Guides</a>
+    <a href="xref:Bodu">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <img src="images/hero-core.svg" alt="Bodu.Collections" />
+  <h3>Bodu.Collections</h3>
+  <p>The specialized collection catalogue — fixed-capacity rings (<code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>), policy-driven caches (<code>EvictingDictionary&lt;TKey,TValue&gt;</code> with TTL expiry), navigable sets and dictionaries with rank/select, range-keyed lookups and overlap-storing interval trees, graphs, tries and multi-pattern text search, and probabilistic sketches (Bloom filter, count-min, HyperLogLog). Depends on <code>Bodu.Core</code>.</p>
+  <div class="bodu-card-links">
+    <a href="docs/collections/index.md">Introduction</a>
+    <a href="guides/core/index.md">Guides</a>
     <a href="xref:Bodu.Collections.Generic">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <img src="images/hero-core.svg" alt="Bodu.Collections.Concurrent" />
+  <h3>Bodu.Collections.Concurrent</h3>
+  <p>The thread-safe collection companion — a lock-free Vyukov MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> implementing <code>IProducerConsumerCollection&lt;T&gt;</code>, and a lock-striped <code>ConcurrentHashSet&lt;T&gt;</code> with lock-free reads and snapshot enumeration. Depends on <code>Bodu.Collections</code>.</p>
+  <div class="bodu-card-links">
+    <a href="docs/collections-concurrent/index.md">Introduction</a>
+    <a href="guides/core/concurrent-collections.md">Guides</a>
+    <a href="xref:Bodu.Collections.Generic.Concurrent">API reference</a>
   </div>
 </div>
 
@@ -259,6 +281,8 @@ A family of focused primary libraries organized into **seven topics** — alongs
 
 ```bash
 dotnet add package Bodu.Core
+dotnet add package Bodu.Collections
+dotnet add package Bodu.Collections.Concurrent
 dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar

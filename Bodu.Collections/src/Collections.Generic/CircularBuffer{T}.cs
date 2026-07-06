@@ -64,7 +64,7 @@ namespace Bodu.Collections.Generic;
 /// </list>
 /// <para>
 /// For a double-ended counterpart with the same fixed-vs-growable choice, see <see cref="Deque{T}" />. For thread-safe
-/// concurrent FIFO access, see <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}" />;
+/// concurrent FIFO access, see <c>ConcurrentCircularBuffer&lt;T&gt;</c> in the Bodu.Collections.Concurrent package;
 /// <see cref="CircularBuffer{T}" /> itself is not thread-safe.
 /// </para>
 /// <para>

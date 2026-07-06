@@ -8,62 +8,18 @@ title: Bodu.Core — Getting started
 
 ```bash
 dotnet add package Bodu.Core
-dotnet add package Bodu.Collections
 ```
 
-Targets `net8.0`. No external runtime dependencies. The specialized collection catalogue (`Bodu.Collections.Generic` and its `.Concurrent` / `.Graphs` / `.Trees` / `Bodu.Collections.Probabilistic` siblings) ships in the `Bodu.Collections` package (namespaces unchanged; it depends on `Bodu.Core`); `Bodu.Core` alone suffices for the buffers, extensions, threading, and functional surfaces.
+Targets `net8.0`. No external runtime dependencies. `Bodu.Core` covers the buffers, extensions, threading, and functional surfaces; the specialized collection catalogue ships in the companion [`Bodu.Collections`](../collections/getting-started.md) package (namespaces unchanged; it depends on `Bodu.Core`), and the thread-safe collections in [`Bodu.Collections.Concurrent`](../collections-concurrent/getting-started.md):
+
+```bash
+dotnet add package Bodu.Collections             # collection catalogue
+dotnet add package Bodu.Collections.Concurrent  # thread-safe variants
+```
 
 ## Minimal samples
 
-The collection samples below (`CircularBuffer<T>`, `EvictingDictionary<TKey, TValue>`, `Deque<T>`, `SequencedDictionary<TKey, TValue>`, `IndexedPriorityQueue<TElement, TPriority>`) need the `Bodu.Collections` package; the remaining samples (`WeekPattern`, `PooledBufferBuilder<T>`, the date extensions, `ThrowHelper`) need only `Bodu.Core`.
-
-### Circular buffer (`CircularBuffer<T>`)
-
-```csharp
-using Bodu.Collections.Generic;
-
-var buffer = new CircularBuffer<int>(capacity: 4, allowOverwrite: true);
-
-buffer.Enqueue(1);
-buffer.Enqueue(2);
-buffer.Enqueue(3);
-buffer.Enqueue(4);
-buffer.Enqueue(5); // 1 is evicted; buffer holds [2, 3, 4, 5]
-
-int oldest = buffer.Dequeue(); // 2
-```
-
-`allowOverwrite: false` throws `InvalidOperationException` when full. For thread safety, use `Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer<T>`.
-
-### Evicting dictionary (`EvictingDictionary<TKey, TValue>`)
-
-```csharp
-using Bodu.Collections.Generic;
-
-var cache = new EvictingDictionary<string, byte[]>(
-    capacity: 100,
-    policy: EvictingDictionaryPolicy.LeastRecentlyUsed);
-
-cache["alpha"] = LoadFromDisk("alpha");
-_ = cache.TryGetValue("alpha", out byte[]? value); // touches LRU order
-```
-
-Policies: `FirstInFirstOut`, `LeastRecentlyUsed`, `LeastFrequentlyUsed`, `MostRecentlyUsed`, `RandomReplacement`, `SecondChance`.
-
-### Deque (`Deque<T>`)
-
-```csharp
-using Bodu.Collections.Generic;
-
-var deque = new Deque<string>(allowGrow: true);
-
-deque.AddFirst("a");
-deque.AddLast("b");
-deque.AddLast("c");
-
-string first = deque.RemoveFirst(); // "a"
-string last  = deque.RemoveLast();  // "c"
-```
+Every sample below needs only `Bodu.Core`. For collection samples (`CircularBuffer<T>`, `EvictingDictionary<TKey, TValue>`, `Deque<T>`, and the rest of the catalogue), see the [Bodu.Collections getting-started page](../collections/getting-started.md).
 
 ### Week pattern (`WeekPattern`)
 
@@ -79,37 +35,29 @@ bool monday = weekdays.Contains(DayOfWeek.Monday); // true
 
 `WeekPattern` is an immutable `readonly struct`, so `With` / `Without` and the `|`, `&`, `^`, `~` operators each return a new value. Presets `WeekPattern.Empty`, `WeekPattern.Weekdays`, and `WeekPattern.Weekend` cover the common cases.
 
-### Sequenced dictionary (`SequencedDictionary<TKey, TValue>`)
+### Railway outcomes (`Option<T>` / `Result<T>`)
 
-An insertion- (or access-) ordered map with O(1) access to and removal of either end — the .NET analogue of Java's `LinkedHashMap`:
-
-```csharp
-using Bodu.Collections.Generic;
-
-var lru = new SequencedDictionary<string, byte[]>(accessOrder: true);
-
-lru["a"] = LoadFromDisk("a");
-_ = lru.TryGetValue("a", out _);   // access-order: moves "a" to the most-recent end
-
-// Trim the least-recently-used entry in O(1).
-if (lru.Count > 100)
-    lru.TryRemoveFirst(out _);
-```
-
-### Indexed priority queue (`IndexedPriorityQueue<TElement, TPriority>`)
-
-A min-heap that supports O(log n) priority updates by element identity — the shape Dijkstra and A* need:
+Model "might be absent" and "might fail" as values, and chain the happy path through combinators:
 
 ```csharp
-using Bodu.Collections.Generic;
+using Bodu.Functional;
 
-var pq = new IndexedPriorityQueue<string, double>();
-pq.Enqueue("source", 0);
-pq.EnqueueOrUpdate("a", 7);    // add, or update if already queued
-pq.EnqueueOrUpdate("a", 3);    // O(log n) decrease-key, no duplicate
+Option<string> setting = LookupSetting("timeout");
 
-var (element, priority) = pq.Dequeue();   // ("source", 0) — smallest priority first
+int timeoutMs = setting
+    .Map(int.Parse)
+    .Filter(ms => ms > 0)
+    .Match(onSome: ms => ms, onNone: () => 30_000);   // default when absent or invalid
+
+Result<Order> order = ParseOrder(json)
+    .Bind(Validate)                                // runs only on the success track
+    .Map(Normalize);
+
+if (!order.IsSuccess)
+    logger.LogWarning("Rejected: {Message}", order.Error.Message);
 ```
+
+`default(Option<T>)` is `None` and `default(Result<T>)` is a failure with an empty error — an unassigned field is well-formed, never a phantom success.
 
 ### Pooled buffer (`PooledBufferBuilder<T>`)
 
@@ -125,6 +73,26 @@ builder.Append((byte)'}');
 
 byte[] json = builder.ToArrayAndDispose();   // snapshot, then return the rental
 ```
+
+### Async coordination (`AsyncLock`)
+
+The awaitable peer of `lock` — waiting yields the thread instead of blocking it:
+
+```csharp
+using Bodu.Threading;
+
+private readonly AsyncLock _gate = new();
+
+public async Task WriteAsync(Entry entry, CancellationToken cancellationToken)
+{
+    using (await _gate.LockAsync(cancellationToken))
+    {
+        await AppendToJournalAsync(entry, cancellationToken);
+    }
+}   // releaser disposes → lock released, next waiter resumes
+```
+
+`AsyncSemaphore`, `AsyncReaderWriterLock`, the async reset/countdown events, `AsyncLazy<T>`, `AsyncDebouncer`, and `RateGate` follow the same awaitable, cancellation-aware shape.
 
 ### Date arithmetic (`DateTimeExtensions`)
 
@@ -159,6 +127,7 @@ public static double Average(IReadOnlyList<int> values)
 ## Where to go next
 
 - **[Bodu.Core introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for circular buffers, deques, evicting dictionaries, and `WeekPattern`.
-- **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full type-by-type docs.
+- **[Core Foundations guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
+- **[Bodu.Collections getting started](../collections/getting-started.md)** — the collection catalogue's install and samples.
+- **[Bodu.Collections.Concurrent getting started](../collections-concurrent/getting-started.md)** — the thread-safe collections.
 - **[Project introduction](../introduction.md)** — the per-library map, if you also need hashing, cryptography, calendar, or text utilities.
