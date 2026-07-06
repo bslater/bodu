@@ -43,6 +43,7 @@ Legend for **Loading**:
 | XSalsa20 | golang.org/x/crypto NaCl xsalsa20 vectors | `XSalsa20GoVectorReader` | 2 |
 | Poly1305 | RFC 8439 Appendix A.3 (MAC) | `Rfc8439VectorReader` | 11 |
 | XChaCha20 | draft-arciszewski-xchacha-03 (2.2.1 + A.3.2) | `XChaChaDraftVectorReader` | 2 |
+| XChaCha20-Poly1305 (AEAD) | draft-arciszewski-xchacha-03 Appendix A.3.1 | `XChaChaDraftVectorReader` | 1 |
 | X25519 | Wycheproof | (pre-existing loader) | — |
 | Ed25519 | Wycheproof | (pre-existing loader) | — |
 | ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |

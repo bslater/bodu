@@ -51,30 +51,12 @@ public class StreamAeadKnownAnswerTests
     /// <see cref="DynamicDataAttribute" /> row.
     /// </summary>
     /// <returns>One row per external vector.</returns>
+    /// <summary>Resource name of the embedded draft-arciszewski-xchacha-03 vector file.</summary>
+    private const string XChaChaDraftResourceName = "Bodu.Security.Cryptography.XChaCha20.draft-arciszewski-xchacha-03.txt";
+
     public static IEnumerable<object[]> ExternalVectors()
     {
-        yield return new object[]
-        {
-            new AeadKnownAnswer
-            {
-                Name = "XChaCha20-Poly1305 (draft-irtf-cfrg-xchacha-03 Appendix A.3.1)",
-                Algorithm = AlgorithmXChaCha20Poly1305,
-                Provenance = new KatProvenance(
-                    KatSourceKind.InternetDraft,
-                    "draft-irtf-cfrg-xchacha-03 Appendix A.3.1, AEAD_XCHACHA20_POLY1305",
-                    "Internet-Draft vector (not an RFC). Matches libsodium crypto_aead_xchacha20poly1305_ietf."),
-                Key = Hex(SunscreenKeyHex),
-                Nonce = Hex(SunscreenNonce24Hex),
-                AssociatedData = Hex(SunscreenAadHex),
-                Plaintext = Hex(SunscreenPlaintextHex),
-                Ciphertext = Hex(
-                    "bd6d179d3e83d43b9576579493c0e939572a1700252bfaccbed2902c21396cbb731c7f1b0b4aa6440bf3a82f4eda7" +
-                    "e39ae64c6708c54c216cb96b72e1213b4522f8c9ba40db5d945b11b69b982c1bb9e3f3fac2bc369488f76b238356" +
-                    "5d3fff921f9664c97637da9768812f615c68b13b52e"),
-                Tag = Hex("c0875924c1c7987947deafd8780acf49"),
-                Layout = AeadKatOutputLayout.DetachedTag,
-            },
-        };
+        yield return new object[] { LoadXChaCha20Poly1305Vector() };
 
         yield return new object[]
         {
@@ -100,6 +82,37 @@ public class StreamAeadKnownAnswerTests
                 Tag = Hex("f3ffc7703f9400e52a7dfb4b3d3305d9"),
                 Layout = AeadKatOutputLayout.TagThenCiphertext,
             },
+        };
+    }
+
+    /// <summary>
+    /// Loads the AEAD_XChaCha20_Poly1305 known-answer vector from the embedded draft-arciszewski-xchacha-03 file
+    /// (Appendix A.3.1 developer-friendly section).
+    /// </summary>
+    /// <returns>The XChaCha20-Poly1305 known-answer vector.</returns>
+    /// <exception cref="InvalidOperationException">The embedded resource cannot be located.</exception>
+    private static AeadKnownAnswer LoadXChaCha20Poly1305Vector()
+    {
+        using Stream stream = typeof(StreamAeadKnownAnswerTests).Assembly.GetManifestResourceStream(XChaChaDraftResourceName)
+            ?? throw new InvalidOperationException($"Embedded resource '{XChaChaDraftResourceName}' is missing.");
+
+        Rfc8439TestVector vector = XChaChaDraftVectorReader.ReadDeveloperFriendly(stream, "A.3.1.  AEAD_XCHACHA20_POLY1305");
+
+        return new AeadKnownAnswer
+        {
+            Name = "XChaCha20-Poly1305 (draft-irtf-cfrg-xchacha-03 Appendix A.3.1)",
+            Algorithm = AlgorithmXChaCha20Poly1305,
+            Provenance = new KatProvenance(
+                KatSourceKind.InternetDraft,
+                "draft-irtf-cfrg-xchacha-03 Appendix A.3.1, AEAD_XCHACHA20_POLY1305",
+                "Internet-Draft vector (not an RFC). Matches libsodium crypto_aead_xchacha20poly1305_ietf."),
+            Key = vector.Field("Key"),
+            Nonce = vector.Field("IV"),
+            AssociatedData = vector.Field("AAD"),
+            Plaintext = vector.Field("Plaintext"),
+            Ciphertext = vector.Field("Ciphertext"),
+            Tag = vector.Field("Tag"),
+            Layout = AeadKatOutputLayout.DetachedTag,
         };
     }
 
