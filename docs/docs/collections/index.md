@@ -4,6 +4,8 @@ title: Bodu.Collections — Introduction
 
 # Bodu.Collections
 
+![Bodu.Collections](../../images/hero-collections.svg)
+
 **Bodu.Collections** is the specialized generic-collection catalogue of the Bodu suite and a member of the **[Core Foundations](../topics/core-foundations.md)** topic. It ships the bounded, ordered, navigable, range-keyed, graph, tree, and probabilistic collections that were split out of `Bodu.Core` — the namespaces are unchanged (`Bodu.Collections.Generic` and its siblings), only the package boundary moved. The package depends on [`Bodu.Core`](../core/index.md) for shared primitives such as `ThrowHelper` and the `IRandomGenerator` abstraction; see the [package matrix](../package-matrix.md) for the full dependency map.
 
 The thread-safe variants — `ConcurrentCircularBuffer<T>` and `ConcurrentHashSet<T>` in the `Bodu.Collections.Generic.Concurrent` namespace — ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on this one.

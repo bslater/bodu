@@ -2,7 +2,7 @@
 uid: Bodu.Collections.Probabilistic
 ---
 
-![Bodu.Collections.Probabilistic](~/images/hero-core.svg)
+![Bodu.Collections.Probabilistic](~/images/hero-collections.svg)
 
 ## Purpose
 

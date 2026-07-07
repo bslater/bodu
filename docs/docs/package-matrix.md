@@ -4,6 +4,13 @@ title: Bodu package matrix
 
 # Bodu package matrix
 
+<style>
+  .bodu-matrix-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .8rem; margin: 1rem 0 1.5rem; }
+  .bodu-matrix-gallery figure { margin: 0; }
+  .bodu-matrix-gallery img { display: block; width: 100%; height: auto; aspect-ratio: 480 / 220; border-radius: 6px; }
+  .bodu-matrix-gallery figcaption { margin-top: .3rem; font-size: .8rem; opacity: .85; overflow-wrap: anywhere; }
+</style>
+
 The Bodu suite ships as a family of focused NuGet packages, each with a clear responsibility. This page is the authoritative list — what every package is for, where it lives in the dependency graph, and how mature its public surface is today.
 
 For the high-level shape of each library, follow the **Intro** link in the table; for runnable samples, the **Get started** link.
@@ -40,6 +47,14 @@ Several capabilities ship as independent companion packages so they can release 
 | `Bodu.Financial.DependencyInjection` | Stable | `IServiceCollection` extensions for registering Bodu.Financial currency-lookup and monetary services via `AddFinancialService`. | `Bodu.Financial`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
 | `Bodu.Numerics.Serialization.Json` | Preview | `System.Text.Json` converters, converter factories, and the `ConfigureForBoduNumerics()` registration for the `Bodu.Numerics` types (`Fraction<T>`, `BigDecimal`, `Interval<T>`, `DiscreteInterval<T>`, `IntervalSet<T>`), keeping the core numerics library serialization-agnostic. | `Bodu.Numerics`, `System.Text.Json` |
 
+<div class="bodu-matrix-gallery">
+<figure><img src="../images/hero-calendar-builder.svg" alt="Bodu.Globalization.Calendar.Builder" /><figcaption><code>Bodu.Globalization.Calendar.Builder</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-di.svg" alt="Bodu.Globalization.Calendar.DependencyInjection" /><figcaption><code>Bodu.Globalization.Calendar.DependencyInjection</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-plugins.svg" alt="Bodu.Globalization.Calendar.Plugins" /><figcaption><code>Bodu.Globalization.Calendar.Plugins</code></figcaption></figure>
+<figure><img src="../images/hero-financial-di.svg" alt="Bodu.Financial.DependencyInjection" /><figcaption><code>Bodu.Financial.DependencyInjection</code></figcaption></figure>
+<figure><img src="../images/hero-numerics-json.svg" alt="Bodu.Numerics.Serialization.Json" /><figcaption><code>Bodu.Numerics.Serialization.Json</code></figcaption></figure>
+</div>
+
 ## File formats and exchange-rate data
 
 Several exchange-rate providers ship as independent packages over a shared `IDatedExchangeRateProvider` / `IExchangeRateProvider` contract, so consumers pull in only the data sources they need, each paired with an opt-in dependency-injection companion. The contract exposes a symmetric single-date/range lookup matrix (synchronous and asynchronous): single-date getters return an `ExchangeRateLookupResult` (the resolved rate plus the applied date-resolution and offset), and range getters return an `ExchangeRateRangeResult` (the rates, the requested window, and the observed span; it is itself an `IReadOnlyList<ExchangeRate>`). The HTTP-backed providers share a `WebExchangeRateProvider` base and are `IDisposable` — each either builds and owns its `HttpClient` from options (via `ExchangeRateHttpClientFactory`) or borrows a caller-supplied one. The Reserve Bank of Australia provider sits on a small, strictly layered stack whose lower two layers carry no financial or RBA-specific concepts and can be reused on their own: a generic compound-file reader, and a narrow binary-`.xls` reader built on it. A standalone caching layer can decorate any provider with a shared on-disk TOML cache.
@@ -60,6 +75,20 @@ Several exchange-rate providers ship as independent packages over a shared `IDat
 | `Bodu.Financial.ExchangeRates.Caching.Distributed` | Stable | `DistributedExchangeRateCache`, an `IExchangeRateCache` over a `Microsoft.Extensions.Caching.Distributed.IDistributedCache` (Redis-capable), persisting a provider's dated rates and fetch-coverage windows as a per-pair JSON blob; behaviourally identical to the in-memory, TOML, and SQLite caches and validated against the same `ExchangeRateCacheContractTests`. Includes its own `AddDistributedRateCache` / `AddRedisRateCache` DI registration (in the `Bodu.Financial.ExchangeRates` namespace). | `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial`, `Bodu.Financial.DependencyInjection`, `Bodu.Core`, `Microsoft.Extensions.Caching.Abstractions` |
 | `Bodu.Financial.ExchangeRates.Caching.Sqlite` | Stable | `SqliteExchangeRateCache`, an `IExchangeRateCache` over a SQLite database (via `Microsoft.Data.Sqlite`), persisting a provider's dated rates and fetch-coverage windows in `rates` and `coverage` tables; behaviourally identical to the in-memory and TOML caches and validated against the same `ExchangeRateCacheContractTests`. Includes its own `AddSqliteRateCache` DI registration (in the `Bodu.Financial.ExchangeRates` namespace), binding `SqliteExchangeRateCacheOptions`. | `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial`, `Bodu.Financial.DependencyInjection`, `Bodu.Core`, `Microsoft.Data.Sqlite` |
 
+<div class="bodu-matrix-gallery">
+<figure><img src="../images/hero-fx-di.svg" alt="Bodu.Financial.ExchangeRates.DependencyInjection" /><figcaption><code>Bodu.Financial.ExchangeRates.DependencyInjection</code></figcaption></figure>
+<figure><img src="../images/hero-fx-rba.svg" alt="Bodu.Financial.ExchangeRates.Rba" /><figcaption><code>Bodu.Financial.ExchangeRates.Rba</code></figcaption></figure>
+<figure><img src="../images/hero-fx-boe.svg" alt="Bodu.Financial.ExchangeRates.Boe" /><figcaption><code>Bodu.Financial.ExchangeRates.Boe</code></figcaption></figure>
+<figure><img src="../images/hero-fx-ecb.svg" alt="Bodu.Financial.ExchangeRates.Ecb" /><figcaption><code>Bodu.Financial.ExchangeRates.Ecb</code></figcaption></figure>
+<figure><img src="../images/hero-fx-yahoo.svg" alt="Bodu.Financial.ExchangeRates.Yahoo" /><figcaption><code>Bodu.Financial.ExchangeRates.Yahoo</code></figcaption></figure>
+<figure><img src="../images/hero-fx-ofx.svg" alt="Bodu.Financial.ExchangeRates.Ofx" /><figcaption><code>Bodu.Financial.ExchangeRates.Ofx</code></figcaption></figure>
+<figure><img src="../images/hero-fx-xe.svg" alt="Bodu.Financial.ExchangeRates.Xe" /><figcaption><code>Bodu.Financial.ExchangeRates.Xe</code></figcaption></figure>
+<figure><img src="../images/hero-fx-oanda.svg" alt="Bodu.Financial.ExchangeRates.Oanda" /><figcaption><code>Bodu.Financial.ExchangeRates.Oanda</code></figcaption></figure>
+<figure><img src="../images/hero-fx-caching.svg" alt="Bodu.Financial.ExchangeRates.Caching" /><figcaption><code>Bodu.Financial.ExchangeRates.Caching</code></figcaption></figure>
+<figure><img src="../images/hero-fx-caching-distributed.svg" alt="Bodu.Financial.ExchangeRates.Caching.Distributed" /><figcaption><code>Bodu.Financial.ExchangeRates.Caching.Distributed</code></figcaption></figure>
+<figure><img src="../images/hero-fx-caching-sqlite.svg" alt="Bodu.Financial.ExchangeRates.Caching.Sqlite" /><figcaption><code>Bodu.Financial.ExchangeRates.Caching.Sqlite</code></figcaption></figure>
+</div>
+
 ## Calendar data packs
 
 Region-specific public-holiday rules ship as independent NuGet packages — one per region — so consumers pull in only the territories they need. Each is built on the notable-date schema and exposes a `<Region>CalendarData` factory over per-country embedded resource packs.
@@ -71,6 +100,14 @@ Region-specific public-holiday rules ship as independent NuGet packages — one 
 | `Bodu.Globalization.Calendar.Europe` | Stable | Europe bundle (e.g. `DE`, `ES`, `FR`, `GB`, `IT`, `NL`). | `Bodu.Globalization.Calendar` |
 | `Bodu.Globalization.Calendar.Africa` | Stable | Africa bundle (e.g. `ZA`, `NG`, `KE`, `GH`, `ET`, `EG`, `MA`). | `Bodu.Globalization.Calendar` |
 | `Bodu.Globalization.Calendar.MiddleEast` | Stable | Middle East bundle (e.g. `AE`, `SA`, `IL`, `TR`, `QA`, `JO`). | `Bodu.Globalization.Calendar` |
+
+<div class="bodu-matrix-gallery">
+<figure><img src="../images/hero-calendar-americas.svg" alt="Bodu.Globalization.Calendar.Americas" /><figcaption><code>Bodu.Globalization.Calendar.Americas</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-asiapacific.svg" alt="Bodu.Globalization.Calendar.AsiaPacific" /><figcaption><code>Bodu.Globalization.Calendar.AsiaPacific</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-europe.svg" alt="Bodu.Globalization.Calendar.Europe" /><figcaption><code>Bodu.Globalization.Calendar.Europe</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-africa.svg" alt="Bodu.Globalization.Calendar.Africa" /><figcaption><code>Bodu.Globalization.Calendar.Africa</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-middleeast.svg" alt="Bodu.Globalization.Calendar.MiddleEast" /><figcaption><code>Bodu.Globalization.Calendar.MiddleEast</code></figcaption></figure>
+</div>
 
 See the [Calendar introduction](calendar/index.md) for how the companion packages compose with the runtime, and the [data-packs guide](../guides/calendar/data-packs.md) for per-bundle install commands and territory coverage.
 

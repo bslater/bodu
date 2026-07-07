@@ -2,6 +2,8 @@
 uid: Bodu.Globalization.Calendar.RangeResolution
 ---
 
+![Bodu.Globalization.Calendar.RangeResolution](~/images/hero-calendar.svg)
+
 # Bodu.Globalization.Calendar.RangeResolution
 
 ## Purpose

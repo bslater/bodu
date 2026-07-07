@@ -2,7 +2,7 @@
 uid: Bodu.Text.Encoding
 ---
 
-![Bodu.Text.Encoding](~/images/hero-text.svg)
+![Bodu.Text.Encoding](~/images/hero-text-encoding.svg)
 
 ## Purpose
 

@@ -2,6 +2,8 @@
 uid: Bodu.Globalization.Calendar.Algorithms
 ---
 
+![Bodu.Globalization.Calendar.Algorithms](~/images/hero-calendar.svg)
+
 # Bodu.Globalization.Calendar.Algorithms
 
 ## Purpose

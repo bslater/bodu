@@ -2,6 +2,8 @@
 uid: Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions
 ---
 
+![Bodu.Globalization.Calendar.DependencyInjection](~/images/hero-calendar-di.svg)
+
 # Bodu.Globalization.Calendar.DependencyInjection
 
 ## Purpose

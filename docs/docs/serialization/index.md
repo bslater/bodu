@@ -4,6 +4,8 @@ title: Bodu serializers — Introduction
 
 # Bodu serializers (Bencode, TOML, and YAML)
 
+![Bodu serializers](../../images/hero-serializers.svg)
+
 **Bodu.Text.Bencode**, **Bodu.Text.Toml**, and **Bodu.Text.Yaml** are three self-contained libraries that map your own types (POCOs, records, collections) to and from a document format. Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, each is a standalone package with no shared engine — every type a serializer needs lives inside its own assembly:
 
 | Package | Namespace | Format | Entry point |

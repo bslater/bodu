@@ -2,6 +2,8 @@
 uid: Bodu.Financial.ExchangeRates.Caching
 ---
 
+![Bodu.Financial.ExchangeRates.Caching](~/images/hero-fx-caching.svg)
+
 # Bodu.Financial.ExchangeRates.Caching
 
 ## Purpose

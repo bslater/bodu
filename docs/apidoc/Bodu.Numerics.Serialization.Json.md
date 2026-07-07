@@ -2,6 +2,8 @@
 uid: Bodu.Numerics.Serialization.Json
 ---
 
+![Bodu.Numerics.Serialization.Json](~/images/hero-numerics-json.svg)
+
 # Bodu.Numerics.Serialization.Json
 
 ## Purpose

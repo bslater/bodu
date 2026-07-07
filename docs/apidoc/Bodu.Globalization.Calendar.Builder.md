@@ -2,6 +2,8 @@
 uid: Bodu.Globalization.Calendar.Builder
 ---
 
+![Bodu.Globalization.Calendar.Builder](~/images/hero-calendar-builder.svg)
+
 # Bodu.Globalization.Calendar.Builder
 
 ## Purpose
