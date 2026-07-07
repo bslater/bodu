@@ -26,14 +26,16 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <description>
-/// Encrypt: the penultimate block is CBC-encrypted to E; the final partial block P_n is padded with E[m:] and
-/// raw-encrypted to produce C_n (full block); C_{n-1} = E[0:m]. Output: C_n then C_{n-1}.
+/// Encrypt: the penultimate block is CBC-encrypted to E; the final partial block P_n is zero-padded and CBC-chained
+/// against E (that is, <c>(P_n || 0) XOR E</c> is encrypted) to produce C_n (full block); C_{n-1} = E[0:m]. Output:
+/// C_n then C_{n-1}.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// Decrypt: C_n is raw-decrypted to recover the padded P_n and E[m:]; C_{n-1} is reconstructed as E[0:m] ||
-/// reconstructed; then the full C_{n-1} is CBC-decrypted to P_{n-1}.
+/// Decrypt: C_n is decrypted to recover <c>(P_n XOR E[0:m]) || E[m:]</c>; E is reconstructed from the truncated
+/// C_{n-1} and the recovered high bytes; P_n is obtained by XORing off E[0:m]; then the full E is CBC-decrypted to
+/// P_{n-1}.
 /// </description>
 /// </item>
 /// </list>
@@ -205,7 +207,7 @@ public sealed class CtsModeTransform
         ReadOnlySpan<byte> cn = input.Slice(bodyLength, blockSize);
         ReadOnlySpan<byte> cnMinus1Trunc = input.Slice(bodyLength + blockSize, tailBytes);
 
-        // Step 1: raw-decrypt C_n → gives us P_n || E[tailBytes..].
+        // Step 1: raw-decrypt C_n → gives us (P_n XOR E[0..tailBytes]) || E[tailBytes..].
         Span<byte> rawDec = stackalloc byte[blockSize];
         _cipher.Decrypt(cn, rawDec);
 
@@ -215,8 +217,10 @@ public sealed class CtsModeTransform
         cnMinus1Trunc.CopyTo(e);
         rawDec[tailBytes..].CopyTo(e[tailBytes..]);
 
-        // Step 3: recover P_n = rawDec[0..tailBytes] (the rest was padding from E).
-        rawDec[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
+        // Step 3: recover P_n by removing the CBC chain: P_n = rawDec[0..tailBytes] XOR E[0..tailBytes].
+        Span<byte> pnOut = output.Slice(bodyLength + blockSize, tailBytes);
+        for (int i = 0; i < tailBytes; i++)
+            pnOut[i] = (byte)(rawDec[i] ^ e[i]);
 
         // Step 4: CBC-decrypt e to get P_{n-1}.
         Span<byte> block = stackalloc byte[blockSize];
@@ -290,12 +294,16 @@ public sealed class CtsModeTransform
         // Final partial block: P_n (tailBytes bytes).
         ReadOnlySpan<byte> tail = input.Slice(bodyLength + blockSize, tailBytes);
 
-        // Build the padded final block: P_n || E[tailBytes..blockSize].
+        // Build the CBC-chained final block: (P_n || 0^(blockSize - tailBytes)) XOR E. Standard CBC-CS3
+        // still chains the zero-padded final plaintext block against the penultimate ciphertext block E
+        // before the raw encryption; the high (blockSize - tailBytes) bytes reduce to E[tailBytes..] and
+        // are recovered from the truncated block on decrypt.
         Span<byte> padded = stackalloc byte[blockSize];
         tail.CopyTo(padded);
-        e[tailBytes..].CopyTo(padded[tailBytes..]);
+        for (int i = 0; i < blockSize; i++)
+            padded[i] ^= e[i];
 
-        // C_n = raw_encrypt(padded) — no CBC chain.
+        // C_n = Encrypt(padded).
         Span<byte> cn = stackalloc byte[blockSize];
         _cipher.Encrypt(padded, cn);
 

@@ -118,4 +118,18 @@ public partial class BigDecimalTests
         Assert.AreEqual("3.14", BigDecimal.Abs(BD(-314, 2)).ToString());
         Assert.AreEqual(BigDecimal.Zero, BigDecimal.Negate(BigDecimal.Zero));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="BigDecimal.Pow(BigDecimal, int)" /> throws <see cref="OverflowException" /> when the
+    /// resulting scale (scale × exponent) exceeds <see cref="int" /> range, rather than silently wrapping to a wrong
+    /// result. The base is a power of ten (mantissa 1) so <see cref="System.Numerics.BigInteger" /> exponentiation is
+    /// cheap and the scale is the only large quantity.
+    /// </summary>
+    [TestMethod]
+    public void Pow_WhenScaleTimesExponentOverflowsInt_ShouldThrowOverflowException()
+    {
+        BigDecimal value = BD(1, 2); // 0.01 — mantissa 1, scale 2
+
+        Assert.ThrowsExactly<OverflowException>(() => _ = BigDecimal.Pow(value, int.MaxValue));
+    }
 }

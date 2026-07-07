@@ -10,14 +10,14 @@ using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 
-// No published standard test vectors apply to SivModeTransform:
+// SivModeTransform implements standard RFC 5297 AES-SIV: the synthetic IV is derived by S2V (a CMAC-based PRF over the
+// associated data and plaintext), then the 31st and 63rd bits from the right are cleared to form the CTR counter. This
+// is confirmed by the RFC 5297 Appendix A.1 known-answer vector below, which pins the exact ciphertext and SIV and is
+// asserted on both the encrypt and decrypt paths — a real data-path check that a symmetric round-trip cannot provide.
 //
-// RFC 5297 SIV-AES derives its synthetic IV using S2V, a CMAC-based PRF over the
-// associated data and plaintext. SivModeTransform uses a simplified CTR with bits 31
-// and 63 cleared, without the S2V computation. RFC 5297 Appendix A vectors do not apply.
-//
-// Real-cipher round-trip coverage is provided by the inherited
-// Transform_WithRealAesCipher_RandomKey_ShouldRoundTrip test defined in BlockCipherModeTests.KnownAnswerTests.cs.
+// Appendix A.1 is the single-associated-data case, which is what this transform's ProcessAssociatedData API models.
+// Appendix A.2 exercises multiple associated-data components plus a nonce (S2V over a vector of inputs) and does not map
+// onto the single-AAD surface, so it is not represented here.
 public sealed partial class SivModeTransformTests
 {
     // ── RFC 5297 Appendix A — AES-SIV known-answer tests ─────────────────────────────────────

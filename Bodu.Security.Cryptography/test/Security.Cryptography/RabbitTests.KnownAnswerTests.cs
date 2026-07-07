@@ -8,7 +8,6 @@
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography.Infrastructure;
 using Bodu.Test.Kat;
-using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 
 namespace Bodu.Security.Cryptography;
 /// <summary>
@@ -37,90 +36,23 @@ public sealed partial class RabbitTests
         };
 
     // ── RFC 4503 Appendix A keystream conformance vectors (I2OSP / big-endian) ────────────────
-    // An empty Nonce marks the without-IV setup (Appendix A.1); a populated Nonce is the with-IV setup (Appendix A.2).
-    private static readonly StreamCipherKnownAnswer[] KeystreamKnownAnswers =
-    [
-        new StreamCipherKnownAnswer
-        {
-            Name = "RFC 4503 Appendix A.1 no-IV zero key",
-            Provenance = KatProvenance.Rfc("RFC 4503 Appendix A.1"),
-            Key = Hex("00000000000000000000000000000000"),
-            Nonce = [],
-            IsKeystream = true,
-            Plaintext = [],
-            Ciphertext = Hex(
-                "B15754F036A5D6ECF56B45261C4AF702" +
-                "88E8D815C59C0C397B696C4789C68AA7" +
-                "F416A1C3700CD451DA68D1881673D696"),
-        },
-        new StreamCipherKnownAnswer
-        {
-            // The Appendix B.1 printed key has a typo (byte 2 = ED); the expanded state proves it is 3D, and this
-            // corrected key reproduces both the Appendix A.1 second vector and the Appendix B.1 output.
-            Name = "RFC 4503 Appendix A.1 no-IV key 912813292E3D36FE3BFC62F1DC51C3AC (corrected B.1 key byte 3D)",
-            Provenance = KatProvenance.Rfc("RFC 4503 Appendix A.1"),
-            Key = Hex("912813292E3D36FE3BFC62F1DC51C3AC"),
-            Nonce = [],
-            IsKeystream = true,
-            Plaintext = [],
-            Ciphertext = Hex(
-                "3D2DF3C83EF627A1E97FC38487E2519C" +
-                "F576CD61F4405B8896BF53AA8554FC19" +
-                "E5547473FBDB43508AE53B20204D4C5E"),
-        },
-        new StreamCipherKnownAnswer
-        {
-            Name = "RFC 4503 Appendix A.1 no-IV key 8395741587E0C733E9E9AB01C09B0043",
-            Provenance = KatProvenance.Rfc("RFC 4503 Appendix A.1"),
-            Key = Hex("8395741587E0C733E9E9AB01C09B0043"),
-            Nonce = [],
-            IsKeystream = true,
-            Plaintext = [],
-            Ciphertext = Hex(
-                "0CB10DCDA041CDAC32EB5CFD02D0609B" +
-                "95FC9FCA0F17015A7B7092114CFF3EAD" +
-                "9649E5DE8BFC7F3F924147AD3A947428"),
-        },
-        new StreamCipherKnownAnswer
-        {
-            Name = "RFC 4503 Appendix A.2 zero key zero IV",
-            Provenance = KatProvenance.Rfc("RFC 4503 Appendix A.2"),
-            Key = Hex("00000000000000000000000000000000"),
-            Nonce = Hex("0000000000000000"),
-            IsKeystream = true,
-            Plaintext = [],
-            Ciphertext = Hex(
-                "C6A7275EF85495D87CCD5D376705B7ED" +
-                "5F29A6AC04F5EFD47B8F293270DC4A8D" +
-                "2ADE822B29DE6C1EE52BDB8A47BF8F66"),
-        },
-        new StreamCipherKnownAnswer
-        {
-            Name = "RFC 4503 Appendix A.2 zero key IV C373F575C1267E59",
-            Provenance = KatProvenance.Rfc("RFC 4503 Appendix A.2"),
-            Key = Hex("00000000000000000000000000000000"),
-            Nonce = Hex("C373F575C1267E59"),
-            IsKeystream = true,
-            Plaintext = [],
-            Ciphertext = Hex(
-                "1FCD4EB9580012E2E0DCCC9222017D6D" +
-                "A75F4E10D12125017B2499FFED936F2E" +
-                "EBC112C393E738392356BDD012029BA7"),
-        },
-        new StreamCipherKnownAnswer
-        {
-            Name = "RFC 4503 Appendix A.2 zero key IV A6EB561AD2F41727",
-            Provenance = KatProvenance.Rfc("RFC 4503 Appendix A.2"),
-            Key = Hex("00000000000000000000000000000000"),
-            Nonce = Hex("A6EB561AD2F41727"),
-            IsKeystream = true,
-            Plaintext = [],
-            Ciphertext = Hex(
-                "445AD8C805858DBF70B6AF23A151104D" +
-                "96C8F27947F42C5BAEAE67C6ACC35B03" +
-                "9FCBFC895FA71C17313DF034F01551CB"),
-        },
-    ];
+    // Loaded dynamically from the embedded RFC 4503 Appendix A octet-form vector file. An empty Nonce marks the
+    // without-IV setup (Appendix A.1); a populated Nonce is the with-IV setup (Appendix A.2). Appendix A prints the
+    // second A.1 key correctly as 91 28 13 29 2E 3D 36 FE ... (the ED typo is confined to the Appendix B.1 walk-through).
+    private const string RabbitRfc4503ResourceName = "Bodu.Security.Cryptography.Rabbit.rfc4503-appendix-a.txt";
+
+    private static readonly StreamCipherKnownAnswer[] KeystreamKnownAnswers = LoadKeystreamKnownAnswers();
+
+    /// <summary>Loads the RFC 4503 Appendix A keystream vectors from the embedded octet-form vector file.</summary>
+    /// <returns>Every Appendix A.1 and A.2 keystream vector.</returns>
+    /// <exception cref="InvalidOperationException">The embedded resource cannot be located.</exception>
+    private static StreamCipherKnownAnswer[] LoadKeystreamKnownAnswers()
+    {
+        using Stream stream = typeof(RabbitTests).Assembly.GetManifestResourceStream(RabbitRfc4503ResourceName)
+            ?? throw new InvalidOperationException($"Embedded resource '{RabbitRfc4503ResourceName}' is missing.");
+
+        return [.. Rfc4503RabbitKatReader.Read(stream)];
+    }
 
     /// <summary>
     /// Yields the RFC 4503 Appendix A keystream vectors as <see cref="DynamicDataAttribute" /> rows.

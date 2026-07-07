@@ -359,30 +359,42 @@ public sealed class GcmSivModeTransform
         // not escape to the managed heap — stack allocation ensures it is reclaimed with the frame.
         Span<byte> z = stackalloc byte[16];
         Span<byte> v = stackalloc byte[16];
-        h.CopyTo(v);
 
-        for (int i = 0; i < 16; i++)
+        try
         {
-            byte xi = x[i];
-            for (int bit = 7; bit >= 0; bit--)
+            h.CopyTo(v);
+
+            // Constant-time bit-serial multiply: every iteration touches z and v unconditionally.
+            // The two secret-dependent decisions — whether bit i of x is set, and whether the bit
+            // shifted out of v is set — are folded in through 0x00/0xFF masks instead of branches,
+            // so neither control flow nor memory-access pattern depends on x, h, or the running state.
+            // Both operands here are secret (reflected POLYVAL state and reflected auth key), so this
+            // mirrors the hardened GCM/GHASH multiply and must stay branchless.
+            for (int i = 0; i < 128; i++)
             {
-                if (((xi >> bit) & 1) == 1)
-                    Xor(z, v, z);
+                // bit i of x in big-endian bit order; bitMask is 0xFF when set, 0x00 otherwise.
+                byte bitMask = (byte)(-((x[i >> 3] >> (7 - (i & 7))) & 1));
+                for (int j = 0; j < 16; j++)
+                    z[j] ^= (byte)(v[j] & bitMask);
 
-                bool lsb = (v[15] & 1) == 1;
+                // lsbMask is 0xFF when the bit about to be shifted out of v is set, 0x00 otherwise.
+                byte lsbMask = (byte)(-(v[15] & 0x01));
 
-                // Right-shift v by 1.
                 for (int j = 15; j > 0; j--)
-                    v[j] = (byte)((v[j] >> 1) | (v[j - 1] << 7));
-
+                    v[j] = (byte)((v[j] >> 1) | ((v[j - 1] & 0x01) << 7));
                 v[0] >>= 1;
 
-                // Reduce: if LSB was set, XOR with 0xE1 in MSByte (x^128 + x^7 + x^2 + x + 1).
-                if (lsb) v[0] ^= 0xE1;
+                // Reduce by R = 0xE1 || 0…0 (x^128 + x^7 + x^2 + x + 1) when that bit was set.
+                v[0] ^= (byte)(0xE1 & lsbMask);
             }
-        }
 
-        z.CopyTo(result);
+            z.CopyTo(result);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(v);
+            CryptographyHelper.Clear(z);
+        }
     }
 
     /// <summary>
@@ -397,33 +409,45 @@ public sealed class GcmSivModeTransform
         // Stack-allocate all three scratch blocks so reflected key material never reaches the managed heap.
         Span<byte> xr = stackalloc byte[16];
         Span<byte> hr = stackalloc byte[16];
-        ReflectBytesAndBits(x, xr);
-        ReflectBytesAndBits(h, hr);
+        ByteReverse(x, xr);
+        ByteReverse(h, hr);
+
+        // RFC 8452 §3: POLYVAL(H, X) = ByteReverse(GHASH(mulX_GHASH(reflect(H)), reflect(X))). The reflected hash key
+        // must be multiplied by x in the GHASH field; without this the tag is wrong for every non-zero POLYVAL input.
+        MulXGhash(hr);
 
         Span<byte> product = stackalloc byte[16];
         GhashMultiply(xr, hr, product);
 
-        ReflectBytesAndBits(product, result);
+        ByteReverse(product, result);
     }
 
     /// <summary>
-    /// Reflects a 128-bit value: reverses byte order and bit-reverses each byte.
+    /// Multiplies a 128-bit GHASH-domain field element by <c>x</c> in place (right-shift by one bit with conditional
+    /// reduction by <c>0xE1</c>), as required to convert a reflected POLYVAL hash key for GHASH multiplication.
+    /// </summary>
+    /// <param name="v">The 16-byte field element, modified in place.</param>
+    private static void MulXGhash(Span<byte> v)
+    {
+        byte lsbMask = (byte)(-(v[15] & 0x01));
+
+        for (int j = 15; j > 0; j--)
+            v[j] = (byte)((v[j] >> 1) | ((v[j - 1] & 0x01) << 7));
+        v[0] >>= 1;
+
+        v[0] ^= (byte)(0xE1 & lsbMask);
+    }
+
+    /// <summary>
+    /// Reverses the byte order of a 128-bit value (RFC 8452 <c>ByteReverse</c>), mapping between POLYVAL's
+    /// little-endian element representation and the GHASH multiply's byte order.
     /// </summary>
     /// <param name="input">The source 16-byte block.</param>
-    /// <param name="output">
-    /// The destination 16-byte block; receives <paramref name="input" /> with byte and bit order reversed.
-    /// </param>
-    private static void ReflectBytesAndBits(ReadOnlySpan<byte> input, Span<byte> output)
+    /// <param name="output">The destination 16-byte block; receives <paramref name="input" /> with byte order reversed.</param>
+    private static void ByteReverse(ReadOnlySpan<byte> input, Span<byte> output)
     {
         for (int i = 0; i < 16; i++)
-        {
-            byte b = input[15 - i];
-
-            // Reverse bits within byte.
-            b = (byte)(((b & 0x01) << 7) | ((b & 0x02) << 5) | ((b & 0x04) << 3) | ((b & 0x08) << 1) |
-                       ((b & 0x10) >> 1) | ((b & 0x20) >> 3) | ((b & 0x40) >> 5) | ((b & 0x80) >> 7));
-            output[i] = b;
-        }
+            output[i] = input[15 - i];
     }
 
     /// <summary>
@@ -500,13 +524,14 @@ public sealed class GcmSivModeTransform
         {
             _encCipher.Encrypt(ctr, ks);
 
-            // GCM-SIV CTR increments only the last 32 bits (little-endian), per RFC 8452.
-            uint lo = (uint)(ctr[12] | (ctr[13] << 8) | (ctr[14] << 16) | (ctr[15] << 24));
+            // GCM-SIV CTR increments the first 32 bits (little-endian), leaving the remaining 96 bits — including the
+            // block-tag bit set in the most significant bit of the last byte — unchanged, per RFC 8452 Section 4.
+            uint lo = (uint)(ctr[0] | (ctr[1] << 8) | (ctr[2] << 16) | (ctr[3] << 24));
             lo++;
-            ctr[12] = (byte)lo;
-            ctr[13] = (byte)(lo >> 8);
-            ctr[14] = (byte)(lo >> 16);
-            ctr[15] = (byte)(lo >> 24);
+            ctr[0] = (byte)lo;
+            ctr[1] = (byte)(lo >> 8);
+            ctr[2] = (byte)(lo >> 16);
+            ctr[3] = (byte)(lo >> 24);
             int len = Math.Min(blockSize, input.Length - offset);
             for (int i = 0; i < len; i++)
                 output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
