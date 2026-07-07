@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu.Financial.DependencyInjection — service registration for financial services">
+  <title>Bodu.Financial.DependencyInjection</title>
+  <defs>
+    <linearGradient id="findi-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="220" rx="12" fill="url(#findi-bg)"/>
+
+  <!-- Left column: the financial library -->
+  <g transform="translate(28 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="150" height="22" rx="8" fill="#34D399"/>
+    <rect y="14" width="150" height="8" fill="#34D399"/>
+    <text x="75" y="16" fill="#06281F" text-anchor="middle" font-weight="700" font-size="11" font-family="'Consolas','Menlo',monospace">Bodu.Financial</text>
+
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10.5">
+      <text x="10" y="48">Money · Money&lt;T&gt;</text>
+      <text x="10" y="68">CurrencyCode</text>
+      <text x="10" y="88">ICurrency catalogue</text>
+      <text x="10" y="108">ExchangeRate</text>
+      <text x="10" y="128" fill="#94A3B8">rounding · allocation</text>
+      <text x="10" y="148" fill="#94A3B8">JSON converters</text>
+    </g>
+  </g>
+
+  <!-- middle: plug connector -->
+  <g transform="translate(186 92)">
+    <line x1="0" y1="10" x2="58" y2="10" stroke="#34D399" stroke-width="2" stroke-linecap="round"/>
+    <rect x="58" y="0" width="18" height="20" rx="3" fill="#34D399"/>
+    <rect x="76" y="4" width="8" height="4" fill="#34D399"/>
+    <rect x="76" y="12" width="8" height="4" fill="#34D399"/>
+    <rect x="88" y="-4" width="10" height="28" rx="3" fill="none" stroke="#60A5FA" stroke-width="2"/>
+    <line x1="98" y1="10" x2="104" y2="10" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Right column: the service collection -->
+  <g transform="translate(310 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="142" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="142" height="22" rx="8" fill="#3B82F6"/>
+    <rect y="14" width="142" height="8" fill="#3B82F6"/>
+    <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="10" font-family="'Consolas','Menlo',monospace">IServiceCollection</text>
+
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
+      <text x="10" y="46">services</text>
+      <text x="16" y="64" fill="#34D399">.AddFinancialService()</text>
+      <text x="16" y="82" fill="#34D399">.UseCurrencyResolution</text>
+      <text x="10" y="108" fill="#94A3B8" font-size="9">named monetary contexts</text>
+      <text x="10" y="124" fill="#94A3B8" font-size="9">currency lookup</text>
+      <text x="10" y="140" fill="#94A3B8" font-size="9">financial JSON</text>
+    </g>
+  </g>
+
+  <!-- bottom note -->
+  <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
+    <text x="240" y="206" text-anchor="middle">IFinancialServiceBuilder · FinancialOptions</text>
+  </g>
+</svg>

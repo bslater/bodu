@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu serializers — Bencode, TOML, and YAML sharing one System.Text.Json-aligned shape">
+  <title>Bodu serializers — Bencode · TOML · YAML</title>
+  <defs>
+    <linearGradient id="ser-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="220" rx="12" fill="url(#ser-bg)"/>
+
+  <!-- Left column: the three formats -->
+  <g transform="translate(28 30)" font-family="'Consolas','Menlo',monospace">
+    <g stroke="#334155" stroke-width="1.2">
+      <rect width="150" height="44" rx="8" fill="#1E293B"/>
+      <rect y="58" width="150" height="44" rx="8" fill="#1E293B"/>
+      <rect y="116" width="150" height="44" rx="8" fill="#1E293B"/>
+    </g>
+    <g stroke="none">
+      <rect width="6" height="44" rx="3" fill="#34D399"/>
+      <rect y="58" width="6" height="44" rx="3" fill="#FBBF24"/>
+      <rect y="116" width="6" height="44" rx="3" fill="#60A5FA"/>
+    </g>
+    <g font-size="11">
+      <text x="16" y="19" fill="#34D399" font-weight="700">bencode</text>
+      <text x="16" y="36" fill="#94A3B8" font-size="9">d3:key5:valuee</text>
+      <text x="16" y="77" fill="#FBBF24" font-weight="700">TOML</text>
+      <text x="16" y="94" fill="#94A3B8" font-size="9">key = "value"</text>
+      <text x="16" y="135" fill="#60A5FA" font-weight="700">YAML</text>
+      <text x="16" y="152" fill="#94A3B8" font-size="9">key: value</text>
+    </g>
+  </g>
+
+  <!-- middle: converging arrows -->
+  <g fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round">
+    <path d="M 186 82 C 230 82 240 100 288 104"/>
+    <path d="M 186 110 L 288 110"/>
+    <path d="M 186 138 C 230 138 240 120 288 116"/>
+  </g>
+  <polygon points="292,110 282,105 282,115" fill="#94A3B8"/>
+
+  <!-- Right column: the shared shape -->
+  <g transform="translate(310 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="142" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="142" height="22" rx="8" fill="#3B82F6"/>
+    <rect y="14" width="142" height="8" fill="#3B82F6"/>
+    <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">One shape</text>
+
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
+      <text x="12" y="46">•Serializer</text>
+      <text x="12" y="66">•Node <tspan fill="#94A3B8">(mutable DOM)</tspan></text>
+      <text x="12" y="86">•Document <tspan fill="#94A3B8">(read-only)</tspan></text>
+      <text x="12" y="106">Utf8•Reader</text>
+      <text x="12" y="126">Utf8•Writer</text>
+      <text x="12" y="148" fill="#94A3B8" font-size="9">System.Text.Json-aligned</text>
+    </g>
+  </g>
+
+  <!-- bottom note -->
+  <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
+    <text x="240" y="206" text-anchor="middle">three self-contained libraries · one architecture</text>
+  </g>
+</svg>
