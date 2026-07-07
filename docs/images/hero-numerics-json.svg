@@ -8,24 +8,28 @@
   </defs>
   <rect width="480" height="220" rx="12" fill="url(#numjson-bg)"/>
 
-  <!-- Left column: numerics values -->
+  <!-- Left panel -->
   <g transform="translate(28 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
     <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
     <rect width="150" height="22" rx="8" fill="#A78BFA"/>
     <rect y="14" width="150" height="8" fill="#A78BFA"/>
-    <text x="75" y="16" fill="#241A47" text-anchor="middle" font-weight="700" font-size="11" font-family="'Consolas','Menlo',monospace">Bodu.Numerics</text>
+    <text x="75" y="16" fill="#241A47" text-anchor="middle" font-weight="700" font-size="11">Bodu.Numerics</text>
 
-    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="11">
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10.5">
       <text x="10" y="48">Fraction&lt;T&gt;</text>
-      <text x="24" y="70" fill="#A78BFA" font-size="14">22</text>
-      <text x="24" y="94" fill="#A78BFA" font-size="14">7</text>
-      <text x="10" y="120">Interval&lt;T&gt; <tspan fill="#A78BFA">[1,2)</tspan></text>
-      <text x="10" y="140">IntervalSet&lt;T&gt;</text>
     </g>
-    <line x1="32" y1="76" x2="56" y2="76" stroke="#A78BFA" stroke-width="1.6"/>
+    <g font-family="'Consolas','Menlo',monospace" font-size="14" fill="#A78BFA">
+      <text x="24" y="76">22</text>
+      <text x="24" y="100">7</text>
+    </g>
+    <line x1="22" y1="82" x2="46" y2="82" stroke="#A78BFA" stroke-width="1.6"/>
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10.5">
+      <text x="10" y="126">Interval&lt;T&gt; <tspan fill="#A78BFA">[1,2)</tspan></text>
+      <text x="10" y="144">IntervalSet&lt;T&gt;</text>
+    </g>
   </g>
 
-  <!-- middle: write/read arrows -->
+  <!-- Bidirectional pipeline arrows -->
   <g transform="translate(186 80)" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round">
     <line x1="0" y1="0" x2="104" y2="0"/>
     <polygon points="104,0 96,-4 96,4" fill="#A78BFA" stroke="none"/>
@@ -37,25 +41,25 @@
     <text x="52" y="56">read</text>
   </g>
 
-  <!-- Right column: JSON wire -->
+  <!-- Right panel -->
   <g transform="translate(310 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
     <rect width="142" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
     <rect width="142" height="22" rx="8" fill="#3B82F6"/>
     <rect y="14" width="142" height="8" fill="#3B82F6"/>
-    <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="10" font-family="'Consolas','Menlo',monospace">System.Text.Json</text>
+    <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="10">System.Text.Json</text>
 
-    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10.5">
-      <text x="10" y="44" fill="#FBBF24">{</text>
-      <text x="20" y="62"><tspan fill="#60A5FA">"fraction"</tspan>: <tspan fill="#34D399">"22/7"</tspan>,</text>
-      <text x="20" y="80"><tspan fill="#60A5FA">"interval"</tspan>: <tspan fill="#FBBF24">{</tspan></text>
-      <text x="30" y="98"><tspan fill="#60A5FA">"min"</tspan>: 1,</text>
-      <text x="30" y="116"><tspan fill="#60A5FA">"max"</tspan>: 2</text>
-      <text x="20" y="134" fill="#FBBF24">}</text>
-      <text x="10" y="152" fill="#FBBF24">}</text>
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
+      <text x="10" y="42"><tspan fill="#FBBF24">{</tspan></text>
+      <text x="10" y="58">  <tspan fill="#60A5FA">"fraction"</tspan>: <tspan fill="#34D399">"22/7"</tspan>,</text>
+      <text x="10" y="74">  <tspan fill="#60A5FA">"interval"</tspan>: <tspan fill="#FBBF24">{</tspan></text>
+      <text x="10" y="90">    <tspan fill="#60A5FA">"min"</tspan>: 1,</text>
+      <text x="10" y="106">    <tspan fill="#60A5FA">"max"</tspan>: 2</text>
+      <text x="10" y="122">  <tspan fill="#FBBF24">}</tspan></text>
+      <text x="10" y="138"><tspan fill="#FBBF24">}</tspan></text>
     </g>
   </g>
 
-  <!-- bottom note -->
+  <!-- Bottom caption -->
   <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
     <text x="240" y="206" text-anchor="middle">options.ConfigureForBoduNumerics() · NumericsJsonPolicy</text>
   </g>

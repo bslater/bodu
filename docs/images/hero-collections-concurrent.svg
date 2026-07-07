@@ -8,31 +8,27 @@
   </defs>
   <rect width="480" height="220" rx="12" fill="url(#colc-bg)"/>
 
-  <!-- Left column: producer/consumer thread lanes -->
+  <!-- Left panel -->
   <g transform="translate(28 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
     <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
-    <rect width="150" height="22" rx="8" fill="#FBBF24"/>
-    <rect y="14" width="150" height="8" fill="#FBBF24"/>
-    <text x="75" y="16" fill="#3A2A04" text-anchor="middle" font-weight="700" font-size="11">Threads</text>
+    <rect width="150" height="22" rx="8" fill="#60A5FA"/>
+    <rect y="14" width="150" height="8" fill="#60A5FA"/>
+    <text x="75" y="16" fill="#0B2545" text-anchor="middle" font-weight="700" font-size="11">Threads</text>
 
-    <g font-family="'Consolas','Menlo',monospace" font-size="10" fill="#E2E8F0">
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
       <text x="10" y="48">producer 1</text>
-      <text x="10" y="86">producer 2</text>
-      <text x="10" y="124">consumer</text>
-    </g>
-    <g fill="none" stroke="#FBBF24" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="4 4">
-      <line x1="10" y1="58" x2="138" y2="58"/>
-      <line x1="10" y1="96" x2="138" y2="96"/>
+      <text x="10" y="76">producer 2</text>
+      <text x="10" y="104">consumer</text>
     </g>
     <g fill="none" stroke="#60A5FA" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="4 4">
+      <line x1="10" y1="58" x2="138" y2="58"/>
+      <line x1="10" y1="96" x2="138" y2="96"/>
       <line x1="138" y1="134" x2="10" y2="134"/>
     </g>
-    <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="9">
-      <text x="10" y="152">no locks on the hot path</text>
-    </g>
+    <text x="10" y="152" fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="9">no locks on the hot path</text>
   </g>
 
-  <!-- middle: interleaved arrows -->
+  <!-- Bidirectional pipeline arrows -->
   <g transform="translate(186 80)" fill="none" stroke="#60A5FA" stroke-width="2" stroke-linecap="round">
     <line x1="0" y1="0" x2="104" y2="0"/>
     <polygon points="104,0 96,-4 96,4" fill="#60A5FA" stroke="none"/>
@@ -44,36 +40,34 @@
     <text x="52" y="56">TryTake</text>
   </g>
 
-  <!-- Right column: sequenced MPMC ring slots -->
+  <!-- Right panel -->
   <g transform="translate(310 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
     <rect width="142" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
     <rect width="142" height="22" rx="8" fill="#3B82F6"/>
     <rect y="14" width="142" height="8" fill="#3B82F6"/>
-    <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="10" font-family="'Consolas','Menlo',monospace">MPMC ring</text>
+    <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">MPMC ring</text>
 
-    <!-- slot cells with sequence numbers -->
     <g stroke="#334155" stroke-width="1.2">
-      <rect x="12" y="38" width="26" height="22" rx="3" fill="#3B82F6"/>
-      <rect x="44" y="38" width="26" height="22" rx="3" fill="#3B82F6"/>
+      <rect x="12" y="38" width="26" height="22" rx="3" fill="#60A5FA"/>
+      <rect x="44" y="38" width="26" height="22" rx="3" fill="#60A5FA"/>
       <rect x="76" y="38" width="26" height="22" rx="3" fill="#0F172A"/>
       <rect x="108" y="38" width="26" height="22" rx="3" fill="#0F172A"/>
     </g>
-    <g fill="#F8FAFC" font-family="'Consolas','Menlo',monospace" font-size="9" text-anchor="middle">
+    <g fill="#0B2545" font-family="'Consolas','Menlo',monospace" font-size="9" text-anchor="middle">
       <text x="25" y="52">s=4</text>
       <text x="57" y="52">s=5</text>
       <text x="89" y="52" fill="#94A3B8">s=6</text>
       <text x="121" y="52" fill="#94A3B8">s=7</text>
     </g>
-
-    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10.5">
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
       <text x="12" y="86">ConcurrentCircular</text>
-      <text x="12" y="100">Buffer&lt;T&gt;</text>
-      <text x="12" y="126" fill="#60A5FA">ConcurrentHashSet&lt;T&gt;</text>
-      <text x="12" y="144" fill="#94A3B8" font-size="9">lock-striped membership</text>
+      <text x="12" y="102">Buffer&lt;T&gt;</text>
+      <text x="12" y="126"><tspan fill="#60A5FA">ConcurrentHashSet&lt;T&gt;</tspan></text>
+      <text x="12" y="142"><tspan fill="#94A3B8" font-size="9">lock-striped membership</tspan></text>
     </g>
   </g>
 
-  <!-- bottom note -->
+  <!-- Bottom caption -->
   <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
     <text x="240" y="206" text-anchor="middle">Vyukov MPMC ring · lock-striped set</text>
   </g>
