@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,44 +7,54 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <!--
+    Externally-acquired known-answer test (KAT) vector files, grouped under
+    Security.Cryptography\Fixtures\<Cipher>\<Source>\ with their original upstream file names.
+    LogicalName pins the embedded-resource manifest name so the on-disk layout can change
+    without touching the readers/tests that call GetManifestResourceStream(...).
+    See Security.Cryptography\Fixtures\README.md for provenance and shared-file notes.
+  -->
   <ItemGroup>
-    <EmbeddedResource Include="Security.Cryptography\AsconAead128.LWC_AEAD_KAT_128_128.txt" />
-    <EmbeddedResource Include="Security.Cryptography\AsconXof128.LWC_XOF_KAT_128_512.txt" />
-    <EmbeddedResource Include="Security.Cryptography\AsconCxof128.LWC_CXOF_KAT_128_512.txt" />
-    <EmbeddedResource Include="Security.Cryptography\SipHash.vectors.h" />
-    <EmbeddedResource Include="Security.Cryptography\Snefru.testSnefru.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Snefru.correctSnefruOutput.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Snefru.testSnefru256.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Snefru.correctSnefru256Output.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Tiger.test-vectors-nessie-format.dat" />
-    <EmbeddedResource Include="Security.Cryptography\Tiger.biham-tiger2-vectors.txt" />
-    <EmbeddedResource Include="Security.Cryptography\CubeHash.ShortMsgKAT_224.txt" />
-    <EmbeddedResource Include="Security.Cryptography\CubeHash.ShortMsgKAT_256.txt" />
-    <EmbeddedResource Include="Security.Cryptography\CubeHash.ShortMsgKAT_384.txt" />
-    <EmbeddedResource Include="Security.Cryptography\CubeHash.ShortMsgKAT_512.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Skein.skein_golden_kat_short.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Blake2.blake2-kat.json" />
-    <EmbeddedResource Include="Security.Cryptography\Blake3.test_vectors.json" />
-    <EmbeddedResource Include="Security.Cryptography\Whirlpool.openssl-evptests.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Twofish.ecb_vk.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Twofish.ecb_vt.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Twofish.ecb_tbl.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Rabbit.rfc4503-appendix-a.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Blowfish.eric-young-vectors.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Hc128.spec-appendix-a.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Rfc8439.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Salsa20.go-test-vectors.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Salsa20.ecrypt-verified.test-vectors.txt" />
-    <EmbeddedResource Include="Security.Cryptography\XChaCha20.draft-arciszewski-xchacha-03.txt" />
-    <EmbeddedResource Include="Security.Cryptography\X25519.Wycheproof.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Ed25519.Wycheproof.txt" />
-    <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyGen.txt" />
-    <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpEncapDecap.txt" />
-    <EmbeddedResource Include="Security.Cryptography\MLKem.AcvpKeyCheck.txt" />
-    <EmbeddedResource Include="Security.Cryptography\MLDsa.AcvpKeyGen.txt" />
-    <EmbeddedResource Include="Security.Cryptography\MLDsa.AcvpSigGen.txt" />
-    <EmbeddedResource Include="Security.Cryptography\MLDsa.AcvpSigVer.txt" />
-    <EmbeddedResource Include="Security.Cryptography\Hpke.Rfc9180Vectors.json" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Ascon\NistLwc\LWC_AEAD_KAT_128_128.txt" LogicalName="Bodu.Security.Cryptography.AsconAead128.LWC_AEAD_KAT_128_128.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Ascon\NistLwc\LWC_XOF_KAT_128_512.txt" LogicalName="Bodu.Security.Cryptography.AsconXof128.LWC_XOF_KAT_128_512.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Ascon\NistLwc\LWC_CXOF_KAT_128_512.txt" LogicalName="Bodu.Security.Cryptography.AsconCxof128.LWC_CXOF_KAT_128_512.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\SipHash\Veorq\vectors.h" LogicalName="Bodu.Security.Cryptography.SipHash.vectors.h" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Snefru\Merkle\testSnefru.txt" LogicalName="Bodu.Security.Cryptography.Snefru.testSnefru.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Snefru\Merkle\correctSnefruOutput.txt" LogicalName="Bodu.Security.Cryptography.Snefru.correctSnefruOutput.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Snefru\Merkle\testSnefru256.txt" LogicalName="Bodu.Security.Cryptography.Snefru.testSnefru256.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Snefru\Merkle\correctSnefru256Output.txt" LogicalName="Bodu.Security.Cryptography.Snefru.correctSnefru256Output.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Tiger\Nessie\test-vectors-nessie-format.dat" LogicalName="Bodu.Security.Cryptography.Tiger.test-vectors-nessie-format.dat" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Tiger\Biham\biham-tiger2-vectors.txt" LogicalName="Bodu.Security.Cryptography.Tiger.biham-tiger2-vectors.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\CubeHash\Sha3Round2\ShortMsgKAT_224.txt" LogicalName="Bodu.Security.Cryptography.CubeHash.ShortMsgKAT_224.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\CubeHash\Sha3Round2\ShortMsgKAT_256.txt" LogicalName="Bodu.Security.Cryptography.CubeHash.ShortMsgKAT_256.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\CubeHash\Sha3Round2\ShortMsgKAT_384.txt" LogicalName="Bodu.Security.Cryptography.CubeHash.ShortMsgKAT_384.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\CubeHash\Sha3Round2\ShortMsgKAT_512.txt" LogicalName="Bodu.Security.Cryptography.CubeHash.ShortMsgKAT_512.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Skein\Skein1_3\skein_golden_kat_short.txt" LogicalName="Bodu.Security.Cryptography.Skein.skein_golden_kat_short.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Blake2\Official\blake2-kat.json" LogicalName="Bodu.Security.Cryptography.Blake2.blake2-kat.json" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Blake3\Official\test_vectors.json" LogicalName="Bodu.Security.Cryptography.Blake3.test_vectors.json" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Whirlpool\OpenSsl\evpmd_whirlpool.txt" LogicalName="Bodu.Security.Cryptography.Whirlpool.openssl-evptests.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Twofish\AesSubmission\ecb_vk.txt" LogicalName="Bodu.Security.Cryptography.Twofish.ecb_vk.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Twofish\AesSubmission\ecb_vt.txt" LogicalName="Bodu.Security.Cryptography.Twofish.ecb_vt.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Twofish\AesSubmission\ecb_tbl.txt" LogicalName="Bodu.Security.Cryptography.Twofish.ecb_tbl.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Rabbit\Rfc4503\rfc4503-appendix-a.txt" LogicalName="Bodu.Security.Cryptography.Rabbit.rfc4503-appendix-a.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Blowfish\EricYoung\eric-young-vectors.txt" LogicalName="Bodu.Security.Cryptography.Blowfish.eric-young-vectors.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Hc128\Spec\hc128-spec-appendix-a.txt" LogicalName="Bodu.Security.Cryptography.Hc128.spec-appendix-a.txt" />
+    <!-- rfc8439.txt is shared by the ChaCha20, Poly1305, and XChaCha20-Poly1305 tests. -->
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\ChaCha20\Rfc8439\rfc8439.txt" LogicalName="Bodu.Security.Cryptography.Rfc8439.txt" />
+    <!-- salsa20_test.go carries the golang.org/x/crypto XSalsa20 vectors consumed by the XSalsa20 tests. -->
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\XSalsa20\GoCrypto\salsa20_test.go" LogicalName="Bodu.Security.Cryptography.Salsa20.go-test-vectors.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Salsa20\Ecrypt\salsa20-full-verified.test-vectors" LogicalName="Bodu.Security.Cryptography.Salsa20.ecrypt-verified.test-vectors.txt" />
+    <!-- draft-arciszewski-xchacha-03.txt is shared by the XChaCha20 and XChaCha20-Poly1305 tests. -->
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\XChaCha20\Draft\draft-arciszewski-xchacha-03.txt" LogicalName="Bodu.Security.Cryptography.XChaCha20.draft-arciszewski-xchacha-03.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\X25519\Wycheproof\x25519_test.txt" LogicalName="Bodu.Security.Cryptography.X25519.Wycheproof.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Ed25519\Wycheproof\eddsa_test.txt" LogicalName="Bodu.Security.Cryptography.Ed25519.Wycheproof.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\MLKem\NistAcvp\ML-KEM-keyGen.txt" LogicalName="Bodu.Security.Cryptography.MLKem.AcvpKeyGen.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\MLKem\NistAcvp\ML-KEM-encapDecap.txt" LogicalName="Bodu.Security.Cryptography.MLKem.AcvpEncapDecap.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\MLKem\NistAcvp\ML-KEM-keyCheck.txt" LogicalName="Bodu.Security.Cryptography.MLKem.AcvpKeyCheck.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\MLDsa\NistAcvp\ML-DSA-keyGen.txt" LogicalName="Bodu.Security.Cryptography.MLDsa.AcvpKeyGen.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\MLDsa\NistAcvp\ML-DSA-sigGen.txt" LogicalName="Bodu.Security.Cryptography.MLDsa.AcvpSigGen.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\MLDsa\NistAcvp\ML-DSA-sigVer.txt" LogicalName="Bodu.Security.Cryptography.MLDsa.AcvpSigVer.txt" />
+    <EmbeddedResource Include="Security.Cryptography\Fixtures\Hpke\Rfc9180\test-vectors.json" LogicalName="Bodu.Security.Cryptography.Hpke.Rfc9180Vectors.json" />
   </ItemGroup>
 
   <ItemGroup>
