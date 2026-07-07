@@ -36,4 +36,17 @@
     <None Include="$(MSBuildProjectDirectory)/../README.md" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 
+  <!--
+    Pack the per-package icon (a checked-in 128x128 PNG named after the package id under bld/icons;
+    see bld/icons/README.md for regeneration). PackagePath renames it so every nuspec carries a
+    uniform <icon>icon.png</icon>. The Exists() guard keeps the build green for any future source
+    project whose icon has not been authored yet; CI enforces icon coverage separately.
+  -->
+  <PropertyGroup Condition="'$(BoduIsSourceProject)' == 'true' and Exists('$(MSBuildThisFileDirectory)icons/$(MSBuildProjectName).png')">
+    <PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(BoduIsSourceProject)' == 'true' and Exists('$(MSBuildThisFileDirectory)icons/$(MSBuildProjectName).png')">
+    <None Include="$(MSBuildThisFileDirectory)icons/$(MSBuildProjectName).png" Pack="true" PackagePath="icon.png" Visible="false" />
+  </ItemGroup>
+
 </Project>
