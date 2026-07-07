@@ -2,6 +2,8 @@
 uid: Bodu.Text
 ---
 
+![Bodu.Text](~/images/hero-text.svg)
+
 # Bodu.Text
 
 ## Purpose

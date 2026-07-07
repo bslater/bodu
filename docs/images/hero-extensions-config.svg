@@ -1,69 +1,57 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu.Extensions.Configuration.Text — Microsoft.Extensions.Configuration bridge">
   <title>Bodu.Extensions.Configuration.Text</title>
   <defs>
-    <linearGradient id="xcfg-bg" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="mect-bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0F172A"/>
       <stop offset="1" stop-color="#1E293B"/>
     </linearGradient>
   </defs>
-  <rect width="480" height="220" rx="12" fill="url(#xcfg-bg)"/>
+  <rect width="480" height="220" rx="12" fill="url(#mect-bg)"/>
 
-  <!-- Left column: configuration providers -->
+  <!-- Left panel -->
   <g transform="translate(28 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
-    <rect width="138" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
-    <rect width="138" height="22" rx="8" fill="#3B82F6"/>
-    <rect y="14" width="138" height="8" fill="#3B82F6"/>
-    <text x="69" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">providers</text>
+    <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="150" height="22" rx="8" fill="#2DD4BF"/>
+    <rect y="14" width="150" height="8" fill="#2DD4BF"/>
+    <text x="75" y="16" fill="#042F2A" text-anchor="middle" font-weight="700" font-size="11">providers</text>
 
-    <g font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">
-      <g transform="translate(14 32)">
-        <rect width="110" height="20" rx="5" fill="#0F172A" stroke="#475569" stroke-width="1"/>
-        <text x="55" y="14" fill="#94A3B8">appsettings.json</text>
-      </g>
-      <g transform="translate(14 58)">
-        <rect width="110" height="20" rx="5" fill="#0F172A" stroke="#475569" stroke-width="1"/>
-        <text x="55" y="14" fill="#94A3B8">env. variables</text>
-      </g>
-      <g transform="translate(14 84)">
-        <rect width="110" height="22" rx="5" fill="#1E3A8A" stroke="#60A5FA" stroke-width="1.4"/>
-        <text x="55" y="15" fill="#F8FAFC" font-weight="700">Bodu .editorconfig</text>
-      </g>
-      <g transform="translate(14 112)">
-        <rect width="110" height="20" rx="5" fill="#0F172A" stroke="#475569" stroke-width="1"/>
-        <text x="55" y="14" fill="#94A3B8">command line</text>
-      </g>
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10.5">
+      <text x="10" y="46"><tspan fill="#94A3B8">appsettings.json</tspan></text>
+      <text x="10" y="65"><tspan fill="#94A3B8">env. variables</tspan></text>
+      <text x="10" y="84"><tspan fill="#2DD4BF">Bodu .editorconfig</tspan></text>
+      <text x="10" y="103"><tspan fill="#94A3B8">command line</tspan></text>
+      <text x="10" y="131"><tspan fill="#94A3B8" font-size="9">layered · last wins</tspan></text>
     </g>
   </g>
 
-  <!-- middle: build arrow -->
-  <g transform="translate(176 80)">
-    <g fill="none" stroke="#60A5FA" stroke-width="2" stroke-linecap="round">
-      <line x1="0" y1="18" x2="120" y2="18"/>
-      <polygon points="120,18 112,14 112,22" fill="#60A5FA" stroke="none"/>
-    </g>
-    <text x="60" y="10" fill="#60A5FA" font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">Build()</text>
-    <text x="60" y="38" fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="9" text-anchor="middle">AddTextConfiguration*</text>
+  <!-- Bidirectional pipeline arrows -->
+  <g transform="translate(186 80)" fill="none" stroke="#2DD4BF" stroke-width="2" stroke-linecap="round">
+    <line x1="0" y1="0" x2="104" y2="0"/>
+    <polygon points="104,0 96,-4 96,4" fill="#2DD4BF" stroke="none"/>
+    <line x1="104" y1="36" x2="0" y2="36"/>
+    <polygon points="0,36 8,32 8,40" fill="#2DD4BF" stroke="none"/>
+  </g>
+  <g transform="translate(186 80)" fill="#2DD4BF" font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">
+    <text x="52" y="-6">Build()</text>
+    <text x="52" y="56">bind</text>
   </g>
 
-  <!-- Right column: IConfiguration / IOptions -->
+  <!-- Right panel -->
   <g transform="translate(310 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
     <rect width="142" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
-    <rect width="142" height="22" rx="8" fill="#A78BFA"/>
-    <rect y="14" width="142" height="8" fill="#A78BFA"/>
+    <rect width="142" height="22" rx="8" fill="#3B82F6"/>
+    <rect y="14" width="142" height="8" fill="#3B82F6"/>
     <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">IConfiguration</text>
 
-    <g font-family="'Consolas','Menlo',monospace" font-size="10">
-      <text x="10" y="44" fill="#E2E8F0">cfg<tspan fill="#FBBF24">[</tspan>"indent:size"<tspan fill="#FBBF24">]</tspan></text>
-      <text x="10" y="64" fill="#E2E8F0">.GetSection("log")</text>
-      <g transform="translate(10 78)">
-        <rect width="120" height="24" rx="5" fill="#2E1065" stroke="#A78BFA" stroke-width="1"/>
-        <text x="60" y="16" fill="#C4B5FD" text-anchor="middle">IOptions&lt;T&gt;</text>
-      </g>
-      <text x="10" y="124" fill="#94A3B8">DI · reload · binding</text>
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
+      <text x="10" y="44">cfg<tspan fill="#FBBF24">[</tspan>"indent:size"<tspan fill="#FBBF24">]</tspan></text>
+      <text x="10" y="62">.GetSection("log")</text>
+      <text x="10" y="89"><tspan fill="#A78BFA">IOptions&lt;T&gt;</tspan></text>
+      <text x="10" y="116"><tspan fill="#94A3B8">DI · reload · binding</tspan></text>
     </g>
   </g>
 
-  <!-- bottom note -->
+  <!-- Bottom caption -->
   <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
     <text x="240" y="206" text-anchor="middle">AddTextConfiguration* · layered source · IOptions</text>
   </g>

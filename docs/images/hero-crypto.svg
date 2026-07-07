@@ -1,27 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu.Security.Cryptography — ciphers and hashes">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu.Security.Cryptography — block ciphers, AEAD, keyed hashes, and post-quantum algorithms">
   <title>Bodu.Security.Cryptography</title>
   <defs>
     <linearGradient id="crypto-bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0F172A"/>
       <stop offset="1" stop-color="#1E293B"/>
     </linearGradient>
-    <pattern id="lattice" width="24" height="24" patternUnits="userSpaceOnUse">
-      <path d="M 0 12 L 24 12 M 12 0 L 12 24" stroke="#334155" stroke-width="1"/>
-      <circle cx="12" cy="12" r="1.4" fill="#475569"/>
-    </pattern>
   </defs>
   <rect width="480" height="220" rx="12" fill="url(#crypto-bg)"/>
-  <rect width="480" height="220" rx="12" fill="url(#lattice)" opacity="0.6"/>
-  <g transform="translate(240 110)">
-    <rect x="-52" y="-8" width="104" height="76" rx="10" fill="#3B82F6"/>
-    <path d="M -34 -8 V -30 A 34 34 0 0 1 34 -30 V -8" fill="none" stroke="#3B82F6" stroke-width="9" stroke-linecap="round"/>
-    <circle cx="0" cy="26" r="8" fill="#0F172A"/>
-    <rect x="-4" y="26" width="8" height="20" fill="#0F172A"/>
+
+  <!-- Left panel -->
+  <g transform="translate(28 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="150" height="22" rx="8" fill="#F87171"/>
+    <rect y="14" width="150" height="8" fill="#F87171"/>
+    <text x="75" y="16" fill="#3B0A0A" text-anchor="middle" font-weight="700" font-size="11">symmetric</text>
+
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
+      <text x="10" y="44">Threefish · Skein</text>
+      <text x="10" y="61">Blowfish · Twofish</text>
+      <text x="10" y="78">Camellia · Skipjack</text>
+      <text x="10" y="95">Ascon AEAD</text>
+      <text x="10" y="112">BLAKE2 · BLAKE3</text>
+      <text x="10" y="129">SipHash · Poly1305</text>
+      <text x="10" y="146"><tspan fill="#94A3B8" font-size="9">EAX · GCM · OCB · SIV</tspan></text>
+    </g>
   </g>
-  <g fill="#60A5FA" font-family="'Consolas','Menlo',monospace" font-size="11" opacity="0.75">
-    <text x="26" y="36">a7 f3 18 c2 9d 44 e1 05</text>
-    <text x="26" y="188">5f 2b 9c 87 d0 61 af b4</text>
-    <text x="302" y="36" text-anchor="start">3a 82 cd 17 40 b9 ee 55</text>
-    <text x="302" y="188" text-anchor="start">c1 6d 24 f8 7a 0b 93 3e</text>
+
+  <!-- Bidirectional pipeline arrows -->
+  <g transform="translate(186 80)" fill="none" stroke="#F87171" stroke-width="2" stroke-linecap="round">
+    <line x1="0" y1="0" x2="104" y2="0"/>
+    <polygon points="104,0 96,-4 96,4" fill="#F87171" stroke="none"/>
+    <line x1="104" y1="36" x2="0" y2="36"/>
+    <polygon points="0,36 8,32 8,40" fill="#F87171" stroke="none"/>
+  </g>
+  <g transform="translate(186 80)" fill="#F87171" font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">
+    <text x="52" y="-6">encrypt</text>
+    <text x="52" y="56">decrypt</text>
+  </g>
+
+  <!-- Right panel -->
+  <g transform="translate(310 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="142" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="142" height="22" rx="8" fill="#3B82F6"/>
+    <rect y="14" width="142" height="8" fill="#3B82F6"/>
+    <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">asymmetric</text>
+
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
+      <text x="10" y="44">X25519</text>
+      <text x="10" y="60">Ed25519</text>
+      <text x="10" y="84"><tspan fill="#F87171">ML-KEM 512/768/1024</tspan></text>
+      <text x="10" y="100"><tspan fill="#F87171">ML-DSA 44/65/87</tspan></text>
+      <text x="10" y="124"><tspan fill="#94A3B8" font-size="9">FIPS 203 · FIPS 204</tspan></text>
+    </g>
+  </g>
+
+  <!-- Bottom caption -->
+  <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
+    <text x="240" y="206" text-anchor="middle">block ciphers · AEAD · keyed hashes · post-quantum</text>
   </g>
 </svg>

@@ -5,86 +5,62 @@
       <stop offset="0" stop-color="#0F172A"/>
       <stop offset="1" stop-color="#1E293B"/>
     </linearGradient>
-    <linearGradient id="num-cell" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3B82F6"/>
-      <stop offset="1" stop-color="#1D4ED8"/>
-    </linearGradient>
   </defs>
   <rect width="480" height="220" rx="12" fill="url(#num-bg)"/>
 
-  <!-- Fraction<T> visual: numerator over denominator -->
-  <g transform="translate(40 36)" font-family="'Consolas','Menlo',monospace">
-    <text x="0" y="0" fill="#94A3B8" font-size="11">Fraction&lt;T&gt;</text>
+  <!-- Left panel -->
+  <g transform="translate(28 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="150" height="22" rx="8" fill="#A78BFA"/>
+    <rect y="14" width="150" height="8" fill="#A78BFA"/>
+    <text x="75" y="16" fill="#241A47" text-anchor="middle" font-weight="700" font-size="10">Fraction&lt;T&gt;</text>
 
-    <!-- numerator -->
-    <rect x="0" y="10" width="54" height="34" rx="6" fill="url(#num-cell)" stroke="#3B82F6" stroke-width="1.4"/>
-    <text x="27" y="34" fill="#F8FAFC" text-anchor="middle" font-size="18" font-weight="700">3</text>
-    <!-- division bar -->
-    <line x1="-2" y1="52" x2="56" y2="52" stroke="#60A5FA" stroke-width="2.4" stroke-linecap="round"/>
-    <!-- denominator -->
-    <rect x="0" y="58" width="54" height="34" rx="6" fill="url(#num-cell)" stroke="#3B82F6" stroke-width="1.4"/>
-    <text x="27" y="82" fill="#F8FAFC" text-anchor="middle" font-size="18" font-weight="700">4</text>
-
-    <!-- equals to decimal / continued fraction -->
-    <text x="74" y="56" fill="#94A3B8" font-size="20">=</text>
-    <text x="98" y="40" fill="#A78BFA" font-size="14" font-weight="700">0.75</text>
-    <text x="98" y="58" fill="#94A3B8" font-size="10">decimal</text>
-    <text x="98" y="80" fill="#FBBF24" font-size="14" font-weight="700">[0; 1, 3]</text>
-    <text x="98" y="98" fill="#94A3B8" font-size="10">continued fraction</text>
-
-    <!-- BigInteger-promoted arrow -->
-    <g transform="translate(220 50)">
-      <line x1="0" y1="0" x2="44" y2="0" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
-      <polygon points="44,0 36,-4 36,4" fill="#60A5FA"/>
-      <text x="22" y="-8" fill="#60A5FA" font-size="10" text-anchor="middle">promote</text>
+    <g font-family="'Consolas','Menlo',monospace">
+      <text x="34" y="58" fill="#F8FAFC" text-anchor="middle" font-size="18" font-weight="700">3</text>
+      <text x="34" y="92" fill="#F8FAFC" text-anchor="middle" font-size="18" font-weight="700">4</text>
+      <text x="62" y="76" fill="#94A3B8" font-size="18">=</text>
+      <text x="82" y="62" fill="#A78BFA" font-size="13" font-weight="700">0.75</text>
+      <text x="82" y="92" fill="#FBBF24" font-size="13" font-weight="700">[0; 1, 3]</text>
     </g>
-
-    <!-- BigInteger numerator/denominator -->
-    <g transform="translate(266 10)">
-      <rect width="138" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1.2"/>
-      <text x="69" y="22" fill="#E2E8F0" text-anchor="middle" font-size="12" font-weight="700">1 234 567 891</text>
-    </g>
-    <line x1="266" y1="52" x2="404" y2="52" stroke="#A78BFA" stroke-width="2.4" stroke-linecap="round"/>
-    <g transform="translate(266 58)">
-      <rect width="138" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1.2"/>
-      <text x="69" y="22" fill="#E2E8F0" text-anchor="middle" font-size="12" font-weight="700">9 876 543 210</text>
-    </g>
-    <text x="335" y="108" fill="#94A3B8" text-anchor="middle" font-size="10">BigInteger · canonical</text>
+    <line x1="22" y1="68" x2="46" y2="68" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="10" y="130" fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="9">BigInteger-promoted · canonical</text>
   </g>
 
-  <!-- Interval<T> visual: number line with closed / open intervals -->
-  <g transform="translate(40 152)" font-family="'Consolas','Menlo',monospace">
-    <text x="0" y="0" fill="#94A3B8" font-size="11">Interval&lt;T&gt;</text>
-    <!-- base line -->
-    <line x1="0" y1="22" x2="360" y2="22" stroke="#475569" stroke-width="1.6"/>
-    <g stroke="#475569" stroke-width="1">
-      <line x1="0"   y1="18" x2="0"   y2="26"/>
-      <line x1="90"  y1="18" x2="90"  y2="26"/>
-      <line x1="180" y1="18" x2="180" y2="26"/>
-      <line x1="270" y1="18" x2="270" y2="26"/>
-      <line x1="360" y1="18" x2="360" y2="26"/>
-    </g>
-    <g fill="#94A3B8" font-size="10" text-anchor="middle">
-      <text x="0"   y="42">0</text>
-      <text x="90"  y="42">1</text>
-      <text x="180" y="42">2</text>
-      <text x="270" y="42">3</text>
-      <text x="360" y="42">4</text>
-    </g>
-    <!-- closed [0, 1] -->
-    <line x1="0" y1="22" x2="90" y2="22" stroke="#60A5FA" stroke-width="5" stroke-linecap="round"/>
-    <circle cx="0"  cy="22" r="5.5" fill="#60A5FA"/>
-    <circle cx="90" cy="22" r="5.5" fill="#60A5FA"/>
-    <text x="45" y="10" fill="#60A5FA" font-size="10" text-anchor="middle">[0, 1]</text>
-    <!-- open (2, 3) -->
-    <line x1="180" y1="22" x2="270" y2="22" stroke="#A78BFA" stroke-width="5" stroke-linecap="round"/>
-    <circle cx="180" cy="22" r="5.5" fill="#1E293B" stroke="#A78BFA" stroke-width="2"/>
-    <circle cx="270" cy="22" r="5.5" fill="#1E293B" stroke="#A78BFA" stroke-width="2"/>
-    <text x="225" y="10" fill="#A78BFA" font-size="10" text-anchor="middle">(2, 3)</text>
+  <!-- Bidirectional pipeline arrows -->
+  <g transform="translate(186 80)" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round">
+    <line x1="0" y1="0" x2="104" y2="0"/>
+    <polygon points="104,0 96,-4 96,4" fill="#A78BFA" stroke="none"/>
+    <line x1="104" y1="36" x2="0" y2="36"/>
+    <polygon points="0,36 8,32 8,40" fill="#A78BFA" stroke="none"/>
+  </g>
+  <g transform="translate(186 80)" fill="#A78BFA" font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">
+    <text x="52" y="-6">normalize</text>
+    <text x="52" y="56">promote</text>
   </g>
 
-  <!-- caption -->
-  <g font-family="'Consolas','Menlo',monospace" font-size="10" fill="#94A3B8">
-    <text x="240" y="212" text-anchor="middle">canonical · BigInteger-promoted · INumber&lt;T&gt;</text>
+  <!-- Right panel -->
+  <g transform="translate(310 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="142" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="142" height="22" rx="8" fill="#3B82F6"/>
+    <rect y="14" width="142" height="8" fill="#3B82F6"/>
+    <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="10">Interval&lt;T&gt;</text>
+
+    <g font-family="'Consolas','Menlo',monospace" font-size="10">
+      <line x1="14" y1="70" x2="128" y2="70" stroke="#334155" stroke-width="2"/>
+      <line x1="20" y1="62" x2="62" y2="62" stroke="#60A5FA" stroke-width="4" stroke-linecap="round"/>
+      <line x1="82" y1="62" x2="118" y2="62" stroke="#A78BFA" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 6"/>
+      <text x="41" y="50" fill="#60A5FA" text-anchor="middle">[0, 1]</text>
+      <text x="100" y="50" fill="#A78BFA" text-anchor="middle">(2, 3)</text>
+    </g>
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
+      <text x="10" y="104">IntervalSet&lt;T&gt;</text>
+      <text x="10" y="121"><tspan fill="#94A3B8">union · complement</tspan></text>
+    </g>
+    <text x="14" y="146" fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="9">INumber&lt;T&gt; generic math</text>
+  </g>
+
+  <!-- Bottom caption -->
+  <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
+    <text x="240" y="206" text-anchor="middle">canonical · BigInteger-promoted · INumber&lt;T&gt;</text>
   </g>
 </svg>

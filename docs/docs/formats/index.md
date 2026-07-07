@@ -4,6 +4,8 @@ title: Bodu.Text.Formats — Introduction
 
 # Bodu.Text.Formats
 
+![Bodu.Text.Formats](../../images/hero-formats.svg)
+
 **Bodu.Text.Formats** decodes and encodes self-framing document formats — formats whose structure is described inline by the bytes themselves, rather than by an external schema. Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, the library ships three format families, each with a strongly-typed value model and a span- and stream-friendly codec:
 
 | Format | Namespace | Source | Use when |

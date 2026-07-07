@@ -4,6 +4,8 @@ title: Bodu.IO.Compound — Introduction
 
 # Bodu.IO.Compound
 
+![Bodu.IO.Compound](../../images/hero-io-compound.svg)
+
 **Bodu.IO.Compound** is a reader and writer for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office documents (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies. Part of the **[Binary Formats & I/O](../topics/binary-formats.md)** topic, it opens existing containers — exposing the embedded storage hierarchy and the raw byte payload of each named stream — and authors new ones through `CompoundFile.Create` and the `Bodu.IO.Compound.Builders` API, with no application-format knowledge of its own.
 
 A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at the root storage and descends through nested storages to stream leaves.

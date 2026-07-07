@@ -4,6 +4,8 @@ title: Bodu.Formats.Excel.Binary — Introduction
 
 # Bodu.Formats.Excel.Binary
 
+![Bodu.Formats.Excel.Binary](../../images/hero-excel.svg)
+
 **Bodu.Formats.Excel.Binary** is a narrow, read-only reader for the Excel 97–2003 binary workbook format (BIFF8 / `.xls`). Part of the **[Binary Formats & I/O](../topics/binary-formats.md)** topic, it surfaces the raw cell values of each worksheet — strings, numbers, booleans, and errors, including a formula cell's cached result — without formula evaluation, styling, or any higher-level interpretation.
 
 An `.xls` file is a BIFF8 record stream stored *inside* the `Workbook` stream of an OLE2 compound file. This package reads that record stream; the container around it is read by [`Bodu.IO.Compound`](../io-compound/index.md), on which this package is built. <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook> is the disposable session: it parses the workbook globals once and reads each sheet on demand.

@@ -2,7 +2,7 @@
 uid: Bodu.IO.Compound
 ---
 
-![Bodu.IO.Compound](~/images/hero-io.svg)
+![Bodu.IO.Compound](~/images/hero-io-compound.svg)
 
 ## Purpose
 

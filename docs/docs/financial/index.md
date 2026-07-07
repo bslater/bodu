@@ -4,6 +4,8 @@ title: Bodu.Financial — Introduction
 
 # Bodu.Financial
 
+![Bodu.Financial](../../images/hero-financial.svg)
+
 **Bodu.Financial** is the monetary-primitives package of the Bodu suite. It ships type-parameter-tagged and runtime-tagged money types, a shipped catalogue of 184 ISO 4217 currencies (155 active and 29 historic), an exchange-rate provider stack with both timeless and dated lookup, and JSON converters with three policy shapes for ledger-style, lenient-import, and compact-wire integrations. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
 
 The package depends on `Bodu.Numerics` so `Money<TCurrency>` can round-trip through `Fraction<BigInteger>` for sub-minor-unit-precise intermediate calculations — interest accumulation, percentage-of-percentage, and other chains where deferred rounding matters.

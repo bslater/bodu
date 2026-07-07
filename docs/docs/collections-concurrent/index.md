@@ -4,6 +4,8 @@ title: Bodu.Collections.Concurrent — Introduction
 
 # Bodu.Collections.Concurrent
 
+![Bodu.Collections.Concurrent](../../images/hero-collections-concurrent.svg)
+
 **Bodu.Collections.Concurrent** ships the thread-safe members of the Bodu collection catalogue — the lock-free `ConcurrentCircularBuffer<T>` and the lock-striped `ConcurrentHashSet<T>` — as a focused companion package in the **[Core Foundations](../topics/core-foundations.md)** topic. The dependency chain is `Bodu.Core` ← [`Bodu.Collections`](../collections/index.md) ← `Bodu.Collections.Concurrent`: this package references `Bodu.Collections` (and through it `Bodu.Core`), so installing it brings the whole family. The namespace is unchanged from the original split — both types live in `Bodu.Collections.Generic.Concurrent`.
 
 Reach for this package when the same collection is accessed by multiple producers and consumers and you need predictable concurrent semantics rather than an external lock. External locking around `CircularBuffer<T>` or `HashSet<T>` works, but it serialises every operation behind a single monitor; the concurrent variants split contention across slots (Vyukov MPMC for the buffer) or bucket regions (lock striping for the set), so disjoint operations proceed in parallel.

@@ -8,66 +8,50 @@
   </defs>
   <rect width="480" height="220" rx="12" fill="url(#env-bg)"/>
 
-  <!-- Left column: ordered key/value entries -->
+  <!-- Left panel -->
   <g transform="translate(28 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
-    <rect width="138" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
-    <rect width="138" height="22" rx="8" fill="#3B82F6"/>
-    <rect y="14" width="138" height="8" fill="#3B82F6"/>
-    <text x="69" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">entries</text>
+    <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="150" height="22" rx="8" fill="#FBBF24"/>
+    <rect y="14" width="150" height="8" fill="#FBBF24"/>
+    <text x="75" y="16" fill="#3A2A04" text-anchor="middle" font-weight="700" font-size="11">entries</text>
 
-    <g font-family="'Consolas','Menlo',monospace" font-size="10">
-      <g>
-        <rect x="8" y="32" width="50" height="18" rx="4" fill="#3B82F6" opacity="0.85"/>
-        <text x="33" y="44" fill="#F8FAFC" text-anchor="middle" font-weight="700">HOST</text>
-        <text x="64" y="44" fill="#E2E8F0">localhost</text>
-      </g>
-      <g>
-        <rect x="8" y="56" width="50" height="18" rx="4" fill="#3B82F6" opacity="0.85"/>
-        <text x="33" y="68" fill="#F8FAFC" text-anchor="middle" font-weight="700">PORT</text>
-        <text x="64" y="68" fill="#E2E8F0">8080</text>
-      </g>
-      <g>
-        <rect x="8" y="80" width="50" height="18" rx="4" fill="#3B82F6" opacity="0.85"/>
-        <text x="33" y="92" fill="#F8FAFC" text-anchor="middle" font-weight="700">USER</text>
-        <text x="64" y="92" fill="#E2E8F0">admin</text>
-      </g>
-      <g>
-        <rect x="8" y="104" width="50" height="18" rx="4" fill="#3B82F6" opacity="0.85"/>
-        <text x="33" y="116" fill="#F8FAFC" text-anchor="middle" font-weight="700">DEBUG</text>
-        <text x="64" y="116" fill="#E2E8F0">true</text>
-      </g>
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="11">
+      <text x="10" y="48"><tspan fill="#F8FAFC" font-weight="700">HOST </tspan> localhost</text>
+      <text x="10" y="72"><tspan fill="#F8FAFC" font-weight="700">PORT </tspan> 8080</text>
+      <text x="10" y="96"><tspan fill="#F8FAFC" font-weight="700">USER </tspan> admin</text>
+      <text x="10" y="120"><tspan fill="#F8FAFC" font-weight="700">DEBUG</tspan> true</text>
     </g>
   </g>
 
-  <!-- middle: bidirectional pipeline arrows -->
-  <g transform="translate(176 80)" fill="none" stroke="#60A5FA" stroke-width="2" stroke-linecap="round">
-    <line x1="0" y1="0" x2="120" y2="0"/>
-    <polygon points="120,0 112,-4 112,4" fill="#60A5FA" stroke="none"/>
-    <line x1="120" y1="36" x2="0" y2="36"/>
-    <polygon points="0,36 8,32 8,40" fill="#60A5FA" stroke="none"/>
+  <!-- Bidirectional pipeline arrows -->
+  <g transform="translate(186 80)" fill="none" stroke="#FBBF24" stroke-width="2" stroke-linecap="round">
+    <line x1="0" y1="0" x2="104" y2="0"/>
+    <polygon points="104,0 96,-4 96,4" fill="#FBBF24" stroke="none"/>
+    <line x1="104" y1="36" x2="0" y2="36"/>
+    <polygon points="0,36 8,32 8,40" fill="#FBBF24" stroke="none"/>
   </g>
-  <g transform="translate(176 80)" fill="#60A5FA" font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">
-    <text x="60" y="-6">format</text>
-    <text x="60" y="56">parse</text>
+  <g transform="translate(186 80)" fill="#FBBF24" font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">
+    <text x="52" y="-6">format</text>
+    <text x="52" y="56">parse</text>
   </g>
 
-  <!-- Right column: .env text -->
+  <!-- Right panel -->
   <g transform="translate(310 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
     <rect width="142" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
-    <rect width="142" height="22" rx="8" fill="#A78BFA"/>
-    <rect y="14" width="142" height="8" fill="#A78BFA"/>
+    <rect width="142" height="22" rx="8" fill="#3B82F6"/>
+    <rect y="14" width="142" height="8" fill="#3B82F6"/>
     <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">.env text</text>
 
-    <g font-family="'Consolas','Menlo',monospace" font-size="11">
-      <text x="10" y="42" fill="#94A3B8"># app config</text>
-      <text x="10" y="58" fill="#E2E8F0"><tspan fill="#60A5FA">HOST</tspan><tspan fill="#FBBF24">=</tspan>localhost</text>
-      <text x="10" y="74" fill="#E2E8F0"><tspan fill="#60A5FA">PORT</tspan><tspan fill="#FBBF24">=</tspan>8080</text>
-      <text x="10" y="90" fill="#E2E8F0"><tspan fill="#60A5FA">USER</tspan><tspan fill="#FBBF24">=</tspan>admin</text>
-      <text x="10" y="106" fill="#E2E8F0"><tspan fill="#60A5FA">DEBUG</tspan><tspan fill="#FBBF24">=</tspan>true</text>
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="11">
+      <text x="10" y="42"><tspan fill="#94A3B8"># app config</tspan></text>
+      <text x="10" y="58"><tspan fill="#60A5FA">HOST</tspan><tspan fill="#FBBF24">=</tspan>localhost</text>
+      <text x="10" y="74"><tspan fill="#60A5FA">PORT</tspan><tspan fill="#FBBF24">=</tspan>8080</text>
+      <text x="10" y="90"><tspan fill="#60A5FA">USER</tspan><tspan fill="#FBBF24">=</tspan>admin</text>
+      <text x="10" y="106"><tspan fill="#60A5FA">DEBUG</tspan><tspan fill="#FBBF24">=</tspan>true</text>
     </g>
   </g>
 
-  <!-- bottom note -->
+  <!-- Bottom caption -->
   <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
     <text x="240" y="206" text-anchor="middle">key=value · quoted · ordered</text>
   </g>

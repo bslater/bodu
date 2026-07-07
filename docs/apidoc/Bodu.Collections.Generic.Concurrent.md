@@ -2,7 +2,7 @@
 uid: Bodu.Collections.Generic.Concurrent
 ---
 
-![Bodu.Collections.Generic.Concurrent](~/images/hero-core.svg)
+![Bodu.Collections.Generic.Concurrent](~/images/hero-collections-concurrent.svg)
 
 ## Purpose
 

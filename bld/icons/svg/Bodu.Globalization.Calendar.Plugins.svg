@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Bodu.Globalization.Calendar.Plugins package icon">
+  <title>Bodu.Globalization.Calendar.Plugins</title>
+  <defs>
+    <linearGradient id="calplg-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="124" height="124" rx="28" fill="url(#calplg-bg)" stroke="#2DD4BF" stroke-width="3"/>
+
+  <!-- Bodu suite mark -->
+  <g transform="translate(21 21)">
+    <circle r="7.5" fill="none" stroke="#F8FAFC" stroke-width="2.2" opacity="0.85"/>
+    <circle cy="-7.5" r="2" fill="#F8FAFC" opacity="0.85"/>
+  </g>
+
+  <!-- package glyph -->
+  <g transform="translate(64 56)">
+    <path d="M 0 -26 L 22 -18 L 22 4 Q 22 20 0 28 Q -22 20 -22 4 L -22 -18 Z" fill="none" stroke="#2DD4BF" stroke-width="4"/>
+    <circle cy="-2" r="5" fill="none" stroke="#2DD4BF" stroke-width="3"/>
+    <rect x="-2.5" y="2" width="5" height="11" rx="2.5" fill="#2DD4BF"/>
+  </g>
+
+  <!-- monogram chip -->
+  <rect x="41" y="94" width="46" height="22" rx="11" fill="#2DD4BF"/>
+  <text x="64" y="110" fill="#042F2A" text-anchor="middle" font-family="'Consolas','Menlo',monospace" font-weight="700" font-size="14">PLG</text>
+</svg>

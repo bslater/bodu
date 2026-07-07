@@ -4,6 +4,8 @@ title: Bodu.Text.Encoding — Introduction
 
 # Bodu.Text.Encoding
 
+![Bodu.Text.Encoding](../../images/hero-text-encoding.svg)
+
 **Bodu.Text.Encoding** is a focused, allocation-conscious library of binary-to-text encodings. The five core radix
 encodings that .NET applications reach for — **Base16**, **Base32**, **Base64**, **Base58**, and **Base85** — each
 carry the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus`-returning streaming methods,

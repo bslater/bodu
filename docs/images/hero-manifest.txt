@@ -1,0 +1,42 @@
+# Package artwork manifest — one row per packable NuGet package: <PackageId> <hero-banner-file>.
+# Every packable project under **/src/*.csproj (excluding Bodu.CodeStyle/**, archive/**) must have
+# exactly one distinct hero banner; CI validates coverage, distinctness, and orphans against this file.
+# Non-package art (namespace/format/family banners) is allowlisted in the workflow, not listed here.
+Bodu.Collections hero-collections.svg
+Bodu.Collections.Concurrent hero-collections-concurrent.svg
+Bodu.Core hero-core.svg
+Bodu.Extensions.Configuration.Text hero-extensions-config.svg
+Bodu.Financial hero-financial.svg
+Bodu.Financial.DependencyInjection hero-financial-di.svg
+Bodu.Financial.ExchangeRates.Boe hero-fx-boe.svg
+Bodu.Financial.ExchangeRates.Caching hero-fx-caching.svg
+Bodu.Financial.ExchangeRates.Caching.Distributed hero-fx-caching-distributed.svg
+Bodu.Financial.ExchangeRates.Caching.Sqlite hero-fx-caching-sqlite.svg
+Bodu.Financial.ExchangeRates.DependencyInjection hero-fx-di.svg
+Bodu.Financial.ExchangeRates.Ecb hero-fx-ecb.svg
+Bodu.Financial.ExchangeRates.Oanda hero-fx-oanda.svg
+Bodu.Financial.ExchangeRates.Ofx hero-fx-ofx.svg
+Bodu.Financial.ExchangeRates.Rba hero-fx-rba.svg
+Bodu.Financial.ExchangeRates.Xe hero-fx-xe.svg
+Bodu.Financial.ExchangeRates.Yahoo hero-fx-yahoo.svg
+Bodu.Formats.Excel.Binary hero-excel.svg
+Bodu.Globalization.Calendar hero-calendar.svg
+Bodu.Globalization.Calendar.Africa hero-calendar-africa.svg
+Bodu.Globalization.Calendar.Americas hero-calendar-americas.svg
+Bodu.Globalization.Calendar.AsiaPacific hero-calendar-asiapacific.svg
+Bodu.Globalization.Calendar.Builder hero-calendar-builder.svg
+Bodu.Globalization.Calendar.DependencyInjection hero-calendar-di.svg
+Bodu.Globalization.Calendar.Europe hero-calendar-europe.svg
+Bodu.Globalization.Calendar.MiddleEast hero-calendar-middleeast.svg
+Bodu.Globalization.Calendar.Plugins hero-calendar-plugins.svg
+Bodu.IO.Compound hero-io-compound.svg
+Bodu.IO.Hashing hero-io.svg
+Bodu.Numerics hero-numerics.svg
+Bodu.Numerics.Serialization.Json hero-numerics-json.svg
+Bodu.Security.Cryptography hero-crypto.svg
+Bodu.Text.Bencode hero-bencode.svg
+Bodu.Text.Configuration hero-configuration.svg
+Bodu.Text.Encoding hero-text-encoding.svg
+Bodu.Text.Formats hero-formats.svg
+Bodu.Text.Toml hero-toml.svg
+Bodu.Text.Yaml hero-yaml.svg

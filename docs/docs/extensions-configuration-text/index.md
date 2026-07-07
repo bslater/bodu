@@ -4,6 +4,8 @@ title: Bodu.Extensions.Configuration.Text — Introduction
 
 # Bodu.Extensions.Configuration.Text
 
+![Bodu.Extensions.Configuration.Text](../../images/hero-extensions-config.svg)
+
 **Bodu.Extensions.Configuration.Text** is the bridge between
 [`Bodu.Text.Configuration`](../text-configuration/index.md) and `Microsoft.Extensions.Configuration`, and one half of
 the **[Configuration](../topics/configuration.md)** topic. It exposes a

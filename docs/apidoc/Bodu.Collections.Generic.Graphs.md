@@ -2,7 +2,7 @@
 uid: Bodu.Collections.Generic.Graphs
 ---
 
-![Bodu.Collections.Generic.Graphs](~/images/hero-core.svg)
+![Bodu.Collections.Generic.Graphs](~/images/hero-collections.svg)
 
 ## Purpose
 

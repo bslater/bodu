@@ -47,7 +47,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 </div>
 
 <div class="bodu-card">
-  <img src="images/hero-core.svg" alt="Bodu.Collections" />
+  <img src="images/hero-collections.svg" alt="Bodu.Collections" />
   <h3>Bodu.Collections</h3>
   <p>The specialized collection catalogue — fixed-capacity rings (<code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>), policy-driven caches (<code>EvictingDictionary&lt;TKey,TValue&gt;</code> with TTL expiry), navigable sets and dictionaries with rank/select, range-keyed lookups and overlap-storing interval trees, graphs, tries and multi-pattern text search, and probabilistic sketches (Bloom filter, count-min, HyperLogLog). Depends on <code>Bodu.Core</code>.</p>
   <div class="bodu-card-links">
@@ -58,7 +58,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 </div>
 
 <div class="bodu-card">
-  <img src="images/hero-core.svg" alt="Bodu.Collections.Concurrent" />
+  <img src="images/hero-collections-concurrent.svg" alt="Bodu.Collections.Concurrent" />
   <h3>Bodu.Collections.Concurrent</h3>
   <p>The thread-safe collection companion — a lock-free Vyukov MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> implementing <code>IProducerConsumerCollection&lt;T&gt;</code>, and a lock-striped <code>ConcurrentHashSet&lt;T&gt;</code> with lock-free reads and snapshot enumeration. Depends on <code>Bodu.Collections</code>.</p>
   <div class="bodu-card-links">
@@ -142,7 +142,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <img src="images/hero-text.svg" alt="Bodu.Text.Encoding" />
+  <img src="images/hero-text-encoding.svg" alt="Bodu.Text.Encoding" />
   <h3>Bodu.Text.Encoding</h3>
   <p>Binary-to-text encoders for <strong>Base16</strong>, <strong>Base32</strong>, <strong>Base64</strong>, <strong>Base58</strong>, and <strong>Base85</strong> with every common variant — RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin / Flickr / Ripple, Adobe Ascii85, ZeroMQ Z85 — plus <strong>Base45</strong> (RFC 9285 QR codes), <strong>Base62</strong> (compact identifiers), and <strong>Bech32 / Bech32m</strong> (BIP 173 / 350 checksummed addresses). The core encodings share the same modern API shape: span- and UTF-8-friendly overloads, <code>OperationStatus</code> streaming methods, length-prediction helpers, validation predicates, plus a unified <code>IBinaryEncoding</code> interface for runtime-pluggable encoding choice.</p>
   <div class="bodu-card-links">
@@ -164,7 +164,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 </div>
 
 <div class="bodu-card">
-  <img src="images/hero-yaml.svg" alt="Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml" />
+  <img src="images/hero-serializers.svg" alt="Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml" />
   <h3>Bodu serializers — Bencode, TOML &amp; YAML</h3>
   <p>Three self-contained serializers that map your own types to and from a format — a shared architecture and <code>System.Text.Json</code>-aligned shape. Each ships a <code>…Serializer</code>, a mutable <code>…Node</code> and a read-only <code>…Document</code> DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair. <strong>Bencode</strong> covers BitTorrent BEP 3; <strong>TOML</strong> covers v1.0.0 / v1.1.0; <strong>YAML</strong> the 1.2 core schema with block and flow collections, anchors, and multi-document streams.</p>
   <div class="bodu-card-links">
@@ -252,7 +252,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <img src="images/hero-io.svg" alt="Bodu.IO.Compound" />
+  <img src="images/hero-io-compound.svg" alt="Bodu.IO.Compound" />
   <h3>Bodu.IO.Compound</h3>
   <p>A read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>). Navigates the <code>RootStorage</code> hierarchy, reads each named stream's bytes through a seekable <code>CompoundStream</code> cursor (buffered or on-demand), and parses the OLE summary-information property sets. The narrow BIFF8 <code>.xls</code> reader <code>Bodu.Formats.Excel.Binary</code> is built on top of it.</p>
   <div class="bodu-card-links">
@@ -290,6 +290,7 @@ dotnet add package Bodu.Text.Encoding
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Toml
 dotnet add package Bodu.Text.Bencode
+dotnet add package Bodu.Text.Yaml
 dotnet add package Bodu.Text.Configuration
 dotnet add package Bodu.Extensions.Configuration.Text
 dotnet add package Bodu.Numerics

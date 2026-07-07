@@ -4,6 +4,8 @@ title: Bodu.IO.Hashing — Introduction
 
 # Bodu.IO.Hashing
 
+![Bodu.IO.Hashing](../../images/hero-io.svg)
+
 **Bodu.IO.Hashing** is the non-cryptographic hashing package of the Bodu suite, and one half of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic. Everything in the package derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, so the lifecycle (`Append` / `GetCurrentHash` / `Reset`) is identical regardless of which algorithm you pick.
 
 > **Adversary model: none.** Nothing in this library is safe against an attacker who can choose inputs. Use it for error detection, distribution, fingerprinting, and identifier validation — for anything security-sensitive, see [Bodu.Security.Cryptography](../cryptography/index.md).

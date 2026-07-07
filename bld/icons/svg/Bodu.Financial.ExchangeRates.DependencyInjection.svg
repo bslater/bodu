@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Bodu.Financial.ExchangeRates.DependencyInjection package icon">
+  <title>Bodu.Financial.ExchangeRates.DependencyInjection</title>
+  <defs>
+    <linearGradient id="fxdi-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="124" height="124" rx="28" fill="url(#fxdi-bg)" stroke="#34D399" stroke-width="3"/>
+
+  <!-- Bodu suite mark -->
+  <g transform="translate(21 21)">
+    <circle r="7.5" fill="none" stroke="#F8FAFC" stroke-width="2.2" opacity="0.85"/>
+    <circle cy="-7.5" r="2" fill="#F8FAFC" opacity="0.85"/>
+  </g>
+
+  <!-- package glyph -->
+  <g transform="translate(64 56)">
+    <line x1="-26" y1="0" x2="-8" y2="0" stroke="#34D399" stroke-width="4" stroke-linecap="round"/>
+    <rect x="-8" y="-11" width="18" height="22" rx="4" fill="#34D399"/>
+    <rect x="10" y="-7" width="8" height="5" fill="#34D399"/>
+    <rect x="10" y="2" width="8" height="5" fill="#34D399"/>
+    <rect x="21" y="-14" width="9" height="28" rx="4" fill="none" stroke="#34D399" stroke-width="3"/>
+  </g>
+
+  <!-- monogram chip -->
+  <rect x="36" y="94" width="56" height="22" rx="11" fill="#34D399"/>
+  <text x="64" y="110" fill="#06281F" text-anchor="middle" font-family="'Consolas','Menlo',monospace" font-weight="700" font-size="14">FXDI</text>
+</svg>

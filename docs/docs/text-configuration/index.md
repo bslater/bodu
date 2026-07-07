@@ -4,6 +4,8 @@ title: Bodu.Text.Configuration — Introduction
 
 # Bodu.Text.Configuration
 
+![Bodu.Text.Configuration](../../images/hero-configuration.svg)
+
 **Bodu.Text.Configuration** is the configuration-layering package of the Bodu suite, and one half of the
 **[Configuration](../topics/configuration.md)** topic. It reads a single text file in the
 familiar **INI / EditorConfig** shape — preamble, named sections, `key = value` properties — and projects it into a
