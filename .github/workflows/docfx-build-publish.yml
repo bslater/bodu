@@ -112,6 +112,101 @@ jobs:
         if [ "$fail" -ne 0 ]; then exit 1; fi
         echo "Package inventory and install commands are consistent with the codebase."
 
+    - name: Validate package artwork
+      run: |
+        set -eu
+        MANIFEST=docs/images/hero-manifest.txt
+        # Shared/non-package banners: namespace, format-level, and family art.
+        ALLOWLIST="hero-text.svg hero-delimited.svg hero-dotenv.svg hero-ini.svg hero-serializers.svg"
+        fail=0
+
+        # Canonical packable package IDs = the projects DocFX documents:
+        # every **/src/*.csproj, excluding the CodeStyle and archive trees.
+        ids="$(find . -path ./archive -prune -o -path ./Bodu.CodeStyle -prune -o \
+          -name '*.csproj' -print | grep -E '/src/[^/]+\.csproj$' \
+          | sed -E 's#.*/([^/]+)\.csproj$#\1#' | sort -u)"
+
+        rows="$(grep -v '^\s*#' "$MANIFEST" | grep -v '^\s*$')"
+
+        # 1. Every packable package has a manifest row; the mapped banner exists, is referenced, and is 480x220.
+        for id in $ids; do
+          banner="$(printf '%s\n' "$rows" | awk -v id="$id" '$1 == id { print $2 }')"
+          if [ -z "$banner" ]; then
+            echo "::error::Package '${id}' has no hero-banner row in ${MANIFEST}."
+            fail=1
+            continue
+          fi
+          if [ ! -f "docs/images/$banner" ]; then
+            echo "::error::${MANIFEST} maps '${id}' to docs/images/${banner}, which does not exist."
+            fail=1
+            continue
+          fi
+          if ! grep -q 'viewBox="0 0 480 220"' "docs/images/$banner"; then
+            echo "::error::docs/images/${banner} is not a 480x220 hero banner (viewBox mismatch)."
+            fail=1
+          fi
+          if ! grep -rqF "$banner" docs/ --include='*.md'; then
+            echo "::error::docs/images/${banner} ('${id}') is not referenced by any page under docs/."
+            fail=1
+          fi
+        done
+
+        # 2. Distinctness: no two packages may share a banner, and no package may be listed twice.
+        dup_files="$(printf '%s\n' "$rows" | awk '{ print $2 }' | sort | uniq -d)"
+        if [ -n "$dup_files" ]; then
+          echo "::error::Hero banners are shared by more than one package in ${MANIFEST}: ${dup_files}"
+          fail=1
+        fi
+        dup_ids="$(printf '%s\n' "$rows" | awk '{ print $1 }' | sort | uniq -d)"
+        if [ -n "$dup_ids" ]; then
+          echo "::error::Duplicate package rows in ${MANIFEST}: ${dup_ids}"
+          fail=1
+        fi
+
+        # 3. Orphans: every hero-*.svg is either a manifest banner or an allowlisted shared banner.
+        for f in docs/images/hero-*.svg; do
+          base="$(basename "$f")"
+          if printf '%s\n' "$rows" | awk '{ print $2 }' | grep -qxF "$base"; then continue; fi
+          if printf '%s\n' $ALLOWLIST | grep -qxF "$base"; then continue; fi
+          echo "::error::${f} is neither mapped to a package in ${MANIFEST} nor allowlisted as shared art."
+          fail=1
+        done
+
+        # 4. Icons: every packable package ships a checked-in 128x128 icon PNG; no orphan icons or stale sources.
+        for id in $ids; do
+          png="bld/icons/$id.png"
+          if [ ! -f "$png" ]; then
+            echo "::error::Package '${id}' has no NuGet icon at ${png} (see bld/icons/README.md)."
+            fail=1
+            continue
+          fi
+          if [ "$(wc -c < "$png")" -gt 1048576 ]; then
+            echo "::error::${png} exceeds the 1 MiB NuGet icon limit."
+            fail=1
+          fi
+          if ! file "$png" | grep -q 'PNG image data, 128 x 128'; then
+            echo "::error::${png} is not a 128x128 PNG: $(file -b "$png")"
+            fail=1
+          fi
+        done
+        for png in bld/icons/*.png; do
+          id="$(basename "$png" .png)"
+          if ! printf '%s\n' $ids | grep -qxF "$id"; then
+            echo "::error::${png} does not map to any packable project. Stale or renamed package?"
+            fail=1
+          fi
+        done
+        for svg in bld/icons/svg/*.svg; do
+          id="$(basename "$svg" .svg)"
+          if [ ! -f "bld/icons/$id.png" ]; then
+            echo "::error::${svg} has no rasterized sibling bld/icons/${id}.png. Run bld/icons/generate-icons.sh."
+            fail=1
+          fi
+        done
+
+        if [ "$fail" -ne 0 ]; then exit 1; fi
+        echo "Package artwork (hero banners + NuGet icons) is complete, distinct, and referenced."
+
     - name: Validate generated API output
       run: |
         set -eu
