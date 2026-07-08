@@ -19,7 +19,10 @@ namespace Bodu.Text.Yaml.Document;
 /// </remarks>
 public sealed partial class YamlDocument : IDisposable
 {
+    /// <summary>The flat node store, with the root at index zero; <see langword="null" /> once the document is disposed.</summary>
     private List<YamlReaderRow>? _rows;
+
+    /// <summary>The decoded-string side table referenced by string scalar rows.</summary>
     private string[] _strings;
 
     /// <summary>

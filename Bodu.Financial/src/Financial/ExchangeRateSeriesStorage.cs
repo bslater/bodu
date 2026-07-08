@@ -175,8 +175,12 @@ internal sealed class ExchangeRateSeriesStorage
     /// Copies the storage's contents into the supplied caller-owned arrays. Used by the mutable buffer's seeding path
     /// so the round-trip through <see cref="DateOnly" /> can be avoided.
     /// </summary>
-    /// <param name="dayNumbers">The caller-owned target array; must be at least <see cref="Count" /> long.</param>
-    /// <param name="rates">The caller-owned target array; must be at least <see cref="Count" /> long.</param>
+    /// <param name="dayNumbers">
+    /// The caller-owned array that receives the day numbers; must be at least <see cref="Count" /> long.
+    /// </param>
+    /// <param name="rates">
+    /// The caller-owned array that receives the rates; must be at least <see cref="Count" /> long.
+    /// </param>
     internal void CopyTo(int[] dayNumbers, decimal[] rates)
     {
         Debug.Assert(dayNumbers is not null && rates is not null);

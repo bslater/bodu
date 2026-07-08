@@ -31,6 +31,10 @@ internal sealed class DhKemX25519
     /// <summary>The IANA KEM identifier for DHKEM(X25519, HKDF-SHA256).</summary>
     private const ushort DhKemX25519HkdfSha256Id = 0x0020;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DhKemX25519" /> class. The type is a stateless singleton; consumers
+    /// use <see cref="Instance" />.
+    /// </summary>
     private DhKemX25519()
     {
     }
@@ -52,12 +56,12 @@ internal sealed class DhKemX25519
         PublicKeySize;
 
     /// <summary>
-    /// DHKEM(X25519, …) fixes HKDF-SHA256 as the KEM's KDF, independent of the HPKE suite KDF.
+    /// Gets the hash algorithm of the KEM's KDF; DHKEM(X25519, …) fixes HKDF-SHA256, independent of the HPKE suite KDF.
     /// </summary>
     private static HashAlgorithmName KemHash => HashAlgorithmName.SHA256;
 
     /// <summary>
-    /// The KEM suite identifier <c>"KEM" ‖ I2OSP(0x0020, 2)</c>.
+    /// Gets the KEM suite identifier <c>"KEM" ‖ I2OSP(0x0020, 2)</c>.
     /// </summary>
     private static ReadOnlySpan<byte> KemSuiteId => [(byte)'K', (byte)'E', (byte)'M', 0x00, 0x20];
 

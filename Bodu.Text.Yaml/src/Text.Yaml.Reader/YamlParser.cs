@@ -19,22 +19,52 @@ namespace Bodu.Text.Yaml.Reader;
 /// </remarks>
 internal sealed partial class YamlParser
 {
+    /// <summary>The UTF-8 source buffer being parsed.</summary>
     private readonly byte[] _source;
+
+    /// <summary>The number of valid bytes in <see cref="_source" />.</summary>
     private readonly int _length;
+
+    /// <summary>The specification version requested through the options.</summary>
     private readonly YamlSpecVersion _optionVersion;
+
+    /// <summary>The specification version in effect, after any <c>%YAML</c> directive.</summary>
     private YamlSpecVersion _version;
+
+    /// <summary>The maximum container nesting depth permitted.</summary>
     private readonly int _maxDepth;
+
+    /// <summary>The policy applied to duplicate mapping keys.</summary>
     private readonly YamlDuplicateKeyBehavior _duplicateKeyBehavior;
+
+    /// <summary>The policy applied to the merge key (<c>&lt;&lt;</c>).</summary>
     private readonly YamlMergeKeyBehavior _mergeKeyBehavior;
+
+    /// <summary>The row store being populated, with the document root at index zero.</summary>
     private List<YamlReaderRow> _rows = [];
 
+    /// <summary>The byte offset of the cursor within <see cref="_source" />.</summary>
     private int _pos;
+
+    /// <summary>The 0-based line number of the cursor.</summary>
     private int _line;
+
+    /// <summary>The byte offset at which the current line starts, used to compute indentation.</summary>
     private int _lineStart;
+
+    /// <summary>The current container nesting depth.</summary>
     private int _depth;
+
+    /// <summary>The tag-handle map declared by <c>%TAG</c> directives, or <see langword="null" /> when none.</summary>
     private Dictionary<string, string>? _tagHandles;
+
+    /// <summary>The minimum indentation for continuation lines inside the current flow collection, or <c>-1</c> when not in flow context.</summary>
     private int _flowIndent = -1;
+
+    /// <summary>The line on which the most recent anchor or tag property was read, or <c>-1</c> when none has been.</summary>
     private int _lastPropertyLine = -1;
+
+    /// <summary>Indicates whether a leading <c>---</c> document-start marker has already been consumed.</summary>
     private bool _documentStartConsumed;
 
     /// <summary>

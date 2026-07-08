@@ -17,34 +17,35 @@ namespace Bodu.Text.Yaml.Serialization;
 /// </summary>
 internal sealed class YamlMemberInfo
 {
+    /// <summary>Caches the discovered member set per type so reflection runs once per type.</summary>
     private static readonly ConcurrentDictionary<Type, YamlMemberInfo[]> s_cache = new();
 
     /// <summary>
-    /// Gets or sets the declared member name.
+    /// Gets the declared member name.
     /// </summary>
     /// <value>The CLR member name.</value>
     public required string MemberName { get; init; }
 
     /// <summary>
-    /// Gets or sets the explicit YAML key supplied by an attribute, if any.
+    /// Gets the explicit YAML key supplied by an attribute, if any.
     /// </summary>
     /// <value>The explicit key, or <see langword="null" />.</value>
     public string? ExplicitName { get; init; }
 
     /// <summary>
-    /// Gets or sets the member's value type.
+    /// Gets the member's value type.
     /// </summary>
     /// <value>The member type.</value>
     public required Type Type { get; init; }
 
     /// <summary>
-    /// Gets or sets the accessor that reads the member's value from an instance.
+    /// Gets the accessor that reads the member's value from an instance.
     /// </summary>
     /// <value>The getter delegate.</value>
     public required Func<object, object?> Get { get; init; }
 
     /// <summary>
-    /// Gets or sets the accessor that writes the member's value to an instance, when writable.
+    /// Gets the accessor that writes the member's value to an instance, when writable.
     /// </summary>
     /// <value>The setter delegate, or <see langword="null" /> when the member is read-only.</value>
     public Action<object, object?>? Set { get; init; }
@@ -95,7 +96,7 @@ internal sealed class YamlMemberInfo
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the member is a field rather than a property.
+    /// Gets a value indicating whether the member is a field rather than a property.
     /// </summary>
     /// <value><see langword="true" /> for a field; otherwise <see langword="false" />.</value>
     public bool IsField { get; init; }

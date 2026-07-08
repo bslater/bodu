@@ -20,6 +20,7 @@ namespace Bodu.Text.Yaml.Serialization;
 /// </remarks>
 internal sealed class YamlConverterCollection : Collection<YamlConverter>
 {
+    /// <summary>The options instance that governs whether the collection may be mutated.</summary>
     private readonly YamlSerializerOptions _options;
 
     /// <summary>

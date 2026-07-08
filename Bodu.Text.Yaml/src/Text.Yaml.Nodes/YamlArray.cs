@@ -14,6 +14,7 @@ namespace Bodu.Text.Yaml.Nodes;
 /// </summary>
 public sealed class YamlArray : YamlNode, IList<YamlNode?>
 {
+    /// <summary>The element nodes in sequence order.</summary>
     private readonly List<YamlNode?> _items = [];
 
     /// <summary>

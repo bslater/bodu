@@ -79,11 +79,36 @@ public sealed class IniFormatException
     {
     }
 
-    private IniFormatException(string message, int lineNumber, int? offset = null) : base(message, lineNumber, offset)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IniFormatException" /> class with the specified message, line
+    /// number, and source offset.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="lineNumber">The 1-based line number at which the error occurred, or <c>0</c> when unknown.</param>
+    /// <param name="offset">
+    /// The 0-based offset from the start of the source at which the parse error was detected, or
+    /// <see langword="null" /> when unknown.
+    /// </param>
+    private IniFormatException(string message, int lineNumber, int? offset = null)
+        : base(message, lineNumber, offset)
     {
     }
 
-    private IniFormatException(string message, int lineNumber, int columnNumber, int? offset) : base(message, lineNumber, columnNumber, offset)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IniFormatException" /> class with the specified message, line
+    /// number, column number, and source offset.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="lineNumber">The 1-based line number at which the error occurred, or <c>0</c> when unknown.</param>
+    /// <param name="columnNumber">
+    /// The 1-based column at which the parse error was detected, or <c>0</c> when unknown.
+    /// </param>
+    /// <param name="offset">
+    /// The 0-based offset from the start of the source at which the parse error was detected, or
+    /// <see langword="null" /> when unknown.
+    /// </param>
+    private IniFormatException(string message, int lineNumber, int columnNumber, int? offset)
+        : base(message, lineNumber, columnNumber, offset)
     {
     }
 }

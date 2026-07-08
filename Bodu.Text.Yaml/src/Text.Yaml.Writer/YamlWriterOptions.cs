@@ -11,8 +11,13 @@ namespace Bodu.Text.Yaml.Writer;
 /// </summary>
 public struct YamlWriterOptions
 {
+    /// <summary>The configured indentation width; zero or less selects the default.</summary>
     private int _indentSize;
+
+    /// <summary>The configured maximum nesting depth; zero or less selects the default.</summary>
     private int _maxDepth;
+
+    /// <summary>The configured line-break sequence, or <see langword="null" /> for the default.</summary>
     private string? _newLine;
 
     /// <summary>

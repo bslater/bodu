@@ -14,6 +14,7 @@ namespace Bodu.Text.Yaml.Reader;
 /// </summary>
 internal sealed partial class YamlParser
 {
+    /// <summary>Indicates whether the most recent plain-scalar line scan stopped at a trailing comment, ending the scalar.</summary>
     private bool _plainCommentTerminated;
 
     /// <summary>
@@ -183,6 +184,7 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Reads a single-quoted scalar, decoding doubled quotes and folding line breaks.
     /// </summary>
+    /// <param name="minIndent">The minimum indentation required of continuation lines.</param>
     /// <returns>The decoded string.</returns>
     /// <exception cref="YamlFormatException">The scalar is not terminated.</exception>
     private string ReadSingleQuoted(int minIndent)
@@ -237,6 +239,7 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Reads a double-quoted scalar, decoding backslash escapes and folding line breaks.
     /// </summary>
+    /// <param name="minIndent">The minimum indentation required of continuation lines.</param>
     /// <returns>The decoded string.</returns>
     /// <exception cref="YamlFormatException">The scalar is not terminated or contains an invalid escape.</exception>
     private string ReadDoubleQuoted(int minIndent)

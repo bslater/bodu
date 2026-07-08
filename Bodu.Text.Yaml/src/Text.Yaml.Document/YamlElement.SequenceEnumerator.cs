@@ -18,9 +18,16 @@ public readonly partial struct YamlElement
     /// </summary>
     public struct SequenceEnumerator : IEnumerable<YamlElement>, IEnumerator<YamlElement>
     {
+        /// <summary>The owning document.</summary>
         private readonly YamlDocument _document;
+
+        /// <summary>The resolved row index of the sequence being enumerated.</summary>
         private readonly int _sequenceIndex;
+
+        /// <summary>The row index of the current element, or <c>-1</c> when none.</summary>
         private int _current;
+
+        /// <summary>Indicates whether <see cref="MoveNext" /> has been called at least once.</summary>
         private bool _started;
 
         /// <summary>

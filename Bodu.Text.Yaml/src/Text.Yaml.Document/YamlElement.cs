@@ -18,7 +18,10 @@ namespace Bodu.Text.Yaml.Document;
 /// </remarks>
 public readonly partial struct YamlElement
 {
+    /// <summary>The owning document.</summary>
     private readonly YamlDocument _document;
+
+    /// <summary>The node row index within the owning document.</summary>
     private readonly int _index;
 
     /// <summary>

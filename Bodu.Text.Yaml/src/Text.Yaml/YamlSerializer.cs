@@ -25,6 +25,7 @@ namespace Bodu.Text.Yaml;
 /// </remarks>
 public static partial class YamlSerializer
 {
+    /// <summary>The shared default options used when a caller passes <see langword="null" />.</summary>
     private static readonly YamlSerializerOptions s_defaultOptions = new();
 
     /// <summary>

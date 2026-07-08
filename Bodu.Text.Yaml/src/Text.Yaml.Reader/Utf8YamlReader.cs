@@ -33,14 +33,28 @@ namespace Bodu.Text.Yaml.Reader;
 /// </remarks>
 public ref struct Utf8YamlReader
 {
+    /// <summary>The flat node store produced by the parser, with the root at index zero.</summary>
     private readonly List<YamlReaderRow> _rows;
+
+    /// <summary>The decoded-string side table referenced by string scalar rows.</summary>
     private readonly string[] _strings;
+
+    /// <summary>The container traversal stack; one frame per open mapping or sequence.</summary>
     private Frame[] _stack;
+
+    /// <summary>The number of frames currently on <see cref="_stack" />.</summary>
     private int _depth;
+
+    /// <summary>Indicates whether <see cref="Read" /> has been called at least once.</summary>
     private bool _started;
 
+    /// <summary>The type of the token at the current cursor position.</summary>
     private YamlTokenType _tokenType;
+
+    /// <summary>The row index of the node the cursor is positioned on, or <c>-1</c> when none.</summary>
     private int _currentRow;
+
+    /// <summary>The key of the current token when it is a mapping key, otherwise <see langword="null" />.</summary>
     private string? _key;
 
     /// <summary>
