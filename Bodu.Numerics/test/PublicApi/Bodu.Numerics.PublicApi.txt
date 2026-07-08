@@ -352,6 +352,28 @@ struct Bodu.Numerics.Interval`1
     property T Length
     property T Lower
     property T Upper
+class Bodu.Numerics.MovingMinMax`1
+    constructor Void .ctor(Int32)
+    method System.String ToString()
+    method Void Add(T)
+    method Void Reset()
+    property Boolean IsEmpty
+    property Boolean IsFull
+    property Int32 Capacity
+    property Int32 Count
+    property T Maximum
+    property T Minimum
+class Bodu.Numerics.MovingSum`1
+    constructor Void .ctor(Int32)
+    method System.String ToString()
+    method Void Add(T)
+    method Void Reset()
+    property Boolean IsEmpty
+    property Boolean IsFull
+    property Double Mean
+    property Int32 Capacity
+    property Int32 Count
+    property T Sum
 struct Bodu.Numerics.RunningQuantile`1
     constructor Void .ctor(Double)
     method Bodu.Numerics.RunningQuantile`1[T] CreateMedian()
