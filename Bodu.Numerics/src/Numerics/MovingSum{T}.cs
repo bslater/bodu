@@ -7,6 +7,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace Bodu.Numerics;
 
@@ -54,8 +55,8 @@ public sealed class MovingSum<T>
     /// Whether <typeparamref name="T" /> is a binary floating-point type whose subtract-on-evict updates drift and
     /// therefore needs the periodic exact rebuild; exact types (integers, <see cref="decimal" />,
     /// <see cref="BigInteger" />) skip it — their incremental sum is already exact, and re-summing the ring in array
-    /// order could transiently overflow a checked prefix that the true window-order sum never reaches. A hardcoded
-    /// type matrix (the reflection-free pattern <c>Fraction&lt;T&gt;</c> uses for its bounds probe) keeps this
+    /// order could transiently overflow a checked prefix that the true window-order sum never reaches. A hardcoded type
+    /// matrix (the reflection-free pattern <c>Fraction&lt;T&gt;</c> uses for its bounds probe) keeps this
     /// NativeAOT-safe.
     /// </summary>
     private static readonly bool s_requiresRebuild =
@@ -203,7 +204,12 @@ public sealed class MovingSum<T>
     /// </summary>
     public void Reset()
     {
-        Array.Clear(_buffer);
+        // Stale slots are unreachable after a reset — warm-up writes every slot before it is read, and the rebuild
+        // only runs once the window has refilled — so the clear is needed only to release references held by
+        // reference-containing sample types (for example BigDecimal's BigInteger).
+        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+            Array.Clear(_buffer);
+
         _head = 0;
         _count = 0;
         _sum = T.Zero;

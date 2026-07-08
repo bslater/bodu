@@ -123,7 +123,9 @@ public partial struct RunningStatistics<T>
     /// </returns>
     /// <remarks>
     /// Uses the parallel-variance merge of Chan et al., so a stream may be partitioned across workers, accumulated
-    /// independently, and recombined without loss beyond ordinary floating-point rounding.
+    /// independently, and recombined without loss beyond ordinary floating-point rounding. Because floating-point
+    /// addition is not associative, different partitionings or merge orders can produce results that differ in the last
+    /// bits; use a deterministic partitioning strategy and merge order when bitwise-reproducible results matter.
     /// </remarks>
     public static RunningStatistics<T> Combine(RunningStatistics<T> left, RunningStatistics<T> right)
     {

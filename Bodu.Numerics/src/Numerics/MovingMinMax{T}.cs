@@ -7,6 +7,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace Bodu.Numerics;
 
@@ -183,8 +184,14 @@ public sealed class MovingMinMax<T>
     /// </summary>
     public void Reset()
     {
-        Array.Clear(_minDeque);
-        Array.Clear(_maxDeque);
+        // Stale entries are unreachable after a reset (reads stay within the live [head, head + count) span), so the
+        // clear is needed only to release references held by reference-containing sample types.
+        if (RuntimeHelpers.IsReferenceOrContainsReferences<Entry>())
+        {
+            Array.Clear(_minDeque);
+            Array.Clear(_maxDeque);
+        }
+
         _minHead = 0;
         _minCount = 0;
         _maxHead = 0;

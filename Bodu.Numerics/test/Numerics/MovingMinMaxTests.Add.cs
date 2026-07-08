@@ -95,6 +95,36 @@ public partial class MovingMinMaxTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="long" /> samples track exact extrema through the deques.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenAccumulatingLongs_ShouldTrackExactExtrema()
+    {
+        var window = new MovingMinMax<long>(2);
+        window.Add(-4_000_000_000L);
+        window.Add(4_000_000_000L);
+        window.Add(0L);
+
+        Assert.AreEqual(0L, window.Minimum);
+        Assert.AreEqual(4_000_000_000L, window.Maximum);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="float" /> samples track exact single-precision extrema through the deques.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenAccumulatingFloats_ShouldTrackExactExtrema()
+    {
+        var window = new MovingMinMax<float>(2);
+        window.Add(1.25f);
+        window.Add(-2.75f);
+        window.Add(0.5f);
+
+        Assert.AreEqual(-2.75f, window.Minimum);
+        Assert.AreEqual(0.5f, window.Maximum);
+    }
+
+    /// <summary>
     /// Verifies that adding a NaN sample throws <see cref="ArgumentException" /> and leaves the window unchanged.
     /// </summary>
     [TestMethod]

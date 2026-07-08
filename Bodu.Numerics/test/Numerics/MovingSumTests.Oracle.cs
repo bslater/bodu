@@ -71,6 +71,41 @@ public partial class MovingSumTests
     }
 
     /// <summary>
+    /// Verifies thousands of adds — many complete ring wrap-arounds — against the naive last-N oracle, over a mix of
+    /// alternating high/low values and long monotonic runs.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    public void Add_WhenRunningThousandsOfAdds_ShouldMatchNaiveLastNOracle()
+    {
+        foreach (var capacity in new[] { 1, 2, 3, 4, 5 })
+        {
+            var window = new MovingSum<double>(capacity);
+            var samples = new List<double>(5_000);
+
+            for (var n = 0; n < 5_000; n++)
+            {
+                // Phases: alternating high/low, a long ascending run, then a long descending run.
+                var phase = n / 1_000 % 3;
+                var sample = phase switch
+                {
+                    0 => n % 2 == 0 ? 250.0 : -250.0,
+                    1 => n % 1_000,
+                    _ => 1_000.0 - (n % 1_000),
+                };
+
+                samples.Add(sample);
+                window.Add(sample);
+
+                var tail = samples.TakeLast(Math.Min(samples.Count, capacity)).ToArray();
+                var expected = tail.Sum();
+
+                Assert.AreEqual(expected, window.Sum, Math.Abs(expected) * 1e-9 + 1e-9, $"Sum diverged (capacity {capacity}, n = {n}).");
+            }
+        }
+    }
+
+    /// <summary>
     /// Verifies that the periodic exact rebuild bounds floating-point drift: alternating huge and tiny samples whose
     /// naive subtract-on-evict sum would drift stays equal to an exact recomputation at every full turnover.
     /// </summary>

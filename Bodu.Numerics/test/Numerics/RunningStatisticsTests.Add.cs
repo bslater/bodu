@@ -43,6 +43,37 @@ public partial class RunningStatisticsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="long" /> samples accumulate with exact extrema and the expected moments.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenAccumulatingLongs_ShouldTrackExactExtremaAndMoments()
+    {
+        var stats = new RunningStatistics<long>();
+        foreach (var sample in new[] { -4_000_000_000L, 0L, 4_000_000_000L })
+            stats.Add(sample);
+
+        Assert.AreEqual(-4_000_000_000L, stats.Minimum);
+        Assert.AreEqual(4_000_000_000L, stats.Maximum);
+        Assert.AreEqual(0.0, stats.Mean, 1e-6);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="float" /> samples accumulate with exact single-precision extrema and
+    /// double-precision moments.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenAccumulatingFloats_ShouldTrackExactExtremaAndMoments()
+    {
+        var stats = new RunningStatistics<float>();
+        foreach (var sample in new[] { 1.5f, 2.5f, 3.5f })
+            stats.Add(sample);
+
+        Assert.AreEqual(1.5f, stats.Minimum);
+        Assert.AreEqual(3.5f, stats.Maximum);
+        Assert.AreEqual(2.5, stats.Mean, 1e-9);
+    }
+
+    /// <summary>
     /// Verifies that decimal samples keep their exact values in the extrema while the moments are computed in
     /// <see cref="double" />.
     /// </summary>
