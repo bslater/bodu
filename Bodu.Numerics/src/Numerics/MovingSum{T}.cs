@@ -19,10 +19,13 @@ namespace Bodu.Numerics;
 /// <para>
 /// This is the finance / telemetry "rolling window" idiom: the window holds the last <see cref="Capacity" /> samples,
 /// <see cref="Sum" /> and <see cref="Mean" /> always describe exactly those samples, and until the window fills (<see cref="IsFull" />)
-/// they describe the samples received so far. The sum is maintained in <typeparamref name="T" /> — exact for integer,
-/// <see cref="decimal" />, and <see cref="BigInteger" /> samples — while <see cref="Mean" /> is computed in
-/// <see cref="double" />. Addition follows <typeparamref name="T" />'s own overflow semantics (unchecked wrap-around
-/// for the fixed-width binary integers).
+/// they describe the samples received so far. Samples are accepted as <typeparamref name="T" /> and the sum is
+/// maintained in <typeparamref name="T" /> — exact for integer, <see cref="decimal" />, and <see cref="BigInteger" />
+/// samples — while <see cref="Mean" /> is a derived result computed and returned as a finite <see cref="double" />. The
+/// rolling-sum arithmetic is <b>checked</b>: a fixed-width integer sum that would overflow throws
+/// <see cref="OverflowException" /> from <see cref="Add" /> rather than silently wrapping, and the window state is left
+/// unchanged when that happens. Floating-point sums cannot overflow (they saturate per IEEE 754); a sum that has
+/// saturated to infinity surfaces as <see cref="OverflowException" /> when <see cref="Mean" /> is read.
 /// </para>
 /// <para>
 /// For floating-point samples the subtract-on-evict update accumulates rounding drift, so the sum is transparently
@@ -47,6 +50,17 @@ namespace Bodu.Numerics;
 public sealed class MovingSum<T>
     where T : INumber<T>
 {
+    /// <summary>
+    /// Whether <typeparamref name="T" /> is a binary floating-point type whose subtract-on-evict updates drift and
+    /// therefore needs the periodic exact rebuild; exact types (integers, <see cref="decimal" />,
+    /// <see cref="BigInteger" />) skip it — their incremental sum is already exact, and re-summing the ring in array
+    /// order could transiently overflow a checked prefix that the true window-order sum never reaches. A hardcoded
+    /// type matrix (the reflection-free pattern <c>Fraction&lt;T&gt;</c> uses for its bounds probe) keeps this
+    /// NativeAOT-safe.
+    /// </summary>
+    private static readonly bool s_requiresRebuild =
+        typeof(T) == typeof(double) || typeof(T) == typeof(float) || typeof(T) == typeof(Half);
+
     /// <summary>The ring buffer holding the current window contents.</summary>
     private readonly T[] _buffer;
 
@@ -116,13 +130,20 @@ public sealed class MovingSum<T>
     /// </summary>
     /// <value>The window mean, computed in <see cref="double" />.</value>
     /// <exception cref="InvalidOperationException">The window is empty.</exception>
+    /// <exception cref="OverflowException">
+    /// The window sum is outside the range representable by <see cref="double" /> (possible for unbounded integer
+    /// sample types such as <see cref="BigInteger" />, or a floating-point sum that has saturated to infinity).
+    /// </exception>
     public double Mean
     {
         get
         {
             NumericsThrowHelper.ThrowIfNoSamples(_count);
 
-            return double.CreateChecked(_sum) / _count;
+            var widened = double.CreateChecked(_sum);
+            NumericsThrowHelper.ThrowIfWideningOverflowed(widened);
+
+            return widened / _count;
         }
     }
 
@@ -131,35 +152,49 @@ public sealed class MovingSum<T>
     /// </summary>
     /// <param name="value">The sample to add. Must be finite.</param>
     /// <exception cref="ArgumentException"><paramref name="value" /> is NaN or infinite.</exception>
+    /// <exception cref="OverflowException">
+    /// The updated rolling sum overflows <typeparamref name="T" /> (fixed-width integer sample types; the arithmetic is
+    /// checked). The window state is unchanged when this is thrown. The subtract-then-add update can, in rare magnitude
+    /// combinations, overflow transiently even when the final sum would fit.
+    /// </exception>
     public void Add(T value)
     {
         NumericsThrowHelper.ThrowIfNotFinite(value);
 
+        // The new sum is computed in a checked context into a local before any state mutates, so an overflowing
+        // fixed-width integer sum throws while Count, the buffer, and Sum still describe the pre-Add window.
         if (_count < _buffer.Length)
         {
+            var grown = checked(_sum + value);
+
             _buffer[(_head + _count) % _buffer.Length] = value;
             _count++;
-            _sum += value;
+            _sum = grown;
             return;
         }
 
-        _sum -= _buffer[_head];
+        var rolled = checked(checked(_sum - _buffer[_head]) + value);
+
         _buffer[_head] = value;
         _head = (_head + 1) % _buffer.Length;
-        _sum += value;
+        _sum = rolled;
 
-        // One full window turnover of subtract-on-evict updates is the drift budget for floating-point T; rebuild
-        // the sum exactly from the buffered samples before starting the next turnover. Exact types recompute to the
-        // identical value, so the rebuild is a no-op for them beyond its O(Capacity) cost.
-        _evictionsSinceRebuild++;
-        if (_evictionsSinceRebuild == _buffer.Length)
+        // One full window turnover of subtract-on-evict updates is the drift budget for binary floating-point T;
+        // rebuild the sum exactly from the buffered samples before starting the next turnover. Exact types skip
+        // this: their incremental sum is already exact, and IEEE addition cannot throw, so the rebuild needs no
+        // checked context.
+        if (s_requiresRebuild)
         {
-            _evictionsSinceRebuild = 0;
-            var rebuilt = T.Zero;
-            foreach (var sample in _buffer)
-                rebuilt += sample;
+            _evictionsSinceRebuild++;
+            if (_evictionsSinceRebuild == _buffer.Length)
+            {
+                _evictionsSinceRebuild = 0;
+                var rebuilt = T.Zero;
+                foreach (var sample in _buffer)
+                    rebuilt += sample;
 
-            _sum = rebuilt;
+                _sum = rebuilt;
+            }
         }
     }
 
