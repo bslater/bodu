@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Hc128SpecKatReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -70,7 +70,9 @@ public static partial class Hc128SpecKatReader
             yield return Build(number.Value, setup, key, iv, words);
     }
 
-    /// <summary>Applies each <c>Kn = value</c> / <c>IVn = value</c> word override found in <paramref name="setup" />.</summary>
+    /// <summary>
+    /// Applies each <c>Kn = value</c> / <c>IVn = value</c> word override found in <paramref name="setup" />.
+    /// </summary>
     /// <param name="setup">The block's prose setup description.</param>
     /// <param name="key">The 16-byte key buffer to mutate.</param>
     /// <param name="iv">The 16-byte IV buffer to mutate.</param>
@@ -89,7 +91,9 @@ public static partial class Hc128SpecKatReader
         }
     }
 
-    /// <summary>Serializes the collected words little-endian and packages them as a keystream vector.</summary>
+    /// <summary>
+    /// Serializes the collected words little-endian and packages them as a keystream vector.
+    /// </summary>
     /// <param name="number">The Appendix A block number.</param>
     /// <param name="setup">The block's prose setup description.</param>
     /// <param name="key">The resolved key bytes.</param>

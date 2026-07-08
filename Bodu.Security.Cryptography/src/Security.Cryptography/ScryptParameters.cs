@@ -18,10 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed record ScryptParameters
 {
-    /// <summary>
-    /// The maximum memory footprint, in bytes, permitted for a single derivation: 2 GiB. Internal so tests can
-    /// validate it.
-    /// </summary>
+    /// <summary>The maximum memory footprint, in bytes, permitted for a single derivation: 2 GiB. Internal so tests can validate it.</summary>
     /// <remarks>
     /// scrypt fills <c>128 · N · r</c> bytes. A verification against an untrusted encoded hash must not let
     /// attacker-supplied cost parameters drive an unbounded allocation; this ceiling sits far above any realistic

@@ -142,7 +142,7 @@ public sealed class ExcelBinaryWorkbook
     /// </code>
     /// </example>
     public static ExcelBinaryWorkbook OpenRead(string path) =>
-        OpenRead(path, ExcelBinaryReaderOptions.Default);
+        OpenRead(path, ExcelBinaryReaderOptions.s_default);
 
     /// <summary>
     /// Opens a workbook from a file path with the specified options.
@@ -193,7 +193,7 @@ public sealed class ExcelBinaryWorkbook
     {
         ThrowHelper.ThrowIfNull(file);
 
-        return OpenRead(file.FullName, ExcelBinaryReaderOptions.Default);
+        return OpenRead(file.FullName, ExcelBinaryReaderOptions.s_default);
     }
 
     /// <summary>
@@ -216,7 +216,7 @@ public sealed class ExcelBinaryWorkbook
     /// <exception cref="ExcelBinaryUnsupportedException">Thrown when the workbook is not BIFF8.</exception>
     /// <exception cref="ExcelBinaryEncryptedWorkbookException">Thrown when the workbook is encrypted.</exception>
     public static ExcelBinaryWorkbook OpenRead(Stream stream, bool leaveOpen = false) =>
-        OpenCore(stream, leaveOpen, ExcelBinaryReaderOptions.Default);
+        OpenCore(stream, leaveOpen, ExcelBinaryReaderOptions.s_default);
 
     /// <summary>
     /// Opens a workbook over the supplied stream with the specified options.
@@ -396,7 +396,7 @@ public sealed class ExcelBinaryWorkbook
             ExcelWorksheetInfo[] worksheets = DescribeWorksheets(root, streamName, globals);
             ExcelWorkbookProperties properties = options.ReadDocumentProperties
                 ? ReadProperties(compound)
-                : ExcelWorkbookProperties.Empty;
+                : ExcelWorkbookProperties.s_empty;
 
             return new ExcelBinaryWorkbook(compound, streamName, globals, worksheets, properties);
         }

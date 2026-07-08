@@ -443,7 +443,9 @@ public sealed class GcmSivModeTransform
     /// little-endian element representation and the GHASH multiply's byte order.
     /// </summary>
     /// <param name="input">The source 16-byte block.</param>
-    /// <param name="output">The destination 16-byte block; receives <paramref name="input" /> with byte order reversed.</param>
+    /// <param name="output">
+    /// The destination 16-byte block; receives <paramref name="input" /> with byte order reversed.
+    /// </param>
     private static void ByteReverse(ReadOnlySpan<byte> input, Span<byte> output)
     {
         for (int i = 0; i < 16; i++)

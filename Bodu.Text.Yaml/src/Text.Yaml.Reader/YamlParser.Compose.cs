@@ -32,12 +32,12 @@ internal sealed partial class YamlParser
     /// <see cref="YamlLimits.AbsoluteMaxExpandedNodes" /> nodes when materialized into a tree.
     /// </summary>
     /// <remarks>
-    /// Aliases are stored as shared references, so the parsed row graph is linear in the input size, but every
-    /// consumer that walks the graph (the node DOM, the read-only document, and the serializer) expands each alias
-    /// into a full copy of its target. Chained aliases amplify exponentially — the "billion laughs" attack. This
-    /// pass computes the materialized node count once, memoized over the (already acyclic) graph, and rejects the
-    /// document before any consumer can exhaust memory. It runs after <see cref="DetectAliasCycles" /> so the walk
-    /// is guaranteed to terminate.
+    /// Aliases are stored as shared references, so the parsed row graph is linear in the input size, but every consumer
+    /// that walks the graph (the node DOM, the read-only document, and the serializer) expands each alias into a full
+    /// copy of its target. Chained aliases amplify exponentially — the "billion laughs" attack. This pass computes the
+    /// materialized node count once, memoized over the (already acyclic) graph, and rejects the document before any
+    /// consumer can exhaust memory. It runs after <see cref="DetectAliasCycles" /> so the walk is guaranteed to
+    /// terminate.
     /// </remarks>
     /// <exception cref="YamlFormatException">The expanded node count exceeds the permitted maximum.</exception>
     private void EnforceExpansionBudget()
@@ -100,7 +100,9 @@ internal sealed partial class YamlParser
     /// <param name="current">The running total.</param>
     /// <param name="addition">The count to add.</param>
     /// <returns>The new running total.</returns>
-    /// <exception cref="YamlFormatException">The total exceeds <see cref="YamlLimits.AbsoluteMaxExpandedNodes" />.</exception>
+    /// <exception cref="YamlFormatException">
+    /// The total exceeds <see cref="YamlLimits.AbsoluteMaxExpandedNodes" />.
+    /// </exception>
     private static long CheckedAdd(long current, long addition)
     {
         long total = current + addition;

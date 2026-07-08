@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyedKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,6 +20,8 @@ public abstract record KeyedKnownAnswer : CryptoKnownAnswer
     /// <summary>
     /// Gets the per-row key, or <see langword="null" /> to defer to the variant default supplied by the specification.
     /// </summary>
-    /// <value>The key bytes, an empty array for the unkeyed sentinel, or <see langword="null" /> for the variant default.</value>
+    /// <value>
+    /// The key bytes, an empty array for the unkeyed sentinel, or <see langword="null" /> for the variant default.
+    /// </value>
     public byte[]? Key { get; init; }
 }

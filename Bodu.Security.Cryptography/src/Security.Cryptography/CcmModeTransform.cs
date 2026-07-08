@@ -87,14 +87,11 @@ public sealed class CcmModeTransform
     /// <summary>Length of the CCM authentication tag is 128 bits (16 bytes). Byte length is derived inline via <see cref="TagSizeBits" /> / 8.</summary>
     private const int TagSizeBits = 128;
 
-    /// <summary>
-    /// The maximum message length, in bytes, encodable in the 3-byte length field (<c>q = 3</c>): <c>2²⁴ − 1</c>.
-    /// Internal so tests can validate the constant.
-    /// </summary>
+    /// <summary>The maximum message length, in bytes, encodable in the 3-byte length field (<c>q = 3</c>): <c>2²⁴ − 1</c>. Internal so tests can validate the constant.</summary>
     /// <remarks>
     /// The B0 length field occupies only bytes 13–15 and the CTR counter is likewise 3 bytes wide. A longer message
-    /// would silently truncate the encoded length (corrupting the CBC-MAC) and wrap the counter (reusing keystream),
-    /// so a message at or beyond this ceiling must be rejected rather than transformed.
+    /// would silently truncate the encoded length (corrupting the CBC-MAC) and wrap the counter (reusing keystream), so
+    /// a message at or beyond this ceiling must be rejected rather than transformed.
     /// </remarks>
     internal const int MaxPlaintextBytes = (1 << 24) - 1;
 
@@ -255,8 +252,8 @@ public sealed class CcmModeTransform
         CryptographyThrowHelper.ThrowIfAlreadyCompleted(_completed);
 
     /// <summary>
-    /// Validates that a message length fits the 3-byte CCM length field, rejecting a longer message that would
-    /// silently truncate the CBC-MAC length encoding and wrap the CTR counter.
+    /// Validates that a message length fits the 3-byte CCM length field, rejecting a longer message that would silently
+    /// truncate the CBC-MAC length encoding and wrap the CTR counter.
     /// </summary>
     /// <param name="length">The plaintext (or ciphertext) length, in bytes.</param>
     /// <exception cref="CryptographicException">The length exceeds <see cref="MaxPlaintextBytes" />.</exception>

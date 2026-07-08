@@ -72,9 +72,9 @@ namespace Bodu.Collections.Generic;
 /// </item>
 /// </list>
 /// <para>
-/// This type is not thread-safe. For thread-safe single-ended FIFO access, use
-/// <c>ConcurrentCircularBuffer&lt;T&gt;</c> in the Bodu.Collections.Concurrent package — its lock-free Vyukov
-/// implementation does not share storage with this hierarchy.
+/// This type is not thread-safe. For thread-safe single-ended FIFO access, use <c>ConcurrentCircularBuffer&lt;T&gt;</c>
+/// in the Bodu.Collections.Concurrent package — its lock-free Vyukov implementation does not share storage with this
+/// hierarchy.
 /// </para>
 /// </remarks>
 /// <example>

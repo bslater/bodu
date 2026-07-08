@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlLimits.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,11 +38,11 @@ internal static class YamlLimits
 
     /// <summary>The absolute maximum number of nodes a document may expand to once aliases are resolved.</summary>
     /// <remarks>
-    /// Aliases share a single physical subtree, so the parsed row graph stays small, but a consumer that
-    /// materializes the graph into a tree expands each alias into a full copy of its target. Chained aliases
-    /// (<c>b: [*a, *a]</c>, <c>c: [*b, *b]</c>, …) therefore expand exponentially — the classic "billion laughs"
-    /// amplification. Bounding the total expanded node count converts that amplification into a catchable
-    /// <see cref="YamlFormatException" /> before any consumer can exhaust memory.
+    /// Aliases share a single physical subtree, so the parsed row graph stays small, but a consumer that materializes
+    /// the graph into a tree expands each alias into a full copy of its target. Chained aliases (<c>b: [*a, *a]</c>,
+    /// <c>c: [*b, *b]</c>, …) therefore expand exponentially — the classic "billion laughs" amplification. Bounding the
+    /// total expanded node count converts that amplification into a catchable <see cref="YamlFormatException" /> before
+    /// any consumer can exhaust memory.
     /// </remarks>
     internal const long AbsoluteMaxExpandedNodes = 10_000_000;
 }

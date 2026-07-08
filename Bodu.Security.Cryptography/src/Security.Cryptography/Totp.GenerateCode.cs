@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Totp.GenerateCode.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -9,7 +9,8 @@ namespace Bodu.Security.Cryptography;
 public static partial class Totp
 {
     /// <summary>
-    /// Generates the RFC 6238 TOTP code for the specified secret and timestamp, counting time steps from the Unix epoch.
+    /// Generates the RFC 6238 TOTP code for the specified secret and timestamp, counting time steps from the Unix
+    /// epoch.
     /// </summary>
     /// <param name="secret">The shared secret key, as raw bytes.</param>
     /// <param name="timestamp">The instant for which to generate the code.</param>
@@ -19,14 +20,15 @@ public static partial class Totp
     /// <returns>The zero-padded decimal code, exactly <paramref name="digits" /> characters long.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="digits" /> is less than 6 or greater than 8, <paramref name="periodSeconds" /> is less than 1,
-    /// <paramref name="algorithm" /> is not a defined <see cref="OtpHashAlgorithm" /> value, or <paramref name="timestamp" />
-    /// is earlier than the Unix epoch.
+    /// <paramref name="algorithm" /> is not a defined <see cref="OtpHashAlgorithm" /> value, or
+    /// <paramref name="timestamp" /> is earlier than the Unix epoch.
     /// </exception>
     public static string GenerateCode(ReadOnlySpan<byte> secret, DateTimeOffset timestamp, int digits = 6, int periodSeconds = DefaultPeriodSeconds, OtpHashAlgorithm algorithm = OtpHashAlgorithm.Sha1) =>
         GenerateCode(secret, timestamp, DateTimeOffset.UnixEpoch, digits, periodSeconds, algorithm);
 
     /// <summary>
-    /// Generates the RFC 6238 TOTP code for the specified secret and timestamp, counting time steps from an explicit epoch.
+    /// Generates the RFC 6238 TOTP code for the specified secret and timestamp, counting time steps from an explicit
+    /// epoch.
     /// </summary>
     /// <param name="secret">The shared secret key, as raw bytes.</param>
     /// <param name="timestamp">The instant for which to generate the code.</param>
@@ -37,8 +39,8 @@ public static partial class Totp
     /// <returns>The zero-padded decimal code, exactly <paramref name="digits" /> characters long.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="digits" /> is less than 6 or greater than 8, <paramref name="periodSeconds" /> is less than 1,
-    /// <paramref name="algorithm" /> is not a defined <see cref="OtpHashAlgorithm" /> value, or <paramref name="timestamp" />
-    /// is earlier than <paramref name="epoch" />.
+    /// <paramref name="algorithm" /> is not a defined <see cref="OtpHashAlgorithm" /> value, or
+    /// <paramref name="timestamp" /> is earlier than <paramref name="epoch" />.
     /// </exception>
     public static string GenerateCode(ReadOnlySpan<byte> secret, DateTimeOffset timestamp, DateTimeOffset epoch, int digits, int periodSeconds, OtpHashAlgorithm algorithm)
     {

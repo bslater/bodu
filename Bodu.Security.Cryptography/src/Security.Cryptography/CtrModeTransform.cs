@@ -26,9 +26,8 @@ namespace Bodu.Security.Cryptography;
 /// That independence is also where the sharpest pitfall lives. To protect against keystream reuse, the transform tracks
 /// counter wrap-around: once the block-width counter rolls over its full 2^n value space back to zero, the next call to
 /// <see cref="Transform" /> throws <see cref="CryptographicException" />. Reusing a <c>(key, nonce)</c> pair across
-/// messages is catastrophic —
-/// the XOR of two ciphertexts recovers the XOR of the two plaintexts — so callers must ensure each counter value is
-/// used at most once per key.
+/// messages is catastrophic — the XOR of two ciphertexts recovers the XOR of the two plaintexts — so callers must
+/// ensure each counter value is used at most once per key.
 /// </para>
 /// <para>
 /// <strong>When to use CTR.</strong> The right confidentiality-only mode for new code that needs random access,
@@ -151,10 +150,10 @@ public sealed class CtrModeTransform
     /// wrap flag when the increment carries out past the most significant byte (a full 2^n rollover to zero).
     /// </summary>
     /// <remarks>
-    /// The counter spans the entire cipher block, so a carry propagating off the top byte means all 2^n counter
-    /// values have been consumed and the counter has returned to zero. Latching on that carry-out is O(1) and
-    /// detects the true keystream-reuse boundary; it fires at or before any return to the (possibly non-zero)
-    /// initial value, so it never permits reuse.
+    /// The counter spans the entire cipher block, so a carry propagating off the top byte means all 2^n counter values
+    /// have been consumed and the counter has returned to zero. Latching on that carry-out is O(1) and detects the true
+    /// keystream-reuse boundary; it fires at or before any return to the (possibly non-zero) initial value, so it never
+    /// permits reuse.
     /// </remarks>
     private void IncrementCounter()
     {

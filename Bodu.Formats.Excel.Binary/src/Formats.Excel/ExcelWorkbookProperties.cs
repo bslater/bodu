@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorkbookProperties.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ namespace Bodu.Formats.Excel;
 public sealed class ExcelWorkbookProperties
 {
     /// <summary>An empty property view used when neither property-set stream is present.</summary>
-    internal static readonly ExcelWorkbookProperties Empty = new(null, null);
+    internal static readonly ExcelWorkbookProperties s_empty = new(null, null);
 
     /// <summary>The parsed summary-information property set, when present.</summary>
     private readonly SummaryInformation? _summary;

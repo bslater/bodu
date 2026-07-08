@@ -850,7 +850,9 @@ public ref struct Utf8BencodeReader
         /// Gets or sets the seen keys grouped by a content hash, built lazily once the dictionary grows past the
         /// linear-scan threshold so a large dictionary's duplicate check stays O(1) average instead of O(n) per key.
         /// </summary>
-        /// <value>The hash-bucketed seen keys, or <see langword="null" /> while the linear scan is still in use.</value>
+        /// <value>
+        /// The hash-bucketed seen keys, or <see langword="null" /> while the linear scan is still in use.
+        /// </value>
         internal Dictionary<int, List<(int Start, int Length)>>? SeenByHash { get; set; }
     }
 }

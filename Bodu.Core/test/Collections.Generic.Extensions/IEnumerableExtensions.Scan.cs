@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Scan.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -151,7 +151,8 @@ public sealed partial class IEnumerableExtensionsTests_Scan
     }
 
     /// <summary>
-    /// Verifies that <c>Scan</c> throws <see cref="ArgumentNullException" /> when the selector is <see langword="null" />.
+    /// Verifies that <c>Scan</c> throws <see cref="ArgumentNullException" /> when the selector is
+    /// <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Scan_WhenSelectorIsNull_ShouldThrowExactly()

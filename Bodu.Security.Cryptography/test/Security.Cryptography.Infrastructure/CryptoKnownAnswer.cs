@@ -36,6 +36,8 @@ public abstract record CryptoKnownAnswer : IKat
     /// <summary>
     /// Gets the provenance of this vector, or <see langword="null" /> when the source is unspecified.
     /// </summary>
-    /// <value>A <see cref="KatProvenance" /> describing the source kind and citation, or <see langword="null" />.</value>
+    /// <value>
+    /// A <see cref="KatProvenance" /> describing the source kind and citation, or <see langword="null" />.
+    /// </value>
     public KatProvenance? Provenance { get; init; }
 }

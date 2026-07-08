@@ -303,7 +303,9 @@ public static partial class Ini
             /// <param name="name">The section name.</param>
             /// <param name="entries">The ordered entry list backing the section.</param>
             /// <param name="lookup">The case-resolved key lookup backing the section.</param>
-            /// <param name="positions">The case-resolved key-to-index map parallel to <paramref name="entries" />.</param>
+            /// <param name="positions">
+            /// The case-resolved key-to-index map parallel to <paramref name="entries" />.
+            /// </param>
             internal SectionBuilder(string name, List<IniEntry> entries, Dictionary<string, IniEntry> lookup, Dictionary<string, int> positions)
             {
                 Name = name;
@@ -351,7 +353,9 @@ public static partial class Ini
         /// <param name="line">The trimmed source line (not a comment, not a section header, not empty).</param>
         /// <param name="entries">The ordered entry list for the active section.</param>
         /// <param name="lookup">The key-to-entry lookup for the active section.</param>
-        /// <param name="positions">The key-to-index map for the active section, used for O(1) in-place replacement.</param>
+        /// <param name="positions">
+        /// The key-to-index map for the active section, used for O(1) in-place replacement.
+        /// </param>
         /// <param name="leadingComments">
         /// The trivia comments accumulated before this entry, or <see langword="null" /> when none were pending.
         /// </param>

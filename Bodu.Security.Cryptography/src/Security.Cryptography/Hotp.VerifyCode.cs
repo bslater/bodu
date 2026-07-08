@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Hotp.VerifyCode.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -40,22 +40,27 @@ public static partial class Hotp
     /// <param name="secret">The shared secret key, as raw bytes.</param>
     /// <param name="code">The candidate code supplied by the user.</param>
     /// <param name="counter">The first (lowest) counter value to test.</param>
-    /// <param name="lookAhead">The number of additional counter values to test beyond <paramref name="counter" />.</param>
+    /// <param name="lookAhead">
+    /// The number of additional counter values to test beyond <paramref name="counter" />.
+    /// </param>
     /// <param name="matchedCounter">
-    /// When this method returns <see langword="true" />, the counter value that matched; otherwise, <c>-1</c>. The server
-    /// should store <c>matchedCounter + 1</c> as the next expected counter.
+    /// When this method returns <see langword="true" />, the counter value that matched; otherwise, <c>-1</c>. The
+    /// server should store <c>matchedCounter + 1</c> as the next expected counter.
     /// </param>
     /// <param name="digits">The expected number of decimal digits.</param>
     /// <param name="algorithm">The HMAC hash algorithm to use.</param>
-    /// <returns><see langword="true" /> if <paramref name="code" /> matches any counter in the inclusive range <c>[counter, counter + lookAhead]</c>; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="code" /> matches any counter in the inclusive range
+    /// <c>[counter, counter + lookAhead]</c>; otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="digits" /> is less than 6 or greater than 8, <paramref name="lookAhead" /> is negative, or
     /// <paramref name="algorithm" /> is not a defined <see cref="OtpHashAlgorithm" /> value.
     /// </exception>
     /// <remarks>
-    /// The full window is always scanned — matching does not short-circuit — so the loop's duration does not reveal which
-    /// counter matched. A wide <paramref name="lookAhead" /> weakens security by admitting more candidate codes; RFC 4226
-    /// recommends a small look-ahead combined with throttling of failed attempts.
+    /// The full window is always scanned — matching does not short-circuit — so the loop's duration does not reveal
+    /// which counter matched. A wide <paramref name="lookAhead" /> weakens security by admitting more candidate codes;
+    /// RFC 4226 recommends a small look-ahead combined with throttling of failed attempts.
     /// </remarks>
     public static bool VerifyCode(ReadOnlySpan<byte> secret, ReadOnlySpan<char> code, long counter, int lookAhead, out long matchedCounter, int digits = 6, OtpHashAlgorithm algorithm = OtpHashAlgorithm.Sha1)
     {

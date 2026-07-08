@@ -228,14 +228,14 @@ public ref partial struct Utf8TomlReader
         _isFinalBlock = isFinalBlock;
         _specVersion = state.Options.SpecVersion;
         _maxDepth = state.Options.MaxDepth <= 0 ? TomlLimits.AbsoluteMaxDepth : Math.Min(state.Options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
-        _state = state.ScanState;
-        _containers = state.Containers;
-        _containerCount = state.ContainerCount;
-        _inlineAfterComma = state.InlineAfterComma;
-        _headerIsArray = state.HeaderIsArray;
-        _line = state.LinesRead + 1;
-        _lineStart = -state.BytesInLine;
-        _atStart = !state.PastStart;
+        _state = state._scanState;
+        _containers = state._containers;
+        _containerCount = state._containerCount;
+        _inlineAfterComma = state._inlineAfterComma;
+        _headerIsArray = state._headerIsArray;
+        _line = state._linesRead + 1;
+        _lineStart = -state._bytesInLine;
+        _atStart = !state._pastStart;
     }
 
     /// <summary>
@@ -308,14 +308,14 @@ public ref partial struct Utf8TomlReader
     public readonly TomlReaderState CurrentState =>
         new(new TomlReaderOptions { SpecVersion = _specVersion, MaxDepth = _maxDepth })
         {
-            ScanState = _state,
-            Containers = _containers,
-            ContainerCount = _containerCount,
-            InlineAfterComma = _inlineAfterComma,
-            HeaderIsArray = _headerIsArray,
-            LinesRead = _line - 1,
-            BytesInLine = _pos - _lineStart,
-            PastStart = !_atStart,
+            _scanState = _state,
+            _containers = _containers,
+            _containerCount = _containerCount,
+            _inlineAfterComma = _inlineAfterComma,
+            _headerIsArray = _headerIsArray,
+            _linesRead = _line - 1,
+            _bytesInLine = _pos - _lineStart,
+            _pastStart = !_atStart,
         };
 
     /// <summary>

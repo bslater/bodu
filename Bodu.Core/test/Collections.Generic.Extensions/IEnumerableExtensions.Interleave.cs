@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Interleave.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -83,8 +83,8 @@ public sealed partial class IEnumerableExtensionsTests_Interleave
     }
 
     /// <summary>
-    /// Verifies that <c>Interleave</c> enumerates each input exactly once and disposes every enumerator, including
-    /// when the inputs are of unequal length.
+    /// Verifies that <c>Interleave</c> enumerates each input exactly once and disposes every enumerator, including when
+    /// the inputs are of unequal length.
     /// </summary>
     [TestMethod]
     public void Interleave_WhenEnumerated_ShouldEnumerateEachInputOnceAndDisposeAll()

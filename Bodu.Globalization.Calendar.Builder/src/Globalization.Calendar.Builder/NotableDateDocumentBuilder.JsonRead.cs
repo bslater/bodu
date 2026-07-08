@@ -331,7 +331,7 @@ public sealed partial class NotableDateDocumentBuilder
             if (property.Value is not JsonObject body || !s_jsonStrategyElementNames.TryGetValue(property.Key, out string? elementName))
                 continue;
 
-            XElement element = new(BuilderXml.Namespace + elementName);
+            XElement element = new(BuilderXml.s_namespace + elementName);
             foreach (KeyValuePair<string, JsonNode?> attribute in body)
                 element.SetAttributeValue(attribute.Key, ConvertStrategyAttribute(attribute.Key, attribute.Value));
 

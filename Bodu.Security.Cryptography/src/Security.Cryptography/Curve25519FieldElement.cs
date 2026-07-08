@@ -31,19 +31,19 @@ namespace Bodu.Security.Cryptography;
 internal struct Curve25519FieldElement
 {
     /// <summary>Limb 0 of the radix-2^51 representation (bits 0–50 of the element value).</summary>
-    internal ulong L0;
+    internal ulong _l0;
 
     /// <summary>Limb 1 of the radix-2^51 representation (bits 51–101 of the element value).</summary>
-    internal ulong L1;
+    internal ulong _l1;
 
     /// <summary>Limb 2 of the radix-2^51 representation (bits 102–152 of the element value).</summary>
-    internal ulong L2;
+    internal ulong _l2;
 
     /// <summary>Limb 3 of the radix-2^51 representation (bits 153–203 of the element value).</summary>
-    internal ulong L3;
+    internal ulong _l3;
 
     /// <summary>Limb 4 of the radix-2^51 representation (bits 204–254 of the element value).</summary>
-    internal ulong L4;
+    internal ulong _l4;
 
     /// <summary>The number of bytes in the canonical little-endian encoding of a field element.</summary>
     internal const int EncodedSizeInBytes = 32;
@@ -61,11 +61,11 @@ internal struct Curve25519FieldElement
     /// <param name="l4">Limb 4 (bits 204–254).</param>
     internal Curve25519FieldElement(ulong l0, ulong l1, ulong l2, ulong l3, ulong l4)
     {
-        L0 = l0;
-        L1 = l1;
-        L2 = l2;
-        L3 = l3;
-        L4 = l4;
+        _l0 = l0;
+        _l1 = l1;
+        _l2 = l2;
+        _l3 = l3;
+        _l4 = l4;
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ internal struct Curve25519FieldElement
     /// <returns>The sum with limbs below 2^54.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Curve25519FieldElement Add(Curve25519FieldElement left, Curve25519FieldElement right) =>
-        new(left.L0 + right.L0, left.L1 + right.L1, left.L2 + right.L2, left.L3 + right.L3, left.L4 + right.L4);
+        new(left._l0 + right._l0, left._l1 + right._l1, left._l2 + right._l2, left._l3 + right._l3, left._l4 + right._l4);
 
     /// <summary>
     /// Copies <paramref name="source" /> into <paramref name="destination" /> when <paramref name="condition" /> is 1,
@@ -104,11 +104,11 @@ internal struct Curve25519FieldElement
     {
         ulong mask = 0UL - condition;
 
-        destination.L0 ^= mask & (destination.L0 ^ source.L0);
-        destination.L1 ^= mask & (destination.L1 ^ source.L1);
-        destination.L2 ^= mask & (destination.L2 ^ source.L2);
-        destination.L3 ^= mask & (destination.L3 ^ source.L3);
-        destination.L4 ^= mask & (destination.L4 ^ source.L4);
+        destination._l0 ^= mask & (destination._l0 ^ source._l0);
+        destination._l1 ^= mask & (destination._l1 ^ source._l1);
+        destination._l2 ^= mask & (destination._l2 ^ source._l2);
+        destination._l3 ^= mask & (destination._l3 ^ source._l3);
+        destination._l4 ^= mask & (destination._l4 ^ source._l4);
     }
 
     /// <summary>
@@ -123,23 +123,23 @@ internal struct Curve25519FieldElement
     {
         ulong mask = 0UL - condition;
 
-        ulong x0 = mask & (left.L0 ^ right.L0);
-        ulong x1 = mask & (left.L1 ^ right.L1);
-        ulong x2 = mask & (left.L2 ^ right.L2);
-        ulong x3 = mask & (left.L3 ^ right.L3);
-        ulong x4 = mask & (left.L4 ^ right.L4);
+        ulong x0 = mask & (left._l0 ^ right._l0);
+        ulong x1 = mask & (left._l1 ^ right._l1);
+        ulong x2 = mask & (left._l2 ^ right._l2);
+        ulong x3 = mask & (left._l3 ^ right._l3);
+        ulong x4 = mask & (left._l4 ^ right._l4);
 
-        left.L0 ^= x0;
-        left.L1 ^= x1;
-        left.L2 ^= x2;
-        left.L3 ^= x3;
-        left.L4 ^= x4;
+        left._l0 ^= x0;
+        left._l1 ^= x1;
+        left._l2 ^= x2;
+        left._l3 ^= x3;
+        left._l4 ^= x4;
 
-        right.L0 ^= x0;
-        right.L1 ^= x1;
-        right.L2 ^= x2;
-        right.L3 ^= x3;
-        right.L4 ^= x4;
+        right._l0 ^= x0;
+        right._l1 ^= x1;
+        right._l2 ^= x2;
+        right._l3 ^= x3;
+        right._l4 ^= x4;
     }
 
     /// <summary>
@@ -242,8 +242,8 @@ internal struct Curve25519FieldElement
     /// </remarks>
     internal static Curve25519FieldElement Multiply(Curve25519FieldElement left, Curve25519FieldElement right)
     {
-        ulong f0 = left.L0, f1 = left.L1, f2 = left.L2, f3 = left.L3, f4 = left.L4;
-        ulong g0 = right.L0, g1 = right.L1, g2 = right.L2, g3 = right.L3, g4 = right.L4;
+        ulong f0 = left._l0, f1 = left._l1, f2 = left._l2, f3 = left._l3, f4 = left._l4;
+        ulong g0 = right._l0, g1 = right._l1, g2 = right._l2, g3 = right._l3, g4 = right._l4;
 
         UInt128 t0 = ((UInt128)f0 * g0)
                    + ((UInt128)19 * (((UInt128)f1 * g4) + ((UInt128)f2 * g3) + ((UInt128)f3 * g2) + ((UInt128)f4 * g1)));
@@ -266,11 +266,11 @@ internal struct Curve25519FieldElement
     /// <returns>The scaled element with all limbs below 2^52.</returns>
     internal static Curve25519FieldElement MultiplySmall(Curve25519FieldElement value, uint factor)
     {
-        UInt128 t0 = (UInt128)value.L0 * factor;
-        UInt128 t1 = (UInt128)value.L1 * factor;
-        UInt128 t2 = (UInt128)value.L2 * factor;
-        UInt128 t3 = (UInt128)value.L3 * factor;
-        UInt128 t4 = (UInt128)value.L4 * factor;
+        UInt128 t0 = (UInt128)value._l0 * factor;
+        UInt128 t1 = (UInt128)value._l1 * factor;
+        UInt128 t2 = (UInt128)value._l2 * factor;
+        UInt128 t3 = (UInt128)value._l3 * factor;
+        UInt128 t4 = (UInt128)value._l4 * factor;
 
         return CarryReduce(t0, t1, t2, t3, t4);
     }
@@ -348,7 +348,7 @@ internal struct Curve25519FieldElement
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Curve25519FieldElement Reduce(Curve25519FieldElement value) =>
-        CarryReduce(value.L0, value.L1, value.L2, value.L3, value.L4);
+        CarryReduce(value._l0, value._l1, value._l2, value._l3, value._l4);
 
     /// <summary>
     /// Squares a field element modulo p, returning a loosely reduced result.
@@ -375,11 +375,11 @@ internal struct Curve25519FieldElement
         const ulong FourN = (1UL << 53) - 4;
 
         return new Curve25519FieldElement(
-            left.L0 + Four0 - right.L0,
-            left.L1 + FourN - right.L1,
-            left.L2 + FourN - right.L2,
-            left.L3 + FourN - right.L3,
-            left.L4 + FourN - right.L4);
+            left._l0 + Four0 - right._l0,
+            left._l1 + FourN - right._l1,
+            left._l2 + FourN - right._l2,
+            left._l3 + FourN - right._l3,
+            left._l4 + FourN - right._l4);
     }
 
     /// <summary>
@@ -433,7 +433,7 @@ internal struct Curve25519FieldElement
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(destination, EncodedSizeInBytes);
 
-        ulong t0 = L0, t1 = L1, t2 = L2, t3 = L3, t4 = L4;
+        ulong t0 = _l0, t1 = _l1, t2 = _l2, t3 = _l3, t4 = _l4;
 
         // Two carry passes bring every limb below 2^51 (plus a tiny excess on t0), so the value is below 2p.
         for (int pass = 0; pass < 2; pass++)

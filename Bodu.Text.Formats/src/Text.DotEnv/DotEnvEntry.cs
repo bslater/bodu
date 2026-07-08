@@ -41,7 +41,7 @@ namespace Bodu.Text.DotEnv;
 public sealed class DotEnvEntry
 {
     /// <summary>The shared empty comment collection used when an entry has no associated comments.</summary>
-    private static readonly IReadOnlyList<DotEnvComment> EmptyComments = Array.Empty<DotEnvComment>();
+    private static readonly IReadOnlyList<DotEnvComment> s_emptyComments = Array.Empty<DotEnvComment>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DotEnvEntry" /> class with no associated comments.
@@ -49,7 +49,7 @@ public sealed class DotEnvEntry
     /// <param name="key">The validated key name.</param>
     /// <param name="value">The fully processed value string — quotes stripped, escape sequences resolved.</param>
     internal DotEnvEntry(string key, string value)
-        : this(key, value, EmptyComments)
+        : this(key, value, s_emptyComments)
     {
     }
 

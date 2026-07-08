@@ -79,11 +79,13 @@ public sealed class DotEnvFormatException
     {
     }
 
-    private DotEnvFormatException(string message, int lineNumber, int? offset = null) : base(message, lineNumber, offset)
+    private DotEnvFormatException(string message, int lineNumber, int? offset = null)
+        : base(message, lineNumber, offset)
     {
     }
 
-    private DotEnvFormatException(string message, int lineNumber, int columnNumber, int? offset) : base(message, lineNumber, columnNumber, offset)
+    private DotEnvFormatException(string message, int lineNumber, int columnNumber, int? offset)
+        : base(message, lineNumber, columnNumber, offset)
     {
     }
 }

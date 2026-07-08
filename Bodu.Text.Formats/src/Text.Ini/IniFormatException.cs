@@ -79,11 +79,13 @@ public sealed class IniFormatException
     {
     }
 
-    private IniFormatException(string message, int lineNumber, int? offset = null) : base(message, lineNumber, offset)
+    private IniFormatException(string message, int lineNumber, int? offset = null)
+        : base(message, lineNumber, offset)
     {
     }
 
-    private IniFormatException(string message, int lineNumber, int columnNumber, int? offset) : base(message, lineNumber, columnNumber, offset)
+    private IniFormatException(string message, int lineNumber, int columnNumber, int? offset)
+        : base(message, lineNumber, columnNumber, offset)
     {
     }
 }

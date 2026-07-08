@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AesSubmissionKatReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,9 @@ public static class AesSubmissionKatReader
     /// </summary>
     /// <param name="stream">A readable stream over an AES-submission ECB KAT file.</param>
     /// <param name="provenance">The provenance stamped onto every emitted vector.</param>
-    /// <param name="label">A short label prefix distinguishing this file's rows (for example <c>VK</c> / <c>VT</c> / <c>TBL</c>).</param>
+    /// <param name="label">
+    /// A short label prefix distinguishing this file's rows (for example <c>VK</c> / <c>VT</c> / <c>TBL</c>).
+    /// </param>
     /// <returns>The vectors, in source order.</returns>
     public static IEnumerable<BlockCipherKnownAnswer> Read(Stream stream, KatProvenance provenance, string label)
     {

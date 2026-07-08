@@ -26,11 +26,7 @@ internal static class NotableDateDocumentParser
     /// <summary>The maximum number of characters an untrusted notable-date document may contain (64 MiB).</summary>
     private const long MaxDocumentCharacters = 64L * 1024 * 1024;
 
-    /// <summary>
-    /// The reader settings used to materialize an untrusted document. DTD and entity processing are prohibited —
-    /// blocking XXE and entity-expansion (billion-laughs) attacks explicitly rather than relying on the framework
-    /// default — no external resolver is used, and the total document size is bounded.
-    /// </summary>
+    /// <summary>The reader settings used to materialize an untrusted document. DTD and entity processing are prohibited — blocking XXE and entity-expansion (billion-laughs) attacks explicitly rather than relying on the framework default — no external resolver is used, and the total document size is bounded.</summary>
     private static readonly XmlReaderSettings s_readerSettings = new()
     {
         DtdProcessing = DtdProcessing.Prohibit,

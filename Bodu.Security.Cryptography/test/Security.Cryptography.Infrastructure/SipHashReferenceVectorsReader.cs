@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SipHashReferenceVectorsReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,15 +21,20 @@ public static partial class SipHashReferenceVectorsReader
         [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F];
 
     /// <summary>
-    /// Reads the named vector table from <paramref name="stream" /> and yields one <see cref="MessageDigestKnownAnswer" />
-    /// per row, with the reference key applied and the incremental message reconstructed from the row index.
+    /// Reads the named vector table from <paramref name="stream" /> and yields one
+    /// <see cref="MessageDigestKnownAnswer" /> per row, with the reference key applied and the incremental message
+    /// reconstructed from the row index.
     /// </summary>
     /// <param name="stream">A readable stream over the <c>vectors.h</c> source text.</param>
     /// <param name="tableName">The C array identifier to extract, for example <c>vectors_sip128</c>.</param>
-    /// <param name="outputBytes">The per-row output width in bytes (8 for the 64-bit variant, 16 for the 128-bit variant).</param>
+    /// <param name="outputBytes">
+    /// The per-row output width in bytes (8 for the 64-bit variant, 16 for the 128-bit variant).
+    /// </param>
     /// <param name="source">Optional human-readable citation propagated into each emitted vector's name.</param>
     /// <returns>One vector per table row, in source order.</returns>
-    /// <exception cref="FormatException">The named table cannot be located, or its byte count is not a multiple of <paramref name="outputBytes" />.</exception>
+    /// <exception cref="FormatException">
+    /// The named table cannot be located, or its byte count is not a multiple of <paramref name="outputBytes" />.
+    /// </exception>
     public static IEnumerable<MessageDigestKnownAnswer> Read(Stream stream, string tableName, int outputBytes, string? source = null)
     {
         using var reader = new StreamReader(stream);
@@ -70,7 +75,9 @@ public static partial class SipHashReferenceVectorsReader
         }
     }
 
-    /// <summary>Matches a single C hex byte literal such as <c>0x3f</c>.</summary>
+    /// <summary>
+    /// Matches a single C hex byte literal such as <c>0x3f</c>.
+    /// </summary>
     /// <returns>The compiled regular expression.</returns>
     [GeneratedRegex(@"0x([0-9a-fA-F]{1,2})")]
     private static partial Regex ByteToken();

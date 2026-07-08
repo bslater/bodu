@@ -27,15 +27,14 @@ namespace Bodu.Security.Cryptography;
 /// <item>
 /// <description>
 /// Encrypt: the penultimate block is CBC-encrypted to E; the final partial block P_n is zero-padded and CBC-chained
-/// against E (that is, <c>(P_n || 0) XOR E</c> is encrypted) to produce C_n (full block); C_{n-1} = E[0:m]. Output:
-/// C_n then C_{n-1}.
+/// against E (that is, <c>(P_n || 0) XOR E</c> is encrypted) to produce C_n (full block); C_{n-1} = E[0:m]. Output: C_n
+/// then C_{n-1}.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// Decrypt: C_n is decrypted to recover <c>(P_n XOR E[0:m]) || E[m:]</c>; E is reconstructed from the truncated
-/// C_{n-1} and the recovered high bytes; P_n is obtained by XORing off E[0:m]; then the full E is CBC-decrypted to
-/// P_{n-1}.
+/// Decrypt: C_n is decrypted to recover <c>(P_n XOR E[0:m]) || E[m:]</c>; E is reconstructed from the truncated C_{n-1}
+/// and the recovered high bytes; P_n is obtained by XORing off E[0:m]; then the full E is CBC-decrypted to P_{n-1}.
 /// </description>
 /// </item>
 /// </list>

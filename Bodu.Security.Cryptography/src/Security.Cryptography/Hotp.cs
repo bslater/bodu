@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Hotp.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -15,8 +15,8 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// HOTP derives a short decimal code from a shared secret and a monotonically increasing counter: it computes an HMAC of
-/// the 8-byte big-endian counter under the secret, applies the RFC 4226 §5.3 dynamic-truncation function to select a
+/// HOTP derives a short decimal code from a shared secret and a monotonically increasing counter: it computes an HMAC
+/// of the 8-byte big-endian counter under the secret, applies the RFC 4226 §5.3 dynamic-truncation function to select a
 /// 31-bit value from the MAC, and reduces that value modulo <c>10^digits</c> to produce a zero-padded decimal string.
 /// The counter is advanced by one on each successful authentication; <see cref="Totp" /> layers a time-derived counter
 /// on top of the same construction.
@@ -24,13 +24,14 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The shared secret is supplied as raw key bytes. Authenticator applications conventionally exchange the secret as a
 /// Base32 string inside an <c>otpauth://</c> URI; decode it to bytes before calling these methods (for example with
-/// <c>Bodu.Text.Encoding.Base32</c>) — this type deliberately takes no dependency on a particular text encoding. RFC 4226
-/// recommends a secret of at least 128 bits, and 160 bits (the SHA-1 output length) for full strength.
+/// <c>Bodu.Text.Encoding.Base32</c>) — this type deliberately takes no dependency on a particular text encoding. RFC
+/// 4226 recommends a secret of at least 128 bits, and 160 bits (the SHA-1 output length) for full strength.
 /// </para>
 /// <para>
 /// Like the rest of the library, this implementation offers best-effort side-channel resistance and has not been
-/// independently audited. Code verification uses <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
-/// so that a valid-but-wrong code is not distinguishable from an invalid one by comparison timing.
+/// independently audited. Code verification uses
+/// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> so that a
+/// valid-but-wrong code is not distinguishable from an invalid one by comparison timing.
 /// </para>
 /// </remarks>
 /// <example>
@@ -45,26 +46,27 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 public static partial class Hotp
 {
-    /// <summary>
-    /// The smallest number of decimal digits permitted for a generated code.
-    /// </summary>
+    /// <summary>The smallest number of decimal digits permitted for a generated code.</summary>
     internal const int MinDigits = 6;
 
-    /// <summary>
-    /// The largest number of decimal digits permitted for a generated code. RFC 4226's reference truncation table caps
-    /// the meaningful width at eight digits, because dynamic truncation yields a 31-bit value.
-    /// </summary>
+    /// <summary>The largest number of decimal digits permitted for a generated code. RFC 4226's reference truncation table caps the meaningful width at eight digits, because dynamic truncation yields a 31-bit value.</summary>
     internal const int MaxDigits = 8;
 
     /// <summary>
-    /// Computes the HOTP code for a single counter value and writes it, zero-padded, into <paramref name="destination" />.
+    /// Computes the HOTP code for a single counter value and writes it, zero-padded, into
+    /// <paramref name="destination" />.
     /// </summary>
     /// <param name="secret">The shared secret key.</param>
     /// <param name="counter">The moving counter value.</param>
-    /// <param name="digits">The number of decimal digits to produce; the length of <paramref name="destination" />.</param>
+    /// <param name="digits">
+    /// The number of decimal digits to produce; the length of <paramref name="destination" />.
+    /// </param>
     /// <param name="algorithm">The HMAC hash algorithm to use.</param>
     /// <param name="destination">The span that receives the decimal code, one character per digit.</param>
-    /// <remarks>Shared core used by both the public generation surface and by <see cref="Totp" />; assumes its arguments have already been validated.</remarks>
+    /// <remarks>
+    /// Shared core used by both the public generation surface and by <see cref="Totp" />; assumes its arguments have
+    /// already been validated.
+    /// </remarks>
     internal static void GenerateInto(ReadOnlySpan<byte> secret, long counter, int digits, OtpHashAlgorithm algorithm, Span<char> destination)
     {
         Span<byte> counterBytes = stackalloc byte[sizeof(long)];
@@ -105,8 +107,14 @@ public static partial class Hotp
     /// <param name="counter">The counter value to test.</param>
     /// <param name="digits">The expected number of decimal digits.</param>
     /// <param name="algorithm">The HMAC hash algorithm to use.</param>
-    /// <returns><see langword="true" /> if <paramref name="code" /> matches the computed code; otherwise, <see langword="false" />.</returns>
-    /// <remarks>Shared core used by both the public verification surface and by <see cref="Totp" />; assumes its arguments have already been validated.</remarks>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="code" /> matches the computed code; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Shared core used by both the public verification surface and by <see cref="Totp" />; assumes its arguments have
+    /// already been validated.
+    /// </remarks>
     internal static bool VerifyCore(ReadOnlySpan<byte> secret, ReadOnlySpan<char> code, long counter, int digits, OtpHashAlgorithm algorithm)
     {
         // Length is not secret, so an early return here leaks nothing; FixedTimeEquals also requires equal lengths.
@@ -131,8 +139,8 @@ public static partial class Hotp
     }
 
     /// <summary>
-    /// Computes the HMAC of <paramref name="source" /> under <paramref name="secret" /> for the selected one-time-password
-    /// hash algorithm, writing the result into <paramref name="destination" />.
+    /// Computes the HMAC of <paramref name="source" /> under <paramref name="secret" /> for the selected
+    /// one-time-password hash algorithm, writing the result into <paramref name="destination" />.
     /// </summary>
     /// <param name="algorithm">The HMAC hash algorithm to use.</param>
     /// <param name="secret">The shared secret key.</param>

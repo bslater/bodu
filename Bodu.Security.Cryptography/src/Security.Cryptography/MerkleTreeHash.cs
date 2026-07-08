@@ -118,8 +118,8 @@ public sealed class MerkleTreeHash
     /// <param name="algorithmFactory">
     /// A typed factory whose <see cref="IHashAlgorithmFactory{T}.Create" /> method is invoked once to obtain the
     /// <see cref="HashAlgorithm" /> instance reused for every leaf and internal node. Must not be
-    /// <see langword="null" />. The one-shot hashing path resets the algorithm between nodes, so a single instance
-    /// is sufficient and no state is shared across concurrent operations.
+    /// <see langword="null" />. The one-shot hashing path resets the algorithm between nodes, so a single instance is
+    /// sufficient and no state is shared across concurrent operations.
     /// </param>
     /// <param name="blockSize">
     /// The size in bytes of each leaf block. Must be greater than zero. Defaults to 1024.
@@ -315,8 +315,8 @@ public sealed class MerkleTreeHash
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Computes a node hash as <c>H(<paramref name="prefix" /> || <paramref name="payload" />)</c> using the
-    /// instance's reused <see cref="HashAlgorithm" />, applying RFC 6962 leaf/internal-node domain separation.
+    /// Computes a node hash as <c>H(<paramref name="prefix" /> || <paramref name="payload" />)</c> using the instance's
+    /// reused <see cref="HashAlgorithm" />, applying RFC 6962 leaf/internal-node domain separation.
     /// </summary>
     /// <param name="prefix">The domain-separation prefix byte (leaf or internal node).</param>
     /// <param name="payload">The node payload — raw leaf bytes, or the concatenated child hashes.</param>

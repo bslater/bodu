@@ -10,12 +10,10 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base62
 {
-    /// <summary>
-    /// The maximum number of characters accepted by a single decode. Internal so tests can validate the bound.
-    /// </summary>
+    /// <summary>The maximum number of characters accepted by a single decode. Internal so tests can validate the bound.</summary>
     /// <remarks>
-    /// Base62 decode accumulates into a growing <see cref="System.Numerics.BigInteger" />, making it O(n²) in the
-    /// input length. The cap bounds the worst-case cost against untrusted input while admitting any realistic payload.
+    /// Base62 decode accumulates into a growing <see cref="System.Numerics.BigInteger" />, making it O(n²) in the input
+    /// length. The cap bounds the worst-case cost against untrusted input while admitting any realistic payload.
     /// </remarks>
     internal const int MaxDecodeInputLength = 65536;
 

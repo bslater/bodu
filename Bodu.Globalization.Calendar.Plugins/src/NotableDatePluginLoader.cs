@@ -185,7 +185,9 @@ public static class NotableDatePluginLoader
     /// Evaluates the trust policy against the supplied context and, when trusted, activates the assembly's declared
     /// plugin.
     /// </summary>
-    /// <param name="assembly">The candidate assembly whose plugin attribute is read after the trust check passes.</param>
+    /// <param name="assembly">
+    /// The candidate assembly whose plugin attribute is read after the trust check passes.
+    /// </param>
     /// <param name="trustContext">The metadata the trust policy evaluates.</param>
     /// <param name="trustPolicy">The policy that must trust the assembly before its plugin is activated.</param>
     /// <param name="log">The logger that receives diagnostics for the load.</param>
