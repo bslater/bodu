@@ -15,19 +15,30 @@ caching; that is added in front (see the caching guide).
 
 ## The providers at a glance
 
-| Provider | Package | Base | Source format | DI registration |
-|---|---|---|---|---|
-| Reserve Bank of Australia | `Bodu.Financial.ExchangeRates.Rba` | AUD | published `.xls` workbooks, per **era** | `AddRbaHistoricalRates()` |
-| European Central Bank | `Bodu.Financial.ExchangeRates.Ecb` | EUR | the `eurofxref` XML **feed** | `AddEcbReferenceRates()` |
-| Bank of England | `Bodu.Financial.ExchangeRates.Boe` | GBP | CSV over a date **window** | `AddBoeReferenceRates()` |
-| Yahoo Finance | `Bodu.Financial.ExchangeRates.Yahoo` | *any pair* | per-**ticker** chart JSON | `AddYahooExchangeRates()` |
-| OFX (ofx.com) | `Bodu.Financial.ExchangeRates.Ofx` | *any pair* | per-**pair** spot-rate-history JSON | `AddOfxExchangeRates()` |
-| XE.com | `Bodu.Financial.ExchangeRates.Xe` | *any pair* | per-**pair** charting-rates JSON | `AddXeExchangeRates()` |
-| OANDA | `Bodu.Financial.ExchangeRates.Oanda` | *any pair* | per-**pair** rate-history JSON | `AddOandaExchangeRates()` |
+| Provider | Package | Base | Source format | History depth | DI registration |
+|---|---|---|---|---|---|
+| Reserve Bank of Australia | `Bodu.Financial.ExchangeRates.Rba` | AUD | published `.xls` workbooks, per **era** | since 1983‑01‑01 (first era) | `AddRbaHistoricalRates()` |
+| European Central Bank | `Bodu.Financial.ExchangeRates.Ecb` | EUR | the `eurofxref` XML **feed** | since 1999‑01‑04 (euro epoch) | `AddEcbReferenceRates()` |
+| Bank of England | `Bodu.Financial.ExchangeRates.Boe` | GBP | CSV over a date **window** | since 1975‑01‑02 (daily spot inception) | `AddBoeReferenceRates()` |
+| Yahoo Finance | `Bodu.Financial.ExchangeRates.Yahoo` | *any pair* | per-**ticker** chart JSON | since 2003‑12‑01 (chart inception) | `AddYahooExchangeRates()` |
+| OFX (ofx.com) | `Bodu.Financial.ExchangeRates.Ofx` | *any pair* | per-**pair** spot-rate-history JSON | unbounded (multi-decade, no published floor) | `AddOfxExchangeRates()` |
+| XE.com | `Bodu.Financial.ExchangeRates.Xe` | *any pair* | per-**pair** charting-rates JSON | rolling ~10 years (server-determined, estimated) | `AddXeExchangeRates()` |
+| OANDA | `Bodu.Financial.ExchangeRates.Oanda` | *any pair* | per-**pair** rate-history JSON | rolling ~180 days | `AddOandaExchangeRates()` |
 
 RBA, ECB, and BoE quote one base currency against many others; direct (`BASE→X`)
 and inverse (`X→BASE`) lookups are supported, cross pairs are not. Yahoo, OFX, XE,
 and OANDA fetch a distinct series per pair, so they serve arbitrary pairs directly.
+
+Every provider advertises its history depth through
+[`HistoryAvailability`](xref:Bodu.Financial.WebExchangeRateProvider.HistoryAvailability),
+so a caller can resolve the earliest date worth requesting before issuing a
+lookup. The value is advisory — it describes the source's published coverage,
+not a per-day or per-series guarantee: BoE and Yahoo floors reflect their
+longest-running series (later-inception series exist), ECB's floor follows the
+configured feeds (rolling when the full-history feed is excluded), RBA's
+follows the configured era catalogue, and XE's window is an estimate of a
+server-determined range. The pair providers expose the value as a settable
+option; BoE adds its own options property for the same purpose.
 
 ## What every provider shares
 
