@@ -54,6 +54,38 @@ Check(BigDecimal.Divide(10m, 3m, 2, MidpointRounding.ToEven) == BigDecimal.FromD
 Check(CreateChecked<BigDecimal, int>(5) == BigDecimal.FromDecimal(5m), "BigDecimal.CreateChecked");
 Check(int.CreateTruncating(BigDecimal.Parse("3.5", System.Globalization.CultureInfo.InvariantCulture)) == 3, "BigDecimal int.CreateTruncating");
 
+// The statistics accumulators widen samples with double.CreateChecked over a generic T and index [InlineArray]
+// storage, both of which must resolve without reflection under AOT.
+var stats = new RunningStatistics<int>();
+foreach (var sample in new[] { 1, 2, 3, 4 })
+    stats.Add(sample);
+
+Check(stats.Mean == 2.5 && stats.Minimum == 1 && stats.Maximum == 4, "RunningStatistics<int> moments");
+
+var median = RunningQuantile<double>.CreateMedian();
+foreach (var observation in new[]
+{
+    0.02, 0.15, 0.74, 3.39, 0.83, 22.37, 10.15, 15.43, 38.62, 15.92,
+    34.60, 10.28, 1.47, 0.40, 0.05, 11.39, 0.27, 0.42, 0.09, 11.37,
+})
+{
+    median.Add(observation);
+}
+
+Check(Math.Abs(median.Value - 4.44063) < 1e-4, "RunningQuantile<double> P² estimate");
+
+var movingSum = new MovingSum<decimal>(3);
+foreach (var sample in new[] { 1.5m, 2.5m, 3.5m, 4.5m })
+    movingSum.Add(sample);
+
+Check(movingSum.Sum == 10.5m, "MovingSum<decimal> window sum");
+
+var movingMinMax = new MovingMinMax<int>(3);
+foreach (var sample in new[] { 5, 1, 4, 2 })
+    movingMinMax.Add(sample);
+
+Check(movingMinMax.Minimum == 1 && movingMinMax.Maximum == 4, "MovingMinMax<int> window extrema");
+
 if (failures == 0)
 {
     Console.WriteLine("Bodu.Numerics AOT smoke: all checks passed.");

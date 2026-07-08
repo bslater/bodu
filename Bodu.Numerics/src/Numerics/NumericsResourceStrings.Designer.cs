@@ -293,5 +293,50 @@ namespace Bodu.Numerics {
                 return ResourceManager.GetString("Arg_Invalid_IntervalNaNEndpoint", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A sample must be a finite number; NaN and infinite values cannot be accumulated..
+        /// </summary>
+        internal static string Arg_Invalid_NonFiniteSample {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_NonFiniteSample", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The probability must be greater than 0 and less than 1..
+        /// </summary>
+        internal static string Arg_OutOfRange_QuantileProbability {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_QuantileProbability", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The accumulator contains no samples..
+        /// </summary>
+        internal static string Op_Invalid_EmptyAccumulator {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EmptyAccumulator", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to At least two samples are required to compute a sample variance..
+        /// </summary>
+        internal static string Op_Invalid_SampleVarianceRequiresTwo {
+            get {
+                return ResourceManager.GetString("Op_Invalid_SampleVarianceRequiresTwo", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The sample is outside the range representable by a Double..
+        /// </summary>
+        internal static string Overflow_SampleOutsideDoubleRange {
+            get {
+                return ResourceManager.GetString("Overflow_SampleOutsideDoubleRange", resourceCulture);
+            }
+        }
     }
 }

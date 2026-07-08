@@ -428,6 +428,10 @@
           href: numerics/interval-algebra.md
         - name: Discrete integer intervals
           href: numerics/discrete-intervals.md
+        - name: Working with BigDecimal
+          href: numerics/bigdecimal.md
+        - name: Running and moving statistics
+          href: numerics/running-statistics.md
         - name: Generic math constraints
           href: numerics/generic-math-constraints.md
     - name: Bodu.Financial

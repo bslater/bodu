@@ -22,10 +22,21 @@ types covering common but missing gaps in the .NET BCL:
   `int` scale). Use it for exact decimal values that exceed
   `System.Decimal`'s 28–29 digit precision or its exponent range, or
   that must preserve trailing-zero scale.
+- **[`RunningStatistics<T>`](xref:Bodu.Numerics.RunningStatistics`1)**
+  / **[`RunningQuantile<T>`](xref:Bodu.Numerics.RunningQuantile`1)** —
+  single-pass, constant-space stream accumulators: Welford
+  count/min/max/mean/variance with a parallel `Combine` merge, and a
+  P² streaming quantile estimator.
+- **[`MovingSum<T>`](xref:Bodu.Numerics.MovingSum`1)** /
+  **[`MovingMinMax<T>`](xref:Bodu.Numerics.MovingMinMax`1)** —
+  rolling-window companions reporting the sum/mean and min/max of the
+  most recent N samples in amortized O(1).
 
-All three types are `readonly struct`, value-equatable, allocation-free
-in their common paths, and integrate with the generic-math interfaces
-that ship in .NET 8+.
+The value types (`Fraction<T>`, `Interval<T>`, `BigDecimal`) are
+`readonly struct`, value-equatable, and allocation-free in their
+common paths; the statistics accumulators are *mutable* structs (with
+class-based rolling windows). Everything integrates with the
+generic-math interfaces that ship in .NET 8+.
 
 > **Looking for `Money<TCurrency>`, currencies, or FX?** Those now
 > live in the companion **[`Bodu.Financial`](../financial/index.md)**
@@ -78,6 +89,11 @@ that ship in .NET 8+.
 </div>
 
 <div class="bodu-card">
+  <h3><a href="running-statistics.md">Running and moving statistics</a></h3>
+  <p><code>RunningStatistics&lt;T&gt;</code>, <code>RunningQuantile&lt;T&gt;</code>, and the rolling-window <code>MovingSum&lt;T&gt;</code> / <code>MovingMinMax&lt;T&gt;</code> — single-pass stream summaries, the mutable-struct usage rules, and the P² estimator's behaviour.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="generic-math-constraints.md">Generic math constraints</a></h3>
   <p>Writing code generic over <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code> through the .NET <code>INumber&lt;T&gt;</code> / <code>IBinaryInteger&lt;T&gt;</code> abstractions.</p>
 </div>
@@ -89,7 +105,8 @@ that ship in .NET 8+.
 1. **[Working with `Fraction<T>`](fraction.md)** — the rational type and its arithmetic surface.
 2. **[Formatting and parsing `Fraction<T>`](formatting-and-parsing.md)** — once values are flowing, control how they render and what text round-trips.
 3. **[Working with `Interval<T>`](interval.md)** — the interval type, independent of fractions; read in any order.
-4. **[JSON serialization](json-serialization.md)** — persist either type; read last, after the value semantics are familiar.
+4. **[Running and moving statistics](running-statistics.md)** — the stream accumulators and rolling windows; independent of the other types.
+5. **[JSON serialization](json-serialization.md)** — persist the value types; read last, after the value semantics are familiar.
 
 ## See also
 
@@ -100,6 +117,8 @@ that ship in .NET 8+.
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1)
 - [`BigDecimal` API reference](xref:Bodu.Numerics.BigDecimal)
+- [`RunningStatistics<T>` API reference](xref:Bodu.Numerics.RunningStatistics`1)
+- [`RunningQuantile<T>` API reference](xref:Bodu.Numerics.RunningQuantile`1)
 - [`Interval` static factory helpers](xref:Bodu.Numerics.Interval)
 - [`Bodu.Financial` overview](../financial/index.md) — money,
   currency, FX.
