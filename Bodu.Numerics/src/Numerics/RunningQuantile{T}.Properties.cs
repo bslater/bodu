@@ -30,14 +30,15 @@ public partial struct RunningQuantile<T>
         _count == 0;
 
     /// <summary>
-    /// Gets the current estimate of the target quantile.
+    /// Gets the current estimated value of the target quantile for the observed sample stream.
     /// </summary>
     /// <value>
-    /// The linearly interpolated empirical quantile while fewer than five samples are held; the P² middle-marker
-    /// estimate from the fifth sample onward.
+    /// The exact linearly interpolated empirical quantile while fewer than five samples are held; the P² middle-marker
+    /// estimate from the fifth sample onward. From that point the value is an approximation and is not guaranteed to
+    /// equal the quantile obtained by sorting all observed samples.
     /// </value>
     /// <exception cref="InvalidOperationException">The estimator is empty.</exception>
-    public readonly double Value
+    public readonly double Estimate
     {
         get
         {

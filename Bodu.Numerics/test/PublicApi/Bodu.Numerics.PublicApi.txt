@@ -381,8 +381,8 @@ struct Bodu.Numerics.RunningQuantile`1
     method Void Add(T)
     method Void Reset()
     property Boolean IsEmpty
+    property Double Estimate
     property Double Probability
-    property Double Value
     property Int64 Count
 struct Bodu.Numerics.RunningStatistics`1
     method Bodu.Numerics.RunningStatistics`1[T] Combine(Bodu.Numerics.RunningStatistics`1[T], Bodu.Numerics.RunningStatistics`1[T])

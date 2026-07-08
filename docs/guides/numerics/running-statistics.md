@@ -16,11 +16,22 @@ stored. Four types cover the two common shapes:
 | `MovingMinMax<T>` | last N samples | minimum and maximum |
 
 All four are generic over `INumber<T>`, so they accept any numeric
-sample type. Extrema and window sums are tracked **exactly in `T`**;
-means, variances, and quantile estimates are computed in `double`
-(each sample is widened with `double.CreateChecked`). A sample that
-cannot survive the widening — an unbounded `BigInteger` beyond
-`double`'s range — throws `OverflowException` at `Add`.
+sample type — but the contract deliberately splits by result:
+
+- **Exact, in `T`:** extrema (`Minimum` / `Maximum`) and the rolling
+  window `Sum`.
+- **Approximate, as finite `double`:** every derived statistical
+  moment — mean, variance, standard deviation, and the quantile
+  estimate. Each sample is widened with `double.CreateChecked`, so
+  `decimal` samples take on binary floating-point precision in these
+  results, and a value that cannot survive the widening — an unbounded
+  `BigInteger` beyond `double`'s range — throws `OverflowException`
+  (at `Add` for the running accumulators, at `Mean` for a
+  `MovingSum<T>` whose exact sum has outgrown `double`).
+
+For exact decimal or arbitrary-precision statistical moments, compute
+them from your own retained samples — these types never store the
+stream.
 
 ## Samples must be finite
 
@@ -90,7 +101,10 @@ var combined = RunningStatistics<double>.Combine(partA, partB);
 `Combine` uses the Chan et al. parallel-variance merge, so a stream
 can be partitioned across workers, accumulated independently, and
 recombined — the result equals accumulating the concatenated stream
-(up to ordinary floating-point rounding).
+(up to ordinary floating-point rounding). Floating-point addition is
+not associative, so different partitionings or merge orders can
+differ in the last bits; when bitwise-reproducible results matter,
+use a stable partitioning strategy and a deterministic merge order.
 
 ## Streaming quantiles: `RunningQuantile<T>`
 
@@ -106,12 +120,12 @@ var median = RunningQuantile<double>.CreateMedian();
 foreach (var latency in latencies)
     p95.Add(latency);
 
-p95.Value;   // streaming 95th-percentile estimate
+p95.Estimate;   // streaming 95th-percentile estimate
 ```
 
 Behavioural notes:
 
-- The first five samples are held exactly; below five, `Value`
+- The first five samples are held exactly; below five, `Estimate`
   returns the linearly interpolated *empirical* quantile, and from
   the fifth sample the P² markers take over.
 - The estimate is an approximation that improves with stream length.
@@ -147,6 +161,9 @@ foreach (var price in prices)
 - `MovingSum<T>.Sum` is maintained in `T` — exact for integer,
   `decimal`, and `BigInteger` samples. The empty window sums to
   `T.Zero` (`Mean` throws instead, like the other empty reads).
+- The rolling-sum arithmetic is **checked**: a fixed-width integer
+  sum that would overflow throws `OverflowException` and leaves the
+  window unchanged, rather than silently wrapping.
 - For floating-point samples the subtract-on-evict update
   accumulates rounding drift, so `MovingSum<T>` transparently
   recomputes the sum from the buffered window after every full

@@ -181,11 +181,20 @@ Authoritative country set for each data pack at release time:
 | `.MiddleEast` | AE, IL, JO, QA, SA, TR |
 | `.Africa` | EG, ET, GH, KE, MA, NG, ZA |
 
-**Versioning policy.** SemVer per package. Breaking changes inside a
-single package bump that package's own major. The Calendar 1.1.0 wave is
-a coordinated release — the breaking change in Calendar necessitates the
-data packs, so they ship together. Git tags follow `<package>/v<version>`,
-e.g. `Bodu.Numerics/v1.0.0`.
+**Versioning policy.** Packages version in **lock-step** at the shared
+`BoduBaseVersion` (`bld/Versioning.props`), so a matched version number
+across `Bodu.*` packages is a coherent set; SemVer discipline still
+applies to each package's surface. A single git tag `v<version>` releases
+every package listed in the shipping manifest
+(`bld/release-manifest.txt`) — the release workflow packs the whole
+solution but publishes only the manifest set. Later waves append their
+package ids to the manifest and bump the base version (the coordinated
+Calendar wave is slated 1.1.0, shipping together with its data packs);
+earlier packages re-publish at the new coherent version. Per-package
+divergence is reserved for out-of-band fixes via
+`BoduPackageVersionOverride`. See `bld/RELEASING.md` for the full
+procedure. *(This supersedes the earlier `<package>/v<version>`
+per-package tag scheme, which predated the lock-step baseline.)*
 
 ## Non-goals
 
@@ -306,13 +315,16 @@ is now:
    / aggregation layer can reason about coverage. This is the concrete
    first step toward promoting the nine Preview exchange-rate packages
    (six providers + three caching backends) to Stable.
-3. **Cut Wave 1–2 packages** (Core, Numerics, IO.Hashing, Text.Encoding,
-   Security.Cryptography, then the self-contained text/format libraries)
-   to exercise package-validation on brand-new package IDs before the
-   coordinated Calendar/Financial waves. The Wave 1 gate is cleared: the
-   `Bodu.Collections` package split has been executed (see the
-   `Bodu.Core` section), so Core's first package can tag against the
-   final assembly boundary. `Bodu.Collections` joins the Wave 1 set.
+3. **Cut Wave 1–2 packages — release-readiness landed; tag to publish.**
+   The shipping manifest (`bld/release-manifest.txt`, the 15 Wave 1–2
+   package ids) now scopes what the release workflow publishes (pack
+   stays full-solution; only the manifest set is pushed), the missing
+   `Bodu.Numerics.Serialization.Json` README landed, the package
+   repository/project URL metadata was corrected, and the
+   package-validation baseline is wired (inert until the first publish).
+   The remaining action is the release itself: tag `v1.0.0` per
+   `bld/RELEASING.md`, then set `BoduPackageValidationBaseline` so
+   ApiCompat begins guarding the published surface.
 4. **Consolidate the two text-format tiers.** The repository has two
    parallel shapes: the modern `Utf8*` ref-struct quartet
    (Bencode/Toml/Yaml) and the older `*Reader`/`*Writer`/`*Document`

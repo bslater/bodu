@@ -55,7 +55,7 @@ public partial class RunningQuantileTests
 
             Assert.AreEqual(
                 exact,
-                estimator.Value,
+                estimator.Estimate,
                 0.02 * range,
                 $"P² estimate diverged from the exact quantile for p = {probability}.");
         }
@@ -83,7 +83,7 @@ public partial class RunningQuantileTests
         var exact = ExactQuantile(samples, 0.5);
         var range = samples.Max() - samples.Min();
 
-        Assert.AreEqual(exact, estimator.Value, 0.02 * range, "P² median diverged from the exact median.");
+        Assert.AreEqual(exact, estimator.Estimate, 0.02 * range, "P² median diverged from the exact median.");
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public partial class RunningQuantileTests
 
                     Assert.AreEqual(
                         ExactQuantile(samples, probability),
-                        estimator.Value,
+                        estimator.Estimate,
                         1e-12,
                         $"Warm-up estimate diverged for p = {probability}, prefix length {length}, trial {trial}.");
                 }

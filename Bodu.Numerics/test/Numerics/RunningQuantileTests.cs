@@ -37,6 +37,6 @@ public partial class RunningQuantileTests
             median.Add(observation);
 
         Assert.AreEqual(20L, median.Count);
-        Assert.AreEqual(4.44063, median.Value, 1e-4);
+        Assert.AreEqual(4.44063, median.Estimate, 1e-4);
     }
 }

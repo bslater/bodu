@@ -66,6 +66,21 @@
   </PropertyGroup>
 
   <!--
+    Package-validation baseline, applied only to packages that have actually shipped. The shipping
+    manifest (bld/release-manifest.txt) is the record of what has been published, so the baseline
+    version (BoduPackageValidationBaseline in bld/Versioning.props — empty until the first release)
+    is set only for projects whose PackageId appears there; a never-published package has no
+    baseline to validate against. The anchored line match keeps prefixed ids apart (Bodu.Numerics
+    must not also match Bodu.Numerics.Serialization.Json), and the condition short-circuits before
+    the file read while the baseline property is empty, so ordinary builds pay nothing. A project
+    that shipped out-of-band via BoduPackageVersionOverride can pin its own
+    PackageValidationBaselineVersion in its csproj, which this block then leaves untouched.
+  -->
+  <PropertyGroup Condition="'$(EnablePackageValidation)' == 'true' and '$(BoduPackageValidationBaseline)' != '' and '$(PackageValidationBaselineVersion)' == '' and $([System.Text.RegularExpressions.Regex]::IsMatch($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)bld/release-manifest.txt')), '(?m)^$(MSBuildProjectName)\s*$'))">
+    <PackageValidationBaselineVersion>$(BoduPackageValidationBaseline)</PackageValidationBaselineVersion>
+  </PropertyGroup>
+
+  <!--
     Define BODU_EXTENSION_MEMBERS when the building SDK is .NET 10 or later, which ships the C# 14
     compiler that supports extension members. Combined with LangVersion=latest (bld/Bodu.props), this
     lets sources express convenience members as C# 14 extension properties; older SDKs fall back to

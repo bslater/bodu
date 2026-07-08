@@ -18,16 +18,16 @@ public partial class RunningQuantileTests
         var median = RunningQuantile<double>.CreateMedian();
 
         median.Add(3.0);
-        Assert.AreEqual(3.0, median.Value, 1e-12);
+        Assert.AreEqual(3.0, median.Estimate, 1e-12);
 
         median.Add(1.0);
-        Assert.AreEqual(2.0, median.Value, 1e-12);
+        Assert.AreEqual(2.0, median.Estimate, 1e-12);
 
         median.Add(5.0);
-        Assert.AreEqual(3.0, median.Value, 1e-12);
+        Assert.AreEqual(3.0, median.Estimate, 1e-12);
 
         median.Add(7.0);
-        Assert.AreEqual(4.0, median.Value, 1e-12);
+        Assert.AreEqual(4.0, median.Estimate, 1e-12);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public partial class RunningQuantileTests
             quartile.Add(sample);
 
         // Sorted {1, 2, 3, 4}: rank h = 3 × 0.25 = 0.75 → 1 + 0.75 × (2 − 1) = 1.75.
-        Assert.AreEqual(1.75, quartile.Value, 1e-12);
+        Assert.AreEqual(1.75, quartile.Estimate, 1e-12);
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public partial class RunningQuantileTests
         foreach (var sample in new[] { 9, 1, 5, 3, 7 })
             median.Add(sample);
 
-        Assert.AreEqual(5.0, median.Value, 1e-12);
+        Assert.AreEqual(5.0, median.Estimate, 1e-12);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public partial class RunningQuantileTests
     }
 
     /// <summary>
-    /// Verifies that reading <see cref="RunningQuantile{T}.Value" /> on an empty estimator throws
+    /// Verifies that reading <see cref="RunningQuantile{T}.Estimate" /> on an empty estimator throws
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
@@ -104,7 +104,7 @@ public partial class RunningQuantileTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            _ = median.Value;
+            _ = median.Estimate;
         });
     }
 
@@ -125,7 +125,7 @@ public partial class RunningQuantileTests
         Assert.IsTrue(p90.IsEmpty);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            _ = p90.Value;
+            _ = p90.Estimate;
         });
     }
 
@@ -145,6 +145,6 @@ public partial class RunningQuantileTests
 
         Assert.AreEqual(21L, original.Count);
         Assert.AreEqual(20L, snapshot.Count);
-        Assert.AreEqual(4.44063, snapshot.Value, 1e-4);
+        Assert.AreEqual(4.44063, snapshot.Estimate, 1e-4);
     }
 }

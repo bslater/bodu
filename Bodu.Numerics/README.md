@@ -120,7 +120,7 @@ foreach (var latency in latencies)
 }
 
 // stats.Mean, stats.SampleStandardDeviation, stats.Minimum, stats.Maximum
-// p95.Value                       — streaming 95th-percentile estimate
+// p95.Estimate                     — streaming 95th-percentile estimate
 // window.Minimum, window.Maximum  — extrema of the last 60 samples
 ```
 
@@ -128,7 +128,7 @@ Highlights:
 
 - O(1) per sample and constant space; the samples themselves are never stored (the moving types buffer at most one window).
 - `RunningStatistics<T>.Combine` merges independently filled accumulators losslessly (Chan et al.), so streams can be partitioned and accumulated in parallel; P² estimators are deliberately not mergeable.
-- Non-finite samples (NaN, ±∞) are rejected at `Add`, so an estimate can never be silently poisoned.
+- Non-finite samples (NaN, ±∞) are rejected at `Add`, so an estimate can never be silently poisoned, and the rolling-sum arithmetic is checked — fixed-width integer overflow throws instead of silently wrapping.
 - The running accumulators are mutable value types: copying one snapshots it, which is also the supported checkpoint mechanism — see the guide for the usage rules.
 - No JSON converters are provided for the accumulators: their state is transient in-process progress, not a wire contract.
 
