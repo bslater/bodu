@@ -15,6 +15,16 @@
   <PropertyGroup>
     <BoduBaseVersion>1.0.0</BoduBaseVersion>
     <VersionPrefix>$(BoduBaseVersion)</VersionPrefix>
+
+    <!--
+      Package-validation baseline. Set this to the last published lock-step version (e.g. 1.0.0)
+      after each release, so subsequent packs run the ApiCompat comparison against the published
+      packages. Empty = validation stays inert (no published baseline exists yet). The baseline is
+      applied only to packages listed in bld/release-manifest.txt — packages that have never shipped
+      have nothing to compare against. Applied in the repository-root Directory.Build.targets; see
+      bld/RELEASING.md for the release procedure.
+    -->
+    <BoduPackageValidationBaseline></BoduPackageValidationBaseline>
   </PropertyGroup>
 
 </Project>

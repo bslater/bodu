@@ -2,6 +2,10 @@ name: Release
 
 # Builds, strong-name (real) signs, packs, and optionally publishes the Bodu packages.
 #
+# The whole solution is packed, but only packages listed in the shipping manifest
+# (bld/release-manifest.txt) are staged and pushed to nuget.org — packages for waves that have not
+# been released yet are produced as build artifacts only. See bld/RELEASING.md for the release model.
+#
 # Triggered for a release by pushing a version tag (e.g. v1.0.0), or manually via the Actions tab.
 # The private strong-name key is never stored in the repo: it is supplied as the base64-encoded
 # BODU_SNK secret, decoded to a path outside the working tree for the duration of the job, and shredded
@@ -146,6 +150,47 @@ jobs:
             shred -u "$RUNNER_TEMP/Bodu.snk" 2>/dev/null || rm -f "$RUNNER_TEMP/Bodu.snk"
           fi
 
+      - name: Select shipping packages (bld/release-manifest.txt)
+        shell: bash
+        run: |
+          # Pack builds every packable project in the solution, including waves that are not yet
+          # released. Only packages listed in the shipping manifest are staged for publish;
+          # everything else remains a build artifact only.
+          PUBLISH_DIR="${{ github.workspace }}/publish"
+          mkdir -p "$PUBLISH_DIR"
+          shopt -s nullglob
+          fail=0; count=0
+          while IFS= read -r line; do
+            id="${line%%#*}"; id="${id//[$'\t\r ']/}"
+            [ -z "$id" ] && continue
+            count=$((count + 1))
+            # The [0-9] guard stops 'Bodu.Numerics' also matching 'Bodu.Numerics.Serialization.Json'.
+            pkgs=("$ARTIFACTS_DIR/$id".[0-9]*.nupkg)
+            if [ "${#pkgs[@]}" -ne 1 ]; then
+              echo "::error::Manifest entry '$id' matched ${#pkgs[@]} nupkg(s) in $ARTIFACTS_DIR (expected exactly 1)."
+              fail=1; continue
+            fi
+            snupkg="${pkgs[0]%.nupkg}.snupkg"
+            if [ ! -f "$snupkg" ]; then
+              echo "::error::Symbol package missing for '$id': $snupkg"
+              fail=1; continue
+            fi
+            cp "${pkgs[0]}" "$snupkg" "$PUBLISH_DIR/"
+          done < bld/release-manifest.txt
+          [ "$fail" -eq 0 ] || exit 1
+          staged=$(ls "$PUBLISH_DIR"/*.nupkg | wc -l)
+          if [ "$staged" -ne "$count" ]; then
+            echo "::error::Staged $staged packages but the manifest lists $count."
+            exit 1
+          fi
+          echo "Staged $staged manifest packages for publish:"
+          ls -1 "$PUBLISH_DIR"/*.nupkg
+          echo "Packed but NOT published (not in the shipping manifest):"
+          for f in "$ARTIFACTS_DIR"/*.nupkg; do
+            [ -f "$PUBLISH_DIR/$(basename "$f")" ] || echo "  $(basename "$f")"
+          done
+          echo "PUBLISH_DIR=$PUBLISH_DIR" >> "$GITHUB_ENV"
+
       - name: Upload package artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -154,6 +199,16 @@ jobs:
             ${{ env.ARTIFACTS_DIR }}/*.nupkg
             ${{ env.ARTIFACTS_DIR }}/*.snupkg
           retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload publish-set artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages-publish
+          path: |
+            ${{ env.PUBLISH_DIR }}/*.nupkg
+            ${{ env.PUBLISH_DIR }}/*.snupkg
+          retention-days: 90
           if-no-files-found: error
 
       - name: Publish to nuget.org
@@ -167,7 +222,7 @@ jobs:
             echo "::warning::NUGET_API_KEY is not set — skipping publish. Packages remain available as artifacts."
             exit 0
           fi
-          dotnet nuget push "$ARTIFACTS_DIR"/*.nupkg \
+          dotnet nuget push "$PUBLISH_DIR"/*.nupkg \
             --api-key "$NUGET_API_KEY" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate

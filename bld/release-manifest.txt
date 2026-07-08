@@ -1,0 +1,24 @@
+# NuGet shipping manifest. `dotnet pack bodu.slnx` builds every packable project; only the
+# packages listed here are pushed to nuget.org by .github/workflows/release.yml, and only they
+# receive the package-validation baseline (see Directory.Build.targets and bld/Versioning.props).
+# One PackageId per line; `#` starts a comment. Extending a release wave = append its package
+# ids here and bump BoduBaseVersion in bld/Versioning.props. See bld/RELEASING.md.
+
+# Wave 1 — foundation packages
+Bodu.Core
+Bodu.Collections
+Bodu.Collections.Concurrent
+Bodu.Numerics
+Bodu.Numerics.Serialization.Json
+Bodu.IO.Hashing
+Bodu.Text.Encoding
+Bodu.Security.Cryptography
+
+# Wave 2 — self-contained format & text libraries
+Bodu.Text.Bencode
+Bodu.Text.Toml
+Bodu.Text.Yaml
+Bodu.Text.Formats
+Bodu.Text.Configuration
+Bodu.IO.Compound
+Bodu.Formats.Excel.Binary
