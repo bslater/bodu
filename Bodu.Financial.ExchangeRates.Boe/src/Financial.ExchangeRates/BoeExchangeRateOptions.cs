@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeExchangeRateOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,6 +26,12 @@ using Microsoft.Extensions.Logging;
 /// </remarks>
 public sealed class BoeExchangeRateOptions
 {
+    /// <summary>
+    /// The inception of the Bank of England's daily spot exchange-rate series: 2 January 1975, the first observation of
+    /// the longest-running IADB <c>XUDL*</c> series.
+    /// </summary>
+    internal static readonly DateOnly DailySpotSeriesEpoch = new(1975, 1, 2);
+
     /// <summary>
     /// Gets or sets the endpoint options describing the provider's connection to the Bank of England IADB — the base
     /// URL, query path, transport timeout, and request identity.
@@ -66,6 +72,22 @@ public sealed class BoeExchangeRateOptions
     /// a neighbouring business day without downloading the entire history.
     /// </remarks>
     public int OnDemandWindowDays { get; set; } = 10;
+
+    /// <summary>
+    /// Gets or sets the advertised history availability for the configured series.
+    /// </summary>
+    /// <value>
+    /// The advertised availability; defaults to a fixed floor of 2 January 1975, the inception of the Bank of England's
+    /// daily spot exchange-rate series.
+    /// </value>
+    /// <remarks>
+    /// The IADB daily spot series (<c>XUDL*</c>) begin on 2 January 1975 for the longest-running currencies; some
+    /// series start later (the euro series begins 4 January 1999, with the launch of the euro). The value is advisory —
+    /// it bounds the earliest date worth requesting for the configured <see cref="Series" /> catalogue, not a
+    /// per-series guarantee — so narrow it when the catalogue is restricted to later-inception series.
+    /// </remarks>
+    public ExchangeRateHistoryAvailability HistoryAvailability { get; set; } =
+        ExchangeRateHistoryAvailability.Since(DailySpotSeriesEpoch);
 
     /// <summary>
     /// Gets or sets a value indicating whether downloaded ranges are persisted to an on-disk cache.

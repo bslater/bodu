@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -70,10 +70,14 @@ public sealed class EcbExchangeRateProvider
     /// <summary>The logger that records feed downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The names of feeds whose data has been loaded.</summary>
+    /// <summary>
+    /// The names of feeds whose data has been loaded.
+    /// </summary>
     private readonly HashSet<string> _loadedFeeds = new(StringComparer.Ordinal);
 
-    /// <summary>The discovered currency series, keyed by pair.</summary>
+    /// <summary>
+    /// The discovered currency series, keyed by pair.
+    /// </summary>
     private readonly Dictionary<ExchangeRatePair, EcbSeriesInfo> _series = new();
 
     /// <summary>
@@ -177,6 +181,29 @@ public sealed class EcbExchangeRateProvider
 
     /// <inheritdoc />
     protected override bool AllowSynchronousNetworkAccess => _options.AllowSynchronousNetworkAccess;
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Computed from the configured <see cref="EcbExchangeRateOptions.Feeds" />: when the full-history feed is
+    /// configured the provider reaches back to <see cref="EcbExchangeRateFeed.Epoch" /> (4 January 1999, the start of
+    /// the euro reference-rate series); otherwise the deepest configured rolling feed bounds the window.
+    /// </remarks>
+    public override ExchangeRateHistoryAvailability HistoryAvailability
+    {
+        get
+        {
+            var windowDays = 0;
+            foreach (EcbExchangeRateFeed feed in _options.Feeds)
+            {
+                if (feed.LookbackDays is null)
+                    return ExchangeRateHistoryAvailability.Since(EcbExchangeRateFeed.Epoch);
+
+                windowDays = Math.Max(windowDays, feed.LookbackDays.Value);
+            }
+
+            return ExchangeRateHistoryAvailability.RollingDays(windowDays);
+        }
+    }
 
     /// <inheritdoc />
     protected override TimeSpan DefaultLookback => TimeSpan.Zero;
