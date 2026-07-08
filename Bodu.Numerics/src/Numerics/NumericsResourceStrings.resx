@@ -141,4 +141,19 @@
   <data name="Arg_Invalid_IntervalNaNEndpoint" xml:space="preserve">
     <value>An interval endpoint must be a number; NaN is not a valid endpoint.</value>
   </data>
+  <data name="Arg_Invalid_NonFiniteSample" xml:space="preserve">
+    <value>A sample must be a finite number; NaN and infinite values cannot be accumulated.</value>
+  </data>
+  <data name="Arg_OutOfRange_QuantileProbability" xml:space="preserve">
+    <value>The probability must be greater than 0 and less than 1.</value>
+  </data>
+  <data name="Op_Invalid_EmptyAccumulator" xml:space="preserve">
+    <value>The accumulator contains no samples.</value>
+  </data>
+  <data name="Op_Invalid_SampleVarianceRequiresTwo" xml:space="preserve">
+    <value>At least two samples are required to compute a sample variance.</value>
+  </data>
+  <data name="Overflow_SampleOutsideDoubleRange" xml:space="preserve">
+    <value>The sample is outside the range representable by a Double.</value>
+  </data>
 </root>
