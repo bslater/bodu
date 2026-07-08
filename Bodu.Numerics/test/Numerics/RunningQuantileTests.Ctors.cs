@@ -70,6 +70,6 @@ public partial class RunningQuantileTests
         foreach (var sample in new[] { 5.0, 1.0, 3.0, 2.0, 4.0 })
             estimator.Add(sample);
 
-        Assert.AreEqual(3.0, estimator.Value, 1e-12);
+        Assert.AreEqual(3.0, estimator.Estimate, 1e-12);
     }
 }

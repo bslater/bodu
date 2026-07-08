@@ -22,13 +22,13 @@ namespace Bodu.Numerics;
 /// halfway between it and the extremes, adjusting the middle markers with piecewise-parabolic (hence "P²")
 /// interpolation as samples arrive. Each <see cref="Add" /> is O(1) and the state is a fixed scalar block — the samples
 /// themselves are never stored. Samples are widened to <see cref="double" /> with
-/// <see cref="double.CreateChecked{TOther}(TOther)" />, so <see cref="Value" /> is always a floating-point estimate.
+/// <see cref="double.CreateChecked{TOther}(TOther)" />, so <see cref="Estimate" /> is always a floating-point estimate.
 /// </para>
 /// <para>
-/// The first five samples are held exactly; while fewer than five have been observed <see cref="Value" /> returns the
-/// linearly interpolated empirical quantile, and from the fifth sample onward the P² markers take over. The estimate is
-/// an approximation whose accuracy improves with stream length; for exact quantiles over small data, sort and index
-/// instead.
+/// The first five samples are held exactly; while fewer than five have been observed <see cref="Estimate" /> returns
+/// the linearly interpolated empirical quantile, and from the fifth sample onward the P² markers take over. The
+/// estimate is an approximation whose accuracy improves with stream length; for exact quantiles over small data, sort
+/// and index instead.
 /// </para>
 /// <para>
 /// This is a <b>mutable value type</b>. Store it in a mutable field or local and pass it by <see langword="ref" />; do
@@ -51,7 +51,7 @@ namespace Bodu.Numerics;
 ///                                34.60, 10.28, 1.47, 0.40, 0.05, 11.39, 0.27, 0.42, 0.09, 11.37 })
 ///     median.Add(sample);
 ///
-/// median.Value;   // ≈ 4.44 (exact sorted median of this stream: 2.43)
+/// median.Estimate;   // ≈ 4.44 (exact sorted median of this stream: 2.43)
 ///
 /// var p95 = new RunningQuantile<int>(0.95);
 ///]]>
@@ -139,12 +139,12 @@ public partial struct RunningQuantile<T>
     /// Returns a culture-invariant summary of the estimator state for diagnostics.
     /// </summary>
     /// <returns>
-    /// A string such as <c>"p = 0.5, Count = 20, Value = 4.44"</c>, or <c>"p = 0.5, Count = 0"</c> when empty.
+    /// A string such as <c>"p = 0.5, Count = 20, Estimate = 4.44"</c>, or <c>"p = 0.5, Count = 0"</c> when empty.
     /// </returns>
     public override readonly string ToString() =>
         _count == 0
             ? string.Format(CultureInfo.InvariantCulture, "p = {0}, Count = 0", Probability)
-            : string.Format(CultureInfo.InvariantCulture, "p = {0}, Count = {1}, Value = {2}", Probability, _count, Value);
+            : string.Format(CultureInfo.InvariantCulture, "p = {0}, Count = {1}, Estimate = {2}", Probability, _count, Estimate);
 
     /// <summary>
     /// Absorbs one of the first five samples, keeping the held samples in ascending order and switching to marker mode

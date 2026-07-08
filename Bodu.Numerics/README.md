@@ -120,7 +120,7 @@ foreach (var latency in latencies)
 }
 
 // stats.Mean, stats.SampleStandardDeviation, stats.Minimum, stats.Maximum
-// p95.Value                       — streaming 95th-percentile estimate
+// p95.Estimate                     — streaming 95th-percentile estimate
 // window.Minimum, window.Maximum  — extrema of the last 60 samples
 ```
 

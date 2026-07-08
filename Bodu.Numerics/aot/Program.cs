@@ -72,7 +72,7 @@ foreach (var observation in new[]
     median.Add(observation);
 }
 
-Check(Math.Abs(median.Value - 4.44063) < 1e-4, "RunningQuantile<double> P² estimate");
+Check(Math.Abs(median.Estimate - 4.44063) < 1e-4, "RunningQuantile<double> P² estimate");
 
 var movingSum = new MovingSum<decimal>(3);
 foreach (var sample in new[] { 1.5m, 2.5m, 3.5m, 4.5m })

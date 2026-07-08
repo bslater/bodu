@@ -106,12 +106,12 @@ var median = RunningQuantile<double>.CreateMedian();
 foreach (var latency in latencies)
     p95.Add(latency);
 
-p95.Value;   // streaming 95th-percentile estimate
+p95.Estimate;   // streaming 95th-percentile estimate
 ```
 
 Behavioural notes:
 
-- The first five samples are held exactly; below five, `Value`
+- The first five samples are held exactly; below five, `Estimate`
   returns the linearly interpolated *empirical* quantile, and from
   the fifth sample the P² markers take over.
 - The estimate is an approximation that improves with stream length.
