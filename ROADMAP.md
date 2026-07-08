@@ -7,9 +7,12 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 **Numerics growth wave has landed — `BigDecimal`** ships as an
 arbitrary-precision decimal with the full `INumber<BigDecimal>`
 generic-math surface, span/UTF-8 parse and format, rounding, and a
-JSON converter registered through `ConfigureForBoduNumerics`, leaving
-the **running-statistics aggregates** as the wave's one remaining step
-(see Active focus). `Bodu.Security.Cryptography` also gained **Merkle
+JSON converter registered through `ConfigureForBoduNumerics` — and
+step 3, the **running-statistics aggregates**, has landed as well
+(`RunningStatistics<T>` / `RunningQuantile<T>` accumulators and the
+rolling-window `MovingSum<T>` / `MovingMinMax<T>` companions),
+**completing the Numerics growth wave** (see Active focus).
+`Bodu.Security.Cryptography` also gained **Merkle
 tree hashing** (`MerkleTreeHash` / `ParallelMerkleTreeHash` with
 RFC 6962-style leaf/node domain separation and length binding), an
 untrusted-input **hardening pass** swept the parsers and AEAD
@@ -29,9 +32,9 @@ post-split; both decisions are recorded in
 key wrapping for Ed25519 / X25519 (closing the key-encoding story), the
 `Bodu.Security.Cryptography.DisableSimd` **AVX-512 opt-out** and capability
 contract, and the **`Hotp` / `Totp`** one-time-password codes — and the
-**Numerics growth wave** began (`Interval<T>` extensions and
-`BigDecimal` now landed; running-statistics remaining — see Active
-focus). A
+**Numerics growth wave** began (now complete: `Interval<T>` extensions,
+`BigDecimal`, and the running-statistics aggregates have all
+landed — see Active focus). A
 release-discipline pass has since moved `Bodu.Numerics` from Stable back
 to **Preview** until its serialization, result-type, and documentation
 conventions catch up with the expanded interval model (see *API-stability
@@ -270,10 +273,9 @@ The `Bodu.Security.Cryptography` interop wave has also landed — RFC 7468
 contract, and the **HOTP / TOTP** one-time-password codes. The active focus
 is now:
 
-1. **The Numerics growth wave *(active engineering wave — one step
-   remaining)*.** Round out
-   `Bodu.Numerics` toward a stronger 1.0 in three sequenced steps, smallest
-   first (details in the `Bodu.Numerics` section):
+1. **The Numerics growth wave — complete.** ✅ All three sequenced steps
+   have landed (details in the `Bodu.Numerics` section); the engineering
+   focus now shifts to items 2–3 below:
    - **`Interval<T>` extensions have landed.** ✅ Unbounded / half-bounded
      endpoints (explicit metadata, not float sentinels; `AtLeast` / `AtMost`
      / `All` …), `Difference` / `SymmetricDifference` returning the
@@ -292,11 +294,12 @@ is now:
      `BigDecimalJsonConverter` registered through
      `ConfigureForBoduNumerics` alongside the existing `Fraction<T>` /
      `Interval<T>` converters.
-   - **Running-statistics aggregates** *(the remaining step — what lands
-     next)* — online mean / variance (Welford),
-     min / max / count, and a streaming quantile (P²), as struct
-     accumulators. (`Complex<T>` is a later follow-on, not part of this
-     wave.)
+   - **Running-statistics aggregates have landed.** ✅ Online
+     mean / variance (Welford, with the Chan et al. parallel `Combine`),
+     exact min / max / count, and a streaming quantile (P²) as mutable
+     struct accumulators, plus the rolling-window `MovingSum<T>` /
+     `MovingMinMax<T>` companions. (`Complex<T>` is a later follow-on,
+     not part of this wave.)
 2. **Advertise history windows uniformly across FX providers.**
    `HistoryAvailability` is wired only for OANDA today; the other six
    providers should declare their earliest resolvable date so the caching
@@ -675,11 +678,13 @@ Current state: new. Ships `Fraction<T>` (exact rationals over
 endpoints over `INumber<T>`) with full set algebra, the `DiscreteInterval<T>`
 integer-domain interval, the `IntervalPair<T>` / `DiscreteIntervalPair<T>`
 binary-result types, and the N-ary `IntervalSet<T>` — each with JSON
-converters where applicable. Money/currency/FX live in the companion
-`Bodu.Financial`.
+converters where applicable — plus the **statistics aggregates**:
+`RunningStatistics<T>` / `RunningQuantile<T>` (single-pass stream
+accumulators) and `MovingSum<T>` / `MovingMinMax<T>` (rolling windows).
+Money/currency/FX live in the companion `Bodu.Financial`.
 
-This is the **active next engineering wave** (see *Active focus*), taken in
-three sequenced steps, smallest first:
+The **Numerics growth wave is complete** (see *Active focus*) — all three
+sequenced steps have shipped:
 
 1. **`Interval<T>` extensions — shipped.** ✅ Unbounded / half-bounded
    endpoints (explicit metadata, not float sentinels), `Difference` /
@@ -703,18 +708,25 @@ three sequenced steps, smallest first:
    `BigDecimalJsonConverter` in `Bodu.Numerics.Serialization.Json`
    registered by `ConfigureForBoduNumerics`. No BCL equivalent existed —
    the highest-leverage gap-filler, now closed.
-3. **Add running-statistics aggregates** *(the wave's remaining step)* —
-   online mean / variance (Welford),
-   min / max / count, and a streaming quantile (P²), shaped as `struct`
-   accumulators that compose with the `INumber<T>`-constrained code.
-   A **windowed / rolling companion set** layers on the same shapes:
-   moving sum / mean and monotonic-deque moving min / max over the last
-   N samples — the finance / telemetry "rolling window" idiom — using
-   `CircularBuffer<T>`'s overwrite mode as the storage. A bare
-   `RollingWindow<T>` *collection* is deliberately not added to Core:
-   the overwrite-mode `CircularBuffer<T>` already is one (oldest-to-
-   newest enumeration included); the gap is the aggregates, so they
-   live here with the statistics.
+3. **Running-statistics aggregates — shipped.** ✅ Online mean / variance
+   (Welford, with the Chan et al. parallel merge exposed as `Combine`),
+   exact min / max / count, and a streaming quantile
+   (`RunningQuantile<T>`, the P² algorithm with an exact empirical
+   warm-up under five samples) as mutable `struct` accumulators over
+   `INumber<T>` — extrema exact in `T`, moments in `double` via
+   `CreateChecked` with an explicit post-widening finiteness guard, and
+   non-finite samples rejected. The **windowed / rolling companion set**
+   shipped alongside: `MovingSum<T>` (last-N sum in `T` + mean, with a
+   periodic exact rebuild bounding floating-point eviction drift) and
+   `MovingMinMax<T>` (monotonic ring deques, amortized O(1)). One
+   deliberate deviation from the plan as originally written: the moving
+   types are sealed classes over a **private internal ring**, not
+   `CircularBuffer<T>` — the collections split made that reuse a brand-new
+   `Bodu.Numerics → Bodu.Collections` package edge, which was judged not
+   worth it, so Numerics keeps its Core-only dependency. A bare
+   `RollingWindow<T>` *collection* is still deliberately not added
+   anywhere: the overwrite-mode `CircularBuffer<T>` in `Bodu.Collections`
+   already is one; the gap was the aggregates, and they live here.
 
 A generic **`Complex<T>`** (the BCL `Complex` is `double`-only) is the
 natural follow-on after this wave, not part of it. See also *New library
@@ -1079,11 +1091,12 @@ filter were added to *Non-goals* instead.
   invariant-English core with per-culture packs (the data-pack pattern
   again) is the only shape worth shipping; without that discipline this
   stays a candidate, not a commitment.
-- **Numeric value types in `Bodu.Numerics`** — running-statistics
-  aggregates and (later) a generic `Complex<T>`. These extend the existing
-  generic-math project rather than needing a new one; **`BigDecimal` has
-  shipped** and running-statistics is the **remaining step of the active
-  Numerics wave** (see *Active focus*), with `Complex<T>` the follow-on.
+- **Numeric value types in `Bodu.Numerics`** — a generic `Complex<T>`
+  (the BCL `Complex` is `double`-only). This extends the existing
+  generic-math project rather than needing a new one; **`BigDecimal` and
+  the running-statistics aggregates have both shipped**, completing the
+  Numerics wave (see *Active focus*), leaving `Complex<T>` as the
+  follow-on candidate.
 - ~~**One-time-password codes (TOTP/HOTP)**~~ — **shipped.** `Hotp` /
   `Totp` landed inside `Bodu.Security.Cryptography` (flat namespace, no new
   package or dependency), not the `Bodu.Security.Otp` sibling that was
@@ -1180,8 +1193,9 @@ blockquote directly under its README title. The assignment:
   `Bodu.Financial.ExchangeRates.DependencyInjection` plumbing.
 - **Preview** — `Bodu.Numerics` (the interval algebra expanded quickly —
   `DiscreteInterval<T>`, `IntervalSet<T>`, and the pair result types are
-  still settling their conventions, and the new `BigDecimal` surface is
-  settling; `Fraction<T>` is a stable candidate) and its companion
+  still settling their conventions, and the new `BigDecimal` and
+  statistics-aggregate surfaces are settling; `Fraction<T>` is a stable
+  candidate) and its companion
   `Bodu.Numerics.Serialization.Json` (the JSON contract is new — the core
   types are now serialization-agnostic and support is opt-in via
   `ConfigureForBoduNumerics`), `Bodu.Text.Yaml` (the serializer is read-first and its

@@ -10,6 +10,8 @@ Numeric value primitives for .NET. The public model is exact rational numbers pl
 - **`IntervalSet<T>`** — a normalized set of disconnected `Interval<T>` pieces, with N-ary union / intersection / difference / complement.
 - **`IntervalPair<T>`** / **`DiscreteIntervalPair<T>`** — allocation-conscious results of a binary difference / symmetric-difference (zero, one, or two disjoint pieces), each convertible to an `IntervalSet<T>`.
 - **`BigDecimal`** — an immutable arbitrary-precision decimal (a `BigInteger` unscaled value plus an `int` scale), for exact decimal values beyond `System.Decimal`'s precision or exponent range.
+- **`RunningStatistics<T>`** / **`RunningQuantile<T>`** — single-pass, constant-space accumulators over a sample stream: Welford count/min/max/mean/variance with a parallel `Combine` merge, and a P² streaming quantile estimator.
+- **`MovingSum<T>`** / **`MovingMinMax<T>`** — rolling-window companions that report the sum/mean and min/max of the most recent N samples in amortized O(1).
 
 > Money, currency, and foreign-exchange types ship in the companion **[Bodu.Financial](https://www.nuget.org/packages/Bodu.Financial)** package. Keeping them separate means a consumer of just `Fraction<T>` does not pull in the ~185-currency ISO 4217 catalogue and FX provider stack.
 
@@ -98,6 +100,37 @@ Highlights:
 - Implicit lifts from `int`, `long`, `BigInteger`, and `decimal`; explicit conversions to/from `double` and to `BigInteger` / `decimal`.
 - Parsing of plain and scientific decimal text across `string`, `ReadOnlySpan<char>`, and UTF-8; `G` and `F` formatting through `IFormattable` / `ISpanFormattable` / `IUtf8SpanFormattable`.
 - The full generic-math surface — `INumber<BigDecimal>`, `ISignedNumber<BigDecimal>` (`Radix` 10) — so it composes with `INumber<T>`-constrained code.
+
+## Running and moving statistics
+
+The statistics aggregates summarize a sample stream in one forward pass without storing it. `RunningStatistics<T>` (Welford) and `RunningQuantile<T>` (the P² algorithm) are mutable struct accumulators over the whole stream; `MovingSum<T>` and `MovingMinMax<T>` are class-based rolling windows over the most recent N samples. All four accept any `INumber<T>` sample type: extrema and window sums stay exact in `T`, while means, variances, and quantile estimates are computed in `double`.
+
+```csharp
+using Bodu.Numerics;
+
+var stats = new RunningStatistics<double>();
+var p95 = new RunningQuantile<double>(0.95);
+var window = new MovingMinMax<double>(60);
+
+foreach (var latency in latencies)
+{
+    stats.Add(latency);
+    p95.Add(latency);
+    window.Add(latency);
+}
+
+// stats.Mean, stats.SampleStandardDeviation, stats.Minimum, stats.Maximum
+// p95.Value                       — streaming 95th-percentile estimate
+// window.Minimum, window.Maximum  — extrema of the last 60 samples
+```
+
+Highlights:
+
+- O(1) per sample and constant space; the samples themselves are never stored (the moving types buffer at most one window).
+- `RunningStatistics<T>.Combine` merges independently filled accumulators losslessly (Chan et al.), so streams can be partitioned and accumulated in parallel; P² estimators are deliberately not mergeable.
+- Non-finite samples (NaN, ±∞) are rejected at `Add`, so an estimate can never be silently poisoned.
+- The running accumulators are mutable value types: copying one snapshots it, which is also the supported checkpoint mechanism — see the guide for the usage rules.
+- No JSON converters are provided for the accumulators: their state is transient in-process progress, not a wire contract.
 
 ## Documentation
 
