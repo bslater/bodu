@@ -37,6 +37,14 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// them with an <see cref="AggregatingExchangeRateProvider" />.
 /// </para>
 /// <para>
+/// When the inner provider advertises its history depth through <see cref="IHistoryAwareExchangeRateProvider" /> and
+/// <see cref="CachingExchangeRateOptions.RespectHistoryAvailability" /> is enabled (the default), misses for dates the
+/// source has declared unavailable are not delegated: a single-date lookup outside the advertised history surfaces as
+/// an ordinary miss without an inner call, and a range fetch is clamped to start at the advertised earliest date — or
+/// skipped entirely when the whole window precedes it — while the full requested window is still recorded as covered,
+/// so the unavailable prefix is not re-asked until normal expiry.
+/// </para>
+/// <para>
 /// Because this provider is itself an <see cref="IDatedExchangeRateProvider" /> and accepts one as its inner source,
 /// caching providers also <em>stack</em>: wrapping a cached provider in a second caching provider forms a tiered
 /// read-through — a fast outer cache (for example in-memory) over a durable inner one (for example SQLite) over the
@@ -178,6 +186,14 @@ public abstract class CachingExchangeRateProviderBase
             return true;
         }
 
+        if (IsOutsideAdvertisedHistory(date, options, now, out DateOnly earliest))
+        {
+            Log.SkippedDateOutsideHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date, earliest);
+
+            result = default;
+            return false;
+        }
+
         if (Inner.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
         {
             StoreResult(duration, fromIsoCode, toIsoCode, result, now);
@@ -229,6 +245,15 @@ public abstract class CachingExchangeRateProviderBase
             return result;
         }
 
+        if (IsOutsideAdvertisedHistory(date, options, now, out DateOnly earliest))
+        {
+            // A skipped date surfaces exactly as a miss does on the throwing surfaces.
+            Log.SkippedDateOutsideHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date, earliest);
+
+            throw new KeyNotFoundException(
+                string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.IO_KeyNotFound_ExchangeRate, fromIsoCode, toIsoCode, date));
+        }
+
         result = await Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken).ConfigureAwait(false);
         StoreResult(duration, fromIsoCode, toIsoCode, result, now);
         Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
@@ -256,11 +281,26 @@ public abstract class CachingExchangeRateProviderBase
             return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
 
-        IReadOnlyList<ExchangeRate> fetched = [.. Inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate)];
+        if (!TryClampFetchStart(startDate, endDate, now, out DateOnly fetchStart, out DateOnly? earliestAvailable))
+        {
+            // No part of the window is inside the inner's advertised history: skip the doomed fetch and record the
+            // whole window as covered-with-no-rows, so repeats are served as an (empty) cache hit until expiry.
+            ExchangeRateCacheWriteStatus skipStatus = StoreFetchedRange(duration, pair, [], startDate, endDate, now);
+
+            Log.SkippedRangeOutsideHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, startDate, endDate, earliestAvailable!.Value, skipStatus);
+            return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, []);
+        }
+
+        if (fetchStart != startDate)
+            Log.ClampedRangeToHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, startDate, fetchStart);
+
+        IReadOnlyList<ExchangeRate> fetched = [.. Inner.GetRates(fromIsoCode, toIsoCode, fetchStart, endDate)];
 
         // Write the fetched rows and the covered window atomically, regardless of how many rows came back: the request
         // asked for every interior day, so even an empty fetch must record the whole window as covered or the same range
-        // would be refetched forever. A single atomic write rules out persisting coverage without its rows.
+        // would be refetched forever. A single atomic write rules out persisting coverage without its rows. Coverage is
+        // recorded over the full requested window even when the fetch start was clamped, so the prefix the source has
+        // declared unavailable is not refetched until normal expiry.
         ExchangeRateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
@@ -291,12 +331,27 @@ public abstract class CachingExchangeRateProviderBase
             return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
 
+        if (!TryClampFetchStart(startDate, endDate, now, out DateOnly fetchStart, out DateOnly? earliestAvailable))
+        {
+            // No part of the window is inside the inner's advertised history: skip the doomed fetch and record the
+            // whole window as covered-with-no-rows, identically to the synchronous path.
+            ExchangeRateCacheWriteStatus skipStatus = StoreFetchedRange(duration, pair, [], startDate, endDate, now);
+
+            Log.SkippedRangeOutsideHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, startDate, endDate, earliestAvailable!.Value, skipStatus);
+            return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, []);
+        }
+
+        if (fetchStart != startDate)
+            Log.ClampedRangeToHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, startDate, fetchStart);
+
         IReadOnlyList<ExchangeRate> fetched =
-            await Inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
+            await Inner.GetRatesAsync(fromIsoCode, toIsoCode, fetchStart, endDate, cancellationToken).ConfigureAwait(false);
 
         // Write the fetched rows and the covered window atomically, regardless of how many rows came back: the request
         // asked for every interior day, so even an empty fetch must record the whole window as covered or the same range
-        // would be refetched forever. A single atomic write rules out persisting coverage without its rows.
+        // would be refetched forever. A single atomic write rules out persisting coverage without its rows. Coverage is
+        // recorded over the full requested window even when the fetch start was clamped, so the prefix the source has
+        // declared unavailable is not refetched until normal expiry.
         ExchangeRateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
@@ -312,6 +367,93 @@ public abstract class CachingExchangeRateProviderBase
         var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
 
         return new DatedExchangeRateProviderAdapter(this, today, _options.DefaultLookupOptions).GetRate(fromIsoCode, toIsoCode);
+    }
+
+    /// <summary>
+    /// Determines whether a single-date lookup should be skipped because no date it could resolve to lies inside the
+    /// inner provider's advertised history.
+    /// </summary>
+    /// <param name="date">The requested date.</param>
+    /// <param name="options">The lookup rules to apply; <see langword="null" /> selects the exact-match rules.</param>
+    /// <param name="now">The instant the advertised rolling window is evaluated against.</param>
+    /// <param name="earliest">
+    /// When this method returns <see langword="true" />, the earliest date the inner provider advertises it can serve.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the clamp is enabled, the inner provider is history-aware, and the latest date the
+    /// lookup could resolve to still precedes the advertised earliest date; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Forward-resolving rules (<see cref="ExchangeRateDateResolution.NextOnOrAfter" /> and the nearest family) can
+    /// reach up to <see cref="ExchangeRateLookupOptions.ToleranceDays" /> past the requested date, so the guard tests
+    /// that reachable maximum rather than the requested date itself — a request just outside the advertised floor whose
+    /// tolerance reaches back inside it is still delegated.
+    /// </remarks>
+    private bool IsOutsideAdvertisedHistory(DateOnly date, ExchangeRateLookupOptions? options, DateTimeOffset now, out DateOnly earliest)
+    {
+        earliest = default;
+
+        if (!_options.RespectHistoryAvailability || Inner is not IHistoryAwareExchangeRateProvider aware)
+            return false;
+
+        DateOnly? floor = aware.HistoryAvailability.GetEarliestAvailable(DateOnly.FromDateTime(now.UtcDateTime));
+        if (floor is null)
+            return false;
+
+        ExchangeRateLookupOptions effective = options ?? ExchangeRateLookupOptions.Exact;
+        DateOnly latestReachable = date;
+        if (effective.DateResolution is not ExchangeRateDateResolution.Exact and not ExchangeRateDateResolution.PreviousOnOrBefore)
+        {
+            // Widen in day-number space so an extreme tolerance saturates at DateOnly.MaxValue instead of overflowing.
+            long reachableDay = (long)date.DayNumber + effective.ToleranceDays;
+            latestReachable = reachableDay >= DateOnly.MaxValue.DayNumber ? DateOnly.MaxValue : DateOnly.FromDayNumber((int)reachableDay);
+        }
+
+        if (latestReachable >= floor.Value)
+            return false;
+
+        earliest = floor.Value;
+        return true;
+    }
+
+    /// <summary>
+    /// Applies the inner provider's advertised history to a requested range window, resolving the first date worth
+    /// fetching.
+    /// </summary>
+    /// <param name="startDate">The inclusive first date of the requested window.</param>
+    /// <param name="endDate">The inclusive last date of the requested window.</param>
+    /// <param name="now">The instant the advertised rolling window is evaluated against.</param>
+    /// <param name="fetchStart">
+    /// The first date to fetch from the inner provider: the requested start when no clamp applies, or the advertised
+    /// earliest date when the window starts before it.
+    /// </param>
+    /// <param name="earliestAvailable">
+    /// The earliest date the inner provider advertises it can serve when that floor clips the window; otherwise
+    /// <see langword="null" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when at least part of the window is inside the advertised history and a fetch should be
+    /// issued; <see langword="false" /> when the whole window precedes the advertised earliest date and the fetch
+    /// should be skipped.
+    /// </returns>
+    private bool TryClampFetchStart(DateOnly startDate, DateOnly endDate, DateTimeOffset now, out DateOnly fetchStart, out DateOnly? earliestAvailable)
+    {
+        fetchStart = startDate;
+        earliestAvailable = null;
+
+        if (!_options.RespectHistoryAvailability || Inner is not IHistoryAwareExchangeRateProvider aware)
+            return true;
+
+        DateOnly? floor = aware.HistoryAvailability.GetEarliestAvailable(DateOnly.FromDateTime(now.UtcDateTime));
+        if (floor is null || floor.Value <= startDate)
+            return true;
+
+        earliestAvailable = floor;
+        if (floor.Value > endDate)
+            return false;
+
+        fetchStart = floor.Value;
+        return true;
     }
 
     /// <summary>

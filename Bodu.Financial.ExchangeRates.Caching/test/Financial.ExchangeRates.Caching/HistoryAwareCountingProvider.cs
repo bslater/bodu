@@ -48,6 +48,18 @@ internal sealed class HistoryAwareCountingProvider
     /// <value>The invocation count.</value>
     public int RangeCallCount { get; private set; }
 
+    /// <summary>
+    /// Gets the start date the most recent range lookup was invoked with, so tests can observe the decorator's clamp.
+    /// </summary>
+    /// <value>The captured start date, or <see langword="null" /> before any range lookup.</value>
+    public DateOnly? LastRangeStart { get; private set; }
+
+    /// <summary>
+    /// Gets the end date the most recent range lookup was invoked with.
+    /// </summary>
+    /// <value>The captured end date, or <see langword="null" /> before any range lookup.</value>
+    public DateOnly? LastRangeEnd { get; private set; }
+
     /// <inheritdoc />
     public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
     {
@@ -73,6 +85,8 @@ internal sealed class HistoryAwareCountingProvider
     public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         RangeCallCount++;
+        LastRangeStart = startDate;
+        LastRangeEnd = endDate;
         return _inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
     }
 
@@ -94,6 +108,8 @@ internal sealed class HistoryAwareCountingProvider
     public ValueTask<ExchangeRateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
         RangeCallCount++;
+        LastRangeStart = startDate;
+        LastRangeEnd = endDate;
         return _inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);
     }
 }
