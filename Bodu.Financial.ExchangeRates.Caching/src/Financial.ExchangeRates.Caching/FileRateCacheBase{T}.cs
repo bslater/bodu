@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
@@ -42,6 +44,21 @@ public abstract class FileRateCacheBase<TOptions>
     /// <summary>The layout deciding the folder hierarchy, file names, and date partitioning for each pair.</summary>
     private readonly RateCacheFileLayout _layout;
 
+    /// <summary>The logger that receives the best-effort degradation messages; never <see langword="null" />.</summary>
+    private readonly ILogger _logger;
+
+    /// <summary>The time source the warning rate-limiting is measured against, so the cooldown is deterministic under test.</summary>
+    private readonly TimeProvider _timeProvider;
+
+    /// <summary>The minimum interval between swallowed-failure warnings; failures inside the window only increment the suppressed count.</summary>
+    private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
+
+    /// <summary>The UTC tick timestamp of the last emitted warning, or <see cref="long.MinValue" /> when none has been emitted.</summary>
+    private long _lastWarnUtcTicks = long.MinValue;
+
+    /// <summary>The number of swallowed failures rate-limited away since the last emitted warning.</summary>
+    private int _suppressedSinceLastWarn;
+
     /// <summary>Memoizes the most recently parsed state per file, keyed by full path, against the file's last-write instant, so a repeated read of an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. An entry is invalidated when this instance writes or deletes the file, and a differing last-write instant — an external or cross-process change — is detected on the next read, so the memo never serves data from a file whose timestamp has moved. Keying by path (not by pair) lets one pair span many partition files.</summary>
     private readonly ConcurrentDictionary<string, (DateTime StampUtc, CachePairState State)> _parsed = new();
 
@@ -51,13 +68,23 @@ public abstract class FileRateCacheBase<TOptions>
     /// <param name="options">
     /// The file-cache options selecting the bound provider, storage directory, and layout.
     /// </param>
+    /// <param name="timeProvider">
+    /// The time source the swallowed-failure warning rate-limiting is measured against, or <see langword="null" /> to
+    /// use <see cref="TimeProvider.System" />.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives a rate-limited warning when a best-effort storage failure is swallowed, or
+    /// <see langword="null" /> to disable that reporting.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    protected FileRateCacheBase(TOptions options)
+    protected FileRateCacheBase(TOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
         : base(options)
     {
+        _timeProvider = timeProvider ?? TimeProvider.System;
+        _logger = logger ?? NullLogger.Instance;
         _directory = string.IsNullOrWhiteSpace(options.CacheDirectory)
             ? Path.Combine(Path.GetTempPath(), "bodu-exchange-rates")
             : options.CacheDirectory!;
@@ -119,12 +146,14 @@ public abstract class FileRateCacheBase<TOptions>
         {
             return _layout.IsPartitioned ? ReadPartitioned(pair) : ReadSingle(pair);
         }
-        catch (IOException) when (ShouldSwallowStorageFailure)
+        catch (IOException ex) when (ShouldSwallowStorageFailure)
         {
+            OnStorageFailureSwallowed("read", ex);
             return CachePairState.Empty;
         }
-        catch (UnauthorizedAccessException) when (ShouldSwallowStorageFailure)
+        catch (UnauthorizedAccessException ex) when (ShouldSwallowStorageFailure)
         {
+            OnStorageFailureSwallowed("read", ex);
             return CachePairState.Empty;
         }
     }
@@ -141,16 +170,18 @@ public abstract class FileRateCacheBase<TOptions>
 
             return true;
         }
-        catch (IOException) when (ShouldSwallowStorageFailure)
+        catch (IOException ex) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: a failed write must not break rate retrieval. Report the failure so the caller can
             // refetch rather than trust coverage that was never persisted. When ThrowOnStorageFailure is set the
             // failure propagates instead.
+            OnStorageFailureSwallowed("store", ex);
             return false;
         }
-        catch (UnauthorizedAccessException) when (ShouldSwallowStorageFailure)
+        catch (UnauthorizedAccessException ex) when (ShouldSwallowStorageFailure)
         {
             // Best-effort cache: see above.
+            OnStorageFailureSwallowed("store", ex);
             return false;
         }
     }
@@ -174,12 +205,13 @@ public abstract class FileRateCacheBase<TOptions>
     /// content is malformed.
     /// </summary>
     /// <param name="text">The file text to parse.</param>
+    /// <param name="path">The full path of the file the text was read from, used for diagnostics.</param>
     /// <returns>The parsed state, or <see cref="CachePairState.Empty" /> when the content cannot be parsed.</returns>
     /// <remarks>
     /// Declared <see langword="private protected" /> because <see cref="CachePairState" /> is an internal storage
     /// detail shared only with same-assembly backends.
     /// </remarks>
-    private protected abstract CachePairState Deserialize(string text);
+    private protected abstract CachePairState Deserialize(string text, string path);
 
     /// <summary>
     /// Resolves the single backing file path for a pair under a non-partitioned layout.
@@ -247,7 +279,7 @@ public abstract class FileRateCacheBase<TOptions>
             return memo.State;
 
         string text = File.ReadAllText(path);
-        CachePairState state = Deserialize(text);
+        CachePairState state = Deserialize(text, path);
 
         // Memoize the parse against the file's last-write instant. A later write (here or in another process) moves the
         // timestamp, so the next read misses this entry and re-parses the fresh file.
@@ -408,23 +440,67 @@ public abstract class FileRateCacheBase<TOptions>
     }
 
     /// <summary>
+    /// Reports a cache file that failed to deserialize and was treated as empty, so corruption surfaces to operators.
+    /// Called by the format-specific <see cref="Deserialize(string, string)" /> implementations.
+    /// </summary>
+    /// <param name="path">The full path of the corrupt cache file.</param>
+    /// <param name="exception">The swallowed deserialization exception.</param>
+    private protected void OnCacheFileCorrupt(string path, Exception exception) =>
+        Log.CacheFileCorrupt(_logger, Provider, path, exception);
+
+    /// <summary>
+    /// Reports a swallowed best-effort storage failure to the logger at <see cref="LogLevel.Warning" />, rate-limited
+    /// so at most one warning is emitted per <see cref="s_warnCooldown" /> window.
+    /// </summary>
+    /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>
+    /// <param name="exception">The swallowed storage exception.</param>
+    /// <remarks>
+    /// The first failure after construction, and the first after each cooldown elapses, is logged immediately and
+    /// carries the count of failures suppressed since the previous warning; failures inside the window only increment
+    /// that count. A single warning slot is claimed with
+    /// <see cref="Interlocked.CompareExchange(ref long, long, long)" /> so that under concurrent swallows exactly one
+    /// caller logs per window. The cooldown is measured against the injected <see cref="TimeProvider" /> so the
+    /// rate-limiting is deterministic under test.
+    /// </remarks>
+    private void OnStorageFailureSwallowed(string operation, Exception exception)
+    {
+        long now = _timeProvider.GetUtcNow().UtcTicks;
+        long last = Interlocked.Read(ref _lastWarnUtcTicks);
+
+        // Emit when no warning has been logged yet, or the cooldown has elapsed since the last one. The MinValue sentinel
+        // is checked before the subtraction so a never-warned instance does not underflow the elapsed comparison.
+        bool due = last == long.MinValue || (now - last) >= s_warnCooldown.Ticks;
+        if (due && Interlocked.CompareExchange(ref _lastWarnUtcTicks, now, last) == last)
+        {
+            int suppressed = Interlocked.Exchange(ref _suppressedSinceLastWarn, 0);
+            Log.FileStorageFailureSwallowed(_logger, Provider, operation, suppressed, exception);
+        }
+        else
+        {
+            Interlocked.Increment(ref _suppressedSinceLastWarn);
+        }
+    }
+
+    /// <summary>
     /// Removes a directory if it exists and is empty, swallowing file-system failures so cleanup never masks a write.
     /// </summary>
     /// <param name="directory">The directory to remove.</param>
-    private static void TryRemoveEmptyDirectory(string directory)
+    private void TryRemoveEmptyDirectory(string directory)
     {
         try
         {
             if (Directory.Exists(directory) && !Directory.EnumerateFileSystemEntries(directory).Any())
                 Directory.Delete(directory);
         }
-        catch (IOException)
+        catch (IOException ex)
         {
             // Best-effort cleanup of the emptied pair directory.
+            Log.CleanupFailureSwallowed(_logger, Provider, directory, ex);
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException ex)
         {
             // Best-effort cleanup of the emptied pair directory.
+            Log.CleanupFailureSwallowed(_logger, Provider, directory, ex);
         }
     }
 
@@ -439,7 +515,7 @@ public abstract class FileRateCacheBase<TOptions>
     /// is a same-volume rename rather than a copy. The temporary file is removed on failure so a crashed or rejected
     /// write leaves no orphan behind.
     /// </remarks>
-    private static void WriteAtomic(string path, string text)
+    private void WriteAtomic(string path, string text)
     {
         string tempPath = $"{path}.{Guid.NewGuid():N}.tmp";
 
@@ -460,20 +536,22 @@ public abstract class FileRateCacheBase<TOptions>
     /// masks the original error.
     /// </summary>
     /// <param name="path">The path of the file to delete.</param>
-    private static void TryDelete(string path)
+    private void TryDelete(string path)
     {
         try
         {
             if (File.Exists(path))
                 File.Delete(path);
         }
-        catch (IOException)
+        catch (IOException ex)
         {
             // Best-effort cleanup of the temp file.
+            Log.CleanupFailureSwallowed(_logger, Provider, path, ex);
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException ex)
         {
             // Best-effort cleanup of the temp file.
+            Log.CleanupFailureSwallowed(_logger, Provider, path, ex);
         }
     }
 }

@@ -108,7 +108,7 @@ public sealed class EcbRateProvider
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public EcbRateProvider(HttpClient httpClient, EcbRateProviderOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
-        : this(CreateSource(httpClient, options), options, ownedHttpClient: null, logger, timeProvider)
+        : this(CreateSource(httpClient, options, logger), options, ownedHttpClient: null, logger, timeProvider)
     {
     }
 
@@ -140,7 +140,7 @@ public sealed class EcbRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private EcbRateProvider(EcbRateProviderOptions options, HttpClient ownedHttpClient, ILogger? logger, TimeProvider? timeProvider)
-        : this(CreateSource(ownedHttpClient, options), options, ownedHttpClient, logger, timeProvider)
+        : this(CreateSource(ownedHttpClient, options, logger), options, ownedHttpClient, logger, timeProvider)
     {
     }
 
@@ -314,15 +314,16 @@ public sealed class EcbRateProvider
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download feed files.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">The provider's logger, forwarded to the on-disk response cache for degradation warnings.</param>
     /// <returns>A new table source.</returns>
-    private static EcbXmlRateTableSource CreateSource(HttpClient httpClient, EcbRateProviderOptions options)
+    private static EcbXmlRateTableSource CreateSource(HttpClient httpClient, EcbRateProviderOptions options, ILogger? logger)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
         IEcbFeedCache cache = options.EnableDiskCache
-            ? new FileSystemEcbFeedCache(options.CacheDirectory)
+            ? new FileSystemEcbFeedCache(options.CacheDirectory, logger)
             : NullEcbFeedCache.Instance;
 
         return new EcbXmlRateTableSource(httpClient, options, cache);

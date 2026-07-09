@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates;
 
@@ -32,8 +33,12 @@ public sealed class FileSystemEcbFeedCache
     /// The cache directory. When <see langword="null" /> or empty, a <c>bodu-ecb</c> folder under the system temporary
     /// path is used.
     /// </param>
-    public FileSystemEcbFeedCache(string? directory)
-        : base(directory, "bodu-ecb") { }
+    /// <param name="logger">
+    /// The logger that receives a warning when a best-effort file-system failure is swallowed, or
+    /// <see langword="null" /> to disable that reporting.
+    /// </param>
+    public FileSystemEcbFeedCache(string? directory, ILogger? logger = null)
+        : base(directory, "bodu-ecb", logger) { }
 
     /// <inheritdoc />
     public bool TryGet(EcbRateFeed feed, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)

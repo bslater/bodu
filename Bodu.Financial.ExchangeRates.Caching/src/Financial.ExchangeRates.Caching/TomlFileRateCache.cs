@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Toml;
+using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
@@ -72,12 +73,20 @@ public sealed class TomlFileRateCache
     /// Initializes a new instance of the <see cref="TomlFileRateCache" /> class.
     /// </summary>
     /// <param name="options">The file-cache options that select the bound provider and storage directory.</param>
+    /// <param name="timeProvider">
+    /// The time source the swallowed-failure warning rate-limiting is measured against, or <see langword="null" /> to
+    /// use <see cref="TimeProvider.System" />.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives a rate-limited warning when a best-effort storage failure is swallowed, or
+    /// <see langword="null" /> to disable that reporting.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public TomlFileRateCache(FileRateCacheOptions options)
-        : base(options)
+    public TomlFileRateCache(FileRateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
+        : base(options, timeProvider, logger)
     {
     }
 
@@ -89,18 +98,20 @@ public sealed class TomlFileRateCache
         TomlSerializer.Serialize(RateCacheFileConverter.ToFile(Provider, pair, state), s_tomlOptions);
 
     /// <inheritdoc />
-    private protected override CachePairState Deserialize(string text)
+    private protected override CachePairState Deserialize(string text, string path)
     {
         try
         {
             return RateCacheFileConverter.ToState(TomlSerializer.Deserialize<RateCacheFile>(text, s_tomlOptions));
         }
-        catch (TomlFormatException)
+        catch (TomlFormatException ex)
         {
+            OnCacheFileCorrupt(path, ex);
             return CachePairState.Empty;
         }
-        catch (TomlSerializationException)
+        catch (TomlSerializationException ex)
         {
+            OnCacheFileCorrupt(path, ex);
             return CachePairState.Empty;
         }
     }

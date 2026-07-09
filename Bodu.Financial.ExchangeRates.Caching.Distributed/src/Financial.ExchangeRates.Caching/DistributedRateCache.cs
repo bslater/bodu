@@ -9,6 +9,8 @@ using System.Globalization;
 using System.Text.Json;
 using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
@@ -75,16 +77,39 @@ public sealed class DistributedRateCache
     /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first use and reused thereafter.</summary>
     private readonly ConcurrentDictionary<CurrencyPair, object> _pairLocks = new();
 
+    /// <summary>The logger that receives the best-effort degradation warnings; never <see langword="null" />.</summary>
+    private readonly ILogger _logger;
+
+    /// <summary>The time source the warning rate-limiting is measured against, so the cooldown is deterministic under test.</summary>
+    private readonly TimeProvider _timeProvider;
+
+    /// <summary>The minimum interval between swallowed-failure warnings; failures inside the window only increment the suppressed count.</summary>
+    private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
+
+    /// <summary>The UTC tick timestamp of the last emitted warning, or <see cref="long.MinValue" /> when none has been emitted.</summary>
+    private long _lastWarnUtcTicks = long.MinValue;
+
+    /// <summary>The number of swallowed failures rate-limited away since the last emitted warning.</summary>
+    private int _suppressedSinceLastWarn;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="DistributedRateCache" /> class.
     /// </summary>
     /// <param name="cache">The distributed cache the per-pair blobs are persisted in.</param>
     /// <param name="options">The options carrying the bound provider and the optional key prefix.</param>
+    /// <param name="timeProvider">
+    /// The time source the swallowed-failure warning rate-limiting is measured against, or <see langword="null" /> to
+    /// use <see cref="TimeProvider.System" />.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives a rate-limited warning when a best-effort storage failure is swallowed, or
+    /// <see langword="null" /> to disable that reporting.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="cache" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public DistributedRateCache(IDistributedCache cache, DistributedRateCacheOptions options)
+    public DistributedRateCache(IDistributedCache cache, DistributedRateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(cache);
         ThrowHelper.ThrowIfNull(options);
@@ -92,6 +117,8 @@ public sealed class DistributedRateCache
 
         _cache = cache;
         _options = options;
+        _timeProvider = timeProvider ?? TimeProvider.System;
+        _logger = logger ?? NullLogger.Instance;
 
         // Eagerly probe the backing store so an unreachable or misconfigured distributed cache surfaces here rather than
         // on the first read or write. A connectivity or configuration fault propagates from the constructor; a missing
@@ -306,6 +333,39 @@ public sealed class DistributedRateCache
     }
 
     /// <summary>
+    /// Reports a swallowed best-effort storage failure to the logger at <see cref="LogLevel.Warning" />, rate-limited
+    /// so at most one warning is emitted per <see cref="s_warnCooldown" /> window.
+    /// </summary>
+    /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>
+    /// <param name="exception">The swallowed storage exception.</param>
+    /// <remarks>
+    /// The first failure after construction, and the first after each cooldown elapses, is logged immediately and
+    /// carries the count of failures suppressed since the previous warning; failures inside the window only increment
+    /// that count. A single warning slot is claimed with
+    /// <see cref="Interlocked.CompareExchange(ref long, long, long)" /> so that under concurrent swallows exactly one
+    /// caller logs per window. The cooldown is measured against the injected <see cref="TimeProvider" /> so the
+    /// rate-limiting is deterministic under test.
+    /// </remarks>
+    private void OnStorageFailureSwallowed(string operation, Exception exception)
+    {
+        long now = _timeProvider.GetUtcNow().UtcTicks;
+        long last = Interlocked.Read(ref _lastWarnUtcTicks);
+
+        // Emit when no warning has been logged yet, or the cooldown has elapsed since the last one. The MinValue sentinel
+        // is checked before the subtraction so a never-warned instance does not underflow the elapsed comparison.
+        bool due = last == long.MinValue || (now - last) >= s_warnCooldown.Ticks;
+        if (due && Interlocked.CompareExchange(ref _lastWarnUtcTicks, now, last) == last)
+        {
+            int suppressed = Interlocked.Exchange(ref _suppressedSinceLastWarn, 0);
+            Log.StorageFailureSwallowed(_logger, _options.Provider, operation, suppressed, exception);
+        }
+        else
+        {
+            Interlocked.Increment(ref _suppressedSinceLastWarn);
+        }
+    }
+
+    /// <summary>
     /// Reads and deserializes the persisted blob for a pair, returning empty state when none exists or the read fails.
     /// </summary>
     /// <param name="pair">The currency pair.</param>
@@ -326,6 +386,7 @@ public sealed class DistributedRateCache
             // Best-effort cache: a backing-store fault degrades to an empty read rather than breaking rate retrieval.
             // Cancellation (and fatal exceptions surfaced as OperationCanceledException) propagates rather than being
             // masked as an empty read.
+            OnStorageFailureSwallowed("read", ex);
             return PairState.Empty;
         }
 
@@ -337,9 +398,10 @@ public sealed class DistributedRateCache
             DistributedCacheEntry? entry = JsonSerializer.Deserialize<DistributedCacheEntry>(payload, s_serializerOptions);
             return entry is null ? PairState.Empty : Project(entry);
         }
-        catch (JsonException) when (ShouldSwallowStorageFailure)
+        catch (JsonException ex) when (ShouldSwallowStorageFailure)
         {
             // A corrupt or incompatible blob degrades to an empty read rather than breaking rate retrieval.
+            OnStorageFailureSwallowed("deserialize", ex);
             return PairState.Empty;
         }
     }
@@ -405,6 +467,7 @@ public sealed class DistributedRateCache
             // deliberately swallowed and reported as a failure; argument validation runs before this block and still
             // throws. Cancellation (and fatal exceptions surfaced as OperationCanceledException) propagates rather than
             // being masked as a failed write.
+            OnStorageFailureSwallowed("store", ex);
             return false;
         }
     }

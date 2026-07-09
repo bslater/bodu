@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates;
 
@@ -32,8 +33,12 @@ public sealed class FileSystemRbaWorkbookCache
     /// The cache directory. When <see langword="null" /> or empty, a <c>bodu-rba</c> folder under the system temporary
     /// path is used.
     /// </param>
-    public FileSystemRbaWorkbookCache(string? directory)
-        : base(directory, "bodu-rba") { }
+    /// <param name="logger">
+    /// The logger that receives a warning when a best-effort file-system failure is swallowed, or
+    /// <see langword="null" /> to disable that reporting.
+    /// </param>
+    public FileSystemRbaWorkbookCache(string? directory, ILogger? logger = null)
+        : base(directory, "bodu-rba", logger) { }
 
     /// <inheritdoc />
     public bool TryGet(RbaEraWorkbook era, TimeSpan currentEraRefreshInterval, [MaybeNullWhen(false)] out byte[] bytes)

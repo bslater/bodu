@@ -107,7 +107,7 @@ public sealed class RbaRateProvider
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public RbaRateProvider(HttpClient httpClient, RbaRateProviderOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
-        : this(CreateSource(httpClient, options), options, ownedHttpClient: null, logger, timeProvider)
+        : this(CreateSource(httpClient, options, logger), options, ownedHttpClient: null, logger, timeProvider)
     {
     }
 
@@ -139,7 +139,7 @@ public sealed class RbaRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private RbaRateProvider(RbaRateProviderOptions options, HttpClient ownedHttpClient, ILogger? logger, TimeProvider? timeProvider)
-        : this(CreateSource(ownedHttpClient, options), options, ownedHttpClient, logger, timeProvider)
+        : this(CreateSource(ownedHttpClient, options, logger), options, ownedHttpClient, logger, timeProvider)
     {
     }
 
@@ -309,15 +309,16 @@ public sealed class RbaRateProvider
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download era files.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">The provider's logger, forwarded to the on-disk response cache for degradation warnings.</param>
     /// <returns>A new table source.</returns>
-    private static RbaXlsRateTableSource CreateSource(HttpClient httpClient, RbaRateProviderOptions options)
+    private static RbaXlsRateTableSource CreateSource(HttpClient httpClient, RbaRateProviderOptions options, ILogger? logger)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
         IRbaWorkbookCache cache = options.EnableDiskCache
-            ? new FileSystemRbaWorkbookCache(options.CacheDirectory)
+            ? new FileSystemRbaWorkbookCache(options.CacheDirectory, logger)
             : NullRbaWorkbookCache.Instance;
 
         return new RbaXlsRateTableSource(httpClient, options, cache);
