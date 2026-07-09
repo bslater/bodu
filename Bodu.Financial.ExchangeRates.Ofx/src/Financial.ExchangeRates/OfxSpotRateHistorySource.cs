@@ -25,14 +25,14 @@ internal sealed class OfxSpotRateHistorySource
     private readonly HttpClient _httpClient;
 
     /// <summary>The provider options supplying the base address, history path, and query parameters.</summary>
-    private readonly OfxExchangeRateOptions _options;
+    private readonly OfxRateProviderOptions _options;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OfxSpotRateHistorySource" /> class.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue history requests.</param>
     /// <param name="options">The provider options.</param>
-    internal OfxSpotRateHistorySource(HttpClient httpClient, OfxExchangeRateOptions options)
+    internal OfxSpotRateHistorySource(HttpClient httpClient, OfxRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);

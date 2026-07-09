@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// that identifies it.
 /// </summary>
 /// <remarks>
-/// Exposed through <see cref="BoeExchangeRateProvider.GetAvailablePairs" /> so callers can discover which currency
+/// Exposed through <see cref="BoeRateProvider.GetAvailablePairs" /> so callers can discover which currency
 /// pairs the loaded BoE data supports without hard-coding the list.
 /// </remarks>
 public sealed class BoeSeriesInfo

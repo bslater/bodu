@@ -24,7 +24,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     {
         using MemoryStream stream = RbaFixtures.OpenStream(RbaFixtures.Sample);
         using var workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
-        return RbaExchangeRateWorkbookParser.Parse(workbook, new RbaExchangeRateOptions());
+        return RbaExchangeRateWorkbookParser.Parse(workbook, new RbaRateProviderOptions());
     }
 
     /// <summary>

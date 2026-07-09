@@ -26,7 +26,7 @@ public static class EcbFinancialServiceBuilderExtensions
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configuration">
     /// An optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
-    /// bound into <see cref="EcbExchangeRateOptions" />.
+    /// bound into <see cref="EcbRateProviderOptions" />.
     /// </param>
     /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Ecb</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
@@ -77,9 +77,9 @@ public static class EcbFinancialServiceBuilderExtensions
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Ecb",
-        Action<EcbExchangeRateOptions>? configure = null,
+        Action<EcbRateProviderOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
-        => builder.AddWebExchangeRateProvider<EcbExchangeRateProvider, EcbExchangeRateOptions>(
+        => builder.AddWebRateProvider<EcbRateProvider, EcbRateProviderOptions>(
             HttpClientName,
             configuration,
             sectionName,
@@ -90,5 +90,5 @@ public static class EcbFinancialServiceBuilderExtensions
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>
-                new EcbExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<EcbExchangeRateProvider>(), timeProvider));
+                new EcbRateProvider(client, opts, loggerFactory?.CreateLogger<EcbRateProvider>(), timeProvider));
 }

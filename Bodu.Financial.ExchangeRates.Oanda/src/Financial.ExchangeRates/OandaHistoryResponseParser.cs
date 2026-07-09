@@ -32,7 +32,7 @@ internal static class OandaHistoryResponseParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON or omits the expected <c>widget</c> array.
     /// </exception>
-    public static PairRateData<OandaSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, OandaExchangeRateOptions options)
+    public static PairRateData<OandaSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, OandaRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(options);

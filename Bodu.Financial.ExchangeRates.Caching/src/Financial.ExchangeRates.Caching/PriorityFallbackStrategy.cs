@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IExchangeRateAggregationStrategy" /> that returns the first successful result from the ordered
+/// An <see cref="IRateAggregationStrategy" /> that returns the first successful result from the ordered
 /// candidates, giving deterministic, auditable fallback.
 /// </summary>
 /// <remarks>
@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// successor to the former <c>CompositeDatedExchangeRateProvider</c>.
 /// </remarks>
 public sealed class PriorityFallbackStrategy
-    : IExchangeRateAggregationStrategy
+    : IRateAggregationStrategy
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PriorityFallbackStrategy" /> class.
@@ -37,7 +37,7 @@ public sealed class PriorityFallbackStrategy
         string toIsoCode,
         DateOnly date,
         RateLookupOptions options,
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
+        IReadOnlyList<NamedDatedRateProvider> candidates,
         out RateLookupResult result)
     {
         ThrowHelper.ThrowIfNull(candidates);
@@ -58,7 +58,7 @@ public sealed class PriorityFallbackStrategy
         string toIsoCode,
         DateOnly startDate,
         DateOnly endDate,
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
+        IReadOnlyList<NamedDatedRateProvider> candidates,
         CancellationToken cancellationToken)
     {
         ThrowHelper.ThrowIfNull(candidates);
@@ -81,7 +81,7 @@ public sealed class PriorityFallbackStrategy
         string toIsoCode,
         DateOnly startDate,
         DateOnly endDate,
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates)
+        IReadOnlyList<NamedDatedRateProvider> candidates)
     {
         ThrowHelper.ThrowIfNull(candidates);
 

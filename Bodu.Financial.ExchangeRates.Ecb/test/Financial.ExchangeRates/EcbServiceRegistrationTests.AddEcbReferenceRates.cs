@@ -25,7 +25,7 @@ public partial class EcbServiceRegistrationTests
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
-        Assert.IsNotNull(provider.GetService<EcbExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetService<EcbRateProvider>());
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public partial class EcbServiceRegistrationTests
         services.AddFinancialService().AddEcbReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        EcbExchangeRateProvider? concrete = provider.GetService<EcbExchangeRateProvider>();
+        EcbRateProvider? concrete = provider.GetService<EcbRateProvider>();
         IDatedRateProvider? dated = provider.GetService<IDatedRateProvider>();
         IRateProvider? simple = provider.GetService<IRateProvider>();
 
@@ -85,7 +85,7 @@ public partial class EcbServiceRegistrationTests
         services.AddFinancialService(configuration).AddEcbReferenceRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        EcbExchangeRateOptions options = provider.GetRequiredService<IOptions<EcbExchangeRateOptions>>().Value;
+        EcbRateProviderOptions options = provider.GetRequiredService<IOptions<EcbRateProviderOptions>>().Value;
 
         Assert.IsFalse(options.EnableDiskCache);
         Assert.AreEqual(TimeSpan.FromHours(6), options.RefreshInterval);
@@ -103,7 +103,7 @@ public partial class EcbServiceRegistrationTests
         services.AddFinancialService().AddEcbReferenceRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        EcbExchangeRateOptions options = provider.GetRequiredService<IOptions<EcbExchangeRateOptions>>().Value;
+        EcbRateProviderOptions options = provider.GetRequiredService<IOptions<EcbRateProviderOptions>>().Value;
 
         Assert.AreEqual("callback-agent", options.Endpoint.UserAgent);
     }
@@ -132,7 +132,7 @@ public partial class EcbServiceRegistrationTests
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
-            _ = provider.GetRequiredService<EcbExchangeRateProvider>();
+            _ = provider.GetRequiredService<EcbRateProvider>();
         });
     }
 
@@ -146,6 +146,6 @@ public partial class EcbServiceRegistrationTests
         services.AddFinancialService().AddEcbReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        Assert.IsNotNull(provider.GetRequiredService<EcbExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetRequiredService<EcbRateProvider>());
     }
 }

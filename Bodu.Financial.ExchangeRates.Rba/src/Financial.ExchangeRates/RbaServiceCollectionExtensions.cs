@@ -21,7 +21,7 @@ public static class RbaServiceCollectionExtensions
     /// <param name="services">The service collection to register into.</param>
     /// <param name="configuration">
     /// An optional configuration root. When supplied, <see cref="FinancialOptions" /> is bound from the
-    /// <c>Financial</c> section and <see cref="RbaExchangeRateOptions" /> from <paramref name="sectionName" />.
+    /// <c>Financial</c> section and <see cref="RbaRateProviderOptions" /> from <paramref name="sectionName" />.
     /// </param>
     /// <param name="sectionName">The RBA configuration section name. Defaults to <c>Financial:Rba</c>.</param>
     /// <param name="configure">An optional callback applied after RBA configuration binding.</param>
@@ -45,7 +45,7 @@ public static class RbaServiceCollectionExtensions
     ///
     /// // Resolve the provider (or IRateProvider / IDatedRateProvider) from the container.
     /// using ServiceProvider provider = services.BuildServiceProvider();
-    /// var rba = provider.GetRequiredService<RbaExchangeRateProvider>();
+    /// var rba = provider.GetRequiredService<RbaRateProvider>();
     ///]]>
     /// </code>
     /// </example>
@@ -53,7 +53,7 @@ public static class RbaServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Rba",
-        Action<RbaExchangeRateOptions>? configure = null)
+        Action<RbaRateProviderOptions>? configure = null)
     {
         ThrowHelper.ThrowIfNull(services);
 

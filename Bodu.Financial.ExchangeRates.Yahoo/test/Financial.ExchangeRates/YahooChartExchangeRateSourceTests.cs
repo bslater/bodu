@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies that <see cref="YahooExchangeRateProvider" /> driven by the real HTTP source builds the expected request
+/// Verifies that <see cref="YahooRateProvider" /> driven by the real HTTP source builds the expected request
 /// and parses the response.
 /// </summary>
 [TestClass]
@@ -22,8 +22,8 @@ public class YahooChartExchangeRateSourceTests
     {
         StubHttpMessageHandler handler = new(YahooFixtures.ReadBytes(YahooFixtures.AudUsd));
         using HttpClient client = new(handler);
-        YahooExchangeRateOptions options = new();
-        YahooExchangeRateProvider provider = new(client, options);
+        YahooRateProviderOptions options = new();
+        YahooRateProvider provider = new(client, options);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 

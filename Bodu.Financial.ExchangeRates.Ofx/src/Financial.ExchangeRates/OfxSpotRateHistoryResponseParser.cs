@@ -30,7 +30,7 @@ internal static class OfxSpotRateHistoryResponseParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON or omits the expected <c>HistoricalPoints</c> array.
     /// </exception>
-    public static PairRateData<OfxSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, OfxExchangeRateOptions options)
+    public static PairRateData<OfxSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, OfxRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(options);

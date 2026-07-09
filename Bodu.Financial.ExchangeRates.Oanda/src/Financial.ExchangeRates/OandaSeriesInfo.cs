@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// and the price basis the rates were drawn from.
 /// </summary>
 /// <remarks>
-/// Exposed through <see cref="PairWebExchangeRateProvider{TSeries}.GetAvailablePairs" /> so callers can discover which
+/// Exposed through <see cref="PairWebRateProvider{TSeries}.GetAvailablePairs" /> so callers can discover which
 /// currency pairs the provider has loaded without hard-coding the list.
 /// </remarks>
 public sealed class OandaSeriesInfo

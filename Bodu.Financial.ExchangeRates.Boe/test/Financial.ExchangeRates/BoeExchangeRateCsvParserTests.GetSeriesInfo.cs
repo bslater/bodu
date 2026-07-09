@@ -16,7 +16,7 @@ public partial class BoeExchangeRateCsvParserTests
     [TestMethod]
     public void GetSeriesInfo_WhenSampleResponse_ShouldReturnGbpPairsWithCodes()
     {
-        BoeExchangeRateTable table = ParseSample();
+        BoeRateTable table = ParseSample();
 
         BoeSeriesInfo usd = table.GetSeriesInfo().Single(s => s.QuoteIsoCode == "USD");
 

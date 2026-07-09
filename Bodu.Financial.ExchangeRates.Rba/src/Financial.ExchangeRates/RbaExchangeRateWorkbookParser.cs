@@ -58,7 +58,7 @@ internal static class RbaExchangeRateWorkbookParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the workbook does not match the expected RBA layout.
     /// </exception>
-    internal static RbaExchangeRateTable Parse(ExcelBinaryWorkbook workbook, RbaExchangeRateOptions options)
+    internal static RbaExchangeRateTable Parse(ExcelBinaryWorkbook workbook, RbaRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(workbook);
         ThrowHelper.ThrowIfNull(options);
@@ -172,7 +172,7 @@ internal static class RbaExchangeRateWorkbookParser
         int titleRow,
         int seriesIdRow,
         int descriptionRow,
-        RbaExchangeRateOptions options)
+        RbaRateProviderOptions options)
     {
         int headerRow = unitsRow >= 0 ? unitsRow : titleRow;
         SortedSet<int> columns = new();
@@ -252,7 +252,7 @@ internal static class RbaExchangeRateWorkbookParser
     /// <returns>
     /// The resolved three-letter ISO code, or <see langword="null" /> when the column is not a currency.
     /// </returns>
-    private static string? ResolveCurrencyCode(string units, string title, RbaExchangeRateOptions options)
+    private static string? ResolveCurrencyCode(string units, string title, RbaRateProviderOptions options)
     {
         string raw = !string.IsNullOrWhiteSpace(units)
             ? units
@@ -266,7 +266,7 @@ internal static class RbaExchangeRateWorkbookParser
             && char.IsAsciiLetterUpper(raw[0])
             && char.IsAsciiLetterUpper(raw[1])
             && char.IsAsciiLetterUpper(raw[2])
-            && !string.Equals(raw, RbaExchangeRateProvider.BaseCurrency.ToString(), StringComparison.Ordinal);
+            && !string.Equals(raw, RbaRateProvider.BaseCurrency.ToString(), StringComparison.Ordinal);
 
         return isCurrency ? raw : null;
     }

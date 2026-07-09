@@ -9,7 +9,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IExchangeRateAggregationStrategy" /> that returns the arithmetic mean of every candidate that can
+/// An <see cref="IRateAggregationStrategy" /> that returns the arithmetic mean of every candidate that can
 /// resolve the request, tagged with a synthetic provider label.
 /// </summary>
 /// <remarks>
@@ -34,7 +34,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// </remarks>
 public sealed class AverageStrategy
-    : IExchangeRateAggregationStrategy
+    : IRateAggregationStrategy
 {
     /// <summary>The default provider label applied to a synthesized average rate.</summary>
     public const string DefaultProviderLabel = "Average";
@@ -71,7 +71,7 @@ public sealed class AverageStrategy
         string toIsoCode,
         DateOnly date,
         RateLookupOptions options,
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
+        IReadOnlyList<NamedDatedRateProvider> candidates,
         out RateLookupResult result)
     {
         ThrowHelper.ThrowIfNull(options);
@@ -110,7 +110,7 @@ public sealed class AverageStrategy
         string toIsoCode,
         DateOnly startDate,
         DateOnly endDate,
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
+        IReadOnlyList<NamedDatedRateProvider> candidates,
         CancellationToken cancellationToken)
     {
         ThrowHelper.ThrowIfNull(candidates);
@@ -120,7 +120,7 @@ public sealed class AverageStrategy
 
         // Gather each candidate's observations keyed by date; the last observation wins for a duplicated date.
         List<Dictionary<DateOnly, decimal>> perCandidate = new(candidates.Count);
-        foreach (NamedDatedExchangeRateProvider candidate in candidates)
+        foreach (NamedDatedRateProvider candidate in candidates)
         {
             IEnumerable<ExchangeRate> rates =
                 await candidate.Provider.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
@@ -145,7 +145,7 @@ public sealed class AverageStrategy
         string toIsoCode,
         DateOnly startDate,
         DateOnly endDate,
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates)
+        IReadOnlyList<NamedDatedRateProvider> candidates)
     {
         ThrowHelper.ThrowIfNull(candidates);
 
@@ -154,7 +154,7 @@ public sealed class AverageStrategy
 
         // Gather each candidate's observations keyed by date; the last observation wins for a duplicated date.
         List<Dictionary<DateOnly, decimal>> perCandidate = new(candidates.Count);
-        foreach (NamedDatedExchangeRateProvider candidate in candidates)
+        foreach (NamedDatedRateProvider candidate in candidates)
         {
             IReadOnlyList<ExchangeRate> rates = candidate.Provider.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
 

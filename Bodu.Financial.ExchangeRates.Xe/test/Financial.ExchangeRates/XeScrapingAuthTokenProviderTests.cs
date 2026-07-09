@@ -35,7 +35,7 @@ public class XeScrapingAuthTokenProviderTests
     {
         RoutedHttpMessageHandler handler = new((request, index) => RouteAppChunk(request));
         using HttpClient client = new(handler);
-        XeScrapingAuthTokenProvider provider = new(client, new XeExchangeRateOptions());
+        XeScrapingAuthTokenProvider provider = new(client, new XeRateProviderOptions());
 
         string token = await provider.GetTokenAsync(forceRefresh: false);
 
@@ -51,7 +51,7 @@ public class XeScrapingAuthTokenProviderTests
     {
         RoutedHttpMessageHandler handler = new((request, index) => RouteAppChunk(request));
         using HttpClient client = new(handler);
-        XeScrapingAuthTokenProvider provider = new(client, new XeExchangeRateOptions());
+        XeScrapingAuthTokenProvider provider = new(client, new XeRateProviderOptions());
 
         string first = await provider.GetTokenAsync(forceRefresh: false);
         string second = await provider.GetTokenAsync(forceRefresh: false);
@@ -68,7 +68,7 @@ public class XeScrapingAuthTokenProviderTests
     {
         RoutedHttpMessageHandler handler = new((request, index) => RouteAppChunk(request));
         using HttpClient client = new(handler);
-        XeScrapingAuthTokenProvider provider = new(client, new XeExchangeRateOptions());
+        XeScrapingAuthTokenProvider provider = new(client, new XeRateProviderOptions());
 
         _ = await provider.GetTokenAsync(forceRefresh: false);
         _ = await provider.GetTokenAsync(forceRefresh: true);
@@ -92,7 +92,7 @@ public class XeScrapingAuthTokenProviderTests
             return url.Contains("currency-chart", StringComparison.Ordinal) ? Ok(AuthSnippet) : Ok(Benign);
         });
         using HttpClient client = new(handler);
-        XeScrapingAuthTokenProvider provider = new(client, new XeExchangeRateOptions());
+        XeScrapingAuthTokenProvider provider = new(client, new XeRateProviderOptions());
 
         string token = await provider.GetTokenAsync(forceRefresh: false);
 
@@ -120,7 +120,7 @@ public class XeScrapingAuthTokenProviderTests
             return url.Contains("777.deadbeefcafe12", StringComparison.Ordinal) ? Ok(AuthSnippet) : Ok(Benign);
         });
         using HttpClient client = new(handler);
-        XeScrapingAuthTokenProvider provider = new(client, new XeExchangeRateOptions());
+        XeScrapingAuthTokenProvider provider = new(client, new XeRateProviderOptions());
 
         string token = await provider.GetTokenAsync(forceRefresh: false);
 
@@ -136,7 +136,7 @@ public class XeScrapingAuthTokenProviderTests
         RoutedHttpMessageHandler handler = new((request, index) =>
             Ok("<html><body>no chunk here</body></html>"));
         using HttpClient client = new(handler);
-        XeScrapingAuthTokenProvider provider = new(client, new XeExchangeRateOptions());
+        XeScrapingAuthTokenProvider provider = new(client, new XeRateProviderOptions());
 
         _ = await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () =>
         {
@@ -158,7 +158,7 @@ public class XeScrapingAuthTokenProviderTests
                 : Ok(Benign);
         });
         using HttpClient client = new(handler);
-        XeScrapingAuthTokenProvider provider = new(client, new XeExchangeRateOptions());
+        XeScrapingAuthTokenProvider provider = new(client, new XeRateProviderOptions());
 
         _ = await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () =>
         {

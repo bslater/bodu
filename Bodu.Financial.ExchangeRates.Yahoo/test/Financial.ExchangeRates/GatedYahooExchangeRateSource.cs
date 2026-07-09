@@ -14,7 +14,7 @@ internal sealed class GatedYahooExchangeRateSource
     : IPairRateSource<YahooSeriesInfo>
 {
     /// <summary>The provider options used while parsing the fixture once the gate opens.</summary>
-    private readonly YahooExchangeRateOptions _options;
+    private readonly YahooRateProviderOptions _options;
 
     /// <summary>The gate that callers await; the fetch completes only after it is released.</summary>
     private readonly TaskCompletionSource _gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -29,7 +29,7 @@ internal sealed class GatedYahooExchangeRateSource
     /// Initializes a new instance of the <see cref="GatedYahooExchangeRateSource" /> class.
     /// </summary>
     /// <param name="options">The provider options used while parsing the fixture.</param>
-    public GatedYahooExchangeRateSource(YahooExchangeRateOptions options)
+    public GatedYahooExchangeRateSource(YahooRateProviderOptions options)
     {
         _options = options;
     }

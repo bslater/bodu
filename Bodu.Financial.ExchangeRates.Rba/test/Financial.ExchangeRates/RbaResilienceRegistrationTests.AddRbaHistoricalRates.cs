@@ -14,7 +14,7 @@ public partial class RbaResilienceRegistrationTests
 {
     /// <summary>
     /// Verifies that the standard resilience options are registered for the named client with the per-attempt timeout
-    /// driven from the configured <see cref="RbaExchangeRateOptions.HttpTimeout" />.
+    /// driven from the configured <see cref="RbaRateProviderOptions.HttpTimeout" />.
     /// </summary>
     [TestMethod]
     public void AddRbaHistoricalRates_ShouldRegisterStandardResilienceOptionsForNamedClient()

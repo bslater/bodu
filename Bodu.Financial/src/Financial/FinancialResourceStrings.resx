@@ -261,9 +261,6 @@
   <data name="Op_Invalid_CurrencyMismatchInAs" xml:space="preserve">
     <value>Cannot convert Money with currency '{0}' to Money&lt;{1}&gt; (currency '{2}').</value>
   </data>
-  <data name="Op_Invalid_SynchronousNetworkAccessOnCapturedContext" xml:space="preserve">
-    <value>Synchronous network access must not be invoked on a thread with a captured SynchronizationContext, which can deadlock; call the asynchronous API or invoke this from a thread-pool thread.</value>
-  </data>
   <data name="Op_Invalid_CurrencyCashRoundingNegative" xml:space="preserve">
     <value>{0}.{1} must be non-negative, but reported {2}.</value>
   </data>
@@ -308,20 +305,5 @@
   </data>
   <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
     <value>Unable to create a JSON converter for '{0}'.</value>
-  </data>
-  <data name="Arg_Invalid_WebExchangeRateOptionsBaseAddress" xml:space="preserve">
-    <value>The exchange-rate provider options must specify a base address.</value>
-  </data>
-  <data name="Arg_Invalid_WebExchangeRateOptionsHttpTimeout" xml:space="preserve">
-    <value>The exchange-rate provider options HTTP timeout must be greater than zero.</value>
-  </data>
-  <data name="Arg_Invalid_WebExchangeRateOptionsDefaultLookback" xml:space="preserve">
-    <value>The exchange-rate provider options default look-back window must be greater than zero.</value>
-  </data>
-  <data name="Arg_Invalid_WebExchangeRateOptionsCurrencyAliases" xml:space="preserve">
-    <value>The exchange-rate provider options currency alias map must not be null.</value>
-  </data>
-  <data name="Arg_Invalid_WebExchangeRateOptionsLogLevel" xml:space="preserve">
-    <value>The exchange-rate provider options must specify a defined log level for every logging concern.</value>
   </data>
 </root>

@@ -14,7 +14,7 @@ internal sealed class FixtureXeExchangeRateSource
     : IPairRateSource<XeSeriesInfo>
 {
     /// <summary>The provider options used while parsing fixtures.</summary>
-    private readonly XeExchangeRateOptions _options;
+    private readonly XeRateProviderOptions _options;
 
     /// <summary>The map from <c>FROM/TO</c> pair key to fixture file name.</summary>
     private readonly IReadOnlyDictionary<string, string> _fixtureByPair;
@@ -27,7 +27,7 @@ internal sealed class FixtureXeExchangeRateSource
     /// An optional pair-to-fixture map; defaults to mapping <c>AUD/USD</c> to the sample fixture.
     /// </param>
     public FixtureXeExchangeRateSource(
-        XeExchangeRateOptions options,
+        XeRateProviderOptions options,
         IReadOnlyDictionary<string, string>? fixtureByPair = null)
     {
         _options = options;

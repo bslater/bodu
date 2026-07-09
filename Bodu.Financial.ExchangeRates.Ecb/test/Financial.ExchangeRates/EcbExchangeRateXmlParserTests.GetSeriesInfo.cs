@@ -16,7 +16,7 @@ public partial class EcbExchangeRateXmlParserTests
     [TestMethod]
     public void GetSeriesInfo_WhenSampleFeed_ShouldReturnDistinctEurPairs()
     {
-        EcbExchangeRateTable table = ParseSample();
+        EcbRateTable table = ParseSample();
 
         var pairs = table.GetSeriesInfo().Select(s => s.Pair).ToList();
 

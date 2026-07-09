@@ -11,7 +11,7 @@ using System.Xml.Linq;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Parses the European Central Bank's <c>eurofxref</c> XML feeds into a normalized <see cref="EcbExchangeRateTable" />.
+/// Parses the European Central Bank's <c>eurofxref</c> XML feeds into a normalized <see cref="EcbRateTable" />.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -43,7 +43,7 @@ internal static class EcbExchangeRateXmlParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the content is well-formed XML but does not match the expected <c>eurofxref</c> layout.
     /// </exception>
-    public static EcbExchangeRateTable Parse(Stream stream, EcbExchangeRateOptions options)
+    public static EcbRateTable Parse(Stream stream, EcbRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(stream);
         ThrowHelper.ThrowIfNull(options);
@@ -64,7 +64,7 @@ internal static class EcbExchangeRateXmlParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the document does not match the expected <c>eurofxref</c> layout.
     /// </exception>
-    public static EcbExchangeRateTable Parse(XDocument document, EcbExchangeRateOptions options)
+    public static EcbRateTable Parse(XDocument document, EcbRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(document);
         ThrowHelper.ThrowIfNull(options);
@@ -94,7 +94,7 @@ internal static class EcbExchangeRateXmlParser
             }
         }
 
-        return new EcbExchangeRateTable(observations);
+        return new EcbRateTable(observations);
     }
 
     /// <summary>
@@ -131,7 +131,7 @@ internal static class EcbExchangeRateXmlParser
     /// <returns>
     /// <see langword="true" /> when the cell yielded a usable observation; otherwise <see langword="false" />.
     /// </returns>
-    private static bool TryParseCell(XElement rateCube, DateOnly date, EcbExchangeRateOptions options, out EcbRateObservation observation)
+    private static bool TryParseCell(XElement rateCube, DateOnly date, EcbRateProviderOptions options, out EcbRateObservation observation)
     {
         observation = default;
 

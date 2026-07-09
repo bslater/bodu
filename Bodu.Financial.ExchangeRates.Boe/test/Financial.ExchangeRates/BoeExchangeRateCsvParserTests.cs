@@ -17,6 +17,6 @@ public partial class BoeExchangeRateCsvParserTests
     /// Parses the embedded sample response with default options.
     /// </summary>
     /// <returns>The parsed table.</returns>
-    private static BoeExchangeRateTable ParseSample() =>
-        BoeExchangeRateCsvParser.Parse(BoeFixtures.OpenStream(BoeFixtures.Sample), new BoeExchangeRateOptions());
+    private static BoeRateTable ParseSample() =>
+        BoeExchangeRateCsvParser.Parse(BoeFixtures.OpenStream(BoeFixtures.Sample), new BoeRateProviderOptions());
 }

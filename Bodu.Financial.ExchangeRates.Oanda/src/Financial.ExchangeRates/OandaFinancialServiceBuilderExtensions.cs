@@ -25,7 +25,7 @@ public static class OandaFinancialServiceBuilderExtensions
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configuration">
     /// An optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
-    /// bound into <see cref="OandaExchangeRateOptions" />.
+    /// bound into <see cref="OandaRateProviderOptions" />.
     /// </param>
     /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Oanda</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
@@ -53,7 +53,7 @@ public static class OandaFinancialServiceBuilderExtensions
     /// and tunable through <paramref name="configureResilience" />. The handler sits in the message-handler pipeline
     /// below the provider's single-flight load coordinator, so a retry re-issues the one in-flight request rather than
     /// multiplying across coalesced callers. Because the resilience handler enforces its own per-attempt timeout driven
-    /// from <see cref="WebExchangeRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
+    /// from <see cref="WebRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
     /// <example>
@@ -76,9 +76,9 @@ public static class OandaFinancialServiceBuilderExtensions
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Oanda",
-        Action<OandaExchangeRateOptions>? configure = null,
+        Action<OandaRateProviderOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
-        => builder.AddWebExchangeRateProvider<OandaExchangeRateProvider, OandaExchangeRateOptions>(
+        => builder.AddWebRateProvider<OandaRateProvider, OandaRateProviderOptions>(
             HttpClientName,
             configuration,
             sectionName,
@@ -86,5 +86,5 @@ public static class OandaFinancialServiceBuilderExtensions
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>
-                new OandaExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<OandaExchangeRateProvider>(), timeProvider));
+                new OandaRateProvider(client, opts, loggerFactory?.CreateLogger<OandaRateProvider>(), timeProvider));
 }

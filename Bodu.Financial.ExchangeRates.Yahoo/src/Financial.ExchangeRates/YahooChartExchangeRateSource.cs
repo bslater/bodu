@@ -29,14 +29,14 @@ internal sealed class YahooChartExchangeRateSource
     private readonly HttpClient _httpClient;
 
     /// <summary>The provider options supplying the base address, chart path, and symbol format.</summary>
-    private readonly YahooExchangeRateOptions _options;
+    private readonly YahooRateProviderOptions _options;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YahooChartExchangeRateSource" /> class.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue chart requests.</param>
     /// <param name="options">The provider options.</param>
-    internal YahooChartExchangeRateSource(HttpClient httpClient, YahooExchangeRateOptions options)
+    internal YahooChartExchangeRateSource(HttpClient httpClient, YahooRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -67,7 +67,7 @@ internal sealed class YahooChartExchangeRateSource
         // The ticker is built from validated ISO letters plus a safe suffix, so it is substituted into the path
         // segment directly; escaping the '=' would change the resource Yahoo serves.
         string path = _options.ChartPath.Replace(
-            YahooExchangeRateOptions.SymbolPlaceholder,
+            YahooRateProviderOptions.SymbolPlaceholder,
             symbol,
             StringComparison.Ordinal);
 

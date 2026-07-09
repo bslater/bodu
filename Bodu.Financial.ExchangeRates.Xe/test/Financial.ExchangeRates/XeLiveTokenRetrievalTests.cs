@@ -31,7 +31,7 @@ public class XeLiveTokenRetrievalTests
     [TestCategory(TestCategories.Stress)]
     public async Task GetTokenAsync_AgainstLiveXe_ShouldReturnUsableBasicCredential()
     {
-        XeExchangeRateOptions options = new();
+        XeRateProviderOptions options = new();
         using HttpClient client = new();
         client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", options.UserAgent);
 

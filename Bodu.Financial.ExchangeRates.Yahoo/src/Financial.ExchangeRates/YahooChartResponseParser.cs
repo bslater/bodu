@@ -32,7 +32,7 @@ internal static class YahooChartResponseParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON, carries a chart error, or omits the expected chart data.
     /// </exception>
-    public static PairRateData<YahooSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, string symbol, YahooExchangeRateOptions options)
+    public static PairRateData<YahooSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, string symbol, YahooRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(symbol);

@@ -1,0 +1,60 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="RbaRateProviderTests.LoadPairAsync.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Financial.Currencies;
+
+namespace Bodu.Financial.ExchangeRates;
+
+public partial class RbaRateProviderTests
+{
+    /// <summary>
+    /// Verifies that warming a pair through the shared <see cref="WebRateProvider.LoadPairAsync" /> surface loads
+    /// the eras covering the window, so RBA exposes the same warm-up verb as the pair-based providers.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadPairAsync_WhenWarmed_ShouldResolvePublishedRate()
+    {
+        (RbaRateProvider provider, FixtureRbaExchangeRateTableSource source) = Create(allowSync: false);
+
+        await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+
+        RateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
+
+        Assert.AreEqual(0.6828m, result.Rate.Rate);
+        Assert.AreEqual(RbaRateProvider.ProviderName, result.Rate.Provider);
+        Assert.AreEqual(1, source.GetTableCallCount);
+    }
+
+    /// <summary>
+    /// Verifies that a pair the RBA feed does not serve — neither side being AUD — is rejected before any download.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadPairAsync_WhenNeitherSideIsAud_ShouldThrowRateSeriesNotFoundException()
+    {
+        (RbaRateProvider provider, FixtureRbaExchangeRateTableSource source) = Create(allowSync: false);
+
+        _ = await Assert.ThrowsExactlyAsync<RateSeriesNotFoundException>(async () =>
+        {
+            await provider.LoadPairAsync("USD", "EUR", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+        });
+
+        Assert.AreEqual(0, source.GetTableCallCount);
+    }
+
+    /// <summary>
+    /// Verifies that a pair warmed through <c>LoadPairAsync</c> is surfaced through the shared
+    /// <see cref="WebRateProvider.GetLoadedPairs" /> discovery surface.
+    /// </summary>
+    [TestMethod]
+    public async Task GetLoadedPairs_AfterLoadPair_ShouldIncludeAudUsd()
+    {
+        (RbaRateProvider provider, _) = Create(allowSync: false);
+
+        await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
+
+        CollectionAssert.Contains(provider.GetLoadedPairs().ToList(), new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD));
+    }
+}

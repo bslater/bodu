@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies that <see cref="OandaExchangeRateProvider" /> driven by the real HTTP source builds the expected request,
+/// Verifies that <see cref="OandaRateProvider" /> driven by the real HTTP source builds the expected request,
 /// primes the session, re-primes on a challenge, and parses the response.
 /// </summary>
 [TestClass]
@@ -23,8 +23,8 @@ public class OandaHistorySourceTests
     {
         StubHttpMessageHandler handler = new(OandaFixtures.ReadBytes(OandaFixtures.AudUsd));
         using HttpClient client = new(handler);
-        OandaExchangeRateOptions options = new();
-        OandaExchangeRateProvider provider = new(client, options);
+        OandaRateProviderOptions options = new();
+        OandaRateProvider provider = new(client, options);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
@@ -52,7 +52,7 @@ public class OandaHistorySourceTests
     {
         StubHttpMessageHandler handler = new(OandaFixtures.ReadBytes(OandaFixtures.AudUsd));
         using HttpClient client = new(handler);
-        OandaExchangeRateProvider provider = new(client, new OandaExchangeRateOptions());
+        OandaRateProvider provider = new(client, new OandaRateProviderOptions());
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 31));
 
@@ -70,7 +70,7 @@ public class OandaHistorySourceTests
     {
         StubHttpMessageHandler handler = new(OandaFixtures.ReadBytes(OandaFixtures.AudUsd));
         using HttpClient client = new(handler);
-        OandaExchangeRateProvider provider = new(client, new OandaExchangeRateOptions());
+        OandaRateProvider provider = new(client, new OandaRateProviderOptions());
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 3));
 
@@ -89,7 +89,7 @@ public class OandaHistorySourceTests
     {
         ChallengeThenFixtureHttpMessageHandler handler = new(OandaFixtures.ReadBytes(OandaFixtures.AudUsd), challengesBeforeSuccess: 1);
         using HttpClient client = new(handler);
-        OandaExchangeRateProvider provider = new(client, new OandaExchangeRateOptions());
+        OandaRateProvider provider = new(client, new OandaRateProviderOptions());
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 

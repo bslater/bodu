@@ -25,7 +25,7 @@ public partial class OfxServiceRegistrationTests
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
-        Assert.IsNotNull(provider.GetService<OfxExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetService<OfxRateProvider>());
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public partial class OfxServiceRegistrationTests
         services.AddFinancialService().AddOfxExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        OfxExchangeRateProvider? concrete = provider.GetService<OfxExchangeRateProvider>();
+        OfxRateProvider? concrete = provider.GetService<OfxRateProvider>();
         IDatedRateProvider? dated = provider.GetService<IDatedRateProvider>();
         IRateProvider? simple = provider.GetService<IRateProvider>();
 
@@ -83,7 +83,7 @@ public partial class OfxServiceRegistrationTests
         services.AddFinancialService(configuration).AddOfxExchangeRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        OfxExchangeRateOptions options = provider.GetRequiredService<IOptions<OfxExchangeRateOptions>>().Value;
+        OfxRateProviderOptions options = provider.GetRequiredService<IOptions<OfxRateProviderOptions>>().Value;
 
         Assert.AreEqual("weekly", options.ReportingInterval);
         Assert.AreEqual(TimeSpan.FromDays(14), options.DefaultLookback);
@@ -99,7 +99,7 @@ public partial class OfxServiceRegistrationTests
         services.AddFinancialService().AddOfxExchangeRates(configure: o => o.UserAgent = "test-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        OfxExchangeRateOptions options = provider.GetRequiredService<IOptions<OfxExchangeRateOptions>>().Value;
+        OfxRateProviderOptions options = provider.GetRequiredService<IOptions<OfxRateProviderOptions>>().Value;
 
         Assert.AreEqual("test-agent", options.UserAgent);
     }
@@ -128,7 +128,7 @@ public partial class OfxServiceRegistrationTests
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
-            _ = provider.GetRequiredService<OfxExchangeRateProvider>();
+            _ = provider.GetRequiredService<OfxRateProvider>();
         });
     }
 
@@ -142,6 +142,6 @@ public partial class OfxServiceRegistrationTests
         services.AddFinancialService().AddOfxExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        Assert.IsNotNull(provider.GetRequiredService<OfxExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetRequiredService<OfxRateProvider>());
     }
 }

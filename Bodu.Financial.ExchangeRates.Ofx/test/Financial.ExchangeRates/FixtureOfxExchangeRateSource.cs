@@ -14,7 +14,7 @@ internal sealed class FixtureOfxExchangeRateSource
     : IPairRateSource<OfxSeriesInfo>
 {
     /// <summary>The provider options used while parsing fixtures.</summary>
-    private readonly OfxExchangeRateOptions _options;
+    private readonly OfxRateProviderOptions _options;
 
     /// <summary>The map from <c>FROM/TO</c> pair key to fixture file name.</summary>
     private readonly IReadOnlyDictionary<string, string> _fixtureByPair;
@@ -27,7 +27,7 @@ internal sealed class FixtureOfxExchangeRateSource
     /// An optional pair-to-fixture map; defaults to mapping <c>AUD/USD</c> to the sample fixture.
     /// </param>
     public FixtureOfxExchangeRateSource(
-        OfxExchangeRateOptions options,
+        OfxRateProviderOptions options,
         IReadOnlyDictionary<string, string>? fixtureByPair = null)
     {
         _options = options;

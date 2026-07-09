@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public class XeChartingRatesResponseParserTests
 {
-    private static readonly XeExchangeRateOptions Options = new();
+    private static readonly XeRateProviderOptions Options = new();
 
     /// <summary>
     /// Verifies that a well-formed response decodes each subsequent rate as its delta from the baseline, dating the

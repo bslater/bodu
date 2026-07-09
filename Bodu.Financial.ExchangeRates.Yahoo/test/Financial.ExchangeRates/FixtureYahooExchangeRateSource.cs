@@ -14,7 +14,7 @@ internal sealed class FixtureYahooExchangeRateSource
     : IPairRateSource<YahooSeriesInfo>
 {
     /// <summary>The provider options used while parsing fixtures.</summary>
-    private readonly YahooExchangeRateOptions _options;
+    private readonly YahooRateProviderOptions _options;
 
     /// <summary>The map from <c>FROM/TO</c> pair key to fixture file name.</summary>
     private readonly IReadOnlyDictionary<string, string> _fixtureByPair;
@@ -27,7 +27,7 @@ internal sealed class FixtureYahooExchangeRateSource
     /// An optional pair-to-fixture map; defaults to mapping <c>AUD/USD</c> to the sample fixture.
     /// </param>
     public FixtureYahooExchangeRateSource(
-        YahooExchangeRateOptions options,
+        YahooRateProviderOptions options,
         IReadOnlyDictionary<string, string>? fixtureByPair = null)
     {
         _options = options;

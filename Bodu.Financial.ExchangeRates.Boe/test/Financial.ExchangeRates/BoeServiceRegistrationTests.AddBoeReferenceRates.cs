@@ -25,7 +25,7 @@ public partial class BoeServiceRegistrationTests
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
-        Assert.IsNotNull(provider.GetService<BoeExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetService<BoeRateProvider>());
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public partial class BoeServiceRegistrationTests
         services.AddFinancialService().AddBoeReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        BoeExchangeRateProvider? concrete = provider.GetService<BoeExchangeRateProvider>();
+        BoeRateProvider? concrete = provider.GetService<BoeRateProvider>();
         IDatedRateProvider? dated = provider.GetService<IDatedRateProvider>();
         IRateProvider? simple = provider.GetService<IRateProvider>();
 
@@ -85,7 +85,7 @@ public partial class BoeServiceRegistrationTests
         services.AddFinancialService(configuration).AddBoeReferenceRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        BoeExchangeRateOptions options = provider.GetRequiredService<IOptions<BoeExchangeRateOptions>>().Value;
+        BoeRateProviderOptions options = provider.GetRequiredService<IOptions<BoeRateProviderOptions>>().Value;
 
         Assert.IsFalse(options.EnableDiskCache);
         Assert.AreEqual(5, options.OnDemandWindowDays);
@@ -103,7 +103,7 @@ public partial class BoeServiceRegistrationTests
         services.AddFinancialService().AddBoeReferenceRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        BoeExchangeRateOptions options = provider.GetRequiredService<IOptions<BoeExchangeRateOptions>>().Value;
+        BoeRateProviderOptions options = provider.GetRequiredService<IOptions<BoeRateProviderOptions>>().Value;
 
         Assert.AreEqual("callback-agent", options.Endpoint.UserAgent);
     }
@@ -132,7 +132,7 @@ public partial class BoeServiceRegistrationTests
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
-            _ = provider.GetRequiredService<BoeExchangeRateProvider>();
+            _ = provider.GetRequiredService<BoeRateProvider>();
         });
     }
 
@@ -146,6 +146,6 @@ public partial class BoeServiceRegistrationTests
         services.AddFinancialService().AddBoeReferenceRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        Assert.IsNotNull(provider.GetRequiredService<BoeExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetRequiredService<BoeRateProvider>());
     }
 }

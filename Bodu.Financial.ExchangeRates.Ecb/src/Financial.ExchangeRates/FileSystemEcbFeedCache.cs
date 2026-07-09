@@ -23,7 +23,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 public sealed class FileSystemEcbFeedCache
-    : FileSystemByteCache<EcbExchangeRateFeed>, IEcbFeedCache
+    : FileSystemByteCache<EcbRateFeed>, IEcbFeedCache
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FileSystemEcbFeedCache" /> class.
@@ -36,7 +36,7 @@ public sealed class FileSystemEcbFeedCache
         : base(directory, "bodu-ecb") { }
 
     /// <inheritdoc />
-    public bool TryGet(EcbExchangeRateFeed feed, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
+    public bool TryGet(EcbRateFeed feed, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
     {
         ThrowHelper.ThrowIfNull(feed);
 
@@ -44,7 +44,7 @@ public sealed class FileSystemEcbFeedCache
     }
 
     /// <inheritdoc />
-    public void Store(EcbExchangeRateFeed feed, byte[] bytes)
+    public void Store(EcbRateFeed feed, byte[] bytes)
     {
         ThrowHelper.ThrowIfNull(feed);
         ThrowHelper.ThrowIfNull(bytes);
@@ -53,6 +53,6 @@ public sealed class FileSystemEcbFeedCache
     }
 
     /// <inheritdoc />
-    protected override string GetFileName(EcbExchangeRateFeed key) =>
+    protected override string GetFileName(EcbRateFeed key) =>
         key.FileName;
 }

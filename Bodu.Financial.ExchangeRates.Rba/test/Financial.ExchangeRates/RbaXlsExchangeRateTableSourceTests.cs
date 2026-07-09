@@ -20,7 +20,7 @@ public class RbaXlsExchangeRateTableSourceTests
     [TestMethod]
     public async Task GetTableAsync_ShouldDownloadAndParse()
     {
-        RbaExchangeRateOptions options = new();
+        RbaRateProviderOptions options = new();
         StubHttpMessageHandler handler = new(RbaFixtures.ReadBytes(RbaFixtures.Sample));
         using HttpClient client = new(handler);
         RbaXlsExchangeRateTableSource source = new(client, options, NullRbaWorkbookCache.Instance);
@@ -40,7 +40,7 @@ public class RbaXlsExchangeRateTableSourceTests
         string directory = Path.Combine(Path.GetTempPath(), "bodu-rba-src-" + Guid.NewGuid().ToString("N"));
         try
         {
-            RbaExchangeRateOptions options = new();
+            RbaRateProviderOptions options = new();
             StubHttpMessageHandler handler = new(RbaFixtures.ReadBytes(RbaFixtures.Sample));
             using HttpClient client = new(handler);
             RbaXlsExchangeRateTableSource source = new(client, options, new FileSystemRbaWorkbookCache(directory));

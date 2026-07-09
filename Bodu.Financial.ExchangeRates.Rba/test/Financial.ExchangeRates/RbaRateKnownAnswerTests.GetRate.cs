@@ -23,7 +23,7 @@ public partial class RbaRateKnownAnswerTests
     {
         ArgumentNullException.ThrowIfNull(answer);
 
-        RbaExchangeRateProvider provider = await GetProviderAsync(answer.SourceFileName);
+        RbaRateProvider provider = await GetProviderAsync(answer.SourceFileName);
 
         RateLookupResult result = provider.GetRate("AUD", ResolveCurrency(answer.Currency), answer.Date);
 

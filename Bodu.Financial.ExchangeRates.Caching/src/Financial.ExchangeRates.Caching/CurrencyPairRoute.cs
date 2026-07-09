@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Describes how an <see cref="AggregatingExchangeRateProvider" /> resolves a specific currency pair: the ordered child
+/// Describes how an <see cref="AggregatingRateProvider" /> resolves a specific currency pair: the ordered child
 /// provider names to consult and, optionally, the strategy to combine them.
 /// </summary>
 /// <remarks>
@@ -31,7 +31,7 @@ public sealed class CurrencyPairRoute
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="providerOrder" /> is empty or contains a blank name.
     /// </exception>
-    public CurrencyPairRoute(IEnumerable<string> providerOrder, IExchangeRateAggregationStrategy? strategy = null)
+    public CurrencyPairRoute(IEnumerable<string> providerOrder, IRateAggregationStrategy? strategy = null)
     {
         ThrowHelper.ThrowIfNull(providerOrder);
 
@@ -59,5 +59,5 @@ public sealed class CurrencyPairRoute
     /// Gets the strategy used to combine the routed providers, if overridden.
     /// </summary>
     /// <value>The route-specific strategy, or <see langword="null" /> to use the aggregator's default strategy.</value>
-    public IExchangeRateAggregationStrategy? Strategy { get; }
+    public IRateAggregationStrategy? Strategy { get; }
 }

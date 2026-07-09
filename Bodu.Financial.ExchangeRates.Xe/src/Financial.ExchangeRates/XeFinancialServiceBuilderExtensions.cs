@@ -26,7 +26,7 @@ public static class XeFinancialServiceBuilderExtensions
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configuration">
     /// An optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
-    /// bound into <see cref="XeExchangeRateOptions" />.
+    /// bound into <see cref="XeRateProviderOptions" />.
     /// </param>
     /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Xe</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
@@ -54,7 +54,7 @@ public static class XeFinancialServiceBuilderExtensions
     /// and tunable through <paramref name="configureResilience" />. The handler sits in the message-handler pipeline
     /// below the provider's single-flight load coordinator, so a retry re-issues the one in-flight request rather than
     /// multiplying across coalesced callers. Because the resilience handler enforces its own per-attempt timeout driven
-    /// from <see cref="WebExchangeRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
+    /// from <see cref="WebRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
     /// <example>
@@ -76,9 +76,9 @@ public static class XeFinancialServiceBuilderExtensions
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Xe",
-        Action<XeExchangeRateOptions>? configure = null,
+        Action<XeRateProviderOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
-        => builder.AddWebExchangeRateProvider<XeExchangeRateProvider, XeExchangeRateOptions>(
+        => builder.AddWebRateProvider<XeRateProvider, XeRateProviderOptions>(
             HttpClientName,
             configuration,
             sectionName,
@@ -86,5 +86,5 @@ public static class XeFinancialServiceBuilderExtensions
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>
-                new XeExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<XeExchangeRateProvider>(), timeProvider));
+                new XeRateProvider(client, opts, loggerFactory?.CreateLogger<XeRateProvider>(), timeProvider));
 }

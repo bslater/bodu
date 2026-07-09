@@ -16,7 +16,7 @@ internal sealed class GatedRbaExchangeRateTableSource
     : IRbaExchangeRateTableSource
 {
     /// <summary>The options used when parsing the workbook fixture.</summary>
-    private readonly RbaExchangeRateOptions _options;
+    private readonly RbaRateProviderOptions _options;
 
     /// <summary>The embedded fixture file name to parse once the gate opens.</summary>
     private readonly string _fileName;
@@ -35,7 +35,7 @@ internal sealed class GatedRbaExchangeRateTableSource
     /// </summary>
     /// <param name="options">The options used when parsing the workbook fixture.</param>
     /// <param name="fileName">The embedded fixture file name to parse.</param>
-    public GatedRbaExchangeRateTableSource(RbaExchangeRateOptions options, string fileName = RbaFixtures.Sample)
+    public GatedRbaExchangeRateTableSource(RbaRateProviderOptions options, string fileName = RbaFixtures.Sample)
     {
         _options = options;
         _fileName = fileName;

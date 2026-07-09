@@ -13,7 +13,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// This is an optional capability interface layered over <see cref="IDatedRateProvider" />, following the same
-/// probe-at-runtime idiom as <see cref="IPairRateLoader" />: consumers test a provider with
+/// probe-at-runtime idiom as <c>IPairRateLoader</c>: consumers test a provider with
 /// <see langword="is" /> and treat one that does not implement the interface as
 /// <see cref="RateHistoryAvailability.Unbounded" /> — never skipped and never clamped. Implementing the
 /// interface therefore only ever removes doomed upstream calls; it cannot hide data a provider could have served.

@@ -14,7 +14,7 @@ internal sealed class GatedXeExchangeRateSource
     : IPairRateSource<XeSeriesInfo>
 {
     /// <summary>The provider options used while parsing the fixture once the gate opens.</summary>
-    private readonly XeExchangeRateOptions _options;
+    private readonly XeRateProviderOptions _options;
 
     /// <summary>The gate that callers await; the fetch completes only after it is released.</summary>
     private readonly TaskCompletionSource _gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -29,7 +29,7 @@ internal sealed class GatedXeExchangeRateSource
     /// Initializes a new instance of the <see cref="GatedXeExchangeRateSource" /> class.
     /// </summary>
     /// <param name="options">The provider options used while parsing the fixture.</param>
-    public GatedXeExchangeRateSource(XeExchangeRateOptions options)
+    public GatedXeExchangeRateSource(XeRateProviderOptions options)
     {
         _options = options;
     }

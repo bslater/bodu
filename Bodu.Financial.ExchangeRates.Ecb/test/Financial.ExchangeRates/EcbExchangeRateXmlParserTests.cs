@@ -25,16 +25,16 @@ public partial class EcbExchangeRateXmlParserTests
     /// Parses the embedded sample feed with default options.
     /// </summary>
     /// <returns>The parsed table.</returns>
-    private static EcbExchangeRateTable ParseSample() =>
-        EcbExchangeRateXmlParser.Parse(EcbFixtures.OpenStream(EcbFixtures.Sample), new EcbExchangeRateOptions());
+    private static EcbRateTable ParseSample() =>
+        EcbExchangeRateXmlParser.Parse(EcbFixtures.OpenStream(EcbFixtures.Sample), new EcbRateProviderOptions());
 
     /// <summary>
     /// Parses inline XML with default options.
     /// </summary>
     /// <param name="xml">The XML to parse.</param>
     /// <returns>The parsed table.</returns>
-    private static EcbExchangeRateTable Parse(string xml) =>
-        EcbExchangeRateXmlParser.Parse(ToStream(xml), new EcbExchangeRateOptions());
+    private static EcbRateTable Parse(string xml) =>
+        EcbExchangeRateXmlParser.Parse(ToStream(xml), new EcbRateProviderOptions());
 
     /// <summary>
     /// Materializes XML text as a UTF-8 stream.

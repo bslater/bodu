@@ -34,7 +34,7 @@ internal sealed class XeChartingRatesSource
     private readonly HttpClient _httpClient;
 
     /// <summary>The provider options supplying the base address, charting-rates path, and currency aliases.</summary>
-    private readonly XeExchangeRateOptions _options;
+    private readonly XeRateProviderOptions _options;
 
     /// <summary>The token provider supplying the <c>Authorization: Basic</c> credential.</summary>
     private readonly IXeAuthTokenProvider _authTokenProvider;
@@ -49,7 +49,7 @@ internal sealed class XeChartingRatesSource
     /// Thrown when <paramref name="httpClient" />, <paramref name="options" />, or
     /// <paramref name="authTokenProvider" /> is <see langword="null" />.
     /// </exception>
-    internal XeChartingRatesSource(HttpClient httpClient, XeExchangeRateOptions options, IXeAuthTokenProvider authTokenProvider)
+    internal XeChartingRatesSource(HttpClient httpClient, XeRateProviderOptions options, IXeAuthTokenProvider authTokenProvider)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);

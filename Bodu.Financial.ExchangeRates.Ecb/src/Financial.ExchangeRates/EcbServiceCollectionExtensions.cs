@@ -21,7 +21,7 @@ public static class EcbServiceCollectionExtensions
     /// <param name="services">The service collection to register into.</param>
     /// <param name="configuration">
     /// An optional configuration root. When supplied, <see cref="FinancialOptions" /> is bound from the
-    /// <c>Financial</c> section and <see cref="EcbExchangeRateOptions" /> from <paramref name="sectionName" />.
+    /// <c>Financial</c> section and <see cref="EcbRateProviderOptions" /> from <paramref name="sectionName" />.
     /// </param>
     /// <param name="sectionName">The ECB configuration section name. Defaults to <c>Financial:Ecb</c>.</param>
     /// <param name="configure">An optional callback applied after ECB configuration binding.</param>
@@ -54,7 +54,7 @@ public static class EcbServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Ecb",
-        Action<EcbExchangeRateOptions>? configure = null)
+        Action<EcbRateProviderOptions>? configure = null)
     {
         ThrowHelper.ThrowIfNull(services);
 

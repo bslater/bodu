@@ -11,13 +11,13 @@ namespace Bodu.Financial.ExchangeRates;
 /// parsing the result.
 /// </summary>
 internal sealed class BoeCsvExchangeRateTableSource
-    : IBoeExchangeRateTableSource
+    : IBoeRateTableSource
 {
     /// <summary>The HTTP client used to download range responses.</summary>
     private readonly HttpClient _httpClient;
 
     /// <summary>The provider options supplying the endpoint, series catalogue, and refresh interval.</summary>
-    private readonly BoeExchangeRateOptions _options;
+    private readonly BoeRateProviderOptions _options;
 
     /// <summary>The response byte cache.</summary>
     private readonly IBoeResponseCache _cache;
@@ -28,7 +28,7 @@ internal sealed class BoeCsvExchangeRateTableSource
     /// <param name="httpClient">The HTTP client used to download range responses.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="cache">The response byte cache.</param>
-    internal BoeCsvExchangeRateTableSource(HttpClient httpClient, BoeExchangeRateOptions options, IBoeResponseCache cache)
+    internal BoeCsvExchangeRateTableSource(HttpClient httpClient, BoeRateProviderOptions options, IBoeResponseCache cache)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -40,7 +40,7 @@ internal sealed class BoeCsvExchangeRateTableSource
     }
 
     /// <inheritdoc />
-    public async ValueTask<BoeExchangeRateTable> GetTableAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
+    public async ValueTask<BoeRateTable> GetTableAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
         byte[] bytes = await GetResponseBytesAsync(startDate, endDate, cancellationToken).ConfigureAwait(false);
 

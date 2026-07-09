@@ -55,15 +55,15 @@ public sealed partial class RateCachingExtensionsTests
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
-    public void AddCachedExchangeRateProvider_WhenRegistered_ShouldResolveBothSurfaces()
+    public void AddCachedRateProvider_WhenRegistered_ShouldResolveBothSurfaces()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
 
         IDatedRateProvider dated = provider.GetRequiredService<IDatedRateProvider>();
         IRateProvider timeless = provider.GetRequiredService<IRateProvider>();
 
-        Assert.IsInstanceOfType<CachingExchangeRateProvider>(dated);
+        Assert.IsInstanceOfType<CachingRateProvider>(dated);
         Assert.AreSame<object>(dated, timeless);
     }
 
@@ -71,10 +71,10 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that the registered caching provider serves the wrapped source's rate.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenResolved_ShouldServeWrappedSource()
+    public void AddCachedRateProvider_WhenResolved_ShouldServeWrappedSource()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
 
         IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
         RateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
@@ -86,10 +86,10 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that the configured cache directory is used, writing the source's rate under a per-provider subdirectory.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenConfigured_ShouldCacheToConfiguredDirectory()
+    public void AddCachedRateProvider_WhenConfigured_ShouldCacheToConfiguredDirectory()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
         IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
 
         _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
@@ -101,13 +101,13 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that the cache directory is bound from configuration.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenConfigurationProvided_ShouldBindCacheDirectory()
+    public void AddCachedRateProvider_WhenConfigurationProvided_ShouldBindCacheDirectory()
     {
         IConfiguration config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:ExchangeRateCache:CacheDirectory"] = _directory })
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:RateCache:CacheDirectory"] = _directory })
             .Build();
 
-        ServiceProvider provider = BuildProvider(builder => builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", config));
+        ServiceProvider provider = BuildProvider(builder => builder.AddCachedRateProvider<StubRbaProvider>("RBA", config));
         IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
 
         _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
@@ -119,11 +119,11 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that a <see langword="null" /> builder is rejected.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    public void AddCachedRateProvider_WhenBuilderIsNull_ShouldThrowArgumentNullException()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = RateCachingExtensions.AddCachedExchangeRateProvider<StubRbaProvider>(null!, "RBA");
+            _ = RateCachingExtensions.AddCachedRateProvider<StubRbaProvider>(null!, "RBA");
         });
 
         Assert.AreEqual("builder", ex.ParamName);
@@ -133,14 +133,14 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that a blank provider name is rejected.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenProviderNameIsBlank_ShouldThrowArgumentException()
+    public void AddCachedRateProvider_WhenProviderNameIsBlank_ShouldThrowArgumentException()
     {
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddFinancialService();
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = builder.AddCachedExchangeRateProvider<StubRbaProvider>("  ");
+            _ = builder.AddCachedRateProvider<StubRbaProvider>("  ");
         });
 
         Assert.AreEqual("providerName", ex.ParamName);
@@ -150,10 +150,10 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that invalid cache options fail fast through <c>ValidateOnStart</c> when the cached provider is resolved.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenOptionsInvalid_ShouldThrowOnResolve()
+    public void AddCachedRateProvider_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.DefaultExpiry = TimeSpan.Zero));
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.DefaultExpiry = TimeSpan.Zero));
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
@@ -165,10 +165,10 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that valid cache options pass <c>ValidateOnStart</c> and resolve the cached provider.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenOptionsValid_ShouldResolveProvider()
+    public void AddCachedRateProvider_WhenOptionsValid_ShouldResolveProvider()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
 
         Assert.IsNotNull(provider.GetRequiredService<IDatedRateProvider>());
     }
@@ -178,14 +178,14 @@ public sealed partial class RateCachingExtensionsTests
     /// TOML file.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenCacheFactoryProvided_ShouldUseChosenCache()
+    public void AddCachedRateProvider_WhenCacheFactoryProvided_ShouldUseChosenCache()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>(
+            builder.AddCachedRateProvider<StubRbaProvider>(
                 "RBA",
                 configure: o => o.CacheDirectory = _directory,
-                cacheFactory: (_, name) => new JsonFileExchangeRateCache(
-                    new FileExchangeRateCacheOptions { Provider = name, CacheDirectory = _directory })));
+                cacheFactory: (_, name) => new JsonFileRateCache(
+                    new FileRateCacheOptions { Provider = name, CacheDirectory = _directory })));
         IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
 
         _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);

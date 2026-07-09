@@ -43,7 +43,7 @@ internal static class XeChartingRatesResponseParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON or omits the expected charting-rate data.
     /// </exception>
-    public static PairRateData<XeSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, XeExchangeRateOptions options)
+    public static PairRateData<XeSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, XeRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(options);

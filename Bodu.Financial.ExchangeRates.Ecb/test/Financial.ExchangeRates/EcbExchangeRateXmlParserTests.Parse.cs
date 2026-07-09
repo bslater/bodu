@@ -17,7 +17,7 @@ public partial class EcbExchangeRateXmlParserTests
     [TestCategory(TestCategories.Smoke)]
     public void Parse_WhenSampleFeed_ShouldYieldOneObservationPerCell()
     {
-        EcbExchangeRateTable table = ParseSample();
+        EcbRateTable table = ParseSample();
 
         Assert.HasCount(6, table.Observations);
     }
@@ -28,7 +28,7 @@ public partial class EcbExchangeRateXmlParserTests
     [TestMethod]
     public void Parse_WhenSampleFeed_ShouldReadDateCurrencyAndRate()
     {
-        EcbExchangeRateTable table = ParseSample();
+        EcbRateTable table = ParseSample();
 
         EcbRateObservation usd = table.Observations
             .Single(o => o.Date == new DateOnly(2023, 1, 3) && o.CurrencyCode == "USD");
@@ -47,7 +47,7 @@ public partial class EcbExchangeRateXmlParserTests
             "<Cube currency=\"USD\" rate=\"0\"/><Cube currency=\"JPY\" rate=\"140.06\"/>" +
             "</Cube></Cube></gesmes:Envelope>";
 
-        EcbExchangeRateTable table = Parse(xml);
+        EcbRateTable table = Parse(xml);
 
         Assert.HasCount(1, table.Observations);
         Assert.AreEqual("JPY", table.Observations[0].CurrencyCode);
@@ -62,10 +62,10 @@ public partial class EcbExchangeRateXmlParserTests
         string xml =
             $"<gesmes:Envelope {Namespaces}><Cube><Cube time=\"2023-01-03\">" +
             "<Cube currency=\"SDR\" rate=\"1.2500\"/></Cube></Cube></gesmes:Envelope>";
-        EcbExchangeRateOptions options = new();
+        EcbRateProviderOptions options = new();
         options.CurrencyAliases["SDR"] = "XDR";
 
-        EcbExchangeRateTable table = EcbExchangeRateXmlParser.Parse(ToStream(xml), options);
+        EcbRateTable table = EcbExchangeRateXmlParser.Parse(ToStream(xml), options);
 
         Assert.HasCount(1, table.Observations);
         Assert.AreEqual("XDR", table.Observations[0].CurrencyCode);

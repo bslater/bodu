@@ -14,7 +14,7 @@ public partial class BoeEndpointOptionsTests
     [TestMethod]
     public void ProviderOptionsValidate_WhenEndpointBaseUrlIsNull_ShouldThrowArgumentException()
     {
-        BoeExchangeRateOptions options = new();
+        BoeRateProviderOptions options = new();
         options.Endpoint.BaseUrl = null!;
 
         _ = Assert.ThrowsExactly<ArgumentException>(options.Validate);

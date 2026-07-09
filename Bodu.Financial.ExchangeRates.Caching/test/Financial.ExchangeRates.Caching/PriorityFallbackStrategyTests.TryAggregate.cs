@@ -14,7 +14,7 @@ public sealed partial class PriorityFallbackStrategyTests
     [TestMethod]
     public void TryAggregate_WhenFirstCandidateHasRate_ShouldReturnFirst()
     {
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[]
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[]
         {
             Named("First", ("USD", "AUD", D1, 1.5m)),
             Named("Second", ("USD", "AUD", D1, 1.6m)),
@@ -32,7 +32,7 @@ public sealed partial class PriorityFallbackStrategyTests
     [TestMethod]
     public void TryAggregate_WhenFirstCandidateMisses_ShouldFallThrough()
     {
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[]
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[]
         {
             Named("First"),
             Named("Second", ("USD", "AUD", D1, 1.6m)),
@@ -50,7 +50,7 @@ public sealed partial class PriorityFallbackStrategyTests
     [TestMethod]
     public void TryAggregate_WhenNoCandidateResolves_ShouldReturnFalse()
     {
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[] { Named("First") };
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[] { Named("First") };
 
         Assert.IsFalse(PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, RateLookupOptions.Exact, candidates, out _));
     }

@@ -26,7 +26,7 @@ public static class BoeFinancialServiceBuilderExtensions
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configuration">
     /// An optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
-    /// bound into <see cref="BoeExchangeRateOptions" />.
+    /// bound into <see cref="BoeRateProviderOptions" />.
     /// </param>
     /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Boe</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
@@ -72,9 +72,9 @@ public static class BoeFinancialServiceBuilderExtensions
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Boe",
-        Action<BoeExchangeRateOptions>? configure = null,
+        Action<BoeRateProviderOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
-        => builder.AddWebExchangeRateProvider<BoeExchangeRateProvider, BoeExchangeRateOptions>(
+        => builder.AddWebRateProvider<BoeRateProvider, BoeRateProviderOptions>(
             HttpClientName,
             configuration,
             sectionName,
@@ -85,5 +85,5 @@ public static class BoeFinancialServiceBuilderExtensions
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>
-                new BoeExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<BoeExchangeRateProvider>(), timeProvider));
+                new BoeRateProvider(client, opts, loggerFactory?.CreateLogger<BoeRateProvider>(), timeProvider));
 }

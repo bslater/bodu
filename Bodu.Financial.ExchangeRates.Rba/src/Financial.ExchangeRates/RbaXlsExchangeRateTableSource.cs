@@ -19,7 +19,7 @@ internal sealed class RbaXlsExchangeRateTableSource
     private readonly HttpClient _httpClient;
 
     /// <summary>The provider options supplying the base URL, refresh interval, and alias map.</summary>
-    private readonly RbaExchangeRateOptions _options;
+    private readonly RbaRateProviderOptions _options;
 
     /// <summary>The workbook byte cache.</summary>
     private readonly IRbaWorkbookCache _cache;
@@ -30,7 +30,7 @@ internal sealed class RbaXlsExchangeRateTableSource
     /// <param name="httpClient">The HTTP client used to download era files.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="cache">The workbook byte cache.</param>
-    internal RbaXlsExchangeRateTableSource(HttpClient httpClient, RbaExchangeRateOptions options, IRbaWorkbookCache cache)
+    internal RbaXlsExchangeRateTableSource(HttpClient httpClient, RbaRateProviderOptions options, IRbaWorkbookCache cache)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);

@@ -25,7 +25,7 @@ public partial class XeServiceRegistrationTests
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
-        Assert.IsNotNull(provider.GetService<XeExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetService<XeRateProvider>());
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public partial class XeServiceRegistrationTests
         services.AddFinancialService().AddXeExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        XeExchangeRateProvider? concrete = provider.GetService<XeExchangeRateProvider>();
+        XeRateProvider? concrete = provider.GetService<XeRateProvider>();
         IDatedRateProvider? dated = provider.GetService<IDatedRateProvider>();
         IRateProvider? simple = provider.GetService<IRateProvider>();
 
@@ -83,7 +83,7 @@ public partial class XeServiceRegistrationTests
         services.AddFinancialService(configuration).AddXeExchangeRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        XeExchangeRateOptions options = provider.GetRequiredService<IOptions<XeExchangeRateOptions>>().Value;
+        XeRateProviderOptions options = provider.GetRequiredService<IOptions<XeRateProviderOptions>>().Value;
 
         Assert.AreEqual("api/protected/other-rates/", options.ChartingRatesPath);
         Assert.AreEqual(TimeSpan.FromDays(14), options.DefaultLookback);
@@ -99,7 +99,7 @@ public partial class XeServiceRegistrationTests
         services.AddFinancialService().AddXeExchangeRates(configure: o => o.UserAgent = "test-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        XeExchangeRateOptions options = provider.GetRequiredService<IOptions<XeExchangeRateOptions>>().Value;
+        XeRateProviderOptions options = provider.GetRequiredService<IOptions<XeRateProviderOptions>>().Value;
 
         Assert.AreEqual("test-agent", options.UserAgent);
     }
@@ -128,7 +128,7 @@ public partial class XeServiceRegistrationTests
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
-            _ = provider.GetRequiredService<XeExchangeRateProvider>();
+            _ = provider.GetRequiredService<XeRateProvider>();
         });
     }
 
@@ -142,6 +142,6 @@ public partial class XeServiceRegistrationTests
         services.AddFinancialService().AddXeExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        Assert.IsNotNull(provider.GetRequiredService<XeExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetRequiredService<XeRateProvider>());
     }
 }

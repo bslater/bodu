@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Parses the Bank of England Interactive Statistical Database (IADB) CSV column response into a normalized
-/// <see cref="BoeExchangeRateTable" />.
+/// <see cref="BoeRateTable" />.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -51,7 +51,7 @@ internal static class BoeExchangeRateCsvParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the content does not contain the expected IADB CSV header.
     /// </exception>
-    public static BoeExchangeRateTable Parse(Stream stream, BoeExchangeRateOptions options)
+    public static BoeRateTable Parse(Stream stream, BoeRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(stream);
         ThrowHelper.ThrowIfNull(options);
@@ -72,7 +72,7 @@ internal static class BoeExchangeRateCsvParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the content does not contain the expected IADB CSV header.
     /// </exception>
-    public static BoeExchangeRateTable Parse(string content, BoeExchangeRateOptions options)
+    public static BoeRateTable Parse(string content, BoeRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(content);
         ThrowHelper.ThrowIfNull(options);
@@ -113,7 +113,7 @@ internal static class BoeExchangeRateCsvParser
             }
         }
 
-        return new BoeExchangeRateTable(observations, present);
+        return new BoeRateTable(observations, present);
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ internal static class BoeExchangeRateCsvParser
     /// </summary>
     /// <param name="options">The provider options supplying the series catalogue.</param>
     /// <returns>The series index keyed by code.</returns>
-    private static Dictionary<string, BoeSeries> BuildSeriesIndex(BoeExchangeRateOptions options)
+    private static Dictionary<string, BoeSeries> BuildSeriesIndex(BoeRateProviderOptions options)
     {
         var index = new Dictionary<string, BoeSeries>(StringComparer.OrdinalIgnoreCase);
         foreach (BoeSeries series in options.Series)

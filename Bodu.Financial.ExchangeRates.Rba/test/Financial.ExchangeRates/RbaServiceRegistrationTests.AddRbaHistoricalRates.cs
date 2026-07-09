@@ -25,7 +25,7 @@ public partial class RbaServiceRegistrationTests
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
-        Assert.IsNotNull(provider.GetService<RbaExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetService<RbaRateProvider>());
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public partial class RbaServiceRegistrationTests
         services.AddFinancialService().AddRbaHistoricalRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        RbaExchangeRateProvider? concrete = provider.GetService<RbaExchangeRateProvider>();
+        RbaRateProvider? concrete = provider.GetService<RbaRateProvider>();
         IDatedRateProvider? dated = provider.GetService<IDatedRateProvider>();
         IRateProvider? simple = provider.GetService<IRateProvider>();
 
@@ -83,7 +83,7 @@ public partial class RbaServiceRegistrationTests
         services.AddFinancialService(configuration).AddRbaHistoricalRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        RbaExchangeRateOptions options = provider.GetRequiredService<IOptions<RbaExchangeRateOptions>>().Value;
+        RbaRateProviderOptions options = provider.GetRequiredService<IOptions<RbaRateProviderOptions>>().Value;
 
         Assert.IsFalse(options.EnableDiskCache);
         Assert.AreEqual(TimeSpan.FromHours(6), options.CurrentEraRefreshInterval);
@@ -99,7 +99,7 @@ public partial class RbaServiceRegistrationTests
         services.AddFinancialService().AddRbaHistoricalRates(configure: o => o.UserAgent = "test-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        RbaExchangeRateOptions options = provider.GetRequiredService<IOptions<RbaExchangeRateOptions>>().Value;
+        RbaRateProviderOptions options = provider.GetRequiredService<IOptions<RbaRateProviderOptions>>().Value;
 
         Assert.AreEqual("test-agent", options.UserAgent);
     }
@@ -128,7 +128,7 @@ public partial class RbaServiceRegistrationTests
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
-            _ = provider.GetRequiredService<RbaExchangeRateProvider>();
+            _ = provider.GetRequiredService<RbaRateProvider>();
         });
     }
 
@@ -142,6 +142,6 @@ public partial class RbaServiceRegistrationTests
         services.AddFinancialService().AddRbaHistoricalRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        Assert.IsNotNull(provider.GetRequiredService<RbaExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetRequiredService<RbaRateProvider>());
     }
 }

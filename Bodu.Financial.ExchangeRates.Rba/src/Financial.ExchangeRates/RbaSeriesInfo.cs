@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// identifies it.
 /// </summary>
 /// <remarks>
-/// Exposed through <see cref="RbaExchangeRateProvider.GetAvailablePairs" /> so callers can discover which currency
+/// Exposed through <see cref="RbaRateProvider.GetAvailablePairs" /> so callers can discover which currency
 /// pairs the loaded RBA data supports without hard-coding the list.
 /// </remarks>
 public sealed class RbaSeriesInfo

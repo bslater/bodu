@@ -14,7 +14,7 @@ internal sealed class FixtureOandaExchangeRateSource
     : IPairRateSource<OandaSeriesInfo>
 {
     /// <summary>The provider options used while parsing fixtures.</summary>
-    private readonly OandaExchangeRateOptions _options;
+    private readonly OandaRateProviderOptions _options;
 
     /// <summary>The map from <c>FROM/TO</c> pair key to fixture file name.</summary>
     private readonly IReadOnlyDictionary<string, string> _fixtureByPair;
@@ -27,7 +27,7 @@ internal sealed class FixtureOandaExchangeRateSource
     /// An optional pair-to-fixture map; defaults to mapping <c>AUD/USD</c> to the sample fixture.
     /// </param>
     public FixtureOandaExchangeRateSource(
-        OandaExchangeRateOptions options,
+        OandaRateProviderOptions options,
         IReadOnlyDictionary<string, string>? fixtureByPair = null)
     {
         _options = options;

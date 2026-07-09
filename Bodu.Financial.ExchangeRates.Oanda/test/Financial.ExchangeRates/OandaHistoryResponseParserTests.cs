@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public class OandaHistoryResponseParserTests
 {
-    private static readonly OandaExchangeRateOptions Options = new();
+    private static readonly OandaRateProviderOptions Options = new();
 
     /// <summary>
     /// Verifies that a well-formed response yields the in-range observations with the expected dates and rates, while

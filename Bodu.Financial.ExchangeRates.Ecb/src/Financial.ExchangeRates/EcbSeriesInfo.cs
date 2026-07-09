@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// Describes one currency series discovered in an ECB feed: the pair it represents and the quote-currency code.
 /// </summary>
 /// <remarks>
-/// Exposed through <see cref="EcbExchangeRateProvider.GetAvailablePairs" /> so callers can discover which currency
+/// Exposed through <see cref="EcbRateProvider.GetAvailablePairs" /> so callers can discover which currency
 /// pairs the loaded ECB data supports without hard-coding the list.
 /// </remarks>
 public sealed class EcbSeriesInfo

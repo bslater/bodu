@@ -15,7 +15,7 @@ public sealed partial class AverageStrategyTests
     [TestCategory("Smoke")]
     public void TryAggregate_WhenTwoContributors_ShouldReturnMean()
     {
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[]
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[]
         {
             Named("A", ("AUD", "USD", D1, 0.5000m)),
             Named("B", ("AUD", "USD", D1, 0.5100m)),
@@ -36,7 +36,7 @@ public sealed partial class AverageStrategyTests
     [TestCategory("Regression")]
     public void TryAggregate_WhenThreeContributors_ShouldReturnExactDecimalMean()
     {
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[]
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[]
         {
             Named("A", ("AUD", "USD", D1, 0.5m)),
             Named("B", ("AUD", "USD", D1, 0.5m)),
@@ -54,7 +54,7 @@ public sealed partial class AverageStrategyTests
     [TestMethod]
     public void TryAggregate_WhenSingleContributor_ShouldReturnThatRate()
     {
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[] { Named("A", ("AUD", "USD", D1, 0.5m)) };
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[] { Named("A", ("AUD", "USD", D1, 0.5m)) };
 
         new AverageStrategy().TryAggregate("AUD", "USD", D1, RateLookupOptions.Exact, candidates, out RateLookupResult result);
 
@@ -67,7 +67,7 @@ public sealed partial class AverageStrategyTests
     [TestMethod]
     public void TryAggregate_WhenNoContributorResolves_ShouldReturnFalse()
     {
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[] { Named("A") };
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[] { Named("A") };
 
         Assert.IsFalse(new AverageStrategy().TryAggregate("AUD", "USD", D1, RateLookupOptions.Exact, candidates, out _));
     }
@@ -78,7 +78,7 @@ public sealed partial class AverageStrategyTests
     [TestMethod]
     public void TryAggregate_WhenCustomLabel_ShouldTagResult()
     {
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[] { Named("A", ("AUD", "USD", D1, 0.5m)) };
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[] { Named("A", ("AUD", "USD", D1, 0.5m)) };
 
         new AverageStrategy("Mid").TryAggregate("AUD", "USD", D1, RateLookupOptions.Exact, candidates, out RateLookupResult result);
 

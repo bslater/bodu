@@ -14,7 +14,7 @@ public partial class EcbEndpointOptionsTests
     [TestMethod]
     public void ProviderOptionsValidate_WhenEndpointBaseUrlIsNull_ShouldThrowArgumentException()
     {
-        EcbExchangeRateOptions options = new();
+        EcbRateProviderOptions options = new();
         options.Endpoint.BaseUrl = null!;
 
         _ = Assert.ThrowsExactly<ArgumentException>(options.Validate);

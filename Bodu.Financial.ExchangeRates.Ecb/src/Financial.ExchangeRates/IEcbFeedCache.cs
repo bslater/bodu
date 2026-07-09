@@ -27,12 +27,12 @@ public interface IEcbFeedCache
     /// When this method returns <see langword="true" />, the cached feed bytes; otherwise <see langword="null" />.
     /// </param>
     /// <returns><see langword="true" /> when a fresh cache entry exists; otherwise <see langword="false" />.</returns>
-    bool TryGet(EcbExchangeRateFeed feed, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes);
+    bool TryGet(EcbRateFeed feed, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes);
 
     /// <summary>
     /// Stores the bytes for a feed, replacing any existing entry.
     /// </summary>
     /// <param name="feed">The feed whose file is being cached.</param>
     /// <param name="bytes">The feed bytes to store.</param>
-    void Store(EcbExchangeRateFeed feed, byte[] bytes);
+    void Store(EcbRateFeed feed, byte[] bytes);
 }

@@ -17,7 +17,7 @@ public partial class BoeExchangeRateCsvParserTests
     [TestCategory(TestCategories.Smoke)]
     public void Parse_WhenSampleResponse_ShouldYieldOneObservationPerCell()
     {
-        BoeExchangeRateTable table = ParseSample();
+        BoeRateTable table = ParseSample();
 
         Assert.HasCount(6, table.Observations);
     }
@@ -28,7 +28,7 @@ public partial class BoeExchangeRateCsvParserTests
     [TestMethod]
     public void Parse_WhenSampleResponse_ShouldReadDateCurrencyAndRate()
     {
-        BoeExchangeRateTable table = ParseSample();
+        BoeRateTable table = ParseSample();
 
         BoeRateObservation usd = table.Observations
             .Single(o => o.Date == new DateOnly(2023, 1, 3) && o.CurrencyCode == "USD");
@@ -46,7 +46,7 @@ public partial class BoeExchangeRateCsvParserTests
             "\"DATE\",\"XUDLUSS\",\"XUDLJYS\"\n" +
             "\"03 Jan 2023\",\"\",\"159.10\"\n";
 
-        BoeExchangeRateTable table = BoeExchangeRateCsvParser.Parse(csv, new BoeExchangeRateOptions());
+        BoeRateTable table = BoeExchangeRateCsvParser.Parse(csv, new BoeRateProviderOptions());
 
         Assert.HasCount(1, table.Observations);
         Assert.AreEqual("JPY", table.Observations[0].CurrencyCode);
@@ -62,7 +62,7 @@ public partial class BoeExchangeRateCsvParserTests
             "\"DATE\",\"XUDLUSS\",\"XUDLZZZ\"\n" +
             "\"03 Jan 2023\",\"1.2065\",\"9.9999\"\n";
 
-        BoeExchangeRateTable table = BoeExchangeRateCsvParser.Parse(csv, new BoeExchangeRateOptions());
+        BoeRateTable table = BoeExchangeRateCsvParser.Parse(csv, new BoeRateProviderOptions());
 
         Assert.HasCount(1, table.Observations);
         Assert.AreEqual("USD", table.Observations[0].CurrencyCode);
@@ -76,7 +76,7 @@ public partial class BoeExchangeRateCsvParserTests
     {
         _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
         {
-            _ = BoeExchangeRateCsvParser.Parse("<html><body>Service unavailable</body></html>", new BoeExchangeRateOptions());
+            _ = BoeExchangeRateCsvParser.Parse("<html><body>Service unavailable</body></html>", new BoeRateProviderOptions());
         });
     }
 }

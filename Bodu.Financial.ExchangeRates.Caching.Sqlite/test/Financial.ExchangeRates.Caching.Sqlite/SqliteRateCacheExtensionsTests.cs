@@ -59,7 +59,7 @@ public sealed class SqliteRateCacheExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the registered cache resolves as an <see cref="IExchangeRateCache" /> bound to the supplied
+    /// Verifies that the registered cache resolves as an <see cref="IRateCache" /> bound to the supplied
     /// provider.
     /// </summary>
     [TestMethod]
@@ -69,7 +69,7 @@ public sealed class SqliteRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(builder =>
             builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
 
-        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        IRateCache cache = provider.GetRequiredService<IRateCache>();
 
         Assert.AreEqual("RBA", cache.Provider);
     }
@@ -84,8 +84,8 @@ public sealed class SqliteRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(builder =>
             builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
 
-        IExchangeRateCache byDefault = provider.GetRequiredService<IExchangeRateCache>();
-        IExchangeRateCache byKey = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+        IRateCache byDefault = provider.GetRequiredService<IRateCache>();
+        IRateCache byKey = provider.GetRequiredKeyedService<IRateCache>("RBA");
 
         Assert.AreSame(byDefault, byKey);
     }
@@ -101,8 +101,8 @@ public sealed class SqliteRateCacheExtensionsTests
             .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
             .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = _databasePath));
 
-        IExchangeRateCache rba = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
-        IExchangeRateCache ofx = provider.GetRequiredKeyedService<IExchangeRateCache>("OFX");
+        IRateCache rba = provider.GetRequiredKeyedService<IRateCache>("RBA");
+        IRateCache ofx = provider.GetRequiredKeyedService<IRateCache>("OFX");
 
         Assert.AreEqual("RBA", rba.Provider);
         Assert.AreEqual("OFX", ofx.Provider);
@@ -120,15 +120,15 @@ public sealed class SqliteRateCacheExtensionsTests
             .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
             .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
 
-        IExchangeRateCache first = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
-        IExchangeRateCache second = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+        IRateCache first = provider.GetRequiredKeyedService<IRateCache>("RBA");
+        IRateCache second = provider.GetRequiredKeyedService<IRateCache>("RBA");
 
         Assert.AreSame(first, second);
         Assert.AreEqual("RBA", first.Provider);
     }
 
     /// <summary>
-    /// Verifies that, with several providers registered, the default <see cref="IExchangeRateCache" /> resolution serves
+    /// Verifies that, with several providers registered, the default <see cref="IRateCache" /> resolution serves
     /// the first-registered provider's cache.
     /// </summary>
     [TestMethod]
@@ -138,7 +138,7 @@ public sealed class SqliteRateCacheExtensionsTests
             .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
             .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = _databasePath));
 
-        IExchangeRateCache byDefault = provider.GetRequiredService<IExchangeRateCache>();
+        IRateCache byDefault = provider.GetRequiredService<IRateCache>();
 
         Assert.AreEqual("RBA", byDefault.Provider);
     }
@@ -156,10 +156,10 @@ public sealed class SqliteRateCacheExtensionsTests
         var pair = new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD);
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        provider.GetRequiredKeyedService<IExchangeRateCache>("RBA")
-            .Store(pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        provider.GetRequiredKeyedService<IRateCache>("RBA")
+            .Store(pair, new[] { new CachedRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
-        IReadOnlyList<CachedExchangeRate> ofxRows = provider.GetRequiredKeyedService<IExchangeRateCache>("OFX")
+        IReadOnlyList<CachedRate> ofxRows = provider.GetRequiredKeyedService<IRateCache>("OFX")
             .GetRates(pair, TimeSpan.FromHours(24), now);
 
         Assert.IsEmpty(ofxRows);
@@ -183,7 +183,7 @@ public sealed class SqliteRateCacheExtensionsTests
         using ServiceProvider provider = services.BuildServiceProvider();
 
         // Resolving constructs the cache over the corrupt file, whose swallowed failure is logged at Warning.
-        _ = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+        _ = provider.GetRequiredKeyedService<IRateCache>("RBA");
 
         bool loggedWarning = false;
         foreach ((LogLevel Level, EventId EventId, string Message, Exception? Exception) entry in loggerProvider.Logger.Entries)
@@ -203,10 +203,10 @@ public sealed class SqliteRateCacheExtensionsTests
     {
         ServiceProvider provider = BuildProvider(builder =>
             builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
-        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        IRateCache cache = provider.GetRequiredService<IRateCache>();
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
         Assert.HasCount(1, cache.GetRates(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now));
         Assert.IsTrue(File.Exists(_databasePath));
@@ -219,14 +219,14 @@ public sealed class SqliteRateCacheExtensionsTests
     public void AddSqliteRateCache_WhenConfigurationProvided_ShouldBindDatabasePath()
     {
         IConfiguration config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:ExchangeRateCache:Sqlite:DatabaseFilePath"] = _databasePath })
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:RateCache:Sqlite:DatabaseFilePath"] = _databasePath })
             .Build();
 
         ServiceProvider provider = BuildProvider(builder => builder.AddSqliteRateCache("RBA", config));
-        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        IRateCache cache = provider.GetRequiredService<IRateCache>();
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
         Assert.IsTrue(File.Exists(_databasePath));
     }
@@ -273,7 +273,7 @@ public sealed class SqliteRateCacheExtensionsTests
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
-            _ = provider.GetRequiredService<IExchangeRateCache>();
+            _ = provider.GetRequiredService<IRateCache>();
         });
     }
 
@@ -286,11 +286,11 @@ public sealed class SqliteRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(builder =>
             builder.AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath));
 
-        Assert.IsNotNull(provider.GetRequiredService<IExchangeRateCache>());
+        Assert.IsNotNull(provider.GetRequiredService<IRateCache>());
     }
 
     /// <summary>
-    /// Verifies that, with <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> set over a database that
+    /// Verifies that, with <see cref="RateCacheOptions.ValidateStorageOnStart" /> set over a database that
     /// cannot be opened, the startup validation the host runs fails, so a misconfigured database fails the host start
     /// rather than the first lookup.
     /// </summary>
@@ -311,7 +311,7 @@ public sealed class SqliteRateCacheExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that, with <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> set over a usable database,
+    /// Verifies that, with <see cref="RateCacheOptions.ValidateStorageOnStart" /> set over a usable database,
     /// the startup validation the host runs passes.
     /// </summary>
     [TestMethod]

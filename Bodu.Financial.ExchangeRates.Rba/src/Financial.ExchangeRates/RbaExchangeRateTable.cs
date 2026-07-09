@@ -58,11 +58,11 @@ internal sealed class RbaExchangeRateTable
                 if (value is > 0m && CurrencyInfo.TryGetCurrencyCode(Series[i].CurrencyCode, out CurrencyCode quote))
                 {
                     yield return new ExchangeRate(
-                        RbaExchangeRateProvider.BaseCurrency,
+                        RbaRateProvider.BaseCurrency,
                         quote,
                         row.Date,
                         value.Value,
-                        RbaExchangeRateProvider.ProviderName);
+                        RbaRateProvider.ProviderName);
                 }
             }
         }
@@ -82,7 +82,7 @@ internal sealed class RbaExchangeRateTable
             if (!CurrencyInfo.TryGetCurrencyCode(series.CurrencyCode, out CurrencyCode quote))
                 continue;
 
-            CurrencyPair pair = new(RbaExchangeRateProvider.BaseCurrency, quote);
+            CurrencyPair pair = new(RbaRateProvider.BaseCurrency, quote);
             result.Add(new RbaSeriesInfo(pair, series.CurrencyCode, series.SeriesId, series.Description, series.Units));
         }
 

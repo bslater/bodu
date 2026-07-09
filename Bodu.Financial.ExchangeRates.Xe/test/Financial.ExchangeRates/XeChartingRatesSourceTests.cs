@@ -28,7 +28,7 @@ public class XeChartingRatesSourceTests
     {
         StubHttpMessageHandler handler = new(XeFixtures.ReadBytes(XeFixtures.AudUsd));
         using HttpClient client = new(handler);
-        XeExchangeRateOptions options = new();
+        XeRateProviderOptions options = new();
         StubXeAuthTokenProvider tokens = new("TESTTOKEN");
         XeChartingRatesSource source = new(client, options, tokens);
 
@@ -61,7 +61,7 @@ public class XeChartingRatesSourceTests
                 ? new HttpResponseMessage(HttpStatusCode.Unauthorized)
                 : new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(fixture) });
         using HttpClient client = new(handler);
-        XeExchangeRateOptions options = new();
+        XeRateProviderOptions options = new();
         StubXeAuthTokenProvider tokens = new();
         XeChartingRatesSource source = new(client, options, tokens);
 
@@ -81,7 +81,7 @@ public class XeChartingRatesSourceTests
     {
         RoutedHttpMessageHandler handler = new((request, index) => new HttpResponseMessage(HttpStatusCode.Forbidden));
         using HttpClient client = new(handler);
-        XeExchangeRateOptions options = new();
+        XeRateProviderOptions options = new();
         StubXeAuthTokenProvider tokens = new();
         XeChartingRatesSource source = new(client, options, tokens);
 
@@ -103,7 +103,7 @@ public class XeChartingRatesSourceTests
         byte[] fixture = XeFixtures.ReadBytes(XeFixtures.AudUsd);
         RoutedHttpMessageHandler handler = new((request, index) => Route(request, fixture));
         using HttpClient client = new(handler);
-        XeExchangeRateProvider provider = new(client, new XeExchangeRateOptions());
+        XeRateProvider provider = new(client, new XeRateProviderOptions());
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 6));
 

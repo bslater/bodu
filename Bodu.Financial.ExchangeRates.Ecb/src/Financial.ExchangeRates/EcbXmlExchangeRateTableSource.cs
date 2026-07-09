@@ -10,13 +10,13 @@ namespace Bodu.Financial.ExchangeRates;
 /// Obtains an ECB feed's rate table by downloading its <c>eurofxref</c> XML file (via a feed cache) and parsing it.
 /// </summary>
 internal sealed class EcbXmlExchangeRateTableSource
-    : IEcbExchangeRateTableSource
+    : IEcbRateTableSource
 {
     /// <summary>The HTTP client used to download feed files.</summary>
     private readonly HttpClient _httpClient;
 
     /// <summary>The provider options supplying the base URL, refresh interval, and alias map.</summary>
-    private readonly EcbExchangeRateOptions _options;
+    private readonly EcbRateProviderOptions _options;
 
     /// <summary>The feed byte cache.</summary>
     private readonly IEcbFeedCache _cache;
@@ -27,7 +27,7 @@ internal sealed class EcbXmlExchangeRateTableSource
     /// <param name="httpClient">The HTTP client used to download feed files.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="cache">The feed byte cache.</param>
-    internal EcbXmlExchangeRateTableSource(HttpClient httpClient, EcbExchangeRateOptions options, IEcbFeedCache cache)
+    internal EcbXmlExchangeRateTableSource(HttpClient httpClient, EcbRateProviderOptions options, IEcbFeedCache cache)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -39,7 +39,7 @@ internal sealed class EcbXmlExchangeRateTableSource
     }
 
     /// <inheritdoc />
-    public async ValueTask<EcbExchangeRateTable> GetTableAsync(EcbExchangeRateFeed feed, CancellationToken cancellationToken = default)
+    public async ValueTask<EcbRateTable> GetTableAsync(EcbRateFeed feed, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(feed);
 
@@ -55,7 +55,7 @@ internal sealed class EcbXmlExchangeRateTableSource
     /// <param name="feed">The feed whose file is required.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the download.</param>
     /// <returns>A task that yields the feed bytes.</returns>
-    private async ValueTask<byte[]> GetFeedBytesAsync(EcbExchangeRateFeed feed, CancellationToken cancellationToken)
+    private async ValueTask<byte[]> GetFeedBytesAsync(EcbRateFeed feed, CancellationToken cancellationToken)
     {
         if (_cache.TryGet(feed, _options.RefreshInterval, out byte[]? cached))
             return cached;
