@@ -206,6 +206,15 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pairs collection must contain at least one currency pair..
+        /// </summary>
+        internal static string Arg_Invalid_ExchangeRatePairsEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ExchangeRatePairsEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The end date must not be earlier than the start date..
         /// </summary>
         internal static string Arg_Invalid_ExchangeRateRangeInverted {
