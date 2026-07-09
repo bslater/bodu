@@ -183,9 +183,9 @@ internal sealed class RateSeriesStorage
     /// </param>
     internal void CopyTo(int[] dayNumbers, decimal[] rates)
     {
-        Debug.Assert(dayNumbers is not null && rates is not null);
-        Debug.Assert(dayNumbers!.Length >= _dayNumbers.Length);
-        Debug.Assert(rates!.Length >= _dayNumbers.Length);
+        Debug.Assert(dayNumbers is not null && rates is not null, "Caller-owned destination arrays must not be null.");
+        Debug.Assert(dayNumbers!.Length >= _dayNumbers.Length, "The day-number destination must be at least Count long.");
+        Debug.Assert(rates!.Length >= _dayNumbers.Length, "The rate destination must be at least Count long.");
 
         Array.Copy(_dayNumbers, dayNumbers, _dayNumbers.Length);
         Array.Copy(_rates, rates, _rates.Length);
@@ -246,12 +246,12 @@ internal sealed class RateSeriesStorage
     /// <returns>A new <see cref="RateSeriesStorage" /> wrapping the supplied arrays.</returns>
     internal static RateSeriesStorage AdoptSortedUniqueArrays(int[] dayNumbers, decimal[] rates)
     {
-        Debug.Assert(dayNumbers is not null);
-        Debug.Assert(rates is not null);
-        Debug.Assert(dayNumbers!.Length == rates!.Length);
-        Debug.Assert(dayNumbers.Length > 0);
-        Debug.Assert(IsStrictlyAscending(dayNumbers));
-        Debug.Assert(AllPositive(rates));
+        Debug.Assert(dayNumbers is not null, "The adopted day-number array must not be null.");
+        Debug.Assert(rates is not null, "The adopted rate array must not be null.");
+        Debug.Assert(dayNumbers!.Length == rates!.Length, "The adopted arrays must be aligned (equal lengths).");
+        Debug.Assert(dayNumbers.Length > 0, "The adopted arrays must contain at least one observation.");
+        Debug.Assert(IsStrictlyAscending(dayNumbers), "The adopted day numbers must be strictly ascending and unique.");
+        Debug.Assert(AllPositive(rates), "Every adopted rate must be strictly positive.");
 
         return new RateSeriesStorage(dayNumbers, rates);
     }
