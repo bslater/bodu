@@ -111,6 +111,9 @@
   <data name="Arg_Invalid_MoneyObject" xml:space="preserve">
     <value>Object must be a Money.</value>
   </data>
+  <data name="Arg_Invalid_ExchangeRatePairsEmpty" xml:space="preserve">
+    <value>Pairs collection must contain at least one currency pair.</value>
+  </data>
   <data name="Arg_Invalid_ExchangeRateRangeInverted" xml:space="preserve">
     <value>The end date must not be earlier than the start date.</value>
   </data>
