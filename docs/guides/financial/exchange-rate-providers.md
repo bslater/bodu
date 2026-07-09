@@ -330,6 +330,57 @@ To serve several sources behind one entry point with per-pair routing and a
 fallback or averaging strategy, group them with the
 [aggregator](exchange-rate-caching.md#grouping-providers-with-the-aggregator).
 
+## Snapshotting and exporting rates
+
+Every web provider maintains its accumulated observations as an immutable
+[`ExchangeRateBook`](xref:Bodu.Financial.ExchangeRateBook) plus a ready-to-query
+[`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider),
+and both are exposed directly:
+[`GetLoadedBook()`](xref:Bodu.Financial.WebExchangeRateProvider.GetLoadedBook) and
+[`GetLoadedSnapshot()`](xref:Bodu.Financial.WebExchangeRateProvider.GetLoadedSnapshot)
+return the current instances without copying or locking. The results are pinned
+at call time — later fetches swap the provider's internal references and never
+mutate an instance already handed out — so a snapshot is deterministic, works
+offline, and survives disposing the source provider. Call again after further
+loads to observe newly accumulated data.
+
+To pin a window of history from *any*
+[`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider) —
+including a cached or aggregated one — materialize it with
+[`ToFixedProviderAsync`](xref:Bodu.Financial.Extensions.DatedExchangeRateProviderExtensions):
+
+```csharp
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.Extensions;
+
+using var rba = new RbaExchangeRateProvider(new RbaExchangeRateOptions());
+
+// Fetch and freeze AUD/USD and AUD/EUR for Q1, decoupled from the live provider.
+FixedDatedExchangeRateProvider q1 = await rba.ToFixedProviderAsync(
+    new[]
+    {
+        new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD),
+        new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.EUR),
+    },
+    new DateOnly(2024, 1, 1),
+    new DateOnly(2024, 3, 31));
+```
+
+The conversion surface composes in both directions. A rate sequence — for
+example the rows a range lookup returned — materializes into a book with
+[`ToBook()`](xref:Bodu.Financial.Extensions.ExchangeRateEnumerableExtensions),
+which keeps one series per (pair, provider) and stores inverse-resolved rows
+under their natively quoted direction; a book wraps into a provider with
+[`ToFixedProvider()`](xref:Bodu.Financial.Extensions.ExchangeRateBookExtensions)
+(optionally with a provider-priority list); and
+[`ExchangeRateBook.ToBuilder()`](xref:Bodu.Financial.ExchangeRateBook.ToBuilder)
+round-trips a book into a mutable
+[`ExchangeRateTableBuilder`](xref:Bodu.Financial.ExchangeRateTableBuilder) for
+editing — `book.ToBuilder()` … edit … `ToBook().ToFixedProvider()`. Each series'
+fetch instant (`FetchedAtUtc`) is preserved through every step, so provenance
+survives a web → fixed round trip losslessly.
+
 ## Choosing a provider
 
 | Need | Reach for |

@@ -44,7 +44,8 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
   as the mutable companion to `ExchangeRateSeries`, plus
   [`ExchangeRateTableBuilder`](xref:Bodu.Financial.ExchangeRateTableBuilder) for
   multi-pair / multi-provider import workflows that produce
-  immutable snapshots.
+  immutable snapshots. Live providers export those snapshots back out —
+  see [Snapshotting and exporting rates](exchange-rate-providers.md#snapshotting-and-exporting-rates).
 
 ## Guides
 

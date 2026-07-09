@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateBook.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -144,4 +144,28 @@ public sealed class ExchangeRateBook
     /// </summary>
     /// <returns>A lazy sequence of <see cref="ExchangeRateSeries" /> instances.</returns>
     public IEnumerable<ExchangeRateSeries> EnumerateSeries() => _series.Values;
+
+    /// <summary>
+    /// Creates a mutable <see cref="ExchangeRateTableBuilder" /> seeded with a copy of every series in this book,
+    /// including each series' fetch instant.
+    /// </summary>
+    /// <returns>A new builder whose contents start equal to this book.</returns>
+    /// <remarks>
+    /// This is the editing counterpart of <see cref="ExchangeRateTableBuilder.ToBook" />: edits to the returned builder
+    /// never affect this book, and calling <c>ToBook()</c> on the builder completes the round trip. It mirrors the
+    /// per-series <see cref="ExchangeRateSeries.ToBuilder" />.
+    /// </remarks>
+    public ExchangeRateTableBuilder ToBuilder()
+    {
+        ExchangeRateTableBuilder builder = new();
+
+        foreach (ExchangeRateSeries series in _series.Values)
+        {
+            ExchangeRateSeriesBuilder seriesBuilder = builder.GetOrAddSeries(series.Pair, series.Provider);
+            seriesBuilder.AddRange(series.GetObservations());
+            seriesBuilder.FetchedAtUtc = series.FetchedAtUtc;
+        }
+
+        return builder;
+    }
 }

@@ -17,6 +17,33 @@ public partial class FixedDatedExchangeRateProviderTests
         new(s_usdAud, provider, [(new DateOnly(2024, 1, 1), rate)]);
 
     /// <summary>
+    /// Verifies that the <see cref="FixedDatedExchangeRateProvider.Book" /> property returns the same immutable
+    /// instance the provider was constructed over.
+    /// </summary>
+    [TestMethod]
+    public void Book_ShouldReturnWrappedBookInstance()
+    {
+        ExchangeRateBook book = new([Series("RBA", 1.5m)]);
+        FixedDatedExchangeRateProvider provider = new(book);
+
+        Assert.AreSame(book, provider.Book);
+    }
+
+    /// <summary>
+    /// Verifies that rewrapping the exposed book in a new provider round-trips the resolvable rates.
+    /// </summary>
+    [TestMethod]
+    public void Book_WhenRewrapped_ShouldRoundTripRates()
+    {
+        FixedDatedExchangeRateProvider original = new(new ExchangeRateBook([Series("RBA", 1.5m)]));
+
+        FixedDatedExchangeRateProvider rewrapped = new(original.Book);
+
+        Assert.IsTrue(rewrapped.TryGetRate("USD", "AUD", new DateOnly(2024, 1, 1), null, out ExchangeRateLookupResult result));
+        Assert.AreEqual(1.5m, result.Rate.Rate);
+    }
+
+    /// <summary>
     /// Verifies that the book-based constructor rejects a <see langword="null" /> book.
     /// </summary>
     [TestMethod]
