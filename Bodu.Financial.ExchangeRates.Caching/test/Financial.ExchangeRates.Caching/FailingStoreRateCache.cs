@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FailingStoreRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,10 +7,10 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IRateCache" /> test double that persists nothing and reports every
-/// <see cref="StoreFetchedRange" /> as <see cref="RateCacheWriteStatus.Failed" />, standing in for a backend
-/// whose storage write was silently swallowed. Reads always return empty, modelling a store that retained nothing, so a
-/// decorator over it must refetch rather than serve a false hit.
+/// An <see cref="IRateCache" /> test double that persists nothing and reports every <see cref="StoreFetchedRange" /> as
+/// <see cref="RateCacheWriteStatus.Failed" />, standing in for a backend whose storage write was silently swallowed.
+/// Reads always return empty, modelling a store that retained nothing, so a decorator over it must refetch rather than
+/// serve a false hit.
 /// </summary>
 internal sealed class FailingStoreRateCache
     : IRateCache

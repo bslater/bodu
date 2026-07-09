@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HistoryAvailabilityGuard.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,10 +20,10 @@ internal static class HistoryAvailabilityGuard
     /// <param name="options">The lookup rules to apply; <see langword="null" /> selects the exact-match rules.</param>
     /// <returns>The latest reachable date, saturating at <see cref="DateOnly.MaxValue" />.</returns>
     /// <remarks>
-    /// Forward-resolving rules (<see cref="RateDateResolution.NextOnOrAfter" /> and the nearest family) can
-    /// reach up to <see cref="RateLookupOptions.ToleranceDays" /> past the requested date, so availability
-    /// guards must test this reachable maximum rather than the requested date itself — a request just outside an
-    /// advertised floor whose tolerance reaches back inside it can still be served.
+    /// Forward-resolving rules (<see cref="RateDateResolution.NextOnOrAfter" /> and the nearest family) can reach up to
+    /// <see cref="RateLookupOptions.ToleranceDays" /> past the requested date, so availability guards must test this
+    /// reachable maximum rather than the requested date itself — a request just outside an advertised floor whose
+    /// tolerance reaches back inside it can still be served.
     /// </remarks>
     internal static DateOnly LatestReachableDate(DateOnly date, RateLookupOptions? options)
     {

@@ -13,9 +13,9 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IRateCache" /> that persists a single provider's rates and fetch-coverage windows in an
-/// injected <see cref="IDistributedCache" /> — for example a Redis cache — expiring them through the same freshness
-/// mechanism as the in-memory, TOML, and SQLite caches.
+/// An <see cref="IRateCache" /> that persists a single provider's rates and fetch-coverage windows in an injected
+/// <see cref="IDistributedCache" /> — for example a Redis cache — expiring them through the same freshness mechanism as
+/// the in-memory, TOML, and SQLite caches.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -28,13 +28,12 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <para>
 /// Expiry is by caching duration rather than by storage: stale and semantically invalid rows are filtered on read and
 /// pruned on write, and stale coverage windows are pruned when coverage is recorded, so the entry self-cleans over
-/// time. The freshness, validity, merge, and coverage rules are delegated to the shared
-/// <see cref="RateCacheRules" /> so this backend stays behaviourally identical to the in-memory, file, and
-/// SQLite caches; this class contributes only its blob storage and locking. The two halves of a pair's state are
-/// written independently through <see cref="Store" /> and <see cref="RecordCoverage" /> — storing rates never drops
-/// recorded coverage, and recording coverage never drops cached rows — by reading the existing blob, replacing only the
-/// affected half, and writing the merged blob back. <see cref="StoreFetchedRange" /> instead replaces both halves in
-/// one blob write.
+/// time. The freshness, validity, merge, and coverage rules are delegated to the shared <see cref="RateCacheRules" />
+/// so this backend stays behaviourally identical to the in-memory, file, and SQLite caches; this class contributes only
+/// its blob storage and locking. The two halves of a pair's state are written independently through
+/// <see cref="Store" /> and <see cref="RecordCoverage" /> — storing rates never drops recorded coverage, and recording
+/// coverage never drops cached rows — by reading the existing blob, replacing only the affected half, and writing the
+/// merged blob back. <see cref="StoreFetchedRange" /> instead replaces both halves in one blob write.
 /// </para>
 /// <para>
 /// The cache is best-effort. An <see cref="IDistributedCache" /> offers no atomic read-modify-write, so the per-pair
@@ -43,8 +42,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// concurrent writes to the same pair are last-write-wins, consistent with the documented best-effort nature of the
 /// contract. Because both halves of a fetched range travel in one blob, a single <see cref="StoreFetchedRange" /> set
 /// is all-or-nothing: the reader never observes coverage without its rows even across processes. As required by
-/// <see cref="IRateCache" />, a backing-store failure surfaces as an empty read or a skipped write rather than
-/// an exception: <see cref="IDistributedCache" /> faults and JSON (de)serialization faults degrade gracefully, while
+/// <see cref="IRateCache" />, a backing-store failure surfaces as an empty read or a skipped write rather than an
+/// exception: <see cref="IDistributedCache" /> faults and JSON (de)serialization faults degrade gracefully, while
 /// argument validation still throws.
 /// </para>
 /// </remarks>

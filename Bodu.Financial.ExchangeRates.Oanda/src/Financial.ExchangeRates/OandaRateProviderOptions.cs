@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OandaRateProviderOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,17 +10,17 @@ using System.Text;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Configures how the <see cref="OandaRateProvider" /> addresses and interprets the OANDA Historical Currency
-/// Converter rate-history service.
+/// Configures how the <see cref="OandaRateProvider" /> addresses and interprets the OANDA Historical Currency Converter
+/// rate-history service.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the
-/// HTTP contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log
-/// levels. The members declared here are OANDA-specific: the data and priming paths, the rate source, the price basis,
-/// the reporting period, and the rate adjustment. The anonymous endpoint serves only a rolling recent window, so the
-/// constructor sets <see cref="WebRateProviderOptions.HistoryAvailability" /> to a 180-day rolling window and
-/// the response is range-filtered to the requested dates.
+/// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
+/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
+/// The members declared here are OANDA-specific: the data and priming paths, the rate source, the price basis, the
+/// reporting period, and the rate adjustment. The anonymous endpoint serves only a rolling recent window, so the
+/// constructor sets <see cref="WebRateProviderOptions.HistoryAvailability" /> to a 180-day rolling window and the
+/// response is range-filtered to the requested dates.
 /// </para>
 /// <para>
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and

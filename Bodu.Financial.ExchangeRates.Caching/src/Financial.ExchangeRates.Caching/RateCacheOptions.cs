@@ -13,8 +13,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <remarks>
 /// A cache instance serves exactly one provider, so the provider name is fixed here at construction rather than
 /// supplied on each call. This lets the provider identity participate in the storage layout (for example a per-provider
-/// subdirectory) without ambiguity, and keeps the <see cref="IRateCache" /> surface free of a provider
-/// argument.
+/// subdirectory) without ambiguity, and keeps the <see cref="IRateCache" /> surface free of a provider argument.
 /// </remarks>
 public class RateCacheOptions
 {

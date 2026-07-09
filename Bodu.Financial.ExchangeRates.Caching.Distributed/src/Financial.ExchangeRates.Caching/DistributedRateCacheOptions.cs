@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedRateCacheOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Configures a distributed-cache-backed <see cref="IRateCache" />: the single provider inherited from
-/// <see cref="RateCacheOptions" /> together with an optional key prefix applied to every entry the cache writes
-/// to the backing <see cref="Microsoft.Extensions.Caching.Distributed.IDistributedCache" />.
+/// <see cref="RateCacheOptions" /> together with an optional key prefix applied to every entry the cache writes to the
+/// backing <see cref="Microsoft.Extensions.Caching.Distributed.IDistributedCache" />.
 /// </summary>
 /// <remarks>
 /// <para>

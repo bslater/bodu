@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OandaRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,15 +24,15 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// <strong>History depth.</strong> The anonymous endpoint serves only a rolling recent window (roughly the last 180
 /// days); requesting an earlier start date returns only what the feed publishes. The provider advertises this through
-/// <see cref="WebRateProvider.HistoryAvailability" />, so a caller can resolve the earliest date worth
-/// requesting before issuing a lookup.
+/// <see cref="WebRateProvider.HistoryAvailability" />, so a caller can resolve the earliest date worth requesting
+/// before issuing a lookup.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
 /// <see cref="HttpClient" /> configured with the options' <see cref="WebRateProviderOptions.UserAgent" /> and
-/// <see cref="WebRateProviderOptions.HttpTimeout" /> (the OANDA endpoint rejects requests without a
-/// recognizable user agent), disposing it with the provider. The constructor that takes an <see cref="HttpClient" />
-/// uses the caller-supplied client as-is, leaving its configuration and lifetime to the caller; this is the path the
+/// <see cref="WebRateProviderOptions.HttpTimeout" /> (the OANDA endpoint rejects requests without a recognizable user
+/// agent), disposing it with the provider. The constructor that takes an <see cref="HttpClient" /> uses the
+/// caller-supplied client as-is, leaving its configuration and lifetime to the caller; this is the path the
 /// dependency-injection package uses.
 /// </para>
 /// </remarks>
@@ -54,8 +54,8 @@ public sealed class OandaRateProvider
     public const string ProviderName = "OANDA";
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OandaRateProvider" /> class backed by an
-    /// <see cref="HttpClient" /> the provider creates and owns, configured from the supplied options.
+    /// Initializes a new instance of the <see cref="OandaRateProvider" /> class backed by an <see cref="HttpClient" />
+    /// the provider creates and owns, configured from the supplied options.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">
@@ -75,8 +75,8 @@ public sealed class OandaRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OandaRateProvider" /> class backed by the OANDA endpoint,
-    /// queried with the caller-supplied HTTP client. The caller owns the client's configuration and lifetime.
+    /// Initializes a new instance of the <see cref="OandaRateProvider" /> class backed by the OANDA endpoint, queried
+    /// with the caller-supplied HTTP client. The caller owns the client's configuration and lifetime.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue history requests.</param>
     /// <param name="options">The provider options.</param>
@@ -97,8 +97,8 @@ public sealed class OandaRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OandaRateProvider" /> class backed by an explicit pair
-    /// source, used for testing.
+    /// Initializes a new instance of the <see cref="OandaRateProvider" /> class backed by an explicit pair source, used
+    /// for testing.
     /// </summary>
     /// <param name="source">The pair source.</param>
     /// <param name="options">The provider options.</param>
@@ -116,8 +116,8 @@ public sealed class OandaRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OandaRateProvider" /> class from an owned client, building
-    /// the source over it before forwarding to the core constructor.
+    /// Initializes a new instance of the <see cref="OandaRateProvider" /> class from an owned client, building the
+    /// source over it before forwarding to the core constructor.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="ownedHttpClient">The HTTP client this provider creates and owns.</param>

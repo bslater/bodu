@@ -11,9 +11,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The selected resolution interacts with <see cref="RateLookupOptions.ToleranceDays" /> to bound how far a
-/// fallback date may be from the requested date. <see cref="Exact" /> never falls back and therefore requires a
-/// tolerance of zero.
+/// The selected resolution interacts with <see cref="RateLookupOptions.ToleranceDays" /> to bound how far a fallback
+/// date may be from the requested date. <see cref="Exact" /> never falls back and therefore requires a tolerance of
+/// zero.
 /// </para>
 /// <para>
 /// For accounting and tax workflows where silently selecting a future rate is undesirable, prefer

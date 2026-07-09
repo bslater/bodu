@@ -19,16 +19,16 @@ namespace Bodu.Financial.ExchangeRates;
 /// tracking, single-flight coalescing, fetch-and-accumulate orchestration, and diagnostic logging shared by every
 /// pair-based web source; this type contributes only the Yahoo identity, the ticker-based log label, and the
 /// Yahoo-specific exception text. Yahoo serves arbitrary pairs through the <c>{FROM}{TO}=X</c> ticker convention, so
-/// any pair of ISO codes can be requested directly. Use <see cref="WebRateProvider.LoadPairAsync" /> to warm a
-/// pair's in-memory store.
+/// any pair of ISO codes can be requested directly. Use <see cref="WebRateProvider.LoadPairAsync" /> to warm a pair's
+/// in-memory store.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
 /// <see cref="HttpClient" /> configured with the options' <see cref="WebRateProviderOptions.UserAgent" /> and
-/// <see cref="WebRateProviderOptions.HttpTimeout" /> (the Yahoo endpoint answers requests without a
-/// recognizable user agent with <c>429 Too Many Requests</c>), disposing it with the provider. The constructor that
-/// takes an <see cref="HttpClient" /> uses the caller-supplied client as-is, leaving its configuration and lifetime to
-/// the caller; this is the path the dependency-injection package uses.
+/// <see cref="WebRateProviderOptions.HttpTimeout" /> (the Yahoo endpoint answers requests without a recognizable user
+/// agent with <c>429 Too Many Requests</c>), disposing it with the provider. The constructor that takes an
+/// <see cref="HttpClient" /> uses the caller-supplied client as-is, leaving its configuration and lifetime to the
+/// caller; this is the path the dependency-injection package uses.
 /// </para>
 /// </remarks>
 /// <example>
@@ -51,8 +51,8 @@ public sealed class YahooRateProvider
     private readonly YahooRateProviderOptions _options;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="YahooRateProvider" /> class backed by an
-    /// <see cref="HttpClient" /> the provider creates and owns, configured from the supplied options.
+    /// Initializes a new instance of the <see cref="YahooRateProvider" /> class backed by an <see cref="HttpClient" />
+    /// the provider creates and owns, configured from the supplied options.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">
@@ -73,9 +73,8 @@ public sealed class YahooRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="YahooRateProvider" /> class backed by the Yahoo Finance
-    /// chart endpoint, queried with the caller-supplied HTTP client. The caller owns the client's configuration and
-    /// lifetime.
+    /// Initializes a new instance of the <see cref="YahooRateProvider" /> class backed by the Yahoo Finance chart
+    /// endpoint, queried with the caller-supplied HTTP client. The caller owns the client's configuration and lifetime.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue chart requests.</param>
     /// <param name="options">The provider options.</param>
@@ -97,8 +96,8 @@ public sealed class YahooRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="YahooRateProvider" /> class backed by an explicit pair
-    /// source, used for testing.
+    /// Initializes a new instance of the <see cref="YahooRateProvider" /> class backed by an explicit pair source, used
+    /// for testing.
     /// </summary>
     /// <param name="source">The pair source.</param>
     /// <param name="options">The provider options.</param>
@@ -116,8 +115,8 @@ public sealed class YahooRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="YahooRateProvider" /> class from an owned client, building
-    /// the pair source over it before forwarding to the core constructor.
+    /// Initializes a new instance of the <see cref="YahooRateProvider" /> class from an owned client, building the pair
+    /// source over it before forwarding to the core constructor.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="ownedHttpClient">The HTTP client this provider creates and owns.</param>

@@ -25,7 +25,7 @@ namespace Bodu.Financial.ExchangeRates;
 public readonly record struct CurrencyPair
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="CurrencyPair" /> struct.
+    /// Initializes a new instance of the <see cref="CurrencyPair" /> class.
     /// </summary>
     /// <param name="from">The source currency.</param>
     /// <param name="to">The destination currency.</param>
@@ -63,10 +63,10 @@ public readonly record struct CurrencyPair
     /// <see cref="CurrencyCode.None" />; otherwise <see langword="false" />.
     /// </value>
     /// <remarks>
-    /// Because <see cref="CurrencyPair" /> is a value type, <see langword="default" /><c>(CurrencyPair)</c>
-    /// bypasses the validating constructor and leaves both currencies <see cref="CurrencyCode.None" />. Public
-    /// boundaries that accept an <see cref="CurrencyPair" /> should reject any instance whose
-    /// <see cref="IsValid" /> property is <see langword="false" />.
+    /// Because <see cref="CurrencyPair" /> is a value type, <see langword="default" /><c>(CurrencyPair)</c> bypasses
+    /// the validating constructor and leaves both currencies <see cref="CurrencyCode.None" />. Public boundaries that
+    /// accept an <see cref="CurrencyPair" /> should reject any instance whose <see cref="IsValid" /> property is
+    /// <see langword="false" />.
     /// </remarks>
     public bool IsValid => From != CurrencyCode.None && To != CurrencyCode.None;
 

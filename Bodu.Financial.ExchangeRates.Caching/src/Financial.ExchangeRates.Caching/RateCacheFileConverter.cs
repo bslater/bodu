@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateCacheFileConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,9 +7,9 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Maps between the internal <see cref="CachePairState" /> and the <see cref="RateCacheFile" /> serialization
-/// shape, so every file-backed format — TOML, JSON, and any future peer — shares one identical projection of rows,
-/// coverage, and the self-describing provider and currency pair.
+/// Maps between the internal <see cref="CachePairState" /> and the <see cref="RateCacheFile" /> serialization shape, so
+/// every file-backed format — TOML, JSON, and any future peer — shares one identical projection of rows, coverage, and
+/// the self-describing provider and currency pair.
 /// </summary>
 internal static class RateCacheFileConverter
 {

@@ -19,34 +19,29 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each provider's dependency-injection package calls one of the <c>AddWebRateProvider</c> overloads to handle
-/// the common plumbing: binding and validating the provider's options, configuring a named <see cref="HttpClient" />
-/// with a Polly standard-resilience handler, constructing the provider singleton, and exposing it as both
-/// <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />. The provider-specific extension
-/// method supplies only the values that differ across providers: the HttpClient name, configuration section, validation
-/// predicate, user-agent and timeout selectors, and the factory delegate that invokes the concrete constructor.
+/// Each provider's dependency-injection package calls one of the <c>AddWebRateProvider</c> overloads to handle the
+/// common plumbing: binding and validating the provider's options, configuring a named <see cref="HttpClient" /> with a
+/// Polly standard-resilience handler, constructing the provider singleton, and exposing it as both
+/// <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />. The provider-specific extension method supplies
+/// only the values that differ across providers: the HttpClient name, configuration section, validation predicate,
+/// user-agent and timeout selectors, and the factory delegate that invokes the concrete constructor.
 /// </para>
 /// <para>
 /// The two public overloads differ by options-type constraint. Use the short overload when <c>TOptions</c> derives from
 /// <see cref="WebRateProviderOptions" /> — it reads <see cref="WebRateProviderOptions.UserAgent" />,
-/// <see cref="WebRateProviderOptions.HttpTimeout" />, and
-/// <see cref="WebRateProviderOptions.TryValidate" /> automatically. Use the full overload when the options type
-/// does not inherit from <see cref="WebRateProviderOptions" /> and the caller must supply explicit selectors.
+/// <see cref="WebRateProviderOptions.HttpTimeout" />, and <see cref="WebRateProviderOptions.TryValidate" />
+/// automatically. Use the full overload when the options type does not inherit from
+/// <see cref="WebRateProviderOptions" /> and the caller must supply explicit selectors.
 /// </para>
 /// </remarks>
 public static class WebRateProviderExtensions
 {
     /// <summary>
-    /// Registers a web-based exchange-rate provider whose options derive from
-    /// <see cref="WebRateProviderOptions" />, binding options and configuring a named <see cref="HttpClient" />
-    /// with Polly resilience.
+    /// Registers a web-based exchange-rate provider whose options derive from <see cref="WebRateProviderOptions" />,
+    /// binding options and configuring a named <see cref="HttpClient" /> with Polly resilience.
     /// </summary>
-    /// <typeparam name="TProvider">
-    /// The concrete provider type, derived from <see cref="WebRateProvider" />.
-    /// </typeparam>
-    /// <typeparam name="TOptions">
-    /// The options type, derived from <see cref="WebRateProviderOptions" />.
-    /// </typeparam>
+    /// <typeparam name="TProvider">The concrete provider type, derived from <see cref="WebRateProvider" />.</typeparam>
+    /// <typeparam name="TOptions">The options type, derived from <see cref="WebRateProviderOptions" />.</typeparam>
     /// <param name="builder">The financial service builder.</param>
     /// <param name="httpClientName">
     /// The name used to register and resolve the provider's <see cref="HttpClient" /> through
@@ -58,8 +53,8 @@ public static class WebRateProviderExtensions
     /// </param>
     /// <param name="sectionName">The configuration section name.</param>
     /// <param name="validationErrorMessage">
-    /// The error message reported by <c>ValidateOnStart</c> when
-    /// <see cref="WebRateProviderOptions.TryValidate" /> returns <see langword="false" />.
+    /// The error message reported by <c>ValidateOnStart</c> when <see cref="WebRateProviderOptions.TryValidate" />
+    /// returns <see langword="false" />.
     /// </param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
     /// <param name="configureResilience">

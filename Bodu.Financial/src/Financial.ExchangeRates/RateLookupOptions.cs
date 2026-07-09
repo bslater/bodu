@@ -40,9 +40,6 @@ namespace Bodu.Financial.ExchangeRates;
 /// </remarks>
 public sealed class RateLookupOptions
 {
-    /// <summary>The cached singleton returned from <see cref="Exact" />.</summary>
-    private static readonly RateLookupOptions s_exact = new(RateDateResolution.Exact);
-
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLookupOptions" /> class.
     /// </summary>
@@ -75,7 +72,7 @@ public sealed class RateLookupOptions
     /// Gets a configuration that requires an exact-date match, allowing inverse and same-currency identity fallbacks.
     /// </summary>
     /// <value>An <see cref="RateLookupOptions" /> with <see cref="RateDateResolution.Exact" />.</value>
-    public static RateLookupOptions Exact => s_exact;
+    public static RateLookupOptions Exact { get; } = new(RateDateResolution.Exact);
 
     /// <summary>
     /// Gets the fallback policy applied when no rate exists on the requested date.
@@ -132,9 +129,7 @@ public sealed class RateLookupOptions
     /// <param name="toleranceDays">
     /// The maximum permitted distance, in days, between requested and resolved dates.
     /// </param>
-    /// <returns>
-    /// An <see cref="RateLookupOptions" /> with <see cref="RateDateResolution.NextOnOrAfter" />.
-    /// </returns>
+    /// <returns>An <see cref="RateLookupOptions" /> with <see cref="RateDateResolution.NextOnOrAfter" />.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="toleranceDays" /> is negative.
     /// </exception>
@@ -152,8 +147,7 @@ public sealed class RateLookupOptions
     /// The maximum permitted distance, in days, between requested and resolved dates.
     /// </param>
     /// <returns>
-    /// An <see cref="RateLookupOptions" /> with <see cref="RateDateResolution.NearestPreferPrevious" />
-    /// .
+    /// An <see cref="RateLookupOptions" /> with <see cref="RateDateResolution.NearestPreferPrevious" /> .
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="toleranceDays" /> is negative.

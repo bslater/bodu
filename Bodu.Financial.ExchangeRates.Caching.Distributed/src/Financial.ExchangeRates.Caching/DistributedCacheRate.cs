@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedCacheRate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ using System.Text.Json.Serialization;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// The JSON serialization shape of one cached rate row, distinct from the public <see cref="CachedRate" />
-/// value so the wire format can evolve independently of the in-memory contract.
+/// The JSON serialization shape of one cached rate row, distinct from the public <see cref="CachedRate" /> value so the
+/// wire format can evolve independently of the in-memory contract.
 /// </summary>
 /// <remarks>
 /// Every field is persisted as invariant text so the row round-trips losslessly regardless of the serializer's default

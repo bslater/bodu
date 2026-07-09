@@ -9,8 +9,7 @@ namespace Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Configures how the <see cref="EcbRateProvider" /> downloads, caches, and interprets ECB euro reference-rate
-/// data.
+/// Configures how the <see cref="EcbRateProvider" /> downloads, caches, and interprets ECB euro reference-rate data.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -43,16 +42,16 @@ public sealed class EcbRateProviderOptions
     /// Gets or sets a value indicating whether a synchronous lookup may block to download a missing feed on demand.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> to allow synchronous, blocking downloads from <see cref="IDatedRateProvider" />
-    /// lookups; <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="false" />, so
-    /// the provider serves a snapshot of already-loaded data and a synchronous miss does not reach the network.
+    /// <see langword="true" /> to allow synchronous, blocking downloads from <see cref="IDatedRateProvider" /> lookups;
+    /// <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="false" />, so the
+    /// provider serves a snapshot of already-loaded data and a synchronous miss does not reach the network.
     /// </value>
     /// <remarks>
     /// Blocking on network I/O from a synchronous method can deadlock in environments with a single-threaded
     /// synchronization context (classic ASP.NET, WPF, WinForms), so the default is snapshot-only. Leave this
     /// <see langword="false" /> and warm the store with <see cref="EcbRateProvider.PreloadAsync" /> or
-    /// <see cref="EcbRateProvider.LoadRangeAsync" /> at startup; set it to <see langword="true" /> only to opt
-    /// in to a blocking on-demand fetch from the synchronous lookup path.
+    /// <see cref="EcbRateProvider.LoadRangeAsync" /> at startup; set it to <see langword="true" /> only to opt in to a
+    /// blocking on-demand fetch from the synchronous lookup path.
     /// </remarks>
     public bool AllowSynchronousNetworkAccess { get; set; }
 

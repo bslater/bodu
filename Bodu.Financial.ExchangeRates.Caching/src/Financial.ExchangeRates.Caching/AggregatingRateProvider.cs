@@ -13,22 +13,22 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Groups several named <see cref="IDatedRateProvider" /> children behind a single entry point, combining them
-/// through a configurable <see cref="IRateAggregationStrategy" /> with optional per-currency-pair routing.
+/// Groups several named <see cref="IDatedRateProvider" /> children behind a single entry point, combining them through
+/// a configurable <see cref="IRateAggregationStrategy" /> with optional per-currency-pair routing.
 /// </summary>
 /// <remarks>
 /// <para>
 /// The aggregator is itself a provider on both the dated <see cref="IDatedRateProvider" /> and timeless
-/// <see cref="IRateProvider" /> surfaces, so it composes anywhere a provider is expected — including wrapping
-/// each child in its own <see cref="CachingRateProvider" /> so the grouping sits above the per-source cache.
-/// Same-currency identity is handled here before any strategy is consulted.
+/// <see cref="IRateProvider" /> surfaces, so it composes anywhere a provider is expected — including wrapping each
+/// child in its own <see cref="CachingRateProvider" /> so the grouping sits above the per-source cache. Same-currency
+/// identity is handled here before any strategy is consulted.
 /// </para>
 /// <para>
 /// Aggregation combines <em>distinct sources</em> — children that differ in who published the rate — for resilience and
-/// coverage, and is orthogonal to the tiered read-through that a <see cref="CachingRateProvider" /> forms by
-/// stacking caches over a <em>single</em> source. The two nest: an aggregator child can itself be a stacked cache over
-/// a source. Reach for aggregation for fallback, an averaged rate, or per-pair routing across providers; reach for
-/// stacking to cut latency and survive restarts on one provider.
+/// coverage, and is orthogonal to the tiered read-through that a <see cref="CachingRateProvider" /> forms by stacking
+/// caches over a <em>single</em> source. The two nest: an aggregator child can itself be a stacked cache over a source.
+/// Reach for aggregation for fallback, an averaged rate, or per-pair routing across providers; reach for stacking to
+/// cut latency and survive restarts on one provider.
 /// </para>
 /// <para>
 /// To target a specific source rather than the routed result, resolve it by name through <see cref="TryGetProvider" />
@@ -36,12 +36,12 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// routing.
 /// </para>
 /// <para>
-/// When <see cref="RateAggregationOptions.RespectHistoryAvailability" /> is enabled (the default), children
-/// that advertise their history depth through <see cref="IHistoryAwareRateProvider" /> and have declared they
-/// cannot serve any part of the requested date or window are dropped from the candidate set before the strategy runs,
-/// so a priority fallback does not waste a call on a source that cannot answer. A non-aware child is treated as
-/// unbounded and always kept, and the group's own <see cref="HistoryAvailability" /> composes the most generous
-/// declaration across the children.
+/// When <see cref="RateAggregationOptions.RespectHistoryAvailability" /> is enabled (the default), children that
+/// advertise their history depth through <see cref="IHistoryAwareRateProvider" /> and have declared they cannot serve
+/// any part of the requested date or window are dropped from the candidate set before the strategy runs, so a priority
+/// fallback does not waste a call on a source that cannot answer. A non-aware child is treated as unbounded and always
+/// kept, and the group's own <see cref="HistoryAvailability" /> composes the most generous declaration across the
+/// children.
 /// </para>
 /// </remarks>
 /// <example>
@@ -173,9 +173,9 @@ public sealed class AggregatingRateProvider
     /// </summary>
     /// <value>
     /// <see cref="RateHistoryAvailability.Unbounded" /> when any child is
-    /// <see cref="RateHistoryAvailability.Unbounded" /> or does not implement
-    /// <see cref="IHistoryAwareRateProvider" /> (a non-aware child declares no floor); otherwise the child
-    /// availability whose earliest available date, evaluated against the current date, reaches furthest back.
+    /// <see cref="RateHistoryAvailability.Unbounded" /> or does not implement <see cref="IHistoryAwareRateProvider" />
+    /// (a non-aware child declares no floor); otherwise the child availability whose earliest available date, evaluated
+    /// against the current date, reaches furthest back.
     /// </value>
     public RateHistoryAvailability HistoryAvailability
     {

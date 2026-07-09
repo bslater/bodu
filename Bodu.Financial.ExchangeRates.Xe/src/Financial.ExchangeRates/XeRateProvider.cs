@@ -38,9 +38,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
 /// <see cref="HttpClient" /> configured with the options' <see cref="WebRateProviderOptions.UserAgent" /> and
-/// <see cref="WebRateProviderOptions.HttpTimeout" />, disposing it with the provider. The constructor that
-/// takes an <see cref="HttpClient" /> uses the caller-supplied client as-is, leaving its configuration and lifetime to
-/// the caller; this is the path the dependency-injection package uses.
+/// <see cref="WebRateProviderOptions.HttpTimeout" />, disposing it with the provider. The constructor that takes an
+/// <see cref="HttpClient" /> uses the caller-supplied client as-is, leaving its configuration and lifetime to the
+/// caller; this is the path the dependency-injection package uses.
 /// </para>
 /// </remarks>
 /// <example>
@@ -60,8 +60,8 @@ public sealed class XeRateProvider
     public const string ProviderName = "XE";
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XeRateProvider" /> class backed by an
-    /// <see cref="HttpClient" /> the provider creates and owns, configured from the supplied options.
+    /// Initializes a new instance of the <see cref="XeRateProvider" /> class backed by an <see cref="HttpClient" /> the
+    /// provider creates and owns, configured from the supplied options.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">
@@ -81,8 +81,8 @@ public sealed class XeRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XeRateProvider" /> class backed by the XE endpoint, queried
-    /// with the caller-supplied HTTP client. The caller owns the client's configuration and lifetime.
+    /// Initializes a new instance of the <see cref="XeRateProvider" /> class backed by the XE endpoint, queried with
+    /// the caller-supplied HTTP client. The caller owns the client's configuration and lifetime.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue charting-rates and token-acquisition requests.</param>
     /// <param name="options">The provider options.</param>
@@ -103,8 +103,8 @@ public sealed class XeRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XeRateProvider" /> class backed by an explicit pair source,
-    /// used for testing.
+    /// Initializes a new instance of the <see cref="XeRateProvider" /> class backed by an explicit pair source, used
+    /// for testing.
     /// </summary>
     /// <param name="source">The pair source.</param>
     /// <param name="options">The provider options.</param>
@@ -122,8 +122,8 @@ public sealed class XeRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XeRateProvider" /> class from an owned client, building the
-    /// source over it before forwarding to the core constructor.
+    /// Initializes a new instance of the <see cref="XeRateProvider" /> class from an owned client, building the source
+    /// over it before forwarding to the core constructor.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="ownedHttpClient">The HTTP client this provider creates and owns.</param>
@@ -135,8 +135,8 @@ public sealed class XeRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XeRateProvider" /> class, the shared core all public and
-    /// internal constructors funnel through.
+    /// Initializes a new instance of the <see cref="XeRateProvider" /> class, the shared core all public and internal
+    /// constructors funnel through.
     /// </summary>
     /// <param name="source">The pair source.</param>
     /// <param name="options">The provider options.</param>

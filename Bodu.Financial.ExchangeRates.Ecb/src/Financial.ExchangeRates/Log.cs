@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Log.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Provides the source-generated, allocation-free logging messages emitted by <see cref="EcbRateProvider" />
-/// while downloading and serving ECB euro reference rates.
+/// Provides the source-generated, allocation-free logging messages emitted by <see cref="EcbRateProvider" /> while
+/// downloading and serving ECB euro reference rates.
 /// </summary>
 /// <remarks>
 /// The messages are produced by the <see cref="LoggerMessageAttribute" /> source generator, so a disabled or

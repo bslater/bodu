@@ -7,13 +7,13 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Builds the set of named, individually cached children an <see cref="AggregatingRateProvider" /> groups,
-/// together with its default strategy and per-currency-pair routing.
+/// Builds the set of named, individually cached children an <see cref="AggregatingRateProvider" /> groups, together
+/// with its default strategy and per-currency-pair routing.
 /// </summary>
 /// <remarks>
-/// Each child is registered as a keyed <see cref="IDatedRateProvider" /> (and resolvable by name through the
-/// service catalog) wrapped in its own <see cref="CachingRateProvider" />, so a specific source can be obtained
-/// directly while the aggregator applies the configured strategy and routing.
+/// Each child is registered as a keyed <see cref="IDatedRateProvider" /> (and resolvable by name through the service
+/// catalog) wrapped in its own <see cref="CachingRateProvider" />, so a specific source can be obtained directly while
+/// the aggregator applies the configured strategy and routing.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[

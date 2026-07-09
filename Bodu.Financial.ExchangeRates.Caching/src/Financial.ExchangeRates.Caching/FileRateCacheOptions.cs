@@ -31,14 +31,14 @@ public class FileRateCacheOptions
     /// and whether the rows are split across files by date.
     /// </summary>
     /// <value>
-    /// The file layout. Defaults to <see cref="RateCacheFileLayout.SingleFile" />, which stores a pair's whole
-    /// history in one file under a per-provider folder.
+    /// The file layout. Defaults to <see cref="RateCacheFileLayout.SingleFile" />, which stores a pair's whole history
+    /// in one file under a per-provider folder.
     /// </value>
     /// <remarks>
     /// Use a built-in partitioned layout — <see cref="RateCacheFileLayout.Yearly" />,
-    /// <see cref="RateCacheFileLayout.Monthly" />, or <see cref="RateCacheFileLayout.Daily" /> — to
-    /// split a pair's rows into per-period files, or <see cref="RateCacheFileLayout.Create" /> to supply custom
-    /// folder and file-name rules and a custom <see cref="RateCachePartitionStrategy" />.
+    /// <see cref="RateCacheFileLayout.Monthly" />, or <see cref="RateCacheFileLayout.Daily" /> — to split a pair's rows
+    /// into per-period files, or <see cref="RateCacheFileLayout.Create" /> to supply custom folder and file-name rules
+    /// and a custom <see cref="RateCachePartitionStrategy" />.
     /// </remarks>
     public RateCacheFileLayout Layout { get; set; } = RateCacheFileLayout.SingleFile;
 

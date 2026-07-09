@@ -9,8 +9,8 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IRateAggregationStrategy" /> that returns the arithmetic mean of every candidate that can
-/// resolve the request, tagged with a synthetic provider label.
+/// An <see cref="IRateAggregationStrategy" /> that returns the arithmetic mean of every candidate that can resolve the
+/// request, tagged with a synthetic provider label.
 /// </summary>
 /// <remarks>
 /// <para>

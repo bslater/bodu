@@ -27,15 +27,11 @@ internal static class DefaultNotableDateAlgorithms
     /// <summary>The UTC offset, in hours, of China Standard Time, used to date Qingming.</summary>
     private const double ChinaStandardTimeOffset = 8.0;
 
-    /// <summary>The pre-seeded registry of every built-in algorithm, keyed by algorithm key.</summary>
-    private static readonly INotableDateAlgorithmRegistry s_registry = Build();
-
     /// <summary>
     /// Gets the pre-seeded registry of every built-in algorithm.
     /// </summary>
     /// <value>The built-in algorithm registry.</value>
-    public static INotableDateAlgorithmRegistry Registry =>
-        s_registry;
+    public static INotableDateAlgorithmRegistry Registry { get; } = Build();
 
     /// <summary>
     /// Builds the registry, registering every built-in algorithm under its key.

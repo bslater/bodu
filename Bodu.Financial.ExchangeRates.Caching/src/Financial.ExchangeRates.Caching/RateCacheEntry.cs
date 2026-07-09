@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// The mutable serialization shape of one cached rate row, distinct from the public <see cref="CachedRate" />
-/// value so the on-disk format can evolve independently of the in-memory contract.
+/// The mutable serialization shape of one cached rate row, distinct from the public <see cref="CachedRate" /> value so
+/// the on-disk format can evolve independently of the in-memory contract.
 /// </summary>
 public sealed class RateCacheEntry
 {

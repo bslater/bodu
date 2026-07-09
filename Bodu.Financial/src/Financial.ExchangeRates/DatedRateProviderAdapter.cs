@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Adapts an <see cref="IDatedRateProvider" /> to the simpler timeless <see cref="IRateProvider" />
-/// surface by pinning a fixed valuation date and lookup options.
+/// Adapts an <see cref="IDatedRateProvider" /> to the simpler timeless <see cref="IRateProvider" /> surface by pinning
+/// a fixed valuation date and lookup options.
 /// </summary>
 /// <remarks>
 /// <para>

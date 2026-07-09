@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileRateCacheBase{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,9 +18,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </typeparam>
 /// <remarks>
 /// <para>
-/// A cache instance is bound to one provider, and the <see cref="FileRateCacheOptions.Layout" /> decides where
-/// each pair's rows are stored: a single file per pair (the default), or — when the layout is partitioned — one file
-/// per calendar period under a per-pair folder. Reads and writes are best-effort: any <see cref="IOException" /> or
+/// A cache instance is bound to one provider, and the <see cref="FileRateCacheOptions.Layout" /> decides where each
+/// pair's rows are stored: a single file per pair (the default), or — when the layout is partitioned — one file per
+/// calendar period under a per-pair folder. Reads and writes are best-effort: any <see cref="IOException" /> or
 /// <see cref="UnauthorizedAccessException" /> surfaces as an empty read result or a skipped write, so a storage problem
 /// never breaks rate retrieval. Derived types are expected to treat malformed content the same way by returning an
 /// empty list from <see cref="Deserialize" />.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateCacheDirectoryContext.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public readonly record struct RateCacheDirectoryContext
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RateCacheDirectoryContext" /> class. Initializes a new
-    /// instance of the <see cref="RateCacheDirectoryContext" /> struct.
+    /// Initializes a new instance of the <see cref="RateCacheDirectoryContext" /> class. Initializes a new instance of
+    /// the <see cref="RateCacheDirectoryContext" /> struct.
     /// </summary>
     /// <param name="root">The resolved cache root directory.</param>
     /// <param name="provider">The provider the cache is bound to.</param>

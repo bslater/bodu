@@ -9,8 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// The default <see cref="IAggregatedRateBuilder" />, accumulating named children, the default strategy, and
-/// per-pair routes in the order they are configured.
+/// The default <see cref="IAggregatedRateBuilder" />, accumulating named children, the default strategy, and per-pair
+/// routes in the order they are configured.
 /// </summary>
 internal sealed class AggregatedRateBuilder
     : IAggregatedRateBuilder

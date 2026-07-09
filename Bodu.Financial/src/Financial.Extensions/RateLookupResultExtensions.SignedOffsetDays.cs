@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateLookupResultExtensions.SignedOffsetDays.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,8 +15,8 @@ public static partial class RateLookupResultExtensions
     extension(RateLookupResult result)
     {
         /// <summary>
-        /// Gets the signed difference, in days, from <see cref="RateLookupResult.RequestedDate" /> to the
-        /// resolved observation date.
+        /// Gets the signed difference, in days, from <see cref="RateLookupResult.RequestedDate" /> to the resolved
+        /// observation date.
         /// </summary>
         /// <value>
         /// A negative value when the resolved observation predates the request (PreviousOnOrBefore fallback), a

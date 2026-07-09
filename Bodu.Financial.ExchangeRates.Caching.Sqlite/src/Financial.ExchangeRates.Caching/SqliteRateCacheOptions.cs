@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteRateCacheOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,9 +9,9 @@ using Microsoft.Data.Sqlite;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Configures a SQLite-backed <see cref="IRateCache" />: the provider inherited from
-/// <see cref="RateCacheOptions" /> together with the location of the SQLite database its rates and coverage
-/// windows are persisted in, and the connection-level concurrency settings applied on open.
+/// Configures a SQLite-backed <see cref="IRateCache" />: the provider inherited from <see cref="RateCacheOptions" />
+/// together with the location of the SQLite database its rates and coverage windows are persisted in, and the
+/// connection-level concurrency settings applied on open.
 /// </summary>
 /// <remarks>
 /// <para>

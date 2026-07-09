@@ -14,12 +14,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Both the immutable storage backing <see cref="RateSeries" /> and any mutable buffer can route through this
-/// helper so that the previous/next/nearest selection rules — including the tie-break semantics encoded in
-/// <see cref="RateDateResolution.NearestPreferPrevious" /> and
-/// <see cref="RateDateResolution.NearestPreferNext" /> — have a single source of truth. The helper operates on
-/// a <see cref="ReadOnlySpan{T}" /> of day numbers so callers can pass either a full backing array or the active prefix
-/// of a growing buffer without allocation.
+/// Both the immutable storage backing <see cref="RateSeries" /> and any mutable buffer can route through this helper so
+/// that the previous/next/nearest selection rules — including the tie-break semantics encoded in
+/// <see cref="RateDateResolution.NearestPreferPrevious" /> and <see cref="RateDateResolution.NearestPreferNext" /> —
+/// have a single source of truth. The helper operates on a <see cref="ReadOnlySpan{T}" /> of day numbers so callers can
+/// pass either a full backing array or the active prefix of a growing buffer without allocation.
 /// </para>
 /// </remarks>
 internal static class RateDateSearch
@@ -39,8 +38,8 @@ internal static class RateDateSearch
     /// <returns><see langword="true" /> if a candidate was selected; otherwise <see langword="false" />.</returns>
     /// <remarks>
     /// <para>
-    /// For <see cref="RateDateResolution.Exact" /> the caller should perform the exact-hit check itself before
-    /// calling; this helper returns <see langword="false" /> for that value because no fallback candidate is permitted.
+    /// For <see cref="RateDateResolution.Exact" /> the caller should perform the exact-hit check itself before calling;
+    /// this helper returns <see langword="false" /> for that value because no fallback candidate is permitted.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

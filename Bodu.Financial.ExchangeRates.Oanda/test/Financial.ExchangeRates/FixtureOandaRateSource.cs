@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixtureOandaRateSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// An <see cref="IPairRateSource{TSeries}" /> that parses embedded JSON fixtures instead of issuing network
-/// requests, mapping currency pairs to fixture files and recording how many pairs it served.
+/// An <see cref="IPairRateSource{TSeries}" /> that parses embedded JSON fixtures instead of issuing network requests,
+/// mapping currency pairs to fixture files and recording how many pairs it served.
 /// </summary>
 internal sealed class FixtureOandaRateSource
     : IPairRateSource<OandaSeriesInfo>

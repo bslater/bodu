@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GatedYahooRateSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// An <see cref="IPairRateSource{TSeries}" /> whose fetch blocks until released, so a test can hold several
-/// concurrent callers inside the source at once and prove the provider coalesces them into a single fetch.
+/// An <see cref="IPairRateSource{TSeries}" /> whose fetch blocks until released, so a test can hold several concurrent
+/// callers inside the source at once and prove the provider coalesces them into a single fetch.
 /// </summary>
 internal sealed class GatedYahooRateSource
     : IPairRateSource<YahooSeriesInfo>

@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Represents the normalized result an <see cref="IPairRateSource{TSeries}" /> produces for one fetch: the
-/// resolved currency pair, its dated observations, and the source-specific series metadata.
+/// Represents the normalized result an <see cref="IPairRateSource{TSeries}" /> produces for one fetch: the resolved
+/// currency pair, its dated observations, and the source-specific series metadata.
 /// </summary>
 /// <typeparam name="TSeries">The source-specific series-metadata type describing the fetched series.</typeparam>
 /// <param name="Pair">The resolved currency pair the observations quote.</param>

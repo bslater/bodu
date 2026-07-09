@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Provides the source-generated, allocation-free logging messages emitted by
-/// <see cref="CachingRateProviderBase" /> while serving rates from the cache and delegating to wrapped sources.
+/// Provides the source-generated, allocation-free logging messages emitted by <see cref="CachingRateProviderBase" />
+/// while serving rates from the cache and delegating to wrapped sources.
 /// </summary>
 /// <remarks>
 /// The messages are produced by the <see cref="LoggerMessageAttribute" /> source generator, so a disabled or

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HistoryAwareCountingProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,10 +7,10 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IDatedRateProvider" /> test double that advertises a settable
-/// <see cref="RateHistoryAvailability" /> through <see cref="IHistoryAwareRateProvider" /> while
-/// delegating to a fixed in-memory book and counting every lookup, so tests can assert both what the decorators forward
-/// and when they avoided calling a source outside its advertised history.
+/// An <see cref="IDatedRateProvider" /> test double that advertises a settable <see cref="RateHistoryAvailability" />
+/// through <see cref="IHistoryAwareRateProvider" /> while delegating to a fixed in-memory book and counting every
+/// lookup, so tests can assert both what the decorators forward and when they avoided calling a source outside its
+/// advertised history.
 /// </summary>
 internal sealed class HistoryAwareCountingProvider
     : IDatedRateProvider, IHistoryAwareRateProvider

@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Decides how an <see cref="AggregatingRateProvider" /> combines the results of an ordered set of candidate
-/// providers into a single answer.
+/// Decides how an <see cref="AggregatingRateProvider" /> combines the results of an ordered set of candidate providers
+/// into a single answer.
 /// </summary>
 /// <remarks>
 /// This is the extensibility seam of the aggregation design: ship strategies such as

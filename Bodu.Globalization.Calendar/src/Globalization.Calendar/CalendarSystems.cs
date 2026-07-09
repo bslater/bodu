@@ -129,16 +129,6 @@ internal static class CalendarSystems
     }
 
     /// <summary>
-    /// Wraps an optional date as a zero- or one-element read-only list.
-    /// </summary>
-    /// <param name="date">The date, or <see langword="null" />.</param>
-    /// <returns>
-    /// An empty list when <paramref name="date" /> is <see langword="null" />; otherwise a single-element list.
-    /// </returns>
-    private static IReadOnlyList<DateOnly> Single(DateOnly? date) =>
-        date is DateOnly value ? new[] { value } : [];
-
-    /// <summary>
     /// Resolves a Hebrew month alias to its one-based month number for the supplied leap-year state.
     /// </summary>
     /// <param name="alias">The Hebrew month alias whose position shifts in leap years.</param>
@@ -162,6 +152,16 @@ internal static class CalendarSystems
             _ => -1,
         };
     }
+
+    /// <summary>
+    /// Wraps an optional date as a zero- or one-element read-only list.
+    /// </summary>
+    /// <param name="date">The date, or <see langword="null" />.</param>
+    /// <returns>
+    /// An empty list when <paramref name="date" /> is <see langword="null" />; otherwise a single-element list.
+    /// </returns>
+    private static IReadOnlyList<DateOnly> Single(DateOnly? date) =>
+        date is DateOnly value ? new[] { value } : [];
 
     /// <summary>
     /// Projects a non-Gregorian month and day by treating the Gregorian year as the calendar year, used when neither a

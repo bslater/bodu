@@ -10,8 +10,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// A caching provider that wraps a single inner <see cref="IDatedRateProvider" /> over a single-provider
-/// <see cref="IRateCache" />, serving fresh rates from the cache and delegating to the inner provider only on a
-/// miss.
+/// <see cref="IRateCache" />, serving fresh rates from the cache and delegating to the inner provider only on a miss.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -47,8 +46,8 @@ public sealed class CachingRateProvider
     private readonly IDatedRateProvider _inner;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CachingRateProvider" /> class wrapping
-    /// <paramref name="inner" /> over the supplied <paramref name="cache" />.
+    /// Initializes a new instance of the <see cref="CachingRateProvider" /> class wrapping <paramref name="inner" />
+    /// over the supplied <paramref name="cache" />.
     /// </summary>
     /// <param name="inner">The inner provider consulted on a cache miss.</param>
     /// <param name="cache">The single-provider cache that serves fresh rates and stores resolved observations.</param>

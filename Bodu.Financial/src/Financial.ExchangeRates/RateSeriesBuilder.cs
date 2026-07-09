@@ -9,16 +9,15 @@ using System.Diagnostics;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Provides a mutable construction and editing surface for an <see cref="RateSeries" />, maintaining strictly
-/// ascending unique observation dates and strictly positive rates while supporting single-observation edits and bulk
-/// import.
+/// Provides a mutable construction and editing surface for an <see cref="RateSeries" />, maintaining strictly ascending
+/// unique observation dates and strictly positive rates while supporting single-observation edits and bulk import.
 /// </summary>
 /// <remarks>
 /// <para>
 /// The builder is the natural entry point for assembling rate observations imperatively (manual data entry, streaming
 /// import, merge with prior history). After mutations complete, call <see cref="ToSeries" /> to produce an immutable
-/// <see cref="RateSeries" /> snapshot for use in production lookup. Further mutations on the builder do not
-/// affect previously produced snapshots, and vice versa.
+/// <see cref="RateSeries" /> snapshot for use in production lookup. Further mutations on the builder do not affect
+/// previously produced snapshots, and vice versa.
 /// </para>
 /// <para>
 /// Instances are not thread-safe; concurrent mutation requires external synchronisation.
@@ -50,8 +49,8 @@ public sealed class RateSeriesBuilder
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RateSeriesBuilder" /> class seeded from the supplied
-    /// immutable series.
+    /// Initializes a new instance of the <see cref="RateSeriesBuilder" /> class seeded from the supplied immutable
+    /// series.
     /// </summary>
     /// <param name="series">The series to copy observations from.</param>
     /// <exception cref="ArgumentNullException">
@@ -85,9 +84,9 @@ public sealed class RateSeriesBuilder
     /// </summary>
     /// <value>The fetch instant when known; otherwise <see langword="null" />.</value>
     /// <remarks>
-    /// The value is carried verbatim onto the <see cref="RateSeries" /> produced by <see cref="ToSeries" /> and
-    /// from there onto every <see cref="ExchangeRate" /> the series materializes. Editing the observation buffer does
-    /// not change it; assign it explicitly to stamp a fresh load instant.
+    /// The value is carried verbatim onto the <see cref="RateSeries" /> produced by <see cref="ToSeries" /> and from
+    /// there onto every <see cref="ExchangeRate" /> the series materializes. Editing the observation buffer does not
+    /// change it; assign it explicitly to stamp a fresh load instant.
     /// </remarks>
     public DateTimeOffset? FetchedAtUtc { get; set; }
 
@@ -235,8 +234,8 @@ public sealed class RateSeriesBuilder
     }
 
     /// <summary>
-    /// Tuple-shaped overload of <see cref="AddRange(IEnumerable{RateObservation})" /> for import sources that
-    /// hand the builder raw <c>(date, rate)</c> pairs.
+    /// Tuple-shaped overload of <see cref="AddRange(IEnumerable{RateObservation})" /> for import sources that hand the
+    /// builder raw <c>(date, rate)</c> pairs.
     /// </summary>
     /// <param name="rates">The observations to insert.</param>
     /// <exception cref="ArgumentNullException">
@@ -255,8 +254,8 @@ public sealed class RateSeriesBuilder
     }
 
     /// <summary>
-    /// Tuple-shaped overload of <see cref="UpsertRange(IEnumerable{RateObservation})" /> for import sources
-    /// that hand the builder raw <c>(date, rate)</c> pairs.
+    /// Tuple-shaped overload of <see cref="UpsertRange(IEnumerable{RateObservation})" /> for import sources that hand
+    /// the builder raw <c>(date, rate)</c> pairs.
     /// </summary>
     /// <param name="rates">The observations to merge.</param>
     /// <exception cref="ArgumentNullException">
