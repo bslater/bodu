@@ -49,7 +49,7 @@ internal sealed partial class YamlParser
         // The walk is an explicit-stack post-order traversal rather than native recursion: chained aliases can make
         // the materialized tree far deeper than the parser's physical nesting clamp, so a recursive counter would
         // itself risk a StackOverflowException on a long alias chain.
-        var counts = new long[_rows.Count];
+        long[] counts = new long[_rows.Count];
         var nodes = new Stack<int>();
         var nextChild = new Stack<int>();
         var accumulated = new Stack<long>();
@@ -287,7 +287,9 @@ internal sealed partial class YamlParser
         int next = _rows[child].NextSibling;
 
         if (previous < 0)
+        {
             p.FirstChild = next;
+        }
         else
         {
             YamlReaderRow prevRow = _rows[previous];
@@ -424,17 +426,17 @@ internal sealed partial class YamlParser
                     break;
 
                 case "float":
-                    (YamlValueKind Kind, long Bits) resolved = ResolveTagged(text);
-                    if (resolved.Kind == YamlValueKind.Float)
+                    (YamlValueKind Kind, long Bits) = ResolveTagged(text);
+                    if (Kind == YamlValueKind.Float)
                     {
                         r.ValueKind = YamlValueKind.Float;
-                        r.ScalarBits = resolved.Bits;
+                        r.ScalarBits = Bits;
                     }
-                    else if (resolved.Kind == YamlValueKind.Integer)
+                    else if (Kind == YamlValueKind.Integer)
                     {
                         // An integral literal under an explicit !!float tag widens to a floating-point value.
                         r.ValueKind = YamlValueKind.Float;
-                        r.ScalarBits = BitConverter.DoubleToInt64Bits(resolved.Bits);
+                        r.ScalarBits = BitConverter.DoubleToInt64Bits(Bits);
                     }
                     else
                     {

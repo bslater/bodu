@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Financial.ExchangeRates;
-
 using Microsoft.Extensions.Logging;
+
+namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Configures how the <see cref="BoeExchangeRateProvider" /> downloads, caches, and interprets Bank of England daily

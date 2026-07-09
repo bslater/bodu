@@ -694,7 +694,7 @@ internal sealed partial class YamlParser
         }
 
         // Re-attach trailing line breaks for chomping: one for the final content line plus any trailing blanks.
-        string withTrailing = sb.ToString() + new string('\n', pending + (any ? 1 : 0));
+        string withTrailing = sb + new string('\n', pending + (any ? 1 : 0));
         return ApplyChomping(withTrailing, chomping);
     }
 

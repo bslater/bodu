@@ -197,7 +197,7 @@ public readonly partial struct BigDecimal
         var ten = new BigInteger(10);
         while (scale > 0)
         {
-            BigInteger quotient = BigInteger.DivRem(mantissa, ten, out BigInteger remainder);
+            var quotient = BigInteger.DivRem(mantissa, ten, out BigInteger remainder);
             if (!remainder.IsZero)
                 break;
 

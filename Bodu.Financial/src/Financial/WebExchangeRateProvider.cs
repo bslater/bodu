@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WebExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -66,15 +66,20 @@ namespace Bodu.Financial;
 /// </example>
 /// </remarks>
 public abstract class WebExchangeRateProvider
-    : IDatedExchangeRateProvider, IExchangeRateProvider, IExchangeRatePairLoader, IDisposable
+    : IDatedExchangeRateProvider, IExchangeRateProvider, IExchangeRatePairLoader, IHistoryAwareExchangeRateProvider, IDisposable
 {
     /// <summary>The tolerance, in days, used to resolve the most recent rate for the undated surfaces; large enough to reach any rate fetched into the store from the current date.</summary>
     private const int LatestRateToleranceDays = 100_000;
 
-    /// <summary>Guards mutation of the accumulator and the snapshot fields, and is shared with derived types for their own coverage and series indexes so a fetch publishes atomically.</summary>
+    /// <summary>
+    /// Guards mutation of the accumulator and the snapshot fields, and is shared with derived types for their own
+    /// coverage and series indexes so a fetch publishes atomically.
+    /// </summary>
     private readonly object _gate = new();
 
-    /// <summary>The accumulator into which each fetched observation is upserted.</summary>
+    /// <summary>
+    /// The accumulator into which each fetched observation is upserted.
+    /// </summary>
     private readonly ExchangeRateTableBuilder _builder = new();
 
     /// <summary>The time source used to resolve the current instant for the undated surfaces.</summary>
@@ -83,7 +88,11 @@ public abstract class WebExchangeRateProvider
     /// <summary>The HTTP client owned by this provider, disposed with it; <see langword="null" /> when the client was supplied by the caller and its lifetime is the caller's responsibility.</summary>
     private readonly HttpClient? _ownedHttpClient;
 
-    /// <summary>Coalesces concurrent loads keyed by a string so callers requesting the same endpoint window share a single in-flight fetch rather than each issuing a duplicate request. Used by derived types through <see cref="LoadCoalescedAsync(string, Func{CancellationToken, Task}, CancellationToken)" />.</summary>
+    /// <summary>
+    /// Coalesces concurrent loads keyed by a string so callers requesting the same endpoint window share a single
+    /// in-flight fetch rather than each issuing a duplicate request. Used by derived types through
+    /// <see cref="LoadCoalescedAsync(string, Func{CancellationToken, Task}, CancellationToken)" />.
+    /// </summary>
     private readonly SingleFlightCoordinator<string> _loadCoordinator = new();
 
     /// <summary>The current immutable book backing range queries; replaced under <see cref="_gate" /> after each fetch.</summary>

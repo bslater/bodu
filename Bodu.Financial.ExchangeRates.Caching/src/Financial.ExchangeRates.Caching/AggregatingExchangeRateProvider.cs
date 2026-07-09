@@ -34,6 +34,14 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// (or, under dependency injection, a keyed service); the lookup methods always apply the configured strategy and
 /// routing.
 /// </para>
+/// <para>
+/// When <see cref="ExchangeRateAggregationOptions.RespectHistoryAvailability" /> is enabled (the default), children
+/// that advertise their history depth through <see cref="IHistoryAwareExchangeRateProvider" /> and have declared they
+/// cannot serve any part of the requested date or window are dropped from the candidate set before the strategy runs,
+/// so a priority fallback does not waste a call on a source that cannot answer. A non-aware child is treated as
+/// unbounded and always kept, and the group's own <see cref="HistoryAvailability" /> composes the most generous
+/// declaration across the children.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -68,7 +76,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </code>
 /// </example>
 public sealed class AggregatingExchangeRateProvider
-    : IDatedExchangeRateProvider, IExchangeRateProvider
+    : IDatedExchangeRateProvider, IExchangeRateProvider, IHistoryAwareExchangeRateProvider
 {
     /// <summary>The synthetic provider name reported for a same-currency identity rate.</summary>
     private const string IdentityProvider = "Identity";
@@ -159,6 +167,47 @@ public sealed class AggregatingExchangeRateProvider
     public IReadOnlyCollection<string> ProviderNames => _byName.Keys;
 
     /// <summary>
+    /// Gets the history depth this group advertises: the most generous availability across the grouped children,
+    /// because a date any single child can serve is a date the group can serve.
+    /// </summary>
+    /// <value>
+    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" /> when any child is
+    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" /> or does not implement
+    /// <see cref="IHistoryAwareExchangeRateProvider" /> (a non-aware child declares no floor); otherwise the child
+    /// availability whose earliest available date, evaluated against the current date, reaches furthest back.
+    /// </value>
+    public ExchangeRateHistoryAvailability HistoryAvailability
+    {
+        get
+        {
+            var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
+
+            ExchangeRateHistoryAvailability? mostGenerous = null;
+            DateOnly? mostGenerousEarliest = null;
+
+            foreach (NamedDatedExchangeRateProvider child in _children)
+            {
+                if (child.Provider is not IHistoryAwareExchangeRateProvider aware)
+                    return ExchangeRateHistoryAvailability.Unbounded;
+
+                ExchangeRateHistoryAvailability availability = aware.HistoryAvailability;
+                DateOnly? earliest = availability.GetEarliestAvailable(today);
+                if (earliest is null)
+                    return ExchangeRateHistoryAvailability.Unbounded;
+
+                if (mostGenerousEarliest is null || earliest.Value < mostGenerousEarliest.Value)
+                {
+                    mostGenerous = availability;
+                    mostGenerousEarliest = earliest;
+                }
+            }
+
+            // The constructor rejects an empty child set, so at least one child contributed a bounded availability.
+            return mostGenerous!.Value;
+        }
+    }
+
+    /// <summary>
     /// Attempts to resolve a grouped child by name, for callers that need a specific source rather than the routed
     /// result.
     /// </summary>
@@ -224,6 +273,7 @@ public sealed class AggregatingExchangeRateProvider
         }
 
         (NamedDatedExchangeRateProvider[] candidates, IExchangeRateAggregationStrategy strategy) = ResolveRoute(pair, options.AllowInverse);
+        candidates = FilterCandidatesForDate(candidates, date, options);
 
         if (_logger.IsEnabled(_options.RouteSelectedLogLevel))
         {
@@ -254,6 +304,7 @@ public sealed class AggregatingExchangeRateProvider
 
         ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         (NamedDatedExchangeRateProvider[] candidates, IExchangeRateAggregationStrategy strategy) = ResolveRoute(pair, allowInverse: false);
+        candidates = FilterCandidatesForRange(candidates, endDate);
 
         if (_logger.IsEnabled(_options.RouteSelectedLogLevel))
         {
@@ -278,6 +329,7 @@ public sealed class AggregatingExchangeRateProvider
 
         ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         (NamedDatedExchangeRateProvider[] candidates, IExchangeRateAggregationStrategy strategy) = ResolveRoute(pair, allowInverse: false);
+        candidates = FilterCandidatesForRange(candidates, endDate);
 
         if (_logger.IsEnabled(_options.RouteSelectedLogLevel))
         {
@@ -313,6 +365,76 @@ public sealed class AggregatingExchangeRateProvider
             return (ResolveNames(_options.DefaultProviderOrder), _options.DefaultStrategy);
 
         return (_children, _options.DefaultStrategy);
+    }
+
+    /// <summary>
+    /// Drops candidates whose advertised history says they cannot resolve any date the lookup could reach, so a doomed
+    /// child is never consulted by the strategy.
+    /// </summary>
+    /// <param name="candidates">The routed candidates, in order.</param>
+    /// <param name="date">The requested date.</param>
+    /// <param name="options">The lookup rules to apply.</param>
+    /// <returns>
+    /// The candidates that could serve the lookup, in their original order; the input array unchanged when the filter
+    /// is disabled or nothing was dropped.
+    /// </returns>
+    private NamedDatedExchangeRateProvider[] FilterCandidatesForDate(NamedDatedExchangeRateProvider[] candidates, DateOnly date, ExchangeRateLookupOptions options)
+    {
+        if (!_options.RespectHistoryAvailability)
+            return candidates;
+
+        DateOnly latestReachable = HistoryAvailabilityGuard.LatestReachableDate(date, options);
+        return FilterCandidates(candidates, latestReachable);
+    }
+
+    /// <summary>
+    /// Drops candidates whose advertised history says they cannot serve any part of the requested window; a child whose
+    /// history merely clips the window's start is kept, since strategies already tolerate partial data.
+    /// </summary>
+    /// <param name="candidates">The routed candidates, in order.</param>
+    /// <param name="endDate">The inclusive last date of the requested window.</param>
+    /// <returns>
+    /// The candidates whose advertised history overlaps the window, in their original order; the input array unchanged
+    /// when the filter is disabled or nothing was dropped.
+    /// </returns>
+    private NamedDatedExchangeRateProvider[] FilterCandidatesForRange(NamedDatedExchangeRateProvider[] candidates, DateOnly endDate) =>
+        _options.RespectHistoryAvailability
+            ? FilterCandidates(candidates, endDate)
+            : candidates;
+
+    /// <summary>
+    /// Keeps the candidates whose advertised earliest available date is on or before the latest date the request can
+    /// reach. A non-aware or unbounded child is always kept.
+    /// </summary>
+    /// <param name="candidates">The routed candidates, in order.</param>
+    /// <param name="latestReachable">The latest date the request could resolve or cover.</param>
+    /// <returns>The surviving candidates, in their original order.</returns>
+    private NamedDatedExchangeRateProvider[] FilterCandidates(NamedDatedExchangeRateProvider[] candidates, DateOnly latestReachable)
+    {
+        var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
+
+        List<NamedDatedExchangeRateProvider>? kept = null;
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            DateOnly? earliest = candidates[i].Provider is IHistoryAwareExchangeRateProvider aware
+                ? aware.HistoryAvailability.GetEarliestAvailable(today)
+                : null;
+            bool available = earliest is null || earliest.Value <= latestReachable;
+
+            if (available)
+            {
+                kept?.Add(candidates[i]);
+            }
+            else if (kept is null)
+            {
+                // First drop: materialize the survivors seen so far and continue filtering into the list.
+                kept = new List<NamedDatedExchangeRateProvider>(candidates.Length - 1);
+                for (int j = 0; j < i; j++)
+                    kept.Add(candidates[j]);
+            }
+        }
+
+        return kept is null ? candidates : [.. kept];
     }
 
     /// <summary>

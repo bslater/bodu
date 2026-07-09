@@ -394,8 +394,7 @@ public static partial class Ini
 
             if (key.Length == 0)
                 Ini.ThrowMissingKey(_lineNumber);
-
-            if (lookup.TryGetValue(key, out IniEntry? existing))
+            if (lookup.TryGetValue(key, out _))
             {
                 switch (_options.DuplicateKeyBehavior)
                 {

@@ -218,6 +218,45 @@ IReadOnlyList<ExchangeRate> january =
 > never mistaken for proof that every interior day was fetched — the distinction a
 > [`DateRangeCoverage`](xref:Bodu.Financial.DateRangeCoverage) makes explicit.
 
+### Respecting advertised history
+
+Every shipped provider [advertises how far back it can serve rates](exchange-rate-providers.md)
+through [`HistoryAvailability`](xref:Bodu.Financial.WebExchangeRateProvider.HistoryAvailability),
+and the caching decorator consumes that declaration by default
+([`RespectHistoryAvailability`](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateOptions.RespectHistoryAvailability)):
+when the inner provider implements
+[`IHistoryAwareExchangeRateProvider`](xref:Bodu.Financial.IHistoryAwareExchangeRateProvider),
+misses for dates the source has declared unavailable are not forwarded.
+
+- **Single-date lookups** outside the advertised history surface as an ordinary
+  miss (`TryGetRate` returns `false`; the throwing surfaces raise the usual
+  `KeyNotFoundException`) without the inner provider being called. Forward-resolving
+  rules are honoured: a request just before the advertised floor whose
+  `NextOnOrAfter`/`Nearest` tolerance reaches back inside it is still delegated.
+- **Range fetches** that start before the advertised earliest date are issued
+  from that date instead, and a window lying entirely before it is not fetched at
+  all. In both cases coverage is recorded over the **whole requested window**, so
+  the unavailable prefix becomes the covered-with-no-rows negative cache described
+  above and is not re-asked until normal expiry.
+
+The clamp only ever removes calls the source has declared doomed — a non-aware
+inner provider is treated as unbounded and never skipped, and a date inside the
+advertised window can still miss for ordinary reasons (weekends, holidays,
+unpublished series). Skips and clamps are logged at
+[`HistoryClampLogLevel`](xref:Bodu.Financial.ExchangeRates.Caching.CachingExchangeRateOptions.HistoryClampLogLevel).
+The decorator forwards the inner's declaration as its own `HistoryAvailability`,
+so stacked caches and the aggregator see through it.
+
+The [aggregator](#grouping-providers-with-the-aggregator) applies the same idea
+at routing time (via its own
+[`RespectHistoryAvailability`](xref:Bodu.Financial.ExchangeRates.Caching.ExchangeRateAggregationOptions.RespectHistoryAvailability)):
+candidates that declared they cannot serve any part of the requested date or
+window are dropped before the strategy runs, so a priority fallback does not
+waste a call on a source that cannot answer — a shallow rolling-window source is
+skipped for deep historical dates while an unbounded central-bank source answers
+them. Its composed `HistoryAvailability` is the most generous declaration across
+the children.
+
 ## The cache cascade
 
 The cache is deliberately layered so you can plug in at whichever level fits:

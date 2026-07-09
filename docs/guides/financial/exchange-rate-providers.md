@@ -40,6 +40,14 @@ follows the configured era catalogue, and XE's window is an estimate of a
 server-determined range. The pair providers expose the value as a settable
 option; BoE adds its own options property for the same purpose.
 
+The value is also discoverable at runtime through the
+[`IHistoryAwareExchangeRateProvider`](xref:Bodu.Financial.IHistoryAwareExchangeRateProvider)
+capability interface, and the caching and aggregation decorators consume it by
+default: fetches for declared-unavailable dates are skipped or clamped rather
+than issued. See
+[Respecting advertised history](exchange-rate-caching.md#respecting-advertised-history)
+in the caching guide.
+
 ## What every provider shares
 
 Because the surface is uniform, the same code drives any provider — the only

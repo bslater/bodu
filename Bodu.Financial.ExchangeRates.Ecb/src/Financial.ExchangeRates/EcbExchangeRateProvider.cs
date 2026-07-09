@@ -188,7 +188,7 @@ public sealed class EcbExchangeRateProvider
     {
         get
         {
-            var windowDays = 0;
+            int windowDays = 0;
             foreach (EcbExchangeRateFeed feed in _options.Feeds)
             {
                 if (feed.LookbackDays is null)

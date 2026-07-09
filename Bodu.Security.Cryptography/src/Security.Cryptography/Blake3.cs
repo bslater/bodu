@@ -356,27 +356,27 @@ public sealed partial class Blake3
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static uint[] CompressScalar(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
     {
-        uint[] state = new uint[16];
-
-        // Upper half: chaining value.
-        state[0] = cv[0];
-        state[1] = cv[1];
-        state[2] = cv[2];
-        state[3] = cv[3];
-        state[4] = cv[4];
-        state[5] = cv[5];
-        state[6] = cv[6];
-        state[7] = cv[7];
-
-        // Lower half: IV words, counter split into two 32-bit halves, block length, flags.
-        state[8] = s_iv[0];
-        state[9] = s_iv[1];
-        state[10] = s_iv[2];
-        state[11] = s_iv[3];
-        state[12] = (uint)counter;
-        state[13] = (uint)(counter >> 32);
-        state[14] = blockLen;
-        state[15] = flags;
+        uint[] state =
+        [
+            // Upper half: chaining value.
+            cv[0],
+            cv[1],
+            cv[2],
+            cv[3],
+            cv[4],
+            cv[5],
+            cv[6],
+            cv[7],
+            // Lower half: IV words, counter split into two 32-bit halves, block length, flags.
+            s_iv[0],
+            s_iv[1],
+            s_iv[2],
+            s_iv[3],
+            (uint)counter,
+            (uint)(counter >> 32),
+            blockLen,
+            flags,
+        ];
 
         // Seven rounds of column then diagonal mixing, each using a permuted view of the message block.
         for (int round = 0; round < 7; round++)
