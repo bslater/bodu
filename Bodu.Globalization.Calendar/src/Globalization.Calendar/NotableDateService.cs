@@ -152,6 +152,201 @@ public sealed class NotableDateService
         return ApplySameDayCollisionPolicy(ordered);
     }
 
+    /// <inheritdoc />
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="territory" /> or <paramref name="filter" /> is <see langword="null" />.
+    /// </exception>
+    public IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory, NotableDateFilter filter) =>
+        Resolve(new DateRange(date, date), territory, filter);
+
+    /// <inheritdoc />
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="territory" /> or <paramref name="filter" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">The range start is later than its end.</exception>
+    public IReadOnlyList<NotableDate> Resolve(DateRange range, string territory, NotableDateFilter filter)
+    {
+        ThrowHelper.ThrowIfNull(filter);
+
+        return [.. Resolve(range, territory).Where(filter.Matches)];
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<string> GetSupportedTerritories() =>
+        _supportedTerritories;
+
+    /// <inheritdoc />
+    public IReadOnlyList<CalendarSystem> GetSupportedCalendars() =>
+        _supportedCalendars;
+
+    /// <summary>
+    /// Keeps the occurrences whose priority is the best in the group for the configured direction.
+    /// </summary>
+    /// <param name="group">The occurrences to filter.</param>
+    /// <param name="higherWins">Whether a higher priority value wins.</param>
+    /// <returns>The best-priority occurrences.</returns>
+    private static List<NotableDate> KeepBestPriority(List<NotableDate> group, bool higherWins)
+    {
+        int best = higherWins ? group.Max(n => n.Priority) : group.Min(n => n.Priority);
+        return [.. group.Where(n => n.Priority == best)];
+    }
+
+    /// <summary>
+    /// Computes the distinct, ordered set of territories referenced by any rule in the resource.
+    /// </summary>
+    /// <param name="resource">The resource to project.</param>
+    /// <returns>The supported territories.</returns>
+    private static IReadOnlyList<string> ComputeSupportedTerritories(NotableDateResource resource) =>
+        [.. resource.NotableDates
+            .SelectMany(definition => definition.Rules)
+            .SelectMany(rule => rule.Applicability.Territories)
+            .Where(territory => !string.IsNullOrWhiteSpace(territory))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(territory => territory, StringComparer.OrdinalIgnoreCase)];
+
+    /// <summary>
+    /// Computes the distinct, ordered set of calendar systems referenced by any rule in the resource.
+    /// </summary>
+    /// <param name="resource">The resource to project.</param>
+    /// <returns>The supported calendar systems.</returns>
+    private static IReadOnlyList<CalendarSystem> ComputeSupportedCalendars(NotableDateResource resource) =>
+        [.. resource.NotableDates
+            .SelectMany(definition => definition.Rules)
+            .Select(rule => rule.Applicability.Calendar)
+            .Distinct()
+            .Order()];
+
+    /// <summary>
+    /// Enumerates the calculated occurrences a strategy produces for a year: every occurrence of a fixed-date strategy
+    /// (a short Islamic month and day can recur twice in one Gregorian year) and the single occurrence of every other
+    /// strategy.
+    /// </summary>
+    /// <param name="strategy">The strategy to evaluate.</param>
+    /// <param name="year">The Gregorian year to calculate against.</param>
+    /// <param name="context">The resolution context for offset references.</param>
+    /// <returns>The calculated occurrences for the year.</returns>
+    private static IEnumerable<DateOnly> EnumerateBaseDates(IDateCalculationStrategy strategy, int year, StrategyResolutionContext context)
+    {
+        if (strategy is FixedDateStrategy fixedStrategy)
+            return fixedStrategy.CalculateAll(year, context);
+
+        return strategy.Calculate(year, context) is DateOnly date ? new[] { date } : [];
+    }
+
+    /// <summary>
+    /// Orders candidates for placement: earliest actual date first, then higher priority, then stable identity.
+    /// Earliest first ensures an earlier holiday claims a contested day before a later one resolves its substitute.
+    /// </summary>
+    /// <param name="left">The first candidate.</param>
+    /// <param name="right">The second candidate.</param>
+    /// <returns>A signed comparison result.</returns>
+    private static int CompareForPlacement(ResolutionCandidate left, ResolutionCandidate right)
+    {
+        int byDate = left.BaseDate.CompareTo(right.BaseDate);
+        if (byDate != 0)
+            return byDate;
+
+        int byPriority = right.Priority.CompareTo(left.Priority);
+        if (byPriority != 0)
+            return byPriority;
+
+        int byNotableDate = string.CompareOrdinal(left.Identity.NotableDateId, right.Identity.NotableDateId);
+        return byNotableDate != 0 ? byNotableDate : string.CompareOrdinal(left.Identity.RuleId, right.Identity.RuleId);
+    }
+
+    /// <summary>
+    /// Resolves the observed date for a <see cref="AdjustmentAction.ReplaceWithRule" /> action by calculating the
+    /// referenced rule's occurrence for the candidate's year.
+    /// </summary>
+    /// <param name="policy">The firing adjustment policy.</param>
+    /// <param name="candidate">The candidate being placed.</param>
+    /// <param name="context">The resolution context that resolves the reference.</param>
+    /// <returns>The referenced occurrence, or the candidate's calculated date when it cannot be resolved.</returns>
+    private static DateOnly ResolveReplacementDate(AdjustmentPolicy policy, ResolutionCandidate candidate, StrategyResolutionContext context)
+    {
+        if (string.IsNullOrEmpty(policy.ActionNotableDateRef))
+            return candidate.BaseDate;
+
+        return context.ResolveReference(policy.ActionNotableDateRef, policy.ActionRuleRef, candidate.BaseDate.Year) ?? candidate.BaseDate;
+    }
+
+    /// <summary>
+    /// Claims an observed date in the occupied-day set when the candidate is a non-working occurrence.
+    /// </summary>
+    /// <param name="occupied">The occupied-day set.</param>
+    /// <param name="observed">The observed date to claim.</param>
+    /// <param name="candidate">The candidate that produced the observed date.</param>
+    private static void Claim(HashSet<DateOnly> occupied, DateOnly observed, ResolutionCandidate candidate)
+    {
+        if (candidate.NonWorking)
+            occupied.Add(observed);
+    }
+
+    /// <summary>
+    /// Adds a resolved occurrence to the result list when its emitted date falls within the requested window.
+    /// </summary>
+    /// <param name="results">The accumulating result list.</param>
+    /// <param name="emitted">The emitted occurrence date.</param>
+    /// <param name="actual">The calculated occurrence date.</param>
+    /// <param name="isObserved">Whether the emitted date differs from the actual date.</param>
+    /// <param name="candidate">The candidate that produced the occurrence.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="adjustmentPolicyId">
+    /// The id of the adjustment policy that produced the observed date, if any.
+    /// </param>
+    /// <param name="reason">The reason recorded by the adjustment policy, if any.</param>
+    /// <param name="range">The inclusive range that controls inclusion.</param>
+    /// <remarks>
+    /// <para>
+    /// A multi-day occurrence is included when any day of its span intersects the requested window, so a single-day
+    /// query for a day inside a multi-day holiday returns it.
+    /// </para>
+    /// </remarks>
+    private static void AddIfInRange(
+        List<NotableDate> results,
+        DateOnly emitted,
+        DateOnly actual,
+        bool isObserved,
+        ResolutionCandidate candidate,
+        string territory,
+        string? adjustmentPolicyId,
+        string? reason,
+        DateRange range)
+    {
+        int spanEndDayNumber = emitted.DayNumber + Math.Max(1, candidate.DurationDays) - 1;
+        if (emitted > range.EndDate || spanEndDayNumber < range.StartDate.DayNumber)
+            return;
+
+        results.Add(new NotableDate(
+            emitted,
+            actual,
+            isObserved,
+            candidate.Identity,
+            candidate.DisplayName,
+            territory,
+            candidate.Category,
+            candidate.Priority,
+            candidate.DurationDays,
+            candidate.NonWorking,
+            candidate.Tags,
+            adjustmentPolicyId,
+            string.IsNullOrEmpty(reason) ? null : reason));
+    }
+
+    /// <summary>
+    /// Determines whether a provider occurrence's inclusive span intersects the requested window.
+    /// </summary>
+    /// <param name="occurrence">The provider occurrence.</param>
+    /// <param name="range">The inclusive range.</param>
+    /// <returns>
+    /// <see langword="true" /> when the span intersects the range; otherwise <see langword="false" />.
+    /// </returns>
+    private static bool SpanIntersects(NotableDate occurrence, DateRange range)
+    {
+        int spanEndDayNumber = occurrence.Date.DayNumber + Math.Max(1, occurrence.DurationDays) - 1;
+        return occurrence.Date <= range.EndDate && spanEndDayNumber >= range.StartDate.DayNumber;
+    }
+
     /// <summary>
     /// Applies the resource's same-day collision policy to occurrences sharing an emitted date, keeping all of them,
     /// the highest-priority occurrence(s), the highest-category-then-priority occurrence(s), or whatever a custom
@@ -222,18 +417,6 @@ public sealed class NotableDateService
     }
 
     /// <summary>
-    /// Keeps the occurrences whose priority is the best in the group for the configured direction.
-    /// </summary>
-    /// <param name="group">The occurrences to filter.</param>
-    /// <param name="higherWins">Whether a higher priority value wins.</param>
-    /// <returns>The best-priority occurrences.</returns>
-    private static List<NotableDate> KeepBestPriority(List<NotableDate> group, bool higherWins)
-    {
-        int best = higherWins ? group.Max(n => n.Priority) : group.Min(n => n.Priority);
-        return [.. group.Where(n => n.Priority == best)];
-    }
-
-    /// <summary>
     /// Returns the collision-precedence rank of a category from the resource's configured category precedence, where a
     /// higher rank wins a category collision and a category absent from the precedence ranks below every listed one.
     /// </summary>
@@ -251,58 +434,6 @@ public sealed class NotableDateService
 
         return 0;
     }
-
-    /// <inheritdoc />
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="territory" /> or <paramref name="filter" /> is <see langword="null" />.
-    /// </exception>
-    public IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory, NotableDateFilter filter) =>
-        Resolve(new DateRange(date, date), territory, filter);
-
-    /// <inheritdoc />
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="territory" /> or <paramref name="filter" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">The range start is later than its end.</exception>
-    public IReadOnlyList<NotableDate> Resolve(DateRange range, string territory, NotableDateFilter filter)
-    {
-        ThrowHelper.ThrowIfNull(filter);
-
-        return [.. Resolve(range, territory).Where(filter.Matches)];
-    }
-
-    /// <inheritdoc />
-    public IReadOnlyList<string> GetSupportedTerritories() =>
-        _supportedTerritories;
-
-    /// <inheritdoc />
-    public IReadOnlyList<CalendarSystem> GetSupportedCalendars() =>
-        _supportedCalendars;
-
-    /// <summary>
-    /// Computes the distinct, ordered set of territories referenced by any rule in the resource.
-    /// </summary>
-    /// <param name="resource">The resource to project.</param>
-    /// <returns>The supported territories.</returns>
-    private static IReadOnlyList<string> ComputeSupportedTerritories(NotableDateResource resource) =>
-        [.. resource.NotableDates
-            .SelectMany(definition => definition.Rules)
-            .SelectMany(rule => rule.Applicability.Territories)
-            .Where(territory => !string.IsNullOrWhiteSpace(territory))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(territory => territory, StringComparer.OrdinalIgnoreCase)];
-
-    /// <summary>
-    /// Computes the distinct, ordered set of calendar systems referenced by any rule in the resource.
-    /// </summary>
-    /// <param name="resource">The resource to project.</param>
-    /// <returns>The supported calendar systems.</returns>
-    private static IReadOnlyList<CalendarSystem> ComputeSupportedCalendars(NotableDateResource resource) =>
-        [.. resource.NotableDates
-            .SelectMany(definition => definition.Rules)
-            .Select(rule => rule.Applicability.Calendar)
-            .Distinct()
-            .Order()];
 
     /// <summary>
     /// Phase one: calculates every applicable actual occurrence and seeds the occupied-day set with the actual dates of
@@ -390,44 +521,6 @@ public sealed class NotableDateService
     }
 
     /// <summary>
-    /// Enumerates the calculated occurrences a strategy produces for a year: every occurrence of a fixed-date strategy
-    /// (a short Islamic month and day can recur twice in one Gregorian year) and the single occurrence of every other
-    /// strategy.
-    /// </summary>
-    /// <param name="strategy">The strategy to evaluate.</param>
-    /// <param name="year">The Gregorian year to calculate against.</param>
-    /// <param name="context">The resolution context for offset references.</param>
-    /// <returns>The calculated occurrences for the year.</returns>
-    private static IEnumerable<DateOnly> EnumerateBaseDates(IDateCalculationStrategy strategy, int year, StrategyResolutionContext context)
-    {
-        if (strategy is FixedDateStrategy fixedStrategy)
-            return fixedStrategy.CalculateAll(year, context);
-
-        return strategy.Calculate(year, context) is DateOnly date ? new[] { date } : [];
-    }
-
-    /// <summary>
-    /// Orders candidates for placement: earliest actual date first, then higher priority, then stable identity.
-    /// Earliest first ensures an earlier holiday claims a contested day before a later one resolves its substitute.
-    /// </summary>
-    /// <param name="left">The first candidate.</param>
-    /// <param name="right">The second candidate.</param>
-    /// <returns>A signed comparison result.</returns>
-    private static int CompareForPlacement(ResolutionCandidate left, ResolutionCandidate right)
-    {
-        int byDate = left.BaseDate.CompareTo(right.BaseDate);
-        if (byDate != 0)
-            return byDate;
-
-        int byPriority = right.Priority.CompareTo(left.Priority);
-        if (byPriority != 0)
-            return byPriority;
-
-        int byNotableDate = string.CompareOrdinal(left.Identity.NotableDateId, right.Identity.NotableDateId);
-        return byNotableDate != 0 ? byNotableDate : string.CompareOrdinal(left.Identity.RuleId, right.Identity.RuleId);
-    }
-
-    /// <summary>
     /// Phase two: computes the observed date for a candidate against the occupied-day set and emits occurrences per the
     /// winning policy's emission mode, updating the occupied-day set with any claimed observed date.
     /// </summary>
@@ -503,22 +596,6 @@ public sealed class NotableDateService
         };
 
     /// <summary>
-    /// Resolves the observed date for a <see cref="AdjustmentAction.ReplaceWithRule" /> action by calculating the
-    /// referenced rule's occurrence for the candidate's year.
-    /// </summary>
-    /// <param name="policy">The firing adjustment policy.</param>
-    /// <param name="candidate">The candidate being placed.</param>
-    /// <param name="context">The resolution context that resolves the reference.</param>
-    /// <returns>The referenced occurrence, or the candidate's calculated date when it cannot be resolved.</returns>
-    private static DateOnly ResolveReplacementDate(AdjustmentPolicy policy, ResolutionCandidate candidate, StrategyResolutionContext context)
-    {
-        if (string.IsNullOrEmpty(policy.ActionNotableDateRef))
-            return candidate.BaseDate;
-
-        return context.ResolveReference(policy.ActionNotableDateRef, policy.ActionRuleRef, candidate.BaseDate.Year) ?? candidate.BaseDate;
-    }
-
-    /// <summary>
     /// Resolves the observed date for a <see cref="AdjustmentAction.Custom" /> action by invoking the handler
     /// registered under the policy's handler key.
     /// </summary>
@@ -548,18 +625,6 @@ public sealed class NotableDateService
 
         AdjustmentHandlerContext handlerContext = new(candidate.BaseDate, territory, policy, occupied.Contains, context);
         return handler.Adjust(handlerContext) ?? candidate.BaseDate;
-    }
-
-    /// <summary>
-    /// Claims an observed date in the occupied-day set when the candidate is a non-working occurrence.
-    /// </summary>
-    /// <param name="occupied">The occupied-day set.</param>
-    /// <param name="observed">The observed date to claim.</param>
-    /// <param name="candidate">The candidate that produced the observed date.</param>
-    private static void Claim(HashSet<DateOnly> occupied, DateOnly observed, ResolutionCandidate candidate)
-    {
-        if (candidate.NonWorking)
-            occupied.Add(observed);
     }
 
     /// <summary>
@@ -654,57 +719,6 @@ public sealed class NotableDateService
     }
 
     /// <summary>
-    /// Adds a resolved occurrence to the result list when its emitted date falls within the requested window.
-    /// </summary>
-    /// <param name="results">The accumulating result list.</param>
-    /// <param name="emitted">The emitted occurrence date.</param>
-    /// <param name="actual">The calculated occurrence date.</param>
-    /// <param name="isObserved">Whether the emitted date differs from the actual date.</param>
-    /// <param name="candidate">The candidate that produced the occurrence.</param>
-    /// <param name="territory">The requested territory code.</param>
-    /// <param name="adjustmentPolicyId">
-    /// The id of the adjustment policy that produced the observed date, if any.
-    /// </param>
-    /// <param name="reason">The reason recorded by the adjustment policy, if any.</param>
-    /// <param name="range">The inclusive range that controls inclusion.</param>
-    /// <remarks>
-    /// <para>
-    /// A multi-day occurrence is included when any day of its span intersects the requested window, so a single-day
-    /// query for a day inside a multi-day holiday returns it.
-    /// </para>
-    /// </remarks>
-    private static void AddIfInRange(
-        List<NotableDate> results,
-        DateOnly emitted,
-        DateOnly actual,
-        bool isObserved,
-        ResolutionCandidate candidate,
-        string territory,
-        string? adjustmentPolicyId,
-        string? reason,
-        DateRange range)
-    {
-        int spanEndDayNumber = emitted.DayNumber + Math.Max(1, candidate.DurationDays) - 1;
-        if (emitted > range.EndDate || spanEndDayNumber < range.StartDate.DayNumber)
-            return;
-
-        results.Add(new NotableDate(
-            emitted,
-            actual,
-            isObserved,
-            candidate.Identity,
-            candidate.DisplayName,
-            territory,
-            candidate.Category,
-            candidate.Priority,
-            candidate.DurationDays,
-            candidate.NonWorking,
-            candidate.Tags,
-            adjustmentPolicyId,
-            string.IsNullOrEmpty(reason) ? null : reason));
-    }
-
-    /// <summary>
     /// Appends the occurrences contributed by any registered code-first providers whose span intersects the requested
     /// window. Provider occurrences are emitted as supplied and bypass the adjustment, override, and specificity
     /// pipeline; they take part only in the subsequent ordering and same-day collision policy.
@@ -725,19 +739,5 @@ public sealed class NotableDateService
                     results.Add(occurrence);
             }
         }
-    }
-
-    /// <summary>
-    /// Determines whether a provider occurrence's inclusive span intersects the requested window.
-    /// </summary>
-    /// <param name="occurrence">The provider occurrence.</param>
-    /// <param name="range">The inclusive range.</param>
-    /// <returns>
-    /// <see langword="true" /> when the span intersects the range; otherwise <see langword="false" />.
-    /// </returns>
-    private static bool SpanIntersects(NotableDate occurrence, DateRange range)
-    {
-        int spanEndDayNumber = occurrence.Date.DayNumber + Math.Max(1, occurrence.DurationDays) - 1;
-        return occurrence.Date <= range.EndDate && spanEndDayNumber >= range.StartDate.DayNumber;
     }
 }
