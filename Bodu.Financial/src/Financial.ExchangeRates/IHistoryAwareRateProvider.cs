@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IHistoryAwareRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,16 +13,16 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// This is an optional capability interface layered over <see cref="IDatedRateProvider" />, following the same
-/// probe-at-runtime idiom as <c>IPairRateLoader</c>: consumers test a provider with
-/// <see langword="is" /> and treat one that does not implement the interface as
-/// <see cref="RateHistoryAvailability.Unbounded" /> — never skipped and never clamped. Implementing the
-/// interface therefore only ever removes doomed upstream calls; it cannot hide data a provider could have served.
+/// probe-at-runtime idiom as <c>IPairRateLoader</c>: consumers test a provider with <see langword="is" /> and treat one
+/// that does not implement the interface as <see cref="RateHistoryAvailability.Unbounded" /> — never skipped and never
+/// clamped. Implementing the interface therefore only ever removes doomed upstream calls; it cannot hide data a
+/// provider could have served.
 /// </para>
 /// <para>
 /// The advertised value is a declaration about the upstream source, not a per-request guarantee: a date inside the
 /// advertised window can still miss (weekends, holidays, unpublished series), and consumers must retain their normal
-/// miss handling. Availability describes the dated history surface only; the undated
-/// <see cref="IRateProvider" /> latest-rate surface is unaffected.
+/// miss handling. Availability describes the dated history surface only; the undated <see cref="IRateProvider" />
+/// latest-rate surface is unaffected.
 /// </para>
 /// </remarks>
 public interface IHistoryAwareRateProvider

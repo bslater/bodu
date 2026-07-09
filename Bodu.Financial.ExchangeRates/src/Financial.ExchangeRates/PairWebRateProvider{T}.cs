@@ -10,29 +10,27 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
-/// Provides the shared machinery for a <see cref="WebRateProvider" /> that fetches one currency pair per
-/// request from a remote feed — per-pair coverage tracking, single-flight request coalescing, the fetch-and-accumulate
-/// orchestration, and the diagnostic logging — leaving a derived type to supply only the feed identity and the
-/// feed-specific exception text. The actual fetch and parse are delegated to an
-/// <see cref="IPairRateSource{TSeries}" />.
+/// Provides the shared machinery for a <see cref="WebRateProvider" /> that fetches one currency pair per request from a
+/// remote feed — per-pair coverage tracking, single-flight request coalescing, the fetch-and-accumulate orchestration,
+/// and the diagnostic logging — leaving a derived type to supply only the feed identity and the feed-specific exception
+/// text. The actual fetch and parse are delegated to an <see cref="IPairRateSource{TSeries}" />.
 /// </summary>
 /// <typeparam name="TSeries">
 /// The source-specific series-metadata type surfaced through <see cref="GetAvailablePairs" />.
 /// </typeparam>
 /// <remarks>
 /// <para>
-/// This base sits between <see cref="WebRateProvider" /> (which owns the in-memory accumulator, the immutable
-/// snapshot, and the full lookup matrix) and a concrete pair-based source such as Yahoo Finance or OFX. It implements
-/// <see cref="WebRateProvider.EnsureLoadedAsync" /> and <see cref="WebRateProvider.IsLoaded" /> with a
-/// gap-respecting per-pair <see cref="DateRangeCoverage" /> set so a request that straddles an unfetched interior gap
-/// is correctly treated as uncovered and re-fetched, and coalesces concurrent fetches of the same pair-and-window so
-/// only one request is in flight.
+/// This base sits between <see cref="WebRateProvider" /> (which owns the in-memory accumulator, the immutable snapshot,
+/// and the full lookup matrix) and a concrete pair-based source such as Yahoo Finance or OFX. It implements
+/// <see cref="WebRateProvider.EnsureLoadedAsync" /> and <see cref="WebRateProvider.IsLoaded" /> with a gap-respecting
+/// per-pair <see cref="DateRangeCoverage" /> set so a request that straddles an unfetched interior gap is correctly
+/// treated as uncovered and re-fetched, and coalesces concurrent fetches of the same pair-and-window so only one
+/// request is in flight.
 /// </para>
 /// <para>
 /// A derived type supplies <see cref="WebRateProvider.ProviderId" /> and may override
-/// <see cref="WebRateProvider.CreateRangeInvertedException" />,
-/// <see cref="WebRateProvider.FormatRateNotFound" />, and <see cref="FormatPairForLog" /> to present
-/// feed-specific exception types, messages, and log labels.
+/// <see cref="WebRateProvider.CreateRangeInvertedException" />, <see cref="WebRateProvider.FormatRateNotFound" />, and
+/// <see cref="FormatPairForLog" /> to present feed-specific exception types, messages, and log labels.
 /// </para>
 /// </remarks>
 public abstract class PairWebRateProvider<TSeries>

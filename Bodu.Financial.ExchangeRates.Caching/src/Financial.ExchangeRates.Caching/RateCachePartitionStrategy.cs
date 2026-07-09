@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateCachePartitionStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,10 +14,10 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A strategy maps each rate's <see cref="CachedRate.Date" /> to a path-safe <em>partition key</em> (the file
-/// name stem) and reports the inclusive date range that key spans. The file cache uses the key to route each row to its
-/// file and the range to split a recorded coverage window at partition boundaries, so a window that crosses, say, a
-/// month boundary is stored as one sub-window per month and re-merged losslessly on read.
+/// A strategy maps each rate's <see cref="CachedRate.Date" /> to a path-safe <em>partition key</em> (the file name
+/// stem) and reports the inclusive date range that key spans. The file cache uses the key to route each row to its file
+/// and the range to split a recorded coverage window at partition boundaries, so a window that crosses, say, a month
+/// boundary is stored as one sub-window per month and re-merged losslessly on read.
 /// </para>
 /// <para>
 /// Use the built-in <see cref="Single" />, <see cref="Yearly" />, <see cref="Monthly" />, and <see cref="Daily" />

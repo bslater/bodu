@@ -13,22 +13,21 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// Implementations are expected to validate their string and option arguments and throw rather than return failure when
-/// inputs are invalid. The distinction between
-/// <see cref="GetRate(string, string, DateOnly, RateLookupOptions?)" /> and
-/// <see cref="TryGetRate(string, string, DateOnly, RateLookupOptions?, out RateLookupResult)" /> is
-/// reserved for the case where no rate is available for an otherwise valid request: the former throws
+/// inputs are invalid. The distinction between <see cref="GetRate(string, string, DateOnly, RateLookupOptions?)" /> and
+/// <see cref="TryGetRate(string, string, DateOnly, RateLookupOptions?, out RateLookupResult)" /> is reserved for the
+/// case where no rate is available for an otherwise valid request: the former throws
 /// <see cref="KeyNotFoundException" />, the latter returns <see langword="false" /> without allocating.
 /// </para>
 /// <para>
 /// Implementations must accept a <see langword="null" /> <c>options</c> argument and substitute
-/// <see cref="RateLookupOptions.Exact" /> (or, for the undated latest surface, an implementation-defined
-/// most-recent policy) so callers can opt into the documented safe default by omission.
+/// <see cref="RateLookupOptions.Exact" /> (or, for the undated latest surface, an implementation-defined most-recent
+/// policy) so callers can opt into the documented safe default by omission.
 /// </para>
 /// <para>
-/// Every getter returns the same element type — a single <see cref="RateLookupResult" /> for the point lookups,
-/// and an <see cref="IEnumerable{T}" /> of them for the range lookups. The synchronous getters and the asynchronous
-/// getters resolve identical results; the asynchronous surface exists because an implementation backed by a remote feed
-/// may fetch on demand, and the synchronous surface may block to do so (or serve only already-loaded data, at the
+/// Every getter returns the same element type — a single <see cref="RateLookupResult" /> for the point lookups, and an
+/// <see cref="IEnumerable{T}" /> of them for the range lookups. The synchronous getters and the asynchronous getters
+/// resolve identical results; the asynchronous surface exists because an implementation backed by a remote feed may
+/// fetch on demand, and the synchronous surface may block to do so (or serve only already-loaded data, at the
 /// implementation's discretion).
 /// </para>
 /// <example>
@@ -150,8 +149,8 @@ public interface IDatedRateProvider
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <returns>
-    /// An <see cref="RateRangeResult" /> carrying the rates in the range ordered by date, the requested window,
-    /// and the observed span; the result is empty when no rates are available.
+    /// An <see cref="RateRangeResult" /> carrying the rates in the range ordered by date, the requested window, and the
+    /// observed span; the result is empty when no rates are available.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
@@ -240,8 +239,8 @@ public interface IDatedRateProvider
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the operation.</param>
     /// <returns>
-    /// A task that yields an <see cref="RateRangeResult" /> carrying the rates in the range ordered by date,
-    /// the requested window, and the observed span; the result is empty when no rates are available.
+    /// A task that yields an <see cref="RateRangeResult" /> carrying the rates in the range ordered by date, the
+    /// requested window, and the observed span; the result is empty when no rates are available.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.

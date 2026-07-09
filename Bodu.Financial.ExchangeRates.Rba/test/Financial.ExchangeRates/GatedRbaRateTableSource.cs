@@ -9,8 +9,8 @@ using Bodu.Formats.Excel;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// An <see cref="IRbaRateTableSource" /> whose fetch blocks until released, so a test can hold several
-/// concurrent callers inside the source at once and prove the provider coalesces them into a single fetch.
+/// An <see cref="IRbaRateTableSource" /> whose fetch blocks until released, so a test can hold several concurrent
+/// callers inside the source at once and prove the provider coalesces them into a single fetch.
 /// </summary>
 internal sealed class GatedRbaRateTableSource
     : IRbaRateTableSource

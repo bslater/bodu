@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateAggregationOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Configures an <see cref="AggregatingRateProvider" />: the default combination strategy, the default child
-/// order, and per-currency-pair routing overrides.
+/// Configures an <see cref="AggregatingRateProvider" />: the default combination strategy, the default child order, and
+/// per-currency-pair routing overrides.
 /// </summary>
 /// <remarks>
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c>.
@@ -51,27 +51,24 @@ public sealed class RateAggregationOptions
 
     /// <summary>
     /// Gets or sets a value indicating whether the aggregator consults each child's advertised
-    /// <see cref="RateHistoryAvailability" /> and drops candidates that have declared they cannot serve any
-    /// part of the requested date or window, before the strategy runs.
+    /// <see cref="RateHistoryAvailability" /> and drops candidates that have declared they cannot serve any part of the
+    /// requested date or window, before the strategy runs.
     /// </summary>
     /// <value><see langword="true" /> to respect the advertised history; defaults to <see langword="true" />.</value>
     /// <remarks>
-    /// The filter applies only to children that implement <see cref="IHistoryAwareRateProvider" />; a non-aware
-    /// child is treated as unbounded and always kept. A range keeps any child whose advertised history overlaps the
-    /// window at all, since strategies already tolerate partial data. When every candidate is filtered out, the lookup
-    /// reports the same miss it reports when every candidate fails. Disable this to offer every routed candidate to the
+    /// The filter applies only to children that implement <see cref="IHistoryAwareRateProvider" />; a non-aware child
+    /// is treated as unbounded and always kept. A range keeps any child whose advertised history overlaps the window at
+    /// all, since strategies already tolerate partial data. When every candidate is filtered out, the lookup reports
+    /// the same miss it reports when every candidate fails. Disable this to offer every routed candidate to the
     /// strategy unchanged.
     /// </remarks>
     public bool RespectHistoryAvailability { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets the lookup options applied by the timeless
-    /// <see cref="IRateProvider.GetRate(string, string)" /> surface, which resolves the rate for the current
-    /// UTC date.
+    /// Gets or sets the lookup options applied by the timeless <see cref="IRateProvider.GetRate(string, string)" />
+    /// surface, which resolves the rate for the current UTC date.
     /// </summary>
-    /// <value>
-    /// The lookup options used for timeless lookups; defaults to <see cref="RateLookupOptions.Exact" />.
-    /// </value>
+    /// <value>The lookup options used for timeless lookups; defaults to <see cref="RateLookupOptions.Exact" />.</value>
     public RateLookupOptions DefaultLookupOptions { get; set; } = RateLookupOptions.Exact;
 
     /// <summary>

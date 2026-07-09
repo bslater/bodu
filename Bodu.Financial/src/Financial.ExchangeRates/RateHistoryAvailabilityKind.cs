@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateHistoryAvailabilityKind.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Identifies how an <see cref="RateHistoryAvailability" /> bounds the earliest date for which a provider can
-/// serve rates.
+/// Identifies how an <see cref="RateHistoryAvailability" /> bounds the earliest date for which a provider can serve
+/// rates.
 /// </summary>
 public enum RateHistoryAvailabilityKind
 {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WebRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -72,15 +72,10 @@ public abstract class WebRateProvider
     /// <summary>The tolerance, in days, used to resolve the most recent rate for the undated surfaces; large enough to reach any rate fetched into the store from the current date.</summary>
     private const int LatestRateToleranceDays = 100_000;
 
-    /// <summary>
-    /// Guards mutation of the accumulator and the snapshot fields, and is shared with derived types for their own
-    /// coverage and series indexes so a fetch publishes atomically.
-    /// </summary>
+    /// <summary>Guards mutation of the accumulator and the snapshot fields, and is shared with derived types for their own coverage and series indexes so a fetch publishes atomically.</summary>
     private readonly object _gate = new();
 
-    /// <summary>
-    /// The accumulator into which each fetched observation is upserted.
-    /// </summary>
+    /// <summary>The accumulator into which each fetched observation is upserted.</summary>
     private readonly RateTableBuilder _builder = new();
 
     /// <summary>The time source used to resolve the current instant for the undated surfaces.</summary>
@@ -89,11 +84,7 @@ public abstract class WebRateProvider
     /// <summary>The HTTP client owned by this provider, disposed with it; <see langword="null" /> when the client was supplied by the caller and its lifetime is the caller's responsibility.</summary>
     private readonly HttpClient? _ownedHttpClient;
 
-    /// <summary>
-    /// Coalesces concurrent loads keyed by a string so callers requesting the same endpoint window share a single
-    /// in-flight fetch rather than each issuing a duplicate request. Used by derived types through
-    /// <see cref="LoadCoalescedAsync(string, Func{CancellationToken, Task}, CancellationToken)" />.
-    /// </summary>
+    /// <summary>Coalesces concurrent loads keyed by a string so callers requesting the same endpoint window share a single in-flight fetch rather than each issuing a duplicate request. Used by derived types through <see cref="LoadCoalescedAsync(string, Func{CancellationToken, Task}, CancellationToken)" />.</summary>
     private readonly SingleFlightCoordinator<string> _loadCoordinator = new();
 
     /// <summary>The current immutable book backing range queries; replaced under <see cref="_gate" /> after each fetch.</summary>
@@ -134,8 +125,8 @@ public abstract class WebRateProvider
     /// Gets the history depth this provider advertises: how far back it can serve rates.
     /// </summary>
     /// <value>
-    /// The advertised availability; the base reports <see cref="RateHistoryAvailability.Unbounded" />. A
-    /// derived type whose feed publishes only a bounded window overrides this to declare it.
+    /// The advertised availability; the base reports <see cref="RateHistoryAvailability.Unbounded" />. A derived type
+    /// whose feed publishes only a bounded window overrides this to declare it.
     /// </value>
     public virtual RateHistoryAvailability HistoryAvailability => RateHistoryAvailability.Unbounded;
 
@@ -292,8 +283,8 @@ public abstract class WebRateProvider
     /// <inheritdoc />
     /// <remarks>
     /// The load is delegated to the feed-specific
-    /// <see cref="EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)" />, so it warms whatever
-    /// unit the provider downloads — a single pair, an era, a feed, or a date range — to cover the requested window.
+    /// <see cref="EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)" />, so it warms whatever unit
+    /// the provider downloads — a single pair, an era, a feed, or a date range — to cover the requested window.
     /// </remarks>
     public Task LoadPairAsync(
         string fromIsoCode,
@@ -340,9 +331,9 @@ public abstract class WebRateProvider
     /// </para>
     /// <para>
     /// The book is the composable export primitive: rewrap it with
-    /// <see cref="FixedDatedRateProvider(RateBook, IEnumerable{string})" /> to apply a custom
-    /// provider-priority policy, or use <see cref="RateBook.ToBuilder" /> to edit a copy. For the
-    /// ready-to-query equivalent see <see cref="GetLoadedSnapshot" />.
+    /// <see cref="FixedDatedRateProvider(RateBook, IEnumerable{string})" /> to apply a custom provider-priority policy,
+    /// or use <see cref="RateBook.ToBuilder" /> to edit a copy. For the ready-to-query equivalent see
+    /// <see cref="GetLoadedSnapshot" />.
     /// </para>
     /// </remarks>
     public RateBook GetLoadedBook()
@@ -357,16 +348,16 @@ public abstract class WebRateProvider
     /// so far.
     /// </summary>
     /// <returns>
-    /// The current immutable <see cref="FixedDatedRateProvider" /> snapshot; it resolves no rates until the
-    /// first fetch completes.
+    /// The current immutable <see cref="FixedDatedRateProvider" /> snapshot; it resolves no rates until the first fetch
+    /// completes.
     /// </returns>
     /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
     /// <remarks>
     /// The snapshot is the instance this provider itself reads from — it is rebuilt once per fetch, so handing it out
     /// costs nothing — and it is pinned at call time: later fetches replace it wholesale and never mutate an instance
     /// already handed out. Use it for deterministic, offline, disposal-independent lookups over what has been loaded.
-    /// Its <see cref="FixedDatedRateProvider.Book" /> is the same instance <see cref="GetLoadedBook" /> returns
-    /// at the same moment.
+    /// Its <see cref="FixedDatedRateProvider.Book" /> is the same instance <see cref="GetLoadedBook" /> returns at the
+    /// same moment.
     /// </remarks>
     public FixedDatedRateProvider GetLoadedSnapshot()
     {
@@ -417,8 +408,8 @@ public abstract class WebRateProvider
     /// Runs <paramref name="load" /> for <paramref name="key" />, or joins the load already in flight for that key, so
     /// concurrent callers requesting the same endpoint window share a single fetch rather than each issuing a duplicate
     /// request. Derived types call this from
-    /// <see cref="EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)" /> with a key identifying
-    /// the unit they download — an era, a feed, a date range, a pair-and-window.
+    /// <see cref="EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)" /> with a key identifying the
+    /// unit they download — an era, a feed, a date range, a pair-and-window.
     /// </summary>
     /// <param name="key">The key identifying the load; equal keys share one in-flight fetch.</param>
     /// <param name="load">The fetch to run on a miss, invoked with a token decoupled from any single caller.</param>

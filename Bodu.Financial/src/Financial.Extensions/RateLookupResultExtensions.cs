@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateLookupResultExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ using Bodu.Financial.ExchangeRates;
 namespace Bodu.Financial.Extensions;
 
 /// <summary>
-/// Provides audit-convenience members for <see cref="RateLookupResult" /> that describe how the resolved rate
-/// relates to the requested date, keeping those derived helpers off the core result type.
+/// Provides audit-convenience members for <see cref="RateLookupResult" /> that describe how the resolved rate relates
+/// to the requested date, keeping those derived helpers off the core result type.
 /// </summary>
 /// <remarks>
 /// <para>

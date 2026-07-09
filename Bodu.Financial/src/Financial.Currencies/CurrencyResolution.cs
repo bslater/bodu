@@ -27,11 +27,11 @@ namespace Bodu.Financial.Currencies;
 /// </remarks>
 public static class CurrencyResolution
 {
-    /// <summary>The process-wide default lookup, used whenever no scoped override is active.</summary>
-    private static volatile ICurrencyLookup s_default = new CurrencyLookupService();
-
     /// <summary>The flow-local override installed by <see cref="PushScoped(ICurrencyLookup)" />, when present.</summary>
     private static readonly AsyncLocal<ICurrencyLookup?> s_scoped = new();
+
+    /// <summary>The process-wide default lookup, used whenever no scoped override is active.</summary>
+    private static volatile ICurrencyLookup s_default = new CurrencyLookupService();
 
     /// <summary>
     /// Gets the currency lookup currently in effect: the active scoped override, or the process-wide default.

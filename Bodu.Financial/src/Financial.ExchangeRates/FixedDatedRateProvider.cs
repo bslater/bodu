@@ -12,16 +12,14 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Provides an immutable <see cref="IDatedRateProvider" /> facade over an <see cref="RateBook" />,
-/// applying an explicit provider-priority list to disambiguate pairs that carry observations from more than one
-/// publishing source.
+/// Provides an immutable <see cref="IDatedRateProvider" /> facade over an <see cref="RateBook" />, applying an explicit
+/// provider-priority list to disambiguate pairs that carry observations from more than one publishing source.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Use this provider as the read-side hand-off from an <see cref="RateTableBuilder" /> built during data
-/// ingest. The <see cref="RateTableBuilder.ToBook" /> method materialises the multi-provider book, and this
-/// provider then selects rates from it using either the single available provider per pair, or the supplied priority
-/// list.
+/// Use this provider as the read-side hand-off from an <see cref="RateTableBuilder" /> built during data ingest. The
+/// <see cref="RateTableBuilder.ToBook" /> method materialises the multi-provider book, and this provider then selects
+/// rates from it using either the single available provider per pair, or the supplied priority list.
 /// </para>
 /// <para>
 /// Lookups walk the provider priority once per pair, perform a <see cref="FrozenDictionary{TKey, TValue}" /> probe for
@@ -55,9 +53,6 @@ public sealed class FixedDatedRateProvider
     /// <summary>The label used as the provider name on synthetic same-currency identity results. Exposed publicly so audit consumers can filter by it without depending on a magic-string literal.</summary>
     public const string IdentityProviderName = "Identity";
 
-    /// <summary>The underlying immutable multi-provider book that backs every lookup.</summary>
-    private readonly RateBook _book;
-
     /// <summary>The ordered set of providers consulted for each pair, in priority order.</summary>
     private readonly string[] _providerPriority;
 
@@ -78,7 +73,7 @@ public sealed class FixedDatedRateProvider
         ThrowHelper.ThrowIfNull(book);
 
         _providerPriority = BuildSingleProviderList(book);
-        _book = book;
+        Book = book;
     }
 
     /// <summary>
@@ -108,13 +103,13 @@ public sealed class FixedDatedRateProvider
         for (int i = 0; i < snapshot.Length; i++)
             ThrowHelper.ThrowIfNullOrWhiteSpace(snapshot[i], nameof(providerPriority));
 
-        _book = book;
+        Book = book;
         _providerPriority = snapshot;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FixedDatedRateProvider" /> class by materialising the
-    /// supplied observations into an <see cref="RateBook" /> first.
+    /// Initializes a new instance of the <see cref="FixedDatedRateProvider" /> class by materialising the supplied
+    /// observations into an <see cref="RateBook" /> first.
     /// </summary>
     /// <param name="rates">The exchange-rate observations to store, in any order.</param>
     /// <exception cref="ArgumentNullException">
@@ -128,17 +123,17 @@ public sealed class FixedDatedRateProvider
     {
         ThrowHelper.ThrowIfNull(rates);
 
-        _book = BuildBook(rates);
-        _providerPriority = BuildSingleProviderList(_book);
+        Book = BuildBook(rates);
+        _providerPriority = BuildSingleProviderList(Book);
     }
 
     /// <summary>
     /// Gets the history depth this provider advertises, derived from the wrapped book's contents.
     /// </summary>
     /// <value>
-    /// <see cref="RateHistoryAvailability.Since(DateOnly)" /> anchored at the earliest observation date across
-    /// every series in the book, or <see cref="RateHistoryAvailability.Unbounded" /> when the book is empty (an
-    /// empty book has no floor to declare, and every lookup misses regardless).
+    /// <see cref="RateHistoryAvailability.Since(DateOnly)" /> anchored at the earliest observation date across every
+    /// series in the book, or <see cref="RateHistoryAvailability.Unbounded" /> when the book is empty (an empty book
+    /// has no floor to declare, and every lookup misses regardless).
     /// </value>
     public RateHistoryAvailability HistoryAvailability =>
         TryGetEarliestDateInBook(out DateOnly earliest)
@@ -154,8 +149,7 @@ public sealed class FixedDatedRateProvider
     /// the provider-priority policy this provider applies per pair is not part of the book, so rewrapping the book
     /// (directly or via <see cref="RateBook.ToBuilder" />) does not carry the policy across.
     /// </remarks>
-    public RateBook Book =>
-        _book;
+    public RateBook Book { get; }
 
     /// <inheritdoc />
     public RateLookupResult GetRate(
@@ -304,8 +298,8 @@ public sealed class FixedDatedRateProvider
         new(GetRates(fromIsoCode, toIsoCode, startDate, endDate));
 
     /// <summary>
-    /// Materialises the supplied observations into a multi-provider <see cref="RateBook" />, validating that
-    /// each pair carries observations from a single provider only.
+    /// Materialises the supplied observations into a multi-provider <see cref="RateBook" />, validating that each pair
+    /// carries observations from a single provider only.
     /// </summary>
     /// <param name="rates">The observations to group.</param>
     /// <returns>A new <see cref="RateBook" /> containing one series per pair.</returns>
@@ -385,7 +379,7 @@ public sealed class FixedDatedRateProvider
             providers.Add(key.Provider);
         }
 
-        return providers.ToArray();
+        return [.. providers];
     }
 
     /// <summary>
@@ -411,7 +405,7 @@ public sealed class FixedDatedRateProvider
         string[] priority = _providerPriority;
         for (int i = 0; i < priority.Length; i++)
         {
-            if (!_book.TryGetSeries(pair, priority[i], out RateSeries? series) || series is null)
+            if (!Book.TryGetSeries(pair, priority[i], out RateSeries? series) || series is null)
                 continue;
 
             if (!series.TryGetRate(requestedDate, options, out DateOnly resolvedDate, out decimal rawRate))
@@ -455,7 +449,7 @@ public sealed class FixedDatedRateProvider
         string[] priority = _providerPriority;
         for (int i = 0; i < priority.Length; i++)
         {
-            if (!_book.TryGetSeries(pair, priority[i], out RateSeries? series) || series is null || series.Count == 0)
+            if (!Book.TryGetSeries(pair, priority[i], out RateSeries? series) || series is null || series.Count == 0)
                 continue;
 
             // Observations are stored in ascending date order, so the last is the most recent.
@@ -501,7 +495,7 @@ public sealed class FixedDatedRateProvider
         string[] priority = _providerPriority;
         for (int i = 0; i < priority.Length; i++)
         {
-            if (!_book.TryGetSeries(pair, priority[i], out RateSeries? series) || series is null)
+            if (!Book.TryGetSeries(pair, priority[i], out RateSeries? series) || series is null)
                 continue;
 
             CurrencyCode reportedFrom = isInverted ? pair.To : pair.From;
@@ -532,9 +526,9 @@ public sealed class FixedDatedRateProvider
         DateOnly max = DateOnly.MinValue;
         bool any = false;
 
-        foreach (RateSeriesKey key in _book.Keys)
+        foreach (RateSeriesKey key in Book.Keys)
         {
-            if (!_book.TryGetSeries(key.Pair, key.Provider, out RateSeries? series) || series is null || series.Count == 0)
+            if (!Book.TryGetSeries(key.Pair, key.Provider, out RateSeries? series) || series is null || series.Count == 0)
                 continue;
 
             DateOnly last = series.GetObservations().Last().Date;
@@ -565,9 +559,9 @@ public sealed class FixedDatedRateProvider
         DateOnly min = DateOnly.MinValue;
         bool any = false;
 
-        foreach (RateSeriesKey key in _book.Keys)
+        foreach (RateSeriesKey key in Book.Keys)
         {
-            if (!_book.TryGetSeries(key.Pair, key.Provider, out RateSeries? series) || series is null || series.Count == 0)
+            if (!Book.TryGetSeries(key.Pair, key.Provider, out RateSeries? series) || series is null || series.Count == 0)
                 continue;
 
             DateOnly first = series.GetObservations().First().Date;

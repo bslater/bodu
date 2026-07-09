@@ -32,8 +32,8 @@ public sealed class FixedRateTable
     private readonly FrozenDictionary<CurrencyPair, decimal> _rates;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FixedRateTable" /> class from the supplied dictionary of
-    /// (from, to) → rate mappings, validating each entry and copying the contents into an immutable store.
+    /// Initializes a new instance of the <see cref="FixedRateTable" /> class from the supplied dictionary of (from, to)
+    /// → rate mappings, validating each entry and copying the contents into an immutable store.
     /// </summary>
     /// <param name="rates">The rate table to copy.</param>
     /// <exception cref="ArgumentNullException">

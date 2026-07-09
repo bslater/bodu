@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IRateAggregationStrategy" /> that returns the first successful result from the ordered
-/// candidates, giving deterministic, auditable fallback.
+/// An <see cref="IRateAggregationStrategy" /> that returns the first successful result from the ordered candidates,
+/// giving deterministic, auditable fallback.
 /// </summary>
 /// <remarks>
 /// On every lookup the candidates are consulted in order and the first to satisfy the request wins, so a preferred

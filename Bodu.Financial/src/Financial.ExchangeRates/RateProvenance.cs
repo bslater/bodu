@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateProvenance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,11 +26,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// </param>
 /// <remarks>
 /// <para>
-/// Every <see cref="RateLookupResult" /> carries a populated <see cref="RateProvenance" />. A rate
-/// resolved directly by a provider reports <see cref="RateOrigin.Live" /> with a <see langword="null" />
-/// <see cref="Backend" />, <see cref="CachedAtUtc" />, and <see cref="Age" />; a rate served from a cache reports
-/// <see cref="RateOrigin.Cache" /> with the serving backend, the instant the data was cached, and the age it
-/// had carried at the lookup instant.
+/// Every <see cref="RateLookupResult" /> carries a populated <see cref="RateProvenance" />. A rate resolved directly by
+/// a provider reports <see cref="RateOrigin.Live" /> with a <see langword="null" /> <see cref="Backend" />,
+/// <see cref="CachedAtUtc" />, and <see cref="Age" />; a rate served from a cache reports
+/// <see cref="RateOrigin.Cache" /> with the serving backend, the instant the data was cached, and the age it had
+/// carried at the lookup instant.
 /// </para>
 /// <para>
 /// Construct instances through <see cref="Live(string)" />, <see cref="Live(string, string)" />, and
@@ -51,8 +51,8 @@ public readonly record struct RateProvenance(
     /// </summary>
     /// <param name="provider">The provider name the rate is attributed to.</param>
     /// <returns>
-    /// An <see cref="RateProvenance" /> with <see cref="Origin" /> set to
-    /// <see cref="RateOrigin.Live" /> and no backend, cache instant, or age.
+    /// An <see cref="RateProvenance" /> with <see cref="Origin" /> set to <see cref="RateOrigin.Live" /> and no
+    /// backend, cache instant, or age.
     /// </returns>
     public static RateProvenance Live(string provider) =>
         new(provider, RateOrigin.Live, Backend: null, CachedAtUtc: null, Age: null);
@@ -64,8 +64,8 @@ public readonly record struct RateProvenance(
     /// <param name="provider">The provider name the rate is attributed to.</param>
     /// <param name="backend">The runtime identity of the cache backend that handled the miss.</param>
     /// <returns>
-    /// An <see cref="RateProvenance" /> with <see cref="Origin" /> set to
-    /// <see cref="RateOrigin.Live" />, carrying <paramref name="backend" /> but no cache instant or age.
+    /// An <see cref="RateProvenance" /> with <see cref="Origin" /> set to <see cref="RateOrigin.Live" />, carrying
+    /// <paramref name="backend" /> but no cache instant or age.
     /// </returns>
     public static RateProvenance Live(string provider, string backend) =>
         new(provider, RateOrigin.Live, backend, CachedAtUtc: null, Age: null);
@@ -81,9 +81,9 @@ public readonly record struct RateProvenance(
     /// </param>
     /// <param name="asOf">The lookup instant against which the age is derived.</param>
     /// <returns>
-    /// An <see cref="RateProvenance" /> with <see cref="Origin" /> set to
-    /// <see cref="RateOrigin.Cache" />, carrying <paramref name="cachedAtUtc" /> and the derived age, or no age
-    /// when <paramref name="cachedAtUtc" /> is <see langword="null" />.
+    /// An <see cref="RateProvenance" /> with <see cref="Origin" /> set to <see cref="RateOrigin.Cache" />, carrying
+    /// <paramref name="cachedAtUtc" /> and the derived age, or no age when <paramref name="cachedAtUtc" /> is
+    /// <see langword="null" />.
     /// </returns>
     /// <remarks>
     /// The age is clamped to <see cref="TimeSpan.Zero" /> so a never-negative value is reported: cache freshness

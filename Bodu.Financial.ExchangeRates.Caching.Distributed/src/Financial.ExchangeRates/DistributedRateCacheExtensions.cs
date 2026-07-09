@@ -25,8 +25,8 @@ public static class DistributedRateCacheExtensions
 
     /// <summary>
     /// Registers a <see cref="DistributedRateCache" /> bound to <paramref name="providerName" /> over the
-    /// <see cref="IDistributedCache" /> already registered in the container, resolvable as an
-    /// <see cref="IRateCache" /> and as a keyed <see cref="IRateCache" /> under the provider name.
+    /// <see cref="IDistributedCache" /> already registered in the container, resolvable as an <see cref="IRateCache" />
+    /// and as a keyed <see cref="IRateCache" /> under the provider name.
     /// </summary>
     /// <param name="builder">The financial service builder.</param>
     /// <param name="providerName">The provider whose rates the cache stores.</param>
@@ -49,8 +49,8 @@ public static class DistributedRateCacheExtensions
     /// <c>AddStackExchangeRedisCache</c> or <c>AddDistributedMemoryCache</c>); use <see cref="AddRedisRateCache" /> to
     /// register a Redis cache and the exchange-rate cache together. The cache is registered as a singleton so its
     /// per-pair write locks are shared across resolutions, and is exposed on both the default and the keyed
-    /// <see cref="IRateCache" /> surface as the same instance. Options are validated through
-    /// <c>ValidateOnStart</c>, so misconfiguration fails fast at application startup.
+    /// <see cref="IRateCache" /> surface as the same instance. Options are validated through <c>ValidateOnStart</c>, so
+    /// misconfiguration fails fast at application startup.
     /// </remarks>
     /// <example>
     /// <code language="csharp">
@@ -114,8 +114,8 @@ public static class DistributedRateCacheExtensions
     }
 
     /// <summary>
-    /// Registers a Redis-backed <see cref="IDistributedCache" /> and a <see cref="DistributedRateCache" /> over
-    /// it, bound to <paramref name="providerName" />, resolvable as an <see cref="IRateCache" /> and as a keyed
+    /// Registers a Redis-backed <see cref="IDistributedCache" /> and a <see cref="DistributedRateCache" /> over it,
+    /// bound to <paramref name="providerName" />, resolvable as an <see cref="IRateCache" /> and as a keyed
     /// <see cref="IRateCache" /> under the provider name.
     /// </summary>
     /// <param name="builder">The financial service builder.</param>

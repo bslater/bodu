@@ -9,15 +9,15 @@ using System.Globalization;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Holds the mutable sorted day-number / rate arrays backing an <see cref="RateSeriesBuilder" /> and implements
-/// the validation, search, insert, remove, and bulk-merge primitives shared with the immutable storage.
+/// Holds the mutable sorted day-number / rate arrays backing an <see cref="RateSeriesBuilder" /> and implements the
+/// validation, search, insert, remove, and bulk-merge primitives shared with the immutable storage.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The buffer maintains the same invariants as <see cref="RateSeriesStorage" /> — strictly ascending unique day
-/// numbers and strictly positive rates — but grows its arrays with spare capacity using the <see cref="List{T}" />
-/// doubling rule. Single-element mutations perform a <see cref="Array.BinarySearch{T}(T[], int, int, T)" /> followed by
-/// an <see cref="Array.Copy(Array, int, Array, int, int)" /> shift. Range mutations sort and deduplicate the incoming
+/// The buffer maintains the same invariants as <see cref="RateSeriesStorage" /> — strictly ascending unique day numbers
+/// and strictly positive rates — but grows its arrays with spare capacity using the <see cref="List{T}" /> doubling
+/// rule. Single-element mutations perform a <see cref="Array.BinarySearch{T}(T[], int, int, T)" /> followed by an
+/// <see cref="Array.Copy(Array, int, Array, int, int)" /> shift. Range mutations sort and deduplicate the incoming
 /// batch, then run a two-pointer merge against the existing buffer into fresh arrays so a validation failure leaves the
 /// buffer unchanged.
 /// </para>

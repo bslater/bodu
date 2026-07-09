@@ -31,9 +31,7 @@ public static class SqliteRateCacheExtensions
     /// <param name="configuration">
     /// An optional configuration root or section bound into <see cref="SqliteRateCacheOptions" />.
     /// </param>
-    /// <param name="sectionName">
-    /// The configuration section name. Defaults to <c>Financial:RateCache:Sqlite</c>.
-    /// </param>
+    /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:RateCache:Sqlite</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
     /// <returns>The builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException">
@@ -51,9 +49,9 @@ public static class SqliteRateCacheExtensions
     /// </para>
     /// <para>
     /// Call this once per provider to register several caches side by side. Point them at distinct
-    /// <see cref="SqliteRateCacheOptions.DatabaseFilePath" /> values to isolate each provider in its own file,
-    /// or at one shared file to hold every provider's series in a single database — the provider is the leading key
-    /// column, so the series stay partitioned with no collisions. The first registration also backs the default
+    /// <see cref="SqliteRateCacheOptions.DatabaseFilePath" /> values to isolate each provider in its own file, or at
+    /// one shared file to hold every provider's series in a single database — the provider is the leading key column,
+    /// so the series stay partitioned with no collisions. The first registration also backs the default
     /// <see cref="IRateCache" /> resolution; resolve a specific provider's cache by its key.
     /// </para>
     /// </remarks>

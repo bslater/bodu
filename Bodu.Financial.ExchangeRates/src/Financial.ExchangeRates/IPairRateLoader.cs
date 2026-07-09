@@ -13,10 +13,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Every <see cref="WebRateProvider" /> implements this contract, so a consumer can treat a pair feed (such as
-/// Yahoo) and a bulk feed (such as RBA, ECB, or Bank of England) uniformly for cache warming. Providers additionally
-/// expose their own strongly-typed discovery surface (for example a <c>GetAvailablePairs</c> that returns feed-specific
-/// series metadata); this interface deliberately projects only the common <see cref="CurrencyPair" />.
+/// Every <see cref="WebRateProvider" /> implements this contract, so a consumer can treat a pair feed (such as Yahoo)
+/// and a bulk feed (such as RBA, ECB, or Bank of England) uniformly for cache warming. Providers additionally expose
+/// their own strongly-typed discovery surface (for example a <c>GetAvailablePairs</c> that returns feed-specific series
+/// metadata); this interface deliberately projects only the common <see cref="CurrencyPair" />.
 /// </para>
 /// </remarks>
 public interface IPairRateLoader

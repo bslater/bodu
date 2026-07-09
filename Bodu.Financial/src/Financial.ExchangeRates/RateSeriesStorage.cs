@@ -10,9 +10,8 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Stores the validated, sorted, deduplicated day-number / rate arrays that back an immutable
-/// <see cref="RateSeries" /> snapshot and provides the lookup, enumeration, and construction logic shared with
-/// the mutable buffer.
+/// Stores the validated, sorted, deduplicated day-number / rate arrays that back an immutable <see cref="RateSeries" />
+/// snapshot and provides the lookup, enumeration, and construction logic shared with the mutable buffer.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -34,8 +33,8 @@ internal sealed class RateSeriesStorage
     private readonly decimal[] _rates;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RateSeriesStorage" /> class with the supplied pre-validated
-    /// arrays. The instance assumes ownership; callers must not mutate the arrays after the call.
+    /// Initializes a new instance of the <see cref="RateSeriesStorage" /> class with the supplied pre-validated arrays.
+    /// The instance assumes ownership; callers must not mutate the arrays after the call.
     /// </summary>
     /// <param name="dayNumbers">The strictly ascending day-number array.</param>
     /// <param name="rates">The aligned strictly-positive rate array.</param>
@@ -62,6 +61,29 @@ internal sealed class RateSeriesStorage
     /// </summary>
     /// <value>The latest observation date.</value>
     public DateOnly LastDate => DateOnly.FromDayNumber(_dayNumbers[_dayNumbers.Length - 1]);
+
+    /// <summary>
+    /// Validates, sorts, and deduplicates the supplied observation sequence and returns a new storage instance.
+    /// </summary>
+    /// <param name="observations">The candidate observations.</param>
+    /// <param name="observationsParamName">
+    /// The parameter name used in raised exceptions so the caller's signature is reflected in
+    /// <see cref="ArgumentException.ParamName" />.
+    /// </param>
+    /// <returns>A new <see cref="RateSeriesStorage" /> wrapping the validated arrays.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="observations" /> is empty or contains duplicate dates.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if any rate is zero or negative.</exception>
+    public static RateSeriesStorage Create(
+        IEnumerable<RateObservation> observations,
+        string observationsParamName)
+    {
+        List<(int DayNumber, decimal Rate)> normalised =
+            RateObservationNormalizer.ToSortedUniqueList(observations, observationsParamName, allowEmpty: false);
+
+        return MaterialiseFromNormalised(normalised);
+    }
 
     /// <summary>
     /// Attempts to resolve a rate for <paramref name="requestedDate" /> under <paramref name="options" />.
@@ -172,72 +194,6 @@ internal sealed class RateSeriesStorage
     }
 
     /// <summary>
-    /// Copies the storage's contents into the supplied caller-owned arrays. Used by the mutable buffer's seeding path
-    /// so the round-trip through <see cref="DateOnly" /> can be avoided.
-    /// </summary>
-    /// <param name="dayNumbers">
-    /// The caller-owned array that receives the day numbers; must be at least <see cref="Count" /> long.
-    /// </param>
-    /// <param name="rates">
-    /// The caller-owned array that receives the rates; must be at least <see cref="Count" /> long.
-    /// </param>
-    internal void CopyTo(int[] dayNumbers, decimal[] rates)
-    {
-        Debug.Assert(dayNumbers is not null && rates is not null);
-        Debug.Assert(dayNumbers!.Length >= _dayNumbers.Length);
-        Debug.Assert(rates!.Length >= _dayNumbers.Length);
-
-        Array.Copy(_dayNumbers, dayNumbers, _dayNumbers.Length);
-        Array.Copy(_rates, rates, _rates.Length);
-    }
-
-    /// <summary>
-    /// Validates, sorts, and deduplicates the supplied tuple sequence and returns a new storage instance.
-    /// </summary>
-    /// <param name="rates">The candidate observations.</param>
-    /// <param name="ratesParamName">
-    /// The parameter name used in raised exceptions so the caller's signature is reflected in
-    /// <see cref="ArgumentException.ParamName" />.
-    /// </param>
-    /// <returns>A new <see cref="RateSeriesStorage" /> wrapping the validated arrays.</returns>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="rates" /> is empty or contains duplicate dates.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if any rate is zero or negative.</exception>
-    public static RateSeriesStorage Create(
-        IEnumerable<(DateOnly Date, decimal Rate)> rates,
-        string ratesParamName)
-    {
-        List<(int DayNumber, decimal Rate)> normalised =
-            RateObservationNormalizer.ToSortedUniqueList(rates, ratesParamName, allowEmpty: false);
-
-        return MaterialiseFromNormalised(normalised);
-    }
-
-    /// <summary>
-    /// Validates, sorts, and deduplicates the supplied observation sequence and returns a new storage instance.
-    /// </summary>
-    /// <param name="observations">The candidate observations.</param>
-    /// <param name="observationsParamName">
-    /// The parameter name used in raised exceptions so the caller's signature is reflected in
-    /// <see cref="ArgumentException.ParamName" />.
-    /// </param>
-    /// <returns>A new <see cref="RateSeriesStorage" /> wrapping the validated arrays.</returns>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="observations" /> is empty or contains duplicate dates.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if any rate is zero or negative.</exception>
-    public static RateSeriesStorage Create(
-        IEnumerable<RateObservation> observations,
-        string observationsParamName)
-    {
-        List<(int DayNumber, decimal Rate)> normalised =
-            RateObservationNormalizer.ToSortedUniqueList(observations, observationsParamName, allowEmpty: false);
-
-        return MaterialiseFromNormalised(normalised);
-    }
-
-    /// <summary>
     /// Adopts ownership of pre-validated strictly-ascending day-number and rate arrays. Asserts the invariants in debug
     /// builds and skips revalidation in release builds.
     /// </summary>
@@ -264,6 +220,26 @@ internal sealed class RateSeriesStorage
     /// <returns>A new <see cref="RateSeriesStorage" /> wrapping the supplied arrays.</returns>
     internal static RateSeriesStorage CreateFromSortedUnique(int[] dayNumbers, decimal[] rates) =>
         AdoptSortedUniqueArrays(dayNumbers, rates);
+
+    /// <summary>
+    /// Copies the storage's contents into the supplied caller-owned arrays. Used by the mutable buffer's seeding path
+    /// so the round-trip through <see cref="DateOnly" /> can be avoided.
+    /// </summary>
+    /// <param name="dayNumbers">
+    /// The caller-owned array that receives the day numbers; must be at least <see cref="Count" /> long.
+    /// </param>
+    /// <param name="rates">
+    /// The caller-owned array that receives the rates; must be at least <see cref="Count" /> long.
+    /// </param>
+    internal void CopyTo(int[] dayNumbers, decimal[] rates)
+    {
+        Debug.Assert(dayNumbers is not null && rates is not null);
+        Debug.Assert(dayNumbers!.Length >= _dayNumbers.Length);
+        Debug.Assert(rates!.Length >= _dayNumbers.Length);
+
+        Array.Copy(_dayNumbers, dayNumbers, _dayNumbers.Length);
+        Array.Copy(_rates, rates, _rates.Length);
+    }
 
     /// <summary>
     /// Reports whether <paramref name="dayNumbers" /> is strictly ascending. Used only by debug assertions.

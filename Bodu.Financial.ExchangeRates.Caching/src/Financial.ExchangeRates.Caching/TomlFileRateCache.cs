@@ -9,8 +9,8 @@ using Bodu.Text.Toml;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IRateCache" /> that persists a provider's rates as TOML files, one file per currency pair (or,
-/// under a partitioned layout, per pair and calendar period).
+/// An <see cref="IRateCache" /> that persists a provider's rates as TOML files, one file per currency pair (or, under a
+/// partitioned layout, per pair and calendar period).
 /// </summary>
 /// <remarks>
 /// <para>
@@ -28,10 +28,10 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// has no <c>Provider</c>/<c>From</c>/<c>To</c> keys.
 /// </para>
 /// <para>
-/// Files are laid out by the configured <see cref="FileRateCacheOptions.Layout" /> — by default a single file
-/// per pair under a per-provider subdirectory, or one file per calendar period when a partitioned layout is selected.
-/// Malformed content is treated as an empty result, and all file-level resilience — including atomic temp-and-move
-/// writes — is provided by <see cref="FileRateCacheBase{TOptions}" />.
+/// Files are laid out by the configured <see cref="FileRateCacheOptions.Layout" /> — by default a single file per pair
+/// under a per-provider subdirectory, or one file per calendar period when a partitioned layout is selected. Malformed
+/// content is treated as an empty result, and all file-level resilience — including atomic temp-and-move writes — is
+/// provided by <see cref="FileRateCacheBase{TOptions}" />.
 /// </para>
 /// </remarks>
 /// <example>

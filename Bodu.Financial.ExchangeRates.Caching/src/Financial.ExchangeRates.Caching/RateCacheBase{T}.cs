@@ -9,10 +9,9 @@ using System.Collections.Concurrent;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Provides the storage-agnostic mechanism for an <see cref="IRateCache" />: read-time freshness filtering,
-/// write-time merge-and-prune, and the recording and pruning of coverage windows for a single provider. Derived types
-/// implement only the persistence of a <see cref="CachePairState" />; this base prescribes no physical storage
-/// structure.
+/// Provides the storage-agnostic mechanism for an <see cref="IRateCache" />: read-time freshness filtering, write-time
+/// merge-and-prune, and the recording and pruning of coverage windows for a single provider. Derived types implement
+/// only the persistence of a <see cref="CachePairState" />; this base prescribes no physical storage structure.
 /// </summary>
 /// <typeparam name="TOptions">The options type carrying the bound provider and any storage settings.</typeparam>
 /// <remarks>
@@ -32,8 +31,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// <para>
 /// The freshness, validity, merge, and coverage rules are not implemented here: they are delegated to the shared
-/// <see cref="RateCacheRules" /> so this base and the SQLite and distributed backends apply one authoritative
-/// policy. This base contributes only the per-pair locking and the read-modify-write sequencing over a
+/// <see cref="RateCacheRules" /> so this base and the SQLite and distributed backends apply one authoritative policy.
+/// This base contributes only the per-pair locking and the read-modify-write sequencing over a
 /// <see cref="CachePairState" />.
 /// </para>
 /// </remarks>
@@ -179,14 +178,13 @@ public abstract class RateCacheBase<TOptions>
     /// <see cref="CachePairState" /> is an internal storage detail shared only with same-assembly backends. The
     /// <see cref="bool" /> result lets <see cref="StoreFetchedRange" /> distinguish a durable write from a best-effort
     /// backend that swallowed an <see cref="IOException" /> or similar fault, so a failed write is reported as
-    /// <see cref="RateCacheWriteStatus.Failed" /> rather than falsely as
-    /// <see cref="RateCacheWriteStatus.Stored" />.
+    /// <see cref="RateCacheWriteStatus.Failed" /> rather than falsely as <see cref="RateCacheWriteStatus.Stored" />.
     /// </remarks>
     private protected abstract bool WriteState(CurrencyPair pair, CachePairState state);
 
     /// <summary>
-    /// Projects the internal coverage windows into the plain tuples the shared <see cref="RateCacheRules" />
-    /// operate on.
+    /// Projects the internal coverage windows into the plain tuples the shared <see cref="RateCacheRules" /> operate
+    /// on.
     /// </summary>
     /// <param name="coverage">The coverage windows to project.</param>
     /// <returns>The windows as <c>(Start, End, FetchedAtUtc)</c> tuples.</returns>
@@ -200,8 +198,8 @@ public abstract class RateCacheBase<TOptions>
     }
 
     /// <summary>
-    /// Projects the plain coverage tuples produced by the shared <see cref="RateCacheRules" /> back into the
-    /// internal <see cref="CoverageWindow" /> representation persisted in a <see cref="CachePairState" />.
+    /// Projects the plain coverage tuples produced by the shared <see cref="RateCacheRules" /> back into the internal
+    /// <see cref="CoverageWindow" /> representation persisted in a <see cref="CachePairState" />.
     /// </summary>
     /// <param name="tuples">The coverage tuples to project.</param>
     /// <returns>The tuples as <see cref="CoverageWindow" /> values.</returns>

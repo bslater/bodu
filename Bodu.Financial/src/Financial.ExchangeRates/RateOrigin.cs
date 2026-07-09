@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateOrigin.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,9 +11,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// from one served out of a cache.
 /// </summary>
 /// <remarks>
-/// The value is surfaced through <see cref="RateProvenance.Origin" /> on every
-/// <see cref="RateLookupResult" />, so a caller can tell a freshly resolved rate from a cached one without
-/// inspecting the provider chain.
+/// The value is surfaced through <see cref="RateProvenance.Origin" /> on every <see cref="RateLookupResult" />, so a
+/// caller can tell a freshly resolved rate from a cached one without inspecting the provider chain.
 /// </remarks>
 public enum RateOrigin
 {

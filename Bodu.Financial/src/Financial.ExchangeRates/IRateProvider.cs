@@ -11,8 +11,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// Implementations decide where rates come from: a static table, a daily snapshot, a live ticker, a mid-market computed
-/// from bid/ask, and so on. Consumers of <see cref="MoneyBag.ConvertTo{TTarget}(IRateProvider)" /> only need
-/// the abstract <see cref="GetRate(string, string)" /> contract.
+/// from bid/ask, and so on. Consumers of <see cref="MoneyBag.ConvertTo{TTarget}(IRateProvider)" /> only need the
+/// abstract <see cref="GetRate(string, string)" /> contract.
 /// </remarks>
 /// <example>
 /// <code language="csharp">

@@ -45,8 +45,8 @@ public static class XeFinancialServiceBuilderExtensions
     /// <para>
     /// The provider is registered as a singleton so its in-memory store of fetched pairs is shared across resolutions;
     /// it is backed by an <see cref="IHttpClientFactory" /> client so handler lifetime is managed by the factory. The
-    /// provider is also exposed as <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />
-    /// through idempotent registrations.
+    /// provider is also exposed as <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" /> through
+    /// idempotent registrations.
     /// </para>
     /// <para>
     /// The named <see cref="HttpClient" /> is fitted with the standard Polly resilience handler (retry with exponential

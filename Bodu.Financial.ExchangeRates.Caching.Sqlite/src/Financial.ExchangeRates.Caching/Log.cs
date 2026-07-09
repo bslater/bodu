@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Provides the source-generated, allocation-free logging messages emitted by <see cref="SqliteRateCache" />
-/// when a best-effort storage failure is swallowed.
+/// Provides the source-generated, allocation-free logging messages emitted by <see cref="SqliteRateCache" /> when a
+/// best-effort storage failure is swallowed.
 /// </summary>
 /// <remarks>
 /// The messages are produced by the <see cref="LoggerMessageAttribute" /> source generator, so a disabled or

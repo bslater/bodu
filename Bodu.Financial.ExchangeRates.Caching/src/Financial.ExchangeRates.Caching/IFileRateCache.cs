@@ -7,13 +7,13 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Specializes <see cref="IRateCache" /> for caches that persist rates as files, exposing the storage directory
-/// and the file or directory a pair resolves to under the configured layout.
+/// Specializes <see cref="IRateCache" /> for caches that persist rates as files, exposing the storage directory and the
+/// file or directory a pair resolves to under the configured layout.
 /// </summary>
 /// <remarks>
 /// This is the file-storage seam of the caching design. Other storage kinds define their own specialization of
-/// <see cref="IRateCache" /> (for example a database cache exposing a table or connection name); consumers that
-/// only need the storage-agnostic contract continue to depend on <see cref="IRateCache" />.
+/// <see cref="IRateCache" /> (for example a database cache exposing a table or connection name); consumers that only
+/// need the storage-agnostic contract continue to depend on <see cref="IRateCache" />.
 /// </remarks>
 public interface IFileRateCache
     : IRateCache

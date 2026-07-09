@@ -10,8 +10,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// Describes one currency series fetched from Yahoo Finance: the pair it represents and the ticker that identifies it.
 /// </summary>
 /// <remarks>
-/// Exposed through <see cref="PairWebRateProvider{TSeries}.GetAvailablePairs" /> so callers can discover which
-/// currency pairs the provider has loaded without hard-coding the list.
+/// Exposed through <see cref="PairWebRateProvider{TSeries}.GetAvailablePairs" /> so callers can discover which currency
+/// pairs the provider has loaded without hard-coding the list.
 /// </remarks>
 public sealed class YahooSeriesInfo
 {

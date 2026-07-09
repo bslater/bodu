@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingRateOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Configures a <see cref="CachingRateProvider" />: the on-disk cache location, the default time a cached rate
-/// stays fresh, and per-provider overrides of that default.
+/// Configures a <see cref="CachingRateProvider" />: the on-disk cache location, the default time a cached rate stays
+/// fresh, and per-provider overrides of that default.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -70,16 +70,16 @@ public sealed class CachingRateOptions
 
     /// <summary>
     /// Gets or sets a value indicating whether the provider consults the inner source's advertised
-    /// <see cref="RateHistoryAvailability" /> before delegating a miss, skipping or clamping fetches for dates
-    /// the source has declared it cannot serve.
+    /// <see cref="RateHistoryAvailability" /> before delegating a miss, skipping or clamping fetches for dates the
+    /// source has declared it cannot serve.
     /// </summary>
     /// <value><see langword="true" /> to respect the advertised history; defaults to <see langword="true" />.</value>
     /// <remarks>
-    /// The clamp applies only when the inner provider implements <see cref="IHistoryAwareRateProvider" />; a
-    /// non-aware inner is treated as unbounded and never skipped. A skipped single-date lookup surfaces as an ordinary
-    /// miss, and a range window that starts before the advertised earliest date is fetched from that earliest date
-    /// while the whole requested window is still recorded as covered, so the unavailable prefix is not refetched until
-    /// normal expiry. Disable this to forward every request to the inner source unchanged.
+    /// The clamp applies only when the inner provider implements <see cref="IHistoryAwareRateProvider" />; a non-aware
+    /// inner is treated as unbounded and never skipped. A skipped single-date lookup surfaces as an ordinary miss, and
+    /// a range window that starts before the advertised earliest date is fetched from that earliest date while the
+    /// whole requested window is still recorded as covered, so the unavailable prefix is not refetched until normal
+    /// expiry. Disable this to forward every request to the inner source unchanged.
     /// </remarks>
     public bool RespectHistoryAvailability { get; set; } = true;
 
@@ -135,13 +135,10 @@ public sealed class CachingRateOptions
     public LogLevel RateProvenanceLogLevel { get; set; } = LogLevel.Debug;
 
     /// <summary>
-    /// Gets or sets the lookup options applied by the timeless
-    /// <see cref="IRateProvider.GetRate(string, string)" /> surface, which resolves the rate for the current
-    /// UTC date.
+    /// Gets or sets the lookup options applied by the timeless <see cref="IRateProvider.GetRate(string, string)" />
+    /// surface, which resolves the rate for the current UTC date.
     /// </summary>
-    /// <value>
-    /// The lookup options used for timeless lookups; defaults to <see cref="RateLookupOptions.Exact" />.
-    /// </value>
+    /// <value>The lookup options used for timeless lookups; defaults to <see cref="RateLookupOptions.Exact" />.</value>
     public RateLookupOptions DefaultLookupOptions { get; set; } = RateLookupOptions.Exact;
 
     /// <summary>

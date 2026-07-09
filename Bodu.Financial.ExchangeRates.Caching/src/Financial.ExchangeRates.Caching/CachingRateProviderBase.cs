@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingRateProviderBase.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,43 +12,41 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Provides the shared caching mechanism for a provider that wraps a single inner
-/// <see cref="IDatedRateProvider" /> over a single-provider <see cref="IRateCache" />: it serves fresh
-/// rates from the cache and delegates to the inner provider only on a miss, caching what the inner provider returns.
-/// Derived types supply the wrapped inner provider.
+/// Provides the shared caching mechanism for a provider that wraps a single inner <see cref="IDatedRateProvider" />
+/// over a single-provider <see cref="IRateCache" />: it serves fresh rates from the cache and delegates to the inner
+/// provider only on a miss, caching what the inner provider returns. Derived types supply the wrapped inner provider.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The provider implements the same <see cref="IDatedRateProvider" /> contract the caller resolves, so it can
-/// be inserted transparently, and also the timeless <see cref="IRateProvider" /> surface, which resolves the
-/// current UTC date under <see cref="CachingRateOptions.DefaultLookupOptions" />. The cache's
-/// <see cref="IRateCache.Provider" /> identifies the source: it selects the caching duration from
-/// <see cref="CachingRateOptions.ProviderExpiry" /> (falling back to
-/// <see cref="CachingRateOptions.DefaultExpiry" />) and tags both cached rows and log messages.
+/// The provider implements the same <see cref="IDatedRateProvider" /> contract the caller resolves, so it can be
+/// inserted transparently, and also the timeless <see cref="IRateProvider" /> surface, which resolves the current UTC
+/// date under <see cref="CachingRateOptions.DefaultLookupOptions" />. The cache's <see cref="IRateCache.Provider" />
+/// identifies the source: it selects the caching duration from <see cref="CachingRateOptions.ProviderExpiry" />
+/// (falling back to <see cref="CachingRateOptions.DefaultExpiry" />) and tags both cached rows and log messages.
 /// </para>
 /// <para>
 /// Single-date lookups serve per-row fresh observations and cache the resolved row on a miss. Range lookups serve from
 /// the cache only when its recorded coverage contains the whole requested window — that is, every day in the window was
 /// actually fetched and is still fresh — so an interior day that was never fetched forces a refetch rather than being
 /// served from a sparse set of rows. On a miss the whole range is refetched from the inner provider and written back
-/// through a single atomic <see cref="IRateCache.StoreFetchedRange" /> that merges the rows and records the
-/// covered window together, even when the fetch returned no rows, so an empty-but-fetched window is not refetched on
-/// the next lookup. To group several sources behind one entry point, wrap each in its own caching provider and compose
-/// them with an <see cref="AggregatingRateProvider" />.
+/// through a single atomic <see cref="IRateCache.StoreFetchedRange" /> that merges the rows and records the covered
+/// window together, even when the fetch returned no rows, so an empty-but-fetched window is not refetched on the next
+/// lookup. To group several sources behind one entry point, wrap each in its own caching provider and compose them with
+/// an <see cref="AggregatingRateProvider" />.
 /// </para>
 /// <para>
 /// When the inner provider advertises its history depth through <see cref="IHistoryAwareRateProvider" /> and
-/// <see cref="CachingRateOptions.RespectHistoryAvailability" /> is enabled (the default), misses for dates the
-/// source has declared unavailable are not delegated: a single-date lookup outside the advertised history surfaces as
-/// an ordinary miss without an inner call, and a range fetch is clamped to start at the advertised earliest date — or
+/// <see cref="CachingRateOptions.RespectHistoryAvailability" /> is enabled (the default), misses for dates the source
+/// has declared unavailable are not delegated: a single-date lookup outside the advertised history surfaces as an
+/// ordinary miss without an inner call, and a range fetch is clamped to start at the advertised earliest date — or
 /// skipped entirely when the whole window precedes it — while the full requested window is still recorded as covered,
 /// so the unavailable prefix is not re-asked until normal expiry.
 /// </para>
 /// <para>
-/// Because this provider is itself an <see cref="IDatedRateProvider" /> and accepts one as its inner source,
-/// caching providers also <em>stack</em>: wrapping a cached provider in a second caching provider forms a tiered
-/// read-through — a fast outer cache (for example in-memory) over a durable inner one (for example SQLite) over the
-/// origin — where each layer is consulted in turn and only a miss falls through. Bind every layer's cache to the same
+/// Because this provider is itself an <see cref="IDatedRateProvider" /> and accepts one as its inner source, caching
+/// providers also <em>stack</em>: wrapping a cached provider in a second caching provider forms a tiered read-through —
+/// a fast outer cache (for example in-memory) over a durable inner one (for example SQLite) over the origin — where
+/// each layer is consulted in turn and only a miss falls through. Bind every layer's cache to the same
 /// <see cref="IRateCache.Provider" /> so a served rate is tagged with the correct source.
 /// </para>
 /// <para>
@@ -384,10 +382,10 @@ public abstract class CachingRateProviderBase
     /// lookup could resolve to still precedes the advertised earliest date; otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// Forward-resolving rules (<see cref="RateDateResolution.NextOnOrAfter" /> and the nearest family) can
-    /// reach up to <see cref="RateLookupOptions.ToleranceDays" /> past the requested date, so the guard tests
-    /// that reachable maximum rather than the requested date itself — a request just outside the advertised floor whose
-    /// tolerance reaches back inside it is still delegated.
+    /// Forward-resolving rules (<see cref="RateDateResolution.NextOnOrAfter" /> and the nearest family) can reach up to
+    /// <see cref="RateLookupOptions.ToleranceDays" /> past the requested date, so the guard tests that reachable
+    /// maximum rather than the requested date itself — a request just outside the advertised floor whose tolerance
+    /// reaches back inside it is still delegated.
     /// </remarks>
     private bool IsOutsideAdvertisedHistory(DateOnly date, RateLookupOptions? options, DateTimeOffset now, out DateOnly earliest)
     {
@@ -456,9 +454,7 @@ public abstract class CachingRateProviderBase
     /// The cache-write instant representing the served data, or <see langword="null" /> when no cached row backs it.
     /// </param>
     /// <param name="asOf">The lookup instant the served data's age is derived from.</param>
-    /// <returns>
-    /// An <see cref="RateProvenance" /> carrying <see cref="RateOrigin.Cache" /> lineage.
-    /// </returns>
+    /// <returns>An <see cref="RateProvenance" /> carrying <see cref="RateOrigin.Cache" /> lineage.</returns>
     /// <remarks>
     /// Used by every serve path — single-date and range, synchronous and asynchronous — so a cache hit reports an
     /// identical provenance regardless of the surface it was served through.
@@ -639,9 +635,9 @@ public abstract class CachingRateProviderBase
     /// <param name="result">The resolved lookup result returned by the inner provider.</param>
     /// <param name="now">The instant to stamp the cached row with.</param>
     /// <remarks>
-    /// A single-date miss caches only the resolved row through <see cref="IRateCache.Store" /> and records no
-    /// coverage window, so a later range query that spans the same day still refetches it. This asymmetry is by design:
-    /// a single-date serve is satisfied per row, whereas only a range fetch establishes the contiguous coverage a range
+    /// A single-date miss caches only the resolved row through <see cref="IRateCache.Store" /> and records no coverage
+    /// window, so a later range query that spans the same day still refetches it. This asymmetry is by design: a
+    /// single-date serve is satisfied per row, whereas only a range fetch establishes the contiguous coverage a range
     /// serve requires.
     /// </remarks>
     private void StoreResult(TimeSpan duration, string fromIsoCode, string toIsoCode, RateLookupResult result, DateTimeOffset now)
@@ -719,8 +715,8 @@ public abstract class CachingRateProviderBase
 
     /// <summary>
     /// Resolves the upstream fetch instant that represents a single-date serve: the
-    /// <see cref="CachedRate.ObservedAtUtc" /> of the candidate row whose date matches the resolved result, or
-    /// the upstream fetch instant of the oldest candidate row (by cache-write instant) when no row matches that date.
+    /// <see cref="CachedRate.ObservedAtUtc" /> of the candidate row whose date matches the resolved result, or the
+    /// upstream fetch instant of the oldest candidate row (by cache-write instant) when no row matches that date.
     /// </summary>
     /// <param name="direct">The fresh candidate rows for the requested pair.</param>
     /// <param name="inverse">The fresh candidate rows for the inverse pair, empty when inversion is disallowed.</param>

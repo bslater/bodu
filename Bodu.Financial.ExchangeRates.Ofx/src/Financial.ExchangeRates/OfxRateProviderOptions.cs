@@ -9,15 +9,15 @@ using System.Globalization;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Configures how the <see cref="OfxRateProvider" /> addresses and interprets the OFX public spot-rate-history
-/// REST service.
+/// Configures how the <see cref="OfxRateProvider" /> addresses and interprets the OFX public spot-rate-history REST
+/// service.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the
-/// HTTP contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log
-/// levels. The members declared here are OFX-specific: the <see cref="HistoryPath" /> template into which the currency
-/// codes and the requested inclusive date range (as Unix-millisecond bounds) are substituted, the requested decimal
+/// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
+/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
+/// The members declared here are OFX-specific: the <see cref="HistoryPath" /> template into which the currency codes
+/// and the requested inclusive date range (as Unix-millisecond bounds) are substituted, the requested decimal
 /// precision, and the reporting interval sent as the <c>ReportingInterval</c> query parameter. The response is
 /// additionally range-filtered to the requested dates as a defensive measure.
 /// </para>
@@ -49,8 +49,8 @@ public sealed class OfxRateProviderOptions
     /// <remarks>
     /// OFX publishes multi-decade spot-rate history ("20+ years") but no fixed inception date, so the advertised
     /// <see cref="WebRateProviderOptions.HistoryAvailability" /> is deliberately
-    /// <see cref="RateHistoryAvailability.Unbounded" /> — there is no known floor worth pre-empting a request
-    /// for. Set the property when a concrete floor matters for the pairs in use.
+    /// <see cref="RateHistoryAvailability.Unbounded" /> — there is no known floor worth pre-empting a request for. Set
+    /// the property when a concrete floor matters for the pairs in use.
     /// </remarks>
     public OfxRateProviderOptions()
     {

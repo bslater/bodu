@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateSeriesNotFoundException.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,8 +27,7 @@ public sealed class RateSeriesNotFoundException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RateSeriesNotFoundException" /> class with the specified
-    /// message.
+    /// Initializes a new instance of the <see cref="RateSeriesNotFoundException" /> class with the specified message.
     /// </summary>
     /// <param name="message">A message that describes the unavailable pair.</param>
     public RateSeriesNotFoundException(string message)
@@ -37,8 +36,8 @@ public sealed class RateSeriesNotFoundException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RateSeriesNotFoundException" /> class with the specified
-    /// message and a reference to the underlying cause.
+    /// Initializes a new instance of the <see cref="RateSeriesNotFoundException" /> class with the specified message
+    /// and a reference to the underlying cause.
     /// </summary>
     /// <param name="message">A message that describes the unavailable pair.</param>
     /// <param name="innerException">The exception that is the cause of this exception.</param>

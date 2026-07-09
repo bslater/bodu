@@ -31,18 +31,17 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <para>
 /// Expiry is by caching duration rather than by storage: stale and semantically invalid rows are filtered on read and
 /// pruned on write, and stale coverage windows are pruned when coverage is recorded, so the database self-cleans over
-/// time. The freshness, validity, merge, and coverage rules are delegated to the shared
-/// <see cref="RateCacheRules" /> so this backend stays behaviourally identical to the in-memory, file, and
-/// distributed caches; this class contributes only its SQLite storage and locking. The two halves of a pair's state are
-/// written independently through <see cref="Store" /> and <see cref="RecordCoverage" /> — storing rates never drops
-/// recorded coverage, and recording coverage never drops cached rows — while <see cref="StoreFetchedRange" /> writes
-/// both halves in one transaction.
+/// time. The freshness, validity, merge, and coverage rules are delegated to the shared <see cref="RateCacheRules" />
+/// so this backend stays behaviourally identical to the in-memory, file, and distributed caches; this class contributes
+/// only its SQLite storage and locking. The two halves of a pair's state are written independently through
+/// <see cref="Store" /> and <see cref="RecordCoverage" /> — storing rates never drops recorded coverage, and recording
+/// coverage never drops cached rows — while <see cref="StoreFetchedRange" /> writes both halves in one transaction.
 /// </para>
 /// <para>
 /// The cache is a single-process best-effort store. Writes for the same pair are serialized under a per-pair lock and
 /// run in a transaction so concurrent same-pair writes cannot lose either half, matching the file cache's guarantee. As
-/// required by <see cref="IRateCache" />, a storage failure surfaces as an empty read or a skipped write rather
-/// than an exception: <see cref="SqliteException" /> and <see cref="IOException" /> degrade gracefully, while argument
+/// required by <see cref="IRateCache" />, a storage failure surfaces as an empty read or a skipped write rather than an
+/// exception: <see cref="SqliteException" /> and <see cref="IOException" /> degrade gracefully, while argument
 /// validation still throws.
 /// </para>
 /// <para>
@@ -50,8 +49,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <see cref="LogLevel.Warning" /> through the optional logger supplied at construction. The first failure is logged
 /// immediately and subsequent failures are rate-limited to at most one warning per minute, each carrying the count of
 /// failures suppressed since the previous warning, so a sustained outage is visible to operators without flooding the
-/// log. With no logger the degradation is unreported; set <see cref="RateCacheOptions.ThrowOnStorageFailure" />
-/// instead when a failure must surface as an exception.
+/// log. With no logger the degradation is unreported; set <see cref="RateCacheOptions.ThrowOnStorageFailure" /> instead
+/// when a failure must surface as an exception.
 /// </para>
 /// <para>
 /// A single keep-alive connection is held open for the instance lifetime so that a shared in-memory database (
@@ -140,10 +139,9 @@ public sealed class SqliteRateCache
     /// <c>observed_at</c> column when it is absent, in one transaction, when the instance is constructed. A failure to
     /// create or migrate the schema is swallowed — and logged at <see cref="LogLevel.Warning" /> through
     /// <paramref name="logger" /> — so a transiently unwritable database surfaces later as empty reads and skipped
-    /// writes rather than a construction-time exception, unless
-    /// <see cref="RateCacheOptions.ValidateStorageOnStart" /> or
-    /// <see cref="RateCacheOptions.ThrowOnStorageFailure" /> is set, in which case the failure propagates from
-    /// the constructor.
+    /// writes rather than a construction-time exception, unless <see cref="RateCacheOptions.ValidateStorageOnStart" />
+    /// or <see cref="RateCacheOptions.ThrowOnStorageFailure" /> is set, in which case the failure propagates from the
+    /// constructor.
     /// </remarks>
     public SqliteRateCache(SqliteRateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
     {
@@ -180,8 +178,7 @@ public sealed class SqliteRateCache
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SqliteRateCache" /> class bound to a provider and a
-    /// database file.
+    /// Initializes a new instance of the <see cref="SqliteRateCache" /> class bound to a provider and a database file.
     /// </summary>
     /// <param name="provider">The provider the cache stores rates for.</param>
     /// <param name="databaseFilePath">The path to the SQLite database file used by the cache.</param>

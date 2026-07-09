@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateHistoryAvailability.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,9 +14,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// A provider advertises its history depth through this value so a caller can know, before requesting an old date,
 /// whether the provider can satisfy it. A feed that publishes only the recent past (for example, an anonymous endpoint
-/// capped to roughly the last six months) declares a <see cref="RateHistoryAvailabilityKind.Rolling" /> window;
-/// a feed with a fixed inception date declares <see cref="RateHistoryAvailabilityKind.Since" />; a feed with no
-/// known floor declares <see cref="RateHistoryAvailabilityKind.Unbounded" />.
+/// capped to roughly the last six months) declares a <see cref="RateHistoryAvailabilityKind.Rolling" /> window; a feed
+/// with a fixed inception date declares <see cref="RateHistoryAvailabilityKind.Since" />; a feed with no known floor
+/// declares <see cref="RateHistoryAvailabilityKind.Unbounded" />.
 /// </para>
 /// <para>
 /// The value is advisory: it describes the provider's published coverage, not a guarantee that every day in range
@@ -64,8 +64,8 @@ public readonly record struct RateHistoryAvailability
     /// Gets the fixed earliest date on or after which the provider serves rates.
     /// </summary>
     /// <value>
-    /// The earliest date when <see cref="Kind" /> is <see cref="RateHistoryAvailabilityKind.Since" />;
-    /// otherwise the default date.
+    /// The earliest date when <see cref="Kind" /> is <see cref="RateHistoryAvailabilityKind.Since" />; otherwise the
+    /// default date.
     /// </value>
     public DateOnly EarliestDate { get; }
 

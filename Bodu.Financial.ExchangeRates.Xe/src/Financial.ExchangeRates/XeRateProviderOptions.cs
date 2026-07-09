@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XeRateProviderOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,15 +7,15 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Configures how the <see cref="XeRateProvider" /> addresses and interprets the XE.com charting-rates JSON
-/// service, and how it acquires the authorization token that endpoint requires.
+/// Configures how the <see cref="XeRateProvider" /> addresses and interprets the XE.com charting-rates JSON service,
+/// and how it acquires the authorization token that endpoint requires.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the
-/// HTTP contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log
-/// levels. The members declared here are XE-specific: the <see cref="ChartingRatesPath" /> queried for a pair, and the
-/// two URLs (<see cref="AuthBootstrapUrl" /> and <see cref="AuthScriptBaseUrl" />) used to discover the
+/// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
+/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
+/// The members declared here are XE-specific: the <see cref="ChartingRatesPath" /> queried for a pair, and the two URLs
+/// (<see cref="AuthBootstrapUrl" /> and <see cref="AuthScriptBaseUrl" />) used to discover the
 /// <c>Authorization: Basic</c> token by scanning the script chunks the XE website publishes. XE serves a
 /// server-determined window per request rather than honouring an explicit date range, so the response is range-filtered
 /// to the requested dates.

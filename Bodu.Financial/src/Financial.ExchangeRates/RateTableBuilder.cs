@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Provides a mutable collection of <see cref="RateSeriesBuilder" /> instances keyed by currency pair and
-/// provider, intended for assembling rate observations across many series before producing immutable snapshots.
+/// Provides a mutable collection of <see cref="RateSeriesBuilder" /> instances keyed by currency pair and provider,
+/// intended for assembling rate observations across many series before producing immutable snapshots.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -195,8 +195,8 @@ public sealed class RateTableBuilder
     /// Produces immutable snapshots for every non-empty series in the table.
     /// </summary>
     /// <returns>
-    /// A list of <see cref="RateSeries" /> instances, one per non-empty builder. Empty builders are skipped
-    /// because an immutable series must contain at least one observation.
+    /// A list of <see cref="RateSeries" /> instances, one per non-empty builder. Empty builders are skipped because an
+    /// immutable series must contain at least one observation.
     /// </returns>
     public IReadOnlyList<RateSeries> ToSeries()
     {
@@ -214,8 +214,8 @@ public sealed class RateTableBuilder
     /// Produces an immutable <see cref="RateBook" /> snapshot containing one series per non-empty builder.
     /// </summary>
     /// <returns>
-    /// A new <see cref="RateBook" /> indexed by (pair, provider). Empty builders are skipped because an
-    /// immutable series must contain at least one observation.
+    /// A new <see cref="RateBook" /> indexed by (pair, provider). Empty builders are skipped because an immutable
+    /// series must contain at least one observation.
     /// </returns>
     /// <remarks>
     /// The returned book preserves multi-provider entries for the same pair, making it the recommended hand-off path

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateBookExtensions.ToFixedProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.Financial.Extensions;
 public static partial class RateBookExtensions
 {
     /// <summary>
-    /// Wraps the book in an immutable <see cref="FixedDatedRateProvider" />, deriving the provider selection
-    /// from the book's single provider per pair.
+    /// Wraps the book in an immutable <see cref="FixedDatedRateProvider" />, deriving the provider selection from the
+    /// book's single provider per pair.
     /// </summary>
     /// <param name="book">The immutable book to wrap.</param>
     /// <returns>A provider resolving rates from <paramref name="book" />.</returns>
@@ -31,8 +31,8 @@ public static partial class RateBookExtensions
     }
 
     /// <summary>
-    /// Wraps the book in an immutable <see cref="FixedDatedRateProvider" /> applying an explicit
-    /// provider-priority list per pair.
+    /// Wraps the book in an immutable <see cref="FixedDatedRateProvider" /> applying an explicit provider-priority list
+    /// per pair.
     /// </summary>
     /// <param name="book">The immutable book to wrap.</param>
     /// <param name="providerPriority">

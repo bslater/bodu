@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OandaSeriesInfo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// and the price basis the rates were drawn from.
 /// </summary>
 /// <remarks>
-/// Exposed through <see cref="PairWebRateProvider{TSeries}.GetAvailablePairs" /> so callers can discover which
-/// currency pairs the provider has loaded without hard-coding the list.
+/// Exposed through <see cref="PairWebRateProvider{TSeries}.GetAvailablePairs" /> so callers can discover which currency
+/// pairs the provider has loaded without hard-coding the list.
 /// </remarks>
 public sealed class OandaSeriesInfo
 {

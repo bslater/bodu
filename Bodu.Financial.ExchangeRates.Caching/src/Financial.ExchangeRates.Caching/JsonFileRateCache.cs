@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="JsonFileRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ using System.Text.Json.Serialization;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IRateCache" /> that persists a provider's rates as JSON files, one file per currency pair (or,
-/// under a partitioned layout, per pair and calendar period).
+/// An <see cref="IRateCache" /> that persists a provider's rates as JSON files, one file per currency pair (or, under a
+/// partitioned layout, per pair and calendar period).
 /// </summary>
 /// <remarks>
 /// <para>
@@ -28,10 +28,10 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// the self-describing header was added has no <c>Provider</c>/<c>From</c>/<c>To</c> keys.
 /// </para>
 /// <para>
-/// Files are laid out by the configured <see cref="FileRateCacheOptions.Layout" /> — by default a single file
-/// per pair under a per-provider subdirectory, or one file per calendar period when a partitioned layout is selected.
-/// Malformed content is treated as an empty result, and all file-level resilience — including atomic temp-and-move
-/// writes — is provided by <see cref="FileRateCacheBase{TOptions}" />.
+/// Files are laid out by the configured <see cref="FileRateCacheOptions.Layout" /> — by default a single file per pair
+/// under a per-provider subdirectory, or one file per calendar period when a partitioned layout is selected. Malformed
+/// content is treated as an empty result, and all file-level resilience — including atomic temp-and-move writes — is
+/// provided by <see cref="FileRateCacheBase{TOptions}" />.
 /// </para>
 /// </remarks>
 /// <example>

@@ -7,14 +7,13 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Configures how the <see cref="YahooRateProvider" /> addresses and interprets the Yahoo Finance chart REST
-/// service.
+/// Configures how the <see cref="YahooRateProvider" /> addresses and interprets the Yahoo Finance chart REST service.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the
-/// HTTP contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log
-/// levels. The members declared here are Yahoo-specific: the <see cref="ChartPath" /> template and the
+/// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
+/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
+/// The members declared here are Yahoo-specific: the <see cref="ChartPath" /> template and the
 /// <see cref="SymbolFormat" /> used to build the foreign-exchange ticker. The chart bar interval is fixed at one day,
 /// and the date range is supplied per call through the provider's lookup and range methods.
 /// </para>
@@ -44,9 +43,9 @@ public sealed class YahooRateProviderOptions
     /// its base address and a fixed history floor at the chart data's December 2003 inception.
     /// </summary>
     /// <remarks>
-    /// The advertised <see cref="WebRateProviderOptions.HistoryAvailability" /> is advisory: individual pairs
-    /// may start later than the December 2003 inception of the longest-running pairs. Override the property when the
-    /// pairs in use are known to have a later floor.
+    /// The advertised <see cref="WebRateProviderOptions.HistoryAvailability" /> is advisory: individual pairs may start
+    /// later than the December 2003 inception of the longest-running pairs. Override the property when the pairs in use
+    /// are known to have a later floor.
     /// </remarks>
     public YahooRateProviderOptions()
     {

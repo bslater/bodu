@@ -9,16 +9,16 @@ using System.Collections.Concurrent;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IRateCache" /> that stores a single provider's rates in memory for the lifetime of the
-/// instance, expiring them through the same freshness mechanism as the file caches.
+/// An <see cref="IRateCache" /> that stores a single provider's rates in memory for the lifetime of the instance,
+/// expiring them through the same freshness mechanism as the file caches.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Rates expire by caching duration rather than by storage: the shared <see cref="RateCacheBase{TOptions}" />
-/// filters stale rows on read and prunes them on write, so a cached rate is served only while it remains fresh under
-/// the duration supplied by the caching provider (see <see cref="CachingRateOptions.DefaultExpiry" /> and
-/// <see cref="CachingRateOptions.ProviderExpiry" />). Nothing is persisted, so the cache starts empty on each
-/// process and is a drop-in alternative to <see cref="TomlFileRateCache" /> when on-disk files are unwanted.
+/// Rates expire by caching duration rather than by storage: the shared <see cref="RateCacheBase{TOptions}" /> filters
+/// stale rows on read and prunes them on write, so a cached rate is served only while it remains fresh under the
+/// duration supplied by the caching provider (see <see cref="CachingRateOptions.DefaultExpiry" /> and
+/// <see cref="CachingRateOptions.ProviderExpiry" />). Nothing is persisted, so the cache starts empty on each process
+/// and is a drop-in alternative to <see cref="TomlFileRateCache" /> when on-disk files are unwanted.
 /// </para>
 /// <para>
 /// Reads and writes are individually thread-safe. As with every <see cref="IRateCache" />, a concurrent

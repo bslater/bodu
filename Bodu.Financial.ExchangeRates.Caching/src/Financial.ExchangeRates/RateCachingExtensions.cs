@@ -23,9 +23,9 @@ public static class RateCachingExtensions
     private const string DefaultCacheSection = "Financial:RateCache";
 
     /// <summary>
-    /// Registers a <see cref="CachingRateProvider" /> that wraps a single source
-    /// <typeparamref name="TProvider" /> over its own on-disk cache, resolvable as both
-    /// <see cref="IDatedRateProvider" /> and the timeless <see cref="IRateProvider" />.
+    /// Registers a <see cref="CachingRateProvider" /> that wraps a single source <typeparamref name="TProvider" /> over
+    /// its own on-disk cache, resolvable as both <see cref="IDatedRateProvider" /> and the timeless
+    /// <see cref="IRateProvider" />.
     /// </summary>
     /// <typeparam name="TProvider">The concrete source provider to cache.</typeparam>
     /// <param name="builder">The financial service builder.</param>
@@ -33,13 +33,11 @@ public static class RateCachingExtensions
     /// <param name="configuration">
     /// An optional configuration root or section bound into <see cref="CachingRateOptions" />.
     /// </param>
-    /// <param name="sectionName">
-    /// The configuration section name. Defaults to <c>Financial:RateCache</c>.
-    /// </param>
+    /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:RateCache</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
     /// <param name="cacheFactory">
-    /// An optional factory producing the <see cref="IRateCache" /> from the service provider and the provider
-    /// name. When <see langword="null" />, a default <see cref="TomlFileRateCache" /> bound to
+    /// An optional factory producing the <see cref="IRateCache" /> from the service provider and the provider name.
+    /// When <see langword="null" />, a default <see cref="TomlFileRateCache" /> bound to
     /// <paramref name="providerName" /> under the options' <c>CacheDirectory</c> is used. Supply a factory to choose
     /// the storage structure — for example a JSON cache, a partitioned file layout, or a SQLite or distributed cache.
     /// </param>
@@ -97,17 +95,15 @@ public static class RateCachingExtensions
     /// <summary>
     /// Registers an <see cref="AggregatingRateProvider" /> that groups the cached children added through
     /// <paramref name="configure" />, resolvable as both <see cref="IDatedRateProvider" /> and the timeless
-    /// <see cref="IRateProvider" />. Each child is also registered as a keyed
-    /// <see cref="IDatedRateProvider" /> so a specific source can be resolved by name.
+    /// <see cref="IRateProvider" />. Each child is also registered as a keyed <see cref="IDatedRateProvider" /> so a
+    /// specific source can be resolved by name.
     /// </summary>
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configure">A callback that adds the cached children and configures routing and strategy.</param>
     /// <param name="configuration">
     /// An optional configuration root or section bound into the shared <see cref="CachingRateOptions" />.
     /// </param>
-    /// <param name="sectionName">
-    /// The configuration section name. Defaults to <c>Financial:RateCache</c>.
-    /// </param>
+    /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:RateCache</c>.</param>
     /// <param name="configureCache">
     /// An optional callback applied to the shared cache options after configuration binding.
     /// </param>

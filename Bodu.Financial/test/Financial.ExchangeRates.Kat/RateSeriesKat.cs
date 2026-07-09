@@ -9,8 +9,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Financial.ExchangeRates.Kat;
 
 /// <summary>
-/// Represents a known-answer test row exercising full <see cref="RateSeries" /> construction followed by a
-/// single <see cref="RateSeries.TryGetRate" /> call.
+/// Represents a known-answer test row exercising full <see cref="RateSeries" /> construction followed by a single
+/// <see cref="RateSeries.TryGetRate" /> call.
 /// </summary>
 /// <param name="Name">The short label identifying the scenario.</param>
 /// <param name="Pair">The currency pair carried by the constructed series.</param>

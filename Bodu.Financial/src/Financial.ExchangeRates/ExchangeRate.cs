@@ -17,9 +17,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// An <see cref="ExchangeRate" /> is an immutable value object intended to be passed back from a provider together with
-/// resolution metadata in an <see cref="RateLookupResult" />. It carries enough context — direction, date,
-/// provider name, and inversion flag — for downstream auditability (for example, tax and accounting reports) without
-/// requiring the caller to reach back into the provider.
+/// resolution metadata in an <see cref="RateLookupResult" />. It carries enough context — direction, date, provider
+/// name, and inversion flag — for downstream auditability (for example, tax and accounting reports) without requiring
+/// the caller to reach back into the provider.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -40,12 +40,6 @@ namespace Bodu.Financial.ExchangeRates;
 [JsonConverter(typeof(ExchangeRateJsonConverter))]
 public readonly record struct ExchangeRate
 {
-    /// <summary>The underlying observed rate used for precise conversion. For a non-inverted rate this equals <see cref="Rate" />; for an inverted rate it is the original reverse-pair rate, so conversion divides by it rather than multiplying by a pre-rounded reciprocal.</summary>
-    private readonly decimal _observedRate;
-
-    /// <summary>The UTC instant at which the upstream data backing this rate was originally fetched, or <see langword="null" /> when the fetch instant is not tracked. Carried as provenance metadata only and excluded from equality.</summary>
-    private readonly DateTimeOffset? _fetchedAtUtc;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="ExchangeRate" /> class.
     /// </summary>
@@ -82,7 +76,7 @@ public readonly record struct ExchangeRate
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeRate" /> struct from fully resolved field values, including
+    /// Initializes a new instance of the <see cref="ExchangeRate" /> class from fully resolved field values, including
     /// the underlying observed rate.
     /// </summary>
     /// <param name="from">The source currency.</param>
@@ -117,8 +111,8 @@ public readonly record struct ExchangeRate
         Rate = rate;
         Provider = provider;
         IsInverted = isInverted;
-        _observedRate = observedRate;
-        _fetchedAtUtc = fetchedAtUtc;
+        ObservedRate = observedRate;
+        FetchedAtUtc = fetchedAtUtc;
     }
 
     /// <summary>
@@ -238,14 +232,14 @@ public readonly record struct ExchangeRate
     /// is excluded from <see cref="Equals(ExchangeRate)" /> and <see cref="GetHashCode" />, so two rates that differ
     /// only in their fetch instant still compare equal.
     /// </remarks>
-    public DateTimeOffset? FetchedAtUtc => _fetchedAtUtc;
+    public DateTimeOffset? FetchedAtUtc { get; }
 
     /// <summary>
     /// Gets the underlying observed rate used for precise conversion. Equals <see cref="Rate" /> for a non-inverted
     /// rate; for an inverted rate it is the original reverse-pair rate.
     /// </summary>
     /// <value>The observed rate.</value>
-    internal decimal ObservedRate => _observedRate;
+    internal decimal ObservedRate { get; }
 
     /// <summary>
     /// Converts <paramref name="amount" /> from the source currency to the destination currency.
@@ -259,7 +253,7 @@ public readonly record struct ExchangeRate
     /// minor-unit precision.
     /// </remarks>
     public decimal Convert(decimal amount) =>
-        IsInverted ? amount / _observedRate : amount * _observedRate;
+        IsInverted ? amount / ObservedRate : amount * ObservedRate;
 
     /// <summary>
     /// Returns a copy of this rate with the specified upstream fetch instant, preserving all other values.
@@ -277,7 +271,7 @@ public readonly record struct ExchangeRate
     /// this one.
     /// </remarks>
     public ExchangeRate WithFetchedAtUtc(DateTimeOffset? fetchedAtUtc) =>
-        new(From, To, Date, Rate, _observedRate, Provider, IsInverted, fetchedAtUtc);
+        new(From, To, Date, Rate, ObservedRate, Provider, IsInverted, fetchedAtUtc);
 
     /// <summary>
     /// Determines whether this rate equals <paramref name="other" /> by its public fields. The internal observed rate

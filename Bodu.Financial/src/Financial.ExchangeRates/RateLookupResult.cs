@@ -28,9 +28,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// <see cref="Provenance" /> is always populated. A rate resolved directly by a provider carries
 /// <see cref="RateOrigin.Live" /> with a <see langword="null" /> <see cref="RateProvenance.Backend" />,
-/// <see cref="RateProvenance.CachedAtUtc" />, and <see cref="RateProvenance.Age" />. A rate served from
-/// a cache carries <see cref="RateOrigin.Cache" /> with the serving backend, the instant the served data was
-/// cached, and the age it had at the lookup instant.
+/// <see cref="RateProvenance.CachedAtUtc" />, and <see cref="RateProvenance.Age" />. A rate served from a cache carries
+/// <see cref="RateOrigin.Cache" /> with the serving backend, the instant the served data was cached, and the age it had
+/// at the lookup instant.
 /// </para>
 /// </remarks>
 public readonly record struct RateLookupResult(

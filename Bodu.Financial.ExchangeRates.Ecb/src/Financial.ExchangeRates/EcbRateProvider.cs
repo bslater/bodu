@@ -17,12 +17,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The provider derives from <see cref="WebRateProvider" />, which supplies the in-memory accumulator, the
-/// immutable snapshot, the full synchronous and asynchronous lookup matrix, and ownership of the
-/// <see cref="HttpClient" /> when this provider creates one. Loading is feed-based: each ECB feed runs from its
-/// earliest date to the most recent business day, so the feed covering a requested date also covers the remainder of
-/// the range. Use <see cref="PreloadAsync" />, <see cref="LoadFeedAsync" />, or <see cref="LoadRangeAsync" /> to warm
-/// the store.
+/// The provider derives from <see cref="WebRateProvider" />, which supplies the in-memory accumulator, the immutable
+/// snapshot, the full synchronous and asynchronous lookup matrix, and ownership of the <see cref="HttpClient" /> when
+/// this provider creates one. Loading is feed-based: each ECB feed runs from its earliest date to the most recent
+/// business day, so the feed covering a requested date also covers the remainder of the range. Use
+/// <see cref="PreloadAsync" />, <see cref="LoadFeedAsync" />, or <see cref="LoadRangeAsync" /> to warm the store.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
@@ -77,8 +76,8 @@ public sealed class EcbRateProvider
     private readonly Dictionary<CurrencyPair, EcbSeriesInfo> _series = new();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EcbRateProvider" /> class backed by an
-    /// <see cref="HttpClient" /> the provider creates and owns, configured from the supplied options.
+    /// Initializes a new instance of the <see cref="EcbRateProvider" /> class backed by an <see cref="HttpClient" />
+    /// the provider creates and owns, configured from the supplied options.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects <see cref="NullLogger.Instance" />.</param>
@@ -95,9 +94,8 @@ public sealed class EcbRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EcbRateProvider" /> class backed by the ECB
-    /// <c>eurofxref</c> feeds, downloaded with the caller-supplied HTTP client. The caller owns the client's
-    /// configuration and lifetime.
+    /// Initializes a new instance of the <see cref="EcbRateProvider" /> class backed by the ECB <c>eurofxref</c> feeds,
+    /// downloaded with the caller-supplied HTTP client. The caller owns the client's configuration and lifetime.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download feed files.</param>
     /// <param name="options">The provider options.</param>
@@ -115,8 +113,8 @@ public sealed class EcbRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EcbRateProvider" /> class backed by an explicit table
-    /// source, used for testing.
+    /// Initializes a new instance of the <see cref="EcbRateProvider" /> class backed by an explicit table source, used
+    /// for testing.
     /// </summary>
     /// <param name="source">The table source.</param>
     /// <param name="options">The provider options.</param>
@@ -134,8 +132,8 @@ public sealed class EcbRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EcbRateProvider" /> class from an owned client, building
-    /// the table source over it before forwarding to the core constructor.
+    /// Initializes a new instance of the <see cref="EcbRateProvider" /> class from an owned client, building the table
+    /// source over it before forwarding to the core constructor.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="ownedHttpClient">The HTTP client this provider creates and owns.</param>
@@ -147,8 +145,8 @@ public sealed class EcbRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EcbRateProvider" /> class, the shared core all public and
-    /// internal constructors funnel through.
+    /// Initializes a new instance of the <see cref="EcbRateProvider" /> class, the shared core all public and internal
+    /// constructors funnel through.
     /// </summary>
     /// <param name="source">The table source.</param>
     /// <param name="options">The provider options.</param>
@@ -181,8 +179,8 @@ public sealed class EcbRateProvider
     /// <inheritdoc />
     /// <remarks>
     /// Computed from the configured <see cref="EcbRateProviderOptions.Feeds" />: when the full-history feed is
-    /// configured the provider reaches back to <see cref="EcbRateFeed.Epoch" /> (4 January 1999, the start of
-    /// the euro reference-rate series); otherwise the deepest configured rolling feed bounds the window.
+    /// configured the provider reaches back to <see cref="EcbRateFeed.Epoch" /> (4 January 1999, the start of the euro
+    /// reference-rate series); otherwise the deepest configured rolling feed bounds the window.
     /// </remarks>
     public override RateHistoryAvailability HistoryAvailability
     {

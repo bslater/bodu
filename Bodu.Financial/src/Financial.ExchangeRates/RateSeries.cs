@@ -11,23 +11,22 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Stores the ordered set of dated exchange-rate observations for a single provider and currency pair, optimised for
-/// read-heavy lookup with allocation-free <c>O(log n)</c> resolution under any
-/// <see cref="RateDateResolution" /> policy.
+/// read-heavy lookup with allocation-free <c>O(log n)</c> resolution under any <see cref="RateDateResolution" />
+/// policy.
 /// </summary>
 /// <remarks>
 /// <para>
 /// The collection is immutable after construction. Internally it stores observations in a shared
-/// <see cref="RateSeriesStorage" /> backed by two parallel sorted arrays — an <see cref="int" /> array of day
-/// numbers (<see cref="DateOnly.DayNumber" />) and a <see cref="decimal" /> array of rates — so that the binary search
-/// at lookup time touches only the compact date array. Compared with
-/// <see cref="System.Collections.Generic.SortedDictionary{TKey, TValue}" /> this gives substantially better cache
-/// locality, no per-node allocation, and predictable hot-path performance for the multi-year daily series typical of FX
-/// data.
+/// <see cref="RateSeriesStorage" /> backed by two parallel sorted arrays — an <see cref="int" /> array of day numbers (<see cref="DateOnly.DayNumber" />)
+/// and a <see cref="decimal" /> array of rates — so that the binary search at lookup time touches only the compact date
+/// array. Compared with <see cref="System.Collections.Generic.SortedDictionary{TKey, TValue}" /> this gives
+/// substantially better cache locality, no per-node allocation, and predictable hot-path performance for the multi-year
+/// daily series typical of FX data.
 /// </para>
 /// <para>
 /// Instances are safe to share across threads after construction because all read paths only touch read-only arrays.
-/// Use <see cref="RateSeriesBuilder" /> to construct or edit observations imperatively before producing a
-/// snapshot via <see cref="RateSeriesBuilder.ToSeries" />.
+/// Use <see cref="RateSeriesBuilder" /> to construct or edit observations imperatively before producing a snapshot via
+/// <see cref="RateSeriesBuilder.ToSeries" />.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -133,8 +132,8 @@ public sealed class RateSeries
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RateSeries" /> class from pre-validated storage. Used by
-    /// the builder snapshot path to avoid revalidation.
+    /// Initializes a new instance of the <see cref="RateSeries" /> class from pre-validated storage. Used by the
+    /// builder snapshot path to avoid revalidation.
     /// </summary>
     /// <param name="pair">The currency pair this series describes.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
@@ -202,9 +201,9 @@ public sealed class RateSeries
     /// The resolution algorithm performs a single <see cref="Array.BinarySearch{T}(T[], T)" /> over the day-number
     /// array. On an exact hit the corresponding rate is returned immediately. On a miss the previous and next candidate
     /// indices are derived from the bitwise complement of the returned index, then selected per
-    /// <paramref name="options" />. For <see cref="RateDateResolution.Nearest" /> with a tie (the requested
-    /// date lies exactly midway between two observations), this method returns <see langword="false" /> so callers
-    /// receive a deterministic failure rather than an arbitrary pick.
+    /// <paramref name="options" />. For <see cref="RateDateResolution.Nearest" /> with a tie (the requested date lies
+    /// exactly midway between two observations), this method returns <see langword="false" /> so callers receive a
+    /// deterministic failure rather than an arbitrary pick.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -238,8 +237,8 @@ public sealed class RateSeries
     /// <remarks>
     /// Each call materialises a complete new immutable series, so this method is intended for occasional,
     /// functional-style single updates. For bulk import or repeated mutation, accumulate observations in an
-    /// <see cref="RateSeriesBuilder" /> and build the series once rather than calling <see cref="WithRate" />
-    /// in a loop.
+    /// <see cref="RateSeriesBuilder" /> and build the series once rather than calling <see cref="WithRate" /> in a
+    /// loop.
     /// </remarks>
     public RateSeries WithRate(DateOnly date, decimal rate)
     {

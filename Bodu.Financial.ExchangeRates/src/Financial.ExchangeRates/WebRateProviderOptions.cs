@@ -62,8 +62,8 @@ public abstract class WebRateProviderOptions
     /// Gets or sets a value indicating whether a synchronous lookup may block to fetch a missing pair on demand.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> to allow synchronous, blocking fetches from <see cref="IDatedRateProvider" />
-    /// lookups; <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="false" />.
+    /// <see langword="true" /> to allow synchronous, blocking fetches from <see cref="IDatedRateProvider" /> lookups;
+    /// <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="false" />.
     /// </value>
     /// <remarks>
     /// Blocking on network I/O from a synchronous method can deadlock in environments with a single-threaded
@@ -85,8 +85,8 @@ public abstract class WebRateProviderOptions
     /// before requesting an old date.
     /// </summary>
     /// <value>
-    /// The advertised availability; defaults to <see cref="RateHistoryAvailability.Unbounded" />. A source
-    /// whose feed publishes only the recent past sets a rolling window in its constructor.
+    /// The advertised availability; defaults to <see cref="RateHistoryAvailability.Unbounded" />. A source whose feed
+    /// publishes only the recent past sets a rolling window in its constructor.
     /// </value>
     public RateHistoryAvailability HistoryAvailability { get; set; } = RateHistoryAvailability.Unbounded;
 

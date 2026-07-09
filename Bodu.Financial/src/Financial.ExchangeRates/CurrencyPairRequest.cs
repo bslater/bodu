@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Describes a single pair-based fetch request issued to an <c>IPairRateSource&lt;TSeries&gt;</c>: the
-/// currency pair to load and the inclusive date range to cover.
+/// Describes a single pair-based fetch request issued to an <c>IPairRateSource&lt;TSeries&gt;</c>: the currency pair to
+/// load and the inclusive date range to cover.
 /// </summary>
 /// <param name="Pair">The currency pair to fetch.</param>
 /// <param name="StartDate">The inclusive start of the range to fetch.</param>
