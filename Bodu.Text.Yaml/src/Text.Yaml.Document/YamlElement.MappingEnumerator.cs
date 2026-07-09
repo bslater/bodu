@@ -18,9 +18,16 @@ public readonly partial struct YamlElement
     /// </summary>
     public struct MappingEnumerator : IEnumerable<YamlProperty>, IEnumerator<YamlProperty>
     {
+        /// <summary>The owning document.</summary>
         private readonly YamlDocument _document;
+
+        /// <summary>The resolved row index of the mapping being enumerated.</summary>
         private readonly int _mappingIndex;
+
+        /// <summary>The row index of the current pair, or <c>-1</c> when none.</summary>
         private int _current;
+
+        /// <summary>Indicates whether <see cref="MoveNext" /> has been called at least once.</summary>
         private bool _started;
 
         /// <summary>

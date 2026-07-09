@@ -79,11 +79,38 @@ public sealed class DotEnvFormatException
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DotEnvFormatException" /> class with the specified message, line
+    /// number, and source offset.
+    /// </summary>
+    /// <param name="message">A message that describes the error.</param>
+    /// <param name="lineNumber">
+    /// The 1-based line number on which the parse error was detected, or <c>0</c> when unknown.
+    /// </param>
+    /// <param name="offset">
+    /// The 0-based offset from the start of the source at which the parse error was detected, or
+    /// <see langword="null" /> when unknown.
+    /// </param>
     private DotEnvFormatException(string message, int lineNumber, int? offset = null)
         : base(message, lineNumber, offset)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DotEnvFormatException" /> class with the specified message, line
+    /// number, column number, and source offset.
+    /// </summary>
+    /// <param name="message">A message that describes the error.</param>
+    /// <param name="lineNumber">
+    /// The 1-based line number on which the parse error was detected, or <c>0</c> when unknown.
+    /// </param>
+    /// <param name="columnNumber">
+    /// The 1-based column at which the parse error was detected, or <c>0</c> when unknown.
+    /// </param>
+    /// <param name="offset">
+    /// The 0-based offset from the start of the source at which the parse error was detected, or
+    /// <see langword="null" /> when unknown.
+    /// </param>
     private DotEnvFormatException(string message, int lineNumber, int columnNumber, int? offset)
         : base(message, lineNumber, columnNumber, offset)
     {

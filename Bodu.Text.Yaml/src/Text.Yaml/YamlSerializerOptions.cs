@@ -21,17 +21,40 @@ namespace Bodu.Text.Yaml;
 /// </remarks>
 public sealed class YamlSerializerOptions
 {
+    /// <summary>The policy used to convert member names to YAML keys, or <see langword="null" /> for none.</summary>
     private YamlNamingPolicy? _propertyNamingPolicy;
+
+    /// <summary>Indicates whether public fields are serialized in addition to properties.</summary>
     private bool _includeFields;
+
+    /// <summary>Indicates whether members with <see langword="null" /> values are omitted when serializing.</summary>
     private bool _ignoreNullValues;
+
+    /// <summary>Indicates whether enumeration values are written as their names rather than numbers.</summary>
     private bool _writeEnumsAsStrings = true;
+
+    /// <summary>Indicates whether member names are matched case-insensitively when deserializing.</summary>
     private bool _propertyNameCaseInsensitive;
+
+    /// <summary>The YAML specification version whose implicit type resolution is applied while parsing.</summary>
     private YamlSpecVersion _specVersion;
+
+    /// <summary>The policy applied to duplicate mapping keys while parsing.</summary>
     private YamlDuplicateKeyBehavior _duplicateKeyBehavior;
+
+    /// <summary>The policy applied to the merge key (<c>&lt;&lt;</c>) while parsing.</summary>
     private YamlMergeKeyBehavior _mergeKeyBehavior;
+
+    /// <summary>The policy applied when coercing numeric scalars to integral targets while deserializing.</summary>
     private YamlNumberHandling _numberHandling;
+
+    /// <summary>The policy applied when a mapping key has no matching member on the target type.</summary>
     private YamlUnmappedMemberHandling _unmappedMemberHandling;
+
+    /// <summary>The configured maximum nesting depth; zero or less selects the default.</summary>
     private int _maxDepth;
+
+    /// <summary>Indicates whether the options instance has been used or frozen and can no longer change.</summary>
     private bool _isReadOnly;
 
     /// <summary>
@@ -104,7 +127,7 @@ public sealed class YamlSerializerOptions
     }
 
     /// <summary>
-    /// Gets or sets the property-name comparison used when binding YAML keys to members.
+    /// Gets or sets a value indicating whether YAML keys are matched to members case-insensitively.
     /// </summary>
     /// <value><see langword="true" /> to match keys case-insensitively; otherwise <see langword="false" />.</value>
     /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>

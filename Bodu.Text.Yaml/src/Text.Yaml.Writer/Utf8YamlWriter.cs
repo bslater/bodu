@@ -27,12 +27,25 @@ namespace Bodu.Text.Yaml.Writer;
 /// </remarks>
 public ref struct Utf8YamlWriter
 {
+    /// <summary>The buffer to which UTF-8 YAML is written.</summary>
     private readonly IBufferWriter<byte> _output;
+
+    /// <summary>The number of spaces emitted per level of block indentation.</summary>
     private readonly int _indentSize;
+
+    /// <summary>The maximum container nesting depth permitted.</summary>
     private readonly int _maxDepth;
+
+    /// <summary>The line-break sequence written at the end of each line.</summary>
     private readonly string _newLine;
+
+    /// <summary>The container tracking stack; one frame per open mapping or sequence.</summary>
     private Frame[] _stack;
+
+    /// <summary>The number of frames currently on <see cref="_stack" />.</summary>
     private int _depth;
+
+    /// <summary>Indicates whether the document's root value has been written.</summary>
     private bool _rootWritten;
 
     /// <summary>

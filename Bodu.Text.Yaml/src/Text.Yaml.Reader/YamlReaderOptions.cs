@@ -11,6 +11,7 @@ namespace Bodu.Text.Yaml.Reader;
 /// </summary>
 public struct YamlReaderOptions
 {
+    /// <summary>The configured maximum nesting depth; zero or less selects the default.</summary>
     private int _maxDepth;
 
     /// <summary>

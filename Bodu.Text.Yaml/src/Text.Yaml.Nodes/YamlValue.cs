@@ -14,7 +14,10 @@ namespace Bodu.Text.Yaml.Nodes;
 /// </summary>
 public sealed class YamlValue : YamlNode
 {
+    /// <summary>The boxed scalar value, or <see langword="null" /> for a null scalar.</summary>
     private readonly object? _value;
+
+    /// <summary>The kind of the scalar value.</summary>
     private readonly YamlValueKind _kind;
 
     /// <summary>

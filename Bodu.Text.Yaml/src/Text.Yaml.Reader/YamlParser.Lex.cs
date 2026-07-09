@@ -15,6 +15,7 @@ namespace Bodu.Text.Yaml.Reader;
 /// </summary>
 internal sealed partial class YamlParser
 {
+    /// <summary>The decoded-string side table referenced by string scalar rows.</summary>
     private List<string> _strings = [];
 
     /// <summary>

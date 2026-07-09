@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 internal static class HpkeLabeledKdf
 {
     /// <summary>
-    /// The HPKE protocol version label prepended to every labeled input.
+    /// Gets the HPKE protocol version label prepended to every labeled input.
     /// </summary>
     private static ReadOnlySpan<byte> VersionLabel => "HPKE-v1"u8;
 

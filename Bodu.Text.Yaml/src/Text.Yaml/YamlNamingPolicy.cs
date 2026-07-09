@@ -61,7 +61,10 @@ public abstract class YamlNamingPolicy
     /// </summary>
     private sealed class SeparatorNamingPolicy : YamlNamingPolicy
     {
+        /// <summary>The separator inserted between word boundaries.</summary>
         private readonly char _separator;
+
+        /// <summary>Indicates whether the result is uppercased rather than lowercased.</summary>
         private readonly bool _toUpper;
 
         /// <summary>

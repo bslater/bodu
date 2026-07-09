@@ -14,7 +14,10 @@ namespace Bodu.Text.Yaml.Nodes;
 /// </summary>
 public sealed class YamlObject : YamlNode, IEnumerable<KeyValuePair<string, YamlNode?>>
 {
+    /// <summary>The mapping keys in insertion order.</summary>
     private readonly List<string> _order = [];
+
+    /// <summary>The key-to-node map, compared ordinally.</summary>
     private readonly Dictionary<string, YamlNode?> _entries = new(StringComparer.Ordinal);
 
     /// <summary>

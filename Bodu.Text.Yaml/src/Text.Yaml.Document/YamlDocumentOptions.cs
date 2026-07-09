@@ -11,6 +11,7 @@ namespace Bodu.Text.Yaml.Document;
 /// </summary>
 public struct YamlDocumentOptions
 {
+    /// <summary>The configured maximum nesting depth; zero or less selects the default.</summary>
     private int _maxDepth;
 
     /// <summary>
