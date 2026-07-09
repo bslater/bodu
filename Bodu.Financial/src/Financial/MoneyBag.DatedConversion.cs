@@ -127,35 +127,3 @@ public sealed partial class MoneyBag
         return new MoneyBagConversionAudit<TTarget>(total, lines);
     }
 }
-
-/// <summary>
-/// Captures the per-line audit metadata produced by
-/// <see cref="MoneyBag.ConvertToWithAudit{TTarget}(IDatedExchangeRateProvider, DateOnly, ExchangeRateLookupOptions?, MoneyBagConversionRoundingPolicy)" />
-/// for a single source currency in the bag.
-/// </summary>
-/// <param name="SourceIsoCode">The source-currency ISO code for this line.</param>
-/// <param name="SourceAmount">The bag's raw decimal balance for that source.</param>
-/// <param name="Rate">
-/// The exchange-rate lookup result used for the conversion, or <see langword="null" /> when the source already matches
-/// the target currency (identity pass-through).
-/// </param>
-/// <param name="RawConvertedAmount">
-/// The unrounded contribution to the aggregated total — <c>SourceAmount × Rate</c> for cross-currency lines or
-/// <c>SourceAmount</c> for the identity pass-through.
-/// </param>
-public readonly record struct MoneyBagConversionLine(
-    string SourceIsoCode,
-    decimal SourceAmount,
-    ExchangeRateLookupResult? Rate,
-    decimal RawConvertedAmount);
-
-/// <summary>
-/// Bundles the aggregated total produced by a dated bag conversion with the full per-line audit trail.
-/// </summary>
-/// <typeparam name="TTarget">The destination currency type.</typeparam>
-/// <param name="Total">The aggregated total in the destination currency.</param>
-/// <param name="Lines">One line per source currency in the bag, in ISO-lexicographic order.</param>
-public readonly record struct MoneyBagConversionAudit<TTarget>(
-    Money<TTarget> Total,
-    IReadOnlyList<MoneyBagConversionLine> Lines)
-    where TTarget : ICurrency;
