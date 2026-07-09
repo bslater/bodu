@@ -400,15 +400,7 @@ public abstract class CachingExchangeRateProviderBase
         if (floor is null)
             return false;
 
-        ExchangeRateLookupOptions effective = options ?? ExchangeRateLookupOptions.Exact;
-        DateOnly latestReachable = date;
-        if (effective.DateResolution is not ExchangeRateDateResolution.Exact and not ExchangeRateDateResolution.PreviousOnOrBefore)
-        {
-            // Widen in day-number space so an extreme tolerance saturates at DateOnly.MaxValue instead of overflowing.
-            long reachableDay = (long)date.DayNumber + effective.ToleranceDays;
-            latestReachable = reachableDay >= DateOnly.MaxValue.DayNumber ? DateOnly.MaxValue : DateOnly.FromDayNumber((int)reachableDay);
-        }
-
+        DateOnly latestReachable = HistoryAvailabilityGuard.LatestReachableDate(date, options);
         if (latestReachable >= floor.Value)
             return false;
 
