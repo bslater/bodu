@@ -21,5 +21,5 @@ internal interface IRbaRateTableSource
     /// <param name="era">The era to obtain.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the operation.</param>
     /// <returns>A task that yields the parsed <see cref="RbaRateTable" />.</returns>
-    ValueTask<RbaRateTable> GetTableAsync(RbaEra era, CancellationToken cancellationToken = default);
+    ValueTask<RbaRateTable> GetTableAsync(RbaEraWorkbook era, CancellationToken cancellationToken = default);
 }

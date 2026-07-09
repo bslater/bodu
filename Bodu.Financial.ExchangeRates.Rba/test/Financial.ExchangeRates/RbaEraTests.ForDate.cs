@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaEraTests.ForDate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class RbaEraTests
     [TestMethod]
     public void ForDate_WhenDateInCurrentEra_ShouldReturnCurrentEra()
     {
-        var era = RbaEra.ForDate(new DateOnly(2024, 6, 1), RbaEra.Default);
+        var era = RbaEraWorkbook.ForDate(new DateOnly(2024, 6, 1), RbaEraWorkbook.Default);
 
         Assert.IsNotNull(era);
         Assert.AreEqual("2023-current", era.Label);
@@ -26,7 +26,7 @@ public partial class RbaEraTests
     [TestMethod]
     public void ForDate_WhenDateInHistoricalEra_ShouldReturnHistoricalEra()
     {
-        var era = RbaEra.ForDate(new DateOnly(1985, 5, 5), RbaEra.Default);
+        var era = RbaEraWorkbook.ForDate(new DateOnly(1985, 5, 5), RbaEraWorkbook.Default);
 
         Assert.IsNotNull(era);
         Assert.AreEqual("1983-1986", era.Label);
@@ -38,7 +38,7 @@ public partial class RbaEraTests
     [TestMethod]
     public void ForDate_WhenDateBeforeAllEras_ShouldReturnNull()
     {
-        var era = RbaEra.ForDate(new DateOnly(1980, 1, 1), RbaEra.Default);
+        var era = RbaEraWorkbook.ForDate(new DateOnly(1980, 1, 1), RbaEraWorkbook.Default);
 
         Assert.IsNull(era);
     }

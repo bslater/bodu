@@ -38,7 +38,7 @@ internal sealed class FixtureRbaRateTableSource
     public int GetTableCallCount { get; private set; }
 
     /// <inheritdoc />
-    public ValueTask<RbaRateTable> GetTableAsync(RbaEra era, CancellationToken cancellationToken = default)
+    public ValueTask<RbaRateTable> GetTableAsync(RbaEraWorkbook era, CancellationToken cancellationToken = default)
     {
         GetTableCallCount++;
 

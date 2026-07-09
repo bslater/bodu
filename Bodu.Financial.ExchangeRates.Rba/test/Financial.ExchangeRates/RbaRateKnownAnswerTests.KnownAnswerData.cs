@@ -14,7 +14,7 @@ public partial class RbaRateKnownAnswerTests
     [TestMethod]
     public void KnownAnswerData_ShouldMapEveryRowToAKnownWorkbook()
     {
-        var knownFiles = RbaEra.Default.Select(era => era.FileName).ToHashSet(StringComparer.Ordinal);
+        var knownFiles = RbaEraWorkbook.Default.Select(era => era.FileName).ToHashSet(StringComparer.Ordinal);
 
         Assert.IsNotEmpty(s_allRows);
         Assert.IsTrue(

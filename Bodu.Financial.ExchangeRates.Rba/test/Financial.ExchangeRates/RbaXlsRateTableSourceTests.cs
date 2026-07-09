@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public class RbaXlsRateTableSourceTests
 {
-    private static readonly RbaEra s_immutableEra = new("2018-2022", new DateOnly(2018, 1, 1), new DateOnly(2022, 12, 31));
+    private static readonly RbaEraWorkbook s_immutableEra = new("2018-2022", new DateOnly(2018, 1, 1), new DateOnly(2022, 12, 31));
 
     /// <summary>
     /// Verifies that the source downloads an era file and parses it into a table.

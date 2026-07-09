@@ -27,7 +27,7 @@ public partial class RbaRateKnownAnswerTests
     public async Task GetRates_WhenKnownAnswerSeries_ShouldMatchSelectedExtremes(string sourceFileName, string currency)
     {
         RbaRateProvider provider = await GetProviderAsync(sourceFileName);
-        RbaEra era = RbaEra.Default.Single(e => string.Equals(e.FileName, sourceFileName, StringComparison.Ordinal));
+        RbaEraWorkbook era = RbaEraWorkbook.Default.Single(e => string.Equals(e.FileName, sourceFileName, StringComparison.Ordinal));
         DateOnly end = era.End ?? new DateOnly(2100, 1, 1);
 
         IReadOnlyList<ExchangeRate> series = [.. await provider.GetRatesAsync("AUD", ResolveCurrency(currency), era.Start, end)];

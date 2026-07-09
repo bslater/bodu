@@ -28,14 +28,14 @@ public sealed class NullRbaWorkbookCache
     public static NullRbaWorkbookCache Instance { get; } = new();
 
     /// <inheritdoc />
-    public bool TryGet(RbaEra era, TimeSpan currentEraRefreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
+    public bool TryGet(RbaEraWorkbook era, TimeSpan currentEraRefreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
     {
         bytes = null;
         return false;
     }
 
     /// <inheritdoc />
-    public void Store(RbaEra era, byte[] bytes)
+    public void Store(RbaEraWorkbook era, byte[] bytes)
     {
         // Intentionally no-op: this cache never stores anything.
     }

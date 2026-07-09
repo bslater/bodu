@@ -178,7 +178,7 @@ public sealed class RbaRateProvider
     /// <inheritdoc />
     /// <remarks>
     /// Computed from the configured <see cref="RbaRateProviderOptions.Eras" />: the earliest era start bounds how far
-    /// back the historical workbook catalogue reaches — 1 January 1983 for the default <see cref="RbaEra.Default" />
+    /// back the historical workbook catalogue reaches — 1 January 1983 for the default <see cref="RbaEraWorkbook.Default" />
     /// catalogue.
     /// </remarks>
     public override RateHistoryAvailability HistoryAvailability
@@ -186,7 +186,7 @@ public sealed class RbaRateProvider
         get
         {
             DateOnly earliest = _options.Eras[0].Start;
-            foreach (RbaEra era in _options.Eras)
+            foreach (RbaEraWorkbook era in _options.Eras)
             {
                 if (era.Start < earliest)
                     earliest = era.Start;
@@ -206,7 +206,7 @@ public sealed class RbaRateProvider
     /// <returns>A task that completes when every era has been loaded.</returns>
     public async Task PreloadAsync(CancellationToken cancellationToken = default)
     {
-        foreach (RbaEra era in _options.Eras)
+        foreach (RbaEraWorkbook era in _options.Eras)
             await LoadEraAsync(era, cancellationToken).ConfigureAwait(false);
     }
 
@@ -219,7 +219,7 @@ public sealed class RbaRateProvider
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="era" /> is <see langword="null" />.
     /// </exception>
-    public Task LoadEraAsync(RbaEra era, CancellationToken cancellationToken = default)
+    public Task LoadEraAsync(RbaEraWorkbook era, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(era);
 
@@ -274,7 +274,7 @@ public sealed class RbaRateProvider
     {
         lock (SyncRoot)
         {
-            foreach (RbaEra era in _options.Eras)
+            foreach (RbaEraWorkbook era in _options.Eras)
             {
                 if (era.Start <= endDate && (era.End is null || era.End.Value >= startDate) && !_loadedEras.Contains(era.Label))
                     return false;
@@ -345,7 +345,7 @@ public sealed class RbaRateProvider
     /// <returns>A task that completes when the overlapping eras have been loaded.</returns>
     private async Task LoadRangeInternalAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
-        foreach (RbaEra era in _options.Eras)
+        foreach (RbaEraWorkbook era in _options.Eras)
         {
             if (era.Start <= endDate && (era.End is null || era.End.Value >= startDate))
                 await LoadEraAsync(era, cancellationToken).ConfigureAwait(false);
@@ -359,7 +359,7 @@ public sealed class RbaRateProvider
     /// <param name="era">The era to load.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the era has been loaded.</returns>
-    private async Task LoadEraCoreAsync(RbaEra era, CancellationToken cancellationToken)
+    private async Task LoadEraCoreAsync(RbaEraWorkbook era, CancellationToken cancellationToken)
     {
         lock (SyncRoot)
         {

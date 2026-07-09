@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowingRbaRateTableSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,6 +26,6 @@ internal sealed class ThrowingRbaRateTableSource
     }
 
     /// <inheritdoc />
-    public ValueTask<RbaRateTable> GetTableAsync(RbaEra era, CancellationToken cancellationToken = default) =>
+    public ValueTask<RbaRateTable> GetTableAsync(RbaEraWorkbook era, CancellationToken cancellationToken = default) =>
         throw _exception;
 }

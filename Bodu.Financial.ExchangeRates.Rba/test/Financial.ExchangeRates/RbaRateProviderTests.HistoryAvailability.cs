@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaRateProviderTests.HistoryAvailability.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,8 +32,8 @@ public partial class RbaRateProviderTests
         {
             Eras =
             [
-                new RbaEra("2023-current", new DateOnly(2023, 1, 1), null),
-                new RbaEra("2018-2022", new DateOnly(2018, 1, 1), new DateOnly(2022, 12, 31)),
+                new RbaEraWorkbook("2023-current", new DateOnly(2023, 1, 1), null),
+                new RbaEraWorkbook("2018-2022", new DateOnly(2018, 1, 1), new DateOnly(2022, 12, 31)),
             ],
             EnableDiskCache = false,
         };

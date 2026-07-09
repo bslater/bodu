@@ -59,7 +59,7 @@ internal sealed class GatedRbaRateTableSource
     public void Release() => _gate.TrySetResult();
 
     /// <inheritdoc />
-    public async ValueTask<RbaRateTable> GetTableAsync(RbaEra era, CancellationToken cancellationToken = default)
+    public async ValueTask<RbaRateTable> GetTableAsync(RbaEraWorkbook era, CancellationToken cancellationToken = default)
     {
         if (Interlocked.Increment(ref _callCount) == 1)
             _entered.TrySetResult();

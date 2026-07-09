@@ -29,12 +29,12 @@ public interface IRbaWorkbookCache
     /// When this method returns <see langword="true" />, the cached workbook bytes; otherwise <see langword="null" />.
     /// </param>
     /// <returns><see langword="true" /> when a fresh cache entry exists; otherwise <see langword="false" />.</returns>
-    bool TryGet(RbaEra era, TimeSpan currentEraRefreshInterval, [MaybeNullWhen(false)] out byte[] bytes);
+    bool TryGet(RbaEraWorkbook era, TimeSpan currentEraRefreshInterval, [MaybeNullWhen(false)] out byte[] bytes);
 
     /// <summary>
     /// Stores the bytes for an era, replacing any existing entry.
     /// </summary>
     /// <param name="era">The era whose workbook is being cached.</param>
     /// <param name="bytes">The workbook bytes to store.</param>
-    void Store(RbaEra era, byte[] bytes);
+    void Store(RbaEraWorkbook era, byte[] bytes);
 }

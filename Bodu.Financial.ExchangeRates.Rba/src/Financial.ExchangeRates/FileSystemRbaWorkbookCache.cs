@@ -23,7 +23,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 public sealed class FileSystemRbaWorkbookCache
-    : FileSystemByteCache<RbaEra>, IRbaWorkbookCache
+    : FileSystemByteCache<RbaEraWorkbook>, IRbaWorkbookCache
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FileSystemRbaWorkbookCache" /> class.
@@ -36,7 +36,7 @@ public sealed class FileSystemRbaWorkbookCache
         : base(directory, "bodu-rba") { }
 
     /// <inheritdoc />
-    public bool TryGet(RbaEra era, TimeSpan currentEraRefreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
+    public bool TryGet(RbaEraWorkbook era, TimeSpan currentEraRefreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
     {
         ThrowHelper.ThrowIfNull(era);
 
@@ -44,7 +44,7 @@ public sealed class FileSystemRbaWorkbookCache
     }
 
     /// <inheritdoc />
-    public void Store(RbaEra era, byte[] bytes)
+    public void Store(RbaEraWorkbook era, byte[] bytes)
     {
         ThrowHelper.ThrowIfNull(era);
         ThrowHelper.ThrowIfNull(bytes);
@@ -53,13 +53,13 @@ public sealed class FileSystemRbaWorkbookCache
     }
 
     /// <inheritdoc />
-    protected override string GetFileName(RbaEra key) =>
+    protected override string GetFileName(RbaEraWorkbook key) =>
         key.FileName;
 
     /// <inheritdoc />
     /// <remarks>
     /// The open-ended current era expires on the refresh interval; fixed eras are immutable and never expire.
     /// </remarks>
-    protected override bool IsFresh(RbaEra key, TimeSpan age, TimeSpan refreshInterval) =>
+    protected override bool IsFresh(RbaEraWorkbook key, TimeSpan age, TimeSpan refreshInterval) =>
         key.End is not null || age <= refreshInterval;
 }

@@ -12,8 +12,8 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public partial class FileSystemRbaWorkbookCacheTests
 {
-    private static readonly RbaEra s_immutableEra = new("2018-2022", new DateOnly(2018, 1, 1), new DateOnly(2022, 12, 31));
-    private static readonly RbaEra s_currentEra = new("2023-current", new DateOnly(2023, 1, 1), null);
+    private static readonly RbaEraWorkbook s_immutableEra = new("2018-2022", new DateOnly(2018, 1, 1), new DateOnly(2022, 12, 31));
+    private static readonly RbaEraWorkbook s_currentEra = new("2023-current", new DateOnly(2023, 1, 1), null);
 
     private string _directory = string.Empty;
 

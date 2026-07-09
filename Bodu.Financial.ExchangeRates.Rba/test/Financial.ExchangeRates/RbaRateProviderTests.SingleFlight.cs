@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaRateProviderTests.SingleFlight.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class RbaRateProviderTests
         RbaRateProviderOptions options = new() { EnableDiskCache = false };
         GatedRbaRateTableSource source = new(options);
         RbaRateProvider provider = new(source, options);
-        RbaEra era = new("2023-current", new DateOnly(2023, 1, 1), null);
+        RbaEraWorkbook era = new("2023-current", new DateOnly(2023, 1, 1), null);
 
         Task[] loads =
         [
@@ -44,7 +44,7 @@ public partial class RbaRateProviderTests
         RbaRateProviderOptions options = new() { EnableDiskCache = false };
         GatedRbaRateTableSource source = new(options);
         RbaRateProvider provider = new(source, options);
-        RbaEra era = new("2023-current", new DateOnly(2023, 1, 1), null);
+        RbaEraWorkbook era = new("2023-current", new DateOnly(2023, 1, 1), null);
 
         source.Release();
         await provider.LoadEraAsync(era);
@@ -63,7 +63,7 @@ public partial class RbaRateProviderTests
         RbaRateProviderOptions options = new() { EnableDiskCache = false };
         GatedRbaRateTableSource source = new(options);
         RbaRateProvider provider = new(source, options);
-        RbaEra era = new("2023-current", new DateOnly(2023, 1, 1), null);
+        RbaEraWorkbook era = new("2023-current", new DateOnly(2023, 1, 1), null);
 
         using CancellationTokenSource cancellingCts = new();
 

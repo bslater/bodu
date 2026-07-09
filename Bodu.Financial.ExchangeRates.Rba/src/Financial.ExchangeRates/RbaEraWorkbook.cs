@@ -16,17 +16,17 @@ namespace Bodu.Financial.ExchangeRates;
 /// default catalogue is exposed through <see cref="Default" /> and can be overridden via the provider options if the
 /// RBA changes its file names.
 /// </remarks>
-public sealed class RbaEra
+public sealed class RbaEraWorkbook
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RbaEra" /> class.
+    /// Initializes a new instance of the <see cref="RbaEraWorkbook" /> class.
     /// </summary>
     /// <param name="label">The era label, also used to form the file name.</param>
     /// <param name="start">The first calendar date the era covers.</param>
     /// <param name="end">
     /// The last calendar date the era covers, or <see langword="null" /> when the era is open-ended.
     /// </param>
-    public RbaEra(string label, DateOnly start, DateOnly? end)
+    public RbaEraWorkbook(string label, DateOnly start, DateOnly? end)
     {
         ThrowHelper.ThrowIfNull(label);
 
@@ -63,7 +63,7 @@ public sealed class RbaEra
     /// Gets the default catalogue of RBA historical daily exchange-rate eras, from 1983 to the current file.
     /// </summary>
     /// <value>The ordered, immutable default era catalogue.</value>
-    public static IReadOnlyList<RbaEra> Default { get; } =
+    public static IReadOnlyList<RbaEraWorkbook> Default { get; } =
     [
         new("1983-1986", new DateOnly(1983, 1, 1), new DateOnly(1986, 12, 31)),
         new("1987-1990", new DateOnly(1987, 1, 1), new DateOnly(1990, 12, 31)),
@@ -97,7 +97,7 @@ public sealed class RbaEra
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="eras" /> is <see langword="null" />.
     /// </exception>
-    public static RbaEra? ForDate(DateOnly date, IReadOnlyList<RbaEra> eras)
+    public static RbaEraWorkbook? ForDate(DateOnly date, IReadOnlyList<RbaEraWorkbook> eras)
     {
         ThrowHelper.ThrowIfNull(eras);
 

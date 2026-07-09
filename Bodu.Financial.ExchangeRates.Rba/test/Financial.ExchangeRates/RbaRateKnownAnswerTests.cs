@@ -100,7 +100,7 @@ public partial class RbaRateKnownAnswerTests
     /// <returns>A task that yields the loaded provider.</returns>
     private static async Task<RbaRateProvider> BuildProviderAsync(string sourceFileName)
     {
-        RbaEra era = RbaEra.Default.Single(e => string.Equals(e.FileName, sourceFileName, StringComparison.Ordinal));
+        RbaEraWorkbook era = RbaEraWorkbook.Default.Single(e => string.Equals(e.FileName, sourceFileName, StringComparison.Ordinal));
         FixtureRbaRateTableSource source = new(s_options, sourceFileName);
 
         RbaRateProvider provider = new(source, s_options);

@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the behavior of <see cref="RbaEra" /> and its default catalogue.
+/// Verifies the behavior of <see cref="RbaEraWorkbook" /> and its default catalogue.
 /// </summary>
 [TestClass]
 public partial class RbaEraTests

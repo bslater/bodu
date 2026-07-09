@@ -14,6 +14,6 @@ public partial class RbaEraTests
     [TestMethod]
     public void Default_ShouldContainElevenEras()
     {
-        Assert.HasCount(11, RbaEra.Default);
+        Assert.HasCount(11, RbaEraWorkbook.Default);
     }
 }
