@@ -63,11 +63,11 @@ internal static partial class CryptographyHelper
     /// </para>
     /// <para>
     /// This is <b>not</b>, on its own, a full padding-oracle defence — the returned length still varies with the
-    /// declared pad count, and an invalid block signals through a thrown <see cref="CryptographicException" />.
-    /// Callers must <b>authenticate the ciphertext</b> (a MAC verified with
-    /// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />, or an AEAD
-    /// mode) <b>before</b> depadding, so a padding failure is never observable to an attacker. Prefer the AEAD modes
-    /// for new designs; raw CBC with strippable padding requires caller-supplied authentication.
+    /// declared pad count, and an invalid block signals through a thrown <see cref="CryptographicException" />. Callers
+    /// must <b>authenticate the ciphertext</b> (a MAC verified with
+    /// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />, or an AEAD mode)
+    /// <b>before</b> depadding, so a padding failure is never observable to an attacker. Prefer the AEAD modes for new
+    /// designs; raw CBC with strippable padding requires caller-supplied authentication.
     /// </para>
     /// </remarks>
     public static int DepadBlock(

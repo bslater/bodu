@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Windowed.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,8 @@ namespace Bodu.Collections.Generic.Extensions;
 public sealed partial class IEnumerableExtensionsTests_Windowed
 {
     /// <summary>
-    /// Verifies that <c>Windowed</c> throws <see cref="ArgumentOutOfRangeException" /> when the window size is less than
-    /// one.
+    /// Verifies that <c>Windowed</c> throws <see cref="ArgumentOutOfRangeException" /> when the window size is less
+    /// than one.
     /// </summary>
     [TestMethod]
     [DataRow(0)]
@@ -113,8 +113,8 @@ public sealed partial class IEnumerableExtensionsTests_Windowed
     }
 
     /// <summary>
-    /// Verifies that <c>Windowed</c> does not yield the first window until exactly <c>size</c> source elements have been
-    /// consumed.
+    /// Verifies that <c>Windowed</c> does not yield the first window until exactly <c>size</c> source elements have
+    /// been consumed.
     /// </summary>
     [TestMethod]
     public void Windowed_WhenFirstWindowRequested_ShouldConsumeExactlySizeElements()

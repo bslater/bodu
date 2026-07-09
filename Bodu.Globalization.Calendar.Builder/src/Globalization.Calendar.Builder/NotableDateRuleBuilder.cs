@@ -443,7 +443,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfLessThan(day, 1);
         ThrowHelper.ThrowIfGreaterThan(day, 31);
 
-        XElement element = new(BuilderXml.Namespace + "Fixed", new XAttribute("month", month), new XAttribute("day", BuilderXml.Int(day)));
+        XElement element = new(BuilderXml.s_namespace + "Fixed", new XAttribute("month", month), new XAttribute("day", BuilderXml.Int(day)));
         if (skipLeapMonth) element.SetAttributeValue("skipLeapMonth", BuilderXml.Bool(true));
         if (sweepCalendarYears) element.SetAttributeValue("sweepCalendarYears", BuilderXml.Bool(true));
 
@@ -465,7 +465,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfGreaterThan(month, 12);
 
         XElement element = new(
-            BuilderXml.Namespace + "DayOfWeekInMonth",
+            BuilderXml.s_namespace + "DayOfWeekInMonth",
             new XAttribute("month", BuilderXml.GetMonthName(month)),
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
             new XAttribute("weekOrdinal", weekOrdinal.ToString()));
@@ -493,7 +493,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfGreaterThan(day, 31);
 
         XElement element = new(
-            BuilderXml.Namespace + "WeekdayNearDate",
+            BuilderXml.s_namespace + "WeekdayNearDate",
             new XAttribute("month", BuilderXml.GetMonthName(month)),
             new XAttribute("day", BuilderXml.Int(day)),
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
@@ -519,7 +519,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfGreaterThan(month, 12);
 
         XElement element = new(
-            BuilderXml.Namespace + "RelativeWeekdayInMonth",
+            BuilderXml.s_namespace + "RelativeWeekdayInMonth",
             new XAttribute("month", BuilderXml.GetMonthName(month)),
             new XAttribute("dayOfWeek", dayOfWeek.ToString()),
             new XAttribute("weekOrdinal", weekOrdinal.ToString()),
@@ -547,7 +547,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
 
         XElement element = new(
-            BuilderXml.Namespace + "OffsetFromRule",
+            BuilderXml.s_namespace + "OffsetFromRule",
             new XAttribute("notableDateRef", notableDateRef),
             new XAttribute("offsetDays", BuilderXml.Int(offsetDays)));
         if (!string.IsNullOrEmpty(ruleRef)) element.SetAttributeValue("ruleRef", ruleRef);
@@ -568,7 +568,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(key);
 
-        XElement element = new(BuilderXml.Namespace + "Algorithm", new XAttribute("key", key));
+        XElement element = new(BuilderXml.s_namespace + "Algorithm", new XAttribute("key", key));
 
         return SetStrategy(element);
     }

@@ -10,13 +10,11 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base58
 {
-    /// <summary>
-    /// The maximum number of characters accepted by a single decode. Internal so tests can validate the bound.
-    /// </summary>
+    /// <summary>The maximum number of characters accepted by a single decode. Internal so tests can validate the bound.</summary>
     /// <remarks>
-    /// Base58 decode accumulates into a growing <see cref="System.Numerics.BigInteger" />, making it O(n²) in the
-    /// input length. The cap bounds the worst-case cost against untrusted input while admitting any realistic
-    /// payload (65,536 Base58 characters decode to roughly 48 KB).
+    /// Base58 decode accumulates into a growing <see cref="System.Numerics.BigInteger" />, making it O(n²) in the input
+    /// length. The cap bounds the worst-case cost against untrusted input while admitting any realistic payload (65,536
+    /// Base58 characters decode to roughly 48 KB).
     /// </remarks>
     internal const int MaxDecodeInputLength = 65536;
 

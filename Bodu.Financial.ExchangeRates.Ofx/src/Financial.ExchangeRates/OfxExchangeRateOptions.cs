@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OfxExchangeRateOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,25 +30,43 @@ namespace Bodu.Financial.ExchangeRates;
 public sealed class OfxExchangeRateOptions
     : WebExchangeRateProviderOptions
 {
-    /// <summary>The placeholder token replaced by the source-currency code when building a path from <see cref="HistoryPath" />.</summary>
+    /// <summary>
+    /// The placeholder token replaced by the source-currency code when building a path from <see cref="HistoryPath" />.
+    /// </summary>
     internal const string FromPlaceholder = "{from}";
 
-    /// <summary>The placeholder token replaced by the destination-currency code when building a path from <see cref="HistoryPath" />.</summary>
+    /// <summary>
+    /// The placeholder token replaced by the destination-currency code when building a path from
+    /// <see cref="HistoryPath" />.
+    /// </summary>
     internal const string ToPlaceholder = "{to}";
 
-    /// <summary>The placeholder token replaced by the inclusive range start (Unix milliseconds) when building a path from <see cref="HistoryPath" />.</summary>
+    /// <summary>
+    /// The placeholder token replaced by the inclusive range start (Unix milliseconds) when building a path from
+    /// <see cref="HistoryPath" />.
+    /// </summary>
     internal const string StartPlaceholder = "{start}";
 
-    /// <summary>The placeholder token replaced by the inclusive range end (Unix milliseconds) when building a path from <see cref="HistoryPath" />.</summary>
+    /// <summary>
+    /// The placeholder token replaced by the inclusive range end (Unix milliseconds) when building a path from
+    /// <see cref="HistoryPath" />.
+    /// </summary>
     internal const string EndPlaceholder = "{end}";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OfxExchangeRateOptions" /> class with the OFX API host as its base
-    /// address.
+    /// address and a deliberately unbounded history declaration.
     /// </summary>
+    /// <remarks>
+    /// OFX publishes multi-decade spot-rate history ("20+ years") but no fixed inception date, so the advertised
+    /// <see cref="WebExchangeRateProviderOptions.HistoryAvailability" /> is deliberately
+    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" /> — there is no known floor worth pre-empting a request
+    /// for. Set the property when a concrete floor matters for the pairs in use.
+    /// </remarks>
     public OfxExchangeRateOptions()
     {
         BaseAddress = new Uri("https://api.ofx.com/");
+        HistoryAvailability = ExchangeRateHistoryAvailability.Unbounded;
     }
 
     /// <summary>

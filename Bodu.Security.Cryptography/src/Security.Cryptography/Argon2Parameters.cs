@@ -50,9 +50,7 @@ public sealed record Argon2Parameters
     /// <summary>The exclusive upper bound on the degree of parallelism (2^24).</summary>
     internal const int MaxParallelism = (1 << 24) - 1;
 
-    /// <summary>
-    /// The maximum memory, in kibibytes, permitted for a single derivation: 2 GiB. Internal so tests can validate it.
-    /// </summary>
+    /// <summary>The maximum memory, in kibibytes, permitted for a single derivation: 2 GiB. Internal so tests can validate it.</summary>
     /// <remarks>
     /// RFC 9106 allows <c>m</c> up to <c>2³² − 1</c> KiB, but a verification against an untrusted PHC string must not
     /// let an attacker-supplied <c>m</c> drive an unbounded allocation. This ceiling sits far above any realistic

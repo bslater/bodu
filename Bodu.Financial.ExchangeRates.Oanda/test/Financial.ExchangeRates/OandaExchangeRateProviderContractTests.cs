@@ -33,6 +33,10 @@ public sealed class OandaExchangeRateProviderContractTests
     protected override DateOnly UnknownDate => new(2020, 1, 1);
 
     /// <inheritdoc />
+    protected override ExchangeRateHistoryAvailability ExpectedHistoryAvailability =>
+        ExchangeRateHistoryAvailability.RollingDays(180);
+
+    /// <inheritdoc />
     protected override bool SupportsDisposalGuard => true;
 
     /// <inheritdoc />

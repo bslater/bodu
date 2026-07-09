@@ -36,7 +36,7 @@ public sealed partial class ConfigurationPattern
     internal const int MaxPatternLength = 4096;
 
     /// <summary>The upper bound on the time a single <see cref="Regex.IsMatch(string)" /> evaluation may run before the engine abandons it with <see cref="RegexMatchTimeoutException" />. This bounds the evaluation time of any single match and is the practical ReDoS guard for untrusted section-name globs; the translated patterns are simple enough that this ceiling is never expected to be reached in practice.</summary>
-    internal static readonly TimeSpan MatchTimeout = TimeSpan.FromMilliseconds(100);
+    internal static readonly TimeSpan s_matchTimeout = TimeSpan.FromMilliseconds(100);
 
     /// <summary>
     /// Translates a glob expression into the equivalent <see cref="Regex" /> pattern, anchored to the start and end of

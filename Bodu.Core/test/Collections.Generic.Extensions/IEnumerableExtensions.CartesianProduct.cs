@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.CartesianProduct.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,8 +24,7 @@ public sealed partial class IEnumerableExtensionsTests_CartesianProduct
     }
 
     /// <summary>
-    /// Verifies that the projection overload receives the first-sequence element and then the second-sequence
-    /// element.
+    /// Verifies that the projection overload receives the first-sequence element and then the second-sequence element.
     /// </summary>
     [TestMethod]
     public void CartesianProduct_WhenProjecting_ShouldPassFirstThenSecond()

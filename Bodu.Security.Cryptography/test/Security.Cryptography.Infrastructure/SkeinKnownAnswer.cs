@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkeinKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,22 +14,34 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// </summary>
 public sealed record SkeinKnownAnswer : IKat
 {
-    /// <summary>Gets the short, human-readable label identifying this row.</summary>
+    /// <summary>
+    /// Gets the short, human-readable label identifying this row.
+    /// </summary>
     public required string Name { get; init; }
 
-    /// <summary>Gets the Skein state (Threefish block) size in bits — 256, 512, or 1024.</summary>
+    /// <summary>
+    /// Gets the Skein state (Threefish block) size in bits — 256, 512, or 1024.
+    /// </summary>
     public required int StateSizeBits { get; init; }
 
-    /// <summary>Gets the requested output size in bits.</summary>
+    /// <summary>
+    /// Gets the requested output size in bits.
+    /// </summary>
     public required int OutputBits { get; init; }
 
-    /// <summary>Gets the raw message bytes fed to the algorithm.</summary>
+    /// <summary>
+    /// Gets the raw message bytes fed to the algorithm.
+    /// </summary>
     public required byte[] Message { get; init; }
 
-    /// <summary>Gets the expected digest.</summary>
+    /// <summary>
+    /// Gets the expected digest.
+    /// </summary>
     public required byte[] Digest { get; init; }
 
-    /// <summary>Returns the row's diagnostic label.</summary>
+    /// <summary>
+    /// Returns the row's diagnostic label.
+    /// </summary>
     /// <returns>The value of <see cref="Name" />.</returns>
     public override string ToString() => Name;
 }

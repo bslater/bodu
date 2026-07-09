@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PublicApiSnapshot.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,10 +17,10 @@ namespace Bodu.Test;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The fingerprint is intentionally a stable fingerprint rather than a faithful C# reproduction: it lists every exported
-/// type and, under each, its declared public and protected members in a fixed order. It does not encode nullable
-/// annotations, so a nullability-only change is not flagged; every other surface change — a new type, a new or removed
-/// member, or a changed signature — is.
+/// The fingerprint is intentionally a stable fingerprint rather than a faithful C# reproduction: it lists every
+/// exported type and, under each, its declared public and protected members in a fixed order. It does not encode
+/// nullable annotations, so a nullability-only change is not flagged; every other surface change — a new type, a new or
+/// removed member, or a changed signature — is.
 /// </para>
 /// <para>
 /// The baseline is a plain text file committed under the test project's <c>PublicApi</c> folder and copied to the test

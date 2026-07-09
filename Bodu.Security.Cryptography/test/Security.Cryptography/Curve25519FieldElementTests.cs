@@ -208,14 +208,14 @@ public class Curve25519FieldElementTests
         var b = new Curve25519FieldElement(6, 7, 8, 9, 10);
 
         Curve25519FieldElement.ConditionalSwap(ref a, ref b, 0);
-        Assert.AreEqual(1UL, a.L0);
-        Assert.AreEqual(6UL, b.L0);
+        Assert.AreEqual(1UL, a._l0);
+        Assert.AreEqual(6UL, b._l0);
 
         Curve25519FieldElement.ConditionalSwap(ref a, ref b, 1);
-        Assert.AreEqual(6UL, a.L0);
-        Assert.AreEqual(10UL, a.L4);
-        Assert.AreEqual(1UL, b.L0);
-        Assert.AreEqual(5UL, b.L4);
+        Assert.AreEqual(6UL, a._l0);
+        Assert.AreEqual(10UL, a._l4);
+        Assert.AreEqual(1UL, b._l0);
+        Assert.AreEqual(5UL, b._l4);
     }
 
     /// <summary>
@@ -229,11 +229,11 @@ public class Curve25519FieldElementTests
         var source = new Curve25519FieldElement(6, 7, 8, 9, 10);
 
         Curve25519FieldElement.ConditionalMove(ref destination, source, 0);
-        Assert.AreEqual(1UL, destination.L0);
+        Assert.AreEqual(1UL, destination._l0);
 
         Curve25519FieldElement.ConditionalMove(ref destination, source, 1);
-        Assert.AreEqual(6UL, destination.L0);
-        Assert.AreEqual(10UL, destination.L4);
+        Assert.AreEqual(6UL, destination._l0);
+        Assert.AreEqual(10UL, destination._l4);
     }
 
     /// <summary>

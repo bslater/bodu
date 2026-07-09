@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileSystemRbaWorkbookCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,7 +57,9 @@ public sealed class FileSystemRbaWorkbookCache
         key.FileName;
 
     /// <inheritdoc />
-    /// <remarks>The open-ended current era expires on the refresh interval; fixed eras are immutable and never expire.</remarks>
+    /// <remarks>
+    /// The open-ended current era expires on the refresh interval; fixed eras are immutable and never expire.
+    /// </remarks>
     protected override bool IsFresh(RbaEra key, TimeSpan age, TimeSpan refreshInterval) =>
         key.End is not null || age <= refreshInterval;
 }

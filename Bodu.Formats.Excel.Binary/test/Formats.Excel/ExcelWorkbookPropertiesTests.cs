@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorkbookPropertiesTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public class ExcelWorkbookPropertiesTests
     [TestMethod]
     public void Empty_WhenSummaryFieldsRead_ShouldAllBeNull()
     {
-        ExcelWorkbookProperties properties = ExcelWorkbookProperties.Empty;
+        ExcelWorkbookProperties properties = ExcelWorkbookProperties.s_empty;
 
         Assert.IsNull(properties.Title);
         Assert.IsNull(properties.Subject);
@@ -38,7 +38,7 @@ public class ExcelWorkbookPropertiesTests
     [TestMethod]
     public void Empty_WhenDocumentFieldsRead_ShouldAllBeNull()
     {
-        ExcelWorkbookProperties properties = ExcelWorkbookProperties.Empty;
+        ExcelWorkbookProperties properties = ExcelWorkbookProperties.s_empty;
 
         Assert.IsNull(properties.Company);
         Assert.IsNull(properties.Manager);

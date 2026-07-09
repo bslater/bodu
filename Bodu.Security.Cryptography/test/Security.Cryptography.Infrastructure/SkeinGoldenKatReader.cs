@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkeinGoldenKatReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,16 +9,16 @@ using System.Text.RegularExpressions;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Parses Skein 1.3 <c>skein_golden_kat</c> reference files into hash known-answer records. Each record is introduced by
-/// a header such as <c>:Skein-256:   256-bit hash, msgLen =   256 bits</c>, followed by a <c>Message data:</c> hex block
-/// and a <c>Result:</c> hex block, and terminated by a dashed separator. Only plain hash records (no key / MAC / tree)
-/// are recognised; other record kinds are skipped.
+/// Parses Skein 1.3 <c>skein_golden_kat</c> reference files into hash known-answer records. Each record is introduced
+/// by a header such as <c>:Skein-256:   256-bit hash, msgLen =   256 bits</c>, followed by a <c>Message data:</c> hex
+/// block and a <c>Result:</c> hex block, and terminated by a dashed separator. Only plain hash records (no key / MAC /
+/// tree) are recognised; other record kinds are skipped.
 /// </summary>
 public static partial class SkeinGoldenKatReader
 {
     /// <summary>
-    /// Reads the hash known-answer vectors from <paramref name="stream" />, yielding one <see cref="SkeinKnownAnswer" />
-    /// per plain-hash record.
+    /// Reads the hash known-answer vectors from <paramref name="stream" />, yielding one
+    /// <see cref="SkeinKnownAnswer" /> per plain-hash record.
     /// </summary>
     /// <param name="stream">A readable stream over the Skein golden-KAT text.</param>
     /// <param name="source">Optional human-readable citation propagated into each emitted vector's name.</param>
@@ -110,7 +110,9 @@ public static partial class SkeinGoldenKatReader
     [GeneratedRegex(@"^:Skein-(\d+):\s+(\d+)-bit hash, msgLen\s*=\s*(\d+) bits\s*$")]
     private static partial Regex HashHeader();
 
-    /// <summary>Matches a line of space-separated hex byte groups.</summary>
+    /// <summary>
+    /// Matches a line of space-separated hex byte groups.
+    /// </summary>
     /// <returns>The compiled regular expression.</returns>
     [GeneratedRegex("^[0-9A-Fa-f ]+$")]
     private static partial Regex HexLine();

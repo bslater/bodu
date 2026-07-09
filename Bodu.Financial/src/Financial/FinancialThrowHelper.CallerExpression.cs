@@ -51,8 +51,8 @@ internal static partial class FinancialThrowHelper
     /// <remarks>
     /// The single shape predicate shared by the throwing <see cref="ThrowIfNotValidIsoCode(string, string?)" /> guard
     /// and the non-throwing lookup paths, so the ISO-shape rule is defined once. In particular it excludes the numeric
-    /// underlying-value form (for example <c>"840"</c>) that <see cref="System.Enum.TryParse{TEnum}(string, out TEnum)" />
-    /// would otherwise accept.
+    /// underlying-value form (for example <c>"840"</c>) that
+    /// <see cref="System.Enum.TryParse{TEnum}(string, out TEnum)" /> would otherwise accept.
     /// </remarks>
     internal static bool IsValidIsoCodeShape([NotNullWhen(true)] string? value) =>
         value is { Length: 3 }

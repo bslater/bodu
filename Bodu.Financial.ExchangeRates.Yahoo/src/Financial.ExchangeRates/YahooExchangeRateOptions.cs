@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooExchangeRateOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,22 +27,42 @@ namespace Bodu.Financial.ExchangeRates;
 public sealed class YahooExchangeRateOptions
     : WebExchangeRateProviderOptions
 {
-    /// <summary>The placeholder token replaced by the ticker symbol when building a request path from <see cref="ChartPath" />.</summary>
+    /// <summary>
+    /// The placeholder token replaced by the ticker symbol when building a request path from <see cref="ChartPath" />.
+    /// </summary>
     internal const string SymbolPlaceholder = "{symbol}";
 
-    /// <summary>The placeholder token replaced by the source-currency code when building a ticker from <see cref="SymbolFormat" />.</summary>
+    /// <summary>
+    /// The placeholder token replaced by the source-currency code when building a ticker from
+    /// <see cref="SymbolFormat" />.
+    /// </summary>
     internal const string FromPlaceholder = "{from}";
 
-    /// <summary>The placeholder token replaced by the destination-currency code when building a ticker from <see cref="SymbolFormat" />.</summary>
+    /// <summary>
+    /// The placeholder token replaced by the destination-currency code when building a ticker from
+    /// <see cref="SymbolFormat" />.
+    /// </summary>
     internal const string ToPlaceholder = "{to}";
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="YahooExchangeRateOptions" /> class with the Yahoo Finance host as
-    /// its base address.
+    /// The inception of Yahoo Finance's foreign-exchange chart data: 1 December 2003, the earliest observation the
+    /// chart endpoint serves for the longest-running currency pairs (for example <c>EURUSD=X</c>).
     /// </summary>
+    internal static readonly DateOnly FxChartEpoch = new(2003, 12, 1);
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="YahooExchangeRateOptions" /> class with the Yahoo Finance host as
+    /// its base address and a fixed history floor at the chart data's December 2003 inception.
+    /// </summary>
+    /// <remarks>
+    /// The advertised <see cref="WebExchangeRateProviderOptions.HistoryAvailability" /> is advisory: individual pairs
+    /// may start later than the December 2003 inception of the longest-running pairs. Override the property when the
+    /// pairs in use are known to have a later floor.
+    /// </remarks>
     public YahooExchangeRateOptions()
     {
         BaseAddress = new Uri("https://query1.finance.yahoo.com/");
+        HistoryAvailability = ExchangeRateHistoryAvailability.Since(FxChartEpoch);
     }
 
     /// <summary>

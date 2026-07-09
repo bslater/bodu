@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NistLwcXofKatReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <summary>
 /// Parses NIST Lightweight Cryptography (LWC) hash / XOF / CXOF known-answer test files in the <c>.rsp</c>-style format
 /// used by the official ASCON reference package. Each vector occupies a <c>Count</c> line, a <c>Msg</c> line, an
-/// optional <c>Z</c> (customization) line, and an <c>MD</c> (output) line, and is separated from the next by one or more
-/// blank lines.
+/// optional <c>Z</c> (customization) line, and an <c>MD</c> (output) line, and is separated from the next by one or
+/// more blank lines.
 /// </summary>
 public static class NistLwcXofKatReader
 {
@@ -25,7 +25,9 @@ public static class NistLwcXofKatReader
     /// </param>
     /// <param name="source">Optional human-readable citation propagated into each emitted vector.</param>
     /// <returns>The parsed vectors, one per <c>Count</c> record, yielded in source order.</returns>
-    /// <exception cref="FormatException">A record is missing the <c>Msg</c> or <c>MD</c> field, or a line is malformed.</exception>
+    /// <exception cref="FormatException">
+    /// A record is missing the <c>Msg</c> or <c>MD</c> field, or a line is malformed.
+    /// </exception>
     public static IEnumerable<XofKnownAnswer> Read(Stream stream, string? source = null)
     {
         using var reader = new StreamReader(stream);
@@ -93,11 +95,15 @@ public static class NistLwcXofKatReader
     /// </summary>
     /// <param name="count">The record's <c>Count</c> ordinal.</param>
     /// <param name="msg">The <c>Msg</c> field value, or <see langword="null" /> if it was absent.</param>
-    /// <param name="z">The <c>Z</c> field value, or <see langword="null" /> if the record had no customization line.</param>
+    /// <param name="z">
+    /// The <c>Z</c> field value, or <see langword="null" /> if the record had no customization line.
+    /// </param>
     /// <param name="md">The <c>MD</c> field value, or <see langword="null" /> if it was absent.</param>
     /// <param name="source">The optional citation to attach to the emitted vector.</param>
     /// <returns>The assembled vector.</returns>
-    /// <exception cref="FormatException"><paramref name="msg" /> or <paramref name="md" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">
+    /// <paramref name="msg" /> or <paramref name="md" /> is <see langword="null" />.
+    /// </exception>
     private static XofKnownAnswer Build(int count, string? msg, string? z, string? md, string? source)
     {
         if (msg is null) throw new FormatException($"KAT record Count={count} is missing the Msg field.");

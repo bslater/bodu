@@ -33,6 +33,10 @@ public sealed class YahooExchangeRateProviderContractTests
     protected override DateOnly UnknownDate => new(2020, 1, 1);
 
     /// <inheritdoc />
+    protected override ExchangeRateHistoryAvailability ExpectedHistoryAvailability =>
+        ExchangeRateHistoryAvailability.Since(new DateOnly(2003, 12, 1));
+
+    /// <inheritdoc />
     protected override bool SupportsDisposalGuard => true;
 
     /// <inheritdoc />

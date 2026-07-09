@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Rfc8439VectorReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,7 +25,9 @@ public static partial class Rfc8439VectorReader
     /// <paramref name="sectionTitle" />.
     /// </summary>
     /// <param name="stream">A readable stream over the RFC 8439 source text.</param>
-    /// <param name="sectionTitle">The section heading prefix to select, for example <c>A.2.  ChaCha20 Encryption</c>.</param>
+    /// <param name="sectionTitle">
+    /// The section heading prefix to select, for example <c>A.2.  ChaCha20 Encryption</c>.
+    /// </param>
     /// <returns>The section's test vectors, in source order.</returns>
     public static IEnumerable<Rfc8439TestVector> Read(Stream stream, string sectionTitle)
     {
@@ -123,7 +125,9 @@ public static partial class Rfc8439VectorReader
             yield return Snapshot();
     }
 
-    /// <summary>Collapses runs of whitespace to single spaces so heading comparisons ignore column alignment.</summary>
+    /// <summary>
+    /// Collapses runs of whitespace to single spaces so heading comparisons ignore column alignment.
+    /// </summary>
     /// <param name="value">The text to normalize.</param>
     /// <returns>The trimmed, single-spaced form.</returns>
     private static string Normalize(string value) =>

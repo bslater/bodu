@@ -33,6 +33,10 @@ public sealed class OfxExchangeRateProviderContractTests
     protected override DateOnly UnknownDate => new(2020, 1, 1);
 
     /// <inheritdoc />
+    protected override ExchangeRateHistoryAvailability ExpectedHistoryAvailability =>
+        ExchangeRateHistoryAvailability.Unbounded;
+
+    /// <inheritdoc />
     protected override bool SupportsDisposalGuard => true;
 
     /// <inheritdoc />

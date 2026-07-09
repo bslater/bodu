@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BigDecimal.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -55,8 +55,8 @@ public readonly partial struct BigDecimal
     /// <remarks>
     /// A negative scale is folded into the unscaled value as <c>mantissa &#215; 10<sup>-scale</sup></c>. Left
     /// unbounded, an attacker-supplied scale or parse exponent drives <see cref="BigInteger.Pow(BigInteger, int)" />
-    /// with an arbitrarily large exponent, producing a multi-gigabyte value that exhausts memory or hangs. Capping
-    /// the magnitude keeps the widening bounded while still admitting any realistic value.
+    /// with an arbitrarily large exponent, producing a multi-gigabyte value that exhausts memory or hangs. Capping the
+    /// magnitude keeps the widening bounded while still admitting any realistic value.
     /// </remarks>
     private const int MaxNegativeScaleMagnitude = 1_000_000;
 

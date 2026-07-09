@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MovingSum{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -51,14 +51,7 @@ namespace Bodu.Numerics;
 public sealed class MovingSum<T>
     where T : INumber<T>
 {
-    /// <summary>
-    /// Whether <typeparamref name="T" /> is a binary floating-point type whose subtract-on-evict updates drift and
-    /// therefore needs the periodic exact rebuild; exact types (integers, <see cref="decimal" />,
-    /// <see cref="BigInteger" />) skip it — their incremental sum is already exact, and re-summing the ring in array
-    /// order could transiently overflow a checked prefix that the true window-order sum never reaches. A hardcoded type
-    /// matrix (the reflection-free pattern <c>Fraction&lt;T&gt;</c> uses for its bounds probe) keeps this
-    /// NativeAOT-safe.
-    /// </summary>
+    /// <summary>Whether <typeparamref name="T" /> is a binary floating-point type whose subtract-on-evict updates drift and therefore needs the periodic exact rebuild; exact types (integers, <see cref="decimal" />, <see cref="BigInteger" />) skip it — their incremental sum is already exact, and re-summing the ring in array order could transiently overflow a checked prefix that the true window-order sum never reaches. A hardcoded type matrix (the reflection-free pattern <c>Fraction&lt;T&gt;</c> uses for its bounds probe) keeps this NativeAOT-safe.</summary>
     private static readonly bool s_requiresRebuild =
         typeof(T) == typeof(double) || typeof(T) == typeof(float) || typeof(T) == typeof(Half);
 

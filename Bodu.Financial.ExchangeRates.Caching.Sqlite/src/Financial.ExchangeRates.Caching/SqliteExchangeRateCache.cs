@@ -111,7 +111,7 @@ public sealed class SqliteExchangeRateCache
     private readonly TimeProvider _timeProvider;
 
     /// <summary>The minimum interval between two emitted degradation warnings; failures inside the window are suppressed and counted.</summary>
-    private static readonly TimeSpan WarnCooldown = TimeSpan.FromMinutes(1);
+    private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
 
     /// <summary>The <see cref="DateTimeOffset.UtcTicks" /> of the last emitted degradation warning, or <see cref="long.MinValue" /> when none has been emitted. Read and updated with <see cref="Interlocked" /> so concurrent swallows agree on a single warning per window.</summary>
     private long _lastWarnUtcTicks = long.MinValue;
@@ -211,7 +211,7 @@ public sealed class SqliteExchangeRateCache
 
     /// <summary>
     /// Reports a swallowed best-effort storage failure to the logger at <see cref="LogLevel.Warning" />, rate-limited
-    /// so at most one warning is emitted per <see cref="WarnCooldown" /> window.
+    /// so at most one warning is emitted per <see cref="s_warnCooldown" /> window.
     /// </summary>
     /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>
     /// <param name="exception">The swallowed storage exception.</param>
@@ -230,7 +230,7 @@ public sealed class SqliteExchangeRateCache
 
         // Emit when no warning has been logged yet, or the cooldown has elapsed since the last one. The MinValue sentinel
         // is checked before the subtraction so a never-warned instance does not underflow the elapsed comparison.
-        bool due = last == long.MinValue || (now - last) >= WarnCooldown.Ticks;
+        bool due = last == long.MinValue || (now - last) >= s_warnCooldown.Ticks;
         if (due && Interlocked.CompareExchange(ref _lastWarnUtcTicks, now, last) == last)
         {
             int suppressed = Interlocked.Exchange(ref _suppressedSinceLastWarn, 0);

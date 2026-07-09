@@ -36,7 +36,7 @@ namespace Bodu.Formats.Excel;
 public sealed class ExcelBinaryReaderOptions
 {
     /// <summary>The shared default options instance.</summary>
-    internal static readonly ExcelBinaryReaderOptions Default = new();
+    internal static readonly ExcelBinaryReaderOptions s_default = new();
 
     /// <summary>
     /// Gets a value indicating whether a caller-supplied stream is left open when the workbook is disposed.

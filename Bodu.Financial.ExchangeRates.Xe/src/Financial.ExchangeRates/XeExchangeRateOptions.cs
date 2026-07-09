@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XeExchangeRateOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,13 +29,23 @@ namespace Bodu.Financial.ExchangeRates;
 public sealed class XeExchangeRateOptions
     : WebExchangeRateProviderOptions
 {
+    /// <summary>The estimated depth, in days, of the server-determined window the XE.com charting endpoint returns — approximately ten years, matching the deepest range the XE currency charts expose.</summary>
+    internal const int EstimatedChartingWindowDays = 3650;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="XeExchangeRateOptions" /> class with the XE.com host as its base
-    /// address.
+    /// address and an estimated ten-year rolling history window.
     /// </summary>
+    /// <remarks>
+    /// The charting endpoint accepts no date bounds — XE returns a server-determined window — so the advertised
+    /// <see cref="WebExchangeRateProviderOptions.HistoryAvailability" /> is an estimate of that window (<see cref="EstimatedChartingWindowDays" />
+    /// days, matching the deepest range the XE currency charts expose) rather than a published contract. Adjust the
+    /// property if the observed window differs.
+    /// </remarks>
     public XeExchangeRateOptions()
     {
         BaseAddress = new Uri("https://www.xe.com/");
+        HistoryAvailability = ExchangeRateHistoryAvailability.RollingDays(EstimatedChartingWindowDays);
     }
 
     /// <summary>

@@ -120,8 +120,8 @@ public readonly struct AuthenticationTag
     /// </returns>
     /// <remarks>
     /// The byte comparison is constant-time in content — it runs through
-    /// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />, so its
-    /// duration depends only on the operand length, not on where the bytes first differ. A length mismatch returns
+    /// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />, so its duration
+    /// depends only on the operand length, not on where the bytes first differ. A length mismatch returns
     /// <see langword="false" /> immediately (the length is not secret). The span-based
     /// <see cref="FixedTimeEquals(ReadOnlySpan{byte})" /> overload remains available for verifying a received tag
     /// against a raw buffer.

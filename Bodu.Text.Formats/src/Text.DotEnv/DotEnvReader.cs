@@ -38,10 +38,7 @@ public sealed class DotEnvReader
     /// <summary>The default size of the internal character buffer in characters used when no buffer size is supplied.</summary>
     public const int DefaultBufferSize = 4096;
 
-    /// <summary>
-    /// The maximum number of characters a single entry may occupy in the pending buffer before it resolves. Internal so
-    /// tests can validate the bound.
-    /// </summary>
+    /// <summary>The maximum number of characters a single entry may occupy in the pending buffer before it resolves. Internal so tests can validate the bound.</summary>
     /// <remarks>
     /// The reader re-parses the pending buffer from its start on every refill, so an oversized or unterminated
     /// construct (for example a double-quoted value with no closing quote) drives quadratic work as it grows without

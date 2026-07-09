@@ -139,8 +139,8 @@ public abstract class WebExchangeRateProvider
     /// When enabled, the synchronous getters block on the async fetch, which can deadlock if invoked on a thread
     /// carrying a captured <see cref="SynchronizationContext" /> (classic ASP.NET, a WPF/WinForms UI thread). The
     /// synchronous path guards against this by throwing <see cref="InvalidOperationException" /> when
-    /// <see cref="SynchronizationContext.Current" /> is non-null; enable this only for code that calls the getters
-    /// from a thread-pool thread (or use the asynchronous API).
+    /// <see cref="SynchronizationContext.Current" /> is non-null; enable this only for code that calls the getters from
+    /// a thread-pool thread (or use the asynchronous API).
     /// </remarks>
     protected abstract bool AllowSynchronousNetworkAccess { get; }
 

@@ -234,8 +234,8 @@ public sealed partial class Blake2b
     /// </param>
     /// <remarks>
     /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
-    /// reference implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" />, which combines
-    /// the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
+    /// reference implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" />, which
+    /// combines the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
     /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
     /// </remarks>
     protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)

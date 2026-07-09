@@ -22,7 +22,7 @@ internal static class BuilderXml
     internal const string DefaultSchemaVersion = "1.0";
 
     /// <summary>The reusable <see cref="XNamespace" /> for the notable-date document schema.</summary>
-    internal static readonly XNamespace Namespace = XNamespace.Get(NamespaceUri);
+    internal static readonly XNamespace s_namespace = XNamespace.Get(NamespaceUri);
 
     /// <summary>The full English month names indexed one-based from January (index 1) to December (index 12).</summary>
     private static readonly string[] s_monthNames =

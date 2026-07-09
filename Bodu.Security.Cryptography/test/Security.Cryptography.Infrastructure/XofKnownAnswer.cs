@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XofKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,25 +15,35 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// </summary>
 public sealed record XofKnownAnswer : IKat
 {
-    /// <summary>Gets the short, human-readable label identifying this row (for example <c>"CXOF Count 45"</c>).</summary>
+    /// <summary>
+    /// Gets the short, human-readable label identifying this row (for example <c>"CXOF Count 45"</c>).
+    /// </summary>
     public required string Name { get; init; }
 
-    /// <summary>Gets the raw message bytes fed to the XOF.</summary>
+    /// <summary>
+    /// Gets the raw message bytes fed to the XOF.
+    /// </summary>
     public required byte[] Message { get; init; }
 
     /// <summary>
-    /// Gets the customization string absorbed before the message, or <see langword="null" /> for a plain (non-customized)
-    /// XOF vector that has no <c>Z</c> field.
+    /// Gets the customization string absorbed before the message, or <see langword="null" /> for a plain
+    /// (non-customized) XOF vector that has no <c>Z</c> field.
     /// </summary>
     public byte[]? Customization { get; init; }
 
-    /// <summary>Gets the expected output bytes (the reference <c>MD</c> field), whose length sets the squeeze length.</summary>
+    /// <summary>
+    /// Gets the expected output bytes (the reference <c>MD</c> field), whose length sets the squeeze length.
+    /// </summary>
     public required byte[] Digest { get; init; }
 
-    /// <summary>Gets an optional human-readable citation propagated from the source file for failure diagnostics.</summary>
+    /// <summary>
+    /// Gets an optional human-readable citation propagated from the source file for failure diagnostics.
+    /// </summary>
     public string? Source { get; init; }
 
-    /// <summary>Returns the row's diagnostic label.</summary>
+    /// <summary>
+    /// Returns the row's diagnostic label.
+    /// </summary>
     /// <returns>The value of <see cref="Name" />.</returns>
     public override string ToString() => Name;
 }

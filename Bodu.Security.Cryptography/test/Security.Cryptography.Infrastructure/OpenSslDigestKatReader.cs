@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OpenSslDigestKatReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -113,7 +113,9 @@ public static class OpenSslDigestKatReader
             yield return tail;
     }
 
-    /// <summary>Enumerates the lines of <paramref name="reader" /> to completion.</summary>
+    /// <summary>
+    /// Enumerates the lines of <paramref name="reader" /> to completion.
+    /// </summary>
     /// <param name="reader">The reader to drain.</param>
     /// <returns>Each source line, without its terminator.</returns>
     private static IEnumerable<string> ReadLines(StreamReader reader)
@@ -123,13 +125,17 @@ public static class OpenSslDigestKatReader
             yield return line;
     }
 
-    /// <summary>Strips a single pair of surrounding double quotes from <paramref name="value" /> when present.</summary>
+    /// <summary>
+    /// Strips a single pair of surrounding double quotes from <paramref name="value" /> when present.
+    /// </summary>
     /// <param name="value">The raw field value.</param>
     /// <returns>The unquoted literal.</returns>
     private static string Unquote(string value) =>
         value.Length >= 2 && value[0] == '"' && value[^1] == '"' ? value[1..^1] : value;
 
-    /// <summary>Concatenates <paramref name="unit" /> with itself <paramref name="count" /> times.</summary>
+    /// <summary>
+    /// Concatenates <paramref name="unit" /> with itself <paramref name="count" /> times.
+    /// </summary>
     /// <param name="unit">The repeating unit.</param>
     /// <param name="count">The number of repetitions.</param>
     /// <returns>A new array holding <paramref name="count" /> copies of <paramref name="unit" />.</returns>

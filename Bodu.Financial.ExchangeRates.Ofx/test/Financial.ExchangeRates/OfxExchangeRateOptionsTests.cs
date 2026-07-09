@@ -12,4 +12,15 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public partial class OfxExchangeRateOptionsTests
 {
+    /// <summary>
+    /// Verifies that the default options deliberately advertise an unbounded history — OFX publishes multi-decade
+    /// data with no fixed inception date.
+    /// </summary>
+    [TestMethod]
+    public void HistoryAvailability_WhenDefault_ShouldBeUnbounded()
+    {
+        OfxExchangeRateOptions options = new();
+
+        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Unbounded, options.HistoryAvailability.Kind);
+    }
 }

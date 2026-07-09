@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Rfc4503RabbitKatReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,10 +10,10 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
 /// Parses the RFC 4503 Appendix A Rabbit conformance vectors into <see cref="StreamCipherKnownAnswer" /> keystream
-/// rows. The octet-form file declares each vector as a <c>key</c> (Appendix A.1, without-IV setup) or
-/// <c>mkey</c> + <c>iv</c> (Appendix A.2, with-IV setup) followed by three 16-byte keystream blocks
-/// <c>S[0]</c>, <c>S[1]</c>, <c>S[2]</c>; the reader concatenates the three blocks into the expected 48-byte
-/// keystream. A persistent <c>mkey</c> spans the successive IV vectors of the A.2 section.
+/// rows. The octet-form file declares each vector as a <c>key</c> (Appendix A.1, without-IV setup) or <c>mkey</c> +
+/// <c>iv</c> (Appendix A.2, with-IV setup) followed by three 16-byte keystream blocks <c>S[0]</c>, <c>S[1]</c>,
+/// <c>S[2]</c>; the reader concatenates the three blocks into the expected 48-byte keystream. A persistent <c>mkey</c>
+/// spans the successive IV vectors of the A.2 section.
 /// </summary>
 /// <remarks>
 /// RFC 4503 octet strings follow the I2OSP (big-endian) convention, so the emitted key, nonce, and keystream bytes are
@@ -93,7 +93,9 @@ public static class Rfc4503RabbitKatReader
         }
     }
 
-    /// <summary>Extracts the hex digits from a bracketed, space-separated octet list such as <c>[00 11 22]</c>.</summary>
+    /// <summary>
+    /// Extracts the hex digits from a bracketed, space-separated octet list such as <c>[00 11 22]</c>.
+    /// </summary>
     /// <param name="value">The raw field value following the <c>=</c>.</param>
     /// <returns>The concatenated hex string with brackets and whitespace removed.</returns>
     private static string ParseBracketedHex(string value)
@@ -108,7 +110,9 @@ public static class Rfc4503RabbitKatReader
         return builder.ToString();
     }
 
-    /// <summary>Concatenates the collected keystream blocks into a single array.</summary>
+    /// <summary>
+    /// Concatenates the collected keystream blocks into a single array.
+    /// </summary>
     /// <param name="blocks">The ordered keystream blocks.</param>
     /// <returns>A new array holding every block in sequence.</returns>
     private static byte[] Concat(List<byte[]> blocks)

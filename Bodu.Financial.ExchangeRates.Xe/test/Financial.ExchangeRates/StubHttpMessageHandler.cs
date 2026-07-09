@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StubHttpMessageHandler.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ using System.Net.Http.Headers;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// A test message handler that returns fixed content for every request and records the requests it received,
-/// including the most recent <c>Authorization</c> header.
+/// A test message handler that returns fixed content for every request and records the requests it received, including
+/// the most recent <c>Authorization</c> header.
 /// </summary>
 internal sealed class StubHttpMessageHandler
     : HttpMessageHandler

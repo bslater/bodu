@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MerkleTreeFormat.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,8 +20,8 @@ namespace Bodu.Security.Cryptography;
 /// resistance).
 /// </para>
 /// <para>
-/// The final partial leaf is hashed at its actual byte length rather than being zero-padded to the block size, so
-/// the exact input length is bound into every leaf and trailing-zero variations cannot collide.
+/// The final partial leaf is hashed at its actual byte length rather than being zero-padded to the block size, so the
+/// exact input length is bound into every leaf and trailing-zero variations cannot collide.
 /// </para>
 /// </remarks>
 internal static class MerkleTreeFormat

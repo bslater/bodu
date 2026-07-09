@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XSalsa20GoVectorReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,10 +11,10 @@ using System.Text.RegularExpressions;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Parses the XSalsa20 test vectors transcribed in the Go <c>golang.org/x/crypto/salsa20</c> test source
-/// (<c>xSalsa20TestData</c> array). Each record holds four byte literals in the order plaintext, nonce, key, and
-/// expected ciphertext, expressed in one of three Go forms: an ASCII string (<c>[]byte("…")</c>), a zero buffer
-/// (<c>make([]byte, N)</c>), or an explicit hex list (<c>[]byte{0x…}</c>).
+/// Parses the XSalsa20 test vectors transcribed in the Go <c>golang.org/x/crypto/salsa20</c> test source (<c>xSalsa20TestData</c>
+/// array). Each record holds four byte literals in the order plaintext, nonce, key, and expected ciphertext, expressed
+/// in one of three Go forms: an ASCII string (<c>[]byte("…")</c>), a zero buffer (<c>make([]byte, N)</c>), or an
+/// explicit hex list (<c>[]byte{0x…}</c>).
 /// </summary>
 public static partial class XSalsa20GoVectorReader
 {
@@ -60,7 +60,9 @@ public static partial class XSalsa20GoVectorReader
         }
     }
 
-    /// <summary>Decodes a single matched Go byte literal into its bytes.</summary>
+    /// <summary>
+    /// Decodes a single matched Go byte literal into its bytes.
+    /// </summary>
     /// <param name="match">A match produced by <see cref="ByteLiteralPattern" />.</param>
     /// <returns>The decoded bytes.</returns>
     private static byte[] Decode(Match match)

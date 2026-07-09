@@ -32,28 +32,28 @@ public struct TomlReaderState
     private readonly TomlReaderOptions _options;
 
     /// <summary>The lexical context the next read resumes from.</summary>
-    internal TomlScanState ScanState;
+    internal TomlScanState _scanState;
 
     /// <summary>The container context stack: one entry per open array or inline table.</summary>
-    internal byte[]? Containers;
+    internal byte[]? _containers;
 
-    /// <summary>The number of open containers on <see cref="Containers" />.</summary>
-    internal int ContainerCount;
+    /// <summary>The number of open containers on <see cref="_containers" />.</summary>
+    internal int _containerCount;
 
     /// <summary>Whether the cursor inside an inline table sits immediately after a value separator comma.</summary>
-    internal bool InlineAfterComma;
+    internal bool _inlineAfterComma;
 
     /// <summary>Whether the header being lexed is an <c>[[array-of-tables]]</c> header.</summary>
-    internal bool HeaderIsArray;
+    internal bool _headerIsArray;
 
     /// <summary>The number of source lines completed before the resume point, so that the zero of a default-initialized state means line one.</summary>
-    internal int LinesRead;
+    internal int _linesRead;
 
     /// <summary>The number of bytes of the current line already consumed in earlier blocks, used to keep columns accurate.</summary>
-    internal int BytesInLine;
+    internal int _bytesInLine;
 
     /// <summary>Whether the reader has moved past the document start, where a byte-order mark may be skipped. Stored inverted so that a default-initialized state describes the document start.</summary>
-    internal bool PastStart;
+    internal bool _pastStart;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlReaderState" /> struct describing the start of a document.
@@ -68,14 +68,14 @@ public struct TomlReaderState
     public TomlReaderState(TomlReaderOptions options = default)
     {
         _options = options;
-        ScanState = TomlScanState.Expression;
-        Containers = null;
-        ContainerCount = 0;
-        InlineAfterComma = false;
-        HeaderIsArray = false;
-        LinesRead = 0;
-        BytesInLine = 0;
-        PastStart = false;
+        _scanState = TomlScanState.Expression;
+        _containers = null;
+        _containerCount = 0;
+        _inlineAfterComma = false;
+        _headerIsArray = false;
+        _linesRead = 0;
+        _bytesInLine = 0;
+        _pastStart = false;
     }
 
     /// <summary>

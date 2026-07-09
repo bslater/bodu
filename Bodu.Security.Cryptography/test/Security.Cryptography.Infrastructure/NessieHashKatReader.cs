@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NessieHashKatReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -76,8 +76,8 @@ public static partial class NessieHashKatReader
     }
 
     /// <summary>
-    /// Decodes a NESSIE message description into its byte input, or returns <see langword="null" /> when the description
-    /// is not a plain byte message this reader models.
+    /// Decodes a NESSIE message description into its byte input, or returns <see langword="null" /> when the
+    /// description is not a plain byte message this reader models.
     /// </summary>
     /// <param name="description">The text following <c>message=</c>.</param>
     /// <returns>The decoded message bytes, or <see langword="null" /> to skip the row.</returns>
@@ -161,22 +161,30 @@ public static partial class NessieHashKatReader
         return [.. bytes];
     }
 
-    /// <summary>Matches a NESSIE record header such as <c>Set 1, vector#  0:</c>.</summary>
+    /// <summary>
+    /// Matches a NESSIE record header such as <c>Set 1, vector#  0:</c>.
+    /// </summary>
     /// <returns>The compiled regular expression.</returns>
     [GeneratedRegex(@"^Set (\d+), vector#\s*(\d+):")]
     private static partial Regex SetHeader();
 
-    /// <summary>Matches an <c>N times "X"</c> repetition description.</summary>
+    /// <summary>
+    /// Matches an <c>N times "X"</c> repetition description.
+    /// </summary>
     /// <returns>The compiled regular expression.</returns>
     [GeneratedRegex("^(1 million|\\d+) times \"(.*)\"$")]
     private static partial Regex TimesRepeat();
 
-    /// <summary>Matches an <c>N zero bits</c> description.</summary>
+    /// <summary>
+    /// Matches an <c>N zero bits</c> description.
+    /// </summary>
     /// <returns>The compiled regular expression.</returns>
     [GeneratedRegex(@"^(\d+) zero bits$")]
     private static partial Regex ZeroBits();
 
-    /// <summary>Matches an <c>M-bit string: pattern</c> description and captures the pattern.</summary>
+    /// <summary>
+    /// Matches an <c>M-bit string: pattern</c> description and captures the pattern.
+    /// </summary>
     /// <returns>The compiled regular expression.</returns>
     [GeneratedRegex(@"^\d+-bit string:\s*(.*)$")]
     private static partial Regex BitStringPattern();

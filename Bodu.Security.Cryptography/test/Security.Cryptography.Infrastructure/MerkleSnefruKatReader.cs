@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MerkleSnefruKatReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,9 +9,10 @@ using System.Text;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Pairs Ralph Merkle's Snefru 2.5a reference files into known-answer records: the <c>testSnefru</c> shell script (whose
-/// here-documents supply each newline-terminated input) and the matching <c>correctSnefruOutput</c> digest listing (one
-/// space-separated hex-word digest per line). Row <c>i</c> of the script is paired with digest line <c>i</c>.
+/// Pairs Ralph Merkle's Snefru 2.5a reference files into known-answer records: the <c>testSnefru</c> shell script
+/// (whose here-documents supply each newline-terminated input) and the matching <c>correctSnefruOutput</c> digest
+/// listing (one space-separated hex-word digest per line). Row <c>i</c> of the script is paired with digest line
+/// <c>i</c>.
 /// </summary>
 public static class MerkleSnefruKatReader
 {
@@ -19,8 +20,12 @@ public static class MerkleSnefruKatReader
     /// Reads the Merkle Snefru reference inputs and digests, yielding one <see cref="MessageDigestKnownAnswer" /> per
     /// paired record.
     /// </summary>
-    /// <param name="inputScript">A readable stream over the <c>testSnefru</c> / <c>testSnefru256</c> shell script.</param>
-    /// <param name="digestOutput">A readable stream over the matching <c>correctSnefru[256]Output</c> digest listing.</param>
+    /// <param name="inputScript">
+    /// A readable stream over the <c>testSnefru</c> / <c>testSnefru256</c> shell script.
+    /// </param>
+    /// <param name="digestOutput">
+    /// A readable stream over the matching <c>correctSnefru[256]Output</c> digest listing.
+    /// </param>
     /// <param name="digestWords">The number of 32-bit hex words per digest line (4 for 128-bit, 8 for 256-bit).</param>
     /// <param name="source">Optional human-readable citation propagated into each emitted vector's name.</param>
     /// <returns>One vector per paired input/digest record, in source order.</returns>
@@ -94,7 +99,9 @@ public static class MerkleSnefruKatReader
     /// <param name="stream">The digest-listing stream.</param>
     /// <param name="digestWords">The number of 32-bit hex words expected per line.</param>
     /// <returns>The parsed digests, in listing order.</returns>
-    /// <exception cref="FormatException">A non-blank line does not carry exactly <paramref name="digestWords" /> hex words.</exception>
+    /// <exception cref="FormatException">
+    /// A non-blank line does not carry exactly <paramref name="digestWords" /> hex words.
+    /// </exception>
     private static List<byte[]> ParseDigests(Stream stream, int digestWords)
     {
         var digests = new List<byte[]>();

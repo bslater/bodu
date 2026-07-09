@@ -35,9 +35,9 @@ internal sealed class TomlDocumentBuilder
 
     /// <summary>The child count at which a table switches from a linear sibling scan to a hashed key index.</summary>
     /// <remarks>
-    /// Small tables scan their sibling chain directly, so a typical document allocates neither collection below. Only
-    /// a table that grows past this threshold builds an index, converting an otherwise O(n²) large-flat-table parse
-    /// (a linear key scan per inserted key) into O(n) while leaving small-document allocation unchanged.
+    /// Small tables scan their sibling chain directly, so a typical document allocates neither collection below. Only a
+    /// table that grows past this threshold builds an index, converting an otherwise O(n²) large-flat-table parse (a
+    /// linear key scan per inserted key) into O(n) while leaving small-document allocation unchanged.
     /// </remarks>
     private const int ChildIndexThreshold = 1024;
 

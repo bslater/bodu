@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Salsa20EcryptVector.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,9 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <param name="Vector">The vector number within the set.</param>
 /// <param name="Key">The Salsa20 key.</param>
 /// <param name="Iv">The 8-byte Salsa20 IV.</param>
-/// <param name="Fragments">The sampled keystream fragments, each an absolute byte offset paired with its expected bytes.</param>
+/// <param name="Fragments">
+/// The sampled keystream fragments, each an absolute byte offset paired with its expected bytes.
+/// </param>
 /// <param name="XorDigest">The expected 64-byte XOR digest of the full keystream.</param>
 /// <param name="StreamLength">The total keystream length, in bytes, the digest and fragments describe.</param>
 public sealed record Salsa20EcryptVector(

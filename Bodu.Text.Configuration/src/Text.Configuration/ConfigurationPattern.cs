@@ -158,7 +158,7 @@ public sealed partial class ConfigurationPattern
         if (IsCaseInsensitive(comparison))
             options |= RegexOptions.IgnoreCase;
 
-        Regex regex = new(TranslateToRegex(pattern), options, MatchTimeout);
+        Regex regex = new(TranslateToRegex(pattern), options, s_matchTimeout);
         ConfigurationPattern compiled = new(pattern, regex);
 
         if (CompileCache.Count > CompileCacheCapacity)

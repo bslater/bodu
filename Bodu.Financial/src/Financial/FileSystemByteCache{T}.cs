@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileSystemByteCache{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,8 +15,8 @@ namespace Bodu.Financial;
 /// <remarks>
 /// <para>
 /// Each key maps to a single file in the cache directory, named by <see cref="GetFileName(TKey)" />; the file's
-/// last-write time serves as its freshness timestamp. A cached file is served only while <see cref="IsFresh(TKey, TimeSpan, TimeSpan)" />
-/// accepts its age against the supplied refresh interval.
+/// last-write time serves as its freshness timestamp. A cached file is served only while
+/// <see cref="IsFresh(TKey, TimeSpan, TimeSpan)" /> accepts its age against the supplied refresh interval.
 /// </para>
 /// <para>
 /// The cache is best-effort: any I/O failure while reading is reported as a miss, and any failure while writing is
@@ -74,7 +74,9 @@ public abstract class FileSystemByteCache<TKey>
     /// </summary>
     /// <param name="key">The download unit to look up.</param>
     /// <param name="refreshInterval">The maximum age a cached file may reach before it is treated as stale.</param>
-    /// <param name="bytes">When this method returns <see langword="true" />, the cached bytes; otherwise <see langword="null" />.</param>
+    /// <param name="bytes">
+    /// When this method returns <see langword="true" />, the cached bytes; otherwise <see langword="null" />.
+    /// </param>
     /// <returns><see langword="true" /> when fresh bytes were read; otherwise <see langword="false" />.</returns>
     protected bool TryGetCore(TKey key, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
     {

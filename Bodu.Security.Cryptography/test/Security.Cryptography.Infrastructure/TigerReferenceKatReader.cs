@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TigerReferenceKatReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,8 +18,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 public static partial class TigerReferenceKatReader
 {
     /// <summary>
-    /// Reads Tiger reference vectors from <paramref name="stream" />, yielding one <see cref="MessageDigestKnownAnswer" />
-    /// per row that matches the requested padding variant.
+    /// Reads Tiger reference vectors from <paramref name="stream" />, yielding one
+    /// <see cref="MessageDigestKnownAnswer" /> per row that matches the requested padding variant.
     /// </summary>
     /// <param name="stream">A readable stream over the labelled Tiger reference text.</param>
     /// <param name="tiger2">
@@ -96,17 +96,21 @@ public static partial class TigerReferenceKatReader
         }
     }
 
-    /// <summary>Returns the short variant label used in a vector's display name.</summary>
+    /// <summary>
+    /// Returns the short variant label used in a vector's display name.
+    /// </summary>
     /// <param name="isTiger2"><see langword="true" /> for the Tiger2 variant.</param>
     /// <returns><c>"Tiger2"</c> or <c>"Tiger"</c>.</returns>
     private static string Label(bool isTiger2) => isTiger2 ? "Tiger2" : "Tiger";
 
     /// <summary>
-    /// Decodes a hex-format message value: literal hex, a <c>repeat HH x N</c> run, or an unmodelled form
-    /// (for example <c>runlength x N</c>) which sets <paramref name="skip" /> and returns an empty array.
+    /// Decodes a hex-format message value: literal hex, a <c>repeat HH x N</c> run, or an unmodelled form (for example
+    /// <c>runlength x N</c>) which sets <paramref name="skip" /> and returns an empty array.
     /// </summary>
     /// <param name="value">The text following <c>m:</c> under an <c>m-format: hex</c> directive.</param>
-    /// <param name="skip">Set to <see langword="true" /> when the value cannot be decoded and the row must be skipped.</param>
+    /// <param name="skip">
+    /// Set to <see langword="true" /> when the value cannot be decoded and the row must be skipped.
+    /// </param>
     /// <returns>The decoded bytes, or an empty array when <paramref name="skip" /> is set.</returns>
     private static byte[] DecodeHexMessage(string value, out bool skip)
     {
@@ -132,17 +136,23 @@ public static partial class TigerReferenceKatReader
         return [];
     }
 
-    /// <summary>Matches the <c>option: variant = tiger2</c> directive.</summary>
+    /// <summary>
+    /// Matches the <c>option: variant = tiger2</c> directive.
+    /// </summary>
     /// <returns>The compiled regular expression.</returns>
     [GeneratedRegex(@"variant\s*=\s*tiger2", RegexOptions.IgnoreCase)]
     private static partial Regex VariantOption();
 
-    /// <summary>Matches a <c>repeat HH x N</c> run description.</summary>
+    /// <summary>
+    /// Matches a <c>repeat HH x N</c> run description.
+    /// </summary>
     /// <returns>The compiled regular expression.</returns>
     [GeneratedRegex(@"^repeat\s+([0-9a-fA-F]{2})\s+x\s+(\d+)$")]
     private static partial Regex RepeatRun();
 
-    /// <summary>Matches a string of hex digits only.</summary>
+    /// <summary>
+    /// Matches a string of hex digits only.
+    /// </summary>
     /// <returns>The compiled regular expression.</returns>
     [GeneratedRegex("^[0-9a-fA-F]+$")]
     private static partial Regex HexOnly();
