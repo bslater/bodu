@@ -318,11 +318,17 @@ is now:
    deliberate documented Unbounded, XE as an estimated ten-year rolling
    window, alongside OANDA's existing ~180-day window; the shared
    pair-provider contract test now forces every future provider to
-   declare deliberately. The remaining increment on the Preview→Stable
-   path is to **consume** the advertised value — nothing reads it yet:
-   teach `CachingExchangeRateProvider` / `AggregatingExchangeRateProvider`
-   to clamp or route requests using each source's earliest resolvable
-   date.
+   declare deliberately. The consuming side has since landed as well:
+   the new `IHistoryAwareExchangeRateProvider` capability interface is
+   implemented across the provider base, the fixed-book provider, and
+   both decorators; `CachingExchangeRateProvider` clamps or skips
+   fetches outside the inner source's advertised history (recording the
+   unavailable prefix as covered-with-no-rows); and
+   `AggregatingExchangeRateProvider` drops candidates that declared they
+   cannot serve the requested date or window before the strategy runs —
+   both behind `RespectHistoryAvailability` flags that default on. The
+   Preview→Stable promotion for the FX family now waits only on
+   live-endpoint soak per the stability-tier policy.
 3. **Cut Wave 1–2 packages — release-readiness landed; tag to publish.**
    The shipping manifest (`bld/release-manifest.txt`, the 15 Wave 1–2
    package ids) now scopes what the release workflow publishes (pack
@@ -806,13 +812,18 @@ per-pair routing) over `IExchangeRateCache`, with in-memory / TOML / JSON
 backends in-package and durable `Sqlite` + shared `Distributed`
 (`IDistributedCache` / Redis) backends as add-ons.
 
-- **`HistoryAvailability` is now advertised on every provider.** ✅
-  Declared per source (fixed floors for the central banks and Yahoo, a
-  deliberate Unbounded for OFX, rolling windows for XE and OANDA) and
-  enforced for pair providers by the shared contract test. Follow-up:
-  make the caching / aggregation layer *consume* it — clamp requested
-  ranges and route per-pair lookups using each source's earliest
-  resolvable date (nothing reads the value yet).
+- **`HistoryAvailability` is now advertised on every provider — and
+  consumed.** ✅ Declared per source (fixed floors for the central banks
+  and Yahoo, a deliberate Unbounded for OFX, rolling windows for XE and
+  OANDA) and enforced for pair providers by the shared contract test.
+  The caching / aggregation layer now reads it through the
+  `IHistoryAwareExchangeRateProvider` capability interface: the caching
+  decorator skips single-date misses and clamps range fetches to the
+  inner source's advertised earliest date (recording the unavailable
+  prefix as covered-with-no-rows), and the aggregator drops candidates
+  that declared they cannot serve the requested date or window before
+  the strategy runs — both behind `RespectHistoryAvailability` flags
+  that default on.
 - **Give Yahoo a dedicated provider subclass.** It is currently the
   generic pair base wired through an adapter — inconsistent with the
   other six and awkward to extend.
