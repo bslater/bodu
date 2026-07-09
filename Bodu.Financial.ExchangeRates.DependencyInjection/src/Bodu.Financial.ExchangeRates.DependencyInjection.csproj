@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Exchange Rates Provider DI</Title>
-    <Description>Shared dependency-injection machinery for Bodu.Financial web-based exchange-rate providers. Exposes AddWebExchangeRateProvider on IFinancialServiceBuilder, handling HttpClient configuration with Polly resilience, options binding, and singleton registration so each provider package delegates its registration plumbing here.</Description>
+    <Description>Shared dependency-injection machinery for Bodu.Financial web-based exchange-rate providers. Exposes AddWebRateProvider on IFinancialServiceBuilder, handling HttpClient configuration with Polly resilience, options binding, and singleton registration so each provider package delegates its registration plumbing here.</Description>
     <PackageTags>$(PackageTags);financial;exchange-rate;dependency-injection;options</PackageTags>
   </PropertyGroup>
 

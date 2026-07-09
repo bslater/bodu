@@ -106,7 +106,7 @@ Historic currencies (DEM, FRF, ITL, etc.) remain accessible through `CurrencyReg
 
 ## Foreign exchange
 
-Both runtime and typed rate forms are first-class:
+The exchange-rate surface lives in the `Bodu.Financial.ExchangeRates` namespace (`using Bodu.Financial.ExchangeRates;`). Both runtime and typed rate forms are first-class:
 
 ```csharp
 // Runtime rate — direction is data
@@ -124,22 +124,22 @@ Bridge between forms via `typed.ToRuntime()` and `ExchangeRate<TBase, TQuote>.Fr
 
 Provider stack:
 
-- Timeless: `IExchangeRateProvider` with `FixedExchangeRateTable` (inverse-rate fallback).
-- Dated: `IDatedExchangeRateProvider`, `FixedDatedExchangeRateProvider`, `ExchangeRateBook`, `ExchangeRateSeries`, and `DatedExchangeRateProviderAdapter`. Grouping several providers (priority-fallback, averaging, per-pair routing) lives in `Bodu.Financial.ExchangeRates.Caching` as `AggregatingExchangeRateProvider`.
+- Timeless: `IRateProvider` with `FixedRateTable` (inverse-rate fallback).
+- Dated: `IDatedRateProvider`, `FixedDatedRateProvider`, `RateBook`, `RateSeries`, and `DatedRateProviderAdapter`. Grouping several providers (priority-fallback, averaging, per-pair routing) lives in `Bodu.Financial.ExchangeRates.Caching` as `AggregatingRateProvider`.
 
-Lookup surface — `IDatedExchangeRateProvider` exposes a symmetric matrix of single-date and range getters, each with a synchronous and an asynchronous form:
+Lookup surface — `IDatedRateProvider` exposes a symmetric matrix of single-date and range getters, each with a synchronous and an asynchronous form:
 
-- Single-date `GetRate` / `GetRateAsync` (timeless and dated overloads) return an `ExchangeRateLookupResult` — the resolved `ExchangeRate` plus the `RequestedDate`, the `ExchangeRateDateResolution` that was applied, and the `OffsetDays` between the requested and resolved dates. Resolution and tolerance are controlled per call through `ExchangeRateLookupOptions`.
-- Range `GetRates` / `GetRatesAsync` return an `ExchangeRateRangeResult`: the observations within the window ordered by date, the requested window (`RequestedStartDate` / `RequestedEndDate`), and the observed span (`FirstObservedDate` / `LastObservedDate`, plus `Count` / `IsEmpty`). The result *is* the rate sequence — it implements `IReadOnlyList<ExchangeRate>`, so it indexes, enumerates, and composes with LINQ directly, while comparing the requested window to the observed span reveals how much of the window carried data.
+- Single-date `GetRate` / `GetRateAsync` (timeless and dated overloads) return a `RateLookupResult` — the resolved `ExchangeRate` plus the `RequestedDate`, the `RateDateResolution` that was applied, and the `OffsetDays` between the requested and resolved dates. Resolution and tolerance are controlled per call through `RateLookupOptions`.
+- Range `GetRates` / `GetRatesAsync` return a `RateRangeResult`: the observations within the window ordered by date, the requested window (`RequestedStartDate` / `RequestedEndDate`), and the observed span (`FirstObservedDate` / `LastObservedDate`, plus `Count` / `IsEmpty`). The result *is* the rate sequence — it implements `IReadOnlyList<ExchangeRate>`, so it indexes, enumerates, and composes with LINQ directly, while comparing the requested window to the observed span reveals how much of the window carried data.
 
-HTTP-backed providers (`Bodu.Financial.ExchangeRates.{Yahoo,Boe,Ecb,Rba,Ofx,Xe,Oanda}`) share the `WebExchangeRateProvider` base, which centralizes accumulation, the snapshot/lookup matrix, on-demand fetch coalescing, and the `HistoryAvailability` each provider advertises (how far back it serves rates — unbounded, a fixed earliest date, or a rolling window such as OANDA's ~180 days). Each provider offers two constructors and is `IDisposable`:
+HTTP-backed providers (`Bodu.Financial.ExchangeRates.{Yahoo,Boe,Ecb,Rba,Ofx,Xe,Oanda}`) share the `WebRateProvider` base from the separate [`Bodu.Financial.ExchangeRates`](../Bodu.Financial.ExchangeRates) infrastructure package (this core package carries no HTTP machinery), which centralizes accumulation, the snapshot/lookup matrix, on-demand fetch coalescing, and the `HistoryAvailability` each provider advertises (how far back it serves rates — unbounded, a fixed earliest date, or a rolling window such as OANDA's ~180 days). Each provider offers two constructors and is `IDisposable`:
 
-- `new XProvider(options, ...)` — the provider builds, owns, and disposes its own `HttpClient` (created via `ExchangeRateHttpClientFactory.Create`). Dispose the provider to release it.
+- `new XProvider(options, ...)` — the provider builds, owns, and disposes its own `HttpClient` (created via `RateProviderHttpClientFactory.Create`). Dispose the provider to release it.
 - `new XProvider(httpClient, options, ...)` — the caller supplies the client and owns its lifetime; the provider never disposes a borrowed client. This is the form the `*.DependencyInjection` packages use with `IHttpClientFactory`.
 
 ## `MoneyBag`
 
-Immutable mixed-currency aggregate for portfolios and ledgers. Per-currency balances are tracked separately, zero balances pruned automatically, and the bag converts to a single target currency through `IExchangeRateProvider`.
+Immutable mixed-currency aggregate for portfolios and ledgers. Per-currency balances are tracked separately, zero balances pruned automatically, and the bag converts to a single target currency through `IRateProvider`.
 
 ```csharp
 var bag = new MoneyBag(new[]

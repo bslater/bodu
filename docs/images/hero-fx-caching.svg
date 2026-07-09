@@ -70,6 +70,6 @@
 
   <!-- Bottom caption -->
   <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
-    <text x="240" y="206" text-anchor="middle">AddCachedExchangeRateProvider · AddAggregatedExchangeRateProvider</text>
+    <text x="240" y="206" text-anchor="middle">AddCachedRateProvider · AddAggregatedRateProvider</text>
   </g>
 </svg>

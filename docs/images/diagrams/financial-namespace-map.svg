@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 412" role="img" aria-labelledby="fin-t fin-d">
   <title id="fin-t">Bodu.Financial — namespace map</title>
-  <desc id="fin-d">Bodu.Financial is organised into three namespaces. Bodu.Financial hosts the monetary primitives Money&lt;TCurrency&gt;, Money, MoneyBag, and the exchange-rate provider stack. Bodu.Financial.Currencies ships sealed tag types — one per ISO 4217 code — that implement the static-abstract ICurrency interface. Bodu.Financial.Serialization ships System.Text.Json converters plus the FinancialJsonPolicy enum that switches between Strict, Lenient, and Compact wire shapes. Currency tags are erased at runtime but their static metadata flows through Money&lt;TCurrency&gt;, the registry, and the serialization layer.</desc>
+  <desc id="fin-d">Bodu.Financial is organised into four namespaces. Bodu.Financial hosts the monetary primitives Money&lt;TCurrency&gt;, Money, and MoneyBag. Bodu.Financial.Currencies ships the runtime currency metadata (ICurrency, CurrencyInfo, CurrencyRegistry) alongside sealed tag types — one per ISO 4217 code. Bodu.Financial.ExchangeRates hosts the exchange-rate provider stack. Bodu.Financial.Serialization ships System.Text.Json converters plus the FinancialJsonPolicy enum that switches between Strict, Lenient, and Compact wire shapes. Currency tags are erased at runtime but their static metadata flows through Money&lt;TCurrency&gt;, the registry, and the serialization layer.</desc>
 
   <defs>
     <style>
@@ -27,7 +27,7 @@
     <rect class="fin-pan" width="800" height="392" rx="8"/>
     <rect class="fin-hdr" width="800" height="46" rx="8"/>
     <rect class="fin-hdr" y="38" width="800" height="8"/>
-    <text class="fin-ttl" x="16" y="29">Bodu.Financial — three namespaces, one monetary surface</text>
+    <text class="fin-ttl" x="16" y="29">Bodu.Financial — four namespaces, one monetary surface</text>
     <text class="fin-form" x="784" y="29" text-anchor="end">type-safe · ISO 4217 · audit-grade FX</text>
 
     <!-- Row 1: namespaces -->
@@ -38,21 +38,21 @@
       <text class="fin-role" x="14" y="58">Money types</text>
       <text class="fin-type" x="14" y="76">Money&lt;TCurrency&gt; · Money</text>
       <text class="fin-type" x="14" y="94">MoneyBag · MoneyConversionResult</text>
-      <text class="fin-role" x="14" y="116">Currency contract</text>
-      <text class="fin-type" x="14" y="134">ICurrency · CurrencyInfo</text>
-      <text class="fin-type" x="14" y="152">CurrencyRegistry</text>
+      <text class="fin-role" x="14" y="116">Formatting &amp; context</text>
+      <text class="fin-type" x="14" y="134">MoneyFormatter · CurrencyDisplay</text>
+      <text class="fin-type" x="14" y="152">MonetaryContext</text>
     </g>
 
     <g transform="translate(277 60)">
       <rect class="fin-card" width="246" height="168" rx="7"/>
       <text class="fin-name" x="14" y="22">Bodu.Financial.Currencies</text>
-      <text class="fin-ns" x="14" y="37">ISO 4217 tag catalogue</text>
-      <text class="fin-role" x="14" y="58">155 active currencies</text>
-      <text class="fin-type" x="14" y="76">USD · EUR · GBP · JPY · AUD</text>
-      <text class="fin-type" x="14" y="94">CAD · CHF · CNY · NZD · …</text>
-      <text class="fin-role" x="14" y="116">29 historic currencies</text>
-      <text class="fin-type" x="14" y="134">ATS · DEM · FRF · ITL · ESP</text>
-      <text class="fin-type" x="14" y="152">IsHistoric · DemonetizedOn</text>
+      <text class="fin-ns" x="14" y="37">metadata + ISO 4217 tag catalogue</text>
+      <text class="fin-role" x="14" y="58">Runtime metadata</text>
+      <text class="fin-type" x="14" y="76">ICurrency · CurrencyInfo</text>
+      <text class="fin-type" x="14" y="94">CurrencyRegistry · CurrencyCode</text>
+      <text class="fin-role" x="14" y="116">184 tag types (155 active)</text>
+      <text class="fin-type" x="14" y="134">USD · EUR · GBP · JPY · AUD · …</text>
+      <text class="fin-type" x="14" y="152">historic: ATS · DEM · FRF · ITL</text>
     </g>
 
     <g transform="translate(534 60)">
@@ -71,35 +71,35 @@
     <g transform="translate(20 244)">
       <rect class="fin-fx" width="760" height="138" rx="7"/>
       <text class="fin-fxt" x="14" y="22">Exchange-rate provider stack</text>
-      <text class="fin-fxs" x="14" y="38">Bodu.Financial · audit-grade FX with provenance metadata</text>
+      <text class="fin-fxs" x="14" y="38">Bodu.Financial.ExchangeRates · audit-grade FX with provenance metadata · web machinery in its own package</text>
 
       <!-- mini cards -->
       <g transform="translate(14 50)">
         <rect class="fin-card" width="172" height="78" rx="6"/>
         <text class="fin-role" x="12" y="20">Contracts</text>
-        <text class="fin-type" x="12" y="38">IExchangeRateProvider</text>
-        <text class="fin-type" x="12" y="54">IDatedExchangeRateProvider</text>
+        <text class="fin-type" x="12" y="38">IRateProvider</text>
+        <text class="fin-type" x="12" y="54">IDatedRateProvider</text>
         <text class="fin-use" x="12" y="70">timeless · dated lookup</text>
       </g>
       <g transform="translate(197 50)">
         <rect class="fin-card" width="172" height="78" rx="6"/>
         <text class="fin-role" x="12" y="20">Values</text>
-        <text class="fin-type" x="12" y="38">ExchangeRate · ExchangeRatePair</text>
-        <text class="fin-type" x="12" y="54">ExchangeRateSeries</text>
+        <text class="fin-type" x="12" y="38">ExchangeRate · CurrencyPair</text>
+        <text class="fin-type" x="12" y="54">RateSeries</text>
         <text class="fin-use" x="12" y="70">O(log n) time series</text>
       </g>
       <g transform="translate(380 50)">
         <rect class="fin-card" width="172" height="78" rx="6"/>
         <text class="fin-role" x="12" y="20">Providers</text>
-        <text class="fin-type" x="12" y="38">FixedExchangeRateTable</text>
-        <text class="fin-type" x="12" y="54">FixedDatedExchangeRateTable</text>
+        <text class="fin-type" x="12" y="38">FixedRateTable</text>
+        <text class="fin-type" x="12" y="54">FixedDatedRateProvider</text>
         <text class="fin-use" x="12" y="70">in-memory tables</text>
       </g>
       <g transform="translate(563 50)">
         <rect class="fin-card" width="183" height="78" rx="6"/>
         <text class="fin-role" x="12" y="20">Aggregation · Caching pkg</text>
-        <text class="fin-type" x="12" y="38">AggregatingExchangeRateProvider</text>
-        <text class="fin-type" x="12" y="54">ExchangeRateLookupResult</text>
+        <text class="fin-type" x="12" y="38">AggregatingRateProvider</text>
+        <text class="fin-type" x="12" y="54">RateLookupResult</text>
         <text class="fin-use" x="12" y="70">prioritised fallback · averaging</text>
       </g>
     </g>

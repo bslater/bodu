@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — ECB Exchange Rates</Title>
-    <Description>European Central Bank (ECB) euro foreign-exchange reference-rate provider for Bodu.Financial. Downloads and parses the ECB's published eurofxref XML feeds and serves them as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API and in-memory plus on-disk caching. Includes the dependency-injection registration extensions (AddEcbReferenceRates) for Microsoft.Extensions.DependencyInjection, with options binding and a resilient named HttpClient.</Description>
+    <Description>European Central Bank (ECB) euro foreign-exchange reference-rate provider for Bodu.Financial. Downloads and parses the ECB's published eurofxref XML feeds and serves them as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API and in-memory plus on-disk caching. Includes the dependency-injection registration extensions (AddEcbExchangeRates) for Microsoft.Extensions.DependencyInjection, with options binding and a resilient named HttpClient.</Description>
     <PackageTags>$(PackageTags);financial;ecb;exchange-rate;forex;fx;euro;eur;eurofxref;dependency-injection;options</PackageTags>
   </PropertyGroup>
 

@@ -5,18 +5,18 @@
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by **OANDA's**
 Historical Currency Converter, queried from its anonymous JSON endpoint.
 
-`OandaExchangeRateProvider` derives from the arbitrary-pair `PairWebExchangeRateProvider`
+`OandaRateProvider` derives from the arbitrary-pair `PairWebRateProvider`
 base: it fetches a pair's history over a date range on demand and serves the results as
-`Bodu.Financial.ExchangeRate` values through the standard `IDatedExchangeRateProvider`
-and `IExchangeRateProvider` contracts — so it composes with `Money.ConvertTo`, the
+`Bodu.Financial.ExchangeRates.ExchangeRate` values through the standard `IDatedRateProvider`
+and `IRateProvider` contracts — so it composes with `Money.ConvertTo`, the
 caching and aggregating providers, and the rest of the Bodu.Financial FX stack.
 
 ```csharp
 using Bodu.Financial.ExchangeRates;
 
-using var provider = new OandaExchangeRateProvider(new OandaExchangeRateOptions());
+using var provider = new OandaRateProvider(new OandaRateProviderOptions());
 
-ExchangeRateRangeResult series =
+RateRangeResult series =
     await provider.GetRatesAsync("EUR", "USD", new DateOnly(2026, 4, 1), new DateOnly(2026, 6, 12));
 ```
 
@@ -26,11 +26,11 @@ ExchangeRateRangeResult series =
   direction is inverted from the fetched series.
 - **Rolling history window.** The anonymous endpoint serves only a rolling recent window —
   roughly the last **180 days**. The provider advertises this through
-  `WebExchangeRateProvider.HistoryAvailability` (`ExchangeRateHistoryAvailability.RollingDays(180)`),
+  `WebRateProvider.HistoryAvailability` (`RateHistoryAvailability.RollingDays(180)`),
   so a caller — or the caching / aggregation layer — can resolve the earliest date worth
   requesting rather than fetching a window that returns nothing. A request for an older date
   resolves against what the window can supply.
-- **Configuration.** `OandaExchangeRateOptions` carries working defaults (the Historical
+- **Configuration.** `OandaRateProviderOptions` carries working defaults (the Historical
   Currency Converter host and the 180-day window) and binds through
   `Microsoft.Extensions.Options`. The package ships its own `AddOandaExchangeRates`
   registration in the `Bodu.Financial.ExchangeRates` namespace.
@@ -38,8 +38,8 @@ ExchangeRateRangeResult series =
 ## HTTP client and lifetime
 
 The provider is `IDisposable` and offers two construction styles: `new
-OandaExchangeRateProvider(options, ...)` — the provider builds, owns, and disposes its own
-`HttpClient` — and `new OandaExchangeRateProvider(httpClient, options, ...)` — you supply
+OandaRateProvider(options, ...)` — the provider builds, owns, and disposes its own
+`HttpClient` — and `new OandaRateProvider(httpClient, options, ...)` — you supply
 the client and own its lifetime. The second form is what the DI registration uses, backed
 by `IHttpClientFactory`.
 

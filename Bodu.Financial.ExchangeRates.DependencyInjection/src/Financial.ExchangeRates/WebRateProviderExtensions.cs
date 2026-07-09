@@ -83,7 +83,7 @@ public static class WebRateProviderExtensions
     /// // A provider package's own DI extension delegates to this overload.
     /// public static IFinancialServiceBuilder AddAcmeRates(
     ///     this IFinancialServiceBuilder builder, IConfiguration? configuration = null) =>
-    ///     builder.AddWebRateProvider<AcmeExchangeRateProvider, AcmeExchangeRateOptions>(
+    ///     builder.AddWebRateProvider<AcmeRateProvider, AcmeRateProviderOptions>(
     ///         httpClientName: "Acme",
     ///         configuration: configuration,
     ///         sectionName: "Financial:Acme",
@@ -91,7 +91,7 @@ public static class WebRateProviderExtensions
     ///         configure: null,
     ///         configureResilience: null,
     ///         factory: (client, opts, loggerFactory, timeProvider) =>
-    ///             new AcmeExchangeRateProvider(client, opts, loggerFactory, timeProvider));
+    ///             new AcmeRateProvider(client, opts, loggerFactory, timeProvider));
     ///]]>
     /// </code>
     /// </example>

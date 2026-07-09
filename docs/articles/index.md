@@ -33,7 +33,7 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
   `Fraction<T>` for canonical rational arithmetic over any `IBinaryInteger<T>` backing type, with `BigInteger`-promoted intermediates, the full `INumber<T>` / `ISignedNumber<T>` surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation. `Interval<T>` for closed / open / half-open intervals with intersection, union, and adjacency.
 
 - **[Bodu.Financial — type-safe monetary primitives](xref:Bodu.Financial)**
-  `Money<TCurrency>` where the currency is encoded as the type parameter so cross-currency arithmetic fails the build; `Money` for runtime-tagged scenarios; `MoneyBag` for multi-currency portfolios; a shipped catalogue of 184 ISO 4217 currencies (active + historic with demonetisation metadata); an audit-grade `IDatedExchangeRateProvider` stack; fair allocation; cash rounding; `Fraction<BigInteger>` interop for sub-minor-unit-precise chains; and three JSON wire shapes (strict / lenient / compact).
+  `Money<TCurrency>` where the currency is encoded as the type parameter so cross-currency arithmetic fails the build; `Money` for runtime-tagged scenarios; `MoneyBag` for multi-currency portfolios; a shipped catalogue of 184 ISO 4217 currencies (active + historic with demonetisation metadata); an audit-grade `IDatedRateProvider` stack; fair allocation; cash rounding; `Fraction<BigInteger>` interop for sub-minor-unit-precise chains; and three JSON wire shapes (strict / lenient / compact).
 
 ## Guides
 

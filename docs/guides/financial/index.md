@@ -27,22 +27,22 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 - **[`MoneyBag`](xref:Bodu.Financial.MoneyBag)** — immutable
   mixed-currency portfolio with aggregate-then-round and
   round-each-then-sum policies.
-- **[`CurrencyRegistry`](xref:Bodu.Financial.CurrencyRegistry)** —
+- **[`CurrencyRegistry`](xref:Bodu.Financial.Currencies.CurrencyRegistry)** —
   runtime ISO-to-metadata lookup, populated from the source-generated
   catalogue.
 - **FX provider stack:**
-  [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)
+  [`IRateProvider`](xref:Bodu.Financial.ExchangeRates.IRateProvider)
   for timeless rates plus
-  [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider)
+  [`IDatedRateProvider`](xref:Bodu.Financial.ExchangeRates.IDatedRateProvider)
   for dated lookups with full audit metadata
-  ([`ExchangeRate`](xref:Bodu.Financial.ExchangeRate),
-  [`ExchangeRateSeries`](xref:Bodu.Financial.ExchangeRateSeries),
-  [`FixedDatedExchangeRateProvider`](xref:Bodu.Financial.FixedDatedExchangeRateProvider); grouping via
-  [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider)).
+  ([`ExchangeRate`](xref:Bodu.Financial.ExchangeRates.ExchangeRate),
+  [`RateSeries`](xref:Bodu.Financial.ExchangeRates.RateSeries),
+  [`FixedDatedRateProvider`](xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider); grouping via
+  [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider)).
 - **FX editing surface:**
-  [`ExchangeRateSeriesBuilder`](xref:Bodu.Financial.ExchangeRateSeriesBuilder)
-  as the mutable companion to `ExchangeRateSeries`, plus
-  [`ExchangeRateTableBuilder`](xref:Bodu.Financial.ExchangeRateTableBuilder) for
+  [`RateSeriesBuilder`](xref:Bodu.Financial.ExchangeRates.RateSeriesBuilder)
+  as the mutable companion to `RateSeries`, plus
+  [`RateTableBuilder`](xref:Bodu.Financial.ExchangeRates.RateTableBuilder) for
   multi-pair / multi-provider import workflows that produce
   immutable snapshots.
 
@@ -57,7 +57,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 
 <div class="bodu-card">
   <h3><a href="exchange-rates.md">Working with exchange rates</a></h3>
-  <p>The FX provider stack — timeless vs. dated contracts, the audit-grade <code>ExchangeRateLookupResult</code>, provider grouping via the aggregator, and the <code>ExchangeRateSeriesBuilder</code> + <code>ExchangeRateTableBuilder</code> editing surface.</p>
+  <p>The FX provider stack — timeless vs. dated contracts, the audit-grade <code>RateLookupResult</code>, provider grouping via the aggregator, and the <code>RateSeriesBuilder</code> + <code>RateTableBuilder</code> editing surface.</p>
 </div>
 
 <div class="bodu-card">
@@ -67,12 +67,12 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 
 <div class="bodu-card">
   <h3><a href="exchange-rate-lookups.md">Exchange-rate lookups on a known dataset</a></h3>
-  <p>One fixed dataset run through every <code>ExchangeRateDateResolution</code> policy, tolerance window, and the inverse / identity switches, with a results matrix.</p>
+  <p>One fixed dataset run through every <code>RateDateResolution</code> policy, tolerance window, and the inverse / identity switches, with a results matrix.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="exchange-rate-caching.md">Caching and aggregating exchange rates</a></h3>
-  <p>Read-through caching one provider per cache (<code>CachingExchangeRateProvider</code>, TOML or in-memory, per-provider expiry), and grouping many providers with <code>AggregatingExchangeRateProvider</code> — priority fallback, averaging, and per-FX-pair routing.</p>
+  <p>Read-through caching one provider per cache (<code>CachingRateProvider</code>, TOML or in-memory, per-provider expiry), and grouping many providers with <code>AggregatingRateProvider</code> — priority fallback, averaging, and per-FX-pair routing.</p>
 </div>
 
 <div class="bodu-card">
@@ -100,9 +100,9 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 - [`Money<TCurrency>` API reference](xref:Bodu.Financial.Money`1)
 - [`Money` API reference](xref:Bodu.Financial.Money)
 - [`MoneyBag` API reference](xref:Bodu.Financial.MoneyBag)
-- [`CurrencyRegistry`](xref:Bodu.Financial.CurrencyRegistry)
-- [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)
-- [`IDatedExchangeRateProvider`](xref:Bodu.Financial.IDatedExchangeRateProvider)
-- [`ICurrency` interface](xref:Bodu.Financial.ICurrency)
+- [`CurrencyRegistry`](xref:Bodu.Financial.Currencies.CurrencyRegistry)
+- [`IRateProvider`](xref:Bodu.Financial.ExchangeRates.IRateProvider)
+- [`IDatedRateProvider`](xref:Bodu.Financial.ExchangeRates.IDatedRateProvider)
+- [`ICurrency` interface](xref:Bodu.Financial.Currencies.ICurrency)
 - [`Bodu.Numerics` overview](../numerics/index.md) — for the
   underlying `Fraction<T>` escape hatch.

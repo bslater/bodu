@@ -9,11 +9,11 @@ registration to the single generic extension defined here, so named-`HttpClient`
 configuration, resilience, options binding, and provider lifetime are wired one way across
 the whole family.
 
-## `AddWebExchangeRateProvider`
+## `AddWebRateProvider`
 
-`AddWebExchangeRateProvider<TProvider, TOptions>` registers a `WebExchangeRateProvider`
-subclass as a singleton, exposed as both `IDatedExchangeRateProvider` and
-`IExchangeRateProvider`. It:
+`AddWebRateProvider<TProvider, TOptions>` registers a `WebRateProvider`
+subclass as a singleton, exposed as both `IDatedRateProvider` and
+`IRateProvider`. It:
 
 - binds and validates `TOptions` through `Microsoft.Extensions.Options`;
 - configures a **named `HttpClient`** for the provider from the options (user agent, HTTP
@@ -28,12 +28,12 @@ A provider package's public `Add…` method is a thin call through to this:
 using Bodu.Financial.ExchangeRates;
 
 // Inside a provider package's own extension:
-public static IFinancialServiceBuilder AddAcmeRates(
+public static IFinancialServiceBuilder AddAcmeExchangeRates(
     this IFinancialServiceBuilder builder,
     IConfiguration configuration,
-    string sectionName = "AcmeExchangeRates",
-    Action<AcmeExchangeRateOptions>? configure = null) =>
-    builder.AddWebExchangeRateProvider<AcmeExchangeRateProvider, AcmeExchangeRateOptions>(
+    string sectionName = "Financial:Acme",
+    Action<AcmeRateProviderOptions>? configure = null) =>
+    builder.AddWebRateProvider<AcmeRateProvider, AcmeRateProviderOptions>(
         configuration, sectionName, configure);
 ```
 

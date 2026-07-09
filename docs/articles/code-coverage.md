@@ -114,7 +114,7 @@ percentage. A path that exists under two different folder spellings is the
 tell-tale of a cross-refactor artifact, not a coverage gap.
 
 The genuinely low spots this re-measurement surfaced were narrow — the
-`OfxExchangeRateProvider` owned-client constructor path (now covered) and the
+`OfxRateProvider` owned-client constructor path (now covered) and the
 file-system feed/response/workbook caches' best-effort I/O swallow blocks. The
 caches' `Store` `IOException` path is covered; their `UnauthorizedAccessException`
 catches and `TryGet` read-fault catches are left uncovered by design per

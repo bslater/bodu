@@ -635,7 +635,7 @@ Bags are immutable; every operation returns a new bag. Zero balances
 are pruned automatically.
 
 To convert the bag to a single target currency, supply an
-`IExchangeRateProvider`:
+`IRateProvider`:
 
 ```csharp
 Dictionary<(string From, string To), decimal> rates = new()
@@ -643,13 +643,13 @@ Dictionary<(string From, string To), decimal> rates = new()
     { ("EUR", "USD"), 1.10m },
     { ("JPY", "USD"), 0.0067m },
 };
-FixedExchangeRateTable table = new(rates);
+FixedRateTable table = new(rates);
 
 Money<USD> totalInUsd = wallet.ConvertTo<USD>(table);
 // 100 + 50×1.10 + 10000×0.0067 = $222.00
 ```
 
-`FixedExchangeRateTable` short-circuits same-currency lookups to `1`
+`FixedRateTable` short-circuits same-currency lookups to `1`
 and falls back to the inverse rate `1 / rate` when only the reverse
 pair is in the table, so a typical "USD → X" set of rates is enough
 to convert in both directions.
@@ -777,8 +777,8 @@ JsonSerializer.Serialize(wallet, options);                   // { "USD": 100.00,
 `Lenient` keeps the `Strict` shape but normalises lowercase ISO codes
 to uppercase and trims surrounding whitespace before validation — for
 ingesting spreadsheets and external feeds, not as a canonical storage
-shape. The same call registers converters for <xref:Bodu.Financial.ExchangeRate>
-and <xref:Bodu.Financial.ExchangeRatePair> too.
+shape. The same call registers converters for <xref:Bodu.Financial.ExchangeRates.ExchangeRate>
+and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> too.
 
 ## When not to use `Money<TCurrency>`
 
@@ -805,11 +805,11 @@ and <xref:Bodu.Financial.ExchangeRatePair> too.
 - [`Money` API reference](xref:Bodu.Financial.Money)
 - [`MoneyBag` API reference](xref:Bodu.Financial.MoneyBag)
 - [`CalculatedMoney` API reference](xref:Bodu.Financial.CalculatedMoney) — the deferred-rounding tier.
-- [`CurrencyRegistry`](xref:Bodu.Financial.CurrencyRegistry)
-- [`CurrencyResolution`](xref:Bodu.Financial.CurrencyResolution) — the ambient currency-lookup seam.
-- [`IExchangeRateProvider`](xref:Bodu.Financial.IExchangeRateProvider)
+- [`CurrencyRegistry`](xref:Bodu.Financial.Currencies.CurrencyRegistry)
+- [`CurrencyResolution`](xref:Bodu.Financial.Currencies.CurrencyResolution) — the ambient currency-lookup seam.
+- [`IRateProvider`](xref:Bodu.Financial.ExchangeRates.IRateProvider)
 - [`Money` static factory helpers](xref:Bodu.Financial.Money)
-- [`ICurrency` interface](xref:Bodu.Financial.ICurrency)
+- [`ICurrency` interface](xref:Bodu.Financial.Currencies.ICurrency)
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1) — the
   exact-arithmetic escape hatch.
 - **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.

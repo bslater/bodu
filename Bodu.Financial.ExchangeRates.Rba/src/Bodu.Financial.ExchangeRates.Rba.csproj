@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — RBA Exchange Rates</Title>
-    <Description>Reserve Bank of Australia (RBA) historical exchange-rate provider for Bodu.Financial. Downloads and parses the RBA's published daily .xls files and serves them as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API and in-memory plus on-disk caching. Includes the dependency-injection registration extensions (AddRbaHistoricalRates) that register the provider as a singleton backed by a configured HttpClient and bind RbaExchangeRateOptions through Microsoft.Extensions.Options.</Description>
+    <Description>Reserve Bank of Australia (RBA) historical exchange-rate provider for Bodu.Financial. Downloads and parses the RBA's published daily .xls files and serves them as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API and in-memory plus on-disk caching. Includes the dependency-injection registration extensions (AddRbaExchangeRates) that register the provider as a singleton backed by a configured HttpClient and bind RbaRateProviderOptions through Microsoft.Extensions.Options.</Description>
     <PackageTags>$(PackageTags);financial;rba;exchange-rate;forex;fx;australia;aud;dependency-injection;options</PackageTags>
   </PropertyGroup>
 
