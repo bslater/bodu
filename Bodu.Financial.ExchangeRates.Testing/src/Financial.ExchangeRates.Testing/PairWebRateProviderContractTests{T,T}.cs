@@ -9,7 +9,7 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// <summary>
 /// Provides the shared contract every pair-based web provider built on
 /// <see cref="PairWebRateProvider{TSeries}" /> must satisfy, layered on top of the general
-/// <see cref="DatedExchangeRateProviderContractTests{TProvider}" />. It exercises the per-pair warm-up surface —
+/// <see cref="DatedRateProviderContractTests{TProvider}" />. It exercises the per-pair warm-up surface —
 /// <see cref="WebRateProvider.LoadPairAsync" /> and
 /// <see cref="PairWebRateProvider{TSeries}.GetAvailablePairs" /> — that the shared base contributes, so each
 /// concrete source (Yahoo, OFX, …) proves the inherited machinery against its own fixture by deriving a
@@ -19,12 +19,12 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// <typeparam name="TSeries">The provider's series-metadata type surfaced through <c>GetAvailablePairs</c>.</typeparam>
 /// <remarks>
 /// The contract is asserted against whatever pair the subclass seeds through
-/// <see cref="DatedExchangeRateProviderContractTests{TProvider}.CanonicalPair" />, so it applies to any pair-based
+/// <see cref="DatedRateProviderContractTests{TProvider}.CanonicalPair" />, so it applies to any pair-based
 /// source without imposing a dataset. The exact <see cref="ArgumentException" /> subtype a provider throws for an
 /// inverted range is source-specific and remains covered by each provider's local tests.
 /// </remarks>
 public abstract class PairWebRateProviderContractTests<TProvider, TSeries>
-    : DatedExchangeRateProviderContractTests<TProvider>
+    : DatedRateProviderContractTests<TProvider>
     where TProvider : PairWebRateProvider<TSeries>
 {
     /// <summary>

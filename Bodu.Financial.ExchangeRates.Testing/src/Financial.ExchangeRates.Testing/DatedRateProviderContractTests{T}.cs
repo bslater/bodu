@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DatedExchangeRateProviderContractTests{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="DatedRateProviderContractTests{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// which is the deliberate signal of where the rate came from.
 /// </para>
 /// </remarks>
-public abstract class DatedExchangeRateProviderContractTests<TProvider>
+public abstract class DatedRateProviderContractTests<TProvider>
     where TProvider : class, IDatedRateProvider
 {
     /// <summary>

@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 [TestClass]
 public sealed class CachingRateProviderContractTests
-    : DatedExchangeRateProviderContractTests<CachingRateProvider>
+    : DatedRateProviderContractTests<CachingRateProvider>
 {
     /// <summary>
     /// The provider name the inner source and cache are bound to.

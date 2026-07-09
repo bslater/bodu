@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 [TestClass]
 public sealed class FixedDatedRateProviderContractTests
-    : DatedExchangeRateProviderContractTests<FixedDatedRateProvider>
+    : DatedRateProviderContractTests<FixedDatedRateProvider>
 {
     /// <summary>
     /// The provider name stamped on the seeded observation.

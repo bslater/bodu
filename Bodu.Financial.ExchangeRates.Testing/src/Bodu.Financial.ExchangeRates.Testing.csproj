@@ -2,11 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <RootNamespace>Bodu.Financial.ExchangeRates.Testing</RootNamespace>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>Bodu</RootNamespace>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>

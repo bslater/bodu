@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 [TestClass]
 public sealed class BoeRateProviderContractTests
-    : DatedExchangeRateProviderContractTests<BoeRateProvider>
+    : DatedRateProviderContractTests<BoeRateProvider>
 {
     /// <summary>
     /// A date present in the embedded fixture (GBP/USD = 1.2065).

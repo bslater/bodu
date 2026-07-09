@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 [TestClass]
 public sealed class RbaRateProviderContractTests
-    : DatedExchangeRateProviderContractTests<RbaRateProvider>
+    : DatedRateProviderContractTests<RbaRateProvider>
 {
     /// <summary>
     /// A date present in the embedded sample workbook (AUD/USD = 0.6828).

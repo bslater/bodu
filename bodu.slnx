@@ -83,7 +83,7 @@
     <Project Path="Bodu.Financial.ExchangeRates.DependencyInjection/src/Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
   </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Testing/">
-    <Project Path="Bodu.Financial.ExchangeRates.Testing/test/Bodu.Financial.ExchangeRates.Testing.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Testing/src/Bodu.Financial.ExchangeRates.Testing.csproj" />
   </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Boe/">
     <Project Path="Bodu.Financial.ExchangeRates.Boe/src/Bodu.Financial.ExchangeRates.Boe.csproj" />

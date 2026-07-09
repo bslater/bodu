@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 [TestClass]
 public sealed class EcbRateProviderContractTests
-    : DatedExchangeRateProviderContractTests<EcbRateProvider>
+    : DatedRateProviderContractTests<EcbRateProvider>
 {
     /// <summary>
     /// A date present in the embedded fixture (EUR/USD = 1.0545).

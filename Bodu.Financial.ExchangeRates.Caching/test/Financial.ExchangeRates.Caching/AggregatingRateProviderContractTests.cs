@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 [TestClass]
 public sealed class AggregatingRateProviderContractTests
-    : DatedExchangeRateProviderContractTests<AggregatingRateProvider>
+    : DatedRateProviderContractTests<AggregatingRateProvider>
 {
     /// <summary>
     /// The name of the single grouped child.
