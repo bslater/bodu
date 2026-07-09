@@ -5,9 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Financial.Currencies;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Carries the runtime metadata of a currency: ISO 4217 code, minor-unit precision, cash-rounding increment, and

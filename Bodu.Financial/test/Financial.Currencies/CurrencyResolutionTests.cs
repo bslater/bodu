@@ -6,7 +6,7 @@
 
 using System.Globalization;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Verifies the ambient <see cref="CurrencyResolution" /> seam: the default resolves the shipped catalogue, a scoped

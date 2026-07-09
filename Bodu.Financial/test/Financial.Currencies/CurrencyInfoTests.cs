@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Verifies the <see cref="CurrencyInfo" /> runtime metadata record and its mapping APIs to and from the

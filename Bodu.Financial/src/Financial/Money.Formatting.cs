@@ -6,6 +6,7 @@
 
 using System.Globalization;
 using System.Text;
+using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
 

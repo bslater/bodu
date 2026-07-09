@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Verifies the runtime <see cref="CurrencyRegistry" /> — shipped-catalogue lookup, custom registration,

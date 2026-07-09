@@ -6,9 +6,8 @@
 
 using System.Collections.Frozen;
 using System.Globalization;
-using Bodu.Financial.Currencies;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Read-only catalogue of <see cref="CurrencyInfo" /> entries keyed by ISO 4217 alphabetic code. Supports lookup by

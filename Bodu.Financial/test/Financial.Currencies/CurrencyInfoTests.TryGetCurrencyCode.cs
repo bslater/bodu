@@ -4,9 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial.Currencies;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Verifies that <see cref="CurrencyInfo.TryGetCurrencyCode(string, out CurrencyCode)" /> honours the ISO 4217

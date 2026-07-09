@@ -5,9 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Financial.Currencies;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Once-per-closed-generic validated metadata for an <see cref="ICurrency" /> tag. Lazily computed and cached in a

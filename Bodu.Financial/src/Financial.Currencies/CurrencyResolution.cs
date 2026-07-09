@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Supplies the ambient <see cref="ICurrencyLookup" /> that the runtime-tagged <see cref="Money" /> and

@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 public partial class CurrencyInfoTests
 {

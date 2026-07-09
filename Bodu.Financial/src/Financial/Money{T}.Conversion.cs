@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Numerics;
+using Bodu.Financial.Currencies;
 using Bodu.Numerics;
 
 namespace Bodu.Financial;

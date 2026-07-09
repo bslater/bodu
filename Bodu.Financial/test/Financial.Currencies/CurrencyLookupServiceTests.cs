@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Verifies <see cref="CurrencyLookupService" /> resolves currencies by ISO code, numeric code, symbol, region, and

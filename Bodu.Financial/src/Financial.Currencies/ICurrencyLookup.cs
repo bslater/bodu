@@ -5,9 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Financial.Currencies;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Resolves <see cref="CurrencyInfo" /> metadata by ISO code, numeric code, symbol, region, or culture, providing

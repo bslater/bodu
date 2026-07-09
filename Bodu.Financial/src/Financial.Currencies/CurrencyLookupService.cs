@@ -5,9 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Financial.Currencies;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Default <see cref="ICurrencyLookup" /> backed by <see cref="CurrencyRegistry" />. Reverse indexes for numeric code,

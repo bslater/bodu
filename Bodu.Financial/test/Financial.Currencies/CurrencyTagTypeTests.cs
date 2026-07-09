@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CurrencyCatalogueTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CurrencyTagTypeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Reflection;
 
-namespace Bodu.Financial;
+namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Verifies the source-generated <see cref="ICurrency" /> tag-type catalogue under
@@ -14,7 +14,7 @@ namespace Bodu.Financial;
 /// <see cref="CurrencyRegistry" /> entry, and every tag type follows the non-instantiable sealed design.
 /// </summary>
 [TestClass]
-public class CurrencyCatalogueTests
+public class CurrencyTagTypeTests
 {
     /// <summary>
     /// Enumerates every shipped <see cref="ICurrency" /> tag type in the catalogue assembly.
