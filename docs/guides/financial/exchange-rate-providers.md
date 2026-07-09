@@ -244,6 +244,14 @@ acquired automatically from the XE website, so no API key or manual setup is nee
 Options are
 [`XeExchangeRateOptions`](xref:Bodu.Financial.ExchangeRates.XeExchangeRateOptions).
 
+> [!WARNING]
+> This package is **Experimental**. The authorization token is recovered by scraping
+> an unversioned public XE page, so a change to the site's markup or bundling can
+> silently reduce the provider to empty results — a broken scraper looks the same as
+> "no rate for this pair". Treat it as best-effort: do not rely on it as your sole
+> rate source in production, and pair it with a stable primary feed (for example the
+> ECB, Bank of England, or RBA providers).
+
 ```csharp
 using Bodu.Financial.ExchangeRates;
 
