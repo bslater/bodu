@@ -145,6 +145,18 @@ public sealed class FixedDatedRateProvider
             ? RateHistoryAvailability.Since(earliest)
             : RateHistoryAvailability.Unbounded;
 
+    /// <summary>
+    /// Gets the immutable book backing every lookup this provider performs.
+    /// </summary>
+    /// <value>The wrapped <see cref="RateBook" />; the same instance for the provider's lifetime.</value>
+    /// <remarks>
+    /// The book is immutable and safe to share or query concurrently. It carries the raw multi-provider series only —
+    /// the provider-priority policy this provider applies per pair is not part of the book, so rewrapping the book
+    /// (directly or via <see cref="RateBook.ToBuilder" />) does not carry the policy across.
+    /// </remarks>
+    public RateBook Book =>
+        _book;
+
     /// <inheritdoc />
     public RateLookupResult GetRate(
         string fromIsoCode,

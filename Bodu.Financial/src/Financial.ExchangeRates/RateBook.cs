@@ -144,4 +144,28 @@ public sealed class RateBook
     /// </summary>
     /// <returns>A lazy sequence of <see cref="RateSeries" /> instances.</returns>
     public IEnumerable<RateSeries> EnumerateSeries() => _series.Values;
+
+    /// <summary>
+    /// Creates a mutable <see cref="RateTableBuilder" /> seeded with a copy of every series in this book,
+    /// including each series' fetch instant.
+    /// </summary>
+    /// <returns>A new builder whose contents start equal to this book.</returns>
+    /// <remarks>
+    /// This is the editing counterpart of <see cref="RateTableBuilder.ToBook" />: edits to the returned builder
+    /// never affect this book, and calling <c>ToBook()</c> on the builder completes the round trip. It mirrors the
+    /// per-series <see cref="RateSeries.ToBuilder" />.
+    /// </remarks>
+    public RateTableBuilder ToBuilder()
+    {
+        RateTableBuilder builder = new();
+
+        foreach (RateSeries series in _series.Values)
+        {
+            RateSeriesBuilder seriesBuilder = builder.GetOrAddSeries(series.Pair, series.Provider);
+            seriesBuilder.AddRange(series.GetObservations());
+            seriesBuilder.FetchedAtUtc = series.FetchedAtUtc;
+        }
+
+        return builder;
+    }
 }

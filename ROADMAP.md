@@ -774,6 +774,20 @@ abstract `WebRateProvider` / `PairWebRateProvider<TSeries>`
 bases the provider packages extend. References `Bodu.Numerics` for the
 `Fraction<BigInteger>` exact-arithmetic escape hatch.
 
+- **The provider → immutable conversion surface has landed.** ✅
+  `WebExchangeRateProvider` exposes its accumulated state through
+  `GetLoadedBook()` / `GetLoadedSnapshot()` (the internal immutable book
+  and ready-to-query snapshot, pinned at call time),
+  `FixedDatedExchangeRateProvider` exposes its wrapped `Book`, and
+  `ExchangeRateBook.ToBuilder()` round-trips into the mutable table
+  builder. The `Bodu.Financial.Extensions` companions complete the chain:
+  `IEnumerable<ExchangeRate>.ToBook()` (multi-provider-safe,
+  inversion-normalizing, `FetchedAtUtc`-preserving),
+  `ExchangeRateBook.ToFixedProvider(…)`, and the fetch-based
+  `IDatedExchangeRateProvider.ToFixedProviderAsync(pairs, start, end)`.
+  Deferred follow-ups if demand emerges: book `Merge` / `Slice` helpers,
+  a per-pair-window `ToFixedProviderAsync` overload, and promoting book
+  exposure onto `IExchangeRatePairLoader`.
 - **Ship the 1.0 package** (Wave 3) with its DI companion.
 - **A second `IRoundingStrategy`.** The abstraction has a single
   implementation (`MidpointRoundingStrategy`); a

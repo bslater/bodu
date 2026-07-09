@@ -326,6 +326,55 @@ public abstract class WebRateProvider
         return pairs;
     }
 
+    /// <summary>
+    /// Returns the immutable book of every observation this provider has fetched and accumulated so far.
+    /// </summary>
+    /// <returns>The current immutable <see cref="RateBook" />; empty until the first fetch completes.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
+    /// <remarks>
+    /// <para>
+    /// The returned book is immutable and pinned at call time: later fetches replace the provider's internal book
+    /// wholesale and never mutate an instance already handed out, so the result is safe to share across threads, to
+    /// query after the provider is disposed, and to use as a deterministic offline snapshot. Call again after further
+    /// loads to observe newly accumulated data; no reference identity is promised across calls.
+    /// </para>
+    /// <para>
+    /// The book is the composable export primitive: rewrap it with
+    /// <see cref="FixedDatedRateProvider(RateBook, IEnumerable{string})" /> to apply a custom
+    /// provider-priority policy, or use <see cref="RateBook.ToBuilder" /> to edit a copy. For the
+    /// ready-to-query equivalent see <see cref="GetLoadedSnapshot" />.
+    /// </para>
+    /// </remarks>
+    public RateBook GetLoadedBook()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        return _book;
+    }
+
+    /// <summary>
+    /// Returns an immutable, ready-to-query provider over every observation this provider has fetched and accumulated
+    /// so far.
+    /// </summary>
+    /// <returns>
+    /// The current immutable <see cref="FixedDatedRateProvider" /> snapshot; it resolves no rates until the
+    /// first fetch completes.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
+    /// <remarks>
+    /// The snapshot is the instance this provider itself reads from — it is rebuilt once per fetch, so handing it out
+    /// costs nothing — and it is pinned at call time: later fetches replace it wholesale and never mutate an instance
+    /// already handed out. Use it for deterministic, offline, disposal-independent lookups over what has been loaded.
+    /// Its <see cref="FixedDatedRateProvider.Book" /> is the same instance <see cref="GetLoadedBook" /> returns
+    /// at the same moment.
+    /// </remarks>
+    public FixedDatedRateProvider GetLoadedSnapshot()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        return _snapshot;
+    }
+
     /// <inheritdoc />
     decimal IRateProvider.GetRate(string fromIsoCode, string toIsoCode) =>
         GetRate(fromIsoCode, toIsoCode).Rate.Rate;
