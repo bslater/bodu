@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -68,14 +68,10 @@ public sealed class RbaExchangeRateProvider
     /// <summary>The logger that records era downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The labels of eras whose data has been loaded.
-    /// </summary>
+    /// <summary>The labels of eras whose data has been loaded.</summary>
     private readonly HashSet<string> _loadedEras = new(StringComparer.Ordinal);
 
-    /// <summary>
-    /// The discovered currency series, keyed by pair.
-    /// </summary>
+    /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<ExchangeRatePair, RbaSeriesInfo> _series = new();
 
     /// <summary>

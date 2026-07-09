@@ -381,7 +381,9 @@ public static class KatCensus
     /// Attempts to instantiate a type through its public parameterless constructor.
     /// </summary>
     /// <param name="type">The type to instantiate.</param>
-    /// <returns>The new instance, or <see langword="null" /> when the type has no usable constructor or construction fails.</returns>
+    /// <returns>
+    /// The new instance, or <see langword="null" /> when the type has no usable constructor or construction fails.
+    /// </returns>
     private static object? TryCreate(Type type)
     {
         if (type.GetConstructor(Type.EmptyTypes) is null)

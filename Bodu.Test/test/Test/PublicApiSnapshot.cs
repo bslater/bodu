@@ -116,7 +116,9 @@ public static class PublicApiSnapshot
     /// member that is not a compiler-generated property/event accessor.
     /// </summary>
     /// <param name="member">The member to test.</param>
-    /// <returns><see langword="true" /> when the member belongs in the snapshot; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the member belongs in the snapshot; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsVisibleApi(MemberInfo member) =>
         member switch
         {

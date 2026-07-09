@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -68,14 +68,10 @@ public sealed class BoeExchangeRateProvider
     /// <summary>The logger that records range downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The inclusive ranges whose data has been loaded.
-    /// </summary>
+    /// <summary>The inclusive ranges whose data has been loaded.</summary>
     private readonly List<(DateOnly From, DateOnly To)> _loadedRanges = new();
 
-    /// <summary>
-    /// The discovered currency series, keyed by pair.
-    /// </summary>
+    /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<ExchangeRatePair, BoeSeriesInfo> _series = new();
 
     /// <summary>

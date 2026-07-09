@@ -22,7 +22,9 @@ public sealed record KatProvenance(KatSourceKind Kind, string Citation, string? 
     /// Creates a provenance record for a vector taken from a formal standard (FIPS, NIST SP, ISO).
     /// </summary>
     /// <param name="citation">The standard reference, for example <c>"FIPS-197 Appendix C.1"</c>.</param>
-    /// <returns>A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.Standard" />.</returns>
+    /// <returns>
+    /// A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.Standard" />.
+    /// </returns>
     public static KatProvenance Standard(string citation) =>
         new(KatSourceKind.Standard, citation);
 
@@ -30,7 +32,9 @@ public sealed record KatProvenance(KatSourceKind Kind, string Citation, string? 
     /// Creates a provenance record for a vector published in an RFC.
     /// </summary>
     /// <param name="citation">The RFC reference, for example <c>"RFC 8439 Section 2.4.2"</c>.</param>
-    /// <returns>A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.Rfc" />.</returns>
+    /// <returns>
+    /// A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.Rfc" />.
+    /// </returns>
     public static KatProvenance Rfc(string citation) =>
         new(KatSourceKind.Rfc, citation);
 
@@ -50,7 +54,10 @@ public sealed record KatProvenance(KatSourceKind Kind, string Citation, string? 
     /// Creates a provenance record for a vector taken from a reference implementation or external test suite.
     /// </summary>
     /// <param name="citation">The implementation or suite reference.</param>
-    /// <returns>A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.ReferenceImplementation" />.</returns>
+    /// <returns>
+    /// A <see cref="KatProvenance" /> with <see cref="Kind" /> set to
+    /// <see cref="KatSourceKind.ReferenceImplementation" />.
+    /// </returns>
     public static KatProvenance ReferenceImplementation(string citation) =>
         new(KatSourceKind.ReferenceImplementation, citation);
 
@@ -59,7 +66,9 @@ public sealed record KatProvenance(KatSourceKind Kind, string Citation, string? 
     /// implementation rather than taken from a single external published source.
     /// </summary>
     /// <param name="citation">A description of how the vector was derived or cross-validated.</param>
-    /// <returns>A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.DerivedOracle" />.</returns>
+    /// <returns>
+    /// A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.DerivedOracle" />.
+    /// </returns>
     public static KatProvenance DerivedOracle(string citation) =>
         new(KatSourceKind.DerivedOracle, citation);
 
@@ -67,7 +76,9 @@ public sealed record KatProvenance(KatSourceKind Kind, string Citation, string? 
     /// Creates a provenance record for an in-tree regression baseline captured from this library's own output.
     /// </summary>
     /// <param name="citation">A short description of the baseline and any tracking issue.</param>
-    /// <returns>A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.InternalRegression" />.</returns>
+    /// <returns>
+    /// A <see cref="KatProvenance" /> with <see cref="Kind" /> set to <see cref="KatSourceKind.InternalRegression" />.
+    /// </returns>
     public static KatProvenance InternalRegression(string citation) =>
         new(KatSourceKind.InternalRegression, citation);
 

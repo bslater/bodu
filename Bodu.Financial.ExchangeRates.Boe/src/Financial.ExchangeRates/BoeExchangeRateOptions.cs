@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeExchangeRateOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,10 +26,7 @@ using Microsoft.Extensions.Logging;
 /// </remarks>
 public sealed class BoeExchangeRateOptions
 {
-    /// <summary>
-    /// The inception of the Bank of England's daily spot exchange-rate series: 2 January 1975, the first observation of
-    /// the longest-running IADB <c>XUDL*</c> series.
-    /// </summary>
+    /// <summary>The inception of the Bank of England's daily spot exchange-rate series: 2 January 1975, the first observation of the longest-running IADB <c>XUDL*</c> series.</summary>
     internal static readonly DateOnly DailySpotSeriesEpoch = new(1975, 1, 2);
 
     /// <summary>

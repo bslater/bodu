@@ -33,7 +33,8 @@ internal partial struct Ed25519Point
     private static readonly Ed25519Point[][] s_baseTable;
 
     /// <summary>
-    /// Initializes the fixed-base table from the base point.
+    /// Initializes static members of the <see cref="Ed25519Point" /> struct with the fixed-base table from the base
+    /// point.
     /// </summary>
     static Ed25519Point()
     {

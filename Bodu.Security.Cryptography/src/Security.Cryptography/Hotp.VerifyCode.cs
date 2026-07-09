@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Hotp.VerifyCode.cs" company="Bodu Pty. Ltd.">
-//     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -16,7 +16,10 @@ public static partial class Hotp
     /// <param name="counter">The counter value to test.</param>
     /// <param name="digits">The expected number of decimal digits.</param>
     /// <param name="algorithm">The HMAC hash algorithm to use.</param>
-    /// <returns><see langword="true" /> if <paramref name="code" /> matches the code computed for <paramref name="counter" />; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="code" /> matches the code computed for <paramref name="counter" />;
+    /// otherwise, <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="digits" /> is less than 6 or greater than 8, or <paramref name="algorithm" /> is not a defined
     /// <see cref="OtpHashAlgorithm" /> value.

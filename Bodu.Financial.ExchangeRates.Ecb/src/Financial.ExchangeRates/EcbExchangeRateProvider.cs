@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EcbExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -70,14 +70,10 @@ public sealed class EcbExchangeRateProvider
     /// <summary>The logger that records feed downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The names of feeds whose data has been loaded.
-    /// </summary>
+    /// <summary>The names of feeds whose data has been loaded.</summary>
     private readonly HashSet<string> _loadedFeeds = new(StringComparer.Ordinal);
 
-    /// <summary>
-    /// The discovered currency series, keyed by pair.
-    /// </summary>
+    /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<ExchangeRatePair, EcbSeriesInfo> _series = new();
 
     /// <summary>

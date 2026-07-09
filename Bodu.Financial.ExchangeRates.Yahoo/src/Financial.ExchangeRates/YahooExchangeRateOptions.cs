@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooExchangeRateOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,27 +27,16 @@ namespace Bodu.Financial.ExchangeRates;
 public sealed class YahooExchangeRateOptions
     : WebExchangeRateProviderOptions
 {
-    /// <summary>
-    /// The placeholder token replaced by the ticker symbol when building a request path from <see cref="ChartPath" />.
-    /// </summary>
+    /// <summary>The placeholder token replaced by the ticker symbol when building a request path from <see cref="ChartPath" />.</summary>
     internal const string SymbolPlaceholder = "{symbol}";
 
-    /// <summary>
-    /// The placeholder token replaced by the source-currency code when building a ticker from
-    /// <see cref="SymbolFormat" />.
-    /// </summary>
+    /// <summary>The placeholder token replaced by the source-currency code when building a ticker from <see cref="SymbolFormat" />.</summary>
     internal const string FromPlaceholder = "{from}";
 
-    /// <summary>
-    /// The placeholder token replaced by the destination-currency code when building a ticker from
-    /// <see cref="SymbolFormat" />.
-    /// </summary>
+    /// <summary>The placeholder token replaced by the destination-currency code when building a ticker from <see cref="SymbolFormat" />.</summary>
     internal const string ToPlaceholder = "{to}";
 
-    /// <summary>
-    /// The inception of Yahoo Finance's foreign-exchange chart data: 1 December 2003, the earliest observation the
-    /// chart endpoint serves for the longest-running currency pairs (for example <c>EURUSD=X</c>).
-    /// </summary>
+    /// <summary>The inception of Yahoo Finance's foreign-exchange chart data: 1 December 2003, the earliest observation the chart endpoint serves for the longest-running currency pairs (for example <c>EURUSD=X</c>).</summary>
     internal static readonly DateOnly FxChartEpoch = new(2003, 12, 1);
 
     /// <summary>
