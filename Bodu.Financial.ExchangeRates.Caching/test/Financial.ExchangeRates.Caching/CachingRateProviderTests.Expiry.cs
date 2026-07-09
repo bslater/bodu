@@ -14,7 +14,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenCachedRowExpires_ShouldRefetch()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 
         _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out _);
@@ -31,7 +31,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenWithinDuration_ShouldNotRefetch()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 
         _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out _);
@@ -49,7 +49,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenProviderHasShorterExpiry_ShouldRefetchAfterOverride()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingRateOptions options = new() { DefaultExpiry = TimeSpan.FromHours(24) };
         options.ProviderExpiry[Provider] = TimeSpan.FromHours(1);
         CachingRateProvider sut = new(inner, _cache, options, _clock);

@@ -265,7 +265,7 @@ public partial class CachingRateProviderTests
     [TestMethod]
     public void GetRates_WhenInnerIsNotHistoryAware_ShouldFetchFullWindow()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(("USD", "AUD", BeforeFloor, 1.50m));
+        CountingDatedRateProvider inner = InnerWith(("USD", "AUD", BeforeFloor, 1.50m));
         CachingRateProvider decorator = CreateDecorator(inner);
 
         RateRangeResult result = decorator.GetRates("USD", "AUD", new DateOnly(2023, 1, 1), BeforeFloor);

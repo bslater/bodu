@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="RbaExchangeRateWorkbookParserTests.RecoverDecimal.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RbaRateWorkbookParserTests.RecoverDecimal.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// Verifies that workbook cell values are recovered as the decimal rate RBA published, across the range of magnitudes
 /// and decimal precisions the era files contain.
 /// </content>
-public partial class RbaExchangeRateWorkbookParserTests
+public partial class RbaRateWorkbookParserTests
 {
     /// <summary>
     /// Gets the decimal-recovery known-answer rows: each pairs the <see langword="double" /> stored in a workbook cell
@@ -35,7 +35,7 @@ public partial class RbaExchangeRateWorkbookParserTests
         .Select(kat => new object[] { kat });
 
     /// <summary>
-    /// Verifies that <see cref="RbaExchangeRateWorkbookParser.RecoverDecimal(double)" /> returns the decimal RBA
+    /// Verifies that <see cref="RbaRateWorkbookParser.RecoverDecimal(double)" /> returns the decimal RBA
     /// published for a workbook cell regardless of the value's magnitude or decimal precision, including stored doubles
     /// that differ from the published figure by one unit in the last place.
     /// </summary>
@@ -46,7 +46,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     {
         ArgumentNullException.ThrowIfNull(kat);
 
-        decimal actual = RbaExchangeRateWorkbookParser.RecoverDecimal(kat.Input);
+        decimal actual = RbaRateWorkbookParser.RecoverDecimal(kat.Input);
 
         Assert.AreEqual(kat.Expected, actual);
     }

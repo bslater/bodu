@@ -102,9 +102,9 @@ real per-file coverage was already healthy:
 
 | File | Report (phantom path) | Actual (live path) |
 |---|---|---|
-| `EcbExchangeRateXmlParser` | 0% | 93.1% |
-| `BoeExchangeRateCsvParser` | 0% | 93.9% |
-| `RbaExchangeRateWorkbookParser` | 0% | 94.3% |
+| `EcbRateXmlParser` | 0% | 93.1% |
+| `BoeRateCsvParser` | 0% | 93.9% |
+| `RbaRateWorkbookParser` | 0% | 94.3% |
 | `YahooChartResponseParser` | 0% | 87.7% |
 | `OfxSpotRateHistoryResponseParser` | 0% | 94.6% |
 

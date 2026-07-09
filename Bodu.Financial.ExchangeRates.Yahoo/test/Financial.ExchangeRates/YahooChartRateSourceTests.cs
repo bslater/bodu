@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="YahooChartExchangeRateSourceTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="YahooChartRateSourceTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// and parses the response.
 /// </summary>
 [TestClass]
-public class YahooChartExchangeRateSourceTests
+public class YahooChartRateSourceTests
 {
     /// <summary>
     /// Verifies that the provider issues a request to the configured chart path with the ticker and date window, then

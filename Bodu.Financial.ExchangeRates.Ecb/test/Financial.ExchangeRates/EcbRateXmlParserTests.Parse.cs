@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="EcbExchangeRateXmlParserTests.Parse.cs" company="Bodu Pty. Ltd.">
+// <copyright file="EcbRateXmlParserTests.Parse.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Test;
 
 namespace Bodu.Financial.ExchangeRates;
 
-public partial class EcbExchangeRateXmlParserTests
+public partial class EcbRateXmlParserTests
 {
     /// <summary>
     /// Verifies that parsing the sample feed yields one observation per present currency cell.
@@ -65,7 +65,7 @@ public partial class EcbExchangeRateXmlParserTests
         EcbRateProviderOptions options = new();
         options.CurrencyAliases["SDR"] = "XDR";
 
-        EcbRateTable table = EcbExchangeRateXmlParser.Parse(ToStream(xml), options);
+        EcbRateTable table = EcbRateXmlParser.Parse(ToStream(xml), options);
 
         Assert.HasCount(1, table.Observations);
         Assert.AreEqual("XDR", table.Observations[0].CurrencyCode);

@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <summary>
 /// Verifies that <see cref="RbaRateProvider" /> satisfies the shared dated-provider contract, so the RBA source
 /// is indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider is seeded
-/// offline from the embedded sample workbook through <see cref="FixtureRbaExchangeRateTableSource" />.
+/// offline from the embedded sample workbook through <see cref="FixtureRbaRateTableSource" />.
 /// </summary>
 [TestClass]
 public sealed class RbaRateProviderContractTests
@@ -39,7 +39,7 @@ public sealed class RbaRateProviderContractTests
     protected override RbaRateProvider CreateProvider()
     {
         RbaRateProviderOptions options = new() { AllowSynchronousNetworkAccess = true, EnableDiskCache = false };
-        FixtureRbaExchangeRateTableSource source = new(options);
+        FixtureRbaRateTableSource source = new(options);
 
         return new RbaRateProvider(source, options);
     }

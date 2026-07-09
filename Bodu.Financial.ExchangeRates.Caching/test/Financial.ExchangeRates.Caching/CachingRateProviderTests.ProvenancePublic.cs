@@ -64,7 +64,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenCacheMiss_ShouldReturnLiveProvenanceWithNoCacheFields()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = new(inner, _cache, _options, _clock);
 
         Assert.IsTrue(sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out RateLookupResult result));

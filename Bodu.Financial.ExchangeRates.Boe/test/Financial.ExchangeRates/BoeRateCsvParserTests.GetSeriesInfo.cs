@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoeExchangeRateCsvParserTests.GetSeriesInfo.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BoeRateCsvParserTests.GetSeriesInfo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.ExchangeRates;
 
-public partial class BoeExchangeRateCsvParserTests
+public partial class BoeRateCsvParserTests
 {
     /// <summary>
     /// Verifies that the distinct quote currencies are surfaced as GBP-based series with their codes.

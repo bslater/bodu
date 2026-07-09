@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="RbaExchangeRateTable.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RbaRateTable.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,16 +13,16 @@ namespace Bodu.Financial.ExchangeRates;
 /// rate values. This is the common shape any RBA source (workbook or CSV) produces before it is mapped to
 /// <see cref="ExchangeRate" /> values.
 /// </summary>
-internal sealed class RbaExchangeRateTable
+internal sealed class RbaRateTable
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RbaExchangeRateTable" /> class.
+    /// Initializes a new instance of the <see cref="RbaRateTable" /> class.
     /// </summary>
     /// <param name="series">The currency series, in column order.</param>
     /// <param name="rows">
     /// The dated rows of rate values, each positionally aligned to <paramref name="series" />.
     /// </param>
-    internal RbaExchangeRateTable(IReadOnlyList<RbaRateSeries> series, IReadOnlyList<RbaExchangeRateRow> rows)
+    internal RbaRateTable(IReadOnlyList<RbaRateSeries> series, IReadOnlyList<RbaRateRow> rows)
     {
         Series = series;
         Rows = rows;
@@ -38,7 +38,7 @@ internal sealed class RbaExchangeRateTable
     /// Gets the dated rows of rate values.
     /// </summary>
     /// <value>A read-only list of rows, each positionally aligned to <see cref="Series" />.</value>
-    public IReadOnlyList<RbaExchangeRateRow> Rows { get; }
+    public IReadOnlyList<RbaRateRow> Rows { get; }
 
     /// <summary>
     /// Enumerates the table as <see cref="ExchangeRate" /> observations, each quoting the Australian dollar against a
@@ -47,7 +47,7 @@ internal sealed class RbaExchangeRateTable
     /// <returns>One <see cref="ExchangeRate" /> per present, strictly positive cell.</returns>
     public IEnumerable<ExchangeRate> EnumerateRates()
     {
-        foreach (RbaExchangeRateRow row in Rows)
+        foreach (RbaRateRow row in Rows)
         {
             for (int i = 0; i < Series.Count; i++)
             {

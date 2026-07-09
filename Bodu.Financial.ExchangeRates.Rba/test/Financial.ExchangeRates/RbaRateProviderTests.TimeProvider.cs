@@ -16,7 +16,7 @@ public partial class RbaRateProviderTests
     public async Task GetRate_WhenUndatedAndTimeProviderInjected_ShouldResolveAgainstInjectedClock()
     {
         RbaRateProviderOptions options = new() { AllowSynchronousNetworkAccess = false, EnableDiskCache = false };
-        FixtureRbaExchangeRateTableSource source = new(options);
+        FixtureRbaRateTableSource source = new(options);
         MutableTimeProvider timeProvider = new(new DateTimeOffset(2023, 1, 3, 0, 0, 0, TimeSpan.Zero));
         RbaRateProvider provider = new(source, options, logger: null, timeProvider);
         await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 12, 31));
@@ -35,7 +35,7 @@ public partial class RbaRateProviderTests
     {
         DateTimeOffset fetchedAt = new(2023, 1, 3, 10, 0, 0, TimeSpan.Zero);
         RbaRateProviderOptions options = new() { AllowSynchronousNetworkAccess = false, EnableDiskCache = false };
-        FixtureRbaExchangeRateTableSource source = new(options);
+        FixtureRbaRateTableSource source = new(options);
         MutableTimeProvider timeProvider = new(fetchedAt);
         RbaRateProvider provider = new(source, options, logger: null, timeProvider);
         await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 12, 31));

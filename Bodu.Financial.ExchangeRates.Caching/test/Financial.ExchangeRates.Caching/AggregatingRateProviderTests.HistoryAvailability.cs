@@ -66,7 +66,7 @@ public partial class AggregatingRateProviderTests
     {
         AggregatingRateProvider agg = CreateAvailabilityGroup(
             NamedAware("Shallow", RateHistoryAvailability.RollingDays(30)),
-            new NamedDatedRateProvider("Legacy", new CountingDatedExchangeRateProvider([])));
+            new NamedDatedRateProvider("Legacy", new CountingDatedRateProvider([])));
 
         Assert.AreEqual(RateHistoryAvailability.Unbounded, agg.HistoryAvailability);
     }

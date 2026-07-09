@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="RbaXlsExchangeRateTableSourceTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RbaXlsRateTableSourceTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,10 +7,10 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies that <see cref="RbaXlsExchangeRateTableSource" /> downloads, parses, and caches era files.
+/// Verifies that <see cref="RbaXlsRateTableSource" /> downloads, parses, and caches era files.
 /// </summary>
 [TestClass]
-public class RbaXlsExchangeRateTableSourceTests
+public class RbaXlsRateTableSourceTests
 {
     private static readonly RbaEra s_immutableEra = new("2018-2022", new DateOnly(2018, 1, 1), new DateOnly(2022, 12, 31));
 
@@ -23,9 +23,9 @@ public class RbaXlsExchangeRateTableSourceTests
         RbaRateProviderOptions options = new();
         StubHttpMessageHandler handler = new(RbaFixtures.ReadBytes(RbaFixtures.Sample));
         using HttpClient client = new(handler);
-        RbaXlsExchangeRateTableSource source = new(client, options, NullRbaWorkbookCache.Instance);
+        RbaXlsRateTableSource source = new(client, options, NullRbaWorkbookCache.Instance);
 
-        RbaExchangeRateTable table = await source.GetTableAsync(s_immutableEra);
+        RbaRateTable table = await source.GetTableAsync(s_immutableEra);
 
         Assert.Contains(s => s.CurrencyCode == "USD", table.Series);
         Assert.AreEqual(1, handler.RequestCount);
@@ -43,7 +43,7 @@ public class RbaXlsExchangeRateTableSourceTests
             RbaRateProviderOptions options = new();
             StubHttpMessageHandler handler = new(RbaFixtures.ReadBytes(RbaFixtures.Sample));
             using HttpClient client = new(handler);
-            RbaXlsExchangeRateTableSource source = new(client, options, new FileSystemRbaWorkbookCache(directory));
+            RbaXlsRateTableSource source = new(client, options, new FileSystemRbaWorkbookCache(directory));
 
             _ = await source.GetTableAsync(s_immutableEra);
             _ = await source.GetTableAsync(s_immutableEra);

@@ -101,7 +101,7 @@ public partial class RbaRateKnownAnswerTests
     private static async Task<RbaRateProvider> BuildProviderAsync(string sourceFileName)
     {
         RbaEra era = RbaEra.Default.Single(e => string.Equals(e.FileName, sourceFileName, StringComparison.Ordinal));
-        FixtureRbaExchangeRateTableSource source = new(s_options, sourceFileName);
+        FixtureRbaRateTableSource source = new(s_options, sourceFileName);
 
         RbaRateProvider provider = new(source, s_options);
         await provider.LoadEraAsync(era);

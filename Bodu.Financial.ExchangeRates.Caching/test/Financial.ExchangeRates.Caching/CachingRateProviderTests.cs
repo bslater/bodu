@@ -125,7 +125,7 @@ public sealed partial class CachingRateProviderTests
     /// </summary>
     /// <param name="rows">The observation rows, each a from/to/date/rate tuple.</param>
     /// <returns>A new counting inner source.</returns>
-    private static CountingDatedExchangeRateProvider InnerWith(params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
+    private static CountingDatedRateProvider InnerWith(params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
         new(rows.Select(static r => new ExchangeRate(CurrencyInfo.ParseCurrencyCode(r.From), CurrencyInfo.ParseCurrencyCode(r.To), r.Date, r.Rate, "Test")));
 
     /// <summary>

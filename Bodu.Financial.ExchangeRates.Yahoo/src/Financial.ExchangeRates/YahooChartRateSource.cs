@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="YahooChartExchangeRateSource.cs" company="Bodu Pty. Ltd.">
+// <copyright file="YahooChartRateSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// supplied), not per request. Connection reuse is the responsibility of the supplied <see cref="HttpClient" />
 /// (typically one created by <c>IHttpClientFactory</c>).
 /// </remarks>
-internal sealed class YahooChartExchangeRateSource
+internal sealed class YahooChartRateSource
     : IPairRateSource<YahooSeriesInfo>
 {
     /// <summary>The fixed daily bar interval requested from the chart endpoint.</summary>
@@ -32,11 +32,11 @@ internal sealed class YahooChartExchangeRateSource
     private readonly YahooRateProviderOptions _options;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="YahooChartExchangeRateSource" /> class.
+    /// Initializes a new instance of the <see cref="YahooChartRateSource" /> class.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue chart requests.</param>
     /// <param name="options">The provider options.</param>
-    internal YahooChartExchangeRateSource(HttpClient httpClient, YahooRateProviderOptions options)
+    internal YahooChartRateSource(HttpClient httpClient, YahooRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);

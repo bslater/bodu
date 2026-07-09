@@ -15,7 +15,7 @@ public partial class YahooRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenSyncDisabledAndNotLoaded_ShouldReturnFalse()
     {
-        (YahooRateProvider provider, FixtureYahooExchangeRateSource source) = Create(allowSync: false);
+        (YahooRateProvider provider, FixtureYahooRateSource source) = Create(allowSync: false);
 
         bool found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out _);
 
@@ -30,7 +30,7 @@ public partial class YahooRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenSyncEnabledAndNotLoaded_ShouldFetchOnDemand()
     {
-        (YahooRateProvider provider, FixtureYahooExchangeRateSource source) = Create(allowSync: true);
+        (YahooRateProvider provider, FixtureYahooRateSource source) = Create(allowSync: true);
 
         bool found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 6), RateLookupOptions.Exact, out RateLookupResult result);
 
@@ -45,7 +45,7 @@ public partial class YahooRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenSameCurrency_ShouldReturnIdentityWithoutFetch()
     {
-        (YahooRateProvider provider, FixtureYahooExchangeRateSource source) = Create(allowSync: true);
+        (YahooRateProvider provider, FixtureYahooRateSource source) = Create(allowSync: true);
 
         bool found = provider.TryGetRate("USD", "USD", new DateOnly(2023, 1, 6), RateLookupOptions.Exact, out RateLookupResult result);
 

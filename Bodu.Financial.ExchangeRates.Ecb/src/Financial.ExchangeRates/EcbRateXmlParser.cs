@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="EcbExchangeRateXmlParser.cs" company="Bodu Pty. Ltd.">
+// <copyright file="EcbRateXmlParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// reported as a layout failure.
 /// </para>
 /// </remarks>
-internal static class EcbExchangeRateXmlParser
+internal static class EcbRateXmlParser
 {
     /// <summary>The ECB <c>eurofxref</c> vocabulary namespace in which the <c>Cube</c> elements are declared.</summary>
     private static readonly XNamespace s_ecbNamespace = "http://www.ecb.int/vocabulary/2002-08-01/eurofxref";

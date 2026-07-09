@@ -254,7 +254,7 @@ public sealed class BoeRateProvider
     /// <param name="httpClient">The HTTP client used to download range responses.</param>
     /// <param name="options">The provider options.</param>
     /// <returns>A new table source.</returns>
-    private static BoeCsvExchangeRateTableSource CreateSource(HttpClient httpClient, BoeRateProviderOptions options)
+    private static BoeCsvRateTableSource CreateSource(HttpClient httpClient, BoeRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -264,7 +264,7 @@ public sealed class BoeRateProvider
             ? new FileSystemBoeResponseCache(options.CacheDirectory)
             : NullBoeResponseCache.Instance;
 
-        return new BoeCsvExchangeRateTableSource(httpClient, options, cache);
+        return new BoeCsvRateTableSource(httpClient, options, cache);
     }
 
     /// <summary>

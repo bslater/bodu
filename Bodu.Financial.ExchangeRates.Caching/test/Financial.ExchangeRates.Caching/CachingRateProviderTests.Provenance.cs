@@ -55,7 +55,7 @@ public sealed partial class CachingRateProviderTests
     public void GetRate_WhenCacheMiss_ShouldLogProvenanceWithLiveOriginAndNoAge()
     {
         CapturingLogger logger = new();
-        CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = new(inner, _cache, _options, _clock, logger);
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
@@ -96,7 +96,7 @@ public sealed partial class CachingRateProviderTests
     public async Task GetRatesAsync_WhenRefetch_ShouldLogProvenanceWithLiveOrigin()
     {
         CapturingLogger logger = new();
-        CountingDatedExchangeRateProvider inner = InnerWith(
+        CountingDatedRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
         CachingRateProvider sut = new(inner, _cache, _options, _clock, logger);

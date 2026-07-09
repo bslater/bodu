@@ -16,7 +16,7 @@ public partial class YahooRateProviderTests
     public async Task GetRate_WhenUndatedAndTimeProviderInjected_ShouldResolveAgainstInjectedClock()
     {
         YahooRateProviderOptions options = new() { AllowSynchronousNetworkAccess = false };
-        FixtureYahooExchangeRateSource source = new(options);
+        FixtureYahooRateSource source = new(options);
         MutableTimeProvider timeProvider = new(new DateTimeOffset(2023, 1, 6, 0, 0, 0, TimeSpan.Zero));
         YahooRateProvider provider = new(source, options, logger: null, timeProvider);
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
@@ -35,7 +35,7 @@ public partial class YahooRateProviderTests
     {
         DateTimeOffset fetchedAt = new(2023, 1, 6, 12, 30, 0, TimeSpan.Zero);
         YahooRateProviderOptions options = new() { AllowSynchronousNetworkAccess = false };
-        FixtureYahooExchangeRateSource source = new(options);
+        FixtureYahooRateSource source = new(options);
         MutableTimeProvider timeProvider = new(fetchedAt);
         YahooRateProvider provider = new(source, options, logger: null, timeProvider);
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));

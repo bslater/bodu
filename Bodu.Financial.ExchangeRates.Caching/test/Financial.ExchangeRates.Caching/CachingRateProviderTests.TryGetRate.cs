@@ -16,7 +16,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenCacheMiss_ShouldDelegateToInnerAndReturnTrue()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 
         bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out RateLookupResult result);
@@ -33,7 +33,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenCalledTwice_ShouldServeSecondFromCache()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 
         _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out _);
@@ -50,7 +50,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenCacheFresh_ShouldServeWithoutInner()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
         SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 
@@ -67,7 +67,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenNoRateAnywhere_ShouldReturnFalse()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
         CachingRateProvider sut = CreateDecorator(inner);
 
         bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out RateLookupResult result);
@@ -83,7 +83,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenPreviousOnOrBeforeResolution_ShouldServeFromCache()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
         SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 

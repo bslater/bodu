@@ -17,7 +17,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenInverseCachedAndAllowed_ShouldServeFromCache()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
         SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 
@@ -36,7 +36,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenInverseCachedButDisallowed_ShouldDelegateToInner()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
         SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 

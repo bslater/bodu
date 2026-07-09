@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="EcbExchangeRateXmlParserTests.GetSeriesInfo.cs" company="Bodu Pty. Ltd.">
+// <copyright file="EcbRateXmlParserTests.GetSeriesInfo.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.ExchangeRates;
 
-public partial class EcbExchangeRateXmlParserTests
+public partial class EcbRateXmlParserTests
 {
     /// <summary>
     /// Verifies that the distinct quote currencies are surfaced as EUR-based series.

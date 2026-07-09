@@ -60,7 +60,7 @@ public sealed class RbaRateProvider
     public const CurrencyCode BaseCurrency = CurrencyCode.AUD;
 
     /// <summary>The source that downloads and parses era files.</summary>
-    private readonly IRbaExchangeRateTableSource _source;
+    private readonly IRbaRateTableSource _source;
 
     /// <summary>The provider options.</summary>
     private readonly RbaRateProviderOptions _options;
@@ -125,7 +125,7 @@ public sealed class RbaRateProvider
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal RbaRateProvider(IRbaExchangeRateTableSource source, RbaRateProviderOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
+    internal RbaRateProvider(IRbaRateTableSource source, RbaRateProviderOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(source, options, ownedHttpClient: null, logger, timeProvider)
     {
     }
@@ -153,7 +153,7 @@ public sealed class RbaRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private RbaRateProvider(
-        IRbaExchangeRateTableSource source,
+        IRbaRateTableSource source,
         RbaRateProviderOptions options,
         HttpClient? ownedHttpClient,
         ILogger? logger,
@@ -310,7 +310,7 @@ public sealed class RbaRateProvider
     /// <param name="httpClient">The HTTP client used to download era files.</param>
     /// <param name="options">The provider options.</param>
     /// <returns>A new table source.</returns>
-    private static RbaXlsExchangeRateTableSource CreateSource(HttpClient httpClient, RbaRateProviderOptions options)
+    private static RbaXlsRateTableSource CreateSource(HttpClient httpClient, RbaRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -320,7 +320,7 @@ public sealed class RbaRateProvider
             ? new FileSystemRbaWorkbookCache(options.CacheDirectory)
             : NullRbaWorkbookCache.Instance;
 
-        return new RbaXlsExchangeRateTableSource(httpClient, options, cache);
+        return new RbaXlsRateTableSource(httpClient, options, cache);
     }
 
     /// <summary>
@@ -369,7 +369,7 @@ public sealed class RbaRateProvider
 
         Log.EraLoadStarting(_logger, _options.DownloadStartingLogLevel, era.Label);
 
-        RbaExchangeRateTable table;
+        RbaRateTable table;
         try
         {
             table = await _source.GetTableAsync(era, cancellationToken).ConfigureAwait(false);

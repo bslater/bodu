@@ -65,6 +65,6 @@ internal sealed class GatedBoeRateTableSource
         await _gate.Task.ConfigureAwait(false);
 
         using MemoryStream stream = BoeFixtures.OpenStream(_fileName);
-        return BoeExchangeRateCsvParser.Parse(stream, _options);
+        return BoeRateCsvParser.Parse(stream, _options);
     }
 }

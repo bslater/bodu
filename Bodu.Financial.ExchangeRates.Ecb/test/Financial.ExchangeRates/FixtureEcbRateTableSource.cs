@@ -42,6 +42,6 @@ internal sealed class FixtureEcbRateTableSource
         GetTableCallCount++;
 
         using MemoryStream stream = EcbFixtures.OpenStream(_fileName);
-        return ValueTask.FromResult(EcbExchangeRateXmlParser.Parse(stream, _options));
+        return ValueTask.FromResult(EcbRateXmlParser.Parse(stream, _options));
     }
 }

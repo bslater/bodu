@@ -37,7 +37,7 @@ public partial class RbaRateProviderTests
             ],
             EnableDiskCache = false,
         };
-        RbaRateProvider provider = new(new FixtureRbaExchangeRateTableSource(options), options);
+        RbaRateProvider provider = new(new FixtureRbaRateTableSource(options), options);
 
         Assert.AreEqual(RateHistoryAvailabilityKind.Since, provider.HistoryAvailability.Kind);
         Assert.AreEqual(new DateOnly(2018, 1, 1), provider.HistoryAvailability.EarliestDate);

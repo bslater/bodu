@@ -17,7 +17,7 @@ public partial class YahooRateProviderTests
     public async Task LoadPairAsync_WhenCalledConcurrentlyForSamePairAndWindow_ShouldFetchOnce()
     {
         YahooRateProviderOptions options = new();
-        GatedYahooExchangeRateSource source = new(options);
+        GatedYahooRateSource source = new(options);
         YahooRateProvider provider = new(source, options);
         DateOnly start = new(2023, 1, 1);
         DateOnly end = new(2023, 1, 31);
@@ -45,7 +45,7 @@ public partial class YahooRateProviderTests
     public async Task LoadPairAsync_WhenWindowAlreadyLoaded_ShouldNotFetchAgain()
     {
         YahooRateProviderOptions options = new();
-        GatedYahooExchangeRateSource source = new(options);
+        GatedYahooRateSource source = new(options);
         YahooRateProvider provider = new(source, options);
         DateOnly start = new(2023, 1, 1);
         DateOnly end = new(2023, 1, 31);
@@ -66,7 +66,7 @@ public partial class YahooRateProviderTests
     public async Task LoadPairAsync_WhenOneConcurrentCallerCancels_ShouldStillLoadForOthersAndFetchOnce()
     {
         YahooRateProviderOptions options = new();
-        GatedYahooExchangeRateSource source = new(options);
+        GatedYahooRateSource source = new(options);
         YahooRateProvider provider = new(source, options);
         DateOnly start = new(2023, 1, 1);
         DateOnly end = new(2023, 1, 31);

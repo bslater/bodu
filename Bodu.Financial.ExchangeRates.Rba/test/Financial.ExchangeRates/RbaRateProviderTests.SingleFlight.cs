@@ -15,7 +15,7 @@ public partial class RbaRateProviderTests
     public async Task LoadEraAsync_WhenCalledConcurrentlyForSameEra_ShouldFetchOnce()
     {
         RbaRateProviderOptions options = new() { EnableDiskCache = false };
-        GatedRbaExchangeRateTableSource source = new(options);
+        GatedRbaRateTableSource source = new(options);
         RbaRateProvider provider = new(source, options);
         RbaEra era = new("2023-current", new DateOnly(2023, 1, 1), null);
 
@@ -42,7 +42,7 @@ public partial class RbaRateProviderTests
     public async Task LoadEraAsync_WhenEraAlreadyLoaded_ShouldNotFetchAgain()
     {
         RbaRateProviderOptions options = new() { EnableDiskCache = false };
-        GatedRbaExchangeRateTableSource source = new(options);
+        GatedRbaRateTableSource source = new(options);
         RbaRateProvider provider = new(source, options);
         RbaEra era = new("2023-current", new DateOnly(2023, 1, 1), null);
 
@@ -61,7 +61,7 @@ public partial class RbaRateProviderTests
     public async Task LoadEraAsync_WhenOneConcurrentCallerCancels_ShouldStillLoadForOthersAndFetchOnce()
     {
         RbaRateProviderOptions options = new() { EnableDiskCache = false };
-        GatedRbaExchangeRateTableSource source = new(options);
+        GatedRbaRateTableSource source = new(options);
         RbaRateProvider provider = new(source, options);
         RbaEra era = new("2023-current", new DateOnly(2023, 1, 1), null);
 

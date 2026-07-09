@@ -17,7 +17,7 @@ public partial class RbaRateProviderTests
     [TestMethod]
     public async Task LoadPairAsync_WhenWarmed_ShouldResolvePublishedRate()
     {
-        (RbaRateProvider provider, FixtureRbaExchangeRateTableSource source) = Create(allowSync: false);
+        (RbaRateProvider provider, FixtureRbaRateTableSource source) = Create(allowSync: false);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
 
@@ -34,7 +34,7 @@ public partial class RbaRateProviderTests
     [TestMethod]
     public async Task LoadPairAsync_WhenNeitherSideIsAud_ShouldThrowRateSeriesNotFoundException()
     {
-        (RbaRateProvider provider, FixtureRbaExchangeRateTableSource source) = Create(allowSync: false);
+        (RbaRateProvider provider, FixtureRbaRateTableSource source) = Create(allowSync: false);
 
         _ = await Assert.ThrowsExactlyAsync<RateSeriesNotFoundException>(async () =>
         {

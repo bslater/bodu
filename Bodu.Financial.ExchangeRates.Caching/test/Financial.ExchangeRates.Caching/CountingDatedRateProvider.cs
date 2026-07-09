@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CountingDatedExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CountingDatedRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,17 +10,17 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// An <see cref="IDatedRateProvider" /> test double that delegates to a fixed in-memory book and counts how
 /// many times each lookup method is invoked, so tests can assert when the caching decorator avoided the inner provider.
 /// </summary>
-internal sealed class CountingDatedExchangeRateProvider
+internal sealed class CountingDatedRateProvider
     : IDatedRateProvider
 {
     /// <summary>The fixed provider backing the counted lookups.</summary>
     private readonly FixedDatedRateProvider _inner;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CountingDatedExchangeRateProvider" /> class.
+    /// Initializes a new instance of the <see cref="CountingDatedRateProvider" /> class.
     /// </summary>
     /// <param name="rates">The observations the inner provider resolves from.</param>
-    public CountingDatedExchangeRateProvider(IEnumerable<ExchangeRate> rates) =>
+    public CountingDatedRateProvider(IEnumerable<ExchangeRate> rates) =>
         _inner = new FixedDatedRateProvider(rates);
 
     /// <summary>

@@ -22,7 +22,7 @@ public sealed partial class CachingRateProviderTests
     public void GetRate_WhenCacheMissAndLoggerSupplied_ShouldLogMissStored()
     {
         CapturingLogger logger = new();
-        CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = new(inner, _cache, _options, _clock, logger);
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);

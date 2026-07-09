@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <summary>
 /// Verifies that <see cref="OandaRateProvider" /> satisfies the shared dated-provider contract, so the OANDA
 /// source is indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider is
-/// seeded offline from the embedded AUD/USD rate-history fixture through <see cref="FixtureOandaExchangeRateSource" />.
+/// seeded offline from the embedded AUD/USD rate-history fixture through <see cref="FixtureOandaRateSource" />.
 /// </summary>
 [TestClass]
 public sealed class OandaRateProviderContractTests
@@ -43,7 +43,7 @@ public sealed class OandaRateProviderContractTests
     protected override OandaRateProvider CreateProvider()
     {
         OandaRateProviderOptions options = new() { AllowSynchronousNetworkAccess = true };
-        FixtureOandaExchangeRateSource source = new(options);
+        FixtureOandaRateSource source = new(options);
 
         return new OandaRateProvider(source, options);
     }

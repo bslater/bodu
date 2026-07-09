@@ -617,11 +617,11 @@ for slug, region, accent, hl, codes, lnote, caption in CAL_PACKS:
 
 FX_PROVIDERS = [
     ("rba", "RBA", "Reserve Bank", "of Australia", "#FBBF24", ".xls workbook", "AUD/USD",
-     "full history", "BIFF8 reader over", "AddRbaHistoricalRates", "Reserve Bank of Australia", "Rba"),
+     "full history", "BIFF8 reader over", "AddRbaExchangeRates", "Reserve Bank of Australia", "Rba"),
     ("boe", "BOE", "Bank of England", "daily spot rates", "#A78BFA", "CSV", "GBP/USD",
-     "full history", "IADB series codes", "AddBoeReferenceRates", "Bank of England", "Boe"),
+     "full history", "IADB series codes", "AddBoeExchangeRates", "Bank of England", "Boe"),
     ("ecb", "ECB", "European Central", "Bank reference rates", "#60A5FA", "XML eurofxref", "EUR/USD",
-     "full history", "90-day + full feeds", "AddEcbReferenceRates", "European Central Bank", "Ecb"),
+     "full history", "90-day + full feeds", "AddEcbExchangeRates", "European Central Bank", "Ecb"),
     ("yahoo", "Yahoo", "Yahoo Finance", "market quotes", "#F472B6", "JSON v8 chart", "USD/JPY",
      "intraday + range", "symbol =X pairs", "AddYahooExchangeRates", "Yahoo Finance", "Yahoo"),
     ("ofx", "OFX", "OFX historical", "rate service", "#2DD4BF", "JSON", "AUD/NZD",
@@ -722,7 +722,7 @@ add("hero-fx-caching", "Bodu.Financial.ExchangeRates.Caching",
     </g>''',
         mono(['<tspan fill="#60A5FA">Aggregating</tspan>', '<tspan fill="#60A5FA">RateProvider</tspan>'],
              x=12, y0=128, dy=14, size=9.5)]),
-    "AddCachedExchangeRateProvider · AddAggregatedExchangeRateProvider", gid="fxcache")
+    "AddCachedRateProvider · AddAggregatedRateProvider", gid="fxcache")
 
 add("hero-fx-caching-distributed", "Bodu.Financial.ExchangeRates.Caching.Distributed",
     "Bodu.Financial.ExchangeRates.Caching.Distributed — IDistributedCache backend for exchange-rate caching",

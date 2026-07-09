@@ -17,7 +17,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenRangeStraddlesUnfetchedGap_ShouldRefetch()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(
+        CountingDatedRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 5), 0.505m),
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
@@ -43,7 +43,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenSubWindowOfRecordedCoverage_ShouldServeWithoutFetch()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(
+        CountingDatedRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 4), 0.50m),
             ("AUD", "USD", new DateOnly(2023, 1, 5), 0.505m),
@@ -66,7 +66,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenRecordedCoverageExpired_ShouldRefetch()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(
+        CountingDatedRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
         CachingRateProvider sut = CreateDecorator(inner);
@@ -86,7 +86,7 @@ public sealed partial class CachingRateProviderTests
     public async Task GetRatesAsync_WhenFetchReturnsNoRows_ShouldRecordCoverageAndNotRefetch()
     {
         // The inner source has no observations in the requested window, so the fetch returns an empty list.
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
         CachingRateProvider sut = CreateDecorator(inner);
 
         IReadOnlyList<ExchangeRate> first = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
@@ -108,7 +108,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenStoreFetchedRangeFails_ShouldRefetchRatherThanFalseHit()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(
+        CountingDatedRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
 

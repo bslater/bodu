@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="EcbExchangeRateXmlParserTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="EcbRateXmlParserTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,11 +9,11 @@ using System.Text;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies that <see cref="EcbExchangeRateXmlParser" /> decodes the ECB <c>eurofxref</c> XML layout correctly and
+/// Verifies that <see cref="EcbRateXmlParser" /> decodes the ECB <c>eurofxref</c> XML layout correctly and
 /// rejects malformed or empty feeds.
 /// </summary>
 [TestClass]
-public partial class EcbExchangeRateXmlParserTests
+public partial class EcbRateXmlParserTests
 {
     /// <summary>
     /// The ECB <c>eurofxref</c> namespace declarations shared by the inline fixtures.
@@ -26,7 +26,7 @@ public partial class EcbExchangeRateXmlParserTests
     /// </summary>
     /// <returns>The parsed table.</returns>
     private static EcbRateTable ParseSample() =>
-        EcbExchangeRateXmlParser.Parse(EcbFixtures.OpenStream(EcbFixtures.Sample), new EcbRateProviderOptions());
+        EcbRateXmlParser.Parse(EcbFixtures.OpenStream(EcbFixtures.Sample), new EcbRateProviderOptions());
 
     /// <summary>
     /// Parses inline XML with default options.
@@ -34,7 +34,7 @@ public partial class EcbExchangeRateXmlParserTests
     /// <param name="xml">The XML to parse.</param>
     /// <returns>The parsed table.</returns>
     private static EcbRateTable Parse(string xml) =>
-        EcbExchangeRateXmlParser.Parse(ToStream(xml), new EcbRateProviderOptions());
+        EcbRateXmlParser.Parse(ToStream(xml), new EcbRateProviderOptions());
 
     /// <summary>
     /// Materializes XML text as a UTF-8 stream.

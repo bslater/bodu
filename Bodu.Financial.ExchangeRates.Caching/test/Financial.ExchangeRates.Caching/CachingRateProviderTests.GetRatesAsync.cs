@@ -17,7 +17,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenCoverageContainsRange_ShouldServeWithoutFetch()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
         CurrencyPair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
         SeedCache(pair, (new DateOnly(2023, 1, 3), 0.5m), (new DateOnly(2023, 1, 6), 0.51m));
         SeedCoverage(pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
@@ -37,7 +37,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenCacheMiss_ShouldFetchThenServeRepeatFromCache()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(
+        CountingDatedRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
         CachingRateProvider sut = CreateDecorator(inner);
@@ -56,7 +56,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenRangeWiderThanCachedSpan_ShouldRefetch()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(
+        CountingDatedRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 10), 0.52m));
         SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
@@ -74,7 +74,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenCacheStale_ShouldRefetch()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(
+        CountingDatedRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m),
             ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
         SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m), (new DateOnly(2023, 1, 6), 0.51m));

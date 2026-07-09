@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <summary>
 /// Verifies that <see cref="OfxRateProvider" /> satisfies the shared dated-provider contract, so the OFX source
 /// is indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider is seeded
-/// offline from the embedded AUD/USD spot-rate-history fixture through <see cref="FixtureOfxExchangeRateSource" />.
+/// offline from the embedded AUD/USD spot-rate-history fixture through <see cref="FixtureOfxRateSource" />.
 /// </summary>
 [TestClass]
 public sealed class OfxRateProviderContractTests
@@ -43,7 +43,7 @@ public sealed class OfxRateProviderContractTests
     protected override OfxRateProvider CreateProvider()
     {
         OfxRateProviderOptions options = new() { AllowSynchronousNetworkAccess = true };
-        FixtureOfxExchangeRateSource source = new(options);
+        FixtureOfxRateSource source = new(options);
 
         return new OfxRateProvider(source, options);
     }

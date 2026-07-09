@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DatedExchangeRateProviderRegistrationTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="DatedRateProviderRegistrationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -14,7 +14,7 @@ namespace Bodu.Financial.DependencyInjection;
 /// <see cref="FinancialServiceBuilderExtensions" />.
 /// </summary>
 [TestClass]
-public sealed class DatedExchangeRateProviderRegistrationTests
+public sealed class DatedRateProviderRegistrationTests
 {
     /// <summary>
     /// A stub <see cref="IDatedRateProvider" /> used only to confirm registration and resolution.

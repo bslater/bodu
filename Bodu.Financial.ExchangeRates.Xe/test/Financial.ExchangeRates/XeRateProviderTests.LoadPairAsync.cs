@@ -16,7 +16,7 @@ public partial class XeRateProviderTests
     public async Task LoadPairAsync_WhenWarmed_ShouldResolveDecodedRate()
     {
         XeRateProviderOptions options = new();
-        FixtureXeExchangeRateSource source = new(options);
+        FixtureXeRateSource source = new(options);
         XeRateProvider provider = new(source, options);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 6));
@@ -35,7 +35,7 @@ public partial class XeRateProviderTests
     public async Task GetRatesAsync_WhenWarmed_ShouldReturnRangeWithinWindow()
     {
         XeRateProviderOptions options = new();
-        FixtureXeExchangeRateSource source = new(options);
+        FixtureXeRateSource source = new(options);
         XeRateProvider provider = new(source, options);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 4));
@@ -53,7 +53,7 @@ public partial class XeRateProviderTests
     public async Task LoadPairAsync_WhenRangeInverted_ShouldThrowArgumentException()
     {
         XeRateProviderOptions options = new();
-        FixtureXeExchangeRateSource source = new(options);
+        FixtureXeRateSource source = new(options);
         XeRateProvider provider = new(source, options);
 
         _ = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>

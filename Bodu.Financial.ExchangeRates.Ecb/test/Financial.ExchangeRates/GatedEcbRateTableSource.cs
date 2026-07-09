@@ -65,6 +65,6 @@ internal sealed class GatedEcbRateTableSource
         await _gate.Task.ConfigureAwait(false);
 
         using MemoryStream stream = EcbFixtures.OpenStream(_fileName);
-        return EcbExchangeRateXmlParser.Parse(stream, _options);
+        return EcbRateXmlParser.Parse(stream, _options);
     }
 }

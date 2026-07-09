@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="RbaXlsExchangeRateTableSource.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RbaXlsRateTableSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,8 +12,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// Obtains an RBA era's rate table by downloading its <c>.xls</c> file (via a workbook cache) and parsing it with the
 /// BIFF8 reader.
 /// </summary>
-internal sealed class RbaXlsExchangeRateTableSource
-    : IRbaExchangeRateTableSource
+internal sealed class RbaXlsRateTableSource
+    : IRbaRateTableSource
 {
     /// <summary>The HTTP client used to download era files.</summary>
     private readonly HttpClient _httpClient;
@@ -25,12 +25,12 @@ internal sealed class RbaXlsExchangeRateTableSource
     private readonly IRbaWorkbookCache _cache;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RbaXlsExchangeRateTableSource" /> class.
+    /// Initializes a new instance of the <see cref="RbaXlsRateTableSource" /> class.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download era files.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="cache">The workbook byte cache.</param>
-    internal RbaXlsExchangeRateTableSource(HttpClient httpClient, RbaRateProviderOptions options, IRbaWorkbookCache cache)
+    internal RbaXlsRateTableSource(HttpClient httpClient, RbaRateProviderOptions options, IRbaWorkbookCache cache)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -42,7 +42,7 @@ internal sealed class RbaXlsExchangeRateTableSource
     }
 
     /// <inheritdoc />
-    public async ValueTask<RbaExchangeRateTable> GetTableAsync(RbaEra era, CancellationToken cancellationToken = default)
+    public async ValueTask<RbaRateTable> GetTableAsync(RbaEra era, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(era);
 
@@ -50,7 +50,7 @@ internal sealed class RbaXlsExchangeRateTableSource
 
         using MemoryStream stream = new(bytes, writable: false);
         using var workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
-        return RbaExchangeRateWorkbookParser.Parse(workbook, _options);
+        return RbaRateWorkbookParser.Parse(workbook, _options);
     }
 
     /// <summary>

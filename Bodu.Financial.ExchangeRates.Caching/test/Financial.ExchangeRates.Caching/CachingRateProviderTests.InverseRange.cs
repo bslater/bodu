@@ -23,7 +23,7 @@ public sealed partial class CachingRateProviderTests
     public async Task GetRatesAsync_WhenOnlyInversePairCovered_ShouldServeInvertedWithoutFetch()
     {
         CurrencyPair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
 
         // Seed only the inverse pair's rows and a full coverage window; the direct AUD/USD pair has nothing cached.
         SeedCache(inverse, (new DateOnly(2023, 1, 3), 2.0m), (new DateOnly(2023, 1, 4), 2.5m));
@@ -54,7 +54,7 @@ public sealed partial class CachingRateProviderTests
     public void GetRates_WhenOnlyInversePairCovered_ShouldServeInverted()
     {
         CurrencyPair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
 
         SeedCache(inverse, (new DateOnly(2023, 1, 3), 4.0m));
         SeedCoverage(inverse, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3));
@@ -76,7 +76,7 @@ public sealed partial class CachingRateProviderTests
     public async Task GetRatesAsync_WhenInverseServingDisabled_ShouldNotUseInverseCoverage()
     {
         CurrencyPair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
-        CountingDatedExchangeRateProvider inner = InnerWith(
+        CountingDatedRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
 
         SeedCache(inverse, (new DateOnly(2023, 1, 3), 2.0m));

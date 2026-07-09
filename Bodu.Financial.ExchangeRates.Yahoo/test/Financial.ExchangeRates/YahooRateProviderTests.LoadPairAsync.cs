@@ -14,7 +14,7 @@ public partial class YahooRateProviderTests
     [TestMethod]
     public async Task LoadPairAsync_WhenRangeAlreadyCovered_ShouldNotRefetch()
     {
-        (YahooRateProvider provider, FixtureYahooExchangeRateSource source) = Create(allowSync: false);
+        (YahooRateProvider provider, FixtureYahooRateSource source) = Create(allowSync: false);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 5), new DateOnly(2023, 1, 10));
@@ -28,7 +28,7 @@ public partial class YahooRateProviderTests
     [TestMethod]
     public async Task LoadPairAsync_WhenRangeWidens_ShouldRefetch()
     {
-        (YahooRateProvider provider, FixtureYahooExchangeRateSource source) = Create(allowSync: false);
+        (YahooRateProvider provider, FixtureYahooRateSource source) = Create(allowSync: false);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2022, 12, 1), new DateOnly(2023, 1, 31));
@@ -43,7 +43,7 @@ public partial class YahooRateProviderTests
     [TestMethod]
     public async Task LoadPairAsync_WhenRequestStraddlesInteriorGap_ShouldRefetch()
     {
-        (YahooRateProvider provider, FixtureYahooExchangeRateSource source) = Create(allowSync: false);
+        (YahooRateProvider provider, FixtureYahooRateSource source) = Create(allowSync: false);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 10));
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 20), new DateOnly(2023, 1, 31));
@@ -59,7 +59,7 @@ public partial class YahooRateProviderTests
     [TestMethod]
     public async Task LoadPairAsync_WhenRequestInsideOneLoadedRange_ShouldNotRefetch()
     {
-        (YahooRateProvider provider, FixtureYahooExchangeRateSource source) = Create(allowSync: false);
+        (YahooRateProvider provider, FixtureYahooRateSource source) = Create(allowSync: false);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 10));
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 20), new DateOnly(2023, 1, 31));

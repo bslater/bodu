@@ -42,6 +42,6 @@ internal sealed class FixtureBoeRateTableSource
         GetTableCallCount++;
 
         using MemoryStream stream = BoeFixtures.OpenStream(_fileName);
-        return ValueTask.FromResult(BoeExchangeRateCsvParser.Parse(stream, _options));
+        return ValueTask.FromResult(BoeRateCsvParser.Parse(stream, _options));
     }
 }

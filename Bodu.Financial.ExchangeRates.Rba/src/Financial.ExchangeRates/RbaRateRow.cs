@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="RbaExchangeRateRow.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RbaRateRow.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,17 +10,17 @@ namespace Bodu.Financial.ExchangeRates;
 /// Represents one observation date of a parsed RBA workbook and the rate values recorded for each currency series on
 /// that date.
 /// </summary>
-internal sealed class RbaExchangeRateRow
+internal sealed class RbaRateRow
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RbaExchangeRateRow" /> class.
+    /// Initializes a new instance of the <see cref="RbaRateRow" /> class.
     /// </summary>
     /// <param name="date">The observation date.</param>
     /// <param name="values">
     /// The per-series rate values, positionally aligned to the table's series; <see langword="null" /> entries denote a
     /// blank cell.
     /// </param>
-    internal RbaExchangeRateRow(DateOnly date, decimal?[] values)
+    internal RbaRateRow(DateOnly date, decimal?[] values)
     {
         Date = date;
         Values = values;

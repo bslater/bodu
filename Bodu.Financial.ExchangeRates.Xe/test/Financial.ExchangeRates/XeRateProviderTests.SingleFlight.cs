@@ -17,7 +17,7 @@ public partial class XeRateProviderTests
     public async Task LoadPairAsync_WhenCalledConcurrentlyForSamePairAndWindow_ShouldFetchOnce()
     {
         XeRateProviderOptions options = new();
-        GatedXeExchangeRateSource source = new(options);
+        GatedXeRateSource source = new(options);
         XeRateProvider provider = new(source, options);
         DateOnly start = new(2023, 1, 2);
         DateOnly end = new(2023, 1, 6);
@@ -45,7 +45,7 @@ public partial class XeRateProviderTests
     public async Task LoadPairAsync_WhenWindowAlreadyLoaded_ShouldNotFetchAgain()
     {
         XeRateProviderOptions options = new();
-        GatedXeExchangeRateSource source = new(options);
+        GatedXeRateSource source = new(options);
         XeRateProvider provider = new(source, options);
         DateOnly start = new(2023, 1, 2);
         DateOnly end = new(2023, 1, 6);
@@ -66,7 +66,7 @@ public partial class XeRateProviderTests
     public async Task LoadPairAsync_WhenOneConcurrentCallerCancels_ShouldStillLoadForOthersAndFetchOnce()
     {
         XeRateProviderOptions options = new();
-        GatedXeExchangeRateSource source = new(options);
+        GatedXeRateSource source = new(options);
         XeRateProvider provider = new(source, options);
         DateOnly start = new(2023, 1, 2);
         DateOnly end = new(2023, 1, 6);

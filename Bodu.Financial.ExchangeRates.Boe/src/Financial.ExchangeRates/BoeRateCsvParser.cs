@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoeExchangeRateCsvParser.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BoeRateCsvParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// is reported as a format failure.
 /// </para>
 /// </remarks>
-internal static class BoeExchangeRateCsvParser
+internal static class BoeRateCsvParser
 {
     /// <summary>The delimited-parse options used to read the IADB CSV: an RFC 4180 grid with a header row, trimmed fields, and a tolerant reaction to ragged or malformed rows.</summary>
     private static readonly DelimitedParseOptions s_csvOptions = new()

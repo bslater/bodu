@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <summary>
 /// Verifies that <see cref="XeRateProvider" /> satisfies the shared dated-provider contract, so the XE source is
 /// indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider is seeded offline
-/// from the embedded AUD/USD charting-rates fixture through <see cref="FixtureXeExchangeRateSource" />.
+/// from the embedded AUD/USD charting-rates fixture through <see cref="FixtureXeRateSource" />.
 /// </summary>
 [TestClass]
 public sealed class XeRateProviderContractTests
@@ -49,7 +49,7 @@ public sealed class XeRateProviderContractTests
     protected override XeRateProvider CreateProvider()
     {
         XeRateProviderOptions options = new() { AllowSynchronousNetworkAccess = true };
-        FixtureXeExchangeRateSource source = new(options);
+        FixtureXeRateSource source = new(options);
 
         return new XeRateProvider(source, options);
     }

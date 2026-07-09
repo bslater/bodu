@@ -317,7 +317,7 @@ public sealed class EcbRateProvider
     /// <param name="httpClient">The HTTP client used to download feed files.</param>
     /// <param name="options">The provider options.</param>
     /// <returns>A new table source.</returns>
-    private static EcbXmlExchangeRateTableSource CreateSource(HttpClient httpClient, EcbRateProviderOptions options)
+    private static EcbXmlRateTableSource CreateSource(HttpClient httpClient, EcbRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -327,7 +327,7 @@ public sealed class EcbRateProvider
             ? new FileSystemEcbFeedCache(options.CacheDirectory)
             : NullEcbFeedCache.Instance;
 
-        return new EcbXmlExchangeRateTableSource(httpClient, options, cache);
+        return new EcbXmlRateTableSource(httpClient, options, cache);
     }
 
     /// <summary>

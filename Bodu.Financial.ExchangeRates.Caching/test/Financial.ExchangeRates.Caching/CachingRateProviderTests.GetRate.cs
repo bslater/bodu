@@ -17,7 +17,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void GetRate_WhenCacheFresh_ShouldServeWithoutInner()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
         SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 
@@ -34,7 +34,7 @@ public sealed partial class CachingRateProviderTests
     [TestCategory("Smoke")]
     public void GetRate_WhenCacheMiss_ShouldDelegateAndStore()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
@@ -52,7 +52,7 @@ public sealed partial class CachingRateProviderTests
     [TestMethod]
     public void GetRate_WhenHardMiss_ShouldPropagateKeyNotFoundException()
     {
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
         CachingRateProvider sut = CreateDecorator(inner);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>

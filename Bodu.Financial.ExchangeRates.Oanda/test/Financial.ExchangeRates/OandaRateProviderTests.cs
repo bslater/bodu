@@ -21,7 +21,7 @@ public partial class OandaRateProviderTests
     public void HistoryAvailability_ShouldReportRolling180Days()
     {
         OandaRateProviderOptions options = new();
-        FixtureOandaExchangeRateSource source = new(options);
+        FixtureOandaRateSource source = new(options);
         using OandaRateProvider provider = new(source, options);
 
         var today = new DateOnly(2026, 6, 28);

@@ -124,7 +124,7 @@ public sealed class YahooRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private YahooRateProvider(YahooRateProviderOptions options, HttpClient ownedHttpClient, ILogger? logger, TimeProvider? timeProvider)
-        : this(new YahooChartExchangeRateSource(ownedHttpClient, options), options, ownedHttpClient, logger, timeProvider)
+        : this(new YahooChartRateSource(ownedHttpClient, options), options, ownedHttpClient, logger, timeProvider)
     {
     }
 
@@ -165,13 +165,13 @@ public sealed class YahooRateProvider
     /// <param name="httpClient">The HTTP client used to issue chart requests.</param>
     /// <param name="options">The provider options.</param>
     /// <returns>A new pair source over the Yahoo Finance chart endpoint.</returns>
-    private static YahooChartExchangeRateSource CreateSource(HttpClient httpClient, YahooRateProviderOptions options)
+    private static YahooChartRateSource CreateSource(HttpClient httpClient, YahooRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        return new YahooChartExchangeRateSource(httpClient, options);
+        return new YahooChartRateSource(httpClient, options);
     }
 
     /// <summary>

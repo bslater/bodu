@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="RbaExchangeRateWorkbookParser.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RbaRateWorkbookParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Interprets the RBA-specific layout of an Excel workbook, turning the raw worksheet cells of the <c>Data</c> sheet
-/// into a normalized <see cref="RbaExchangeRateTable" />.
+/// into a normalized <see cref="RbaRateTable" />.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -26,7 +26,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <see cref="ExchangeRateFormatException" />.
 /// </para>
 /// </remarks>
-internal static class RbaExchangeRateWorkbookParser
+internal static class RbaRateWorkbookParser
 {
     /// <summary>The worksheet that holds the rate data.</summary>
     private const string DataSheetName = "Data";
@@ -51,14 +51,14 @@ internal static class RbaExchangeRateWorkbookParser
     /// </summary>
     /// <param name="workbook">The opened BIFF8 workbook.</param>
     /// <param name="options">The provider options supplying the currency-alias map.</param>
-    /// <returns>The normalized <see cref="RbaExchangeRateTable" />.</returns>
+    /// <returns>The normalized <see cref="RbaRateTable" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="workbook" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the workbook does not match the expected RBA layout.
     /// </exception>
-    internal static RbaExchangeRateTable Parse(ExcelBinaryWorkbook workbook, RbaRateProviderOptions options)
+    internal static RbaRateTable Parse(ExcelBinaryWorkbook workbook, RbaRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(workbook);
         ThrowHelper.ThrowIfNull(options);
@@ -81,9 +81,9 @@ internal static class RbaExchangeRateWorkbookParser
             throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaNoDataRows);
 
         List<RbaRateSeries> series = BuildSeries(grid, unitsRow, titleRow, seriesIdRow, descriptionRow, options);
-        List<RbaExchangeRateRow> rows = BuildRows(grid, dataRows, series);
+        List<RbaRateRow> rows = BuildRows(grid, dataRows, series);
 
-        return new RbaExchangeRateTable(series, rows);
+        return new RbaRateTable(series, rows);
     }
 
     /// <summary>
@@ -211,12 +211,12 @@ internal static class RbaExchangeRateWorkbookParser
     /// <param name="dataRows">The data row indices in ascending order.</param>
     /// <param name="series">The currency series.</param>
     /// <returns>The dated rows, aligned to <paramref name="series" />.</returns>
-    private static List<RbaExchangeRateRow> BuildRows(
+    private static List<RbaRateRow> BuildRows(
         Dictionary<(int Row, int Column), ExcelCell> grid,
         List<int> dataRows,
         List<RbaRateSeries> series)
     {
-        List<RbaExchangeRateRow> rows = new(dataRows.Count);
+        List<RbaRateRow> rows = new(dataRows.Count);
         foreach (int row in dataRows)
         {
             double serial = grid[(row, 0)].NumberValue!.Value;
@@ -236,7 +236,7 @@ internal static class RbaExchangeRateWorkbookParser
                 }
             }
 
-            rows.Add(new RbaExchangeRateRow(date, values));
+            rows.Add(new RbaRateRow(date, values));
         }
 
         return rows;

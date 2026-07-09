@@ -20,10 +20,10 @@ public partial class RbaRateProviderTests
     /// </summary>
     /// <param name="allowSync">Whether to allow synchronous on-demand loading.</param>
     /// <returns>The provider and its fixture source.</returns>
-    private static (RbaRateProvider Provider, FixtureRbaExchangeRateTableSource Source) Create(bool allowSync = true)
+    private static (RbaRateProvider Provider, FixtureRbaRateTableSource Source) Create(bool allowSync = true)
     {
         RbaRateProviderOptions options = new() { AllowSynchronousNetworkAccess = allowSync, EnableDiskCache = false };
-        FixtureRbaExchangeRateTableSource source = new(options);
+        FixtureRbaRateTableSource source = new(options);
         return (new RbaRateProvider(source, options), source);
     }
 
@@ -87,7 +87,7 @@ public partial class RbaRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenEraNotLoadedAndSyncEnabled_ShouldLazyLoadAndResolve()
     {
-        (RbaRateProvider provider, FixtureRbaExchangeRateTableSource source) = Create(allowSync: true);
+        (RbaRateProvider provider, FixtureRbaRateTableSource source) = Create(allowSync: true);
 
         bool found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), null, out RateLookupResult result);
 
@@ -102,7 +102,7 @@ public partial class RbaRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenEraNotLoadedAndSyncDisabled_ShouldReturnFalse()
     {
-        (RbaRateProvider provider, FixtureRbaExchangeRateTableSource source) = Create(allowSync: false);
+        (RbaRateProvider provider, FixtureRbaRateTableSource source) = Create(allowSync: false);
 
         bool found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), null, out _);
 

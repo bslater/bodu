@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="GatedXeExchangeRateSource.cs" company="Bodu Pty. Ltd.">
+// <copyright file="GatedXeRateSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// An <see cref="IPairRateSource{TSeries}" /> whose fetch blocks until released, so a test can hold several
 /// concurrent callers inside the source at once and prove the provider coalesces them into a single fetch.
 /// </summary>
-internal sealed class GatedXeExchangeRateSource
+internal sealed class GatedXeRateSource
     : IPairRateSource<XeSeriesInfo>
 {
     /// <summary>The provider options used while parsing the fixture once the gate opens.</summary>
@@ -26,10 +26,10 @@ internal sealed class GatedXeExchangeRateSource
     private int _callCount;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GatedXeExchangeRateSource" /> class.
+    /// Initializes a new instance of the <see cref="GatedXeRateSource" /> class.
     /// </summary>
     /// <param name="options">The provider options used while parsing the fixture.</param>
-    public GatedXeExchangeRateSource(XeRateProviderOptions options)
+    public GatedXeRateSource(XeRateProviderOptions options)
     {
         _options = options;
     }

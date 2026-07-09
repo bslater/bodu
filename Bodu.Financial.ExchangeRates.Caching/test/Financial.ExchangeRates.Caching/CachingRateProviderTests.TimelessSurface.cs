@@ -23,7 +23,7 @@ public sealed partial class CachingRateProviderTests
     public void GetRate_WhenTimelessAndCacheFreshForToday_ShouldReturnTodaysRate()
     {
         var today = DateOnly.FromDateTime(Now.UtcDateTime);
-        CountingDatedExchangeRateProvider inner = InnerWith();
+        CountingDatedRateProvider inner = InnerWith();
         SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (today, 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 
@@ -40,7 +40,7 @@ public sealed partial class CachingRateProviderTests
     public void GetRate_WhenTimelessAndCacheMiss_ShouldDelegateToInner()
     {
         var today = DateOnly.FromDateTime(Now.UtcDateTime);
-        CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", today, 0.5m));
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", today, 0.5m));
         CachingRateProvider sut = CreateDecorator(inner);
 
         decimal rate = ((IRateProvider)sut).GetRate("AUD", "USD");

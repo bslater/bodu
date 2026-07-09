@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="FixtureXeExchangeRateSource.cs" company="Bodu Pty. Ltd.">
+// <copyright file="FixtureOfxRateSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,30 +10,30 @@ namespace Bodu.Financial.ExchangeRates;
 /// An <see cref="IPairRateSource{TSeries}" /> that parses embedded JSON fixtures instead of issuing network
 /// requests, mapping currency pairs to fixture files and recording how many pairs it served.
 /// </summary>
-internal sealed class FixtureXeExchangeRateSource
-    : IPairRateSource<XeSeriesInfo>
+internal sealed class FixtureOfxRateSource
+    : IPairRateSource<OfxSeriesInfo>
 {
     /// <summary>The provider options used while parsing fixtures.</summary>
-    private readonly XeRateProviderOptions _options;
+    private readonly OfxRateProviderOptions _options;
 
     /// <summary>The map from <c>FROM/TO</c> pair key to fixture file name.</summary>
     private readonly IReadOnlyDictionary<string, string> _fixtureByPair;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FixtureXeExchangeRateSource" /> class.
+    /// Initializes a new instance of the <see cref="FixtureOfxRateSource" /> class.
     /// </summary>
     /// <param name="options">The provider options used while parsing fixtures.</param>
     /// <param name="fixtureByPair">
     /// An optional pair-to-fixture map; defaults to mapping <c>AUD/USD</c> to the sample fixture.
     /// </param>
-    public FixtureXeExchangeRateSource(
-        XeRateProviderOptions options,
+    public FixtureOfxRateSource(
+        OfxRateProviderOptions options,
         IReadOnlyDictionary<string, string>? fixtureByPair = null)
     {
         _options = options;
         _fixtureByPair = fixtureByPair ?? new Dictionary<string, string>(StringComparer.Ordinal)
         {
-            ["AUD/USD"] = XeFixtures.AudUsd,
+            ["AUD/USD"] = OfxFixtures.AudUsd,
         };
     }
 
@@ -44,19 +44,19 @@ internal sealed class FixtureXeExchangeRateSource
     public int GetPairCallCount { get; private set; }
 
     /// <inheritdoc />
-    public ValueTask<PairRateData<XeSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
+    public ValueTask<PairRateData<OfxSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         GetPairCallCount++;
 
         string key = $"{request.Pair.From}/{request.Pair.To}";
         if (_fixtureByPair.TryGetValue(key, out string? fixture))
         {
-            byte[] json = XeFixtures.ReadBytes(fixture);
-            return ValueTask.FromResult(XeChartingRatesResponseParser.Parse(json, request, _options));
+            byte[] json = OfxFixtures.ReadBytes(fixture);
+            return ValueTask.FromResult(OfxSpotRateHistoryResponseParser.Parse(json, request, _options));
         }
 
         // Unknown pair: behave like one with no published data so inverse-fallback paths can be exercised.
         return ValueTask.FromResult(
-            new PairRateData<XeSeriesInfo>(request.Pair, Array.Empty<RateObservation>(), new XeSeriesInfo(request.Pair, request.Pair.To.ToString())));
+            new PairRateData<OfxSeriesInfo>(request.Pair, Array.Empty<RateObservation>(), new OfxSeriesInfo(request.Pair, request.Pair.To.ToString())));
     }
 }

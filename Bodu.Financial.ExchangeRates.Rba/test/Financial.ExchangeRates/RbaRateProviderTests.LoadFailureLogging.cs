@@ -27,7 +27,7 @@ public partial class RbaRateProviderTests
         RbaRateProviderOptions options = new() { AllowSynchronousNetworkAccess = false, EnableDiskCache = false };
         CapturingLogger logger = new();
 
-        return (new RbaRateProvider(new ThrowingRbaExchangeRateTableSource(exception), options, logger), logger);
+        return (new RbaRateProvider(new ThrowingRbaRateTableSource(exception), options, logger), logger);
     }
 
     /// <summary>

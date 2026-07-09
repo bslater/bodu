@@ -13,7 +13,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <remarks>
 /// On every lookup the candidates are consulted in order and the first to satisfy the request wins, so a preferred
 /// provider's fallback-date hit beats a lower-priority provider's exact-date hit. This is the default strategy and the
-/// successor to the former <c>CompositeDatedExchangeRateProvider</c>.
+/// successor to the former <c>CompositeDatedRateProvider</c>.
 /// </remarks>
 public sealed class PriorityFallbackStrategy
     : IRateAggregationStrategy

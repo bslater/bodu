@@ -63,9 +63,9 @@ DOM quartet; (3) the **container + office-format reader** pair
 `Bodu.IO.Compound` (OLE2/CFB read + edit + fluent authoring) and
 `Bodu.Formats.Excel.Binary` (read-only BIFF8 `.xls`); (4) the entire
 **`Bodu.Financial.ExchangeRates.*` ecosystem** — seven web providers (Boe,
-Ecb, Rba, Yahoo, Ofx, Xe, Oanda) over a shared `WebExchangeRateProvider`
-base, the provider-agnostic caching layer (`CachingExchangeRateProvider`,
-`AggregatingExchangeRateProvider`) with in-memory / TOML / JSON / SQLite /
+Ecb, Rba, Yahoo, Ofx, Xe, Oanda) over a shared `WebRateProvider`
+base, the provider-agnostic caching layer (`CachingRateProvider`,
+`AggregatingRateProvider`) with in-memory / TOML / JSON / SQLite /
 distributed backends, and per-package DI; and (5) DI packages for
 `Bodu.Financial` and the calendar service, plus the calendar plugin loader.
 Central package management (`Directory.Packages.props`) is now in place.
@@ -156,7 +156,7 @@ exercised on the smallest self-contained units first.
 
 | Package | Notes |
 | --- | --- |
-| `Bodu.Financial` | `Money` / `Money<TCurrency>`, `CalculatedMoney`, `MoneyBag`, the ISO 4217 catalogue, rounding/allocation policies, and the FX abstractions (`ExchangeRate`, `IExchangeRateProvider` / `IDatedExchangeRateProvider`, `ExchangeRateBook`, `WebExchangeRateProvider` base). References `Bodu.Numerics`. |
+| `Bodu.Financial` | `Money` / `Money<TCurrency>`, `CalculatedMoney`, `MoneyBag`, the ISO 4217 catalogue, rounding/allocation policies, and the FX abstractions (`ExchangeRate`, `IRateProvider` / `IDatedRateProvider`, `RateBook`, `WebRateProvider` base). References `Bodu.Numerics`. |
 | `Bodu.Financial.DependencyInjection` | `AddFinancialService`, currency-resolution registration. |
 | `Bodu.Globalization.Calendar` | 1.1.0 — multi-assembly rule resolution. **Behavioural change**: parameterless `NotableDateService()` no longer ships every region's rules; consumers must reference a data pack. |
 | `Bodu.Globalization.Calendar.{Americas,AsiaPacific,Europe,MiddleEast,Africa}` | The five regional data packs (authoritative country set below). |
@@ -166,9 +166,9 @@ exercised on the smallest self-contained units first.
 
 | Package | Notes |
 | --- | --- |
-| `Bodu.Financial.ExchangeRates.DependencyInjection` | Shared `AddWebExchangeRateProvider` machinery (named `HttpClient` + Polly resilience). |
+| `Bodu.Financial.ExchangeRates.DependencyInjection` | Shared `AddWebRateProvider` machinery (named `HttpClient` + Polly resilience). |
 | `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Xe,Oanda}` | Per-source provider packages, each shipping its own DI extension. |
-| `Bodu.Financial.ExchangeRates.Caching` | `CachingExchangeRateProvider`, `AggregatingExchangeRateProvider`, in-memory / TOML / JSON backends. |
+| `Bodu.Financial.ExchangeRates.Caching` | `CachingRateProvider`, `AggregatingRateProvider`, in-memory / TOML / JSON backends. |
 | `Bodu.Financial.ExchangeRates.Caching.{Sqlite,Distributed}` | Durable SQLite and shared `IDistributedCache` backends. |
 
 Authoritative country set for each data pack at release time:
@@ -319,12 +319,12 @@ is now:
    window, alongside OANDA's existing ~180-day window; the shared
    pair-provider contract test now forces every future provider to
    declare deliberately. The consuming side has since landed as well:
-   the new `IHistoryAwareExchangeRateProvider` capability interface is
+   the new `IHistoryAwareRateProvider` capability interface is
    implemented across the provider base, the fixed-book provider, and
-   both decorators; `CachingExchangeRateProvider` clamps or skips
+   both decorators; `CachingRateProvider` clamps or skips
    fetches outside the inner source's advertised history (recording the
    unavailable prefix as covered-with-no-rows); and
-   `AggregatingExchangeRateProvider` drops candidates that declared they
+   `AggregatingRateProvider` drops candidates that declared they
    cannot serve the requested date or window before the strategy runs —
    both behind `RespectHistoryAvailability` flags that default on. The
    Preview→Stable promotion for the FX family now waits only on
@@ -768,9 +768,9 @@ per-currency `ICurrency` types, `CurrencyLookupService`), formatting /
 parsing (`MoneyFormatter`, `MoneyParseOptions`), rounding / allocation
 policies (`IRoundingStrategy`, `MonetaryContext`, the policy enums), the
 full FX abstraction stack (`ExchangeRate` / `ExchangeRate<TBase,TQuote>`,
-`IExchangeRateProvider` / `IDatedExchangeRateProvider`, `ExchangeRateBook`
-/ `ExchangeRateSeries`, `FixedDatedExchangeRateProvider`), and the
-abstract `WebExchangeRateProvider` / `PairWebExchangeRateProvider<TSeries>`
+`IRateProvider` / `IDatedRateProvider`, `RateBook`
+/ `RateSeries`, `FixedDatedRateProvider`), and the
+abstract `WebRateProvider` / `PairWebRateProvider<TSeries>`
 bases the provider packages extend. References `Bodu.Numerics` for the
 `Fraction<BigInteger>` exact-arithmetic escape hatch.
 
@@ -798,17 +798,17 @@ Current state: bridge; `IServiceCollection` extensions declared in the
 ### `Bodu.Financial.ExchangeRates.*` *(provider + caching family)*
 
 Current state: new and extensive. Seven web providers over the shared
-`WebExchangeRateProvider` base, split into two architectural families:
+`WebRateProvider` base, split into two architectural families:
 central-bank whole-file sources (**Boe** IADB CSV, **Ecb** eurofxref XML,
 **Rba** `.xls` eras) and arbitrary-pair sources over
-`PairWebExchangeRateProvider<TSeries>` (**Yahoo** chart JSON, **Ofx**,
+`PairWebRateProvider<TSeries>` (**Yahoo** chart JSON, **Ofx**,
 **Xe** — scrape-token auth, **Oanda** — rolling ~180-day window). The
-shared `.DependencyInjection` package owns the `AddWebExchangeRateProvider`
+shared `.DependencyInjection` package owns the `AddWebRateProvider`
 machinery (named `HttpClient` + Polly resilience) each provider's `Add*`
 extension delegates to. The provider-agnostic `.Caching` package supplies
-the `CachingExchangeRateProvider` read-through decorator and the
-`AggregatingExchangeRateProvider` (priority-fallback / average strategies,
-per-pair routing) over `IExchangeRateCache`, with in-memory / TOML / JSON
+the `CachingRateProvider` read-through decorator and the
+`AggregatingRateProvider` (priority-fallback / average strategies,
+per-pair routing) over `IRateCache`, with in-memory / TOML / JSON
 backends in-package and durable `Sqlite` + shared `Distributed`
 (`IDistributedCache` / Redis) backends as add-ons.
 
@@ -817,7 +817,7 @@ backends in-package and durable `Sqlite` + shared `Distributed`
   and Yahoo, a deliberate Unbounded for OFX, rolling windows for XE and
   OANDA) and enforced for pair providers by the shared contract test.
   The caching / aggregation layer now reads it through the
-  `IHistoryAwareExchangeRateProvider` capability interface: the caching
+  `IHistoryAwareRateProvider` capability interface: the caching
   decorator skips single-date misses and clamps range fetches to the
   inner source's advertised earliest date (recording the unavailable
   prefix as covered-with-no-rows), and the aggregator drops candidates
@@ -825,11 +825,11 @@ backends in-package and durable `Sqlite` + shared `Distributed`
   the strategy runs — both behind `RespectHistoryAvailability` flags
   that default on.
 - **Yahoo is now structurally identical to the other pair providers.** ✅
-  The dedicated `YahooExchangeRateProvider` subclass already existed; the
+  The dedicated `YahooRateProvider` subclass already existed; the
   remaining inconsistency — a bespoke `IYahooExchangeRateChartSource`
   bridged through an internal adapter — has been collapsed:
-  `YahooChartExchangeRateSource` implements
-  `IExchangeRatePairSource<YahooSeriesInfo>` directly and the parser
+  `YahooChartRateSource` implements
+  `IPairRateSource<YahooSeriesInfo>` directly and the parser
   returns `PairRateData<YahooSeriesInfo>` like its OFX/XE peers.
 - **De-risk the XE provider — Experimental marking done; official
   endpoint still open.** The package is already labelled Experimental
@@ -1174,7 +1174,7 @@ rather than inventing a fourth shape.
    model (`Bodu.Formats.Excel.*`). New office/document readers (`.msg`,
    `.doc`, `.xlsx`) plug into this split.
 3. **The resilient web-data-provider stack** — an abstract provider base
-   (`WebExchangeRateProvider`) owning `HttpClient` + Polly resilience and
+   (`WebRateProvider`) owning `HttpClient` + Polly resilience and
    single-flight coalescing, a read-through cache decorator, an
    aggregator with pluggable strategies over a storage-agnostic cache
    contract, and per-package DI extensions delegating to shared

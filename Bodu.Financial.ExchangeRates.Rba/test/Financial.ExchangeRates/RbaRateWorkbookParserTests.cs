@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="RbaExchangeRateWorkbookParserTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RbaRateWorkbookParserTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,20 +11,20 @@ using Bodu.Test;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies that <see cref="RbaExchangeRateWorkbookParser" /> interprets the RBA workbook layout correctly.
+/// Verifies that <see cref="RbaRateWorkbookParser" /> interprets the RBA workbook layout correctly.
 /// </summary>
 [TestClass]
-public partial class RbaExchangeRateWorkbookParserTests
+public partial class RbaRateWorkbookParserTests
 {
     /// <summary>
     /// Parses the embedded sample workbook with default options.
     /// </summary>
     /// <returns>The parsed table.</returns>
-    private static RbaExchangeRateTable ParseSample()
+    private static RbaRateTable ParseSample()
     {
         using MemoryStream stream = RbaFixtures.OpenStream(RbaFixtures.Sample);
         using var workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
-        return RbaExchangeRateWorkbookParser.Parse(workbook, new RbaRateProviderOptions());
+        return RbaRateWorkbookParser.Parse(workbook, new RbaRateProviderOptions());
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     [TestCategory(TestCategories.Smoke)]
     public void Parse_WhenSampleWorkbook_ShouldDiscoverAudUsdSeries()
     {
-        RbaExchangeRateTable table = ParseSample();
+        RbaRateTable table = ParseSample();
 
         RbaRateSeries usd = table.Series.Single(s => s.CurrencyCode == "USD");
 
@@ -48,7 +48,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     [TestMethod]
     public void Parse_WhenSampleWorkbook_ShouldExcludeTradeWeightedIndexColumn()
     {
-        RbaExchangeRateTable table = ParseSample();
+        RbaRateTable table = ParseSample();
 
         Assert.IsTrue(table.Series.All(s => s.CurrencyCode.Length == 3));
         Assert.DoesNotContain(s => s.SeriesId == "FXRTWI", table.Series);
@@ -60,7 +60,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     [TestMethod]
     public void Parse_WhenSampleWorkbook_ShouldAliasSdrToXdr()
     {
-        RbaExchangeRateTable table = ParseSample();
+        RbaRateTable table = ParseSample();
 
         RbaRateSeries xdr = table.Series.Single(s => s.CurrencyCode == "XDR");
 
@@ -73,7 +73,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     [TestMethod]
     public void Parse_WhenSampleWorkbook_ShouldExposeRowsAcrossExpectedDateRange()
     {
-        RbaExchangeRateTable table = ParseSample();
+        RbaRateTable table = ParseSample();
 
         Assert.AreEqual(new DateOnly(2023, 1, 3), table.Rows[0].Date);
         Assert.AreEqual(new DateOnly(2026, 6, 12), table.Rows[^1].Date);

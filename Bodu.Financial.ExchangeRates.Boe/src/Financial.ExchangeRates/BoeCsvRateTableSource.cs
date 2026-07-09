@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoeCsvExchangeRateTableSource.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BoeCsvRateTableSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// Obtains a Bank of England date range's rate table by querying the IADB CSV endpoint (via a response cache) and
 /// parsing the result.
 /// </summary>
-internal sealed class BoeCsvExchangeRateTableSource
+internal sealed class BoeCsvRateTableSource
     : IBoeRateTableSource
 {
     /// <summary>The HTTP client used to download range responses.</summary>
@@ -23,12 +23,12 @@ internal sealed class BoeCsvExchangeRateTableSource
     private readonly IBoeResponseCache _cache;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoeCsvExchangeRateTableSource" /> class.
+    /// Initializes a new instance of the <see cref="BoeCsvRateTableSource" /> class.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download range responses.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="cache">The response byte cache.</param>
-    internal BoeCsvExchangeRateTableSource(HttpClient httpClient, BoeRateProviderOptions options, IBoeResponseCache cache)
+    internal BoeCsvRateTableSource(HttpClient httpClient, BoeRateProviderOptions options, IBoeResponseCache cache)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -45,7 +45,7 @@ internal sealed class BoeCsvExchangeRateTableSource
         byte[] bytes = await GetResponseBytesAsync(startDate, endDate, cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);
-        return BoeExchangeRateCsvParser.Parse(stream, _options);
+        return BoeRateCsvParser.Parse(stream, _options);
     }
 
     /// <summary>
