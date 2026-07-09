@@ -61,8 +61,11 @@ public sealed class AlgorithmDateStrategy
     /// A key registered in the context's custom registry takes precedence over a built-in registration of the same key,
     /// so a document may override a built-in algorithm; an unrecognized key produces no occurrence.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="context" /> is <see langword="null" />.</exception>
     public DateOnly? Calculate(int year, StrategyResolutionContext context)
     {
+        ThrowHelper.ThrowIfNull(context);
+
         if (year is < 1 or > 9999)
             return null;
 

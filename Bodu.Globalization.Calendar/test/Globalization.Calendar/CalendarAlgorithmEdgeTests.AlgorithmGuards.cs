@@ -23,4 +23,19 @@ public partial class CalendarAlgorithmEdgeTests
         Assert.IsNull(TibetanLosarCalculator.Losar(0));
         Assert.IsNull(HinduLunarCalculator.Resolve("not-a-festival", 2025));
     }
+
+    /// <summary>
+    /// Verifies that the algorithm strategy throws <see cref="ArgumentNullException" /> when the resolution context is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void AlgorithmGuards_WhenContextIsNull_ShouldThrowArgumentNullException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new AlgorithmDateStrategy("easter-western").Calculate(2025, null!);
+        });
+
+        Assert.AreEqual("context", ex.ParamName);
+    }
 }
