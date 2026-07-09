@@ -119,7 +119,7 @@ public sealed partial class DistributedExchangeRateCacheTests
         DateTimeOffset now = DateTimeOffset.UtcNow;
         MemoryDistributedCache backingStore = CreateBackingStore();
         DistributedExchangeRateCache cache = CreateCache(backingStore);
-        var other = new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD);
+        var other = new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD);
 
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
         cache.Store(other, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 1.1000m, now) }, Duration, now);

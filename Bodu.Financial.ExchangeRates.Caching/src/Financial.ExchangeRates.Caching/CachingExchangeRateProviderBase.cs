@@ -13,14 +13,14 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Provides the shared caching mechanism for a provider that wraps a single inner
-/// <see cref="IDatedExchangeRateProvider" /> over a single-provider <see cref="IExchangeRateCache" />: it serves fresh
+/// <see cref="IDatedRateProvider" /> over a single-provider <see cref="IExchangeRateCache" />: it serves fresh
 /// rates from the cache and delegates to the inner provider only on a miss, caching what the inner provider returns.
 /// Derived types supply the wrapped inner provider.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The provider implements the same <see cref="IDatedExchangeRateProvider" /> contract the caller resolves, so it can
-/// be inserted transparently, and also the timeless <see cref="IExchangeRateProvider" /> surface, which resolves the
+/// The provider implements the same <see cref="IDatedRateProvider" /> contract the caller resolves, so it can
+/// be inserted transparently, and also the timeless <see cref="IRateProvider" /> surface, which resolves the
 /// current UTC date under <see cref="CachingExchangeRateOptions.DefaultLookupOptions" />. The cache's
 /// <see cref="IExchangeRateCache.Provider" /> identifies the source: it selects the caching duration from
 /// <see cref="CachingExchangeRateOptions.ProviderExpiry" /> (falling back to
@@ -37,7 +37,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// them with an <see cref="AggregatingExchangeRateProvider" />.
 /// </para>
 /// <para>
-/// When the inner provider advertises its history depth through <see cref="IHistoryAwareExchangeRateProvider" /> and
+/// When the inner provider advertises its history depth through <see cref="IHistoryAwareRateProvider" /> and
 /// <see cref="CachingExchangeRateOptions.RespectHistoryAvailability" /> is enabled (the default), misses for dates the
 /// source has declared unavailable are not delegated: a single-date lookup outside the advertised history surfaces as
 /// an ordinary miss without an inner call, and a range fetch is clamped to start at the advertised earliest date — or
@@ -45,7 +45,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// so the unavailable prefix is not re-asked until normal expiry.
 /// </para>
 /// <para>
-/// Because this provider is itself an <see cref="IDatedExchangeRateProvider" /> and accepts one as its inner source,
+/// Because this provider is itself an <see cref="IDatedRateProvider" /> and accepts one as its inner source,
 /// caching providers also <em>stack</em>: wrapping a cached provider in a second caching provider forms a tiered
 /// read-through — a fast outer cache (for example in-memory) over a durable inner one (for example SQLite) over the
 /// origin — where each layer is consulted in turn and only a miss falls through. Bind every layer's cache to the same
@@ -71,7 +71,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// </remarks>
 public abstract class CachingExchangeRateProviderBase
-    : IDatedExchangeRateProvider, IExchangeRateProvider, IHistoryAwareExchangeRateProvider, IDisposable
+    : IDatedRateProvider, IRateProvider, IHistoryAwareRateProvider, IDisposable
 {
     /// <summary>The single-provider cache that serves fresh rates and stores resolved observations.</summary>
     private readonly IExchangeRateCache _cache;
@@ -133,7 +133,7 @@ public abstract class CachingExchangeRateProviderBase
     /// Gets the inner provider consulted on a cache miss.
     /// </summary>
     /// <value>The wrapped inner provider.</value>
-    protected abstract IDatedExchangeRateProvider Inner { get; }
+    protected abstract IDatedRateProvider Inner { get; }
 
     /// <summary>
     /// Gets the history depth this provider advertises, forwarded from the inner provider it wraps. The cache itself
@@ -141,16 +141,16 @@ public abstract class CachingExchangeRateProviderBase
     /// as its source.
     /// </summary>
     /// <value>
-    /// The inner provider's advertised availability when it implements <see cref="IHistoryAwareExchangeRateProvider" />;
-    /// otherwise <see cref="ExchangeRateHistoryAvailability.Unbounded" />.
+    /// The inner provider's advertised availability when it implements <see cref="IHistoryAwareRateProvider" />;
+    /// otherwise <see cref="RateHistoryAvailability.Unbounded" />.
     /// </value>
-    public ExchangeRateHistoryAvailability HistoryAvailability =>
-        Inner is IHistoryAwareExchangeRateProvider aware
+    public RateHistoryAvailability HistoryAvailability =>
+        Inner is IHistoryAwareRateProvider aware
             ? aware.HistoryAvailability
-            : ExchangeRateHistoryAvailability.Unbounded;
+            : RateHistoryAvailability.Unbounded;
 
     /// <inheritdoc />
-    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
+    public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
@@ -159,16 +159,16 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <inheritdoc />
-    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null)
+    public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null)
     {
-        return TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result)
+        return TryGetRate(fromIsoCode, toIsoCode, date, options, out RateLookupResult result)
             ? result
             : throw new KeyNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.IO_KeyNotFound_ExchangeRate, fromIsoCode, toIsoCode, date));
     }
 
     /// <inheritdoc />
-    public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result)
+    public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options, out RateLookupResult result)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
@@ -209,10 +209,10 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <inheritdoc />
-    public ValueTask<ExchangeRateLookupResult> GetRateAsync(
+    public ValueTask<RateLookupResult> GetRateAsync(
         string fromIsoCode,
         string toIsoCode,
-        ExchangeRateLookupOptions? options = null,
+        RateLookupOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -222,11 +222,11 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <inheritdoc />
-    public async ValueTask<ExchangeRateLookupResult> GetRateAsync(
+    public async ValueTask<RateLookupResult> GetRateAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions? options = null,
+        RateLookupOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -234,7 +234,7 @@ public abstract class CachingExchangeRateProviderBase
         DateTimeOffset now = _timeProvider.GetUtcNow();
         TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
-        if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out ExchangeRateLookupResult result, out DateTimeOffset? servedCachedAtUtc))
+        if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out RateLookupResult result, out DateTimeOffset? servedCachedAtUtc))
         {
             // Overwrite the snapshot's Live provenance with the cache lineage exactly as the synchronous path does, so a
             // cache hit returns Origin.Cache (with the backend and age) on both surfaces rather than diverging.
@@ -264,13 +264,13 @@ public abstract class CachingExchangeRateProviderBase
     }
 
     /// <inheritdoc />
-    public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    public RateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
-        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         DateTimeOffset now = _timeProvider.GetUtcNow();
         TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
@@ -278,7 +278,7 @@ public abstract class CachingExchangeRateProviderBase
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
             EmitProvenance(CacheServeProvenance(oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
-            return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
+            return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
 
         if (!TryClampFetchStart(startDate, endDate, now, out DateOnly fetchStart, out DateOnly? earliestAvailable))
@@ -288,7 +288,7 @@ public abstract class CachingExchangeRateProviderBase
             ExchangeRateCacheWriteStatus skipStatus = StoreFetchedRange(duration, pair, [], startDate, endDate, now);
 
             Log.SkippedRangeOutsideHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, startDate, endDate, earliestAvailable!.Value, skipStatus);
-            return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, []);
+            return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, []);
         }
 
         if (fetchStart != startDate)
@@ -304,12 +304,12 @@ public abstract class CachingExchangeRateProviderBase
         ExchangeRateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
-        EmitProvenance(ExchangeRateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
-        return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, fetched);
+        EmitProvenance(RateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
+        return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, fetched);
     }
 
     /// <inheritdoc />
-    public async ValueTask<ExchangeRateRangeResult> GetRatesAsync(
+    public async ValueTask<RateRangeResult> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -320,7 +320,7 @@ public abstract class CachingExchangeRateProviderBase
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
-        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         DateTimeOffset now = _timeProvider.GetUtcNow();
         TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
@@ -328,7 +328,7 @@ public abstract class CachingExchangeRateProviderBase
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
             EmitProvenance(CacheServeProvenance(oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
-            return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
+            return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
 
         if (!TryClampFetchStart(startDate, endDate, now, out DateOnly fetchStart, out DateOnly? earliestAvailable))
@@ -338,7 +338,7 @@ public abstract class CachingExchangeRateProviderBase
             ExchangeRateCacheWriteStatus skipStatus = StoreFetchedRange(duration, pair, [], startDate, endDate, now);
 
             Log.SkippedRangeOutsideHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, startDate, endDate, earliestAvailable!.Value, skipStatus);
-            return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, []);
+            return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, []);
         }
 
         if (fetchStart != startDate)
@@ -355,8 +355,8 @@ public abstract class CachingExchangeRateProviderBase
         ExchangeRateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
-        EmitProvenance(ExchangeRateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
-        return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, fetched);
+        EmitProvenance(RateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
+        return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, fetched);
     }
 
     /// <inheritdoc />
@@ -366,7 +366,7 @@ public abstract class CachingExchangeRateProviderBase
 
         var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
 
-        return new DatedExchangeRateProviderAdapter(this, today, _options.DefaultLookupOptions).GetRate(fromIsoCode, toIsoCode);
+        return new DatedRateProviderAdapter(this, today, _options.DefaultLookupOptions).GetRate(fromIsoCode, toIsoCode);
     }
 
     /// <summary>
@@ -384,16 +384,16 @@ public abstract class CachingExchangeRateProviderBase
     /// lookup could resolve to still precedes the advertised earliest date; otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// Forward-resolving rules (<see cref="ExchangeRateDateResolution.NextOnOrAfter" /> and the nearest family) can
-    /// reach up to <see cref="ExchangeRateLookupOptions.ToleranceDays" /> past the requested date, so the guard tests
+    /// Forward-resolving rules (<see cref="RateDateResolution.NextOnOrAfter" /> and the nearest family) can
+    /// reach up to <see cref="RateLookupOptions.ToleranceDays" /> past the requested date, so the guard tests
     /// that reachable maximum rather than the requested date itself — a request just outside the advertised floor whose
     /// tolerance reaches back inside it is still delegated.
     /// </remarks>
-    private bool IsOutsideAdvertisedHistory(DateOnly date, ExchangeRateLookupOptions? options, DateTimeOffset now, out DateOnly earliest)
+    private bool IsOutsideAdvertisedHistory(DateOnly date, RateLookupOptions? options, DateTimeOffset now, out DateOnly earliest)
     {
         earliest = default;
 
-        if (!_options.RespectHistoryAvailability || Inner is not IHistoryAwareExchangeRateProvider aware)
+        if (!_options.RespectHistoryAvailability || Inner is not IHistoryAwareRateProvider aware)
             return false;
 
         DateOnly? floor = aware.HistoryAvailability.GetEarliestAvailable(DateOnly.FromDateTime(now.UtcDateTime));
@@ -433,7 +433,7 @@ public abstract class CachingExchangeRateProviderBase
         fetchStart = startDate;
         earliestAvailable = null;
 
-        if (!_options.RespectHistoryAvailability || Inner is not IHistoryAwareExchangeRateProvider aware)
+        if (!_options.RespectHistoryAvailability || Inner is not IHistoryAwareRateProvider aware)
             return true;
 
         DateOnly? floor = aware.HistoryAvailability.GetEarliestAvailable(DateOnly.FromDateTime(now.UtcDateTime));
@@ -457,18 +457,18 @@ public abstract class CachingExchangeRateProviderBase
     /// </param>
     /// <param name="asOf">The lookup instant the served data's age is derived from.</param>
     /// <returns>
-    /// An <see cref="ExchangeRateProvenance" /> carrying <see cref="ExchangeRateOrigin.Cache" /> lineage.
+    /// An <see cref="RateProvenance" /> carrying <see cref="RateOrigin.Cache" /> lineage.
     /// </returns>
     /// <remarks>
     /// Used by every serve path — single-date and range, synchronous and asynchronous — so a cache hit reports an
     /// identical provenance regardless of the surface it was served through.
     /// </remarks>
-    private ExchangeRateProvenance CacheServeProvenance(DateTimeOffset? servedCachedAtUtc, DateTimeOffset asOf) =>
-        ExchangeRateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, asOf);
+    private RateProvenance CacheServeProvenance(DateTimeOffset? servedCachedAtUtc, DateTimeOffset asOf) =>
+        RateProvenance.FromCache(_cache.Provider, _backend, servedCachedAtUtc, asOf);
 
     /// <summary>
     /// Attempts to resolve a single-date request from the fresh cached rows (and their inverse, when inversion is
-    /// permitted) by delegating to a <see cref="FixedDatedExchangeRateProvider" /> built from them.
+    /// permitted) by delegating to a <see cref="FixedDatedRateProvider" /> built from them.
     /// </summary>
     /// <param name="duration">The duration cached rows stay fresh.</param>
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
@@ -486,13 +486,13 @@ public abstract class CachingExchangeRateProviderBase
     /// <returns>
     /// <see langword="true" /> when the request was satisfied from the cache; otherwise <see langword="false" />.
     /// </returns>
-    private bool TryServeFromCache(TimeSpan duration, string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, DateTimeOffset now, out ExchangeRateLookupResult result, out DateTimeOffset? servedCachedAtUtc)
+    private bool TryServeFromCache(TimeSpan duration, string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options, DateTimeOffset now, out RateLookupResult result, out DateTimeOffset? servedCachedAtUtc)
     {
-        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
 
         IReadOnlyList<CachedExchangeRate> direct = _cache.GetRates(pair, duration, now);
 
-        bool allowInverse = options?.AllowInverse ?? ExchangeRateLookupOptions.Exact.AllowInverse;
+        bool allowInverse = options?.AllowInverse ?? RateLookupOptions.Exact.AllowInverse;
         IReadOnlyList<CachedExchangeRate> inverse = allowInverse
             ? _cache.GetRates(pair.Inverse(), duration, now)
             : Array.Empty<CachedExchangeRate>();
@@ -511,7 +511,7 @@ public abstract class CachingExchangeRateProviderBase
         foreach (CachedExchangeRate rate in inverse)
             rates.Add(new ExchangeRate(pair.To, pair.From, rate.Date, rate.Rate, provider));
 
-        FixedDatedExchangeRateProvider snapshot = new(rates);
+        FixedDatedRateProvider snapshot = new(rates);
         if (!snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
         {
             servedCachedAtUtc = null;
@@ -520,7 +520,7 @@ public abstract class CachingExchangeRateProviderBase
 
         servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
 
-        // FixedDatedExchangeRateProvider flattens the cached rows to (Date, Rate) and drops the fetch instant, so restore
+        // FixedDatedRateProvider flattens the cached rows to (Date, Rate) and drops the fetch instant, so restore
         // it from the matching cached row onto the rebuilt rate; the cache-write instant stays separate in the provenance.
         DateTimeOffset? servedObservedAt = ResolveServedObservedInstant(direct, inverse, result.Rate.Date);
         result = result with { Rate = result.Rate.WithFetchedAtUtc(servedObservedAt) };
@@ -557,7 +557,7 @@ public abstract class CachingExchangeRateProviderBase
     /// <returns>
     /// <see langword="true" /> when the range was satisfied from the cache; otherwise <see langword="false" />.
     /// </returns>
-    private bool TryServeRangeFromCache(TimeSpan duration, ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
+    private bool TryServeRangeFromCache(TimeSpan duration, CurrencyPair pair, DateOnly startDate, DateOnly endDate, DateTimeOffset now, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
     {
         // The fresh coverage, not the span of the rate rows, decides whether the whole window was actually fetched. The
         // direct pair is tried first; when inversion is permitted a complete inverse-pair coverage serves the window by
@@ -595,7 +595,7 @@ public abstract class CachingExchangeRateProviderBase
     /// when the covered window yields no rows.
     /// </param>
     /// <returns>Always <see langword="true" />; the caller has already confirmed the window is covered.</returns>
-    private bool BuildRange(ExchangeRatePair cachedPair, TimeSpan duration, DateOnly startDate, DateOnly endDate, DateTimeOffset now, bool invert, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
+    private bool BuildRange(CurrencyPair cachedPair, TimeSpan duration, DateOnly startDate, DateOnly endDate, DateTimeOffset now, bool invert, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
     {
         string provider = _cache.Provider;
         IReadOnlyList<CachedExchangeRate> fresh = _cache.GetRates(cachedPair, duration, now);
@@ -619,7 +619,7 @@ public abstract class CachingExchangeRateProviderBase
             decimal value = invert ? 1m / rate.Rate : rate.Rate;
 
             // This serve path returns the rebuilt rows directly, so the cached fetch instant is stamped onto the rate
-            // here rather than restored later; no FixedDatedExchangeRateProvider round-trip drops it.
+            // here rather than restored later; no FixedDatedRateProvider round-trip drops it.
             rates.Add(new ExchangeRate(fromCode, toCode, rate.Date, value, provider, isInverted: invert, rate.ObservedAtUtc));
             if (oldest is not { } current || rate.CachedAtUtc < current)
                 oldest = rate.CachedAtUtc;
@@ -644,9 +644,9 @@ public abstract class CachingExchangeRateProviderBase
     /// a single-date serve is satisfied per row, whereas only a range fetch establishes the contiguous coverage a range
     /// serve requires.
     /// </remarks>
-    private void StoreResult(TimeSpan duration, string fromIsoCode, string toIsoCode, ExchangeRateLookupResult result, DateTimeOffset now)
+    private void StoreResult(TimeSpan duration, string fromIsoCode, string toIsoCode, RateLookupResult result, DateTimeOffset now)
     {
-        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         CachedExchangeRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now, result.Rate.FetchedAtUtc) };
         _cache.Store(pair, rows, duration, now);
     }
@@ -668,7 +668,7 @@ public abstract class CachingExchangeRateProviderBase
     /// coverage window are written as one atomic unit so a swallowed storage failure can never leave coverage recorded
     /// without its rows.
     /// </remarks>
-    private ExchangeRateCacheWriteStatus StoreFetchedRange(TimeSpan duration, ExchangeRatePair pair, IReadOnlyList<ExchangeRate> rates, DateOnly startDate, DateOnly endDate, DateTimeOffset now)
+    private ExchangeRateCacheWriteStatus StoreFetchedRange(TimeSpan duration, CurrencyPair pair, IReadOnlyList<ExchangeRate> rates, DateOnly startDate, DateOnly endDate, DateTimeOffset now)
     {
         var rows = new CachedExchangeRate[rates.Count];
         for (int i = 0; i < rates.Count; i++)
@@ -778,7 +778,7 @@ public abstract class CachingExchangeRateProviderBase
     /// The call is unconditional: the <see cref="LoggerMessageAttribute" /> source generator short-circuits before any
     /// argument is formatted when <see cref="CachingExchangeRateOptions.RateProvenanceLogLevel" /> is disabled.
     /// </remarks>
-    private void EmitProvenance(ExchangeRateProvenance provenance, string fromIsoCode, string toIsoCode) =>
+    private void EmitProvenance(RateProvenance provenance, string fromIsoCode, string toIsoCode) =>
         Log.RateProvenance(
             _logger,
             _options.RateProvenanceLogLevel,

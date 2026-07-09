@@ -93,7 +93,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     protected abstract string FileExtension { get; }
 
     /// <inheritdoc />
-    public string ResolveFilePath(ExchangeRatePair pair)
+    public string ResolveFilePath(CurrencyPair pair)
     {
         if (_layout.IsPartitioned)
             throw new InvalidOperationException(CachingResourceStrings.Op_Invalid_PartitionedNoSingleFile);
@@ -102,18 +102,18 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     }
 
     /// <inheritdoc />
-    public string ResolveDirectory(ExchangeRatePair pair) =>
+    public string ResolveDirectory(CurrencyPair pair) =>
         _layout.ResolveDirectory(_directory, Provider, pair);
 
     /// <inheritdoc />
-    public string ResolvePartitionPath(ExchangeRatePair pair, DateOnly date)
+    public string ResolvePartitionPath(CurrencyPair pair, DateOnly date)
     {
         string key = _layout.PartitionStrategy.GetPartitionKey(date);
         return Path.Combine(ResolveDirectory(pair), _layout.ResolveFileName(Provider, pair, key, FileExtension));
     }
 
     /// <inheritdoc />
-    private protected sealed override CachePairState ReadState(ExchangeRatePair pair)
+    private protected sealed override CachePairState ReadState(CurrencyPair pair)
     {
         try
         {
@@ -130,7 +130,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     }
 
     /// <inheritdoc />
-    private protected sealed override bool WriteState(ExchangeRatePair pair, CachePairState state)
+    private protected sealed override bool WriteState(CurrencyPair pair, CachePairState state)
     {
         try
         {
@@ -167,7 +167,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// <see langword="private protected" /> because <see cref="CachePairState" /> is an internal storage detail shared
     /// only with same-assembly backends.
     /// </remarks>
-    private protected abstract string Serialize(ExchangeRatePair pair, CachePairState state);
+    private protected abstract string Serialize(CurrencyPair pair, CachePairState state);
 
     /// <summary>
     /// Deserializes the cache file's text into per-pair state, returning <see cref="CachePairState.Empty" /> when the
@@ -186,7 +186,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <returns>The full path of the pair's file.</returns>
-    private string SingleFilePath(ExchangeRatePair pair) =>
+    private string SingleFilePath(CurrencyPair pair) =>
         Path.Combine(_layout.ResolveDirectory(_directory, Provider, pair), _layout.ResolveFileName(Provider, pair, string.Empty, FileExtension));
 
     /// <summary>
@@ -195,7 +195,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <returns>The parsed state, or <see cref="CachePairState.Empty" /> when no file exists.</returns>
-    private CachePairState ReadSingle(ExchangeRatePair pair) =>
+    private CachePairState ReadSingle(CurrencyPair pair) =>
         ReadFile(SingleFilePath(pair));
 
     /// <summary>
@@ -205,7 +205,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// <returns>
     /// The merged state across all partitions, or <see cref="CachePairState.Empty" /> when none exists.
     /// </returns>
-    private CachePairState ReadPartitioned(ExchangeRatePair pair)
+    private CachePairState ReadPartitioned(CurrencyPair pair)
     {
         string directory = ResolveDirectory(pair);
         if (!Directory.Exists(directory))
@@ -260,7 +260,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <param name="state">The state to persist.</param>
-    private void WriteSingle(ExchangeRatePair pair, CachePairState state)
+    private void WriteSingle(CurrencyPair pair, CachePairState state)
     {
         string path = SingleFilePath(pair);
 
@@ -281,7 +281,7 @@ public abstract class FileExchangeRateCacheBase<TOptions>
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <param name="state">The full state to distribute across partitions.</param>
-    private void WritePartitioned(ExchangeRatePair pair, CachePairState state)
+    private void WritePartitioned(CurrencyPair pair, CachePairState state)
     {
         string directory = ResolveDirectory(pair);
 

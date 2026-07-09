@@ -7,11 +7,11 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// An <see cref="IExchangeRatePairSource{TSeries}" /> that parses embedded JSON fixtures instead of issuing network
+/// An <see cref="IPairRateSource{TSeries}" /> that parses embedded JSON fixtures instead of issuing network
 /// requests, mapping currency pairs to fixture files and recording how many pairs it served.
 /// </summary>
 internal sealed class FixtureYahooExchangeRateSource
-    : IExchangeRatePairSource<YahooSeriesInfo>
+    : IPairRateSource<YahooSeriesInfo>
 {
     /// <summary>The provider options used while parsing fixtures.</summary>
     private readonly YahooExchangeRateOptions _options;
@@ -44,7 +44,7 @@ internal sealed class FixtureYahooExchangeRateSource
     public int GetPairCallCount { get; private set; }
 
     /// <inheritdoc />
-    public ValueTask<PairRateData<YahooSeriesInfo>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default)
+    public ValueTask<PairRateData<YahooSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         GetPairCallCount++;
 
@@ -59,6 +59,6 @@ internal sealed class FixtureYahooExchangeRateSource
 
         // Unknown pair: behave like one with no published data so inverse-fallback paths can be exercised.
         return ValueTask.FromResult(
-            new PairRateData<YahooSeriesInfo>(request.Pair, Array.Empty<ExchangeRateObservation>(), new YahooSeriesInfo(request.Pair, symbol, request.Pair.To.ToString())));
+            new PairRateData<YahooSeriesInfo>(request.Pair, Array.Empty<RateObservation>(), new YahooSeriesInfo(request.Pair, symbol, request.Pair.To.ToString())));
     }
 }

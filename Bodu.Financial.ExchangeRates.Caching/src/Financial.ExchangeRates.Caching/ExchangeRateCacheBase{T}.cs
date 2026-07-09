@@ -45,7 +45,7 @@ public abstract class ExchangeRateCacheBase<TOptions>
     private readonly TOptions _options;
 
     /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" /> and <see cref="RecordCoverage" />. One lock object is created per pair on first use and reused thereafter.</summary>
-    private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
+    private readonly ConcurrentDictionary<CurrencyPair, object> _pairLocks = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExchangeRateCacheBase{TOptions}" /> class.
@@ -73,7 +73,7 @@ public abstract class ExchangeRateCacheBase<TOptions>
     protected TOptions Options => _options;
 
     /// <inheritdoc />
-    public IReadOnlyList<CachedExchangeRate> GetRates(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
+    public IReadOnlyList<CachedExchangeRate> GetRates(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf)
     {
         IReadOnlyList<CachedExchangeRate> entries = ReadState(pair).Entries;
         if (entries.Count == 0)
@@ -83,7 +83,7 @@ public abstract class ExchangeRateCacheBase<TOptions>
     }
 
     /// <inheritdoc />
-    public void Store(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
+    public void Store(CurrencyPair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
     {
         ThrowHelper.ThrowIfNull(rates);
 
@@ -102,11 +102,11 @@ public abstract class ExchangeRateCacheBase<TOptions>
     }
 
     /// <inheritdoc />
-    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
+    public DateRangeCoverage GetCoverage(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf) =>
         ExchangeRateCacheRules.BuildCoverage(ToTuples(ReadState(pair).Coverage), duration, asOf);
 
     /// <inheritdoc />
-    public void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
+    public void RecordCoverage(CurrencyPair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
     {
         ThrowHelper.ThrowIfGreaterThan(start, end);
 
@@ -124,7 +124,7 @@ public abstract class ExchangeRateCacheBase<TOptions>
 
     /// <inheritdoc />
     public ExchangeRateCacheWriteStatus StoreFetchedRange(
-        ExchangeRatePair pair,
+        CurrencyPair pair,
         IReadOnlyList<CachedExchangeRate> rows,
         DateOnly start,
         DateOnly end,
@@ -163,7 +163,7 @@ public abstract class ExchangeRateCacheBase<TOptions>
     /// detail: the seam is open only to backends within this assembly. An out-of-assembly backend implements the public
     /// <see cref="IExchangeRateCache" /> contract directly instead, as <see cref="NullExchangeRateCache" /> does.
     /// </remarks>
-    private protected abstract CachePairState ReadState(ExchangeRatePair pair);
+    private protected abstract CachePairState ReadState(CurrencyPair pair);
 
     /// <summary>
     /// Writes the supplied state for a pair, replacing any existing state.
@@ -182,7 +182,7 @@ public abstract class ExchangeRateCacheBase<TOptions>
     /// <see cref="ExchangeRateCacheWriteStatus.Failed" /> rather than falsely as
     /// <see cref="ExchangeRateCacheWriteStatus.Stored" />.
     /// </remarks>
-    private protected abstract bool WriteState(ExchangeRatePair pair, CachePairState state);
+    private protected abstract bool WriteState(CurrencyPair pair, CachePairState state);
 
     /// <summary>
     /// Projects the internal coverage windows into the plain tuples the shared <see cref="ExchangeRateCacheRules" />
@@ -219,6 +219,6 @@ public abstract class ExchangeRateCacheBase<TOptions>
     /// </summary>
     /// <param name="pair">The currency pair whose write lock is required.</param>
     /// <returns>The per-pair lock object.</returns>
-    private object LockFor(ExchangeRatePair pair) =>
+    private object LockFor(CurrencyPair pair) =>
         _pairLocks.GetOrAdd(pair, static _ => new object());
 }

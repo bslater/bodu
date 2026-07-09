@@ -34,7 +34,7 @@ public class YahooChartExchangeRateSourceTests
             handler.LastRequestUri.AbsolutePath);
         Assert.IsTrue(handler.LastRequestUri.Query.Contains("interval=1d", StringComparison.Ordinal), handler.LastRequestUri.Query);
 
-        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+        RateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
         Assert.AreEqual(0.6828m, result.Rate.Rate);
     }
 }

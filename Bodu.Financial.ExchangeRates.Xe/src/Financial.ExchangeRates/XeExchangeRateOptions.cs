@@ -45,7 +45,7 @@ public sealed class XeExchangeRateOptions
     public XeExchangeRateOptions()
     {
         BaseAddress = new Uri("https://www.xe.com/");
-        HistoryAvailability = ExchangeRateHistoryAvailability.RollingDays(EstimatedChartingWindowDays);
+        HistoryAvailability = RateHistoryAvailability.RollingDays(EstimatedChartingWindowDays);
     }
 
     /// <summary>

@@ -45,7 +45,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// using var boe = new BoeExchangeRateProvider(new BoeExchangeRateOptions());
 /// await boe.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
 ///
-/// ExchangeRateLookupResult gbp = boe.GetRate("GBP", "USD", new DateOnly(2023, 1, 3));
+/// RateLookupResult gbp = boe.GetRate("GBP", "USD", new DateOnly(2023, 1, 3));
 /// // The reverse direction (USD->GBP) is served by inverting the GBP-based series.
 ///]]>
 /// </code>
@@ -72,7 +72,7 @@ public sealed class BoeExchangeRateProvider
     private readonly List<(DateOnly From, DateOnly To)> _loadedRanges = new();
 
     /// <summary>The discovered currency series, keyed by pair.</summary>
-    private readonly Dictionary<ExchangeRatePair, BoeSeriesInfo> _series = new();
+    private readonly Dictionary<CurrencyPair, BoeSeriesInfo> _series = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BoeExchangeRateProvider" /> class backed by an
@@ -183,7 +183,7 @@ public sealed class BoeExchangeRateProvider
     /// Forwards <see cref="BoeExchangeRateOptions.HistoryAvailability" />, which defaults to a fixed floor of 2 January
     /// 1975 — the inception of the Bank of England's daily spot exchange-rate series.
     /// </remarks>
-    public override ExchangeRateHistoryAvailability HistoryAvailability => _options.HistoryAvailability;
+    public override RateHistoryAvailability HistoryAvailability => _options.HistoryAvailability;
 
     /// <summary>
     /// Downloads and loads the inclusive date range, unless it is already covered by a previous load.
@@ -216,11 +216,11 @@ public sealed class BoeExchangeRateProvider
     }
 
     /// <inheritdoc />
-    protected override ValueTask EnsureLoadedAsync(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
+    protected override ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
         new(LoadRangeInternalAsync(startDate, endDate, cancellationToken));
 
     /// <inheritdoc />
-    protected override bool IsLoaded(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate)
+    protected override bool IsLoaded(CurrencyPair pair, DateOnly startDate, DateOnly endDate)
     {
         lock (SyncRoot)
         {
@@ -235,7 +235,7 @@ public sealed class BoeExchangeRateProvider
         if (!string.Equals(fromIsoCode, baseIso, StringComparison.Ordinal) &&
             !string.Equals(toIsoCode, baseIso, StringComparison.Ordinal))
         {
-            throw new ExchangeRateSeriesNotFoundException(
+            throw new RateSeriesNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, BoeResourceStrings.IO_KeyNotFound_BoeSeries, fromIsoCode, toIsoCode));
         }
     }

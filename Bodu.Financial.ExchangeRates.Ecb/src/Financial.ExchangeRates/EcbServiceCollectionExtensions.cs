@@ -45,7 +45,7 @@ public static class EcbServiceCollectionExtensions
     /// });
     ///
     /// using ServiceProvider provider = services.BuildServiceProvider();
-    /// var rates = provider.GetRequiredService<IDatedExchangeRateProvider>();
+    /// var rates = provider.GetRequiredService<IDatedRateProvider>();
     ///]]>
     /// </code>
     /// </example>

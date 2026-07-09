@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public class XeChartingRatesSourceTests
 {
-    private static readonly ExchangeRatePair AudUsd = new(CurrencyCode.AUD, CurrencyCode.USD);
+    private static readonly CurrencyPair AudUsd = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>
     /// Verifies that the source requests the charting-rates path with the currency query parameters and attaches the
@@ -107,7 +107,7 @@ public class XeChartingRatesSourceTests
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 6));
 
-        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual(0.6828m, result.Rate.Rate);
 
@@ -135,6 +135,6 @@ public class XeChartingRatesSourceTests
         return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(fixture) };
     }
 
-    private static ExchangeRatePairRequest Request(DateOnly startDate, DateOnly endDate) =>
+    private static CurrencyPairRequest Request(DateOnly startDate, DateOnly endDate) =>
         new(AudUsd, startDate, endDate);
 }

@@ -24,8 +24,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// public sealed class LastAvailableStrategy : IExchangeRateAggregationStrategy
 /// {
 ///     public bool TryAggregate(string fromIsoCode, string toIsoCode, DateOnly date,
-///         ExchangeRateLookupOptions options, IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
-///         out ExchangeRateLookupResult result)
+///         RateLookupOptions options, IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
+///         out RateLookupResult result)
 ///     {
 ///         for (int i = candidates.Count - 1; i >= 0; i--)
 ///         {
@@ -73,9 +73,9 @@ public interface IExchangeRateAggregationStrategy
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        RateLookupOptions options,
         IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
-        out ExchangeRateLookupResult result);
+        out RateLookupResult result);
 
     /// <summary>
     /// Combines the candidates' rates over the inclusive date range <paramref name="startDate" /> to

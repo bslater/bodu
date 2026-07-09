@@ -45,7 +45,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// using var rba = new RbaExchangeRateProvider(new RbaExchangeRateOptions());
 /// await rba.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
 ///
-/// ExchangeRateLookupResult aud = rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+/// RateLookupResult aud = rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 /// // aud.Rate.Provider == RbaExchangeRateProvider.ProviderName; the reverse direction (USD->AUD) is inverted.
 ///]]>
 /// </code>
@@ -72,7 +72,7 @@ public sealed class RbaExchangeRateProvider
     private readonly HashSet<string> _loadedEras = new(StringComparer.Ordinal);
 
     /// <summary>The discovered currency series, keyed by pair.</summary>
-    private readonly Dictionary<ExchangeRatePair, RbaSeriesInfo> _series = new();
+    private readonly Dictionary<CurrencyPair, RbaSeriesInfo> _series = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RbaExchangeRateProvider" /> class backed by an
@@ -181,7 +181,7 @@ public sealed class RbaExchangeRateProvider
     /// back the historical workbook catalogue reaches — 1 January 1983 for the default <see cref="RbaEra.Default" />
     /// catalogue.
     /// </remarks>
-    public override ExchangeRateHistoryAvailability HistoryAvailability
+    public override RateHistoryAvailability HistoryAvailability
     {
         get
         {
@@ -192,7 +192,7 @@ public sealed class RbaExchangeRateProvider
                     earliest = era.Start;
             }
 
-            return ExchangeRateHistoryAvailability.Since(earliest);
+            return RateHistoryAvailability.Since(earliest);
         }
     }
 
@@ -266,11 +266,11 @@ public sealed class RbaExchangeRateProvider
     }
 
     /// <inheritdoc />
-    protected override ValueTask EnsureLoadedAsync(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
+    protected override ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
         new(LoadRangeInternalAsync(startDate, endDate, cancellationToken));
 
     /// <inheritdoc />
-    protected override bool IsLoaded(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate)
+    protected override bool IsLoaded(CurrencyPair pair, DateOnly startDate, DateOnly endDate)
     {
         lock (SyncRoot)
         {
@@ -291,7 +291,7 @@ public sealed class RbaExchangeRateProvider
         if (!string.Equals(fromIsoCode, baseIso, StringComparison.Ordinal) &&
             !string.Equals(toIsoCode, baseIso, StringComparison.Ordinal))
         {
-            throw new ExchangeRateSeriesNotFoundException(
+            throw new RateSeriesNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, RbaResourceStrings.IO_KeyNotFound_RbaSeries, fromIsoCode, toIsoCode));
         }
     }

@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Verifies that <see cref="CachingExchangeRateProvider" /> populates the public
-/// <see cref="ExchangeRateLookupResult.Provenance" /> on the returned result: a cache serve carries cache lineage while
+/// <see cref="RateLookupResult.Provenance" /> on the returned result: a cache serve carries cache lineage while
 /// a miss carries the inner provider's live lineage unchanged.
 /// </summary>
 public sealed partial class CachingExchangeRateProviderTests
@@ -23,13 +23,13 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void GetRate_WhenCacheHit_ShouldReturnCacheProvenanceWithBackendAndAge()
     {
-        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock);
 
         _clock.Advance(TimeSpan.FromHours(1));
-        ExchangeRateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        Assert.AreEqual(ExchangeRateOrigin.Cache, result.Provenance.Origin);
+        Assert.AreEqual(RateOrigin.Cache, result.Provenance.Origin);
         Assert.AreEqual(Provider, result.Provenance.Provider);
         Assert.AreEqual(nameof(InMemoryExchangeRateCache), result.Provenance.Backend);
         Assert.AreEqual(Now, result.Provenance.CachedAtUtc);
@@ -44,13 +44,13 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public async Task GetRateAsync_WhenCacheHit_ShouldReturnCacheProvenanceWithBackendAndAge()
     {
-        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock);
 
         _clock.Advance(TimeSpan.FromHours(1));
-        ExchangeRateLookupResult result = await sut.GetRateAsync("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = await sut.GetRateAsync("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        Assert.AreEqual(ExchangeRateOrigin.Cache, result.Provenance.Origin);
+        Assert.AreEqual(RateOrigin.Cache, result.Provenance.Origin);
         Assert.AreEqual(Provider, result.Provenance.Provider);
         Assert.AreEqual(nameof(InMemoryExchangeRateCache), result.Provenance.Backend);
         Assert.AreEqual(Now, result.Provenance.CachedAtUtc);
@@ -67,9 +67,9 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = new(inner, _cache, _options, _clock);
 
-        Assert.IsTrue(sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result));
+        Assert.IsTrue(sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out RateLookupResult result));
 
-        Assert.AreEqual(ExchangeRateOrigin.Live, result.Provenance.Origin);
+        Assert.AreEqual(RateOrigin.Live, result.Provenance.Origin);
         Assert.AreEqual("Test", result.Provenance.Provider);
         Assert.IsNull(result.Provenance.Backend);
         Assert.IsNull(result.Provenance.CachedAtUtc);
@@ -87,16 +87,16 @@ public sealed partial class CachingExchangeRateProviderTests
         // and fresh, but its raw age (asOf - cachedAtUtc) is negative and must clamp to zero.
         DateTimeOffset futureStamp = Now + TimeSpan.FromSeconds(30);
         _cache.Store(
-            new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD),
+            new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD),
             [new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, futureStamp)],
             Duration,
             futureStamp);
 
         CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock);
 
-        ExchangeRateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        Assert.AreEqual(ExchangeRateOrigin.Cache, result.Provenance.Origin);
+        Assert.AreEqual(RateOrigin.Cache, result.Provenance.Origin);
         Assert.AreEqual(futureStamp, result.Provenance.CachedAtUtc);
         Assert.AreEqual(TimeSpan.Zero, result.Provenance.Age);
     }

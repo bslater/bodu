@@ -45,7 +45,7 @@ public static class RbaFinancialServiceBuilderExtensions
     /// <para>
     /// The provider is registered as a singleton so its in-memory store of loaded eras is shared across resolutions; it
     /// is backed by an <see cref="IHttpClientFactory" /> client so handler lifetime is managed by the factory. The
-    /// provider is also exposed as <see cref="IDatedExchangeRateProvider" /> and <see cref="IExchangeRateProvider" />
+    /// provider is also exposed as <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />
     /// through idempotent registrations.
     /// </para>
     /// <para>

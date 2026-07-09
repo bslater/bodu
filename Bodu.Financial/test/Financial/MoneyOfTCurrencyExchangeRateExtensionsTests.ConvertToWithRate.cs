@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.ExchangeRates;
 using Bodu.Test.Assertions;
 
 namespace Bodu.Financial;
@@ -13,7 +14,7 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="MoneyOfTCurrencyExchangeRateExtensions.ConvertToWithRate" /> returns the converted amount and the
-    /// complete <see cref="ExchangeRateLookupResult" /> that produced it.
+    /// complete <see cref="RateLookupResult" /> that produced it.
     /// </summary>
     [TestMethod]
     public void ConvertToWithRate_WhenRateAvailable_ShouldReturnConvertedAmountAndMetadata()
@@ -23,7 +24,7 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
         MoneyConversionResult<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD> result = amount.ConvertToWithRate<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
             BuildProvider(),
             s_d1,
-            ExchangeRateLookupOptions.Exact);
+            RateLookupOptions.Exact);
 
         Assert.AreEqual(100m, result.SourceAmount.Amount);
         Assert.AreEqual(150.00m, result.TargetAmount.Amount);
@@ -45,7 +46,7 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
             () => amount.ConvertToWithRate<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
                 null!,
                 s_d1,
-                ExchangeRateLookupOptions.Exact),
+                RateLookupOptions.Exact),
             "provider");
     }
 }

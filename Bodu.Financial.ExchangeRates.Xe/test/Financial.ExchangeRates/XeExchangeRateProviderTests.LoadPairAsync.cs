@@ -21,7 +21,7 @@ public partial class XeExchangeRateProviderTests
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 6));
 
-        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual(0.6828m, result.Rate.Rate);
         Assert.AreEqual(new DateOnly(2023, 1, 3), result.Rate.Date);
@@ -40,7 +40,7 @@ public partial class XeExchangeRateProviderTests
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 4));
 
-        ExchangeRateRangeResult range = await provider.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 4));
+        RateRangeResult range = await provider.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 4));
 
         Assert.AreEqual(3, range.Count);
         Assert.IsTrue(range.All(rate => rate.Date >= new DateOnly(2023, 1, 2) && rate.Date <= new DateOnly(2023, 1, 4)));

@@ -66,9 +66,9 @@ public sealed partial class DistributedRateCacheExtensionsTests
         IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
-        Assert.HasCount(1, cache.GetRates(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now));
+        Assert.HasCount(1, cache.GetRates(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now));
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
         // The configured "fx:" prefix must be applied to the underlying distributed-cache key.
         Assert.IsNotNull(distributedCache.Get("fx:RBA:AUDUSD"));

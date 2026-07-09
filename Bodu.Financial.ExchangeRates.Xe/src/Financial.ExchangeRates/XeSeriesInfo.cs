@@ -21,7 +21,7 @@ public sealed class XeSeriesInfo
     /// </summary>
     /// <param name="pair">The currency pair the series represents.</param>
     /// <param name="quoteIsoCode">The quote-currency ISO code.</param>
-    internal XeSeriesInfo(ExchangeRatePair pair, string quoteIsoCode)
+    internal XeSeriesInfo(CurrencyPair pair, string quoteIsoCode)
     {
         Pair = pair;
         QuoteIsoCode = quoteIsoCode;
@@ -30,8 +30,8 @@ public sealed class XeSeriesInfo
     /// <summary>
     /// Gets the currency pair the series represents.
     /// </summary>
-    /// <value>The <see cref="ExchangeRatePair" /> from the base currency to the quote currency.</value>
-    public ExchangeRatePair Pair { get; }
+    /// <value>The <see cref="CurrencyPair" /> from the base currency to the quote currency.</value>
+    public CurrencyPair Pair { get; }
 
     /// <summary>
     /// Gets the quote-currency ISO code.

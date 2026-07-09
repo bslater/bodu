@@ -94,6 +94,6 @@ public class DistributedExchangeRateCacheOptions
     /// The key is <c>{prefix}{provider}:{from}{to}</c>. The provider and the two three-letter ISO codes are joined with
     /// a colon and concatenated so that no two distinct pairs (or providers) can ever map to the same key.
     /// </remarks>
-    internal string BuildKey(ExchangeRatePair pair) =>
+    internal string BuildKey(CurrencyPair pair) =>
         string.Format(CultureInfo.InvariantCulture, "{0}{1}:{2}{3}", KeyPrefix, Provider, pair.From, pair.To);
 }

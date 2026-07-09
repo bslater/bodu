@@ -47,8 +47,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// using var ecb = new EcbExchangeRateProvider(new EcbExchangeRateOptions());
 /// await ecb.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
 ///
-/// ExchangeRateLookupResult usd = ecb.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
-/// ExchangeRateLookupResult eur = ecb.GetRate("USD", "EUR", new DateOnly(2023, 1, 3)); // inverted
+/// RateLookupResult usd = ecb.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
+/// RateLookupResult eur = ecb.GetRate("USD", "EUR", new DateOnly(2023, 1, 3)); // inverted
 ///]]>
 /// </code>
 /// </example>
@@ -74,7 +74,7 @@ public sealed class EcbExchangeRateProvider
     private readonly HashSet<string> _loadedFeeds = new(StringComparer.Ordinal);
 
     /// <summary>The discovered currency series, keyed by pair.</summary>
-    private readonly Dictionary<ExchangeRatePair, EcbSeriesInfo> _series = new();
+    private readonly Dictionary<CurrencyPair, EcbSeriesInfo> _series = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EcbExchangeRateProvider" /> class backed by an
@@ -184,7 +184,7 @@ public sealed class EcbExchangeRateProvider
     /// configured the provider reaches back to <see cref="EcbExchangeRateFeed.Epoch" /> (4 January 1999, the start of
     /// the euro reference-rate series); otherwise the deepest configured rolling feed bounds the window.
     /// </remarks>
-    public override ExchangeRateHistoryAvailability HistoryAvailability
+    public override RateHistoryAvailability HistoryAvailability
     {
         get
         {
@@ -192,12 +192,12 @@ public sealed class EcbExchangeRateProvider
             foreach (EcbExchangeRateFeed feed in _options.Feeds)
             {
                 if (feed.LookbackDays is null)
-                    return ExchangeRateHistoryAvailability.Since(EcbExchangeRateFeed.Epoch);
+                    return RateHistoryAvailability.Since(EcbExchangeRateFeed.Epoch);
 
                 windowDays = Math.Max(windowDays, feed.LookbackDays.Value);
             }
 
-            return ExchangeRateHistoryAvailability.RollingDays(windowDays);
+            return RateHistoryAvailability.RollingDays(windowDays);
         }
     }
 
@@ -273,11 +273,11 @@ public sealed class EcbExchangeRateProvider
     }
 
     /// <inheritdoc />
-    protected override ValueTask EnsureLoadedAsync(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
+    protected override ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
         new(LoadFeedAsync(SelectFeedForRange(startDate), cancellationToken));
 
     /// <inheritdoc />
-    protected override bool IsLoaded(ExchangeRatePair pair, DateOnly startDate, DateOnly endDate)
+    protected override bool IsLoaded(CurrencyPair pair, DateOnly startDate, DateOnly endDate)
     {
         EcbExchangeRateFeed feed = SelectFeedForRange(startDate);
 
@@ -294,7 +294,7 @@ public sealed class EcbExchangeRateProvider
         if (!string.Equals(fromIsoCode, baseIso, StringComparison.Ordinal) &&
             !string.Equals(toIsoCode, baseIso, StringComparison.Ordinal))
         {
-            throw new ExchangeRateSeriesNotFoundException(
+            throw new RateSeriesNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, EcbResourceStrings.IO_KeyNotFound_EcbSeries, fromIsoCode, toIsoCode));
         }
     }

@@ -8,7 +8,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Reports the outcome of an atomic
-/// <see cref="IExchangeRateCache.StoreFetchedRange(ExchangeRatePair, IReadOnlyList{CachedExchangeRate}, DateOnly, DateOnly, TimeSpan, DateTimeOffset)" />
+/// <see cref="IExchangeRateCache.StoreFetchedRange(CurrencyPair, IReadOnlyList{CachedExchangeRate}, DateOnly, DateOnly, TimeSpan, DateTimeOffset)" />
 /// write, distinguishing a durable success from a swallowed storage failure and from a deliberate no-op cache.
 /// </summary>
 /// <remarks>

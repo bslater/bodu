@@ -51,7 +51,7 @@ public sealed class YahooExchangeRateOptions
     public YahooExchangeRateOptions()
     {
         BaseAddress = new Uri("https://query1.finance.yahoo.com/");
-        HistoryAvailability = ExchangeRateHistoryAvailability.Since(FxChartEpoch);
+        HistoryAvailability = RateHistoryAvailability.Since(FxChartEpoch);
     }
 
     /// <summary>

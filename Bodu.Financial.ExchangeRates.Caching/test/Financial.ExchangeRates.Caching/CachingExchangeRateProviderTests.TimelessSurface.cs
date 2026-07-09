@@ -9,7 +9,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies the timeless <see cref="IExchangeRateProvider" /> surface of <see cref="CachingExchangeRateProvider" />,
+/// Verifies the timeless <see cref="IRateProvider" /> surface of <see cref="CachingExchangeRateProvider" />,
 /// which resolves the current UTC date from the injected time provider under the configured default lookup options.
 /// </summary>
 public sealed partial class CachingExchangeRateProviderTests
@@ -24,10 +24,10 @@ public sealed partial class CachingExchangeRateProviderTests
     {
         var today = DateOnly.FromDateTime(Now.UtcDateTime);
         CountingDatedExchangeRateProvider inner = InnerWith();
-        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (today, 0.5m));
+        SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (today, 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        decimal rate = ((IExchangeRateProvider)sut).GetRate("AUD", "USD");
+        decimal rate = ((IRateProvider)sut).GetRate("AUD", "USD");
 
         Assert.AreEqual(0.5m, rate);
         Assert.AreEqual(0, inner.TotalCallCount);
@@ -43,7 +43,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", today, 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        decimal rate = ((IExchangeRateProvider)sut).GetRate("AUD", "USD");
+        decimal rate = ((IRateProvider)sut).GetRate("AUD", "USD");
 
         Assert.AreEqual(0.5m, rate);
         Assert.AreEqual(1, inner.TotalCallCount);
@@ -60,7 +60,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
-            _ = ((IExchangeRateProvider)sut).GetRate("AUD", "USD");
+            _ = ((IRateProvider)sut).GetRate("AUD", "USD");
         });
     }
 }

@@ -22,7 +22,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// Each provider's dependency-injection package calls one of the <c>AddWebExchangeRateProvider</c> overloads to handle
 /// the common plumbing: binding and validating the provider's options, configuring a named <see cref="HttpClient" />
 /// with a Polly standard-resilience handler, constructing the provider singleton, and exposing it as both
-/// <see cref="IDatedExchangeRateProvider" /> and <see cref="IExchangeRateProvider" />. The provider-specific extension
+/// <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />. The provider-specific extension
 /// method supplies only the values that differ across providers: the HttpClient name, configuration section, validation
 /// predicate, user-agent and timeout selectors, and the factory delegate that invokes the concrete constructor.
 /// </para>
@@ -270,8 +270,8 @@ public static class WebExchangeRateProviderExtensions
                 serviceProvider.GetService<ILoggerFactory>(),
                 serviceProvider.GetService<TimeProvider>());
         });
-        services.TryAddSingleton<IDatedExchangeRateProvider>(serviceProvider => serviceProvider.GetRequiredService<TProvider>());
-        services.TryAddSingleton<IExchangeRateProvider>(serviceProvider => serviceProvider.GetRequiredService<TProvider>());
+        services.TryAddSingleton<IDatedRateProvider>(serviceProvider => serviceProvider.GetRequiredService<TProvider>());
+        services.TryAddSingleton<IRateProvider>(serviceProvider => serviceProvider.GetRequiredService<TProvider>());
 
         return builder;
     }

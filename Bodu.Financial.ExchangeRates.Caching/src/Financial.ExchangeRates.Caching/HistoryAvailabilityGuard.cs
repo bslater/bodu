@@ -8,7 +8,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Provides the shared date arithmetic the caching and aggregating decorators use when honouring a source's advertised
-/// <see cref="ExchangeRateHistoryAvailability" />.
+/// <see cref="RateHistoryAvailability" />.
 /// </summary>
 internal static class HistoryAvailabilityGuard
 {
@@ -20,15 +20,15 @@ internal static class HistoryAvailabilityGuard
     /// <param name="options">The lookup rules to apply; <see langword="null" /> selects the exact-match rules.</param>
     /// <returns>The latest reachable date, saturating at <see cref="DateOnly.MaxValue" />.</returns>
     /// <remarks>
-    /// Forward-resolving rules (<see cref="ExchangeRateDateResolution.NextOnOrAfter" /> and the nearest family) can
-    /// reach up to <see cref="ExchangeRateLookupOptions.ToleranceDays" /> past the requested date, so availability
+    /// Forward-resolving rules (<see cref="RateDateResolution.NextOnOrAfter" /> and the nearest family) can
+    /// reach up to <see cref="RateLookupOptions.ToleranceDays" /> past the requested date, so availability
     /// guards must test this reachable maximum rather than the requested date itself — a request just outside an
     /// advertised floor whose tolerance reaches back inside it can still be served.
     /// </remarks>
-    internal static DateOnly LatestReachableDate(DateOnly date, ExchangeRateLookupOptions? options)
+    internal static DateOnly LatestReachableDate(DateOnly date, RateLookupOptions? options)
     {
-        ExchangeRateLookupOptions effective = options ?? ExchangeRateLookupOptions.Exact;
-        if (effective.DateResolution is ExchangeRateDateResolution.Exact or ExchangeRateDateResolution.PreviousOnOrBefore)
+        RateLookupOptions effective = options ?? RateLookupOptions.Exact;
+        if (effective.DateResolution is RateDateResolution.Exact or RateDateResolution.PreviousOnOrBefore)
             return date;
 
         // Widen in day-number space so an extreme tolerance saturates at DateOnly.MaxValue instead of overflowing.

@@ -28,7 +28,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 internal sealed class XeChartingRatesSource
-    : IExchangeRatePairSource<XeSeriesInfo>
+    : IPairRateSource<XeSeriesInfo>
 {
     /// <summary>The HTTP client used to issue charting-rates requests.</summary>
     private readonly HttpClient _httpClient;
@@ -61,7 +61,7 @@ internal sealed class XeChartingRatesSource
     }
 
     /// <inheritdoc />
-    public async ValueTask<PairRateData<XeSeriesInfo>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default)
+    public async ValueTask<PairRateData<XeSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         Uri url = BuildRequestUri(request);
         byte[] json = await SendAuthorizedAsync(url, cancellationToken).ConfigureAwait(false);
@@ -101,7 +101,7 @@ internal sealed class XeChartingRatesSource
     /// </summary>
     /// <param name="request">The pair request.</param>
     /// <returns>The absolute request URI.</returns>
-    private Uri BuildRequestUri(ExchangeRatePairRequest request)
+    private Uri BuildRequestUri(CurrencyPairRequest request)
     {
         string from = _options.MapCurrencyCode(request.Pair.From.ToString());
         string to = _options.MapCurrencyCode(request.Pair.To.ToString());

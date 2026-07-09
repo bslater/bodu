@@ -20,7 +20,7 @@ public partial class BoeExchangeRateCsvParserTests
 
         BoeSeriesInfo usd = table.GetSeriesInfo().Single(s => s.QuoteIsoCode == "USD");
 
-        Assert.AreEqual(new ExchangeRatePair(CurrencyCode.GBP, CurrencyCode.USD), usd.Pair);
+        Assert.AreEqual(new CurrencyPair(CurrencyCode.GBP, CurrencyCode.USD), usd.Pair);
         Assert.AreEqual("XUDLUSS", usd.SeriesCode);
     }
 }

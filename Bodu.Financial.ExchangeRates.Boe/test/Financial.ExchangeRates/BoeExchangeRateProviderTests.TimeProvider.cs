@@ -40,7 +40,7 @@ public partial class BoeExchangeRateProviderTests
         BoeExchangeRateProvider provider = new(source, options, logger: null, timeProvider);
         await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
 
-        ExchangeRateLookupResult result = provider.GetRate("GBP", "USD", new DateOnly(2023, 1, 3));
+        RateLookupResult result = provider.GetRate("GBP", "USD", new DateOnly(2023, 1, 3));
 
         Assert.AreEqual(fetchedAt, result.Rate.FetchedAtUtc);
     }

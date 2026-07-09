@@ -57,7 +57,7 @@ public static class FinancialJsonSerializerOptionsExtensions
         options.Converters.Add(new MoneyJsonConverter(policy));
         options.Converters.Add(new MoneyBagJsonConverter(policy));
         options.Converters.Add(new ExchangeRateJsonConverter(policy));
-        options.Converters.Add(new ExchangeRatePairJsonConverter(policy));
+        options.Converters.Add(new CurrencyPairJsonConverter(policy));
 
         return options;
     }

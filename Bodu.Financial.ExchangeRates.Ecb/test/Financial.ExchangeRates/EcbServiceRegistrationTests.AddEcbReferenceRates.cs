@@ -40,8 +40,8 @@ public partial class EcbServiceRegistrationTests
         using ServiceProvider provider = services.BuildServiceProvider();
 
         EcbExchangeRateProvider? concrete = provider.GetService<EcbExchangeRateProvider>();
-        IDatedExchangeRateProvider? dated = provider.GetService<IDatedExchangeRateProvider>();
-        IExchangeRateProvider? simple = provider.GetService<IExchangeRateProvider>();
+        IDatedRateProvider? dated = provider.GetService<IDatedRateProvider>();
+        IRateProvider? simple = provider.GetService<IRateProvider>();
 
         Assert.IsNotNull(concrete);
         Assert.AreSame(concrete, dated);

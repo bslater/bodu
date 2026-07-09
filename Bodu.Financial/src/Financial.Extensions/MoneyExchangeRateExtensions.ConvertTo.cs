@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial.Extensions;
 
@@ -34,15 +35,15 @@ public static partial class MoneyExchangeRateExtensions
     /// </exception>
     public static Money ConvertTo(
         this Money amount,
-        IDatedExchangeRateProvider provider,
+        IDatedRateProvider provider,
         string targetIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions? options = null,
+        RateLookupOptions? options = null,
         MidpointRounding rounding = MidpointRounding.ToEven)
     {
         ThrowHelper.ThrowIfNull(provider);
 
-        ExchangeRateLookupResult lookup = provider.GetRate(amount.Code.ToString(), targetIsoCode, date, options);
+        RateLookupResult lookup = provider.GetRate(amount.Code.ToString(), targetIsoCode, date, options);
         return new Money(amount.Amount * lookup.Rate.Rate, CurrencyInfo.ParseCurrencyCode(targetIsoCode), rounding);
     }
 
@@ -66,15 +67,15 @@ public static partial class MoneyExchangeRateExtensions
     /// </exception>
     public static Money<TTarget> ConvertTo<TTarget>(
         this Money amount,
-        IDatedExchangeRateProvider provider,
+        IDatedRateProvider provider,
         DateOnly date,
-        ExchangeRateLookupOptions? options = null,
+        RateLookupOptions? options = null,
         MidpointRounding rounding = MidpointRounding.ToEven)
         where TTarget : ICurrency
     {
         ThrowHelper.ThrowIfNull(provider);
 
-        ExchangeRateLookupResult lookup = provider.GetRate(amount.Code.ToString(), Money<TTarget>.IsoCode, date, options);
+        RateLookupResult lookup = provider.GetRate(amount.Code.ToString(), Money<TTarget>.IsoCode, date, options);
         return new Money<TTarget>(amount.Amount * lookup.Rate.Rate, rounding);
     }
 }

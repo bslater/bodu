@@ -22,7 +22,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenOnlyInversePairCovered_ShouldServeInvertedWithoutFetch()
     {
-        ExchangeRatePair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
+        CurrencyPair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
         CountingDatedExchangeRateProvider inner = InnerWith();
 
         // Seed only the inverse pair's rows and a full coverage window; the direct AUD/USD pair has nothing cached.
@@ -53,14 +53,14 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void GetRates_WhenOnlyInversePairCovered_ShouldServeInverted()
     {
-        ExchangeRatePair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
+        CurrencyPair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
         CountingDatedExchangeRateProvider inner = InnerWith();
 
         SeedCache(inverse, (new DateOnly(2023, 1, 3), 4.0m));
         SeedCoverage(inverse, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        ExchangeRateRangeResult rates = sut.GetRates("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3));
+        RateRangeResult rates = sut.GetRates("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3));
 
         Assert.AreEqual(0, inner.GetRatesAsyncCallCount);
         Assert.AreEqual(1, rates.Count);
@@ -75,7 +75,7 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenInverseServingDisabled_ShouldNotUseInverseCoverage()
     {
-        ExchangeRatePair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
+        CurrencyPair inverse = new(CurrencyCode.USD, CurrencyCode.AUD);
         CountingDatedExchangeRateProvider inner = InnerWith(
             ("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
 
@@ -83,7 +83,7 @@ public sealed partial class CachingExchangeRateProviderTests
         SeedCoverage(inverse, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3));
 
         // Disable inverse range serving through the provider's default lookup options.
-        _options.DefaultLookupOptions = new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, allowInverse: false);
+        _options.DefaultLookupOptions = new RateLookupOptions(RateDateResolution.Exact, allowInverse: false);
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
         IReadOnlyList<ExchangeRate> rates = [.. await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3))];

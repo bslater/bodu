@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates.Testing;
 
 /// <summary>
-/// Provides the shared contract every <see cref="IDatedExchangeRateProvider" /> must satisfy, so a cache-fronted
+/// Provides the shared contract every <see cref="IDatedRateProvider" /> must satisfy, so a cache-fronted
 /// provider is indistinguishable from a direct one at the API surface. A test project asserts the contract for a
 /// concrete provider by deriving a <see langword="sealed" /> <c>[TestClass]</c> from this base and supplying the seed
 /// knowledge through the abstract members.
@@ -23,31 +23,31 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// </para>
 /// <para>
 /// "The same contract" means the same shape and invariants on every path — synchronous results equal their asynchronous
-/// counterparts, <see cref="IDatedExchangeRateProvider.GetRate(string, string, DateOnly, ExchangeRateLookupOptions)" />
+/// counterparts, <see cref="IDatedRateProvider.GetRate(string, string, DateOnly, RateLookupOptions)" />
 /// throws exactly where the <c>TryGet</c> form returns <see langword="false" />, and every result carries a
-/// self-consistent <see cref="ExchangeRateProvenance" />. It does not mean identical provenance values: a cache serve
-/// reports <see cref="ExchangeRateOrigin.Cache" /> while a direct serve reports <see cref="ExchangeRateOrigin.Live" />,
+/// self-consistent <see cref="RateProvenance" />. It does not mean identical provenance values: a cache serve
+/// reports <see cref="RateOrigin.Cache" /> while a direct serve reports <see cref="RateOrigin.Live" />,
 /// which is the deliberate signal of where the rate came from.
 /// </para>
 /// </remarks>
 public abstract class DatedExchangeRateProviderContractTests<TProvider>
-    where TProvider : class, IDatedExchangeRateProvider
+    where TProvider : class, IDatedRateProvider
 {
     /// <summary>
     /// Gets the currency pair the provider returned by <see cref="CreateProvider" /> has been seeded for.
     /// </summary>
     /// <value>The seeded currency pair.</value>
-    protected abstract ExchangeRatePair CanonicalPair { get; }
+    protected abstract CurrencyPair CanonicalPair { get; }
 
     /// <summary>
-    /// Gets a date for which the seeded provider has a resolvable observation under <see cref="ExchangeRateLookupOptions.Exact" />.
+    /// Gets a date for which the seeded provider has a resolvable observation under <see cref="RateLookupOptions.Exact" />.
     /// </summary>
     /// <value>A date that resolves for <see cref="CanonicalPair" />.</value>
     protected abstract DateOnly KnownDate { get; }
 
     /// <summary>
     /// Gets a date for which the seeded provider has no observation and that does not resolve under
-    /// <see cref="ExchangeRateLookupOptions.Exact" /> in either direction.
+    /// <see cref="RateLookupOptions.Exact" /> in either direction.
     /// </summary>
     /// <value>A date that does not resolve for <see cref="CanonicalPair" />.</value>
     protected abstract DateOnly UnknownDate { get; }
@@ -97,8 +97,8 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         string from = CanonicalPair.From.ToString();
         string to = CanonicalPair.To.ToString();
 
-        ExchangeRateLookupResult sync = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact);
-        ExchangeRateLookupResult async = await provider.GetRateAsync(from, to, KnownDate, ExchangeRateLookupOptions.Exact);
+        RateLookupResult sync = provider.GetRate(from, to, KnownDate, RateLookupOptions.Exact);
+        RateLookupResult async = await provider.GetRateAsync(from, to, KnownDate, RateLookupOptions.Exact);
 
         Assert.AreEqual(sync.Rate.Rate, async.Rate.Rate, "rate");
         Assert.AreEqual(sync.Rate.Date, async.Rate.Date, "rate date");
@@ -123,8 +123,8 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         string from = CanonicalPair.From.ToString();
         string to = CanonicalPair.To.ToString();
 
-        ExchangeRateRangeResult sync = provider.GetRates(from, to, RangeStart, RangeEnd);
-        ExchangeRateRangeResult async = await provider.GetRatesAsync(from, to, RangeStart, RangeEnd);
+        RateRangeResult sync = provider.GetRates(from, to, RangeStart, RangeEnd);
+        RateRangeResult async = await provider.GetRatesAsync(from, to, RangeStart, RangeEnd);
 
         Assert.AreEqual(sync.Count, async.Count, "range count");
         for (int i = 0; i < sync.Count; i++)
@@ -147,7 +147,7 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
             CanonicalPair.From.ToString(),
             CanonicalPair.To.ToString(),
             UnknownDate,
-            ExchangeRateLookupOptions.Exact,
+            RateLookupOptions.Exact,
             out _);
 
         Assert.IsFalse(resolved);
@@ -164,7 +164,7 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
-            _ = provider.GetRate(CanonicalPair.From.ToString(), CanonicalPair.To.ToString(), UnknownDate, ExchangeRateLookupOptions.Exact);
+            _ = provider.GetRate(CanonicalPair.From.ToString(), CanonicalPair.To.ToString(), UnknownDate, RateLookupOptions.Exact);
         });
     }
 
@@ -177,11 +177,11 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
     {
         TProvider provider = CreateWarmedProvider();
 
-        ExchangeRateLookupResult result = provider.GetRate(
+        RateLookupResult result = provider.GetRate(
             CanonicalPair.From.ToString(),
             CanonicalPair.To.ToString(),
             KnownDate,
-            ExchangeRateLookupOptions.Exact);
+            RateLookupOptions.Exact);
 
         AssertProvenanceConsistent(result.Provenance);
     }
@@ -197,8 +197,8 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         string from = CanonicalPair.From.ToString();
         string to = CanonicalPair.To.ToString();
 
-        ExchangeRateLookupResult withDefault = provider.GetRate(from, to, KnownDate, options: null);
-        ExchangeRateLookupResult withExact = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact);
+        RateLookupResult withDefault = provider.GetRate(from, to, KnownDate, options: null);
+        RateLookupResult withExact = provider.GetRate(from, to, KnownDate, RateLookupOptions.Exact);
 
         Assert.AreEqual(withExact.Rate.Rate, withDefault.Rate.Rate);
         Assert.AreEqual(withExact.Rate.Date, withDefault.Rate.Date);
@@ -221,8 +221,8 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         string from = CanonicalPair.From.ToString();
         string to = CanonicalPair.To.ToString();
 
-        decimal direct = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact).Rate.Rate;
-        decimal inverse = provider.GetRate(to, from, KnownDate, ExchangeRateLookupOptions.Exact).Rate.Rate;
+        decimal direct = provider.GetRate(from, to, KnownDate, RateLookupOptions.Exact).Rate.Rate;
+        decimal inverse = provider.GetRate(to, from, KnownDate, RateLookupOptions.Exact).Rate.Rate;
 
         Assert.IsTrue(direct > 0m && inverse > 0m, "both directions resolve to a positive rate");
         Assert.IsLessThan(0.0001m, Math.Abs((direct * inverse) - 1m), $"product {direct * inverse} should be ~1");
@@ -244,7 +244,7 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         TProvider provider = CreateProvider();
         string code = CanonicalPair.From.ToString();
 
-        ExchangeRateLookupResult result = provider.GetRate(code, code, KnownDate, ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = provider.GetRate(code, code, KnownDate, RateLookupOptions.Exact);
 
         Assert.AreEqual(1m, result.Rate.Rate);
     }
@@ -270,13 +270,13 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         ((IDisposable)provider).Dispose();
 
         _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
-            _ = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact));
+            _ = provider.GetRate(from, to, KnownDate, RateLookupOptions.Exact));
         _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
-            provider.TryGetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact, out _));
+            provider.TryGetRate(from, to, KnownDate, RateLookupOptions.Exact, out _));
         _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
             _ = provider.GetRates(from, to, RangeStart, RangeEnd));
         _ = await Assert.ThrowsExactlyAsync<ObjectDisposedException>(async () =>
-            await provider.GetRateAsync(from, to, KnownDate, ExchangeRateLookupOptions.Exact));
+            await provider.GetRateAsync(from, to, KnownDate, RateLookupOptions.Exact));
         _ = await Assert.ThrowsExactlyAsync<ObjectDisposedException>(async () =>
             await provider.GetRatesAsync(from, to, RangeStart, RangeEnd));
     }
@@ -305,7 +305,7 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
 
         // A single-date miss populates the per-row cache; a range fetch establishes the contiguous coverage a range
         // serve requires. Both are harmless no-ops for a provider without a cache.
-        _ = provider.TryGetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact, out _);
+        _ = provider.TryGetRate(from, to, KnownDate, RateLookupOptions.Exact, out _);
         _ = provider.GetRates(from, to, RangeStart, RangeEnd);
 
         return provider;
@@ -315,11 +315,11 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
     /// Asserts that the supplied provenance is internally consistent for its origin.
     /// </summary>
     /// <param name="provenance">The provenance to validate.</param>
-    private static void AssertProvenanceConsistent(ExchangeRateProvenance provenance)
+    private static void AssertProvenanceConsistent(RateProvenance provenance)
     {
         Assert.IsFalse(string.IsNullOrEmpty(provenance.Provider), "provenance carries a provider name");
 
-        if (provenance.Origin == ExchangeRateOrigin.Cache)
+        if (provenance.Origin == RateOrigin.Cache)
         {
             Assert.IsNotNull(provenance.Backend, "cache serve carries a backend");
             Assert.IsNotNull(provenance.CachedAtUtc, "cache serve carries a cache instant");
@@ -328,7 +328,7 @@ public abstract class DatedExchangeRateProviderContractTests<TProvider>
         }
         else
         {
-            Assert.AreEqual(ExchangeRateOrigin.Live, provenance.Origin, "origin is Live when not Cache");
+            Assert.AreEqual(RateOrigin.Live, provenance.Origin, "origin is Live when not Cache");
             Assert.IsNull(provenance.Backend, "live serve carries no backend");
             Assert.IsNull(provenance.CachedAtUtc, "live serve carries no cache instant");
             Assert.IsNull(provenance.Age, "live serve carries no age");

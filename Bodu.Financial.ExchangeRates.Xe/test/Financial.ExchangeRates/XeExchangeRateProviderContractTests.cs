@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Verifies that <see cref="XeExchangeRateProvider" /> satisfies the shared dated-provider contract, so the XE source is
-/// indistinguishable in shape from any other <see cref="IDatedExchangeRateProvider" />. The provider is seeded offline
+/// indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider is seeded offline
 /// from the embedded AUD/USD charting-rates fixture through <see cref="FixtureXeExchangeRateSource" />.
 /// </summary>
 [TestClass]
@@ -24,7 +24,7 @@ public sealed class XeExchangeRateProviderContractTests
     private static readonly DateOnly s_seeded = new(2023, 1, 3);
 
     /// <inheritdoc />
-    protected override ExchangeRatePair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
+    protected override CurrencyPair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <inheritdoc />
     protected override DateOnly KnownDate => s_seeded;
@@ -39,8 +39,8 @@ public sealed class XeExchangeRateProviderContractTests
     protected override DateOnly RangeEnd => new(2023, 1, 6);
 
     /// <inheritdoc />
-    protected override ExchangeRateHistoryAvailability ExpectedHistoryAvailability =>
-        ExchangeRateHistoryAvailability.RollingDays(3650);
+    protected override RateHistoryAvailability ExpectedHistoryAvailability =>
+        RateHistoryAvailability.RollingDays(3650);
 
     /// <inheritdoc />
     protected override bool SupportsDisposalGuard => true;

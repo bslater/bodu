@@ -46,7 +46,7 @@ public sealed class BoeExchangeRateOptions
     /// Gets or sets a value indicating whether a synchronous lookup may block to download a missing range on demand.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> to allow synchronous, blocking downloads from <see cref="IDatedExchangeRateProvider" />
+    /// <see langword="true" /> to allow synchronous, blocking downloads from <see cref="IDatedRateProvider" />
     /// lookups; <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="false" />, so
     /// the provider serves a snapshot of already-loaded data and a synchronous miss does not reach the network.
     /// </value>
@@ -83,8 +83,8 @@ public sealed class BoeExchangeRateOptions
     /// it bounds the earliest date worth requesting for the configured <see cref="Series" /> catalogue, not a
     /// per-series guarantee — so narrow it when the catalogue is restricted to later-inception series.
     /// </remarks>
-    public ExchangeRateHistoryAvailability HistoryAvailability { get; set; } =
-        ExchangeRateHistoryAvailability.Since(DailySpotSeriesEpoch);
+    public RateHistoryAvailability HistoryAvailability { get; set; } =
+        RateHistoryAvailability.Since(DailySpotSeriesEpoch);
 
     /// <summary>
     /// Gets or sets a value indicating whether downloaded ranges are persisted to an on-disk cache.

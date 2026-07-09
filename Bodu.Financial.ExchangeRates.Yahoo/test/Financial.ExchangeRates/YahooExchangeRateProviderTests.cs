@@ -47,7 +47,7 @@ public partial class YahooExchangeRateProviderTests
     {
         YahooExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+        RateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 
         Assert.AreEqual(0.6828m, result.Rate.Rate);
         Assert.AreEqual(YahooExchangeRateProvider.ProviderName, result.Rate.Provider);

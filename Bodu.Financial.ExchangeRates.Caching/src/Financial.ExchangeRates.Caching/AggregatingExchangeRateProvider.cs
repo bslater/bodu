@@ -13,13 +13,13 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Groups several named <see cref="IDatedExchangeRateProvider" /> children behind a single entry point, combining them
+/// Groups several named <see cref="IDatedRateProvider" /> children behind a single entry point, combining them
 /// through a configurable <see cref="IExchangeRateAggregationStrategy" /> with optional per-currency-pair routing.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The aggregator is itself a provider on both the dated <see cref="IDatedExchangeRateProvider" /> and timeless
-/// <see cref="IExchangeRateProvider" /> surfaces, so it composes anywhere a provider is expected — including wrapping
+/// The aggregator is itself a provider on both the dated <see cref="IDatedRateProvider" /> and timeless
+/// <see cref="IRateProvider" /> surfaces, so it composes anywhere a provider is expected — including wrapping
 /// each child in its own <see cref="CachingExchangeRateProvider" /> so the grouping sits above the per-source cache.
 /// Same-currency identity is handled here before any strategy is consulted.
 /// </para>
@@ -37,7 +37,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// <para>
 /// When <see cref="ExchangeRateAggregationOptions.RespectHistoryAvailability" /> is enabled (the default), children
-/// that advertise their history depth through <see cref="IHistoryAwareExchangeRateProvider" /> and have declared they
+/// that advertise their history depth through <see cref="IHistoryAwareRateProvider" /> and have declared they
 /// cannot serve any part of the requested date or window are dropped from the candidate set before the strategy runs,
 /// so a priority fallback does not waste a call on a source that cannot answer. A non-aware child is treated as
 /// unbounded and always kept, and the group's own <see cref="HistoryAvailability" /> composes the most generous
@@ -53,11 +53,11 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// var ecb = new CachingExchangeRateProvider(ecbSource, new InMemoryExchangeRateCache("ECB"), options);
 ///
 /// var aggregation = new ExchangeRateAggregationOptions();
-/// aggregation.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
-/// aggregation.Routes[new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
-/// aggregation.Routes[new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
+/// aggregation.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "RBA", "ECB" });
+/// aggregation.Routes[new CurrencyPair(CurrencyCode.USD, CurrencyCode.GBP)] = new CurrencyPairRoute(new[] { "ECB", "RBA" });
+/// aggregation.Routes[new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
 ///
-/// IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
+/// IDatedRateProvider provider = new AggregatingExchangeRateProvider(
 ///     new[]
 ///     {
 ///         new NamedDatedExchangeRateProvider("RBA", rba),
@@ -66,18 +66,18 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 ///     aggregation);
 ///
 /// // AUD/USD is routed RBA-then-ECB; EUR/USD is averaged across both.
-/// ExchangeRateLookupResult aud = provider.GetRate("AUD", "USD", new DateOnly(2024, 1, 3), ExchangeRateLookupOptions.Exact);
+/// RateLookupResult aud = provider.GetRate("AUD", "USD", new DateOnly(2024, 1, 3), RateLookupOptions.Exact);
 ///
 /// // Reach a specific source directly when the routed result is not what you want.
-/// if (((AggregatingExchangeRateProvider)provider).TryGetProvider("ECB", out IDatedExchangeRateProvider ecbOnly))
+/// if (((AggregatingExchangeRateProvider)provider).TryGetProvider("ECB", out IDatedRateProvider ecbOnly))
 /// {
-///     ExchangeRateLookupResult ecbRate = ecbOnly.GetRate("AUD", "USD", new DateOnly(2024, 1, 3), ExchangeRateLookupOptions.Exact);
+///     RateLookupResult ecbRate = ecbOnly.GetRate("AUD", "USD", new DateOnly(2024, 1, 3), RateLookupOptions.Exact);
 /// }
 ///]]>
 /// </code>
 /// </example>
 public sealed class AggregatingExchangeRateProvider
-    : IDatedExchangeRateProvider, IExchangeRateProvider, IHistoryAwareExchangeRateProvider
+    : IDatedRateProvider, IRateProvider, IHistoryAwareRateProvider
 {
     /// <summary>The synthetic provider name reported for a same-currency identity rate.</summary>
     private const string IdentityProvider = "Identity";
@@ -86,7 +86,7 @@ public sealed class AggregatingExchangeRateProvider
     private readonly NamedDatedExchangeRateProvider[] _children;
 
     /// <summary>The children indexed by name for routing and direct resolution.</summary>
-    private readonly Dictionary<string, IDatedExchangeRateProvider> _byName;
+    private readonly Dictionary<string, IDatedRateProvider> _byName;
 
     /// <summary>The aggregation options carrying the default strategy, default order, and per-pair routes.</summary>
     private readonly ExchangeRateAggregationOptions _options;
@@ -137,7 +137,7 @@ public sealed class AggregatingExchangeRateProvider
         if (snapshot.Length == 0)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_ProvidersEmpty, nameof(children));
 
-        _byName = new Dictionary<string, IDatedExchangeRateProvider>(snapshot.Length, StringComparer.Ordinal);
+        _byName = new Dictionary<string, IDatedRateProvider>(snapshot.Length, StringComparer.Ordinal);
         for (int i = 0; i < snapshot.Length; i++)
         {
             NamedDatedExchangeRateProvider child = snapshot[i];
@@ -172,29 +172,29 @@ public sealed class AggregatingExchangeRateProvider
     /// because a date any single child can serve is a date the group can serve.
     /// </summary>
     /// <value>
-    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" /> when any child is
-    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" /> or does not implement
-    /// <see cref="IHistoryAwareExchangeRateProvider" /> (a non-aware child declares no floor); otherwise the child
+    /// <see cref="RateHistoryAvailability.Unbounded" /> when any child is
+    /// <see cref="RateHistoryAvailability.Unbounded" /> or does not implement
+    /// <see cref="IHistoryAwareRateProvider" /> (a non-aware child declares no floor); otherwise the child
     /// availability whose earliest available date, evaluated against the current date, reaches furthest back.
     /// </value>
-    public ExchangeRateHistoryAvailability HistoryAvailability
+    public RateHistoryAvailability HistoryAvailability
     {
         get
         {
             var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
 
-            ExchangeRateHistoryAvailability? mostGenerous = null;
+            RateHistoryAvailability? mostGenerous = null;
             DateOnly? mostGenerousEarliest = null;
 
             foreach (NamedDatedExchangeRateProvider child in _children)
             {
-                if (child.Provider is not IHistoryAwareExchangeRateProvider aware)
-                    return ExchangeRateHistoryAvailability.Unbounded;
+                if (child.Provider is not IHistoryAwareRateProvider aware)
+                    return RateHistoryAvailability.Unbounded;
 
-                ExchangeRateHistoryAvailability availability = aware.HistoryAvailability;
+                RateHistoryAvailability availability = aware.HistoryAvailability;
                 DateOnly? earliest = availability.GetEarliestAvailable(today);
                 if (earliest is null)
-                    return ExchangeRateHistoryAvailability.Unbounded;
+                    return RateHistoryAvailability.Unbounded;
 
                 if (mostGenerousEarliest is null || earliest.Value < mostGenerousEarliest.Value)
                 {
@@ -220,7 +220,7 @@ public sealed class AggregatingExchangeRateProvider
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
-    public bool TryGetProvider(string name, [MaybeNullWhen(false)] out IDatedExchangeRateProvider provider)
+    public bool TryGetProvider(string name, [MaybeNullWhen(false)] out IDatedRateProvider provider)
     {
         ThrowHelper.ThrowIfNull(name);
 
@@ -228,48 +228,48 @@ public sealed class AggregatingExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
+    public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null)
     {
         var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
         return GetRate(fromIsoCode, toIsoCode, today, options ?? _options.DefaultLookupOptions);
     }
 
     /// <inheritdoc />
-    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null)
+    public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null)
     {
-        return TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult result)
+        return TryGetRate(fromIsoCode, toIsoCode, date, options, out RateLookupResult result)
             ? result
             : throw new KeyNotFoundException(
                 string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.IO_KeyNotFound_ExchangeRate, fromIsoCode, toIsoCode, date));
     }
 
     /// <inheritdoc />
-    public ValueTask<ExchangeRateLookupResult> GetRateAsync(
+    public ValueTask<RateLookupResult> GetRateAsync(
         string fromIsoCode,
         string toIsoCode,
-        ExchangeRateLookupOptions? options = null,
+        RateLookupOptions? options = null,
         CancellationToken cancellationToken = default) =>
         new(GetRate(fromIsoCode, toIsoCode, options));
 
     /// <inheritdoc />
-    public ValueTask<ExchangeRateLookupResult> GetRateAsync(
+    public ValueTask<RateLookupResult> GetRateAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions? options = null,
+        RateLookupOptions? options = null,
         CancellationToken cancellationToken = default) =>
         new(GetRate(fromIsoCode, toIsoCode, date, options));
 
     /// <inheritdoc />
-    public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result)
+    public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options, out RateLookupResult result)
     {
-        options ??= ExchangeRateLookupOptions.Exact;
-        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+        options ??= RateLookupOptions.Exact;
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
 
         if (options.AllowSameCurrencyIdentityRate && pair.From == pair.To)
         {
             ExchangeRate identity = new(pair.From, pair.To, date, 1m, IdentityProvider);
-            result = new ExchangeRateLookupResult(identity, date, options.DateResolution, 0, ExchangeRateProvenance.Live(identity.Provider));
+            result = new RateLookupResult(identity, date, options.DateResolution, 0, RateProvenance.Live(identity.Provider));
             return true;
         }
 
@@ -298,12 +298,12 @@ public sealed class AggregatingExchangeRateProvider
     }
 
     /// <inheritdoc />
-    public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    public RateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
-        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         (NamedDatedExchangeRateProvider[] candidates, IExchangeRateAggregationStrategy strategy) = ResolveRoute(pair, allowInverse: false);
         candidates = FilterCandidatesForRange(candidates, endDate);
 
@@ -314,11 +314,11 @@ public sealed class AggregatingExchangeRateProvider
         }
 
         IReadOnlyList<ExchangeRate> rates = strategy.AggregateRange(fromIsoCode, toIsoCode, startDate, endDate, candidates);
-        return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, rates);
+        return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, rates);
     }
 
     /// <inheritdoc />
-    public async ValueTask<ExchangeRateRangeResult> GetRatesAsync(
+    public async ValueTask<RateRangeResult> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
         DateOnly startDate,
@@ -328,7 +328,7 @@ public sealed class AggregatingExchangeRateProvider
         if (endDate < startDate)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_RangeInverted, nameof(endDate));
 
-        ExchangeRatePair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         (NamedDatedExchangeRateProvider[] candidates, IExchangeRateAggregationStrategy strategy) = ResolveRoute(pair, allowInverse: false);
         candidates = FilterCandidatesForRange(candidates, endDate);
 
@@ -340,11 +340,11 @@ public sealed class AggregatingExchangeRateProvider
 
         IReadOnlyList<ExchangeRate> rates =
             await strategy.AggregateRangeAsync(fromIsoCode, toIsoCode, startDate, endDate, candidates, cancellationToken).ConfigureAwait(false);
-        return new ExchangeRateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, rates);
+        return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, rates);
     }
 
     /// <inheritdoc />
-    decimal IExchangeRateProvider.GetRate(string fromIsoCode, string toIsoCode) =>
+    decimal IRateProvider.GetRate(string fromIsoCode, string toIsoCode) =>
         GetRate(fromIsoCode, toIsoCode).Rate.Rate;
 
     /// <summary>
@@ -354,12 +354,12 @@ public sealed class AggregatingExchangeRateProvider
     /// <param name="pair">The requested currency pair.</param>
     /// <param name="allowInverse">Whether an inverse-pair route may be used.</param>
     /// <returns>The ordered candidates and the strategy to combine them.</returns>
-    private (NamedDatedExchangeRateProvider[] Candidates, IExchangeRateAggregationStrategy Strategy) ResolveRoute(ExchangeRatePair pair, bool allowInverse)
+    private (NamedDatedExchangeRateProvider[] Candidates, IExchangeRateAggregationStrategy Strategy) ResolveRoute(CurrencyPair pair, bool allowInverse)
     {
-        if (_options.Routes.TryGetValue(pair, out ExchangeRatePairRoute? route))
+        if (_options.Routes.TryGetValue(pair, out CurrencyPairRoute? route))
             return (ResolveNames(route.ProviderOrder), route.Strategy ?? _options.DefaultStrategy);
 
-        if (allowInverse && _options.Routes.TryGetValue(pair.Inverse(), out ExchangeRatePairRoute? inverseRoute))
+        if (allowInverse && _options.Routes.TryGetValue(pair.Inverse(), out CurrencyPairRoute? inverseRoute))
             return (ResolveNames(inverseRoute.ProviderOrder), inverseRoute.Strategy ?? _options.DefaultStrategy);
 
         if (_options.DefaultProviderOrder is not null)
@@ -379,7 +379,7 @@ public sealed class AggregatingExchangeRateProvider
     /// The candidates that could serve the lookup, in their original order; the input array unchanged when the filter
     /// is disabled or nothing was dropped.
     /// </returns>
-    private NamedDatedExchangeRateProvider[] FilterCandidatesForDate(NamedDatedExchangeRateProvider[] candidates, DateOnly date, ExchangeRateLookupOptions options)
+    private NamedDatedExchangeRateProvider[] FilterCandidatesForDate(NamedDatedExchangeRateProvider[] candidates, DateOnly date, RateLookupOptions options)
     {
         if (!_options.RespectHistoryAvailability)
             return candidates;
@@ -417,7 +417,7 @@ public sealed class AggregatingExchangeRateProvider
         List<NamedDatedExchangeRateProvider>? kept = null;
         for (int i = 0; i < candidates.Length; i++)
         {
-            DateOnly? earliest = candidates[i].Provider is IHistoryAwareExchangeRateProvider aware
+            DateOnly? earliest = candidates[i].Provider is IHistoryAwareRateProvider aware
                 ? aware.HistoryAvailability.GetEarliestAvailable(today)
                 : null;
             bool available = earliest is null || earliest.Value <= latestReachable;
@@ -465,7 +465,7 @@ public sealed class AggregatingExchangeRateProvider
                 ThrowIfUnknownChild(name, optionsParamName);
         }
 
-        foreach (KeyValuePair<ExchangeRatePair, ExchangeRatePairRoute> entry in _options.Routes)
+        foreach (KeyValuePair<CurrencyPair, CurrencyPairRoute> entry in _options.Routes)
         {
             foreach (string name in entry.Value.ProviderOrder)
                 ThrowIfUnknownChild(name, optionsParamName);

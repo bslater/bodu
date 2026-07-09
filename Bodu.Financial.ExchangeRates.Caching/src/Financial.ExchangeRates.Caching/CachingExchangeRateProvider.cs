@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// A caching provider that wraps a single inner <see cref="IDatedExchangeRateProvider" /> over a single-provider
+/// A caching provider that wraps a single inner <see cref="IDatedRateProvider" /> over a single-provider
 /// <see cref="IExchangeRateCache" />, serving fresh rates from the cache and delegating to the inner provider only on a
 /// miss.
 /// </summary>
@@ -33,10 +33,10 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// // Read-through caching over a TOML file cache (the caller picks the storage).
 /// var fileCache = new TomlFileExchangeRateCache(
 ///     new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
-/// IDatedExchangeRateProvider cachedRba = new CachingExchangeRateProvider(rba, fileCache, options);
+/// IDatedRateProvider cachedRba = new CachingExchangeRateProvider(rba, fileCache, options);
 ///
 /// // Or any other IExchangeRateCache — for example an in-memory cache.
-/// IDatedExchangeRateProvider cachedEcb = new CachingExchangeRateProvider(ecb, new InMemoryExchangeRateCache("ECB"), options);
+/// IDatedRateProvider cachedEcb = new CachingExchangeRateProvider(ecb, new InMemoryExchangeRateCache("ECB"), options);
 ///]]>
 /// </code>
 /// </example>
@@ -44,7 +44,7 @@ public sealed class CachingExchangeRateProvider
     : CachingExchangeRateProviderBase
 {
     /// <summary>The inner provider consulted on a cache miss.</summary>
-    private readonly IDatedExchangeRateProvider _inner;
+    private readonly IDatedRateProvider _inner;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CachingExchangeRateProvider" /> class wrapping
@@ -70,7 +70,7 @@ public sealed class CachingExchangeRateProvider
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public CachingExchangeRateProvider(
-        IDatedExchangeRateProvider inner,
+        IDatedRateProvider inner,
         IExchangeRateCache cache,
         CachingExchangeRateOptions options,
         TimeProvider? timeProvider = null,
@@ -84,5 +84,5 @@ public sealed class CachingExchangeRateProvider
     }
 
     /// <inheritdoc />
-    protected override IDatedExchangeRateProvider Inner => _inner;
+    protected override IDatedRateProvider Inner => _inner;
 }

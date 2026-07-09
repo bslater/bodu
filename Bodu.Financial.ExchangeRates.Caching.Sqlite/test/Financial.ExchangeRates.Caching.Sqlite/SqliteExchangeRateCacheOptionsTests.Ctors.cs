@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SqliteExchangeRateCacheOptionsTests.Constructor.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SqliteExchangeRateCacheOptionsTests.Ctors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@
 
 using System.Numerics;
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 using Bodu.Numerics;
 
 namespace Bodu.Financial;

@@ -7,21 +7,21 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IDatedExchangeRateProvider" /> test double that delegates to a fixed in-memory book and counts how
+/// An <see cref="IDatedRateProvider" /> test double that delegates to a fixed in-memory book and counts how
 /// many times each lookup method is invoked, so tests can assert when the caching decorator avoided the inner provider.
 /// </summary>
 internal sealed class CountingDatedExchangeRateProvider
-    : IDatedExchangeRateProvider
+    : IDatedRateProvider
 {
     /// <summary>The fixed provider backing the counted lookups.</summary>
-    private readonly FixedDatedExchangeRateProvider _inner;
+    private readonly FixedDatedRateProvider _inner;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CountingDatedExchangeRateProvider" /> class.
     /// </summary>
     /// <param name="rates">The observations the inner provider resolves from.</param>
     public CountingDatedExchangeRateProvider(IEnumerable<ExchangeRate> rates) =>
-        _inner = new FixedDatedExchangeRateProvider(rates);
+        _inner = new FixedDatedRateProvider(rates);
 
     /// <summary>
     /// Gets the number of times <see cref="GetRate" /> has been invoked.
@@ -48,49 +48,49 @@ internal sealed class CountingDatedExchangeRateProvider
     public int TotalCallCount => GetRateCallCount + TryGetRateCallCount;
 
     /// <inheritdoc />
-    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
+    public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null)
     {
         GetRateCallCount++;
         return _inner.GetRate(fromIsoCode, toIsoCode, options);
     }
 
     /// <inheritdoc />
-    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null)
+    public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null)
     {
         GetRateCallCount++;
         return _inner.GetRate(fromIsoCode, toIsoCode, date, options);
     }
 
     /// <inheritdoc />
-    public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result)
+    public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options, out RateLookupResult result)
     {
         TryGetRateCallCount++;
         return _inner.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
     }
 
     /// <inheritdoc />
-    public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    public RateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         GetRatesAsyncCallCount++;
         return _inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
     }
 
     /// <inheritdoc />
-    public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default)
+    public ValueTask<RateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null, CancellationToken cancellationToken = default)
     {
         GetRateCallCount++;
         return _inner.GetRateAsync(fromIsoCode, toIsoCode, options, cancellationToken);
     }
 
     /// <inheritdoc />
-    public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default)
+    public ValueTask<RateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null, CancellationToken cancellationToken = default)
     {
         GetRateCallCount++;
         return _inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken);
     }
 
     /// <inheritdoc />
-    public ValueTask<ExchangeRateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
+    public ValueTask<RateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
         GetRatesAsyncCallCount++;
         return _inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);

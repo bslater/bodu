@@ -21,7 +21,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
         CapturingLogger logger = new();
         AggregatingExchangeRateProvider agg = new(new[] { Named("RBA", ("USD", "AUD", D1, 1.5m)) }, options: null, timeProvider: null, logger: logger);
 
-        agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out _);
+        agg.TryGetRate("USD", "AUD", D1, RateLookupOptions.Exact, out _);
 
         Assert.Contains(e => e.EventId.Id == 4511, logger.Entries);
     }
@@ -35,7 +35,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
         CapturingLogger logger = new();
         AggregatingExchangeRateProvider agg = new(new[] { Named("RBA") }, options: null, timeProvider: null, logger: logger);
 
-        agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out _);
+        agg.TryGetRate("USD", "AUD", D1, RateLookupOptions.Exact, out _);
 
         Assert.Contains(e => e.EventId.Id == 4512, logger.Entries);
     }

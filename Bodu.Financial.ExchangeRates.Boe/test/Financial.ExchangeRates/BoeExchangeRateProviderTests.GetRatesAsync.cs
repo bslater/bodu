@@ -47,14 +47,14 @@ public partial class BoeExchangeRateProviderTests
 
     /// <summary>
     /// Verifies that a cross-currency pair with neither side equal to GBP throws
-    /// <see cref="ExchangeRateSeriesNotFoundException" />.
+    /// <see cref="RateSeriesNotFoundException" />.
     /// </summary>
     [TestMethod]
     public async Task GetRatesAsync_WhenCrossPair_ShouldThrowSeriesNotFound()
     {
         (BoeExchangeRateProvider provider, _) = Create(allowSync: false);
 
-        _ = await Assert.ThrowsExactlyAsync<ExchangeRateSeriesNotFoundException>(async () =>
+        _ = await Assert.ThrowsExactlyAsync<RateSeriesNotFoundException>(async () =>
         {
             _ = await provider.GetRatesAsync("USD", "JPY", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
         });

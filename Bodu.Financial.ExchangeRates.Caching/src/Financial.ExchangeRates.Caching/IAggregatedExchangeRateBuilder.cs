@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// together with its default strategy and per-currency-pair routing.
 /// </summary>
 /// <remarks>
-/// Each child is registered as a keyed <see cref="IDatedExchangeRateProvider" /> (and resolvable by name through the
+/// Each child is registered as a keyed <see cref="IDatedRateProvider" /> (and resolvable by name through the
 /// service catalog) wrapped in its own <see cref="CachingExchangeRateProvider" />, so a specific source can be obtained
 /// directly while the aggregator applies the configured strategy and routing.
 /// <example>
@@ -22,8 +22,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 ///             .AddCachedChild<RbaExchangeRateProvider>("RBA")
 ///             .AddCachedChild<EcbExchangeRateProvider>("ECB")
 ///             .UseDefaultStrategy(new PriorityFallbackStrategy())
-///             .MapPair(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "RBA", "ECB")
-///             .MapPair(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD), new AverageStrategy(), "ECB", "RBA"));
+///             .MapPair(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), "RBA", "ECB")
+///             .MapPair(new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD), new AverageStrategy(), "ECB", "RBA"));
 ///]]>
 /// </code>
 /// </example>
@@ -44,7 +44,7 @@ public interface IAggregatedExchangeRateBuilder
     IAggregatedExchangeRateBuilder AddCachedChild<TProvider>(
         string name,
         Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = null)
-        where TProvider : class, IDatedExchangeRateProvider;
+        where TProvider : class, IDatedRateProvider;
 
     /// <summary>
     /// Adds a cached child resolved by a factory.
@@ -62,7 +62,7 @@ public interface IAggregatedExchangeRateBuilder
     /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is empty or white space.</exception>
     IAggregatedExchangeRateBuilder AddCachedChild(
         string name,
-        Func<IServiceProvider, IDatedExchangeRateProvider> factory,
+        Func<IServiceProvider, IDatedRateProvider> factory,
         Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = null);
 
     /// <summary>
@@ -84,7 +84,7 @@ public interface IAggregatedExchangeRateBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="providerOrder" /> is <see langword="null" />.
     /// </exception>
-    IAggregatedExchangeRateBuilder MapPair(ExchangeRatePair pair, params string[] providerOrder);
+    IAggregatedExchangeRateBuilder MapPair(CurrencyPair pair, params string[] providerOrder);
 
     /// <summary>
     /// Routes a currency pair to an ordered set of child names, combined with a pair-specific strategy.
@@ -96,5 +96,5 @@ public interface IAggregatedExchangeRateBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="strategy" /> or <paramref name="providerOrder" /> is <see langword="null" />.
     /// </exception>
-    IAggregatedExchangeRateBuilder MapPair(ExchangeRatePair pair, IExchangeRateAggregationStrategy strategy, params string[] providerOrder);
+    IAggregatedExchangeRateBuilder MapPair(CurrencyPair pair, IExchangeRateAggregationStrategy strategy, params string[] providerOrder);
 }

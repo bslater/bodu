@@ -17,7 +17,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void GetCoverage_WhenCoverageRecorded_ShouldReturnEmpty()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+        CurrencyPair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
         cache.RecordCoverage(pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), TimeSpan.FromHours(24), now);

@@ -30,7 +30,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 ///<![CDATA[
 /// // An in-memory caching provider: read-through caching with no on-disk files.
 /// var options = new CachingExchangeRateOptions { DefaultExpiry = TimeSpan.FromMinutes(15) };
-/// IDatedExchangeRateProvider cached = new CachingExchangeRateProvider(rba, new InMemoryExchangeRateCache("RBA"), options);
+/// IDatedRateProvider cached = new CachingExchangeRateProvider(rba, new InMemoryExchangeRateCache("RBA"), options);
 ///]]>
 /// </code>
 /// </example>
@@ -38,7 +38,7 @@ public sealed class InMemoryExchangeRateCache
     : ExchangeRateCacheBase<ExchangeRateCacheOptions>
 {
     /// <summary>The in-memory store of per-pair state, keyed by currency pair. Each value is an immutable snapshot owned by the cache, carrying both the cached rows and the coverage windows.</summary>
-    private readonly ConcurrentDictionary<ExchangeRatePair, CachePairState> _store = new();
+    private readonly ConcurrentDictionary<CurrencyPair, CachePairState> _store = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InMemoryExchangeRateCache" /> class.
@@ -69,11 +69,11 @@ public sealed class InMemoryExchangeRateCache
     }
 
     /// <inheritdoc />
-    private protected override CachePairState ReadState(ExchangeRatePair pair) =>
+    private protected override CachePairState ReadState(CurrencyPair pair) =>
         _store.TryGetValue(pair, out CachePairState? state) ? state : CachePairState.Empty;
 
     /// <inheritdoc />
-    private protected override bool WriteState(ExchangeRatePair pair, CachePairState state)
+    private protected override bool WriteState(CurrencyPair pair, CachePairState state)
     {
         // Drop the pair entirely only when nothing remains to retain, so an empty state does not linger in the map.
         if (state.Entries.Count == 0 && state.Coverage.Count == 0)

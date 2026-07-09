@@ -43,14 +43,14 @@ public partial class RbaExchangeRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that requesting a cross-currency pair throws <see cref="ExchangeRateSeriesNotFoundException" />.
+    /// Verifies that requesting a cross-currency pair throws <see cref="RateSeriesNotFoundException" />.
     /// </summary>
     [TestMethod]
     public async Task GetRatesAsync_WhenCrossPair_ShouldThrowSeriesNotFound()
     {
         (RbaExchangeRateProvider provider, _) = Create(allowSync: false);
 
-        await Assert.ThrowsExactlyAsync<ExchangeRateSeriesNotFoundException>(async () =>
+        await Assert.ThrowsExactlyAsync<RateSeriesNotFoundException>(async () =>
             await provider.GetRatesAsync("USD", "JPY", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 31)));
     }
 

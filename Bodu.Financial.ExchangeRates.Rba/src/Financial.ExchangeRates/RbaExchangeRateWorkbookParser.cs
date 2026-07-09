@@ -80,7 +80,7 @@ internal static class RbaExchangeRateWorkbookParser
         if (dataRows.Count == 0)
             throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaNoDataRows);
 
-        List<RbaExchangeRateSeries> series = BuildSeries(grid, unitsRow, titleRow, seriesIdRow, descriptionRow, options);
+        List<RbaRateSeries> series = BuildSeries(grid, unitsRow, titleRow, seriesIdRow, descriptionRow, options);
         List<RbaExchangeRateRow> rows = BuildRows(grid, dataRows, series);
 
         return new RbaExchangeRateTable(series, rows);
@@ -166,7 +166,7 @@ internal static class RbaExchangeRateWorkbookParser
     /// <param name="descriptionRow">The description row index, or <c>-1</c> when absent.</param>
     /// <param name="options">The provider options supplying the currency-alias map.</param>
     /// <returns>The currency series in ascending column order.</returns>
-    private static List<RbaExchangeRateSeries> BuildSeries(
+    private static List<RbaRateSeries> BuildSeries(
         Dictionary<(int Row, int Column), ExcelCell> grid,
         int unitsRow,
         int titleRow,
@@ -182,7 +182,7 @@ internal static class RbaExchangeRateWorkbookParser
                 columns.Add(entry.Key.Column);
         }
 
-        List<RbaExchangeRateSeries> series = new();
+        List<RbaRateSeries> series = new();
         foreach (int column in columns)
         {
             string units = GetText(grid, unitsRow, column);
@@ -192,7 +192,7 @@ internal static class RbaExchangeRateWorkbookParser
             if (currencyCode is null)
                 continue;
 
-            series.Add(new RbaExchangeRateSeries(
+            series.Add(new RbaRateSeries(
                 column,
                 GetText(grid, seriesIdRow, column),
                 currencyCode,
@@ -214,7 +214,7 @@ internal static class RbaExchangeRateWorkbookParser
     private static List<RbaExchangeRateRow> BuildRows(
         Dictionary<(int Row, int Column), ExcelCell> grid,
         List<int> dataRows,
-        List<RbaExchangeRateSeries> series)
+        List<RbaRateSeries> series)
     {
         List<RbaExchangeRateRow> rows = new(dataRows.Count);
         foreach (int row in dataRows)

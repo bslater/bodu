@@ -56,7 +56,7 @@ public interface IExchangeRateCache
     /// <param name="duration">The duration a cached rate remains fresh after it was cached.</param>
     /// <param name="asOf">The instant against which freshness is evaluated.</param>
     /// <returns>The fresh cached rates ordered by date, or an empty list when none are fresh or available.</returns>
-    IReadOnlyList<CachedExchangeRate> GetRates(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf);
+    IReadOnlyList<CachedExchangeRate> GetRates(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf);
 
     /// <summary>
     /// Stores rates for the supplied pair, merging with any existing entry so the most recently cached rate wins per
@@ -72,7 +72,7 @@ public interface IExchangeRateCache
     /// refetches rather than serving from these rows — by design, since only a range fetch (through
     /// <see cref="StoreFetchedRange" />) establishes the contiguous coverage a range serve requires.
     /// </remarks>
-    void Store(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf);
+    void Store(CurrencyPair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf);
 
     /// <summary>
     /// Returns the union of the still-fresh coverage windows recorded for the supplied pair, evaluated against
@@ -91,7 +91,7 @@ public interface IExchangeRateCache
     /// <see cref="DateRangeCoverage.Contains(DateOnly, DateOnly)" /> the whole requested window, so an interior day
     /// that was never fetched forces a refetch rather than being served from a sparse set of rows.
     /// </remarks>
-    DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf);
+    DateRangeCoverage GetCoverage(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf);
 
     /// <summary>
     /// Records that the inclusive range <paramref name="start" />..<paramref name="end" /> was fetched for the supplied
@@ -114,7 +114,7 @@ public interface IExchangeRateCache
     /// writing rows through a separate <see cref="Store" /> risks persisting coverage a backend later serves as a false
     /// hit. A range fetch must instead use <see cref="StoreFetchedRange" />, which writes both halves atomically.
     /// </remarks>
-    void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf);
+    void RecordCoverage(CurrencyPair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf);
 
     /// <summary>
     /// Atomically merges <paramref name="rows" /> into the pair's cached rows and records the inclusive range
@@ -160,7 +160,7 @@ public interface IExchangeRateCache
     /// </para>
     /// </remarks>
     ExchangeRateCacheWriteStatus StoreFetchedRange(
-        ExchangeRatePair pair,
+        CurrencyPair pair,
         IReadOnlyList<CachedExchangeRate> rows,
         DateOnly start,
         DateOnly end,

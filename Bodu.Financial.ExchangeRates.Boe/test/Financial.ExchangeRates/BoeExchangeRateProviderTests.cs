@@ -47,7 +47,7 @@ public partial class BoeExchangeRateProviderTests
     {
         BoeExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        ExchangeRateLookupResult result = provider.GetRate("GBP", "USD", new DateOnly(2023, 1, 3));
+        RateLookupResult result = provider.GetRate("GBP", "USD", new DateOnly(2023, 1, 3));
 
         Assert.AreEqual(1.2065m, result.Rate.Rate);
         Assert.AreEqual(BoeExchangeRateProvider.ProviderName, result.Rate.Provider);
@@ -62,7 +62,7 @@ public partial class BoeExchangeRateProviderTests
     {
         BoeExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        ExchangeRateLookupResult result = provider.GetRate("USD", "GBP", new DateOnly(2023, 1, 3));
+        RateLookupResult result = provider.GetRate("USD", "GBP", new DateOnly(2023, 1, 3));
 
         Assert.IsTrue(result.Rate.IsInverted);
         Assert.AreEqual(1m / 1.2065m, result.Rate.Rate, 1e-12m);
@@ -76,7 +76,7 @@ public partial class BoeExchangeRateProviderTests
     {
         BoeExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        ExchangeRateLookupResult result = provider.GetRate("USD", "USD", new DateOnly(2023, 1, 3));
+        RateLookupResult result = provider.GetRate("USD", "USD", new DateOnly(2023, 1, 3));
 
         Assert.AreEqual(1m, result.Rate.Rate);
     }
@@ -89,7 +89,7 @@ public partial class BoeExchangeRateProviderTests
     {
         (BoeExchangeRateProvider provider, FixtureBoeExchangeRateTableSource source) = Create(allowSync: true);
 
-        bool found = provider.TryGetRate("GBP", "USD", new DateOnly(2023, 1, 3), null, out ExchangeRateLookupResult result);
+        bool found = provider.TryGetRate("GBP", "USD", new DateOnly(2023, 1, 3), null, out RateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.2065m, result.Rate.Rate);
@@ -147,6 +147,6 @@ public partial class BoeExchangeRateProviderTests
 
         var pairs = provider.GetAvailablePairs().Select(p => p.Pair).ToList();
 
-        CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.GBP, CurrencyCode.USD));
+        CollectionAssert.Contains(pairs, new CurrencyPair(CurrencyCode.GBP, CurrencyCode.USD));
     }
 }

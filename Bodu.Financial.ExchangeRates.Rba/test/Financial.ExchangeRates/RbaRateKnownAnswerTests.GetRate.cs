@@ -25,7 +25,7 @@ public partial class RbaRateKnownAnswerTests
 
         RbaExchangeRateProvider provider = await GetProviderAsync(answer.SourceFileName);
 
-        ExchangeRateLookupResult result = provider.GetRate("AUD", ResolveCurrency(answer.Currency), answer.Date);
+        RateLookupResult result = provider.GetRate("AUD", ResolveCurrency(answer.Currency), answer.Date);
 
         Assert.AreEqual(answer.ExpectedRate, result.Rate.Rate);
     }

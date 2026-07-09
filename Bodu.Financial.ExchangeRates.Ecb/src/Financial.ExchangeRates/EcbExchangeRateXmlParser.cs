@@ -79,7 +79,7 @@ internal static class EcbExchangeRateXmlParser
         if (dayCubes.Count == 0)
             throw new ExchangeRateFormatException(EcbResourceStrings.Format_Invalid_EcbNoDataRows);
 
-        var observations = new List<EcbExchangeRateObservation>();
+        var observations = new List<EcbRateObservation>();
 
         foreach (XElement dayCube in dayCubes)
         {
@@ -89,7 +89,7 @@ internal static class EcbExchangeRateXmlParser
 
             foreach (XElement rateCube in dayCube.Elements(s_ecbNamespace + "Cube"))
             {
-                if (TryParseCell(rateCube, date, options, out EcbExchangeRateObservation observation))
+                if (TryParseCell(rateCube, date, options, out EcbRateObservation observation))
                     observations.Add(observation);
             }
         }
@@ -131,7 +131,7 @@ internal static class EcbExchangeRateXmlParser
     /// <returns>
     /// <see langword="true" /> when the cell yielded a usable observation; otherwise <see langword="false" />.
     /// </returns>
-    private static bool TryParseCell(XElement rateCube, DateOnly date, EcbExchangeRateOptions options, out EcbExchangeRateObservation observation)
+    private static bool TryParseCell(XElement rateCube, DateOnly date, EcbExchangeRateOptions options, out EcbRateObservation observation)
     {
         observation = default;
 
@@ -149,7 +149,7 @@ internal static class EcbExchangeRateXmlParser
         if (!decimal.TryParse(rateText, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal rate) || rate <= 0m)
             return false;
 
-        observation = new EcbExchangeRateObservation(date, currency, rate);
+        observation = new EcbRateObservation(date, currency, rate);
         return true;
     }
 

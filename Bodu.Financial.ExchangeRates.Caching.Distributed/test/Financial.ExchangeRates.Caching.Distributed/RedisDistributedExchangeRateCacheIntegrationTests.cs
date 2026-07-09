@@ -27,7 +27,7 @@ public sealed class RedisDistributedExchangeRateCacheIntegrationTests
     /// <summary>
     /// The currency pair used by the tests.
     /// </summary>
-    private static readonly ExchangeRatePair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+    private static readonly CurrencyPair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>
     /// The freshness duration used by the tests.

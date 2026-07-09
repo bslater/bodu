@@ -7,11 +7,11 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// An <see cref="IExchangeRatePairSource{TSeries}" /> whose fetch blocks until released, so a test can hold several
+/// An <see cref="IPairRateSource{TSeries}" /> whose fetch blocks until released, so a test can hold several
 /// concurrent callers inside the source at once and prove the provider coalesces them into a single fetch.
 /// </summary>
 internal sealed class GatedYahooExchangeRateSource
-    : IExchangeRatePairSource<YahooSeriesInfo>
+    : IPairRateSource<YahooSeriesInfo>
 {
     /// <summary>The provider options used while parsing the fixture once the gate opens.</summary>
     private readonly YahooExchangeRateOptions _options;
@@ -52,7 +52,7 @@ internal sealed class GatedYahooExchangeRateSource
     public void Release() => _gate.TrySetResult();
 
     /// <inheritdoc />
-    public async ValueTask<PairRateData<YahooSeriesInfo>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default)
+    public async ValueTask<PairRateData<YahooSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         if (Interlocked.Increment(ref _callCount) == 1)
             _entered.TrySetResult();

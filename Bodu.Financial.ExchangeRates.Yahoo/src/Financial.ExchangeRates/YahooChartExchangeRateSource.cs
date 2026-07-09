@@ -20,7 +20,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// (typically one created by <c>IHttpClientFactory</c>).
 /// </remarks>
 internal sealed class YahooChartExchangeRateSource
-    : IExchangeRatePairSource<YahooSeriesInfo>
+    : IPairRateSource<YahooSeriesInfo>
 {
     /// <summary>The fixed daily bar interval requested from the chart endpoint.</summary>
     private const string DailyInterval = "1d";
@@ -46,7 +46,7 @@ internal sealed class YahooChartExchangeRateSource
     }
 
     /// <inheritdoc />
-    public async ValueTask<PairRateData<YahooSeriesInfo>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default)
+    public async ValueTask<PairRateData<YahooSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         string symbol = _options.BuildSymbol(request.Pair.From.ToString(), request.Pair.To.ToString());
 
@@ -62,7 +62,7 @@ internal sealed class YahooChartExchangeRateSource
     /// <param name="symbol">The <c>{FROM}{TO}=X</c> ticker addressing the pair's chart.</param>
     /// <param name="request">The pair request.</param>
     /// <returns>The absolute request URI.</returns>
-    private Uri BuildRequestUri(string symbol, ExchangeRatePairRequest request)
+    private Uri BuildRequestUri(string symbol, CurrencyPairRequest request)
     {
         // The ticker is built from validated ISO letters plus a safe suffix, so it is substituted into the path
         // segment directly; escaping the '=' would change the resource Yahoo serves.

@@ -18,7 +18,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void StoreFetchedRange_WhenRowsNull_ShouldThrowArgumentNullException()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+        CurrencyPair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -37,7 +37,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void StoreFetchedRange_WhenStartAfterEnd_ShouldThrowArgumentOutOfRangeException()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+        CurrencyPair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -60,7 +60,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void StoreFetchedRange_WhenInvoked_ShouldReturnSkippedAndStoreNothing()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+        CurrencyPair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
         ExchangeRateCacheWriteStatus status = cache.StoreFetchedRange(

@@ -23,7 +23,7 @@ public sealed class BoeSeriesInfo
     /// <param name="quoteIsoCode">The quote-currency ISO code.</param>
     /// <param name="seriesCode">The IADB series code.</param>
     /// <param name="description">The series description.</param>
-    internal BoeSeriesInfo(ExchangeRatePair pair, string quoteIsoCode, string seriesCode, string description)
+    internal BoeSeriesInfo(CurrencyPair pair, string quoteIsoCode, string seriesCode, string description)
     {
         Pair = pair;
         QuoteIsoCode = quoteIsoCode;
@@ -34,8 +34,8 @@ public sealed class BoeSeriesInfo
     /// <summary>
     /// Gets the currency pair the series represents, always quoted against the pound sterling.
     /// </summary>
-    /// <value>The <see cref="ExchangeRatePair" /> from <c>GBP</c> to the quote currency.</value>
-    public ExchangeRatePair Pair { get; }
+    /// <value>The <see cref="CurrencyPair" /> from <c>GBP</c> to the quote currency.</value>
+    public CurrencyPair Pair { get; }
 
     /// <summary>
     /// Gets the quote-currency ISO code.

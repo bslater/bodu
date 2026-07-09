@@ -20,9 +20,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <code language="csharp">
 ///<![CDATA[
 /// var options = new ExchangeRateAggregationOptions();
-/// options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
-/// options.Routes[new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
-/// options.Routes[new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
+/// options.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "RBA", "ECB" });
+/// options.Routes[new CurrencyPair(CurrencyCode.USD, CurrencyCode.GBP)] = new CurrencyPairRoute(new[] { "ECB", "RBA" });
+/// options.Routes[new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
 ///]]>
 /// </code>
 /// </example>
@@ -47,16 +47,16 @@ public sealed class ExchangeRateAggregationOptions
     /// Gets the per-currency-pair routing overrides.
     /// </summary>
     /// <value>A map from currency pair to the route that resolves it.</value>
-    public IDictionary<ExchangeRatePair, ExchangeRatePairRoute> Routes { get; } = new Dictionary<ExchangeRatePair, ExchangeRatePairRoute>();
+    public IDictionary<CurrencyPair, CurrencyPairRoute> Routes { get; } = new Dictionary<CurrencyPair, CurrencyPairRoute>();
 
     /// <summary>
     /// Gets or sets a value indicating whether the aggregator consults each child's advertised
-    /// <see cref="ExchangeRateHistoryAvailability" /> and drops candidates that have declared they cannot serve any
+    /// <see cref="RateHistoryAvailability" /> and drops candidates that have declared they cannot serve any
     /// part of the requested date or window, before the strategy runs.
     /// </summary>
     /// <value><see langword="true" /> to respect the advertised history; defaults to <see langword="true" />.</value>
     /// <remarks>
-    /// The filter applies only to children that implement <see cref="IHistoryAwareExchangeRateProvider" />; a non-aware
+    /// The filter applies only to children that implement <see cref="IHistoryAwareRateProvider" />; a non-aware
     /// child is treated as unbounded and always kept. A range keeps any child whose advertised history overlaps the
     /// window at all, since strategies already tolerate partial data. When every candidate is filtered out, the lookup
     /// reports the same miss it reports when every candidate fails. Disable this to offer every routed candidate to the
@@ -66,13 +66,13 @@ public sealed class ExchangeRateAggregationOptions
 
     /// <summary>
     /// Gets or sets the lookup options applied by the timeless
-    /// <see cref="IExchangeRateProvider.GetRate(string, string)" /> surface, which resolves the rate for the current
+    /// <see cref="IRateProvider.GetRate(string, string)" /> surface, which resolves the rate for the current
     /// UTC date.
     /// </summary>
     /// <value>
-    /// The lookup options used for timeless lookups; defaults to <see cref="ExchangeRateLookupOptions.Exact" />.
+    /// The lookup options used for timeless lookups; defaults to <see cref="RateLookupOptions.Exact" />.
     /// </value>
-    public ExchangeRateLookupOptions DefaultLookupOptions { get; set; } = ExchangeRateLookupOptions.Exact;
+    public RateLookupOptions DefaultLookupOptions { get; set; } = RateLookupOptions.Exact;
 
     /// <summary>
     /// Gets or sets the level at which the selected route is logged.
@@ -106,7 +106,7 @@ public sealed class ExchangeRateAggregationOptions
     {
         ThrowHelper.ThrowIfNull(DefaultStrategy);
 
-        foreach (KeyValuePair<ExchangeRatePair, ExchangeRatePairRoute> entry in Routes)
+        foreach (KeyValuePair<CurrencyPair, CurrencyPairRoute> entry in Routes)
         {
             if (!entry.Key.IsValid)
                 throw new ArgumentException(CachingResourceStrings.Arg_Invalid_AggregationRoutePair, nameof(Routes));

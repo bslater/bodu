@@ -43,7 +43,7 @@ public static class RbaServiceCollectionExtensions
     ///     options.AllowSynchronousNetworkAccess = false;
     /// });
     ///
-    /// // Resolve the provider (or IExchangeRateProvider / IDatedExchangeRateProvider) from the container.
+    /// // Resolve the provider (or IRateProvider / IDatedRateProvider) from the container.
     /// using ServiceProvider provider = services.BuildServiceProvider();
     /// var rba = provider.GetRequiredService<RbaExchangeRateProvider>();
     ///]]>

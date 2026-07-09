@@ -18,10 +18,10 @@ public sealed partial class CachingExchangeRateProviderTests
     public void TryGetRate_WhenInverseCachedAndAllowed_ShouldServeFromCache()
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
-        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        bool found = sut.TryGetRate("USD", "AUD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = sut.TryGetRate("USD", "AUD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.IsTrue(result.Rate.IsInverted);
@@ -37,10 +37,10 @@ public sealed partial class CachingExchangeRateProviderTests
     public void TryGetRate_WhenInverseCachedButDisallowed_ShouldDelegateToInner()
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
-        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        var options = new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, allowInverse: false);
+        var options = new RateLookupOptions(RateDateResolution.Exact, allowInverse: false);
         bool found = sut.TryGetRate("USD", "AUD", new DateOnly(2023, 1, 3), options, out _);
 
         Assert.IsFalse(found);

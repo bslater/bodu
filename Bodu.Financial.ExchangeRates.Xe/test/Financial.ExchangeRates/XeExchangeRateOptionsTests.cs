@@ -21,7 +21,7 @@ public partial class XeExchangeRateOptionsTests
     {
         XeExchangeRateOptions options = new();
 
-        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Rolling, options.HistoryAvailability.Kind);
+        Assert.AreEqual(RateHistoryAvailabilityKind.Rolling, options.HistoryAvailability.Kind);
         Assert.AreEqual(3650, options.HistoryAvailability.WindowDays);
     }
 }

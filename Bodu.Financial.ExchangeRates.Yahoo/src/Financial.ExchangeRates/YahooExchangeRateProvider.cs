@@ -37,7 +37,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// using var yahoo = new YahooExchangeRateProvider(new YahooExchangeRateOptions());
 /// await yahoo.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 ///
-/// ExchangeRateLookupResult aud = yahoo.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+/// RateLookupResult aud = yahoo.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 ///]]>
 /// </code>
 /// </example>
@@ -110,7 +110,7 @@ public sealed class YahooExchangeRateProvider
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal YahooExchangeRateProvider(IExchangeRatePairSource<YahooSeriesInfo> source, YahooExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
+    internal YahooExchangeRateProvider(IPairRateSource<YahooSeriesInfo> source, YahooExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(source, options, ownedHttpClient: null, logger, timeProvider)
     {
     }
@@ -138,7 +138,7 @@ public sealed class YahooExchangeRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private YahooExchangeRateProvider(
-        IExchangeRatePairSource<YahooSeriesInfo> source,
+        IPairRateSource<YahooSeriesInfo> source,
         YahooExchangeRateOptions options,
         HttpClient? ownedHttpClient,
         ILogger? logger,
@@ -152,7 +152,7 @@ public sealed class YahooExchangeRateProvider
     protected override string ProviderId => ProviderName;
 
     /// <inheritdoc />
-    protected override string FormatPairForLog(ExchangeRatePair pair) =>
+    protected override string FormatPairForLog(CurrencyPair pair) =>
         _options.BuildSymbol(pair.From.ToString(), pair.To.ToString());
 
     /// <inheritdoc />

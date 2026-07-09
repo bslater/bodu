@@ -30,7 +30,7 @@ public partial class BoeExchangeRateCsvParserTests
     {
         BoeExchangeRateTable table = ParseSample();
 
-        BoeExchangeRateObservation usd = table.Observations
+        BoeRateObservation usd = table.Observations
             .Single(o => o.Date == new DateOnly(2023, 1, 3) && o.CurrencyCode == "USD");
 
         Assert.AreEqual(1.2065m, usd.Rate);

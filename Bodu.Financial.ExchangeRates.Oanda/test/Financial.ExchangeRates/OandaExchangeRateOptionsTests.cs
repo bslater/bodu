@@ -21,7 +21,7 @@ public partial class OandaExchangeRateOptionsTests
     {
         OandaExchangeRateOptions options = new();
 
-        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Rolling, options.HistoryAvailability.Kind);
+        Assert.AreEqual(RateHistoryAvailabilityKind.Rolling, options.HistoryAvailability.Kind);
         Assert.AreEqual(180, options.HistoryAvailability.WindowDays);
     }
 }

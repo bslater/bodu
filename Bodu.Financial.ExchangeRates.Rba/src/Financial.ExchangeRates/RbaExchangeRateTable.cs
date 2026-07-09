@@ -22,7 +22,7 @@ internal sealed class RbaExchangeRateTable
     /// <param name="rows">
     /// The dated rows of rate values, each positionally aligned to <paramref name="series" />.
     /// </param>
-    internal RbaExchangeRateTable(IReadOnlyList<RbaExchangeRateSeries> series, IReadOnlyList<RbaExchangeRateRow> rows)
+    internal RbaExchangeRateTable(IReadOnlyList<RbaRateSeries> series, IReadOnlyList<RbaExchangeRateRow> rows)
     {
         Series = series;
         Rows = rows;
@@ -32,7 +32,7 @@ internal sealed class RbaExchangeRateTable
     /// Gets the discovered currency series, in column order.
     /// </summary>
     /// <value>A read-only list of series descriptors.</value>
-    public IReadOnlyList<RbaExchangeRateSeries> Series { get; }
+    public IReadOnlyList<RbaRateSeries> Series { get; }
 
     /// <summary>
     /// Gets the dated rows of rate values.
@@ -75,14 +75,14 @@ internal sealed class RbaExchangeRateTable
     public IReadOnlyList<RbaSeriesInfo> GetSeriesInfo()
     {
         var result = new List<RbaSeriesInfo>(Series.Count);
-        foreach (RbaExchangeRateSeries series in Series)
+        foreach (RbaRateSeries series in Series)
         {
             // Skip non-currency series (for example XDR, the IMF Special Drawing Rights unit) that the runtime
             // exchange-rate types cannot represent.
             if (!CurrencyInfo.TryGetCurrencyCode(series.CurrencyCode, out CurrencyCode quote))
                 continue;
 
-            ExchangeRatePair pair = new(RbaExchangeRateProvider.BaseCurrency, quote);
+            CurrencyPair pair = new(RbaExchangeRateProvider.BaseCurrency, quote);
             result.Add(new RbaSeriesInfo(pair, series.CurrencyCode, series.SeriesId, series.Description, series.Units));
         }
 

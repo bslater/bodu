@@ -21,7 +21,7 @@ public partial class YahooExchangeRateOptionsTests
     {
         YahooExchangeRateOptions options = new();
 
-        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Since, options.HistoryAvailability.Kind);
+        Assert.AreEqual(RateHistoryAvailabilityKind.Since, options.HistoryAvailability.Kind);
         Assert.AreEqual(new DateOnly(2003, 12, 1), options.HistoryAvailability.EarliestDate);
     }
 }

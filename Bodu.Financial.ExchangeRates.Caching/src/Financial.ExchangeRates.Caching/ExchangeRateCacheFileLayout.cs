@@ -138,7 +138,7 @@ public sealed class ExchangeRateCacheFileLayout
     /// <param name="provider">The provider the cache is bound to.</param>
     /// <param name="pair">The currency pair.</param>
     /// <returns>The directory the pair's file or files are stored in.</returns>
-    public string ResolveDirectory(string root, string provider, ExchangeRatePair pair) =>
+    public string ResolveDirectory(string root, string provider, CurrencyPair pair) =>
         _directory(new ExchangeRateCacheDirectoryContext(root, provider, pair));
 
     /// <summary>
@@ -149,7 +149,7 @@ public sealed class ExchangeRateCacheFileLayout
     /// <param name="partitionKey">The partition key, or the empty string for a single-file layout.</param>
     /// <param name="fileExtension">The file extension, including the leading period.</param>
     /// <returns>The file name, without directory.</returns>
-    public string ResolveFileName(string provider, ExchangeRatePair pair, string partitionKey, string fileExtension) =>
+    public string ResolveFileName(string provider, CurrencyPair pair, string partitionKey, string fileExtension) =>
         _fileName(new ExchangeRateCacheFileContext(provider, pair, partitionKey, fileExtension));
 
     /// <summary>
@@ -182,7 +182,7 @@ public sealed class ExchangeRateCacheFileLayout
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <returns>The concatenated currency codes, for example <c>AUDUSD</c>.</returns>
-    private static string PairToken(ExchangeRatePair pair) =>
+    private static string PairToken(CurrencyPair pair) =>
         $"{pair.From}{pair.To}";
 
     /// <summary>

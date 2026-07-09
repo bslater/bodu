@@ -16,10 +16,10 @@ internal sealed class AggregatedExchangeRateBuilder
     : IAggregatedExchangeRateBuilder
 {
     /// <summary>The accumulated named children, in insertion order: a source factory and an optional cache factory each.</summary>
-    private readonly List<(string Name, Func<IServiceProvider, IDatedExchangeRateProvider> Factory, Func<IServiceProvider, string, IExchangeRateCache>? CacheFactory)> _children = new();
+    private readonly List<(string Name, Func<IServiceProvider, IDatedRateProvider> Factory, Func<IServiceProvider, string, IExchangeRateCache>? CacheFactory)> _children = new();
 
     /// <summary>The accumulated per-pair routes, in insertion order.</summary>
-    private readonly List<(ExchangeRatePair Pair, string[] ProviderOrder, IExchangeRateAggregationStrategy? Strategy)> _routes = new();
+    private readonly List<(CurrencyPair Pair, string[] ProviderOrder, IExchangeRateAggregationStrategy? Strategy)> _routes = new();
 
     /// <summary>The configured default strategy, or <see langword="null" /> to use the aggregator's own default.</summary>
     private IExchangeRateAggregationStrategy? _defaultStrategy;
@@ -28,13 +28,13 @@ internal sealed class AggregatedExchangeRateBuilder
     /// Gets the accumulated named children, in insertion order.
     /// </summary>
     /// <value>The named children, each carrying a source factory and an optional per-child cache factory.</value>
-    public IReadOnlyList<(string Name, Func<IServiceProvider, IDatedExchangeRateProvider> Factory, Func<IServiceProvider, string, IExchangeRateCache>? CacheFactory)> Children => _children;
+    public IReadOnlyList<(string Name, Func<IServiceProvider, IDatedRateProvider> Factory, Func<IServiceProvider, string, IExchangeRateCache>? CacheFactory)> Children => _children;
 
     /// <summary>
     /// Gets the accumulated per-pair routes, in insertion order.
     /// </summary>
     /// <returns>The per-pair routes.</returns>
-    public IReadOnlyList<(ExchangeRatePair Pair, string[] ProviderOrder, IExchangeRateAggregationStrategy? Strategy)> Routes => _routes;
+    public IReadOnlyList<(CurrencyPair Pair, string[] ProviderOrder, IExchangeRateAggregationStrategy? Strategy)> Routes => _routes;
 
     /// <summary>
     /// Gets the configured default strategy.
@@ -45,7 +45,7 @@ internal sealed class AggregatedExchangeRateBuilder
     /// <inheritdoc />
     public IAggregatedExchangeRateBuilder AddCachedChild(
         string name,
-        Func<IServiceProvider, IDatedExchangeRateProvider> factory,
+        Func<IServiceProvider, IDatedRateProvider> factory,
         Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(name);
@@ -59,7 +59,7 @@ internal sealed class AggregatedExchangeRateBuilder
     public IAggregatedExchangeRateBuilder AddCachedChild<TProvider>(
         string name,
         Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = null)
-        where TProvider : class, IDatedExchangeRateProvider =>
+        where TProvider : class, IDatedRateProvider =>
         AddCachedChild(name, static serviceProvider => serviceProvider.GetRequiredService<TProvider>(), cacheFactory);
 
     /// <inheritdoc />
@@ -72,7 +72,7 @@ internal sealed class AggregatedExchangeRateBuilder
     }
 
     /// <inheritdoc />
-    public IAggregatedExchangeRateBuilder MapPair(ExchangeRatePair pair, params string[] providerOrder)
+    public IAggregatedExchangeRateBuilder MapPair(CurrencyPair pair, params string[] providerOrder)
     {
         ThrowHelper.ThrowIfNull(providerOrder);
 
@@ -81,7 +81,7 @@ internal sealed class AggregatedExchangeRateBuilder
     }
 
     /// <inheritdoc />
-    public IAggregatedExchangeRateBuilder MapPair(ExchangeRatePair pair, IExchangeRateAggregationStrategy strategy, params string[] providerOrder)
+    public IAggregatedExchangeRateBuilder MapPair(CurrencyPair pair, IExchangeRateAggregationStrategy strategy, params string[] providerOrder)
     {
         ThrowHelper.ThrowIfNull(strategy);
         ThrowHelper.ThrowIfNull(providerOrder);

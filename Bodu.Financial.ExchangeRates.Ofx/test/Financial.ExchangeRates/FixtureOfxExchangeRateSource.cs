@@ -7,11 +7,11 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// An <see cref="IExchangeRatePairSource{TSeries}" /> that parses embedded JSON fixtures instead of issuing network
+/// An <see cref="IPairRateSource{TSeries}" /> that parses embedded JSON fixtures instead of issuing network
 /// requests, mapping currency pairs to fixture files and recording how many pairs it served.
 /// </summary>
 internal sealed class FixtureOfxExchangeRateSource
-    : IExchangeRatePairSource<OfxSeriesInfo>
+    : IPairRateSource<OfxSeriesInfo>
 {
     /// <summary>The provider options used while parsing fixtures.</summary>
     private readonly OfxExchangeRateOptions _options;
@@ -44,7 +44,7 @@ internal sealed class FixtureOfxExchangeRateSource
     public int GetPairCallCount { get; private set; }
 
     /// <inheritdoc />
-    public ValueTask<PairRateData<OfxSeriesInfo>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default)
+    public ValueTask<PairRateData<OfxSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         GetPairCallCount++;
 
@@ -57,6 +57,6 @@ internal sealed class FixtureOfxExchangeRateSource
 
         // Unknown pair: behave like one with no published data so inverse-fallback paths can be exercised.
         return ValueTask.FromResult(
-            new PairRateData<OfxSeriesInfo>(request.Pair, Array.Empty<ExchangeRateObservation>(), new OfxSeriesInfo(request.Pair, request.Pair.To.ToString())));
+            new PairRateData<OfxSeriesInfo>(request.Pair, Array.Empty<RateObservation>(), new OfxSeriesInfo(request.Pair, request.Pair.To.ToString())));
     }
 }

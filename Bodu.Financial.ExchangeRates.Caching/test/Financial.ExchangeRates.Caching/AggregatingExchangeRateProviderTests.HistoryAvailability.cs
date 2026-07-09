@@ -21,7 +21,7 @@ public partial class AggregatingExchangeRateProviderTests
     [TestMethod]
     public void HistoryAvailability_WhenSingleBoundedChild_ShouldReturnChildValue()
     {
-        ExchangeRateHistoryAvailability declared = ExchangeRateHistoryAvailability.Since(new DateOnly(2020, 1, 1));
+        RateHistoryAvailability declared = RateHistoryAvailability.Since(new DateOnly(2020, 1, 1));
         AggregatingExchangeRateProvider agg = CreateAvailabilityGroup(NamedAware("A", declared));
 
         Assert.AreEqual(declared, agg.HistoryAvailability);
@@ -36,39 +36,39 @@ public partial class AggregatingExchangeRateProviderTests
     public void HistoryAvailability_WhenAllChildrenBounded_ShouldReturnMostGenerous()
     {
         AggregatingExchangeRateProvider agg = CreateAvailabilityGroup(
-            NamedAware("Shallow", ExchangeRateHistoryAvailability.RollingDays(30)),
-            NamedAware("Deep", ExchangeRateHistoryAvailability.Since(new DateOnly(2015, 1, 1))),
-            NamedAware("Mid", ExchangeRateHistoryAvailability.Since(new DateOnly(2022, 1, 1))));
+            NamedAware("Shallow", RateHistoryAvailability.RollingDays(30)),
+            NamedAware("Deep", RateHistoryAvailability.Since(new DateOnly(2015, 1, 1))),
+            NamedAware("Mid", RateHistoryAvailability.Since(new DateOnly(2022, 1, 1))));
 
-        Assert.AreEqual(ExchangeRateHistoryAvailability.Since(new DateOnly(2015, 1, 1)), agg.HistoryAvailability);
+        Assert.AreEqual(RateHistoryAvailability.Since(new DateOnly(2015, 1, 1)), agg.HistoryAvailability);
     }
 
     /// <summary>
-    /// Verifies that a single <see cref="ExchangeRateHistoryAvailability.Unbounded" /> child makes the whole group
+    /// Verifies that a single <see cref="RateHistoryAvailability.Unbounded" /> child makes the whole group
     /// unbounded, regardless of how shallow the other children are.
     /// </summary>
     [TestMethod]
     public void HistoryAvailability_WhenAnyChildUnbounded_ShouldReturnUnbounded()
     {
         AggregatingExchangeRateProvider agg = CreateAvailabilityGroup(
-            NamedAware("Shallow", ExchangeRateHistoryAvailability.RollingDays(30)),
-            NamedAware("Deep", ExchangeRateHistoryAvailability.Unbounded));
+            NamedAware("Shallow", RateHistoryAvailability.RollingDays(30)),
+            NamedAware("Deep", RateHistoryAvailability.Unbounded));
 
-        Assert.AreEqual(ExchangeRateHistoryAvailability.Unbounded, agg.HistoryAvailability);
+        Assert.AreEqual(RateHistoryAvailability.Unbounded, agg.HistoryAvailability);
     }
 
     /// <summary>
-    /// Verifies that a child that does not implement <see cref="IHistoryAwareExchangeRateProvider" /> makes the whole
+    /// Verifies that a child that does not implement <see cref="IHistoryAwareRateProvider" /> makes the whole
     /// group unbounded: a non-aware child declares no floor, so the group cannot declare one either.
     /// </summary>
     [TestMethod]
     public void HistoryAvailability_WhenAnyChildNotHistoryAware_ShouldReturnUnbounded()
     {
         AggregatingExchangeRateProvider agg = CreateAvailabilityGroup(
-            NamedAware("Shallow", ExchangeRateHistoryAvailability.RollingDays(30)),
+            NamedAware("Shallow", RateHistoryAvailability.RollingDays(30)),
             new NamedDatedExchangeRateProvider("Legacy", new CountingDatedExchangeRateProvider([])));
 
-        Assert.AreEqual(ExchangeRateHistoryAvailability.Unbounded, agg.HistoryAvailability);
+        Assert.AreEqual(RateHistoryAvailability.Unbounded, agg.HistoryAvailability);
     }
 
     /// <summary>
@@ -79,10 +79,10 @@ public partial class AggregatingExchangeRateProviderTests
     public void HistoryAvailability_WhenRollingReachesFurtherThanSince_ShouldReturnRolling()
     {
         // As of 2024-06-01 a 3650-day rolling window reaches back to 2014, further than the 2023 inception.
-        ExchangeRateHistoryAvailability rolling = ExchangeRateHistoryAvailability.RollingDays(3650);
+        RateHistoryAvailability rolling = RateHistoryAvailability.RollingDays(3650);
         AggregatingExchangeRateProvider agg = CreateAvailabilityGroup(
             NamedAware("Rolling", rolling),
-            NamedAware("Since", ExchangeRateHistoryAvailability.Since(new DateOnly(2023, 1, 1))));
+            NamedAware("Since", RateHistoryAvailability.Since(new DateOnly(2023, 1, 1))));
 
         Assert.AreEqual(rolling, agg.HistoryAvailability);
     }
@@ -96,13 +96,13 @@ public partial class AggregatingExchangeRateProviderTests
     public void TryGetRate_WhenHigherPriorityChildOutsideAdvertisedHistory_ShouldResolveFromNextWithoutCallingIt()
     {
         DateOnly requested = new(2024, 4, 15);
-        HistoryAwareCountingProvider shallow = AwareWith("Shallow", ExchangeRateHistoryAvailability.Since(new DateOnly(2024, 5, 1)), ("USD", "AUD", requested, 1.50m));
-        HistoryAwareCountingProvider deep = AwareWith("Deep", ExchangeRateHistoryAvailability.Unbounded, ("USD", "AUD", requested, 1.60m));
+        HistoryAwareCountingProvider shallow = AwareWith("Shallow", RateHistoryAvailability.Since(new DateOnly(2024, 5, 1)), ("USD", "AUD", requested, 1.50m));
+        HistoryAwareCountingProvider deep = AwareWith("Deep", RateHistoryAvailability.Unbounded, ("USD", "AUD", requested, 1.60m));
         AggregatingExchangeRateProvider agg = CreateAvailabilityGroup(
             new NamedDatedExchangeRateProvider("Shallow", shallow),
             new NamedDatedExchangeRateProvider("Deep", deep));
 
-        bool found = agg.TryGetRate("USD", "AUD", requested, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = agg.TryGetRate("USD", "AUD", requested, RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.60m, result.Rate.Rate, "the rate comes from the first candidate that advertises the date");
@@ -118,12 +118,12 @@ public partial class AggregatingExchangeRateProviderTests
     public void GetRate_WhenEveryChildOutsideAdvertisedHistory_ShouldThrowKeyNotFoundExceptionWithoutInnerCalls()
     {
         DateOnly requested = new(2024, 4, 15);
-        HistoryAwareCountingProvider shallow = AwareWith("Shallow", ExchangeRateHistoryAvailability.Since(new DateOnly(2024, 5, 1)), ("USD", "AUD", requested, 1.50m));
+        HistoryAwareCountingProvider shallow = AwareWith("Shallow", RateHistoryAvailability.Since(new DateOnly(2024, 5, 1)), ("USD", "AUD", requested, 1.50m));
         AggregatingExchangeRateProvider agg = CreateAvailabilityGroup(new NamedDatedExchangeRateProvider("Shallow", shallow));
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
-            _ = agg.GetRate("USD", "AUD", requested, ExchangeRateLookupOptions.Exact);
+            _ = agg.GetRate("USD", "AUD", requested, RateLookupOptions.Exact);
         });
 
         Assert.AreEqual(0, shallow.SingleDateCallCount);
@@ -137,10 +137,10 @@ public partial class AggregatingExchangeRateProviderTests
     public void TryGetRate_WhenForwardToleranceReachesChildHistory_ShouldKeepChild()
     {
         DateOnly floor = new(2024, 5, 1);
-        HistoryAwareCountingProvider shallow = AwareWith("Shallow", ExchangeRateHistoryAvailability.Since(floor), ("USD", "AUD", new DateOnly(2024, 5, 2), 1.55m));
+        HistoryAwareCountingProvider shallow = AwareWith("Shallow", RateHistoryAvailability.Since(floor), ("USD", "AUD", new DateOnly(2024, 5, 2), 1.55m));
         AggregatingExchangeRateProvider agg = CreateAvailabilityGroup(new NamedDatedExchangeRateProvider("Shallow", shallow));
 
-        bool found = agg.TryGetRate("USD", "AUD", new DateOnly(2024, 4, 29), ExchangeRateLookupOptions.NextWithin(5), out ExchangeRateLookupResult result);
+        bool found = agg.TryGetRate("USD", "AUD", new DateOnly(2024, 4, 29), RateLookupOptions.NextWithin(5), out RateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(new DateOnly(2024, 5, 2), result.Rate.Date);
@@ -155,13 +155,13 @@ public partial class AggregatingExchangeRateProviderTests
     public void GetRates_WhenChildHistoryBeginsAfterWindowEnd_ShouldDropChild()
     {
         DateOnly inWindow = new(2024, 3, 15);
-        HistoryAwareCountingProvider shallow = AwareWith("Shallow", ExchangeRateHistoryAvailability.Since(new DateOnly(2024, 5, 1)), ("USD", "AUD", inWindow, 1.50m));
-        HistoryAwareCountingProvider deep = AwareWith("Deep", ExchangeRateHistoryAvailability.Unbounded, ("USD", "AUD", inWindow, 1.60m));
+        HistoryAwareCountingProvider shallow = AwareWith("Shallow", RateHistoryAvailability.Since(new DateOnly(2024, 5, 1)), ("USD", "AUD", inWindow, 1.50m));
+        HistoryAwareCountingProvider deep = AwareWith("Deep", RateHistoryAvailability.Unbounded, ("USD", "AUD", inWindow, 1.60m));
         AggregatingExchangeRateProvider agg = CreateAvailabilityGroup(
             new NamedDatedExchangeRateProvider("Shallow", shallow),
             new NamedDatedExchangeRateProvider("Deep", deep));
 
-        ExchangeRateRangeResult result = agg.GetRates("USD", "AUD", new DateOnly(2024, 3, 1), new DateOnly(2024, 4, 1));
+        RateRangeResult result = agg.GetRates("USD", "AUD", new DateOnly(2024, 3, 1), new DateOnly(2024, 4, 1));
 
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual(1.60m, result[0].Rate);
@@ -176,10 +176,10 @@ public partial class AggregatingExchangeRateProviderTests
     [TestMethod]
     public void GetRates_WhenChildHistoryOverlapsWindow_ShouldKeepChild()
     {
-        HistoryAwareCountingProvider shallow = AwareWith("Shallow", ExchangeRateHistoryAvailability.Since(new DateOnly(2024, 3, 20)), ("USD", "AUD", new DateOnly(2024, 3, 25), 1.50m));
+        HistoryAwareCountingProvider shallow = AwareWith("Shallow", RateHistoryAvailability.Since(new DateOnly(2024, 3, 20)), ("USD", "AUD", new DateOnly(2024, 3, 25), 1.50m));
         AggregatingExchangeRateProvider agg = CreateAvailabilityGroup(new NamedDatedExchangeRateProvider("Shallow", shallow));
 
-        ExchangeRateRangeResult result = agg.GetRates("USD", "AUD", new DateOnly(2024, 3, 1), new DateOnly(2024, 4, 1));
+        RateRangeResult result = agg.GetRates("USD", "AUD", new DateOnly(2024, 3, 1), new DateOnly(2024, 4, 1));
 
         Assert.AreEqual(1, shallow.RangeCallCount, "a partially overlapping child stays in the candidate set");
         Assert.AreEqual(1, result.Count);
@@ -193,13 +193,13 @@ public partial class AggregatingExchangeRateProviderTests
     public void TryGetRate_WhenRespectHistoryAvailabilityDisabled_ShouldConsultDeclaredUnavailableChild()
     {
         DateOnly requested = new(2024, 4, 15);
-        HistoryAwareCountingProvider shallow = AwareWith("Shallow", ExchangeRateHistoryAvailability.Since(new DateOnly(2024, 5, 1)), ("USD", "AUD", requested, 1.50m));
+        HistoryAwareCountingProvider shallow = AwareWith("Shallow", RateHistoryAvailability.Since(new DateOnly(2024, 5, 1)), ("USD", "AUD", requested, 1.50m));
         AggregatingExchangeRateProvider agg = new(
             new[] { new NamedDatedExchangeRateProvider("Shallow", shallow) },
             new ExchangeRateAggregationOptions { RespectHistoryAvailability = false },
             new MutableTimeProvider(AvailabilityNow));
 
-        bool found = agg.TryGetRate("USD", "AUD", requested, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = agg.TryGetRate("USD", "AUD", requested, RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.50m, result.Rate.Rate);
@@ -222,7 +222,7 @@ public partial class AggregatingExchangeRateProviderTests
     /// <param name="availability">The history depth the child advertises.</param>
     /// <param name="rows">The observation rows.</param>
     /// <returns>The counting child.</returns>
-    private static HistoryAwareCountingProvider AwareWith(string name, ExchangeRateHistoryAvailability availability, params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
+    private static HistoryAwareCountingProvider AwareWith(string name, RateHistoryAvailability availability, params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
         new(availability, rows.Select(r => new ExchangeRate(CurrencyInfo.ParseCurrencyCode(r.From), CurrencyInfo.ParseCurrencyCode(r.To), r.Date, r.Rate, name)));
 
     /// <summary>
@@ -231,6 +231,6 @@ public partial class AggregatingExchangeRateProviderTests
     /// <param name="name">The child name.</param>
     /// <param name="availability">The history depth the child advertises.</param>
     /// <returns>The named child.</returns>
-    private static NamedDatedExchangeRateProvider NamedAware(string name, ExchangeRateHistoryAvailability availability) =>
+    private static NamedDatedExchangeRateProvider NamedAware(string name, RateHistoryAvailability availability) =>
         new(name, new HistoryAwareCountingProvider(availability, []));
 }

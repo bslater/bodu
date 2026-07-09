@@ -44,7 +44,7 @@ public static class XeServiceCollectionExtensions
     /// });
     ///
     /// ServiceProvider provider = services.BuildServiceProvider();
-    /// var rates = provider.GetRequiredService<IDatedExchangeRateProvider>();
+    /// var rates = provider.GetRequiredService<IDatedRateProvider>();
     ///]]>
     /// </code>
     /// </example>

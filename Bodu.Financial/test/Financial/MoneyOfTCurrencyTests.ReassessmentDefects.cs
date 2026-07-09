@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Text.Json;
 using Bodu.Financial.Currencies;
 
+using Bodu.Financial.ExchangeRates;
 using Bodu.Numerics;
 
 namespace Bodu.Financial;
@@ -246,14 +247,14 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that a provider returning a zero exchange rate causes
-    /// <see cref="MoneyBag.ConvertTo{TTarget}(IExchangeRateProvider)" /> to fail loudly rather than silently
+    /// <see cref="MoneyBag.ConvertTo{TTarget}(IRateProvider)" /> to fail loudly rather than silently
     /// producing a wrong total.
     /// </summary>
     [TestMethod]
     public void ConvertTo_WhenProviderReturnsZeroRate_ShouldThrowInvalidOperationException()
     {
         MoneyBag bag = MoneyBag.Empty.Add(new Money<EUR>(100m));
-        IExchangeRateProvider rates = new ConstantRateProvider(0m);
+        IRateProvider rates = new ConstantRateProvider(0m);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -268,7 +269,7 @@ public partial class MoneyOfTCurrencyTests
     public void ConvertTo_WhenProviderReturnsNegativeRate_ShouldThrowInvalidOperationException()
     {
         MoneyBag bag = MoneyBag.Empty.Add(new Money<EUR>(100m));
-        IExchangeRateProvider rates = new ConstantRateProvider(-1.10m);
+        IRateProvider rates = new ConstantRateProvider(-1.10m);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -277,11 +278,11 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// A minimal <see cref="IExchangeRateProvider" /> that returns a fixed rate for every pair, used to drive the
-    /// bag's defensive zero/negative-rate check independently of <see cref="FixedExchangeRateTable" />.
+    /// A minimal <see cref="IRateProvider" /> that returns a fixed rate for every pair, used to drive the
+    /// bag's defensive zero/negative-rate check independently of <see cref="FixedRateTable" />.
     /// </summary>
     private sealed class ConstantRateProvider
-        : IExchangeRateProvider
+        : IRateProvider
     {
         /// <summary>
         /// The fixed rate this provider returns from every lookup.
@@ -479,7 +480,7 @@ public partial class MoneyOfTCurrencyTests
             .Add(new Money(0.005m, CurrencyCode.BHD))
             .Add(new Money(0.005m, CurrencyCode.KWD));
 
-        FixedExchangeRateTable rates = new(new Dictionary<(string From, string To), decimal>
+        FixedRateTable rates = new(new Dictionary<(string From, string To), decimal>
         {
             { ("BHD", "USD"), 1m },
             { ("KWD", "USD"), 1m },

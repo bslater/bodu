@@ -18,7 +18,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void Store_WhenRatesNull_ShouldThrowArgumentNullException()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+        CurrencyPair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>

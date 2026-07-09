@@ -20,7 +20,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// offset is the largest offset among the contributing candidates.
 /// </para>
 /// <para>
-/// Averaging is most meaningful with <see cref="ExchangeRateLookupOptions.Exact" />, where every contributor shares the
+/// Averaging is most meaningful with <see cref="RateLookupOptions.Exact" />, where every contributor shares the
 /// requested date; under fallback resolutions the contributors may have resolved different dates. The range overload
 /// averages only the dates present in <em>every</em> contributing candidate (an inner join by date).
 /// </para>
@@ -70,9 +70,9 @@ public sealed class AverageStrategy
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        RateLookupOptions options,
         IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
-        out ExchangeRateLookupResult result)
+        out RateLookupResult result)
     {
         ThrowHelper.ThrowIfNull(options);
         ThrowHelper.ThrowIfNull(candidates);
@@ -83,7 +83,7 @@ public sealed class AverageStrategy
 
         for (int i = 0; i < candidates.Count; i++)
         {
-            if (candidates[i].Provider.TryGetRate(fromIsoCode, toIsoCode, date, options, out ExchangeRateLookupResult candidate))
+            if (candidates[i].Provider.TryGetRate(fromIsoCode, toIsoCode, date, options, out RateLookupResult candidate))
             {
                 sum += candidate.Rate.Rate;
                 count++;
@@ -100,7 +100,7 @@ public sealed class AverageStrategy
         }
 
         ExchangeRate rate = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode), date, sum / count, _providerLabel);
-        result = new ExchangeRateLookupResult(rate, date, options.DateResolution, maxOffset, ExchangeRateProvenance.Live(rate.Provider));
+        result = new RateLookupResult(rate, date, options.DateResolution, maxOffset, RateProvenance.Live(rate.Provider));
         return true;
     }
 

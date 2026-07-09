@@ -40,8 +40,8 @@ public partial class RbaServiceRegistrationTests
         using ServiceProvider provider = services.BuildServiceProvider();
 
         RbaExchangeRateProvider? concrete = provider.GetService<RbaExchangeRateProvider>();
-        IDatedExchangeRateProvider? dated = provider.GetService<IDatedExchangeRateProvider>();
-        IExchangeRateProvider? simple = provider.GetService<IExchangeRateProvider>();
+        IDatedRateProvider? dated = provider.GetService<IDatedRateProvider>();
+        IRateProvider? simple = provider.GetService<IRateProvider>();
 
         Assert.IsNotNull(concrete);
         Assert.AreSame(concrete, dated);

@@ -22,7 +22,7 @@ public sealed class OandaSeriesInfo
     /// <param name="pair">The currency pair the series represents.</param>
     /// <param name="quoteIsoCode">The quote-currency ISO code.</param>
     /// <param name="price">The price basis the series was fetched at.</param>
-    internal OandaSeriesInfo(ExchangeRatePair pair, string quoteIsoCode, string price)
+    internal OandaSeriesInfo(CurrencyPair pair, string quoteIsoCode, string price)
     {
         Pair = pair;
         QuoteIsoCode = quoteIsoCode;
@@ -32,8 +32,8 @@ public sealed class OandaSeriesInfo
     /// <summary>
     /// Gets the currency pair the series represents.
     /// </summary>
-    /// <value>The <see cref="ExchangeRatePair" /> from the base currency to the quote currency.</value>
-    public ExchangeRatePair Pair { get; }
+    /// <value>The <see cref="CurrencyPair" /> from the base currency to the quote currency.</value>
+    public CurrencyPair Pair { get; }
 
     /// <summary>
     /// Gets the quote-currency ISO code.

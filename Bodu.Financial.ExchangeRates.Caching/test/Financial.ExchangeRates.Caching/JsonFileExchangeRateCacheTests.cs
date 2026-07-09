@@ -19,7 +19,7 @@ public sealed partial class JsonFileExchangeRateCacheTests
     private const string Provider = "Yahoo";
 
     /// <summary>The currency pair used by the tests.</summary>
-    private static readonly ExchangeRatePair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+    private static readonly CurrencyPair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>The duration used by the tests.</summary>
     private static readonly TimeSpan Duration = TimeSpan.FromHours(24);

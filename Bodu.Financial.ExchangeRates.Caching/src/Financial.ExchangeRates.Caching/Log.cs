@@ -86,7 +86,7 @@ internal static partial class Log
     /// The age of the served data, or <see langword="null" /> for a live serve or when no row backs the serve.
     /// </param>
     [LoggerMessage(EventId = 4505, Message = "Resolved {fromIsoCode}->{toIsoCode} for source '{source}' from {origin} (backend '{backend}', age {age})")]
-    public static partial void RateProvenance(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, ExchangeRateOrigin origin, string? backend, TimeSpan? age);
+    public static partial void RateProvenance(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, RateOrigin origin, string? backend, TimeSpan? age);
 
     /// <summary>
     /// Logs that a single-date lookup was not delegated to the wrapped source because the requested date lies outside

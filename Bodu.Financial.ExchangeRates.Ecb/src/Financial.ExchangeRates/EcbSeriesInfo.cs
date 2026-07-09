@@ -20,7 +20,7 @@ public sealed class EcbSeriesInfo
     /// </summary>
     /// <param name="pair">The currency pair the series represents.</param>
     /// <param name="quoteIsoCode">The quote-currency ISO code.</param>
-    internal EcbSeriesInfo(ExchangeRatePair pair, string quoteIsoCode)
+    internal EcbSeriesInfo(CurrencyPair pair, string quoteIsoCode)
     {
         Pair = pair;
         QuoteIsoCode = quoteIsoCode;
@@ -29,8 +29,8 @@ public sealed class EcbSeriesInfo
     /// <summary>
     /// Gets the currency pair the series represents, always quoted against the euro.
     /// </summary>
-    /// <value>The <see cref="ExchangeRatePair" /> from <c>EUR</c> to the quote currency.</value>
-    public ExchangeRatePair Pair { get; }
+    /// <value>The <see cref="CurrencyPair" /> from <c>EUR</c> to the quote currency.</value>
+    public CurrencyPair Pair { get; }
 
     /// <summary>
     /// Gets the quote-currency ISO code.

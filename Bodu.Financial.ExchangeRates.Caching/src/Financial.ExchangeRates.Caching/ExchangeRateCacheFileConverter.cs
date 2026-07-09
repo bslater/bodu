@@ -21,7 +21,7 @@ internal static class ExchangeRateCacheFileConverter
     /// <param name="pair">The currency pair the state belongs to.</param>
     /// <param name="state">The per-pair state to project.</param>
     /// <returns>The serialization shape carrying the header, rows, and coverage windows.</returns>
-    public static ExchangeRateCacheFile ToFile(string provider, ExchangeRatePair pair, CachePairState state)
+    public static ExchangeRateCacheFile ToFile(string provider, CurrencyPair pair, CachePairState state)
     {
         ExchangeRateCacheFile file = new()
         {

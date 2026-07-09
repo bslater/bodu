@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial;
 
@@ -24,7 +25,7 @@ public sealed partial class MoneyBag
     /// <exception cref="KeyNotFoundException">
     /// No rate is available for one of the bag's currencies under <paramref name="options" />.
     /// </exception>
-    public Money<TTarget> ConvertTo<TTarget>(IDatedExchangeRateProvider rates, DateOnly date, ExchangeRateLookupOptions? options = null)
+    public Money<TTarget> ConvertTo<TTarget>(IDatedRateProvider rates, DateOnly date, RateLookupOptions? options = null)
         where TTarget : ICurrency =>
         ConvertTo<TTarget>(rates, date, options, MoneyBagConversionRoundingPolicy.SumRawThenRound);
 
@@ -44,9 +45,9 @@ public sealed partial class MoneyBag
     /// No rate is available for one of the bag's currencies under <paramref name="options" />.
     /// </exception>
     public Money<TTarget> ConvertTo<TTarget>(
-        IDatedExchangeRateProvider rates,
+        IDatedRateProvider rates,
         DateOnly date,
-        ExchangeRateLookupOptions? options,
+        RateLookupOptions? options,
         MoneyBagConversionRoundingPolicy policy)
         where TTarget : ICurrency
     {
@@ -77,9 +78,9 @@ public sealed partial class MoneyBag
     /// No rate is available for one of the bag's currencies under <paramref name="options" />.
     /// </exception>
     public MoneyBagConversionAudit<TTarget> ConvertToWithAudit<TTarget>(
-        IDatedExchangeRateProvider rates,
+        IDatedRateProvider rates,
         DateOnly date,
-        ExchangeRateLookupOptions? options,
+        RateLookupOptions? options,
         MoneyBagConversionRoundingPolicy policy = MoneyBagConversionRoundingPolicy.SumRawThenRound)
         where TTarget : ICurrency
     {
@@ -99,7 +100,7 @@ public sealed partial class MoneyBag
         {
             string sourceIso = entry.Key.ToString();
             decimal raw;
-            ExchangeRateLookupResult? lookup;
+            RateLookupResult? lookup;
             if (entry.Key == targetCode)
             {
                 raw = entry.Value;
@@ -107,7 +108,7 @@ public sealed partial class MoneyBag
             }
             else
             {
-                ExchangeRateLookupResult resolved = rates.GetRate(sourceIso, targetIso, date, options);
+                RateLookupResult resolved = rates.GetRate(sourceIso, targetIso, date, options);
                 lookup = resolved;
                 raw = entry.Value * resolved.Rate.Rate;
             }

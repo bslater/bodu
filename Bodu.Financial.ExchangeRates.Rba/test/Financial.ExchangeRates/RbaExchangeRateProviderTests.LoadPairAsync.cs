@@ -21,7 +21,7 @@ public partial class RbaExchangeRateProviderTests
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
 
-        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual(0.6828m, result.Rate.Rate);
         Assert.AreEqual(RbaExchangeRateProvider.ProviderName, result.Rate.Provider);
@@ -32,11 +32,11 @@ public partial class RbaExchangeRateProviderTests
     /// Verifies that a pair the RBA feed does not serve — neither side being AUD — is rejected before any download.
     /// </summary>
     [TestMethod]
-    public async Task LoadPairAsync_WhenNeitherSideIsAud_ShouldThrowExchangeRateSeriesNotFoundException()
+    public async Task LoadPairAsync_WhenNeitherSideIsAud_ShouldThrowRateSeriesNotFoundException()
     {
         (RbaExchangeRateProvider provider, FixtureRbaExchangeRateTableSource source) = Create(allowSync: false);
 
-        _ = await Assert.ThrowsExactlyAsync<ExchangeRateSeriesNotFoundException>(async () =>
+        _ = await Assert.ThrowsExactlyAsync<RateSeriesNotFoundException>(async () =>
         {
             await provider.LoadPairAsync("USD", "EUR", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
         });
@@ -55,6 +55,6 @@ public partial class RbaExchangeRateProviderTests
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 12, 31));
 
-        CollectionAssert.Contains(provider.GetLoadedPairs().ToList(), new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD));
+        CollectionAssert.Contains(provider.GetLoadedPairs().ToList(), new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD));
     }
 }

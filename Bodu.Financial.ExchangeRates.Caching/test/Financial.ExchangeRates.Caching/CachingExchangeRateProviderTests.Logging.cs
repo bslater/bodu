@@ -25,7 +25,7 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = new(inner, _cache, _options, _clock, logger);
 
-        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.Contains(e => e.Level == LogLevel.Trace && e.EventId.Id == 4502, logger.Entries);
     }
@@ -37,10 +37,10 @@ public sealed partial class CachingExchangeRateProviderTests
     public void GetRate_WhenCacheFreshAndLoggerSupplied_ShouldLogCacheHit()
     {
         CapturingLogger logger = new();
-        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock, logger);
 
-        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.Contains(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501, logger.Entries);
     }
@@ -54,10 +54,10 @@ public sealed partial class CachingExchangeRateProviderTests
     {
         CapturingLogger logger = new();
         _options.CacheHitLogLevel = LogLevel.Information;
-        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = new(InnerWith(), _cache, _options, _clock, logger);
 
-        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.Contains(e => e.Level == LogLevel.Information && e.EventId.Id == 4501, logger.Entries);
         Assert.DoesNotContain(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501, logger.Entries);
@@ -70,10 +70,10 @@ public sealed partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void GetRate_WhenNoLoggerSupplied_ShouldServeWithoutLogging()
     {
-        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(InnerWith());
 
-        ExchangeRateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual(0.5m, result.Rate.Rate);
     }

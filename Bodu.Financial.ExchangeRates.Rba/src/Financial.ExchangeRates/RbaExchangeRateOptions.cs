@@ -54,7 +54,7 @@ public sealed class RbaExchangeRateOptions
     /// Gets or sets a value indicating whether a synchronous lookup may block to download a missing era on demand.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> to allow synchronous, blocking downloads from <see cref="IDatedExchangeRateProvider" />
+    /// <see langword="true" /> to allow synchronous, blocking downloads from <see cref="IDatedRateProvider" />
     /// lookups; <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="false" />, so
     /// the provider serves a snapshot of already-loaded data and a synchronous miss does not reach the network.
     /// </value>

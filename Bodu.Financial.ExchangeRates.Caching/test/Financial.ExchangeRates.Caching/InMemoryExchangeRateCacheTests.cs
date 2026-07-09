@@ -17,7 +17,7 @@ public sealed class InMemoryExchangeRateCacheTests
     /// <summary>
     /// The currency pair used by the tests.
     /// </summary>
-    private static readonly ExchangeRatePair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+    private static readonly CurrencyPair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>
     /// Verifies that a stored rate is served while fresh and filtered out once it ages past the duration.

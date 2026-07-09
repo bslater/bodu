@@ -44,7 +44,7 @@ public static class BoeServiceCollectionExtensions
     /// services.AddBoeReferenceRates(configuration);
     ///
     /// IServiceProvider provider = services.BuildServiceProvider();
-    /// var rates = provider.GetRequiredService<IDatedExchangeRateProvider>();
+    /// var rates = provider.GetRequiredService<IDatedRateProvider>();
     ///]]>
     /// </code>
     /// </example>

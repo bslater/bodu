@@ -82,7 +82,7 @@ public sealed class JsonFileExchangeRateCache
     protected override string FileExtension => ".json";
 
     /// <inheritdoc />
-    private protected override string Serialize(ExchangeRatePair pair, CachePairState state) =>
+    private protected override string Serialize(CurrencyPair pair, CachePairState state) =>
         JsonSerializer.Serialize(ExchangeRateCacheFileConverter.ToFile(Provider, pair, state), s_jsonOptions);
 
     /// <inheritdoc />

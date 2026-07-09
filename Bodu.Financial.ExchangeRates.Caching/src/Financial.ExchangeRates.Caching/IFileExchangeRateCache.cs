@@ -33,14 +33,14 @@ public interface IFileExchangeRateCache
     /// Thrown when the cache uses a partitioned layout, where a pair has no single backing file; use
     /// <see cref="ResolveDirectory" /> or <see cref="ResolvePartitionPath" /> instead.
     /// </exception>
-    string ResolveFilePath(ExchangeRatePair pair);
+    string ResolveFilePath(CurrencyPair pair);
 
     /// <summary>
     /// Resolves the directory that holds the supplied pair's cache file or files for this cache's provider.
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <returns>The directory the pair's rates are stored in.</returns>
-    string ResolveDirectory(ExchangeRatePair pair);
+    string ResolveDirectory(CurrencyPair pair);
 
     /// <summary>
     /// Resolves the full path of the file that backs the supplied pair's rates for the partition containing
@@ -52,5 +52,5 @@ public interface IFileExchangeRateCache
     /// The resolved partition file path. For a single-file layout this is the pair's one file regardless of
     /// <paramref name="date" />.
     /// </returns>
-    string ResolvePartitionPath(ExchangeRatePair pair, DateOnly date);
+    string ResolvePartitionPath(CurrencyPair pair, DateOnly date);
 }

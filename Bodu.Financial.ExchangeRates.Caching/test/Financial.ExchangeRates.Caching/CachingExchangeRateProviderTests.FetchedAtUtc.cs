@@ -26,12 +26,12 @@ public sealed partial class CachingExchangeRateProviderTests
     /// instant, so a served rate can be attributed to when its backing data was downloaded.
     /// </summary>
     /// <returns>A fixed provider backed by the stamped series.</returns>
-    private static FixedDatedExchangeRateProvider StampedInner()
+    private static FixedDatedRateProvider StampedInner()
     {
-        ExchangeRateTableBuilder builder = new();
-        builder.Upsert(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), Provider, new DateOnly(2023, 1, 3), 0.5m, FetchedAt);
-        builder.Upsert(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), Provider, new DateOnly(2023, 1, 6), 0.51m, FetchedAt);
-        return new FixedDatedExchangeRateProvider(builder.ToBook());
+        RateTableBuilder builder = new();
+        builder.Upsert(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), Provider, new DateOnly(2023, 1, 3), 0.5m, FetchedAt);
+        builder.Upsert(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), Provider, new DateOnly(2023, 1, 6), 0.51m, FetchedAt);
+        return new FixedDatedRateProvider(builder.ToBook());
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public sealed partial class CachingExchangeRateProviderTests
     {
         CachingExchangeRateProvider sut = CreateDecorator(StampedInner());
 
-        ExchangeRateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual(FetchedAt, result.Rate.FetchedAtUtc);
     }
@@ -57,11 +57,11 @@ public sealed partial class CachingExchangeRateProviderTests
         CachingExchangeRateProvider sut = CreateDecorator(StampedInner());
 
         // First call misses and caches the row, stamping ObservedAtUtc from the inner fetch instant.
-        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         // Advance the clock so the cache-write instant (Now) is clearly distinct from a later hit.
         _clock.Advance(TimeSpan.FromHours(2));
-        ExchangeRateLookupResult hit = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult hit = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual(FetchedAt, hit.Rate.FetchedAtUtc);
         Assert.AreNotEqual(Now, hit.Rate.FetchedAtUtc);
@@ -75,12 +75,12 @@ public sealed partial class CachingExchangeRateProviderTests
     public void GetRate_WhenHitAfterMiss_ShouldAnchorProvenanceAgeToCacheWriteInstant()
     {
         CachingExchangeRateProvider sut = CreateDecorator(StampedInner());
-        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         _clock.Advance(TimeSpan.FromHours(2));
-        ExchangeRateLookupResult hit = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult hit = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        Assert.AreEqual(ExchangeRateOrigin.Cache, hit.Provenance.Origin);
+        Assert.AreEqual(RateOrigin.Cache, hit.Provenance.Origin);
 
         // The cache-write instant is Now; the hit is two hours later, so the provenance age is two hours — independent
         // of the much older upstream fetch instant carried on the rate.

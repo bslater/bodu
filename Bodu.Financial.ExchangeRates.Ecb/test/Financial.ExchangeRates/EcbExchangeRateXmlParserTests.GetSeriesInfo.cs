@@ -21,8 +21,8 @@ public partial class EcbExchangeRateXmlParserTests
         var pairs = table.GetSeriesInfo().Select(s => s.Pair).ToList();
 
         Assert.HasCount(3, pairs);
-        CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD));
-        CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.JPY));
-        CollectionAssert.Contains(pairs, new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.GBP));
+        CollectionAssert.Contains(pairs, new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD));
+        CollectionAssert.Contains(pairs, new CurrencyPair(CurrencyCode.EUR, CurrencyCode.JPY));
+        CollectionAssert.Contains(pairs, new CurrencyPair(CurrencyCode.EUR, CurrencyCode.GBP));
     }
 }

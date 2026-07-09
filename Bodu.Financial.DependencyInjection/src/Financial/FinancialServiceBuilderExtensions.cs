@@ -7,6 +7,7 @@
 using System.Text.Json;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.DependencyInjection;
+using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -76,23 +77,23 @@ public static class FinancialServiceBuilderExtensions
     }
 
     /// <summary>
-    /// Registers an <see cref="IExchangeRateProvider" /> implementation as a singleton.
+    /// Registers an <see cref="IRateProvider" /> implementation as a singleton.
     /// </summary>
     /// <typeparam name="TProvider">The provider implementation.</typeparam>
     /// <param name="builder">The builder.</param>
     /// <returns>The builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="builder" /> is <see langword="null" />.</exception>
     public static IFinancialServiceBuilder AddExchangeRateProvider<TProvider>(this IFinancialServiceBuilder builder)
-        where TProvider : class, IExchangeRateProvider
+        where TProvider : class, IRateProvider
     {
         ThrowHelper.ThrowIfNull(builder);
 
-        builder.Services.TryAddSingleton<IExchangeRateProvider, TProvider>();
+        builder.Services.TryAddSingleton<IRateProvider, TProvider>();
         return builder;
     }
 
     /// <summary>
-    /// Registers an <see cref="IExchangeRateProvider" /> instance as a singleton.
+    /// Registers an <see cref="IRateProvider" /> instance as a singleton.
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="provider">The provider instance.</param>
@@ -100,7 +101,7 @@ public static class FinancialServiceBuilderExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder" /> or <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    public static IFinancialServiceBuilder AddExchangeRateProvider(this IFinancialServiceBuilder builder, IExchangeRateProvider provider)
+    public static IFinancialServiceBuilder AddExchangeRateProvider(this IFinancialServiceBuilder builder, IRateProvider provider)
     {
         ThrowHelper.ThrowIfNull(builder);
         ThrowHelper.ThrowIfNull(provider);
@@ -110,23 +111,23 @@ public static class FinancialServiceBuilderExtensions
     }
 
     /// <summary>
-    /// Registers an <see cref="IDatedExchangeRateProvider" /> implementation as a singleton.
+    /// Registers an <see cref="IDatedRateProvider" /> implementation as a singleton.
     /// </summary>
     /// <typeparam name="TProvider">The provider implementation.</typeparam>
     /// <param name="builder">The builder.</param>
     /// <returns>The builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="builder" /> is <see langword="null" />.</exception>
     public static IFinancialServiceBuilder AddDatedExchangeRateProvider<TProvider>(this IFinancialServiceBuilder builder)
-        where TProvider : class, IDatedExchangeRateProvider
+        where TProvider : class, IDatedRateProvider
     {
         ThrowHelper.ThrowIfNull(builder);
 
-        builder.Services.TryAddSingleton<IDatedExchangeRateProvider, TProvider>();
+        builder.Services.TryAddSingleton<IDatedRateProvider, TProvider>();
         return builder;
     }
 
     /// <summary>
-    /// Registers an <see cref="IDatedExchangeRateProvider" /> instance as a singleton.
+    /// Registers an <see cref="IDatedRateProvider" /> instance as a singleton.
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="provider">The provider instance.</param>
@@ -134,7 +135,7 @@ public static class FinancialServiceBuilderExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder" /> or <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    public static IFinancialServiceBuilder AddDatedExchangeRateProvider(this IFinancialServiceBuilder builder, IDatedExchangeRateProvider provider)
+    public static IFinancialServiceBuilder AddDatedExchangeRateProvider(this IFinancialServiceBuilder builder, IDatedRateProvider provider)
     {
         ThrowHelper.ThrowIfNull(builder);
         ThrowHelper.ThrowIfNull(provider);

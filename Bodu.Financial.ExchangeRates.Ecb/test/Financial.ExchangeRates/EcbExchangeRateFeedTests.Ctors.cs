@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="EcbExchangeRateFeedTests.Constructor.cs" company="Bodu Pty. Ltd.">
+// <copyright file="EcbExchangeRateFeedTests.Ctors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

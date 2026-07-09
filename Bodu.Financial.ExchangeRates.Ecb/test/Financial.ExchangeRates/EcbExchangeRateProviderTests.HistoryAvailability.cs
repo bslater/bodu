@@ -17,7 +17,7 @@ public partial class EcbExchangeRateProviderTests
     {
         (EcbExchangeRateProvider provider, _) = Create();
 
-        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Since, provider.HistoryAvailability.Kind);
+        Assert.AreEqual(RateHistoryAvailabilityKind.Since, provider.HistoryAvailability.Kind);
         Assert.AreEqual(EcbExchangeRateFeed.Epoch, provider.HistoryAvailability.EarliestDate);
         Assert.AreEqual(new DateOnly(1999, 1, 4), provider.HistoryAvailability.EarliestDate);
     }
@@ -36,7 +36,7 @@ public partial class EcbExchangeRateProviderTests
         };
         EcbExchangeRateProvider provider = new(new FixtureEcbExchangeRateTableSource(options), options);
 
-        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Rolling, provider.HistoryAvailability.Kind);
+        Assert.AreEqual(RateHistoryAvailabilityKind.Rolling, provider.HistoryAvailability.Kind);
         Assert.AreEqual(90, provider.HistoryAvailability.WindowDays);
     }
 }

@@ -24,7 +24,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
     /// <summary>
     /// The currency pair used by the contract tests.
     /// </summary>
-    protected static readonly ExchangeRatePair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+    protected static readonly CurrencyPair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>
     /// The duration used by the contract tests.
@@ -192,7 +192,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.Store(Pair, new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5000m, now) }, Duration, now);
 
-        IReadOnlyList<CachedExchangeRate> other = cache.GetRates(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD), Duration, now);
+        IReadOnlyList<CachedExchangeRate> other = cache.GetRates(new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD), Duration, now);
 
         Assert.IsEmpty(other);
     }
@@ -288,7 +288,7 @@ public abstract class ExchangeRateCacheContractTests<TCache>
         DateTimeOffset now = DateTimeOffset.UtcNow;
         cache.RecordCoverage(Pair, new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 10), Duration, now);
 
-        DateRangeCoverage other = cache.GetCoverage(new ExchangeRatePair(CurrencyCode.EUR, CurrencyCode.USD), Duration, now);
+        DateRangeCoverage other = cache.GetCoverage(new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD), Duration, now);
 
         Assert.IsTrue(other.IsEmpty);
     }

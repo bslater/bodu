@@ -27,7 +27,7 @@ public readonly record struct ExchangeRateCacheFileContext
     /// <param name="fileExtension">
     /// The file extension, including the leading period, applied by the serialization format.
     /// </param>
-    public ExchangeRateCacheFileContext(string provider, ExchangeRatePair pair, string partitionKey, string fileExtension)
+    public ExchangeRateCacheFileContext(string provider, CurrencyPair pair, string partitionKey, string fileExtension)
     {
         Provider = provider;
         Pair = pair;
@@ -45,7 +45,7 @@ public readonly record struct ExchangeRateCacheFileContext
     /// Gets the currency pair the file holds.
     /// </summary>
     /// <value>The currency pair.</value>
-    public ExchangeRatePair Pair { get; }
+    public CurrencyPair Pair { get; }
 
     /// <summary>
     /// Gets the partition key the file holds.

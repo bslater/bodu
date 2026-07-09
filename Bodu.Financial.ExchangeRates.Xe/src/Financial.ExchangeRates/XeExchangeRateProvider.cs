@@ -49,7 +49,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// using var xe = new XeExchangeRateProvider(new XeExchangeRateOptions());
 /// await xe.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 ///
-/// ExchangeRateLookupResult usd = xe.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+/// RateLookupResult usd = xe.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 ///]]>
 /// </code>
 /// </example>
@@ -116,7 +116,7 @@ public sealed class XeExchangeRateProvider
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal XeExchangeRateProvider(IExchangeRatePairSource<XeSeriesInfo> source, XeExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
+    internal XeExchangeRateProvider(IPairRateSource<XeSeriesInfo> source, XeExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(source, options, ownedHttpClient: null, logger, timeProvider)
     {
     }
@@ -144,7 +144,7 @@ public sealed class XeExchangeRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private XeExchangeRateProvider(
-        IExchangeRatePairSource<XeSeriesInfo> source,
+        IPairRateSource<XeSeriesInfo> source,
         XeExchangeRateOptions options,
         HttpClient? ownedHttpClient,
         ILogger? logger,

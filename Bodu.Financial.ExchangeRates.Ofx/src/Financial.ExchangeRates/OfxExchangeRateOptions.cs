@@ -49,13 +49,13 @@ public sealed class OfxExchangeRateOptions
     /// <remarks>
     /// OFX publishes multi-decade spot-rate history ("20+ years") but no fixed inception date, so the advertised
     /// <see cref="WebExchangeRateProviderOptions.HistoryAvailability" /> is deliberately
-    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" /> — there is no known floor worth pre-empting a request
+    /// <see cref="RateHistoryAvailability.Unbounded" /> — there is no known floor worth pre-empting a request
     /// for. Set the property when a concrete floor matters for the pairs in use.
     /// </remarks>
     public OfxExchangeRateOptions()
     {
         BaseAddress = new Uri("https://api.ofx.com/");
-        HistoryAvailability = ExchangeRateHistoryAvailability.Unbounded;
+        HistoryAvailability = RateHistoryAvailability.Unbounded;
     }
 
     /// <summary>

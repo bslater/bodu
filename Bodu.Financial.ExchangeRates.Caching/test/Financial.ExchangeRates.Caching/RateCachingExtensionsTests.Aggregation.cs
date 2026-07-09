@@ -25,8 +25,8 @@ public sealed partial class RateCachingExtensionsTests
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m)),
                 configureCache: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider dated = provider.GetRequiredService<IDatedExchangeRateProvider>();
-        IExchangeRateProvider timeless = provider.GetRequiredService<IExchangeRateProvider>();
+        IDatedRateProvider dated = provider.GetRequiredService<IDatedRateProvider>();
+        IRateProvider timeless = provider.GetRequiredService<IRateProvider>();
 
         Assert.IsInstanceOfType<AggregatingExchangeRateProvider>(dated);
         Assert.AreSame<object>(dated, timeless);
@@ -45,8 +45,8 @@ public sealed partial class RateCachingExtensionsTests
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m)),
                 configureCache: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
-        ExchangeRateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
+        RateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual("RBA", result.Rate.Provider);
     }
@@ -64,10 +64,10 @@ public sealed partial class RateCachingExtensionsTests
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m)),
                 configureCache: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider rba = provider.GetRequiredKeyedService<IDatedExchangeRateProvider>("RBA");
+        IDatedRateProvider rba = provider.GetRequiredKeyedService<IDatedRateProvider>("RBA");
 
         Assert.IsInstanceOfType<CachingExchangeRateProvider>(rba);
-        Assert.AreEqual(0.50m, rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact).Rate.Rate);
+        Assert.AreEqual(0.50m, rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact).Rate.Rate);
     }
 
     /// <summary>
@@ -85,8 +85,8 @@ public sealed partial class RateCachingExtensionsTests
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m)),
                 configureCache: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider rba = provider.GetRequiredKeyedService<IDatedExchangeRateProvider>("RBA");
-        _ = rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        IDatedRateProvider rba = provider.GetRequiredKeyedService<IDatedRateProvider>("RBA");
+        _ = rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.IsTrue(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.json")), "the RBA child uses its supplied JSON cache");
     }
@@ -102,11 +102,11 @@ public sealed partial class RateCachingExtensionsTests
                 agg => agg
                     .AddCachedChild("RBA", _ => Fixed("RBA", 0.50m))
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m))
-                    .MapPair(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "ECB", "RBA"),
+                    .MapPair(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), "ECB", "RBA"),
                 configureCache: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
-        ExchangeRateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
+        RateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual("ECB", result.Rate.Provider);
     }
@@ -134,6 +134,6 @@ public sealed partial class RateCachingExtensionsTests
     /// <param name="provider">The provider tag.</param>
     /// <param name="rate">The rate.</param>
     /// <returns>A new fixed provider.</returns>
-    private static IDatedExchangeRateProvider Fixed(string provider, decimal rate) =>
-        new FixedDatedExchangeRateProvider(new[] { new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2023, 1, 3), rate, provider) });
+    private static IDatedRateProvider Fixed(string provider, decimal rate) =>
+        new FixedDatedRateProvider(new[] { new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2023, 1, 3), rate, provider) });
 }

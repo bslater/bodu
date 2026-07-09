@@ -36,7 +36,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// using var ofx = new OfxExchangeRateProvider(new OfxExchangeRateOptions());
 /// await ofx.LoadPairAsync("USD", "AUD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 ///
-/// ExchangeRateLookupResult aud = ofx.GetRate("USD", "AUD", new DateOnly(2023, 1, 3));
+/// RateLookupResult aud = ofx.GetRate("USD", "AUD", new DateOnly(2023, 1, 3));
 ///]]>
 /// </code>
 /// </example>
@@ -103,7 +103,7 @@ public sealed class OfxExchangeRateProvider
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal OfxExchangeRateProvider(IExchangeRatePairSource<OfxSeriesInfo> source, OfxExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
+    internal OfxExchangeRateProvider(IPairRateSource<OfxSeriesInfo> source, OfxExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(source, options, ownedHttpClient: null, logger, timeProvider)
     {
     }
@@ -131,7 +131,7 @@ public sealed class OfxExchangeRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private OfxExchangeRateProvider(
-        IExchangeRatePairSource<OfxSeriesInfo> source,
+        IPairRateSource<OfxSeriesInfo> source,
         OfxExchangeRateOptions options,
         HttpClient? ownedHttpClient,
         ILogger? logger,

@@ -36,9 +36,9 @@ public sealed class PriorityFallbackStrategy
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options,
+        RateLookupOptions options,
         IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
-        out ExchangeRateLookupResult result)
+        out RateLookupResult result)
     {
         ThrowHelper.ThrowIfNull(candidates);
 

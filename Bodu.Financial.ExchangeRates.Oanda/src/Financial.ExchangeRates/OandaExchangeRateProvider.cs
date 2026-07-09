@@ -43,7 +43,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// var today = DateOnly.FromDateTime(DateTime.UtcNow);
 /// await oanda.LoadPairAsync("AUD", "USD", today.AddDays(-30), today);
 ///
-/// ExchangeRateLookupResult usd = oanda.GetRate("AUD", "USD", today.AddDays(-1));
+/// RateLookupResult usd = oanda.GetRate("AUD", "USD", today.AddDays(-1));
 ///]]>
 /// </code>
 /// </example>
@@ -110,7 +110,7 @@ public sealed class OandaExchangeRateProvider
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal OandaExchangeRateProvider(IExchangeRatePairSource<OandaSeriesInfo> source, OandaExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
+    internal OandaExchangeRateProvider(IPairRateSource<OandaSeriesInfo> source, OandaExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(source, options, ownedHttpClient: null, logger, timeProvider)
     {
     }
@@ -138,7 +138,7 @@ public sealed class OandaExchangeRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private OandaExchangeRateProvider(
-        IExchangeRatePairSource<OandaSeriesInfo> source,
+        IPairRateSource<OandaSeriesInfo> source,
         OandaExchangeRateOptions options,
         HttpClient? ownedHttpClient,
         ILogger? logger,

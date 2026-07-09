@@ -32,7 +32,7 @@ internal static class YahooChartResponseParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON, carries a chart error, or omits the expected chart data.
     /// </exception>
-    public static PairRateData<YahooSeriesInfo> Parse(byte[] json, ExchangeRatePairRequest request, string symbol, YahooExchangeRateOptions options)
+    public static PairRateData<YahooSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, string symbol, YahooExchangeRateOptions options)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(symbol);
@@ -64,7 +64,7 @@ internal static class YahooChartResponseParser
         string quoteIsoCode = ReadQuoteIsoCode(first, request.Pair.To.ToString());
 
         int count = Math.Min(timestamps.GetArrayLength(), closes.GetArrayLength());
-        var observations = new List<ExchangeRateObservation>(count);
+        var observations = new List<RateObservation>(count);
 
         for (int i = 0; i < count; i++)
         {
@@ -83,7 +83,7 @@ internal static class YahooChartResponseParser
             if (date < request.StartDate || date > request.EndDate)
                 continue;
 
-            observations.Add(new ExchangeRateObservation(date, rate));
+            observations.Add(new RateObservation(date, rate));
         }
 
         YahooSeriesInfo series = new(request.Pair, symbol, quoteIsoCode);

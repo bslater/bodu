@@ -24,8 +24,8 @@ public class YahooChartResponseParserTests
     /// Builds a pair request for the AUD/USD fixture spanning January 2023.
     /// </summary>
     /// <returns>The pair request.</returns>
-    private static ExchangeRatePairRequest CreateRequest() =>
-        new(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+    private static CurrencyPairRequest CreateRequest() =>
+        new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
     /// <summary>
     /// Verifies that a valid chart parses to the present close observations, skipping the null-close day.

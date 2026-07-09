@@ -11,17 +11,17 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed partial class CachingExchangeRateProviderTests
 {
     /// <summary>
-    /// Verifies that a fresh cached rate is returned by <see cref="CachingExchangeRateProvider.GetRate(string, string, DateOnly, ExchangeRateLookupOptions?)" />
+    /// Verifies that a fresh cached rate is returned by <see cref="CachingExchangeRateProvider.GetRate(string, string, DateOnly, RateLookupOptions?)" />
     /// without consulting the inner provider.
     /// </summary>
     [TestMethod]
     public void GetRate_WhenCacheFresh_ShouldServeWithoutInner()
     {
         CountingDatedExchangeRateProvider inner = InnerWith();
-        SeedCache(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
+        SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        ExchangeRateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual(0.5m, result.Rate.Rate);
         Assert.AreEqual(0, inner.TotalCallCount);
@@ -37,9 +37,9 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        IReadOnlyList<CachedExchangeRate> cached = _cache.GetRates(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), Duration, _clock.GetUtcNow());
+        IReadOnlyList<CachedExchangeRate> cached = _cache.GetRates(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), Duration, _clock.GetUtcNow());
         Assert.HasCount(1, cached);
         Assert.AreEqual(0.5m, cached[0].Rate);
         Assert.AreEqual(1, inner.TotalCallCount);
@@ -57,7 +57,7 @@ public sealed partial class CachingExchangeRateProviderTests
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
-            _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+            _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
         });
     }
 }

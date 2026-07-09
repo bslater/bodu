@@ -153,7 +153,7 @@ public sealed class SqliteRateCacheExtensionsTests
         ServiceProvider provider = BuildProvider(builder => builder
             .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = _databasePath)
             .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = _databasePath));
-        var pair = new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD);
+        var pair = new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD);
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
         provider.GetRequiredKeyedService<IExchangeRateCache>("RBA")
@@ -206,9 +206,9 @@ public sealed class SqliteRateCacheExtensionsTests
         IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
-        Assert.HasCount(1, cache.GetRates(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now));
+        Assert.HasCount(1, cache.GetRates(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now));
         Assert.IsTrue(File.Exists(_databasePath));
     }
 
@@ -226,7 +226,7 @@ public sealed class SqliteRateCacheExtensionsTests
         IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
         Assert.IsTrue(File.Exists(_databasePath));
     }

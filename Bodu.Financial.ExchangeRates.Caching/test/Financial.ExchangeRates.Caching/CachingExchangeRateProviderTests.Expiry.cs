@@ -17,9 +17,9 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
+        _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out _);
         _clock.Advance(Duration + TimeSpan.FromHours(1));
-        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
+        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out _);
 
         Assert.IsTrue(found);
         Assert.AreEqual(2, inner.TryGetRateCallCount);
@@ -34,9 +34,9 @@ public sealed partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 3), 0.5m));
         CachingExchangeRateProvider sut = CreateDecorator(inner);
 
-        _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
+        _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out _);
         _clock.Advance(Duration - TimeSpan.FromHours(1));
-        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
+        bool found = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out _);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1, inner.TryGetRateCallCount);
@@ -54,9 +54,9 @@ public sealed partial class CachingExchangeRateProviderTests
         options.ProviderExpiry[Provider] = TimeSpan.FromHours(1);
         CachingExchangeRateProvider sut = new(inner, _cache, options, _clock);
 
-        _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
+        _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out _);
         _clock.Advance(TimeSpan.FromHours(2));
-        _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
+        _ = sut.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact, out _);
 
         Assert.AreEqual(2, inner.TryGetRateCallCount);
     }

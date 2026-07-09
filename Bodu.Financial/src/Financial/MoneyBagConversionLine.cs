@@ -4,11 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.ExchangeRates;
+
 namespace Bodu.Financial;
 
 /// <summary>
 /// Captures the per-line audit metadata produced by
-/// <see cref="MoneyBag.ConvertToWithAudit{TTarget}(IDatedExchangeRateProvider, DateOnly, ExchangeRateLookupOptions?, MoneyBagConversionRoundingPolicy)" />
+/// <see cref="MoneyBag.ConvertToWithAudit{TTarget}(IDatedRateProvider, DateOnly, RateLookupOptions?, MoneyBagConversionRoundingPolicy)" />
 /// for a single source currency in the bag.
 /// </summary>
 /// <param name="SourceIsoCode">The source-currency ISO code for this line.</param>
@@ -24,5 +26,5 @@ namespace Bodu.Financial;
 public readonly record struct MoneyBagConversionLine(
     string SourceIsoCode,
     decimal SourceAmount,
-    ExchangeRateLookupResult? Rate,
+    RateLookupResult? Rate,
     decimal RawConvertedAmount);

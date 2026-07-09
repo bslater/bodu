@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed partial class ExchangeRateCacheFileLayoutTests
 {
     /// <summary>The currency pair used by the tests.</summary>
-    private static readonly ExchangeRatePair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+    private static readonly CurrencyPair Pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>
     /// Verifies that the single-file layout is not partitioned while the calendar layouts are.

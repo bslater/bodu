@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial;
 
@@ -89,22 +90,22 @@ internal static partial class FinancialThrowHelper
     }
 
     /// <summary>
-    /// Throws when <paramref name="value" /> is not a fully constructed <see cref="ExchangeRatePair" />.
+    /// Throws when <paramref name="value" /> is not a fully constructed <see cref="CurrencyPair" />.
     /// </summary>
     /// <param name="value">The candidate pair to validate.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="value" /> is <see langword="default" />, i.e. its
-    /// <see cref="ExchangeRatePair.IsValid" /> property reports <see langword="false" />.
+    /// <see cref="CurrencyPair.IsValid" /> property reports <see langword="false" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ThrowIfInvalidExchangeRatePair(
-        ExchangeRatePair value,
+    internal static void ThrowIfInvalidCurrencyPair(
+        CurrencyPair value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {
         if (!value.IsValid)
             throw new ArgumentException(
-                FinancialResourceStrings.Arg_Invalid_ExchangeRatePairDefault,
+                FinancialResourceStrings.Arg_Invalid_CurrencyPairDefault,
                 paramName);
     }
 

@@ -17,7 +17,7 @@ public partial class RbaExchangeRateProviderTests
     {
         (RbaExchangeRateProvider provider, _) = Create();
 
-        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Since, provider.HistoryAvailability.Kind);
+        Assert.AreEqual(RateHistoryAvailabilityKind.Since, provider.HistoryAvailability.Kind);
         Assert.AreEqual(new DateOnly(1983, 1, 1), provider.HistoryAvailability.EarliestDate);
     }
 
@@ -39,7 +39,7 @@ public partial class RbaExchangeRateProviderTests
         };
         RbaExchangeRateProvider provider = new(new FixtureRbaExchangeRateTableSource(options), options);
 
-        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Since, provider.HistoryAvailability.Kind);
+        Assert.AreEqual(RateHistoryAvailabilityKind.Since, provider.HistoryAvailability.Kind);
         Assert.AreEqual(new DateOnly(2018, 1, 1), provider.HistoryAvailability.EarliestDate);
     }
 }

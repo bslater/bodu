@@ -30,10 +30,10 @@ public abstract class PairWebExchangeRateProviderContractTests<TProvider, TSerie
     /// <summary>
     /// Gets the history availability the provider is expected to advertise — the declared depth of the upstream source.
     /// Every pair provider must declare one deliberately (an intentional
-    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" /> included), so this contract fails when a new provider
+    /// <see cref="RateHistoryAvailability.Unbounded" /> included), so this contract fails when a new provider
     /// forgets to set the value in its options.
     /// </summary>
-    protected abstract ExchangeRateHistoryAvailability ExpectedHistoryAvailability { get; }
+    protected abstract RateHistoryAvailability ExpectedHistoryAvailability { get; }
 
     /// <summary>
     /// Verifies that the provider advertises the expected history availability, forwarded from its options, so the
@@ -60,7 +60,7 @@ public abstract class PairWebExchangeRateProviderContractTests<TProvider, TSerie
 
         await provider.LoadPairAsync(from, to, RangeStart, RangeEnd);
 
-        ExchangeRateLookupResult result = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = provider.GetRate(from, to, KnownDate, RateLookupOptions.Exact);
 
         Assert.IsGreaterThan(0m, result.Rate.Rate, "the warmed known date resolves to a positive rate");
     }
@@ -79,7 +79,7 @@ public abstract class PairWebExchangeRateProviderContractTests<TProvider, TSerie
         await provider.LoadPairAsync(from, to, RangeStart, RangeEnd);
         await provider.LoadPairAsync(from, to, RangeStart, RangeEnd);
 
-        ExchangeRateLookupResult result = provider.GetRate(from, to, KnownDate, ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = provider.GetRate(from, to, KnownDate, RateLookupOptions.Exact);
 
         Assert.IsGreaterThan(0m, result.Rate.Rate);
     }

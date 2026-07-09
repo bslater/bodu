@@ -26,7 +26,7 @@ public partial class OandaExchangeRateProviderTests
 
         var today = new DateOnly(2026, 6, 28);
 
-        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Rolling, provider.HistoryAvailability.Kind);
+        Assert.AreEqual(RateHistoryAvailabilityKind.Rolling, provider.HistoryAvailability.Kind);
         Assert.AreEqual(today.AddDays(-180), provider.HistoryAvailability.GetEarliestAvailable(today));
     }
 }

@@ -17,7 +17,7 @@ public partial class BoeExchangeRateProviderTests
     {
         (BoeExchangeRateProvider provider, _) = Create();
 
-        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Since, provider.HistoryAvailability.Kind);
+        Assert.AreEqual(RateHistoryAvailabilityKind.Since, provider.HistoryAvailability.Kind);
         Assert.AreEqual(new DateOnly(1975, 1, 2), provider.HistoryAvailability.EarliestDate);
     }
 
@@ -30,7 +30,7 @@ public partial class BoeExchangeRateProviderTests
     {
         BoeExchangeRateOptions options = new()
         {
-            HistoryAvailability = ExchangeRateHistoryAvailability.Since(new DateOnly(1999, 1, 4)),
+            HistoryAvailability = RateHistoryAvailability.Since(new DateOnly(1999, 1, 4)),
             EnableDiskCache = false,
         };
         BoeExchangeRateProvider provider = new(new FixtureBoeExchangeRateTableSource(options), options);

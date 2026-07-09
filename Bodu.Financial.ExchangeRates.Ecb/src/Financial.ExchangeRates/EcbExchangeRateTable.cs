@@ -19,7 +19,7 @@ internal sealed class EcbExchangeRateTable
     /// Initializes a new instance of the <see cref="EcbExchangeRateTable" /> class.
     /// </summary>
     /// <param name="observations">The parsed euro reference-rate observations.</param>
-    internal EcbExchangeRateTable(IReadOnlyList<EcbExchangeRateObservation> observations)
+    internal EcbExchangeRateTable(IReadOnlyList<EcbRateObservation> observations)
     {
         Observations = observations;
     }
@@ -28,7 +28,7 @@ internal sealed class EcbExchangeRateTable
     /// Gets the parsed euro reference-rate observations.
     /// </summary>
     /// <value>A read-only list of dated, per-currency observations.</value>
-    public IReadOnlyList<EcbExchangeRateObservation> Observations { get; }
+    public IReadOnlyList<EcbRateObservation> Observations { get; }
 
     /// <summary>
     /// Enumerates the table as <see cref="ExchangeRate" /> observations, each quoting the euro against a currency on a
@@ -37,7 +37,7 @@ internal sealed class EcbExchangeRateTable
     /// <returns>One <see cref="ExchangeRate" /> per observation.</returns>
     public IEnumerable<ExchangeRate> EnumerateRates()
     {
-        foreach (EcbExchangeRateObservation observation in Observations)
+        foreach (EcbRateObservation observation in Observations)
         {
             yield return new ExchangeRate(
                 EcbExchangeRateProvider.BaseCurrency,
@@ -57,11 +57,11 @@ internal sealed class EcbExchangeRateTable
         var seen = new HashSet<string>(StringComparer.Ordinal);
         var result = new List<EcbSeriesInfo>();
 
-        foreach (EcbExchangeRateObservation observation in Observations)
+        foreach (EcbRateObservation observation in Observations)
         {
             if (seen.Add(observation.CurrencyCode))
             {
-                ExchangeRatePair pair = new(EcbExchangeRateProvider.BaseCurrency, CurrencyInfo.ParseCurrencyCode(observation.CurrencyCode));
+                CurrencyPair pair = new(EcbExchangeRateProvider.BaseCurrency, CurrencyInfo.ParseCurrencyCode(observation.CurrencyCode));
                 result.Add(new EcbSeriesInfo(pair, observation.CurrencyCode));
             }
         }

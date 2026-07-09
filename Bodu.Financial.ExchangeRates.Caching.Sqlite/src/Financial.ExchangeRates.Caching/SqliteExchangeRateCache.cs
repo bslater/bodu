@@ -66,7 +66,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// // A SQLite caching provider persisting to a file under the system temp path.
 /// var options = new SqliteExchangeRateCacheOptions { Provider = "RBA", DatabaseFilePath = "/var/cache/rba.db" };
 /// using var cache = new SqliteExchangeRateCache(options);
-/// IDatedExchangeRateProvider cached = new CachingExchangeRateProvider(rba, cache, new CachingExchangeRateOptions());
+/// IDatedRateProvider cached = new CachingExchangeRateProvider(rba, cache, new CachingExchangeRateOptions());
 ///]]>
 /// </code>
 /// </example>
@@ -81,8 +81,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// using var rbaCache = new SqliteExchangeRateCache("RBA", "/var/cache/fx.db");
 /// using var ofxCache = new SqliteExchangeRateCache("OFX", "/var/cache/fx.db");
 ///
-/// IDatedExchangeRateProvider rba = new CachingExchangeRateProvider(rbaSource, rbaCache, options);
-/// IDatedExchangeRateProvider ofx = new CachingExchangeRateProvider(ofxSource, ofxCache, options);
+/// IDatedRateProvider rba = new CachingExchangeRateProvider(rbaSource, rbaCache, options);
+/// IDatedRateProvider ofx = new CachingExchangeRateProvider(ofxSource, ofxCache, options);
 ///]]>
 /// </code>
 /// </example>
@@ -99,7 +99,7 @@ public sealed class SqliteExchangeRateCache
     private readonly SqliteConnection _keepAlive;
 
     /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first use and reused thereafter.</summary>
-    private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
+    private readonly ConcurrentDictionary<CurrencyPair, object> _pairLocks = new();
 
     /// <summary>Tracks whether the instance has been disposed, as <c>0</c> for live and <c>1</c> for disposed. Stored as an <see cref="int" /> so <see cref="Interlocked.Exchange(ref int, int)" /> can make <see cref="Dispose" /> idempotent: only the first caller observes the transition and releases the keep-alive connection.</summary>
     private int _disposed;
@@ -243,7 +243,7 @@ public sealed class SqliteExchangeRateCache
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<CachedExchangeRate> GetRates(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
+    public IReadOnlyList<CachedExchangeRate> GetRates(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf)
     {
         IReadOnlyList<CachedExchangeRate> entries = ReadEntries(pair);
         if (entries.Count == 0)
@@ -253,7 +253,7 @@ public sealed class SqliteExchangeRateCache
     }
 
     /// <inheritdoc />
-    public void Store(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
+    public void Store(CurrencyPair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
     {
         ThrowHelper.ThrowIfNull(rates);
 
@@ -270,11 +270,11 @@ public sealed class SqliteExchangeRateCache
     }
 
     /// <inheritdoc />
-    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
+    public DateRangeCoverage GetCoverage(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf) =>
         ExchangeRateCacheRules.BuildCoverage(ReadCoverage(pair), duration, asOf);
 
     /// <inheritdoc />
-    public void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
+    public void RecordCoverage(CurrencyPair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
     {
         ThrowHelper.ThrowIfGreaterThan(start, end);
 
@@ -290,7 +290,7 @@ public sealed class SqliteExchangeRateCache
 
     /// <inheritdoc />
     public ExchangeRateCacheWriteStatus StoreFetchedRange(
-        ExchangeRatePair pair,
+        CurrencyPair pair,
         IReadOnlyList<CachedExchangeRate> rows,
         DateOnly start,
         DateOnly end,
@@ -477,7 +477,7 @@ public sealed class SqliteExchangeRateCache
     /// Returns the raw stored rows without freshness filtering; the freshness policy is applied by the public surface.
     /// A malformed row that cannot be parsed is skipped so a single corrupt value never fails the whole read.
     /// </remarks>
-    private IReadOnlyList<CachedExchangeRate> ReadEntries(ExchangeRatePair pair)
+    private IReadOnlyList<CachedExchangeRate> ReadEntries(CurrencyPair pair)
     {
         List<CachedExchangeRate> rows = new();
 
@@ -535,7 +535,7 @@ public sealed class SqliteExchangeRateCache
     /// Runs as a single transaction so a reader never observes a half-replaced set. A storage failure is swallowed so a
     /// failed write does not break rate retrieval.
     /// </remarks>
-    private void WriteEntries(ExchangeRatePair pair, List<CachedExchangeRate> entries)
+    private void WriteEntries(CurrencyPair pair, List<CachedExchangeRate> entries)
     {
         try
         {
@@ -570,7 +570,7 @@ public sealed class SqliteExchangeRateCache
     /// Shared by <see cref="WriteEntries" /> and <see cref="WritePairState" /> so the rate-table statements are
     /// single-sourced; the caller owns the transaction lifetime and commits or rolls back.
     /// </remarks>
-    private void ReplaceEntries(SqliteConnection connection, SqliteTransaction transaction, ExchangeRatePair pair, List<CachedExchangeRate> entries)
+    private void ReplaceEntries(SqliteConnection connection, SqliteTransaction transaction, CurrencyPair pair, List<CachedExchangeRate> entries)
     {
         using (SqliteCommand delete = connection.CreateCommand())
         {
@@ -619,7 +619,7 @@ public sealed class SqliteExchangeRateCache
     /// surface. A malformed window that cannot be parsed is skipped so a single corrupt value never fails the whole
     /// read.
     /// </remarks>
-    private IReadOnlyList<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> ReadCoverage(ExchangeRatePair pair)
+    private IReadOnlyList<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> ReadCoverage(CurrencyPair pair)
     {
         List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> windows = new();
 
@@ -671,7 +671,7 @@ public sealed class SqliteExchangeRateCache
     /// Runs as a single transaction so a reader never observes a half-replaced set. A storage failure is swallowed so a
     /// failed write does not break rate retrieval.
     /// </remarks>
-    private void WriteCoverage(ExchangeRatePair pair, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
+    private void WriteCoverage(CurrencyPair pair, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
     {
         try
         {
@@ -706,7 +706,7 @@ public sealed class SqliteExchangeRateCache
     /// Shared by <see cref="WriteCoverage" /> and <see cref="WritePairState" /> so the coverage-table statements are
     /// single-sourced; the caller owns the transaction lifetime and commits or rolls back.
     /// </remarks>
-    private void ReplaceCoverage(SqliteConnection connection, SqliteTransaction transaction, ExchangeRatePair pair, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
+    private void ReplaceCoverage(SqliteConnection connection, SqliteTransaction transaction, CurrencyPair pair, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
     {
         using (SqliteCommand delete = connection.CreateCommand())
         {
@@ -756,7 +756,7 @@ public sealed class SqliteExchangeRateCache
     /// Backs <see cref="StoreFetchedRange" />: rewriting both tables in a single transaction is what makes the
     /// rows-plus-coverage write atomic, closing the window in which coverage could be recorded without its rows.
     /// </remarks>
-    private bool WritePairState(ExchangeRatePair pair, List<CachedExchangeRate> entries, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
+    private bool WritePairState(CurrencyPair pair, List<CachedExchangeRate> entries, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
     {
         try
         {
@@ -789,7 +789,7 @@ public sealed class SqliteExchangeRateCache
     /// </summary>
     /// <param name="command">The command to bind onto.</param>
     /// <param name="pair">The currency pair supplying the codes.</param>
-    private void BindPair(SqliteCommand command, ExchangeRatePair pair)
+    private void BindPair(SqliteCommand command, CurrencyPair pair)
     {
         command.Parameters.AddWithValue("$provider", _options.Provider);
         command.Parameters.AddWithValue("$from", pair.From.ToString());
@@ -841,6 +841,6 @@ public sealed class SqliteExchangeRateCache
     /// </summary>
     /// <param name="pair">The currency pair whose write lock is required.</param>
     /// <returns>The per-pair lock object.</returns>
-    private object LockFor(ExchangeRatePair pair) =>
+    private object LockFor(CurrencyPair pair) =>
         _pairLocks.GetOrAdd(pair, static _ => new object());
 }

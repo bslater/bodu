@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Verifies that <see cref="OandaExchangeRateProvider" /> satisfies the shared dated-provider contract, so the OANDA
-/// source is indistinguishable in shape from any other <see cref="IDatedExchangeRateProvider" />. The provider is
+/// source is indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider is
 /// seeded offline from the embedded AUD/USD rate-history fixture through <see cref="FixtureOandaExchangeRateSource" />.
 /// </summary>
 [TestClass]
@@ -24,7 +24,7 @@ public sealed class OandaExchangeRateProviderContractTests
     private static readonly DateOnly s_seeded = new(2023, 1, 3);
 
     /// <inheritdoc />
-    protected override ExchangeRatePair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
+    protected override CurrencyPair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <inheritdoc />
     protected override DateOnly KnownDate => s_seeded;
@@ -33,8 +33,8 @@ public sealed class OandaExchangeRateProviderContractTests
     protected override DateOnly UnknownDate => new(2020, 1, 1);
 
     /// <inheritdoc />
-    protected override ExchangeRateHistoryAvailability ExpectedHistoryAvailability =>
-        ExchangeRateHistoryAvailability.RollingDays(180);
+    protected override RateHistoryAvailability ExpectedHistoryAvailability =>
+        RateHistoryAvailability.RollingDays(180);
 
     /// <inheritdoc />
     protected override bool SupportsDisposalGuard => true;

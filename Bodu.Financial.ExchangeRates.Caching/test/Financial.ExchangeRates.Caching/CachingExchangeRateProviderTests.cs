@@ -117,7 +117,7 @@ public sealed partial class CachingExchangeRateProviderTests
     /// </summary>
     /// <param name="inner">The inner source to wrap.</param>
     /// <returns>A new decorator instance.</returns>
-    private CachingExchangeRateProvider CreateDecorator(IDatedExchangeRateProvider inner) =>
+    private CachingExchangeRateProvider CreateDecorator(IDatedRateProvider inner) =>
         new(inner, _cache, _options, _clock);
 
     /// <summary>
@@ -133,7 +133,7 @@ public sealed partial class CachingExchangeRateProviderTests
     /// </summary>
     /// <param name="pair">The pair to seed.</param>
     /// <param name="rows">The date/rate rows to store.</param>
-    private void SeedCache(ExchangeRatePair pair, params (DateOnly Date, decimal Rate)[] rows) =>
+    private void SeedCache(CurrencyPair pair, params (DateOnly Date, decimal Rate)[] rows) =>
         _cache.Store(
             pair,
             rows.Select(r => new CachedExchangeRate(r.Date, r.Rate, _clock.GetUtcNow())).ToArray(),
@@ -147,6 +147,6 @@ public sealed partial class CachingExchangeRateProviderTests
     /// <param name="pair">The pair to record coverage for.</param>
     /// <param name="start">The inclusive first date of the covered window.</param>
     /// <param name="end">The inclusive last date of the covered window.</param>
-    private void SeedCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end) =>
+    private void SeedCoverage(CurrencyPair pair, DateOnly start, DateOnly end) =>
         _cache.RecordCoverage(pair, start, end, Duration, _clock.GetUtcNow());
 }

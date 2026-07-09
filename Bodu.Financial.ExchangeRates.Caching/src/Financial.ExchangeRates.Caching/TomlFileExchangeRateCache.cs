@@ -85,7 +85,7 @@ public sealed class TomlFileExchangeRateCache
     protected override string FileExtension => ".toml";
 
     /// <inheritdoc />
-    private protected override string Serialize(ExchangeRatePair pair, CachePairState state) =>
+    private protected override string Serialize(CurrencyPair pair, CachePairState state) =>
         TomlSerializer.Serialize(ExchangeRateCacheFileConverter.ToFile(Provider, pair, state), s_tomlOptions);
 
     /// <inheritdoc />

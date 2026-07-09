@@ -44,7 +44,7 @@ public sealed class OandaExchangeRateOptions
     public OandaExchangeRateOptions()
     {
         BaseAddress = new Uri("https://fxds-hcc.oanda.com/");
-        HistoryAvailability = ExchangeRateHistoryAvailability.RollingDays(AnonymousHistoryWindowDays);
+        HistoryAvailability = RateHistoryAvailability.RollingDays(AnonymousHistoryWindowDays);
     }
 
     /// <summary>

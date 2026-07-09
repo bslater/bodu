@@ -20,7 +20,7 @@ public partial class YahooExchangeRateProviderTests
     {
         YahooExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        ExchangeRateLookupResult result = await provider.GetRateAsync("AUD", "USD", new DateOnly(2023, 1, 3));
+        RateLookupResult result = await provider.GetRateAsync("AUD", "USD", new DateOnly(2023, 1, 3));
 
         Assert.AreEqual(0.6828m, result.Rate.Rate);
     }
@@ -33,8 +33,8 @@ public partial class YahooExchangeRateProviderTests
     {
         YahooExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        ExchangeRateLookupResult sync = provider.GetRate("AUD", "USD");
-        ExchangeRateLookupResult async = await provider.GetRateAsync("AUD", "USD");
+        RateLookupResult sync = provider.GetRate("AUD", "USD");
+        RateLookupResult async = await provider.GetRateAsync("AUD", "USD");
 
         Assert.AreEqual(sync.Rate.Rate, async.Rate.Rate);
         Assert.IsGreaterThan(0m, sync.Rate.Rate);
@@ -42,16 +42,16 @@ public partial class YahooExchangeRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that the explicit timeless <see cref="IExchangeRateProvider" /> surface returns the same multiplier as
+    /// Verifies that the explicit timeless <see cref="IRateProvider" /> surface returns the same multiplier as
     /// the rich undated lookup.
     /// </summary>
     [TestMethod]
-    public async Task GetRate_WhenAccessedThroughIExchangeRateProvider_ShouldMatchRichResult()
+    public async Task GetRate_WhenAccessedThroughIRateProvider_ShouldMatchRichResult()
     {
         YahooExchangeRateProvider provider = await CreatePreloadedAsync();
 
-        ExchangeRateLookupResult rich = provider.GetRate("AUD", "USD");
-        decimal plain = ((IExchangeRateProvider)provider).GetRate("AUD", "USD");
+        RateLookupResult rich = provider.GetRate("AUD", "USD");
+        decimal plain = ((IRateProvider)provider).GetRate("AUD", "USD");
 
         Assert.AreEqual(rich.Rate.Rate, plain);
     }

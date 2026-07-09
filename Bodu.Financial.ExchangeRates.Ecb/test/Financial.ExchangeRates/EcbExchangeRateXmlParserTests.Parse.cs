@@ -30,7 +30,7 @@ public partial class EcbExchangeRateXmlParserTests
     {
         EcbExchangeRateTable table = ParseSample();
 
-        EcbExchangeRateObservation usd = table.Observations
+        EcbRateObservation usd = table.Observations
             .Single(o => o.Date == new DateOnly(2023, 1, 3) && o.CurrencyCode == "USD");
 
         Assert.AreEqual(1.0545m, usd.Rate);

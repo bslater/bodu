@@ -142,7 +142,7 @@ public sealed partial class SqliteExchangeRateCacheTests
         var date = new DateOnly(2023, 1, 3);
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        ExchangeRatePair[] pairs =
+        CurrencyPair[] pairs =
         {
             new(CurrencyCode.AUD, CurrencyCode.USD),
             new(CurrencyCode.GBP, CurrencyCode.USD),
@@ -158,7 +158,7 @@ public sealed partial class SqliteExchangeRateCacheTests
         List<Task> writes = new();
         for (int i = 0; i < pairs.Length; i++)
         {
-            ExchangeRatePair pair = pairs[i];
+            CurrencyPair pair = pairs[i];
             decimal rate = 0.5000m + (0.0100m * i);
             writes.Add(Task.Run(() => cache.Store(pair, new[] { new CachedExchangeRate(date, rate, now) }, Duration, now)));
         }

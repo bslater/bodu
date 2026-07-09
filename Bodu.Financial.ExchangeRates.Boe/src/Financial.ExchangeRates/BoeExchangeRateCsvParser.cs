@@ -96,7 +96,7 @@ internal static class BoeExchangeRateCsvParser
         Dictionary<string, BoeSeries> byCode = BuildSeriesIndex(options);
         BoeSeries?[] columns = MapColumns(document.Headers, byCode, out Dictionary<string, BoeSeries> present);
 
-        var observations = new List<BoeExchangeRateObservation>();
+        var observations = new List<BoeRateObservation>();
         foreach (DelimitedRow row in document.Rows)
         {
             if (row.Count == 0 || !TryParseDate(row[0], out DateOnly date))
@@ -109,7 +109,7 @@ internal static class BoeExchangeRateCsvParser
                     continue;
 
                 if (TryParseRate(row[column], out decimal rate))
-                    observations.Add(new BoeExchangeRateObservation(date, series.QuoteIsoCode, rate));
+                    observations.Add(new BoeRateObservation(date, series.QuoteIsoCode, rate));
             }
         }
 

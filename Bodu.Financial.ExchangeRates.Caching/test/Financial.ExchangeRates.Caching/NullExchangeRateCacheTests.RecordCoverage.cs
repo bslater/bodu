@@ -18,7 +18,7 @@ public sealed partial class NullExchangeRateCacheTests
     public void RecordCoverage_WhenStartAfterEnd_ShouldThrowArgumentOutOfRangeException()
     {
         IExchangeRateCache cache = NullExchangeRateCache.Create("Yahoo");
-        ExchangeRatePair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
+        CurrencyPair pair = new(CurrencyCode.AUD, CurrencyCode.USD);
 
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

@@ -26,7 +26,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     /// <param name="rows">The observation rows.</param>
     /// <returns>The named child.</returns>
     private static NamedDatedExchangeRateProvider Named(string name, params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
-        new(name, new FixedDatedExchangeRateProvider(rows.Select(r => new ExchangeRate(CurrencyInfo.ParseCurrencyCode(r.From), CurrencyInfo.ParseCurrencyCode(r.To), r.Date, r.Rate, name))));
+        new(name, new FixedDatedRateProvider(rows.Select(r => new ExchangeRate(CurrencyInfo.ParseCurrencyCode(r.From), CurrencyInfo.ParseCurrencyCode(r.To), r.Date, r.Rate, name))));
 
     /// <summary>
     /// Verifies that a <see langword="null" /> children collection is rejected.
@@ -62,7 +62,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     [TestMethod]
     public void Constructor_WhenChildNameIsBlank_ShouldThrowArgumentException()
     {
-        NamedDatedExchangeRateProvider blank = new("  ", new FixedDatedExchangeRateProvider(Array.Empty<ExchangeRate>()));
+        NamedDatedExchangeRateProvider blank = new("  ", new FixedDatedRateProvider(Array.Empty<ExchangeRate>()));
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -111,7 +111,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     public void Constructor_WhenRouteReferencesUnknownChild_ShouldThrowArgumentException()
     {
         ExchangeRateAggregationOptions options = new();
-        options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "Unknown" });
+        options.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "Unknown" });
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -130,14 +130,14 @@ public sealed partial class AggregatingExchangeRateProviderTests
     {
         AggregatingExchangeRateProvider agg = new(new[] { Named("RBA", ("USD", "AUD", D1, 1.5m)) });
 
-        ExchangeRateLookupResult result = agg.GetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = agg.GetRate("USD", "AUD", D1, RateLookupOptions.Exact);
 
         Assert.AreEqual(1.5m, result.Rate.Rate);
         Assert.AreEqual("RBA", result.Rate.Provider);
     }
 
     /// <summary>
-    /// Verifies that <see cref="AggregatingExchangeRateProvider.GetRate(string, string, DateOnly, ExchangeRateLookupOptions?)" />
+    /// Verifies that <see cref="AggregatingExchangeRateProvider.GetRate(string, string, DateOnly, RateLookupOptions?)" />
     /// throws when no child can satisfy the request.
     /// </summary>
     [TestMethod]
@@ -147,7 +147,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
-            _ = agg.GetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact);
+            _ = agg.GetRate("USD", "AUD", D1, RateLookupOptions.Exact);
         });
     }
 
@@ -160,7 +160,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
         NamedDatedExchangeRateProvider rba = Named("RBA", ("USD", "AUD", D1, 1.5m));
         AggregatingExchangeRateProvider agg = new(new[] { rba });
 
-        bool found = agg.TryGetProvider("RBA", out IDatedExchangeRateProvider? provider);
+        bool found = agg.TryGetProvider("RBA", out IDatedRateProvider? provider);
 
         Assert.IsTrue(found);
         Assert.AreSame(rba.Provider, provider);
@@ -186,7 +186,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
         MutableTimeProvider clock = new(new DateTimeOffset(D1.Year, D1.Month, D1.Day, 12, 0, 0, TimeSpan.Zero));
         AggregatingExchangeRateProvider agg = new(new[] { Named("RBA", ("USD", "AUD", D1, 1.5m)) }, options: null, timeProvider: clock);
 
-        decimal rate = ((IExchangeRateProvider)agg).GetRate("USD", "AUD");
+        decimal rate = ((IRateProvider)agg).GetRate("USD", "AUD");
 
         Assert.AreEqual(1.5m, rate);
     }

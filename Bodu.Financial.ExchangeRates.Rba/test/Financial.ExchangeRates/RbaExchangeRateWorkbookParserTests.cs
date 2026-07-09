@@ -36,7 +36,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     {
         RbaExchangeRateTable table = ParseSample();
 
-        RbaExchangeRateSeries usd = table.Series.Single(s => s.CurrencyCode == "USD");
+        RbaRateSeries usd = table.Series.Single(s => s.CurrencyCode == "USD");
 
         Assert.AreEqual("FXRUSD", usd.SeriesId);
     }
@@ -62,7 +62,7 @@ public partial class RbaExchangeRateWorkbookParserTests
     {
         RbaExchangeRateTable table = ParseSample();
 
-        RbaExchangeRateSeries xdr = table.Series.Single(s => s.CurrencyCode == "XDR");
+        RbaRateSeries xdr = table.Series.Single(s => s.CurrencyCode == "XDR");
 
         Assert.AreEqual("FXRSDR", xdr.SeriesId);
     }

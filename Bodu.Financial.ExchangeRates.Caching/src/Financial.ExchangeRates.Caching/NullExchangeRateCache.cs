@@ -43,11 +43,11 @@ public sealed class NullExchangeRateCache
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<CachedExchangeRate> GetRates(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
+    public IReadOnlyList<CachedExchangeRate> GetRates(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf) =>
         Array.Empty<CachedExchangeRate>();
 
     /// <inheritdoc />
-    public void Store(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
+    public void Store(CurrencyPair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
     {
         ThrowHelper.ThrowIfNull(rates);
 
@@ -56,11 +56,11 @@ public sealed class NullExchangeRateCache
     }
 
     /// <inheritdoc />
-    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
+    public DateRangeCoverage GetCoverage(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf) =>
         new();
 
     /// <inheritdoc />
-    public void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
+    public void RecordCoverage(CurrencyPair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
     {
         ThrowHelper.ThrowIfGreaterThan(start, end);
 
@@ -70,7 +70,7 @@ public sealed class NullExchangeRateCache
 
     /// <inheritdoc />
     public ExchangeRateCacheWriteStatus StoreFetchedRange(
-        ExchangeRatePair pair,
+        CurrencyPair pair,
         IReadOnlyList<CachedExchangeRate> rows,
         DateOnly start,
         DateOnly end,

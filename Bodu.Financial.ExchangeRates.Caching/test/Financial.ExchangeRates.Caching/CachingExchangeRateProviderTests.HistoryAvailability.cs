@@ -17,7 +17,7 @@ public partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void HistoryAvailability_WhenInnerIsHistoryAware_ShouldForwardInnerValue()
     {
-        ExchangeRateHistoryAvailability declared = ExchangeRateHistoryAvailability.RollingDays(180);
+        RateHistoryAvailability declared = RateHistoryAvailability.RollingDays(180);
         HistoryAwareCountingProvider inner = new(declared, []);
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
@@ -31,25 +31,25 @@ public partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void HistoryAvailability_WhenInnerDeclarationChanges_ShouldReflectCurrentInnerValue()
     {
-        HistoryAwareCountingProvider inner = new(ExchangeRateHistoryAvailability.Unbounded, []);
+        HistoryAwareCountingProvider inner = new(RateHistoryAvailability.Unbounded, []);
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
-        inner.HistoryAvailability = ExchangeRateHistoryAvailability.Since(new DateOnly(2020, 1, 1));
+        inner.HistoryAvailability = RateHistoryAvailability.Since(new DateOnly(2020, 1, 1));
 
-        Assert.AreEqual(ExchangeRateHistoryAvailability.Since(new DateOnly(2020, 1, 1)), decorator.HistoryAvailability);
+        Assert.AreEqual(RateHistoryAvailability.Since(new DateOnly(2020, 1, 1)), decorator.HistoryAvailability);
     }
 
     /// <summary>
     /// Verifies that wrapping an inner provider that does not implement
-    /// <see cref="IHistoryAwareExchangeRateProvider" /> yields
-    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" />: a non-aware source declares no floor.
+    /// <see cref="IHistoryAwareRateProvider" /> yields
+    /// <see cref="RateHistoryAvailability.Unbounded" />: a non-aware source declares no floor.
     /// </summary>
     [TestMethod]
     public void HistoryAvailability_WhenInnerIsNotHistoryAware_ShouldReturnUnbounded()
     {
         CachingExchangeRateProvider decorator = CreateDecorator(InnerWith());
 
-        Assert.AreEqual(ExchangeRateHistoryAvailability.Unbounded, decorator.HistoryAvailability);
+        Assert.AreEqual(RateHistoryAvailability.Unbounded, decorator.HistoryAvailability);
     }
 
     /// <summary>
@@ -74,10 +74,10 @@ public partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenDateOutsideAdvertisedHistory_ShouldReturnFalseWithoutInnerCall()
     {
-        HistoryAwareCountingProvider inner = AwareInnerWith(ExchangeRateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
+        HistoryAwareCountingProvider inner = AwareInnerWith(RateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
-        bool found = decorator.TryGetRate("USD", "AUD", BeforeFloor, ExchangeRateLookupOptions.Exact, out _);
+        bool found = decorator.TryGetRate("USD", "AUD", BeforeFloor, RateLookupOptions.Exact, out _);
 
         Assert.IsFalse(found);
         Assert.AreEqual(0, inner.SingleDateCallCount, "the inner provider is never consulted for a declared-unavailable date");
@@ -90,12 +90,12 @@ public partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void GetRate_WhenDateOutsideAdvertisedHistory_ShouldThrowKeyNotFoundExceptionWithoutInnerCall()
     {
-        HistoryAwareCountingProvider inner = AwareInnerWith(ExchangeRateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
+        HistoryAwareCountingProvider inner = AwareInnerWith(RateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
-            _ = decorator.GetRate("USD", "AUD", BeforeFloor, ExchangeRateLookupOptions.Exact);
+            _ = decorator.GetRate("USD", "AUD", BeforeFloor, RateLookupOptions.Exact);
         });
 
         Assert.AreEqual(0, inner.SingleDateCallCount);
@@ -109,12 +109,12 @@ public partial class CachingExchangeRateProviderTests
     [TestMethod]
     public async Task GetRateAsync_WhenDateOutsideAdvertisedHistory_ShouldThrowKeyNotFoundExceptionWithoutInnerCall()
     {
-        HistoryAwareCountingProvider inner = AwareInnerWith(ExchangeRateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
+        HistoryAwareCountingProvider inner = AwareInnerWith(RateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
         _ = await Assert.ThrowsExactlyAsync<KeyNotFoundException>(async () =>
         {
-            _ = await decorator.GetRateAsync("USD", "AUD", BeforeFloor, ExchangeRateLookupOptions.Exact);
+            _ = await decorator.GetRateAsync("USD", "AUD", BeforeFloor, RateLookupOptions.Exact);
         });
 
         Assert.AreEqual(0, inner.SingleDateCallCount);
@@ -127,10 +127,10 @@ public partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenForwardToleranceReachesAdvertisedHistory_ShouldDelegateToInner()
     {
-        HistoryAwareCountingProvider inner = AwareInnerWith(ExchangeRateHistoryAvailability.Since(Floor), ("USD", "AUD", AfterFloor, 1.52m));
+        HistoryAwareCountingProvider inner = AwareInnerWith(RateHistoryAvailability.Since(Floor), ("USD", "AUD", AfterFloor, 1.52m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
-        bool found = decorator.TryGetRate("USD", "AUD", BeforeFloor, ExchangeRateLookupOptions.NextWithin(5), out ExchangeRateLookupResult result);
+        bool found = decorator.TryGetRate("USD", "AUD", BeforeFloor, RateLookupOptions.NextWithin(5), out RateLookupResult result);
 
         Assert.IsTrue(found, "NextOnOrAfter can resolve to a date inside the advertised history");
         Assert.AreEqual(AfterFloor, result.Rate.Date);
@@ -145,10 +145,10 @@ public partial class CachingExchangeRateProviderTests
     public void TryGetRate_WhenRespectHistoryAvailabilityDisabled_ShouldDelegateToInner()
     {
         _options.RespectHistoryAvailability = false;
-        HistoryAwareCountingProvider inner = AwareInnerWith(ExchangeRateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
+        HistoryAwareCountingProvider inner = AwareInnerWith(RateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
-        bool found = decorator.TryGetRate("USD", "AUD", BeforeFloor, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = decorator.TryGetRate("USD", "AUD", BeforeFloor, RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.50m, result.Rate.Rate);
@@ -163,11 +163,11 @@ public partial class CachingExchangeRateProviderTests
     [TestMethod]
     public void GetRates_WhenWholeWindowOutsideAdvertisedHistory_ShouldReturnEmptyWithoutInnerCall()
     {
-        HistoryAwareCountingProvider inner = AwareInnerWith(ExchangeRateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
+        HistoryAwareCountingProvider inner = AwareInnerWith(RateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
-        ExchangeRateRangeResult first = decorator.GetRates("USD", "AUD", new DateOnly(2023, 1, 1), BeforeFloor);
-        ExchangeRateRangeResult repeat = decorator.GetRates("USD", "AUD", new DateOnly(2023, 1, 1), BeforeFloor);
+        RateRangeResult first = decorator.GetRates("USD", "AUD", new DateOnly(2023, 1, 1), BeforeFloor);
+        RateRangeResult repeat = decorator.GetRates("USD", "AUD", new DateOnly(2023, 1, 1), BeforeFloor);
 
         Assert.IsTrue(first.IsEmpty);
         Assert.IsTrue(repeat.IsEmpty);
@@ -181,10 +181,10 @@ public partial class CachingExchangeRateProviderTests
     [TestMethod]
     public async Task GetRatesAsync_WhenWholeWindowOutsideAdvertisedHistory_ShouldReturnEmptyWithoutInnerCall()
     {
-        HistoryAwareCountingProvider inner = AwareInnerWith(ExchangeRateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
+        HistoryAwareCountingProvider inner = AwareInnerWith(RateHistoryAvailability.Since(Floor), ("USD", "AUD", BeforeFloor, 1.50m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
-        ExchangeRateRangeResult result = await decorator.GetRatesAsync("USD", "AUD", new DateOnly(2023, 1, 1), BeforeFloor);
+        RateRangeResult result = await decorator.GetRatesAsync("USD", "AUD", new DateOnly(2023, 1, 1), BeforeFloor);
 
         Assert.IsTrue(result.IsEmpty);
         Assert.AreEqual(0, inner.RangeCallCount);
@@ -199,15 +199,15 @@ public partial class CachingExchangeRateProviderTests
     public void GetRates_WhenWindowStartsBeforeAdvertisedHistory_ShouldClampFetchStartAndCoverWholeWindow()
     {
         HistoryAwareCountingProvider inner = AwareInnerWith(
-            ExchangeRateHistoryAvailability.Since(Floor),
+            RateHistoryAvailability.Since(Floor),
             ("USD", "AUD", BeforeFloor, 1.50m),
             ("USD", "AUD", AfterFloor, 1.52m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
         DateOnly requestedStart = new(2023, 1, 2);
         DateOnly requestedEnd = new(2023, 1, 8);
 
-        ExchangeRateRangeResult first = decorator.GetRates("USD", "AUD", requestedStart, requestedEnd);
-        ExchangeRateRangeResult repeat = decorator.GetRates("USD", "AUD", requestedStart, requestedEnd);
+        RateRangeResult first = decorator.GetRates("USD", "AUD", requestedStart, requestedEnd);
+        RateRangeResult repeat = decorator.GetRates("USD", "AUD", requestedStart, requestedEnd);
 
         Assert.AreEqual(Floor, inner.LastRangeStart, "the fetch starts at the advertised earliest date");
         Assert.AreEqual(requestedEnd, inner.LastRangeEnd);
@@ -225,12 +225,12 @@ public partial class CachingExchangeRateProviderTests
     public async Task GetRatesAsync_WhenWindowStartsBeforeAdvertisedHistory_ShouldClampFetchStart()
     {
         HistoryAwareCountingProvider inner = AwareInnerWith(
-            ExchangeRateHistoryAvailability.Since(Floor),
+            RateHistoryAvailability.Since(Floor),
             ("USD", "AUD", BeforeFloor, 1.50m),
             ("USD", "AUD", AfterFloor, 1.52m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
-        ExchangeRateRangeResult result = await decorator.GetRatesAsync("USD", "AUD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 8));
+        RateRangeResult result = await decorator.GetRatesAsync("USD", "AUD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 8));
 
         Assert.AreEqual(Floor, inner.LastRangeStart);
         Assert.AreEqual(1, result.Count);
@@ -246,13 +246,13 @@ public partial class CachingExchangeRateProviderTests
     {
         _options.RespectHistoryAvailability = false;
         HistoryAwareCountingProvider inner = AwareInnerWith(
-            ExchangeRateHistoryAvailability.Since(Floor),
+            RateHistoryAvailability.Since(Floor),
             ("USD", "AUD", BeforeFloor, 1.50m),
             ("USD", "AUD", AfterFloor, 1.52m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
         DateOnly requestedStart = new(2023, 1, 2);
 
-        ExchangeRateRangeResult result = decorator.GetRates("USD", "AUD", requestedStart, new DateOnly(2023, 1, 8));
+        RateRangeResult result = decorator.GetRates("USD", "AUD", requestedStart, new DateOnly(2023, 1, 8));
 
         Assert.AreEqual(requestedStart, inner.LastRangeStart, "the requested window is forwarded unchanged");
         Assert.AreEqual(2, result.Count, "the declared-unavailable observation is fetched too");
@@ -268,7 +268,7 @@ public partial class CachingExchangeRateProviderTests
         CountingDatedExchangeRateProvider inner = InnerWith(("USD", "AUD", BeforeFloor, 1.50m));
         CachingExchangeRateProvider decorator = CreateDecorator(inner);
 
-        ExchangeRateRangeResult result = decorator.GetRates("USD", "AUD", new DateOnly(2023, 1, 1), BeforeFloor);
+        RateRangeResult result = decorator.GetRates("USD", "AUD", new DateOnly(2023, 1, 1), BeforeFloor);
 
         Assert.AreEqual(1, inner.GetRatesAsyncCallCount, "a non-aware inner is treated as unbounded and always fetched");
         Assert.AreEqual(1, result.Count);
@@ -280,6 +280,6 @@ public partial class CachingExchangeRateProviderTests
     /// <param name="availability">The history depth the inner source advertises.</param>
     /// <param name="rows">The observation rows, each a from/to/date/rate tuple.</param>
     /// <returns>A new history-aware counting inner source.</returns>
-    private static HistoryAwareCountingProvider AwareInnerWith(ExchangeRateHistoryAvailability availability, params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
+    private static HistoryAwareCountingProvider AwareInnerWith(RateHistoryAvailability availability, params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
         new(availability, rows.Select(static r => new ExchangeRate(CurrencyInfo.ParseCurrencyCode(r.From), CurrencyInfo.ParseCurrencyCode(r.To), r.Date, r.Rate, "Test")));
 }

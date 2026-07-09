@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Verifies that <see cref="RbaExchangeRateProvider" /> satisfies the shared dated-provider contract, so the RBA source
-/// is indistinguishable in shape from any other <see cref="IDatedExchangeRateProvider" />. The provider is seeded
+/// is indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider is seeded
 /// offline from the embedded sample workbook through <see cref="FixtureRbaExchangeRateTableSource" />.
 /// </summary>
 [TestClass]
@@ -24,7 +24,7 @@ public sealed class RbaExchangeRateProviderContractTests
     private static readonly DateOnly s_seeded = new(2023, 1, 3);
 
     /// <inheritdoc />
-    protected override ExchangeRatePair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
+    protected override CurrencyPair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <inheritdoc />
     protected override DateOnly KnownDate => s_seeded;

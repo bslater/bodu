@@ -19,10 +19,10 @@ public sealed partial class AggregatingExchangeRateProviderTests
         NamedDatedExchangeRateProvider rba = Named("RBA", ("AUD", "USD", D1, 0.50m));
         NamedDatedExchangeRateProvider ecb = Named("ECB", ("AUD", "USD", D1, 0.51m));
         ExchangeRateAggregationOptions options = new();
-        options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+        options.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "ECB", "RBA" });
         AggregatingExchangeRateProvider agg = new(new[] { rba, ecb }, options);
 
-        agg.TryGetRate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        agg.TryGetRate("AUD", "USD", D1, RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.AreEqual("ECB", result.Rate.Provider);
     }
@@ -36,12 +36,12 @@ public sealed partial class AggregatingExchangeRateProviderTests
         NamedDatedExchangeRateProvider rba = Named("RBA", ("AUD", "USD", D1, 0.50m), ("USD", "GBP", D1, 0.80m));
         NamedDatedExchangeRateProvider ecb = Named("ECB", ("AUD", "USD", D1, 0.51m), ("USD", "GBP", D1, 0.81m));
         ExchangeRateAggregationOptions options = new();
-        options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
-        options.Routes[new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+        options.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "RBA", "ECB" });
+        options.Routes[new CurrencyPair(CurrencyCode.USD, CurrencyCode.GBP)] = new CurrencyPairRoute(new[] { "ECB", "RBA" });
         AggregatingExchangeRateProvider agg = new(new[] { rba, ecb }, options);
 
-        agg.TryGetRate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult audUsd);
-        agg.TryGetRate("USD", "GBP", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult usdGbp);
+        agg.TryGetRate("AUD", "USD", D1, RateLookupOptions.Exact, out RateLookupResult audUsd);
+        agg.TryGetRate("USD", "GBP", D1, RateLookupOptions.Exact, out RateLookupResult usdGbp);
 
         Assert.AreEqual("RBA", audUsd.Rate.Provider);
         Assert.AreEqual("ECB", usdGbp.Rate.Provider);
@@ -59,7 +59,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
             Named("ECB", ("AUD", "USD", D1, 0.51m)),
         });
 
-        agg.TryGetRate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        agg.TryGetRate("AUD", "USD", D1, RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.AreEqual("RBA", result.Rate.Provider);
     }
@@ -79,7 +79,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
             },
             options);
 
-        agg.TryGetRate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        agg.TryGetRate("AUD", "USD", D1, RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.AreEqual("ECB", result.Rate.Provider);
     }
@@ -91,10 +91,10 @@ public sealed partial class AggregatingExchangeRateProviderTests
     public void TryGetRate_WhenInversePairRequested_ShouldUseDirectRouteAndInvert()
     {
         ExchangeRateAggregationOptions options = new();
-        options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA" });
+        options.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "RBA" });
         AggregatingExchangeRateProvider agg = new(new[] { Named("RBA", ("AUD", "USD", D1, 0.50m)) }, options);
 
-        bool found = agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = agg.TryGetRate("USD", "AUD", D1, RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual("RBA", result.Rate.Provider);
@@ -110,10 +110,10 @@ public sealed partial class AggregatingExchangeRateProviderTests
         NamedDatedExchangeRateProvider rba = Named("RBA", ("AUD", "USD", D1, 0.50m));
         NamedDatedExchangeRateProvider ecb = Named("ECB", ("AUD", "USD", D1, 0.52m));
         ExchangeRateAggregationOptions options = new();
-        options.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" }, new AverageStrategy());
+        options.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "RBA", "ECB" }, new AverageStrategy());
         AggregatingExchangeRateProvider agg = new(new[] { rba, ecb }, options);
 
-        agg.TryGetRate("AUD", "USD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        agg.TryGetRate("AUD", "USD", D1, RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.AreEqual(0.51m, result.Rate.Rate);
         Assert.AreEqual("Average", result.Rate.Provider);

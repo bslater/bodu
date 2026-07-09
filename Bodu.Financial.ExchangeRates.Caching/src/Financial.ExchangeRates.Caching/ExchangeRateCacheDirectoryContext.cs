@@ -23,7 +23,7 @@ public readonly record struct ExchangeRateCacheDirectoryContext
     /// <param name="root">The resolved cache root directory.</param>
     /// <param name="provider">The provider the cache is bound to.</param>
     /// <param name="pair">The currency pair the folder holds.</param>
-    public ExchangeRateCacheDirectoryContext(string root, string provider, ExchangeRatePair pair)
+    public ExchangeRateCacheDirectoryContext(string root, string provider, CurrencyPair pair)
     {
         Root = root;
         Provider = provider;
@@ -46,5 +46,5 @@ public readonly record struct ExchangeRateCacheDirectoryContext
     /// Gets the currency pair the resolved folder holds.
     /// </summary>
     /// <value>The currency pair.</value>
-    public ExchangeRatePair Pair { get; }
+    public CurrencyPair Pair { get; }
 }

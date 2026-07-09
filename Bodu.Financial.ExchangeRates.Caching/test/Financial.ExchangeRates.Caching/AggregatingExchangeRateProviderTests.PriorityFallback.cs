@@ -21,7 +21,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
             Named("Second", ("USD", "AUD", D1, 1.60m)),
         });
 
-        bool found = agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = agg.TryGetRate("USD", "AUD", D1, RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1.50m, result.Rate.Rate);
@@ -40,7 +40,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
             Named("Second", ("USD", "AUD", D1, 1.60m)),
         });
 
-        bool found = agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
+        bool found = agg.TryGetRate("USD", "AUD", D1, RateLookupOptions.Exact, out RateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual("Second", result.Rate.Provider);
@@ -54,7 +54,7 @@ public sealed partial class AggregatingExchangeRateProviderTests
     {
         AggregatingExchangeRateProvider agg = new(new[] { Named("First"), Named("Second") });
 
-        Assert.IsFalse(agg.TryGetRate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, out _));
+        Assert.IsFalse(agg.TryGetRate("USD", "AUD", D1, RateLookupOptions.Exact, out _));
     }
 
     /// <summary>

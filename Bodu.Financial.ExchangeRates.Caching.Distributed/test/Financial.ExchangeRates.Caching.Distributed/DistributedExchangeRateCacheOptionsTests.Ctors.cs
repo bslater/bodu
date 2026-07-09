@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DistributedExchangeRateCacheOptionsTests.Constructor.cs" company="Bodu Pty. Ltd.">
+// <copyright file="DistributedExchangeRateCacheOptionsTests.Ctors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

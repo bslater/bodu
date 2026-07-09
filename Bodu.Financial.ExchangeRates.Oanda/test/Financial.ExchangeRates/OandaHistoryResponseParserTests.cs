@@ -149,8 +149,8 @@ public class OandaHistoryResponseParserTests
         Assert.AreEqual(0.6850m, data.Observations[0].Rate);
     }
 
-    private static ExchangeRatePairRequest Request(DateOnly startDate, DateOnly endDate) =>
-        new(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), startDate, endDate);
+    private static CurrencyPairRequest Request(DateOnly startDate, DateOnly endDate) =>
+        new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), startDate, endDate);
 
     private static byte[] Utf8(string text) => Encoding.UTF8.GetBytes(text);
 }

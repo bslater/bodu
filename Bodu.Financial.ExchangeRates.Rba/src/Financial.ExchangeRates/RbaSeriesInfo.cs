@@ -24,7 +24,7 @@ public sealed class RbaSeriesInfo
     /// <param name="seriesId">The RBA series identifier (for example, <c>FXRUSD</c>).</param>
     /// <param name="description">The RBA description of the series.</param>
     /// <param name="units">The RBA units label of the series.</param>
-    internal RbaSeriesInfo(ExchangeRatePair pair, string quoteIsoCode, string seriesId, string description, string units)
+    internal RbaSeriesInfo(CurrencyPair pair, string quoteIsoCode, string seriesId, string description, string units)
     {
         Pair = pair;
         QuoteIsoCode = quoteIsoCode;
@@ -36,8 +36,8 @@ public sealed class RbaSeriesInfo
     /// <summary>
     /// Gets the currency pair the series represents, always quoted against the Australian dollar.
     /// </summary>
-    /// <value>The <see cref="ExchangeRatePair" /> from <c>AUD</c> to the quote currency.</value>
-    public ExchangeRatePair Pair { get; }
+    /// <value>The <see cref="CurrencyPair" /> from <c>AUD</c> to the quote currency.</value>
+    public CurrencyPair Pair { get; }
 
     /// <summary>
     /// Gets the quote-currency ISO code.

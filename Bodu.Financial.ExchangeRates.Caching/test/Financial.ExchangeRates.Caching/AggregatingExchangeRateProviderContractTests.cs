@@ -28,7 +28,7 @@ public sealed class AggregatingExchangeRateProviderContractTests
     private static readonly DateOnly s_seeded = new(2023, 1, 3);
 
     /// <inheritdoc />
-    protected override ExchangeRatePair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
+    protected override CurrencyPair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <inheritdoc />
     protected override DateOnly KnownDate => s_seeded;
@@ -39,7 +39,7 @@ public sealed class AggregatingExchangeRateProviderContractTests
     /// <inheritdoc />
     protected override AggregatingExchangeRateProvider CreateProvider()
     {
-        FixedDatedExchangeRateProvider child = new(new[] { new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, s_seeded, 0.6828m, ProviderName) });
+        FixedDatedRateProvider child = new(new[] { new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, s_seeded, 0.6828m, ProviderName) });
 
         return new AggregatingExchangeRateProvider(new[] { new NamedDatedExchangeRateProvider(ProviderName, child) });
     }

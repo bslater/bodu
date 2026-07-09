@@ -21,6 +21,6 @@ public partial class OfxExchangeRateOptionsTests
     {
         OfxExchangeRateOptions options = new();
 
-        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Unbounded, options.HistoryAvailability.Kind);
+        Assert.AreEqual(RateHistoryAvailabilityKind.Unbounded, options.HistoryAvailability.Kind);
     }
 }

@@ -7,9 +7,9 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Pairs an <see cref="IDatedExchangeRateProvider" /> with the name it is referenced by inside an
+/// Pairs an <see cref="IDatedRateProvider" /> with the name it is referenced by inside an
 /// <see cref="AggregatingExchangeRateProvider" />.
 /// </summary>
 /// <param name="Name">The name the provider is referenced by in routing and diagnostics.</param>
 /// <param name="Provider">The wrapped dated provider.</param>
-public readonly record struct NamedDatedExchangeRateProvider(string Name, IDatedExchangeRateProvider Provider);
+public readonly record struct NamedDatedExchangeRateProvider(string Name, IDatedRateProvider Provider);

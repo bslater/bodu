@@ -30,7 +30,7 @@ public class FinancialJsonSerializerOptionsExtensionsTests
         Assert.Contains(c => c is MoneyJsonConverter, options.Converters);
         Assert.Contains(c => c is MoneyBagJsonConverter, options.Converters);
         Assert.Contains(c => c is ExchangeRateJsonConverter, options.Converters);
-        Assert.Contains(c => c is ExchangeRatePairJsonConverter, options.Converters);
+        Assert.Contains(c => c is CurrencyPairJsonConverter, options.Converters);
     }
 
     /// <summary>

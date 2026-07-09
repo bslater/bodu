@@ -20,7 +20,7 @@ public sealed partial class PriorityFallbackStrategyTests
             Named("Second", ("USD", "AUD", D1, 1.6m)),
         };
 
-        bool ok = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, candidates, out ExchangeRateLookupResult result);
+        bool ok = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, RateLookupOptions.Exact, candidates, out RateLookupResult result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("First", result.Rate.Provider);
@@ -38,7 +38,7 @@ public sealed partial class PriorityFallbackStrategyTests
             Named("Second", ("USD", "AUD", D1, 1.6m)),
         };
 
-        bool ok = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, candidates, out ExchangeRateLookupResult result);
+        bool ok = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, RateLookupOptions.Exact, candidates, out RateLookupResult result);
 
         Assert.IsTrue(ok);
         Assert.AreEqual("Second", result.Rate.Provider);
@@ -52,7 +52,7 @@ public sealed partial class PriorityFallbackStrategyTests
     {
         IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[] { Named("First") };
 
-        Assert.IsFalse(PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, candidates, out _));
+        Assert.IsFalse(PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, RateLookupOptions.Exact, candidates, out _));
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public sealed partial class PriorityFallbackStrategyTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, ExchangeRateLookupOptions.Exact, null!, out _);
+            _ = PriorityFallbackStrategy.Instance.TryAggregate("USD", "AUD", D1, RateLookupOptions.Exact, null!, out _);
         });
 
         Assert.AreEqual("candidates", ex.ParamName);

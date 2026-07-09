@@ -70,12 +70,12 @@ public sealed class CachingExchangeRateOptions
 
     /// <summary>
     /// Gets or sets a value indicating whether the provider consults the inner source's advertised
-    /// <see cref="ExchangeRateHistoryAvailability" /> before delegating a miss, skipping or clamping fetches for dates
+    /// <see cref="RateHistoryAvailability" /> before delegating a miss, skipping or clamping fetches for dates
     /// the source has declared it cannot serve.
     /// </summary>
     /// <value><see langword="true" /> to respect the advertised history; defaults to <see langword="true" />.</value>
     /// <remarks>
-    /// The clamp applies only when the inner provider implements <see cref="IHistoryAwareExchangeRateProvider" />; a
+    /// The clamp applies only when the inner provider implements <see cref="IHistoryAwareRateProvider" />; a
     /// non-aware inner is treated as unbounded and never skipped. A skipped single-date lookup surfaces as an ordinary
     /// miss, and a range window that starts before the advertised earliest date is fetched from that earliest date
     /// while the whole requested window is still recorded as covered, so the unavailable prefix is not refetched until
@@ -136,13 +136,13 @@ public sealed class CachingExchangeRateOptions
 
     /// <summary>
     /// Gets or sets the lookup options applied by the timeless
-    /// <see cref="IExchangeRateProvider.GetRate(string, string)" /> surface, which resolves the rate for the current
+    /// <see cref="IRateProvider.GetRate(string, string)" /> surface, which resolves the rate for the current
     /// UTC date.
     /// </summary>
     /// <value>
-    /// The lookup options used for timeless lookups; defaults to <see cref="ExchangeRateLookupOptions.Exact" />.
+    /// The lookup options used for timeless lookups; defaults to <see cref="RateLookupOptions.Exact" />.
     /// </value>
-    public ExchangeRateLookupOptions DefaultLookupOptions { get; set; } = ExchangeRateLookupOptions.Exact;
+    public RateLookupOptions DefaultLookupOptions { get; set; } = RateLookupOptions.Exact;
 
     /// <summary>
     /// Resolves the caching duration for a provider, returning its specific override when present and the default

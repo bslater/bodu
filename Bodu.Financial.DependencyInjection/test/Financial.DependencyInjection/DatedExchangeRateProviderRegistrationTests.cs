@@ -4,49 +4,50 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Financial.DependencyInjection;
 
 /// <summary>
-/// Verifies the <see cref="IDatedExchangeRateProvider" /> registration overloads exposed by
+/// Verifies the <see cref="IDatedRateProvider" /> registration overloads exposed by
 /// <see cref="FinancialServiceBuilderExtensions" />.
 /// </summary>
 [TestClass]
 public sealed class DatedExchangeRateProviderRegistrationTests
 {
     /// <summary>
-    /// A stub <see cref="IDatedExchangeRateProvider" /> used only to confirm registration and resolution.
+    /// A stub <see cref="IDatedRateProvider" /> used only to confirm registration and resolution.
     /// </summary>
     private sealed class StubDatedRateProvider
-        : IDatedExchangeRateProvider
+        : IDatedRateProvider
     {
         /// <inheritdoc />
-        public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null) =>
+        public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null) =>
             throw new NotSupportedException();
 
         /// <inheritdoc />
-        public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null) =>
+        public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null) =>
             throw new NotSupportedException();
 
         /// <inheritdoc />
-        public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result) =>
+        public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options, out RateLookupResult result) =>
             throw new NotSupportedException();
 
         /// <inheritdoc />
-        public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
+        public RateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
             throw new NotSupportedException();
 
         /// <inheritdoc />
-        public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
+        public ValueTask<RateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
         /// <inheritdoc />
-        public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
+        public ValueTask<RateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
         /// <inheritdoc />
-        public ValueTask<ExchangeRateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        public ValueTask<RateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
     }
 
@@ -61,7 +62,7 @@ public sealed class DatedExchangeRateProviderRegistrationTests
         builder.AddDatedExchangeRateProvider<StubDatedRateProvider>();
 
         using ServiceProvider provider = builder.Services.BuildServiceProvider();
-        Assert.IsInstanceOfType<StubDatedRateProvider>(provider.GetRequiredService<IDatedExchangeRateProvider>());
+        Assert.IsInstanceOfType<StubDatedRateProvider>(provider.GetRequiredService<IDatedRateProvider>());
     }
 
     /// <summary>
@@ -76,6 +77,6 @@ public sealed class DatedExchangeRateProviderRegistrationTests
         builder.AddDatedExchangeRateProvider(stub);
 
         using ServiceProvider provider = builder.Services.BuildServiceProvider();
-        Assert.AreSame(stub, provider.GetRequiredService<IDatedExchangeRateProvider>());
+        Assert.AreSame(stub, provider.GetRequiredService<IDatedRateProvider>());
     }
 }

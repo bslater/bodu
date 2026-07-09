@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyFormatterTests.Constructor.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MoneyFormatterTests.Ctors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

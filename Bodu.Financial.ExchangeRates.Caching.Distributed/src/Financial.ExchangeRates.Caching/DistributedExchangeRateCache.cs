@@ -54,7 +54,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// // A distributed caching provider backed by a Redis IDistributedCache resolved from DI.
 /// var options = new DistributedExchangeRateCacheOptions { Provider = "RBA" };
 /// var cache = new DistributedExchangeRateCache(redisDistributedCache, options);
-/// IDatedExchangeRateProvider cached = new CachingExchangeRateProvider(rba, cache, new CachingExchangeRateOptions());
+/// IDatedRateProvider cached = new CachingExchangeRateProvider(rba, cache, new CachingExchangeRateOptions());
 ///]]>
 /// </code>
 /// </example>
@@ -65,7 +65,7 @@ public sealed class DistributedExchangeRateCache
     private static readonly JsonSerializerOptions s_serializerOptions = new(JsonSerializerDefaults.Web);
 
     /// <summary>The fixed currency pair used only to build a sentinel key for the startup probe under <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" />; it is read (and the result discarded), never written, so its value is irrelevant.</summary>
-    private static readonly ExchangeRatePair s_probePair = new(CurrencyCode.USD, CurrencyCode.USD);
+    private static readonly CurrencyPair s_probePair = new(CurrencyCode.USD, CurrencyCode.USD);
 
     /// <summary>The backing distributed cache the per-pair blobs are read from and written to.</summary>
     private readonly IDistributedCache _cache;
@@ -74,7 +74,7 @@ public sealed class DistributedExchangeRateCache
     private readonly DistributedExchangeRateCacheOptions _options;
 
     /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first use and reused thereafter.</summary>
-    private readonly ConcurrentDictionary<ExchangeRatePair, object> _pairLocks = new();
+    private readonly ConcurrentDictionary<CurrencyPair, object> _pairLocks = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DistributedExchangeRateCache" /> class.
@@ -134,7 +134,7 @@ public sealed class DistributedExchangeRateCache
     private bool ShouldSwallowStorageFailure => !_options.ThrowOnStorageFailure;
 
     /// <inheritdoc />
-    public IReadOnlyList<CachedExchangeRate> GetRates(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf)
+    public IReadOnlyList<CachedExchangeRate> GetRates(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf)
     {
         IReadOnlyList<CachedExchangeRate> entries = ReadEntry(pair).Entries;
         if (entries.Count == 0)
@@ -144,7 +144,7 @@ public sealed class DistributedExchangeRateCache
     }
 
     /// <inheritdoc />
-    public void Store(ExchangeRatePair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
+    public void Store(CurrencyPair pair, IReadOnlyList<CachedExchangeRate> rates, TimeSpan duration, DateTimeOffset asOf)
     {
         ThrowHelper.ThrowIfNull(rates);
 
@@ -163,11 +163,11 @@ public sealed class DistributedExchangeRateCache
     }
 
     /// <inheritdoc />
-    public DateRangeCoverage GetCoverage(ExchangeRatePair pair, TimeSpan duration, DateTimeOffset asOf) =>
+    public DateRangeCoverage GetCoverage(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf) =>
         ExchangeRateCacheRules.BuildCoverage(ReadEntry(pair).Coverage, duration, asOf);
 
     /// <inheritdoc />
-    public void RecordCoverage(ExchangeRatePair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
+    public void RecordCoverage(CurrencyPair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
     {
         ThrowHelper.ThrowIfGreaterThan(start, end);
 
@@ -185,7 +185,7 @@ public sealed class DistributedExchangeRateCache
 
     /// <inheritdoc />
     public ExchangeRateCacheWriteStatus StoreFetchedRange(
-        ExchangeRatePair pair,
+        CurrencyPair pair,
         IReadOnlyList<CachedExchangeRate> rows,
         DateOnly start,
         DateOnly end,
@@ -315,7 +315,7 @@ public sealed class DistributedExchangeRateCache
     /// A backing-store fault or a corrupt, undeserializable blob degrades to empty state rather than throwing, as the
     /// best-effort contract requires.
     /// </remarks>
-    private PairState ReadEntry(ExchangeRatePair pair)
+    private PairState ReadEntry(CurrencyPair pair)
     {
         byte[]? payload;
         try
@@ -360,7 +360,7 @@ public sealed class DistributedExchangeRateCache
     /// the failure is reported so <see cref="StoreFetchedRange" /> can signal that nothing was persisted. When both
     /// halves are empty the key is removed so the entry self-cleans rather than persisting an empty blob.
     /// </remarks>
-    private bool WriteEntry(ExchangeRatePair pair, PairState state)
+    private bool WriteEntry(CurrencyPair pair, PairState state)
     {
         string key = _options.BuildKey(pair);
 
@@ -415,6 +415,6 @@ public sealed class DistributedExchangeRateCache
     /// </summary>
     /// <param name="pair">The currency pair whose write lock is required.</param>
     /// <returns>The per-pair lock object.</returns>
-    private object LockFor(ExchangeRatePair pair) =>
+    private object LockFor(CurrencyPair pair) =>
         _pairLocks.GetOrAdd(pair, static _ => new object());
 }

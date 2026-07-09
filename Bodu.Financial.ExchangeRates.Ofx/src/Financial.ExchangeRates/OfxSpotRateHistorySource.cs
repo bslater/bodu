@@ -19,7 +19,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// owns the client, or by the caller when the client is supplied), not per request.
 /// </remarks>
 internal sealed class OfxSpotRateHistorySource
-    : IExchangeRatePairSource<OfxSeriesInfo>
+    : IPairRateSource<OfxSeriesInfo>
 {
     /// <summary>The HTTP client used to issue history requests.</summary>
     private readonly HttpClient _httpClient;
@@ -42,7 +42,7 @@ internal sealed class OfxSpotRateHistorySource
     }
 
     /// <inheritdoc />
-    public async ValueTask<PairRateData<OfxSeriesInfo>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default)
+    public async ValueTask<PairRateData<OfxSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         Uri url = BuildRequestUri(request);
         byte[] json = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
@@ -55,7 +55,7 @@ internal sealed class OfxSpotRateHistorySource
     /// </summary>
     /// <param name="request">The pair request.</param>
     /// <returns>The absolute request URI.</returns>
-    private Uri BuildRequestUri(ExchangeRatePairRequest request)
+    private Uri BuildRequestUri(CurrencyPairRequest request)
     {
         // OFX addresses the range through inclusive Unix-millisecond path bounds: the start at the beginning of the
         // start date and the end at the last millisecond of the end date, both interpreted in UTC.

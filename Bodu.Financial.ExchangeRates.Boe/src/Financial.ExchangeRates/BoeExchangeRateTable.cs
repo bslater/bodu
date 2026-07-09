@@ -20,7 +20,7 @@ internal sealed class BoeExchangeRateTable
     /// </summary>
     /// <param name="observations">The parsed daily spot observations.</param>
     /// <param name="series">The series metadata for the currencies present, keyed by quote ISO code.</param>
-    internal BoeExchangeRateTable(IReadOnlyList<BoeExchangeRateObservation> observations, IReadOnlyDictionary<string, BoeSeries> series)
+    internal BoeExchangeRateTable(IReadOnlyList<BoeRateObservation> observations, IReadOnlyDictionary<string, BoeSeries> series)
     {
         Observations = observations;
         Series = series;
@@ -30,7 +30,7 @@ internal sealed class BoeExchangeRateTable
     /// Gets the parsed daily spot observations.
     /// </summary>
     /// <value>A read-only list of dated, per-currency observations.</value>
-    public IReadOnlyList<BoeExchangeRateObservation> Observations { get; }
+    public IReadOnlyList<BoeRateObservation> Observations { get; }
 
     /// <summary>
     /// Gets the series metadata for the currencies present, keyed by quote ISO code.
@@ -45,7 +45,7 @@ internal sealed class BoeExchangeRateTable
     /// <returns>One <see cref="ExchangeRate" /> per observation.</returns>
     public IEnumerable<ExchangeRate> EnumerateRates()
     {
-        foreach (BoeExchangeRateObservation observation in Observations)
+        foreach (BoeRateObservation observation in Observations)
         {
             yield return new ExchangeRate(
                 BoeExchangeRateProvider.BaseCurrency,
@@ -65,12 +65,12 @@ internal sealed class BoeExchangeRateTable
         var seen = new HashSet<string>(StringComparer.Ordinal);
         var result = new List<BoeSeriesInfo>();
 
-        foreach (BoeExchangeRateObservation observation in Observations)
+        foreach (BoeRateObservation observation in Observations)
         {
             if (!seen.Add(observation.CurrencyCode))
                 continue;
 
-            ExchangeRatePair pair = new(BoeExchangeRateProvider.BaseCurrency, CurrencyInfo.ParseCurrencyCode(observation.CurrencyCode));
+            CurrencyPair pair = new(BoeExchangeRateProvider.BaseCurrency, CurrencyInfo.ParseCurrencyCode(observation.CurrencyCode));
             Series.TryGetValue(observation.CurrencyCode, out BoeSeries? series);
             result.Add(new BoeSeriesInfo(
                 pair,
