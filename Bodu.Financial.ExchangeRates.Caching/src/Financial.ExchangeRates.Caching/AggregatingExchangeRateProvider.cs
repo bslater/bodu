@@ -68,7 +68,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </code>
 /// </example>
 public sealed class AggregatingExchangeRateProvider
-    : IDatedExchangeRateProvider, IExchangeRateProvider
+    : IDatedExchangeRateProvider, IExchangeRateProvider, IHistoryAwareExchangeRateProvider
 {
     /// <summary>The synthetic provider name reported for a same-currency identity rate.</summary>
     private const string IdentityProvider = "Identity";
@@ -157,6 +157,47 @@ public sealed class AggregatingExchangeRateProvider
     /// </summary>
     /// <value>The child names, in no particular order.</value>
     public IReadOnlyCollection<string> ProviderNames => _byName.Keys;
+
+    /// <summary>
+    /// Gets the history depth this group advertises: the most generous availability across the grouped children,
+    /// because a date any single child can serve is a date the group can serve.
+    /// </summary>
+    /// <value>
+    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" /> when any child is
+    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" /> or does not implement
+    /// <see cref="IHistoryAwareExchangeRateProvider" /> (a non-aware child declares no floor); otherwise the child
+    /// availability whose earliest available date, evaluated against the current date, reaches furthest back.
+    /// </value>
+    public ExchangeRateHistoryAvailability HistoryAvailability
+    {
+        get
+        {
+            var today = DateOnly.FromDateTime(_timeProvider.GetUtcNow().UtcDateTime);
+
+            ExchangeRateHistoryAvailability? mostGenerous = null;
+            DateOnly? mostGenerousEarliest = null;
+
+            foreach (NamedDatedExchangeRateProvider child in _children)
+            {
+                if (child.Provider is not IHistoryAwareExchangeRateProvider aware)
+                    return ExchangeRateHistoryAvailability.Unbounded;
+
+                ExchangeRateHistoryAvailability availability = aware.HistoryAvailability;
+                DateOnly? earliest = availability.GetEarliestAvailable(today);
+                if (earliest is null)
+                    return ExchangeRateHistoryAvailability.Unbounded;
+
+                if (mostGenerousEarliest is null || earliest.Value < mostGenerousEarliest.Value)
+                {
+                    mostGenerous = availability;
+                    mostGenerousEarliest = earliest;
+                }
+            }
+
+            // The constructor rejects an empty child set, so at least one child contributed a bounded availability.
+            return mostGenerous!.Value;
+        }
+    }
 
     /// <summary>
     /// Attempts to resolve a grouped child by name, for callers that need a specific source rather than the routed

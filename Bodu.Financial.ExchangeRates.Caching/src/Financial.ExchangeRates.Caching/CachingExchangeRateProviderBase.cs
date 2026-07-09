@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateProviderBase.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -63,7 +63,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// </remarks>
 public abstract class CachingExchangeRateProviderBase
-    : IDatedExchangeRateProvider, IExchangeRateProvider, IDisposable
+    : IDatedExchangeRateProvider, IExchangeRateProvider, IHistoryAwareExchangeRateProvider, IDisposable
 {
     /// <summary>The single-provider cache that serves fresh rates and stores resolved observations.</summary>
     private readonly IExchangeRateCache _cache;
@@ -126,6 +126,20 @@ public abstract class CachingExchangeRateProviderBase
     /// </summary>
     /// <value>The wrapped inner provider.</value>
     protected abstract IDatedExchangeRateProvider Inner { get; }
+
+    /// <summary>
+    /// Gets the history depth this provider advertises, forwarded from the inner provider it wraps. The cache itself
+    /// adds no history of its own — it can only hold what the inner once served — so the decorator is exactly as deep
+    /// as its source.
+    /// </summary>
+    /// <value>
+    /// The inner provider's advertised availability when it implements <see cref="IHistoryAwareExchangeRateProvider" />;
+    /// otherwise <see cref="ExchangeRateHistoryAvailability.Unbounded" />.
+    /// </value>
+    public ExchangeRateHistoryAvailability HistoryAvailability =>
+        Inner is IHistoryAwareExchangeRateProvider aware
+            ? aware.HistoryAvailability
+            : ExchangeRateHistoryAvailability.Unbounded;
 
     /// <inheritdoc />
     public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
