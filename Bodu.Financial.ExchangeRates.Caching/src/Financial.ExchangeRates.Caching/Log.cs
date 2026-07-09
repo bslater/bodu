@@ -87,4 +87,48 @@ internal static partial class Log
     /// </param>
     [LoggerMessage(EventId = 4505, Message = "Resolved {fromIsoCode}->{toIsoCode} for source '{source}' from {origin} (backend '{backend}', age {age})")]
     public static partial void RateProvenance(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, ExchangeRateOrigin origin, string? backend, TimeSpan? age);
+
+    /// <summary>
+    /// Logs that a single-date lookup was not delegated to the wrapped source because the requested date lies outside
+    /// the source's advertised history.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="level">The level at which to log the message.</param>
+    /// <param name="source">The source name whose advertised history caused the skip.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="date">The requested date.</param>
+    /// <param name="earliest">The earliest date the source advertises it can serve.</param>
+    [LoggerMessage(EventId = 4506, Message = "Skipped source '{source}' for {fromIsoCode}->{toIsoCode} on {date}: outside advertised history (earliest available {earliest})")]
+    public static partial void SkippedDateOutsideHistory(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, DateOnly date, DateOnly earliest);
+
+    /// <summary>
+    /// Logs that a range fetch was skipped entirely because no part of the requested window lies inside the wrapped
+    /// source's advertised history, with the whole window recorded as covered-with-no-rows instead.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="level">The level at which to log the message.</param>
+    /// <param name="source">The source name whose advertised history caused the skip.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="startDate">The inclusive first date of the requested window.</param>
+    /// <param name="endDate">The inclusive last date of the requested window.</param>
+    /// <param name="earliest">The earliest date the source advertises it can serve.</param>
+    /// <param name="status">The outcome of the empty rows-and-coverage cache write.</param>
+    [LoggerMessage(EventId = 4507, Message = "Skipped source '{source}' fetch for {fromIsoCode}->{toIsoCode} {startDate}..{endDate}: outside advertised history (earliest available {earliest}); recorded empty coverage, cache write {status}")]
+    public static partial void SkippedRangeOutsideHistory(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, DateOnly earliest, ExchangeRateCacheWriteStatus status);
+
+    /// <summary>
+    /// Logs that a range fetch was clamped to start at the wrapped source's advertised earliest date rather than the
+    /// requested start, with the whole requested window still recorded as covered.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="level">The level at which to log the message.</param>
+    /// <param name="source">The source name whose advertised history caused the clamp.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="startDate">The inclusive first date of the requested window.</param>
+    /// <param name="fetchStart">The advertised earliest date the fetch was raised to.</param>
+    [LoggerMessage(EventId = 4508, Message = "Clamped {fromIsoCode}->{toIsoCode} range fetch from source '{source}': requested start {startDate} raised to advertised earliest {fetchStart}")]
+    public static partial void ClampedRangeToHistory(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly fetchStart);
 }

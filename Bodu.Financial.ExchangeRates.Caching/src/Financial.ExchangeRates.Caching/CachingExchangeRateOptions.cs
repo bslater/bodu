@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingExchangeRateOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -69,6 +69,21 @@ public sealed class CachingExchangeRateOptions
     public TimeSpan DefaultExpiry { get; set; } = TimeSpan.FromHours(24);
 
     /// <summary>
+    /// Gets or sets a value indicating whether the provider consults the inner source's advertised
+    /// <see cref="ExchangeRateHistoryAvailability" /> before delegating a miss, skipping or clamping fetches for dates
+    /// the source has declared it cannot serve.
+    /// </summary>
+    /// <value><see langword="true" /> to respect the advertised history; defaults to <see langword="true" />.</value>
+    /// <remarks>
+    /// The clamp applies only when the inner provider implements <see cref="IHistoryAwareExchangeRateProvider" />; a
+    /// non-aware inner is treated as unbounded and never skipped. A skipped single-date lookup surfaces as an ordinary
+    /// miss, and a range window that starts before the advertised earliest date is fetched from that earliest date
+    /// while the whole requested window is still recorded as covered, so the unavailable prefix is not refetched until
+    /// normal expiry. Disable this to forward every request to the inner source unchanged.
+    /// </remarks>
+    public bool RespectHistoryAvailability { get; set; } = true;
+
+    /// <summary>
     /// Gets the per-provider expiry overrides, keyed by the provider name supplied to the caching provider.
     /// </summary>
     /// <value>
@@ -100,6 +115,13 @@ public sealed class CachingExchangeRateOptions
     /// </summary>
     /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
     public LogLevel CacheRangeRefetchLogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
+    /// Gets or sets the level at which a fetch skipped or clamped because of the inner source's advertised history (see
+    /// <see cref="RespectHistoryAvailability" />) is logged.
+    /// </summary>
+    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
+    public LogLevel HistoryClampLogLevel { get; set; } = LogLevel.Debug;
 
     /// <summary>
     /// Gets or sets the level at which the provenance of every served rate is logged.
@@ -137,7 +159,8 @@ public sealed class CachingExchangeRateOptions
     /// <exception cref="ArgumentException">
     /// Thrown when <see cref="DefaultExpiry" /> or any <see cref="ProviderExpiry" /> entry is not strictly positive,
     /// when <see cref="ProviderExpiry" /> or <see cref="DefaultLookupOptions" /> is <see langword="null" />, or when
-    /// any <c>Cache*LogLevel</c> or <see cref="RateProvenanceLogLevel" /> is not a defined <see cref="LogLevel" />.
+    /// any <c>Cache*LogLevel</c>, <see cref="HistoryClampLogLevel" />, or <see cref="RateProvenanceLogLevel" /> is not
+    /// a defined <see cref="LogLevel" />.
     /// </exception>
     /// <remarks>
     /// This throwing form preserves the <c>ParamName</c> of the offending option, which callers rely on. The
@@ -228,13 +251,14 @@ public sealed class CachingExchangeRateOptions
     /// Reports whether every configurable log level is a defined <see cref="LogLevel" /> value.
     /// </summary>
     /// <returns>
-    /// <see langword="true" /> when every <c>Cache*LogLevel</c> property and <see cref="RateProvenanceLogLevel" /> is
-    /// defined; otherwise <see langword="false" />.
+    /// <see langword="true" /> when every <c>Cache*LogLevel</c> property, <see cref="HistoryClampLogLevel" />, and
+    /// <see cref="RateProvenanceLogLevel" /> is defined; otherwise <see langword="false" />.
     /// </returns>
     private bool AreLogLevelsDefined() =>
         Enum.IsDefined(CacheHitLogLevel)
         && Enum.IsDefined(CacheMissLogLevel)
         && Enum.IsDefined(CacheRangeHitLogLevel)
         && Enum.IsDefined(CacheRangeRefetchLogLevel)
+        && Enum.IsDefined(HistoryClampLogLevel)
         && Enum.IsDefined(RateProvenanceLogLevel);
 }

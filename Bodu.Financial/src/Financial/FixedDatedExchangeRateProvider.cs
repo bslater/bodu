@@ -50,7 +50,7 @@ namespace Bodu.Financial;
 /// </example>
 /// </remarks>
 public sealed class FixedDatedExchangeRateProvider
-    : IDatedExchangeRateProvider
+    : IDatedExchangeRateProvider, IHistoryAwareExchangeRateProvider
 {
     /// <summary>The label used as the provider name on synthetic same-currency identity results. Exposed publicly so audit consumers can filter by it without depending on a magic-string literal.</summary>
     public const string IdentityProviderName = "Identity";
@@ -131,6 +131,19 @@ public sealed class FixedDatedExchangeRateProvider
         _book = BuildBook(rates);
         _providerPriority = BuildSingleProviderList(_book);
     }
+
+    /// <summary>
+    /// Gets the history depth this provider advertises, derived from the wrapped book's contents.
+    /// </summary>
+    /// <value>
+    /// <see cref="ExchangeRateHistoryAvailability.Since(DateOnly)" /> anchored at the earliest observation date across
+    /// every series in the book, or <see cref="ExchangeRateHistoryAvailability.Unbounded" /> when the book is empty (an
+    /// empty book has no floor to declare, and every lookup misses regardless).
+    /// </value>
+    public ExchangeRateHistoryAvailability HistoryAvailability =>
+        TryGetEarliestDateInBook(out DateOnly earliest)
+            ? ExchangeRateHistoryAvailability.Since(earliest)
+            : ExchangeRateHistoryAvailability.Unbounded;
 
     /// <inheritdoc />
     public ExchangeRateLookupResult GetRate(
@@ -521,5 +534,39 @@ public sealed class FixedDatedExchangeRateProvider
         }
 
         return max;
+    }
+
+    /// <summary>
+    /// Attempts to find the earliest observation date present across every series in the book. Series observations are
+    /// stored in ascending date order, so each series contributes its first observation. Used to derive the advertised
+    /// <see cref="HistoryAvailability" />.
+    /// </summary>
+    /// <param name="earliest">
+    /// When this method returns <see langword="true" />, the earliest observation date in the book; otherwise
+    /// <see cref="DateOnly.MinValue" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the book contains at least one observation; otherwise <see langword="false" />.
+    /// </returns>
+    private bool TryGetEarliestDateInBook(out DateOnly earliest)
+    {
+        DateOnly min = DateOnly.MinValue;
+        bool any = false;
+
+        foreach (ExchangeRateSeriesKey key in _book.Keys)
+        {
+            if (!_book.TryGetSeries(key.Pair, key.Provider, out ExchangeRateSeries? series) || series is null || series.Count == 0)
+                continue;
+
+            DateOnly first = series.GetObservations().First().Date;
+            if (!any || first < min)
+            {
+                min = first;
+                any = true;
+            }
+        }
+
+        earliest = any ? min : DateOnly.MinValue;
+        return any;
     }
 }

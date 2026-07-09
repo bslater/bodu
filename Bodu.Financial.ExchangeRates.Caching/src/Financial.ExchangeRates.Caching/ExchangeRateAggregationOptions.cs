@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateAggregationOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -48,6 +48,21 @@ public sealed class ExchangeRateAggregationOptions
     /// </summary>
     /// <value>A map from currency pair to the route that resolves it.</value>
     public IDictionary<ExchangeRatePair, ExchangeRatePairRoute> Routes { get; } = new Dictionary<ExchangeRatePair, ExchangeRatePairRoute>();
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the aggregator consults each child's advertised
+    /// <see cref="ExchangeRateHistoryAvailability" /> and drops candidates that have declared they cannot serve any
+    /// part of the requested date or window, before the strategy runs.
+    /// </summary>
+    /// <value><see langword="true" /> to respect the advertised history; defaults to <see langword="true" />.</value>
+    /// <remarks>
+    /// The filter applies only to children that implement <see cref="IHistoryAwareExchangeRateProvider" />; a non-aware
+    /// child is treated as unbounded and always kept. A range keeps any child whose advertised history overlaps the
+    /// window at all, since strategies already tolerate partial data. When every candidate is filtered out, the lookup
+    /// reports the same miss it reports when every candidate fails. Disable this to offer every routed candidate to the
+    /// strategy unchanged.
+    /// </remarks>
+    public bool RespectHistoryAvailability { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the lookup options applied by the timeless
