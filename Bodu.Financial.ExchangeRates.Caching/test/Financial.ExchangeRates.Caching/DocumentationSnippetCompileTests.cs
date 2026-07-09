@@ -128,6 +128,7 @@ public sealed class DocumentationSnippetCompileTests
             "using System.Threading.Tasks;" +
             "using Bodu.Financial;" +
             "using Bodu.Financial.Currencies;" +
+            "using Bodu.Financial.ExchangeRates;" +
             "using Bodu.Financial.ExchangeRates.Caching;" +
             "namespace Bodu.DocSnippets { internal static class Snippet { internal static async Task RunAsync() {" +
             Environment.NewLine + snippet + Environment.NewLine +
