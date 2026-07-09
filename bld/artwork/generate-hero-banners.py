@@ -153,7 +153,7 @@ def provider_left(accent, s1, s2, chip, pair):
 
 def provider_right(accent, history, note_text):
     return mono([
-        "IDatedExchangeRate", "Provider", None, "ExchangeRateBook", None,
+        "IDatedRateProvider", None, "RateBook", None,
         f'<tspan fill="{accent}">{history}</tspan>', None,
         f'<tspan fill="#94A3B8" font-size="9">{note_text}</tspan>',
     ], y0=46, dy=16, size=9.5)
@@ -485,7 +485,7 @@ add("hero-financial", "Bodu.Financial", "Bodu.Financial — type-safe monetary p
         note("fair remainder distribution", y=150)]),
     "convert", "allocate", "ExchangeRate",
     mono(['<tspan fill="#34D399">× 0.93</tspan> <tspan fill="#94A3B8">USD→EUR</tspan>',
-          '<tspan fill="#94A3B8">2026-06-01</tspan>', None, "ExchangeRateBook", "IDatedExchange", "RateProvider", None,
+          '<tspan fill="#94A3B8">2026-06-01</tspan>', None, "RateBook", "IDatedRateProvider", None,
           '<tspan fill="#94A3B8" font-size="9">audit-grade provenance</tspan>'], y0=44, dy=15, size=10),
     "type-safe · ISO 4217 · audit-grade FX · fair allocation", gid="fin")
 
@@ -629,7 +629,7 @@ FX_PROVIDERS = [
     ("xe", "XE", "XE.com currency", "data service", "#F87171", "JSON + token", "USD/EUR",
      "full history", "account-scoped API", "AddXeExchangeRates", "XE.com", "Xe"),
     ("oanda", "OANDA", "OANDA fxDS", "historical rates", "#FB923C", "JSON · ~180d", "USD/CAD",
-     "rolling window", "HistoryAvailability", "AddOandaExchangeRates", "OANDA", "Oanda"),
+     "rolling window", "RateHistoryAvailability", "AddOandaExchangeRates", "OANDA", "Oanda"),
 ]
 
 for slug, short, s1, s2, accent, chip, pair, history, pnote, register, desc, pid in FX_PROVIDERS:
@@ -638,6 +638,32 @@ for slug, short, s1, s2, accent, chip, pair, history, pnote, register, desc, pid
         accent, short, provider_left(accent, s1, s2, chip, pair),
         "fetch", "parse", "Provider", provider_right(accent, history, pnote),
         f"services.{register}()", gid="fx" + slug)
+
+add("hero-fx", "Bodu.Financial.ExchangeRates",
+    "Bodu.Financial.ExchangeRates — web exchange-rate provider infrastructure",
+    "#34D399", "WebRateProvider",
+    "\n".join([
+        '''    <g stroke="#334155" stroke-width="1">
+      <rect x="10" y="38" width="130" height="24" rx="5" fill="#0F172A"/>
+      <rect x="10" y="74" width="130" height="24" rx="5" fill="#0F172A"/>
+      <rect x="10" y="110" width="130" height="24" rx="5" fill="#0F172A"/>
+    </g>
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
+      <text x="18" y="54">single-flight <tspan fill="#94A3B8">coalesce</tspan></text>
+      <text x="18" y="90">byte cache <tspan fill="#94A3B8">on disk</tspan></text>
+      <text x="18" y="126">pair loads <tspan fill="#94A3B8">· ranges</tspan></text>
+    </g>
+    <g fill="none" stroke="#34D399" stroke-width="1.4">
+      <path d="M 75 62 L 75 74"/>
+      <path d="M 75 98 L 75 110"/>
+    </g>''',
+        note("RateProviderHttpClientFactory", y=152)]),
+    "fetch", "serve", "Provider base",
+    mono(['<tspan fill="#60A5FA">WebRateProvider</tspan>', None,
+          '<tspan fill="#60A5FA">PairWebRateProvider&lt;T&gt;</tspan>', None,
+          '<tspan fill="#94A3B8" font-size="9">the base every source</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">package derives from</tspan>'], y0=44, dy=15, size=9.5),
+    "base classes for BOE \u00b7 ECB \u00b7 RBA \u00b7 Yahoo \u00b7 OFX \u00b7 XE \u00b7 OANDA", gid="fx")
 
 add("hero-fx-di", "Bodu.Financial.ExchangeRates.DependencyInjection",
     "Bodu.Financial.ExchangeRates.DependencyInjection — resilient HttpClient wiring for exchange-rate providers",
@@ -660,14 +686,14 @@ add("hero-fx-di", "Bodu.Financial.ExchangeRates.DependencyInjection",
         note("SingleFlightCoordinator", y=152)]),
     "register", "delegate", "Provider base",
     mono(["AddWebExchangeRate", "Provider&lt;T&gt;(…)", None,
-          '<tspan fill="#60A5FA">WebExchangeRate</tspan>', '<tspan fill="#60A5FA">Provider</tspan>', None,
+          '<tspan fill="#60A5FA">WebRateProvider</tspan>', None,
           '<tspan fill="#94A3B8" font-size="9">every source package</tspan>',
           '<tspan fill="#94A3B8" font-size="9">builds on this wiring</tspan>'], y0=44, dy=15, size=9.5),
     "shared machinery for BOE · ECB · RBA · Yahoo · OFX · XE · OANDA", gid="fxdi")
 
 add("hero-fx-caching", "Bodu.Financial.ExchangeRates.Caching",
     "Bodu.Financial.ExchangeRates.Caching — read-through caching and aggregation for exchange-rate providers",
-    "#34D399", "IExchangeRateCache",
+    "#34D399", "IRateCache",
     "\n".join([
         '''    <g stroke="#334155" stroke-width="1">
       <rect x="10" y="38" width="130" height="26" rx="5" fill="#0F172A"/>
@@ -694,7 +720,7 @@ add("hero-fx-caching", "Bodu.Financial.ExchangeRates.Caching",
       <text x="20" y="76">BOE <tspan fill="#94A3B8">priority 2</tspan></text>
       <text x="20" y="102">RBA <tspan fill="#94A3B8">per-pair</tspan></text>
     </g>''',
-        mono(['<tspan fill="#60A5FA">Aggregating</tspan>', '<tspan fill="#60A5FA">ExchangeRateProvider</tspan>'],
+        mono(['<tspan fill="#60A5FA">Aggregating</tspan>', '<tspan fill="#60A5FA">RateProvider</tspan>'],
              x=12, y0=128, dy=14, size=9.5)]),
     "AddCachedExchangeRateProvider · AddAggregatedExchangeRateProvider", gid="fxcache")
 
@@ -742,7 +768,7 @@ add("hero-fx-caching-sqlite", "Bodu.Financial.ExchangeRates.Caching.Sqlite",
         mono(['rates <tspan fill="#94A3B8">(pair,date,mid)</tspan>',
               'coverage <tspan fill="#94A3B8">(pair,range)</tspan>'], x=14, y0=122, dy=17, size=9.5)]),
     "lookup", "persist", "Rate cache",
-    mono(['<tspan fill="#60A5FA">AddSqliteRateCache(…)</tspan>', None, "CachingExchangeRate",
+    mono(['<tspan fill="#60A5FA">AddSqliteRateCache(…)</tspan>', None, "CachingRate",
           'Provider <tspan fill="#94A3B8">read-through</tspan>', None,
           '<tspan fill="#94A3B8" font-size="9">survives restarts —</tspan>',
           '<tspan fill="#94A3B8" font-size="9">fetch once per range</tspan>'], y0=44, dy=16, size=9.5),

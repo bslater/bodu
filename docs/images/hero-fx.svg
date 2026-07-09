@@ -1,19 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu.Financial.ExchangeRates.DependencyInjection — resilient HttpClient wiring for exchange-rate providers">
-  <title>Bodu.Financial.ExchangeRates.DependencyInjection</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu.Financial.ExchangeRates — web exchange-rate provider infrastructure">
+  <title>Bodu.Financial.ExchangeRates</title>
   <defs>
-    <linearGradient id="fxdi-bg" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="fx-bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0F172A"/>
       <stop offset="1" stop-color="#1E293B"/>
     </linearGradient>
   </defs>
-  <rect width="480" height="220" rx="12" fill="url(#fxdi-bg)"/>
+  <rect width="480" height="220" rx="12" fill="url(#fx-bg)"/>
 
   <!-- Left panel -->
   <g transform="translate(28 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
     <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
     <rect width="150" height="22" rx="8" fill="#34D399"/>
     <rect y="14" width="150" height="8" fill="#34D399"/>
-    <text x="75" y="16" fill="#06281F" text-anchor="middle" font-weight="700" font-size="10">named HttpClient</text>
+    <text x="75" y="16" fill="#06281F" text-anchor="middle" font-weight="700" font-size="10">WebRateProvider</text>
 
     <g stroke="#334155" stroke-width="1">
       <rect x="10" y="38" width="130" height="24" rx="5" fill="#0F172A"/>
@@ -21,15 +21,15 @@
       <rect x="10" y="110" width="130" height="24" rx="5" fill="#0F172A"/>
     </g>
     <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
-      <text x="18" y="54">Polly retry <tspan fill="#94A3B8">backoff</tspan></text>
-      <text x="18" y="90">circuit breaker</text>
-      <text x="18" y="126">timeout <tspan fill="#94A3B8">· jitter</tspan></text>
+      <text x="18" y="54">single-flight <tspan fill="#94A3B8">coalesce</tspan></text>
+      <text x="18" y="90">byte cache <tspan fill="#94A3B8">on disk</tspan></text>
+      <text x="18" y="126">pair loads <tspan fill="#94A3B8">· ranges</tspan></text>
     </g>
     <g fill="none" stroke="#34D399" stroke-width="1.4">
       <path d="M 75 62 L 75 74"/>
       <path d="M 75 98 L 75 110"/>
     </g>
-    <text x="10" y="152" fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="9">SingleFlightCoordinator</text>
+    <text x="10" y="152" fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="9">RateProviderHttpClientFactory</text>
   </g>
 
   <!-- Bidirectional pipeline arrows -->
@@ -40,8 +40,8 @@
     <polygon points="0,36 8,32 8,40" fill="#34D399" stroke="none"/>
   </g>
   <g transform="translate(186 80)" fill="#34D399" font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">
-    <text x="52" y="-6">register</text>
-    <text x="52" y="56">delegate</text>
+    <text x="52" y="-6">fetch</text>
+    <text x="52" y="56">serve</text>
   </g>
 
   <!-- Right panel -->
@@ -52,16 +52,15 @@
     <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">Provider base</text>
 
     <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="9.5">
-      <text x="10" y="44">AddWebExchangeRate</text>
-      <text x="10" y="59">Provider&lt;T&gt;(…)</text>
-      <text x="10" y="81"><tspan fill="#60A5FA">WebRateProvider</tspan></text>
-      <text x="10" y="103"><tspan fill="#94A3B8" font-size="9">every source package</tspan></text>
-      <text x="10" y="118"><tspan fill="#94A3B8" font-size="9">builds on this wiring</tspan></text>
+      <text x="10" y="44"><tspan fill="#60A5FA">WebRateProvider</tspan></text>
+      <text x="10" y="66"><tspan fill="#60A5FA">PairWebRateProvider&lt;T&gt;</tspan></text>
+      <text x="10" y="88"><tspan fill="#94A3B8" font-size="9">the base every source</tspan></text>
+      <text x="10" y="103"><tspan fill="#94A3B8" font-size="9">package derives from</tspan></text>
     </g>
   </g>
 
   <!-- Bottom caption -->
   <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
-    <text x="240" y="206" text-anchor="middle">shared machinery for BOE · ECB · RBA · Yahoo · OFX · XE · OANDA</text>
+    <text x="240" y="206" text-anchor="middle">base classes for BOE · ECB · RBA · Yahoo · OFX · XE · OANDA</text>
   </g>
 </svg>

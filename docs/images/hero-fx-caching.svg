@@ -13,7 +13,7 @@
     <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
     <rect width="150" height="22" rx="8" fill="#34D399"/>
     <rect y="14" width="150" height="8" fill="#34D399"/>
-    <text x="75" y="16" fill="#06281F" text-anchor="middle" font-weight="700" font-size="10">IExchangeRateCache</text>
+    <text x="75" y="16" fill="#06281F" text-anchor="middle" font-weight="700" font-size="11">IRateCache</text>
 
     <g stroke="#334155" stroke-width="1">
       <rect x="10" y="38" width="130" height="26" rx="5" fill="#0F172A"/>
@@ -64,7 +64,7 @@
     </g>
     <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="9.5">
       <text x="12" y="128"><tspan fill="#60A5FA">Aggregating</tspan></text>
-      <text x="12" y="142"><tspan fill="#60A5FA">ExchangeRateProvider</tspan></text>
+      <text x="12" y="142"><tspan fill="#60A5FA">RateProvider</tspan></text>
     </g>
   </g>
 
