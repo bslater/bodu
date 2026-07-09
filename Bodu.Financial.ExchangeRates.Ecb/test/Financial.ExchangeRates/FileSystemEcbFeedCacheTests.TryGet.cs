@@ -19,9 +19,9 @@ public partial class FileSystemEcbFeedCacheTests
         {
             FileSystemEcbFeedCache cache = new(directory);
             byte[] payload = new byte[] { 1, 2, 3, 4 };
-            cache.Store(EcbExchangeRateFeed.Full, payload);
+            cache.Store(EcbRateFeed.Full, payload);
 
-            bool hit = cache.TryGet(EcbExchangeRateFeed.Full, TimeSpan.FromHours(1), out byte[]? bytes);
+            bool hit = cache.TryGet(EcbRateFeed.Full, TimeSpan.FromHours(1), out byte[]? bytes);
 
             Assert.IsTrue(hit);
             CollectionAssert.AreEqual(payload, bytes);
@@ -42,12 +42,12 @@ public partial class FileSystemEcbFeedCacheTests
         try
         {
             FileSystemEcbFeedCache cache = new(directory);
-            cache.Store(EcbExchangeRateFeed.Full, new byte[] { 1 });
+            cache.Store(EcbRateFeed.Full, new byte[] { 1 });
 
-            string path = Path.Combine(directory, EcbExchangeRateFeed.Full.FileName);
+            string path = Path.Combine(directory, EcbRateFeed.Full.FileName);
             File.SetLastWriteTimeUtc(path, DateTime.UtcNow - TimeSpan.FromHours(2));
 
-            bool hit = cache.TryGet(EcbExchangeRateFeed.Full, TimeSpan.FromMinutes(30), out _);
+            bool hit = cache.TryGet(EcbRateFeed.Full, TimeSpan.FromMinutes(30), out _);
 
             Assert.IsFalse(hit);
         }
@@ -68,7 +68,7 @@ public partial class FileSystemEcbFeedCacheTests
         {
             FileSystemEcbFeedCache cache = new(directory);
 
-            bool hit = cache.TryGet(EcbExchangeRateFeed.Full, TimeSpan.FromHours(1), out _);
+            bool hit = cache.TryGet(EcbRateFeed.Full, TimeSpan.FromHours(1), out _);
 
             Assert.IsFalse(hit);
         }

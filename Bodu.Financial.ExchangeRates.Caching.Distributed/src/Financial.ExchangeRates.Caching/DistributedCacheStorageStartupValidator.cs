@@ -11,15 +11,15 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Validates, at application startup, that the backing store of an exchange-rate cache configured with
-/// <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> can be reached, so an unreachable or misconfigured
+/// <see cref="RateCacheOptions.ValidateStorageOnStart" /> can be reached, so an unreachable or misconfigured
 /// distributed cache fails the host start rather than the first lookup.
 /// </summary>
 /// <remarks>
 /// Registered as an <see cref="IValidateOptions{TOptions}" /> so the existing <c>ValidateOnStart</c> wiring runs it at
-/// host start. It is a no-op unless <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> is set.
+/// host start. It is a no-op unless <see cref="RateCacheOptions.ValidateStorageOnStart" /> is set.
 /// </remarks>
 internal sealed class DistributedCacheStorageStartupValidator
-    : IValidateOptions<DistributedExchangeRateCacheOptions>
+    : IValidateOptions<DistributedRateCacheOptions>
 {
     /// <summary>The distributed cache the exchange-rate cache is backed by, probed at startup.</summary>
     private readonly IDistributedCache _distributedCache;
@@ -32,7 +32,7 @@ internal sealed class DistributedCacheStorageStartupValidator
         _distributedCache = distributedCache;
 
     /// <inheritdoc />
-    public ValidateOptionsResult Validate(string? name, DistributedExchangeRateCacheOptions options)
+    public ValidateOptionsResult Validate(string? name, DistributedRateCacheOptions options)
     {
         if (!options.ValidateStorageOnStart)
             return ValidateOptionsResult.Skip;
@@ -41,7 +41,7 @@ internal sealed class DistributedCacheStorageStartupValidator
         {
             // Constructing the cache runs the same sentinel-read probe the runtime uses; with ValidateStorageOnStart set
             // the constructor throws rather than swallowing when the backing store is unreachable.
-            _ = new DistributedExchangeRateCache(_distributedCache, options);
+            _ = new DistributedRateCache(_distributedCache, options);
             return ValidateOptionsResult.Success;
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

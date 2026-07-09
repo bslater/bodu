@@ -4,11 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.ExchangeRates;
+
 namespace Bodu.Financial;
 
 /// <summary>
 /// Selects the rounding policy used by
-/// <see cref="MoneyBag.ConvertTo{TTarget}(IExchangeRateProvider, MoneyBagConversionRoundingPolicy)" /> when aggregating
+/// <see cref="MoneyBag.ConvertTo{TTarget}(IRateProvider, MoneyBagConversionRoundingPolicy)" /> when aggregating
 /// per-currency balances into a single target-currency total.
 /// </summary>
 /// <remarks>

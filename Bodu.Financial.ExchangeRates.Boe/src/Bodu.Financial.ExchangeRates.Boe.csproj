@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — BoE Exchange Rates</Title>
-    <Description>Bank of England (BoE) daily spot exchange-rate provider for Bodu.Financial. Queries the BoE's Interactive Statistical Database (IADB) CSV endpoint and serves the results as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API and in-memory plus on-disk caching. Includes dependency-injection extensions that register the provider on a configured, resilient HttpClient and bind its options.</Description>
+    <Description>Bank of England (BoE) daily spot exchange-rate provider for Bodu.Financial. Queries the BoE's Interactive Statistical Database (IADB) CSV endpoint and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API and in-memory plus on-disk caching. Includes dependency-injection extensions that register the provider on a configured, resilient HttpClient and bind its options.</Description>
     <PackageTags>$(PackageTags);financial;boe;exchange-rate;forex;fx;sterling;gbp;bank-of-england;dependency-injection;options</PackageTags>
   </PropertyGroup>
 
@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates\src\Bodu.Financial.ExchangeRates.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\Bodu.Text.Formats\src\Bodu.Text.Formats.csproj" />

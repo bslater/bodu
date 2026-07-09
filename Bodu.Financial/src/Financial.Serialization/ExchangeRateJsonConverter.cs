@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial.Serialization;
 
@@ -251,13 +252,13 @@ public sealed class ExchangeRateJsonConverter
     private static (string From, string To) ReadCompactPair(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.String)
-            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedCompactString_ExchangeRatePair);
+            throw new JsonException(FinancialResourceStrings.Json_Invalid_ExpectedCompactString_CurrencyPair);
 
         string text = reader.GetString()!;
         int slashIndex = text.IndexOf('/');
         return slashIndex <= 0 || slashIndex >= text.Length - 1 || text.LastIndexOf('/') != slashIndex
             ? throw new JsonException(
-                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_CompactExchangeRatePairForm, text))
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Json_Invalid_CompactCurrencyPairForm, text))
             : ((string From, string To))(text[..slashIndex], text[(slashIndex + 1)..]);
     }
 

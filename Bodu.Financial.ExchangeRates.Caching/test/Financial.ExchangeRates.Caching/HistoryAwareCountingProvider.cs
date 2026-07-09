@@ -7,33 +7,33 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IDatedExchangeRateProvider" /> test double that advertises a settable
-/// <see cref="ExchangeRateHistoryAvailability" /> through <see cref="IHistoryAwareExchangeRateProvider" /> while
+/// An <see cref="IDatedRateProvider" /> test double that advertises a settable
+/// <see cref="RateHistoryAvailability" /> through <see cref="IHistoryAwareRateProvider" /> while
 /// delegating to a fixed in-memory book and counting every lookup, so tests can assert both what the decorators forward
 /// and when they avoided calling a source outside its advertised history.
 /// </summary>
 internal sealed class HistoryAwareCountingProvider
-    : IDatedExchangeRateProvider, IHistoryAwareExchangeRateProvider
+    : IDatedRateProvider, IHistoryAwareRateProvider
 {
     /// <summary>The fixed provider backing the counted lookups.</summary>
-    private readonly FixedDatedExchangeRateProvider _inner;
+    private readonly FixedDatedRateProvider _inner;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HistoryAwareCountingProvider" /> class.
     /// </summary>
     /// <param name="availability">The history depth the double advertises.</param>
     /// <param name="rates">The observations the inner provider resolves from.</param>
-    public HistoryAwareCountingProvider(ExchangeRateHistoryAvailability availability, IEnumerable<ExchangeRate> rates)
+    public HistoryAwareCountingProvider(RateHistoryAvailability availability, IEnumerable<ExchangeRate> rates)
     {
         HistoryAvailability = availability;
-        _inner = new FixedDatedExchangeRateProvider(rates);
+        _inner = new FixedDatedRateProvider(rates);
     }
 
     /// <summary>
     /// Gets or sets the history depth the double advertises.
     /// </summary>
     /// <value>The advertised availability, mutable so a test can change the declaration mid-scenario.</value>
-    public ExchangeRateHistoryAvailability HistoryAvailability { get; set; }
+    public RateHistoryAvailability HistoryAvailability { get; set; }
 
     /// <summary>
     /// Gets the number of times a single-date lookup (<c>GetRate</c>, <c>TryGetRate</c>, or <c>GetRateAsync</c>) has
@@ -61,28 +61,28 @@ internal sealed class HistoryAwareCountingProvider
     public DateOnly? LastRangeEnd { get; private set; }
 
     /// <inheritdoc />
-    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null)
+    public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null)
     {
         SingleDateCallCount++;
         return _inner.GetRate(fromIsoCode, toIsoCode, options);
     }
 
     /// <inheritdoc />
-    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null)
+    public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null)
     {
         SingleDateCallCount++;
         return _inner.GetRate(fromIsoCode, toIsoCode, date, options);
     }
 
     /// <inheritdoc />
-    public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result)
+    public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options, out RateLookupResult result)
     {
         SingleDateCallCount++;
         return _inner.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
     }
 
     /// <inheritdoc />
-    public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
+    public RateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         RangeCallCount++;
         LastRangeStart = startDate;
@@ -91,21 +91,21 @@ internal sealed class HistoryAwareCountingProvider
     }
 
     /// <inheritdoc />
-    public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default)
+    public ValueTask<RateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null, CancellationToken cancellationToken = default)
     {
         SingleDateCallCount++;
         return _inner.GetRateAsync(fromIsoCode, toIsoCode, options, cancellationToken);
     }
 
     /// <inheritdoc />
-    public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default)
+    public ValueTask<RateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null, CancellationToken cancellationToken = default)
     {
         SingleDateCallCount++;
         return _inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken);
     }
 
     /// <inheritdoc />
-    public ValueTask<ExchangeRateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
+    public ValueTask<RateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
         RangeCallCount++;
         LastRangeStart = startDate;

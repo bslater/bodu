@@ -48,10 +48,9 @@
     <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10">
       <text x="10" y="44"><tspan fill="#34D399">× 0.93</tspan> <tspan fill="#94A3B8">USD→EUR</tspan></text>
       <text x="10" y="59"><tspan fill="#94A3B8">2026-06-01</tspan></text>
-      <text x="10" y="81">ExchangeRateBook</text>
-      <text x="10" y="96">IDatedExchange</text>
-      <text x="10" y="111">RateProvider</text>
-      <text x="10" y="133"><tspan fill="#94A3B8" font-size="9">audit-grade provenance</tspan></text>
+      <text x="10" y="81">RateBook</text>
+      <text x="10" y="96">IDatedRateProvider</text>
+      <text x="10" y="118"><tspan fill="#94A3B8" font-size="9">audit-grade provenance</tspan></text>
     </g>
   </g>
 

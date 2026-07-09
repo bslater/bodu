@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial;
 
@@ -19,7 +20,7 @@ public partial class MoneyExchangeRateExtensionsTests
     {
         Money source = new(100m, CurrencyCode.EUR);
 
-        Money<USD> result = source.ConvertTo<USD>(BuildProvider(), s_asOf, ExchangeRateLookupOptions.Exact);
+        Money<USD> result = source.ConvertTo<USD>(BuildProvider(), s_asOf, RateLookupOptions.Exact);
 
         Assert.AreEqual(new Money<USD>(110m), result);
     }

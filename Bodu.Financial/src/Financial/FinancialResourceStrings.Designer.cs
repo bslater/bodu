@@ -69,14 +69,6 @@ namespace Bodu.Financial {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to Synchronous network access must not be invoked on a thread with a captured SynchronizationContext, which can deadlock; call the asynchronous API or invoke this from a thread-pool thread..
-        /// </summary>
-        internal static string Op_Invalid_SynchronousNetworkAccessOnCapturedContext {
-            get {
-                return ResourceManager.GetString("Op_Invalid_SynchronousNetworkAccessOnCapturedContext", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to At least one ratio must be supplied..
@@ -125,20 +117,20 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to ExchangeRateBook cannot contain two series with the same pair and provider; &apos;{0}/{1}&apos; from &apos;{2}&apos; is duplicated..
+        ///   Looks up a localized string similar to RateBook cannot contain two series with the same pair and provider; &apos;{0}/{1}&apos; from &apos;{2}&apos; is duplicated..
         /// </summary>
-        internal static string Arg_Invalid_ExchangeRateBookDuplicateKey {
+        internal static string Arg_Invalid_RateBookDuplicateKey {
             get {
-                return ResourceManager.GetString("Arg_Invalid_ExchangeRateBookDuplicateKey", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_RateBookDuplicateKey", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to ExchangeRatePair is uninitialised; default(ExchangeRatePair) bypasses currency-code validation and is not a valid directional key..
+        ///   Looks up a localized string similar to CurrencyPair is uninitialised; default(CurrencyPair) bypasses currency-code validation and is not a valid directional key..
         /// </summary>
-        internal static string Arg_Invalid_ExchangeRatePairDefault {
+        internal static string Arg_Invalid_CurrencyPairDefault {
             get {
-                return ResourceManager.GetString("Arg_Invalid_ExchangeRatePairDefault", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_CurrencyPairDefault", resourceCulture);
             }
         }
 
@@ -208,9 +200,9 @@ namespace Bodu.Financial {
         /// <summary>
         ///   Looks up a localized string similar to Pairs collection must contain at least one currency pair..
         /// </summary>
-        internal static string Arg_Invalid_ExchangeRatePairsEmpty {
+        internal static string Arg_Invalid_CurrencyPairsEmpty {
             get {
-                return ResourceManager.GetString("Arg_Invalid_ExchangeRatePairsEmpty", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_CurrencyPairsEmpty", resourceCulture);
             }
         }
 
@@ -424,11 +416,11 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The JSON string &apos;{0}&apos; is not a valid compact ExchangeRatePair form..
+        ///   Looks up a localized string similar to The JSON string &apos;{0}&apos; is not a valid compact CurrencyPair form..
         /// </summary>
-        internal static string Json_Invalid_CompactExchangeRatePairForm {
+        internal static string Json_Invalid_CompactCurrencyPairForm {
             get {
-                return ResourceManager.GetString("Json_Invalid_CompactExchangeRatePairForm", resourceCulture);
+                return ResourceManager.GetString("Json_Invalid_CompactCurrencyPairForm", resourceCulture);
             }
         }
 
@@ -496,11 +488,11 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected a JSON string in compact ExchangeRatePair form (e.g. &quot;USD/JPY&quot;)..
+        ///   Looks up a localized string similar to Expected a JSON string in compact CurrencyPair form (e.g. &quot;USD/JPY&quot;)..
         /// </summary>
-        internal static string Json_Invalid_ExpectedCompactString_ExchangeRatePair {
+        internal static string Json_Invalid_ExpectedCompactString_CurrencyPair {
             get {
-                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_ExchangeRatePair", resourceCulture);
+                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_CurrencyPair", resourceCulture);
             }
         }
 
@@ -532,11 +524,11 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Expected a JSON object containing an ExchangeRatePair..
+        ///   Looks up a localized string similar to Expected a JSON object containing an CurrencyPair..
         /// </summary>
-        internal static string Json_Invalid_ExpectedObject_ExchangeRatePair {
+        internal static string Json_Invalid_ExpectedObject_CurrencyPair {
             get {
-                return ResourceManager.GetString("Json_Invalid_ExpectedObject_ExchangeRatePair", resourceCulture);
+                return ResourceManager.GetString("Json_Invalid_ExpectedObject_CurrencyPair", resourceCulture);
             }
         }
 
@@ -811,49 +803,9 @@ namespace Bodu.Financial {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The exchange-rate provider options must specify a base address..
-        /// </summary>
-        internal static string Arg_Invalid_WebExchangeRateOptionsBaseAddress {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsBaseAddress", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The exchange-rate provider options HTTP timeout must be greater than zero..
-        /// </summary>
-        internal static string Arg_Invalid_WebExchangeRateOptionsHttpTimeout {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsHttpTimeout", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The exchange-rate provider options default look-back window must be greater than zero..
-        /// </summary>
-        internal static string Arg_Invalid_WebExchangeRateOptionsDefaultLookback {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsDefaultLookback", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The exchange-rate provider options currency alias map must not be null..
-        /// </summary>
-        internal static string Arg_Invalid_WebExchangeRateOptionsCurrencyAliases {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsCurrencyAliases", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The exchange-rate provider options must specify a defined log level for every logging concern..
-        /// </summary>
-        internal static string Arg_Invalid_WebExchangeRateOptionsLogLevel {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsLogLevel", resourceCulture);
-            }
-        }
     }
 }

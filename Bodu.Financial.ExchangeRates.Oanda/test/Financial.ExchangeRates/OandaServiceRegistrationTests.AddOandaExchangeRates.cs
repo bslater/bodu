@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +25,7 @@ public partial class OandaServiceRegistrationTests
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
-        Assert.IsNotNull(provider.GetService<OandaExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetService<OandaRateProvider>());
     }
 
     /// <summary>
@@ -38,9 +39,9 @@ public partial class OandaServiceRegistrationTests
         services.AddFinancialService().AddOandaExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        OandaExchangeRateProvider? concrete = provider.GetService<OandaExchangeRateProvider>();
-        IDatedExchangeRateProvider? dated = provider.GetService<IDatedExchangeRateProvider>();
-        IExchangeRateProvider? simple = provider.GetService<IExchangeRateProvider>();
+        OandaRateProvider? concrete = provider.GetService<OandaRateProvider>();
+        IDatedRateProvider? dated = provider.GetService<IDatedRateProvider>();
+        IRateProvider? simple = provider.GetService<IRateProvider>();
 
         Assert.IsNotNull(concrete);
         Assert.AreSame(concrete, dated);
@@ -83,7 +84,7 @@ public partial class OandaServiceRegistrationTests
         services.AddFinancialService(configuration).AddOandaExchangeRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        OandaExchangeRateOptions options = provider.GetRequiredService<IOptions<OandaExchangeRateOptions>>().Value;
+        OandaRateProviderOptions options = provider.GetRequiredService<IOptions<OandaRateProviderOptions>>().Value;
 
         Assert.AreEqual("weekly", options.Period);
         Assert.AreEqual("bid", options.Price);
@@ -100,7 +101,7 @@ public partial class OandaServiceRegistrationTests
         services.AddFinancialService().AddOandaExchangeRates(configure: o => o.UserAgent = "test-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        OandaExchangeRateOptions options = provider.GetRequiredService<IOptions<OandaExchangeRateOptions>>().Value;
+        OandaRateProviderOptions options = provider.GetRequiredService<IOptions<OandaRateProviderOptions>>().Value;
 
         Assert.AreEqual("test-agent", options.UserAgent);
     }
@@ -129,7 +130,7 @@ public partial class OandaServiceRegistrationTests
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
-            _ = provider.GetRequiredService<OandaExchangeRateProvider>();
+            _ = provider.GetRequiredService<OandaRateProvider>();
         });
     }
 
@@ -143,6 +144,6 @@ public partial class OandaServiceRegistrationTests
         services.AddFinancialService().AddOandaExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        Assert.IsNotNull(provider.GetRequiredService<OandaExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetRequiredService<OandaRateProvider>());
     }
 }

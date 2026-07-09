@@ -16,7 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Testing\test\Bodu.Financial.ExchangeRates.Testing.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Testing\src\Bodu.Financial.ExchangeRates.Testing.csproj" />
     <ProjectReference Include="..\src\Bodu.Financial.ExchangeRates.Ofx.csproj" />
   </ItemGroup>
 

@@ -55,15 +55,15 @@ public sealed partial class RateCachingExtensionsTests
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
-    public void AddCachedExchangeRateProvider_WhenRegistered_ShouldResolveBothSurfaces()
+    public void AddCachedRateProvider_WhenRegistered_ShouldResolveBothSurfaces()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider dated = provider.GetRequiredService<IDatedExchangeRateProvider>();
-        IExchangeRateProvider timeless = provider.GetRequiredService<IExchangeRateProvider>();
+        IDatedRateProvider dated = provider.GetRequiredService<IDatedRateProvider>();
+        IRateProvider timeless = provider.GetRequiredService<IRateProvider>();
 
-        Assert.IsInstanceOfType<CachingExchangeRateProvider>(dated);
+        Assert.IsInstanceOfType<CachingRateProvider>(dated);
         Assert.AreSame<object>(dated, timeless);
     }
 
@@ -71,13 +71,13 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that the registered caching provider serves the wrapped source's rate.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenResolved_ShouldServeWrappedSource()
+    public void AddCachedRateProvider_WhenResolved_ShouldServeWrappedSource()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
-        ExchangeRateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
+        RateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual(0.5m, result.Rate.Rate);
     }
@@ -86,13 +86,13 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that the configured cache directory is used, writing the source's rate under a per-provider subdirectory.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenConfigured_ShouldCacheToConfiguredDirectory()
+    public void AddCachedRateProvider_WhenConfigured_ShouldCacheToConfiguredDirectory()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
-        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+        IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
 
-        _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.IsTrue(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.toml")));
     }
@@ -101,16 +101,16 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that the cache directory is bound from configuration.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenConfigurationProvided_ShouldBindCacheDirectory()
+    public void AddCachedRateProvider_WhenConfigurationProvided_ShouldBindCacheDirectory()
     {
         IConfiguration config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:ExchangeRateCache:CacheDirectory"] = _directory })
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:RateCache:CacheDirectory"] = _directory })
             .Build();
 
-        ServiceProvider provider = BuildProvider(builder => builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", config));
-        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
+        ServiceProvider provider = BuildProvider(builder => builder.AddCachedRateProvider<StubRbaProvider>("RBA", config));
+        IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
 
-        _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.IsTrue(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.toml")));
     }
@@ -119,11 +119,11 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that a <see langword="null" /> builder is rejected.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    public void AddCachedRateProvider_WhenBuilderIsNull_ShouldThrowArgumentNullException()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = RateCachingExtensions.AddCachedExchangeRateProvider<StubRbaProvider>(null!, "RBA");
+            _ = RateCachingExtensions.AddCachedRateProvider<StubRbaProvider>(null!, "RBA");
         });
 
         Assert.AreEqual("builder", ex.ParamName);
@@ -133,14 +133,14 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that a blank provider name is rejected.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenProviderNameIsBlank_ShouldThrowArgumentException()
+    public void AddCachedRateProvider_WhenProviderNameIsBlank_ShouldThrowArgumentException()
     {
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddFinancialService();
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = builder.AddCachedExchangeRateProvider<StubRbaProvider>("  ");
+            _ = builder.AddCachedRateProvider<StubRbaProvider>("  ");
         });
 
         Assert.AreEqual("providerName", ex.ParamName);
@@ -150,14 +150,14 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that invalid cache options fail fast through <c>ValidateOnStart</c> when the cached provider is resolved.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenOptionsInvalid_ShouldThrowOnResolve()
+    public void AddCachedRateProvider_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.DefaultExpiry = TimeSpan.Zero));
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.DefaultExpiry = TimeSpan.Zero));
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
-            _ = provider.GetRequiredService<IDatedExchangeRateProvider>();
+            _ = provider.GetRequiredService<IDatedRateProvider>();
         });
     }
 
@@ -165,12 +165,12 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that valid cache options pass <c>ValidateOnStart</c> and resolve the cached provider.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenOptionsValid_ShouldResolveProvider()
+    public void AddCachedRateProvider_WhenOptionsValid_ShouldResolveProvider()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.CacheDirectory = _directory));
 
-        Assert.IsNotNull(provider.GetRequiredService<IDatedExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetRequiredService<IDatedRateProvider>());
     }
 
     /// <summary>
@@ -178,17 +178,17 @@ public sealed partial class RateCachingExtensionsTests
     /// TOML file.
     /// </summary>
     [TestMethod]
-    public void AddCachedExchangeRateProvider_WhenCacheFactoryProvided_ShouldUseChosenCache()
+    public void AddCachedRateProvider_WhenCacheFactoryProvided_ShouldUseChosenCache()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddCachedExchangeRateProvider<StubRbaProvider>(
+            builder.AddCachedRateProvider<StubRbaProvider>(
                 "RBA",
                 configure: o => o.CacheDirectory = _directory,
-                cacheFactory: (_, name) => new JsonFileExchangeRateCache(
-                    new FileExchangeRateCacheOptions { Provider = name, CacheDirectory = _directory })));
-        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
+                cacheFactory: (_, name) => new JsonFileRateCache(
+                    new FileRateCacheOptions { Provider = name, CacheDirectory = _directory })));
+        IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
 
-        _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        _ = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.IsTrue(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.json")), "the supplied JSON cache is used");
         Assert.IsFalse(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.toml")), "the default TOML cache is not used");
@@ -207,43 +207,43 @@ public sealed partial class RateCachingExtensionsTests
     }
 
     /// <summary>
-    /// A parameterless <see cref="IDatedExchangeRateProvider" /> source resolving a single AUD/USD observation.
+    /// A parameterless <see cref="IDatedRateProvider" /> source resolving a single AUD/USD observation.
     /// </summary>
     private sealed class StubRbaProvider
-        : IDatedExchangeRateProvider
+        : IDatedRateProvider
     {
         /// <summary>
         /// The fixed provider backing the stub.
         /// </summary>
-        private static readonly FixedDatedExchangeRateProvider Inner =
+        private static readonly FixedDatedRateProvider Inner =
             new(new[] { new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2023, 1, 3), 0.5m, "RBA") });
 
         /// <inheritdoc />
-        public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null) =>
+        public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null) =>
             Inner.GetRate(fromIsoCode, toIsoCode, options);
 
         /// <inheritdoc />
-        public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null) =>
+        public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null) =>
             Inner.GetRate(fromIsoCode, toIsoCode, date, options);
 
         /// <inheritdoc />
-        public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result) =>
+        public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options, out RateLookupResult result) =>
             Inner.TryGetRate(fromIsoCode, toIsoCode, date, options, out result);
 
         /// <inheritdoc />
-        public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
+        public RateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
             Inner.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
 
         /// <inheritdoc />
-        public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
+        public ValueTask<RateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
             Inner.GetRateAsync(fromIsoCode, toIsoCode, options, cancellationToken);
 
         /// <inheritdoc />
-        public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
+        public ValueTask<RateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
             Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken);
 
         /// <inheritdoc />
-        public ValueTask<ExchangeRateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        public ValueTask<RateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
             Inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);
     }
 }

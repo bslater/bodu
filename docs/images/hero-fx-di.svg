@@ -54,10 +54,9 @@
     <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="9.5">
       <text x="10" y="44">AddWebExchangeRate</text>
       <text x="10" y="59">Provider&lt;T&gt;(…)</text>
-      <text x="10" y="81"><tspan fill="#60A5FA">WebExchangeRate</tspan></text>
-      <text x="10" y="96"><tspan fill="#60A5FA">Provider</tspan></text>
-      <text x="10" y="118"><tspan fill="#94A3B8" font-size="9">every source package</tspan></text>
-      <text x="10" y="133"><tspan fill="#94A3B8" font-size="9">builds on this wiring</tspan></text>
+      <text x="10" y="81"><tspan fill="#60A5FA">WebRateProvider</tspan></text>
+      <text x="10" y="103"><tspan fill="#94A3B8" font-size="9">every source package</tspan></text>
+      <text x="10" y="118"><tspan fill="#94A3B8" font-size="9">builds on this wiring</tspan></text>
     </g>
   </g>
 

@@ -6,6 +6,7 @@
 
 using System.Globalization;
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial;
 
@@ -26,7 +27,7 @@ public sealed partial class MoneyBag
     /// <exception cref="InvalidOperationException">
     /// A rate returned by <paramref name="rates" /> is zero or negative.
     /// </exception>
-    public Money<TTarget> ConvertTo<TTarget>(IExchangeRateProvider rates)
+    public Money<TTarget> ConvertTo<TTarget>(IRateProvider rates)
         where TTarget : ICurrency =>
         ConvertTo<TTarget>(rates, MoneyBagConversionRoundingPolicy.SumRawThenRound);
 
@@ -45,7 +46,7 @@ public sealed partial class MoneyBag
     /// <exception cref="InvalidOperationException">
     /// A rate returned by <paramref name="rates" /> is zero or negative.
     /// </exception>
-    public Money<TTarget> ConvertTo<TTarget>(IExchangeRateProvider rates, MoneyBagConversionRoundingPolicy policy)
+    public Money<TTarget> ConvertTo<TTarget>(IRateProvider rates, MoneyBagConversionRoundingPolicy policy)
         where TTarget : ICurrency
     {
         ThrowHelper.ThrowIfNull(rates);

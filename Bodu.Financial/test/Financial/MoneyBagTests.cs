@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial;
 
@@ -221,7 +222,7 @@ public partial class MoneyBagTests
     }
 
     /// <summary>
-    /// Verifies conversion via an <see cref="IExchangeRateProvider" /> aggregates correctly.
+    /// Verifies conversion via an <see cref="IRateProvider" /> aggregates correctly.
     /// </summary>
     [TestMethod]
     public void ConvertTo_WhenUsingRateProvider_ShouldAggregateToTargetCurrency()
@@ -236,7 +237,7 @@ public partial class MoneyBagTests
             { ("EUR", "USD"), 1.10m },
             { ("JPY", "USD"), 0.0067m },
         };
-        var table = new FixedExchangeRateTable(rates);
+        var table = new FixedRateTable(rates);
 
         Money<USD> total = bag.ConvertTo<USD>(table);
 
@@ -266,7 +267,7 @@ public partial class MoneyBagTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="FixedExchangeRateTable" /> uses the inverse rate when the direct pair is missing.
+    /// Verifies that <see cref="FixedRateTable" /> uses the inverse rate when the direct pair is missing.
     /// </summary>
     [TestMethod]
     public void FixedRateTable_WhenInverseDefined_ShouldUseInverseRate()
@@ -275,7 +276,7 @@ public partial class MoneyBagTests
         {
             { ("USD", "EUR"), 0.92m },
         };
-        var table = new FixedExchangeRateTable(rates);
+        var table = new FixedRateTable(rates);
 
         decimal usdToEur = table.GetRate("USD", "EUR");
         decimal eurToUsd = table.GetRate("EUR", "USD");
@@ -290,7 +291,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void FixedRateTable_WhenSameCurrency_ShouldReturnOne()
     {
-        var table = new FixedExchangeRateTable(new Dictionary<(string, string), decimal>());
+        var table = new FixedRateTable(new Dictionary<(string, string), decimal>());
 
         Assert.AreEqual(1m, table.GetRate("USD", "USD"));
     }
@@ -301,7 +302,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void FixedRateTable_WhenPairAbsent_ShouldThrowKeyNotFoundException()
     {
-        var table = new FixedExchangeRateTable(new Dictionary<(string, string), decimal>());
+        var table = new FixedRateTable(new Dictionary<(string, string), decimal>());
 
         Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {

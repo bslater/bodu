@@ -8,7 +8,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Records one inclusive date range that was actually fetched from a provider, together with the UTC instant the fetch
-/// occurred, which drives expiry of the coverage just as <see cref="CachedExchangeRate.CachedAtUtc" /> drives expiry of
+/// occurred, which drives expiry of the coverage just as <see cref="CachedRate.CachedAtUtc" /> drives expiry of
 /// a cached rate.
 /// </summary>
 /// <param name="Start">The inclusive first date of the fetched range.</param>

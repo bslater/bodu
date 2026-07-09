@@ -21,7 +21,7 @@ public static class OfxServiceCollectionExtensions
     /// <param name="services">The service collection to register into.</param>
     /// <param name="configuration">
     /// An optional configuration root. When supplied, <see cref="Bodu.Financial.FinancialOptions" /> is bound from the
-    /// <c>Financial</c> section and <see cref="OfxExchangeRateOptions" /> from <paramref name="sectionName" />.
+    /// <c>Financial</c> section and <see cref="OfxRateProviderOptions" /> from <paramref name="sectionName" />.
     /// </param>
     /// <param name="sectionName">The OFX configuration section name. Defaults to <c>Financial:Ofx</c>.</param>
     /// <param name="configure">An optional callback applied after OFX configuration binding.</param>
@@ -51,7 +51,7 @@ public static class OfxServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Ofx",
-        Action<OfxExchangeRateOptions>? configure = null)
+        Action<OfxRateProviderOptions>? configure = null)
     {
         ThrowHelper.ThrowIfNull(services);
 

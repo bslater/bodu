@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — OANDA Exchange Rates</Title>
-    <Description>OANDA (Historical Currency Converter) exchange-rate provider for Bodu.Financial. Fetches and parses the public OANDA Rates history JSON service and serves the results as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API over arbitrary currency pairs. The anonymous endpoint serves a rolling recent window (roughly the last 180 days), declared through the provider's HistoryAvailability. Includes the dependency-injection registration extensions (AddOandaExchangeRates) that bind OandaExchangeRateOptions and configure a resilient named HttpClient.</Description>
+    <Description>OANDA (Historical Currency Converter) exchange-rate provider for Bodu.Financial. Fetches and parses the public OANDA Rates history JSON service and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API over arbitrary currency pairs. The anonymous endpoint serves a rolling recent window (roughly the last 180 days), declared through the provider's HistoryAvailability. Includes the dependency-injection registration extensions (AddOandaExchangeRates) that bind OandaRateProviderOptions and configure a resilient named HttpClient.</Description>
     <PackageTags>$(PackageTags);financial;oanda;exchange-rate;forex;fx;rest;json;dependency-injection;options</PackageTags>
   </PropertyGroup>
 
@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates\src\Bodu.Financial.ExchangeRates.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
   </ItemGroup>

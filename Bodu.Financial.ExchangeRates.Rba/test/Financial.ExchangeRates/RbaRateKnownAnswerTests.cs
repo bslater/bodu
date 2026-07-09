@@ -27,12 +27,12 @@ public partial class RbaRateKnownAnswerTests
     /// <summary>
     /// Shared options (no disk cache) used to build providers and to resolve currency aliases consistently.
     /// </summary>
-    private static readonly RbaExchangeRateOptions s_options = new() { EnableDiskCache = false };
+    private static readonly RbaRateProviderOptions s_options = new() { EnableDiskCache = false };
 
     /// <summary>
     /// The cache of providers built per source workbook, so each workbook is parsed once across all rows.
     /// </summary>
-    private static readonly ConcurrentDictionary<string, Task<RbaExchangeRateProvider>> s_providers = new();
+    private static readonly ConcurrentDictionary<string, Task<RbaRateProvider>> s_providers = new();
 
     /// <summary>
     /// The options used to deserialize the embedded known-answer data set.
@@ -90,7 +90,7 @@ public partial class RbaRateKnownAnswerTests
     /// </summary>
     /// <param name="sourceFileName">The RBA workbook file name.</param>
     /// <returns>A task that yields the provider with the workbook's era loaded.</returns>
-    private static Task<RbaExchangeRateProvider> GetProviderAsync(string sourceFileName) =>
+    private static Task<RbaRateProvider> GetProviderAsync(string sourceFileName) =>
         s_providers.GetOrAdd(sourceFileName, BuildProviderAsync);
 
     /// <summary>
@@ -98,12 +98,12 @@ public partial class RbaRateKnownAnswerTests
     /// </summary>
     /// <param name="sourceFileName">The RBA workbook file name.</param>
     /// <returns>A task that yields the loaded provider.</returns>
-    private static async Task<RbaExchangeRateProvider> BuildProviderAsync(string sourceFileName)
+    private static async Task<RbaRateProvider> BuildProviderAsync(string sourceFileName)
     {
         RbaEra era = RbaEra.Default.Single(e => string.Equals(e.FileName, sourceFileName, StringComparison.Ordinal));
-        FixtureRbaExchangeRateTableSource source = new(s_options, sourceFileName);
+        FixtureRbaRateTableSource source = new(s_options, sourceFileName);
 
-        RbaExchangeRateProvider provider = new(source, s_options);
+        RbaRateProvider provider = new(source, s_options);
         await provider.LoadEraAsync(era);
         return provider;
     }

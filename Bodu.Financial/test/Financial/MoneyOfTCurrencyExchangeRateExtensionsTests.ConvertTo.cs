@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.ExchangeRates;
 using Bodu.Test;
 using Bodu.Test.Assertions;
 
@@ -25,7 +26,7 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
         Money<Bodu.Financial.Currencies.AUD> converted = amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
             BuildProvider(),
             s_d1,
-            ExchangeRateLookupOptions.Exact);
+            RateLookupOptions.Exact);
 
         Assert.AreEqual(150.00m, converted.Amount);
     }
@@ -42,7 +43,7 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
         Money<Bodu.Financial.Currencies.USD> converted = amount.ConvertTo<Bodu.Financial.Currencies.AUD, Bodu.Financial.Currencies.USD>(
             BuildProvider(),
             s_d1,
-            ExchangeRateLookupOptions.Exact);
+            RateLookupOptions.Exact);
 
         Assert.AreEqual(100.00m, converted.Amount);
     }
@@ -59,7 +60,7 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
         Money<Bodu.Financial.Currencies.USD> converted = amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.USD>(
             BuildProvider(),
             s_d1,
-            ExchangeRateLookupOptions.Exact);
+            RateLookupOptions.Exact);
 
         Assert.AreEqual(100m, converted.Amount);
     }
@@ -72,13 +73,13 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
     public void ConvertTo_WhenRateMissing_ShouldThrowKeyNotFoundException()
     {
         Money<Bodu.Financial.Currencies.USD> amount = new(100m);
-        FixedDatedExchangeRateProvider empty = new([]);
+        FixedDatedRateProvider empty = new([]);
 
         _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
             amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.JPY>(
                 empty,
                 s_d1,
-                new ExchangeRateLookupOptions(ExchangeRateDateResolution.Exact, allowSameCurrencyIdentityRate: false)));
+                new RateLookupOptions(RateDateResolution.Exact, allowSameCurrencyIdentityRate: false)));
     }
 
     /// <summary>
@@ -94,7 +95,7 @@ public partial class MoneyOfTCurrencyExchangeRateExtensionsTests
             () => amount.ConvertTo<Bodu.Financial.Currencies.USD, Bodu.Financial.Currencies.AUD>(
                 null!,
                 s_d1,
-                ExchangeRateLookupOptions.Exact),
+                RateLookupOptions.Exact),
             "provider");
     }
 }

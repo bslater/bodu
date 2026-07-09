@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json.Serialization;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial.Serialization;
 

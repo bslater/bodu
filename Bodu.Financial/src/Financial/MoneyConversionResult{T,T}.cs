@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+
 namespace Bodu.Financial;
 
 /// <summary>
@@ -21,6 +24,6 @@ namespace Bodu.Financial;
 public readonly record struct MoneyConversionResult<TSource, TTarget>(
     Money<TSource> SourceAmount,
     Money<TTarget> TargetAmount,
-    ExchangeRateLookupResult ExchangeRate)
+    RateLookupResult ExchangeRate)
     where TSource : ICurrency
     where TTarget : ICurrency;

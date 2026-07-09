@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -23,6 +25,6 @@ public sealed partial class AverageStrategyTests
     /// <param name="name">The candidate name.</param>
     /// <param name="rows">The observation rows.</param>
     /// <returns>The named candidate.</returns>
-    private static NamedDatedExchangeRateProvider Named(string name, params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
-        new(name, new FixedDatedExchangeRateProvider(rows.Select(r => new ExchangeRate(CurrencyInfo.ParseCurrencyCode(r.From), CurrencyInfo.ParseCurrencyCode(r.To), r.Date, r.Rate, name))));
+    private static NamedDatedRateProvider Named(string name, params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
+        new(name, new FixedDatedRateProvider(rows.Select(r => new ExchangeRate(CurrencyInfo.ParseCurrencyCode(r.From), CurrencyInfo.ParseCurrencyCode(r.To), r.Date, r.Rate, name))));
 }

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Financial.DependencyInjection;
@@ -18,6 +19,6 @@ public sealed partial class FinancialServiceBuilderExtensionsTests
     {
         ServiceProvider provider = new ServiceCollection().AddFinancialService().Services.BuildServiceProvider();
 
-        Assert.IsNull(provider.GetService<IExchangeRateProvider>());
+        Assert.IsNull(provider.GetService<IRateProvider>());
     }
 }

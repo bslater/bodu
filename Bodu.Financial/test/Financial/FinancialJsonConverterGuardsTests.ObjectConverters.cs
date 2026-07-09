@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
@@ -25,7 +26,7 @@ public partial class FinancialJsonConverterGuardsTests
         AssertReadThrowsJsonException(new MoneyBagJsonConverter(FinancialJsonPolicy.Strict), "{ /* c */ \"balances\":{}}", allowComments: true);
         AssertReadThrowsJsonException(new MoneyBagJsonConverter(FinancialJsonPolicy.Strict), "{\"balances\":{ /* c */ \"USD\":1}}", allowComments: true);
         AssertReadThrowsJsonException(new ExchangeRateJsonConverter(FinancialJsonPolicy.Strict), "{ /* c */ \"from\":\"USD\"}", allowComments: true);
-        AssertReadThrowsJsonException(new ExchangeRatePairJsonConverter(FinancialJsonPolicy.Strict), "{ /* c */ \"from\":\"USD\"}", allowComments: true);
+        AssertReadThrowsJsonException(new CurrencyPairJsonConverter(FinancialJsonPolicy.Strict), "{ /* c */ \"from\":\"USD\"}", allowComments: true);
     }
 
     /// <summary>
@@ -40,7 +41,7 @@ public partial class FinancialJsonConverterGuardsTests
         AssertReadThrowsJsonException(new MoneyBagJsonConverter(FinancialJsonPolicy.Strict), "{\"balances\":", isFinalBlock: false);
         AssertReadThrowsJsonException(new MoneyBagJsonConverter(FinancialJsonPolicy.Strict), "{\"balances\":{\"USD\":", isFinalBlock: false);
         AssertReadThrowsJsonException(new ExchangeRateJsonConverter(FinancialJsonPolicy.Strict), "{\"from\":", isFinalBlock: false);
-        AssertReadThrowsJsonException(new ExchangeRatePairJsonConverter(FinancialJsonPolicy.Strict), "{\"from\":", isFinalBlock: false);
+        AssertReadThrowsJsonException(new CurrencyPairJsonConverter(FinancialJsonPolicy.Strict), "{\"from\":", isFinalBlock: false);
     }
 
     /// <summary>
@@ -55,7 +56,7 @@ public partial class FinancialJsonConverterGuardsTests
         MoneyBag bag = JsonSerializer.Deserialize<MoneyBag>("{\"note\":\"x\",\"balances\":{\"USD\":1}}")!;
         Assert.AreEqual(new Money(1m, CurrencyCode.USD), bag.GetBalance(CurrencyCode.USD));
 
-        ExchangeRatePair pair = JsonSerializer.Deserialize<ExchangeRatePair>("{\"from\":\"USD\",\"to\":\"JPY\",\"note\":\"x\"}");
+        CurrencyPair pair = JsonSerializer.Deserialize<CurrencyPair>("{\"from\":\"USD\",\"to\":\"JPY\",\"note\":\"x\"}");
         Assert.AreEqual(CurrencyCode.USD, pair.From);
 
         ExchangeRate rate = JsonSerializer.Deserialize<ExchangeRate>(

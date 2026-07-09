@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public class XeChartingRatesSourceTests
 {
-    private static readonly ExchangeRatePair AudUsd = new(CurrencyCode.AUD, CurrencyCode.USD);
+    private static readonly CurrencyPair AudUsd = new(CurrencyCode.AUD, CurrencyCode.USD);
 
     /// <summary>
     /// Verifies that the source requests the charting-rates path with the currency query parameters and attaches the
@@ -28,7 +28,7 @@ public class XeChartingRatesSourceTests
     {
         StubHttpMessageHandler handler = new(XeFixtures.ReadBytes(XeFixtures.AudUsd));
         using HttpClient client = new(handler);
-        XeExchangeRateOptions options = new();
+        XeRateProviderOptions options = new();
         StubXeAuthTokenProvider tokens = new("TESTTOKEN");
         XeChartingRatesSource source = new(client, options, tokens);
 
@@ -61,7 +61,7 @@ public class XeChartingRatesSourceTests
                 ? new HttpResponseMessage(HttpStatusCode.Unauthorized)
                 : new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(fixture) });
         using HttpClient client = new(handler);
-        XeExchangeRateOptions options = new();
+        XeRateProviderOptions options = new();
         StubXeAuthTokenProvider tokens = new();
         XeChartingRatesSource source = new(client, options, tokens);
 
@@ -81,7 +81,7 @@ public class XeChartingRatesSourceTests
     {
         RoutedHttpMessageHandler handler = new((request, index) => new HttpResponseMessage(HttpStatusCode.Forbidden));
         using HttpClient client = new(handler);
-        XeExchangeRateOptions options = new();
+        XeRateProviderOptions options = new();
         StubXeAuthTokenProvider tokens = new();
         XeChartingRatesSource source = new(client, options, tokens);
 
@@ -103,11 +103,11 @@ public class XeChartingRatesSourceTests
         byte[] fixture = XeFixtures.ReadBytes(XeFixtures.AudUsd);
         RoutedHttpMessageHandler handler = new((request, index) => Route(request, fixture));
         using HttpClient client = new(handler);
-        XeExchangeRateProvider provider = new(client, new XeExchangeRateOptions());
+        XeRateProvider provider = new(client, new XeRateProviderOptions());
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 6));
 
-        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual(0.6828m, result.Rate.Rate);
 
@@ -135,6 +135,6 @@ public class XeChartingRatesSourceTests
         return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(fixture) };
     }
 
-    private static ExchangeRatePairRequest Request(DateOnly startDate, DateOnly endDate) =>
+    private static CurrencyPairRequest Request(DateOnly startDate, DateOnly endDate) =>
         new(AudUsd, startDate, endDate);
 }

@@ -14,7 +14,7 @@ public sealed partial class PriorityFallbackStrategyTests
     [TestMethod]
     public async Task AggregateRangeAsync_WhenFirstCandidateEmpty_ShouldFallThrough()
     {
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[]
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[]
         {
             Named("First"),
             Named("Second", ("USD", "AUD", D1, 1.6m)),

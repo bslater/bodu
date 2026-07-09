@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// Describes one currency series fetched from Yahoo Finance: the pair it represents and the ticker that identifies it.
 /// </summary>
 /// <remarks>
-/// Exposed through <see cref="PairWebExchangeRateProvider{TSeries}.GetAvailablePairs" /> so callers can discover which
+/// Exposed through <see cref="PairWebRateProvider{TSeries}.GetAvailablePairs" /> so callers can discover which
 /// currency pairs the provider has loaded without hard-coding the list.
 /// </remarks>
 public sealed class YahooSeriesInfo
@@ -21,7 +21,7 @@ public sealed class YahooSeriesInfo
     /// <param name="pair">The currency pair the series represents.</param>
     /// <param name="symbol">The Yahoo Finance ticker symbol.</param>
     /// <param name="quoteIsoCode">The quote-currency ISO code.</param>
-    internal YahooSeriesInfo(ExchangeRatePair pair, string symbol, string quoteIsoCode)
+    internal YahooSeriesInfo(CurrencyPair pair, string symbol, string quoteIsoCode)
     {
         Pair = pair;
         Symbol = symbol;
@@ -31,8 +31,8 @@ public sealed class YahooSeriesInfo
     /// <summary>
     /// Gets the currency pair the series represents.
     /// </summary>
-    /// <value>The <see cref="ExchangeRatePair" /> from the base currency to the quote currency.</value>
-    public ExchangeRatePair Pair { get; }
+    /// <value>The <see cref="CurrencyPair" /> from the base currency to the quote currency.</value>
+    public CurrencyPair Pair { get; }
 
     /// <summary>
     /// Gets the Yahoo Finance ticker symbol the series was fetched under.

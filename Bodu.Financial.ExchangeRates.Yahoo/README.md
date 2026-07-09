@@ -6,27 +6,27 @@ A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **Yah
 Finance** chart REST service.
 
 It fetches the Yahoo Finance `v8/finance/chart/{symbol}` endpoint, parses the JSON
-response, and serves the results as `Bodu.Financial.ExchangeRate` values through the
-standard `IDatedExchangeRateProvider` and `IExchangeRateProvider` contracts — so it
+response, and serves the results as `Bodu.Financial.ExchangeRates.ExchangeRate` values through the
+standard `IDatedRateProvider` and `IRateProvider` contracts — so it
 composes with `Money.ConvertTo`, the caching and aggregating providers, and the rest of
 the Bodu.Financial FX stack. It is a logical sister to
 [`Bodu.Financial.ExchangeRates.Rba`](../Bodu.Financial.ExchangeRates.Rba): the same
 interfaces and DI shape, a different data source.
 
 ```csharp
-using Bodu.Financial.ExchangeRates.Yahoo;
+using Bodu.Financial.ExchangeRates;
 
 // The provider builds and owns its HttpClient from the options; dispose it to release the client.
-using var provider = new YahooExchangeRateProvider(new YahooExchangeRateOptions());
+using var provider = new YahooRateProvider(new YahooRateProviderOptions());
 
 // Warm a pair for a range (recommended), then look rates up synchronously.
 await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
 
-ExchangeRateLookupResult usd = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+RateLookupResult usd = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 
 // Read a whole range at once. The result is an IReadOnlyList<ExchangeRate> that also reports
 // the requested window (RequestedStartDate/RequestedEndDate) and the observed span.
-ExchangeRateRangeResult series =
+RateRangeResult series =
     await provider.GetRatesAsync("AUD", "JPY", new DateOnly(2026, 1, 1), new DateOnly(2026, 6, 12));
 
 // The latest available spot rate.
@@ -49,7 +49,7 @@ decimal latest = provider.GetRate("EUR", "GBP");
 - **No provider-local disk cache.** The Yahoo provider fetches over HTTP and keeps only an
   in-memory store of the pairs and windows it has fetched this session; it does not persist
   anything to disk. For durable caching across processes, compose it with the generic
-  caching provider — `AddCachedExchangeRateProvider<…>` from the
+  caching provider — `AddCachedRateProvider<…>` from the
   [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package
   — rather than a provider-local cache.
 
@@ -57,16 +57,16 @@ decimal latest = provider.GetRate("EUR", "GBP");
 
 The provider is `IDisposable` and offers two construction styles:
 
-- `new YahooExchangeRateProvider(options, ...)` — the provider builds, owns, and disposes its
-  own `HttpClient`, created via `ExchangeRateHttpClientFactory.Create` from the configured user
+- `new YahooRateProvider(options, ...)` — the provider builds, owns, and disposes its
+  own `HttpClient`, created via `RateProviderHttpClientFactory.Create` from the configured user
   agent and timeout. Dispose the provider (for example with `using`) to release the client.
-- `new YahooExchangeRateProvider(httpClient, options, ...)` — you supply the client and own its
+- `new YahooRateProvider(httpClient, options, ...)` — you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
   `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
 
 ## Endpoint configuration
 
-`YahooExchangeRateOptions` is centred on configuring the REST endpoint:
+`YahooRateProviderOptions` is centred on configuring the REST endpoint:
 
 | Option | Default | Purpose |
 |---|---|---|
@@ -82,7 +82,7 @@ The provider is `IDisposable` and offers two construction styles:
 The Yahoo provider has no `EnableDiskCache` / `CacheDirectory` / `CacheExpiry` options: it
 fetches over HTTP with no provider-local disk cache. Use the generic
 [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package
-(`AddCachedExchangeRateProvider<…>`) when you need caching.
+(`AddCachedRateProvider<…>`) when you need caching.
 
 ## Dependency injection
 
@@ -94,13 +94,13 @@ package.
 
 The provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to the
 constructor, or let the `*.DependencyInjection` package wire one for you (category
-`Bodu.Financial.ExchangeRates.Yahoo.YahooExchangeRateProvider`). When no logger is supplied
+`Bodu.Financial.ExchangeRates.YahooRateProvider`). When no logger is supplied
 it defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 
 The levels follow the conventions used by `Microsoft.Extensions.Http`, EF Core, and the
 Azure SDK — the completed download is the one `Information` line per fetch, payload detail
 is `Trace`, and degraded paths are `Warning`. Every level is individually configurable on
-`YahooExchangeRateOptions`:
+`YahooRateProviderOptions`:
 
 | Event | Default level | Option property |
 |---|---|---|
@@ -112,7 +112,7 @@ is `Trace`, and degraded paths are `Warning`. Every level is individually config
 
 ```csharp
 // Quieten the per-fetch line and turn off per-observation tracing entirely.
-var options = new YahooExchangeRateOptions
+var options = new YahooRateProviderOptions
 {
     DownloadCompletedLogLevel = LogLevel.Debug,
     ObservationIngestedLogLevel = LogLevel.None,

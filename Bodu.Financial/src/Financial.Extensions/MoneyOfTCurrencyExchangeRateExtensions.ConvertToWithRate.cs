@@ -4,13 +4,16 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+
 namespace Bodu.Financial.Extensions;
 
 public static partial class MoneyOfTCurrencyExchangeRateExtensions
 {
     /// <summary>
     /// Converts <paramref name="amount" /> to <typeparamref name="TTarget" /> and additionally returns the full
-    /// <see cref="ExchangeRateLookupResult" /> used so callers can audit the selected rate.
+    /// <see cref="RateLookupResult" /> used so callers can audit the selected rate.
     /// </summary>
     /// <typeparam name="TSource">The source currency.</typeparam>
     /// <typeparam name="TTarget">The destination currency.</typeparam>
@@ -32,16 +35,16 @@ public static partial class MoneyOfTCurrencyExchangeRateExtensions
     /// </exception>
     public static MoneyConversionResult<TSource, TTarget> ConvertToWithRate<TSource, TTarget>(
         this Money<TSource> amount,
-        IDatedExchangeRateProvider provider,
+        IDatedRateProvider provider,
         DateOnly date,
-        ExchangeRateLookupOptions? options = null,
+        RateLookupOptions? options = null,
         MidpointRounding rounding = MidpointRounding.ToEven)
         where TSource : ICurrency
         where TTarget : ICurrency
     {
         ThrowHelper.ThrowIfNull(provider);
 
-        ExchangeRateLookupResult lookup = provider.GetRate(
+        RateLookupResult lookup = provider.GetRate(
             Money<TSource>.IsoCode,
             Money<TTarget>.IsoCode,
             date,

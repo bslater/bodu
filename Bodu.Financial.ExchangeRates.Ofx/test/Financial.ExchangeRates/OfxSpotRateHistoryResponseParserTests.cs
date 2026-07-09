@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public class OfxSpotRateHistoryResponseParserTests
 {
-    private static readonly OfxExchangeRateOptions Options = new();
+    private static readonly OfxRateProviderOptions Options = new();
 
     /// <summary>
     /// Verifies that a well-formed response yields the in-range observations with the expected dates and rates, while
@@ -114,8 +114,8 @@ public class OfxSpotRateHistoryResponseParserTests
         Assert.AreEqual(0.6850m, data.Observations[0].Rate);
     }
 
-    private static ExchangeRatePairRequest Request(DateOnly startDate, DateOnly endDate) =>
-        new(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), startDate, endDate);
+    private static CurrencyPairRequest Request(DateOnly startDate, DateOnly endDate) =>
+        new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), startDate, endDate);
 
     private static byte[] Utf8(string text) => Encoding.UTF8.GetBytes(text);
 }

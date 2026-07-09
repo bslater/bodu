@@ -23,7 +23,7 @@ public partial class RbaResilienceRegistrationTests
         ServiceCollection services = new();
         services
             .AddFinancialService()
-            .AddRbaHistoricalRates(configureResilience: ConfigureFastRetry);
+            .AddRbaExchangeRates(configureResilience: ConfigureFastRetry);
         services
             .AddHttpClient(RbaFinancialServiceBuilderExtensions.HttpClientName)
             .ConfigurePrimaryHttpMessageHandler(() => handler);
@@ -52,7 +52,7 @@ public partial class RbaResilienceRegistrationTests
         ServiceCollection services = new();
         services
             .AddFinancialService()
-            .AddRbaHistoricalRates(configureResilience: ConfigureFastBreaker);
+            .AddRbaExchangeRates(configureResilience: ConfigureFastBreaker);
         services
             .AddHttpClient(RbaFinancialServiceBuilderExtensions.HttpClientName)
             .ConfigurePrimaryHttpMessageHandler(() => handler);

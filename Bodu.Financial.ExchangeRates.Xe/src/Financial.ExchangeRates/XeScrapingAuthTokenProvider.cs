@@ -51,7 +51,7 @@ internal sealed partial class XeScrapingAuthTokenProvider
     private readonly HttpClient _httpClient;
 
     /// <summary>The provider options supplying the token-acquisition URLs.</summary>
-    private readonly XeExchangeRateOptions _options;
+    private readonly XeRateProviderOptions _options;
 
     /// <summary>Guards <see cref="_token" /> and <see cref="_inFlight" /> against concurrent mutation.</summary>
     private readonly object _sync = new();
@@ -70,7 +70,7 @@ internal sealed partial class XeScrapingAuthTokenProvider
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    internal XeScrapingAuthTokenProvider(HttpClient httpClient, XeExchangeRateOptions options)
+    internal XeScrapingAuthTokenProvider(HttpClient httpClient, XeRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);

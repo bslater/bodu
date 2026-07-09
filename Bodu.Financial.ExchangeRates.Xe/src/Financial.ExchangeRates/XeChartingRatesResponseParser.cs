@@ -43,7 +43,7 @@ internal static class XeChartingRatesResponseParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON or omits the expected charting-rate data.
     /// </exception>
-    public static PairRateData<XeSeriesInfo> Parse(byte[] json, ExchangeRatePairRequest request, XeExchangeRateOptions options)
+    public static PairRateData<XeSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, XeRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(options);
@@ -72,7 +72,7 @@ internal static class XeChartingRatesResponseParser
         }
 
         int count = rates.GetArrayLength();
-        var observations = new List<ExchangeRateObservation>(count);
+        var observations = new List<RateObservation>(count);
 
         // An attacker-controlled startTime or interval can drive the timestamp arithmetic out of the representable
         // DateTime/TimeSpan range (ArgumentOutOfRangeException / OverflowException). Map any such out-of-range value
@@ -91,7 +91,7 @@ internal static class XeChartingRatesResponseParser
                     var date = DateOnly.FromDateTime(point);
 
                     if (rate > 0m && date >= request.StartDate && date <= request.EndDate)
-                        observations.Add(new ExchangeRateObservation(date, rate));
+                        observations.Add(new RateObservation(date, rate));
                 }
 
                 point += interval;
@@ -123,7 +123,7 @@ internal static class XeChartingRatesResponseParser
     /// <param name="request">The originating request, used for the error message.</param>
     /// <returns>The parsed document.</returns>
     /// <exception cref="ExchangeRateFormatException">Thrown when the bytes are not valid JSON.</exception>
-    private static JsonDocument ParseDocument(byte[] json, ExchangeRatePairRequest request)
+    private static JsonDocument ParseDocument(byte[] json, CurrencyPairRequest request)
     {
         try
         {
@@ -160,6 +160,6 @@ internal static class XeChartingRatesResponseParser
     /// </summary>
     /// <param name="request">The originating request.</param>
     /// <returns>The exception to throw.</returns>
-    private static ExchangeRateFormatException NoData(ExchangeRatePairRequest request) =>
+    private static ExchangeRateFormatException NoData(CurrencyPairRequest request) =>
         new(string.Format(CultureInfo.CurrentCulture, XeResourceStrings.Format_Invalid_XeNoData, request.Pair.From.ToString(), request.Pair.To.ToString()));
 }

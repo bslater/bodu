@@ -26,7 +26,7 @@ public partial class RbaRateKnownAnswerTests
     [DynamicData(nameof(ClassificationGroups))]
     public async Task GetRates_WhenKnownAnswerSeries_ShouldMatchSelectedExtremes(string sourceFileName, string currency)
     {
-        RbaExchangeRateProvider provider = await GetProviderAsync(sourceFileName);
+        RbaRateProvider provider = await GetProviderAsync(sourceFileName);
         RbaEra era = RbaEra.Default.Single(e => string.Equals(e.FileName, sourceFileName, StringComparison.Ordinal));
         DateOnly end = era.End ?? new DateOnly(2100, 1, 1);
 

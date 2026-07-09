@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Provides the source-generated, allocation-free logging messages emitted by <see cref="BoeExchangeRateProvider" />
+/// Provides the source-generated, allocation-free logging messages emitted by <see cref="BoeRateProvider" />
 /// while downloading and serving Bank of England daily spot rates.
 /// </summary>
 /// <remarks>

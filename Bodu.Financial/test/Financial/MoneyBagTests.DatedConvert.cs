@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial;
 
@@ -19,7 +20,7 @@ public partial class MoneyBagTests
     /// Builds a fixture provider with EUR/USD = 1.10, JPY/USD = 0.0067, GBP/USD = 1.25 observed on <see cref="s_asOf" />.
     /// </summary>
     /// <returns>The provider.</returns>
-    private static IDatedExchangeRateProvider BuildDatedProvider() => new FixedDatedExchangeRateProvider(
+    private static IDatedRateProvider BuildDatedProvider() => new FixedDatedRateProvider(
     [
         new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD,s_asOf, 1.10m, "RBA"),
         new ExchangeRate(CurrencyCode.JPY, CurrencyCode.USD,s_asOf, 0.0067m, "RBA"),
@@ -27,7 +28,7 @@ public partial class MoneyBagTests
     ]);
 
     /// <summary>
-    /// Verifies that the dated <see cref="MoneyBag.ConvertTo{TTarget}(IDatedExchangeRateProvider, DateOnly, ExchangeRateLookupOptions)" />
+    /// Verifies that the dated <see cref="MoneyBag.ConvertTo{TTarget}(IDatedRateProvider, DateOnly, RateLookupOptions)" />
     /// overload aggregates a multi-currency bag at the supplied valuation date.
     /// </summary>
     [TestMethod]
@@ -38,7 +39,7 @@ public partial class MoneyBagTests
             .Add(new Money<EUR>(50m))
             .Add(new Money<JPY>(10_000m));
 
-        Money<USD> total = bag.ConvertTo<USD>(BuildDatedProvider(), s_asOf, ExchangeRateLookupOptions.Exact);
+        Money<USD> total = bag.ConvertTo<USD>(BuildDatedProvider(), s_asOf, RateLookupOptions.Exact);
 
         // 100 + 50×1.10 + 10000×0.0067 = 100 + 55 + 67 = 222
         Assert.AreEqual(new Money<USD>(222m), total);
@@ -55,7 +56,7 @@ public partial class MoneyBagTests
     {
         // Use two three-minor-unit currencies (BHD, KWD) so Money natively carries the sub-cent source precision that
         // exposes the per-line vs sum-then-round difference.
-        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
+        IDatedRateProvider rates = new FixedDatedRateProvider(
         [
             new ExchangeRate(CurrencyCode.BHD, CurrencyCode.USD,s_asOf, 1m, "Test"),
             new ExchangeRate(CurrencyCode.KWD, CurrencyCode.USD,s_asOf, 1m, "Test"),
@@ -65,26 +66,26 @@ public partial class MoneyBagTests
             .Add(new Money(0.005m, CurrencyCode.BHD))
             .Add(new Money(0.005m, CurrencyCode.KWD));
 
-        Money<USD> total = bag.ConvertTo<USD>(rates, s_asOf, ExchangeRateLookupOptions.Exact, policy);
+        Money<USD> total = bag.ConvertTo<USD>(rates, s_asOf, RateLookupOptions.Exact, policy);
 
         Assert.AreEqual(new Money<USD>((decimal)expected), total);
     }
 
     /// <summary>
-    /// Verifies that the dated overload uses the lookup options — e.g. <see cref="ExchangeRateLookupOptions.PreviousWithin(int)" />
+    /// Verifies that the dated overload uses the lookup options — e.g. <see cref="RateLookupOptions.PreviousWithin(int)" />
     /// — to resolve fall-back dates within the requested tolerance.
     /// </summary>
     [TestMethod]
     public void DatedConvertTo_WhenResolutionPolicyAppliesFallback_ShouldUseEarlierObservation()
     {
-        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
+        IDatedRateProvider rates = new FixedDatedRateProvider(
         [
             new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD,new DateOnly(2024, 6, 28), 1.10m, "RBA"),
         ]);
 
         MoneyBag bag = MoneyBag.Empty.Add(new Money<EUR>(100m));
 
-        Money<USD> total = bag.ConvertTo<USD>(rates, s_asOf, ExchangeRateLookupOptions.PreviousWithin(5));
+        Money<USD> total = bag.ConvertTo<USD>(rates, s_asOf, RateLookupOptions.PreviousWithin(5));
 
         Assert.AreEqual(new Money<USD>(110m), total);
     }
@@ -96,7 +97,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void DatedConvertTo_WhenRateUnavailable_ShouldThrowKeyNotFoundException()
     {
-        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
+        IDatedRateProvider rates = new FixedDatedRateProvider(
         [
             new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD,s_asOf, 1.10m, "RBA"),
         ]);
@@ -107,7 +108,7 @@ public partial class MoneyBagTests
 
         Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
-            _ = bag.ConvertTo<USD>(rates, s_asOf, ExchangeRateLookupOptions.Exact);
+            _ = bag.ConvertTo<USD>(rates, s_asOf, RateLookupOptions.Exact);
         });
     }
 
@@ -121,23 +122,23 @@ public partial class MoneyBagTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = bag.ConvertTo<USD>((IDatedExchangeRateProvider)null!, s_asOf, ExchangeRateLookupOptions.Exact);
+            _ = bag.ConvertTo<USD>((IDatedRateProvider)null!, s_asOf, RateLookupOptions.Exact);
         });
     }
 
     /// <summary>
     /// Verifies that a same-currency target balance bypasses the rate lookup when
-    /// <see cref="ExchangeRateLookupOptions.AllowSameCurrencyIdentityRate" /> is true (the default).
+    /// <see cref="RateLookupOptions.AllowSameCurrencyIdentityRate" /> is true (the default).
     /// </summary>
     [TestMethod]
     public void DatedConvertTo_WhenBagAlreadyContainsTargetCurrency_ShouldPassThroughWithoutRateLookup()
     {
         // No USD/USD rate in the provider — proves the same-currency identity is taking effect.
-        IDatedExchangeRateProvider rates = BuildDatedProvider();
+        IDatedRateProvider rates = BuildDatedProvider();
 
         MoneyBag bag = MoneyBag.Empty.Add(new Money<USD>(75m));
 
-        Money<USD> total = bag.ConvertTo<USD>(rates, s_asOf, ExchangeRateLookupOptions.Exact);
+        Money<USD> total = bag.ConvertTo<USD>(rates, s_asOf, RateLookupOptions.Exact);
 
         Assert.AreEqual(new Money<USD>(75m), total);
     }
@@ -155,7 +156,7 @@ public partial class MoneyBagTests
         MoneyBagConversionAudit<USD> audit = bag.ConvertToWithAudit<USD>(
             BuildDatedProvider(),
             s_asOf,
-            ExchangeRateLookupOptions.Exact);
+            RateLookupOptions.Exact);
 
         Assert.HasCount(2, audit.Lines);
         // Total: 100 × 1.10 + 10000 × 0.0067 = 110 + 67 = 177
@@ -184,7 +185,7 @@ public partial class MoneyBagTests
         MoneyBagConversionAudit<USD> audit = bag.ConvertToWithAudit<USD>(
             BuildDatedProvider(),
             s_asOf,
-            ExchangeRateLookupOptions.Exact);
+            RateLookupOptions.Exact);
 
         // USD line: no rate lookup (identity pass-through).
         MoneyBagConversionLine usdLine = audit.Lines.Single(l => l.SourceIsoCode == "USD");

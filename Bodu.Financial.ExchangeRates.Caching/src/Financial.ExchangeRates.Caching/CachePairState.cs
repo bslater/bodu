@@ -21,7 +21,7 @@ internal sealed class CachePairState
 {
     /// <summary>The shared empty state, returned by a backend when a pair has neither rows nor coverage recorded.</summary>
     private static readonly CachePairState s_empty =
-        new(Array.Empty<CachedExchangeRate>(), Array.Empty<CoverageWindow>());
+        new(Array.Empty<CachedRate>(), Array.Empty<CoverageWindow>());
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CachePairState" /> class.
@@ -31,7 +31,7 @@ internal sealed class CachePairState
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="entries" /> or <paramref name="coverage" /> is <see langword="null" />.
     /// </exception>
-    public CachePairState(IReadOnlyList<CachedExchangeRate> entries, IReadOnlyList<CoverageWindow> coverage)
+    public CachePairState(IReadOnlyList<CachedRate> entries, IReadOnlyList<CoverageWindow> coverage)
     {
         ThrowHelper.ThrowIfNull(entries);
         ThrowHelper.ThrowIfNull(coverage);
@@ -50,7 +50,7 @@ internal sealed class CachePairState
     /// Gets the cached rate rows for the pair.
     /// </summary>
     /// <value>The cached rate rows, possibly empty.</value>
-    public IReadOnlyList<CachedExchangeRate> Entries { get; }
+    public IReadOnlyList<CachedRate> Entries { get; }
 
     /// <summary>
     /// Gets the coverage windows recording which date ranges were fetched for the pair.

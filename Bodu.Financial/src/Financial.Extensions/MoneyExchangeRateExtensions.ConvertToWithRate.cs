@@ -4,13 +4,16 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+
 namespace Bodu.Financial.Extensions;
 
 public static partial class MoneyExchangeRateExtensions
 {
     /// <summary>
     /// Converts <paramref name="amount" /> to <paramref name="targetIsoCode" /> and returns the converted value
-    /// alongside the full <see cref="ExchangeRateLookupResult" /> used so callers can audit the selected rate.
+    /// alongside the full <see cref="RateLookupResult" /> used so callers can audit the selected rate.
     /// </summary>
     /// <param name="amount">The amount to convert.</param>
     /// <param name="provider">The dated provider that resolves the exchange rate.</param>
@@ -28,17 +31,17 @@ public static partial class MoneyExchangeRateExtensions
     /// <exception cref="KeyNotFoundException">
     /// No rate is available for the requested pair under <paramref name="options" />.
     /// </exception>
-    public static (Money Target, ExchangeRateLookupResult Rate) ConvertToWithRate(
+    public static (Money Target, RateLookupResult Rate) ConvertToWithRate(
         this Money amount,
-        IDatedExchangeRateProvider provider,
+        IDatedRateProvider provider,
         string targetIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions? options = null,
+        RateLookupOptions? options = null,
         MidpointRounding rounding = MidpointRounding.ToEven)
     {
         ThrowHelper.ThrowIfNull(provider);
 
-        ExchangeRateLookupResult lookup = provider.GetRate(amount.Code.ToString(), targetIsoCode, date, options);
+        RateLookupResult lookup = provider.GetRate(amount.Code.ToString(), targetIsoCode, date, options);
         Money target = new(amount.Amount * lookup.Rate.Rate, CurrencyInfo.ParseCurrencyCode(targetIsoCode), rounding);
         return (target, lookup);
     }

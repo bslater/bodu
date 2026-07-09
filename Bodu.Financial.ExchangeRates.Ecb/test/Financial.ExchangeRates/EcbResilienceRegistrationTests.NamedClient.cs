@@ -23,7 +23,7 @@ public partial class EcbResilienceRegistrationTests
         ServiceCollection services = new();
         services
             .AddFinancialService()
-            .AddEcbReferenceRates(configureResilience: ConfigureFastRetry);
+            .AddEcbExchangeRates(configureResilience: ConfigureFastRetry);
         services
             .AddHttpClient(EcbFinancialServiceBuilderExtensions.HttpClientName)
             .ConfigurePrimaryHttpMessageHandler(() => handler);
@@ -52,7 +52,7 @@ public partial class EcbResilienceRegistrationTests
         ServiceCollection services = new();
         services
             .AddFinancialService()
-            .AddEcbReferenceRates(configureResilience: ConfigureFastBreaker);
+            .AddEcbExchangeRates(configureResilience: ConfigureFastBreaker);
         services
             .AddHttpClient(EcbFinancialServiceBuilderExtensions.HttpClientName)
             .ConfigurePrimaryHttpMessageHandler(() => handler);

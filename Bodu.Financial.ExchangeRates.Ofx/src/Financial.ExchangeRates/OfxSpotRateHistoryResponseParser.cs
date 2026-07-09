@@ -30,7 +30,7 @@ internal static class OfxSpotRateHistoryResponseParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON or omits the expected <c>HistoricalPoints</c> array.
     /// </exception>
-    public static PairRateData<OfxSeriesInfo> Parse(byte[] json, ExchangeRatePairRequest request, OfxExchangeRateOptions options)
+    public static PairRateData<OfxSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, OfxRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(options);
@@ -45,7 +45,7 @@ internal static class OfxSpotRateHistoryResponseParser
             throw NoData(request);
         }
 
-        var observations = new List<ExchangeRateObservation>(points.GetArrayLength());
+        var observations = new List<RateObservation>(points.GetArrayLength());
 
         foreach (JsonElement point in points.EnumerateArray())
         {
@@ -61,7 +61,7 @@ internal static class OfxSpotRateHistoryResponseParser
             if (date < request.StartDate || date > request.EndDate)
                 continue;
 
-            observations.Add(new ExchangeRateObservation(date, rate));
+            observations.Add(new RateObservation(date, rate));
         }
 
         OfxSeriesInfo series = new(request.Pair, request.Pair.To.ToString());
@@ -76,7 +76,7 @@ internal static class OfxSpotRateHistoryResponseParser
     /// <param name="request">The originating request, used for the error message.</param>
     /// <returns>The parsed document.</returns>
     /// <exception cref="ExchangeRateFormatException">Thrown when the bytes are not valid JSON.</exception>
-    private static JsonDocument ParseDocument(byte[] json, ExchangeRatePairRequest request)
+    private static JsonDocument ParseDocument(byte[] json, CurrencyPairRequest request)
     {
         try
         {
@@ -140,6 +140,6 @@ internal static class OfxSpotRateHistoryResponseParser
     /// </summary>
     /// <param name="request">The originating request.</param>
     /// <returns>The exception to throw.</returns>
-    private static ExchangeRateFormatException NoData(ExchangeRatePairRequest request) =>
+    private static ExchangeRateFormatException NoData(CurrencyPairRequest request) =>
         new(string.Format(CultureInfo.CurrentCulture, OfxResourceStrings.Format_Invalid_OfxNoData, request.Pair.From.ToString(), request.Pair.To.ToString()));
 }

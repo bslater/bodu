@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial;
 
@@ -24,7 +25,7 @@ public partial class MoneyExchangeRateExtensionsTests
     {
         Money source = new((decimal)amount, CurrencyInfo.ParseCurrencyCode(from));
 
-        Money result = source.ConvertTo(BuildProvider(), to, s_asOf, ExchangeRateLookupOptions.Exact);
+        Money result = source.ConvertTo(BuildProvider(), to, s_asOf, RateLookupOptions.Exact);
 
         Assert.AreEqual(to, result.Code.ToString());
         Assert.AreEqual((decimal)expected, result.Amount);
@@ -40,7 +41,7 @@ public partial class MoneyExchangeRateExtensionsTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = source.ConvertTo(null!, "USD", s_asOf, ExchangeRateLookupOptions.Exact);
+            _ = source.ConvertTo(null!, "USD", s_asOf, RateLookupOptions.Exact);
         });
     }
 
@@ -54,13 +55,13 @@ public partial class MoneyExchangeRateExtensionsTests
 
         Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
-            _ = source.ConvertTo(BuildProvider(), "USD", s_asOf, ExchangeRateLookupOptions.Exact);
+            _ = source.ConvertTo(BuildProvider(), "USD", s_asOf, RateLookupOptions.Exact);
         });
     }
 
     /// <summary>
     /// Verifies that requesting conversion to the source currency under
-    /// <see cref="ExchangeRateLookupOptions.AllowSameCurrencyIdentityRate" /> short-circuits without rate lookup,
+    /// <see cref="RateLookupOptions.AllowSameCurrencyIdentityRate" /> short-circuits without rate lookup,
     /// even when the provider has no observation for the (X, X) pair.
     /// </summary>
     [TestMethod]
@@ -68,7 +69,7 @@ public partial class MoneyExchangeRateExtensionsTests
     {
         Money source = new(100m, CurrencyCode.EUR);
 
-        Money result = source.ConvertTo(BuildProvider(), "EUR", s_asOf, ExchangeRateLookupOptions.Exact);
+        Money result = source.ConvertTo(BuildProvider(), "EUR", s_asOf, RateLookupOptions.Exact);
 
         Assert.AreEqual(source, result);
     }
@@ -79,7 +80,7 @@ public partial class MoneyExchangeRateExtensionsTests
     [TestMethod]
     public void ConvertTo_WhenAwayFromZeroRequested_ShouldRoundMidpointAway()
     {
-        IDatedExchangeRateProvider rates = new FixedDatedExchangeRateProvider(
+        IDatedRateProvider rates = new FixedDatedRateProvider(
         [
             // 1.225 EUR/USD; 1 EUR × 1.225 = 1.225 → midpoint rounds to 1.22 banker's, 1.23 AwayFromZero.
             new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD, s_asOf, 1.225m, "Bench"),
@@ -87,8 +88,8 @@ public partial class MoneyExchangeRateExtensionsTests
 
         Money source = new(1m, CurrencyCode.EUR);
 
-        Money banker = source.ConvertTo(rates, "USD", s_asOf, ExchangeRateLookupOptions.Exact);
-        Money awayFromZero = source.ConvertTo(rates, "USD", s_asOf, ExchangeRateLookupOptions.Exact, MidpointRounding.AwayFromZero);
+        Money banker = source.ConvertTo(rates, "USD", s_asOf, RateLookupOptions.Exact);
+        Money awayFromZero = source.ConvertTo(rates, "USD", s_asOf, RateLookupOptions.Exact, MidpointRounding.AwayFromZero);
 
         Assert.AreEqual(1.22m, banker.Amount);
         Assert.AreEqual(1.23m, awayFromZero.Amount);

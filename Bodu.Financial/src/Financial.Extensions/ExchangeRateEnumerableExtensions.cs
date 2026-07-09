@@ -4,11 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.ExchangeRates;
+
 namespace Bodu.Financial.Extensions;
 
 /// <summary>
 /// Provides extension methods that materialize sequences of <see cref="ExchangeRate" /> observations into the immutable
-/// <see cref="ExchangeRateBook" /> store.
+/// <see cref="RateBook" /> store.
 /// </summary>
 public static partial class ExchangeRateEnumerableExtensions
 {

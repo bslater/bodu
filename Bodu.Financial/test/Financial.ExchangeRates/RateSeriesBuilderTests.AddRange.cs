@@ -1,0 +1,220 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="RateSeriesBuilderTests.AddRange.cs" company="Bodu Pty. Ltd.">
+//     Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Test.Assertions;
+
+namespace Bodu.Financial.ExchangeRates;
+
+public partial class RateSeriesBuilderTests
+{
+    /// <summary>
+    /// Verifies that <see cref="RateSeriesBuilder.AddRange(IEnumerable{RateObservation})" /> throws
+    /// on a null observation sequence.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenObservationsNull_ShouldThrowArgumentNullException()
+    {
+        RateSeriesBuilder builder = new(s_usdAud, "RBA");
+
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(
+            () =>
+            {
+                builder.AddRange((IEnumerable<RateObservation>)null!);
+            },
+            "observations");
+    }
+
+    /// <summary>
+    /// Verifies that the tuple overload of <c>AddRange</c> inserts the same observations as the typed-record
+    /// overload.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenGivenTuples_ShouldInsertSameObservations()
+    {
+        RateSeriesBuilder builder = new(s_usdAud, "RBA");
+
+        builder.AddRange(
+        [
+            (new DateOnly(2024, 1, 1), 1.5m),
+            (new DateOnly(2024, 1, 3), 1.6m),
+        ]);
+
+        Assert.AreEqual(2, builder.Count);
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 1), out decimal first));
+        Assert.AreEqual(1.5m, first);
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 3), out decimal second));
+        Assert.AreEqual(1.6m, second);
+    }
+
+    /// <summary>
+    /// Verifies that the tuple overload of <c>UpsertRange</c> replaces existing rates.
+    /// </summary>
+    [TestMethod]
+    public void UpsertRange_WhenGivenTuples_ShouldReplaceExistingObservations()
+    {
+        RateSeriesBuilder builder = new(s_usdAud, "RBA");
+        builder.Add(new DateOnly(2024, 1, 1), 1.5m);
+
+        builder.UpsertRange(
+        [
+            (new DateOnly(2024, 1, 1), 1.55m),
+            (new DateOnly(2024, 1, 2), 1.6m),
+        ]);
+
+        Assert.AreEqual(2, builder.Count);
+        Assert.IsTrue(builder.TryGetRate(new DateOnly(2024, 1, 1), out decimal replaced));
+        Assert.AreEqual(1.55m, replaced);
+    }
+
+    /// <summary>
+    /// Verifies that pre-sorted observations are inserted in order.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenAllNew_ShouldInsertSortedAndPreserveOrder()
+    {
+        RateSeriesBuilder builder = new(s_usdAud, "RBA");
+        builder.AddRange(SampleObservations());
+
+        CollectionAssert.AreEqual(SampleObservations(), builder.GetObservations().ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that an unsorted incoming batch is reordered into strictly ascending enumeration order.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenInputUnsorted_ShouldInsertSorted()
+    {
+        RateSeriesBuilder builder = new(s_usdAud, "RBA");
+        RateObservation[] unsorted =
+        [
+            new(new DateOnly(2026, 6, 5), 1.54m),
+            new(new DateOnly(2026, 6, 1), 1.50m),
+            new(new DateOnly(2026, 6, 3), 1.52m),
+        ];
+
+        builder.AddRange(unsorted);
+
+        CollectionAssert.AreEqual(SampleObservations(), builder.GetObservations().ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that duplicate dates inside the incoming batch throw <see cref="ArgumentException" /> with
+    /// parameter name <c>observations</c>.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenIncomingBatchContainsDuplicateDate_ShouldThrowArgumentException()
+    {
+        RateSeriesBuilder builder = new(s_usdAud, "RBA");
+        RateObservation[] batch =
+        [
+            new(new DateOnly(2026, 6, 1), 1.50m),
+            new(new DateOnly(2026, 6, 1), 1.55m),
+        ];
+
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
+            () =>
+            {
+                builder.AddRange(batch);
+            },
+            "observations");
+    }
+
+    /// <summary>
+    /// Verifies that incoming dates that collide with existing observations throw
+    /// <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenIncomingDateAlreadyPresent_ShouldThrowArgumentException()
+    {
+        RateSeriesBuilder builder = new(s_usdAud, "RBA");
+        builder.Add(new DateOnly(2026, 6, 1), 1.50m);
+
+        RateObservation[] batch =
+        [
+            new(new DateOnly(2026, 6, 1), 1.55m),
+        ];
+
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
+            () =>
+            {
+                builder.AddRange(batch);
+            },
+            "observations");
+    }
+
+    /// <summary>
+    /// Verifies that an invalid (non-positive) rate inside the batch throws
+    /// <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenRateIsZero_ShouldThrowArgumentOutOfRangeException()
+    {
+        RateSeriesBuilder builder = new(s_usdAud, "RBA");
+        RateObservation[] batch =
+        [
+            new(new DateOnly(2026, 6, 1), 0m),
+        ];
+
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
+            () =>
+            {
+                builder.AddRange(batch);
+            },
+            "observations");
+    }
+
+    /// <summary>
+    /// Verifies that a validation failure during <see cref="RateSeriesBuilder.AddRange" /> leaves the
+    /// builder in its prior state (the merge is atomic).
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenThrows_ShouldLeaveBuilderUnchanged()
+    {
+        RateSeriesBuilder builder = new(s_usdAud, "RBA");
+        builder.Add(new DateOnly(2026, 6, 1), 1.50m);
+        builder.Add(new DateOnly(2026, 6, 3), 1.52m);
+
+        RateObservation[] snapshotBefore = builder.GetObservations().ToArray();
+        RateObservation[] conflicting =
+        [
+            new(new DateOnly(2026, 6, 1), 1.55m), // collides with existing
+            new(new DateOnly(2026, 6, 7), 1.60m), // would otherwise be inserted
+        ];
+
+        Assert.ThrowsExactly<ArgumentException>(() => builder.AddRange(conflicting));
+
+        CollectionAssert.AreEqual(snapshotBefore, builder.GetObservations().ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a batch of new dates merged with existing observations produces a single sorted result.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenAllNewBatchMergesWithExisting_ShouldPreserveSortedOrder()
+    {
+        RateSeriesBuilder builder = new(s_usdAud, "RBA");
+        builder.Add(new DateOnly(2026, 6, 1), 1.50m);
+        builder.Add(new DateOnly(2026, 6, 5), 1.54m);
+
+        RateObservation[] batch =
+        [
+            new(new DateOnly(2026, 6, 2), 1.51m),
+            new(new DateOnly(2026, 6, 4), 1.53m),
+        ];
+
+        builder.AddRange(batch);
+
+        RateObservation[] expected =
+        [
+            new(new DateOnly(2026, 6, 1), 1.50m),
+            new(new DateOnly(2026, 6, 2), 1.51m),
+            new(new DateOnly(2026, 6, 4), 1.53m),
+            new(new DateOnly(2026, 6, 5), 1.54m),
+        ];
+
+        CollectionAssert.AreEqual(expected, builder.GetObservations().ToArray());
+    }
+}

@@ -25,7 +25,7 @@ internal readonly struct PairState
     /// fetched.
     /// </param>
     public PairState(
-        IReadOnlyList<CachedExchangeRate> entries,
+        IReadOnlyList<CachedRate> entries,
         IReadOnlyList<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> coverage)
     {
         Entries = entries;
@@ -38,14 +38,14 @@ internal readonly struct PairState
     /// </summary>
     /// <value>An empty <see cref="PairState" />.</value>
     public static PairState Empty { get; } = new(
-        Array.Empty<CachedExchangeRate>(),
+        Array.Empty<CachedRate>(),
         Array.Empty<(DateOnly, DateOnly, DateTimeOffset)>());
 
     /// <summary>
     /// Gets the cached rate rows for the pair.
     /// </summary>
     /// <value>The cached rate rows.</value>
-    public IReadOnlyList<CachedExchangeRate> Entries { get; }
+    public IReadOnlyList<CachedRate> Entries { get; }
 
     /// <summary>
     /// Gets the coverage windows for the pair.

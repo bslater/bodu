@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial;
 
@@ -19,11 +20,11 @@ public partial class MoneyExchangeRateExtensionsTests
     {
         Money source = new(100m, CurrencyCode.EUR);
 
-        (Money target, ExchangeRateLookupResult lookup) = source.ConvertToWithRate(
+        (Money target, RateLookupResult lookup) = source.ConvertToWithRate(
             BuildProvider(),
             "USD",
             s_asOf,
-            ExchangeRateLookupOptions.Exact);
+            RateLookupOptions.Exact);
 
         Assert.AreEqual(new Money(110m, CurrencyCode.USD), target);
         Assert.AreEqual(1.10m, lookup.Rate.Rate);
@@ -41,11 +42,11 @@ public partial class MoneyExchangeRateExtensionsTests
         // Only EUR/USD is in the table; converting USD → EUR uses the inverse.
         Money source = new(110m, CurrencyCode.USD);
 
-        (Money target, ExchangeRateLookupResult lookup) = source.ConvertToWithRate(
+        (Money target, RateLookupResult lookup) = source.ConvertToWithRate(
             BuildProvider(),
             "EUR",
             s_asOf,
-            ExchangeRateLookupOptions.Exact);
+            RateLookupOptions.Exact);
 
         Assert.AreEqual(CurrencyCode.EUR, target.Code);
         Assert.IsTrue(lookup.Rate.IsInverted);

@@ -10,74 +10,74 @@ A caching and composition layer for `Bodu.Financial` exchange-rate providers.
 
 The provider classes (Yahoo, RBA, ECB, BoE) are pure fetchers — they know nothing
 of caching. This package adds two orthogonal pieces that each implement the same
-`IDatedExchangeRateProvider` contract (and the timeless `IExchangeRateProvider`), so
+`IDatedRateProvider` contract (and the timeless `IRateProvider`), so
 they compose anywhere a provider is expected:
 
 ```
 Caller
-  │  IDatedExchangeRateProvider / IExchangeRateProvider
+  │  IDatedRateProvider / IRateProvider
   ▼
-AggregatingExchangeRateProvider     ── groups named children; routes per FX pair and
+AggregatingRateProvider     ── groups named children; routes per FX pair and
   │                                    combines them with a strategy (priority / average)
-  ├── CachingExchangeRateProvider("RBA")  ── read-through cache over ONE source + ONE cache
-  │       └── RbaExchangeRateProvider
-  └── CachingExchangeRateProvider("ECB")
-          └── EcbExchangeRateProvider
+  ├── CachingRateProvider("RBA")  ── read-through cache over ONE source + ONE cache
+  │       └── RbaRateProvider
+  └── CachingRateProvider("ECB")
+          └── EcbRateProvider
 ```
 
 ## Caching (one cache = one provider)
 
-`CachingExchangeRateProvider` wraps exactly **one** inner `IDatedExchangeRateProvider`
-over **one** single-provider `IExchangeRateCache`. On a lookup it first tries the cache's
-fresh rows (reusing `FixedDatedExchangeRateProvider` for date-resolution, inverse, and
+`CachingRateProvider` wraps exactly **one** inner `IDatedRateProvider`
+over **one** single-provider `IRateCache`. On a lookup it first tries the cache's
+fresh rows (reusing `FixedDatedRateProvider` for date-resolution, inverse, and
 identity handling) and, on a miss, delegates to the inner provider and stores what it
-returns. It also exposes the timeless `IExchangeRateProvider.GetRate(from, to)`, which
-resolves the current UTC date under `CachingExchangeRateOptions.DefaultLookupOptions`.
+returns. It also exposes the timeless `IRateProvider.GetRate(from, to)`, which
+resolves the current UTC date under `CachingRateOptions.DefaultLookupOptions`.
 
 The cache is bound to a single provider, so its surface carries no provider argument:
 
 | Type | Role |
 |---|---|
-| `IExchangeRateCache` | Single-provider cache contract (`Provider`; `GetRates`/`Store` by pair). |
-| `ExchangeRateCacheBase<TOptions>` | Storage-agnostic core: freshness filtering + merge/prune. No physical layout. |
-| `IFileExchangeRateCache` | File-storage seam (`CacheDirectory`, `ResolveFilePath`, `ResolveDirectory`, `ResolvePartitionPath`). |
-| `FileExchangeRateCacheBase<TOptions>` | File plumbing: layout-driven directory + file-name resolution, date partitioning, best-effort IO. |
-| `TomlFileExchangeRateCache` | Sealed TOML leaf — `<dir>/<provider>/<from><to>.toml`, decimals quoted for lossless round-trips, self-describing `Provider`/`From`/`To` header. |
-| `JsonFileExchangeRateCache` | Sealed JSON leaf — `<dir>/<provider>/<from><to>.json`, decimals as JSON numbers, the same self-describing header. |
-| `ExchangeRateCacheFileLayout` | Where a pair's files live and whether they split by date: `SingleFile` (default), `Yearly`, `Monthly`, `Daily`, or `Create(strategy, directoryFunc?, fileNameFunc?)`. |
-| `ExchangeRateCachePartitionStrategy` | The date split a layout applies: `Single`, `Yearly`, `Monthly`, `Daily`, or `Custom(...)`. |
-| `InMemoryExchangeRateCache` | In-memory cache reusing the same expiry mechanism; nothing persisted. |
-| `NullExchangeRateCache` | No-op cache (`NullExchangeRateCache.Create(provider)`). |
-| `CachingExchangeRateProvider` | Read-through caching decorator over one source + one cache. |
-| `CachingExchangeRateOptions` | Cache location, default + per-provider expiry, log levels, timeless lookup options. |
+| `IRateCache` | Single-provider cache contract (`Provider`; `GetRates`/`Store` by pair). |
+| `RateCacheBase<TOptions>` | Storage-agnostic core: freshness filtering + merge/prune. No physical layout. |
+| `IFileRateCache` | File-storage seam (`CacheDirectory`, `ResolveFilePath`, `ResolveDirectory`, `ResolvePartitionPath`). |
+| `FileRateCacheBase<TOptions>` | File plumbing: layout-driven directory + file-name resolution, date partitioning, best-effort IO. |
+| `TomlFileRateCache` | Sealed TOML leaf — `<dir>/<provider>/<from><to>.toml`, decimals quoted for lossless round-trips, self-describing `Provider`/`From`/`To` header. |
+| `JsonFileRateCache` | Sealed JSON leaf — `<dir>/<provider>/<from><to>.json`, decimals as JSON numbers, the same self-describing header. |
+| `RateCacheFileLayout` | Where a pair's files live and whether they split by date: `SingleFile` (default), `Yearly`, `Monthly`, `Daily`, or `Create(strategy, directoryFunc?, fileNameFunc?)`. |
+| `RateCachePartitionStrategy` | The date split a layout applies: `Single`, `Yearly`, `Monthly`, `Daily`, or `Custom(...)`. |
+| `InMemoryRateCache` | In-memory cache reusing the same expiry mechanism; nothing persisted. |
+| `NullRateCache` | No-op cache (`NullRateCache.Create(provider)`). |
+| `CachingRateProvider` | Read-through caching decorator over one source + one cache. |
+| `CachingRateOptions` | Cache location, default + per-provider expiry, log levels, timeless lookup options. |
 
-Craft your own storage by implementing `IExchangeRateCache`, extending
-`ExchangeRateCacheBase<TOptions>` (storage-agnostic), or extending
-`FileExchangeRateCacheBase<TOptions>` (a new file format).
+Craft your own storage by implementing `IRateCache`, extending
+`RateCacheBase<TOptions>` (storage-agnostic), or extending
+`FileRateCacheBase<TOptions>` (a new file format).
 
 ### File layout and date partitioning
 
 Both file caches store one file per pair by default
 (`<dir>/<provider>/<from><to>.toml` or `.json`) and write a self-describing
 `Provider`/`From`/`To` header into each file, so a file no longer depends on its
-name or folder for identity. Set `FileExchangeRateCacheOptions.Layout` to control
+name or folder for identity. Set `FileRateCacheOptions.Layout` to control
 the folder hierarchy, file name, and whether a pair's rows split across files by
-date — `ExchangeRateCacheFileLayout.Yearly` / `.Monthly` / `.Daily` write one file
+date — `RateCacheFileLayout.Yearly` / `.Monthly` / `.Daily` write one file
 per calendar period under a per-pair folder (for example
-`<dir>/RBA/AUDUSD/2023-01.toml`), and `ExchangeRateCacheFileLayout.Create(...)`
+`<dir>/RBA/AUDUSD/2023-01.toml`), and `RateCacheFileLayout.Create(...)`
 builds a custom layout from a partition strategy and optional directory/file-name
 delegates:
 
 ```csharp
-var monthly = new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions
+var monthly = new TomlFileRateCache(new FileRateCacheOptions
 {
     Provider = "RBA",
     CacheDirectory = "/var/cache/fx",
-    Layout = ExchangeRateCacheFileLayout.Monthly,
+    Layout = RateCacheFileLayout.Monthly,
 });
 
 // JSON instead of TOML, same layout/partitioning surface.
-var json = new JsonFileExchangeRateCache(new FileExchangeRateCacheOptions
+var json = new JsonFileRateCache(new FileRateCacheOptions
 {
     Provider = "RBA",
     CacheDirectory = "/var/cache/fx",
@@ -86,33 +86,33 @@ var json = new JsonFileExchangeRateCache(new FileExchangeRateCacheOptions
 
 ## Aggregation (group many providers behind one entry point)
 
-`AggregatingExchangeRateProvider` groups several named children and resolves each request
-through a pluggable `IExchangeRateAggregationStrategy`, with optional **per-FX-pair routing**.
+`AggregatingRateProvider` groups several named children and resolves each request
+through a pluggable `IRateAggregationStrategy`, with optional **per-FX-pair routing**.
 
 - `PriorityFallbackStrategy` — first child that resolves wins (the default).
 - `AverageStrategy` — arithmetic mean of every child that resolves, tagged `Average`.
-- Implement `IExchangeRateAggregationStrategy` for your own (weighted, median, …).
-- `ExchangeRateAggregationOptions.Routes` maps a pair to an ordered child list and an
+- Implement `IRateAggregationStrategy` for your own (weighted, median, …).
+- `RateAggregationOptions.Routes` maps a pair to an ordered child list and an
   optional per-pair strategy, so `AUD/USD` can prefer `[RBA, ECB]` while `USD/GBP`
   prefers `[ECB, RBA]`.
 - `TryGetProvider(name, out provider)` resolves a specific child directly.
 
 ```csharp
-// The caching provider is storage-agnostic — you supply the IExchangeRateCache.
-var rba = new CachingExchangeRateProvider(
-    rbaSource, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }), options);
-var ecb = new CachingExchangeRateProvider(
-    ecbSource, new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions { Provider = "ECB", CacheDirectory = "/var/cache/fx" }), options);
+// The caching provider is storage-agnostic — you supply the IRateCache.
+var rba = new CachingRateProvider(
+    rbaSource, new TomlFileRateCache(new FileRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }), options);
+var ecb = new CachingRateProvider(
+    ecbSource, new TomlFileRateCache(new FileRateCacheOptions { Provider = "ECB", CacheDirectory = "/var/cache/fx" }), options);
 
-var agg = new ExchangeRateAggregationOptions();
-agg.Routes[new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD)] = new ExchangeRatePairRoute(new[] { "RBA", "ECB" });
-agg.Routes[new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP)] = new ExchangeRatePairRoute(new[] { "ECB", "RBA" });
+var agg = new RateAggregationOptions();
+agg.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "RBA", "ECB" });
+agg.Routes[new CurrencyPair(CurrencyCode.USD, CurrencyCode.GBP)] = new CurrencyPairRoute(new[] { "ECB", "RBA" });
 
-IDatedExchangeRateProvider provider = new AggregatingExchangeRateProvider(
+IDatedRateProvider provider = new AggregatingRateProvider(
     new[]
     {
-        new NamedDatedExchangeRateProvider("RBA", rba),
-        new NamedDatedExchangeRateProvider("ECB", ecb),
+        new NamedDatedRateProvider("RBA", rba),
+        new NamedDatedRateProvider("ECB", ecb),
     },
     agg);
 ```
@@ -129,7 +129,7 @@ entirely opt-in and free when unused.
 
 Single-date lookups happen on the read hot path, so their hit/miss diagnostics default to
 `Trace`; coarser range operations default to `Debug`. Every level is individually
-configurable on `CachingExchangeRateOptions`:
+configurable on `CachingRateOptions`:
 
 | Event | Default level | Option property |
 |---|---|---|
@@ -139,7 +139,7 @@ configurable on `CachingExchangeRateOptions`:
 | A range lookup refetched from a source and re-cached | `Debug` | `CacheRangeRefetchLogLevel` |
 
 The aggregator's route-selected, aggregated, and unresolved diagnostics are configurable on
-`ExchangeRateAggregationOptions`.
+`RateAggregationOptions`.
 
 Persistent backends may add their own diagnostics. The SQLite cache logs best-effort **storage
 degradation** at `Warning` under **`EventId 4520`** (first failure immediately, then rate-limited
@@ -150,7 +150,7 @@ package and the observability section of the
 
 ## Served-rate provenance & data age
 
-Every `ExchangeRateLookupResult` carries an `ExchangeRateProvenance` describing where the rate came from:
+Every `RateLookupResult` carries a `RateProvenance` describing where the rate came from:
 
 - `Origin == Live` — the value was resolved directly by a provider (for a cache-fronted provider, a miss the inner
   provider satisfied). `Backend`, `CachedAtUtc`, and `Age` are all `null`.
@@ -167,7 +167,7 @@ Two ages travel with a cache-served rate and are deliberately distinct:
 - **Cache-write age** — `Provenance.Age` (and `Provenance.CachedAtUtc`) is anchored to when the row was written to the
   cache.
 - **Data age** — `ExchangeRate.FetchedAtUtc` carries the *upstream* fetch instant end to end. A provider stamps it when
-  it loads a rate; the cache persists it (as `CachedExchangeRate.ObservedAtUtc`) and restores it onto the rate it
+  it loads a rate; the cache persists it (as `CachedRate.ObservedAtUtc`) and restores it onto the rate it
   serves, so a cache-served rate reports the **original** fetch instant. Data age is `now - ExchangeRate.FetchedAtUtc`,
   independent of how recently the row happened to be (re)written to the cache.
 

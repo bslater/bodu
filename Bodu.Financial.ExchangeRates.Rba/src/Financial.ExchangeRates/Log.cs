@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Provides the source-generated, allocation-free logging messages emitted by <see cref="RbaExchangeRateProvider" />
+/// Provides the source-generated, allocation-free logging messages emitted by <see cref="RbaRateProvider" />
 /// while downloading and serving RBA historical exchange rates.
 /// </summary>
 /// <remarks>

@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Exchange Rate Cache (Distributed)</Title>
-    <Description>Distributed (Redis-capable) exchange-rate cache for Bodu.Financial. Provides DistributedExchangeRateCache, an IExchangeRateCache implementation over Microsoft.Extensions.Caching.Distributed.IDistributedCache that persists a single provider's rates and fetch-coverage windows as a per-pair JSON blob, with the same freshness, merge, coverage, and validation semantics as the in-memory, TOML, and SQLite caches. Includes the dependency-injection registrations (AddDistributedRateCache, AddRedisRateCache) on IFinancialServiceBuilder.</Description>
+    <Description>Distributed (Redis-capable) exchange-rate cache for Bodu.Financial. Provides DistributedRateCache, an IRateCache implementation over Microsoft.Extensions.Caching.Distributed.IDistributedCache that persists a single provider's rates and fetch-coverage windows as a per-pair JSON blob, with the same freshness, merge, coverage, and validation semantics as the in-memory, TOML, and SQLite caches. Includes the dependency-injection registrations (AddDistributedRateCache, AddRedisRateCache) on IFinancialServiceBuilder.</Description>
     <PackageTags>$(PackageTags);financial;exchange-rate;forex;fx;cache;distributed;redis;decorator;dependency-injection;options</PackageTags>
   </PropertyGroup>
 

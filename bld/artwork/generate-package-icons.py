@@ -210,6 +210,7 @@ ICONS = {
     "Bodu.Globalization.Calendar.AsiaPacific": ("calap", "#F87171", "AP", "grid"),
     "Bodu.Globalization.Calendar.Europe": ("caleu", "#60A5FA", "EU", "grid"),
     "Bodu.Globalization.Calendar.MiddleEast": ("calme", "#A78BFA", "ME", "grid"),
+    "Bodu.Financial.ExchangeRates":      ("fx", "#34D399", "FX", "spark"),
     "Bodu.Financial.ExchangeRates.DependencyInjection": ("fxdi", "#34D399", "FXDI", "plug"),
     "Bodu.Financial.ExchangeRates.Rba":  ("fxrba", "#FBBF24", "RBA", "spark"),
     "Bodu.Financial.ExchangeRates.Boe":  ("fxboe", "#A78BFA", "BOE", "spark"),

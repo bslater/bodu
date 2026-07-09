@@ -21,7 +21,7 @@ public static class EcbServiceCollectionExtensions
     /// <param name="services">The service collection to register into.</param>
     /// <param name="configuration">
     /// An optional configuration root. When supplied, <see cref="FinancialOptions" /> is bound from the
-    /// <c>Financial</c> section and <see cref="EcbExchangeRateOptions" /> from <paramref name="sectionName" />.
+    /// <c>Financial</c> section and <see cref="EcbRateProviderOptions" /> from <paramref name="sectionName" />.
     /// </param>
     /// <param name="sectionName">The ECB configuration section name. Defaults to <c>Financial:Ecb</c>.</param>
     /// <param name="configure">An optional callback applied after ECB configuration binding.</param>
@@ -39,27 +39,27 @@ public static class EcbServiceCollectionExtensions
     /// IServiceCollection services = new ServiceCollection();
     ///
     /// // One-call registration: core financial services plus the ECB provider.
-    /// services.AddEcbReferenceRates(configure: opts =>
+    /// services.AddEcbExchangeRates(configure: opts =>
     /// {
     ///     opts.EnableDiskCache = true;
     /// });
     ///
     /// using ServiceProvider provider = services.BuildServiceProvider();
-    /// var rates = provider.GetRequiredService<IDatedExchangeRateProvider>();
+    /// var rates = provider.GetRequiredService<IDatedRateProvider>();
     ///]]>
     /// </code>
     /// </example>
     /// </remarks>
-    public static IFinancialServiceBuilder AddEcbReferenceRates(
+    public static IFinancialServiceBuilder AddEcbExchangeRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Ecb",
-        Action<EcbExchangeRateOptions>? configure = null)
+        Action<EcbRateProviderOptions>? configure = null)
     {
         ThrowHelper.ThrowIfNull(services);
 
         return services
             .AddFinancialService(configuration)
-            .AddEcbReferenceRates(configuration, sectionName, configure);
+            .AddEcbExchangeRates(configuration, sectionName, configure);
     }
 }

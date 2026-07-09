@@ -48,16 +48,15 @@
     <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">Provider</text>
 
     <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="9.5">
-      <text x="10" y="46">IDatedExchangeRate</text>
-      <text x="10" y="62">Provider</text>
-      <text x="10" y="86">ExchangeRateBook</text>
-      <text x="10" y="110"><tspan fill="#60A5FA">full history</tspan></text>
-      <text x="10" y="134"><tspan fill="#94A3B8" font-size="9">90-day + full feeds</tspan></text>
+      <text x="10" y="46">IDatedRateProvider</text>
+      <text x="10" y="70">RateBook</text>
+      <text x="10" y="94"><tspan fill="#60A5FA">full history</tspan></text>
+      <text x="10" y="118"><tspan fill="#94A3B8" font-size="9">90-day + full feeds</tspan></text>
     </g>
   </g>
 
   <!-- Bottom caption -->
   <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
-    <text x="240" y="206" text-anchor="middle">services.AddEcbReferenceRates()</text>
+    <text x="240" y="206" text-anchor="middle">services.AddEcbExchangeRates()</text>
   </g>
 </svg>
