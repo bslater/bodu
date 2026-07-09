@@ -86,6 +86,29 @@ internal sealed class RateSeriesStorage
     }
 
     /// <summary>
+    /// Validates, sorts, and deduplicates the supplied tuple sequence and returns a new storage instance.
+    /// </summary>
+    /// <param name="rates">The candidate observations.</param>
+    /// <param name="ratesParamName">
+    /// The parameter name used in raised exceptions so the caller's signature is reflected in
+    /// <see cref="ArgumentException.ParamName" />.
+    /// </param>
+    /// <returns>A new <see cref="RateSeriesStorage" /> wrapping the validated arrays.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="rates" /> is empty or contains duplicate dates.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if any rate is zero or negative.</exception>
+    public static RateSeriesStorage Create(
+        IEnumerable<(DateOnly Date, decimal Rate)> rates,
+        string ratesParamName)
+    {
+        List<(int DayNumber, decimal Rate)> normalised =
+            RateObservationNormalizer.ToSortedUniqueList(rates, ratesParamName, allowEmpty: false);
+
+        return MaterialiseFromNormalised(normalised);
+    }
+
+    /// <summary>
     /// Attempts to resolve a rate for <paramref name="requestedDate" /> under <paramref name="options" />.
     /// </summary>
     /// <param name="requestedDate">The calendar date the caller is asking about.</param>
@@ -202,12 +225,12 @@ internal sealed class RateSeriesStorage
     /// <returns>A new <see cref="RateSeriesStorage" /> wrapping the supplied arrays.</returns>
     internal static RateSeriesStorage AdoptSortedUniqueArrays(int[] dayNumbers, decimal[] rates)
     {
-        Debug.Assert(dayNumbers is not null);
-        Debug.Assert(rates is not null);
-        Debug.Assert(dayNumbers!.Length == rates!.Length);
-        Debug.Assert(dayNumbers.Length > 0);
-        Debug.Assert(IsStrictlyAscending(dayNumbers));
-        Debug.Assert(AllPositive(rates));
+        Debug.Assert(dayNumbers is not null, "The adopted day-number array must not be null.");
+        Debug.Assert(rates is not null, "The adopted rate array must not be null.");
+        Debug.Assert(dayNumbers!.Length == rates!.Length, "The adopted arrays must be aligned (equal lengths).");
+        Debug.Assert(dayNumbers.Length > 0, "The adopted arrays must contain at least one observation.");
+        Debug.Assert(IsStrictlyAscending(dayNumbers), "The adopted day numbers must be strictly ascending and unique.");
+        Debug.Assert(AllPositive(rates), "Every adopted rate must be strictly positive.");
 
         return new RateSeriesStorage(dayNumbers, rates);
     }
@@ -233,9 +256,9 @@ internal sealed class RateSeriesStorage
     /// </param>
     internal void CopyTo(int[] dayNumbers, decimal[] rates)
     {
-        Debug.Assert(dayNumbers is not null && rates is not null);
-        Debug.Assert(dayNumbers!.Length >= _dayNumbers.Length);
-        Debug.Assert(rates!.Length >= _dayNumbers.Length);
+        Debug.Assert(dayNumbers is not null && rates is not null, "Caller-owned destination arrays must not be null.");
+        Debug.Assert(dayNumbers!.Length >= _dayNumbers.Length, "The day-number destination must be at least Count long.");
+        Debug.Assert(rates!.Length >= _dayNumbers.Length, "The rate destination must be at least Count long.");
 
         Array.Copy(_dayNumbers, dayNumbers, _dayNumbers.Length);
         Array.Copy(_rates, rates, _rates.Length);

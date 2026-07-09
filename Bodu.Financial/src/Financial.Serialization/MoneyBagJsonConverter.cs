@@ -119,7 +119,7 @@ public sealed class MoneyBagJsonConverter
             }
         }
 
-        return [.. entries];
+        return new MoneyBag(entries);
     }
 
     /// <summary>
@@ -131,7 +131,7 @@ public sealed class MoneyBagJsonConverter
     {
         List<Money> entries = new();
         ReadBalanceMap(ref reader, entries);
-        return [.. entries];
+        return new MoneyBag(entries);
     }
 
     /// <summary>
