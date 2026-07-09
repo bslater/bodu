@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooChartResponseParserTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,11 +16,16 @@ namespace Bodu.Financial.ExchangeRates;
 public class YahooChartResponseParserTests
 {
     /// <summary>
-    /// Builds a chart request for the AUD/USD fixture spanning January 2023.
+    /// The ticker addressing the AUD/USD fixture chart.
     /// </summary>
-    /// <returns>The chart request.</returns>
-    private static YahooChartRequest CreateRequest() =>
-        new(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "AUDUSD=X", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+    private const string Symbol = "AUDUSD=X";
+
+    /// <summary>
+    /// Builds a pair request for the AUD/USD fixture spanning January 2023.
+    /// </summary>
+    /// <returns>The pair request.</returns>
+    private static ExchangeRatePairRequest CreateRequest() =>
+        new(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
     /// <summary>
     /// Verifies that a valid chart parses to the present close observations, skipping the null-close day.
@@ -30,12 +35,12 @@ public class YahooChartResponseParserTests
     {
         byte[] json = YahooFixtures.ReadBytes(YahooFixtures.AudUsd);
 
-        YahooExchangeRateChart chart = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooExchangeRateOptions());
 
-        Assert.HasCount(3, chart.Observations);
-        Assert.AreEqual("USD", chart.QuoteIsoCode);
-        Assert.AreEqual(new DateOnly(2023, 1, 3), chart.Observations[0].Date);
-        Assert.AreEqual(0.6828m, chart.Observations[0].Rate);
+        Assert.HasCount(3, data.Observations);
+        Assert.AreEqual("USD", data.Series.QuoteIsoCode);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), data.Observations[0].Date);
+        Assert.AreEqual(0.6828m, data.Observations[0].Rate);
     }
 
     /// <summary>
@@ -48,7 +53,7 @@ public class YahooChartResponseParserTests
 
         _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
         {
-            _ = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
+            _ = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooExchangeRateOptions());
         });
     }
 
@@ -62,7 +67,7 @@ public class YahooChartResponseParserTests
 
         _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
         {
-            _ = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
+            _ = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooExchangeRateOptions());
         });
     }
 
@@ -91,10 +96,10 @@ public class YahooChartResponseParserTests
             }
             """);
 
-        YahooExchangeRateChart chart = YahooChartResponseParser.Parse(json, CreateRequest(), new YahooExchangeRateOptions());
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooExchangeRateOptions());
 
-        Assert.HasCount(1, chart.Observations);
-        Assert.AreEqual(new DateOnly(2023, 1, 3), chart.Observations[0].Date);
-        Assert.AreEqual(0.6828m, chart.Observations[0].Rate);
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), data.Observations[0].Date);
+        Assert.AreEqual(0.6828m, data.Observations[0].Rate);
     }
 }

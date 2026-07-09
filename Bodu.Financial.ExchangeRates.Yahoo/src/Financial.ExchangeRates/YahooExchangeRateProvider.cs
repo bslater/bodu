@@ -97,10 +97,10 @@ public sealed class YahooExchangeRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="YahooExchangeRateProvider" /> class backed by an explicit chart
+    /// Initializes a new instance of the <see cref="YahooExchangeRateProvider" /> class backed by an explicit pair
     /// source, used for testing.
     /// </summary>
-    /// <param name="source">The chart source.</param>
+    /// <param name="source">The pair source.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">The logger. <see langword="null" /> selects a no-op logger.</param>
     /// <param name="timeProvider">
@@ -110,14 +110,14 @@ public sealed class YahooExchangeRateProvider
     /// Thrown when <paramref name="source" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    internal YahooExchangeRateProvider(IYahooExchangeRateChartSource source, YahooExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
+    internal YahooExchangeRateProvider(IExchangeRatePairSource<YahooSeriesInfo> source, YahooExchangeRateOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(source, options, ownedHttpClient: null, logger, timeProvider)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="YahooExchangeRateProvider" /> class from an owned client, building
-    /// the chart source over it before forwarding to the core constructor.
+    /// the pair source over it before forwarding to the core constructor.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <param name="ownedHttpClient">The HTTP client this provider creates and owns.</param>
@@ -132,18 +132,18 @@ public sealed class YahooExchangeRateProvider
     /// Initializes a new instance of the <see cref="YahooExchangeRateProvider" /> class, the shared core all public and
     /// internal constructors funnel through.
     /// </summary>
-    /// <param name="source">The chart source.</param>
+    /// <param name="source">The pair source.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="ownedHttpClient">The owned client to dispose with the provider, or <see langword="null" />.</param>
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private YahooExchangeRateProvider(
-        IYahooExchangeRateChartSource source,
+        IExchangeRatePairSource<YahooSeriesInfo> source,
         YahooExchangeRateOptions options,
         HttpClient? ownedHttpClient,
         ILogger? logger,
         TimeProvider? timeProvider)
-        : base(new YahooPairSourceAdapter(source, options), options, logger, ownedHttpClient, timeProvider)
+        : base(source, options, logger, ownedHttpClient, timeProvider)
     {
         _options = options;
     }
@@ -160,11 +160,11 @@ public sealed class YahooExchangeRateProvider
         string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.IO_KeyNotFound_YahooRate, fromIsoCode, toIsoCode, date);
 
     /// <summary>
-    /// Builds the default chart source from the supplied client and options.
+    /// Builds the default pair source from the supplied client and options.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue chart requests.</param>
     /// <param name="options">The provider options.</param>
-    /// <returns>A new chart source.</returns>
+    /// <returns>A new pair source over the Yahoo Finance chart endpoint.</returns>
     private static YahooChartExchangeRateSource CreateSource(HttpClient httpClient, YahooExchangeRateOptions options)
     {
         ThrowHelper.ThrowIfNull(httpClient);

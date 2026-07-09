@@ -20,10 +20,10 @@ public partial class YahooExchangeRateProviderTests
     /// </summary>
     /// <param name="allowSync">Whether synchronous network access is permitted.</param>
     /// <returns>The provider and its fixture source.</returns>
-    private static (YahooExchangeRateProvider Provider, FixtureYahooExchangeRateChartSource Source) Create(bool allowSync = true)
+    private static (YahooExchangeRateProvider Provider, FixtureYahooExchangeRateSource Source) Create(bool allowSync = true)
     {
         YahooExchangeRateOptions options = new() { AllowSynchronousNetworkAccess = allowSync };
-        FixtureYahooExchangeRateChartSource source = new(options);
+        FixtureYahooExchangeRateSource source = new(options);
         return (new YahooExchangeRateProvider(source, options), source);
     }
 

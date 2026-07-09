@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YahooChartResponseParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,7 +10,7 @@ using System.Text.Json;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Parses a Yahoo Finance <c>v8/finance/chart</c> JSON response into a <see cref="YahooExchangeRateChart" />.
+/// Parses a Yahoo Finance <c>v8/finance/chart</c> JSON response into a <see cref="PairRateData{TSeries}" />.
 /// </summary>
 /// <remarks>
 /// The chart response carries a parallel <c>timestamp</c> array and an <c>indicators.quote[0].close</c> array. Days
@@ -24,39 +24,42 @@ internal static class YahooChartResponseParser
     /// </summary>
     /// <param name="json">The UTF-8 JSON response bytes.</param>
     /// <param name="request">The originating request, supplying the pair and date range.</param>
+    /// <param name="symbol">
+    /// The <c>{FROM}{TO}=X</c> ticker the chart was requested for, used for error messages and the series metadata.
+    /// </param>
     /// <param name="options">The provider options (reserved for future response-shaping behaviour).</param>
-    /// <returns>The parsed chart.</returns>
+    /// <returns>The parsed, range-restricted observations and series metadata.</returns>
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON, carries a chart error, or omits the expected chart data.
     /// </exception>
-    public static YahooExchangeRateChart Parse(byte[] json, YahooChartRequest request, YahooExchangeRateOptions options)
+    public static PairRateData<YahooSeriesInfo> Parse(byte[] json, ExchangeRatePairRequest request, string symbol, YahooExchangeRateOptions options)
     {
         ThrowHelper.ThrowIfNull(json);
-        ThrowHelper.ThrowIfNull(request);
+        ThrowHelper.ThrowIfNull(symbol);
         ThrowHelper.ThrowIfNull(options);
 
-        using JsonDocument document = ParseDocument(json, request);
+        using JsonDocument document = ParseDocument(json, symbol);
         JsonElement root = document.RootElement;
 
         if (root.ValueKind != JsonValueKind.Object || !root.TryGetProperty("chart", out JsonElement chart))
-            throw NoData(request);
+            throw NoData(symbol);
 
-        ThrowOnChartError(chart, request);
+        ThrowOnChartError(chart, symbol);
 
         if (!chart.TryGetProperty("result", out JsonElement result)
             || result.ValueKind != JsonValueKind.Array
             || result.GetArrayLength() == 0)
         {
-            throw NoData(request);
+            throw NoData(symbol);
         }
 
         JsonElement first = result[0];
 
         if (!first.TryGetProperty("timestamp", out JsonElement timestamps) || timestamps.ValueKind != JsonValueKind.Array)
-            throw NoData(request);
+            throw NoData(symbol);
 
         if (!TryGetCloseArray(first, out JsonElement closes))
-            throw NoData(request);
+            throw NoData(symbol);
 
         string quoteIsoCode = ReadQuoteIsoCode(first, request.Pair.To.ToString());
 
@@ -83,7 +86,8 @@ internal static class YahooChartResponseParser
             observations.Add(new ExchangeRateObservation(date, rate));
         }
 
-        return new YahooExchangeRateChart(request.Pair, request.Symbol, quoteIsoCode, observations);
+        YahooSeriesInfo series = new(request.Pair, symbol, quoteIsoCode);
+        return new PairRateData<YahooSeriesInfo>(request.Pair, observations, series);
     }
 
     /// <summary>
@@ -91,10 +95,10 @@ internal static class YahooChartResponseParser
     /// exception.
     /// </summary>
     /// <param name="json">The UTF-8 JSON response bytes.</param>
-    /// <param name="request">The originating request, used for the error message.</param>
+    /// <param name="symbol">The requested ticker, used for the error message.</param>
     /// <returns>The parsed document.</returns>
     /// <exception cref="ExchangeRateFormatException">Thrown when the bytes are not valid JSON.</exception>
-    private static JsonDocument ParseDocument(byte[] json, YahooChartRequest request)
+    private static JsonDocument ParseDocument(byte[] json, string symbol)
     {
         try
         {
@@ -103,7 +107,7 @@ internal static class YahooChartResponseParser
         catch (JsonException ex)
         {
             throw new ExchangeRateFormatException(
-                string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.Format_Invalid_YahooNoData, request.Symbol),
+                string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.Format_Invalid_YahooNoData, symbol),
                 ex);
         }
     }
@@ -112,9 +116,9 @@ internal static class YahooChartResponseParser
     /// Throws when the chart object carries a non-null <c>error</c> member.
     /// </summary>
     /// <param name="chart">The <c>chart</c> element.</param>
-    /// <param name="request">The originating request, used for the error message.</param>
+    /// <param name="symbol">The requested ticker, used for the error message.</param>
     /// <exception cref="ExchangeRateFormatException">Thrown when an error is present.</exception>
-    private static void ThrowOnChartError(JsonElement chart, YahooChartRequest request)
+    private static void ThrowOnChartError(JsonElement chart, string symbol)
     {
         if (!chart.TryGetProperty("error", out JsonElement error) || error.ValueKind is JsonValueKind.Null)
             return;
@@ -124,7 +128,7 @@ internal static class YahooChartResponseParser
             : string.Empty;
 
         throw new ExchangeRateFormatException(
-            string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.Format_Invalid_YahooChartError, request.Symbol, description));
+            string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.Format_Invalid_YahooChartError, symbol, description));
     }
 
     /// <summary>
@@ -185,10 +189,10 @@ internal static class YahooChartResponseParser
             : fallback;
 
     /// <summary>
-    /// Builds the no-data format exception for a request.
+    /// Builds the no-data format exception for a requested ticker.
     /// </summary>
-    /// <param name="request">The originating request.</param>
+    /// <param name="symbol">The requested ticker.</param>
     /// <returns>The exception to throw.</returns>
-    private static ExchangeRateFormatException NoData(YahooChartRequest request) =>
-        new(string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.Format_Invalid_YahooNoData, request.Symbol));
+    private static ExchangeRateFormatException NoData(string symbol) =>
+        new(string.Format(CultureInfo.CurrentCulture, YahooResourceStrings.Format_Invalid_YahooNoData, symbol));
 }

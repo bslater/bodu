@@ -15,12 +15,12 @@ public partial class YahooExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenSyncDisabledAndNotLoaded_ShouldReturnFalse()
     {
-        (YahooExchangeRateProvider provider, FixtureYahooExchangeRateChartSource source) = Create(allowSync: false);
+        (YahooExchangeRateProvider provider, FixtureYahooExchangeRateSource source) = Create(allowSync: false);
 
         bool found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact, out _);
 
         Assert.IsFalse(found);
-        Assert.AreEqual(0, source.GetChartCallCount);
+        Assert.AreEqual(0, source.GetPairCallCount);
     }
 
     /// <summary>
@@ -30,12 +30,12 @@ public partial class YahooExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenSyncEnabledAndNotLoaded_ShouldFetchOnDemand()
     {
-        (YahooExchangeRateProvider provider, FixtureYahooExchangeRateChartSource source) = Create(allowSync: true);
+        (YahooExchangeRateProvider provider, FixtureYahooExchangeRateSource source) = Create(allowSync: true);
 
         bool found = provider.TryGetRate("AUD", "USD", new DateOnly(2023, 1, 6), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
-        Assert.AreEqual(1, source.GetChartCallCount);
+        Assert.AreEqual(1, source.GetPairCallCount);
         Assert.AreEqual(0.6855m, result.Rate.Rate);
     }
 
@@ -45,12 +45,12 @@ public partial class YahooExchangeRateProviderTests
     [TestMethod]
     public void TryGetRate_WhenSameCurrency_ShouldReturnIdentityWithoutFetch()
     {
-        (YahooExchangeRateProvider provider, FixtureYahooExchangeRateChartSource source) = Create(allowSync: true);
+        (YahooExchangeRateProvider provider, FixtureYahooExchangeRateSource source) = Create(allowSync: true);
 
         bool found = provider.TryGetRate("USD", "USD", new DateOnly(2023, 1, 6), ExchangeRateLookupOptions.Exact, out ExchangeRateLookupResult result);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1m, result.Rate.Rate);
-        Assert.AreEqual(0, source.GetChartCallCount);
+        Assert.AreEqual(0, source.GetPairCallCount);
     }
 }
