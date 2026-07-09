@@ -824,12 +824,20 @@ backends in-package and durable `Sqlite` + shared `Distributed`
   that declared they cannot serve the requested date or window before
   the strategy runs — both behind `RespectHistoryAvailability` flags
   that default on.
-- **Give Yahoo a dedicated provider subclass.** It is currently the
-  generic pair base wired through an adapter — inconsistent with the
-  other six and awkward to extend.
-- **De-risk or de-emphasise the XE provider.** Its scrape-based
-  `Authorization: Basic` token is documented as brittle; consider marking
-  the package Experimental until an official-endpoint path exists.
+- **Yahoo is now structurally identical to the other pair providers.** ✅
+  The dedicated `YahooExchangeRateProvider` subclass already existed; the
+  remaining inconsistency — a bespoke `IYahooExchangeRateChartSource`
+  bridged through an internal adapter — has been collapsed:
+  `YahooChartExchangeRateSource` implements
+  `IExchangeRatePairSource<YahooSeriesInfo>` directly and the parser
+  returns `PairRateData<YahooSeriesInfo>` like its OFX/XE peers.
+- **De-risk the XE provider — Experimental marking done; official
+  endpoint still open.** The package is already labelled Experimental
+  (README tier badge; see *API-stability tiers*) and the scrape-token
+  brittleness is documented in the README, the XML docs, and the
+  providers guide. The remaining open half is replacing the scraped
+  `Authorization: Basic` token with an official-endpoint path, if one
+  ever becomes available.
 - **Broaden provider coverage** if there is demand — Fixer,
   exchangerate.host, IMF, and FRED are the common free/commercial APIs
   not yet wrapped. Each is a small package following the established

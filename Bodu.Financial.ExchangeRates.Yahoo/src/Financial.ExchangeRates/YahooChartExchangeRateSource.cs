@@ -9,7 +9,8 @@ using System.Globalization;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Obtains a Yahoo Finance chart by issuing a GET against the configured chart endpoint and parsing the JSON response.
+/// Obtains a currency pair's Yahoo Finance chart by mapping the pair to its <c>{FROM}{TO}=X</c> ticker, issuing a GET
+/// against the configured chart endpoint, and parsing the JSON response.
 /// </summary>
 /// <remarks>
 /// The bar interval is fixed at one day; the date range is taken from the request and expressed as the <c>period1</c>/
@@ -19,7 +20,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// (typically one created by <c>IHttpClientFactory</c>).
 /// </remarks>
 internal sealed class YahooChartExchangeRateSource
-    : IYahooExchangeRateChartSource
+    : IExchangeRatePairSource<YahooSeriesInfo>
 {
     /// <summary>The fixed daily bar interval requested from the chart endpoint.</summary>
     private const string DailyInterval = "1d";
@@ -45,28 +46,29 @@ internal sealed class YahooChartExchangeRateSource
     }
 
     /// <inheritdoc />
-    public async ValueTask<YahooExchangeRateChart> GetChartAsync(YahooChartRequest request, CancellationToken cancellationToken = default)
+    public async ValueTask<PairRateData<YahooSeriesInfo>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(request);
+        string symbol = _options.BuildSymbol(request.Pair.From.ToString(), request.Pair.To.ToString());
 
-        Uri url = BuildRequestUri(request);
+        Uri url = BuildRequestUri(symbol, request);
         byte[] json = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return YahooChartResponseParser.Parse(json, request, _options);
+        return YahooChartResponseParser.Parse(json, request, symbol, _options);
     }
 
     /// <summary>
-    /// Builds the absolute chart request URI from the options and request.
+    /// Builds the absolute chart request URI from the options, ticker, and request.
     /// </summary>
-    /// <param name="request">The chart request.</param>
+    /// <param name="symbol">The <c>{FROM}{TO}=X</c> ticker addressing the pair's chart.</param>
+    /// <param name="request">The pair request.</param>
     /// <returns>The absolute request URI.</returns>
-    private Uri BuildRequestUri(YahooChartRequest request)
+    private Uri BuildRequestUri(string symbol, ExchangeRatePairRequest request)
     {
         // The ticker is built from validated ISO letters plus a safe suffix, so it is substituted into the path
         // segment directly; escaping the '=' would change the resource Yahoo serves.
         string path = _options.ChartPath.Replace(
             YahooExchangeRateOptions.SymbolPlaceholder,
-            request.Symbol,
+            symbol,
             StringComparison.Ordinal);
 
         long period1 = ToUnixSeconds(request.StartDate);

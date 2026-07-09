@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <summary>
 /// Verifies that <see cref="YahooExchangeRateProvider" /> satisfies the shared dated-provider contract, so the Yahoo
 /// source is indistinguishable in shape from any other <see cref="IDatedExchangeRateProvider" />. The provider is seeded
-/// offline from the embedded AUD/USD chart fixture through <see cref="FixtureYahooExchangeRateChartSource" />.
+/// offline from the embedded AUD/USD chart fixture through <see cref="FixtureYahooExchangeRateSource" />.
 /// </summary>
 [TestClass]
 public sealed class YahooExchangeRateProviderContractTests
@@ -43,7 +43,7 @@ public sealed class YahooExchangeRateProviderContractTests
     protected override YahooExchangeRateProvider CreateProvider()
     {
         YahooExchangeRateOptions options = new() { AllowSynchronousNetworkAccess = true };
-        FixtureYahooExchangeRateChartSource source = new(options);
+        FixtureYahooExchangeRateSource source = new(options);
 
         return new YahooExchangeRateProvider(source, options);
     }
