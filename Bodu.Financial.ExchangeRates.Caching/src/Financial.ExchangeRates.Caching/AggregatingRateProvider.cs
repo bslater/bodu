@@ -37,7 +37,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// <para>
 /// When <see cref="RateAggregationOptions.RespectHistoryAvailability" /> is enabled (the default), children that
-/// advertise their history depth through <see cref="IHistoryAwareRateProvider" /> and have declared they cannot serve
+/// advertise their history depth through <see cref="IHistoricalRateProvider" /> and have declared they cannot serve
 /// any part of the requested date or window are dropped from the candidate set before the strategy runs, so a priority
 /// fallback does not waste a call on a source that cannot answer. A non-aware child is treated as unbounded and always
 /// kept, and the group's own <see cref="HistoryAvailability" /> composes the most generous declaration across the
@@ -77,7 +77,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </code>
 /// </example>
 public sealed class AggregatingRateProvider
-    : IDatedRateProvider, IRateProvider, IHistoryAwareRateProvider
+    : IDatedRateProvider, IRateProvider, IHistoricalRateProvider
 {
     /// <summary>The synthetic provider name reported for a same-currency identity rate.</summary>
     private const string IdentityProvider = "Identity";
@@ -173,7 +173,7 @@ public sealed class AggregatingRateProvider
     /// </summary>
     /// <value>
     /// <see cref="RateHistoryAvailability.Unbounded" /> when any child is
-    /// <see cref="RateHistoryAvailability.Unbounded" /> or does not implement <see cref="IHistoryAwareRateProvider" />
+    /// <see cref="RateHistoryAvailability.Unbounded" /> or does not implement <see cref="IHistoricalRateProvider" />
     /// (a non-aware child declares no floor); otherwise the child availability whose earliest available date, evaluated
     /// against the current date, reaches furthest back.
     /// </value>
@@ -188,7 +188,7 @@ public sealed class AggregatingRateProvider
 
             foreach (NamedDatedRateProvider child in _children)
             {
-                if (child.Provider is not IHistoryAwareRateProvider aware)
+                if (child.Provider is not IHistoricalRateProvider aware)
                     return RateHistoryAvailability.Unbounded;
 
                 RateHistoryAvailability availability = aware.HistoryAvailability;
@@ -417,7 +417,7 @@ public sealed class AggregatingRateProvider
         List<NamedDatedRateProvider>? kept = null;
         for (int i = 0; i < candidates.Length; i++)
         {
-            DateOnly? earliest = candidates[i].Provider is IHistoryAwareRateProvider aware
+            DateOnly? earliest = candidates[i].Provider is IHistoricalRateProvider aware
                 ? aware.HistoryAvailability.GetEarliestAvailable(today)
                 : null;
             bool available = earliest is null || earliest.Value <= latestReachable;

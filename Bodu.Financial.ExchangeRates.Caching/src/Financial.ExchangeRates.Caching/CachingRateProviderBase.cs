@@ -35,7 +35,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// an <see cref="AggregatingRateProvider" />.
 /// </para>
 /// <para>
-/// When the inner provider advertises its history depth through <see cref="IHistoryAwareRateProvider" /> and
+/// When the inner provider advertises its history depth through <see cref="IHistoricalRateProvider" /> and
 /// <see cref="CachingRateOptions.RespectHistoryAvailability" /> is enabled (the default), misses for dates the source
 /// has declared unavailable are not delegated: a single-date lookup outside the advertised history surfaces as an
 /// ordinary miss without an inner call, and a range fetch is clamped to start at the advertised earliest date — or
@@ -69,7 +69,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// </remarks>
 public abstract class CachingRateProviderBase
-    : IDatedRateProvider, IRateProvider, IHistoryAwareRateProvider, IDisposable
+    : IDatedRateProvider, IRateProvider, IHistoricalRateProvider, IDisposable
 {
     /// <summary>The single-provider cache that serves fresh rates and stores resolved observations.</summary>
     private readonly IRateCache _cache;
@@ -139,11 +139,11 @@ public abstract class CachingRateProviderBase
     /// as its source.
     /// </summary>
     /// <value>
-    /// The inner provider's advertised availability when it implements <see cref="IHistoryAwareRateProvider" />;
+    /// The inner provider's advertised availability when it implements <see cref="IHistoricalRateProvider" />;
     /// otherwise <see cref="RateHistoryAvailability.Unbounded" />.
     /// </value>
     public RateHistoryAvailability HistoryAvailability =>
-        Inner is IHistoryAwareRateProvider aware
+        Inner is IHistoricalRateProvider aware
             ? aware.HistoryAvailability
             : RateHistoryAvailability.Unbounded;
 
@@ -391,7 +391,7 @@ public abstract class CachingRateProviderBase
     {
         earliest = default;
 
-        if (!_options.RespectHistoryAvailability || Inner is not IHistoryAwareRateProvider aware)
+        if (!_options.RespectHistoryAvailability || Inner is not IHistoricalRateProvider aware)
             return false;
 
         DateOnly? floor = aware.HistoryAvailability.GetEarliestAvailable(DateOnly.FromDateTime(now.UtcDateTime));
@@ -431,7 +431,7 @@ public abstract class CachingRateProviderBase
         fetchStart = startDate;
         earliestAvailable = null;
 
-        if (!_options.RespectHistoryAvailability || Inner is not IHistoryAwareRateProvider aware)
+        if (!_options.RespectHistoryAvailability || Inner is not IHistoricalRateProvider aware)
             return true;
 
         DateOnly? floor = aware.HistoryAvailability.GetEarliestAvailable(DateOnly.FromDateTime(now.UtcDateTime));

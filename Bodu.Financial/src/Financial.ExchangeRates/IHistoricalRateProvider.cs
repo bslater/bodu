@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IHistoryAwareRateProvider.cs" company="Bodu Pty. Ltd.">
+// <copyright file="IHistoricalRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// latest-rate surface is unaffected.
 /// </para>
 /// </remarks>
-public interface IHistoryAwareRateProvider
+public interface IHistoricalRateProvider
 {
     /// <summary>
     /// Gets the history depth this provider advertises: how far back it can serve rates.

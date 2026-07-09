@@ -67,7 +67,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </example>
 /// </remarks>
 public abstract class WebRateProvider
-    : IDatedRateProvider, IRateProvider, IPairRateLoader, IHistoryAwareRateProvider, IDisposable
+    : IDatedRateProvider, IRateProvider, IPairRateLoader, IHistoricalRateProvider, IDisposable
 {
     /// <summary>The tolerance, in days, used to resolve the most recent rate for the undated surfaces; large enough to reach any rate fetched into the store from the current date.</summary>
     private const int LatestRateToleranceDays = 100_000;

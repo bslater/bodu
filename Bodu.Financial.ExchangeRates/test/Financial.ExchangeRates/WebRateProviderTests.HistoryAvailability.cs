@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WebRateProviderTests.HistoryAvailability.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class WebRateProviderTests
 
     /// <summary>
     /// Verifies that every provider built on <see cref="WebRateProvider" /> is discoverable through the
-    /// <see cref="IHistoryAwareRateProvider" /> capability interface, so composing layers can probe it at
+    /// <see cref="IHistoricalRateProvider" /> capability interface, so composing layers can probe it at
     /// runtime.
     /// </summary>
     [TestMethod]
@@ -30,7 +30,7 @@ public partial class WebRateProviderTests
     {
         TestBulkWebRateProvider provider = CreateProvider();
 
-        IHistoryAwareRateProvider aware = provider;
+        IHistoricalRateProvider aware = provider;
 
         Assert.AreEqual(provider.HistoryAvailability, aware.HistoryAvailability);
     }

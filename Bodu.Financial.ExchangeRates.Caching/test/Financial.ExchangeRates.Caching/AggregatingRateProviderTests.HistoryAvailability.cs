@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AggregatingRateProviderTests.HistoryAvailability.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -58,7 +58,7 @@ public partial class AggregatingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a child that does not implement <see cref="IHistoryAwareRateProvider" /> makes the whole
+    /// Verifies that a child that does not implement <see cref="IHistoricalRateProvider" /> makes the whole
     /// group unbounded: a non-aware child declares no floor, so the group cannot declare one either.
     /// </summary>
     [TestMethod]

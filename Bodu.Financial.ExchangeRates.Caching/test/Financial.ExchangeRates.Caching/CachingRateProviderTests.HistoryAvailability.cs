@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingRateProviderTests.HistoryAvailability.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,7 +41,7 @@ public partial class CachingRateProviderTests
 
     /// <summary>
     /// Verifies that wrapping an inner provider that does not implement
-    /// <see cref="IHistoryAwareRateProvider" /> yields
+    /// <see cref="IHistoricalRateProvider" /> yields
     /// <see cref="RateHistoryAvailability.Unbounded" />: a non-aware source declares no floor.
     /// </summary>
     [TestMethod]
