@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PairWebExchangeRateProviderContractTests{T,T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,9 +7,10 @@
 namespace Bodu.Financial.ExchangeRates.Testing;
 
 /// <summary>
-/// Provides the shared contract every pair-based web provider built on <see cref="PairWebExchangeRateProvider{TSeries}" />
-/// must satisfy, layered on top of the general <see cref="DatedExchangeRateProviderContractTests{TProvider}" />. It
-/// exercises the per-pair warm-up surface — <see cref="WebExchangeRateProvider.LoadPairAsync" /> and
+/// Provides the shared contract every pair-based web provider built on
+/// <see cref="PairWebExchangeRateProvider{TSeries}" /> must satisfy, layered on top of the general
+/// <see cref="DatedExchangeRateProviderContractTests{TProvider}" />. It exercises the per-pair warm-up surface —
+/// <see cref="WebExchangeRateProvider.LoadPairAsync" /> and
 /// <see cref="PairWebExchangeRateProvider{TSeries}.GetAvailablePairs" /> — that the shared base contributes, so each
 /// concrete source (Yahoo, OFX, …) proves the inherited machinery against its own fixture by deriving a
 /// <see langword="sealed" /> <c>[TestClass]</c> from this base.
@@ -26,6 +27,26 @@ public abstract class PairWebExchangeRateProviderContractTests<TProvider, TSerie
     : DatedExchangeRateProviderContractTests<TProvider>
     where TProvider : PairWebExchangeRateProvider<TSeries>
 {
+    /// <summary>
+    /// Gets the history availability the provider is expected to advertise — the declared depth of the upstream source.
+    /// Every pair provider must declare one deliberately (an intentional
+    /// <see cref="ExchangeRateHistoryAvailability.Unbounded" /> included), so this contract fails when a new provider
+    /// forgets to set the value in its options.
+    /// </summary>
+    protected abstract ExchangeRateHistoryAvailability ExpectedHistoryAvailability { get; }
+
+    /// <summary>
+    /// Verifies that the provider advertises the expected history availability, forwarded from its options, so the
+    /// caching and aggregation layers can rely on every pair provider declaring its source's depth.
+    /// </summary>
+    [TestMethod]
+    public void HistoryAvailability_ShouldMatchDeclaredExpectation()
+    {
+        TProvider provider = CreateProvider();
+
+        Assert.AreEqual(ExpectedHistoryAvailability, provider.HistoryAvailability);
+    }
+
     /// <summary>
     /// Verifies that explicitly warming a cold provider through <c>LoadPairAsync</c> makes the seeded known date
     /// resolve to a positive rate, exercising the per-pair fetch-and-accumulate path.

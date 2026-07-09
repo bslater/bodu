@@ -12,4 +12,16 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public partial class XeExchangeRateOptionsTests
 {
+    /// <summary>
+    /// Verifies that the default options advertise the estimated ten-year rolling window of XE's server-determined
+    /// charting range.
+    /// </summary>
+    [TestMethod]
+    public void HistoryAvailability_WhenDefault_ShouldBeRollingTenYears()
+    {
+        XeExchangeRateOptions options = new();
+
+        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Rolling, options.HistoryAvailability.Kind);
+        Assert.AreEqual(3650, options.HistoryAvailability.WindowDays);
+    }
 }

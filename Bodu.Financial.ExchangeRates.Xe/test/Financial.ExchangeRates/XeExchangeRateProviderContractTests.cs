@@ -39,6 +39,10 @@ public sealed class XeExchangeRateProviderContractTests
     protected override DateOnly RangeEnd => new(2023, 1, 6);
 
     /// <inheritdoc />
+    protected override ExchangeRateHistoryAvailability ExpectedHistoryAvailability =>
+        ExchangeRateHistoryAvailability.RollingDays(3650);
+
+    /// <inheritdoc />
     protected override bool SupportsDisposalGuard => true;
 
     /// <inheritdoc />

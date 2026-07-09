@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeExchangeRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -68,10 +68,14 @@ public sealed class BoeExchangeRateProvider
     /// <summary>The logger that records range downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The inclusive ranges whose data has been loaded.</summary>
+    /// <summary>
+    /// The inclusive ranges whose data has been loaded.
+    /// </summary>
     private readonly List<(DateOnly From, DateOnly To)> _loadedRanges = new();
 
-    /// <summary>The discovered currency series, keyed by pair.</summary>
+    /// <summary>
+    /// The discovered currency series, keyed by pair.
+    /// </summary>
     private readonly Dictionary<ExchangeRatePair, BoeSeriesInfo> _series = new();
 
     /// <summary>
@@ -177,6 +181,13 @@ public sealed class BoeExchangeRateProvider
 
     /// <inheritdoc />
     protected override TimeSpan DefaultLookback => TimeSpan.FromDays(_options.OnDemandWindowDays);
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Forwards <see cref="BoeExchangeRateOptions.HistoryAvailability" />, which defaults to a fixed floor of 2 January
+    /// 1975 — the inception of the Bank of England's daily spot exchange-rate series.
+    /// </remarks>
+    public override ExchangeRateHistoryAvailability HistoryAvailability => _options.HistoryAvailability;
 
     /// <summary>
     /// Downloads and loads the inclusive date range, unless it is already covered by a previous load.

@@ -12,4 +12,16 @@ namespace Bodu.Financial.ExchangeRates;
 [TestClass]
 public partial class YahooExchangeRateOptionsTests
 {
+    /// <summary>
+    /// Verifies that the default options advertise a fixed history floor at the December 2003 inception of Yahoo's
+    /// foreign-exchange chart data.
+    /// </summary>
+    [TestMethod]
+    public void HistoryAvailability_WhenDefault_ShouldBeSinceDecember2003()
+    {
+        YahooExchangeRateOptions options = new();
+
+        Assert.AreEqual(ExchangeRateHistoryAvailabilityKind.Since, options.HistoryAvailability.Kind);
+        Assert.AreEqual(new DateOnly(2003, 12, 1), options.HistoryAvailability.EarliestDate);
+    }
 }
