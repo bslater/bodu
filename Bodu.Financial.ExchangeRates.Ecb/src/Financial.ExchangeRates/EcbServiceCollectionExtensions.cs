@@ -39,7 +39,7 @@ public static class EcbServiceCollectionExtensions
     /// IServiceCollection services = new ServiceCollection();
     ///
     /// // One-call registration: core financial services plus the ECB provider.
-    /// services.AddEcbReferenceRates(configure: opts =>
+    /// services.AddEcbExchangeRates(configure: opts =>
     /// {
     ///     opts.EnableDiskCache = true;
     /// });
@@ -50,7 +50,7 @@ public static class EcbServiceCollectionExtensions
     /// </code>
     /// </example>
     /// </remarks>
-    public static IFinancialServiceBuilder AddEcbReferenceRates(
+    public static IFinancialServiceBuilder AddEcbExchangeRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Ecb",
@@ -60,6 +60,6 @@ public static class EcbServiceCollectionExtensions
 
         return services
             .AddFinancialService(configuration)
-            .AddEcbReferenceRates(configuration, sectionName, configure);
+            .AddEcbExchangeRates(configuration, sectionName, configure);
     }
 }

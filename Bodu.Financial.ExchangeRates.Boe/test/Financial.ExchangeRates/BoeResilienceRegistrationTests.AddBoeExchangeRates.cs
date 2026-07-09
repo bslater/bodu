@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="EcbResilienceRegistrationTests.AddEcbReferenceRates.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BoeResilienceRegistrationTests.AddBoeExchangeRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,17 +10,17 @@ using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates;
 
-public partial class EcbResilienceRegistrationTests
+public partial class BoeResilienceRegistrationTests
 {
     /// <summary>
     /// Verifies that the standard resilience options are registered for the named client with the per-attempt timeout
-    /// driven from the configured <see cref="EcbEndpointOptions.HttpTimeout" />.
+    /// driven from the configured <see cref="BoeEndpointOptions.HttpTimeout" />.
     /// </summary>
     [TestMethod]
-    public void AddEcbReferenceRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
+    public void AddBoeExchangeRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddEcbReferenceRates(configure: o => o.Endpoint.HttpTimeout = TimeSpan.FromSeconds(7));
+        services.AddFinancialService().AddBoeExchangeRates(configure: o => o.Endpoint.HttpTimeout = TimeSpan.FromSeconds(7));
         using ServiceProvider provider = services.BuildServiceProvider();
 
         HttpStandardResilienceOptions options = provider

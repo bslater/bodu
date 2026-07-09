@@ -63,7 +63,7 @@ public static class EcbFinancialServiceBuilderExtensions
     /// IServiceCollection services = new ServiceCollection();
     ///
     /// services.AddFinancialService()
-    ///     .AddEcbReferenceRates(
+    ///     .AddEcbExchangeRates(
     ///         configure: opts => opts.EnableDiskCache = true,
     ///         configureResilience: resilience => resilience.Retry.MaxRetryAttempts = 5);
     ///
@@ -73,7 +73,7 @@ public static class EcbFinancialServiceBuilderExtensions
     /// </code>
     /// </example>
     /// </remarks>
-    public static IFinancialServiceBuilder AddEcbReferenceRates(
+    public static IFinancialServiceBuilder AddEcbExchangeRates(
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Ecb",

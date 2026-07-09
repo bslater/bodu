@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="RbaResilienceRegistrationTests.AddRbaHistoricalRates.cs" company="Bodu Pty. Ltd.">
+// <copyright file="EcbResilienceRegistrationTests.AddEcbExchangeRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,17 +10,17 @@ using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates;
 
-public partial class RbaResilienceRegistrationTests
+public partial class EcbResilienceRegistrationTests
 {
     /// <summary>
     /// Verifies that the standard resilience options are registered for the named client with the per-attempt timeout
-    /// driven from the configured <see cref="RbaRateProviderOptions.HttpTimeout" />.
+    /// driven from the configured <see cref="EcbEndpointOptions.HttpTimeout" />.
     /// </summary>
     [TestMethod]
-    public void AddRbaHistoricalRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
+    public void AddEcbExchangeRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddRbaHistoricalRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
+        services.AddFinancialService().AddEcbExchangeRates(configure: o => o.Endpoint.HttpTimeout = TimeSpan.FromSeconds(7));
         using ServiceProvider provider = services.BuildServiceProvider();
 
         HttpStandardResilienceOptions options = provider

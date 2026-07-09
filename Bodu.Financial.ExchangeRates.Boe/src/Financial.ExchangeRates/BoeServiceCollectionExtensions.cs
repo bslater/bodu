@@ -41,7 +41,7 @@ public static class BoeServiceCollectionExtensions
     /// IServiceCollection services = new ServiceCollection();
     ///
     /// // One call wires up the core financial services plus the Bank of England provider.
-    /// services.AddBoeReferenceRates(configuration);
+    /// services.AddBoeExchangeRates(configuration);
     ///
     /// IServiceProvider provider = services.BuildServiceProvider();
     /// var rates = provider.GetRequiredService<IDatedRateProvider>();
@@ -49,7 +49,7 @@ public static class BoeServiceCollectionExtensions
     /// </code>
     /// </example>
     /// </remarks>
-    public static IFinancialServiceBuilder AddBoeReferenceRates(
+    public static IFinancialServiceBuilder AddBoeExchangeRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Boe",
@@ -59,6 +59,6 @@ public static class BoeServiceCollectionExtensions
 
         return services
             .AddFinancialService(configuration)
-            .AddBoeReferenceRates(configuration, sectionName, configure);
+            .AddBoeExchangeRates(configuration, sectionName, configure);
     }
 }

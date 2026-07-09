@@ -23,7 +23,7 @@ public partial class BoeResilienceRegistrationTests
         ServiceCollection services = new();
         services
             .AddFinancialService()
-            .AddBoeReferenceRates(configureResilience: ConfigureFastRetry);
+            .AddBoeExchangeRates(configureResilience: ConfigureFastRetry);
         services
             .AddHttpClient(BoeFinancialServiceBuilderExtensions.HttpClientName)
             .ConfigurePrimaryHttpMessageHandler(() => handler);
@@ -52,7 +52,7 @@ public partial class BoeResilienceRegistrationTests
         ServiceCollection services = new();
         services
             .AddFinancialService()
-            .AddBoeReferenceRates(configureResilience: ConfigureFastBreaker);
+            .AddBoeExchangeRates(configureResilience: ConfigureFastBreaker);
         services
             .AddHttpClient(BoeFinancialServiceBuilderExtensions.HttpClientName)
             .ConfigurePrimaryHttpMessageHandler(() => handler);

@@ -52,7 +52,7 @@ public static class RateCachingExtensions
     /// </exception>
     /// <remarks>
     /// The source <typeparamref name="TProvider" /> must already be registered — for example through its provider
-    /// package's registration such as <c>AddRbaHistoricalRates</c>. This method resolves the registered instance and
+    /// package's registration such as <c>AddRbaExchangeRates</c>. This method resolves the registered instance and
     /// wraps it in a caching decorator; it does not construct the source or its own dependencies (such as its
     /// <see cref="HttpClient" />), so registering only the cache without the source fails when the provider is
     /// resolved.
@@ -61,7 +61,7 @@ public static class RateCachingExtensions
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddFinancialService()
-    ///         .AddRbaHistoricalRates(configuration)
+    ///         .AddRbaExchangeRates(configuration)
     ///         .AddCachedRateProvider<RbaRateProvider>("RBA", configuration,
     ///             configure: o => o.DefaultExpiry = TimeSpan.FromHours(12));
     ///

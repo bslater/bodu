@@ -63,12 +63,12 @@ public static class BoeFinancialServiceBuilderExtensions
     /// IServiceCollection services = new ServiceCollection();
     ///
     /// services.AddFinancialService(builder => builder
-    ///     .AddBoeReferenceRates(configuration, configure: opts => opts.Endpoint.HttpTimeout = TimeSpan.FromSeconds(15)));
+    ///     .AddBoeExchangeRates(configuration, configure: opts => opts.Endpoint.HttpTimeout = TimeSpan.FromSeconds(15)));
     ///]]>
     /// </code>
     /// </example>
     /// </remarks>
-    public static IFinancialServiceBuilder AddBoeReferenceRates(
+    public static IFinancialServiceBuilder AddBoeExchangeRates(
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Boe",

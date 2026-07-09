@@ -37,7 +37,7 @@ public static class RbaServiceCollectionExtensions
     ///<![CDATA[
     /// IServiceCollection services = new ServiceCollection();
     ///
-    /// services.AddRbaHistoricalRates(configuration, configure: options =>
+    /// services.AddRbaExchangeRates(configuration, configure: options =>
     /// {
     ///     options.EnableDiskCache = true;
     ///     options.AllowSynchronousNetworkAccess = false;
@@ -49,7 +49,7 @@ public static class RbaServiceCollectionExtensions
     ///]]>
     /// </code>
     /// </example>
-    public static IFinancialServiceBuilder AddRbaHistoricalRates(
+    public static IFinancialServiceBuilder AddRbaExchangeRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Rba",
@@ -59,6 +59,6 @@ public static class RbaServiceCollectionExtensions
 
         return services
             .AddFinancialService(configuration)
-            .AddRbaHistoricalRates(configuration, sectionName, configure);
+            .AddRbaExchangeRates(configuration, sectionName, configure);
     }
 }

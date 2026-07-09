@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoeServiceRegistrationTests.AddBoeReferenceRates.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BoeServiceRegistrationTests.AddBoeExchangeRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -18,10 +18,10 @@ public partial class BoeServiceRegistrationTests
     /// Verifies that the one-call entry point registers the core currency lookup alongside the Bank of England provider.
     /// </summary>
     [TestMethod]
-    public void AddBoeReferenceRates_ShouldRegisterCoreServicesAndProvider()
+    public void AddBoeExchangeRates_ShouldRegisterCoreServicesAndProvider()
     {
         ServiceCollection services = new();
-        services.AddBoeReferenceRates();
+        services.AddBoeExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
@@ -33,10 +33,10 @@ public partial class BoeServiceRegistrationTests
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
-    public void AddBoeReferenceRates_ShouldRegisterProviderAsSingleton()
+    public void AddBoeExchangeRates_ShouldRegisterProviderAsSingleton()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddBoeReferenceRates();
+        services.AddFinancialService().AddBoeExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         BoeRateProvider? concrete = provider.GetService<BoeRateProvider>();
@@ -52,10 +52,10 @@ public partial class BoeServiceRegistrationTests
     /// Verifies that the named Bank of England HTTP client is configured and resolvable.
     /// </summary>
     [TestMethod]
-    public void AddBoeReferenceRates_ShouldRegisterNamedHttpClient()
+    public void AddBoeExchangeRates_ShouldRegisterNamedHttpClient()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddBoeReferenceRates();
+        services.AddFinancialService().AddBoeExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         IHttpClientFactory? factory = provider.GetService<IHttpClientFactory>();
@@ -69,7 +69,7 @@ public partial class BoeServiceRegistrationTests
     /// Verifies that options, including the nested endpoint settings, bind from a configuration section.
     /// </summary>
     [TestMethod]
-    public void AddBoeReferenceRates_ShouldBindOptionsFromConfiguration()
+    public void AddBoeExchangeRates_ShouldBindOptionsFromConfiguration()
     {
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
@@ -82,7 +82,7 @@ public partial class BoeServiceRegistrationTests
             .Build();
 
         ServiceCollection services = new();
-        services.AddFinancialService(configuration).AddBoeReferenceRates(configuration);
+        services.AddFinancialService(configuration).AddBoeExchangeRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         BoeRateProviderOptions options = provider.GetRequiredService<IOptions<BoeRateProviderOptions>>().Value;
@@ -97,10 +97,10 @@ public partial class BoeServiceRegistrationTests
     /// Verifies that the configure callback is applied to the bound options.
     /// </summary>
     [TestMethod]
-    public void AddBoeReferenceRates_ShouldApplyConfigureCallback()
+    public void AddBoeExchangeRates_ShouldApplyConfigureCallback()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddBoeReferenceRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
+        services.AddFinancialService().AddBoeExchangeRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         BoeRateProviderOptions options = provider.GetRequiredService<IOptions<BoeRateProviderOptions>>().Value;
@@ -112,11 +112,11 @@ public partial class BoeServiceRegistrationTests
     /// Verifies that registering against a <see langword="null" /> builder throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void AddBoeReferenceRates_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    public void AddBoeExchangeRates_WhenBuilderIsNull_ShouldThrowArgumentNullException()
     {
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = BoeFinancialServiceBuilderExtensions.AddBoeReferenceRates(null!);
+            _ = BoeFinancialServiceBuilderExtensions.AddBoeExchangeRates(null!);
         });
     }
 
@@ -124,10 +124,10 @@ public partial class BoeServiceRegistrationTests
     /// Verifies that invalid options fail fast through <c>ValidateOnStart</c> when the provider is resolved.
     /// </summary>
     [TestMethod]
-    public void AddBoeReferenceRates_WhenOptionsInvalid_ShouldThrowOnResolve()
+    public void AddBoeExchangeRates_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddBoeReferenceRates(configure: o => o.Series = []);
+        services.AddFinancialService().AddBoeExchangeRates(configure: o => o.Series = []);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
@@ -140,10 +140,10 @@ public partial class BoeServiceRegistrationTests
     /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the provider.
     /// </summary>
     [TestMethod]
-    public void AddBoeReferenceRates_WhenOptionsValid_ShouldResolveProvider()
+    public void AddBoeExchangeRates_WhenOptionsValid_ShouldResolveProvider()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddBoeReferenceRates();
+        services.AddFinancialService().AddBoeExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetRequiredService<BoeRateProvider>());

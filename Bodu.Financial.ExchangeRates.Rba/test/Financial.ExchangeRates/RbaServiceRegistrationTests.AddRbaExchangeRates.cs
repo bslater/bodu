@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="RbaServiceRegistrationTests.AddRbaHistoricalRates.cs" company="Bodu Pty. Ltd.">
+// <copyright file="RbaServiceRegistrationTests.AddRbaExchangeRates.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -18,10 +18,10 @@ public partial class RbaServiceRegistrationTests
     /// Verifies that the one-call entry point registers the core currency lookup alongside the RBA provider.
     /// </summary>
     [TestMethod]
-    public void AddRbaHistoricalRates_ShouldRegisterCoreServicesAndProvider()
+    public void AddRbaExchangeRates_ShouldRegisterCoreServicesAndProvider()
     {
         ServiceCollection services = new();
-        services.AddRbaHistoricalRates();
+        services.AddRbaExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
@@ -33,10 +33,10 @@ public partial class RbaServiceRegistrationTests
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
-    public void AddRbaHistoricalRates_ShouldRegisterProviderAsSingleton()
+    public void AddRbaExchangeRates_ShouldRegisterProviderAsSingleton()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddRbaHistoricalRates();
+        services.AddFinancialService().AddRbaExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         RbaRateProvider? concrete = provider.GetService<RbaRateProvider>();
@@ -52,10 +52,10 @@ public partial class RbaServiceRegistrationTests
     /// Verifies that the named RBA HTTP client is configured and resolvable.
     /// </summary>
     [TestMethod]
-    public void AddRbaHistoricalRates_ShouldRegisterNamedHttpClient()
+    public void AddRbaExchangeRates_ShouldRegisterNamedHttpClient()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddRbaHistoricalRates();
+        services.AddFinancialService().AddRbaExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         IHttpClientFactory? factory = provider.GetService<IHttpClientFactory>();
@@ -69,7 +69,7 @@ public partial class RbaServiceRegistrationTests
     /// Verifies that options bind from a configuration section.
     /// </summary>
     [TestMethod]
-    public void AddRbaHistoricalRates_ShouldBindOptionsFromConfiguration()
+    public void AddRbaExchangeRates_ShouldBindOptionsFromConfiguration()
     {
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
@@ -80,7 +80,7 @@ public partial class RbaServiceRegistrationTests
             .Build();
 
         ServiceCollection services = new();
-        services.AddFinancialService(configuration).AddRbaHistoricalRates(configuration);
+        services.AddFinancialService(configuration).AddRbaExchangeRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         RbaRateProviderOptions options = provider.GetRequiredService<IOptions<RbaRateProviderOptions>>().Value;
@@ -93,10 +93,10 @@ public partial class RbaServiceRegistrationTests
     /// Verifies that the configure callback is applied to the bound options.
     /// </summary>
     [TestMethod]
-    public void AddRbaHistoricalRates_ShouldApplyConfigureCallback()
+    public void AddRbaExchangeRates_ShouldApplyConfigureCallback()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddRbaHistoricalRates(configure: o => o.UserAgent = "test-agent");
+        services.AddFinancialService().AddRbaExchangeRates(configure: o => o.UserAgent = "test-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         RbaRateProviderOptions options = provider.GetRequiredService<IOptions<RbaRateProviderOptions>>().Value;
@@ -108,11 +108,11 @@ public partial class RbaServiceRegistrationTests
     /// Verifies that registering against a <see langword="null" /> builder throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void AddRbaHistoricalRates_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    public void AddRbaExchangeRates_WhenBuilderIsNull_ShouldThrowArgumentNullException()
     {
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = RbaFinancialServiceBuilderExtensions.AddRbaHistoricalRates(null!);
+            _ = RbaFinancialServiceBuilderExtensions.AddRbaExchangeRates(null!);
         });
     }
 
@@ -120,10 +120,10 @@ public partial class RbaServiceRegistrationTests
     /// Verifies that invalid options fail fast through <c>ValidateOnStart</c> when the provider is resolved.
     /// </summary>
     [TestMethod]
-    public void AddRbaHistoricalRates_WhenOptionsInvalid_ShouldThrowOnResolve()
+    public void AddRbaExchangeRates_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddRbaHistoricalRates(configure: o => o.Eras = []);
+        services.AddFinancialService().AddRbaExchangeRates(configure: o => o.Eras = []);
         using ServiceProvider provider = services.BuildServiceProvider();
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
@@ -136,10 +136,10 @@ public partial class RbaServiceRegistrationTests
     /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the provider.
     /// </summary>
     [TestMethod]
-    public void AddRbaHistoricalRates_WhenOptionsValid_ShouldResolveProvider()
+    public void AddRbaExchangeRates_WhenOptionsValid_ShouldResolveProvider()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddRbaHistoricalRates();
+        services.AddFinancialService().AddRbaExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetRequiredService<RbaRateProvider>());

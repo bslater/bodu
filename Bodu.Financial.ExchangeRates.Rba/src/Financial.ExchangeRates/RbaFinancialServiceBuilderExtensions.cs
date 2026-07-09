@@ -61,7 +61,7 @@ public static class RbaFinancialServiceBuilderExtensions
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddFinancialService(configuration)
-    ///     .AddRbaHistoricalRates(
+    ///     .AddRbaExchangeRates(
     ///         configuration,
     ///         configure: options => options.EnableDiskCache = true,
     ///         configureResilience: resilience =>
@@ -72,7 +72,7 @@ public static class RbaFinancialServiceBuilderExtensions
     /// </code>
     /// </example>
     /// </remarks>
-    public static IFinancialServiceBuilder AddRbaHistoricalRates(
+    public static IFinancialServiceBuilder AddRbaExchangeRates(
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Rba",
