@@ -26,13 +26,13 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 internal sealed class OandaHistorySource
-    : IExchangeRatePairSource<OandaSeriesInfo>
+    : IPairRateSource<OandaSeriesInfo>
 {
     /// <summary>The HTTP client used to issue priming and history requests.</summary>
     private readonly HttpClient _httpClient;
 
     /// <summary>The provider options supplying the base address, paths, and query parameters.</summary>
-    private readonly OandaExchangeRateOptions _options;
+    private readonly OandaRateProviderOptions _options;
 
     /// <summary>Tracks whether the session has been primed since the last challenge.</summary>
     private volatile bool _primed;
@@ -42,7 +42,7 @@ internal sealed class OandaHistorySource
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue priming and history requests.</param>
     /// <param name="options">The provider options.</param>
-    internal OandaHistorySource(HttpClient httpClient, OandaExchangeRateOptions options)
+    internal OandaHistorySource(HttpClient httpClient, OandaRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -52,7 +52,7 @@ internal sealed class OandaHistorySource
     }
 
     /// <inheritdoc />
-    public async ValueTask<PairRateData<OandaSeriesInfo>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default)
+    public async ValueTask<PairRateData<OandaSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         Uri url = BuildRequestUri(request);
 
@@ -97,7 +97,7 @@ internal sealed class OandaHistorySource
     /// </summary>
     /// <param name="request">The pair request.</param>
     /// <returns>The absolute request URI.</returns>
-    private Uri BuildRequestUri(ExchangeRatePairRequest request)
+    private Uri BuildRequestUri(CurrencyPairRequest request)
     {
         string query = _options.BuildQuery(
             request.Pair.From.ToString(),

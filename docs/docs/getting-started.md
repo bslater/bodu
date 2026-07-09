@@ -377,7 +377,6 @@ Mixing currencies on the typed form is a compile error; on the runtime form it t
 
 ```csharp
 using Bodu.Financial;
-using Bodu.Financial.DependencyInjection;
 
 services.AddFinancialService();
 ```

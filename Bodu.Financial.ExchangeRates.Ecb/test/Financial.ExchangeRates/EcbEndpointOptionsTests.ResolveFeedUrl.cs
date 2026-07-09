@@ -16,7 +16,7 @@ public partial class EcbEndpointOptionsTests
     {
         EcbEndpointOptions endpoint = new() { BaseUrl = new Uri("https://mirror.example/fx/") };
 
-        Uri url = endpoint.ResolveFeedUrl(EcbExchangeRateFeed.Full);
+        Uri url = endpoint.ResolveFeedUrl(EcbRateFeed.Full);
 
         Assert.AreEqual(new Uri("https://mirror.example/fx/eurofxref-hist.xml"), url);
     }

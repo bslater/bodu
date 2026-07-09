@@ -6,8 +6,8 @@ A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **XE.
 charting-rates JSON service.
 
 It fetches the XE `api/protected/charting-rates` endpoint, decodes the delta-encoded
-series, and serves the results as `Bodu.Financial.ExchangeRate` values through the
-standard `IDatedExchangeRateProvider` and `IExchangeRateProvider` contracts — so it
+series, and serves the results as `Bodu.Financial.ExchangeRates.ExchangeRate` values through the
+standard `IDatedRateProvider` and `IRateProvider` contracts — so it
 composes with `Money.ConvertTo`, the caching and aggregating providers, and the rest of
 the Bodu.Financial FX stack. It is a logical sister to
 [`Bodu.Financial.ExchangeRates.Yahoo`](../Bodu.Financial.ExchangeRates.Yahoo): the same
@@ -17,15 +17,15 @@ interfaces and DI shape, a different data source.
 using Bodu.Financial.ExchangeRates;
 
 // The provider builds and owns its HttpClient from the options; dispose it to release the client.
-using var provider = new XeExchangeRateProvider(new XeExchangeRateOptions());
+using var provider = new XeRateProvider(new XeRateProviderOptions());
 
 // Warm a pair for a range (recommended), then look rates up synchronously.
 await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
-ExchangeRateLookupResult usd = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+RateLookupResult usd = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 
 // Read a whole range at once.
-ExchangeRateRangeResult series =
+RateRangeResult series =
     await provider.GetRatesAsync("AUD", "JPY", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 ```
 
@@ -67,24 +67,24 @@ or endorsement by XE.
   when `AllowSynchronousNetworkAccess` is enabled (it is `false` by default).
 - **No provider-local disk cache.** The provider keeps only an in-memory store of the pairs
   and windows it has fetched this session. For durable caching across processes, compose it
-  with the generic caching provider — `AddCachedExchangeRateProvider<…>` from the
+  with the generic caching provider — `AddCachedRateProvider<…>` from the
   [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package.
 
 ## HTTP client and lifetime
 
 The provider is `IDisposable` and offers two construction styles:
 
-- `new XeExchangeRateProvider(options, ...)` — the provider builds, owns, and disposes its
-  own `HttpClient`, created via `ExchangeRateHttpClientFactory.Create` from the configured
+- `new XeRateProvider(options, ...)` — the provider builds, owns, and disposes its
+  own `HttpClient`, created via `RateProviderHttpClientFactory.Create` from the configured
   user agent and timeout. Dispose the provider (for example with `using`) to release the
   client.
-- `new XeExchangeRateProvider(httpClient, options, ...)` — you supply the client and own its
+- `new XeRateProvider(httpClient, options, ...)` — you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
   `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
 
 ## Endpoint configuration
 
-`XeExchangeRateOptions` is centred on configuring the REST endpoint and token acquisition:
+`XeRateProviderOptions` is centred on configuring the REST endpoint and token acquisition:
 
 | Option | Default | Purpose |
 |---|---|---|
@@ -108,7 +108,7 @@ package.
 
 The provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to the
 constructor, or let the `*.DependencyInjection` package wire one for you (category
-`Bodu.Financial.ExchangeRates.XeExchangeRateProvider`). When no logger is supplied it
+`Bodu.Financial.ExchangeRates.XeRateProvider`). When no logger is supplied it
 defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 
 | Event | Default level | Option property |

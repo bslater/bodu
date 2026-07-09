@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Bodu.Test;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +25,7 @@ public partial class YahooServiceRegistrationTests
         using ServiceProvider provider = services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
-        Assert.IsNotNull(provider.GetService<YahooExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetService<YahooRateProvider>());
     }
 
     /// <summary>
@@ -38,9 +39,9 @@ public partial class YahooServiceRegistrationTests
         services.AddFinancialService().AddYahooExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        YahooExchangeRateProvider? concrete = provider.GetService<YahooExchangeRateProvider>();
-        IDatedExchangeRateProvider? dated = provider.GetService<IDatedExchangeRateProvider>();
-        IExchangeRateProvider? simple = provider.GetService<IExchangeRateProvider>();
+        YahooRateProvider? concrete = provider.GetService<YahooRateProvider>();
+        IDatedRateProvider? dated = provider.GetService<IDatedRateProvider>();
+        IRateProvider? simple = provider.GetService<IRateProvider>();
 
         Assert.IsNotNull(concrete);
         Assert.AreSame(concrete, dated);
@@ -82,7 +83,7 @@ public partial class YahooServiceRegistrationTests
         services.AddFinancialService(configuration).AddYahooExchangeRates(configuration);
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        YahooExchangeRateOptions options = provider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
+        YahooRateProviderOptions options = provider.GetRequiredService<IOptions<YahooRateProviderOptions>>().Value;
 
         Assert.AreEqual(new Uri("https://query2.finance.yahoo.com/"), options.BaseAddress);
         Assert.AreEqual(TimeSpan.FromDays(14), options.DefaultLookback);
@@ -98,7 +99,7 @@ public partial class YahooServiceRegistrationTests
         services.AddFinancialService().AddYahooExchangeRates(configure: o => o.UserAgent = "test-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        YahooExchangeRateOptions options = provider.GetRequiredService<IOptions<YahooExchangeRateOptions>>().Value;
+        YahooRateProviderOptions options = provider.GetRequiredService<IOptions<YahooRateProviderOptions>>().Value;
 
         Assert.AreEqual("test-agent", options.UserAgent);
     }
@@ -127,7 +128,7 @@ public partial class YahooServiceRegistrationTests
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
-            _ = provider.GetRequiredService<YahooExchangeRateProvider>();
+            _ = provider.GetRequiredService<YahooRateProvider>();
         });
     }
 
@@ -141,6 +142,6 @@ public partial class YahooServiceRegistrationTests
         services.AddFinancialService().AddYahooExchangeRates();
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        Assert.IsNotNull(provider.GetRequiredService<YahooExchangeRateProvider>());
+        Assert.IsNotNull(provider.GetRequiredService<YahooRateProvider>());
     }
 }

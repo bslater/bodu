@@ -134,15 +134,15 @@ internal static class Program
         builder.AppendLine();
         builder.AppendLine("/// <summary>");
         builder.AppendLine("/// Source-generated registration list of the shipped currency catalogue, consumed by");
-        builder.AppendLine("/// <see cref=\"Bodu.Financial.CurrencyRegistry\" /> at static-constructor time.");
+        builder.AppendLine("/// <see cref=\"Bodu.Financial.Currencies.CurrencyRegistry\" /> at static-constructor time.");
         builder.AppendLine("/// </summary>");
         builder.AppendLine("internal static class GeneratedCurrencyRegistration");
         builder.AppendLine("{");
         builder.AppendLine("    /// <summary>");
-        builder.AppendLine("    /// Enumerates the shipped <see cref=\"Bodu.Financial.CurrencyInfo\" /> entries.");
+        builder.AppendLine("    /// Enumerates the shipped <see cref=\"Bodu.Financial.Currencies.CurrencyInfo\" /> entries.");
         builder.AppendLine("    /// </summary>");
         builder.AppendLine("    /// <returns>One entry per currency tag type under <c>Bodu.Financial.Currencies</c>.</returns>");
-        builder.AppendLine("    public static IEnumerable<global::Bodu.Financial.CurrencyInfo> All()");
+        builder.AppendLine("    public static IEnumerable<global::Bodu.Financial.Currencies.CurrencyInfo> All()");
         builder.AppendLine("    {");
 
         foreach (CurrencyEntry currency in catalogue.Currencies)
@@ -172,7 +172,7 @@ internal static class Program
 
             string englishNameLiteral = ToCSharpStringLiteral(currency.Name);
 
-            builder.Append("        yield return new global::Bodu.Financial.CurrencyInfo(\"")
+            builder.Append("        yield return new global::Bodu.Financial.Currencies.CurrencyInfo(\"")
                 .Append(currency.Iso)
                 .Append("\", ")
                 .Append(currency.MinorUnits.ToString(CultureInfo.InvariantCulture))

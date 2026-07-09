@@ -7,16 +7,16 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IExchangeRateAggregationStrategy" /> that returns the first successful result from the ordered
+/// An <see cref="IRateAggregationStrategy" /> that returns the first successful result from the ordered
 /// candidates, giving deterministic, auditable fallback.
 /// </summary>
 /// <remarks>
 /// On every lookup the candidates are consulted in order and the first to satisfy the request wins, so a preferred
 /// provider's fallback-date hit beats a lower-priority provider's exact-date hit. This is the default strategy and the
-/// successor to the former <c>CompositeDatedExchangeRateProvider</c>.
+/// successor to the former <c>CompositeDatedRateProvider</c>.
 /// </remarks>
 public sealed class PriorityFallbackStrategy
-    : IExchangeRateAggregationStrategy
+    : IRateAggregationStrategy
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PriorityFallbackStrategy" /> class.
@@ -36,9 +36,9 @@ public sealed class PriorityFallbackStrategy
         string fromIsoCode,
         string toIsoCode,
         DateOnly date,
-        ExchangeRateLookupOptions options,
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
-        out ExchangeRateLookupResult result)
+        RateLookupOptions options,
+        IReadOnlyList<NamedDatedRateProvider> candidates,
+        out RateLookupResult result)
     {
         ThrowHelper.ThrowIfNull(candidates);
 
@@ -58,7 +58,7 @@ public sealed class PriorityFallbackStrategy
         string toIsoCode,
         DateOnly startDate,
         DateOnly endDate,
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates,
+        IReadOnlyList<NamedDatedRateProvider> candidates,
         CancellationToken cancellationToken)
     {
         ThrowHelper.ThrowIfNull(candidates);
@@ -81,7 +81,7 @@ public sealed class PriorityFallbackStrategy
         string toIsoCode,
         DateOnly startDate,
         DateOnly endDate,
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates)
+        IReadOnlyList<NamedDatedRateProvider> candidates)
     {
         ThrowHelper.ThrowIfNull(candidates);
 

@@ -17,19 +17,19 @@ public sealed partial class DistributedRateCacheExtensionsTests
     /// the exchange-rate cache, asserting service registration without requiring a live Redis server.
     /// </summary>
     [TestMethod]
-    public void AddRedisRateCache_WhenRegistered_ShouldRegisterDistributedCacheAndExchangeRateCache()
+    public void AddRedisRateCache_WhenRegistered_ShouldRegisterDistributedCacheAndRateCache()
     {
         var services = new ServiceCollection();
 
         services.AddFinancialService().AddRedisRateCache(redis => redis.Configuration = "localhost:6379", "RBA");
 
-        // AddStackExchangeRedisCache registers IDistributedCache; the builder registers IExchangeRateCache (default and
+        // AddStackExchangeRedisCache registers IDistributedCache; the builder registers IRateCache (default and
         // keyed) and the concrete cache. Assert the descriptors exist without resolving the Redis cache (which would
         // attempt a connection).
         Assert.Contains(d => d.ServiceType == typeof(IDistributedCache), services);
-        Assert.Contains(d => d.ServiceType == typeof(IExchangeRateCache) && d.ServiceKey is null, services);
-        Assert.Contains(d => d.ServiceType == typeof(IExchangeRateCache) && Equals(d.ServiceKey, "RBA"), services);
-        Assert.Contains(d => d.ServiceType == typeof(DistributedExchangeRateCache), services);
+        Assert.Contains(d => d.ServiceType == typeof(IRateCache) && d.ServiceKey is null, services);
+        Assert.Contains(d => d.ServiceType == typeof(IRateCache) && Equals(d.ServiceKey, "RBA"), services);
+        Assert.Contains(d => d.ServiceType == typeof(DistributedRateCache), services);
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
         services.AddDistributedMemoryCache();
 
         using ServiceProvider provider = services.BuildServiceProvider();
-        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        IRateCache cache = provider.GetRequiredService<IRateCache>();
 
         Assert.AreEqual("RBA", cache.Provider);
     }

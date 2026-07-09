@@ -21,7 +21,7 @@ public static class BoeServiceCollectionExtensions
     /// <param name="services">The service collection to register into.</param>
     /// <param name="configuration">
     /// An optional configuration root. When supplied, <see cref="FinancialOptions" /> is bound from the
-    /// <c>Financial</c> section and <see cref="BoeExchangeRateOptions" /> from <paramref name="sectionName" />.
+    /// <c>Financial</c> section and <see cref="BoeRateProviderOptions" /> from <paramref name="sectionName" />.
     /// </param>
     /// <param name="sectionName">
     /// The Bank of England configuration section name. Defaults to <c>Financial:Boe</c>.
@@ -41,24 +41,24 @@ public static class BoeServiceCollectionExtensions
     /// IServiceCollection services = new ServiceCollection();
     ///
     /// // One call wires up the core financial services plus the Bank of England provider.
-    /// services.AddBoeReferenceRates(configuration);
+    /// services.AddBoeExchangeRates(configuration);
     ///
     /// IServiceProvider provider = services.BuildServiceProvider();
-    /// var rates = provider.GetRequiredService<IDatedExchangeRateProvider>();
+    /// var rates = provider.GetRequiredService<IDatedRateProvider>();
     ///]]>
     /// </code>
     /// </example>
     /// </remarks>
-    public static IFinancialServiceBuilder AddBoeReferenceRates(
+    public static IFinancialServiceBuilder AddBoeExchangeRates(
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Boe",
-        Action<BoeExchangeRateOptions>? configure = null)
+        Action<BoeRateProviderOptions>? configure = null)
     {
         ThrowHelper.ThrowIfNull(services);
 
         return services
             .AddFinancialService(configuration)
-            .AddBoeReferenceRates(configuration, sectionName, configure);
+            .AddBoeExchangeRates(configuration, sectionName, configure);
     }
 }

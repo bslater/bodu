@@ -19,7 +19,7 @@ uid: Bodu.Financial.Serialization
 - <xref:Bodu.Financial.Serialization.MoneyOfTCurrencyJsonConverter`1>, <xref:Bodu.Financial.Serialization.MoneyOfTCurrencyJsonConverterFactory> — converter and factory for <xref:Bodu.Financial.Money`1>.
 - <xref:Bodu.Financial.Serialization.MoneyJsonConverter> — converter for <xref:Bodu.Financial.Money>.
 - <xref:Bodu.Financial.Serialization.MoneyBagJsonConverter> — converter for <xref:Bodu.Financial.MoneyBag>.
-- <xref:Bodu.Financial.Serialization.ExchangeRateJsonConverter>, <xref:Bodu.Financial.Serialization.ExchangeRatePairJsonConverter> — converters for the FX value objects.
+- <xref:Bodu.Financial.Serialization.ExchangeRateJsonConverter>, <xref:Bodu.Financial.Serialization.CurrencyPairJsonConverter> — converters for the FX value objects.
 - <xref:Bodu.Financial.Serialization.FinancialJsonSerializerOptionsExtensions> — the registration extension method `AddFinancialJsonConverters(options, policy)`.
 
 ## Wire shapes

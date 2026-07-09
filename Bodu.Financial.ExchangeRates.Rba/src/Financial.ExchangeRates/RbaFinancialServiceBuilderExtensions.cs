@@ -26,7 +26,7 @@ public static class RbaFinancialServiceBuilderExtensions
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configuration">
     /// An optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
-    /// bound into <see cref="RbaExchangeRateOptions" />.
+    /// bound into <see cref="RbaRateProviderOptions" />.
     /// </param>
     /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Rba</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
@@ -45,7 +45,7 @@ public static class RbaFinancialServiceBuilderExtensions
     /// <para>
     /// The provider is registered as a singleton so its in-memory store of loaded eras is shared across resolutions; it
     /// is backed by an <see cref="IHttpClientFactory" /> client so handler lifetime is managed by the factory. The
-    /// provider is also exposed as <see cref="IDatedExchangeRateProvider" /> and <see cref="IExchangeRateProvider" />
+    /// provider is also exposed as <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />
     /// through idempotent registrations.
     /// </para>
     /// <para>
@@ -54,14 +54,14 @@ public static class RbaFinancialServiceBuilderExtensions
     /// and tunable through <paramref name="configureResilience" />. The handler sits in the message-handler pipeline
     /// below the provider's single-flight load coordinator, so a retry re-issues the one in-flight request rather than
     /// multiplying across coalesced callers. Because the resilience handler enforces its own per-attempt timeout driven
-    /// from <see cref="RbaExchangeRateOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
+    /// from <see cref="RbaRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddFinancialService(configuration)
-    ///     .AddRbaHistoricalRates(
+    ///     .AddRbaExchangeRates(
     ///         configuration,
     ///         configure: options => options.EnableDiskCache = true,
     ///         configureResilience: resilience =>
@@ -72,13 +72,13 @@ public static class RbaFinancialServiceBuilderExtensions
     /// </code>
     /// </example>
     /// </remarks>
-    public static IFinancialServiceBuilder AddRbaHistoricalRates(
+    public static IFinancialServiceBuilder AddRbaExchangeRates(
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Rba",
-        Action<RbaExchangeRateOptions>? configure = null,
+        Action<RbaRateProviderOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
-        => builder.AddWebExchangeRateProvider<RbaExchangeRateProvider, RbaExchangeRateOptions>(
+        => builder.AddWebRateProvider<RbaRateProvider, RbaRateProviderOptions>(
             HttpClientName,
             configuration,
             sectionName,
@@ -89,5 +89,5 @@ public static class RbaFinancialServiceBuilderExtensions
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>
-                new RbaExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<RbaExchangeRateProvider>(), timeProvider));
+                new RbaRateProvider(client, opts, loggerFactory?.CreateLogger<RbaRateProvider>(), timeProvider));
 }

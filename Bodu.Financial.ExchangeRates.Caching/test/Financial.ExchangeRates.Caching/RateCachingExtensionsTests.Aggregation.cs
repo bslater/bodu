@@ -16,19 +16,19 @@ public sealed partial class RateCachingExtensionsTests
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
-    public void AddAggregatedExchangeRateProvider_WhenRegistered_ShouldResolveBothSurfaces()
+    public void AddAggregatedRateProvider_WhenRegistered_ShouldResolveBothSurfaces()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddAggregatedExchangeRateProvider(
+            builder.AddAggregatedRateProvider(
                 agg => agg
                     .AddCachedChild("RBA", _ => Fixed("RBA", 0.50m))
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m)),
                 configureCache: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider dated = provider.GetRequiredService<IDatedExchangeRateProvider>();
-        IExchangeRateProvider timeless = provider.GetRequiredService<IExchangeRateProvider>();
+        IDatedRateProvider dated = provider.GetRequiredService<IDatedRateProvider>();
+        IRateProvider timeless = provider.GetRequiredService<IRateProvider>();
 
-        Assert.IsInstanceOfType<AggregatingExchangeRateProvider>(dated);
+        Assert.IsInstanceOfType<AggregatingRateProvider>(dated);
         Assert.AreSame<object>(dated, timeless);
     }
 
@@ -36,17 +36,17 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that the aggregator serves via the default priority-fallback strategy, returning the first child.
     /// </summary>
     [TestMethod]
-    public void AddAggregatedExchangeRateProvider_WhenResolved_ShouldServeViaPriorityFallback()
+    public void AddAggregatedRateProvider_WhenResolved_ShouldServeViaPriorityFallback()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddAggregatedExchangeRateProvider(
+            builder.AddAggregatedRateProvider(
                 agg => agg
                     .AddCachedChild("RBA", _ => Fixed("RBA", 0.50m))
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m)),
                 configureCache: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
-        ExchangeRateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
+        RateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual("RBA", result.Rate.Provider);
     }
@@ -55,19 +55,19 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that each child is registered as a keyed cached provider resolvable by name.
     /// </summary>
     [TestMethod]
-    public void AddAggregatedExchangeRateProvider_WhenChildKeyed_ShouldResolveSpecificChildByName()
+    public void AddAggregatedRateProvider_WhenChildKeyed_ShouldResolveSpecificChildByName()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddAggregatedExchangeRateProvider(
+            builder.AddAggregatedRateProvider(
                 agg => agg
                     .AddCachedChild("RBA", _ => Fixed("RBA", 0.50m))
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m)),
                 configureCache: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider rba = provider.GetRequiredKeyedService<IDatedExchangeRateProvider>("RBA");
+        IDatedRateProvider rba = provider.GetRequiredKeyedService<IDatedRateProvider>("RBA");
 
-        Assert.IsInstanceOfType<CachingExchangeRateProvider>(rba);
-        Assert.AreEqual(0.50m, rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact).Rate.Rate);
+        Assert.IsInstanceOfType<CachingRateProvider>(rba);
+        Assert.AreEqual(0.50m, rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact).Rate.Rate);
     }
 
     /// <summary>
@@ -75,18 +75,18 @@ public sealed partial class RateCachingExtensionsTests
     /// that supplied the factory.
     /// </summary>
     [TestMethod]
-    public void AddAggregatedExchangeRateProvider_WhenChildCacheFactoryProvided_ShouldUseChosenCache()
+    public void AddAggregatedRateProvider_WhenChildCacheFactoryProvided_ShouldUseChosenCache()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddAggregatedExchangeRateProvider(
+            builder.AddAggregatedRateProvider(
                 agg => agg
-                    .AddCachedChild("RBA", _ => Fixed("RBA", 0.50m), (_, name) => new JsonFileExchangeRateCache(
-                        new FileExchangeRateCacheOptions { Provider = name, CacheDirectory = _directory }))
+                    .AddCachedChild("RBA", _ => Fixed("RBA", 0.50m), (_, name) => new JsonFileRateCache(
+                        new FileRateCacheOptions { Provider = name, CacheDirectory = _directory }))
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m)),
                 configureCache: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider rba = provider.GetRequiredKeyedService<IDatedExchangeRateProvider>("RBA");
-        _ = rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        IDatedRateProvider rba = provider.GetRequiredKeyedService<IDatedRateProvider>("RBA");
+        _ = rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.IsTrue(File.Exists(Path.Combine(_directory, "RBA", "AUDUSD.json")), "the RBA child uses its supplied JSON cache");
     }
@@ -95,18 +95,18 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that a per-pair route configured through the builder is honoured, overriding the child order.
     /// </summary>
     [TestMethod]
-    public void AddAggregatedExchangeRateProvider_WhenRouteConfigured_ShouldHonourRoute()
+    public void AddAggregatedRateProvider_WhenRouteConfigured_ShouldHonourRoute()
     {
         ServiceProvider provider = BuildProvider(builder =>
-            builder.AddAggregatedExchangeRateProvider(
+            builder.AddAggregatedRateProvider(
                 agg => agg
                     .AddCachedChild("RBA", _ => Fixed("RBA", 0.50m))
                     .AddCachedChild("ECB", _ => Fixed("ECB", 0.51m))
-                    .MapPair(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "ECB", "RBA"),
+                    .MapPair(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), "ECB", "RBA"),
                 configureCache: o => o.CacheDirectory = _directory));
 
-        IDatedExchangeRateProvider resolved = provider.GetRequiredService<IDatedExchangeRateProvider>();
-        ExchangeRateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        IDatedRateProvider resolved = provider.GetRequiredService<IDatedRateProvider>();
+        RateLookupResult result = resolved.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.AreEqual("ECB", result.Rate.Provider);
     }
@@ -115,14 +115,14 @@ public sealed partial class RateCachingExtensionsTests
     /// Verifies that a <see langword="null" /> configure callback is rejected.
     /// </summary>
     [TestMethod]
-    public void AddAggregatedExchangeRateProvider_WhenConfigureIsNull_ShouldThrowArgumentNullException()
+    public void AddAggregatedRateProvider_WhenConfigureIsNull_ShouldThrowArgumentNullException()
     {
         var services = new ServiceCollection();
         IFinancialServiceBuilder builder = services.AddFinancialService();
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = builder.AddAggregatedExchangeRateProvider(null!);
+            _ = builder.AddAggregatedRateProvider(null!);
         });
 
         Assert.AreEqual("configure", ex.ParamName);
@@ -134,6 +134,6 @@ public sealed partial class RateCachingExtensionsTests
     /// <param name="provider">The provider tag.</param>
     /// <param name="rate">The rate.</param>
     /// <returns>A new fixed provider.</returns>
-    private static IDatedExchangeRateProvider Fixed(string provider, decimal rate) =>
-        new FixedDatedExchangeRateProvider(new[] { new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2023, 1, 3), rate, provider) });
+    private static IDatedRateProvider Fixed(string provider, decimal rate) =>
+        new FixedDatedRateProvider(new[] { new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2023, 1, 3), rate, provider) });
 }

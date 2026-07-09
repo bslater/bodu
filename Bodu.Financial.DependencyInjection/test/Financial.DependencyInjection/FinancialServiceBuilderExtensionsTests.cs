@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+
 namespace Bodu.Financial.DependencyInjection;
 
 /// <summary>
@@ -13,10 +16,10 @@ namespace Bodu.Financial.DependencyInjection;
 public sealed partial class FinancialServiceBuilderExtensionsTests
 {
     /// <summary>
-    /// A stub <see cref="IExchangeRateProvider" /> for registration tests.
+    /// A stub <see cref="IRateProvider" /> for registration tests.
     /// </summary>
     private sealed class StubRateProvider
-        : IExchangeRateProvider
+        : IRateProvider
     {
         /// <inheritdoc />
         public decimal GetRate(string fromIsoCode, string toIsoCode) => 1m;

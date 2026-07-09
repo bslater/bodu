@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 public sealed partial class DistributedRateCacheExtensionsTests
 {
     /// <summary>
-    /// Verifies that the registered cache resolves as an <see cref="IExchangeRateCache" /> bound to the supplied
+    /// Verifies that the registered cache resolves as an <see cref="IRateCache" /> bound to the supplied
     /// provider when an <see cref="IDistributedCache" /> is already registered.
     /// </summary>
     [TestMethod]
@@ -28,7 +28,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
             services.AddFinancialService().AddDistributedRateCache("RBA");
         });
 
-        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        IRateCache cache = provider.GetRequiredService<IRateCache>();
 
         Assert.AreEqual("RBA", cache.Provider);
     }
@@ -46,8 +46,8 @@ public sealed partial class DistributedRateCacheExtensionsTests
             services.AddFinancialService().AddDistributedRateCache("RBA");
         });
 
-        IExchangeRateCache byDefault = provider.GetRequiredService<IExchangeRateCache>();
-        IExchangeRateCache byKey = provider.GetRequiredKeyedService<IExchangeRateCache>("RBA");
+        IRateCache byDefault = provider.GetRequiredService<IRateCache>();
+        IRateCache byKey = provider.GetRequiredKeyedService<IRateCache>("RBA");
 
         Assert.AreSame(byDefault, byKey);
     }
@@ -63,12 +63,12 @@ public sealed partial class DistributedRateCacheExtensionsTests
             services.AddDistributedMemoryCache();
             services.AddFinancialService().AddDistributedRateCache("RBA");
         });
-        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        IRateCache cache = provider.GetRequiredService<IRateCache>();
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
-        Assert.HasCount(1, cache.GetRates(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now));
+        Assert.HasCount(1, cache.GetRates(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now));
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
     public void AddDistributedRateCache_WhenConfigurationProvided_ShouldBindKeyPrefix()
     {
         IConfiguration config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:ExchangeRateCache:Distributed:KeyPrefix"] = "fx:" })
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Financial:RateCache:Distributed:KeyPrefix"] = "fx:" })
             .Build();
 
         ServiceProvider provider = BuildProvider(services =>
@@ -87,10 +87,10 @@ public sealed partial class DistributedRateCacheExtensionsTests
             services.AddFinancialService().AddDistributedRateCache("RBA", config);
         });
         IDistributedCache distributedCache = provider.GetRequiredService<IDistributedCache>();
-        IExchangeRateCache cache = provider.GetRequiredService<IExchangeRateCache>();
+        IRateCache cache = provider.GetRequiredService<IRateCache>();
         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-        cache.Store(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedExchangeRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
+        cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new[] { new CachedRate(new DateOnly(2023, 1, 3), 0.5m, now) }, TimeSpan.FromHours(24), now);
 
         // The configured "fx:" prefix must be applied to the underlying distributed-cache key.
         Assert.IsNotNull(distributedCache.Get("fx:RBA:AUDUSD"));
@@ -142,7 +142,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
         {
-            _ = provider.GetRequiredService<IExchangeRateCache>();
+            _ = provider.GetRequiredService<IRateCache>();
         });
     }
 
@@ -158,11 +158,11 @@ public sealed partial class DistributedRateCacheExtensionsTests
             services.AddFinancialService().AddDistributedRateCache("RBA", configure: o => o.KeyPrefix = "fx:");
         });
 
-        Assert.IsNotNull(provider.GetRequiredService<IExchangeRateCache>());
+        Assert.IsNotNull(provider.GetRequiredService<IRateCache>());
     }
 
     /// <summary>
-    /// Verifies that, with <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> set over an unreachable
+    /// Verifies that, with <see cref="RateCacheOptions.ValidateStorageOnStart" /> set over an unreachable
     /// backing store, the startup validation the host runs fails, so an unreachable distributed cache fails the host
     /// start rather than the first lookup.
     /// </summary>
@@ -181,7 +181,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that, with <see cref="ExchangeRateCacheOptions.ValidateStorageOnStart" /> set over a reachable backing
+    /// Verifies that, with <see cref="RateCacheOptions.ValidateStorageOnStart" /> set over a reachable backing
     /// store, the startup validation the host runs passes.
     /// </summary>
     [TestMethod]

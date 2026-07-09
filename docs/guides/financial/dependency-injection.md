@@ -18,7 +18,7 @@ The package depends on `Bodu.Financial` and `Microsoft.Extensions.DependencyInje
 
 ## The registration surface
 
-The entry point is the `AddFinancialService` `IServiceCollection` extension (in the `Bodu.Financial` namespace), with two overloads. Both register the default <xref:Bodu.Financial.ICurrency> lookup and return an <xref:Bodu.Financial.IFinancialServiceBuilder>.
+The entry point is the `AddFinancialService` `IServiceCollection` extension (in the `Bodu.Financial` namespace), with two overloads. Both register the default <xref:Bodu.Financial.Currencies.ICurrency> lookup and return an <xref:Bodu.Financial.IFinancialServiceBuilder>.
 
 | Method | Registers |
 |---|---|
@@ -33,8 +33,8 @@ The chainable `IFinancialServiceBuilder` extension methods (in the `Bodu.Financi
 |---|---|
 | `AddCurrencyLookup<TLookup>()` | Replaces the default currency lookup with your `ICurrencyLookup` implementation. |
 | `AddMonetaryContext(string name, MonetaryContext context)` | Registers a named monetary context (rounding, minor units, formatting). |
-| `AddExchangeRateProvider<TProvider>()` / `AddExchangeRateProvider(provider)` | Registers a timeless <xref:Bodu.Financial.IExchangeRateProvider>, by type or by instance. |
-| `AddDatedExchangeRateProvider<TProvider>()` / `AddDatedExchangeRateProvider(provider)` | Registers a dated <xref:Bodu.Financial.IDatedExchangeRateProvider>. |
+| `AddExchangeRateProvider<TProvider>()` / `AddExchangeRateProvider(provider)` | Registers a timeless <xref:Bodu.Financial.ExchangeRates.IRateProvider>, by type or by instance. |
+| `AddDatedExchangeRateProvider<TProvider>()` / `AddDatedExchangeRateProvider(provider)` | Registers a dated <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider>. |
 | `AddFinancialJson(FinancialJsonPolicy policy = FinancialJsonPolicy.Strict)` | Registers the `System.Text.Json` converters under the chosen policy. |
 
 ```csharp
@@ -98,14 +98,15 @@ The generic overloads register an implementation *type*; the instance overloads 
 
 ```csharp
 using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
 
 services.AddFinancialService(financial =>
 {
-    financial.AddDatedExchangeRateProvider(new FixedDatedExchangeRateProvider(ecbObservations));
+    financial.AddDatedExchangeRateProvider(new FixedDatedRateProvider(ecbObservations));
 });
 ```
 
-To group several providers behind one registration — prioritised fallback, averaging, or per-FX-pair routing — and add read-through caching, use `AddAggregatedExchangeRateProvider(...)` from the `Bodu.Financial.ExchangeRates.Caching` package (its DI registration ships in the package, in the `Bodu.Financial.ExchangeRates` namespace), which registers an <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider> as the application's single <xref:Bodu.Financial.IDatedExchangeRateProvider>. `ExchangeRateLookupResult.Rate.Provider` records which source answered, so the audit trail survives the composition. See the [caching and aggregating guide](exchange-rate-caching.md#dependency-injection) for the full walkthrough.
+To group several providers behind one registration — prioritised fallback, averaging, or per-FX-pair routing — and add read-through caching, use `AddAggregatedRateProvider(...)` from the `Bodu.Financial.ExchangeRates.Caching` package (its DI registration ships in the package, in the `Bodu.Financial.ExchangeRates` namespace), which registers an <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider> as the application's single <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider>. `RateLookupResult.Rate.Provider` records which source answered, so the audit trail survives the composition. See the [caching and aggregating guide](exchange-rate-caching.md#dependency-injection) for the full walkthrough.
 
 Neither `AddFinancialService` overload registers an FX provider by default — an application that never crosses currencies pays nothing for the contract.
 
@@ -158,6 +159,7 @@ A complete wiring — host builder, financial registration, and a service that c
 ```csharp
 using Bodu.Financial;
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -166,7 +168,7 @@ HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddFinancialService(builder.Configuration)   // binds the "Financial" section
     .AddFinancialJson()
     .AddMonetaryContext("Settlement", MonetaryContext.Default)
-    .AddDatedExchangeRateProvider(new FixedDatedExchangeRateProvider(observations));
+    .AddDatedExchangeRateProvider(new FixedDatedRateProvider(observations));
 
 builder.Services.AddSingleton<SettlementService>();
 
@@ -181,16 +183,16 @@ The consuming service depends only on the contract:
 ```csharp
 public sealed class SettlementService
 {
-    private readonly IDatedExchangeRateProvider _rates;
+    private readonly IDatedRateProvider _rates;
 
-    public SettlementService(IDatedExchangeRateProvider rates) =>
+    public SettlementService(IDatedRateProvider rates) =>
         _rates = rates;
 
     public Money<EUR> Settle(Money<USD> amount, DateOnly postingDate)
     {
-        ExchangeRateLookupResult lookup = _rates.GetRate(
+        RateLookupResult lookup = _rates.GetRate(
             "USD", "EUR", postingDate,
-            ExchangeRateLookupOptions.PreviousWithin(3));
+            RateLookupOptions.PreviousWithin(3));
 
         return amount.Convert<EUR>(lookup.Rate.Rate);
     }
@@ -201,17 +203,18 @@ Swapping the fixed table for a live feed later means changing one registration; 
 
 ## Swapping in a test double
 
-Because consumers depend on <xref:Bodu.Financial.IDatedExchangeRateProvider> rather than a concrete feed, tests substitute a deterministic table — <xref:Bodu.Financial.FixedDatedExchangeRateProvider> over hand-written observations is usually all the fake you need:
+Because consumers depend on <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> rather than a concrete feed, tests substitute a deterministic table — <xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider> over hand-written observations is usually all the fake you need:
 
 ```csharp
 using Bodu.Financial;
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 
 ServiceCollection services = new();
 services.AddFinancialService(financial =>
 {
-    financial.AddDatedExchangeRateProvider(new FixedDatedExchangeRateProvider(new ExchangeRate[]
+    financial.AddDatedExchangeRateProvider(new FixedDatedRateProvider(new ExchangeRate[]
     {
         new(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 14), 0.928m, "Test"),
     }));
@@ -225,7 +228,7 @@ SettlementService sut = provider.GetRequiredService<SettlementService>();
 
 Two registration details matter for tests:
 
-- The provider registrations use `TryAdd` semantics — the *first* registration for a contract wins. Register the fake before any production wiring runs, or use `services.Replace(ServiceDescriptor.Singleton<IDatedExchangeRateProvider>(fake))` (from `Microsoft.Extensions.DependencyInjection.Extensions`) to override an existing registration.
+- The provider registrations use `TryAdd` semantics — the *first* registration for a contract wins. Register the fake before any production wiring runs, or use `services.Replace(ServiceDescriptor.Singleton<IDatedRateProvider>(fake))` (from `Microsoft.Extensions.DependencyInjection.Extensions`) to override an existing registration.
 - `UseCurrencyResolution` mutates *process-wide* ambient state. Avoid calling it in unit tests; if a test must exercise a custom ambient lookup, prefer the flow-scoped `CurrencyResolution.PushScoped(...)` from `Bodu.Financial`, which restores the previous lookup on dispose and isolates parallel tests.
 
 ## See also

@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// unsupported because the disposal tests never resolve a rate through it.
 /// </summary>
 internal sealed class DisposableProbeProvider
-    : IDatedExchangeRateProvider, IDisposable
+    : IDatedRateProvider, IDisposable
 {
     /// <summary>
     /// Gets the number of times <see cref="Dispose" /> has been called.
@@ -31,7 +31,7 @@ internal sealed class DisposableProbeProvider
     /// <param name="toIsoCode">Unused.</param>
     /// <param name="options">Unused.</param>
     /// <returns>Never returns.</returns>
-    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null) =>
+    public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null) =>
         throw new NotSupportedException();
 
     /// <summary>
@@ -42,7 +42,7 @@ internal sealed class DisposableProbeProvider
     /// <param name="date">Unused.</param>
     /// <param name="options">Unused.</param>
     /// <returns>Never returns.</returns>
-    public ExchangeRateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null) =>
+    public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null) =>
         throw new NotSupportedException();
 
     /// <summary>
@@ -54,7 +54,7 @@ internal sealed class DisposableProbeProvider
     /// <param name="options">Unused.</param>
     /// <param name="result">Unused.</param>
     /// <returns>Never returns.</returns>
-    public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options, out ExchangeRateLookupResult result) =>
+    public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options, out RateLookupResult result) =>
         throw new NotSupportedException();
 
     /// <summary>
@@ -65,7 +65,7 @@ internal sealed class DisposableProbeProvider
     /// <param name="startDate">Unused.</param>
     /// <param name="endDate">Unused.</param>
     /// <returns>Never returns.</returns>
-    public ExchangeRateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
+    public RateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate) =>
         throw new NotSupportedException();
 
     /// <summary>
@@ -76,7 +76,7 @@ internal sealed class DisposableProbeProvider
     /// <param name="options">Unused.</param>
     /// <param name="cancellationToken">Unused.</param>
     /// <returns>Never returns.</returns>
-    public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
+    public ValueTask<RateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
         throw new NotSupportedException();
 
     /// <summary>
@@ -88,7 +88,7 @@ internal sealed class DisposableProbeProvider
     /// <param name="options">Unused.</param>
     /// <param name="cancellationToken">Unused.</param>
     /// <returns>Never returns.</returns>
-    public ValueTask<ExchangeRateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, ExchangeRateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
+    public ValueTask<RateLookupResult> GetRateAsync(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null, CancellationToken cancellationToken = default) =>
         throw new NotSupportedException();
 
     /// <summary>
@@ -100,6 +100,6 @@ internal sealed class DisposableProbeProvider
     /// <param name="endDate">Unused.</param>
     /// <param name="cancellationToken">Unused.</param>
     /// <returns>Never returns.</returns>
-    public ValueTask<ExchangeRateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+    public ValueTask<RateRangeResult> GetRatesAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
         throw new NotSupportedException();
 }

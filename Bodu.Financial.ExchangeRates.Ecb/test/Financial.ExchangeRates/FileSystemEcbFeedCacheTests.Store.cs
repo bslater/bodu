@@ -25,9 +25,9 @@ public partial class FileSystemEcbFeedCacheTests
 
             FileSystemEcbFeedCache cache = new(filePath);
 
-            cache.Store(EcbExchangeRateFeed.Full, new byte[] { 1, 2, 3 });
+            cache.Store(EcbRateFeed.Full, new byte[] { 1, 2, 3 });
 
-            bool hit = cache.TryGet(EcbExchangeRateFeed.Full, TimeSpan.FromHours(1), out _);
+            bool hit = cache.TryGet(EcbRateFeed.Full, TimeSpan.FromHours(1), out _);
             Assert.IsFalse(hit);
         }
         finally

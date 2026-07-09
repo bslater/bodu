@@ -28,14 +28,14 @@ public sealed class NullEcbFeedCache
     public static NullEcbFeedCache Instance { get; } = new();
 
     /// <inheritdoc />
-    public bool TryGet(EcbExchangeRateFeed feed, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
+    public bool TryGet(EcbRateFeed feed, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
     {
         bytes = null;
         return false;
     }
 
     /// <inheritdoc />
-    public void Store(EcbExchangeRateFeed feed, byte[] bytes)
+    public void Store(EcbRateFeed feed, byte[] bytes)
     {
         // Intentionally no-op: this cache never stores anything.
     }

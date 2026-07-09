@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Yahoo Finance Exchange Rates</Title>
-    <Description>Yahoo Finance exchange-rate provider for Bodu.Financial. Fetches and parses the Yahoo Finance v8 chart JSON service and serves the results as Bodu.Financial.ExchangeRate values through IDatedExchangeRateProvider and IExchangeRateProvider, with an async range API over arbitrary currency pairs. Includes the dependency-injection registration extensions (AddYahooExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>
+    <Description>Yahoo Finance exchange-rate provider for Bodu.Financial. Fetches and parses the Yahoo Finance v8 chart JSON service and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API over arbitrary currency pairs. Includes the dependency-injection registration extensions (AddYahooExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>
     <PackageTags>$(PackageTags);financial;yahoo;exchange-rate;forex;fx;rest;json;dependency-injection;options</PackageTags>
   </PropertyGroup>
 
@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates\src\Bodu.Financial.ExchangeRates.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
   </ItemGroup>

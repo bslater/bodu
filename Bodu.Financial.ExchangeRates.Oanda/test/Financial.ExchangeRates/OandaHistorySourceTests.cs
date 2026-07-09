@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies that <see cref="OandaExchangeRateProvider" /> driven by the real HTTP source builds the expected request,
+/// Verifies that <see cref="OandaRateProvider" /> driven by the real HTTP source builds the expected request,
 /// primes the session, re-primes on a challenge, and parses the response.
 /// </summary>
 [TestClass]
@@ -23,8 +23,8 @@ public class OandaHistorySourceTests
     {
         StubHttpMessageHandler handler = new(OandaFixtures.ReadBytes(OandaFixtures.AudUsd));
         using HttpClient client = new(handler);
-        OandaExchangeRateOptions options = new();
-        OandaExchangeRateProvider provider = new(client, options);
+        OandaRateProviderOptions options = new();
+        OandaRateProvider provider = new(client, options);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
@@ -39,7 +39,7 @@ public class OandaHistorySourceTests
         Assert.IsTrue(handler.LastRequestUri.Query.Contains("price=mid", StringComparison.Ordinal), handler.LastRequestUri.Query);
         Assert.IsTrue(handler.LastRequestUri.Query.Contains("period=daily", StringComparison.Ordinal), handler.LastRequestUri.Query);
 
-        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
         Assert.AreEqual(0.6828m, result.Rate.Rate);
         Assert.AreEqual(new DateOnly(2023, 1, 3), result.Rate.Date);
     }
@@ -52,7 +52,7 @@ public class OandaHistorySourceTests
     {
         StubHttpMessageHandler handler = new(OandaFixtures.ReadBytes(OandaFixtures.AudUsd));
         using HttpClient client = new(handler);
-        OandaExchangeRateProvider provider = new(client, new OandaExchangeRateOptions());
+        OandaRateProvider provider = new(client, new OandaRateProviderOptions());
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 31));
 
@@ -70,11 +70,11 @@ public class OandaHistorySourceTests
     {
         StubHttpMessageHandler handler = new(OandaFixtures.ReadBytes(OandaFixtures.AudUsd));
         using HttpClient client = new(handler);
-        OandaExchangeRateProvider provider = new(client, new OandaExchangeRateOptions());
+        OandaRateProvider provider = new(client, new OandaRateProviderOptions());
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 3));
 
-        ExchangeRateRangeResult range = provider.GetRates("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 3));
+        RateRangeResult range = provider.GetRates("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 3));
 
         Assert.AreEqual(2, range.Count);
         Assert.IsTrue(range.All(rate => rate.Date <= new DateOnly(2023, 1, 3)), "no observation later than the loaded window");
@@ -89,14 +89,14 @@ public class OandaHistorySourceTests
     {
         ChallengeThenFixtureHttpMessageHandler handler = new(OandaFixtures.ReadBytes(OandaFixtures.AudUsd), challengesBeforeSuccess: 1);
         using HttpClient client = new(handler);
-        OandaExchangeRateProvider provider = new(client, new OandaExchangeRateOptions());
+        OandaRateProvider provider = new(client, new OandaRateProviderOptions());
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
         Assert.AreEqual(2, handler.DataRequestCount, "the challenged data request is retried once");
         Assert.IsGreaterThanOrEqualTo(2, handler.PrimeRequestCount, "the session is primed and re-primed");
 
-        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
         Assert.AreEqual(0.6828m, result.Rate.Rate);
     }
 }

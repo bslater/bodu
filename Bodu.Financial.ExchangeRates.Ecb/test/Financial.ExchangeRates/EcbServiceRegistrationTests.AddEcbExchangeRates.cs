@@ -1,0 +1,151 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="EcbServiceRegistrationTests.AddEcbExchangeRates.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Financial.Currencies;
+using Bodu.Test;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+namespace Bodu.Financial.ExchangeRates;
+
+public partial class EcbServiceRegistrationTests
+{
+    /// <summary>
+    /// Verifies that the one-call entry point registers the core currency lookup alongside the ECB provider.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbExchangeRates_ShouldRegisterCoreServicesAndProvider()
+    {
+        ServiceCollection services = new();
+        services.AddEcbExchangeRates();
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        Assert.IsNotNull(provider.GetService<ICurrencyLookup>());
+        Assert.IsNotNull(provider.GetService<EcbRateProvider>());
+    }
+
+    /// <summary>
+    /// Verifies that the provider is registered once and exposed through both provider interfaces as the same instance.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void AddEcbExchangeRates_ShouldRegisterProviderAsSingleton()
+    {
+        ServiceCollection services = new();
+        services.AddFinancialService().AddEcbExchangeRates();
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        EcbRateProvider? concrete = provider.GetService<EcbRateProvider>();
+        IDatedRateProvider? dated = provider.GetService<IDatedRateProvider>();
+        IRateProvider? simple = provider.GetService<IRateProvider>();
+
+        Assert.IsNotNull(concrete);
+        Assert.AreSame(concrete, dated);
+        Assert.AreSame(concrete, simple);
+    }
+
+    /// <summary>
+    /// Verifies that the named ECB HTTP client is configured and resolvable.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbExchangeRates_ShouldRegisterNamedHttpClient()
+    {
+        ServiceCollection services = new();
+        services.AddFinancialService().AddEcbExchangeRates();
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        IHttpClientFactory? factory = provider.GetService<IHttpClientFactory>();
+
+        Assert.IsNotNull(factory);
+        using HttpClient client = factory.CreateClient(EcbFinancialServiceBuilderExtensions.HttpClientName);
+        Assert.IsNotNull(client);
+    }
+
+    /// <summary>
+    /// Verifies that options, including the nested endpoint settings, bind from a configuration section.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbExchangeRates_ShouldBindOptionsFromConfiguration()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:Ecb:EnableDiskCache"] = "false",
+                ["Financial:Ecb:RefreshInterval"] = "06:00:00",
+                ["Financial:Ecb:Endpoint:BaseUrl"] = "https://mirror.example/fx/",
+                ["Financial:Ecb:Endpoint:UserAgent"] = "test-agent",
+            })
+            .Build();
+
+        ServiceCollection services = new();
+        services.AddFinancialService(configuration).AddEcbExchangeRates(configuration);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        EcbRateProviderOptions options = provider.GetRequiredService<IOptions<EcbRateProviderOptions>>().Value;
+
+        Assert.IsFalse(options.EnableDiskCache);
+        Assert.AreEqual(TimeSpan.FromHours(6), options.RefreshInterval);
+        Assert.AreEqual(new Uri("https://mirror.example/fx/"), options.Endpoint.BaseUrl);
+        Assert.AreEqual("test-agent", options.Endpoint.UserAgent);
+    }
+
+    /// <summary>
+    /// Verifies that the configure callback is applied to the bound options.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbExchangeRates_ShouldApplyConfigureCallback()
+    {
+        ServiceCollection services = new();
+        services.AddFinancialService().AddEcbExchangeRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        EcbRateProviderOptions options = provider.GetRequiredService<IOptions<EcbRateProviderOptions>>().Value;
+
+        Assert.AreEqual("callback-agent", options.Endpoint.UserAgent);
+    }
+
+    /// <summary>
+    /// Verifies that registering against a <see langword="null" /> builder throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbExchangeRates_WhenBuilderIsNull_ShouldThrowArgumentNullException()
+    {
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = EcbFinancialServiceBuilderExtensions.AddEcbExchangeRates(null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that invalid options fail fast through <c>ValidateOnStart</c> when the provider is resolved.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbExchangeRates_WhenOptionsInvalid_ShouldThrowOnResolve()
+    {
+        ServiceCollection services = new();
+        services.AddFinancialService().AddEcbExchangeRates(configure: o => o.Feeds = []);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<EcbRateProvider>();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the provider.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbExchangeRates_WhenOptionsValid_ShouldResolveProvider()
+    {
+        ServiceCollection services = new();
+        services.AddFinancialService().AddEcbExchangeRates();
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        Assert.IsNotNull(provider.GetRequiredService<EcbRateProvider>());
+    }
+}

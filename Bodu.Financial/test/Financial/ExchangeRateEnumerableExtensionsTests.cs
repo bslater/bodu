@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.Extensions;
 
 namespace Bodu.Financial;
@@ -15,7 +16,7 @@ namespace Bodu.Financial;
 [TestClass]
 public partial class ExchangeRateEnumerableExtensionsTests
 {
-    private static readonly ExchangeRatePair AudUsd = new(CurrencyCode.AUD, CurrencyCode.USD);
+    private static readonly CurrencyPair AudUsd = new(CurrencyCode.AUD, CurrencyCode.USD);
     private static readonly DateOnly D1 = new(2024, 1, 3);
 
     private static ExchangeRate Rate(string from, string to, DateOnly date, decimal rate, string provider, DateTimeOffset? fetchedAtUtc = null) =>

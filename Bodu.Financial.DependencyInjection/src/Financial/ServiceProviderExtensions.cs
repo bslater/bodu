@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Financial;

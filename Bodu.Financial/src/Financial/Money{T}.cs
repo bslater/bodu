@@ -6,6 +6,7 @@
 
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;

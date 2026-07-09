@@ -26,7 +26,7 @@ public static class EcbFinancialServiceBuilderExtensions
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configuration">
     /// An optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
-    /// bound into <see cref="EcbExchangeRateOptions" />.
+    /// bound into <see cref="EcbRateProviderOptions" />.
     /// </param>
     /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Ecb</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
@@ -45,7 +45,7 @@ public static class EcbFinancialServiceBuilderExtensions
     /// <para>
     /// The provider is registered as a singleton so its in-memory store of loaded feeds is shared across resolutions;
     /// it is backed by an <see cref="IHttpClientFactory" /> client so handler lifetime is managed by the factory. The
-    /// provider is also exposed as <see cref="IDatedExchangeRateProvider" /> and <see cref="IExchangeRateProvider" />
+    /// provider is also exposed as <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />
     /// through idempotent registrations.
     /// </para>
     /// <para>
@@ -63,23 +63,23 @@ public static class EcbFinancialServiceBuilderExtensions
     /// IServiceCollection services = new ServiceCollection();
     ///
     /// services.AddFinancialService()
-    ///     .AddEcbReferenceRates(
+    ///     .AddEcbExchangeRates(
     ///         configure: opts => opts.EnableDiskCache = true,
     ///         configureResilience: resilience => resilience.Retry.MaxRetryAttempts = 5);
     ///
     /// using ServiceProvider provider = services.BuildServiceProvider();
-    /// var rates = provider.GetRequiredService<IDatedExchangeRateProvider>();
+    /// var rates = provider.GetRequiredService<IDatedRateProvider>();
     ///]]>
     /// </code>
     /// </example>
     /// </remarks>
-    public static IFinancialServiceBuilder AddEcbReferenceRates(
+    public static IFinancialServiceBuilder AddEcbExchangeRates(
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Ecb",
-        Action<EcbExchangeRateOptions>? configure = null,
+        Action<EcbRateProviderOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
-        => builder.AddWebExchangeRateProvider<EcbExchangeRateProvider, EcbExchangeRateOptions>(
+        => builder.AddWebRateProvider<EcbRateProvider, EcbRateProviderOptions>(
             HttpClientName,
             configuration,
             sectionName,
@@ -90,5 +90,5 @@ public static class EcbFinancialServiceBuilderExtensions
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>
-                new EcbExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<EcbExchangeRateProvider>(), timeProvider));
+                new EcbRateProvider(client, opts, loggerFactory?.CreateLogger<EcbRateProvider>(), timeProvider));
 }

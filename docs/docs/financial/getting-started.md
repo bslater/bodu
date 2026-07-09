@@ -126,7 +126,7 @@ wallet.GetBalance(CurrencyCode.EUR);   // Money? — EUR 50.00
 wallet.Count;                          // 3
 ```
 
-Convert the bag to a single target currency via an `IExchangeRateProvider`:
+Convert the bag to a single target currency via an `IRateProvider`:
 
 ```csharp
 var rates = new Dictionary<(string From, string To), decimal>
@@ -134,7 +134,7 @@ var rates = new Dictionary<(string From, string To), decimal>
     { ("EUR", "USD"), 1.10m },
     { ("JPY", "USD"), 0.0067m },
 };
-FixedExchangeRateTable table = new(rates);
+FixedRateTable table = new(rates);
 
 Money<USD> totalInUsd = wallet.ConvertTo<USD>(table);
 // 100 + 50×1.10 + 10000×0.0067 = $222.00
@@ -143,20 +143,21 @@ Money<USD> totalInUsd = wallet.ConvertTo<USD>(table);
 ### Dated FX lookup with audit metadata
 
 ```csharp
+using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.Extensions;   // IsExactDate / ResolvedDate extension members
 
-IDatedExchangeRateProvider provider = …;
-ExchangeRateLookupResult lookup = provider.GetRate(
+IDatedRateProvider provider = …;
+RateLookupResult lookup = provider.GetRate(
     "USD", "EUR",
     new DateOnly(2024, 6, 15),
-    ExchangeRateLookupOptions.NearestWithin(7));
+    RateLookupOptions.NearestWithin(7));
 
 Console.WriteLine($"Used {lookup.Rate.Date} from {lookup.Rate.Provider}");
 Console.WriteLine($"Offset: {lookup.OffsetDays} day(s), exact: {lookup.IsExactDate()}");
 ```
 
 The lookup result is a `readonly record struct` carrying the resolved
-`Rate` (an <xref:Bodu.Financial.ExchangeRate>), the `RequestedDate`, the
+`Rate` (an <xref:Bodu.Financial.ExchangeRates.ExchangeRate>), the `RequestedDate`, the
 `Resolution` policy that fired, the absolute `OffsetDays`, and the
 `Provenance`. `IsExactDate`, `ResolvedDate`, `SignedOffsetDays`,
 `IsPreviousDate`, and `IsFutureDate` are extension members in

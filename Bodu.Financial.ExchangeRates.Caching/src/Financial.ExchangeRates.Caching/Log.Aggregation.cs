@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
-/// <content> Source-generated logging messages emitted by <see cref="AggregatingExchangeRateProvider" /> while routing
+/// <content> Source-generated logging messages emitted by <see cref="AggregatingRateProvider" /> while routing
 /// and combining candidate providers. </content>
 internal static partial class Log
 {

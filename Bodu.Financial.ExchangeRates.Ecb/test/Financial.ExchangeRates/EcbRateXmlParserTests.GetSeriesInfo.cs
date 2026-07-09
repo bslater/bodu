@@ -1,0 +1,28 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="EcbRateXmlParserTests.GetSeriesInfo.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Financial.Currencies;
+
+namespace Bodu.Financial.ExchangeRates;
+
+public partial class EcbRateXmlParserTests
+{
+    /// <summary>
+    /// Verifies that the distinct quote currencies are surfaced as EUR-based series.
+    /// </summary>
+    [TestMethod]
+    public void GetSeriesInfo_WhenSampleFeed_ShouldReturnDistinctEurPairs()
+    {
+        EcbRateTable table = ParseSample();
+
+        var pairs = table.GetSeriesInfo().Select(s => s.Pair).ToList();
+
+        Assert.HasCount(3, pairs);
+        CollectionAssert.Contains(pairs, new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD));
+        CollectionAssert.Contains(pairs, new CurrencyPair(CurrencyCode.EUR, CurrencyCode.JPY));
+        CollectionAssert.Contains(pairs, new CurrencyPair(CurrencyCode.EUR, CurrencyCode.GBP));
+    }
+}

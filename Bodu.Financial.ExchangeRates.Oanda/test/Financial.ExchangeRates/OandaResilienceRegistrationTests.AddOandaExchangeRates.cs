@@ -14,7 +14,7 @@ public partial class OandaResilienceRegistrationTests
 {
     /// <summary>
     /// Verifies that the standard resilience options are registered for the named client with the per-attempt timeout
-    /// driven from the configured <see cref="WebExchangeRateProviderOptions.HttpTimeout" />.
+    /// driven from the configured <see cref="WebRateProviderOptions.HttpTimeout" />.
     /// </summary>
     [TestMethod]
     public void AddOandaExchangeRates_ShouldRegisterStandardResilienceOptionsForNamedClient()

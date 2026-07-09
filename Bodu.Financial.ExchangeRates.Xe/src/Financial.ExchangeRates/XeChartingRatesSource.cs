@@ -28,13 +28,13 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 internal sealed class XeChartingRatesSource
-    : IExchangeRatePairSource<XeSeriesInfo>
+    : IPairRateSource<XeSeriesInfo>
 {
     /// <summary>The HTTP client used to issue charting-rates requests.</summary>
     private readonly HttpClient _httpClient;
 
     /// <summary>The provider options supplying the base address, charting-rates path, and currency aliases.</summary>
-    private readonly XeExchangeRateOptions _options;
+    private readonly XeRateProviderOptions _options;
 
     /// <summary>The token provider supplying the <c>Authorization: Basic</c> credential.</summary>
     private readonly IXeAuthTokenProvider _authTokenProvider;
@@ -49,7 +49,7 @@ internal sealed class XeChartingRatesSource
     /// Thrown when <paramref name="httpClient" />, <paramref name="options" />, or
     /// <paramref name="authTokenProvider" /> is <see langword="null" />.
     /// </exception>
-    internal XeChartingRatesSource(HttpClient httpClient, XeExchangeRateOptions options, IXeAuthTokenProvider authTokenProvider)
+    internal XeChartingRatesSource(HttpClient httpClient, XeRateProviderOptions options, IXeAuthTokenProvider authTokenProvider)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -61,7 +61,7 @@ internal sealed class XeChartingRatesSource
     }
 
     /// <inheritdoc />
-    public async ValueTask<PairRateData<XeSeriesInfo>> GetPairAsync(ExchangeRatePairRequest request, CancellationToken cancellationToken = default)
+    public async ValueTask<PairRateData<XeSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         Uri url = BuildRequestUri(request);
         byte[] json = await SendAuthorizedAsync(url, cancellationToken).ConfigureAwait(false);
@@ -101,7 +101,7 @@ internal sealed class XeChartingRatesSource
     /// </summary>
     /// <param name="request">The pair request.</param>
     /// <returns>The absolute request URI.</returns>
-    private Uri BuildRequestUri(ExchangeRatePairRequest request)
+    private Uri BuildRequestUri(CurrencyPairRequest request)
     {
         string from = _options.MapCurrencyCode(request.Pair.From.ToString());
         string to = _options.MapCurrencyCode(request.Pair.To.ToString());

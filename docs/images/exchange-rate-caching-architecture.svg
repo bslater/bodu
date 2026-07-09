@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 540" role="img" aria-labelledby="title desc" font-family="'Segoe UI', system-ui, -apple-system, Arial, sans-serif">
   <title id="title">Exchange-rate caching composition</title>
-  <desc id="desc">A caller talks to an AggregatingExchangeRateProvider, which routes each currency pair to one of several CachingExchangeRateProviders. Each caching provider reads through its own cache (for example a SQLite or in-memory cache) and only calls its concrete source provider on a miss.</desc>
+  <desc id="desc">A caller talks to an AggregatingRateProvider, which routes each currency pair to one of several CachingRateProviders. Each caching provider reads through its own cache (for example a SQLite or in-memory cache) and only calls its concrete source provider on a miss.</desc>
 
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -28,49 +28,49 @@
   <!-- edge label -->
   <g>
     <rect x="392" y="76" width="196" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
-    <text x="490" y="90" text-anchor="middle" font-size="11" fill="#334155">IDatedExchangeRateProvider</text>
+    <text x="490" y="90" text-anchor="middle" font-size="11" fill="#334155">IDatedRateProvider</text>
   </g>
 
   <!-- aggregator -->
   <g>
     <rect x="170" y="104" width="420" height="64" rx="8" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.5"/>
-    <text x="380" y="132" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1b4b">AggregatingExchangeRateProvider</text>
+    <text x="380" y="132" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1b4b">AggregatingRateProvider</text>
     <text x="380" y="152" text-anchor="middle" font-size="11" fill="#3730a3">routes per FX pair · priority / average / custom</text>
   </g>
 
   <!-- caching providers -->
   <g>
     <rect x="90" y="226" width="240" height="62" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
-    <text x="210" y="252" text-anchor="middle" font-size="13" font-weight="600" fill="#14532d">CachingExchangeRateProvider</text>
+    <text x="210" y="252" text-anchor="middle" font-size="13" font-weight="600" fill="#14532d">CachingRateProvider</text>
     <text x="210" y="272" text-anchor="middle" font-size="11" fill="#166534">"RBA" · read-through</text>
   </g>
   <g>
     <rect x="430" y="226" width="240" height="62" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
-    <text x="550" y="252" text-anchor="middle" font-size="13" font-weight="600" fill="#14532d">CachingExchangeRateProvider</text>
+    <text x="550" y="252" text-anchor="middle" font-size="13" font-weight="600" fill="#14532d">CachingRateProvider</text>
     <text x="550" y="272" text-anchor="middle" font-size="11" fill="#166534">"ECB" · read-through</text>
   </g>
 
   <!-- caches -->
   <g>
     <rect x="110" y="346" width="200" height="56" rx="8" fill="#fef9c3" stroke="#eab308" stroke-width="1.5"/>
-    <text x="210" y="370" text-anchor="middle" font-size="12.5" font-weight="600" fill="#713f12">SqliteExchangeRateCache</text>
+    <text x="210" y="370" text-anchor="middle" font-size="12.5" font-weight="600" fill="#713f12">SqliteRateCache</text>
     <text x="210" y="389" text-anchor="middle" font-size="10.5" fill="#854d0e">durable · one file, per provider</text>
   </g>
   <g>
     <rect x="450" y="346" width="200" height="56" rx="8" fill="#fef9c3" stroke="#eab308" stroke-width="1.5"/>
-    <text x="550" y="370" text-anchor="middle" font-size="12.5" font-weight="600" fill="#713f12">InMemoryExchangeRateCache</text>
+    <text x="550" y="370" text-anchor="middle" font-size="12.5" font-weight="600" fill="#713f12">InMemoryRateCache</text>
     <text x="550" y="389" text-anchor="middle" font-size="10.5" fill="#854d0e">process-local</text>
   </g>
 
   <!-- sources -->
   <g>
     <rect x="110" y="456" width="200" height="48" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
-    <text x="210" y="479" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0f172a">RbaExchangeRateProvider</text>
+    <text x="210" y="479" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0f172a">RbaRateProvider</text>
     <text x="210" y="496" text-anchor="middle" font-size="10.5" fill="#475569">concrete network source</text>
   </g>
   <g>
     <rect x="450" y="456" width="200" height="48" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
-    <text x="550" y="479" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0f172a">EcbExchangeRateProvider</text>
+    <text x="550" y="479" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0f172a">EcbRateProvider</text>
     <text x="550" y="496" text-anchor="middle" font-size="10.5" fill="#475569">concrete network source</text>
   </g>
 </svg>

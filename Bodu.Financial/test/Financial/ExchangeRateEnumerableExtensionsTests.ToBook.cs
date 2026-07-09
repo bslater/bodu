@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.Extensions;
 using Bodu.Test.Assertions;
 
@@ -33,14 +34,14 @@ public partial class ExchangeRateEnumerableExtensionsTests
     [TestMethod]
     public void ToBook_WhenRatesIsEmpty_ShouldReturnEmptyBook()
     {
-        ExchangeRateBook book = Array.Empty<ExchangeRate>().ToBook();
+        RateBook book = Array.Empty<ExchangeRate>().ToBook();
 
         Assert.AreEqual(0, book.Count);
     }
 
     /// <summary>
     /// Verifies that rates for the same pair from different providers become separate series, unlike the
-    /// single-provider-per-pair <see cref="FixedDatedExchangeRateProvider(IEnumerable{ExchangeRate})" /> constructor.
+    /// single-provider-per-pair <see cref="FixedDatedRateProvider(IEnumerable{ExchangeRate})" /> constructor.
     /// </summary>
     [TestMethod]
     public void ToBook_WhenSamePairHasMultipleProviders_ShouldKeepOneSeriesPerProvider()
@@ -51,12 +52,12 @@ public partial class ExchangeRateEnumerableExtensionsTests
             Rate("AUD", "USD", D1, 0.69m, "ECB"),
         ];
 
-        ExchangeRateBook book = rates.ToBook();
+        RateBook book = rates.ToBook();
 
         Assert.AreEqual(2, book.Count);
-        Assert.IsTrue(book.TryGetSeries(AudUsd, "RBA", out ExchangeRateSeries? rba));
+        Assert.IsTrue(book.TryGetSeries(AudUsd, "RBA", out RateSeries? rba));
         Assert.AreEqual(0.68m, rba!.GetObservations().Single().Rate);
-        Assert.IsTrue(book.TryGetSeries(AudUsd, "ECB", out ExchangeRateSeries? ecb));
+        Assert.IsTrue(book.TryGetSeries(AudUsd, "ECB", out RateSeries? ecb));
         Assert.AreEqual(0.69m, ecb!.GetObservations().Single().Rate);
     }
 
@@ -73,9 +74,9 @@ public partial class ExchangeRateEnumerableExtensionsTests
             Rate("AUD", "USD", D1, 0.70m, "RBA"),
         ];
 
-        ExchangeRateBook book = rates.ToBook();
+        RateBook book = rates.ToBook();
 
-        Assert.IsTrue(book.TryGetSeries(AudUsd, "RBA", out ExchangeRateSeries? series));
+        Assert.IsTrue(book.TryGetSeries(AudUsd, "RBA", out RateSeries? series));
         Assert.AreEqual(0.70m, series!.GetObservations().Single().Rate);
     }
 
@@ -94,9 +95,9 @@ public partial class ExchangeRateEnumerableExtensionsTests
             Rate("AUD", "USD", D1.AddDays(1), 0.69m, "RBA", earlier),
         ];
 
-        ExchangeRateBook book = rates.ToBook();
+        RateBook book = rates.ToBook();
 
-        Assert.IsTrue(book.TryGetSeries(AudUsd, "RBA", out ExchangeRateSeries? series));
+        Assert.IsTrue(book.TryGetSeries(AudUsd, "RBA", out RateSeries? series));
         Assert.AreEqual(later, series!.FetchedAtUtc);
     }
 
@@ -111,14 +112,14 @@ public partial class ExchangeRateEnumerableExtensionsTests
         // A USD->AUD row derived from an AUD/USD observation of 0.68: Rate is the pre-rounded reciprocal.
         ExchangeRate inverted = new(CurrencyCode.USD, CurrencyCode.AUD, D1, 1m / 0.68m, "RBA", isInverted: true);
 
-        ExchangeRateBook book = new[] { inverted }.ToBook();
+        RateBook book = new[] { inverted }.ToBook();
 
         Assert.AreEqual(1, book.Count);
-        Assert.IsTrue(book.TryGetSeries(AudUsd, "RBA", out ExchangeRateSeries? series), "the natively quoted AUD/USD series holds the observation");
+        Assert.IsTrue(book.TryGetSeries(AudUsd, "RBA", out RateSeries? series), "the natively quoted AUD/USD series holds the observation");
         Assert.AreEqual(0.68m, series!.GetObservations().Single().Rate);
 
-        FixedDatedExchangeRateProvider provider = new(book);
-        Assert.IsTrue(provider.TryGetRate("USD", "AUD", D1, null, out ExchangeRateLookupResult result), "the derived direction still resolves via inverse fallback");
+        FixedDatedRateProvider provider = new(book);
+        Assert.IsTrue(provider.TryGetRate("USD", "AUD", D1, null, out RateLookupResult result), "the derived direction still resolves via inverse fallback");
         Assert.IsTrue(result.Rate.IsInverted);
     }
 
@@ -128,12 +129,12 @@ public partial class ExchangeRateEnumerableExtensionsTests
     [TestMethod]
     public void ToBook_WhenFedGetRatesRows_ShouldRoundTrip()
     {
-        FixedDatedExchangeRateProvider source = new(new[] { Rate("AUD", "USD", D1, 0.6828m, "RBA") });
+        FixedDatedRateProvider source = new(new[] { Rate("AUD", "USD", D1, 0.6828m, "RBA") });
 
-        ExchangeRateRangeResult fetched = source.GetRates("AUD", "USD", D1, D1);
-        ExchangeRateBook book = fetched.ToBook();
+        RateRangeResult fetched = source.GetRates("AUD", "USD", D1, D1);
+        RateBook book = fetched.ToBook();
 
-        Assert.IsTrue(book.TryGetSeries(AudUsd, "RBA", out ExchangeRateSeries? series));
+        Assert.IsTrue(book.TryGetSeries(AudUsd, "RBA", out RateSeries? series));
         Assert.AreEqual(0.6828m, series!.GetObservations().Single().Rate);
     }
 }

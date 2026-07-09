@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Financial.Currencies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Financial.DependencyInjection;

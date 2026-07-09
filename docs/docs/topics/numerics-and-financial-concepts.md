@@ -35,7 +35,7 @@ All empty constructions — inverted bounds, or equal bounds with an open endpoi
 
 ## Minor unit
 
-The smallest commonly-issued denomination of a currency, expressed as the number of fractional digits its major unit subdivides into: `0` for `JPY` and `KRW`, `2` for `USD` and `EUR` and most others, `3` for `BHD` and `KWD`. Construction of `Money<TCurrency>` rounds to this precision, and `FromMinorUnits` / `ToMinorUnits` bridge to the integer minor-unit storage that ledgers and wire formats use. The value travels on the <xref:Bodu.Financial.ICurrency> tag, so generic code reads it as `TCurrency.MinorUnits`.
+The smallest commonly-issued denomination of a currency, expressed as the number of fractional digits its major unit subdivides into: `0` for `JPY` and `KRW`, `2` for `USD` and `EUR` and most others, `3` for `BHD` and `KWD`. Construction of `Money<TCurrency>` rounds to this precision, and `FromMinorUnits` / `ToMinorUnits` bridge to the integer minor-unit storage that ledgers and wire formats use. The value travels on the <xref:Bodu.Financial.Currencies.ICurrency> tag, so generic code reads it as `TCurrency.MinorUnits`.
 
 ## Cash-rounding increment
 
@@ -58,7 +58,7 @@ The ratio overload `Allocate(ReadOnlySpan<decimal> ratios)` weights shares propo
 
 ## Dated FX lookup and provenance
 
-<xref:Bodu.Financial.IExchangeRateProvider> answers "what is the rate now"; <xref:Bodu.Financial.IDatedExchangeRateProvider> answers "what was the rate on this date" — the contract for ledger postings and tax reports where the date is part of the audit trail. A dated lookup returns an <xref:Bodu.Financial.ExchangeRateLookupResult> carrying **provenance**: the publishing provider's name, the date the returned rate was actually observed, the offset-day distance from the requested date, the resolution policy that fired, and an inversion flag. That set is what lets an accounting workflow answer "which observed rate produced this number?" without re-querying the table. Grouping several sources behind one entry point with deterministic first-available fallback (or averaging, or per-FX-pair routing) lives in the `Bodu.Financial.ExchangeRates.Caching` package as [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider).
+<xref:Bodu.Financial.ExchangeRates.IRateProvider> answers "what is the rate now"; <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> answers "what was the rate on this date" — the contract for ledger postings and tax reports where the date is part of the audit trail. A dated lookup returns an <xref:Bodu.Financial.ExchangeRates.RateLookupResult> carrying **provenance**: the publishing provider's name, the date the returned rate was actually observed, the offset-day distance from the requested date, the resolution policy that fired, and an inversion flag. That set is what lets an accounting workflow answer "which observed rate produced this number?" without re-querying the table. Grouping several sources behind one entry point with deterministic first-available fallback (or averaging, or per-FX-pair routing) lives in the `Bodu.Financial.ExchangeRates.Caching` package as [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider).
 
 ## Going deeper
 

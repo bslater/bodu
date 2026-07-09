@@ -32,7 +32,7 @@ internal static class OandaHistoryResponseParser
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON or omits the expected <c>widget</c> array.
     /// </exception>
-    public static PairRateData<OandaSeriesInfo> Parse(byte[] json, ExchangeRatePairRequest request, OandaExchangeRateOptions options)
+    public static PairRateData<OandaSeriesInfo> Parse(byte[] json, CurrencyPairRequest request, OandaRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(options);
@@ -49,7 +49,7 @@ internal static class OandaHistoryResponseParser
         }
 
         JsonElement series = SelectSeries(widget, request.Pair);
-        var observations = new List<ExchangeRateObservation>();
+        var observations = new List<RateObservation>();
 
         if (series.TryGetProperty("data", out JsonElement data) && data.ValueKind == JsonValueKind.Array)
         {
@@ -70,7 +70,7 @@ internal static class OandaHistoryResponseParser
                 if (date < request.StartDate || date > request.EndDate)
                     continue;
 
-                observations.Add(new ExchangeRateObservation(date, rate));
+                observations.Add(new RateObservation(date, rate));
             }
         }
 
@@ -84,7 +84,7 @@ internal static class OandaHistoryResponseParser
     /// <param name="widget">The widget array.</param>
     /// <param name="pair">The requested currency pair.</param>
     /// <returns>The matching widget entry, or the first entry when no exact match is present.</returns>
-    private static JsonElement SelectSeries(JsonElement widget, ExchangeRatePair pair)
+    private static JsonElement SelectSeries(JsonElement widget, CurrencyPair pair)
     {
         string from = pair.From.ToString();
         string to = pair.To.ToString();
@@ -112,7 +112,7 @@ internal static class OandaHistoryResponseParser
     /// <param name="request">The originating request, used for the error message.</param>
     /// <returns>The parsed document.</returns>
     /// <exception cref="ExchangeRateFormatException">Thrown when the bytes are not valid JSON.</exception>
-    private static JsonDocument ParseDocument(byte[] json, ExchangeRatePairRequest request)
+    private static JsonDocument ParseDocument(byte[] json, CurrencyPairRequest request)
     {
         try
         {
@@ -169,6 +169,6 @@ internal static class OandaHistoryResponseParser
     /// </summary>
     /// <param name="request">The originating request.</param>
     /// <returns>The exception to throw.</returns>
-    private static ExchangeRateFormatException NoData(ExchangeRatePairRequest request) =>
+    private static ExchangeRateFormatException NoData(CurrencyPairRequest request) =>
         new(string.Format(CultureInfo.CurrentCulture, OandaResourceStrings.Format_Invalid_OandaNoData, request.Pair.From.ToString(), request.Pair.To.ToString()));
 }

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Financial.DependencyInjection;
@@ -26,7 +28,7 @@ public sealed class IntegrationTests
         ServiceProvider provider = new ServiceCollection()
             .AddFinancialService(builder => builder
                 .AddMonetaryContext("Tax", tax)
-                .AddExchangeRateProvider(new FixedExchangeRateTable(new Dictionary<(string, string), decimal>
+                .AddExchangeRateProvider(new FixedRateTable(new Dictionary<(string, string), decimal>
                 {
                     { ("USD", "AUD"), 1.5m },
                 }))
@@ -36,7 +38,7 @@ public sealed class IntegrationTests
         Assert.IsNotNull(provider.GetRequiredService<ICurrencyLookup>());
         Assert.AreSame(tax, provider.GetRequiredKeyedService<MonetaryContext>("Tax"));
 
-        IExchangeRateProvider rates = provider.GetRequiredService<IExchangeRateProvider>();
+        IRateProvider rates = provider.GetRequiredService<IRateProvider>();
         Assert.AreEqual(1.5m, rates.GetRate("USD", "AUD"));
     }
 }

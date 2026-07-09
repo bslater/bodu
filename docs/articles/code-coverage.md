@@ -102,9 +102,9 @@ real per-file coverage was already healthy:
 
 | File | Report (phantom path) | Actual (live path) |
 |---|---|---|
-| `EcbExchangeRateXmlParser` | 0% | 93.1% |
-| `BoeExchangeRateCsvParser` | 0% | 93.9% |
-| `RbaExchangeRateWorkbookParser` | 0% | 94.3% |
+| `EcbRateXmlParser` | 0% | 93.1% |
+| `BoeRateCsvParser` | 0% | 93.9% |
+| `RbaRateWorkbookParser` | 0% | 94.3% |
 | `YahooChartResponseParser` | 0% | 87.7% |
 | `OfxSpotRateHistoryResponseParser` | 0% | 94.6% |
 
@@ -114,7 +114,7 @@ percentage. A path that exists under two different folder spellings is the
 tell-tale of a cross-refactor artifact, not a coverage gap.
 
 The genuinely low spots this re-measurement surfaced were narrow — the
-`OfxExchangeRateProvider` owned-client constructor path (now covered) and the
+`OfxRateProvider` owned-client constructor path (now covered) and the
 file-system feed/response/workbook caches' best-effort I/O swallow blocks. The
 caches' `Store` `IOException` path is covered; their `UnauthorizedAccessException`
 catches and `TryGet` read-fault catches are left uncovered by design per

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Provides the source-generated, allocation-free logging messages emitted by <see cref="EcbExchangeRateProvider" />
+/// Provides the source-generated, allocation-free logging messages emitted by <see cref="EcbRateProvider" />
 /// while downloading and serving ECB euro reference rates.
 /// </summary>
 /// <remarks>

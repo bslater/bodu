@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// The JSON serialization shape of one cached rate row, distinct from the public <see cref="CachedExchangeRate" />
+/// The JSON serialization shape of one cached rate row, distinct from the public <see cref="CachedRate" />
 /// value so the wire format can evolve independently of the in-memory contract.
 /// </summary>
 /// <remarks>

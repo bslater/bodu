@@ -15,7 +15,7 @@ public sealed partial class AverageStrategyTests
     [TestCategory("Regression")]
     public async Task AggregateRangeAsync_WhenDatesMisaligned_ShouldAverageOnlySharedDates()
     {
-        IReadOnlyList<NamedDatedExchangeRateProvider> candidates = new[]
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[]
         {
             Named("A", ("AUD", "USD", new DateOnly(2024, 1, 1), 0.50m), ("AUD", "USD", new DateOnly(2024, 1, 2), 0.52m)),
             Named("B", ("AUD", "USD", new DateOnly(2024, 1, 2), 0.54m), ("AUD", "USD", new DateOnly(2024, 1, 3), 0.56m)),

@@ -26,7 +26,7 @@ public static class YahooFinancialServiceBuilderExtensions
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configuration">
     /// An optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
-    /// bound into <see cref="YahooExchangeRateOptions" />.
+    /// bound into <see cref="YahooRateProviderOptions" />.
     /// </param>
     /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Yahoo</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
@@ -45,7 +45,7 @@ public static class YahooFinancialServiceBuilderExtensions
     /// <para>
     /// The provider is registered as a singleton so its in-memory store of fetched pairs is shared across resolutions;
     /// it is backed by an <see cref="IHttpClientFactory" /> client so handler lifetime is managed by the factory. The
-    /// provider is also exposed as <see cref="IDatedExchangeRateProvider" /> and <see cref="IExchangeRateProvider" />
+    /// provider is also exposed as <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />
     /// through idempotent registrations.
     /// </para>
     /// <para>
@@ -54,7 +54,7 @@ public static class YahooFinancialServiceBuilderExtensions
     /// and tunable through <paramref name="configureResilience" />. The handler sits in the message-handler pipeline
     /// below the provider's single-flight load coordinator, so a retry re-issues the one in-flight request rather than
     /// multiplying across coalesced callers. Because the resilience handler enforces its own per-attempt timeout driven
-    /// from <see cref="WebExchangeRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
+    /// from <see cref="WebRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
     /// <example>
@@ -76,9 +76,9 @@ public static class YahooFinancialServiceBuilderExtensions
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Yahoo",
-        Action<YahooExchangeRateOptions>? configure = null,
+        Action<YahooRateProviderOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
-        => builder.AddWebExchangeRateProvider<YahooExchangeRateProvider, YahooExchangeRateOptions>(
+        => builder.AddWebRateProvider<YahooRateProvider, YahooRateProviderOptions>(
             HttpClientName,
             configuration,
             sectionName,
@@ -86,5 +86,5 @@ public static class YahooFinancialServiceBuilderExtensions
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>
-                new YahooExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<YahooExchangeRateProvider>(), timeProvider));
+                new YahooRateProvider(client, opts, loggerFactory?.CreateLogger<YahooRateProvider>(), timeProvider));
 }

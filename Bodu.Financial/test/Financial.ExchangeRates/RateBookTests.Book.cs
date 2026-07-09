@@ -1,0 +1,30 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="RateBookTests.Book.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Test;
+
+namespace Bodu.Financial.ExchangeRates;
+
+public partial class RateBookTests
+{
+
+    /// <summary>
+    /// Verifies that the smoke-tier happy path constructs a book from a single series and exposes it via the
+    /// pair/provider key.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void Book_WhenConstructedFromSingleSeries_ShouldExposeSeriesByKey()
+    {
+        RateSeries series = BuildSeries(s_usdAud, "RBA", 1.5m);
+        RateBook book = new([series]);
+
+        bool found = book.TryGetSeries(s_usdAud, "RBA", out RateSeries? resolved);
+
+        Assert.IsTrue(found);
+        Assert.AreSame(series, resolved);
+    }
+}

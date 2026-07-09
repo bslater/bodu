@@ -19,27 +19,27 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 public static class RateCachingExtensions
 {
-    /// <summary>The default configuration section bound into <see cref="CachingExchangeRateOptions" />.</summary>
-    private const string DefaultCacheSection = "Financial:ExchangeRateCache";
+    /// <summary>The default configuration section bound into <see cref="CachingRateOptions" />.</summary>
+    private const string DefaultCacheSection = "Financial:RateCache";
 
     /// <summary>
-    /// Registers a <see cref="CachingExchangeRateProvider" /> that wraps a single source
+    /// Registers a <see cref="CachingRateProvider" /> that wraps a single source
     /// <typeparamref name="TProvider" /> over its own on-disk cache, resolvable as both
-    /// <see cref="IDatedExchangeRateProvider" /> and the timeless <see cref="IExchangeRateProvider" />.
+    /// <see cref="IDatedRateProvider" /> and the timeless <see cref="IRateProvider" />.
     /// </summary>
     /// <typeparam name="TProvider">The concrete source provider to cache.</typeparam>
     /// <param name="builder">The financial service builder.</param>
     /// <param name="providerName">The name the source's rates are cached under.</param>
     /// <param name="configuration">
-    /// An optional configuration root or section bound into <see cref="CachingExchangeRateOptions" />.
+    /// An optional configuration root or section bound into <see cref="CachingRateOptions" />.
     /// </param>
     /// <param name="sectionName">
-    /// The configuration section name. Defaults to <c>Financial:ExchangeRateCache</c>.
+    /// The configuration section name. Defaults to <c>Financial:RateCache</c>.
     /// </param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
     /// <param name="cacheFactory">
-    /// An optional factory producing the <see cref="IExchangeRateCache" /> from the service provider and the provider
-    /// name. When <see langword="null" />, a default <see cref="TomlFileExchangeRateCache" /> bound to
+    /// An optional factory producing the <see cref="IRateCache" /> from the service provider and the provider
+    /// name. When <see langword="null" />, a default <see cref="TomlFileRateCache" /> bound to
     /// <paramref name="providerName" /> under the options' <c>CacheDirectory</c> is used. Supply a factory to choose
     /// the storage structure — for example a JSON cache, a partitioned file layout, or a SQLite or distributed cache.
     /// </param>
@@ -52,7 +52,7 @@ public static class RateCachingExtensions
     /// </exception>
     /// <remarks>
     /// The source <typeparamref name="TProvider" /> must already be registered — for example through its provider
-    /// package's registration such as <c>AddRbaHistoricalRates</c>. This method resolves the registered instance and
+    /// package's registration such as <c>AddRbaExchangeRates</c>. This method resolves the registered instance and
     /// wraps it in a caching decorator; it does not construct the source or its own dependencies (such as its
     /// <see cref="HttpClient" />), so registering only the cache without the source fails when the provider is
     /// resolved.
@@ -61,22 +61,22 @@ public static class RateCachingExtensions
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddFinancialService()
-    ///         .AddRbaHistoricalRates(configuration)
-    ///         .AddCachedExchangeRateProvider<RbaExchangeRateProvider>("RBA", configuration,
+    ///         .AddRbaExchangeRates(configuration)
+    ///         .AddCachedRateProvider<RbaRateProvider>("RBA", configuration,
     ///             configure: o => o.DefaultExpiry = TimeSpan.FromHours(12));
     ///
-    /// // Consumers resolve IDatedExchangeRateProvider (or IExchangeRateProvider) and get cached lookups transparently.
+    /// // Consumers resolve IDatedRateProvider (or IRateProvider) and get cached lookups transparently.
     ///]]>
     /// </code>
     /// </example>
-    public static IFinancialServiceBuilder AddCachedExchangeRateProvider<TProvider>(
+    public static IFinancialServiceBuilder AddCachedRateProvider<TProvider>(
         this IFinancialServiceBuilder builder,
         string providerName,
         IConfiguration? configuration = null,
         string sectionName = DefaultCacheSection,
-        Action<CachingExchangeRateOptions>? configure = null,
-        Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = null)
-        where TProvider : class, IDatedExchangeRateProvider
+        Action<CachingRateOptions>? configure = null,
+        Func<IServiceProvider, string, IRateCache>? cacheFactory = null)
+        where TProvider : class, IDatedRateProvider
     {
         ThrowHelper.ThrowIfNull(builder);
         ThrowHelper.ThrowIfNullOrWhiteSpace(providerName);
@@ -88,25 +88,25 @@ public static class RateCachingExtensions
         services.TryAddSingleton<TProvider>();
         services.AddSingleton(serviceProvider =>
             CreateCachingProvider(serviceProvider, providerName, serviceProvider.GetRequiredService<TProvider>(), cacheFactory));
-        services.AddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<CachingExchangeRateProvider>());
-        services.AddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<CachingExchangeRateProvider>());
+        services.AddSingleton<IDatedRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<CachingRateProvider>());
+        services.AddSingleton<IRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<CachingRateProvider>());
 
         return builder;
     }
 
     /// <summary>
-    /// Registers an <see cref="AggregatingExchangeRateProvider" /> that groups the cached children added through
-    /// <paramref name="configure" />, resolvable as both <see cref="IDatedExchangeRateProvider" /> and the timeless
-    /// <see cref="IExchangeRateProvider" />. Each child is also registered as a keyed
-    /// <see cref="IDatedExchangeRateProvider" /> so a specific source can be resolved by name.
+    /// Registers an <see cref="AggregatingRateProvider" /> that groups the cached children added through
+    /// <paramref name="configure" />, resolvable as both <see cref="IDatedRateProvider" /> and the timeless
+    /// <see cref="IRateProvider" />. Each child is also registered as a keyed
+    /// <see cref="IDatedRateProvider" /> so a specific source can be resolved by name.
     /// </summary>
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configure">A callback that adds the cached children and configures routing and strategy.</param>
     /// <param name="configuration">
-    /// An optional configuration root or section bound into the shared <see cref="CachingExchangeRateOptions" />.
+    /// An optional configuration root or section bound into the shared <see cref="CachingRateOptions" />.
     /// </param>
     /// <param name="sectionName">
-    /// The configuration section name. Defaults to <c>Financial:ExchangeRateCache</c>.
+    /// The configuration section name. Defaults to <c>Financial:RateCache</c>.
     /// </param>
     /// <param name="configureCache">
     /// An optional callback applied to the shared cache options after configuration binding.
@@ -122,41 +122,41 @@ public static class RateCachingExtensions
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddFinancialService()
-    ///         .AddAggregatedExchangeRateProvider(agg => agg
-    ///             .AddCachedChild<RbaExchangeRateProvider>("RBA")
-    ///             .AddCachedChild<EcbExchangeRateProvider>("ECB")
-    ///             .MapPair(new ExchangeRatePair(CurrencyCode.AUD, CurrencyCode.USD), "RBA", "ECB")
-    ///             .MapPair(new ExchangeRatePair(CurrencyCode.USD, CurrencyCode.GBP), "ECB", "RBA"));
+    ///         .AddAggregatedRateProvider(agg => agg
+    ///             .AddCachedChild<RbaRateProvider>("RBA")
+    ///             .AddCachedChild<EcbRateProvider>("ECB")
+    ///             .MapPair(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), "RBA", "ECB")
+    ///             .MapPair(new CurrencyPair(CurrencyCode.USD, CurrencyCode.GBP), "ECB", "RBA"));
     ///
     /// // Resolve the aggregate, or a specific source by name:
-    /// var aggregate = provider.GetRequiredService<IDatedExchangeRateProvider>();
-    /// var rbaOnly = provider.GetRequiredKeyedService<IDatedExchangeRateProvider>("RBA");
+    /// var aggregate = provider.GetRequiredService<IDatedRateProvider>();
+    /// var rbaOnly = provider.GetRequiredKeyedService<IDatedRateProvider>("RBA");
     ///]]>
     /// </code>
     /// </example>
-    public static IFinancialServiceBuilder AddAggregatedExchangeRateProvider(
+    public static IFinancialServiceBuilder AddAggregatedRateProvider(
         this IFinancialServiceBuilder builder,
-        Action<IAggregatedExchangeRateBuilder> configure,
+        Action<IAggregatedRateBuilder> configure,
         IConfiguration? configuration = null,
         string sectionName = DefaultCacheSection,
-        Action<CachingExchangeRateOptions>? configureCache = null)
+        Action<CachingRateOptions>? configureCache = null)
     {
         ThrowHelper.ThrowIfNull(builder);
         ThrowHelper.ThrowIfNull(configure);
         ThrowHelper.ThrowIfNullOrWhiteSpace(sectionName);
 
-        AggregatedExchangeRateBuilder aggregateBuilder = new();
+        AggregatedRateBuilder aggregateBuilder = new();
         configure(aggregateBuilder);
 
         IServiceCollection services = builder.Services;
         BindCacheOptions(services, configuration, sectionName, configureCache);
 
         // Register each child keyed by name so a specific cached source is resolvable through the service catalog.
-        foreach ((string Name, Func<IServiceProvider, IDatedExchangeRateProvider> Factory, Func<IServiceProvider, string, IExchangeRateCache>? CacheFactory) child in aggregateBuilder.Children)
+        foreach ((string Name, Func<IServiceProvider, IDatedRateProvider> Factory, Func<IServiceProvider, string, IRateCache>? CacheFactory) child in aggregateBuilder.Children)
         {
-            Func<IServiceProvider, IDatedExchangeRateProvider> factory = child.Factory;
-            Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory = child.CacheFactory;
-            services.TryAddKeyedSingleton<IDatedExchangeRateProvider>(
+            Func<IServiceProvider, IDatedRateProvider> factory = child.Factory;
+            Func<IServiceProvider, string, IRateCache>? cacheFactory = child.CacheFactory;
+            services.TryAddKeyedSingleton<IDatedRateProvider>(
                 child.Name,
                 (serviceProvider, key) => CreateCachingProvider(serviceProvider, (string)key!, factory(serviceProvider), cacheFactory));
         }
@@ -165,37 +165,37 @@ public static class RateCachingExtensions
         for (int i = 0; i < childNames.Length; i++)
             childNames[i] = aggregateBuilder.Children[i].Name;
 
-        IReadOnlyList<(ExchangeRatePair Pair, string[] ProviderOrder, IExchangeRateAggregationStrategy? Strategy)> routes = aggregateBuilder.Routes;
-        IExchangeRateAggregationStrategy? defaultStrategy = aggregateBuilder.DefaultStrategy;
+        IReadOnlyList<(CurrencyPair Pair, string[] ProviderOrder, IRateAggregationStrategy? Strategy)> routes = aggregateBuilder.Routes;
+        IRateAggregationStrategy? defaultStrategy = aggregateBuilder.DefaultStrategy;
 
         services.AddSingleton(serviceProvider =>
         {
-            var children = new NamedDatedExchangeRateProvider[childNames.Length];
+            var children = new NamedDatedRateProvider[childNames.Length];
             for (int i = 0; i < childNames.Length; i++)
-                children[i] = new NamedDatedExchangeRateProvider(childNames[i], serviceProvider.GetRequiredKeyedService<IDatedExchangeRateProvider>(childNames[i]));
+                children[i] = new NamedDatedRateProvider(childNames[i], serviceProvider.GetRequiredKeyedService<IDatedRateProvider>(childNames[i]));
 
-            ExchangeRateAggregationOptions options = new();
+            RateAggregationOptions options = new();
             if (defaultStrategy is not null)
                 options.DefaultStrategy = defaultStrategy;
 
-            foreach ((ExchangeRatePair pair, string[]? order, IExchangeRateAggregationStrategy? strategy) in routes)
-                options.Routes[pair] = new ExchangeRatePairRoute(order, strategy);
+            foreach ((CurrencyPair pair, string[]? order, IRateAggregationStrategy? strategy) in routes)
+                options.Routes[pair] = new CurrencyPairRoute(order, strategy);
 
-            return new AggregatingExchangeRateProvider(
+            return new AggregatingRateProvider(
                 children,
                 options,
                 serviceProvider.GetService<TimeProvider>(),
-                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<AggregatingExchangeRateProvider>());
+                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<AggregatingRateProvider>());
         });
 
-        services.AddSingleton<IDatedExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<AggregatingExchangeRateProvider>());
-        services.AddSingleton<IExchangeRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<AggregatingExchangeRateProvider>());
+        services.AddSingleton<IDatedRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<AggregatingRateProvider>());
+        services.AddSingleton<IRateProvider>(static serviceProvider => serviceProvider.GetRequiredService<AggregatingRateProvider>());
 
         return builder;
     }
 
     /// <summary>
-    /// Adds and binds the shared <see cref="CachingExchangeRateOptions" /> from configuration and a callback.
+    /// Adds and binds the shared <see cref="CachingRateOptions" /> from configuration and a callback.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The optional configuration root or section.</param>
@@ -205,9 +205,9 @@ public static class RateCachingExtensions
         IServiceCollection services,
         IConfiguration? configuration,
         string sectionName,
-        Action<CachingExchangeRateOptions>? configure)
+        Action<CachingRateOptions>? configure)
     {
-        OptionsBuilder<CachingExchangeRateOptions> optionsBuilder = services.AddOptions<CachingExchangeRateOptions>();
+        OptionsBuilder<CachingRateOptions> optionsBuilder = services.AddOptions<CachingRateOptions>();
 
         if (configuration is not null)
             optionsBuilder.Bind(configuration.GetSection(sectionName));
@@ -231,33 +231,33 @@ public static class RateCachingExtensions
     /// <param name="cacheFactory">
     /// An optional factory producing the cache; when <see langword="null" />, a default file cache is built.
     /// </param>
-    /// <returns>A new <see cref="CachingExchangeRateProvider" />.</returns>
-    private static CachingExchangeRateProvider CreateCachingProvider(
+    /// <returns>A new <see cref="CachingRateProvider" />.</returns>
+    private static CachingRateProvider CreateCachingProvider(
         IServiceProvider serviceProvider,
         string name,
-        IDatedExchangeRateProvider inner,
-        Func<IServiceProvider, string, IExchangeRateCache>? cacheFactory)
+        IDatedRateProvider inner,
+        Func<IServiceProvider, string, IRateCache>? cacheFactory)
     {
-        CachingExchangeRateOptions options = serviceProvider.GetRequiredService<IOptions<CachingExchangeRateOptions>>().Value;
-        IExchangeRateCache cache = cacheFactory?.Invoke(serviceProvider, name) ?? CreateDefaultCache(name, options);
+        CachingRateOptions options = serviceProvider.GetRequiredService<IOptions<CachingRateOptions>>().Value;
+        IRateCache cache = cacheFactory?.Invoke(serviceProvider, name) ?? CreateDefaultCache(name, options);
 
-        return new CachingExchangeRateProvider(
+        return new CachingRateProvider(
             inner,
             cache,
             options,
             serviceProvider.GetService<TimeProvider>(),
-            serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<CachingExchangeRateProvider>());
+            serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<CachingRateProvider>());
     }
 
     /// <summary>
-    /// Builds the default cache for a named source: a <see cref="TomlFileExchangeRateCache" /> bound to
+    /// Builds the default cache for a named source: a <see cref="TomlFileRateCache" /> bound to
     /// <paramref name="name" /> under the options' cache directory.
     /// </summary>
     /// <param name="name">The provider name the cache is bound to.</param>
     /// <param name="options">The shared cache options carrying the cache directory.</param>
-    /// <returns>A new default <see cref="IExchangeRateCache" />.</returns>
-    private static IExchangeRateCache CreateDefaultCache(string name, CachingExchangeRateOptions options) =>
-        new TomlFileExchangeRateCache(new FileExchangeRateCacheOptions
+    /// <returns>A new default <see cref="IRateCache" />.</returns>
+    private static IRateCache CreateDefaultCache(string name, CachingRateOptions options) =>
+        new TomlFileRateCache(new FileRateCacheOptions
         {
             Provider = name,
             CacheDirectory = options.CacheDirectory,

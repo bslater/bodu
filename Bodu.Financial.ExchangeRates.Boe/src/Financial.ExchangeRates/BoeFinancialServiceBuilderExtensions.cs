@@ -26,7 +26,7 @@ public static class BoeFinancialServiceBuilderExtensions
     /// <param name="builder">The financial service builder.</param>
     /// <param name="configuration">
     /// An optional configuration root or section. When supplied, the section named <paramref name="sectionName" /> is
-    /// bound into <see cref="BoeExchangeRateOptions" />.
+    /// bound into <see cref="BoeRateProviderOptions" />.
     /// </param>
     /// <param name="sectionName">The configuration section name. Defaults to <c>Financial:Boe</c>.</param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
@@ -45,7 +45,7 @@ public static class BoeFinancialServiceBuilderExtensions
     /// <para>
     /// The provider is registered as a singleton so its in-memory store of loaded ranges is shared across resolutions;
     /// it is backed by an <see cref="IHttpClientFactory" /> client so handler lifetime is managed by the factory. The
-    /// provider is also exposed as <see cref="IDatedExchangeRateProvider" /> and <see cref="IExchangeRateProvider" />
+    /// provider is also exposed as <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />
     /// through idempotent registrations.
     /// </para>
     /// <para>
@@ -63,18 +63,18 @@ public static class BoeFinancialServiceBuilderExtensions
     /// IServiceCollection services = new ServiceCollection();
     ///
     /// services.AddFinancialService(builder => builder
-    ///     .AddBoeReferenceRates(configuration, configure: opts => opts.Endpoint.HttpTimeout = TimeSpan.FromSeconds(15)));
+    ///     .AddBoeExchangeRates(configuration, configure: opts => opts.Endpoint.HttpTimeout = TimeSpan.FromSeconds(15)));
     ///]]>
     /// </code>
     /// </example>
     /// </remarks>
-    public static IFinancialServiceBuilder AddBoeReferenceRates(
+    public static IFinancialServiceBuilder AddBoeExchangeRates(
         this IFinancialServiceBuilder builder,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Boe",
-        Action<BoeExchangeRateOptions>? configure = null,
+        Action<BoeRateProviderOptions>? configure = null,
         Action<HttpStandardResilienceOptions>? configureResilience = null)
-        => builder.AddWebExchangeRateProvider<BoeExchangeRateProvider, BoeExchangeRateOptions>(
+        => builder.AddWebRateProvider<BoeRateProvider, BoeRateProviderOptions>(
             HttpClientName,
             configuration,
             sectionName,
@@ -85,5 +85,5 @@ public static class BoeFinancialServiceBuilderExtensions
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>
-                new BoeExchangeRateProvider(client, opts, loggerFactory?.CreateLogger<BoeExchangeRateProvider>(), timeProvider));
+                new BoeRateProvider(client, opts, loggerFactory?.CreateLogger<BoeRateProvider>(), timeProvider));
 }

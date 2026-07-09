@@ -10,7 +10,7 @@ For the high-level shape of the library and the namespace map, start with the [i
 
 ## Currency tag
 
-A **currency tag** is a sealed class in `Bodu.Financial.Currencies` (one per ISO 4217 code) that implements <xref:Bodu.Financial.ICurrency>. Tags exist solely to parameterise <xref:Bodu.Financial.Money`1> and to carry the currency's static metadata. They are never instantiated — every shipped tag declares a `private` constructor and exposes only `static` members.
+A **currency tag** is a sealed class in `Bodu.Financial.Currencies` (one per ISO 4217 code) that implements <xref:Bodu.Financial.Currencies.ICurrency>. Tags exist solely to parameterise <xref:Bodu.Financial.Money`1> and to carry the currency's static metadata. They are never instantiated — every shipped tag declares a `private` constructor and exposes only `static` members.
 
 Tags use C# 11 static-abstract members, so metadata is accessed through the type itself (`USD.IsoCode`, `USD.MinorUnits`) and through `TCurrency.IsoCode` from generic code constrained by `where TCurrency : ICurrency`. `IsoCode` and `MinorUnits` are required; `CashRoundingIncrement`, `IsHistoric`, `DemonetizedOn`, and `SuccessorIsoCode` are `static virtual` with sensible defaults so existing custom tags compile unchanged.
 
@@ -40,7 +40,7 @@ Cross-currency conversion is available only through the explicit `Money<T>.Conve
 
 ## ISO 4217
 
-The international standard for currency codes. Every <xref:Bodu.Financial.ICurrency> tag carries the standard's three-letter alphabetic code (`USD`, `EUR`, `JPY`, `BHD`) and its declared minor-unit count. Validation throughout the library matches the standard's shape: codes are exactly three uppercase ASCII letters, and any value outside that shape is rejected at the boundary.
+The international standard for currency codes. Every <xref:Bodu.Financial.Currencies.ICurrency> tag carries the standard's three-letter alphabetic code (`USD`, `EUR`, `JPY`, `BHD`) and its declared minor-unit count. Validation throughout the library matches the standard's shape: codes are exactly three uppercase ASCII letters, and any value outside that shape is rejected at the boundary.
 
 ## Minor unit
 
@@ -56,7 +56,7 @@ Construction of <xref:Bodu.Financial.Money`1> rounds to this precision; `Money<T
 
 ## Cash rounding increment
 
-A coin-or-note-aligned coarser denomination some currencies use for physical cash totals. CHF rounds to five rappen (`0.05m`), AUD and CAD cash totals round to five cents (`0.05m`), SEK / NOK / ISK round to the whole krona. <xref:Bodu.Financial.ICurrency.CashRoundingIncrement> exposes the value; `Money<T>.RoundToCash()` snaps to it.
+A coin-or-note-aligned coarser denomination some currencies use for physical cash totals. CHF rounds to five rappen (`0.05m`), AUD and CAD cash totals round to five cents (`0.05m`), SEK / NOK / ISK round to the whole krona. <xref:Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement> exposes the value; `Money<T>.RoundToCash()` snaps to it.
 
 Cash rounding is a presentation choice for physical payments, not a storage rule. Electronic transactions retain full minor-unit precision; call `RoundToCash()` only at the point a total becomes a cash payment. The default of `0m` means "no special cash rounding", and `RoundToCash()` is a no-op for those currencies.
 
@@ -66,7 +66,7 @@ Construction and arithmetic default to <xref:System.MidpointRounding.ToEven> —
 
 ## Sub-minor-unit precision
 
-<xref:Bodu.Financial.Money`1> is settlement-grade — every operation rounds to <xref:Bodu.Financial.ICurrency.MinorUnits>. Calculation chains where each step's rounding would compound (compound interest, percentage-of-percentage, unit-rate products) need an exact intermediate representation.
+<xref:Bodu.Financial.Money`1> is settlement-grade — every operation rounds to <xref:Bodu.Financial.Currencies.ICurrency.MinorUnits>. Calculation chains where each step's rounding would compound (compound interest, percentage-of-percentage, unit-rate products) need an exact intermediate representation.
 
 `Money<T>.ToFraction()` returns a <xref:Bodu.Numerics.Fraction`1> over <xref:System.Numerics.BigInteger>, and `Money<T>.FromFraction(...)` snaps a fraction back to settlement precision in one rounding event. `Money<T>.MultiplyExact(Fraction<BigInteger>)` is the single-step shortcut. Use it for amortisation schedules, multi-rate FX chains, and any compound calculation where drift across hundreds of rounding events is unacceptable.
 
@@ -100,82 +100,82 @@ Tag types are source-generated from `currencies.json`, and the runtime catalogue
 
 ## `CurrencyRegistry`
 
-<xref:Bodu.Financial.CurrencyRegistry> is the read-only runtime catalogue of <xref:Bodu.Financial.CurrencyInfo> records — the runtime-shape counterpart of an `ICurrency` tag. It backs <xref:Bodu.Financial.Money> rounding and <xref:Bodu.Financial.MoneyBag> conversions, which resolve a currency's metadata at runtime.
+<xref:Bodu.Financial.Currencies.CurrencyRegistry> is the read-only runtime catalogue of <xref:Bodu.Financial.Currencies.CurrencyInfo> records — the runtime-shape counterpart of an `ICurrency` tag. It backs <xref:Bodu.Financial.Money> rounding and <xref:Bodu.Financial.MoneyBag> conversions, which resolve a currency's metadata at runtime.
 
-The catalogue is closed: it is fixed to the shipped ISO 4217 set (active and historic) and exposes no runtime registration seam, so a currency outside it cannot be constructed as a runtime <xref:Bodu.Financial.Money>. For a generic amount in a unit outside ISO 4217 (a commodity, an in-game token), declare your own `ICurrency` tag and use `Money<TCurrency>`; to substitute or restrict the metadata used for the *shipped* currencies, install a custom `ICurrencyLookup` through <xref:Bodu.Financial.CurrencyResolution>.
+The catalogue is closed: it is fixed to the shipped ISO 4217 set (active and historic) and exposes no runtime registration seam, so a currency outside it cannot be constructed as a runtime <xref:Bodu.Financial.Money>. For a generic amount in a unit outside ISO 4217 (a commodity, an in-game token), declare your own `ICurrency` tag and use `Money<TCurrency>`; to substitute or restrict the metadata used for the *shipped* currencies, install a custom `ICurrencyLookup` through <xref:Bodu.Financial.Currencies.CurrencyResolution>.
 
 ## `ExchangeRate`
 
-<xref:Bodu.Financial.ExchangeRate> is an immutable record-struct describing a single observation: source ISO, destination ISO, observation date, the strictly-positive multiplier, the publishing provider's name, and a flag indicating whether the rate was derived from the reverse pair. It is the unit returned by providers and embedded in <xref:Bodu.Financial.ExchangeRateLookupResult>; it deliberately does not round, so the destination currency's minor-unit precision applies only at the money boundary.
+<xref:Bodu.Financial.ExchangeRates.ExchangeRate> is an immutable record-struct describing a single observation: source ISO, destination ISO, observation date, the strictly-positive multiplier, the publishing provider's name, and a flag indicating whether the rate was derived from the reverse pair. It is the unit returned by providers and embedded in <xref:Bodu.Financial.ExchangeRates.RateLookupResult>; it deliberately does not round, so the destination currency's minor-unit precision applies only at the money boundary.
 
-## `ExchangeRatePair`
+## `CurrencyPair`
 
-<xref:Bodu.Financial.ExchangeRatePair> is the strongly-typed key for FX lookups — an immutable `(FromIsoCode, ToIsoCode)` record-struct that validates both codes at construction. Preferred over `(string, string)` tuples wherever a directional currency pair is used as a dictionary key or method argument; the named fields make the direction obvious and centralise validation. `Inverse()` returns the reverse-direction pair.
+<xref:Bodu.Financial.ExchangeRates.CurrencyPair> is the strongly-typed key for FX lookups — an immutable `(FromIsoCode, ToIsoCode)` record-struct that validates both codes at construction. Preferred over `(string, string)` tuples wherever a directional currency pair is used as a dictionary key or method argument; the named fields make the direction obvious and centralise validation. `Inverse()` returns the reverse-direction pair.
 
-## `ExchangeRateSeries`
+## `RateSeries`
 
-<xref:Bodu.Financial.ExchangeRateSeries> stores every observation for one `(pair, provider)` combination in two parallel sorted arrays — day numbers (<xref:System.DateOnly.DayNumber>) and rates — so resolution is allocation-free and runs in `O(log n)` over the day-number array via <xref:System.Array.BinarySearch``1(``0[],``0)>. The two-array layout improves cache locality compared to a <xref:System.Collections.Generic.SortedDictionary`2>, and instances are safe to share across threads after construction. Public APIs continue to accept and return <xref:System.DateOnly>; conversion to and from the internal day-number representation happens at the boundary.
+<xref:Bodu.Financial.ExchangeRates.RateSeries> stores every observation for one `(pair, provider)` combination in two parallel sorted arrays — day numbers (<xref:System.DateOnly.DayNumber>) and rates — so resolution is allocation-free and runs in `O(log n)` over the day-number array via <xref:System.Array.BinarySearch``1(``0[],``0)>. The two-array layout improves cache locality compared to a <xref:System.Collections.Generic.SortedDictionary`2>, and instances are safe to share across threads after construction. Public APIs continue to accept and return <xref:System.DateOnly>; conversion to and from the internal day-number representation happens at the boundary.
 
-The series is **immutable**. Use the companion <xref:Bodu.Financial.ExchangeRateSeriesBuilder> to construct or edit observations imperatively, or the copy-on-write helpers `ExchangeRateSeries.WithRate(date, rate)` and `ExchangeRateSeries.WithoutRate(date)` for single-edit return-new patterns. `ExchangeRateSeries.GetObservations()` yields the observations as an <xref:Bodu.Financial.ExchangeRateObservation> sequence in strictly ascending date order, and `ExchangeRateSeries.ToBuilder()` returns a fresh builder pre-populated from the snapshot.
+The series is **immutable**. Use the companion <xref:Bodu.Financial.ExchangeRates.RateSeriesBuilder> to construct or edit observations imperatively, or the copy-on-write helpers `RateSeries.WithRate(date, rate)` and `RateSeries.WithoutRate(date)` for single-edit return-new patterns. `RateSeries.GetObservations()` yields the observations as an <xref:Bodu.Financial.ExchangeRates.RateObservation> sequence in strictly ascending date order, and `RateSeries.ToBuilder()` returns a fresh builder pre-populated from the snapshot.
 
-## `ExchangeRateObservation`
+## `RateObservation`
 
-<xref:Bodu.Financial.ExchangeRateObservation> is the lightweight `(Date, Rate)` `readonly record struct` used as the transport shape for series enumeration, builder mutation, and bulk-import APIs. Unlike <xref:Bodu.Financial.ExchangeRate> it does not carry provider or inversion metadata — those are owned by the enclosing series. The type itself does not validate `Rate`; the surrounding series and builder reject zero or negative values at the boundary.
+<xref:Bodu.Financial.ExchangeRates.RateObservation> is the lightweight `(Date, Rate)` `readonly record struct` used as the transport shape for series enumeration, builder mutation, and bulk-import APIs. Unlike <xref:Bodu.Financial.ExchangeRates.ExchangeRate> it does not carry provider or inversion metadata — those are owned by the enclosing series. The type itself does not validate `Rate`; the surrounding series and builder reject zero or negative values at the boundary.
 
-## `ExchangeRateSeriesBuilder`
+## `RateSeriesBuilder`
 
-<xref:Bodu.Financial.ExchangeRateSeriesBuilder> is the mutable companion to <xref:Bodu.Financial.ExchangeRateSeries>. It maintains strictly ascending unique observation dates and strictly positive rates while supporting single-observation edits and bulk import. The public surface distinguishes intent through three explicit shapes — `Add` (throws on duplicate), `Set` (throws on missing), and `Upsert` (insert-or-replace) — plus their `Try`-prefixed boolean siblings. Bulk import uses `AddRange` (rejects duplicates) and `UpsertRange` (replaces existing dates, rejects in-batch duplicates) with atomic-rollback semantics: a mid-batch validation failure leaves the builder unchanged. `ToSeries()` produces an immutable <xref:Bodu.Financial.ExchangeRateSeries> snapshot; further builder mutations do not affect previously produced snapshots, and vice versa. Instances are not thread-safe.
+<xref:Bodu.Financial.ExchangeRates.RateSeriesBuilder> is the mutable companion to <xref:Bodu.Financial.ExchangeRates.RateSeries>. It maintains strictly ascending unique observation dates and strictly positive rates while supporting single-observation edits and bulk import. The public surface distinguishes intent through three explicit shapes — `Add` (throws on duplicate), `Set` (throws on missing), and `Upsert` (insert-or-replace) — plus their `Try`-prefixed boolean siblings. Bulk import uses `AddRange` (rejects duplicates) and `UpsertRange` (replaces existing dates, rejects in-batch duplicates) with atomic-rollback semantics: a mid-batch validation failure leaves the builder unchanged. `ToSeries()` produces an immutable <xref:Bodu.Financial.ExchangeRates.RateSeries> snapshot; further builder mutations do not affect previously produced snapshots, and vice versa. Instances are not thread-safe.
 
-## `ExchangeRateSeriesKey` and `ExchangeRateTableBuilder`
+## `RateSeriesKey` and `RateTableBuilder`
 
-<xref:Bodu.Financial.ExchangeRateSeriesKey> is a `readonly record struct` carrying a <xref:Bodu.Financial.ExchangeRatePair> and the publishing provider's identifier — the natural dictionary key when the same pair has rates from multiple sources.
+<xref:Bodu.Financial.ExchangeRates.RateSeriesKey> is a `readonly record struct` carrying a <xref:Bodu.Financial.ExchangeRates.CurrencyPair> and the publishing provider's identifier — the natural dictionary key when the same pair has rates from multiple sources.
 
-<xref:Bodu.Financial.ExchangeRateTableBuilder> is the higher-level mutable collection that owns one <xref:Bodu.Financial.ExchangeRateSeriesBuilder> per `(pair, provider)` key. It exposes `GetOrAddSeries`, `Upsert(pair, provider, date, rate)`, `TryGetBuilder` (returns the mutable builder), `TryGetSeries` (returns an immutable snapshot), and `ToSeries()` (snapshots every non-empty series). Use it for import workflows that ingest rate observations across many currency pairs and providers before producing immutable snapshots for production lookup. Like the builder it is not thread-safe.
+<xref:Bodu.Financial.ExchangeRates.RateTableBuilder> is the higher-level mutable collection that owns one <xref:Bodu.Financial.ExchangeRates.RateSeriesBuilder> per `(pair, provider)` key. It exposes `GetOrAddSeries`, `Upsert(pair, provider, date, rate)`, `TryGetBuilder` (returns the mutable builder), `TryGetSeries` (returns an immutable snapshot), and `ToSeries()` (snapshots every non-empty series). Use it for import workflows that ingest rate observations across many currency pairs and providers before producing immutable snapshots for production lookup. Like the builder it is not thread-safe.
 
 ## Timeless vs. dated provider
 
-<xref:Bodu.Financial.IExchangeRateProvider> exposes a single `GetRate(from, to)` method returning a `decimal`. It is the right abstraction when the rate is "current" — a static table for unit tests, a daily snapshot, or a live mid-market ticker.
+<xref:Bodu.Financial.ExchangeRates.IRateProvider> exposes a single `GetRate(from, to)` method returning a `decimal`. It is the right abstraction when the rate is "current" — a static table for unit tests, a daily snapshot, or a live mid-market ticker.
 
-<xref:Bodu.Financial.IDatedExchangeRateProvider> takes a <xref:System.DateOnly> and <xref:Bodu.Financial.ExchangeRateLookupOptions> and returns an <xref:Bodu.Financial.ExchangeRateLookupResult>. It is the right abstraction for ledger postings, tax reports, and any workflow where the *date* of the rate is part of the audit trail. Both `GetRate` (throws <xref:System.Collections.Generic.KeyNotFoundException>) and `TryGetRate` (returns `bool`) shapes are required by the contract.
+<xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> takes a <xref:System.DateOnly> and <xref:Bodu.Financial.ExchangeRates.RateLookupOptions> and returns an <xref:Bodu.Financial.ExchangeRates.RateLookupResult>. It is the right abstraction for ledger postings, tax reports, and any workflow where the *date* of the rate is part of the audit trail. Both `GetRate` (throws <xref:System.Collections.Generic.KeyNotFoundException>) and `TryGetRate` (returns `bool`) shapes are required by the contract.
 
 ## Provenance
 
-A dated lookup returns an <xref:Bodu.Financial.ExchangeRateLookupResult> — a `readonly record struct` with five properties — plus a family of derived convenience members. The properties:
+A dated lookup returns an <xref:Bodu.Financial.ExchangeRates.RateLookupResult> — a `readonly record struct` with five properties — plus a family of derived convenience members. The properties:
 
 | Property | Meaning |
 |---|---|
-| `Rate` | The resolved <xref:Bodu.Financial.ExchangeRate>: `Rate.Provider`, `Rate.Date` (the observed date, may differ from the request), `Rate.Rate` (the multiplier), and `Rate.IsInverted` (derived from the reverse-direction pair). |
+| `Rate` | The resolved <xref:Bodu.Financial.ExchangeRates.ExchangeRate>: `Rate.Provider`, `Rate.Date` (the observed date, may differ from the request), `Rate.Rate` (the multiplier), and `Rate.IsInverted` (derived from the reverse-direction pair). |
 | `RequestedDate` | The date the caller originally asked for. |
-| `Resolution` | The <xref:Bodu.Financial.ExchangeRateDateResolution> policy that fired (`Exact`, `PreviousOnOrBefore`, `NextOnOrAfter`, `Nearest`, `NearestPreferPrevious`, `NearestPreferNext`). |
+| `Resolution` | The <xref:Bodu.Financial.ExchangeRates.RateDateResolution> policy that fired (`Exact`, `PreviousOnOrBefore`, `NextOnOrAfter`, `Nearest`, `NearestPreferPrevious`, `NearestPreferNext`). |
 | `OffsetDays` | Absolute day distance between `RequestedDate` and `Rate.Date`. |
-| `Provenance` | The <xref:Bodu.Financial.ExchangeRateProvenance> — provider, <xref:Bodu.Financial.ExchangeRateOrigin> (`Live` / `Cache`), backend label, and cache age when served from a cache. |
+| `Provenance` | The <xref:Bodu.Financial.ExchangeRates.RateProvenance> — provider, <xref:Bodu.Financial.ExchangeRates.RateOrigin> (`Live` / `Cache`), backend label, and cache age when served from a cache. |
 
 The derived members live on <xref:Bodu.Financial.Extensions> rather than on the record — `ResolvedDate` (`== Rate.Date`), `SignedOffsetDays` (negative when the resolved date is earlier), `IsExactDate` (`OffsetDays == 0`), `IsPreviousDate`, and `IsFutureDate` — emitted as C# extension *properties* or classic extension *methods* depending on the build. That set is what lets accounting and tax workflows answer "which observed rate produced this number, and how far off the requested date was it?" without re-querying the table.
 
 ## Aggregating provider
 
-Grouping several FX sources behind one entry point is no longer part of core `Bodu.Financial` — it lives in the `Bodu.Financial.ExchangeRates.Caching` package as [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider). It wraps a set of named child providers and combines their results through a pluggable [`IExchangeRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IExchangeRateAggregationStrategy):
+Grouping several FX sources behind one entry point is no longer part of core `Bodu.Financial` — it lives in the `Bodu.Financial.ExchangeRates.Caching` package as [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider). It wraps a set of named child providers and combines their results through a pluggable [`IRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy):
 
 - `PriorityFallbackStrategy` resolves every lookup with a deterministic first-available strategy — child providers are consulted in order and the first successful result is returned. This is the direct successor to the old composite stack, keeping fallback behaviour explicit and auditable, useful for stacking a primary ECB feed over an OANDA backup over a static last-known-good table.
 - `AverageStrategy` returns the mean of all contributing providers for the pair.
 
-Strategies are expressed through `IExchangeRateAggregationStrategy` (PriorityFallback / Average / custom) rather than a fixed enum, and the aggregator supports optional per-FX-pair routing so different pairs can resolve through different child providers.
+Strategies are expressed through `IRateAggregationStrategy` (PriorityFallback / Average / custom) rather than a fixed enum, and the aggregator supports optional per-FX-pair routing so different pairs can resolve through different child providers.
 
 ## In-memory providers
 
-<xref:Bodu.Financial.FixedExchangeRateTable> implements the timeless <xref:Bodu.Financial.IExchangeRateProvider> from a fixed `(from, to) → rate` dictionary. Same-currency lookups return `1m` without consulting the table, and a missing pair triggers an inverse-pair fallback that returns `1 / rate` — the convention most FX feeds use to keep the table minimal.
+<xref:Bodu.Financial.ExchangeRates.FixedRateTable> implements the timeless <xref:Bodu.Financial.ExchangeRates.IRateProvider> from a fixed `(from, to) → rate` dictionary. Same-currency lookups return `1m` without consulting the table, and a missing pair triggers an inverse-pair fallback that returns `1 / rate` — the convention most FX feeds use to keep the table minimal.
 
-<xref:Bodu.Financial.FixedDatedExchangeRateProvider> implements the dated <xref:Bodu.Financial.IDatedExchangeRateProvider> from a flat sequence of <xref:Bodu.Financial.ExchangeRate> observations grouped into one <xref:Bodu.Financial.ExchangeRateSeries> per pair. Each pair is described by exactly one series and therefore one provider, so composing rates from multiple publishing sources is done by stacking several tables behind an [`AggregatingExchangeRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingExchangeRateProvider) (in `Bodu.Financial.ExchangeRates.Caching`) rather than mixing providers in a single table. Identity (same-currency) results carry the well-known `FixedDatedExchangeRateProvider.IdentityProviderName` label so audit consumers can filter by it.
+<xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider> implements the dated <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> from a flat sequence of <xref:Bodu.Financial.ExchangeRates.ExchangeRate> observations grouped into one <xref:Bodu.Financial.ExchangeRates.RateSeries> per pair. Each pair is described by exactly one series and therefore one provider, so composing rates from multiple publishing sources is done by stacking several tables behind an [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider) (in `Bodu.Financial.ExchangeRates.Caching`) rather than mixing providers in a single table. Identity (same-currency) results carry the well-known `FixedDatedRateProvider.IdentityProviderName` label so audit consumers can filter by it.
 
 ## `MoneyConversionResult<TSource, TTarget>`
 
-<xref:Bodu.Financial.MoneyConversionResult`2> is the audit record returned by the `ConvertTo<TTarget>(IDatedExchangeRateProvider, …)` extension methods on `Money<T>`, `Money`, and `MoneyBag`. It bundles the original source amount, the rounded target amount, and the full <xref:Bodu.Financial.ExchangeRateLookupResult> that produced it — so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.
+<xref:Bodu.Financial.MoneyConversionResult`2> is the audit record returned by the `ConvertTo<TTarget>(IDatedRateProvider, …)` extension methods on `Money<T>`, `Money`, and `MoneyBag`. It bundles the original source amount, the rounded target amount, and the full <xref:Bodu.Financial.ExchangeRates.RateLookupResult> that produced it — so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.
 
 ## `MoneyBag`
 
 <xref:Bodu.Financial.MoneyBag> is an immutable mixed-currency portfolio — a snapshot of balances across multiple ISO codes. Mutators return new instances; zero balances are pruned automatically on every operation; enumeration yields one <xref:Bodu.Financial.Money> per non-zero currency in lexicographic ISO order, so iteration is stable and reproducible across runs.
 
-The bag is the type that models the **aggregate-then-convert** pattern: accumulate per-currency balances during a batch, then convert the entire bag to a single target currency once at the boundary via `MoneyBag.ConvertTo<TTarget>(IExchangeRateProvider)` or its dated counterpart. Compared to converting each amount on the way in, aggregate-then-convert needs one FX lookup per source currency instead of one per posting.
+The bag is the type that models the **aggregate-then-convert** pattern: accumulate per-currency balances during a batch, then convert the entire bag to a single target currency once at the boundary via `MoneyBag.ConvertTo<TTarget>(IRateProvider)` or its dated counterpart. Compared to converting each amount on the way in, aggregate-then-convert needs one FX lookup per source currency instead of one per posting.
 
 ## JSON policies
 
@@ -187,7 +187,7 @@ The bag is the type that models the **aggregate-then-convert** pattern: accumula
 | `Lenient` | Same shape as `Strict`, but also normalises lowercase ISO codes to uppercase and trims surrounding whitespace before validation. | Import workflows that ingest spreadsheets and external feeds. Not suitable as a canonical storage shape. |
 | `Compact` | Single JSON string `"19.99 USD"` for money; flat object `{ "USD": 19.99, "EUR": 12.34 }` for bags. Reads accept either ISO-prefix or ISO-suffix string forms. | Wire-size-sensitive APIs and human-readable logs. |
 
-Register a policy via `options.AddFinancialJsonConverters(policy)`; this installs the five financial converters — for `Money<TCurrency>` (through a `JsonConverterFactory`), `Money`, `MoneyBag`, <xref:Bodu.Financial.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRatePair>. Converters added to <xref:System.Text.Json.JsonSerializerOptions.Converters> take precedence over the type-level `[JsonConverter]` attribute that defaults to `Strict`.
+Register a policy via `options.AddFinancialJsonConverters(policy)`; this installs the five financial converters — for `Money<TCurrency>` (through a `JsonConverterFactory`), `Money`, `MoneyBag`, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair>. Converters added to <xref:System.Text.Json.JsonSerializerOptions.Converters> take precedence over the type-level `[JsonConverter]` attribute that defaults to `Strict`.
 
 ## Demonetisation
 

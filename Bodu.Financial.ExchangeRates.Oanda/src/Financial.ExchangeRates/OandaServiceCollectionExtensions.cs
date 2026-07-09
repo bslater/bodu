@@ -21,7 +21,7 @@ public static class OandaServiceCollectionExtensions
     /// <param name="services">The service collection to register into.</param>
     /// <param name="configuration">
     /// An optional configuration root. When supplied, <see cref="Bodu.Financial.FinancialOptions" /> is bound from the
-    /// <c>Financial</c> section and <see cref="OandaExchangeRateOptions" /> from <paramref name="sectionName" />.
+    /// <c>Financial</c> section and <see cref="OandaRateProviderOptions" /> from <paramref name="sectionName" />.
     /// </param>
     /// <param name="sectionName">The OANDA configuration section name. Defaults to <c>Financial:Oanda</c>.</param>
     /// <param name="configure">An optional callback applied after OANDA configuration binding.</param>
@@ -51,7 +51,7 @@ public static class OandaServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration? configuration = null,
         string sectionName = "Financial:Oanda",
-        Action<OandaExchangeRateOptions>? configure = null)
+        Action<OandaRateProviderOptions>? configure = null)
     {
         ThrowHelper.ThrowIfNull(services);
 

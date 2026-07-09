@@ -84,11 +84,11 @@
   <data name="Arg_Invalid_CustomScaleRequiresValue" xml:space="preserve">
     <value>ScalePolicy.Custom requires a non-null CustomScale value.</value>
   </data>
-  <data name="Arg_Invalid_ExchangeRateBookDuplicateKey" xml:space="preserve">
-    <value>ExchangeRateBook cannot contain two series with the same pair and provider; '{0}/{1}' from '{2}' is duplicated.</value>
+  <data name="Arg_Invalid_RateBookDuplicateKey" xml:space="preserve">
+    <value>RateBook cannot contain two series with the same pair and provider; '{0}/{1}' from '{2}' is duplicated.</value>
   </data>
-  <data name="Arg_Invalid_ExchangeRatePairDefault" xml:space="preserve">
-    <value>ExchangeRatePair is uninitialised; default(ExchangeRatePair) bypasses currency-code validation and is not a valid directional key.</value>
+  <data name="Arg_Invalid_CurrencyPairDefault" xml:space="preserve">
+    <value>CurrencyPair is uninitialised; default(CurrencyPair) bypasses currency-code validation and is not a valid directional key.</value>
   </data>
   <data name="Arg_Invalid_IsoCodeLength" xml:space="preserve">
     <value>ISO 4217 code must be exactly three letters, but '{0}' has {1}.</value>
@@ -111,7 +111,7 @@
   <data name="Arg_Invalid_MoneyObject" xml:space="preserve">
     <value>Object must be a Money.</value>
   </data>
-  <data name="Arg_Invalid_ExchangeRatePairsEmpty" xml:space="preserve">
+  <data name="Arg_Invalid_CurrencyPairsEmpty" xml:space="preserve">
     <value>Pairs collection must contain at least one currency pair.</value>
   </data>
   <data name="Arg_Invalid_ExchangeRateRangeInverted" xml:space="preserve">
@@ -180,8 +180,8 @@
   <data name="Json_Invalid_BalancesMustBeObject" xml:space="preserve">
     <value>The 'balances' property must be a JSON object.</value>
   </data>
-  <data name="Json_Invalid_CompactExchangeRatePairForm" xml:space="preserve">
-    <value>The JSON string '{0}' is not a valid compact ExchangeRatePair form.</value>
+  <data name="Json_Invalid_CompactCurrencyPairForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact CurrencyPair form.</value>
   </data>
   <data name="Json_Invalid_CompactMoneyOfTCurrencyForm" xml:space="preserve">
     <value>The JSON string '{0}' is not a valid compact Money&lt;{1}&gt; form.</value>
@@ -204,8 +204,8 @@
   <data name="Json_Invalid_DuplicateCurrency" xml:space="preserve">
     <value>The JSON object contains a duplicate 'currency' property.</value>
   </data>
-  <data name="Json_Invalid_ExpectedCompactString_ExchangeRatePair" xml:space="preserve">
-    <value>Expected a JSON string in compact ExchangeRatePair form (e.g. "USD/JPY").</value>
+  <data name="Json_Invalid_ExpectedCompactString_CurrencyPair" xml:space="preserve">
+    <value>Expected a JSON string in compact CurrencyPair form (e.g. "USD/JPY").</value>
   </data>
   <data name="Json_Invalid_ExpectedCompactString_MoneyOfTCurrency" xml:space="preserve">
     <value>Expected a JSON string in compact Money&lt;{0}&gt; form (e.g. "19.99 USD").</value>
@@ -216,8 +216,8 @@
   <data name="Json_Invalid_ExpectedObject_ExchangeRate" xml:space="preserve">
     <value>Expected a JSON object containing an ExchangeRate.</value>
   </data>
-  <data name="Json_Invalid_ExpectedObject_ExchangeRatePair" xml:space="preserve">
-    <value>Expected a JSON object containing an ExchangeRatePair.</value>
+  <data name="Json_Invalid_ExpectedObject_CurrencyPair" xml:space="preserve">
+    <value>Expected a JSON object containing an CurrencyPair.</value>
   </data>
   <data name="Json_Invalid_ExpectedObject_MoneyOfTCurrency" xml:space="preserve">
     <value>Expected a JSON object containing a Money amount.</value>
@@ -264,9 +264,6 @@
   <data name="Op_Invalid_CurrencyMismatchInAs" xml:space="preserve">
     <value>Cannot convert Money with currency '{0}' to Money&lt;{1}&gt; (currency '{2}').</value>
   </data>
-  <data name="Op_Invalid_SynchronousNetworkAccessOnCapturedContext" xml:space="preserve">
-    <value>Synchronous network access must not be invoked on a thread with a captured SynchronizationContext, which can deadlock; call the asynchronous API or invoke this from a thread-pool thread.</value>
-  </data>
   <data name="Op_Invalid_CurrencyCashRoundingNegative" xml:space="preserve">
     <value>{0}.{1} must be non-negative, but reported {2}.</value>
   </data>
@@ -311,20 +308,5 @@
   </data>
   <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
     <value>Unable to create a JSON converter for '{0}'.</value>
-  </data>
-  <data name="Arg_Invalid_WebExchangeRateOptionsBaseAddress" xml:space="preserve">
-    <value>The exchange-rate provider options must specify a base address.</value>
-  </data>
-  <data name="Arg_Invalid_WebExchangeRateOptionsHttpTimeout" xml:space="preserve">
-    <value>The exchange-rate provider options HTTP timeout must be greater than zero.</value>
-  </data>
-  <data name="Arg_Invalid_WebExchangeRateOptionsDefaultLookback" xml:space="preserve">
-    <value>The exchange-rate provider options default look-back window must be greater than zero.</value>
-  </data>
-  <data name="Arg_Invalid_WebExchangeRateOptionsCurrencyAliases" xml:space="preserve">
-    <value>The exchange-rate provider options currency alias map must not be null.</value>
-  </data>
-  <data name="Arg_Invalid_WebExchangeRateOptionsLogLevel" xml:space="preserve">
-    <value>The exchange-rate provider options must specify a defined log level for every logging concern.</value>
   </data>
 </root>

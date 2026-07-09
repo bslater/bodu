@@ -29,8 +29,8 @@ services.AddFinancialService(configuration, sectionName: "Financial")
 | `AddFinancialService(IConfiguration?, string)` | Register `ICurrencyLookup`, bind `FinancialOptions`, return an `IFinancialServiceBuilder` |
 | `AddFinancialService(Action<IFinancialServiceBuilder>)` | Register core services and compose fluently |
 | `IFinancialServiceBuilder.AddCurrencyLookup<TLookup>()` | Replace the registered `ICurrencyLookup` |
-| `.AddExchangeRateProvider<T>()` / `(instance)` | Register an `IExchangeRateProvider` |
-| `.AddDatedExchangeRateProvider<T>()` / `(instance)` | Register an `IDatedExchangeRateProvider` |
+| `.AddExchangeRateProvider<T>()` / `(instance)` | Register an `IRateProvider` |
+| `.AddDatedExchangeRateProvider<T>()` / `(instance)` | Register an `IDatedRateProvider` |
 | `.AddMonetaryContext(name, context)` | Register a named `MonetaryContext` as a keyed singleton |
 | `.AddFinancialJson(policy)` | Register a `JsonSerializerOptions` (keyed `"Financial"`) with the financial converters |
 | `IServiceProvider.UseCurrencyResolution()` | Install the container's `ICurrencyLookup` as the process-wide ambient resolver |

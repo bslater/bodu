@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies that <see cref="OfxExchangeRateProvider" /> driven by the real HTTP source builds the expected request and
+/// Verifies that <see cref="OfxRateProvider" /> driven by the real HTTP source builds the expected request and
 /// parses the response.
 /// </summary>
 [TestClass]
@@ -23,8 +23,8 @@ public class OfxSpotRateHistorySourceTests
     {
         StubHttpMessageHandler handler = new(OfxFixtures.ReadBytes(OfxFixtures.AudUsd));
         using HttpClient client = new(handler);
-        OfxExchangeRateOptions options = new();
-        OfxExchangeRateProvider provider = new(client, options);
+        OfxRateProviderOptions options = new();
+        OfxRateProvider provider = new(client, options);
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
@@ -41,7 +41,7 @@ public class OfxSpotRateHistorySourceTests
         Assert.IsTrue(handler.LastRequestUri.Query.Contains("ReportingInterval=daily", StringComparison.Ordinal), handler.LastRequestUri.Query);
         Assert.IsTrue(handler.LastRequestUri.Query.Contains("format=json", StringComparison.Ordinal), handler.LastRequestUri.Query);
 
-        ExchangeRateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), ExchangeRateLookupOptions.Exact);
+        RateLookupResult result = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
         Assert.AreEqual(0.6828m, result.Rate.Rate);
         Assert.AreEqual(new DateOnly(2023, 1, 3), result.Rate.Date);
     }
@@ -55,11 +55,11 @@ public class OfxSpotRateHistorySourceTests
     {
         StubHttpMessageHandler handler = new(OfxFixtures.ReadBytes(OfxFixtures.AudUsd));
         using HttpClient client = new(handler);
-        OfxExchangeRateProvider provider = new(client, new OfxExchangeRateOptions());
+        OfxRateProvider provider = new(client, new OfxRateProviderOptions());
 
         await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 3));
 
-        ExchangeRateRangeResult range = provider.GetRates("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 3));
+        RateRangeResult range = provider.GetRates("AUD", "USD", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 3));
 
         Assert.AreEqual(2, range.Count);
         Assert.IsTrue(range.All(rate => rate.Date <= new DateOnly(2023, 1, 3)), "no observation later than the loaded window");

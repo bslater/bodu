@@ -4,16 +4,16 @@
 
 A distributed (Redis-capable) cache for `Bodu.Financial` exchange-rate providers.
 
-> One `IExchangeRateCache` backend among several. For the composition model, the
-> [`SqliteExchangeRateCache`](../Bodu.Financial.ExchangeRates.Caching.Sqlite/README.md)
+> One `IRateCache` backend among several. For the composition model, the
+> [`SqliteRateCache`](../Bodu.Financial.ExchangeRates.Caching.Sqlite/README.md)
 > alternative, and "when to use which", see the
 > [Caching and aggregating exchange rates guide](../docs/guides/financial/exchange-rate-caching.md).
 
-`DistributedExchangeRateCache` implements the `IExchangeRateCache` contract over a
+`DistributedRateCache` implements the `IRateCache` contract over a
 `Microsoft.Extensions.Caching.Distributed.IDistributedCache`, persisting one provider's dated rates and fetch-coverage
 windows so they need not be re-fetched while fresh. It is behaviourally identical to the in-memory, TOML, and SQLite
 caches in `Bodu.Financial.ExchangeRates.Caching` — the same freshness, merge, coverage, and validation semantics — and
-is validated against the same shared `ExchangeRateCacheContractTests`.
+is validated against the same shared `RateCacheContractTests`.
 
 Because it depends only on the `IDistributedCache` abstraction it is fully unit-testable in-memory (against
 `MemoryDistributedCache`) and, in production, backed by Redis (via
@@ -35,11 +35,11 @@ Because it depends only on the `IDistributedCache` abstraction it is fully unit-
   coverage windows are pruned when coverage is recorded, so the entry self-cleans.
 * The two **independent** half-writes preserve the other half: `Store` writes rate rows without dropping coverage, and
   `RecordCoverage` writes coverage windows without dropping rows — each by read-modify-writing the per-pair blob.
-* `StoreFetchedRange` — the path the `CachingExchangeRateProvider` decorator uses after a range fetch — writes **both**
+* `StoreFetchedRange` — the path the `CachingRateProvider` decorator uses after a range fetch — writes **both**
   halves together as one atomic blob set: the pair's rate rows and the fetched coverage window are merged and persisted
   in a single `Set`, all-or-nothing. A reader (even in another process) therefore never observes coverage without its
   rows, so a range lookup cannot report a false hit and return incomplete data as if complete. The write returns an
-  `ExchangeRateCacheWriteStatus` (`Stored` when both halves were persisted, `Failed` when a backing-store error was
+  `RateCacheWriteStatus` (`Stored` when both halves were persisted, `Failed` when a backing-store error was
   swallowed and nothing was persisted, `Skipped` for a no-op cache), which the decorator logs and, on `Failed`, treats
   as a miss so the next lookup refetches rather than trusting partial coverage.
 * An empty-but-fetched range still records coverage: a successful fetch that returned no observation (a weekend, a
@@ -54,7 +54,7 @@ Because it depends only on the `IDistributedCache` abstraction it is fully unit-
 
 Because the persisted `observedAtUtc` is restored onto a served rate's `ExchangeRate.FetchedAtUtc`, a cache-served rate
 reports its **original** upstream fetch instant (data age), distinct from the cache-write age surfaced through
-`ExchangeRateLookupResult.Provenance` (`CachedAtUtc` / `Age`). See the served-rate provenance notes in the
+`RateLookupResult.Provenance` (`CachedAtUtc` / `Age`). See the served-rate provenance notes in the
 `Bodu.Financial.ExchangeRates.Caching` README.
 
 ## When to use
@@ -68,9 +68,9 @@ lock for the in-memory and file caches, and one transaction for SQLite — for e
 ## Usage
 
 ```csharp
-var options = new DistributedExchangeRateCacheOptions { Provider = "RBA" };
-var cache = new DistributedExchangeRateCache(distributedCache, options);
-IDatedExchangeRateProvider cached = new CachingExchangeRateProvider(rba, cache, new CachingExchangeRateOptions());
+var options = new DistributedRateCacheOptions { Provider = "RBA" };
+var cache = new DistributedRateCache(distributedCache, options);
+IDatedRateProvider cached = new CachingRateProvider(rba, cache, new CachingRateOptions());
 ```
 
 Or, through dependency injection (the package ships its own `AddDistributedRateCache` / `AddRedisRateCache` registration in the `Bodu.Financial.ExchangeRates` namespace):

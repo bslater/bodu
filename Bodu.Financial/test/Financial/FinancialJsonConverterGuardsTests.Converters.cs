@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial;
 
@@ -20,7 +21,7 @@ public partial class FinancialJsonConverterGuardsTests
     {
         Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<ExchangeRate>(
             "{\"pair\":123,\"date\":\"2024-01-15\",\"rate\":1,\"provider\":\"x\"}"));
-        Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<ExchangeRatePair>("{\"from\":\"USD\",\"to\":\"JPY\",\"to\":\"GBP\"}"));
+        Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<CurrencyPair>("{\"from\":\"USD\",\"to\":\"JPY\",\"to\":\"GBP\"}"));
         Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<MoneyBag>("{\"balances\":123}"));
     }
 }
