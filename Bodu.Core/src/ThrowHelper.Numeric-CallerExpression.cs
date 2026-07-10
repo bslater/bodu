@@ -195,6 +195,110 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if the sum of <paramref name="left" /> and
+    /// <paramref name="right" /> would fall outside the <see cref="int" /> range.
+    /// </summary>
+    /// <param name="left">The left addend.</param>
+    /// <param name="right">The right addend.</param>
+    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <c>left + right</c> would overflow or underflow the <see cref="int" /> range.
+    /// </exception>
+    /// <remarks>
+    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to
+    /// index, slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfAddOverflows(
+        int left, int right,
+        [CallerArgumentExpression(nameof(left))] string? paramName = null)
+    {
+        long sum = (long)left + right;
+        if (sum < int.MinValue || sum > int.MaxValue)
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_AddOverflow, nameof(Int32)));
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if the sum of <paramref name="left" /> and
+    /// <paramref name="right" /> would fall outside the <see cref="long" /> range.
+    /// </summary>
+    /// <param name="left">The left addend.</param>
+    /// <param name="right">The right addend.</param>
+    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <c>left + right</c> would overflow or underflow the <see cref="long" /> range.
+    /// </exception>
+    /// <remarks>
+    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to
+    /// index, slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfAddOverflows(
+        long left, long right,
+        [CallerArgumentExpression(nameof(left))] string? paramName = null)
+    {
+        Int128 sum = (Int128)left + right;
+        if (sum < long.MinValue || sum > long.MaxValue)
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_AddOverflow, nameof(Int64)));
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if the product of <paramref name="left" /> and
+    /// <paramref name="right" /> would fall outside the <see cref="int" /> range.
+    /// </summary>
+    /// <param name="left">The left factor.</param>
+    /// <param name="right">The right factor.</param>
+    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <c>left * right</c> would overflow or underflow the <see cref="int" /> range.
+    /// </exception>
+    /// <remarks>
+    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to
+    /// index, slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfMultiplyOverflows(
+        int left, int right,
+        [CallerArgumentExpression(nameof(left))] string? paramName = null)
+    {
+        long product = (long)left * right;
+        if (product < int.MinValue || product > int.MaxValue)
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_MultiplyOverflow, nameof(Int32)));
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if the product of <paramref name="left" /> and
+    /// <paramref name="right" /> would fall outside the <see cref="long" /> range.
+    /// </summary>
+    /// <param name="left">The left factor.</param>
+    /// <param name="right">The right factor.</param>
+    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <c>left * right</c> would overflow or underflow the <see cref="long" /> range.
+    /// </exception>
+    /// <remarks>
+    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to
+    /// index, slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfMultiplyOverflows(
+        long left, long right,
+        [CallerArgumentExpression(nameof(left))] string? paramName = null)
+    {
+        Int128 product = (Int128)left * right;
+        if (product < long.MinValue || product > long.MaxValue)
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_MultiplyOverflow, nameof(Int64)));
+    }
+
+    /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> equals zero.
     /// </summary>
     /// <typeparam name="T">A type that implements <see cref="IEquatable{T}" />.</typeparam>

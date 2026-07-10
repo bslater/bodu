@@ -402,6 +402,12 @@
   <data name="Arg_OutOfRange_ResultingValueOutOfRangeForType" xml:space="preserve">
     <value>The resulting value is outside the supported range for {0}.</value>
   </data>
+  <data name="Arg_OutOfRange_AddOverflow" xml:space="preserve">
+    <value>The sum of the specified values would exceed the range of {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_MultiplyOverflow" xml:space="preserve">
+    <value>The product of the specified values would exceed the range of {0}.</value>
+  </data>
   <data name="Arg_OutOfRange_SequenceRangeOverflow" xml:space="preserve">
     <value>The specified sequence range would exceed the maximum allowed value for {0}.</value>
   </data>
