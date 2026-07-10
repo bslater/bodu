@@ -2,7 +2,7 @@
 uid: Bodu.Financial.ExchangeRates
 ---
 
-![Bodu.Financial.ExchangeRates](~/images/hero-fx-di.svg)
+![Bodu.Financial.ExchangeRates](~/images/hero-fx.svg)
 
 # Bodu.Financial.ExchangeRates
 

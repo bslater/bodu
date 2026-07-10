@@ -77,6 +77,7 @@ Several exchange-rate providers ship as independent packages over a shared `IDat
 | `Bodu.Financial.ExchangeRates.Caching.Sqlite` | Stable | `SqliteRateCache`, an `IRateCache` over a SQLite database (via `Microsoft.Data.Sqlite`), persisting a provider's dated rates and fetch-coverage windows in `rates` and `coverage` tables; behaviourally identical to the in-memory and TOML caches and validated against the same `RateCacheContractTests`. Includes its own `AddSqliteRateCache` DI registration (in the `Bodu.Financial.ExchangeRates` namespace), binding `SqliteRateCacheOptions`. | `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial`, `Bodu.Financial.DependencyInjection`, `Bodu.Core`, `Microsoft.Data.Sqlite` |
 
 <div class="bodu-matrix-gallery">
+<figure><img src="../images/hero-fx.svg" alt="Bodu.Financial.ExchangeRates" /><figcaption><code>Bodu.Financial.ExchangeRates</code></figcaption></figure>
 <figure><img src="../images/hero-fx-di.svg" alt="Bodu.Financial.ExchangeRates.DependencyInjection" /><figcaption><code>Bodu.Financial.ExchangeRates.DependencyInjection</code></figcaption></figure>
 <figure><img src="../images/hero-fx-rba.svg" alt="Bodu.Financial.ExchangeRates.Rba" /><figcaption><code>Bodu.Financial.ExchangeRates.Rba</code></figcaption></figure>
 <figure><img src="../images/hero-fx-boe.svg" alt="Bodu.Financial.ExchangeRates.Boe" /><figcaption><code>Bodu.Financial.ExchangeRates.Boe</code></figcaption></figure>
