@@ -225,7 +225,7 @@ through [`HistoryAvailability`](xref:Bodu.Financial.ExchangeRates.WebRateProvide
 and the caching decorator consumes that declaration by default
 ([`RespectHistoryAvailability`](xref:Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RespectHistoryAvailability)):
 when the inner provider implements
-[`IHistoryAwareRateProvider`](xref:Bodu.Financial.ExchangeRates.IHistoryAwareRateProvider),
+[`IHistoricalRateProvider`](xref:Bodu.Financial.ExchangeRates.IHistoricalRateProvider),
 misses for dates the source has declared unavailable are not forwarded.
 
 - **Single-date lookups** outside the advertised history surface as an ordinary

@@ -62,7 +62,7 @@ Each provider ships its own dependency-injection registration in the `Bodu.Finan
 **Reserve Bank of Australia (AUD base; published `.xls` workbooks, split into eras)**
 
 - <xref:Bodu.Financial.ExchangeRates.RbaRateProvider> — the provider; warm it with `PreloadAsync`, `LoadEraAsync`, or `LoadRangeAsync`. Registered with `AddRbaExchangeRates`.
-- <xref:Bodu.Financial.ExchangeRates.RbaRateProviderOptions>, <xref:Bodu.Financial.ExchangeRates.RbaEra> — the options (base URL, era list, HTTP, on-demand access, on-disk workbook cache) and one published workbook era.
+- <xref:Bodu.Financial.ExchangeRates.RbaRateProviderOptions>, <xref:Bodu.Financial.ExchangeRates.RbaEraWorkbook> — the options (base URL, era list, HTTP, on-demand access, on-disk workbook cache) and one published workbook era.
 - <xref:Bodu.Financial.ExchangeRates.RbaSeriesInfo> — a discovered currency series, surfaced by `GetAvailablePairs`.
 - <xref:Bodu.Financial.ExchangeRates.IRbaWorkbookCache>, <xref:Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache> — the raw-workbook byte-cache seam and its on-disk implementation.
 
@@ -82,7 +82,7 @@ Each provider ships its own dependency-injection registration in the `Bodu.Finan
 
 - <xref:Bodu.Financial.ExchangeRates.XeRateProvider> — the provider built on the shared `PairWebRateProvider<TSeries>` base; warm a pair with `LoadPairAsync`. Registered with `AddXeExchangeRates`.
 - <xref:Bodu.Financial.ExchangeRates.XeRateProviderOptions> — the endpoint, HTTP, and token-acquisition configuration.
-- <xref:Bodu.Financial.ExchangeRates.IXeAuthTokenProvider>, <xref:Bodu.Financial.ExchangeRates.XeScrapingAuthTokenProvider> — the authorization-token seam and the default implementation that acquires XE's `Basic` credential automatically.
+- `IXeAuthTokenProvider`, `XeScrapingAuthTokenProvider` (internal) — the authorization-token seam and the default implementation that acquires XE's `Basic` credential automatically.
 - <xref:Bodu.Financial.ExchangeRates.XeSeriesInfo> — a discovered pair, surfaced by `GetAvailablePairs`.
 
 **OANDA (arbitrary pairs; anonymous rolling ~180-day history window)**
