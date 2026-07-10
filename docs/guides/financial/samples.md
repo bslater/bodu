@@ -5,7 +5,7 @@ title: Runnable samples
 # Runnable samples
 
 The repository ships runnable, self-contained sample projects for the financial packages under
-[`samples/financial/`](https://github.com/bslater/bodu/tree/master/samples/financial). Every
+[`samples/Financial/`](https://github.com/bslater/bodu/tree/master/samples/Financial). Every
 sample runs **fully offline** — exchange-rate samples build their providers from committed
 static data files instead of calling live feeds — and each carries a clearly fenced comment
 block showing how to switch to a real web provider. The samples are members of `bodu.slnx` and
@@ -14,7 +14,7 @@ are built and executed by CI, so the code they show cannot drift from the curren
 Run any sample from the repository root:
 
 ```bash
-dotnet run --project samples/financial/<SampleName>
+dotnet run --project samples/Financial/<SampleName>
 ```
 
 ## The samples

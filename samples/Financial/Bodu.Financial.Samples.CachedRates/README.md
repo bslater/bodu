@@ -4,7 +4,7 @@ The provider-agnostic caching layer, demonstrated offline: wrap any `IDatedRateP
 read-through cache and stack the tiers you need.
 
 ```bash
-dotnet run --project samples/financial/Bodu.Financial.Samples.CachedRates
+dotnet run --project samples/Financial/Bodu.Financial.Samples.CachedRates
 ```
 
 ## What it demonstrates

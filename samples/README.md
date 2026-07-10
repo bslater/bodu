@@ -16,7 +16,7 @@ consumer would actually compose them. Every sample:
 ## Running a sample
 
 ```bash
-dotnet run --project samples/financial/Bodu.Financial.Samples.OfflineRates
+dotnet run --project samples/Financial/Bodu.Financial.Samples.OfflineRates
 ```
 
 All samples are members of `bodu.slnx`, so `dotnet build bodu.slnx` builds them and any
@@ -44,4 +44,4 @@ conventions — they run in CI alongside the library test suites.
 
 | Domain | Samples |
 |---|---|
-| Financial | [`samples/financial/`](financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers |
+| Financial | [`samples/Financial/`](financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers |

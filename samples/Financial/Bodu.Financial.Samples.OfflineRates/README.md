@@ -5,7 +5,7 @@ provider from a committed CSV — no network, no API keys — and use it to reso
 convert money.
 
 ```bash
-dotnet run --project samples/financial/Bodu.Financial.Samples.OfflineRates
+dotnet run --project samples/Financial/Bodu.Financial.Samples.OfflineRates
 ```
 
 ## What it demonstrates

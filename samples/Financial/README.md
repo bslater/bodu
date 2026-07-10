@@ -4,7 +4,7 @@ Console applications demonstrating the `Bodu.Financial` package family. Each sam
 standalone project; run one with:
 
 ```bash
-dotnet run --project samples/financial/<SampleName>
+dotnet run --project samples/Financial/<SampleName>
 ```
 
 ## Sample → pattern → package matrix

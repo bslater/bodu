@@ -3,7 +3,7 @@
 The core `Bodu.Financial` value types and policies, demonstrated offline with in-code data only.
 
 ```bash
-dotnet run --project samples/financial/Bodu.Financial.Samples.MoneyBasics
+dotnet run --project samples/Financial/Bodu.Financial.Samples.MoneyBasics
 ```
 
 ## What it demonstrates

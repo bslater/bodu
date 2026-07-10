@@ -4,8 +4,8 @@ Consumer extensibility: write your own `IDatedRateProvider` and prove it with th
 contract-test base.
 
 ```bash
-dotnet run --project samples/financial/Bodu.Financial.Samples.CustomProvider
-dotnet test samples/financial/Bodu.Financial.Samples.CustomProvider.Test
+dotnet run --project samples/Financial/Bodu.Financial.Samples.CustomProvider
+dotnet test samples/Financial/Bodu.Financial.Samples.CustomProvider.Test
 ```
 
 ## What it demonstrates

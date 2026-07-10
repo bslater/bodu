@@ -4,7 +4,7 @@ Multi-provider aggregation, demonstrated offline with two static feeds whose cov
 deliberately complementary.
 
 ```bash
-dotnet run --project samples/financial/Bodu.Financial.Samples.AggregatedRates
+dotnet run --project samples/Financial/Bodu.Financial.Samples.AggregatedRates
 ```
 
 ## What it demonstrates

@@ -4,7 +4,7 @@ Currency services and host wiring: the ambient resolution seam, named monetary c
 `AddFinancialService` composition root.
 
 ```bash
-dotnet run --project samples/financial/Bodu.Financial.Samples.CurrencyServices
+dotnet run --project samples/Financial/Bodu.Financial.Samples.CurrencyServices
 ```
 
 ## What it demonstrates
