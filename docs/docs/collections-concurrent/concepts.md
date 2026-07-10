@@ -19,20 +19,20 @@ Two consequences of the protocol surface in the API:
 
 Single-element operations (`Enqueue` / `Dequeue` / `Peek` and their `Try…` variants) are individually atomic and lock-free on the hot path. The buffer implements <xref:System.Collections.Concurrent.IProducerConsumerCollection`1> (`TryAdd` / `TryTake`), so it composes with [`BlockingCollection<T>`](https://learn.microsoft.com/dotnet/api/system.collections.concurrent.blockingcollection-1) when consumers should block until an item arrives — neither type has blocking operations of its own.
 
-## Lock striping
+## Lock-free split-ordered hashing
 
-<xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> partitions its bucket array into **regions, each guarded by its own monitor**. A writer locks only the region its element hashes into, so writers on disjoint regions proceed in parallel; only same-region writers contend. `Contains` is *lock-free* — readers never block writers — which makes the set well suited to read-heavy workloads such as membership tests over a working set or deduplication of a stream.
+<xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> is a **lock-free split-ordered list** (Shalev & Shavit): every element lives in one Harris–Michael lock-free ordered linked list, sorted by the bit-reversed hash code, and the hash-table part is just an array of lazily created *shortcut* pointers into that list. Mutations are single compare-and-swap operations; deletion marks the node first and unlinks it cooperatively. Growing the table copies shortcut pointers but never rehashes or moves a node.
 
-The stripe count is the concurrency budget: operations that need a globally coherent view (`Count`, `ToArray`, enumeration, `Clear`) acquire *every* region lock once, which is exactly why the approximate alternatives below exist.
+No operation on the set takes a lock — `Add`, `Remove`, `Contains`, `Count`, `Clear`, and `ToArray` are all lock-free, so a preempted thread can never stall the others. `Clear` atomically swaps the entire backing structure in one compare-and-swap; `ToArray` and enumeration are *weakly consistent* traversals (see below).
 
 ## Snapshot enumeration
 
-The single-threaded catalogue enumerates **fail-fast**: a version counter detects structural mutation and the enumerator throws <xref:System.InvalidOperationException>. A lock-free structure cannot maintain that token, so both concurrent types substitute **snapshot enumeration** — `foreach` and `ToArray` observe a coherent point-in-time capture and *never throw* on concurrent modification. Writes that land after the snapshot are simply not seen.
+The single-threaded catalogue enumerates **fail-fast**: a version counter detects structural mutation and the enumerator throws <xref:System.InvalidOperationException>. A lock-free structure cannot maintain that token, so both concurrent types substitute **snapshot enumeration** — `foreach` and `ToArray` capture the contents once, iterate over that fixed copy, and *never throw* on concurrent modification. Writes that land after the snapshot are simply not seen.
 
 The two types capture their snapshots differently:
 
-- The **buffer** uses a per-slot *seqlock*: the scan validates slot sequence numbers and restarts on churn, falling back to a sequence-validated best-effort snapshot only after an internal retry budget is exhausted.
-- The **set** acquires every region lock once, copies, and releases — a brief globally consistent pause rather than an optimistic retry loop.
+- The **buffer** uses a per-slot *seqlock*: the scan validates slot sequence numbers and restarts on churn, falling back to a sequence-validated best-effort snapshot only after an internal retry budget is exhausted. The result is a coherent point-in-time capture.
+- The **set** performs a lock-free traversal of its split-ordered list. The capture is **weakly consistent** rather than point-in-time: it contains every element present for the entire duration of the call and never contains an element twice, but concurrent additions and removals may or may not be observed.
 
 ## Approximate vs. coherent counts
 
@@ -41,11 +41,12 @@ Under concurrency, "how many elements?" has two honest answers, and the API name
 | Read | Consistency | Cost |
 |---|---|---|
 | Buffer `Count` | **Approximate** — head and tail positions are read independently | Two volatile reads; never blocks |
-| Set `ApproximateCount`, `IsEmptyApproximate` | **Approximate** — may slightly under- or over-count under mutation | Lock-free |
-| Set `Count`, `IsEmpty` | **Coherent** — a true point-in-time value | Acquires every region lock |
+| Set `Count`, `IsEmpty` | **Exact at quiescence** — an interlocked counter that may transiently lag operations still in flight | One volatile read; lock-free |
+| Set `ApproximateCount`, `IsEmptyApproximate` | Aliases of `Count` / `IsEmpty`, retained for compatibility with the earlier lock-striped design | Same as `Count` |
 | Buffer `ToArray` / enumeration | **Coherent snapshot** (seqlock) | Restarts on churn |
+| Set `ToArray` / enumeration | **Weakly consistent** traversal | Lock-free; never blocks writers |
 
-Prefer the approximate reads on hot paths (throughput sampling, logging) and reserve the coherent ones for decisions that genuinely need exactness (shutdown accounting, capacity-based throttling). For lightweight sampling of a busy buffer, `TryPeek` / `TryDequeue` beat reading `Count`.
+Prefer `TryPeek` / `TryDequeue` over reading the buffer's `Count` for lightweight sampling of a busy buffer, and treat any count read under active mutation as already stale by the time it is inspected.
 
 ## Eviction events under contention
 

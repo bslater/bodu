@@ -67,7 +67,7 @@ The trie family and an n-ary tree. See the [Tries and text search](../../guides/
 | <xref:Bodu.Collections.Generic.Trees.Tree`1> | A mutable n-ary tree node with stack-safe pre-/post-/level-order traversals. |
 
 ### `Bodu.Collections.Generic.Concurrent` (companion package)
-The thread-safe variants — the lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> and the lock-striped <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> — ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on `Bodu.Collections`.
+The thread-safe variants — the lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> and the lock-free split-ordered <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> — ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on `Bodu.Collections`.
 
 ## Scenarios this library covers
 

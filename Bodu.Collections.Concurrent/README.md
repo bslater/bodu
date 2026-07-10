@@ -2,7 +2,7 @@
 
 > **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-The thread-safe collection variants of the Bodu collection catalogue: a lock-free bounded MPMC ring buffer and a lock-striped concurrent set. The types were split out of `Bodu.Collections` with the namespace unchanged — code written against `Bodu.Collections.Generic.Concurrent` keeps compiling; only the package reference changes. Both collections implement the standard BCL interfaces and ship struct enumerators over best-effort snapshots. The package references `Bodu.Collections` (and transitively `Bodu.Core`).
+The thread-safe collection variants of the Bodu collection catalogue: a lock-free bounded MPMC ring buffer and a lock-free split-ordered concurrent set. The types were split out of `Bodu.Collections` with the namespace unchanged — code written against `Bodu.Collections.Generic.Concurrent` keeps compiling; only the package reference changes. Both collections implement the standard BCL interfaces and ship struct enumerators over best-effort snapshots. The package references `Bodu.Collections` (and transitively `Bodu.Core`).
 
 ## Installation
 
@@ -17,7 +17,7 @@ Targets `net8.0`. Depends on `Bodu.Collections`.
 | Type | Namespace | Summary |
 |---|---|---|
 | `ConcurrentCircularBuffer<T>` | `Bodu.Collections.Generic.Concurrent` | Lock-free (Vyukov MPMC) fixed-capacity FIFO ring buffer with optional overwrite-on-full and eviction events |
-| `ConcurrentHashSet<T>` | `Bodu.Collections.Generic.Concurrent` | Lock-striped concurrent set implementing `ISet<T>`, with comparer injection and snapshot enumeration |
+| `ConcurrentHashSet<T>` | `Bodu.Collections.Generic.Concurrent` | Lock-free split-ordered concurrent set implementing `ISet<T>`, with comparer injection and snapshot enumeration |
 
 For the single-threaded counterparts (`CircularBuffer<T>`, `Deque<T>`, and the wider catalogue), see the `Bodu.Collections` package.
 

@@ -60,7 +60,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 <div class="bodu-card">
   <img src="images/hero-collections-concurrent.svg" alt="Bodu.Collections.Concurrent" />
   <h3>Bodu.Collections.Concurrent</h3>
-  <p>The thread-safe collection companion — a lock-free Vyukov MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> implementing <code>IProducerConsumerCollection&lt;T&gt;</code>, and a lock-striped <code>ConcurrentHashSet&lt;T&gt;</code> with lock-free reads and snapshot enumeration. Depends on <code>Bodu.Collections</code>.</p>
+  <p>The thread-safe collection companion — a lock-free Vyukov MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> implementing <code>IProducerConsumerCollection&lt;T&gt;</code>, and a lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code> with snapshot enumeration. Depends on <code>Bodu.Collections</code>.</p>
   <div class="bodu-card-links">
     <a href="docs/collections-concurrent/index.md">Introduction</a>
     <a href="guides/core/concurrent-collections.md">Guides</a>

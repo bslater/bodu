@@ -19,8 +19,9 @@ public sealed partial class ConcurrentHashSet<T> :
     /// and does not expose a public lock object.
     /// </value>
     /// <remarks>
-    /// Thread safety is achieved through internal lock striping. Callers should not attempt to coordinate access
-    /// externally via <see cref="ICollection.SyncRoot" />, as that property is not supported.
+    /// Thread safety is achieved through a lock-free algorithm — there is no internal lock to expose. Callers should
+    /// not attempt to coordinate access externally via <see cref="ICollection.SyncRoot" />, as that property is not
+    /// supported.
     /// </remarks>
     bool ICollection.IsSynchronized => false;
 
@@ -32,8 +33,8 @@ public sealed partial class ConcurrentHashSet<T> :
     /// Always thrown. Use the thread-safe members of this class directly.
     /// </exception>
     /// <remarks>
-    /// Exposing a <see cref="ICollection.SyncRoot" /> would allow callers to take the same locks used internally,
-    /// undermining the concurrency guarantees of the collection. This matches the behavior of
+    /// The set is lock-free, so no lock object exists that external code could meaningfully share; exposing one would
+    /// only invite callers to serialize access the algorithm does not require. This matches the behavior of
     /// <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}" /> and other BCL concurrent
     /// collections.
     /// </remarks>
@@ -57,8 +58,9 @@ public sealed partial class ConcurrentHashSet<T> :
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is less than zero.</exception>
     /// <remarks>
-    /// This method takes an atomic snapshot of the set before copying. The destination array reflects the state of the
-    /// set at the moment the snapshot was taken and is not affected by concurrent modifications made afterward.
+    /// This method takes a weakly consistent snapshot of the set (see <see cref="ConcurrentHashSet{T}.ToArray" />)
+    /// before copying. The destination array is a fixed copy that is not affected by concurrent modifications made
+    /// after the snapshot completes, but it is not guaranteed to reflect the set's state at any single instant.
     /// </remarks>
     void ICollection.CopyTo(Array array, int index)
     {
