@@ -6,8 +6,8 @@
     <RootNamespace>Bodu</RootNamespace>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Title>Bodu — Concurrent Collections</Title>
-    <Description>Thread-safe collection variants for .NET 8: a lock-free Vyukov MPMC ConcurrentCircularBuffer&lt;T&gt;, a lock-striped ConcurrentHashSet&lt;T&gt;, and a lock-striped ConcurrentEvictingDictionary&lt;TKey,TValue&gt; bounded cache (FIFO/LRU/LFU/MRU/SecondChance/Random policies, optional TTL expiry). Split out of Bodu.Collections with namespaces unchanged; references Bodu.Collections.</Description>
-    <PackageTags>$(PackageTags);concurrent-collections;lock-free;circular-buffer;hash-set;thread-safe;evicting-dictionary;cache;lru;lfu;ttl</PackageTags>
+    <Description>Thread-safe collection variants for .NET 8: a lock-free Vyukov MPMC ConcurrentCircularBuffer&lt;T&gt;, a lock-striped ConcurrentHashSet&lt;T&gt;, a lock-striped ConcurrentEvictingDictionary&lt;TKey,TValue&gt; bounded cache (FIFO/LRU/LFU/MRU/SecondChance/Random policies, optional TTL expiry), and a lock-free-read ConcurrentLruCache&lt;TKey,TValue&gt; (segmented pseudo-LRU, hit/miss telemetry). Split out of Bodu.Collections with namespaces unchanged; references Bodu.Collections.</Description>
+    <PackageTags>$(PackageTags);concurrent-collections;lock-free;circular-buffer;hash-set;thread-safe;evicting-dictionary;cache;lru;lfu;ttl;lru-cache;pseudo-lru</PackageTags>
   </PropertyGroup>
 
   <!--
