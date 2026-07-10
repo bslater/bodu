@@ -14,13 +14,13 @@ namespace Bodu.Numerics.Serialization.Json;
 /// <para>
 /// The policy is supplied either by constructing a converter directly (e.g.
 /// <c>new FractionJsonConverter&lt;int&gt;(NumericsJsonPolicy.Compact)</c>) or, more commonly, through
-/// <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" /> which registers a coherent set of
+/// <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" /> which registers a coherent set of
 /// converters on a <see cref="System.Text.Json.JsonSerializerOptions" />.
 /// </para>
 /// <para>
 /// The core <c>Bodu.Numerics</c> types carry no <c>[JsonConverter]</c> attribute, so a policy takes effect only once
 /// the converters are registered. <see cref="Strict" /> is the default supplied by
-/// <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" />.
+/// <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" />.
 /// </para>
 /// </remarks>
 public enum NumericsJsonPolicy

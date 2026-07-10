@@ -1,0 +1,40 @@
+class Bodu.Financial.Serialization.Json.CurrencyPairJsonConverter
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Financial.Serialization.Json.FinancialJsonPolicy)
+    method Bodu.Financial.ExchangeRates.CurrencyPair Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Financial.ExchangeRates.CurrencyPair, System.Text.Json.JsonSerializerOptions)
+class Bodu.Financial.Serialization.Json.ExchangeRateJsonConverter
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Financial.Serialization.Json.FinancialJsonPolicy)
+    method Bodu.Financial.ExchangeRates.ExchangeRate Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Financial.ExchangeRates.ExchangeRate, System.Text.Json.JsonSerializerOptions)
+enum Bodu.Financial.Serialization.Json.FinancialJsonPolicy
+    field Bodu.Financial.Serialization.Json.FinancialJsonPolicy Compact
+    field Bodu.Financial.Serialization.Json.FinancialJsonPolicy Lenient
+    field Bodu.Financial.Serialization.Json.FinancialJsonPolicy Strict
+    field Int32 value__
+class Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions
+    method System.Text.Json.JsonSerializerOptions AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Bodu.Financial.Serialization.Json.FinancialJsonPolicy)
+class Bodu.Financial.Serialization.Json.FinancialJsonServiceCollectionExtensions
+    field System.String JsonOptionsKey
+    method Microsoft.Extensions.DependencyInjection.IServiceCollection AddFinancialJson(Microsoft.Extensions.DependencyInjection.IServiceCollection, Bodu.Financial.Serialization.Json.FinancialJsonPolicy)
+class Bodu.Financial.Serialization.Json.MoneyBagJsonConverter
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Financial.Serialization.Json.FinancialJsonPolicy)
+    method Bodu.Financial.MoneyBag Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Financial.MoneyBag, System.Text.Json.JsonSerializerOptions)
+class Bodu.Financial.Serialization.Json.MoneyJsonConverter
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Financial.Serialization.Json.FinancialJsonPolicy)
+    method Bodu.Financial.Money Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Financial.Money, System.Text.Json.JsonSerializerOptions)
+class Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverterFactory
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Financial.Serialization.Json.FinancialJsonPolicy)
+    method Boolean CanConvert(System.Type)
+    method System.Text.Json.Serialization.JsonConverter CreateConverter(System.Type, System.Text.Json.JsonSerializerOptions)
+class Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverter`1
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Financial.Serialization.Json.FinancialJsonPolicy)
+    method Bodu.Financial.Money`1[TCurrency] Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Financial.Money`1[TCurrency], System.Text.Json.JsonSerializerOptions)

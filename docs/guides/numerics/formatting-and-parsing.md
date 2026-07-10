@@ -155,13 +155,13 @@ Fraction<int> parsed = Fraction<int>.Parse("3/4"u8, null);
 
 ## Round-tripping JSON
 
-JSON support ships in the companion `Bodu.Numerics.Serialization.Json` package (the core library is serialization-agnostic). Register the converters with `ConfigureForBoduNumerics`; the default `Strict` policy emits the canonical *object* form:
+JSON support ships in the companion `Bodu.Numerics.Serialization.Json` package (the core library is serialization-agnostic). Register the converters with `AddNumericsJsonConverters`; the default `Strict` policy emits the canonical *object* form:
 
 ```csharp
 using System.Text.Json;
 using Bodu.Numerics.Serialization.Json;
 
-var options = new JsonSerializerOptions().ConfigureForBoduNumerics();
+var options = new JsonSerializerOptions().AddNumericsJsonConverters();
 
 string json = JsonSerializer.Serialize(new Fraction<int>(3, 4), options);
 // {"numerator":3,"denominator":4}
@@ -169,7 +169,7 @@ string json = JsonSerializer.Serialize(new Fraction<int>(3, 4), options);
 Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json, options);
 ```
 
-The compact single-string form documented above (`"3/4"`) is the wire shape of the `Compact` *policy*, opt-in via `ConfigureForBoduNumerics(NumericsJsonPolicy.Compact)`; its read path delegates to `Fraction<T>.TryParse(text, CultureInfo.InvariantCulture, …)`, and the percentage and mixed-number text forms feed back through that same parser. See [JSON serialization](json-serialization.md) for the policy table and failure modes, and the [Working with `Fraction<T>`](fraction.md) guide for the equivalent XML helpers `ToXml()` / `FromXml(string)`.
+The compact single-string form documented above (`"3/4"`) is the wire shape of the `Compact` *policy*, opt-in via `AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`; its read path delegates to `Fraction<T>.TryParse(text, CultureInfo.InvariantCulture, …)`, and the percentage and mixed-number text forms feed back through that same parser. See [JSON serialization](json-serialization.md) for the policy table and failure modes, and the [Working with `Fraction<T>`](fraction.md) guide for the equivalent XML helpers `ToXml()` / `FromXml(string)`.
 
 ## See also
 

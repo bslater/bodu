@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Text.Json;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.ExchangeRates;
 
@@ -308,25 +307,6 @@ public partial class MoneyBagTests
         {
             _ = table.GetRate("USD", "EUR");
         });
-    }
-
-    /// <summary>
-    /// Verifies the JSON shape and round-trip preservation.
-    /// </summary>
-    [TestMethod]
-    public void Json_WhenRoundTripped_ShouldPreserveBag()
-    {
-        MoneyBag original = MoneyBag.Empty
-            .Add(new Money(100m, CurrencyCode.USD))
-            .Add(new Money(50m, CurrencyCode.EUR));
-
-        string json = JsonSerializer.Serialize(original);
-        MoneyBag? recovered = JsonSerializer.Deserialize<MoneyBag>(json);
-
-        Assert.IsNotNull(recovered);
-        Assert.AreEqual(original, recovered);
-        StringAssert.Contains(json, "\"balances\"");
-        StringAssert.Contains(json, "\"USD\":100");
     }
 
     /// <summary>

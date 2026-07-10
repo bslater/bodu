@@ -177,7 +177,9 @@ because the target currency's own balance needs no rate (its `Rate` is `null`).
 `FinancialJsonPolicy` values pick the trade-off explicitly; this scenario shows each on the same
 values.
 
-**What it does.** Registers the financial converters on three `JsonSerializerOptions` instances
+**What it does.** Registers the financial converters (from the `Bodu.Financial.Serialization.Json`
+companion package — the core types carry no `[JsonConverter]` attribute, so registration is
+required) on three `JsonSerializerOptions` instances
 (`Strict` default, `Compact`, `Lenient`), serializes a `Money<USD>` and a `MoneyBag` under them,
 round-trips the strict shape, and deserializes a lowercase-ISO document under `Lenient`.
 

@@ -23,7 +23,7 @@ public class IntervalJsonConverterUnboundedTests
     /// <param name="policy">The policy under test.</param>
     /// <returns>The configured options.</returns>
     private static JsonSerializerOptions Options(NumericsJsonPolicy policy) =>
-        new JsonSerializerOptions().ConfigureForBoduNumerics(policy);
+        new JsonSerializerOptions().AddNumericsJsonConverters(policy);
 
     /// <summary>
     /// Verifies that each unbounded and half-bounded interval shape round-trips under the Strict object policy.

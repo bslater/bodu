@@ -431,14 +431,14 @@ Helper convenience methods:
 JSON support ships in the companion
 `Bodu.Numerics.Serialization.Json` package — the core library is
 serialization-agnostic. Register the converters with
-`ConfigureForBoduNumerics`; the default `Strict` policy emits the
+`AddNumericsJsonConverters`; the default `Strict` policy emits the
 canonical **object** form:
 
 ```csharp
 using System.Text.Json;
 using Bodu.Numerics.Serialization.Json;
 
-var options = new JsonSerializerOptions().ConfigureForBoduNumerics();
+var options = new JsonSerializerOptions().AddNumericsJsonConverters();
 
 string json = JsonSerializer.Serialize(new Fraction<int>(3, 4), options);
 // {"numerator":3,"denominator":4}
@@ -452,7 +452,7 @@ precision through the writer's `Int64` / `decimal` primitives. On read,
 a component may be either a JSON number or a numeric string token.
 
 To switch to the compact single-string form `"3/4"`, register with
-`ConfigureForBoduNumerics(NumericsJsonPolicy.Compact)`; the `Compact`
+`AddNumericsJsonConverters(NumericsJsonPolicy.Compact)`; the `Compact`
 read path delegates to
 `Fraction<T>.TryParse(text, CultureInfo.InvariantCulture, …)`. See
 [JSON serialization](json-serialization.md) for the full policy table
@@ -469,7 +469,7 @@ invariant-culture *general* text form in
 > The `ToJson()` / `FromJson()` helpers use the reflection-based
 > `JsonSerializer` and are annotated `RequiresUnreferencedCode` /
 > `RequiresDynamicCode`. For trimming or AOT, register the converters
-> via `ConfigureForBoduNumerics` against a source-generated
+> via `AddNumericsJsonConverters` against a source-generated
 > `JsonSerializerContext` instead.
 
 ## Equality, hashing, and `Equals(object?)`

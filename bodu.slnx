@@ -151,6 +151,10 @@
     <Project Path="Bodu.Financial.DependencyInjection/src/Bodu.Financial.DependencyInjection.csproj" />
     <Project Path="Bodu.Financial.DependencyInjection/test/Bodu.Financial.DependencyInjection.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial.Serialization.Json/">
+    <Project Path="Bodu.Financial.Serialization.Json/src/Bodu.Financial.Serialization.Json.csproj" />
+    <Project Path="Bodu.Financial.Serialization.Json/test/Bodu.Financial.Serialization.Json.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Security.Cryptography/">
     <Project Path="Bodu.Security.Cryptography\bench\Bodu.Security.Cryptography.Benchmarks.csproj" />
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />

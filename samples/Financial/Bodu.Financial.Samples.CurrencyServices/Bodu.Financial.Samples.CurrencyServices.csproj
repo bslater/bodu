@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
     <ProjectReference Include="..\..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Financial.Serialization.Json\src\Bodu.Financial.Serialization.Json.csproj" />
   </ItemGroup>
 
 </Project>

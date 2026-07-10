@@ -23,7 +23,7 @@ public class BigDecimalJsonConverterTests
     /// <param name="policy">The policy under test.</param>
     /// <returns>The configured options.</returns>
     private static JsonSerializerOptions Options(NumericsJsonPolicy policy = NumericsJsonPolicy.Strict) =>
-        new JsonSerializerOptions().ConfigureForBoduNumerics(policy);
+        new JsonSerializerOptions().AddNumericsJsonConverters(policy);
 
     /// <summary>
     /// Verifies that the Strict policy writes the canonical object form.

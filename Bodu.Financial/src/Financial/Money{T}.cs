@@ -5,9 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
-using System.Text.Json.Serialization;
 using Bodu.Financial.Currencies;
-using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial;
 
@@ -53,11 +51,9 @@ namespace Bodu.Financial;
 /// metadata.
 /// </para>
 /// <para>
-/// The type-level <see cref="JsonConverterAttribute" /> always serializes the canonical
-/// <see cref="Serialization.FinancialJsonPolicy.Strict" /> object shape; the compact and lenient shapes are opt-in only
-/// and must be selected through
-/// <see cref="Serialization.FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(System.Text.Json.JsonSerializerOptions, Serialization.FinancialJsonPolicy)" />
-/// .
+/// JSON serialization ships in the companion <c>Bodu.Financial.Serialization.Json</c> package; the type carries no
+/// <c>[JsonConverter]</c> attribute, so register the financial converters on the target <c>JsonSerializerOptions</c>
+/// via its <c>AddFinancialJsonConverters</c> extension.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -84,7 +80,6 @@ namespace Bodu.Financial;
 /// </example>
 /// </remarks>
 [DebuggerDisplay("{ToString(),nq}")]
-[JsonConverter(typeof(MoneyOfTCurrencyJsonConverterFactory))]
 public readonly partial struct Money<TCurrency>
     where TCurrency : ICurrency
 {
