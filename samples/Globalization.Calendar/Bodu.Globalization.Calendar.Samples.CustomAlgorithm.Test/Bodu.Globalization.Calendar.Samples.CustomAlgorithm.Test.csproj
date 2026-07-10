@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Globalization.Calendar.Samples.CustomAlgorithm</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Data\Bodu.Globalization.Calendar.Data.Test.Common\Bodu.Globalization.Calendar.Data.Test.Common.csproj" />
+    <ProjectReference Include="..\Bodu.Globalization.Calendar.Samples.CustomAlgorithm\Bodu.Globalization.Calendar.Samples.CustomAlgorithm.csproj" />
+  </ItemGroup>
+
+</Project>
