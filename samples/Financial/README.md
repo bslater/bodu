@@ -17,6 +17,7 @@ dotnet run --project samples/Financial/<SampleName>
 | `Bodu.Financial.Samples.AggregatedRates` | Multi-provider aggregation: priority fallback, averaging, per-pair routing, and the `AddAggregatedRateProvider` DI builder | `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial.DependencyInjection` |
 | `Bodu.Financial.Samples.CurrencyServices` | Ambient currency resolution (`CurrencyResolution`), named `MonetaryContext`s, the `AddFinancialService` host wiring | `Bodu.Financial`, `Bodu.Financial.DependencyInjection` |
 | `Bodu.Financial.Samples.CustomProvider` (+ `.Test`) | Writing your own `IDatedRateProvider` and validating it with the shipped contract-test bases | `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial.ExchangeRates.Testing` |
+| `Bodu.Financial.Samples.LiveRates` | **Online** (the one exception): fetch real published rates from a live provider — ECB active, RBA/BoE/Yahoo/OFX/OANDA/XE comment-switchable — for a buffered "last Wednesday" date and its trailing week | `Bodu.Financial.ExchangeRates.Ecb` (+ the other six provider packages) |
 
 ## Offline by default, live by choice
 

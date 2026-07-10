@@ -184,6 +184,7 @@
     <Project Path="samples/Financial/Bodu.Financial.Samples.CurrencyServices/Bodu.Financial.Samples.CurrencyServices.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CustomProvider/Bodu.Financial.Samples.CustomProvider.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CustomProvider.Test/Bodu.Financial.Samples.CustomProvider.Test.csproj" />
+    <Project Path="samples/Financial/Bodu.Financial.Samples.LiveRates/Bodu.Financial.Samples.LiveRates.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.MoneyBasics/Bodu.Financial.Samples.MoneyBasics.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.OfflineRates/Bodu.Financial.Samples.OfflineRates.csproj" />
   </Folder>

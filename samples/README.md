@@ -6,7 +6,9 @@ consumer would actually compose them. Every sample:
 - **runs fully offline** — no network access, no accounts, no API keys. Exchange-rate
   samples read committed static data files instead of calling live feeds, and each one
   carries a clearly fenced comment block showing exactly how to switch to the real
-  web-based provider.
+  web-based provider. (One deliberate exception: `Bodu.Financial.Samples.LiveRates`
+  exists precisely to call a live feed; it is clearly marked and excluded from the CI
+  samples run.)
 - **is deterministic** — running a sample twice prints the same output, so the samples
   double as executable documentation and as CI smoke tests.
 - references the library projects directly via `ProjectReference`, so the samples always

@@ -77,10 +77,20 @@ the caching decorator. Its companion test project derives
 *Packages: `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching`,
 `Bodu.Financial.ExchangeRates.Testing` (test).*
 
+### Bodu.Financial.Samples.LiveRates
+
+The one sample that goes **online** (and is therefore excluded from the CI samples run): it
+fetches real published rates from a live web provider for a computed historical date — the most
+recent Wednesday at least five days old, with a `PreviousWithin(5)` tolerance so a published
+fixing is near-certain — plus that date's trailing week as a single range read. The ECB feed is
+active by default; RBA, BoE, Yahoo, OFX, OANDA, and XE are comment-switchable blocks, and every
+provider package is referenced so the switch is a comment flip. *Packages: one of the
+`Bodu.Financial.ExchangeRates.<Source>` provider packages.*
+
 ## Offline by default, live by choice
 
-The samples never touch the network. Where a live feed could be used, a fenced comment block
-shows the exact switch:
+With the exception of `LiveRates` above, the samples never touch the network. Where a live feed
+could be used, a fenced comment block shows the exact switch:
 
 ```csharp
 // --- To use the live Reserve Bank of Australia feed instead -----------------

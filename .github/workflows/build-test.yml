@@ -125,9 +125,12 @@ jobs:
           # Every sample console app that is a member of bodu.slnx (excluding sample test
           # projects, which run in the Test step above). Samples are offline and deterministic;
           # running each one is the smoke test that keeps the sample code from rotting.
+          # LiveRates is the one deliberate exception - it calls a live web feed, so it is
+          # built (slnx membership) but not executed here.
           projects=$(grep -oE 'Path="samples/[^"]*\.csproj"' bodu.slnx \
             | sed -E 's/^Path="//; s/"$//; s/\\/\//g' \
             | grep -v '\.Test\.csproj$' \
+            | grep -v '\.Samples\.LiveRates\.csproj$' \
             | sort -u)
 
           if [ -z "$projects" ]; then
