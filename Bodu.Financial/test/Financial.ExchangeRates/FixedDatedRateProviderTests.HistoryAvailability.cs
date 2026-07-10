@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixedDatedRateProviderTests.HistoryAvailability.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -56,7 +56,7 @@ public partial class FixedDatedRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that the provider is discoverable through the <see cref="IHistoryAwareRateProvider" />
+    /// Verifies that the provider is discoverable through the <see cref="IHistoricalRateProvider" />
     /// capability interface, so composing layers can probe it at runtime.
     /// </summary>
     [TestMethod]
@@ -64,7 +64,7 @@ public partial class FixedDatedRateProviderTests
     {
         FixedDatedRateProvider table = new(SingleRate());
 
-        IHistoryAwareRateProvider aware = table;
+        IHistoricalRateProvider aware = table;
 
         Assert.AreEqual(table.HistoryAvailability, aware.HistoryAvailability);
         Assert.AreEqual(RateHistoryAvailability.Since(s_d1), aware.HistoryAvailability);

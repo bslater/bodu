@@ -8,12 +8,12 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// An <see cref="IDatedRateProvider" /> test double that advertises a settable <see cref="RateHistoryAvailability" />
-/// through <see cref="IHistoryAwareRateProvider" /> while delegating to a fixed in-memory book and counting every
+/// through <see cref="IHistoricalRateProvider" /> while delegating to a fixed in-memory book and counting every
 /// lookup, so tests can assert both what the decorators forward and when they avoided calling a source outside its
 /// advertised history.
 /// </summary>
 internal sealed class HistoryAwareCountingProvider
-    : IDatedRateProvider, IHistoryAwareRateProvider
+    : IDatedRateProvider, IHistoricalRateProvider
 {
     /// <summary>The fixed provider backing the counted lookups.</summary>
     private readonly FixedDatedRateProvider _inner;

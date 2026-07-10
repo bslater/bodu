@@ -48,7 +48,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </example>
 /// </remarks>
 public sealed class FixedDatedRateProvider
-    : IDatedRateProvider, IHistoryAwareRateProvider
+    : IDatedRateProvider, IHistoricalRateProvider
 {
     /// <summary>The label used as the provider name on synthetic same-currency identity results. Exposed publicly so audit consumers can filter by it without depending on a magic-string literal.</summary>
     public const string IdentityProviderName = "Identity";
