@@ -6,7 +6,7 @@
 
 using System.Text.Json;
 using Bodu.Financial.Currencies;
-using Bodu.Financial.Serialization;
+using Bodu.Financial.Serialization.Json;
 
 namespace Bodu.Financial.Samples.MoneyBasics.Scenarios;
 
@@ -29,6 +29,7 @@ public static class JsonPolicies
 
         // Strict (default): the canonical {"amount":..,"currency":".."} object shape for ledgers,
         // persistence, and audit data. Duplicate properties and mismatched currencies are rejected.
+        // Registration is required - the core types carry no [JsonConverter] attribute.
         var strict = new JsonSerializerOptions().AddFinancialJsonConverters();
         var ledgerJson = JsonSerializer.Serialize(price, strict);
         Money<USD> restored = JsonSerializer.Deserialize<Money<USD>>(ledgerJson, strict);

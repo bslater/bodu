@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Numerics;
-using System.Text.Json;
 using Bodu.Financial.Currencies;
 
 using Bodu.Financial.ExchangeRates;
@@ -426,39 +425,6 @@ public partial class MoneyOfTCurrencyTests
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = real + empty;
-        });
-    }
-
-    // ---------------------------------------------------------------------------------------------------------------
-    // P1.8 — MoneyJsonConverter must reject duplicate "amount" or "currency" properties.
-    // ---------------------------------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that a JSON payload with duplicate <c>"amount"</c> properties is rejected for
-    /// <see cref="Money" /> (mirroring the existing guarantee on <see cref="Money{TCurrency}" />).
-    /// </summary>
-    [TestMethod]
-    public void MoneyJsonDeserialize_WhenAmountPropertyDuplicated_ShouldThrowJsonException()
-    {
-        string json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
-
-        Assert.ThrowsExactly<JsonException>(() =>
-        {
-            _ = JsonSerializer.Deserialize<Money>(json);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a JSON payload with duplicate <c>"currency"</c> properties is rejected.
-    /// </summary>
-    [TestMethod]
-    public void MoneyJsonDeserialize_WhenCurrencyPropertyDuplicated_ShouldThrowJsonException()
-    {
-        string json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"EUR\"}";
-
-        Assert.ThrowsExactly<JsonException>(() =>
-        {
-            _ = JsonSerializer.Deserialize<Money>(json);
         });
     }
 

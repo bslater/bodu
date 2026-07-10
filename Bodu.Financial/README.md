@@ -184,11 +184,21 @@ Compact-notation overloads (`ToCompactString(...)`) add a K/M/B/T magnitude suff
 
 ## Serialization
 
-JSON converters for `Money`, `Money<TCurrency>`, `MoneyBag`, and `ExchangeRate` support three policies:
+`Bodu.Financial` is serialization-agnostic — the monetary types carry no `[JsonConverter]` attribute and the core library ships no `System.Text.Json` integration of its own. JSON converters for `Money`, `Money<TCurrency>`, `MoneyBag`, `ExchangeRate`, and `CurrencyPair` live in the companion [`Bodu.Financial.Serialization.Json`](https://github.com/bslater/bodu/tree/master/Bodu.Financial.Serialization.Json) package; registration is required:
+
+```csharp
+using Bodu.Financial.Serialization.Json;
+
+var options = new JsonSerializerOptions().AddFinancialJsonConverters(FinancialJsonPolicy.Strict);
+```
+
+Three policies control the wire shape:
 
 - **Strict** (default) — object form `{ "amount": 19.99, "currency": "AUD" }`; rejects duplicate keys and mismatched / lowercase ISO codes.
 - **Lenient** — accepts lowercase currency codes and surrounding whitespace.
 - **Compact** — accepts the round-trip string form `"19.99 AUD"`.
+
+> **Migration note.** Earlier builds shipped the converters inside `Bodu.Financial` and serialized through type-level `[JsonConverter]` attributes with zero configuration. Without the registration above, `JsonSerializer` now falls back to reflection-shaped output instead of the canonical shapes.
 
 ## Currency catalogue
 

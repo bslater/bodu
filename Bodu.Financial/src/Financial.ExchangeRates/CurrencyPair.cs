@@ -5,9 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
-using System.Text.Json.Serialization;
 using Bodu.Financial.Currencies;
-using Bodu.Financial.Serialization;
 
 namespace Bodu.Financial.ExchangeRates;
 
@@ -21,7 +19,6 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{From,nq}/{To,nq}")]
-[JsonConverter(typeof(CurrencyPairJsonConverter))]
 public readonly record struct CurrencyPair
 {
     /// <summary>

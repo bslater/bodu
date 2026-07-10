@@ -17,8 +17,8 @@ namespace Bodu.Financial.DependencyInjection;
 public sealed class IntegrationTests
 {
     /// <summary>
-    /// Verifies that a full composition resolves the currency lookup, named context, exchange-rate provider, and JSON
-    /// options together.
+    /// Verifies that a full composition resolves the currency lookup, named context, and exchange-rate provider
+    /// together.
     /// </summary>
     [TestMethod]
     public void AddFinancialService_WhenComposedViaCallback_ShouldResolveAllServices()
@@ -31,8 +31,7 @@ public sealed class IntegrationTests
                 .AddExchangeRateProvider(new FixedRateTable(new Dictionary<(string, string), decimal>
                 {
                     { ("USD", "AUD"), 1.5m },
-                }))
-                .AddFinancialJson())
+                })))
             .Services.BuildServiceProvider();
 
         Assert.IsNotNull(provider.GetRequiredService<ICurrencyLookup>());

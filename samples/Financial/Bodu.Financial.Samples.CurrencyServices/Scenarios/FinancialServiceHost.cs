@@ -7,14 +7,15 @@
 using System.Text.Json;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.ExchangeRates;
-using Bodu.Financial.Serialization;
+using Bodu.Financial.Serialization.Json;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bodu.Financial.Samples.CurrencyServices.Scenarios;
 
 /// <summary>
 /// Demonstrates the composition-root wiring: <c>AddFinancialService</c> registers the currency lookup
-/// and financial options, the builder chain adds JSON policy and an exchange-rate provider, and
+/// and financial options, the builder chain adds an exchange-rate provider, <c>AddFinancialJson</c>
+/// (from the Bodu.Financial.Serialization.Json companion) registers the JSON policy, and
 /// <c>UseCurrencyResolution</c> promotes the DI lookup to the ambient seam once at startup.
 /// </summary>
 public static class FinancialServiceHost
@@ -28,15 +29,18 @@ public static class FinancialServiceHost
 
         var services = new ServiceCollection();
 
-        // One call registers the core services (ICurrencyLookup, FinancialOptions, financial JSON);
-        // the returned builder adds the optional pieces. The rate provider here is an offline
-        // instance - a live provider package would use its Add<Source>ExchangeRates() instead.
+        // One call registers the core services (ICurrencyLookup, FinancialOptions); the returned
+        // builder adds the optional pieces. The rate provider here is an offline instance - a live
+        // provider package would use its Add<Source>ExchangeRates() instead.
         services.AddFinancialService()
-            .AddFinancialJson(FinancialJsonPolicy.Compact)
             .AddDatedExchangeRateProvider(new FixedDatedRateProvider(
             [
                 new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 3, 15), 0.6580m, "Config"),
             ]));
+
+        // Financial JSON ships in the Bodu.Financial.Serialization.Json companion; register the
+        // keyed JsonSerializerOptions explicitly with the desired policy.
+        services.AddFinancialJson(FinancialJsonPolicy.Compact);
 
         using ServiceProvider provider = services.BuildServiceProvider();
 
@@ -50,7 +54,7 @@ public static class FinancialServiceHost
             Console.WriteLine($"Numeric 036   : {byNumber.IsoCode} ({byNumber.EnglishName})");
 
         // The keyed JsonSerializerOptions carry the configured financial policy (Compact here).
-        var json = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialServiceBuilderExtensions.JsonOptionsKey);
+        var json = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialJsonServiceCollectionExtensions.JsonOptionsKey);
         Console.WriteLine($"Financial JSON: {JsonSerializer.Serialize(Money.Of<USD>(19.99m), json)}  (Compact policy)");
 
         // The registered provider serves rate lookups for consumers depending on IDatedRateProvider.

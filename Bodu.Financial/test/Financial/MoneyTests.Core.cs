@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Text.Json;
 using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial;
@@ -568,48 +567,4 @@ public partial class MoneyTests
         Assert.AreEqual(original, recovered);
     }
 
-    // ---------------------------------------------------------------------------------------------------------------
-    // JSON
-    // ---------------------------------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies the JSON output shape.
-    /// </summary>
-    [TestMethod]
-    public void Json_WhenSerialised_ShouldEmitAmountAndCurrencyFields()
-    {
-        var money = new Money(19.99m, CurrencyCode.USD);
-
-        string json = JsonSerializer.Serialize(money);
-
-        Assert.AreEqual("{\"amount\":19.99,\"currency\":\"USD\"}", json);
-    }
-
-    /// <summary>
-    /// Verifies a JSON round-trip preserves the value.
-    /// </summary>
-    [TestMethod]
-    public void Json_WhenRoundTripped_ShouldPreserveValue()
-    {
-        var original = new Money(123.45m, CurrencyCode.EUR);
-
-        string json = JsonSerializer.Serialize(original);
-        Money recovered = JsonSerializer.Deserialize<Money>(json);
-
-        Assert.AreEqual(original, recovered);
-    }
-
-    /// <summary>
-    /// Verifies that a JSON payload missing the currency property throws.
-    /// </summary>
-    [TestMethod]
-    public void Json_WhenCurrencyMissing_ShouldThrowJsonException()
-    {
-        string json = "{\"amount\":19.99}";
-
-        Assert.ThrowsExactly<JsonException>(() =>
-        {
-            _ = JsonSerializer.Deserialize<Money>(json);
-        });
-    }
 }
