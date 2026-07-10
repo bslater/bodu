@@ -15,6 +15,16 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// day. The other policies thin a same-day group by priority or category, or defer to an
 /// <see cref="INotableDateCollisionResolver" /> when set to <see cref="Custom" />.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Two concepts landing on the same day: HighestPriorityOnly keeps the winner,
+/// // KeepAll surfaces both. Set via the resolution policy:
+/// NotableDateDocumentBuilder.Create("demo")
+///     .WithResolutionPolicy(p => p.WithSameDayCollisionPolicy(CollisionPolicy.HighestPriorityOnly));
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 /// <seealso cref="INotableDateCollisionResolver" /> <seealso href="../guides/calendar/identity-and-resolution.html">
 /// Rule identity, priority, and observed-date resolution (guide)</seealso>

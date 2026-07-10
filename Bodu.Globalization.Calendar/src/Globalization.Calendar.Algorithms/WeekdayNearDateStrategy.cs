@@ -12,6 +12,20 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
 /// date rules (guide)</seealso>
+/// <remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The rule shape this strategy realizes - the weekday nearest a fixed anchor date
+/// // (the Monday closest to 12 June):
+/// NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
+///     .AddNotableDate("kings-birthday", "King's Birthday", NotableDateCategory.PublicHoliday, c => c
+///         .AddRule("default", r => r.WeekdayNearDate(6, 12, DayOfWeek.Monday, WeekdayProximity.Nearest)))
+///     .Build();
+///]]>
+/// </code>
+/// </example>
+/// </remarks>
 public sealed class WeekdayNearDateStrategy
     : IDateCalculationStrategy
 {

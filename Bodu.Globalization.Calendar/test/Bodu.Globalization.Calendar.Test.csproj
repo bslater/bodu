@@ -27,6 +27,19 @@
     <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Data\Bodu.Globalization.Calendar.MiddleEast\src\Bodu.Globalization.Calendar.MiddleEast.csproj" />
   </ItemGroup>
 
+  <!--
+    Test-only references for the documentation snippet-compile guard: Roslyn compiles the
+    guide snippets marked with the compile sentinel against the assemblies this project
+    references, and the Builder / DependencyInjection companions let builder and DI snippets
+    opt in.
+  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Builder\src\Bodu.Globalization.Calendar.Builder.csproj" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar.DependencyInjection\src\Bodu.Globalization.Calendar.DependencyInjection.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="Globalization.Calendar\Fixtures\*.xml">
       <LogicalName>Bodu.Globalization.Calendar.Fixtures.%(Filename)%(Extension)</LogicalName>

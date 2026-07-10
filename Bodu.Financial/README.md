@@ -196,7 +196,7 @@ Covers the ~155 active ISO 4217 currencies plus 29 historic / demonetised curren
 
 ## Runnable samples
 
-The repository ships offline, `dotnet run`-able sample projects for the financial packages — money basics, static-file rate providers, caching, aggregation, DI wiring, and a custom provider with contract tests — under [`samples/financial/`](https://github.com/bslater/bodu/tree/master/samples/financial).
+The repository ships offline, `dotnet run`-able sample projects for the financial packages — money basics, static-file rate providers, caching, aggregation, DI wiring, and a custom provider with contract tests — under [`samples/Financial/`](https://github.com/bslater/bodu/tree/master/samples/Financial).
 
 ## License
 

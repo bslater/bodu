@@ -179,3 +179,4 @@ builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"
 - **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — `NotableDateService` patterns, algorithms, rule authoring, working-day arithmetic, territories, data packs.
 - **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — full type-by-type docs.
 - **[Calendar data packs guide](../../guides/calendar/data-packs.md)** — composing `AmericasCalendarData` / `EuropeCalendarData` / `AsiaPacificCalendarData` resources.
+- **[Runnable samples](../../samples/calendar.md)** — offline sample projects under `samples/Globalization.Calendar/` you can `dotnet run` and copy from.

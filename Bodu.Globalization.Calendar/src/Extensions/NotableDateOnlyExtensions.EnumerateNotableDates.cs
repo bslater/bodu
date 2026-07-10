@@ -20,6 +20,18 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+    ///
+    /// // Every public holiday in January 2026, eagerly materialized.
+    /// IReadOnlyList<NotableDate> january = new DateOnly(2026, 1, 1).EnumerateNotableDates(
+    ///     new DateOnly(2026, 1, 31), service, "AU",
+    ///     NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
+    ///]]>
+    /// </code>
+    /// </example>
     public static IReadOnlyList<NotableDate> EnumerateNotableDates(this DateOnly start, DateOnly end, INotableDateService service, string territory, NotableDateFilter? filter = null)
     {
         ThrowHelper.ThrowIfNull(service);

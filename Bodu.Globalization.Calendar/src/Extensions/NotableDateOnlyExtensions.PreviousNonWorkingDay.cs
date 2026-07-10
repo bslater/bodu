@@ -20,6 +20,16 @@ public static partial class NotableDateOnlyExtensions
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">No non-working day is found within the traversal guard.</exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+    ///
+    /// // From Monday 29 April 2024 the most recent closed day is the Sunday before.
+    /// DateOnly closed = new DateOnly(2024, 4, 29).PreviousNonWorkingDay(service, "AU");   // 2024-04-28
+    ///]]>
+    /// </code>
+    /// </example>
     public static DateOnly PreviousNonWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
         StepNonWorking(date, -1, service, territory, workingWeek);
 }

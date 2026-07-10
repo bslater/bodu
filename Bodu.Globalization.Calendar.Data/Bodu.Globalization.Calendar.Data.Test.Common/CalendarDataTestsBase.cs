@@ -16,6 +16,31 @@ namespace Bodu.Globalization.Calendar;
 /// inherits the <see cref="CreateService_ForEverySupportedCountry_LoadsAndResolves" /> smoke test. The base itself
 /// declares no <see cref="TestClassAttribute" />, so MSTest discovers and runs the inherited methods only under the
 /// concrete derived classes in the leaf test assemblies.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The same derivation validates a consumer-built calendar shaped as a data-pack
+/// // factory (see samples/Globalization.Calendar/...CustomAlgorithm for a worked example).
+/// [TestClass]
+/// public sealed class AsiaPacificCalendarDataTests
+///     : CalendarDataTestsBase
+/// {
+///     protected override IReadOnlyList<string> SupportedCountries => AsiaPacificCalendarData.SupportedCountries;
+///
+///     protected override INotableDateService CreateService(string territory) =>
+///         AsiaPacificCalendarData.CreateService(territory);
+///
+///     [TestMethod]
+///     public void Resolve_ForKnownDate_ShouldMatchPublishedExpectation()
+///     {
+///         NotableDate labourDay = ResolveSingle("AU-VIC", 2026, "labour-day");
+///
+///         Assert.AreEqual(new DateOnly(2026, 3, 9), labourDay.Date);
+///     }
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public abstract class CalendarDataTestsBase
 {

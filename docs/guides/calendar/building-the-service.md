@@ -4,7 +4,7 @@ title: Building and extending the service
 
 # Building and extending the service
 
-A <xref:Bodu.Globalization.Calendar.NotableDateService> is built over a single immutable, already-validated <xref:Bodu.Globalization.Calendar.NotableDateResource>. The simplest construction takes just the resource; richer scenarios supply optional collaborators through the constructor's overloads. This page walks the constructor surface, the runtime-swap pair, code-first providers, display-name localization, and the trust-gated plugin system.
+A <xref:Bodu.Globalization.Calendar.NotableDateService> is built over a single immutable, already-validated <xref:Bodu.Globalization.Calendar.NotableDateResource>. The simplest construction takes just the resource; richer scenarios supply optional collaborators through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>. This page walks the construction surface, the runtime-swap pair, code-first providers, display-name localization, and the trust-gated plugin system.
 
 For the vocabulary used below (resource vs. document, rule vs. resolved date, nominal vs. observed) see [Core concepts](../../docs/calendar/concepts.md).
 
@@ -19,38 +19,27 @@ NotableDateResource resource = NotableDateResourceLoader.Load(xml, CommonNotable
 NotableDateService  service  = new NotableDateService(resource);
 ```
 
-There is no options object: resolution behaviour is carried by the resource itself — its `<ResolutionPolicy>` decides duplicate handling, same-day collisions, the priority direction, observed-date inclusion, and the working week. To change those, edit the document or build the resource differently; see [Identity and resolution](identity-and-resolution.md). The constructor overloads add optional collaborators, in this fixed order:
+Resolution *behaviour* is carried by the resource itself — its `<ResolutionPolicy>` decides duplicate handling, same-day collisions, the priority direction, observed-date inclusion, and the working week. To change those, edit the document or build the resource differently; see [Identity and resolution](identity-and-resolution.md). Runtime *collaborators* are supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>, an object with `init`-only properties (there is no positional-collaborator constructor):
 
-| Parameter | Type | Purpose |
+| Property | Type | Purpose |
 |---|---|---|
-| `resource` | `NotableDateResource` | The loaded, validated resource the service draws occurrences from. Required. |
-| `algorithms` | `INotableDateAlgorithmRegistry?` | A custom algorithm registry for `<Algorithm key="…">` rules. `null` uses the built-in keys only. |
-| `collisionResolver` | `INotableDateCollisionResolver?` | Consulted only when the resource's same-day collision policy is `CollisionPolicy.Custom`. |
-| `handlers` | `IAdjustmentHandlerRegistry?` | Consulted when an adjustment **action** is `AdjustmentAction.Custom`. |
-| `triggerHandlers` | `IAdjustmentTriggerHandlerRegistry?` | Consulted when an adjustment **trigger** is `AdjustmentTrigger.Custom`. |
-| `providers` | `IEnumerable<INotableDateProvider>?` | Code-first providers that contribute finished occurrences. |
+| `Algorithms` | `INotableDateAlgorithmRegistry?` | A custom algorithm registry for `<Algorithm key="…">` rules. `null` uses the built-in keys only. |
+| `CollisionResolver` | `INotableDateCollisionResolver?` | Consulted only when the resource's same-day collision policy is `CollisionPolicy.Custom`. |
+| `Handlers` | `IAdjustmentHandlerRegistry?` | Consulted when an adjustment **action** is `AdjustmentAction.Custom`. |
+| `TriggerHandlers` | `IAdjustmentTriggerHandlerRegistry?` | Consulted when an adjustment **trigger** is `AdjustmentTrigger.Custom`. |
+| `Providers` | `IEnumerable<INotableDateProvider>?` | Code-first providers that contribute finished occurrences. |
 
+Set only the properties you need — unset ones keep the built-in defaults:
+
+<!-- compile -->
 ```csharp
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Algorithms;
+// Register your own INotableDateAlgorithm implementations by key (see the next section).
+var algorithms = new NotableDateAlgorithmRegistry();
 
-// A custom algorithm backs a <Algorithm key="pi-day"> rule in the resource.
-var algorithms = new NotableDateAlgorithmRegistry()
-    .Register("pi-day", new PiDayAlgorithm());
-
-NotableDateService service = new NotableDateService(resource, algorithms);
-```
-
-To supply a later collaborator while leaving an earlier one at its default, pass `null` for the ones you do not need:
-
-```csharp
+NotableDateResource resource = AsiaPacificCalendarData.LoadResource("AU");
 NotableDateService service = new NotableDateService(
     resource,
-    algorithms:        algorithms,
-    collisionResolver: null,                       // use the resource's policy as-authored
-    handlers:          customActions,
-    triggerHandlers:   null,
-    providers:         new[] { new CompanyEventsProvider() });
+    new NotableDateServiceOptions { Algorithms = algorithms });
 ```
 
 ### Custom algorithm registry
@@ -70,7 +59,8 @@ var registry = new NotableDateAlgorithmRegistry()
     .Register("pi-day", new PiDayAlgorithm());
 
 NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ => null, registry);
-NotableDateService  service  = new NotableDateService(resource, registry);
+NotableDateService  service  = new NotableDateService(
+    resource, new NotableDateServiceOptions { Algorithms = registry });
 ```
 
 Built-in keys (`western-easter`, `orthodox-easter`, `qingming`, `vesak`, `losar`, `matariki`, the Hindu-festival keys, …) need no registration. See [Date calculation algorithms](algorithms.md).
@@ -95,7 +85,8 @@ public sealed class HighestPriorityResolver : INotableDateCollisionResolver
     }
 }
 
-NotableDateService service = new NotableDateService(resource, algorithms: null, collisionResolver: new HighestPriorityResolver());
+NotableDateService service = new NotableDateService(
+    resource, new NotableDateServiceOptions { CollisionResolver = new HighestPriorityResolver() });
 ```
 
 The built-in policies (`KeepAll`, `HighestPriorityOnly`, `CategoryPriority`) cover most needs and require no resolver; reach for `Custom` only for bespoke precedence. See [Identity and resolution](identity-and-resolution.md).
@@ -114,14 +105,14 @@ var triggers = new AdjustmentTriggerHandlerRegistry()
     .Register("if-school-term", new IfSchoolTermTrigger());
 
 NotableDateService service = new NotableDateService(
-    resource, algorithms: null, collisionResolver: null, handlers: actions, triggerHandlers: triggers);
+    resource, new NotableDateServiceOptions { Handlers = actions, TriggerHandlers = triggers });
 ```
 
 An <xref:Bodu.Globalization.Calendar.IAdjustmentHandler> implements `DateOnly? Adjust(AdjustmentHandlerContext)`; an <xref:Bodu.Globalization.Calendar.IAdjustmentTriggerHandler> implements `bool ShouldAdjust(AdjustmentTriggerContext)`. See [Observance adjustment rules](adjustment-rules.md) for the trigger / action catalogues and the context members.
 
 ## Code-first providers
 
-When a source cannot be expressed as an authored rule — occurrences pulled from a database, an HR system, or computed by bespoke logic — implement <xref:Bodu.Globalization.Calendar.INotableDateProvider> and register it through the `providers` parameter. A provider returns finished <xref:Bodu.Globalization.Calendar.NotableDate> occurrences for a requested range and territory:
+When a source cannot be expressed as an authored rule — occurrences pulled from a database, an HR system, or computed by bespoke logic — implement <xref:Bodu.Globalization.Calendar.INotableDateProvider> and register it through `NotableDateServiceOptions.Providers`. A provider returns finished <xref:Bodu.Globalization.Calendar.NotableDate> occurrences for a requested range and territory:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -150,8 +141,7 @@ public sealed class CompanyEventsProvider : INotableDateProvider
 }
 
 NotableDateService service = new NotableDateService(
-    resource, algorithms: null, collisionResolver: null, handlers: null, triggerHandlers: null,
-    providers: new[] { new CompanyEventsProvider() });
+    resource, new NotableDateServiceOptions { Providers = new[] { new CompanyEventsProvider() } });
 ```
 
 Provider occurrences are *terminal*: the service intersects them with the requested range and applies any query filter, but they do **not** pass through adjustment policies or declarative overrides — a provider that needs an observed-date shift must compute it itself. They do take part in the final ordering and the resource's same-day collision policy alongside resource occurrences.
@@ -160,14 +150,13 @@ Provider occurrences are *terminal*: the service intersects them with the reques
 
 A resource is immutable, so a *live* change means loading a new resource and swapping it in. Build the service over a <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider> via <xref:Bodu.Globalization.Calendar.ReloadableNotableDateService>; the reloadable service rereads the provider's `Current` on each query:
 
+<!-- compile -->
 ```csharp
-using Bodu.Globalization.Calendar;
-
-var provider = new MutableNotableDateResourceProvider(NotableDateResourceLoader.Load(initialXml));
+var provider = new MutableNotableDateResourceProvider(AsiaPacificCalendarData.LoadResource("AU"));
 INotableDateService service = new ReloadableNotableDateService(provider);
 
 // later, when the rules change — the live service picks it up atomically on the next query:
-provider.Reload(NotableDateResourceLoader.Load(updatedXml, CommonNotableDateResources.Resolver));
+provider.Reload(AsiaPacificCalendarData.LoadResource("NZ"));
 ```
 
 `ReloadableNotableDateService` accepts the same optional collaborators as `NotableDateService` (custom algorithm registry, collision resolver, adjustment-handler registries) after the provider argument. The pairing is what the DI companion's `AddReloadableNotableDateService` registers for you — see [Calendar dependency injection](dependency-injection.md).

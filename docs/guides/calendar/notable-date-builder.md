@@ -26,10 +26,8 @@ Each level is reached through a nested `Add*(…, configure)` callback that hand
 
 `Create` starts an empty document; `AddNotableDate` adds a concept, and each concept holds one or more rules:
 
+<!-- compile -->
 ```csharp
-using Bodu.Globalization.Calendar;
-using Bodu.Globalization.Calendar.Builder;
-
 NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("contoso.holidays")
     .WithMetadata(name: "Contoso holidays", description: "Company observances.")
     .AddNotableDate("new-years-day", "New Year's Day", NotableDateCategory.PublicHoliday, d => d
@@ -136,13 +134,14 @@ builder.Save("holidays.txt", NotableDateDocumentFormat.Xml);
 
 `FromXml` / `FromJson` parse a document back into a builder for editing, and `Load(path)` reads a file by extension — so you can load, mutate, and re-save:
 
+<!-- compile -->
 ```csharp
 NotableDateDocumentBuilder edited = NotableDateDocumentBuilder.Load("holidays.xml");
 edited.AddNotableDate("juneteenth", "Juneteenth", NotableDateCategory.PublicHoliday, d => d
     .AddRule("default", r => r.ForTerritory("US").Fixed(6, 19)));
 edited.Save("holidays.xml");
 
-NotableDateDocumentBuilder copy = builder.Clone();   // deep, independent copy
+NotableDateDocumentBuilder copy = edited.Clone();   // deep, independent copy
 ```
 
 ## Where to go next
