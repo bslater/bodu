@@ -14,6 +14,26 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// On every lookup the candidates are consulted in order and the first to satisfy the request wins, so a preferred
 /// provider's fallback-date hit beats a lower-priority provider's exact-date hit. This is the default strategy and the
 /// successor to the former <c>CompositeDatedRateProvider</c>.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial.ExchangeRates;
+/// using Bodu.Financial.ExchangeRates.Caching;
+///
+/// // Children in priority order: the first source that can serve a pair wins,
+/// // so a pair the primary does not quote falls through to the next source.
+/// var aggregate = new AggregatingRateProvider(new[]
+/// {
+///     new NamedDatedRateProvider("RBA", rbaProvider),
+///     new NamedDatedRateProvider("ECB", ecbProvider),
+/// });
+///
+/// // Provenance names the child that answered.
+/// RateLookupResult result = aggregate.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));
+/// var servedBy = result.Rate.Provider;
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class PriorityFallbackStrategy
     : IRateAggregationStrategy

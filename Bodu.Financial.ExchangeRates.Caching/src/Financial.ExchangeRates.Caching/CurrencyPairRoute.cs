@@ -14,6 +14,25 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// A route lets a single aggregator prefer different sources for different pairs — for example <c>AUD/USD</c> via
 /// <c>[RBA, ECB]</c> while <c>USD/GBP</c> prefers <c>[ECB, RBA]</c> — and optionally override the aggregator's default
 /// strategy for that pair.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial.Currencies;
+/// using Bodu.Financial.ExchangeRates;
+/// using Bodu.Financial.ExchangeRates.Caching;
+///
+/// var options = new RateAggregationOptions();
+///
+/// // AUD/USD prefers the RBA; unrouted pairs keep the aggregator's default child order.
+/// options.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] =
+///     new CurrencyPairRoute(new[] { "RBA", "ECB" });
+///
+/// // EUR/USD is averaged across both sources - a per-pair strategy override.
+/// options.Routes[new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD)] =
+///     new CurrencyPairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class CurrencyPairRoute
 {

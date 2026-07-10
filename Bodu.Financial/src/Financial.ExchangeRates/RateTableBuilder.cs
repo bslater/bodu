@@ -19,6 +19,27 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// Instances are not thread-safe; concurrent mutation requires external synchronisation.
 /// </para>
+/// <example>
+/// The builder → book → provider chain is the offline-first pattern: pour any rate data you already hold (a file, a
+/// database table, an archived API response) through the builder, freeze it, and serve it through the same contracts
+/// the live web providers implement.
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial.Currencies;
+/// using Bodu.Financial.ExchangeRates;
+///
+/// var builder = new RateTableBuilder();
+///
+/// builder.Upsert(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), "SampleData", new DateOnly(2024, 3, 15), 0.6580m);
+/// builder.Upsert(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.EUR), "SampleData", new DateOnly(2024, 3, 15), 0.6196m);
+///
+/// // Freeze every series into an immutable book, then wrap it in a dated provider.
+/// var rates = new FixedDatedRateProvider(builder.ToBook());
+///
+/// RateLookupResult usd = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class RateTableBuilder
 {

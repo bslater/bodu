@@ -120,6 +120,28 @@ jobs:
 
           exit $status
 
+      - name: Run samples
+        run: |
+          # Every sample console app that is a member of bodu.slnx (excluding sample test
+          # projects, which run in the Test step above). Samples are offline and deterministic;
+          # running each one is the smoke test that keeps the sample code from rotting.
+          projects=$(grep -oE 'Path="samples/[^"]*\.csproj"' bodu.slnx \
+            | sed -E 's/^Path="//; s/"$//; s/\\/\//g' \
+            | grep -v '\.Test\.csproj$' \
+            | sort -u)
+
+          if [ -z "$projects" ]; then
+            echo "::error::No sample projects discovered in bodu.slnx" >&2
+            exit 1
+          fi
+
+          for proj in $projects; do
+            name=$(basename "$proj" .csproj)
+            echo "::group::Run $name"
+            dotnet run --project "$proj" --configuration Release
+            echo "::endgroup::"
+          done
+
       - name: Upload TRX artifact
         if: always()
         uses: actions/upload-artifact@v4

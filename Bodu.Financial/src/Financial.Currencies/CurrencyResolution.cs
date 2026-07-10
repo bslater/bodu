@@ -24,6 +24,28 @@ namespace Bodu.Financial.Currencies;
 /// The scoped override is stored in an <see cref="System.Threading.AsyncLocal{T}" />, so it is isolated per
 /// asynchronous control flow and does not leak across parallel test cases.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
+///
+/// // A lookup restricted to the currencies this system settles in (a delegating
+/// // ICurrencyLookup decorator over CurrencyResolution.Current, for example).
+/// ICurrencyLookup restricted = new RestrictedCurrencyLookup(CurrencyResolution.Current, "AUD", "USD", "EUR");
+///
+/// using (CurrencyResolution.PushScoped(restricted))
+/// {
+///     // Inside the scope, runtime Money resolves through the override:
+///     // unsupported ISO codes now fail parsing and metadata resolution.
+///     var accepted = Money.TryParse("THB 25.00", CultureInfo.InvariantCulture, out _);   // false
+/// }
+///
+/// // Disposing the scope restores the previous lookup. At composition root, prefer
+/// // SetDefault (or the DI package's provider.UseCurrencyResolution()) instead.
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public static class CurrencyResolution
 {

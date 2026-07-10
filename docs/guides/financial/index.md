@@ -90,6 +90,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 3. **[Exchange-rate types](exchange-types.md)** and **[lookups on a known dataset](exchange-rate-lookups.md)** — reference material; dip in when choosing a type or tuning a lookup policy.
 4. **[Caching exchange rates](exchange-rate-caching.md)** — add a TOML disk cache in front of any provider, with per-provider expiry.
 5. **[Dependency injection](dependency-injection.md)** — last, once you know which services your application composes.
+6. **[Testing your own provider](testing-providers.md)** and **[runnable samples](samples.md)** — the contract-test bases for consumer-written providers, and the offline sample projects under `samples/financial/` that compose everything above end to end.
 
 ## See also
 

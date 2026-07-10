@@ -26,6 +26,26 @@ using Microsoft.Extensions.Logging;
 /// so consumers can re-tune verbosity per concern without category-wide log filters. Set any of them to
 /// <see cref="LogLevel.None" /> to suppress that event entirely.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial.ExchangeRates;
+///
+/// // Concrete options types (YahooRateProviderOptions, OfxRateProviderOptions, ...) share this surface.
+/// var options = new YahooRateProviderOptions
+/// {
+///     HttpTimeout = TimeSpan.FromSeconds(10),
+///     AllowSynchronousNetworkAccess = false,     // force callers onto the asynchronous surface
+///     DefaultLookback = TimeSpan.FromDays(14),   // window used by the timeless lookup surface
+/// };
+///
+/// options.CurrencyAliases["CNH"] = "CNY";        // map a non-ISO source symbol onto its ISO code
+///
+/// if (!options.TryValidate(out string? error))
+///     throw new InvalidOperationException(error);
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public abstract class WebRateProviderOptions
 {

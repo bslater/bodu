@@ -22,6 +22,23 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// Instances are not thread-safe; concurrent mutation requires external synchronisation.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial.Currencies;
+/// using Bodu.Financial.ExchangeRates;
+///
+/// var builder = new RateSeriesBuilder(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), "Treasury");
+///
+/// builder.Add(new DateOnly(2024, 3, 14), 0.6604m);
+/// builder.Add(new DateOnly(2024, 3, 15), 0.6580m);
+/// builder.Upsert(new DateOnly(2024, 3, 15), 0.6582m);   // corrects the existing observation
+///
+/// // Freeze the observations; later builder mutations do not affect the snapshot.
+/// RateSeries series = builder.ToSeries();
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 [DebuggerDisplay("{Pair.From,nq}/{Pair.To,nq} ({Provider,nq}) Count={Count}")]
 public sealed class RateSeriesBuilder
