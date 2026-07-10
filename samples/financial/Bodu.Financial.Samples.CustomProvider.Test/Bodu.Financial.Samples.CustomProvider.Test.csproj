@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Financial.Samples.CustomProvider</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The contract tests construct the provider over the sample's committed data file. -->
+    <None Include="..\Bodu.Financial.Samples.CustomProvider\Data\custom-feed.csv" Link="Data\custom-feed.csv" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.Testing\src\Bodu.Financial.ExchangeRates.Testing.csproj" />
+    <ProjectReference Include="..\Bodu.Financial.Samples.CustomProvider\Bodu.Financial.Samples.CustomProvider.csproj" />
+  </ItemGroup>
+
+</Project>
