@@ -8,7 +8,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
 /// A trust policy that trusts a candidate only when every composed policy trusts it; the first rejection short-circuits
-/// and its reason is surfaced.
+/// and its reason is surfaced. An empty policy set fails closed — it rejects every candidate rather than vacuously
+/// trusting it — so a misconfigured composite cannot silently disable the trust gate.
 /// </summary>
 public sealed class CompositePluginTrustPolicy
     : IPluginTrustPolicy
@@ -33,6 +34,11 @@ public sealed class CompositePluginTrustPolicy
     public PluginTrustResult Evaluate(PluginTrustContext context)
     {
         ThrowHelper.ThrowIfNull(context);
+
+        // Fail closed: with no constituent policies there is nothing to establish trust, so an empty composite must
+        // reject rather than fall through to the vacuous-conjunction "trusted" result.
+        if (_policies.Length == 0)
+            return PluginTrustResult.Rejected(PluginsResourceStrings.Op_NotTrusted_PluginNoPolicies);
 
         foreach (IPluginTrustPolicy policy in _policies)
         {

@@ -82,6 +82,9 @@
   <data name="Op_NotTrusted_PluginHashMismatch" xml:space="preserve">
     <value>The plugin assembly '{0}' file hash does not match the pinned value.</value>
   </data>
+  <data name="Op_NotTrusted_PluginNoPolicies" xml:space="preserve">
+    <value>The composite trust policy has no constituent policies, so no assembly can be trusted.</value>
+  </data>
   <data name="Op_NotTrusted_PluginNotStrongNamed" xml:space="preserve">
     <value>The plugin assembly is not strong-named.</value>
   </data>
