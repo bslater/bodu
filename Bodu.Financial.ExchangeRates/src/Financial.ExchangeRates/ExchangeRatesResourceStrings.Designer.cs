@@ -96,6 +96,12 @@ namespace Bodu.Financial.ExchangeRates {
             get {
                 return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsCurrencyAliasValue", resourceCulture);
             }
+        }
+
+        internal static string Arg_Invalid_WebExchangeRateOptionsMaxResponseContentBufferSize {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsMaxResponseContentBufferSize", resourceCulture);
+            }
         }        
         /// <summary>
         ///   Looks up a localized string similar to The exchange-rate provider options default look-back window must be greater than zero..

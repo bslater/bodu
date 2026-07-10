@@ -18,7 +18,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// <strong>HttpClient ownership.</strong> A derived provider constructed without a caller-supplied client builds and
-/// owns its own (typically through <see cref="RateProviderHttpClientFactory.Create(string?, TimeSpan)" />), passing it
+/// owns its own (typically through <see cref="RateProviderHttpClientFactory.Create(string?, TimeSpan, long)" />), passing it
 /// to this base so it is disposed with the provider. A provider constructed with a caller-supplied client passes
 /// <see langword="null" /> as the owned client, leaving its lifetime — and its HTTP contract (user agent, timeout) — to
 /// the caller. This is the path a dependency-injection registration uses, supplying a client from

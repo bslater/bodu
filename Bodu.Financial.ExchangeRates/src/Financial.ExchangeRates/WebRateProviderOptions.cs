@@ -63,6 +63,22 @@ public abstract class WebRateProviderOptions
     public TimeSpan HttpTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
+    /// Gets or sets the maximum number of response bytes a provider-owned <see cref="HttpClient" /> buffers,
+    /// bounding the memory a single response can consume.
+    /// </summary>
+    /// <value>
+    /// The response buffer cap, in bytes; defaults to
+    /// <see cref="RateProviderHttpClientFactory.DefaultMaxResponseContentBufferSize" /> (64 MiB).
+    /// </value>
+    /// <remarks>
+    /// This value is applied when the provider creates and owns its own <see cref="HttpClient" />. When a client is
+    /// supplied to the provider directly, bounding its response size is the caller's responsibility and this value
+    /// is not applied.
+    /// </remarks>
+    public long MaxResponseContentBufferSize { get; set; } =
+        RateProviderHttpClientFactory.DefaultMaxResponseContentBufferSize;
+
+    /// <summary>
     /// Gets or sets the <c>User-Agent</c> header applied to the HTTP client.
     /// </summary>
     /// <value>
@@ -189,6 +205,12 @@ public abstract class WebRateProviderOptions
         if (DefaultLookback <= TimeSpan.Zero)
         {
             error = ExchangeRatesResourceStrings.Arg_Invalid_WebExchangeRateOptionsDefaultLookback;
+            return false;
+        }
+
+        if (MaxResponseContentBufferSize <= 0)
+        {
+            error = ExchangeRatesResourceStrings.Arg_Invalid_WebExchangeRateOptionsMaxResponseContentBufferSize;
             return false;
         }
 

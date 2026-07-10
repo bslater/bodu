@@ -183,6 +183,6 @@ public sealed class YahooRateProvider
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout);
+        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout, options.MaxResponseContentBufferSize);
     }
 }
