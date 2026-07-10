@@ -29,7 +29,7 @@ using Bodu.IO.Hashing;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var fnv = new Fnv1a64();
+var fnv = new Fnv1a64();
 fnv.Append(data);
 byte[] digest = fnv.GetCurrentHash();
 string hex    = Convert.ToHexString(digest);   // 8 bytes, 16 hex characters
@@ -47,7 +47,7 @@ using Bodu.IO.Hashing;
 
 int FingerprintFor(string key)
 {
-    using var fnv = new Fnv1a32();
+    var fnv = new Fnv1a32();
     fnv.Append(Encoding.UTF8.GetBytes(key));
     return BitConverter.ToInt32(fnv.GetCurrentHash());
 }
@@ -60,7 +60,7 @@ FNV is **not** keyed. An adversary who can choose inputs can construct collision
 Each FNV type exposes an `AlgorithmName` string that captures the variant and width, which is handy for logging or on-wire format headers:
 
 ```csharp
-using var fnv = new Fnv1a64();
+var fnv = new Fnv1a64();
 Console.WriteLine(fnv.AlgorithmName);   // "FNV-1a-64"
 ```
 
@@ -69,7 +69,7 @@ Console.WriteLine(fnv.AlgorithmName);   // "FNV-1a-64"
 ```csharp
 using Bodu.IO.Hashing;
 
-using var fnv = new Fnv1a64();
+var fnv = new Fnv1a64();
 
 using (FileStream fs = File.OpenRead("archive.bin"))
 {
@@ -91,7 +91,7 @@ The update is byte-by-byte internally, so any chunking works — including buffe
 ```csharp
 using Bodu.IO.Hashing;
 
-using var fnv = new Fnv1a64();
+var fnv = new Fnv1a64();
 
 fnv.Append(header);
 fnv.Append(body);

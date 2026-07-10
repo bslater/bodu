@@ -119,6 +119,7 @@ string? formatCode = workbook.GetNumberFormatCode(cell.FormatIndex);
 
 ## Pattern 6 — convert coordinates to and from A1
 
+<!-- compile -->
 ```csharp
 using Bodu.Formats.Excel;
 

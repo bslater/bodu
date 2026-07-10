@@ -12,13 +12,14 @@ title: Using CRC
 
 The most common standards are exposed as strongly-typed properties. This is the shortest path to a working CRC.
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.IO.Hashing.Checksums;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 crc.Append(data);
 string hex = Convert.ToHexString(crc.GetCurrentHash());   // little-endian, low byte first
 ```
@@ -35,8 +36,8 @@ For anything outside the short list of strongly-typed properties, use the <xref:
 ```csharp
 using Bodu.IO.Hashing.Checksums;
 
-using var crc16 = new Crc(CrcStandard.Get(CrcStandards.CRC16_XMODEM));
-using var crc8  = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));
+var crc16 = new Crc(CrcStandard.Get(CrcStandards.CRC16_XMODEM));
+var crc8  = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));
 ```
 
 Instances are memoized inside <xref:Bodu.IO.Hashing.Checksums.CrcStandard>, so repeated calls to `Get` for the same entry return the same reference.
@@ -46,8 +47,8 @@ Instances are memoized inside <xref:Bodu.IO.Hashing.Checksums.CrcStandard>, so r
 Canonical names and every published alias resolve to the same standard.
 
 ```csharp
-using var a = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));
-using var b = new Crc(CrcStandard.FromName("PKZIP"));          // same underlying instance
+var a = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));
+var b = new Crc(CrcStandard.FromName("PKZIP"));          // same underlying instance
 ```
 
 `FromName` is ordinal and case-sensitive. `TryFromName` returns `false` instead of throwing when the name is unknown, which is the safer choice for user-supplied configuration.
@@ -69,7 +70,7 @@ var custom = new CrcStandard(
     reflectOut:   false,
     xOrOut:       0x000);
 
-using var crc = new Crc(custom);
+var crc = new Crc(custom);
 ```
 
 Widths 1–64 bits are supported. `CrcStandard` validates the width at construction time.
@@ -81,7 +82,7 @@ Because <xref:Bodu.IO.Hashing.Checksums.Crc> derives from <xref:System.IO.Hashin
 ```csharp
 using Bodu.IO.Hashing.Checksums;
 
-using var crc = new Crc(CrcStandard.CRC32_ISCSI);
+var crc = new Crc(CrcStandard.CRC32_ISCSI);
 
 using (FileStream fs = File.OpenRead("archive.bin"))
 {
@@ -106,7 +107,7 @@ byte[] fingerprint = crc.GetCurrentHash();
 using System.Text;
 using Bodu.IO.Hashing.Checksums;
 
-using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 
 byte[] firstDigest = crc.ComputeHash(Encoding.UTF8.GetBytes("the quick brown fox"));
 

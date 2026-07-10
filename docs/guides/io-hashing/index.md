@@ -101,7 +101,7 @@ Everything in this package derives from <xref:System.IO.Hashing.NonCryptographic
 using Bodu.IO.Hashing;
 using Bodu.IO.Hashing.Checksums;
 
-using var hash = new Crc();      // or Fletcher32, Adler32, Fnv1a64, CityHash64, …
+var hash = new Crc();      // or Fletcher32, Adler32, Fnv1a64, CityHash64, …
 
 hash.Append(chunk1);
 hash.Append(chunk2);

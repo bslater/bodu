@@ -33,7 +33,7 @@ using Bodu.IO.Hashing;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var hash = new Bernstein();             // djb2 — seed 5381, XOR form
+var hash = new Bernstein();             // djb2 — seed 5381, XOR form
 hash.Append(data);
 byte[] digest = hash.GetCurrentHash();
 uint h = BitConverter.ToUInt32(digest);
@@ -49,13 +49,13 @@ Bernstein's original posting used addition (`h = h * 33 + c`). The XOR form (`h 
 using Bodu.IO.Hashing;
 
 // Original: h = (h * 33) + c
-using var original = new Bernstein(Bernstein.DefaultInitialValue, useModifiedAlgorithm: false);
+var original = new Bernstein(Bernstein.DefaultInitialValue, useModifiedAlgorithm: false);
 
 // "djb2a":  h = (h * 33) ^ c — the common modern variant
-using var modified = new Bernstein(Bernstein.DefaultInitialValue, useModifiedAlgorithm: true);
+var modified = new Bernstein(Bernstein.DefaultInitialValue, useModifiedAlgorithm: true);
 
 // Or set the properties before the first Append
-using var alt = new Bernstein { InitialValue = 0, UseModifiedAlgorithm = true };
+var alt = new Bernstein { InitialValue = 0, UseModifiedAlgorithm = true };
 ```
 
 Both properties are only settable **before** the first `Append` — changing them mid-stream would invalidate the running state, so the setters throw once input has been fed.
@@ -67,7 +67,7 @@ BKDR is a family: the multiplier is a repeating-digit odd number from the publis
 ```csharp
 using Bodu.IO.Hashing;
 
-using var bkdr = new BKDR(seed: 1313);         // must be one of the published values
+var bkdr = new BKDR(seed: 1313);         // must be one of the published values
 bkdr.Append(Encoding.UTF8.GetBytes("example"));
 byte[] digest = bkdr.GetCurrentHash();
 ```
@@ -81,7 +81,7 @@ Passing a value outside the published set throws — the seed is a property of t
 ```csharp
 using Bodu.IO.Hashing;
 
-using var elf = new Elf64(seed: 0xDEADBEEFUL);
+var elf = new Elf64(seed: 0xDEADBEEFUL);
 elf.Append(Encoding.UTF8.GetBytes("/usr/bin/ls"));
 byte[] digest = elf.GetCurrentHash();
 ```
@@ -95,7 +95,7 @@ Every type in this family behaves identically under the `NonCryptographicHashAlg
 ```csharp
 using Bodu.IO.Hashing;
 
-using var hash = new SDBM();
+var hash = new SDBM();
 
 hash.Append(header);
 hash.Append(body);
