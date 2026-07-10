@@ -27,7 +27,7 @@ No operation on the set takes a lock — `Add`, `Remove`, `Contains`, `Count`, `
 
 ## Snapshot enumeration
 
-The single-threaded catalogue enumerates **fail-fast**: a version counter detects structural mutation and the enumerator throws <xref:System.InvalidOperationException>. A lock-free structure cannot maintain that token, so both concurrent types substitute **snapshot enumeration** — `foreach` and `ToArray` observe a coherent point-in-time capture and *never throw* on concurrent modification. Writes that land after the snapshot are simply not seen.
+The single-threaded catalogue enumerates **fail-fast**: a version counter detects structural mutation and the enumerator throws <xref:System.InvalidOperationException>. A lock-free structure cannot maintain that token, so both concurrent types substitute **snapshot enumeration** — `foreach` and `ToArray` capture the contents once, iterate over that fixed copy, and *never throw* on concurrent modification. Writes that land after the snapshot are simply not seen.
 
 The two types capture their snapshots differently:
 

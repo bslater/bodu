@@ -133,7 +133,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="concurrent-collections.md">Concurrent collections</a></h3>
-  <p>Thread-safe peers — lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring) and lock-striped <code>ConcurrentHashSet&lt;T&gt;</code>.</p>
+  <p>Thread-safe peers — lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring) and lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>.</p>
 </div>
 
 </div>

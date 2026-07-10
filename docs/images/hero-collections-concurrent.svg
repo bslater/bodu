@@ -63,12 +63,12 @@
       <text x="12" y="86">ConcurrentCircular</text>
       <text x="12" y="102">Buffer&lt;T&gt;</text>
       <text x="12" y="126"><tspan fill="#60A5FA">ConcurrentHashSet&lt;T&gt;</tspan></text>
-      <text x="12" y="142"><tspan fill="#94A3B8" font-size="9">lock-striped membership</tspan></text>
+      <text x="12" y="142"><tspan fill="#94A3B8" font-size="9">lock-free membership</tspan></text>
     </g>
   </g>
 
   <!-- Bottom caption -->
   <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
-    <text x="240" y="206" text-anchor="middle">Vyukov MPMC ring · lock-striped set</text>
+    <text x="240" y="206" text-anchor="middle">Vyukov MPMC ring · lock-free set</text>
   </g>
 </svg>

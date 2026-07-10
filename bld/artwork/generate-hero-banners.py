@@ -213,8 +213,8 @@ add("hero-collections-concurrent", "Bodu.Collections.Concurrent", "Bodu.Collecti
     </g>''',
         mono(["ConcurrentCircular", "Buffer&lt;T&gt;", None,
               '<tspan fill="#60A5FA">ConcurrentHashSet&lt;T&gt;</tspan>',
-              '<tspan fill="#94A3B8" font-size="9">lock-striped membership</tspan>'], x=12, y0=86, dy=16, size=10)]),
-    "Vyukov MPMC ring · lock-striped set", gid="colc")
+              '<tspan fill="#94A3B8" font-size="9">lock-free membership</tspan>'], x=12, y0=86, dy=16, size=10)]),
+    "Vyukov MPMC ring · lock-free set", gid="colc")
 
 # --- Hashing & crypto ---------------------------------------------------------------------------------------
 

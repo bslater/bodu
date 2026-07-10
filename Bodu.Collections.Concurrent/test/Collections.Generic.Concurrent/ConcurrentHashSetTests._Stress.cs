@@ -521,8 +521,8 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that when every key hashes to the same bucket — funnelling all writers through a single stripe lock
-    /// and a single chain — every privately-owned key is still added exactly once and retained.
+    /// Verifies that when every key hashes to the same bucket — funnelling all writers into a single equal-key run
+    /// of the split-ordered list — every privately-owned key is still added exactly once and retained.
     /// </summary>
     [TestMethod]
     [TestCategory("Stress")]

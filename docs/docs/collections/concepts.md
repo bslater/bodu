@@ -8,7 +8,7 @@ This page is the vocabulary the rest of the collection documentation assumes. Re
 
 Part of the **[Core Foundations](../topics/core-foundations.md)** topic.
 
-For the high-level shape of the library and the namespace map, start with the [introduction](index.md). Concurrency-specific vocabulary — lock-free rings, lock striping, snapshot enumeration — lives on the [Bodu.Collections.Concurrent concepts page](../collections-concurrent/concepts.md).
+For the high-level shape of the library and the namespace map, start with the [introduction](index.md). Concurrency-specific vocabulary — lock-free rings, split-ordered hashing, snapshot enumeration — lives on the [Bodu.Collections.Concurrent concepts page](../collections-concurrent/concepts.md).
 
 ## Fixed-capacity collection
 

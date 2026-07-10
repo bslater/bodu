@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 348" role="img" aria-labelledby="ccm-t ccm-d">
   <title id="ccm-t">Bodu.Collections.Concurrent — type map</title>
-  <desc id="ccm-d">Bodu.Collections.Concurrent ships two thread-safe collections in the Bodu.Collections.Generic.Concurrent namespace. ConcurrentCircularBuffer&lt;T&gt; is a lock-free multi-producer multi-consumer ring using the Vyukov per-slot sequence protocol, implementing IProducerConsumerCollection&lt;T&gt; with overwrite-on-full semantics and snapshot enumeration. ConcurrentHashSet&lt;T&gt; is a lock-striped set of unique elements with lock-free Contains, approximate and coherent counts, and snapshot enumeration. The package depends on Bodu.Collections, which depends on Bodu.Core.</desc>
+  <desc id="ccm-d">Bodu.Collections.Concurrent ships two thread-safe collections in the Bodu.Collections.Generic.Concurrent namespace. ConcurrentCircularBuffer&lt;T&gt; is a lock-free multi-producer multi-consumer ring using the Vyukov per-slot sequence protocol, implementing IProducerConsumerCollection&lt;T&gt; with overwrite-on-full semantics and snapshot enumeration. ConcurrentHashSet&lt;T&gt; is a lock-free split-ordered set of unique elements with lock-free operations throughout, exact lock-free counts, and snapshot enumeration. The package depends on Bodu.Collections, which depends on Bodu.Core.</desc>
 
   <defs>
     <style>
@@ -62,7 +62,7 @@
     <g transform="translate(408 130)">
       <rect class="ccm-card" width="378" height="142" rx="7"/>
       <text class="ccm-name" x="14" y="22">ConcurrentHashSet&lt;T&gt;</text>
-      <text class="ccm-ns" x="14" y="37">lock-striped set · T : notnull</text>
+      <text class="ccm-ns" x="14" y="37">lock-free set · T : notnull</text>
       <text class="ccm-type" x="14" y="58">region-guarded buckets — disjoint writers in parallel</text>
       <text class="ccm-type" x="14" y="76">lock-free Contains · ISet&lt;T&gt; surface</text>
       <text class="ccm-type" x="14" y="94">snapshot enumeration and ToArray</text>
