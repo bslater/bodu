@@ -22,6 +22,13 @@ dotnet run --project samples/Financial/Bodu.Financial.Samples.OfflineRates
 All samples are members of `bodu.slnx`, so `dotnet build bodu.slnx` builds them and any
 API drift breaks the build immediately.
 
+## Layout
+
+Domain folders under `samples/` are named by namespace segment — `Financial/`,
+`Globalization.Calendar/` — mirroring how folders map to namespaces in the library source
+trees. The `samples/` root itself stays lowercase, like `src`/`test`/`bench`, because it is
+not a namespace component. Each sample project is a flat folder named after the project.
+
 ## Conventions
 
 Sample code is intentionally held to a *different* standard than the shipping libraries.
@@ -40,8 +47,23 @@ Test projects that accompany a sample (for example
 `Bodu.Financial.Samples.CustomProvider.Test`) follow the full repository test
 conventions — they run in CI alongside the library test suites.
 
+## README standard
+
+Every sample project's README documents its scenarios individually, so a reader knows what
+each one is trying to show *before* reading the code. For each `Scenarios/*.cs` file the
+README carries a `###` section with four parts:
+
+- **Intent** — the design question the scenario answers, and why it matters.
+- **What it does** — a step-by-step account of what the code actually performs.
+- **What to expect** — the console output the scenario prints, with the load-bearing lines
+  explained (e.g. why a counter stays at 1, or why two totals agree).
+- **APIs demonstrated** — the specific types and members the scenario exercises.
+
+Because samples are deterministic, the "what to expect" output is the *actual* output — if a
+change to the libraries alters it, the README review catches the drift alongside the CI run.
+
 ## Index
 
 | Domain | Samples |
 |---|---|
-| Financial | [`samples/Financial/`](financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers |
+| Financial | [`samples/Financial/`](Financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers |
