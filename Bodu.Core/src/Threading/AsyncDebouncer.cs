@@ -276,7 +276,7 @@ public sealed partial class AsyncDebouncer
         }
 
         foreach (Run run in active)
-            run.Cts.Cancel();
+            TryCancel(run);
     }
 
     /// <summary>
@@ -302,7 +302,31 @@ public sealed partial class AsyncDebouncer
 
         timer?.Dispose();
         foreach (Run run in active)
+            TryCancel(run);
+    }
+
+    /// <summary>
+    /// Requests cancellation of a run's token source, tolerating a concurrent disposal of that source.
+    /// </summary>
+    /// <param name="run">The run whose cancellation token source should be canceled.</param>
+    /// <remarks>
+    /// A run's <see cref="CancellationTokenSource" /> is disposed by <see cref="RunCallbackAsync" /> after the run
+    /// is removed from the active set, outside the gate. <see cref="Cancel" /> and <see cref="Dispose" /> capture
+    /// the active set under the gate and cancel outside it, so a run captured here may be disposed concurrently by
+    /// its own completing callback. Cancelling an already-disposed source is a benign no-op — the callback has
+    /// already finished — so the resulting <see cref="ObjectDisposedException" /> is swallowed rather than surfaced
+    /// from the public <see cref="Cancel" /> / <see cref="Dispose" /> members.
+    /// </remarks>
+    private static void TryCancel(Run run)
+    {
+        try
+        {
             run.Cts.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+            // The run's callback completed and disposed its token source between the gated snapshot and this call.
+        }
     }
 
     /// <summary>

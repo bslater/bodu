@@ -79,4 +79,48 @@ public sealed partial class AsyncDebouncerTests
 
         Assert.IsTrue(canceledObserved);
     }
+
+    /// <summary>
+    /// Verifies that disposing the debouncer while an in-flight callback completes concurrently does not surface
+    /// <see cref="ObjectDisposedException" /> from <see cref="AsyncDebouncer.Dispose" /> — the completing callback
+    /// disposes its per-run <see cref="CancellationTokenSource" /> while <see cref="AsyncDebouncer.Dispose" />
+    /// cancels the same source it captured under the gate.
+    /// </summary>
+    [TestMethod]
+    public async Task Dispose_WhenCallbackCompletesConcurrently_ShouldNotThrowObjectDisposedException()
+    {
+        for (int i = 0; i < 2000; i++)
+        {
+            var time = new FakeTimeProvider();
+            var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            var sut = new AsyncDebouncer(TimeSpan.FromMilliseconds(100), async _ =>
+            {
+                started.SetResult();
+                await release.Task.ConfigureAwait(false);
+            }, timeProvider: time);
+
+            sut.Invoke();
+            time.Advance(TimeSpan.FromMilliseconds(100));
+            await started.Task;
+
+            using var barrier = new Barrier(2);
+
+            // Complete the callback (its finally disposes the per-run CTS) and dispose the debouncer (its cancel
+            // loop touches the same CTS) at the same instant, maximizing the race window.
+            var complete = Task.Run(() =>
+            {
+                barrier.SignalAndWait();
+                release.SetResult();
+            });
+            var dispose = Task.Run(() =>
+            {
+                barrier.SignalAndWait();
+                sut.Dispose();
+            });
+
+            await Task.WhenAll(complete, dispose);
+        }
+    }
 }
