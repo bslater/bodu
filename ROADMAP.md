@@ -12,8 +12,9 @@ the `WebRateProvider` / `PairWebRateProvider<TSeries>` web-provider
 machinery was extracted into its own **`Bodu.Financial.ExchangeRates`
 package** that every per-source provider references. A
 **runnable-samples suite** landed alongside — a `samples/` tree covering
-Financial, Calendar, and the text libraries, with snippet-compile guards
-keeping the guide snippets building, a live FX sample, and a testing
+Financial, Calendar, the text libraries, and the IO group (IO.Hashing,
+IO.Compound, Formats.Excel), with snippet-compile guards keeping the
+guide snippets building, a live FX sample, and a testing
 guide — and the FX libraries gained a **swallowed-exception logging
 pass** plus follow-up renames (`IHistoryAwareRateProvider` →
 `IHistoricalRateProvider`, `RbaEra` → `RbaEraWorkbook`). Before that,
@@ -1324,7 +1325,8 @@ entry, and coverage is broad — including the articles the previous roadmap
 listed as owed (`numerics/fraction.md`, `serialization/yaml/`,
 `financial/exchange-rate-caching.md` and the other FX guides). The guides
 are now backed by the **runnable-samples suite** — the `samples/` tree
-(Financial, Calendar, and the text libraries, including a live FX sample)
+(Financial, Calendar, the text libraries, and the IO group, including a
+live FX sample)
 whose snippet-compile guards keep the documented code building. The one
 remaining gap is a dedicated **calendar plugin-loader** guide under
 `docs/guides/calendar/` (the loader is currently covered only implicitly by
