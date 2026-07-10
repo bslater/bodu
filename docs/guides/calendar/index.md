@@ -130,7 +130,7 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 
 ## Where to go next
 
-- **[Runnable samples](samples.md)** — offline sample projects under `samples/Globalization.Calendar/` composing the data packs, working-day arithmetic, the builder, DI, and custom algorithms end to end.
+- **[Runnable samples](../../samples/calendar.md)** — offline sample projects under `samples/Globalization.Calendar/` composing the data packs, working-day arithmetic, the builder, DI, and custom algorithms end to end.
 - [Bodu.Globalization.Calendar introduction](../../docs/calendar/index.md) — mental model, headline types, scenarios.
 - [Core concepts](../../docs/calendar/concepts.md) — vocabulary used throughout these guides.
 - [Bodu.Globalization.Calendar getting started](../../docs/calendar/getting-started.md) — install and minimal samples.

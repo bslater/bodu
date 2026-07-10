@@ -261,8 +261,6 @@
           items:
             - name: Calendar data packs
               href: calendar/data-packs.md
-        - name: Runnable samples
-          href: calendar/samples.md
         - name: Bodu.Globalization.Calendar — Notable-date catalogue
           items:
             - name: Catalogue overview
@@ -456,8 +454,6 @@
           href: financial/dependency-injection.md
         - name: Testing your own provider
           href: financial/testing-providers.md
-        - name: Runnable samples
-          href: financial/samples.md
 - name: Binary Formats & I/O
   href: topics/binary-formats.md
   items:

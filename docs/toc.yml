@@ -3,5 +3,7 @@
   href: docs/
 - name: Guides
   href: guides/
+- name: Samples
+  href: samples/
 - name: API
   href: api/

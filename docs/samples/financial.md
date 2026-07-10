@@ -73,7 +73,7 @@ Consumer extensibility: a custom `CsvFileRateProvider` in the recommended shape 
 book → delegated fixed provider), used directly, through the conversion extensions, and under
 the caching decorator. Its companion test project derives
 `DatedRateProviderContractTests<CsvFileRateProvider>` from
-`Bodu.Financial.ExchangeRates.Testing` — see [Testing your own provider](testing-providers.md).
+`Bodu.Financial.ExchangeRates.Testing` — see [Testing your own provider](../guides/financial/testing-providers.md).
 *Packages: `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching`,
 `Bodu.Financial.ExchangeRates.Testing` (test).*
 
