@@ -32,9 +32,10 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// eviction policies — at the cost of taking a segment lock on every operation, including reads — use
 /// <see cref="ConcurrentEvictingDictionary{TKey, TValue}" />. The two types also differ in their capacity contract:
 /// this cache's <see cref="Count" /> may <em>transiently</em> exceed <see cref="Capacity" /> by at most the number of
-/// concurrently in-flight writers, converging back under the bound as maintenance runs; the evicting dictionary's bound
-/// is strict. Explicitly removed entries keep their queue slot until the maintenance cycle drains them, so occupancy
-/// accounting is likewise eventual rather than instantaneous.
+/// concurrently in-flight writers. That bound is enforced by write back-pressure: a writer that observes the cache over
+/// capacity converges maintenance before returning, so sustained insert pressure against a full cache serializes writes
+/// on the maintenance lock while reads stay lock-free. Explicitly removed entries keep their queue slot until the
+/// maintenance cycle drains them, so internal occupancy accounting is eventual rather than instantaneous.
 /// </para>
 /// <para>
 /// <see cref="GetOrAdd(TKey, Func{TKey, TValue})" /> follows
@@ -95,7 +96,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
     /// <summary>The counter of hits taken on the lock-free read path; striped to avoid reader contention.</summary>
     private readonly StripedLongCounter _hitCounter = new();
 
-    /// <summary>The monitor that serializes queue maintenance; writers contend with TryEnter and losers skip the cycle.</summary>
+    /// <summary>The monitor that serializes queue maintenance. Within capacity, writers contend with TryEnter and losers skip the cycle; over capacity, writers block on it to apply back-pressure.</summary>
     private readonly object _maintenanceLock = new();
 
     /// <summary>The counter of misses taken on the lock-free read path; striped to avoid reader contention.</summary>
@@ -121,6 +122,9 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
 
     /// <summary>The occupancy counter of the hot queue, including not-yet-drained dead nodes.</summary>
     private int _hotCount;
+
+    /// <summary>The lock-free count of live entries, updated on every successful add, removal, and eviction. Drives the maintenance cycle's hard capacity enforcement and <see cref="ApproximateCount" />.</summary>
+    private int _liveCount;
 
     /// <summary>The occupancy counter of the warm queue, including not-yet-drained dead nodes.</summary>
     private int _warmCount;
@@ -233,16 +237,16 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
     /// Gets an approximate entry count without touching the backing dictionary.
     /// </summary>
     /// <value>
-    /// The sum of the hot, warm, and cold queue occupancy counters. The result includes explicitly removed or replaced
-    /// entries whose dead queue nodes have not yet been drained by maintenance, so it can exceed <see cref="Count" />;
-    /// the two converge as maintenance runs.
+    /// A lock-free counter of live entries, updated on every successful add, removal, and eviction. Under concurrent
+    /// mutation the value may momentarily differ from <see cref="Count" /> by the number of in-flight operations; the
+    /// two agree once mutation quiesces.
     /// </value>
     /// <remarks>
     /// Use this property for fast size estimates on hot paths; prefer <see cref="Count" /> for the exact number of live
-    /// entries.
+    /// entries at a coherent instant.
     /// </remarks>
     public int ApproximateCount =>
-        Volatile.Read(ref _hotCount) + Volatile.Read(ref _warmCount) + Volatile.Read(ref _coldCount);
+        Volatile.Read(ref _liveCount);
 
     /// <summary>
     /// Gets the number of entries the cache aims to retain.
@@ -391,6 +395,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
             var created = new Node(key, value, Node.StateHot);
             if (_dictionary.TryAdd(key, created))
             {
+                Interlocked.Increment(ref _liveCount);
                 Enqueue(_hotQueue, ref _hotCount, created);
                 Maintain();
                 return;
@@ -421,7 +426,10 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
             foreach (KeyValuePair<TKey, Node> pair in _dictionary)
             {
                 if (_dictionary.TryRemove(pair))
+                {
+                    Interlocked.Decrement(ref _liveCount);
                     pair.Value.MarkRemoved();
+                }
             }
 
             DrainDeadNodes(_hotQueue, ref _hotCount);
@@ -485,6 +493,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
             var created = new Node(key, value, Node.StateHot);
             if (_dictionary.TryAdd(key, created))
             {
+                Interlocked.Increment(ref _liveCount);
                 _missCounter.Increment();
                 Enqueue(_hotQueue, ref _hotCount, created);
                 Maintain();
@@ -539,6 +548,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
             var created = new Node(key, valueFactory(key), Node.StateHot);
             if (_dictionary.TryAdd(key, created))
             {
+                Interlocked.Increment(ref _liveCount);
                 _missCounter.Increment();
                 Enqueue(_hotQueue, ref _hotCount, created);
                 Maintain();
@@ -593,6 +603,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
         var created = new Node(key, value, Node.StateHot);
         if (_dictionary.TryAdd(key, created))
         {
+            Interlocked.Increment(ref _liveCount);
             Enqueue(_hotQueue, ref _hotCount, created);
             Maintain();
             return true;
@@ -662,6 +673,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
 
         if (_dictionary.TryRemove(key, out Node? node))
         {
+            Interlocked.Decrement(ref _liveCount);
             node.MarkRemoved();
             value = node.Value;
             return true;

@@ -33,11 +33,11 @@ public partial class ConcurrentLruCacheTests
     }
 
     /// <summary>
-    /// Verifies that explicitly removed entries keep their queue slot, so the approximate count can exceed the exact
-    /// count until maintenance drains the dead nodes.
+    /// Verifies that the approximate count tracks explicit removals immediately: it is a live-entry counter, not a
+    /// queue-occupancy sum, so dead queue nodes do not inflate it.
     /// </summary>
     [TestMethod]
-    public void ApproximateCount_WhenDeadNodesPending_ShouldExceedExactCount()
+    public void ApproximateCount_WhenEntriesRemoved_ShouldTrackLiveEntries()
     {
         var cache = new ConcurrentLruCache<int, int>(capacity: 64);
         for (int i = 0; i < 10; i++)
@@ -47,6 +47,6 @@ public partial class ConcurrentLruCacheTests
             Assert.IsTrue(cache.TryRemove(i, out _));
 
         Assert.AreEqual(5, cache.Count);
-        Assert.IsTrue(cache.ApproximateCount >= cache.Count, "Dead queue nodes must still occupy approximate-count slots until drained.");
+        Assert.AreEqual(5, cache.ApproximateCount, "The live-entry counter must reflect removals without waiting for maintenance.");
     }
 }

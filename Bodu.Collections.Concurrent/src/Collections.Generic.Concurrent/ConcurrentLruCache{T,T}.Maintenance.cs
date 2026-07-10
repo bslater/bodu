@@ -17,31 +17,55 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
     private const int MaxConvergencePasses = 64;
 
     /// <summary>
-    /// Runs write-amortized queue maintenance: at most one thread cycles the queues at a time, and contending writers
-    /// return immediately rather than waiting.
+    /// Runs write-amortized queue maintenance. While the cache is within its capacity, at most one thread cycles the
+    /// queues at a time and contending writers return immediately; a writer that observes the cache <em>over</em>
+    /// capacity instead blocks on the maintenance lock and converges before returning.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The blocking path is the write back-pressure that makes the capacity contract real: writers cannot outpace
+    /// eviction, because each one that pushes the live count past <see cref="Capacity" /> must finish converging it
+    /// back under the bound before its own operation completes. Reads never take this path and remain lock-free; the
+    /// cost lands on sustained insert pressure against a full cache, where writes serialize on the maintenance lock.
+    /// </para>
+    /// <para>
     /// The maintenance lock is released <em>before</em> eviction notifications are dispatched, so
     /// <see cref="ItemEvicted" /> handlers never run while queue maintenance is blocked and may safely call back into
     /// the cache.
+    /// </para>
     /// </remarks>
     private void Maintain()
     {
-        if (!Monitor.TryEnter(_maintenanceLock))
-            return;
-
         List<KeyValuePair<TKey, TValue>>? evicted = null;
-        try
+
+        if (Volatile.Read(ref _liveCount) > Capacity)
         {
-            for (int pass = 0; pass < AmortizedCyclePasses; pass++)
+            lock (_maintenanceLock)
             {
-                if (!CyclePass(ref evicted))
-                    break;
+                for (int pass = 0; pass < MaxConvergencePasses; pass++)
+                {
+                    if (!CyclePass(ref evicted))
+                        break;
+                }
             }
         }
-        finally
+        else
         {
-            Monitor.Exit(_maintenanceLock);
+            if (!Monitor.TryEnter(_maintenanceLock))
+                return;
+
+            try
+            {
+                for (int pass = 0; pass < AmortizedCyclePasses; pass++)
+                {
+                    if (!CyclePass(ref evicted))
+                        break;
+                }
+            }
+            finally
+            {
+                Monitor.Exit(_maintenanceLock);
+            }
         }
 
         OnEvicted(evicted);
@@ -90,6 +114,12 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
     /// <para>
     /// A node observed in the <see cref="Node.StateRemoved" /> state anywhere is dead (explicitly removed, replaced, or
     /// cleared) and is dropped; a failed lifecycle transition means the node died concurrently and is likewise dropped.
+    /// </para>
+    /// <para>
+    /// The pass ends with a hard capacity enforcement loop: while the live count exceeds <see cref="Capacity" />,
+    /// entries are evicted from the cold head regardless of their accessed flags, with warm and hot demoted to refill
+    /// cold as needed. This guarantees the capacity contract even when sustained reads re-flag entries faster than the
+    /// policy cycling can retire them.
     /// </para>
     /// </remarks>
     private bool CyclePass(ref List<KeyValuePair<TKey, TValue>>? evicted)
@@ -156,7 +186,49 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
             else if (node.TryTransition(Node.StateCold, Node.StateRemoved)
                 && _dictionary.TryRemove(new KeyValuePair<TKey, Node>(node.Key, node)))
             {
+                Interlocked.Decrement(ref _liveCount);
                 (evicted ??= new List<KeyValuePair<TKey, TValue>>()).Add(new KeyValuePair<TKey, TValue>(node.Key, node.Value));
+            }
+        }
+
+        // Hard capacity enforcement. The policy cycling above can stall against readers that continuously re-flag
+        // resident entries — every cold examination then resurrects instead of evicting, and the live count creeps
+        // above the capacity. When that happens, evict from the cold head regardless of accessed flags, demoting from
+        // warm and hot to refill cold as needed, until the live count is back within the bound. Accessed entries
+        // sacrificed here are the price of the documented capacity contract under pathological read pressure.
+        while (Volatile.Read(ref _liveCount) > Capacity)
+        {
+            if (TryDequeue(_coldQueue, ref _coldCount, out Node? node))
+            {
+                moved = true;
+
+                if (node.State == Node.StateRemoved)
+                    continue;
+
+                if (node.TryTransition(Node.StateCold, Node.StateRemoved)
+                    && _dictionary.TryRemove(new KeyValuePair<TKey, Node>(node.Key, node)))
+                {
+                    Interlocked.Decrement(ref _liveCount);
+                    (evicted ??= new List<KeyValuePair<TKey, TValue>>()).Add(new KeyValuePair<TKey, TValue>(node.Key, node.Value));
+                }
+            }
+            else if (TryDequeue(_warmQueue, ref _warmCount, out node) || TryDequeue(_hotQueue, ref _hotCount, out node))
+            {
+                moved = true;
+
+                if (node.State == Node.StateRemoved)
+                    continue;
+
+                node.WasAccessed = false;
+                int state = node.State;
+                if (state != Node.StateRemoved && node.TryTransition(state, Node.StateCold))
+                    Enqueue(_coldQueue, ref _coldCount, node);
+            }
+            else
+            {
+                // Every queue is momentarily empty (in-flight writers hold undelivered nodes); a later maintenance
+                // run finishes the job.
+                break;
             }
         }
 
