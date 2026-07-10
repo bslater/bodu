@@ -41,7 +41,7 @@ server-determined range. The pair providers expose the value as a settable
 option; BoE adds its own options property for the same purpose.
 
 The value is also discoverable at runtime through the
-[`IHistoryAwareRateProvider`](xref:Bodu.Financial.ExchangeRates.IHistoryAwareRateProvider)
+[`IHistoricalRateProvider`](xref:Bodu.Financial.ExchangeRates.IHistoricalRateProvider)
 capability interface, and the caching and aggregation decorators consume it by
 default: fetches for declared-unavailable dates are skipped or clamped rather
 than issued. See

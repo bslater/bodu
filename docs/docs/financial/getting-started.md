@@ -215,3 +215,4 @@ Money<XPT> holding = new Money<XPT>(12.3456m);
 - **[Working with `Money<TCurrency>`](../../guides/financial/money.md)** — the full reference for typed money, including formatting/parsing, locale-aware output, cash rounding, historic-currency metadata, `Money` interop, and `MoneyBag` portfolios.
 - **[Bodu.Numerics getting started](../numerics/getting-started.md)** — for the `Fraction<BigInteger>` precision escape hatch used by `Money<T>.ToFraction()`.
 - **[Bodu.Financial API reference](xref:Bodu.Financial)** — full type-by-type docs.
+- **[Runnable samples](../../guides/financial/samples.md)** — offline sample projects under `samples/financial/` you can `dotnet run` and copy from.

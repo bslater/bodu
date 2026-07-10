@@ -194,6 +194,10 @@ JSON converters for `Money`, `Money<TCurrency>`, `MoneyBag`, and `ExchangeRate` 
 
 Covers the ~155 active ISO 4217 currencies plus 29 historic / demonetised currencies under `Bodu.Financial.Currencies` (`USD`, `EUR`, `GBP`, `JPY`, `BHD`, `KWD`, the Euro-zone predecessors `DEM` / `FRF` / `ITL` / `ESP` / …, `VEF`, `ZWL`, …). Tag types, the `CurrencyCode` enum, and the metadata registration list are source-generated from `currencies.json` by `tools/CurrencyCatalogueGenerator`; consumers add custom currencies by implementing `ICurrency` directly and registering them on `CurrencyRegistry`.
 
+## Runnable samples
+
+The repository ships offline, `dotnet run`-able sample projects for the financial packages — money basics, static-file rate providers, caching, aggregation, DI wiring, and a custom provider with contract tests — under [`samples/financial/`](https://github.com/bslater/bodu/tree/master/samples/financial).
+
 ## License
 
 MIT. © Bodu Pty. Ltd.
