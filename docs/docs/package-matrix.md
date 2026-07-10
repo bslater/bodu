@@ -45,13 +45,15 @@ Several capabilities ship as independent companion packages so they can release 
 | `Bodu.Globalization.Calendar.DependencyInjection` | Stable | `IServiceCollection` extensions for registering `INotableDateService` over a loaded `NotableDateResource`. | `Bodu.Globalization.Calendar`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
 | `Bodu.Globalization.Calendar.Plugins` | Stable | Trust-gated loading of external assemblies that contribute custom `INotableDateAlgorithm` implementations. | `Bodu.Globalization.Calendar` |
 | `Bodu.Financial.DependencyInjection` | Stable | `IServiceCollection` extensions for registering Bodu.Financial currency-lookup and monetary services via `AddFinancialService`. | `Bodu.Financial`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
-| `Bodu.Numerics.Serialization.Json` | Preview | `System.Text.Json` converters, converter factories, and the `ConfigureForBoduNumerics()` registration for the `Bodu.Numerics` types (`Fraction<T>`, `BigDecimal`, `Interval<T>`, `DiscreteInterval<T>`, `IntervalSet<T>`), keeping the core numerics library serialization-agnostic. | `Bodu.Numerics`, `System.Text.Json` |
+| `Bodu.Financial.Serialization.Json` | Stable | `System.Text.Json` converters, the `FinancialJsonPolicy` (`Strict` / `Lenient` / `Compact`), the `AddFinancialJsonConverters()` registration, and the `AddFinancialJson()` DI registration for the `Bodu.Financial` types (`Money`, `Money<TCurrency>`, `MoneyBag`, `ExchangeRate`, `CurrencyPair`), keeping the core financial library serialization-agnostic. | `Bodu.Financial`, `System.Text.Json`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
+| `Bodu.Numerics.Serialization.Json` | Preview | `System.Text.Json` converters, converter factories, and the `AddNumericsJsonConverters()` registration for the `Bodu.Numerics` types (`Fraction<T>`, `BigDecimal`, `Interval<T>`, `DiscreteInterval<T>`, `IntervalSet<T>`), keeping the core numerics library serialization-agnostic. | `Bodu.Numerics`, `System.Text.Json` |
 
 <div class="bodu-matrix-gallery">
 <figure><img src="../images/hero-calendar-builder.svg" alt="Bodu.Globalization.Calendar.Builder" /><figcaption><code>Bodu.Globalization.Calendar.Builder</code></figcaption></figure>
 <figure><img src="../images/hero-calendar-di.svg" alt="Bodu.Globalization.Calendar.DependencyInjection" /><figcaption><code>Bodu.Globalization.Calendar.DependencyInjection</code></figcaption></figure>
 <figure><img src="../images/hero-calendar-plugins.svg" alt="Bodu.Globalization.Calendar.Plugins" /><figcaption><code>Bodu.Globalization.Calendar.Plugins</code></figcaption></figure>
 <figure><img src="../images/hero-financial-di.svg" alt="Bodu.Financial.DependencyInjection" /><figcaption><code>Bodu.Financial.DependencyInjection</code></figcaption></figure>
+<figure><img src="../images/hero-financial-json.svg" alt="Bodu.Financial.Serialization.Json" /><figcaption><code>Bodu.Financial.Serialization.Json</code></figcaption></figure>
 <figure><img src="../images/hero-numerics-json.svg" alt="Bodu.Numerics.Serialization.Json" /><figcaption><code>Bodu.Numerics.Serialization.Json</code></figcaption></figure>
 </div>
 
@@ -147,6 +149,8 @@ dotnet add package Bodu.Globalization.Calendar.Builder
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 dotnet add package Bodu.Globalization.Calendar.Plugins
 dotnet add package Bodu.Financial.DependencyInjection
+dotnet add package Bodu.Financial.Serialization.Json
+dotnet add package Bodu.Numerics.Serialization.Json
 
 # File formats and exchange-rate data
 dotnet add package Bodu.IO.Compound

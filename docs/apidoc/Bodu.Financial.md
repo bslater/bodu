@@ -44,7 +44,7 @@ Reach for this library when you need monetary arithmetic that the compiler valid
 - <xref:Bodu.Financial.Currencies> — the runtime currency metadata surface (`ICurrency`, `CurrencyInfo`, `CurrencyRegistry`, `CurrencyLookupService`, `CurrencyCode`) plus 184 sealed ISO 4217 tag types (155 active plus 29 historic / demonetised).
 - <xref:Bodu.Financial.ExchangeRates> — the exchange-rate stack: values, series, in-memory tables, the timeless / dated provider contracts, and (via the separate `Bodu.Financial.ExchangeRates` package) the web-provider machinery the per-source feed packages build on.
 - <xref:Bodu.Financial.ExchangeRates.Caching> — provider-agnostic read-through caching and aggregation over any provider.
-- <xref:Bodu.Financial.Serialization> — JSON converters and the `FinancialJsonPolicy` enum (`Strict`, `Lenient`, `Compact`).
+- <xref:Bodu.Financial.Serialization.Json> — JSON converters and the `FinancialJsonPolicy` enum (`Strict`, `Lenient`, `Compact`), shipped in the companion `Bodu.Financial.Serialization.Json` package (the core library is serialization-agnostic).
 
 ## Example
 
@@ -71,4 +71,4 @@ Money<USD>[] shares = new Money<USD>(0.10m).Allocate(3);
 - **Audit-friendly FX.** Dated lookups return <xref:Bodu.Financial.ExchangeRates.RateLookupResult> carrying the provider name, the date actually used, the offset-day distance from the requested date, the resolution policy that fired, and an inversion flag.
 - **Sub-minor-unit precision.** `Money<T>.ToFraction()` / `FromFraction()` / `MultiplyExact()` round-trip through `Fraction<BigInteger>` so chained multiplications and divisions do not accumulate rounding error. See [`Fraction<T>`](~/guides/numerics/fraction.md).
 - **Zero balances are pruned.** `MoneyBag` removes zero balances on every operation, so equality and enumeration are stable across insertion order and across serialisation round trips.
-- **See also:** the [`Money<TCurrency>` guide](~/guides/financial/money.md), the [`Bodu.Financial.Currencies` reference](xref:Bodu.Financial.Currencies), and the [`Bodu.Financial.Serialization` reference](xref:Bodu.Financial.Serialization).
+- **See also:** the [`Money<TCurrency>` guide](~/guides/financial/money.md), the [`Bodu.Financial.Currencies` reference](xref:Bodu.Financial.Currencies), and the [`Bodu.Financial.Serialization.Json` reference](xref:Bodu.Financial.Serialization.Json).

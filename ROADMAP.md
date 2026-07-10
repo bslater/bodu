@@ -7,7 +7,7 @@ Forward-looking plan for the **Bodu** C# utility library. Pairs with
 **Numerics growth wave has landed — `BigDecimal`** ships as an
 arbitrary-precision decimal with the full `INumber<BigDecimal>`
 generic-math surface, span/UTF-8 parse and format, rounding, and a
-JSON converter registered through `ConfigureForBoduNumerics` — and
+JSON converter registered through `AddNumericsJsonConverters` — and
 step 3, the **running-statistics aggregates**, has landed as well
 (`RunningStatistics<T>` / `RunningQuantile<T>` accumulators and the
 rolling-window `MovingSum<T>` / `MovingMinMax<T>` companions),
@@ -135,7 +135,7 @@ exercised on the smallest self-contained units first.
 | `Bodu.Core` | The dependency root — buffers, extension surfaces, threading primitives, sequences, `WeekPattern`, `ThrowHelper`, text-encoding utilities. |
 | `Bodu.Collections` | The specialized collection catalogue (incl. the graphs/trees pillars), split out of Core; references `Bodu.Core`. Namespaces unchanged (`Bodu.Collections.*`). |
 | `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and the interval algebra (`Interval<T>` / `DiscreteInterval<T>` / `IntervalSet<T>`) over `INumber<T>`. Serialization-agnostic — no `System.Text.Json` dependency. |
-| `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`ConfigureForBoduNumerics`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
+| `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`AddNumericsJsonConverters`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
 | `Bodu.IO.Hashing` | Non-cryptographic hashing + the full RevEng CRC catalogue + the check-digit family. |
 | `Bodu.Text.Encoding` | Base16/32/58/62/64/85 + Base45 + Bech32/Bech32m. |
 | `Bodu.Security.Cryptography` | Block/stream ciphers, AEAD, keyed/crypto hashes, the asymmetric family, KDFs, HPKE. |
@@ -301,7 +301,7 @@ is now:
      (`BigInteger` mantissa + scale) with the full `INumber<BigDecimal>`
      generic-math surface, span/UTF-8 parse and format, rounding, and a
      `BigDecimalJsonConverter` registered through
-     `ConfigureForBoduNumerics` alongside the existing `Fraction<T>` /
+     `AddNumericsJsonConverters` alongside the existing `Fraction<T>` /
      `Interval<T>` converters.
    - **Running-statistics aggregates have landed.** ✅ Online
      mean / variance (Welford, with the Chan et al. parallel `Combine`),
@@ -732,7 +732,7 @@ sequenced steps have shipped:
    `INumber<BigDecimal>` / `INumberBase<BigDecimal>` generic-math surface,
    span/UTF-8 parse and format, rounding, conversions, and a
    `BigDecimalJsonConverter` in `Bodu.Numerics.Serialization.Json`
-   registered by `ConfigureForBoduNumerics`. No BCL equivalent existed —
+   registered by `AddNumericsJsonConverters`. No BCL equivalent existed —
    the highest-leverage gap-filler, now closed.
 3. **Running-statistics aggregates — shipped.** ✅ Online mean / variance
    (Welford, with the Chan et al. parallel merge exposed as `Combine`),
@@ -1255,7 +1255,7 @@ blockquote directly under its README title. The assignment:
   candidate) and its companion
   `Bodu.Numerics.Serialization.Json` (the JSON contract is new — the core
   types are now serialization-agnostic and support is opt-in via
-  `ConfigureForBoduNumerics`), `Bodu.Text.Yaml` (the serializer is read-first and its
+  `AddNumericsJsonConverters`), `Bodu.Text.Yaml` (the serializer is read-first and its
   write surface is still being rounded out) and the network-dependent
   exchange-rate family: the six web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda}`
   and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.

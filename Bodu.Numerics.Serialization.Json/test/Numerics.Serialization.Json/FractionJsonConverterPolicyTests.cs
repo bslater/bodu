@@ -24,7 +24,7 @@ public class FractionJsonConverterPolicyTests
     /// <param name="policy">The policy under test.</param>
     /// <returns>The configured options.</returns>
     private static JsonSerializerOptions Options(NumericsJsonPolicy policy) =>
-        new JsonSerializerOptions().ConfigureForBoduNumerics(policy);
+        new JsonSerializerOptions().AddNumericsJsonConverters(policy);
 
     /// <summary>
     /// Verifies that the registered Strict converter emits the canonical object form.

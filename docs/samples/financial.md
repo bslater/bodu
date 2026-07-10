@@ -27,7 +27,7 @@ The core value types, offline with in-code data only. Covers the three-tier roun
 `TryAs<T>`, casts), sum-preserving allocation and cash rounding, the format-specifier
 vocabulary and <xref:Bodu.Financial.MoneyFormatterBuilder>, the four
 <xref:Bodu.Financial.MoneyParseMode> levels, <xref:Bodu.Financial.MoneyBag> ledgers with
-`ConvertToWithAudit`, and the three <xref:Bodu.Financial.Serialization.FinancialJsonPolicy>
+`ConvertToWithAudit`, and the three <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy>
 shapes. *Packages: `Bodu.Financial`.*
 
 ### Bodu.Financial.Samples.OfflineRates

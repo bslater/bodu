@@ -35,7 +35,6 @@ The chainable `IFinancialServiceBuilder` extension methods (in the `Bodu.Financi
 | `AddMonetaryContext(string name, MonetaryContext context)` | Registers a named monetary context (rounding, minor units, formatting). |
 | `AddExchangeRateProvider<TProvider>()` / `AddExchangeRateProvider(provider)` | Registers a timeless <xref:Bodu.Financial.ExchangeRates.IRateProvider>, by type or by instance. |
 | `AddDatedExchangeRateProvider<TProvider>()` / `AddDatedExchangeRateProvider(provider)` | Registers a dated <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider>. |
-| `AddFinancialJson(FinancialJsonPolicy policy = FinancialJsonPolicy.Strict)` | Registers the `System.Text.Json` converters under the chosen policy. |
 
 ```csharp
 using Bodu.Financial;
@@ -43,7 +42,6 @@ using Bodu.Financial;
 builder.Services.AddFinancialService(configure: financial =>
 {
     financial
-        .AddFinancialJson(FinancialJsonPolicy.Strict)
         .AddExchangeRateProvider<MyRateProvider>()
         .AddDatedExchangeRateProvider<HistoricalRateProvider>();
 });
@@ -54,7 +52,6 @@ The delegate overload is sugar over the first form — `AddFinancialService()` f
 ```csharp
 services
     .AddFinancialService()
-    .AddFinancialJson()
     .AddDatedExchangeRateProvider<HistoricalRateProvider>();
 ```
 
@@ -112,30 +109,23 @@ Neither `AddFinancialService` overload registers an FX provider by default — a
 
 ## Consuming the financial JSON options
 
-`AddFinancialJson(policy)` registers a configured `JsonSerializerOptions` as a keyed singleton under `FinancialServiceBuilderExtensions.JsonOptionsKey` (`"Financial"`), with the financial converters applied for the chosen <xref:Bodu.Financial.Serialization.FinancialJsonPolicy>:
+Financial JSON registration ships in the companion `Bodu.Financial.Serialization.Json` package as a plain `IServiceCollection` extension. `services.AddFinancialJson(policy)` registers a configured `JsonSerializerOptions` as a keyed singleton under `FinancialJsonServiceCollectionExtensions.JsonOptionsKey` (`"Financial"`), with the financial converters applied for the chosen <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy>:
 
 ```csharp
+using Bodu.Financial.Serialization.Json;
+
+services.AddFinancialJson(FinancialJsonPolicy.Strict);
+
 JsonSerializerOptions financialJson =
     provider.GetRequiredKeyedService<JsonSerializerOptions>(
-        FinancialServiceBuilderExtensions.JsonOptionsKey);
+        FinancialJsonServiceCollectionExtensions.JsonOptionsKey);
 
 string payload = JsonSerializer.Serialize(new Money<USD>(19.99m), financialJson);
 ```
 
 ## Binding options from configuration
 
-Passing an `IConfiguration` binds <xref:Bodu.Financial.FinancialOptions> — which carries the single `JsonPolicy` property — from the named section (default `"Financial"`):
-
-```jsonc
-// appsettings.json
-{
-  "Financial": {
-    "JsonPolicy": "Strict"
-  }
-}
-```
-
-`JsonPolicy` is a <xref:Bodu.Financial.Serialization.FinancialJsonPolicy> value (`Strict`, `Lenient`, or `Compact`), which `AddFinancialJson()` reads when registering the converters.
+Passing an `IConfiguration` binds <xref:Bodu.Financial.FinancialOptions> from the named section (default `"Financial"`). The type currently declares no settings of its own — it is the binding seam for future options:
 
 ```csharp
 builder.Services.AddFinancialService(builder.Configuration);
@@ -166,9 +156,10 @@ using Microsoft.Extensions.Hosting;
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddFinancialService(builder.Configuration)   // binds the "Financial" section
-    .AddFinancialJson()
     .AddMonetaryContext("Settlement", MonetaryContext.Default)
     .AddDatedExchangeRateProvider(new FixedDatedRateProvider(observations));
+
+builder.Services.AddFinancialJson();   // Bodu.Financial.Serialization.Json companion
 
 builder.Services.AddSingleton<SettlementService>();
 

@@ -61,6 +61,6 @@
 
   <!-- Bottom caption -->
   <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
-    <text x="240" y="206" text-anchor="middle">options.ConfigureForBoduNumerics() · NumericsJsonPolicy</text>
+    <text x="240" y="206" text-anchor="middle">options.AddNumericsJsonConverters() · NumericsJsonPolicy</text>
   </g>
 </svg>
