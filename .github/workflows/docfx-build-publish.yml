@@ -80,10 +80,15 @@ jobs:
         fail=0
 
         # Canonical packable package IDs = the projects DocFX documents:
-        # every **/src/*.csproj, excluding the CodeStyle and archive trees.
+        # every **/src/*.csproj, excluding the CodeStyle and archive trees and
+        # projects that explicitly opt out of packing with <IsPackable>false</IsPackable>
+        # (e.g. Bodu.Financial.ExchangeRates.Testing, which ships contract-test bases
+        # to sibling test projects but is not published).
         ids="$(find . -path ./archive -prune -o -path ./Bodu.CodeStyle -prune -o \
           -name '*.csproj' -print | grep -E '/src/[^/]+\.csproj$' \
-          | sed -E 's#.*/([^/]+)\.csproj$#\1#' | sort -u)"
+          | while read -r proj; do \
+              grep -qi '<IsPackable>false</IsPackable>' "$proj" || basename "$proj" .csproj; \
+            done | sort -u)"
         echo "Discovered $(printf '%s\n' "$ids" | grep -c . ) packable packages."
 
         # 1. Every packable package must appear in the matrix AND have an install command in docs/.
@@ -121,10 +126,15 @@ jobs:
         fail=0
 
         # Canonical packable package IDs = the projects DocFX documents:
-        # every **/src/*.csproj, excluding the CodeStyle and archive trees.
+        # every **/src/*.csproj, excluding the CodeStyle and archive trees and
+        # projects that explicitly opt out of packing with <IsPackable>false</IsPackable>
+        # (e.g. Bodu.Financial.ExchangeRates.Testing, which ships contract-test bases
+        # to sibling test projects but is not published).
         ids="$(find . -path ./archive -prune -o -path ./Bodu.CodeStyle -prune -o \
           -name '*.csproj' -print | grep -E '/src/[^/]+\.csproj$' \
-          | sed -E 's#.*/([^/]+)\.csproj$#\1#' | sort -u)"
+          | while read -r proj; do \
+              grep -qi '<IsPackable>false</IsPackable>' "$proj" || basename "$proj" .csproj; \
+            done | sort -u)"
 
         rows="$(grep -v '^\s*#' "$MANIFEST" | grep -v '^\s*$')"
 
