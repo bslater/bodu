@@ -79,6 +79,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The given key &apos;{0}&apos; was not present in the dictionary..
+        /// </summary>
+        internal static string KeyNotFound_Dictionary {
+            get {
+                return ResourceManager.GetString("KeyNotFound_Dictionary", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The capacity has been exhausted..
         /// </summary>
         internal static string Op_Invalid_CapacityExhausted {
@@ -102,6 +111,33 @@ namespace Bodu {
         internal static string Op_Invalid_ConcurrentSnapshotUnstable {
             get {
                 return ResourceManager.GetString("Op_Invalid_ConcurrentSnapshotUnstable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Eviction policy &apos;{0}&apos; produced no candidate while the dictionary is at capacity..
+        /// </summary>
+        internal static string Op_Invalid_EvictionProducedNoCandidate {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EvictionProducedNoCandidate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A per-entry time-to-live requires an expiration configuration; construct the dictionary with an EvictingDictionaryExpiration..
+        /// </summary>
+        internal static string Op_Invalid_ExpirationNotConfigured {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpirationNotConfigured", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown eviction policy &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_UnknownEvictionPolicy {
+            get {
+                return ResourceManager.GetString("Op_Invalid_UnknownEvictionPolicy", resourceCulture);
             }
         }
 
