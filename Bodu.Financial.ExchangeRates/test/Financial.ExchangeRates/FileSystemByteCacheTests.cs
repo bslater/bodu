@@ -97,6 +97,29 @@ public sealed class FileSystemByteCacheTests
     }
 
     /// <summary>
+    /// Verifies that a key whose derived file name attempts directory traversal cannot escape the cache directory:
+    /// the payload is written inside the cache directory, never at the traversal target in the parent.
+    /// </summary>
+    [TestMethod]
+    public void Store_WhenKeyAttemptsPathTraversal_ShouldStayWithinCacheDirectory()
+    {
+        var cache = new TestByteCache(_directory);
+        string escapeTarget = Path.Combine(Path.GetDirectoryName(_directory)!, "pwned.bin");
+
+        try
+        {
+            cache.Store("../pwned", [1, 2, 3]);
+
+            Assert.IsFalse(File.Exists(escapeTarget), "a traversal key escaped the cache directory");
+        }
+        finally
+        {
+            if (File.Exists(escapeTarget))
+                File.Delete(escapeTarget);
+        }
+    }
+
+    /// <summary>
     /// A minimal concrete byte cache exposing the protected core operations for testing.
     /// </summary>
     private sealed class TestByteCache
