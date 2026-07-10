@@ -15,6 +15,19 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <remarks>
 /// The source is read once when the configuration is built; it attaches no reload-on-change machinery. Exactly one of
 /// <see cref="Stream" /> or <see cref="Path" /> should be set.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Normally added through the extension method:
+/// IConfiguration configuration = new ConfigurationBuilder()
+///     .AddTomlFile("appsettings.toml", optional: true)
+///     .Build();
+///
+/// // The source itself is the seam for custom composition:
+/// var source = new TomlConfigurationSource { Path = "appsettings.toml", Optional = true };
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class TomlConfigurationSource
     : IConfigurationSource

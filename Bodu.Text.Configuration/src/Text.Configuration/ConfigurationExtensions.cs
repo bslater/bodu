@@ -26,6 +26,25 @@ namespace Bodu.Text.Configuration;
 /// <see cref="ConfigurationDocument.Parse(string)" /> at the start of the pipeline and with the typed accessors on
 /// <see cref="ConfigurationView" /> at its end.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// ConfigurationDocument document = ConfigurationDocument.Parse("""
+///     root = true
+///
+///     [*]
+///     indent_size = 4
+///
+///     [src/**.cs]
+///     indent_size = 8
+///     """);
+///
+/// // Sections whose glob matches the target path apply, later sections winning.
+/// ConfigurationView view = document.Resolve("src/App/Program.cs");
+/// var indent = view.GetInt32("indent_size");   // 8
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public static class ConfigurationExtensions
 {

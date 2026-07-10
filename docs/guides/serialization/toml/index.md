@@ -44,6 +44,7 @@ New to the library? Start with the [introduction](../../../docs/serialization/to
 
 ## Where to go next
 
+- [Runnable samples](../../../samples/toml.md) — offline sample projects under `samples/Text.Toml/` covering the serializer surface, both DOMs, the token layer, and streaming reads.
 - [Bodu serializer guides](../index.md) — the family guide hub across all three libraries.
 - [Bodu.Text.Toml introduction](../../../docs/serialization/toml/index.md) and [core concepts](../../../docs/serialization/toml/concepts.md) — the format-specific shape and vocabulary.
 - [Text & Serialization guides](../../topics/text-and-serialization.md) — how these guides sit alongside the encoding and format guides.

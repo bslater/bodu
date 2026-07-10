@@ -30,6 +30,22 @@ namespace Bodu.Text.Configuration;
 /// and mapping that produced the parsed keys. The default <see cref="ConfigurationKeyOptions.Default" /> matches the
 /// <c>Microsoft.Extensions.Configuration</c> shape.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// ConfigurationView view = document.Resolve(
+///     "src/App/Program.cs",
+///     new ConfigurationResolveOptions
+///     {
+///         Profile = ConfigurationProfile.EditorConfigCompatible,
+///         UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue,
+///     });
+///
+/// // Or start from a canonical profile option set and rely on its coherent defaults:
+/// ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.For(ConfigurationProfile.Strict));
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed partial class ConfigurationResolveOptions
 {

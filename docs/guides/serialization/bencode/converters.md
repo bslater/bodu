@@ -143,6 +143,7 @@ public sealed class WorkItem
 
 To cover *every* enumeration in one registration, add the non-generic string-enum factory (<xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter>) to the options, optionally with a naming policy:
 
+<!-- compile -->
 ```csharp
 var options = new BencodeSerializerOptions();
 options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.SnakeCaseLower, allowIntegerValues: false));

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Samples.Text.Encoding.CustomEncoding</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Text.Encoding\src\Bodu.Text.Encoding.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Text.Encoding\test\Bodu.Text.Encoding.Test.csproj" />
+    <ProjectReference Include="..\Bodu.Text.Encoding.Samples.CustomEncoding\Bodu.Text.Encoding.Samples.CustomEncoding.csproj" />
+  </ItemGroup>
+
+</Project>

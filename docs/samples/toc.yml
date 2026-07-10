@@ -4,3 +4,13 @@
   href: financial.md
 - name: Globalization.Calendar
   href: calendar.md
+- name: Text.Bencode
+  href: bencode.md
+- name: Text.Configuration
+  href: text-configuration.md
+- name: Text.Encoding
+  href: text-encoding.md
+- name: Text.Formats
+  href: formats.md
+- name: Text.Toml
+  href: toml.md

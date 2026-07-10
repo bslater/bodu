@@ -17,6 +17,18 @@ namespace Bodu.Text.Delimited;
 /// default <see cref="Throw" /> policy surfaces these as parse errors. <see cref="SkipRecord" /> mirrors historical
 /// lenient parsers that discard the remainder of the malformed record.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // SkipRecord discards the rest of a record with malformed quoting instead of failing the parse.
+/// DelimitedDocument document = Delimited.Parse(csvText, new DelimitedParseOptions
+/// {
+///     MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord,
+///     FieldCountBehavior = DelimitedFieldCountBehavior.Ragged, // truncated records are short
+/// });
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum DelimitedMalformedRecordBehavior
 {

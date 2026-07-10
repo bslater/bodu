@@ -8,6 +8,7 @@ title: Configuration sources
 
 ## Pattern 1 — file-backed source with reload-on-change
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;

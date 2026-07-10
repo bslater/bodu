@@ -49,6 +49,14 @@ Base32.TryEncode(data, dest, out int written, Base32Variant.Crockford);
 
 `BaseFormattingOptions` (encode) toggles casing, line breaks, prefixes, spacing, and padding omission; `BaseFormatStyles` (decode) controls leniency — prefix tolerance, whitespace skipping, missing padding, and canonical-form enforcement.
 
+## Runnable samples
+
+The repository ships offline, `dotnet run`-able sample projects for this package — the
+catalogue and variant tour, the formatting/parse-style knobs, checksummed Base58Check and
+Bech32 corruption detection, the `BinaryEncodings` registry, and a custom Base36 codec proven
+by the shipped contract-test base — under
+[`samples/Text.Encoding/`](https://github.com/bslater/bodu/tree/master/samples/Text.Encoding).
+
 ## Testing
 
 Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:

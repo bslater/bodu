@@ -12,6 +12,18 @@ namespace Bodu.Text.Bencode.Writer;
 /// <remarks>
 /// Bencode output is always canonical — dictionary keys are emitted in ascending bytewise order and there is no
 /// insignificant whitespace — so the options define no indentation or encoder settings.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var buffer = new ArrayBufferWriter<byte>();
+/// var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions
+/// {
+///     MaxDepth = 32,
+///     AllowMultipleRootValues = false,   // one document per stream (the default)
+/// });
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public struct BencodeWriterOptions
 {

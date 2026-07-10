@@ -128,6 +128,7 @@ public sealed class WorkItem
 
 To cover *every* enumeration in one registration, add the non-generic string-enum factory (<xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter>) to the options, optionally with a naming policy:
 
+<!-- compile -->
 ```csharp
 var options = new TomlSerializerOptions();
 options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.SnakeCaseLower, allowIntegerValues: false));

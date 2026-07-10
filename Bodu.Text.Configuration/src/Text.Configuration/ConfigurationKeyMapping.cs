@@ -13,6 +13,17 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// A future release may add a <c>MixedDotAndColon</c> mode that permits a single document to combine both separator
 /// forms; v1 deliberately keeps the surface area small.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // "logging.level" under each mapping:
+/// //   DotToColon -> "logging:level" (dots and colons both address it)
+/// //   Colon      -> "logging:level" (colon canonical form only)
+/// //   Identity   -> "logging.level" (verbatim)
+/// var keyOptions = new ConfigurationKeyOptions { Mapping = ConfigurationKeyMapping.DotToColon };
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum ConfigurationKeyMapping
 {

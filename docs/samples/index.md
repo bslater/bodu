@@ -6,7 +6,8 @@ title: Samples
 
 The repository ships runnable, self-contained sample projects under
 [`samples/`](https://github.com/bslater/bodu/tree/master/samples), organised by domain folder
-named after the namespace segment they demonstrate (`Financial/`, `Globalization.Calendar/`).
+named after the namespace segment they demonstrate (`Financial/`, `Globalization.Calendar/`,
+`Text.Toml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`).
 This section catalogues them; each domain page walks its samples individually.
 
 Every sample:
@@ -37,11 +38,18 @@ dotnet run --project samples/<Domain>/<SampleName>
 |---|---|---|
 | [Financial](financial.md) | 7 projects + 1 test project | Money arithmetic and the three-tier rounding model, the offline static-rate-file pattern, read-through caching and tiered stacking, multi-provider aggregation and routing, DI hosting, a consumer-written provider proven by the shipped contract-test base, and the live-provider exception |
 | [Globalization.Calendar](calendar.md) | 5 projects + 1 test project | Holiday queries with ISO 3166-2 subdivision shadowing, working-day and fiscal arithmetic with `WeekPattern` overrides, fluent calendar authoring with catalogue imports and the XML round trip, DI with live data reload, and custom date algorithms proven by the shared data-pack test base |
+| [Text.Bencode](bencode.md) | 1 project | A real BitTorrent metainfo file end to end: DOM inspection, canonical byte-exact round trips, the info-hash from the raw `info` slice, and typed POCO mapping with keys containing spaces |
+| [Text.Configuration](text-configuration.md) | 2 projects | The parse/resolve/save pipeline with diagnostics and the EditorConfig-style path cascade, `unset` dialect handling, and the `Microsoft.Extensions.Configuration` bridge into `IOptions<T>` |
+| [Text.Encoding](text-encoding.md) | 2 projects + 1 test project | The base-encoding catalogue and variants, formatting/parse-style knobs, checksummed Base58Check/Bech32 corruption detection, the runtime registry, and a custom Base36 codec proven by the library's contract-test base |
+| [Text.Formats](formats.md) | 2 projects | RFC 4180 CSV/TSV with typed getters and dirty-input policies, streaming reader/writer pipelines, INI comment-preserving edit loops, and DotEnv's literal no-interpolation contract |
+| [Text.Toml](toml.md) | 2 projects | The `TomlSerializer` POCO surface with TOML's four native temporal kinds and naming/attribute layering, plus the mutable and read-only DOMs, the UTF-8 token layer, and resumable streaming reads |
 
 ## Testing companions
 
-Two samples ship test projects that derive the repository's contract-test bases —
+Three samples ship test projects that derive the repository's contract-test bases —
 `DatedRateProviderContractTests<T>` (from the shipped `Bodu.Financial.ExchangeRates.Testing`
-package) and `CalendarDataTestsBase` (repository-internal) — demonstrating how consumer-written
-providers, calendars, and algorithms are validated against the same contracts the built-in
-implementations pass. Both run in CI with the library suites.
+package), `CalendarDataTestsBase` (repository-internal), and
+`BinaryEncodingContractTests<TEncoding>` (from the `Bodu.Text.Encoding` test suite) —
+demonstrating how consumer-written providers, calendars, algorithms, and encodings are
+validated against the same contracts the built-in implementations pass. All run in CI with
+the library suites.

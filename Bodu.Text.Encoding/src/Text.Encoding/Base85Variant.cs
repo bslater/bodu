@@ -12,6 +12,17 @@ namespace Bodu.Text.Encoding;
 /// <remarks>
 /// Base85 encodes four bytes as five characters using radix 85. Variants differ in alphabet, alphabet ordering, the
 /// availability of the all-zero shortcut <c>z</c>, and whether partial trailing groups are permitted.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// byte[] payload = "data"u8.ToArray();
+///
+/// var ascii85 = Base85.Encode(payload);                            // Adobe Ascii85
+/// var z85 = Base85.Encode(payload, Base85Variant.Z85);             // ZeroMQ string-safe
+/// var git = Base85.Encode(payload, Base85Variant.GitCompact);      // git binary patches
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum Base85Variant : byte
 {

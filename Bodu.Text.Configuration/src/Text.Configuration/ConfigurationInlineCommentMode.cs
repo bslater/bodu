@@ -12,6 +12,18 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// EditorConfig 0.17.2 explicitly forbids inline comments — a <c>#</c> or <c>;</c> anywhere other than the start of a
 /// line is part of the value. Bodu permits inline comments as an opt-in extension.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // value = 8 # comment  -- WhitespaceIntroduced treats "# comment" as a comment
+/// // only when preceded by whitespace; Disabled keeps it as part of the value.
+/// var options = new ConfigurationParseOptions
+/// {
+///     InlineCommentMode = ConfigurationInlineCommentMode.WhitespaceIntroduced,
+/// };
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum ConfigurationInlineCommentMode
 {

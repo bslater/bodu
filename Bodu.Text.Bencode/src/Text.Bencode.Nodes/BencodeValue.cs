@@ -17,6 +17,19 @@ namespace Bodu.Text.Bencode.Nodes;
 /// Because Bencode has only two scalar kinds, a <see cref="BencodeValue" /> stores either a 64-bit integer or a byte
 /// string; the two are distinguished by <see cref="GetValueKind" />. A string is stored as its UTF-8 byte string, and
 /// an integer-valued instance can be read back as any fixed-width integer type through a checked conversion.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Bencode's native scalar is the byte string; text is a UTF-8 convenience view.
+/// BencodeValue length = BencodeValue.Create(262144L);
+/// BencodeValue name = BencodeValue.Create("data.bin");
+/// BencodeValue hash = BencodeValue.Create(new byte[] { 0x12, 0x34, 0x56 });
+///
+/// var text = name.GetValue<string>();     // "data.bin"
+/// var raw = hash.GetValue<byte[]>();      // the original bytes
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class BencodeValue
     : BencodeNode

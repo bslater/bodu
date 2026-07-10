@@ -12,6 +12,7 @@ For the vocabulary used below (document, section, entry, comment, parse options)
 
 ## Pattern 1 — parse a configuration file
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Ini;
 

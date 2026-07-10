@@ -21,6 +21,17 @@ namespace Bodu.Text.Toml.Document;
 /// ceiling <see cref="TomlLimits.AbsoluteMaxDepth" />; a document that nests deeper than the effective limit throws
 /// <see cref="TomlFormatException" /> rather than risking a <see cref="StackOverflowException" />.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using TomlDocument document = TomlDocument.Parse("value = 1"u8, new TomlDocumentOptions
+/// {
+///     SpecVersion = TomlSpecVersion.V1_0,   // reject TOML 1.1-only syntax
+///     MaxDepth = 32,
+/// });
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public struct TomlDocumentOptions
 {

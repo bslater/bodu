@@ -12,6 +12,17 @@ namespace Bodu.Text.Encoding;
 /// <remarks>
 /// Base58 is a non-power-of-two radix that excludes visually ambiguous characters (zero, capital-O, capital-I, and
 /// lower-case L). Each variant differs only in the ordering of the 58 alphabet symbols.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// byte[] payload = { 0x00, 0x01, 0x02 };
+///
+/// var bitcoin = Base58.Encode(payload);                          // Bitcoin alphabet (default)
+/// var flickr = Base58.Encode(payload, Base58Variant.Flickr);     // lowercase-first alphabet
+/// var ripple = Base58.Encode(payload, Base58Variant.Ripple);     // Ripple's reordering
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum Base58Variant : byte
 {

@@ -13,6 +13,20 @@ namespace Bodu.Text.Bencode.Reader;
 /// Bencode has no comment syntax and no trailing-comma concept; the options relax the two dictionary-key rules that
 /// older real-world encoders are known to violate: <see cref="AllowUnsortedKeys" /> and
 /// <see cref="AllowDuplicateKeys" />. Both default to the strict canonical behaviour.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Torrents in the wild are not always canonical - relax the reader when ingesting,
+/// // keep the defaults when validating.
+/// var reader = new Utf8BencodeReader(torrentBytes, new BencodeReaderOptions
+/// {
+///     AllowUnsortedKeys = true,
+///     AllowDuplicateKeys = false,
+///     MaxDepth = 32,
+/// });
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public struct BencodeReaderOptions
 {

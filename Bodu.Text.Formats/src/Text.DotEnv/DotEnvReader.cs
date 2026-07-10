@@ -31,6 +31,22 @@ namespace Bodu.Text.DotEnv;
 /// The reader takes ownership of the supplied <see cref="TextReader" /> and disposes it when <see cref="Dispose" /> is
 /// called.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using var reader = DotEnv.CreateReader(new StringReader("""
+///     # database
+///     DB_HOST=localhost
+///     export DB_PORT=5432
+///     """));
+///
+/// while (reader.Read())
+/// {
+///     // reader.Key / reader.Value / reader.LineNumber
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class DotEnvReader
     : IDisposable

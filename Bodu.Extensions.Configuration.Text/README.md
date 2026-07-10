@@ -18,6 +18,13 @@ use for JSON, INI, or XML providers.
 - [Getting started](../docs/docs/extensions-configuration-text/getting-started.md) — worked samples for
   the file, stream, and document overloads, plus reload-on-change.
 
+## Runnable samples
+
+The repository ships an offline, `dotnet run`-able sample for this package —
+`AddTextConfigurationFile` with per-target cascade resolution, `AddTomlFile` flattening, and
+`AddConfigurationOptions<T>` into DI-resolved `IOptions<T>` — under
+[`samples/Text.Configuration/`](https://github.com/bslater/bodu/tree/master/samples/Text.Configuration).
+
 ## API matrix vs `Microsoft.Extensions.Configuration.Json`
 
 | Feature | `Microsoft.Extensions.Configuration.Json` | `Bodu.Extensions.Configuration.Text` |

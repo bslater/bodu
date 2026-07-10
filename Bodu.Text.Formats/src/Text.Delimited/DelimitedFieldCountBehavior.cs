@@ -16,6 +16,18 @@ namespace Bodu.Text.Delimited;
 /// not applied because there is no anchor to compare against; sources whose rows must remain rectangular in that mode
 /// should be validated by the caller.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // A ragged row (fewer fields than the header) is an error by default;
+/// // Pad fills missing fields so imports of untidy data can proceed.
+/// DelimitedDocument document = Delimited.Parse("a,b,c\n1,2", new DelimitedParseOptions
+/// {
+///     FieldCountBehavior = DelimitedFieldCountBehavior.Pad,
+/// });
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum DelimitedFieldCountBehavior
 {

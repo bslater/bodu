@@ -24,6 +24,18 @@ namespace Bodu.Text.Toml.Writer;
 /// <see cref="TomlLimits.AbsoluteMaxDepth" />; opening a table or array deeper than the effective limit throws
 /// <see cref="TomlSerializationException" /> rather than risking a <see cref="StackOverflowException" />.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var buffer = new ArrayBufferWriter<byte>();
+/// var writer = new Utf8TomlWriter(buffer, new TomlWriterOptions
+/// {
+///     SpecVersion = TomlSpecVersion.V1_1,   // permit 1.1-only constructs on write
+///     MaxDepth = 16,
+/// });
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public struct TomlWriterOptions
 {
