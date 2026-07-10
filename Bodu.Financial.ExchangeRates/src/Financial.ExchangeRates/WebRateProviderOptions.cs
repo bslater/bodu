@@ -198,6 +198,18 @@ public abstract class WebRateProviderOptions
             return false;
         }
 
+        foreach (KeyValuePair<string, string> alias in CurrencyAliases)
+        {
+            if (!IsUrlSafeAliasValue(alias.Value))
+            {
+                error = string.Format(
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    ExchangeRatesResourceStrings.Arg_Invalid_WebExchangeRateOptionsCurrencyAliasValue,
+                    alias.Key);
+                return false;
+            }
+        }
+
         if (!AreLogLevelsDefined())
         {
             error = ExchangeRatesResourceStrings.Arg_Invalid_WebExchangeRateOptionsLogLevel;
@@ -231,6 +243,34 @@ public abstract class WebRateProviderOptions
     /// <returns>The aliased symbol component, or <paramref name="isoCode" /> when unmapped.</returns>
     protected string MapCurrency(string isoCode) =>
         CurrencyAliases.TryGetValue(isoCode, out string? alias) ? alias : isoCode;
+
+    /// <summary>
+    /// Determines whether a currency alias value is safe to substitute into a request URL.
+    /// </summary>
+    /// <param name="value">The alias value to test.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="value" /> is a non-empty run of ASCII letters and digits;
+    /// otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Alias values are substituted verbatim into a source's request path. Constraining them to alphanumerics
+    /// keeps them URL-safe — a value containing a path or query delimiter (<c>/</c>, <c>?</c>, <c>#</c>,
+    /// <c>\</c>, <c>%</c>) or a parent-directory reference cannot inject an extra path or query segment into the
+    /// request. Source symbol components (for example <c>USD</c> or <c>BTC</c>) are already alphanumeric.
+    /// </remarks>
+    private static bool IsUrlSafeAliasValue(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return false;
+
+        foreach (char c in value)
+        {
+            if (!char.IsAsciiLetterOrDigit(c))
+                return false;
+        }
+
+        return true;
+    }
 
     /// <summary>
     /// Reports whether every configurable log level is a defined <see cref="LogLevel" /> value.

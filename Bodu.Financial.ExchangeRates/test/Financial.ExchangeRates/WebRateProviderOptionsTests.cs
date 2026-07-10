@@ -86,6 +86,42 @@ public class WebRateProviderOptionsTests
     }
 
     /// <summary>
+    /// Verifies that an alias value containing URL-structural characters (which would let a crafted mapping inject
+    /// path or query segments into a request) is rejected.
+    /// </summary>
+    [TestMethod]
+    [DataRow("../etc")]
+    [DataRow("a/b")]
+    [DataRow("x?y")]
+    [DataRow("x#y")]
+    [DataRow("")]
+    public void TryValidate_WhenCurrencyAliasValueIsUnsafe_ShouldReturnFalse(string aliasValue)
+    {
+        TestWebRateProviderOptions options = new();
+        options.CurrencyAliases["USD"] = aliasValue;
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that an alphanumeric alias value (the shape a source symbol component takes) is accepted.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenCurrencyAliasValueIsAlphanumeric_ShouldReturnTrue()
+    {
+        TestWebRateProviderOptions options = new();
+        options.CurrencyAliases["USD"] = "USD2";
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsTrue(valid);
+        Assert.IsNull(error);
+    }
+
+    /// <summary>
     /// Verifies that an undefined log level is rejected.
     /// </summary>
     [TestMethod]

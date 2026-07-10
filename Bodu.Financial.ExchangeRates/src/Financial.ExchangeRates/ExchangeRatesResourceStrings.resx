@@ -75,6 +75,9 @@
   <data name="Arg_Invalid_WebExchangeRateOptionsCurrencyAliases" xml:space="preserve">
     <value>The exchange-rate provider options currency alias map must not be null.</value>
   </data>
+  <data name="Arg_Invalid_WebExchangeRateOptionsCurrencyAliasValue" xml:space="preserve">
+    <value>The currency alias for {0} must be a non-empty alphanumeric symbol; it is substituted into a request URL and must not contain path or query characters.</value>
+  </data>
   <data name="Arg_Invalid_WebExchangeRateOptionsDefaultLookback" xml:space="preserve">
     <value>The exchange-rate provider options default look-back window must be greater than zero.</value>
   </data>
