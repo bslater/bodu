@@ -2,8 +2,14 @@
   href: index.md
 - name: Financial
   href: financial.md
+- name: Formats.Excel
+  href: excel.md
 - name: Globalization.Calendar
   href: calendar.md
+- name: IO.Compound
+  href: io-compound.md
+- name: IO.Hashing
+  href: io-hashing.md
 - name: Text.Bencode
   href: bencode.md
 - name: Text.Configuration

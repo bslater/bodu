@@ -41,6 +41,7 @@ byte[] bytes = root.ToArray();        // …or materialize the bytes
 
 When a stream's bytes come from a file or another source you do not want to hold in memory, add it with a deferred opener or directly from a path. The bytes are read only when the container is serialized.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Compound.Builders;
 

@@ -68,6 +68,7 @@ By default the whole source is buffered into memory at open time, so the file is
 
 ## Where to go next
 
+- [Runnable samples](../../samples/io-compound.md) — the offline CompoundBasics sample under `samples/IO.Compound/`: builder authoring + read-back, property sets, detection and the v3/v4 knob, a real `.doc`'s tree.
 - [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound) — every type and member, including the [Bodu.IO.Compound.Builders](xref:Bodu.IO.Compound.Builders) authoring types.
 - [Bodu.Formats.Excel.Binary](../excel/index.md) — the BIFF8 `.xls` reader built on this package.
 - [Package matrix](../../docs/package-matrix.md) — where Bodu.IO.Compound sits in the suite and its dependency stack.

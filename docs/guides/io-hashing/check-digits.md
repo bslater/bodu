@@ -53,6 +53,7 @@ bool invalid  = Luhn.IsValid("79927398710");         // false
 
 The **Damm algorithm** uses a quasigroup operation table designed by H. Michael Damm (2004). It detects **all** single-digit substitution errors and **all** adjacent transposition errors — including the `09 ↔ 90` swap that Luhn misses. It also detects many twin errors.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Hashing.CheckDigits;
 

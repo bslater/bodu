@@ -6,8 +6,9 @@ title: Samples
 
 The repository ships runnable, self-contained sample projects under
 [`samples/`](https://github.com/bslater/bodu/tree/master/samples), organised by domain folder
-named after the namespace segment they demonstrate (`Financial/`, `Globalization.Calendar/`,
-`Text.Toml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`).
+named after the namespace segment they demonstrate (`Financial/`, `Formats.Excel/`,
+`Globalization.Calendar/`, `IO.Compound/`, `IO.Hashing/`, `Text.Toml/`, `Text.Bencode/`,
+`Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`).
 This section catalogues them; each domain page walks its samples individually.
 
 Every sample:
@@ -37,7 +38,10 @@ dotnet run --project samples/<Domain>/<SampleName>
 | Domain | Samples | Highlights |
 |---|---|---|
 | [Financial](financial.md) | 7 projects + 1 test project | Money arithmetic and the three-tier rounding model, the offline static-rate-file pattern, read-through caching and tiered stacking, multi-provider aggregation and routing, DI hosting, a consumer-written provider proven by the shipped contract-test base, and the live-provider exception |
+| [Formats.Excel](excel.md) | 1 project | The read-only BIFF8 `.xls` reader over a real ~18,000-cell workbook: the session/sheet-directory surface, constant-memory forward-only streaming, the materialized worksheet, and format-classified serial-date decoding |
 | [Globalization.Calendar](calendar.md) | 5 projects + 1 test project | Holiday queries with ISO 3166-2 subdivision shadowing, working-day and fiscal arithmetic with `WeekPattern` overrides, fluent calendar authoring with catalogue imports and the XML round trip, DI with live data reload, and custom date algorithms proven by the shared data-pack test base |
+| [IO.Compound](io-compound.md) | 1 project | The OLE2 structured-storage container: builder-based authoring and byte-exact read-back, typed OLE property sets on authored and real Word files, signature detection with the v3/v4 sector knob, and walking a real `.doc`'s storage tree |
+| [IO.Hashing](io-hashing.md) | 3 projects + 1 test project | The 112-standard parametric CRC catalogue, checksum families with corruption detection, streaming/resumable digests, non-cryptographic bucket routing, identifier check digits across domains with error-class comparisons, and a custom scheme proven by the shared contract-test base |
 | [Text.Bencode](bencode.md) | 1 project | A real BitTorrent metainfo file end to end: DOM inspection, canonical byte-exact round trips, the info-hash from the raw `info` slice, and typed POCO mapping with keys containing spaces |
 | [Text.Configuration](text-configuration.md) | 2 projects | The parse/resolve/save pipeline with diagnostics and the EditorConfig-style path cascade, `unset` dialect handling, and the `Microsoft.Extensions.Configuration` bridge into `IOptions<T>` |
 | [Text.Encoding](text-encoding.md) | 2 projects + 1 test project | The base-encoding catalogue and variants, formatting/parse-style knobs, checksummed Base58Check/Bech32 corruption detection, the runtime registry, and a custom Base36 codec proven by the library's contract-test base |
@@ -46,10 +50,11 @@ dotnet run --project samples/<Domain>/<SampleName>
 
 ## Testing companions
 
-Three samples ship test projects that derive the repository's contract-test bases —
+Four samples ship test projects that derive the repository's contract-test bases —
 `DatedRateProviderContractTests<T>` (from the shipped `Bodu.Financial.ExchangeRates.Testing`
-package), `CalendarDataTestsBase` (repository-internal), and
-`BinaryEncodingContractTests<TEncoding>` (from the `Bodu.Text.Encoding` test suite) —
-demonstrating how consumer-written providers, calendars, algorithms, and encodings are
-validated against the same contracts the built-in implementations pass. All run in CI with
-the library suites.
+package), `CalendarDataTestsBase` (repository-internal),
+`BinaryEncodingContractTests<TEncoding>` (from the `Bodu.Text.Encoding` test suite), and
+`CheckDigitContractTests<TAlgorithm>` (from the `Bodu.IO.Hashing` test suite) —
+demonstrating how consumer-written providers, calendars, algorithms, encodings, and
+check-digit schemes are validated against the same contracts the built-in implementations
+pass. All run in CI with the library suites.

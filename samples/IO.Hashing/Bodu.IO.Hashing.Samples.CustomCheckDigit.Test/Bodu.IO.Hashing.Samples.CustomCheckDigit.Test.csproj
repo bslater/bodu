@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.IO.Hashing.Samples.CustomCheckDigit</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.IO.Hashing\src\Bodu.IO.Hashing.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.IO.Hashing\test\Bodu.IO.Hashing.Test.csproj" />
+    <ProjectReference Include="..\Bodu.IO.Hashing.Samples.CustomCheckDigit\Bodu.IO.Hashing.Samples.CustomCheckDigit.csproj" />
+  </ItemGroup>
+
+</Project>

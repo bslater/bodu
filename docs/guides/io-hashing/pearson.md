@@ -25,7 +25,7 @@ using Bodu.IO.Hashing;
 
 byte[] data = Encoding.UTF8.GetBytes("example");
 
-using var pearson = new Pearson();        // 8-bit output, Pearson's canonical table
+var pearson = new Pearson();        // 8-bit output, Pearson's canonical table
 pearson.Append(data);
 byte[] digest = pearson.GetCurrentHash();  // 1 byte
 ```
@@ -40,7 +40,7 @@ Any width from 8 to 2048 bits in 8-bit steps is supported. The implementation ru
 using Bodu.IO.Hashing;
 
 // 128-bit Pearson with the canonical permutation.
-using var pearson = new Pearson(hashSizeBits: 128, tableType: PearsonTableType.Pearson);
+var pearson = new Pearson(hashSizeBits: 128, tableType: PearsonTableType.Pearson);
 pearson.Append(data);
 byte[] digest = pearson.GetCurrentHash();  // 16 bytes
 ```
@@ -62,7 +62,7 @@ The table defines the hash. Bodu ships five choices:
 ```csharp
 using Bodu.IO.Hashing;
 
-using var pearson = new Pearson(hashSizeBits: 64, tableType: PearsonTableType.AESSBox);
+var pearson = new Pearson(hashSizeBits: 64, tableType: PearsonTableType.AESSBox);
 ```
 
 All four built-in tables are **permutations** — every byte 0–255 appears exactly once. This is the property Pearson relies on; it is checked at construction time, so a table with duplicates or missing values is rejected.
@@ -76,7 +76,7 @@ using Bodu.IO.Hashing;
 
 byte[] permutation = BuildMyPermutation();   // must be a permutation of 0..255
 
-using var pearson = new Pearson(hashSizeBits: 256, permutationTable: permutation);
+var pearson = new Pearson(hashSizeBits: 256, permutationTable: permutation);
 ```
 
 Constructing `Pearson` with `permutationTable`:
@@ -98,7 +98,7 @@ Pearson follows the standard `NonCryptographicHashAlgorithm` lifecycle:
 ```csharp
 using Bodu.IO.Hashing;
 
-using var pearson = new Pearson(hashSizeBits: 64, tableType: PearsonTableType.Pearson);
+var pearson = new Pearson(hashSizeBits: 64, tableType: PearsonTableType.Pearson);
 
 pearson.Append(chunk1);
 pearson.Append(chunk2);

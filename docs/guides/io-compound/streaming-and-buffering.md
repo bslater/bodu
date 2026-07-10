@@ -10,6 +10,7 @@ title: Buffered vs streaming access
 
 ## The two modes
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Compound;
 

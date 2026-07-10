@@ -26,16 +26,16 @@ Three entry points:
 
 ```csharp
 // 1. Strongly-typed common standards — most convenient for the usual suspects.
-using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
-using var crc = new Crc(CrcStandard.CRC32_ISCSI);          // iSCSI / Castagnoli
-using var crc = new Crc(CrcStandard.CRC16_MODBUS);
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+var crc = new Crc(CrcStandard.CRC32_ISCSI);          // iSCSI / Castagnoli
+var crc = new Crc(CrcStandard.CRC16_MODBUS);
 
 // 2. By enum — covers every canonical catalogue entry (112 in total).
-using var crc = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));
+var crc = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));
 
 // 3. By name — resolves canonical names AND published aliases.
-using var crc1 = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));
-using var crc2 = new Crc(CrcStandard.FromName("PKZIP"));   // same instance as crc1
+var crc1 = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));
+var crc2 = new Crc(CrcStandard.FromName("PKZIP"));   // same instance as crc1
 
 // Iterate every catalogue standard
 foreach (CrcStandard std in CrcStandard.All) { ... }
