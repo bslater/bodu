@@ -7,6 +7,8 @@
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Financial.ExchangeRates;
 
@@ -53,6 +55,9 @@ internal sealed partial class XeScrapingAuthTokenProvider
     /// <summary>The provider options supplying the token-acquisition URLs.</summary>
     private readonly XeRateProviderOptions _options;
 
+    /// <summary>The logger that receives the token-scan diagnostics; never <see langword="null" />.</summary>
+    private readonly ILogger _logger;
+
     /// <summary>Guards <see cref="_token" /> and <see cref="_inFlight" /> against concurrent mutation.</summary>
     private readonly object _sync = new();
 
@@ -67,16 +72,21 @@ internal sealed partial class XeScrapingAuthTokenProvider
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download the bootstrap page and the script chunks.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">
+    /// The logger that receives a diagnostic when an unreachable script chunk is skipped during the token scan, or
+    /// <see langword="null" /> to disable that reporting.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="httpClient" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    internal XeScrapingAuthTokenProvider(HttpClient httpClient, XeRateProviderOptions options)
+    internal XeScrapingAuthTokenProvider(HttpClient httpClient, XeRateProviderOptions options, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
 
         _httpClient = httpClient;
         _options = options;
+        _logger = logger ?? NullLogger.Instance;
     }
 
     /// <inheritdoc />
@@ -211,9 +221,10 @@ internal sealed partial class XeScrapingAuthTokenProvider
         {
             return await _httpClient.GetStringAsync(url, cancellationToken).ConfigureAwait(false);
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
             // A reconstructed lazy-chunk URL that no longer exists 404s; skip it and keep scanning the rest.
+            Log.TokenChunkSkipped(_logger, url, ex);
             return string.Empty;
         }
     }

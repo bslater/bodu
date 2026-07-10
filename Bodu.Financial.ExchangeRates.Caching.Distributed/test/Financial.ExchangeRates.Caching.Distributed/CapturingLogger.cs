@@ -6,7 +6,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Bodu.Financial.ExchangeRates.Caching;
+namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 
 /// <summary>
 /// An <see cref="ILogger" /> that records every logged entry so tests can assert on the level, event id, formatted
@@ -37,8 +37,7 @@ internal sealed class CapturingLogger
         NullScope.Instance;
 
     /// <inheritdoc />
-    public bool IsEnabled(LogLevel logLevel) =>
-        logLevel != LogLevel.None;
+    public bool IsEnabled(LogLevel logLevel) => true;
 
     /// <inheritdoc />
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)

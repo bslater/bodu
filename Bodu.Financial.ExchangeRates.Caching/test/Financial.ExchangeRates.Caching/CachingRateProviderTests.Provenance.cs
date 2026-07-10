@@ -40,7 +40,7 @@ public sealed partial class CachingRateProviderTests
         _clock.Advance(TimeSpan.FromHours(1));
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        (LogLevel Level, EventId EventId, string Message) entry = logger.Entries.Single(e => e.EventId.Id == ProvenanceEventId);
+        (LogLevel Level, EventId EventId, string Message, Exception? Exception) entry = logger.Entries.Single(e => e.EventId.Id == ProvenanceEventId);
         Assert.AreEqual(LogLevel.Debug, entry.Level);
         Assert.IsTrue(entry.Message.Contains("from Cache", StringComparison.Ordinal), entry.Message);
         Assert.IsTrue(entry.Message.Contains($"backend '{Backend}'", StringComparison.Ordinal), entry.Message);
@@ -60,7 +60,7 @@ public sealed partial class CachingRateProviderTests
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        (LogLevel Level, EventId EventId, string Message) entry = logger.Entries.Single(e => e.EventId.Id == ProvenanceEventId);
+        (LogLevel Level, EventId EventId, string Message, Exception? Exception) entry = logger.Entries.Single(e => e.EventId.Id == ProvenanceEventId);
         Assert.AreEqual(LogLevel.Debug, entry.Level);
         Assert.IsTrue(entry.Message.Contains("from Live", StringComparison.Ordinal), entry.Message);
         Assert.IsTrue(entry.Message.Contains("age )", StringComparison.Ordinal), entry.Message);
@@ -82,7 +82,7 @@ public sealed partial class CachingRateProviderTests
         _clock.Advance(TimeSpan.FromHours(1));
         _ = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
 
-        (LogLevel Level, EventId EventId, string Message) entry = logger.Entries.Single(e => e.EventId.Id == ProvenanceEventId);
+        (LogLevel Level, EventId EventId, string Message, Exception? Exception) entry = logger.Entries.Single(e => e.EventId.Id == ProvenanceEventId);
         Assert.AreEqual(LogLevel.Debug, entry.Level);
         Assert.IsTrue(entry.Message.Contains("from Cache", StringComparison.Ordinal), entry.Message);
         Assert.IsTrue(entry.Message.Contains($"backend '{Backend}'", StringComparison.Ordinal), entry.Message);
@@ -103,7 +103,7 @@ public sealed partial class CachingRateProviderTests
 
         _ = await sut.GetRatesAsync("AUD", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 6));
 
-        (LogLevel Level, EventId EventId, string Message) entry = logger.Entries.Single(e => e.EventId.Id == ProvenanceEventId);
+        (LogLevel Level, EventId EventId, string Message, Exception? Exception) entry = logger.Entries.Single(e => e.EventId.Id == ProvenanceEventId);
         Assert.AreEqual(LogLevel.Debug, entry.Level);
         Assert.IsTrue(entry.Message.Contains("from Live", StringComparison.Ordinal), entry.Message);
         Assert.IsTrue(entry.Message.Contains("age )", StringComparison.Ordinal), entry.Message);

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bodu.Financial.ExchangeRates;
@@ -102,7 +103,11 @@ public static class DistributedRateCacheExtensions
             DistributedRateCacheOptions options =
                 serviceProvider.GetRequiredService<IOptionsMonitor<DistributedRateCacheOptions>>().Get(providerName);
             IDistributedCache distributedCache = serviceProvider.GetRequiredService<IDistributedCache>();
-            return new DistributedRateCache(distributedCache, options);
+            return new DistributedRateCache(
+                distributedCache,
+                options,
+                serviceProvider.GetService<TimeProvider>(),
+                serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<DistributedRateCache>());
         });
 
         // Expose the same singleton on both the default and the keyed IRateCache surface so a specific cached

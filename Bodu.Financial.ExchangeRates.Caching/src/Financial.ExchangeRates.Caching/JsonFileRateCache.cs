@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
@@ -69,12 +70,20 @@ public sealed class JsonFileRateCache
     /// <param name="options">
     /// The file-cache options that select the bound provider, storage directory, and layout.
     /// </param>
+    /// <param name="timeProvider">
+    /// The time source the swallowed-failure warning rate-limiting is measured against, or <see langword="null" /> to
+    /// use <see cref="TimeProvider.System" />.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives a rate-limited warning when a best-effort storage failure is swallowed, or
+    /// <see langword="null" /> to disable that reporting.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
-    public JsonFileRateCache(FileRateCacheOptions options)
-        : base(options)
+    public JsonFileRateCache(FileRateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
+        : base(options, timeProvider, logger)
     {
     }
 
@@ -86,14 +95,15 @@ public sealed class JsonFileRateCache
         JsonSerializer.Serialize(RateCacheFileConverter.ToFile(Provider, pair, state), s_jsonOptions);
 
     /// <inheritdoc />
-    private protected override CachePairState Deserialize(string text)
+    private protected override CachePairState Deserialize(string text, string path)
     {
         try
         {
             return RateCacheFileConverter.ToState(JsonSerializer.Deserialize<RateCacheFile>(text, s_jsonOptions));
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
+            OnCacheFileCorrupt(path, ex);
             return CachePairState.Empty;
         }
     }

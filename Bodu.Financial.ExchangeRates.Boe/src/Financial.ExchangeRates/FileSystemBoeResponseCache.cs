@@ -6,6 +6,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates;
 
@@ -33,8 +34,12 @@ public sealed class FileSystemBoeResponseCache
     /// The cache directory. When <see langword="null" /> or empty, a <c>bodu-boe</c> folder under the system temporary
     /// path is used.
     /// </param>
-    public FileSystemBoeResponseCache(string? directory)
-        : base(directory, "bodu-boe") { }
+    /// <param name="logger">
+    /// The logger that receives a warning when a best-effort file-system failure is swallowed, or
+    /// <see langword="null" /> to disable that reporting.
+    /// </param>
+    public FileSystemBoeResponseCache(string? directory, ILogger? logger = null)
+        : base(directory, "bodu-boe", logger) { }
 
     /// <inheritdoc />
     public bool TryGet(DateOnly startDate, DateOnly endDate, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes) =>

@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bodu.Financial.ExchangeRates;
 
@@ -28,6 +30,9 @@ public abstract class FileSystemByteCache<TKey>
     /// <summary>The directory in which cached response bytes are stored.</summary>
     private readonly string _directory;
 
+    /// <summary>The logger that receives the best-effort degradation warnings; never <see langword="null" />.</summary>
+    private readonly ILogger _logger;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="FileSystemByteCache{TKey}" /> class.
     /// </summary>
@@ -36,11 +41,16 @@ public abstract class FileSystemByteCache<TKey>
     /// The folder name (under the system temporary path) to use when <paramref name="directory" /> is
     /// <see langword="null" /> or blank.
     /// </param>
-    protected FileSystemByteCache(string? directory, string defaultFolderName)
+    /// <param name="logger">
+    /// The logger that receives a warning when a best-effort file-system failure is swallowed, or
+    /// <see langword="null" /> to disable that reporting.
+    /// </param>
+    protected FileSystemByteCache(string? directory, string defaultFolderName, ILogger? logger = null)
     {
         _directory = string.IsNullOrWhiteSpace(directory)
             ? Path.Combine(Path.GetTempPath(), defaultFolderName)
             : directory;
+        _logger = logger ?? NullLogger.Instance;
     }
 
     /// <summary>
@@ -99,13 +109,15 @@ public abstract class FileSystemByteCache<TKey>
             bytes = File.ReadAllBytes(path);
             return true;
         }
-        catch (IOException)
+        catch (IOException ex)
         {
+            FileSystemByteCacheLog.ReadFailureSwallowed(_logger, path, ex);
             bytes = null;
             return false;
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException ex)
         {
+            FileSystemByteCacheLog.ReadFailureSwallowed(_logger, path, ex);
             bytes = null;
             return false;
         }
@@ -121,18 +133,22 @@ public abstract class FileSystemByteCache<TKey>
     {
         ThrowHelper.ThrowIfNull(bytes);
 
+        string path = Path.Combine(_directory, GetFileName(key));
+
         try
         {
             System.IO.Directory.CreateDirectory(_directory);
-            File.WriteAllBytes(Path.Combine(_directory, GetFileName(key)), bytes);
+            File.WriteAllBytes(path, bytes);
         }
-        catch (IOException)
+        catch (IOException ex)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
+            FileSystemByteCacheLog.StoreFailureSwallowed(_logger, path, ex);
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException ex)
         {
             // Best-effort cache: a failed write must not break rate retrieval.
+            FileSystemByteCacheLog.StoreFailureSwallowed(_logger, path, ex);
         }
     }
 }

@@ -106,7 +106,7 @@ public sealed class BoeRateProvider
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public BoeRateProvider(HttpClient httpClient, BoeRateProviderOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
-        : this(CreateSource(httpClient, options), options, ownedHttpClient: null, logger, timeProvider)
+        : this(CreateSource(httpClient, options, logger), options, ownedHttpClient: null, logger, timeProvider)
     {
     }
 
@@ -138,7 +138,7 @@ public sealed class BoeRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private BoeRateProvider(BoeRateProviderOptions options, HttpClient ownedHttpClient, ILogger? logger, TimeProvider? timeProvider)
-        : this(CreateSource(ownedHttpClient, options), options, ownedHttpClient, logger, timeProvider)
+        : this(CreateSource(ownedHttpClient, options, logger), options, ownedHttpClient, logger, timeProvider)
     {
     }
 
@@ -252,15 +252,16 @@ public sealed class BoeRateProvider
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download range responses.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">The provider's logger, forwarded to the on-disk response cache for degradation warnings.</param>
     /// <returns>A new table source.</returns>
-    private static BoeCsvRateTableSource CreateSource(HttpClient httpClient, BoeRateProviderOptions options)
+    private static BoeCsvRateTableSource CreateSource(HttpClient httpClient, BoeRateProviderOptions options, ILogger? logger)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
         IBoeResponseCache cache = options.EnableDiskCache
-            ? new FileSystemBoeResponseCache(options.CacheDirectory)
+            ? new FileSystemBoeResponseCache(options.CacheDirectory, logger)
             : NullBoeResponseCache.Instance;
 
         return new BoeCsvRateTableSource(httpClient, options, cache);

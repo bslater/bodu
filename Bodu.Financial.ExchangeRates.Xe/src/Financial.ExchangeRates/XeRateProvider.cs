@@ -98,7 +98,7 @@ public sealed class XeRateProvider
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public XeRateProvider(HttpClient httpClient, XeRateProviderOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
-        : this(CreateSource(httpClient, options), options, ownedHttpClient: null, logger, timeProvider)
+        : this(CreateSource(httpClient, options, logger), options, ownedHttpClient: null, logger, timeProvider)
     {
     }
 
@@ -130,7 +130,7 @@ public sealed class XeRateProvider
     /// <param name="logger">The logger.</param>
     /// <param name="timeProvider">The time source.</param>
     private XeRateProvider(XeRateProviderOptions options, HttpClient ownedHttpClient, ILogger? logger, TimeProvider? timeProvider)
-        : this(CreateSource(ownedHttpClient, options), options, ownedHttpClient, logger, timeProvider)
+        : this(CreateSource(ownedHttpClient, options, logger), options, ownedHttpClient, logger, timeProvider)
     {
     }
 
@@ -166,14 +166,15 @@ public sealed class XeRateProvider
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue charting-rates and token-acquisition requests.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="logger">The provider's logger, forwarded to the token provider for scan diagnostics.</param>
     /// <returns>A new charting-rates source.</returns>
-    private static XeChartingRatesSource CreateSource(HttpClient httpClient, XeRateProviderOptions options)
+    private static XeChartingRatesSource CreateSource(HttpClient httpClient, XeRateProviderOptions options, ILogger? logger)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        XeScrapingAuthTokenProvider tokenProvider = new(httpClient, options);
+        XeScrapingAuthTokenProvider tokenProvider = new(httpClient, options, logger);
         return new XeChartingRatesSource(httpClient, options, tokenProvider);
     }
 
