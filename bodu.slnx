@@ -178,6 +178,10 @@
     <Project Path="Bodu.Extensions.Configuration.Text\src\Bodu.Extensions.Configuration.Text.csproj" />
     <Project Path="Bodu.Extensions.Configuration.Text\test\Bodu.Extensions.Configuration.Text.Test.csproj" />
   </Folder>
+  <Folder Name="/Samples/">
+    <Project Path="samples/financial/Bodu.Financial.Samples.MoneyBasics/Bodu.Financial.Samples.MoneyBasics.csproj" />
+    <Project Path="samples/financial/Bodu.Financial.Samples.OfflineRates/Bodu.Financial.Samples.OfflineRates.csproj" />
+  </Folder>
   <Project Path="Bodu.Test\test\Bodu.Test.csproj" />
   <Project Path="docs\doc.csproj" />
 </Solution>
