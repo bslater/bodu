@@ -42,7 +42,7 @@ var missing = view.TryGetValue("theme", out string? theme);    // false - no thr
 
 // Presets switch the whole pipeline's dialect in one place:
 ConfigurationView compat = document.Resolve(
-    "src/App/Program.cs", ConfigurationResolveOptions.Presets.EditorConfigCompatible);
+    "src/App/Program.cs", ConfigurationResolveOptions.EditorConfigCompatible);
 ```
 
 `ParseWithDiagnostics` returns the document plus collected `ConfigurationDiagnostic` rows instead

@@ -20,10 +20,11 @@ namespace Bodu.Text.Delimited;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Skip drops records with malformed quoting instead of failing the whole parse.
+/// // SkipRecord discards the rest of a record with malformed quoting instead of failing the parse.
 /// DelimitedDocument document = Delimited.Parse(csvText, new DelimitedParseOptions
 /// {
-///     MalformedRecordBehavior = DelimitedMalformedRecordBehavior.Skip,
+///     MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord,
+///     FieldCountBehavior = DelimitedFieldCountBehavior.Ragged, // truncated records are short
 /// });
 ///]]>
 /// </code>

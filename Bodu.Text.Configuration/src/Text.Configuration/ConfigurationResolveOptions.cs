@@ -41,8 +41,8 @@ namespace Bodu.Text.Configuration;
 ///         UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue,
 ///     });
 ///
-/// // Or start from a preset and rely on its coherent defaults:
-/// ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.Presets.Strict);
+/// // Or start from a canonical profile option set and rely on its coherent defaults:
+/// ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.For(ConfigurationProfile.Strict));
 ///]]>
 /// </code>
 /// </example>
