@@ -12,6 +12,22 @@ namespace Bodu.Financial;
 /// Configures how <see cref="Money.Parse(string, MoneyParseOptions)" /> and its <c>TryParse</c> counterpart interpret
 /// monetary text.
 /// </summary>
+/// <remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial;
+///
+/// // RoundTripOnly pairs with the "R" format specifier for storage and wire formats.
+/// var wire = Money.From(1234.56m, CurrencyCode.USD).ToString("R");   // "USD 1234.56"
+/// Money restored = Money.Parse(wire, new MoneyParseOptions { Mode = MoneyParseMode.RoundTripOnly });
+///
+/// // LenientImport trims white space and upcases the ISO code - for spreadsheets and external feeds.
+/// Money imported = Money.Parse("  1234.56 usd ", new MoneyParseOptions { Mode = MoneyParseMode.LenientImport });
+///]]>
+/// </code>
+/// </example>
+/// </remarks>
 public sealed record MoneyParseOptions
 {
     /// <summary>

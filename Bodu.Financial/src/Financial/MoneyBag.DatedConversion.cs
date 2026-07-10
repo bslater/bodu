@@ -77,6 +77,29 @@ public sealed partial class MoneyBag
     /// <exception cref="KeyNotFoundException">
     /// No rate is available for one of the bag's currencies under <paramref name="options" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Financial;
+    /// using Bodu.Financial.Currencies;
+    /// using Bodu.Financial.ExchangeRates;
+    ///
+    /// MoneyBag ledger = MoneyBag.Of(
+    ///     Money.From(1450.00m, CurrencyCode.AUD),
+    ///     Money.From(370.75m, CurrencyCode.USD));
+    ///
+    /// MoneyBagConversionAudit<AUD> audit = ledger.ConvertToWithAudit<AUD>(
+    ///     rates, new DateOnly(2024, 3, 15), RateLookupOptions.PreviousWithin(3));
+    ///
+    /// // audit.Total is the aggregated Money<AUD>; each line explains one balance.
+    /// foreach (MoneyBagConversionLine line in audit.Lines)
+    /// {
+    ///     // line.SourceIsoCode, line.SourceAmount, line.RawConvertedAmount, and
+    ///     // line.Rate (null for the AUD balance - identity pass-through).
+    /// }
+    ///]]>
+    /// </code>
+    /// </example>
     public MoneyBagConversionAudit<TTarget> ConvertToWithAudit<TTarget>(
         IDatedRateProvider rates,
         DateOnly date,

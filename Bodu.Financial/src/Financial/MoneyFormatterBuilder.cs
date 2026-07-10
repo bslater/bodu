@@ -9,6 +9,27 @@ namespace Bodu.Financial;
 /// <summary>
 /// Fluently composes a <see cref="MoneyFormatter" /> for complex formatting scenarios.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Use the builder to capture a reusable display policy once instead of scattering format strings through the code
+/// base; the built <see cref="MoneyFormatter" /> is immutable and safe to share.
+/// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using System.Globalization;
+/// using Bodu.Financial;
+///
+/// MoneyFormatter formatter = new MoneyFormatterBuilder()
+///     .WithEnglishName()
+///     .WithCulture(new CultureInfo("en-US"))
+///     .Build();
+///
+/// var text = formatter.Format(Money.From(1234.56m, CurrencyCode.USD));   // "1,234.56 US Dollar"
+///]]>
+/// </code>
+/// </example>
+/// </remarks>
 public sealed class MoneyFormatterBuilder
 {
     /// <summary>The options accumulated by the builder.</summary>
