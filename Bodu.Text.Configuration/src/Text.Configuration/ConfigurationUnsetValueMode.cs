@@ -15,6 +15,18 @@ namespace Bodu.Text.Configuration;
 /// removes the effective value. In <see cref="ConfigurationProfile.Bodu" /> mode the literal is preserved by default so
 /// users who wish to store the string <c>unset</c> are not surprised. Set this mode explicitly when you want
 /// EditorConfig-style behaviour under the Bodu profile.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // EditorConfig's "unset" sentinel: RemoveEffectiveValue makes a later
+/// // `indent_size = unset` erase the inherited value from the resolved view.
+/// ConfigurationView view = document.Resolve(targetPath, new ConfigurationResolveOptions
+/// {
+///     UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue,
+/// });
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum ConfigurationUnsetValueMode
 {

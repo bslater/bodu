@@ -17,6 +17,19 @@ namespace Bodu.Text.Toml.Nodes;
 /// The stored kind is fixed at construction and reported by <see cref="GetValueKind" />. A scalar reads back as the CLR
 /// type that matches its kind; an integer additionally reads back as any fixed-width integer type through a checked
 /// conversion, and a float reads back as either <see cref="double" /> or <see cref="float" />.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Create wraps each TOML scalar kind - including the four native temporal kinds.
+/// TomlValue text = TomlValue.Create("orders");
+/// TomlValue offset = TomlValue.Create(new DateTimeOffset(2026, 1, 15, 8, 30, 0, TimeSpan.FromHours(10)));
+/// TomlValue local = TomlValue.Create(new DateOnly(2026, 1, 15));
+/// TomlValue time = TomlValue.Create(new TimeOnly(8, 30));
+///
+/// var date = local.GetValue<DateOnly>();   // 2026-01-15
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class TomlValue
     : TomlNode

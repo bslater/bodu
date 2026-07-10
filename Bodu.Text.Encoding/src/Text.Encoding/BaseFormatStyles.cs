@@ -12,6 +12,19 @@ namespace Bodu.Text.Encoding;
 /// <remarks>
 /// These options control the leniency of the decoder. Multiple flags may be combined using a bitwise OR. The default of
 /// <see cref="None" /> requires strict, decoration-free input.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Decode styles mirror the formatting options used on encode.
+/// var encoded = Base64.Encode(payload, options: BaseFormattingOptions.InsertLineBreaks);
+///
+/// byte[] decoded = Base64.Decode(encoded, style: BaseFormatStyles.IgnoreWhitespace);
+///
+/// // RequireCanonicalEncoding rejects non-canonical trailing bits lenient decoders accept.
+/// bool strict = Base64.IsValid(encoded, BaseFormatStyles.RequireCanonicalEncoding | BaseFormatStyles.IgnoreWhitespace);
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 [Flags]
 public enum BaseFormatStyles : byte

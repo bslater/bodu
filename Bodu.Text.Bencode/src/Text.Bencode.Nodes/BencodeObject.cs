@@ -20,6 +20,20 @@ namespace Bodu.Text.Bencode.Nodes;
 /// because Bencode has no null token. Adding a node that already belongs to another container throws an
 /// <see cref="InvalidOperationException" />; removing or replacing a value detaches it, clearing its
 /// <see cref="BencodeNode.Parent" /> so it can be added to another container.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var dictionary = new BencodeObject
+/// {
+///     ["announce"] = BencodeValue.Create("http://tracker.example/announce"),
+///     ["info"] = new BencodeObject { ["name"] = BencodeValue.Create("data.bin") },
+/// };
+///
+/// // Keys are emitted in canonical (ascending bytewise) order regardless of add order.
+/// byte[] encoded = dictionary.ToUtf8Bytes();
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class BencodeObject
     : BencodeNode, IDictionary<string, BencodeNode?>

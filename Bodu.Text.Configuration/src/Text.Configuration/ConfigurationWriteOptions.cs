@@ -30,6 +30,18 @@ namespace Bodu.Text.Configuration;
 /// <see cref="NewLine" /> defaults to a single LF — switch to <c>"\r\n"</c> for hosts that require CRLF on output.
 /// Every property is <c>init</c>-only, so instances are safe to cache and share across threads.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// ConfigurationDocument.Save(document, "team.boduconfig", new ConfigurationWriteOptions
+/// {
+///     KeyValueSeparator = " = ",
+///     PreserveComments = true,
+///     InsertBlankLineBetweenSections = true,
+/// });
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed partial class ConfigurationWriteOptions
 {

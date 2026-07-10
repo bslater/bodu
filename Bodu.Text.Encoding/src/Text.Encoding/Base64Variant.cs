@@ -12,6 +12,17 @@ namespace Bodu.Text.Encoding;
 /// <remarks>
 /// All variants share the same byte-to-symbol mapping at the bit level; they differ only in alphabet substitutions and
 /// the default behaviour around padding and line breaks.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// byte[] payload = { 0xFB, 0xEF, 0xFF };
+///
+/// var standard = Base64.Encode(payload);                          // may contain '+' and '/'
+/// var urlSafe = Base64.Encode(payload, Base64Variant.UrlSafe);    // '-' and '_' instead
+/// var mime = Base64.Encode(payload, Base64Variant.Mime);          // MIME transfer profile
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum Base64Variant : byte
 {

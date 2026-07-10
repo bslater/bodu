@@ -22,6 +22,26 @@ namespace Bodu.Text.Toml.Document;
 /// and tables. Each scalar accessor returns the value decoded once during parsing and throws
 /// <see cref="InvalidOperationException" /> when invoked on an element of a different kind.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using TomlDocument document = TomlDocument.Parse("""
+///     name = "orders"
+///     port = 8080
+///     tags = ["a", "b"]
+///     """);
+///
+/// TomlElement root = document.RootElement;
+/// var name = root.GetProperty("name").GetString();       // "orders"
+/// var port = root.GetProperty("port").GetInt64();        // 8080
+///
+/// foreach (TomlElement tag in root.GetProperty("tags").EnumerateArray())
+/// {
+///     // "a", "b"
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public readonly partial struct TomlElement
 {

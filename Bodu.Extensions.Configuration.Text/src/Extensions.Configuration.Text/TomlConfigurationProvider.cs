@@ -25,6 +25,19 @@ namespace Bodu.Extensions.Configuration.Text;
 /// configuration bridge on the read-only half of the contract, so configuration loaded from TOML cannot be mutated back
 /// through the provider.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Built by TomlConfigurationSource; flattens TOML tables into
+/// // colon-separated configuration keys.
+/// IConfiguration configuration = new ConfigurationBuilder()
+///     .AddTomlFile("appsettings.toml")
+///     .Build();
+///
+/// var level = configuration["logging:level"];
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class TomlConfigurationProvider
     : IConfigurationProvider

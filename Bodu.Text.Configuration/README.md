@@ -17,6 +17,38 @@ Profiles select a coherent set of parse, resolve, and write defaults: `Bodu` (pe
 `EditorConfigCompatible` (strict EditorConfig 0.17.2 alignment), `Strict` (deterministic parsing for
 generated files), and `Relaxed` (collect-diagnostics for user-authored files).
 
+## Quick start
+
+```csharp
+using Bodu.Text.Configuration;
+
+ConfigurationDocument document = ConfigurationDocument.Parse("""
+    root = true
+
+    [*]
+    indent_size = 4
+    start_day = Monday
+
+    [src/**.cs]
+    indent_size = 8
+    """);
+
+// Sections whose glob matches the target path apply, later sections winning.
+ConfigurationView view = document.Resolve("src/App/Program.cs");
+
+var indent = view.GetInt32("indent_size");                     // 8
+var start = view.GetEnum<DayOfWeek>("start_day");              // Monday
+var missing = view.TryGetValue("theme", out string? theme);    // false - no throw
+
+// Presets switch the whole pipeline's dialect in one place:
+ConfigurationView compat = document.Resolve(
+    "src/App/Program.cs", ConfigurationResolveOptions.Presets.EditorConfigCompatible);
+```
+
+`ParseWithDiagnostics` returns the document plus collected `ConfigurationDiagnostic` rows instead
+of throwing; `ConfigurationDocument.Save(document, path, writeOptions)` round-trips the document
+(comments preserved by default).
+
 ## Where to start
 
 - [Documentation index](../docs/docs/text-configuration/index.md) — high-level pipeline overview.
