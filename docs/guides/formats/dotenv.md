@@ -12,6 +12,7 @@ For the vocabulary used below (document, entry, comment, parse options) see [Cor
 
 ## Pattern 1 — parse a `.env` file
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.DotEnv;
 

@@ -120,6 +120,7 @@ This makes the encoded form deterministic for the same data, so it is safe to ha
 
 ## Pattern 5 — Rename members
 
+<!-- compile -->
 ```csharp
 var options = new BencodeSerializerOptions
 {

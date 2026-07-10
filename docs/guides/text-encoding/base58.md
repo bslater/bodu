@@ -63,6 +63,7 @@ preserves them as **leading `1` characters** in the encoded form (where `1` is `
 This is the rule that makes Bitcoin P2PKH addresses (which always start with the mainnet version byte `0x00`)
 always start with `1` in their encoded form.
 
+<!-- compile -->
 ```csharp
 // Round trip preserves leading zero bytes exactly:
 byte[] withZeros = new byte[] { 0x00, 0x00, 0xDE, 0xAD };

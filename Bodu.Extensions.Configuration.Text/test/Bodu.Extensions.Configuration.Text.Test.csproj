@@ -21,4 +21,8 @@
     <ProjectReference Include="..\src\Bodu.Extensions.Configuration.Text.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
 </Project>

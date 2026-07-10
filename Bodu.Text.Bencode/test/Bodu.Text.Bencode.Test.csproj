@@ -16,4 +16,8 @@
     <EmbeddedResource Include="Fixtures\sample.torrent" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
 </Project>

@@ -44,6 +44,7 @@ breaks in the *source* are treated:
 | `Binary` (default) | Escaped as `=0D` / `=0A`; no byte sequence is a hard break | Arbitrary octet round-trips |
 | `Text` | A canonical `CRLF` pair becomes a hard break (`options.NewLine`); a lone CR or LF is escaped | RFC 2045 canonical text bodies |
 
+<!-- compile -->
 ```csharp
 byte[] crlf = "line1\r\nline2"u8.ToArray();
 

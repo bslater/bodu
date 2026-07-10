@@ -51,6 +51,7 @@ The severity is fixed per diagnostic code — there is no "promote warnings to e
 
 <xref:Bodu.Text.Configuration.ConfigurationDiagnostic> is an immutable `sealed class` with four read-only properties, constructed from severity, code, message, and location:
 
+<!-- compile -->
 ```csharp
 var diagnostic = new ConfigurationDiagnostic(
     ConfigurationDiagnosticSeverity.Warning,
