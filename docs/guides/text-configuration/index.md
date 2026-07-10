@@ -57,6 +57,7 @@ Hosting the resolved view inside `Microsoft.Extensions.Configuration` (ASP.NET C
 
 ## Where to go next
 
+- **[Runnable samples](../../samples/text-configuration.md)** — offline sample projects under `samples/Text.Configuration/` covering the resolve cascade, diagnostics, `unset` dialects, save, and the Microsoft.Extensions bridge.
 - **[Introduction](../../docs/text-configuration/index.md)** — namespaces, headline types, scenarios.
 - **[Core concepts](../../docs/text-configuration/concepts.md)** — full vocabulary.
 - **[Getting started](../../docs/text-configuration/getting-started.md)** — install + runnable minimal samples.

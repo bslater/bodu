@@ -46,6 +46,13 @@ byte[] back = node.ToUtf8Bytes();
 - Because the reader/writer/document types live in sub-namespaces, code that uses them alongside the serializer imports `using Bodu.Text.Toml.Reader;` / `.Writer;` / `.Document;` / `.Nodes;` as needed.
 - Failures surface through `TomlFormatException` (malformed input, with line/column/offset) and `TomlSerializationException` (binding failures).
 
+## Runnable samples
+
+The repository ships offline, `dotnet run`-able sample projects for this package — the
+`TomlSerializer` POCO surface (temporal kinds, naming policies and attributes, the wire
+knobs) and the layers beneath it (both DOMs, the token reader/writer, streaming reads) —
+under [`samples/Text.Toml/`](https://github.com/bslater/bodu/tree/master/samples/Text.Toml).
+
 ## Testing
 
 Tests live in `test/` as MSTest classes mirroring `src/`. Run tiers via the runsettings files at the solution root:

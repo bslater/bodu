@@ -70,6 +70,7 @@ applies unchanged to values consumed through `IConfiguration`.
 
 ## Where to go next
 
+- **[Runnable samples](../../samples/text-configuration.md)** — the offline BridgeHosting sample under `samples/Text.Configuration/`: `AddTextConfigurationFile` with `targetPath`, `AddTomlFile`, and `IOptions<T>` binding.
 - **[Introduction](../../docs/extensions-configuration-text/index.md)** — namespaces, headline types, scenarios.
 - **[Core concepts](../../docs/extensions-configuration-text/concepts.md)** — full vocabulary.
 - **[Getting started](../../docs/extensions-configuration-text/getting-started.md)** — install + runnable minimal samples.

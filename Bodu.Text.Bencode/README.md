@@ -57,6 +57,13 @@ TorrentInfo info = BencodeSerializer.Deserialize<TorrentInfo>(payload);
 
 **Property-name matching.** `BencodeSerializerOptions.PropertyNameCaseInsensitive` defaults to `true`, so reads bind wire keys to members leniently. Wire keys themselves are raw bytes and case-sensitive; output never changes case.
 
+## Runnable samples
+
+The repository ships an offline, `dotnet run`-able sample for this package — a real
+BitTorrent metainfo file read, verified, and re-authored end to end (DOM inspection,
+canonical byte-exact round trips, the raw-slice info-hash, typed POCO mapping) — under
+[`samples/Text.Bencode/`](https://github.com/bslater/bodu/tree/master/samples/Text.Bencode).
+
 ## Testing
 
 Tests live in `test/` as MSTest classes mirroring `src/`. Run tiers via the runsettings files at the solution root:

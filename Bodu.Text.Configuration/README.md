@@ -57,6 +57,13 @@ of throwing; `ConfigurationDocument.Save(document, path, writeOptions)` round-tr
 - [Getting started](../docs/docs/text-configuration/getting-started.md) — worked samples for parsing,
   resolving, typed value access, and round-tripping.
 
+## Runnable samples
+
+The repository ships offline, `dotnet run`-able sample projects for this package and its
+bridge — the resolve cascade, diagnostics, `unset` dialect handling, save round trips, and
+the `Microsoft.Extensions.Configuration` integration — under
+[`samples/Text.Configuration/`](https://github.com/bslater/bodu/tree/master/samples/Text.Configuration).
+
 ## When to reach for the bridge package
 
 If you want a `.boduconfig` file to flow into `Microsoft.Extensions.Configuration` (the standard

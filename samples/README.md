@@ -27,8 +27,9 @@ API drift breaks the build immediately.
 ## Layout
 
 Domain folders under `samples/` are named by namespace segment — `Financial/`,
-`Globalization.Calendar/` — mirroring how folders map to namespaces in the library source
-trees. The `samples/` root itself stays lowercase, like `src`/`test`/`bench`, because it is
+`Globalization.Calendar/`, `Text.Toml/`, `Text.Bencode/`, `Text.Formats/`,
+`Text.Configuration/`, `Text.Encoding/` — mirroring how folders map to namespaces in the
+library source trees. The `samples/` root itself stays lowercase, like `src`/`test`/`bench`, because it is
 not a namespace component. Each sample project is a flat folder named after the project.
 
 ## Conventions
@@ -70,3 +71,8 @@ change to the libraries alters it, the README review catches the drift alongside
 |---|---|
 | Financial | [`samples/Financial/`](Financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers, the live-provider exception |
 | Globalization.Calendar | [`samples/Globalization.Calendar/`](Globalization.Calendar/README.md) — holiday queries and subdivisions, working-day arithmetic, authored calendars, DI + reload, custom algorithms |
+| Text.Bencode | [`samples/Text.Bencode/`](Text.Bencode/README.md) — a real torrent file end to end: DOM inspection, canonical byte-exact round trips, the raw-slice info-hash, typed POCO mapping |
+| Text.Configuration | [`samples/Text.Configuration/`](Text.Configuration/README.md) — the parse/resolve/save cascade with diagnostics and `unset` dialects, plus the Microsoft.Extensions.Configuration bridge into `IOptions<T>` |
+| Text.Encoding | [`samples/Text.Encoding/`](Text.Encoding/README.md) — the base-encoding catalogue and variants, formatting/style knobs, checksummed schemes, the runtime registry, and a custom Base36 codec with contract tests |
+| Text.Formats | [`samples/Text.Formats/`](Text.Formats/README.md) — CSV/TSV with typed getters and dirty-input policies, streaming pipelines, comment-preserving INI edits, DotEnv's literal contract |
+| Text.Toml | [`samples/Text.Toml/`](Text.Toml/README.md) — the TomlSerializer POCO surface with native temporal kinds, plus both DOMs, the token layer, and resumable streaming reads |
