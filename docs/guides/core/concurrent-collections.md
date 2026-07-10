@@ -6,7 +6,7 @@ title: Concurrent collections
 
 `Bodu.Collections.Generic.Concurrent` ships two thread-safe collections that pair with their non-concurrent peers in `Bodu.Collections.Generic`: `ConcurrentCircularBuffer<T>` for fixed-capacity FIFO under multi-producer / multi-consumer load, and `ConcurrentHashSet<T>` for an unordered set of unique elements under concurrent add / remove / lookup. The namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`) — install with `dotnet add package Bodu.Collections.Concurrent`.
 
-Reach for them when the same collection is accessed by multiple producers and consumers — external locking around `CircularBuffer<T>` or `HashSet<T>` works, but it serialises every operation behind a single monitor. The concurrent variants split contention across slots (Vyukov MPMC for the buffer) or bucket regions (lock striping for the set), so disjoint operations proceed in parallel.
+Reach for them when the same collection is accessed by multiple producers and consumers — external locking around `CircularBuffer<T>` or `HashSet<T>` works, but it serialises every operation behind a single monitor. The concurrent variants coordinate through compare-and-swap operations instead — per-slot sequence numbers (Vyukov MPMC) for the buffer, a split-ordered list for the set — so operations proceed in parallel without any lock.
 
 ## `ConcurrentCircularBuffer<T>`
 
@@ -90,7 +90,7 @@ For lightweight throughput sampling, prefer `TryDequeue` / `TryPeek` over readin
 
 ## `ConcurrentHashSet<T>`
 
-A thread-safe unordered set of unique elements backed by **lock striping**. The internal bucket array is partitioned into regions, each guarded by its own monitor; disjoint writers proceed in parallel, and `Contains` is lock-free.
+A thread-safe unordered set of unique elements backed by a **lock-free split-ordered list** (Shalev & Shavit): all elements live in one Harris–Michael lock-free ordered linked list keyed by bit-reversed hash codes, and the bucket array holds lazily created shortcut pointers into it. Every operation — `Add`, `Remove`, `Contains`, `Count`, `Clear`, `ToArray` — is lock-free; growing the table copies shortcuts but never rehashes or moves a node.
 
 ### Construction
 
@@ -112,11 +112,11 @@ The constraint is `where T : notnull` — null elements are rejected, matching t
 ```csharp
 set.Add("alpha");        // True if added, false if already present
 set.Remove("alpha");     // True if removed, false if absent
-set.Contains("alpha");   // Lock-free — never blocks a writer
-set.Clear();             // Acquires all locks
+set.Contains("alpha");   // Pure lock-free read — never blocks a writer
+set.Clear();             // Atomic lock-free swap of the whole backing structure
 ```
 
-Single-element operations (`Add`, `Remove`, `Contains`) are atomic per element. `Contains` is *lock-free* — readers never block writers, which makes the set well suited to read-heavy workloads (membership tests on a working set, deduplication of a stream).
+Single-element operations (`Add`, `Remove`, `Contains`) are atomic per element and lock-free — a preempted thread can never stall the others, and readers never block writers, which makes the set well suited to read-heavy workloads (membership tests on a working set, deduplication of a stream).
 
 ### Snapshot enumeration
 
@@ -127,18 +127,18 @@ foreach (string item in set)
 string[] snap = set.ToArray();
 ```
 
-`ToArray` and the enumerator both acquire every region lock once to capture a snapshot, then release. Enumeration is safe under concurrent mutation but does not see writes that occur after the snapshot is taken.
+`ToArray` and the enumerator capture a **weakly consistent** snapshot via a lock-free traversal: every element present for the entire duration of the capture is included and no element appears twice, but concurrent additions and removals may or may not be observed. Enumeration is safe under concurrent mutation, never throws, and does not see writes that occur after the snapshot is taken.
 
-### Approximate vs. coherent counts
+### Counting
 
 ```csharp
-int hot   = set.ApproximateCount;     // Lock-free; may slightly under- or over-count under concurrent mutation
-int exact = set.Count;                 // Acquires all locks; coherent
-bool empty = set.IsEmptyApproximate;
-bool reallyEmpty = set.IsEmpty;
+int count = set.Count;                 // Lock-free interlocked counter read; exact at quiescence
+bool empty = set.IsEmpty;
+int alias = set.ApproximateCount;      // Alias of Count, retained for compatibility
+bool aliasEmpty = set.IsEmptyApproximate;
 ```
 
-Reach for the approximate properties when reading the count on a hot path; reach for the exact `Count` only when you genuinely need a coherent view (logging on shutdown, capacity-based throttling).
+`Count` is a single lock-free counter read — exact whenever no mutation is in flight, and never off by more than the operations currently executing. `ApproximateCount` and `IsEmptyApproximate` are retained as aliases from the earlier lock-striped design; prefer `Count` and `IsEmpty` in new code.
 
 ### Bulk set operations
 
@@ -146,10 +146,10 @@ Reach for the approximate properties when reading the count on a hot path; reach
 
 ## When *not* to use these collections
 
-- **Single-threaded scenarios.** The Vyukov coordination and lock-striping overhead is a tax that single-threaded code pays for nothing. Use the non-concurrent peers in [`Bodu.Collections.Generic`](xref:Bodu.Collections.Generic).
+- **Single-threaded scenarios.** The Vyukov and split-ordered CAS coordination is a tax that single-threaded code pays for nothing. Use the non-concurrent peers in [`Bodu.Collections.Generic`](xref:Bodu.Collections.Generic).
 - **Value types.** `ConcurrentCircularBuffer<T>` constrains `T : class?` because slot publication relies on `Volatile` reference reads. For a concurrent queue of value types, use the BCL `ConcurrentQueue<T>`.
 - **Bounded waiting.** Neither collection has a blocking dequeue / blocking add. Compose with `BlockingCollection<T>` if you need consumer threads to block until an item is available.
-- **Ordered set semantics.** `ConcurrentHashSet<T>` does not maintain insertion order. For ordered concurrent semantics, an external lock around `SortedSet<T>` is usually clearer than a custom striped implementation.
+- **Ordered set semantics.** `ConcurrentHashSet<T>` does not maintain insertion order. For ordered concurrent semantics, an external lock around `SortedSet<T>` is usually clearer than a custom concurrent implementation.
 
 ## See also
 
