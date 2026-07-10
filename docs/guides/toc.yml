@@ -261,6 +261,8 @@
           items:
             - name: Calendar data packs
               href: calendar/data-packs.md
+        - name: Runnable samples
+          href: calendar/samples.md
         - name: Bodu.Globalization.Calendar — Notable-date catalogue
           items:
             - name: Catalogue overview

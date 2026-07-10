@@ -68,6 +68,10 @@ dotnet test Bodu.Globalization.Calendar/test/Bodu.Globalization.Calendar.Test.cs
 
 The suite uses self-contained `*KnownAnswerTests` classes that pin Easter offsets, lunar/solar-term, and strategy-resolution results against published dates, with shared XML fixtures under `test/Globalization.Calendar/Fixtures/`.
 
+## Runnable samples
+
+The repository ships offline, `dotnet run`-able sample projects for the calendar packages — holiday queries with subdivision shadowing, working-day arithmetic, authored company calendars, DI with live data reload, and custom algorithms with contract tests — under [`samples/Globalization.Calendar/`](https://github.com/bslater/bodu/tree/master/samples/Globalization.Calendar).
+
 ## License
 
 MIT. © Bodu Pty. Ltd.
