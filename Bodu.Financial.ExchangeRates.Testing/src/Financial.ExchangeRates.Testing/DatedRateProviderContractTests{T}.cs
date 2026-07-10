@@ -29,6 +29,31 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// reports <see cref="RateOrigin.Cache" /> while a direct serve reports <see cref="RateOrigin.Live" />,
 /// which is the deliberate signal of where the rate came from.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial.Currencies;
+/// using Bodu.Financial.ExchangeRates;
+/// using Bodu.Financial.ExchangeRates.Testing;
+///
+/// // Validate a consumer-written provider by supplying the seeded provider and the
+/// // dates that characterise it; the base exercises the full lookup surface.
+/// [TestClass]
+/// public sealed class CsvFileRateProviderTests
+///     : DatedRateProviderContractTests<CsvFileRateProvider>
+/// {
+///     protected override CurrencyPair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
+///
+///     protected override DateOnly KnownDate => new(2024, 1, 15);
+///
+///     protected override DateOnly UnknownDate => new(2024, 6, 17);
+///
+///     protected override CsvFileRateProvider CreateProvider() =>
+///         new("Data/custom-feed.csv", "CustomFeed");
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public abstract class DatedRateProviderContractTests<TProvider>
     where TProvider : class, IDatedRateProvider

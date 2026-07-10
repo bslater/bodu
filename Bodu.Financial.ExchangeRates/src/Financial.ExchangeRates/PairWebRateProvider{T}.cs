@@ -32,6 +32,26 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <see cref="WebRateProvider.CreateRangeInvertedException" />, <see cref="WebRateProvider.FormatRateNotFound" />, and
 /// <see cref="FormatPairForLog" /> to present feed-specific exception types, messages, and log labels.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial.ExchangeRates;
+///
+/// // A concrete pair-based source: the fetch/parse lives in an IPairRateSource<TSeries>;
+/// // this type contributes only the feed identity. Coverage tracking, single-flight
+/// // coalescing, and the full lookup surface come from the base classes.
+/// public sealed class MyFeedRateProvider : PairWebRateProvider<MyFeedSeriesInfo>
+/// {
+///     public MyFeedRateProvider(MyFeedRateProviderOptions options, HttpClient httpClient)
+///         : base(new MyFeedSource(httpClient, options), options, logger: null, ownedHttpClient: null, timeProvider: null)
+///     {
+///     }
+///
+///     protected override string ProviderId => "MyFeed";
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public abstract class PairWebRateProvider<TSeries>
     : WebRateProvider

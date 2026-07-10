@@ -22,6 +22,35 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// <see cref="DatedRateProviderContractTests{TProvider}.CanonicalPair" />, so it applies to any pair-based
 /// source without imposing a dataset. The exact <see cref="ArgumentException" /> subtype a provider throws for an
 /// inverted range is source-specific and remains covered by each provider's local tests.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial.Currencies;
+/// using Bodu.Financial.ExchangeRates;
+/// using Bodu.Financial.ExchangeRates.Testing;
+///
+/// // A pair-based source proves the warm-up lifecycle on top of the dated contract.
+/// // Point the provider at a local stub (a canned HTTP handler or file-backed pair
+/// // source) so the contract runs hermetically.
+/// [TestClass]
+/// public sealed class MyFeedRateProviderContractTests
+///     : PairWebRateProviderContractTests<MyFeedRateProvider, MyFeedSeriesInfo>
+/// {
+///     protected override CurrencyPair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
+///
+///     protected override DateOnly KnownDate => new(2024, 1, 15);
+///
+///     protected override DateOnly UnknownDate => new(2024, 6, 17);
+///
+///     protected override RateHistoryAvailability ExpectedHistoryAvailability =>
+///         RateHistoryAvailability.RollingDays(180);
+///
+///     protected override MyFeedRateProvider CreateProvider() =>
+///         new(new MyFeedRateProviderOptions(), stubHttpClient);
+/// }
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public abstract class PairWebRateProviderContractTests<TProvider, TSeries>
     : DatedRateProviderContractTests<TProvider>

@@ -32,6 +32,25 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// other compliance use — should prefer a single source (for example through <see cref="PriorityFallbackStrategy" /> or
 /// per-pair routing) rather than this strategy.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// using Bodu.Financial.ExchangeRates;
+/// using Bodu.Financial.ExchangeRates.Caching;
+///
+/// var aggregate = new AggregatingRateProvider(
+///     new[]
+///     {
+///         new NamedDatedRateProvider("BankA", bankA),
+///         new NamedDatedRateProvider("BankB", bankB),
+///     },
+///     new RateAggregationOptions { DefaultStrategy = new AverageStrategy() });
+///
+/// // The mean of every contributor, under the synthetic "Average" provider label.
+/// RateLookupResult averaged = aggregate.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class AverageStrategy
     : IRateAggregationStrategy
