@@ -12,13 +12,14 @@ public sealed partial class ConcurrentHashSet<T> :
     IEnumerable<T>
 {
     /// <summary>
-    /// Returns an enumerator that iterates over a point-in-time snapshot of the set.
+    /// Returns an enumerator that iterates over a weakly consistent snapshot of the set.
     /// </summary>
     /// <returns>An <see cref="Enumerator" /> over the elements present when the enumerator was created.</returns>
     /// <remarks>
     /// <para>
-    /// Enumeration operates on a snapshot captured via <see cref="ToArray" /> at the moment this method is called.
-    /// Elements added or removed afterward are not reflected in the enumerated sequence.
+    /// Enumeration operates on a weakly consistent snapshot captured via <see cref="ToArray" /> at the moment this
+    /// method is called. Elements added or removed after the snapshot completes are not reflected in the enumerated
+    /// sequence; elements mutated while the snapshot is being captured may or may not appear.
     /// </para>
     /// <para>
     /// Because the enumerator operates on a snapshot, it never throws <see cref="System.InvalidOperationException" />

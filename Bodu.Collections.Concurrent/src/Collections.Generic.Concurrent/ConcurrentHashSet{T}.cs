@@ -1,10 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSet{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
@@ -14,33 +16,40 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// <typeparam name="T">The type of elements in the set (constraint: <c>where T : notnull</c>).</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="ConcurrentHashSet{T}" /> is backed by a hand-rolled hash table that uses lock striping: the bucket array
-/// is partitioned into a fixed number of regions, each guarded by its own monitor. Mutating a single element locks only
-/// the region that owns that element's bucket, so disjoint writers proceed in parallel. The bucket array grows
-/// automatically as elements are added; the lock array is allocated once at construction and never changes.
+/// <see cref="ConcurrentHashSet{T}" /> is a <b>lock-free</b> hash set built on a split-ordered list (Shalev &amp;
+/// Shavit): every element lives in a single Harris–Michael lock-free ordered linked list, sorted by the bit-reversed
+/// hash code of the element. The hash-table part is only an array of lazily initialized <i>shortcut</i> pointers into
+/// that list — one sentinel node per bucket. Doubling the table copies shortcut pointers but never rehashes or moves a
+/// node, so growth is itself lock-free and readers are never invalidated by a resize.
 /// </para>
 /// <para>
-/// The single-element operations <see cref="Add" />, <see cref="Remove" />, and <see cref="Contains" /> are each
-/// individually atomic and safe to call concurrently from any number of threads. <see cref="Contains" /> is lock-free —
-/// it never blocks a writer and never takes a lock.
+/// No operation on this type ever takes a lock or blocks another thread. <see cref="Add" />, <see cref="Remove" />,
+/// <see cref="Contains" />, <see cref="Clear" />, <see cref="Count" />, and <see cref="ToArray" /> are all lock-free: a
+/// suspended or preempted thread can never prevent other threads from completing their operations. Mutations are
+/// applied with single-reference compare-and-swap operations; deletion uses the standard two-phase Harris scheme
+/// (logical marking, then cooperative physical unlinking).
 /// </para>
 /// <para>
-/// <see cref="Count" />, <see cref="IsEmpty" />, <see cref="Clear" />, and <see cref="ToArray" /> acquire every
-/// internal lock for the duration of the call. They therefore observe (or install) a coherent point-in-time state, but
-/// are more expensive than the single-element operations and briefly block all writers.
+/// <see cref="Add" />, <see cref="Remove" />, and <see cref="Contains" /> are each individually atomic (linearizable)
+/// and safe to call concurrently from any number of threads. <see cref="Count" /> and <see cref="IsEmpty" /> read a
+/// counter maintained with interlocked operations — exact whenever no mutation is in flight, and never off by more than
+/// the operations currently executing. <see cref="Clear" /> atomically replaces the entire backing structure in one
+/// compare-and-swap; operations that began against the previous structure complete against it and are ordered before
+/// the clear.
 /// </para>
 /// <para>
-/// Enumeration iterates over a true snapshot captured when the enumerator is created (via <see cref="ToArray" />) and
-/// does not reflect subsequent changes. Unlike enumerators on non-concurrent collections, it never throws
-/// <see cref="InvalidOperationException" /> because of concurrent modification.
+/// <see cref="ToArray" /> and enumeration are <b>weakly consistent</b> rather than point-in-time snapshots: the
+/// traversal observes every element that is present for the entire duration of the call, never yields the same element
+/// twice, and never throws — but elements added or removed while the traversal is in progress may or may not be
+/// observed, and the result is not guaranteed to correspond to the set's state at any single instant.
 /// </para>
 /// <para>
 /// The set implements the full <see cref="ISet{T}" /> contract. The bulk set-algebra operations it adds (
 /// <see cref="UnionWith" />, <see cref="IntersectWith" />, <see cref="ExceptWith" />,
 /// <see cref="SymmetricExceptWith" /> and the subset/superset predicates) are <b>not</b> atomic: they are evaluated as
-/// a sequence of individual atomic operations over a point-in-time snapshot, so a concurrent mutation may interleave
-/// and the result can reflect a state the set never occupied at any single instant. See each member's remarks for
-/// details.
+/// a sequence of individual atomic operations over a weakly consistent snapshot, so a concurrent mutation may
+/// interleave and the result can reflect a state the set never occupied at any single instant. See each member's
+/// remarks for details.
 /// </para>
 /// <para>
 /// The element type is constrained to <c>notnull</c>: both reference types and value types are supported, and
@@ -69,30 +78,30 @@ namespace Bodu.Collections.Generic.Concurrent;
 public sealed partial class ConcurrentHashSet<T>
     where T : notnull
 {
-    /// <summary>The upper bound applied to <see cref="DefaultConcurrencyLevel" /> so that the lock array stays small on high-core machines where the typical set is also small. Explicit constructors can request a higher level via the internal initializer.</summary>
-    internal const int MaxDefaultConcurrencyLevel = 32;
+    /// <summary>The bucket-shortcut array length used when no capacity hint is supplied. Always a power of two.</summary>
+    private const int DefaultBucketCount = 32;
 
-    /// <summary>The default initial bucket count used when no capacity hint is supplied.</summary>
-    private const int DefaultCapacity = 31;
+    /// <summary>The smallest bucket-shortcut array length a constructor will allocate, so tiny capacity hints do not cause an immediate cascade of doublings.</summary>
+    private const int MinBucketCount = 8;
+
+    /// <summary>The largest bucket-shortcut array length — the greatest power of two representable in an <see cref="int" /> length. Once reached, the table stops doubling and equal-prefix runs simply lengthen.</summary>
+    private const int MaxBucketCount = 1 << 30;
+
+    /// <summary>The average number of elements per bucket tolerated before <see cref="Add" /> requests a doubling of the shortcut array.</summary>
+    private const int MaxLoadFactor = 2;
 
     /// <summary>The equality comparer used to hash and compare elements. Never <see langword="null" />.</summary>
     private readonly IEqualityComparer<T> _comparer;
 
-    /// <summary>The fixed array of monitor objects used for lock striping. Bucket <c>b</c> is guarded by <c>_locks[b % _locks.Length]</c>. Allocated once at construction and never replaced or resized.</summary>
-    private readonly object[] _locks;
-
-    /// <summary>The maximum number of elements a single lock region may own before <see cref="Add" /> requests a resize. Recomputed whenever the bucket table grows.</summary>
-    private int _budget;
-
-    /// <summary>The current bucket table. Replaced atomically by <see cref="GrowTable" /> and <see cref="Clear" /> while every lock is held; declared <see langword="volatile" /> so lock-free readers observe a fully published table.</summary>
-    private volatile Tables _tables;
+    /// <summary>The current generation: the split-ordered list, its bucket shortcuts, and its element counter. Read via <see cref="Volatile" /> and replaced only by the <see cref="Clear" /> compare-and-swap.</summary>
+    private Core _core;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class that is empty and uses the default
     /// equality comparer.
     /// </summary>
     public ConcurrentHashSet()
-        : this(DefaultConcurrencyLevel, DefaultCapacity, null)
+        : this(DefaultBucketCount, null)
     { }
 
     /// <summary>
@@ -103,7 +112,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// The comparer used to hash and compare elements, or <see langword="null" /> to use the default comparer.
     /// </param>
     public ConcurrentHashSet(IEqualityComparer<T>? comparer)
-        : this(DefaultConcurrencyLevel, DefaultCapacity, comparer)
+        : this(DefaultBucketCount, comparer)
     { }
 
     /// <summary>
@@ -113,11 +122,11 @@ public sealed partial class ConcurrentHashSet<T>
     /// <param name="capacity">The initial number of buckets the set can hold before its first resize.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     /// <remarks>
-    /// <paramref name="capacity" /> is a sizing hint only. The set grows automatically and is not bounded by this
-    /// value.
+    /// <paramref name="capacity" /> is a sizing hint only: it is rounded up to a power of two and the set grows
+    /// automatically, so it is not bounded by this value.
     /// </remarks>
     public ConcurrentHashSet(int capacity)
-        : this(DefaultConcurrencyLevel, capacity, null)
+        : this(capacity, null)
     { }
 
     /// <summary>
@@ -140,12 +149,16 @@ public sealed partial class ConcurrentHashSet<T>
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     /// <remarks>
-    /// <paramref name="capacity" /> is a sizing hint only. The set grows automatically and is not bounded by this
-    /// value.
+    /// <paramref name="capacity" /> is a sizing hint only: it is rounded up to a power of two and the set grows
+    /// automatically, so it is not bounded by this value.
     /// </remarks>
     public ConcurrentHashSet(int capacity, IEqualityComparer<T>? comparer)
-        : this(DefaultConcurrencyLevel, capacity, comparer)
-    { }
+    {
+        ThrowHelper.ThrowIfNegative(capacity);
+
+        _comparer = comparer ?? EqualityComparer<T>.Default;
+        _core = new Core(NormalizeBucketCount(capacity));
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class containing the distinct elements
@@ -160,7 +173,7 @@ public sealed partial class ConcurrentHashSet<T>
     /// Elements that compare equal under <paramref name="comparer" /> are collapsed to a single entry.
     /// </remarks>
     public ConcurrentHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer)
-        : this(DefaultConcurrencyLevel, GetCapacityHint(collection), comparer)
+        : this(GetCapacityHint(collection), comparer)
     {
         ThrowHelper.ThrowIfNull(collection);
 
@@ -169,76 +182,16 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class with the specified lock striping
-    /// level, initial bucket capacity, and equality comparer.
+    /// Gets the element count without any locking. Retained for source compatibility — on this lock-free implementation
+    /// it is identical to <see cref="Count" />.
     /// </summary>
-    /// <param name="concurrencyLevel">The number of lock stripes to allocate. Must be greater than zero.</param>
-    /// <param name="capacity">The initial number of buckets.</param>
-    /// <param name="comparer">The element comparer, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is negative, or <paramref name="concurrencyLevel" /> is less than or equal to zero.
-    /// </exception>
+    /// <value>The same value as <see cref="Count" />.</value>
     /// <remarks>
-    /// This is the single shared initializer that every public constructor delegates to. The capacity is raised to at
-    /// least <paramref name="concurrencyLevel" /> so that every lock guards at least one bucket. It is also visible to
-    /// the test assembly so that instances can be constructed with an explicit lock-striping level.
+    /// Earlier lock-striped versions of this type distinguished a cheap approximate count from an exact count that
+    /// blocked writers. Every read is now a single lock-free counter read, so the distinction is vacuous; prefer
+    /// <see cref="Count" /> in new code.
     /// </remarks>
-    internal ConcurrentHashSet(int concurrencyLevel, int capacity, IEqualityComparer<T>? comparer)
-    {
-        ThrowHelper.ThrowIfLessThanOrEqual(concurrencyLevel, 0);
-        ThrowHelper.ThrowIfNegative(capacity);
-
-        if (capacity < concurrencyLevel)
-            capacity = concurrencyLevel;
-
-        object[] locks = new object[concurrencyLevel];
-        for (int i = 0; i < locks.Length; i++)
-            locks[i] = new object();
-
-        _locks = locks;
-        _comparer = comparer ?? EqualityComparer<T>.Default;
-        _tables = new Tables(new Node?[capacity], new int[concurrencyLevel]);
-        _budget = Math.Max(1, capacity / concurrencyLevel);
-    }
-
-    /// <summary>
-    /// Gets an approximate element count without acquiring any stripe lock.
-    /// </summary>
-    /// <value>
-    /// The sum of the per-stripe element counters at the moment of the call. The result is correct when no other thread
-    /// is concurrently mutating the set; under concurrent <see cref="Add" />/<see cref="Remove" /> the returned value
-    /// may not reflect any single coherent point-in-time state.
-    /// </value>
-    /// <remarks>
-    /// <para>
-    /// Use this property when callers need a fast size estimate — for capacity hints, telemetry, or display — but can
-    /// tolerate values that lag or slightly under- or over-count active writers. Prefer <see cref="Count" /> when an
-    /// exact snapshot is required.
-    /// </para>
-    /// <para>
-    /// The read takes no locks, so it never blocks writers and never contends with them. The cost is bounded by the
-    /// number of lock stripes (the current default is at most <see cref="MaxDefaultConcurrencyLevel" />), not the
-    /// number of elements.
-    /// </para>
-    /// </remarks>
-    public int ApproximateCount
-    {
-        get
-        {
-            int[] countPerLock = _tables._countPerLock;
-            int count = 0;
-
-            for (int i = 0; i < countPerLock.Length; i++)
-            {
-                checked
-                {
-                    count += Volatile.Read(ref countPerLock[i]);
-                }
-            }
-
-            return count;
-        }
-    }
+    public int ApproximateCount => Count;
 
     /// <summary>
     /// Gets the equality comparer used to hash and compare elements.
@@ -251,122 +204,58 @@ public sealed partial class ConcurrentHashSet<T>
     /// </summary>
     /// <value>The element count observed at the moment of the call.</value>
     /// <remarks>
-    /// Reading this property acquires every internal lock, yielding an exact point-in-time count. Under concurrency the
-    /// returned value may already be stale by the time the caller inspects it.
+    /// Reading this property is lock-free — a single interlocked counter read that never blocks writers. The value is
+    /// exact whenever no mutation is concurrently in flight; while <see cref="Add" /> or <see cref="Remove" /> calls
+    /// are executing on other threads the value may transiently lag those operations, and it may already be stale by
+    /// the time the caller inspects it.
     /// </remarks>
     public int Count
     {
         get
         {
-            int locksAcquired = 0;
-            try
-            {
-                AcquireAllLocks(ref locksAcquired);
-                return GetCountNoLocks();
-            }
-            finally
-            {
-                ReleaseLocks(locksAcquired);
-            }
+            Core core = Volatile.Read(ref _core);
+
+            // A remover can decrement before a racing adder's increment lands, so the counter may transiently dip
+            // below zero; clamp rather than surface the intermediate state.
+            return Math.Max(0, Volatile.Read(ref core._count));
         }
     }
 
     /// <summary>
-    /// Gets a value indicating whether the set is empty, observed as an exact point-in-time snapshot.
+    /// Gets a value indicating whether the set is empty.
     /// </summary>
     /// <value><see langword="true" /> if the set contains no elements; otherwise, <see langword="false" />.</value>
     /// <remarks>
-    /// <para>
-    /// Reading this property acquires every internal lock, producing a coherent point-in-time view of the set's
-    /// emptiness. It is cheaper than comparing <see cref="Count" /> against zero because it stops at the first
-    /// non-empty lock region.
-    /// </para>
-    /// <para>
-    /// Use this property when the answer must reflect a true snapshot — for example, before tearing down the set or
-    /// before publishing a "set is drained" event. Prefer <see cref="IsEmptyApproximate" /> when callers need a fast,
-    /// lock-free probe and can tolerate a momentary disagreement with reality under concurrent mutation.
-    /// </para>
+    /// Reading this property is lock-free and equivalent to comparing <see cref="Count" /> against zero. Under
+    /// concurrent mutation the answer may be stale by the time the caller inspects it.
     /// </remarks>
-    public bool IsEmpty
-    {
-        get
-        {
-            int locksAcquired = 0;
-            try
-            {
-                AcquireAllLocks(ref locksAcquired);
-
-                int[] countPerLock = _tables._countPerLock;
-                for (int i = 0; i < countPerLock.Length; i++)
-                {
-                    if (countPerLock[i] != 0)
-                        return false;
-                }
-
-                return true;
-            }
-            finally
-            {
-                ReleaseLocks(locksAcquired);
-            }
-        }
-    }
+    public bool IsEmpty => Count == 0;
 
     /// <summary>
-    /// Gets a value indicating whether the set is empty. This is an <strong>approximate</strong> indication and is
-    /// computed without acquiring any stripe lock. The "Approximate" suffix matches <see cref="ApproximateCount" /> and
-    /// signals that the answer may briefly disagree with reality under concurrent mutation.
+    /// Gets a value indicating whether the set is empty, without any locking. Retained for source compatibility — on
+    /// this lock-free implementation it is identical to <see cref="IsEmpty" />.
     /// </summary>
-    /// <value>
-    /// <see langword="true" /> when every per-stripe counter reads as zero at the moment of inspection; otherwise
-    /// <see langword="false" />. As with <see cref="ApproximateCount" /> the answer is exact in the absence of
-    /// concurrent mutation but may briefly disagree with reality under active <see cref="Add" />/<see cref="Remove" />
-    /// traffic — for example, by returning <see langword="false" /> for a set that is empty by the time the caller
-    /// inspects the result, or vice versa.
-    /// </value>
+    /// <value>The same value as <see cref="IsEmpty" />.</value>
     /// <remarks>
-    /// Use this property as a fast emptiness probe in hot paths where occasional staleness is acceptable. Prefer
-    /// <see cref="IsEmpty" /> when the answer must reflect a true point-in-time snapshot — for example, before tearing
-    /// down the set.
+    /// Earlier lock-striped versions of this type distinguished a cheap approximate probe from an exact check that
+    /// blocked writers. Every read is now a single lock-free counter read, so the distinction is vacuous; prefer
+    /// <see cref="IsEmpty" /> in new code.
     /// </remarks>
-    public bool IsEmptyApproximate
+    public bool IsEmptyApproximate => IsEmpty;
+
+    /// <summary>
+    /// Gets the number of buckets in the current shortcut array. Exposed to the test assembly so that table-sizing
+    /// invariants can be asserted directly.
+    /// </summary>
+    /// <value>The length of the current bucket-shortcut array. Always a power of two.</value>
+    internal int BucketCount
     {
         get
         {
-            int[] countPerLock = _tables._countPerLock;
-
-            for (int i = 0; i < countPerLock.Length; i++)
-            {
-                if (Volatile.Read(ref countPerLock[i]) != 0)
-                    return false;
-            }
-
-            return true;
+            Core core = Volatile.Read(ref _core);
+            return Volatile.Read(ref core._buckets).Length;
         }
     }
-
-    /// <summary>
-    /// Gets the number of buckets in the current internal table. Exposed to the test assembly so that table-sizing
-    /// invariants can be asserted directly.
-    /// </summary>
-    /// <value>The length of the current bucket array.</value>
-    internal int BucketCount => _tables._buckets.Length;
-
-    /// <summary>
-    /// Gets the number of stripe locks that guard the table. Exposed to the test assembly so that table-sizing
-    /// invariants can be asserted directly.
-    /// </summary>
-    /// <value>The fixed number of stripe locks allocated at construction.</value>
-    internal int LockCount => _locks.Length;
-
-    /// <summary>
-    /// Gets the default number of lock stripes used by the public constructors. Reads
-    /// <see cref="Environment.ProcessorCount" /> and routes through <see cref="ClampDefaultConcurrencyLevel(int)" /> so
-    /// the clamp logic can be exercised in isolation.
-    /// </summary>
-    /// <value>The clamped default lock striping level for newly created instances.</value>
-    private static int DefaultConcurrencyLevel =>
-        ClampDefaultConcurrencyLevel(Environment.ProcessorCount);
 
     /// <summary>
     /// Adds the specified element to the set.
@@ -378,49 +267,40 @@ public sealed partial class ConcurrentHashSet<T>
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// This operation is atomic. It locks only the stripe that owns the element's bucket, so it does not block writers
-    /// targeting other stripes.
+    /// This operation is atomic and lock-free: the element is inserted into the split-ordered list with a single
+    /// compare-and-swap, so the call never blocks and never prevents other threads from making progress. A lost
+    /// compare-and-swap (a concurrent insert or delete at the same position) simply retries from a fresh traversal.
     /// </remarks>
     public bool Add(T item)
     {
         ThrowHelper.ThrowIfNull(item);
 
         int hashCode = _comparer.GetHashCode(item);
+        ulong key = MakeDataKey(hashCode);
+        SpinWait spinner = default;
 
         while (true)
         {
-            Tables tables = _tables;
-            GetBucketAndLockNo(hashCode, out int bucketNo, out int lockNo, tables._buckets.Length);
+            Core core = Volatile.Read(ref _core);
+            Node sentinel = GetBucketSentinel(core, hashCode);
 
-            bool resizeDesired = false;
-            lock (_locks[lockNo])
+            if (Find(sentinel, key, matchData: true, item, out Node pred, out Node? curr))
+                return false;
+
+            Node created = Node.CreateData(item, key, next: curr);
+            if (ReferenceEquals(Interlocked.CompareExchange(ref pred._next, created, curr), curr))
             {
-                // A concurrent resize may have published a new table while this thread waited for the lock.
-                if (tables != _tables)
-                    continue;
+                int newCount = Interlocked.Increment(ref core._count);
 
-                for (Node? node = tables._buckets[bucketNo]; node is not null; node = node._next)
-                {
-                    if (hashCode == node._hashCode && _comparer.Equals(node._item, item))
-                        return false;
-                }
+                Node?[] buckets = Volatile.Read(ref core._buckets);
+                if (newCount > (long)buckets.Length * MaxLoadFactor)
+                    TryGrow(core, buckets);
 
-                var created = new Node(item, hashCode, tables._buckets[bucketNo]);
-                Volatile.Write(ref tables._buckets[bucketNo], created);
-
-                checked
-                {
-                    tables._countPerLock[lockNo]++;
-                }
-
-                resizeDesired = tables._countPerLock[lockNo] > _budget;
+                return true;
             }
 
-            // Resize outside the stripe lock so GrowTable can acquire all locks in a consistent order.
-            if (resizeDesired)
-                GrowTable(tables);
-
-            return true;
+            // The insertion window changed under us (competing insert, delete, or mark at pred) — re-traverse.
+            spinner.SpinOnce();
         }
     }
 
@@ -428,26 +308,32 @@ public sealed partial class ConcurrentHashSet<T>
     /// Removes all elements from the set.
     /// </summary>
     /// <remarks>
-    /// This operation acquires every internal lock and installs a fresh, empty bucket table, so it is atomic with
-    /// respect to all other operations. The replacement table keeps at least as many buckets as there are lock stripes,
-    /// preserving the invariant that every stripe guards at least one bucket.
+    /// <para>
+    /// This operation is lock-free and linearizable: it atomically replaces the entire backing structure (list, bucket
+    /// shortcuts, and counter) with a fresh empty one in a single compare-and-swap, which is the operation's
+    /// linearization point. Operations that began against the previous structure complete against it and are ordered
+    /// before the clear — an <see cref="Add" /> that races the swap either lands in the new structure or is cleared
+    /// along with the old one, exactly as if it had completed an instant before the clear.
+    /// </para>
+    /// <para>
+    /// The replacement keeps the current bucket count, so a previously grown set is not forced to immediately regrow.
+    /// </para>
     /// </remarks>
     public void Clear()
     {
-        int locksAcquired = 0;
-        try
-        {
-            AcquireAllLocks(ref locksAcquired);
+        SpinWait spinner = default;
 
-            // Retain the current bucket count so a previously grown set is not forced to immediately regrow, and
-            // never drop below the lock count or a stripe would guard zero buckets.
-            int bucketCount = Math.Max(_tables._buckets.Length, _locks.Length);
-            _tables = new Tables(new Node?[bucketCount], new int[_locks.Length]);
-            _budget = Math.Max(1, bucketCount / _locks.Length);
-        }
-        finally
+        while (true)
         {
-            ReleaseLocks(locksAcquired);
+            Core core = Volatile.Read(ref _core);
+            var replacement = new Core(Volatile.Read(ref core._buckets).Length);
+
+            // CAS rather than a blind write so the replacement's bucket count is derived from the very generation
+            // being replaced — a racing grow can never be shrunk away by a stale observation.
+            if (ReferenceEquals(Interlocked.CompareExchange(ref _core, replacement, core), core))
+                return;
+
+            spinner.SpinOnce();
         }
     }
 
@@ -460,21 +346,38 @@ public sealed partial class ConcurrentHashSet<T>
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// This operation is lock-free: it walks the bucket chain through volatile reads and never blocks or is blocked by
-    /// a concurrent writer.
+    /// This operation is a pure lock-free read: it walks the split-ordered list through volatile reads, hopping over
+    /// logically deleted nodes without helping to unlink them, and never blocks or is blocked by a concurrent writer.
+    /// The first lookup that targets an untouched bucket may lazily publish that bucket's shortcut sentinel.
     /// </remarks>
     public bool Contains(T item)
     {
         ThrowHelper.ThrowIfNull(item);
 
         int hashCode = _comparer.GetHashCode(item);
-        Tables tables = _tables;
-        int bucketNo = GetBucket(hashCode, tables._buckets.Length);
+        ulong key = MakeDataKey(hashCode);
+        Core core = Volatile.Read(ref _core);
+        Node sentinel = GetBucketSentinel(core, hashCode);
 
-        for (Node? node = Volatile.Read(ref tables._buckets[bucketNo]); node is not null; node = node._next)
+        Node? curr = Volatile.Read(ref sentinel._next);
+        while (curr is not null)
         {
-            if (hashCode == node._hashCode && _comparer.Equals(node._item, item))
+            Node? succ = Volatile.Read(ref curr._next);
+
+            if (succ is { _isMarker: true })
+            {
+                // curr is logically deleted — skip it via the marker's frozen successor without helping to unlink.
+                curr = succ._next;
+                continue;
+            }
+
+            if (curr._key > key)
+                return false;
+
+            if (curr._key == key && _comparer.Equals(curr._item, item))
                 return true;
+
+            curr = succ;
         }
 
         return false;
@@ -489,45 +392,48 @@ public sealed partial class ConcurrentHashSet<T>
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="item" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// This operation is atomic. It locks only the stripe that owns the element's bucket.
+    /// This operation is atomic and lock-free. Removal is two-phase in the Harris style: the node is first logically
+    /// deleted by installing a marker into its successor link with a compare-and-swap (the linearization point), then
+    /// physically unlinked best-effort — any traversal that later encounters the marker completes the unlinking
+    /// cooperatively.
     /// </remarks>
     public bool Remove(T item)
     {
         ThrowHelper.ThrowIfNull(item);
 
         int hashCode = _comparer.GetHashCode(item);
+        ulong key = MakeDataKey(hashCode);
+        SpinWait spinner = default;
 
         while (true)
         {
-            Tables tables = _tables;
-            GetBucketAndLockNo(hashCode, out int bucketNo, out int lockNo, tables._buckets.Length);
+            Core core = Volatile.Read(ref _core);
+            Node sentinel = GetBucketSentinel(core, hashCode);
 
-            lock (_locks[lockNo])
-            {
-                if (tables != _tables)
-                    continue;
-
-                Node? previous = null;
-                for (Node? node = tables._buckets[bucketNo]; node is not null; node = node._next)
-                {
-                    if (hashCode == node._hashCode && _comparer.Equals(node._item, item))
-                    {
-                        // Unlink the node. The removed node's _next is left intact so a lock-free reader
-                        // currently positioned on it can still walk forward to the rest of the chain.
-                        if (previous is null)
-                            Volatile.Write(ref tables._buckets[bucketNo], node._next);
-                        else
-                            previous._next = node._next;
-
-                        tables._countPerLock[lockNo]--;
-                        return true;
-                    }
-
-                    previous = node;
-                }
-
+            if (!Find(sentinel, key, matchData: true, item, out Node pred, out Node? curr))
                 return false;
+
+            Node found = curr!;
+            Node? succ = Volatile.Read(ref found._next);
+
+            if (succ is { _isMarker: true })
+            {
+                // A competing deleter marked the node after Find passed it; retry so the traversal observes the removal.
+                spinner.SpinOnce();
+                continue;
             }
+
+            // Logical delete: fold the mark into _next so any competing insert-after or second delete fails its CAS.
+            if (ReferenceEquals(Interlocked.CompareExchange(ref found._next, Node.CreateMarker(succ), succ), succ))
+            {
+                Interlocked.Decrement(ref core._count);
+
+                // Best-effort physical unlink; on failure the next traversal through pred cleans up cooperatively.
+                Interlocked.CompareExchange(ref pred._next, succ, found);
+                return true;
+            }
+
+            spinner.SpinOnce();
         }
     }
 
@@ -535,234 +441,268 @@ public sealed partial class ConcurrentHashSet<T>
     /// Copies the elements of the set into a new array.
     /// </summary>
     /// <returns>
-    /// A new array containing a coherent point-in-time snapshot of the set's elements, or an empty array if the set is
-    /// empty. The order of elements is unspecified.
+    /// A new array containing a weakly consistent snapshot of the set's elements, or an empty array if no elements were
+    /// observed. The order of elements is unspecified.
     /// </returns>
     /// <remarks>
-    /// This method acquires every internal lock for the duration of the copy, so the returned array reflects the set's
-    /// contents at a single instant and is unaffected by concurrent modifications made afterward.
+    /// This method is a pure lock-free traversal of the split-ordered list: it never blocks writers. The result is <b>weakly
+    /// consistent</b> — it contains every element that was present for the entire duration of the call and never
+    /// contains the same element twice (the traversal is monotonic in split-order, so a concurrently re-added element
+    /// cannot be revisited), but elements added or removed while the copy is in progress may or may not appear, and the
+    /// array is not guaranteed to reflect the set's state at any single instant.
     /// </remarks>
     public T[] ToArray()
     {
-        int locksAcquired = 0;
-        try
+        Core core = Volatile.Read(ref _core);
+        var items = new List<T>(Math.Max(0, Volatile.Read(ref core._count)));
+
+        Node? curr = Volatile.Read(ref core._head._next);
+        while (curr is not null)
         {
-            AcquireAllLocks(ref locksAcquired);
+            Node? succ = Volatile.Read(ref curr._next);
 
-            int count = GetCountNoLocks();
-            if (count == 0)
-                return [];
-
-            var array = new T[count];
-            int index = 0;
-            Node?[] buckets = _tables._buckets;
-            for (int i = 0; i < buckets.Length; i++)
+            if (succ is { _isMarker: true })
             {
-                for (Node? node = buckets[i]; node is not null; node = node._next)
-                    array[index++] = node._item;
+                // curr is logically deleted — skip it via the marker's frozen successor without helping to unlink.
+                curr = succ._next;
+                continue;
             }
 
-            return array;
+            // Data nodes carry an odd split-order key; bucket sentinels (even keys) are structural and skipped.
+            if ((curr._key & 1UL) == 1UL)
+                items.Add(curr._item);
+
+            curr = succ;
         }
-        finally
-        {
-            ReleaseLocks(locksAcquired);
-        }
+
+        return items.Count == 0 ? [] : items.ToArray();
     }
 
     /// <summary>
-    /// Clamps a raw processor count to the range used by <see cref="DefaultConcurrencyLevel" />, guaranteeing at least
-    /// one lock and at most <see cref="MaxDefaultConcurrencyLevel" /> locks regardless of the host machine.
+    /// Reverses the bit order of a 32-bit value using the classic five-step mask-and-shift network.
     /// </summary>
-    /// <param name="processorCount">The raw processor count to clamp.</param>
-    /// <returns>A value in the range <c>[1, MaxDefaultConcurrencyLevel]</c>.</returns>
+    /// <param name="value">The value whose bits to reverse.</param>
+    /// <returns><paramref name="value" /> with bit 0 exchanged with bit 31, bit 1 with bit 30, and so on.</returns>
     /// <remarks>
-    /// Extracted as a static helper so unit tests can exercise the clamp envelope with synthetic processor counts
-    /// rather than relying on the machine's actual <see cref="Environment.ProcessorCount" />.
+    /// Bit reversal is the heart of split-ordering: sorting elements by reversed hash makes each bucket's elements a
+    /// contiguous run of the list, and doubling the table splits every run in two without moving a single node.
     /// </remarks>
-    internal static int ClampDefaultConcurrencyLevel(int processorCount) =>
-        Math.Clamp(processorCount, 1, MaxDefaultConcurrencyLevel);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static uint ReverseBits(uint value)
+    {
+        value = ((value >> 1) & 0x55555555u) | ((value & 0x55555555u) << 1);
+        value = ((value >> 2) & 0x33333333u) | ((value & 0x33333333u) << 2);
+        value = ((value >> 4) & 0x0F0F0F0Fu) | ((value & 0x0F0F0F0Fu) << 4);
+        value = ((value >> 8) & 0x00FF00FFu) | ((value & 0x00FF00FFu) << 8);
+
+        return (value >> 16) | (value << 16);
+    }
 
     /// <summary>
-    /// Maps a hash code to a bucket index.
+    /// Computes the split-order key of a data node for the specified hash code.
     /// </summary>
-    /// <param name="hashCode">The element hash code.</param>
-    /// <param name="bucketCount">The number of buckets in the table.</param>
-    /// <returns>The zero-based bucket index for <paramref name="hashCode" />.</returns>
-    private static int GetBucket(int hashCode, int bucketCount) =>
-        (int)((uint)hashCode % (uint)bucketCount);
+    /// <param name="hashCode">The element's hash code.</param>
+    /// <returns>The bit-reversed hash shifted left one position with the low bit set — always odd.</returns>
+    /// <remarks>
+    /// Widening to 64 bits before setting the low discriminator bit preserves all 32 hash bits (the original 32-bit
+    /// formulation of split-ordering sacrifices the top hash bit). Because bit reversal is a bijection, two data keys
+    /// are equal exactly when the underlying hash codes are equal.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static ulong MakeDataKey(int hashCode) =>
+        ((ulong)ReverseBits((uint)hashCode) << 1) | 1UL;
+
+    /// <summary>
+    /// Computes the split-order key of the sentinel node for the specified bucket index.
+    /// </summary>
+    /// <param name="bucketNo">The bucket index.</param>
+    /// <returns>The bit-reversed bucket index shifted left one position — always even.</returns>
+    /// <remarks>
+    /// A sentinel key is a strict lower bound of every data key that hashes into its bucket: the two share the same
+    /// reversed prefix, and the sentinel has zeros below it plus a zero discriminator bit.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static ulong MakeSentinelKey(int bucketNo) =>
+        (ulong)ReverseBits((uint)bucketNo) << 1;
+
+    /// <summary>
+    /// Rounds a constructor capacity hint to the bucket-count envelope: a power of two between
+    /// <see cref="MinBucketCount" /> and <see cref="MaxBucketCount" />.
+    /// </summary>
+    /// <param name="capacity">The non-negative capacity hint.</param>
+    /// <returns>The normalized bucket-shortcut array length.</returns>
+    private static int NormalizeBucketCount(int capacity) =>
+        (int)BitOperations.RoundUpToPowerOf2((uint)Math.Clamp(capacity, MinBucketCount, MaxBucketCount));
 
     /// <summary>
     /// Returns a bucket-count hint for sizing the initial table from a source collection.
     /// </summary>
     /// <param name="collection">The source collection, which may be <see langword="null" />.</param>
     /// <returns>
-    /// The element count when it can be determined cheaply; otherwise <see cref="DefaultCapacity" />.
+    /// The element count when it can be determined cheaply; otherwise <see cref="DefaultBucketCount" />.
     /// </returns>
     private static int GetCapacityHint(IEnumerable<T>? collection) =>
         collection switch
         {
             ICollection<T> generic => generic.Count,
             IReadOnlyCollection<T> readOnly => readOnly.Count,
-            _ => DefaultCapacity,
+            _ => DefaultBucketCount,
         };
 
     /// <summary>
-    /// Acquires every stripe lock in ascending index order.
+    /// Doubles the bucket-shortcut array of the specified generation, if no other thread has done so first.
     /// </summary>
-    /// <param name="locksAcquired">
-    /// A running count of locks successfully entered, incremented as each lock is taken so the caller's
-    /// <see langword="finally" /> block can release exactly the locks that were acquired.
-    /// </param>
-    private void AcquireAllLocks(ref int locksAcquired)
-    {
-        for (int i = 0; i < _locks.Length; i++)
-        {
-            bool lockTaken = false;
-            try
-            {
-                Monitor.Enter(_locks[i], ref lockTaken);
-            }
-            finally
-            {
-                if (lockTaken)
-                    locksAcquired++;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Maps a hash code to its bucket index and the index of the stripe lock that guards that bucket.
-    /// </summary>
-    /// <param name="hashCode">The element hash code.</param>
-    /// <param name="bucketNo">When this method returns, contains the bucket index.</param>
-    /// <param name="lockNo">When this method returns, contains the stripe lock index.</param>
-    /// <param name="bucketCount">The number of buckets in the table.</param>
-    private void GetBucketAndLockNo(int hashCode, out int bucketNo, out int lockNo, int bucketCount)
-    {
-        bucketNo = (int)((uint)hashCode % (uint)bucketCount);
-        lockNo = bucketNo % _locks.Length;
-    }
-
-    /// <summary>
-    /// Returns the total element count by summing the per-lock counters. The caller must already hold every lock.
-    /// </summary>
-    /// <returns>The number of elements currently stored across all buckets.</returns>
-    private int GetCountNoLocks()
-    {
-        int count = 0;
-        int[] countPerLock = _tables._countPerLock;
-        for (int i = 0; i < countPerLock.Length; i++)
-        {
-            checked
-            {
-                count += countPerLock[i];
-            }
-        }
-
-        return count;
-    }
-
-    /// <summary>
-    /// Doubles the size of the bucket table and rehashes every element into it.
-    /// </summary>
-    /// <param name="tables">The table generation observed by the caller that requested the resize.</param>
+    /// <param name="core">The generation whose table to grow.</param>
+    /// <param name="observed">The bucket array the caller observed when it decided to grow.</param>
     /// <remarks>
     /// <para>
-    /// The method acquires every internal lock, then verifies that <paramref name="tables" /> is still current — if
-    /// another thread has already resized, it returns without doing further work.
+    /// Growth copies the shortcut pointers into an array of twice the length and publishes it with a single
+    /// compare-and-swap against <paramref name="observed" /> — nodes are never rehashed or moved, so concurrent readers
+    /// and writers are completely unaffected. Losing the compare-and-swap means another thread already grew the table;
+    /// the freshly allocated array is simply discarded.
     /// </para>
     /// <para>
-    /// A new bucket array is allocated and every element is copied into a freshly created <see cref="Node" />. The old
-    /// nodes are left untouched so that lock-free readers still walking the previous table observe a consistent chain.
+    /// One benign race is accepted by design: a sentinel published into a slot of the old array after that slot has
+    /// been copied is absent from the new array. Nothing is lost — the sentinel node itself is already linked into the
+    /// list, and the next lookup that targets the bucket re-runs <see cref="InitializeBucket" />, whose traversal finds
+    /// the existing sentinel by key and re-publishes the shortcut.
     /// </para>
     /// </remarks>
-    private void GrowTable(Tables tables)
+    private static void TryGrow(Core core, Node?[] observed)
     {
-        int locksAcquired = 0;
-        try
-        {
-            AcquireAllLocks(ref locksAcquired);
+        if (observed.Length >= MaxBucketCount)
+            return;
 
-            // Another thread may already have grown the table while this thread waited for the locks.
-            if (tables != _tables)
-                return;
+        var grown = new Node?[observed.Length * 2];
+        Array.Copy(observed, grown, observed.Length);
 
-            int approxCount = 0;
-            for (int i = 0; i < tables._countPerLock.Length; i++)
-                approxCount += tables._countPerLock[i];
-
-            // A sparsely populated table that still tripped the budget indicates a poor hash distribution rather
-            // than genuine growth. Doubling the budget avoids a resize that would not relieve the clustering, while
-            // the clamp keeps the doubling from overflowing once the budget approaches its maximum.
-            if (approxCount < tables._buckets.Length / 4)
-            {
-                _budget = _budget > int.MaxValue / 2 ? int.MaxValue : _budget * 2;
-                return;
-            }
-
-            // Grow to roughly double, kept odd and not a multiple of three for a better modulo distribution.
-            int newBucketCount;
-            try
-            {
-                checked
-                {
-                    newBucketCount = (tables._buckets.Length * 2) + 1;
-                    while (newBucketCount % 3 == 0)
-                        newBucketCount += 2;
-                }
-            }
-            catch (OverflowException)
-            {
-                _budget = int.MaxValue;
-                return;
-            }
-
-            if ((uint)newBucketCount > Array.MaxLength)
-            {
-                newBucketCount = Array.MaxLength;
-                _budget = int.MaxValue;
-            }
-
-            var newBuckets = new Node?[newBucketCount];
-            int[] newCountPerLock = new int[_locks.Length];
-
-            for (int i = 0; i < tables._buckets.Length; i++)
-            {
-                Node? current = tables._buckets[i];
-                while (current is not null)
-                {
-                    Node? next = current._next;
-                    int newBucketNo = GetBucket(current._hashCode, newBucketCount);
-                    newBuckets[newBucketNo] = new Node(current._item, current._hashCode, newBuckets[newBucketNo]);
-
-                    checked
-                    {
-                        newCountPerLock[newBucketNo % _locks.Length]++;
-                    }
-
-                    current = next;
-                }
-            }
-
-            if (_budget != int.MaxValue)
-                _budget = Math.Max(1, newBucketCount / _locks.Length);
-
-            _tables = new Tables(newBuckets, newCountPerLock);
-        }
-        finally
-        {
-            ReleaseLocks(locksAcquired);
-        }
+        Interlocked.CompareExchange(ref core._buckets, grown, observed);
     }
 
     /// <summary>
-    /// Releases the first <paramref name="locksAcquired" /> stripe locks.
+    /// Returns the sentinel node for the bucket that owns the specified hash code, lazily initializing it on first use.
     /// </summary>
-    /// <param name="locksAcquired">The number of stripe locks, starting at index zero, to release.</param>
-    private void ReleaseLocks(int locksAcquired)
+    /// <param name="core">The generation to look in.</param>
+    /// <param name="hashCode">The element hash code.</param>
+    /// <returns>The bucket's sentinel node.</returns>
+    /// <remarks>
+    /// Bucket 0 is populated with the list head at construction and survives every growth copy, so the recursive
+    /// initialization performed for other buckets always bottoms out.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private Node GetBucketSentinel(Core core, int hashCode)
     {
-        for (int i = 0; i < locksAcquired; i++)
-            Monitor.Exit(_locks[i]);
+        Node?[] buckets = Volatile.Read(ref core._buckets);
+        int bucketNo = hashCode & (buckets.Length - 1);
+
+        return Volatile.Read(ref buckets[bucketNo]) ?? InitializeBucket(core, buckets, bucketNo);
+    }
+
+    /// <summary>
+    /// Creates (or adopts) the sentinel node for the specified bucket and publishes it into the shortcut array.
+    /// </summary>
+    /// <param name="core">The generation that owns <paramref name="buckets" />.</param>
+    /// <param name="buckets">The bucket array observed by the caller.</param>
+    /// <param name="bucketNo">The bucket index to initialize. Never zero.</param>
+    /// <returns>The bucket's sentinel node.</returns>
+    /// <remarks>
+    /// The parent bucket (the index with its most significant set bit cleared) is initialized first — recursively —
+    /// because the parent's sentinel is the nearest guaranteed entry point that precedes this bucket's position in
+    /// split-order. Insertion is idempotent under races: the loser of the list compare-and-swap re-traverses, finds the
+    /// winner's sentinel by its unique even key, and adopts it, so exactly one sentinel node ever represents a bucket
+    /// within a generation.
+    /// </remarks>
+    private Node InitializeBucket(Core core, Node?[] buckets, int bucketNo)
+    {
+        int parentNo = bucketNo & ((1 << BitOperations.Log2((uint)bucketNo)) - 1);
+        Node parent = Volatile.Read(ref buckets[parentNo]) ?? InitializeBucket(core, buckets, parentNo);
+
+        ulong key = MakeSentinelKey(bucketNo);
+        SpinWait spinner = default;
+        Node sentinel;
+
+        while (true)
+        {
+            if (Find(parent, key, matchData: false, default!, out Node pred, out Node? curr))
+            {
+                // A racing initializer already inserted this bucket's sentinel — adopt it.
+                sentinel = curr!;
+                break;
+            }
+
+            Node created = Node.CreateSentinel(key, next: curr);
+            if (ReferenceEquals(Interlocked.CompareExchange(ref pred._next, created, curr), curr))
+            {
+                sentinel = created;
+                break;
+            }
+
+            spinner.SpinOnce();
+        }
+
+        Interlocked.CompareExchange(ref buckets[bucketNo], sentinel, null);
+
+        Node? published = Volatile.Read(ref buckets[bucketNo]);
+        return published!;
+    }
+
+    /// <summary>
+    /// Traverses the list from <paramref name="start" /> looking for the specified split-order key, unlinking logically
+    /// deleted nodes encountered along the way.
+    /// </summary>
+    /// <param name="start">The node to begin the traversal from — a bucket sentinel or the list head.</param>
+    /// <param name="key">The split-order key to locate.</param>
+    /// <param name="matchData">
+    /// <see langword="true" /> to match a data node for <paramref name="item" /> within the equal-key run;
+    /// <see langword="false" /> to match a sentinel by exact key.
+    /// </param>
+    /// <param name="item">The element to match when <paramref name="matchData" /> is <see langword="true" />.</param>
+    /// <param name="pred">When this method returns, the node immediately preceding <paramref name="curr" />.</param>
+    /// <param name="curr">
+    /// When this method returns <see langword="true" />, the matched node; when it returns <see langword="false" />,
+    /// the first node whose key is greater than <paramref name="key" /> (or <see langword="null" /> at the list end) —
+    /// together with <paramref name="pred" /> this brackets the insertion window at the end of the equal-key run.
+    /// </param>
+    /// <returns><see langword="true" /> if a matching node was found; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// This is the Michael-list <c>Find</c>: on encountering a node whose successor link holds a marker, the traversal
+    /// helps by swinging the predecessor past the deleted node; if that compare-and-swap fails the predecessor itself
+    /// changed, and the traversal restarts from <paramref name="start" />. Restarting from the bucket sentinel rather
+    /// than the list head keeps the retry cost proportional to the bucket's run length.
+    /// </remarks>
+    private bool Find(Node start, ulong key, bool matchData, T item, out Node pred, out Node? curr)
+    {
+    retry:
+        pred = start;
+        curr = Volatile.Read(ref pred._next);
+
+        while (true)
+        {
+            if (curr is null)
+                return false;
+
+            Node? succ = Volatile.Read(ref curr._next);
+
+            if (succ is { _isMarker: true })
+            {
+                // curr is logically deleted — help unlink it, or restart when pred itself has changed.
+                if (!ReferenceEquals(Interlocked.CompareExchange(ref pred._next, succ._next, curr), curr))
+                    goto retry;
+
+                curr = succ._next;
+                continue;
+            }
+
+            if (curr._key > key)
+                return false;
+
+            // Data keys are odd and sentinel keys even, so an exact key match already implies the right node kind;
+            // within an equal-key run (hash collision) the comparer disambiguates the element.
+            if (curr._key == key && (!matchData || _comparer.Equals(curr._item, item)))
+                return true;
+
+            pred = curr;
+            curr = succ;
+        }
     }
 }

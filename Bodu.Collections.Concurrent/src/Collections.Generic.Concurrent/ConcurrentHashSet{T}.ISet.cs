@@ -39,8 +39,9 @@ public sealed partial class ConcurrentHashSet<T> :
     /// <paramref name="arrayIndex" /> onward.
     /// </exception>
     /// <remarks>
-    /// This method takes an atomic snapshot of the set before copying, so the destination reflects the set's contents
-    /// at a single instant and is unaffected by concurrent modifications made afterward.
+    /// This method takes a weakly consistent snapshot of the set (see <see cref="ToArray" />) before copying. The
+    /// destination is a fixed copy that is unaffected by concurrent modifications made after the snapshot completes,
+    /// but it is not guaranteed to reflect the set's contents at any single instant.
     /// </remarks>
     public void CopyTo(T[] array, int arrayIndex)
     {
@@ -81,7 +82,7 @@ public sealed partial class ConcurrentHashSet<T> :
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     /// <remarks>
     /// This operation is <b>not</b> atomic. It materializes <paramref name="other" />, then removes the non-matching
-    /// elements of a point-in-time snapshot through individual atomic <see cref="Remove" /> calls. A concurrent
+    /// elements of a weakly consistent snapshot through individual atomic <see cref="Remove" /> calls. A concurrent
     /// mutation may interleave, so the resulting set may not equal the intersection of any single observed state.
     /// </remarks>
     public void IntersectWith(IEnumerable<T> other)
@@ -161,7 +162,7 @@ public sealed partial class ConcurrentHashSet<T> :
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// This operation is <b>not</b> atomic. It compares a point-in-time snapshot of the set against
+    /// This operation is <b>not</b> atomic. It compares a weakly consistent snapshot of the set against
     /// <paramref name="other" />; a concurrent mutation may interleave, so the result describes a relationship that may
     /// no longer hold when the call returns.
     /// </remarks>
@@ -220,7 +221,7 @@ public sealed partial class ConcurrentHashSet<T> :
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// This operation is <b>not</b> atomic. It compares a point-in-time snapshot of the set against
+    /// This operation is <b>not</b> atomic. It compares a weakly consistent snapshot of the set against
     /// <paramref name="other" />; a concurrent mutation may interleave, so the result describes a relationship that may
     /// no longer hold when the call returns.
     /// </remarks>
@@ -253,7 +254,7 @@ public sealed partial class ConcurrentHashSet<T> :
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// This operation is <b>not</b> atomic. It compares a point-in-time snapshot of the set against
+    /// This operation is <b>not</b> atomic. It compares a weakly consistent snapshot of the set against
     /// <paramref name="other" />; a concurrent mutation may interleave, so the result describes a relationship that may
     /// no longer hold when the call returns.
     /// </remarks>
@@ -313,7 +314,7 @@ public sealed partial class ConcurrentHashSet<T> :
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// This operation is <b>not</b> atomic. It compares a point-in-time snapshot of the set against
+    /// This operation is <b>not</b> atomic. It compares a weakly consistent snapshot of the set against
     /// <paramref name="other" />; a concurrent mutation may interleave, so the result describes a relationship that may
     /// no longer hold when the call returns.
     /// </remarks>

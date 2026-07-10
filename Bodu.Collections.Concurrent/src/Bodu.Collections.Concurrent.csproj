@@ -6,14 +6,14 @@
     <RootNamespace>Bodu</RootNamespace>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Title>Bodu — Concurrent Collections</Title>
-    <Description>Thread-safe collection variants for .NET 8: a lock-free Vyukov MPMC ConcurrentCircularBuffer&lt;T&gt; and a lock-striped ConcurrentHashSet&lt;T&gt;. Split out of Bodu.Collections with namespaces unchanged; references Bodu.Collections.</Description>
+    <Description>Thread-safe collection variants for .NET 8: a lock-free Vyukov MPMC ConcurrentCircularBuffer&lt;T&gt; and a lock-free split-ordered ConcurrentHashSet&lt;T&gt;. Split out of Bodu.Collections with namespaces unchanged; references Bodu.Collections.</Description>
     <PackageTags>$(PackageTags);concurrent-collections;lock-free;circular-buffer;hash-set;thread-safe</PackageTags>
   </PropertyGroup>
 
   <!--
     InternalsVisibleTo grants:
-      - Bodu.Collections.Concurrent.Test : test project (ConcurrentHashSet internal ctor /
-                                           ClampDefaultConcurrencyLevel, slot-layout coverage, etc.).
+      - Bodu.Collections.Concurrent.Test : test project (ConcurrentHashSet split-order key helpers /
+                                           BucketCount, slot-layout coverage, etc.).
     Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
   -->
   <ItemGroup>
