@@ -116,6 +116,7 @@ Only `Crc` currently implements `IResumableHashAlgorithm` — see the [CRC guide
 
 ## Where to go next
 
+- [Runnable samples](../../samples/io-hashing.md) — offline sample projects under `samples/IO.Hashing/`: the CRC catalogue, checksum families, streaming/resumable digests, check digits, and a custom scheme with contract tests.
 - [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — namespaces, headline types, scenarios.
 - [Bodu.IO.Hashing getting started](../../docs/io-hashing/getting-started.md) — install and minimal samples.
 - [Bodu.Security.Cryptography hashing guide](../cryptography/hashing.md) — keyed and cryptographic hashes.

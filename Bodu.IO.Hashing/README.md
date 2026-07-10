@@ -72,6 +72,13 @@ Decimal algorithms derive from `CheckDigitAlgorithm`; alphanumeric and multi-cha
 
 The extension surface on `NonCryptographicHashAlgorithm` adds `AppendData(Stream)`, one-shot `ComputeHash(...)` / `ComputeHashAsync(Stream)`, and constant-time `VerifyHash` / `TryVerifyHash` (sync and async) over the standard incremental `Append` / `GetCurrentHash` / `Reset` methods.
 
+## Runnable samples
+
+The repository ships offline, `dotnet run`-able sample projects for this package — the CRC
+catalogue and checksum families, streaming and resumable digests, identifier check digits
+across domains, and a custom check-digit scheme proven by the shared contract-test base —
+under [`samples/IO.Hashing/`](https://github.com/bslater/bodu/tree/master/samples/IO.Hashing).
+
 ## Testing
 
 Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:

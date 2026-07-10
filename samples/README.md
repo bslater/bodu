@@ -27,9 +27,9 @@ API drift breaks the build immediately.
 ## Layout
 
 Domain folders under `samples/` are named by namespace segment — `Financial/`,
-`Globalization.Calendar/`, `Text.Toml/`, `Text.Bencode/`, `Text.Formats/`,
-`Text.Configuration/`, `Text.Encoding/` — mirroring how folders map to namespaces in the
-library source trees. The `samples/` root itself stays lowercase, like `src`/`test`/`bench`, because it is
+`Formats.Excel/`, `Globalization.Calendar/`, `IO.Compound/`, `IO.Hashing/`, `Text.Toml/`,
+`Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/` — mirroring how
+folders map to namespaces in the library source trees. The `samples/` root itself stays lowercase, like `src`/`test`/`bench`, because it is
 not a namespace component. Each sample project is a flat folder named after the project.
 
 ## Conventions
@@ -70,7 +70,10 @@ change to the libraries alters it, the README review catches the drift alongside
 | Domain | Samples |
 |---|---|
 | Financial | [`samples/Financial/`](Financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers, the live-provider exception |
+| Formats.Excel | [`samples/Formats.Excel/`](Formats.Excel/README.md) — the read-only BIFF8 `.xls` reader: sheet directory, forward-only streaming, materialized worksheets, serial-date decoding |
 | Globalization.Calendar | [`samples/Globalization.Calendar/`](Globalization.Calendar/README.md) — holiday queries and subdivisions, working-day arithmetic, authored calendars, DI + reload, custom algorithms |
+| IO.Compound | [`samples/IO.Compound/`](IO.Compound/README.md) — OLE2 structured storage: builder authoring + read-back, OLE property sets, detection and the v3/v4 knob, a real `.doc`'s tree |
+| IO.Hashing | [`samples/IO.Hashing/`](IO.Hashing/README.md) — the CRC catalogue, checksum families, streaming/resumable digests, identifier check digits, and a custom scheme with contract tests |
 | Text.Bencode | [`samples/Text.Bencode/`](Text.Bencode/README.md) — a real torrent file end to end: DOM inspection, canonical byte-exact round trips, the raw-slice info-hash, typed POCO mapping |
 | Text.Configuration | [`samples/Text.Configuration/`](Text.Configuration/README.md) — the parse/resolve/save cascade with diagnostics and `unset` dialects, plus the Microsoft.Extensions.Configuration bridge into `IOptions<T>` |
 | Text.Encoding | [`samples/Text.Encoding/`](Text.Encoding/README.md) — the base-encoding catalogue and variants, formatting/style knobs, checksummed schemes, the runtime registry, and a custom Base36 codec with contract tests |

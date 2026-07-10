@@ -64,6 +64,14 @@ offset, sheet type, and hidden state), `SST` (+ `CONTINUE` for split strings), `
 `DIMENSIONS`. `BLANK` / `MULBLANK` and unrecognized records are skipped. Malformed records
 fail with `ExcelBinaryFormatException`.
 
+## Runnable samples
+
+The repository ships an offline, `dotnet run`-able sample for this package — the workbook
+session and sheet directory, forward-only streaming over ~18,000 cells, the materialized
+worksheet surface, and format-classified serial-date decoding against a real committed
+fixture — under
+[`samples/Formats.Excel/`](https://github.com/bslater/bodu/tree/master/samples/Formats.Excel).
+
 ## Out of scope
 
 Formulas, styles, charts, pivot tables, macros, named ranges, and writing `.xls` files.

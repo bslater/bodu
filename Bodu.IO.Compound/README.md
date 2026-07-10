@@ -89,6 +89,13 @@ builder.AddStream(SummaryInformation.StreamName,
 builder.WriteTo(stream);   // writes an OLE2 / CFB file
 ```
 
+## Runnable samples
+
+The repository ships an offline, `dotnet run`-able sample for this package — builder-based
+authoring with byte-exact read-back, OLE property sets on authored and real Word files,
+signature detection with the v3/v4 version knob, and walking a real `.doc`'s storage tree —
+under [`samples/IO.Compound/`](https://github.com/bslater/bodu/tree/master/samples/IO.Compound).
+
 ## Out of scope
 
 Both creating and updating rebuild the whole container: `Commit()` serializes the entire staged tree
