@@ -57,6 +57,33 @@ int exact   = seen.Count;                // coherent — acquires every region l
 
 Enumeration and `ToArray()` observe a coherent snapshot and never throw on concurrent modification.
 
+### Concurrent evicting dictionary (`ConcurrentEvictingDictionary<TKey,TValue>`)
+
+A lock-striped bounded cache — the thread-safe variant of `EvictingDictionary<TKey,TValue>`, with the same six eviction policies and optional TTL expiry:
+
+```csharp
+using Bodu.Collections.Generic.Concurrent;
+
+var cache = new ConcurrentEvictingDictionary<string, Report>(
+    capacity: 1024, EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+// Single-flight GetOrAdd: under concurrent misses the factory runs at most
+// once per key, so an expensive load is never duplicated.
+Parallel.ForEach(requests, request =>
+{
+    Report report = cache.GetOrAdd(request.Key, key => BuildReport(key));
+    Serve(request, report);
+});
+
+cache.ItemEvicted += (key, _) => log.Debug("Evicted {Key}", key);
+
+bool hit  = cache.TryGetValue("q-42", out Report? cached); // counts as an LRU access
+int hot   = cache.ApproximateCount;                        // lock-free estimate
+int exact = cache.Count;                                   // coherent — acquires every segment lock
+```
+
+The capacity bound is strict — the cache never stores more than `capacity` entries — while eviction order is exact within each internal segment and approximate globally. Pass an `EvictingDictionaryExpiration` to add absolute or sliding TTL on top of the capacity policy.
+
 ## Where to go next
 
 - **[Bodu.Collections.Concurrent introduction](index.md)** — headline types, scenarios, and design notes.

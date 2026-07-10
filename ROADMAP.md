@@ -400,6 +400,22 @@ Forward-looking:
   contract-test bases promoted to `Bodu.Test.Contracts` per the
   documented second-consumer rule and the package carrying its own
   resource strings.
+- **`ConcurrentEvictingDictionary<TKey,TValue>` has landed.** ✅ The
+  thread-safe variant of `EvictingDictionary<,>` in
+  `Bodu.Collections.Concurrent`: lock-striped segments (the
+  `ConcurrentHashSet` idiom) where each segment runs an exact policy
+  cache over its slice of the capacity — eviction order is exact per
+  segment, approximate globally, while the slices sum to `Capacity`
+  exactly. All six policies plus the TTL layer are supported; concurrent
+  idioms added over the non-concurrent surface are `TryRemove(key, out
+  value)`, single-flight `GetOrAdd` (factory inside the segment lock),
+  and lock-free `ApproximateCount`. Only the post-commit `ItemEvicted`
+  event survives (raised after lock release, handler exceptions
+  suppressed — the `ConcurrentCircularBuffer` precedent); `ItemEvicting`,
+  `PeekEvictionCandidate`, and `TouchOrThrow` are deliberately omitted
+  as unhonorable or trap-prone under concurrency. A differential test
+  suite pins single-segment eviction parity against the non-concurrent
+  oracle.
 - **`WeekPattern` stays in `Bodu.Core` — extraction retired.** With the
   collections split done, Core *is* the small always-referenced
   primitive layer the proposed `Bodu.Globalization.WeekPattern`
