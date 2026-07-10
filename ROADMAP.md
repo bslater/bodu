@@ -416,6 +416,23 @@ Forward-looking:
   as unhonorable or trap-prone under concurrency. A differential test
   suite pins single-segment eviction parity against the non-concurrent
   oracle.
+- **`ConcurrentLruCache<TKey,TValue>` has landed.** ✅ The
+  read-optimized bounded cache (BitFaster `ConcurrentLru` style) in
+  `Bodu.Collections.Concurrent`: lock-free lookups over a
+  `ConcurrentDictionary` with hot/warm/cold pseudo-LRU queues,
+  write-amortized maintenance, and write back-pressure that bounds
+  transient capacity overshoot by the number of in-flight writers.
+  Ships striped (cache-line-padded) hit/miss counters with a computed
+  `HitRatio`, plus the package's post-commit `ItemEvicted` contract.
+  The name deliberately breaks the "no `LruCache` synonyms" note above:
+  that note rejects Java-style synonyms for the general
+  `EvictingDictionary`; here the pseudo-LRU algorithm *is* the type's
+  identity, so BCL-style naming names the algorithm. `GetOrAdd` is
+  intentionally not single-flight (documented; use
+  `ConcurrentEvictingDictionary` for stampede suppression), and TTL is
+  a reserved follow-on seam. W-TinyLFU admission remains the recorded
+  stretch follow-up, now naturally scoped as an upgrade to this type's
+  admission path.
 - **`WeekPattern` stays in `Bodu.Core` — extraction retired.** With the
   collections split done, Core *is* the small always-referenced
   primitive layer the proposed `Bodu.Globalization.WeekPattern`

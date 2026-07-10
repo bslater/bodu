@@ -4,7 +4,7 @@ title: Concurrent collections
 
 # Concurrent collections
 
-`Bodu.Collections.Generic.Concurrent` ships three thread-safe collections that pair with their non-concurrent peers in `Bodu.Collections.Generic`: `ConcurrentCircularBuffer<T>` for fixed-capacity FIFO under multi-producer / multi-consumer load, `ConcurrentHashSet<T>` for an unordered set of unique elements under concurrent add / remove / lookup, and `ConcurrentEvictingDictionary<TKey,TValue>` for a bounded cache with policy-driven eviction under concurrent reads and writes. The namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`) — install with `dotnet add package Bodu.Collections.Concurrent`.
+`Bodu.Collections.Generic.Concurrent` ships four thread-safe collections that pair with their non-concurrent peers in `Bodu.Collections.Generic`: `ConcurrentCircularBuffer<T>` for fixed-capacity FIFO under multi-producer / multi-consumer load, `ConcurrentHashSet<T>` for an unordered set of unique elements under concurrent add / remove / lookup, `ConcurrentEvictingDictionary<TKey,TValue>` for a bounded cache with exact policy-driven eviction, and `ConcurrentLruCache<TKey,TValue>` for a read-optimized bounded cache with lock-free lookups. The namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`) — install with `dotnet add package Bodu.Collections.Concurrent`.
 
 Reach for them when the same collection is accessed by multiple producers and consumers — external locking around `CircularBuffer<T>`, `HashSet<T>`, or `EvictingDictionary<TKey,TValue>` works, but it serialises every operation behind a single monitor. The concurrent variants split contention across slots (Vyukov MPMC for the buffer) or bucket / segment regions (lock striping for the set and the cache), so disjoint operations proceed in parallel.
 
@@ -188,6 +188,44 @@ The `ItemEvicted` event is raised **after** an eviction has been committed and a
 
 `ToArray`, `Keys`, `Values`, enumeration, `Count`, and `IsEmpty` acquire every segment lock for a coherent point-in-time view; `ApproximateCount` is lock-free. Enumeration iterates a detached snapshot and never throws on concurrent modification; its order is unspecified. With TTL configured, `Count` reports the raw stored count *including* expired-but-unpurged entries — call `RemoveExpired()` to reconcile, exactly as with the non-concurrent type.
 
+## `ConcurrentLruCache<TKey,TValue>`
+
+The read-optimized bounded cache, in the style of BitFaster.Caching's `ConcurrentLru`: entries live in a `ConcurrentDictionary<TKey,TValue>` and recency is tracked by three internal FIFO queues — *hot* (new arrivals), *warm* (proven reuse), *cold* (one unaccessed pass from eviction). A successful lookup is **entirely lock-free**: a dictionary probe plus one volatile write of the entry's accessed flag. Queue maintenance (promote / demote / evict) is amortized onto writers — at most one thread cycles at a time, and a writer that observes the cache over capacity converges maintenance before returning (write back-pressure), which is what keeps the capacity bound honest.
+
+### Construction and core operations
+
+```csharp
+using Bodu.Collections.Generic.Concurrent;
+
+var cache = new ConcurrentLruCache<string, Payload>(capacity: 1024);
+
+cache.Add("k", payload);                       // Add-or-replace (replacement restarts the entry's LRU life)
+cache.TryAdd("k", payload);                    // Add only when absent
+cache.TryGetValue("k", out var value);         // Lock-free; marks the entry accessed
+Payload p = cache.GetOrAdd("k", key => Load(key)); // ConcurrentDictionary semantics — factory may race, one wins
+cache.TryRemove("k", out var removed);         // Explicit removal — not an eviction, no event
+
+Console.WriteLine($"{cache.HitCount} hits, {cache.MissCount} misses, {cache.HitRatio:P1}");
+```
+
+Hit/miss telemetry rides cache-line-padded striped counters, so recording a hit never contends across reader cores; `HitRatio` is the cache's headline health metric. Evictions raise the package's post-commit `ItemEvicted` event (after all internal coordination is released; handler exceptions suppressed except `OutOfMemoryException`).
+
+### Choosing between the two caches
+
+Both bounded caches solve "keep the hot working set under concurrent access" — they trade differently:
+
+| Aspect | `ConcurrentEvictingDictionary` | `ConcurrentLruCache` |
+|---|---|---|
+| Policy | 6 exact policies (exact per segment) | Single segmented pseudo-LRU, approximate |
+| Capacity bound | Strict | Transient overshoot ≤ in-flight writers |
+| Read path | Segment lock per read | Lock-free |
+| `GetOrAdd(factory)` | Single-flight | Factory may race; one wins |
+| TTL | Optional | Not yet supported |
+| `Touch` | Yes | No — reads touch implicitly |
+| Telemetry | `EvictionCount`, `TotalTouches` | `HitCount`, `MissCount`, `HitRatio`, `EvictionCount` |
+
+Reach for `ConcurrentLruCache` when the workload is read-dominated and lookup latency/scalability is the priority; reach for `ConcurrentEvictingDictionary` when you need a specific eviction policy, TTL expiry, a strict capacity bound, or a single-flight factory to suppress cache stampedes.
+
 ## When *not* to use these collections
 
 - **Single-threaded scenarios.** The Vyukov coordination and lock-striping overhead is a tax that single-threaded code pays for nothing. Use the non-concurrent peers in [`Bodu.Collections.Generic`](xref:Bodu.Collections.Generic).
@@ -200,6 +238,7 @@ The `ItemEvicted` event is raised **after** an eviction has been committed and a
 - [`ConcurrentCircularBuffer<T>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1)
 - [`ConcurrentHashSet<T>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1)
 - [`ConcurrentEvictingDictionary<TKey,TValue>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2)
+- [`ConcurrentLruCache<TKey,TValue>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentLruCache`2)
 - [Circular buffer guide](circular-buffer.md) — the non-concurrent peer.
 - [Evicting dictionary guide](evicting-dictionary.md) — the non-concurrent peer of the evicting cache.
 - [`Bodu.Collections.Generic.Concurrent` namespace landing](xref:Bodu.Collections.Generic.Concurrent)

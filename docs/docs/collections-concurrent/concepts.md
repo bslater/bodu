@@ -25,6 +25,8 @@ Single-element operations (`Enqueue` / `Dequeue` / `Peek` and their `Try…` var
 
 <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> applies the same idiom to a bounded cache, with one twist: in an evicting cache *reads are writes* (a lookup repositions the key for recency-tracked policies), so even `TryGetValue` takes its segment's lock. Each segment is an exact policy cache over a fixed slice of the total capacity — the slices sum to `Capacity` exactly, so the global bound is strict while eviction order is exact per segment and approximate globally. That trade is what every production concurrent cache makes; a single global recency order would serialise all reads behind one lock.
 
+<xref:Bodu.Collections.Generic.Concurrent.ConcurrentLruCache`2> takes the opposite side of that trade: reads stay entirely lock-free (a `ConcurrentDictionary` probe plus one volatile accessed-flag write) because recency is *not* an ordered structure at all — it is a set of per-entry flags that a write-amortized maintenance cycle later folds into hot/warm/cold queue movements. The policy consequently degrades from exact per-segment ordering to a pseudo-LRU approximation, and the capacity bound relaxes from strict to "transient overshoot bounded by in-flight writers", enforced by write back-pressure: a writer that observes the cache over capacity converges maintenance before returning.
+
 The stripe count is the concurrency budget: operations that need a globally coherent view (`Count`, `ToArray`, enumeration, `Clear`) acquire *every* region lock once, which is exactly why the approximate alternatives below exist.
 
 ## Snapshot enumeration
@@ -47,6 +49,8 @@ Under concurrency, "how many elements?" has two honest answers, and the API name
 | Set `Count`, `IsEmpty` | **Coherent** — a true point-in-time value | Acquires every region lock |
 | Dictionary `ApproximateCount` | **Approximate** — per-segment counters summed lock-free | Lock-free |
 | Dictionary `Count`, `IsEmpty` | **Coherent** — a true point-in-time value (raw count incl. expired-unpurged) | Acquires every segment lock |
+| LRU cache `ApproximateCount` | **Approximate** — a lock-free live-entry counter | Lock-free |
+| LRU cache `Count`, `IsEmpty` | **Coherent** — the backing `ConcurrentDictionary` count | Takes the dictionary's internal locks briefly |
 | Buffer `ToArray` / enumeration | **Coherent snapshot** (seqlock) | Restarts on churn |
 
 Prefer the approximate reads on hot paths (throughput sampling, logging) and reserve the coherent ones for decisions that genuinely need exactness (shutdown accounting, capacity-based throttling). For lightweight sampling of a busy buffer, `TryPeek` / `TryDequeue` beat reading `Count`.
@@ -64,6 +68,8 @@ With `AllowOverwrite = true`, a producer that finds the buffer full silently ove
 The lock-free path cannot safely unwind a half-completed slot handoff, so there is no veto and a throwing handler must not be able to fail the producer. Do not port veto logic between the two types; treat the concurrent event as telemetry, not control flow.
 
 <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> follows the same concurrent contract relative to its non-concurrent peer: only the post-commit `ItemEvicted` survives (no `ItemEvicting`), handlers run *after* the owning segment's lock is released — so they may safely call back into the dictionary — and handler exceptions are swallowed. Capacity evictions and TTL expiries raise the event; explicit `TryRemove` and `Clear` do not.
+
+<xref:Bodu.Collections.Generic.Concurrent.ConcurrentLruCache`2> carries the identical contract: post-commit `ItemEvicted` only, raised after the maintenance lock is released, handler exceptions swallowed; capacity evictions raise it while explicit removals, replacements, and `Clear` do not.
 
 ## Bulk operations are not transactions
 

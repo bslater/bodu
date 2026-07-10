@@ -84,6 +84,28 @@ int exact = cache.Count;                                   // coherent — acqui
 
 The capacity bound is strict — the cache never stores more than `capacity` entries — while eviction order is exact within each internal segment and approximate globally. Pass an `EvictingDictionaryExpiration` to add absolute or sliding TTL on top of the capacity policy.
 
+### Concurrent LRU cache (`ConcurrentLruCache<TKey,TValue>`)
+
+The read-optimized bounded cache — lock-free lookups, pseudo-LRU eviction, hit-ratio telemetry:
+
+```csharp
+using Bodu.Collections.Generic.Concurrent;
+
+var cache = new ConcurrentLruCache<string, Report>(capacity: 1024);
+
+Parallel.ForEach(requests, request =>
+{
+    // Lock-free on a hit; on concurrent misses the factory may race and one produced value wins.
+    Report report = cache.GetOrAdd(request.Key, key => BuildReport(key));
+    Serve(request, report);
+});
+
+cache.ItemEvicted += (key, _) => log.Debug("Evicted {Key}", key);
+Console.WriteLine($"Hit ratio: {cache.HitRatio:P1}");   // striped counters — no reader contention
+```
+
+Reads never take a lock; queue maintenance is amortized onto writers, and `Count` may transiently exceed `capacity` by at most the number of in-flight writers. Prefer `ConcurrentEvictingDictionary` when you need exact policies, TTL, a strict bound, or a single-flight factory.
+
 ## Where to go next
 
 - **[Bodu.Collections.Concurrent introduction](index.md)** — headline types, scenarios, and design notes.

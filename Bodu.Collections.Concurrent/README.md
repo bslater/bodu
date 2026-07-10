@@ -2,7 +2,7 @@
 
 > **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-The thread-safe collection variants of the Bodu collection catalogue: a lock-free bounded MPMC ring buffer, a lock-striped concurrent set, and a lock-striped bounded cache. The original two types were split out of `Bodu.Collections` with the namespace unchanged — code written against `Bodu.Collections.Generic.Concurrent` keeps compiling; only the package reference changes. All collections implement the standard BCL interfaces and ship struct enumerators over point-in-time snapshots. The package references `Bodu.Collections` (and transitively `Bodu.Core`).
+The thread-safe collection variants of the Bodu collection catalogue: a lock-free bounded MPMC ring buffer, a lock-striped concurrent set, a lock-striped bounded cache with exact eviction policies, and a lock-free-read pseudo-LRU cache. The original two types were split out of `Bodu.Collections` with the namespace unchanged — code written against `Bodu.Collections.Generic.Concurrent` keeps compiling; only the package reference changes. All collections implement the standard BCL interfaces and ship struct enumerators over point-in-time snapshots. The package references `Bodu.Collections` (and transitively `Bodu.Core`).
 
 ## Installation
 
@@ -19,12 +19,13 @@ Targets `net8.0`. Depends on `Bodu.Collections`.
 | `ConcurrentCircularBuffer<T>` | `Bodu.Collections.Generic.Concurrent` | Lock-free (Vyukov MPMC) fixed-capacity FIFO ring buffer with optional overwrite-on-full and eviction events |
 | `ConcurrentHashSet<T>` | `Bodu.Collections.Generic.Concurrent` | Lock-striped concurrent set implementing `ISet<T>`, with comparer injection and snapshot enumeration |
 | `ConcurrentEvictingDictionary<TKey,TValue>` | `Bodu.Collections.Generic.Concurrent` | Lock-striped bounded cache — the thread-safe variant of `EvictingDictionary<TKey,TValue>` with all six eviction policies (FIFO/LRU/LFU/MRU/SecondChance/Random), optional TTL expiry, single-flight `GetOrAdd`, and a post-commit `ItemEvicted` event. Eviction order is exact per segment, approximate globally |
+| `ConcurrentLruCache<TKey,TValue>` | `Bodu.Collections.Generic.Concurrent` | Read-optimized bounded cache in the BitFaster `ConcurrentLru` style: lock-free lookups over a `ConcurrentDictionary` with hot/warm/cold pseudo-LRU queues, write-amortized maintenance with over-capacity back-pressure, hit/miss/`HitRatio` telemetry on striped counters, and a post-commit `ItemEvicted` event |
 
 For the single-threaded counterparts (`CircularBuffer<T>`, `EvictingDictionary<TKey,TValue>`, `Deque<T>`, and the wider catalogue), see the `Bodu.Collections` package.
 
 ## Testing
 
-The types are verified through the shared contract-test bases in `Bodu.Test` (collection, set, read-only-collection, enumerator, non-generic, and debug-view contracts) plus concurrency-specific suites: multi-producer/multi-consumer stress runs, overwrite contention, slot-layout and snapshot-stability checks, and — for the evicting dictionary — a differential suite that replays scripted workloads against the non-concurrent `EvictingDictionary` oracle to pin per-segment eviction parity.
+The types are verified through the shared contract-test bases in `Bodu.Test` (collection, set, read-only-collection, enumerator, non-generic, and debug-view contracts) plus concurrency-specific suites: multi-producer/multi-consumer stress runs, overwrite contention, slot-layout and snapshot-stability checks, a differential suite that replays scripted workloads against the non-concurrent `EvictingDictionary` oracle to pin per-segment eviction parity, and — for the LRU cache — deterministic scan-resistance/hit-ratio workloads plus stress runs that reconcile admissions, evictions, and telemetry exactly.
 
 ## License
 
