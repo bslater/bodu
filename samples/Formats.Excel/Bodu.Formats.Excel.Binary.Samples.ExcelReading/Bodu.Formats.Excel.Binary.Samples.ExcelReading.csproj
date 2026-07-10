@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Formats.Excel.Binary.Samples.ExcelReading</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+
+    <!-- Sample code - opt out of the shipping-library style gates. -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <RunAnalyzers>false</RunAnalyzers>
+    <BoduCodeStyleAnalyzers>false</BoduCodeStyleAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Data\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Formats.Excel.Binary\src\Bodu.Formats.Excel.Binary.csproj" />
+  </ItemGroup>
+
+</Project>
