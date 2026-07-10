@@ -152,19 +152,9 @@ internal sealed class CfbSectorReader
 
         using MemoryStream buffer = new();
         Span<byte> scratch = stackalloc byte[_header.SectorSize];
-        uint sector = startSector;
-        int guard = 0;
 
-        while (sector != CfbHeader.EndOfChain)
-        {
-            if (StopOrThrow(sector >= (uint)_fat.Length, CompoundFileError.SectorOutOfRange))
-                break;
-            if (StopOrThrow(guard++ > _fat.Length, CompoundFileError.FatCycle))
-                break;
-
+        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle))
             buffer.Write(ReadSector(sector, scratch));
-            sector = _fat[sector];
-        }
 
         return buffer.ToArray();
     }
@@ -183,20 +173,48 @@ internal sealed class CfbSectorReader
             return [];
 
         List<uint> chain = new();
+
+        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle))
+            chain.Add(sector);
+
+        return chain.ToArray();
+    }
+
+    /// <summary>
+    /// Walks a FAT chain from <paramref name="startSector" />, yielding each sector identifier exactly once.
+    /// </summary>
+    /// <param name="startSector">The first sector of the chain.</param>
+    /// <param name="fat">The allocation table (regular FAT or mini-FAT) that links the chain.</param>
+    /// <param name="cycleError">The failure category reported when a sector is revisited.</param>
+    /// <returns>The chain's sector identifiers in order, each appearing at most once.</returns>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the chain references an out-of-range sector, or revisits a sector, at a validation level
+    /// stricter than <see cref="CompoundValidationLevel.Minimal" />.
+    /// </exception>
+    /// <remarks>
+    /// A per-chain visited set bounds the walk to the number of distinct real sectors and rejects the first
+    /// revisit as a cycle. This is what prevents a crafted self-loop or back-edge from re-reading sectors and
+    /// amplifying a caller's accumulated allocation far beyond the container size — the amplification is capped
+    /// regardless of validation level, because the visited set is consulted before any sector is yielded.
+    /// </remarks>
+    private IEnumerable<uint> WalkChain(uint startSector, uint[] fat, CompoundFileError cycleError)
+    {
+        if (startSector == CfbHeader.EndOfChain)
+            yield break;
+
+        HashSet<uint> visited = new();
         uint sector = startSector;
 
         while (sector != CfbHeader.EndOfChain)
         {
-            if (StopOrThrow(sector >= (uint)_fat.Length, CompoundFileError.SectorOutOfRange))
-                break;
-            if (StopOrThrow(chain.Count > _fat.Length, CompoundFileError.FatCycle))
-                break;
+            if (StopOrThrow(sector >= (uint)fat.Length, CompoundFileError.SectorOutOfRange))
+                yield break;
+            if (StopOrThrow(!visited.Add(sector), cycleError))
+                yield break;
 
-            chain.Add(sector);
-            sector = _fat[sector];
+            yield return sector;
+            sector = fat[sector];
         }
-
-        return chain.ToArray();
     }
 
     /// <summary>
@@ -266,22 +284,16 @@ internal sealed class CfbSectorReader
         }
 
         using MemoryStream buffer = new();
-        uint sector = startMiniSector;
-        int guard = 0;
 
-        while (sector != CfbHeader.EndOfChain)
+        foreach (uint sector in WalkChain(startMiniSector, _miniFat!, CompoundFileError.InvalidMiniFat))
         {
-            if (StopOrThrow(sector >= (uint)_miniFat!.Length, CompoundFileError.SectorOutOfRange))
-                break;
-            if (StopOrThrow(guard++ > _miniFat.Length, CompoundFileError.InvalidMiniFat))
-                break;
-
-            int offset = (int)sector * _header.MiniSectorSize;
+            // Compute the mini-stream offset in a wider type so a large (corrupt) sector id cannot overflow the
+            // int arithmetic before the bounds check runs.
+            long offset = (long)sector * _header.MiniSectorSize;
             if (StopOrThrow(offset + _header.MiniSectorSize > _miniStream!.Length, CompoundFileError.InvalidMiniFat))
                 break;
 
-            buffer.Write(_miniStream.AsSpan(offset, _header.MiniSectorSize));
-            sector = _miniFat[sector];
+            buffer.Write(_miniStream.AsSpan((int)offset, _header.MiniSectorSize));
         }
 
         return Trim(buffer, size);
