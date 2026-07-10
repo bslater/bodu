@@ -12,6 +12,31 @@ dotnet add package Bodu.IO.Hashing
 
 Targets `net8.0`.
 
+## Quick start
+
+```csharp
+using Bodu.IO.Hashing.Checksums;
+using Bodu.IO.Hashing.CheckDigits;
+
+// CRC: one parametric engine, 112 catalogued standards.
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);           // the ubiquitous zip/png CRC-32
+byte[] digest = crc.ComputeHash("123456789"u8);          // one-shot over bytes
+
+// Or stream it: the standard NonCryptographicHashAlgorithm surface.
+crc.Append("1234"u8);
+crc.Append("56789"u8);
+byte[] same = crc.GetHashAndReset();                     // equals the one-shot digest
+
+// Check digits: static Compute / IsValid per identifier scheme.
+bool ok = Iban.IsValid("GB82WEST12345698765432");        // true (electronic format, no spaces)
+char check = Luhn.Compute("7992739871");                 // '3' -> card number 79927398713
+bool valid = Isbn13.IsValid("9780306406157");            // true
+```
+
+`Crc` implements `IResumableHashAlgorithm`, so a stored digest can be extended with more data
+without replaying the original input. See the [guides](../docs/guides/io-hashing/index.md) for
+the full catalogue, streaming, and verification surfaces.
+
 ## Checksums and non-cryptographic hashes
 
 | Family | Algorithms | Output (bits) | Notes |
