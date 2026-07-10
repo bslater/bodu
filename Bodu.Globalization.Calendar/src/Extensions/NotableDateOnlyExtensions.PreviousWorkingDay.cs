@@ -19,6 +19,16 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+    ///
+    /// // From Friday 26 April 2024 the previous open day skips Anzac Day back to Wednesday.
+    /// DateOnly open = new DateOnly(2024, 4, 26).PreviousWorkingDay(service, "AU");   // 2024-04-24
+    ///]]>
+    /// </code>
+    /// </example>
     public static DateOnly PreviousWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
         Step(date, -1, service, territory, workingWeek);
 }

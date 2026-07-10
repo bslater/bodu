@@ -20,6 +20,19 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+    ///
+    /// // Saturday 27 April 2024 snaps back to Friday (one day) rather than forward to Monday (two).
+    /// DateOnly nearest = new DateOnly(2024, 4, 27).SnapToNearestWorkingDay(service, "AU");   // 2024-04-26
+    ///
+    /// // A working day is returned unchanged.
+    /// DateOnly noOp = new DateOnly(2024, 4, 23).SnapToNearestWorkingDay(service, "AU");      // 2024-04-23
+    ///]]>
+    /// </code>
+    /// </example>
     public static DateOnly SnapToNearestWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
         if (date.IsWorkingDay(service, territory, workingWeek))

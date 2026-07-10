@@ -20,6 +20,20 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+    ///
+    /// // Anzac week 2024: the weekend plus Anzac Day (Thursday 25 April).
+    /// foreach (DateOnly closed in new DateOnly(2024, 4, 22).EnumerateNonWorkingDays(
+    ///     new DateOnly(2024, 4, 28), service, "AU"))
+    /// {
+    ///     // 2024-04-25, 2024-04-27, 2024-04-28
+    /// }
+    ///]]>
+    /// </code>
+    /// </example>
     public static IEnumerable<DateOnly> EnumerateNonWorkingDays(this DateOnly start, DateOnly end, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);

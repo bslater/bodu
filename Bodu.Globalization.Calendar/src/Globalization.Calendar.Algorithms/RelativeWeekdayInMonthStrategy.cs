@@ -12,6 +12,21 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
 /// date rules (guide)</seealso>
+/// <remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The rule shape this strategy realizes - a weekday positioned relative to an
+/// // nth-weekday anchor (the Friday after the fourth Thursday of November):
+/// NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
+///     .AddNotableDate("day-after-thanksgiving", "Day after Thanksgiving", NotableDateCategory.Observance, c => c
+///         .AddRule("default", r => r.RelativeWeekdayInMonth(
+///             11, DayOfWeek.Thursday, WeekOrdinal.Fourth, DayOfWeek.Friday, WeekdayProximity.After)))
+///     .Build();
+///]]>
+/// </code>
+/// </example>
+/// </remarks>
 public sealed class RelativeWeekdayInMonthStrategy
     : IDateCalculationStrategy
 {

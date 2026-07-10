@@ -17,6 +17,18 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// a calendar-year sweep (for lunar and lunisolar systems whose year does not align with the Gregorian year) or a
 /// leap-month skip (for the Chinese lunisolar calendar).
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The rule shape this strategy realizes - a fixed civil date, authored via the builder
+/// // (or <Fixed month="December" day="25" /> in the XML document form):
+/// NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
+///     .AddNotableDate("christmas", "Christmas Day", NotableDateCategory.PublicHoliday, c => c
+///         .AddRule("default", r => r.Fixed(12, 25)))
+///     .Build();
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 /// <seealso cref="IDateCalculationStrategy" /> <seealso cref="CalendarSystem" />
 /// <seealso href="../guides/calendar/non-gregorian-calendars.html">Working with non-Gregorian calendars (guide)

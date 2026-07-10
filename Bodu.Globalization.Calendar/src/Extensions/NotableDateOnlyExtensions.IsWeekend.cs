@@ -16,6 +16,18 @@ public static partial class NotableDateOnlyExtensions
     /// <returns>
     /// <see langword="true" /> if the date is not a working-week day; otherwise <see langword="false" />.
     /// </returns>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// bool saturday = new DateOnly(2026, 1, 3).IsWeekend();   // true under the default Mon-Fri week
+    ///
+    /// // A Sunday-Thursday working week makes Friday the weekend instead.
+    /// var sundayToThursday = new WeekPattern(
+    ///     DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday);
+    /// bool friday = new DateOnly(2026, 1, 2).IsWeekend(sundayToThursday);   // true
+    ///]]>
+    /// </code>
+    /// </example>
     public static bool IsWeekend(this DateOnly date, WeekPattern? workingWeek = null) =>
         !(workingWeek ?? WeekPattern.MondayToFriday).Contains(date.DayOfWeek);
 }

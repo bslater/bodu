@@ -16,6 +16,20 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// surfaces during loading rather than as a silently absent date. Astronomical results are computed in the local time
 /// zone appropriate to the observance (for example Japan Standard Time for the Japanese equinox holidays).
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The rule shape this strategy realizes - a keyed algorithm supplies the date.
+/// // Built-in keys ("western-easter", "orthodox-easter", "qingming", "vesak", "matariki", ...)
+/// // need no registration; custom keys are registered on a NotableDateAlgorithmRegistry
+/// // handed to both the loader and the service.
+/// NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
+///     .AddNotableDate("easter-sunday", "Easter Sunday", NotableDateCategory.Religious, c => c
+///         .AddRule("default", r => r.Algorithm("western-easter")))
+///     .Build();
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 /// <seealso cref="IDateCalculationStrategy" /> <seealso cref="INotableDateAlgorithm" />
 /// <seealso href="../guides/calendar/algorithms.html">Date calculation algorithms (guide)</seealso>

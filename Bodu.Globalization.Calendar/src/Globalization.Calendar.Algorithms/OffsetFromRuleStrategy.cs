@@ -15,6 +15,20 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// The referenced rule is identified by stable id. When the reference cannot be resolved unambiguously the strategy
 /// produces no occurrence; the loader reports the unresolved or ambiguous reference as a validation error.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The rule shape this strategy realizes - a day count from another concept's rule
+/// // (Good Friday: two days before Easter Sunday). The referenced concept must exist
+/// // in the document (or arrive via an import).
+/// NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
+///     .AddImport("christian-western", i => i.Use("easter-sunday"))
+///     .AddNotableDate("good-friday", "Good Friday", NotableDateCategory.PublicHoliday, c => c
+///         .AddRule("default", r => r.OffsetFromRule("easter-sunday", -2)))
+///     .Build(CommonNotableDateResources.Resolver);
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 /// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
 /// date rules (guide)</seealso>

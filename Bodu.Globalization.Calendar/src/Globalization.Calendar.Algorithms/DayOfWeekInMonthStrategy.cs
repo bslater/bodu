@@ -12,6 +12,20 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
 /// date rules (guide)</seealso>
+/// <remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The rule shape this strategy realizes - an nth-weekday-of-month floater
+/// // (United States Labor Day: the first Monday of September):
+/// NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
+///     .AddNotableDate("labor-day", "Labor Day", NotableDateCategory.PublicHoliday, c => c
+///         .AddRule("default", r => r.DayOfWeekInMonth(9, DayOfWeek.Monday, WeekOrdinal.First)))
+///     .Build();
+///]]>
+/// </code>
+/// </example>
+/// </remarks>
 public sealed class DayOfWeekInMonthStrategy
     : IDateCalculationStrategy
 {
