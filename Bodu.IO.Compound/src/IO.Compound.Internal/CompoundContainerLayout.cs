@@ -538,7 +538,7 @@ internal static partial class CompoundContainerLayout
     /// <summary>
     /// Buffers output one sector at a time and flushes whole sectors to a destination stream.
     /// </summary>
-    private sealed class SectorWriter
+    private sealed partial class SectorWriter
     {
         /// <summary>The destination stream.</summary>
         private readonly Stream _destination;
