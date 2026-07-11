@@ -26,6 +26,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 public abstract class FileSystemByteCache<TKey>
+    : IByteCache<TKey>
 {
     /// <summary>The directory in which cached response bytes are stored.</summary>
     private readonly string _directory;
@@ -123,6 +124,14 @@ public abstract class FileSystemByteCache<TKey>
     /// </returns>
     protected virtual bool IsFresh(TKey key, TimeSpan age, TimeSpan refreshInterval) =>
         age <= refreshInterval;
+
+    /// <inheritdoc />
+    public bool TryGet(TKey key, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes) =>
+        TryGetCore(key, refreshInterval, out bytes);
+
+    /// <inheritdoc />
+    public void Store(TKey key, byte[] bytes) =>
+        StoreCore(key, bytes);
 
     /// <summary>
     /// Attempts to read the cached bytes for a key when a fresh file exists.

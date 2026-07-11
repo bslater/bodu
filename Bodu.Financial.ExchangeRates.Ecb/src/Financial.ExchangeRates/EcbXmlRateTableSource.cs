@@ -19,7 +19,7 @@ internal sealed class EcbXmlRateTableSource
     private readonly EcbRateProviderOptions _options;
 
     /// <summary>The feed byte cache.</summary>
-    private readonly IEcbFeedCache _cache;
+    private readonly IByteCache<EcbRateFeed> _cache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EcbXmlRateTableSource" /> class.
@@ -27,7 +27,7 @@ internal sealed class EcbXmlRateTableSource
     /// <param name="httpClient">The HTTP client used to download feed files.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="cache">The feed byte cache.</param>
-    internal EcbXmlRateTableSource(HttpClient httpClient, EcbRateProviderOptions options, IEcbFeedCache cache)
+    internal EcbXmlRateTableSource(HttpClient httpClient, EcbRateProviderOptions options, IByteCache<EcbRateFeed> cache)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);

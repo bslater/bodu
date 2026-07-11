@@ -23,7 +23,7 @@ public class RbaXlsRateTableSourceTests
         RbaRateProviderOptions options = new();
         StubHttpMessageHandler handler = new(RbaFixtures.ReadBytes(RbaFixtures.Sample));
         using HttpClient client = new(handler);
-        RbaXlsRateTableSource source = new(client, options, NullRbaWorkbookCache.Instance);
+        RbaXlsRateTableSource source = new(client, options, NullByteCache<RbaEraWorkbook>.Instance);
 
         RbaRateTable table = await source.GetTableAsync(s_immutableEra);
 

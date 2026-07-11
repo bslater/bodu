@@ -25,9 +25,9 @@ public partial class FileSystemBoeResponseCacheTests
 
             FileSystemBoeResponseCache cache = new(filePath);
 
-            cache.Store(s_from, s_to, new byte[] { 1, 2, 3 });
+            cache.Store((s_from, s_to), new byte[] { 1, 2, 3 });
 
-            bool hit = cache.TryGet(s_from, s_to, TimeSpan.FromHours(1), out _);
+            bool hit = cache.TryGet((s_from, s_to), TimeSpan.FromHours(1), out _);
             Assert.IsFalse(hit);
         }
         finally

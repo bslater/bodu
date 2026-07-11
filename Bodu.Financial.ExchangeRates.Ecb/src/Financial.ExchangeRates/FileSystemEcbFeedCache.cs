@@ -4,13 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// An <see cref="IEcbFeedCache" /> that persists downloaded ECB feeds as files in a cache directory.
+/// An <see cref="IByteCache{TKey}" /> that persists downloaded ECB feeds as files in a cache directory, keyed by the
+/// feed that produced them.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -24,7 +24,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 public sealed class FileSystemEcbFeedCache
-    : FileSystemByteCache<EcbRateFeed>, IEcbFeedCache
+    : FileSystemByteCache<EcbRateFeed>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FileSystemEcbFeedCache" /> class.
@@ -41,23 +41,10 @@ public sealed class FileSystemEcbFeedCache
         : base(directory, "bodu-ecb", logger) { }
 
     /// <inheritdoc />
-    public bool TryGet(EcbRateFeed feed, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
+    protected override string GetFileName(EcbRateFeed key)
     {
-        ThrowHelper.ThrowIfNull(feed);
+        ThrowHelper.ThrowIfNull(key);
 
-        return TryGetCore(feed, refreshInterval, out bytes);
+        return key.FileName;
     }
-
-    /// <inheritdoc />
-    public void Store(EcbRateFeed feed, byte[] bytes)
-    {
-        ThrowHelper.ThrowIfNull(feed);
-        ThrowHelper.ThrowIfNull(bytes);
-
-        StoreCore(feed, bytes);
-    }
-
-    /// <inheritdoc />
-    protected override string GetFileName(EcbRateFeed key) =>
-        key.FileName;
 }

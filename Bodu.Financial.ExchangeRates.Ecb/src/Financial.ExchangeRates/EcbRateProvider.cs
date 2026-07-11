@@ -322,9 +322,9 @@ public sealed class EcbRateProvider
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        IEcbFeedCache cache = options.EnableDiskCache
+        IByteCache<EcbRateFeed> cache = options.EnableDiskCache
             ? new FileSystemEcbFeedCache(options.CacheDirectory, logger)
-            : NullEcbFeedCache.Instance;
+            : NullByteCache<EcbRateFeed>.Instance;
 
         return new EcbXmlRateTableSource(httpClient, options, cache);
     }

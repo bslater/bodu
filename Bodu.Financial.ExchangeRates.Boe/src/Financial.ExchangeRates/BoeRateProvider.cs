@@ -260,9 +260,9 @@ public sealed class BoeRateProvider
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        IBoeResponseCache cache = options.EnableDiskCache
+        IByteCache<(DateOnly StartDate, DateOnly EndDate)> cache = options.EnableDiskCache
             ? new FileSystemBoeResponseCache(options.CacheDirectory, logger)
-            : NullBoeResponseCache.Instance;
+            : NullByteCache<(DateOnly StartDate, DateOnly EndDate)>.Instance;
 
         return new BoeCsvRateTableSource(httpClient, options, cache);
     }

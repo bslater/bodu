@@ -317,9 +317,9 @@ public sealed class RbaRateProvider
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        IRbaWorkbookCache cache = options.EnableDiskCache
+        IByteCache<RbaEraWorkbook> cache = options.EnableDiskCache
             ? new FileSystemRbaWorkbookCache(options.CacheDirectory, logger)
-            : NullRbaWorkbookCache.Instance;
+            : NullByteCache<RbaEraWorkbook>.Instance;
 
         return new RbaXlsRateTableSource(httpClient, options, cache);
     }
