@@ -1,0 +1,182 @@
+name: Claude Policy Review
+
+# Tier-2 JUDGMENT-BASED coding-policy gate. The deterministic Policy Gate (policy-gate.yml)
+# handles everything a script can prove; this agent covers only the residue that requires
+# reading intent against CLAUDE.md — the policies a regex cannot express.
+#
+# It is a BLOCKING check, but the blocking decision is DETERMINISTIC: Claude reviews the PR
+# diff and writes structured findings to policy-findings.json; a plain parse step then fails
+# the job iff any finding is severity "blocking". The model chooses WHAT to report; the check
+# mechanics that gate the merge are ordinary code. Infra hiccups (no findings file) fail OPEN
+# with a warning so a flaky run never wedges every merge — only real findings block.
+#
+# Scope of this agent (Tier-2 only — do NOT re-check what Policy Gate already enforces):
+#   • Test placed in the correct member/subject partial per the routing rules.
+#   • Bespoke KAT record used where a shared ValidKat<,>/RoundTripKat<,>/BinaryKat<,> fits.
+#   • Pass/fail split into separate [TestMethod]s instead of branching on an outcome flag.
+#   • "Verifies that …" test summaries; XML <summary> describing intent, not restating the name.
+#   • <returns> misused on a property (should be <value>).
+#   • resx key named per the Arg_Invalid_* / Op_Invalid_* / Format_Invalid_* taxonomy.
+#   • Validation grouped at the top of the member; smallest-change / right altitude.
+#
+# Required secret: ANTHROPIC_API_KEY (or CLAUDE_CODE_OAUTH_TOKEN — swap the input below).
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write   # post the findings review comment
+
+concurrency:
+  group: claude-policy-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  policy-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Same-repo PRs only: forks can't read the API-key secret, and we don't run an agent as a
+    # required gate on unauthenticated fork content.
+    if: >
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute changed files
+        id: diff
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+          # A compact changed-file list to focus the reviewer.
+          git diff --name-only "$base" HEAD -- '*.cs' > changed-cs.txt || true
+          echo "Changed .cs files:"; cat changed-cs.txt || true
+
+      - name: Claude policy review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            You are the Tier-2 coding-POLICY reviewer for the Bodu repository. Review ONLY the
+            changes in this pull request against the JUDGMENT-BASED policies in CLAUDE.md. You are
+            not a bug reviewer and not a fixer — do not run the build, do not edit code, do not
+            propose functional changes. Judge conformance to house policy, nothing else.
+
+            The diff base is ${{ steps.diff.outputs.base }}. Inspect the change with:
+                git diff ${{ steps.diff.outputs.base }} HEAD
+            The changed C# files are listed in changed-cs.txt. Read CLAUDE.md in full first.
+
+            Report ONLY these Tier-2 concerns (the deterministic Policy Gate already covers banners,
+            file-scoped namespaces, folder↔namespace alignment, and literal exception messages —
+            do NOT duplicate those):
+              1. A test that belongs in a different member/subject partial per CLAUDE.md's routing
+                 rules (e.g. a Remove-behaviour test living in a catch-all *.EdgeCases.cs, or a
+                 Serialize_* test not routed to .Serialize.cs).
+              2. A bespoke KAT record where a shared Bodu.Test.Kat generic (ValidKat<,>,
+                 RoundTripKat<,>, BinaryKat<,>, InvalidKat<>, GuardValidKat<>/GuardInvalidKat<>)
+                 fits the assertion shape exactly.
+              3. A single [TestMethod] that branches on a pass/fail outcome flag instead of being
+                 split into separate _WhenValid_ / _WhenInvalid_ methods over filtered sources.
+              4. A [TestMethod] missing its "Verifies that …" XML <summary>, or a test name not
+                 following <Member>_When…_Should… .
+              5. An XML <summary> that merely restates the member name instead of describing intent;
+                 or <returns> used on a property (should be <value>).
+              6. A resx key that doesn't follow the Arg_Invalid_* / Arg_Null_* / Arg_OutOfRange_* /
+                 Op_Invalid_* / Op_NotSupported_* / Format_Invalid_* / Json_Invalid_* taxonomy.
+              7. Parameter validation not grouped at the top of the member before the body.
+
+            Be CONSERVATIVE — this review can block a merge, so only report a finding you are highly
+            confident is a real policy violation in code THIS PR adds or changes. When unsure, omit it.
+            Grandfather pre-existing code you did not touch.
+
+            When done, WRITE your findings as strict JSON to the file policy-findings.json in the repo
+            root — ALWAYS write it, using an empty array when the change is clean. Schema:
+              [
+                {
+                  "file": "relative/path.cs",
+                  "line": 123,
+                  "policy": "short CLAUDE.md section reference",
+                  "severity": "blocking" | "advisory",
+                  "summary": "one sentence: what violates which policy",
+                  "fix": "one sentence: the conforming form"
+                }
+              ]
+            Use "blocking" for a clear violation of a stated rule; "advisory" for a soft/stylistic
+            nudge. Output nothing else to the file. Your final chat message should be a short prose
+            summary of what you found.
+          claude_args: |
+            --max-turns 40
+            --allowedTools "Read,Grep,Glob,Bash(git diff:*),Bash(git log:*),Bash(cat:*),Bash(ls:*),Write"
+
+      - name: Evaluate findings and gate
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'policy-findings.json';
+            const marker = '<!-- claude-policy-review -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            // Fail OPEN on infra error: if the model produced no findings file, warn but don't
+            // wedge the merge queue.
+            if (!fs.existsSync(path)) {
+              core.warning('policy-findings.json not produced — treating policy review as INCONCLUSIVE (not blocking).');
+              return;
+            }
+
+            let findings;
+            try {
+              findings = JSON.parse(fs.readFileSync(path, 'utf8'));
+              if (!Array.isArray(findings)) throw new Error('not an array');
+            } catch (e) {
+              core.warning(`policy-findings.json was not valid JSON (${e.message}) — INCONCLUSIVE, not blocking.`);
+              return;
+            }
+
+            const blocking = findings.filter(f => f && f.severity === 'blocking');
+            const advisory = findings.filter(f => f && f.severity === 'advisory');
+
+            const fmt = f =>
+              `- **${f.file}${f.line ? `:${f.line}` : ''}** — ${f.summary}` +
+              `${f.policy ? ` _(${f.policy})_` : ''}${f.fix ? `\n  - Fix: ${f.fix}` : ''}`;
+
+            let body;
+            if (findings.length === 0) {
+              body = [marker, '## ✅ Claude Policy Review', '', 'No Tier-2 policy violations found in this change.'].join('\n');
+            } else {
+              body = [
+                marker,
+                '## 🧭 Claude Policy Review',
+                '',
+                blocking.length
+                  ? `**${blocking.length} blocking** policy violation(s) — this check fails until resolved:`
+                  : 'No blocking violations. Advisory notes only:',
+                '',
+                ...(blocking.length ? ['### Blocking', ...blocking.map(fmt), ''] : []),
+                ...(advisory.length ? ['### Advisory', ...advisory.map(fmt), ''] : []),
+                '_Tier-2 checks judgment-based CLAUDE.md policies. Mechanical rules are enforced separately by Policy Gate._',
+              ].join('\n');
+            }
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number, per_page: 100,
+            });
+            const existing = comments.find(c => c.user.type === 'Bot' && c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+            if (blocking.length > 0) {
+              core.setFailed(`Policy review found ${blocking.length} blocking violation(s).`);
+            }
