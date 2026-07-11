@@ -153,4 +153,7 @@
   <data name="Format_Invalid_TerritoryCode" xml:space="preserve">
     <value>'{0}' is not a valid territory code; expected a two-letter country optionally followed by a hyphen and a one-to-three alphanumeric subdivision.</value>
   </data>
+  <data name="Op_Invalid_CommonCatalogNotBundled" xml:space="preserve">
+    <value>The common catalogue '{0}' is not bundled with this assembly.</value>
+  </data>
 </root>
