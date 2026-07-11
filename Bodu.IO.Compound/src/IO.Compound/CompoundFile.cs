@@ -713,6 +713,47 @@ public sealed class CompoundFile
     }
 
     /// <summary>
+    /// Writes the standard summary-information property set into the root storage, creating or replacing the stream.
+    /// </summary>
+    /// <param name="summary">The summary information to write.</param>
+    /// <remarks>
+    /// The write counterpart of <see cref="TryGetSummaryInformation(out SummaryInformation)" />: the record's
+    /// underlying <see cref="SummaryInformation.PropertySet" /> is staged as the <c>\x05SummaryInformation</c> stream
+    /// and persisted when <see cref="Commit" /> is called.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="summary" /> is <see langword="null" />.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
+    public void SetSummaryInformation(SummaryInformation summary)
+    {
+        ThrowHelper.ThrowIfNull(summary);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        RootStorage.WritePropertySet(SummaryInformation.StreamName, summary.PropertySet);
+    }
+
+    /// <summary>
+    /// Writes the standard document-summary-information property set into the root storage, creating or replacing the
+    /// stream.
+    /// </summary>
+    /// <param name="summary">The document summary information to write.</param>
+    /// <remarks>
+    /// The write counterpart of <see cref="TryGetDocumentSummaryInformation(out DocumentSummaryInformation)" />: the
+    /// record's underlying <see cref="DocumentSummaryInformation.PropertySet" /> is staged as the
+    /// <c>\x05DocumentSummaryInformation</c> stream and persisted when <see cref="Commit" /> is called.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="summary" /> is <see langword="null" />.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
+    public void SetDocumentSummaryInformation(DocumentSummaryInformation summary)
+    {
+        ThrowHelper.ThrowIfNull(summary);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        RootStorage.WritePropertySet(DocumentSummaryInformation.StreamName, summary.PropertySet);
+    }
+
+    /// <summary>
     /// Writes the staged contents of a writable file to its destination, clearing the dirty state.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>

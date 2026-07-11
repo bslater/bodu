@@ -494,6 +494,33 @@ public sealed class CompoundStorage
     }
 
     /// <summary>
+    /// Serializes a property set into the named child stream, creating or replacing it in the staging tree.
+    /// </summary>
+    /// <param name="name">The property-set stream name (for example, <c>\x05SummaryInformation</c>).</param>
+    /// <param name="propertySet">The property set to serialize.</param>
+    /// <remarks>
+    /// The write counterpart of <see cref="TryOpenPropertySet(string, out OlePropertySet)" />: the set is serialized
+    /// through its MS-OLEPS layout and staged as the named stream, replacing any existing payload. The edit is
+    /// persisted only when <see cref="CompoundFile.Commit" /> is called.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> or <paramref name="propertySet" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the stream name is not valid or the set carries a property value that cannot be encoded.
+    /// </exception>
+    public void WritePropertySet(string name, OlePropertySet propertySet)
+    {
+        ThrowHelper.ThrowIfNull(name);
+        ThrowHelper.ThrowIfNull(propertySet);
+        RequireWritable();
+
+        using CompoundStream stream = OpenStream(name, FileMode.Create, FileAccess.Write);
+        propertySet.WriteTo(stream);
+    }
+
+    /// <summary>
     /// Validates that the requested mode and access describe a read-only open, the only capability the current release
     /// supports.
     /// </summary>
