@@ -403,7 +403,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     private static XElement BuildRuleElement(NotableDateRuleBuilder rule, bool requireStrategy)
     {
-        if (requireStrategy && rule.Strategy is null)
+        if (requireStrategy && rule.Strategy is null && rule.Recurrence is null)
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Op_Invalid_RuleStrategyNotSet, rule.Id));
 
         XElement element = new(BuilderXml.s_namespace + "Rule", new XAttribute("id", rule.Id));
@@ -414,6 +414,21 @@ public sealed partial class NotableDateDocumentBuilder
 
         if (rule.Strategy is not null)
             element.Add(new XElement(BuilderXml.s_namespace + "Strategy", new XElement(rule.Strategy)));
+
+        if (rule.Recurrence is not null)
+            element.Add(new XElement(rule.Recurrence));
+
+        if (rule.EndStrategy is not null)
+        {
+            element.Add(new XElement(
+                BuilderXml.s_namespace + "Duration",
+                new XElement(
+                    BuilderXml.s_namespace + "UntilDate",
+                    new XAttribute("startBoundary", rule.EndStartBoundary.ToString()),
+                    new XAttribute("endBoundary", rule.EndEndBoundary.ToString()),
+                    new XAttribute("selection", rule.EndSelectionValue.ToString()),
+                    new XElement(BuilderXml.s_namespace + "Strategy", new XElement(rule.EndStrategy)))));
+        }
 
         XElement? tags = BuildTagsElement(rule.Tags);
         if (tags is not null) element.Add(tags);
