@@ -355,6 +355,11 @@ internal static class PropertySetWriter
     /// <param name="names">The property-name dictionary.</param>
     /// <param name="encoding">The encoding for ANSI names.</param>
     /// <returns>The encoded dictionary bytes (without the leading type word).</returns>
+    /// <remarks>
+    /// In a Unicode (code page 1200) section the reader expects each entry's length prefix as a character count and
+    /// each name padded to a four-byte boundary; in every other code page the prefix is a byte count and entries are
+    /// unpadded. Both branches mirror the reader's <c>ParseDictionary</c> exactly.
+    /// </remarks>
     private static byte[] EncodeDictionary(IReadOnlyDictionary<int, string> names, Encoding encoding)
     {
         using MemoryStream buffer = new();
@@ -362,16 +367,31 @@ internal static class PropertySetWriter
         BinaryPrimitives.WriteUInt32LittleEndian(word, (uint)names.Count);
         buffer.Write(word);
 
+        bool unicode = ReferenceEquals(encoding, Encoding.Unicode);
         foreach (KeyValuePair<int, string> entry in names)
         {
             BinaryPrimitives.WriteUInt32LittleEndian(word, (uint)entry.Key);
             buffer.Write(word);
 
             byte[] text = encoding.GetBytes(entry.Value);
-            BinaryPrimitives.WriteUInt32LittleEndian(word, (uint)(text.Length + 1));
-            buffer.Write(word);
-            buffer.Write(text);
-            buffer.WriteByte(0);
+            if (unicode)
+            {
+                BinaryPrimitives.WriteUInt32LittleEndian(word, (uint)(entry.Value.Length + 1));
+                buffer.Write(word);
+                buffer.Write(text);
+                buffer.WriteByte(0);
+                buffer.WriteByte(0);
+
+                for (int padding = Align4(text.Length + 2) - (text.Length + 2); padding > 0; padding--)
+                    buffer.WriteByte(0);
+            }
+            else
+            {
+                BinaryPrimitives.WriteUInt32LittleEndian(word, (uint)(text.Length + 1));
+                buffer.Write(word);
+                buffer.Write(text);
+                buffer.WriteByte(0);
+            }
         }
 
         return buffer.ToArray();
