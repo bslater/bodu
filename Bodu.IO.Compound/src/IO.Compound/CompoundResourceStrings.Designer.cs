@@ -133,6 +133,15 @@ namespace Bodu.IO.Compound {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A writable stream cursor supports payloads up to 2,147,483,647 bytes; author larger payloads through a deferred stream source such as AddStream(name, openRead, length) or AddStreamFromFile..
+        /// </summary>
+        internal static string Op_NotSupported_CompoundStreamPayloadTooLarge {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_CompoundStreamPayloadTooLarge", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The operation requires write access, but the compound file was opened read-only..
         /// </summary>
         internal static string Op_Invalid_CompoundFileReadOnly {

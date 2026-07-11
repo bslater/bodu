@@ -124,4 +124,7 @@
   <data name="Op_Invalid_CompoundBuilderTooLarge" xml:space="preserve">
     <value>The compound file is too large to serialize.</value>
   </data>
+  <data name="Op_NotSupported_CompoundStreamPayloadTooLarge" xml:space="preserve">
+    <value>A writable stream cursor supports payloads up to 2,147,483,647 bytes; author larger payloads through a deferred stream source such as AddStream(name, openRead, length) or AddStreamFromFile.</value>
+  </data>
 </root>

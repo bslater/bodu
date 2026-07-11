@@ -35,7 +35,10 @@ namespace Bodu.IO.Compound;
 /// backed by a growable in-memory buffer: <see cref="CanWrite" /> is <see langword="true" />, and
 /// <see cref="Write(byte[], int, int)" /> and <see cref="SetLength(long)" /> mutate the buffer. The edits are staged in
 /// memory and are persisted to the underlying destination only when <see cref="CompoundFile.Commit" /> is called;
-/// closing the cursor flushes its buffer into the staging tree but does not write to the destination.
+/// closing the cursor flushes its buffer into the staging tree but does not write to the destination. A writable
+/// cursor holds at most <see cref="int.MaxValue" /> bytes — payloads beyond that are authored through the deferred
+/// stream sources on <see cref="Bodu.IO.Compound.Builders.CompoundStorageBuilder" />
+/// (<c>AddStream(name, openRead, length)</c> or <c>AddStreamFromFile</c>), which never buffer the whole payload.
 /// </para>
 /// <para>
 /// A read-only cursor (<see cref="CanWrite" /> is <see langword="false" />) throws <see cref="NotSupportedException" />
@@ -104,6 +107,9 @@ public sealed class CompoundStream
     /// <summary>Whether this cursor has been disposed.</summary>
     private bool _disposed;
 
+    /// <summary>Whether the writable buffer holds changes not yet flushed into the staging node.</summary>
+    private bool _writePending;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CompoundStream" /> class over a materialized payload.
     /// </summary>
@@ -162,6 +168,11 @@ public sealed class CompoundStream
             _write.Write(initialContent.Span);
             _write.Position = 0;
         }
+
+        // A truncating open (FileMode.Create over an existing stream) seeds the cursor empty but leaves the node's
+        // old content in place, so the cursor starts flush-pending: a write-less dispose must still persist the
+        // truncation into the staging tree.
+        _writePending = true;
     }
 
     /// <summary>
@@ -392,19 +403,30 @@ public sealed class CompoundStream
     {
         ThrowIfDisposed();
         if (_write is not null)
-            FlushToNode();
+            FlushToNode(disposing: false);
     }
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Thrown when the cursor is read-only.</exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when the cursor is read-only, or when <paramref name="value" /> exceeds the
+    /// <see cref="int.MaxValue" /> writable-cursor payload cap.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
+    /// <remarks>
+    /// A writable cursor buffers its payload in memory and supports at most <see cref="int.MaxValue" /> bytes;
+    /// author larger payloads through a deferred stream source
+    /// (<c>AddStream(name, openRead, length)</c> or <c>AddStreamFromFile</c>).
+    /// </remarks>
     public override void SetLength(long value)
     {
         ThrowIfDisposed();
         if (_write is null)
             throw new NotSupportedException();
+        if (value > int.MaxValue)
+            throw new NotSupportedException(CompoundResourceStrings.Op_NotSupported_CompoundStreamPayloadTooLarge);
 
         _write.SetLength(value);
+        _writePending = true;
     }
 
     /// <inheritdoc />
@@ -417,15 +439,26 @@ public sealed class CompoundStream
     }
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Thrown when the cursor is read-only.</exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when the cursor is read-only, or when the write would grow the payload beyond the
+    /// <see cref="int.MaxValue" /> writable-cursor cap.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
+    /// <remarks>
+    /// A writable cursor buffers its payload in memory and supports at most <see cref="int.MaxValue" /> bytes;
+    /// author larger payloads through a deferred stream source
+    /// (<c>AddStream(name, openRead, length)</c> or <c>AddStreamFromFile</c>).
+    /// </remarks>
     public override void Write(ReadOnlySpan<byte> buffer)
     {
         ThrowIfDisposed();
         if (_write is null)
             throw new NotSupportedException();
+        if (buffer.Length > int.MaxValue - _write.Position)
+            throw new NotSupportedException(CompoundResourceStrings.Op_NotSupported_CompoundStreamPayloadTooLarge);
 
         _write.Write(buffer);
+        _writePending = true;
     }
 
     /// <inheritdoc />
@@ -488,7 +521,7 @@ public sealed class CompoundStream
     {
         if (!_disposed && disposing && _write is not null)
         {
-            FlushToNode();
+            FlushToNode(disposing: true);
             _write.Dispose();
         }
 
@@ -497,12 +530,32 @@ public sealed class CompoundStream
     }
 
     /// <summary>
-    /// Persists the buffered bytes into the staging stream node and marks the owning file dirty.
+    /// Persists the buffered bytes into the staging stream node and marks the owning file dirty; a no-op when
+    /// nothing changed since the last flush.
     /// </summary>
-    private void FlushToNode()
+    /// <param name="disposing">
+    /// Whether the cursor is being disposed. A disposing flush transfers the write buffer to the node without
+    /// copying — the dying cursor can no longer mutate it — while a mid-life flush stores a snapshot copy so later
+    /// cursor writes cannot alias already-flushed node content.
+    /// </param>
+    /// <remarks>
+    /// A transferred buffer is the write buffer's growth array, so the node can retain up to roughly twice the
+    /// payload as slack until its content is next replaced or the staging tree is released; the copy saved on every
+    /// dispose outweighs that transient slack for staged edits that are committed and released.
+    /// </remarks>
+    private void FlushToNode(bool disposing)
     {
-        _node!.SetContent(_write!.GetBuffer().AsSpan(0, (int)_write.Length));
+        if (!_writePending)
+            return;
+
+        int length = (int)_write!.Length;
+        if (disposing)
+            _node!.Content = _write.GetBuffer().AsMemory(0, length);
+        else
+            _node!.SetContent(_write.GetBuffer().AsSpan(0, length));
+
         _file!.MarkDirty();
+        _writePending = false;
     }
 
     /// <summary>
