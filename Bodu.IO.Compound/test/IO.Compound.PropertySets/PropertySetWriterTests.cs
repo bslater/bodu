@@ -11,7 +11,7 @@ namespace Bodu.IO.Compound.PropertySets;
 /// <see cref="OlePropertySet.Parse(ReadOnlyMemory{byte})" />.
 /// </summary>
 [TestClass]
-public class PropertySetWriterTests
+public partial class PropertySetWriterTests
 {
     /// <summary>The format identifier used for the test sections.</summary>
     private static readonly Guid TestFormatId = new("F29F85E0-4FF9-1068-AB91-08002B27B3D9");
