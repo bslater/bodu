@@ -82,6 +82,9 @@
   <data name="Arg_Invalid_EcbOptionsFeeds" xml:space="preserve">
     <value>The ECB options must specify at least one feed.</value>
   </data>
+  <data name="Arg_Invalid_EcbFeedFileName" xml:space="preserve">
+    <value>The ECB feed file name '{0}' must be a plain relative file name; a rooted path, parent-directory reference, or absolute URL is not permitted.</value>
+  </data>
   <data name="Op_Invalid_EcbEndpointBaseUrl" xml:space="preserve">
     <value>The ECB endpoint base URL has not been configured.</value>
   </data>
