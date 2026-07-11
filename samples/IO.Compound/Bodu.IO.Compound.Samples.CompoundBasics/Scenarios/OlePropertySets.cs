@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.IO.Compound;
-using Bodu.IO.Compound.Builders;
 using Bodu.IO.Compound.PropertySets;
 
 namespace Bodu.IO.Compound.Samples.CompoundBasics.Scenarios;
@@ -26,7 +25,7 @@ public static class OlePropertySets
     {
         Console.WriteLine("--- OLE property sets: SummaryInformation ---");
 
-        // Author: build the property-set stream bytes, then add them under the well-known name.
+        // Author: build the metadata and write it back through the convenience setter.
         var summary = new SummaryInformationBuilder
         {
             Title = "Quarterly figures",
@@ -35,15 +34,14 @@ public static class OlePropertySets
             CreateTime = new DateTimeOffset(2026, 7, 1, 9, 0, 0, TimeSpan.Zero),
         };
 
-        using var summaryBytes = new MemoryStream();
-        summary.WriteTo(summaryBytes);
-
-        var root = CompoundStorageBuilder.CreateRoot();
-        root.AddStream(SummaryInformation.StreamName, summaryBytes.ToArray());
-        root.AddStream("Body", "..."u8.ToArray());
-
         using var container = new MemoryStream();
-        root.WriteTo(container);
+        using (var writable = CompoundFile.Create(container, leaveOpen: true))
+        {
+            writable.SetSummaryInformation(new SummaryInformation(summary.ToPropertySet()));
+            writable.RootStorage.CreateStream("Body", "..."u8.ToArray());
+            writable.Commit();
+        }
+
         container.Position = 0;
 
         // Read back through the typed accessor.
