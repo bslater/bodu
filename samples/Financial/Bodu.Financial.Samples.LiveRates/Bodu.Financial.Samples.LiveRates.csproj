@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <!--
-      All seven provider packages are referenced so switching the active provider in Program.cs
+      All eleven provider packages are referenced so switching the active provider in Program.cs
       is a comment flip, not a project edit. NuGet consumers add only the package they use.
     -->
     <ProjectReference Include="..\..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
@@ -26,6 +26,10 @@
     <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.Ofx\src\Bodu.Financial.ExchangeRates.Ofx.csproj" />
     <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.Oanda\src\Bodu.Financial.ExchangeRates.Oanda.csproj" />
     <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.Xe\src\Bodu.Financial.ExchangeRates.Xe.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.Fixer\src\Bodu.Financial.ExchangeRates.Fixer.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.ExchangeRateHost\src\Bodu.Financial.ExchangeRates.ExchangeRateHost.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.Fred\src\Bodu.Financial.ExchangeRates.Fred.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.Imf\src\Bodu.Financial.ExchangeRates.Imf.csproj" />
   </ItemGroup>
 
 </Project>

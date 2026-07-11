@@ -2,8 +2,10 @@
 
 The one sample in this tree that goes **online**: fetch real published rates from a live web
 provider for a computed historical date and its trailing week. The ECB reference-rate feed is
-active by default; all six other providers (RBA, BoE, Yahoo, OFX, OANDA, XE) are present as
-comment-switchable blocks — every provider package is already referenced, so switching is a
+active by default; all ten other providers (RBA, BoE, Yahoo, OFX, OANDA, XE, Fixer,
+exchangerate.host, FRED, IMF) are present as comment-switchable blocks — the API-key sources
+(Fixer, exchangerate.host, FRED) need a key set and IMF serves monthly data — every provider
+package is already referenced, so switching is a
 comment flip, and the scenarios run unchanged because all providers serve the same
 `IDatedRateProvider` contract.
 
@@ -99,5 +101,5 @@ provider-agnostic.
 ## NuGet equivalent
 
 ```bash
-dotnet add package Bodu.Financial.ExchangeRates.Ecb    # or .Rba / .Boe / .Yahoo / .Ofx / .Oanda / .Xe
+dotnet add package Bodu.Financial.ExchangeRates.Ecb    # or .Rba / .Boe / .Yahoo / .Ofx / .Oanda / .Xe / .Fixer / .ExchangeRateHost / .Fred / .Imf
 ```

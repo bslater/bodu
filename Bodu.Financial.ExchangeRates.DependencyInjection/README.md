@@ -4,7 +4,7 @@
 
 Shared dependency-injection machinery for the
 [Bodu.Financial](../Bodu.Financial) web exchange-rate providers. Every per-source provider
-package (`Boe`, `Ecb`, `Rba`, `Yahoo`, `Ofx`, `Xe`, `Oanda`) delegates its own `Add…`
+package (`Boe`, `Ecb`, `Rba`, `Yahoo`, `Ofx`, `Xe`, `Oanda`, `Fixer`, `ExchangeRateHost`, `Fred`, `Imf`) delegates its own `Add…`
 registration to the single generic extension defined here, so named-`HttpClient`
 configuration, resilience, options binding, and provider lifetime are wired one way across
 the whole family.
