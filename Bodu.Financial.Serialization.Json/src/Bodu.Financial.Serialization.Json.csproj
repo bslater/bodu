@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Financial JSON Serialization</Title>
+    <Description>System.Text.Json integration for Bodu.Financial. Provides converters, a shared serialization policy (FinancialJsonPolicy: Strict/Lenient/Compact), the AddFinancialJsonConverters() registration helper for Money, Money&lt;TCurrency&gt;, MoneyBag, ExchangeRate, and CurrencyPair, and the AddFinancialJson() dependency-injection registration. Keeping JSON support in this companion package leaves the core Bodu.Financial library serialization-agnostic.</Description>
+    <PackageTags>$(PackageTags);financial;money;currency;json;serialization;system.text.json</PackageTags>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Financial.Serialization.Json.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+  </ItemGroup>
+
+  <!-- Dependency-injection registration surface (AddFinancialJson). -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="Financial.Serialization.Json\FinancialJsonResourceStrings.resx">
+      <LastGenOutput>FinancialJsonResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="Financial.Serialization.Json\FinancialJsonResourceStrings.Designer.cs">
+      <DependentUpon>FinancialJsonResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>

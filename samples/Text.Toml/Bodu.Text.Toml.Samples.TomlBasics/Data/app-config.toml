@@ -1,0 +1,20 @@
+# Contoso order-service configuration (sample data).
+service_name = "orders"
+max_retries = 3
+enabled = true
+
+released_on = 2026-01-15
+maintenance_window = 03:30:00
+build_stamp = 2026-01-15T08:30:00+10:00
+
+[database]
+host = "localhost"
+port = 5432
+
+[[endpoints]]
+name = "public"
+url = "https://api.example.com"
+
+[[endpoints]]
+name = "admin"
+url = "https://admin.example.com"

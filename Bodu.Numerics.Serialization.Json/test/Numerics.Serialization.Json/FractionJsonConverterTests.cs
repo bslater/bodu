@@ -23,7 +23,7 @@ public class FractionJsonConverterTests
     /// <param name="policy">The policy under test.</param>
     /// <returns>The configured options.</returns>
     private static JsonSerializerOptions Options(NumericsJsonPolicy policy = NumericsJsonPolicy.Strict) =>
-        new JsonSerializerOptions().ConfigureForBoduNumerics(policy);
+        new JsonSerializerOptions().AddNumericsJsonConverters(policy);
 
     /// <summary>
     /// Verifies that JSON serialization writes a fraction in the canonical object form under the Strict policy.

@@ -128,11 +128,11 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that an <see cref="ConcurrentHashSet{T}.Add" /> aborted by a faulting comparer <c>Equals</c> releases
-    /// its stripe lock, so a later operation on the same stripe does not deadlock.
+    /// Verifies that an <see cref="ConcurrentHashSet{T}.Add" /> aborted by a faulting comparer <c>Equals</c> leaves
+    /// the lock-free structure fully usable, so a later operation on the same bucket completes normally.
     /// </summary>
     [TestMethod]
-    public void Add_WhenComparerEqualsThrows_ShouldReleaseStripeLock()
+    public void Add_WhenComparerEqualsThrows_ShouldLeaveSetUsable()
     {
         var comparer = new ThrowingEqualsComparer();
         var set = new ConcurrentHashSet<int>(comparer);
@@ -147,7 +147,7 @@ public partial class ConcurrentHashSetTests
         comparer.FaultArmed = false;
         bool completed = Task.Run(() => set.Add(3)).Wait(TimeSpan.FromSeconds(5));
 
-        Assert.IsTrue(completed, "A faulted Add must release its stripe lock so later operations do not deadlock.");
+        Assert.IsTrue(completed, "A faulted Add must leave the set usable so later operations complete normally.");
         Assert.IsTrue(set.Contains(3));
     }
 

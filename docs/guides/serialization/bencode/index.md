@@ -42,6 +42,7 @@ Recipe-style walk-throughs for **Bodu.Text.Bencode** (<xref:Bodu.Text.Bencode.Be
 
 ## Where to go next
 
+- [Runnable samples](../../../samples/bencode.md) — the offline torrent-file sample under `samples/Text.Bencode/`: DOM inspection, canonical round trips, the raw-slice info-hash, and POCO mapping.
 - [Bodu.Text.Bencode introduction](../../../docs/serialization/bencode/index.md) — the format specifics behind these guides.
 - [Bodu serializer guides](../index.md) — the family hub, with the TOML and YAML guide sets.
 - [Text & Serialization guides](../../topics/text-and-serialization.md) — how these guides sit alongside the encoding and format guides.

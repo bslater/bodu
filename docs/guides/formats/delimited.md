@@ -153,6 +153,7 @@ The headline `DelimitedParseOptions` fields control the format dialect:
 
 The count is checked only against a declared header, so `FieldCountBehavior` has no effect when `HasHeader` is `false` — there is no reference width to compare against.
 
+<!-- compile -->
 ```csharp
 var ragged = new DelimitedParseOptions { FieldCountBehavior = DelimitedFieldCountBehavior.Ragged };
 

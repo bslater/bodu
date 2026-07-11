@@ -8,6 +8,7 @@ Bodu.Core hero-core.svg
 Bodu.Extensions.Configuration.Text hero-extensions-config.svg
 Bodu.Financial hero-financial.svg
 Bodu.Financial.DependencyInjection hero-financial-di.svg
+Bodu.Financial.Serialization.Json hero-financial-json.svg
 Bodu.Financial.ExchangeRates hero-fx.svg
 Bodu.Financial.ExchangeRates.Boe hero-fx-boe.svg
 Bodu.Financial.ExchangeRates.Caching hero-fx-caching.svg

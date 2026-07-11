@@ -29,6 +29,18 @@ namespace Bodu.Text.Configuration;
 /// Instances are immutable once constructed; <c>init</c>-only setters allow object-initializer syntax for callers that
 /// need to deviate from the defaults. Reuse a single configured instance across calls when consistency matters.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Dotted keys normalize to colon-separated configuration paths by default;
+/// // Identity keeps authored keys verbatim.
+/// var options = new ConfigurationResolveOptions
+/// {
+///     KeyOptions = new ConfigurationKeyOptions { Mapping = ConfigurationKeyMapping.Identity },
+/// };
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class ConfigurationKeyOptions
 {

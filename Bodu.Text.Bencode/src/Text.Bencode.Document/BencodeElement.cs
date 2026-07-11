@@ -22,6 +22,20 @@ namespace Bodu.Text.Bencode.Document;
 /// null, or floating-point surface, and exposes byte-string content through both <see cref="GetString" /> (UTF-8 text)
 /// and <see cref="GetBytes" /> (raw bytes).
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Navigate a parsed torrent without materializing a mutable tree.
+/// using BencodeDocument document = BencodeDocument.Parse(torrentBytes);
+/// BencodeElement root = document.RootElement;
+///
+/// var announce = root.GetProperty("announce").GetString();
+/// BencodeElement info = root.GetProperty("info");
+/// var pieceLength = info.GetProperty("piece length").GetInt64();
+/// byte[] pieces = info.GetProperty("pieces").GetBytes();   // raw byte string
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public readonly partial struct BencodeElement
 {

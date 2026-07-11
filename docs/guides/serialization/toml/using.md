@@ -41,6 +41,7 @@ TOML has no null: a null member is omitted by default. Dictionary keys may be st
 
 Choose the `byte[]` form with <xref:Bodu.Text.Toml.TomlByteArrayHandling> and the `decimal` form with <xref:Bodu.Text.Toml.TomlDecimalHandling> on the options:
 
+<!-- compile -->
 ```csharp
 var options = new TomlSerializerOptions
 {

@@ -19,6 +19,16 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+    ///
+    /// bool anzacDay = new DateOnly(2024, 4, 25).IsNonWorkingDay(service, "AU");   // true (public holiday)
+    /// bool friday = new DateOnly(2024, 4, 26).IsNonWorkingDay(service, "AU");     // false
+    ///]]>
+    /// </code>
+    /// </example>
     public static bool IsNonWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);

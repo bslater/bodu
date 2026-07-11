@@ -15,6 +15,22 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// The defaults mirror the recommended policy in the schema strategy: duplicates are an error, collisions keep all
 /// occurrences, higher priority wins, and the observed (emitted) occurrence controls range inclusion.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The policy is authored on the document; the builder route sets each knob fluently
+/// // (the XML form is the <ResolutionPolicy> element):
+/// NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
+///     .WithResolutionPolicy(p => p
+///         .WithDuplicatePolicy(DuplicatePolicy.KeepFirst)
+///         .WithSameDayCollisionPolicy(CollisionPolicy.HighestPriorityOnly)
+///         .WithCategoryPrecedence(NotableDateCategory.PublicHoliday, NotableDateCategory.Observance))
+///     .AddNotableDate("new-year", "New Year's Day", NotableDateCategory.PublicHoliday, c => c
+///         .AddRule("default", r => r.Fixed(1, 1)))
+///     .Build();
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 /// <seealso cref="CollisionPolicy" /> <seealso cref="DuplicatePolicy" />
 /// <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity, priority, and observed-date

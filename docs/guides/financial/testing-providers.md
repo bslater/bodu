@@ -70,7 +70,7 @@ switch those fallbacks off for providers that reject them, and `SupportsDisposal
 the post-dispose `ObjectDisposedException` sweep.
 
 This exact pattern runs in the repository: the
-[CustomProvider sample](samples.md#bodufinancialsamplescustomprovider--test) is a consumer-shaped
+[CustomProvider sample](../../samples/financial.md#bodufinancialsamplescustomprovider--test) is a consumer-shaped
 `CsvFileRateProvider` whose companion test project derives the base and passes it in CI.
 
 ## Deriving the pair-web-provider contract

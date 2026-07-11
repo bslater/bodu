@@ -221,7 +221,7 @@ Register the converters with a single call and pick a wire shape:
 using Bodu.Numerics.Serialization.Json;
 
 var options = new JsonSerializerOptions()
-    .ConfigureForBoduNumerics(NumericsJsonPolicy.Strict);
+    .AddNumericsJsonConverters(NumericsJsonPolicy.Strict);
 
 // Strict — canonical object form:
 //   { "unscaledValue": 12340, "scale": 3 }

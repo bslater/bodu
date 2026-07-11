@@ -6,7 +6,6 @@
 
 using System.Globalization;
 using System.Numerics;
-using System.Text.Json;
 using Bodu.Financial.Currencies;
 
 using Bodu.Numerics;
@@ -401,36 +400,4 @@ public partial class MoneyOfTCurrencyTests
         Assert.AreEqual("JPY 1,234", actual);
     }
 
-    // ---------------------------------------------------------------------------------------------------------------
-    // 10.2 — JSON read must reject duplicate "amount" or "currency" properties.
-    // ---------------------------------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that a JSON payload with duplicate <c>"amount"</c> properties is rejected. Last-write-wins on
-    /// financial payloads is a silent data-integrity hazard.
-    /// </summary>
-    [TestMethod]
-    public void JsonDeserialize_WhenAmountPropertyDuplicated_ShouldThrowJsonException()
-    {
-        string json = "{\"amount\":10,\"amount\":20,\"currency\":\"USD\"}";
-
-        Assert.ThrowsExactly<JsonException>(() =>
-        {
-            _ = JsonSerializer.Deserialize<Money<USD>>(json);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a JSON payload with duplicate <c>"currency"</c> properties is rejected.
-    /// </summary>
-    [TestMethod]
-    public void JsonDeserialize_WhenCurrencyPropertyDuplicated_ShouldThrowJsonException()
-    {
-        string json = "{\"amount\":10,\"currency\":\"USD\",\"currency\":\"JPY\"}";
-
-        Assert.ThrowsExactly<JsonException>(() =>
-        {
-            _ = JsonSerializer.Deserialize<Money<USD>>(json);
-        });
-    }
 }

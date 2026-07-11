@@ -20,6 +20,21 @@ namespace Bodu.Text.Toml.Nodes;
 /// TOML has no null token. Adding a node that already belongs to another container throws an
 /// <see cref="InvalidOperationException" />; removing or replacing a value detaches it, clearing its
 /// <see cref="TomlNode.Parent" /> so it can be added to another container.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var table = new TomlObject
+/// {
+///     ["name"] = TomlValue.Create("orders"),
+///     ["port"] = TomlValue.Create(8080),
+/// };
+/// table.Add("enabled", TomlValue.Create(true));
+///
+/// // The mutable tree serializes straight back to TOML text.
+/// byte[] utf8 = table.ToUtf8Bytes();
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class TomlObject
     : TomlNode, IDictionary<string, TomlNode?>

@@ -50,7 +50,11 @@ bool isClosed   = today.IsNonWorkingDay(service, "AU-NSW");
 | `NextNotableDate(service, territory, NotableDateFilter? filter = null)` | The next `NotableDate?` matching the optional filter, or `null` when none is found. |
 | `PreviousNotableDate(service, territory, NotableDateFilter? filter = null)` | The previous `NotableDate?` matching the optional filter, or `null`. |
 
+<!-- compile -->
 ```csharp
+NotableDateService service = AsiaPacificCalendarData.CreateService("AU-NSW");
+DateOnly today = new DateOnly(2026, 1, 26);
+
 DateOnly nextOpen    = today.NextWorkingDay(service, "AU-NSW");
 DateOnly lastOpen    = today.PreviousWorkingDay(service, "AU-NSW");
 NotableDate? holiday = today.NextNotableDate(service, "AU-NSW");
@@ -94,7 +98,9 @@ The day enumerations return a lazily-evaluated `IEnumerable<DateOnly>` over the 
 | `EnumerateNonWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)` | `IEnumerable<DateOnly>` — every non-working day in the inclusive range (lazy). |
 | `EnumerateNotableDates(DateOnly end, service, territory, NotableDateFilter? filter = null)` | `IReadOnlyList<NotableDate>` — every notable date in the inclusive range (eager). |
 
+<!-- compile -->
 ```csharp
+NotableDateService service = AsiaPacificCalendarData.CreateService("AU-NSW");
 DateOnly start = new DateOnly(2026, 1, 1);
 DateOnly end   = new DateOnly(2026, 1, 31);
 

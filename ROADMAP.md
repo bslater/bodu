@@ -3,11 +3,26 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-07-08. Since the previous revision, step 2 of the
-**Numerics growth wave has landed — `BigDecimal`** ships as an
+*Last updated: 2026-07-10. Since the previous revision,
+**`Bodu.Financial` was restructured**: the currency surface now lives in
+`Bodu.Financial.Currencies`, the FX core in
+`Bodu.Financial.ExchangeRates`, the `Exchange`-stuttered type names were
+de-stuttered (`RateBook`, `RateSeries`, `CachingRateProvider`, …), and
+the `WebRateProvider` / `PairWebRateProvider<TSeries>` web-provider
+machinery was extracted into its own **`Bodu.Financial.ExchangeRates`
+package** that every per-source provider references. A
+**runnable-samples suite** landed alongside — a `samples/` tree covering
+Financial, Calendar, the text libraries, and the IO group (IO.Hashing,
+IO.Compound, Formats.Excel), with snippet-compile guards keeping the
+guide snippets building, a live FX sample, and a testing
+guide — and the FX libraries gained a **swallowed-exception logging
+pass** plus follow-up renames (`IHistoryAwareRateProvider` →
+`IHistoricalRateProvider`, `RbaEra` → `RbaEraWorkbook`). Before that,
+step 2 of the
+**Numerics growth wave landed — `BigDecimal`** ships as an
 arbitrary-precision decimal with the full `INumber<BigDecimal>`
 generic-math surface, span/UTF-8 parse and format, rounding, and a
-JSON converter registered through `ConfigureForBoduNumerics` — and
+JSON converter registered through `AddNumericsJsonConverters` — and
 step 3, the **running-statistics aggregates**, has landed as well
 (`RunningStatistics<T>` / `RunningQuantile<T>` accumulators and the
 rolling-window `MovingSum<T>` / `MovingMinMax<T>` companions),
@@ -35,9 +50,11 @@ contract, and the **`Hotp` / `Totp`** one-time-password codes — and the
 **Numerics growth wave** began (now complete: `Interval<T>` extensions,
 `BigDecimal`, and the running-statistics aggregates have all
 landed — see Active focus). A
-release-discipline pass has since moved `Bodu.Numerics` from Stable back
-to **Preview** until its serialization, result-type, and documentation
-conventions catch up with the expanded interval model (see *API-stability
+release-discipline pass earlier moved `Bodu.Numerics` from Stable to
+**Preview**; its serialization and documentation conventions have since
+caught up (JSON now ships in the `Bodu.Numerics.Serialization.Json`
+companion), and the tier now holds only while the new `BigDecimal` and
+statistics surfaces settle (see *API-stability
 tiers*). This revision also folds in a **cross-ecosystem gap review** —
 Bodu's surface compared against the highest-adoption Java (Guava, Apache
 Commons, libphonenumber, ical4j / Quartz, Caffeine) and Python (stdlib
@@ -135,7 +152,7 @@ exercised on the smallest self-contained units first.
 | `Bodu.Core` | The dependency root — buffers, extension surfaces, threading primitives, sequences, `WeekPattern`, `ThrowHelper`, text-encoding utilities. |
 | `Bodu.Collections` | The specialized collection catalogue (incl. the graphs/trees pillars), split out of Core; references `Bodu.Core`. Namespaces unchanged (`Bodu.Collections.*`). |
 | `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and the interval algebra (`Interval<T>` / `DiscreteInterval<T>` / `IntervalSet<T>`) over `INumber<T>`. Serialization-agnostic — no `System.Text.Json` dependency. |
-| `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`ConfigureForBoduNumerics`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
+| `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`AddNumericsJsonConverters`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
 | `Bodu.IO.Hashing` | Non-cryptographic hashing + the full RevEng CRC catalogue + the check-digit family. |
 | `Bodu.Text.Encoding` | Base16/32/58/62/64/85 + Base45 + Bech32/Bech32m. |
 | `Bodu.Security.Cryptography` | Block/stream ciphers, AEAD, keyed/crypto hashes, the asymmetric family, KDFs, HPKE. |
@@ -301,7 +318,7 @@ is now:
      (`BigInteger` mantissa + scale) with the full `INumber<BigDecimal>`
      generic-math surface, span/UTF-8 parse and format, rounding, and a
      `BigDecimalJsonConverter` registered through
-     `ConfigureForBoduNumerics` alongside the existing `Fraction<T>` /
+     `AddNumericsJsonConverters` alongside the existing `Fraction<T>` /
      `Interval<T>` converters.
    - **Running-statistics aggregates have landed.** ✅ Online
      mean / variance (Welford, with the Chan et al. parallel `Combine`),
@@ -319,7 +336,7 @@ is now:
    window, alongside OANDA's existing ~180-day window; the shared
    pair-provider contract test now forces every future provider to
    declare deliberately. The consuming side has since landed as well:
-   the new `IHistoryAwareRateProvider` capability interface is
+   the new `IHistoricalRateProvider` capability interface is
    implemented across the provider base, the fixed-book provider, and
    both decorators; `CachingRateProvider` clamps or skips
    fetches outside the inner source's advertised history (recording the
@@ -402,8 +419,8 @@ Forward-looking:
   resource strings.
 - **`ConcurrentEvictingDictionary<TKey,TValue>` has landed.** ✅ The
   thread-safe variant of `EvictingDictionary<,>` in
-  `Bodu.Collections.Concurrent`: lock-striped segments (the
-  `ConcurrentHashSet` idiom) where each segment runs an exact policy
+  `Bodu.Collections.Concurrent`: lock-striped segments,
+  where each segment runs an exact policy
   cache over its slice of the capacity — eviction order is exact per
   segment, approximate globally, while the slices sum to `Capacity`
   exactly. All six policies plus the TTL layer are supported; concurrent
@@ -748,7 +765,7 @@ sequenced steps have shipped:
    `INumber<BigDecimal>` / `INumberBase<BigDecimal>` generic-math surface,
    span/UTF-8 parse and format, rounding, conversions, and a
    `BigDecimalJsonConverter` in `Bodu.Numerics.Serialization.Json`
-   registered by `ConfigureForBoduNumerics`. No BCL equivalent existed —
+   registered by `AddNumericsJsonConverters`. No BCL equivalent existed —
    the highest-leverage gap-filler, now closed.
 3. **Running-statistics aggregates — shipped.** ✅ Online mean / variance
    (Welford, with the Chan et al. parallel merge exposed as `Combine`),
@@ -784,26 +801,28 @@ per-currency `ICurrency` types, `CurrencyLookupService`), formatting /
 parsing (`MoneyFormatter`, `MoneyParseOptions`), rounding / allocation
 policies (`IRoundingStrategy`, `MonetaryContext`, the policy enums), the
 full FX abstraction stack (`ExchangeRate` / `ExchangeRate<TBase,TQuote>`,
-`IRateProvider` / `IDatedRateProvider`, `RateBook`
-/ `RateSeries`, `FixedDatedRateProvider`), and the
-abstract `WebRateProvider` / `PairWebRateProvider<TSeries>`
-bases the provider packages extend. References `Bodu.Numerics` for the
-`Fraction<BigInteger>` exact-arithmetic escape hatch.
+`IRateProvider` / `IDatedRateProvider` / `IHistoricalRateProvider`,
+`RateBook` / `RateSeries`, `FixedDatedRateProvider`), delineated across
+the `Bodu.Financial` / `.Currencies` / `.ExchangeRates` namespaces. The
+abstract `WebRateProvider` / `PairWebRateProvider<TSeries>` bases the
+provider packages extend now ship from the separate
+`Bodu.Financial.ExchangeRates` package. References `Bodu.Numerics` for
+the `Fraction<BigInteger>` exact-arithmetic escape hatch.
 
 - **The provider → immutable conversion surface has landed.** ✅
-  `WebExchangeRateProvider` exposes its accumulated state through
+  `WebRateProvider` exposes its accumulated state through
   `GetLoadedBook()` / `GetLoadedSnapshot()` (the internal immutable book
   and ready-to-query snapshot, pinned at call time),
-  `FixedDatedExchangeRateProvider` exposes its wrapped `Book`, and
-  `ExchangeRateBook.ToBuilder()` round-trips into the mutable table
+  `FixedDatedRateProvider` exposes its wrapped `Book`, and
+  `RateBook.ToBuilder()` round-trips into the mutable table
   builder. The `Bodu.Financial.Extensions` companions complete the chain:
   `IEnumerable<ExchangeRate>.ToBook()` (multi-provider-safe,
   inversion-normalizing, `FetchedAtUtc`-preserving),
-  `ExchangeRateBook.ToFixedProvider(…)`, and the fetch-based
-  `IDatedExchangeRateProvider.ToFixedProviderAsync(pairs, start, end)`.
+  `RateBook.ToFixedProvider(…)`, and the fetch-based
+  `IDatedRateProvider.ToFixedProviderAsync(pairs, start, end)`.
   Deferred follow-ups if demand emerges: book `Merge` / `Slice` helpers,
   a per-pair-window `ToFixedProviderAsync` overload, and promoting book
-  exposure onto `IExchangeRatePairLoader`.
+  exposure onto `IPairRateLoader`.
 - **Ship the 1.0 package** (Wave 3) with its DI companion.
 - **A second `IRoundingStrategy`.** The abstraction has a single
   implementation (`MidpointRoundingStrategy`); a
@@ -847,7 +866,7 @@ backends in-package and durable `Sqlite` + shared `Distributed`
   and Yahoo, a deliberate Unbounded for OFX, rolling windows for XE and
   OANDA) and enforced for pair providers by the shared contract test.
   The caching / aggregation layer now reads it through the
-  `IHistoryAwareRateProvider` capability interface: the caching
+  `IHistoricalRateProvider` capability interface: the caching
   decorator skips single-date misses and clamps range fetches to the
   inner source's advertised earliest date (recording the unavailable
   prefix as covered-with-no-rows), and the aggregator drops candidates
@@ -1271,7 +1290,7 @@ blockquote directly under its README title. The assignment:
   candidate) and its companion
   `Bodu.Numerics.Serialization.Json` (the JSON contract is new — the core
   types are now serialization-agnostic and support is opt-in via
-  `ConfigureForBoduNumerics`), `Bodu.Text.Yaml` (the serializer is read-first and its
+  `AddNumericsJsonConverters`), `Bodu.Text.Yaml` (the serializer is read-first and its
   write surface is still being rounded out) and the network-dependent
   exchange-rate family: the six web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda}`
   and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.
@@ -1320,7 +1339,11 @@ catching accidental breaking changes at pack time.
 **Largely achieved.** Every shipping project has a `docs/guides/<project>/`
 entry, and coverage is broad — including the articles the previous roadmap
 listed as owed (`numerics/fraction.md`, `serialization/yaml/`,
-`financial/exchange-rate-caching.md` and the other FX guides). The one
+`financial/exchange-rate-caching.md` and the other FX guides). The guides
+are now backed by the **runnable-samples suite** — the `samples/` tree
+(Financial, Calendar, the text libraries, and the IO group, including a
+live FX sample)
+whose snippet-compile guards keep the documented code building. The one
 remaining gap is a dedicated **calendar plugin-loader** guide under
 `docs/guides/calendar/` (the loader is currently covered only implicitly by
 `building-the-service.md` / `dependency-injection.md`).

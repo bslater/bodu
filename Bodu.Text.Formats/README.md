@@ -41,6 +41,13 @@ DelimitedDocument loaded = Delimited.Load(stream);
 
 Parse options expose the behavioural knobs each format needs — delimiter / quote / comment characters and duplicate-header and malformed-record policies for delimited text; case sensitivity and duplicate-section/key policies for INI; and export-prefix, inline-comment, and interpolation toggles for DotEnv.
 
+## Runnable samples
+
+The repository ships offline, `dotnet run`-able sample projects for this package — delimited
+parsing with typed getters and dirty-input policies, streaming reader/writer pipelines, and
+the INI and DotEnv document formats — under
+[`samples/Text.Formats/`](https://github.com/bslater/bodu/tree/master/samples/Text.Formats).
+
 ## Testing
 
 Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:

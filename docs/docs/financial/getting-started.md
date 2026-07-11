@@ -175,20 +175,19 @@ The currency's `CashRoundingIncrement` (e.g. `0.05m` for CHF) drives the snap. E
 
 ### JSON
 
-`Money<T>`, `Money`, and `MoneyBag` all carry `[JsonConverter]` attributes, so the default `Strict` policy works without extra wiring:
+JSON support ships in the companion `Bodu.Financial.Serialization.Json` package (`dotnet add package Bodu.Financial.Serialization.Json`); the core types carry no `[JsonConverter]` attribute, so register the converters before serializing. The default `Strict` policy emits the canonical object shape:
 
 ```json
 { "amount": 19.99, "currency": "USD" }
 ```
 
-To switch to lenient parsing or the compact string form (`"19.99 USD"`), register the converters with an explicit policy:
-
 ```csharp
-using Bodu.Financial.Serialization;
+using Bodu.Financial.Serialization.Json;
 
-var options = new JsonSerializerOptions();
-options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
+var options = new JsonSerializerOptions().AddFinancialJsonConverters();
 ```
+
+For lenient parsing or the compact string form (`"19.99 USD"`), pass an explicit policy — for example `options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact)`.
 
 ### A unit outside the shipped catalogue
 
@@ -215,4 +214,4 @@ Money<XPT> holding = new Money<XPT>(12.3456m);
 - **[Working with `Money<TCurrency>`](../../guides/financial/money.md)** — the full reference for typed money, including formatting/parsing, locale-aware output, cash rounding, historic-currency metadata, `Money` interop, and `MoneyBag` portfolios.
 - **[Bodu.Numerics getting started](../numerics/getting-started.md)** — for the `Fraction<BigInteger>` precision escape hatch used by `Money<T>.ToFraction()`.
 - **[Bodu.Financial API reference](xref:Bodu.Financial)** — full type-by-type docs.
-- **[Runnable samples](../../guides/financial/samples.md)** — offline sample projects under `samples/financial/` you can `dotnet run` and copy from.
+- **[Runnable samples](../../samples/financial.md)** — offline sample projects under `samples/Financial/` you can `dotnet run` and copy from.

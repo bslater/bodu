@@ -521,8 +521,8 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that when every key hashes to the same bucket — funnelling all writers through a single stripe lock
-    /// and a single chain — every privately-owned key is still added exactly once and retained.
+    /// Verifies that when every key hashes to the same bucket — funnelling all writers into a single equal-key run
+    /// of the split-ordered list — every privately-owned key is still added exactly once and retained.
     /// </summary>
     [TestMethod]
     [TestCategory("Stress")]
@@ -1047,5 +1047,263 @@ public partial class ConcurrentHashSetTests
         Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
         Assert.AreEqual(0, coherenceViolations, "Every snapshot must contain only distinct, in-range elements.");
         Assert.IsGreaterThan(0, snapshots, "Readers must have captured snapshots during the stress run.");
+    }
+    /// <summary>
+    /// Verifies that many workers toggling one shared key with unconditional add/remove pairs never corrupt the
+    /// count or the membership answer: at quiescence the count is zero or one, agrees with
+    /// <see cref="ConcurrentHashSet{T}.Contains" />, and equals the surplus of successful adds over successful
+    /// removes.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Stress_WhenWorkersToggleSameKey_ShouldNeverCorruptCountOrMembership()
+    {
+        const int workerCount = 8;
+        const int iterations = 50_000;
+        const int key = 42;
+
+        var set = new ConcurrentHashSet<int>();
+        using var startGate = new ManualResetEventSlim(false);
+
+        int successfulAdds = 0;
+        int successfulRemoves = 0;
+        int faults = 0;
+        Exception? firstException = null;
+
+        Task[] tasks = Enumerable.Range(0, workerCount).Select(_ =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+
+                try
+                {
+                    for (int i = 0; i < iterations; i++)
+                    {
+                        if (set.Add(key))
+                            Interlocked.Increment(ref successfulAdds);
+
+                        if (set.Remove(key))
+                            Interlocked.Increment(ref successfulRemoves);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                }
+            })).ToArray();
+
+        startGate.Set();
+        bool completed = Task.WaitAll(tasks, 60_000);
+
+        int finalCount = set.Count;
+        bool finallyPresent = set.Contains(key);
+
+        TestContext.WriteLine(
+            $"SuccessfulAdds={successfulAdds}, SuccessfulRemoves={successfulRemoves}, FinalCount={finalCount}, " +
+            $"Present={finallyPresent}, Faults={faults}, Completed={completed}, FirstException={firstException}");
+
+        Assert.IsTrue(completed, "Workers did not complete within the deadlock timeout.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.IsTrue(finalCount is 0 or 1, $"A single toggled key must leave a count of 0 or 1, got {finalCount}.");
+        Assert.AreEqual(finallyPresent ? 1 : 0, finalCount, "Count must agree with Contains at quiescence.");
+        Assert.AreEqual(
+            successfulAdds - successfulRemoves, finalCount,
+            "The surplus of successful adds over successful removes must equal the final count.");
+    }
+
+    /// <summary>
+    /// Verifies that keys fully acknowledged before <see cref="ConcurrentHashSet{T}.Clear" /> begins are absent
+    /// after it returns, even while unrelated churn races the clear — the clear's atomic swap must be ordered after
+    /// every operation that completed before it started.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Stress_WhenClearRacesWithChurn_ShouldRemoveEveryPreClearKey()
+    {
+        const int rounds = 200;
+        const int preClearKeys = 100;
+        const int churnWorkers = 4;
+
+        var set = new ConcurrentHashSet<int>();
+        using var stopGate = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        int faults = 0;
+        Exception? firstException = null;
+
+        // Churn workers mutate a disjoint key range so they never mask the pre-clear keys under test.
+        Task[] churn = Enumerable.Range(0, churnWorkers).Select(workerId =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                int baseKey = 1_000_000 + (workerId * 1000);
+
+                try
+                {
+                    while (!stopGate.Token.IsCancellationRequested)
+                    {
+                        for (int k = 0; k < 100; k++)
+                            set.Add(baseKey + k);
+
+                        for (int k = 0; k < 100; k++)
+                            set.Remove(baseKey + k);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                }
+            })).ToArray();
+
+        startGate.Set();
+
+        int staleKeys = 0;
+        for (int round = 0; round < rounds; round++)
+        {
+            for (int k = 0; k < preClearKeys; k++)
+                set.Add(k);
+
+            set.Clear();
+
+            for (int k = 0; k < preClearKeys; k++)
+            {
+                if (set.Contains(k))
+                    Interlocked.Increment(ref staleKeys);
+            }
+        }
+
+        stopGate.Cancel();
+        bool completed = Task.WaitAll(churn, 60_000);
+
+        TestContext.WriteLine(
+            $"StaleKeys={staleKeys}, Faults={faults}, Completed={completed}, FirstException={firstException}");
+
+        Assert.IsTrue(completed, "Churn workers did not complete within the deadlock timeout.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.AreEqual(0, staleKeys, "Every key acknowledged before Clear began must be absent after Clear returns.");
+    }
+
+    /// <summary>
+    /// Verifies that growth cycles racing concurrent removers neither lose surviving keys nor resurrect removed
+    /// ones: with adders inserting one half of the key space and removers draining the other, exactly the added half
+    /// survives.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Stress_WhenGrowthRacesWithRemoves_ShouldRetainExactSurvivors()
+    {
+        const int half = 4_000;
+
+        // A tiny initial capacity forces many doubling cycles while both worker groups run.
+        var set = new ConcurrentHashSet<int>(capacity: 4);
+        for (int i = 0; i < half; i++)
+            set.Add(i);
+
+        using var startGate = new ManualResetEventSlim(false);
+        int faults = 0;
+        Exception? firstException = null;
+
+        Task[] tasks =
+        [
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                try
+                {
+                    for (int i = half; i < half * 2; i++)
+                        set.Add(i);
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                }
+            }),
+            StartWorker(() =>
+            {
+                startGate.Wait();
+                try
+                {
+                    for (int i = 0; i < half; i++)
+                        set.Remove(i);
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                }
+            }),
+        ];
+
+        startGate.Set();
+        bool completed = Task.WaitAll(tasks, 60_000);
+
+        TestContext.WriteLine(
+            $"FinalCount={set.Count}, Buckets={set.BucketCount}, Faults={faults}, Completed={completed}, " +
+            $"FirstException={firstException}");
+
+        Assert.IsTrue(completed, "Workers did not complete within the deadlock timeout.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.AreEqual(half, set.Count, "Exactly the added half of the key space must survive.");
+
+        for (int i = 0; i < half; i++)
+            Assert.IsFalse(set.Contains(i), $"Removed key {i} must not survive.");
+
+        for (int i = half; i < half * 2; i++)
+            Assert.IsTrue(set.Contains(i), $"Added key {i} must survive.");
+    }
+
+    /// <summary>
+    /// Verifies lock-free progress under oversubscription: with more workers than processors all hammering a single
+    /// fully colliding equal-key run, every worker still completes its fixed operation quota — no interleaving of
+    /// preempted threads can livelock or deadlock the set.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Stress_WhenOversubscribedWorkersChurnCollidingRun_ShouldAlwaysMakeProgress()
+    {
+        int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        const int iterations = 20_000;
+
+        var set = new ConcurrentHashSet<int>(new ConstantHashComparer());
+        using var startGate = new ManualResetEventSlim(false);
+
+        int faults = 0;
+        Exception? firstException = null;
+
+        Task[] tasks = Enumerable.Range(0, workerCount).Select(workerId =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+
+                try
+                {
+                    for (int i = 0; i < iterations; i++)
+                    {
+                        int key = (workerId * iterations) + i;
+                        set.Add(key % 64);
+                        set.Contains(key % 64);
+                        set.Remove(key % 64);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Interlocked.CompareExchange(ref firstException, ex, null);
+                    Interlocked.Increment(ref faults);
+                }
+            })).ToArray();
+
+        startGate.Set();
+        bool completed = Task.WaitAll(tasks, 300_000);
+
+        TestContext.WriteLine(
+            $"Workers={workerCount}, Faults={faults}, FinalCount={set.Count}, Completed={completed}, " +
+            $"FirstException={firstException}");
+
+        Assert.IsTrue(completed, "Every worker must finish its quota — the lock-free set must never livelock.");
+        Assert.AreEqual(0, faults, $"No exception is expected. First exception: {firstException}");
+        Assert.IsTrue(set.Count is >= 0 and <= 64, $"Final count must lie within the toggled key range, got {set.Count}.");
     }
 }

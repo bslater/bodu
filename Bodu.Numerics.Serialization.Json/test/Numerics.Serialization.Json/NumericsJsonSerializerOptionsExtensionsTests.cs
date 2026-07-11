@@ -9,7 +9,7 @@ using System.Text.Json;
 namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
-/// Verifies <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" /> registers the expected
+/// Verifies <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" /> registers the expected
 /// converters, validates its arguments, and selects the requested <see cref="NumericsJsonPolicy" />.
 /// </summary>
 [TestClass]
@@ -19,11 +19,11 @@ public class NumericsJsonSerializerOptionsExtensionsTests
     /// Verifies that the extension registers one converter for each shipped numeric type.
     /// </summary>
     [TestMethod]
-    public void ConfigureForBoduNumerics_WhenCalled_ShouldRegisterExpectedConverters()
+    public void AddNumericsJsonConverters_WhenCalled_ShouldRegisterExpectedConverters()
     {
         JsonSerializerOptions options = new();
 
-        options.ConfigureForBoduNumerics();
+        options.AddNumericsJsonConverters();
 
         Assert.HasCount(5, options.Converters);
         Assert.Contains(c => c is FractionJsonConverterFactory, options.Converters);
@@ -37,11 +37,11 @@ public class NumericsJsonSerializerOptionsExtensionsTests
     /// Verifies that the extension returns its argument so that calls compose fluently.
     /// </summary>
     [TestMethod]
-    public void ConfigureForBoduNumerics_WhenCalled_ShouldReturnSameInstance()
+    public void AddNumericsJsonConverters_WhenCalled_ShouldReturnSameInstance()
     {
         JsonSerializerOptions options = new();
 
-        JsonSerializerOptions returned = options.ConfigureForBoduNumerics();
+        JsonSerializerOptions returned = options.AddNumericsJsonConverters();
 
         Assert.AreSame(options, returned);
     }
@@ -51,13 +51,13 @@ public class NumericsJsonSerializerOptionsExtensionsTests
     /// expected <see cref="ArgumentException.ParamName" />.
     /// </summary>
     [TestMethod]
-    public void ConfigureForBoduNumerics_WhenOptionsIsNull_ShouldThrowArgumentNullException()
+    public void AddNumericsJsonConverters_WhenOptionsIsNull_ShouldThrowArgumentNullException()
     {
         JsonSerializerOptions? options = null;
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = options!.ConfigureForBoduNumerics();
+            _ = options!.AddNumericsJsonConverters();
         });
 
         Assert.AreEqual("options", ex.ParamName);
@@ -67,13 +67,13 @@ public class NumericsJsonSerializerOptionsExtensionsTests
     /// Verifies that an undefined policy throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void ConfigureForBoduNumerics_WhenPolicyUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void AddNumericsJsonConverters_WhenPolicyUndefined_ShouldThrowArgumentOutOfRangeException()
     {
         JsonSerializerOptions options = new();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = options.ConfigureForBoduNumerics((NumericsJsonPolicy)999);
+            _ = options.AddNumericsJsonConverters((NumericsJsonPolicy)999);
         });
     }
 }

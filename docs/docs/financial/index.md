@@ -54,9 +54,9 @@ The exchange-rate values, stores, and provider contracts, shipped in the core `B
 
 The same namespace is also where the separate **`Bodu.Financial.ExchangeRates`** package adds the web-provider machinery (<xref:Bodu.Financial.ExchangeRates.WebRateProvider>, <xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1>, and their supporting types) that the per-source feed packages build on — see [Exchange-rate providers and caching](#exchange-rate-providers-and-caching) below. The core `Bodu.Financial` package itself carries no HTTP machinery.
 
-### `Bodu.Financial.Serialization`
+### `Bodu.Financial.Serialization.Json` (companion package)
 
-`System.Text.Json` converters and the <xref:Bodu.Financial.Serialization.FinancialJsonPolicy> enum (`Strict = 0`, `Lenient = 1`, `Compact = 2`). `FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(options, policy)` registers all five converters at once — for `Money<TCurrency>` (via a `JsonConverterFactory`), `Money`, `MoneyBag`, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> — under the chosen policy, and returns the same `JsonSerializerOptions` for chaining. Each converter also has a parameterless constructor that defaults to `Strict`, which is what the type-level `[JsonConverter]` attributes use when no converter is registered explicitly.
+`System.Text.Json` converters and the <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> enum (`Strict = 0`, `Lenient = 1`, `Compact = 2`), shipped in the companion `Bodu.Financial.Serialization.Json` package — the core library is serialization-agnostic and its types carry no `[JsonConverter]` attribute. `FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(options, policy)` registers all five converters at once — for `Money<TCurrency>` (via a `JsonConverterFactory`), `Money`, `MoneyBag`, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> — under the chosen policy, and returns the same `JsonSerializerOptions` for chaining. Each converter also has a parameterless constructor that defaults to `Strict`.
 
 ## Exchange-rate providers and caching
 
@@ -107,7 +107,7 @@ Cash rounding is a presentation choice for physical payments, not a storage rule
 
 ## JSON serialization
 
-`Money<TCurrency>`, `Money`, and `MoneyBag` all carry `[JsonConverter]` attributes, so the default `Strict` policy works without extra wiring. The <xref:Bodu.Financial.Serialization.FinancialJsonPolicy> enum selects the wire shape and parsing strictness:
+JSON support ships in the companion `Bodu.Financial.Serialization.Json` package; registration via `AddFinancialJsonConverters` is required — the monetary types carry no `[JsonConverter]` attribute. The <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> enum selects the wire shape and parsing strictness:
 
 | Policy | Wire shape | Use case |
 |---|---|---|
@@ -116,7 +116,7 @@ Cash rounding is a presentation choice for physical payments, not a storage rule
 | `Compact` | Single string `"19.99 USD"` for money; flat object `{ "USD": 19.99, "EUR": 12.34 }` for bags. | Wire-size-sensitive APIs and human-readable logs. |
 
 ```csharp
-using Bodu.Financial.Serialization;
+using Bodu.Financial.Serialization.Json;
 
 var options = new JsonSerializerOptions();
 options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
@@ -124,7 +124,7 @@ options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
 string json = JsonSerializer.Serialize(new Money<USD>(19.99m), options);   // "19.99 USD"
 ```
 
-Deserialization on `Money<TCurrency>` rejects payloads whose `currency` field does not match `TCurrency.IsoCode` — currency drift surfaces as `JsonException`, not as a silently re-interpreted amount. Converters registered on <xref:System.Text.Json.JsonSerializerOptions.Converters> take precedence over the type-level attribute, which defaults to `Strict`.
+Deserialization on `Money<TCurrency>` rejects payloads whose `currency` field does not match `TCurrency.IsoCode` — currency drift surfaces as `JsonException`, not as a silently re-interpreted amount.
 
 ## Scenarios this library covers
 
@@ -142,7 +142,7 @@ Deserialization on `Money<TCurrency>` rejects payloads whose `currency` field do
 | Prioritised fallback (or averaging) across multiple FX sources | [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider) (in `Bodu.Financial.ExchangeRates.Caching`) |
 | Build a rate series imperatively, or edit an existing one and snapshot the result | <xref:Bodu.Financial.ExchangeRates.RateSeriesBuilder>, `RateSeries.ToBuilder()` / `WithRate(...)` / `WithoutRate(...)` |
 | Import rates for many `(pair, provider)` combinations before producing immutable snapshots | <xref:Bodu.Financial.ExchangeRates.RateTableBuilder> |
-| Three JSON wire shapes (strict-canonical, lenient-import, compact-string) for the same monetary type | <xref:Bodu.Financial.Serialization.FinancialJsonPolicy> |
+| Three JSON wire shapes (strict-canonical, lenient-import, compact-string) for the same monetary type | <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> |
 
 ## Design choices
 
@@ -159,7 +159,7 @@ The companion **`Bodu.Financial.DependencyInjection`** package — a separate, S
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-The entry point is `AddFinancialService(...)`, an `IServiceCollection` extension method in the `Bodu.Financial` namespace. Both overloads register the default <xref:Bodu.Financial.Currencies.ICurrency> lookup and return a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, timeless and dated exchange-rate providers, and the JSON converters under a chosen policy. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.FinancialOptions> (its single `JsonPolicy` property) from a configuration section (default `"Financial"`).
+The entry point is `AddFinancialService(...)`, an `IServiceCollection` extension method in the `Bodu.Financial` namespace. Both overloads register the default <xref:Bodu.Financial.Currencies.ICurrency> lookup and return a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, and timeless and dated exchange-rate providers. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.FinancialOptions> from a configuration section (default `"Financial"`). Financial JSON registration (`services.AddFinancialJson(policy)`) ships in the companion `Bodu.Financial.Serialization.Json` package.
 
 ```csharp
 using Bodu.Financial;
@@ -168,7 +168,6 @@ using Microsoft.Extensions.DependencyInjection;
 builder.Services.AddFinancialService(configure: financial =>
 {
     financial
-        .AddFinancialJson(FinancialJsonPolicy.Strict)
         .AddExchangeRateProvider<MyRateProvider>()
         .AddDatedExchangeRateProvider<HistoricalRateProvider>();
 });
@@ -188,4 +187,4 @@ The package depends only on `Bodu.Financial` and `Microsoft.Extensions.Dependenc
 - **[Bodu.Financial API reference](xref:Bodu.Financial)** — full type-by-type docs.
 - **[Bodu.Financial.Currencies API reference](xref:Bodu.Financial.Currencies)** — the currency metadata surface and the shipped ISO 4217 catalogue.
 - **[Bodu.Financial.ExchangeRates API reference](xref:Bodu.Financial.ExchangeRates)** — the exchange-rate stack: core FX types, the web-provider machinery, and the per-source providers.
-- **[Bodu.Financial.Serialization API reference](xref:Bodu.Financial.Serialization)** — JSON converters and policies.
+- **[Bodu.Financial.Serialization.Json API reference](xref:Bodu.Financial.Serialization.Json)** — JSON converters and policies (companion package).

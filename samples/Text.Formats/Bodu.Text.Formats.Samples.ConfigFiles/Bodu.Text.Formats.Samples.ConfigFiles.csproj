@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Samples.Text.Formats.ConfigFiles</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+
+    <!-- Sample code - opt out of the shipping-library style gates. -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <RunAnalyzers>false</RunAnalyzers>
+    <BoduCodeStyleAnalyzers>false</BoduCodeStyleAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Data\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Text.Formats\src\Bodu.Text.Formats.csproj" />
+  </ItemGroup>
+
+</Project>

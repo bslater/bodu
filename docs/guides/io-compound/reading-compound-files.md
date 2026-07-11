@@ -98,6 +98,7 @@ See [Buffered vs streaming access](streaming-and-buffering.md) for how the curso
 
 ## Pattern 5 — choose a validation level
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Compound;
 

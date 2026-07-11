@@ -95,5 +95,6 @@ guides drill into the variant-specific options:
 - **[Quoted-Printable guide](quoted-printable.md)** — MIME body `=HH` encoding; binary vs text mode; soft wrapping; strict-vs-relaxed decode.
 - **[Percent-encoding guide](percent-encoding.md)** — RFC 3986 / WHATWG `%HH` encoding; component modes; form mode; string helpers.
 - **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding pattern.
+- **[Runnable samples](../../samples/text-encoding.md)** — offline sample projects under `samples/Text.Encoding/`: the catalogue tour, checksummed schemes, the registry, and a custom Base36 codec with contract tests.
 - **[Encoding helpers and BOM detection](encoding-helpers.md)** — `System.Text.Encoding` helpers: `string`↔`byte[]` conversion, preamble/BOM handling, UTF classification, fallbacks, and chunked transcoding.
 - **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

@@ -10,6 +10,7 @@ The mental model is a disposable session over the container. Opening parses the 
 
 ## Pattern 1 — open from a path
 
+<!-- compile -->
 ```csharp
 using Bodu.Formats.Excel;
 
@@ -74,6 +75,7 @@ The workbook's declared date system is available up front through <xref:Bodu.For
 
 ## Pattern 4 — skip optional work for throughput
 
+<!-- compile -->
 ```csharp
 using Bodu.Formats.Excel;
 

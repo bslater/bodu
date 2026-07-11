@@ -13,6 +13,20 @@ namespace Bodu.IO.Compound;
 /// All levels enforce the memory-safety invariants required to parse a file without faulting — the signature,
 /// byte-order marker, sector sizes, file truncation, allocation-table bounds, and the presence of a root storage are
 /// always validated. The level controls only how the reader responds to the remaining, recoverable inconsistencies.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Salvage what a damaged legacy file still holds instead of rejecting it outright.
+/// using var salvage = CompoundFile.OpenRead("damaged.doc", new CompoundFileOptions
+/// {
+///     ValidationLevel = CompoundValidationLevel.Minimal,
+/// });
+///
+/// // Conformance tooling wants the opposite: fail on anything non-conformant.
+/// var strict = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum CompoundValidationLevel
 {

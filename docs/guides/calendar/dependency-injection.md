@@ -32,11 +32,11 @@ Every extension method lives on <xref:Bodu.Globalization.Calendar.NotableDateSer
 
 Pass a loaded resource — typically from a companion data pack, or from `NotableDateResourceLoader.Load(...)` for your own document:
 
+<!-- compile -->
 ```csharp
-using Bodu.Globalization.Calendar;
-using Microsoft.Extensions.DependencyInjection;
+IServiceCollection services = new ServiceCollection();   // or builder.Services in ASP.NET Core
 
-builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
+services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
 ```
 
 ## Register via a factory

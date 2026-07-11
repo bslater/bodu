@@ -4,10 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Text.Json;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.DependencyInjection;
-using Bodu.Financial.Serialization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -25,9 +23,8 @@ public static class ServiceCollectionExtensions
     public const string DefaultConfigurationSection = "Financial";
 
     /// <summary>
-    /// Registers the core financial services — an <see cref="ICurrencyLookup" /> singleton, the financial
-    /// <see cref="JsonSerializerOptions" /> and a default <see cref="MoneyParseOptions" /> applied from the bound and
-    /// validated <see cref="FinancialOptions" /> — and returns a builder for further composition.
+    /// Registers the core financial services — an <see cref="ICurrencyLookup" /> singleton and the bound
+    /// <see cref="FinancialOptions" /> — and returns a builder for further composition.
     /// </summary>
     /// <param name="services">The service collection to register into.</param>
     /// <param name="configuration">
@@ -42,17 +39,11 @@ public static class ServiceCollectionExtensions
     /// <exception cref="ArgumentException"><paramref name="sectionName" /> is empty or white space.</exception>
     /// <remarks>
     /// <para>
-    /// The bound <see cref="FinancialOptions" /> are validated on start — the JSON policy must be a defined value — and
-    /// applied to the services they govern: <see cref="FinancialOptions.JsonPolicy" /> configures the financial
-    /// <see cref="JsonSerializerOptions" /> registered under
-    /// <see cref="FinancialServiceBuilderExtensions.JsonOptionsKey" /> with <c>TryAdd</c>, so an explicit
-    /// <see cref="FinancialServiceBuilderExtensions.AddFinancialJson(IFinancialServiceBuilder, FinancialJsonPolicy)" />
-    /// takes precedence.
-    /// </para>
-    /// <para>
     /// No foreign-exchange provider is registered by default; supply one via
     /// <see cref="FinancialServiceBuilderExtensions.AddExchangeRateProvider{TProvider}(IFinancialServiceBuilder)" /> or
-    /// its dated counterpart.
+    /// its dated counterpart. JSON serialization is not registered here either — the financial
+    /// <c>JsonSerializerOptions</c> registration (<c>AddFinancialJson</c>) ships in the companion
+    /// <c>Bodu.Financial.Serialization.Json</c> package.
     /// </para>
     /// </remarks>
     public static IFinancialServiceBuilder AddFinancialService(
@@ -65,24 +56,12 @@ public static class ServiceCollectionExtensions
 
         services.AddOptions();
 
-        OptionsBuilder<FinancialOptions> optionsBuilder = services
-            .AddOptions<FinancialOptions>()
-            .Validate(
-                static options => Enum.IsDefined(options.JsonPolicy),
-                DependencyInjectionResourceStrings.Op_Invalid_FinancialOptions)
-            .ValidateOnStart();
+        OptionsBuilder<FinancialOptions> optionsBuilder = services.AddOptions<FinancialOptions>();
 
         if (configuration is not null)
             optionsBuilder.Bind(configuration.GetSection(sectionName));
 
         services.TryAddSingleton<ICurrencyLookup, CurrencyLookupService>();
-
-        // Apply the bound JSON policy to the financial JSON options. TryAdd is used so an explicit
-        // AddFinancialJson(...) still wins.
-        services.TryAddKeyedSingleton(
-            FinancialServiceBuilderExtensions.JsonOptionsKey,
-            static (provider, _) => new JsonSerializerOptions()
-                .AddFinancialJsonConverters(provider.GetRequiredService<IOptions<FinancialOptions>>().Value.JsonPolicy));
 
         return new FinancialServiceBuilder(services);
     }
@@ -105,8 +84,7 @@ public static class ServiceCollectionExtensions
     /// services.AddFinancialService(builder => builder
     ///     .AddCurrencyLookup<MyCurrencyLookup>()
     ///     .AddMonetaryContext("invoicing", new MonetaryContext(CurrencyCode.USD))
-    ///     .AddDatedExchangeRateProvider<MyRateProvider>()
-    ///     .AddFinancialJson(FinancialJsonPolicy.Strict));
+    ///     .AddDatedExchangeRateProvider<MyRateProvider>());
     ///
     /// // Promote the configured lookup to the ambient default after the provider is built.
     /// services.BuildServiceProvider().UseCurrencyResolution();

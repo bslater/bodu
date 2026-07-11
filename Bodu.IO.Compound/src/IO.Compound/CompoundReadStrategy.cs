@@ -9,6 +9,22 @@ namespace Bodu.IO.Compound;
 /// <summary>
 /// Specifies how the compound-file reader sources the bytes of an opened container.
 /// </summary>
+/// <remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Bound memory for a large container: read sectors on demand instead of buffering it all.
+/// using var file = CompoundFile.OpenRead("large-archive.msg", new CompoundFileOptions
+/// {
+///     ReadStrategy = CompoundReadStrategy.Streaming,
+/// });
+///
+/// // Or let the reader pick per source: Buffered below MaxBufferedBytes, Streaming above it.
+/// var options = new CompoundFileOptions { ReadStrategy = CompoundReadStrategy.Auto };
+///]]>
+/// </code>
+/// </example>
+/// </remarks>
 public enum CompoundReadStrategy
 {
     /// <summary>

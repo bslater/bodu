@@ -454,8 +454,6 @@
           href: financial/dependency-injection.md
         - name: Testing your own provider
           href: financial/testing-providers.md
-        - name: Runnable samples
-          href: financial/samples.md
 - name: Binary Formats & I/O
   href: topics/binary-formats.md
   items:

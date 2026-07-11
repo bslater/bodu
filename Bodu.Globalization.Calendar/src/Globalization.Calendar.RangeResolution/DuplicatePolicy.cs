@@ -13,6 +13,16 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// <para>
 /// The recommended default is <see cref="Error" />, which surfaces accidental rule collapse rather than hiding it.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The same concept emitted twice for one day (for example by overlapping rules):
+/// // KeepFirst drops the later duplicate, Error fails the resolve. Set via the policy:
+/// NotableDateDocumentBuilder.Create("demo")
+///     .WithResolutionPolicy(p => p.WithDuplicatePolicy(DuplicatePolicy.KeepFirst));
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 /// <seealso cref="ResolutionPolicy" /> <seealso href="../guides/calendar/identity-and-resolution.html">Rule identity,
 /// priority, and observed-date resolution (guide)</seealso>

@@ -213,8 +213,8 @@ add("hero-collections-concurrent", "Bodu.Collections.Concurrent", "Bodu.Collecti
     </g>''',
         mono(["ConcurrentCircular", "Buffer&lt;T&gt;", None,
               '<tspan fill="#60A5FA">ConcurrentHashSet&lt;T&gt;</tspan>',
-              '<tspan fill="#94A3B8" font-size="9">lock-striped membership</tspan>'], x=12, y0=86, dy=16, size=10)]),
-    "Vyukov MPMC ring · lock-striped set", gid="colc")
+              '<tspan fill="#94A3B8" font-size="9">lock-free membership</tspan>'], x=12, y0=86, dy=16, size=10)]),
+    "Vyukov MPMC ring · lock-free set", gid="colc")
 
 # --- Hashing & crypto ---------------------------------------------------------------------------------------
 
@@ -472,7 +472,7 @@ add("hero-numerics-json", "Bodu.Numerics.Serialization.Json",
           '    <tspan fill="#60A5FA">"min"</tspan>: 1,',
           '    <tspan fill="#60A5FA">"max"</tspan>: 2',
           '  <tspan fill="#FBBF24">}</tspan>', '<tspan fill="#FBBF24">}</tspan>'], y0=42, dy=16, size=10),
-    "options.ConfigureForBoduNumerics() · NumericsJsonPolicy", gid="numjson")
+    "options.AddNumericsJsonConverters() · NumericsJsonPolicy", gid="numjson")
 
 add("hero-financial", "Bodu.Financial", "Bodu.Financial — type-safe monetary primitives with audit-grade FX",
     "#34D399", "Money&lt;USD&gt;",
@@ -493,15 +493,26 @@ add("hero-financial-di", "Bodu.Financial.DependencyInjection",
     "Bodu.Financial.DependencyInjection — service registration for financial services",
     "#34D399", "Bodu.Financial",
     mono(["Money · Money&lt;T&gt;", "CurrencyCode", "ICurrency catalogue", "ExchangeRate", None,
-          '<tspan fill="#94A3B8">rounding · allocation</tspan>',
-          '<tspan fill="#94A3B8">JSON converters</tspan>'], y0=46, dy=16, size=10.5),
+          '<tspan fill="#94A3B8">rounding · allocation</tspan>'], y0=46, dy=16, size=10.5),
     "register", "resolve", "IServiceCollection",
     mono(["services", '<tspan fill="#34D399"> .AddFinancialService()</tspan>',
           '<tspan fill="#34D399"> .UseCurrencyResolution</tspan>', None,
           '<tspan fill="#94A3B8" font-size="9">named monetary contexts</tspan>',
-          '<tspan fill="#94A3B8" font-size="9">currency lookup</tspan>',
-          '<tspan fill="#94A3B8" font-size="9">financial JSON</tspan>'], y0=44, dy=16, size=9.5),
+          '<tspan fill="#94A3B8" font-size="9">currency lookup</tspan>'], y0=44, dy=16, size=9.5),
     "IFinancialServiceBuilder · FinancialOptions", gid="findi")
+
+add("hero-financial-json", "Bodu.Financial.Serialization.Json",
+    "Bodu.Financial.Serialization.Json — System.Text.Json converters for money and exchange rates",
+    "#34D399", "Bodu.Financial",
+    mono(["Money · Money&lt;T&gt;", "MoneyBag", "ExchangeRate", "CurrencyPair", None,
+          '<tspan fill="#94A3B8">serialization-agnostic core</tspan>'], y0=46, dy=17),
+    "write", "read", "System.Text.Json",
+    mono(['<tspan fill="#FBBF24">{</tspan>',
+          '  <tspan fill="#60A5FA">"amount"</tspan>: <tspan fill="#34D399">19.99</tspan>,',
+          '  <tspan fill="#60A5FA">"currency"</tspan>: <tspan fill="#34D399">"USD"</tspan>',
+          '<tspan fill="#FBBF24">}</tspan>', None,
+          '<tspan fill="#94A3B8" font-size="9">Strict · Lenient · Compact</tspan>'], y0=42, dy=16, size=10),
+    "options.AddFinancialJsonConverters() · FinancialJsonPolicy", gid="finjson")
 
 # --- Calendar ------------------------------------------------------------------------------------------------
 

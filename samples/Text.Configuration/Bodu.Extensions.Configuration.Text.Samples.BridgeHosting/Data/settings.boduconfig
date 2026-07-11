@@ -1,0 +1,11 @@
+# Hosting settings expressed as a .boduconfig cascade.
+root = true
+
+[*]
+app.name = bridge-sample
+logging.level = information
+logging.console = true
+
+[production/**]
+# Production trees log quieter.
+logging.level = warning

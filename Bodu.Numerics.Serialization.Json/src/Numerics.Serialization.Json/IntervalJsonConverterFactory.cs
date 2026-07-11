@@ -17,7 +17,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// <remarks>
 /// The core <see cref="Interval{T}" /> type carries no <see cref="JsonConverterAttribute" /> so that
 /// <c>Bodu.Numerics</c> stays serialization-agnostic; register this factory through
-/// <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" /> (which registers a coherent set for
+/// <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" /> (which registers a coherent set for
 /// every numeric type) or add it directly to <see cref="JsonSerializerOptions.Converters" />.
 /// </remarks>
 public sealed class IntervalJsonConverterFactory

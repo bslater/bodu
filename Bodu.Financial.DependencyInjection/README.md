@@ -2,7 +2,7 @@
 
 > **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-`Microsoft.Extensions.DependencyInjection` integration for `Bodu.Financial`. Registers currency lookup, financial options, exchange-rate providers, named monetary contexts, and the JSON converter set behind a small fluent builder.
+`Microsoft.Extensions.DependencyInjection` integration for `Bodu.Financial`. Registers currency lookup, financial options, exchange-rate providers, and named monetary contexts behind a small fluent builder. Financial JSON registration (`AddFinancialJson`) ships in the companion `Bodu.Financial.Serialization.Json` package.
 
 ## Installation
 
@@ -16,12 +16,13 @@ Targets `net8.0`. The registration extension methods, the `IFinancialServiceBuil
 
 ```csharp
 using Bodu.Financial;
-using Bodu.Financial.Serialization;
+using Bodu.Financial.Serialization.Json;   // Bodu.Financial.Serialization.Json package (optional, for AddFinancialJson)
 
 services.AddFinancialService(configuration, sectionName: "Financial")
     .AddExchangeRateProvider<EcbRateProvider>()
-    .AddMonetaryContext("au", auContext)
-    .AddFinancialJson(FinancialJsonPolicy.Strict);
+    .AddMonetaryContext("au", auContext);
+
+services.AddFinancialJson(FinancialJsonPolicy.Strict);
 ```
 
 | Entry point | Purpose |
@@ -32,10 +33,9 @@ services.AddFinancialService(configuration, sectionName: "Financial")
 | `.AddExchangeRateProvider<T>()` / `(instance)` | Register an `IRateProvider` |
 | `.AddDatedExchangeRateProvider<T>()` / `(instance)` | Register an `IDatedRateProvider` |
 | `.AddMonetaryContext(name, context)` | Register a named `MonetaryContext` as a keyed singleton |
-| `.AddFinancialJson(policy)` | Register a `JsonSerializerOptions` (keyed `"Financial"`) with the financial converters |
 | `IServiceProvider.UseCurrencyResolution()` | Install the container's `ICurrencyLookup` as the process-wide ambient resolver |
 
-`FinancialOptions` carries the `JsonPolicy` (default `Strict`) and `UnknownCurrency` (default `Reject`) settings, bound from the supplied configuration section (default `"Financial"`).
+`FinancialOptions` is bound from the supplied configuration section (default `"Financial"`); it currently declares no settings of its own and exists as the binding seam for future options. The JSON registration `services.AddFinancialJson(policy)` (a `JsonSerializerOptions` keyed `"Financial"` with the financial converters) lives in the companion `Bodu.Financial.Serialization.Json` package.
 
 ## Testing
 

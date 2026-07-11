@@ -13,6 +13,17 @@ namespace Bodu.Text.Encoding;
 /// Each variant differs in its alphabet, default casing, padding convention, and decoder leniency around visually
 /// ambiguous characters. The encoder always emits the canonical case for the chosen variant; the decoder is
 /// case-insensitive for every variant.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// byte[] payload = { 0xDE, 0xAD, 0xBE, 0xEF };
+///
+/// var rfc = Base32.Encode(payload);                                  // RFC 4648 alphabet
+/// var hex = Base32.Encode(payload, Base32Variant.HexExtended);       // sortable hex-extended
+/// var human = Base32.Encode(payload, Base32Variant.Crockford);       // transcription-safe
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum Base32Variant : byte
 {

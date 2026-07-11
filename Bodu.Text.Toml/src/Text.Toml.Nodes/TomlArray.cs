@@ -19,6 +19,17 @@ namespace Bodu.Text.Toml.Nodes;
 /// because TOML has no null token. Adding a node that already belongs to another container throws an
 /// <see cref="InvalidOperationException" />; removing or replacing an element detaches it, clearing its
 /// <see cref="TomlNode.Parent" /> so it can be added to another container.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// var tags = new TomlArray(TomlValue.Create("a"), TomlValue.Create("b"));
+/// tags.Add(TomlValue.Create("c"));
+///
+/// var root = new TomlObject { ["tags"] = tags };
+/// byte[] utf8 = root.ToUtf8Bytes();   // tags = [ "a", "b", "c" ]
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class TomlArray
     : TomlNode, IList<TomlNode?>

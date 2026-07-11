@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Text.Bencode.Samples.TorrentFile</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+
+    <!-- Sample code - opt out of the shipping-library style gates. -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <RunAnalyzers>false</RunAnalyzers>
+    <BoduCodeStyleAnalyzers>false</BoduCodeStyleAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Data\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Text.Bencode\src\Bodu.Text.Bencode.csproj" />
+    <!-- Base16 renders the SHA-1 info-hash - the conventional hex form trackers display. -->
+    <ProjectReference Include="..\..\..\Bodu.Text.Encoding\src\Bodu.Text.Encoding.csproj" />
+  </ItemGroup>
+
+</Project>

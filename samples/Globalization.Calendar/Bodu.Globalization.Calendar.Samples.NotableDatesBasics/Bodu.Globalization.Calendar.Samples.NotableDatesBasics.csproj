@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Globalization.Calendar.Samples.NotableDatesBasics</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+
+    <!-- Sample code - opt out of the shipping-library style gates. -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <RunAnalyzers>false</RunAnalyzers>
+    <BoduCodeStyleAnalyzers>false</BoduCodeStyleAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Data\Bodu.Globalization.Calendar.AsiaPacific\src\Bodu.Globalization.Calendar.AsiaPacific.csproj" />
+  </ItemGroup>
+
+</Project>

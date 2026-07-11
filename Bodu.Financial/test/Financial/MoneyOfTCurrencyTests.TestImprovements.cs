@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using System.Text.Json;
 using Bodu.Financial.Currencies;
 
 using Bodu.Numerics;
@@ -18,62 +17,6 @@ namespace Bodu.Financial;
 /// </summary>
 public partial class MoneyOfTCurrencyTests
 {
-    // ---------------------------------------------------------------------------------------------------------------
-    // JSON malformed-payload grid — what the deserialiser does with every reasonable wrong shape.
-    // ---------------------------------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that every malformed JSON payload that the test-review document called out is rejected with
-    /// <see cref="JsonException" /> rather than silently producing a default <see cref="Money{TCurrency}" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow("null")]                                                  // top-level null
-    [DataRow("[]")]                                                    // wrong root shape — array
-    [DataRow("{}")]                                                    // empty object
-    [DataRow("{\"amount\":19.99}")]                                    // missing currency
-    [DataRow("{\"currency\":\"USD\"}")]                                // missing amount
-    [DataRow("{\"amount\":null,\"currency\":\"USD\"}")]                // amount is null
-    [DataRow("{\"amount\":true,\"currency\":\"USD\"}")]                // amount is boolean
-    [DataRow("{\"amount\":{},\"currency\":\"USD\"}")]                  // amount is object
-    [DataRow("{\"amount\":[],\"currency\":\"USD\"}")]                  // amount is array
-    [DataRow("{\"amount\":\"not-a-number\",\"currency\":\"USD\"}")]    // amount is a non-numeric string
-    [DataRow("{\"amount\":19.99,\"currency\":null}")]                  // currency is null
-    [DataRow("{\"amount\":19.99,\"currency\":123}")]                   // currency is a number
-    [DataRow("{\"amount\":19.99,\"currency\":\"usd\"}")]               // currency case mismatch
-    [DataRow("{\"amount\":19.99,\"currency\":\" USD \"}")]             // currency with surrounding whitespace
-    public void JsonDeserialize_WhenMalformedPayload_ShouldThrowJsonException(string json)
-    {
-        Assert.ThrowsExactly<JsonException>(() =>
-        {
-            _ = JsonSerializer.Deserialize<Money<USD>>(json);
-        }, $"Payload should not deserialise: {json}");
-    }
-
-    /// <summary>
-    /// Verifies that the reader continues to accept a numeric <c>"amount"</c> emitted as a JSON string —
-    /// documented lenient behaviour for systems lacking arbitrary-precision number support.
-    /// </summary>
-    [TestMethod]
-    public void JsonDeserialize_WhenAmountIsNumericString_ShouldAcceptIt()
-    {
-        Money<USD> money = JsonSerializer.Deserialize<Money<USD>>("{\"amount\":\"19.99\",\"currency\":\"USD\"}");
-
-        Assert.AreEqual(new Money<USD>(19.99m), money);
-    }
-
-    /// <summary>
-    /// Verifies that an over-precision input is interpreted at the currency's precision, matching the
-    /// documented settlement-value contract. (Strict over-precision rejection was considered and declined for
-    /// v1 — the type is documented as a settlement value that interprets any input at its precision.)
-    /// </summary>
-    [TestMethod]
-    public void JsonDeserialize_WhenAmountHasOverPrecision_ShouldNormaliseToMinorUnits()
-    {
-        Money<USD> money = JsonSerializer.Deserialize<Money<USD>>("{\"amount\":1.999,\"currency\":\"USD\"}");
-
-        Assert.AreEqual(new Money<USD>(2.00m), money);
-    }
-
     // ---------------------------------------------------------------------------------------------------------------
     // TryFormat exact-buffer boundaries.
     // ---------------------------------------------------------------------------------------------------------------
@@ -284,11 +227,5 @@ public partial class MoneyOfTCurrencyTests
 
         // FromFraction:
         Assert.ThrowsExactly<InvalidOperationException>(() => { _ = Money<NullIsoCurrency>.FromFraction(Fraction<System.Numerics.BigInteger>.One); });
-
-        // JSON write of a default value (whose payload depends on metadata):
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            _ = JsonSerializer.Serialize(default(Money<NullIsoCurrency>));
-        });
     }
 }

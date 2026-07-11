@@ -1,0 +1,10 @@
+# Hosting settings expressed as TOML (sample data).
+title = "bridge-sample"
+
+[server]
+host = "localhost"
+port = 8080
+tls = false
+
+[server.limits]
+max_connections = 100

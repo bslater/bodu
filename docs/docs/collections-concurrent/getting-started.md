@@ -36,7 +36,7 @@ With `allowOverwrite: false`, `Enqueue` throws when full and `TryEnqueue` return
 
 ### Concurrent hash set (`ConcurrentHashSet<T>`)
 
-A lock-striped set of unique elements — `Contains` is lock-free, disjoint writers proceed in parallel:
+A lock-free split-ordered set of unique elements — every operation is lock-free, so writers never block each other or readers:
 
 ```csharp
 using Bodu.Collections.Generic.Concurrent;
@@ -51,11 +51,10 @@ Parallel.ForEach(events, e =>
 });
 
 bool active = seen.Contains("req-42");   // lock-free — never blocks a writer
-int hot     = seen.ApproximateCount;     // lock-free estimate for hot paths
-int exact   = seen.Count;                // coherent — acquires every region lock
+int count   = seen.Count;                // lock-free counter — exact at quiescence
 ```
 
-Enumeration and `ToArray()` observe a coherent snapshot and never throw on concurrent modification.
+Enumeration and `ToArray()` are weakly consistent lock-free traversals and never throw on concurrent modification.
 
 ### Concurrent evicting dictionary (`ConcurrentEvictingDictionary<TKey,TValue>`)
 
@@ -87,7 +86,7 @@ The capacity bound is strict — the cache never stores more than `capacity` ent
 ## Where to go next
 
 - **[Bodu.Collections.Concurrent introduction](index.md)** — headline types, scenarios, and design notes.
-- **[Core concepts](concepts.md)** — MPMC rings, lock striping, snapshot enumeration, approximate counts.
+- **[Core concepts](concepts.md)** — MPMC rings, split-ordered hashing, snapshot enumeration, counting under concurrency.
 - **[Concurrent collections guide](../../guides/core/concurrent-collections.md)** — the full walk-through, including the consistency table and when *not* to use these types.
 - **[Bodu.Collections getting started](../collections/getting-started.md)** — the single-threaded catalogue.
 - **[Bodu.Collections.Generic.Concurrent API reference](xref:Bodu.Collections.Generic.Concurrent)** — full type-by-type docs.

@@ -21,6 +21,18 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+    ///
+    /// // The most recent public holiday before 1 May 2024 is Anzac Day.
+    /// NotableDate? previous = new DateOnly(2024, 5, 1).PreviousNotableDate(
+    ///     service, "AU", NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
+    /// // previous?.Date == 2024-04-25
+    ///]]>
+    /// </code>
+    /// </example>
     public static NotableDate? PreviousNotableDate(this DateOnly date, INotableDateService service, string territory, NotableDateFilter? filter = null)
     {
         ThrowHelper.ThrowIfNull(service);

@@ -489,8 +489,15 @@ known until run time.
 
 ## JSON
 
-`Money<TCurrency>` carries a `JsonConverter` attribute so
-`System.Text.Json` works without extra wiring:
+JSON support ships in the companion `Bodu.Financial.Serialization.Json`
+package; register its converters before serializing — the core types
+carry no `[JsonConverter]` attribute:
+
+```csharp
+using Bodu.Financial.Serialization.Json;
+
+var options = new JsonSerializerOptions().AddFinancialJsonConverters();
+```
 
 ```json
 { "amount": 19.99, "currency": "USD" }
@@ -735,7 +742,9 @@ provider.UseCurrencyResolution();   // ambient default = the DI lookup
 
 ## JSON wire shape
 
-`Money<TCurrency>` and `Money` both serialise as:
+With the `Bodu.Financial.Serialization.Json` converters registered
+(`options.AddFinancialJsonConverters()`), `Money<TCurrency>` and
+`Money` both serialise as:
 
 ```json
 { "amount": 19.99, "currency": "USD" }
@@ -760,12 +769,12 @@ amounts to round-trip large values through systems that lack
 arbitrary-precision number support.
 
 To switch the wire shape, register the converters under an explicit
-<xref:Bodu.Financial.Serialization.FinancialJsonPolicy>. The `Compact`
+<xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy>. The `Compact`
 policy collapses each money to a single string and a bag to a flat
 ISO-keyed object — smaller on the wire and readable in a log line:
 
 ```csharp
-using Bodu.Financial.Serialization;
+using Bodu.Financial.Serialization.Json;
 
 var options = new JsonSerializerOptions();
 options.AddFinancialJsonConverters(FinancialJsonPolicy.Compact);

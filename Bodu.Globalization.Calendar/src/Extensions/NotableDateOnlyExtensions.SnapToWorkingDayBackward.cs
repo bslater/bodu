@@ -19,6 +19,16 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// INotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+    ///
+    /// // A "no later than" contractual date falling on Anzac Day rolls back to Wednesday.
+    /// DateOnly payday = new DateOnly(2024, 4, 25).SnapToWorkingDayBackward(service, "AU");   // 2024-04-24
+    ///]]>
+    /// </code>
+    /// </example>
     public static DateOnly SnapToWorkingDayBackward(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
         date.IsWorkingDay(service, territory, workingWeek) ? date : Step(date, -1, service, territory, workingWeek);
 }

@@ -75,6 +75,7 @@ Each format pairs a typed value model with a codec: parse turns a span of text i
 
 ## Where to go next
 
+- [Runnable samples](../../samples/formats.md) — offline sample projects under `samples/Text.Formats/` covering delimited typed getters, dirty-input policies, streaming pipelines, and the INI/DotEnv formats.
 - [Bodu.Text.Formats introduction](../../docs/formats/index.md) — mental model, headline types, scenarios.
 - [Core concepts](../../docs/formats/concepts.md) — vocabulary used throughout these guides.
 - [Bodu.Text.Formats getting started](../../docs/formats/getting-started.md) — install and minimal samples.
