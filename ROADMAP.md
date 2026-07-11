@@ -902,29 +902,29 @@ The forward items below are sequenced and scoped in
   flushed into the tree on dispose and persisted only by `Commit`. The
   remaining distance to `IStream` is per-stream transacted commit,
   which stays out of scope (plan decision D2).
-- **Property-set write-back symmetry** (plan T1). The reader parses
-  vector-valued properties but `PropertySetWriter` throws on them, so a
-  set read from a real file cannot always be re-emitted; and there is
-  no write counterpart to `TryGetSummaryInformation` /
-  `TryOpenPropertySet` — embedding is manual `AddStream(...)`. Add
-  vector emit plus `CompoundStorage.WritePropertySet` and
+- **Property-set write-back symmetry — done.** ✅ (plan T1)
+  `PropertySetWriter` now emits every value shape the reader parses,
+  including `VT_VECTOR` values (variant round-trips guarantee value
+  identity, not byte identity), and `CompoundStorage.WritePropertySet` /
   `CompoundFile.SetSummaryInformation` /
-  `SetDocumentSummaryInformation`.
-- **Writable-cursor memory model** (plan T2). A writable cursor buffers
-  the whole payload in a `MemoryStream` and copies it again into the
-  staging node on flush — double-buffered and `int`-capped. Eliminate
-  the extra copy, back the buffer with pooled/chunked storage, and turn
-  the ~2 GB cap into a deliberate, documented guard (deferred sources
-  remain the larger-than-memory route).
-- **Entry metadata on the edit surface** (plan T3). CLSID, timestamps,
-  and state bits are settable only through the authoring builders; the
-  live edit surface can't touch them. Expose them as settable
-  properties on `CompoundStorage` (storages only — MS-CFB §2.6.1 forces
-  stream metadata to zero).
-- **True-async commit and streaming reads** (plan T4). Every `*Async`
-  member is a sync-over-async wrapper today. Add `CommitAsync` (async
-  serialize + deferred-source copies) and real async streaming-mode
-  `ReadAsync`; buffered reads keep the wrappers (they're memory copies).
+  `SetDocumentSummaryInformation` are the write counterparts of the
+  `TryGet…` readers.
+- **Writable-cursor memory model — done.** ✅ (plan T2) The writable
+  cursor no longer double-copies on flush (it transfers its buffer to
+  the staging node at dispose and tracks pending writes so an unchanged
+  re-flush is a no-op) and rejects payloads past `int.MaxValue` with a
+  deliberate `NotSupportedException` that routes callers to the deferred
+  stream sources.
+- **Entry metadata on the edit surface — done.** ✅ (plan T3)
+  `CompoundStorage` exposes settable `ClassId` / `CreationTime` /
+  `ModifiedTime` / `StateBits` on a writable file (storages only, per
+  MS-CFB §2.6.1); nothing is auto-stamped, so byte-identical re-saves
+  stay possible.
+- **True-async commit and streaming reads — done.** ✅ (plan T4)
+  `CommitAsync` / `FlushAsync` serialize asynchronously (sharing the
+  synchronous layout, so bytes are identical) and streaming-mode
+  `ReadAsync` reads its sectors with real async I/O; buffered and
+  writable cursors keep synchronous completion.
 - **This project is the substrate for new office-format readers** — see
   `Bodu.Formats.Excel.Binary` (already built on it) and the `.msg` /
   `.doc` candidates under *New library candidates*. Before the `.msg`

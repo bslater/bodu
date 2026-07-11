@@ -1,9 +1,36 @@
 # Bodu.IO.Compound roadmap — implementation plan
 
 **Date:** 2026-07-11
-**Status:** proposed
+**Status:** T0 done (roadmap truth-up); **T1–T4 executed 2026-07-11**; T5
+(the `.msg` substrate review) remains open and gates the `.msg` project,
+not this package.
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *Per-project roadmap →
 `Bodu.IO.Compound`*
+
+> **T1–T4 executed 2026-07-11.** All four landed additively (no committed
+> surface changed) with the golden v3/v4 fixtures byte-stable throughout.
+> Notable deviations from the sketch below, each a deliberate outcome:
+>
+> 1. **T1a widened beyond vectors.** Full reader/writer scalar symmetry
+>    was in scope, but the emitter also needed `Empty`/`Null` bodies and
+>    a CLR-type→VT inference table for variant vectors (the reader
+>    flattens `VT_VARIANT` vectors to a typeless `object?[]`), so variant
+>    round-trips guarantee *value* identity, not byte identity. The
+>    latent Unicode-dictionary asymmetry was fixed in the same item as
+>    its own commit.
+> 2. **T2 kept `MemoryStream`; no new builder member.** The exploration
+>    confirmed `PooledBufferBuilder` is append-only and unfit for a
+>    seekable cursor, and that `CompoundStreamBuilder.Content`'s setter
+>    already stores `ReadOnlyMemory<byte>` without copying — so the
+>    zero-copy dispose-time transfer needed no new API.
+> 3. **T4 duplicated only the byte-moving layer.** `WriteTo`'s geometry
+>    was extracted into `PreparePlan` / `EmissionPlan` (its own
+>    golden-proven-neutral commit) so `WriteToAsync` shares one plan; the
+>    `Emit*` twins fork only at the `SectorWriter` `ValueTask` methods.
+>    `CfbStreamDataSource`'s monitor lock became a `SemaphoreSlim`
+>    guarding both sync and async reads. Cancellation lands as
+>    `OperationCanceledException` (or its `TaskCanceledException`
+>    subtype), so its tests assert the base type.
 
 This plan turns the `Bodu.IO.Compound` section of the repository roadmap
 into sequenced, scoped work. The roadmap entry carries one concrete item
