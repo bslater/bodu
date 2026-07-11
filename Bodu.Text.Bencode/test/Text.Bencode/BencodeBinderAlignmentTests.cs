@@ -7,6 +7,8 @@
 using System.Text;
 using Bodu.Text.Bencode.Serialization;
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Bencode;
 
 /// <summary>
@@ -19,8 +21,8 @@ namespace Bodu.Text.Bencode;
 public class BencodeBinderAlignmentTests
 {
     /// <summary>
-    /// Verifies that serializing a value invokes <see cref="IBencodeOnSerializing.OnSerializing" /> before
-    /// <see cref="IBencodeOnSerialized.OnSerialized" /> and records both in order.
+    /// Verifies that serializing a value invokes <see cref="IOnSerializing.OnSerializing" /> before
+    /// <see cref="IOnSerialized.OnSerialized" /> and records both in order.
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
@@ -34,8 +36,8 @@ public class BencodeBinderAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that deserializing into a value invokes <see cref="IBencodeOnDeserializing.OnDeserializing" /> before
-    /// <see cref="IBencodeOnDeserialized.OnDeserialized" /> and records both in order.
+    /// Verifies that deserializing into a value invokes <see cref="IOnDeserializing.OnDeserializing" /> before
+    /// <see cref="IOnDeserialized.OnDeserialized" /> and records both in order.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenValueImplementsCallbacks_ShouldInvokeDeserializingThenDeserialized()
@@ -48,7 +50,7 @@ public class BencodeBinderAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IBencodeOnDeserializing.OnDeserializing" /> runs before the settable members are
+    /// Verifies that <see cref="IOnDeserializing.OnDeserializing" /> runs before the settable members are
     /// assigned, observing the still-unpopulated instance.
     /// </summary>
     [TestMethod]
@@ -216,7 +218,7 @@ public class BencodeBinderAlignmentTests
     /// A model that records each serialization callback the serializer invokes, used to assert callback ordering.
     /// </summary>
     private sealed class CallbackModel
-        : IBencodeOnSerializing, IBencodeOnSerialized, IBencodeOnDeserializing, IBencodeOnDeserialized
+        : IOnSerializing, IOnSerialized, IOnDeserializing, IOnDeserialized
     {
         /// <summary>
         /// Gets the ordered list of callback names the serializer has invoked.

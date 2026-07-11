@@ -8,6 +8,8 @@ using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Nodes;
 using Bodu.Text.Toml.Serialization;
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Toml;
 
 /// <summary>
@@ -196,8 +198,8 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that serializing a value invokes <see cref="ITomlOnSerializing.OnSerializing" /> before
-    /// <see cref="ITomlOnSerialized.OnSerialized" /> and records both in order.
+    /// Verifies that serializing a value invokes <see cref="IOnSerializing.OnSerializing" /> before
+    /// <see cref="IOnSerialized.OnSerialized" /> and records both in order.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenValueImplementsCallbacks_ShouldInvokeSerializingThenSerialized()
@@ -210,8 +212,8 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that deserializing into a value invokes <see cref="ITomlOnDeserializing.OnDeserializing" /> before
-    /// <see cref="ITomlOnDeserialized.OnDeserialized" /> and records both in order.
+    /// Verifies that deserializing into a value invokes <see cref="IOnDeserializing.OnDeserializing" /> before
+    /// <see cref="IOnDeserialized.OnDeserialized" /> and records both in order.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenValueImplementsCallbacks_ShouldInvokeDeserializingThenDeserialized()
@@ -222,7 +224,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ITomlOnDeserializing.OnDeserializing" /> runs before the settable members are assigned,
+    /// Verifies that <see cref="IOnDeserializing.OnDeserializing" /> runs before the settable members are assigned,
     /// observing the still-unpopulated instance.
     /// </summary>
     [TestMethod]
@@ -483,7 +485,7 @@ public class TomlSerializerAlignmentTests
     /// A model that records each serialization callback the serializer invokes.
     /// </summary>
     private sealed class CallbackModel
-        : ITomlOnSerializing, ITomlOnSerialized, ITomlOnDeserializing, ITomlOnDeserialized
+        : IOnSerializing, IOnSerialized, IOnDeserializing, IOnDeserialized
     {
         /// <summary>Gets the ordered list of callback names the serializer has invoked.</summary>
         /// <value>The recorded callback names.</value>

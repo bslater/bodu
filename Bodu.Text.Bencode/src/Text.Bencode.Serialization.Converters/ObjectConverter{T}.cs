@@ -10,6 +10,8 @@ using Bodu.Text.Bencode.Reader;
 using Bodu.Text.Bencode.Serialization.Metadata;
 using Bodu.Text.Bencode.Writer;
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Bencode.Serialization.Converters;
 
 /// <summary>
@@ -94,10 +96,10 @@ internal sealed class ObjectConverter<T>
         // Keep the instance boxed for the whole assignment phase. For a value type each member assignment must target
         // the same box, so unboxing to T before assignment would mutate a throwaway copy and lose the values.
         object instance = BareConstruct(metadata, values);
-        (instance as IBencodeOnDeserializing)?.OnDeserializing();
+        (instance as IOnDeserializing)?.OnDeserializing();
         AssignSettableMembers(metadata, values, instance, options);
         PopulateExtensionData(metadata, instance, extensionEntries);
-        (instance as IBencodeOnDeserialized)?.OnDeserialized();
+        (instance as IOnDeserialized)?.OnDeserialized();
         return (T)instance;
     }
 
@@ -113,7 +115,7 @@ internal sealed class ObjectConverter<T>
         if (state is { HasFailure: true })
             return;
 
-        (value as IBencodeOnSerializing)?.OnSerializing();
+        (value as IOnSerializing)?.OnSerializing();
 
         TypeMetadata metadata = options.GetTypeMetadata(typeof(T));
 
@@ -142,7 +144,7 @@ internal sealed class ObjectConverter<T>
 
         writer.WriteEndDictionary();
 
-        (value as IBencodeOnSerialized)?.OnSerialized();
+        (value as IOnSerialized)?.OnSerialized();
     }
 
     /// <summary>
@@ -227,7 +229,7 @@ internal sealed class ObjectConverter<T>
 
     /// <summary>
     /// Constructs the instance using the type's construction plan, invoking the chosen constructor only. Settable
-    /// members are assigned in a separate step so that an <see cref="IBencodeOnDeserializing" /> callback can run
+    /// members are assigned in a separate step so that an <see cref="IOnDeserializing" /> callback can run
     /// between construction and member population.
     /// </summary>
     /// <param name="metadata">The type metadata.</param>
@@ -235,7 +237,7 @@ internal sealed class ObjectConverter<T>
     /// <returns>The constructed instance, before any settable member is assigned.</returns>
     /// <remarks>
     /// For a parameterized constructor the bound arguments are gathered from <paramref name="values" /> (falling back
-    /// to each parameter's default), so an <see cref="IBencodeOnDeserializing" /> callback necessarily observes those
+    /// to each parameter's default), so an <see cref="IOnDeserializing" /> callback necessarily observes those
     /// arguments already applied; for a parameterless constructor the instance is created empty.
     /// </remarks>
     private static object BareConstruct(TypeMetadata metadata, Dictionary<PropertyMetadata, object?> values)

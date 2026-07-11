@@ -10,6 +10,8 @@ using Bodu.Text.Toml.Reader;
 using Bodu.Text.Toml.Serialization.Metadata;
 using Bodu.Text.Toml.Writer;
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
@@ -97,10 +99,10 @@ internal sealed class ObjectConverter<T>
         // and extension-data writes (and any mutating deserialization callback) would be silently lost. Threading the
         // single box through and unboxing only at the return preserves those writes.
         object boxed = BareConstruct(metadata, values);
-        (boxed as ITomlOnDeserializing)?.OnDeserializing();
+        (boxed as IOnDeserializing)?.OnDeserializing();
         AssignSettableMembers(metadata, values, boxed, options);
         PopulateExtensionData(metadata, boxed, extensionEntries);
-        (boxed as ITomlOnDeserialized)?.OnDeserialized();
+        (boxed as IOnDeserialized)?.OnDeserialized();
         return (T)boxed;
     }
 
@@ -126,7 +128,7 @@ internal sealed class ObjectConverter<T>
 
         try
         {
-            (value as ITomlOnSerializing)?.OnSerializing();
+            (value as IOnSerializing)?.OnSerializing();
 
             TypeMetadata metadata = options.GetTypeMetadata(typeof(T));
 
@@ -164,7 +166,7 @@ internal sealed class ObjectConverter<T>
 
             writer.WriteEndTable();
 
-            (value as ITomlOnSerialized)?.OnSerialized();
+            (value as IOnSerialized)?.OnSerialized();
         }
         finally
         {
@@ -264,7 +266,7 @@ internal sealed class ObjectConverter<T>
 
     /// <summary>
     /// Constructs the instance using the type's construction plan, invoking the chosen constructor only. Settable
-    /// members are assigned in a separate step so that an <see cref="ITomlOnDeserializing" /> callback can run between
+    /// members are assigned in a separate step so that an <see cref="IOnDeserializing" /> callback can run between
     /// construction and member population.
     /// </summary>
     /// <param name="metadata">The type metadata.</param>
@@ -272,7 +274,7 @@ internal sealed class ObjectConverter<T>
     /// <returns>The constructed instance, before any settable member is assigned.</returns>
     /// <remarks>
     /// For a parameterized constructor the bound arguments are gathered from <paramref name="values" /> (falling back
-    /// to each parameter's default), so an <see cref="ITomlOnDeserializing" /> callback necessarily observes those
+    /// to each parameter's default), so an <see cref="IOnDeserializing" /> callback necessarily observes those
     /// arguments already applied; for a parameterless constructor the instance is created empty.
     /// </remarks>
     private static object BareConstruct(TypeMetadata metadata, Dictionary<PropertyMetadata, object?> values)
