@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Yaml;
 
 /// <summary>
@@ -13,7 +15,7 @@ namespace Bodu.Text.Yaml;
 public partial class YamlSerializerOptionsTests
 {
     /// <summary>
-    /// Verifies that an unmapped key is ignored under the default <see cref="YamlUnmappedMemberHandling.Skip" />.
+    /// Verifies that an unmapped key is ignored under the default <see cref="UnmappedMemberHandling.Skip" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndSkip_ShouldIgnore()
@@ -25,12 +27,12 @@ public partial class YamlSerializerOptionsTests
     }
 
     /// <summary>
-    /// Verifies that an unmapped key throws under <see cref="YamlUnmappedMemberHandling.Disallow" />.
+    /// Verifies that an unmapped key throws under <see cref="UnmappedMemberHandling.Disallow" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndDisallow_ShouldThrow()
     {
-        var options = new YamlSerializerOptions { UnmappedMemberHandling = YamlUnmappedMemberHandling.Disallow };
+        var options = new YamlSerializerOptions { UnmappedMemberHandling = UnmappedMemberHandling.Disallow };
 
         Assert.ThrowsExactly<YamlSerializationException>(() =>
         {

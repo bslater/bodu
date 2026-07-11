@@ -4,32 +4,51 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Yaml.Document;
+using Bodu.Text.Yaml.Reader;
 using Bodu.Text.Yaml.Writer;
 
 namespace Bodu.Text.Yaml.Serialization;
 
 /// <summary>
 /// Serves as the strongly-typed base for custom YAML converters that read and write values of type
-/// <typeparamref name="T" />.
+/// <typeparamref name="T" />. This is the base authors derive to customize how a specific type is serialized.
 /// </summary>
 /// <typeparam name="T">The type handled by the converter.</typeparam>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class VersionConverter : YamlConverter<Version>
+/// {
+///     public override Version Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) =>
+///         Version.Parse(reader.GetString());
+///
+///     public override void Write(Utf8YamlWriter writer, Version value, YamlSerializerOptions options) =>
+///         writer.WriteString(value.ToString());
+/// }
+///]]>
+/// </code>
+/// </example>
 public abstract class YamlConverter<T> : YamlConverter
 {
     /// <summary>
     /// Determines whether the converter can convert the specified type.
     /// </summary>
     /// <param name="typeToConvert">The type to test.</param>
-    /// <returns><see langword="true" /> when the type is assignable to <typeparamref name="T" />.</returns>
+    /// <returns><see langword="true" /> when the type is <typeparamref name="T" />.</returns>
     public override bool CanConvert(Type typeToConvert) => typeof(T) == typeToConvert;
 
     /// <summary>
-    /// Reads and converts a YAML element to a value of type <typeparamref name="T" />.
+    /// Reads and converts a value of type <typeparamref name="T" /> from the reader.
     /// </summary>
-    /// <param name="element">The element to read.</param>
+    /// <param name="reader">The reader positioned on the first token of the value.</param>
+    /// <param name="typeToConvert">The requested type.</param>
     /// <param name="options">The serializer options in effect.</param>
     /// <returns>The converted value.</returns>
-    public abstract T? Read(YamlElement element, YamlSerializerOptions options);
+    /// <remarks>
+    /// On entry the reader is positioned on the value's first token. On return it must be positioned on the value's
+    /// last token, so the caller can advance past the value with a single <see cref="Utf8YamlReader.Read" />.
+    /// </remarks>
+    public abstract T Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options);
 
     /// <summary>
     /// Writes a value of type <typeparamref name="T" /> as YAML.
@@ -40,10 +59,10 @@ public abstract class YamlConverter<T> : YamlConverter
     public abstract void Write(Utf8YamlWriter writer, T value, YamlSerializerOptions options);
 
     /// <inheritdoc />
-    internal override void WriteAsObject(Utf8YamlWriter writer, object value, YamlSerializerOptions options) =>
-        Write(writer, (T)value, options);
+    internal sealed override object? ReadAsObject(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) =>
+        Read(ref reader, typeToConvert, options);
 
     /// <inheritdoc />
-    internal override object? ReadAsObject(YamlElement element, YamlSerializerOptions options) =>
-        Read(element, options);
+    internal sealed override void WriteAsObject(Utf8YamlWriter writer, object? value, YamlSerializerOptions options) =>
+        Write(writer, (T)value!, options);
 }

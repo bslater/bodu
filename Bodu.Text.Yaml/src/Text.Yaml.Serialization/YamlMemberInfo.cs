@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Yaml.Serialization;
 
@@ -116,10 +117,10 @@ internal sealed class YamlMemberInfo
             if (property.GetIndexParameters().Length > 0 || property.GetMethod is null)
                 continue;
 
-            if (property.IsDefined(typeof(YamlIgnoreAttribute), inherit: true))
+            if (property.IsDefined(typeof(IgnoreAttribute), inherit: true))
                 continue;
 
-            string? explicitName = property.GetCustomAttribute<YamlPropertyNameAttribute>(inherit: true)?.Name;
+            string? explicitName = property.GetCustomAttribute<PropertyNameAttribute>(inherit: true)?.Name;
             Action<object, object?>? setter = null;
             if (property.SetMethod is { IsPublic: true })
                 setter = property.SetValue;
@@ -137,10 +138,10 @@ internal sealed class YamlMemberInfo
 
         foreach (FieldInfo field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
         {
-            if (field.IsDefined(typeof(YamlIgnoreAttribute), inherit: true))
+            if (field.IsDefined(typeof(IgnoreAttribute), inherit: true))
                 continue;
 
-            string? explicitName = field.GetCustomAttribute<YamlPropertyNameAttribute>(inherit: true)?.Name;
+            string? explicitName = field.GetCustomAttribute<PropertyNameAttribute>(inherit: true)?.Name;
             members.Add(new YamlMemberInfo
             {
                 MemberName = field.Name,

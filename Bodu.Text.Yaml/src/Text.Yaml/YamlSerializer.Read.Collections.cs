@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializer.Read.Collections.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,7 +7,8 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Bodu.Text.Yaml.Document;
+using Bodu.Text.Serialization;
+using Bodu.Text.Yaml.Reader;
 using Bodu.Text.Yaml.Serialization;
 
 namespace Bodu.Text.Yaml;
@@ -18,22 +19,22 @@ namespace Bodu.Text.Yaml;
 public static partial class YamlSerializer
 {
     /// <summary>
-    /// Binds a YAML sequence to an array.
+    /// Binds the YAML sequence at the reader's current position to an array.
     /// </summary>
-    /// <param name="element">The sequence element.</param>
+    /// <param name="reader">The reader positioned on the sequence's start token.</param>
     /// <param name="arrayType">The array type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The bound array.</returns>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
-    private static Array BindArray(YamlElement element, Type arrayType, YamlSerializerOptions options)
+    private static Array BindArray(ref Utf8YamlReader reader, Type arrayType, YamlSerializerOptions options)
     {
         Type elementType = arrayType.GetElementType()!;
-        RequireSequence(element);
+        RequireSequence(ref reader);
 
         var items = new List<object?>();
         int index = 0;
-        foreach (YamlElement item in element.EnumerateSequence())
-            items.Add(BindChild(item, elementType, options, $"[{index++}]"));
+        while (reader.Read() && reader.TokenType != YamlTokenType.EndSequence)
+            items.Add(BindChild(ref reader, elementType, options, $"[{index++}]"));
 
         var array = Array.CreateInstance(elementType, items.Count);
         for (int i = 0; i < items.Count; i++)
@@ -43,27 +44,27 @@ public static partial class YamlSerializer
     }
 
     /// <summary>
-    /// Binds a YAML sequence to a generic list or compatible collection interface.
+    /// Binds the YAML sequence at the reader's current position to a generic list or compatible collection interface.
     /// </summary>
-    /// <param name="element">The sequence element.</param>
+    /// <param name="reader">The reader positioned on the sequence's start token.</param>
     /// <param name="type">The target collection type.</param>
     /// <param name="elementType">The element type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The bound collection.</returns>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
     private static object BindList(
-        YamlElement element,
+        ref Utf8YamlReader reader,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type,
         Type elementType,
         YamlSerializerOptions options)
     {
-        RequireSequence(element);
+        RequireSequence(ref reader);
 
         Type listType = typeof(List<>).MakeGenericType(elementType);
         var list = (IList)Activator.CreateInstance(listType)!;
         int index = 0;
-        foreach (YamlElement item in element.EnumerateSequence())
-            list.Add(BindChild(item, elementType, options, $"[{index++}]"));
+        while (reader.Read() && reader.TokenType != YamlTokenType.EndSequence)
+            list.Add(BindChild(ref reader, elementType, options, $"[{index++}]"));
 
         if (type.IsAssignableFrom(listType))
             return list;
@@ -77,50 +78,53 @@ public static partial class YamlSerializer
     }
 
     /// <summary>
-    /// Binds a YAML mapping to a dictionary keyed by string-convertible keys.
+    /// Binds the YAML mapping at the reader's current position to a dictionary keyed by string-convertible keys.
     /// </summary>
-    /// <param name="element">The mapping element.</param>
+    /// <param name="reader">The reader positioned on the mapping's start token.</param>
     /// <param name="type">The target dictionary type.</param>
     /// <param name="valueType">The dictionary value type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The bound dictionary.</returns>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
-    private static object BindDictionary(YamlElement element, Type type, Type valueType, YamlSerializerOptions options)
+    private static object BindDictionary(ref Utf8YamlReader reader, Type type, Type valueType, YamlSerializerOptions options)
     {
-        RequireMapping(element);
+        RequireMapping(ref reader);
 
         Type keyType = type.IsGenericType ? type.GetGenericArguments()[0] : typeof(string);
         Type dictType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
         var dict = (IDictionary)Activator.CreateInstance(dictType)!;
 
-        foreach (YamlProperty pair in element.EnumerateMapping())
+        while (reader.Read() && reader.TokenType != YamlTokenType.EndMapping)
         {
-            object key = keyType == typeof(string)
-                ? pair.Name
-                : keyType.IsEnum
-                    ? Enum.Parse(keyType, pair.Name, ignoreCase: true)
-                    : Convert.ChangeType(pair.Name, keyType, CultureInfo.InvariantCulture);
+            string name = reader.GetString();
+            reader.Read();
 
-            dict[key] = BindChild(pair.Value, valueType, options, pair.Name);
+            object key = keyType == typeof(string)
+                ? name
+                : keyType.IsEnum
+                    ? Enum.Parse(keyType, name, ignoreCase: true)
+                    : Convert.ChangeType(name, keyType, CultureInfo.InvariantCulture);
+
+            dict[key] = BindChild(ref reader, valueType, options, name);
         }
 
         return dict;
     }
 
     /// <summary>
-    /// Binds a YAML mapping to a plain CLR object by setting its writable members.
+    /// Binds the YAML mapping at the reader's current position to a plain CLR object by setting its writable members.
     /// </summary>
-    /// <param name="element">The mapping element.</param>
+    /// <param name="reader">The reader positioned on the mapping's start token.</param>
     /// <param name="type">The target object type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The bound object.</returns>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
     private static object BindObject(
-        YamlElement element,
+        ref Utf8YamlReader reader,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] Type type,
         YamlSerializerOptions options)
     {
-        RequireMapping(element);
+        RequireMapping(ref reader);
 
         object instance = Activator.CreateInstance(type)
             ?? throw new YamlSerializationException(
@@ -130,25 +134,36 @@ public static partial class YamlSerializer
         YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        foreach (YamlProperty pair in element.EnumerateMapping())
+        while (reader.Read() && reader.TokenType != YamlTokenType.EndMapping)
         {
-            bool matched = false;
+            string name = reader.GetString();
+            reader.Read();
+
+            YamlMemberInfo? match = null;
             foreach (YamlMemberInfo member in members)
             {
-                if (!string.Equals(member.WireName(options), pair.Name, comparison))
-                    continue;
-
-                matched = true;
-                if (member.Set is not null)
-                    member.Set(instance, BindChild(pair.Value, member.Type, options, member.WireName(options)));
-
-                break;
+                if (string.Equals(member.WireName(options), name, comparison))
+                {
+                    match = member;
+                    break;
+                }
             }
 
-            if (!matched && options.UnmappedMemberHandling == YamlUnmappedMemberHandling.Disallow)
+            if (match is not null)
+            {
+                if (match.Set is not null)
+                    match.Set(instance, BindChild(ref reader, match.Type, options, match.WireName(options)));
+                else
+                    SkipValue(ref reader);
+            }
+            else if (options.UnmappedMemberHandling == UnmappedMemberHandling.Disallow)
             {
                 throw new YamlSerializationException(string.Format(
-                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlUnmappedMember, pair.Name, type));
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlUnmappedMember, name, type));
+            }
+            else
+            {
+                SkipValue(ref reader);
             }
         }
 
@@ -202,24 +217,24 @@ public static partial class YamlSerializer
     }
 
     /// <summary>
-    /// Validates that an element is a sequence.
+    /// Validates that the reader is positioned on a sequence start token.
     /// </summary>
-    /// <param name="element">The element to validate.</param>
-    /// <exception cref="YamlSerializationException">The element is not a sequence.</exception>
-    private static void RequireSequence(YamlElement element)
+    /// <param name="reader">The reader to validate.</param>
+    /// <exception cref="YamlSerializationException">The current token is not a sequence start.</exception>
+    private static void RequireSequence(ref Utf8YamlReader reader)
     {
-        if (element.ValueKind != YamlValueKind.Sequence)
+        if (reader.TokenType != YamlTokenType.StartSequence)
             throw new YamlSerializationException(YamlResourceStrings.Op_Invalid_YamlExpectedSequence);
     }
 
     /// <summary>
-    /// Validates that an element is a mapping.
+    /// Validates that the reader is positioned on a mapping start token.
     /// </summary>
-    /// <param name="element">The element to validate.</param>
-    /// <exception cref="YamlSerializationException">The element is not a mapping.</exception>
-    private static void RequireMapping(YamlElement element)
+    /// <param name="reader">The reader to validate.</param>
+    /// <exception cref="YamlSerializationException">The current token is not a mapping start.</exception>
+    private static void RequireMapping(ref Utf8YamlReader reader)
     {
-        if (element.ValueKind != YamlValueKind.Mapping)
+        if (reader.TokenType != YamlTokenType.StartMapping)
             throw new YamlSerializationException(YamlResourceStrings.Op_Invalid_YamlExpectedMapping);
     }
 }

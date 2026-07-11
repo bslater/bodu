@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Yaml.Document;
+using Bodu.Text.Yaml.Reader;
 using Bodu.Text.Yaml.Serialization;
 using Bodu.Text.Yaml.Writer;
 
@@ -64,7 +64,7 @@ public partial class YamlSerializerOptionsTests
     private sealed class PassthroughConverter : YamlConverter<string>
     {
         /// <inheritdoc />
-        public override string Read(YamlElement element, YamlSerializerOptions options) => element.GetString();
+        public override string Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) => reader.GetString();
 
         /// <inheritdoc />
         public override void Write(Utf8YamlWriter writer, string value, YamlSerializerOptions options) =>
