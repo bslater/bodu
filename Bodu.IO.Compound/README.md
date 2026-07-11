@@ -2,15 +2,15 @@
 
 > **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-A small, dependency-free reader for the **OLE2 / Compound File Binary (CFB)** container
-format — the structured-storage envelope behind legacy Microsoft Office files such as
-`.xls`, `.doc`, `.ppt`, and `.msg`.
+A small, dependency-free reader, editor, and writer for the **OLE2 / Compound File Binary
+(CFB)** container format — the structured-storage envelope behind legacy Microsoft Office
+files such as `.xls`, `.doc`, `.ppt`, and `.msg`.
 
-The reader understands the *container*: it navigates the storage hierarchy, exposes the
-metadata of every entry, materializes the bytes of any named stream, and parses OLE
-**property sets** (summary information). It applies no interpretation to application stream
-contents — turning those bytes into a workbook, a document, or anything else is the
-consumer's job.
+It understands the *container*: it navigates the storage hierarchy, exposes the metadata of
+every entry, materializes the bytes of any named stream, edits existing containers
+transactionally, authors new ones, and reads **and writes** OLE **property sets** (summary
+information). It applies no interpretation to application stream contents — turning those
+bytes into a workbook, a document, or anything else is the consumer's job.
 
 ```csharp
 using Bodu.IO.Compound;
@@ -45,9 +45,12 @@ if (file.TryGetSummaryInformation(out var summary))
   `CompoundStorage.OpenStream` accept BCL `FileMode` / `FileAccess`, mirroring `System.IO.Packaging`.
 - A unified, package-aligned write API: `CompoundFile.Create(stream)` / `Create(path)` starts a new file,
   and `CompoundFile.Open(stream, FileMode.Open, FileAccess.ReadWrite)` loads an existing one for update.
-  The writable `RootStorage` exposes `CreateStorage` / `CreateStream` / `Delete` / `Rename` and a writable
-  `CompoundStream`. Edits are staged in memory and written to the destination only when `Commit()` is
-  called; `Revert()` discards them and disposing without committing leaves the destination untouched.
+  The writable `RootStorage` exposes `CreateStorage` / `CreateStream` / `Delete` / `Rename`, a writable
+  `CompoundStream` (payloads up to `int.MaxValue`; larger streams go through the deferred builder sources),
+  and settable entry metadata (`ClassId` / `CreationTime` / `ModifiedTime` / `StateBits`) on a storage.
+  Edits are staged in memory and written to the destination only when `Commit()` — or the asynchronous
+  `CommitAsync` / `FlushAsync` — is called; `Revert()` discards them and disposing without committing
+  leaves the destination untouched.
 - **Bounded-memory streaming reads**: `CompoundFile.Open(stream, buffered: false)` reads sectors on
   demand from a seekable stream, and `CompoundStorage.OpenStream(name)` returns a lazy `CompoundStream`
   for large streams, so a multi-gigabyte file can be read without buffering it whole.
@@ -58,11 +61,14 @@ if (file.TryGetSummaryInformation(out var summary))
   default `Compatible` matches the historical behavior, and `Minimal` recovers from cyclic / out-of-range /
   short sector chains by returning the bytes read so far.
 - Per-entry metadata via `CompoundEntryInfo` (the `STATSTG` analogue): class id, state
-  bits, creation / modified time stamps, and red-black node color. `CompoundStream.Parent` /
+  bits, creation / modified time stamps, and red-black node color — readable on any entry and
+  settable on a writable storage (see the write API above). `CompoundStream.Parent` /
   `CompoundStorage.Parent` give upward navigation, and every exception derives from `CompoundFileException`.
 - OLE property-set parsing **and writing** (`Bodu.IO.Compound.PropertySets`): `OlePropertySet` /
-  `OlePropertyValue` (PROPVARIANT) plus the strongly-typed `SummaryInformation` /
-  `DocumentSummaryInformation` views and `…Builder` authors, including user-defined custom properties.
+  `OlePropertyValue` (PROPVARIANT, including vector values) plus the strongly-typed `SummaryInformation` /
+  `DocumentSummaryInformation` views and `…Builder` authors, including user-defined custom properties. On a
+  writable file, `CompoundFile.SetSummaryInformation` / `SetDocumentSummaryInformation` and
+  `CompoundStorage.WritePropertySet` embed a set as the read counterparts of `TryGet…` / `TryOpenPropertySet`.
 - A detached snapshot-authoring model, `CompoundStorageBuilder`: build a JsonNode-style tree of
   `CompoundStorageBuilder` / `CompoundStreamBuilder` children with `CompoundStorageBuilder.CreateRoot()`
   (or `CompoundStorageBuilder.Load` an existing file into one), then `WriteTo` / `Save` / `ToArray`
