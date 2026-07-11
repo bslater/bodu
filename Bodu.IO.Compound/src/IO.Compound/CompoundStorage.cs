@@ -124,6 +124,85 @@ public sealed class CompoundStorage
     public CompoundEntryInfo Stat => _node is not null ? ToEntryInfo(_node) : _entry!.ToEntryInfo();
 
     /// <summary>
+    /// Gets or sets the class identifier (CLSID) recorded on this storage's directory entry.
+    /// </summary>
+    /// <value>The storage CLSID; <see cref="Guid.Empty" /> when none is recorded.</value>
+    /// <remarks>
+    /// The root storage's CLSID is the conventional file-type discriminator for OLE2-based document formats. The
+    /// setter stages the value on a writable file; it is written to the destination by
+    /// <see cref="CompoundFile.Commit" />. Per MS-CFB §2.6.1 only storage entries carry a CLSID — stream entries are
+    /// always written with a zero CLSID.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown on set when the compound file is read-only.</exception>
+    public Guid ClassId
+    {
+        get => Stat.ClassId;
+        set
+        {
+            RequireWritable();
+            _node!.ClassId = value;
+            _file.MarkDirty();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the creation timestamp recorded on this storage's directory entry.
+    /// </summary>
+    /// <value>The creation time, or <see langword="null" /> when none is recorded.</value>
+    /// <remarks>
+    /// The value is never stamped automatically — a storage created through the edit surface carries no timestamps
+    /// unless the caller sets them, keeping byte-identical re-saves possible.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown on set when the compound file is read-only.</exception>
+    public DateTimeOffset? CreationTime
+    {
+        get => Stat.CreationTime;
+        set
+        {
+            RequireWritable();
+            _node!.CreationTime = value;
+            _file.MarkDirty();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the last-modification timestamp recorded on this storage's directory entry.
+    /// </summary>
+    /// <value>The last-modification time, or <see langword="null" /> when none is recorded.</value>
+    /// <remarks>
+    /// Surfaces the same value <see cref="Stat" /> exposes as <see cref="CompoundEntryInfo.LastModifiedTime" />. It
+    /// is never stamped automatically — <see cref="CompoundFile.Commit" /> leaves timestamps untouched, keeping
+    /// byte-identical re-saves possible; callers who want a modification time set it explicitly.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown on set when the compound file is read-only.</exception>
+    public DateTimeOffset? ModifiedTime
+    {
+        get => Stat.LastModifiedTime;
+        set
+        {
+            RequireWritable();
+            _node!.ModifiedTime = value;
+            _file.MarkDirty();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the user-defined state bits recorded on this storage's directory entry.
+    /// </summary>
+    /// <value>The opaque state-bits value; <c>0</c> when none is recorded.</value>
+    /// <exception cref="InvalidOperationException">Thrown on set when the compound file is read-only.</exception>
+    public int StateBits
+    {
+        get => Stat.StateBits;
+        set
+        {
+            RequireWritable();
+            _node!.StateBits = value;
+            _file.MarkDirty();
+        }
+    }
+
+    /// <summary>
     /// Enumerates the metadata of every direct child of this storage, in directory order.
     /// </summary>
     /// <returns>A sequence of <see cref="CompoundEntryInfo" /> for the child storages and streams.</returns>
