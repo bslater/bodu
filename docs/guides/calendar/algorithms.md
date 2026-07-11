@@ -4,17 +4,17 @@ title: Date calculation algorithms
 
 # Date calculation algorithms
 
-Every <xref:Bodu.Globalization.Calendar.NotableDateRule> finds its *nominal* date for a year through exactly one <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. The loader maps each `<Strategy>` element in a rule document to one of the six built-in strategies. Five compute a date from calendar arithmetic; the sixth — `<Algorithm>` — delegates to a named astronomical or ecclesiastical calculator that cannot be expressed as a formula (Easter, the equinoxes, Vesak, Diwali, Qingming, …).
+A single-date <xref:Bodu.Globalization.Calendar.NotableDateRule> finds its *nominal* date for a year through exactly one <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. The loader maps each `<Strategy>` element in a rule document to a strategy implementation. Most compute a date from calendar arithmetic; `<Algorithm>` delegates to a named astronomical or ecclesiastical calculator that cannot be expressed as a formula (Easter, the equinoxes, Vesak, Diwali, Qingming, …). (A rule may alternatively declare a `<Recurrence>` that yields many dates — see [Notable-date rule strategies](strategy-reference.md#recurrence-sources) — but this guide is about the single-date algorithms.)
 
-This guide covers the six strategy kinds and the `<Strategy>` element each maps to, the full set of built-in `<Algorithm>` keys, `AlgorithmDateStrategy.IsKnownKey`, how to implement and register a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm>, and how `<OffsetFromRule>` resolves another rule's date through the strategy resolution context.
+This guide focuses on the `<Algorithm>` strategy: the full set of built-in keys, `AlgorithmDateStrategy.IsKnownKey`, how to implement and register a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm>, and how reference strategies resolve another rule's date through the strategy resolution context. For the complete catalogue of every strategy element and recurrence source, see [Notable-date rule strategies](strategy-reference.md).
 
 For the conceptual distinction between *algorithm* and *fixed rule*, see [Core concepts — Algorithm vs. fixed rule](../../docs/calendar/concepts.md#algorithm-vs-fixed-rule). For the namespace overview, see the [Algorithms API reference](xref:Bodu.Globalization.Calendar.Algorithms).
 
 ---
 
-## The six strategy kinds
+## The strategy kinds
 
-A `<Rule>` element carries exactly one `<Strategy>` child, and that child is exactly one of the elements below. Each maps to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> implementation. You rarely construct these by hand — the loader builds them from the document — but they are the vocabulary the engine resolves against. The strategy contract is a single method, `DateOnly? Calculate(int year, StrategyResolutionContext context)`, returning `null` when the rule produces no occurrence for that year.
+A single-date `<Rule>` carries exactly one `<Strategy>` child, mapping to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> implementation. You rarely construct these by hand — the loader builds them from the document — but they are the vocabulary the engine resolves against. The strategy contract is a single method, `DateOnly? Calculate(int year, StrategyResolutionContext context)`, returning `null` when the rule produces no occurrence for that year.
 
 | `<Strategy>` element | Strategy type | What it computes |
 |---|---|---|
@@ -22,8 +22,17 @@ A `<Rule>` element carries exactly one `<Strategy>` child, and that child is exa
 | `<DayOfWeekInMonth>` | <xref:Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy> | The *n*th or last weekday in a month. |
 | `<RelativeWeekdayInMonth>` | <xref:Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy> | A weekday positioned relative to a weekday-in-month anchor. |
 | `<WeekdayNearDate>` | <xref:Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy> | A weekday on / before / after / nearest a fixed reference date. |
-| `<OffsetFromRule>` | <xref:Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy> | A signed day-offset from another rule's occurrence. |
+| `<OrdinalDayOfMonth>` | <xref:Bodu.Globalization.Calendar.Algorithms.OrdinalDayOfMonthStrategy> | A signed day-of-month from the start or end of a month. |
+| `<DayOfYear>` | <xref:Bodu.Globalization.Calendar.Algorithms.DayOfYearStrategy> | A signed day-of-year from 1 January or 31 December. |
+| `<IsoWeekDate>` | <xref:Bodu.Globalization.Calendar.Algorithms.IsoWeekDateStrategy> | A weekday within an ISO-8601 week of an ISO week-year. |
+| `<OffsetFromRule>` | <xref:Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy> | A signed calendar-day offset from another rule's occurrence. |
+| `<WeekdayNearRule>` | <xref:Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy> | A weekday near another rule's occurrence. |
+| `<NthWeekdayFromRule>` | <xref:Bodu.Globalization.Calendar.Algorithms.NthWeekdayFromRuleStrategy> | The *n*th weekday before/after another rule's occurrence. |
+| `<WorkingDayOffsetFromRule>` | <xref:Bodu.Globalization.Calendar.Algorithms.WorkingDayOffsetFromRuleStrategy> | A signed **working-day** offset from another rule's occurrence. |
+| `<WorkingDayInMonth>` | <xref:Bodu.Globalization.Calendar.Algorithms.WorkingDayInMonthStrategy> | The *n*th working day of a month. |
 | `<Algorithm>` | <xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy> | Dispatch to a named algorithm key. |
+
+The reference (`<OffsetFromRule>`, `<WeekdayNearRule>`, `<NthWeekdayFromRule>`, `<WorkingDayOffsetFromRule>`) and business-day (`<WorkingDayOffsetFromRule>`, `<WorkingDayInMonth>`) strategies resolve through the same `StrategyResolutionContext` — see [Cross-rule references and the resolution context](#cross-rule-references-and-the-resolution-context) below and [Notable-date rule strategies](strategy-reference.md) for each element's attributes and scenarios. Recurrence sources implement the sibling <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy> contract (`IEnumerable<DateOnly> GetOccurrences(DateRange range, StrategyResolutionContext context)`).
 
 ### `<Fixed>` — a fixed month and day
 

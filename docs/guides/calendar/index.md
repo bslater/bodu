@@ -59,6 +59,11 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 <div class="bodu-cards">
 
 <div class="bodu-card">
+  <h3><a href="strategy-reference.md">Notable-date rule strategies</a></h3>
+  <p>The full catalogue of occurrence sources — every single-date strategy (fixed, positional, weekday, reference-based, business-day, algorithm), the recurrence sources, and fixed vs. calculated durations — with a choosing guide and a common-scenarios cookbook.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="rule-reference.md">NotableDateRule and adjustment-policy reference</a></h3>
   <p>Authoritative element-by-element reference for the rule document — every strategy element, the applicability window, and the reusable <code>&lt;AdjustmentPolicy&gt;</code> shape — with worked examples.</p>
 </div>

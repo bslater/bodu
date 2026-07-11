@@ -6,7 +6,7 @@ title: Authoring notable date rules
 
 A notable date is defined by a **rule document** on the notable-date schema (`urn:bodu:globalization:calendar`): author it as XML or JSON, then load it into an immutable <xref:Bodu.Globalization.Calendar.NotableDateResource> with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>. There is no mutable rule-object graph and no rule-provider interface — a rule is a `<Rule>` element, and a service is built over the loaded resource. This guide covers the document model directly; to assemble the same document fluently in C# instead, see [Authoring with the notable-date builder](notable-date-builder.md).
 
-This guide walks the document model top to bottom: the `<NotableDateResource>` root and its child order, how a `<NotableDate>` concept carries one or more `<Rule>` recipes, the six `<Strategy>` elements, importing the bundled common catalogues with `<Imports>`, and ID-targeted edits with `<Overrides>`. For the vocabulary it assumes (document vs. resource, concept vs. rule, nominal vs. observed, territory containment) read [Core concepts](../../docs/calendar/concepts.md) first. For the per-element field reference, see [NotableDateRule and adjustment-policy reference](rule-reference.md).
+This guide walks the document model top to bottom: the `<NotableDateResource>` root and its child order, how a `<NotableDate>` concept carries one or more `<Rule>` recipes, the `<Strategy>` and `<Recurrence>` occurrence sources, importing the bundled common catalogues with `<Imports>`, and ID-targeted edits with `<Overrides>`. For the full strategy catalogue see [Notable-date rule strategies](strategy-reference.md). For the vocabulary it assumes (document vs. resource, concept vs. rule, nominal vs. observed, territory containment) read [Core concepts](../../docs/calendar/concepts.md) first. For the per-element field reference, see [NotableDateRule and adjustment-policy reference](rule-reference.md).
 
 ![Rule authoring — authored document loaded into an immutable resource](../../images/diagrams/calendar-rule-authoring.svg)
 
@@ -83,9 +83,9 @@ A concept holds several rules when the same date is observed differently across 
 
 ---
 
-## The six strategy elements
+## The strategy elements
 
-Every rule carries exactly one `<Strategy>` child, and that child is exactly one of six elements. Each maps to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>:
+A rule's occurrence source is a `<Strategy>` child holding exactly one strategy element, each mapping to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. The six most common describe a single date by calendar arithmetic or by reference to another rule:
 
 | `<Strategy>` element | What it computes |
 |---|---|
@@ -107,6 +107,8 @@ A one-line example of each:
 <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="-2" /></Strategy>
 <Strategy><Algorithm key="western-easter" /></Strategy>
 ```
+
+Alongside these, the schema provides **positional** strategies (`<OrdinalDayOfMonth>`, `<DayOfYear>`, `<IsoWeekDate>`), **dynamic-reference** strategies (`<WeekdayNearRule>`, `<NthWeekdayFromRule>`), and **business-day** strategies (`<WorkingDayOffsetFromRule>`, `<WorkingDayInMonth>`) that resolve against the working-week and applicable non-working occurrences. A rule may instead declare a `<Recurrence>` — a repeating cadence (`<DailyInterval>`, `<Weekly>`, `<MonthlyDay>`, `<MonthlyWeekday>`) that yields many occurrences — and may carry a `<Duration>` whose end date is either a fixed day count or **calculated** from a second strategy. The complete catalogue, with a choosing guide and a common-scenarios cookbook, is [Notable-date rule strategies](strategy-reference.md).
 
 `month` accepts either a number (`1`–`12`) or an English month name (`January`). `weekOrdinal` is a <xref:Bodu.Extensions.WeekOrdinal> value (`First`…`Fifth`, `Last`); `direction` is a <xref:Bodu.Globalization.Calendar.WeekdayProximity> value (`Before`, `OnOrBefore`, `Nearest`, `OnOrAfter`, `After`). For per-element attribute tables and worked examples see [NotableDateRule and adjustment-policy reference](rule-reference.md); for the `<Algorithm>` key catalogue and custom algorithms see [Date calculation algorithms](algorithms.md).
 
@@ -329,8 +331,9 @@ Typical errors include a duplicate concept or rule id, an unknown adjustment `po
 ## Where to go next
 
 - [Using NotableDateService](notable-dates.md) — loading resources, querying by date / range / year, and filtering.
+- [Notable-date rule strategies](strategy-reference.md) — every occurrence source and duration, with a choosing guide and common-scenarios cookbook.
 - [NotableDateRule and adjustment-policy reference](rule-reference.md) — the per-element field reference for the document model.
-- [Date calculation algorithms](algorithms.md) — the six strategies, the built-in `<Algorithm>` keys, and custom algorithms.
+- [Date calculation algorithms](algorithms.md) — the strategy kinds, the built-in `<Algorithm>` keys, and custom algorithms.
 - [Observance adjustment rules](adjustment-rules.md) — the full trigger / action / emission catalogues for `<AdjustmentPolicy>`.
 - [Working with non-Gregorian calendars](non-gregorian-calendars.md) — `<Fixed>` dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
 - [Calendar data packs](data-packs.md) — the official Americas / Europe / Asia-Pacific resources, built from these same imports.

@@ -25,6 +25,7 @@ public static class Program
         Console.WriteLine();
 
         AuthoringCompanyHolidays.Run();
+        FrequencyBasedSchedules.Run();
         AdjustmentsAndPolicies.Run();
         ImportingCatalogues.Run();
         XmlRoundTrip.Run();
