@@ -14,7 +14,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ContainsKey_WhenKeyExists_ShouldReturnTrue()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         Assert.IsTrue(dictionary.ContainsKey("a"));
@@ -26,7 +26,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ContainsKey_WhenKeyMissing_ShouldReturnFalse()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         Assert.IsFalse(dictionary.ContainsKey("missing"));
     }
@@ -37,7 +37,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ContainsKey_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -71,7 +71,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ContainsKey_WhenHit_ShouldNotIncrementTotalTouches()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         Assert.IsTrue(dictionary.ContainsKey("a"));

@@ -14,7 +14,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void TryRemove_WhenKeyExists_ShouldReturnTrueAndValue()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 42);
 
         Assert.IsTrue(dictionary.TryRemove("a", out int value));
@@ -28,7 +28,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void TryRemove_WhenKeyMissing_ShouldReturnFalseAndDefault()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         Assert.IsFalse(dictionary.TryRemove("missing", out int value));
         Assert.AreEqual(0, value);
@@ -40,7 +40,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void TryRemove_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -58,7 +58,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void TryRemove_WhenKeyExists_ShouldNotCountAsEviction()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         int evictedCallbacks = 0;
         dictionary.ItemEvicted += (_, _) => evictedCallbacks++;
         dictionary.Add("a", 1);

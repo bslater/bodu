@@ -14,7 +14,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Enumerator_WhenAdvanced_ShouldYieldEveryEntryThenComplete()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
         dictionary.Add("b", 2);
 
@@ -46,7 +46,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Enumerator_WhenReset_ShouldRewindToStart()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         ConcurrentEvictingDictionary<string, int>.Enumerator enumerator = dictionary.GetEnumerator();
@@ -65,7 +65,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Enumerator_WhenDisposed_ShouldBeNoOp()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         ConcurrentEvictingDictionary<string, int>.Enumerator enumerator = dictionary.GetEnumerator();

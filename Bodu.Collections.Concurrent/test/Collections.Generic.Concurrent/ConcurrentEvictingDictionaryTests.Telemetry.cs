@@ -15,7 +15,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void TotalTouches_WhenMixedOperationsRun_ShouldCountOnlySuccessfulAccesses()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         Assert.IsTrue(dictionary.TryGetValue("a", out _));   // +1

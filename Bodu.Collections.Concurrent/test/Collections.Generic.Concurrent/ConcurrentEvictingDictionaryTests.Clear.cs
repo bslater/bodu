@@ -14,7 +14,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Clear_WhenEntriesExist_ShouldRemoveEverything()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
         dictionary.Add("b", 2);
 
@@ -52,7 +52,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Clear_WhenEntriesExist_ShouldNotRaiseItemEvicted()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         int evictedCallbacks = 0;
         dictionary.ItemEvicted += (_, _) => evictedCallbacks++;
         dictionary.Add("a", 1);

@@ -18,7 +18,7 @@ public sealed class ConcurrentEvictingDictionaryEnumeratorContractTests
     /// <inheritdoc />
     protected override ConcurrentEvictingDictionary<string, int> Create(params KeyValuePair<string, int>[] items)
     {
-        ConcurrentEvictingDictionary<string, int> dictionary = new(capacity: Math.Max(64, items.Length));
+        ConcurrentEvictingDictionary<string, int> dictionary = new(capacity: Math.Max(128, items.Length * 32));
         foreach (KeyValuePair<string, int> item in items)
             dictionary.Add(item.Key, item.Value);
         return dictionary;

@@ -16,7 +16,7 @@ public partial class ConcurrentEvictingDictionaryTests
     {
         var time = new ManualTimeProvider();
         var expiration = new EvictingDictionaryExpiration(null, EvictingDictionaryExpirationKind.Absolute, time);
-        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 8, expiration);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
         dictionary.Add("mortal1", 1, TimeSpan.FromMinutes(1));
         dictionary.Add("mortal2", 2, TimeSpan.FromMinutes(1));
         dictionary.Add("immortal", 3);
@@ -37,7 +37,7 @@ public partial class ConcurrentEvictingDictionaryTests
     {
         var time = new ManualTimeProvider();
         var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(10), EvictingDictionaryExpirationKind.Absolute, time);
-        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 4, expiration);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
         dictionary.Add("a", 1);
 
         Assert.AreEqual(0, dictionary.RemoveExpired());
@@ -50,7 +50,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void RemoveExpired_WhenExpirationNotConfigured_ShouldReturnZero()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         Assert.AreEqual(0, dictionary.RemoveExpired());
@@ -67,7 +67,7 @@ public partial class ConcurrentEvictingDictionaryTests
     {
         var time = new ManualTimeProvider();
         var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(1), EvictingDictionaryExpirationKind.Absolute, time);
-        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 8, expiration);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
         var evicted = new List<string>();
         dictionary.ItemEvicted += (key, _) => evicted.Add(key);
         dictionary.Add("a", 1);
@@ -90,7 +90,7 @@ public partial class ConcurrentEvictingDictionaryTests
     {
         var time = new ManualTimeProvider();
         var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(1), EvictingDictionaryExpirationKind.Absolute, time);
-        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 8, expiration);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
         dictionary.Add("a", 1);
         dictionary.Add("b", 2);
 

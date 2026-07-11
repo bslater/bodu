@@ -14,7 +14,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Keys_WhenEntriesExist_ShouldContainExactlyStoredKeys()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
         dictionary.Add("b", 2);
 
@@ -31,7 +31,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Values_WhenEntriesExist_ShouldContainExactlyStoredValues()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
         dictionary.Add("b", 2);
 
@@ -48,7 +48,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Keys_WhenMutatedAfterRead_ShouldNotReflectMutations()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         IReadOnlyCollection<string> keys = dictionary.Keys;
@@ -63,7 +63,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Values_WhenMutatedAfterRead_ShouldNotReflectMutations()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         IReadOnlyCollection<int> values = dictionary.Values;
@@ -78,7 +78,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void KeysValues_WhenEmpty_ShouldBeEmpty()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         Assert.IsEmpty(dictionary.Keys);
         Assert.IsEmpty(dictionary.Values);

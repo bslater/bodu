@@ -14,7 +14,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void GetOrAdd_WhenKeyExists_ShouldReturnExistingValue()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         int result = dictionary.GetOrAdd("a", 99);
@@ -29,7 +29,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void GetOrAdd_WhenKeyMissing_ShouldAddAndReturnValue()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         int result = dictionary.GetOrAdd("a", 42);
 
@@ -43,7 +43,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void GetOrAdd_WhenKeyMissing_ForFactory_ShouldInvokeFactoryOnceAndStoreResult()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         int invocations = 0;
 
         int result = dictionary.GetOrAdd("a", key =>
@@ -63,7 +63,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void GetOrAdd_WhenKeyExists_ForFactory_ShouldNotInvokeFactory()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
         int invocations = 0;
 
@@ -83,7 +83,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void GetOrAdd_WhenArgumentIsNull_ShouldThrowArgumentNullException()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         var keyEx = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -105,7 +105,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void GetOrAdd_WhenFactoryThrows_ShouldPropagateAndAddNothing()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

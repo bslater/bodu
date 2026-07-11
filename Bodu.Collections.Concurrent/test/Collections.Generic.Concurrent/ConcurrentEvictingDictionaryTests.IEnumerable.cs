@@ -16,7 +16,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void IEnumerable_WhenEnumerated_ShouldYieldExactlyStoredEntries()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
         dictionary.Add("b", 2);
 
@@ -35,7 +35,9 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void IEnumerable_WhenMutatedDuringEnumeration_ShouldNotThrow()
     {
-        var dictionary = new ConcurrentEvictingDictionary<int, int>(capacity: 32);
+        // Capacity 640 guarantees a per-segment slice of at least 20 for any stripe count, so the 20 keys this test
+        // stores can never collide into eviction regardless of segment routing.
+        var dictionary = new ConcurrentEvictingDictionary<int, int>(capacity: 640);
         for (int i = 0; i < 10; i++)
             dictionary.Add(i, i);
 
@@ -56,7 +58,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void IEnumerable_WhenEnumeratedNonGenerically_ShouldYieldSameEntries()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         IEnumerable enumerable = dictionary;
@@ -76,7 +78,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void IEnumerable_WhenEmpty_ShouldYieldNothing()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         foreach (KeyValuePair<string, int> pair in dictionary)
             Assert.Fail($"Unexpected entry: {pair.Key}.");

@@ -22,12 +22,12 @@ public sealed class ConcurrentEvictingDictionaryNonGenericCollectionContractTest
     protected override bool SyncRootSupported => false;
 
     /// <inheritdoc />
-    protected override ConcurrentEvictingDictionary<string, int> CreateEmpty() => new(capacity: 16);
+    protected override ConcurrentEvictingDictionary<string, int> CreateEmpty() => new(capacity: 128);
 
     /// <inheritdoc />
     protected override ConcurrentEvictingDictionary<string, int> Create()
     {
-        ConcurrentEvictingDictionary<string, int> dictionary = new(capacity: 16);
+        ConcurrentEvictingDictionary<string, int> dictionary = new(capacity: 128);
         dictionary.Add("a", 1);
         dictionary.Add("b", 2);
         dictionary.Add("c", 3);

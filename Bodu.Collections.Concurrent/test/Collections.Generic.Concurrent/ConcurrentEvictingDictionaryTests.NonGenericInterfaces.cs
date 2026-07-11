@@ -17,7 +17,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ICollection_IsSynchronized_ShouldBeFalse()
     {
-        ICollection collection = new ConcurrentEvictingDictionary<string, int>();
+        ICollection collection = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         Assert.IsFalse(collection.IsSynchronized);
     }
@@ -29,7 +29,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ICollection_SyncRoot_ShouldThrowNotSupportedException()
     {
-        ICollection collection = new ConcurrentEvictingDictionary<string, int>();
+        ICollection collection = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         _ = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
@@ -43,7 +43,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ICollection_CopyTo_WhenArrayFits_ShouldCopyEntries()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
         dictionary.Add("b", 2);
         ICollection collection = dictionary;
@@ -62,7 +62,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ICollection_CopyTo_WhenArgumentsInvalid_ShouldThrow()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
         ICollection collection = dictionary;
 
@@ -88,7 +88,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ICollection_CopyTo_WhenArrayTypeIncompatible_ShouldThrowArgumentException()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
         ICollection collection = dictionary;
 

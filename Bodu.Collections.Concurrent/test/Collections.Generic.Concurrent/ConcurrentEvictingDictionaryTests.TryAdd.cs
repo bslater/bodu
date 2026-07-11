@@ -14,7 +14,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void TryAdd_WhenKeyIsNew_ShouldReturnTrueAndStoreEntry()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         Assert.IsTrue(dictionary.TryAdd("a", 1));
         Assert.IsTrue(dictionary.TryGetValue("a", out int value));
@@ -27,7 +27,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void TryAdd_WhenKeyExists_ShouldReturnFalseAndKeepExistingValue()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         Assert.IsFalse(dictionary.TryAdd("a", 2));
@@ -41,7 +41,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void TryAdd_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

@@ -122,10 +122,28 @@ public partial class ConcurrentEvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the sequence constructor copies every entry from the source.
+    /// Verifies that the default-capacity sequence constructor copies the source entry.
     /// </summary>
+    /// <remarks>
+    /// A single entry is used deliberately: at the default capacity the per-segment slice can be one slot, so two
+    /// string keys routed to the same segment by the process's randomized string hashing would evict one another. The
+    /// multi-entry copy path is covered below with a collision-safe explicit capacity.
+    /// </remarks>
     [TestMethod]
     public void Ctor_WhenSourceSupplied_ShouldCopyEntries()
+    {
+        KeyValuePair<string, int>[] source = [new("a", 1)];
+
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(source);
+
+        AssertContainsExactly(dictionary, ("a", 1));
+    }
+
+    /// <summary>
+    /// Verifies that the capacity-taking sequence constructor copies every entry from the source.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceSuppliedWithCapacity_ShouldCopyEveryEntry()
     {
         KeyValuePair<string, int>[] source =
         [
@@ -134,7 +152,7 @@ public partial class ConcurrentEvictingDictionaryTests
             new("c", 3),
         ];
 
-        var dictionary = new ConcurrentEvictingDictionary<string, int>(source);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, source);
 
         AssertContainsExactly(dictionary, ("a", 1), ("b", 2), ("c", 3));
     }
@@ -154,16 +172,21 @@ public partial class ConcurrentEvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that a source sequence larger than the capacity leaves at most <c>Capacity</c> entries stored.
+    /// Verifies that a source sequence larger than the capacity leaves exactly <c>Capacity</c> entries stored.
     /// </summary>
+    /// <remarks>
+    /// Sequential <see cref="int" /> keys are used deliberately: their hash codes cover every segment for any segment
+    /// count the default concurrency level can produce at this capacity, so each segment fills its slice exactly.
+    /// String keys would make the segment routing depend on the process's randomized string hashing.
+    /// </remarks>
     [TestMethod]
     public void Ctor_WhenSourceExceedsCapacity_ShouldEvictDownToCapacity()
     {
-        KeyValuePair<string, int>[] source = Enumerable.Range(0, 10)
-            .Select(i => new KeyValuePair<string, int>($"k{i}", i))
+        KeyValuePair<int, int>[] source = Enumerable.Range(0, 10)
+            .Select(i => new KeyValuePair<int, int>(i, i))
             .ToArray();
 
-        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 4, source);
+        var dictionary = new ConcurrentEvictingDictionary<int, int>(capacity: 4, source);
 
         Assert.AreEqual(4, dictionary.Count);
         Assert.AreEqual(6, dictionary.EvictionCount);

@@ -18,7 +18,7 @@ public sealed class ConcurrentEvictingDictionaryDebugViewContractTests
     /// <inheritdoc />
     protected override ConcurrentEvictingDictionary<string, int> Create()
     {
-        ConcurrentEvictingDictionary<string, int> dictionary = new(capacity: 16);
+        ConcurrentEvictingDictionary<string, int> dictionary = new(capacity: 128);
         dictionary.Add("a", 1);
         dictionary.Add("b", 2);
         dictionary.Add("c", 3);

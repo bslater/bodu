@@ -14,7 +14,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ToArray_WhenEmpty_ShouldReturnEmptyArray()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         Assert.IsEmpty(dictionary.ToArray());
     }
@@ -43,7 +43,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void ToArray_WhenMutatedAfterSnapshot_ShouldNotReflectMutations()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 1);
 
         KeyValuePair<string, int>[] snapshot = dictionary.ToArray();

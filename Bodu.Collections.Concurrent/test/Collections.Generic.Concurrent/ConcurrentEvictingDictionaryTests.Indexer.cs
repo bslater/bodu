@@ -14,7 +14,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Indexer_WhenKeyExists_ShouldReturnValue()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary.Add("a", 42);
 
         Assert.AreEqual(42, dictionary["a"]);
@@ -26,7 +26,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Indexer_WhenKeyMissing_ShouldThrowKeyNotFoundException()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         var ex = Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
@@ -42,7 +42,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Indexer_WhenSetForNewKey_ShouldAddEntry()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         dictionary["a"] = 1;
 
@@ -56,7 +56,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Indexer_WhenSetForExistingKey_ShouldReplaceValue()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
         dictionary["a"] = 1;
 
         dictionary["a"] = 2;
@@ -88,7 +88,7 @@ public partial class ConcurrentEvictingDictionaryTests
     [TestMethod]
     public void Indexer_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        var dictionary = new ConcurrentEvictingDictionary<string, int>();
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128);
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
