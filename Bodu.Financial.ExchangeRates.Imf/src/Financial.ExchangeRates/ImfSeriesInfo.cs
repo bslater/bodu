@@ -36,6 +36,6 @@ public sealed class ImfSeriesInfo
     /// <summary>
     /// Gets the SDMX series key fragment queried for this pair.
     /// </summary>
-    /// <value>The <c>{freq}.{area}.{indicator}</c> series key, for example <c>M.GB.ENDE_XDC_USD_RATE</c>.</value>
+    /// <value>The <c>{freq}.{area}.{indicator}</c> series key, for example <c>D.GB.ENDE_XDC_USD_RATE</c>.</value>
     public string SeriesKey { get; }
 }

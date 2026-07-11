@@ -838,7 +838,7 @@ central-bank whole-file sources (**Boe** IADB CSV, **Ecb** eurofxref XML,
 **Xe** — scrape-token auth, **Oanda** — rolling ~180-day window,
 **Fixer** — fixer.io `access_key` base+quotes, **ExchangeRateHost** —
 exchangerate.host `access_key` source+quotes, **Fred** — St. Louis Fed
-`api_key` per-pair `series_id` map, **Imf** — IMF SDMX keyless monthly
+`api_key` per-pair `series_id` map, **Imf** — IMF SDMX Data API keyless daily
 USD/SDR-anchored per-pair series). The
 shared `.DependencyInjection` package owns the `AddWebRateProvider`
 machinery (named `HttpClient` + Polly resilience) each provider's `Add*`
@@ -879,10 +879,9 @@ backends in-package and durable `Sqlite` + shared `Distributed`
   APIs.* Fixer (`Bodu.Financial.ExchangeRates.Fixer`), exchangerate.host
   (`.ExchangeRateHost`), FRED (`.Fred`), and IMF (`.Imf`) are now wrapped
   as pair providers over `PairWebRateProvider<TSeries>`, each a small
-  package following the established provider + DI shape. IMF ships with a
-  documented limitation: keyless SDMX, monthly (not daily) observations,
-  and USD/SDR-anchored per-pair series only. Further sources can follow the
-  same template on demand.
+  package following the established provider + DI shape. IMF serves daily
+  observations from the SDMX Data API (keyless), USD/SDR-anchored per mapped
+  pair. Further sources can follow the same template on demand.
 
 ### `Bodu.IO.Compound`
 

@@ -27,7 +27,7 @@ caching; that is added in front (see the caching guide).
 | Fixer (fixer.io) | `Bodu.Financial.ExchangeRates.Fixer` | *any pair* | per-**pair** time-series / single-date JSON (`access_key`) | since 1999‑01‑01 | `AddFixerExchangeRates()` |
 | exchangerate.host | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | *any pair* | per-**pair** time-series / single-date JSON (`access_key`) | since 1999‑01‑01 | `AddExchangeRateHostExchangeRates()` |
 | FRED (St. Louis Fed) | `Bodu.Financial.ExchangeRates.Fred` | *mapped pairs* | per-**pair** `series_id` observations JSON (`api_key`) | unbounded (per series) | `AddFredExchangeRates()` |
-| IMF | `Bodu.Financial.ExchangeRates.Imf` | *mapped pairs* | per-**pair** SDMX-JSON series (keyless, monthly) | unbounded (per series) | `AddImfExchangeRates()` |
+| IMF | `Bodu.Financial.ExchangeRates.Imf` | *mapped pairs* | per-**pair** SDMX-JSON series (keyless, daily) | unbounded (per series) | `AddImfExchangeRates()` |
 
 RBA, ECB, and BoE quote one base currency against many others; direct (`BASE→X`)
 and inverse (`X→BASE`) lookups are supported, cross pairs are not. Yahoo, OFX, XE,
@@ -35,7 +35,7 @@ OANDA, Fixer, and exchangerate.host fetch a distinct series per pair, so they se
 arbitrary pairs directly (subject to their plan's base-currency rules). FRED and IMF
 are per-pair too, but each pair must be mapped to the source's series identifier —
 they ship built-in maps for the major pairs and accept more through their options;
-IMF's data is monthly and USD/SDR-anchored. Fixer, exchangerate.host, and FRED
+IMF's data is daily and USD/SDR-anchored. Fixer, exchangerate.host, and FRED
 require an API key on their options; IMF is keyless.
 
 Every provider advertises its history depth through
@@ -356,24 +356,22 @@ await fred.LoadPairAsync("EUR", "USD", new DateOnly(2023, 1, 1), new DateOnly(20
 RateLookupResult usd = fred.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 ```
 
-## IMF (mapped pairs, keyless, monthly)
+## IMF (mapped pairs, keyless, daily)
 
 [`ImfRateProvider`](xref:Bodu.Financial.ExchangeRates.ImfRateProvider)
-serves the IMF SDMX-JSON CompactData service. It is keyless, but its data is
-**monthly** (not daily) and **USD/SDR-anchored**: each pair maps to an SDMX series
-key through
+serves **daily** exchange rates from the IMF SDMX Data API (the Exchange Rates `ER`
+dataflow, `FREQ = D`). It is keyless and **USD/SDR-anchored**: each pair maps to an SDMX
+series key through
 [`ImfRateProviderOptions.SeriesMap`](xref:Bodu.Financial.ExchangeRates.ImfRateProviderOptions),
-and the built-in map covers a handful of USD pairs. A monthly observation resolves to
-the first day of its month. This provider suits reference and reporting scenarios, not
-daily arbitrary-pair conversion.
+and the built-in map covers a set of USD pairs (extend it to add more).
 
 ```csharp
 using Bodu.Financial.ExchangeRates;
 
 using var imf = new ImfRateProvider(new ImfRateProviderOptions());
-await imf.LoadPairAsync("USD", "GBP", new DateOnly(2023, 1, 1), new DateOnly(2023, 3, 31));
+await imf.LoadPairAsync("USD", "GBP", new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
-RateLookupResult gbp = imf.GetRate("USD", "GBP", new DateOnly(2023, 1, 1));
+RateLookupResult gbp = imf.GetRate("USD", "GBP", new DateOnly(2023, 1, 3));
 ```
 
 ## Registering a provider with dependency injection
@@ -485,7 +483,7 @@ survives a web → fixed round trip losslessly.
 | Recent rates for an arbitrary pair (rolling ~180-day window) | OANDA |
 | A commercial API you already hold a key for | Fixer or exchangerate.host |
 | Official US-published FX series (per mapped pair) | FRED |
-| Monthly, USD/SDR-anchored reference rates (keyless) | IMF |
+| Daily, USD/SDR-anchored reference rates (keyless) | IMF |
 | One pair from several sources, with fallback or an average | the [aggregator](exchange-rate-caching.md) over any mix |
 
 ## See also

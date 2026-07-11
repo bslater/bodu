@@ -1,5 +1,5 @@
 {
   "meta": {
-    "note": "A valid JSON object that lacks the CompactData path."
+    "note": "A valid JSON object that lacks the SDMX data path."
   }
 }

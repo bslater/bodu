@@ -10,22 +10,22 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Serves IMF (International Monetary Fund) exchange rates as <see cref="ExchangeRate" /> values, implementing the
-/// Bodu.Financial provider contracts over the IMF SDMX-JSON CompactData REST service.
+/// Serves IMF (International Monetary Fund) daily exchange rates as <see cref="ExchangeRate" /> values, implementing
+/// the Bodu.Financial provider contracts over the IMF SDMX Data API.
 /// </summary>
 /// <remarks>
 /// <para>
 /// The provider derives from <see cref="PairWebRateProvider{TSeries}" />, which supplies the per-pair coverage
 /// tracking, single-flight coalescing, fetch-and-accumulate orchestration, and diagnostic logging shared by every
 /// pair-based web source; this type contributes only the IMF identity and exception text. A pair is fetched by mapping
-/// it to an SDMX series key and requesting the CompactData resource for the covered months. Use
+/// it to an SDMX series key and requesting the daily data resource over the covered date range. Use
 /// <see cref="WebRateProvider.LoadPairAsync" /> to warm a pair's in-memory store.
 /// </para>
 /// <para>
-/// <strong>Monthly, USD/SDR-anchored.</strong> IMF observations are monthly (the IFS end-of-period rate), not daily,
-/// and the seeded series are USD/SDR-anchored domestic-currency-per-USD rates. Only pairs present in
-/// <see cref="ImfRateProviderOptions.SeriesMap" /> (or their reverse, served by the base inverse-lookup fallback) are
-/// serviceable; an arbitrary daily pair is not, and an unmapped pair returns no data.
+/// <strong>Daily, USD/SDR-anchored.</strong> The provider requests the daily (<c>FREQ = D</c>) exchange-rate series
+/// from the IMF Exchange Rates (<c>ER</c>) dataflow; the seeded series are USD/SDR-anchored domestic-currency-per-USD
+/// rates. Only pairs present in <see cref="ImfRateProviderOptions.SeriesMap" /> (or their reverse, served by the base
+/// inverse-lookup fallback) are serviceable; an unmapped pair returns no data. Extend the map to add more pairs.
 /// </para>
 /// <para>
 /// <strong>Keyless.</strong> The IMF service requires no API key. <strong>HttpClient ownership.</strong> The

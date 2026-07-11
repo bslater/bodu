@@ -23,12 +23,12 @@ public partial class ImfRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a blank CompactData path is rejected.
+    /// Verifies that a blank data path is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenCompactDataPathBlank_ShouldReturnFalse()
+    public void TryValidate_WhenDataPathBlank_ShouldReturnFalse()
     {
-        ImfRateProviderOptions options = new() { CompactDataPath = "  " };
+        ImfRateProviderOptions options = new() { DataPath = "  " };
 
         bool valid = options.TryValidate(out string? error);
 
@@ -43,6 +43,20 @@ public partial class ImfRateProviderOptionsTests
     public void TryValidate_WhenDataflowBlank_ShouldReturnFalse()
     {
         ImfRateProviderOptions options = new() { Dataflow = "" };
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that a blank data version is rejected.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenDataVersionBlank_ShouldReturnFalse()
+    {
+        ImfRateProviderOptions options = new() { DataVersion = " " };
 
         bool valid = options.TryValidate(out string? error);
 

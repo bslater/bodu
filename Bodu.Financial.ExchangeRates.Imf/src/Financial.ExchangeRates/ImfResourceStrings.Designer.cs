@@ -61,11 +61,11 @@ namespace Bodu.Financial.ExchangeRates {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The IMF options CompactData path must be specified..
+        ///   Looks up a localized string similar to The IMF options data path must be specified..
         /// </summary>
-        internal static string Arg_Invalid_ImfOptionsCompactDataPath {
+        internal static string Arg_Invalid_ImfOptionsDataPath {
             get {
-                return ResourceManager.GetString("Arg_Invalid_ImfOptionsCompactDataPath", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_ImfOptionsDataPath", resourceCulture);
             }
         }
 
@@ -75,6 +75,15 @@ namespace Bodu.Financial.ExchangeRates {
         internal static string Arg_Invalid_ImfOptionsDataflow {
             get {
                 return ResourceManager.GetString("Arg_Invalid_ImfOptionsDataflow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The IMF options data version must be specified..
+        /// </summary>
+        internal static string Arg_Invalid_ImfOptionsDataVersion {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ImfOptionsDataVersion", resourceCulture);
             }
         }
 

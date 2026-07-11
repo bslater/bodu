@@ -24,7 +24,7 @@ internal sealed class FixtureImfRateSource
     /// </summary>
     /// <param name="options">The provider options used while resolving series keys.</param>
     /// <param name="fixtureByPair">
-    /// An optional pair-to-fixture map; defaults to mapping <c>USD/GBP</c> to the sample monthly fixture.
+    /// An optional pair-to-fixture map; defaults to mapping <c>USD/GBP</c> to the sample daily fixture.
     /// </param>
     public FixtureImfRateSource(
         ImfRateProviderOptions options,
@@ -33,7 +33,7 @@ internal sealed class FixtureImfRateSource
         _options = options;
         _fixtureByPair = fixtureByPair ?? new Dictionary<string, string>(StringComparer.Ordinal)
         {
-            ["USD/GBP"] = ImfFixtures.UsdGbp2023,
+            ["USD/GBP"] = ImfFixtures.UsdGbpDaily2023,
         };
     }
 

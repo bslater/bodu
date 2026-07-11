@@ -92,8 +92,7 @@ public static class Program
         //     using var provider = new FredRateProvider(new FredRateProviderOptions { ApiKey = "<your-key>" });
         //     var fromIso = "EUR"; var toIso = "USD";
         //
-        // IMF (keyless, but MONTHLY and USD/SDR-anchored - the weekly window above won't resolve;
-        // use a month-spanning range and a first-of-month target date for this source):
+        // IMF (keyless, daily; USD/SDR-anchored - the pair must involve USD, e.g. USD/GBP):
         //     using var provider = new ImfRateProvider(new ImfRateProviderOptions());
         //     var fromIso = "USD"; var toIso = "GBP";
         // -------------------------------------------------------------------------------------------

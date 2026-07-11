@@ -5,22 +5,27 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Net.Http.Headers;
 
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Obtains a currency pair's rates from the IMF SDMX-JSON CompactData service by resolving the pair to an SDMX series
-/// key, issuing a GET for the covered months, and parsing the JSON response.
+/// Obtains a currency pair's daily rates from the IMF SDMX Data API by resolving the pair to an SDMX series key,
+/// issuing a GET over the requested date range, and parsing the SDMX-JSON response.
 /// </summary>
 /// <remarks>
 /// The series key is resolved through <see cref="ImfRateProviderOptions.SeriesMap" />. A pair that has no mapped series
 /// key is treated as one with no published data — an empty result is returned without issuing a request — so the
-/// provider's inverse-lookup fallback can be exercised. IMF observations are monthly, so the request's date range is
-/// projected to the enclosing <c>YYYY-MM</c> <c>startPeriod</c> and <c>endPeriod</c> parameters.
+/// provider's inverse-lookup fallback can be exercised. The request addresses the daily series over the inclusive range
+/// through <c>startPeriod</c> / <c>endPeriod</c> <c>YYYY-MM-DD</c> parameters, and asks for SDMX-JSON through the
+/// <c>Accept</c> header.
 /// </remarks>
 internal sealed class ImfRateSource
     : IPairRateSource<ImfSeriesInfo>
 {
+    /// <summary>The media type requested for the SDMX-JSON data message.</summary>
+    private const string SdmxJsonMediaType = "application/vnd.sdmx.data+json";
+
     /// <summary>The HTTP client used to issue requests.</summary>
     private readonly HttpClient _httpClient;
 
@@ -54,13 +59,19 @@ internal sealed class ImfRateSource
         }
 
         Uri url = BuildRequestUri(seriesKey, request);
-        byte[] json = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
+
+        using HttpRequestMessage message = new(HttpMethod.Get, url);
+        message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(SdmxJsonMediaType));
+
+        using HttpResponseMessage response = await _httpClient.SendAsync(message, cancellationToken).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        byte[] json = await response.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
 
         return ImfResponseParser.Parse(json, request, seriesKey);
     }
 
     /// <summary>
-    /// Builds the absolute request URI addressing the CompactData resource for a series over the covered months.
+    /// Builds the absolute request URI addressing the SDMX daily data resource for a series over the requested range.
     /// </summary>
     /// <param name="seriesKey">The resolved SDMX series key.</param>
     /// <param name="request">The pair request.</param>
@@ -69,16 +80,17 @@ internal sealed class ImfRateSource
     {
         string path = string.Format(
             CultureInfo.InvariantCulture,
-            "{0}/{1}/{2}",
-            _options.CompactDataPath,
+            "{0}/{1}/{2}/{3}",
+            _options.DataPath,
             _options.Dataflow,
+            _options.DataVersion,
             seriesKey);
 
         string query = string.Format(
             CultureInfo.InvariantCulture,
-            "startPeriod={0}&endPeriod={1}",
-            request.StartDate.ToString("yyyy-MM", CultureInfo.InvariantCulture),
-            request.EndDate.ToString("yyyy-MM", CultureInfo.InvariantCulture));
+            "startPeriod={0}&endPeriod={1}&dimensionAtObservation=TIME_PERIOD",
+            request.StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+            request.EndDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
 
         UriBuilder builder = new(new Uri(_options.BaseAddress, path)) { Query = query };
 

@@ -4,7 +4,7 @@ The one sample in this tree that goes **online**: fetch real published rates fro
 provider for a computed historical date and its trailing week. The ECB reference-rate feed is
 active by default; all ten other providers (RBA, BoE, Yahoo, OFX, OANDA, XE, Fixer,
 exchangerate.host, FRED, IMF) are present as comment-switchable blocks — the API-key sources
-(Fixer, exchangerate.host, FRED) need a key set and IMF serves monthly data — every provider
+(Fixer, exchangerate.host, FRED) need a key set and IMF serves daily USD-anchored data — every provider
 package is already referenced, so switching is a
 comment flip, and the scenarios run unchanged because all providers serve the same
 `IDatedRateProvider` contract.

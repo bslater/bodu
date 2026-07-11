@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <summary>
 /// Verifies that <see cref="ImfRateProvider" /> satisfies the shared dated-provider contract, so the IMF source is
 /// indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider is seeded offline from the
-/// embedded USD/GBP monthly fixture through <see cref="FixtureImfRateSource" />.
+/// embedded USD/GBP daily SDMX-JSON fixture through <see cref="FixtureImfRateSource" />.
 /// </summary>
 [TestClass]
 public sealed class ImfRateProviderContractTests
@@ -22,16 +22,16 @@ public sealed class ImfRateProviderContractTests
     protected override CurrencyPair CanonicalPair => new(CurrencyCode.USD, CurrencyCode.GBP);
 
     /// <inheritdoc />
-    protected override DateOnly KnownDate => new(2023, 1, 1);
+    protected override DateOnly KnownDate => new(2023, 1, 3);
 
     /// <inheritdoc />
     protected override DateOnly UnknownDate => new(2019, 1, 1);
 
     /// <inheritdoc />
-    protected override DateOnly RangeStart => new(2023, 1, 1);
+    protected override DateOnly RangeStart => new(2023, 1, 2);
 
     /// <inheritdoc />
-    protected override DateOnly RangeEnd => new(2023, 3, 1);
+    protected override DateOnly RangeEnd => new(2023, 1, 6);
 
     /// <inheritdoc />
     protected override RateHistoryAvailability ExpectedHistoryAvailability =>

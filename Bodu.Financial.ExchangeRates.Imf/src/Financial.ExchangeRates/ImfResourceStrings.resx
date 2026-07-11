@@ -58,11 +58,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Arg_Invalid_ImfOptionsCompactDataPath" xml:space="preserve">
-    <value>The IMF options CompactData path must be specified.</value>
+  <data name="Arg_Invalid_ImfOptionsDataPath" xml:space="preserve">
+    <value>The IMF options data path must be specified.</value>
   </data>
   <data name="Arg_Invalid_ImfOptionsDataflow" xml:space="preserve">
     <value>The IMF options dataflow must be specified.</value>
+  </data>
+  <data name="Arg_Invalid_ImfOptionsDataVersion" xml:space="preserve">
+    <value>The IMF options data version must be specified.</value>
   </data>
   <data name="Arg_Invalid_ImfOptionsSeriesMap" xml:space="preserve">
     <value>The IMF options series map must not be null.</value>

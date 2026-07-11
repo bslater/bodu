@@ -84,7 +84,7 @@ fetches real published rates from a live web provider for a computed historical 
 recent Wednesday at least five days old, with a `PreviousWithin(5)` tolerance so a published
 fixing is near-certain — plus that date's trailing week as a single range read. The ECB feed is
 active by default; RBA, BoE, Yahoo, OFX, OANDA, XE, Fixer, exchangerate.host, FRED, and IMF are
-comment-switchable blocks (the API-key sources need a key set; IMF is monthly), and every
+comment-switchable blocks (the API-key sources need a key set), and every
 provider package is referenced so the switch is a comment flip. *Packages: one of the
 `Bodu.Financial.ExchangeRates.<Source>` provider packages.*
 
