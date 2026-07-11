@@ -31,7 +31,7 @@ Prioritized backlog derived from the workstream findings. Ordered by severity wi
 |---|---|---|---|---|
 | R14 | Yaml hard-coded exception messages (High, convention) | `06-...duplication.md` #3 | S | Migrate the 5 literals to `YamlResourceStrings` keys (`Arg_*`/`Op_*`). |
 | R15 | Text serializers lack a domain `ThrowHelper` (Medium) | `06-...duplication.md` #5 | S | Add one shared serialization `ThrowHelper` (fold into R17). |
-| R16 | Docs/resx-placement housekeeping (Low) | `06-...duplication.md` #6,#7 | XS | Add `Bodu.Text.Yaml` + `Bodu.Security.Cryptography.Simd.Test` to the CLAUDE.md table; normalize resx placement. Fix the out-of-scope `Bodu.Financial/bench/` compile errors (stale `CurrencyPair`/`RateSeries` namespace) while here. |
+| R16 | Docs/resx-placement housekeeping (Low) → **done** | `06-...duplication.md` #6,#7 | XS | Added `Bodu.Text.Yaml` to the CLAUDE.md project table and documented `Bodu.Security.Cryptography.Simd.Test` (the SIMD-disable test assembly). Fixed the `Bodu.Financial/bench/` compile errors (stale `Bodu.Financial.RateSeries` namespace + `CurrencyPair(string,string)` → `CurrencyPair(CurrencyCode,CurrencyCode)`). resx-placement normalization deferred (cosmetic; folded into the R17 serializer-core move). |
 
 ## Consolidation strategy — `Bodu.Core` is the central substrate
 
