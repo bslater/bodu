@@ -92,9 +92,10 @@ public static class Program
         //     using var provider = new FredRateProvider(new FredRateProviderOptions { ApiKey = "<your-key>" });
         //     var fromIso = "EUR"; var toIso = "USD";
         //
-        // IMF (keyless, daily; USD/SDR-anchored - the pair must involve USD, e.g. USD/GBP):
+        // IMF (keyless; daily USD-anchored representative rates from the monthly TSV report;
+        // single-base like ECB, so the pair must involve USD, e.g. USD/JPY):
         //     using var provider = new ImfRateProvider(new ImfRateProviderOptions());
-        //     var fromIso = "USD"; var toIso = "GBP";
+        //     var fromIso = "USD"; var toIso = "JPY";
         // -------------------------------------------------------------------------------------------
 
         try
