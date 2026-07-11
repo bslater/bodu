@@ -36,6 +36,9 @@ internal static class PropertySetWriter
     /// <summary>The property identifier of the code-page property.</summary>
     private const int CodePagePropertyId = 1;
 
+    /// <summary>The bit that flags a vector value within a property type word.</summary>
+    private const ushort VectorFlag = 0x1000;
+
     /// <summary>
     /// Serializes a property set to its byte form.
     /// </summary>
@@ -126,32 +129,169 @@ internal static class PropertySetWriter
     }
 
     /// <summary>
-    /// Encodes a single typed property value.
+    /// Encodes a single typed property value, dispatching to the scalar or vector layout.
     /// </summary>
     /// <param name="value">The value to encode.</param>
     /// <param name="encoding">The encoding for ANSI strings.</param>
     /// <returns>The encoded typed-property-value bytes.</returns>
     /// <exception cref="CompoundFileSerializationException">Thrown when the value type cannot be encoded.</exception>
-    private static byte[] EncodeValue(OlePropertyValue value, Encoding encoding)
+    private static byte[] EncodeValue(OlePropertyValue value, Encoding encoding) =>
+        value.IsVector
+            ? EncodeVector(value, encoding)
+            : Typed(value.Type, EncodeScalarBody(value.Type, value.Value, encoding));
+
+    /// <summary>
+    /// Encodes a scalar value body — no type word and no trailing padding — mirroring the scalar types
+    /// <see cref="PropertySetReader" /> decodes.
+    /// </summary>
+    /// <param name="type">The scalar property type.</param>
+    /// <param name="value">The CLR value to encode.</param>
+    /// <param name="encoding">The encoding for ANSI strings.</param>
+    /// <returns>The encoded value body bytes.</returns>
+    /// <exception cref="CompoundFileSerializationException">Thrown when the value type cannot be encoded.</exception>
+    private static byte[] EncodeScalarBody(OlePropertyType type, object? value, Encoding encoding) =>
+        type switch
+        {
+            OlePropertyType.Empty or OlePropertyType.Null => Array.Empty<byte>(),
+            OlePropertyType.Int16 => ToBytes16(Convert.ToInt16(value, CultureInfo.InvariantCulture)),
+            OlePropertyType.UInt16 => ToBytes16(unchecked((short)Convert.ToUInt16(value, CultureInfo.InvariantCulture))),
+            OlePropertyType.Boolean => ToBytes16((short)((value is true) ? -1 : 0)),
+            OlePropertyType.Int8 => new[] { unchecked((byte)Convert.ToSByte(value, CultureInfo.InvariantCulture)) },
+            OlePropertyType.UInt8 => new[] { Convert.ToByte(value, CultureInfo.InvariantCulture) },
+            OlePropertyType.Int32 => ToBytes32(Convert.ToInt32(value, CultureInfo.InvariantCulture)),
+            OlePropertyType.UInt32 => ToBytes32(unchecked((int)Convert.ToUInt32(value, CultureInfo.InvariantCulture))),
+            OlePropertyType.Float32 => ToBytesFloat32(Convert.ToSingle(value, CultureInfo.InvariantCulture)),
+            OlePropertyType.Float64 => ToBytes64(BitConverter.DoubleToInt64Bits(Convert.ToDouble(value, CultureInfo.InvariantCulture))),
+            OlePropertyType.Int64 => ToBytes64(Convert.ToInt64(value, CultureInfo.InvariantCulture)),
+            OlePropertyType.UInt64 => ToBytes64(unchecked((long)Convert.ToUInt64(value, CultureInfo.InvariantCulture))),
+            OlePropertyType.Currency => ToBytes64(decimal.ToInt64(Convert.ToDecimal(value, CultureInfo.InvariantCulture) * 10000m)),
+            OlePropertyType.Date => ToBytes64(BitConverter.DoubleToInt64Bits(ToOleDate(value))),
+            OlePropertyType.FileTime => ToBytes64(Convert.ToInt64(value, CultureInfo.InvariantCulture)),
+            OlePropertyType.AnsiString or OlePropertyType.BinaryString => EncodeCodePageString((string)value!, encoding),
+            OlePropertyType.UnicodeString => EncodeUnicodeString((string)value!),
+            OlePropertyType.Blob or OlePropertyType.ClipboardData => EncodeBlob((byte[])value!),
+            OlePropertyType.Variant => EncodeVariantBody(value, encoding),
+            _ => throw Unsupported(type),
+        };
+
+    /// <summary>
+    /// Encodes a <c>VT_VECTOR</c>-flagged value: the vector type word, a four-byte element count, then each element's
+    /// scalar body padded to a four-byte boundary — the exact inverse of the reader's vector loop.
+    /// </summary>
+    /// <param name="value">The vector value; its <see cref="OlePropertyValue.Value" /> must be an object array.</param>
+    /// <param name="encoding">The encoding for ANSI strings.</param>
+    /// <returns>The encoded typed-property-value bytes.</returns>
+    /// <remarks>
+    /// <para>
+    /// Fixed-size, string, and blob elements carry no per-element type word; <see cref="OlePropertyType.Variant" />
+    /// elements each carry an inner type word inferred from the element's CLR type (see
+    /// <see cref="InferVariantType" />). The round-trip guarantee for variant vectors is therefore value identity, not
+    /// byte identity — an element originally tagged <c>VT_FILETIME</c> is surfaced as <see cref="long" /> and re-emits
+    /// as <c>VT_I8</c>, and <c>VT_BSTR</c> strings re-emit as <c>VT_LPSTR</c>; both read back to the identical value.
+    /// </para>
+    /// <para>
+    /// Vectors of <see cref="OlePropertyType.Empty" /> or <see cref="OlePropertyType.Null" /> are rejected because
+    /// their elements consume zero bytes, which the reader treats as malformed; a <see langword="null" /> element is
+    /// representable only inside a variant vector, where it re-emits as <c>VT_EMPTY</c>.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the element type cannot be encoded or the value is not an object array.
+    /// </exception>
+    private static byte[] EncodeVector(OlePropertyValue value, Encoding encoding)
     {
-        if (value.IsVector)
+        if (value.Type is OlePropertyType.Empty or OlePropertyType.Null)
+            throw Unsupported(value.Type);
+        if (value.Value is not object?[] items)
             throw Unsupported(value.Type);
 
-        return value.Type switch
+        using MemoryStream buffer = new();
+        Span<byte> word = stackalloc byte[4];
+        BinaryPrimitives.WriteUInt16LittleEndian(word, (ushort)((ushort)value.Type | VectorFlag));
+        BinaryPrimitives.WriteUInt16LittleEndian(word.Slice(2), 0);
+        buffer.Write(word);
+
+        BinaryPrimitives.WriteUInt32LittleEndian(word, (uint)items.Length);
+        buffer.Write(word);
+
+        foreach (object? item in items)
         {
-            OlePropertyType.Int16 => Typed(value.Type, ToBytes16(Convert.ToInt16(value.Value, CultureInfo.InvariantCulture))),
-            OlePropertyType.Boolean => Typed(value.Type, ToBytes16((short)((value.Value is true) ? -1 : 0))),
-            OlePropertyType.Int32 => Typed(value.Type, ToBytes32(Convert.ToInt32(value.Value, CultureInfo.InvariantCulture))),
-            OlePropertyType.UInt32 => Typed(value.Type, ToBytes32(unchecked((int)Convert.ToUInt32(value.Value, CultureInfo.InvariantCulture)))),
-            OlePropertyType.Float64 => Typed(value.Type, ToBytes64(BitConverter.DoubleToInt64Bits(Convert.ToDouble(value.Value, CultureInfo.InvariantCulture)))),
-            OlePropertyType.Int64 => Typed(value.Type, ToBytes64(Convert.ToInt64(value.Value, CultureInfo.InvariantCulture))),
-            OlePropertyType.FileTime => Typed(value.Type, ToBytes64(Convert.ToInt64(value.Value, CultureInfo.InvariantCulture))),
-            OlePropertyType.AnsiString or OlePropertyType.BinaryString => Typed(value.Type, EncodeCodePageString((string)value.Value!, encoding)),
-            OlePropertyType.UnicodeString => Typed(value.Type, EncodeUnicodeString((string)value.Value!)),
-            OlePropertyType.Blob or OlePropertyType.ClipboardData => Typed(value.Type, EncodeBlob((byte[])value.Value!)),
-            _ => throw Unsupported(value.Type),
-        };
+            byte[] body = EncodeScalarBody(value.Type, item, encoding);
+            buffer.Write(body);
+
+            // The reader advances by Align4(consumed) per element, so each element body is zero-padded in place.
+            for (int padding = Align4(body.Length) - body.Length; padding > 0; padding--)
+                buffer.WriteByte(0);
+        }
+
+        return buffer.ToArray();
     }
+
+    /// <summary>
+    /// Encodes a self-describing variant body: a four-byte inner type word inferred from the CLR value, followed by
+    /// the inner scalar body.
+    /// </summary>
+    /// <param name="value">The CLR value carried by the variant.</param>
+    /// <param name="encoding">The encoding for ANSI strings.</param>
+    /// <returns>The encoded variant body bytes.</returns>
+    /// <exception cref="CompoundFileSerializationException">Thrown when the value's CLR type cannot be inferred.</exception>
+    private static byte[] EncodeVariantBody(object? value, Encoding encoding)
+    {
+        OlePropertyType innerType = InferVariantType(value);
+        byte[] body = EncodeScalarBody(innerType, value, encoding);
+
+        byte[] result = new byte[4 + body.Length];
+        BinaryPrimitives.WriteUInt16LittleEndian(result, (ushort)innerType);
+        body.CopyTo(result.AsSpan(4));
+        return result;
+    }
+
+    /// <summary>
+    /// Infers the variant element type from a CLR value, the inverse image of the reader's scalar CLR result types.
+    /// </summary>
+    /// <param name="value">The CLR value to classify.</param>
+    /// <returns>The inferred <see cref="OlePropertyType" />.</returns>
+    /// <remarks>
+    /// The inference never yields <see cref="OlePropertyType.Variant" />, so encoding cannot recurse. Strings map to
+    /// <c>VT_LPSTR</c> (the section code page), matching the convention real document-summary streams use for
+    /// heading-pair vectors.
+    /// </remarks>
+    /// <exception cref="CompoundFileSerializationException">Thrown when the CLR type has no property-type mapping.</exception>
+    private static OlePropertyType InferVariantType(object? value) =>
+        value switch
+        {
+            null => OlePropertyType.Empty,
+            bool => OlePropertyType.Boolean,
+            sbyte => OlePropertyType.Int8,
+            byte => OlePropertyType.UInt8,
+            short => OlePropertyType.Int16,
+            ushort => OlePropertyType.UInt16,
+            int => OlePropertyType.Int32,
+            uint => OlePropertyType.UInt32,
+            long => OlePropertyType.Int64,
+            ulong => OlePropertyType.UInt64,
+            float => OlePropertyType.Float32,
+            double => OlePropertyType.Float64,
+            decimal => OlePropertyType.Currency,
+            string => OlePropertyType.AnsiString,
+            DateTimeOffset => OlePropertyType.Date,
+            byte[] => OlePropertyType.Blob,
+            _ => throw Unsupported(OlePropertyType.Variant),
+        };
+
+    /// <summary>
+    /// Converts a date value to its OLE automation date, the inverse of the reader's UTC conversion.
+    /// </summary>
+    /// <param name="value">The date value; a <see cref="DateTimeOffset" /> or <see cref="DateTime" />.</param>
+    /// <returns>The OLE automation date.</returns>
+    /// <exception cref="CompoundFileSerializationException">Thrown when the value is not a date.</exception>
+    private static double ToOleDate(object? value) =>
+        value switch
+        {
+            DateTimeOffset offset => offset.UtcDateTime.ToOADate(),
+            DateTime time => time.ToUniversalTime().ToOADate(),
+            _ => throw Unsupported(OlePropertyType.Date),
+        };
 
     /// <summary>
     /// Prefixes a value body with its four-byte type word and pads the result to a four-byte boundary.
@@ -276,6 +416,18 @@ internal static class PropertySetWriter
     }
 
     /// <summary>
+    /// Encodes a 32-bit floating-point value to little-endian bytes.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>The four-byte little-endian encoding.</returns>
+    private static byte[] ToBytesFloat32(float value)
+    {
+        byte[] bytes = new byte[4];
+        BinaryPrimitives.WriteSingleLittleEndian(bytes, value);
+        return bytes;
+    }
+
+    /// <summary>
     /// Encodes a 64-bit value to little-endian bytes.
     /// </summary>
     /// <param name="value">The value.</param>
@@ -301,5 +453,5 @@ internal static class PropertySetWriter
     /// <param name="type">The unsupported type.</param>
     /// <returns>The exception to throw.</returns>
     private static CompoundFileSerializationException Unsupported(OlePropertyType type) =>
-        new(string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundPropertySetCodePage, type));
+        new(string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_Invalid_CompoundPropertySetUnsupportedType, type));
 }

@@ -232,11 +232,11 @@ namespace Bodu.IO.Compound {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The property value of type '{0}' cannot be encoded into an OLE property set..
+        ///   Looks up a localized string similar to The property value type '{0}' cannot be serialized to an OLE property set..
         /// </summary>
-        internal static string Op_Invalid_CompoundPropertySetCodePage {
+        internal static string Op_Invalid_CompoundPropertySetUnsupportedType {
             get {
-                return ResourceManager.GetString("Op_Invalid_CompoundPropertySetCodePage", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CompoundPropertySetUnsupportedType", resourceCulture);
             }
         }
 

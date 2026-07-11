@@ -115,8 +115,8 @@
   <data name="Op_Invalid_CompoundV3StreamTooLarge" xml:space="preserve">
     <value>The stream '{0}' exceeds the 2 GB maximum size of a version-3 compound file; write a version-4 file instead.</value>
   </data>
-  <data name="Op_Invalid_CompoundPropertySetCodePage" xml:space="preserve">
-    <value>The property value of type '{0}' cannot be encoded into an OLE property set.</value>
+  <data name="Op_Invalid_CompoundPropertySetUnsupportedType" xml:space="preserve">
+    <value>The property value type '{0}' cannot be serialized to an OLE property set.</value>
   </data>
   <data name="Op_Invalid_CompoundBuilderStreamLength" xml:space="preserve">
     <value>The stream source for '{0}' produced fewer bytes than its declared length of {1}.</value>
