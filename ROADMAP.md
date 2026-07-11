@@ -878,22 +878,59 @@ backends in-package and durable `Sqlite` + shared `Distributed`
 
 ### `Bodu.IO.Compound`
 
-Current state: new; ~44 src / ~43 test files. A read + edit + authoring
+Current state: ~44 src / ~46 test files. A read + edit + authoring
 implementation of the OLE2 / Compound File Binary (CFB) container — the
 structured-storage envelope behind legacy Office files (`.xls`, `.doc`,
-`.msg`). `CompoundFile` opens for read, edits transactionally
-(`CreateStream` / `Delete` / `Rename` + `Commit` / `Revert`), and authors
-from scratch through the fluent `CompoundStorageBuilder` /
-`CompoundStreamBuilder` tree. Full OLE property-set surface
+`.msg`). `CompoundFile` opens for read (buffered or streaming), edits
+transactionally through BCL-style writable cursors (`OpenStream(name,
+FileMode, FileAccess)` / `CreateStream` / `Delete` / `Rename` staged
+until `Commit`, with `Revert`), and authors from scratch through the
+fluent `CompoundStorageBuilder` / `CompoundStreamBuilder` tree —
+including deferred `Func<Stream>` payload sources for streaming-scale
+writes and version 3 **and** 4 emit. Full OLE property-set surface
 (`SummaryInformation`, `DocumentSummaryInformation`, `OlePropertySet` with
 MS-OLEPS read/emit) and a complete exception hierarchy.
 
-- **Writable stream cursors.** `CompoundStream` is a read-only cursor
-  today; mutation goes through `CreateStream(content)` or the builders. A
-  writable/seekable stream would round out the `IStream` counterpart.
+The forward items below are sequenced and scoped in
+[`Bodu.IO.Compound/docs/roadmap-implementation-plan.md`](Bodu.IO.Compound/docs/roadmap-implementation-plan.md)
+(tranches T0–T5, with the audit evidence behind each).
+
+- **Writable stream cursors — done.** ✅ Delivered as the BCL
+  `Package.Open`-style model rather than a COM `IStream` clone: a
+  writable, seekable `CompoundStream` over the staging tree, obtained
+  via `OpenStream(name, FileMode, FileAccess)` / `CreateStream(name)`,
+  flushed into the tree on dispose and persisted only by `Commit`. The
+  remaining distance to `IStream` is per-stream transacted commit,
+  which stays out of scope (plan decision D2).
+- **Property-set write-back symmetry** (plan T1). The reader parses
+  vector-valued properties but `PropertySetWriter` throws on them, so a
+  set read from a real file cannot always be re-emitted; and there is
+  no write counterpart to `TryGetSummaryInformation` /
+  `TryOpenPropertySet` — embedding is manual `AddStream(...)`. Add
+  vector emit plus `CompoundStorage.WritePropertySet` and
+  `CompoundFile.SetSummaryInformation` /
+  `SetDocumentSummaryInformation`.
+- **Writable-cursor memory model** (plan T2). A writable cursor buffers
+  the whole payload in a `MemoryStream` and copies it again into the
+  staging node on flush — double-buffered and `int`-capped. Eliminate
+  the extra copy, back the buffer with pooled/chunked storage, and turn
+  the ~2 GB cap into a deliberate, documented guard (deferred sources
+  remain the larger-than-memory route).
+- **Entry metadata on the edit surface** (plan T3). CLSID, timestamps,
+  and state bits are settable only through the authoring builders; the
+  live edit surface can't touch them. Expose them as settable
+  properties on `CompoundStorage` (storages only — MS-CFB §2.6.1 forces
+  stream metadata to zero).
+- **True-async commit and streaming reads** (plan T4). Every `*Async`
+  member is a sync-over-async wrapper today. Add `CommitAsync` (async
+  serialize + deferred-source copies) and real async streaming-mode
+  `ReadAsync`; buffered reads keep the wrappers (they're memory copies).
 - **This project is the substrate for new office-format readers** — see
   `Bodu.Formats.Excel.Binary` (already built on it) and the `.msg` /
-  `.doc` candidates under *New library candidates*.
+  `.doc` candidates under *New library candidates*. Before the `.msg`
+  reader starts, a substrate-readiness review walks MS-OXMSG against
+  the current surface (plan T5; analysis only, expected to need no new
+  container API).
 
 ### `Bodu.Formats.Excel.Binary`
 
