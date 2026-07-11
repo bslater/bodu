@@ -30,6 +30,77 @@ public sealed class CommonResourcesTests
     }
 
     /// <summary>
+    /// Verifies that a strongly-typed catalogue resolves to the same content as its raw resource name, so the enum
+    /// overload is a faithful alias for the string overload.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_ForStronglyTypedCatalog_ReturnsSameContentAsName()
+    {
+        Assert.AreEqual(
+            CommonNotableDateResources.Resolve("global-core"),
+            CommonNotableDateResources.Resolve(CommonNotableDateCatalog.GlobalCore));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CommonNotableDateResources.Resolve(CommonNotableDateCatalog)" /> throws for a value that
+    /// is not a defined <see cref="CommonNotableDateCatalog" />.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenCatalogUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = CommonNotableDateResources.Resolve((CommonNotableDateCatalog)(-1));
+        });
+
+        Assert.AreEqual("catalog", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that loading the bundled <c>global-all</c> catalogue by its strongly-typed name materializes a populated
+    /// <see cref="NotableDateResource" /> whose nested imports resolve against the other bundled catalogues.
+    /// </summary>
+    [TestMethod]
+    public void Load_ForGlobalAllCatalog_ReturnsPopulatedResource()
+    {
+        NotableDateResource resource = CommonNotableDateResources.Load(CommonNotableDateCatalog.GlobalAll);
+
+        Assert.IsNotEmpty(resource.NotableDates);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CommonNotableDateResources.Load(CommonNotableDateCatalog)" /> throws for a value that is
+    /// not a defined <see cref="CommonNotableDateCatalog" />.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenCatalogUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = CommonNotableDateResources.Load((CommonNotableDateCatalog)(-1));
+        });
+
+        Assert.AreEqual("catalog", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that every <see cref="CommonNotableDateCatalog" /> member maps to a bundled catalogue that resolves to
+    /// content, so the enum and the embedded resources stay in lock-step.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void GetResourceName_ForEveryCatalog_MapsToBundledResource()
+    {
+        foreach (CommonNotableDateCatalog catalog in Enum.GetValues<CommonNotableDateCatalog>())
+        {
+            string name = CommonNotableDateResources.GetResourceName(catalog);
+            Assert.IsNotNull(
+                CommonNotableDateResources.Resolve(name),
+                $"catalogue '{catalog}' maps to '{name}', which did not resolve to bundled content");
+        }
+    }
+
+    /// <summary>
     /// A territory resource importing the bundled common catalogues and specializing several shared concepts with the
     /// territory's own scope, category, non-working flag, and weekend adjustments.
     /// </summary>

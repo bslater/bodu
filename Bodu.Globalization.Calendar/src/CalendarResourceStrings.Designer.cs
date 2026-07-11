@@ -329,5 +329,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Format_Invalid_TerritoryCode", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The common catalogue '{0}' is not bundled with this assembly..
+        /// </summary>
+        internal static string Op_Invalid_CommonCatalogNotBundled {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CommonCatalogNotBundled", resourceCulture);
+            }
+        }
     }
 }
