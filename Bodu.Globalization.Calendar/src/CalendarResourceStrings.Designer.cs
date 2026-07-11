@@ -338,5 +338,131 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_CommonCatalogNotBundled", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The weekly recurrence requires at least one weekday..
+        /// </summary>
+        internal static string Arg_Invalid_RecurrenceWeekdaysEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RecurrenceWeekdaysEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The weekly recurrence weekday set must not contain duplicate weekdays..
+        /// </summary>
+        internal static string Arg_Invalid_RecurrenceWeekdaysDuplicate {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RecurrenceWeekdaysDuplicate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A recurrence interval greater than one requires an anchor date..
+        /// </summary>
+        internal static string Arg_Invalid_RecurrenceAnchorRequired {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RecurrenceAnchorRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The ordinal must not be zero..
+        /// </summary>
+        internal static string Arg_OutOfRange_OrdinalZero {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_OrdinalZero", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to a rule must not declare both durationDays and a calculated end-date duration..
+        /// </summary>
+        internal static string Validation_DurationConflict {
+            get {
+                return ResourceManager.GetString("Validation_DurationConflict", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to the calculated end-date duration is missing an end strategy..
+        /// </summary>
+        internal static string Validation_DurationEndStrategyMissing {
+            get {
+                return ResourceManager.GetString("Validation_DurationEndStrategyMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to the calculated end-date duration references '{2}', which resolves to no rule..
+        /// </summary>
+        internal static string Validation_DurationOffsetReferenceNotFound {
+            get {
+                return ResourceManager.GetString("Validation_DurationOffsetReferenceNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to the calculated end-date duration reference '{2}' is ambiguous; specify a ruleRef..
+        /// </summary>
+        internal static string Validation_DurationOffsetReferenceAmbiguous {
+            get {
+                return ResourceManager.GetString("Validation_DurationOffsetReferenceAmbiguous", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to the calculated end-date duration algorithm key '{2}' is not recognized..
+        /// </summary>
+        internal static string Validation_DurationUnknownAlgorithm {
+            get {
+                return ResourceManager.GetString("Validation_DurationUnknownAlgorithm", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to the recurrence definition is invalid. {2}.
+        /// </summary>
+        internal static string Validation_RecurrenceInvalid {
+            get {
+                return ResourceManager.GetString("Validation_RecurrenceInvalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to a rule must not declare both a strategy and a recurrence..
+        /// </summary>
+        internal static string Validation_OccurrenceSourceConflict {
+            get {
+                return ResourceManager.GetString("Validation_OccurrenceSourceConflict", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ordinal '{2}' is invalid..
+        /// </summary>
+        internal static string Validation_InvalidOrdinalValue {
+            get {
+                return ResourceManager.GetString("Validation_InvalidOrdinalValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ISO week '{2}' is out of range..
+        /// </summary>
+        internal static string Validation_InvalidWeekValue {
+            get {
+                return ResourceManager.GetString("Validation_InvalidWeekValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to referenced rule '{2}' is a recurrence and cannot be used as a singular reference..
+        /// </summary>
+        internal static string Validation_ReferenceIsRecurring {
+            get {
+                return ResourceManager.GetString("Validation_ReferenceIsRecurring", resourceCulture);
+            }
+        }
     }
 }
