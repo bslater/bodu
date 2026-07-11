@@ -80,17 +80,11 @@ public sealed class DistributedRateCache
     /// <summary>The logger that receives the best-effort degradation warnings; never <see langword="null" />.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The time source the warning rate-limiting is measured against, so the cooldown is deterministic under test.</summary>
-    private readonly TimeProvider _timeProvider;
-
     /// <summary>The minimum interval between swallowed-failure warnings; failures inside the window only increment the suppressed count.</summary>
     private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
 
-    /// <summary>The UTC tick timestamp of the last emitted warning, or <see cref="long.MinValue" /> when none has been emitted.</summary>
-    private long _lastWarnUtcTicks = long.MinValue;
-
-    /// <summary>The number of swallowed failures rate-limited away since the last emitted warning.</summary>
-    private int _suppressedSinceLastWarn;
+    /// <summary>Rate-limits the swallowed-failure warning to at most one emission per <see cref="s_warnCooldown" /> window.</summary>
+    private readonly RateLimitedWarningGate _warnGate;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DistributedRateCache" /> class.
@@ -117,7 +111,7 @@ public sealed class DistributedRateCache
 
         _cache = cache;
         _options = options;
-        _timeProvider = timeProvider ?? TimeProvider.System;
+        _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
         _logger = logger ?? NullLogger.Instance;
 
         // Eagerly probe the backing store so an unreachable or misconfigured distributed cache surfaces here rather than
@@ -348,21 +342,8 @@ public sealed class DistributedRateCache
     /// </remarks>
     private void OnStorageFailureSwallowed(string operation, Exception exception)
     {
-        long now = _timeProvider.GetUtcNow().UtcTicks;
-        long last = Interlocked.Read(ref _lastWarnUtcTicks);
-
-        // Emit when no warning has been logged yet, or the cooldown has elapsed since the last one. The MinValue sentinel
-        // is checked before the subtraction so a never-warned instance does not underflow the elapsed comparison.
-        bool due = last == long.MinValue || (now - last) >= s_warnCooldown.Ticks;
-        if (due && Interlocked.CompareExchange(ref _lastWarnUtcTicks, now, last) == last)
-        {
-            int suppressed = Interlocked.Exchange(ref _suppressedSinceLastWarn, 0);
+        if (_warnGate.TryClaimWarning(out int suppressed))
             Log.StorageFailureSwallowed(_logger, _options.Provider, operation, suppressed, exception);
-        }
-        else
-        {
-            Interlocked.Increment(ref _suppressedSinceLastWarn);
-        }
     }
 
     /// <summary>
