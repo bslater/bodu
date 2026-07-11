@@ -70,6 +70,24 @@ public class CompoundReferenceFixtureTests
     }
 
     /// <summary>
+    /// Verifies that the root storage's class identifier matches the CLSID recorded in the manifest by the
+    /// independent reference parser.
+    /// </summary>
+    /// <param name="kat">The reference fixture row.</param>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    [DynamicData(nameof(CompoundReferenceManifest.ValidFixtures), typeof(CompoundReferenceManifest),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void ClassId_WhenReferenceFixtureIsValid_ShouldMatchManifestRootClsid(CompoundReferenceFixtureKat kat)
+    {
+        using var file = CompoundFile.Open(CompoundFixtures.OpenReference(kat.RelativePath));
+
+        Guid expected = kat.RootClsid.Length == 0 ? Guid.Empty : Guid.Parse(kat.RootClsid);
+        Assert.AreEqual(expected, file.RootStorage.ClassId);
+    }
+
+    /// <summary>
     /// Flattens a storage hierarchy into a path-keyed map of entry metadata.
     /// </summary>
     /// <param name="root">The root storage to walk.</param>
