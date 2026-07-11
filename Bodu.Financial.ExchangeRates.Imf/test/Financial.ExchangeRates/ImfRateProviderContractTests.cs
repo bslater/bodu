@@ -12,30 +12,26 @@ namespace Bodu.Financial.ExchangeRates;
 /// <summary>
 /// Verifies that <see cref="ImfRateProvider" /> satisfies the shared dated-provider contract, so the IMF source is
 /// indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider is seeded offline from the
-/// embedded USD/GBP daily SDMX-JSON fixture through <see cref="FixtureImfRateSource" />.
+/// embedded April 2026 Representative Exchange Rates report through <see cref="FixtureImfRateTableSource" />.
 /// </summary>
 [TestClass]
 public sealed class ImfRateProviderContractTests
-    : PairWebRateProviderContractTests<ImfRateProvider, ImfSeriesInfo>
+    : DatedRateProviderContractTests<ImfRateProvider>
 {
     /// <inheritdoc />
-    protected override CurrencyPair CanonicalPair => new(CurrencyCode.USD, CurrencyCode.GBP);
+    protected override CurrencyPair CanonicalPair => new(CurrencyCode.USD, CurrencyCode.JPY);
 
     /// <inheritdoc />
-    protected override DateOnly KnownDate => new(2023, 1, 3);
+    protected override DateOnly KnownDate => new(2026, 4, 1);
 
     /// <inheritdoc />
     protected override DateOnly UnknownDate => new(2019, 1, 1);
 
     /// <inheritdoc />
-    protected override DateOnly RangeStart => new(2023, 1, 2);
+    protected override DateOnly RangeStart => new(2026, 4, 1);
 
     /// <inheritdoc />
-    protected override DateOnly RangeEnd => new(2023, 1, 6);
-
-    /// <inheritdoc />
-    protected override RateHistoryAvailability ExpectedHistoryAvailability =>
-        RateHistoryAvailability.Unbounded;
+    protected override DateOnly RangeEnd => new(2026, 4, 16);
 
     /// <inheritdoc />
     protected override bool SupportsDisposalGuard => true;
@@ -43,8 +39,8 @@ public sealed class ImfRateProviderContractTests
     /// <inheritdoc />
     protected override ImfRateProvider CreateProvider()
     {
-        ImfRateProviderOptions options = new() { AllowSynchronousNetworkAccess = true };
-        FixtureImfRateSource source = new(options);
+        ImfRateProviderOptions options = new() { AllowSynchronousNetworkAccess = true, EnableDiskCache = false };
+        FixtureImfRateTableSource source = new(options);
 
         return new ImfRateProvider(source, options);
     }

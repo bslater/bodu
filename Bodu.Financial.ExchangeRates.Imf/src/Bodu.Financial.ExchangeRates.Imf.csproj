@@ -5,8 +5,8 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — IMF Exchange Rates</Title>
-    <Description>IMF (International Monetary Fund) exchange-rate provider for Bodu.Financial. Fetches and parses the IMF SDMX-JSON CompactData REST service and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API over currency pairs. Observations are monthly and USD/SDR-anchored. Includes the dependency-injection registration extensions (AddImfExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>
-    <PackageTags>$(PackageTags);financial;imf;sdmx;exchange-rate;forex;fx;rest;json;dependency-injection;options</PackageTags>
+    <Description>IMF (International Monetary Fund) exchange-rate provider for Bodu.Financial. Downloads and parses the IMF Representative Exchange Rates monthly tab-separated report and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API. Rates are USD-anchored daily representative rates (all reported currencies against the US dollar) with per-month caching; direction is auto-normalized. Includes the dependency-injection registration extensions (AddImfExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>
+    <PackageTags>$(PackageTags);financial;imf;exchange-rate;forex;fx;tsv;usd;dependency-injection;options</PackageTags>
   </PropertyGroup>
 
   <!-- Grant the companion test project access to internal members. -->
@@ -35,6 +35,7 @@
     <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates\src\Bodu.Financial.ExchangeRates.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\Bodu.Text.Formats\src\Bodu.Text.Formats.csproj" />
   </ItemGroup>
 
   <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->

@@ -13,20 +13,21 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class ImfRateProviderOptionsTests
 {
     /// <summary>
-    /// Verifies that the constructor sets the IMF SDMX Data API base address, an unbounded history depth, the data-path,
-    /// dataflow, and version defaults, and seeds the series map with the default daily USD/GBP series.
+    /// Verifies that the constructor sets the IMF report base address, an unbounded history depth, the report-path and
+    /// report-type defaults, and seeds the currency-name map.
     /// </summary>
     [TestMethod]
     public void Ctor_ShouldSetImfDefaults()
     {
         ImfRateProviderOptions options = new();
 
-        Assert.AreEqual(new Uri("https://api.imf.org/external/sdmx/3.0/"), options.BaseAddress);
+        Assert.AreEqual(new Uri("https://www.imf.org/external/np/fin/data/"), options.BaseAddress);
         Assert.AreEqual(RateHistoryAvailability.Unbounded, options.HistoryAvailability);
-        Assert.AreEqual("data/dataflow", options.DataPath);
-        Assert.AreEqual("IMF.STA/ER", options.Dataflow);
-        Assert.AreEqual("+", options.DataVersion);
-        Assert.IsTrue(options.SeriesMap.ContainsKey("USD/GBP"));
-        Assert.AreEqual("D.GB.ENDE_XDC_USD_RATE", options.SeriesMap["USD/GBP"]);
+        Assert.AreEqual("rms_mth.aspx", options.ReportPath);
+        Assert.AreEqual("REP", options.ReportType);
+        Assert.IsTrue(options.EnableDiskCache);
+        Assert.AreEqual(TimeSpan.FromHours(12), options.RefreshInterval);
+        Assert.IsTrue(options.CurrencyNames.ContainsKey("Japanese yen"));
+        Assert.AreEqual("JPY", options.CurrencyNames["Japanese yen"]);
     }
 }

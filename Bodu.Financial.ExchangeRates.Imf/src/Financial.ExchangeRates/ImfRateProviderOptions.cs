@@ -4,147 +4,180 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.Currencies;
+
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Configures how the <see cref="ImfRateProvider" /> addresses and interprets the IMF (International Monetary Fund)
-/// SDMX Data API for daily exchange rates.
+/// Configures how the <see cref="ImfRateProvider" /> addresses, caches, and interprets the IMF Representative Exchange
+/// Rates monthly report.
 /// </summary>
 /// <remarks>
 /// <para>
 /// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
-/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
-/// The members declared here are IMF-specific: the <see cref="DataPath" />, <see cref="Dataflow" />, and
-/// <see cref="DataVersion" /> that address the SDMX 3.0 data resource, and the <see cref="SeriesMap" /> that resolves a
-/// currency pair to an SDMX series key. The IMF Data API is keyless, so no API key is required.
+/// contract, the synchronous-access and look-back behaviour, and the per-concern log levels. The members declared here
+/// are report-specific: the <see cref="ReportPath" /> and <see cref="ReportType" /> that address the monthly report,
+/// the on-disk cache settings, and the <see cref="CurrencyNames" /> map that resolves an IMF currency label to its ISO
+/// 4217 code. The report is keyless, so no API key is required.
 /// </para>
 /// <para>
-/// <strong>Daily, USD/SDR-anchored.</strong> The provider requests the <b>daily</b> (<c>FREQ = D</c>) exchange-rate
-/// series from the IMF Exchange Rates (<c>ER</c>) dataflow; the seeded series are the domestic-currency-per-USD rates (<c>ENDE_XDC_USD_RATE</c>).
-/// Only pairs present in <see cref="SeriesMap" /> (or their reverse, served by the base inverse-lookup fallback) are
-/// serviceable; an unmapped pair yields no data. Extend <see cref="SeriesMap" /> to add more pairs. Every member
-/// carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c>.
+/// <strong>USD-anchored, bulk.</strong> The report quotes every reported currency against the US dollar for each
+/// business day of the month, so a single download warms the store for all currencies and all business days at once.
+/// Only <c>USD/X</c> and <c>X/USD</c> pairs are serviceable; the reverse direction is served by the base inverse-lookup
+/// fallback. Every member carries a working default, so the options bind cleanly through
+/// <c>Microsoft.Extensions.Options</c>.
 /// </para>
 /// </remarks>
 public sealed class ImfRateProviderOptions
     : WebRateProviderOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ImfRateProviderOptions" /> class with the IMF SDMX Data API host as
-    /// its base address, an unbounded history depth, and the default daily domestic-currency-per-USD series map.
+    /// Initializes a new instance of the <see cref="ImfRateProviderOptions" /> class with the IMF report host as its
+    /// base address, an unbounded history depth, and the default currency-name map.
     /// </summary>
     public ImfRateProviderOptions()
     {
-        BaseAddress = new Uri("https://api.imf.org/external/sdmx/3.0/");
+        BaseAddress = new Uri("https://www.imf.org/external/np/fin/data/");
         HistoryAvailability = RateHistoryAvailability.Unbounded;
 
-        SeriesMap = new Dictionary<string, string>(StringComparer.Ordinal)
+        CurrencyNames = new Dictionary<string, string>(StringComparer.Ordinal)
         {
-            ["USD/GBP"] = "D.GB.ENDE_XDC_USD_RATE",
-            ["USD/EUR"] = "D.U2.ENDE_XDC_USD_RATE",
-            ["USD/JPY"] = "D.JP.ENDE_XDC_USD_RATE",
-            ["USD/CAD"] = "D.CA.ENDE_XDC_USD_RATE",
-            ["USD/CHF"] = "D.CH.ENDE_XDC_USD_RATE",
-            ["USD/AUD"] = "D.AU.ENDE_XDC_USD_RATE",
-            ["USD/INR"] = "D.IN.ENDE_XDC_USD_RATE",
-            ["USD/ZAR"] = "D.ZA.ENDE_XDC_USD_RATE",
-            ["USD/MXN"] = "D.MX.ENDE_XDC_USD_RATE",
-            ["USD/KRW"] = "D.KR.ENDE_XDC_USD_RATE",
+            ["Chinese yuan"] = "CNY",
+            ["Euro"] = "EUR",
+            ["Japanese yen"] = "JPY",
+            ["U.K. pound"] = "GBP",
+            ["Algerian dinar"] = "DZD",
+            ["Australian dollar"] = "AUD",
+            ["Botswana pula"] = "BWP",
+            ["Brazilian real"] = "BRL",
+            ["Brunei dollar"] = "BND",
+            ["Canadian dollar"] = "CAD",
+            ["Chilean peso"] = "CLP",
+            ["Czech koruna"] = "CZK",
+            ["Danish krone"] = "DKK",
+            ["Indian rupee"] = "INR",
+            ["Israeli New Shekel"] = "ILS",
+            ["Korean won"] = "KRW",
+            ["Kuwaiti dinar"] = "KWD",
+            ["Malaysian ringgit"] = "MYR",
+            ["Mauritian rupee"] = "MUR",
+            ["Mexican peso"] = "MXN",
+            ["New Zealand dollar"] = "NZD",
+            ["Norwegian krone"] = "NOK",
+            ["Omani rial"] = "OMR",
+            ["Peruvian sol"] = "PEN",
+            ["Philippine peso"] = "PHP",
+            ["Polish zloty"] = "PLN",
+            ["Qatari riyal"] = "QAR",
+            ["Saudi Arabian riyal"] = "SAR",
+            ["Singapore dollar"] = "SGD",
+            ["Swedish krona"] = "SEK",
+            ["Swiss franc"] = "CHF",
+            ["Thai baht"] = "THB",
+            ["Trinidadian dollar"] = "TTD",
+            ["U.A.E. dirham"] = "AED",
+            ["Uruguayan peso"] = "UYU",
         };
     }
 
     /// <summary>
-    /// Gets or sets the relative SDMX data-resource path segment that precedes the dataflow and series key.
+    /// Gets or sets the relative report resource path appended to the base address.
     /// </summary>
-    /// <value>The data path; defaults to <c>data/dataflow</c> (the SDMX 3.0 data resource).</value>
-    public string DataPath { get; set; } = "data/dataflow";
+    /// <value>The report path; defaults to <c>rms_mth.aspx</c>.</value>
+    public string ReportPath { get; set; } = "rms_mth.aspx";
 
     /// <summary>
-    /// Gets or sets the agency-qualified SDMX dataflow identifier the series are drawn from.
+    /// Gets or sets the report-type selector supplied to the endpoint.
     /// </summary>
-    /// <value>The dataflow identifier; defaults to <c>IMF.STA/ER</c> (the IMF Exchange Rates dataflow).</value>
-    public string Dataflow { get; set; } = "IMF.STA/ER";
+    /// <value>The report type; defaults to <c>REP</c> (representative rates).</value>
+    public string ReportType { get; set; } = "REP";
 
     /// <summary>
-    /// Gets or sets the dataflow version selector appended to the data path.
-    /// </summary>
-    /// <value>The version selector; defaults to <c>+</c> (the latest published version).</value>
-    public string DataVersion { get; set; } = "+";
-
-    /// <summary>
-    /// Gets or sets the map from a <c>FROM/TO</c> pair key to the SDMX series key fragment (<c>{freq}.{area}.{indicator}</c>)
-    /// that quotes it. A pair absent from the map — and whose reverse is also absent — is not serviceable and yields no
-    /// data.
+    /// Gets or sets a value indicating whether downloaded report files are persisted to an on-disk cache.
     /// </summary>
     /// <value>
-    /// The series map; seeded in the constructor with the daily domestic-currency-per-USD series for a set of common
-    /// currencies.
+    /// <see langword="true" /> to enable the on-disk cache; otherwise <see langword="false" />. Defaults to
+    /// <see langword="true" />.
     /// </value>
-    /// <remarks>
-    /// Each key is stored in the direction the series is quoted (for example <c>USD/GBP</c> maps to the GBP-per-USD
-    /// series), so no inversion is needed; the reverse direction is served by the base inverse-lookup fallback.
-    /// </remarks>
-    public IDictionary<string, string> SeriesMap { get; set; }
+    public bool EnableDiskCache { get; set; } = true;
 
     /// <summary>
-    /// Validates the IMF-specific options, ensuring the data path, dataflow, version, and series map are usable.
+    /// Gets or sets the directory used by the on-disk cache.
+    /// </summary>
+    /// <value>
+    /// The cache directory, or <see langword="null" /> to use a <c>bodu-imf</c> folder under the system temporary path.
+    /// </value>
+    public string? CacheDirectory { get; set; }
+
+    /// <summary>
+    /// Gets or sets how long a cached copy of the current month's report remains fresh before it is re-downloaded.
+    /// </summary>
+    /// <value>The refresh interval; defaults to 12 hours.</value>
+    /// <remarks>
+    /// A closed month's report is immutable and is served from cache regardless of age; only the current, still-growing
+    /// month is subject to this interval.
+    /// </remarks>
+    public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromHours(12);
+
+    /// <summary>
+    /// Gets or sets the map from an IMF currency label (footnote-stripped and trimmed) to its ISO 4217 code, applied
+    /// while normalizing a report row.
+    /// </summary>
+    /// <value>The currency-name map; seeded in the constructor with the currencies the report commonly quotes.</value>
+    /// <remarks>
+    /// A label absent from this map is resolved directly against the ISO 4217 catalogue, and a label that resolves
+    /// neither way is skipped. Extend the map to add labels the IMF publishes that are not seeded here.
+    /// </remarks>
+    public IDictionary<string, string> CurrencyNames { get; set; }
+
+    /// <summary>
+    /// Attempts to resolve an IMF currency label to its ISO 4217 code, consulting <see cref="CurrencyNames" /> first
+    /// and then the ISO 4217 catalogue.
+    /// </summary>
+    /// <param name="label">The footnote-stripped, trimmed currency label.</param>
+    /// <param name="code">
+    /// When this method returns <see langword="true" />, the resolved currency code; otherwise the default.
+    /// </param>
+    /// <returns><see langword="true" /> when the label resolved; otherwise <see langword="false" />.</returns>
+    internal bool TryResolveCurrency(string label, out CurrencyCode code)
+    {
+        if (CurrencyNames.TryGetValue(label, out string? iso))
+            return CurrencyInfo.TryGetCurrencyCode(iso, out code);
+
+        return CurrencyInfo.TryGetCurrencyCode(label, out code);
+    }
+
+    /// <summary>
+    /// Validates the report-specific options, ensuring the report path, report type, and currency-name map are usable.
     /// </summary>
     /// <param name="error">
     /// When this method returns <see langword="false" />, a message describing the violated invariant; otherwise
     /// <see langword="null" />.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> when every IMF-specific invariant holds; otherwise <see langword="false" />.
+    /// <see langword="true" /> when every report-specific invariant holds; otherwise <see langword="false" />.
     /// </returns>
     protected override bool TryValidateCore(out string? error)
     {
-        if (string.IsNullOrWhiteSpace(DataPath))
+        if (string.IsNullOrWhiteSpace(ReportPath))
         {
-            error = ImfResourceStrings.Arg_Invalid_ImfOptionsDataPath;
+            error = ImfResourceStrings.Arg_Invalid_ImfOptionsReportPath;
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(Dataflow))
+        if (string.IsNullOrWhiteSpace(ReportType))
         {
-            error = ImfResourceStrings.Arg_Invalid_ImfOptionsDataflow;
+            error = ImfResourceStrings.Arg_Invalid_ImfOptionsReportType;
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(DataVersion))
+        if (CurrencyNames is null)
         {
-            error = ImfResourceStrings.Arg_Invalid_ImfOptionsDataVersion;
-            return false;
-        }
-
-        if (SeriesMap is null)
-        {
-            error = ImfResourceStrings.Arg_Invalid_ImfOptionsSeriesMap;
+            error = ImfResourceStrings.Arg_Invalid_ImfOptionsCurrencyNames;
             return false;
         }
 
         error = null;
         return true;
-    }
-
-    /// <summary>
-    /// Attempts to resolve the SDMX series key for a currency pair from <see cref="SeriesMap" />.
-    /// </summary>
-    /// <param name="pair">The currency pair to resolve.</param>
-    /// <param name="seriesKey">
-    /// When this method returns <see langword="true" />, the mapped SDMX series key; otherwise an empty string.
-    /// </param>
-    /// <returns>
-    /// <see langword="true" /> when the pair is present in <see cref="SeriesMap" />; otherwise <see langword="false" />.
-    /// </returns>
-    internal bool TryGetSeriesKey(CurrencyPair pair, out string seriesKey)
-    {
-        if (SeriesMap.TryGetValue($"{pair.From}/{pair.To}", out string? mapped))
-        {
-            seriesKey = mapped;
-            return true;
-        }
-
-        seriesKey = string.Empty;
-        return false;
     }
 }

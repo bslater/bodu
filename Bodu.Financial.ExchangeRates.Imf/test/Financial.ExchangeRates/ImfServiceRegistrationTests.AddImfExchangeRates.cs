@@ -74,7 +74,7 @@ public partial class ImfServiceRegistrationTests
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["Financial:Imf:Dataflow"] = "IFS_ALT",
+                ["Financial:Imf:ReportType"] = "REP_ALT",
                 ["Financial:Imf:DefaultLookback"] = "14.00:00:00",
             })
             .Build();
@@ -85,7 +85,7 @@ public partial class ImfServiceRegistrationTests
 
         ImfRateProviderOptions options = provider.GetRequiredService<IOptions<ImfRateProviderOptions>>().Value;
 
-        Assert.AreEqual("IFS_ALT", options.Dataflow);
+        Assert.AreEqual("REP_ALT", options.ReportType);
         Assert.AreEqual(TimeSpan.FromDays(14), options.DefaultLookback);
     }
 
@@ -102,14 +102,14 @@ public partial class ImfServiceRegistrationTests
     }
 
     /// <summary>
-    /// Verifies that invalid options (a blank dataflow forced through <c>configure</c>) fail fast through
+    /// Verifies that invalid options (a blank report path forced through <c>configure</c>) fail fast through
     /// <c>ValidateOnStart</c> when the provider is resolved.
     /// </summary>
     [TestMethod]
     public void AddImfExchangeRates_WhenOptionsInvalid_ShouldThrowOnResolve()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddImfExchangeRates(configure: o => o.Dataflow = "");
+        services.AddFinancialService().AddImfExchangeRates(configure: o => o.ReportPath = "");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         _ = Assert.ThrowsExactly<OptionsValidationException>(() =>

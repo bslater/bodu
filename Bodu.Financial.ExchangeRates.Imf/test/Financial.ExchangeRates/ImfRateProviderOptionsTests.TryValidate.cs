@@ -23,12 +23,12 @@ public partial class ImfRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a blank data path is rejected.
+    /// Verifies that a blank report path is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenDataPathBlank_ShouldReturnFalse()
+    public void TryValidate_WhenReportPathBlank_ShouldReturnFalse()
     {
-        ImfRateProviderOptions options = new() { DataPath = "  " };
+        ImfRateProviderOptions options = new() { ReportPath = "  " };
 
         bool valid = options.TryValidate(out string? error);
 
@@ -37,12 +37,12 @@ public partial class ImfRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a blank dataflow is rejected.
+    /// Verifies that a blank report type is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenDataflowBlank_ShouldReturnFalse()
+    public void TryValidate_WhenReportTypeBlank_ShouldReturnFalse()
     {
-        ImfRateProviderOptions options = new() { Dataflow = "" };
+        ImfRateProviderOptions options = new() { ReportType = "" };
 
         bool valid = options.TryValidate(out string? error);
 
@@ -51,26 +51,12 @@ public partial class ImfRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a blank data version is rejected.
+    /// Verifies that a null currency-name map is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenDataVersionBlank_ShouldReturnFalse()
+    public void TryValidate_WhenCurrencyNamesNull_ShouldReturnFalse()
     {
-        ImfRateProviderOptions options = new() { DataVersion = " " };
-
-        bool valid = options.TryValidate(out string? error);
-
-        Assert.IsFalse(valid);
-        Assert.IsNotNull(error);
-    }
-
-    /// <summary>
-    /// Verifies that a null series map is rejected.
-    /// </summary>
-    [TestMethod]
-    public void TryValidate_WhenSeriesMapNull_ShouldReturnFalse()
-    {
-        ImfRateProviderOptions options = new() { SeriesMap = null! };
+        ImfRateProviderOptions options = new() { CurrencyNames = null! };
 
         bool valid = options.TryValidate(out string? error);
 

@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Fixtures\*.json">
+    <EmbeddedResource Include="Fixtures\*.tsv;Fixtures\*.txt">
       <LogicalName>Bodu.Financial.ExchangeRates.Imf.Fixtures.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup>

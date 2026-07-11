@@ -58,20 +58,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Arg_Invalid_ImfOptionsDataPath" xml:space="preserve">
-    <value>The IMF options data path must be specified.</value>
+  <data name="Arg_Invalid_ImfOptionsReportPath" xml:space="preserve">
+    <value>The IMF options report path must be specified.</value>
   </data>
-  <data name="Arg_Invalid_ImfOptionsDataflow" xml:space="preserve">
-    <value>The IMF options dataflow must be specified.</value>
+  <data name="Arg_Invalid_ImfOptionsReportType" xml:space="preserve">
+    <value>The IMF options report type must be specified.</value>
   </data>
-  <data name="Arg_Invalid_ImfOptionsDataVersion" xml:space="preserve">
-    <value>The IMF options data version must be specified.</value>
+  <data name="Arg_Invalid_ImfOptionsCurrencyNames" xml:space="preserve">
+    <value>The IMF options currency-name map must not be null.</value>
   </data>
-  <data name="Arg_Invalid_ImfOptionsSeriesMap" xml:space="preserve">
-    <value>The IMF options series map must not be null.</value>
+  <data name="Format_Invalid_ImfReportHeader" xml:space="preserve">
+    <value>The IMF representative-rates report did not contain a recognizable header row.</value>
   </data>
-  <data name="Format_Invalid_ImfNoData" xml:space="preserve">
-    <value>The IMF response for {0}/{1} did not contain any rate data.</value>
+  <data name="Format_Invalid_ImfReportNoRows" xml:space="preserve">
+    <value>The IMF representative-rates report for {0} did not contain any usable rate rows.</value>
+  </data>
+  <data name="IO_KeyNotFound_ImfSeries" xml:space="preserve">
+    <value>No IMF representative rate series is available for {0}/{1}; the IMF report is quoted against USD.</value>
   </data>
   <data name="IO_KeyNotFound_ImfRate" xml:space="preserve">
     <value>No IMF exchange rate is available for {0}/{1} on {2}.</value>

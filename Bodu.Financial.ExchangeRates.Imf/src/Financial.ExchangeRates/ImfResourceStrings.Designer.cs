@@ -61,47 +61,56 @@ namespace Bodu.Financial.ExchangeRates {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The IMF options data path must be specified..
+        ///   Looks up a localized string similar to The IMF options report path must be specified..
         /// </summary>
-        internal static string Arg_Invalid_ImfOptionsDataPath {
+        internal static string Arg_Invalid_ImfOptionsReportPath {
             get {
-                return ResourceManager.GetString("Arg_Invalid_ImfOptionsDataPath", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_ImfOptionsReportPath", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The IMF options dataflow must be specified..
+        ///   Looks up a localized string similar to The IMF options report type must be specified..
         /// </summary>
-        internal static string Arg_Invalid_ImfOptionsDataflow {
+        internal static string Arg_Invalid_ImfOptionsReportType {
             get {
-                return ResourceManager.GetString("Arg_Invalid_ImfOptionsDataflow", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_ImfOptionsReportType", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The IMF options data version must be specified..
+        ///   Looks up a localized string similar to The IMF options currency-name map must not be null..
         /// </summary>
-        internal static string Arg_Invalid_ImfOptionsDataVersion {
+        internal static string Arg_Invalid_ImfOptionsCurrencyNames {
             get {
-                return ResourceManager.GetString("Arg_Invalid_ImfOptionsDataVersion", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_ImfOptionsCurrencyNames", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The IMF options series map must not be null..
+        ///   Looks up a localized string similar to The IMF representative-rates report did not contain a recognizable header row..
         /// </summary>
-        internal static string Arg_Invalid_ImfOptionsSeriesMap {
+        internal static string Format_Invalid_ImfReportHeader {
             get {
-                return ResourceManager.GetString("Arg_Invalid_ImfOptionsSeriesMap", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_ImfReportHeader", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The IMF response for {0}/{1} did not contain any rate data..
+        ///   Looks up a localized string similar to The IMF representative-rates report for {0} did not contain any usable rate rows..
         /// </summary>
-        internal static string Format_Invalid_ImfNoData {
+        internal static string Format_Invalid_ImfReportNoRows {
             get {
-                return ResourceManager.GetString("Format_Invalid_ImfNoData", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_ImfReportNoRows", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No IMF representative rate series is available for {0}/{1}; the IMF report is quoted against USD..
+        /// </summary>
+        internal static string IO_KeyNotFound_ImfSeries {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_ImfSeries", resourceCulture);
             }
         }
 
