@@ -58,7 +58,7 @@ public static class BencodeSerializer
 
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { MaxDepth = effective.MaxDepth });
-        BencodeSerializerEngine.Serialize(writer, value, effective);
+        SerializerEngine.Serialize(writer, value, effective);
         return buffer.WrittenSpan.ToArray();
     }
 
@@ -217,7 +217,7 @@ public static class BencodeSerializer
             AllowUnsortedKeys = effective.AllowUnsortedKeys,
             AllowDuplicateKeys = effective.AllowDuplicateKeys,
         });
-        return BencodeSerializerEngine.Deserialize<T>(ref reader, effective);
+        return SerializerEngine.Deserialize<T>(ref reader, effective);
     }
 
     /// <summary>

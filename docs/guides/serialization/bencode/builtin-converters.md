@@ -21,7 +21,7 @@ Bencode (BEP 3) has exactly two scalar forms — integers and byte strings — a
 | `ulong` | integer | integer | Dedicated converter on the unsigned surface — the full `[0, ulong.MaxValue]` range round-trips. |
 | `Int128` | integer | integer | Confined by checked conversion to the signed 64-bit surface. |
 | `UInt128` | integer | integer | Rides the unsigned surface like `ulong`; values above `ulong.MaxValue` throw on write. |
-| `enum` (any) | byte string, the member name | byte string (case-insensitive) or integer | The default enum handling — no converter needed; per-member names via `[BencodeStringEnumMemberName]`. The explicit string and number enum converters below override it.|
+| `enum` (any) | byte string, the member name | byte string (case-insensitive) or integer | The default enum handling — no converter needed; per-member names via `[StringEnumMemberName]`. The explicit string and number enum converters below override it.|
 
 ## Structural and document-model types
 
@@ -38,7 +38,7 @@ Bencode (BEP 3) has exactly two scalar forms — integers and byte strings — a
 
 ## Public enum converters
 
-Registered on the options or referenced from a `[BencodeConverter(...)]` attribute:
+Registered on the options or referenced from a `[Converter(...)]` attribute:
 
 - <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter> / `BencodeStringEnumConverter<TEnum>` — member-name byte strings with an optional naming policy and integer-on-read flag.
 - `BencodeNumberEnumConverter<TEnum>` — the underlying numeric value as a Bencode integer.

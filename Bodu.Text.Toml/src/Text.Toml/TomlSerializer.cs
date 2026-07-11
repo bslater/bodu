@@ -98,7 +98,7 @@ public static class TomlSerializer
         RequireRootIsTable(value, effective);
 
         var writer = new Utf8TomlWriter(destination, new TomlWriterOptions { MaxDepth = effective.MaxDepth });
-        TomlSerializerEngine.Serialize(writer, value, effective);
+        SerializerEngine.Serialize(writer, value, effective);
     }
 
     /// <summary>
@@ -177,7 +177,7 @@ public static class TomlSerializer
         TomlSerializerOptions effective = options ?? new TomlSerializerOptions();
 
         var reader = new TomlDocumentReader(utf8Toml, new TomlReaderOptions { SpecVersion = effective.SpecVersion, MaxDepth = effective.MaxDepth });
-        return TomlSerializerEngine.Deserialize<T>(ref reader, effective);
+        return SerializerEngine.Deserialize<T>(ref reader, effective);
     }
 
     /// <summary>

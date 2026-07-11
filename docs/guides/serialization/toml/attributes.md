@@ -8,12 +8,12 @@ The TOML serializer exposes an attribute family for shaping how a type maps to t
 
 ## Pattern 1 — Rename a member
 
-<xref:Bodu.Text.Toml.Serialization.TomlPropertyNameAttribute> pins the serialized key for one member, beating any naming policy:
+<xref:Bodu.Text.Toml.Serialization.PropertyNameAttribute> pins the serialized key for one member, beating any naming policy:
 
 ```csharp
 public sealed class Profile
 {
-    [TomlPropertyName("display-name")]
+    [PropertyName("display-name")]
     public string DisplayName { get; set; } = "Ada";
 }
 ```
@@ -24,10 +24,10 @@ display-name = "Ada"
 
 ## Pattern 2 — Apply a naming policy per type
 
-<xref:Bodu.Text.Toml.Serialization.TomlNamingPolicyAttribute> overrides the options-level `PropertyNamingPolicy` for one type:
+<xref:Bodu.Text.Toml.Serialization.NamingPolicyAttribute> overrides the options-level `PropertyNamingPolicy` for one type:
 
 ```csharp
-[TomlNamingPolicy(TomlKnownNamingPolicy.SnakeCaseLower)]
+[NamingPolicy(KnownNamingPolicy.SnakeCaseLower)]
 public sealed class RetryPolicy
 {
     public int MaxRetryCount { get; set; } = 5;
@@ -38,21 +38,21 @@ public sealed class RetryPolicy
 max_retry_count = 5
 ```
 
-A member carrying `[TomlPropertyName]` is unaffected — the explicit name always wins. `TomlKnownNamingPolicy.Unspecified` defers back to the options.
+A member carrying `[PropertyName]` is unaffected — the explicit name always wins. `KnownNamingPolicy.Unspecified` defers back to the options.
 
 ## Pattern 3 — Exclude members
 
-<xref:Bodu.Text.Toml.Serialization.TomlIgnoreAttribute> drops a member unconditionally, or under a condition:
+<xref:Bodu.Text.Toml.Serialization.IgnoreAttribute> drops a member unconditionally, or under a condition:
 
 ```csharp
 public sealed class Account
 {
     public string Name { get; set; } = "svc";
 
-    [TomlIgnore]
+    [Ignore]
     public string? Secret { get; set; }
 
-    [TomlIgnore(Condition = TomlIgnoreCondition.WhenWritingNull)]
+    [Ignore(Condition = IgnoreCondition.WhenWritingNull)]
     public string? Comment { get; set; }
 }
 ```
@@ -65,15 +65,15 @@ Name = "svc"
 
 ## Pattern 4 — Force a member in
 
-<xref:Bodu.Text.Toml.Serialization.TomlIncludeAttribute> binds non-public property accessors and surfaces public fields without turning on `IncludeFields` for the whole options:
+<xref:Bodu.Text.Toml.Serialization.IncludeAttribute> binds non-public property accessors and surfaces public fields without turning on `IncludeFields` for the whole options:
 
 ```csharp
 public sealed class Counter
 {
-    [TomlInclude]
+    [Include]
     public int Total { get; private set; }
 
-    [TomlInclude]
+    [Include]
     public int Retries;
 }
 ```
@@ -82,15 +82,15 @@ Both members now round-trip — the private setter is assigned on read, and the 
 
 ## Pattern 5 — Control write order
 
-<xref:Bodu.Text.Toml.Serialization.TomlPropertyOrderAttribute> reorders the emitted key/value lines; members without the attribute default to order zero and keep declaration order:
+<xref:Bodu.Text.Toml.Serialization.PropertyOrderAttribute> reorders the emitted key/value lines; members without the attribute default to order zero and keep declaration order:
 
 ```csharp
 public sealed class Manifest
 {
-    [TomlPropertyOrder(2)]
+    [PropertyOrder(2)]
     public string Name { get; set; } = "demo";
 
-    [TomlPropertyOrder(1)]
+    [PropertyOrder(1)]
     public int Version { get; set; } = 3;
 }
 ```
@@ -102,12 +102,12 @@ Name = "demo"
 
 ## Pattern 6 — Require a key
 
-<xref:Bodu.Text.Toml.Serialization.TomlRequiredAttribute> makes deserialization fail when the key is absent, with the same effect as declaring the member with the C# `required` keyword:
+<xref:Bodu.Text.Toml.Serialization.RequiredAttribute> makes deserialization fail when the key is absent, with the same effect as declaring the member with the C# `required` keyword:
 
 ```csharp
 public sealed class ServerConfig
 {
-    [TomlRequired]
+    [Required]
     public string Host { get; set; } = string.Empty;
 }
 
@@ -116,12 +116,12 @@ public sealed class ServerConfig
 
 ## Pattern 7 — Pick the deserialization constructor
 
-When a type declares more than one constructor, <xref:Bodu.Text.Toml.Serialization.TomlConstructorAttribute> resolves the ambiguity:
+When a type declares more than one constructor, <xref:Bodu.Text.Toml.Serialization.ConstructorAttribute> resolves the ambiguity:
 
 ```csharp
 public sealed class Endpoint
 {
-    [TomlConstructor]
+    [Constructor]
     public Endpoint(string host, int port) => (Host, Port) = (host, port);
 
     public Endpoint(Uri uri) : this(uri.Host, uri.Port) { }
@@ -135,14 +135,14 @@ Without the attribute the serializer prefers a public parameterless constructor,
 
 ## Pattern 8 — Capture unknown keys
 
-<xref:Bodu.Text.Toml.Serialization.TomlExtensionDataAttribute> designates one member that collects every key that maps to no other member, and writes the collected entries back out on serialization:
+<xref:Bodu.Text.Toml.Serialization.ExtensionDataAttribute> designates one member that collects every key that maps to no other member, and writes the collected entries back out on serialization:
 
 ```csharp
 public sealed class ServerConfig
 {
     public int Port { get; set; }
 
-    [TomlExtensionData]
+    [ExtensionData]
     public Dictionary<string, TomlNode>? Extra { get; set; }
 }
 ```
@@ -151,10 +151,10 @@ The member must be a `TomlObject` or an `(I)Dictionary<string, TomlNode>`, and a
 
 ## Pattern 9 — Reject unknown keys
 
-<xref:Bodu.Text.Toml.Serialization.TomlUnmappedMemberHandlingAttribute> chooses, per type, between skipping a key that maps to no member (the default) and failing:
+<xref:Bodu.Text.Toml.Serialization.UnmappedMemberHandlingAttribute> chooses, per type, between skipping a key that maps to no member (the default) and failing:
 
 ```csharp
-[TomlUnmappedMemberHandling(TomlUnmappedMemberHandling.Disallow)]
+[UnmappedMemberHandling(UnmappedMemberHandling.Disallow)]
 public sealed class StrictConfig
 {
     public int Port { get; set; }
@@ -167,12 +167,12 @@ A type with an extension-data member (Pattern 8) still captures unmapped keys in
 
 ## Pattern 10 — Populate instead of replace
 
-<xref:Bodu.Text.Toml.Serialization.TomlObjectCreationHandlingAttribute> controls whether deserialization replaces a member's value with a fresh instance or populates the instance already held — useful for get-only collection properties:
+<xref:Bodu.Text.Toml.Serialization.ObjectCreationHandlingAttribute> controls whether deserialization replaces a member's value with a fresh instance or populates the instance already held — useful for get-only collection properties:
 
 ```csharp
 public sealed class Pipeline
 {
-    [TomlObjectCreationHandling(TomlObjectCreationHandling.Populate)]
+    [ObjectCreationHandling(ObjectCreationHandling.Populate)]
     public List<string> Steps { get; } = new() { "restore" };
 }
 ```
@@ -181,12 +181,12 @@ Deserialized entries are appended to the existing list instead of replacing it. 
 
 ## Pattern 11 — Choose a converter
 
-<xref:Bodu.Text.Toml.Serialization.TomlConverterAttribute> selects the converter for a member, or for every use of a type:
+<xref:Bodu.Text.Toml.Serialization.ConverterAttribute> selects the converter for a member, or for every use of a type:
 
 ```csharp
 public sealed class Package
 {
-    [TomlConverter(typeof(VersionConverter))]
+    [Converter(typeof(VersionConverter))]
     public Version Version { get; set; } = new(1, 2, 3);
 }
 ```
@@ -199,15 +199,15 @@ The referenced type must derive from the format's converter base and expose a pu
 
 ## Pattern 12 — Name enum members
 
-<xref:Bodu.Text.Toml.Serialization.TomlStringEnumMemberNameAttribute> renames an individual enumeration member when the enum is serialized by name:
+<xref:Bodu.Text.Toml.Serialization.StringEnumMemberNameAttribute> renames an individual enumeration member when the enum is serialized by name:
 
 ```csharp
-[TomlConverter(typeof(TomlStringEnumConverter<Status>))]
+[Converter(typeof(TomlStringEnumConverter<Status>))]
 public enum Status
 {
     Active,
 
-    [TomlStringEnumMemberName("on-hold")]
+    [StringEnumMemberName("on-hold")]
     OnHold,
 }
 ```
@@ -222,8 +222,8 @@ The attribute applies only to by-name serialization (the default enum handling, 
 
 When several settings could govern the same member, the closest one wins:
 
-1. a member-level attribute (`[TomlPropertyName]`, `[TomlIgnore]`, `[TomlConverter]`, `[TomlObjectCreationHandling]`, …);
-2. a type-level attribute (`[TomlNamingPolicy]`, `[TomlConverter]`, `[TomlUnmappedMemberHandling]`, `[TomlObjectCreationHandling]`);
+1. a member-level attribute (`[PropertyName]`, `[Ignore]`, `[TomlConverter]`, `[ObjectCreationHandling]`, …);
+2. a type-level attribute (`[NamingPolicy]`, `[TomlConverter]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`);
 3. the serializer options (`PropertyNamingPolicy`, `Converters`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, `IncludeFields`).
 
 ## See also

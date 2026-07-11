@@ -39,7 +39,7 @@ A user converter, or a converter named by a `[TomlConverter]` attribute, is cons
 | `DateTime` | local date-time (`Unspecified`) or offset date-time (`Utc` / `Local`) | matching kind | Kind-aware on write. |
 | `DateOnly` | local date | local date | |
 | `TimeOnly` | local time | local time | |
-| `enum` (any) | string, the member name | string (case-insensitive) or integer | Per-member names via `[TomlStringEnumMemberName]`; see the enum converters below. |
+| `enum` (any) | string, the member name | string (case-insensitive) or integer | Per-member names via `[StringEnumMemberName]`; see the enum converters below. |
 
 ## Binary data
 
@@ -63,7 +63,7 @@ A user converter, or a converter named by a `[TomlConverter]` attribute, is cons
 
 ## Public enum converters
 
-Registered on the options or referenced from a `[TomlConverter(...)]` attribute:
+Registered on the options or referenced from a `[Converter(...)]` attribute:
 
 - <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter> / `TomlStringEnumConverter<TEnum>` — member-name strings with an optional naming policy and integer-on-read flag.
 - `TomlNumberEnumConverter<TEnum>` — the underlying numeric value as a TOML integer.

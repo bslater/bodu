@@ -4,7 +4,7 @@ title: Serialization callbacks
 
 # Serialization callbacks
 
-The TOML serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces. TOML exposes four hooks — <xref:Bodu.Text.Toml.Serialization.ITomlOnSerializing>, <xref:Bodu.Text.Toml.Serialization.ITomlOnSerialized>, <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserializing>, and <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserialized>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) expose the same hooks with their own prefix.
+The TOML serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces. TOML exposes four hooks — <xref:Bodu.Text.Toml.Serialization.IOnSerializing>, <xref:Bodu.Text.Toml.Serialization.IOnSerialized>, <xref:Bodu.Text.Toml.Serialization.IOnDeserializing>, and <xref:Bodu.Text.Toml.Serialization.IOnDeserialized>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) expose the same hooks with their own prefix.
 
 | Hook | Runs | Typical use |
 |---|---|---|
@@ -18,11 +18,11 @@ The TOML serializer lets a type participate in its own serialization lifecycle b
 Member initializers run at construction, but a key present in the input then overwrites them — there is no way to distinguish "key absent" from "key set to the initializer value" after the fact. `OnDeserializing` runs after construction and *before* member assignment, so a value it assigns persists exactly when the input omits the key:
 
 ```csharp
-public sealed class ServerConfig : ITomlOnDeserializing
+public sealed class ServerConfig : IOnDeserializing
 {
     public int Port { get; set; }
 
-    void ITomlOnDeserializing.OnDeserializing() =>
+    void IOnDeserializing.OnDeserializing() =>
         Port = 8080;
 }
 ```
@@ -39,11 +39,11 @@ For a type built through a parameterized constructor the callback necessarily ru
 `OnDeserialized` is the last step of deserialization for the instance, so it observes the fully materialized object — including required members, extension data, and populated collections. Throwing from it fails the deserialization:
 
 ```csharp
-public sealed class ServerConfig : ITomlOnDeserialized
+public sealed class ServerConfig : IOnDeserialized
 {
     public int Port { get; set; }
 
-    void ITomlOnDeserialized.OnDeserialized()
+    void IOnDeserialized.OnDeserialized()
     {
         if (Port is < 1 or > 65535)
             throw new InvalidOperationException("Port is out of range.");
@@ -51,18 +51,18 @@ public sealed class ServerConfig : ITomlOnDeserialized
 }
 ```
 
-This complements `[TomlRequired]` (which checks presence, not validity): the attribute rejects an absent key, the callback rejects a present-but-invalid value.
+This complements `[Required]` (which checks presence, not validity): the attribute rejects an absent key, the callback rejects a present-but-invalid value.
 
 ## Pattern 3 — Derive state before serialization
 
 `OnSerializing` runs before the value's members are written, so any mutation it performs is reflected in the emitted output. Use it to stamp timestamps, recompute checksums, or normalize state at the moment of writing:
 
 ```csharp
-public sealed class Snapshot : ITomlOnSerializing
+public sealed class Snapshot : IOnSerializing
 {
     public DateTime SavedAt { get; set; }
 
-    void ITomlOnSerializing.OnSerializing() =>
+    void IOnSerializing.OnSerializing() =>
         SavedAt = DateTime.UtcNow;
 }
 ```
@@ -72,12 +72,12 @@ public sealed class Snapshot : ITomlOnSerializing
 `OnSerialized` runs after the value's table/dictionary has been closed: it observes the completed write rather than influencing the output. Use it to restore state changed by `OnSerializing`, or to track writes:
 
 ```csharp
-public sealed class Snapshot : ITomlOnSerialized
+public sealed class Snapshot : IOnSerialized
 {
-    [TomlIgnore]
+    [Ignore]
     public int WriteCount { get; private set; }
 
-    void ITomlOnSerialized.OnSerialized() =>
+    void IOnSerialized.OnSerialized() =>
         WriteCount++;
 }
 ```
@@ -90,16 +90,16 @@ The hooks combine naturally: `OnSerializing` keeps a computed member fresh at th
 using Bodu.Text.Toml;
 using Bodu.Text.Toml.Serialization;
 
-public sealed class Manifest : ITomlOnSerializing, ITomlOnDeserialized
+public sealed class Manifest : IOnSerializing, IOnDeserialized
 {
     public List<string> Files { get; set; } = [];
 
     public int FileCount { get; set; }
 
-    void ITomlOnSerializing.OnSerializing() =>
+    void IOnSerializing.OnSerializing() =>
         FileCount = Files.Count;   // refreshed on every write — never stale
 
-    void ITomlOnDeserialized.OnDeserialized()
+    void IOnDeserialized.OnDeserialized()
     {
         if (FileCount != Files.Count)
             throw new TomlSerializationException("FileCount does not match the number of entries in Files.");
@@ -158,9 +158,9 @@ Member-level converters and callbacks compose, however: a callback-bearing type 
 
 ## See also
 
-- [Mapping attributes](attributes.md) — `[TomlRequired]` and friends; declarative presence checks that the callbacks complement with value validation.
+- [Mapping attributes](attributes.md) — `[Required]` and friends; declarative presence checks that the callbacks complement with value validation.
 - [Writing converters](converters.md) — the customization seam that *replaces* the object mapping (and with it, the callbacks) for a type.
 - [Using TOML](using.md) — the format walk-through, including the error-handling pattern that catches the exception thrown from `OnDeserialized`.
 - [Core concepts](../../../docs/serialization/toml/concepts.md) — where the callbacks sit in the family vocabulary.
 - [Text & Serialization guides](../../topics/text-and-serialization.md) and the [topic overview](../../../docs/topics/text-and-serialization.md).
-- API reference — <xref:Bodu.Text.Toml.Serialization.ITomlOnSerializing>, <xref:Bodu.Text.Toml.Serialization.ITomlOnSerialized>, <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserializing>, <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserialized>.
+- API reference — <xref:Bodu.Text.Toml.Serialization.IOnSerializing>, <xref:Bodu.Text.Toml.Serialization.IOnSerialized>, <xref:Bodu.Text.Toml.Serialization.IOnDeserializing>, <xref:Bodu.Text.Toml.Serialization.IOnDeserialized>.

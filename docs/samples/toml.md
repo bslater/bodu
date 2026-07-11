@@ -25,8 +25,8 @@ The front door: the <xref:Bodu.Text.Toml.TomlSerializer> POCO surface, shaped af
 `System.Text.Json`. A committed config file (nested table, array of tables) deserializes into a
 typed graph and round-trips; TOML's four native date-time kinds arrive as `DateOnly`,
 `TimeOnly`, and `DateTimeOffset` — no invented midnights; wire names layer a naming policy
-(<xref:Bodu.Text.Toml.TomlNamingPolicy>) under the attribute family (`[TomlPropertyName]`,
-`[TomlIgnore]`, `[TomlRequired]`) with <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter>
+(<xref:Bodu.Text.Toml.NamingPolicy>) under the attribute family (`[PropertyName]`,
+`[Ignore]`, `[Required]`) with <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter>
 re-casing enums; and the two wire knobs — <xref:Bodu.Text.Toml.TomlSpecVersion> gating the TOML
 v1.1.0 grammar on parse and <xref:Bodu.Text.Toml.TomlByteArrayHandling> choosing the `byte[]`
 shape — each shown with both settings. *Package: `Bodu.Text.Toml`.*

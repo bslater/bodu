@@ -78,14 +78,14 @@ using Bodu.Text.Toml;
 
 var options = new TomlSerializerOptions
 {
-    PropertyNamingPolicy = TomlNamingPolicy.SnakeCaseLower,
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
 };
 
 // "Host" is written as "host", "Port" as "port".
 string text = TomlSerializer.Serialize(config, options);
 ```
 
-Or pin a single member's name with `[TomlPropertyName]`.
+Or pin a single member's name with `[PropertyName]`.
 
 ## Edit a document without a model
 

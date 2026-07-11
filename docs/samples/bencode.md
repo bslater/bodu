@@ -40,7 +40,7 @@ verified, and re-authored through all of the library's layers:
   the hash survives. The digest renders through `Bodu.Text.Encoding`'s `Base16` — a
   cross-package demonstration.
 - **PocoTorrent** — the typed layer: <xref:Bodu.Text.Bencode.BencodeSerializer> maps the
-  metainfo onto POCOs whose `[BencodePropertyName]` attributes carry the keys with spaces
+  metainfo onto POCOs whose `[PropertyName]` attributes carry the keys with spaces
   (`creation date`, `piece length`), with `byte[]` binding for binary values — and even the
   POCO round trip is byte-exact.
 

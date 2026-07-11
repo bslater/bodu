@@ -141,6 +141,7 @@ public sealed class DocumentationSnippetCompileTests
             "using Bodu.Text.Toml.Reader;" +
             "using Bodu.Text.Toml.Serialization;" +
             "using Bodu.Text.Toml.Writer;" +
+            "using Bodu.Text.Serialization;" +
             "namespace Bodu.DocSnippets { internal static class Snippet { internal static async Task RunAsync() {" +
             Environment.NewLine + snippet + Environment.NewLine +
             "} } }";

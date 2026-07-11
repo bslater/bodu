@@ -34,7 +34,7 @@ Output is always canonical: dictionary entries are emitted in ascending bytewise
 
 ## Pattern 3 — Worked example: torrent-style metadata
 
-Bencode's natural habitat is torrent metadata: text fields, integers, a nested `info` dictionary, and the raw SHA-1 `pieces` blob side by side. `byte[]` members map straight to byte strings — no Base64 detour — and `[BencodePropertyName]` pins the lowercase, space-separated keys the format uses on the wire:
+Bencode's natural habitat is torrent metadata: text fields, integers, a nested `info` dictionary, and the raw SHA-1 `pieces` blob side by side. `byte[]` members map straight to byte strings — no Base64 detour — and `[PropertyName]` pins the lowercase, space-separated keys the format uses on the wire:
 
 ```csharp
 using Bodu.Text.Bencode;
@@ -42,25 +42,25 @@ using Bodu.Text.Bencode.Serialization;
 
 public sealed class Torrent
 {
-    [BencodePropertyName("announce")]
+    [PropertyName("announce")]
     public string? Announce { get; set; }
 
-    [BencodePropertyName("info")]
+    [PropertyName("info")]
     public TorrentInfo? Info { get; set; }
 }
 
 public sealed class TorrentInfo
 {
-    [BencodePropertyName("name")]
+    [PropertyName("name")]
     public string? Name { get; set; }
 
-    [BencodePropertyName("piece length")]
+    [PropertyName("piece length")]
     public long PieceLength { get; set; }
 
-    [BencodePropertyName("length")]
+    [PropertyName("length")]
     public long Length { get; set; }
 
-    [BencodePropertyName("pieces")]
+    [PropertyName("pieces")]
     public byte[]? Pieces { get; set; }   // concatenated 20-byte SHA-1 hashes
 }
 ```
@@ -116,7 +116,7 @@ byte[] bytes = BencodeSerializer.Serialize(new OutOfOrder());
 // → d5:Alphai2e4:Zetai1ee   — "Alpha" precedes "Zeta" bytewise
 ```
 
-This makes the encoded form deterministic for the same data, so it is safe to hash, sign, or compare payloads byte for byte. (`[BencodePropertyOrder]` affects only the order members are presented to the writer; the dictionary is re-sorted when it closes.)
+This makes the encoded form deterministic for the same data, so it is safe to hash, sign, or compare payloads byte for byte. (`[PropertyOrder]` affects only the order members are presented to the writer; the dictionary is re-sorted when it closes.)
 
 ## Pattern 5 — Rename members
 
@@ -124,13 +124,13 @@ This makes the encoded form deterministic for the same data, so it is safe to ha
 ```csharp
 var options = new BencodeSerializerOptions
 {
-    PropertyNamingPolicy = BencodeNamingPolicy.SnakeCaseLower,
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
 };
 ```
 
-Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[BencodePropertyName("…")]`, which always wins over the policy.
+Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[PropertyName("…")]`, which always wins over the policy.
 
-Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[BencodeInclude]` on the field. Fields follow the same naming-policy, ignore, required, and converter rules as properties. The full attribute family is catalogued in [Mapping attributes](attributes.md).
+Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[Include]` on the field. Fields follow the same naming-policy, ignore, required, and converter rules as properties. The full attribute family is catalogued in [Mapping attributes](attributes.md).
 
 ## Pattern 6 — Handle the kinds Bencode cannot represent
 
@@ -174,7 +174,7 @@ public sealed class UnixSecondsConverter : BencodeConverter<DateTimeOffset>
 
 public sealed class Stamped
 {
-    [BencodeConverter(typeof(UnixSecondsConverter))]
+    [Converter(typeof(UnixSecondsConverter))]
     public DateTimeOffset CreatedAt { get; set; }
 }
 
@@ -183,7 +183,7 @@ byte[] bytes = BencodeSerializer.Serialize(
 // → d9:CreatedAti1700000000ee
 ```
 
-Register a converter on a member or type with `[BencodeConverter(typeof(…))]` as above, or for every occurrence via `options.Converters.Add(new UnixSecondsConverter())`. The full recipe, including converter factories for type families, is in [Writing converters](converters.md).
+Register a converter on a member or type with `[Converter(typeof(…))]` as above, or for every occurrence via `options.Converters.Add(new UnixSecondsConverter())`. The full recipe, including converter factories for type families, is in [Writing converters](converters.md).
 
 ## Pattern 7 — Use a document model instead of a type
 

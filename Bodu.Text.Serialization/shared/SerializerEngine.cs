@@ -1,24 +1,26 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlSerializerEngine.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SerializerEngine.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Text.Toml.Reader;
-using Bodu.Text.Toml.Writer;
 
+#if BENCODE
+namespace Bodu.Text.Bencode.Serialization;
+#elif TOML
 namespace Bodu.Text.Toml.Serialization;
+#endif
 
 /// <summary>
-/// Drives serialization and deserialization between a strongly-typed value and the TOML reader and writer, resolving
-/// the root converter from the options and delegating to it.
+/// Drives serialization and deserialization between a strongly-typed value and the format's reader and writer,
+/// resolving the root converter from the options and delegating to it.
 /// </summary>
 /// <remarks>
-/// This type is the bridge the <see cref="TomlSerializer" /> facade calls once it has built a reader over the source
-/// bytes or a writer over its output.
+/// This type is the bridge the format's serializer facade calls once it has built a reader over the source bytes or a
+/// writer over its output.
 /// </remarks>
-internal static class TomlSerializerEngine
+internal static class SerializerEngine
 {
     /// <summary>
     /// Serializes a value of type <typeparamref name="T" /> to the writer.
@@ -30,19 +32,19 @@ internal static class TomlSerializerEngine
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    internal static void Serialize<T>(Utf8TomlWriter writer, T value, TomlSerializerOptions options)
+    internal static void Serialize<T>(FormatWriter writer, T value, FormatOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
 
         options.MakeReadOnly();
 
-        // Attach the serializer write state so the converters record an over-deep graph or a reference cycle
-        // cooperatively and unwind through returns; the single recorded failure is thrown once here, at the shallow
-        // root boundary, rather than from the deepest recursive frame.
-        var state = new TomlWriteStack();
+        // Attach the serializer write state so the converters record a failure (an over-deep graph, or whatever else
+        // the format's write stack detects) cooperatively and unwind through returns; the single recorded failure is
+        // thrown once here, at the shallow root boundary, rather than from the deepest recursive frame.
+        var state = new FormatWriteStack();
         writer.AttachWriteStack(state);
 
-        TomlConverter converter = options.GetConverter(typeof(T));
+        FormatConverter converter = options.GetConverter(typeof(T));
         converter.WriteAsObject(writer, value, options);
 
         state.ThrowIfFailed();
@@ -58,18 +60,18 @@ internal static class TomlSerializerEngine
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="options" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="TomlSerializationException">
+    /// <exception cref="FormatSerializationException">
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
-    internal static T Deserialize<T>(ref TomlDocumentReader reader, TomlSerializerOptions options)
+    internal static T Deserialize<T>(ref FormatReader reader, FormatOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
 
         options.MakeReadOnly();
-        TomlConverter converter = options.GetConverter(typeof(T));
+        FormatConverter converter = options.GetConverter(typeof(T));
 
         if (!reader.Read())
-            throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_UnexpectedEndOfInput, typeof(T)));
+            throw new FormatSerializationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_UnexpectedEndOfInput, typeof(T)));
 
         return (T)converter.ReadAsObject(ref reader, typeof(T), options)!;
     }
