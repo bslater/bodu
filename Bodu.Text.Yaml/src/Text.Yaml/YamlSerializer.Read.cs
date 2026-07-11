@@ -304,7 +304,7 @@ public static partial class YamlSerializer
         YamlValueKind.Float => element.GetDouble().ToString(CultureInfo.InvariantCulture),
         YamlValueKind.Boolean => element.GetBoolean() ? "true" : "false",
         YamlValueKind.Null => string.Empty,
-        _ => throw new YamlSerializationException("Expected a scalar value."),
+        _ => throw new YamlSerializationException(YamlResourceStrings.Op_Invalid_YamlExpectedScalar),
     };
 
     /// <summary>

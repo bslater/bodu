@@ -60,6 +60,11 @@
   <data name="Op_Invalid_OptionsReadOnly" xml:space="preserve"><value>Serializer options cannot be changed after the options instance has been used to serialize or deserialize.</value></data>
   <data name="Op_Invalid_YamlUnmappedMember" xml:space="preserve"><value>The YAML key '{0}' does not map to any member of type '{1}'.</value></data>
   <data name="Op_Invalid_YamlValueConversion" xml:space="preserve"><value>The scalar value cannot be converted to the requested type '{0}'.</value></data>
+  <data name="Op_Invalid_YamlExpectedScalar" xml:space="preserve"><value>Expected a scalar value.</value></data>
+  <data name="Op_Invalid_YamlExpectedSequence" xml:space="preserve"><value>Expected a YAML sequence.</value></data>
+  <data name="Op_Invalid_YamlExpectedMapping" xml:space="preserve"><value>Expected a YAML mapping.</value></data>
+  <data name="Op_Invalid_YamlTypeNotInstantiable" xml:space="preserve"><value>The type '{0}' could not be instantiated.</value></data>
+  <data name="Arg_Invalid_YamlDuplicateKey" xml:space="preserve"><value>An entry with the same key already exists.</value></data>
   <data name="Op_Invalid_ExtensionDataKeyCollision" xml:space="preserve"><value>The extension-data key '{0}' collides with a key already written for type '{1}'.</value></data>
   <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a YamlConverter.</value></data>
   <data name="Arg_Invalid_YamlInvalidUtf8" xml:space="preserve"><value>The supplied bytes are not valid UTF-8.</value></data>

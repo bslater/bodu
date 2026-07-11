@@ -67,7 +67,7 @@ public sealed class YamlObject : YamlNode, IEnumerable<KeyValuePair<string, Yaml
     {
         Bodu.ThrowHelper.ThrowIfNull(key);
         if (_entries.ContainsKey(key))
-            throw new ArgumentException("An entry with the same key already exists.", nameof(key));
+            throw new ArgumentException(YamlResourceStrings.Arg_Invalid_YamlDuplicateKey, nameof(key));
 
         _order.Add(key);
         _entries[key] = value;

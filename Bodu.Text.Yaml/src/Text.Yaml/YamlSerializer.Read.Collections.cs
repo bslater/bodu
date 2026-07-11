@@ -123,7 +123,8 @@ public static partial class YamlSerializer
         RequireMapping(element);
 
         object instance = Activator.CreateInstance(type)
-            ?? throw new YamlSerializationException($"The type '{type}' could not be instantiated.");
+            ?? throw new YamlSerializationException(
+                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlTypeNotInstantiable, type));
 
         YamlMemberInfo[] members = YamlMemberInfo.ForType(type, options.IncludeFields);
         YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
@@ -208,7 +209,7 @@ public static partial class YamlSerializer
     private static void RequireSequence(YamlElement element)
     {
         if (element.ValueKind != YamlValueKind.Sequence)
-            throw new YamlSerializationException("Expected a YAML sequence.");
+            throw new YamlSerializationException(YamlResourceStrings.Op_Invalid_YamlExpectedSequence);
     }
 
     /// <summary>
@@ -219,6 +220,6 @@ public static partial class YamlSerializer
     private static void RequireMapping(YamlElement element)
     {
         if (element.ValueKind != YamlValueKind.Mapping)
-            throw new YamlSerializationException("Expected a YAML mapping.");
+            throw new YamlSerializationException(YamlResourceStrings.Op_Invalid_YamlExpectedMapping);
     }
 }

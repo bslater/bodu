@@ -367,6 +367,46 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to Expected a scalar value..
+        /// </summary>
+        internal static string Op_Invalid_YamlExpectedScalar {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlExpectedScalar", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a YAML sequence..
+        /// </summary>
+        internal static string Op_Invalid_YamlExpectedSequence {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlExpectedSequence", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a YAML mapping..
+        /// </summary>
+        internal static string Op_Invalid_YamlExpectedMapping {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlExpectedMapping", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' could not be instantiated..
+        /// </summary>
+        internal static string Op_Invalid_YamlTypeNotInstantiable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlTypeNotInstantiable", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to An entry with the same key already exists..
+        /// </summary>
+        internal static string Arg_Invalid_YamlDuplicateKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_YamlDuplicateKey", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The floating-point value '{0}' cannot be deserialized into an integer target without loss of precision..
         /// </summary>
         internal static string Op_Invalid_YamlFloatNotIntegral {
