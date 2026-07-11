@@ -4,11 +4,15 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Converters;
+#elif TOML
+namespace Bodu.Text.Toml.Serialization.Converters;
+#endif
 
 /// <summary>
 /// Identifies how a <see cref="DictionaryConverter{TDictionary, TKey, TValue}" /> converts a dictionary key to and from
-/// the byte-string key of a Bencode dictionary.
+/// the string key of the format's keyed structure.
 /// </summary>
 internal enum DictionaryKeyKind
 {

@@ -15,6 +15,17 @@
     <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
+  <!-- Format selector for the shared serializer source (see Bodu.Text.Serialization/shared/). -->
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);TOML</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Shared serializer source, compiled into this assembly with format aliases (net8.0 ref-struct
+       converters cannot live in a shared generic assembly). -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.Text.Serialization\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

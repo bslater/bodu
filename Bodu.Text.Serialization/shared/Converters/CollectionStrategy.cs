@@ -1,10 +1,14 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CollectionStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if BENCODE
+namespace Bodu.Text.Bencode.Serialization.Converters;
+#elif TOML
 namespace Bodu.Text.Toml.Serialization.Converters;
+#endif
 
 /// <summary>
 /// Identifies how a <see cref="CollectionConverter{TCollection, TElement}" /> materializes the collection it produces

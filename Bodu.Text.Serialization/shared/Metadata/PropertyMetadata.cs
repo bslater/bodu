@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PropertyMetadata.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,12 +7,16 @@
 using Bodu.Text.Serialization;
 using System.Reflection;
 
+#if BENCODE
+namespace Bodu.Text.Bencode.Serialization.Metadata;
+#elif TOML
 namespace Bodu.Text.Toml.Serialization.Metadata;
+#endif
 
 /// <summary>
 /// Describes a single serializable member (a property, or a public field surfaced through
-/// <see cref="TomlSerializerOptions.IncludeFields" /> or <see cref="IncludeAttribute" />) of a type: its wire name,
-/// the converter that handles its value, how it is read and written, and how it binds to a constructor parameter.
+/// <see cref="FormatOptions.IncludeFields" /> or <see cref="IncludeAttribute" />) of a type: its wire name, the
+/// converter that handles its value, how it is read and written, and how it binds to a constructor parameter.
 /// </summary>
 /// <remarks>
 /// Instances are produced by <see cref="MetadataResolver" /> and cached on the serializer options, so the reflection
@@ -52,7 +56,7 @@ internal sealed class PropertyMetadata
     internal PropertyMetadata(
         MemberInfo member,
         string wireName,
-        TomlConverter converter,
+        FormatConverter converter,
         IgnoreCondition? conditionalIgnore,
         int order,
         int constructorParameterIndex,
@@ -95,7 +99,7 @@ internal sealed class PropertyMetadata
     /// Gets the converter that handles the member value.
     /// </summary>
     /// <value>The member converter.</value>
-    internal TomlConverter Converter { get; }
+    internal FormatConverter Converter { get; }
 
     /// <summary>
     /// Gets the condition under which the member is omitted on write, or <see langword="null" /> when it is always
@@ -149,9 +153,9 @@ internal sealed class PropertyMetadata
     /// </summary>
     /// <value>
     /// For a property, <see langword="true" /> when it has a public setter (which includes an init-only setter) or a
-    /// non-public setter opted in by <see cref="IncludeAttribute" />; a property exposed only through a non-public
-    /// setter is therefore not assigned on read unless it carries that attribute. For a field, <see langword="true" />
-    /// unless the field is <see langword="readonly" />.
+    /// non-public setter opted in by <see cref="IncludeAttribute" />; a property exposed only through a
+    /// non-public setter is therefore not assigned on read unless it carries that attribute. For a field,
+    /// <see langword="true" /> unless the field is <see langword="readonly" />.
     /// </value>
     internal bool CanSet =>
         _property is not null

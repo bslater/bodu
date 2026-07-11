@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TypeMetadata.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,11 +7,15 @@
 using Bodu.Text.Serialization;
 using System.Reflection;
 
+#if BENCODE
+namespace Bodu.Text.Bencode.Serialization.Metadata;
+#elif TOML
 namespace Bodu.Text.Toml.Serialization.Metadata;
+#endif
 
 /// <summary>
-/// Describes how a type is mapped to and from a TOML table: the serializable members in write order, a name lookup for
-/// reading, and the plan used to construct an instance during deserialization.
+/// Describes how a type is mapped to and from the format's keyed structure: the serializable members in write order, a
+/// name lookup for reading, and the plan used to construct an instance during deserialization.
 /// </summary>
 /// <remarks>
 /// Instances are produced by <see cref="MetadataResolver" /> and cached on the serializer options. A type is built
@@ -47,7 +51,7 @@ internal sealed class TypeMetadata
     /// <param name="constructorParameters">The member bound to each constructor parameter by position.</param>
     /// <param name="constructorDefaults">The default value for each constructor parameter.</param>
     /// <param name="extensionData">
-    /// The member that captures unmatched dictionary entries, or <see langword="null" /> when the type declares none.
+    /// The member that captures unmatched entries, or <see langword="null" /> when the type declares none.
     /// </param>
     internal TypeMetadata(
         Type type,
@@ -80,14 +84,14 @@ internal sealed class TypeMetadata
     internal IReadOnlyList<PropertyMetadata> Properties => _properties;
 
     /// <summary>
-    /// Gets the member that captures dictionary entries with no matching property, or <see langword="null" /> when the
-    /// type declares none.
+    /// Gets the member that captures entries with no matching property, or <see langword="null" /> when the type
+    /// declares none.
     /// </summary>
     /// <value>The extension-data member, or <see langword="null" />.</value>
     internal PropertyMetadata? ExtensionData { get; }
 
     /// <summary>
-    /// Gets the type-level handling for a dictionary key that maps to no member, sourced from a
+    /// Gets the type-level handling for a key that maps to no member, sourced from a
     /// <see cref="UnmappedMemberHandlingAttribute" /> on the type, or <see langword="null" /> when the type
     /// declares none.
     /// </summary>
@@ -95,8 +99,9 @@ internal sealed class TypeMetadata
     internal UnmappedMemberHandling? UnmappedMemberHandling { get; init; }
 
     /// <summary>
-    /// Gets the type-level object-creation handling, sourced from a <see cref="ObjectCreationHandlingAttribute" />
-    /// on the type, or <see langword="null" /> when the type declares none.
+    /// Gets the type-level object-creation handling, sourced from a
+    /// <see cref="ObjectCreationHandlingAttribute" /> on the type, or <see langword="null" /> when the type
+    /// declares none.
     /// </summary>
     /// <value>The type-level object-creation handling, or <see langword="null" />.</value>
     internal ObjectCreationHandling? CreationHandling { get; init; }
