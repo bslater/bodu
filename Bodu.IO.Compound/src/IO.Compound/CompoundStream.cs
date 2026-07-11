@@ -530,18 +530,18 @@ public sealed class CompoundStream
     }
 
     /// <summary>
-    /// Persists the buffered bytes into the staging stream node and marks the owning file dirty; a no-op when
-    /// nothing changed since the last flush.
+    /// Persists the buffered bytes into the staging stream node and marks the owning file dirty; a no-op when nothing
+    /// changed since the last flush.
     /// </summary>
     /// <param name="disposing">
-    /// Whether the cursor is being disposed. A disposing flush transfers the write buffer to the node without
-    /// copying — the dying cursor can no longer mutate it — while a mid-life flush stores a snapshot copy so later
-    /// cursor writes cannot alias already-flushed node content.
+    /// Whether the cursor is being disposed. A disposing flush transfers the write buffer to the node without copying —
+    /// the dying cursor can no longer mutate it — while a mid-life flush stores a snapshot copy so later cursor writes
+    /// cannot alias already-flushed node content.
     /// </param>
     /// <remarks>
-    /// A transferred buffer is the write buffer's growth array, so the node can retain up to roughly twice the
-    /// payload as slack until its content is next replaced or the staging tree is released; the copy saved on every
-    /// dispose outweighs that transient slack for staged edits that are committed and released.
+    /// A transferred buffer is the write buffer's growth array, so the node can retain up to roughly twice the payload
+    /// as slack until its content is next replaced or the staging tree is released; the copy saved on every dispose
+    /// outweighs that transient slack for staged edits that are committed and released.
     /// </remarks>
     private void FlushToNode(bool disposing)
     {
