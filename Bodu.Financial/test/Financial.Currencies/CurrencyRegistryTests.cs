@@ -81,6 +81,23 @@ public partial class CurrencyRegistryTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="CurrencyRegistry.TryGet(string, out CurrencyInfo?)" /> is case-sensitive: a
+    /// lower-case rendering of a known ISO code is treated as unknown, matching the library's uppercase-only ISO
+    /// code contract.
+    /// </summary>
+    [TestMethod]
+    [DataRow("usd")]
+    [DataRow("Usd")]
+    [DataRow("eur")]
+    public void TryGet_WhenIsoCodeIsNotUpperCase_ShouldReturnFalse(string isoCode)
+    {
+        bool found = CurrencyRegistry.TryGet(isoCode, out CurrencyInfo? info);
+
+        Assert.IsFalse(found);
+        Assert.IsNull(info);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="CurrencyRegistry.TryGet(string, out CurrencyInfo?)" /> returns
     /// <see langword="false" /> for a <see langword="null" /> input rather than throwing.
     /// </summary>
