@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SeparatorNamingPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -6,7 +6,7 @@
 
 using System.Text;
 
-namespace Bodu.Text.Bencode;
+namespace Bodu.Text.Serialization;
 
 /// <summary>
 /// A naming policy that converts a <c>PascalCase</c> or <c>camelCase</c> member name to a separated form, inserting a
@@ -19,7 +19,7 @@ namespace Bodu.Text.Bencode;
 /// result is then lowercased or uppercased uniformly.
 /// </remarks>
 internal sealed class SeparatorNamingPolicy
-    : BencodeNamingPolicy
+    : NamingPolicy
 {
     /// <summary>The character inserted at word boundaries.</summary>
     private readonly char _separator;

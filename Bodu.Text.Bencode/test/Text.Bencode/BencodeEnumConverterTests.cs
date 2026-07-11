@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text;
 using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Serialization;
@@ -12,7 +13,7 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Verifies the System.Text.Json-style enum-converter surface for Bencode: the built-in by-name default,
-/// <see cref="BencodeStringEnumMemberNameAttribute" />, and the <see cref="BencodeStringEnumConverter" />,
+/// <see cref="StringEnumMemberNameAttribute" />, and the <see cref="BencodeStringEnumConverter" />,
 /// <see cref="BencodeStringEnumConverter{TEnum}" />, and <see cref="BencodeNumberEnumConverter{TEnum}" /> factories.
 /// </summary>
 [TestClass]
@@ -48,7 +49,7 @@ public class BencodeEnumConverterTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodeStringEnumMemberNameAttribute" /> overrides the byte-string name used for an
+    /// Verifies that <see cref="StringEnumMemberNameAttribute" /> overrides the byte-string name used for an
     /// individual enumeration member on both write and read, even with no converter explicitly registered.
     /// </summary>
     [TestMethod]
@@ -72,7 +73,7 @@ public class BencodeEnumConverterTests
     public void Serialize_WhenStringEnumConverterWithCamelCasePolicy_ShouldCamelCaseMemberName()
     {
         var options = new BencodeSerializerOptions();
-        options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new StatusModel { Status = Status.Active };
         byte[] bytes = BencodeSerializer.Serialize(model, options);
@@ -91,7 +92,7 @@ public class BencodeEnumConverterTests
     public void Deserialize_WhenStringEnumConverterAllowsIntegers_ShouldReadIntegerAsEnum()
     {
         var options = new BencodeSerializerOptions();
-        options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         byte[] bytes = Encoding.Latin1.GetBytes("d6:Statusi2ee");
 
@@ -108,7 +109,7 @@ public class BencodeEnumConverterTests
     public void Deserialize_WhenStringEnumConverterReadsUnknownName_ShouldThrowBencodeSerializationException()
     {
         var options = new BencodeSerializerOptions();
-        options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         byte[] bytes = Encoding.Latin1.GetBytes("d6:Status7:unknowne");
 
@@ -137,7 +138,7 @@ public class BencodeEnumConverterTests
     }
 
     /// <summary>
-    /// Verifies that a property annotated with <see cref="BencodeConverterAttribute" /> naming a
+    /// Verifies that a property annotated with <see cref="ConverterAttribute" /> naming a
     /// <see cref="BencodeNumberEnumConverter{TEnum}" /> serializes the enumeration as a Bencode integer and round-trips.
     /// </summary>
     [TestMethod]
@@ -154,7 +155,7 @@ public class BencodeEnumConverterTests
     }
 
     /// <summary>
-    /// Verifies that a property annotated with <see cref="BencodeConverterAttribute" /> naming a
+    /// Verifies that a property annotated with <see cref="ConverterAttribute" /> naming a
     /// <see cref="BencodeStringEnumConverter{TEnum}" /> serializes the enumeration as its member-name byte string and
     /// round-trips.
     /// </summary>
@@ -229,7 +230,7 @@ public class BencodeEnumConverterTests
     public void SerializeDeserialize_WhenGenericStringEnumConverterWithPolicy_ShouldCamelCaseAndRoundTrip()
     {
         var options = new BencodeSerializerOptions();
-        options.Converters.Add(new BencodeStringEnumConverter<Status>(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new BencodeStringEnumConverter<Status>(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new StatusModel { Status = Status.Active };
         byte[] bytes = BencodeSerializer.Serialize(model, options);
@@ -326,14 +327,14 @@ public class BencodeEnumConverterTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodeStringEnumMemberNameAttribute" /> takes precedence over a naming policy applied by
+    /// Verifies that <see cref="StringEnumMemberNameAttribute" /> takes precedence over a naming policy applied by
     /// a <see cref="BencodeStringEnumConverter" />, so the explicit name is used unchanged.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenMemberNameAttributeAndNamingPolicy_ShouldPreferAttribute()
     {
         var options = new BencodeSerializerOptions();
-        options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new RenamedStatusModel { Status = RenamedStatus.NotFound };
         byte[] bytes = BencodeSerializer.Serialize(model, options);
@@ -374,15 +375,15 @@ public class BencodeEnumConverterTests
     }
 
     /// <summary>
-    /// Verifies that constructing <see cref="BencodeStringEnumMemberNameAttribute" /> with a <see langword="null" />
+    /// Verifies that constructing <see cref="StringEnumMemberNameAttribute" /> with a <see langword="null" />
     /// name throws <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>name</c>.
     /// </summary>
     [TestMethod]
-    public void BencodeStringEnumMemberNameAttribute_WhenNameNull_ShouldThrowArgumentNullException()
+    public void StringEnumMemberNameAttribute_WhenNameNull_ShouldThrowArgumentNullException()
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
-            _ = new BencodeStringEnumMemberNameAttribute(null!);
+            _ = new StringEnumMemberNameAttribute(null!);
         }, "name");
     }
 
@@ -409,7 +410,7 @@ public class BencodeEnumConverterTests
 
     /// <summary>
     /// An enumeration whose members carry explicit byte-string names through
-    /// <see cref="BencodeStringEnumMemberNameAttribute" />.
+    /// <see cref="StringEnumMemberNameAttribute" />.
     /// </summary>
     private enum RenamedStatus
     {
@@ -421,7 +422,7 @@ public class BencodeEnumConverterTests
         /// <summary>
         /// The not-found state, written under the name <c>not-found</c>.
         /// </summary>
-        [BencodeStringEnumMemberName("not-found")]
+        [StringEnumMemberName("not-found")]
         NotFound = 1,
     }
 
@@ -458,7 +459,7 @@ public class BencodeEnumConverterTests
         /// Gets or sets the status, serialized as a Bencode integer.
         /// </summary>
         /// <value>The status.</value>
-        [BencodeConverter(typeof(BencodeNumberEnumConverter<Status>))]
+        [Converter(typeof(BencodeNumberEnumConverter<Status>))]
         public Status Status { get; set; }
     }
 
@@ -471,7 +472,7 @@ public class BencodeEnumConverterTests
         /// Gets or sets the status, serialized as its member-name byte string.
         /// </summary>
         /// <value>The status.</value>
-        [BencodeConverter(typeof(BencodeStringEnumConverter<Status>))]
+        [Converter(typeof(BencodeStringEnumConverter<Status>))]
         public Status Status { get; set; }
     }
 

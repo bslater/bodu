@@ -1,10 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BencodeObjectCreationHandling.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ObjectCreationHandling.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Bencode.Serialization;
+namespace Bodu.Text.Serialization;
 
 /// <summary>
 /// Specifies whether the serializer replaces a member's value with a freshly created instance or populates the value
@@ -16,7 +16,7 @@ namespace Bodu.Text.Bencode.Serialization;
 /// value is <see langword="null" /> or the member is not a populatable collection, the serializer falls back to
 /// replacing the value.
 /// </remarks>
-public enum BencodeObjectCreationHandling
+public enum ObjectCreationHandling
 {
     /// <summary>
     /// A new instance is created and assigned to the member.

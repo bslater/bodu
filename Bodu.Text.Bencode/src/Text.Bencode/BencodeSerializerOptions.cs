@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Reflection;
@@ -34,10 +35,10 @@ namespace Bodu.Text.Bencode;
 /// // Configure once and reuse across calls; resolved converters are cached on the instance.
 /// var options = new BencodeSerializerOptions
 /// {
-///     PropertyNamingPolicy = BencodeNamingPolicy.SnakeCaseLower,
-///     DefaultIgnoreCondition = BencodeIgnoreCondition.WhenWritingDefault,
+///     PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+///     DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault,
 /// };
-/// options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+/// options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));
 ///
 /// byte[] bytes = BencodeSerializer.Serialize(value, options);
 ///]]>
@@ -61,7 +62,7 @@ public sealed class BencodeSerializerOptions
     private BencodeConverter[]? _frozenConverters;
 
     /// <summary>The configured property naming policy.</summary>
-    private BencodeNamingPolicy? _namingPolicy;
+    private NamingPolicy? _namingPolicy;
 
     /// <summary>Whether property-name matching ignores case when reading.</summary>
     private bool _caseInsensitive = true;
@@ -76,13 +77,13 @@ public sealed class BencodeSerializerOptions
     private bool _allowDuplicateKeys;
 
     /// <summary>The serializer-wide default condition under which a member is omitted on write.</summary>
-    private BencodeIgnoreCondition _defaultIgnoreCondition = BencodeIgnoreCondition.Never;
+    private IgnoreCondition _defaultIgnoreCondition = IgnoreCondition.Never;
 
     /// <summary>The serializer-wide handling for a dictionary key that maps to no member when reading.</summary>
-    private BencodeUnmappedMemberHandling _unmappedMemberHandling = BencodeUnmappedMemberHandling.Skip;
+    private UnmappedMemberHandling _unmappedMemberHandling = UnmappedMemberHandling.Skip;
 
     /// <summary>The serializer-wide preference for replacing or populating a member's value when reading.</summary>
-    private BencodeObjectCreationHandling _preferredObjectCreationHandling = BencodeObjectCreationHandling.Replace;
+    private ObjectCreationHandling _preferredObjectCreationHandling = ObjectCreationHandling.Replace;
 
     /// <summary>The maximum nesting depth.</summary>
     private int _maxDepth = DefaultMaxDepth;
@@ -114,7 +115,7 @@ public sealed class BencodeSerializerOptions
 
         if (defaults == BencodeSerializerDefaults.Web)
         {
-            _namingPolicy = BencodeNamingPolicy.CamelCase;
+            _namingPolicy = NamingPolicy.CamelCase;
             _caseInsensitive = true;
         }
     }
@@ -130,7 +131,7 @@ public sealed class BencodeSerializerOptions
     /// </summary>
     /// <value>The naming policy, or <see langword="null" /> to use member names unchanged.</value>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    public BencodeNamingPolicy? PropertyNamingPolicy
+    public NamingPolicy? PropertyNamingPolicy
     {
         get => _namingPolicy;
         set
@@ -218,7 +219,7 @@ public sealed class BencodeSerializerOptions
     /// default is <see langword="false" />.
     /// </value>
     /// <remarks>
-    /// A public field annotated with <see cref="Serialization.BencodeIncludeAttribute" /> participates regardless of
+    /// A public field annotated with <see cref="IncludeAttribute" /> participates regardless of
     /// this setting. Fields honor the property naming policy, name and order attributes, ignore conditions, and
     /// required-member enforcement exactly like properties; a <see langword="readonly" /> field is written but never
     /// assigned on read.
@@ -236,27 +237,27 @@ public sealed class BencodeSerializerOptions
 
     /// <summary>
     /// Gets or sets the default condition that determines when a member is omitted on write, applied to every member
-    /// that does not carry its own <see cref="Serialization.BencodeIgnoreAttribute" />.
+    /// that does not carry its own <see cref="IgnoreAttribute" />.
     /// </summary>
-    /// <value>The default ignore condition; <see cref="BencodeIgnoreCondition.Never" /> by default.</value>
+    /// <value>The default ignore condition; <see cref="IgnoreCondition.Never" /> by default.</value>
     /// <remarks>
     /// Because Bencode has no null token, a member whose value is <see langword="null" /> is omitted from the output
-    /// regardless of this setting, so <see cref="BencodeIgnoreCondition.Never" /> behaves like
-    /// <see cref="BencodeIgnoreCondition.WhenWritingNull" /> for null values specifically.
+    /// regardless of this setting, so <see cref="IgnoreCondition.Never" /> behaves like
+    /// <see cref="IgnoreCondition.WhenWritingNull" /> for null values specifically.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when the value is undefined, or when it is <see cref="BencodeIgnoreCondition.Always" />, which is not a
+    /// Thrown when the value is undefined, or when it is <see cref="IgnoreCondition.Always" />, which is not a
     /// valid default.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    public BencodeIgnoreCondition DefaultIgnoreCondition
+    public IgnoreCondition DefaultIgnoreCondition
     {
         get => _defaultIgnoreCondition;
         set
         {
             VerifyMutable();
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
-            if (value == BencodeIgnoreCondition.Always)
+            if (value == IgnoreCondition.Always)
                 throw new ArgumentOutOfRangeException(nameof(value), BencodeResourceStrings.Arg_OutOfRange_DefaultIgnoreConditionAlways);
 
             _defaultIgnoreCondition = value;
@@ -266,17 +267,17 @@ public sealed class BencodeSerializerOptions
     /// <summary>
     /// Gets or sets the serializer-wide handling for a dictionary key that maps to no member of the target type when
     /// reading, applied to every type that does not carry its own
-    /// <see cref="Serialization.BencodeUnmappedMemberHandlingAttribute" />.
+    /// <see cref="UnmappedMemberHandlingAttribute" />.
     /// </summary>
-    /// <value>The unmapped-member handling; <see cref="BencodeUnmappedMemberHandling.Skip" /> by default.</value>
+    /// <value>The unmapped-member handling; <see cref="UnmappedMemberHandling.Skip" /> by default.</value>
     /// <remarks>
     /// A type that declares an extension-data member captures unmapped keys into that member, which takes precedence
     /// over this setting, so a key absorbed by extension data never triggers
-    /// <see cref="BencodeUnmappedMemberHandling.Disallow" />.
+    /// <see cref="UnmappedMemberHandling.Disallow" />.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is undefined.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    public BencodeUnmappedMemberHandling UnmappedMemberHandling
+    public UnmappedMemberHandling UnmappedMemberHandling
     {
         get => _unmappedMemberHandling;
         set
@@ -291,18 +292,18 @@ public sealed class BencodeSerializerOptions
     /// <summary>
     /// Gets or sets the serializer-wide preference for whether a member's value is replaced with a freshly created
     /// instance or populated when reading, applied to every type and member that does not carry its own
-    /// <see cref="Serialization.BencodeObjectCreationHandlingAttribute" />.
+    /// <see cref="ObjectCreationHandlingAttribute" />.
     /// </summary>
     /// <value>
-    /// The preferred object-creation handling; <see cref="BencodeObjectCreationHandling.Replace" /> by default.
+    /// The preferred object-creation handling; <see cref="ObjectCreationHandling.Replace" /> by default.
     /// </value>
     /// <remarks>
-    /// <see cref="BencodeObjectCreationHandling.Populate" /> applies only to collection and dictionary members whose
+    /// <see cref="ObjectCreationHandling.Populate" /> applies only to collection and dictionary members whose
     /// existing value is non-<see langword="null" />; in every other case the serializer replaces the value.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is undefined.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    public BencodeObjectCreationHandling PreferredObjectCreationHandling
+    public ObjectCreationHandling PreferredObjectCreationHandling
     {
         get => _preferredObjectCreationHandling;
         set
@@ -417,7 +418,7 @@ public sealed class BencodeSerializerOptions
     /// <exception cref="NotSupportedException">Thrown when no converter handles the type.</exception>
     private BencodeConverter ResolveConverter(Type type)
     {
-        BencodeConverterAttribute? attribute = type.GetCustomAttribute<BencodeConverterAttribute>(inherit: false);
+        ConverterAttribute? attribute = type.GetCustomAttribute<ConverterAttribute>(inherit: false);
         if (attribute is not null)
             return InstantiateConverter(attribute.ConverterType, type);
 

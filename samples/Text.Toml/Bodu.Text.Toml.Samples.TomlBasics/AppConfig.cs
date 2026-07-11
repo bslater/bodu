@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml.Samples.TomlBasics;
@@ -16,7 +17,7 @@ namespace Bodu.Text.Toml.Samples.TomlBasics;
 public sealed class AppConfig
 {
     /// <summary>Gets or sets the service name (wire key <c>service_name</c> via the naming policy).</summary>
-    [TomlRequired]
+    [Required]
     public string ServiceName { get; set; } = string.Empty;
 
     /// <summary>Gets or sets the retry budget.</summary>
@@ -41,7 +42,7 @@ public sealed class AppConfig
     public List<EndpointConfig> Endpoints { get; set; } = [];
 
     /// <summary>Gets a computed display label — never serialized.</summary>
-    [TomlIgnore]
+    [Ignore]
     public string DisplayLabel => $"{ServiceName} (retries: {MaxRetries})";
 }
 
@@ -66,6 +67,6 @@ public sealed class EndpointConfig
     public string Name { get; set; } = string.Empty;
 
     /// <summary>Gets or sets the endpoint address (wire key <c>url</c>, overriding the policy).</summary>
-    [TomlPropertyName("url")]
+    [PropertyName("url")]
     public string Address { get; set; } = string.Empty;
 }

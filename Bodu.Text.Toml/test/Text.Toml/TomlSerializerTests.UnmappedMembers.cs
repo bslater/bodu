@@ -5,15 +5,16 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test.Assertions;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies how <see cref="TomlSerializer" /> treats a table key that maps to no member: the default
-/// <see cref="TomlUnmappedMemberHandling.Skip" />, the serializer-wide
-/// <see cref="TomlUnmappedMemberHandling.Disallow" /> on <see cref="TomlSerializerOptions" />, and the per-type
-/// <see cref="TomlUnmappedMemberHandlingAttribute" /> that overrides the options-level default.
+/// <see cref="UnmappedMemberHandling.Skip" />, the serializer-wide
+/// <see cref="UnmappedMemberHandling.Disallow" /> on <see cref="TomlSerializerOptions" />, and the per-type
+/// <see cref="UnmappedMemberHandlingAttribute" /> that overrides the options-level default.
 /// </summary>
 public partial class TomlSerializerTests
 {
@@ -31,12 +32,12 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that an unmapped key throws <see cref="TomlSerializationException" /> when the serializer-wide
-    /// handling is <see cref="TomlUnmappedMemberHandling.Disallow" />.
+    /// handling is <see cref="UnmappedMemberHandling.Disallow" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndOptionsDisallow_ShouldThrowTomlSerializationException()
     {
-        var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
+        var options = new TomlSerializerOptions { UnmappedMemberHandling = UnmappedMemberHandling.Disallow };
 
         TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
@@ -48,13 +49,13 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that a document whose every key maps to a member does not throw under
-    /// <see cref="TomlUnmappedMemberHandling.Disallow" />, confirming the policy fires only on genuinely unmapped
+    /// <see cref="UnmappedMemberHandling.Disallow" />, confirming the policy fires only on genuinely unmapped
     /// keys.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenAllKeysMappedAndOptionsDisallow_ShouldNotThrow()
     {
-        var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
+        var options = new TomlSerializerOptions { UnmappedMemberHandling = UnmappedMemberHandling.Disallow };
 
         PlainNameModel model = TomlSerializer.Deserialize<PlainNameModel>("Name = \"n\"\n", options);
 
@@ -62,9 +63,9 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a type annotated with <see cref="TomlUnmappedMemberHandlingAttribute" /> set to
-    /// <see cref="TomlUnmappedMemberHandling.Disallow" /> throws on an unmapped key even when the options leave the
-    /// default <see cref="TomlUnmappedMemberHandling.Skip" />.
+    /// Verifies that a type annotated with <see cref="UnmappedMemberHandlingAttribute" /> set to
+    /// <see cref="UnmappedMemberHandling.Disallow" /> throws on an unmapped key even when the options leave the
+    /// default <see cref="UnmappedMemberHandling.Skip" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenAttributeDisallowsAndOptionsDefault_ShouldThrowTomlSerializationException()
@@ -78,15 +79,15 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a type annotated with <see cref="TomlUnmappedMemberHandlingAttribute" /> set to
-    /// <see cref="TomlUnmappedMemberHandling.Skip" /> skips an unmapped key even when the options set the
-    /// serializer-wide default to <see cref="TomlUnmappedMemberHandling.Disallow" />, so the attribute overrides the
+    /// Verifies that a type annotated with <see cref="UnmappedMemberHandlingAttribute" /> set to
+    /// <see cref="UnmappedMemberHandling.Skip" /> skips an unmapped key even when the options set the
+    /// serializer-wide default to <see cref="UnmappedMemberHandling.Disallow" />, so the attribute overrides the
     /// options.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenAttributeSkipsAndOptionsDisallow_ShouldSkip()
     {
-        var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
+        var options = new TomlSerializerOptions { UnmappedMemberHandling = UnmappedMemberHandling.Disallow };
 
         SkipAttributeModel model = TomlSerializer.Deserialize<SkipAttributeModel>("Name = \"n\"\nunknown = 1\n", options);
 
@@ -100,7 +101,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyDisallowed_ShouldReportKeyAndTypeInMessage()
     {
-        var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
+        var options = new TomlSerializerOptions { UnmappedMemberHandling = UnmappedMemberHandling.Disallow };
 
         TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
@@ -112,16 +113,16 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that constructing <see cref="TomlUnmappedMemberHandlingAttribute" /> with an undefined
-    /// <see cref="TomlUnmappedMemberHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// Verifies that constructing <see cref="UnmappedMemberHandlingAttribute" /> with an undefined
+    /// <see cref="UnmappedMemberHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>unmappedMemberHandling</c>.
     /// </summary>
     [TestMethod]
-    public void TomlUnmappedMemberHandlingAttribute_WhenHandlingUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void UnmappedMemberHandlingAttribute_WhenHandlingUndefined_ShouldThrowArgumentOutOfRangeException()
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            _ = new TomlUnmappedMemberHandlingAttribute((TomlUnmappedMemberHandling)99);
+            _ = new UnmappedMemberHandlingAttribute((UnmappedMemberHandling)99);
         }, "unmappedMemberHandling");
     }
 
@@ -140,7 +141,7 @@ public partial class TomlSerializerTests
     /// <summary>
     /// A model whose type-level attribute disallows unmapped keys.
     /// </summary>
-    [TomlUnmappedMemberHandling(TomlUnmappedMemberHandling.Disallow)]
+    [UnmappedMemberHandling(UnmappedMemberHandling.Disallow)]
     private sealed class DisallowAttributeModel
     {
         /// <summary>
@@ -152,9 +153,9 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// A model whose type-level attribute skips unmapped keys, overriding an options-level
-    /// <see cref="TomlUnmappedMemberHandling.Disallow" />.
+    /// <see cref="UnmappedMemberHandling.Disallow" />.
     /// </summary>
-    [TomlUnmappedMemberHandling(TomlUnmappedMemberHandling.Skip)]
+    [UnmappedMemberHandling(UnmappedMemberHandling.Skip)]
     private sealed class SkipAttributeModel
     {
         /// <summary>

@@ -1,10 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlConstructorAttribute.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConstructorAttribute.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Toml.Serialization;
+namespace Bodu.Text.Serialization;
 
 /// <summary>
 /// Marks the constructor the serializer uses to instantiate a type during deserialization, resolving the ambiguity when
@@ -19,7 +19,7 @@ namespace Bodu.Text.Toml.Serialization;
 ///<![CDATA[
 /// public sealed class Endpoint
 /// {
-///     [TomlConstructor]
+///     [Constructor]
 ///     public Endpoint(string host, int port) => (Host, Port) = (host, port);
 ///
 ///     public Endpoint(Uri uri) : this(uri.Host, uri.Port) { }
@@ -33,7 +33,7 @@ namespace Bodu.Text.Toml.Serialization;
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Constructor, AllowMultiple = false, Inherited = false)]
-public sealed class TomlConstructorAttribute
-    : TomlAttribute
+public sealed class ConstructorAttribute
+    : SerializationAttribute
 {
 }

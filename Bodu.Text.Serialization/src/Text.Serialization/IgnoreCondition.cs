@@ -1,16 +1,16 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlIgnoreCondition.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="IgnoreCondition.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Toml.Serialization;
+namespace Bodu.Text.Serialization;
 
 /// <summary>
 /// Specifies the condition under which a member is excluded from serialization, whether through
-/// <see cref="TomlIgnoreAttribute" /> on the member or through the serializer-wide default ignore condition.
+/// <see cref="IgnoreAttribute" /> on the member or through the serializer-wide default ignore condition.
 /// </summary>
-public enum TomlIgnoreCondition
+public enum IgnoreCondition
 {
     /// <summary>
     /// Property is never ignored.

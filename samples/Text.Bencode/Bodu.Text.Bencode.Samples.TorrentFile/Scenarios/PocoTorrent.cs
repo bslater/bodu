@@ -5,13 +5,14 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Bencode.Serialization;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Bencode.Samples.TorrentFile.Scenarios;
 
 /// <summary>
 /// Demonstrates the typed layer: <c>BencodeSerializer</c> maps the metainfo dictionary straight
 /// onto a POCO graph. Torrent keys contain spaces (<c>creation date</c>, <c>piece length</c>) —
-/// exactly what <c>[BencodePropertyName]</c> exists for — and the binary <c>pieces</c> value
+/// exactly what <c>[PropertyName]</c> exists for — and the binary <c>pieces</c> value
 /// binds to <c>byte[]</c>, not <c>string</c>.
 /// </summary>
 public static class PocoTorrent
@@ -21,19 +22,19 @@ public static class PocoTorrent
     /// </summary>
     private sealed class TorrentMeta
     {
-        [BencodePropertyName("announce")]
+        [PropertyName("announce")]
         public string Announce { get; set; } = string.Empty;
 
-        [BencodePropertyName("comment")]
+        [PropertyName("comment")]
         public string Comment { get; set; } = string.Empty;
 
-        [BencodePropertyName("created by")]
+        [PropertyName("created by")]
         public string CreatedBy { get; set; } = string.Empty;
 
-        [BencodePropertyName("creation date")]
+        [PropertyName("creation date")]
         public long CreationDate { get; set; }
 
-        [BencodePropertyName("info")]
+        [PropertyName("info")]
         public TorrentInfo Info { get; set; } = new();
     }
 
@@ -42,16 +43,16 @@ public static class PocoTorrent
     /// </summary>
     private sealed class TorrentInfo
     {
-        [BencodePropertyName("length")]
+        [PropertyName("length")]
         public long Length { get; set; }
 
-        [BencodePropertyName("name")]
+        [PropertyName("name")]
         public string Name { get; set; } = string.Empty;
 
-        [BencodePropertyName("piece length")]
+        [PropertyName("piece length")]
         public long PieceLength { get; set; }
 
-        [BencodePropertyName("pieces")]
+        [PropertyName("pieces")]
         public byte[] Pieces { get; set; } = [];
     }
 

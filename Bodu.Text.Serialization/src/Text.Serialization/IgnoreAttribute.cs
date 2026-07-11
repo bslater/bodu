@@ -1,13 +1,13 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlIgnoreAttribute.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="IgnoreAttribute.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Toml.Serialization;
+namespace Bodu.Text.Serialization;
 
 /// <summary>
-/// Excludes a property or field from TOML serialization, either unconditionally or under the condition given by
+/// Excludes a property or field from serialization, either unconditionally or under the condition given by
 /// <see cref="Condition" />.
 /// </summary>
 /// <example>
@@ -15,10 +15,10 @@ namespace Bodu.Text.Toml.Serialization;
 ///<![CDATA[
 /// public sealed class Account
 /// {
-///     [TomlIgnore]
+///     [Ignore]
 ///     public string? Secret { get; set; }
 ///
-///     [TomlIgnore(Condition = TomlIgnoreCondition.WhenWritingNull)]
+///     [Ignore(Condition = IgnoreCondition.WhenWritingNull)]
 ///     public string? Comment { get; set; }
 /// }
 ///
@@ -27,12 +27,12 @@ namespace Bodu.Text.Toml.Serialization;
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public sealed class TomlIgnoreAttribute
-    : TomlAttribute
+public sealed class IgnoreAttribute
+    : SerializationAttribute
 {
     /// <summary>
     /// Gets or sets the condition under which the member is ignored.
     /// </summary>
-    /// <value>The ignore condition; <see cref="TomlIgnoreCondition.Always" /> by default.</value>
-    public TomlIgnoreCondition Condition { get; set; } = TomlIgnoreCondition.Always;
+    /// <value>The ignore condition; <see cref="IgnoreCondition.Always" /> by default.</value>
+    public IgnoreCondition Condition { get; set; } = IgnoreCondition.Always;
 }

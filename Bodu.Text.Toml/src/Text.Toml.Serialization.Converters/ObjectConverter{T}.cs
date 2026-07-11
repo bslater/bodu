@@ -74,7 +74,7 @@ internal sealed class ObjectConverter<T>
                 extensionEntries ??= new Dictionary<string, TomlNode?>(StringComparer.Ordinal);
                 extensionEntries[name] = TomlNode.ReadFrom(ref reader);
             }
-            else if ((metadata.UnmappedMemberHandling ?? options.UnmappedMemberHandling) == TomlUnmappedMemberHandling.Disallow)
+            else if ((metadata.UnmappedMemberHandling ?? options.UnmappedMemberHandling) == UnmappedMemberHandling.Disallow)
             {
                 throw new TomlSerializationException(
                     string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_UnmappedMember, name, typeof(T)));
@@ -253,15 +253,15 @@ internal sealed class ObjectConverter<T>
     /// A <see langword="null" /> value is always skipped because TOML cannot represent it. For a non-null value, the
     /// effective condition is the member's <see cref="PropertyMetadata.ConditionalIgnore" /> when set, otherwise
     /// <see cref="TomlSerializerOptions.DefaultIgnoreCondition" />: a value is skipped when the effective condition is
-    /// <see cref="TomlIgnoreCondition.WhenWritingDefault" /> and the value equals the member's default-type value.
+    /// <see cref="IgnoreCondition.WhenWritingDefault" /> and the value equals the member's default-type value.
     /// </remarks>
     private static bool ShouldSkip(PropertyMetadata property, object? value, TomlSerializerOptions options)
     {
         if (value is null)
             return true;
 
-        TomlIgnoreCondition effective = property.ConditionalIgnore ?? options.DefaultIgnoreCondition;
-        return effective == TomlIgnoreCondition.WhenWritingDefault && Equals(value, property.DefaultTypeValue);
+        IgnoreCondition effective = property.ConditionalIgnore ?? options.DefaultIgnoreCondition;
+        return effective == IgnoreCondition.WhenWritingDefault && Equals(value, property.DefaultTypeValue);
     }
 
     /// <summary>
@@ -298,7 +298,7 @@ internal sealed class ObjectConverter<T>
 
     /// <summary>
     /// Assigns the read values to the settable members of a constructed instance, honoring each member's effective
-    /// object-creation handling so that a <see cref="TomlObjectCreationHandling.Populate" /> member merges its read
+    /// object-creation handling so that a <see cref="ObjectCreationHandling.Populate" /> member merges its read
     /// entries into the existing collection or dictionary instead of replacing it.
     /// </summary>
     /// <param name="metadata">The type metadata, used to determine constructor binding and effective handling.</param>
@@ -311,7 +311,7 @@ internal sealed class ObjectConverter<T>
     /// the member's <see cref="PropertyMetadata.CreationHandling" />, then the type's
     /// <see cref="TypeMetadata.CreationHandling" />, then
     /// <see cref="TomlSerializerOptions.PreferredObjectCreationHandling" />;
-    /// <see cref="TomlObjectCreationHandling.Populate" /> is applied only when the member already holds a populatable
+    /// <see cref="ObjectCreationHandling.Populate" /> is applied only when the member already holds a populatable
     /// collection or dictionary, otherwise the value is set through the member's setter.
     /// </remarks>
     private static void AssignSettableMembers(TypeMetadata metadata, Dictionary<PropertyMetadata, object?> values, object instance, TomlSerializerOptions options)
@@ -323,8 +323,8 @@ internal sealed class ObjectConverter<T>
             if (skipConstructorBound && property.ConstructorParameterIndex >= 0)
                 continue;
 
-            TomlObjectCreationHandling handling = property.CreationHandling ?? metadata.CreationHandling ?? options.PreferredObjectCreationHandling;
-            if (handling == TomlObjectCreationHandling.Populate && TryPopulate(property, instance, entry.Value))
+            ObjectCreationHandling handling = property.CreationHandling ?? metadata.CreationHandling ?? options.PreferredObjectCreationHandling;
+            if (handling == ObjectCreationHandling.Populate && TryPopulate(property, instance, entry.Value))
                 continue;
 
             if (property.CanSet)
@@ -335,7 +335,7 @@ internal sealed class ObjectConverter<T>
     /// <summary>
     /// Attempts to merge a freshly read collection or dictionary value into the instance already held by a member,
     /// rather than replacing it. This lets a get-only collection or dictionary property round-trip under
-    /// <see cref="TomlObjectCreationHandling.Populate" />.
+    /// <see cref="ObjectCreationHandling.Populate" />.
     /// </summary>
     /// <param name="property">The member whose existing value is populated.</param>
     /// <param name="instance">The instance that owns the member.</param>

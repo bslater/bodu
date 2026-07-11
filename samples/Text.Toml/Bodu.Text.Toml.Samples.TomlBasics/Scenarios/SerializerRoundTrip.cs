@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml;
 
 namespace Bodu.Text.Toml.Samples.TomlBasics.Scenarios;
@@ -25,7 +26,7 @@ public static class SerializerRoundTrip
         var toml = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Data", "app-config.toml"));
 
         // Deserialize with the snake_case policy so service_name binds to ServiceName.
-        var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.SnakeCaseLower };
+        var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
         AppConfig config = TomlSerializer.Deserialize<AppConfig>(toml, options);
 
         Console.WriteLine($"Service   : {config.ServiceName} (enabled: {config.Enabled}, retries: {config.MaxRetries})");

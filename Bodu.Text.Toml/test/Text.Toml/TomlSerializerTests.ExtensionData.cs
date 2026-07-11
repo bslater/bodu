@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Nodes;
 using Bodu.Text.Toml.Serialization;
 
@@ -11,7 +12,7 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies how <see cref="TomlSerializer" /> captures and re-emits unmatched table entries through a member annotated
-/// with <see cref="TomlExtensionDataAttribute" />: overflow capture on read, write-back in document order after the
+/// with <see cref="ExtensionDataAttribute" />: overflow capture on read, write-back in document order after the
 /// declared members, both the <see cref="TomlObject" /> and <c>IDictionary&lt;string, TomlNode?&gt;</c> target shapes,
 /// the get-only dictionary populated in place, and the rejection of unsupported or duplicate extension-data members.
 /// </summary>
@@ -108,12 +109,12 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that an unmatched key is captured into extension data even when the serializer-wide unmapped-member
-    /// handling is <see cref="TomlUnmappedMemberHandling.Disallow" />, because extension data takes precedence.
+    /// handling is <see cref="UnmappedMemberHandling.Disallow" />, because extension data takes precedence.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenDisallowAndExtensionDataPresent_ShouldCaptureAndNotThrow()
     {
-        var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
+        var options = new TomlSerializerOptions { UnmappedMemberHandling = UnmappedMemberHandling.Disallow };
 
         ObjectExtensionDataModel model = TomlSerializer.Deserialize<ObjectExtensionDataModel>("Name = \"n\"\nunknown = 1\n", options);
 
@@ -179,7 +180,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the extension-data member that captures unmatched keys.
         /// </summary>
         /// <value>The captured entries, or <see langword="null" /> when none were read.</value>
-        [TomlExtensionData]
+        [ExtensionData]
         public TomlObject? Extra { get; set; }
     }
 
@@ -198,7 +199,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the extension-data member that captures unmatched keys.
         /// </summary>
         /// <value>The captured entries, or <see langword="null" /> when none were read.</value>
-        [TomlExtensionData]
+        [ExtensionData]
         public Dictionary<string, TomlNode?>? Extra { get; set; }
     }
 
@@ -217,7 +218,7 @@ public partial class TomlSerializerTests
         /// Gets the get-only extension-data member, populated in place with unmatched keys.
         /// </summary>
         /// <value>The captured entries.</value>
-        [TomlExtensionData]
+        [ExtensionData]
         public IDictionary<string, TomlNode?> Extra { get; } = new Dictionary<string, TomlNode?>(StringComparer.Ordinal);
     }
 
@@ -230,14 +231,14 @@ public partial class TomlSerializerTests
         /// Gets or sets the first extension-data member.
         /// </summary>
         /// <value>The first captured entries.</value>
-        [TomlExtensionData]
+        [ExtensionData]
         public TomlObject? First { get; set; }
 
         /// <summary>
         /// Gets or sets the second extension-data member, which makes the type invalid.
         /// </summary>
         /// <value>The second captured entries.</value>
-        [TomlExtensionData]
+        [ExtensionData]
         public TomlObject? Second { get; set; }
     }
 
@@ -250,7 +251,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the extension-data member declared with an unsupported value type.
         /// </summary>
         /// <value>The captured entries.</value>
-        [TomlExtensionData]
+        [ExtensionData]
         public Dictionary<string, int>? Extra { get; set; }
     }
 }

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
@@ -11,10 +12,10 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Verifies which property members the <see cref="TomlSerializer" /> surfaces and how it binds them: read/write
 /// properties, init-only properties, get-only properties, properties with non-public accessors, and the
-/// <see cref="TomlIncludeAttribute" /> opt-in. It also pins a shape that differs from the most permissive
+/// <see cref="IncludeAttribute" /> opt-in. It also pins a shape that differs from the most permissive
 /// <see cref="System.Text.Json.JsonSerializer" /> configuration: a get-only scalar property is written but cannot be
 /// set on read. Field serialization — opt-in through <see cref="TomlSerializerOptions.IncludeFields" /> or
-/// <see cref="TomlIncludeAttribute" /> — is covered by the <c>Fields</c> partial.
+/// <see cref="IncludeAttribute" /> — is covered by the <c>Fields</c> partial.
 /// </summary>
 public partial class TomlSerializerTests
 {
@@ -88,7 +89,7 @@ public partial class TomlSerializerTests
     /// <summary>
     /// Verifies that a property with a public getter and a private setter that is not opted into serialization is not
     /// assigned on read, so the constructed instance keeps the value its parameterless constructor produced rather
-    /// than the value in the input. This matches the documented <see cref="TomlIncludeAttribute" /> rule that a
+    /// than the value in the input. This matches the documented <see cref="IncludeAttribute" /> rule that a
     /// non-public setter binds only when opted in.
     /// </summary>
     [TestMethod]
@@ -101,7 +102,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that a property with a public getter and a private setter annotated with
-    /// <see cref="TomlIncludeAttribute" /> is both written and assigned on read, binding through the non-public
+    /// <see cref="IncludeAttribute" /> is both written and assigned on read, binding through the non-public
     /// setter.
     /// </summary>
     [TestMethod]
@@ -197,7 +198,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// A model whose private-setter property is opted into serialization through <see cref="TomlIncludeAttribute" />.
+    /// A model whose private-setter property is opted into serialization through <see cref="IncludeAttribute" />.
     /// </summary>
     private sealed class IncludedPrivateSetterModel
     {
@@ -219,10 +220,10 @@ public partial class TomlSerializerTests
 
         /// <summary>
         /// Gets the integer value, opted into serialization through its private setter by
-        /// <see cref="TomlIncludeAttribute" />.
+        /// <see cref="IncludeAttribute" />.
         /// </summary>
         /// <value>The value.</value>
-        [TomlInclude]
+        [Include]
         public int Value { get; private set; }
     }
 }

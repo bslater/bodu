@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Globalization;
 using System.Reflection;
 using Bodu.Text.Toml.Reader;
@@ -13,7 +14,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
 /// Converts an enumeration value to and from a TOML string holding its member name, honoring a naming policy and any
-/// per-member <see cref="TomlStringEnumMemberNameAttribute" />, and optionally accepting an integer on read.
+/// per-member <see cref="StringEnumMemberNameAttribute" />, and optionally accepting an integer on read.
 /// </summary>
 /// <typeparam name="T">The enumeration type.</typeparam>
 /// <remarks>
@@ -30,7 +31,7 @@ internal sealed class EnumConverter<T>
     where T : struct, Enum
 {
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
-    private readonly TomlNamingPolicy? _namingPolicy;
+    private readonly NamingPolicy? _namingPolicy;
 
     /// <summary>Whether a TOML integer is accepted as an enumeration value on read.</summary>
     private readonly bool _allowIntegerValues;
@@ -51,16 +52,16 @@ internal sealed class EnumConverter<T>
     /// <remarks>
     /// The name maps are built once at construction by reflecting over the public, static fields of
     /// <typeparamref name="T" />, resolving each member's wire name from its
-    /// <see cref="TomlStringEnumMemberNameAttribute" />, then the naming policy, and finally the CLR field name.
+    /// <see cref="StringEnumMemberNameAttribute" />, then the naming policy, and finally the CLR field name.
     /// </remarks>
-    public EnumConverter(TomlNamingPolicy? namingPolicy, bool allowIntegerValues)
+    public EnumConverter(NamingPolicy? namingPolicy, bool allowIntegerValues)
     {
         _namingPolicy = namingPolicy;
         _allowIntegerValues = allowIntegerValues;
 
         foreach (FieldInfo field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static))
         {
-            string name = field.GetCustomAttribute<TomlStringEnumMemberNameAttribute>()?.Name
+            string name = field.GetCustomAttribute<StringEnumMemberNameAttribute>()?.Name
                 ?? namingPolicy?.ConvertName(field.Name)
                 ?? field.Name;
             var value = (T)field.GetValue(null)!;

@@ -6,20 +6,21 @@
 
 using Bodu.Test.Assertions;
 using Bodu.Test.Kat;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies the property-naming-policy surface of <see cref="TomlSerializer" />: the built-in
-/// <see cref="TomlNamingPolicy" /> singletons (camel case and the lower/upper snake- and kebab-case separator
+/// <see cref="NamingPolicy" /> singletons (camel case and the lower/upper snake- and kebab-case separator
 /// policies), how an options-level policy is applied to table keys and reversed on read, and how the per-type
-/// <see cref="TomlNamingPolicyAttribute" /> overrides the options-level policy.
+/// <see cref="NamingPolicyAttribute" /> overrides the options-level policy.
 /// </summary>
 public partial class TomlSerializerTests
 {
     /// <summary>
-    /// Verifies that each built-in <see cref="TomlNamingPolicy" /> rewrites a multi-word Pascal-case member name to its
+    /// Verifies that each built-in <see cref="NamingPolicy" /> rewrites a multi-word Pascal-case member name to its
     /// expected separator-cased table key when applied through
     /// <see cref="TomlSerializerOptions.PropertyNamingPolicy" />.
     /// </summary>
@@ -27,7 +28,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(nameof(NamingPolicyCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Serialize_WhenNamingPolicyApplied_ShouldRewriteKeyToExpectedForm(ValidKat<TomlNamingPolicy, string> kat)
+    public void Serialize_WhenNamingPolicyApplied_ShouldRewriteKeyToExpectedForm(ValidKat<NamingPolicy, string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
 
@@ -45,7 +46,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(nameof(NamingPolicyCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void SerializeDeserialize_WhenNamingPolicyApplied_ShouldRoundTrip(ValidKat<TomlNamingPolicy, string> kat)
+    public void SerializeDeserialize_WhenNamingPolicyApplied_ShouldRoundTrip(ValidKat<NamingPolicy, string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
 
@@ -57,14 +58,14 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlNamingPolicy.ConvertName(string)" /> rewrites a representative name to the expected
+    /// Verifies that <see cref="NamingPolicy.ConvertName(string)" /> rewrites a representative name to the expected
     /// form for each built-in policy, exercising the policy contract independently of the serializer.
     /// </summary>
     /// <param name="kat">The naming-policy scenario carrying the policy and the expected key for the name <c>FirstName</c>.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(nameof(NamingPolicyCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void ConvertName_WhenBuiltInPolicy_ShouldProduceExpectedForm(ValidKat<TomlNamingPolicy, string> kat)
+    public void ConvertName_WhenBuiltInPolicy_ShouldProduceExpectedForm(ValidKat<NamingPolicy, string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
 
@@ -78,11 +79,11 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void ConvertName_WhenSingleWord_ShouldHandleWordBoundaryConsistently()
     {
-        Assert.AreEqual("name", TomlNamingPolicy.CamelCase.ConvertName("Name"));
-        Assert.AreEqual("name", TomlNamingPolicy.SnakeCaseLower.ConvertName("Name"));
-        Assert.AreEqual("NAME", TomlNamingPolicy.SnakeCaseUpper.ConvertName("Name"));
-        Assert.AreEqual("name", TomlNamingPolicy.KebabCaseLower.ConvertName("Name"));
-        Assert.AreEqual("NAME", TomlNamingPolicy.KebabCaseUpper.ConvertName("Name"));
+        Assert.AreEqual("name", NamingPolicy.CamelCase.ConvertName("Name"));
+        Assert.AreEqual("name", NamingPolicy.SnakeCaseLower.ConvertName("Name"));
+        Assert.AreEqual("NAME", NamingPolicy.SnakeCaseUpper.ConvertName("Name"));
+        Assert.AreEqual("name", NamingPolicy.KebabCaseLower.ConvertName("Name"));
+        Assert.AreEqual("NAME", NamingPolicy.KebabCaseUpper.ConvertName("Name"));
     }
 
     /// <summary>
@@ -92,20 +93,20 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void ConvertName_WhenEmptyString_ShouldReturnEmptyString()
     {
-        Assert.AreEqual(string.Empty, TomlNamingPolicy.CamelCase.ConvertName(string.Empty));
-        Assert.AreEqual(string.Empty, TomlNamingPolicy.SnakeCaseLower.ConvertName(string.Empty));
-        Assert.AreEqual(string.Empty, TomlNamingPolicy.KebabCaseUpper.ConvertName(string.Empty));
+        Assert.AreEqual(string.Empty, NamingPolicy.CamelCase.ConvertName(string.Empty));
+        Assert.AreEqual(string.Empty, NamingPolicy.SnakeCaseLower.ConvertName(string.Empty));
+        Assert.AreEqual(string.Empty, NamingPolicy.KebabCaseUpper.ConvertName(string.Empty));
     }
 
     /// <summary>
-    /// Verifies that a per-type <see cref="TomlNamingPolicyAttribute" /> overrides the options-level naming policy, so
+    /// Verifies that a per-type <see cref="NamingPolicyAttribute" /> overrides the options-level naming policy, so
     /// the type's members are emitted under the type's policy rather than the conflicting options policy.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenTypePolicyConflictsWithOptionsPolicy_ShouldPreferTypePolicy()
     {
         // The options select kebab-lower, but the type selects snake-lower; the type policy must win.
-        var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.KebabCaseLower };
+        var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.KebabCaseLower };
 
         string text = TomlSerializer.Serialize(new SnakeTypeModel { FirstName = "x" }, options);
 
@@ -113,13 +114,13 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a type annotated with <see cref="TomlKnownNamingPolicy.Unspecified" /> applies no policy of its
+    /// Verifies that a type annotated with <see cref="KnownNamingPolicy.Unspecified" /> applies no policy of its
     /// own, so the options-level policy still governs the member keys.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenTypePolicyUnspecified_ShouldFallBackToOptionsPolicy()
     {
-        var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
+        var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
 
         string text = TomlSerializer.Serialize(new UnspecifiedTypeModel { FirstName = "x" }, options);
 
@@ -127,31 +128,31 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that constructing <see cref="TomlNamingPolicyAttribute" /> with an undefined
-    /// <see cref="TomlKnownNamingPolicy" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// Verifies that constructing <see cref="NamingPolicyAttribute" /> with an undefined
+    /// <see cref="KnownNamingPolicy" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>namingPolicy</c>.
     /// </summary>
     [TestMethod]
-    public void TomlNamingPolicyAttribute_WhenKnownPolicyUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void NamingPolicyAttribute_WhenKnownPolicyUndefined_ShouldThrowArgumentOutOfRangeException()
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            _ = new TomlNamingPolicyAttribute((TomlKnownNamingPolicy)99);
+            _ = new NamingPolicyAttribute((KnownNamingPolicy)99);
         }, "namingPolicy");
     }
 
     /// <summary>
-    /// Gets the built-in naming-policy scenarios, each carrying a <see cref="TomlNamingPolicy" /> and the table key the
+    /// Gets the built-in naming-policy scenarios, each carrying a <see cref="NamingPolicy" /> and the table key the
     /// Pascal-case member name <c>FirstName</c> rewrites to under that policy.
     /// </summary>
     /// <returns>The naming-policy rows.</returns>
     public static IEnumerable<object[]> NamingPolicyCases()
     {
-        yield return [new ValidKat<TomlNamingPolicy, string>("CamelCase", TomlNamingPolicy.CamelCase, "firstName")];
-        yield return [new ValidKat<TomlNamingPolicy, string>("SnakeCaseLower", TomlNamingPolicy.SnakeCaseLower, "first_name")];
-        yield return [new ValidKat<TomlNamingPolicy, string>("SnakeCaseUpper", TomlNamingPolicy.SnakeCaseUpper, "FIRST_NAME")];
-        yield return [new ValidKat<TomlNamingPolicy, string>("KebabCaseLower", TomlNamingPolicy.KebabCaseLower, "first-name")];
-        yield return [new ValidKat<TomlNamingPolicy, string>("KebabCaseUpper", TomlNamingPolicy.KebabCaseUpper, "FIRST-NAME")];
+        yield return [new ValidKat<NamingPolicy, string>("CamelCase", NamingPolicy.CamelCase, "firstName")];
+        yield return [new ValidKat<NamingPolicy, string>("SnakeCaseLower", NamingPolicy.SnakeCaseLower, "first_name")];
+        yield return [new ValidKat<NamingPolicy, string>("SnakeCaseUpper", NamingPolicy.SnakeCaseUpper, "FIRST_NAME")];
+        yield return [new ValidKat<NamingPolicy, string>("KebabCaseLower", NamingPolicy.KebabCaseLower, "first-name")];
+        yield return [new ValidKat<NamingPolicy, string>("KebabCaseUpper", NamingPolicy.KebabCaseUpper, "FIRST-NAME")];
     }
 
     /// <summary>
@@ -167,9 +168,9 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// A model that selects lower snake-case naming for its members through <see cref="TomlNamingPolicyAttribute" />.
+    /// A model that selects lower snake-case naming for its members through <see cref="NamingPolicyAttribute" />.
     /// </summary>
-    [TomlNamingPolicy(TomlKnownNamingPolicy.SnakeCaseLower)]
+    [NamingPolicy(KnownNamingPolicy.SnakeCaseLower)]
     private sealed class SnakeTypeModel
     {
         /// <summary>
@@ -180,10 +181,10 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// A model whose <see cref="TomlNamingPolicyAttribute" /> specifies
-    /// <see cref="TomlKnownNamingPolicy.Unspecified" />, applying no type-level policy of its own.
+    /// A model whose <see cref="NamingPolicyAttribute" /> specifies
+    /// <see cref="KnownNamingPolicy.Unspecified" />, applying no type-level policy of its own.
     /// </summary>
-    [TomlNamingPolicy(TomlKnownNamingPolicy.Unspecified)]
+    [NamingPolicy(KnownNamingPolicy.Unspecified)]
     private sealed class UnspecifiedTypeModel
     {
         /// <summary>

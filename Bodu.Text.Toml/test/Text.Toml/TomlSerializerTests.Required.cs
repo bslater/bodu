@@ -4,13 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies how <see cref="TomlSerializer" /> enforces required members on read: the C# <see langword="required" />
-/// keyword, the <see cref="TomlRequiredAttribute" />, and the implicit requirement created by a constructor parameter
+/// keyword, the <see cref="RequiredAttribute" />, and the implicit requirement created by a constructor parameter
 /// without a default. A missing required member fails deserialization; a present one round-trips.
 /// </summary>
 public partial class TomlSerializerTests
@@ -43,7 +44,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a member annotated with <see cref="TomlRequiredAttribute" /> round-trips when its key is present
+    /// Verifies that a member annotated with <see cref="RequiredAttribute" /> round-trips when its key is present
     /// in the input.
     /// </summary>
     [TestMethod]
@@ -55,7 +56,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a member annotated with <see cref="TomlRequiredAttribute" /> causes deserialization to throw
+    /// Verifies that a member annotated with <see cref="RequiredAttribute" /> causes deserialization to throw
     /// <see cref="TomlSerializationException" /> when its key is absent from the input.
     /// </summary>
     [TestMethod]
@@ -162,7 +163,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// A type whose member is marked required through <see cref="TomlRequiredAttribute" /> and renamed on the wire.
+    /// A type whose member is marked required through <see cref="RequiredAttribute" /> and renamed on the wire.
     /// </summary>
     private sealed class RequiredAttributeModel
     {
@@ -170,8 +171,8 @@ public partial class TomlSerializerTests
         /// Gets or sets the identifier, required and written under the wire name <c>id</c>.
         /// </summary>
         /// <value>The identifier.</value>
-        [TomlRequired]
-        [TomlPropertyName("id")]
+        [Required]
+        [PropertyName("id")]
         public int Id { get; set; }
     }
 

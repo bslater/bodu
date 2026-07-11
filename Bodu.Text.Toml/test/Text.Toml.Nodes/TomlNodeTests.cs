@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text;
 using Bodu.Text.Toml.Serialization;
 
@@ -465,7 +466,7 @@ public partial class TomlNodeTests
 
     /// <summary>
     /// Verifies that deserializing a table with keys that match no normal member captures them into a
-    /// <see cref="TomlObject" /> member annotated with <see cref="TomlExtensionDataAttribute" />, and that the captured
+    /// <see cref="TomlObject" /> member annotated with <see cref="ExtensionDataAttribute" />, and that the captured
     /// entries write back out alongside the type's normal members.
     /// </summary>
     [TestMethod]
@@ -493,7 +494,7 @@ public partial class TomlNodeTests
     }
 
     /// <summary>
-    /// A model with a normal member and a <see cref="TomlExtensionDataAttribute" /> member typed as the
+    /// A model with a normal member and a <see cref="ExtensionDataAttribute" /> member typed as the
     /// <see cref="TomlObject" /> document object model node, which captures unmatched table entries.
     /// </summary>
     private sealed class ExtensionDataModel
@@ -504,7 +505,7 @@ public partial class TomlNodeTests
 
         /// <summary>Gets or sets the captured entries that match no other member.</summary>
         /// <value>The captured entries.</value>
-        [TomlExtensionData]
+        [ExtensionData]
         public TomlObject? Extra { get; set; }
     }
 }

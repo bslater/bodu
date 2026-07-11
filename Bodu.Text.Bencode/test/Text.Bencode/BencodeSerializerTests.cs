@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Reflection;
 using System.Text;
 using Bodu.Test.Kat;
@@ -79,7 +80,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodePropertyNameAttribute" /> overrides the dictionary key used on the wire.
+    /// Verifies that <see cref="PropertyNameAttribute" /> overrides the dictionary key used on the wire.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenPropertyNameAttributePresent_ShouldUseOverriddenKey()
@@ -95,7 +96,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a member annotated with <see cref="BencodeIgnoreAttribute" /> is omitted from the output.
+    /// Verifies that a member annotated with <see cref="IgnoreAttribute" /> is omitted from the output.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenMemberIgnored_ShouldOmitMember()
@@ -113,7 +114,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Serialize_WhenCamelCaseNamingPolicy_ShouldLowerCaseKeys()
     {
-        var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.CamelCase };
+        var options = new BencodeSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
         var model = new OutOfOrderModel { Zebra = "z", Apple = "a", Mango = "m" };
 
         byte[] bytes = BencodeSerializer.Serialize(model, options);
@@ -267,7 +268,7 @@ public partial class BencodeSerializerTests
         /// Gets or sets the identifier, written under the wire name <c>id</c>.
         /// </summary>
         /// <value>The identifier.</value>
-        [BencodePropertyName("id")]
+        [PropertyName("id")]
         public int Identifier { get; set; }
     }
 
@@ -286,7 +287,7 @@ public partial class BencodeSerializerTests
         /// Gets or sets the member excluded from the output.
         /// </summary>
         /// <value>The excluded value.</value>
-        [BencodeIgnore]
+        [Bodu.Text.Serialization.Ignore]
         public string Skipped { get; set; } = string.Empty;
     }
 

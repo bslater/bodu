@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -35,10 +36,10 @@ namespace Bodu.Text.Toml;
 /// // Configure once and reuse across calls; resolved converters are cached on the instance.
 /// var options = new TomlSerializerOptions
 /// {
-///     PropertyNamingPolicy = TomlNamingPolicy.SnakeCaseLower,
-///     DefaultIgnoreCondition = TomlIgnoreCondition.WhenWritingDefault,
+///     PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+///     DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault,
 /// };
-/// options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+/// options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));
 ///
 /// string text = TomlSerializer.Serialize(config, options);
 ///]]>
@@ -62,7 +63,7 @@ public sealed partial class TomlSerializerOptions
     private TomlConverter[]? _frozenConverters;
 
     /// <summary>The configured property naming policy.</summary>
-    private TomlNamingPolicy? _namingPolicy;
+    private NamingPolicy? _namingPolicy;
 
     /// <summary>Whether property-name matching ignores case when reading. Case-sensitive by default for general options, matching <see cref="System.Text.Json.JsonSerializer" /> and TOML's case-sensitive keys; the <see cref="TomlSerializerDefaults.Web" /> preset enables case-insensitive matching.</summary>
     private bool _caseInsensitive;
@@ -71,13 +72,13 @@ public sealed partial class TomlSerializerOptions
     private bool _includeFields;
 
     /// <summary>The serializer-wide default condition under which a member is omitted on write.</summary>
-    private TomlIgnoreCondition _defaultIgnoreCondition = TomlIgnoreCondition.Never;
+    private IgnoreCondition _defaultIgnoreCondition = IgnoreCondition.Never;
 
     /// <summary>The serializer-wide handling for a dictionary key that maps to no member when reading.</summary>
-    private TomlUnmappedMemberHandling _unmappedMemberHandling = TomlUnmappedMemberHandling.Skip;
+    private UnmappedMemberHandling _unmappedMemberHandling = UnmappedMemberHandling.Skip;
 
     /// <summary>The serializer-wide preference for replacing or populating a member's value when reading.</summary>
-    private TomlObjectCreationHandling _preferredObjectCreationHandling = TomlObjectCreationHandling.Replace;
+    private ObjectCreationHandling _preferredObjectCreationHandling = ObjectCreationHandling.Replace;
 
     /// <summary>The maximum nesting depth.</summary>
     private int _maxDepth = DefaultMaxDepth;
@@ -120,7 +121,7 @@ public sealed partial class TomlSerializerOptions
 
         if (defaults == TomlSerializerDefaults.Web)
         {
-            _namingPolicy = TomlNamingPolicy.CamelCase;
+            _namingPolicy = NamingPolicy.CamelCase;
             _caseInsensitive = true;
         }
     }
@@ -136,7 +137,7 @@ public sealed partial class TomlSerializerOptions
     /// </summary>
     /// <value>The naming policy, or <see langword="null" /> to use member names unchanged.</value>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    public TomlNamingPolicy? PropertyNamingPolicy
+    public NamingPolicy? PropertyNamingPolicy
     {
         get => _namingPolicy;
         set
@@ -173,7 +174,7 @@ public sealed partial class TomlSerializerOptions
     /// default is <see langword="false" />.
     /// </value>
     /// <remarks>
-    /// A public field annotated with <see cref="Serialization.TomlIncludeAttribute" /> participates regardless of this
+    /// A public field annotated with <see cref="IncludeAttribute" /> participates regardless of this
     /// setting. Fields honor the property naming policy, name and order attributes, ignore conditions, and
     /// required-member enforcement exactly like properties; a <see langword="readonly" /> field is written but never
     /// assigned on read.
@@ -191,27 +192,27 @@ public sealed partial class TomlSerializerOptions
 
     /// <summary>
     /// Gets or sets the default condition that determines when a member is omitted on write, applied to every member
-    /// that does not carry its own <see cref="Serialization.TomlIgnoreAttribute" />.
+    /// that does not carry its own <see cref="IgnoreAttribute" />.
     /// </summary>
-    /// <value>The default ignore condition; <see cref="TomlIgnoreCondition.Never" /> by default.</value>
+    /// <value>The default ignore condition; <see cref="IgnoreCondition.Never" /> by default.</value>
     /// <remarks>
     /// Because TOML has no null token, a member whose value is <see langword="null" /> is omitted from the output
-    /// regardless of this setting, so <see cref="TomlIgnoreCondition.Never" /> behaves like
-    /// <see cref="TomlIgnoreCondition.WhenWritingNull" /> for null values specifically.
+    /// regardless of this setting, so <see cref="IgnoreCondition.Never" /> behaves like
+    /// <see cref="IgnoreCondition.WhenWritingNull" /> for null values specifically.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when the value is undefined, or when it is <see cref="TomlIgnoreCondition.Always" />, which is not a
+    /// Thrown when the value is undefined, or when it is <see cref="IgnoreCondition.Always" />, which is not a
     /// valid default.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    public TomlIgnoreCondition DefaultIgnoreCondition
+    public IgnoreCondition DefaultIgnoreCondition
     {
         get => _defaultIgnoreCondition;
         set
         {
             VerifyMutable();
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
-            if (value == TomlIgnoreCondition.Always)
+            if (value == IgnoreCondition.Always)
                 throw new ArgumentOutOfRangeException(nameof(value), TomlResourceStrings.Arg_OutOfRange_DefaultIgnoreConditionAlways);
 
             _defaultIgnoreCondition = value;
@@ -221,17 +222,17 @@ public sealed partial class TomlSerializerOptions
     /// <summary>
     /// Gets or sets the serializer-wide handling for a dictionary key that maps to no member of the target type when
     /// reading, applied to every type that does not carry its own
-    /// <see cref="Serialization.TomlUnmappedMemberHandlingAttribute" />.
+    /// <see cref="UnmappedMemberHandlingAttribute" />.
     /// </summary>
-    /// <value>The unmapped-member handling; <see cref="TomlUnmappedMemberHandling.Skip" /> by default.</value>
+    /// <value>The unmapped-member handling; <see cref="UnmappedMemberHandling.Skip" /> by default.</value>
     /// <remarks>
     /// A type that declares an extension-data member captures unmapped keys into that member, which takes precedence
     /// over this setting, so a key absorbed by extension data never triggers
-    /// <see cref="TomlUnmappedMemberHandling.Disallow" />.
+    /// <see cref="UnmappedMemberHandling.Disallow" />.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is undefined.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    public TomlUnmappedMemberHandling UnmappedMemberHandling
+    public UnmappedMemberHandling UnmappedMemberHandling
     {
         get => _unmappedMemberHandling;
         set
@@ -246,18 +247,18 @@ public sealed partial class TomlSerializerOptions
     /// <summary>
     /// Gets or sets the serializer-wide preference for whether a member's value is replaced with a freshly created
     /// instance or populated when reading, applied to every type and member that does not carry its own
-    /// <see cref="Serialization.TomlObjectCreationHandlingAttribute" />.
+    /// <see cref="ObjectCreationHandlingAttribute" />.
     /// </summary>
     /// <value>
-    /// The preferred object-creation handling; <see cref="TomlObjectCreationHandling.Replace" /> by default.
+    /// The preferred object-creation handling; <see cref="ObjectCreationHandling.Replace" /> by default.
     /// </value>
     /// <remarks>
-    /// <see cref="TomlObjectCreationHandling.Populate" /> applies only to collection and dictionary members whose
+    /// <see cref="ObjectCreationHandling.Populate" /> applies only to collection and dictionary members whose
     /// existing value is non-<see langword="null" />; in every other case the serializer replaces the value.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is undefined.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    public TomlObjectCreationHandling PreferredObjectCreationHandling
+    public ObjectCreationHandling PreferredObjectCreationHandling
     {
         get => _preferredObjectCreationHandling;
         set
@@ -474,7 +475,7 @@ public sealed partial class TomlSerializerOptions
     /// <exception cref="NotSupportedException">Thrown when no converter handles the type.</exception>
     private TomlConverter ResolveConverter(Type type)
     {
-        TomlConverterAttribute? attribute = type.GetCustomAttribute<TomlConverterAttribute>(inherit: false);
+        ConverterAttribute? attribute = type.GetCustomAttribute<ConverterAttribute>(inherit: false);
         if (attribute is not null)
             return InstantiateConverter(attribute.ConverterType, type);
 

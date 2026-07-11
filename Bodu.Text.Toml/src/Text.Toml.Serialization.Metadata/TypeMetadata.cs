@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Reflection;
 
 namespace Bodu.Text.Toml.Serialization.Metadata;
@@ -87,18 +88,18 @@ internal sealed class TypeMetadata
 
     /// <summary>
     /// Gets the type-level handling for a dictionary key that maps to no member, sourced from a
-    /// <see cref="TomlUnmappedMemberHandlingAttribute" /> on the type, or <see langword="null" /> when the type
+    /// <see cref="UnmappedMemberHandlingAttribute" /> on the type, or <see langword="null" /> when the type
     /// declares none.
     /// </summary>
     /// <value>The type-level unmapped-member handling, or <see langword="null" />.</value>
-    internal TomlUnmappedMemberHandling? UnmappedMemberHandling { get; init; }
+    internal UnmappedMemberHandling? UnmappedMemberHandling { get; init; }
 
     /// <summary>
-    /// Gets the type-level object-creation handling, sourced from a <see cref="TomlObjectCreationHandlingAttribute" />
+    /// Gets the type-level object-creation handling, sourced from a <see cref="ObjectCreationHandlingAttribute" />
     /// on the type, or <see langword="null" /> when the type declares none.
     /// </summary>
     /// <value>The type-level object-creation handling, or <see langword="null" />.</value>
-    internal TomlObjectCreationHandling? CreationHandling { get; init; }
+    internal ObjectCreationHandling? CreationHandling { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the type is constructed through a parameterized constructor.

@@ -1,10 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CamelCaseNamingPolicy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Bencode;
+namespace Bodu.Text.Serialization;
 
 /// <summary>
 /// A naming policy that converts a member name to <c>camelCase</c> by lowercasing its first character.
@@ -14,7 +14,7 @@ namespace Bodu.Text.Bencode;
 /// already-lowercase leading characters.
 /// </remarks>
 internal sealed class CamelCaseNamingPolicy
-    : BencodeNamingPolicy
+    : NamingPolicy
 {
     /// <inheritdoc />
     public override string ConvertName(string name)

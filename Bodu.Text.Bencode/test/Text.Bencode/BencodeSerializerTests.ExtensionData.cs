@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text;
 using Bodu.Text.Bencode.Nodes;
 using Bodu.Text.Bencode.Serialization;
@@ -12,7 +13,7 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Verifies how <see cref="BencodeSerializer" /> captures and re-emits unmatched dictionary entries through a member
-/// annotated with <see cref="BencodeExtensionDataAttribute" />: overflow capture on read, write-back into canonical key
+/// annotated with <see cref="ExtensionDataAttribute" />: overflow capture on read, write-back into canonical key
 /// order, both the <see cref="BencodeObject" /> and <c>IDictionary&lt;string, BencodeNode?&gt;</c> target shapes, the
 /// get-only dictionary populated in place, and the rejection of unsupported or duplicate extension-data members.
 /// </summary>
@@ -119,12 +120,12 @@ public partial class BencodeSerializerTests
 
     /// <summary>
     /// Verifies that an unmatched key is captured into extension data even when the serializer-wide unmapped-member
-    /// handling is <see cref="BencodeUnmappedMemberHandling.Disallow" />, because extension data takes precedence.
+    /// handling is <see cref="UnmappedMemberHandling.Disallow" />, because extension data takes precedence.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenDisallowAndExtensionDataPresent_ShouldCaptureAndNotThrow()
     {
-        var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
+        var options = new BencodeSerializerOptions { UnmappedMemberHandling = UnmappedMemberHandling.Disallow };
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:n7:unknowni1ee");
 
         ObjectExtensionDataModel model = BencodeSerializer.Deserialize<ObjectExtensionDataModel>(bytes, options);
@@ -194,7 +195,7 @@ public partial class BencodeSerializerTests
         /// Gets or sets the extension-data member that captures unmatched keys.
         /// </summary>
         /// <value>The captured entries, or <see langword="null" /> when none were read.</value>
-        [BencodeExtensionData]
+        [ExtensionData]
         public BencodeObject? Extra { get; set; }
     }
 
@@ -213,7 +214,7 @@ public partial class BencodeSerializerTests
         /// Gets or sets the extension-data member that captures unmatched keys.
         /// </summary>
         /// <value>The captured entries, or <see langword="null" /> when none were read.</value>
-        [BencodeExtensionData]
+        [ExtensionData]
         public IDictionary<string, BencodeNode?>? Extra { get; set; }
     }
 
@@ -232,7 +233,7 @@ public partial class BencodeSerializerTests
         /// Gets the get-only extension-data member, populated in place with unmatched keys.
         /// </summary>
         /// <value>The captured entries.</value>
-        [BencodeExtensionData]
+        [ExtensionData]
         public IDictionary<string, BencodeNode?> Extra { get; } = new Dictionary<string, BencodeNode?>(StringComparer.Ordinal);
     }
 
@@ -245,14 +246,14 @@ public partial class BencodeSerializerTests
         /// Gets or sets the first extension-data member.
         /// </summary>
         /// <value>The first captured entries.</value>
-        [BencodeExtensionData]
+        [ExtensionData]
         public BencodeObject? First { get; set; }
 
         /// <summary>
         /// Gets or sets the second extension-data member, which makes the type invalid.
         /// </summary>
         /// <value>The second captured entries.</value>
-        [BencodeExtensionData]
+        [ExtensionData]
         public BencodeObject? Second { get; set; }
     }
 
@@ -265,7 +266,7 @@ public partial class BencodeSerializerTests
         /// Gets or sets the extension-data member declared with an unsupported value type.
         /// </summary>
         /// <value>The captured entries.</value>
-        [BencodeExtensionData]
+        [ExtensionData]
         public Dictionary<string, int>? Extra { get; set; }
     }
 }

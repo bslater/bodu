@@ -1,15 +1,15 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TomlObjectCreationHandlingAttribute.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ObjectCreationHandlingAttribute.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Toml.Serialization;
+namespace Bodu.Text.Serialization;
 
 /// <summary>
 /// Specifies, for the annotated type or member, whether the serializer replaces the value with a freshly created
-/// instance or populates the value already held during deserialization, overriding the serializer-wide
-/// <see cref="TomlSerializerOptions.PreferredObjectCreationHandling" />.
+/// instance or populates the value already held during deserialization, overriding the serializer-wide preferred
+/// object-creation handling.
 /// </summary>
 /// <remarks>
 /// When applied to a member the attribute governs that member alone; when applied to a type it governs every member of
@@ -21,7 +21,7 @@ namespace Bodu.Text.Toml.Serialization;
 ///<![CDATA[
 /// public sealed class Pipeline
 /// {
-///     [TomlObjectCreationHandling(TomlObjectCreationHandling.Populate)]
+///     [ObjectCreationHandling(ObjectCreationHandling.Populate)]
 ///     public List<string> Steps { get; } = new() { "restore" };
 /// }
 ///
@@ -30,17 +30,17 @@ namespace Bodu.Text.Toml.Serialization;
 /// </code>
 /// </example>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface | AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-public sealed class TomlObjectCreationHandlingAttribute
-    : TomlAttribute
+public sealed class ObjectCreationHandlingAttribute
+    : SerializationAttribute
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TomlObjectCreationHandlingAttribute" /> class.
+    /// Initializes a new instance of the <see cref="ObjectCreationHandlingAttribute" /> class.
     /// </summary>
     /// <param name="handling">The object-creation handling applied to the annotated type or member.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="handling" /> is not a defined <see cref="TomlObjectCreationHandling" /> value.
+    /// Thrown when <paramref name="handling" /> is not a defined <see cref="ObjectCreationHandling" /> value.
     /// </exception>
-    public TomlObjectCreationHandlingAttribute(TomlObjectCreationHandling handling)
+    public ObjectCreationHandlingAttribute(ObjectCreationHandling handling)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(handling);
 
@@ -51,5 +51,5 @@ public sealed class TomlObjectCreationHandlingAttribute
     /// Gets the object-creation handling applied to the annotated type or member.
     /// </summary>
     /// <value>The object-creation handling.</value>
-    public TomlObjectCreationHandling Handling { get; }
+    public ObjectCreationHandling Handling { get; }
 }

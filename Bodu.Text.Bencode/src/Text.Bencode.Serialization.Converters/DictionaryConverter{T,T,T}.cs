@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Globalization;
 using Bodu.Text.Bencode.Reader;
 using Bodu.Text.Bencode.Writer;
@@ -26,7 +27,7 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// <see cref="Enum.ToString()" /> (decimal or comma-separated fallback for undefined or combined values, matched
 /// case-insensitively on read), <see cref="Guid" /> uses the hyphenated "D" format, <see cref="bool" /> uses
 /// <c>True</c>/<c>False</c>, and <see cref="char" /> uses a single-character string. Key stringification ignores naming
-/// policies and <see cref="BencodeStringEnumMemberNameAttribute" />; dictionary keys are treated independently of value
+/// policies and <see cref="StringEnumMemberNameAttribute" />; dictionary keys are treated independently of value
 /// converters. The writer's canonical ordering applies to the stringified keys, so entries are emitted in ascending
 /// bytewise order of their text form. A key that cannot be parsed back surfaces as a
 /// <see cref="BencodeSerializationException" />.

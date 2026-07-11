@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text;
 using Bodu.Text.Bencode.Serialization;
 
@@ -11,7 +12,7 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Verifies how <see cref="BencodeSerializer" /> selects and invokes a constructor when deserializing: parameterless
-/// versus parameterized construction, positional records, the <see cref="BencodeConstructorAttribute" /> override,
+/// versus parameterized construction, positional records, the <see cref="ConstructorAttribute" /> override,
 /// greatest-arity selection, and how constructor parameters match the read members by name, naming policy, and case.
 /// </summary>
 public partial class BencodeSerializerTests
@@ -47,7 +48,7 @@ public partial class BencodeSerializerTests
 
     /// <summary>
     /// Verifies that a constructor parameter binds to the member it maps to even when that member carries a
-    /// <see cref="BencodePropertyNameAttribute" />, so the value read under the wire key flows to the constructor.
+    /// <see cref="PropertyNameAttribute" />, so the value read under the wire key flows to the constructor.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenConstructorParameterBindsRenamedMember_ShouldReadFromWireName()
@@ -66,7 +67,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void Deserialize_WhenNamingPolicyAndParameterizedConstructor_ShouldBindFromPolicyWireName()
     {
-        var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.CamelCase };
+        var options = new BencodeSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
         byte[] bytes = Encoding.Latin1.GetBytes("d9:firstName5:Alicee");
 
         ImmutableName model = BencodeSerializer.Deserialize<ImmutableName>(bytes, options);
@@ -92,7 +93,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a constructor marked with <see cref="BencodeConstructorAttribute" /> is selected even when a public
+    /// Verifies that a constructor marked with <see cref="ConstructorAttribute" /> is selected even when a public
     /// parameterless constructor is also declared, so the attributed constructor receives the read members.
     /// </summary>
     [TestMethod]
@@ -238,7 +239,7 @@ public partial class BencodeSerializerTests
 
     /// <summary>
     /// A type whose constructor parameter binds a property that is renamed on the wire by
-    /// <see cref="BencodePropertyNameAttribute" />.
+    /// <see cref="PropertyNameAttribute" />.
     /// </summary>
     private sealed class RenamedConstructorMember
     {
@@ -255,7 +256,7 @@ public partial class BencodeSerializerTests
         /// Gets the identifier, written under the wire name <c>id</c>.
         /// </summary>
         /// <value>The identifier.</value>
-        [BencodePropertyName("id")]
+        [PropertyName("id")]
         public int Identifier { get; }
     }
 
@@ -306,7 +307,7 @@ public partial class BencodeSerializerTests
         /// serializer is directed to use.
         /// </summary>
         /// <param name="a">The value.</param>
-        [BencodeConstructor]
+        [Constructor]
         public AttributedConstructorModel(int a)
         {
             A = a;

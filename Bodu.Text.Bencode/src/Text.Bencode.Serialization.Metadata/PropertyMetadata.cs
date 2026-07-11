@@ -4,13 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Reflection;
 
 namespace Bodu.Text.Bencode.Serialization.Metadata;
 
 /// <summary>
 /// Describes a single serializable member (a property, or a public field surfaced through
-/// <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="BencodeIncludeAttribute" />) of a type: its wire
+/// <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="IncludeAttribute" />) of a type: its wire
 /// name, the converter that handles its value, how it is read and written, and how it binds to a constructor parameter.
 /// </summary>
 /// <remarks>
@@ -25,7 +26,7 @@ internal sealed class PropertyMetadata
     /// <summary>The reflected field used to read and write the member value, or <see langword="null" /> when the member is a property.</summary>
     private readonly FieldInfo? _field;
 
-    /// <summary>Whether the member is opted into binding through non-public accessors by <see cref="BencodeIncludeAttribute" />.</summary>
+    /// <summary>Whether the member is opted into binding through non-public accessors by <see cref="IncludeAttribute" />.</summary>
     private readonly bool _included;
 
     /// <summary>
@@ -46,13 +47,13 @@ internal sealed class PropertyMetadata
     /// The default value used when the member binds to a constructor parameter that is absent.
     /// </param>
     /// <param name="included">
-    /// Whether the member is opted into binding through non-public accessors by <see cref="BencodeIncludeAttribute" />.
+    /// Whether the member is opted into binding through non-public accessors by <see cref="IncludeAttribute" />.
     /// </param>
     internal PropertyMetadata(
         MemberInfo member,
         string wireName,
         BencodeConverter converter,
-        BencodeIgnoreCondition? conditionalIgnore,
+        IgnoreCondition? conditionalIgnore,
         int order,
         int constructorParameterIndex,
         bool isRequired,
@@ -101,15 +102,15 @@ internal sealed class PropertyMetadata
     /// written.
     /// </summary>
     /// <value>The conditional-ignore setting, or <see langword="null" />.</value>
-    internal BencodeIgnoreCondition? ConditionalIgnore { get; }
+    internal IgnoreCondition? ConditionalIgnore { get; }
 
     /// <summary>
     /// Gets the member-level object-creation handling, sourced from a
-    /// <see cref="BencodeObjectCreationHandlingAttribute" /> on the member, or <see langword="null" /> when the member
+    /// <see cref="ObjectCreationHandlingAttribute" /> on the member, or <see langword="null" /> when the member
     /// declares none.
     /// </summary>
     /// <value>The member-level object-creation handling, or <see langword="null" />.</value>
-    internal BencodeObjectCreationHandling? CreationHandling { get; init; }
+    internal ObjectCreationHandling? CreationHandling { get; init; }
 
     /// <summary>
     /// Gets the relative write order of the member.
@@ -138,7 +139,7 @@ internal sealed class PropertyMetadata
 
     /// <summary>
     /// Gets the default value of the member's type, used to evaluate
-    /// <see cref="BencodeIgnoreCondition.WhenWritingDefault" />.
+    /// <see cref="IgnoreCondition.WhenWritingDefault" />.
     /// </summary>
     /// <value>The boxed default value of the member type; <see langword="null" /> for reference types.</value>
     internal object? DefaultTypeValue { get; }
@@ -148,7 +149,7 @@ internal sealed class PropertyMetadata
     /// </summary>
     /// <value>
     /// For a property, <see langword="true" /> when it has a public setter (which includes an init-only setter) or a
-    /// non-public setter opted in by <see cref="BencodeIncludeAttribute" />; a property exposed only through a
+    /// non-public setter opted in by <see cref="IncludeAttribute" />; a property exposed only through a
     /// non-public setter is therefore not assigned on read unless it carries that attribute. For a field,
     /// <see langword="true" /> unless the field is <see langword="readonly" />.
     /// </value>

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text;
 using Bodu.Text.Bencode.Serialization;
 
@@ -12,10 +13,10 @@ namespace Bodu.Text.Bencode;
 /// <summary>
 /// Verifies which property members the <see cref="BencodeSerializer" /> surfaces and how it binds them: read/write
 /// properties, init-only properties, get-only properties, properties with non-public accessors, and the
-/// <see cref="BencodeIncludeAttribute" /> opt-in. It also pins a Bencode-specific shape that differs from the most
+/// <see cref="IncludeAttribute" /> opt-in. It also pins a Bencode-specific shape that differs from the most
 /// permissive <see cref="System.Text.Json.JsonSerializer" /> configuration: a get-only scalar property is written but
 /// cannot be set on read. Field serialization — opt-in through
-/// <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="BencodeIncludeAttribute" /> — is covered by
+/// <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="IncludeAttribute" /> — is covered by
 /// the <c>Fields</c> partial.
 /// </summary>
 public partial class BencodeSerializerTests
@@ -92,7 +93,7 @@ public partial class BencodeSerializerTests
     /// <summary>
     /// Verifies that a property with a public getter and a private setter that is not opted into serialization is not
     /// assigned on read, so the constructed instance keeps the value its parameterless constructor produced rather than
-    /// the value in the input. This matches the documented <see cref="BencodeIncludeAttribute" /> rule that a non-public
+    /// the value in the input. This matches the documented <see cref="IncludeAttribute" /> rule that a non-public
     /// setter binds only when opted in.
     /// </summary>
     [TestMethod]
@@ -107,7 +108,7 @@ public partial class BencodeSerializerTests
 
     /// <summary>
     /// Verifies that a property with a public getter and a private setter annotated with
-    /// <see cref="BencodeIncludeAttribute" /> is both written and assigned on read, binding through the non-public
+    /// <see cref="IncludeAttribute" /> is both written and assigned on read, binding through the non-public
     /// setter.
     /// </summary>
     [TestMethod]
@@ -203,7 +204,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// A model whose private-setter property is opted into serialization through <see cref="BencodeIncludeAttribute" />.
+    /// A model whose private-setter property is opted into serialization through <see cref="IncludeAttribute" />.
     /// </summary>
     private sealed class IncludedPrivateSetterModel
     {
@@ -225,10 +226,10 @@ public partial class BencodeSerializerTests
 
         /// <summary>
         /// Gets the integer value, opted into serialization through its private setter by
-        /// <see cref="BencodeIncludeAttribute" />.
+        /// <see cref="IncludeAttribute" />.
         /// </summary>
         /// <value>The value.</value>
-        [BencodeInclude]
+        [Include]
         public int Value { get; private set; }
     }
 

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
@@ -11,10 +12,10 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Verifies the opt-in field serialization of <see cref="TomlSerializer" />: public fields are excluded by default,
 /// included for all types when <see cref="TomlSerializerOptions.IncludeFields" /> is enabled, and included
-/// individually through <see cref="TomlIncludeAttribute" /> regardless of that option, mirroring
+/// individually through <see cref="IncludeAttribute" /> regardless of that option, mirroring
 /// <see cref="System.Text.Json.JsonSerializerOptions.IncludeFields" /> and
 /// <see cref="System.Text.Json.Serialization.JsonIncludeAttribute" />. Fields honor naming policies, name and order
-/// attributes — and because TOML output preserves member order, <see cref="TomlPropertyOrderAttribute" /> visibly
+/// attributes — and because TOML output preserves member order, <see cref="PropertyOrderAttribute" /> visibly
 /// reorders the emitted lines — ignore conditions, and required-member enforcement exactly like properties; a
 /// <see langword="readonly" /> field is written but never assigned on read.
 /// </summary>
@@ -51,7 +52,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a public field annotated with <see cref="TomlIncludeAttribute" /> round-trips even when
+    /// Verifies that a public field annotated with <see cref="IncludeAttribute" /> round-trips even when
     /// <see cref="TomlSerializerOptions.IncludeFields" /> is disabled, mirroring how
     /// <see cref="System.Text.Json.Serialization.JsonIncludeAttribute" /> opts an individual field in.
     /// </summary>
@@ -76,7 +77,7 @@ public partial class TomlSerializerTests
         var options = new TomlSerializerOptions
         {
             IncludeFields = true,
-            PropertyNamingPolicy = TomlNamingPolicy.CamelCase,
+            PropertyNamingPolicy = NamingPolicy.CamelCase,
         };
 
         string text = TomlSerializer.Serialize(new FieldAndPropertyModel { Field = 5, Property = 6 }, options);
@@ -85,7 +86,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="TomlPropertyNameAttribute" /> on a field overrides both the field name and the
+    /// Verifies that a <see cref="PropertyNameAttribute" /> on a field overrides both the field name and the
     /// naming policy, and that the renamed key binds on read.
     /// </summary>
     [TestMethod]
@@ -102,7 +103,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="TomlPropertyOrderAttribute" /> on a field reorders the emitted lines — TOML output
+    /// Verifies that a <see cref="PropertyOrderAttribute" /> on a field reorders the emitted lines — TOML output
     /// preserves member order, so a field with a negative order is written before the type's properties.
     /// </summary>
     [TestMethod]
@@ -116,7 +117,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a field annotated with <see cref="TomlIgnoreAttribute" /> is omitted even when
+    /// Verifies that a field annotated with <see cref="IgnoreAttribute" /> is omitted even when
     /// <see cref="TomlSerializerOptions.IncludeFields" /> is enabled.
     /// </summary>
     [TestMethod]
@@ -146,7 +147,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a field annotated with <see cref="TomlRequiredAttribute" /> is enforced on read: deserializing a
+    /// Verifies that a field annotated with <see cref="RequiredAttribute" /> is enforced on read: deserializing a
     /// document without the field's key throws <see cref="TomlSerializationException" /> naming the member.
     /// </summary>
     [TestMethod]
@@ -163,7 +164,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a field annotated with <see cref="TomlRequiredAttribute" /> round-trips normally when its key is
+    /// Verifies that a field annotated with <see cref="RequiredAttribute" /> round-trips normally when its key is
     /// present in the input.
     /// </summary>
     [TestMethod]
@@ -228,32 +229,32 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// A model whose only member is a public field annotated with <see cref="TomlIncludeAttribute" />, surfaced
+    /// A model whose only member is a public field annotated with <see cref="IncludeAttribute" />, surfaced
     /// regardless of <see cref="TomlSerializerOptions.IncludeFields" />.
     /// </summary>
     private sealed class IncludedFieldModel
     {
         /// <summary>
-        /// The public field opted into serialization by <see cref="TomlIncludeAttribute" />.
+        /// The public field opted into serialization by <see cref="IncludeAttribute" />.
         /// </summary>
-        [TomlInclude]
+        [Include]
         public int Field;
     }
 
     /// <summary>
-    /// A model whose field carries a <see cref="TomlPropertyNameAttribute" /> wire-name override.
+    /// A model whose field carries a <see cref="PropertyNameAttribute" /> wire-name override.
     /// </summary>
     private sealed class RenamedFieldModel
     {
         /// <summary>
         /// The public field serialized under the wire name <c>n</c>.
         /// </summary>
-        [TomlPropertyName("n")]
+        [PropertyName("n")]
         public int Count;
     }
 
     /// <summary>
-    /// A model whose field is hoisted before its property by <see cref="TomlPropertyOrderAttribute" />; without the
+    /// A model whose field is hoisted before its property by <see cref="PropertyOrderAttribute" />; without the
     /// attribute the property would be written first.
     /// </summary>
     private sealed class OrderedFieldModel
@@ -261,7 +262,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// The public field ordered before the property.
         /// </summary>
-        [TomlPropertyOrder(-1)]
+        [PropertyOrder(-1)]
         public int First;
 
         /// <summary>
@@ -272,7 +273,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// A model with one retained field and one field excluded by <see cref="TomlIgnoreAttribute" />.
+    /// A model with one retained field and one field excluded by <see cref="IgnoreAttribute" />.
     /// </summary>
     private sealed class IgnoredFieldModel
     {
@@ -282,9 +283,9 @@ public partial class TomlSerializerTests
         public int Kept;
 
         /// <summary>
-        /// The public field excluded from serialization by <see cref="TomlIgnoreAttribute" />.
+        /// The public field excluded from serialization by <see cref="IgnoreAttribute" />.
         /// </summary>
-        [TomlIgnore]
+        [Bodu.Text.Serialization.Ignore]
         public int Skipped;
     }
 
@@ -317,14 +318,14 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// A model whose field is marked required through <see cref="TomlRequiredAttribute" />.
+    /// A model whose field is marked required through <see cref="RequiredAttribute" />.
     /// </summary>
     private sealed class RequiredFieldModel
     {
         /// <summary>
         /// The public field that must be present in the input.
         /// </summary>
-        [TomlRequired]
+        [Required]
         public int Field;
     }
 
@@ -364,7 +365,7 @@ public partial class TomlSerializerTests
         /// Gets the value of the private field, exposed for test assertions only.
         /// </summary>
         /// <value>The hidden value.</value>
-        [TomlIgnore]
+        [Bodu.Text.Serialization.Ignore]
         public int Hidden => _hidden;
     }
 }

@@ -4,12 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Verifies that <see cref="TomlPropertyOrderAttribute" /> governs the on-the-wire sequence of a table's key/value
+/// Verifies that <see cref="PropertyOrderAttribute" /> governs the on-the-wire sequence of a table's key/value
 /// lines. Unlike Bodu's Bencode serializer, whose canonical key sorting overrides any configured order, the TOML
 /// writer preserves the order in which members are presented, so the attribute has a real, observable effect on the
 /// serialized text: members are written in ascending order value, with declaration order breaking ties.
@@ -17,7 +18,7 @@ namespace Bodu.Text.Toml;
 public partial class TomlSerializerTests
 {
     /// <summary>
-    /// Verifies that members without <see cref="TomlPropertyOrderAttribute" /> are written in declaration order, the
+    /// Verifies that members without <see cref="PropertyOrderAttribute" /> are written in declaration order, the
     /// baseline the attribute reorders.
     /// </summary>
     [TestMethod]
@@ -29,7 +30,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that members whose <see cref="TomlPropertyOrderAttribute" /> values reverse the declaration order are
+    /// Verifies that members whose <see cref="PropertyOrderAttribute" /> values reverse the declaration order are
     /// emitted in ascending attribute order, proving the attribute reorders the serialized key/value lines.
     /// </summary>
     [TestMethod]
@@ -79,7 +80,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a model whose members carry <see cref="TomlPropertyOrderAttribute" /> round-trips, confirming the
+    /// Verifies that a model whose members carry <see cref="PropertyOrderAttribute" /> round-trips, confirming the
     /// reordered output is read back into the correct members.
     /// </summary>
     [TestMethod]
@@ -96,7 +97,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// A model whose three members carry <see cref="TomlPropertyOrderAttribute" /> values that reverse the declaration
+    /// A model whose three members carry <see cref="PropertyOrderAttribute" /> values that reverse the declaration
     /// order, used to prove the attribute reorders the serialized lines.
     /// </summary>
     private sealed class OrderedTrioModel
@@ -105,26 +106,26 @@ public partial class TomlSerializerTests
         /// Gets or sets the value declared first but ordered last.
         /// </summary>
         /// <value>The value.</value>
-        [TomlPropertyOrder(10)]
+        [PropertyOrder(10)]
         public int Alpha { get; set; }
 
         /// <summary>
         /// Gets or sets the value declared and ordered in the middle.
         /// </summary>
         /// <value>The value.</value>
-        [TomlPropertyOrder(0)]
+        [PropertyOrder(0)]
         public int Bravo { get; set; }
 
         /// <summary>
         /// Gets or sets the value declared last but ordered first.
         /// </summary>
         /// <value>The value.</value>
-        [TomlPropertyOrder(-10)]
+        [PropertyOrder(-10)]
         public int Charlie { get; set; }
     }
 
     /// <summary>
-    /// A model identical to <see cref="OrderedTrioModel" /> but without any <see cref="TomlPropertyOrderAttribute" />,
+    /// A model identical to <see cref="OrderedTrioModel" /> but without any <see cref="PropertyOrderAttribute" />,
     /// used to pin the declaration-order baseline.
     /// </summary>
     private sealed class UnorderedTrioModel
@@ -170,7 +171,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the value promoted ahead of its siblings by a negative order.
         /// </summary>
         /// <value>The value.</value>
-        [TomlPropertyOrder(-1)]
+        [PropertyOrder(-1)]
         public int Promoted { get; set; }
     }
 
@@ -184,7 +185,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the value demoted behind its siblings by a positive order.
         /// </summary>
         /// <value>The value.</value>
-        [TomlPropertyOrder(1)]
+        [PropertyOrder(1)]
         public int Demoted { get; set; }
 
         /// <summary>
@@ -210,7 +211,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the first member of the order-1 partition.
         /// </summary>
         /// <value>The value.</value>
-        [TomlPropertyOrder(1)]
+        [PropertyOrder(1)]
         public int A { get; set; }
 
         /// <summary>
@@ -223,7 +224,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the second member of the order-1 partition.
         /// </summary>
         /// <value>The value.</value>
-        [TomlPropertyOrder(1)]
+        [PropertyOrder(1)]
         public int C { get; set; }
 
         /// <summary>
