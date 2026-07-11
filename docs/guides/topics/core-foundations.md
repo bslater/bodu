@@ -29,7 +29,7 @@ If you have not yet installed the packages, start with the [topic overview](../.
 
 <div class="bodu-card">
   <h3><a href="../core/evicting-dictionary.md">Evicting dictionary</a></h3>
-  <p>Capacity-bounded key-value store with FIFO, LRU, LFU, MRU, Random, and Second-Chance eviction policies — the drop-in cache primitive.</p>
+  <p>Capacity-bounded key-value store with FIFO, LRU, LFU, MRU, Random, and Second-Chance eviction policies — the drop-in cache primitive. Thread-safe <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> (in <code>Bodu.Collections.Concurrent</code>) adds lock-striped segments, TTL, and single-flight <code>GetOrAdd</code>.</p>
 </div>
 
 <div class="bodu-card">

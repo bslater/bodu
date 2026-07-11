@@ -123,6 +123,9 @@
   <data name="Arg_Invalid_ArrayType" xml:space="preserve">
     <value>Target array type is not compatible with the type of items in the collection.</value>
   </data>
+  <data name="KeyNotFound_Dictionary" xml:space="preserve">
+    <value>The given key '{0}' was not present in the dictionary.</value>
+  </data>
   <data name="Op_Invalid_CapacityExhausted" xml:space="preserve">
     <value>The capacity has been exhausted.</value>
   </data>
@@ -131,6 +134,15 @@
   </data>
   <data name="Op_Invalid_ConcurrentSnapshotUnstable" xml:space="preserve">
     <value>The collection could not produce a stable snapshot under sustained concurrent modification.</value>
+  </data>
+  <data name="Op_Invalid_EvictionProducedNoCandidate" xml:space="preserve">
+    <value>Eviction policy '{0}' produced no candidate while the dictionary is at capacity.</value>
+  </data>
+  <data name="Op_Invalid_ExpirationNotConfigured" xml:space="preserve">
+    <value>A per-entry time-to-live requires an expiration configuration; construct the dictionary with an EvictingDictionaryExpiration.</value>
+  </data>
+  <data name="Op_Invalid_UnknownEvictionPolicy" xml:space="preserve">
+    <value>Unknown eviction policy '{0}'.</value>
   </data>
   <data name="Op_NotSupported_ConcurrentSyncRoot" xml:space="preserve">
     <value>The SyncRoot property may not be used for the synchronization of concurrent collections.</value>
