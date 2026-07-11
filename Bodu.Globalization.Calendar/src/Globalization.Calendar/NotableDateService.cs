@@ -131,7 +131,7 @@ public sealed class NotableDateService
         int firstYear = Math.Max(1, range.StartDate.Year - 1);
         int lastYear = Math.Min(9999, range.EndDate.Year + 1);
 
-        StrategyResolutionContext context = new(_resource, _algorithms);
+        StrategyResolutionContext context = new(_resource, _algorithms, territory);
         HashSet<DateOnly> occupied = new();
         List<ResolutionCandidate> candidates = GatherCandidates(context, territory, firstYear, lastYear, occupied);
 
@@ -217,18 +217,121 @@ public sealed class NotableDateService
             .Order()];
 
     /// <summary>
-    /// Enumerates the calculated occurrences a strategy produces for a year: every occurrence of a fixed-date strategy
-    /// (a short Islamic month and day can recur twice in one Gregorian year) and the single occurrence of every other
-    /// strategy.
+    /// Enumerates the base occurrences a rule produces for a year, from whichever occurrence source it declares: a
+    /// single-date strategy (including a multi-occurrence fixed-date strategy) or a recurrence strategy bounded to the
+    /// year.
+    /// </summary>
+    /// <param name="rule">The rule whose occurrence source is evaluated.</param>
+    /// <param name="year">The Gregorian year to calculate against.</param>
+    /// <param name="context">The resolution context for offset references.</param>
+    /// <returns>The base occurrences for the year.</returns>
+    private static IEnumerable<DateOnly> EnumerateBaseDates(NotableDateRule rule, int year, StrategyResolutionContext context) =>
+        OccurrenceSourceEnumerator.Enumerate(rule, year, new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), context);
+
+    /// <summary>
+    /// Resolves the span (effective start and inclusive duration) of a single occurrence, applying either a fixed
+    /// duration or a calculated end-date duration.
+    /// </summary>
+    /// <param name="rule">The rule that produced the occurrence.</param>
+    /// <param name="definition">The parent concept, supplying the default duration.</param>
+    /// <param name="startAnchor">The occurrence's calculated start anchor.</param>
+    /// <param name="context">The resolution context for the end strategy.</param>
+    /// <returns>The resolved span, or <see langword="null" /> when a calculated span is invalid for this occurrence.</returns>
+    private static ResolvedNotableDateSpan? ResolveSpan(NotableDateRule rule, NotableDateDefinition definition, DateOnly startAnchor, StrategyResolutionContext context)
+    {
+        if (rule.Duration is CalculatedEndDateDurationDefinition calculated)
+            return ResolveCalculatedSpan(startAnchor, calculated, context);
+
+        int days = Math.Max(1, (rule.Duration as FixedDurationDefinition)?.Days ?? definition.DefaultDurationDays);
+        return new ResolvedNotableDateSpan(startAnchor, days);
+    }
+
+    /// <summary>
+    /// Resolves a calculated end-date span for one start anchor, applying the boundary and selection rules within the
+    /// permitted two-year window.
+    /// </summary>
+    /// <param name="startAnchor">The occurrence's calculated start anchor.</param>
+    /// <param name="calculated">The calculated end-date duration definition.</param>
+    /// <param name="context">The resolution context for the end strategy.</param>
+    /// <returns>The resolved span, or <see langword="null" /> when no valid span exists for this occurrence.</returns>
+    private static ResolvedNotableDateSpan? ResolveCalculatedSpan(DateOnly startAnchor, CalculatedEndDateDurationDefinition calculated, StrategyResolutionContext context)
+    {
+        DateOnly effectiveStart;
+        if (calculated.StartBoundary == DateBoundary.Inclusive)
+        {
+            effectiveStart = startAnchor;
+        }
+        else
+        {
+            if (startAnchor == DateOnly.MaxValue)
+                return null;
+            effectiveStart = startAnchor.AddDays(1);
+        }
+
+        if (SelectEndAnchor(startAnchor, calculated, context) is not DateOnly endAnchor)
+            return null;
+
+        DateOnly effectiveEnd;
+        if (calculated.EndBoundary == DateBoundary.Inclusive)
+        {
+            effectiveEnd = endAnchor;
+        }
+        else
+        {
+            if (endAnchor == DateOnly.MinValue)
+                return null;
+            effectiveEnd = endAnchor.AddDays(-1);
+        }
+
+        int days = effectiveEnd.DayNumber - effectiveStart.DayNumber + 1;
+        return days >= 1 ? new ResolvedNotableDateSpan(effectiveStart, days) : null;
+    }
+
+    /// <summary>
+    /// Selects the end anchor for a calculated span: the earliest end-strategy occurrence in the start anchor's civil
+    /// year, or the following year, that satisfies the configured selection rule.
+    /// </summary>
+    /// <param name="startAnchor">The occurrence's calculated start anchor.</param>
+    /// <param name="calculated">The calculated end-date duration definition.</param>
+    /// <param name="context">The resolution context for the end strategy.</param>
+    /// <returns>The selected end anchor, or <see langword="null" /> when none is acceptable in the window.</returns>
+    private static DateOnly? SelectEndAnchor(DateOnly startAnchor, CalculatedEndDateDurationDefinition calculated, StrategyResolutionContext context)
+    {
+        for (int yearOffset = 0; yearOffset <= 1; yearOffset++)
+        {
+            int endYear = startAnchor.Year + yearOffset;
+            if (endYear > 9999)
+                break;
+
+            DateOnly? best = null;
+            foreach (DateOnly candidate in EnumerateStrategyDates(calculated.EndStrategy, endYear, context))
+            {
+                bool satisfies = calculated.EndSelection == EndDateSelection.FirstAfterStart
+                    ? candidate > startAnchor
+                    : candidate >= startAnchor;
+
+                if (satisfies && (best is null || candidate < best))
+                    best = candidate;
+            }
+
+            if (best is DateOnly found)
+                return found;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Enumerates the occurrences of a single-date strategy for a Gregorian year, including a multi-occurrence strategy.
     /// </summary>
     /// <param name="strategy">The strategy to evaluate.</param>
     /// <param name="year">The Gregorian year to calculate against.</param>
-    /// <param name="context">The resolution context for offset references.</param>
-    /// <returns>The calculated occurrences for the year.</returns>
-    private static IEnumerable<DateOnly> EnumerateBaseDates(IDateCalculationStrategy strategy, int year, StrategyResolutionContext context)
+    /// <param name="context">The resolution context for referential lookups.</param>
+    /// <returns>The occurrences for the year; an empty sequence when there is none.</returns>
+    private static IEnumerable<DateOnly> EnumerateStrategyDates(IDateCalculationStrategy strategy, int year, StrategyResolutionContext context)
     {
-        if (strategy is FixedDateStrategy fixedStrategy)
-            return fixedStrategy.CalculateAll(year, context);
+        if (strategy is IMultiOccurrenceCalculation multi)
+            return multi.CalculateAll(year, context);
 
         return strategy.Calculate(year, context) is DateOnly date ? new[] { date } : [];
     }
@@ -279,7 +382,24 @@ public sealed class NotableDateService
     private static void Claim(HashSet<DateOnly> occupied, DateOnly observed, ResolutionCandidate candidate)
     {
         if (candidate.NonWorking)
-            occupied.Add(observed);
+            ClaimSpan(occupied, observed, candidate.DurationDays);
+    }
+
+    /// <summary>
+    /// Claims every day of a multi-day span in the occupied-day set, from the supplied start through its inclusive end.
+    /// </summary>
+    /// <param name="occupied">The occupied-day set.</param>
+    /// <param name="start">The first day of the span.</param>
+    /// <param name="durationDays">The inclusive number of days the span covers.</param>
+    private static void ClaimSpan(HashSet<DateOnly> occupied, DateOnly start, int durationDays)
+    {
+        int days = Math.Max(1, durationDays);
+        for (int offset = 0; offset < days; offset++)
+        {
+            occupied.Add(start.AddDays(offset));
+            if (start.DayNumber > DateOnly.MaxValue.DayNumber - days)
+                break;
+        }
     }
 
     /// <summary>
@@ -483,18 +603,28 @@ public sealed class NotableDateService
                     NotableDateCategory category = rule.Category ?? definition.Category;
                     NotableDateRuleIdentity identity = _resource.GetIdentity(definition, rule);
                     bool nonWorking = rule.NonWorking ?? definition.DefaultNonWorkingDay;
-                    int durationDays = Math.Max(1, rule.DurationDays ?? definition.DefaultDurationDays);
 
                     IReadOnlyList<string> tags = rule.Tags.Count > 0 ? rule.Tags : definition.Tags;
 
-                    foreach (DateOnly baseDate in EnumerateBaseDates(rule.Strategy, year, context))
+                    foreach (DateOnly startAnchor in EnumerateBaseDates(rule, year, context))
                     {
-                        candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, baseDate, null, rule.Priority, nonWorking, durationDays, tags, definition, rule));
+                        // The span (effective start and duration) is resolved per occurrence, so a calculated end-date
+                        // duration is evaluated relative to each start; an invalid span omits the occurrence.
+                        if (ResolveSpan(rule, definition, startAnchor, context) is not ResolvedNotableDateSpan span)
+                            continue;
+
+                        candidates.Add(new ResolutionCandidate(identity, definition.DisplayName, category, span.StartDate, null, rule.Priority, nonWorking, span.DurationDays, tags, definition, rule));
 
                         if (nonWorking)
                         {
-                            occupied.Add(baseDate);
-                            actualNonWorkingCounts[baseDate] = actualNonWorkingCounts.GetValueOrDefault(baseDate) + 1;
+                            for (int offset = 0; offset < span.DurationDays; offset++)
+                            {
+                                DateOnly day = span.StartDate.AddDays(offset);
+                                occupied.Add(day);
+                                actualNonWorkingCounts[day] = actualNonWorkingCounts.GetValueOrDefault(day) + 1;
+                                if (span.StartDate.DayNumber > DateOnly.MaxValue.DayNumber - span.DurationDays)
+                                    break;
+                            }
                         }
                     }
                 }
@@ -507,10 +637,14 @@ public sealed class NotableDateService
             ResolutionCandidate candidate = candidates[i];
 
             // A day is occupied "by another" when a non-working occurrence other than this one shares the date; the
-            // candidate's own contribution to the tally is discounted so a lone holiday never collides with itself.
+            // candidate's own contribution across its whole span is discounted so a multi-day holiday never collides
+            // with itself.
             bool OccupiedByAnother(DateOnly day)
             {
-                return actualNonWorkingCounts.GetValueOrDefault(day) > (candidate.NonWorking && day == candidate.BaseDate ? 1 : 0);
+                bool withinOwnSpan = candidate.NonWorking
+                    && day.DayNumber >= candidate.BaseDate.DayNumber
+                    && day.DayNumber <= candidate.BaseDate.DayNumber + Math.Max(1, candidate.DurationDays) - 1;
+                return actualNonWorkingCounts.GetValueOrDefault(day) > (withinOwnSpan ? 1 : 0);
             }
 
             AdjustmentPolicy? policy = SelectAdjustmentPolicy(candidate.Definition, candidate.Rule, candidate.Category, candidate.BaseDate, territory, context, workingWeek, OccupiedByAnother);

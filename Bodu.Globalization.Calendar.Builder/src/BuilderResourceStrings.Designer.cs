@@ -149,6 +149,15 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_RuleStrategyAlreadySet", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The rule already has a duration configured....
+        /// </summary>
+        internal static string Op_Invalid_RuleDurationAlreadySet {
+            get {
+                return ResourceManager.GetString("Op_Invalid_RuleDurationAlreadySet", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to The rule &apos;{0}&apos; has no calculation strategy. Configure exactly one strategy (for example Fixed, DayOfWeekInMonth, OffsetFromRule, or Algorithm) before building or serializing the document..

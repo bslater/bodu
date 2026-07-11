@@ -191,7 +191,11 @@
   <xs:complexType name="Rule">
     <xs:sequence>
       <xs:element name="Applicability" type="nd:Applicability" minOccurs="0" maxOccurs="1" />
-      <xs:element name="Strategy" type="nd:Strategy" minOccurs="1" maxOccurs="1" />
+      <xs:choice minOccurs="1" maxOccurs="1">
+        <xs:element name="Strategy" type="nd:Strategy" />
+        <xs:element name="Recurrence" type="nd:Recurrence" />
+      </xs:choice>
+      <xs:element name="Duration" type="nd:Duration" minOccurs="0" maxOccurs="1" />
       <xs:element name="Tags" type="nd:Tags" minOccurs="0" maxOccurs="1" />
       <xs:element name="Adjustments" type="nd:RuleAdjustments" minOccurs="0" maxOccurs="1" />
     </xs:sequence>
@@ -224,7 +228,111 @@
       <xs:element name="RelativeWeekdayInMonth" type="nd:RelativeWeekdayInMonthStrategy" />
       <xs:element name="OffsetFromRule" type="nd:OffsetFromRuleStrategy" />
       <xs:element name="Algorithm" type="nd:AlgorithmStrategy" />
+      <xs:element name="WeekdayNearRule" type="nd:WeekdayNearRuleStrategy" />
+      <xs:element name="NthWeekdayFromRule" type="nd:NthWeekdayFromRuleStrategy" />
+      <xs:element name="WorkingDayOffsetFromRule" type="nd:WorkingDayOffsetFromRuleStrategy" />
+      <xs:element name="WorkingDayInMonth" type="nd:WorkingDayInMonthStrategy" />
+      <xs:element name="OrdinalDayOfMonth" type="nd:OrdinalDayOfMonthStrategy" />
+      <xs:element name="IsoWeekDate" type="nd:IsoWeekDateStrategy" />
+      <xs:element name="DayOfYear" type="nd:DayOfYearStrategy" />
     </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="Recurrence">
+    <xs:choice minOccurs="1" maxOccurs="1">
+      <xs:element name="DailyInterval" type="nd:DailyIntervalRecurrence" />
+      <xs:element name="Weekly" type="nd:WeeklyRecurrence" />
+      <xs:element name="MonthlyDay" type="nd:MonthlyDayRecurrence" />
+      <xs:element name="MonthlyWeekday" type="nd:MonthlyWeekdayRecurrence" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="Duration">
+    <xs:sequence>
+      <xs:element name="UntilDate" type="nd:UntilDate" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="UntilDate">
+    <xs:sequence>
+      <xs:element name="Strategy" type="nd:Strategy" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="startBoundary" type="nd:dateBoundary" use="optional" default="Inclusive" />
+    <xs:attribute name="endBoundary" type="nd:dateBoundary" use="optional" default="Inclusive" />
+    <xs:attribute name="selection" type="nd:endDateSelection" use="optional" default="FirstOnOrAfterStart" />
+  </xs:complexType>
+
+  <xs:complexType name="DailyIntervalRecurrence">
+    <xs:attribute name="anchorDate" type="xs:date" use="required" />
+    <xs:attribute name="intervalDays" type="xs:positiveInteger" use="optional" default="1" />
+  </xs:complexType>
+
+  <xs:complexType name="WeeklyRecurrence">
+    <xs:sequence>
+      <xs:element name="Day" minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="intervalWeeks" type="xs:positiveInteger" use="optional" default="1" />
+    <xs:attribute name="anchorDate" type="xs:date" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="MonthlyDayRecurrence">
+    <xs:attribute name="dayOfMonth" type="nd:dayValue" use="required" />
+    <xs:attribute name="intervalMonths" type="xs:positiveInteger" use="optional" default="1" />
+    <xs:attribute name="anchorDate" type="xs:date" use="optional" />
+    <xs:attribute name="invalidDayBehavior" type="nd:invalidDayOfMonthBehavior" use="optional" default="Skip" />
+  </xs:complexType>
+
+  <xs:complexType name="MonthlyWeekdayRecurrence">
+    <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+    <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="required" />
+    <xs:attribute name="intervalMonths" type="xs:positiveInteger" use="optional" default="1" />
+    <xs:attribute name="anchorDate" type="xs:date" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="WeekdayNearRuleStrategy">
+    <xs:attribute name="notableDateRef" type="nd:identifier" use="required" />
+    <xs:attribute name="ruleRef" type="nd:identifier" use="optional" />
+    <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+    <xs:attribute name="direction" type="nd:weekdayProximity" use="required" />
+    <xs:attribute name="referenceYearOffset" type="xs:int" use="optional" default="0" />
+  </xs:complexType>
+
+  <xs:complexType name="NthWeekdayFromRuleStrategy">
+    <xs:attribute name="notableDateRef" type="nd:identifier" use="required" />
+    <xs:attribute name="ruleRef" type="nd:identifier" use="optional" />
+    <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+    <xs:attribute name="ordinal" type="nd:nonZeroOrdinal" use="required" />
+    <xs:attribute name="referenceYearOffset" type="xs:int" use="optional" default="0" />
+  </xs:complexType>
+
+  <xs:complexType name="WorkingDayOffsetFromRuleStrategy">
+    <xs:attribute name="notableDateRef" type="nd:identifier" use="required" />
+    <xs:attribute name="ruleRef" type="nd:identifier" use="optional" />
+    <xs:attribute name="offsetWorkingDays" type="xs:int" use="required" />
+    <xs:attribute name="referenceYearOffset" type="xs:int" use="optional" default="0" />
+  </xs:complexType>
+
+  <xs:complexType name="WorkingDayInMonthStrategy">
+    <xs:attribute name="month" type="xs:string" use="required" />
+    <xs:attribute name="ordinal" type="nd:nonZeroOrdinal" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="OrdinalDayOfMonthStrategy">
+    <xs:attribute name="month" type="xs:string" use="required" />
+    <xs:attribute name="ordinal" type="nd:nonZeroOrdinal" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="IsoWeekDateStrategy">
+    <xs:attribute name="week" type="nd:isoWeekValue" use="required" />
+    <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="DayOfYearStrategy">
+    <xs:attribute name="ordinal" type="nd:nonZeroOrdinal" use="required" />
   </xs:complexType>
 
   <xs:complexType name="FixedStrategy">
@@ -294,6 +402,8 @@
     <xs:sequence>
       <xs:element name="Applicability" type="nd:Applicability" minOccurs="0" maxOccurs="1" />
       <xs:element name="Strategy" type="nd:Strategy" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Recurrence" type="nd:Recurrence" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Duration" type="nd:Duration" minOccurs="0" maxOccurs="1" />
       <xs:element name="Tags" type="nd:Tags" minOccurs="0" maxOccurs="1" />
       <xs:element name="Adjustments" type="nd:RuleAdjustments" minOccurs="0" maxOccurs="1" />
     </xs:sequence>
@@ -456,6 +566,42 @@
       <xs:enumeration value="Nearest" />
       <xs:enumeration value="OnOrAfter" />
       <xs:enumeration value="After" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dateBoundary">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Inclusive" />
+      <xs:enumeration value="Exclusive" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="endDateSelection">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FirstOnOrAfterStart" />
+      <xs:enumeration value="FirstAfterStart" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="invalidDayOfMonthBehavior">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Skip" />
+      <xs:enumeration value="UseLastDayOfMonth" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="nonZeroOrdinal">
+    <xs:restriction base="xs:int">
+      <xs:minInclusive value="-366" />
+      <xs:maxInclusive value="366" />
+      <xs:pattern value="-?[1-9][0-9]*" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="isoWeekValue">
+    <xs:restriction base="xs:positiveInteger">
+      <xs:minInclusive value="1" />
+      <xs:maxInclusive value="53" />
     </xs:restriction>
   </xs:simpleType>
 

@@ -74,6 +74,9 @@
   <data name="Op_Invalid_RuleStrategyAlreadySet" xml:space="preserve">
     <value>The rule already has a calculation strategy configured. A rule must declare exactly one strategy; remove the existing strategy before configuring a different one.</value>
   </data>
+  <data name="Op_Invalid_RuleDurationAlreadySet" xml:space="preserve">
+    <value>The rule already has a duration configured, or the calculated end-date configurator did not select a strategy. A rule must declare exactly one duration.</value>
+  </data>
   <data name="Op_Invalid_DefinitionHasNoRules" xml:space="preserve">
     <value>The notable-date concept '{0}' has no rules. Add at least one rule before building or serializing the document.</value>
   </data>

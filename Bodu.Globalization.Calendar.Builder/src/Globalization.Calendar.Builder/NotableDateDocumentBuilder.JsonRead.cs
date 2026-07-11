@@ -26,6 +26,22 @@ public sealed partial class NotableDateDocumentBuilder
         ["relativeWeekdayInMonth"] = "RelativeWeekdayInMonth",
         ["offsetFromRule"] = "OffsetFromRule",
         ["algorithm"] = "Algorithm",
+        ["weekdayNearRule"] = "WeekdayNearRule",
+        ["nthWeekdayFromRule"] = "NthWeekdayFromRule",
+        ["workingDayOffsetFromRule"] = "WorkingDayOffsetFromRule",
+        ["workingDayInMonth"] = "WorkingDayInMonth",
+        ["ordinalDayOfMonth"] = "OrdinalDayOfMonth",
+        ["isoWeekDate"] = "IsoWeekDate",
+        ["dayOfYear"] = "DayOfYear",
+    };
+
+    /// <summary>Maps each JSON recurrence property name to the corresponding XML recurrence element local name.</summary>
+    private static readonly Dictionary<string, string> s_jsonRecurrenceElementNames = new(StringComparer.Ordinal)
+    {
+        ["dailyInterval"] = "DailyInterval",
+        ["weekly"] = "Weekly",
+        ["monthlyDay"] = "MonthlyDay",
+        ["monthlyWeekday"] = "MonthlyWeekday",
     };
 
     /// <summary>
@@ -240,7 +256,54 @@ public sealed partial class NotableDateDocumentBuilder
 
         rule.SetParsedStrategy(BuildStrategyElement(ruleJson["strategy"] as JsonObject));
 
+        if (BuildRecurrenceElement(ruleJson["recurrence"] as JsonObject) is XElement recurrence)
+            rule.SetParsedRecurrence(recurrence);
+
+        if (ruleJson["duration"]?["untilDate"] is JsonObject untilDate)
+        {
+            rule.SetParsedDuration(
+                BuildStrategyElement(untilDate["strategy"] as JsonObject),
+                ParseNullableEnum<DateBoundary>((string?)untilDate["startBoundary"]) ?? DateBoundary.Inclusive,
+                ParseNullableEnum<DateBoundary>((string?)untilDate["endBoundary"]) ?? DateBoundary.Inclusive,
+                ParseNullableEnum<EndDateSelection>((string?)untilDate["selection"]) ?? EndDateSelection.FirstOnOrAfterStart);
+        }
+
         return rule;
+    }
+
+    /// <summary>
+    /// Reconstructs a <c>Recurrence</c> element from a JSON recurrence object.
+    /// </summary>
+    /// <param name="recurrenceJson">The recurrence object, or <see langword="null" /> when absent.</param>
+    /// <returns>The reconstructed recurrence element, or <see langword="null" /> when absent or empty.</returns>
+    private static XElement? BuildRecurrenceElement(JsonObject? recurrenceJson)
+    {
+        if (recurrenceJson is null)
+            return null;
+
+        foreach (KeyValuePair<string, JsonNode?> property in recurrenceJson)
+        {
+            if (property.Value is not JsonObject body || !s_jsonRecurrenceElementNames.TryGetValue(property.Key, out string? elementName))
+                continue;
+
+            XElement kind = new(BuilderXml.s_namespace + elementName);
+            foreach (KeyValuePair<string, JsonNode?> attribute in body)
+            {
+                if (string.Equals(attribute.Key, "days", StringComparison.Ordinal) && attribute.Value is JsonArray days)
+                {
+                    foreach (JsonNode? day in days)
+                        kind.Add(new XElement(BuilderXml.s_namespace + "Day", new XAttribute("dayOfWeek", day?.GetValue<string>() ?? string.Empty)));
+                }
+                else
+                {
+                    kind.SetAttributeValue(attribute.Key, ConvertStrategyAttribute(attribute.Key, attribute.Value));
+                }
+            }
+
+            return new XElement(BuilderXml.s_namespace + "Recurrence", kind);
+        }
+
+        return null;
     }
 
     /// <summary>
