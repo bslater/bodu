@@ -55,7 +55,7 @@ public static partial class YamlSerializer
         o.MakeReadOnly();
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8YamlWriter(buffer);
-        WriteValue(ref writer, value, inputType, o, 0);
+        WriteValue(writer, value, inputType, o, 0);
         return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
@@ -68,7 +68,7 @@ public static partial class YamlSerializer
     /// <param name="options">The serializer options.</param>
     /// <param name="depth">The current recursion depth.</param>
     [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
-    private static void WriteValue(ref Utf8YamlWriter writer, object? value, Type declaredType, YamlSerializerOptions options, int depth)
+    private static void WriteValue(Utf8YamlWriter writer, object? value, Type declaredType, YamlSerializerOptions options, int depth)
     {
         if (value is null)
         {
@@ -86,7 +86,7 @@ public static partial class YamlSerializer
         YamlConverter? converter = options.GetConverter(runtimeType) ?? options.GetConverter(declaredType);
         if (converter is not null)
         {
-            converter.WriteAsObject(ref writer, value, options);
+            converter.WriteAsObject(writer, value, options);
             return;
         }
 
@@ -143,17 +143,17 @@ public static partial class YamlSerializer
 
         if (value is IDictionary dictionary)
         {
-            WriteDictionary(ref writer, dictionary, options, depth);
+            WriteDictionary(writer, dictionary, options, depth);
             return;
         }
 
         if (value is IEnumerable enumerable)
         {
-            WriteSequence(ref writer, enumerable, options, depth);
+            WriteSequence(writer, enumerable, options, depth);
             return;
         }
 
-        WriteObject(ref writer, value, runtimeType, options, depth);
+        WriteObject(writer, value, runtimeType, options, depth);
     }
 
     /// <summary>
@@ -164,7 +164,7 @@ public static partial class YamlSerializer
     /// <param name="options">The serializer options.</param>
     /// <param name="depth">The current recursion depth.</param>
     [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
-    private static void WriteDictionary(ref Utf8YamlWriter writer, IDictionary dictionary, YamlSerializerOptions options, int depth)
+    private static void WriteDictionary(Utf8YamlWriter writer, IDictionary dictionary, YamlSerializerOptions options, int depth)
     {
         writer.WriteStartMapping();
         var seen = new HashSet<string>(StringComparer.Ordinal);
@@ -178,7 +178,7 @@ public static partial class YamlSerializer
             }
 
             writer.WritePropertyName(key);
-            WriteValue(ref writer, entry.Value, entry.Value?.GetType() ?? typeof(object), options, depth + 1);
+            WriteValue(writer, entry.Value, entry.Value?.GetType() ?? typeof(object), options, depth + 1);
         }
 
         writer.WriteEndMapping();
@@ -192,11 +192,11 @@ public static partial class YamlSerializer
     /// <param name="options">The serializer options.</param>
     /// <param name="depth">The current recursion depth.</param>
     [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
-    private static void WriteSequence(ref Utf8YamlWriter writer, IEnumerable enumerable, YamlSerializerOptions options, int depth)
+    private static void WriteSequence(Utf8YamlWriter writer, IEnumerable enumerable, YamlSerializerOptions options, int depth)
     {
         writer.WriteStartSequence();
         foreach (object? item in enumerable)
-            WriteValue(ref writer, item, item?.GetType() ?? typeof(object), options, depth + 1);
+            WriteValue(writer, item, item?.GetType() ?? typeof(object), options, depth + 1);
 
         writer.WriteEndSequence();
     }
@@ -211,7 +211,7 @@ public static partial class YamlSerializer
     /// <param name="depth">The current recursion depth.</param>
     [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
     private static void WriteObject(
-        ref Utf8YamlWriter writer,
+        Utf8YamlWriter writer,
         object value,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
         YamlSerializerOptions options,
@@ -228,7 +228,7 @@ public static partial class YamlSerializer
                 continue;
 
             writer.WritePropertyName(member.WireName(options));
-            WriteValue(ref writer, memberValue, member.Type, options, depth + 1);
+            WriteValue(writer, memberValue, member.Type, options, depth + 1);
         }
 
         writer.WriteEndMapping();

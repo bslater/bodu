@@ -59,7 +59,7 @@ public partial class YamlSerializerTests
         public override string Read(YamlElement element, YamlSerializerOptions options) =>
             element.GetString().ToUpperInvariant();
 
-        public override void Write(ref Utf8YamlWriter writer, string value, YamlSerializerOptions options) =>
+        public override void Write(Utf8YamlWriter writer, string value, YamlSerializerOptions options) =>
             writer.WriteString(value.ToUpperInvariant());
     }
 }

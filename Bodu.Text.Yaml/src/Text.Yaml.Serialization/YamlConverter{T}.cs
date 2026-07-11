@@ -37,11 +37,11 @@ public abstract class YamlConverter<T> : YamlConverter
     /// <param name="writer">The writer to emit into.</param>
     /// <param name="value">The value to write.</param>
     /// <param name="options">The serializer options in effect.</param>
-    public abstract void Write(ref Utf8YamlWriter writer, T value, YamlSerializerOptions options);
+    public abstract void Write(Utf8YamlWriter writer, T value, YamlSerializerOptions options);
 
     /// <inheritdoc />
-    internal override void WriteAsObject(ref Utf8YamlWriter writer, object value, YamlSerializerOptions options) =>
-        Write(ref writer, (T)value, options);
+    internal override void WriteAsObject(Utf8YamlWriter writer, object value, YamlSerializerOptions options) =>
+        Write(writer, (T)value, options);
 
     /// <inheritdoc />
     internal override object? ReadAsObject(YamlElement element, YamlSerializerOptions options) =>

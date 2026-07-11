@@ -96,7 +96,7 @@ public abstract class YamlNode
     {
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8YamlWriter(buffer);
-        WriteTo(ref writer);
+        WriteTo(writer);
         return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
@@ -104,7 +104,7 @@ public abstract class YamlNode
     /// Writes this node to the given writer.
     /// </summary>
     /// <param name="writer">The writer to emit into.</param>
-    public abstract void WriteTo(ref Utf8YamlWriter writer);
+    public abstract void WriteTo(Utf8YamlWriter writer);
 
     /// <summary>
     /// Builds a mutable node from a read-only document element.
@@ -145,11 +145,11 @@ public abstract class YamlNode
     /// </summary>
     /// <param name="writer">The writer to emit into.</param>
     /// <param name="node">The child node, or <see langword="null" />.</param>
-    private protected static void WriteChild(ref Utf8YamlWriter writer, YamlNode? node)
+    private protected static void WriteChild(Utf8YamlWriter writer, YamlNode? node)
     {
         if (node is null)
             writer.WriteNull();
         else
-            node.WriteTo(ref writer);
+            node.WriteTo(writer);
     }
 }

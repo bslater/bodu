@@ -93,7 +93,7 @@ public sealed class YamlValue : YamlNode
     }
 
     /// <inheritdoc />
-    public override void WriteTo(ref Utf8YamlWriter writer)
+    public override void WriteTo(Utf8YamlWriter writer)
     {
         switch (_kind)
         {

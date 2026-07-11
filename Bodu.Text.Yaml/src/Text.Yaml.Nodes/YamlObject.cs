@@ -116,13 +116,13 @@ public sealed class YamlObject : YamlNode, IEnumerable<KeyValuePair<string, Yaml
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <inheritdoc />
-    public override void WriteTo(ref Utf8YamlWriter writer)
+    public override void WriteTo(Utf8YamlWriter writer)
     {
         writer.WriteStartMapping();
         foreach (string key in _order)
         {
             writer.WritePropertyName(key);
-            WriteChild(ref writer, _entries[key]);
+            WriteChild(writer, _entries[key]);
         }
 
         writer.WriteEndMapping();

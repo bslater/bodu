@@ -37,7 +37,7 @@ public abstract class YamlConverter
     /// <param name="writer">The writer to emit into.</param>
     /// <param name="value">The value to write.</param>
     /// <param name="options">The serializer options in effect.</param>
-    internal abstract void WriteAsObject(ref Utf8YamlWriter writer, object value, YamlSerializerOptions options);
+    internal abstract void WriteAsObject(Utf8YamlWriter writer, object value, YamlSerializerOptions options);
 
     /// <summary>
     /// Reads a value as a boxed object using the converter's typed read implementation.

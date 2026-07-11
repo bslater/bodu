@@ -19,7 +19,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteStartMapping_WhenMappingOfScalars_ShouldEmitBlock()
     {
-        string yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("a");
@@ -36,7 +36,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteStartMapping_WhenNested_ShouldIndent()
     {
-        string yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("server");
@@ -54,7 +54,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteStartMapping_WhenEmptyCollections_ShouldEmitFlowEmpty()
     {
-        string yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("list");
@@ -73,7 +73,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteStartMapping_WhenComplexDocument_ShouldRoundTrip()
     {
-        string yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("name");
