@@ -106,6 +106,14 @@ finally
 }
 ```
 
+## Large payloads on the write side
+
+A *writable* cursor (from `CreateStream` or a write-access `OpenStream` on a writable file) buffers its whole payload in memory until it flushes into the staging tree, and it caps that buffer at `int.MaxValue` bytes — growing past the cap throws <xref:System.NotSupportedException> rather than exhausting memory by surprise.
+
+For payloads that should not (or cannot) be buffered, author through a deferred stream source instead: `CompoundStorageBuilder.AddStream(name, openRead, length)` or `AddStreamFromFile`. Deferred sources declare their length up front, are opened only during serialization, and are copied to the destination through a fixed-size pooled buffer — so the container can carry payloads far larger than memory. See [Authoring compound files](authoring-compound-files.md) for the deferred patterns.
+
+Independent of the cursor cap, MS-CFB itself limits any single stream in a version-3 (512-byte-sector) file to 2 GB; larger streams require a version-4 file (`CompoundBuildOptions.Version = CompoundFileVersion.V4`).
+
 ## Lifetime checklist
 
 - Dispose the `CompoundFile` when finished; it releases the source according to the `leaveOpen` contract.
