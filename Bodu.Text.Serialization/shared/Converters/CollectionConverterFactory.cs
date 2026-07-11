@@ -1,10 +1,14 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CollectionConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Converters;
+#elif TOML
+namespace Bodu.Text.Toml.Serialization.Converters;
+#endif
 
 /// <summary>
 /// Produces a <see cref="CollectionConverter{TCollection, TElement}" /> for single-dimensional arrays, for
@@ -18,7 +22,7 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// through <c>Enqueue</c>, <c>Push</c>, or <c>Add</c> instead.
 /// </summary>
 internal sealed class CollectionConverterFactory
-    : BencodeConverterFactory
+    : FormatConverterFactory
 {
     /// <inheritdoc />
     public override bool CanConvert(Type typeToConvert)
@@ -28,15 +32,15 @@ internal sealed class CollectionConverterFactory
     }
 
     /// <inheritdoc />
-    public override BencodeConverter CreateConverter(Type typeToConvert, BencodeSerializerOptions options)
+    public override FormatConverter CreateConverter(Type typeToConvert, FormatOptions options)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);
         ThrowHelper.ThrowIfNull(options);
 
         _ = TryGetInfo(typeToConvert, out Type? elementType, out CollectionStrategy strategy);
-        BencodeConverter elementConverter = options.GetConverter(elementType!);
+        FormatConverter elementConverter = options.GetConverter(elementType!);
         Type converterType = typeof(CollectionConverter<,>).MakeGenericType(typeToConvert, elementType!);
-        return (BencodeConverter)Activator.CreateInstance(converterType, elementConverter, strategy)!;
+        return (FormatConverter)Activator.CreateInstance(converterType, elementConverter, strategy)!;
     }
 
     /// <summary>

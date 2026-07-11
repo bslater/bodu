@@ -35,7 +35,7 @@ internal static class DefaultConverters
     /// <summary>The built-in converters, in resolution order.</summary>
     private static readonly BencodeConverter[] s_builtIn =
     [
-        new BencodeNodeConverter(),
+        new NodeConverter(),
         new BencodeElementConverter(),
         new BencodeDocumentConverter(),
         new StringConverter(),

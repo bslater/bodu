@@ -10,6 +10,7 @@
 // ordinary C# while binding to this format's ref-struct-bound surface.
 global using FormatConverter = Bodu.Text.Toml.Serialization.TomlConverter;
 global using FormatConverterFactory = Bodu.Text.Toml.Serialization.TomlConverterFactory;
+global using FormatNode = Bodu.Text.Toml.Nodes.TomlNode;
 global using FormatOptions = Bodu.Text.Toml.TomlSerializerOptions;
 global using FormatReader = Bodu.Text.Toml.Reader.TomlDocumentReader;
 global using FormatResourceStrings = Bodu.TomlResourceStrings;

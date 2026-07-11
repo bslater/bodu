@@ -10,6 +10,7 @@
 // ordinary C# while binding to this format's ref-struct-bound surface.
 global using FormatConverter = Bodu.Text.Bencode.Serialization.BencodeConverter;
 global using FormatConverterFactory = Bodu.Text.Bencode.Serialization.BencodeConverterFactory;
+global using FormatNode = Bodu.Text.Bencode.Nodes.BencodeNode;
 global using FormatOptions = Bodu.Text.Bencode.BencodeSerializerOptions;
 global using FormatReader = Bodu.Text.Bencode.Reader.Utf8BencodeReader;
 global using FormatResourceStrings = Bodu.BencodeResourceStrings;

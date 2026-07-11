@@ -1,16 +1,20 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NullableConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if BENCODE
+namespace Bodu.Text.Bencode.Serialization.Converters;
+#elif TOML
 namespace Bodu.Text.Toml.Serialization.Converters;
+#endif
 
 /// <summary>
 /// Produces a <see cref="NullableConverter{T}" /> for any <see cref="Nullable{T}" /> type.
 /// </summary>
 internal sealed class NullableConverterFactory
-    : TomlConverterFactory
+    : FormatConverterFactory
 {
     /// <inheritdoc />
     public override bool CanConvert(Type typeToConvert)
@@ -20,14 +24,14 @@ internal sealed class NullableConverterFactory
     }
 
     /// <inheritdoc />
-    public override TomlConverter CreateConverter(Type typeToConvert, TomlSerializerOptions options)
+    public override FormatConverter CreateConverter(Type typeToConvert, FormatOptions options)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);
         ThrowHelper.ThrowIfNull(options);
 
         Type underlying = Nullable.GetUnderlyingType(typeToConvert)!;
-        TomlConverter inner = options.GetConverter(underlying);
+        FormatConverter inner = options.GetConverter(underlying);
         Type converterType = typeof(NullableConverter<>).MakeGenericType(underlying);
-        return (TomlConverter)Activator.CreateInstance(converterType, inner)!;
+        return (FormatConverter)Activator.CreateInstance(converterType, inner)!;
     }
 }

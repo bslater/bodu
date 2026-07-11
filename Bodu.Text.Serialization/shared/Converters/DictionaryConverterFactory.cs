@@ -1,10 +1,14 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DictionaryConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Converters;
+#elif TOML
+namespace Bodu.Text.Toml.Serialization.Converters;
+#endif
 
 /// <summary>
 /// Produces a <see cref="DictionaryConverter{TDictionary, TKey, TValue}" /> for dictionaries with a supported key type
@@ -15,11 +19,11 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// Supported key types are <see cref="string" />, the fixed-width integer family (<see cref="sbyte" />,
 /// <see cref="byte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />,
 /// <see cref="long" />, <see cref="ulong" />), enumerations, <see cref="Guid" />, <see cref="bool" />, and
-/// <see cref="char" /> — the key types whose text form round-trips cleanly through a Bencode byte-string key. A
+/// <see cref="char" /> — the key types whose text form round-trips cleanly through the format's string key. A
 /// dictionary with any other key type is not claimed by this factory and falls through to the later converters.
 /// </remarks>
 internal sealed class DictionaryConverterFactory
-    : BencodeConverterFactory
+    : FormatConverterFactory
 {
     /// <summary>The non-enum key types this factory supports, mapped to their key-conversion kind.</summary>
     private static readonly Dictionary<Type, DictionaryKeyKind> s_keyKinds = new()
@@ -46,15 +50,15 @@ internal sealed class DictionaryConverterFactory
     }
 
     /// <inheritdoc />
-    public override BencodeConverter CreateConverter(Type typeToConvert, BencodeSerializerOptions options)
+    public override FormatConverter CreateConverter(Type typeToConvert, FormatOptions options)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);
         ThrowHelper.ThrowIfNull(options);
 
         _ = TryGetInfo(typeToConvert, out Type? keyType, out Type? valueType, out DictionaryKeyKind keyKind, out bool concrete);
-        BencodeConverter valueConverter = options.GetConverter(valueType!);
+        FormatConverter valueConverter = options.GetConverter(valueType!);
         Type converterType = typeof(DictionaryConverter<,,>).MakeGenericType(typeToConvert, keyType!, valueType!);
-        return (BencodeConverter)Activator.CreateInstance(converterType, valueConverter, keyKind, concrete)!;
+        return (FormatConverter)Activator.CreateInstance(converterType, valueConverter, keyKind, concrete)!;
     }
 
     /// <summary>

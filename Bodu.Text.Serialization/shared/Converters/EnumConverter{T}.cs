@@ -1,20 +1,21 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EnumConverter{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Serialization;
-using System.Globalization;
 using System.Reflection;
-using Bodu.Text.Toml.Reader;
-using Bodu.Text.Toml.Writer;
 
+#if BENCODE
+namespace Bodu.Text.Bencode.Serialization.Converters;
+#elif TOML
 namespace Bodu.Text.Toml.Serialization.Converters;
+#endif
 
 /// <summary>
-/// Converts an enumeration value to and from a TOML string holding its member name, honoring a naming policy and any
-/// per-member <see cref="StringEnumMemberNameAttribute" />, and optionally accepting an integer on read.
+/// Converts an enumeration value to and from the format's string token holding its member name, honoring a naming
+/// policy and any per-member <see cref="StringEnumMemberNameAttribute" />, and optionally accepting an integer on read.
 /// </summary>
 /// <typeparam name="T">The enumeration type.</typeparam>
 /// <remarks>
@@ -23,17 +24,17 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// member — an undefined value or a combination of flags — falls back to the value's decimal or comma-separated string
 /// form. On read a string is matched case-insensitively against the member names and then, as a fallback, parsed by the
 /// runtime so numeric and combined-flag strings are accepted. When <see cref="_allowIntegerValues" /> is
-/// <see langword="true" /> a TOML integer is also accepted and converted to the underlying enumeration value.
+/// <see langword="true" /> an integer token is also accepted and converted to the underlying enumeration value.
 /// </para>
 /// </remarks>
 internal sealed class EnumConverter<T>
-    : TomlConverter<T>
+    : SharedConverter<T>
     where T : struct, Enum
 {
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether a TOML integer is accepted as an enumeration value on read.</summary>
+    /// <summary>Whether an integer token is accepted as an enumeration value on read.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>Maps each wire name to its enumeration value, matched case-insensitively.</summary>
@@ -48,7 +49,7 @@ internal sealed class EnumConverter<T>
     /// <param name="namingPolicy">
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
-    /// <param name="allowIntegerValues">Whether a TOML integer is accepted as an enumeration value on read.</param>
+    /// <param name="allowIntegerValues">Whether an integer token is accepted as an enumeration value on read.</param>
     /// <remarks>
     /// The name maps are built once at construction by reflecting over the public, static fields of
     /// <typeparamref name="T" />, resolving each member's wire name from its
@@ -73,9 +74,9 @@ internal sealed class EnumConverter<T>
     }
 
     /// <inheritdoc />
-    public override T Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
+    public override T Read(ref FormatReader reader, Type typeToConvert, FormatOptions options)
     {
-        if (reader.TokenType == TomlTokenType.String)
+        if (reader.TokenType == FormatToken.String)
         {
             string text = reader.GetString();
             if (_nameToValue.TryGetValue(text, out T mapped))
@@ -83,18 +84,16 @@ internal sealed class EnumConverter<T>
 
             return Enum.TryParse(text, ignoreCase: true, out T parsed)
                 ? parsed
-                : throw new TomlSerializationException(
-                    string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_EnumValueNotFound, text, typeof(T)));
+                : throw SerializationThrowHelper.EnumValueNotFound(ref reader, text, typeof(T));
         }
 
-        if (reader.TokenType == TomlTokenType.Integer && _allowIntegerValues)
+        if (reader.TokenType == FormatToken.Integer && _allowIntegerValues)
             return (T)Enum.ToObject(typeof(T), reader.GetInt64());
 
-        throw new TomlSerializationException(
-            string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExpectedString, reader.TokenType));
+        throw SerializationThrowHelper.ExpectedString(ref reader);
     }
 
     /// <inheritdoc />
-    public override void Write(Utf8TomlWriter writer, T value, TomlSerializerOptions options) =>
+    public override void Write(FormatWriter writer, T value, FormatOptions options) =>
         writer.WriteString(_valueToName.TryGetValue(value, out string? name) ? name : value.ToString());
 }
