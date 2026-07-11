@@ -114,6 +114,15 @@ For payloads that should not (or cannot) be buffered, author through a deferred 
 
 Independent of the cursor cap, MS-CFB itself limits any single stream in a version-3 (512-byte-sector) file to 2 GB; larger streams require a version-4 file (`CompoundBuildOptions.Version = CompoundFileVersion.V4`).
 
+## Asynchronous I/O
+
+Two paths do real asynchronous I/O, matched to where the work is actually a device operation rather than a memory copy:
+
+- **`CompoundFile.CommitAsync` / `FlushAsync`** write the container to the destination — and copy any deferred stream sources — with `WriteAsync` / `ReadAsync`. They share the exact layout computation the synchronous `Commit` uses, so the bytes are identical; cancellation is observed before any write and again between chunks. A cancellation or failure mid-write leaves the destination partially written and the file dirty (the same surface a synchronous fault presents) — commit again, or `Revert`.
+- **`CompoundStream.ReadAsync`** is truly asynchronous only for a *streaming*-mode cursor, which reads its sectors on demand from the underlying source. A buffered cursor (the default) and a writable cursor read from memory, so their `ReadAsync` completes synchronously — awaiting them is correct but adds no I/O concurrency.
+
+There is no `OpenAsync`: opening a buffered file is a single contiguous read the caller can do themselves (open a `MemoryStream` and pass it), and opening a streaming file does no bulk I/O up front.
+
 ## Lifetime checklist
 
 - Dispose the `CompoundFile` when finished; it releases the source according to the `leaveOpen` contract.
