@@ -6,6 +6,7 @@
 
 using Bodu.IO.Compound.Builders;
 using Bodu.IO.Compound.Internal;
+using Bodu.Test.IO;
 using Bodu.Test.Kat;
 
 namespace Bodu.IO.Compound;
@@ -56,5 +57,40 @@ public partial class CompoundStorageBuilderSerializationTests
         await CompoundContainerLayout.WriteToAsync(async, BuildMixed(), options, CancellationToken.None);
 
         CollectionAssert.AreEqual(sync.ToArray(), async.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that cancellation observed while copying a deferred stream source surfaces as
+    /// <see cref="OperationCanceledException" /> during an asynchronous write.
+    /// </summary>
+    [TestMethod]
+    public async Task WriteToAsync_WhenCancelledMidDeferredCopy_ShouldThrowOperationCanceledException()
+    {
+        using var cts = new CancellationTokenSource();
+
+        const int payloadSize = 300_000;
+        var root = CompoundStorageBuilder.CreateRoot();
+        _ = root.AddStream("Big", () => new CancellationTriggerStream(new IncrementingByteStream(payloadSize), cts, cancelAfterRead: 2), payloadSize);
+
+        using var destination = new MemoryStream();
+
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            await CompoundContainerLayout.WriteToAsync(destination, root, new CompoundBuildOptions(), cts.Token));
+    }
+
+    /// <summary>
+    /// Verifies that a deferred source shorter than its declared length throws
+    /// <see cref="CompoundFileSerializationException" /> during an asynchronous write.
+    /// </summary>
+    [TestMethod]
+    public async Task WriteToAsync_WhenDeferredSourceShort_ShouldThrowCompoundFileSerializationException()
+    {
+        var root = CompoundStorageBuilder.CreateRoot();
+        _ = root.AddStream("Big", () => new MemoryStream(Canonical(4096)), 8192);
+
+        using var destination = new MemoryStream();
+
+        await Assert.ThrowsExactlyAsync<CompoundFileSerializationException>(async () =>
+            await CompoundContainerLayout.WriteToAsync(destination, root, new CompoundBuildOptions(), CancellationToken.None));
     }
 }

@@ -340,24 +340,23 @@ public sealed class CompoundStream
     {
         ThrowHelper.ThrowIfNull(buffer);
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(buffer, offset, count);
-        if (cancellationToken.IsCancellationRequested)
-            return Task.FromCanceled<int>(cancellationToken);
 
-        try
-        {
-            return Task.FromResult(Read(buffer.AsSpan(offset, count)));
-        }
-        catch (Exception ex)
-        {
-            return Task.FromException<int>(ex);
-        }
+        return ReadAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// This is truly asynchronous only for a streaming-mode cursor, which reads its sectors on demand from the
+    /// underlying source; a buffered or writable cursor reads from memory and completes synchronously.
+    /// </remarks>
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         if (cancellationToken.IsCancellationRequested)
             return ValueTask.FromCanceled<int>(cancellationToken);
+
+        // Only a streaming cursor performs real I/O; buffered and writable cursors read from memory synchronously.
+        if (_sectors is not null)
+            return ReadStreamingAsync(buffer, cancellationToken);
 
         try
         {
@@ -367,6 +366,47 @@ public sealed class CompoundStream
         {
             return ValueTask.FromException<int>(ex);
         }
+    }
+
+    /// <summary>
+    /// Reads from a streaming-mode cursor by walking its sector chain with asynchronous source reads.
+    /// </summary>
+    /// <param name="buffer">The buffer that receives the bytes.</param>
+    /// <param name="cancellationToken">A token that cancels the read.</param>
+    /// <returns>The number of bytes read.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
+    /// <exception cref="CompoundFileFormatException">Thrown when the declared size outruns the sector chain.</exception>
+    private async ValueTask<int> ReadStreamingAsync(Memory<byte> buffer, CancellationToken cancellationToken)
+    {
+        ThrowIfDisposed();
+
+        long remaining = _length - _position;
+        if (remaining <= 0)
+            return 0;
+
+        int want = (int)Math.Min(buffer.Length, remaining);
+        int total = 0;
+        while (want > 0)
+        {
+            int sectorIndex = (int)(_position / _sectorSize);
+
+            // A crafted directory can declare a stream size larger than its actual sector chain covers. Guard
+            // the chain index so an over-declared size surfaces as a catchable CompoundFileFormatException rather
+            // than an IndexOutOfRangeException escaping the Stream.Read contract.
+            CompoundThrowHelper.ThrowFormatIf(
+                (uint)sectorIndex >= (uint)_chain!.Length,
+                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+                CompoundFileError.StreamChainTooShort);
+
+            int within = (int)(_position % _sectorSize);
+            int n = Math.Min(want, _sectorSize - within);
+            await _sectors!.ReadWithinSectorAsync(_chain[sectorIndex], within, buffer.Slice(total, n), cancellationToken).ConfigureAwait(false);
+            want -= n;
+            total += n;
+            _position += n;
+        }
+
+        return total;
     }
 
     /// <inheritdoc />

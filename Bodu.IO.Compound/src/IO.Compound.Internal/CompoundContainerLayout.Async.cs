@@ -254,6 +254,9 @@ internal static partial class CompoundContainerLayout
         {
             while (remaining > 0)
             {
+                // Observe cancellation between chunks even when the underlying source ignores the token.
+                cancellationToken.ThrowIfCancellationRequested();
+
                 int toRead = (int)Math.Min(buffer.Length, remaining);
                 int read = await source.ReadAsync(buffer.AsMemory(0, toRead), cancellationToken).ConfigureAwait(false);
                 if (read <= 0)
