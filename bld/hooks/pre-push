@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# ---------------------------------------------------------------------------------------------------------------
+# pre-push — author-time (upstream) coding-policy enforcement.
+#
+# Runs the deterministic Tier-1 policy checks (bld/check-policy.sh) over the range being pushed,
+# BEFORE it reaches the remote and the CI Policy Gate. This is the "apply the policy before it
+# gets caught" shift-left step: an authoring session (human or agent) sees the violation at push
+# time and fixes it locally instead of round-tripping through CI.
+#
+# Enabled by pointing git at this directory:  git config core.hooksPath bld/hooks
+# The Claude Code on the web SessionStart hook does this automatically in the remote environment.
+#
+# Bypass (rarely, and never to dodge policy): git push --no-verify
+#
+# git passes candidate ref updates on stdin as:  <local_ref> <local_sha> <remote_ref> <remote_sha>
+# ---------------------------------------------------------------------------------------------------------------
+set -uo pipefail
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+checker="$repo_root/bld/check-policy.sh"
+[ -x "$checker" ] || [ -f "$checker" ] || exit 0
+
+zero="0000000000000000000000000000000000000000"
+status=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  # Branch deletion — nothing to check.
+  [ "$local_sha" = "$zero" ] && continue
+
+  if [ "$remote_sha" = "$zero" ]; then
+    # New branch on the remote: diff against the merge-base with master so we judge only this
+    # branch's own commits, not everything since the beginning of history.
+    base="$(git merge-base origin/master "$local_sha" 2>/dev/null \
+          || git merge-base master "$local_sha" 2>/dev/null || echo "")"
+  else
+    # Updating an existing remote branch: judge exactly the newly pushed commits.
+    base="$remote_sha"
+  fi
+  # Last resort: the immediate parent (or the commit itself for a root commit).
+  [ -z "$base" ] && base="$(git rev-parse "${local_sha}^" 2>/dev/null || echo "$local_sha")"
+
+  POLICY_BASE_REF="$base" POLICY_HEAD_REF="$local_sha" bash "$checker" || status=1
+done
+
+if [ "$status" -ne 0 ]; then
+  echo >&2
+  echo "pre-push: coding-policy violations found (see above). See bld/policy/POLICIES.md." >&2
+  echo "          Fix them, or push with --no-verify only if you have a genuine reason." >&2
+fi
+
+exit "$status"

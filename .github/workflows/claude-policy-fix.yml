@@ -1,0 +1,192 @@
+name: Claude Policy Fix
+
+# Fix-and-LEARN arm of the policy pipeline. When a policy check fails (Policy Gate or Claude
+# Policy Review), this launches Claude Code to bring the change into conformance AND to distil
+# what was caught back into bld/policy/POLICIES.md — so the next authoring session applies the
+# rule upstream, before CI catches it again. Over time, recurring Tier-2 (judgment) catches get
+# promoted into Tier-1 (deterministic) checks in check-policy.sh, migrating enforcement upstream.
+#
+# The loop:
+#   1. Policy Gate or Claude Policy Review FAILS on a PR.
+#   2. This fires (workflow_run / conclusion == failure), checks a bounded attempt counter.
+#   3. Claude fixes the violations following POLICIES.md, appends a Learning-log entry (and, when
+#      the rule is deterministic, adds it to check-policy.sh), commits with a [claude-policy-fix]
+#      marker, and pushes via a GitHub APP token so the checks re-run and re-judge.
+#   4. Still failing → step 2 again, up to MAX_ATTEMPTS; then it escalates to a human.
+#
+# ── Required secrets ────────────────────────────────────────────────────────────────────────
+#   ANTHROPIC_API_KEY          Claude Code credential (or CLAUDE_CODE_OAUTH_TOKEN — swap the input).
+#   CLAUDE_APP_ID              GitHub App id whose installation token pushes the fix. The app needs
+#   CLAUDE_APP_PRIVATE_KEY       Contents + Pull requests: write. Using an APP (or PAT) instead of
+#                              GITHUB_TOKEN is REQUIRED, or the pushed fix won't re-trigger the
+#                              policy checks and the gate deadlocks against branch protection.
+
+on:
+  workflow_run:
+    workflows: ["Policy Gate", "Claude Policy Review"]
+    types: [completed]
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: read
+
+concurrency:
+  group: claude-policy-fix-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+env:
+  MAX_ATTEMPTS: "3"
+  FIXER_MARKER: "[claude-policy-fix]"
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: >
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+
+    steps:
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+
+      - name: Resolve PR and enforce attempt cap
+        id: gate
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const marker = '<!-- claude-policy-fix-state -->';
+            const fixerMarker = process.env.FIXER_MARKER;
+            const maxAttempts = parseInt(process.env.MAX_ATTEMPTS, 10);
+            const headBranch = context.payload.workflow_run.head_branch;
+            const headSha = context.payload.workflow_run.head_sha;
+            const { owner, repo } = context.repo;
+
+            const prs = await github.rest.pulls.list({
+              owner, repo, state: 'open', head: `${owner}:${headBranch}`, per_page: 10,
+            });
+            if (prs.data.length === 0) {
+              core.info(`No open PR for head '${headBranch}'.`);
+              core.setOutput('should_fix', 'false');
+              return;
+            }
+            const pr = prs.data[0];
+
+            // Reset the counter when the head commit is NOT one of ours (a human pushed fresh work).
+            const headCommit = await github.rest.repos.getCommit({ owner, repo, ref: headSha });
+            const isFixerCommit = (headCommit.data.commit.message || '').includes(fixerMarker);
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number: pr.number, per_page: 100,
+            });
+            const stateComment = comments.find(c => c.user.type === 'Bot' && c.body && c.body.includes(marker));
+
+            let attempts = 0;
+            if (stateComment && isFixerCommit) {
+              const m = stateComment.body.match(/attempts:\s*(\d+)/);
+              if (m) attempts = parseInt(m[1], 10);
+            }
+
+            if (attempts >= maxAttempts) {
+              const body = [
+                marker, '## 🛑 Claude Policy Fix — stopped', '',
+                `Reached the cap of **${maxAttempts} attempts** without reaching policy conformance. ` +
+                `This needs a human.`, '', `attempts: ${attempts} (capped)`, '',
+                '_Push a commit of your own to reset the counter and re-arm the fixer._',
+              ].join('\n');
+              if (stateComment) await github.rest.issues.updateComment({ owner, repo, comment_id: stateComment.id, body });
+              else await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body });
+              core.setOutput('should_fix', 'false');
+              return;
+            }
+
+            const next = attempts + 1;
+            const body = [
+              marker, '## 🤖 Claude Policy Fix — working', '',
+              `A policy check failed on \`${headSha.substring(0, 7)}\`. Bringing the change into ` +
+              `conformance and recording the lesson.`, '', `attempts: ${next}`, '',
+              `_Automated attempt ${next} of ${maxAttempts}. Push your own commit to reset._`,
+            ].join('\n');
+            if (stateComment) await github.rest.issues.updateComment({ owner, repo, comment_id: stateComment.id, body });
+            else await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body });
+
+            core.setOutput('should_fix', 'true');
+            core.setOutput('pr_number', String(pr.number));
+            core.setOutput('head_branch', headBranch);
+            core.setOutput('base_sha', pr.base.sha);
+            core.setOutput('attempt', String(next));
+            core.setOutput('today', new Date().toISOString().slice(0, 10));
+
+      - name: Checkout PR head
+        if: steps.gate.outputs.should_fix == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.gate.outputs.head_branch }}
+          token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
+
+      - name: Setup .NET
+        if: steps.gate.outputs.should_fix == 'true'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Configure git identity
+        if: steps.gate.outputs.should_fix == 'true'
+        run: |
+          git config user.name  "claude-policy-fix[bot]"
+          git config user.email "claude-policy-fix[bot]@users.noreply.github.com"
+
+      - name: Run Claude Code to fix and learn
+        if: steps.gate.outputs.should_fix == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.app-token.outputs.token }}
+          prompt: |
+            You are the fix-and-learn agent for the Bodu coding-policy pipeline. A policy check
+            failed on this pull request branch (${{ steps.gate.outputs.head_branch }}); attempt
+            ${{ steps.gate.outputs.attempt }} of ${{ env.MAX_ATTEMPTS }}. Read CLAUDE.md and
+            bld/policy/POLICIES.md first — POLICIES.md is the policy registry and the learning surface.
+
+            STEP 1 — Identify the violations.
+              • Deterministic (Tier-1): run
+                    POLICY_BASE_REF=${{ steps.gate.outputs.base_sha }} POLICY_HEAD_REF=HEAD bash bld/check-policy.sh
+                    bash bld/check-folder-namespace-alignment.sh
+                and read every violation it prints.
+              • Judgment (Tier-2): read the "Claude Policy Review" comment on this PR for its findings.
+
+            STEP 2 — Fix them, minimally, following CLAUDE.md and the conforming form in POLICIES.md
+            for each policy ID. Do NOT weaken tests, suppress analyzers, or make unrelated changes.
+            Do NOT edit `.github/workflows/**`, signing files, `*.snk`, `NuGet.config`, or `global.json`.
+            Re-run the deterministic checks until they pass clean.
+
+            STEP 3 — LEARN. This is what makes the pipeline self-improving. For each violation you
+            fixed, append an entry to the Learning log in bld/policy/POLICIES.md, INSIDE the
+            `<!-- LEARNING-LOG:START -->` / `<!-- LEARNING-LOG:END -->` markers (replace the
+            "No entries yet" placeholder if present), using the entry format documented in that file.
+            Use the date ${{ steps.gate.outputs.today }} and reference PR #${{ steps.gate.outputs.pr_number }}.
+            Then:
+              • If a violation you fixed is DETERMINISTICALLY checkable (a regex/AST rule) but is not
+                yet caught by bld/check-policy.sh, ADD a diff-scoped check for it to check-policy.sh
+                following the existing checks' structure, and record "Promoted: added rule to
+                check-policy.sh" in the log entry. This migrates a Tier-2 judgment into a Tier-1
+                script so it is caught upstream and for free next time.
+              • Otherwise record "Promoted: none".
+
+            STEP 4 — Commit everything (the code fix AND the POLICIES.md / check-policy.sh updates)
+            with a message whose body includes the literal marker ${{ env.FIXER_MARKER }} on its own
+            line, then `git push`. If you could not reach a clean conforming state, do NOT push a
+            partial fix — end your turn with a clear diagnosis of what a human must decide.
+          claude_args: |
+            --max-turns 60
+            --allowedTools "Bash,Edit,MultiEdit,Write,Read,Glob,Grep"

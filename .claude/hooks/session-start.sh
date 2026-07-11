@@ -20,6 +20,30 @@ if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
 fi
 
 # ---------------------------------------------------------------------------
+# author-time coding-policy enforcement
+#
+# Point git at the version-controlled hooks directory so the pre-push hook
+# (bld/hooks/pre-push) runs the deterministic Tier-1 policy checks over the
+# range being pushed, BEFORE it reaches CI. This is the "apply the policy
+# before it gets caught" shift-left step: the authoring session sees a
+# violation at push time and fixes it locally rather than round-tripping
+# through the CI Policy Gate. Idempotent; never blocks session start.
+# Local developers opt in with the same one-liner (see bld/policy/POLICIES.md).
+# ---------------------------------------------------------------------------
+enable_policy_hooks() {
+    local repo_root
+    repo_root="$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --show-toplevel 2>/dev/null)" || return 0
+    [ -f "$repo_root/bld/hooks/pre-push" ] || return 0
+
+    chmod +x "$repo_root/bld/hooks/pre-push" 2>/dev/null || true
+    if [ "$(git -C "$repo_root" config --local core.hooksPath 2>/dev/null)" != "bld/hooks" ]; then
+        git -C "$repo_root" config --local core.hooksPath bld/hooks \
+            && echo "[session-start] Enabled author-time policy hooks (core.hooksPath=bld/hooks)."
+    fi
+}
+enable_policy_hooks || true
+
+# ---------------------------------------------------------------------------
 # dotnet-dnceng plugin repair
 #
 # .claude/settings.json registers the dotnet/arcade-skills marketplace and

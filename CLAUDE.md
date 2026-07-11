@@ -104,6 +104,10 @@ The hook also repairs the `dotnet-dnceng` plugin that `.claude/settings.json` en
 
 Local developer machines are untouched (the hook short-circuits when `CLAUDE_CODE_REMOTE` is unset), and the hook is registered via `.claude/settings.json`. Note for local use: until the upstream manifest fix lands, the plugin install triggered by the project settings may fail validation on a local machine; sessions still work, just without the plugin's skills.
 
+### Coding-policy pipeline
+
+The coding policies in this file are enforced through a self-improving CI/CD pipeline documented in `.github/workflows/README.ci-policy-pipeline.md`, with `bld/policy/POLICIES.md` as the machine-readable registry (stable `BODU-Pxxx` IDs, tiers, and the conforming form for each rule). **Apply policy at authoring time, before CI catches it:** the session-start hook enables `bld/hooks/pre-push`, which runs `bld/check-policy.sh` (diff-scoped Tier-1 checks: banner, file-scoped namespace on new files, no string-literal exception messages) over the range being pushed and blocks the push on a violation. Run `bld/check-policy.sh` yourself before pushing, and consult `POLICIES.md` — including its append-only **Learning log**, where every violation the pipeline has previously fixed is recorded so it is not repeated. When you resolve a recurring judgment-based catch that is deterministically checkable, promote it into `check-policy.sh` and note it in the log (this is how a Tier-2 review finding becomes a Tier-1 script and moves upstream).
+
 ## Branching and Commits
 
 - **One branch per session, by default.** Use the branch the harness designates at session start (typically `claude/<topic>-<id>`) and make multiple commits to it as the session progresses. Do not spin up additional branches for each edit, fix, or intermediate step within the same session.
