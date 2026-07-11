@@ -105,6 +105,22 @@
     <Project Path="Bodu.Financial.ExchangeRates.Ecb/src/Bodu.Financial.ExchangeRates.Ecb.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Ecb/test/Bodu.Financial.ExchangeRates.Ecb.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.ExchangeRateHost/">
+    <Project Path="Bodu.Financial.ExchangeRates.ExchangeRateHost/src/Bodu.Financial.ExchangeRates.ExchangeRateHost.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.ExchangeRateHost/test/Bodu.Financial.ExchangeRates.ExchangeRateHost.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Fixer/">
+    <Project Path="Bodu.Financial.ExchangeRates.Fixer/src/Bodu.Financial.ExchangeRates.Fixer.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Fixer/test/Bodu.Financial.ExchangeRates.Fixer.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Fred/">
+    <Project Path="Bodu.Financial.ExchangeRates.Fred/src/Bodu.Financial.ExchangeRates.Fred.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Fred/test/Bodu.Financial.ExchangeRates.Fred.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Imf/">
+    <Project Path="Bodu.Financial.ExchangeRates.Imf/src/Bodu.Financial.ExchangeRates.Imf.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Imf/test/Bodu.Financial.ExchangeRates.Imf.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Oanda/">
     <Project Path="Bodu.Financial.ExchangeRates.Oanda/src/Bodu.Financial.ExchangeRates.Oanda.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Oanda/test/Bodu.Financial.ExchangeRates.Oanda.Test.csproj" />

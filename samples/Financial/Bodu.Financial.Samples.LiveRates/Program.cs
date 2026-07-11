@@ -79,6 +79,23 @@ public static class Program
         // XE.com (any pair, rolling ~10-year window; experimental - scrapes an auth token):
         //     using var provider = new XeRateProvider(new XeRateProviderOptions { EnableDiskCache = false });
         //     var fromIso = "EUR"; var toIso = "USD";
+        //
+        // Fixer (fixer.io, any pair; requires an access_key - free plan is EUR-base only):
+        //     using var provider = new FixerRateProvider(new FixerRateProviderOptions { ApiKey = "<your-key>" });
+        //     var fromIso = "EUR"; var toIso = "USD";
+        //
+        // exchangerate.host (any pair; requires an access_key - free plan is USD-source only):
+        //     using var provider = new ExchangeRateHostRateProvider(new ExchangeRateHostRateProviderOptions { ApiKey = "<your-key>" });
+        //     var fromIso = "USD"; var toIso = "EUR";
+        //
+        // FRED (St. Louis Fed, mapped pairs; requires an api_key - EUR/USD maps to DEXUSEU):
+        //     using var provider = new FredRateProvider(new FredRateProviderOptions { ApiKey = "<your-key>" });
+        //     var fromIso = "EUR"; var toIso = "USD";
+        //
+        // IMF (keyless; daily USD-anchored representative rates from the monthly TSV report;
+        // single-base like ECB, so the pair must involve USD, e.g. USD/JPY):
+        //     using var provider = new ImfRateProvider(new ImfRateProviderOptions());
+        //     var fromIso = "USD"; var toIso = "JPY";
         // -------------------------------------------------------------------------------------------
 
         try

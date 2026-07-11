@@ -79,9 +79,9 @@ ref-struct `Utf8*Reader` / `Utf8*Writer` + `*Serializer` + mutable/read-only
 DOM quartet; (3) the **container + office-format reader** pair
 `Bodu.IO.Compound` (OLE2/CFB read + edit + fluent authoring) and
 `Bodu.Formats.Excel.Binary` (read-only BIFF8 `.xls`); (4) the entire
-**`Bodu.Financial.ExchangeRates.*` ecosystem** — seven web providers (Boe,
-Ecb, Rba, Yahoo, Ofx, Xe, Oanda) over a shared `WebRateProvider`
-base, the provider-agnostic caching layer (`CachingRateProvider`,
+**`Bodu.Financial.ExchangeRates.*` ecosystem** — eleven web providers (Boe,
+Ecb, Rba, Yahoo, Ofx, Xe, Oanda, Fixer, ExchangeRateHost, Fred, Imf) over a
+shared `WebRateProvider` base, the provider-agnostic caching layer (`CachingRateProvider`,
 `AggregatingRateProvider`) with in-memory / TOML / JSON / SQLite /
 distributed backends, and per-package DI; and (5) DI packages for
 `Bodu.Financial` and the calendar service, plus the calendar plugin loader.
@@ -184,7 +184,7 @@ exercised on the smallest self-contained units first.
 | Package | Notes |
 | --- | --- |
 | `Bodu.Financial.ExchangeRates.DependencyInjection` | Shared `AddWebRateProvider` machinery (named `HttpClient` + Polly resilience). |
-| `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Xe,Oanda}` | Per-source provider packages, each shipping its own DI extension. |
+| `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Xe,Oanda,Fixer,ExchangeRateHost,Fred,Imf}` | Per-source provider packages, each shipping its own DI extension. |
 | `Bodu.Financial.ExchangeRates.Caching` | `CachingRateProvider`, `AggregatingRateProvider`, in-memory / TOML / JSON backends. |
 | `Bodu.Financial.ExchangeRates.Caching.{Sqlite,Distributed}` | Durable SQLite and shared `IDistributedCache` backends. |
 
@@ -846,12 +846,16 @@ Current state: bridge; `IServiceCollection` extensions declared in the
 
 ### `Bodu.Financial.ExchangeRates.*` *(provider + caching family)*
 
-Current state: new and extensive. Seven web providers over the shared
+Current state: new and extensive. Eleven web providers over the shared
 `WebRateProvider` base, split into two architectural families:
-central-bank whole-file sources (**Boe** IADB CSV, **Ecb** eurofxref XML,
-**Rba** `.xls` eras) and arbitrary-pair sources over
-`PairWebRateProvider<TSeries>` (**Yahoo** chart JSON, **Ofx**,
-**Xe** — scrape-token auth, **Oanda** — rolling ~180-day window). The
+central-bank / single-base whole-file sources (**Boe** IADB CSV, **Ecb**
+eurofxref XML, **Rba** `.xls` eras, **Imf** — keyless USD-anchored daily
+Representative Exchange Rates over a monthly tab-separated report) and
+arbitrary-pair sources over `PairWebRateProvider<TSeries>` (**Yahoo** chart
+JSON, **Ofx**, **Xe** — scrape-token auth, **Oanda** — rolling ~180-day
+window, **Fixer** — fixer.io `access_key` base+quotes, **ExchangeRateHost** —
+exchangerate.host `access_key` source+quotes, **Fred** — St. Louis Fed
+`api_key` per-pair `series_id` map). The
 shared `.DependencyInjection` package owns the `AddWebRateProvider`
 machinery (named `HttpClient` + Polly resilience) each provider's `Add*`
 extension delegates to. The provider-agnostic `.Caching` package supplies
@@ -887,10 +891,15 @@ backends in-package and durable `Sqlite` + shared `Distributed`
   providers guide. The remaining open half is replacing the scraped
   `Authorization: Basic` token with an official-endpoint path, if one
   ever becomes available.
-- **Broaden provider coverage** if there is demand — Fixer,
-  exchangerate.host, IMF, and FRED are the common free/commercial APIs
-  not yet wrapped. Each is a small package following the established
-  provider + DI shape.
+- **Broaden provider coverage** — *done for the common free/commercial
+  APIs.* Fixer (`Bodu.Financial.ExchangeRates.Fixer`), exchangerate.host
+  (`.ExchangeRateHost`), FRED (`.Fred`), and IMF (`.Imf`) are now wrapped
+  as pair providers over `PairWebRateProvider<TSeries>`, each a small
+  package following the established provider + DI shape. IMF is a keyless,
+  USD-anchored bulk provider (like ECB) that downloads the IMF's monthly
+  Representative Exchange Rates tab-separated report and serves daily rates;
+  quotation direction (some currencies are USD-per-unit) is normalized on
+  ingest. Further sources can follow the same template on demand.
 
 ### `Bodu.IO.Compound`
 
@@ -1292,7 +1301,7 @@ blockquote directly under its README title. The assignment:
   types are now serialization-agnostic and support is opt-in via
   `AddNumericsJsonConverters`), `Bodu.Text.Yaml` (the serializer is read-first and its
   write surface is still being rounded out) and the network-dependent
-  exchange-rate family: the six web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda}`
+  exchange-rate family: the web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda,Fixer,ExchangeRateHost,Fred,Imf}`
   and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.
   These are held at Preview until they have shipped and been exercised
   against their live upstream endpoints; the public API is largely settled,

@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "historical": true,
+  "date": "2023-01-03",
+  "source": "EUR",
+  "quotes": { "EURUSD": 1.0546 }
+}
