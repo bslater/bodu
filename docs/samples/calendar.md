@@ -42,12 +42,15 @@ fiscal-period boundaries, and `WeekPattern` overrides for non-Mon–Fri working 
 ### Bodu.Globalization.Calendar.Samples.CustomCalendar
 
 The "bring your own data" story:
-<xref:Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder> fluent authoring (fixed,
-floating, and multi-day rules), declarative weekend-roll adjustment policies, importing the
-shared catalogues through <xref:Bodu.Globalization.Calendar.CommonNotableDateResources> —
-including the offset-anchor dependency the validator enforces — and the XML save/load round trip
-that makes the document a distributable artifact. *Packages: `Bodu.Globalization.Calendar`,
-`Bodu.Globalization.Calendar.Builder`.*
+<xref:Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder> fluent authoring — fixed
+and floating rules, a **calculated-duration** year-end shutdown (`UntilDate`), and
+**frequency-based** recurrences (daily-interval, weekly, monthly day, and monthly ordinal-weekday
+schedules) — declarative weekend-roll adjustment policies, importing the shared catalogues through
+<xref:Bodu.Globalization.Calendar.CommonNotableDateResources> (including the offset-anchor
+dependency the validator enforces), and the XML save/load round trip that makes the document a
+distributable artifact. Its `FrequencyBasedSchedules` and `AuthoringCompanyHolidays` scenarios are
+the runnable companions to the [Notable-date rule strategies](../guides/calendar/strategy-reference.md)
+guide. *Packages: `Bodu.Globalization.Calendar`, `Bodu.Globalization.Calendar.Builder`.*
 
 ### Bodu.Globalization.Calendar.Samples.ServiceHosting
 

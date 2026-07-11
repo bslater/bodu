@@ -231,6 +231,8 @@
               href: calendar/notable-date-builder.md
         - name: Bodu.Globalization.Calendar — Reference
           items:
+            - name: Notable-date rule strategies
+              href: calendar/strategy-reference.md
             - name: NotableDateRule and adjustment-policy reference
               href: calendar/rule-reference.md
             - name: Territories and regional composition

@@ -11,31 +11,67 @@ dotnet run --project samples/Globalization.Calendar/Bodu.Globalization.Calendar.
 
 ## Scenarios
 
+For the full catalogue of occurrence sources — every single-date strategy, the recurrence
+sources, and fixed vs. calculated durations — see the
+[Notable-date rule strategies](../../../docs/guides/calendar/strategy-reference.md) guide.
+
 ### AuthoringCompanyHolidays (`Scenarios/AuthoringCompanyHolidays.cs`)
 
-**Intent.** Show that rules are *data*, authored declaratively: a fixed date, an "nth weekday of
-month" floater, and a multi-day span — no date mathematics in consumer code.
+**Intent.** Show that rules are *data*, authored declaratively — a fixed date, a fortnightly
+recurrence, and a **calculated-duration** span whose length is computed from the calendar — with
+no date mathematics in consumer code.
 
-**What it does.** Builds a three-concept company calendar (fixed Founding Day, first-Friday-of-
-December Summer Party, three-day Year-End Shutdown), materializes it with `Build()`, and
-resolves 2024 through a plain `NotableDateService`.
+**What it does.** Builds a three-concept company calendar (fixed Founding Day, a fortnightly
+All-Hands `DailyInterval` recurrence, and a Year-End Shutdown whose span runs from the Friday
+before Boxing Day to the Monday after New Year's Day), materializes it with `Build()`, and
+resolves December 2023 → mid-2024 through a plain `NotableDateService`.
 
-**What to expect.**
+**What to expect (excerpt).**
 
 ```
-  2024-03-12 (Tuesday  ) Contoso Founding Day   Other, non-working: True, spans 1d
-  2024-12-06 (Friday   ) Summer Party           Cultural, non-working: False, spans 1d
-  2024-12-27 (Friday   ) Year-End Shutdown      Other, non-working: True, spans 3d
+  2023-12-23 (Saturday ) Year-End Shutdown      Other, non-working: True, spans 16d (ends 2024-01-07)
+  2024-01-05 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2024-01-05)
+  2024-03-12 (Tuesday  ) Contoso Founding Day   Other, non-working: True, spans 1d (ends 2024-03-12)
 ```
 
-The Summer Party floated to the first Friday (12-06) from the `DayOfWeekInMonth` strategy; the
-shutdown carries `DurationDays = 3`. The authored resource is served by the same service type
-the regional packs return — a custom calendar is a first-class citizen.
+The shutdown's span is **calculated**, not a fixed day count — it is 16 days here but 9 in years
+where the Friday before Boxing Day is Christmas Day, all from one rule (see the shutdown table in
+the [strategy guide](../../../docs/guides/calendar/strategy-reference.md#durations-fixed-or-calculated)).
+The All-Hands repeats every 14 days from its anchor. The authored resource is served by the same
+service type the regional packs return — a custom calendar is a first-class citizen.
 
 **APIs demonstrated.** `NotableDateDocumentBuilder.Create` / `WithMetadata` / `AddNotableDate`,
 `NotableDateDefinitionBuilder.AsNonWorkingByDefault` / `AddRule`,
-`NotableDateRuleBuilder.Fixed` / `DayOfWeekInMonth` / `WithDurationDays`, `Build()`,
-`new NotableDateService(resource)`.
+`NotableDateRuleBuilder.Fixed` / `DailyInterval` / `UntilDate`, `DateBoundary`,
+`EndDateSelection`, `Build()`, `new NotableDateService(resource)`.
+
+### FrequencyBasedSchedules (`Scenarios/FrequencyBasedSchedules.cs`)
+
+**Intent.** Frequency-based rules: a `Recurrence` source yields **many** occurrences in a window
+instead of one date per year — the four recurrence kinds, authored fluently.
+
+**What it does.** Builds an operations calendar entirely from recurrences — a fortnightly
+All-Hands (`DailyInterval`), a twice-weekly Maintenance Window (`Weekly` on Monday + Friday), a
+day-15 Payroll Run and a day-31 Month-End Close (`MonthlyDay`, the latter clamping short months),
+and a last-Friday Board Report (`MonthlyWeekday`) — then resolves the first quarter of 2026.
+
+**What to expect (excerpt).**
+
+```
+  2026-01-05 (Monday   ) Fortnightly All-Hands
+  2026-01-15 (Thursday ) Payroll Run
+  2026-01-30 (Friday   ) Board Report
+  2026-01-31 (Saturday ) Month-End Close
+```
+
+Every occurrence flows through the normal pipeline (category, non-working flag, duration,
+adjustments) just like a fixed holiday, and generation is **query-window invariant** — resolving
+February alone yields exactly the February subset of the quarter. See
+[Notable-date rule strategies — Recurrence sources](../../../docs/guides/calendar/strategy-reference.md#recurrence-sources).
+
+**APIs demonstrated.** `NotableDateRuleBuilder.DailyInterval` / `Weekly` / `MonthlyDay` /
+`MonthlyWeekday`, `InvalidDayOfMonthBehavior.UseLastDayOfMonth`, `WeekOrdinal.Last`,
+`NotableDateService.Resolve(DateRange, territory)`.
 
 ### AdjustmentsAndPolicies (`Scenarios/AdjustmentsAndPolicies.cs`)
 
