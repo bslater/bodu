@@ -130,6 +130,8 @@ public static partial class YamlSerializer
             ?? throw new YamlSerializationException(
                 string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlTypeNotInstantiable, type));
 
+        (instance as IOnDeserializing)?.OnDeserializing();
+
         YamlMemberInfo[] members = YamlMemberInfo.ForType(type, options.IncludeFields);
         YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
@@ -166,6 +168,8 @@ public static partial class YamlSerializer
                 SkipValue(ref reader);
             }
         }
+
+        (instance as IOnDeserialized)?.OnDeserialized();
 
         return instance;
     }

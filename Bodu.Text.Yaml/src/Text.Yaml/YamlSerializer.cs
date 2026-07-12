@@ -9,6 +9,7 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
+using Bodu.Text.Serialization;
 using Bodu.Text.Yaml.Serialization;
 using Bodu.Text.Yaml.Writer;
 
@@ -220,6 +221,8 @@ public static partial class YamlSerializer
         YamlMemberInfo[] members = YamlMemberInfo.ForType(type, options.IncludeFields);
         YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
 
+        (value as IOnSerializing)?.OnSerializing();
+
         writer.WriteStartMapping();
         foreach (YamlMemberInfo member in members)
         {
@@ -232,5 +235,7 @@ public static partial class YamlSerializer
         }
 
         writer.WriteEndMapping();
+
+        (value as IOnSerialized)?.OnSerialized();
     }
 }
