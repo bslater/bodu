@@ -136,6 +136,7 @@ public static partial class YamlSerializer
         YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         HashSet<YamlMemberInfo>? seenRequired = Array.Exists(members, static m => m.IsRequired) ? new HashSet<YamlMemberInfo>() : null;
+        IDictionary<string, object?>? extensionData = ResolveExtensionData(instance, members);
 
         while (reader.Read() && reader.TokenType != YamlTokenType.EndMapping)
         {
@@ -145,7 +146,7 @@ public static partial class YamlSerializer
             YamlMemberInfo? match = null;
             foreach (YamlMemberInfo member in members)
             {
-                if (string.Equals(member.WireName(options), name, comparison))
+                if (!member.IsExtensionData && string.Equals(member.WireName(options), name, comparison))
                 {
                     match = member;
                     break;
@@ -161,6 +162,10 @@ public static partial class YamlSerializer
                     match.Set(instance, BindChild(ref reader, match.Type, options, match.WireName(options)));
                 else
                     SkipValue(ref reader);
+            }
+            else if (extensionData is not null)
+            {
+                extensionData[name] = BindChild(ref reader, typeof(object), options, name);
             }
             else if (options.UnmappedMemberHandling == UnmappedMemberHandling.Disallow)
             {
@@ -188,6 +193,33 @@ public static partial class YamlSerializer
         (instance as IOnDeserialized)?.OnDeserialized();
 
         return instance;
+    }
+
+    /// <summary>
+    /// Resolves the dictionary that captures unmapped keys for a type declaring an extension-data member, reusing an
+    /// existing instance or creating and assigning a new one when the member is settable.
+    /// </summary>
+    /// <param name="instance">The object being populated.</param>
+    /// <param name="members">The discovered members of the object's type.</param>
+    /// <returns>
+    /// The extension-data dictionary, or <see langword="null" /> when the type declares no extension-data member or the
+    /// member holds no dictionary and cannot be assigned one.
+    /// </returns>
+    private static IDictionary<string, object?>? ResolveExtensionData(object instance, YamlMemberInfo[] members)
+    {
+        YamlMemberInfo? extension = Array.Find(members, static m => m.IsExtensionData);
+        if (extension is null)
+            return null;
+
+        if (extension.Get(instance) is IDictionary<string, object?> existing)
+            return existing;
+
+        if (extension.Set is null)
+            return null;
+
+        var created = new Dictionary<string, object?>(StringComparer.Ordinal);
+        extension.Set(instance, created);
+        return created;
     }
 
     /// <summary>

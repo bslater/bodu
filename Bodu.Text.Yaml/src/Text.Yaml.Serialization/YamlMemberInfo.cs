@@ -78,6 +78,13 @@ internal sealed class YamlMemberInfo
     public bool Include { get; init; }
 
     /// <summary>
+    /// Gets a value indicating whether the member is the type's extension-data member, which captures unmapped keys
+    /// rather than participating as a normal mapped member.
+    /// </summary>
+    /// <value><see langword="true" /> for the extension-data member; otherwise <see langword="false" />.</value>
+    public bool IsExtensionData { get; init; }
+
+    /// <summary>
     /// Computes the YAML key for this member under the given options.
     /// </summary>
     /// <param name="options">The serializer options.</param>
@@ -97,6 +104,9 @@ internal sealed class YamlMemberInfo
         var seen = new HashSet<string>(StringComparer.Ordinal);
         foreach (YamlMemberInfo member in members)
         {
+            if (member.IsExtensionData)
+                continue;
+
             if (!seen.Add(member.WireName(options)))
             {
                 throw new InvalidOperationException(string.Format(
@@ -149,6 +159,13 @@ internal sealed class YamlMemberInfo
                 continue;
 
             bool include = property.IsDefined(typeof(IncludeAttribute), inherit: true);
+            bool isExtension = property.IsDefined(typeof(ExtensionDataAttribute), inherit: true);
+            if (isExtension && !IsExtensionDataCompatible(property.PropertyType))
+            {
+                throw new YamlSerializationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlExtensionDataType, property.Name, type));
+            }
+
             string? explicitName = property.GetCustomAttribute<PropertyNameAttribute>(inherit: true)?.Name;
             Action<object, object?>? setter = null;
             if (property.SetMethod is not null && (property.SetMethod.IsPublic || include))
@@ -165,6 +182,7 @@ internal sealed class YamlMemberInfo
                 Order = property.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0,
                 Condition = ignore?.Condition,
                 Include = include,
+                IsExtensionData = isExtension,
                 IsField = false,
             });
         }
@@ -174,6 +192,13 @@ internal sealed class YamlMemberInfo
             IgnoreAttribute? ignore = field.GetCustomAttribute<IgnoreAttribute>(inherit: true);
             if (ignore is { Condition: IgnoreCondition.Always })
                 continue;
+
+            bool isExtension = field.IsDefined(typeof(ExtensionDataAttribute), inherit: true);
+            if (isExtension && !IsExtensionDataCompatible(field.FieldType))
+            {
+                throw new YamlSerializationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlExtensionDataType, field.Name, type));
+            }
 
             string? explicitName = field.GetCustomAttribute<PropertyNameAttribute>(inherit: true)?.Name;
             members.Add(new YamlMemberInfo
@@ -187,12 +212,28 @@ internal sealed class YamlMemberInfo
                 Order = field.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0,
                 Condition = ignore?.Condition,
                 Include = field.IsDefined(typeof(IncludeAttribute), inherit: true),
+                IsExtensionData = isExtension,
                 IsField = true,
             });
         }
 
+        if (members.FindAll(static m => m.IsExtensionData).Count > 1)
+        {
+            throw new YamlSerializationException(string.Format(
+                CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlMultipleExtensionData, type));
+        }
+
         return members.ToArray();
     }
+
+    /// <summary>
+    /// Determines whether a type can serve as an extension-data member, which must be assignable from
+    /// <see cref="Dictionary{TKey, TValue}" /> of <see cref="string" /> to <see cref="object" />.
+    /// </summary>
+    /// <param name="type">The declared member type.</param>
+    /// <returns><see langword="true" /> when the type is a supported extension-data container.</returns>
+    private static bool IsExtensionDataCompatible(Type type) =>
+        typeof(IDictionary<string, object?>).IsAssignableFrom(type);
 
     /// <summary>
     /// Determines whether a member is required, either through the <see langword="required" /> keyword (surfaced as

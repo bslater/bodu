@@ -299,6 +299,9 @@ public static partial class YamlSerializer
                 if (state is { HasFailure: true })
                     break;
 
+                if (member.IsExtensionData)
+                    continue;
+
                 object? memberValue = member.Get(value);
                 if (ShouldOmit(member, memberValue, options))
                     continue;
@@ -312,6 +315,11 @@ public static partial class YamlSerializer
             if (state is { HasFailure: true })
                 return;
 
+            WriteExtensionData(writer, value, members, options, depth);
+
+            if (state is { HasFailure: true })
+                return;
+
             writer.WriteEndMapping();
 
             (value as IOnSerialized)?.OnSerialized();
@@ -319,6 +327,49 @@ public static partial class YamlSerializer
         finally
         {
             state?.ExitReference(value);
+        }
+    }
+
+    /// <summary>
+    /// Writes the entries of the type's extension-data member, if any, after its declared members, rejecting an entry
+    /// whose key collides with a declared member's wire name.
+    /// </summary>
+    /// <param name="writer">The writer to emit into.</param>
+    /// <param name="value">The object being written.</param>
+    /// <param name="members">The discovered members of the object's type.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <param name="depth">The current recursion depth.</param>
+    /// <exception cref="YamlSerializationException">An extension-data key collides with a declared member.</exception>
+    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    private static void WriteExtensionData(Utf8YamlWriter writer, object value, YamlMemberInfo[] members, YamlSerializerOptions options, int depth)
+    {
+        YamlMemberInfo? extension = Array.Find(members, static m => m.IsExtensionData);
+        if (extension?.Get(value) is not IDictionary<string, object?> entries || entries.Count == 0)
+            return;
+
+        YamlWriteStack? state = writer.WriteStack;
+        var declared = new HashSet<string>(StringComparer.Ordinal);
+        foreach (YamlMemberInfo member in members)
+        {
+            if (!member.IsExtensionData)
+                declared.Add(member.WireName(options));
+        }
+
+        foreach (KeyValuePair<string, object?> entry in entries)
+        {
+            if (state is { HasFailure: true })
+                return;
+
+            if (declared.Contains(entry.Key))
+            {
+                throw new YamlSerializationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlExtensionDataKeyCollision, entry.Key, value.GetType()));
+            }
+
+            state?.PushPath(entry.Key);
+            writer.WritePropertyName(entry.Key);
+            WriteValue(writer, entry.Value, entry.Value?.GetType() ?? typeof(object), options, depth + 1);
+            state?.PopPath();
         }
     }
 

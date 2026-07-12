@@ -359,6 +359,30 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to The extension-data member '{0}' of type '{1}' must be a Dictionary&lt;string, object&gt; or an IDictionary&lt;string, object&gt;..
+        /// </summary>
+        internal static string Op_Invalid_YamlExtensionDataType {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlExtensionDataType", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Type '{0}' declares more than one extension-data member; at most one is allowed..
+        /// </summary>
+        internal static string Op_Invalid_YamlMultipleExtensionData {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlMultipleExtensionData", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The extension-data key '{0}' collides with a declared member of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_YamlExtensionDataKeyCollision {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlExtensionDataKeyCollision", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The required member '{0}' of type '{1}' was not present in the input..
         /// </summary>
         internal static string Op_Invalid_YamlMissingRequiredMember {
