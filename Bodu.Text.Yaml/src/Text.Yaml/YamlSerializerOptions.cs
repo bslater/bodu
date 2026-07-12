@@ -52,6 +52,9 @@ public sealed class YamlSerializerOptions
     /// <summary>The policy applied when a mapping key has no matching member on the target type.</summary>
     private UnmappedMemberHandling _unmappedMemberHandling;
 
+    /// <summary>The serializer-wide default for whether a member's value is replaced or populated when reading.</summary>
+    private ObjectCreationHandling _preferredObjectCreationHandling;
+
     /// <summary>The configured maximum nesting depth; zero or less selects the default.</summary>
     private int _maxDepth;
 
@@ -191,6 +194,20 @@ public sealed class YamlSerializerOptions
     {
         get => _unmappedMemberHandling;
         set { VerifyMutable(); _unmappedMemberHandling = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets the serializer-wide default for whether a member's value is replaced with a freshly created
+    /// instance or populated into the value the member already holds during deserialization.
+    /// </summary>
+    /// <value>
+    /// The preferred object-creation handling; the default is <see cref="ObjectCreationHandling.Replace" />.
+    /// </value>
+    /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
+    public ObjectCreationHandling PreferredObjectCreationHandling
+    {
+        get => _preferredObjectCreationHandling;
+        set { VerifyMutable(); _preferredObjectCreationHandling = value; }
     }
 
     /// <summary>

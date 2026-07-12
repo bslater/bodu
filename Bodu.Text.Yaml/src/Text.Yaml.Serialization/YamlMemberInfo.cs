@@ -85,6 +85,13 @@ internal sealed class YamlMemberInfo
     public bool IsExtensionData { get; init; }
 
     /// <summary>
+    /// Gets the member-level object-creation handling, sourced from an <see cref="ObjectCreationHandlingAttribute" />
+    /// on the member, or <see langword="null" /> when the member declares none.
+    /// </summary>
+    /// <value>The member-level object-creation handling, or <see langword="null" />.</value>
+    public ObjectCreationHandling? CreationHandling { get; init; }
+
+    /// <summary>
     /// Computes the YAML key for this member under the given options.
     /// </summary>
     /// <param name="options">The serializer options.</param>
@@ -183,6 +190,7 @@ internal sealed class YamlMemberInfo
                 Condition = ignore?.Condition,
                 Include = include,
                 IsExtensionData = isExtension,
+                CreationHandling = property.GetCustomAttribute<ObjectCreationHandlingAttribute>(inherit: true)?.Handling,
                 IsField = false,
             });
         }
@@ -213,6 +221,7 @@ internal sealed class YamlMemberInfo
                 Condition = ignore?.Condition,
                 Include = field.IsDefined(typeof(IncludeAttribute), inherit: true),
                 IsExtensionData = isExtension,
+                CreationHandling = field.GetCustomAttribute<ObjectCreationHandlingAttribute>(inherit: true)?.Handling,
                 IsField = true,
             });
         }
@@ -234,6 +243,43 @@ internal sealed class YamlMemberInfo
     /// <returns><see langword="true" /> when the type is a supported extension-data container.</returns>
     private static bool IsExtensionDataCompatible(Type type) =>
         typeof(IDictionary<string, object?>).IsAssignableFrom(type);
+
+    /// <summary>
+    /// Selects the constructor the serializer uses to instantiate a type during deserialization: the one marked with
+    /// <see cref="ConstructorAttribute" />, else a public parameterless constructor, else the single declared
+    /// constructor, else the constructor with the most parameters.
+    /// </summary>
+    /// <param name="type">The type to construct.</param>
+    /// <returns>
+    /// The chosen constructor, or <see langword="null" /> when the type declares no accessible constructor (in which
+    /// case a value type is default-constructed).
+    /// </returns>
+    public static ConstructorInfo? GetDeserializationConstructor(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
+    {
+        ConstructorInfo[] constructors = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
+        if (constructors.Length == 0)
+            return null;
+
+        foreach (ConstructorInfo constructor in constructors)
+        {
+            if (constructor.IsDefined(typeof(ConstructorAttribute), inherit: false))
+                return constructor;
+        }
+
+        ConstructorInfo? best = null;
+        foreach (ConstructorInfo constructor in constructors)
+        {
+            int count = constructor.GetParameters().Length;
+            if (count == 0)
+                return constructor;
+
+            if (best is null || count > best.GetParameters().Length)
+                best = constructor;
+        }
+
+        return best;
+    }
 
     /// <summary>
     /// Determines whether a member is required, either through the <see langword="required" /> keyword (surfaced as
