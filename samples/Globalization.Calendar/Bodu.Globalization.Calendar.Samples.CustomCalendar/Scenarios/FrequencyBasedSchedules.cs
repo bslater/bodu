@@ -8,6 +8,7 @@ using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Algorithms;
 using Bodu.Globalization.Calendar.Builder;
+using Bodu.Globalization.Calendar.RangeResolution;
 
 namespace Bodu.Globalization.Calendar.Samples.CustomCalendar.Scenarios;
 
@@ -32,12 +33,23 @@ public static class FrequencyBasedSchedules
         // through the normal pipeline (category, non-working flag, duration, adjustments) just like a fixed holiday.
         NotableDateResource resource = NotableDateDocumentBuilder.Create("contoso-ops-schedule")
             .WithMetadata("Contoso operations schedule", "Recurring operational events")
+            // A reusable policy declared once and referenced by rule id. When an occurrence lands on a non-working day
+            // (weekend, or a day already claimed by a non-working holiday), roll it back to the previous working day.
+            // ActualAndObserved emits both the original date and the moved date, so the occurrence keeps its lineage.
+            .AddAdjustmentPolicy("payroll-roll-back", p => p
+                .When(AdjustmentTrigger.IfNonWorkingDay)
+                .Then(AdjustmentAction.MoveToPreviousWorkingDay)
+                .Emit(EmissionMode.ActualAndObserved)
+                .WithReason("Paid on the prior working day"))
             .AddNotableDate("all-hands", "Fortnightly All-Hands", NotableDateCategory.Other, c => c
                 .AddRule("r", r => r.DailyInterval(new DateOnly(2026, 1, 5), 14)))
             .AddNotableDate("maintenance", "Maintenance Window", NotableDateCategory.Other, c => c
                 .AddRule("r", r => r.Weekly(new[] { DayOfWeek.Monday, DayOfWeek.Friday })))
-            .AddNotableDate("payroll", "Payroll Run", NotableDateCategory.Other, c => c
-                .AddRule("r", r => r.MonthlyDay(15)))
+            .AddNotableDate("payroll", "Monthly Payroll Run", NotableDateCategory.Other, c => c
+                .AddRule("r", r => r
+                    .MonthlyDay(15)
+                    // If the 15th falls on a non-working day, move the payroll run to the previous working day.
+                    .WithAdjustment("payroll-roll-back")))
             .AddNotableDate("month-end-close", "Month-End Close", NotableDateCategory.Other, c => c
                 .AddRule("r", r => r.MonthlyDay(31, invalidDayBehavior: InvalidDayOfMonthBehavior.UseLastDayOfMonth)))
             .AddNotableDate("board-report", "Board Report", NotableDateCategory.Other, c => c
@@ -49,7 +61,12 @@ public static class FrequencyBasedSchedules
         // Resolve the first quarter of 2026: every recurrence occurrence within the window, in date order.
         DateRange quarter = new(new DateOnly(2026, 1, 1), new DateOnly(2026, 3, 31));
         foreach (NotableDate date in service.Resolve(quarter, "XX"))
-            Console.WriteLine($"  {date.Date:yyyy-MM-dd} ({date.Date.DayOfWeek,-9}) {date.DisplayName}");
+        {
+            // Observed rows carry their lineage back to the actual (unadjusted) date - here, the payroll runs that
+            // fell on a weekend 15th and were rolled back to the previous working day.
+            string lineage = date.IsObserved ? $"  <- moved from {date.ActualDate:yyyy-MM-dd}" : string.Empty;
+            Console.WriteLine($"  {date.Date:yyyy-MM-dd} ({date.Date.DayOfWeek,-9}) {date.DisplayName}{lineage}");
+        }
 
         Console.WriteLine();
 
