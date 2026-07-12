@@ -72,7 +72,7 @@ stream.ReadExactly(header);
 
 Under a buffered file the cursor's payload was materialized into a `byte[]` at open time, and `Read` / `Seek` work over that array. Under a streaming file the same cursor instead walks the stream's sector chain in the source: each `Read` locates the sector for the current `Position`, copies only the bytes within that sector, and advances — so the full payload is never resident. The two behave identically from the caller's side; only the memory profile differs.
 
-`Write` and `SetLength` throw <xref:System.NotSupportedException> on this read-only cursor. Seeking past the end is allowed (the `Stream` contract); the next `Read` returns zero. The cursor's <xref:Bodu.IO.Compound.CompoundStream.Stat> property exposes the entry's <xref:Bodu.IO.Compound.CompoundEntryInfo> metadata snapshot, and `Length` reports the declared payload size.
+`Write` and `SetLength` throw <xref:System.NotSupportedException> on this read-only cursor — the one returned by `OpenStream(name)`. On a *writable* file, `OpenStream(name, FileMode, FileAccess)` (and `CreateStream`) instead return a read-write cursor whose `CanWrite` is `true`; see [Authoring compound files](authoring-compound-files.md). Seeking past the end is allowed (the `Stream` contract); the next `Read` returns zero. The cursor's <xref:Bodu.IO.Compound.CompoundStream.Stat> property exposes the entry's <xref:Bodu.IO.Compound.CompoundEntryInfo> metadata snapshot, and `Length` reports the declared payload size.
 
 > A single cursor is not safe for concurrent use — its `Position` advances as you read. Open one cursor per reader.
 
@@ -105,6 +105,23 @@ finally
     ArrayPool<byte>.Shared.Return(buffer);
 }
 ```
+
+## Large payloads on the write side
+
+A *writable* cursor (from `CreateStream` or a write-access `OpenStream` on a writable file) buffers its whole payload in memory until it flushes into the staging tree, and it caps that buffer at `int.MaxValue` bytes — growing past the cap throws <xref:System.NotSupportedException> rather than exhausting memory by surprise.
+
+For payloads that should not (or cannot) be buffered, author through a deferred stream source instead: `CompoundStorageBuilder.AddStream(name, openRead, length)` or `AddStreamFromFile`. Deferred sources declare their length up front, are opened only during serialization, and are copied to the destination through a fixed-size pooled buffer — so the container can carry payloads far larger than memory. See [Authoring compound files](authoring-compound-files.md) for the deferred patterns.
+
+Independent of the cursor cap, MS-CFB itself limits any single stream in a version-3 (512-byte-sector) file to 2 GB; larger streams require a version-4 file (`CompoundBuildOptions.Version = CompoundFileVersion.V4`).
+
+## Asynchronous I/O
+
+Two paths do real asynchronous I/O, matched to where the work is actually a device operation rather than a memory copy:
+
+- **`CompoundFile.CommitAsync` / `FlushAsync`** write the container to the destination — and copy any deferred stream sources — with `WriteAsync` / `ReadAsync`. They share the exact layout computation the synchronous `Commit` uses, so the bytes are identical; cancellation is observed before any write and again between chunks. A cancellation or failure mid-write leaves the destination partially written and the file dirty (the same surface a synchronous fault presents) — commit again, or `Revert`.
+- **`CompoundStream.ReadAsync`** is truly asynchronous only for a *streaming*-mode cursor, which reads its sectors on demand from the underlying source. A buffered cursor (the default) and a writable cursor read from memory, so their `ReadAsync` completes synchronously — awaiting them is correct but adds no I/O concurrency.
+
+There is no `OpenAsync`: opening a buffered file is a single contiguous read the caller can do themselves (open a `MemoryStream` and pass it), and opening a streaming file does no bulk I/O up front.
 
 ## Lifetime checklist
 

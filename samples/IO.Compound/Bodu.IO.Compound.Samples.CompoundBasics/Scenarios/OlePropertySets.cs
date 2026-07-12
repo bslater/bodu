@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.IO.Compound;
-using Bodu.IO.Compound.Builders;
 using Bodu.IO.Compound.PropertySets;
 
 namespace Bodu.IO.Compound.Samples.CompoundBasics.Scenarios;
@@ -19,14 +18,19 @@ namespace Bodu.IO.Compound.Samples.CompoundBasics.Scenarios;
 /// </summary>
 public static class OlePropertySets
 {
+    /// <summary>The Microsoft Word document class id, used to mark the authored container's type.</summary>
+    private static readonly Guid WordDocumentClassId = new("00020906-0000-0000-c000-000000000046");
+
     /// <summary>
-    /// Authors and reads back a summary-information stream, then inspects a real document's.
+    /// Authors and reads back a summary-information stream and root class id, then inspects a real document's.
     /// </summary>
-    public static void Run()
+    /// <returns>A task that completes when the scenario has run.</returns>
+    public static async Task RunAsync()
     {
         Console.WriteLine("--- OLE property sets: SummaryInformation ---");
 
-        // Author: build the property-set stream bytes, then add them under the well-known name.
+        // Author: build the metadata, write it back through the convenience setter, stamp the root
+        // storage's class id (the OLE2 file-type discriminator), and persist with an async commit.
         var summary = new SummaryInformationBuilder
         {
             Title = "Quarterly figures",
@@ -35,23 +39,25 @@ public static class OlePropertySets
             CreateTime = new DateTimeOffset(2026, 7, 1, 9, 0, 0, TimeSpan.Zero),
         };
 
-        using var summaryBytes = new MemoryStream();
-        summary.WriteTo(summaryBytes);
-
-        var root = CompoundStorageBuilder.CreateRoot();
-        root.AddStream(SummaryInformation.StreamName, summaryBytes.ToArray());
-        root.AddStream("Body", "..."u8.ToArray());
-
         using var container = new MemoryStream();
-        root.WriteTo(container);
+        using (var writable = CompoundFile.Create(container, leaveOpen: true))
+        {
+            writable.SetSummaryInformation(new SummaryInformation(summary.ToPropertySet()));
+            writable.RootStorage.ClassId = WordDocumentClassId;
+            writable.RootStorage.CreateStream("Body", "..."u8.ToArray());
+            await writable.CommitAsync();
+        }
+
         container.Position = 0;
 
-        // Read back through the typed accessor.
+        // Read back through the typed accessor and the settable metadata.
         using var file = CompoundFile.Open(container, leaveOpen: true);
         if (file.TryGetSummaryInformation(out var readBack))
         {
             Console.WriteLine($"authored : '{readBack.Title}' by {readBack.Author} (created {readBack.CreateTime:yyyy-MM-dd})");
         }
+
+        Console.WriteLine($"authored : root class id {file.RootStorage.ClassId}");
 
         // The same accessor reads real-world files: the committed .doc fixture.
         using var doc = CompoundFile.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample1.doc"));

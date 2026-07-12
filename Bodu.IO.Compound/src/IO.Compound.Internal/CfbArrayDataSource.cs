@@ -32,4 +32,14 @@ internal sealed class CfbArrayDataSource
     /// <inheritdoc />
     public override void Read(long offset, Span<byte> destination) =>
         _data.AsSpan((int)offset, destination.Length).CopyTo(destination);
+
+    /// <inheritdoc />
+    public override ValueTask ReadAsync(long offset, Memory<byte> destination, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
+            return ValueTask.FromCanceled(cancellationToken);
+
+        _data.AsSpan((int)offset, destination.Length).CopyTo(destination.Span);
+        return ValueTask.CompletedTask;
+    }
 }

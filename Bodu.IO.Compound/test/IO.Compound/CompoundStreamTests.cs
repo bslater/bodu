@@ -13,7 +13,7 @@ namespace Bodu.IO.Compound;
 /// streaming backings.
 /// </summary>
 [TestClass]
-public class CompoundStreamTests
+public partial class CompoundStreamTests
 {
     /// <summary>
     /// Builds a single-stream container whose <c>Data</c> stream carries a deterministic multi-sector payload.

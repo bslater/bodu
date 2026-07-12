@@ -385,11 +385,11 @@ services.AddFinancialService();
 
 ## Binary Formats & I/O
 
-Read-only readers for legacy binary container and document formats — see the **[Binary Formats & I/O overview](topics/binary-formats.md)** for the layered container-vs-format split.
+Legacy binary container and document formats — a read/edit/author compound-file container with narrower read-only format readers on top; see the **[Binary Formats & I/O overview](topics/binary-formats.md)** for the layered container-vs-format split.
 
 ### Bodu.IO.Compound
 
-**Bodu.IO.Compound** reads the OLE2 / Compound File Binary (CFB) container behind legacy Office documents, exposing the embedded named streams with no application-format knowledge.
+**Bodu.IO.Compound** reads, edits, and authors the OLE2 / Compound File Binary (CFB) container behind legacy Office documents, exposing the embedded named streams with no application-format knowledge.
 
 ```csharp
 using Bodu.IO.Compound;

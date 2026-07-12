@@ -43,6 +43,16 @@ internal abstract class CfbDataSource
     /// <param name="destination">The buffer that receives the bytes.</param>
     public abstract void Read(long offset, Span<byte> destination);
 
+    /// <summary>
+    /// Asynchronously reads exactly <c>destination.Length</c> bytes starting at <paramref name="offset" /> into the
+    /// destination.
+    /// </summary>
+    /// <param name="offset">The absolute byte offset.</param>
+    /// <param name="destination">The buffer that receives the bytes.</param>
+    /// <param name="cancellationToken">A token that cancels the read.</param>
+    /// <returns>A task that completes when the bytes have been read.</returns>
+    public abstract ValueTask ReadAsync(long offset, Memory<byte> destination, CancellationToken cancellationToken);
+
     /// <inheritdoc />
     public virtual void Dispose()
     {

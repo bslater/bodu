@@ -20,14 +20,15 @@ public static class Program
     /// <summary>
     /// Runs every scenario in order.
     /// </summary>
-    public static void Main()
+    /// <returns>A task that completes when every scenario has run.</returns>
+    public static async Task Main()
     {
         Console.WriteLine("Bodu.IO.Compound.Samples.CompoundBasics");
         Console.WriteLine("=======================================");
         Console.WriteLine();
 
         AuthorAndReadBack.Run();
-        OlePropertySets.Run();
+        await OlePropertySets.RunAsync();
         DetectAndVersion.Run();
         StreamsAndEntries.Run();
 

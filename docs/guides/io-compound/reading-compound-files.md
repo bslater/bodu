@@ -145,8 +145,11 @@ catch (CompoundStreamNotFoundException ex)
 > [!TIP]
 > Catch the base <xref:Bodu.IO.Compound.CompoundFileException> when you want to handle every compound-file failure uniformly, then inspect the concrete type or `Category` only where the distinction matters.
 
+This guide covers the read path. To *edit* a stream, open the file for write access and use the read-write cursor from `OpenStream(name, FileMode, FileAccess)` or `CreateStream` — see [Authoring compound files](authoring-compound-files.md).
+
 ## Where to go next
 
 - [Buffered vs streaming access](streaming-and-buffering.md) — the `buffered` flag and the `CompoundStream` cursor in depth.
+- [Authoring compound files](authoring-compound-files.md) — create, edit, and commit writable containers.
 - [Reading property sets](property-sets.md) — pull authored metadata from the summary-information streams.
 - [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound).

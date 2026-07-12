@@ -10,7 +10,7 @@ namespace Bodu.IO.Compound;
 /// Verifies hierarchy navigation through <see cref="CompoundStorage" />, including scoped child lookups.
 /// </summary>
 [TestClass]
-public class CompoundStorageTests
+public partial class CompoundStorageTests
 {
     /// <summary>
     /// Opens the reference fixture whose root contains a single nested storage <c>Storage 1</c> with one stream.

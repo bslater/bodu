@@ -10,7 +10,7 @@ Recipe-style walk-throughs for the **Binary Formats & I/O** topic — readers (a
 
 ## Bodu.IO.Compound guides
 
-The CFB container reader — the storage hierarchy, the stream cursor, and the OLE property sets.
+The CFB container reader and writer — the storage hierarchy, the stream cursor, editing and authoring, and the OLE property sets.
 
 <div class="bodu-cards">
 
