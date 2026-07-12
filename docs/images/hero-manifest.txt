@@ -16,6 +16,10 @@ Bodu.Financial.ExchangeRates.Caching.Distributed hero-fx-caching-distributed.svg
 Bodu.Financial.ExchangeRates.Caching.Sqlite hero-fx-caching-sqlite.svg
 Bodu.Financial.ExchangeRates.DependencyInjection hero-fx-di.svg
 Bodu.Financial.ExchangeRates.Ecb hero-fx-ecb.svg
+Bodu.Financial.ExchangeRates.ExchangeRateHost hero-fx-exchangeratehost.svg
+Bodu.Financial.ExchangeRates.Fixer hero-fx-fixer.svg
+Bodu.Financial.ExchangeRates.Fred hero-fx-fred.svg
+Bodu.Financial.ExchangeRates.Imf hero-fx-imf.svg
 Bodu.Financial.ExchangeRates.Oanda hero-fx-oanda.svg
 Bodu.Financial.ExchangeRates.Ofx hero-fx-ofx.svg
 Bodu.Financial.ExchangeRates.Rba hero-fx-rba.svg
