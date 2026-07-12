@@ -58,6 +58,12 @@ internal sealed class YamlMemberInfo
     public bool IsRequired { get; init; }
 
     /// <summary>
+    /// Gets the relative write order of the member; members are emitted in ascending order.
+    /// </summary>
+    /// <value>The order value, or zero when the member declares none.</value>
+    public int Order { get; init; }
+
+    /// <summary>
     /// Computes the YAML key for this member under the given options.
     /// </summary>
     /// <param name="options">The serializer options.</param>
@@ -139,6 +145,7 @@ internal sealed class YamlMemberInfo
                 Get = property.GetValue,
                 Set = setter,
                 IsRequired = IsRequiredMember(property),
+                Order = property.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0,
                 IsField = false,
             });
         }
@@ -157,6 +164,7 @@ internal sealed class YamlMemberInfo
                 Get = field.GetValue,
                 Set = field.SetValue,
                 IsRequired = IsRequiredMember(field),
+                Order = field.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0,
                 IsField = true,
             });
         }

@@ -8,6 +8,7 @@ using System.Buffers;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using Bodu.Text.Serialization;
 using Bodu.Text.Yaml.Serialization;
@@ -56,7 +57,15 @@ public static partial class YamlSerializer
         o.MakeReadOnly();
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8YamlWriter(buffer);
+
+        // Attach the serializer write state so the writer's converters report a reference cycle cooperatively and
+        // unwind through returns; the single recorded failure is thrown once here at the root boundary.
+        var state = new YamlWriteStack();
+        writer.AttachWriteStack(state);
+
         WriteValue(writer, value, inputType, o, 0);
+
+        state.ThrowIfFailed();
         return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
@@ -71,6 +80,11 @@ public static partial class YamlSerializer
     [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
     private static void WriteValue(Utf8YamlWriter writer, object? value, Type declaredType, YamlSerializerOptions options, int depth)
     {
+        // Once a reference cycle has been recorded, stop dispatching so the recursion unwinds through normal returns
+        // rather than continuing to write into a document that will be discarded.
+        if (writer.WriteStack is { HasFailure: true })
+            return;
+
         if (value is null)
         {
             writer.WriteNull();
@@ -167,22 +181,44 @@ public static partial class YamlSerializer
     [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
     private static void WriteDictionary(Utf8YamlWriter writer, IDictionary dictionary, YamlSerializerOptions options, int depth)
     {
-        writer.WriteStartMapping();
-        var seen = new HashSet<string>(StringComparer.Ordinal);
-        foreach (DictionaryEntry entry in dictionary)
+        YamlWriteStack? state = writer.WriteStack;
+        if (state is not null && !state.TryEnterReference(dictionary))
         {
-            string key = Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty;
-            if (!seen.Add(key))
-            {
-                throw new YamlSerializationException(string.Format(
-                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlDuplicateDictionaryKey, key));
-            }
-
-            writer.WritePropertyName(key);
-            WriteValue(writer, entry.Value, entry.Value?.GetType() ?? typeof(object), options, depth + 1);
+            state.SetFailure(string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlCycleDetected, dictionary.GetType()));
+            return;
         }
 
-        writer.WriteEndMapping();
+        try
+        {
+            writer.WriteStartMapping();
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (DictionaryEntry entry in dictionary)
+            {
+                if (state is { HasFailure: true })
+                    break;
+
+                string key = Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty;
+                if (!seen.Add(key))
+                {
+                    throw new YamlSerializationException(string.Format(
+                        CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlDuplicateDictionaryKey, key));
+                }
+
+                state?.PushPath(key);
+                writer.WritePropertyName(key);
+                WriteValue(writer, entry.Value, entry.Value?.GetType() ?? typeof(object), options, depth + 1);
+                state?.PopPath();
+            }
+
+            if (state is { HasFailure: true })
+                return;
+
+            writer.WriteEndMapping();
+        }
+        finally
+        {
+            state?.ExitReference(dictionary);
+        }
     }
 
     /// <summary>
@@ -195,11 +231,36 @@ public static partial class YamlSerializer
     [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
     private static void WriteSequence(Utf8YamlWriter writer, IEnumerable enumerable, YamlSerializerOptions options, int depth)
     {
-        writer.WriteStartSequence();
-        foreach (object? item in enumerable)
-            WriteValue(writer, item, item?.GetType() ?? typeof(object), options, depth + 1);
+        YamlWriteStack? state = writer.WriteStack;
+        if (state is not null && !state.TryEnterReference(enumerable))
+        {
+            state.SetFailure(string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlCycleDetected, enumerable.GetType()));
+            return;
+        }
 
-        writer.WriteEndSequence();
+        try
+        {
+            writer.WriteStartSequence();
+            int index = 0;
+            foreach (object? item in enumerable)
+            {
+                if (state is { HasFailure: true })
+                    break;
+
+                state?.PushPath($"[{index++}]");
+                WriteValue(writer, item, item?.GetType() ?? typeof(object), options, depth + 1);
+                state?.PopPath();
+            }
+
+            if (state is { HasFailure: true })
+                return;
+
+            writer.WriteEndSequence();
+        }
+        finally
+        {
+            state?.ExitReference(enumerable);
+        }
     }
 
     /// <summary>
@@ -221,21 +282,60 @@ public static partial class YamlSerializer
         YamlMemberInfo[] members = YamlMemberInfo.ForType(type, options.IncludeFields);
         YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
 
-        (value as IOnSerializing)?.OnSerializing();
-
-        writer.WriteStartMapping();
-        foreach (YamlMemberInfo member in members)
+        YamlWriteStack? state = writer.WriteStack;
+        if (state is not null && !state.TryEnterReference(value))
         {
-            object? memberValue = member.Get(value);
-            if (options.IgnoreNullValues && memberValue is null)
-                continue;
-
-            writer.WritePropertyName(member.WireName(options));
-            WriteValue(writer, memberValue, member.Type, options, depth + 1);
+            state.SetFailure(string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlCycleDetected, type));
+            return;
         }
 
-        writer.WriteEndMapping();
+        try
+        {
+            (value as IOnSerializing)?.OnSerializing();
 
-        (value as IOnSerialized)?.OnSerialized();
+            writer.WriteStartMapping();
+            foreach (YamlMemberInfo member in OrderMembers(members))
+            {
+                if (state is { HasFailure: true })
+                    break;
+
+                object? memberValue = member.Get(value);
+                if (options.IgnoreNullValues && memberValue is null)
+                    continue;
+
+                state?.PushPath(member.WireName(options));
+                writer.WritePropertyName(member.WireName(options));
+                WriteValue(writer, memberValue, member.Type, options, depth + 1);
+                state?.PopPath();
+            }
+
+            if (state is { HasFailure: true })
+                return;
+
+            writer.WriteEndMapping();
+
+            (value as IOnSerialized)?.OnSerialized();
+        }
+        finally
+        {
+            state?.ExitReference(value);
+        }
+    }
+
+    /// <summary>
+    /// Returns the members in write order, sorting by ascending <see cref="YamlMemberInfo.Order" /> only when at least
+    /// one member declares a non-default order; otherwise the declared order is preserved unchanged.
+    /// </summary>
+    /// <param name="members">The discovered members in declaration order.</param>
+    /// <returns>The members in the order they should be written.</returns>
+    private static IEnumerable<YamlMemberInfo> OrderMembers(YamlMemberInfo[] members)
+    {
+        foreach (YamlMemberInfo member in members)
+        {
+            if (member.Order != 0)
+                return members.OrderBy(static m => m.Order);
+        }
+
+        return members;
     }
 }

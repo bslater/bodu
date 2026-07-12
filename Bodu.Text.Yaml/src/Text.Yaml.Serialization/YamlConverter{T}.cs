@@ -63,6 +63,13 @@ public abstract class YamlConverter<T> : YamlConverter
         Read(ref reader, typeToConvert, options);
 
     /// <inheritdoc />
-    internal sealed override void WriteAsObject(Utf8YamlWriter writer, object? value, YamlSerializerOptions options) =>
+    internal sealed override void WriteAsObject(Utf8YamlWriter writer, object? value, YamlSerializerOptions options)
+    {
+        // Once a failure has been recorded, stop dispatching so the recursion unwinds through normal returns rather
+        // than entering another converter on a document that will be discarded.
+        if (writer.WriteStack is { HasFailure: true })
+            return;
+
         Write(writer, (T)value!, options);
+    }
 }

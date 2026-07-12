@@ -351,6 +351,14 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A reference cycle was detected while serializing an instance of type '{0}'; YAML cannot represent an object cycle..
+        /// </summary>
+        internal static string Op_Invalid_YamlCycleDetected {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlCycleDetected", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The required member '{0}' of type '{1}' was not present in the input..
         /// </summary>
         internal static string Op_Invalid_YamlMissingRequiredMember {
