@@ -48,20 +48,23 @@ one with the typed builder, and read one back from a real Word file with the typ
 no raw property-set parsing required.
 
 **What it does.** Fills a `SummaryInformationBuilder` (title, author, application, creation
-time), writes its bytes into a stream named `SummaryInformation.StreamName` on a new
-container, reopens it and reads the values back through `TryGetSummaryInformation`; then
-applies the same accessor to the committed `sample1.doc` and prints the metadata Word 2000
-wrote into it decades ago.
+time), embeds it on a new writable container through `CompoundFile.SetSummaryInformation`,
+stamps the root storage's `ClassId` (the OLE2 file-type discriminator), persists it with the
+asynchronous `CommitAsync`, reopens it and reads the values and class id back through
+`TryGetSummaryInformation` and `RootStorage.ClassId`; then applies the same accessor to the
+committed `sample1.doc` and prints the metadata Word 2000 wrote into it decades ago.
 
 **What to expect.**
 
 ```text
 authored : 'Quarterly figures' by Bodu Sample (created 2026-07-01)
+authored : root class id 00020906-0000-0000-c000-000000000046
 sample1.doc: title='Sample document created with MS Word', author='steve', app='Microsoft Word 9.0'
 ```
 
-**APIs demonstrated.** `SummaryInformationBuilder` + `.WriteTo`,
-`SummaryInformation.StreamName`, `CompoundFile.TryGetSummaryInformation`, the typed
+**APIs demonstrated.** `SummaryInformationBuilder.ToPropertySet`, `CompoundFile.Create`,
+`CompoundFile.SetSummaryInformation`, the settable `CompoundStorage.ClassId`,
+`CompoundFile.CommitAsync`, `CompoundFile.TryGetSummaryInformation`, the typed
 `SummaryInformation` properties.
 
 ## Scenario 3 — DetectAndVersion

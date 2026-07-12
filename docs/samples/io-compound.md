@@ -28,11 +28,12 @@ inside legacy Office documents — end to end:
   <xref:Bodu.IO.Compound.Builders.CompoundStorageBuilder> (nested storages, byte streams),
   `WriteTo` a `MemoryStream`, reopen with <xref:Bodu.IO.Compound.CompoundFile> and walk
   entries and stream contents back byte-for-byte — no file on disk.
-- **OlePropertySets** — document metadata both ways: author a
-  `\x05SummaryInformation` stream with the typed
-  <xref:Bodu.IO.Compound.PropertySets.SummaryInformationBuilder>, read it back through
-  `TryGetSummaryInformation`, then apply the same accessor to the committed Word fixture
-  and print the title/author/application Word 2000 wrote into it.
+- **OlePropertySets** — document metadata both ways: build a summary set with the typed
+  <xref:Bodu.IO.Compound.PropertySets.SummaryInformationBuilder>, embed it through
+  `CompoundFile.SetSummaryInformation` while stamping the root storage `ClassId`, persist it
+  with `CommitAsync`, read the values and class id back through `TryGetSummaryInformation` and
+  `RootStorage.ClassId`, then apply the same accessor to the committed Word fixture and print
+  the title/author/application Word 2000 wrote into it.
 - **DetectAndVersion** — `IsCompoundFile` signature probing (a `.doc` *is* an OLE2
   container; plain text is not), and the
   <xref:Bodu.IO.Compound.Builders.CompoundBuildOptions.Version> knob: the same tree authored
