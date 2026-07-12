@@ -72,7 +72,7 @@ stream.ReadExactly(header);
 
 Under a buffered file the cursor's payload was materialized into a `byte[]` at open time, and `Read` / `Seek` work over that array. Under a streaming file the same cursor instead walks the stream's sector chain in the source: each `Read` locates the sector for the current `Position`, copies only the bytes within that sector, and advances — so the full payload is never resident. The two behave identically from the caller's side; only the memory profile differs.
 
-`Write` and `SetLength` throw <xref:System.NotSupportedException> on this read-only cursor. Seeking past the end is allowed (the `Stream` contract); the next `Read` returns zero. The cursor's <xref:Bodu.IO.Compound.CompoundStream.Stat> property exposes the entry's <xref:Bodu.IO.Compound.CompoundEntryInfo> metadata snapshot, and `Length` reports the declared payload size.
+`Write` and `SetLength` throw <xref:System.NotSupportedException> on this read-only cursor — the one returned by `OpenStream(name)`. On a *writable* file, `OpenStream(name, FileMode, FileAccess)` (and `CreateStream`) instead return a read-write cursor whose `CanWrite` is `true`; see [Authoring compound files](authoring-compound-files.md). Seeking past the end is allowed (the `Stream` contract); the next `Read` returns zero. The cursor's <xref:Bodu.IO.Compound.CompoundStream.Stat> property exposes the entry's <xref:Bodu.IO.Compound.CompoundEntryInfo> metadata snapshot, and `Length` reports the declared payload size.
 
 > A single cursor is not safe for concurrent use — its `Position` advances as you read. Open one cursor per reader.
 
