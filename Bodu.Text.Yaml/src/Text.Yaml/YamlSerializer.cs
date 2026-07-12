@@ -300,7 +300,7 @@ public static partial class YamlSerializer
                     break;
 
                 object? memberValue = member.Get(value);
-                if (options.IgnoreNullValues && memberValue is null)
+                if (ShouldOmit(member, memberValue, options))
                     continue;
 
                 state?.PushPath(member.WireName(options));
@@ -320,6 +320,42 @@ public static partial class YamlSerializer
         {
             state?.ExitReference(value);
         }
+    }
+
+    /// <summary>
+    /// Determines whether a member is omitted from the output for the given value, honoring the member's per-member
+    /// <see cref="IgnoreCondition" /> and, in its absence, the serializer-wide null handling.
+    /// </summary>
+    /// <param name="member">The member being considered.</param>
+    /// <param name="value">The member's current value.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <returns><see langword="true" /> when the member is omitted; otherwise <see langword="false" />.</returns>
+    private static bool ShouldOmit(YamlMemberInfo member, object? value, YamlSerializerOptions options) =>
+        member.Condition switch
+        {
+            IgnoreCondition.WhenWritingNull => value is null,
+            IgnoreCondition.WhenWritingDefault => IsTypeDefault(member.Type, value),
+            IgnoreCondition.Never => false,
+            _ => options.IgnoreNullValues && value is null,
+        };
+
+    /// <summary>
+    /// Determines whether a value equals the default of its declared type, used to evaluate
+    /// <see cref="IgnoreCondition.WhenWritingDefault" />.
+    /// </summary>
+    /// <param name="type">The member's declared type.</param>
+    /// <param name="value">The member's current value.</param>
+    /// <returns><see langword="true" /> when the value is the type default; otherwise <see langword="false" />.</returns>
+    private static bool IsTypeDefault(Type type, object? value)
+    {
+        if (value is null)
+            return true;
+
+        if (!type.IsValueType)
+            return false;
+
+        object? defaultValue = Activator.CreateInstance(type);
+        return value.Equals(defaultValue);
     }
 
     /// <summary>

@@ -64,6 +64,20 @@ internal sealed class YamlMemberInfo
     public int Order { get; init; }
 
     /// <summary>
+    /// Gets the condition under which the member is omitted on write, or <see langword="null" /> when it declares no
+    /// per-member condition (in which case the serializer-wide null handling applies).
+    /// </summary>
+    /// <value>The conditional-ignore setting, or <see langword="null" />.</value>
+    public IgnoreCondition? Condition { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the member is opted into serialization through <see cref="IncludeAttribute" />,
+    /// which binds a non-public property setter and surfaces a public field even when fields are otherwise excluded.
+    /// </summary>
+    /// <value><see langword="true" /> when the member is force-included; otherwise <see langword="false" />.</value>
+    public bool Include { get; init; }
+
+    /// <summary>
     /// Computes the YAML key for this member under the given options.
     /// </summary>
     /// <param name="options">The serializer options.</param>
@@ -105,7 +119,8 @@ internal sealed class YamlMemberInfo
         if (includeFields)
             return all;
 
-        return Array.FindAll(all, static m => !m.IsField);
+        // A public field is surfaced only when fields are enabled or the field opts in with [Include].
+        return Array.FindAll(all, static m => !m.IsField || m.Include);
     }
 
     /// <summary>
@@ -129,12 +144,14 @@ internal sealed class YamlMemberInfo
             if (property.GetIndexParameters().Length > 0 || property.GetMethod is null)
                 continue;
 
-            if (property.IsDefined(typeof(IgnoreAttribute), inherit: true))
+            IgnoreAttribute? ignore = property.GetCustomAttribute<IgnoreAttribute>(inherit: true);
+            if (ignore is { Condition: IgnoreCondition.Always })
                 continue;
 
+            bool include = property.IsDefined(typeof(IncludeAttribute), inherit: true);
             string? explicitName = property.GetCustomAttribute<PropertyNameAttribute>(inherit: true)?.Name;
             Action<object, object?>? setter = null;
-            if (property.SetMethod is { IsPublic: true })
+            if (property.SetMethod is not null && (property.SetMethod.IsPublic || include))
                 setter = property.SetValue;
 
             members.Add(new YamlMemberInfo
@@ -146,13 +163,16 @@ internal sealed class YamlMemberInfo
                 Set = setter,
                 IsRequired = IsRequiredMember(property),
                 Order = property.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0,
+                Condition = ignore?.Condition,
+                Include = include,
                 IsField = false,
             });
         }
 
         foreach (FieldInfo field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
         {
-            if (field.IsDefined(typeof(IgnoreAttribute), inherit: true))
+            IgnoreAttribute? ignore = field.GetCustomAttribute<IgnoreAttribute>(inherit: true);
+            if (ignore is { Condition: IgnoreCondition.Always })
                 continue;
 
             string? explicitName = field.GetCustomAttribute<PropertyNameAttribute>(inherit: true)?.Name;
@@ -165,6 +185,8 @@ internal sealed class YamlMemberInfo
                 Set = field.SetValue,
                 IsRequired = IsRequiredMember(field),
                 Order = field.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0,
+                Condition = ignore?.Condition,
+                Include = field.IsDefined(typeof(IncludeAttribute), inherit: true),
                 IsField = true,
             });
         }
