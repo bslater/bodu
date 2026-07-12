@@ -5,13 +5,14 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test.Assertions;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies the System.Text.Json-style enum-converter surface for TOML: the built-in by-name default, the
-/// <see cref="TomlStringEnumMemberNameAttribute" /> override, and the <see cref="TomlStringEnumConverter" />,
+/// <see cref="StringEnumMemberNameAttribute" /> override, and the <see cref="TomlStringEnumConverter" />,
 /// <see cref="TomlStringEnumConverter{TEnum}" />, and <see cref="TomlNumberEnumConverter{TEnum}" /> factories.
 /// </summary>
 public partial class TomlSerializerTests
@@ -59,7 +60,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlStringEnumMemberNameAttribute" /> overrides the string used for an individual
+    /// Verifies that <see cref="StringEnumMemberNameAttribute" /> overrides the string used for an individual
     /// enumeration member on both write and read, even with no converter explicitly registered.
     /// </summary>
     [TestMethod]
@@ -83,7 +84,7 @@ public partial class TomlSerializerTests
     public void SerializeDeserialize_WhenStringEnumConverterCamelCasePolicy_ShouldCamelCaseAndRoundTrip()
     {
         var options = new TomlSerializerOptions();
-        options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new StatusModel { Status = Status.Active };
         string text = TomlSerializer.Serialize(model, options);
@@ -102,7 +103,7 @@ public partial class TomlSerializerTests
     public void Deserialize_WhenStringEnumConverterAllowsIntegers_ShouldReadIntegerAsEnum()
     {
         var options = new TomlSerializerOptions();
-        options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         StatusModel model = TomlSerializer.Deserialize<StatusModel>("Status = 2\n", options);
 
@@ -117,7 +118,7 @@ public partial class TomlSerializerTests
     public void Deserialize_WhenStringEnumConverterReadsUnknownName_ShouldThrowTomlSerializationException()
     {
         var options = new TomlSerializerOptions();
-        options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
@@ -142,7 +143,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a property annotated with <see cref="TomlConverterAttribute" /> naming a
+    /// Verifies that a property annotated with <see cref="ConverterAttribute" /> naming a
     /// <see cref="TomlNumberEnumConverter{TEnum}" /> serializes the enumeration as a TOML integer and round-trips.
     /// </summary>
     [TestMethod]
@@ -159,7 +160,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a property annotated with <see cref="TomlConverterAttribute" /> naming a
+    /// Verifies that a property annotated with <see cref="ConverterAttribute" /> naming a
     /// <see cref="TomlStringEnumConverter{TEnum}" /> serializes the enumeration as its member-name string and
     /// round-trips.
     /// </summary>
@@ -227,7 +228,7 @@ public partial class TomlSerializerTests
     public void SerializeDeserialize_WhenGenericStringEnumConverterWithPolicy_ShouldCamelCaseAndRoundTrip()
     {
         var options = new TomlSerializerOptions();
-        options.Converters.Add(new TomlStringEnumConverter<Status>(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new TomlStringEnumConverter<Status>(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new StatusModel { Status = Status.Active };
         string text = TomlSerializer.Serialize(model, options);
@@ -322,14 +323,14 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlStringEnumMemberNameAttribute" /> takes precedence over a naming policy applied by
+    /// Verifies that <see cref="StringEnumMemberNameAttribute" /> takes precedence over a naming policy applied by
     /// a <see cref="TomlStringEnumConverter" />, so the explicit name is used unchanged.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenMemberNameAttributeAndNamingPolicy_ShouldPreferAttribute()
     {
         var options = new TomlSerializerOptions();
-        options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         var model = new RenamedStatusModel { Status = RenamedStatus.NotFound };
         string text = TomlSerializer.Serialize(model, options);
@@ -370,15 +371,15 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that constructing <see cref="TomlStringEnumMemberNameAttribute" /> with a <see langword="null" />
+    /// Verifies that constructing <see cref="StringEnumMemberNameAttribute" /> with a <see langword="null" />
     /// name throws <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>name</c>.
     /// </summary>
     [TestMethod]
-    public void TomlStringEnumMemberNameAttribute_WhenNameNull_ShouldThrowArgumentNullException()
+    public void StringEnumMemberNameAttribute_WhenNameNull_ShouldThrowArgumentNullException()
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
-            _ = new TomlStringEnumMemberNameAttribute(null!);
+            _ = new StringEnumMemberNameAttribute(null!);
         }, "name");
     }
 
@@ -405,7 +406,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// An enumeration whose members carry explicit wire names through
-    /// <see cref="TomlStringEnumMemberNameAttribute" />.
+    /// <see cref="StringEnumMemberNameAttribute" />.
     /// </summary>
     private enum RenamedStatus
     {
@@ -417,7 +418,7 @@ public partial class TomlSerializerTests
         /// <summary>
         /// The not-found state, written under the name <c>not-found</c>.
         /// </summary>
-        [TomlStringEnumMemberName("not-found")]
+        [StringEnumMemberName("not-found")]
         NotFound = 1,
     }
 
@@ -476,7 +477,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the status, serialized as a TOML integer.
         /// </summary>
         /// <value>The status.</value>
-        [TomlConverter(typeof(TomlNumberEnumConverter<Status>))]
+        [Converter(typeof(TomlNumberEnumConverter<Status>))]
         public Status Status { get; set; }
     }
 
@@ -489,7 +490,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the status, serialized as its member-name string.
         /// </summary>
         /// <value>The status.</value>
-        [TomlConverter(typeof(TomlStringEnumConverter<Status>))]
+        [Converter(typeof(TomlStringEnumConverter<Status>))]
         public Status Status { get; set; }
     }
 

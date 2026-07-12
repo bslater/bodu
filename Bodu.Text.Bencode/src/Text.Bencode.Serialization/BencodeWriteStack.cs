@@ -13,7 +13,7 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <remarks>
 /// <para>
 /// A container converter records an over-deep graph here and returns, instead of throwing from the deepest writer
-/// frame. The single recorded failure is thrown once by <see cref="BencodeSerializerEngine.Serialize{T}" /> after
+/// frame. The single recorded failure is thrown once by <see cref="SerializerEngine.Serialize{T}" /> after
 /// control has returned to the root, so the call stack unwinds through normal returns and cannot exhaust a constrained
 /// stack while dispatching the exception.
 /// </para>

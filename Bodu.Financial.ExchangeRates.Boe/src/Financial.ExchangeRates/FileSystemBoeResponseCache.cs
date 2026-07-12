@@ -4,14 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// An <see cref="IBoeResponseCache" /> that persists downloaded IADB range responses as files in a cache directory.
+/// An <see cref="IByteCache{TKey}" /> that persists downloaded IADB range responses as files in a cache directory,
+/// keyed by the inclusive date range that produced them.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -25,7 +25,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 public sealed class FileSystemBoeResponseCache
-    : FileSystemByteCache<(DateOnly StartDate, DateOnly EndDate)>, IBoeResponseCache
+    : FileSystemByteCache<(DateOnly StartDate, DateOnly EndDate)>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FileSystemBoeResponseCache" /> class.
@@ -40,14 +40,6 @@ public sealed class FileSystemBoeResponseCache
     /// </param>
     public FileSystemBoeResponseCache(string? directory, ILogger? logger = null)
         : base(directory, "bodu-boe", logger) { }
-
-    /// <inheritdoc />
-    public bool TryGet(DateOnly startDate, DateOnly endDate, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes) =>
-        TryGetCore((startDate, endDate), refreshInterval, out bytes);
-
-    /// <inheritdoc />
-    public void Store(DateOnly startDate, DateOnly endDate, byte[] bytes) =>
-        StoreCore((startDate, endDate), bytes);
 
     /// <inheritdoc />
     protected override string GetFileName((DateOnly StartDate, DateOnly EndDate) key) =>

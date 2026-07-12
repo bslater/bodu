@@ -43,6 +43,12 @@ public static class CurrencyRegistry
     /// default value.
     /// </param>
     /// <returns><see langword="true" /> when the currency is registered; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// Lookup is case-sensitive and matches canonical uppercase ISO 4217 codes only; a lower- or mixed-case code is
+    /// treated as unknown and returns <see langword="false" />. This mirrors the uppercase-only ISO-code contract the
+    /// exchange-rate providers enforce (a mixed-case code is rejected as malformed there), keeping code resolution
+    /// uniform across the library.
+    /// </remarks>
     public static bool TryGet(string isoCode, out CurrencyInfo? info)
     {
         if (isoCode is null)
@@ -68,6 +74,10 @@ public static class CurrencyRegistry
     /// <returns>The matching <see cref="CurrencyInfo" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">No currency is registered under <paramref name="isoCode" />.</exception>
+    /// <remarks>
+    /// Resolution is case-sensitive and matches canonical uppercase ISO 4217 codes only; a lower- or mixed-case code
+    /// is treated as unknown and throws <see cref="KeyNotFoundException" />.
+    /// </remarks>
     public static CurrencyInfo Get(string isoCode)
     {
         ThrowHelper.ThrowIfNull(isoCode);

@@ -38,14 +38,14 @@ using Bodu.Text.Bencode;
 
 var options = new BencodeSerializerOptions
 {
-    PropertyNamingPolicy = BencodeNamingPolicy.SnakeCaseLower,
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
 };
 
 // "Name" is written as "name", "Length" as "length".
 byte[] payload = BencodeSerializer.Serialize(entry, options);
 ```
 
-Or pin a single member's name with `[BencodePropertyName]`, which always wins over the policy.
+Or pin a single member's name with `[PropertyName]`, which always wins over the policy.
 
 ## Edit a document without a model
 

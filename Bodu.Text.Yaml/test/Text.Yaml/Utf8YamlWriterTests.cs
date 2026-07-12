@@ -17,9 +17,9 @@ namespace Bodu.Text.Yaml;
 [TestClass]
 public partial class Utf8YamlWriterTests
 {
-    /// <summary>A by-ref writer callback used to drive emission within a test.</summary>
+    /// <summary>A writer callback used to drive emission within a test; copies share the writer state.</summary>
     /// <param name="writer">The writer to emit into.</param>
-    private delegate void WriterAction(ref Utf8YamlWriter writer);
+    private delegate void WriterAction(Utf8YamlWriter writer);
 
     /// <summary>Writes via the supplied callback and returns the produced UTF-8 text.</summary>
     /// <param name="write">The emission callback.</param>
@@ -28,7 +28,7 @@ public partial class Utf8YamlWriterTests
     {
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8YamlWriter(buffer);
-        write(ref writer);
+        write(writer);
         return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 

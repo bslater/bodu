@@ -6,6 +6,8 @@
 
 using Bodu.Text.Yaml.Serialization;
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Yaml;
 
 /// <summary>
@@ -27,11 +29,11 @@ public partial class YamlSerializerOptionsTests
     private sealed class Collision
     {
         /// <summary>Gets or sets the first colliding member.</summary>
-        [YamlPropertyName("k")]
+        [PropertyName("k")]
         public int A { get; set; }
 
         /// <summary>Gets or sets the second colliding member.</summary>
-        [YamlPropertyName("k")]
+        [PropertyName("k")]
         public int B { get; set; }
     }
 }

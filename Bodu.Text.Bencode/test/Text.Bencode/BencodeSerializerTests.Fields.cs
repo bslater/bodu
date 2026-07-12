@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text;
 using Bodu.Text.Bencode.Serialization;
 
@@ -12,7 +13,7 @@ namespace Bodu.Text.Bencode;
 /// <summary>
 /// Verifies the opt-in field serialization of <see cref="BencodeSerializer" />: public fields are excluded by
 /// default, included for all types when <see cref="BencodeSerializerOptions.IncludeFields" /> is enabled, and
-/// included individually through <see cref="BencodeIncludeAttribute" /> regardless of that option, mirroring
+/// included individually through <see cref="IncludeAttribute" /> regardless of that option, mirroring
 /// <see cref="System.Text.Json.JsonSerializerOptions.IncludeFields" /> and
 /// <see cref="System.Text.Json.Serialization.JsonIncludeAttribute" />. Fields honor naming policies, name and order
 /// attributes, ignore conditions, and required-member enforcement exactly like properties; a
@@ -51,7 +52,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a public field annotated with <see cref="BencodeIncludeAttribute" /> round-trips even when
+    /// Verifies that a public field annotated with <see cref="IncludeAttribute" /> round-trips even when
     /// <see cref="BencodeSerializerOptions.IncludeFields" /> is disabled, mirroring how
     /// <see cref="System.Text.Json.Serialization.JsonIncludeAttribute" /> opts an individual field in.
     /// </summary>
@@ -76,7 +77,7 @@ public partial class BencodeSerializerTests
         var options = new BencodeSerializerOptions
         {
             IncludeFields = true,
-            PropertyNamingPolicy = BencodeNamingPolicy.CamelCase,
+            PropertyNamingPolicy = NamingPolicy.CamelCase,
         };
 
         byte[] bytes = BencodeSerializer.Serialize(new FieldAndPropertyModel { Field = 5, Property = 6 }, options);
@@ -85,7 +86,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="BencodePropertyNameAttribute" /> on a field overrides both the field name and the
+    /// Verifies that a <see cref="PropertyNameAttribute" /> on a field overrides both the field name and the
     /// naming policy, and that the renamed key binds on read.
     /// </summary>
     [TestMethod]
@@ -102,7 +103,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a field annotated with <see cref="BencodeIgnoreAttribute" /> is omitted even when
+    /// Verifies that a field annotated with <see cref="IgnoreAttribute" /> is omitted even when
     /// <see cref="BencodeSerializerOptions.IncludeFields" /> is enabled.
     /// </summary>
     [TestMethod]
@@ -132,7 +133,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a field annotated with <see cref="BencodeRequiredAttribute" /> is enforced on read: deserializing
+    /// Verifies that a field annotated with <see cref="RequiredAttribute" /> is enforced on read: deserializing
     /// a document without the field's key throws <see cref="BencodeSerializationException" /> naming the member.
     /// </summary>
     [TestMethod]
@@ -150,7 +151,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a field annotated with <see cref="BencodeRequiredAttribute" /> round-trips normally when its key
+    /// Verifies that a field annotated with <see cref="RequiredAttribute" /> round-trips normally when its key
     /// is present in the input.
     /// </summary>
     [TestMethod]
@@ -216,32 +217,32 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// A model whose only member is a public field annotated with <see cref="BencodeIncludeAttribute" />, surfaced
+    /// A model whose only member is a public field annotated with <see cref="IncludeAttribute" />, surfaced
     /// regardless of <see cref="BencodeSerializerOptions.IncludeFields" />.
     /// </summary>
     private sealed class IncludedFieldModel
     {
         /// <summary>
-        /// The public field opted into serialization by <see cref="BencodeIncludeAttribute" />.
+        /// The public field opted into serialization by <see cref="IncludeAttribute" />.
         /// </summary>
-        [BencodeInclude]
+        [Include]
         public int Field;
     }
 
     /// <summary>
-    /// A model whose field carries a <see cref="BencodePropertyNameAttribute" /> wire-name override.
+    /// A model whose field carries a <see cref="PropertyNameAttribute" /> wire-name override.
     /// </summary>
     private sealed class RenamedFieldModel
     {
         /// <summary>
         /// The public field serialized under the wire name <c>n</c>.
         /// </summary>
-        [BencodePropertyName("n")]
+        [PropertyName("n")]
         public int Count;
     }
 
     /// <summary>
-    /// A model with one retained field and one field excluded by <see cref="BencodeIgnoreAttribute" />.
+    /// A model with one retained field and one field excluded by <see cref="IgnoreAttribute" />.
     /// </summary>
     private sealed class IgnoredFieldModel
     {
@@ -251,9 +252,9 @@ public partial class BencodeSerializerTests
         public int Kept;
 
         /// <summary>
-        /// The public field excluded from serialization by <see cref="BencodeIgnoreAttribute" />.
+        /// The public field excluded from serialization by <see cref="IgnoreAttribute" />.
         /// </summary>
-        [BencodeIgnore]
+        [Bodu.Text.Serialization.Ignore]
         public int Skipped;
     }
 
@@ -286,14 +287,14 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// A model whose field is marked required through <see cref="BencodeRequiredAttribute" />.
+    /// A model whose field is marked required through <see cref="RequiredAttribute" />.
     /// </summary>
     private sealed class RequiredFieldModel
     {
         /// <summary>
         /// The public field that must be present in the input.
         /// </summary>
-        [BencodeRequired]
+        [Required]
         public int Field;
     }
 
@@ -333,7 +334,7 @@ public partial class BencodeSerializerTests
         /// Gets the value of the private field, exposed for test assertions only.
         /// </summary>
         /// <value>The hidden value.</value>
-        [BencodeIgnore]
+        [Bodu.Text.Serialization.Ignore]
         public int Hidden => _hidden;
     }
 }

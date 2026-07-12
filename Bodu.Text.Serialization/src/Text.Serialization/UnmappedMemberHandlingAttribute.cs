@@ -1,0 +1,54 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="UnmappedMemberHandlingAttribute.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Text.Serialization;
+
+/// <summary>
+/// Specifies, for the annotated type, how the serializer treats a dictionary key that maps to no member during
+/// deserialization, overriding the serializer-wide unmapped-member handling.
+/// </summary>
+/// <remarks>
+/// When a type carries this attribute, its configured handling is used in place of the options-level default for that
+/// type. A type with an extension-data member still captures unmapped keys into that member regardless of this setting.
+/// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// [UnmappedMemberHandling(UnmappedMemberHandling.Disallow)]
+/// public sealed class StrictConfig
+/// {
+///     public int Port { get; set; }
+/// }
+///
+/// // Input containing a key that maps to no member throws a serialization exception.
+///]]>
+/// </code>
+/// </example>
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
+public sealed class UnmappedMemberHandlingAttribute
+    : SerializationAttribute
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UnmappedMemberHandlingAttribute" /> class.
+    /// </summary>
+    /// <param name="unmappedMemberHandling">The handling applied to unmapped keys for the annotated type.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="unmappedMemberHandling" /> is not a defined
+    /// <see cref="Bodu.Text.Serialization.UnmappedMemberHandling" /> value.
+    /// </exception>
+    public UnmappedMemberHandlingAttribute(UnmappedMemberHandling unmappedMemberHandling)
+    {
+        ThrowHelper.ThrowIfEnumValueIsUndefined(unmappedMemberHandling);
+
+        UnmappedMemberHandling = unmappedMemberHandling;
+    }
+
+    /// <summary>
+    /// Gets the handling applied to unmapped keys for the annotated type.
+    /// </summary>
+    /// <value>The unmapped-member handling.</value>
+    public UnmappedMemberHandling UnmappedMemberHandling { get; }
+}

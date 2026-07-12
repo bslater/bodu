@@ -135,6 +135,12 @@ namespace Bodu.Financial.ExchangeRates {
         /// <summary>
         ///   Looks up a localized string similar to The ECB endpoint base URL has not been configured..
         /// </summary>
+        internal static string Arg_Invalid_EcbFeedFileName {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_EcbFeedFileName", resourceCulture);
+            }
+        }
+
         internal static string Op_Invalid_EcbEndpointBaseUrl {
             get {
                 return ResourceManager.GetString("Op_Invalid_EcbEndpointBaseUrl", resourceCulture);

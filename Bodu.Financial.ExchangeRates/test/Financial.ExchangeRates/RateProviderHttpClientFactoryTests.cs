@@ -46,4 +46,29 @@ public class RateProviderHttpClientFactoryTests
 
         Assert.AreEqual(TimeSpan.FromSeconds(42), client.Timeout);
     }
+
+    /// <summary>
+    /// Verifies that the created client is given a finite response-content buffer cap by default, so a compromised
+    /// or man-in-the-middle endpoint cannot drive unbounded memory use by returning an oversized body.
+    /// </summary>
+    [TestMethod]
+    public void Create_WhenNoBufferSizeSupplied_ShouldApplyFiniteDefaultCap()
+    {
+        using HttpClient client = RateProviderHttpClientFactory.Create(null, TimeSpan.FromSeconds(30));
+
+        Assert.AreEqual(
+            RateProviderHttpClientFactory.DefaultMaxResponseContentBufferSize,
+            client.MaxResponseContentBufferSize);
+    }
+
+    /// <summary>
+    /// Verifies that an explicit positive response-content buffer cap is applied to the created client.
+    /// </summary>
+    [TestMethod]
+    public void Create_WhenBufferSizeSupplied_ShouldApplyBufferSize()
+    {
+        using HttpClient client = RateProviderHttpClientFactory.Create(null, TimeSpan.FromSeconds(30), 1_048_576);
+
+        Assert.AreEqual(1_048_576, client.MaxResponseContentBufferSize);
+    }
 }

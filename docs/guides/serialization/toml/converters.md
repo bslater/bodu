@@ -38,7 +38,7 @@ Two ways, highest precedence first:
 // On a member or type:
 public sealed class Shape
 {
-    [TomlConverter(typeof(PointConverter))]
+    [Converter(typeof(PointConverter))]
     public Point Origin { get; set; }
 }
 
@@ -51,7 +51,7 @@ options.Converters.Add(new PointConverter());
 
 For a given type the serializer selects a converter by checking, in order:
 
-1. a member-level converter attribute (`[TomlConverter(...)]`);
+1. a member-level converter attribute (`[Converter(...)]`);
 2. a type-level converter attribute;
 3. the first matching converter in `options.Converters`;
 4. the built-in converters.
@@ -102,12 +102,12 @@ For enums you usually do not need a hand-written converter. The library ships a 
 On the enumeration itself, use the generic string-enum form (<xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter`1>), optionally renaming individual members:
 
 ```csharp
-[TomlConverter(typeof(TomlStringEnumConverter<Status>))]
+[Converter(typeof(TomlStringEnumConverter<Status>))]
 public enum Status
 {
     Active,
 
-    [TomlStringEnumMemberName("on-hold")]
+    [StringEnumMemberName("on-hold")]
     OnHold,
 }
 
@@ -119,7 +119,7 @@ On a single member, the generic number-enum form (<xref:Bodu.Text.Toml.Serializa
 ```csharp
 public sealed class WorkItem
 {
-    [TomlConverter(typeof(TomlNumberEnumConverter<Priority>))]
+    [Converter(typeof(TomlNumberEnumConverter<Priority>))]
     public Priority Priority { get; set; }
 }
 
@@ -131,7 +131,7 @@ To cover *every* enumeration in one registration, add the non-generic string-enu
 <!-- compile -->
 ```csharp
 var options = new TomlSerializerOptions();
-options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));
 
 // Status.OnHold now serializes as "on_hold" everywhere.
 ```

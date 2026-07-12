@@ -45,8 +45,8 @@ The library never invents a lossy representation on your behalf; the choice of e
 |---|---|
 | <xref:Bodu.Text.Bencode.BencodeSerializer> | `Serialize` / `Deserialize<T>` over `byte[]`, `ReadOnlySpan<byte>`, `IBufferWriter<byte>`, and `Stream` (with async variants), plus the DOM bridges `SerializeToNode` / `SerializeToDocument` and `Deserialize<T>(BencodeNode)`. |
 | <xref:Bodu.Text.Bencode.BencodeSerializerOptions> | Converters, naming policy, case-insensitive matching, ignore conditions, unmapped-member and object-creation policy, read-path leniency (`AllowUnsortedKeys` / `AllowDuplicateKeys`), depth. |
-| <xref:Bodu.Text.Bencode.BencodeNamingPolicy> | Property-name policy: `CamelCase`, `SnakeCaseLower`, `SnakeCaseUpper`, `KebabCaseLower`, `KebabCaseUpper`. |
-| <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> | Base class for a custom converter over the reader/writer pair; attach one to a member or type with <xref:Bodu.Text.Bencode.Serialization.BencodeConverterAttribute>. Built-in enum converters: <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter> and <xref:Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter`1>. |
+| <xref:Bodu.Text.Serialization.NamingPolicy> | Property-name policy: `CamelCase`, `SnakeCaseLower`, `SnakeCaseUpper`, `KebabCaseLower`, `KebabCaseUpper`. |
+| <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> | Base class for a custom converter over the reader/writer pair; attach one to a member or type with <xref:Bodu.Text.Serialization.ConverterAttribute>. Built-in enum converters: <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter> and <xref:Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter`1>. |
 | <xref:Bodu.Text.Bencode.Nodes.BencodeNode> | Mutable DOM — `Parse`, index, mutate, write back. |
 | <xref:Bodu.Text.Bencode.Document.BencodeDocument> | Read-only, low-allocation DOM walked through `RootElement`. |
 | <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> / <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> | Forward-only, allocation-free `ref struct` token machines. |

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializer.Read.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,7 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
-using Bodu.Text.Yaml.Document;
+using Bodu.Text.Yaml.Reader;
 using Bodu.Text.Yaml.Serialization;
 
 namespace Bodu.Text.Yaml;
@@ -15,6 +15,12 @@ namespace Bodu.Text.Yaml;
 /// <summary>
 /// Deserialization (binding) for <see cref="YamlSerializer" />.
 /// </summary>
+/// <remarks>
+/// Binding consumes the forward-only <see cref="Utf8YamlReader" /> token stream directly rather than a materialized
+/// document object model. The reader resolves anchors and aliases, expands merge keys, applies the duplicate-key
+/// policy, and enforces the alias-expansion budget during its parse, so the binder observes a fully composed stream and
+/// each of these behaviors is inherited unchanged.
+/// </remarks>
 public static partial class YamlSerializer
 {
     /// <summary>
@@ -63,98 +69,100 @@ public static partial class YamlSerializer
         ThrowHelper.ThrowIfNull(returnType);
         YamlSerializerOptions o = options ?? s_defaultOptions;
         o.MakeReadOnly();
-        using var document = YamlDocument.Parse(utf8Yaml, new YamlDocumentOptions
+        var reader = new Utf8YamlReader(utf8Yaml, new YamlReaderOptions
         {
             SpecVersion = o.SpecVersion,
             DuplicateKeyBehavior = o.DuplicateKeyBehavior,
             MergeKeyBehavior = o.MergeKeyBehavior,
             MaxDepth = o.MaxDepth,
         });
-        return BindValue(document.RootElement, returnType, o);
+
+        if (!reader.Read())
+            return returnType.IsValueType ? Activator.CreateInstance(returnType) : null;
+
+        return BindValue(ref reader, returnType, o);
     }
 
     /// <summary>
-    /// Binds a YAML element to a value of the target type.
+    /// Binds the value at the reader's current position to the target type.
     /// </summary>
-    /// <param name="element">The element to bind.</param>
+    /// <param name="reader">The reader positioned on the value's first token.</param>
     /// <param name="type">The target type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The bound value.</returns>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
     private static object? BindValue(
-        YamlElement element,
+        ref Utf8YamlReader reader,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
         YamlSerializerOptions options)
     {
         Type? underlying = Nullable.GetUnderlyingType(type);
         if (underlying is not null)
-        {
-            return element.ValueKind == YamlValueKind.Null ? null : BindValue(element, underlying, options);
-        }
+            return reader.TokenType == YamlTokenType.Null ? null : BindValue(ref reader, underlying, options);
 
         YamlConverter? converter = options.GetConverter(type);
         if (converter is not null)
-            return converter.ReadAsObject(element, options);
+            return converter.ReadAsObject(ref reader, type, options);
 
         if (type == typeof(object))
-            return BindDynamic(element, options);
+            return BindDynamic(ref reader, options);
 
         if (type == typeof(string))
-            return element.ValueKind == YamlValueKind.Null ? null : ElementToString(element);
+            return reader.TokenType == YamlTokenType.Null ? null : ReaderScalarText(ref reader);
 
-        if (element.ValueKind == YamlValueKind.Null)
+        if (reader.TokenType == YamlTokenType.Null)
             return type.IsValueType ? Activator.CreateInstance(type) : null;
 
         if (type.IsEnum)
-            return BindEnum(element, type);
+            return BindEnum(ref reader, type);
 
         if (type == typeof(bool))
-            return element.GetBoolean();
+            return reader.GetBoolean();
 
         if (type == typeof(char))
-            return BindChar(element);
+            return BindChar(ref reader);
 
         if (IsIntegral(type))
-            return BindIntegral(element, type, options);
+            return BindIntegral(ref reader, type, options);
 
         if (type == typeof(float))
-            return float.Parse(ElementToString(element), NumberStyles.Float, CultureInfo.InvariantCulture);
+            return float.Parse(ReaderScalarText(ref reader), NumberStyles.Float, CultureInfo.InvariantCulture);
 
         if (type == typeof(double))
-            return double.Parse(ElementToString(element), NumberStyles.Float, CultureInfo.InvariantCulture);
+            return double.Parse(ReaderScalarText(ref reader), NumberStyles.Float, CultureInfo.InvariantCulture);
 
         if (type == typeof(decimal))
-            return decimal.Parse(ElementToString(element), NumberStyles.Float, CultureInfo.InvariantCulture);
+            return decimal.Parse(ReaderScalarText(ref reader), NumberStyles.Float, CultureInfo.InvariantCulture);
 
         if (type == typeof(Guid))
-            return Guid.Parse(ElementToString(element));
+            return Guid.Parse(ReaderScalarText(ref reader));
 
         if (type == typeof(DateTime))
-            return DateTime.Parse(ElementToString(element), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            return DateTime.Parse(ReaderScalarText(ref reader), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
         if (type == typeof(DateTimeOffset))
-            return DateTimeOffset.Parse(ElementToString(element), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            return DateTimeOffset.Parse(ReaderScalarText(ref reader), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
         if (type == typeof(TimeSpan))
-            return TimeSpan.Parse(ElementToString(element), CultureInfo.InvariantCulture);
+            return TimeSpan.Parse(ReaderScalarText(ref reader), CultureInfo.InvariantCulture);
 
         if (type.IsArray)
-            return BindArray(element, type, options);
+            return BindArray(ref reader, type, options);
 
         if (TryGetDictionaryValueType(type, out Type? valueType))
-            return BindDictionary(element, type, valueType, options);
+            return BindDictionary(ref reader, type, valueType, options);
 
         if (TryGetEnumerableElementType(type, out Type? elementType))
-            return BindList(element, type, elementType, options);
+            return BindList(ref reader, type, elementType, options);
 
-        return BindObject(element, type, options);
+        return BindObject(ref reader, type, options);
     }
 
     /// <summary>
-    /// Binds a child element, attaching the child's path segment to any binding failure so the reported
+    /// Binds a child value, attaching the child's path segment to any binding failure so the reported
     /// <see cref="YamlSerializationException.Path" /> identifies the offending member, index, or key.
     /// </summary>
-    /// <param name="element">The child element to bind.</param>
+    /// <param name="reader">The reader positioned on the child value's first token.</param>
     /// <param name="type">The target type.</param>
     /// <param name="options">The serializer options.</param>
     /// <param name="segment">The path segment for this child (a member or key name, or a <c>[index]</c>).</param>
@@ -162,14 +170,14 @@ public static partial class YamlSerializer
     /// <exception cref="YamlSerializationException">The child cannot be bound to the target type.</exception>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
     private static object? BindChild(
-        YamlElement element,
+        ref Utf8YamlReader reader,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
         YamlSerializerOptions options,
         string segment)
     {
         try
         {
-            return BindValue(element, type, options);
+            return BindValue(ref reader, type, options);
         }
         catch (YamlSerializationException ex)
         {
@@ -187,57 +195,61 @@ public static partial class YamlSerializer
     }
 
     /// <summary>
-    /// Binds a YAML element to a loosely-typed object graph of dictionaries, lists, and primitives.
+    /// Binds the value at the reader's current position to a loosely-typed graph of dictionaries, lists, and primitives.
     /// </summary>
-    /// <param name="element">The element to bind.</param>
+    /// <param name="reader">The reader positioned on the value's first token.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The bound value.</returns>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
-    private static object? BindDynamic(YamlElement element, YamlSerializerOptions options)
+    private static object? BindDynamic(ref Utf8YamlReader reader, YamlSerializerOptions options)
     {
-        switch (element.ValueKind)
+        switch (reader.TokenType)
         {
-            case YamlValueKind.Null:
+            case YamlTokenType.Null:
                 return null;
-            case YamlValueKind.Boolean:
-                return element.GetBoolean();
-            case YamlValueKind.Integer:
-                return element.GetInt64();
-            case YamlValueKind.Float:
-                return element.GetDouble();
-            case YamlValueKind.String:
-                return element.GetString();
-            case YamlValueKind.Sequence:
+            case YamlTokenType.Boolean:
+                return reader.GetBoolean();
+            case YamlTokenType.Integer:
+                return reader.GetInt64();
+            case YamlTokenType.Float:
+                return reader.GetDouble();
+            case YamlTokenType.String:
+                return reader.GetString();
+            case YamlTokenType.StartSequence:
                 var list = new List<object?>();
-                foreach (YamlElement item in element.EnumerateSequence())
-                    list.Add(BindDynamic(item, options));
+                while (reader.Read() && reader.TokenType != YamlTokenType.EndSequence)
+                    list.Add(BindDynamic(ref reader, options));
 
                 return list;
             default:
                 var map = new Dictionary<string, object?>(StringComparer.Ordinal);
-                foreach (YamlProperty pair in element.EnumerateMapping())
-                    map[pair.Name] = BindDynamic(pair.Value, options);
+                while (reader.Read() && reader.TokenType != YamlTokenType.EndMapping)
+                {
+                    string key = reader.GetString();
+                    reader.Read();
+                    map[key] = BindDynamic(ref reader, options);
+                }
 
                 return map;
         }
     }
 
     /// <summary>
-    /// Binds a scalar element to an integral target, rejecting a non-integral or out-of-range source rather than
-    /// silently truncating it.
+    /// Binds the scalar at the reader's current position to an integral target, rejecting a non-integral or
+    /// out-of-range source rather than silently truncating it.
     /// </summary>
-    /// <param name="element">The element to read.</param>
+    /// <param name="reader">The reader positioned on the scalar.</param>
     /// <param name="type">The integral target type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The bound integral value.</returns>
     /// <exception cref="YamlSerializationException">
     /// The source is a non-integral float, or its value is outside the range of <paramref name="type" />.
     /// </exception>
-    private static object BindIntegral(YamlElement element, Type type, YamlSerializerOptions options)
+    private static object BindIntegral(ref Utf8YamlReader reader, Type type, YamlSerializerOptions options)
     {
-        if (element.ValueKind == YamlValueKind.Float)
+        if (reader.TokenType == YamlTokenType.Float)
         {
-            double d = element.GetDouble();
+            double d = reader.GetDouble();
             if (options.NumberHandling == YamlNumberHandling.AllowFloatToInteger)
                 return Convert.ChangeType(Math.Truncate(d), type, CultureInfo.InvariantCulture);
 
@@ -248,7 +260,7 @@ public static partial class YamlSerializer
             }
         }
 
-        string text = ElementToString(element);
+        string text = ReaderScalarText(ref reader);
         try
         {
             return Convert.ChangeType(text, type, CultureInfo.InvariantCulture);
@@ -261,14 +273,15 @@ public static partial class YamlSerializer
     }
 
     /// <summary>
-    /// Binds a scalar element to a <see cref="char" />, requiring exactly one Unicode code unit.
+    /// Binds the scalar at the reader's current position to a <see cref="char" />, requiring exactly one Unicode code
+    /// unit.
     /// </summary>
-    /// <param name="element">The element to read.</param>
+    /// <param name="reader">The reader positioned on the scalar.</param>
     /// <returns>The bound character.</returns>
     /// <exception cref="YamlSerializationException">The source is not exactly one character.</exception>
-    private static char BindChar(YamlElement element)
+    private static char BindChar(ref Utf8YamlReader reader)
     {
-        string s = ElementToString(element);
+        string s = ReaderScalarText(ref reader);
         if (s.Length != 1)
         {
             throw new YamlSerializationException(string.Format(
@@ -279,33 +292,54 @@ public static partial class YamlSerializer
     }
 
     /// <summary>
-    /// Binds a scalar element to an enumeration value by name or number.
+    /// Binds the scalar at the reader's current position to an enumeration value by name or number.
     /// </summary>
-    /// <param name="element">The element to bind.</param>
+    /// <param name="reader">The reader positioned on the scalar.</param>
     /// <param name="enumType">The enumeration type.</param>
     /// <returns>The enumeration value.</returns>
-    private static object BindEnum(YamlElement element, Type enumType)
+    private static object BindEnum(ref Utf8YamlReader reader, Type enumType)
     {
-        if (element.ValueKind == YamlValueKind.Integer)
-            return Enum.ToObject(enumType, element.GetInt64());
+        if (reader.TokenType == YamlTokenType.Integer)
+            return Enum.ToObject(enumType, reader.GetInt64());
 
-        return Enum.Parse(enumType, ElementToString(element), ignoreCase: true);
+        return Enum.Parse(enumType, ReaderScalarText(ref reader), ignoreCase: true);
     }
 
     /// <summary>
-    /// Produces the string form of a scalar element.
+    /// Produces the string form of the scalar at the reader's current position.
     /// </summary>
-    /// <param name="element">The element to read.</param>
+    /// <param name="reader">The reader positioned on the scalar.</param>
     /// <returns>The scalar's text.</returns>
-    private static string ElementToString(YamlElement element) => element.ValueKind switch
+    /// <exception cref="YamlSerializationException">The current token is not a scalar.</exception>
+    private static string ReaderScalarText(ref Utf8YamlReader reader) => reader.TokenType switch
     {
-        YamlValueKind.String => element.GetString(),
-        YamlValueKind.Integer => element.GetInt64().ToString(CultureInfo.InvariantCulture),
-        YamlValueKind.Float => element.GetDouble().ToString(CultureInfo.InvariantCulture),
-        YamlValueKind.Boolean => element.GetBoolean() ? "true" : "false",
-        YamlValueKind.Null => string.Empty,
-        _ => throw new YamlSerializationException("Expected a scalar value."),
+        YamlTokenType.String => reader.GetString(),
+        YamlTokenType.Integer => reader.GetInt64().ToString(CultureInfo.InvariantCulture),
+        YamlTokenType.Float => reader.GetDouble().ToString(CultureInfo.InvariantCulture),
+        YamlTokenType.Boolean => reader.GetBoolean() ? "true" : "false",
+        YamlTokenType.Null => string.Empty,
+        _ => throw new YamlSerializationException(YamlResourceStrings.Op_Invalid_YamlExpectedScalar),
     };
+
+    /// <summary>
+    /// Advances the reader past the value at its current position without binding it, so an unbound member's value is
+    /// consumed and the enclosing loop resumes on the next token.
+    /// </summary>
+    /// <param name="reader">The reader positioned on the value's first token.</param>
+    private static void SkipValue(ref Utf8YamlReader reader)
+    {
+        if (reader.TokenType is not (YamlTokenType.StartMapping or YamlTokenType.StartSequence))
+            return;
+
+        int depth = 1;
+        while (depth > 0 && reader.Read())
+        {
+            if (reader.TokenType is YamlTokenType.StartMapping or YamlTokenType.StartSequence)
+                depth++;
+            else if (reader.TokenType is YamlTokenType.EndMapping or YamlTokenType.EndSequence)
+                depth--;
+        }
+    }
 
     /// <summary>
     /// Determines whether a type is a CLR integral type.

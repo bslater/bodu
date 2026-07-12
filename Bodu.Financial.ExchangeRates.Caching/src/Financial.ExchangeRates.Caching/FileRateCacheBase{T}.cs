@@ -47,17 +47,11 @@ public abstract class FileRateCacheBase<TOptions>
     /// <summary>The logger that receives the best-effort degradation messages; never <see langword="null" />.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The time source the warning rate-limiting is measured against, so the cooldown is deterministic under test.</summary>
-    private readonly TimeProvider _timeProvider;
-
     /// <summary>The minimum interval between swallowed-failure warnings; failures inside the window only increment the suppressed count.</summary>
     private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
 
-    /// <summary>The UTC tick timestamp of the last emitted warning, or <see cref="long.MinValue" /> when none has been emitted.</summary>
-    private long _lastWarnUtcTicks = long.MinValue;
-
-    /// <summary>The number of swallowed failures rate-limited away since the last emitted warning.</summary>
-    private int _suppressedSinceLastWarn;
+    /// <summary>Rate-limits the swallowed-failure warning to at most one emission per <see cref="s_warnCooldown" /> window.</summary>
+    private readonly RateLimitedWarningGate _warnGate;
 
     /// <summary>Memoizes the most recently parsed state per file, keyed by full path, against the file's last-write instant, so a repeated read of an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. An entry is invalidated when this instance writes or deletes the file, and a differing last-write instant — an external or cross-process change — is detected on the next read, so the memo never serves data from a file whose timestamp has moved. Keying by path (not by pair) lets one pair span many partition files.</summary>
     private readonly ConcurrentDictionary<string, (DateTime StampUtc, CachePairState State)> _parsed = new();
@@ -83,7 +77,7 @@ public abstract class FileRateCacheBase<TOptions>
     protected FileRateCacheBase(TOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
         : base(options)
     {
-        _timeProvider = timeProvider ?? TimeProvider.System;
+        _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
         _logger = logger ?? NullLogger.Instance;
         _directory = string.IsNullOrWhiteSpace(options.CacheDirectory)
             ? Path.Combine(Path.GetTempPath(), "bodu-exchange-rates")
@@ -464,21 +458,8 @@ public abstract class FileRateCacheBase<TOptions>
     /// </remarks>
     private void OnStorageFailureSwallowed(string operation, Exception exception)
     {
-        long now = _timeProvider.GetUtcNow().UtcTicks;
-        long last = Interlocked.Read(ref _lastWarnUtcTicks);
-
-        // Emit when no warning has been logged yet, or the cooldown has elapsed since the last one. The MinValue sentinel
-        // is checked before the subtraction so a never-warned instance does not underflow the elapsed comparison.
-        bool due = last == long.MinValue || (now - last) >= s_warnCooldown.Ticks;
-        if (due && Interlocked.CompareExchange(ref _lastWarnUtcTicks, now, last) == last)
-        {
-            int suppressed = Interlocked.Exchange(ref _suppressedSinceLastWarn, 0);
+        if (_warnGate.TryClaimWarning(out int suppressed))
             Log.FileStorageFailureSwallowed(_logger, Provider, operation, suppressed, exception);
-        }
-        else
-        {
-            Interlocked.Increment(ref _suppressedSinceLastWarn);
-        }
     }
 
     /// <summary>

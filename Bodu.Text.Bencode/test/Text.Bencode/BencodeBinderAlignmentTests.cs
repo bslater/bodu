@@ -7,20 +7,22 @@
 using System.Text;
 using Bodu.Text.Bencode.Serialization;
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Verifies the binder features that align the Bencode serializer with <see cref="System.Text.Json.JsonSerializer" />:
-/// the serialization callback interfaces, <see cref="BencodeUnmappedMemberHandling" /> handling,
-/// <see cref="BencodeObjectCreationHandling" /> populate behavior, and the per-type
-/// <see cref="BencodeNamingPolicyAttribute" />.
+/// the serialization callback interfaces, <see cref="UnmappedMemberHandling" /> handling,
+/// <see cref="ObjectCreationHandling" /> populate behavior, and the per-type
+/// <see cref="NamingPolicyAttribute" />.
 /// </summary>
 [TestClass]
 public class BencodeBinderAlignmentTests
 {
     /// <summary>
-    /// Verifies that serializing a value invokes <see cref="IBencodeOnSerializing.OnSerializing" /> before
-    /// <see cref="IBencodeOnSerialized.OnSerialized" /> and records both in order.
+    /// Verifies that serializing a value invokes <see cref="IOnSerializing.OnSerializing" /> before
+    /// <see cref="IOnSerialized.OnSerialized" /> and records both in order.
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
@@ -34,8 +36,8 @@ public class BencodeBinderAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that deserializing into a value invokes <see cref="IBencodeOnDeserializing.OnDeserializing" /> before
-    /// <see cref="IBencodeOnDeserialized.OnDeserialized" /> and records both in order.
+    /// Verifies that deserializing into a value invokes <see cref="IOnDeserializing.OnDeserializing" /> before
+    /// <see cref="IOnDeserialized.OnDeserialized" /> and records both in order.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenValueImplementsCallbacks_ShouldInvokeDeserializingThenDeserialized()
@@ -48,7 +50,7 @@ public class BencodeBinderAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IBencodeOnDeserializing.OnDeserializing" /> runs before the settable members are
+    /// Verifies that <see cref="IOnDeserializing.OnDeserializing" /> runs before the settable members are
     /// assigned, observing the still-unpopulated instance.
     /// </summary>
     [TestMethod]
@@ -64,7 +66,7 @@ public class BencodeBinderAlignmentTests
 
     /// <summary>
     /// Verifies that deserializing a dictionary with an unmapped key succeeds under the default
-    /// <see cref="BencodeUnmappedMemberHandling.Skip" /> handling.
+    /// <see cref="UnmappedMemberHandling.Skip" /> handling.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndHandlingIsSkip_ShouldIgnoreUnmappedKey()
@@ -79,12 +81,12 @@ public class BencodeBinderAlignmentTests
     /// <summary>
     /// Verifies that deserializing a dictionary with an unmapped key throws
     /// <see cref="BencodeSerializationException" /> when the options select
-    /// <see cref="BencodeUnmappedMemberHandling.Disallow" />.
+    /// <see cref="UnmappedMemberHandling.Disallow" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndOptionsDisallow_ShouldThrowBencodeSerializationException()
     {
-        var options = new BencodeSerializerOptions { UnmappedMemberHandling = BencodeUnmappedMemberHandling.Disallow };
+        var options = new BencodeSerializerOptions { UnmappedMemberHandling = UnmappedMemberHandling.Disallow };
         byte[] bytes = Encoding.Latin1.GetBytes("d5:Extrai9e5:Valuei3ee");
 
         Assert.ThrowsExactly<BencodeSerializationException>(() =>
@@ -94,9 +96,9 @@ public class BencodeBinderAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that a type annotated with <see cref="BencodeUnmappedMemberHandlingAttribute" /> set to
-    /// <see cref="BencodeUnmappedMemberHandling.Disallow" /> rejects an unmapped key even when the options default to
-    /// <see cref="BencodeUnmappedMemberHandling.Skip" />.
+    /// Verifies that a type annotated with <see cref="UnmappedMemberHandlingAttribute" /> set to
+    /// <see cref="UnmappedMemberHandling.Disallow" /> rejects an unmapped key even when the options default to
+    /// <see cref="UnmappedMemberHandling.Skip" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenTypeDisallowsUnmapped_ShouldThrowRegardlessOfOptions()
@@ -127,7 +129,7 @@ public class BencodeBinderAlignmentTests
 
     /// <summary>
     /// Verifies that a get-only collection property annotated with
-    /// <see cref="BencodeObjectCreationHandlingAttribute" /> set to <see cref="BencodeObjectCreationHandling.Populate" />
+    /// <see cref="ObjectCreationHandlingAttribute" /> set to <see cref="ObjectCreationHandling.Populate" />
     /// has the read entries added into its pre-seeded instance rather than replacing it.
     /// </summary>
     [TestMethod]
@@ -141,13 +143,13 @@ public class BencodeBinderAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodeObjectCreationHandling.Populate" /> selected through the options applies to a
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> selected through the options applies to a
     /// get-only collection property, adding the read entries into its pre-seeded instance.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenOptionsPreferPopulate_ShouldAddIntoExistingCollection()
     {
-        var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = BencodeObjectCreationHandling.Populate };
+        var options = new BencodeSerializerOptions { PreferredObjectCreationHandling = ObjectCreationHandling.Populate };
         byte[] bytes = Encoding.Latin1.GetBytes("d4:Tagsli1ei2eee");
 
         GetOnlyCollectionModel model = BencodeSerializer.Deserialize<GetOnlyCollectionModel>(bytes, options);
@@ -156,7 +158,7 @@ public class BencodeBinderAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that under the default <see cref="BencodeObjectCreationHandling.Replace" /> handling a get-only
+    /// Verifies that under the default <see cref="ObjectCreationHandling.Replace" /> handling a get-only
     /// collection property is not populated, so its pre-seeded contents are unchanged.
     /// </summary>
     [TestMethod]
@@ -171,7 +173,7 @@ public class BencodeBinderAlignmentTests
 
     /// <summary>
     /// Verifies that a populatable dictionary member merges the read entries into its pre-seeded instance under
-    /// <see cref="BencodeObjectCreationHandling.Populate" />.
+    /// <see cref="ObjectCreationHandling.Populate" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenDictionaryMemberPopulates_ShouldMergeIntoExistingDictionary()
@@ -186,8 +188,8 @@ public class BencodeBinderAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that a type annotated with <see cref="BencodeNamingPolicyAttribute" /> set to
-    /// <see cref="BencodeKnownNamingPolicy.CamelCase" /> serializes its members with camel-cased keys even when the
+    /// Verifies that a type annotated with <see cref="NamingPolicyAttribute" /> set to
+    /// <see cref="KnownNamingPolicy.CamelCase" /> serializes its members with camel-cased keys even when the
     /// options' naming policy is unset.
     /// </summary>
     [TestMethod]
@@ -201,8 +203,8 @@ public class BencodeBinderAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that a member with an explicit <see cref="BencodePropertyNameAttribute" /> keeps its literal name while
-    /// other members follow the type's <see cref="BencodeNamingPolicyAttribute" /> policy.
+    /// Verifies that a member with an explicit <see cref="PropertyNameAttribute" /> keeps its literal name while
+    /// other members follow the type's <see cref="NamingPolicyAttribute" /> policy.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenTypePolicyAndExplicitName_ShouldPreferExplicitName()
@@ -216,7 +218,7 @@ public class BencodeBinderAlignmentTests
     /// A model that records each serialization callback the serializer invokes, used to assert callback ordering.
     /// </summary>
     private sealed class CallbackModel
-        : IBencodeOnSerializing, IBencodeOnSerialized, IBencodeOnDeserializing, IBencodeOnDeserialized
+        : IOnSerializing, IOnSerialized, IOnDeserializing, IOnDeserialized
     {
         /// <summary>
         /// Gets the ordered list of callback names the serializer has invoked.
@@ -270,9 +272,9 @@ public class BencodeBinderAlignmentTests
     }
 
     /// <summary>
-    /// A model that disallows unmapped members through <see cref="BencodeUnmappedMemberHandlingAttribute" />.
+    /// A model that disallows unmapped members through <see cref="UnmappedMemberHandlingAttribute" />.
     /// </summary>
-    [BencodeUnmappedMemberHandling(BencodeUnmappedMemberHandling.Disallow)]
+    [UnmappedMemberHandling(UnmappedMemberHandling.Disallow)]
     private sealed class DisallowUnmappedModel
     {
         /// <summary>
@@ -285,7 +287,7 @@ public class BencodeBinderAlignmentTests
     /// <summary>
     /// A model that disallows unmapped members yet still captures them into an extension-data member.
     /// </summary>
-    [BencodeUnmappedMemberHandling(BencodeUnmappedMemberHandling.Disallow)]
+    [UnmappedMemberHandling(UnmappedMemberHandling.Disallow)]
     private sealed class DisallowWithExtensionDataModel
     {
         /// <summary>
@@ -298,13 +300,13 @@ public class BencodeBinderAlignmentTests
         /// Gets or sets the captured entries that match no other member.
         /// </summary>
         /// <value>The captured entries.</value>
-        [BencodeExtensionData]
+        [ExtensionData]
         public Nodes.BencodeObject? Extra { get; set; }
     }
 
     /// <summary>
     /// A model whose get-only collection member is populated through a member-level
-    /// <see cref="BencodeObjectCreationHandlingAttribute" />.
+    /// <see cref="ObjectCreationHandlingAttribute" />.
     /// </summary>
     private sealed class PopulateMemberModel
     {
@@ -312,7 +314,7 @@ public class BencodeBinderAlignmentTests
         /// Gets the pre-seeded tag list that the serializer populates rather than replaces.
         /// </summary>
         /// <value>The tags.</value>
-        [BencodeObjectCreationHandling(BencodeObjectCreationHandling.Populate)]
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
         public List<int> Tags { get; } = new() { 99 };
     }
 
@@ -331,7 +333,7 @@ public class BencodeBinderAlignmentTests
 
     /// <summary>
     /// A model whose get-only dictionary member is populated through a member-level
-    /// <see cref="BencodeObjectCreationHandlingAttribute" />.
+    /// <see cref="ObjectCreationHandlingAttribute" />.
     /// </summary>
     private sealed class PopulateDictionaryModel
     {
@@ -339,15 +341,15 @@ public class BencodeBinderAlignmentTests
         /// Gets the pre-seeded map that the serializer merges into rather than replaces.
         /// </summary>
         /// <value>The map.</value>
-        [BencodeObjectCreationHandling(BencodeObjectCreationHandling.Populate)]
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
         public Dictionary<string, int> Map { get; } = new() { ["a"] = 1 };
     }
 
     /// <summary>
     /// A model that selects camel-case naming for all of its members through
-    /// <see cref="BencodeNamingPolicyAttribute" />.
+    /// <see cref="NamingPolicyAttribute" />.
     /// </summary>
-    [BencodeNamingPolicy(BencodeKnownNamingPolicy.CamelCase)]
+    [NamingPolicy(KnownNamingPolicy.CamelCase)]
     private sealed class CamelCaseTypeModel
     {
         /// <summary>
@@ -365,9 +367,9 @@ public class BencodeBinderAlignmentTests
 
     /// <summary>
     /// A camel-case model on which one member overrides the policy through
-    /// <see cref="BencodePropertyNameAttribute" />.
+    /// <see cref="PropertyNameAttribute" />.
     /// </summary>
-    [BencodeNamingPolicy(BencodeKnownNamingPolicy.CamelCase)]
+    [NamingPolicy(KnownNamingPolicy.CamelCase)]
     private sealed class CamelCaseWithOverrideModel
     {
         /// <summary>
@@ -380,7 +382,7 @@ public class BencodeBinderAlignmentTests
         /// Gets or sets the last name, named explicitly so the policy does not apply.
         /// </summary>
         /// <value>The last name.</value>
-        [BencodePropertyName("surname")]
+        [PropertyName("surname")]
         public string LastName { get; set; } = string.Empty;
     }
 }

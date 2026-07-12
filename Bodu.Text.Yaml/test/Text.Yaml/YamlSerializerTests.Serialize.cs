@@ -4,7 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Yaml.Document;
+using Bodu.Text.Serialization;
+using Bodu.Text.Yaml.Reader;
 using Bodu.Text.Yaml.Serialization;
 using Bodu.Text.Yaml.Writer;
 
@@ -28,7 +29,7 @@ public partial class YamlSerializerTests
     [TestMethod]
     public void Serialize_WhenNamingPolicyAndAttributes_ShouldApply()
     {
-        var options = new YamlSerializerOptions { PropertyNamingPolicy = YamlNamingPolicy.SnakeCaseLower };
+        var options = new YamlSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
         string yaml = YamlSerializer.Serialize(new Config { ServerHost = "h", ServerPort = 8080, Secret = "x" }, options);
 
         Assert.AreEqual("server_host: h\nport: 8080\n", yaml);
@@ -56,10 +57,10 @@ public partial class YamlSerializerTests
     /// <summary>A custom converter that reads and writes a value as an uppercase string.</summary>
     private sealed class UpperConverter : YamlConverter<string>
     {
-        public override string Read(YamlElement element, YamlSerializerOptions options) =>
-            element.GetString().ToUpperInvariant();
+        public override string Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) =>
+            reader.GetString().ToUpperInvariant();
 
-        public override void Write(ref Utf8YamlWriter writer, string value, YamlSerializerOptions options) =>
+        public override void Write(Utf8YamlWriter writer, string value, YamlSerializerOptions options) =>
             writer.WriteString(value.ToUpperInvariant());
     }
 }

@@ -54,7 +54,7 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 |---|---|
 | <xref:Bodu.Text.Yaml.YamlSerializer> | `Serialize` to a `string` (from a typed value or an `object` + `Type`); `Deserialize<T>` from a `string` or `ReadOnlySpan<byte>` (UTF-8). |
 | <xref:Bodu.Text.Yaml.YamlSerializerOptions> | Naming policy, converters, `IncludeFields`, `IgnoreNullValues`, `WriteEnumsAsStrings`, `PropertyNameCaseInsensitive`, `SpecVersion`, `NumberHandling`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `UnmappedMemberHandling`, `MaxDepth`. Frozen on first use. |
-| <xref:Bodu.Text.Yaml.YamlNamingPolicy> | `CamelCase`, `SnakeCaseLower`, `KebabCaseLower`. |
+| <xref:Bodu.Text.Serialization.NamingPolicy> | `CamelCase`, `SnakeCaseLower`, `KebabCaseLower`. |
 | <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> | Base class for a custom per-type converter, reading a <xref:Bodu.Text.Yaml.Document.YamlElement> and writing through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>. |
 | <xref:Bodu.Text.Yaml.Nodes.YamlNode> | Mutable DOM — `Parse`, index, mutate, write back with `ToYamlString()`. |
 | <xref:Bodu.Text.Yaml.Document.YamlDocument> | Read-only, low-allocation DOM walked through `RootElement`; `ParseAllDocuments` for multi-document streams. |

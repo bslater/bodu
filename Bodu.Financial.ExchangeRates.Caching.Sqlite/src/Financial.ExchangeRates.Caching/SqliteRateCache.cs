@@ -106,17 +106,11 @@ public sealed class SqliteRateCache
     /// <summary>The logger that receives the rate-limited degradation warnings, or <see cref="NullLogger.Instance" /> when none was supplied.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The time source the degradation-warning cooldown is measured against.</summary>
-    private readonly TimeProvider _timeProvider;
-
     /// <summary>The minimum interval between two emitted degradation warnings; failures inside the window are suppressed and counted.</summary>
     private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
 
-    /// <summary>The <see cref="DateTimeOffset.UtcTicks" /> of the last emitted degradation warning, or <see cref="long.MinValue" /> when none has been emitted. Read and updated with <see cref="Interlocked" /> so concurrent swallows agree on a single warning per window.</summary>
-    private long _lastWarnUtcTicks = long.MinValue;
-
-    /// <summary>The number of swallowed failures suppressed since the last emitted warning, reported with the next warning and then reset.</summary>
-    private int _suppressedSinceLastWarn;
+    /// <summary>Rate-limits the degradation warning to at most one emission per <see cref="s_warnCooldown" /> window.</summary>
+    private readonly RateLimitedWarningGate _warnGate;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqliteRateCache" /> class.
@@ -150,7 +144,7 @@ public sealed class SqliteRateCache
 
         _options = options;
         _connectionString = options.ResolveConnectionString();
-        _timeProvider = timeProvider ?? TimeProvider.System;
+        _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
         _logger = logger ?? NullLogger.Instance;
 
         // Hold one connection open for the instance lifetime so a shared in-memory database is not destroyed between
@@ -222,21 +216,8 @@ public sealed class SqliteRateCache
     /// </remarks>
     private void OnStorageFailureSwallowed(string operation, Exception exception)
     {
-        long now = _timeProvider.GetUtcNow().UtcTicks;
-        long last = Interlocked.Read(ref _lastWarnUtcTicks);
-
-        // Emit when no warning has been logged yet, or the cooldown has elapsed since the last one. The MinValue sentinel
-        // is checked before the subtraction so a never-warned instance does not underflow the elapsed comparison.
-        bool due = last == long.MinValue || (now - last) >= s_warnCooldown.Ticks;
-        if (due && Interlocked.CompareExchange(ref _lastWarnUtcTicks, now, last) == last)
-        {
-            int suppressed = Interlocked.Exchange(ref _suppressedSinceLastWarn, 0);
+        if (_warnGate.TryClaimWarning(out int suppressed))
             Log.StorageFailureSwallowed(_logger, _options.Provider, operation, suppressed, exception);
-        }
-        else
-        {
-            Interlocked.Increment(ref _suppressedSinceLastWarn);
-        }
     }
 
     /// <inheritdoc />

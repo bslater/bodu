@@ -102,11 +102,11 @@ public sealed class YamlArray : YamlNode, IList<YamlNode?>
     IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
 
     /// <inheritdoc />
-    public override void WriteTo(ref Utf8YamlWriter writer)
+    public override void WriteTo(Utf8YamlWriter writer)
     {
         writer.WriteStartSequence();
         foreach (YamlNode? item in _items)
-            WriteChild(ref writer, item);
+            WriteChild(writer, item);
 
         writer.WriteEndSequence();
     }

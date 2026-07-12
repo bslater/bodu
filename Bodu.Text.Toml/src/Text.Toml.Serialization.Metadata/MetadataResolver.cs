@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -13,7 +14,7 @@ namespace Bodu.Text.Toml.Serialization.Metadata;
 
 /// <summary>
 /// Builds the <see cref="TypeMetadata" /> for a type by reflecting over its public properties, its public fields (when
-/// surfaced by <see cref="TomlSerializerOptions.IncludeFields" /> or <see cref="TomlIncludeAttribute" />), and its
+/// surfaced by <see cref="TomlSerializerOptions.IncludeFields" /> or <see cref="IncludeAttribute" />), and its
 /// constructors, applying the serializer's naming policy, attributes, and converter resolution rules.
 /// </summary>
 internal static class MetadataResolver
@@ -29,7 +30,7 @@ internal static class MetadataResolver
     /// <returns>The resolved metadata.</returns>
     internal static TypeMetadata Resolve(Type type, TomlSerializerOptions options)
     {
-        TomlNamingPolicy? namingPolicy = type.GetCustomAttribute<TomlNamingPolicyAttribute>(inherit: false)?.NamingPolicy
+        NamingPolicy? namingPolicy = type.GetCustomAttribute<NamingPolicyAttribute>(inherit: false)?.NamingPolicy
             ?? options.PropertyNamingPolicy;
 
         List<Draft> drafts = [];
@@ -37,22 +38,22 @@ internal static class MetadataResolver
         int declarationIndex = 0;
         foreach (PropertyInfo property in type.GetProperties(MemberFlags))
         {
-            bool included = property.IsDefined(typeof(TomlIncludeAttribute), inherit: true);
+            bool included = property.IsDefined(typeof(IncludeAttribute), inherit: true);
             if (property.GetIndexParameters().Length > 0 || property.GetMethod is null || (!property.GetMethod.IsPublic && !included))
                 continue;
 
-            TomlIgnoreAttribute? ignore = property.GetCustomAttribute<TomlIgnoreAttribute>(inherit: true);
-            if (ignore is not null && ignore.Condition == TomlIgnoreCondition.Always)
+            IgnoreAttribute? ignore = property.GetCustomAttribute<IgnoreAttribute>(inherit: true);
+            if (ignore is not null && ignore.Condition == IgnoreCondition.Always)
                 continue;
 
             TomlConverter converter = ResolveMemberConverter(property, property.PropertyType, options);
-            int order = property.GetCustomAttribute<TomlPropertyOrderAttribute>(inherit: true)?.Order ?? 0;
-            TomlIgnoreCondition? conditional = ignore?.Condition;
-            TomlObjectCreationHandling? creationHandling = property.GetCustomAttribute<TomlObjectCreationHandlingAttribute>(inherit: true)?.Handling;
+            int order = property.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0;
+            IgnoreCondition? conditional = ignore?.Condition;
+            ObjectCreationHandling? creationHandling = property.GetCustomAttribute<ObjectCreationHandlingAttribute>(inherit: true)?.Handling;
             bool requiredByAttribute = property.IsDefined(typeof(RequiredMemberAttribute), inherit: false)
-                || property.IsDefined(typeof(TomlRequiredAttribute), inherit: false);
+                || property.IsDefined(typeof(RequiredAttribute), inherit: false);
 
-            if (property.IsDefined(typeof(TomlExtensionDataAttribute), inherit: true))
+            if (property.IsDefined(typeof(ExtensionDataAttribute), inherit: true))
             {
                 if (extensionData is not null)
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_MultipleExtensionData, type));
@@ -64,7 +65,7 @@ internal static class MetadataResolver
                 continue;
             }
 
-            string wireName = property.GetCustomAttribute<TomlPropertyNameAttribute>(inherit: true)?.Name
+            string wireName = property.GetCustomAttribute<PropertyNameAttribute>(inherit: true)?.Name
                 ?? namingPolicy?.ConvertName(property.Name)
                 ?? property.Name;
 
@@ -73,22 +74,22 @@ internal static class MetadataResolver
 
         foreach (FieldInfo field in type.GetFields(MemberFlags))
         {
-            bool included = field.IsDefined(typeof(TomlIncludeAttribute), inherit: true);
+            bool included = field.IsDefined(typeof(IncludeAttribute), inherit: true);
             if (!options.IncludeFields && !included)
                 continue;
 
-            TomlIgnoreAttribute? ignore = field.GetCustomAttribute<TomlIgnoreAttribute>(inherit: true);
-            if (ignore is not null && ignore.Condition == TomlIgnoreCondition.Always)
+            IgnoreAttribute? ignore = field.GetCustomAttribute<IgnoreAttribute>(inherit: true);
+            if (ignore is not null && ignore.Condition == IgnoreCondition.Always)
                 continue;
 
             TomlConverter converter = ResolveMemberConverter(field, field.FieldType, options);
-            int order = field.GetCustomAttribute<TomlPropertyOrderAttribute>(inherit: true)?.Order ?? 0;
-            TomlIgnoreCondition? conditional = ignore?.Condition;
-            TomlObjectCreationHandling? creationHandling = field.GetCustomAttribute<TomlObjectCreationHandlingAttribute>(inherit: true)?.Handling;
+            int order = field.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0;
+            IgnoreCondition? conditional = ignore?.Condition;
+            ObjectCreationHandling? creationHandling = field.GetCustomAttribute<ObjectCreationHandlingAttribute>(inherit: true)?.Handling;
             bool requiredByAttribute = field.IsDefined(typeof(RequiredMemberAttribute), inherit: false)
-                || field.IsDefined(typeof(TomlRequiredAttribute), inherit: false);
+                || field.IsDefined(typeof(RequiredAttribute), inherit: false);
 
-            if (field.IsDefined(typeof(TomlExtensionDataAttribute), inherit: true))
+            if (field.IsDefined(typeof(ExtensionDataAttribute), inherit: true))
             {
                 if (extensionData is not null)
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_MultipleExtensionData, type));
@@ -100,7 +101,7 @@ internal static class MetadataResolver
                 continue;
             }
 
-            string wireName = field.GetCustomAttribute<TomlPropertyNameAttribute>(inherit: true)?.Name
+            string wireName = field.GetCustomAttribute<PropertyNameAttribute>(inherit: true)?.Name
                 ?? namingPolicy?.ConvertName(field.Name)
                 ?? field.Name;
 
@@ -148,8 +149,8 @@ internal static class MetadataResolver
                 constructorDefaults[i] = parameters[i].HasDefaultValue ? parameters[i].DefaultValue : DefaultOf(parameters[i].ParameterType);
         }
 
-        TomlUnmappedMemberHandling? unmappedMemberHandling = type.GetCustomAttribute<TomlUnmappedMemberHandlingAttribute>(inherit: false)?.UnmappedMemberHandling;
-        TomlObjectCreationHandling? typeCreationHandling = type.GetCustomAttribute<TomlObjectCreationHandlingAttribute>(inherit: false)?.Handling;
+        UnmappedMemberHandling? unmappedMemberHandling = type.GetCustomAttribute<UnmappedMemberHandlingAttribute>(inherit: false)?.UnmappedMemberHandling;
+        ObjectCreationHandling? typeCreationHandling = type.GetCustomAttribute<ObjectCreationHandlingAttribute>(inherit: false)?.Handling;
 
         return new TypeMetadata(type, ordered, byWireName, constructor, constructorParameters, constructorDefaults, extensionData)
         {
@@ -181,7 +182,7 @@ internal static class MetadataResolver
     /// <returns>The converter for the member's value.</returns>
     private static TomlConverter ResolveMemberConverter(MemberInfo member, Type memberType, TomlSerializerOptions options)
     {
-        TomlConverterAttribute? attribute = member.GetCustomAttribute<TomlConverterAttribute>(inherit: true);
+        ConverterAttribute? attribute = member.GetCustomAttribute<ConverterAttribute>(inherit: true);
         return attribute is not null
             ? options.InstantiateConverter(attribute.ConverterType, memberType)
             : options.GetConverter(memberType);
@@ -196,7 +197,7 @@ internal static class MetadataResolver
     {
         ConstructorInfo[] constructors = type.GetConstructors(MemberFlags);
 
-        ConstructorInfo? attributed = Array.Find(constructors, static c => c.IsDefined(typeof(TomlConstructorAttribute), inherit: false));
+        ConstructorInfo? attributed = Array.Find(constructors, static c => c.IsDefined(typeof(ConstructorAttribute), inherit: false));
         if (attributed is not null)
             return attributed;
 
@@ -264,14 +265,14 @@ internal static class MetadataResolver
         /// </param>
         /// <param name="order">The write order.</param>
         /// <param name="requiredByAttribute">Whether the member is marked <see langword="required" />.</param>
-        /// <param name="included">Whether <see cref="TomlIncludeAttribute" /> opts the member into binding.</param>
+        /// <param name="included">Whether <see cref="IncludeAttribute" /> opts the member into binding.</param>
         /// <param name="declarationIndex">The declaration order index.</param>
         internal Draft(
             MemberInfo member,
             string wireName,
             TomlConverter converter,
-            TomlIgnoreCondition? conditionalIgnore,
-            TomlObjectCreationHandling? creationHandling,
+            IgnoreCondition? conditionalIgnore,
+            ObjectCreationHandling? creationHandling,
             int order,
             bool requiredByAttribute,
             bool included,
@@ -311,13 +312,13 @@ internal static class MetadataResolver
         /// Gets the conditional-ignore setting, or <see langword="null" />.
         /// </summary>
         /// <value>The conditional-ignore setting.</value>
-        internal TomlIgnoreCondition? ConditionalIgnore { get; }
+        internal IgnoreCondition? ConditionalIgnore { get; }
 
         /// <summary>
         /// Gets the member-level object-creation handling, or <see langword="null" />.
         /// </summary>
         /// <value>The member-level object-creation handling.</value>
-        internal TomlObjectCreationHandling? CreationHandling { get; }
+        internal ObjectCreationHandling? CreationHandling { get; }
 
         /// <summary>
         /// Gets the write order.
@@ -333,7 +334,7 @@ internal static class MetadataResolver
 
         /// <summary>
         /// Gets a value indicating whether the member is opted into binding through non-public accessors by
-        /// <see cref="TomlIncludeAttribute" />.
+        /// <see cref="IncludeAttribute" />.
         /// </summary>
         /// <value><see langword="true" /> when the member carries the attribute.</value>
         internal bool Included { get; }

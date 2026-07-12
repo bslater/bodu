@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text;
 using Bodu.Test.Assertions;
 using Bodu.Test.Kat;
@@ -13,14 +14,14 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Verifies the property-naming-policy surface of <see cref="BencodeSerializer" />: the built-in
-/// <see cref="BencodeNamingPolicy" /> singletons (camel case and the lower/upper snake- and kebab-case separator
+/// <see cref="NamingPolicy" /> singletons (camel case and the lower/upper snake- and kebab-case separator
 /// policies), how an options-level policy is applied to dictionary keys and reversed on read, and how the per-type
-/// <see cref="BencodeNamingPolicyAttribute" /> overrides the options-level policy.
+/// <see cref="NamingPolicyAttribute" /> overrides the options-level policy.
 /// </summary>
 public partial class BencodeSerializerTests
 {
     /// <summary>
-    /// Verifies that each built-in <see cref="BencodeNamingPolicy" /> rewrites a multi-word Pascal-case member name to
+    /// Verifies that each built-in <see cref="NamingPolicy" /> rewrites a multi-word Pascal-case member name to
     /// its expected separator-cased dictionary key when applied through
     /// <see cref="BencodeSerializerOptions.PropertyNamingPolicy" />.
     /// </summary>
@@ -28,7 +29,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(nameof(NamingPolicyCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Serialize_WhenNamingPolicyApplied_ShouldRewriteKeyToExpectedForm(ValidKat<BencodeNamingPolicy, string> kat)
+    public void Serialize_WhenNamingPolicyApplied_ShouldRewriteKeyToExpectedForm(ValidKat<NamingPolicy, string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
 
@@ -48,7 +49,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(nameof(NamingPolicyCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void SerializeDeserialize_WhenNamingPolicyApplied_ShouldRoundTrip(ValidKat<BencodeNamingPolicy, string> kat)
+    public void SerializeDeserialize_WhenNamingPolicyApplied_ShouldRoundTrip(ValidKat<NamingPolicy, string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
 
@@ -60,14 +61,14 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodeNamingPolicy.ConvertName(string)" /> rewrites a representative name to the
+    /// Verifies that <see cref="NamingPolicy.ConvertName(string)" /> rewrites a representative name to the
     /// expected form for each built-in policy, exercising the policy contract independently of the serializer.
     /// </summary>
     /// <param name="kat">The naming-policy scenario carrying the policy and the expected key for the name <c>FirstName</c>.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(nameof(NamingPolicyCases), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void ConvertName_WhenBuiltInPolicy_ShouldProduceExpectedForm(ValidKat<BencodeNamingPolicy, string> kat)
+    public void ConvertName_WhenBuiltInPolicy_ShouldProduceExpectedForm(ValidKat<NamingPolicy, string> kat)
     {
         ArgumentNullException.ThrowIfNull(kat);
 
@@ -81,11 +82,11 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void ConvertName_WhenSingleWord_ShouldHandleWordBoundaryConsistently()
     {
-        Assert.AreEqual("name", BencodeNamingPolicy.CamelCase.ConvertName("Name"));
-        Assert.AreEqual("name", BencodeNamingPolicy.SnakeCaseLower.ConvertName("Name"));
-        Assert.AreEqual("NAME", BencodeNamingPolicy.SnakeCaseUpper.ConvertName("Name"));
-        Assert.AreEqual("name", BencodeNamingPolicy.KebabCaseLower.ConvertName("Name"));
-        Assert.AreEqual("NAME", BencodeNamingPolicy.KebabCaseUpper.ConvertName("Name"));
+        Assert.AreEqual("name", NamingPolicy.CamelCase.ConvertName("Name"));
+        Assert.AreEqual("name", NamingPolicy.SnakeCaseLower.ConvertName("Name"));
+        Assert.AreEqual("NAME", NamingPolicy.SnakeCaseUpper.ConvertName("Name"));
+        Assert.AreEqual("name", NamingPolicy.KebabCaseLower.ConvertName("Name"));
+        Assert.AreEqual("NAME", NamingPolicy.KebabCaseUpper.ConvertName("Name"));
     }
 
     /// <summary>
@@ -95,20 +96,20 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void ConvertName_WhenEmptyString_ShouldReturnEmptyString()
     {
-        Assert.AreEqual(string.Empty, BencodeNamingPolicy.CamelCase.ConvertName(string.Empty));
-        Assert.AreEqual(string.Empty, BencodeNamingPolicy.SnakeCaseLower.ConvertName(string.Empty));
-        Assert.AreEqual(string.Empty, BencodeNamingPolicy.KebabCaseUpper.ConvertName(string.Empty));
+        Assert.AreEqual(string.Empty, NamingPolicy.CamelCase.ConvertName(string.Empty));
+        Assert.AreEqual(string.Empty, NamingPolicy.SnakeCaseLower.ConvertName(string.Empty));
+        Assert.AreEqual(string.Empty, NamingPolicy.KebabCaseUpper.ConvertName(string.Empty));
     }
 
     /// <summary>
-    /// Verifies that a per-type <see cref="BencodeNamingPolicyAttribute" /> overrides the options-level naming policy,
+    /// Verifies that a per-type <see cref="NamingPolicyAttribute" /> overrides the options-level naming policy,
     /// so the type's members are emitted under the type's policy rather than the conflicting options policy.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenTypePolicyConflictsWithOptionsPolicy_ShouldPreferTypePolicy()
     {
         // The options select kebab-lower, but the type selects snake-lower; the type policy must win.
-        var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.KebabCaseLower };
+        var options = new BencodeSerializerOptions { PropertyNamingPolicy = NamingPolicy.KebabCaseLower };
 
         byte[] bytes = BencodeSerializer.Serialize(new SnakeTypeModel { FirstName = "x" }, options);
 
@@ -116,13 +117,13 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a type annotated with <see cref="BencodeKnownNamingPolicy.Unspecified" /> applies no policy of its
+    /// Verifies that a type annotated with <see cref="KnownNamingPolicy.Unspecified" /> applies no policy of its
     /// own, so the options-level policy still governs the member keys.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenTypePolicyUnspecified_ShouldFallBackToOptionsPolicy()
     {
-        var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.CamelCase };
+        var options = new BencodeSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
 
         byte[] bytes = BencodeSerializer.Serialize(new UnspecifiedTypeModel { FirstName = "x" }, options);
 
@@ -130,31 +131,31 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that constructing <see cref="BencodeNamingPolicyAttribute" /> with an undefined
-    /// <see cref="BencodeKnownNamingPolicy" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// Verifies that constructing <see cref="NamingPolicyAttribute" /> with an undefined
+    /// <see cref="KnownNamingPolicy" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>namingPolicy</c>.
     /// </summary>
     [TestMethod]
-    public void BencodeNamingPolicyAttribute_WhenKnownPolicyUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void NamingPolicyAttribute_WhenKnownPolicyUndefined_ShouldThrowArgumentOutOfRangeException()
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            _ = new BencodeNamingPolicyAttribute((BencodeKnownNamingPolicy)99);
+            _ = new NamingPolicyAttribute((KnownNamingPolicy)99);
         }, "namingPolicy");
     }
 
     /// <summary>
-    /// Gets the built-in naming-policy scenarios, each carrying a <see cref="BencodeNamingPolicy" /> and the dictionary
+    /// Gets the built-in naming-policy scenarios, each carrying a <see cref="NamingPolicy" /> and the dictionary
     /// key the Pascal-case member name <c>FirstName</c> rewrites to under that policy.
     /// </summary>
     /// <returns>The naming-policy rows.</returns>
     public static IEnumerable<object[]> NamingPolicyCases()
     {
-        yield return [new ValidKat<BencodeNamingPolicy, string>("CamelCase", BencodeNamingPolicy.CamelCase, "firstName")];
-        yield return [new ValidKat<BencodeNamingPolicy, string>("SnakeCaseLower", BencodeNamingPolicy.SnakeCaseLower, "first_name")];
-        yield return [new ValidKat<BencodeNamingPolicy, string>("SnakeCaseUpper", BencodeNamingPolicy.SnakeCaseUpper, "FIRST_NAME")];
-        yield return [new ValidKat<BencodeNamingPolicy, string>("KebabCaseLower", BencodeNamingPolicy.KebabCaseLower, "first-name")];
-        yield return [new ValidKat<BencodeNamingPolicy, string>("KebabCaseUpper", BencodeNamingPolicy.KebabCaseUpper, "FIRST-NAME")];
+        yield return [new ValidKat<NamingPolicy, string>("CamelCase", NamingPolicy.CamelCase, "firstName")];
+        yield return [new ValidKat<NamingPolicy, string>("SnakeCaseLower", NamingPolicy.SnakeCaseLower, "first_name")];
+        yield return [new ValidKat<NamingPolicy, string>("SnakeCaseUpper", NamingPolicy.SnakeCaseUpper, "FIRST_NAME")];
+        yield return [new ValidKat<NamingPolicy, string>("KebabCaseLower", NamingPolicy.KebabCaseLower, "first-name")];
+        yield return [new ValidKat<NamingPolicy, string>("KebabCaseUpper", NamingPolicy.KebabCaseUpper, "FIRST-NAME")];
     }
 
     /// <summary>
@@ -170,9 +171,9 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// A model that selects lower snake-case naming for its members through <see cref="BencodeNamingPolicyAttribute" />.
+    /// A model that selects lower snake-case naming for its members through <see cref="NamingPolicyAttribute" />.
     /// </summary>
-    [BencodeNamingPolicy(BencodeKnownNamingPolicy.SnakeCaseLower)]
+    [NamingPolicy(KnownNamingPolicy.SnakeCaseLower)]
     private sealed class SnakeTypeModel
     {
         /// <summary>
@@ -183,10 +184,10 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// A model whose <see cref="BencodeNamingPolicyAttribute" /> specifies
-    /// <see cref="BencodeKnownNamingPolicy.Unspecified" />, applying no type-level policy of its own.
+    /// A model whose <see cref="NamingPolicyAttribute" /> specifies
+    /// <see cref="KnownNamingPolicy.Unspecified" />, applying no type-level policy of its own.
     /// </summary>
-    [BencodeNamingPolicy(BencodeKnownNamingPolicy.Unspecified)]
+    [NamingPolicy(KnownNamingPolicy.Unspecified)]
     private sealed class UnspecifiedTypeModel
     {
         /// <summary>

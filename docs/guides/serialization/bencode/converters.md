@@ -53,7 +53,7 @@ Two ways, highest precedence first:
 // On a member or type:
 public sealed class Shape
 {
-    [BencodeConverter(typeof(PointConverter))]
+    [Converter(typeof(PointConverter))]
     public Point Origin { get; set; }
 }
 
@@ -66,7 +66,7 @@ options.Converters.Add(new PointConverter());
 
 For a given type the serializer selects a converter by checking, in order:
 
-1. a member-level converter attribute (`[BencodeConverter(...)]`);
+1. a member-level converter attribute (`[Converter(...)]`);
 2. a type-level converter attribute;
 3. the first matching converter in `options.Converters`;
 4. the built-in converters.
@@ -117,12 +117,12 @@ For enums you usually do not need a hand-written converter. The library ships a 
 On the enumeration itself, use the generic string-enum form (<xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter`1>), optionally renaming individual members:
 
 ```csharp
-[BencodeConverter(typeof(BencodeStringEnumConverter<Status>))]
+[Converter(typeof(BencodeStringEnumConverter<Status>))]
 public enum Status
 {
     Active,
 
-    [BencodeStringEnumMemberName("on-hold")]
+    [StringEnumMemberName("on-hold")]
     OnHold,
 }
 
@@ -134,7 +134,7 @@ On a single member, the generic number-enum form (<xref:Bodu.Text.Bencode.Serial
 ```csharp
 public sealed class WorkItem
 {
-    [BencodeConverter(typeof(BencodeNumberEnumConverter<Priority>))]
+    [Converter(typeof(BencodeNumberEnumConverter<Priority>))]
     public Priority Priority { get; set; }
 }
 
@@ -146,7 +146,7 @@ To cover *every* enumeration in one registration, add the non-generic string-enu
 <!-- compile -->
 ```csharp
 var options = new BencodeSerializerOptions();
-options.Converters.Add(new BencodeStringEnumConverter(BencodeNamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));
 
 // Status.OnHold now serializes as the byte string "on_hold" everywhere.
 ```

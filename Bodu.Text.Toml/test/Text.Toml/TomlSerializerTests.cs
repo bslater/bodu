@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Buffers;
 using System.Globalization;
 using System.Text;
@@ -101,7 +102,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Serialize_WhenCamelCaseNamingPolicy_ShouldLowerCaseKeys()
     {
-        var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
+        var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
         var model = new PascalModel { FirstName = "a", LastName = "b" };
 
         string text = TomlSerializer.Serialize(model, options);
@@ -114,7 +115,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Serialization.TomlPropertyNameAttribute" /> overrides the table key used on the wire.
+    /// Verifies that <see cref="PropertyNameAttribute" /> overrides the table key used on the wire.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenPropertyNameAttributePresent_ShouldUseOverriddenKey()
@@ -130,7 +131,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a member annotated with <see cref="Serialization.TomlIgnoreAttribute" /> is omitted from the
+    /// Verifies that a member annotated with <see cref="IgnoreAttribute" /> is omitted from the
     /// output.
     /// </summary>
     [TestMethod]
@@ -390,7 +391,7 @@ public partial class TomlSerializerTests
     {
         /// <summary>Gets or sets the identifier, written under the wire name <c>id</c>.</summary>
         /// <value>The identifier.</value>
-        [TomlPropertyName("id")]
+        [PropertyName("id")]
         public int Identifier { get; set; }
     }
 
@@ -405,7 +406,7 @@ public partial class TomlSerializerTests
 
         /// <summary>Gets or sets the member excluded from the output.</summary>
         /// <value>The excluded value.</value>
-        [TomlIgnore]
+        [Bodu.Text.Serialization.Ignore]
         public string Skipped { get; set; } = string.Empty;
     }
 

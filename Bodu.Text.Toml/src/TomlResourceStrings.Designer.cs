@@ -4,6 +4,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
+
 namespace Bodu {
     using System;
 
@@ -425,7 +427,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to TomlIgnoreCondition.Always is not a valid value for DefaultIgnoreCondition..
+        ///   Looks up a localized string similar to IgnoreCondition.Always is not a valid value for DefaultIgnoreCondition..
         /// </summary>
         internal static string Arg_OutOfRange_DefaultIgnoreConditionAlways {
             get {

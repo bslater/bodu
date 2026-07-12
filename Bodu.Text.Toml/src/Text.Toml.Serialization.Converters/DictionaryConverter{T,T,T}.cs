@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Globalization;
 using Bodu.Text.Toml.Reader;
 using Bodu.Text.Toml.Writer;
@@ -26,7 +27,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <see cref="Enum.ToString()" /> (decimal or comma-separated fallback for undefined or combined values, matched
 /// case-insensitively on read), <see cref="Guid" /> uses the hyphenated "D" format, <see cref="bool" /> uses
 /// <c>True</c>/<c>False</c>, and <see cref="char" /> uses a single-character string. Key stringification ignores naming
-/// policies and <see cref="TomlStringEnumMemberNameAttribute" /> — dictionary keys are converted independently of value
+/// policies and <see cref="StringEnumMemberNameAttribute" /> — dictionary keys are converted independently of value
 /// converters. Entries are written in the dictionary's enumeration (insertion) order — TOML output preserves document
 /// order, so the stringified keys are <b>not</b> sorted, in contrast to the canonical bytewise key ordering of the
 /// Bencode twin. The writer quotes a stringified key only when it does not match the bare-key grammar. A key that

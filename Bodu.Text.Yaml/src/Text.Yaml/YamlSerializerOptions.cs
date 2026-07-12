@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.ObjectModel;
+using Bodu.Text.Serialization;
 using Bodu.Text.Yaml.Serialization;
 
 namespace Bodu.Text.Yaml;
@@ -22,7 +23,7 @@ namespace Bodu.Text.Yaml;
 public sealed class YamlSerializerOptions
 {
     /// <summary>The policy used to convert member names to YAML keys, or <see langword="null" /> for none.</summary>
-    private YamlNamingPolicy? _propertyNamingPolicy;
+    private NamingPolicy? _propertyNamingPolicy;
 
     /// <summary>Indicates whether public fields are serialized in addition to properties.</summary>
     private bool _includeFields;
@@ -49,7 +50,10 @@ public sealed class YamlSerializerOptions
     private YamlNumberHandling _numberHandling;
 
     /// <summary>The policy applied when a mapping key has no matching member on the target type.</summary>
-    private YamlUnmappedMemberHandling _unmappedMemberHandling;
+    private UnmappedMemberHandling _unmappedMemberHandling;
+
+    /// <summary>The serializer-wide default for whether a member's value is replaced or populated when reading.</summary>
+    private ObjectCreationHandling _preferredObjectCreationHandling;
 
     /// <summary>The configured maximum nesting depth; zero or less selects the default.</summary>
     private int _maxDepth;
@@ -84,7 +88,7 @@ public sealed class YamlSerializerOptions
     /// </summary>
     /// <value>The naming policy, or <see langword="null" /> to use member names verbatim.</value>
     /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
-    public YamlNamingPolicy? PropertyNamingPolicy
+    public NamingPolicy? PropertyNamingPolicy
     {
         get => _propertyNamingPolicy;
         set { VerifyMutable(); _propertyNamingPolicy = value; }
@@ -184,12 +188,26 @@ public sealed class YamlSerializerOptions
     /// <summary>
     /// Gets or sets the policy applied to a YAML key that does not map to any member of the target type.
     /// </summary>
-    /// <value>The unmapped-member policy; the default is <see cref="YamlUnmappedMemberHandling.Skip" />.</value>
+    /// <value>The unmapped-member policy; the default is <see cref="UnmappedMemberHandling.Skip" />.</value>
     /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
-    public YamlUnmappedMemberHandling UnmappedMemberHandling
+    public UnmappedMemberHandling UnmappedMemberHandling
     {
         get => _unmappedMemberHandling;
         set { VerifyMutable(); _unmappedMemberHandling = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets the serializer-wide default for whether a member's value is replaced with a freshly created
+    /// instance or populated into the value the member already holds during deserialization.
+    /// </summary>
+    /// <value>
+    /// The preferred object-creation handling; the default is <see cref="ObjectCreationHandling.Replace" />.
+    /// </value>
+    /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
+    public ObjectCreationHandling PreferredObjectCreationHandling
+    {
+        get => _preferredObjectCreationHandling;
+        set { VerifyMutable(); _preferredObjectCreationHandling = value; }
     }
 
     /// <summary>

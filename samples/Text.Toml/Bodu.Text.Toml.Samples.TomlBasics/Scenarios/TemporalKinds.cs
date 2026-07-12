@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml;
 
 namespace Bodu.Text.Toml.Samples.TomlBasics.Scenarios;
@@ -23,7 +24,7 @@ public static class TemporalKinds
     {
         Console.WriteLine("--- The four native temporal kinds ---");
 
-        var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.SnakeCaseLower };
+        var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
         var toml = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Data", "app-config.toml"));
         AppConfig config = TomlSerializer.Deserialize<AppConfig>(toml, options);
 

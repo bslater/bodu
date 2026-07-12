@@ -15,7 +15,7 @@ string text = TomlSerializer.Serialize(config);
 ServerConfig back = TomlSerializer.Deserialize<ServerConfig>(text);
 ```
 
-`Serialize` also writes to an `IBufferWriter<byte>` (UTF-8) or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `string`, a `ReadOnlySpan<byte>` (UTF-8), or a `Stream` (with `DeserializeAsync`). Output is canonical TOML in document order, so `[TomlPropertyOrder]` is honored. See [Pattern 8](#pattern-8--streams-and-async) for the stream surface.
+`Serialize` also writes to an `IBufferWriter<byte>` (UTF-8) or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `string`, a `ReadOnlySpan<byte>` (UTF-8), or a `Stream` (with `DeserializeAsync`). Output is canonical TOML in document order, so `[PropertyOrder]` is honored. See [Pattern 8](#pattern-8--streams-and-async) for the stream surface.
 
 ## Pattern 2 — Know the type mapping
 
@@ -115,22 +115,22 @@ AppConfig back = TomlSerializer.Deserialize<AppConfig>(text);
 // back.Endpoints[1].Path → "/admin"
 ```
 
-To emit lowercase keys (`title`, `[server]`, …) apply a naming policy ([Pattern 4](#pattern-4--rename-members)); to reorder the lines, use `[TomlPropertyOrder]` ([Mapping attributes](attributes.md)).
+To emit lowercase keys (`title`, `[server]`, …) apply a naming policy ([Pattern 4](#pattern-4--rename-members)); to reorder the lines, use `[PropertyOrder]` ([Mapping attributes](attributes.md)).
 
 ## Pattern 4 — Rename members
 
 ```csharp
 var options = new TomlSerializerOptions
 {
-    PropertyNamingPolicy = TomlNamingPolicy.SnakeCaseLower,
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
 };
 ```
 
-Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[TomlPropertyName("…")]`, which always wins over the policy. Start from a scenario preset by constructing the options from <xref:Bodu.Text.Toml.TomlSerializerDefaults> (for example `TomlSerializerDefaults.Web`, which also turns on case-insensitive matching).
+Naming policies cover `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`. Pin a single member's name with `[PropertyName("…")]`, which always wins over the policy. Start from a scenario preset by constructing the options from <xref:Bodu.Text.Toml.TomlSerializerDefaults> (for example `TomlSerializerDefaults.Web`, which also turns on case-insensitive matching).
 
 On *read*, key matching is case-sensitive by default; set `PropertyNameCaseInsensitive = true` (or use the `Web` preset) to bind a key to a member regardless of case. The setting governs matching only — it does not change the name a member is *written* under.
 
-Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[TomlInclude]` on the field. Fields follow the same naming-policy, ordering, ignore, required, and converter rules as properties — including `[TomlPropertyOrder]`, which reorders the emitted lines. The full attribute family is catalogued in [Mapping attributes](attributes.md).
+Properties are mapped by default; public fields join in when `IncludeFields` is set on the options, or individually with `[Include]` on the field. Fields follow the same naming-policy, ordering, ignore, required, and converter rules as properties — including `[PropertyOrder]`, which reorders the emitted lines. The full attribute family is catalogued in [Mapping attributes](attributes.md).
 
 ## Pattern 5 — Select the spec version
 

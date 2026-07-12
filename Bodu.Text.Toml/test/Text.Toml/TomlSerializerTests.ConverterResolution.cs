@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test.Assertions;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Reader;
 using Bodu.Text.Toml.Serialization;
 using Bodu.Text.Toml.Writer;
@@ -13,14 +14,14 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies the converter-resolution precedence the serializer applies to a member value: a member-level
-/// <see cref="TomlConverterAttribute" /> takes priority over a type-level <see cref="TomlConverterAttribute" />, which
+/// <see cref="ConverterAttribute" /> takes priority over a type-level <see cref="ConverterAttribute" />, which
 /// takes priority over a converter registered on <see cref="TomlSerializerOptions.Converters" />, which takes priority
 /// over the built-in converters.
 /// </summary>
 public partial class TomlSerializerTests
 {
     /// <summary>
-    /// Verifies that a member-level <see cref="TomlConverterAttribute" /> wins over a type-level one, so the member's
+    /// Verifies that a member-level <see cref="ConverterAttribute" /> wins over a type-level one, so the member's
     /// converter governs the value even though the value's type carries its own converter attribute.
     /// </summary>
     [TestMethod]
@@ -35,7 +36,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a type-level <see cref="TomlConverterAttribute" /> governs a member that carries no converter
+    /// Verifies that a type-level <see cref="ConverterAttribute" /> governs a member that carries no converter
     /// attribute of its own, so the value's declared converter is used.
     /// </summary>
     [TestMethod]
@@ -50,7 +51,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a type-level <see cref="TomlConverterAttribute" /> wins over a converter registered on the
+    /// Verifies that a type-level <see cref="ConverterAttribute" /> wins over a converter registered on the
     /// options, so the attribute takes precedence over the registered converter.
     /// </summary>
     [TestMethod]
@@ -116,22 +117,22 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that constructing <see cref="TomlConverterAttribute" /> with a <see langword="null" /> converter
+    /// Verifies that constructing <see cref="ConverterAttribute" /> with a <see langword="null" /> converter
     /// type throws <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>converterType</c>.
     /// </summary>
     [TestMethod]
-    public void TomlConverterAttribute_WhenConverterTypeNull_ShouldThrowArgumentNullException()
+    public void ConverterAttribute_WhenConverterTypeNull_ShouldThrowArgumentNullException()
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
-            _ = new TomlConverterAttribute(null!);
+            _ = new ConverterAttribute(null!);
         }, "converterType");
     }
 
     /// <summary>
     /// A value type whose own converter attribute writes it as a TOML string, used to observe type-level resolution.
     /// </summary>
-    [TomlConverter(typeof(CodeStringConverter))]
+    [Converter(typeof(CodeStringConverter))]
     private sealed class Code
     {
         /// <summary>
@@ -180,7 +181,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the code, written through the member-level integer converter.
         /// </summary>
         /// <value>The code.</value>
-        [TomlConverter(typeof(CodeIntegerConverter))]
+        [Converter(typeof(CodeIntegerConverter))]
         public Code Code { get; set; } = new(0);
     }
 

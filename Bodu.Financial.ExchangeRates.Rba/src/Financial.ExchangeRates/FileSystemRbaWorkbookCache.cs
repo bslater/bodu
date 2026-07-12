@@ -4,13 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// An <see cref="IRbaWorkbookCache" /> that persists downloaded RBA workbooks as files in a cache directory.
+/// An <see cref="IByteCache{TKey}" /> that persists downloaded RBA workbooks as files in a cache directory, keyed by
+/// the era workbook that produced them.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -24,7 +24,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 public sealed class FileSystemRbaWorkbookCache
-    : FileSystemByteCache<RbaEraWorkbook>, IRbaWorkbookCache
+    : FileSystemByteCache<RbaEraWorkbook>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FileSystemRbaWorkbookCache" /> class.
@@ -41,25 +41,12 @@ public sealed class FileSystemRbaWorkbookCache
         : base(directory, "bodu-rba", logger) { }
 
     /// <inheritdoc />
-    public bool TryGet(RbaEraWorkbook era, TimeSpan currentEraRefreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
+    protected override string GetFileName(RbaEraWorkbook key)
     {
-        ThrowHelper.ThrowIfNull(era);
+        ThrowHelper.ThrowIfNull(key);
 
-        return TryGetCore(era, currentEraRefreshInterval, out bytes);
+        return key.FileName;
     }
-
-    /// <inheritdoc />
-    public void Store(RbaEraWorkbook era, byte[] bytes)
-    {
-        ThrowHelper.ThrowIfNull(era);
-        ThrowHelper.ThrowIfNull(bytes);
-
-        StoreCore(era, bytes);
-    }
-
-    /// <inheritdoc />
-    protected override string GetFileName(RbaEraWorkbook key) =>
-        key.FileName;
 
     /// <inheritdoc />
     /// <remarks>

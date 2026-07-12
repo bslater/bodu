@@ -8,6 +8,7 @@ using System.Buffers;
 using System.Globalization;
 using System.Text;
 using Bodu.Text.Yaml.Reader;
+using Bodu.Text.Yaml.Serialization;
 
 namespace Bodu.Text.Yaml.Writer;
 
@@ -23,6 +24,8 @@ namespace Bodu.Text.Yaml.Writer;
 /// </para>
 /// <para>
 /// The writer is a <see langword="ref struct" /> and cannot be boxed, stored on the heap, or captured by a lambda.
+/// Its mutable state lives behind a single shared reference, so passing the writer by value hands the callee the same
+/// in-progress document rather than an independent copy.
 /// </para>
 /// </remarks>
 public ref struct Utf8YamlWriter
@@ -39,14 +42,11 @@ public ref struct Utf8YamlWriter
     /// <summary>The line-break sequence written at the end of each line.</summary>
     private readonly string _newLine;
 
-    /// <summary>The container tracking stack; one frame per open mapping or sequence.</summary>
-    private Frame[] _stack;
-
-    /// <summary>The number of frames currently on <see cref="_stack" />.</summary>
-    private int _depth;
-
-    /// <summary>Indicates whether the document's root value has been written.</summary>
-    private bool _rootWritten;
+    /// <summary>
+    /// The mutable writer state, held behind a single reference so by-value copies of this <see langword="ref" />
+    /// <see langword="struct" /> observe and advance the same document.
+    /// </summary>
+    private readonly State _state;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Utf8YamlWriter" /> struct.
@@ -74,10 +74,28 @@ public ref struct Utf8YamlWriter
         _indentSize = options.EffectiveIndentSize;
         _maxDepth = options.EffectiveMaxDepth;
         _newLine = options.EffectiveNewLine;
-        _stack = new Frame[8];
-        _depth = 0;
-        _rootWritten = false;
+        _state = new State();
     }
+
+    /// <summary>
+    /// Gets the number of currently open containers, which the serializer consults before opening another.
+    /// </summary>
+    /// <value>The open container depth; zero at the document root.</value>
+    internal readonly int CurrentDepth => _state.Depth;
+
+    /// <summary>
+    /// Gets the serializer write state attached to this writer, or <see langword="null" /> outside a serializer write.
+    /// </summary>
+    /// <value>The attached write state, or <see langword="null" />.</value>
+    internal readonly YamlWriteStack? WriteStack => _state.WriteStack;
+
+    /// <summary>
+    /// Attaches the serializer's write state so converters can record an over-deep graph or a reference cycle
+    /// cooperatively instead of throwing from deep in the recursion.
+    /// </summary>
+    /// <param name="state">The write state to attach.</param>
+    internal readonly void AttachWriteStack(YamlWriteStack state) =>
+        _state.WriteStack = state;
 
     /// <summary>
     /// Begins a block mapping at the current value position.
@@ -112,10 +130,10 @@ public ref struct Utf8YamlWriter
     public void WritePropertyName(string name)
     {
         Bodu.ThrowHelper.ThrowIfNull(name);
-        if (_depth == 0 || !_stack[_depth - 1].IsMapping)
+        if (_state.Depth == 0 || !_state.Stack[_state.Depth - 1].IsMapping)
             throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterPropertyNameOutsideMapping);
 
-        ref Frame frame = ref _stack[_depth - 1];
+        ref Frame frame = ref _state.Stack[_state.Depth - 1];
         if (frame.PendingKey is not null)
             throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterPropertyNamePending);
 
@@ -163,24 +181,24 @@ public ref struct Utf8YamlWriter
     private void OpenContainer(bool isMapping)
     {
         Frame child;
-        if (_depth == 0)
+        if (_state.Depth == 0)
         {
-            if (_rootWritten)
+            if (_state.RootWritten)
                 throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterDocumentComplete);
 
             child = new Frame { IsMapping = isMapping, IsRoot = true, EntryIndent = 0 };
-            _rootWritten = true;
+            _state.RootWritten = true;
         }
         else
         {
-            if (_depth >= _maxDepth)
+            if (_state.Depth >= _maxDepth)
             {
                 throw new InvalidOperationException(string.Format(
                     CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
             }
 
-            ref Frame parent = ref _stack[_depth - 1];
-            EnsureStarted(_depth - 1);
+            ref Frame parent = ref _state.Stack[_state.Depth - 1];
+            EnsureStarted(_state.Depth - 1);
             child = new Frame
             {
                 IsMapping = isMapping,
@@ -208,17 +226,17 @@ public ref struct Utf8YamlWriter
     /// <param name="isMapping">Whether the expected container is a mapping.</param>
     private void CloseContainer(bool isMapping)
     {
-        if (_depth == 0)
+        if (_state.Depth == 0)
             throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterNoOpenContainer);
 
-        if (_stack[_depth - 1].IsMapping != isMapping)
+        if (_state.Stack[_state.Depth - 1].IsMapping != isMapping)
             throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterEndMismatch);
 
-        if (_stack[_depth - 1].PendingKey is not null)
+        if (_state.Stack[_state.Depth - 1].PendingKey is not null)
             throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterPropertyNameWithoutValue);
 
-        Frame frame = _stack[_depth - 1];
-        _depth--;
+        Frame frame = _state.Stack[_state.Depth - 1];
+        _state.Depth--;
 
         if (!frame.Started)
         {
@@ -252,19 +270,19 @@ public ref struct Utf8YamlWriter
     /// <param name="text">The already-formatted scalar literal.</param>
     private void EmitScalar(string text)
     {
-        if (_depth == 0)
+        if (_state.Depth == 0)
         {
-            if (_rootWritten)
+            if (_state.RootWritten)
                 throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterDocumentComplete);
 
-            _rootWritten = true;
+            _state.RootWritten = true;
             WriteRaw(text);
             WriteNewLine();
             return;
         }
 
-        EnsureStarted(_depth - 1);
-        ref Frame frame = ref _stack[_depth - 1];
+        EnsureStarted(_state.Depth - 1);
+        ref Frame frame = ref _state.Stack[_state.Depth - 1];
         if (frame.IsMapping)
         {
             string key = frame.PendingKey ?? throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterValueWithoutKey);
@@ -290,7 +308,7 @@ public ref struct Utf8YamlWriter
     /// <param name="frameIndex">The stack index of the container.</param>
     private void EnsureStarted(int frameIndex)
     {
-        ref Frame frame = ref _stack[frameIndex];
+        ref Frame frame = ref _state.Stack[frameIndex];
         if (frame.Started)
             return;
 
@@ -485,11 +503,29 @@ public ref struct Utf8YamlWriter
     /// <param name="frame">The frame to push.</param>
     private void Push(Frame frame)
     {
-        if (_depth == _stack.Length)
-            Array.Resize(ref _stack, _stack.Length * 2);
+        if (_state.Depth == _state.Stack.Length)
+            Array.Resize(ref _state.Stack, _state.Stack.Length * 2);
 
-        _stack[_depth] = frame;
-        _depth++;
+        _state.Stack[_state.Depth] = frame;
+        _state.Depth++;
+    }
+
+    /// <summary>
+    /// Holds the writer's mutable state behind a single reference, so every by-value copy of the writer shares it.
+    /// </summary>
+    private sealed class State
+    {
+        /// <summary>The container tracking stack; one frame per open mapping or sequence.</summary>
+        public Frame[] Stack = new Frame[8];
+
+        /// <summary>The number of frames currently on <see cref="Stack" />.</summary>
+        public int Depth;
+
+        /// <summary>Indicates whether the document's root value has been written.</summary>
+        public bool RootWritten;
+
+        /// <summary>The serializer write state attached for the duration of a serializer write, or <see langword="null" />.</summary>
+        public YamlWriteStack? WriteStack;
     }
 
     /// <summary>

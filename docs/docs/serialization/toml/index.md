@@ -43,8 +43,8 @@ TOML files are edited by hand, so parse failures must point at the offending lin
 |---|---|
 | <xref:Bodu.Text.Toml.TomlSerializer> | `Serialize` to `string` / `IBufferWriter<byte>` (UTF-8), or to a `Stream` via `SerializeAsync`; `Deserialize<T>` from `string` / `ReadOnlySpan<byte>` / `Stream` (with `DeserializeAsync`). |
 | <xref:Bodu.Text.Toml.TomlSerializerOptions> | Converters, naming policy, ignore conditions, `SpecVersion`, `ByteArrayHandling`, `DecimalHandling`, depth. |
-| <xref:Bodu.Text.Toml.TomlNamingPolicy> | Property-name policy: `CamelCase`, `SnakeCaseLower`, `SnakeCaseUpper`, `KebabCaseLower`, `KebabCaseUpper`. |
-| <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> | Base class for a custom converter over the reader/writer pair; attach one to a member or type with <xref:Bodu.Text.Toml.Serialization.TomlConverterAttribute>. Built-in enum converters: <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter> and <xref:Bodu.Text.Toml.Serialization.TomlNumberEnumConverter`1>. |
+| <xref:Bodu.Text.Serialization.NamingPolicy> | Property-name policy: `CamelCase`, `SnakeCaseLower`, `SnakeCaseUpper`, `KebabCaseLower`, `KebabCaseUpper`. |
+| <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> | Base class for a custom converter over the reader/writer pair; attach one to a member or type with <xref:Bodu.Text.Serialization.ConverterAttribute>. Built-in enum converters: <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter> and <xref:Bodu.Text.Toml.Serialization.TomlNumberEnumConverter`1>. |
 | <xref:Bodu.Text.Toml.Nodes.TomlNode> | Mutable DOM — `Parse`, index, mutate, write back. |
 | <xref:Bodu.Text.Toml.Document.TomlDocument> | Read-only, low-allocation DOM walked through `RootElement`. |
 | <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Reader.TomlDocumentReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> | Forward-only, allocation-free `ref struct` token machines: the source-order lexer, the normalized structural cursor a converter receives, and the writer. |
@@ -55,7 +55,7 @@ TOML files are edited by hand, so parse failures must point at the offending lin
 | You want to… | Use |
 |---|---|
 | Load an application's `.toml` configuration into a typed record | `TomlSerializer.Deserialize<T>` |
-| Emit configuration a human will edit | `TomlSerializer.Serialize` — canonical output in document order, `[TomlPropertyOrder]` honored |
+| Emit configuration a human will edit | `TomlSerializer.Serialize` — canonical output in document order, `[PropertyOrder]` honored |
 | Patch one value in an existing file without a model | <xref:Bodu.Text.Toml.Nodes.TomlNode> — index, mutate, write back |
 | Inspect a document with minimal allocation | <xref:Bodu.Text.Toml.Document.TomlDocument> and `RootElement` |
 | Accept TOML v1.1.0 input | `SpecVersion = TomlSpecVersion.V1_1` on the options |

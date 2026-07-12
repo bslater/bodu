@@ -231,7 +231,7 @@ base type, or a single registration on the options:
 
 ```csharp
 // Option A — annotate the base type so every Shape member uses the factory.
-[BencodeConverter(typeof(ShapeConverterFactory))]
+[Converter(typeof(ShapeConverterFactory))]
 public abstract class Shape { /* … */ }
 
 // Option B — register once on the options.

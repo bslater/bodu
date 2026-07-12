@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text;
 using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Serialization;
@@ -13,7 +14,7 @@ namespace Bodu.Text.Bencode;
 /// <summary>
 /// Verifies how the <see cref="BencodeSerializer" /> resolves dictionary keys to members on read: the
 /// <see cref="BencodeSerializerOptions.PropertyNameCaseInsensitive" /> matching behavior, the precedence of
-/// <see cref="BencodePropertyNameAttribute" /> over any naming policy, and the guard on a null attribute name.
+/// <see cref="PropertyNameAttribute" /> over any naming policy, and the guard on a null attribute name.
 /// </summary>
 public partial class BencodeSerializerTests
 {
@@ -62,14 +63,14 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodePropertyNameAttribute" /> on a member overrides an active naming policy on both
+    /// Verifies that <see cref="PropertyNameAttribute" /> on a member overrides an active naming policy on both
     /// write and read, so the member is keyed by its explicit name while a sibling without the attribute follows the
     /// policy.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenExplicitNameAndNamingPolicy_ShouldPreferExplicitName()
     {
-        var options = new BencodeSerializerOptions { PropertyNamingPolicy = BencodeNamingPolicy.CamelCase };
+        var options = new BencodeSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
         var original = new ExplicitNameModel { FirstName = "a", LastName = "b" };
 
         byte[] bytes = BencodeSerializer.Serialize(original, options);
@@ -83,7 +84,7 @@ public partial class BencodeSerializerTests
 
     /// <summary>
     /// Verifies that a dictionary key matching the member's CLR name rather than its overriding
-    /// <see cref="BencodePropertyNameAttribute" /> wire name is not bound, since reads match on the wire name only.
+    /// <see cref="PropertyNameAttribute" /> wire name is not bound, since reads match on the wire name only.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenKeyMatchesClrNameNotWireName_ShouldNotBindMember()
@@ -97,7 +98,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a dictionary key matching the overriding <see cref="BencodePropertyNameAttribute" /> wire name is
+    /// Verifies that a dictionary key matching the overriding <see cref="PropertyNameAttribute" /> wire name is
     /// bound on read.
     /// </summary>
     [TestMethod]
@@ -111,15 +112,15 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that constructing <see cref="BencodePropertyNameAttribute" /> with a null name throws
+    /// Verifies that constructing <see cref="PropertyNameAttribute" /> with a null name throws
     /// <see cref="ArgumentNullException" />, naming the <c>name</c> parameter.
     /// </summary>
     [TestMethod]
-    public void BencodePropertyNameAttribute_WhenNameNull_ShouldThrowArgumentNullException()
+    public void PropertyNameAttribute_WhenNameNull_ShouldThrowArgumentNullException()
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
-            _ = new BencodePropertyNameAttribute(null!);
+            _ = new PropertyNameAttribute(null!);
         }, "name");
     }
 
@@ -202,7 +203,7 @@ public partial class BencodeSerializerTests
         /// Gets or sets the last name, named explicitly so the policy does not apply.
         /// </summary>
         /// <value>The last name.</value>
-        [BencodePropertyName("surname")]
+        [PropertyName("surname")]
         public string LastName { get; set; } = string.Empty;
     }
 
@@ -215,14 +216,14 @@ public partial class BencodeSerializerTests
         /// Gets or sets the first value, keyed under the wire name <c>id</c>.
         /// </summary>
         /// <value>The first value.</value>
-        [BencodePropertyName("id")]
+        [PropertyName("id")]
         public int First { get; set; }
 
         /// <summary>
         /// Gets or sets the second value, also keyed under the wire name <c>id</c>.
         /// </summary>
         /// <value>The second value.</value>
-        [BencodePropertyName("id")]
+        [PropertyName("id")]
         public int Second { get; set; }
     }
 
@@ -235,14 +236,14 @@ public partial class BencodeSerializerTests
         /// Gets or sets the first value, keyed under the lower-case wire name <c>id</c>.
         /// </summary>
         /// <value>The first value.</value>
-        [BencodePropertyName("id")]
+        [PropertyName("id")]
         public int Lower { get; set; }
 
         /// <summary>
         /// Gets or sets the second value, keyed under the upper-case wire name <c>ID</c>.
         /// </summary>
         /// <value>The second value.</value>
-        [BencodePropertyName("ID")]
+        [PropertyName("ID")]
         public int Upper { get; set; }
     }
 
@@ -255,7 +256,7 @@ public partial class BencodeSerializerTests
         /// Gets or sets the identifier, keyed under the wire name <c>id</c>.
         /// </summary>
         /// <value>The identifier.</value>
-        [BencodePropertyName("id")]
+        [PropertyName("id")]
         public int Identifier { get; set; }
     }
 }

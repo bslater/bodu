@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Bodu.Text.Toml.Serialization;
@@ -29,7 +30,7 @@ public partial class TomlSerializerTests
         var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
         string json = JsonSerializer.Serialize(model, jsonOptions);
 
-        var tomlOptions = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
+        var tomlOptions = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
         string toml = TomlSerializer.Serialize(model, tomlOptions);
 
         Assert.IsTrue(json.Contains("\"serverName\"", StringComparison.Ordinal), "System.Text.Json emitted camelCase key.");
@@ -39,7 +40,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that <see cref="TomlSerializerOptions.DefaultIgnoreCondition" /> set to
-    /// <see cref="TomlIgnoreCondition.WhenWritingNull" /> omits a null member, matching
+    /// <see cref="IgnoreCondition.WhenWritingNull" /> omits a null member, matching
     /// <see cref="JsonIgnoreCondition.WhenWritingNull" />.
     /// </summary>
     [TestMethod]
@@ -50,7 +51,7 @@ public partial class TomlSerializerTests
         var jsonOptions = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
         string json = JsonSerializer.Serialize(model, jsonOptions);
 
-        var tomlOptions = new TomlSerializerOptions { DefaultIgnoreCondition = TomlIgnoreCondition.WhenWritingNull };
+        var tomlOptions = new TomlSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingNull };
         string toml = TomlSerializer.Serialize(model, tomlOptions);
 
         Assert.IsFalse(json.Contains("Absent", StringComparison.Ordinal), "System.Text.Json omitted the null member.");
@@ -88,7 +89,7 @@ public partial class TomlSerializerTests
         var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
         string json = JsonSerializer.Serialize(model, jsonOptions);
 
-        var tomlOptions = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
+        var tomlOptions = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
         string toml = TomlSerializer.Serialize(model, tomlOptions);
 
         Assert.IsTrue(json.Contains("\"explicit_name\"", StringComparison.Ordinal), "System.Text.Json honored the attribute over the policy.");
@@ -232,7 +233,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the value member, whose wire name is fixed by attribute.
         /// </summary>
         /// <value>The value.</value>
-        [TomlPropertyName("explicit_name")]
+        [PropertyName("explicit_name")]
         [JsonPropertyName("explicit_name")]
         public int Value { get; set; }
     }

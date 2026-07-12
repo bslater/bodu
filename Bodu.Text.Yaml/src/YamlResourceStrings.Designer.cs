@@ -351,6 +351,46 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A reference cycle was detected while serializing an instance of type '{0}'; YAML cannot represent an object cycle..
+        /// </summary>
+        internal static string Op_Invalid_YamlCycleDetected {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlCycleDetected", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The extension-data member '{0}' of type '{1}' must be a Dictionary&lt;string, object&gt; or an IDictionary&lt;string, object&gt;..
+        /// </summary>
+        internal static string Op_Invalid_YamlExtensionDataType {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlExtensionDataType", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Type '{0}' declares more than one extension-data member; at most one is allowed..
+        /// </summary>
+        internal static string Op_Invalid_YamlMultipleExtensionData {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlMultipleExtensionData", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The extension-data key '{0}' collides with a declared member of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_YamlExtensionDataKeyCollision {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlExtensionDataKeyCollision", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The required member '{0}' of type '{1}' was not present in the input..
+        /// </summary>
+        internal static string Op_Invalid_YamlMissingRequiredMember {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlMissingRequiredMember", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The YAML key '{0}' does not map to any member of type '{1}'..
         /// </summary>
         internal static string Op_Invalid_YamlUnmappedMember {
@@ -364,6 +404,46 @@ namespace Bodu {
         internal static string Op_Invalid_YamlValueConversion {
             get {
                 return ResourceManager.GetString("Op_Invalid_YamlValueConversion", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a scalar value..
+        /// </summary>
+        internal static string Op_Invalid_YamlExpectedScalar {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlExpectedScalar", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a YAML sequence..
+        /// </summary>
+        internal static string Op_Invalid_YamlExpectedSequence {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlExpectedSequence", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a YAML mapping..
+        /// </summary>
+        internal static string Op_Invalid_YamlExpectedMapping {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlExpectedMapping", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' could not be instantiated..
+        /// </summary>
+        internal static string Op_Invalid_YamlTypeNotInstantiable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlTypeNotInstantiable", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to An entry with the same key already exists..
+        /// </summary>
+        internal static string Arg_Invalid_YamlDuplicateKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_YamlDuplicateKey", resourceCulture);
             }
         }
         /// <summary>

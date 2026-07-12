@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Bencode.Serialization.Converters;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Bencode.Serialization;
 
@@ -14,7 +15,7 @@ namespace Bodu.Text.Bencode.Serialization;
 /// </summary>
 /// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
 /// <remarks>
-/// Reference the factory from a <see cref="BencodeConverterAttribute" /> on a member, property, or the enumeration
+/// Reference the factory from a <see cref="ConverterAttribute" /> on a member, property, or the enumeration
 /// itself, or register it on <see cref="BencodeSerializerOptions.Converters" />. It exposes a public parameterless
 /// constructor so it can be used through the converter attribute.
 /// </remarks>
@@ -23,7 +24,7 @@ namespace Bodu.Text.Bencode.Serialization;
 ///<![CDATA[
 /// public sealed class WorkItem
 /// {
-///     [BencodeConverter(typeof(BencodeNumberEnumConverter<Priority>))]
+///     [Converter(typeof(BencodeNumberEnumConverter<Priority>))]
 ///     public Priority Priority { get; set; }
 /// }
 ///

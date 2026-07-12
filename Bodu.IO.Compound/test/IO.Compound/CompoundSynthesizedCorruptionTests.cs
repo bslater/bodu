@@ -159,6 +159,37 @@ public class CompoundSynthesizedCorruptionTests
     }
 
     /// <summary>
+    /// Verifies that a regular-sector chain that cycles back on itself does not amplify the intermediate
+    /// allocation — the accumulated payload can never exceed the container, because each distinct sector
+    /// contributes at most once. The pre-fix count-guard walked the self-loop up to <c>_fat.Length</c> times,
+    /// writing one sector per iteration, so a small crafted cycle produced far more bytes than the whole file.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    public void ReadChainToEnd_WhenRegularChainSelfCycles_ShouldNotAmplifyAllocation()
+    {
+        // A 5000-byte stream is a regular (non-mini) stream resolved through the FAT.
+        byte[] bytes = BuildSingleStream("Big", 5000);
+        var header = CfbHeader.Parse(bytes);
+        int entry = FindEntryOffset(bytes, header, "Big");
+        uint start = BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(entry + StartSectorOffset));
+
+        // Point the stream's first FAT entry at itself, forming a self-loop.
+        int perSector = header.EntriesPerSector;
+        uint fatSector = header.Difat[start / (uint)perSector];
+        long fatEntryOffset = (((long)fatSector + 1) * header.SectorSize) + ((start % (uint)perSector) * sizeof(uint));
+        BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan((int)fatEntryOffset), start);
+
+        var reader = new CfbSectorReader(new CfbArrayDataSource(bytes), header, CompoundValidationLevel.Minimal);
+
+        byte[] chain = reader.ReadChainToEnd(start);
+
+        Assert.IsTrue(
+            chain.Length <= bytes.Length,
+            $"Self-cycling chain amplified to {chain.Length} bytes (container is {bytes.Length}).");
+    }
+
+    /// <summary>
     /// Builds a valid version-3 container with a single named stream of the requested size.
     /// </summary>
     /// <param name="name">The stream name.</param>

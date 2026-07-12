@@ -71,12 +71,15 @@ public sealed class BoeEndpointOptions
         if (BaseUrl is null)
             throw new InvalidOperationException(BoeResourceStrings.Op_Invalid_BoeEndpointBaseUrl);
 
-        string codes = string.Join(",", seriesCodes);
+        // Escape each series code individually and join with a literal comma so the comma stays a valid list
+        // separator in the query. Escaping the joined string instead would percent-encode the separators (%2C),
+        // which the IADB only tolerates incidentally.
+        string codes = string.Join(",", seriesCodes.Select(Uri.EscapeDataString));
         string query =
             "?csv.x=yes" +
             "&Datefrom=" + Uri.EscapeDataString(FormatDate(startDate)) +
             "&Dateto=" + Uri.EscapeDataString(FormatDate(endDate)) +
-            "&SeriesCodes=" + Uri.EscapeDataString(codes) +
+            "&SeriesCodes=" + codes +
             "&CSVF=TN&UsingCodes=Y&VPD=Y&VFD=N";
 
         return new Uri(BaseUrl, QueryPath + query);

@@ -55,6 +55,16 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// <see cref="System.Threading.Volatile" /> overloads that target reference types. Value-type element support would
 /// require a different publication mechanism and is intentionally out of scope for this type.
 /// </para>
+/// <para>
+/// Any capacity of at least two is supported, including non-power-of-two values, and <see cref="Capacity" /> reports
+/// the exact requested value. One caveat applies at extreme longevity: the head and tail counters are 32-bit, and the
+/// physical slot index is their unsigned modulo the capacity. When the capacity is not a power of two, the counter's
+/// wrap at <c>2^32</c> operations shifts that modulo by <c>2^32 mod capacity</c>, which could misalign a single slot
+/// once every ~4.29 billion enqueue/dequeue operations. A power-of-two capacity divides <c>2^32</c> evenly and is
+/// therefore free of the caveat entirely; callers whose buffers process on the order of billions of operations without
+/// recreation should prefer one. Eliminating the caveat for arbitrary capacities would require widening the counters to
+/// 64-bit and is intentionally out of scope for this type.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -842,7 +852,9 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <returns>The wrapped slot index in the range <c>[0, _capacity)</c>.</returns>
     /// <remarks>
     /// Uses unsigned modulo to guarantee a non-negative result even after <see cref="int" /> counter overflow, where
-    /// plain <c>position % _capacity</c> would yield a negative index in C#.
+    /// plain <c>position % _capacity</c> would yield a negative index in C#. The mapping is a clean permutation across
+    /// the counter's <c>2^32</c> wrap only when the capacity is a power of two; for a non-power-of-two capacity a
+    /// single slot may misalign once per <c>2^32</c> operations (see the class remarks).
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int SlotIndex(int position) => (int)((uint)position % (uint)_capacity);

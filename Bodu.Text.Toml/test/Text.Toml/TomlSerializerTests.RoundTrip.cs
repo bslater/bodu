@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test.Kat;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Document;
 using Bodu.Text.Toml.Nodes;
 using Bodu.Text.Toml.Serialization;
@@ -231,7 +232,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// A model whose two members are mapped to the same wire name via <see cref="TomlPropertyNameAttribute" />.
+    /// A model whose two members are mapped to the same wire name via <see cref="PropertyNameAttribute" />.
     /// </summary>
     private sealed class DuplicateWireNameModel
     {
@@ -239,14 +240,14 @@ public partial class TomlSerializerTests
         /// Gets or sets the first member mapped to the shared wire name.
         /// </summary>
         /// <value>The first value.</value>
-        [TomlPropertyName("shared")]
+        [PropertyName("shared")]
         public int First { get; set; }
 
         /// <summary>
         /// Gets or sets the second member mapped to the shared wire name.
         /// </summary>
         /// <value>The second value.</value>
-        [TomlPropertyName("shared")]
+        [PropertyName("shared")]
         public int Second { get; set; }
     }
 
@@ -265,7 +266,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the extension-data member.
         /// </summary>
         /// <value>The overflow entries, or <see langword="null" /> when none exist.</value>
-        [TomlExtensionData]
+        [ExtensionData]
         public Dictionary<string, TomlNode?>? Extra { get; set; }
     }
 

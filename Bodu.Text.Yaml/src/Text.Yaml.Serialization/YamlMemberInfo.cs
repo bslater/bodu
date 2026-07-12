@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Yaml.Serialization;
 
@@ -51,6 +52,46 @@ internal sealed class YamlMemberInfo
     public Action<object, object?>? Set { get; init; }
 
     /// <summary>
+    /// Gets a value indicating whether the member must be present in the input.
+    /// </summary>
+    /// <value><see langword="true" /> when the member is required; otherwise <see langword="false" />.</value>
+    public bool IsRequired { get; init; }
+
+    /// <summary>
+    /// Gets the relative write order of the member; members are emitted in ascending order.
+    /// </summary>
+    /// <value>The order value, or zero when the member declares none.</value>
+    public int Order { get; init; }
+
+    /// <summary>
+    /// Gets the condition under which the member is omitted on write, or <see langword="null" /> when it declares no
+    /// per-member condition (in which case the serializer-wide null handling applies).
+    /// </summary>
+    /// <value>The conditional-ignore setting, or <see langword="null" />.</value>
+    public IgnoreCondition? Condition { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the member is opted into serialization through <see cref="IncludeAttribute" />,
+    /// which binds a non-public property setter and surfaces a public field even when fields are otherwise excluded.
+    /// </summary>
+    /// <value><see langword="true" /> when the member is force-included; otherwise <see langword="false" />.</value>
+    public bool Include { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the member is the type's extension-data member, which captures unmapped keys
+    /// rather than participating as a normal mapped member.
+    /// </summary>
+    /// <value><see langword="true" /> for the extension-data member; otherwise <see langword="false" />.</value>
+    public bool IsExtensionData { get; init; }
+
+    /// <summary>
+    /// Gets the member-level object-creation handling, sourced from an <see cref="ObjectCreationHandlingAttribute" />
+    /// on the member, or <see langword="null" /> when the member declares none.
+    /// </summary>
+    /// <value>The member-level object-creation handling, or <see langword="null" />.</value>
+    public ObjectCreationHandling? CreationHandling { get; init; }
+
+    /// <summary>
     /// Computes the YAML key for this member under the given options.
     /// </summary>
     /// <param name="options">The serializer options.</param>
@@ -70,6 +111,9 @@ internal sealed class YamlMemberInfo
         var seen = new HashSet<string>(StringComparer.Ordinal);
         foreach (YamlMemberInfo member in members)
         {
+            if (member.IsExtensionData)
+                continue;
+
             if (!seen.Add(member.WireName(options)))
             {
                 throw new InvalidOperationException(string.Format(
@@ -92,7 +136,8 @@ internal sealed class YamlMemberInfo
         if (includeFields)
             return all;
 
-        return Array.FindAll(all, static m => !m.IsField);
+        // A public field is surfaced only when fields are enabled or the field opts in with [Include].
+        return Array.FindAll(all, static m => !m.IsField || m.Include);
     }
 
     /// <summary>
@@ -116,12 +161,21 @@ internal sealed class YamlMemberInfo
             if (property.GetIndexParameters().Length > 0 || property.GetMethod is null)
                 continue;
 
-            if (property.IsDefined(typeof(YamlIgnoreAttribute), inherit: true))
+            IgnoreAttribute? ignore = property.GetCustomAttribute<IgnoreAttribute>(inherit: true);
+            if (ignore is { Condition: IgnoreCondition.Always })
                 continue;
 
-            string? explicitName = property.GetCustomAttribute<YamlPropertyNameAttribute>(inherit: true)?.Name;
+            bool include = property.IsDefined(typeof(IncludeAttribute), inherit: true);
+            bool isExtension = property.IsDefined(typeof(ExtensionDataAttribute), inherit: true);
+            if (isExtension && !IsExtensionDataCompatible(property.PropertyType))
+            {
+                throw new YamlSerializationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlExtensionDataType, property.Name, type));
+            }
+
+            string? explicitName = property.GetCustomAttribute<PropertyNameAttribute>(inherit: true)?.Name;
             Action<object, object?>? setter = null;
-            if (property.SetMethod is { IsPublic: true })
+            if (property.SetMethod is not null && (property.SetMethod.IsPublic || include))
                 setter = property.SetValue;
 
             members.Add(new YamlMemberInfo
@@ -131,16 +185,30 @@ internal sealed class YamlMemberInfo
                 Type = property.PropertyType,
                 Get = property.GetValue,
                 Set = setter,
+                IsRequired = IsRequiredMember(property),
+                Order = property.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0,
+                Condition = ignore?.Condition,
+                Include = include,
+                IsExtensionData = isExtension,
+                CreationHandling = property.GetCustomAttribute<ObjectCreationHandlingAttribute>(inherit: true)?.Handling,
                 IsField = false,
             });
         }
 
         foreach (FieldInfo field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
         {
-            if (field.IsDefined(typeof(YamlIgnoreAttribute), inherit: true))
+            IgnoreAttribute? ignore = field.GetCustomAttribute<IgnoreAttribute>(inherit: true);
+            if (ignore is { Condition: IgnoreCondition.Always })
                 continue;
 
-            string? explicitName = field.GetCustomAttribute<YamlPropertyNameAttribute>(inherit: true)?.Name;
+            bool isExtension = field.IsDefined(typeof(ExtensionDataAttribute), inherit: true);
+            if (isExtension && !IsExtensionDataCompatible(field.FieldType))
+            {
+                throw new YamlSerializationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlExtensionDataType, field.Name, type));
+            }
+
+            string? explicitName = field.GetCustomAttribute<PropertyNameAttribute>(inherit: true)?.Name;
             members.Add(new YamlMemberInfo
             {
                 MemberName = field.Name,
@@ -148,10 +216,79 @@ internal sealed class YamlMemberInfo
                 Type = field.FieldType,
                 Get = field.GetValue,
                 Set = field.SetValue,
+                IsRequired = IsRequiredMember(field),
+                Order = field.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0,
+                Condition = ignore?.Condition,
+                Include = field.IsDefined(typeof(IncludeAttribute), inherit: true),
+                IsExtensionData = isExtension,
+                CreationHandling = field.GetCustomAttribute<ObjectCreationHandlingAttribute>(inherit: true)?.Handling,
                 IsField = true,
             });
         }
 
+        if (members.FindAll(static m => m.IsExtensionData).Count > 1)
+        {
+            throw new YamlSerializationException(string.Format(
+                CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlMultipleExtensionData, type));
+        }
+
         return members.ToArray();
     }
+
+    /// <summary>
+    /// Determines whether a type can serve as an extension-data member, which must be assignable from
+    /// <see cref="Dictionary{TKey, TValue}" /> of <see cref="string" /> to <see cref="object" />.
+    /// </summary>
+    /// <param name="type">The declared member type.</param>
+    /// <returns><see langword="true" /> when the type is a supported extension-data container.</returns>
+    private static bool IsExtensionDataCompatible(Type type) =>
+        typeof(IDictionary<string, object?>).IsAssignableFrom(type);
+
+    /// <summary>
+    /// Selects the constructor the serializer uses to instantiate a type during deserialization: the one marked with
+    /// <see cref="ConstructorAttribute" />, else a public parameterless constructor, else the single declared
+    /// constructor, else the constructor with the most parameters.
+    /// </summary>
+    /// <param name="type">The type to construct.</param>
+    /// <returns>
+    /// The chosen constructor, or <see langword="null" /> when the type declares no accessible constructor (in which
+    /// case a value type is default-constructed).
+    /// </returns>
+    public static ConstructorInfo? GetDeserializationConstructor(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
+    {
+        ConstructorInfo[] constructors = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
+        if (constructors.Length == 0)
+            return null;
+
+        foreach (ConstructorInfo constructor in constructors)
+        {
+            if (constructor.IsDefined(typeof(ConstructorAttribute), inherit: false))
+                return constructor;
+        }
+
+        ConstructorInfo? best = null;
+        foreach (ConstructorInfo constructor in constructors)
+        {
+            int count = constructor.GetParameters().Length;
+            if (count == 0)
+                return constructor;
+
+            if (best is null || count > best.GetParameters().Length)
+                best = constructor;
+        }
+
+        return best;
+    }
+
+    /// <summary>
+    /// Determines whether a member is required, either through the <see langword="required" /> keyword (surfaced as
+    /// <see cref="System.Runtime.CompilerServices.RequiredMemberAttribute" />) or through
+    /// <see cref="RequiredAttribute" />.
+    /// </summary>
+    /// <param name="member">The reflected member.</param>
+    /// <returns><see langword="true" /> when the member is required; otherwise <see langword="false" />.</returns>
+    private static bool IsRequiredMember(MemberInfo member) =>
+        member.IsDefined(typeof(System.Runtime.CompilerServices.RequiredMemberAttribute), inherit: false)
+            || member.IsDefined(typeof(RequiredAttribute), inherit: false);
 }

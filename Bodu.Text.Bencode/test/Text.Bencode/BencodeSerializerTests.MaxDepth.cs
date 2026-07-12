@@ -146,6 +146,27 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that serializing a genuinely cyclic object graph — an instance whose <c>Child</c> refers back to itself
+    /// — surfaces as a depth-exceeded <see cref="BencodeSerializationException" /> rather than a cycle diagnostic,
+    /// pinning the intended design that the Bencode write path performs no reference-cycle detection (unlike the TOML
+    /// serializer, whose write stack reports cycles explicitly).
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenObjectGraphHasCycle_ShouldThrowDepthExceededNotCycleDetected()
+    {
+        var cyclic = new RecursiveModel();
+        cyclic.Child = cyclic;
+
+        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(cyclic);
+        });
+
+        Assert.IsFalse(ex.Message.Contains("cycle", StringComparison.OrdinalIgnoreCase));
+        Assert.IsTrue(ex.Message.Contains("depth", StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
     /// Verifies that serializing a POCO graph nested no deeper than <see cref="BencodeSerializerOptions.MaxDepth" />
     /// succeeds and emits canonical bytes.
     /// </summary>

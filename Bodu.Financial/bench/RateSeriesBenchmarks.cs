@@ -5,20 +5,22 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using BenchmarkDotNet.Attributes;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 
 namespace Bodu.Financial.Benchmarks;
 
 /// <summary>
-/// Measures the throughput of <see cref="Bodu.Financial.RateSeries" /> against a
+/// Measures the throughput of <see cref="Bodu.Financial.ExchangeRates.RateSeries" /> against a
 /// <see cref="SortedDictionary{TKey, TValue}" /> baseline and against an array-of-structs baseline over a synthetic
 /// ten-year daily-rate series.
 /// </summary>
 [MemoryDiagnoser]
 public class RateSeriesBenchmarks
 {
-    private static readonly CurrencyPair s_pair = new("USD", "AUD");
+    private static readonly CurrencyPair s_pair = new(CurrencyCode.USD, CurrencyCode.AUD);
 
-    private Bodu.Financial.RateSeries _series = null!;
+    private Bodu.Financial.ExchangeRates.RateSeries _series = null!;
     private SortedDictionary<DateOnly, decimal> _sortedDict = null!;
     private (DateOnly Date, decimal Rate)[] _arrayOfStructs = null!;
     private DateOnly _hitDate;
@@ -43,7 +45,7 @@ public class RateSeriesBenchmarks
         for (int i = 0; i < Count; i++)
             rates.Add((start.AddDays(i * 2), 1.50m + (i * 0.0001m)));
 
-        _series = new Bodu.Financial.RateSeries(s_pair, "Bench", rates);
+        _series = new Bodu.Financial.ExchangeRates.RateSeries(s_pair, "Bench", rates);
 
         _sortedDict = new SortedDictionary<DateOnly, decimal>();
         foreach ((DateOnly Date, decimal Rate) entry in rates)

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test.Assertions;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
@@ -19,7 +20,7 @@ public partial class TomlSerializerOptionsTests
 {
     /// <summary>
     /// Verifies that setting <see cref="TomlSerializerOptions.DefaultIgnoreCondition" /> to an undefined
-    /// <see cref="TomlIgnoreCondition" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <see cref="IgnoreCondition" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>value</c>.
     /// </summary>
     [TestMethod]
@@ -29,13 +30,13 @@ public partial class TomlSerializerOptionsTests
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            options.DefaultIgnoreCondition = (TomlIgnoreCondition)99;
+            options.DefaultIgnoreCondition = (IgnoreCondition)99;
         }, "value");
     }
 
     /// <summary>
     /// Verifies that setting <see cref="TomlSerializerOptions.UnmappedMemberHandling" /> to an undefined
-    /// <see cref="TomlUnmappedMemberHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <see cref="UnmappedMemberHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>value</c>.
     /// </summary>
     [TestMethod]
@@ -45,13 +46,13 @@ public partial class TomlSerializerOptionsTests
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            options.UnmappedMemberHandling = (TomlUnmappedMemberHandling)99;
+            options.UnmappedMemberHandling = (UnmappedMemberHandling)99;
         }, "value");
     }
 
     /// <summary>
     /// Verifies that setting <see cref="TomlSerializerOptions.PreferredObjectCreationHandling" /> to an undefined
-    /// <see cref="TomlObjectCreationHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <see cref="ObjectCreationHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>value</c>.
     /// </summary>
     [TestMethod]
@@ -61,7 +62,7 @@ public partial class TomlSerializerOptionsTests
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            options.PreferredObjectCreationHandling = (TomlObjectCreationHandling)99;
+            options.PreferredObjectCreationHandling = (ObjectCreationHandling)99;
         }, "value");
     }
 

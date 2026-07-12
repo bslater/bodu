@@ -129,6 +129,12 @@ namespace Bodu.Globalization.Calendar.Plugins {
         /// <summary>
         ///   Looks up a localized string similar to The plugin assembly is not strong-named.
         /// </summary>
+        internal static string Op_NotTrusted_PluginNoPolicies {
+            get {
+                return ResourceManager.GetString("Op_NotTrusted_PluginNoPolicies", resourceCulture);
+            }
+        }
+
         internal static string Op_NotTrusted_PluginNotStrongNamed {
             get {
                 return ResourceManager.GetString("Op_NotTrusted_PluginNotStrongNamed", resourceCulture);

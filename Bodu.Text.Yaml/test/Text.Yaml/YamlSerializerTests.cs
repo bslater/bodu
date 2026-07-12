@@ -6,6 +6,8 @@
 
 using Bodu.Text.Yaml.Serialization;
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Yaml;
 
 /// <summary>
@@ -31,10 +33,10 @@ public partial class YamlSerializerTests
     {
         public string? ServerHost { get; set; }
 
-        [YamlPropertyName("port")]
+        [PropertyName("port")]
         public int ServerPort { get; set; }
 
-        [YamlIgnore]
+        [Bodu.Text.Serialization.Ignore]
         public string? Secret { get; set; }
     }
 

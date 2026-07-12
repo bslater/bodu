@@ -4,13 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies how <see cref="TomlSerializer" /> selects and invokes a constructor when deserializing: parameterless
-/// versus parameterized construction, positional records, the <see cref="TomlConstructorAttribute" /> override,
+/// versus parameterized construction, positional records, the <see cref="ConstructorAttribute" /> override,
 /// greatest-arity selection, and how constructor parameters match the read members by name, naming policy, and case.
 /// </summary>
 public partial class TomlSerializerTests
@@ -42,7 +43,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that a constructor parameter binds to the member it maps to even when that member carries a
-    /// <see cref="TomlPropertyNameAttribute" />, so the value read under the wire key flows to the constructor.
+    /// <see cref="PropertyNameAttribute" />, so the value read under the wire key flows to the constructor.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenConstructorParameterBindsRenamedMember_ShouldReadFromWireName()
@@ -59,7 +60,7 @@ public partial class TomlSerializerTests
     [TestMethod]
     public void Deserialize_WhenNamingPolicyAndParameterizedConstructor_ShouldBindFromPolicyWireName()
     {
-        var options = new TomlSerializerOptions { PropertyNamingPolicy = TomlNamingPolicy.CamelCase };
+        var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
 
         ImmutableName model = TomlSerializer.Deserialize<ImmutableName>("firstName = \"Alice\"\n", options);
 
@@ -84,7 +85,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a constructor marked with <see cref="TomlConstructorAttribute" /> is selected even when a public
+    /// Verifies that a constructor marked with <see cref="ConstructorAttribute" /> is selected even when a public
     /// parameterless constructor is also declared, so the attributed constructor receives the read members.
     /// </summary>
     [TestMethod]
@@ -220,7 +221,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// A type whose constructor parameter binds a property that is renamed on the wire by
-    /// <see cref="TomlPropertyNameAttribute" />.
+    /// <see cref="PropertyNameAttribute" />.
     /// </summary>
     private sealed class RenamedConstructorMember
     {
@@ -237,7 +238,7 @@ public partial class TomlSerializerTests
         /// Gets the identifier, written under the wire name <c>id</c>.
         /// </summary>
         /// <value>The identifier.</value>
-        [TomlPropertyName("id")]
+        [PropertyName("id")]
         public int Identifier { get; }
     }
 
@@ -288,7 +289,7 @@ public partial class TomlSerializerTests
         /// serializer is directed to use.
         /// </summary>
         /// <param name="a">The value.</param>
-        [TomlConstructor]
+        [Constructor]
         public AttributedConstructorModel(int a)
         {
             A = a;

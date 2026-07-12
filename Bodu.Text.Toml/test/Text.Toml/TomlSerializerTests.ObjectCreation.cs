@@ -5,21 +5,22 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test.Assertions;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies how <see cref="TomlSerializer" /> handles object-creation on read: the default
-/// <see cref="TomlObjectCreationHandling.Replace" /> that overwrites a member's seeded value, and
-/// <see cref="TomlObjectCreationHandling.Populate" /> that merges the read entries into a member's existing collection
+/// <see cref="ObjectCreationHandling.Replace" /> that overwrites a member's seeded value, and
+/// <see cref="ObjectCreationHandling.Populate" /> that merges the read entries into a member's existing collection
 /// or dictionary. It covers the options-level, type-level, and member-level controls and their precedence, the
 /// get-only collection round-trip Populate enables, and the fallback to replacement when Populate cannot apply.
 /// </summary>
 public partial class TomlSerializerTests
 {
     /// <summary>
-    /// Verifies that the default <see cref="TomlObjectCreationHandling.Replace" /> overwrites a settable list that the
+    /// Verifies that the default <see cref="ObjectCreationHandling.Replace" /> overwrites a settable list that the
     /// type seeds, so only the read elements survive.
     /// </summary>
     [TestMethod]
@@ -31,13 +32,13 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlObjectCreationHandling.Populate" /> on the options merges read elements into a
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> on the options merges read elements into a
     /// settable list's seeded contents rather than replacing them.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenOptionsPopulateAndSeededList_ShouldAppendToExisting()
     {
-        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
+        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = ObjectCreationHandling.Populate };
 
         SettableListModel model = TomlSerializer.Deserialize<SettableListModel>("Items = [2, 3]\n", options);
 
@@ -45,13 +46,13 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlObjectCreationHandling.Populate" /> lets a get-only list property, which has no
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> lets a get-only list property, which has no
     /// setter, round-trip by populating the instance the type initialized.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenOptionsPopulateAndGetOnlyList_ShouldPopulateExisting()
     {
-        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
+        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = ObjectCreationHandling.Populate };
 
         GetOnlyListModel model = TomlSerializer.Deserialize<GetOnlyListModel>("Items = [2, 3]\n", options);
 
@@ -59,9 +60,9 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a member annotated with the <see cref="TomlObjectCreationHandlingAttribute" /> set to
-    /// <see cref="TomlObjectCreationHandling.Populate" /> merges into its seeded value even when the options leave the
-    /// default <see cref="TomlObjectCreationHandling.Replace" />.
+    /// Verifies that a member annotated with the <see cref="ObjectCreationHandlingAttribute" /> set to
+    /// <see cref="ObjectCreationHandling.Populate" /> merges into its seeded value even when the options leave the
+    /// default <see cref="ObjectCreationHandling.Replace" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenMemberPopulateAttributeAndOptionsDefault_ShouldAppendToExisting()
@@ -72,13 +73,13 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a member-level <see cref="TomlObjectCreationHandling.Replace" /> attribute overrides an
-    /// options-level <see cref="TomlObjectCreationHandling.Populate" />, replacing the member's seeded value.
+    /// Verifies that a member-level <see cref="ObjectCreationHandling.Replace" /> attribute overrides an
+    /// options-level <see cref="ObjectCreationHandling.Populate" />, replacing the member's seeded value.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenMemberReplaceAttributeAndOptionsPopulate_ShouldReplace()
     {
-        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
+        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = ObjectCreationHandling.Populate };
 
         MemberReplaceModel model = TomlSerializer.Deserialize<MemberReplaceModel>("Items = [2, 3]\n", options);
 
@@ -86,8 +87,8 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a type annotated with the <see cref="TomlObjectCreationHandlingAttribute" /> set to
-    /// <see cref="TomlObjectCreationHandling.Populate" /> merges into every member's seeded value.
+    /// Verifies that a type annotated with the <see cref="ObjectCreationHandlingAttribute" /> set to
+    /// <see cref="ObjectCreationHandling.Populate" /> merges into every member's seeded value.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenTypePopulateAttribute_ShouldAppendToExisting()
@@ -98,8 +99,8 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a member-level <see cref="TomlObjectCreationHandling.Replace" /> attribute overrides a type-level
-    /// <see cref="TomlObjectCreationHandling.Populate" />, confirming member precedence over type.
+    /// Verifies that a member-level <see cref="ObjectCreationHandling.Replace" /> attribute overrides a type-level
+    /// <see cref="ObjectCreationHandling.Populate" />, confirming member precedence over type.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenMemberReplaceOverridesTypePopulate_ShouldReplace()
@@ -110,13 +111,13 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlObjectCreationHandling.Populate" /> merges read entries into a seeded dictionary
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> merges read entries into a seeded dictionary
     /// member, overwriting matching keys and adding new ones.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenPopulateAndSeededDictionary_ShouldMergeEntries()
     {
-        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
+        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = ObjectCreationHandling.Populate };
 
         SeededDictionaryModel model = TomlSerializer.Deserialize<SeededDictionaryModel>("[Counts]\nb = 9\nc = 3\n", options);
 
@@ -127,13 +128,13 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlObjectCreationHandling.Populate" /> falls back to replacing the value when the
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> falls back to replacing the value when the
     /// member's existing value is <see langword="null" />, since there is no instance to populate.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenPopulateAndNullExistingValue_ShouldFallBackToReplace()
     {
-        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
+        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = ObjectCreationHandling.Populate };
 
         NullSeedListModel model = TomlSerializer.Deserialize<NullSeedListModel>("Items = [2, 3]\n", options);
 
@@ -142,16 +143,16 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that constructing <see cref="TomlObjectCreationHandlingAttribute" /> with an undefined
-    /// <see cref="TomlObjectCreationHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// Verifies that constructing <see cref="ObjectCreationHandlingAttribute" /> with an undefined
+    /// <see cref="ObjectCreationHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>handling</c>.
     /// </summary>
     [TestMethod]
-    public void TomlObjectCreationHandlingAttribute_WhenHandlingUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void ObjectCreationHandlingAttribute_WhenHandlingUndefined_ShouldThrowArgumentOutOfRangeException()
     {
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            _ = new TomlObjectCreationHandlingAttribute((TomlObjectCreationHandling)99);
+            _ = new ObjectCreationHandlingAttribute((ObjectCreationHandling)99);
         }, "handling");
     }
 
@@ -188,7 +189,7 @@ public partial class TomlSerializerTests
         /// Gets or sets the list, merged into on read by its Populate attribute.
         /// </summary>
         /// <value>The list.</value>
-        [TomlObjectCreationHandling(TomlObjectCreationHandling.Populate)]
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
         public List<int> Items { get; set; } = new() { 1 };
     }
 
@@ -201,14 +202,14 @@ public partial class TomlSerializerTests
         /// Gets or sets the list, replaced on read by its Replace attribute.
         /// </summary>
         /// <value>The list.</value>
-        [TomlObjectCreationHandling(TomlObjectCreationHandling.Replace)]
+        [ObjectCreationHandling(ObjectCreationHandling.Replace)]
         public List<int> Items { get; set; } = new() { 1 };
     }
 
     /// <summary>
     /// A model whose type carries a type-level Populate attribute.
     /// </summary>
-    [TomlObjectCreationHandling(TomlObjectCreationHandling.Populate)]
+    [ObjectCreationHandling(ObjectCreationHandling.Populate)]
     private sealed class TypePopulateModel
     {
         /// <summary>
@@ -221,7 +222,7 @@ public partial class TomlSerializerTests
     /// <summary>
     /// A model whose type-level Populate attribute is overridden on one member by a Replace attribute.
     /// </summary>
-    [TomlObjectCreationHandling(TomlObjectCreationHandling.Populate)]
+    [ObjectCreationHandling(ObjectCreationHandling.Populate)]
     private sealed class TypePopulateWithMemberReplaceModel
     {
         /// <summary>
@@ -229,7 +230,7 @@ public partial class TomlSerializerTests
         /// Populate.
         /// </summary>
         /// <value>The list.</value>
-        [TomlObjectCreationHandling(TomlObjectCreationHandling.Replace)]
+        [ObjectCreationHandling(ObjectCreationHandling.Replace)]
         public List<int> Items { get; set; } = new() { 1 };
     }
 

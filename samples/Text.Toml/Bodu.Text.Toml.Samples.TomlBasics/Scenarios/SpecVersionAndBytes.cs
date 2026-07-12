@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml;
 
 namespace Bodu.Text.Toml.Samples.TomlBasics.Scenarios;
@@ -52,12 +53,12 @@ public static class SpecVersionAndBytes
         var packet = new Packet();
         var asIntegers = TomlSerializer.Serialize(packet, new TomlSerializerOptions
         {
-            PropertyNamingPolicy = TomlNamingPolicy.SnakeCaseLower,
+            PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
             ByteArrayHandling = TomlByteArrayHandling.IntegerArray,
         });
         var asBase64 = TomlSerializer.Serialize(packet, new TomlSerializerOptions
         {
-            PropertyNamingPolicy = TomlNamingPolicy.SnakeCaseLower,
+            PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
             ByteArrayHandling = TomlByteArrayHandling.Base64String,
         });
 
@@ -67,7 +68,7 @@ public static class SpecVersionAndBytes
         // Both shapes deserialize back to the same bytes when the handling matches.
         var roundTripped = TomlSerializer.Deserialize<Packet>(asBase64, new TomlSerializerOptions
         {
-            PropertyNamingPolicy = TomlNamingPolicy.SnakeCaseLower,
+            PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
             ByteArrayHandling = TomlByteArrayHandling.Base64String,
         });
         Console.WriteLine($"  Round trip    : payload restored -> {Convert.ToHexString(roundTripped.Payload)}");

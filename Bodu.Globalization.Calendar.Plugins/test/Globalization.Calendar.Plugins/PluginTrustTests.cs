@@ -13,16 +13,17 @@ namespace Bodu.Globalization.Calendar.Plugins;
 public sealed class PluginTrustTests
 {
     /// <summary>
-    /// Verifies that a composite policy with no constituent policies trusts every context.
+    /// Verifies that a composite policy with no constituent policies rejects every context (fails closed), so a
+    /// misconfigured empty policy set cannot silently trust every assembly.
     /// </summary>
     [TestMethod]
-    public void CompositePolicy_WhenNoConstituents_ShouldTrust()
+    public void CompositePolicy_WhenNoConstituents_ShouldReject()
     {
         PluginTrustContext context = new("plugin.asm", "/plugins/plugin.dll", FileHash: null);
 
         PluginTrustResult result = new CompositePluginTrustPolicy().Evaluate(context);
 
-        Assert.IsTrue(result.IsTrusted);
+        Assert.IsFalse(result.IsTrusted);
     }
 
     /// <summary>

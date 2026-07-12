@@ -22,7 +22,7 @@ internal sealed class RbaXlsRateTableSource
     private readonly RbaRateProviderOptions _options;
 
     /// <summary>The workbook byte cache.</summary>
-    private readonly IRbaWorkbookCache _cache;
+    private readonly IByteCache<RbaEraWorkbook> _cache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RbaXlsRateTableSource" /> class.
@@ -30,7 +30,7 @@ internal sealed class RbaXlsRateTableSource
     /// <param name="httpClient">The HTTP client used to download era files.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="cache">The workbook byte cache.</param>
-    internal RbaXlsRateTableSource(HttpClient httpClient, RbaRateProviderOptions options, IRbaWorkbookCache cache)
+    internal RbaXlsRateTableSource(HttpClient httpClient, RbaRateProviderOptions options, IByteCache<RbaEraWorkbook> cache)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);

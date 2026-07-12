@@ -19,8 +19,8 @@ internal sealed class BoeCsvRateTableSource
     /// <summary>The provider options supplying the endpoint, series catalogue, and refresh interval.</summary>
     private readonly BoeRateProviderOptions _options;
 
-    /// <summary>The response byte cache.</summary>
-    private readonly IBoeResponseCache _cache;
+    /// <summary>The response byte cache, keyed by the inclusive date range.</summary>
+    private readonly IByteCache<(DateOnly StartDate, DateOnly EndDate)> _cache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BoeCsvRateTableSource" /> class.
@@ -28,7 +28,7 @@ internal sealed class BoeCsvRateTableSource
     /// <param name="httpClient">The HTTP client used to download range responses.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="cache">The response byte cache.</param>
-    internal BoeCsvRateTableSource(HttpClient httpClient, BoeRateProviderOptions options, IBoeResponseCache cache)
+    internal BoeCsvRateTableSource(HttpClient httpClient, BoeRateProviderOptions options, IByteCache<(DateOnly StartDate, DateOnly EndDate)> cache)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
@@ -57,13 +57,13 @@ internal sealed class BoeCsvRateTableSource
     /// <returns>A task that yields the response bytes.</returns>
     private async ValueTask<byte[]> GetResponseBytesAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
-        if (_cache.TryGet(startDate, endDate, _options.RefreshInterval, out byte[]? cached))
+        if (_cache.TryGet((startDate, endDate), _options.RefreshInterval, out byte[]? cached))
             return cached;
 
         string[] codes = _options.Series.Select(static series => series.SeriesCode).ToArray();
         Uri url = _options.Endpoint.BuildRequestUrl(codes, startDate, endDate);
         byte[] bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
-        _cache.Store(startDate, endDate, bytes);
+        _cache.Store((startDate, endDate), bytes);
 
         return bytes;
     }

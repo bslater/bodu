@@ -6,6 +6,7 @@
 
 using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Serialization;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Bencode;
 
@@ -19,7 +20,7 @@ public class BencodeSerializerOptionsTests
 {
     /// <summary>
     /// Verifies that setting <see cref="BencodeSerializerOptions.DefaultIgnoreCondition" /> to an undefined
-    /// <see cref="BencodeIgnoreCondition" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <see cref="IgnoreCondition" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>value</c>.
     /// </summary>
     [TestMethod]
@@ -29,13 +30,13 @@ public class BencodeSerializerOptionsTests
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            options.DefaultIgnoreCondition = (BencodeIgnoreCondition)99;
+            options.DefaultIgnoreCondition = (IgnoreCondition)99;
         }, "value");
     }
 
     /// <summary>
     /// Verifies that setting <see cref="BencodeSerializerOptions.UnmappedMemberHandling" /> to an undefined
-    /// <see cref="BencodeUnmappedMemberHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <see cref="UnmappedMemberHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>value</c>.
     /// </summary>
     [TestMethod]
@@ -45,13 +46,13 @@ public class BencodeSerializerOptionsTests
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            options.UnmappedMemberHandling = (BencodeUnmappedMemberHandling)99;
+            options.UnmappedMemberHandling = (UnmappedMemberHandling)99;
         }, "value");
     }
 
     /// <summary>
     /// Verifies that setting <see cref="BencodeSerializerOptions.PreferredObjectCreationHandling" /> to an undefined
-    /// <see cref="BencodeObjectCreationHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
+    /// <see cref="ObjectCreationHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>value</c>.
     /// </summary>
     [TestMethod]
@@ -61,7 +62,7 @@ public class BencodeSerializerOptionsTests
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            options.PreferredObjectCreationHandling = (BencodeObjectCreationHandling)99;
+            options.PreferredObjectCreationHandling = (ObjectCreationHandling)99;
         }, "value");
     }
 

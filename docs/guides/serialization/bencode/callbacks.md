@@ -4,7 +4,7 @@ title: Serialization callbacks
 
 # Serialization callbacks
 
-The Bencode serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces: <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerializing>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerialized>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserializing>, and <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserialized>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The sibling [TOML](../toml/index.md) and [YAML](../yaml/index.md) serializers expose the same four hooks with their own prefix.
+The Bencode serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces: <xref:Bodu.Text.Serialization.IOnSerializing>, <xref:Bodu.Text.Serialization.IOnSerialized>, <xref:Bodu.Text.Serialization.IOnDeserializing>, and <xref:Bodu.Text.Serialization.IOnDeserialized>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The sibling [TOML](../toml/index.md) and [YAML](../yaml/index.md) serializers expose the same four hooks with their own prefix.
 
 | Hook | Runs | Typical use |
 |---|---|---|
@@ -18,11 +18,11 @@ The Bencode serializer lets a type participate in its own serialization lifecycl
 Member initializers run at construction, but a key present in the input then overwrites them — there is no way to distinguish "key absent" from "key set to the initializer value" after the fact. `OnDeserializing` runs after construction and *before* member assignment, so a value it assigns persists exactly when the input omits the key:
 
 ```csharp
-public sealed class ServerConfig : IBencodeOnDeserializing
+public sealed class ServerConfig : IOnDeserializing
 {
     public int Port { get; set; }
 
-    void IBencodeOnDeserializing.OnDeserializing() =>
+    void IOnDeserializing.OnDeserializing() =>
         Port = 8080;
 }
 ```
@@ -39,11 +39,11 @@ For a type built through a parameterized constructor the callback necessarily ru
 `OnDeserialized` is the last step of deserialization for the instance, so it observes the fully materialized object — including required members, extension data, and populated collections. Throwing from it fails the deserialization:
 
 ```csharp
-public sealed class ServerConfig : IBencodeOnDeserialized
+public sealed class ServerConfig : IOnDeserialized
 {
     public int Port { get; set; }
 
-    void IBencodeOnDeserialized.OnDeserialized()
+    void IOnDeserialized.OnDeserialized()
     {
         if (Port is < 1 or > 65535)
             throw new InvalidOperationException("Port is out of range.");
@@ -51,18 +51,18 @@ public sealed class ServerConfig : IBencodeOnDeserialized
 }
 ```
 
-This complements `[BencodeRequired]` (which checks presence, not validity): the attribute rejects an absent key, the callback rejects a present-but-invalid value.
+This complements `[Required]` (which checks presence, not validity): the attribute rejects an absent key, the callback rejects a present-but-invalid value.
 
 ## Pattern 3 — Derive state before serialization
 
 `OnSerializing` runs before the value's members are written, so any mutation it performs is reflected in the emitted output. Use it to stamp timestamps, recompute checksums, or normalize state at the moment of writing. Bencode has no native date-time kind, so a timestamp is stored as a `long`:
 
 ```csharp
-public sealed class Snapshot : IBencodeOnSerializing
+public sealed class Snapshot : IOnSerializing
 {
     public long SavedAt { get; set; }
 
-    void IBencodeOnSerializing.OnSerializing() =>
+    void IOnSerializing.OnSerializing() =>
         SavedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 }
 ```
@@ -72,12 +72,12 @@ public sealed class Snapshot : IBencodeOnSerializing
 `OnSerialized` runs after the value's dictionary has been closed: it observes the completed write rather than influencing the output. Use it to restore state changed by `OnSerializing`, or to track writes:
 
 ```csharp
-public sealed class Snapshot : IBencodeOnSerialized
+public sealed class Snapshot : IOnSerialized
 {
-    [BencodeIgnore]
+    [Ignore]
     public int WriteCount { get; private set; }
 
-    void IBencodeOnSerialized.OnSerialized() =>
+    void IOnSerialized.OnSerialized() =>
         WriteCount++;
 }
 ```
@@ -90,16 +90,16 @@ The hooks combine naturally: `OnSerializing` keeps a computed member fresh at th
 using Bodu.Text.Bencode;
 using Bodu.Text.Bencode.Serialization;
 
-public sealed class Manifest : IBencodeOnSerializing, IBencodeOnDeserialized
+public sealed class Manifest : IOnSerializing, IOnDeserialized
 {
     public List<string> Files { get; set; } = [];
 
     public int FileCount { get; set; }
 
-    void IBencodeOnSerializing.OnSerializing() =>
+    void IOnSerializing.OnSerializing() =>
         FileCount = Files.Count;   // refreshed on every write — never stale
 
-    void IBencodeOnDeserialized.OnDeserialized()
+    void IOnDeserialized.OnDeserialized()
     {
         if (FileCount != Files.Count)
             throw new BencodeSerializationException("FileCount does not match the number of entries in Files.");
@@ -154,9 +154,9 @@ Member-level converters and callbacks compose, however: a callback-bearing type 
 
 ## See also
 
-- [Mapping attributes](attributes.md) — `[BencodeRequired]` and friends; declarative presence checks that the callbacks complement with value validation.
+- [Mapping attributes](attributes.md) — `[Required]` and friends; declarative presence checks that the callbacks complement with value validation.
 - [Writing converters](converters.md) — the customization seam that *replaces* the object mapping (and with it, the callbacks) for a type.
 - [Using Bencode](using.md) — the format walk-through, including the error-handling pattern that catches the exception thrown from `OnDeserialized`.
 - [Core concepts](../../../docs/serialization/bencode/concepts.md) — where the callbacks sit in the Bencode vocabulary.
 - [Text & Serialization guides](../../topics/text-and-serialization.md) and the [topic overview](../../../docs/topics/text-and-serialization.md).
-- API reference — <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerializing>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerialized>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserializing>, <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserialized>.
+- API reference — <xref:Bodu.Text.Serialization.IOnSerializing>, <xref:Bodu.Text.Serialization.IOnSerialized>, <xref:Bodu.Text.Serialization.IOnDeserializing>, <xref:Bodu.Text.Serialization.IOnDeserialized>.

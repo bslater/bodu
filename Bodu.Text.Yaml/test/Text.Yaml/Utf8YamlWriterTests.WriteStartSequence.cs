@@ -17,7 +17,7 @@ public partial class Utf8YamlWriterTests
     [TestMethod]
     public void WriteStartSequence_WhenSequence_ShouldEmitDashes()
     {
-        string yaml = Write((ref Utf8YamlWriter w) =>
+        string yaml = Write((Utf8YamlWriter w) =>
         {
             w.WriteStartMapping();
             w.WritePropertyName("items");

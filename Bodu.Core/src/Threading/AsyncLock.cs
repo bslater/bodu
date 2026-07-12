@@ -187,12 +187,17 @@ public sealed partial class AsyncLock
     }
 
     /// <summary>
-    /// Completes acquisition after a contended wait and produces the releaser, honoring cancellation that races with
-    /// the grant by releasing the just-acquired lock.
+    /// Completes acquisition after a contended wait and produces the releaser.
     /// </summary>
     /// <param name="node">The queued waiter to observe.</param>
     /// <param name="cancellationToken">A token used to cancel the pending acquisition.</param>
     /// <returns>A <see cref="Releaser" /> whose disposal releases the lock.</returns>
+    /// <remarks>
+    /// Cancellation is observed only while the acquisition is still pending: once ownership has been transferred to
+    /// this waiter, the grant wins and the lock is returned even if the token is signaled in the same instant. This
+    /// "success wins" policy matches <see cref="System.Threading.SemaphoreSlim.WaitAsync(CancellationToken)" /> and is
+    /// shared by <see cref="AsyncSemaphore" /> and <see cref="AsyncReaderWriterLock" />.
+    /// </remarks>
     private async ValueTask<Releaser> AwaitAcquireAsync(LinkedListNode<TaskCompletionSource<Releaser>> node, CancellationToken cancellationToken)
     {
         using (cancellationToken.Register(
@@ -205,17 +210,8 @@ public sealed partial class AsyncLock
             // The waiter's task is completed by Release/Dispose on this same lock, not work scheduled elsewhere, and the
             // type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against cannot arise.
 #pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
-            Releaser releaser = await node.Value.Task.ConfigureAwait(false);
+            return await node.Value.Task.ConfigureAwait(false);
 #pragma warning restore VSTHRD003
-
-            // If cancellation raced with the ownership transfer, honor the cancellation and return the lock.
-            if (cancellationToken.IsCancellationRequested)
-            {
-                releaser.Dispose();
-                cancellationToken.ThrowIfCancellationRequested();
-            }
-
-            return releaser;
         }
     }
 

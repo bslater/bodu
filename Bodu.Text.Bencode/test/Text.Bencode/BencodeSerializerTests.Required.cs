@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text;
 using Bodu.Text.Bencode.Serialization;
 
@@ -11,7 +12,7 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Verifies how <see cref="BencodeSerializer" /> enforces required members on read: the C# <see langword="required" />
-/// keyword, the <see cref="BencodeRequiredAttribute" />, and the implicit requirement created by a constructor parameter
+/// keyword, the <see cref="RequiredAttribute" />, and the implicit requirement created by a constructor parameter
 /// without a default. A missing required member fails deserialization; a present one round-trips.
 /// </summary>
 public partial class BencodeSerializerTests
@@ -48,7 +49,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a member annotated with <see cref="BencodeRequiredAttribute" /> round-trips when its key is present
+    /// Verifies that a member annotated with <see cref="RequiredAttribute" /> round-trips when its key is present
     /// in the input.
     /// </summary>
     [TestMethod]
@@ -62,7 +63,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a member annotated with <see cref="BencodeRequiredAttribute" /> causes deserialization to throw
+    /// Verifies that a member annotated with <see cref="RequiredAttribute" /> causes deserialization to throw
     /// <see cref="BencodeSerializationException" /> when its key is absent from the input.
     /// </summary>
     [TestMethod]
@@ -183,7 +184,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// A type whose member is marked required through <see cref="BencodeRequiredAttribute" /> and renamed on the wire.
+    /// A type whose member is marked required through <see cref="RequiredAttribute" /> and renamed on the wire.
     /// </summary>
     private sealed class RequiredAttributeModel
     {
@@ -191,8 +192,8 @@ public partial class BencodeSerializerTests
         /// Gets or sets the identifier, required and written under the wire name <c>id</c>.
         /// </summary>
         /// <value>The identifier.</value>
-        [BencodeRequired]
-        [BencodePropertyName("id")]
+        [Required]
+        [PropertyName("id")]
         public int Id { get; set; }
     }
 

@@ -15,7 +15,7 @@ namespace Bodu.Text.Toml.Serialization;
 /// <para>
 /// The converters report an over-deep graph or a reference cycle by recording the failure here and returning, rather
 /// than throwing from deep in the recursion and rethrowing through every parent frame. The single recorded failure is
-/// thrown once by <see cref="TomlSerializerEngine.Serialize{T}" /> after control has returned to the root, so the call
+/// thrown once by <see cref="SerializerEngine.Serialize{T}" /> after control has returned to the root, so the call
 /// stack unwinds through normal returns and cannot exhaust a constrained stack while dispatching the exception.
 /// </para>
 /// <para>

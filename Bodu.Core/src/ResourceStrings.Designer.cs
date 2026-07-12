@@ -924,6 +924,24 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The sum of the specified values would exceed the range of {0}..
+        /// </summary>
+        internal static string Arg_OutOfRange_AddOverflow {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_AddOverflow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The product of the specified values would exceed the range of {0}..
+        /// </summary>
+        internal static string Arg_OutOfRange_MultiplyOverflow {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_MultiplyOverflow", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The specified sequence range would exceed the maximum allowed value for {0}..
         /// </summary>
         internal static string Arg_OutOfRange_SequenceRangeOverflow {

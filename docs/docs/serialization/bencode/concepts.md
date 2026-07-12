@@ -27,12 +27,12 @@ Every overload accepts an optional <xref:Bodu.Text.Bencode.BencodeSerializerOpti
 | Member | Default | Governs |
 |---|---|---|
 | `Converters` | empty | The user converter list, searched ahead of the built-ins. |
-| `PropertyNamingPolicy` | `null` | The <xref:Bodu.Text.Bencode.BencodeNamingPolicy> applied to member names with no explicit `[BencodePropertyName]`. |
+| `PropertyNamingPolicy` | `null` | The <xref:Bodu.Text.Serialization.NamingPolicy> applied to member names with no explicit `[PropertyName]`. |
 | `PropertyNameCaseInsensitive` | `false` | Whether a document key matches a member name ignoring case on read. |
 | `IncludeFields` | `false` | Whether public fields join properties as serializable members. |
-| `DefaultIgnoreCondition` | `Never` | The fallback <xref:Bodu.Text.Bencode.Serialization.BencodeIgnoreCondition> for members with no explicit `[BencodeIgnore]`. |
-| `UnmappedMemberHandling` | `Skip` | Whether an unmapped key is skipped or rejected on read (<xref:Bodu.Text.Bencode.Serialization.BencodeUnmappedMemberHandling>). |
-| `PreferredObjectCreationHandling` | `Replace` | Whether a member is replaced or populated on read (<xref:Bodu.Text.Bencode.Serialization.BencodeObjectCreationHandling>). |
+| `DefaultIgnoreCondition` | `Never` | The fallback <xref:Bodu.Text.Serialization.IgnoreCondition> for members with no explicit `[Ignore]`. |
+| `UnmappedMemberHandling` | `Skip` | Whether an unmapped key is skipped or rejected on read (<xref:Bodu.Text.Serialization.UnmappedMemberHandling>). |
+| `PreferredObjectCreationHandling` | `Replace` | Whether a member is replaced or populated on read (<xref:Bodu.Text.Serialization.ObjectCreationHandling>). |
 | `AllowUnsortedKeys` | `false` | Read-only leniency: accept dictionaries whose keys are not in ascending bytewise order. |
 | `AllowDuplicateKeys` | `false` | Read-only leniency: accept repeated keys (last occurrence wins). |
 | `MaxDepth` | `64` (`DefaultMaxDepth`) | The maximum nesting depth before a depth guard trips. |
@@ -49,7 +49,7 @@ A <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> converts one type, r
 
 For a given type the serializer resolves a converter by checking, in order:
 
-1. a member-level converter attribute (`[BencodeConverter(typeof(…))]`);
+1. a member-level converter attribute (`[Converter(typeof(…))]`);
 2. a type-level converter attribute;
 3. the first matching converter in `options.Converters`;
 4. the built-in converters.
@@ -60,9 +60,9 @@ The first match wins, and the result is cached on the options.
 
 The full serialization surface lives in the `Bodu.Text.Bencode.Serialization` namespace:
 
-- **Attributes** — `[BencodePropertyName]`, `[BencodeIgnore]`, `[BencodeConverter]`, `[BencodePropertyOrder]`, `[BencodeConstructor]`, `[BencodeRequired]`, `[BencodeInclude]`, `[BencodeExtensionData]`, `[BencodeNamingPolicy]`, `[BencodeUnmappedMemberHandling]`, `[BencodeObjectCreationHandling]`, `[BencodeStringEnumMemberName]`.
-- **Callbacks** — the <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerializing> / <xref:Bodu.Text.Bencode.Serialization.IBencodeOnSerialized> / <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserializing> / <xref:Bodu.Text.Bencode.Serialization.IBencodeOnDeserialized> interfaces, run at the matching point in the pipeline.
-- **Naming policies** — <xref:Bodu.Text.Bencode.BencodeNamingPolicy>`.CamelCase`, `.SnakeCaseLower` / `.SnakeCaseUpper`, `.KebabCaseLower` / `.KebabCaseUpper`, plus the `BencodeSerializerDefaults.Web` preset.
+- **Attributes** — `[PropertyName]`, `[Ignore]`, `[BencodeConverter]`, `[PropertyOrder]`, `[Constructor]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[NamingPolicy]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[StringEnumMemberName]`.
+- **Callbacks** — the <xref:Bodu.Text.Serialization.IOnSerializing> / <xref:Bodu.Text.Serialization.IOnSerialized> / <xref:Bodu.Text.Serialization.IOnDeserializing> / <xref:Bodu.Text.Serialization.IOnDeserialized> interfaces, run at the matching point in the pipeline.
+- **Naming policies** — <xref:Bodu.Text.Serialization.NamingPolicy>`.CamelCase`, `.SnakeCaseLower` / `.SnakeCaseUpper`, `.KebabCaseLower` / `.KebabCaseUpper`, plus the `BencodeSerializerDefaults.Web` preset.
 - **Enum converters** — a string-enum converter (member names) and a number-enum converter.
 
 ## The document object models
@@ -92,7 +92,7 @@ The writer is the dual: structural pairs `WriteStartList()` / `WriteEndList()` a
 
 Bencode maps the BCL types it can represent natively and rejects the rest unless a converter handles them.
 
-`string`, `byte[]`, and memory-of-byte map to byte strings; the integer family (through `ulong.MaxValue`, including the 128-bit types within the 64-bit surfaces) maps to `i…e`; enums map to member-name byte strings; collections (including queues, stacks, and the concurrent collections) map to lists; objects and dictionaries map to dictionaries with keys in canonical ascending bytewise order. Dictionary keys may be strings, integers, enums, `Guid`, `bool`, or `char`, stringified on the wire. Booleans, floating-point, and date-times have **no** Bencode form and require a registered converter. An `object`-typed member writes its runtime type and reads back as a `BencodeElement`. A `null` member is omitted on write; public fields participate via `IncludeFields` or `[BencodeInclude]`.
+`string`, `byte[]`, and memory-of-byte map to byte strings; the integer family (through `ulong.MaxValue`, including the 128-bit types within the 64-bit surfaces) maps to `i…e`; enums map to member-name byte strings; collections (including queues, stacks, and the concurrent collections) map to lists; objects and dictionaries map to dictionaries with keys in canonical ascending bytewise order. Dictionary keys may be strings, integers, enums, `Guid`, `bool`, or `char`, stringified on the wire. Booleans, floating-point, and date-times have **no** Bencode form and require a registered converter. An `object`-typed member writes its runtime type and reads back as a `BencodeElement`. A `null` member is omitted on write; public fields participate via `IncludeFields` or `[Include]`.
 
 ## Errors
 

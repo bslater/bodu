@@ -61,8 +61,43 @@ public sealed class EcbEndpointOptions
         ThrowHelper.ThrowIfNull(feed);
         if (BaseUrl is null)
             throw new InvalidOperationException(EcbResourceStrings.Op_Invalid_EcbEndpointBaseUrl);
+        if (!IsSafeRelativeFeedFileName(feed.FileName))
+            throw new ArgumentException(
+                string.Format(System.Globalization.CultureInfo.CurrentCulture, EcbResourceStrings.Arg_Invalid_EcbFeedFileName, feed.FileName),
+                nameof(feed));
 
         return new Uri(BaseUrl, feed.FileName);
+    }
+
+    /// <summary>
+    /// Determines whether a feed file name is a plain relative name safe to resolve against <see cref="BaseUrl" />.
+    /// </summary>
+    /// <param name="fileName">The feed file name to test.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="fileName" /> is a non-empty relative name with no rooted, scheme,
+    /// or parent-directory component; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// <see cref="EcbRateFeed" /> exposes a public constructor, so a feed's file name can be supplied by configuration.
+    /// Resolving an absolute URL, a rooted path, a protocol-relative reference, or a <c>..</c> segment against
+    /// <see cref="BaseUrl" /> would retarget the request to a different host or path, so such names are rejected before
+    /// the request URL is composed.
+    /// </remarks>
+    private static bool IsSafeRelativeFeedFileName(string fileName)
+    {
+        if (string.IsNullOrEmpty(fileName))
+            return false;
+
+        // Absolute URLs (http://…, file:…) and Windows-style drive/scheme prefixes carry a colon.
+        if (Uri.TryCreate(fileName, UriKind.Absolute, out _) || fileName.Contains(':', StringComparison.Ordinal))
+            return false;
+
+        // Rooted or protocol-relative ('/x', '//host', '\x') paths replace the base path or host.
+        if (fileName[0] is '/' or '\\')
+            return false;
+
+        // A parent-directory reference walks out of the base path.
+        return !fileName.Contains("..", StringComparison.Ordinal);
     }
 
     /// <summary>

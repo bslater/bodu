@@ -77,6 +77,20 @@ public static class NotableDatePluginLoader
     /// <exception cref="PluginActivationException">
     /// The plugin type could not be activated or is not a plugin.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// This overload offers a weaker guarantee than the path-based <see cref="LoadFrom(string, IPluginTrustPolicy, ILogger?)" />
+    /// and must not be used for untrusted input. The assembly is <b>already loaded</b> when the trust policy runs,
+    /// so any module initializer or type-load side effect it carries has had the opportunity to execute
+    /// <i>before</i> the trust check — a rejection here cannot prevent code that ran at load time.
+    /// </para>
+    /// <para>
+    /// The <see cref="PluginTrustContext.FileHash" /> supplied to the policy is computed by re-reading
+    /// <see cref="Assembly.Location" /> from disk, not from the bytes that were actually loaded, so it does not
+    /// close the time-of-check/time-of-use gap that the path-based overload avoids by hashing the in-memory image
+    /// it maps. For untrusted assemblies, load through the path-based overload instead.
+    /// </para>
+    /// </remarks>
     public static INotableDatePlugin LoadFrom(Assembly assembly, IPluginTrustPolicy trustPolicy, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(assembly);

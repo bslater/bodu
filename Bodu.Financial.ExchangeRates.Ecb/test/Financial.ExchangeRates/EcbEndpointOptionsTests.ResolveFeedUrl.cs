@@ -34,4 +34,27 @@ public partial class EcbEndpointOptionsTests
             _ = endpoint.ResolveFeedUrl(null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that a feed whose file name is not a plain relative name — a parent-directory reference, a rooted
+    /// path, or an absolute URL — is rejected rather than retargeting the request outside the configured base URL.
+    /// </summary>
+    /// <param name="fileName">The crafted feed file name.</param>
+    [TestMethod]
+    [DataRow("../evil.xml")]
+    [DataRow("/rooted.xml")]
+    [DataRow("http://evil.example/feed.xml")]
+    [DataRow("//evil.example/feed.xml")]
+    public void ResolveFeedUrl_WhenFeedFileNameEscapesBase_ShouldThrowArgumentException(string fileName)
+    {
+        EcbEndpointOptions endpoint = new();
+        EcbRateFeed feed = new("crafted", fileName, null);
+
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = endpoint.ResolveFeedUrl(feed);
+        });
+
+        Assert.AreEqual("feed", ex.ParamName);
+    }
 }

@@ -8,28 +8,30 @@ using Bodu.Test.Assertions;
 using Bodu.Text.Toml.Nodes;
 using Bodu.Text.Toml.Serialization;
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies the additions that align the TOML serializer's public surface with
 /// <see cref="System.Text.Json.JsonSerializer" />: the <see cref="TomlSerializerOptions.DefaultIgnoreCondition" />,
 /// the required/include/extension-data attributes, the serialization callbacks,
-/// <see cref="TomlUnmappedMemberHandling" /> and <see cref="TomlObjectCreationHandling" /> handling, the per-type
-/// naming policy, the <see cref="TomlSerializerDefaults" /> constructor, the shared <see cref="TomlAttribute" /> base
+/// <see cref="UnmappedMemberHandling" /> and <see cref="ObjectCreationHandling" /> handling, the per-type
+/// naming policy, the <see cref="TomlSerializerDefaults" /> constructor, the shared <see cref="SerializationAttribute" /> base
 /// type, and the enum converters.
 /// </summary>
 [TestClass]
 public class TomlSerializerAlignmentTests
 {
     /// <summary>
-    /// Verifies that <see cref="TomlIgnoreCondition.WhenWritingDefault" /> as the default ignore condition omits a member
+    /// Verifies that <see cref="IgnoreCondition.WhenWritingDefault" /> as the default ignore condition omits a member
     /// equal to its type default while retaining a non-default member.
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]
     public void Serialize_WhenDefaultIgnoreConditionIsWhenWritingDefault_ShouldOmitDefaultValuedMembers()
     {
-        var options = new TomlSerializerOptions { DefaultIgnoreCondition = TomlIgnoreCondition.WhenWritingDefault };
+        var options = new TomlSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault };
 
         string zeroCount = TomlSerializer.Serialize(new CountModel { Count = 0, Label = "x" }, options);
         Assert.AreEqual("Label = \"x\"\n", zeroCount);
@@ -39,7 +41,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that the default <see cref="TomlIgnoreCondition.Never" /> ignore condition keeps a non-null member whose
+    /// Verifies that the default <see cref="IgnoreCondition.Never" /> ignore condition keeps a non-null member whose
     /// value equals its type default.
     /// </summary>
     [TestMethod]
@@ -52,7 +54,7 @@ public class TomlSerializerAlignmentTests
 
     /// <summary>
     /// Verifies that setting <see cref="TomlSerializerOptions.DefaultIgnoreCondition" /> to
-    /// <see cref="TomlIgnoreCondition.Always" /> throws <see cref="ArgumentOutOfRangeException" />.
+    /// <see cref="IgnoreCondition.Always" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
     public void DefaultIgnoreCondition_WhenSetToAlways_ShouldThrowArgumentOutOfRangeException()
@@ -61,12 +63,12 @@ public class TomlSerializerAlignmentTests
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
         {
-            options.DefaultIgnoreCondition = TomlIgnoreCondition.Always;
+            options.DefaultIgnoreCondition = IgnoreCondition.Always;
         }, "value");
     }
 
     /// <summary>
-    /// Verifies that deserializing a document that omits a member annotated with <see cref="TomlRequiredAttribute" />
+    /// Verifies that deserializing a document that omits a member annotated with <see cref="RequiredAttribute" />
     /// throws <see cref="TomlSerializationException" />.
     /// </summary>
     [TestMethod]
@@ -79,7 +81,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that a member annotated with <see cref="TomlRequiredAttribute" /> round-trips when present in the input.
+    /// Verifies that a member annotated with <see cref="RequiredAttribute" /> round-trips when present in the input.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenRequiredMemberPresent_ShouldRoundTrip()
@@ -94,7 +96,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that a property with a non-public setter annotated with <see cref="TomlIncludeAttribute" /> is both
+    /// Verifies that a property with a non-public setter annotated with <see cref="IncludeAttribute" /> is both
     /// serialized and round-tripped, binding through the non-public accessor.
     /// </summary>
     [TestMethod]
@@ -111,7 +113,7 @@ public class TomlSerializerAlignmentTests
 
     /// <summary>
     /// Verifies that deserializing a table with keys that match no normal member captures them into the member annotated
-    /// with <see cref="TomlExtensionDataAttribute" />.
+    /// with <see cref="ExtensionDataAttribute" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenExtraKeysPresent_ShouldCaptureIntoExtensionData()
@@ -126,7 +128,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that the entries captured by a <see cref="TomlExtensionDataAttribute" /> member are written back out in
+    /// Verifies that the entries captured by a <see cref="ExtensionDataAttribute" /> member are written back out in
     /// document order alongside the type's normal members.
     /// </summary>
     [TestMethod]
@@ -179,25 +181,25 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that every TOML serialization attribute derives from <see cref="TomlAttribute" />, mirroring the way the
+    /// Verifies that every TOML serialization attribute derives from <see cref="SerializationAttribute" />, mirroring the way the
     /// <c>System.Text.Json</c> attributes derive from <see cref="System.Text.Json.Serialization.JsonAttribute" />.
     /// </summary>
     [TestMethod]
-    public void Attributes_WhenInspected_ShouldDeriveFromTomlAttribute()
+    public void Attributes_WhenInspected_ShouldDeriveFromSerializationAttribute()
     {
-        Assert.IsTrue(typeof(TomlAttribute).IsAssignableFrom(typeof(TomlPropertyNameAttribute)));
-        Assert.IsTrue(typeof(TomlAttribute).IsAssignableFrom(typeof(TomlIgnoreAttribute)));
-        Assert.IsTrue(typeof(TomlAttribute).IsAssignableFrom(typeof(TomlConverterAttribute)));
-        Assert.IsTrue(typeof(TomlAttribute).IsAssignableFrom(typeof(TomlPropertyOrderAttribute)));
-        Assert.IsTrue(typeof(TomlAttribute).IsAssignableFrom(typeof(TomlConstructorAttribute)));
-        Assert.IsTrue(typeof(TomlAttribute).IsAssignableFrom(typeof(TomlRequiredAttribute)));
-        Assert.IsTrue(typeof(TomlAttribute).IsAssignableFrom(typeof(TomlIncludeAttribute)));
-        Assert.IsTrue(typeof(TomlAttribute).IsAssignableFrom(typeof(TomlExtensionDataAttribute)));
+        Assert.IsTrue(typeof(SerializationAttribute).IsAssignableFrom(typeof(PropertyNameAttribute)));
+        Assert.IsTrue(typeof(SerializationAttribute).IsAssignableFrom(typeof(Bodu.Text.Serialization.IgnoreAttribute)));
+        Assert.IsTrue(typeof(SerializationAttribute).IsAssignableFrom(typeof(ConverterAttribute)));
+        Assert.IsTrue(typeof(SerializationAttribute).IsAssignableFrom(typeof(PropertyOrderAttribute)));
+        Assert.IsTrue(typeof(SerializationAttribute).IsAssignableFrom(typeof(ConstructorAttribute)));
+        Assert.IsTrue(typeof(SerializationAttribute).IsAssignableFrom(typeof(RequiredAttribute)));
+        Assert.IsTrue(typeof(SerializationAttribute).IsAssignableFrom(typeof(IncludeAttribute)));
+        Assert.IsTrue(typeof(SerializationAttribute).IsAssignableFrom(typeof(ExtensionDataAttribute)));
     }
 
     /// <summary>
-    /// Verifies that serializing a value invokes <see cref="ITomlOnSerializing.OnSerializing" /> before
-    /// <see cref="ITomlOnSerialized.OnSerialized" /> and records both in order.
+    /// Verifies that serializing a value invokes <see cref="IOnSerializing.OnSerializing" /> before
+    /// <see cref="IOnSerialized.OnSerialized" /> and records both in order.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenValueImplementsCallbacks_ShouldInvokeSerializingThenSerialized()
@@ -210,8 +212,8 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that deserializing into a value invokes <see cref="ITomlOnDeserializing.OnDeserializing" /> before
-    /// <see cref="ITomlOnDeserialized.OnDeserialized" /> and records both in order.
+    /// Verifies that deserializing into a value invokes <see cref="IOnDeserializing.OnDeserializing" /> before
+    /// <see cref="IOnDeserialized.OnDeserialized" /> and records both in order.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenValueImplementsCallbacks_ShouldInvokeDeserializingThenDeserialized()
@@ -222,7 +224,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ITomlOnDeserializing.OnDeserializing" /> runs before the settable members are assigned,
+    /// Verifies that <see cref="IOnDeserializing.OnDeserializing" /> runs before the settable members are assigned,
     /// observing the still-unpopulated instance.
     /// </summary>
     [TestMethod]
@@ -236,7 +238,7 @@ public class TomlSerializerAlignmentTests
 
     /// <summary>
     /// Verifies that deserializing a table with an unmapped key succeeds under the default
-    /// <see cref="TomlUnmappedMemberHandling.Skip" /> handling.
+    /// <see cref="UnmappedMemberHandling.Skip" /> handling.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndHandlingIsSkip_ShouldIgnoreUnmappedKey()
@@ -248,12 +250,12 @@ public class TomlSerializerAlignmentTests
 
     /// <summary>
     /// Verifies that deserializing a table with an unmapped key throws <see cref="TomlSerializationException" /> when the
-    /// options select <see cref="TomlUnmappedMemberHandling.Disallow" />.
+    /// options select <see cref="UnmappedMemberHandling.Disallow" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenUnmappedKeyAndOptionsDisallow_ShouldThrowTomlSerializationException()
     {
-        var options = new TomlSerializerOptions { UnmappedMemberHandling = TomlUnmappedMemberHandling.Disallow };
+        var options = new TomlSerializerOptions { UnmappedMemberHandling = UnmappedMemberHandling.Disallow };
 
         Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
@@ -262,9 +264,9 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that a type annotated with <see cref="TomlUnmappedMemberHandlingAttribute" /> set to
-    /// <see cref="TomlUnmappedMemberHandling.Disallow" /> rejects an unmapped key even when the options default to
-    /// <see cref="TomlUnmappedMemberHandling.Skip" />.
+    /// Verifies that a type annotated with <see cref="UnmappedMemberHandlingAttribute" /> set to
+    /// <see cref="UnmappedMemberHandling.Disallow" /> rejects an unmapped key even when the options default to
+    /// <see cref="UnmappedMemberHandling.Skip" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenTypeDisallowsUnmapped_ShouldThrowRegardlessOfOptions()
@@ -290,8 +292,8 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that a get-only collection property annotated with <see cref="TomlObjectCreationHandlingAttribute" /> set
-    /// to <see cref="TomlObjectCreationHandling.Populate" /> has the read entries added into its pre-seeded instance
+    /// Verifies that a get-only collection property annotated with <see cref="ObjectCreationHandlingAttribute" /> set
+    /// to <see cref="ObjectCreationHandling.Populate" /> has the read entries added into its pre-seeded instance
     /// rather than replacing it.
     /// </summary>
     [TestMethod]
@@ -303,13 +305,13 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlObjectCreationHandling.Populate" /> selected through the options applies to a
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> selected through the options applies to a
     /// get-only collection property, adding the read entries into its pre-seeded instance.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenOptionsPreferPopulate_ShouldAddIntoExistingCollection()
     {
-        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = TomlObjectCreationHandling.Populate };
+        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = ObjectCreationHandling.Populate };
 
         GetOnlyCollectionModel model = TomlSerializer.Deserialize<GetOnlyCollectionModel>("Tags = [1, 2]\n", options);
 
@@ -317,7 +319,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that under the default <see cref="TomlObjectCreationHandling.Replace" /> handling a get-only collection
+    /// Verifies that under the default <see cref="ObjectCreationHandling.Replace" /> handling a get-only collection
     /// property is not populated, so its pre-seeded contents are unchanged.
     /// </summary>
     [TestMethod]
@@ -329,8 +331,8 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that a type annotated with <see cref="TomlNamingPolicyAttribute" /> set to
-    /// <see cref="TomlKnownNamingPolicy.CamelCase" /> serializes its members with camel-cased keys even when the options'
+    /// Verifies that a type annotated with <see cref="NamingPolicyAttribute" /> set to
+    /// <see cref="KnownNamingPolicy.CamelCase" /> serializes its members with camel-cased keys even when the options'
     /// naming policy is unset.
     /// </summary>
     [TestMethod]
@@ -361,7 +363,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="TomlStringEnumMemberNameAttribute" /> overrides the string name used for an individual
+    /// Verifies that <see cref="StringEnumMemberNameAttribute" /> overrides the string name used for an individual
     /// enumeration member on both write and read.
     /// </summary>
     [TestMethod]
@@ -378,7 +380,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// Verifies that a property annotated with <see cref="TomlConverterAttribute" /> naming a
+    /// Verifies that a property annotated with <see cref="ConverterAttribute" /> naming a
     /// <see cref="TomlNumberEnumConverter{TEnum}" /> serializes the enumeration as a TOML integer and round-trips.
     /// </summary>
     [TestMethod]
@@ -402,7 +404,7 @@ public class TomlSerializerAlignmentTests
     public void Serialize_WhenStringEnumConverterWithCamelCasePolicy_ShouldCamelCaseMemberName()
     {
         var options = new TomlSerializerOptions();
-        options.Converters.Add(new TomlStringEnumConverter(TomlNamingPolicy.CamelCase, allowIntegerValues: true));
+        options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.CamelCase, allowIntegerValues: true));
 
         string text = TomlSerializer.Serialize(new StatusModel { Status = Status.Active }, options);
         Assert.AreEqual("Status = \"active\"\n", text);
@@ -426,13 +428,13 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// A model with a member marked required through <see cref="TomlRequiredAttribute" />.
+    /// A model with a member marked required through <see cref="RequiredAttribute" />.
     /// </summary>
     private sealed class RequiredMemberModel
     {
         /// <summary>Gets or sets the required name.</summary>
         /// <value>The name.</value>
-        [TomlRequired]
+        [Required]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the optional value.</summary>
@@ -441,7 +443,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// A model whose member has a non-public setter forced into serialization by <see cref="TomlIncludeAttribute" />.
+    /// A model whose member has a non-public setter forced into serialization by <see cref="IncludeAttribute" />.
     /// </summary>
     private sealed class IncludedModel
     {
@@ -457,14 +459,14 @@ public class TomlSerializerAlignmentTests
             Value = value;
         }
 
-        /// <summary>Gets the value, exposed through a non-public setter that <see cref="TomlIncludeAttribute" /> opts into.</summary>
+        /// <summary>Gets the value, exposed through a non-public setter that <see cref="IncludeAttribute" /> opts into.</summary>
         /// <value>The value.</value>
-        [TomlInclude]
+        [Include]
         public int Value { get; private set; }
     }
 
     /// <summary>
-    /// A model with a normal member and a <see cref="TomlExtensionDataAttribute" /> member that captures unmatched table
+    /// A model with a normal member and a <see cref="ExtensionDataAttribute" /> member that captures unmatched table
     /// entries.
     /// </summary>
     private sealed class ExtensionDataModel
@@ -475,7 +477,7 @@ public class TomlSerializerAlignmentTests
 
         /// <summary>Gets or sets the captured entries that match no other member.</summary>
         /// <value>The captured entries.</value>
-        [TomlExtensionData]
+        [ExtensionData]
         public TomlObject? Extra { get; set; }
     }
 
@@ -483,7 +485,7 @@ public class TomlSerializerAlignmentTests
     /// A model that records each serialization callback the serializer invokes.
     /// </summary>
     private sealed class CallbackModel
-        : ITomlOnSerializing, ITomlOnSerialized, ITomlOnDeserializing, ITomlOnDeserialized
+        : IOnSerializing, IOnSerialized, IOnDeserializing, IOnDeserialized
     {
         /// <summary>Gets the ordered list of callback names the serializer has invoked.</summary>
         /// <value>The recorded callback names.</value>
@@ -528,9 +530,9 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// A model that disallows unmapped members through <see cref="TomlUnmappedMemberHandlingAttribute" />.
+    /// A model that disallows unmapped members through <see cref="UnmappedMemberHandlingAttribute" />.
     /// </summary>
-    [TomlUnmappedMemberHandling(TomlUnmappedMemberHandling.Disallow)]
+    [UnmappedMemberHandling(UnmappedMemberHandling.Disallow)]
     private sealed class DisallowUnmappedModel
     {
         /// <summary>Gets or sets the integer value.</summary>
@@ -541,7 +543,7 @@ public class TomlSerializerAlignmentTests
     /// <summary>
     /// A model that disallows unmapped members yet still captures them into an extension-data member.
     /// </summary>
-    [TomlUnmappedMemberHandling(TomlUnmappedMemberHandling.Disallow)]
+    [UnmappedMemberHandling(UnmappedMemberHandling.Disallow)]
     private sealed class DisallowWithExtensionDataModel
     {
         /// <summary>Gets or sets the integer value.</summary>
@@ -550,19 +552,19 @@ public class TomlSerializerAlignmentTests
 
         /// <summary>Gets or sets the captured entries that match no other member.</summary>
         /// <value>The captured entries.</value>
-        [TomlExtensionData]
+        [ExtensionData]
         public TomlObject? Extra { get; set; }
     }
 
     /// <summary>
     /// A model whose get-only collection member is populated through a member-level
-    /// <see cref="TomlObjectCreationHandlingAttribute" />.
+    /// <see cref="ObjectCreationHandlingAttribute" />.
     /// </summary>
     private sealed class PopulateMemberModel
     {
         /// <summary>Gets the pre-seeded tag list that the serializer populates rather than replaces.</summary>
         /// <value>The tags.</value>
-        [TomlObjectCreationHandling(TomlObjectCreationHandling.Populate)]
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
         public List<int> Tags { get; } = new() { 99 };
     }
 
@@ -578,9 +580,9 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// A model that selects camel-case naming for all of its members through <see cref="TomlNamingPolicyAttribute" />.
+    /// A model that selects camel-case naming for all of its members through <see cref="NamingPolicyAttribute" />.
     /// </summary>
-    [TomlNamingPolicy(TomlKnownNamingPolicy.CamelCase)]
+    [NamingPolicy(KnownNamingPolicy.CamelCase)]
     private sealed class CamelCaseTypeModel
     {
         /// <summary>Gets or sets the first name.</summary>
@@ -608,7 +610,7 @@ public class TomlSerializerAlignmentTests
     }
 
     /// <summary>
-    /// An enumeration whose members carry explicit names through <see cref="TomlStringEnumMemberNameAttribute" />.
+    /// An enumeration whose members carry explicit names through <see cref="StringEnumMemberNameAttribute" />.
     /// </summary>
     private enum RenamedStatus
     {
@@ -616,7 +618,7 @@ public class TomlSerializerAlignmentTests
         Found = 0,
 
         /// <summary>The not-found state, written under the name <c>not-found</c>.</summary>
-        [TomlStringEnumMemberName("not-found")]
+        [StringEnumMemberName("not-found")]
         NotFound = 1,
     }
 
@@ -647,7 +649,7 @@ public class TomlSerializerAlignmentTests
     {
         /// <summary>Gets or sets the status, serialized as a TOML integer.</summary>
         /// <value>The status.</value>
-        [TomlConverter(typeof(TomlNumberEnumConverter<Status>))]
+        [Converter(typeof(TomlNumberEnumConverter<Status>))]
         public Status Status { get; set; }
     }
 }

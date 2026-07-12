@@ -4,12 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
 using System.Text;
 
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Verifies how <see cref="Serialization.BencodePropertyOrderAttribute" /> interacts with the
+/// Verifies how <see cref="PropertyOrderAttribute" /> interacts with the
 /// <see cref="BencodeSerializer" />. Unlike <see cref="System.Text.Json.JsonSerializer" />, whose output preserves the
 /// configured property order, a Bencode dictionary is always emitted in canonical ascending bytewise key order, so the
 /// attribute governs only the sequence in which members are presented to the writer and has no observable effect on the
@@ -18,7 +19,7 @@ namespace Bodu.Text.Bencode;
 public partial class BencodeSerializerTests
 {
     /// <summary>
-    /// Verifies that the serialized bytes of a model carrying <see cref="Serialization.BencodePropertyOrderAttribute" />
+    /// Verifies that the serialized bytes of a model carrying <see cref="PropertyOrderAttribute" />
     /// are identical to the bytes of an otherwise equal model without the attribute, proving the attribute does not
     /// influence the on-the-wire order, which the writer always sorts to canonical ascending key order.
     /// </summary>
@@ -33,7 +34,7 @@ public partial class BencodeSerializerTests
 
     /// <summary>
     /// Verifies that a model whose members carry out-of-sequence
-    /// <see cref="Serialization.BencodePropertyOrderAttribute" /> values still serializes its keys in canonical
+    /// <see cref="PropertyOrderAttribute" /> values still serializes its keys in canonical
     /// ascending bytewise order rather than in the attribute-specified order.
     /// </summary>
     [TestMethod]
@@ -46,7 +47,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a model whose members carry <see cref="Serialization.BencodePropertyOrderAttribute" /> round-trips,
+    /// Verifies that a model whose members carry <see cref="PropertyOrderAttribute" /> round-trips,
     /// confirming the attribute affects neither the written bytes nor the ability to read them back.
     /// </summary>
     [TestMethod]
@@ -63,7 +64,7 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// A model whose three members carry <see cref="Serialization.BencodePropertyOrderAttribute" /> values that run
+    /// A model whose three members carry <see cref="PropertyOrderAttribute" /> values that run
     /// counter to canonical key order, used to prove the attribute does not change the serialized bytes.
     /// </summary>
     private sealed class OrderedTrioModel
@@ -72,27 +73,27 @@ public partial class BencodeSerializerTests
         /// Gets or sets the value whose key sorts first but is ordered last.
         /// </summary>
         /// <value>The value.</value>
-        [Serialization.BencodePropertyOrder(10)]
+        [PropertyOrder(10)]
         public int Alpha { get; set; }
 
         /// <summary>
         /// Gets or sets the value whose key and order both sit in the middle.
         /// </summary>
         /// <value>The value.</value>
-        [Serialization.BencodePropertyOrder(0)]
+        [PropertyOrder(0)]
         public int Bravo { get; set; }
 
         /// <summary>
         /// Gets or sets the value whose key sorts last but is ordered first.
         /// </summary>
         /// <value>The value.</value>
-        [Serialization.BencodePropertyOrder(-10)]
+        [PropertyOrder(-10)]
         public int Charlie { get; set; }
     }
 
     /// <summary>
     /// A model identical to <see cref="OrderedTrioModel" /> but without any
-    /// <see cref="Serialization.BencodePropertyOrderAttribute" />, used as the baseline for byte-for-byte comparison.
+    /// <see cref="PropertyOrderAttribute" />, used as the baseline for byte-for-byte comparison.
     /// </summary>
     private sealed class UnorderedTrioModel
     {

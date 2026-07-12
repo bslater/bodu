@@ -27,7 +27,7 @@ A <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> converts one type, reading
 
 For a given type the serializer resolves a converter by checking, in order:
 
-1. a member-level converter attribute (`[TomlConverter(typeof(…))]`);
+1. a member-level converter attribute (`[Converter(typeof(…))]`);
 2. a type-level converter attribute;
 3. the first matching converter in `options.Converters`;
 4. the built-in converters.
@@ -38,9 +38,9 @@ The first match wins, and the result is cached on the options.
 
 The full serialization surface lives in the `Bodu.Text.Toml.Serialization` namespace:
 
-- **Attributes** — `[TomlPropertyName]`, `[TomlIgnore]`, `[TomlConverter]`, `[TomlPropertyOrder]`, `[TomlConstructor]`, `[TomlRequired]`, `[TomlInclude]`, `[TomlExtensionData]`, `[TomlNamingPolicy]`, `[TomlUnmappedMemberHandling]`, `[TomlObjectCreationHandling]`, `[TomlStringEnumMemberName]`.
-- **Callbacks** — the <xref:Bodu.Text.Toml.Serialization.ITomlOnSerializing> / <xref:Bodu.Text.Toml.Serialization.ITomlOnSerialized> / <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserializing> / <xref:Bodu.Text.Toml.Serialization.ITomlOnDeserialized> interfaces, run at the matching point in the pipeline.
-- **Naming policies** — `TomlNamingPolicy.CamelCase`, `.SnakeCaseLower` / `.SnakeCaseUpper`, `.KebabCaseLower` / `.KebabCaseUpper`, plus the `TomlSerializerDefaults.Web` preset.
+- **Attributes** — `[PropertyName]`, `[Ignore]`, `[TomlConverter]`, `[PropertyOrder]`, `[Constructor]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[NamingPolicy]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[StringEnumMemberName]`.
+- **Callbacks** — the <xref:Bodu.Text.Serialization.IOnSerializing> / <xref:Bodu.Text.Serialization.IOnSerialized> / <xref:Bodu.Text.Serialization.IOnDeserializing> / <xref:Bodu.Text.Serialization.IOnDeserialized> interfaces, run at the matching point in the pipeline.
+- **Naming policies** — `NamingPolicy.CamelCase`, `.SnakeCaseLower` / `.SnakeCaseUpper`, `.KebabCaseLower` / `.KebabCaseUpper`, plus the `TomlSerializerDefaults.Web` preset.
 - **Enum converters** — a string-enum converter (member names) and a number-enum converter.
 
 ## The document object models
@@ -71,7 +71,7 @@ TOML maps the BCL types it can represent natively and rejects the rest unless a 
 
 - `string` / `char` / `Guid` / `Uri` / `Version` → string, `TimeSpan` → the invariant `"c"`-format string, the integer family (including the 128-bit types within the i64 range) → integer, `double` / `float` / `Half` → float, `decimal` → float or a lossless string per `DecimalHandling`, `bool` → boolean, and `DateTimeOffset` / `DateTime` / `DateOnly` / `TimeOnly` → the four RFC 3339 date-time forms.
 - `byte[]` and memory-of-byte → an integer array (or a Base64 string via `ByteArrayHandling`); enums → member-name strings; collections (including queues, stacks, and the concurrent collections) → arrays; dictionaries → tables in insertion order, with string, integer, enum, `Guid`, `bool`, or `char` keys.
-- An `object`-typed member writes its runtime type and reads back as a <xref:Bodu.Text.Toml.Document.TomlElement>. The document root must be a table, so a top-level scalar or array throws; public fields participate via `IncludeFields` or `[TomlInclude]`.
+- An `object`-typed member writes its runtime type and reads back as a <xref:Bodu.Text.Toml.Document.TomlElement>. The document root must be a table, so a top-level scalar or array throws; public fields participate via `IncludeFields` or `[Include]`.
 
 The four date-time forms are distinct <xref:Bodu.Text.Toml.TomlValueKind> members — `OffsetDateTime`, `LocalDateTime`, `LocalDate`, and `LocalTime` — and the mapping is **kind-aware**, not just type-aware:
 

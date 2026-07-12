@@ -26,6 +26,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// </remarks>
 public abstract class FileSystemByteCache<TKey>
+    : IByteCache<TKey>
 {
     /// <summary>The directory in which cached response bytes are stored.</summary>
     private readonly string _directory;
@@ -67,6 +68,51 @@ public abstract class FileSystemByteCache<TKey>
     protected abstract string GetFileName(TKey key);
 
     /// <summary>
+    /// Resolves the absolute cache file path for a key, ensuring the derived file name cannot escape the cache
+    /// directory.
+    /// </summary>
+    /// <param name="key">The download unit to resolve.</param>
+    /// <returns>The cache file path, always inside <see cref="Directory" />.</returns>
+    /// <remarks>
+    /// The name returned by <see cref="GetFileName(TKey)" /> is reduced to a single, sanitized path segment before
+    /// it is combined with the cache directory. A crafted key whose name contains directory separators, a
+    /// parent-directory reference, or a rooted path therefore cannot direct a read or write outside the cache
+    /// directory. Sanitization is silent (it never throws) so the cache stays best-effort.
+    /// </remarks>
+    private string ResolveCachePath(TKey key) =>
+        Path.Combine(_directory, SanitizeFileName(GetFileName(key)));
+
+    /// <summary>
+    /// Reduces a candidate file name to a single, filesystem-safe path segment.
+    /// </summary>
+    /// <param name="fileName">The candidate file name derived from a key.</param>
+    /// <returns>A single path segment with no separators, traversal, or invalid characters.</returns>
+    private static string SanitizeFileName(string fileName)
+    {
+        // Strip any directory portion (rooted path or separators) so only the final segment survives, defeating a
+        // key that tries to walk out of the cache directory.
+        string name = Path.GetFileName(fileName ?? string.Empty);
+
+        // A bare "." / ".." (or an empty result) is not a usable file name and would still reference a directory;
+        // replace it with a safe placeholder.
+        if (string.IsNullOrEmpty(name) || name == "." || name == "..")
+            return "_";
+
+        char[] invalid = Path.GetInvalidFileNameChars();
+        if (name.AsSpan().IndexOfAny(invalid) < 0)
+            return name;
+
+        char[] chars = name.ToCharArray();
+        for (int i = 0; i < chars.Length; i++)
+        {
+            if (Array.IndexOf(invalid, chars[i]) >= 0)
+                chars[i] = '_';
+        }
+
+        return new string(chars);
+    }
+
+    /// <summary>
     /// Determines whether a cached file of the supplied age is still fresh for a key.
     /// </summary>
     /// <param name="key">The download unit the file was cached for.</param>
@@ -79,6 +125,14 @@ public abstract class FileSystemByteCache<TKey>
     protected virtual bool IsFresh(TKey key, TimeSpan age, TimeSpan refreshInterval) =>
         age <= refreshInterval;
 
+    /// <inheritdoc />
+    public bool TryGet(TKey key, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes) =>
+        TryGetCore(key, refreshInterval, out bytes);
+
+    /// <inheritdoc />
+    public void Store(TKey key, byte[] bytes) =>
+        StoreCore(key, bytes);
+
     /// <summary>
     /// Attempts to read the cached bytes for a key when a fresh file exists.
     /// </summary>
@@ -90,7 +144,7 @@ public abstract class FileSystemByteCache<TKey>
     /// <returns><see langword="true" /> when fresh bytes were read; otherwise <see langword="false" />.</returns>
     protected bool TryGetCore(TKey key, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
     {
-        string path = Path.Combine(_directory, GetFileName(key));
+        string path = ResolveCachePath(key);
 
         try
         {
@@ -133,7 +187,7 @@ public abstract class FileSystemByteCache<TKey>
     {
         ThrowHelper.ThrowIfNull(bytes);
 
-        string path = Path.Combine(_directory, GetFileName(key));
+        string path = ResolveCachePath(key);
 
         try
         {

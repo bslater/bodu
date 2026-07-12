@@ -24,7 +24,19 @@ namespace Bodu.Financial.ExchangeRates;
 public static class RateProviderHttpClientFactory
 {
     /// <summary>
-    /// Creates a new <see cref="HttpClient" /> configured with the supplied user agent and request timeout.
+    /// The default cap, in bytes, applied to <see cref="HttpClient.MaxResponseContentBufferSize" /> for a
+    /// provider-owned client (64 MiB).
+    /// </summary>
+    /// <remarks>
+    /// The exchange-rate feeds these clients address return small payloads (a CSV, XML, or JSON document), so a
+    /// finite ceiling well above any legitimate response prevents a compromised or man-in-the-middle endpoint from
+    /// driving unbounded memory use, while never affecting a well-formed response.
+    /// </remarks>
+    public const long DefaultMaxResponseContentBufferSize = 64L * 1024 * 1024;
+
+    /// <summary>
+    /// Creates a new <see cref="HttpClient" /> configured with the supplied user agent, request timeout, and
+    /// response-content buffer cap.
     /// </summary>
     /// <param name="userAgent">
     /// The <c>User-Agent</c> header applied to every request. A <see langword="null" />, empty, or white-space value
@@ -33,13 +45,22 @@ public static class RateProviderHttpClientFactory
     /// <param name="httpTimeout">
     /// The request timeout applied to the client. Values not greater than zero are ignored.
     /// </param>
+    /// <param name="maxResponseContentBufferSize">
+    /// The maximum number of bytes to buffer when reading a response. Values not greater than zero are ignored,
+    /// leaving the framework default; the default caps the client at
+    /// <see cref="DefaultMaxResponseContentBufferSize" />.
+    /// </param>
     /// <returns>A new, configured <see cref="HttpClient" />.</returns>
     /// <remarks>
     /// The timeout is applied to <see cref="HttpClient.Timeout" /> directly because a provider-owned client has no
     /// resilience handler enforcing a per-attempt timeout; a dependency-injection registration that adds its own
-    /// resilience pipeline supplies its client to the provider instead and does not use this factory.
+    /// resilience pipeline supplies its client to the provider instead and does not use this factory. The buffer
+    /// cap bounds the memory a single response can consume, so an oversized body fails rather than exhausting memory.
     /// </remarks>
-    public static HttpClient Create(string? userAgent, TimeSpan httpTimeout)
+    public static HttpClient Create(
+        string? userAgent,
+        TimeSpan httpTimeout,
+        long maxResponseContentBufferSize = DefaultMaxResponseContentBufferSize)
     {
         var client = new HttpClient();
 
@@ -48,6 +69,9 @@ public static class RateProviderHttpClientFactory
 
         if (httpTimeout > TimeSpan.Zero)
             client.Timeout = httpTimeout;
+
+        if (maxResponseContentBufferSize > 0)
+            client.MaxResponseContentBufferSize = maxResponseContentBufferSize;
 
         return client;
     }

@@ -141,6 +141,7 @@ public sealed class DocumentationSnippetCompileTests
             "using Bodu.Text.Bencode.Reader;" +
             "using Bodu.Text.Bencode.Serialization;" +
             "using Bodu.Text.Bencode.Writer;" +
+            "using Bodu.Text.Serialization;" +
             "namespace Bodu.DocSnippets { internal static class Snippet { internal static async Task RunAsync() {" +
             Environment.NewLine + snippet + Environment.NewLine +
             "} } }";

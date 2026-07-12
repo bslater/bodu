@@ -8,7 +8,7 @@ title: Mapping attributes
 
 ## Pattern 1 — Rename a member
 
-<xref:Bodu.Text.Yaml.Serialization.YamlPropertyNameAttribute> pins the serialized key for one member, beating any naming policy:
+<xref:Bodu.Text.Serialization.PropertyNameAttribute> pins the serialized key for one member, beating any naming policy:
 
 ```csharp
 using Bodu.Text.Yaml.Serialization;
@@ -55,7 +55,7 @@ On the read path, <xref:Bodu.Text.Yaml.YamlSerializerOptions.PropertyNameCaseIns
 
 ## Pattern 3 — Exclude a member
 
-<xref:Bodu.Text.Yaml.Serialization.YamlIgnoreAttribute> drops a member unconditionally — it is never written and never read:
+<xref:Bodu.Text.Serialization.IgnoreAttribute> drops a member unconditionally — it is never written and never read:
 
 ```csharp
 using Bodu.Text.Yaml.Serialization;
@@ -85,7 +85,7 @@ The remaining shaping is on <xref:Bodu.Text.Yaml.YamlSerializerOptions>:
 | `WriteEnumsAsStrings` | `true` (default) writes enums as member-name strings; `false` writes the underlying integer. |
 | `PropertyNameCaseInsensitive` | Matches mapping keys to members case-insensitively on read. |
 | `IncludeFields` | Includes public fields alongside properties. |
-| `UnmappedMemberHandling` | <xref:Bodu.Text.Yaml.YamlUnmappedMemberHandling> — `Skip` (default) ignores keys that map to no member; `Disallow` raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
+| `UnmappedMemberHandling` | <xref:Bodu.Text.Serialization.UnmappedMemberHandling> — `Skip` (default) ignores keys that map to no member; `Disallow` raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
 
 ```csharp
 var options = new YamlSerializerOptions
@@ -128,4 +128,4 @@ When several settings could govern the same member, the closest one wins:
 - [Using YAML](using.md) — the end-to-end walk-through.
 - [Bodu.Text.Yaml core concepts](../../../docs/serialization/yaml/concepts.md) — where attributes fit in the converter-resolution picture.
 - [Bodu serializer guides](../index.md) and the [Text & Serialization guides](../../topics/text-and-serialization.md).
-- API reference — <xref:Bodu.Text.Yaml.Serialization.YamlPropertyNameAttribute>, <xref:Bodu.Text.Yaml.Serialization.YamlIgnoreAttribute>, <xref:Bodu.Text.Yaml.YamlNamingPolicy>.
+- API reference — <xref:Bodu.Text.Serialization.PropertyNameAttribute>, <xref:Bodu.Text.Serialization.IgnoreAttribute>, <xref:Bodu.Text.Serialization.NamingPolicy>.

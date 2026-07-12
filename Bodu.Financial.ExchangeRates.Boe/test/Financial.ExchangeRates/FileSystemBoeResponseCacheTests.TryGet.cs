@@ -19,9 +19,9 @@ public partial class FileSystemBoeResponseCacheTests
         {
             FileSystemBoeResponseCache cache = new(directory);
             byte[] payload = new byte[] { 1, 2, 3, 4 };
-            cache.Store(s_from, s_to, payload);
+            cache.Store((s_from, s_to), payload);
 
-            bool hit = cache.TryGet(s_from, s_to, TimeSpan.FromHours(1), out byte[]? bytes);
+            bool hit = cache.TryGet((s_from, s_to), TimeSpan.FromHours(1), out byte[]? bytes);
 
             Assert.IsTrue(hit);
             CollectionAssert.AreEqual(payload, bytes);
@@ -42,9 +42,9 @@ public partial class FileSystemBoeResponseCacheTests
         try
         {
             FileSystemBoeResponseCache cache = new(directory);
-            cache.Store(s_from, s_to, new byte[] { 1 });
+            cache.Store((s_from, s_to), new byte[] { 1 });
 
-            bool hit = cache.TryGet(s_from, new DateOnly(2023, 2, 28), TimeSpan.FromHours(1), out _);
+            bool hit = cache.TryGet((s_from, new DateOnly(2023, 2, 28)), TimeSpan.FromHours(1), out _);
 
             Assert.IsFalse(hit);
         }
@@ -64,12 +64,12 @@ public partial class FileSystemBoeResponseCacheTests
         try
         {
             FileSystemBoeResponseCache cache = new(directory);
-            cache.Store(s_from, s_to, new byte[] { 1 });
+            cache.Store((s_from, s_to), new byte[] { 1 });
 
             string path = Path.Combine(directory, "boe_20230101_20230131.csv");
             File.SetLastWriteTimeUtc(path, DateTime.UtcNow - TimeSpan.FromHours(2));
 
-            bool hit = cache.TryGet(s_from, s_to, TimeSpan.FromMinutes(30), out _);
+            bool hit = cache.TryGet((s_from, s_to), TimeSpan.FromMinutes(30), out _);
 
             Assert.IsFalse(hit);
         }
