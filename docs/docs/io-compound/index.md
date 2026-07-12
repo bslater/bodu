@@ -16,7 +16,7 @@ A compound file is effectively a small file system embedded in a single file. <x
 |---|---|---|---|
 | **File** | <xref:Bodu.IO.Compound.CompoundFile> | `StgOpenStorage` | Opens the container and anchors the hierarchy at `RootStorage`. |
 | **Storage** | <xref:Bodu.IO.Compound.CompoundStorage> | `IStorage` | A named container of child storages and streams. |
-| **Stream** | <xref:Bodu.IO.Compound.CompoundStream> | `IStream` | A named, file-like leaf with an opaque byte payload; itself a read-only, seekable <xref:System.IO.Stream> cursor over those bytes. |
+| **Stream** | <xref:Bodu.IO.Compound.CompoundStream> | `IStream` | A named, file-like leaf with an opaque byte payload; itself a seekable <xref:System.IO.Stream> cursor over those bytes — read-only from a read-opened file, read-write on a writable file. |
 
 ## Key concepts
 
@@ -71,15 +71,18 @@ byte[] bytes = workbook.ReadAllBytes();
 | Read a stream incrementally | `OpenStream(name).Open()` → a `CompoundStream` cursor |
 | Look up a stream that may be absent | `TryOpenStream(name, out entry)` |
 | Read authored document metadata | `file.TryGetSummaryInformation(out summary)` |
+| Write document metadata | `file.SetSummaryInformation(summary)` (or `RootStorage.WritePropertySet(name, set)`) on a writable file |
+| Stamp storage entry metadata | set `RootStorage.ClassId` / `CreationTime` / `ModifiedTime` / `StateBits` on a writable file |
 | Author a container | `CompoundStorageBuilder.CreateRoot()` → `AddStream` → `Save` (or `CompoundFile.Create` + `Commit`) |
+| Commit a writable file asynchronously | `await file.CommitAsync()` |
 
 ## Headline types — <xref:Bodu.IO.Compound>
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.IO.Compound.CompoundFile> | Opens or creates a CFB container and anchors the hierarchy; static `Open` / `OpenRead` / `IsCompoundFile` readers and the `Create` writer (finalized by `Commit`). |
-| <xref:Bodu.IO.Compound.CompoundStorage> | A storage node — enumerates children and resolves child storages and streams by name. |
-| <xref:Bodu.IO.Compound.CompoundStream> | A stream node and read-only, seekable `Stream` cursor in one — `ReadAllBytes` for the whole payload, `AsMemory` for a whole-payload view, `Stat` for metadata. |
+| <xref:Bodu.IO.Compound.CompoundFile> | Opens or creates a CFB container and anchors the hierarchy; static `Open` / `OpenRead` / `IsCompoundFile` readers and the `Create` writer (finalized by `Commit` / `CommitAsync`), plus the `SetSummaryInformation` / `SetDocumentSummaryInformation` property-set writers. |
+| <xref:Bodu.IO.Compound.CompoundStorage> | A storage node — enumerates children, resolves child storages and streams by name, and (on a writable file) creates, deletes, renames, writes property sets, and carries settable entry metadata. |
+| <xref:Bodu.IO.Compound.CompoundStream> | A stream node and seekable `Stream` cursor in one — `ReadAllBytes` for the whole payload, `AsMemory` for a whole-payload view, `Stat` for metadata, an async-capable `ReadAsync`, and `Write` / `SetLength` on a writable cursor. |
 | <xref:Bodu.IO.Compound.CompoundEntryInfo> | An immutable metadata snapshot — name, <xref:Bodu.IO.Compound.CompoundEntryType>, length, class id, timestamps, and red-black <xref:Bodu.IO.Compound.CompoundEntryColor>. |
 | <xref:Bodu.IO.Compound.CompoundFileOptions> | Read options — <xref:Bodu.IO.Compound.CompoundReadStrategy> (buffered / streaming / auto) and <xref:Bodu.IO.Compound.CompoundValidationLevel> (strict / compatible / minimal). |
 | <xref:Bodu.IO.Compound.CompoundFileException> | The common base for every compound-file failure; `CompoundFileFormatException` (with a <xref:Bodu.IO.Compound.CompoundFileError> `Category`) and `CompoundStreamNotFoundException` derive from it. |

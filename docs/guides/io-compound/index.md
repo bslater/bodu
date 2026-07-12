@@ -12,7 +12,7 @@ If you are new to the library, start with the [introduction](../../docs/io-compo
 
 ## How the library works
 
-A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at `RootStorage` and descends through nested <xref:Bodu.IO.Compound.CompoundStorage> containers (the COM `IStorage`) to <xref:Bodu.IO.Compound.CompoundStream> leaves (the COM `IStream`). A <xref:Bodu.IO.Compound.CompoundStream> is itself a read-only, seekable <xref:System.IO.Stream> cursor over the bytes.
+A compound file is effectively a small file system embedded in a single file. <xref:Bodu.IO.Compound.CompoundFile> is the managed counterpart of the COM `StgOpenStorage` entry point: navigation begins at `RootStorage` and descends through nested <xref:Bodu.IO.Compound.CompoundStorage> containers (the COM `IStorage`) to <xref:Bodu.IO.Compound.CompoundStream> leaves (the COM `IStream`). A <xref:Bodu.IO.Compound.CompoundStream> is itself a seekable <xref:System.IO.Stream> cursor over the bytes — read-only when opened from a read-only file, read-write on a writable one.
 
 ![A compound file is a structured-storage envelope: a header, allocation tables, and a directory of sectors on the left, resolving via CompoundFile.Open into the logical RootStorage to CompoundStorage to CompoundStream hierarchy on the right.](../../images/diagrams/io-compound-structure.svg)
 
@@ -44,7 +44,7 @@ By default the whole source is buffered into memory at open time, so the file is
 
 <div class="bodu-card">
   <h3><a href="streaming-and-buffering.md">Buffered vs streaming access</a></h3>
-  <p>The <code>buffered</code> flag, the <code>CompoundStream</code> cursor, <code>AsMemory</code> vs chunked <code>Read</code>, lifetime and threading contracts, and how to bound memory for large files.</p>
+  <p>The <code>buffered</code> flag, the <code>CompoundStream</code> cursor, <code>AsMemory</code> vs chunked <code>Read</code>, asynchronous commit and streaming reads, lifetime and threading contracts, and how to bound memory for large files.</p>
 </div>
 
 <div class="bodu-card">
