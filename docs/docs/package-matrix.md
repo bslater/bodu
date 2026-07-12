@@ -92,6 +92,10 @@ Several exchange-rate providers ship as independent packages over a shared `IDat
 <figure><img src="../images/hero-fx-ofx.svg" alt="Bodu.Financial.ExchangeRates.Ofx" /><figcaption><code>Bodu.Financial.ExchangeRates.Ofx</code></figcaption></figure>
 <figure><img src="../images/hero-fx-xe.svg" alt="Bodu.Financial.ExchangeRates.Xe" /><figcaption><code>Bodu.Financial.ExchangeRates.Xe</code></figcaption></figure>
 <figure><img src="../images/hero-fx-oanda.svg" alt="Bodu.Financial.ExchangeRates.Oanda" /><figcaption><code>Bodu.Financial.ExchangeRates.Oanda</code></figcaption></figure>
+<figure><img src="../images/hero-fx-fixer.svg" alt="Bodu.Financial.ExchangeRates.Fixer" /><figcaption><code>Bodu.Financial.ExchangeRates.Fixer</code></figcaption></figure>
+<figure><img src="../images/hero-fx-exchangeratehost.svg" alt="Bodu.Financial.ExchangeRates.ExchangeRateHost" /><figcaption><code>Bodu.Financial.ExchangeRates.ExchangeRateHost</code></figcaption></figure>
+<figure><img src="../images/hero-fx-fred.svg" alt="Bodu.Financial.ExchangeRates.Fred" /><figcaption><code>Bodu.Financial.ExchangeRates.Fred</code></figcaption></figure>
+<figure><img src="../images/hero-fx-imf.svg" alt="Bodu.Financial.ExchangeRates.Imf" /><figcaption><code>Bodu.Financial.ExchangeRates.Imf</code></figcaption></figure>
 <figure><img src="../images/hero-fx-caching.svg" alt="Bodu.Financial.ExchangeRates.Caching" /><figcaption><code>Bodu.Financial.ExchangeRates.Caching</code></figcaption></figure>
 <figure><img src="../images/hero-fx-caching-distributed.svg" alt="Bodu.Financial.ExchangeRates.Caching.Distributed" /><figcaption><code>Bodu.Financial.ExchangeRates.Caching.Distributed</code></figcaption></figure>
 <figure><img src="../images/hero-fx-caching-sqlite.svg" alt="Bodu.Financial.ExchangeRates.Caching.Sqlite" /><figcaption><code>Bodu.Financial.ExchangeRates.Caching.Sqlite</code></figcaption></figure>
