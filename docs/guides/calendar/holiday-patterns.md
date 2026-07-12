@@ -248,6 +248,9 @@ Diwali (`diwali`), Holi (`holi`), Qingming (`qingming`), Losar (`losar`), and th
 
 Set `durationDays` (on the rule, or `defaultDurationDays` on the concept) to the number of calendar days the event spans, inclusive of the start date. `NotableDate.EndDate` is then `Date + DurationDays − 1`.
 
+> [!TIP]
+> When the span's length varies year to year — a year-end shutdown that runs to the first working day back, say — compute its end from a second strategy with a `<Duration><UntilDate>` instead of a fixed `durationDays`. For repeating events (every fortnight, every Monday, the last Friday of each month), author a `<Recurrence>` source. Both are covered in [Notable-date rule strategies](strategy-reference.md).
+
 ```xml
 <NotableDate id="national-reconciliation-week" displayName="National Reconciliation Week"
              category="Observance" defaultNonWorkingDay="false" defaultDurationDays="7">

@@ -1,9 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Program.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
 using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.Samples.LiveRates.Scenarios;
 
@@ -38,55 +39,71 @@ public static class Program
         //    (including OANDA's rolling ~180 days).
         var todayUtc = DateOnly.FromDateTime(DateTime.UtcNow);
         var anchor = todayUtc.AddDays(-5);
-        var lastWednesday = anchor.AddDays(-(((int)anchor.DayOfWeek - (int)DayOfWeek.Wednesday + 7) % 7));
-        var weekStart = lastWednesday.AddDays(-6);
+        var wednesday = anchor.PreviousDateOfWeek(DayOfWeek.Wednesday);
+        var weekStart = wednesday.AddDays(-6);
 
         Console.WriteLine($"Today (UTC)     : {todayUtc:yyyy-MM-dd} ({todayUtc.DayOfWeek})");
-        Console.WriteLine($"Target date     : {lastWednesday:yyyy-MM-dd} ({lastWednesday.DayOfWeek}, >= 5 days old)");
-        Console.WriteLine($"Week window     : {weekStart:yyyy-MM-dd} .. {lastWednesday:yyyy-MM-dd}");
+        Console.WriteLine($"Target date     : {wednesday:yyyy-MM-dd} ({wednesday.DayOfWeek}, >= 5 days old)");
+        Console.WriteLine($"Week window     : {weekStart:yyyy-MM-dd} .. {wednesday:yyyy-MM-dd}");
         Console.WriteLine();
 
         // --- Active provider: European Central Bank (EUR reference rates, since 1999) -------------
         // The ECB feed is anonymous, robust, and has deep history - the safest default.
-        using var provider = new EcbRateProvider(new EcbRateProviderOptions());
-        var fromIso = "EUR";
-        var toIso = "USD";
+        using var provider = new EcbRateProvider(new EcbRateProviderOptions { EnableDiskCache = false });
+        var fromIso = "EUR"; var toIso = "USD";
 
         // --- Other providers: uncomment ONE block (and comment the ECB block above) ---------------
         // Every provider serves the same contracts, and LoadPairAsync below works uniformly, so the
         // scenarios run unchanged. Single-base feeds need their base currency in the pair.
         //
         // Reserve Bank of Australia (base AUD, published .xls workbooks, since 1983):
-        //     using var provider = new RbaRateProvider(new RbaRateProviderOptions());
+        //     using var provider = new RbaRateProvider(new RbaRateProviderOptions { EnableDiskCache = false });
         //     var fromIso = "AUD"; var toIso = "USD";
         //
         // Bank of England (base GBP, CSV windows, since 1975):
-        //     using var provider = new BoeRateProvider(new BoeRateProviderOptions());
+        //     using var provider = new BoeRateProvider(new BoeRateProviderOptions { EnableDiskCache = false });
         //     var fromIso = "GBP"; var toIso = "USD";
         //
         // Yahoo Finance (any pair, per-ticker chart JSON, since 2003; sends a browser User-Agent):
-        //     using var provider = new YahooRateProvider(new YahooRateProviderOptions());
+        //     using var provider = new YahooRateProvider(new YahooRateProviderOptions { EnableDiskCache = false });
         //     var fromIso = "EUR"; var toIso = "USD";
         //
         // OFX (any pair, spot-rate history JSON, unbounded history):
-        //     using var provider = new OfxRateProvider(new OfxRateProviderOptions());
+        //     using var provider = new OfxRateProvider(new OfxRateProviderOptions { EnableDiskCache = false });
         //     var fromIso = "EUR"; var toIso = "USD";
         //
         // OANDA (any pair, rolling ~180-day anonymous window - the buffer above stays inside it):
-        //     using var provider = new OandaRateProvider(new OandaRateProviderOptions());
+        //     using var provider = new OandaRateProvider(new OandaRateProviderOptions { EnableDiskCache = false });
         //     var fromIso = "EUR"; var toIso = "USD";
         //
         // XE.com (any pair, rolling ~10-year window; experimental - scrapes an auth token):
-        //     using var provider = new XeRateProvider(new XeRateProviderOptions());
+        //     using var provider = new XeRateProvider(new XeRateProviderOptions { EnableDiskCache = false });
         //     var fromIso = "EUR"; var toIso = "USD";
+        //
+        // Fixer (fixer.io, any pair; requires an access_key - free plan is EUR-base only):
+        //     using var provider = new FixerRateProvider(new FixerRateProviderOptions { ApiKey = "<your-key>" });
+        //     var fromIso = "EUR"; var toIso = "USD";
+        //
+        // exchangerate.host (any pair; requires an access_key - free plan is USD-source only):
+        //     using var provider = new ExchangeRateHostRateProvider(new ExchangeRateHostRateProviderOptions { ApiKey = "<your-key>" });
+        //     var fromIso = "USD"; var toIso = "EUR";
+        //
+        // FRED (St. Louis Fed, mapped pairs; requires an api_key - EUR/USD maps to DEXUSEU):
+        //     using var provider = new FredRateProvider(new FredRateProviderOptions { ApiKey = "<your-key>" });
+        //     var fromIso = "EUR"; var toIso = "USD";
+        //
+        // IMF (keyless; daily USD-anchored representative rates from the monthly TSV report;
+        // single-base like ECB, so the pair must involve USD, e.g. USD/JPY):
+        //     using var provider = new ImfRateProvider(new ImfRateProviderOptions());
+        //     var fromIso = "USD"; var toIso = "JPY";
         // -------------------------------------------------------------------------------------------
 
         try
         {
             // One warm-up call works for every provider: LoadPairAsync is on the shared
             // WebRateProvider base, whether the source fetches by feed, era, window, or pair.
-            Console.WriteLine($"Fetching {fromIso}/{toIso} {weekStart:yyyy-MM-dd}..{lastWednesday:yyyy-MM-dd} from {provider.GetType().Name}...");
-            await provider.LoadPairAsync(fromIso, toIso, weekStart, lastWednesday);
+            Console.WriteLine($"Fetching {fromIso}/{toIso} {weekStart:yyyy-MM-dd}..{wednesday:yyyy-MM-dd} from {provider.GetType().Name}...");
+            await provider.LoadPairAsync(fromIso, toIso, weekStart, wednesday);
             Console.WriteLine();
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or ExchangeRateFormatException)
@@ -97,8 +114,8 @@ public static class Program
             return 1;
         }
 
-        HistoricalDate.Run(provider, fromIso, toIso, lastWednesday);
-        WeekOfRates.Run(provider, fromIso, toIso, weekStart, lastWednesday);
+        HistoricalDate.Run(provider, fromIso, toIso, wednesday);
+        WeekOfRates.Run(provider, fromIso, toIso, weekStart, wednesday);
 
         Console.WriteLine("Done.");
         return 0;

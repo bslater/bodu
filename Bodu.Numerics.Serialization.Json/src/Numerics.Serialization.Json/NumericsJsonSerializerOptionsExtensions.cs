@@ -48,7 +48,7 @@ public static class NumericsJsonSerializerOptionsExtensions
     /// <c>"3/4"</c>, <c>"[1, 5)"</c>, <c>"∅"</c>).
     /// </para>
     /// </remarks>
-    public static JsonSerializerOptions ConfigureForBoduNumerics(
+    public static JsonSerializerOptions AddNumericsJsonConverters(
         this JsonSerializerOptions options,
         NumericsJsonPolicy policy = NumericsJsonPolicy.Strict)
     {

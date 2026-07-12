@@ -133,6 +133,15 @@ namespace Bodu.IO.Compound {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A writable stream cursor supports payloads up to 2,147,483,647 bytes; author larger payloads through a deferred stream source such as AddStream(name, openRead, length) or AddStreamFromFile..
+        /// </summary>
+        internal static string Op_NotSupported_CompoundStreamPayloadTooLarge {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_CompoundStreamPayloadTooLarge", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The operation requires write access, but the compound file was opened read-only..
         /// </summary>
         internal static string Op_Invalid_CompoundFileReadOnly {
@@ -232,11 +241,11 @@ namespace Bodu.IO.Compound {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The property value of type '{0}' cannot be encoded into an OLE property set..
+        ///   Looks up a localized string similar to The property value type '{0}' cannot be serialized to an OLE property set..
         /// </summary>
-        internal static string Op_Invalid_CompoundPropertySetCodePage {
+        internal static string Op_Invalid_CompoundPropertySetUnsupportedType {
             get {
-                return ResourceManager.GetString("Op_Invalid_CompoundPropertySetCodePage", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_CompoundPropertySetUnsupportedType", resourceCulture);
             }
         }
 

@@ -135,7 +135,7 @@ Territory scoping is **hierarchical**: a rule scoped to `AU` resolves for an `AU
 
 ## Strategy elements
 
-Every rule carries exactly one `<Strategy>` child, which is exactly one of the six elements below. Each maps to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. Pick the simplest strategy that matches how the date is defined; reach for `<Algorithm>` only when the date cannot be expressed as calendar arithmetic. The strategy kinds are also covered, with the engine's view, in [Date calculation algorithms](algorithms.md).
+A rule carries exactly one occurrence source: a `<Strategy>` child (one of the elements below) **or** a `<Recurrence>` child ([recurrence elements](#recurrence-elements)). Each `<Strategy>` element maps to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>. Pick the simplest strategy that matches how the date is defined; reach for `<Algorithm>` only when the date cannot be expressed as calendar arithmetic. The six most common are detailed below; the positional (`<OrdinalDayOfMonth>`, `<DayOfYear>`, `<IsoWeekDate>`), dynamic-reference (`<WeekdayNearRule>`, `<NthWeekdayFromRule>`), and business-day (`<WorkingDayOffsetFromRule>`, `<WorkingDayInMonth>`) strategies — plus a per-attribute treatment of all of them — are catalogued in [Notable-date rule strategies](strategy-reference.md). The strategy kinds are also covered, with the engine's view, in [Date calculation algorithms](algorithms.md).
 
 ### `<Fixed>` — a fixed month and day
 
@@ -255,6 +255,54 @@ The referenced rule is resolved first and the offset applied — this is how Goo
 ```
 
 Built-in keys include `western-easter`, `orthodox-easter`, `vernal-equinox`, `autumnal-equinox`, `qingming`, `vesak`, `asalha-puja`, `losar`, `matariki`, and the Hindu-festival keys (`diwali`, `holi`, `ram-navami`, …). An unknown key resolves against a custom registry; an unregistered unknown key surfaces as a validation diagnostic at load time. See [Date calculation algorithms](algorithms.md) for the full key catalogue and how to register a custom algorithm.
+
+---
+
+## Recurrence elements
+
+In place of a `<Strategy>`, a rule may carry a `<Recurrence>` child holding exactly one of the elements below, each mapping to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy>. A recurrence generates many occurrences within a window; each is a normal candidate that receives the rule's category, non-working flag, duration, and adjustments. An anchor is required only when the interval is greater than one. Full semantics and worked scenarios are in [Notable-date rule strategies](strategy-reference.md#recurrence-sources).
+
+| Element | Key attributes | Yields |
+|---|---|---|
+| `<DailyInterval>` | `anchorDate` (req.), `intervalDays` (≥1, default 1) | An occurrence every *n* days from the anchor. |
+| `<Weekly>` | `<Day dayOfWeek="…" />` (1+), `intervalWeeks` (≥1), `anchorDate` (req. when `intervalWeeks > 1`) | The selected weekdays every *n* weeks. |
+| `<MonthlyDay>` | `dayOfMonth` (1–31), `intervalMonths` (≥1), `anchorDate` (req. when `> 1`), `invalidDayBehavior` (`Skip` \| `UseLastDayOfMonth`) | A calendar day every *n* months. |
+| `<MonthlyWeekday>` | `dayOfWeek`, `weekOrdinal`, `intervalMonths` (≥1), `anchorDate` (req. when `> 1`) | An ordinal weekday every *n* months. |
+
+```xml
+<!-- The last Friday of every month. -->
+<Rule id="default">
+  <Recurrence><MonthlyWeekday dayOfWeek="Friday" weekOrdinal="Last" /></Recurrence>
+</Rule>
+```
+
+`anchorDate` is an ISO-8601 `yyyy-MM-dd` date. A rule declaring both `<Strategy>` and `<Recurrence>`, or neither, is rejected at load time.
+
+---
+
+## `<Duration>` — a calculated span
+
+A rule's span is either the fixed `durationDays` attribute (above) or a calculated `<Duration><UntilDate>` whose end is computed by a second `<Strategy>`. A rule declares one or the other, never both. The end strategy is evaluated for the start anchor's civil year and, when that yields nothing acceptable, the following year — so the span can cross the year boundary and vary in length. Maps to <xref:Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition>.
+
+| `<UntilDate>` attribute | Required | Type | Description |
+|---|---|---|---|
+| `startBoundary` | No | proximity | <xref:Bodu.Globalization.Calendar.DateBoundary>: `Inclusive` (default) or `Exclusive`. |
+| `endBoundary` | No | proximity | `Inclusive` (default) or `Exclusive`. |
+| `selection` | No | enum | <xref:Bodu.Globalization.Calendar.EndDateSelection>: `FirstOnOrAfterStart` (default) or `FirstAfterStart`. |
+
+```xml
+<!-- Year-end shutdown: the Friday before Boxing Day to the Monday after New Year's Day. -->
+<Rule id="default">
+  <Strategy><WeekdayNearDate month="12" day="26" dayOfWeek="Friday" direction="Before" /></Strategy>
+  <Duration>
+    <UntilDate startBoundary="Exclusive" endBoundary="Exclusive">
+      <Strategy><WeekdayNearDate month="1" day="1" dayOfWeek="Monday" direction="After" /></Strategy>
+    </UntilDate>
+  </Duration>
+</Rule>
+```
+
+See [Notable-date rule strategies — Durations](strategy-reference.md#durations-fixed-or-calculated) for the full treatment.
 
 ---
 

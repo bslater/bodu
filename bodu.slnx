@@ -108,6 +108,22 @@
     <Project Path="Bodu.Financial.ExchangeRates.Ecb/src/Bodu.Financial.ExchangeRates.Ecb.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Ecb/test/Bodu.Financial.ExchangeRates.Ecb.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.ExchangeRateHost/">
+    <Project Path="Bodu.Financial.ExchangeRates.ExchangeRateHost/src/Bodu.Financial.ExchangeRates.ExchangeRateHost.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.ExchangeRateHost/test/Bodu.Financial.ExchangeRates.ExchangeRateHost.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Fixer/">
+    <Project Path="Bodu.Financial.ExchangeRates.Fixer/src/Bodu.Financial.ExchangeRates.Fixer.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Fixer/test/Bodu.Financial.ExchangeRates.Fixer.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Fred/">
+    <Project Path="Bodu.Financial.ExchangeRates.Fred/src/Bodu.Financial.ExchangeRates.Fred.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Fred/test/Bodu.Financial.ExchangeRates.Fred.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Imf/">
+    <Project Path="Bodu.Financial.ExchangeRates.Imf/src/Bodu.Financial.ExchangeRates.Imf.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Imf/test/Bodu.Financial.ExchangeRates.Imf.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Oanda/">
     <Project Path="Bodu.Financial.ExchangeRates.Oanda/src/Bodu.Financial.ExchangeRates.Oanda.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Oanda/test/Bodu.Financial.ExchangeRates.Oanda.Test.csproj" />
@@ -154,6 +170,10 @@
     <Project Path="Bodu.Financial.DependencyInjection/src/Bodu.Financial.DependencyInjection.csproj" />
     <Project Path="Bodu.Financial.DependencyInjection/test/Bodu.Financial.DependencyInjection.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial.Serialization.Json/">
+    <Project Path="Bodu.Financial.Serialization.Json/src/Bodu.Financial.Serialization.Json.csproj" />
+    <Project Path="Bodu.Financial.Serialization.Json/test/Bodu.Financial.Serialization.Json.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Security.Cryptography/">
     <Project Path="Bodu.Security.Cryptography\bench\Bodu.Security.Cryptography.Benchmarks.csproj" />
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
@@ -198,6 +218,18 @@
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.NotableDatesBasics/Bodu.Globalization.Calendar.Samples.NotableDatesBasics.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.ServiceHosting/Bodu.Globalization.Calendar.Samples.ServiceHosting.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.WorkingDays/Bodu.Globalization.Calendar.Samples.WorkingDays.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Formats.Excel/">
+    <Project Path="samples/Formats.Excel/Bodu.Formats.Excel.Binary.Samples.ExcelReading/Bodu.Formats.Excel.Binary.Samples.ExcelReading.csproj" />
+  </Folder>
+  <Folder Name="/Samples/IO.Compound/">
+    <Project Path="samples/IO.Compound/Bodu.IO.Compound.Samples.CompoundBasics/Bodu.IO.Compound.Samples.CompoundBasics.csproj" />
+  </Folder>
+  <Folder Name="/Samples/IO.Hashing/">
+    <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.CheckDigits/Bodu.IO.Hashing.Samples.CheckDigits.csproj" />
+    <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.ChecksumTour/Bodu.IO.Hashing.Samples.ChecksumTour.csproj" />
+    <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.CustomCheckDigit/Bodu.IO.Hashing.Samples.CustomCheckDigit.csproj" />
+    <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.CustomCheckDigit.Test/Bodu.IO.Hashing.Samples.CustomCheckDigit.Test.csproj" />
   </Folder>
   <Folder Name="/Samples/Text.Bencode/">
     <Project Path="samples/Text.Bencode/Bodu.Text.Bencode.Samples.TorrentFile/Bodu.Text.Bencode.Samples.TorrentFile.csproj" />

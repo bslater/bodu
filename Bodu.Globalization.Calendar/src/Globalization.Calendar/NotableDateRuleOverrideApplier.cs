@@ -100,22 +100,35 @@ internal static class NotableDateRuleOverrideApplier
     }
 
     /// <summary>
-    /// Produces a copy of a rule with the patch's non-null fields applied.
+    /// Produces a copy of a rule with the patch's non-null fields applied, including replacement of the occurrence
+    /// source or duration mode.
     /// </summary>
     /// <param name="rule">The rule to patch.</param>
     /// <param name="patch">The patch operation.</param>
     /// <returns>A new <see cref="NotableDateRule" /> with the patched fields.</returns>
-    private static NotableDateRule ApplyPatch(NotableDateRule rule, PatchRuleOverride patch) =>
-        new(
-            rule.Id,
-            patch.Priority ?? rule.Priority,
-            patch.Category ?? rule.Category,
-            patch.NonWorking ?? rule.NonWorking,
-            patch.DurationDays ?? rule.DurationDays,
-            patch.Applicability ?? rule.Applicability,
-            patch.Strategy ?? rule.Strategy,
-            patch.AdjustmentPolicyRefs ?? rule.AdjustmentPolicyRefs,
-            patch.Tags ?? rule.Tags);
+    private static NotableDateRule ApplyPatch(NotableDateRule rule, PatchRuleOverride patch)
+    {
+        int priority = patch.Priority ?? rule.Priority;
+        NotableDateCategory? category = patch.Category ?? rule.Category;
+        bool? nonWorking = patch.NonWorking ?? rule.NonWorking;
+        NotableDateDurationDefinition? duration = patch.Duration ?? rule.Duration;
+        RuleApplicability applicability = patch.Applicability ?? rule.Applicability;
+        IReadOnlyList<string> adjustments = patch.AdjustmentPolicyRefs ?? rule.AdjustmentPolicyRefs;
+        IReadOnlyList<string> tags = patch.Tags ?? rule.Tags;
+
+        // A patch may replace the occurrence source with a strategy or a recurrence; otherwise the base source is kept.
+        // Whichever source wins, only one is ever set, so the two modes can never both be active after a patch.
+        if (patch.Recurrence is IDateRecurrenceStrategy patchRecurrence)
+            return new NotableDateRule(rule.Id, priority, category, nonWorking, duration, applicability, patchRecurrence, adjustments, tags);
+
+        if (patch.Strategy is IDateCalculationStrategy patchStrategy)
+            return new NotableDateRule(rule.Id, priority, category, nonWorking, duration, applicability, patchStrategy, adjustments, tags);
+
+        if (rule.Recurrence is IDateRecurrenceStrategy ruleRecurrence)
+            return new NotableDateRule(rule.Id, priority, category, nonWorking, duration, applicability, ruleRecurrence, adjustments, tags);
+
+        return new NotableDateRule(rule.Id, priority, category, nonWorking, duration, applicability, rule.Strategy!, adjustments, tags);
+    }
 
     /// <summary>
     /// Records a diagnostic for an override that targets a non-existent rule.

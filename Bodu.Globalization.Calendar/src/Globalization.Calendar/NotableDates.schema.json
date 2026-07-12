@@ -223,13 +223,169 @@
         "weekdayNearDate": { "$ref": "#/$defs/weekdayNearDateStrategy" },
         "relativeWeekdayInMonth": { "$ref": "#/$defs/relativeWeekdayInMonthStrategy" },
         "offsetFromRule": { "$ref": "#/$defs/offsetFromRuleStrategy" },
-        "algorithm": { "$ref": "#/$defs/algorithmStrategy" }
+        "algorithm": { "$ref": "#/$defs/algorithmStrategy" },
+        "weekdayNearRule": { "$ref": "#/$defs/weekdayNearRuleStrategy" },
+        "nthWeekdayFromRule": { "$ref": "#/$defs/nthWeekdayFromRuleStrategy" },
+        "workingDayOffsetFromRule": { "$ref": "#/$defs/workingDayOffsetFromRuleStrategy" },
+        "workingDayInMonth": { "$ref": "#/$defs/workingDayInMonthStrategy" },
+        "ordinalDayOfMonth": { "$ref": "#/$defs/ordinalDayOfMonthStrategy" },
+        "isoWeekDate": { "$ref": "#/$defs/isoWeekDateStrategy" },
+        "dayOfYear": { "$ref": "#/$defs/dayOfYearStrategy" }
       }
     },
+    "weekdayNearRuleStrategy": {
+      "type": "object",
+      "required": [ "notableDateRef", "dayOfWeek", "direction" ],
+      "additionalProperties": false,
+      "properties": {
+        "notableDateRef": { "$ref": "#/$defs/identifier" },
+        "ruleRef": { "$ref": "#/$defs/identifier" },
+        "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "direction": { "$ref": "#/$defs/weekdayProximity" },
+        "referenceYearOffset": { "type": "integer" }
+      }
+    },
+    "nthWeekdayFromRuleStrategy": {
+      "type": "object",
+      "required": [ "notableDateRef", "dayOfWeek", "ordinal" ],
+      "additionalProperties": false,
+      "properties": {
+        "notableDateRef": { "$ref": "#/$defs/identifier" },
+        "ruleRef": { "$ref": "#/$defs/identifier" },
+        "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "ordinal": { "$ref": "#/$defs/nonZeroOrdinal" },
+        "referenceYearOffset": { "type": "integer" }
+      }
+    },
+    "workingDayOffsetFromRuleStrategy": {
+      "type": "object",
+      "required": [ "notableDateRef", "offsetWorkingDays" ],
+      "additionalProperties": false,
+      "properties": {
+        "notableDateRef": { "$ref": "#/$defs/identifier" },
+        "ruleRef": { "$ref": "#/$defs/identifier" },
+        "offsetWorkingDays": { "type": "integer" },
+        "referenceYearOffset": { "type": "integer" }
+      }
+    },
+    "workingDayInMonthStrategy": {
+      "type": "object",
+      "required": [ "month", "ordinal" ],
+      "additionalProperties": false,
+      "properties": {
+        "month": { "type": [ "string", "integer" ] },
+        "ordinal": { "$ref": "#/$defs/nonZeroOrdinal" }
+      }
+    },
+    "ordinalDayOfMonthStrategy": {
+      "type": "object",
+      "required": [ "month", "ordinal" ],
+      "additionalProperties": false,
+      "properties": {
+        "month": { "type": [ "string", "integer" ] },
+        "ordinal": { "$ref": "#/$defs/nonZeroOrdinal" }
+      }
+    },
+    "isoWeekDateStrategy": {
+      "type": "object",
+      "required": [ "week", "dayOfWeek" ],
+      "additionalProperties": false,
+      "properties": {
+        "week": { "type": "integer", "minimum": 1, "maximum": 53 },
+        "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" }
+      }
+    },
+    "dayOfYearStrategy": {
+      "type": "object",
+      "required": [ "ordinal" ],
+      "additionalProperties": false,
+      "properties": {
+        "ordinal": { "$ref": "#/$defs/nonZeroOrdinal" }
+      }
+    },
+    "recurrence": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "dailyInterval": { "$ref": "#/$defs/dailyIntervalRecurrence" },
+        "weekly": { "$ref": "#/$defs/weeklyRecurrence" },
+        "monthlyDay": { "$ref": "#/$defs/monthlyDayRecurrence" },
+        "monthlyWeekday": { "$ref": "#/$defs/monthlyWeekdayRecurrence" }
+      }
+    },
+    "dailyIntervalRecurrence": {
+      "type": "object",
+      "required": [ "anchorDate" ],
+      "additionalProperties": false,
+      "properties": {
+        "anchorDate": { "type": "string", "format": "date" },
+        "intervalDays": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "weeklyRecurrence": {
+      "type": "object",
+      "required": [ "days" ],
+      "additionalProperties": false,
+      "properties": {
+        "days": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/dayOfWeek" } },
+        "intervalWeeks": { "type": "integer", "minimum": 1 },
+        "anchorDate": { "type": "string", "format": "date" }
+      }
+    },
+    "monthlyDayRecurrence": {
+      "type": "object",
+      "required": [ "dayOfMonth" ],
+      "additionalProperties": false,
+      "properties": {
+        "dayOfMonth": { "type": "integer", "minimum": 1, "maximum": 31 },
+        "intervalMonths": { "type": "integer", "minimum": 1 },
+        "anchorDate": { "type": "string", "format": "date" },
+        "invalidDayBehavior": { "$ref": "#/$defs/invalidDayOfMonthBehavior" }
+      }
+    },
+    "monthlyWeekdayRecurrence": {
+      "type": "object",
+      "required": [ "dayOfWeek", "weekOrdinal" ],
+      "additionalProperties": false,
+      "properties": {
+        "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
+        "weekOrdinal": { "$ref": "#/$defs/weekOrdinal" },
+        "intervalMonths": { "type": "integer", "minimum": 1 },
+        "anchorDate": { "type": "string", "format": "date" }
+      }
+    },
+    "duration": {
+      "type": "object",
+      "required": [ "untilDate" ],
+      "additionalProperties": false,
+      "properties": {
+        "untilDate": {
+          "type": "object",
+          "required": [ "strategy" ],
+          "additionalProperties": false,
+          "properties": {
+            "startBoundary": { "$ref": "#/$defs/dateBoundary" },
+            "endBoundary": { "$ref": "#/$defs/dateBoundary" },
+            "selection": { "$ref": "#/$defs/endDateSelection" },
+            "strategy": { "$ref": "#/$defs/strategy" }
+          }
+        }
+      }
+    },
+    "nonZeroOrdinal": { "type": "integer", "minimum": -366, "maximum": 366 },
+    "dateBoundary": { "enum": [ "Inclusive", "Exclusive" ] },
+    "endDateSelection": { "enum": [ "FirstOnOrAfterStart", "FirstAfterStart" ] },
+    "invalidDayOfMonthBehavior": { "enum": [ "Skip", "UseLastDayOfMonth" ] },
     "rule": {
       "type": "object",
-      "required": [ "id", "strategy" ],
+      "required": [ "id" ],
       "additionalProperties": false,
+      "oneOf": [
+        { "required": [ "strategy" ] },
+        { "required": [ "recurrence" ] }
+      ],
       "properties": {
         "id": { "$ref": "#/$defs/identifier" },
         "priority": { "type": "integer" },
@@ -239,6 +395,8 @@
         "comment": { "type": "string" },
         "applicability": { "$ref": "#/$defs/applicability" },
         "strategy": { "$ref": "#/$defs/strategy" },
+        "recurrence": { "$ref": "#/$defs/recurrence" },
+        "duration": { "$ref": "#/$defs/duration" },
         "tags": { "type": "array", "items": { "type": "string" } },
         "adjustments": { "type": "array", "items": { "$ref": "#/$defs/identifier" } }
       }
@@ -268,6 +426,9 @@
         "category": { "$ref": "#/$defs/notableDateCategory" },
         "nonWorking": { "type": "boolean" },
         "durationDays": { "type": "integer", "minimum": 1 },
+        "strategy": { "$ref": "#/$defs/strategy" },
+        "recurrence": { "$ref": "#/$defs/recurrence" },
+        "duration": { "$ref": "#/$defs/duration" },
         "rule": { "$ref": "#/$defs/rule" }
       },
       "required": [ "operation", "notableDateRef" ]

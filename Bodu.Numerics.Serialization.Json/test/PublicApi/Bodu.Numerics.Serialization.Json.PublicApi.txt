@@ -52,4 +52,4 @@ enum Bodu.Numerics.Serialization.Json.NumericsJsonPolicy
     field Bodu.Numerics.Serialization.Json.NumericsJsonPolicy Strict
     field Int32 value__
 class Bodu.Numerics.Serialization.Json.NumericsJsonSerializerOptionsExtensions
-    method System.Text.Json.JsonSerializerOptions ConfigureForBoduNumerics(System.Text.Json.JsonSerializerOptions, Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method System.Text.Json.JsonSerializerOptions AddNumericsJsonConverters(System.Text.Json.JsonSerializerOptions, Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)

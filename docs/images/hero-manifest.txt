@@ -8,6 +8,7 @@ Bodu.Core hero-core.svg
 Bodu.Extensions.Configuration.Text hero-extensions-config.svg
 Bodu.Financial hero-financial.svg
 Bodu.Financial.DependencyInjection hero-financial-di.svg
+Bodu.Financial.Serialization.Json hero-financial-json.svg
 Bodu.Financial.ExchangeRates hero-fx.svg
 Bodu.Financial.ExchangeRates.Boe hero-fx-boe.svg
 Bodu.Financial.ExchangeRates.Caching hero-fx-caching.svg
@@ -15,6 +16,10 @@ Bodu.Financial.ExchangeRates.Caching.Distributed hero-fx-caching-distributed.svg
 Bodu.Financial.ExchangeRates.Caching.Sqlite hero-fx-caching-sqlite.svg
 Bodu.Financial.ExchangeRates.DependencyInjection hero-fx-di.svg
 Bodu.Financial.ExchangeRates.Ecb hero-fx-ecb.svg
+Bodu.Financial.ExchangeRates.ExchangeRateHost hero-fx-exchangeratehost.svg
+Bodu.Financial.ExchangeRates.Fixer hero-fx-fixer.svg
+Bodu.Financial.ExchangeRates.Fred hero-fx-fred.svg
+Bodu.Financial.ExchangeRates.Imf hero-fx-imf.svg
 Bodu.Financial.ExchangeRates.Oanda hero-fx-oanda.svg
 Bodu.Financial.ExchangeRates.Ofx hero-fx-ofx.svg
 Bodu.Financial.ExchangeRates.Rba hero-fx-rba.svg

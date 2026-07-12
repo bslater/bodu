@@ -16,7 +16,7 @@ The dependency runs one way: `Bodu.Formats.Excel.Binary` references `Bodu.IO.Com
 
 | Package | Status | What it provides | Docs |
 |---|---|---|---|
-| `Bodu.IO.Compound` | Stable | A CFB container reader and writer: the `CompoundFile` open/create entry points, the builder API for authoring containers, the `CompoundStorage` / `CompoundStream` hierarchy, the seekable `CompoundStream` cursor, and OLE property-set readers. | [Intro](../io-compound/index.md) · [Concepts](../io-compound/concepts.md) · [Get started](../io-compound/getting-started.md) |
+| `Bodu.IO.Compound` | Stable | A CFB container reader and writer: the `CompoundFile` open/create entry points and a transactional `Commit` / `CommitAsync`, the builder API for authoring containers, the `CompoundStorage` / `CompoundStream` hierarchy, the seekable `CompoundStream` cursor with async streaming reads, and OLE property-set readers and writers. | [Intro](../io-compound/index.md) · [Concepts](../io-compound/concepts.md) · [Get started](../io-compound/getting-started.md) |
 | `Bodu.Formats.Excel.Binary` | Stable | A narrow, read-only BIFF8 (`.xls`) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | [Intro](../excel/index.md) · [Concepts](../excel/concepts.md) · [Get started](../excel/getting-started.md) |
 
 ## Why a layered reader

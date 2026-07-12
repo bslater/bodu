@@ -350,6 +350,19 @@ public sealed partial class NotableDateDocumentBuilder
         XElement? strategyChild = strategy?.Elements().FirstOrDefault();
         rule.SetParsedStrategy(strategyChild is null ? null : new XElement(strategyChild));
 
+        if (element.Element(BuilderXml.s_namespace + "Recurrence") is XElement recurrence)
+            rule.SetParsedRecurrence(new XElement(recurrence));
+
+        if (element.Element(BuilderXml.s_namespace + "Duration")?.Element(BuilderXml.s_namespace + "UntilDate") is XElement untilDate)
+        {
+            XElement? endStrategyChild = untilDate.Element(BuilderXml.s_namespace + "Strategy")?.Elements().FirstOrDefault();
+            rule.SetParsedDuration(
+                endStrategyChild is null ? null : new XElement(endStrategyChild),
+                ParseNullableEnum<DateBoundary>((string?)untilDate.Attribute("startBoundary")) ?? DateBoundary.Inclusive,
+                ParseNullableEnum<DateBoundary>((string?)untilDate.Attribute("endBoundary")) ?? DateBoundary.Inclusive,
+                ParseNullableEnum<EndDateSelection>((string?)untilDate.Attribute("selection")) ?? EndDateSelection.FirstOnOrAfterStart);
+        }
+
         return rule;
     }
 

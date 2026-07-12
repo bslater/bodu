@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — FRED Exchange Rates</Title>
+    <Description>FRED (Federal Reserve Bank of St. Louis) exchange-rate provider for Bodu.Financial. Maps each currency pair to a FRED foreign-exchange series, fetches and parses the series observations JSON endpoint, and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API over currency pairs. Includes the dependency-injection registration extensions (AddFredExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>
+    <PackageTags>$(PackageTags);financial;fred;exchange-rate;forex;fx;rest;json;dependency-injection;options</PackageTags>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Financial.ExchangeRates.Fred.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- External package dependencies. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates\src\Bodu.Financial.ExchangeRates.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="Financial.ExchangeRates\FredResourceStrings.resx">
+      <LastGenOutput>FredResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="Financial.ExchangeRates\FredResourceStrings.Designer.cs">
+      <DependentUpon>FredResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>

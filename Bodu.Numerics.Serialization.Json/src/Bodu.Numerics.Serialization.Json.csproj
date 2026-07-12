@@ -6,7 +6,7 @@
     <RootNamespace>Bodu</RootNamespace>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Title>Bodu — Numerics JSON Serialization</Title>
-    <Description>System.Text.Json integration for Bodu.Numerics. Provides converters, a shared serialization policy, and the ConfigureForBoduNumerics() registration helper for Fraction&lt;T&gt;, Interval&lt;T&gt;, DiscreteInterval&lt;T&gt;, IntervalSet&lt;T&gt;, and the interval pair result types. Keeping JSON support in this companion package leaves the core Bodu.Numerics library serialization-agnostic.</Description>
+    <Description>System.Text.Json integration for Bodu.Numerics. Provides converters, a shared serialization policy, and the AddNumericsJsonConverters() registration helper for Fraction&lt;T&gt;, Interval&lt;T&gt;, DiscreteInterval&lt;T&gt;, IntervalSet&lt;T&gt;, and the interval pair result types. Keeping JSON support in this companion package leaves the core Bodu.Numerics library serialization-agnostic.</Description>
     <PackageTags>$(PackageTags);numerics;json;serialization;system.text.json;fraction;interval</PackageTags>
   </PropertyGroup>
 

@@ -23,13 +23,14 @@ All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?disp
 
 ## Pattern 1 — compute a digest in one call
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.IO.Hashing.Checksums;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var adler = new Adler32();
+var adler = new Adler32();
 adler.Append(data);
 byte[] digest = adler.GetCurrentHash();
 string hex    = Convert.ToHexString(digest);   // 4 bytes, 8 hex characters, big-endian
@@ -42,7 +43,7 @@ Swap `Adler32` for `Adler64` when you need the wider space, or for `Adler32C` wh
 ```csharp
 using Bodu.IO.Hashing.Checksums;
 
-using var adler = new Adler32();
+var adler = new Adler32();
 
 adler.Append(chunk1);                       // update A and B
 adler.Append(chunk2);
@@ -60,7 +61,7 @@ adler.Reset();                              // A = 1, B = 0 — zlib's canonical
 ```csharp
 using Bodu.IO.Hashing.Checksums;
 
-using var adler = new Adler32();
+var adler = new Adler32();
 
 using (FileStream fs = File.OpenRead("archive.bin"))
 {
@@ -84,7 +85,7 @@ A zlib stream carries an Adler-32 trailer in **big-endian** byte order. `GetCurr
 ```csharp
 using Bodu.IO.Hashing.Checksums;
 
-using var adler = new Adler32();
+var adler = new Adler32();
 adler.Append(deflateOutput);
 
 // 4-byte big-endian Adler-32 trailer, per RFC 1950 §2.2.

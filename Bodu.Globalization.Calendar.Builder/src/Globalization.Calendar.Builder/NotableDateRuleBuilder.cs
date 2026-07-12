@@ -4,7 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Xml.Linq;
+using Bodu.Globalization.Calendar.Algorithms;
 
 namespace Bodu.Globalization.Calendar.Builder;
 
@@ -172,6 +174,36 @@ public sealed class NotableDateRuleBuilder
     internal XElement? Strategy { get; private set; }
 
     /// <summary>
+    /// Gets the single recurrence element in the document namespace.
+    /// </summary>
+    /// <value>The recurrence element, or <see langword="null" /> when no recurrence is set.</value>
+    internal XElement? Recurrence { get; private set; }
+
+    /// <summary>
+    /// Gets the calculated end-date strategy element in the document namespace.
+    /// </summary>
+    /// <value>The end strategy element, or <see langword="null" /> when no calculated duration is set.</value>
+    internal XElement? EndStrategy { get; private set; }
+
+    /// <summary>
+    /// Gets the start boundary of a calculated end-date duration.
+    /// </summary>
+    /// <value>The start boundary; <see cref="DateBoundary.Inclusive" /> by default.</value>
+    internal DateBoundary EndStartBoundary { get; private set; } = DateBoundary.Inclusive;
+
+    /// <summary>
+    /// Gets the end boundary of a calculated end-date duration.
+    /// </summary>
+    /// <value>The end boundary; <see cref="DateBoundary.Inclusive" /> by default.</value>
+    internal DateBoundary EndEndBoundary { get; private set; } = DateBoundary.Inclusive;
+
+    /// <summary>
+    /// Gets the end-date selection rule of a calculated end-date duration.
+    /// </summary>
+    /// <value>The selection rule; <see cref="EndDateSelection.FirstOnOrAfterStart" /> by default.</value>
+    internal EndDateSelection EndSelectionValue { get; private set; } = EndDateSelection.FirstOnOrAfterStart;
+
+    /// <summary>
     /// Gets a value indicating whether the applicability scope declares any values.
     /// </summary>
     /// <value>
@@ -229,6 +261,8 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder WithDurationDays(int durationDays)
     {
         ThrowHelper.ThrowIfLessThan(durationDays, 1);
+        if (EndStrategy is not null)
+            throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_RuleDurationAlreadySet);
 
         DurationDays = durationDays;
         return this;
@@ -574,6 +608,246 @@ public sealed class NotableDateRuleBuilder
     }
 
     /// <summary>
+    /// Configures the rule with an ordinal-day-of-month strategy.
+    /// </summary>
+    /// <param name="month">The one-based month number.</param>
+    /// <param name="ordinal">The signed ordinal position of the day within the month.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder OrdinalDayOfMonth(int month, int ordinal) =>
+        SetStrategy(new XElement(
+            BuilderXml.s_namespace + "OrdinalDayOfMonth",
+            new XAttribute("month", BuilderXml.GetMonthName(month)),
+            new XAttribute("ordinal", BuilderXml.Int(ordinal))));
+
+    /// <summary>
+    /// Configures the rule with a day-of-year strategy.
+    /// </summary>
+    /// <param name="ordinal">The signed ordinal position of the day within the year.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder DayOfYear(int ordinal) =>
+        SetStrategy(new XElement(BuilderXml.s_namespace + "DayOfYear", new XAttribute("ordinal", BuilderXml.Int(ordinal))));
+
+    /// <summary>
+    /// Configures the rule with an ISO-week-date strategy.
+    /// </summary>
+    /// <param name="week">The one-based ISO-8601 week number.</param>
+    /// <param name="dayOfWeek">The weekday within the ISO week.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder IsoWeekDate(int week, DayOfWeek dayOfWeek) =>
+        SetStrategy(new XElement(
+            BuilderXml.s_namespace + "IsoWeekDate",
+            new XAttribute("week", BuilderXml.Int(week)),
+            new XAttribute("dayOfWeek", dayOfWeek.ToString())));
+
+    /// <summary>
+    /// Configures the rule with a weekday-near-rule strategy that seeks a weekday relative to another rule's occurrence.
+    /// </summary>
+    /// <param name="notableDateRef">The identifier of the referenced concept.</param>
+    /// <param name="dayOfWeek">The weekday to seek.</param>
+    /// <param name="direction">The proximity rule relative to the reference.</param>
+    /// <param name="referenceYearOffset">The signed year offset applied to the reference.</param>
+    /// <param name="ruleRef">The identifier of the referenced rule, or <see langword="null" />.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="ArgumentException"><paramref name="notableDateRef" /> is <see langword="null" />, empty, or white-space.</exception>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder WeekdayNearRule(string notableDateRef, DayOfWeek dayOfWeek, WeekdayProximity direction, int referenceYearOffset = 0, string? ruleRef = null)
+    {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
+
+        XElement element = new(
+            BuilderXml.s_namespace + "WeekdayNearRule",
+            new XAttribute("notableDateRef", notableDateRef),
+            new XAttribute("dayOfWeek", dayOfWeek.ToString()),
+            new XAttribute("direction", direction.ToString()));
+        if (referenceYearOffset != 0) element.SetAttributeValue("referenceYearOffset", BuilderXml.Int(referenceYearOffset));
+        if (!string.IsNullOrEmpty(ruleRef)) element.SetAttributeValue("ruleRef", ruleRef);
+
+        return SetStrategy(element);
+    }
+
+    /// <summary>
+    /// Configures the rule with an nth-weekday-from-rule strategy.
+    /// </summary>
+    /// <param name="notableDateRef">The identifier of the referenced concept.</param>
+    /// <param name="dayOfWeek">The weekday to seek.</param>
+    /// <param name="ordinal">The signed ordinal count of matching weekdays from the reference.</param>
+    /// <param name="referenceYearOffset">The signed year offset applied to the reference.</param>
+    /// <param name="ruleRef">The identifier of the referenced rule, or <see langword="null" />.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="ArgumentException"><paramref name="notableDateRef" /> is <see langword="null" />, empty, or white-space.</exception>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder NthWeekdayFromRule(string notableDateRef, DayOfWeek dayOfWeek, int ordinal, int referenceYearOffset = 0, string? ruleRef = null)
+    {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
+
+        XElement element = new(
+            BuilderXml.s_namespace + "NthWeekdayFromRule",
+            new XAttribute("notableDateRef", notableDateRef),
+            new XAttribute("dayOfWeek", dayOfWeek.ToString()),
+            new XAttribute("ordinal", BuilderXml.Int(ordinal)));
+        if (referenceYearOffset != 0) element.SetAttributeValue("referenceYearOffset", BuilderXml.Int(referenceYearOffset));
+        if (!string.IsNullOrEmpty(ruleRef)) element.SetAttributeValue("ruleRef", ruleRef);
+
+        return SetStrategy(element);
+    }
+
+    /// <summary>
+    /// Configures the rule with a working-day-offset-from-rule strategy.
+    /// </summary>
+    /// <param name="notableDateRef">The identifier of the referenced concept.</param>
+    /// <param name="offsetWorkingDays">The signed number of working days from the reference.</param>
+    /// <param name="referenceYearOffset">The signed year offset applied to the reference.</param>
+    /// <param name="ruleRef">The identifier of the referenced rule, or <see langword="null" />.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="ArgumentException"><paramref name="notableDateRef" /> is <see langword="null" />, empty, or white-space.</exception>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder WorkingDayOffsetFromRule(string notableDateRef, int offsetWorkingDays, int referenceYearOffset = 0, string? ruleRef = null)
+    {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
+
+        XElement element = new(
+            BuilderXml.s_namespace + "WorkingDayOffsetFromRule",
+            new XAttribute("notableDateRef", notableDateRef),
+            new XAttribute("offsetWorkingDays", BuilderXml.Int(offsetWorkingDays)));
+        if (referenceYearOffset != 0) element.SetAttributeValue("referenceYearOffset", BuilderXml.Int(referenceYearOffset));
+        if (!string.IsNullOrEmpty(ruleRef)) element.SetAttributeValue("ruleRef", ruleRef);
+
+        return SetStrategy(element);
+    }
+
+    /// <summary>
+    /// Configures the rule with a working-day-in-month strategy.
+    /// </summary>
+    /// <param name="month">The one-based month number.</param>
+    /// <param name="ordinal">The signed ordinal position of the working day within the month.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder WorkingDayInMonth(int month, int ordinal) =>
+        SetStrategy(new XElement(
+            BuilderXml.s_namespace + "WorkingDayInMonth",
+            new XAttribute("month", BuilderXml.GetMonthName(month)),
+            new XAttribute("ordinal", BuilderXml.Int(ordinal))));
+
+    /// <summary>
+    /// Configures the rule with a daily-interval recurrence.
+    /// </summary>
+    /// <param name="anchorDate">The anchor date that defines occurrence zero and the phase of the series.</param>
+    /// <param name="intervalDays">The number of calendar days between consecutive occurrences.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder DailyInterval(DateOnly anchorDate, int intervalDays = 1)
+    {
+        XElement inner = new(BuilderXml.s_namespace + "DailyInterval", new XAttribute("anchorDate", FormatDate(anchorDate)));
+        if (intervalDays != 1) inner.SetAttributeValue("intervalDays", BuilderXml.Int(intervalDays));
+
+        return SetRecurrence(inner);
+    }
+
+    /// <summary>
+    /// Configures the rule with a weekly recurrence on the supplied weekdays.
+    /// </summary>
+    /// <param name="daysOfWeek">The weekdays to generate occurrences on.</param>
+    /// <param name="intervalWeeks">The number of weeks between consecutive occurrences.</param>
+    /// <param name="anchorDate">The anchor date that phases each weekday series, or <see langword="null" />.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="daysOfWeek" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder Weekly(IEnumerable<DayOfWeek> daysOfWeek, int intervalWeeks = 1, DateOnly? anchorDate = null)
+    {
+        ThrowHelper.ThrowIfNull(daysOfWeek);
+
+        XElement inner = new(BuilderXml.s_namespace + "Weekly");
+        if (intervalWeeks != 1) inner.SetAttributeValue("intervalWeeks", BuilderXml.Int(intervalWeeks));
+        if (anchorDate is DateOnly anchor) inner.SetAttributeValue("anchorDate", FormatDate(anchor));
+        foreach (DayOfWeek day in daysOfWeek)
+            inner.Add(new XElement(BuilderXml.s_namespace + "Day", new XAttribute("dayOfWeek", day.ToString())));
+
+        return SetRecurrence(inner);
+    }
+
+    /// <summary>
+    /// Configures the rule with a monthly day-of-month recurrence.
+    /// </summary>
+    /// <param name="dayOfMonth">The one-based day of the month.</param>
+    /// <param name="intervalMonths">The number of months between consecutive occurrences.</param>
+    /// <param name="anchorDate">The anchor whose year and month define month zero, or <see langword="null" />.</param>
+    /// <param name="invalidDayBehavior">How a month without the requested day is handled.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder MonthlyDay(int dayOfMonth, int intervalMonths = 1, DateOnly? anchorDate = null, InvalidDayOfMonthBehavior invalidDayBehavior = InvalidDayOfMonthBehavior.Skip)
+    {
+        XElement inner = new(BuilderXml.s_namespace + "MonthlyDay", new XAttribute("dayOfMonth", BuilderXml.Int(dayOfMonth)));
+        if (intervalMonths != 1) inner.SetAttributeValue("intervalMonths", BuilderXml.Int(intervalMonths));
+        if (anchorDate is DateOnly anchor) inner.SetAttributeValue("anchorDate", FormatDate(anchor));
+        if (invalidDayBehavior != InvalidDayOfMonthBehavior.Skip) inner.SetAttributeValue("invalidDayBehavior", invalidDayBehavior.ToString());
+
+        return SetRecurrence(inner);
+    }
+
+    /// <summary>
+    /// Configures the rule with a monthly ordinal-weekday recurrence.
+    /// </summary>
+    /// <param name="dayOfWeek">The weekday to select in each participating month.</param>
+    /// <param name="weekOrdinal">The ordinal position of the weekday within the month.</param>
+    /// <param name="intervalMonths">The number of months between consecutive occurrences.</param>
+    /// <param name="anchorDate">The anchor whose year and month define month zero, or <see langword="null" />.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    public NotableDateRuleBuilder MonthlyWeekday(DayOfWeek dayOfWeek, WeekOrdinal weekOrdinal, int intervalMonths = 1, DateOnly? anchorDate = null)
+    {
+        XElement inner = new(
+            BuilderXml.s_namespace + "MonthlyWeekday",
+            new XAttribute("dayOfWeek", dayOfWeek.ToString()),
+            new XAttribute("weekOrdinal", weekOrdinal.ToString()));
+        if (intervalMonths != 1) inner.SetAttributeValue("intervalMonths", BuilderXml.Int(intervalMonths));
+        if (anchorDate is DateOnly anchor) inner.SetAttributeValue("anchorDate", FormatDate(anchor));
+
+        return SetRecurrence(inner);
+    }
+
+    /// <summary>
+    /// Configures the rule with a calculated end-date duration whose end anchor is produced by a second strategy.
+    /// </summary>
+    /// <param name="endStrategy">A configurator that selects the end strategy via one strategy method.</param>
+    /// <param name="startBoundary">Whether the start anchor is included in the span.</param>
+    /// <param name="endBoundary">Whether the end anchor is included in the span.</param>
+    /// <param name="selection">How the end anchor is selected relative to the start anchor.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="endStrategy" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// A fixed duration is already configured, a calculated duration is already configured, or the configurator did not
+    /// select a strategy.
+    /// </exception>
+    public NotableDateRuleBuilder UntilDate(Action<NotableDateRuleBuilder> endStrategy, DateBoundary startBoundary = DateBoundary.Inclusive, DateBoundary endBoundary = DateBoundary.Inclusive, EndDateSelection selection = EndDateSelection.FirstOnOrAfterStart)
+    {
+        ThrowHelper.ThrowIfNull(endStrategy);
+        if (DurationDays is not null || EndStrategy is not null)
+            throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_RuleDurationAlreadySet);
+
+        NotableDateRuleBuilder capture = new("end");
+        endStrategy(capture);
+        if (capture.Strategy is not XElement selected)
+            throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_RuleDurationAlreadySet);
+
+        EndStrategy = selected;
+        EndStartBoundary = startBoundary;
+        EndEndBoundary = endBoundary;
+        EndSelectionValue = selection;
+        return this;
+    }
+
+    /// <summary>
+    /// Formats a date as an ISO-8601 <c>yyyy-MM-dd</c> token.
+    /// </summary>
+    /// <param name="date">The date to format.</param>
+    /// <returns>The ISO-8601 date token.</returns>
+    private static string FormatDate(DateOnly date) =>
+        date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+    /// <summary>
     /// Adds a single adjustment policy reference to the rule.
     /// </summary>
     /// <param name="policyRef">The identifier of the adjustment policy to apply.</param>
@@ -610,6 +884,28 @@ public sealed class NotableDateRuleBuilder
     /// <param name="strategy">The strategy element in the document namespace, or <see langword="null" />.</param>
     internal void SetParsedStrategy(XElement? strategy) =>
         Strategy = strategy;
+
+    /// <summary>
+    /// Replaces the rule's recurrence directly when reconstructing a builder from a parsed document.
+    /// </summary>
+    /// <param name="recurrence">The <c>Recurrence</c> element in the document namespace, or <see langword="null" />.</param>
+    internal void SetParsedRecurrence(XElement? recurrence) =>
+        Recurrence = recurrence;
+
+    /// <summary>
+    /// Replaces the rule's calculated end-date duration directly when reconstructing a builder from a parsed document.
+    /// </summary>
+    /// <param name="endStrategy">The end strategy element, or <see langword="null" /> when there is no calculated duration.</param>
+    /// <param name="startBoundary">The start boundary.</param>
+    /// <param name="endBoundary">The end boundary.</param>
+    /// <param name="selection">The end-date selection rule.</param>
+    internal void SetParsedDuration(XElement? endStrategy, DateBoundary startBoundary, DateBoundary endBoundary, EndDateSelection selection)
+    {
+        EndStrategy = endStrategy;
+        EndStartBoundary = startBoundary;
+        EndEndBoundary = endBoundary;
+        EndSelectionValue = selection;
+    }
 
     /// <summary>
     /// Sets the applicability and scalar state directly when reconstructing a builder from a parsed document.
@@ -695,6 +991,11 @@ public sealed class NotableDateRuleBuilder
             AnchorYearValue);
         clone.SetParsedCollections(_territories, _onlyYears, _exceptYears, _tags, _adjustments);
         clone.Strategy = Strategy is null ? null : new XElement(Strategy);
+        clone.Recurrence = Recurrence is null ? null : new XElement(Recurrence);
+        clone.EndStrategy = EndStrategy is null ? null : new XElement(EndStrategy);
+        clone.EndStartBoundary = EndStartBoundary;
+        clone.EndEndBoundary = EndEndBoundary;
+        clone.EndSelectionValue = EndSelectionValue;
         return clone;
     }
 
@@ -706,10 +1007,26 @@ public sealed class NotableDateRuleBuilder
     /// <exception cref="InvalidOperationException">A strategy has already been configured on this rule.</exception>
     private NotableDateRuleBuilder SetStrategy(XElement element)
     {
-        if (Strategy is not null)
+        if (Strategy is not null || Recurrence is not null)
             throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_RuleStrategyAlreadySet);
 
         Strategy = element;
+        return this;
+    }
+
+    /// <summary>
+    /// Stores the single recurrence element wrapped in a <c>Recurrence</c> element, enforcing the one-occurrence-source
+    /// invariant.
+    /// </summary>
+    /// <param name="inner">The recurrence kind element to store.</param>
+    /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    private NotableDateRuleBuilder SetRecurrence(XElement inner)
+    {
+        if (Strategy is not null || Recurrence is not null)
+            throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_RuleStrategyAlreadySet);
+
+        Recurrence = new XElement(BuilderXml.s_namespace + "Recurrence", inner);
         return this;
     }
 }

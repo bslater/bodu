@@ -4,7 +4,7 @@
 
 The web exchange-rate provider infrastructure for the [Bodu.Financial](../Bodu.Financial)
 FX stack. It hosts the abstract `WebRateProvider` and `PairWebRateProvider<TSeries>` base
-classes that every per-source provider package — BoE, ECB, RBA, Yahoo, OFX, XE, OANDA —
+classes that every per-source provider package — BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF —
 builds on, plus the shared fetch machinery they have in common. Factoring this layer out
 keeps the core `Bodu.Financial` package free of HTTP machinery (and of any logging
 dependency); reference this package only when you consume one of the web providers or
@@ -37,7 +37,7 @@ public sealed class AcmeRateProvider : PairWebRateProvider<AcmeSeriesInfo>
   serves rates through `HistoryAvailability` (a `RateHistoryAvailability` — unbounded, a
   fixed earliest date, or a rolling window).
 - **`PairWebRateProvider<TSeries>`** — the specialisation for sources that fetch a
-  distinct series per currency pair (the shape of the Yahoo, OFX, XE, and OANDA feeds),
+  distinct series per currency pair (the shape of the Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, and IMF feeds),
   driven by an `IPairRateSource<TSeries>`.
 - **`WebRateProviderOptions`** — the abstract options base carrying `BaseAddress`,
   `HttpTimeout`, `UserAgent`, `DefaultLookback`, `CurrencyAliases`, and the per-stage

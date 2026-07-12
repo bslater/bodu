@@ -18,7 +18,7 @@ The foundation every other package builds on — collections, buffers, extension
 |---|---|---|
 | **[Bodu.Core](core/index.md)** | The foundation package — a day-of-week `WeekPattern` value type, pooled buffers, async coordination primitives, railway outcomes (`Option<T>` / `Result<T>` / `Either<TLeft,TRight>`), and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized `ThrowHelper`. | `net8.0` |
 | **[Bodu.Collections](collections/index.md)** | The specialized collection catalogue (depends on `Bodu.Core`; namespaces unchanged) — fixed-capacity rings (`CircularBuffer<T>`, `Deque<T>`), policy-driven caches (`EvictingDictionary<TKey,TValue>` with TTL expiry), navigable sets/dictionaries with rank/select, range-keyed lookups and overlap-storing interval trees, graphs, tries and multi-pattern text search, and the probabilistic sketches. | `net8.0` |
-| **[Bodu.Collections.Concurrent](collections-concurrent/index.md)** | The thread-safe collection companion (depends on `Bodu.Collections`) — the lock-free `ConcurrentCircularBuffer<T>` (Vyukov MPMC, `IProducerConsumerCollection<T>`) and the lock-striped `ConcurrentHashSet<T>` with lock-free reads and snapshot enumeration. | `net8.0` |
+| **[Bodu.Collections.Concurrent](collections-concurrent/index.md)** | The thread-safe collection companion (depends on `Bodu.Collections`) — the lock-free `ConcurrentCircularBuffer<T>` (Vyukov MPMC, `IProducerConsumerCollection<T>`) and the lock-free split-ordered `ConcurrentHashSet<T>` with snapshot enumeration. | `net8.0` |
 | **[Bodu.Text](text/index.md)** *(namespace in Bodu.Core)* | Encoding-detection and text / byte conversion helpers over `System.Text.Encoding` — BOM-based `EncodingDetection`, plus `EncodingExtensions` and `StringEncodingExtensions` for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. | `net8.0` |
 
 ### [Hashing & Cryptography](topics/hashing-and-cryptography.md)
@@ -68,11 +68,11 @@ Exact arithmetic — rational numbers and intervals, and the money, currency, an
 
 ### [Binary Formats & I/O](topics/binary-formats.md)
 
-Read-only readers for legacy binary container and document formats — a general-purpose compound-file reader, with narrower format readers layered on top.
+Legacy binary container and document formats — a general-purpose compound-file container (read, edit, and author) with narrower read-only format readers layered on top.
 
 | Package | What it provides | Target framework |
 |---|---|---|
-| **[Bodu.IO.Compound](io-compound/index.md)** | A read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (`.xls`, `.doc`, `.ppt`, `.msg`). Navigates the `RootStorage` hierarchy, reads each named stream through a seekable `CompoundStream` cursor (buffered or on-demand), and parses the OLE summary-information property sets. | `net8.0` |
+| **[Bodu.IO.Compound](io-compound/index.md)** | A reader, editor, and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (`.xls`, `.doc`, `.ppt`, `.msg`). Navigates the `RootStorage` hierarchy, reads each named stream through a seekable `CompoundStream` cursor (buffered or on-demand), edits and authors containers with a transactional `Commit` / `CommitAsync`, and reads and writes the OLE summary-information property sets. | `net8.0` |
 | **[Bodu.Formats.Excel.Binary](excel/index.md)** | A narrow, read-only BIFF8 (`.xls`) reader built on `Bodu.IO.Compound` that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `net8.0` |
 
 Each package is versioned and released independently — take the one you need and ignore the others. The only shared runtime dependency is `Bodu.Core`, whose `ThrowHelper` provides argument validation for `Bodu.Collections`, `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Configuration`, `Bodu.Extensions.Configuration.Text`, `Bodu.Text`, `Bodu.Numerics`, `Bodu.Financial`, and `Bodu.IO.Compound`. Beyond that, `Bodu.Collections` builds on `Bodu.Core`, and `Bodu.Collections.Concurrent` builds on `Bodu.Collections`; `Bodu.Text.Formats` references `Bodu.Text.Encoding`; `Bodu.Text.Configuration` builds on `Bodu.Text.Formats`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration` plus `Microsoft.Extensions.Configuration`; `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch; and `Bodu.Formats.Excel.Binary` builds on `Bodu.IO.Compound` to read BIFF8 `.xls` workbooks.
@@ -109,7 +109,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="collections-concurrent/index.md">Bodu.Collections.Concurrent</a></h3>
-  <p>The thread-safe collection companion — a lock-free MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> and a lock-striped <code>ConcurrentHashSet&lt;T&gt;</code>, both with snapshot enumeration. Depends on <code>Bodu.Collections</code>.</p>
+  <p>The thread-safe collection companion — a lock-free MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> and a lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, both with snapshot enumeration. Depends on <code>Bodu.Collections</code>.</p>
   <div class="bodu-card-links">
     <a href="collections-concurrent/index.md">Introduction</a>
     <a href="collections-concurrent/getting-started.md">Getting started</a>
@@ -274,7 +274,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="io-compound/index.md">Bodu.IO.Compound</a></h3>
-  <p>A read-only OLE2 / Compound File Binary (CFB) container reader — navigate the storage hierarchy, read each named stream through a seekable <code>CompoundStream</code> cursor, and parse the OLE property sets. The BIFF8 <code>.xls</code> reader <code>Bodu.Formats.Excel.Binary</code> is built on it.</p>
+  <p>An OLE2 / Compound File Binary (CFB) container reader, editor, and writer — navigate the storage hierarchy, read each named stream through a seekable <code>CompoundStream</code> cursor, edit or author containers with a transactional commit, and read and write the OLE property sets. The BIFF8 <code>.xls</code> reader <code>Bodu.Formats.Excel.Binary</code> is built on it.</p>
   <div class="bodu-card-links">
     <a href="io-compound/index.md">Introduction</a>
     <a href="io-compound/getting-started.md">Getting started</a>

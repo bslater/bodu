@@ -612,11 +612,11 @@ Type-safe money, the ISO 4217 currency catalogue, exchange rates, allocation, an
 
 ## Binary Formats & I/O
 
-Read-only readers for legacy binary container and document formats — see the **[Binary Formats & I/O guides landing](topics/binary-formats.md)**.
+Legacy binary container and document formats — a read/edit/author compound-file container with narrower read-only format readers on top; see the **[Binary Formats & I/O guides landing](topics/binary-formats.md)**.
 
 ### Bodu.IO.Compound
 
-A read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" used by legacy Office documents (`.xls`, `.doc`, `.ppt`, `.msg`). It exposes the storage hierarchy and the raw byte payload of each named stream with no application-format knowledge.
+A reader, editor, and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" used by legacy Office documents (`.xls`, `.doc`, `.ppt`, `.msg`). It navigates the storage hierarchy, reads the raw byte payload of each named stream, edits and authors containers with a transactional `Commit` / `CommitAsync`, and reads and writes the OLE property sets, all with no application-format knowledge.
 
 <div class="bodu-cards">
 

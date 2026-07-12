@@ -20,7 +20,7 @@ public class IntervalJsonConverterTests
     /// </summary>
     /// <returns>The configured options.</returns>
     private static JsonSerializerOptions Options() =>
-        new JsonSerializerOptions().ConfigureForBoduNumerics(NumericsJsonPolicy.Strict);
+        new JsonSerializerOptions().AddNumericsJsonConverters(NumericsJsonPolicy.Strict);
 
     /// <summary>
     /// Verifies that the parameterless <see cref="IntervalJsonConverter{T}" /> constructor selects the canonical Strict

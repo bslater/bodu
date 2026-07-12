@@ -41,6 +41,7 @@ byte[] bytes = root.ToArray();        // …or materialize the bytes
 
 When a stream's bytes come from a file or another source you do not want to hold in memory, add it with a deferred opener or directly from a path. The bytes are read only when the container is serialized.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Compound.Builders;
 
@@ -78,6 +79,14 @@ using (CompoundStream nested = storage.CreateStream("Nested"))
 
 file.Commit();   // nothing is written to `output` until this call
 ```
+
+A writable <xref:Bodu.IO.Compound.CompoundStorage> also exposes its directory-entry metadata as settable properties — <xref:Bodu.IO.Compound.CompoundStorage.ClassId>, <xref:Bodu.IO.Compound.CompoundStorage.CreationTime>, <xref:Bodu.IO.Compound.CompoundStorage.ModifiedTime>, and <xref:Bodu.IO.Compound.CompoundStorage.StateBits>. The root storage's `ClassId` is the conventional file-type discriminator for OLE2-based formats:
+
+```csharp
+file.RootStorage.ClassId = new Guid("00020820-0000-0000-c000-000000000046");   // Excel workbook CLSID
+```
+
+Metadata is never stamped automatically — `Commit` leaves timestamps untouched, so a value only changes when you set it (and byte-identical re-saves stay possible). Per MS-CFB, only storage entries carry this metadata; stream entries are always written with zero CLSID, timestamps, and state bits.
 
 Disposing the file **without** calling `Commit` discards the staged edits — `Commit` is the only thing that writes to the destination. `Revert` drops staged edits explicitly; `IsDirty` reports whether any are pending.
 

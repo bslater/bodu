@@ -98,7 +98,7 @@ using var reader = new StreamReader(stream, Encoding.Unicode);
 string text = reader.ReadToEnd();
 ```
 
-`OpenStream` returns a read-only, seekable `CompoundStream` you can hand to any `Stream` consumer. Under a streaming file it reads sectors on demand; under a buffered file it works over the in-memory payload.
+`OpenStream(name)` returns a read-only, seekable `CompoundStream` you can hand to any `Stream` consumer. Under a streaming file it reads sectors on demand; under a buffered file it works over the in-memory payload. (On a writable file, the `OpenStream(name, FileMode, FileAccess)` overload and `CreateStream` return a read-write cursor instead — see the [authoring guide](../../guides/io-compound/authoring-compound-files.md).)
 
 ## Read document metadata
 

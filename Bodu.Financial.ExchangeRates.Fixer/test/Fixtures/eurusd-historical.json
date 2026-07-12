@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "historical": true,
+  "date": "2023-01-03",
+  "base": "EUR",
+  "rates": { "USD": 1.0546 }
+}

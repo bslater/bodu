@@ -206,68 +206,23 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that the internal lock-striping constructor throws <see cref="ArgumentOutOfRangeException" /> when
-    /// <c>concurrencyLevel</c> is zero or negative, naming the offending parameter rather than failing late inside
-    /// the lock-array allocation with an opaque message.
+    /// Verifies that the capacity constructor rounds the bucket count up to a power of two within the sizing
+    /// envelope, so the split-ordered bucket mask is always valid.
     /// </summary>
     [TestMethod]
-    [DataRow(0)]
-    [DataRow(-1)]
-    [DataRow(-1000)]
-    public void Ctor_WhenConcurrencyLevelIsZeroOrNegative_ShouldThrowArgumentOutOfRangeException(int concurrencyLevel)
+    [DataRow(0, 8)]
+    [DataRow(1, 8)]
+    [DataRow(7, 8)]
+    [DataRow(8, 8)]
+    [DataRow(9, 16)]
+    [DataRow(31, 32)]
+    [DataRow(33, 64)]
+    [DataRow(1000, 1024)]
+    public void Ctor_WhenCapacityProvided_ShouldRoundBucketCountUpToPowerOfTwo(int capacity, int expectedBucketCount)
     {
-        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = new ConcurrentHashSet<int>(concurrencyLevel, capacity: 16, comparer: null);
-        });
+        var set = new ConcurrentHashSet<int>(capacity);
 
-        Assert.AreEqual("concurrencyLevel", ex.ParamName);
+        Assert.AreEqual(expectedBucketCount, set.BucketCount);
+        Assert.AreEqual(0, set.BucketCount & (set.BucketCount - 1), "Bucket count must be a power of two.");
     }
-
-    /// <summary>
-    /// Verifies that the internal lock-striping constructor succeeds for valid <c>concurrencyLevel</c> values and
-    /// allocates exactly the requested number of lock stripes.
-    /// </summary>
-    [TestMethod]
-    [DataRow(1)]
-    [DataRow(4)]
-    [DataRow(64)]
-    public void Ctor_WhenConcurrencyLevelIsPositive_ShouldAllocateExactlyThatManyLocks(int concurrencyLevel)
-    {
-        var set = new ConcurrentHashSet<int>(concurrencyLevel, capacity: 16, comparer: null);
-
-        Assert.AreEqual(concurrencyLevel, set.LockCount);
-    }
-
-    /// <summary>
-    /// Verifies that the default constructor clamps the lock striping level to
-    /// <see cref="ConcurrentHashSet{T}.MaxDefaultConcurrencyLevel" /> so that high-core machines do not allocate an
-    /// excessive lock array for small sets.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_Default_ShouldClampLockCountToMaxDefaultConcurrencyLevel()
-    {
-        var set = new ConcurrentHashSet<int>();
-
-        Assert.IsGreaterThanOrEqualTo(1, set.LockCount, $"Expected at least one lock, got {set.LockCount}.");
-        Assert.IsLessThanOrEqualTo(
-            ConcurrentHashSet<int>.MaxDefaultConcurrencyLevel, set.LockCount,
-            $"Expected default lock count <= {ConcurrentHashSet<int>.MaxDefaultConcurrencyLevel}, got {set.LockCount}.");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ConcurrentHashSet{T}.ClampDefaultConcurrencyLevel(int)" /> clamps a synthetic
-    /// processor count into the inclusive range <c>[1, MaxDefaultConcurrencyLevel]</c>. Driving the clamp with
-    /// scripted values means the regression net does not depend on the host's actual core count.
-    /// </summary>
-    [TestMethod]
-    [DataRow(-1, 1)]
-    [DataRow(0, 1)]
-    [DataRow(1, 1)]
-    [DataRow(4, 4)]
-    [DataRow(32, 32)]
-    [DataRow(33, 32)]
-    [DataRow(128, 32)]
-    [DataRow(int.MaxValue, 32)]
-    public void ClampDefaultConcurrencyLevel_ShouldClampInputToValidRange(int processorCount, int expected) => Assert.AreEqual(expected, ConcurrentHashSet<int>.ClampDefaultConcurrencyLevel(processorCount));
 }

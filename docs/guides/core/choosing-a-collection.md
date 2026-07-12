@@ -85,7 +85,7 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 | Requirement | Reach for | Notes |
 |---|---|---|
 | Multi-threaded FIFO ring | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> | Implements <xref:System.Collections.Concurrent.IProducerConsumerCollection`1> over a Vyukov MPMC algorithm. |
-| Multi-threaded unique set | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> | Lock-striped hash table; disjoint writers proceed in parallel. |
+| Multi-threaded unique set | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> | Lock-free split-ordered hash set; every operation is CAS-based, so writers never block each other or readers. |
 | Single-threaded, every other scenario | All non-concurrent types in <xref:Bodu.Collections.Generic> | Wrap with external synchronisation if shared across threads. |
 
 The non-concurrent types are **not** thread-safe even for concurrent reads — <xref:Bodu.Collections.Generic.EvictingDictionary`2> mutates LRU and LFU metadata on read, and <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> mutates the element-to-slot map on every heap operation. Wrap with a lock or `ReaderWriterLockSlim` when sharing a single instance.

@@ -713,6 +713,47 @@ public sealed class CompoundFile
     }
 
     /// <summary>
+    /// Writes the standard summary-information property set into the root storage, creating or replacing the stream.
+    /// </summary>
+    /// <param name="summary">The summary information to write.</param>
+    /// <remarks>
+    /// The write counterpart of <see cref="TryGetSummaryInformation(out SummaryInformation)" />: the record's
+    /// underlying <see cref="SummaryInformation.PropertySet" /> is staged as the <c>\x05SummaryInformation</c> stream
+    /// and persisted when <see cref="Commit" /> is called.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="summary" /> is <see langword="null" />.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
+    public void SetSummaryInformation(SummaryInformation summary)
+    {
+        ThrowHelper.ThrowIfNull(summary);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        RootStorage.WritePropertySet(SummaryInformation.StreamName, summary.PropertySet);
+    }
+
+    /// <summary>
+    /// Writes the standard document-summary-information property set into the root storage, creating or replacing the
+    /// stream.
+    /// </summary>
+    /// <param name="summary">The document summary information to write.</param>
+    /// <remarks>
+    /// The write counterpart of <see cref="TryGetDocumentSummaryInformation(out DocumentSummaryInformation)" />: the
+    /// record's underlying <see cref="DocumentSummaryInformation.PropertySet" /> is staged as the
+    /// <c>\x05DocumentSummaryInformation</c> stream and persisted when <see cref="Commit" /> is called.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="summary" /> is <see langword="null" />.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
+    public void SetDocumentSummaryInformation(DocumentSummaryInformation summary)
+    {
+        ThrowHelper.ThrowIfNull(summary);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        RootStorage.WritePropertySet(DocumentSummaryInformation.StreamName, summary.PropertySet);
+    }
+
+    /// <summary>
     /// Writes the staged contents of a writable file to its destination, clearing the dirty state.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
@@ -753,6 +794,56 @@ public sealed class CompoundFile
     /// </remarks>
     public void Flush() =>
         Commit();
+
+    /// <summary>
+    /// Asynchronously writes the staged contents of a writable file to its destination, clearing the dirty state.
+    /// </summary>
+    /// <param name="cancellationToken">A token that cancels the commit before or during the write.</param>
+    /// <returns>A task that completes when the container has been written and flushed.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the staging tree cannot be represented.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">Thrown when <paramref name="cancellationToken" /> is canceled.</exception>
+    /// <remarks>
+    /// The asynchronous counterpart of <see cref="Commit" />, sharing the same layout computation. Cancellation is
+    /// observed before any destination mutation and again during the write; a cancellation or failure mid-write leaves
+    /// the destination partially written and the file dirty — the same surface a synchronous <see cref="Commit" />
+    /// fault presents — so call <see cref="CommitAsync" /> (or <see cref="Commit" />) again, or <see cref="Revert" />.
+    /// </remarks>
+    public async Task CommitAsync(CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        RequireWritable();
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (_destination!.CanSeek)
+        {
+            _destination.Position = 0;
+            _destination.SetLength(0);
+        }
+
+        await CompoundContainerLayout.WriteToAsync(_destination, _staging!, _buildOptions, cancellationToken).ConfigureAwait(false);
+        await _destination.FlushAsync(cancellationToken).ConfigureAwait(false);
+        _dirty = false;
+    }
+
+    /// <summary>
+    /// Asynchronously writes the staged contents of a writable file to its destination, clearing the dirty state.
+    /// </summary>
+    /// <param name="cancellationToken">A token that cancels the write.</param>
+    /// <returns>A task that completes when the container has been written and flushed.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the staging tree cannot be represented.
+    /// </exception>
+    /// <remarks>
+    /// This is an alias for <see cref="CommitAsync" />, named for parity with stream-style consumers.
+    /// </remarks>
+    public Task FlushAsync(CancellationToken cancellationToken = default) =>
+        CommitAsync(cancellationToken);
 
     /// <summary>
     /// Discards all staged edits since the file was opened.

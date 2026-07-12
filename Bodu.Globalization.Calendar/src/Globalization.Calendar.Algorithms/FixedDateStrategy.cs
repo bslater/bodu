@@ -34,7 +34,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <seealso href="../guides/calendar/non-gregorian-calendars.html">Working with non-Gregorian calendars (guide)
 /// </seealso> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable date rules (guide)</seealso>
 public sealed class FixedDateStrategy
-    : IDateCalculationStrategy
+    : IDateCalculationStrategy, IMultiOccurrenceCalculation
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FixedDateStrategy" /> class for the Gregorian calendar.

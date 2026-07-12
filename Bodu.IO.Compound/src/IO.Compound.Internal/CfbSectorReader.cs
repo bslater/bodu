@@ -238,6 +238,28 @@ internal sealed class CfbSectorReader
     }
 
     /// <summary>
+    /// Asynchronously reads a sub-range of a single regular sector into the destination.
+    /// </summary>
+    /// <param name="sector">The sector identifier.</param>
+    /// <param name="within">The byte offset within the sector at which to start.</param>
+    /// <param name="destination">
+    /// The buffer that receives the bytes; its length must not exceed the remaining sector bytes.
+    /// </param>
+    /// <param name="cancellationToken">A token that cancels the read.</param>
+    /// <returns>A task that completes when the bytes have been read.</returns>
+    /// <exception cref="CompoundFileFormatException">Thrown when the range lies beyond the end of the data.</exception>
+    internal ValueTask ReadWithinSectorAsync(uint sector, int within, Memory<byte> destination, CancellationToken cancellationToken)
+    {
+        long offset = ((long)(sector + 1) * _header.SectorSize) + within;
+        CompoundThrowHelper.ThrowFormatIf(
+            offset + destination.Length > _source.Length,
+            CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+            CompoundFileError.SectorOutOfRange);
+
+        return _source.ReadAsync(offset, destination, cancellationToken);
+    }
+
+    /// <summary>
     /// Builds the mini stream and mini-FAT from the root storage entry so that <see cref="ReadMiniChain(uint, long)" />
     /// can resolve small streams.
     /// </summary>

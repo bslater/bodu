@@ -4,9 +4,9 @@ title: Concurrent collections
 
 # Concurrent collections
 
-`Bodu.Collections.Generic.Concurrent` ships two thread-safe collections that pair with their non-concurrent peers in `Bodu.Collections.Generic`: `ConcurrentCircularBuffer<T>` for fixed-capacity FIFO under multi-producer / multi-consumer load, and `ConcurrentHashSet<T>` for an unordered set of unique elements under concurrent add / remove / lookup. The namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`) — install with `dotnet add package Bodu.Collections.Concurrent`.
+`Bodu.Collections.Generic.Concurrent` ships three thread-safe collections that pair with their non-concurrent peers in `Bodu.Collections.Generic`: `ConcurrentCircularBuffer<T>` for fixed-capacity FIFO under multi-producer / multi-consumer load, `ConcurrentHashSet<T>` for an unordered set of unique elements under concurrent add / remove / lookup, and `ConcurrentEvictingDictionary<TKey,TValue>` for a bounded cache with policy-driven eviction under concurrent reads and writes. The namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`) — install with `dotnet add package Bodu.Collections.Concurrent`.
 
-Reach for them when the same collection is accessed by multiple producers and consumers — external locking around `CircularBuffer<T>` or `HashSet<T>` works, but it serialises every operation behind a single monitor. The concurrent variants split contention across slots (Vyukov MPMC for the buffer) or bucket regions (lock striping for the set), so disjoint operations proceed in parallel.
+Reach for them when the same collection is accessed by multiple producers and consumers — external locking around `CircularBuffer<T>`, `HashSet<T>`, or `EvictingDictionary<TKey,TValue>` works, but it serialises every operation behind a single monitor. The concurrent variants coordinate more finely — per-slot sequence numbers (Vyukov MPMC) for the buffer, a lock-free split-ordered list for the set, and independently locked policy segments (lock striping) for the cache — so disjoint operations proceed in parallel.
 
 ## `ConcurrentCircularBuffer<T>`
 
@@ -90,7 +90,7 @@ For lightweight throughput sampling, prefer `TryDequeue` / `TryPeek` over readin
 
 ## `ConcurrentHashSet<T>`
 
-A thread-safe unordered set of unique elements backed by **lock striping**. The internal bucket array is partitioned into regions, each guarded by its own monitor; disjoint writers proceed in parallel, and `Contains` is lock-free.
+A thread-safe unordered set of unique elements backed by a **lock-free split-ordered list** (Shalev & Shavit): all elements live in one Harris–Michael lock-free ordered linked list keyed by bit-reversed hash codes, and the bucket array holds lazily created shortcut pointers into it. Every operation — `Add`, `Remove`, `Contains`, `Count`, `Clear`, `ToArray` — is lock-free; growing the table copies shortcuts but never rehashes or moves a node.
 
 ### Construction
 
@@ -112,11 +112,11 @@ The constraint is `where T : notnull` — null elements are rejected, matching t
 ```csharp
 set.Add("alpha");        // True if added, false if already present
 set.Remove("alpha");     // True if removed, false if absent
-set.Contains("alpha");   // Lock-free — never blocks a writer
-set.Clear();             // Acquires all locks
+set.Contains("alpha");   // Pure lock-free read — never blocks a writer
+set.Clear();             // Atomic lock-free swap of the whole backing structure
 ```
 
-Single-element operations (`Add`, `Remove`, `Contains`) are atomic per element. `Contains` is *lock-free* — readers never block writers, which makes the set well suited to read-heavy workloads (membership tests on a working set, deduplication of a stream).
+Single-element operations (`Add`, `Remove`, `Contains`) are atomic per element and lock-free — a preempted thread can never stall the others, and readers never block writers, which makes the set well suited to read-heavy workloads (membership tests on a working set, deduplication of a stream).
 
 ### Snapshot enumeration
 
@@ -127,34 +127,80 @@ foreach (string item in set)
 string[] snap = set.ToArray();
 ```
 
-`ToArray` and the enumerator both acquire every region lock once to capture a snapshot, then release. Enumeration is safe under concurrent mutation but does not see writes that occur after the snapshot is taken.
+`ToArray` and the enumerator capture a **weakly consistent** snapshot via a lock-free traversal: every element present for the entire duration of the capture is included and no element appears twice, but concurrent additions and removals may or may not be observed. Enumeration is safe under concurrent mutation, never throws, and does not see writes that occur after the snapshot is taken.
 
-### Approximate vs. coherent counts
+### Counting
 
 ```csharp
-int hot   = set.ApproximateCount;     // Lock-free; may slightly under- or over-count under concurrent mutation
-int exact = set.Count;                 // Acquires all locks; coherent
-bool empty = set.IsEmptyApproximate;
-bool reallyEmpty = set.IsEmpty;
+int count = set.Count;                 // Lock-free interlocked counter read; exact at quiescence
+bool empty = set.IsEmpty;
+int alias = set.ApproximateCount;      // Alias of Count, retained for compatibility
+bool aliasEmpty = set.IsEmptyApproximate;
 ```
 
-Reach for the approximate properties when reading the count on a hot path; reach for the exact `Count` only when you genuinely need a coherent view (logging on shutdown, capacity-based throttling).
+`Count` is a single lock-free counter read — exact whenever no mutation is in flight, and never off by more than the operations currently executing. `ApproximateCount` and `IsEmptyApproximate` are retained as aliases from the earlier lock-striped design; prefer `Count` and `IsEmpty` in new code.
 
 ### Bulk set operations
 
 `ConcurrentHashSet<T>` implements `ISet<T>`, so the standard `UnionWith`, `IntersectWith`, `ExceptWith`, `SymmetricExceptWith`, `IsSubsetOf`, etc. are available. They are *not* atomic — each is a sequence of per-element atomic operations over a snapshot, so concurrent mutation may interleave. For atomic snapshot-and-mutate, capture `ToArray()`, mutate the array, and bulk-update.
 
+## `ConcurrentEvictingDictionary<TKey,TValue>`
+
+The thread-safe variant of [`EvictingDictionary<TKey,TValue>`](evicting-dictionary.md): a fixed-capacity dictionary that evicts per a configurable policy, backed by **lock-striped segments**. The key comparer's hash routes each key to one of up to 32 segments; each segment is a small, exact policy cache over its own slice of the capacity, guarded by its own monitor. In an evicting cache *reads are writes* — a lookup repositions the key for recency-tracked policies — so even `TryGetValue` takes its segment's lock; the striping keeps that contention local instead of global.
+
+### Construction
+
+```csharp
+using Bodu.Collections.Generic.Concurrent;
+
+// Capacity + policy; all six EvictingDictionaryPolicy values are supported.
+var cache = new ConcurrentEvictingDictionary<string, Payload>(
+    capacity: 1024, EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+// Optional TTL layer — same EvictingDictionaryExpiration as the non-concurrent type.
+var expiring = new ConcurrentEvictingDictionary<string, Payload>(
+    capacity: 1024,
+    new EvictingDictionaryExpiration(TimeSpan.FromMinutes(5), EvictingDictionaryExpirationKind.Sliding));
+```
+
+### Core operations
+
+```csharp
+cache.Add("k", payload);                    // Add-or-replace; may evict when the segment is full
+cache.TryAdd("k", payload);                 // Add only when absent
+cache.TryGetValue("k", out var value);      // Counts as a policy access; slides a sliding TTL
+cache.Touch("k");                           // Policy access without reading or sliding
+cache.TryRemove("k", out var removed);      // Explicit removal — not an eviction, no event
+Payload p = cache.GetOrAdd("k", key => Load(key)); // Single-flight: factory runs at most once per key
+```
+
+`GetOrAdd` runs its factory *inside* the owning segment's lock, so concurrent misses on the same key invoke the factory exactly once — the cache-stampede guard. Keep factories short and never call back into the dictionary from one.
+
+### Approximate global eviction order
+
+Eviction order is **exact within a segment, approximate globally**: each segment runs the configured policy over its own capacity slice (the slices sum to `Capacity` exactly), so a hot segment may evict while a cold one has free slots. The global capacity bound is strict — the dictionary never stores more than `Capacity` entries. This is the same trade every production concurrent cache makes; a cache that maintained one global recency order would serialise all reads behind a single lock.
+
+### Eviction notifications
+
+The `ItemEvicted` event is raised **after** an eviction has been committed and after the segment lock has been released, so handlers can safely call back into the dictionary. Handler exceptions are suppressed (except `OutOfMemoryException`) because the eviction cannot be undone. There is no pre-removal `ItemEvicting` event — under concurrency it could not be honored. Explicit `TryRemove` and `Clear` are not evictions and raise no event.
+
+### Snapshots and counts
+
+`ToArray`, `Keys`, `Values`, enumeration, `Count`, and `IsEmpty` acquire every segment lock for a coherent point-in-time view; `ApproximateCount` is lock-free. Enumeration iterates a detached snapshot and never throws on concurrent modification; its order is unspecified. With TTL configured, `Count` reports the raw stored count *including* expired-but-unpurged entries — call `RemoveExpired()` to reconcile, exactly as with the non-concurrent type.
+
 ## When *not* to use these collections
 
-- **Single-threaded scenarios.** The Vyukov coordination and lock-striping overhead is a tax that single-threaded code pays for nothing. Use the non-concurrent peers in [`Bodu.Collections.Generic`](xref:Bodu.Collections.Generic).
+- **Single-threaded scenarios.** The Vyukov and split-ordered CAS coordination is a tax that single-threaded code pays for nothing. Use the non-concurrent peers in [`Bodu.Collections.Generic`](xref:Bodu.Collections.Generic).
 - **Value types.** `ConcurrentCircularBuffer<T>` constrains `T : class?` because slot publication relies on `Volatile` reference reads. For a concurrent queue of value types, use the BCL `ConcurrentQueue<T>`.
-- **Bounded waiting.** Neither collection has a blocking dequeue / blocking add. Compose with `BlockingCollection<T>` if you need consumer threads to block until an item is available.
-- **Ordered set semantics.** `ConcurrentHashSet<T>` does not maintain insertion order. For ordered concurrent semantics, an external lock around `SortedSet<T>` is usually clearer than a custom striped implementation.
+- **Bounded waiting.** None of the collections has a blocking dequeue / blocking add. Compose with `BlockingCollection<T>` if you need consumer threads to block until an item is available.
+- **Ordered set semantics.** `ConcurrentHashSet<T>` does not maintain insertion order. For ordered concurrent semantics, an external lock around `SortedSet<T>` is usually clearer than a custom concurrent implementation.
 
 ## See also
 
 - [`ConcurrentCircularBuffer<T>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1)
 - [`ConcurrentHashSet<T>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1)
+- [`ConcurrentEvictingDictionary<TKey,TValue>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2)
 - [Circular buffer guide](circular-buffer.md) — the non-concurrent peer.
+- [Evicting dictionary guide](evicting-dictionary.md) — the non-concurrent peer of the evicting cache.
 - [`Bodu.Collections.Generic.Concurrent` namespace landing](xref:Bodu.Collections.Generic.Concurrent)
 - **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

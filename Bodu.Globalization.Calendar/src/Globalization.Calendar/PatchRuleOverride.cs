@@ -28,11 +28,12 @@ internal sealed class PatchRuleOverride
     /// <param name="nonWorking">
     /// The replacement non-working-day flag, or <see langword="null" /> to leave unchanged.
     /// </param>
-    /// <param name="durationDays">The replacement duration, or <see langword="null" /> to leave unchanged.</param>
+    /// <param name="duration">The replacement duration, or <see langword="null" /> to leave unchanged.</param>
     /// <param name="applicability">
     /// The replacement applicability, or <see langword="null" /> to leave unchanged.
     /// </param>
-    /// <param name="strategy">The replacement strategy, or <see langword="null" /> to leave unchanged.</param>
+    /// <param name="strategy">The replacement single-date strategy, or <see langword="null" /> to leave unchanged.</param>
+    /// <param name="recurrence">The replacement recurrence, or <see langword="null" /> to leave unchanged.</param>
     /// <param name="adjustmentPolicyRefs">
     /// The replacement adjustment references, or <see langword="null" /> to leave unchanged.
     /// </param>
@@ -46,9 +47,10 @@ internal sealed class PatchRuleOverride
         int? priority,
         NotableDateCategory? category,
         bool? nonWorking,
-        int? durationDays,
+        NotableDateDurationDefinition? duration,
         RuleApplicability? applicability,
         IDateCalculationStrategy? strategy,
+        IDateRecurrenceStrategy? recurrence,
         IReadOnlyList<string>? adjustmentPolicyRefs,
         IReadOnlyList<string>? tags)
         : base(notableDateRef)
@@ -59,9 +61,10 @@ internal sealed class PatchRuleOverride
         Priority = priority;
         Category = category;
         NonWorking = nonWorking;
-        DurationDays = durationDays;
+        Duration = duration;
         Applicability = applicability;
         Strategy = strategy;
+        Recurrence = recurrence;
         AdjustmentPolicyRefs = adjustmentPolicyRefs;
         Tags = tags;
     }
@@ -93,8 +96,8 @@ internal sealed class PatchRuleOverride
     /// <summary>
     /// Gets the replacement duration.
     /// </summary>
-    /// <value>The duration, or <see langword="null" /> to leave unchanged.</value>
-    public int? DurationDays { get; }
+    /// <value>The duration definition, or <see langword="null" /> to leave unchanged.</value>
+    public NotableDateDurationDefinition? Duration { get; }
 
     /// <summary>
     /// Gets the replacement applicability.
@@ -103,10 +106,16 @@ internal sealed class PatchRuleOverride
     public RuleApplicability? Applicability { get; }
 
     /// <summary>
-    /// Gets the replacement strategy.
+    /// Gets the replacement single-date strategy.
     /// </summary>
     /// <value>The strategy, or <see langword="null" /> to leave unchanged.</value>
     public IDateCalculationStrategy? Strategy { get; }
+
+    /// <summary>
+    /// Gets the replacement recurrence.
+    /// </summary>
+    /// <value>The recurrence, or <see langword="null" /> to leave unchanged.</value>
+    public IDateRecurrenceStrategy? Recurrence { get; }
 
     /// <summary>
     /// Gets the replacement adjustment references.

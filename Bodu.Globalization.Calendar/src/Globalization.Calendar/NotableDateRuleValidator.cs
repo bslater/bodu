@@ -254,43 +254,104 @@ internal static class NotableDateRuleValidator
         ICollection<NotableDateValidationDiagnostic> diagnostics,
         INotableDateAlgorithmRegistry? algorithms)
     {
-        switch (rule.Strategy)
+        if (rule.Strategy is IDateCalculationStrategy strategy)
+            ValidateStrategy(resource, definition, rule, strategy, isEndStrategy: false, diagnostics, algorithms);
+
+        if (rule.Duration is CalculatedEndDateDurationDefinition calculated)
+            ValidateStrategy(resource, definition, rule, calculated.EndStrategy, isEndStrategy: true, diagnostics, algorithms);
+    }
+
+    /// <summary>
+    /// Reports unresolved, ambiguous, or recurring references and unrecognized algorithm keys for a single strategy,
+    /// selecting primary or duration-end-strategy diagnostic codes.
+    /// </summary>
+    /// <param name="resource">The resource being validated.</param>
+    /// <param name="definition">The owning concept.</param>
+    /// <param name="rule">The rule to validate.</param>
+    /// <param name="strategy">The strategy to validate.</param>
+    /// <param name="isEndStrategy">Whether the strategy is a calculated duration's end strategy.</param>
+    /// <param name="diagnostics">The collection that receives diagnostics.</param>
+    /// <param name="algorithms">The custom algorithm registry whose keys are accepted, or <see langword="null" />.</param>
+    private static void ValidateStrategy(
+        NotableDateResource resource,
+        NotableDateDefinition definition,
+        NotableDateRule rule,
+        IDateCalculationStrategy strategy,
+        bool isEndStrategy,
+        ICollection<NotableDateValidationDiagnostic> diagnostics,
+        INotableDateAlgorithmRegistry? algorithms)
+    {
+        if (strategy is AlgorithmDateStrategy algorithm && !AlgorithmDateStrategy.IsKnownKey(algorithm.Key) && !(algorithms?.Contains(algorithm.Key) ?? false))
         {
-            case OffsetFromRuleStrategy offset:
-            {
-                string reference = string.IsNullOrEmpty(offset.RuleRef)
-                        ? offset.NotableDateRef
-                        : $"{offset.NotableDateRef}/{offset.RuleRef}";
-
-                int matches = CountReferenceMatches(resource, offset.NotableDateRef, offset.RuleRef);
-                if (matches == 0)
-                {
-                    diagnostics.Add(new NotableDateValidationDiagnostic(
-                        NotableDateValidationSeverity.Error,
-                        "BODU-CAL-OFFSET-MISSING",
-                        string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_OffsetReferenceNotFound, definition.Id, rule.Id, reference)));
-                }
-                else if (matches > 1)
-                {
-                    diagnostics.Add(new NotableDateValidationDiagnostic(
-                        NotableDateValidationSeverity.Error,
-                        "BODU-CAL-OFFSET-AMBIGUOUS",
-                        string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_OffsetReferenceAmbiguous, definition.Id, rule.Id, reference)));
-                }
-
-                break;
-            }
-
-            case AlgorithmDateStrategy algorithm when !AlgorithmDateStrategy.IsKnownKey(algorithm.Key) && !(algorithms?.Contains(algorithm.Key) ?? false):
-                diagnostics.Add(new NotableDateValidationDiagnostic(
-                    NotableDateValidationSeverity.Error,
-                    "BODU-CAL-ALGORITHM",
-                    string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_UnknownAlgorithm, definition.Id, rule.Id, algorithm.Key)));
-                break;
-
-            default:
-                break;
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                isEndStrategy ? "BODU-CAL-DURATION-ALGORITHM" : "BODU-CAL-ALGORITHM",
+                string.Format(CultureInfo.CurrentCulture, isEndStrategy ? CalendarResourceStrings.Validation_DurationUnknownAlgorithm : CalendarResourceStrings.Validation_UnknownAlgorithm, definition.Id, rule.Id, algorithm.Key)));
         }
+
+        if (ReferenceOf(strategy) is not { } referencePair)
+            return;
+
+        (string notableDateRef, string? ruleRef) = referencePair;
+        string reference = string.IsNullOrEmpty(ruleRef) ? notableDateRef : $"{notableDateRef}/{ruleRef}";
+        int matches = CountReferenceMatches(resource, notableDateRef, ruleRef);
+
+        if (matches == 0)
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                isEndStrategy ? "BODU-CAL-DURATION-OFFSET-MISSING" : "BODU-CAL-OFFSET-MISSING",
+                string.Format(CultureInfo.CurrentCulture, isEndStrategy ? CalendarResourceStrings.Validation_DurationOffsetReferenceNotFound : CalendarResourceStrings.Validation_OffsetReferenceNotFound, definition.Id, rule.Id, reference)));
+        }
+        else if (matches > 1)
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                isEndStrategy ? "BODU-CAL-DURATION-OFFSET-AMBIGUOUS" : "BODU-CAL-OFFSET-AMBIGUOUS",
+                string.Format(CultureInfo.CurrentCulture, isEndStrategy ? CalendarResourceStrings.Validation_DurationOffsetReferenceAmbiguous : CalendarResourceStrings.Validation_OffsetReferenceAmbiguous, definition.Id, rule.Id, reference)));
+        }
+        else if (ReferencedRuleIsRecurring(resource, notableDateRef, ruleRef))
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                "BODU-CAL-REF-RECURRING",
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_ReferenceIsRecurring, definition.Id, rule.Id, reference)));
+        }
+    }
+
+    /// <summary>
+    /// Extracts the notable-date and rule references of a referential strategy.
+    /// </summary>
+    /// <param name="strategy">The strategy to inspect.</param>
+    /// <returns>The reference pair, or <see langword="null" /> when the strategy is not referential.</returns>
+    private static (string NotableDateRef, string? RuleRef)? ReferenceOf(IDateCalculationStrategy strategy) =>
+        strategy switch
+        {
+            OffsetFromRuleStrategy s => (s.NotableDateRef, s.RuleRef),
+            WeekdayNearRuleStrategy s => (s.NotableDateRef, s.RuleRef),
+            NthWeekdayFromRuleStrategy s => (s.NotableDateRef, s.RuleRef),
+            WorkingDayOffsetFromRuleStrategy s => (s.NotableDateRef, s.RuleRef),
+            _ => null,
+        };
+
+    /// <summary>
+    /// Determines whether a reference resolves to a rule whose occurrence source is a recurrence.
+    /// </summary>
+    /// <param name="resource">The resource being validated.</param>
+    /// <param name="notableDateRef">The referenced concept id.</param>
+    /// <param name="ruleRef">The referenced rule id, or <see langword="null" /> for the sole rule.</param>
+    /// <returns><see langword="true" /> when the reference resolves to a recurrence rule; otherwise <see langword="false" />.</returns>
+    private static bool ReferencedRuleIsRecurring(NotableDateResource resource, string notableDateRef, string? ruleRef)
+    {
+        NotableDateDefinition? target = resource.FindDefinition(notableDateRef);
+        if (target is null)
+            return false;
+
+        if (string.IsNullOrEmpty(ruleRef))
+            return target.Rules.Count == 1 && target.Rules[0].Recurrence is not null;
+
+        NotableDateRule? referenced = target.Rules.FirstOrDefault(r => string.Equals(r.Id, ruleRef, StringComparison.Ordinal));
+        return referenced?.Recurrence is not null;
     }
 
     /// <summary>

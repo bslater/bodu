@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Arg_Invalid_IsoCodeShape" xml:space="preserve">
+    <value>Currency code must be a three-character uppercase ISO-style code.</value>
+    <comment>Duplicated from Bodu.Financial FinancialResourceStrings.resx (shared currency-validation wording) - keep the two copies in sync.</comment>
+  </data>
+  <data name="Arg_Invalid_UnknownCurrencyRejected" xml:space="preserve">
+    <value>Currency '{0}' is not a known ISO 4217 currency.</value>
+    <comment>Duplicated from Bodu.Financial FinancialResourceStrings.resx (shared currency-validation wording) - keep the two copies in sync.</comment>
+  </data>
+  <data name="Json_Invalid_AmountMustBeNumber" xml:space="preserve">
+    <value>The 'amount' property must be a number.</value>
+  </data>
+  <data name="Json_Invalid_BalanceMustBeNumber" xml:space="preserve">
+    <value>The balance for '{0}' must be a number.</value>
+  </data>
+  <data name="Json_Invalid_BalancesMustBeObject" xml:space="preserve">
+    <value>The 'balances' property must be a JSON object.</value>
+  </data>
+  <data name="Json_Invalid_CompactCurrencyPairForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact CurrencyPair form.</value>
+  </data>
+  <data name="Json_Invalid_CompactMoneyForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact Money form.</value>
+  </data>
+  <data name="Json_Invalid_CompactMoneyOfTCurrencyForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact Money&lt;{1}&gt; form.</value>
+  </data>
+  <data name="Json_Invalid_CurrencyMismatch" xml:space="preserve">
+    <value>The JSON 'currency' value '{0}' does not match the expected currency '{1}'.</value>
+  </data>
+  <data name="Json_Invalid_CurrencyMustBeString" xml:space="preserve">
+    <value>The 'currency' property must be a string.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateAmount" xml:space="preserve">
+    <value>The JSON object contains a duplicate 'amount' property.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateCurrency" xml:space="preserve">
+    <value>The JSON object contains a duplicate 'currency' property.</value>
+  </data>
+  <data name="Json_Invalid_DuplicateProperty" xml:space="preserve">
+    <value>The JSON object contains a duplicate '{0}' property.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedCompactString_CurrencyPair" xml:space="preserve">
+    <value>Expected a JSON string in compact CurrencyPair form (e.g. "USD/JPY").</value>
+  </data>
+  <data name="Json_Invalid_ExpectedCompactString_Money" xml:space="preserve">
+    <value>Expected a JSON string in compact Money form (e.g. "19.99 USD").</value>
+  </data>
+  <data name="Json_Invalid_ExpectedCompactString_MoneyOfTCurrency" xml:space="preserve">
+    <value>Expected a JSON string in compact Money&lt;{0}&gt; form (e.g. "19.99 USD").</value>
+  </data>
+  <data name="Json_Invalid_ExpectedObject_CurrencyPair" xml:space="preserve">
+    <value>Expected a JSON object containing an CurrencyPair.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedObject_ExchangeRate" xml:space="preserve">
+    <value>Expected a JSON object containing an ExchangeRate.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedObject_Money" xml:space="preserve">
+    <value>Expected a JSON object containing a Money.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedObject_MoneyBag" xml:space="preserve">
+    <value>Expected a JSON object containing a MoneyBag.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedObject_MoneyOfTCurrency" xml:space="preserve">
+    <value>Expected a JSON object containing a Money amount.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedPropertyName" xml:space="preserve">
+    <value>Expected a JSON property name.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedPropertyNameInBalances" xml:space="preserve">
+    <value>Expected a JSON property name inside 'balances'.</value>
+  </data>
+  <data name="Json_Invalid_MissingAmount" xml:space="preserve">
+    <value>The JSON object is missing the required 'amount' property.</value>
+  </data>
+  <data name="Json_Invalid_MissingCurrency" xml:space="preserve">
+    <value>The JSON object is missing the required 'currency' property.</value>
+  </data>
+  <data name="Json_Invalid_MissingRequiredProperty" xml:space="preserve">
+    <value>The JSON object is missing the required '{0}' property.</value>
+  </data>
+  <data name="Json_Invalid_PropertyMustBeBoolean" xml:space="preserve">
+    <value>The '{0}' property must be a boolean.</value>
+  </data>
+  <data name="Json_Invalid_PropertyMustBeDateString" xml:space="preserve">
+    <value>The '{0}' property must be an ISO date string (yyyy-MM-dd).</value>
+  </data>
+  <data name="Json_Invalid_PropertyMustBeNumber" xml:space="preserve">
+    <value>The '{0}' property must be a number.</value>
+  </data>
+  <data name="Json_Invalid_PropertyMustBeString" xml:space="preserve">
+    <value>The '{0}' property must be a string.</value>
+  </data>
+  <data name="Json_Invalid_UnexpectedEnd" xml:space="preserve">
+    <value>Unexpected end of JSON.</value>
+  </data>
+  <data name="Json_Invalid_UnexpectedEndInBalances" xml:space="preserve">
+    <value>Unexpected end of JSON inside 'balances'.</value>
+  </data>
+  <data name="Op_Invalid_UnableToCreateConverter" xml:space="preserve">
+    <value>Unable to create a JSON converter for '{0}'.</value>
+  </data>
+</root>

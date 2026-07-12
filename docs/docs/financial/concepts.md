@@ -179,7 +179,7 @@ The bag is the type that models the **aggregate-then-convert** pattern: accumula
 
 ## JSON policies
 
-<xref:Bodu.Financial.Serialization.FinancialJsonPolicy> selects the wire shape and parsing strictness used by the shipped `System.Text.Json` converters:
+<xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> (from the companion `Bodu.Financial.Serialization.Json` package) selects the wire shape and parsing strictness used by the `System.Text.Json` converters:
 
 | Policy | Shape | Use case |
 |---|---|---|
@@ -187,7 +187,7 @@ The bag is the type that models the **aggregate-then-convert** pattern: accumula
 | `Lenient` | Same shape as `Strict`, but also normalises lowercase ISO codes to uppercase and trims surrounding whitespace before validation. | Import workflows that ingest spreadsheets and external feeds. Not suitable as a canonical storage shape. |
 | `Compact` | Single JSON string `"19.99 USD"` for money; flat object `{ "USD": 19.99, "EUR": 12.34 }` for bags. Reads accept either ISO-prefix or ISO-suffix string forms. | Wire-size-sensitive APIs and human-readable logs. |
 
-Register a policy via `options.AddFinancialJsonConverters(policy)`; this installs the five financial converters — for `Money<TCurrency>` (through a `JsonConverterFactory`), `Money`, `MoneyBag`, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair>. Converters added to <xref:System.Text.Json.JsonSerializerOptions.Converters> take precedence over the type-level `[JsonConverter]` attribute that defaults to `Strict`.
+Register a policy via `options.AddFinancialJsonConverters(policy)`; this installs the five financial converters — for `Money<TCurrency>` (through a `JsonConverterFactory`), `Money`, `MoneyBag`, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair>. Registration is required — the core types carry no `[JsonConverter]` attribute, and the core library is serialization-agnostic.
 
 ## Demonetisation
 

@@ -21,7 +21,6 @@
       <text x="10" y="78">ICurrency catalogue</text>
       <text x="10" y="94">ExchangeRate</text>
       <text x="10" y="118"><tspan fill="#94A3B8">rounding · allocation</tspan></text>
-      <text x="10" y="134"><tspan fill="#94A3B8">JSON converters</tspan></text>
     </g>
   </g>
 
@@ -50,7 +49,6 @@
       <text x="10" y="76"><tspan fill="#34D399"> .UseCurrencyResolution</tspan></text>
       <text x="10" y="100"><tspan fill="#94A3B8" font-size="9">named monetary contexts</tspan></text>
       <text x="10" y="116"><tspan fill="#94A3B8" font-size="9">currency lookup</tspan></text>
-      <text x="10" y="132"><tspan fill="#94A3B8" font-size="9">financial JSON</tspan></text>
     </g>
   </g>
 

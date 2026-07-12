@@ -68,14 +68,5 @@ namespace Bodu.Financial.DependencyInjection {
                 return ResourceManager.GetString("Arg_Invalid_MonetaryContextNameBlank", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The financial options are invalid: JsonPolicy and UnknownCurrency must each be a defined enumeration value..
-        /// </summary>
-        internal static string Op_Invalid_FinancialOptions {
-            get {
-                return ResourceManager.GetString("Op_Invalid_FinancialOptions", resourceCulture);
-            }
-        }
     }
 }

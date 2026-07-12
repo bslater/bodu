@@ -132,7 +132,7 @@ Lookup surface — `IDatedRateProvider` exposes a symmetric matrix of single-dat
 - Single-date `GetRate` / `GetRateAsync` (timeless and dated overloads) return a `RateLookupResult` — the resolved `ExchangeRate` plus the `RequestedDate`, the `RateDateResolution` that was applied, and the `OffsetDays` between the requested and resolved dates. Resolution and tolerance are controlled per call through `RateLookupOptions`.
 - Range `GetRates` / `GetRatesAsync` return a `RateRangeResult`: the observations within the window ordered by date, the requested window (`RequestedStartDate` / `RequestedEndDate`), and the observed span (`FirstObservedDate` / `LastObservedDate`, plus `Count` / `IsEmpty`). The result *is* the rate sequence — it implements `IReadOnlyList<ExchangeRate>`, so it indexes, enumerates, and composes with LINQ directly, while comparing the requested window to the observed span reveals how much of the window carried data.
 
-HTTP-backed providers (`Bodu.Financial.ExchangeRates.{Yahoo,Boe,Ecb,Rba,Ofx,Xe,Oanda}`) share the `WebRateProvider` base from the separate [`Bodu.Financial.ExchangeRates`](../Bodu.Financial.ExchangeRates) infrastructure package (this core package carries no HTTP machinery), which centralizes accumulation, the snapshot/lookup matrix, on-demand fetch coalescing, and the `HistoryAvailability` each provider advertises (how far back it serves rates — unbounded, a fixed earliest date, or a rolling window such as OANDA's ~180 days). Each provider offers two constructors and is `IDisposable`:
+HTTP-backed providers (`Bodu.Financial.ExchangeRates.{Yahoo,Boe,Ecb,Rba,Ofx,Xe,Oanda,Fixer,ExchangeRateHost,Fred,Imf}`) share the `WebRateProvider` base from the separate [`Bodu.Financial.ExchangeRates`](../Bodu.Financial.ExchangeRates) infrastructure package (this core package carries no HTTP machinery), which centralizes accumulation, the snapshot/lookup matrix, on-demand fetch coalescing, and the `HistoryAvailability` each provider advertises (how far back it serves rates — unbounded, a fixed earliest date, or a rolling window such as OANDA's ~180 days). Each provider offers two constructors and is `IDisposable`:
 
 - `new XProvider(options, ...)` — the provider builds, owns, and disposes its own `HttpClient` (created via `RateProviderHttpClientFactory.Create`). Dispose the provider to release it.
 - `new XProvider(httpClient, options, ...)` — the caller supplies the client and owns its lifetime; the provider never disposes a borrowed client. This is the form the `*.DependencyInjection` packages use with `IHttpClientFactory`.
@@ -184,11 +184,21 @@ Compact-notation overloads (`ToCompactString(...)`) add a K/M/B/T magnitude suff
 
 ## Serialization
 
-JSON converters for `Money`, `Money<TCurrency>`, `MoneyBag`, and `ExchangeRate` support three policies:
+`Bodu.Financial` is serialization-agnostic — the monetary types carry no `[JsonConverter]` attribute and the core library ships no `System.Text.Json` integration of its own. JSON converters for `Money`, `Money<TCurrency>`, `MoneyBag`, `ExchangeRate`, and `CurrencyPair` live in the companion [`Bodu.Financial.Serialization.Json`](https://github.com/bslater/bodu/tree/master/Bodu.Financial.Serialization.Json) package; registration is required:
+
+```csharp
+using Bodu.Financial.Serialization.Json;
+
+var options = new JsonSerializerOptions().AddFinancialJsonConverters(FinancialJsonPolicy.Strict);
+```
+
+Three policies control the wire shape:
 
 - **Strict** (default) — object form `{ "amount": 19.99, "currency": "AUD" }`; rejects duplicate keys and mismatched / lowercase ISO codes.
 - **Lenient** — accepts lowercase currency codes and surrounding whitespace.
 - **Compact** — accepts the round-trip string form `"19.99 AUD"`.
+
+> **Migration note.** Earlier builds shipped the converters inside `Bodu.Financial` and serialized through type-level `[JsonConverter]` attributes with zero configuration. Without the registration above, `JsonSerializer` now falls back to reflection-shaped output instead of the canonical shapes.
 
 ## Currency catalogue
 

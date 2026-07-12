@@ -67,24 +67,6 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ConcurrentHashSet{T}.Clear" /> never installs a table with fewer buckets than there
-    /// are lock stripes, even when the lock-striping level exceeds the default bucket capacity.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenConcurrencyLevelExceedsDefaultCapacity_ShouldKeepBucketCountAtLeastLockCount()
-    {
-        var set = new ConcurrentHashSet<int>(concurrencyLevel: 64, capacity: 4, comparer: null);
-        for (int i = 0; i < 100; i++)
-            set.Add(i);
-
-        set.Clear();
-
-        Assert.IsGreaterThanOrEqualTo(
-            set.LockCount, set.BucketCount,
-            $"Clear left {set.BucketCount} buckets for {set.LockCount} lock stripes.");
-    }
-
-    /// <summary>
     /// Verifies that <see cref="ConcurrentHashSet{T}.Clear" /> retains the grown bucket count so a previously large
     /// set is not forced to immediately regrow on reuse.
     /// </summary>

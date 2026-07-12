@@ -400,7 +400,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="NotSupportedException">The rule uses a non-Gregorian calendar.</exception>
     private static JsonObject BuildRuleJson(NotableDateRuleBuilder rule, bool requireStrategy)
     {
-        if (requireStrategy && rule.Strategy is null)
+        if (requireStrategy && rule.Strategy is null && rule.Recurrence is null)
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Op_Invalid_RuleStrategyNotSet, rule.Id));
 
         if (rule.Calendar is CalendarSystem calendar && calendar != CalendarSystem.Gregorian)
@@ -419,10 +419,65 @@ public sealed partial class NotableDateDocumentBuilder
         if (rule.Strategy is not null)
             result["strategy"] = BuildStrategyJson(rule.Strategy);
 
+        if (rule.Recurrence is not null)
+            result["recurrence"] = BuildRecurrenceJson(rule.Recurrence);
+
+        if (rule.EndStrategy is not null)
+        {
+            result["duration"] = new JsonObject
+            {
+                ["untilDate"] = new JsonObject
+                {
+                    ["startBoundary"] = rule.EndStartBoundary.ToString(),
+                    ["endBoundary"] = rule.EndEndBoundary.ToString(),
+                    ["selection"] = rule.EndSelectionValue.ToString(),
+                    ["strategy"] = BuildStrategyJson(rule.EndStrategy),
+                },
+            };
+        }
+
         if (rule.Tags.Count > 0) result["tags"] = BuildStringArray(rule.Tags);
         if (rule.Adjustments.Count > 0) result["adjustments"] = BuildStringArray(rule.Adjustments);
 
         return result;
+    }
+
+    /// <summary>
+    /// Builds the JSON <c>recurrence</c> object from a recurrence element, mapping its kind name and attributes.
+    /// </summary>
+    /// <param name="recurrence">The <c>Recurrence</c> element.</param>
+    /// <returns>The serialized recurrence object.</returns>
+    private static JsonObject BuildRecurrenceJson(XElement recurrence)
+    {
+        XElement kind = recurrence.Elements().First();
+        JsonObject inner = new();
+
+        foreach (XAttribute attribute in kind.Attributes())
+        {
+            inner[attribute.Name.LocalName] = attribute.Name.LocalName switch
+            {
+                "intervalDays" or "intervalWeeks" or "intervalMonths" or "dayOfMonth" => JsonValue.Create(int.Parse(attribute.Value, CultureInfo.InvariantCulture)),
+                _ => JsonValue.Create(attribute.Value),
+            };
+        }
+
+        if (kind.Name.LocalName == "Weekly")
+        {
+            JsonArray days = new();
+            foreach (XElement day in kind.Elements(BuilderXml.s_namespace + "Day"))
+                days.Add(JsonValue.Create((string?)day.Attribute("dayOfWeek") ?? string.Empty));
+            inner["days"] = days;
+        }
+
+        string key = kind.Name.LocalName switch
+        {
+            "DailyInterval" => "dailyInterval",
+            "Weekly" => "weekly",
+            "MonthlyDay" => "monthlyDay",
+            _ => "monthlyWeekday",
+        };
+
+        return new JsonObject { [key] = inner };
     }
 
     /// <summary>
@@ -457,7 +512,7 @@ public sealed partial class NotableDateDocumentBuilder
         {
             inner[attribute.Name.LocalName] = attribute.Name.LocalName switch
             {
-                "day" or "offsetDays" => JsonValue.Create(int.Parse(attribute.Value, CultureInfo.InvariantCulture)),
+                "day" or "offsetDays" or "ordinal" or "week" or "offsetWorkingDays" or "referenceYearOffset" => JsonValue.Create(int.Parse(attribute.Value, CultureInfo.InvariantCulture)),
                 "skipLeapMonth" or "sweepCalendarYears" => JsonValue.Create(BuilderXml.ParseBool(attribute.Value) ?? false),
                 _ => JsonValue.Create(attribute.Value),
             };
@@ -470,6 +525,13 @@ public sealed partial class NotableDateDocumentBuilder
             "WeekdayNearDate" => "weekdayNearDate",
             "RelativeWeekdayInMonth" => "relativeWeekdayInMonth",
             "OffsetFromRule" => "offsetFromRule",
+            "WeekdayNearRule" => "weekdayNearRule",
+            "NthWeekdayFromRule" => "nthWeekdayFromRule",
+            "WorkingDayOffsetFromRule" => "workingDayOffsetFromRule",
+            "WorkingDayInMonth" => "workingDayInMonth",
+            "OrdinalDayOfMonth" => "ordinalDayOfMonth",
+            "IsoWeekDate" => "isoWeekDate",
+            "DayOfYear" => "dayOfYear",
             _ => "algorithm",
         };
 

@@ -17,7 +17,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// These helpers moved here from the core library so that <c>Bodu.Numerics</c> takes no dependency on
 /// <see cref="System.Text.Json" />. Each call configures a fresh <see cref="JsonSerializerOptions" /> and registers the
 /// numeric converters; for repeated serialization prefer building one <see cref="JsonSerializerOptions" /> with
-/// <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" /> and reusing it.
+/// <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" /> and reusing it.
 /// </remarks>
 public static class FractionJsonExtensions
 {
@@ -35,7 +35,7 @@ public static class FractionJsonExtensions
     public static string ToJson<T>(this Fraction<T> value, NumericsJsonPolicy policy = NumericsJsonPolicy.Strict)
         where T : IBinaryInteger<T>
     {
-        var options = new JsonSerializerOptions().ConfigureForBoduNumerics(policy);
+        var options = new JsonSerializerOptions().AddNumericsJsonConverters(policy);
         return JsonSerializer.Serialize(value, options);
     }
 
@@ -60,7 +60,7 @@ public static class FractionJsonExtensions
     {
         ThrowHelper.ThrowIfNull(json);
 
-        var options = new JsonSerializerOptions().ConfigureForBoduNumerics(policy);
+        var options = new JsonSerializerOptions().AddNumericsJsonConverters(policy);
         return JsonSerializer.Deserialize<Fraction<T>>(json, options);
     }
 }

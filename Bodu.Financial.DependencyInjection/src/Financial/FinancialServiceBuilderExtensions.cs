@@ -4,11 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Text.Json;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.DependencyInjection;
 using Bodu.Financial.ExchangeRates;
-using Bodu.Financial.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -16,7 +14,7 @@ namespace Bodu.Financial;
 
 /// <summary>
 /// Provides the fluent registration surface for <see cref="IFinancialServiceBuilder" />: currency lookup, named
-/// monetary contexts, exchange-rate providers, and JSON policy.
+/// monetary contexts, and exchange-rate providers.
 /// </summary>
 /// <remarks>
 /// <example>
@@ -27,17 +25,13 @@ namespace Bodu.Financial;
 /// services.AddFinancialService(builder => builder
 ///     .AddCurrencyLookup<MyCurrencyLookup>()
 ///     .AddMonetaryContext("payroll", new MonetaryContext(CurrencyCode.EUR))
-///     .AddExchangeRateProvider<MyRateProvider>()
-///     .AddFinancialJson(FinancialJsonPolicy.Compact));
+///     .AddExchangeRateProvider<MyRateProvider>());
 ///]]>
 /// </code>
 /// </example>
 /// </remarks>
 public static class FinancialServiceBuilderExtensions
 {
-    /// <summary>The service key under which the configured financial <see cref="JsonSerializerOptions" /> is registered.</summary>
-    public const string JsonOptionsKey = "Financial";
-
     /// <summary>
     /// Replaces the registered <see cref="ICurrencyLookup" /> with <typeparamref name="TLookup" />.
     /// </summary>
@@ -141,22 +135,6 @@ public static class FinancialServiceBuilderExtensions
         ThrowHelper.ThrowIfNull(provider);
 
         builder.Services.TryAddSingleton(provider);
-        return builder;
-    }
-
-    /// <summary>
-    /// Registers a <see cref="JsonSerializerOptions" /> configured with the financial converters under the
-    /// <paramref name="policy" />, keyed by <see cref="JsonOptionsKey" />.
-    /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <param name="policy">The serialization policy.</param>
-    /// <returns>The builder, for chaining.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="builder" /> is <see langword="null" />.</exception>
-    public static IFinancialServiceBuilder AddFinancialJson(this IFinancialServiceBuilder builder, FinancialJsonPolicy policy = FinancialJsonPolicy.Strict)
-    {
-        ThrowHelper.ThrowIfNull(builder);
-
-        builder.Services.AddKeyedSingleton(JsonOptionsKey, (_, _) => new JsonSerializerOptions().AddFinancialJsonConverters(policy));
         return builder;
     }
 }

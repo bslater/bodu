@@ -21,7 +21,7 @@ using Bodu.IO.Hashing.Checksums;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var fletcher = new Fletcher32();
+var fletcher = new Fletcher32();
 fletcher.Append(data);
 byte[] digest = fletcher.GetCurrentHash();
 string hex = Convert.ToHexString(digest);  // 4 bytes, 8 hex characters, big-endian B‖A
@@ -36,7 +36,7 @@ The BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=na
 ```csharp
 using Bodu.IO.Hashing.Checksums;
 
-using var fletcher = new Fletcher64();
+var fletcher = new Fletcher64();
 
 fletcher.Append(chunk1);                  // update A and B
 fletcher.Append(chunk2);                  // continue
@@ -54,7 +54,7 @@ fletcher.Reset();                         // back to zeroed A and B
 ```csharp
 using Bodu.IO.Hashing.Checksums;
 
-using var fletcher = new Fletcher32();
+var fletcher = new Fletcher32();
 
 using (FileStream fs = File.OpenRead("archive.bin"))
 {

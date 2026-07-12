@@ -22,7 +22,7 @@ public class DiscreteIntervalJsonConverterTests
     /// <param name="policy">The policy under test.</param>
     /// <returns>The configured options.</returns>
     private static JsonSerializerOptions Options(NumericsJsonPolicy policy) =>
-        new JsonSerializerOptions().ConfigureForBoduNumerics(policy);
+        new JsonSerializerOptions().AddNumericsJsonConverters(policy);
 
     /// <summary>
     /// Verifies that the Compact form of a bounded discrete interval is the canonical closed bracket string.

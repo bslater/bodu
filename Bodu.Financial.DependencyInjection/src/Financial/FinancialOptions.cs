@@ -4,19 +4,17 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Financial.Serialization;
-
 namespace Bodu.Financial;
 
 /// <summary>
 /// Configuration-bindable options for the Bodu.Financial dependency-injection surface.
 /// </summary>
+/// <remarks>
+/// The type currently declares no options of its own; it remains the binding target for the
+/// <c>AddFinancialService</c> configuration section so future options bind without an API change. JSON serialization
+/// options live in the companion <c>Bodu.Financial.Serialization.Json</c> package and are registered via its
+/// <c>AddFinancialJson</c> extension.
+/// </remarks>
 public sealed class FinancialOptions
 {
-    /// <summary>
-    /// Gets or sets the JSON serialization policy applied to the financial JSON options that <c>AddFinancialService</c>
-    /// registers, unless a later <c>AddFinancialJson</c> overrides it.
-    /// </summary>
-    /// <value>The configured policy; defaults to <see cref="FinancialJsonPolicy.Strict" />.</value>
-    public FinancialJsonPolicy JsonPolicy { get; set; } = FinancialJsonPolicy.Strict;
 }

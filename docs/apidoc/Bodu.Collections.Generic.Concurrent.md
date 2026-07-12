@@ -11,7 +11,7 @@ uid: Bodu.Collections.Generic.Concurrent
 ## Key types
 
 - <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> — thread-safe variant of <xref:Bodu.Collections.Generic.CircularBuffer`1> implementing `IProducerConsumerCollection<T>` over the Vyukov MPMC algorithm. Same overwrite semantics as the non-concurrent base.
-- <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> — thread-safe hash set with concurrent add / remove / contains; backed by a partitioned segment design for predictable contention behaviour.
+- <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> — thread-safe hash set with concurrent add / remove / contains; backed by a lock-free split-ordered list, so every operation completes without taking a lock.
 
 ## Example
 
@@ -29,7 +29,7 @@ while (ring.TryTake(out long item))
 
 ## Notes
 
-- **Lock-free.** `ConcurrentCircularBuffer<T>` uses the Vyukov bounded MPMC algorithm — no `lock` statements on the hot path.
+- **Lock-free.** `ConcurrentCircularBuffer<T>` uses the Vyukov bounded MPMC algorithm and `ConcurrentHashSet<T>` a split-ordered list — no `lock` statements anywhere; a preempted thread can never stall the others.
 - **Producer-consumer semantics.** Implements `IProducerConsumerCollection<T>`, so it composes with `BlockingCollection<T>` if you need blocking semantics on top.
 - **Related namespaces.** The non-concurrent peers (<xref:Bodu.Collections.Generic.CircularBuffer`1> and the rest of the catalogue) live in <xref:Bodu.Collections.Generic>, shipped by the `Bodu.Collections` package this one depends on.
 - **See also:** the [concurrent collections guide](~/guides/core/concurrent-collections.md), the [circular buffer guide](~/guides/core/circular-buffer.md), and the [Bodu.Collections.Concurrent introduction](~/docs/collections-concurrent/index.md).

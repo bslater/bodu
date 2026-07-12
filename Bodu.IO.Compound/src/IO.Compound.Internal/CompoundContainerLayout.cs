@@ -28,7 +28,7 @@ namespace Bodu.IO.Compound.Internal;
 /// byte-compatible with the reader and with other conforming parsers.
 /// </para>
 /// </remarks>
-internal static class CompoundContainerLayout
+internal static partial class CompoundContainerLayout
 {
     /// <summary>The fixed size, in bytes, of a directory entry.</summary>
     private const int DirectoryEntrySize = 128;
@@ -73,6 +73,46 @@ internal static class CompoundContainerLayout
     /// <param name="options">The options controlling the output layout.</param>
     /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
     internal static void WriteTo(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options)
+    {
+        EmissionPlan plan = PreparePlan(root, options);
+        var writer = new SectorWriter(destination, plan.SectorSize);
+
+        EmitHeader(writer, plan);
+        EmitDirectory(writer, plan.Entries);
+        if (plan.MiniFatSectors > 0)
+            EmitMiniFat(writer, plan);
+
+        if (plan.MiniStreamSectors > 0)
+        {
+            EmitMiniStream(writer, plan.Entries);
+            writer.PadToSector();
+        }
+
+        foreach (Entry entry in plan.Entries)
+        {
+            if (entry.IsRegularStream)
+            {
+                CopyContent(writer, entry);
+                writer.WriteZeros((CeilDiv(entry.Size, plan.SectorSize) * plan.SectorSize) - entry.Size);
+            }
+        }
+
+        EmitFat(writer, plan);
+
+        if (plan.DifatSectors > 0)
+            EmitDifat(writer, plan);
+    }
+
+    /// <summary>
+    /// Computes the container geometry — the directory entries and every sector count and start index — without
+    /// emitting any bytes, so the synchronous and asynchronous emit paths consume one plan and cannot diverge in
+    /// layout.
+    /// </summary>
+    /// <param name="root">The root storage to serialize.</param>
+    /// <param name="options">The options controlling the output layout.</param>
+    /// <returns>The precomputed emission plan.</returns>
+    /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
+    private static EmissionPlan PreparePlan(CompoundStorageBuilder root, CompoundBuildOptions options)
     {
         int sectorSize = options.SectorSize;
         int entriesPerSector = sectorSize / 4;
@@ -134,46 +174,23 @@ internal static class CompoundContainerLayout
         if (totalSectors >= CfbHeader.DifatSector)
             throw new CompoundFileSerializationException(CompoundResourceStrings.Op_Invalid_CompoundBuilderTooLarge);
 
-        var writer = new SectorWriter(destination, sectorSize);
-
-        EmitHeader(writer, isVersion4, fatSectors, directoryStart, directorySectors, miniFatStart, miniFatSectors, difatStart, difatSectors, fatStart);
-        EmitDirectory(writer, entries);
-        if (miniFatSectors > 0)
-            EmitMiniFat(writer, entries, totalMiniSectors, miniFatSectors, entriesPerSector);
-
-        if (miniStreamSectors > 0)
-        {
-            EmitMiniStream(writer, entries);
-            writer.PadToSector();
-        }
-
-        foreach (Entry entry in entries)
-        {
-            if (entry.IsRegularStream)
-            {
-                CopyContent(writer, entry);
-                writer.WriteZeros((CeilDiv(entry.Size, sectorSize) * sectorSize) - entry.Size);
-            }
-        }
-
-        EmitFat(
-            writer,
+        return new EmissionPlan(
             entries,
-            dataSectorCount,
-            fatStart,
-            fatSectors,
-            difatSectors,
+            sectorSize,
+            entriesPerSector,
+            isVersion4,
             directoryStart,
             directorySectors,
             miniFatStart,
             miniFatSectors,
             miniStreamStart,
             miniStreamSectors,
-            sectorSize,
-            entriesPerSector);
-
-        if (difatSectors > 0)
-            EmitDifat(writer, fatStart, fatSectors, difatStart, difatSectors, entriesPerSector);
+            totalMiniSectors,
+            dataSectorCount,
+            fatStart,
+            fatSectors,
+            difatStart,
+            difatSectors);
     }
 
     /// <summary>
@@ -297,53 +314,45 @@ internal static class CompoundContainerLayout
     }
 
     /// <summary>
-    /// Emits the header sector: the 512-byte header followed by zero padding to the sector boundary.
+    /// Builds the 512-byte header from the plan into the supplied buffer.
     /// </summary>
-    /// <param name="writer">The destination sector writer.</param>
-    /// <param name="isVersion4">Whether the file uses the version-4 (4096-byte sector) layout.</param>
-    /// <param name="fatSectors">The number of FAT sectors.</param>
-    /// <param name="directoryStart">The index of the first directory sector.</param>
-    /// <param name="directorySectors">The number of directory sectors.</param>
-    /// <param name="miniFatStart">The index of the first mini-FAT sector.</param>
-    /// <param name="miniFatSectors">The number of mini-FAT sectors.</param>
-    /// <param name="difatStart">The index of the first DIFAT sector.</param>
-    /// <param name="difatSectors">The number of DIFAT sectors.</param>
-    /// <param name="fatStart">The index of the first FAT sector.</param>
-    private static void EmitHeader(
-        SectorWriter writer,
-        bool isVersion4,
-        long fatSectors,
-        long directoryStart,
-        long directorySectors,
-        uint miniFatStart,
-        long miniFatSectors,
-        long difatStart,
-        long difatSectors,
-        long fatStart)
+    /// <param name="plan">The emission plan.</param>
+    /// <param name="h">The 512-byte destination span.</param>
+    private static void BuildHeader(EmissionPlan plan, Span<byte> h)
     {
-        Span<byte> h = stackalloc byte[512];
         h.Clear();
         CfbHeader.Signature.CopyTo(h);
         BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(24), MinorVersion);
-        BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(26), (ushort)(isVersion4 ? 4 : 3));
+        BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(26), (ushort)(plan.IsVersion4 ? 4 : 3));
         BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(28), ByteOrderMarker);
-        BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(30), (ushort)(isVersion4 ? 12 : 9));
+        BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(30), (ushort)(plan.IsVersion4 ? 12 : 9));
         BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(32), 6);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(40), isVersion4 ? (uint)directorySectors : 0);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(44), (uint)fatSectors);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(48), (uint)directoryStart);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(40), plan.IsVersion4 ? (uint)plan.DirectorySectors : 0);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(44), (uint)plan.FatSectors);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(48), (uint)plan.DirectoryStart);
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(56), MiniStreamCutoff);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(60), miniFatSectors > 0 ? miniFatStart : CfbHeader.EndOfChain);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(64), (uint)miniFatSectors);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(68), difatSectors > 0 ? (uint)difatStart : CfbHeader.EndOfChain);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(72), (uint)difatSectors);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(60), plan.MiniFatSectors > 0 ? plan.MiniFatStart : CfbHeader.EndOfChain);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(64), (uint)plan.MiniFatSectors);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(68), plan.DifatSectors > 0 ? (uint)plan.DifatStart : CfbHeader.EndOfChain);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(72), (uint)plan.DifatSectors);
 
-        long inlineCount = Math.Min(fatSectors, CfbHeader.HeaderDifatCount);
+        long inlineCount = Math.Min(plan.FatSectors, CfbHeader.HeaderDifatCount);
         for (int i = 0; i < CfbHeader.HeaderDifatCount; i++)
         {
-            uint value = i < inlineCount ? (uint)(fatStart + i) : CfbHeader.FreeSector;
+            uint value = i < inlineCount ? (uint)(plan.FatStart + i) : CfbHeader.FreeSector;
             BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(76 + (i * 4)), value);
         }
+    }
+
+    /// <summary>
+    /// Emits the header sector: the 512-byte header followed by zero padding to the sector boundary.
+    /// </summary>
+    /// <param name="writer">The destination sector writer.</param>
+    /// <param name="plan">The emission plan.</param>
+    private static void EmitHeader(SectorWriter writer, EmissionPlan plan)
+    {
+        Span<byte> h = stackalloc byte[512];
+        BuildHeader(plan, h);
 
         writer.WriteBytes(h);
         writer.PadToSector();
@@ -371,19 +380,16 @@ internal static class CompoundContainerLayout
     /// Emits the mini-FAT sectors, chaining each mini-stream member and padding with free markers.
     /// </summary>
     /// <param name="writer">The destination sector writer.</param>
-    /// <param name="entries">The directory entries.</param>
-    /// <param name="totalMiniSectors">The total number of mini sectors.</param>
-    /// <param name="miniFatSectors">The number of mini-FAT sectors.</param>
-    /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
-    private static void EmitMiniFat(SectorWriter writer, List<Entry> entries, int totalMiniSectors, long miniFatSectors, int entriesPerSector)
+    /// <param name="plan">The emission plan.</param>
+    private static void EmitMiniFat(SectorWriter writer, EmissionPlan plan)
     {
-        foreach (Entry entry in entries)
+        foreach (Entry entry in plan.Entries)
         {
             if (entry.IsMiniStream)
                 WriteChain(writer, entry.StartSector, CeilDiv(entry.Size, MiniSectorSize));
         }
 
-        WriteFree(writer, (miniFatSectors * entriesPerSector) - totalMiniSectors);
+        WriteFree(writer, (plan.MiniFatSectors * plan.EntriesPerSector) - plan.TotalMiniSectors);
     }
 
     /// <summary>
@@ -408,80 +414,50 @@ internal static class CompoundContainerLayout
     /// markers.
     /// </summary>
     /// <param name="writer">The destination sector writer.</param>
-    /// <param name="entries">The directory entries.</param>
-    /// <param name="dataSectorCount">The number of non-FAT, non-DIFAT sectors.</param>
-    /// <param name="fatStart">The index of the first FAT sector.</param>
-    /// <param name="fatSectors">The number of FAT sectors.</param>
-    /// <param name="difatSectors">The number of DIFAT sectors.</param>
-    /// <param name="directoryStart">The index of the first directory sector.</param>
-    /// <param name="directorySectors">The number of directory sectors.</param>
-    /// <param name="miniFatStart">The index of the first mini-FAT sector.</param>
-    /// <param name="miniFatSectors">The number of mini-FAT sectors.</param>
-    /// <param name="miniStreamStart">The index of the first mini-stream sector.</param>
-    /// <param name="miniStreamSectors">The number of mini-stream sectors.</param>
-    /// <param name="sectorSize">The regular sector size, in bytes.</param>
-    /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
-    private static void EmitFat(
-        SectorWriter writer,
-        List<Entry> entries,
-        long dataSectorCount,
-        long fatStart,
-        long fatSectors,
-        long difatSectors,
-        long directoryStart,
-        long directorySectors,
-        uint miniFatStart,
-        long miniFatSectors,
-        uint miniStreamStart,
-        long miniStreamSectors,
-        int sectorSize,
-        int entriesPerSector)
+    /// <param name="plan">The emission plan.</param>
+    private static void EmitFat(SectorWriter writer, EmissionPlan plan)
     {
-        WriteChain(writer, (uint)directoryStart, directorySectors);
-        if (miniFatSectors > 0)
-            WriteChain(writer, miniFatStart, miniFatSectors);
+        WriteChain(writer, (uint)plan.DirectoryStart, plan.DirectorySectors);
+        if (plan.MiniFatSectors > 0)
+            WriteChain(writer, plan.MiniFatStart, plan.MiniFatSectors);
 
-        if (miniStreamSectors > 0)
-            WriteChain(writer, miniStreamStart, miniStreamSectors);
+        if (plan.MiniStreamSectors > 0)
+            WriteChain(writer, plan.MiniStreamStart, plan.MiniStreamSectors);
 
-        foreach (Entry entry in entries)
+        foreach (Entry entry in plan.Entries)
         {
             if (entry.IsRegularStream)
-                WriteChain(writer, entry.StartSector, CeilDiv(entry.Size, sectorSize));
+                WriteChain(writer, entry.StartSector, CeilDiv(entry.Size, plan.SectorSize));
         }
 
-        for (long i = 0; i < fatSectors; i++)
+        for (long i = 0; i < plan.FatSectors; i++)
             writer.WriteUInt32(CfbHeader.FatSector);
 
-        for (long i = 0; i < difatSectors; i++)
+        for (long i = 0; i < plan.DifatSectors; i++)
             writer.WriteUInt32(CfbHeader.DifatSector);
 
-        long totalSectors = dataSectorCount + fatSectors + difatSectors;
-        WriteFree(writer, (fatSectors * entriesPerSector) - totalSectors);
+        long totalSectors = plan.DataSectorCount + plan.FatSectors + plan.DifatSectors;
+        WriteFree(writer, (plan.FatSectors * plan.EntriesPerSector) - totalSectors);
     }
 
     /// <summary>
     /// Emits the extended DIFAT sectors, each carrying FAT-sector indices and a chain pointer.
     /// </summary>
     /// <param name="writer">The destination sector writer.</param>
-    /// <param name="fatStart">The index of the first FAT sector.</param>
-    /// <param name="fatSectors">The number of FAT sectors.</param>
-    /// <param name="difatStart">The index of the first DIFAT sector.</param>
-    /// <param name="difatSectors">The number of DIFAT sectors.</param>
-    /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
-    private static void EmitDifat(SectorWriter writer, long fatStart, long fatSectors, long difatStart, long difatSectors, int entriesPerSector)
+    /// <param name="plan">The emission plan.</param>
+    private static void EmitDifat(SectorWriter writer, EmissionPlan plan)
     {
-        int slotsPerSector = entriesPerSector - 1;
+        int slotsPerSector = plan.EntriesPerSector - 1;
         long fatIndex = CfbHeader.HeaderDifatCount;
-        for (long s = 0; s < difatSectors; s++)
+        for (long s = 0; s < plan.DifatSectors; s++)
         {
             for (int j = 0; j < slotsPerSector; j++)
             {
-                writer.WriteUInt32(fatIndex < fatSectors ? (uint)(fatStart + fatIndex) : CfbHeader.FreeSector);
+                writer.WriteUInt32(fatIndex < plan.FatSectors ? (uint)(plan.FatStart + fatIndex) : CfbHeader.FreeSector);
                 fatIndex++;
             }
 
-            writer.WriteUInt32(s == difatSectors - 1 ? CfbHeader.EndOfChain : (uint)(difatStart + s + 1));
+            writer.WriteUInt32(s == plan.DifatSectors - 1 ? CfbHeader.EndOfChain : (uint)(plan.DifatStart + s + 1));
         }
     }
 
@@ -562,7 +538,7 @@ internal static class CompoundContainerLayout
     /// <summary>
     /// Buffers output one sector at a time and flushes whole sectors to a destination stream.
     /// </summary>
-    private sealed class SectorWriter
+    private sealed partial class SectorWriter
     {
         /// <summary>The destination stream.</summary>
         private readonly Stream _destination;

@@ -15,7 +15,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// applying a configurable <see cref="NumericsJsonPolicy" /> to every closed converter the factory produces.
 /// </summary>
 /// <remarks>
-/// Register this factory through <see cref="NumericsJsonSerializerOptionsExtensions.ConfigureForBoduNumerics" />; the
+/// Register this factory through <see cref="NumericsJsonSerializerOptionsExtensions.AddNumericsJsonConverters" />; the
 /// core <see cref="IntervalSet{T}" /> type carries no <see cref="JsonConverterAttribute" /> so that
 /// <c>Bodu.Numerics</c> stays serialization-agnostic.
 /// </remarks>

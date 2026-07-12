@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Text;
 
 namespace Bodu.Globalization.Calendar;
@@ -81,4 +82,99 @@ public static class CommonNotableDateResources
             return reader.ReadToEnd();
         });
     }
+
+    /// <summary>
+    /// Resolves a bundled catalogue to its embedded XML content by its strongly-typed name.
+    /// </summary>
+    /// <param name="catalog">The catalogue to resolve.</param>
+    /// <returns>
+    /// The catalogue XML, or <see langword="null" /> when the catalogue is not bundled with this assembly.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="catalog" /> is not a defined <see cref="CommonNotableDateCatalog" /> value.
+    /// </exception>
+    public static string? Resolve(CommonNotableDateCatalog catalog)
+    {
+        ThrowHelper.ThrowIfEnumValueIsUndefined(catalog);
+
+        return Resolve(GetResourceName(catalog));
+    }
+
+    /// <summary>
+    /// Loads and validates a bundled catalogue into a <see cref="NotableDateResource" /> by its strongly-typed name,
+    /// resolving any nested imports against the other bundled catalogues.
+    /// </summary>
+    /// <param name="catalog">The catalogue to load.</param>
+    /// <returns>The materialized <see cref="NotableDateResource" /> for the requested catalogue.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="catalog" /> is not a defined <see cref="CommonNotableDateCatalog" /> value.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The catalogue's content is not bundled with this assembly.
+    /// </exception>
+    /// <remarks>
+    /// This is the direct path from a strongly-typed name to a usable resource — for example
+    /// <c>CommonNotableDateResources.Load(CommonNotableDateCatalog.GlobalAll)</c> materializes the entire bundled
+    /// <c>global-all</c> catalogue ready to hand to a <see cref="NotableDateService" />.
+    /// </remarks>
+    public static NotableDateResource Load(CommonNotableDateCatalog catalog)
+    {
+        ThrowHelper.ThrowIfEnumValueIsUndefined(catalog);
+
+        string name = GetResourceName(catalog);
+        string? content = Resolve(name);
+        if (content is null)
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Op_Invalid_CommonCatalogNotBundled, name));
+
+        return NotableDateResourceLoader.Load(content, Resolver);
+    }
+
+    /// <summary>
+    /// Gets the bare resource name (for example <c>christian-western</c>) for a strongly-typed catalogue, suitable for
+    /// an <c>Import</c> directive or a direct <see cref="Resolve(string)" /> call.
+    /// </summary>
+    /// <param name="catalog">The catalogue whose resource name to return.</param>
+    /// <returns>The bare, kebab-case resource name that identifies the catalogue.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="catalog" /> is not a defined <see cref="CommonNotableDateCatalog" /> value.
+    /// </exception>
+    public static string GetResourceName(CommonNotableDateCatalog catalog) =>
+        catalog switch
+        {
+            CommonNotableDateCatalog.Catholic => "catholic",
+            CommonNotableDateCatalog.ChristianAnglican => "christian-anglican",
+            CommonNotableDateCatalog.ChristianOrientalOrthodox => "christian-oriental-orthodox",
+            CommonNotableDateCatalog.ChristianOrthodox => "christian-orthodox",
+            CommonNotableDateCatalog.ChristianProtestant => "christian-protestant",
+            CommonNotableDateCatalog.ChristianWestern => "christian-western",
+            CommonNotableDateCatalog.DefaultMinimal => "default-minimal",
+            CommonNotableDateCatalog.GlobalAll => "global-all",
+            CommonNotableDateCatalog.GlobalAnchors => "global-anchors",
+            CommonNotableDateCatalog.GlobalAnimals => "global-animals",
+            CommonNotableDateCatalog.GlobalBahai => "global-bahai",
+            CommonNotableDateCatalog.GlobalBuddhist => "global-buddhist",
+            CommonNotableDateCatalog.GlobalCore => "global-core",
+            CommonNotableDateCatalog.GlobalCultural => "global-cultural",
+            CommonNotableDateCatalog.GlobalEducation => "global-education",
+            CommonNotableDateCatalog.GlobalEnvironment => "global-environment",
+            CommonNotableDateCatalog.GlobalFamilySocial => "global-family-social",
+            CommonNotableDateCatalog.GlobalFamily => "global-family",
+            CommonNotableDateCatalog.GlobalFood => "global-food",
+            CommonNotableDateCatalog.GlobalHealth => "global-health",
+            CommonNotableDateCatalog.GlobalHindu => "global-hindu",
+            CommonNotableDateCatalog.GlobalIslamicUmmAlQura => "global-islamic-umm-al-qura",
+            CommonNotableDateCatalog.GlobalIslamic => "global-islamic",
+            CommonNotableDateCatalog.GlobalJain => "global-jain",
+            CommonNotableDateCatalog.GlobalJewish => "global-jewish",
+            CommonNotableDateCatalog.GlobalLunar => "global-lunar",
+            CommonNotableDateCatalog.GlobalMultidayNormalization => "global-multiday-normalization",
+            CommonNotableDateCatalog.GlobalPersian => "global-persian",
+            CommonNotableDateCatalog.GlobalRemembrance => "global-remembrance",
+            CommonNotableDateCatalog.GlobalScience => "global-science",
+            CommonNotableDateCatalog.GlobalSikh => "global-sikh",
+            CommonNotableDateCatalog.GlobalSocial => "global-social",
+            CommonNotableDateCatalog.GlobalUn => "global-un",
+            CommonNotableDateCatalog.GlobalZoroastrian => "global-zoroastrian",
+            _ => throw new ArgumentOutOfRangeException(nameof(catalog)),
+        };
 }

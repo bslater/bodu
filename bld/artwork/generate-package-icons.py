@@ -201,6 +201,7 @@ ICONS = {
     "Bodu.Numerics.Serialization.Json":  ("numjson", "#A78BFA", "JSON", "braces"),
     "Bodu.Financial":                    ("fin", "#34D399", "FIN", "coin"),
     "Bodu.Financial.DependencyInjection": ("findi", "#34D399", "FDI", "plug"),
+    "Bodu.Financial.Serialization.Json": ("finjson", "#34D399", "JSON", "braces"),
     "Bodu.Globalization.Calendar":       ("cal", "#FBBF24", "CAL", "grid"),
     "Bodu.Globalization.Calendar.Builder": ("calb", "#FBBF24", "BLD", "pills"),
     "Bodu.Globalization.Calendar.DependencyInjection": ("caldi", "#60A5FA", "CDI", "plug"),

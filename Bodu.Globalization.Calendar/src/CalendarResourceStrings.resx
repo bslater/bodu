@@ -153,4 +153,49 @@
   <data name="Format_Invalid_TerritoryCode" xml:space="preserve">
     <value>'{0}' is not a valid territory code; expected a two-letter country optionally followed by a hyphen and a one-to-three alphanumeric subdivision.</value>
   </data>
+  <data name="Op_Invalid_CommonCatalogNotBundled" xml:space="preserve">
+    <value>The common catalogue '{0}' is not bundled with this assembly.</value>
+  </data>
+  <data name="Arg_Invalid_RecurrenceWeekdaysEmpty" xml:space="preserve">
+    <value>The weekly recurrence requires at least one weekday.</value>
+  </data>
+  <data name="Arg_Invalid_RecurrenceWeekdaysDuplicate" xml:space="preserve">
+    <value>The weekly recurrence weekday set must not contain duplicate weekdays.</value>
+  </data>
+  <data name="Arg_Invalid_RecurrenceAnchorRequired" xml:space="preserve">
+    <value>A recurrence interval greater than one requires an anchor date.</value>
+  </data>
+  <data name="Arg_OutOfRange_OrdinalZero" xml:space="preserve">
+    <value>The ordinal must not be zero.</value>
+  </data>
+  <data name="Validation_DurationConflict" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': a rule must not declare both durationDays and a calculated end-date duration.</value>
+  </data>
+  <data name="Validation_DurationEndStrategyMissing" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the calculated end-date duration is missing an end strategy.</value>
+  </data>
+  <data name="Validation_DurationOffsetReferenceNotFound" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the calculated end-date duration references '{2}', which resolves to no rule.</value>
+  </data>
+  <data name="Validation_DurationOffsetReferenceAmbiguous" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the calculated end-date duration reference '{2}' is ambiguous; specify a ruleRef.</value>
+  </data>
+  <data name="Validation_DurationUnknownAlgorithm" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the calculated end-date duration algorithm key '{2}' is not recognized.</value>
+  </data>
+  <data name="Validation_RecurrenceInvalid" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the recurrence definition is invalid. {2}</value>
+  </data>
+  <data name="Validation_OccurrenceSourceConflict" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': a rule must not declare both a strategy and a recurrence.</value>
+  </data>
+  <data name="Validation_InvalidOrdinalValue" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': ordinal '{2}' is invalid.</value>
+  </data>
+  <data name="Validation_InvalidWeekValue" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': ISO week '{2}' is out of range.</value>
+  </data>
+  <data name="Validation_ReferenceIsRecurring" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': referenced rule '{2}' is a recurrence and cannot be used as a singular reference.</value>
+  </data>
 </root>

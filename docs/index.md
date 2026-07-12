@@ -60,7 +60,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 <div class="bodu-card">
   <img src="images/hero-collections-concurrent.svg" alt="Bodu.Collections.Concurrent" />
   <h3>Bodu.Collections.Concurrent</h3>
-  <p>The thread-safe collection companion — a lock-free Vyukov MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> implementing <code>IProducerConsumerCollection&lt;T&gt;</code>, and a lock-striped <code>ConcurrentHashSet&lt;T&gt;</code> with lock-free reads and snapshot enumeration. Depends on <code>Bodu.Collections</code>.</p>
+  <p>The thread-safe collection companion — a lock-free Vyukov MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> implementing <code>IProducerConsumerCollection&lt;T&gt;</code>, and a lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code> with snapshot enumeration. Depends on <code>Bodu.Collections</code>.</p>
   <div class="bodu-card-links">
     <a href="docs/collections-concurrent/index.md">Introduction</a>
     <a href="guides/core/concurrent-collections.md">Guides</a>
@@ -246,7 +246,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 ## Binary Formats & I/O
 
 <div class="bodu-topic">
-<p class="bodu-topic-lede">Read-only readers for legacy binary container and document formats — a general-purpose compound-file reader with narrower format readers layered on top. <a href="docs/topics/binary-formats.md">Topic overview →</a></p>
+<p class="bodu-topic-lede">Legacy binary container and document formats — a general-purpose compound-file container (read, edit, and author) with narrower read-only format readers layered on top. <a href="docs/topics/binary-formats.md">Topic overview →</a></p>
 </div>
 
 <div class="bodu-cards">
@@ -254,7 +254,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 <div class="bodu-card">
   <img src="images/hero-io-compound.svg" alt="Bodu.IO.Compound" />
   <h3>Bodu.IO.Compound</h3>
-  <p>A read-only reader for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>). Navigates the <code>RootStorage</code> hierarchy, reads each named stream's bytes through a seekable <code>CompoundStream</code> cursor (buffered or on-demand), and parses the OLE summary-information property sets. The narrow BIFF8 <code>.xls</code> reader <code>Bodu.Formats.Excel.Binary</code> is built on top of it.</p>
+  <p>A reader, editor, and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>). Navigates the <code>RootStorage</code> hierarchy, reads each named stream's bytes through a seekable <code>CompoundStream</code> cursor (buffered or on-demand), edits and authors containers with a transactional <code>Commit</code> / <code>CommitAsync</code>, and reads and writes the OLE summary-information property sets. The narrow BIFF8 <code>.xls</code> reader <code>Bodu.Formats.Excel.Binary</code> is built on top of it.</p>
   <div class="bodu-card-links">
     <a href="docs/io-compound/index.md">Introduction</a>
     <a href="guides/io-compound/index.md">Guides</a>

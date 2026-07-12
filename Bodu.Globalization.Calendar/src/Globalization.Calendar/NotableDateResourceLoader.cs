@@ -421,12 +421,8 @@ public static class NotableDateResourceLoader
         if (overrideTerritory || overrideAdjustments)
         {
             rules = [.. concept.Rules
-                .Select(r => new NotableDateRule(
-                    r.Id,
-                    r.Priority,
-                    r.Category,
-                    r.NonWorking,
-                    r.DurationDays,
+                .Select(r => CloneRule(
+                    r,
                     overrideTerritory
                         ? new RuleApplicability(
                             r.Applicability.Calendar,
@@ -438,13 +434,24 @@ public static class NotableDateResourceLoader
                             r.Applicability.EveryYears,
                             r.Applicability.AnchorYear)
                         : r.Applicability,
-                    r.Strategy,
-                    overrideAdjustments ? use.AdjustmentPolicyRefs! : r.AdjustmentPolicyRefs,
-                    r.Tags))];
+                    overrideAdjustments ? use.AdjustmentPolicyRefs! : r.AdjustmentPolicyRefs))];
         }
 
         return new NotableDateDefinition(id, concept.DisplayName, category, nonWorking, concept.DefaultDurationDays, concept.Tags, rules);
     }
+
+    /// <summary>
+    /// Reconstructs a rule with a replacement applicability and adjustment references, preserving its full duration and
+    /// its occurrence source (single-date strategy or recurrence).
+    /// </summary>
+    /// <param name="rule">The rule to clone.</param>
+    /// <param name="applicability">The replacement applicability.</param>
+    /// <param name="adjustmentPolicyRefs">The replacement adjustment references.</param>
+    /// <returns>The reconstructed rule.</returns>
+    private static NotableDateRule CloneRule(NotableDateRule rule, RuleApplicability applicability, IReadOnlyList<string> adjustmentPolicyRefs) =>
+        rule.Recurrence is IDateRecurrenceStrategy recurrence
+            ? new NotableDateRule(rule.Id, rule.Priority, rule.Category, rule.NonWorking, rule.Duration, applicability, recurrence, adjustmentPolicyRefs, rule.Tags)
+            : new NotableDateRule(rule.Id, rule.Priority, rule.Category, rule.NonWorking, rule.Duration, applicability, rule.Strategy!, adjustmentPolicyRefs, rule.Tags);
 
     /// <summary>
     /// Parses imported content as JSON when its first significant character opens a JSON value, otherwise as XML.

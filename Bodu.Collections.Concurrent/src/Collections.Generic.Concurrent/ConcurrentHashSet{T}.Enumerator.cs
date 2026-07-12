@@ -11,13 +11,16 @@ namespace Bodu.Collections.Generic.Concurrent;
 public sealed partial class ConcurrentHashSet<T>
 {
     /// <summary>
-    /// Enumerates a point-in-time snapshot of a <see cref="ConcurrentHashSet{T}" />.
+    /// Enumerates a weakly consistent snapshot of a <see cref="ConcurrentHashSet{T}" />.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The enumerator captures a snapshot of the set's elements when it is created, by calling
     /// <see cref="ConcurrentHashSet{T}.ToArray" />. All iteration runs over that fixed copy and is unaffected by
-    /// concurrent additions or removals on the originating set.
+    /// concurrent additions or removals on the originating set. The snapshot itself is <b>weakly consistent</b> (see
+    /// <see cref="ConcurrentHashSet{T}.ToArray" />): it contains every element present for the entire duration of its
+    /// capture and never contains an element twice, but it is not guaranteed to correspond to the set's state at any
+    /// single instant.
     /// </para>
     /// <para>
     /// Because the snapshot is taken eagerly, creating the enumerator allocates an array proportional to the number of
@@ -31,7 +34,7 @@ public sealed partial class ConcurrentHashSet<T>
     public struct Enumerator
         : IEnumerator<T>
     {
-        /// <summary>The point-in-time snapshot of the set's elements captured when the enumerator was created.</summary>
+        /// <summary>The weakly consistent snapshot of the set's elements captured when the enumerator was created.</summary>
         private readonly T[] _snapshot;
 
         /// <summary>The element exposed by <see cref="Current" /> for the current position.</summary>

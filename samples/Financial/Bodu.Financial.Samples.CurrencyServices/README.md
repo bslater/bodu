@@ -74,7 +74,8 @@ yields the identical settlement — consumers take `[FromKeyedServices("Retail")
 ### FinancialServiceHost (`Scenarios/FinancialServiceHost.cs`)
 
 **Intent.** The composition root, end to end: one `AddFinancialService()` call registers the
-core services; the returned builder adds JSON policy and a rate provider; and
+core services; the returned builder adds a rate provider; `AddFinancialJson` (from the
+`Bodu.Financial.Serialization.Json` companion package) registers the JSON policy; and
 `UseCurrencyResolution()` promotes the container's lookup to the ambient seam once at startup.
 
 **What it does.** Composes a `ServiceCollection` with `AddFinancialService()`,
@@ -93,7 +94,7 @@ AUD/USD       : 0.6580 [Config]
 
 The JSON line prints the compact string shape because the *keyed options* carry the policy the
 builder configured — consumers resolve `JsonSerializerOptions` by the
-`FinancialServiceBuilderExtensions.JsonOptionsKey` key instead of building their own. The rate
+`FinancialJsonServiceCollectionExtensions.JsonOptionsKey` key instead of building their own. The rate
 line comes from the registered offline instance; a live provider package would replace that one
 registration with its `Add<Source>ExchangeRates()` and nothing else changes.
 

@@ -12,6 +12,15 @@ namespace Bodu.Formats.Excel;
 /// <remarks>
 /// A workbook declares its date system through the date-mode record. The two systems differ by 1,462 days, so a serial
 /// number must be paired with the correct system to recover the intended calendar date.
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // The same serial number names two different days depending on the workbook's system.
+/// DateOnly windows = ExcelSerialDate.FromSerialDate(45000.0, ExcelDateSystem.Excel1900); // 2023-03-15
+/// DateOnly mac     = ExcelSerialDate.FromSerialDate(45000.0, ExcelDateSystem.Excel1904); // 2027-03-16
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 public enum ExcelDateSystem
 {

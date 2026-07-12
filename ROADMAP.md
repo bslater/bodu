@@ -3,11 +3,26 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-07-08. Since the previous revision, step 2 of the
-**Numerics growth wave has landed — `BigDecimal`** ships as an
+*Last updated: 2026-07-10. Since the previous revision,
+**`Bodu.Financial` was restructured**: the currency surface now lives in
+`Bodu.Financial.Currencies`, the FX core in
+`Bodu.Financial.ExchangeRates`, the `Exchange`-stuttered type names were
+de-stuttered (`RateBook`, `RateSeries`, `CachingRateProvider`, …), and
+the `WebRateProvider` / `PairWebRateProvider<TSeries>` web-provider
+machinery was extracted into its own **`Bodu.Financial.ExchangeRates`
+package** that every per-source provider references. A
+**runnable-samples suite** landed alongside — a `samples/` tree covering
+Financial, Calendar, the text libraries, and the IO group (IO.Hashing,
+IO.Compound, Formats.Excel), with snippet-compile guards keeping the
+guide snippets building, a live FX sample, and a testing
+guide — and the FX libraries gained a **swallowed-exception logging
+pass** plus follow-up renames (`IHistoryAwareRateProvider` →
+`IHistoricalRateProvider`, `RbaEra` → `RbaEraWorkbook`). Before that,
+step 2 of the
+**Numerics growth wave landed — `BigDecimal`** ships as an
 arbitrary-precision decimal with the full `INumber<BigDecimal>`
 generic-math surface, span/UTF-8 parse and format, rounding, and a
-JSON converter registered through `ConfigureForBoduNumerics` — and
+JSON converter registered through `AddNumericsJsonConverters` — and
 step 3, the **running-statistics aggregates**, has landed as well
 (`RunningStatistics<T>` / `RunningQuantile<T>` accumulators and the
 rolling-window `MovingSum<T>` / `MovingMinMax<T>` companions),
@@ -35,9 +50,11 @@ contract, and the **`Hotp` / `Totp`** one-time-password codes — and the
 **Numerics growth wave** began (now complete: `Interval<T>` extensions,
 `BigDecimal`, and the running-statistics aggregates have all
 landed — see Active focus). A
-release-discipline pass has since moved `Bodu.Numerics` from Stable back
-to **Preview** until its serialization, result-type, and documentation
-conventions catch up with the expanded interval model (see *API-stability
+release-discipline pass earlier moved `Bodu.Numerics` from Stable to
+**Preview**; its serialization and documentation conventions have since
+caught up (JSON now ships in the `Bodu.Numerics.Serialization.Json`
+companion), and the tier now holds only while the new `BigDecimal` and
+statistics surfaces settle (see *API-stability
 tiers*). This revision also folds in a **cross-ecosystem gap review** —
 Bodu's surface compared against the highest-adoption Java (Guava, Apache
 Commons, libphonenumber, ical4j / Quartz, Caffeine) and Python (stdlib
@@ -62,9 +79,9 @@ ref-struct `Utf8*Reader` / `Utf8*Writer` + `*Serializer` + mutable/read-only
 DOM quartet; (3) the **container + office-format reader** pair
 `Bodu.IO.Compound` (OLE2/CFB read + edit + fluent authoring) and
 `Bodu.Formats.Excel.Binary` (read-only BIFF8 `.xls`); (4) the entire
-**`Bodu.Financial.ExchangeRates.*` ecosystem** — seven web providers (Boe,
-Ecb, Rba, Yahoo, Ofx, Xe, Oanda) over a shared `WebRateProvider`
-base, the provider-agnostic caching layer (`CachingRateProvider`,
+**`Bodu.Financial.ExchangeRates.*` ecosystem** — eleven web providers (Boe,
+Ecb, Rba, Yahoo, Ofx, Xe, Oanda, Fixer, ExchangeRateHost, Fred, Imf) over a
+shared `WebRateProvider` base, the provider-agnostic caching layer (`CachingRateProvider`,
 `AggregatingRateProvider`) with in-memory / TOML / JSON / SQLite /
 distributed backends, and per-package DI; and (5) DI packages for
 `Bodu.Financial` and the calendar service, plus the calendar plugin loader.
@@ -135,7 +152,7 @@ exercised on the smallest self-contained units first.
 | `Bodu.Core` | The dependency root — buffers, extension surfaces, threading primitives, sequences, `WeekPattern`, `ThrowHelper`, text-encoding utilities. |
 | `Bodu.Collections` | The specialized collection catalogue (incl. the graphs/trees pillars), split out of Core; references `Bodu.Core`. Namespaces unchanged (`Bodu.Collections.*`). |
 | `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and the interval algebra (`Interval<T>` / `DiscreteInterval<T>` / `IntervalSet<T>`) over `INumber<T>`. Serialization-agnostic — no `System.Text.Json` dependency. |
-| `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`ConfigureForBoduNumerics`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
+| `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`AddNumericsJsonConverters`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
 | `Bodu.IO.Hashing` | Non-cryptographic hashing + the full RevEng CRC catalogue + the check-digit family. |
 | `Bodu.Text.Encoding` | Base16/32/58/62/64/85 + Base45 + Bech32/Bech32m. |
 | `Bodu.Security.Cryptography` | Block/stream ciphers, AEAD, keyed/crypto hashes, the asymmetric family, KDFs, HPKE. |
@@ -167,7 +184,7 @@ exercised on the smallest self-contained units first.
 | Package | Notes |
 | --- | --- |
 | `Bodu.Financial.ExchangeRates.DependencyInjection` | Shared `AddWebRateProvider` machinery (named `HttpClient` + Polly resilience). |
-| `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Xe,Oanda}` | Per-source provider packages, each shipping its own DI extension. |
+| `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Xe,Oanda,Fixer,ExchangeRateHost,Fred,Imf}` | Per-source provider packages, each shipping its own DI extension. |
 | `Bodu.Financial.ExchangeRates.Caching` | `CachingRateProvider`, `AggregatingRateProvider`, in-memory / TOML / JSON backends. |
 | `Bodu.Financial.ExchangeRates.Caching.{Sqlite,Distributed}` | Durable SQLite and shared `IDistributedCache` backends. |
 
@@ -301,7 +318,7 @@ is now:
      (`BigInteger` mantissa + scale) with the full `INumber<BigDecimal>`
      generic-math surface, span/UTF-8 parse and format, rounding, and a
      `BigDecimalJsonConverter` registered through
-     `ConfigureForBoduNumerics` alongside the existing `Fraction<T>` /
+     `AddNumericsJsonConverters` alongside the existing `Fraction<T>` /
      `Interval<T>` converters.
    - **Running-statistics aggregates have landed.** ✅ Online
      mean / variance (Welford, with the Chan et al. parallel `Combine`),
@@ -319,7 +336,7 @@ is now:
    window, alongside OANDA's existing ~180-day window; the shared
    pair-provider contract test now forces every future provider to
    declare deliberately. The consuming side has since landed as well:
-   the new `IHistoryAwareRateProvider` capability interface is
+   the new `IHistoricalRateProvider` capability interface is
    implemented across the provider base, the fixed-book provider, and
    both decorators; `CachingRateProvider` clamps or skips
    fetches outside the inner source's advertised history (recording the
@@ -400,6 +417,22 @@ Forward-looking:
   contract-test bases promoted to `Bodu.Test.Contracts` per the
   documented second-consumer rule and the package carrying its own
   resource strings.
+- **`ConcurrentEvictingDictionary<TKey,TValue>` has landed.** ✅ The
+  thread-safe variant of `EvictingDictionary<,>` in
+  `Bodu.Collections.Concurrent`: lock-striped segments,
+  where each segment runs an exact policy
+  cache over its slice of the capacity — eviction order is exact per
+  segment, approximate globally, while the slices sum to `Capacity`
+  exactly. All six policies plus the TTL layer are supported; concurrent
+  idioms added over the non-concurrent surface are `TryRemove(key, out
+  value)`, single-flight `GetOrAdd` (factory inside the segment lock),
+  and lock-free `ApproximateCount`. Only the post-commit `ItemEvicted`
+  event survives (raised after lock release, handler exceptions
+  suppressed — the `ConcurrentCircularBuffer` precedent); `ItemEvicting`,
+  `PeekEvictionCandidate`, and `TouchOrThrow` are deliberately omitted
+  as unhonorable or trap-prone under concurrency. A differential test
+  suite pins single-segment eviction parity against the non-concurrent
+  oracle.
 - **`WeekPattern` stays in `Bodu.Core` — extraction retired.** With the
   collections split done, Core *is* the small always-referenced
   primitive layer the proposed `Bodu.Globalization.WeekPattern`
@@ -732,7 +765,7 @@ sequenced steps have shipped:
    `INumber<BigDecimal>` / `INumberBase<BigDecimal>` generic-math surface,
    span/UTF-8 parse and format, rounding, conversions, and a
    `BigDecimalJsonConverter` in `Bodu.Numerics.Serialization.Json`
-   registered by `ConfigureForBoduNumerics`. No BCL equivalent existed —
+   registered by `AddNumericsJsonConverters`. No BCL equivalent existed —
    the highest-leverage gap-filler, now closed.
 3. **Running-statistics aggregates — shipped.** ✅ Online mean / variance
    (Welford, with the Chan et al. parallel merge exposed as `Combine`),
@@ -768,26 +801,28 @@ per-currency `ICurrency` types, `CurrencyLookupService`), formatting /
 parsing (`MoneyFormatter`, `MoneyParseOptions`), rounding / allocation
 policies (`IRoundingStrategy`, `MonetaryContext`, the policy enums), the
 full FX abstraction stack (`ExchangeRate` / `ExchangeRate<TBase,TQuote>`,
-`IRateProvider` / `IDatedRateProvider`, `RateBook`
-/ `RateSeries`, `FixedDatedRateProvider`), and the
-abstract `WebRateProvider` / `PairWebRateProvider<TSeries>`
-bases the provider packages extend. References `Bodu.Numerics` for the
-`Fraction<BigInteger>` exact-arithmetic escape hatch.
+`IRateProvider` / `IDatedRateProvider` / `IHistoricalRateProvider`,
+`RateBook` / `RateSeries`, `FixedDatedRateProvider`), delineated across
+the `Bodu.Financial` / `.Currencies` / `.ExchangeRates` namespaces. The
+abstract `WebRateProvider` / `PairWebRateProvider<TSeries>` bases the
+provider packages extend now ship from the separate
+`Bodu.Financial.ExchangeRates` package. References `Bodu.Numerics` for
+the `Fraction<BigInteger>` exact-arithmetic escape hatch.
 
 - **The provider → immutable conversion surface has landed.** ✅
-  `WebExchangeRateProvider` exposes its accumulated state through
+  `WebRateProvider` exposes its accumulated state through
   `GetLoadedBook()` / `GetLoadedSnapshot()` (the internal immutable book
   and ready-to-query snapshot, pinned at call time),
-  `FixedDatedExchangeRateProvider` exposes its wrapped `Book`, and
-  `ExchangeRateBook.ToBuilder()` round-trips into the mutable table
+  `FixedDatedRateProvider` exposes its wrapped `Book`, and
+  `RateBook.ToBuilder()` round-trips into the mutable table
   builder. The `Bodu.Financial.Extensions` companions complete the chain:
   `IEnumerable<ExchangeRate>.ToBook()` (multi-provider-safe,
   inversion-normalizing, `FetchedAtUtc`-preserving),
-  `ExchangeRateBook.ToFixedProvider(…)`, and the fetch-based
-  `IDatedExchangeRateProvider.ToFixedProviderAsync(pairs, start, end)`.
+  `RateBook.ToFixedProvider(…)`, and the fetch-based
+  `IDatedRateProvider.ToFixedProviderAsync(pairs, start, end)`.
   Deferred follow-ups if demand emerges: book `Merge` / `Slice` helpers,
   a per-pair-window `ToFixedProviderAsync` overload, and promoting book
-  exposure onto `IExchangeRatePairLoader`.
+  exposure onto `IPairRateLoader`.
 - **Ship the 1.0 package** (Wave 3) with its DI companion.
 - **A second `IRoundingStrategy`.** The abstraction has a single
   implementation (`MidpointRoundingStrategy`); a
@@ -811,12 +846,16 @@ Current state: bridge; `IServiceCollection` extensions declared in the
 
 ### `Bodu.Financial.ExchangeRates.*` *(provider + caching family)*
 
-Current state: new and extensive. Seven web providers over the shared
+Current state: new and extensive. Eleven web providers over the shared
 `WebRateProvider` base, split into two architectural families:
-central-bank whole-file sources (**Boe** IADB CSV, **Ecb** eurofxref XML,
-**Rba** `.xls` eras) and arbitrary-pair sources over
-`PairWebRateProvider<TSeries>` (**Yahoo** chart JSON, **Ofx**,
-**Xe** — scrape-token auth, **Oanda** — rolling ~180-day window). The
+central-bank / single-base whole-file sources (**Boe** IADB CSV, **Ecb**
+eurofxref XML, **Rba** `.xls` eras, **Imf** — keyless USD-anchored daily
+Representative Exchange Rates over a monthly tab-separated report) and
+arbitrary-pair sources over `PairWebRateProvider<TSeries>` (**Yahoo** chart
+JSON, **Ofx**, **Xe** — scrape-token auth, **Oanda** — rolling ~180-day
+window, **Fixer** — fixer.io `access_key` base+quotes, **ExchangeRateHost** —
+exchangerate.host `access_key` source+quotes, **Fred** — St. Louis Fed
+`api_key` per-pair `series_id` map). The
 shared `.DependencyInjection` package owns the `AddWebRateProvider`
 machinery (named `HttpClient` + Polly resilience) each provider's `Add*`
 extension delegates to. The provider-agnostic `.Caching` package supplies
@@ -831,7 +870,7 @@ backends in-package and durable `Sqlite` + shared `Distributed`
   and Yahoo, a deliberate Unbounded for OFX, rolling windows for XE and
   OANDA) and enforced for pair providers by the shared contract test.
   The caching / aggregation layer now reads it through the
-  `IHistoryAwareRateProvider` capability interface: the caching
+  `IHistoricalRateProvider` capability interface: the caching
   decorator skips single-date misses and clamps range fetches to the
   inner source's advertised earliest date (recording the unavailable
   prefix as covered-with-no-rows), and the aggregator drops candidates
@@ -852,29 +891,71 @@ backends in-package and durable `Sqlite` + shared `Distributed`
   providers guide. The remaining open half is replacing the scraped
   `Authorization: Basic` token with an official-endpoint path, if one
   ever becomes available.
-- **Broaden provider coverage** if there is demand — Fixer,
-  exchangerate.host, IMF, and FRED are the common free/commercial APIs
-  not yet wrapped. Each is a small package following the established
-  provider + DI shape.
+- **Broaden provider coverage** — *done for the common free/commercial
+  APIs.* Fixer (`Bodu.Financial.ExchangeRates.Fixer`), exchangerate.host
+  (`.ExchangeRateHost`), FRED (`.Fred`), and IMF (`.Imf`) are now wrapped
+  as pair providers over `PairWebRateProvider<TSeries>`, each a small
+  package following the established provider + DI shape. IMF is a keyless,
+  USD-anchored bulk provider (like ECB) that downloads the IMF's monthly
+  Representative Exchange Rates tab-separated report and serves daily rates;
+  quotation direction (some currencies are USD-per-unit) is normalized on
+  ingest. Further sources can follow the same template on demand.
 
 ### `Bodu.IO.Compound`
 
-Current state: new; ~44 src / ~43 test files. A read + edit + authoring
+Current state: ~44 src / ~46 test files. A read + edit + authoring
 implementation of the OLE2 / Compound File Binary (CFB) container — the
 structured-storage envelope behind legacy Office files (`.xls`, `.doc`,
-`.msg`). `CompoundFile` opens for read, edits transactionally
-(`CreateStream` / `Delete` / `Rename` + `Commit` / `Revert`), and authors
-from scratch through the fluent `CompoundStorageBuilder` /
-`CompoundStreamBuilder` tree. Full OLE property-set surface
+`.msg`). `CompoundFile` opens for read (buffered or streaming), edits
+transactionally through BCL-style writable cursors (`OpenStream(name,
+FileMode, FileAccess)` / `CreateStream` / `Delete` / `Rename` staged
+until `Commit`, with `Revert`), and authors from scratch through the
+fluent `CompoundStorageBuilder` / `CompoundStreamBuilder` tree —
+including deferred `Func<Stream>` payload sources for streaming-scale
+writes and version 3 **and** 4 emit. Full OLE property-set surface
 (`SummaryInformation`, `DocumentSummaryInformation`, `OlePropertySet` with
 MS-OLEPS read/emit) and a complete exception hierarchy.
 
-- **Writable stream cursors.** `CompoundStream` is a read-only cursor
-  today; mutation goes through `CreateStream(content)` or the builders. A
-  writable/seekable stream would round out the `IStream` counterpart.
+The forward items below are sequenced and scoped in
+[`Bodu.IO.Compound/docs/roadmap-implementation-plan.md`](Bodu.IO.Compound/docs/roadmap-implementation-plan.md)
+(tranches T0–T5, with the audit evidence behind each).
+
+- **Writable stream cursors — done.** ✅ Delivered as the BCL
+  `Package.Open`-style model rather than a COM `IStream` clone: a
+  writable, seekable `CompoundStream` over the staging tree, obtained
+  via `OpenStream(name, FileMode, FileAccess)` / `CreateStream(name)`,
+  flushed into the tree on dispose and persisted only by `Commit`. The
+  remaining distance to `IStream` is per-stream transacted commit,
+  which stays out of scope (plan decision D2).
+- **Property-set write-back symmetry — done.** ✅ (plan T1)
+  `PropertySetWriter` now emits every value shape the reader parses,
+  including `VT_VECTOR` values (variant round-trips guarantee value
+  identity, not byte identity), and `CompoundStorage.WritePropertySet` /
+  `CompoundFile.SetSummaryInformation` /
+  `SetDocumentSummaryInformation` are the write counterparts of the
+  `TryGet…` readers.
+- **Writable-cursor memory model — done.** ✅ (plan T2) The writable
+  cursor no longer double-copies on flush (it transfers its buffer to
+  the staging node at dispose and tracks pending writes so an unchanged
+  re-flush is a no-op) and rejects payloads past `int.MaxValue` with a
+  deliberate `NotSupportedException` that routes callers to the deferred
+  stream sources.
+- **Entry metadata on the edit surface — done.** ✅ (plan T3)
+  `CompoundStorage` exposes settable `ClassId` / `CreationTime` /
+  `ModifiedTime` / `StateBits` on a writable file (storages only, per
+  MS-CFB §2.6.1); nothing is auto-stamped, so byte-identical re-saves
+  stay possible.
+- **True-async commit and streaming reads — done.** ✅ (plan T4)
+  `CommitAsync` / `FlushAsync` serialize asynchronously (sharing the
+  synchronous layout, so bytes are identical) and streaming-mode
+  `ReadAsync` reads its sectors with real async I/O; buffered and
+  writable cursors keep synchronous completion.
 - **This project is the substrate for new office-format readers** — see
   `Bodu.Formats.Excel.Binary` (already built on it) and the `.msg` /
-  `.doc` candidates under *New library candidates*.
+  `.doc` candidates under *New library candidates*. Before the `.msg`
+  reader starts, a substrate-readiness review walks MS-OXMSG against
+  the current surface (plan T5; analysis only, expected to need no new
+  container API).
 
 ### `Bodu.Formats.Excel.Binary`
 
@@ -1255,9 +1336,9 @@ blockquote directly under its README title. The assignment:
   candidate) and its companion
   `Bodu.Numerics.Serialization.Json` (the JSON contract is new — the core
   types are now serialization-agnostic and support is opt-in via
-  `ConfigureForBoduNumerics`), `Bodu.Text.Yaml` (the serializer is read-first and its
+  `AddNumericsJsonConverters`), `Bodu.Text.Yaml` (the serializer is read-first and its
   write surface is still being rounded out) and the network-dependent
-  exchange-rate family: the six web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda}`
+  exchange-rate family: the web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda,Fixer,ExchangeRateHost,Fred,Imf}`
   and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.
   These are held at Preview until they have shipped and been exercised
   against their live upstream endpoints; the public API is largely settled,
@@ -1304,7 +1385,11 @@ catching accidental breaking changes at pack time.
 **Largely achieved.** Every shipping project has a `docs/guides/<project>/`
 entry, and coverage is broad — including the articles the previous roadmap
 listed as owed (`numerics/fraction.md`, `serialization/yaml/`,
-`financial/exchange-rate-caching.md` and the other FX guides). The one
+`financial/exchange-rate-caching.md` and the other FX guides). The guides
+are now backed by the **runnable-samples suite** — the `samples/` tree
+(Financial, Calendar, the text libraries, and the IO group, including a
+live FX sample)
+whose snippet-compile guards keep the documented code building. The one
 remaining gap is a dedicated **calendar plugin-loader** guide under
 `docs/guides/calendar/` (the loader is currently covered only implicitly by
 `building-the-service.md` / `dependency-injection.md`).
