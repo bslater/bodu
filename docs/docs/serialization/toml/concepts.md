@@ -39,7 +39,7 @@ The first match wins, and the result is cached on the options.
 The full serialization surface lives in the `Bodu.Text.Toml.Serialization` namespace:
 
 - **Attributes** — `[PropertyName]`, `[Ignore]`, `[TomlConverter]`, `[PropertyOrder]`, `[Constructor]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[NamingPolicy]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[StringEnumMemberName]`.
-- **Callbacks** — the <xref:Bodu.Text.Toml.Serialization.IOnSerializing> / <xref:Bodu.Text.Toml.Serialization.IOnSerialized> / <xref:Bodu.Text.Toml.Serialization.IOnDeserializing> / <xref:Bodu.Text.Toml.Serialization.IOnDeserialized> interfaces, run at the matching point in the pipeline.
+- **Callbacks** — the <xref:Bodu.Text.Serialization.IOnSerializing> / <xref:Bodu.Text.Serialization.IOnSerialized> / <xref:Bodu.Text.Serialization.IOnDeserializing> / <xref:Bodu.Text.Serialization.IOnDeserialized> interfaces, run at the matching point in the pipeline.
 - **Naming policies** — `NamingPolicy.CamelCase`, `.SnakeCaseLower` / `.SnakeCaseUpper`, `.KebabCaseLower` / `.KebabCaseUpper`, plus the `TomlSerializerDefaults.Web` preset.
 - **Enum converters** — a string-enum converter (member names) and a number-enum converter.
 

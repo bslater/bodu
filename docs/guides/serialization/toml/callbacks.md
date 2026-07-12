@@ -4,7 +4,7 @@ title: Serialization callbacks
 
 # Serialization callbacks
 
-The TOML serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces. TOML exposes four hooks — <xref:Bodu.Text.Toml.Serialization.IOnSerializing>, <xref:Bodu.Text.Toml.Serialization.IOnSerialized>, <xref:Bodu.Text.Toml.Serialization.IOnDeserializing>, and <xref:Bodu.Text.Toml.Serialization.IOnDeserialized>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) expose the same hooks with their own prefix.
+The TOML serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces. TOML exposes four hooks — <xref:Bodu.Text.Serialization.IOnSerializing>, <xref:Bodu.Text.Serialization.IOnSerialized>, <xref:Bodu.Text.Serialization.IOnDeserializing>, and <xref:Bodu.Text.Serialization.IOnDeserialized>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) expose the same hooks with their own prefix.
 
 | Hook | Runs | Typical use |
 |---|---|---|
@@ -163,4 +163,4 @@ Member-level converters and callbacks compose, however: a callback-bearing type 
 - [Using TOML](using.md) — the format walk-through, including the error-handling pattern that catches the exception thrown from `OnDeserialized`.
 - [Core concepts](../../../docs/serialization/toml/concepts.md) — where the callbacks sit in the family vocabulary.
 - [Text & Serialization guides](../../topics/text-and-serialization.md) and the [topic overview](../../../docs/topics/text-and-serialization.md).
-- API reference — <xref:Bodu.Text.Toml.Serialization.IOnSerializing>, <xref:Bodu.Text.Toml.Serialization.IOnSerialized>, <xref:Bodu.Text.Toml.Serialization.IOnDeserializing>, <xref:Bodu.Text.Toml.Serialization.IOnDeserialized>.
+- API reference — <xref:Bodu.Text.Serialization.IOnSerializing>, <xref:Bodu.Text.Serialization.IOnSerialized>, <xref:Bodu.Text.Serialization.IOnDeserializing>, <xref:Bodu.Text.Serialization.IOnDeserialized>.

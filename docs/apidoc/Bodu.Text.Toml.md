@@ -27,7 +27,7 @@ The types are organised into folders/namespaces by surface (`Reader`, `Writer`, 
 - <xref:Bodu.Text.Toml.TomlSerializer> — static façade. `Serialize` to `string` / `IBufferWriter<byte>` / `Stream` and `Deserialize<T>` from `string` / `ReadOnlySpan<byte>` / `Stream`, sync and async.
 - <xref:Bodu.Text.Toml.TomlSerializerOptions> — converters, naming policy, ignore conditions, depth, `IncludeFields`, `SpecVersion`, and `ByteArrayHandling`; cached and frozen on first use.
 - <xref:Bodu.Text.Toml.TomlSerializerDefaults> — the `General` / `Web` preset selector.
-- <xref:Bodu.Text.Toml.NamingPolicy> — camel, snake, and kebab casing policies.
+- <xref:Bodu.Text.Serialization.NamingPolicy> — camel, snake, and kebab casing policies.
 - <xref:Bodu.Text.Toml.TomlTokenType>, <xref:Bodu.Text.Toml.TomlValueKind> — the token and value-kind enumerations.
 - <xref:Bodu.Text.Toml.TomlSpecVersion> — the spec selector: `V1_0` (default) or `V1_1`. <xref:Bodu.Text.Toml.TomlByteArrayHandling> — integer-array or Base64-string `byte[]` mapping.
 - <xref:Bodu.Text.Toml.TomlFormatException> — malformed input (with line / column / offset). <xref:Bodu.Text.Toml.TomlSerializationException> — binding failures.
@@ -45,8 +45,8 @@ The types are organised into folders/namespaces by surface (`Reader`, `Writer`, 
 **Converters and attributes (`Bodu.Text.Toml.Serialization`)**
 
 - <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> / <xref:Bodu.Text.Toml.Serialization.TomlConverterFactory> — base types for custom per-type converters and converter families.
-- <xref:Bodu.Text.Toml.Serialization.PropertyNameAttribute>, <xref:Bodu.Text.Toml.Serialization.IgnoreAttribute>, <xref:Bodu.Text.Toml.Serialization.ConverterAttribute>, and the rest of the attribute family (`PropertyOrder`, `Constructor`, `Required`, `Include`, `ExtensionData`, `NamingPolicy`, `UnmappedMemberHandling`, `ObjectCreationHandling`, `StringEnumMemberName`).
-- <xref:Bodu.Text.Toml.Serialization.IOnSerializing>, <xref:Bodu.Text.Toml.Serialization.IOnSerialized>, <xref:Bodu.Text.Toml.Serialization.IOnDeserializing>, <xref:Bodu.Text.Toml.Serialization.IOnDeserialized> — the serialization callbacks.
+- <xref:Bodu.Text.Serialization.PropertyNameAttribute>, <xref:Bodu.Text.Serialization.IgnoreAttribute>, <xref:Bodu.Text.Serialization.ConverterAttribute>, and the rest of the attribute family (`PropertyOrder`, `Constructor`, `Required`, `Include`, `ExtensionData`, `NamingPolicy`, `UnmappedMemberHandling`, `ObjectCreationHandling`, `StringEnumMemberName`).
+- <xref:Bodu.Text.Serialization.IOnSerializing>, <xref:Bodu.Text.Serialization.IOnSerialized>, <xref:Bodu.Text.Serialization.IOnDeserializing>, <xref:Bodu.Text.Serialization.IOnDeserialized> — the serialization callbacks.
 - <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter>, <xref:Bodu.Text.Toml.Serialization.TomlNumberEnumConverter`1> — the built-in enum converters.
 
 ## Example

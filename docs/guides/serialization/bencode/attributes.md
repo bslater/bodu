@@ -4,11 +4,11 @@ title: Mapping attributes
 
 # Mapping attributes
 
-The Bencode serializer exposes a family of attributes for shaping how a type maps to the wire — every one derives <xref:Bodu.Text.Bencode.Serialization.BencodeAttribute>. The sibling [TOML](../toml/index.md) and [YAML](../yaml/index.md) serializers expose the same family with their own prefix; the patterns transfer directly. Each pattern below shows the Bencode form and the dictionary entry it writes.
+The Bencode serializer exposes a family of attributes for shaping how a type maps to the wire — every one derives <xref:Bodu.Text.Serialization.SerializationAttribute>. The sibling [TOML](../toml/index.md) and [YAML](../yaml/index.md) serializers expose the same family with their own prefix; the patterns transfer directly. Each pattern below shows the Bencode form and the dictionary entry it writes.
 
 ## Pattern 1 — Rename a member
 
-<xref:Bodu.Text.Bencode.Serialization.PropertyNameAttribute> pins the serialized key for one member, beating any naming policy:
+<xref:Bodu.Text.Serialization.PropertyNameAttribute> pins the serialized key for one member, beating any naming policy:
 
 ```csharp
 public sealed class Profile
@@ -22,7 +22,7 @@ This writes the dictionary entry `12:display-name3:Ada`.
 
 ## Pattern 2 — Apply a naming policy per type
 
-<xref:Bodu.Text.Bencode.Serialization.NamingPolicyAttribute> overrides the options-level `PropertyNamingPolicy` for one type:
+<xref:Bodu.Text.Serialization.NamingPolicyAttribute> overrides the options-level `PropertyNamingPolicy` for one type:
 
 ```csharp
 [NamingPolicy(KnownNamingPolicy.SnakeCaseLower)]
@@ -38,7 +38,7 @@ A member carrying `[PropertyName]` is unaffected — the explicit name always wi
 
 ## Pattern 3 — Exclude members
 
-<xref:Bodu.Text.Bencode.Serialization.IgnoreAttribute> drops a member unconditionally, or under a condition:
+<xref:Bodu.Text.Serialization.IgnoreAttribute> drops a member unconditionally, or under a condition:
 
 ```csharp
 public sealed class Account
@@ -59,7 +59,7 @@ public sealed class Account
 
 ## Pattern 4 — Force a member in
 
-<xref:Bodu.Text.Bencode.Serialization.IncludeAttribute> binds non-public property accessors and surfaces public fields without turning on `IncludeFields` for the whole options:
+<xref:Bodu.Text.Serialization.IncludeAttribute> binds non-public property accessors and surfaces public fields without turning on `IncludeFields` for the whole options:
 
 ```csharp
 public sealed class Counter
@@ -76,7 +76,7 @@ Both members now round-trip — the private setter is assigned on read, and the 
 
 ## Pattern 5 — Control write order
 
-<xref:Bodu.Text.Bencode.Serialization.PropertyOrderAttribute> reorders the order members are presented to the writer; members without the attribute default to order zero and keep declaration order:
+<xref:Bodu.Text.Serialization.PropertyOrderAttribute> reorders the order members are presented to the writer; members without the attribute default to order zero and keep declaration order:
 
 ```csharp
 public sealed class Manifest
@@ -94,7 +94,7 @@ public sealed class Manifest
 
 ## Pattern 6 — Require a key
 
-<xref:Bodu.Text.Bencode.Serialization.RequiredAttribute> makes deserialization fail when the key is absent, with the same effect as declaring the member with the C# `required` keyword:
+<xref:Bodu.Text.Serialization.RequiredAttribute> makes deserialization fail when the key is absent, with the same effect as declaring the member with the C# `required` keyword:
 
 ```csharp
 public sealed class ServerConfig
@@ -108,7 +108,7 @@ public sealed class ServerConfig
 
 ## Pattern 7 — Pick the deserialization constructor
 
-When a type declares more than one constructor, <xref:Bodu.Text.Bencode.Serialization.ConstructorAttribute> resolves the ambiguity:
+When a type declares more than one constructor, <xref:Bodu.Text.Serialization.ConstructorAttribute> resolves the ambiguity:
 
 ```csharp
 public sealed class Endpoint
@@ -127,7 +127,7 @@ Without the attribute the serializer resolves the constructor in this order: a c
 
 ## Pattern 8 — Capture unknown keys
 
-<xref:Bodu.Text.Bencode.Serialization.ExtensionDataAttribute> designates one member that collects every key that maps to no other member, and writes the collected entries back out on serialization:
+<xref:Bodu.Text.Serialization.ExtensionDataAttribute> designates one member that collects every key that maps to no other member, and writes the collected entries back out on serialization:
 
 ```csharp
 public sealed class ServerConfig
@@ -143,7 +143,7 @@ The member must be a <xref:Bodu.Text.Bencode.Nodes.BencodeObject>, an `IDictiona
 
 ## Pattern 9 — Reject unknown keys
 
-<xref:Bodu.Text.Bencode.Serialization.UnmappedMemberHandlingAttribute> chooses, per type, between skipping a key that maps to no member (the default) and failing:
+<xref:Bodu.Text.Serialization.UnmappedMemberHandlingAttribute> chooses, per type, between skipping a key that maps to no member (the default) and failing:
 
 ```csharp
 [UnmappedMemberHandling(UnmappedMemberHandling.Disallow)]
@@ -159,7 +159,7 @@ A type with an extension-data member (Pattern 8) still captures unmapped keys in
 
 ## Pattern 10 — Populate instead of replace
 
-<xref:Bodu.Text.Bencode.Serialization.ObjectCreationHandlingAttribute> controls whether deserialization replaces a member's value with a fresh instance or populates the instance already held — useful for get-only collection properties:
+<xref:Bodu.Text.Serialization.ObjectCreationHandlingAttribute> controls whether deserialization replaces a member's value with a fresh instance or populates the instance already held — useful for get-only collection properties:
 
 ```csharp
 public sealed class Pipeline
@@ -173,7 +173,7 @@ Deserialized entries are appended to the existing list instead of replacing it. 
 
 ## Pattern 11 — Choose a converter
 
-<xref:Bodu.Text.Bencode.Serialization.ConverterAttribute> selects the converter for a member, or for every use of a type:
+<xref:Bodu.Text.Serialization.ConverterAttribute> selects the converter for a member, or for every use of a type:
 
 ```csharp
 public sealed class Stamped
@@ -189,7 +189,7 @@ The referenced type must derive from <xref:Bodu.Text.Bencode.Serialization.Benco
 
 ## Pattern 12 — Name enum members
 
-<xref:Bodu.Text.Bencode.Serialization.StringEnumMemberNameAttribute> renames an individual enumeration member when the enum is serialized by name:
+<xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute> renames an individual enumeration member when the enum is serialized by name:
 
 ```csharp
 [Converter(typeof(BencodeStringEnumConverter<Status>))]

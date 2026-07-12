@@ -48,7 +48,7 @@ There are no `Stream` or async overloads — read a stream into a `string` or a 
 
 ## Rename members
 
-A naming policy renames every member; <xref:Bodu.Text.Yaml.Serialization.YamlPropertyNameAttribute> pins a single one and always wins over the policy:
+A naming policy renames every member; <xref:Bodu.Text.Serialization.PropertyNameAttribute> pins a single one and always wins over the policy:
 
 ```csharp
 using Bodu.Text.Yaml;

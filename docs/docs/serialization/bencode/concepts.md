@@ -27,12 +27,12 @@ Every overload accepts an optional <xref:Bodu.Text.Bencode.BencodeSerializerOpti
 | Member | Default | Governs |
 |---|---|---|
 | `Converters` | empty | The user converter list, searched ahead of the built-ins. |
-| `PropertyNamingPolicy` | `null` | The <xref:Bodu.Text.Bencode.NamingPolicy> applied to member names with no explicit `[PropertyName]`. |
+| `PropertyNamingPolicy` | `null` | The <xref:Bodu.Text.Serialization.NamingPolicy> applied to member names with no explicit `[PropertyName]`. |
 | `PropertyNameCaseInsensitive` | `false` | Whether a document key matches a member name ignoring case on read. |
 | `IncludeFields` | `false` | Whether public fields join properties as serializable members. |
-| `DefaultIgnoreCondition` | `Never` | The fallback <xref:Bodu.Text.Bencode.Serialization.IgnoreCondition> for members with no explicit `[Ignore]`. |
-| `UnmappedMemberHandling` | `Skip` | Whether an unmapped key is skipped or rejected on read (<xref:Bodu.Text.Bencode.Serialization.UnmappedMemberHandling>). |
-| `PreferredObjectCreationHandling` | `Replace` | Whether a member is replaced or populated on read (<xref:Bodu.Text.Bencode.Serialization.ObjectCreationHandling>). |
+| `DefaultIgnoreCondition` | `Never` | The fallback <xref:Bodu.Text.Serialization.IgnoreCondition> for members with no explicit `[Ignore]`. |
+| `UnmappedMemberHandling` | `Skip` | Whether an unmapped key is skipped or rejected on read (<xref:Bodu.Text.Serialization.UnmappedMemberHandling>). |
+| `PreferredObjectCreationHandling` | `Replace` | Whether a member is replaced or populated on read (<xref:Bodu.Text.Serialization.ObjectCreationHandling>). |
 | `AllowUnsortedKeys` | `false` | Read-only leniency: accept dictionaries whose keys are not in ascending bytewise order. |
 | `AllowDuplicateKeys` | `false` | Read-only leniency: accept repeated keys (last occurrence wins). |
 | `MaxDepth` | `64` (`DefaultMaxDepth`) | The maximum nesting depth before a depth guard trips. |
@@ -61,8 +61,8 @@ The first match wins, and the result is cached on the options.
 The full serialization surface lives in the `Bodu.Text.Bencode.Serialization` namespace:
 
 - **Attributes** — `[PropertyName]`, `[Ignore]`, `[BencodeConverter]`, `[PropertyOrder]`, `[Constructor]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[NamingPolicy]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[StringEnumMemberName]`.
-- **Callbacks** — the <xref:Bodu.Text.Bencode.Serialization.IOnSerializing> / <xref:Bodu.Text.Bencode.Serialization.IOnSerialized> / <xref:Bodu.Text.Bencode.Serialization.IOnDeserializing> / <xref:Bodu.Text.Bencode.Serialization.IOnDeserialized> interfaces, run at the matching point in the pipeline.
-- **Naming policies** — <xref:Bodu.Text.Bencode.NamingPolicy>`.CamelCase`, `.SnakeCaseLower` / `.SnakeCaseUpper`, `.KebabCaseLower` / `.KebabCaseUpper`, plus the `BencodeSerializerDefaults.Web` preset.
+- **Callbacks** — the <xref:Bodu.Text.Serialization.IOnSerializing> / <xref:Bodu.Text.Serialization.IOnSerialized> / <xref:Bodu.Text.Serialization.IOnDeserializing> / <xref:Bodu.Text.Serialization.IOnDeserialized> interfaces, run at the matching point in the pipeline.
+- **Naming policies** — <xref:Bodu.Text.Serialization.NamingPolicy>`.CamelCase`, `.SnakeCaseLower` / `.SnakeCaseUpper`, `.KebabCaseLower` / `.KebabCaseUpper`, plus the `BencodeSerializerDefaults.Web` preset.
 - **Enum converters** — a string-enum converter (member names) and a number-enum converter.
 
 ## The document object models

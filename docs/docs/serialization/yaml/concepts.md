@@ -30,7 +30,7 @@ ServerConfig config = YamlSerializer.Deserialize<ServerConfig>(yaml)!;
 
 | Property | Effect |
 |---|---|
-| `PropertyNamingPolicy` | The <xref:Bodu.Text.Yaml.YamlNamingPolicy> applied to member names (`null` keeps the declared name). |
+| `PropertyNamingPolicy` | The <xref:Bodu.Text.Serialization.NamingPolicy> applied to member names (`null` keeps the declared name). |
 | `IncludeFields` | When `true`, public fields participate alongside properties. |
 | `IgnoreNullValues` | When `true`, members whose value is `null` are omitted on write. |
 | `WriteEnumsAsStrings` | When `true` (the default), enums write as member-name strings; when `false`, as integers. |
@@ -39,7 +39,7 @@ ServerConfig config = YamlSerializer.Deserialize<ServerConfig>(yaml)!;
 | `NumberHandling` | <xref:Bodu.Text.Yaml.YamlNumberHandling> — `Strict` (default) or `AllowFloatToInteger`. |
 | `DuplicateKeyBehavior` | <xref:Bodu.Text.Yaml.YamlDuplicateKeyBehavior> — `Throw` (default), `UseFirst`, or `UseLast`. |
 | `MergeKeyBehavior` | <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior> — `Expand` (default), `Disabled`, or `PreserveAsNormalKey`. |
-| `UnmappedMemberHandling` | <xref:Bodu.Text.Yaml.YamlUnmappedMemberHandling> — `Skip` (default) or `Disallow`. |
+| `UnmappedMemberHandling` | <xref:Bodu.Text.Serialization.UnmappedMemberHandling> — `Skip` (default) or `Disallow`. |
 | `MaxDepth` | Maximum nesting depth; default 64. |
 | `Converters` | The ordered list of custom <xref:Bodu.Text.Yaml.Serialization.YamlConverter> instances. |
 

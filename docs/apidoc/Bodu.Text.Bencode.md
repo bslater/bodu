@@ -27,7 +27,7 @@ Output is always canonical Bencode: dictionary entries are emitted in ascending 
 - <xref:Bodu.Text.Bencode.BencodeSerializer> — static façade. `Serialize` to `byte[]` / `IBufferWriter<byte>` / `Stream` and `Deserialize<T>` from `ReadOnlySpan<byte>` / `byte[]` / `Stream`, sync and async.
 - <xref:Bodu.Text.Bencode.BencodeSerializerOptions> — converters, naming policy, ignore conditions, depth, and `IncludeFields`; cached and frozen on first use.
 - <xref:Bodu.Text.Bencode.BencodeSerializerDefaults> — the `General` / `Web` preset selector.
-- <xref:Bodu.Text.Bencode.NamingPolicy> — camel, snake, and kebab casing policies.
+- <xref:Bodu.Text.Serialization.NamingPolicy> — camel, snake, and kebab casing policies.
 - <xref:Bodu.Text.Bencode.BencodeTokenType>, <xref:Bodu.Text.Bencode.BencodeValueKind> — the token and value-kind enumerations.
 - <xref:Bodu.Text.Bencode.BencodeFormatException> — malformed bytes. <xref:Bodu.Text.Bencode.BencodeSerializationException> — binding failures.
 
@@ -44,8 +44,8 @@ Output is always canonical Bencode: dictionary entries are emitted in ascending 
 **Converters and attributes (`Bodu.Text.Bencode.Serialization`)**
 
 - <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> / <xref:Bodu.Text.Bencode.Serialization.BencodeConverterFactory> — base types for custom per-type converters and converter families.
-- <xref:Bodu.Text.Bencode.Serialization.PropertyNameAttribute>, <xref:Bodu.Text.Bencode.Serialization.IgnoreAttribute>, <xref:Bodu.Text.Bencode.Serialization.ConverterAttribute>, and the rest of the attribute family (`PropertyOrder`, `Constructor`, `Required`, `Include`, `ExtensionData`, `NamingPolicy`, `UnmappedMemberHandling`, `ObjectCreationHandling`, `StringEnumMemberName`).
-- <xref:Bodu.Text.Bencode.Serialization.IOnSerializing>, <xref:Bodu.Text.Bencode.Serialization.IOnSerialized>, <xref:Bodu.Text.Bencode.Serialization.IOnDeserializing>, <xref:Bodu.Text.Bencode.Serialization.IOnDeserialized> — the serialization callbacks.
+- <xref:Bodu.Text.Serialization.PropertyNameAttribute>, <xref:Bodu.Text.Serialization.IgnoreAttribute>, <xref:Bodu.Text.Serialization.ConverterAttribute>, and the rest of the attribute family (`PropertyOrder`, `Constructor`, `Required`, `Include`, `ExtensionData`, `NamingPolicy`, `UnmappedMemberHandling`, `ObjectCreationHandling`, `StringEnumMemberName`).
+- <xref:Bodu.Text.Serialization.IOnSerializing>, <xref:Bodu.Text.Serialization.IOnSerialized>, <xref:Bodu.Text.Serialization.IOnDeserializing>, <xref:Bodu.Text.Serialization.IOnDeserialized> — the serialization callbacks.
 - <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter>, <xref:Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter`1> — the built-in enum converters.
 
 ## Example
