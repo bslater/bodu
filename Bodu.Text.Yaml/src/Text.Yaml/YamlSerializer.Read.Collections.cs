@@ -135,6 +135,7 @@ public static partial class YamlSerializer
         YamlMemberInfo[] members = YamlMemberInfo.ForType(type, options.IncludeFields);
         YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        HashSet<YamlMemberInfo>? seenRequired = Array.Exists(members, static m => m.IsRequired) ? new HashSet<YamlMemberInfo>() : null;
 
         while (reader.Read() && reader.TokenType != YamlTokenType.EndMapping)
         {
@@ -153,6 +154,9 @@ public static partial class YamlSerializer
 
             if (match is not null)
             {
+                if (match.IsRequired)
+                    seenRequired!.Add(match);
+
                 if (match.Set is not null)
                     match.Set(instance, BindChild(ref reader, match.Type, options, match.WireName(options)));
                 else
@@ -166,6 +170,18 @@ public static partial class YamlSerializer
             else
             {
                 SkipValue(ref reader);
+            }
+        }
+
+        if (seenRequired is not null)
+        {
+            foreach (YamlMemberInfo member in members)
+            {
+                if (member.IsRequired && !seenRequired.Contains(member))
+                {
+                    throw new YamlSerializationException(string.Format(
+                        CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlMissingRequiredMember, member.WireName(options), type));
+                }
             }
         }
 

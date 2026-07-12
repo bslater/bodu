@@ -52,6 +52,12 @@ internal sealed class YamlMemberInfo
     public Action<object, object?>? Set { get; init; }
 
     /// <summary>
+    /// Gets a value indicating whether the member must be present in the input.
+    /// </summary>
+    /// <value><see langword="true" /> when the member is required; otherwise <see langword="false" />.</value>
+    public bool IsRequired { get; init; }
+
+    /// <summary>
     /// Computes the YAML key for this member under the given options.
     /// </summary>
     /// <param name="options">The serializer options.</param>
@@ -132,6 +138,7 @@ internal sealed class YamlMemberInfo
                 Type = property.PropertyType,
                 Get = property.GetValue,
                 Set = setter,
+                IsRequired = IsRequiredMember(property),
                 IsField = false,
             });
         }
@@ -149,10 +156,22 @@ internal sealed class YamlMemberInfo
                 Type = field.FieldType,
                 Get = field.GetValue,
                 Set = field.SetValue,
+                IsRequired = IsRequiredMember(field),
                 IsField = true,
             });
         }
 
         return members.ToArray();
     }
+
+    /// <summary>
+    /// Determines whether a member is required, either through the <see langword="required" /> keyword (surfaced as
+    /// <see cref="System.Runtime.CompilerServices.RequiredMemberAttribute" />) or through
+    /// <see cref="RequiredAttribute" />.
+    /// </summary>
+    /// <param name="member">The reflected member.</param>
+    /// <returns><see langword="true" /> when the member is required; otherwise <see langword="false" />.</returns>
+    private static bool IsRequiredMember(MemberInfo member) =>
+        member.IsDefined(typeof(System.Runtime.CompilerServices.RequiredMemberAttribute), inherit: false)
+            || member.IsDefined(typeof(RequiredAttribute), inherit: false);
 }

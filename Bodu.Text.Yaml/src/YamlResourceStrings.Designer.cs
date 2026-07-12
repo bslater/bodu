@@ -351,6 +351,14 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to The required member '{0}' of type '{1}' was not present in the input..
+        /// </summary>
+        internal static string Op_Invalid_YamlMissingRequiredMember {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlMissingRequiredMember", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The YAML key '{0}' does not map to any member of type '{1}'..
         /// </summary>
         internal static string Op_Invalid_YamlUnmappedMember {
