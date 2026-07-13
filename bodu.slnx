@@ -56,6 +56,14 @@
     <Project Path="Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
     <Project Path="Bodu.Globalization.Calendar\test\Bodu.Globalization.Calendar.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Globalization.Calendar/Caching/">
+    <Project Path="Bodu.Globalization.Calendar.Caching\src\Bodu.Globalization.Calendar.Caching.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Caching\test\Bodu.Globalization.Calendar.Caching.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Caching.Sqlite\src\Bodu.Globalization.Calendar.Caching.Sqlite.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Caching.Sqlite\test\Bodu.Globalization.Calendar.Caching.Sqlite.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Caching.Distributed\src\Bodu.Globalization.Calendar.Caching.Distributed.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Caching.Distributed\test\Bodu.Globalization.Calendar.Caching.Distributed.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Globalization.Calendar/Bodu.Globalization.Calendar.Data/">
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Data.Test.Common/Bodu.Globalization.Calendar.Data.Test.Common.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Africa/src/Bodu.Globalization.Calendar.Africa.csproj" />

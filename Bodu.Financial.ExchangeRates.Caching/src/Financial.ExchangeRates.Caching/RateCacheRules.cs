@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Caching;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -27,9 +29,6 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </remarks>
 public static class RateCacheRules
 {
-    /// <summary>The clock-skew tolerance applied when validating a row's caching instant: a row stamped more than this far in the future of the evaluation instant is treated as invalid rather than fresh.</summary>
-    private static readonly TimeSpan s_clockSkewTolerance = TimeSpan.FromMinutes(1);
-
     /// <summary>
     /// Reports whether a cached row is semantically valid against the evaluation instant.
     /// </summary>
@@ -49,7 +48,7 @@ public static class RateCacheRules
     public static bool IsValid(CachedRate row, DateTimeOffset asOf) =>
         row.Rate > 0m
             && row.Date != default
-            && row.CachedAtUtc <= asOf + s_clockSkewTolerance;
+            && CacheFreshness.IsWithinClockSkew(row.CachedAtUtc, asOf);
 
     /// <summary>
     /// Selects the rows that are both semantically valid and still fresh at <paramref name="asOf" />, ordered by date.

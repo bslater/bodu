@@ -4,19 +4,26 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Financial.ExchangeRates.Caching;
+namespace Bodu.Caching;
 
 /// <summary>
 /// Rate-limits a repeated best-effort failure warning to at most one emission per cooldown window, tracking the number
 /// of failures suppressed since the previous warning.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The first failure after construction, and the first after each cooldown elapses, claims the single warning slot and
 /// reports the count of failures suppressed since the previous warning; failures inside the window only increment that
 /// count. The slot is claimed with <see cref="Interlocked.CompareExchange(ref long, long, long)" /> so that under
 /// concurrent swallows exactly one caller emits per window. The cooldown is measured against the injected
 /// <see cref="TimeProvider" /> so the rate-limiting is deterministic under test. Callers own the actual log emission,
 /// so each cache can route the warning through its own source-generated logger.
+/// </para>
+/// <para>
+/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs
+/// it (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
+/// exposed and no two assemblies collide on the type identity.
+/// </para>
 /// </remarks>
 internal sealed class RateLimitedWarningGate
 {

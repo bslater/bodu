@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Concurrent;
+using Bodu.Caching;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -415,7 +416,7 @@ public abstract class FileRateCacheBase<TOptions>
         if (!string.IsNullOrEmpty(directory))
             Directory.CreateDirectory(directory);
 
-        WriteAtomic(path, text);
+        AtomicFileWriter.Write(path, text);
 
         // Invalidate the parse memo so the next read re-parses from the freshly written file and re-stamps it.
         _parsed.TryRemove(path, out _);
@@ -482,57 +483,6 @@ public abstract class FileRateCacheBase<TOptions>
         {
             // Best-effort cleanup of the emptied pair directory.
             Log.CleanupFailureSwallowed(_logger, Provider, directory, ex);
-        }
-    }
-
-    /// <summary>
-    /// Writes <paramref name="text" /> to <paramref name="path" /> atomically by writing to a uniquely named temporary
-    /// file in the same directory and moving it into place, so a reader never observes a partially written file.
-    /// </summary>
-    /// <param name="path">The destination file path.</param>
-    /// <param name="text">The text to write.</param>
-    /// <remarks>
-    /// The temporary file shares the destination directory so the final <see cref="File.Move(string, string, bool)" />
-    /// is a same-volume rename rather than a copy. The temporary file is removed on failure so a crashed or rejected
-    /// write leaves no orphan behind.
-    /// </remarks>
-    private void WriteAtomic(string path, string text)
-    {
-        string tempPath = $"{path}.{Guid.NewGuid():N}.tmp";
-
-        try
-        {
-            File.WriteAllText(tempPath, text);
-            File.Move(tempPath, path, overwrite: true);
-        }
-        catch
-        {
-            TryDelete(tempPath);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Deletes the file at <paramref name="path" /> if it exists, swallowing file-system failures so cleanup never
-    /// masks the original error.
-    /// </summary>
-    /// <param name="path">The path of the file to delete.</param>
-    private void TryDelete(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-                File.Delete(path);
-        }
-        catch (IOException ex)
-        {
-            // Best-effort cleanup of the temp file.
-            Log.CleanupFailureSwallowed(_logger, Provider, path, ex);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            // Best-effort cleanup of the temp file.
-            Log.CleanupFailureSwallowed(_logger, Provider, path, ex);
         }
     }
 }
