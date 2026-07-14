@@ -178,6 +178,7 @@ public sealed class CachingNotableDateService
                 if (entry is not null)
                 {
                     Log.CacheHit(_logger, _options.CacheHitLogLevel, territory, year, (now - entry.ComputedAtUtc).TotalSeconds);
+            CalendarCachingMeter.CacheHit(territory);
                     occurrences = entry.Occurrences;
                 }
                 else
@@ -258,6 +259,7 @@ public sealed class CachingNotableDateService
         if (entry is not null)
         {
             Log.CacheHit(_logger, _options.CacheHitLogLevel, territory, year, (now - entry.ComputedAtUtc).TotalSeconds);
+            CalendarCachingMeter.CacheHit(territory);
             return entry.Occurrences;
         }
 
@@ -285,6 +287,11 @@ public sealed class CachingNotableDateService
     {
         (string Territory, int Year, string Version) key = (NotableDateCacheRules.NormalizeTerritory(territory), year, version);
 
+        // Approximate coalesce detection: a probe that finds an existing flight means this caller will join it
+        // rather than compute. Racing the flight's completion may undercount, which a pressure counter tolerates.
+        if (_inFlight.ContainsKey(key))
+            CalendarCachingMeter.CoalescedFlight(key.Territory);
+
         Lazy<IReadOnlyList<NotableDate>> flight = _inFlight.GetOrAdd(
             key,
             _ => new Lazy<IReadOnlyList<NotableDate>>(
@@ -296,6 +303,7 @@ public sealed class CachingNotableDateService
                     _cache.StoreYear(new NotableDateCacheEntry(territory, year, version, occurrences, now), ttl, now);
 
                     Log.CacheMiss(_logger, _options.CacheMissLogLevel, territory, year, occurrences.Count);
+                    CalendarCachingMeter.CacheMiss(territory);
                     return occurrences;
                 },
                 LazyThreadSafetyMode.ExecutionAndPublication));

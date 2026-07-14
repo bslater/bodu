@@ -485,6 +485,9 @@ public abstract class FileRateCacheBase<TOptions>
     /// </remarks>
     private void OnStorageFailureSwallowed(string operation, Exception exception)
     {
+        // The counter increments on every swallow; only the log volume is rate-limited by the gate below.
+        CachingMeter.StorageFailure(Provider, operation);
+
         if (_warnGate.TryClaimWarning(out int suppressed))
             Log.FileStorageFailureSwallowed(_logger, Provider, operation, suppressed, exception);
     }

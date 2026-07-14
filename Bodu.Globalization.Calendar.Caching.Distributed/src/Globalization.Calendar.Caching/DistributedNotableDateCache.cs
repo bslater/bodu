@@ -214,6 +214,9 @@ public sealed class DistributedNotableDateCache
     /// <param name="exception">The swallowed storage exception.</param>
     private void OnStorageFailureSwallowed(string operation, Exception exception)
     {
+        // The counter increments on every swallow; only the log volume is rate-limited by the gate below.
+        CalendarCachingDistributedMeter.StorageFailure(operation);
+
         if (_warnGate.TryClaimWarning(out int suppressed))
             Log.StorageFailureSwallowed(_logger, operation, suppressed, exception);
     }

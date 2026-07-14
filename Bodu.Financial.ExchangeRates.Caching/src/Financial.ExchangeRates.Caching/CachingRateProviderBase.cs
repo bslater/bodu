@@ -184,6 +184,7 @@ public abstract class CachingRateProviderBase
             result = result with { Provenance = CacheServeProvenance(servedCachedAtUtc, now) };
 
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            CachingMeter.CacheHit(_cache.Provider, "single");
             EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return true;
         }
@@ -200,6 +201,7 @@ public abstract class CachingRateProviderBase
         {
             StoreResult(duration, fromIsoCode, toIsoCode, result, now);
             Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            CachingMeter.CacheMiss(_cache.Provider, "single");
 
             // A miss carries the inner provider's Live provenance through unchanged.
             EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
@@ -243,6 +245,7 @@ public abstract class CachingRateProviderBase
             result = result with { Provenance = CacheServeProvenance(servedCachedAtUtc, now) };
 
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            CachingMeter.CacheHit(_cache.Provider, "single");
             EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return result;
         }
@@ -259,6 +262,7 @@ public abstract class CachingRateProviderBase
         result = await Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken).ConfigureAwait(false);
         StoreResult(duration, fromIsoCode, toIsoCode, result, now);
         Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+        CachingMeter.CacheMiss(_cache.Provider, "single");
 
         // A miss carries the inner provider's Live provenance through unchanged, identically to the synchronous path.
         EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
@@ -279,6 +283,7 @@ public abstract class CachingRateProviderBase
         if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
+            CachingMeter.CacheHit(_cache.Provider, "range");
             EmitProvenance(CacheServeProvenance(oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
             return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
@@ -306,6 +311,7 @@ public abstract class CachingRateProviderBase
         RateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
+        CachingMeter.CacheMiss(_cache.Provider, "range");
         EmitProvenance(RateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
         return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, fetched);
     }
@@ -329,6 +335,7 @@ public abstract class CachingRateProviderBase
         if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
+            CachingMeter.CacheHit(_cache.Provider, "range");
             EmitProvenance(CacheServeProvenance(oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
             return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
@@ -357,6 +364,7 @@ public abstract class CachingRateProviderBase
         RateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
+        CachingMeter.CacheMiss(_cache.Provider, "range");
         EmitProvenance(RateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
         return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, fetched);
     }

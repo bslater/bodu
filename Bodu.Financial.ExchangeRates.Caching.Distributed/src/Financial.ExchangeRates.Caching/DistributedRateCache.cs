@@ -322,6 +322,9 @@ public sealed class DistributedRateCache
     /// <param name="exception">The swallowed storage exception.</param>
     private void OnStorageFailureSwallowed(string operation, Exception exception)
     {
+        // The counter increments on every swallow; only the log volume is rate-limited by the gate below.
+        CachingDistributedMeter.StorageFailure(Options.Provider, operation);
+
         if (_warnGate.TryClaimWarning(out int suppressed))
             Log.StorageFailureSwallowed(_logger, Options.Provider, operation, suppressed, exception);
     }

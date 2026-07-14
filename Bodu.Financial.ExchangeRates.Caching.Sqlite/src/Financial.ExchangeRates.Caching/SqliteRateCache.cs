@@ -216,6 +216,9 @@ public sealed class SqliteRateCache
     /// </remarks>
     private void OnStorageFailureSwallowed(string operation, Exception exception)
     {
+        // The counter increments on every swallow; only the log volume is rate-limited by the gate below.
+        CachingSqliteMeter.StorageFailure(_options.Provider, operation);
+
         if (_warnGate.TryClaimWarning(out int suppressed))
             Log.StorageFailureSwallowed(_logger, _options.Provider, operation, suppressed, exception);
     }
