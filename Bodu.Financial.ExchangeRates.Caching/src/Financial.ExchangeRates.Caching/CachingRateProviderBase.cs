@@ -78,6 +78,9 @@ public abstract class CachingRateProviderBase
     /// <summary>The single-provider cache that serves fresh rates and stores resolved observations.</summary>
     private readonly IRateCache _cache;
 
+    /// <summary>The cache's asynchronous seam, captured once at construction, or <see langword="null" /> when the cache is synchronous-only; when present the asynchronous surfaces route through it so backend I/O never blocks a thread-pool thread.</summary>
+    private readonly IRateCacheAsync? _asyncCache;
+
     /// <summary>The options carrying the caching durations and the timeless-surface lookup options.</summary>
     private readonly CachingRateOptions _options;
 
@@ -124,6 +127,7 @@ public abstract class CachingRateProviderBase
         options.Validate();
 
         _cache = cache;
+        _asyncCache = cache as IRateCacheAsync;
         _options = options;
         _timeProvider = timeProvider ?? TimeProvider.System;
         _logger = logger ?? NullLogger.Instance;
@@ -238,7 +242,13 @@ public abstract class CachingRateProviderBase
         DateTimeOffset now = _timeProvider.GetUtcNow();
         TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
-        if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out RateLookupResult result, out DateTimeOffset? servedCachedAtUtc))
+        // Route the cache I/O through the async seam when the backend supports it, so a network-backed cache never
+        // blocks a thread-pool thread; policy, logging, and provenance are identical on both routes.
+        (bool served, RateLookupResult result, DateTimeOffset? servedCachedAtUtc) = _asyncCache is not null
+            ? await TryServeFromCacheAsync(duration, fromIsoCode, toIsoCode, date, options, now, cancellationToken).ConfigureAwait(false)
+            : (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out RateLookupResult syncResult, out DateTimeOffset? syncServedAt), syncResult, syncServedAt);
+
+        if (served)
         {
             // Overwrite the snapshot's Live provenance with the cache lineage exactly as the synchronous path does, so a
             // cache hit returns Origin.Cache (with the backend and age) on both surfaces rather than diverging.
@@ -260,7 +270,10 @@ public abstract class CachingRateProviderBase
         }
 
         result = await Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken).ConfigureAwait(false);
-        StoreResult(duration, fromIsoCode, toIsoCode, result, now);
+        if (_asyncCache is not null)
+            await StoreResultAsync(duration, fromIsoCode, toIsoCode, result, now, cancellationToken).ConfigureAwait(false);
+        else
+            StoreResult(duration, fromIsoCode, toIsoCode, result, now);
         Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
         CachingMeter.CacheMiss(_cache.Provider, "single");
 
@@ -332,7 +345,13 @@ public abstract class CachingRateProviderBase
         DateTimeOffset now = _timeProvider.GetUtcNow();
         TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
-        if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
+        // Route the cache I/O through the async seam when the backend supports it; policy, logging, and provenance
+        // are identical on both routes.
+        (bool servedFromCache, IReadOnlyList<ExchangeRate> cached, DateTimeOffset? oldestCachedAtUtc) = _asyncCache is not null
+            ? await TryServeRangeFromCacheAsync(duration, pair, startDate, endDate, now, cancellationToken).ConfigureAwait(false)
+            : (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> syncCached, out DateTimeOffset? syncOldest), syncCached, syncOldest);
+
+        if (servedFromCache)
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
             CachingMeter.CacheHit(_cache.Provider, "range");
@@ -344,7 +363,7 @@ public abstract class CachingRateProviderBase
         {
             // No part of the window is inside the inner's advertised history: skip the doomed fetch and record the
             // whole window as covered-with-no-rows, identically to the synchronous path.
-            RateCacheWriteStatus skipStatus = StoreFetchedRange(duration, pair, [], startDate, endDate, now);
+            RateCacheWriteStatus skipStatus = await StoreFetchedRangeOnEitherSeamAsync(duration, pair, [], startDate, endDate, now, cancellationToken).ConfigureAwait(false);
 
             Log.SkippedRangeOutsideHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, startDate, endDate, earliestAvailable!.Value, skipStatus);
             return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, []);
@@ -361,7 +380,7 @@ public abstract class CachingRateProviderBase
         // would be refetched forever. A single atomic write rules out persisting coverage without its rows. Coverage is
         // recorded over the full requested window even when the fetch start was clamped, so the prefix the source has
         // declared unavailable is not refetched until normal expiry.
-        RateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
+        RateCacheWriteStatus status = await StoreFetchedRangeOnEitherSeamAsync(duration, pair, fetched, startDate, endDate, now, cancellationToken).ConfigureAwait(false);
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
         CachingMeter.CacheMiss(_cache.Provider, "range");
@@ -645,6 +664,155 @@ public abstract class CachingRateProviderBase
             return duration;
 
         return CacheFreshness.WithJitter(duration, $"{_cache.Provider}:{pair.From}{pair.To}", _options.ExpiryJitter);
+    }
+
+    /// <summary>
+    /// The asynchronous twin of <see cref="TryServeFromCache" />, reading the candidate rows through the cache's
+    /// asynchronous seam so a network-backed cache never blocks a thread-pool thread. Resolution semantics, jitter,
+    /// and served-instant selection are identical to the synchronous helper.
+    /// </summary>
+    /// <param name="duration">The duration cached rows stay fresh.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="date">The calendar date for which a rate is required.</param>
+    /// <param name="options">The lookup rules to apply.</param>
+    /// <param name="now">The instant against which cached rows are evaluated for freshness.</param>
+    /// <param name="cancellationToken">Cancels the cache reads.</param>
+    /// <returns>Whether the request was served, the resolved result, and the served cache instant.</returns>
+    private async ValueTask<(bool Served, RateLookupResult Result, DateTimeOffset? ServedCachedAtUtc)> TryServeFromCacheAsync(
+        TimeSpan duration,
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly date,
+        RateLookupOptions? options,
+        DateTimeOffset now,
+        CancellationToken cancellationToken)
+    {
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+
+        IReadOnlyList<CachedRate> direct = await _asyncCache!.GetRatesAsync(pair, EffectiveExpiry(pair, duration), now, cancellationToken).ConfigureAwait(false);
+
+        bool allowInverse = options?.AllowInverse ?? RateLookupOptions.Exact.AllowInverse;
+        IReadOnlyList<CachedRate> inverse = allowInverse
+            ? await _asyncCache.GetRatesAsync(pair.Inverse(), EffectiveExpiry(pair.Inverse(), duration), now, cancellationToken).ConfigureAwait(false)
+            : Array.Empty<CachedRate>();
+
+        if (direct.Count == 0 && inverse.Count == 0)
+            return (false, default, null);
+
+        if (!CachedRateResolver.TryResolve(pair, direct, inverse, date, options, _cache.Provider, out RateLookupResult result, out CachedRate? matched))
+            return (false, default, null);
+
+        // Identical to the synchronous helper: a resolved serve takes its instants from the matched row; the identity
+        // serve falls back to the legacy oldest-candidate scans.
+        DateTimeOffset? servedCachedAtUtc;
+        DateTimeOffset? servedObservedAt;
+        if (matched is { } row)
+        {
+            servedCachedAtUtc = row.CachedAtUtc;
+            servedObservedAt = row.ObservedAtUtc;
+        }
+        else
+        {
+            servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
+            servedObservedAt = ResolveServedObservedInstant(direct, inverse, result.Rate.Date);
+        }
+
+        result = result with { Rate = result.Rate.WithFetchedAtUtc(servedObservedAt) };
+        return (true, result, servedCachedAtUtc);
+    }
+
+    /// <summary>
+    /// The asynchronous twin of <see cref="TryServeRangeFromCache" />, reading each snapshot through the cache's
+    /// asynchronous seam. Coverage semantics, the inverse probe (including the optional skip), and jitter are
+    /// identical to the synchronous helper; the seam always exposes the combined snapshot read, so no
+    /// coverage-then-rows fallback is needed.
+    /// </summary>
+    /// <param name="duration">The duration cached rows and coverage windows stay fresh.</param>
+    /// <param name="pair">The requested currency pair.</param>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    /// <param name="now">The instant against which freshness is evaluated.</param>
+    /// <param name="cancellationToken">Cancels the cache reads.</param>
+    /// <returns>Whether the range was served, the in-window rates, and the oldest served cache instant.</returns>
+    private async ValueTask<(bool Served, IReadOnlyList<ExchangeRate> Result, DateTimeOffset? OldestCachedAtUtc)> TryServeRangeFromCacheAsync(
+        TimeSpan duration,
+        CurrencyPair pair,
+        DateOnly startDate,
+        DateOnly endDate,
+        DateTimeOffset now,
+        CancellationToken cancellationToken)
+    {
+        TimeSpan directDuration = EffectiveExpiry(pair, duration);
+
+        RateCacheSnapshot snapshot = await _asyncCache!.ReadSnapshotAsync(pair, directDuration, now, cancellationToken).ConfigureAwait(false);
+        if (snapshot.Coverage.Contains(startDate, endDate))
+        {
+            bool built = BuildRange(pair, FreshRows(snapshot, directDuration, now), startDate, endDate, invert: false, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldest);
+            return (built, result, oldest);
+        }
+
+        if (AllowInverseRangeServe && ShouldProbeInverse(snapshot.Coverage))
+        {
+            TimeSpan inverseDuration = EffectiveExpiry(pair.Inverse(), duration);
+            snapshot = await _asyncCache.ReadSnapshotAsync(pair.Inverse(), inverseDuration, now, cancellationToken).ConfigureAwait(false);
+            if (snapshot.Coverage.Contains(startDate, endDate))
+            {
+                bool built = BuildRange(pair.Inverse(), FreshRows(snapshot, inverseDuration, now), startDate, endDate, invert: true, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldest);
+                return (built, result, oldest);
+            }
+        }
+
+        return (false, Array.Empty<ExchangeRate>(), null);
+    }
+
+    /// <summary>
+    /// The asynchronous twin of <see cref="StoreResult" />, writing the resolved row through the cache's asynchronous
+    /// seam with the same per-pair jittered expiry.
+    /// </summary>
+    /// <param name="duration">The duration the cached row stays fresh.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="result">The resolved lookup result to cache.</param>
+    /// <param name="now">The instant the row is stamped with.</param>
+    /// <param name="cancellationToken">Cancels the write.</param>
+    /// <returns>A task representing the write.</returns>
+    private async ValueTask StoreResultAsync(TimeSpan duration, string fromIsoCode, string toIsoCode, RateLookupResult result, DateTimeOffset now, CancellationToken cancellationToken)
+    {
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+        CachedRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now, result.Rate.FetchedAtUtc) };
+        await _asyncCache!.StoreAsync(pair, rows, EffectiveExpiry(pair, duration), now, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Writes a fetched range through the cache's asynchronous seam when it exposes one, or through the synchronous
+    /// helper otherwise, so the async surfaces have a single store call site regardless of the backend.
+    /// </summary>
+    /// <param name="duration">The duration rows and the coverage window stay fresh.</param>
+    /// <param name="pair">The requested currency pair.</param>
+    /// <param name="rates">The fetched rates.</param>
+    /// <param name="startDate">The inclusive start of the covered window.</param>
+    /// <param name="endDate">The inclusive end of the covered window.</param>
+    /// <param name="now">The instant the write is stamped with.</param>
+    /// <param name="cancellationToken">Cancels the write.</param>
+    /// <returns>The persistence outcome.</returns>
+    private async ValueTask<RateCacheWriteStatus> StoreFetchedRangeOnEitherSeamAsync(
+        TimeSpan duration,
+        CurrencyPair pair,
+        IReadOnlyList<ExchangeRate> rates,
+        DateOnly startDate,
+        DateOnly endDate,
+        DateTimeOffset now,
+        CancellationToken cancellationToken)
+    {
+        if (_asyncCache is null)
+            return StoreFetchedRange(duration, pair, rates, startDate, endDate, now);
+
+        var rows = new CachedRate[rates.Count];
+        for (int i = 0; i < rates.Count; i++)
+            rows[i] = new CachedRate(rates[i].Date, rates[i].Rate, now, rates[i].FetchedAtUtc);
+
+        return await _asyncCache.StoreFetchedRangeAsync(pair, rows, startDate, endDate, EffectiveExpiry(pair, duration), now, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>

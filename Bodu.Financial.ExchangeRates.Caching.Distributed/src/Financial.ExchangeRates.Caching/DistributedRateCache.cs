@@ -152,6 +152,38 @@ public sealed class DistributedRateCache
             return CachePairState.Empty;
         }
 
+        return DeserializePayload(payload);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Reads the blob through the backing store's asynchronous API so a network-backed read never blocks a
+    /// thread-pool thread; policy, degradation, and deserialization are identical to the synchronous read.
+    /// </remarks>
+    internal override async ValueTask<CachePairState> ReadStateAsync(CurrencyPair pair, CancellationToken cancellationToken)
+    {
+        byte[]? payload;
+        try
+        {
+            payload = await _cache.GetAsync(Options.BuildKey(pair), cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException && ShouldSwallowStorageFailure)
+        {
+            // Best-effort cache: identical degradation to the synchronous read; cancellation propagates.
+            OnStorageFailureSwallowed("read", ex);
+            return CachePairState.Empty;
+        }
+
+        return DeserializePayload(payload);
+    }
+
+    /// <summary>
+    /// Deserializes a read blob into the pair state, degrading a corrupt or incompatible blob to empty state.
+    /// </summary>
+    /// <param name="payload">The raw blob, or <see langword="null" /> when the key is absent.</param>
+    /// <returns>The parsed state, or <see cref="CachePairState.Empty" />.</returns>
+    private CachePairState DeserializePayload(byte[]? payload)
+    {
         if (payload is null || payload.Length == 0)
             return CachePairState.Empty;
 
@@ -223,29 +255,7 @@ public sealed class DistributedRateCache
                 return true;
             }
 
-            var entry = new DistributedCacheEntry();
-            foreach (CachedRate row in state.Entries)
-            {
-                entry.Rates.Add(new DistributedCacheRate
-                {
-                    Date = InvariantCacheText.FormatDate(row.Date),
-                    Rate = InvariantCacheText.FormatDecimal(row.Rate),
-                    CachedAtUtc = InvariantCacheText.FormatInstant(row.CachedAtUtc),
-                    ObservedAtUtc = row.ObservedAtUtc is { } o ? InvariantCacheText.FormatInstant(o) : null,
-                });
-            }
-
-            foreach (CoverageWindow window in state.Coverage)
-            {
-                entry.Coverage.Add(new DistributedCacheCoverage
-                {
-                    Start = InvariantCacheText.FormatDate(window.Start),
-                    End = InvariantCacheText.FormatDate(window.End),
-                    FetchedAtUtc = InvariantCacheText.FormatInstant(window.FetchedAtUtc),
-                });
-            }
-
-            byte[] payload = JsonSerializer.SerializeToUtf8Bytes(entry, s_serializerOptions);
+            byte[] payload = SerializePayload(state);
             if (entryOptions is null)
                 _cache.Set(key, payload);
             else
@@ -263,6 +273,72 @@ public sealed class DistributedRateCache
             OnStorageFailureSwallowed("store", ex);
             return false;
         }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Writes the blob through the backing store's asynchronous API so a network-backed write never blocks a
+    /// thread-pool thread; policy, degradation, and the stamped server-side lifetime are identical to the synchronous
+    /// write.
+    /// </remarks>
+    internal override async ValueTask<bool> WriteStateAsync(CurrencyPair pair, CachePairState state, TimeSpan duration, DateTimeOffset asOf, CancellationToken cancellationToken)
+    {
+        string key = Options.BuildKey(pair);
+
+        try
+        {
+            if (state.Entries.Count == 0 && state.Coverage.Count == 0)
+            {
+                await _cache.RemoveAsync(key, cancellationToken).ConfigureAwait(false);
+                return true;
+            }
+
+            byte[] payload = SerializePayload(state);
+            DistributedCacheEntryOptions entryOptions = Options.EntryExpirationMargin is { } margin
+                ? new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = duration + margin }
+                : new DistributedCacheEntryOptions();
+
+            await _cache.SetAsync(key, payload, entryOptions, cancellationToken).ConfigureAwait(false);
+            return true;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException && ShouldSwallowStorageFailure)
+        {
+            // Best-effort cache: identical degradation to the synchronous write; cancellation propagates.
+            OnStorageFailureSwallowed("store", ex);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Serializes a pair's state into the stable JSON blob format shared by both write surfaces.
+    /// </summary>
+    /// <param name="state">The state to serialize.</param>
+    /// <returns>The UTF-8 JSON payload.</returns>
+    private static byte[] SerializePayload(CachePairState state)
+    {
+        var entry = new DistributedCacheEntry();
+        foreach (CachedRate row in state.Entries)
+        {
+            entry.Rates.Add(new DistributedCacheRate
+            {
+                Date = InvariantCacheText.FormatDate(row.Date),
+                Rate = InvariantCacheText.FormatDecimal(row.Rate),
+                CachedAtUtc = InvariantCacheText.FormatInstant(row.CachedAtUtc),
+                ObservedAtUtc = row.ObservedAtUtc is { } o ? InvariantCacheText.FormatInstant(o) : null,
+            });
+        }
+
+        foreach (CoverageWindow window in state.Coverage)
+        {
+            entry.Coverage.Add(new DistributedCacheCoverage
+            {
+                Start = InvariantCacheText.FormatDate(window.Start),
+                End = InvariantCacheText.FormatDate(window.End),
+                FetchedAtUtc = InvariantCacheText.FormatInstant(window.FetchedAtUtc),
+            });
+        }
+
+        return JsonSerializer.SerializeToUtf8Bytes(entry, s_serializerOptions);
     }
 
     /// <summary>

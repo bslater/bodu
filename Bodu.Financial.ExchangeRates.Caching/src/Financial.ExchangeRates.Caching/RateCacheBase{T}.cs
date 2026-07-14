@@ -37,14 +37,14 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// </remarks>
 public abstract class RateCacheBase<TOptions>
-    : IRateCache, IRateCacheSnapshotReader
+    : IRateCache, IRateCacheSnapshotReader, IRateCacheAsync
     where TOptions : RateCacheOptions
 {
     /// <summary>The validated options carrying the bound provider and any storage settings.</summary>
     private readonly TOptions _options;
 
-    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" /> and <see cref="RecordCoverage" />.</summary>
-    private readonly StripedLockSet<CurrencyPair> _pairLocks = new();
+    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. Asynchronous-capable so the synchronous and asynchronous write paths share one mutual-exclusion domain per pair.</summary>
+    private readonly StripedAsyncLockSet<CurrencyPair> _pairLocks = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateCacheBase{TOptions}" /> class.
@@ -94,7 +94,7 @@ public abstract class RateCacheBase<TOptions>
         if (rates.Count == 0)
             return;
 
-        lock (LockFor(pair))
+        using (_pairLocks.Acquire(pair))
         {
             CachePairState state = ReadState(pair);
 
@@ -125,7 +125,7 @@ public abstract class RateCacheBase<TOptions>
     {
         ThrowHelper.ThrowIfGreaterThan(start, end);
 
-        lock (LockFor(pair))
+        using (_pairLocks.Acquire(pair))
         {
             CachePairState state = ReadState(pair);
 
@@ -148,7 +148,7 @@ public abstract class RateCacheBase<TOptions>
         ThrowHelper.ThrowIfNull(rows);
         ThrowHelper.ThrowIfGreaterThan(start, end);
 
-        lock (LockFor(pair))
+        using (_pairLocks.Acquire(pair))
         {
             CachePairState state = ReadState(pair);
 
@@ -218,10 +218,97 @@ public abstract class RateCacheBase<TOptions>
         WriteState(pair, state);
 
     /// <summary>
-    /// Returns the lock object guarding writes for the supplied pair, creating it on first use.
+    /// Asynchronously reads the raw, unfiltered persisted state for a pair.
     /// </summary>
-    /// <param name="pair">The currency pair whose write lock is required.</param>
-    /// <returns>The per-pair lock object.</returns>
-    private object LockFor(CurrencyPair pair) =>
-        _pairLocks.For(pair);
+    /// <param name="pair">The currency pair.</param>
+    /// <param name="cancellationToken">Cancels the read.</param>
+    /// <returns>
+    /// The stored state, or <see cref="CachePairState.Empty" /> when none is available or the read fails.
+    /// </returns>
+    /// <remarks>
+    /// The default implementation completes synchronously over <see cref="ReadState" />, so backends with synchronous
+    /// storage pay nothing; a backend with genuinely asynchronous storage — the distributed cache — overrides this to
+    /// avoid blocking a thread on network I/O.
+    /// </remarks>
+    internal virtual ValueTask<CachePairState> ReadStateAsync(CurrencyPair pair, CancellationToken cancellationToken) =>
+        new(ReadState(pair));
+
+    /// <summary>
+    /// Asynchronously writes the supplied state for a pair with the caching duration and evaluation instant the write
+    /// was performed under.
+    /// </summary>
+    /// <param name="pair">The currency pair.</param>
+    /// <param name="state">The state to persist.</param>
+    /// <param name="duration">The caching duration the write's freshness pruning was evaluated against.</param>
+    /// <param name="asOf">The instant the write was evaluated at.</param>
+    /// <param name="cancellationToken">Cancels the write.</param>
+    /// <returns>
+    /// <see langword="true" /> when the state was persisted; <see langword="false" /> when a storage failure was
+    /// swallowed and nothing was persisted.
+    /// </returns>
+    /// <remarks>
+    /// The default implementation completes synchronously over <see cref="WriteState(CurrencyPair, CachePairState,
+    /// TimeSpan, DateTimeOffset)" />; the distributed backend overrides this to use its store's asynchronous API.
+    /// </remarks>
+    internal virtual ValueTask<bool> WriteStateAsync(CurrencyPair pair, CachePairState state, TimeSpan duration, DateTimeOffset asOf, CancellationToken cancellationToken) =>
+        new(WriteState(pair, state, duration, asOf));
+
+    /// <inheritdoc />
+    async ValueTask<IReadOnlyList<CachedRate>> IRateCacheAsync.GetRatesAsync(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf, CancellationToken cancellationToken)
+    {
+        IReadOnlyList<CachedRate> entries = (await ReadStateAsync(pair, cancellationToken).ConfigureAwait(false)).Entries;
+        if (entries.Count == 0)
+            return Array.Empty<CachedRate>();
+
+        // Identical policy to the synchronous GetRates, including the all-fresh zero-copy fast path.
+        return RateCacheRules.IsAllFreshOrdered(entries, duration, asOf)
+            ? entries
+            : RateCacheRules.SelectFresh(entries, duration, asOf);
+    }
+
+    /// <inheritdoc />
+    async ValueTask<RateCacheSnapshot> IRateCacheAsync.ReadSnapshotAsync(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf, CancellationToken cancellationToken)
+    {
+        CachePairState state = await ReadStateAsync(pair, cancellationToken).ConfigureAwait(false);
+        return new RateCacheSnapshot(state.Entries, RateCacheRules.BuildCoverage(state.Coverage, duration, asOf));
+    }
+
+    /// <inheritdoc />
+    async ValueTask IRateCacheAsync.StoreAsync(CurrencyPair pair, IReadOnlyList<CachedRate> rates, TimeSpan duration, DateTimeOffset asOf, CancellationToken cancellationToken)
+    {
+        ThrowHelper.ThrowIfNull(rates);
+
+        if (rates.Count == 0)
+            return;
+
+        using (await _pairLocks.AcquireAsync(pair, cancellationToken).ConfigureAwait(false))
+        {
+            CachePairState state = await ReadStateAsync(pair, cancellationToken).ConfigureAwait(false);
+
+            List<CachedRate> ordered = RateCacheRules.MergeRows(state.Entries, rates, duration, asOf);
+
+            // Preserve the existing coverage half, identically to the synchronous Store.
+            await WriteStateAsync(pair, new CachePairState(ordered, state.Coverage), duration, asOf, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    /// <inheritdoc />
+    async ValueTask<RateCacheWriteStatus> IRateCacheAsync.StoreFetchedRangeAsync(CurrencyPair pair, IReadOnlyList<CachedRate> rows, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf, CancellationToken cancellationToken)
+    {
+        ThrowHelper.ThrowIfNull(rows);
+        ThrowHelper.ThrowIfGreaterThan(start, end);
+
+        using (await _pairLocks.AcquireAsync(pair, cancellationToken).ConfigureAwait(false))
+        {
+            CachePairState state = await ReadStateAsync(pair, cancellationToken).ConfigureAwait(false);
+
+            // Merge both halves first, then write them together, identically to the synchronous StoreFetchedRange.
+            List<CachedRate> ordered = RateCacheRules.MergeRows(state.Entries, rows, duration, asOf);
+            List<CoverageWindow> windows = RateCacheRules.MergeCoverage(state.Coverage, start, end, duration, asOf);
+
+            return await WriteStateAsync(pair, new CachePairState(ordered, windows), duration, asOf, cancellationToken).ConfigureAwait(false)
+                ? RateCacheWriteStatus.Stored
+                : RateCacheWriteStatus.Failed;
+        }
+    }
 }

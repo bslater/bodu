@@ -36,15 +36,40 @@ internal sealed class RecordingDistributedCache : IDistributedCache
         }
     }
 
-    /// <inheritdoc />
-    public byte[]? Get(string key) => _store.TryGetValue(key, out byte[]? value) ? value : null;
+    /// <summary>Gets the number of synchronous <see cref="Get" /> calls observed.</summary>
+    /// <value>The synchronous read count.</value>
+    public int GetCalls { get; private set; }
+
+    /// <summary>Gets the number of <see cref="GetAsync" /> calls observed.</summary>
+    /// <value>The asynchronous read count.</value>
+    public int GetAsyncCalls { get; private set; }
+
+    /// <summary>Gets the number of synchronous <see cref="Set" /> calls observed.</summary>
+    /// <value>The synchronous write count.</value>
+    public int SetCalls { get; private set; }
+
+    /// <summary>Gets the number of <see cref="SetAsync" /> calls observed.</summary>
+    /// <value>The asynchronous write count.</value>
+    public int SetAsyncCalls { get; private set; }
 
     /// <inheritdoc />
-    public Task<byte[]?> GetAsync(string key, CancellationToken token = default) => Task.FromResult(Get(key));
+    public byte[]? Get(string key)
+    {
+        GetCalls++;
+        return _store.TryGetValue(key, out byte[]? value) ? value : null;
+    }
+
+    /// <inheritdoc />
+    public Task<byte[]?> GetAsync(string key, CancellationToken token = default)
+    {
+        GetAsyncCalls++;
+        return Task.FromResult(_store.TryGetValue(key, out byte[]? value) ? value : null);
+    }
 
     /// <inheritdoc />
     public void Set(string key, byte[] value, DistributedCacheEntryOptions options)
     {
+        SetCalls++;
         _store[key] = value;
         lock (_sets)
             _sets.Add((key, options));
@@ -53,7 +78,10 @@ internal sealed class RecordingDistributedCache : IDistributedCache
     /// <inheritdoc />
     public Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options, CancellationToken token = default)
     {
-        Set(key, value, options);
+        SetAsyncCalls++;
+        _store[key] = value;
+        lock (_sets)
+            _sets.Add((key, options));
         return Task.CompletedTask;
     }
 
