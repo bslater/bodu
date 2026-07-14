@@ -107,7 +107,7 @@ public abstract class RateCacheBase<TOptions>
 
     /// <inheritdoc />
     public DateRangeCoverage GetCoverage(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf) =>
-        RateCacheRules.BuildCoverage(ToTuples(ReadState(pair).Coverage), duration, asOf);
+        RateCacheRules.BuildCoverage(ReadState(pair).Coverage, duration, asOf);
 
     /// <inheritdoc />
     /// <remarks>
@@ -117,7 +117,7 @@ public abstract class RateCacheBase<TOptions>
     RateCacheSnapshot IRateCacheSnapshotReader.ReadSnapshot(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf)
     {
         CachePairState state = ReadState(pair);
-        return new RateCacheSnapshot(state.Entries, RateCacheRules.BuildCoverage(ToTuples(state.Coverage), duration, asOf));
+        return new RateCacheSnapshot(state.Entries, RateCacheRules.BuildCoverage(state.Coverage, duration, asOf));
     }
 
     /// <inheritdoc />
@@ -129,11 +129,10 @@ public abstract class RateCacheBase<TOptions>
         {
             CachePairState state = ReadState(pair);
 
-            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
-                RateCacheRules.MergeCoverage(ToTuples(state.Coverage), start, end, duration, asOf);
+            List<CoverageWindow> windows = RateCacheRules.MergeCoverage(state.Coverage, start, end, duration, asOf);
 
             // Preserve the existing entries half: recording coverage must never drop cached rows.
-            WriteState(pair, new CachePairState(state.Entries, ToWindows(windows)));
+            WriteState(pair, new CachePairState(state.Entries, windows));
         }
     }
 
@@ -155,12 +154,11 @@ public abstract class RateCacheBase<TOptions>
 
             // Merge both halves first, then write them together so a reader never observes coverage without its rows.
             List<CachedRate> ordered = RateCacheRules.MergeRows(state.Entries, rows, duration, asOf);
-            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
-                RateCacheRules.MergeCoverage(ToTuples(state.Coverage), start, end, duration, asOf);
+            List<CoverageWindow> windows = RateCacheRules.MergeCoverage(state.Coverage, start, end, duration, asOf);
 
             // Report the real persistence outcome: a swallowed storage failure must surface as Failed so the caller
             // refetches rather than trusting coverage that was never written.
-            return WriteState(pair, new CachePairState(ordered, ToWindows(windows)))
+            return WriteState(pair, new CachePairState(ordered, windows))
                 ? RateCacheWriteStatus.Stored
                 : RateCacheWriteStatus.Failed;
         }
@@ -198,36 +196,6 @@ public abstract class RateCacheBase<TOptions>
     /// <see cref="RateCacheWriteStatus.Failed" /> rather than falsely as <see cref="RateCacheWriteStatus.Stored" />.
     /// </remarks>
     internal abstract bool WriteState(CurrencyPair pair, CachePairState state);
-
-    /// <summary>
-    /// Projects the internal coverage windows into the plain tuples the shared <see cref="RateCacheRules" /> operate
-    /// on.
-    /// </summary>
-    /// <param name="coverage">The coverage windows to project.</param>
-    /// <returns>The windows as <c>(Start, End, FetchedAtUtc)</c> tuples.</returns>
-    private static List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> ToTuples(IReadOnlyList<CoverageWindow> coverage)
-    {
-        List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> tuples = new(coverage.Count);
-        foreach (CoverageWindow window in coverage)
-            tuples.Add((window.Start, window.End, window.FetchedAtUtc));
-
-        return tuples;
-    }
-
-    /// <summary>
-    /// Projects the plain coverage tuples produced by the shared <see cref="RateCacheRules" /> back into the internal
-    /// <see cref="CoverageWindow" /> representation persisted in a <see cref="CachePairState" />.
-    /// </summary>
-    /// <param name="tuples">The coverage tuples to project.</param>
-    /// <returns>The tuples as <see cref="CoverageWindow" /> values.</returns>
-    private static List<CoverageWindow> ToWindows(List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> tuples)
-    {
-        List<CoverageWindow> windows = new(tuples.Count);
-        foreach ((DateOnly start, DateOnly end, DateTimeOffset fetchedAt) in tuples)
-            windows.Add(new CoverageWindow(start, end, fetchedAt));
-
-        return windows;
-    }
 
     /// <summary>
     /// Returns the lock object guarding writes for the supplied pair, creating it on first use.

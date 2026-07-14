@@ -333,4 +333,84 @@ public static class RateCacheRules
         windows.Add((start, end, asOf));
         return windows;
     }
+
+    /// <summary>
+    /// Folds the still-fresh coverage windows for a pair into a <see cref="DateRangeCoverage" /> directly from the
+    /// internal window representation, avoiding the tuple projection the public overload requires.
+    /// </summary>
+    /// <param name="windows">The recorded coverage windows to fold.</param>
+    /// <param name="duration">The duration a recorded coverage window remains fresh after it was fetched.</param>
+    /// <param name="asOf">The instant against which coverage freshness is evaluated.</param>
+    /// <returns>
+    /// A <see cref="DateRangeCoverage" /> describing the days known to have been fetched and still fresh; empty when no
+    /// fresh window remains.
+    /// </returns>
+    /// <remarks>
+    /// Behaviourally identical to the public tuple overload; kept <see langword="internal" /> because
+    /// <see cref="CoverageWindow" /> is an internal storage type.
+    /// </remarks>
+    internal static DateRangeCoverage BuildCoverage(
+        IReadOnlyList<CoverageWindow> windows,
+        TimeSpan duration,
+        DateTimeOffset asOf)
+    {
+        DateRangeCoverage coverage = new();
+        for (int i = 0; i < windows.Count; i++)
+        {
+            CoverageWindow window = windows[i];
+            if (asOf - window.FetchedAtUtc < duration)
+                coverage.Add(window.Start, window.End);
+        }
+
+        return coverage;
+    }
+
+    /// <summary>
+    /// Appends the newly fetched window <paramref name="start" />..<paramref name="end" /> stamped at
+    /// <paramref name="asOf" /> to the still-fresh existing windows directly in the internal window representation,
+    /// avoiding the tuple round-trip the public overload requires.
+    /// </summary>
+    /// <param name="existing">The windows already recorded for the pair.</param>
+    /// <param name="start">The inclusive first date of the newly fetched range.</param>
+    /// <param name="end">The inclusive last date of the newly fetched range.</param>
+    /// <param name="duration">The duration a recorded coverage window remains fresh after it was fetched.</param>
+    /// <param name="asOf">
+    /// The instant the new window is stamped with and against which stale windows are pruned.
+    /// </param>
+    /// <returns>The pruned existing windows with the new window appended.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="start" /> is later than <paramref name="end" />.
+    /// </exception>
+    /// <remarks>
+    /// Behaviourally identical to the public tuple overload, including the supersede rule that drops a still-fresh
+    /// window fully contained in the newly fetched range; kept <see langword="internal" /> because
+    /// <see cref="CoverageWindow" /> is an internal storage type.
+    /// </remarks>
+    internal static List<CoverageWindow> MergeCoverage(
+        IReadOnlyList<CoverageWindow> existing,
+        DateOnly start,
+        DateOnly end,
+        TimeSpan duration,
+        DateTimeOffset asOf)
+    {
+        ThrowHelper.ThrowIfGreaterThan(start, end);
+
+        // Same policy as the public tuple overload: keep the still-fresh windows, drop stale ones and windows fully
+        // superseded by the newly fetched range, then append the new window so the store self-cleans.
+        List<CoverageWindow> windows = new(existing.Count + 1);
+        for (int i = 0; i < existing.Count; i++)
+        {
+            CoverageWindow window = existing[i];
+            if (asOf - window.FetchedAtUtc >= duration)
+                continue;
+
+            if (window.Start >= start && window.End <= end)
+                continue;
+
+            windows.Add(window);
+        }
+
+        windows.Add(new CoverageWindow(start, end, asOf));
+        return windows;
+    }
 }
