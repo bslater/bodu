@@ -188,6 +188,14 @@ public sealed class SqliteNotableDateCache
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The write is a transactional delete-and-reinsert of the whole territory rather than a per-year UPSERT. This is
+    /// deliberate: the base class's <c>StoreYear</c> applies the shared merge policy — dropping other-version entries
+    /// and TTL-expired years — to the full entry list before calling this method, and that pruning is not cleanly
+    /// expressible as SQL against the persisted RFC 3339 text instants without a UTC-normalized wire change. An UPSERT
+    /// that bypassed the base merge would fork the single merge policy the backends share; a territory's entry set is
+    /// small (one row per cached year), so the rewrite cost is immaterial.
+    /// </remarks>
     protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries)
     {
         try

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Concurrent;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -77,6 +78,9 @@ public sealed class CachingNotableDateService
 
     /// <summary>The monotonic reload generation, bumped whenever the observed resource reference changes.</summary>
     private long _generation;
+
+    /// <summary>The in-flight year computations, keyed by normalized territory, year, and version, so concurrent misses for the same cold year coalesce onto one computation instead of stampeding the wrapped service.</summary>
+    private readonly ConcurrentDictionary<(string Territory, int Year, string Version), Lazy<IReadOnlyList<NotableDate>>> _inFlight = new();
 
     /// <summary>Guards against double disposal.</summary>
     private bool _disposed;
@@ -243,7 +247,7 @@ public sealed class CachingNotableDateService
 
     /// <summary>
     /// Computes one civil year through the wrapped service and writes it to the cache — the shared miss path of the
-    /// per-year and batch read branches.
+    /// per-year and batch read branches — coalescing concurrent misses for the same cold year onto one computation.
     /// </summary>
     /// <param name="territory">The requested territory code, passed through unmodified; the cache normalizes it.</param>
     /// <param name="year">The civil year to compute.</param>
@@ -251,15 +255,42 @@ public sealed class CachingNotableDateService
     /// <param name="ttl">The time-to-live the write prunes against.</param>
     /// <param name="now">The instant the computed year is stamped with.</param>
     /// <returns>The computed occurrences, unfiltered, in the wrapped service's order.</returns>
+    /// <remarks>
+    /// The wrapped service has no coalescing of its own (year resolution is a synchronous, CPU-bound computation), so
+    /// without this guard N concurrent misses for the same cold year would run N identical computations. The first
+    /// caller for a key computes and stores; concurrent callers share the same <see cref="Lazy{T}" /> result — including
+    /// its exception when the computation faults. The in-flight entry is removed once the value is realized, so a
+    /// faulted computation never poisons the key and the next caller retries fresh.
+    /// </remarks>
     private IReadOnlyList<NotableDate> ComputeAndStoreYear(string territory, int year, string version, TimeSpan ttl, DateTimeOffset now)
     {
-        IReadOnlyList<NotableDate> occurrences =
-            _inner.Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory);
+        (string Territory, int Year, string Version) key = (NotableDateCacheRules.NormalizeTerritory(territory), year, version);
 
-        _cache.StoreYear(new NotableDateCacheEntry(territory, year, version, occurrences, now), ttl, now);
+        Lazy<IReadOnlyList<NotableDate>> flight = _inFlight.GetOrAdd(
+            key,
+            _ => new Lazy<IReadOnlyList<NotableDate>>(
+                () =>
+                {
+                    IReadOnlyList<NotableDate> occurrences =
+                        _inner.Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory);
 
-        Log.CacheMiss(_logger, _options.CacheMissLogLevel, territory, year, occurrences.Count);
-        return occurrences;
+                    _cache.StoreYear(new NotableDateCacheEntry(territory, year, version, occurrences, now), ttl, now);
+
+                    Log.CacheMiss(_logger, _options.CacheMissLogLevel, territory, year, occurrences.Count);
+                    return occurrences;
+                },
+                LazyThreadSafetyMode.ExecutionAndPublication));
+
+        try
+        {
+            return flight.Value;
+        }
+        finally
+        {
+            // Remove the completed (or faulted) flight so later misses — after expiry or a failure — start fresh
+            // rather than observing a cached Lazy exception forever.
+            _inFlight.TryRemove(key, out _);
+        }
     }
 
     /// <summary>

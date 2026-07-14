@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
 using Bodu.Caching;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -44,8 +43,8 @@ public abstract class FileNotableDateCacheBase
     /// <summary>Rate-limits the swallowed-storage-failure warning to at most one per cooldown window.</summary>
     private readonly RateLimitedWarningGate _warnGate;
 
-    /// <summary>Memoizes the parsed entries per file path against the file's last-write time, so an unchanged file is not re-read.</summary>
-    private readonly ConcurrentDictionary<string, (DateTime WriteTimeUtc, IReadOnlyList<NotableDateCacheEntry> Entries)> _parsed = new(StringComparer.Ordinal);
+    /// <summary>Memoizes the parsed entries per file path against the file's last-write time, so an unchanged file is not re-read. Bounded with LRU eviction so a long-lived process touching many territories cannot grow it without limit; eviction only forces a re-parse.</summary>
+    private readonly FileParseMemo<IReadOnlyList<NotableDateCacheEntry>> _parsed = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FileNotableDateCacheBase" /> class.
@@ -96,7 +95,7 @@ public abstract class FileNotableDateCacheBase
             foreach (string path in Directory.EnumerateFiles(_directory, $"*{FileExtension}"))
             {
                 File.Delete(path);
-                _parsed.TryRemove(path, out _);
+                _parsed.Invalidate(path);
             }
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -140,13 +139,13 @@ public abstract class FileNotableDateCacheBase
                 return Array.Empty<NotableDateCacheEntry>();
 
             DateTime writeTime = File.GetLastWriteTimeUtc(path);
-            if (_parsed.TryGetValue(path, out (DateTime WriteTimeUtc, IReadOnlyList<NotableDateCacheEntry> Entries) memo) && memo.WriteTimeUtc == writeTime)
-                return memo.Entries;
+            if (_parsed.TryGet(path, writeTime, out IReadOnlyList<NotableDateCacheEntry>? memoized))
+                return memoized!;
 
             string text = File.ReadAllText(path);
             IReadOnlyList<NotableDateCacheEntry> entries = Deserialize(text, path);
 
-            _parsed[path] = (writeTime, entries);
+            _parsed.Set(path, writeTime, entries);
             return entries;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -171,7 +170,7 @@ public abstract class FileNotableDateCacheBase
                 if (File.Exists(path))
                     File.Delete(path);
 
-                _parsed.TryRemove(path, out _);
+                _parsed.Invalidate(path);
                 return true;
             }
 
@@ -179,7 +178,7 @@ public abstract class FileNotableDateCacheBase
             AtomicFileWriter.Write(path, Serialize(territory, entries));
 
             // Invalidate the parse memo so the next read re-parses from the freshly written file and re-stamps it.
-            _parsed.TryRemove(path, out _);
+            _parsed.Invalidate(path);
             return true;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)

@@ -56,9 +56,12 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <see cref="CachingRateOptions.RateProvenanceLogLevel" />.
 /// </para>
 /// <para>
-/// Request coalescing is delegated to the inner provider rather than performed here, so the synchronous and
-/// asynchronous surfaces stay identical: the shipped network providers already single-flight their downloads, so
-/// concurrent misses for the same source collapse onto one fetch at the layer where the cost actually lives.
+/// Request coalescing is deliberately delegated to the inner provider rather than performed here, so the synchronous
+/// and asynchronous surfaces stay identical: both shipped origin bases already single-flight their downloads —
+/// <c>WebRateProvider</c> directly through its <c>SingleFlightCoordinator</c>, and <c>PairWebRateProvider</c> through
+/// the same coordinator via its per-pair-and-window coalescing bridge — so concurrent misses for the same source
+/// collapse onto one fetch at the layer where the cost actually lives, and decorator-level coalescing would be
+/// redundant.
 /// </para>
 /// <para>
 /// The provider is <see cref="IDisposable" />. By default it does not dispose the inner provider it wraps, because the
