@@ -98,9 +98,7 @@ public abstract class NotableDateCacheBase<TOptions>
         if (entries.Count == 0)
             return years;
 
-        for (int year = firstYear; year <= lastYear; year++)
-            years[year - firstYear] = NotableDateCacheRules.SelectFresh(entries, year, resourceVersion, ttl, asOf);
-
+        NotableDateCacheRules.SelectFreshInto(entries, firstYear, resourceVersion, ttl, asOf, years);
         return years;
     }
 

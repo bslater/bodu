@@ -65,7 +65,7 @@ internal static class NotableDateCacheRules
     /// Thrown when <paramref name="entries" /> is <see langword="null" />.
     /// </exception>
     public static NotableDateCacheEntry? SelectFresh(
-        IEnumerable<NotableDateCacheEntry> entries,
+        IReadOnlyList<NotableDateCacheEntry> entries,
         int year,
         string resourceVersion,
         TimeSpan ttl,
@@ -73,8 +73,9 @@ internal static class NotableDateCacheRules
     {
         ThrowHelper.ThrowIfNull(entries);
 
-        foreach (NotableDateCacheEntry entry in entries)
+        for (int i = 0; i < entries.Count; i++)
         {
+            NotableDateCacheEntry entry = entries[i];
             if (entry.Year == year
                 && string.Equals(entry.ResourceVersion, resourceVersion, StringComparison.Ordinal)
                 && IsValid(entry, asOf)
@@ -85,6 +86,53 @@ internal static class NotableDateCacheRules
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Selects the fresh, version-matching entry for every civil year in <paramref name="years" />'s span in a single
+    /// pass over the candidate entries, writing each match into its year's slot.
+    /// </summary>
+    /// <param name="entries">The candidate entries for the territory.</param>
+    /// <param name="firstYear">The civil year the first slot of <paramref name="years" /> represents.</param>
+    /// <param name="resourceVersion">The resource version each entry must match.</param>
+    /// <param name="ttl">The duration a computed year remains fresh after it was computed.</param>
+    /// <param name="asOf">The instant against which freshness and validity are evaluated.</param>
+    /// <param name="years">
+    /// The per-year result slots, one per year starting at <paramref name="firstYear" />; a slot is left
+    /// <see langword="null" /> when no entry qualifies for its year.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="entries" /> or <paramref name="years" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// Equivalent to calling <see cref="SelectFresh" /> once per year, but scanning the entry list once rather than
+    /// once per year — the batch read path over a multi-year span is O(entries) instead of O(years × entries).
+    /// </remarks>
+    public static void SelectFreshInto(
+        IReadOnlyList<NotableDateCacheEntry> entries,
+        int firstYear,
+        string resourceVersion,
+        TimeSpan ttl,
+        DateTimeOffset asOf,
+        NotableDateCacheEntry?[] years)
+    {
+        ThrowHelper.ThrowIfNull(entries);
+        ThrowHelper.ThrowIfNull(years);
+
+        int lastYear = firstYear + years.Length - 1;
+        for (int i = 0; i < entries.Count; i++)
+        {
+            NotableDateCacheEntry entry = entries[i];
+            if (entry.Year >= firstYear
+                && entry.Year <= lastYear
+                && years[entry.Year - firstYear] is null
+                && string.Equals(entry.ResourceVersion, resourceVersion, StringComparison.Ordinal)
+                && IsValid(entry, asOf)
+                && entry.IsFresh(asOf, ttl))
+            {
+                years[entry.Year - firstYear] = entry;
+            }
+        }
     }
 
     /// <summary>
@@ -106,7 +154,7 @@ internal static class NotableDateCacheRules
     /// every surviving entry is re-checked for freshness and validity so the store self-cleans on each write.
     /// </remarks>
     public static List<NotableDateCacheEntry> Merge(
-        IEnumerable<NotableDateCacheEntry> existing,
+        IReadOnlyList<NotableDateCacheEntry> existing,
         NotableDateCacheEntry incoming,
         TimeSpan ttl,
         DateTimeOffset asOf)
@@ -114,12 +162,13 @@ internal static class NotableDateCacheRules
         ThrowHelper.ThrowIfNull(existing);
         ThrowHelper.ThrowIfNull(incoming);
 
-        List<NotableDateCacheEntry> merged = new();
+        List<NotableDateCacheEntry> merged = new(existing.Count + 1);
         if (IsValid(incoming, asOf))
             merged.Add(incoming);
 
-        foreach (NotableDateCacheEntry entry in existing)
+        for (int i = 0; i < existing.Count; i++)
         {
+            NotableDateCacheEntry entry = existing[i];
             // Drop the entry the incoming year replaces, any superseded-version entry, and anything no longer fresh or
             // valid, so the store keeps only current, live years.
             if (entry.Year == incoming.Year)

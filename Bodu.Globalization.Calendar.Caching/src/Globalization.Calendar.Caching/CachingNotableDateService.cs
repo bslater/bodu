@@ -200,7 +200,20 @@ public sealed class CachingNotableDateService
     {
         ThrowHelper.ThrowIfNull(filter);
 
-        return [.. Resolve(range, territory).Where(filter.Matches)];
+        IReadOnlyList<NotableDate> unfiltered = Resolve(range, territory);
+        if (unfiltered.Count == 0)
+            return unfiltered;
+
+        List<NotableDate> matched = new(unfiltered.Count);
+        for (int i = 0; i < unfiltered.Count; i++)
+        {
+            if (filter.Matches(unfiltered[i]))
+                matched.Add(unfiltered[i]);
+        }
+
+        // Everything matched: hand back the unfiltered list itself — the unfiltered overload already returns shared
+        // cached lists, so this exposes nothing new.
+        return matched.Count == unfiltered.Count ? unfiltered : matched;
     }
 
     /// <inheritdoc />
