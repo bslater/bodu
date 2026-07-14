@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
+using Bodu.Caching;
 
 namespace Bodu.Globalization.Calendar.Caching;
 
@@ -28,14 +28,14 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// </para>
 /// </remarks>
 public abstract class NotableDateCacheBase<TOptions>
-    : INotableDateCache
+    : INotableDateCache, INotableDateCacheBatchReader
     where TOptions : NotableDateCacheOptions
 {
     /// <summary>The validated options carrying any storage settings.</summary>
     private readonly TOptions _options;
 
-    /// <summary>The striped per-territory locks guarding the read-modify-write sequence in <see cref="StoreYear" />. One lock object is created per territory on first use and reused thereafter.</summary>
-    private readonly ConcurrentDictionary<string, object> _territoryLocks = new(StringComparer.Ordinal);
+    /// <summary>The striped per-territory locks guarding the read-modify-write sequence in <see cref="StoreYear" />.</summary>
+    private readonly StripedLockSet<string> _territoryLocks = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateCacheBase{TOptions}" /> class.
@@ -76,6 +76,30 @@ public abstract class NotableDateCacheBase<TOptions>
             return null;
 
         return NotableDateCacheRules.SelectFresh(entries, year, resourceVersion, ttl, asOf);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The whole span is answered from one <see cref="ReadEntries" />, so a multi-year range lookup that would
+    /// otherwise call <see cref="GetYear" /> once per year reads the territory's persisted state once.
+    /// </remarks>
+    NotableDateCacheEntry?[] INotableDateCacheBatchReader.GetYears(string territory, int firstYear, int lastYear, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf)
+    {
+        ThrowHelper.ThrowIfNull(territory);
+        ThrowHelper.ThrowIfNull(resourceVersion);
+        ThrowHelper.ThrowIfGreaterThan(firstYear, lastYear);
+
+        string key = NotableDateCacheRules.NormalizeTerritory(territory);
+        IReadOnlyList<NotableDateCacheEntry> entries = ReadEntries(key);
+
+        var years = new NotableDateCacheEntry?[lastYear - firstYear + 1];
+        if (entries.Count == 0)
+            return years;
+
+        for (int year = firstYear; year <= lastYear; year++)
+            years[year - firstYear] = NotableDateCacheRules.SelectFresh(entries, year, resourceVersion, ttl, asOf);
+
+        return years;
     }
 
     /// <inheritdoc />
@@ -143,5 +167,5 @@ public abstract class NotableDateCacheBase<TOptions>
     /// <param name="territory">The normalized territory whose write lock is required.</param>
     /// <returns>The per-territory lock object.</returns>
     private object LockFor(string territory) =>
-        _territoryLocks.GetOrAdd(territory, static _ => new object());
+        _territoryLocks.For(territory);
 }

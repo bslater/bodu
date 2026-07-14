@@ -48,10 +48,7 @@ public abstract class FileRateCacheBase<TOptions>
     /// <summary>The logger that receives the best-effort degradation messages; never <see langword="null" />.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The minimum interval between swallowed-failure warnings; failures inside the window only increment the suppressed count.</summary>
-    private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
-
-    /// <summary>Rate-limits the swallowed-failure warning to at most one emission per <see cref="s_warnCooldown" /> window.</summary>
+    /// <summary>Rate-limits the swallowed-failure warning to at most one emission per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.</summary>
     private readonly RateLimitedWarningGate _warnGate;
 
     /// <summary>Memoizes the most recently parsed state per file, keyed by full path, against the file's last-write instant, so a repeated read of an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. An entry is invalidated when this instance writes or deletes the file, and a differing last-write instant — an external or cross-process change — is detected on the next read, so the memo never serves data from a file whose timestamp has moved. Keying by path (not by pair) lets one pair span many partition files.</summary>
@@ -78,7 +75,7 @@ public abstract class FileRateCacheBase<TOptions>
     protected FileRateCacheBase(TOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
         : base(options)
     {
-        _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
+        _warnGate = new RateLimitedWarningGate(timeProvider, RateLimitedWarningGate.DefaultCooldown);
         _logger = logger ?? NullLogger.Instance;
         _directory = string.IsNullOrWhiteSpace(options.CacheDirectory)
             ? Path.Combine(Path.GetTempPath(), "bodu-exchange-rates")
@@ -135,7 +132,7 @@ public abstract class FileRateCacheBase<TOptions>
     }
 
     /// <inheritdoc />
-    private protected sealed override CachePairState ReadState(CurrencyPair pair)
+    internal sealed override CachePairState ReadState(CurrencyPair pair)
     {
         try
         {
@@ -154,7 +151,7 @@ public abstract class FileRateCacheBase<TOptions>
     }
 
     /// <inheritdoc />
-    private protected sealed override bool WriteState(CurrencyPair pair, CachePairState state)
+    internal sealed override bool WriteState(CurrencyPair pair, CachePairState state)
     {
         try
         {
@@ -445,7 +442,7 @@ public abstract class FileRateCacheBase<TOptions>
 
     /// <summary>
     /// Reports a swallowed best-effort storage failure to the logger at <see cref="LogLevel.Warning" />, rate-limited
-    /// so at most one warning is emitted per <see cref="s_warnCooldown" /> window.
+    /// so at most one warning is emitted per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.
     /// </summary>
     /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>
     /// <param name="exception">The swallowed storage exception.</param>

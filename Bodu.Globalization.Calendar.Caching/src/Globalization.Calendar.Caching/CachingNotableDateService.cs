@@ -155,10 +155,33 @@ public sealed class CachingNotableDateService
         }
 
         List<NotableDate> assembled = new();
-        for (int year = firstYear; year <= lastYear; year++)
+
+        // A backend that stores a territory as one unit exposes the batch seam, so the whole span is read from one
+        // territory state read instead of once per year; other backends are consulted per year.
+        if (_cache is INotableDateCacheBatchReader batchReader)
         {
-            IReadOnlyList<NotableDate> occurrences = ResolveYear(territory, year, version, ttl, now);
-            AppendInRange(assembled, occurrences, range);
+            NotableDateCacheEntry?[] years = batchReader.GetYears(territory, firstYear, lastYear, version, ttl, now);
+            for (int year = firstYear; year <= lastYear; year++)
+            {
+                NotableDateCacheEntry? entry = years[year - firstYear];
+                IReadOnlyList<NotableDate> occurrences;
+                if (entry is not null)
+                {
+                    Log.CacheHit(_logger, _options.CacheHitLogLevel, territory, year, (now - entry.ComputedAtUtc).TotalSeconds);
+                    occurrences = entry.Occurrences;
+                }
+                else
+                {
+                    occurrences = ComputeAndStoreYear(territory, year, version, ttl, now);
+                }
+
+                AppendInRange(assembled, occurrences, range);
+            }
+        }
+        else
+        {
+            for (int year = firstYear; year <= lastYear; year++)
+                AppendInRange(assembled, ResolveYear(territory, year, version, ttl, now), range);
         }
 
         return EnsureOrdered(assembled);
@@ -215,6 +238,21 @@ public sealed class CachingNotableDateService
             return entry.Occurrences;
         }
 
+        return ComputeAndStoreYear(territory, year, version, ttl, now);
+    }
+
+    /// <summary>
+    /// Computes one civil year through the wrapped service and writes it to the cache — the shared miss path of the
+    /// per-year and batch read branches.
+    /// </summary>
+    /// <param name="territory">The requested territory code, passed through unmodified; the cache normalizes it.</param>
+    /// <param name="year">The civil year to compute.</param>
+    /// <param name="version">The resource version token the entry is keyed by.</param>
+    /// <param name="ttl">The time-to-live the write prunes against.</param>
+    /// <param name="now">The instant the computed year is stamped with.</param>
+    /// <returns>The computed occurrences, unfiltered, in the wrapped service's order.</returns>
+    private IReadOnlyList<NotableDate> ComputeAndStoreYear(string territory, int year, string version, TimeSpan ttl, DateTimeOffset now)
+    {
         IReadOnlyList<NotableDate> occurrences =
             _inner.Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory);
 

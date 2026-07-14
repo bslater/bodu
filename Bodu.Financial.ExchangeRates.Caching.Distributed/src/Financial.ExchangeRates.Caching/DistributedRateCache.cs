@@ -1,11 +1,9 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
-using System.Globalization;
 using System.Text.Json;
 using Bodu.Caching;
 using Bodu.Financial.Currencies;
@@ -29,25 +27,17 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// full precision and scale round-trips losslessly, mirroring the TOML and SQLite caches' string-decimal choice.
 /// </para>
 /// <para>
-/// Expiry is by caching duration rather than by storage: stale and semantically invalid rows are filtered on read and
-/// pruned on write, and stale coverage windows are pruned when coverage is recorded, so the entry self-cleans over
-/// time. The freshness, validity, merge, and coverage rules are delegated to the shared <see cref="RateCacheRules" />
-/// so this backend stays behaviourally identical to the in-memory, file, and SQLite caches; this class contributes only
-/// its blob storage and locking. The two halves of a pair's state are written independently through
-/// <see cref="Store" /> and <see cref="RecordCoverage" /> — storing rates never drops recorded coverage, and recording
-/// coverage never drops cached rows — by reading the existing blob, replacing only the affected half, and writing the
-/// merged blob back. <see cref="StoreFetchedRange" /> instead replaces both halves in one blob write.
+/// Because a pair's whole state travels as one blob, this backend fits the whole-state seam of
+/// <see cref="RateCacheBase{TOptions}" /> exactly: the read-merge-write mechanism, per-pair locking, snapshot read, and
+/// the shared <see cref="RateCacheRules" /> policy are all inherited, and this class contributes only the blob
+/// serialization. A single <see cref="RateCacheBase{TOptions}.StoreFetchedRange" /> set is all-or-nothing — the reader
+/// never observes coverage without its rows even across processes — while <em>cross-process</em> concurrent writes to
+/// the same pair remain last-write-wins, consistent with the documented best-effort nature of the contract.
 /// </para>
 /// <para>
-/// The cache is best-effort. An <see cref="IDistributedCache" /> offers no atomic read-modify-write, so the per-pair
-/// blob is read, modified, and written back: same-process races are prevented by a per-pair in-process lock guarding
-/// <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />, but <em>cross-process</em>
-/// concurrent writes to the same pair are last-write-wins, consistent with the documented best-effort nature of the
-/// contract. Because both halves of a fetched range travel in one blob, a single <see cref="StoreFetchedRange" /> set
-/// is all-or-nothing: the reader never observes coverage without its rows even across processes. As required by
-/// <see cref="IRateCache" />, a backing-store failure surfaces as an empty read or a skipped write rather than an
-/// exception: <see cref="IDistributedCache" /> faults and JSON (de)serialization faults degrade gracefully, while
-/// argument validation still throws.
+/// As required by <see cref="IRateCache" />, a backing-store failure surfaces as an empty read or a skipped write
+/// rather than an exception: <see cref="IDistributedCache" /> faults and JSON (de)serialization faults degrade
+/// gracefully, while argument validation still throws.
 /// </para>
 /// </remarks>
 /// <example>
@@ -61,7 +51,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </code>
 /// </example>
 public sealed class DistributedRateCache
-    : IRateCache, IRateCacheSnapshotReader
+    : RateCacheBase<DistributedRateCacheOptions>
 {
     /// <summary>The serializer options used for every read and write so the wire format is stable and culture-independent.</summary>
     private static readonly JsonSerializerOptions s_serializerOptions = new(JsonSerializerDefaults.Web);
@@ -72,19 +62,10 @@ public sealed class DistributedRateCache
     /// <summary>The backing distributed cache the per-pair blobs are read from and written to.</summary>
     private readonly IDistributedCache _cache;
 
-    /// <summary>The validated options carrying the bound provider and the optional key prefix.</summary>
-    private readonly DistributedRateCacheOptions _options;
-
-    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first use and reused thereafter.</summary>
-    private readonly ConcurrentDictionary<CurrencyPair, object> _pairLocks = new();
-
     /// <summary>The logger that receives the best-effort degradation warnings; never <see langword="null" />.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The minimum interval between swallowed-failure warnings; failures inside the window only increment the suppressed count.</summary>
-    private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
-
-    /// <summary>Rate-limits the swallowed-failure warning to at most one emission per <see cref="s_warnCooldown" /> window.</summary>
+    /// <summary>Rate-limits the swallowed-failure warning to at most one emission per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.</summary>
     private readonly RateLimitedWarningGate _warnGate;
 
     /// <summary>
@@ -105,21 +86,19 @@ public sealed class DistributedRateCache
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public DistributedRateCache(IDistributedCache cache, DistributedRateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
+        : base(options)
     {
         ThrowHelper.ThrowIfNull(cache);
-        ThrowHelper.ThrowIfNull(options);
-        options.Validate();
 
         _cache = cache;
-        _options = options;
-        _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
+        _warnGate = new RateLimitedWarningGate(timeProvider, RateLimitedWarningGate.DefaultCooldown);
         _logger = logger ?? NullLogger.Instance;
 
         // Eagerly probe the backing store so an unreachable or misconfigured distributed cache surfaces here rather than
         // on the first read or write. A connectivity or configuration fault propagates from the constructor; a missing
         // probe key simply reads back null.
         if (options.ValidateStorageOnStart)
-            _ = _cache.Get(_options.BuildKey(s_probePair));
+            _ = _cache.Get(Options.BuildKey(s_probePair));
     }
 
     /// <summary>
@@ -140,9 +119,6 @@ public sealed class DistributedRateCache
     {
     }
 
-    /// <inheritdoc />
-    public string Provider => _options.Provider;
-
     /// <summary>
     /// Gets a value indicating whether a caught backing-store or serialization fault should degrade to a best-effort
     /// fallback rather than propagate. Used as the exception filter on the read and write paths so a strict cache fails
@@ -152,228 +128,20 @@ public sealed class DistributedRateCache
     /// <see langword="true" /> when <see cref="RateCacheOptions.ThrowOnStorageFailure" /> is not set; otherwise
     /// <see langword="false" />, so the failure propagates.
     /// </value>
-    private bool ShouldSwallowStorageFailure => !_options.ThrowOnStorageFailure;
+    private bool ShouldSwallowStorageFailure => !Options.ThrowOnStorageFailure;
 
     /// <inheritdoc />
-    public IReadOnlyList<CachedRate> GetRates(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf)
-    {
-        IReadOnlyList<CachedRate> entries = ReadEntry(pair).Entries;
-        if (entries.Count == 0)
-            return Array.Empty<CachedRate>();
-
-        return RateCacheRules.SelectFresh(entries, duration, asOf);
-    }
-
-    /// <inheritdoc />
-    public void Store(CurrencyPair pair, IReadOnlyList<CachedRate> rates, TimeSpan duration, DateTimeOffset asOf)
-    {
-        ThrowHelper.ThrowIfNull(rates);
-
-        if (rates.Count == 0)
-            return;
-
-        lock (LockFor(pair))
-        {
-            PairState state = ReadEntry(pair);
-
-            List<CachedRate> ordered = RateCacheRules.MergeRows(state.Entries, rates, duration, asOf);
-
-            // Preserve the existing coverage half: storing rows must never drop recorded coverage.
-            WriteEntry(pair, new PairState(ordered, state.Coverage));
-        }
-    }
-
-    /// <inheritdoc />
-    public DateRangeCoverage GetCoverage(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf) =>
-        RateCacheRules.BuildCoverage(ReadEntry(pair).Coverage, duration, asOf);
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Both halves come from one <see cref="ReadEntry" /> — a single distributed get and one blob deserialization —
-    /// so a range lookup that would otherwise call <see cref="GetCoverage" /> and <see cref="GetRates" /> separately
-    /// no longer fetches and parses the same blob twice.
-    /// </remarks>
-    RateCacheSnapshot IRateCacheSnapshotReader.ReadSnapshot(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf)
-    {
-        PairState state = ReadEntry(pair);
-        return new RateCacheSnapshot(state.Entries, RateCacheRules.BuildCoverage(state.Coverage, duration, asOf));
-    }
-
-    /// <inheritdoc />
-    public void RecordCoverage(CurrencyPair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
-    {
-        ThrowHelper.ThrowIfGreaterThan(start, end);
-
-        lock (LockFor(pair))
-        {
-            PairState state = ReadEntry(pair);
-
-            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
-                RateCacheRules.MergeCoverage(state.Coverage, start, end, duration, asOf);
-
-            // Preserve the existing entries half: recording coverage must never drop cached rows.
-            WriteEntry(pair, new PairState(state.Entries, windows));
-        }
-    }
-
-    /// <inheritdoc />
-    public RateCacheWriteStatus StoreFetchedRange(
-        CurrencyPair pair,
-        IReadOnlyList<CachedRate> rows,
-        DateOnly start,
-        DateOnly end,
-        TimeSpan duration,
-        DateTimeOffset asOf)
-    {
-        ThrowHelper.ThrowIfNull(rows);
-        ThrowHelper.ThrowIfGreaterThan(start, end);
-
-        lock (LockFor(pair))
-        {
-            PairState state = ReadEntry(pair);
-
-            // Merge both halves, then write them in one blob so a reader never observes coverage without its rows; the
-            // single Set is all-or-nothing.
-            List<CachedRate> ordered = RateCacheRules.MergeRows(state.Entries, rows, duration, asOf);
-            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
-                RateCacheRules.MergeCoverage(state.Coverage, start, end, duration, asOf);
-
-            return WriteEntry(pair, new PairState(ordered, windows))
-                ? RateCacheWriteStatus.Stored
-                : RateCacheWriteStatus.Failed;
-        }
-    }
-
-    /// <summary>
-    /// Formats a <see cref="DateOnly" /> as invariant <c>yyyy-MM-dd</c> text for storage.
-    /// </summary>
-    /// <param name="value">The date to format.</param>
-    /// <returns>The invariant ISO date text.</returns>
-    private static string FormatDate(DateOnly value) =>
-        value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant <c>yyyy-MM-dd</c> text back into a <see cref="DateOnly" />.
-    /// </summary>
-    /// <param name="text">The stored date text.</param>
-    /// <returns>The parsed date.</returns>
-    private static DateOnly ParseDate(string text) =>
-        DateOnly.ParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Formats a <see cref="DateTimeOffset" /> as invariant round-trip (<c>"O"</c>) text for storage.
-    /// </summary>
-    /// <param name="value">The instant to format.</param>
-    /// <returns>The invariant round-trip text.</returns>
-    private static string FormatInstant(DateTimeOffset value) =>
-        value.ToString("O", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant round-trip (<c>"O"</c>) text back into a <see cref="DateTimeOffset" />.
-    /// </summary>
-    /// <param name="text">The stored instant text.</param>
-    /// <returns>The parsed instant.</returns>
-    private static DateTimeOffset ParseInstant(string text) =>
-        DateTimeOffset.Parse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-
-    /// <summary>
-    /// Formats a decimal rate as invariant text for storage so its scale and precision round-trips losslessly.
-    /// </summary>
-    /// <param name="value">The rate to format.</param>
-    /// <returns>The invariant decimal text.</returns>
-    private static string FormatRate(decimal value) =>
-        value.ToString(CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant decimal text back into a rate.
-    /// </summary>
-    /// <param name="text">The stored decimal text.</param>
-    /// <returns>The parsed rate.</returns>
-    private static decimal ParseRate(string text) =>
-        decimal.Parse(text, CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Projects the persisted JSON blob into the in-memory rows and windows used by the public surface, skipping any
-    /// individual row or window that cannot be parsed.
-    /// </summary>
-    /// <param name="entry">The deserialized blob.</param>
-    /// <returns>The parsed, unfiltered state.</returns>
-    /// <remarks>
-    /// Returns the raw stored rows and windows without freshness filtering; the freshness policy is applied by the
-    /// public surface. A malformed row or window that cannot be parsed is skipped so a single corrupt value never fails
-    /// the whole read.
-    /// </remarks>
-    private static PairState Project(DistributedCacheEntry entry)
-    {
-        List<CachedRate> rows = new(entry.Rates.Count);
-        foreach (DistributedCacheRate rate in entry.Rates)
-        {
-            try
-            {
-                // A legacy blob, or a row whose source never supplied a fetch instant, omits ObservedAtUtc and reads
-                // back as a null upstream fetch instant.
-                DateTimeOffset? observedAt = rate.ObservedAtUtc is { } s ? ParseInstant(s) : (DateTimeOffset?)null;
-                rows.Add(new CachedRate(ParseDate(rate.Date), ParseRate(rate.Rate), ParseInstant(rate.CachedAtUtc), observedAt));
-            }
-            catch (Exception ex) when (ex is FormatException or OverflowException)
-            {
-                // Skip a single malformed row rather than failing the whole read. An out-of-range decimal rate
-                // parses as an OverflowException, which must be swallowed alongside FormatException so a poisoned
-                // value cannot break the documented best-effort read contract.
-            }
-        }
-
-        List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> windows = new(entry.Coverage.Count);
-        foreach (DistributedCacheCoverage window in entry.Coverage)
-        {
-            try
-            {
-                windows.Add((ParseDate(window.Start), ParseDate(window.End), ParseInstant(window.FetchedAtUtc)));
-            }
-            catch (FormatException)
-            {
-                // Skip a single malformed window rather than failing the whole read.
-            }
-        }
-
-        return new PairState(rows, windows);
-    }
-
-    /// <summary>
-    /// Reports a swallowed best-effort storage failure to the logger at <see cref="LogLevel.Warning" />, rate-limited
-    /// so at most one warning is emitted per <see cref="s_warnCooldown" /> window.
-    /// </summary>
-    /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>
-    /// <param name="exception">The swallowed storage exception.</param>
-    /// <remarks>
-    /// The first failure after construction, and the first after each cooldown elapses, is logged immediately and
-    /// carries the count of failures suppressed since the previous warning; failures inside the window only increment
-    /// that count. A single warning slot is claimed with
-    /// <see cref="Interlocked.CompareExchange(ref long, long, long)" /> so that under concurrent swallows exactly one
-    /// caller logs per window. The cooldown is measured against the injected <see cref="TimeProvider" /> so the
-    /// rate-limiting is deterministic under test.
-    /// </remarks>
-    private void OnStorageFailureSwallowed(string operation, Exception exception)
-    {
-        if (_warnGate.TryClaimWarning(out int suppressed))
-            Log.StorageFailureSwallowed(_logger, _options.Provider, operation, suppressed, exception);
-    }
-
-    /// <summary>
-    /// Reads and deserializes the persisted blob for a pair, returning empty state when none exists or the read fails.
-    /// </summary>
-    /// <param name="pair">The currency pair.</param>
-    /// <returns>The stored state, or <see cref="PairState.Empty" /> when none is available or the read fails.</returns>
     /// <remarks>
     /// A backing-store fault or a corrupt, undeserializable blob degrades to empty state rather than throwing, as the
-    /// best-effort contract requires.
+    /// best-effort contract requires. A malformed individual row or window is skipped so a single corrupt value never
+    /// fails the whole read.
     /// </remarks>
-    private PairState ReadEntry(CurrencyPair pair)
+    internal override CachePairState ReadState(CurrencyPair pair)
     {
         byte[]? payload;
         try
         {
-            payload = _cache.Get(_options.BuildKey(pair));
+            payload = _cache.Get(Options.BuildKey(pair));
         }
         catch (Exception ex) when (ex is not OperationCanceledException && ShouldSwallowStorageFailure)
         {
@@ -381,43 +149,34 @@ public sealed class DistributedRateCache
             // Cancellation (and fatal exceptions surfaced as OperationCanceledException) propagates rather than being
             // masked as an empty read.
             OnStorageFailureSwallowed("read", ex);
-            return PairState.Empty;
+            return CachePairState.Empty;
         }
 
         if (payload is null || payload.Length == 0)
-            return PairState.Empty;
+            return CachePairState.Empty;
 
         try
         {
             DistributedCacheEntry? entry = JsonSerializer.Deserialize<DistributedCacheEntry>(payload, s_serializerOptions);
-            return entry is null ? PairState.Empty : Project(entry);
+            return entry is null ? CachePairState.Empty : Project(entry);
         }
         catch (JsonException ex) when (ShouldSwallowStorageFailure)
         {
             // A corrupt or incompatible blob degrades to an empty read rather than breaking rate retrieval.
             OnStorageFailureSwallowed("deserialize", ex);
-            return PairState.Empty;
+            return CachePairState.Empty;
         }
     }
 
-    /// <summary>
-    /// Serializes and writes the supplied state for a pair, replacing the entire blob, or removing the key when the
-    /// state is empty.
-    /// </summary>
-    /// <param name="pair">The currency pair.</param>
-    /// <param name="state">The state to persist.</param>
-    /// <returns>
-    /// <see langword="true" /> when the blob was written or removed; <see langword="false" /> when a backing-store or
-    /// serialization fault was swallowed and nothing was persisted.
-    /// </returns>
+    /// <inheritdoc />
     /// <remarks>
-    /// A backing-store fault or a serialization fault is swallowed so a failed write does not break rate retrieval, and
-    /// the failure is reported so <see cref="StoreFetchedRange" /> can signal that nothing was persisted. When both
-    /// halves are empty the key is removed so the entry self-cleans rather than persisting an empty blob.
+    /// Replaces the entire blob in one <see cref="IDistributedCache" /> set — all-or-nothing, so a
+    /// reader never observes coverage without its rows — or removes the key when the state is empty so the entry
+    /// self-cleans. A backing-store fault or a serialization fault is swallowed and reported as an unpersisted write.
     /// </remarks>
-    private bool WriteEntry(CurrencyPair pair, PairState state)
+    internal override bool WriteState(CurrencyPair pair, CachePairState state)
     {
-        string key = _options.BuildKey(pair);
+        string key = Options.BuildKey(pair);
 
         try
         {
@@ -432,20 +191,20 @@ public sealed class DistributedRateCache
             {
                 entry.Rates.Add(new DistributedCacheRate
                 {
-                    Date = FormatDate(row.Date),
-                    Rate = FormatRate(row.Rate),
-                    CachedAtUtc = FormatInstant(row.CachedAtUtc),
-                    ObservedAtUtc = row.ObservedAtUtc is { } o ? FormatInstant(o) : null,
+                    Date = InvariantCacheText.FormatDate(row.Date),
+                    Rate = InvariantCacheText.FormatDecimal(row.Rate),
+                    CachedAtUtc = InvariantCacheText.FormatInstant(row.CachedAtUtc),
+                    ObservedAtUtc = row.ObservedAtUtc is { } o ? InvariantCacheText.FormatInstant(o) : null,
                 });
             }
 
-            foreach ((DateOnly windowStart, DateOnly windowEnd, DateTimeOffset fetchedAt) in state.Coverage)
+            foreach (CoverageWindow window in state.Coverage)
             {
                 entry.Coverage.Add(new DistributedCacheCoverage
                 {
-                    Start = FormatDate(windowStart),
-                    End = FormatDate(windowEnd),
-                    FetchedAtUtc = FormatInstant(fetchedAt),
+                    Start = InvariantCacheText.FormatDate(window.Start),
+                    End = InvariantCacheText.FormatDate(window.End),
+                    FetchedAtUtc = InvariantCacheText.FormatInstant(window.FetchedAtUtc),
                 });
             }
 
@@ -467,10 +226,63 @@ public sealed class DistributedRateCache
     }
 
     /// <summary>
-    /// Returns the lock object guarding writes for the supplied pair, creating it on first use.
+    /// Projects the persisted JSON blob into the in-memory rows and windows the base mechanism operates on, skipping any
+    /// individual row or window that cannot be parsed.
     /// </summary>
-    /// <param name="pair">The currency pair whose write lock is required.</param>
-    /// <returns>The per-pair lock object.</returns>
-    private object LockFor(CurrencyPair pair) =>
-        _pairLocks.GetOrAdd(pair, static _ => new object());
+    /// <param name="entry">The deserialized blob.</param>
+    /// <returns>The parsed, unfiltered state.</returns>
+    private static CachePairState Project(DistributedCacheEntry entry)
+    {
+        List<CachedRate> rows = new(entry.Rates.Count);
+        foreach (DistributedCacheRate rate in entry.Rates)
+        {
+            try
+            {
+                // A legacy blob, or a row whose source never supplied a fetch instant, omits ObservedAtUtc and reads
+                // back as a null upstream fetch instant.
+                DateTimeOffset? observedAt = rate.ObservedAtUtc is { } s ? InvariantCacheText.ParseInstant(s) : (DateTimeOffset?)null;
+                rows.Add(new CachedRate(
+                    InvariantCacheText.ParseDate(rate.Date),
+                    InvariantCacheText.ParseDecimal(rate.Rate),
+                    InvariantCacheText.ParseInstant(rate.CachedAtUtc),
+                    observedAt));
+            }
+            catch (Exception ex) when (ex is FormatException or OverflowException)
+            {
+                // Skip a single malformed row rather than failing the whole read. An out-of-range decimal rate
+                // parses as an OverflowException, which must be swallowed alongside FormatException so a poisoned
+                // value cannot break the documented best-effort read contract.
+            }
+        }
+
+        List<CoverageWindow> windows = new(entry.Coverage.Count);
+        foreach (DistributedCacheCoverage window in entry.Coverage)
+        {
+            try
+            {
+                windows.Add(new CoverageWindow(
+                    InvariantCacheText.ParseDate(window.Start),
+                    InvariantCacheText.ParseDate(window.End),
+                    InvariantCacheText.ParseInstant(window.FetchedAtUtc)));
+            }
+            catch (FormatException)
+            {
+                // Skip a single malformed window rather than failing the whole read.
+            }
+        }
+
+        return new CachePairState(rows, windows);
+    }
+
+    /// <summary>
+    /// Reports a swallowed best-effort storage failure to the logger at <see cref="LogLevel.Warning" />, rate-limited
+    /// so at most one warning is emitted per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.
+    /// </summary>
+    /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>
+    /// <param name="exception">The swallowed storage exception.</param>
+    private void OnStorageFailureSwallowed(string operation, Exception exception)
+    {
+        if (_warnGate.TryClaimWarning(out int suppressed))
+            Log.StorageFailureSwallowed(_logger, Options.Provider, operation, suppressed, exception);
+    }
 }

@@ -35,9 +35,6 @@ namespace Bodu.Globalization.Calendar.Caching;
 public sealed class SqliteNotableDateCache
     : NotableDateCacheBase<SqliteNotableDateCacheOptions>, IDisposable
 {
-    /// <summary>The minimum interval between two emitted degradation warnings.</summary>
-    private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
-
     /// <summary>The resolved connection string every connection is opened with.</summary>
     private readonly string _connectionString;
 
@@ -71,7 +68,7 @@ public sealed class SqliteNotableDateCache
         : base(options)
     {
         _connectionString = options.ResolveConnectionString();
-        _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
+        _warnGate = new RateLimitedWarningGate(timeProvider, RateLimitedWarningGate.DefaultCooldown);
         _logger = logger ?? NullLogger.Instance;
 
         _keepAlive = new SqliteConnection(_connectionString);
@@ -225,7 +222,7 @@ public sealed class SqliteNotableDateCache
                 {
                     year.Value = entry.Year;
                     version.Value = entry.ResourceVersion;
-                    computed.Value = FormatInstant(entry.ComputedAtUtc);
+                    computed.Value = InvariantCacheText.FormatInstant(entry.ComputedAtUtc);
                     occurrences.Value = NotableDateCacheFileConverter.SerializeOccurrences(entry.Occurrences);
                     insert.ExecuteNonQuery();
                 }
@@ -263,22 +260,6 @@ public sealed class SqliteNotableDateCache
     }
 
     /// <summary>
-    /// Formats a <see cref="DateTimeOffset" /> as invariant round-trip (<c>"O"</c>) text for storage.
-    /// </summary>
-    /// <param name="value">The instant to format.</param>
-    /// <returns>The invariant round-trip text.</returns>
-    private static string FormatInstant(DateTimeOffset value) =>
-        value.ToString("O", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant round-trip (<c>"O"</c>) text back into a <see cref="DateTimeOffset" />.
-    /// </summary>
-    /// <param name="text">The stored instant text.</param>
-    /// <returns>The parsed instant.</returns>
-    private static DateTimeOffset ParseInstant(string text) =>
-        DateTimeOffset.Parse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-
-    /// <summary>
     /// Builds a cache entry from stored columns, skipping a row whose stored instant cannot be parsed.
     /// </summary>
     /// <param name="territory">The normalized territory.</param>
@@ -296,7 +277,7 @@ public sealed class SqliteNotableDateCache
                 year,
                 version,
                 NotableDateCacheFileConverter.DeserializeOccurrences(occurrences),
-                ParseInstant(computedAt));
+                InvariantCacheText.ParseInstant(computedAt));
         }
         catch (Exception ex) when (ex is FormatException or OverflowException)
         {

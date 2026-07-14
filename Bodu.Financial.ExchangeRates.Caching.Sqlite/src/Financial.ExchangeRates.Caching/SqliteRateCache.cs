@@ -98,8 +98,8 @@ public sealed class SqliteRateCache
     /// <summary>The keep-alive connection held open for the instance lifetime so a shared in-memory database is not torn down between operations. Closed on <see cref="Dispose" />.</summary>
     private readonly SqliteConnection _keepAlive;
 
-    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first use and reused thereafter.</summary>
-    private readonly ConcurrentDictionary<CurrencyPair, object> _pairLocks = new();
+    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />.</summary>
+    private readonly StripedLockSet<CurrencyPair> _pairLocks = new();
 
     /// <summary>Tracks whether the instance has been disposed, as <c>0</c> for live and <c>1</c> for disposed. Stored as an <see cref="int" /> so <see cref="Interlocked.Exchange(ref int, int)" /> can make <see cref="Dispose" /> idempotent: only the first caller observes the transition and releases the keep-alive connection.</summary>
     private int _disposed;
@@ -107,10 +107,7 @@ public sealed class SqliteRateCache
     /// <summary>The logger that receives the rate-limited degradation warnings, or <see cref="NullLogger.Instance" /> when none was supplied.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The minimum interval between two emitted degradation warnings; failures inside the window are suppressed and counted.</summary>
-    private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
-
-    /// <summary>Rate-limits the degradation warning to at most one emission per <see cref="s_warnCooldown" /> window.</summary>
+    /// <summary>Rate-limits the degradation warning to at most one emission per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.</summary>
     private readonly RateLimitedWarningGate _warnGate;
 
     /// <summary>
@@ -145,7 +142,7 @@ public sealed class SqliteRateCache
 
         _options = options;
         _connectionString = options.ResolveConnectionString();
-        _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
+        _warnGate = new RateLimitedWarningGate(timeProvider, RateLimitedWarningGate.DefaultCooldown);
         _logger = logger ?? NullLogger.Instance;
 
         // Hold one connection open for the instance lifetime so a shared in-memory database is not destroyed between
@@ -203,7 +200,7 @@ public sealed class SqliteRateCache
 
     /// <summary>
     /// Reports a swallowed best-effort storage failure to the logger at <see cref="LogLevel.Warning" />, rate-limited
-    /// so at most one warning is emitted per <see cref="s_warnCooldown" /> window.
+    /// so at most one warning is emitted per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.
     /// </summary>
     /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>
     /// <param name="exception">The swallowed storage exception.</param>
@@ -400,54 +397,6 @@ public sealed class SqliteRateCache
     }
 
     /// <summary>
-    /// Formats a <see cref="DateOnly" /> as invariant <c>yyyy-MM-dd</c> text for storage.
-    /// </summary>
-    /// <param name="value">The date to format.</param>
-    /// <returns>The invariant ISO date text.</returns>
-    private static string FormatDate(DateOnly value) =>
-        value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant <c>yyyy-MM-dd</c> text back into a <see cref="DateOnly" />.
-    /// </summary>
-    /// <param name="text">The stored date text.</param>
-    /// <returns>The parsed date.</returns>
-    private static DateOnly ParseDate(string text) =>
-        DateOnly.ParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Formats a <see cref="DateTimeOffset" /> as invariant round-trip (<c>"O"</c>) text for storage.
-    /// </summary>
-    /// <param name="value">The instant to format.</param>
-    /// <returns>The invariant round-trip text.</returns>
-    private static string FormatInstant(DateTimeOffset value) =>
-        value.ToString("O", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant round-trip (<c>"O"</c>) text back into a <see cref="DateTimeOffset" />.
-    /// </summary>
-    /// <param name="text">The stored instant text.</param>
-    /// <returns>The parsed instant.</returns>
-    private static DateTimeOffset ParseInstant(string text) =>
-        DateTimeOffset.Parse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-
-    /// <summary>
-    /// Formats a decimal rate as invariant text for storage so its scale and precision round-trips losslessly.
-    /// </summary>
-    /// <param name="value">The rate to format.</param>
-    /// <returns>The invariant decimal text.</returns>
-    private static string FormatRate(decimal value) =>
-        value.ToString(CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant decimal text back into a rate.
-    /// </summary>
-    /// <param name="text">The stored decimal text.</param>
-    /// <returns>The parsed rate.</returns>
-    private static decimal ParseRate(string text) =>
-        decimal.Parse(text, CultureInfo.InvariantCulture);
-
-    /// <summary>
     /// Reads the persisted rate rows for a pair, returning an empty list when none exist or the read fails.
     /// </summary>
     /// <param name="pair">The currency pair.</param>
@@ -475,11 +424,11 @@ public sealed class SqliteRateCache
                 {
                     // A pre-C row, or a row whose source never supplied a fetch instant, stores observed_at as NULL and
                     // reads back as a null ObservedAtUtc.
-                    DateTimeOffset? observedAt = reader.IsDBNull(3) ? (DateTimeOffset?)null : ParseInstant(reader.GetString(3));
+                    DateTimeOffset? observedAt = reader.IsDBNull(3) ? (DateTimeOffset?)null : InvariantCacheText.ParseInstant(reader.GetString(3));
                     rows.Add(new CachedRate(
-                        ParseDate(reader.GetString(0)),
-                        ParseRate(reader.GetString(1)),
-                        ParseInstant(reader.GetString(2)),
+                        InvariantCacheText.ParseDate(reader.GetString(0)),
+                        InvariantCacheText.ParseDecimal(reader.GetString(1)),
+                        InvariantCacheText.ParseInstant(reader.GetString(2)),
                         observedAt));
                 }
                 catch (Exception ex) when (ex is FormatException or OverflowException)
@@ -580,10 +529,10 @@ public sealed class SqliteRateCache
 
         foreach (CachedRate entry in entries)
         {
-            date.Value = FormatDate(entry.Date);
-            rate.Value = FormatRate(entry.Rate);
-            cached.Value = FormatInstant(entry.CachedAtUtc);
-            observed.Value = entry.ObservedAtUtc is { } o ? FormatInstant(o) : (object)DBNull.Value;
+            date.Value = InvariantCacheText.FormatDate(entry.Date);
+            rate.Value = InvariantCacheText.FormatDecimal(entry.Rate);
+            cached.Value = InvariantCacheText.FormatInstant(entry.CachedAtUtc);
+            observed.Value = entry.ObservedAtUtc is { } o ? InvariantCacheText.FormatInstant(o) : (object)DBNull.Value;
             insert.ExecuteNonQuery();
         }
     }
@@ -616,9 +565,9 @@ public sealed class SqliteRateCache
                 try
                 {
                     windows.Add((
-                        ParseDate(reader.GetString(0)),
-                        ParseDate(reader.GetString(1)),
-                        ParseInstant(reader.GetString(2))));
+                        InvariantCacheText.ParseDate(reader.GetString(0)),
+                        InvariantCacheText.ParseDate(reader.GetString(1)),
+                        InvariantCacheText.ParseInstant(reader.GetString(2))));
                 }
                 catch (FormatException)
                 {
@@ -713,9 +662,9 @@ public sealed class SqliteRateCache
 
         foreach ((DateOnly windowStart, DateOnly windowEnd, DateTimeOffset fetchedAt) in windows)
         {
-            start.Value = FormatDate(windowStart);
-            end.Value = FormatDate(windowEnd);
-            fetched.Value = FormatInstant(fetchedAt);
+            start.Value = InvariantCacheText.FormatDate(windowStart);
+            end.Value = InvariantCacheText.FormatDate(windowEnd);
+            fetched.Value = InvariantCacheText.FormatInstant(fetchedAt);
             insert.ExecuteNonQuery();
         }
     }
@@ -821,5 +770,5 @@ public sealed class SqliteRateCache
     /// <param name="pair">The currency pair whose write lock is required.</param>
     /// <returns>The per-pair lock object.</returns>
     private object LockFor(CurrencyPair pair) =>
-        _pairLocks.GetOrAdd(pair, static _ => new object());
+        _pairLocks.For(pair);
 }

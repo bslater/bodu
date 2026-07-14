@@ -27,6 +27,12 @@ namespace Bodu.Caching;
 /// </remarks>
 internal sealed class RateLimitedWarningGate
 {
+    /// <summary>
+    /// The default cooldown every Bodu cache backend rate-limits its best-effort degradation warning with: at most one
+    /// emitted warning per minute.
+    /// </summary>
+    public static readonly TimeSpan DefaultCooldown = TimeSpan.FromMinutes(1);
+
     /// <summary>The clock the cooldown is measured against.</summary>
     private readonly TimeProvider _timeProvider;
 

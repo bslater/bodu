@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
+using Bodu.Caching;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
@@ -43,8 +43,8 @@ public abstract class RateCacheBase<TOptions>
     /// <summary>The validated options carrying the bound provider and any storage settings.</summary>
     private readonly TOptions _options;
 
-    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" /> and <see cref="RecordCoverage" />. One lock object is created per pair on first use and reused thereafter.</summary>
-    private readonly ConcurrentDictionary<CurrencyPair, object> _pairLocks = new();
+    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" /> and <see cref="RecordCoverage" />.</summary>
+    private readonly StripedLockSet<CurrencyPair> _pairLocks = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RateCacheBase{TOptions}" /> class.
@@ -169,11 +169,13 @@ public abstract class RateCacheBase<TOptions>
     /// The stored state, or <see cref="CachePairState.Empty" /> when none is available or the read fails.
     /// </returns>
     /// <remarks>
-    /// Declared <see langword="private protected" /> because <see cref="CachePairState" /> is an internal storage
-    /// detail: the seam is open only to backends within this assembly. An out-of-assembly backend implements the public
+    /// Declared <see langword="internal" /> so the storage seam is open to the backends in this assembly and
+    /// — through the existing <c>InternalsVisibleTo</c> grants — to the companion distributed package, which stores a
+    /// pair's whole state as one unit and derives from this base. A backend whose halves are independently addressable
+    /// (the SQLite cache's two tables) or an unrelated third-party backend implements the public
     /// <see cref="IRateCache" /> contract directly instead, as <see cref="NullRateCache" /> does.
     /// </remarks>
-    private protected abstract CachePairState ReadState(CurrencyPair pair);
+    internal abstract CachePairState ReadState(CurrencyPair pair);
 
     /// <summary>
     /// Writes the supplied state for a pair, replacing any existing state.
@@ -185,13 +187,12 @@ public abstract class RateCacheBase<TOptions>
     /// <see langword="false" /> when a storage failure was swallowed and nothing was persisted.
     /// </returns>
     /// <remarks>
-    /// Declared <see langword="private protected" /> for the same reason as <see cref="ReadState" />:
-    /// <see cref="CachePairState" /> is an internal storage detail shared only with same-assembly backends. The
+    /// Declared <see langword="internal" /> for the same reason as <see cref="ReadState" />. The
     /// <see cref="bool" /> result lets <see cref="StoreFetchedRange" /> distinguish a durable write from a best-effort
     /// backend that swallowed an <see cref="IOException" /> or similar fault, so a failed write is reported as
     /// <see cref="RateCacheWriteStatus.Failed" /> rather than falsely as <see cref="RateCacheWriteStatus.Stored" />.
     /// </remarks>
-    private protected abstract bool WriteState(CurrencyPair pair, CachePairState state);
+    internal abstract bool WriteState(CurrencyPair pair, CachePairState state);
 
     /// <summary>
     /// Projects the internal coverage windows into the plain tuples the shared <see cref="RateCacheRules" /> operate
@@ -229,5 +230,5 @@ public abstract class RateCacheBase<TOptions>
     /// <param name="pair">The currency pair whose write lock is required.</param>
     /// <returns>The per-pair lock object.</returns>
     private object LockFor(CurrencyPair pair) =>
-        _pairLocks.GetOrAdd(pair, static _ => new object());
+        _pairLocks.For(pair);
 }

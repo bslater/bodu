@@ -37,6 +37,8 @@
     <Compile Include="..\..\shared\Caching\RateLimitedWarningGate.cs" Link="Caching\RateLimitedWarningGate.cs" />
     <Compile Include="..\..\shared\Caching\AtomicFileWriter.cs" Link="Caching\AtomicFileWriter.cs" />
     <Compile Include="..\..\shared\Caching\CacheFreshness.cs" Link="Caching\CacheFreshness.cs" />
+    <Compile Include="..\..\shared\Caching\StripedLockSet.cs" Link="Caching\StripedLockSet.cs" />
+    <Compile Include="..\..\shared\Caching\InvariantCacheText.cs" Link="Caching\InvariantCacheText.cs" />
   </ItemGroup>
 
   <!-- Bodu project dependencies. -->

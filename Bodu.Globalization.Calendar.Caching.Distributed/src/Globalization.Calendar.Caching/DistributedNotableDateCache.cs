@@ -38,9 +38,6 @@ namespace Bodu.Globalization.Calendar.Caching;
 public sealed class DistributedNotableDateCache
     : NotableDateCacheBase<DistributedNotableDateCacheOptions>
 {
-    /// <summary>The minimum interval between two emitted degradation warnings.</summary>
-    private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
-
     /// <summary>The backing distributed store.</summary>
     private readonly IDistributedCache _cache;
 
@@ -76,7 +73,7 @@ public sealed class DistributedNotableDateCache
         ThrowHelper.ThrowIfNull(cache);
 
         _cache = cache;
-        _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
+        _warnGate = new RateLimitedWarningGate(timeProvider, RateLimitedWarningGate.DefaultCooldown);
         _logger = logger ?? NullLogger.Instance;
     }
 

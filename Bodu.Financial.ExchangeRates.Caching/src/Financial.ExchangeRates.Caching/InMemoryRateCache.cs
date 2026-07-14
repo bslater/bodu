@@ -69,11 +69,11 @@ public sealed class InMemoryRateCache
     }
 
     /// <inheritdoc />
-    private protected override CachePairState ReadState(CurrencyPair pair) =>
+    internal override CachePairState ReadState(CurrencyPair pair) =>
         _store.TryGetValue(pair, out CachePairState? state) ? state : CachePairState.Empty;
 
     /// <inheritdoc />
-    private protected override bool WriteState(CurrencyPair pair, CachePairState state)
+    internal override bool WriteState(CurrencyPair pair, CachePairState state)
     {
         // Drop the pair entirely only when nothing remains to retain, so an empty state does not linger in the map.
         if (state.Entries.Count == 0 && state.Coverage.Count == 0)

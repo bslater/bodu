@@ -32,9 +32,6 @@ namespace Bodu.Globalization.Calendar.Caching;
 public abstract class FileNotableDateCacheBase
     : NotableDateCacheBase<FileNotableDateCacheOptions>
 {
-    /// <summary>The minimum interval between two emitted best-effort storage-failure warnings.</summary>
-    private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
-
     /// <summary>The resolved cache directory the files are stored under.</summary>
     private readonly string _directory;
 
@@ -70,7 +67,7 @@ public abstract class FileNotableDateCacheBase
         _directory = ResolveDirectory(options.CacheDirectory);
         _logger = logger ?? NullLogger.Instance;
         _throwOnFailure = options.ThrowOnStorageFailure;
-        _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
+        _warnGate = new RateLimitedWarningGate(timeProvider, RateLimitedWarningGate.DefaultCooldown);
 
         if (options.ValidateStorageOnStart)
             Directory.CreateDirectory(_directory);
