@@ -80,6 +80,8 @@ public sealed class SqliteNotableDateCache
         {
             _keepAlive.Open();
             ConfigureConnection(_keepAlive);
+            if (options.UseWriteAheadLogging)
+                ApplyWriteAheadLogging(_keepAlive);
             EnsureSchema(_keepAlive);
         }
         catch (Exception ex) when (ex is SqliteException or IOException && !options.ValidateStorageOnStart && !options.ThrowOnStorageFailure)
@@ -351,9 +353,15 @@ public sealed class SqliteNotableDateCache
     }
 
     /// <summary>
-    /// Applies the connection-level concurrency settings to a freshly opened connection.
+    /// Applies the per-connection concurrency setting — the <c>busy_timeout</c> wait — to a freshly opened connection.
     /// </summary>
     /// <param name="connection">The open connection to configure.</param>
+    /// <remarks>
+    /// Write-ahead logging is deliberately not re-asserted here: <c>journal_mode = WAL</c> is a persistent
+    /// database-level property, so it is applied once to the keep-alive connection at construction (see
+    /// <see cref="ApplyWriteAheadLogging" />) and every later per-operation connection inherits it, saving a PRAGMA
+    /// round-trip per open.
+    /// </remarks>
     private void ConfigureConnection(SqliteConnection connection)
     {
         using SqliteCommand command = connection.CreateCommand();
@@ -363,12 +371,22 @@ public sealed class SqliteNotableDateCache
             "PRAGMA busy_timeout = {0};",
             (long)Options.BusyTimeout.TotalMilliseconds);
         command.ExecuteNonQuery();
+    }
 
-        if (Options.UseWriteAheadLogging)
-        {
-            command.CommandText = "PRAGMA journal_mode = WAL;";
-            command.ExecuteNonQuery();
-        }
+    /// <summary>
+    /// Enables write-ahead logging on the database through an open connection, once at construction.
+    /// </summary>
+    /// <param name="connection">The open keep-alive connection.</param>
+    /// <remarks>
+    /// Best-effort: a database that cannot honor the mode — notably an in-memory database, which reports back its
+    /// native mode — is left unchanged rather than failing. Runs outside any transaction so the journal-mode change is
+    /// permitted.
+    /// </remarks>
+    private static void ApplyWriteAheadLogging(SqliteConnection connection)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = "PRAGMA journal_mode = WAL;";
+        command.ExecuteNonQuery();
     }
 
     /// <summary>
