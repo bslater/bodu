@@ -21,8 +21,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 public sealed class JsonNotableDateCache
     : FileNotableDateCacheBase
 {
-    /// <summary>The serializer options shared by every read and write; indented for human-readable on-disk files.</summary>
-    private static readonly JsonSerializerOptions s_jsonOptions = new(JsonSerializerDefaults.Web)
+    /// <summary>The write-side serializer options: the shared web defaults plus indentation for human-readable on-disk files. Reads use the shared <see cref="NotableDateCacheFileConverter.JsonOptions" /> directly, since indentation does not affect parsing.</summary>
+    private static readonly JsonSerializerOptions s_writeOptions = new(NotableDateCacheFileConverter.JsonOptions)
     {
         WriteIndented = true,
     };
@@ -50,21 +50,21 @@ public sealed class JsonNotableDateCache
     protected override string FileExtension => ".json";
 
     /// <inheritdoc />
-    private protected override string Serialize(TerritoryCacheState state) =>
-        JsonSerializer.Serialize(NotableDateCacheFileConverter.ToFile(state), s_jsonOptions);
+    private protected override string Serialize(string territory, IReadOnlyList<NotableDateCacheEntry> entries) =>
+        JsonSerializer.Serialize(NotableDateCacheFileConverter.ToFile(territory, entries), s_writeOptions);
 
     /// <inheritdoc />
-    private protected override TerritoryCacheState Deserialize(string text, string path)
+    private protected override IReadOnlyList<NotableDateCacheEntry> Deserialize(string text, string path)
     {
         try
         {
-            NotableDateCacheFile? file = JsonSerializer.Deserialize<NotableDateCacheFile>(text, s_jsonOptions);
-            return file is null ? TerritoryCacheState.Empty : NotableDateCacheFileConverter.ToState(file);
+            NotableDateCacheFile? file = JsonSerializer.Deserialize<NotableDateCacheFile>(text, NotableDateCacheFileConverter.JsonOptions);
+            return file is null ? Array.Empty<NotableDateCacheEntry>() : NotableDateCacheFileConverter.ToEntries(file);
         }
         catch (JsonException ex)
         {
             OnCacheFileCorrupt(path, ex);
-            return TerritoryCacheState.Empty;
+            return Array.Empty<NotableDateCacheEntry>();
         }
     }
 }

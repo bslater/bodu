@@ -53,25 +53,25 @@ public sealed class TomlNotableDateCache
     protected override string FileExtension => ".toml";
 
     /// <inheritdoc />
-    private protected override string Serialize(TerritoryCacheState state) =>
-        TomlSerializer.Serialize(NotableDateCacheFileConverter.ToFile(state), s_tomlOptions);
+    private protected override string Serialize(string territory, IReadOnlyList<NotableDateCacheEntry> entries) =>
+        TomlSerializer.Serialize(NotableDateCacheFileConverter.ToFile(territory, entries), s_tomlOptions);
 
     /// <inheritdoc />
-    private protected override TerritoryCacheState Deserialize(string text, string path)
+    private protected override IReadOnlyList<NotableDateCacheEntry> Deserialize(string text, string path)
     {
         try
         {
-            return NotableDateCacheFileConverter.ToState(TomlSerializer.Deserialize<NotableDateCacheFile>(text, s_tomlOptions));
+            return NotableDateCacheFileConverter.ToEntries(TomlSerializer.Deserialize<NotableDateCacheFile>(text, s_tomlOptions));
         }
         catch (TomlFormatException ex)
         {
             OnCacheFileCorrupt(path, ex);
-            return TerritoryCacheState.Empty;
+            return Array.Empty<NotableDateCacheEntry>();
         }
         catch (TomlSerializationException ex)
         {
             OnCacheFileCorrupt(path, ex);
-            return TerritoryCacheState.Empty;
+            return Array.Empty<NotableDateCacheEntry>();
         }
     }
 }

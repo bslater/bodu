@@ -40,11 +40,11 @@ public sealed partial class NotableDateCacheFileConverterTests
     }
 
     /// <summary>
-    /// Verifies that converting a populated state to a file and back preserves every entry's territory, year, version,
+    /// Verifies that converting populated entries to a file and back preserves every entry's territory, year, version,
     /// computed instant, and occurrence fields.
     /// </summary>
     [TestMethod]
-    public void ToStateOfToFile_WhenStatePopulated_ShouldRoundTripEveryField()
+    public void ToEntriesOfToFile_WhenEntriesPopulated_ShouldRoundTripEveryField()
     {
         NotableDateCacheEntry populated = new(
             "US",
@@ -53,13 +53,13 @@ public sealed partial class NotableDateCacheFileConverterTests
             new[] { NotableDateCacheTestFactory.NewYearsDay(2026), NotableDateCacheTestFactory.ObservedHoliday(2026) },
             ComputedAt);
         NotableDateCacheEntry empty = NotableDateCacheTestFactory.EmptyEntry("US", 2027, "v1", ComputedAt);
-        var state = new TerritoryCacheState(new[] { populated, empty });
 
-        TerritoryCacheState result = NotableDateCacheFileConverter.ToState(NotableDateCacheFileConverter.ToFile(state));
+        IReadOnlyList<NotableDateCacheEntry> result =
+            NotableDateCacheFileConverter.ToEntries(NotableDateCacheFileConverter.ToFile("US", new[] { populated, empty }));
 
-        Assert.AreEqual(2, result.Entries.Count);
+        Assert.AreEqual(2, result.Count);
 
-        NotableDateCacheEntry roundTripped = result.Entries.Single(e => e.Year == 2026);
+        NotableDateCacheEntry roundTripped = result.Single(e => e.Year == 2026);
         Assert.AreEqual("US", roundTripped.Territory);
         Assert.AreEqual("v1", roundTripped.ResourceVersion);
         Assert.AreEqual(ComputedAt, roundTripped.ComputedAtUtc);
@@ -67,18 +67,37 @@ public sealed partial class NotableDateCacheFileConverterTests
         AssertOccurrenceEqual(NotableDateCacheTestFactory.NewYearsDay(2026), roundTripped.Occurrences.Single(o => o.NotableDateId == "new-year"));
         AssertOccurrenceEqual(NotableDateCacheTestFactory.ObservedHoliday(2026), roundTripped.Occurrences.Single(o => o.NotableDateId == "independence-day"));
 
-        NotableDateCacheEntry emptyRoundTripped = result.Entries.Single(e => e.Year == 2027);
+        NotableDateCacheEntry emptyRoundTripped = result.Single(e => e.Year == 2027);
         Assert.AreEqual(0, emptyRoundTripped.Occurrences.Count);
     }
 
     /// <summary>
-    /// Verifies that converting an empty state produces a file with no entries that reconstructs to the empty state.
+    /// Verifies that converting an empty entry list produces a file that reconstructs to an empty list.
     /// </summary>
     [TestMethod]
-    public void ToStateOfToFile_WhenStateEmpty_ShouldRoundTripToEmpty()
+    public void ToEntriesOfToFile_WhenEntriesEmpty_ShouldRoundTripToEmpty()
     {
-        TerritoryCacheState result = NotableDateCacheFileConverter.ToState(NotableDateCacheFileConverter.ToFile(TerritoryCacheState.Empty));
+        IReadOnlyList<NotableDateCacheEntry> result =
+            NotableDateCacheFileConverter.ToEntries(NotableDateCacheFileConverter.ToFile("US", Array.Empty<NotableDateCacheEntry>()));
 
-        Assert.AreEqual(0, result.Entries.Count);
+        Assert.AreEqual(0, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that occurrences round-trip in stored order, the ordering contract the caching service relies on.
+    /// </summary>
+    [TestMethod]
+    public void ToEntriesOfToFile_WhenMultipleOccurrences_ShouldPreserveStoredOrder()
+    {
+        // Deliberately not date-sorted: order preservation, not sortedness, is the contract under test.
+        NotableDate july = NotableDateCacheTestFactory.ObservedHoliday(2026);
+        NotableDate january = NotableDateCacheTestFactory.NewYearsDay(2026);
+        var entry = new NotableDateCacheEntry("US", 2026, "v1", new[] { july, january }, ComputedAt);
+
+        IReadOnlyList<NotableDateCacheEntry> result =
+            NotableDateCacheFileConverter.ToEntries(NotableDateCacheFileConverter.ToFile("US", new[] { entry }));
+
+        Assert.AreEqual("independence-day", result[0].Occurrences[0].NotableDateId);
+        Assert.AreEqual("new-year", result[0].Occurrences[1].NotableDateId);
     }
 }

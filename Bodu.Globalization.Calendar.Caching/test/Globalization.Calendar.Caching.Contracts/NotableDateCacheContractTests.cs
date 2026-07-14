@@ -152,6 +152,44 @@ public abstract class NotableDateCacheContractTests
     }
 
     /// <summary>
+    /// Verifies that a stored year's occurrences round-trip in the order they were supplied, which is the ordering
+    /// contract the caching service relies on to assemble range results without re-sorting.
+    /// </summary>
+    [TestMethod]
+    public void StoreYear_WhenMultipleOccurrences_ShouldPreserveStoredOrder()
+    {
+        INotableDateCache cache = CreateCache();
+
+        // Deliberately not date-sorted: order preservation, not sortedness, is the contract under test.
+        NotableDate july = NotableDateCacheTestFactory.ObservedHoliday(2026);
+        NotableDate january = NotableDateCacheTestFactory.NewYearsDay(2026);
+        cache.StoreYear(new NotableDateCacheEntry("US", 2026, "v1", new[] { july, january }, Now), Ttl, Now);
+
+        NotableDateCacheEntry? entry = cache.GetYear("US", 2026, "v1", Ttl, Now);
+
+        Assert.IsNotNull(entry);
+        Assert.AreEqual(2, entry.Occurrences.Count);
+        Assert.AreEqual("independence-day", entry.Occurrences[0].NotableDateId);
+        Assert.AreEqual("new-year", entry.Occurrences[1].NotableDateId);
+    }
+
+    /// <summary>
+    /// Verifies that a stored entry with a lower-cased territory reads back self-describing with the normalized
+    /// territory key.
+    /// </summary>
+    [TestMethod]
+    public void StoreYear_WhenTerritoryLowerCase_ShouldNormalizeStoredEntry()
+    {
+        INotableDateCache cache = CreateCache();
+        cache.StoreYear(NotableDateCacheTestFactory.Entry("us", 2026, "v1", Now), Ttl, Now);
+
+        NotableDateCacheEntry? entry = cache.GetYear("US", 2026, "v1", Ttl, Now);
+
+        Assert.IsNotNull(entry);
+        Assert.AreEqual("US", entry.Territory);
+    }
+
+    /// <summary>
     /// Verifies that clearing the cache removes every stored year.
     /// </summary>
     [TestMethod]

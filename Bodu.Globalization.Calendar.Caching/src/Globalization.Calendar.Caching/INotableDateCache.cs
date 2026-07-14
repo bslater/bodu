@@ -29,6 +29,12 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// resolution.
 /// </para>
 /// <para>
+/// <strong>Ordering contract.</strong> An entry's occurrences must round-trip in the order they were supplied to
+/// <see cref="StoreYear" /> — the notable-date service's date-then-identity order. The caching service relies on this to
+/// assemble ordered range results without re-sorting; a backend that cannot preserve order forces a sort fallback on
+/// every read it serves.
+/// </para>
+/// <para>
 /// Implementations are expected to be resilient: a cache failure should manifest as an empty read or a no-op write
 /// rather than an exception that breaks notable-date resolution. Argument validation still throws.
 /// </para>

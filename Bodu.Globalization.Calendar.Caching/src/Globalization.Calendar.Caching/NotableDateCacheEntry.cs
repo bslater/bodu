@@ -19,7 +19,11 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <param name="ResourceVersion">
 /// The version token of the resource the occurrences were computed from; a change invalidates the entry.
 /// </param>
-/// <param name="Occurrences">The occurrences emitted within <paramref name="Year" />, unfiltered.</param>
+/// <param name="Occurrences">
+/// The occurrences emitted within <paramref name="Year" />, unfiltered and in the order they were computed (the
+/// notable-date service's date-then-identity order), which backends preserve per the <see cref="INotableDateCache" />
+/// ordering contract.
+/// </param>
 /// <param name="ComputedAtUtc">The UTC instant at which the year was computed and written to the cache.</param>
 /// <remarks>
 /// <para>

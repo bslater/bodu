@@ -14,8 +14,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <summary>
 /// Provides the file-storage mechanism for an <see cref="INotableDateCache" />: one file per territory under a cache
 /// directory, atomic temp-and-move writes, a last-write-time parse memo, and best-effort degradation on storage
-/// failures. Derived types implement only the file extension and the serialization of a
-/// <see cref="TerritoryCacheState" />.
+/// failures. Derived types implement only the file extension and the serialization of a territory's entry list.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -48,8 +47,8 @@ public abstract class FileNotableDateCacheBase
     /// <summary>Rate-limits the swallowed-storage-failure warning to at most one per cooldown window.</summary>
     private readonly RateLimitedWarningGate _warnGate;
 
-    /// <summary>Memoizes the parsed state per file path against the file's last-write time, so an unchanged file is not re-read.</summary>
-    private readonly ConcurrentDictionary<string, (DateTime WriteTimeUtc, TerritoryCacheState State)> _parsed = new(StringComparer.Ordinal);
+    /// <summary>Memoizes the parsed entries per file path against the file's last-write time, so an unchanged file is not re-read.</summary>
+    private readonly ConcurrentDictionary<string, (DateTime WriteTimeUtc, IReadOnlyList<NotableDateCacheEntry> Entries)> _parsed = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FileNotableDateCacheBase" /> class.
@@ -110,19 +109,20 @@ public abstract class FileNotableDateCacheBase
     }
 
     /// <summary>
-    /// Serializes a territory's state to the concrete text format.
+    /// Serializes a territory's entries to the concrete text format.
     /// </summary>
-    /// <param name="state">The state to serialize.</param>
+    /// <param name="territory">The normalized territory the entries belong to.</param>
+    /// <param name="entries">The entries to serialize.</param>
     /// <returns>The serialized text.</returns>
-    private protected abstract string Serialize(TerritoryCacheState state);
+    private protected abstract string Serialize(string territory, IReadOnlyList<NotableDateCacheEntry> entries);
 
     /// <summary>
-    /// Deserializes a territory's state from the concrete text format, reporting a corrupt file as empty.
+    /// Deserializes a territory's entries from the concrete text format, reporting a corrupt file as empty.
     /// </summary>
     /// <param name="text">The serialized text.</param>
     /// <param name="path">The full path the text was read from, for corrupt-file reporting.</param>
-    /// <returns>The deserialized state, or <see cref="TerritoryCacheState.Empty" /> when the text is corrupt.</returns>
-    private protected abstract TerritoryCacheState Deserialize(string text, string path);
+    /// <returns>The deserialized entries, or an empty list when the text is corrupt.</returns>
+    private protected abstract IReadOnlyList<NotableDateCacheEntry> Deserialize(string text, string path);
 
     /// <summary>
     /// Reports a cache file that failed to deserialize and was treated as empty, so corruption surfaces to operators.
@@ -133,24 +133,24 @@ public abstract class FileNotableDateCacheBase
         Log.CacheFileCorrupt(_logger, path, exception);
 
     /// <inheritdoc />
-    private protected override TerritoryCacheState ReadState(string territory)
+    protected internal override IReadOnlyList<NotableDateCacheEntry> ReadEntries(string territory)
     {
         string path = FilePath(territory);
 
         try
         {
             if (!File.Exists(path))
-                return TerritoryCacheState.Empty;
+                return Array.Empty<NotableDateCacheEntry>();
 
             DateTime writeTime = File.GetLastWriteTimeUtc(path);
-            if (_parsed.TryGetValue(path, out (DateTime WriteTimeUtc, TerritoryCacheState State) memo) && memo.WriteTimeUtc == writeTime)
-                return memo.State;
+            if (_parsed.TryGetValue(path, out (DateTime WriteTimeUtc, IReadOnlyList<NotableDateCacheEntry> Entries) memo) && memo.WriteTimeUtc == writeTime)
+                return memo.Entries;
 
             string text = File.ReadAllText(path);
-            TerritoryCacheState state = Deserialize(text, path);
+            IReadOnlyList<NotableDateCacheEntry> entries = Deserialize(text, path);
 
-            _parsed[path] = (writeTime, state);
-            return state;
+            _parsed[path] = (writeTime, entries);
+            return entries;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
@@ -158,18 +158,18 @@ public abstract class FileNotableDateCacheBase
                 throw;
 
             OnStorageFailureSwallowed("read", ex);
-            return TerritoryCacheState.Empty;
+            return Array.Empty<NotableDateCacheEntry>();
         }
     }
 
     /// <inheritdoc />
-    private protected override bool WriteState(string territory, TerritoryCacheState state)
+    protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries)
     {
         string path = FilePath(territory);
 
         try
         {
-            if (state.Entries.Count == 0)
+            if (entries.Count == 0)
             {
                 if (File.Exists(path))
                     File.Delete(path);
@@ -179,7 +179,7 @@ public abstract class FileNotableDateCacheBase
             }
 
             Directory.CreateDirectory(_directory);
-            AtomicFileWriter.Write(path, Serialize(state));
+            AtomicFileWriter.Write(path, Serialize(territory, entries));
 
             // Invalidate the parse memo so the next read re-parses from the freshly written file and re-stamps it.
             _parsed.TryRemove(path, out _);

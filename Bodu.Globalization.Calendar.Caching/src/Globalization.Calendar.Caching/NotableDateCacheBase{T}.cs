@@ -11,21 +11,20 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <summary>
 /// Provides the storage-agnostic mechanism for an <see cref="INotableDateCache" />: territory normalization, read-time
 /// freshness and version filtering, and write-time merge-and-prune of per-year entries. Derived types implement only
-/// the persistence of a <see cref="TerritoryCacheState" />; this base prescribes no physical storage structure.
+/// the persistence of a territory's entry list; this base prescribes no physical storage structure.
 /// </summary>
 /// <typeparam name="TOptions">The options type carrying any storage settings.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="ReadState" /> returns the raw stored entries without filtering; this base applies the freshness and
+/// <see cref="ReadEntries" /> returns the raw stored entries without filtering; this base applies the freshness and
 /// version policy in <see cref="GetYear" /> and prunes stale and superseded entries in <see cref="StoreYear" />, so the
 /// backing store self-cleans on every write. The read-modify-write sequence in <see cref="StoreYear" /> runs under a
 /// per-territory lock so concurrent writes to the same territory cannot interleave and lose an entry.
 /// </para>
 /// <para>
 /// The freshness, validity, version-matching, and merge rules are delegated to the shared
-/// <see cref="NotableDateCacheRules" /> so this base and the SQLite and distributed backends apply one authoritative
-/// policy. This base contributes only the per-territory locking and the read-modify-write sequencing over a
-/// <see cref="TerritoryCacheState" />.
+/// <see cref="NotableDateCacheRules" /> so every backend applies one authoritative policy. This base contributes only
+/// the per-territory locking and the read-modify-write sequencing over the entry list.
 /// </para>
 /// </remarks>
 public abstract class NotableDateCacheBase<TOptions>
@@ -59,14 +58,20 @@ public abstract class NotableDateCacheBase<TOptions>
     protected TOptions Options => _options;
 
     /// <inheritdoc />
-    public NotableDateCacheEntry? GetYear(string territory, int year, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf)
+    /// <remarks>
+    /// Declared <see langword="virtual" /> so a backend whose storage can answer a single year cheaper than reading the
+    /// whole territory — for example a keyed database row — can override the read while inheriting the write mechanism.
+    /// An override must apply the same freshness, validity, and version policy through
+    /// <see cref="NotableDateCacheRules" />.
+    /// </remarks>
+    public virtual NotableDateCacheEntry? GetYear(string territory, int year, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf)
     {
         ThrowHelper.ThrowIfNull(territory);
         ThrowHelper.ThrowIfNull(resourceVersion);
 
         string key = NotableDateCacheRules.NormalizeTerritory(territory);
 
-        IReadOnlyList<NotableDateCacheEntry> entries = ReadState(key).Entries;
+        IReadOnlyList<NotableDateCacheEntry> entries = ReadEntries(key);
         if (entries.Count == 0)
             return null;
 
@@ -80,13 +85,17 @@ public abstract class NotableDateCacheBase<TOptions>
 
         string key = NotableDateCacheRules.NormalizeTerritory(entry.Territory);
 
+        // Rewrite the entry onto the normalized key so persisted state always self-describes with the canonical
+        // territory, regardless of the casing the caller supplied.
+        NotableDateCacheEntry normalized = string.Equals(entry.Territory, key, StringComparison.Ordinal)
+            ? entry
+            : entry with { Territory = key };
+
         lock (LockFor(key))
         {
-            TerritoryCacheState state = ReadState(key);
+            List<NotableDateCacheEntry> merged = NotableDateCacheRules.Merge(ReadEntries(key), normalized, ttl, asOf);
 
-            List<NotableDateCacheEntry> merged = NotableDateCacheRules.Merge(state.Entries, entry, ttl, asOf);
-
-            return WriteState(key, new TerritoryCacheState(merged))
+            return WriteEntries(key, merged)
                 ? NotableDateCacheWriteStatus.Stored
                 : NotableDateCacheWriteStatus.Failed;
         }
@@ -96,33 +105,37 @@ public abstract class NotableDateCacheBase<TOptions>
     public abstract void Clear();
 
     /// <summary>
-    /// Reads the raw, unfiltered persisted state for a normalized territory.
+    /// Reads the raw, unfiltered persisted entries for a normalized territory.
     /// </summary>
     /// <param name="territory">The normalized territory key.</param>
-    /// <returns>The stored state, or <see cref="TerritoryCacheState.Empty" /> when none is available or the read fails.</returns>
+    /// <returns>The stored entries, or an empty list when none are available or the read fails.</returns>
     /// <remarks>
-    /// Declared <see langword="private protected" /> because <see cref="TerritoryCacheState" /> is an internal storage
-    /// detail: the seam is open only to backends within this assembly. An out-of-assembly backend implements the public
-    /// <see cref="INotableDateCache" /> contract directly instead, as <see cref="NullNotableDateCache" /> does.
+    /// Declared <see langword="protected internal" /> so the storage seam is open to the backends in this assembly and
+    /// in the companion SQLite and distributed packages, which derive from this base. An unrelated third-party backend
+    /// implements the public <see cref="INotableDateCache" /> contract directly instead, as
+    /// <see cref="NullNotableDateCache" /> does.
     /// </remarks>
-    private protected abstract TerritoryCacheState ReadState(string territory);
+    protected internal abstract IReadOnlyList<NotableDateCacheEntry> ReadEntries(string territory);
 
     /// <summary>
-    /// Writes the supplied state for a normalized territory, replacing any existing state.
+    /// Writes the supplied entries for a normalized territory, replacing any existing state.
     /// </summary>
     /// <param name="territory">The normalized territory key.</param>
-    /// <param name="state">The state to persist.</param>
+    /// <param name="entries">
+    /// The entries to persist. The list is freshly allocated by the caller for this write, so a backend may store the
+    /// reference directly without a defensive copy.
+    /// </param>
     /// <returns>
-    /// <see langword="true" /> when the state was persisted, including the deliberate deletion of an empty state;
+    /// <see langword="true" /> when the entries were persisted, including the deliberate deletion of an empty state;
     /// <see langword="false" /> when a storage failure was swallowed and nothing was persisted.
     /// </returns>
     /// <remarks>
-    /// Declared <see langword="private protected" /> for the same reason as <see cref="ReadState" />. The
+    /// Declared <see langword="protected internal" /> for the same reason as <see cref="ReadEntries" />. The
     /// <see cref="bool" /> result lets <see cref="StoreYear" /> distinguish a durable write from a best-effort backend
     /// that swallowed a fault, so a failed write is reported as <see cref="NotableDateCacheWriteStatus.Failed" /> rather
     /// than falsely as <see cref="NotableDateCacheWriteStatus.Stored" />.
     /// </remarks>
-    private protected abstract bool WriteState(string territory, TerritoryCacheState state);
+    protected internal abstract bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries);
 
     /// <summary>
     /// Returns the lock object guarding writes for the supplied normalized territory, creating it on first use.

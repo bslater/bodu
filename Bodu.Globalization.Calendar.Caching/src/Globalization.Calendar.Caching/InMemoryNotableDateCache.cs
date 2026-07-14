@@ -27,8 +27,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 public sealed class InMemoryNotableDateCache
     : NotableDateCacheBase<NotableDateCacheOptions>
 {
-    /// <summary>The in-memory store of per-territory state, keyed by the normalized territory. Each value is an immutable snapshot owned by the cache.</summary>
-    private readonly ConcurrentDictionary<string, TerritoryCacheState> _store = new(StringComparer.Ordinal);
+    /// <summary>The in-memory store of per-territory entries, keyed by the normalized territory. Each value is the freshly merged list the base handed to <see cref="WriteEntries" />, owned by the cache from that point and never mutated.</summary>
+    private readonly ConcurrentDictionary<string, IReadOnlyList<NotableDateCacheEntry>> _store = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InMemoryNotableDateCache" /> class.
@@ -53,24 +53,21 @@ public sealed class InMemoryNotableDateCache
         _store.Clear();
 
     /// <inheritdoc />
-    private protected override TerritoryCacheState ReadState(string territory) =>
-        _store.TryGetValue(territory, out TerritoryCacheState? state) ? state : TerritoryCacheState.Empty;
+    protected internal override IReadOnlyList<NotableDateCacheEntry> ReadEntries(string territory) =>
+        _store.TryGetValue(territory, out IReadOnlyList<NotableDateCacheEntry>? entries) ? entries : Array.Empty<NotableDateCacheEntry>();
 
     /// <inheritdoc />
-    private protected override bool WriteState(string territory, TerritoryCacheState state)
+    protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries)
     {
         // Drop the territory entirely when nothing remains to retain, so an empty state does not linger in the map.
-        if (state.Entries.Count == 0)
+        if (entries.Count == 0)
         {
             _store.TryRemove(territory, out _);
             return true;
         }
 
-        var entries = new NotableDateCacheEntry[state.Entries.Count];
-        for (int i = 0; i < state.Entries.Count; i++)
-            entries[i] = state.Entries[i];
-
-        _store[territory] = new TerritoryCacheState(entries);
+        // The base hands over a freshly merged list per write, so it is stored directly without a defensive copy.
+        _store[territory] = entries;
 
         // An in-memory dictionary write cannot fail, so the write is always durable for the instance lifetime.
         return true;

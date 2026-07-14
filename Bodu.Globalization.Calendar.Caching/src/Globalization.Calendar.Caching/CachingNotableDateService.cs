@@ -21,7 +21,14 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// cache when a fresh, version-matching entry exists or otherwise recomputed for the whole year and written back, and
 /// the assembled occurrences are clipped to the requested window by their emitted date. Because the notable-date engine
 /// resolves per Gregorian year, a whole-year entry is the reusable unit: a later single-day or sub-range query for the
-/// same year is served without recomputing.
+/// same year is served without recomputing, and a query for exactly one whole civil year is served as the cached list
+/// itself with no copying.
+/// </para>
+/// <para>
+/// Output ordering relies on the <see cref="INotableDateCache" /> ordering contract — cached occurrences round-trip in
+/// the order supplied, which is the wrapped service's date-then-identity ordering, and emitted dates in one civil year
+/// always precede the next year's — so assembled results are ordered without re-sorting. As a safeguard, the assembled
+/// result is verified with a linear scan, and only a non-conforming cache backend pays a full sort.
 /// </para>
 /// <para>
 /// The filtered overloads apply the filter after assembling the unfiltered result, exactly as the wrapped service does,
@@ -62,17 +69,14 @@ public sealed class CachingNotableDateService
     /// <summary>Whether the decorator owns and disposes the cache.</summary>
     private readonly bool _ownsCache;
 
-    /// <summary>Guards the resource-version generation tracking.</summary>
+    /// <summary>Guards the version-token derivation when the observed resource reference changes.</summary>
     private readonly object _versionLock = new();
 
-    /// <summary>The resource observed on the previous version resolution, tracked by reference identity to detect a reload.</summary>
-    private NotableDateResource? _lastResource;
+    /// <summary>The immutable pair of the resource observed on the previous version resolution and the token derived for it, swapped atomically on reload so the per-query fast path is a single volatile read with no lock.</summary>
+    private volatile Tuple<NotableDateResource, string>? _version;
 
     /// <summary>The monotonic reload generation, bumped whenever the observed resource reference changes.</summary>
     private long _generation;
-
-    /// <summary>The version token derived for the current observed resource.</summary>
-    private string? _versionToken;
 
     /// <summary>Guards against double disposal.</summary>
     private bool _disposed;
@@ -135,15 +139,29 @@ public sealed class CachingNotableDateService
         string version = ResolveVersion();
         TimeSpan ttl = _options.Ttl;
 
-        List<NotableDate> assembled = new();
-        for (int year = range.StartDate.Year; year <= range.EndDate.Year; year++)
-            assembled.AddRange(ResolveYear(territory, year, version, ttl, now));
+        int firstYear = range.StartDate.Year;
+        int lastYear = range.EndDate.Year;
 
-        return [.. assembled
-            .Where(occurrence => occurrence.Date >= range.StartDate && occurrence.Date <= range.EndDate)
-            .OrderBy(occurrence => occurrence.Date)
-            .ThenBy(occurrence => occurrence.NotableDateId, StringComparer.Ordinal)
-            .ThenBy(occurrence => occurrence.RuleId, StringComparer.Ordinal)];
+        if (firstYear == lastYear)
+        {
+            IReadOnlyList<NotableDate> year = ResolveYear(territory, firstYear, version, ttl, now);
+
+            // Whole-civil-year window (the Resolve(year, territory) extension shape): the cached year list is the
+            // answer itself — no clipping, no copying.
+            if (range.StartDate.DayOfYear == 1 && range.EndDate.Month == 12 && range.EndDate.Day == 31)
+                return EnsureOrdered(year);
+
+            return EnsureOrdered(Clip(year, range));
+        }
+
+        List<NotableDate> assembled = new();
+        for (int year = firstYear; year <= lastYear; year++)
+        {
+            IReadOnlyList<NotableDate> occurrences = ResolveYear(territory, year, version, ttl, now);
+            AppendInRange(assembled, occurrences, range);
+        }
+
+        return EnsureOrdered(assembled);
     }
 
     /// <inheritdoc />
@@ -182,12 +200,12 @@ public sealed class CachingNotableDateService
     /// Resolves one civil year, serving it from the cache when a fresh entry exists or otherwise recomputing the whole
     /// year and caching it.
     /// </summary>
-    /// <param name="territory">The requested territory code.</param>
+    /// <param name="territory">The requested territory code, passed through unmodified; the cache normalizes it.</param>
     /// <param name="year">The civil year to resolve.</param>
     /// <param name="version">The resource version token entries are keyed by.</param>
     /// <param name="ttl">The time-to-live freshness is evaluated against.</param>
     /// <param name="now">The lookup instant.</param>
-    /// <returns>The occurrences emitted within the year, unfiltered.</returns>
+    /// <returns>The occurrences emitted within the year, unfiltered, in the wrapped service's order.</returns>
     private IReadOnlyList<NotableDate> ResolveYear(string territory, int year, string version, TimeSpan ttl, DateTimeOffset now)
     {
         NotableDateCacheEntry? entry = _cache.GetYear(territory, year, version, ttl, now);
@@ -200,8 +218,7 @@ public sealed class CachingNotableDateService
         IReadOnlyList<NotableDate> occurrences =
             _inner.Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory);
 
-        string normalized = NotableDateCacheRules.NormalizeTerritory(territory);
-        _cache.StoreYear(new NotableDateCacheEntry(normalized, year, version, occurrences, now), ttl, now);
+        _cache.StoreYear(new NotableDateCacheEntry(territory, year, version, occurrences, now), ttl, now);
 
         Log.CacheMiss(_logger, _options.CacheMissLogLevel, territory, year, occurrences.Count);
         return occurrences;
@@ -212,6 +229,11 @@ public sealed class CachingNotableDateService
     /// provider is present, or from the fixed options token otherwise.
     /// </summary>
     /// <returns>The current resource-version token.</returns>
+    /// <remarks>
+    /// The common case — the observed resource has not changed since the previous query — is a single volatile read and
+    /// a reference comparison, with no lock. The lock is taken only when a reload has swapped the resource reference,
+    /// deriving the new token once and publishing the immutable pair atomically.
+    /// </remarks>
     private string ResolveVersion()
     {
         if (_versionSource is null)
@@ -219,23 +241,99 @@ public sealed class CachingNotableDateService
 
         NotableDateResource current = _versionSource.Current;
 
+        Tuple<NotableDateResource, string>? version = _version;
+        if (version is not null && ReferenceEquals(version.Item1, current))
+            return version.Item2;
+
         lock (_versionLock)
         {
+            // Re-check under the lock: a concurrent caller may already have derived the token for this resource.
+            version = _version;
+            if (version is not null && ReferenceEquals(version.Item1, current))
+                return version.Item2;
+
             // A reload swaps the resource reference; bump the generation so the token — and therefore every cache key —
             // changes even when the new resource carries the same identifier and schema version as the old one.
-            if (!ReferenceEquals(current, _lastResource))
-            {
-                _lastResource = current;
-                _generation++;
-                _versionToken = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "{0}|{1}|{2}",
-                    current.ResourceId,
-                    current.SchemaVersion,
-                    _generation);
-            }
+            _generation++;
+            string token = string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}|{1}|{2}",
+                current.ResourceId,
+                current.SchemaVersion,
+                _generation);
 
-            return _versionToken!;
+            _version = Tuple.Create(current, token);
+            return token;
         }
+    }
+
+    /// <summary>
+    /// Copies the occurrences whose emitted date falls within the requested window into a new list, preserving order.
+    /// </summary>
+    /// <param name="occurrences">The year's occurrences, in stored order.</param>
+    /// <param name="range">The requested window.</param>
+    /// <returns>The clipped occurrences.</returns>
+    private static List<NotableDate> Clip(IReadOnlyList<NotableDate> occurrences, DateRange range)
+    {
+        List<NotableDate> clipped = new(occurrences.Count);
+        AppendInRange(clipped, occurrences, range);
+        return clipped;
+    }
+
+    /// <summary>
+    /// Appends the occurrences whose emitted date falls within the requested window, preserving order.
+    /// </summary>
+    /// <param name="target">The list the in-range occurrences are appended to.</param>
+    /// <param name="occurrences">The year's occurrences, in stored order.</param>
+    /// <param name="range">The requested window.</param>
+    private static void AppendInRange(List<NotableDate> target, IReadOnlyList<NotableDate> occurrences, DateRange range)
+    {
+        for (int i = 0; i < occurrences.Count; i++)
+        {
+            NotableDate occurrence = occurrences[i];
+            if (occurrence.Date >= range.StartDate && occurrence.Date <= range.EndDate)
+                target.Add(occurrence);
+        }
+    }
+
+    /// <summary>
+    /// Returns the occurrences ordered by emitted date then identity, verifying the expected order with a linear scan
+    /// and sorting only when a non-conforming cache backend violated the ordering contract.
+    /// </summary>
+    /// <param name="occurrences">The assembled occurrences.</param>
+    /// <returns>
+    /// <paramref name="occurrences" /> itself when already ordered — the common case for every conforming backend — or
+    /// a sorted copy otherwise.
+    /// </returns>
+    private static IReadOnlyList<NotableDate> EnsureOrdered(IReadOnlyList<NotableDate> occurrences)
+    {
+        for (int i = 1; i < occurrences.Count; i++)
+        {
+            if (Compare(occurrences[i - 1], occurrences[i]) > 0)
+            {
+                var sorted = new List<NotableDate>(occurrences);
+                sorted.Sort(Compare);
+                return sorted;
+            }
+        }
+
+        return occurrences;
+    }
+
+    /// <summary>
+    /// Compares two occurrences by emitted date, then notable-date id, then rule id, matching the wrapped service's
+    /// output ordering.
+    /// </summary>
+    /// <param name="left">The first occurrence.</param>
+    /// <param name="right">The second occurrence.</param>
+    /// <returns>A signed comparison result.</returns>
+    private static int Compare(NotableDate left, NotableDate right)
+    {
+        int result = left.Date.CompareTo(right.Date);
+        if (result != 0)
+            return result;
+
+        result = string.CompareOrdinal(left.NotableDateId, right.NotableDateId);
+        return result != 0 ? result : string.CompareOrdinal(left.RuleId, right.RuleId);
     }
 }

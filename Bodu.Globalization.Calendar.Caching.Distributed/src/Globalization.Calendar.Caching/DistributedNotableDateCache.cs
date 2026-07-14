@@ -21,42 +21,34 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <remarks>
 /// <para>
 /// A territory's cached years are stored as a single JSON blob under a per-territory key, so a read-modify-write of a
-/// territory's state is one get and one set. Because <see cref="IDistributedCache" /> offers no atomic read-modify-write,
-/// each write runs under a per-territory in-process lock; concurrent writes from separate processes are last-write-wins,
-/// which is acceptable for a best-effort cache. The freshness, validity, version-matching, and merge rules are delegated
-/// to the shared <see cref="NotableDateCacheRules" /> so this backend stays behaviourally identical to the others.
+/// territory's state is one get and one set. The read-merge-write mechanism, per-territory in-process locking, and the
+/// freshness, validity, version-matching, and merge rules are all inherited from
+/// <see cref="NotableDateCacheBase{TOptions}" />; this class contributes only the blob storage. Because
+/// <see cref="IDistributedCache" /> offers no atomic read-modify-write, concurrent writes from separate processes are
+/// last-write-wins, which is acceptable for a best-effort cache.
 /// </para>
 /// <para>
-/// As required by <see cref="INotableDateCache" />, a storage failure surfaces as an empty read or a skipped write rather
-/// than an exception; cancellation is allowed to propagate. Each swallowed failure is logged at
+/// As required by <see cref="INotableDateCache" />, a storage failure surfaces as an empty read or a skipped write
+/// rather than an exception; cancellation is allowed to propagate. Each swallowed failure is logged at
 /// <see cref="LogLevel.Warning" /> rate-limited to at most one warning per minute. Because a distributed store cannot be
 /// enumerated through <see cref="IDistributedCache" />, <see cref="Clear" /> removes only the keys this instance has
 /// written.
 /// </para>
 /// </remarks>
 public sealed class DistributedNotableDateCache
-    : INotableDateCache
+    : NotableDateCacheBase<DistributedNotableDateCacheOptions>
 {
     /// <summary>The minimum interval between two emitted degradation warnings.</summary>
     private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
 
-    /// <summary>The serializer options for the per-territory blob.</summary>
-    private static readonly JsonSerializerOptions s_json = new(JsonSerializerDefaults.Web);
-
     /// <summary>The backing distributed store.</summary>
     private readonly IDistributedCache _cache;
-
-    /// <summary>The validated options carrying the key prefix.</summary>
-    private readonly DistributedNotableDateCacheOptions _options;
 
     /// <summary>The logger that receives the rate-limited degradation warnings.</summary>
     private readonly ILogger _logger;
 
     /// <summary>Rate-limits the degradation warning to at most one emission per cooldown window.</summary>
     private readonly RateLimitedWarningGate _warnGate;
-
-    /// <summary>The striped per-territory locks guarding the read-modify-write of a territory's blob.</summary>
-    private readonly ConcurrentDictionary<string, object> _territoryLocks = new(StringComparer.Ordinal);
 
     /// <summary>The keys this instance has written, so <see cref="Clear" /> can remove them.</summary>
     private readonly ConcurrentDictionary<string, byte> _writtenKeys = new(StringComparer.Ordinal);
@@ -79,13 +71,11 @@ public sealed class DistributedNotableDateCache
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public DistributedNotableDateCache(IDistributedCache cache, DistributedNotableDateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
+        : base(options)
     {
         ThrowHelper.ThrowIfNull(cache);
-        ThrowHelper.ThrowIfNull(options);
-        options.Validate();
 
         _cache = cache;
-        _options = options;
         _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
         _logger = logger ?? NullLogger.Instance;
     }
@@ -95,37 +85,10 @@ public sealed class DistributedNotableDateCache
     /// propagate.
     /// </summary>
     /// <value><see langword="true" /> when <see cref="NotableDateCacheOptions.ThrowOnStorageFailure" /> is not set.</value>
-    private bool ShouldSwallowStorageFailure => !_options.ThrowOnStorageFailure;
+    private bool ShouldSwallowStorageFailure => !Options.ThrowOnStorageFailure;
 
     /// <inheritdoc />
-    public NotableDateCacheEntry? GetYear(string territory, int year, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf)
-    {
-        ThrowHelper.ThrowIfNull(territory);
-        ThrowHelper.ThrowIfNull(resourceVersion);
-
-        string key = NotableDateCacheRules.NormalizeTerritory(territory);
-
-        IReadOnlyList<NotableDateCacheEntry> entries = ReadTerritory(key);
-        return entries.Count == 0 ? null : NotableDateCacheRules.SelectFresh(entries, year, resourceVersion, ttl, asOf);
-    }
-
-    /// <inheritdoc />
-    public NotableDateCacheWriteStatus StoreYear(NotableDateCacheEntry entry, TimeSpan ttl, DateTimeOffset asOf)
-    {
-        ThrowHelper.ThrowIfNull(entry);
-
-        string key = NotableDateCacheRules.NormalizeTerritory(entry.Territory);
-        var normalized = entry with { Territory = key };
-
-        lock (LockFor(key))
-        {
-            List<NotableDateCacheEntry> merged = NotableDateCacheRules.Merge(ReadTerritory(key), normalized, ttl, asOf);
-            return WriteTerritory(key, merged) ? NotableDateCacheWriteStatus.Stored : NotableDateCacheWriteStatus.Failed;
-        }
-    }
-
-    /// <inheritdoc />
-    public void Clear()
+    public override void Clear()
     {
         foreach (string cacheKey in _writtenKeys.Keys)
         {
@@ -141,14 +104,10 @@ public sealed class DistributedNotableDateCache
         }
     }
 
-    /// <summary>
-    /// Reads every cached year for a territory, returning an empty list when the key is absent or the read fails.
-    /// </summary>
-    /// <param name="territory">The normalized territory.</param>
-    /// <returns>The stored entries, unfiltered, or an empty list on failure.</returns>
-    private IReadOnlyList<NotableDateCacheEntry> ReadTerritory(string territory)
+    /// <inheritdoc />
+    protected internal override IReadOnlyList<NotableDateCacheEntry> ReadEntries(string territory)
     {
-        string cacheKey = _options.BuildKey(territory);
+        string cacheKey = Options.BuildKey(territory);
 
         try
         {
@@ -156,32 +115,24 @@ public sealed class DistributedNotableDateCache
             if (bytes is null || bytes.Length == 0)
                 return Array.Empty<NotableDateCacheEntry>();
 
-            NotableDateCacheFile? file = JsonSerializer.Deserialize<NotableDateCacheFile>(bytes, s_json);
-            return file is null ? Array.Empty<NotableDateCacheEntry>() : NotableDateCacheFileConverter.ToState(file).Entries;
+            NotableDateCacheFile? file = JsonSerializer.Deserialize<NotableDateCacheFile>(bytes, NotableDateCacheFileConverter.JsonOptions);
+            return file is null ? Array.Empty<NotableDateCacheEntry>() : NotableDateCacheFileConverter.ToEntries(file);
         }
         catch (OperationCanceledException)
         {
             throw;
         }
-        catch (Exception ex) when ((ex is JsonException || ShouldSwallowStorageFailure))
+        catch (Exception ex) when (ex is JsonException || ShouldSwallowStorageFailure)
         {
             OnStorageFailureSwallowed("read", ex);
             return Array.Empty<NotableDateCacheEntry>();
         }
     }
 
-    /// <summary>
-    /// Replaces a territory's blob with the merged entries, removing the key when nothing remains.
-    /// </summary>
-    /// <param name="territory">The normalized territory whose blob is replaced.</param>
-    /// <param name="entries">The entries to persist.</param>
-    /// <returns>
-    /// <see langword="true" /> when the write succeeded; <see langword="false" /> when a storage error was swallowed and
-    /// nothing was persisted.
-    /// </returns>
-    private bool WriteTerritory(string territory, List<NotableDateCacheEntry> entries)
+    /// <inheritdoc />
+    protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries)
     {
-        string cacheKey = _options.BuildKey(territory);
+        string cacheKey = Options.BuildKey(territory);
 
         try
         {
@@ -192,7 +143,9 @@ public sealed class DistributedNotableDateCache
                 return true;
             }
 
-            byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(NotableDateCacheFileConverter.ToFile(new TerritoryCacheState(entries)), s_json);
+            byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(
+                NotableDateCacheFileConverter.ToFile(territory, entries),
+                NotableDateCacheFileConverter.JsonOptions);
             _cache.Set(cacheKey, bytes);
             _writtenKeys[cacheKey] = 0;
             return true;
@@ -201,7 +154,7 @@ public sealed class DistributedNotableDateCache
         {
             throw;
         }
-        catch (Exception ex) when ((ex is JsonException || ShouldSwallowStorageFailure))
+        catch (Exception ex) when (ex is JsonException || ShouldSwallowStorageFailure)
         {
             OnStorageFailureSwallowed("store", ex);
             return false;
@@ -219,12 +172,4 @@ public sealed class DistributedNotableDateCache
         if (_warnGate.TryClaimWarning(out int suppressed))
             Log.StorageFailureSwallowed(_logger, operation, suppressed, exception);
     }
-
-    /// <summary>
-    /// Returns the lock object guarding writes for the supplied normalized territory, creating it on first use.
-    /// </summary>
-    /// <param name="territory">The normalized territory whose write lock is required.</param>
-    /// <returns>The per-territory lock object.</returns>
-    private object LockFor(string territory) =>
-        _territoryLocks.GetOrAdd(territory, static _ => new object());
 }

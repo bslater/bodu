@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
 using System.Globalization;
 using Bodu.Caching;
 using Microsoft.Data.Sqlite;
@@ -20,36 +19,30 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <remarks>
 /// <para>
 /// Computed years live in one table keyed by <c>(territory, year, version)</c>, one row per cached year, with the
-/// year's occurrences stored as a JSON blob and the computed instant as invariant round-trip text. The freshness,
-/// validity, version-matching, and merge rules are delegated to the shared <see cref="NotableDateCacheRules" /> so this
-/// backend stays behaviourally identical to the other caches; this class contributes only its SQLite storage and
-/// per-territory locking.
+/// year's occurrences stored as a JSON blob and the computed instant as invariant round-trip text. The read-merge-write
+/// mechanism, per-territory locking, and the freshness, validity, version-matching, and merge rules are all inherited
+/// from <see cref="NotableDateCacheBase{TOptions}" />; this class contributes only its SQLite storage, plus a
+/// single-row <see cref="GetYear" /> override so a lookup reads one row rather than parsing every year's occurrence
+/// blob.
 /// </para>
 /// <para>
-/// The cache is a single-process best-effort store. Writes for a territory are serialized under a per-territory lock and
-/// run in a transaction. As required by <see cref="INotableDateCache" />, a storage failure surfaces as an empty read or
-/// a skipped write rather than an exception, and each swallowed failure is logged at <see cref="LogLevel.Warning" />
-/// rate-limited to at most one warning per minute. A single keep-alive connection is held open for the instance lifetime
-/// so a shared in-memory database survives between operations.
+/// The cache is a single-process best-effort store. As required by <see cref="INotableDateCache" />, a storage failure
+/// surfaces as an empty read or a skipped write rather than an exception, and each swallowed failure is logged at
+/// <see cref="LogLevel.Warning" /> rate-limited to at most one warning per minute. A single keep-alive connection is
+/// held open for the instance lifetime so a shared in-memory database survives between operations.
 /// </para>
 /// </remarks>
 public sealed class SqliteNotableDateCache
-    : INotableDateCache, IDisposable
+    : NotableDateCacheBase<SqliteNotableDateCacheOptions>, IDisposable
 {
     /// <summary>The minimum interval between two emitted degradation warnings.</summary>
     private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
-
-    /// <summary>The validated options carrying the database location.</summary>
-    private readonly SqliteNotableDateCacheOptions _options;
 
     /// <summary>The resolved connection string every connection is opened with.</summary>
     private readonly string _connectionString;
 
     /// <summary>The keep-alive connection held open so a shared in-memory database is not torn down between operations.</summary>
     private readonly SqliteConnection _keepAlive;
-
-    /// <summary>The striped per-territory locks guarding the read-modify-write sequence in <see cref="StoreYear" />.</summary>
-    private readonly ConcurrentDictionary<string, object> _territoryLocks = new(StringComparer.Ordinal);
 
     /// <summary>The logger that receives the rate-limited degradation warnings.</summary>
     private readonly ILogger _logger;
@@ -75,11 +68,8 @@ public sealed class SqliteNotableDateCache
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public SqliteNotableDateCache(SqliteNotableDateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
+        : base(options)
     {
-        ThrowHelper.ThrowIfNull(options);
-        options.Validate();
-
-        _options = options;
         _connectionString = options.ResolveConnectionString();
         _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
         _logger = logger ?? NullLogger.Instance;
@@ -92,7 +82,7 @@ public sealed class SqliteNotableDateCache
             ConfigureConnection(_keepAlive);
             EnsureSchema(_keepAlive);
         }
-        catch (Exception ex) when (ex is SqliteException or IOException && !_options.ValidateStorageOnStart && !_options.ThrowOnStorageFailure)
+        catch (Exception ex) when (ex is SqliteException or IOException && !options.ValidateStorageOnStart && !options.ThrowOnStorageFailure)
         {
             // Best-effort cache: a database that cannot be opened or initialized now degrades to empty reads and skipped
             // writes rather than failing construction. When either strict flag is set the failure propagates instead.
@@ -116,10 +106,15 @@ public sealed class SqliteNotableDateCache
     /// propagate.
     /// </summary>
     /// <value><see langword="true" /> when <see cref="NotableDateCacheOptions.ThrowOnStorageFailure" /> is not set.</value>
-    private bool ShouldSwallowStorageFailure => !_options.ThrowOnStorageFailure;
+    private bool ShouldSwallowStorageFailure => !Options.ThrowOnStorageFailure;
 
     /// <inheritdoc />
-    public NotableDateCacheEntry? GetYear(string territory, int year, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf)
+    /// <remarks>
+    /// Overridden so a single-year lookup reads exactly one keyed row rather than loading and parsing every cached
+    /// year's occurrence blob for the territory; the same freshness, validity, and version policy is applied through the
+    /// shared <see cref="NotableDateCacheRules" />.
+    /// </remarks>
+    public override NotableDateCacheEntry? GetYear(string territory, int year, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf)
     {
         ThrowHelper.ThrowIfNull(territory);
         ThrowHelper.ThrowIfNull(resourceVersion);
@@ -134,22 +129,7 @@ public sealed class SqliteNotableDateCache
     }
 
     /// <inheritdoc />
-    public NotableDateCacheWriteStatus StoreYear(NotableDateCacheEntry entry, TimeSpan ttl, DateTimeOffset asOf)
-    {
-        ThrowHelper.ThrowIfNull(entry);
-
-        string key = NotableDateCacheRules.NormalizeTerritory(entry.Territory);
-        var normalized = entry with { Territory = key };
-
-        lock (LockFor(key))
-        {
-            List<NotableDateCacheEntry> merged = NotableDateCacheRules.Merge(ReadTerritory(key), normalized, ttl, asOf);
-            return WriteTerritory(key, merged) ? NotableDateCacheWriteStatus.Stored : NotableDateCacheWriteStatus.Failed;
-        }
-    }
-
-    /// <inheritdoc />
-    public void Clear()
+    public override void Clear()
     {
         try
         {
@@ -164,7 +144,14 @@ public sealed class SqliteNotableDateCache
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Releases the keep-alive connection held for the instance lifetime.
+    /// </summary>
+    /// <remarks>
+    /// Idempotent: a second or concurrent call is a safe no-op. The disposed flag is flipped with
+    /// <see cref="Interlocked.Exchange(ref int, int)" /> so exactly one caller wins the transition and disposes the
+    /// keep-alive connection.
+    /// </remarks>
     public void Dispose()
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0)
@@ -173,82 +160,8 @@ public sealed class SqliteNotableDateCache
         _keepAlive.Dispose();
     }
 
-    /// <summary>
-    /// Creates the <c>notable_dates</c> table if it does not already exist.
-    /// </summary>
-    /// <param name="connection">An open connection to run the schema statement on.</param>
-    private static void EnsureSchema(SqliteConnection connection)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            CREATE TABLE IF NOT EXISTS notable_dates (
-                territory     TEXT NOT NULL,
-                year          INTEGER NOT NULL,
-                version       TEXT NOT NULL,
-                computed_at   TEXT NOT NULL,
-                occurrences   TEXT NOT NULL,
-                PRIMARY KEY (territory, year, version)
-            );
-            """;
-        command.ExecuteNonQuery();
-    }
-
-    /// <summary>
-    /// Formats a <see cref="DateTimeOffset" /> as invariant round-trip (<c>"O"</c>) text for storage.
-    /// </summary>
-    /// <param name="value">The instant to format.</param>
-    /// <returns>The invariant round-trip text.</returns>
-    private static string FormatInstant(DateTimeOffset value) =>
-        value.ToString("O", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant round-trip (<c>"O"</c>) text back into a <see cref="DateTimeOffset" />.
-    /// </summary>
-    /// <param name="text">The stored instant text.</param>
-    /// <returns>The parsed instant.</returns>
-    private static DateTimeOffset ParseInstant(string text) =>
-        DateTimeOffset.Parse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-
-    /// <summary>
-    /// Reads a single cached year for a territory, year, and version, or <see langword="null" /> when absent or the read
-    /// fails.
-    /// </summary>
-    /// <param name="territory">The normalized territory.</param>
-    /// <param name="year">The civil year.</param>
-    /// <param name="version">The resource version.</param>
-    /// <returns>The stored entry, or <see langword="null" />.</returns>
-    private NotableDateCacheEntry? ReadYear(string territory, int year, string version)
-    {
-        try
-        {
-            using SqliteConnection connection = OpenConnection();
-            using SqliteCommand command = connection.CreateCommand();
-            command.CommandText =
-                "SELECT computed_at, occurrences FROM notable_dates WHERE territory = $territory AND year = $year AND version = $version;";
-            command.Parameters.AddWithValue("$territory", territory);
-            command.Parameters.AddWithValue("$year", year);
-            command.Parameters.AddWithValue("$version", version);
-
-            using SqliteDataReader reader = command.ExecuteReader();
-            if (!reader.Read())
-                return null;
-
-            return BuildEntry(territory, year, version, reader.GetString(0), reader.GetString(1));
-        }
-        catch (Exception ex) when (ex is SqliteException or IOException && ShouldSwallowStorageFailure)
-        {
-            OnStorageFailureSwallowed("read", ex);
-            return null;
-        }
-    }
-
-    /// <summary>
-    /// Reads every cached year for a territory, returning an empty list when none exist or the read fails.
-    /// </summary>
-    /// <param name="territory">The normalized territory.</param>
-    /// <returns>The stored entries, unfiltered, or an empty list on failure.</returns>
-    private IReadOnlyList<NotableDateCacheEntry> ReadTerritory(string territory)
+    /// <inheritdoc />
+    protected internal override IReadOnlyList<NotableDateCacheEntry> ReadEntries(string territory)
     {
         List<NotableDateCacheEntry> entries = new();
 
@@ -277,43 +190,8 @@ public sealed class SqliteNotableDateCache
         return entries;
     }
 
-    /// <summary>
-    /// Builds a cache entry from stored columns, skipping a row whose stored instant cannot be parsed.
-    /// </summary>
-    /// <param name="territory">The normalized territory.</param>
-    /// <param name="year">The civil year.</param>
-    /// <param name="version">The resource version.</param>
-    /// <param name="computedAt">The stored computed instant text.</param>
-    /// <param name="occurrences">The stored occurrences JSON blob.</param>
-    /// <returns>The reconstructed entry, or <see langword="null" /> when the row is malformed.</returns>
-    private static NotableDateCacheEntry? BuildEntry(string territory, int year, string version, string computedAt, string occurrences)
-    {
-        try
-        {
-            return new NotableDateCacheEntry(
-                territory,
-                year,
-                version,
-                NotableDateCacheFileConverter.DeserializeOccurrences(occurrences),
-                ParseInstant(computedAt));
-        }
-        catch (Exception ex) when (ex is FormatException or OverflowException)
-        {
-            // Skip a single malformed row rather than failing the whole read.
-            return null;
-        }
-    }
-
-    /// <summary>
-    /// Replaces every cached year for a territory with <paramref name="entries" /> in one transaction.
-    /// </summary>
-    /// <param name="territory">The normalized territory whose entries are replaced.</param>
-    /// <param name="entries">The entries to persist.</param>
-    /// <returns>
-    /// <see langword="true" /> when the transaction committed; <see langword="false" /> when a storage error was
-    /// swallowed and nothing was persisted.
-    /// </returns>
-    private bool WriteTerritory(string territory, List<NotableDateCacheEntry> entries)
+    /// <inheritdoc />
+    protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries)
     {
         try
         {
@@ -364,6 +242,103 @@ public sealed class SqliteNotableDateCache
     }
 
     /// <summary>
+    /// Creates the <c>notable_dates</c> table if it does not already exist.
+    /// </summary>
+    /// <param name="connection">An open connection to run the schema statement on.</param>
+    private static void EnsureSchema(SqliteConnection connection)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            CREATE TABLE IF NOT EXISTS notable_dates (
+                territory     TEXT NOT NULL,
+                year          INTEGER NOT NULL,
+                version       TEXT NOT NULL,
+                computed_at   TEXT NOT NULL,
+                occurrences   TEXT NOT NULL,
+                PRIMARY KEY (territory, year, version)
+            );
+            """;
+        command.ExecuteNonQuery();
+    }
+
+    /// <summary>
+    /// Formats a <see cref="DateTimeOffset" /> as invariant round-trip (<c>"O"</c>) text for storage.
+    /// </summary>
+    /// <param name="value">The instant to format.</param>
+    /// <returns>The invariant round-trip text.</returns>
+    private static string FormatInstant(DateTimeOffset value) =>
+        value.ToString("O", CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Parses invariant round-trip (<c>"O"</c>) text back into a <see cref="DateTimeOffset" />.
+    /// </summary>
+    /// <param name="text">The stored instant text.</param>
+    /// <returns>The parsed instant.</returns>
+    private static DateTimeOffset ParseInstant(string text) =>
+        DateTimeOffset.Parse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+
+    /// <summary>
+    /// Builds a cache entry from stored columns, skipping a row whose stored instant cannot be parsed.
+    /// </summary>
+    /// <param name="territory">The normalized territory.</param>
+    /// <param name="year">The civil year.</param>
+    /// <param name="version">The resource version.</param>
+    /// <param name="computedAt">The stored computed instant text.</param>
+    /// <param name="occurrences">The stored occurrences JSON blob.</param>
+    /// <returns>The reconstructed entry, or <see langword="null" /> when the row is malformed.</returns>
+    private static NotableDateCacheEntry? BuildEntry(string territory, int year, string version, string computedAt, string occurrences)
+    {
+        try
+        {
+            return new NotableDateCacheEntry(
+                territory,
+                year,
+                version,
+                NotableDateCacheFileConverter.DeserializeOccurrences(occurrences),
+                ParseInstant(computedAt));
+        }
+        catch (Exception ex) when (ex is FormatException or OverflowException)
+        {
+            // Skip a single malformed row rather than failing the whole read.
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Reads a single cached year for a territory, year, and version, or <see langword="null" /> when absent or the read
+    /// fails.
+    /// </summary>
+    /// <param name="territory">The normalized territory.</param>
+    /// <param name="year">The civil year.</param>
+    /// <param name="version">The resource version.</param>
+    /// <returns>The stored entry, or <see langword="null" />.</returns>
+    private NotableDateCacheEntry? ReadYear(string territory, int year, string version)
+    {
+        try
+        {
+            using SqliteConnection connection = OpenConnection();
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                "SELECT computed_at, occurrences FROM notable_dates WHERE territory = $territory AND year = $year AND version = $version;";
+            command.Parameters.AddWithValue("$territory", territory);
+            command.Parameters.AddWithValue("$year", year);
+            command.Parameters.AddWithValue("$version", version);
+
+            using SqliteDataReader reader = command.ExecuteReader();
+            if (!reader.Read())
+                return null;
+
+            return BuildEntry(territory, year, version, reader.GetString(0), reader.GetString(1));
+        }
+        catch (Exception ex) when (ex is SqliteException or IOException && ShouldSwallowStorageFailure)
+        {
+            OnStorageFailureSwallowed("read", ex);
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Opens a connection to the cache database with the resolved connection string.
     /// </summary>
     /// <returns>An open connection the caller owns and disposes.</returns>
@@ -386,10 +361,10 @@ public sealed class SqliteNotableDateCache
         command.CommandText = string.Format(
             CultureInfo.InvariantCulture,
             "PRAGMA busy_timeout = {0};",
-            (long)_options.BusyTimeout.TotalMilliseconds);
+            (long)Options.BusyTimeout.TotalMilliseconds);
         command.ExecuteNonQuery();
 
-        if (_options.UseWriteAheadLogging)
+        if (Options.UseWriteAheadLogging)
         {
             command.CommandText = "PRAGMA journal_mode = WAL;";
             command.ExecuteNonQuery();
@@ -407,12 +382,4 @@ public sealed class SqliteNotableDateCache
         if (_warnGate.TryClaimWarning(out int suppressed))
             Log.StorageFailureSwallowed(_logger, operation, suppressed, exception);
     }
-
-    /// <summary>
-    /// Returns the lock object guarding writes for the supplied normalized territory, creating it on first use.
-    /// </summary>
-    /// <param name="territory">The normalized territory whose write lock is required.</param>
-    /// <returns>The per-territory lock object.</returns>
-    private object LockFor(string territory) =>
-        _territoryLocks.GetOrAdd(territory, static _ => new object());
 }
