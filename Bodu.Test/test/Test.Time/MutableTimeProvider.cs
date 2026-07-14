@@ -4,13 +4,18 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
+namespace Bodu.Test.Time;
 
 /// <summary>
-/// A <see cref="TimeProvider" /> whose current instant is set explicitly, so tests can control the degradation-warning
-/// cooldown deterministically.
+/// A <see cref="TimeProvider" /> whose current instant is set explicitly, so tests can control freshness, expiry, and
+/// on-demand windowing deterministically.
 /// </summary>
-internal sealed class MutableTimeProvider
+/// <remarks>
+/// This is the shared canonical controllable clock promoted from the per-project copies the Financial and Calendar
+/// test suites previously duplicated; it unifies their two API shapes (a settable <see cref="UtcNow" /> property and
+/// the <see cref="Advance" />/<see cref="Set" /> methods).
+/// </remarks>
+public sealed class MutableTimeProvider
     : TimeProvider
 {
     /// <summary>
@@ -30,6 +35,12 @@ internal sealed class MutableTimeProvider
     /// </summary>
     /// <param name="delta">The amount to advance.</param>
     public void Advance(TimeSpan delta) => UtcNow += delta;
+
+    /// <summary>
+    /// Sets the current instant.
+    /// </summary>
+    /// <param name="utcNow">The instant to set.</param>
+    public void Set(DateTimeOffset utcNow) => UtcNow = utcNow;
 
     /// <inheritdoc />
     public override DateTimeOffset GetUtcNow() => UtcNow;

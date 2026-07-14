@@ -24,4 +24,10 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
   </ItemGroup>
 
+  <!-- Shared test infrastructure namespaces from Bodu.Test, imported project-wide. -->
+  <ItemGroup>
+    <Using Include="Bodu.Test.Logging" />
+    <Using Include="Bodu.Test.Time" />
+  </ItemGroup>
+
 </Project>

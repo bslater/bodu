@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CapturingLoggerProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -6,13 +6,13 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
+namespace Bodu.Test.Logging;
 
 /// <summary>
 /// An <see cref="ILoggerProvider" /> that hands out a single shared <see cref="CapturingLogger" />, so a test can wire
-/// a capturing logger into a service collection and assert on what the resolved cache logged.
+/// a capturing logger into a service collection and assert on what a resolved component logged.
 /// </summary>
-internal sealed class CapturingLoggerProvider
+public sealed class CapturingLoggerProvider
     : ILoggerProvider
 {
     /// <summary>

@@ -71,7 +71,7 @@ public sealed class FileSystemByteCacheTests
 
         cache.Store("key", [1, 2, 3]);
 
-        List<(LogLevel Level, EventId EventId, string Message)> warnings =
+        List<(LogLevel Level, EventId EventId, string Message, Exception? Exception)> warnings =
             logger.Entries.Where(e => e.Level == LogLevel.Warning).ToList();
 
         Assert.HasCount(1, warnings);

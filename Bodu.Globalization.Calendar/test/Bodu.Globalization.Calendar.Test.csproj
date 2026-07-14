@@ -46,4 +46,9 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <!-- Shared test infrastructure namespaces from Bodu.Test, imported project-wide. -->
+  <ItemGroup>
+    <Using Include="Bodu.Test.Logging" />
+  </ItemGroup>
+
 </Project>

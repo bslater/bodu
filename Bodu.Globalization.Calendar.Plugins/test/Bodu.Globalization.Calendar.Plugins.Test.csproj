@@ -8,7 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
     <ProjectReference Include="..\src\Bodu.Globalization.Calendar.Plugins.csproj" />
+  </ItemGroup>
+
+  <!-- Shared test infrastructure namespaces from Bodu.Test, imported project-wide. -->
+  <ItemGroup>
+    <Using Include="Bodu.Test.Logging" />
   </ItemGroup>
 
 </Project>

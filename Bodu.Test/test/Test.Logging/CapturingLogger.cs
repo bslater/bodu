@@ -6,13 +6,18 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
+namespace Bodu.Test.Logging;
 
 /// <summary>
 /// An <see cref="ILogger" /> that records every logged entry so tests can assert on the level, event id, formatted
-/// message, and exception of the cache's degradation warnings.
+/// message, and exception of a component's diagnostics.
 /// </summary>
-internal sealed class CapturingLogger
+/// <remarks>
+/// Recording is thread-safe and <see cref="Entries" /> returns a snapshot, so a test can assert while a component logs
+/// concurrently. This is the shared canonical capture logger promoted from the per-project copies the Financial and
+/// Calendar test suites previously duplicated.
+/// </remarks>
+public sealed class CapturingLogger
     : ILogger
 {
     /// <summary>The recorded entries, guarded by its own lock for concurrent writes.</summary>
@@ -21,7 +26,7 @@ internal sealed class CapturingLogger
     /// <summary>
     /// Gets a snapshot of the entries recorded so far.
     /// </summary>
-    /// <value>The recorded log entries in order.</value>
+    /// <value>The recorded log entries in emission order.</value>
     public IReadOnlyList<(LogLevel Level, EventId EventId, string Message, Exception? Exception)> Entries
     {
         get
@@ -37,7 +42,8 @@ internal sealed class CapturingLogger
         NullScope.Instance;
 
     /// <inheritdoc />
-    public bool IsEnabled(LogLevel logLevel) => true;
+    public bool IsEnabled(LogLevel logLevel) =>
+        logLevel != LogLevel.None;
 
     /// <inheritdoc />
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
