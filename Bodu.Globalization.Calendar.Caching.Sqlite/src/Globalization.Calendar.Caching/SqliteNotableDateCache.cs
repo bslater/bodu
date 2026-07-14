@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Text.Json;
 using Bodu.Caching;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
@@ -295,9 +296,11 @@ public sealed class SqliteNotableDateCache
                 NotableDateCacheFileConverter.DeserializeOccurrences(occurrences),
                 InvariantCacheText.ParseInstant(computedAt));
         }
-        catch (Exception ex) when (ex is FormatException or OverflowException)
+        catch (Exception ex) when (ex is FormatException or OverflowException or JsonException)
         {
-            // Skip a single malformed row rather than failing the whole read.
+            // Skip a single malformed row rather than failing the whole read. JsonException covers a corrupt
+            // occurrences blob; row corruption is data damage, not a storage failure, so it degrades to a skip even
+            // when ThrowOnStorageFailure is set — matching the distributed backend.
             return null;
         }
     }
