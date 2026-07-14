@@ -21,9 +21,11 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// namespace the cache's entries so several applications, or several caches, can safely share one distributed store.
 /// </para>
 /// <para>
-/// Expiry is not a storage concern — it is supplied per call by the caching provider — so this type carries no
-/// duration. Cache entries are written without an absolute or sliding expiration; the cache's own freshness filtering
-/// prunes stale rows and coverage windows when a pair is next written.
+/// Freshness is supplied per call by the caching provider, so this type carries no caching duration of its own.
+/// Server-side lifetime is a separate concern: each written blob is stamped with an absolute expiration of the
+/// caching duration plus <see cref="EntryExpirationMargin" />, so a key whose pair stops being queried self-evicts
+/// from the backing store instead of lingering forever. Set the margin to <see langword="null" /> to write entries
+/// without any server-side expiration (the pre-margin behaviour).
 /// </para>
 /// </remarks>
 public class DistributedRateCacheOptions
@@ -49,6 +51,28 @@ public class DistributedRateCacheOptions
     public string? KeyPrefix { get; set; }
 
     /// <summary>
+    /// Gets or sets the margin added to the caching duration when deriving each written blob's server-side absolute
+    /// expiration, or <see langword="null" /> to write entries without any server-side expiration.
+    /// </summary>
+    /// <value>The expiration margin; defaults to one hour.</value>
+    /// <remarks>
+    /// <para>
+    /// Every entry this cache serves must already be fresh under the per-call caching duration, so an entry evicted
+    /// server-side at <c>duration + margin</c> would in any case have been filtered on read — served results are
+    /// unchanged in any normal configuration. The margin keeps the server-side lifetime comfortably behind the
+    /// application-side freshness (including the shared one-minute clock-skew tolerance), so eviction never races a
+    /// legitimate read.
+    /// </para>
+    /// <para>
+    /// One corner is worth knowing: a deployment that stores under one duration and later reads under a longer one
+    /// (for example after raising the provider's expiry at runtime) could observe a server-side eviction where it
+    /// previously saw a hit. Set the margin to <see langword="null" /> to opt out entirely and restore unbounded
+    /// server-side lifetime.
+    /// </para>
+    /// </remarks>
+    public TimeSpan? EntryExpirationMargin { get; set; } = TimeSpan.FromHours(1);
+
+    /// <summary>
     /// Validates the option values, throwing when a rule is violated.
     /// </summary>
     /// <exception cref="ArgumentNullException">
@@ -66,6 +90,13 @@ public class DistributedRateCacheOptions
         {
             throw new ArgumentException(CachingDistributedResourceStrings.Arg_Invalid_KeyPrefixWhiteSpace, nameof(KeyPrefix));
         }
+
+        if (EntryExpirationMargin is { } margin && margin < TimeSpan.Zero)
+        {
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, CachingDistributedResourceStrings.Arg_Invalid_EntryExpirationMarginNegative, margin),
+                nameof(EntryExpirationMargin));
+        }
     }
 
     /// <inheritdoc />
@@ -77,6 +108,12 @@ public class DistributedRateCacheOptions
         if (KeyPrefix is not null && string.IsNullOrWhiteSpace(KeyPrefix))
         {
             error = CachingDistributedResourceStrings.Arg_Invalid_KeyPrefixWhiteSpace;
+            return false;
+        }
+
+        if (EntryExpirationMargin is { } margin && margin < TimeSpan.Zero)
+        {
+            error = string.Format(CultureInfo.CurrentCulture, CachingDistributedResourceStrings.Arg_Invalid_EntryExpirationMarginNegative, margin);
             return false;
         }
 

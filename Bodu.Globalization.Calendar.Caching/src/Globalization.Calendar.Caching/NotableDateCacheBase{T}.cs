@@ -119,7 +119,7 @@ public abstract class NotableDateCacheBase<TOptions>
         {
             List<NotableDateCacheEntry> merged = NotableDateCacheRules.Merge(ReadEntries(key), normalized, ttl, asOf);
 
-            return WriteEntries(key, merged)
+            return WriteEntries(key, merged, ttl, asOf)
                 ? NotableDateCacheWriteStatus.Stored
                 : NotableDateCacheWriteStatus.Failed;
         }
@@ -160,6 +160,27 @@ public abstract class NotableDateCacheBase<TOptions>
     /// rather than falsely as <see cref="NotableDateCacheWriteStatus.Stored" />.
     /// </remarks>
     protected internal abstract bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries);
+
+    /// <summary>
+    /// Writes the supplied entries for a normalized territory with the time-to-live and evaluation instant the write
+    /// was performed under, so a backend whose store supports server-side expiration can derive an entry lifetime.
+    /// </summary>
+    /// <param name="territory">The normalized territory key.</param>
+    /// <param name="entries">The entries to persist.</param>
+    /// <param name="ttl">The time-to-live the write's freshness pruning was evaluated against.</param>
+    /// <param name="asOf">The instant the write was evaluated at.</param>
+    /// <returns>
+    /// <see langword="true" /> when the entries were persisted; <see langword="false" /> when a storage failure was
+    /// swallowed and nothing was persisted.
+    /// </returns>
+    /// <remarks>
+    /// The default implementation ignores the time-to-live and delegates to <see cref="WriteEntries(string,
+    /// IReadOnlyList{NotableDateCacheEntry})" />, so backends without server-side expiration — and third-party
+    /// derivations of the existing seam — are unaffected. The distributed backend overrides this to stamp an absolute
+    /// expiration onto each territory blob so untouched keys self-evict.
+    /// </remarks>
+    protected internal virtual bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries, TimeSpan ttl, DateTimeOffset asOf) =>
+        WriteEntries(territory, entries);
 
     /// <summary>
     /// Returns the lock object guarding writes for the supplied normalized territory, creating it on first use.

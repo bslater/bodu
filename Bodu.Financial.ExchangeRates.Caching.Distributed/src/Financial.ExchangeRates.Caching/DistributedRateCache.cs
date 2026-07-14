@@ -170,11 +170,48 @@ public sealed class DistributedRateCache
 
     /// <inheritdoc />
     /// <remarks>
-    /// Replaces the entire blob in one <see cref="IDistributedCache" /> set — all-or-nothing, so a reader never
-    /// observes coverage without its rows — or removes the key when the state is empty so the entry self-cleans. A
-    /// backing-store fault or a serialization fault is swallowed and reported as an unpersisted write.
+    /// Writes without a server-side expiration; reached only when a caller bypasses the duration-aware overload. The
+    /// standard write paths flow through <see cref="WriteState(CurrencyPair, CachePairState, TimeSpan,
+    /// DateTimeOffset)" />, which stamps the blob's absolute expiration.
     /// </remarks>
-    internal override bool WriteState(CurrencyPair pair, CachePairState state)
+    internal override bool WriteState(CurrencyPair pair, CachePairState state) =>
+        WriteCore(pair, state, entryOptions: null);
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Stamps each written blob with a server-side lifetime of <paramref name="duration" /> plus
+    /// <see cref="DistributedRateCacheOptions.EntryExpirationMargin" />, so a key whose pair stops being queried
+    /// self-evicts from the backing store; any entry evicted at that point would already be stale on read, so served
+    /// results are unchanged. The lifetime is expressed relative to the store's own clock
+    /// (<see cref="DistributedCacheEntryOptions.AbsoluteExpirationRelativeToNow" />) rather than as an
+    /// application-clock absolute instant, so clock skew between the application and the store — or a test-supplied
+    /// synthetic clock — cannot evict entries prematurely. A <see langword="null" /> margin disables the server-side
+    /// expiration entirely.
+    /// </remarks>
+    internal override bool WriteState(CurrencyPair pair, CachePairState state, TimeSpan duration, DateTimeOffset asOf) =>
+        WriteCore(
+            pair,
+            state,
+            Options.EntryExpirationMargin is { } margin
+                ? new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = duration + margin }
+                : null);
+
+    /// <summary>
+    /// Serializes and writes a pair's whole state as one blob — all-or-nothing, so a reader never observes coverage
+    /// without its rows — or removes the key when the state is empty so the entry self-cleans. A backing-store fault
+    /// or a serialization fault is swallowed and reported as an unpersisted write.
+    /// </summary>
+    /// <param name="pair">The currency pair.</param>
+    /// <param name="state">The state to persist.</param>
+    /// <param name="entryOptions">
+    /// The server-side entry options carrying the absolute expiration, or <see langword="null" /> to write without
+    /// one.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the blob was persisted (or the key removed); <see langword="false" /> when a
+    /// storage failure was swallowed and nothing was persisted.
+    /// </returns>
+    private bool WriteCore(CurrencyPair pair, CachePairState state, DistributedCacheEntryOptions? entryOptions)
     {
         string key = Options.BuildKey(pair);
 
@@ -209,7 +246,10 @@ public sealed class DistributedRateCache
             }
 
             byte[] payload = JsonSerializer.SerializeToUtf8Bytes(entry, s_serializerOptions);
-            _cache.Set(key, payload);
+            if (entryOptions is null)
+                _cache.Set(key, payload);
+            else
+                _cache.Set(key, payload, entryOptions);
             return true;
         }
         catch (Exception ex) when (ex is not OperationCanceledException && ShouldSwallowStorageFailure)

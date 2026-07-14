@@ -101,7 +101,7 @@ public abstract class RateCacheBase<TOptions>
             List<CachedRate> ordered = RateCacheRules.MergeRows(state.Entries, rates, duration, asOf);
 
             // Preserve the existing coverage half: storing rows must never drop recorded coverage.
-            WriteState(pair, new CachePairState(ordered, state.Coverage));
+            WriteState(pair, new CachePairState(ordered, state.Coverage), duration, asOf);
         }
     }
 
@@ -132,7 +132,7 @@ public abstract class RateCacheBase<TOptions>
             List<CoverageWindow> windows = RateCacheRules.MergeCoverage(state.Coverage, start, end, duration, asOf);
 
             // Preserve the existing entries half: recording coverage must never drop cached rows.
-            WriteState(pair, new CachePairState(state.Entries, windows));
+            WriteState(pair, new CachePairState(state.Entries, windows), duration, asOf);
         }
     }
 
@@ -158,7 +158,7 @@ public abstract class RateCacheBase<TOptions>
 
             // Report the real persistence outcome: a swallowed storage failure must surface as Failed so the caller
             // refetches rather than trusting coverage that was never written.
-            return WriteState(pair, new CachePairState(ordered, windows))
+            return WriteState(pair, new CachePairState(ordered, windows), duration, asOf)
                 ? RateCacheWriteStatus.Stored
                 : RateCacheWriteStatus.Failed;
         }
@@ -196,6 +196,26 @@ public abstract class RateCacheBase<TOptions>
     /// <see cref="RateCacheWriteStatus.Failed" /> rather than falsely as <see cref="RateCacheWriteStatus.Stored" />.
     /// </remarks>
     internal abstract bool WriteState(CurrencyPair pair, CachePairState state);
+
+    /// <summary>
+    /// Writes the supplied state for a pair with the caching duration and evaluation instant the write was performed
+    /// under, so a backend whose store supports server-side expiration can derive an entry lifetime.
+    /// </summary>
+    /// <param name="pair">The currency pair.</param>
+    /// <param name="state">The state to persist.</param>
+    /// <param name="duration">The caching duration the write's freshness pruning was evaluated against.</param>
+    /// <param name="asOf">The instant the write was evaluated at.</param>
+    /// <returns>
+    /// <see langword="true" /> when the state was persisted; <see langword="false" /> when a storage failure was
+    /// swallowed and nothing was persisted.
+    /// </returns>
+    /// <remarks>
+    /// The default implementation ignores the duration and delegates to <see cref="WriteState(CurrencyPair,
+    /// CachePairState)" />, so backends without server-side expiration are unaffected. The distributed backend
+    /// overrides this to stamp an absolute expiration onto each blob so untouched keys self-evict.
+    /// </remarks>
+    internal virtual bool WriteState(CurrencyPair pair, CachePairState state, TimeSpan duration, DateTimeOffset asOf) =>
+        WriteState(pair, state);
 
     /// <summary>
     /// Returns the lock object guarding writes for the supplied pair, creating it on first use.
