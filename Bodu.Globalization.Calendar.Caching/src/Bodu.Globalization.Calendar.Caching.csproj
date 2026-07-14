@@ -39,6 +39,7 @@
     <Compile Include="..\..\shared\Caching\CacheFreshness.cs" Link="Caching\CacheFreshness.cs" />
     <Compile Include="..\..\shared\Caching\StripedLockSet.cs" Link="Caching\StripedLockSet.cs" />
     <Compile Include="..\..\shared\Caching\InvariantCacheText.cs" Link="Caching\InvariantCacheText.cs" />
+    <Compile Include="..\..\shared\Caching\FileParseMemo{T}.cs" Link="Caching\FileParseMemo{T}.cs" />
   </ItemGroup>
 
   <!-- Bodu project dependencies. -->

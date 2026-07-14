@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
 using Bodu.Caching;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -51,8 +50,8 @@ public abstract class FileRateCacheBase<TOptions>
     /// <summary>Rate-limits the swallowed-failure warning to at most one emission per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.</summary>
     private readonly RateLimitedWarningGate _warnGate;
 
-    /// <summary>Memoizes the most recently parsed state per file, keyed by full path, against the file's last-write instant, so a repeated read of an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. An entry is invalidated when this instance writes or deletes the file, and a differing last-write instant — an external or cross-process change — is detected on the next read, so the memo never serves data from a file whose timestamp has moved. Keying by path (not by pair) lets one pair span many partition files.</summary>
-    private readonly ConcurrentDictionary<string, (DateTime StampUtc, CachePairState State)> _parsed = new();
+    /// <summary>Memoizes the most recently parsed state per file, keyed by full path, against the file's last-write instant, so a repeated read of an unchanged file serves the cached parse rather than re-reading and re-deserializing it on every lookup. An entry is invalidated when this instance writes or deletes the file, and a differing last-write instant — an external or cross-process change — is detected on the next read, so the memo never serves data from a file whose timestamp has moved. Keying by path (not by pair) lets one pair span many partition files. Bounded with LRU eviction so a long-lived process touching many files cannot grow it without limit; eviction only forces a re-parse.</summary>
+    private readonly FileParseMemo<CachePairState> _parsed = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FileRateCacheBase{TOptions}" /> class.
@@ -229,6 +228,13 @@ public abstract class FileRateCacheBase<TOptions>
     /// <returns>
     /// The merged state across all partitions, or <see cref="CachePairState.Empty" /> when none exists.
     /// </returns>
+    /// <remarks>
+    /// Each read walks the pair's directory to enumerate partition files. This per-read walk is a known, accepted
+    /// cost: per-file parses are already memoized against their last-write instants, so the walk itself — one
+    /// directory enumeration — is the only repeated I/O, and it is what detects partitions added or removed by
+    /// another process. If a partitioned layout ships to production with wide pair directories, revisit with a
+    /// listing memo stamped against the directory's own last-write time.
+    /// </remarks>
     private CachePairState ReadPartitioned(CurrencyPair pair)
     {
         string directory = ResolveDirectory(pair);
@@ -262,20 +268,20 @@ public abstract class FileRateCacheBase<TOptions>
     {
         if (!File.Exists(path))
         {
-            _parsed.TryRemove(path, out _);
+            _parsed.Invalidate(path);
             return CachePairState.Empty;
         }
 
         DateTime stamp = File.GetLastWriteTimeUtc(path);
-        if (_parsed.TryGetValue(path, out (DateTime StampUtc, CachePairState State) memo) && memo.StampUtc == stamp)
-            return memo.State;
+        if (_parsed.TryGet(path, stamp, out CachePairState? memoized))
+            return memoized!;
 
         string text = File.ReadAllText(path);
         CachePairState state = Deserialize(text, path);
 
         // Memoize the parse against the file's last-write instant. A later write (here or in another process) moves the
         // timestamp, so the next read misses this entry and re-parses the fresh file.
-        _parsed[path] = (stamp, state);
+        _parsed.Set(path, stamp, state);
         return state;
     }
 
@@ -416,7 +422,7 @@ public abstract class FileRateCacheBase<TOptions>
         AtomicFileWriter.Write(path, text);
 
         // Invalidate the parse memo so the next read re-parses from the freshly written file and re-stamps it.
-        _parsed.TryRemove(path, out _);
+        _parsed.Invalidate(path);
     }
 
     /// <summary>
@@ -428,7 +434,7 @@ public abstract class FileRateCacheBase<TOptions>
         if (File.Exists(path))
             File.Delete(path);
 
-        _parsed.TryRemove(path, out _);
+        _parsed.Invalidate(path);
     }
 
     /// <summary>

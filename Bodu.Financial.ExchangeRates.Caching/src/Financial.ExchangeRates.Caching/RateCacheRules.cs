@@ -64,14 +64,27 @@ public static class RateCacheRules
     {
         ThrowHelper.ThrowIfNull(rows);
 
+        // Track ordering while filtering so the sort — an O(n log n) pass — runs only for an unsorted source. Every
+        // backend persists rows already date-ordered by MergeRows, so on the hot read path the surviving rows arrive
+        // sorted and the scan below is the only cost.
         List<CachedRate> fresh = new();
+        var sorted = true;
+        var lastDate = DateOnly.MinValue;
         foreach (CachedRate row in rows)
         {
             if (IsValid(row, asOf) && row.IsFresh(asOf, duration))
+            {
+                if (row.Date < lastDate)
+                    sorted = false;
+
+                lastDate = row.Date;
                 fresh.Add(row);
+            }
         }
 
-        fresh.Sort(static (left, right) => left.Date.CompareTo(right.Date));
+        if (!sorted)
+            fresh.Sort(static (left, right) => left.Date.CompareTo(right.Date));
+
         return fresh;
     }
 
@@ -100,6 +113,16 @@ public static class RateCacheRules
         ThrowHelper.ThrowIfNull(existing);
         ThrowHelper.ThrowIfNull(incoming);
 
+        // The dominant store shape is a single-day observation merged into an already sorted, duplicate-free stored
+        // list (every backend persists this method's own output). That case merges in one linear pass with no
+        // dictionary; any input that breaks the sorted-distinct precondition falls through to the general path.
+        if (incoming is IReadOnlyList<CachedRate> { Count: 1 } singleIncoming
+            && existing is IReadOnlyList<CachedRate> existingList
+            && TryMergeSingle(existingList, singleIncoming[0], duration, asOf, out List<CachedRate>? fastMerged))
+        {
+            return fastMerged;
+        }
+
         // Merge with any existing entry so the most recently cached rate wins per date.
         Dictionary<DateOnly, CachedRate> merged = new();
         foreach (CachedRate row in existing)
@@ -125,6 +148,79 @@ public static class RateCacheRules
 
         ordered.Sort(static (left, right) => left.Date.CompareTo(right.Date));
         return ordered;
+    }
+
+    /// <summary>
+    /// Attempts the single-incoming-row merge in one linear pass over a date-sorted, duplicate-free existing list,
+    /// producing the same pruned, ordered result as the general dictionary merge without building the dictionary.
+    /// </summary>
+    /// <param name="existing">The rows already stored for the pair, expected date-sorted and duplicate-free.</param>
+    /// <param name="incoming">The single row being stored.</param>
+    /// <param name="duration">The duration a cached row remains fresh after it was cached.</param>
+    /// <param name="asOf">The instant against which staleness and validity are evaluated.</param>
+    /// <param name="merged">The merged, pruned rows when the fast path applied.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="existing" /> satisfied the sorted-distinct precondition and
+    /// <paramref name="merged" /> holds the result; <see langword="false" /> when the caller must run the general
+    /// merge because the precondition does not hold.
+    /// </returns>
+    /// <remarks>
+    /// The general merge keeps the last existing occurrence per date; a duplicate date in <paramref name="existing" />
+    /// therefore aborts the fast path rather than silently keeping the first occurrence. The incoming row overwrites an
+    /// existing same-date row only when it is valid and at least as recently cached, matching the dictionary path.
+    /// </remarks>
+    private static bool TryMergeSingle(
+        IReadOnlyList<CachedRate> existing,
+        CachedRate incoming,
+        TimeSpan duration,
+        DateTimeOffset asOf,
+        out List<CachedRate>? merged)
+    {
+        var incomingValid = IsValid(incoming, asOf);
+        var incomingSurvives = incomingValid && incoming.IsFresh(asOf, duration);
+        List<CachedRate> result = new(existing.Count + 1);
+        var lastDate = DateOnly.MinValue;
+        var placed = false;
+
+        for (int i = 0; i < existing.Count; i++)
+        {
+            CachedRate row = existing[i];
+
+            // The precondition is strictly ascending dates; an equal or earlier date means the input was not produced
+            // by these rules, so the general merge must arbitrate it.
+            if (i > 0 && row.Date <= lastDate)
+            {
+                merged = null;
+                return false;
+            }
+
+            lastDate = row.Date;
+
+            if (!placed && incoming.Date < row.Date)
+            {
+                if (incomingSurvives)
+                    result.Add(incoming);
+                placed = true;
+            }
+
+            if (row.Date == incoming.Date)
+            {
+                CachedRate winner = incomingValid && incoming.CachedAtUtc >= row.CachedAtUtc ? incoming : row;
+                if (IsValid(winner, asOf) && winner.IsFresh(asOf, duration))
+                    result.Add(winner);
+                placed = true;
+                continue;
+            }
+
+            if (IsValid(row, asOf) && row.IsFresh(asOf, duration))
+                result.Add(row);
+        }
+
+        if (!placed && incomingSurvives)
+            result.Add(incoming);
+
+        merged = result;
+        return true;
     }
 
     /// <summary>
