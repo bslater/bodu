@@ -505,17 +505,29 @@ public abstract class CachingRateProviderBase
 
         // Resolve directly against the date-sorted cached rows rather than materializing a FixedDatedRateProvider
         // snapshot per lookup; the resolver replicates the snapshot provider's semantics over the rows in hand.
-        if (!CachedRateResolver.TryResolve(pair, direct, inverse, date, options, _cache.Provider, out result))
+        if (!CachedRateResolver.TryResolve(pair, direct, inverse, date, options, _cache.Provider, out result, out CachedRate? matched))
         {
             servedCachedAtUtc = null;
             return false;
         }
 
-        servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
+        // A resolved (non-identity) serve carries the row the resolver actually selected, so both instants come
+        // straight from it — no re-scan of the candidate lists. Only the same-currency identity serve, which
+        // synthesizes its rate without a row, falls back to the legacy oldest-candidate scans.
+        DateTimeOffset? servedObservedAt;
+        if (matched is { } row)
+        {
+            servedCachedAtUtc = row.CachedAtUtc;
+            servedObservedAt = row.ObservedAtUtc;
+        }
+        else
+        {
+            servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
+            servedObservedAt = ResolveServedObservedInstant(direct, inverse, result.Rate.Date);
+        }
 
         // The resolved rate is rebuilt from (Date, Rate) and carries no fetch instant, so restore it from the matching
         // cached row; the cache-write instant stays separate in the provenance.
-        DateTimeOffset? servedObservedAt = ResolveServedObservedInstant(direct, inverse, result.Rate.Date);
         result = result with { Rate = result.Rate.WithFetchedAtUtc(servedObservedAt) };
         return true;
     }
@@ -563,13 +575,13 @@ public abstract class CachingRateProviderBase
         {
             RateCacheSnapshot snapshot = reader.ReadSnapshot(pair, duration, now);
             if (snapshot.Coverage.Contains(startDate, endDate))
-                return BuildRange(pair, RateCacheRules.SelectFresh(snapshot.Rows, duration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
+                return BuildRange(pair, FreshRows(snapshot, duration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
 
             if (AllowInverseRangeServe)
             {
                 snapshot = reader.ReadSnapshot(pair.Inverse(), duration, now);
                 if (snapshot.Coverage.Contains(startDate, endDate))
-                    return BuildRange(pair.Inverse(), RateCacheRules.SelectFresh(snapshot.Rows, duration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
+                    return BuildRange(pair.Inverse(), FreshRows(snapshot, duration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
             }
 
             result = Array.Empty<ExchangeRate>();
@@ -587,6 +599,19 @@ public abstract class CachingRateProviderBase
         oldestCachedAtUtc = null;
         return false;
     }
+
+    /// <summary>
+    /// Returns the snapshot's fresh, date-ordered rows, serving the snapshot's list as-is when every row already
+    /// qualifies so the covered-range hot path performs no filtered copy.
+    /// </summary>
+    /// <param name="snapshot">The snapshot whose rows are filtered.</param>
+    /// <param name="duration">The caching duration freshness is evaluated against.</param>
+    /// <param name="now">The evaluation instant.</param>
+    /// <returns>The fresh rows, ordered ascending by date.</returns>
+    private static IReadOnlyList<CachedRate> FreshRows(RateCacheSnapshot snapshot, TimeSpan duration, DateTimeOffset now) =>
+        RateCacheRules.IsAllFreshOrdered(snapshot.Rows, duration, now)
+            ? snapshot.Rows
+            : RateCacheRules.SelectFresh(snapshot.Rows, duration, now);
 
     /// <summary>
     /// Builds the in-window rates for a range serve from the cached rows of <paramref name="cachedPair" />, optionally
@@ -702,8 +727,10 @@ public abstract class CachingRateProviderBase
     /// instant among the candidate rows, or <see langword="null" /> when no candidate rows are present.
     /// </returns>
     /// <remarks>
-    /// A nearest-date or inverse serve has no row dated exactly <paramref name="resolvedDate" />, so the oldest
-    /// candidate instant is reported as a stable, lower-bound representative of the data backing the serve.
+    /// Reached only by the same-currency identity serve, which synthesizes its rate without a matched row; a resolved
+    /// serve takes its instants directly from the row the resolver selected. The identity serve's resolved date is
+    /// the requested date, so no candidate row matches it and the oldest candidate instant is reported as a stable,
+    /// lower-bound representative of the data backing the serve.
     /// </remarks>
     private static DateTimeOffset? ResolveServedInstant(IReadOnlyList<CachedRate> direct, IReadOnlyList<CachedRate> inverse, DateOnly resolvedDate)
     {
@@ -744,9 +771,9 @@ public abstract class CachingRateProviderBase
     /// present or none carried an upstream fetch instant.
     /// </returns>
     /// <remarks>
-    /// Parallels <see cref="ResolveServedInstant" />: a nearest-date or inverse serve has no row dated exactly
-    /// <paramref name="resolvedDate" />, so the oldest candidate's upstream fetch instant is reported, matching the
-    /// cache-write instant the same serve reports through the provenance.
+    /// Parallels <see cref="ResolveServedInstant" /> and, like it, is reached only by the same-currency identity
+    /// serve: no candidate row matches the identity serve's resolved date, so the oldest candidate's upstream fetch
+    /// instant is reported, matching the cache-write instant the same serve reports through the provenance.
     /// </remarks>
     private static DateTimeOffset? ResolveServedObservedInstant(IReadOnlyList<CachedRate> direct, IReadOnlyList<CachedRate> inverse, DateOnly resolvedDate)
     {

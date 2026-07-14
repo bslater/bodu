@@ -89,6 +89,37 @@ public static class RateCacheRules
     }
 
     /// <summary>
+    /// Reports whether every row is valid, fresh at <paramref name="asOf" />, and already ordered ascending by date —
+    /// the condition under which a read can serve the stored list as-is instead of building the filtered copy
+    /// <see cref="SelectFresh" /> would produce.
+    /// </summary>
+    /// <param name="rows">The stored rows to inspect.</param>
+    /// <param name="duration">The duration a cached row remains fresh after it was cached.</param>
+    /// <param name="asOf">The instant against which freshness and validity are evaluated.</param>
+    /// <returns>
+    /// <see langword="true" /> when serving <paramref name="rows" /> unchanged is equivalent to
+    /// <see cref="SelectFresh" />'s output; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Every backend persists <see cref="MergeRows" /> output — valid, fresh-at-write, date-ordered — so on the hot
+    /// read path this check passes and the read is allocation-free. An empty list trivially qualifies.
+    /// </remarks>
+    internal static bool IsAllFreshOrdered(IReadOnlyList<CachedRate> rows, TimeSpan duration, DateTimeOffset asOf)
+    {
+        var lastDate = DateOnly.MinValue;
+        for (int i = 0; i < rows.Count; i++)
+        {
+            CachedRate row = rows[i];
+            if (!IsValid(row, asOf) || !row.IsFresh(asOf, duration) || row.Date < lastDate)
+                return false;
+
+            lastDate = row.Date;
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// Merges <paramref name="incoming" /> rows into <paramref name="existing" /> rows so the most recently cached row
     /// wins per date, dropping rows that are stale or semantically invalid, and ordering the result by date.
     /// </summary>

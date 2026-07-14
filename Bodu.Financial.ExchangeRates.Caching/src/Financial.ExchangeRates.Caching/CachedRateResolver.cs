@@ -50,6 +50,11 @@ internal static class CachedRateResolver
     /// </param>
     /// <param name="provider">The provider name the served rate is attributed to.</param>
     /// <param name="result">When this method returns <see langword="true" />, the resolved lookup result.</param>
+    /// <param name="matched">
+    /// When this method returns <see langword="true" />, the cached row the resolution selected — from the direct or
+    /// the inverse list — or <see langword="null" /> for the same-currency identity serve, which synthesizes its rate
+    /// without consulting any row.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> when a rate was resolved from the cached rows; otherwise <see langword="false" />.
     /// </returns>
@@ -61,10 +66,12 @@ internal static class CachedRateResolver
         DateOnly date,
         RateLookupOptions? options,
         string provider,
-        out RateLookupResult result)
+        out RateLookupResult result,
+        out CachedRate? matched)
     {
         options ??= RateLookupOptions.Exact;
         options.Validate();
+        matched = null;
 
         // Same-currency identity, replicating the snapshot provider's short-circuit: a synthetic 1.0 rate attributed
         // to the well-known identity provider, before any pair resolution.
@@ -77,19 +84,21 @@ internal static class CachedRateResolver
 
         // The direct pair is preferred unconditionally; the inverse rows are consulted only when the direct rows
         // yield nothing, never as a nearest-across-both.
-        if (TryResolveRows(direct, date, options, out DateOnly resolvedDate, out decimal observed, out int offsetDays))
+        if (TryResolveRows(direct, date, options, out CachedRate row, out int offsetDays))
         {
-            var rate = ExchangeRate.FromObservedRate(pair.From, pair.To, resolvedDate, observed, provider, isInverted: false);
+            var rate = ExchangeRate.FromObservedRate(pair.From, pair.To, row.Date, row.Rate, provider, isInverted: false);
             result = new RateLookupResult(rate, date, options.DateResolution, offsetDays, RateProvenance.Live(rate.Provider));
+            matched = row;
             return true;
         }
 
-        if (options.AllowInverse && TryResolveRows(inverse, date, options, out resolvedDate, out observed, out offsetDays))
+        if (options.AllowInverse && TryResolveRows(inverse, date, options, out row, out offsetDays))
         {
             // The observed rate is the reverse-pair rate; FromObservedRate reports the requested orientation with the
             // reciprocal multiplier while preserving the observed value for precise conversion.
-            var rate = ExchangeRate.FromObservedRate(pair.From, pair.To, resolvedDate, observed, provider, isInverted: true);
+            var rate = ExchangeRate.FromObservedRate(pair.From, pair.To, row.Date, row.Rate, provider, isInverted: true);
             result = new RateLookupResult(rate, date, options.DateResolution, offsetDays, RateProvenance.Live(rate.Provider));
+            matched = row;
             return true;
         }
 
@@ -104,10 +113,9 @@ internal static class CachedRateResolver
     /// <param name="rows">The fresh cached rows, ordered ascending by date.</param>
     /// <param name="date">The requested date.</param>
     /// <param name="options">The validated lookup options.</param>
-    /// <param name="resolvedDate">
-    /// When this method returns <see langword="true" />, the resolved observation date.
+    /// <param name="matched">
+    /// When this method returns <see langword="true" />, the row that satisfied the resolution.
     /// </param>
-    /// <param name="observed">When this method returns <see langword="true" />, the observed rate on that date.</param>
     /// <param name="offsetDays">
     /// When this method returns <see langword="true" />, the absolute distance in days between the requested and
     /// resolved dates.
@@ -119,12 +127,10 @@ internal static class CachedRateResolver
         IReadOnlyList<CachedRate> rows,
         DateOnly date,
         RateLookupOptions options,
-        out DateOnly resolvedDate,
-        out decimal observed,
+        out CachedRate matched,
         out int offsetDays)
     {
-        resolvedDate = default;
-        observed = default;
+        matched = default;
         offsetDays = 0;
 
         if (rows.Count == 0)
@@ -141,8 +147,7 @@ internal static class CachedRateResolver
         int index = ((ReadOnlySpan<int>)days).BinarySearch(requested);
         if (index >= 0)
         {
-            resolvedDate = rows[index].Date;
-            observed = rows[index].Rate;
+            matched = rows[index];
             return true;
         }
 
@@ -159,8 +164,7 @@ internal static class CachedRateResolver
         if (offsetDays > options.ToleranceDays)
             return false;
 
-        resolvedDate = rows[candidate].Date;
-        observed = rows[candidate].Rate;
+        matched = rows[candidate];
         return true;
     }
 }

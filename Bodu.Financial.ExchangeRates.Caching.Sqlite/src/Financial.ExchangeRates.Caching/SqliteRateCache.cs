@@ -225,7 +225,11 @@ public sealed class SqliteRateCache
         if (entries.Count == 0)
             return Array.Empty<CachedRate>();
 
-        return RateCacheRules.SelectFresh(entries, duration, asOf);
+        // The rows are materialized fresh per read, date-ordered by the query, so the all-fresh fast path serves them
+        // without the extra filtered copy SelectFresh would build.
+        return RateCacheRules.IsAllFreshOrdered(entries, duration, asOf)
+            ? entries
+            : RateCacheRules.SelectFresh(entries, duration, asOf);
     }
 
     /// <inheritdoc />

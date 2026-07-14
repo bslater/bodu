@@ -277,12 +277,35 @@ public abstract class FileRateCacheBase<TOptions>
             return memoized!;
 
         string text = File.ReadAllText(path);
-        CachePairState state = Deserialize(text, path);
+        CachePairState state = WrapReadOnly(Deserialize(text, path));
 
         // Memoize the parse against the file's last-write instant. A later write (here or in another process) moves the
         // timestamp, so the next read misses this entry and re-parses the fresh file.
         _parsed.Set(path, stamp, state);
         return state;
+    }
+
+    /// <summary>
+    /// Re-wraps a deserialized state's lists in read-only views. The memoized state is shared across reads and — via
+    /// the all-fresh fast path — may be served to callers by reference, so its lists must not be castable back to
+    /// their mutable backing collections.
+    /// </summary>
+    /// <param name="state">The freshly deserialized state.</param>
+    /// <returns>The state with read-only list views.</returns>
+    private static CachePairState WrapReadOnly(CachePairState state)
+    {
+        if (state.Entries.Count == 0 && state.Coverage.Count == 0)
+            return state;
+
+        var entries = new CachedRate[state.Entries.Count];
+        for (int i = 0; i < state.Entries.Count; i++)
+            entries[i] = state.Entries[i];
+
+        var coverage = new CoverageWindow[state.Coverage.Count];
+        for (int i = 0; i < state.Coverage.Count; i++)
+            coverage[i] = state.Coverage[i];
+
+        return new CachePairState(Array.AsReadOnly(entries), Array.AsReadOnly(coverage));
     }
 
     /// <summary>

@@ -78,7 +78,12 @@ public abstract class RateCacheBase<TOptions>
         if (entries.Count == 0)
             return Array.Empty<CachedRate>();
 
-        return RateCacheRules.SelectFresh(entries, duration, asOf);
+        // Backends persist MergeRows output, so on the hot read path every stored row is still fresh, valid, and
+        // date-ordered — serve the stored list as-is instead of copying it. Stored lists are exposed read-only by the
+        // in-box backends, so this cannot leak mutable cache state.
+        return RateCacheRules.IsAllFreshOrdered(entries, duration, asOf)
+            ? entries
+            : RateCacheRules.SelectFresh(entries, duration, asOf);
     }
 
     /// <inheritdoc />
