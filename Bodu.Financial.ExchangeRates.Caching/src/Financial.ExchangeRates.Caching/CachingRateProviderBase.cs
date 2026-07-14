@@ -500,15 +500,9 @@ public abstract class CachingRateProviderBase
             return false;
         }
 
-        string provider = _cache.Provider;
-        List<ExchangeRate> rates = new(direct.Count + inverse.Count);
-        foreach (CachedRate rate in direct)
-            rates.Add(new ExchangeRate(pair.From, pair.To, rate.Date, rate.Rate, provider));
-        foreach (CachedRate rate in inverse)
-            rates.Add(new ExchangeRate(pair.To, pair.From, rate.Date, rate.Rate, provider));
-
-        FixedDatedRateProvider snapshot = new(rates);
-        if (!snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
+        // Resolve directly against the date-sorted cached rows rather than materializing a FixedDatedRateProvider
+        // snapshot per lookup; the resolver replicates the snapshot provider's semantics over the rows in hand.
+        if (!CachedRateResolver.TryResolve(pair, direct, inverse, date, options, _cache.Provider, out result))
         {
             servedCachedAtUtc = null;
             return false;
@@ -516,8 +510,8 @@ public abstract class CachingRateProviderBase
 
         servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
 
-        // FixedDatedRateProvider flattens the cached rows to (Date, Rate) and drops the fetch instant, so restore
-        // it from the matching cached row onto the rebuilt rate; the cache-write instant stays separate in the provenance.
+        // The resolved rate is rebuilt from (Date, Rate) and carries no fetch instant, so restore it from the matching
+        // cached row; the cache-write instant stays separate in the provenance.
         DateTimeOffset? servedObservedAt = ResolveServedObservedInstant(direct, inverse, result.Rate.Date);
         result = result with { Rate = result.Rate.WithFetchedAtUtc(servedObservedAt) };
         return true;
@@ -558,11 +552,33 @@ public abstract class CachingRateProviderBase
         // The fresh coverage, not the span of the rate rows, decides whether the whole window was actually fetched. The
         // direct pair is tried first; when inversion is permitted a complete inverse-pair coverage serves the window by
         // inverting each rate, mirroring the single-date serve path.
+        //
+        // A backend that stores both halves as one unit exposes the snapshot seam, so coverage and rows come from a
+        // single state read; other backends — including the SQLite cache, whose two tables make a coverage-first probe
+        // cheaper — are consulted through the standard IRateCache calls.
+        if (_cache is IRateCacheSnapshotReader reader)
+        {
+            RateCacheSnapshot snapshot = reader.ReadSnapshot(pair, duration, now);
+            if (snapshot.Coverage.Contains(startDate, endDate))
+                return BuildRange(pair, RateCacheRules.SelectFresh(snapshot.Rows, duration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
+
+            if (AllowInverseRangeServe)
+            {
+                snapshot = reader.ReadSnapshot(pair.Inverse(), duration, now);
+                if (snapshot.Coverage.Contains(startDate, endDate))
+                    return BuildRange(pair.Inverse(), RateCacheRules.SelectFresh(snapshot.Rows, duration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
+            }
+
+            result = Array.Empty<ExchangeRate>();
+            oldestCachedAtUtc = null;
+            return false;
+        }
+
         if (_cache.GetCoverage(pair, duration, now).Contains(startDate, endDate))
-            return BuildRange(pair, duration, startDate, endDate, now, invert: false, out result, out oldestCachedAtUtc);
+            return BuildRange(pair, _cache.GetRates(pair, duration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
 
         if (AllowInverseRangeServe && _cache.GetCoverage(pair.Inverse(), duration, now).Contains(startDate, endDate))
-            return BuildRange(pair.Inverse(), duration, startDate, endDate, now, invert: true, out result, out oldestCachedAtUtc);
+            return BuildRange(pair.Inverse(), _cache.GetRates(pair.Inverse(), duration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
 
         result = Array.Empty<ExchangeRate>();
         oldestCachedAtUtc = null;
@@ -577,10 +593,9 @@ public abstract class CachingRateProviderBase
     /// The pair whose cached rows back the serve — the requested pair, or its inverse when <paramref name="invert" />
     /// is set.
     /// </param>
-    /// <param name="duration">The duration cached rows stay fresh.</param>
+    /// <param name="fresh">The fresh cached rows of <paramref name="cachedPair" />, ordered ascending by date.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
-    /// <param name="now">The instant against which cached rows are evaluated for freshness.</param>
     /// <param name="invert">
     /// <see langword="true" /> to reciprocate each cached rate and emit the inverse direction; otherwise
     /// <see langword="false" />.
@@ -591,10 +606,9 @@ public abstract class CachingRateProviderBase
     /// when the covered window yields no rows.
     /// </param>
     /// <returns>Always <see langword="true" />; the caller has already confirmed the window is covered.</returns>
-    private bool BuildRange(CurrencyPair cachedPair, TimeSpan duration, DateOnly startDate, DateOnly endDate, DateTimeOffset now, bool invert, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
+    private bool BuildRange(CurrencyPair cachedPair, IReadOnlyList<CachedRate> fresh, DateOnly startDate, DateOnly endDate, bool invert, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
     {
         string provider = _cache.Provider;
-        IReadOnlyList<CachedRate> fresh = _cache.GetRates(cachedPair, duration, now);
 
         // The output always carries the requested direction. When inverting, the cached pair is the requested pair's
         // inverse, so the requested from/to are the cached pair's to/from.

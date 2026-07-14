@@ -37,7 +37,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// </remarks>
 public abstract class RateCacheBase<TOptions>
-    : IRateCache
+    : IRateCache, IRateCacheSnapshotReader
     where TOptions : RateCacheOptions
 {
     /// <summary>The validated options carrying the bound provider and any storage settings.</summary>
@@ -103,6 +103,17 @@ public abstract class RateCacheBase<TOptions>
     /// <inheritdoc />
     public DateRangeCoverage GetCoverage(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf) =>
         RateCacheRules.BuildCoverage(ToTuples(ReadState(pair).Coverage), duration, asOf);
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Both halves come from one <see cref="ReadState" />, so a range lookup that would otherwise call
+    /// <see cref="GetCoverage" /> and <see cref="GetRates" /> separately reads the persisted state once.
+    /// </remarks>
+    RateCacheSnapshot IRateCacheSnapshotReader.ReadSnapshot(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf)
+    {
+        CachePairState state = ReadState(pair);
+        return new RateCacheSnapshot(state.Entries, RateCacheRules.BuildCoverage(ToTuples(state.Coverage), duration, asOf));
+    }
 
     /// <inheritdoc />
     public void RecordCoverage(CurrencyPair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)

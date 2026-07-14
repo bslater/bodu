@@ -61,7 +61,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </code>
 /// </example>
 public sealed class DistributedRateCache
-    : IRateCache
+    : IRateCache, IRateCacheSnapshotReader
 {
     /// <summary>The serializer options used for every read and write so the wire format is stable and culture-independent.</summary>
     private static readonly JsonSerializerOptions s_serializerOptions = new(JsonSerializerDefaults.Web);
@@ -186,6 +186,18 @@ public sealed class DistributedRateCache
     /// <inheritdoc />
     public DateRangeCoverage GetCoverage(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf) =>
         RateCacheRules.BuildCoverage(ReadEntry(pair).Coverage, duration, asOf);
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Both halves come from one <see cref="ReadEntry" /> — a single distributed get and one blob deserialization —
+    /// so a range lookup that would otherwise call <see cref="GetCoverage" /> and <see cref="GetRates" /> separately
+    /// no longer fetches and parses the same blob twice.
+    /// </remarks>
+    RateCacheSnapshot IRateCacheSnapshotReader.ReadSnapshot(CurrencyPair pair, TimeSpan duration, DateTimeOffset asOf)
+    {
+        PairState state = ReadEntry(pair);
+        return new RateCacheSnapshot(state.Entries, RateCacheRules.BuildCoverage(state.Coverage, duration, asOf));
+    }
 
     /// <inheritdoc />
     public void RecordCoverage(CurrencyPair pair, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf)
