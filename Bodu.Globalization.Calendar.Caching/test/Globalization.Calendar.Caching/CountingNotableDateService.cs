@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CountingNotableDateService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,9 +7,9 @@
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// An <see cref="INotableDateService" /> test double that returns a configurable, deterministic occurrence per requested
-/// year and counts how many times each range resolution is invoked, so a decorator's cache hits and misses can be
-/// asserted.
+/// An <see cref="INotableDateService" /> test double that returns a configurable, deterministic occurrence per
+/// requested year and counts how many times each range resolution is invoked, so a decorator's cache hits and misses
+/// can be asserted.
 /// </summary>
 internal sealed class CountingNotableDateService : INotableDateService
 {

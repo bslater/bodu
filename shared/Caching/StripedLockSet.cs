@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StripedLockSet.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,14 +15,14 @@ namespace Bodu.Caching;
 /// <typeparam name="TKey">The key type the locks are striped by.</typeparam>
 /// <remarks>
 /// <para>
-/// Every Bodu cache backend guards its per-key (currency pair, territory) read-modify-write sequence with this shape:
-/// a <see cref="ConcurrentDictionary{TKey, TValue}" /> of plain lock objects populated by
+/// Every Bodu cache backend guards its per-key (currency pair, territory) read-modify-write sequence with this shape: a
+/// <see cref="ConcurrentDictionary{TKey, TValue}" /> of plain lock objects populated by
 /// <see cref="ConcurrentDictionary{TKey, TValue}.GetOrAdd(TKey, Func{TKey, TValue})" />. Lock objects are never
 /// removed; the set grows to the number of distinct keys observed, which is bounded by the key domain a cache serves.
 /// </para>
 /// <para>
-/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs
-/// it (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
+/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs it
+/// (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
 /// exposed and no two assemblies collide on the type identity.
 /// </para>
 /// </remarks>

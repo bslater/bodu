@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateLimitedWarningGate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,17 +20,14 @@ namespace Bodu.Caching;
 /// so each cache can route the warning through its own source-generated logger.
 /// </para>
 /// <para>
-/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs
-/// it (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
+/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs it
+/// (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
 /// exposed and no two assemblies collide on the type identity.
 /// </para>
 /// </remarks>
 internal sealed class RateLimitedWarningGate
 {
-    /// <summary>
-    /// The default cooldown every Bodu cache backend rate-limits its best-effort degradation warning with: at most one
-    /// emitted warning per minute.
-    /// </summary>
+    /// <summary>The default cooldown every Bodu cache backend rate-limits its best-effort degradation warning with: at most one emitted warning per minute.</summary>
     public static readonly TimeSpan DefaultCooldown = TimeSpan.FromMinutes(1);
 
     /// <summary>The clock the cooldown is measured against.</summary>

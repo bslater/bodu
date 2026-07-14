@@ -613,7 +613,9 @@ public sealed class NotableDateRuleBuilder
     /// <param name="month">The one-based month number.</param>
     /// <param name="ordinal">The signed ordinal position of the day within the month.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder OrdinalDayOfMonth(int month, int ordinal) =>
         SetStrategy(new XElement(
             BuilderXml.s_namespace + "OrdinalDayOfMonth",
@@ -625,7 +627,9 @@ public sealed class NotableDateRuleBuilder
     /// </summary>
     /// <param name="ordinal">The signed ordinal position of the day within the year.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder DayOfYear(int ordinal) =>
         SetStrategy(new XElement(BuilderXml.s_namespace + "DayOfYear", new XAttribute("ordinal", BuilderXml.Int(ordinal))));
 
@@ -635,7 +639,9 @@ public sealed class NotableDateRuleBuilder
     /// <param name="week">The one-based ISO-8601 week number.</param>
     /// <param name="dayOfWeek">The weekday within the ISO week.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder IsoWeekDate(int week, DayOfWeek dayOfWeek) =>
         SetStrategy(new XElement(
             BuilderXml.s_namespace + "IsoWeekDate",
@@ -643,7 +649,8 @@ public sealed class NotableDateRuleBuilder
             new XAttribute("dayOfWeek", dayOfWeek.ToString())));
 
     /// <summary>
-    /// Configures the rule with a weekday-near-rule strategy that seeks a weekday relative to another rule's occurrence.
+    /// Configures the rule with a weekday-near-rule strategy that seeks a weekday relative to another rule's
+    /// occurrence.
     /// </summary>
     /// <param name="notableDateRef">The identifier of the referenced concept.</param>
     /// <param name="dayOfWeek">The weekday to seek.</param>
@@ -651,8 +658,12 @@ public sealed class NotableDateRuleBuilder
     /// <param name="referenceYearOffset">The signed year offset applied to the reference.</param>
     /// <param name="ruleRef">The identifier of the referenced rule, or <see langword="null" />.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="ArgumentException"><paramref name="notableDateRef" /> is <see langword="null" />, empty, or white-space.</exception>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="notableDateRef" /> is <see langword="null" />, empty, or white-space.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder WeekdayNearRule(string notableDateRef, DayOfWeek dayOfWeek, WeekdayProximity direction, int referenceYearOffset = 0, string? ruleRef = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
@@ -677,8 +688,12 @@ public sealed class NotableDateRuleBuilder
     /// <param name="referenceYearOffset">The signed year offset applied to the reference.</param>
     /// <param name="ruleRef">The identifier of the referenced rule, or <see langword="null" />.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="ArgumentException"><paramref name="notableDateRef" /> is <see langword="null" />, empty, or white-space.</exception>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="notableDateRef" /> is <see langword="null" />, empty, or white-space.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder NthWeekdayFromRule(string notableDateRef, DayOfWeek dayOfWeek, int ordinal, int referenceYearOffset = 0, string? ruleRef = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
@@ -702,8 +717,12 @@ public sealed class NotableDateRuleBuilder
     /// <param name="referenceYearOffset">The signed year offset applied to the reference.</param>
     /// <param name="ruleRef">The identifier of the referenced rule, or <see langword="null" />.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="ArgumentException"><paramref name="notableDateRef" /> is <see langword="null" />, empty, or white-space.</exception>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="notableDateRef" /> is <see langword="null" />, empty, or white-space.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder WorkingDayOffsetFromRule(string notableDateRef, int offsetWorkingDays, int referenceYearOffset = 0, string? ruleRef = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateRef);
@@ -724,7 +743,9 @@ public sealed class NotableDateRuleBuilder
     /// <param name="month">The one-based month number.</param>
     /// <param name="ordinal">The signed ordinal position of the working day within the month.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder WorkingDayInMonth(int month, int ordinal) =>
         SetStrategy(new XElement(
             BuilderXml.s_namespace + "WorkingDayInMonth",
@@ -737,7 +758,9 @@ public sealed class NotableDateRuleBuilder
     /// <param name="anchorDate">The anchor date that defines occurrence zero and the phase of the series.</param>
     /// <param name="intervalDays">The number of calendar days between consecutive occurrences.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder DailyInterval(DateOnly anchorDate, int intervalDays = 1)
     {
         XElement inner = new(BuilderXml.s_namespace + "DailyInterval", new XAttribute("anchorDate", FormatDate(anchorDate)));
@@ -754,7 +777,9 @@ public sealed class NotableDateRuleBuilder
     /// <param name="anchorDate">The anchor date that phases each weekday series, or <see langword="null" />.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="daysOfWeek" /> is <see langword="null" />.</exception>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder Weekly(IEnumerable<DayOfWeek> daysOfWeek, int intervalWeeks = 1, DateOnly? anchorDate = null)
     {
         ThrowHelper.ThrowIfNull(daysOfWeek);
@@ -776,7 +801,9 @@ public sealed class NotableDateRuleBuilder
     /// <param name="anchorDate">The anchor whose year and month define month zero, or <see langword="null" />.</param>
     /// <param name="invalidDayBehavior">How a month without the requested day is handled.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder MonthlyDay(int dayOfMonth, int intervalMonths = 1, DateOnly? anchorDate = null, InvalidDayOfMonthBehavior invalidDayBehavior = InvalidDayOfMonthBehavior.Skip)
     {
         XElement inner = new(BuilderXml.s_namespace + "MonthlyDay", new XAttribute("dayOfMonth", BuilderXml.Int(dayOfMonth)));
@@ -795,7 +822,9 @@ public sealed class NotableDateRuleBuilder
     /// <param name="intervalMonths">The number of months between consecutive occurrences.</param>
     /// <param name="anchorDate">The anchor whose year and month define month zero, or <see langword="null" />.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     public NotableDateRuleBuilder MonthlyWeekday(DayOfWeek dayOfWeek, WeekOrdinal weekOrdinal, int intervalMonths = 1, DateOnly? anchorDate = null)
     {
         XElement inner = new(
@@ -1020,7 +1049,9 @@ public sealed class NotableDateRuleBuilder
     /// </summary>
     /// <param name="inner">The recurrence kind element to store.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
-    /// <exception cref="InvalidOperationException">An occurrence source has already been configured on this rule.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// An occurrence source has already been configured on this rule.
+    /// </exception>
     private NotableDateRuleBuilder SetRecurrence(XElement inner)
     {
         if (Strategy is not null || Recurrence is not null)

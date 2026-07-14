@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedNotableDateCacheExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -37,13 +37,17 @@ public static class DistributedNotableDateCacheExtensions
     /// </param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
     /// <returns>The same service collection, to allow chaining.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="sectionName" /> is empty or white space.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="services" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="sectionName" /> is empty or white space.
+    /// </exception>
     /// <remarks>
     /// The caller is responsible for registering an <see cref="IDistributedCache" /> (for example via
-    /// <c>AddStackExchangeRedisCache</c> or <c>AddDistributedMemoryCache</c>); use <see cref="AddRedisNotableDateCache" />
-    /// to register a Redis cache and the notable-date cache together. Compose it with the caching service by resolving
-    /// the registered cache, for example
+    /// <c>AddStackExchangeRedisCache</c> or <c>AddDistributedMemoryCache</c>); use
+    /// <see cref="AddRedisNotableDateCache" /> to register a Redis cache and the notable-date cache together. Compose
+    /// it with the caching service by resolving the registered cache, for example
     /// <c>AddCachedNotableDateService(cacheFactory: sp =&gt; sp.GetRequiredService&lt;INotableDateCache&gt;())</c>.
     /// </remarks>
     public static IServiceCollection AddDistributedNotableDateCache(
@@ -97,11 +101,13 @@ public static class DistributedNotableDateCacheExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="services" /> or <paramref name="configureRedis" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="sectionName" /> is empty or white space.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="sectionName" /> is empty or white space.
+    /// </exception>
     /// <remarks>
     /// A convenience over <see cref="AddDistributedNotableDateCache" /> that first registers a Redis
-    /// <see cref="IDistributedCache" /> via <c>AddStackExchangeRedisCache</c>, then registers the notable-date cache over
-    /// it.
+    /// <see cref="IDistributedCache" /> via <c>AddStackExchangeRedisCache</c>, then registers the notable-date cache
+    /// over it.
     /// </remarks>
     public static IServiceCollection AddRedisNotableDateCache(
         this IServiceCollection services,

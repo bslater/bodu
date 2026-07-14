@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileNotableDateCacheBase.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -59,7 +59,9 @@ public abstract class FileNotableDateCacheBase
     /// The logger that receives a rate-limited warning when a best-effort storage failure is swallowed, or
     /// <see langword="null" /> to disable that reporting.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     protected FileNotableDateCacheBase(FileNotableDateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
         : base(options)
@@ -212,8 +214,8 @@ public abstract class FileNotableDateCacheBase
         Path.Combine(_directory, Sanitize(territory) + FileExtension);
 
     /// <summary>
-    /// Sanitizes a normalized territory into a safe file name stem, replacing any character that is not a letter, digit,
-    /// or hyphen with an underscore.
+    /// Sanitizes a normalized territory into a safe file name stem, replacing any character that is not a letter,
+    /// digit, or hyphen with an underscore.
     /// </summary>
     /// <param name="territory">The normalized territory key.</param>
     /// <returns>The sanitized file name stem.</returns>
@@ -230,8 +232,8 @@ public abstract class FileNotableDateCacheBase
     }
 
     /// <summary>
-    /// Reports a swallowed best-effort storage failure to the logger, rate-limited so at most one warning is emitted per
-    /// cooldown window.
+    /// Reports a swallowed best-effort storage failure to the logger, rate-limited so at most one warning is emitted
+    /// per cooldown window.
     /// </summary>
     /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>
     /// <param name="exception">The swallowed storage exception.</param>

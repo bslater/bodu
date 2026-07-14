@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteNotableDateCacheExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,11 +29,17 @@ public static class SqliteNotableDateCacheExtensions
     /// <param name="configuration">
     /// An optional configuration root or section bound into <see cref="SqliteNotableDateCacheOptions" />.
     /// </param>
-    /// <param name="sectionName">The configuration section name. Defaults to <c>Calendar:NotableDateCache:Sqlite</c>.</param>
+    /// <param name="sectionName">
+    /// The configuration section name. Defaults to <c>Calendar:NotableDateCache:Sqlite</c>.
+    /// </param>
     /// <param name="configure">An optional callback applied after configuration binding.</param>
     /// <returns>The same service collection, to allow chaining.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="sectionName" /> is empty or white space.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="services" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="sectionName" /> is empty or white space.
+    /// </exception>
     /// <remarks>
     /// The cache is registered as a singleton so its keep-alive connection is shared and the container disposes it on
     /// shutdown. Compose it with the caching service by resolving the registered cache — for example

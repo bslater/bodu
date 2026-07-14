@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeStringEnumConverter{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,14 +11,14 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Produces a converter that serializes the enumeration <typeparamref name="TEnum" /> as a Bencode byte string holding
-/// its member name, applying an optional naming policy and honoring <see cref="StringEnumMemberNameAttribute" />
-/// on individual members.
+/// its member name, applying an optional naming policy and honoring <see cref="StringEnumMemberNameAttribute" /> on
+/// individual members.
 /// </summary>
 /// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
 /// <remarks>
 /// Unlike the non-generic <see cref="BencodeStringEnumConverter" />, this strongly typed factory can be referenced from
-/// a <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a
-/// public parameterless constructor and applies to a single enumeration type.
+/// a <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a public
+/// parameterless constructor and applies to a single enumeration type.
 /// </remarks>
 /// <example>
 /// <code language="csharp">

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCacheBase{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,7 +41,9 @@ public abstract class NotableDateCacheBase<TOptions>
     /// Initializes a new instance of the <see cref="NotableDateCacheBase{TOptions}" /> class.
     /// </summary>
     /// <param name="options">The options carrying any storage settings.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     protected NotableDateCacheBase(TOptions options)
     {
@@ -156,8 +158,8 @@ public abstract class NotableDateCacheBase<TOptions>
     /// <remarks>
     /// Declared <see langword="protected internal" /> for the same reason as <see cref="ReadEntries" />. The
     /// <see cref="bool" /> result lets <see cref="StoreYear" /> distinguish a durable write from a best-effort backend
-    /// that swallowed a fault, so a failed write is reported as <see cref="NotableDateCacheWriteStatus.Failed" /> rather
-    /// than falsely as <see cref="NotableDateCacheWriteStatus.Stored" />.
+    /// that swallowed a fault, so a failed write is reported as <see cref="NotableDateCacheWriteStatus.Failed" />
+    /// rather than falsely as <see cref="NotableDateCacheWriteStatus.Stored" />.
     /// </remarks>
     protected internal abstract bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries);
 

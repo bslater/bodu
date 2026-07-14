@@ -178,8 +178,8 @@ public sealed class RbaRateProvider
     /// <inheritdoc />
     /// <remarks>
     /// Computed from the configured <see cref="RbaRateProviderOptions.Eras" />: the earliest era start bounds how far
-    /// back the historical workbook catalogue reaches — 1 January 1983 for the default <see cref="RbaEraWorkbook.Default" />
-    /// catalogue.
+    /// back the historical workbook catalogue reaches — 1 January 1983 for the default
+    /// <see cref="RbaEraWorkbook.Default" /> catalogue.
     /// </remarks>
     public override RateHistoryAvailability HistoryAvailability
     {

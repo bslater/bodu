@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IRateCacheSnapshotReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,11 +13,11 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A range lookup needs the pair's coverage first and its rows only on a coverage hit. For a backend that persists
-/// both halves together — the in-memory and file caches' single per-pair state, or the distributed cache's single
-/// per-pair blob — answering those as two separate calls reads and deserializes the same state twice. Implementing
-/// this seam lets the decorator read once: the snapshot carries the <em>raw, unfiltered</em> rows (so a coverage miss
-/// pays no freshness filtering) together with the freshness-evaluated coverage, and the decorator applies
+/// A range lookup needs the pair's coverage first and its rows only on a coverage hit. For a backend that persists both
+/// halves together — the in-memory and file caches' single per-pair state, or the distributed cache's single per-pair
+/// blob — answering those as two separate calls reads and deserializes the same state twice. Implementing this seam
+/// lets the decorator read once: the snapshot carries the <em>raw, unfiltered</em> rows (so a coverage miss pays no
+/// freshness filtering) together with the freshness-evaluated coverage, and the decorator applies
 /// <see cref="RateCacheRules.SelectFresh" /> to the rows only when the window is actually served.
 /// </para>
 /// <para>

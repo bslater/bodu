@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MutableTimeProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,9 +11,9 @@ namespace Bodu.Test.Time;
 /// on-demand windowing deterministically.
 /// </summary>
 /// <remarks>
-/// This is the shared canonical controllable clock promoted from the per-project copies the Financial and Calendar
-/// test suites previously duplicated; it unifies their two API shapes (a settable <see cref="UtcNow" /> property and
-/// the <see cref="Advance" />/<see cref="Set" /> methods).
+/// This is the shared canonical controllable clock promoted from the per-project copies the Financial and Calendar test
+/// suites previously duplicated; it unifies their two API shapes (a settable <see cref="UtcNow" /> property and the
+/// <see cref="Advance" />/<see cref="Set" /> methods).
 /// </remarks>
 public sealed class MutableTimeProvider
     : TimeProvider

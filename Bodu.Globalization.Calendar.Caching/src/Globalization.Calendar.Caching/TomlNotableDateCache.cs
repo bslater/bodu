@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TomlNotableDateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -42,7 +42,9 @@ public sealed class TomlNotableDateCache
     /// The logger that receives a rate-limited warning when a best-effort storage failure is swallowed, or
     /// <see langword="null" /> to disable that reporting.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public TomlNotableDateCache(FileNotableDateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
         : base(options, timeProvider, logger)

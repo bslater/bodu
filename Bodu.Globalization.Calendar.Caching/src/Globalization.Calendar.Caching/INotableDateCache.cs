@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,11 +17,11 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// the per-year entries it spans and clipping to the requested window, so the cache unit is always a single civil year.
 /// </para>
 /// <para>
-/// The cache owns expiry. A caller supplies a time-to-live and an evaluation instant on every call: <see cref="GetYear" />
-/// returns an entry only while it is fresh, and <see cref="StoreYear" /> prunes stale and superseded-version entries as
-/// it merges, so the backing store self-cleans over time. An entry is served only when its
-/// <see cref="NotableDateCacheEntry.ResourceVersion" /> matches the requested version, so a resource reload — signalled
-/// by a changed version token — forces a recompute rather than serving stale data.
+/// The cache owns expiry. A caller supplies a time-to-live and an evaluation instant on every call:
+/// <see cref="GetYear" /> returns an entry only while it is fresh, and <see cref="StoreYear" /> prunes stale and
+/// superseded-version entries as it merges, so the backing store self-cleans over time. An entry is served only when
+/// its <see cref="NotableDateCacheEntry.ResourceVersion" /> matches the requested version, so a resource reload —
+/// signalled by a changed version token — forces a recompute rather than serving stale data.
 /// </para>
 /// <para>
 /// Territory is normalized case-insensitively for keying, so <c>us</c> and <c>US</c> address the same entry; a
@@ -30,8 +30,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// </para>
 /// <para>
 /// <strong>Ordering contract.</strong> An entry's occurrences must round-trip in the order they were supplied to
-/// <see cref="StoreYear" /> — the notable-date service's date-then-identity order. The caching service relies on this to
-/// assemble ordered range results without re-sorting; a backend that cannot preserve order forces a sort fallback on
+/// <see cref="StoreYear" /> — the notable-date service's date-then-identity order. The caching service relies on this
+/// to assemble ordered range results without re-sorting; a backend that cannot preserve order forces a sort fallback on
 /// every read it serves.
 /// </para>
 /// <para>
@@ -71,7 +71,9 @@ public interface INotableDateCache
     /// <see cref="NotableDateCacheWriteStatus.Failed" /> when a storage error was swallowed and nothing was persisted;
     /// <see cref="NotableDateCacheWriteStatus.Skipped" /> for a cache that intentionally stores nothing.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entry" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="entry" /> is <see langword="null" />.
+    /// </exception>
     NotableDateCacheWriteStatus StoreYear(NotableDateCacheEntry entry, TimeSpan ttl, DateTimeOffset asOf);
 
     /// <summary>

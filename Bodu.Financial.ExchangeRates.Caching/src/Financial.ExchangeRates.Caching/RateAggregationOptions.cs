@@ -56,8 +56,8 @@ public sealed class RateAggregationOptions
     /// </summary>
     /// <value><see langword="true" /> to respect the advertised history; defaults to <see langword="true" />.</value>
     /// <remarks>
-    /// The filter applies only to children that implement <see cref="IHistoricalRateProvider" />; a non-aware child
-    /// is treated as unbounded and always kept. A range keeps any child whose advertised history overlaps the window at
+    /// The filter applies only to children that implement <see cref="IHistoricalRateProvider" />; a non-aware child is
+    /// treated as unbounded and always kept. A range keeps any child whose advertised history overlaps the window at
     /// all, since strategies already tolerate partial data. When every candidate is filtered out, the lookup reports
     /// the same miss it reports when every candidate fails. Disable this to offer every routed candidate to the
     /// strategy unchanged.

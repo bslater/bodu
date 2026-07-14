@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCachingExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -46,12 +46,14 @@ public static class NotableDateCachingExtensions
     /// <param name="configure">An optional callback applied to the caching options.</param>
     /// <param name="cacheFactory">
     /// An optional factory producing the <see cref="INotableDateCache" /> from the service provider. When
-    /// <see langword="null" />, a default <see cref="TomlNotableDateCache" /> under the options' <c>CacheDirectory</c> is
-    /// used. Supply a factory to choose the storage structure — for example an in-memory, JSON, SQLite, or distributed
-    /// cache.
+    /// <see langword="null" />, a default <see cref="TomlNotableDateCache" /> under the options' <c>CacheDirectory</c>
+    /// is used. Supply a factory to choose the storage structure — for example an in-memory, JSON, SQLite, or
+    /// distributed cache.
     /// </param>
     /// <returns>The same service collection, to allow chaining.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="services" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when no <see cref="INotableDateService" /> has been registered.
     /// </exception>
@@ -74,8 +76,12 @@ public static class NotableDateCachingExtensions
     /// per-territory TOML file cache is used.
     /// </param>
     /// <returns>The same service collection, to allow chaining.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="sectionName" /> is empty or white space.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="services" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="sectionName" /> is empty or white space.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when no <see cref="INotableDateService" /> has been registered.
     /// </exception>

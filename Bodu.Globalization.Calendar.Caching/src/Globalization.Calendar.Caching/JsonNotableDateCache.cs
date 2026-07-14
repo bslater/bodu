@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="JsonNotableDateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,8 +15,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <remarks>
 /// Structurally identical to <see cref="TomlNotableDateCache" /> but serialized with <see cref="System.Text.Json" />:
 /// the territory, an <c>Entries</c> array of per-year metadata, and a flat <c>Occurrences</c> array. Malformed content
-/// is treated as an empty result, and all file-level resilience is provided by
-/// <see cref="FileNotableDateCacheBase" />.
+/// is treated as an empty result, and all file-level resilience is provided by <see cref="FileNotableDateCacheBase" />.
 /// </remarks>
 public sealed class JsonNotableDateCache
     : FileNotableDateCacheBase
@@ -39,7 +38,9 @@ public sealed class JsonNotableDateCache
     /// The logger that receives a rate-limited warning when a best-effort storage failure is swallowed, or
     /// <see langword="null" /> to disable that reporting.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public JsonNotableDateCache(FileNotableDateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
         : base(options, timeProvider, logger)

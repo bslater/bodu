@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedNotableDateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,9 +14,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// An <see cref="INotableDateCache" /> that persists computed years in any
-/// <see cref="IDistributedCache" /> — Redis, SQL Server, or an in-memory distributed cache — as one JSON blob per
-/// territory, expiring them through the same freshness and version mechanism as the other backends.
+/// An <see cref="INotableDateCache" /> that persists computed years in any <see cref="IDistributedCache" /> — Redis,
+/// SQL Server, or an in-memory distributed cache — as one JSON blob per territory, expiring them through the same
+/// freshness and version mechanism as the other backends.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -30,8 +30,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <para>
 /// As required by <see cref="INotableDateCache" />, a storage failure surfaces as an empty read or a skipped write
 /// rather than an exception; cancellation is allowed to propagate. Each swallowed failure is logged at
-/// <see cref="LogLevel.Warning" /> rate-limited to at most one warning per minute. Because a distributed store cannot be
-/// enumerated through <see cref="IDistributedCache" />, <see cref="Clear" /> removes only the keys this instance has
+/// <see cref="LogLevel.Warning" /> rate-limited to at most one warning per minute. Because a distributed store cannot
+/// be enumerated through <see cref="IDistributedCache" />, <see cref="Clear" /> removes only the keys this instance has
 /// written.
 /// </para>
 /// </remarks>
@@ -81,7 +81,9 @@ public sealed class DistributedNotableDateCache
     /// Gets a value indicating whether a caught storage failure should degrade to a best-effort fallback rather than
     /// propagate.
     /// </summary>
-    /// <value><see langword="true" /> when <see cref="NotableDateCacheOptions.ThrowOnStorageFailure" /> is not set.</value>
+    /// <value>
+    /// <see langword="true" /> when <see cref="NotableDateCacheOptions.ThrowOnStorageFailure" /> is not set.
+    /// </value>
     private bool ShouldSwallowStorageFailure => !Options.ThrowOnStorageFailure;
 
     /// <inheritdoc />

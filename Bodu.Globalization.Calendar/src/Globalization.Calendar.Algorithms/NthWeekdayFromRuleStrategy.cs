@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NthWeekdayFromRuleStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,10 +41,12 @@ public sealed class NthWeekdayFromRuleStrategy
     /// <param name="dayOfWeek">The weekday to seek.</param>
     /// <param name="ordinal">The signed ordinal count of matching weekdays from the reference.</param>
     /// <param name="referenceYearOffset">The signed year offset applied to the referenced rule.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="notableDateRef" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="notableDateRef" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="dayOfWeek" /> is not a defined <see cref="System.DayOfWeek" />, or <paramref name="ordinal" /> is
-    /// zero.
+    /// <paramref name="dayOfWeek" /> is not a defined <see cref="System.DayOfWeek" />, or <paramref name="ordinal" />
+    /// is zero.
     /// </exception>
     public NthWeekdayFromRuleStrategy(string notableDateRef, string? ruleRef, DayOfWeek dayOfWeek, int ordinal, int referenceYearOffset = 0)
     {

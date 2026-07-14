@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AtomicFileWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ namespace Bodu.Caching;
 /// so a best-effort caller can decide whether to swallow it.
 /// </para>
 /// <para>
-/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs
-/// it (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
+/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs it
+/// (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
 /// exposed and no two assemblies collide on the type identity.
 /// </para>
 /// </remarks>
@@ -31,7 +31,9 @@ internal static class AtomicFileWriter
     /// <param name="path">The destination file path.</param>
     /// <param name="text">The text to write.</param>
     /// <exception cref="IOException">Thrown when the underlying write or move fails.</exception>
-    /// <exception cref="UnauthorizedAccessException">Thrown when the process lacks permission to write the file.</exception>
+    /// <exception cref="UnauthorizedAccessException">
+    /// Thrown when the process lacks permission to write the file.
+    /// </exception>
     public static void Write(string path, string text)
     {
         string tempPath = $"{path}.{Guid.NewGuid():N}.tmp";

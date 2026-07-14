@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="InMemoryNotableDateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,7 +34,9 @@ public sealed class InMemoryNotableDateCache
     /// Initializes a new instance of the <see cref="InMemoryNotableDateCache" /> class.
     /// </summary>
     /// <param name="options">The cache options.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     public InMemoryNotableDateCache(NotableDateCacheOptions options)
         : base(options)
     {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundStorage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -128,10 +128,9 @@ public sealed class CompoundStorage
     /// </summary>
     /// <value>The storage CLSID; <see cref="Guid.Empty" /> when none is recorded.</value>
     /// <remarks>
-    /// The root storage's CLSID is the conventional file-type discriminator for OLE2-based document formats. The
-    /// setter stages the value on a writable file; it is written to the destination by
-    /// <see cref="CompoundFile.Commit" />. Per MS-CFB §2.6.1 only storage entries carry a CLSID — stream entries are
-    /// always written with a zero CLSID.
+    /// The root storage's CLSID is the conventional file-type discriminator for OLE2-based document formats. The setter
+    /// stages the value on a writable file; it is written to the destination by <see cref="CompoundFile.Commit" />. Per
+    /// MS-CFB §2.6.1 only storage entries carry a CLSID — stream entries are always written with a zero CLSID.
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown on set when the compound file is read-only.</exception>
     public Guid ClassId
@@ -170,8 +169,8 @@ public sealed class CompoundStorage
     /// </summary>
     /// <value>The last-modification time, or <see langword="null" /> when none is recorded.</value>
     /// <remarks>
-    /// Surfaces the same value <see cref="Stat" /> exposes as <see cref="CompoundEntryInfo.LastModifiedTime" />. It
-    /// is never stamped automatically — <see cref="CompoundFile.Commit" /> leaves timestamps untouched, keeping
+    /// Surfaces the same value <see cref="Stat" /> exposes as <see cref="CompoundEntryInfo.LastModifiedTime" />. It is
+    /// never stamped automatically — <see cref="CompoundFile.Commit" /> leaves timestamps untouched, keeping
     /// byte-identical re-saves possible; callers who want a modification time set it explicitly.
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown on set when the compound file is read-only.</exception>

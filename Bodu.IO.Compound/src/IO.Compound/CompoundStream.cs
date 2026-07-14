@@ -35,10 +35,10 @@ namespace Bodu.IO.Compound;
 /// backed by a growable in-memory buffer: <see cref="CanWrite" /> is <see langword="true" />, and
 /// <see cref="Write(byte[], int, int)" /> and <see cref="SetLength(long)" /> mutate the buffer. The edits are staged in
 /// memory and are persisted to the underlying destination only when <see cref="CompoundFile.Commit" /> is called;
-/// closing the cursor flushes its buffer into the staging tree but does not write to the destination. A writable
-/// cursor holds at most <see cref="int.MaxValue" /> bytes — payloads beyond that are authored through the deferred
-/// stream sources on <see cref="Bodu.IO.Compound.Builders.CompoundStorageBuilder" />
-/// (<c>AddStream(name, openRead, length)</c> or <c>AddStreamFromFile</c>), which never buffer the whole payload.
+/// closing the cursor flushes its buffer into the staging tree but does not write to the destination. A writable cursor
+/// holds at most <see cref="int.MaxValue" /> bytes — payloads beyond that are authored through the deferred stream
+/// sources on <see cref="Bodu.IO.Compound.Builders.CompoundStorageBuilder" /> (<c>AddStream(name, openRead, length)</c>
+/// or <c>AddStreamFromFile</c>), which never buffer the whole payload.
 /// </para>
 /// <para>
 /// A read-only cursor (<see cref="CanWrite" /> is <see langword="false" />) throws <see cref="NotSupportedException" />
@@ -375,7 +375,9 @@ public sealed class CompoundStream
     /// <param name="cancellationToken">A token that cancels the read.</param>
     /// <returns>The number of bytes read.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
-    /// <exception cref="CompoundFileFormatException">Thrown when the declared size outruns the sector chain.</exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the declared size outruns the sector chain.
+    /// </exception>
     private async ValueTask<int> ReadStreamingAsync(Memory<byte> buffer, CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
@@ -448,14 +450,14 @@ public sealed class CompoundStream
 
     /// <inheritdoc />
     /// <exception cref="NotSupportedException">
-    /// Thrown when the cursor is read-only, or when <paramref name="value" /> exceeds the
-    /// <see cref="int.MaxValue" /> writable-cursor payload cap.
+    /// Thrown when the cursor is read-only, or when <paramref name="value" /> exceeds the <see cref="int.MaxValue" />
+    /// writable-cursor payload cap.
     /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
     /// <remarks>
-    /// A writable cursor buffers its payload in memory and supports at most <see cref="int.MaxValue" /> bytes;
-    /// author larger payloads through a deferred stream source
-    /// (<c>AddStream(name, openRead, length)</c> or <c>AddStreamFromFile</c>).
+    /// A writable cursor buffers its payload in memory and supports at most <see cref="int.MaxValue" /> bytes; author
+    /// larger payloads through a deferred stream source (<c>AddStream(name, openRead, length)</c> or
+    /// <c>AddStreamFromFile</c>).
     /// </remarks>
     public override void SetLength(long value)
     {
@@ -485,9 +487,9 @@ public sealed class CompoundStream
     /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
     /// <remarks>
-    /// A writable cursor buffers its payload in memory and supports at most <see cref="int.MaxValue" /> bytes;
-    /// author larger payloads through a deferred stream source
-    /// (<c>AddStream(name, openRead, length)</c> or <c>AddStreamFromFile</c>).
+    /// A writable cursor buffers its payload in memory and supports at most <see cref="int.MaxValue" /> bytes; author
+    /// larger payloads through a deferred stream source (<c>AddStream(name, openRead, length)</c> or
+    /// <c>AddStreamFromFile</c>).
     /// </remarks>
     public override void Write(ReadOnlySpan<byte> buffer)
     {

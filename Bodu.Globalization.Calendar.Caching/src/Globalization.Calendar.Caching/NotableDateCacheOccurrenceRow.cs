@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCacheOccurrenceRow.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,9 +11,9 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// resource version alongside every field needed to reconstruct the record.
 /// </summary>
 /// <remarks>
-/// The rule identity is flattened to its three string components and the category to its enum name, so the row is a flat
-/// table of scalars that both the TOML and JSON serializers round-trip natively. Nullable fields are omitted when unset
-/// and deserialize back to <see langword="null" />.
+/// The rule identity is flattened to its three string components and the category to its enum name, so the row is a
+/// flat table of scalars that both the TOML and JSON serializers round-trip natively. Nullable fields are omitted when
+/// unset and deserialize back to <see langword="null" />.
 /// </remarks>
 public sealed class NotableDateCacheOccurrenceRow
 {

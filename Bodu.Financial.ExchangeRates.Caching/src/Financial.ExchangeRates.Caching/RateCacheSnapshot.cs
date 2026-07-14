@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateCacheSnapshot.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// The rows are deliberately raw — unfiltered and in stored order — so a coverage miss pays no filtering cost; the
-/// consumer applies <see cref="RateCacheRules.SelectFresh" /> only when the coverage confirms the window is served.
-/// The coverage, by contrast, is already freshness-evaluated because its only use is the containment probe.
+/// consumer applies <see cref="RateCacheRules.SelectFresh" /> only when the coverage confirms the window is served. The
+/// coverage, by contrast, is already freshness-evaluated because its only use is the containment probe.
 /// </remarks>
 internal readonly struct RateCacheSnapshot
 {

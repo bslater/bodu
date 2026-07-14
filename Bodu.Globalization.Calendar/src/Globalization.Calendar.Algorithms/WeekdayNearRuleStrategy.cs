@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekdayNearRuleStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,7 +41,9 @@ public sealed class WeekdayNearRuleStrategy
     /// <param name="dayOfWeek">The weekday to seek.</param>
     /// <param name="direction">The direction and inclusivity to apply when seeking the weekday.</param>
     /// <param name="referenceYearOffset">The signed year offset applied to the referenced rule.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="notableDateRef" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="notableDateRef" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="dayOfWeek" /> or <paramref name="direction" /> is not a defined enumeration value.
     /// </exception>

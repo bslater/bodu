@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CacheFreshness.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,17 +19,14 @@ namespace Bodu.Caching;
 /// slightly different clocks.
 /// </para>
 /// <para>
-/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs
-/// it (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
+/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs it
+/// (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
 /// exposed and no two assemblies collide on the type identity.
 /// </para>
 /// </remarks>
 internal static class CacheFreshness
 {
-    /// <summary>
-    /// The clock-skew tolerance applied when validating a caching instant: a value stamped more than this far in the
-    /// future of the evaluation instant is treated as invalid rather than fresh.
-    /// </summary>
+    /// <summary>The clock-skew tolerance applied when validating a caching instant: a value stamped more than this far in the future of the evaluation instant is treated as invalid rather than fresh.</summary>
     public static readonly TimeSpan ClockSkewTolerance = TimeSpan.FromMinutes(1);
 
     /// <summary>

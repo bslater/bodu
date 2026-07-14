@@ -174,10 +174,9 @@ public sealed partial class TomlSerializerOptions
     /// default is <see langword="false" />.
     /// </value>
     /// <remarks>
-    /// A public field annotated with <see cref="IncludeAttribute" /> participates regardless of this
-    /// setting. Fields honor the property naming policy, name and order attributes, ignore conditions, and
-    /// required-member enforcement exactly like properties; a <see langword="readonly" /> field is written but never
-    /// assigned on read.
+    /// A public field annotated with <see cref="IncludeAttribute" /> participates regardless of this setting. Fields
+    /// honor the property naming policy, name and order attributes, ignore conditions, and required-member enforcement
+    /// exactly like properties; a <see langword="readonly" /> field is written but never assigned on read.
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public bool IncludeFields
@@ -201,8 +200,8 @@ public sealed partial class TomlSerializerOptions
     /// <see cref="IgnoreCondition.WhenWritingNull" /> for null values specifically.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when the value is undefined, or when it is <see cref="IgnoreCondition.Always" />, which is not a
-    /// valid default.
+    /// Thrown when the value is undefined, or when it is <see cref="IgnoreCondition.Always" />, which is not a valid
+    /// default.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public IgnoreCondition DefaultIgnoreCondition
@@ -221,8 +220,7 @@ public sealed partial class TomlSerializerOptions
 
     /// <summary>
     /// Gets or sets the serializer-wide handling for a dictionary key that maps to no member of the target type when
-    /// reading, applied to every type that does not carry its own
-    /// <see cref="UnmappedMemberHandlingAttribute" />.
+    /// reading, applied to every type that does not carry its own <see cref="UnmappedMemberHandlingAttribute" />.
     /// </summary>
     /// <value>The unmapped-member handling; <see cref="UnmappedMemberHandling.Skip" /> by default.</value>
     /// <remarks>
@@ -249,12 +247,10 @@ public sealed partial class TomlSerializerOptions
     /// instance or populated when reading, applied to every type and member that does not carry its own
     /// <see cref="ObjectCreationHandlingAttribute" />.
     /// </summary>
-    /// <value>
-    /// The preferred object-creation handling; <see cref="ObjectCreationHandling.Replace" /> by default.
-    /// </value>
+    /// <value>The preferred object-creation handling; <see cref="ObjectCreationHandling.Replace" /> by default.</value>
     /// <remarks>
-    /// <see cref="ObjectCreationHandling.Populate" /> applies only to collection and dictionary members whose
-    /// existing value is non-<see langword="null" />; in every other case the serializer replaces the value.
+    /// <see cref="ObjectCreationHandling.Populate" /> applies only to collection and dictionary members whose existing
+    /// value is non-<see langword="null" />; in every other case the serializer replaces the value.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is undefined.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>

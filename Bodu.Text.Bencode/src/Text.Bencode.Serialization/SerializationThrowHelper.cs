@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SerializationThrowHelper.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,8 +13,8 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <summary>
 /// Creates the serialization exceptions thrown by the shared serializer source (see
 /// <c>Bodu.Text.Serialization/shared/</c>). Each Bodu text-format package defines the same factory surface over its own
-/// exception type and resource strings, so shared converters raise failures without naming either — this
-/// implementation stamps the reader's byte offset into every exception, matching the Bencode diagnostics contract.
+/// exception type and resource strings, so shared converters raise failures without naming either — this implementation
+/// stamps the reader's byte offset into every exception, matching the Bencode diagnostics contract.
 /// </summary>
 internal static class SerializationThrowHelper
 {

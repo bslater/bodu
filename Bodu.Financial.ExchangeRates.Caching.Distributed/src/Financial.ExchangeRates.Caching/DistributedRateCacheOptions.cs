@@ -55,8 +55,8 @@ public class DistributedRateCacheOptions
     /// Thrown when <see cref="RateCacheOptions.Provider" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <see cref="RateCacheOptions.Provider" /> is empty or white space, or when
-    /// <see cref="KeyPrefix" /> is supplied but consists only of white space.
+    /// Thrown when <see cref="RateCacheOptions.Provider" /> is empty or white space, or when <see cref="KeyPrefix" />
+    /// is supplied but consists only of white space.
     /// </exception>
     public override void Validate()
     {

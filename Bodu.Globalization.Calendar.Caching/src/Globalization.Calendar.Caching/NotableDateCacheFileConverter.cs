@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCacheFileConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,9 @@ internal static class NotableDateCacheFileConverter
     /// </summary>
     /// <param name="occurrences">The occurrences to serialize.</param>
     /// <returns>The JSON blob.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="occurrences" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="occurrences" /> is <see langword="null" />.
+    /// </exception>
     public static string SerializeOccurrences(IReadOnlyList<NotableDate> occurrences)
     {
         ThrowHelper.ThrowIfNull(occurrences);
@@ -100,7 +102,9 @@ internal static class NotableDateCacheFileConverter
     /// </summary>
     /// <param name="file">The file to reconstruct from.</param>
     /// <returns>The reconstructed entries, or an empty list when the file names no territory.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="file" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="file" /> is <see langword="null" />.
+    /// </exception>
     public static IReadOnlyList<NotableDateCacheEntry> ToEntries(NotableDateCacheFile file)
     {
         ThrowHelper.ThrowIfNull(file);
@@ -176,9 +180,12 @@ internal static class NotableDateCacheFileConverter
     /// </summary>
     /// <param name="row">The row to reconstruct from.</param>
     /// <param name="occurrence">
-    /// When this method returns <see langword="true" />, the reconstructed occurrence; otherwise <see langword="null" />.
+    /// When this method returns <see langword="true" />, the reconstructed occurrence; otherwise
+    /// <see langword="null" />.
     /// </param>
-    /// <returns><see langword="true" /> when the row reconstructs to a valid occurrence; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the row reconstructs to a valid occurrence; otherwise <see langword="false" />.
+    /// </returns>
     private static bool TryToOccurrence(NotableDateCacheOccurrenceRow row, out NotableDate? occurrence)
     {
         occurrence = null;

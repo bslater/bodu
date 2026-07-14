@@ -15,9 +15,9 @@ namespace Bodu.Text.Toml.Serialization;
 /// </summary>
 /// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
 /// <remarks>
-/// Reference the factory from a <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself,
-/// or register it on <see cref="TomlSerializerOptions.Converters" />. It exposes a public parameterless constructor so
-/// it can be used through the converter attribute.
+/// Reference the factory from a <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, or
+/// register it on <see cref="TomlSerializerOptions.Converters" />. It exposes a public parameterless constructor so it
+/// can be used through the converter attribute.
 /// </remarks>
 /// <example>
 /// <code language="csharp">

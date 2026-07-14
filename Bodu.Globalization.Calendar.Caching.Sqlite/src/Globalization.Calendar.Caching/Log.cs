@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Log.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ internal static partial class Log
 {
     /// <summary>
     /// Logs that a SQLite notable-date cache storage operation failed and was swallowed under the cache's best-effort
-    /// contract, with the count of similar failures suppressed since the previous warning so a sustained outage does not
-    /// flood the log.
+    /// contract, with the count of similar failures suppressed since the previous warning so a sustained outage does
+    /// not flood the log.
     /// </summary>
     /// <param name="logger">The logger that receives the message.</param>
     /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>

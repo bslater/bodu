@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="InvariantCacheText.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ namespace Bodu.Caching;
 /// every backend stores the same culture-independent, lexicographically stable representation.
 /// </summary>
 /// <remarks>
-/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs
-/// it (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
+/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs it
+/// (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
 /// exposed and no two assemblies collide on the type identity.
 /// </remarks>
 internal static class InvariantCacheText

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCacheRules.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,15 +31,17 @@ internal static class NotableDateCacheRules
     /// Reports whether a cache entry is semantically valid against the evaluation instant.
     /// </summary>
     /// <param name="entry">The entry to validate.</param>
-    /// <param name="asOf">The instant against which the computed instant is checked for implausible future stamps.</param>
+    /// <param name="asOf">
+    /// The instant against which the computed instant is checked for implausible future stamps.
+    /// </param>
     /// <returns>
     /// <see langword="false" /> when the entry carries a null territory or version, a year outside the supported range,
     /// or a computed instant implausibly far in the future of <paramref name="asOf" />; otherwise
     /// <see langword="true" />.
     /// </returns>
     /// <remarks>
-    /// Invalid entries are skipped on both write (rejecting bad incoming data) and read (rejecting persisted or tampered
-    /// entries) so a malformed cache never surfaces a nonsensical result.
+    /// Invalid entries are skipped on both write (rejecting bad incoming data) and read (rejecting persisted or
+    /// tampered entries) so a malformed cache never surfaces a nonsensical result.
     /// </remarks>
     public static bool IsValid(NotableDateCacheEntry entry, DateTimeOffset asOf) =>
         entry is not null
@@ -59,7 +61,9 @@ internal static class NotableDateCacheRules
     /// <param name="ttl">The duration a computed year remains fresh after it was computed.</param>
     /// <param name="asOf">The instant against which freshness and validity are evaluated.</param>
     /// <returns>The fresh, version-matching entry, or <see langword="null" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="entries" /> is <see langword="null" />.
+    /// </exception>
     public static NotableDateCacheEntry? SelectFresh(
         IEnumerable<NotableDateCacheEntry> entries,
         int year,
@@ -138,7 +142,9 @@ internal static class NotableDateCacheRules
     /// </summary>
     /// <param name="territory">The territory code to normalize.</param>
     /// <returns>The normalized territory code.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="territory" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="territory" /> is <see langword="null" />.
+    /// </exception>
     public static string NormalizeTerritory(string territory)
     {
         ThrowHelper.ThrowIfNull(territory);

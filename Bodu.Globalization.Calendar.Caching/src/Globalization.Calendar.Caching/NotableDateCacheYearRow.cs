@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCacheYearRow.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// instant it was computed.
 /// </summary>
 /// <remarks>
-/// A year row exists for every cached year, including a year that yielded no occurrences, so the cache can distinguish a
-/// computed-but-empty year from a never-computed one.
+/// A year row exists for every cached year, including a year that yielded no occurrences, so the cache can distinguish
+/// a computed-but-empty year from a never-computed one.
 /// </remarks>
 public sealed class NotableDateCacheYearRow
 {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrdinalDayOfMonthStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,9 +12,9 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A positive ordinal counts from the start of the month (<c>1</c> is the first day); a negative ordinal counts from the
-/// end (<c>-1</c> is the last day). The result always stays within the specified month: a positive ordinal that does not
-/// exist in a particular year and month produces no occurrence.
+/// A positive ordinal counts from the start of the month (<c>1</c> is the first day); a negative ordinal counts from
+/// the end (<c>-1</c> is the last day). The result always stays within the specified month: a positive ordinal that
+/// does not exist in a particular year and month produces no occurrence.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -36,8 +36,8 @@ public sealed class OrdinalDayOfMonthStrategy
     /// <param name="month">The one-based month.</param>
     /// <param name="ordinal">The signed ordinal position of the day within the month.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="month" /> is not between 1 and 12, or <paramref name="ordinal" /> is zero or has an absolute value
-    /// greater than 31.
+    /// <paramref name="month" /> is not between 1 and 12, or <paramref name="ordinal" /> is zero or has an absolute
+    /// value greater than 31.
     /// </exception>
     public OrdinalDayOfMonthStrategy(int month, int ordinal)
     {

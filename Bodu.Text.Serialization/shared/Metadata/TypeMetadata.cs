@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TypeMetadata.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -92,16 +92,15 @@ internal sealed class TypeMetadata
 
     /// <summary>
     /// Gets the type-level handling for a key that maps to no member, sourced from a
-    /// <see cref="UnmappedMemberHandlingAttribute" /> on the type, or <see langword="null" /> when the type
-    /// declares none.
+    /// <see cref="UnmappedMemberHandlingAttribute" /> on the type, or <see langword="null" /> when the type declares
+    /// none.
     /// </summary>
     /// <value>The type-level unmapped-member handling, or <see langword="null" />.</value>
     internal UnmappedMemberHandling? UnmappedMemberHandling { get; init; }
 
     /// <summary>
-    /// Gets the type-level object-creation handling, sourced from a
-    /// <see cref="ObjectCreationHandlingAttribute" /> on the type, or <see langword="null" /> when the type
-    /// declares none.
+    /// Gets the type-level object-creation handling, sourced from a <see cref="ObjectCreationHandlingAttribute" /> on
+    /// the type, or <see langword="null" /> when the type declares none.
     /// </summary>
     /// <value>The type-level object-creation handling, or <see langword="null" />.</value>
     internal ObjectCreationHandling? CreationHandling { get; init; }

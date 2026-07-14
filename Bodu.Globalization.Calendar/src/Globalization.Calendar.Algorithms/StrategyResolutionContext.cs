@@ -140,7 +140,8 @@ public sealed class StrategyResolutionContext
     /// <returns><see langword="true" /> when the date is a working day; otherwise <see langword="false" />.</returns>
     /// <remarks>
     /// The result is deterministic and independent of resource-declaration order: a non-working day is a rest day
-    /// outside the working week, or a day claimed by a non-working rule's base occurrence (and its fixed-duration span).
+    /// outside the working week, or a day claimed by a non-working rule's base occurrence (and its fixed-duration
+    /// span).
     /// </remarks>
     public bool IsWorkingDay(DateOnly date, string territory)
     {
@@ -190,8 +191,8 @@ public sealed class StrategyResolutionContext
     }
 
     /// <summary>
-    /// Computes and memoizes the non-working dates for a territory and Gregorian year, expanding each non-working rule's
-    /// base occurrences by their fixed-duration span.
+    /// Computes and memoizes the non-working dates for a territory and Gregorian year, expanding each non-working
+    /// rule's base occurrences by their fixed-duration span.
     /// </summary>
     /// <param name="territory">The territory whose non-working days apply.</param>
     /// <param name="year">The Gregorian year to compute.</param>

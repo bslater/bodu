@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachingNotableDateService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,8 +32,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// </para>
 /// <para>
 /// The filtered overloads apply the filter after assembling the unfiltered result, exactly as the wrapped service does,
-/// so a <see cref="NotableDateFilter" /> never participates in the cache key. The discovery methods delegate straight to
-/// the wrapped service.
+/// so a <see cref="NotableDateFilter" /> never participates in the cache key. The discovery methods delegate straight
+/// to the wrapped service.
 /// </para>
 /// <para>
 /// When constructed with an <see cref="INotableDateResourceProvider" />, the decorator observes the resource currently
@@ -263,8 +263,8 @@ public sealed class CachingNotableDateService
     }
 
     /// <summary>
-    /// Resolves the resource-version token, deriving it from the observed resource identity and reload generation when a
-    /// provider is present, or from the fixed options token otherwise.
+    /// Resolves the resource-version token, deriving it from the observed resource identity and reload generation when
+    /// a provider is present, or from the fixed options token otherwise.
     /// </summary>
     /// <returns>The current resource-version token.</returns>
     /// <remarks>

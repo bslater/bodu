@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PropertyMetadata.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -109,9 +109,8 @@ internal sealed class PropertyMetadata
     internal IgnoreCondition? ConditionalIgnore { get; }
 
     /// <summary>
-    /// Gets the member-level object-creation handling, sourced from a
-    /// <see cref="ObjectCreationHandlingAttribute" /> on the member, or <see langword="null" /> when the member
-    /// declares none.
+    /// Gets the member-level object-creation handling, sourced from a <see cref="ObjectCreationHandlingAttribute" /> on
+    /// the member, or <see langword="null" /> when the member declares none.
     /// </summary>
     /// <value>The member-level object-creation handling, or <see langword="null" />.</value>
     internal ObjectCreationHandling? CreationHandling { get; init; }
@@ -142,8 +141,7 @@ internal sealed class PropertyMetadata
     internal object? DefaultValue { get; }
 
     /// <summary>
-    /// Gets the default value of the member's type, used to evaluate
-    /// <see cref="IgnoreCondition.WhenWritingDefault" />.
+    /// Gets the default value of the member's type, used to evaluate <see cref="IgnoreCondition.WhenWritingDefault" />.
     /// </summary>
     /// <value>The boxed default value of the member type; <see langword="null" /> for reference types.</value>
     internal object? DefaultTypeValue { get; }
@@ -153,9 +151,9 @@ internal sealed class PropertyMetadata
     /// </summary>
     /// <value>
     /// For a property, <see langword="true" /> when it has a public setter (which includes an init-only setter) or a
-    /// non-public setter opted in by <see cref="IncludeAttribute" />; a property exposed only through a
-    /// non-public setter is therefore not assigned on read unless it carries that attribute. For a field,
-    /// <see langword="true" /> unless the field is <see langword="readonly" />.
+    /// non-public setter opted in by <see cref="IncludeAttribute" />; a property exposed only through a non-public
+    /// setter is therefore not assigned on read unless it carries that attribute. For a field, <see langword="true" />
+    /// unless the field is <see langword="readonly" />.
     /// </value>
     internal bool CanSet =>
         _property is not null

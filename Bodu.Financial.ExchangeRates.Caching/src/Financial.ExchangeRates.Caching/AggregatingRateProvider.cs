@@ -37,8 +37,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// <para>
 /// When <see cref="RateAggregationOptions.RespectHistoryAvailability" /> is enabled (the default), children that
-/// advertise their history depth through <see cref="IHistoricalRateProvider" /> and have declared they cannot serve
-/// any part of the requested date or window are dropped from the candidate set before the strategy runs, so a priority
+/// advertise their history depth through <see cref="IHistoricalRateProvider" /> and have declared they cannot serve any
+/// part of the requested date or window are dropped from the candidate set before the strategy runs, so a priority
 /// fallback does not waste a call on a source that cannot answer. A non-aware child is treated as unbounded and always
 /// kept, and the group's own <see cref="HistoryAvailability" /> composes the most generous declaration across the
 /// children.
@@ -195,8 +195,8 @@ public sealed class AggregatingRateProvider
     /// </summary>
     /// <value>
     /// <see cref="RateHistoryAvailability.Unbounded" /> when any child is
-    /// <see cref="RateHistoryAvailability.Unbounded" /> or does not implement <see cref="IHistoricalRateProvider" />
-    /// (a non-aware child declares no floor); otherwise the child availability whose earliest available date, evaluated
+    /// <see cref="RateHistoryAvailability.Unbounded" /> or does not implement <see cref="IHistoricalRateProvider" /> (a
+    /// non-aware child declares no floor); otherwise the child availability whose earliest available date, evaluated
     /// against the current date, reaches furthest back.
     /// </value>
     public RateHistoryAvailability HistoryAvailability

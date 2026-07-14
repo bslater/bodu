@@ -169,11 +169,11 @@ public abstract class RateCacheBase<TOptions>
     /// The stored state, or <see cref="CachePairState.Empty" /> when none is available or the read fails.
     /// </returns>
     /// <remarks>
-    /// Declared <see langword="internal" /> so the storage seam is open to the backends in this assembly and
-    /// — through the existing <c>InternalsVisibleTo</c> grants — to the companion distributed package, which stores a
-    /// pair's whole state as one unit and derives from this base. A backend whose halves are independently addressable
-    /// (the SQLite cache's two tables) or an unrelated third-party backend implements the public
-    /// <see cref="IRateCache" /> contract directly instead, as <see cref="NullRateCache" /> does.
+    /// Declared <see langword="internal" /> so the storage seam is open to the backends in this assembly and — through
+    /// the existing <c>InternalsVisibleTo</c> grants — to the companion distributed package, which stores a pair's
+    /// whole state as one unit and derives from this base. A backend whose halves are independently addressable (the
+    /// SQLite cache's two tables) or an unrelated third-party backend implements the public <see cref="IRateCache" />
+    /// contract directly instead, as <see cref="NullRateCache" /> does.
     /// </remarks>
     internal abstract CachePairState ReadState(CurrencyPair pair);
 
@@ -187,9 +187,9 @@ public abstract class RateCacheBase<TOptions>
     /// <see langword="false" /> when a storage failure was swallowed and nothing was persisted.
     /// </returns>
     /// <remarks>
-    /// Declared <see langword="internal" /> for the same reason as <see cref="ReadState" />. The
-    /// <see cref="bool" /> result lets <see cref="StoreFetchedRange" /> distinguish a durable write from a best-effort
-    /// backend that swallowed an <see cref="IOException" /> or similar fault, so a failed write is reported as
+    /// Declared <see langword="internal" /> for the same reason as <see cref="ReadState" />. The <see cref="bool" />
+    /// result lets <see cref="StoreFetchedRange" /> distinguish a durable write from a best-effort backend that
+    /// swallowed an <see cref="IOException" /> or similar fault, so a failed write is reported as
     /// <see cref="RateCacheWriteStatus.Failed" /> rather than falsely as <see cref="RateCacheWriteStatus.Stored" />.
     /// </remarks>
     internal abstract bool WriteState(CurrencyPair pair, CachePairState state);

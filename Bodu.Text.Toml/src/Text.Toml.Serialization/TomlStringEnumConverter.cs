@@ -15,9 +15,9 @@ namespace Bodu.Text.Toml.Serialization;
 /// </summary>
 /// <remarks>
 /// Register the factory on <see cref="TomlSerializerOptions.Converters" /> to apply it to every enumeration, or use the
-/// generic <see cref="TomlStringEnumConverter{TEnum}" /> with <see cref="ConverterAttribute" /> to apply it to a
-/// single enumeration. Two constructors are provided: a parameterless form that applies no naming policy and accepts
-/// integers on read, and a form that takes an explicit naming policy and integer-handling flag.
+/// generic <see cref="TomlStringEnumConverter{TEnum}" /> with <see cref="ConverterAttribute" /> to apply it to a single
+/// enumeration. Two constructors are provided: a parameterless form that applies no naming policy and accepts integers
+/// on read, and a form that takes an explicit naming policy and integer-handling flag.
 /// </remarks>
 /// <example>
 /// <code language="csharp">

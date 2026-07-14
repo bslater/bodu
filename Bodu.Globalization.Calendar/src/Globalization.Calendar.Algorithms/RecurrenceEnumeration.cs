@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RecurrenceEnumeration.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -48,12 +48,17 @@ internal static class RecurrenceEnumeration
     }
 
     /// <summary>
-    /// Enumerates the participating months of a month-interval series that overlap a bounded window, in ascending order.
+    /// Enumerates the participating months of a month-interval series that overlap a bounded window, in ascending
+    /// order.
     /// </summary>
-    /// <param name="anchor">The anchor whose year and month define month zero when <paramref name="intervalMonths" /> is greater than one.</param>
+    /// <param name="anchor">
+    /// The anchor whose year and month define month zero when <paramref name="intervalMonths" /> is greater than one.
+    /// </param>
     /// <param name="intervalMonths">The stride between consecutive participating months.</param>
     /// <param name="range">The inclusive window whose overlapping months are considered.</param>
-    /// <returns>The participating <c>(year, month)</c> pairs in ascending order, restricted to years 1 through 9999.</returns>
+    /// <returns>
+    /// The participating <c>(year, month)</c> pairs in ascending order, restricted to years 1 through 9999.
+    /// </returns>
     public static IEnumerable<(int Year, int Month)> Months(DateOnly? anchor, int intervalMonths, DateRange range)
     {
         if (range.StartDate > range.EndDate)

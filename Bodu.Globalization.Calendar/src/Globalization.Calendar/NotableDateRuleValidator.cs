@@ -340,7 +340,9 @@ internal static class NotableDateRuleValidator
     /// <param name="resource">The resource being validated.</param>
     /// <param name="notableDateRef">The referenced concept id.</param>
     /// <param name="ruleRef">The referenced rule id, or <see langword="null" /> for the sole rule.</param>
-    /// <returns><see langword="true" /> when the reference resolves to a recurrence rule; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the reference resolves to a recurrence rule; otherwise <see langword="false" />.
+    /// </returns>
     private static bool ReferencedRuleIsRecurring(NotableDateResource resource, string notableDateRef, string? ruleRef)
     {
         NotableDateDefinition? target = resource.FindDefinition(notableDateRef);

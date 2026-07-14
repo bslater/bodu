@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MonthlyDayRecurrenceStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -45,7 +45,8 @@ public sealed class MonthlyDayRecurrenceStrategy
     /// <paramref name="invalidDayBehavior" /> is not a defined <see cref="InvalidDayOfMonthBehavior" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="intervalMonths" /> is greater than one while <paramref name="anchorDate" /> is <see langword="null" />.
+    /// <paramref name="intervalMonths" /> is greater than one while <paramref name="anchorDate" /> is
+    /// <see langword="null" />.
     /// </exception>
     public MonthlyDayRecurrenceStrategy(
         int dayOfMonth,

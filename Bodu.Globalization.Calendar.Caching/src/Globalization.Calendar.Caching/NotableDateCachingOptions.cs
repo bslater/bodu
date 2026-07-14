@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCachingOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -50,7 +50,8 @@ public sealed class NotableDateCachingOptions
     /// <remarks>
     /// Set this to the data version of the resource the wrapped service resolves against when that service is not
     /// reloadable, so bumping it invalidates the cache after a data update. When a reloadable resource provider is
-    /// observed, the token is derived from the resource identity and reload generation instead and this value is unused.
+    /// observed, the token is derived from the resource identity and reload generation instead and this value is
+    /// unused.
     /// </remarks>
     public string? ResourceVersion { get; set; }
 
@@ -128,7 +129,9 @@ public sealed class NotableDateCachingOptions
     /// <summary>
     /// Reports whether every configurable log level is a defined <see cref="LogLevel" /> value.
     /// </summary>
-    /// <returns><see langword="true" /> when every configured log level is defined; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when every configured log level is defined; otherwise <see langword="false" />.
+    /// </returns>
     private bool AreLogLevelsDefined() =>
         Enum.IsDefined(CacheHitLogLevel)
         && Enum.IsDefined(CacheMissLogLevel);

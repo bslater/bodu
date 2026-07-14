@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CachedRateResolver.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -25,9 +25,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// Semantics deliberately mirror <see cref="FixedDatedRateProvider.TryGetRate(string, string, DateOnly,
 /// RateLookupOptions, out RateLookupResult)" />: the same-currency identity short-circuit, an unconditional preference
 /// for the direct pair with the inverse consulted only when the direct rows yield nothing, inverse composition through
-/// <see cref="ExchangeRate.FromObservedRate" /> so the served rate divides by the originally observed reverse-pair rate,
-/// and a <see cref="RateProvenance.Live(string)" /> provenance the decorator subsequently overwrites with the cache
-/// lineage.
+/// <see cref="ExchangeRate.FromObservedRate" /> so the served rate divides by the originally observed reverse-pair
+/// rate, and a <see cref="RateProvenance.Live(string)" /> provenance the decorator subsequently overwrites with the
+/// cache lineage.
 /// </para>
 /// </remarks>
 internal static class CachedRateResolver
@@ -45,10 +45,14 @@ internal static class CachedRateResolver
     /// The fresh cached rows of the inverse pair, ordered ascending by date; empty when inversion is not permitted.
     /// </param>
     /// <param name="date">The requested date.</param>
-    /// <param name="options">The lookup options, or <see langword="null" /> for <see cref="RateLookupOptions.Exact" />.</param>
+    /// <param name="options">
+    /// The lookup options, or <see langword="null" /> for <see cref="RateLookupOptions.Exact" />.
+    /// </param>
     /// <param name="provider">The provider name the served rate is attributed to.</param>
     /// <param name="result">When this method returns <see langword="true" />, the resolved lookup result.</param>
-    /// <returns><see langword="true" /> when a rate was resolved from the cached rows; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when a rate was resolved from the cached rows; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public static bool TryResolve(
         CurrencyPair pair,
@@ -100,13 +104,17 @@ internal static class CachedRateResolver
     /// <param name="rows">The fresh cached rows, ordered ascending by date.</param>
     /// <param name="date">The requested date.</param>
     /// <param name="options">The validated lookup options.</param>
-    /// <param name="resolvedDate">When this method returns <see langword="true" />, the resolved observation date.</param>
+    /// <param name="resolvedDate">
+    /// When this method returns <see langword="true" />, the resolved observation date.
+    /// </param>
     /// <param name="observed">When this method returns <see langword="true" />, the observed rate on that date.</param>
     /// <param name="offsetDays">
     /// When this method returns <see langword="true" />, the absolute distance in days between the requested and
     /// resolved dates.
     /// </param>
-    /// <returns><see langword="true" /> when an observation satisfied the resolution policy; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when an observation satisfied the resolution policy; otherwise <see langword="false" />.
+    /// </returns>
     private static bool TryResolveRows(
         IReadOnlyList<CachedRate> rows,
         DateOnly date,

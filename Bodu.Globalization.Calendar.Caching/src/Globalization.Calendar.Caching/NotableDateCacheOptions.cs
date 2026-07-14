@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCacheOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// types derive from this base to add their own location settings.
 /// </summary>
 /// <remarks>
-/// Unlike the exchange-rate cache, a notable-date cache is not bound to a single provider: it keys entries by territory,
-/// year, and resource version, so one instance serves every territory a service resolves.
+/// Unlike the exchange-rate cache, a notable-date cache is not bound to a single provider: it keys entries by
+/// territory, year, and resource version, so one instance serves every territory a service resolves.
 /// </remarks>
 public class NotableDateCacheOptions
 {
@@ -68,8 +68,8 @@ public class NotableDateCacheOptions
     /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
     /// <remarks>
     /// The dependency-injection registration wires this method into <c>ValidateOnStart</c> so misconfiguration fails
-    /// fast at application startup. Storage-specific option types override this method to add their own invariants after
-    /// invoking the base implementation.
+    /// fast at application startup. Storage-specific option types override this method to add their own invariants
+    /// after invoking the base implementation.
     /// </remarks>
     public virtual bool TryValidate(out string? error)
     {

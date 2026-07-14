@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -170,9 +170,9 @@ public sealed class DistributedRateCache
 
     /// <inheritdoc />
     /// <remarks>
-    /// Replaces the entire blob in one <see cref="IDistributedCache" /> set — all-or-nothing, so a
-    /// reader never observes coverage without its rows — or removes the key when the state is empty so the entry
-    /// self-cleans. A backing-store fault or a serialization fault is swallowed and reported as an unpersisted write.
+    /// Replaces the entire blob in one <see cref="IDistributedCache" /> set — all-or-nothing, so a reader never
+    /// observes coverage without its rows — or removes the key when the state is empty so the entry self-cleans. A
+    /// backing-store fault or a serialization fault is swallowed and reported as an unpersisted write.
     /// </remarks>
     internal override bool WriteState(CurrencyPair pair, CachePairState state)
     {
@@ -226,8 +226,8 @@ public sealed class DistributedRateCache
     }
 
     /// <summary>
-    /// Projects the persisted JSON blob into the in-memory rows and windows the base mechanism operates on, skipping any
-    /// individual row or window that cannot be parsed.
+    /// Projects the persisted JSON blob into the in-memory rows and windows the base mechanism operates on, skipping
+    /// any individual row or window that cannot be parsed.
     /// </summary>
     /// <param name="entry">The deserialized blob.</param>
     /// <returns>The parsed, unfiltered state.</returns>

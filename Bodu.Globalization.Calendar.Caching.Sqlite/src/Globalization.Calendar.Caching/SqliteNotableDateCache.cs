@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SqliteNotableDateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,8 +13,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// An <see cref="INotableDateCache" /> that persists computed years in a SQLite database, expiring them through the same
-/// freshness and version mechanism as the in-memory and file caches.
+/// An <see cref="INotableDateCache" /> that persists computed years in a SQLite database, expiring them through the
+/// same freshness and version mechanism as the in-memory and file caches.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -62,7 +62,9 @@ public sealed class SqliteNotableDateCache
     /// The logger that receives the rate-limited best-effort degradation warnings, or <see langword="null" /> to leave
     /// the degradation unreported.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
     public SqliteNotableDateCache(SqliteNotableDateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
         : base(options)
@@ -91,8 +93,12 @@ public sealed class SqliteNotableDateCache
     /// Initializes a new instance of the <see cref="SqliteNotableDateCache" /> class bound to a database file.
     /// </summary>
     /// <param name="databaseFilePath">The path to the SQLite database file used by the cache.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="databaseFilePath" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="databaseFilePath" /> is empty or white space.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="databaseFilePath" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="databaseFilePath" /> is empty or white space.
+    /// </exception>
     public SqliteNotableDateCache(string databaseFilePath)
         : this(new SqliteNotableDateCacheOptions { DatabaseFilePath = databaseFilePath })
     {
@@ -102,14 +108,16 @@ public sealed class SqliteNotableDateCache
     /// Gets a value indicating whether a caught storage failure should degrade to a best-effort fallback rather than
     /// propagate.
     /// </summary>
-    /// <value><see langword="true" /> when <see cref="NotableDateCacheOptions.ThrowOnStorageFailure" /> is not set.</value>
+    /// <value>
+    /// <see langword="true" /> when <see cref="NotableDateCacheOptions.ThrowOnStorageFailure" /> is not set.
+    /// </value>
     private bool ShouldSwallowStorageFailure => !Options.ThrowOnStorageFailure;
 
     /// <inheritdoc />
     /// <remarks>
     /// Overridden so a single-year lookup reads exactly one keyed row rather than loading and parsing every cached
-    /// year's occurrence blob for the territory; the same freshness, validity, and version policy is applied through the
-    /// shared <see cref="NotableDateCacheRules" />.
+    /// year's occurrence blob for the territory; the same freshness, validity, and version policy is applied through
+    /// the shared <see cref="NotableDateCacheRules" />.
     /// </remarks>
     public override NotableDateCacheEntry? GetYear(string territory, int year, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf)
     {
@@ -287,8 +295,8 @@ public sealed class SqliteNotableDateCache
     }
 
     /// <summary>
-    /// Reads a single cached year for a territory, year, and version, or <see langword="null" /> when absent or the read
-    /// fails.
+    /// Reads a single cached year for a territory, year, and version, or <see langword="null" /> when absent or the
+    /// read fails.
     /// </summary>
     /// <param name="territory">The normalized territory.</param>
     /// <param name="year">The civil year.</param>

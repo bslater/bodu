@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PropertySetWriter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -184,10 +184,10 @@ internal static class PropertySetWriter
     /// <remarks>
     /// <para>
     /// Fixed-size, string, and blob elements carry no per-element type word; <see cref="OlePropertyType.Variant" />
-    /// elements each carry an inner type word inferred from the element's CLR type (see
-    /// <see cref="InferVariantType" />). The round-trip guarantee for variant vectors is therefore value identity, not
-    /// byte identity — an element originally tagged <c>VT_FILETIME</c> is surfaced as <see cref="long" /> and re-emits
-    /// as <c>VT_I8</c>, and <c>VT_BSTR</c> strings re-emit as <c>VT_LPSTR</c>; both read back to the identical value.
+    /// elements each carry an inner type word inferred from the element's CLR type (see <see cref="InferVariantType" />).
+    /// The round-trip guarantee for variant vectors is therefore value identity, not byte identity — an element
+    /// originally tagged <c>VT_FILETIME</c> is surfaced as <see cref="long" /> and re-emits as <c>VT_I8</c>, and
+    /// <c>VT_BSTR</c> strings re-emit as <c>VT_LPSTR</c>; both read back to the identical value.
     /// </para>
     /// <para>
     /// Vectors of <see cref="OlePropertyType.Empty" /> or <see cref="OlePropertyType.Null" /> are rejected because
@@ -228,13 +228,15 @@ internal static class PropertySetWriter
     }
 
     /// <summary>
-    /// Encodes a self-describing variant body: a four-byte inner type word inferred from the CLR value, followed by
-    /// the inner scalar body.
+    /// Encodes a self-describing variant body: a four-byte inner type word inferred from the CLR value, followed by the
+    /// inner scalar body.
     /// </summary>
     /// <param name="value">The CLR value carried by the variant.</param>
     /// <param name="encoding">The encoding for ANSI strings.</param>
     /// <returns>The encoded variant body bytes.</returns>
-    /// <exception cref="CompoundFileSerializationException">Thrown when the value's CLR type cannot be inferred.</exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the value's CLR type cannot be inferred.
+    /// </exception>
     private static byte[] EncodeVariantBody(object? value, Encoding encoding)
     {
         OlePropertyType innerType = InferVariantType(value);
@@ -256,7 +258,9 @@ internal static class PropertySetWriter
     /// <c>VT_LPSTR</c> (the section code page), matching the convention real document-summary streams use for
     /// heading-pair vectors.
     /// </remarks>
-    /// <exception cref="CompoundFileSerializationException">Thrown when the CLR type has no property-type mapping.</exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when the CLR type has no property-type mapping.
+    /// </exception>
     private static OlePropertyType InferVariantType(object? value) =>
         value switch
         {
