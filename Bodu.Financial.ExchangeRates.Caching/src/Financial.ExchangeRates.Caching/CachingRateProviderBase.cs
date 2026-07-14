@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Caching;
 using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -489,11 +490,11 @@ public abstract class CachingRateProviderBase
     {
         CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
 
-        IReadOnlyList<CachedRate> direct = _cache.GetRates(pair, duration, now);
+        IReadOnlyList<CachedRate> direct = _cache.GetRates(pair, EffectiveExpiry(pair, duration), now);
 
         bool allowInverse = options?.AllowInverse ?? RateLookupOptions.Exact.AllowInverse;
         IReadOnlyList<CachedRate> inverse = allowInverse
-            ? _cache.GetRates(pair.Inverse(), duration, now)
+            ? _cache.GetRates(pair.Inverse(), EffectiveExpiry(pair.Inverse(), duration), now)
             : Array.Empty<CachedRate>();
 
         if (direct.Count == 0 && inverse.Count == 0)
@@ -571,19 +572,22 @@ public abstract class CachingRateProviderBase
         // A backend that stores both halves as one unit exposes the snapshot seam, so coverage and rows come from a
         // single state read; other backends — including the SQLite cache, whose two tables make a coverage-first probe
         // cheaper — are consulted through the standard IRateCache calls.
+        TimeSpan directDuration = EffectiveExpiry(pair, duration);
+
         if (_cache is IRateCacheSnapshotReader reader)
         {
-            RateCacheSnapshot snapshot = reader.ReadSnapshot(pair, duration, now);
+            RateCacheSnapshot snapshot = reader.ReadSnapshot(pair, directDuration, now);
             if (snapshot.Coverage.Contains(startDate, endDate))
-                return BuildRange(pair, FreshRows(snapshot, duration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
+                return BuildRange(pair, FreshRows(snapshot, directDuration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
 
             // When enabled, any fresh direct coverage is evidence the pair is fetched in the direct orientation, so
             // the inverse probe — a second whole-state backend read — is skipped and the miss refetches instead.
             if (AllowInverseRangeServe && ShouldProbeInverse(snapshot.Coverage))
             {
-                snapshot = reader.ReadSnapshot(pair.Inverse(), duration, now);
+                TimeSpan inverseDuration = EffectiveExpiry(pair.Inverse(), duration);
+                snapshot = reader.ReadSnapshot(pair.Inverse(), inverseDuration, now);
                 if (snapshot.Coverage.Contains(startDate, endDate))
-                    return BuildRange(pair.Inverse(), FreshRows(snapshot, duration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
+                    return BuildRange(pair.Inverse(), FreshRows(snapshot, inverseDuration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
             }
 
             result = Array.Empty<ExchangeRate>();
@@ -591,12 +595,16 @@ public abstract class CachingRateProviderBase
             return false;
         }
 
-        DateRangeCoverage directCoverage = _cache.GetCoverage(pair, duration, now);
+        DateRangeCoverage directCoverage = _cache.GetCoverage(pair, directDuration, now);
         if (directCoverage.Contains(startDate, endDate))
-            return BuildRange(pair, _cache.GetRates(pair, duration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
+            return BuildRange(pair, _cache.GetRates(pair, directDuration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
 
-        if (AllowInverseRangeServe && ShouldProbeInverse(directCoverage) && _cache.GetCoverage(pair.Inverse(), duration, now).Contains(startDate, endDate))
-            return BuildRange(pair.Inverse(), _cache.GetRates(pair.Inverse(), duration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
+        if (AllowInverseRangeServe && ShouldProbeInverse(directCoverage))
+        {
+            TimeSpan inverseDuration = EffectiveExpiry(pair.Inverse(), duration);
+            if (_cache.GetCoverage(pair.Inverse(), inverseDuration, now).Contains(startDate, endDate))
+                return BuildRange(pair.Inverse(), _cache.GetRates(pair.Inverse(), inverseDuration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
+        }
 
         result = Array.Empty<ExchangeRate>();
         oldestCachedAtUtc = null;
@@ -612,6 +620,24 @@ public abstract class CachingRateProviderBase
     /// <returns><see langword="true" /> when the inverse pair should be probed.</returns>
     private bool ShouldProbeInverse(DateRangeCoverage directCoverage) =>
         !_options.SkipInverseRangeProbeWhenDirectCovered || directCoverage.IsEmpty;
+
+    /// <summary>
+    /// Applies the configured deterministic expiry jitter to a caching duration, keyed by the provider and the pair
+    /// whose data is being read or written, so entries warmed together do not all expire at the same instant.
+    /// </summary>
+    /// <param name="pair">The pair whose cached data the duration governs.</param>
+    /// <param name="duration">The configured caching duration.</param>
+    /// <returns>
+    /// The pair's effective duration — shortened by up to <see cref="CachingRateOptions.ExpiryJitter" /> of itself,
+    /// stably per pair — or <paramref name="duration" /> unchanged when jitter is disabled.
+    /// </returns>
+    private TimeSpan EffectiveExpiry(CurrencyPair pair, TimeSpan duration)
+    {
+        if (_options.ExpiryJitter <= 0)
+            return duration;
+
+        return CacheFreshness.WithJitter(duration, $"{_cache.Provider}:{pair.From}{pair.To}", _options.ExpiryJitter);
+    }
 
     /// <summary>
     /// Returns the snapshot's fresh, date-ordered rows, serving the snapshot's list as-is when every row already
@@ -699,7 +725,7 @@ public abstract class CachingRateProviderBase
     {
         CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         CachedRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now, result.Rate.FetchedAtUtc) };
-        _cache.Store(pair, rows, duration, now);
+        _cache.Store(pair, rows, EffectiveExpiry(pair, duration), now);
     }
 
     /// <summary>
@@ -725,7 +751,7 @@ public abstract class CachingRateProviderBase
         for (int i = 0; i < rates.Count; i++)
             rows[i] = new CachedRate(rates[i].Date, rates[i].Rate, now, rates[i].FetchedAtUtc);
 
-        return _cache.StoreFetchedRange(pair, rows, startDate, endDate, duration, now);
+        return _cache.StoreFetchedRange(pair, rows, startDate, endDate, EffectiveExpiry(pair, duration), now);
     }
 
     /// <summary>

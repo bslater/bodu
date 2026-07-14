@@ -103,6 +103,23 @@ public sealed class CachingRateOptions
     public bool SkipInverseRangeProbeWhenDirectCovered { get; set; }
 
     /// <summary>
+    /// Gets or sets the maximum fraction of a pair's caching duration that is deterministically shaved off per pair,
+    /// so entries warmed together do not all expire — and refetch — at the same instant.
+    /// </summary>
+    /// <value>
+    /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables jitter and preserves the exact configured
+    /// expiry.
+    /// </value>
+    /// <remarks>
+    /// The reduction is derived from a stable hash of the provider and pair (not from randomness), so a given pair's
+    /// effective expiry is identical across instances and processes and deterministic under test. Jitter only ever
+    /// shortens the duration, never extends it, so no rate is served longer than the configured expiry allows; the
+    /// trade-off is that a pair may refetch up to this fraction of its expiry early. Inverse-pair probes jitter by the
+    /// inverse pair's own key, matching the data actually being read.
+    /// </remarks>
+    public double ExpiryJitter { get; set; }
+
+    /// <summary>
     /// Gets the per-provider expiry overrides, keyed by the provider name supplied to the caching provider.
     /// </summary>
     /// <value>
@@ -205,6 +222,13 @@ public sealed class CachingRateOptions
             }
         }
 
+        if (ExpiryJitter is < 0 or >= 1 || double.IsNaN(ExpiryJitter))
+        {
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryJitterOutOfRange, ExpiryJitter),
+                nameof(ExpiryJitter));
+        }
+
         if (DefaultLookupOptions is null)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_LookupOptionsNull, nameof(DefaultLookupOptions));
 
@@ -245,6 +269,12 @@ public sealed class CachingRateOptions
                 error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryNotPositive, entry.Value);
                 return false;
             }
+        }
+
+        if (ExpiryJitter is < 0 or >= 1 || double.IsNaN(ExpiryJitter))
+        {
+            error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryJitterOutOfRange, ExpiryJitter);
+            return false;
         }
 
         if (DefaultLookupOptions is null)

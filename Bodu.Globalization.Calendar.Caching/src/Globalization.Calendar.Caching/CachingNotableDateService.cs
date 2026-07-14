@@ -6,6 +6,7 @@
 
 using System.Collections.Concurrent;
 using System.Globalization;
+using Bodu.Caching;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -141,7 +142,12 @@ public sealed class CachingNotableDateService
 
         DateTimeOffset now = _timeProvider.GetUtcNow();
         string version = ResolveVersion();
-        TimeSpan ttl = _options.Ttl;
+
+        // Jitter is keyed by the normalized territory (not territory+year) so the batch and per-year read paths,
+        // which share this one time-to-live for the whole span, always agree on freshness.
+        TimeSpan ttl = _options.TtlJitter > 0
+            ? CacheFreshness.WithJitter(_options.Ttl, NotableDateCacheRules.NormalizeTerritory(territory), _options.TtlJitter)
+            : _options.Ttl;
 
         int firstYear = range.StartDate.Year;
         int lastYear = range.EndDate.Year;

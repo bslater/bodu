@@ -40,6 +40,24 @@ public sealed class NotableDateCachingOptions
     public TimeSpan Ttl { get; set; } = TimeSpan.FromDays(30);
 
     /// <summary>
+    /// Gets or sets the maximum fraction of <see cref="Ttl" /> that is deterministically shaved off per territory, so
+    /// territories warmed together do not all expire — and recompute — at the same instant.
+    /// </summary>
+    /// <value>
+    /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables jitter and preserves the exact configured
+    /// time-to-live.
+    /// </value>
+    /// <remarks>
+    /// The reduction is derived from a stable hash of the normalized territory (not from randomness), so a given
+    /// territory's effective time-to-live is identical across instances and processes and deterministic under test.
+    /// The jitter is keyed by territory rather than by territory and year so the batch and per-year read paths — which
+    /// share one time-to-live per resolution — always agree on freshness. Jitter only ever shortens the duration, so
+    /// no year is served longer than the configured time-to-live allows; the trade-off is that a territory may
+    /// recompute up to this fraction of its time-to-live early.
+    /// </remarks>
+    public double TtlJitter { get; set; }
+
+    /// <summary>
     /// Gets or sets the resource-version token used to key cache entries when the caching service observes no
     /// <see cref="INotableDateResourceProvider" />.
     /// </summary>
@@ -96,6 +114,13 @@ public sealed class NotableDateCachingOptions
                 nameof(Ttl));
         }
 
+        if (TtlJitter is < 0 or >= 1 || double.IsNaN(TtlJitter))
+        {
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, CalendarCachingResourceStrings.Arg_Invalid_TtlJitterOutOfRange, TtlJitter),
+                nameof(TtlJitter));
+        }
+
         if (!AreLogLevelsDefined())
             throw new ArgumentException(CalendarCachingResourceStrings.Arg_Invalid_LogLevelUndefined, nameof(CacheHitLogLevel));
     }
@@ -113,6 +138,12 @@ public sealed class NotableDateCachingOptions
         if (Ttl <= TimeSpan.Zero)
         {
             error = string.Format(CultureInfo.CurrentCulture, CalendarCachingResourceStrings.Arg_Invalid_TtlNotPositive, Ttl);
+            return false;
+        }
+
+        if (TtlJitter is < 0 or >= 1 || double.IsNaN(TtlJitter))
+        {
+            error = string.Format(CultureInfo.CurrentCulture, CalendarCachingResourceStrings.Arg_Invalid_TtlJitterOutOfRange, TtlJitter);
             return false;
         }
 

@@ -61,6 +61,15 @@ namespace Bodu.Financial.ExchangeRates.Caching {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The expiry jitter fraction must be in the range [0, 1), but was {0}..
+        /// </summary>
+        internal static string Arg_Invalid_ExpiryJitterOutOfRange {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ExpiryJitterOutOfRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The cache expiry must be greater than zero, but was {0}..
         /// </summary>
         internal static string Arg_Invalid_ExpiryNotPositive {

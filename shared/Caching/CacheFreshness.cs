@@ -55,4 +55,49 @@ internal static class CacheFreshness
     /// </returns>
     public static bool IsWithinClockSkew(DateTimeOffset stampedAtUtc, DateTimeOffset asOf) =>
         stampedAtUtc <= asOf + ClockSkewTolerance;
+
+    /// <summary>
+    /// Shortens a caching duration by a deterministic, key-derived fraction so entries warmed together do not all
+    /// expire at the same instant, spreading refresh work instead of stampeding it.
+    /// </summary>
+    /// <param name="duration">The configured caching duration.</param>
+    /// <param name="key">The stable identity the jitter is derived from, such as a cache key or territory code.</param>
+    /// <param name="fraction">
+    /// The maximum fraction of <paramref name="duration" /> that may be shaved off, in <c>[0, 1)</c>; <c>0</c> returns
+    /// <paramref name="duration" /> unchanged.
+    /// </param>
+    /// <returns>
+    /// The effective duration: <paramref name="duration" /> reduced by up to <paramref name="fraction" /> of itself,
+    /// by an amount stable for a given <paramref name="key" />.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// The reduction is derived from an FNV-1a hash of the key characters — deliberately not
+    /// <see cref="string.GetHashCode()" />, which is randomized per process — so the same key always yields the same
+    /// effective duration across instances, processes, and test runs, and two processes sharing a durable store agree
+    /// on when an entry expires.
+    /// </para>
+    /// <para>
+    /// Jitter only ever shortens the duration, never extends it, so a jittered read can never serve data the
+    /// configured duration would already consider stale, and server-side expirations derived from the configured
+    /// duration remain safe upper bounds.
+    /// </para>
+    /// </remarks>
+    public static TimeSpan WithJitter(TimeSpan duration, ReadOnlySpan<char> key, double fraction)
+    {
+        if (fraction <= 0)
+            return duration;
+
+        // FNV-1a 32-bit over the key characters: stable across processes, cheap, and well-spread for short keys.
+        uint hash = 2166136261;
+        for (int i = 0; i < key.Length; i++)
+        {
+            hash ^= key[i];
+            hash *= 16777619;
+        }
+
+        // Map the hash to [0, 1) and shave off up to `fraction` of the duration.
+        double unit = hash / 4294967296.0;
+        return TimeSpan.FromTicks(duration.Ticks - (long)(duration.Ticks * fraction * unit));
+    }
 }
