@@ -577,7 +577,9 @@ public abstract class CachingRateProviderBase
             if (snapshot.Coverage.Contains(startDate, endDate))
                 return BuildRange(pair, FreshRows(snapshot, duration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
 
-            if (AllowInverseRangeServe)
+            // When enabled, any fresh direct coverage is evidence the pair is fetched in the direct orientation, so
+            // the inverse probe — a second whole-state backend read — is skipped and the miss refetches instead.
+            if (AllowInverseRangeServe && ShouldProbeInverse(snapshot.Coverage))
             {
                 snapshot = reader.ReadSnapshot(pair.Inverse(), duration, now);
                 if (snapshot.Coverage.Contains(startDate, endDate))
@@ -589,16 +591,27 @@ public abstract class CachingRateProviderBase
             return false;
         }
 
-        if (_cache.GetCoverage(pair, duration, now).Contains(startDate, endDate))
+        DateRangeCoverage directCoverage = _cache.GetCoverage(pair, duration, now);
+        if (directCoverage.Contains(startDate, endDate))
             return BuildRange(pair, _cache.GetRates(pair, duration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
 
-        if (AllowInverseRangeServe && _cache.GetCoverage(pair.Inverse(), duration, now).Contains(startDate, endDate))
+        if (AllowInverseRangeServe && ShouldProbeInverse(directCoverage) && _cache.GetCoverage(pair.Inverse(), duration, now).Contains(startDate, endDate))
             return BuildRange(pair.Inverse(), _cache.GetRates(pair.Inverse(), duration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
 
         result = Array.Empty<ExchangeRate>();
         oldestCachedAtUtc = null;
         return false;
     }
+
+    /// <summary>
+    /// Decides whether a direct-coverage miss should still probe the inverse pair: always, unless
+    /// <see cref="CachingRateOptions.SkipInverseRangeProbeWhenDirectCovered" /> is enabled and the direct pair holds
+    /// any fresh coverage at all.
+    /// </summary>
+    /// <param name="directCoverage">The direct pair's fresh coverage.</param>
+    /// <returns><see langword="true" /> when the inverse pair should be probed.</returns>
+    private bool ShouldProbeInverse(DateRangeCoverage directCoverage) =>
+        !_options.SkipInverseRangeProbeWhenDirectCovered || directCoverage.IsEmpty;
 
     /// <summary>
     /// Returns the snapshot's fresh, date-ordered rows, serving the snapshot's list as-is when every row already

@@ -84,6 +84,25 @@ public sealed class CachingRateOptions
     public bool RespectHistoryAvailability { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets a value indicating whether a range lookup that misses the direct pair's coverage skips the
+    /// inverse-pair probe when the direct pair holds any fresh coverage at all, probing the inverse only when the
+    /// direct pair's coverage is completely empty.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to skip the inverse probe when the direct pair carries fresh coverage; defaults to
+    /// <see langword="false" />, matching the historical behaviour of always probing the inverse on a direct miss.
+    /// </value>
+    /// <remarks>
+    /// On a direct-coverage miss the provider normally issues a second backend read for the inverse pair. For a
+    /// workload that only ever fetches one orientation — the common case — that probe is a guaranteed-empty read
+    /// doubling backend I/O on every refetch. Enabling this option treats any fresh direct coverage as evidence the
+    /// pair is actively fetched in the direct orientation and goes straight to the refetch, at the cost of a redundant
+    /// refetch in the rare configuration where the inverse pair alone holds complete coverage for the window. The
+    /// option has no effect when <see cref="DefaultLookupOptions" /> disallows inverse serves.
+    /// </remarks>
+    public bool SkipInverseRangeProbeWhenDirectCovered { get; set; }
+
+    /// <summary>
     /// Gets the per-provider expiry overrides, keyed by the provider name supplied to the caching provider.
     /// </summary>
     /// <value>
