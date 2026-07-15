@@ -131,4 +131,32 @@ internal static partial class Log
     /// <param name="fetchStart">The advertised earliest date the fetch was raised to.</param>
     [LoggerMessage(EventId = 4508, Message = "Clamped {fromIsoCode}->{toIsoCode} range fetch from source '{source}': requested start {startDate} raised to advertised earliest {fetchStart}")]
     public static partial void ClampedRangeToHistory(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly fetchStart);
+
+    /// <summary>
+    /// Logs that an aged cache hit scheduled a background refresh of the served window, so the data is refetched
+    /// before it expires.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="level">The level at which to log the message.</param>
+    /// <param name="source">The source name the refreshed rows are cached under.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="startDate">The inclusive first date of the window being refreshed.</param>
+    /// <param name="endDate">The inclusive last date of the window being refreshed.</param>
+    [LoggerMessage(EventId = 4516, Message = "Scheduled refresh-ahead of {fromIsoCode}->{toIsoCode} {startDate}..{endDate} for source '{source}' after an aged cache hit")]
+    public static partial void RefreshAheadScheduled(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate);
+
+    /// <summary>
+    /// Logs that a background refresh-ahead attempt failed and was swallowed; the hit that triggered it was already
+    /// served, and the next aged hit schedules a fresh attempt.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="source">The source name the refresh targeted.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="startDate">The inclusive first date of the window whose refresh failed.</param>
+    /// <param name="endDate">The inclusive last date of the window whose refresh failed.</param>
+    /// <param name="exception">The swallowed refresh exception.</param>
+    [LoggerMessage(EventId = 4517, Level = LogLevel.Warning, Message = "Refresh-ahead of {fromIsoCode}->{toIsoCode} {startDate}..{endDate} from source '{source}' failed and was swallowed; the next aged hit will retry")]
+    public static partial void RefreshAheadFailed(ILogger logger, string source, string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, Exception exception);
 }

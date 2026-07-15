@@ -82,6 +82,9 @@
   <data name="Arg_Invalid_RangeInverted" xml:space="preserve">
     <value>The end date must not be earlier than the start date.</value>
   </data>
+  <data name="Arg_Invalid_RefreshAheadFractionOutOfRange" xml:space="preserve">
+    <value>The refresh-ahead fraction must be in the range [0, 1), but was {0}.</value>
+  </data>
   <data name="Arg_Invalid_UnknownAggregationChild" xml:space="preserve">
     <value>The provider name '{0}' referenced by the aggregation configuration was not supplied as a child.</value>
   </data>

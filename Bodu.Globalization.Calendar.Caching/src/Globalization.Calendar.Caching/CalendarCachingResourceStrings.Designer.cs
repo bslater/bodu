@@ -61,6 +61,15 @@ namespace Bodu.Globalization.Calendar.Caching {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The refresh-ahead fraction must be in the range [0, 1), but was {0}..
+        /// </summary>
+        internal static string Arg_Invalid_RefreshAheadFractionOutOfRange {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RefreshAheadFractionOutOfRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The time-to-live jitter fraction must be in the range [0, 1), but was {0}..
         /// </summary>
         internal static string Arg_Invalid_TtlJitterOutOfRange {

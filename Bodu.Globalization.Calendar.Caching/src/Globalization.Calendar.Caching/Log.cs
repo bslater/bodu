@@ -70,4 +70,32 @@ internal static partial class Log
         Level = LogLevel.Warning,
         Message = "File notable-date cache treated corrupt cache file '{path}' as empty; it will be repaired by the next successful write")]
     public static partial void CacheFileCorrupt(ILogger logger, string path, Exception exception);
+
+    /// <summary>
+    /// Logs that a year was recomputed in the background by refresh-ahead after an aged cache hit, so the entry was
+    /// renewed before it expired.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="level">The level the diagnostic is logged at.</param>
+    /// <param name="territory">The territory the year was recomputed for.</param>
+    /// <param name="year">The civil year recomputed.</param>
+    /// <param name="occurrences">The number of occurrences the recomputed year yielded.</param>
+    [LoggerMessage(
+        EventId = 4605,
+        Message = "Refresh-ahead recomputed notable-date year {year} for territory '{territory}' after an aged cache hit; cached {occurrences} occurrence(s)")]
+    public static partial void RefreshAheadRecomputed(ILogger logger, LogLevel level, string territory, int year, int occurrences);
+
+    /// <summary>
+    /// Logs that a background refresh-ahead recompute failed and was swallowed; the hit that triggered it was already
+    /// served, and the next aged hit schedules a fresh attempt.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="territory">The territory whose recompute failed.</param>
+    /// <param name="year">The civil year whose recompute failed.</param>
+    /// <param name="exception">The swallowed recompute exception.</param>
+    [LoggerMessage(
+        EventId = 4606,
+        Level = LogLevel.Warning,
+        Message = "Refresh-ahead recompute of notable-date year {year} for territory '{territory}' failed and was swallowed; the next aged hit will retry")]
+    public static partial void RefreshAheadFailed(ILogger logger, string territory, int year, Exception exception);
 }

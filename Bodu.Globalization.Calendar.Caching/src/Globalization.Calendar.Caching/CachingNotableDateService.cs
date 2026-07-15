@@ -83,6 +83,9 @@ public sealed class CachingNotableDateService
     /// <summary>The in-flight year computations, keyed by normalized territory, year, and version, so concurrent misses for the same cold year coalesce onto one computation instead of stampeding the wrapped service.</summary>
     private readonly ConcurrentDictionary<(string Territory, int Year, string Version), Lazy<IReadOnlyList<NotableDate>>> _inFlight = new();
 
+    /// <summary>The pending background refresh-ahead recomputes, keyed like <see cref="_inFlight" />, so concurrent aged hits for the same year join the one pending recompute rather than duplicating it. Entries are removed when their task completes.</summary>
+    private readonly ConcurrentDictionary<(string Territory, int Year, string Version), Task> _pendingRefreshAhead = new();
+
     /// <summary>Guards against double disposal.</summary>
     private bool _disposed;
 
@@ -178,7 +181,8 @@ public sealed class CachingNotableDateService
                 if (entry is not null)
                 {
                     Log.CacheHit(_logger, _options.CacheHitLogLevel, territory, year, (now - entry.ComputedAtUtc).TotalSeconds);
-            CalendarCachingMeter.CacheHit(territory);
+                    CalendarCachingMeter.CacheHit(territory);
+                    MaybeScheduleRefreshAhead(territory, year, version, ttl, entry.ComputedAtUtc, now);
                     occurrences = entry.Occurrences;
                 }
                 else
@@ -260,6 +264,7 @@ public sealed class CachingNotableDateService
         {
             Log.CacheHit(_logger, _options.CacheHitLogLevel, territory, year, (now - entry.ComputedAtUtc).TotalSeconds);
             CalendarCachingMeter.CacheHit(territory);
+            MaybeScheduleRefreshAhead(territory, year, version, ttl, entry.ComputedAtUtc, now);
             return entry.Occurrences;
         }
 
@@ -275,15 +280,22 @@ public sealed class CachingNotableDateService
     /// <param name="version">The resource version token the entry is keyed by.</param>
     /// <param name="ttl">The time-to-live the write prunes against.</param>
     /// <param name="now">The instant the computed year is stamped with.</param>
+    /// <param name="refreshAhead">
+    /// <see langword="true" /> when the computation was triggered by a background refresh-ahead rather than a genuine
+    /// miss, selecting the refresh-ahead diagnostics instead of the miss log and counter.
+    /// </param>
     /// <returns>The computed occurrences, unfiltered, in the wrapped service's order.</returns>
     /// <remarks>
     /// The wrapped service has no coalescing of its own (year resolution is a synchronous, CPU-bound computation), so
     /// without this guard N concurrent misses for the same cold year would run N identical computations. The first
     /// caller for a key computes and stores; concurrent callers share the same <see cref="Lazy{T}" /> result — including
     /// its exception when the computation faults. The in-flight entry is removed once the value is realized, so a
-    /// faulted computation never poisons the key and the next caller retries fresh.
+    /// faulted computation never poisons the key and the next caller retries fresh. Background refresh-ahead recomputes
+    /// share this single-flight guard, so a genuine miss that arrives while a refresh is computing joins the refresh
+    /// flight and is served the refreshed value — such a joining caller is counted as neither a hit nor a miss, because
+    /// the creator of the flight determines which diagnostics its computation emits.
     /// </remarks>
-    private IReadOnlyList<NotableDate> ComputeAndStoreYear(string territory, int year, string version, TimeSpan ttl, DateTimeOffset now)
+    private IReadOnlyList<NotableDate> ComputeAndStoreYear(string territory, int year, string version, TimeSpan ttl, DateTimeOffset now, bool refreshAhead = false)
     {
         (string Territory, int Year, string Version) key = (NotableDateCacheRules.NormalizeTerritory(territory), year, version);
 
@@ -302,8 +314,16 @@ public sealed class CachingNotableDateService
 
                     _cache.StoreYear(new NotableDateCacheEntry(territory, year, version, occurrences, now), ttl, now);
 
-                    Log.CacheMiss(_logger, _options.CacheMissLogLevel, territory, year, occurrences.Count);
-                    CalendarCachingMeter.CacheMiss(territory);
+                    if (refreshAhead)
+                    {
+                        Log.RefreshAheadRecomputed(_logger, _options.CacheMissLogLevel, territory, year, occurrences.Count);
+                    }
+                    else
+                    {
+                        Log.CacheMiss(_logger, _options.CacheMissLogLevel, territory, year, occurrences.Count);
+                        CalendarCachingMeter.CacheMiss(territory);
+                    }
+
                     return occurrences;
                 },
                 LazyThreadSafetyMode.ExecutionAndPublication));
@@ -319,6 +339,78 @@ public sealed class CachingNotableDateService
             _inFlight.TryRemove(key, out _);
         }
     }
+
+    /// <summary>
+    /// Schedules a background refresh-ahead recompute of a served year when refresh-ahead is enabled and the served
+    /// entry has aged past the configured fraction of the effective time-to-live.
+    /// </summary>
+    /// <param name="territory">The requested territory code, passed through unmodified; the key normalizes it.</param>
+    /// <param name="year">The served civil year.</param>
+    /// <param name="version">The resource version token in effect at the serving lookup.</param>
+    /// <param name="ttl">The effective (post-jitter) time-to-live the serving lookup evaluated freshness against.</param>
+    /// <param name="computedAtUtc">The instant the served entry was computed.</param>
+    /// <param name="now">The serving lookup's instant.</param>
+    /// <remarks>
+    /// The pending registration is published <em>before</em> the task starts — a completion source's task is added
+    /// under the key first, and only a successful add spawns the worker — so a concurrent aged hit can never slip in
+    /// between a worker finishing and its registration appearing. The worker captures the schedule-time version token
+    /// (a mid-flight resource reload merely writes an entry under the stale version, which is never read again) but
+    /// takes a fresh computation instant when it runs, and routes through
+    /// <see cref="ComputeAndStoreYear" /> so it shares the single-flight guard with genuine misses. Failures are
+    /// swallowed after logging: the hit that triggered the recompute was already served, and the next aged hit
+    /// schedules a fresh attempt. Disposal is re-checked when the worker starts; pending recomputes are abandoned, not
+    /// drained, by <see cref="Dispose" />.
+    /// </remarks>
+    private void MaybeScheduleRefreshAhead(string territory, int year, string version, TimeSpan ttl, DateTimeOffset computedAtUtc, DateTimeOffset now)
+    {
+        if (_options.RefreshAheadFraction <= 0 || _disposed)
+            return;
+
+        // Because the fraction is below one, the threshold always precedes expiry, so a continuously hot territory
+        // refreshes before it can ever miss.
+        var threshold = TimeSpan.FromTicks((long)(ttl.Ticks * _options.RefreshAheadFraction));
+        if (now - computedAtUtc < threshold)
+            return;
+
+        (string Territory, int Year, string Version) key = (NotableDateCacheRules.NormalizeTerritory(territory), year, version);
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        if (!_pendingRefreshAhead.TryAdd(key, completion.Task))
+            return;
+
+        // Fire-and-forget by design: the task is observed through the pending registry (and the test hook), and its
+        // body routes every outcome to the meter and log rather than throwing.
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                if (_disposed)
+                    return;
+
+                DateTimeOffset freshNow = _timeProvider.GetUtcNow();
+                _ = ComputeAndStoreYear(territory, year, version, ttl, freshNow, refreshAhead: true);
+                CalendarCachingMeter.RefreshAhead(territory, "success");
+            }
+            catch (Exception ex)
+            {
+                CalendarCachingMeter.RefreshAhead(territory, "failed");
+                Log.RefreshAheadFailed(_logger, territory, year, ex);
+            }
+            finally
+            {
+                _pendingRefreshAhead.TryRemove(key, out _);
+                completion.SetResult();
+            }
+        });
+    }
+
+    /// <summary>
+    /// Waits for every currently pending background refresh-ahead recompute to complete, so tests can
+    /// deterministically observe refresh-ahead side effects. Recomputes are registered synchronously inside the
+    /// serving call, so a pending recompute scheduled by a completed resolution is always visible here.
+    /// </summary>
+    /// <returns>A task that completes when every recompute pending at the call instant has finished.</returns>
+    internal Task WaitForRefreshAheadForTestingAsync() =>
+        Task.WhenAll(_pendingRefreshAhead.Values.ToArray());
 
     /// <summary>
     /// Resolves the resource-version token, deriving it from the observed resource identity and reload generation when

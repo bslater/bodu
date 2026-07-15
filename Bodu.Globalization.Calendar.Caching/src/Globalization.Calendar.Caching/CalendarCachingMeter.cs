@@ -57,6 +57,12 @@ internal static class CalendarCachingMeter
         unit: "{failure}",
         description: "Best-effort cache storage failures that were swallowed.");
 
+    /// <summary>Counts background refresh-ahead recomputes, tagged by outcome.</summary>
+    private static readonly Counter<long> s_refreshAhead = s_meter.CreateCounter<long>(
+        "bodu.calendar.notable_date_cache.refresh_ahead",
+        unit: "{refresh}",
+        description: "Background refresh-ahead recomputes triggered by aged cache hits.");
+
     /// <summary>
     /// Records a year served from the cache.
     /// </summary>
@@ -100,5 +106,20 @@ internal static class CalendarCachingMeter
     {
         if (s_storageFailures.Enabled)
             s_storageFailures.Add(1, new KeyValuePair<string, object?>("operation", operation));
+    }
+
+    /// <summary>
+    /// Records a completed background refresh-ahead recompute.
+    /// </summary>
+    /// <param name="territory">The normalized territory the recompute belongs to.</param>
+    /// <param name="outcome">The attempt outcome: <c>success</c> or <c>failed</c>.</param>
+    /// <remarks>
+    /// One count is recorded per scheduled background task; aged hits that joined an already pending recompute are not
+    /// counted separately.
+    /// </remarks>
+    public static void RefreshAhead(string territory, string outcome)
+    {
+        if (s_refreshAhead.Enabled)
+            s_refreshAhead.Add(1, new KeyValuePair<string, object?>("territory", NotableDateCacheRules.NormalizeTerritory(territory)), new KeyValuePair<string, object?>("outcome", outcome));
     }
 }

@@ -52,6 +52,12 @@ internal static class CachingMeter
         unit: "{failure}",
         description: "Best-effort cache storage failures that were swallowed.");
 
+    /// <summary>Counts background refresh-ahead attempts, tagged by outcome.</summary>
+    private static readonly Counter<long> s_refreshAhead = s_meter.CreateCounter<long>(
+        "bodu.financial.rate_cache.refresh_ahead",
+        unit: "{refresh}",
+        description: "Background refresh-ahead attempts triggered by aged cache hits.");
+
     /// <summary>
     /// Records a lookup served from the cache.
     /// </summary>
@@ -83,5 +89,20 @@ internal static class CachingMeter
     {
         if (s_storageFailures.Enabled)
             s_storageFailures.Add(1, new KeyValuePair<string, object?>("provider", provider), new KeyValuePair<string, object?>("operation", operation));
+    }
+
+    /// <summary>
+    /// Records a completed background refresh-ahead attempt.
+    /// </summary>
+    /// <param name="provider">The provider the cache is bound to.</param>
+    /// <param name="outcome">The attempt outcome: <c>success</c> or <c>failed</c>.</param>
+    /// <remarks>
+    /// One count is recorded per scheduled background task; aged hits that joined an already pending refresh are not
+    /// counted separately.
+    /// </remarks>
+    public static void RefreshAhead(string provider, string outcome)
+    {
+        if (s_refreshAhead.Enabled)
+            s_refreshAhead.Add(1, new KeyValuePair<string, object?>("provider", provider), new KeyValuePair<string, object?>("outcome", outcome));
     }
 }

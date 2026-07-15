@@ -133,6 +133,15 @@ namespace Bodu.Financial.ExchangeRates.Caching {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The refresh-ahead fraction must be in the range [0, 1), but was {0}..
+        /// </summary>
+        internal static string Arg_Invalid_RefreshAheadFractionOutOfRange {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RefreshAheadFractionOutOfRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The provider name '{0}' referenced by the aggregation configuration was not supplied as a child..
         /// </summary>
         internal static string Arg_Invalid_UnknownAggregationChild {

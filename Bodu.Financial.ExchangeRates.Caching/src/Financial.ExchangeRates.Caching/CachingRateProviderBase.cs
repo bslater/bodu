@@ -72,7 +72,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <see cref="System.Net.Http.HttpClient" />) behind the cache by hand.
 /// </para>
 /// </remarks>
-public abstract class CachingRateProviderBase
+public abstract partial class CachingRateProviderBase
     : IDatedRateProvider, IRateProvider, IHistoricalRateProvider, IDisposable
 {
     /// <summary>The single-provider cache that serves fresh rates and stores resolved observations.</summary>
@@ -189,6 +189,7 @@ public abstract class CachingRateProviderBase
 
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
             CachingMeter.CacheHit(_cache.Provider, "single");
+            MaybeScheduleRefreshAhead(duration, fromIsoCode, toIsoCode, date, options, now, servedCachedAtUtc);
             EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return true;
         }
@@ -256,6 +257,7 @@ public abstract class CachingRateProviderBase
 
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
             CachingMeter.CacheHit(_cache.Provider, "single");
+            MaybeScheduleRefreshAhead(duration, fromIsoCode, toIsoCode, date, options, now, servedCachedAtUtc);
             EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return result;
         }
@@ -297,6 +299,7 @@ public abstract class CachingRateProviderBase
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
             CachingMeter.CacheHit(_cache.Provider, "range");
+            MaybeScheduleRangeRefreshAhead(duration, pair, fromIsoCode, toIsoCode, startDate, endDate, now, oldestCachedAtUtc);
             EmitProvenance(CacheServeProvenance(oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
             return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
@@ -355,6 +358,7 @@ public abstract class CachingRateProviderBase
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
             CachingMeter.CacheHit(_cache.Provider, "range");
+            MaybeScheduleRangeRefreshAhead(duration, pair, fromIsoCode, toIsoCode, startDate, endDate, now, oldestCachedAtUtc);
             EmitProvenance(CacheServeProvenance(oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
             return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
@@ -1050,7 +1054,9 @@ public abstract class CachingRateProviderBase
     /// </summary>
     /// <remarks>
     /// Disposal is idempotent. The cache is not disposed here: the shipped caches hold no unmanaged resources, and a
-    /// caller-supplied cache is owned by its caller.
+    /// caller-supplied cache is owned by its caller. Pending background refresh-ahead work is abandoned, not drained:
+    /// no new refresh is scheduled after disposal, and an already scheduled refresh that observes the disposed state
+    /// completes as a no-op.
     /// </remarks>
     public void Dispose()
     {

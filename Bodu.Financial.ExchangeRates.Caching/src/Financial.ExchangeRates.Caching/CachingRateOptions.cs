@@ -120,6 +120,33 @@ public sealed class CachingRateOptions
     public double ExpiryJitter { get; set; }
 
     /// <summary>
+    /// Gets or sets the fraction of a pair's effective caching duration after which a cache hit, while still served
+    /// immediately, additionally schedules a single background refresh of the served data, so a hot pair is refetched
+    /// before it expires and no caller ever absorbs the refetch latency.
+    /// </summary>
+    /// <value>
+    /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables refresh-ahead entirely and preserves the
+    /// plain serve-until-expiry behaviour.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// Refresh-ahead is access-triggered: no timers run, and only a lookup that is actually served from the cache can
+    /// schedule a refresh. When a hit's served data is older than this fraction of the pair's effective (post-jitter)
+    /// expiry, at most one background refresh per pair and window is started; concurrent aged hits for the same key
+    /// join the pending refresh rather than duplicating it. Because the fraction is below <c>1</c>, the refresh always
+    /// begins before the entry expires, so a continuously hot pair never surfaces a miss.
+    /// </para>
+    /// <para>
+    /// A background refresh that fails is swallowed after logging — the hit it piggybacked on was already served — and
+    /// the next aged hit schedules a fresh attempt. Single-date hits served from the inverse pair's rows evaluate the
+    /// threshold against the requested pair's effective expiry, a deliberate approximation that keeps the trigger
+    /// cheap. Disposing the provider prevents new refreshes from being scheduled and abandons pending ones without
+    /// draining them.
+    /// </para>
+    /// </remarks>
+    public double RefreshAheadFraction { get; set; }
+
+    /// <summary>
     /// Gets the per-provider expiry overrides, keyed by the provider name supplied to the caching provider.
     /// </summary>
     /// <value>
@@ -229,6 +256,13 @@ public sealed class CachingRateOptions
                 nameof(ExpiryJitter));
         }
 
+        if (RefreshAheadFraction is < 0 or >= 1 || double.IsNaN(RefreshAheadFraction))
+        {
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_RefreshAheadFractionOutOfRange, RefreshAheadFraction),
+                nameof(RefreshAheadFraction));
+        }
+
         if (DefaultLookupOptions is null)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_LookupOptionsNull, nameof(DefaultLookupOptions));
 
@@ -274,6 +308,12 @@ public sealed class CachingRateOptions
         if (ExpiryJitter is < 0 or >= 1 || double.IsNaN(ExpiryJitter))
         {
             error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryJitterOutOfRange, ExpiryJitter);
+            return false;
+        }
+
+        if (RefreshAheadFraction is < 0 or >= 1 || double.IsNaN(RefreshAheadFraction))
+        {
+            error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_RefreshAheadFractionOutOfRange, RefreshAheadFraction);
             return false;
         }
 
