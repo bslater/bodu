@@ -141,6 +141,21 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
                 _residualBytes = 0;
             }
 
+            // Fast path: with nothing buffered and more than one full block still to come, compress full blocks
+            // straight from the caller's span rather than memcpy'ing every byte through the residual buffer. Always
+            // leave at least one byte behind so the trailing block stays deferred for isFinal: true.
+            if (_residualBytes == 0 && remaining > blockBytes)
+            {
+                int fullBlocks = (remaining - 1) / blockBytes;
+                for (int b = 0; b < fullBlocks; b++)
+                {
+                    ProcessBlock(source.Slice(pos, blockBytes), _totalBytes + (ulong)blockBytes, isFinal: false);
+                    _totalBytes += (ulong)blockBytes;
+                    pos += blockBytes;
+                    remaining -= blockBytes;
+                }
+            }
+
             int canCopy = Math.Min(blockBytes - _residualBytes, remaining);
             source.Slice(pos, canCopy).CopyTo(residualSpan[_residualBytes..]);
             _residualBytes += canCopy;
