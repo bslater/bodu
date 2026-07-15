@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -226,17 +227,57 @@ internal sealed class StreamCipherTransform
     private void Apply(ReadOnlySpan<byte> input, Span<byte> output)
     {
         int blockSize = _cipher.BlockSize;
+        Span<byte> keystream = _keystream;
+        int pos = 0;
 
-        for (int i = 0; i < input.Length; i++)
+        // 1. Consume any keystream carried over from a previous call before pulling fresh blocks.
+        if (_keystreamOffset < blockSize)
         {
-            if (_keystreamOffset == blockSize)
-            {
-                _cipher.NextKeystreamBlock(_keystream);
-                _keystreamOffset = 0;
-            }
-
-            output[i] = (byte)(input[i] ^ _keystream[_keystreamOffset++]);
+            int take = Math.Min(blockSize - _keystreamOffset, input.Length);
+            XorInto(input[..take], keystream.Slice(_keystreamOffset, take), output[..take]);
+            _keystreamOffset += take;
+            pos = take;
         }
+
+        // 2. Whole blocks: pull one keystream block at a time and XOR the full block in ulong-wide chunks.
+        while (input.Length - pos >= blockSize)
+        {
+            _cipher.NextKeystreamBlock(keystream);
+            XorInto(input.Slice(pos, blockSize), keystream, output.Slice(pos, blockSize));
+            _keystreamOffset = blockSize;
+            pos += blockSize;
+        }
+
+        // 3. Trailing partial block: pull a fresh block and retain the unused keystream tail for the next call.
+        if (pos < input.Length)
+        {
+            _cipher.NextKeystreamBlock(keystream);
+            int take = input.Length - pos;
+            XorInto(input.Slice(pos, take), keystream[..take], output.Slice(pos, take));
+            _keystreamOffset = take;
+        }
+    }
+
+    /// <summary>
+    /// XORs <paramref name="a" /> with <paramref name="b" /> into <paramref name="dest" />, processing eight bytes at a
+    /// time before handling any remaining tail one byte at a time.
+    /// </summary>
+    /// <param name="a">The first input span.</param>
+    /// <param name="b">The second input span; must be at least as long as <paramref name="a" />.</param>
+    /// <param name="dest">The destination span; must be at least as long as <paramref name="a" />.</param>
+    private static void XorInto(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> dest)
+    {
+        int i = 0;
+        int n = a.Length;
+
+        for (; i + sizeof(ulong) <= n; i += sizeof(ulong))
+        {
+            ulong x = BinaryPrimitives.ReadUInt64LittleEndian(a[i..]) ^ BinaryPrimitives.ReadUInt64LittleEndian(b[i..]);
+            BinaryPrimitives.WriteUInt64LittleEndian(dest[i..], x);
+        }
+
+        for (; i < n; i++)
+            dest[i] = (byte)(a[i] ^ b[i]);
     }
 
     /// <summary>
