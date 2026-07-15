@@ -61,6 +61,15 @@ public abstract class Fletcher<TSelf>
     /// <summary>The set of output widths, in bits, that the Fletcher family supports (16, 32, and 64).</summary>
     private static readonly int[] s_validHashSizes = [16, 32, 64];
 
+    /// <summary>
+    /// The number of input bytes accumulated in <see cref="Append" /> before the two accumulators are reduced modulo
+    /// <see cref="_modulus" />. Chosen well below the point at which the running <c>B</c> accumulator could overflow a
+    /// 64-bit value for the widest variant (Fletcher-64, modulus 2^32−1: <c>B</c> grows by at most <c>N·2^32</c>, so any
+    /// <c>N</c> below ~2^27 is safe), while amortizing the two modulo operations over a whole cache-friendly run
+    /// instead of paying them per byte.
+    /// </summary>
+    private const int ReductionBatch = 4096;
+
     /// <summary>The configured output width, in bits, of this instance.</summary>
     private readonly int _hashSizeBits;
 
@@ -120,6 +129,47 @@ public abstract class Fletcher<TSelf>
         byte[] buffer = new byte[BlockSizeBytes];
         block.CopyTo(buffer);
         return buffer;
+    }
+
+    /// <summary>
+    /// Consumes input with deferred modular reduction, amortizing the two modulo operations over a whole
+    /// <see cref="ReductionBatch" />-byte run instead of paying them per byte.
+    /// </summary>
+    /// <param name="source">The input bytes to fold into the running accumulators.</param>
+    /// <remarks>
+    /// <para>
+    /// Both accumulators enter reduced (below <see cref="_modulus" />), and the batch length is bounded so the running
+    /// <c>B</c> accumulator cannot overflow a 64-bit value. Reducing per batch is congruent to — and therefore produces
+    /// the identical result as — the per-byte <c>A = (A + b) mod m; B = (B + A) mod m</c> recurrence, regardless of how
+    /// the input is split across calls.
+    /// </para>
+    /// <para>
+    /// This overrides the base per-block driver directly: with a one-byte block size the residual buffer is never
+    /// populated, so the base <see cref="BlockNonCryptographicHashAlgorithm{TSelf}.ProcessBlock" /> path is used only
+    /// by the padding branch that <see cref="ShouldPadFinalBlock" /> disables for production Fletcher variants.
+    /// </para>
+    /// </remarks>
+    public override void Append(ReadOnlySpan<byte> source)
+    {
+        ulong a = _partA;
+        ulong b = _partB;
+
+        int pos = 0;
+        while (pos < source.Length)
+        {
+            int end = Math.Min(pos + ReductionBatch, source.Length);
+            for (; pos < end; pos++)
+            {
+                a += source[pos];
+                b += a;
+            }
+
+            a %= _modulus;
+            b %= _modulus;
+        }
+
+        _partA = a;
+        _partB = b;
     }
 
     /// <inheritdoc />
