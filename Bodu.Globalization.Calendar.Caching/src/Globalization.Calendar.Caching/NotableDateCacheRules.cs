@@ -169,6 +169,7 @@ internal static class NotableDateCacheRules
         for (int i = 0; i < existing.Count; i++)
         {
             NotableDateCacheEntry entry = existing[i];
+
             // Drop the entry the incoming year replaces, any superseded-version entry, and anything no longer fresh or
             // valid, so the store keeps only current, live years.
             if (entry.Year == incoming.Year)

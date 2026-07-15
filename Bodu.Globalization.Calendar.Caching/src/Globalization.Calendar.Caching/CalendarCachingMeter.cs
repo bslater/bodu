@@ -16,13 +16,13 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <remarks>
 /// <para>
 /// The instruments complement — never replace — the existing log messages: logs carry per-event detail while the
-/// counters make hit ratio, stampede pressure, and failure rate measurable. Storage-failure counts increment on
-/// <em>every</em> swallowed failure, deliberately outside the rate-limited warning gate that throttles log volume, so
-/// sustained degradation is quantifiable even while its logging is suppressed.
+/// counters make hit ratio, stampede pressure, and failure rate measurable. Storage-failure counts increment on <em>every</em>
+/// swallowed failure, deliberately outside the rate-limited warning gate that throttles log volume, so sustained
+/// degradation is quantifiable even while its logging is suppressed.
 /// </para>
 /// <para>
-/// With no listener attached a counter add is a no-op branch, so the instrumentation costs nothing on the hot path;
-/// tag values are normalized ISO territory codes and fixed operation literals, so cardinality stays bounded.
+/// With no listener attached a counter add is a no-op branch, so the instrumentation costs nothing on the hot path; tag
+/// values are normalized ISO territory codes and fixed operation literals, so cardinality stays bounded.
 /// </para>
 /// </remarks>
 internal static class CalendarCachingMeter

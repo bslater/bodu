@@ -229,11 +229,11 @@ public abstract class FileRateCacheBase<TOptions>
     /// The merged state across all partitions, or <see cref="CachePairState.Empty" /> when none exists.
     /// </returns>
     /// <remarks>
-    /// Each read walks the pair's directory to enumerate partition files. This per-read walk is a known, accepted
-    /// cost: per-file parses are already memoized against their last-write instants, so the walk itself — one
-    /// directory enumeration — is the only repeated I/O, and it is what detects partitions added or removed by
-    /// another process. If a partitioned layout ships to production with wide pair directories, revisit with a
-    /// listing memo stamped against the directory's own last-write time.
+    /// Each read walks the pair's directory to enumerate partition files. This per-read walk is a known, accepted cost:
+    /// per-file parses are already memoized against their last-write instants, so the walk itself — one directory
+    /// enumeration — is the only repeated I/O, and it is what detects partitions added or removed by another process.
+    /// If a partitioned layout ships to production with wide pair directories, revisit with a listing memo stamped
+    /// against the directory's own last-write time.
     /// </remarks>
     private CachePairState ReadPartitioned(CurrencyPair pair)
     {
@@ -287,8 +287,8 @@ public abstract class FileRateCacheBase<TOptions>
 
     /// <summary>
     /// Re-wraps a deserialized state's lists in read-only views. The memoized state is shared across reads and — via
-    /// the all-fresh fast path — may be served to callers by reference, so its lists must not be castable back to
-    /// their mutable backing collections.
+    /// the all-fresh fast path — may be served to callers by reference, so its lists must not be castable back to their
+    /// mutable backing collections.
     /// </summary>
     /// <param name="state">The freshly deserialized state.</param>
     /// <returns>The state with read-only list views.</returns>

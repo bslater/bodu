@@ -22,10 +22,10 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// <para>
 /// Freshness is supplied per call by the caching provider, so this type carries no caching duration of its own.
-/// Server-side lifetime is a separate concern: each written blob is stamped with an absolute expiration of the
-/// caching duration plus <see cref="EntryExpirationMargin" />, so a key whose pair stops being queried self-evicts
-/// from the backing store instead of lingering forever. Set the margin to <see langword="null" /> to write entries
-/// without any server-side expiration (the pre-margin behaviour).
+/// Server-side lifetime is a separate concern: each written blob is stamped with an absolute expiration of the caching
+/// duration plus <see cref="EntryExpirationMargin" />, so a key whose pair stops being queried self-evicts from the
+/// backing store instead of lingering forever. Set the margin to <see langword="null" /> to write entries without any
+/// server-side expiration (the pre-margin behaviour).
 /// </para>
 /// </remarks>
 public class DistributedRateCacheOptions
@@ -64,10 +64,10 @@ public class DistributedRateCacheOptions
     /// legitimate read.
     /// </para>
     /// <para>
-    /// One corner is worth knowing: a deployment that stores under one duration and later reads under a longer one
-    /// (for example after raising the provider's expiry at runtime) could observe a server-side eviction where it
-    /// previously saw a hit. Set the margin to <see langword="null" /> to opt out entirely and restore unbounded
-    /// server-side lifetime.
+    /// One corner is worth knowing: a deployment that stores under one duration and later reads under a longer one (for
+    /// example after raising the provider's expiry at runtime) could observe a server-side eviction where it previously
+    /// saw a hit. Set the margin to <see langword="null" /> to opt out entirely and restore unbounded server-side
+    /// lifetime.
     /// </para>
     /// </remarks>
     public TimeSpan? EntryExpirationMargin { get; set; } = TimeSpan.FromHours(1);

@@ -21,8 +21,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// quantifiable even while its logging is suppressed.
 /// </para>
 /// <para>
-/// With no listener attached a counter add is a no-op branch, so the instrumentation costs nothing on the hot path;
-/// tag values are drawn from small fixed sets (provider names, <c>single</c>/<c>range</c>, operation literals) so
+/// With no listener attached a counter add is a no-op branch, so the instrumentation costs nothing on the hot path; tag
+/// values are drawn from small fixed sets (provider names, <c>single</c>/<c>range</c>, operation literals) so
 /// cardinality stays bounded.
 /// </para>
 /// </remarks>

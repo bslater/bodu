@@ -49,38 +49,37 @@ public sealed class NotableDateCachingOptions
     /// </value>
     /// <remarks>
     /// The reduction is derived from a stable hash of the normalized territory (not from randomness), so a given
-    /// territory's effective time-to-live is identical across instances and processes and deterministic under test.
-    /// The jitter is keyed by territory rather than by territory and year so the batch and per-year read paths — which
-    /// share one time-to-live per resolution — always agree on freshness. Jitter only ever shortens the duration, so
-    /// no year is served longer than the configured time-to-live allows; the trade-off is that a territory may
-    /// recompute up to this fraction of its time-to-live early.
+    /// territory's effective time-to-live is identical across instances and processes and deterministic under test. The
+    /// jitter is keyed by territory rather than by territory and year so the batch and per-year read paths — which
+    /// share one time-to-live per resolution — always agree on freshness. Jitter only ever shortens the duration, so no
+    /// year is served longer than the configured time-to-live allows; the trade-off is that a territory may recompute
+    /// up to this fraction of its time-to-live early.
     /// </remarks>
     public double TtlJitter { get; set; }
 
     /// <summary>
-    /// Gets or sets the fraction of the effective time-to-live after which a cache hit, while still served
-    /// immediately, additionally schedules a single background recompute of the served year, so a hot territory is
-    /// recomputed before it expires and no caller ever absorbs the recompute latency.
+    /// Gets or sets the fraction of the effective time-to-live after which a cache hit, while still served immediately,
+    /// additionally schedules a single background recompute of the served year, so a hot territory is recomputed before
+    /// it expires and no caller ever absorbs the recompute latency.
     /// </summary>
     /// <value>
-    /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables refresh-ahead entirely and preserves the
-    /// plain serve-until-expiry behaviour.
+    /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables refresh-ahead entirely and preserves the plain
+    /// serve-until-expiry behaviour.
     /// </value>
     /// <remarks>
     /// <para>
-    /// Refresh-ahead is access-triggered: no timers run, and only a year actually served from the cache can schedule
-    /// a recompute. When a hit's served entry is older than this fraction of the effective (post-jitter)
-    /// time-to-live, at most one background recompute per territory, year, and resource version is started;
-    /// concurrent aged hits for the same key join the pending recompute rather than duplicating it. Because the
-    /// fraction is below <c>1</c>, the recompute always begins before the entry expires, so a continuously hot
-    /// territory never surfaces a miss.
+    /// Refresh-ahead is access-triggered: no timers run, and only a year actually served from the cache can schedule a
+    /// recompute. When a hit's served entry is older than this fraction of the effective (post-jitter) time-to-live, at
+    /// most one background recompute per territory, year, and resource version is started; concurrent aged hits for the
+    /// same key join the pending recompute rather than duplicating it. Because the fraction is below <c>1</c>, the
+    /// recompute always begins before the entry expires, so a continuously hot territory never surfaces a miss.
     /// </para>
     /// <para>
     /// The background recompute shares the single-flight guard with genuine misses, so a miss that arrives while a
     /// refresh is computing is served the refreshed value; such a joining caller is counted as neither a hit nor a
-    /// miss. A recompute that fails is swallowed after logging — the hit it piggybacked on was already served — and
-    /// the next aged hit schedules a fresh attempt. Disposing the service prevents new recomputes from being
-    /// scheduled and abandons pending ones without draining them.
+    /// miss. A recompute that fails is swallowed after logging — the hit it piggybacked on was already served — and the
+    /// next aged hit schedules a fresh attempt. Disposing the service prevents new recomputes from being scheduled and
+    /// abandons pending ones without draining them.
     /// </para>
     /// </remarks>
     public double RefreshAheadFraction { get; set; }

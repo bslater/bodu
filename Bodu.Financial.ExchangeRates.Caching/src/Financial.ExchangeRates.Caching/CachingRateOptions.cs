@@ -103,8 +103,8 @@ public sealed class CachingRateOptions
     public bool SkipInverseRangeProbeWhenDirectCovered { get; set; }
 
     /// <summary>
-    /// Gets or sets the maximum fraction of a pair's caching duration that is deterministically shaved off per pair,
-    /// so entries warmed together do not all expire — and refetch — at the same instant.
+    /// Gets or sets the maximum fraction of a pair's caching duration that is deterministically shaved off per pair, so
+    /// entries warmed together do not all expire — and refetch — at the same instant.
     /// </summary>
     /// <value>
     /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables jitter and preserves the exact configured
@@ -125,8 +125,8 @@ public sealed class CachingRateOptions
     /// before it expires and no caller ever absorbs the refetch latency.
     /// </summary>
     /// <value>
-    /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables refresh-ahead entirely and preserves the
-    /// plain serve-until-expiry behaviour.
+    /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables refresh-ahead entirely and preserves the plain
+    /// serve-until-expiry behaviour.
     /// </value>
     /// <remarks>
     /// <para>

@@ -8,8 +8,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// The asynchronous seam of a rate cache whose backing store supports non-blocking I/O. The caching decorator
-/// type-tests its cache for this interface and, when present, routes its asynchronous surfaces through these members
-/// so a distributed backend's network I/O never blocks a thread-pool thread.
+/// type-tests its cache for this interface and, when present, routes its asynchronous surfaces through these members so
+/// a distributed backend's network I/O never blocks a thread-pool thread.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -70,6 +70,8 @@ internal interface IRateCacheAsync
     /// <param name="duration">The duration rows and the coverage window remain fresh.</param>
     /// <param name="asOf">The instant the write is evaluated at.</param>
     /// <param name="cancellationToken">Cancels the write.</param>
-    /// <returns>The persistence outcome, so a swallowed failure surfaces as <see cref="RateCacheWriteStatus.Failed" />.</returns>
+    /// <returns>
+    /// The persistence outcome, so a swallowed failure surfaces as <see cref="RateCacheWriteStatus.Failed" />.
+    /// </returns>
     ValueTask<RateCacheWriteStatus> StoreFetchedRangeAsync(CurrencyPair pair, IReadOnlyList<CachedRate> rows, DateOnly start, DateOnly end, TimeSpan duration, DateTimeOffset asOf, CancellationToken cancellationToken);
 }

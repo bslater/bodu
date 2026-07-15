@@ -14,11 +14,10 @@ namespace Bodu.Caching;
 /// <typeparam name="T">The parsed representation cached per file.</typeparam>
 /// <remarks>
 /// <para>
-/// A hit requires both the path and the caller-observed last-write instant to match the stored entry, so a file
-/// changed by any writer — this process or another — misses on its moved timestamp and is re-parsed. Eviction and
-/// invalidation only ever force a re-parse, never a stale serve, so the capacity bound is safe by construction; it
-/// exists to keep the memo from growing without limit in a process that touches many distinct cache files over its
-/// lifetime.
+/// A hit requires both the path and the caller-observed last-write instant to match the stored entry, so a file changed
+/// by any writer — this process or another — misses on its moved timestamp and is re-parsed. Eviction and invalidation
+/// only ever force a re-parse, never a stale serve, so the capacity bound is safe by construction; it exists to keep
+/// the memo from growing without limit in a process that touches many distinct cache files over its lifetime.
 /// </para>
 /// <para>
 /// All operations take a single plain lock. The memo brackets file I/O — an open, stat, read, and parse — so the
@@ -26,8 +25,8 @@ namespace Bodu.Caching;
 /// lock is preferred over a lock-free structure that cannot maintain recency order.
 /// </para>
 /// <para>
-/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs
-/// it (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
+/// This type is a shared cache-infrastructure primitive: it is linked as source into each caching package that needs it
+/// (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly, so no public surface is
 /// exposed and no two assemblies collide on the type identity.
 /// </para>
 /// </remarks>
@@ -51,7 +50,9 @@ internal sealed class FileParseMemo<T>
     /// <summary>
     /// Initializes a new instance of the <see cref="FileParseMemo{T}" /> class.
     /// </summary>
-    /// <param name="capacity">The maximum number of file paths retained; defaults to <see cref="DefaultCapacity" />.</param>
+    /// <param name="capacity">
+    /// The maximum number of file paths retained; defaults to <see cref="DefaultCapacity" />.
+    /// </param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="capacity" /> ≤ 0.</exception>
     public FileParseMemo(int capacity = DefaultCapacity)
     {

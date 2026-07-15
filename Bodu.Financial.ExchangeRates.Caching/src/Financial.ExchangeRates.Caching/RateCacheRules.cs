@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Bodu.Caching;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
@@ -192,8 +193,8 @@ public static class RateCacheRules
     /// <param name="merged">The merged, pruned rows when the fast path applied.</param>
     /// <returns>
     /// <see langword="true" /> when <paramref name="existing" /> satisfied the sorted-distinct precondition and
-    /// <paramref name="merged" /> holds the result; <see langword="false" /> when the caller must run the general
-    /// merge because the precondition does not hold.
+    /// <paramref name="merged" /> holds the result; <see langword="false" /> when the caller must run the general merge
+    /// because the precondition does not hold.
     /// </returns>
     /// <remarks>
     /// The general merge keeps the last existing occurrence per date; a duplicate date in <paramref name="existing" />
@@ -205,7 +206,7 @@ public static class RateCacheRules
         CachedRate incoming,
         TimeSpan duration,
         DateTimeOffset asOf,
-        out List<CachedRate>? merged)
+        [NotNullWhen(true)] out List<CachedRate>? merged)
     {
         var incomingValid = IsValid(incoming, asOf);
         var incomingSurvives = incomingValid && incoming.IsFresh(asOf, duration);

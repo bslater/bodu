@@ -133,8 +133,8 @@ internal static partial class Log
     public static partial void ClampedRangeToHistory(ILogger logger, LogLevel level, string source, string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly fetchStart);
 
     /// <summary>
-    /// Logs that an aged cache hit scheduled a background refresh of the served window, so the data is refetched
-    /// before it expires.
+    /// Logs that an aged cache hit scheduled a background refresh of the served window, so the data is refetched before
+    /// it expires.
     /// </summary>
     /// <param name="logger">The logger that receives the message.</param>
     /// <param name="level">The level at which to log the message.</param>

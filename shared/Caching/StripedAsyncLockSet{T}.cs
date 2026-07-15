@@ -9,8 +9,8 @@ using System.Collections.Concurrent;
 namespace Bodu.Caching;
 
 /// <summary>
-/// Provides one asynchronous-capable mutual-exclusion primitive per key, created on first use and reused thereafter,
-/// so synchronous and asynchronous read-modify-write sequences for the same key serialize against each other while
+/// Provides one asynchronous-capable mutual-exclusion primitive per key, created on first use and reused thereafter, so
+/// synchronous and asynchronous read-modify-write sequences for the same key serialize against each other while
 /// sequences for distinct keys proceed concurrently.
 /// </summary>
 /// <typeparam name="TKey">The key type the locks are striped by.</typeparam>
@@ -24,8 +24,8 @@ namespace Bodu.Caching;
 /// <para>
 /// Lock objects are never removed; the set grows to the number of distinct keys observed, which is bounded by the key
 /// domain a cache serves. This type is a shared cache-infrastructure primitive: it is linked as source into each
-/// caching package that needs it (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per
-/// assembly, so no public surface is exposed and no two assemblies collide on the type identity.
+/// caching package that needs it (namespace <c>Bodu.Caching</c>) and compiled <see langword="internal" /> per assembly,
+/// so no public surface is exposed and no two assemblies collide on the type identity.
 /// </para>
 /// </remarks>
 internal sealed class StripedAsyncLockSet<TKey>

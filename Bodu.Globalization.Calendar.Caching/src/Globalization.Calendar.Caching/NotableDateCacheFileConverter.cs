@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace Bodu.Globalization.Calendar.Caching;
@@ -186,7 +187,7 @@ internal static class NotableDateCacheFileConverter
     /// <returns>
     /// <see langword="true" /> when the row reconstructs to a valid occurrence; otherwise <see langword="false" />.
     /// </returns>
-    private static bool TryToOccurrence(NotableDateCacheOccurrenceRow row, out NotableDate? occurrence)
+    private static bool TryToOccurrence(NotableDateCacheOccurrenceRow row, [NotNullWhen(true)] out NotableDate? occurrence)
     {
         occurrence = null;
 

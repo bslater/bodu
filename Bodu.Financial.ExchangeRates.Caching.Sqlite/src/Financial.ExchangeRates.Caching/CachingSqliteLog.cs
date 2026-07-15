@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Log.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CachingSqliteLog.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <see cref="Microsoft.Extensions.Logging.Abstractions.NullLogger" /> logger short-circuits before any argument is
 /// formatted.
 /// </remarks>
-internal static partial class Log
+internal static partial class CachingSqliteLog
 {
     /// <summary>
     /// Logs that a SQLite storage operation failed and was swallowed under the cache's best-effort contract, surfacing

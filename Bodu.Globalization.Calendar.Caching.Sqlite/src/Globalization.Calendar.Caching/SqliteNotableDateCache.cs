@@ -70,6 +70,8 @@ public sealed class SqliteNotableDateCache
     public SqliteNotableDateCache(SqliteNotableDateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
         : base(options)
     {
+        ThrowHelper.ThrowIfNull(options);
+
         _connectionString = options.ResolveConnectionString();
         _warnGate = new RateLimitedWarningGate(timeProvider, RateLimitedWarningGate.DefaultCooldown);
         _logger = logger ?? NullLogger.Instance;
@@ -215,6 +217,8 @@ public sealed class SqliteNotableDateCache
     /// </remarks>
     protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries)
     {
+        ThrowHelper.ThrowIfNull(entries);
+
         try
         {
             using SqliteConnection connection = OpenConnection();
@@ -407,6 +411,6 @@ public sealed class SqliteNotableDateCache
         CalendarCachingSqliteMeter.StorageFailure(operation);
 
         if (_warnGate.TryClaimWarning(out int suppressed))
-            Log.StorageFailureSwallowed(_logger, operation, suppressed, exception);
+            CalendarCachingSqliteLog.StorageFailureSwallowed(_logger, operation, suppressed, exception);
     }
 }

@@ -10,7 +10,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Emits the caching metrics for this assembly through a process-wide <see cref="Meter" /> named
-/// <c>Bodu.Financial.ExchangeRates.Caching.Distributed</c>: swallowed best-effort storage failures, tagged by provider and operation.
+/// <c>Bodu.Financial.ExchangeRates.Caching.Distributed</c>: swallowed best-effort storage failures, tagged by provider
+/// and operation.
 /// </summary>
 /// <remarks>
 /// The counter complements — never replaces — the existing log messages, and increments on <em>every</em> swallowed

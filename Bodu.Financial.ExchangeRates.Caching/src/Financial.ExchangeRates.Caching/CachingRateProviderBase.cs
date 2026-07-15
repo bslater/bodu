@@ -272,10 +272,7 @@ public abstract partial class CachingRateProviderBase
         }
 
         result = await Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken).ConfigureAwait(false);
-        if (_asyncCache is not null)
-            await StoreResultAsync(duration, fromIsoCode, toIsoCode, result, now, cancellationToken).ConfigureAwait(false);
-        else
-            StoreResult(duration, fromIsoCode, toIsoCode, result, now);
+        await StoreResultOnEitherSeamAsync(duration, fromIsoCode, toIsoCode, result, now, cancellationToken).ConfigureAwait(false);
         Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
         CachingMeter.CacheMiss(_cache.Provider, "single");
 
@@ -376,7 +373,7 @@ public abstract partial class CachingRateProviderBase
         if (fetchStart != startDate)
             Log.ClampedRangeToHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, startDate, fetchStart);
 
-        IReadOnlyList<ExchangeRate> fetched =
+        RateRangeResult fetched =
             await Inner.GetRatesAsync(fromIsoCode, toIsoCode, fetchStart, endDate, cancellationToken).ConfigureAwait(false);
 
         // Write the fetched rows and the covered window atomically, regardless of how many rows came back: the request
@@ -510,9 +507,9 @@ public abstract partial class CachingRateProviderBase
     /// <param name="result">When this method returns <see langword="true" />, the resolved result.</param>
     /// <param name="servedCachedAtUtc">
     /// When this method returns <see langword="true" />, the cache instant representing the served data: the
-    /// <see cref="CachedRate.CachedAtUtc" /> of the row whose date matches the resolved result, or the oldest
-    /// instant among the fresh candidate rows when no exact match is found. <see langword="null" /> when this method
-    /// returns <see langword="false" />.
+    /// <see cref="CachedRate.CachedAtUtc" /> of the row whose date matches the resolved result, or the oldest instant
+    /// among the fresh candidate rows when no exact match is found. <see langword="null" /> when this method returns
+    /// <see langword="false" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the request was satisfied from the cache; otherwise <see langword="false" />.
@@ -587,9 +584,9 @@ public abstract partial class CachingRateProviderBase
     /// <param name="now">The instant against which cached rows and coverage are evaluated for freshness.</param>
     /// <param name="result">When this method returns <see langword="true" />, the rates within the range.</param>
     /// <param name="oldestCachedAtUtc">
-    /// When this method returns <see langword="true" />, the oldest <see cref="CachedRate.CachedAtUtc" /> among
-    /// the in-window rows added to <paramref name="result" />, or <see langword="null" /> when the covered window
-    /// yields no rows. <see langword="null" /> when this method returns <see langword="false" />.
+    /// When this method returns <see langword="true" />, the oldest <see cref="CachedRate.CachedAtUtc" /> among the
+    /// in-window rows added to <paramref name="result" />, or <see langword="null" /> when the covered window yields no
+    /// rows. <see langword="null" /> when this method returns <see langword="false" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the range was satisfied from the cache; otherwise <see langword="false" />.
@@ -672,8 +669,8 @@ public abstract partial class CachingRateProviderBase
 
     /// <summary>
     /// The asynchronous twin of <see cref="TryServeFromCache" />, reading the candidate rows through the cache's
-    /// asynchronous seam so a network-backed cache never blocks a thread-pool thread. Resolution semantics, jitter,
-    /// and served-instant selection are identical to the synchronous helper.
+    /// asynchronous seam so a network-backed cache never blocks a thread-pool thread. Resolution semantics, jitter, and
+    /// served-instant selection are identical to the synchronous helper.
     /// </summary>
     /// <param name="duration">The duration cached rows stay fresh.</param>
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
@@ -728,9 +725,9 @@ public abstract partial class CachingRateProviderBase
 
     /// <summary>
     /// The asynchronous twin of <see cref="TryServeRangeFromCache" />, reading each snapshot through the cache's
-    /// asynchronous seam. Coverage semantics, the inverse probe (including the optional skip), and jitter are
-    /// identical to the synchronous helper; the seam always exposes the combined snapshot read, so no
-    /// coverage-then-rows fallback is needed.
+    /// asynchronous seam. Coverage semantics, the inverse probe (including the optional skip), and jitter are identical
+    /// to the synchronous helper; the seam always exposes the combined snapshot read, so no coverage-then-rows fallback
+    /// is needed.
     /// </summary>
     /// <param name="duration">The duration cached rows and coverage windows stay fresh.</param>
     /// <param name="pair">The requested currency pair.</param>
@@ -771,8 +768,32 @@ public abstract partial class CachingRateProviderBase
     }
 
     /// <summary>
-    /// The asynchronous twin of <see cref="StoreResult" />, writing the resolved row through the cache's asynchronous
-    /// seam with the same per-pair jittered expiry.
+    /// Writes a resolved single-date row through the cache's asynchronous seam when it exposes one, or through the
+    /// synchronous <see cref="StoreResult" /> otherwise, so the asynchronous surfaces have a single store call site
+    /// regardless of the backend.
+    /// </summary>
+    /// <param name="duration">The duration the cached row stays fresh.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="result">The resolved lookup result to cache.</param>
+    /// <param name="now">The instant the row is stamped with.</param>
+    /// <param name="cancellationToken">Cancels the write when the asynchronous seam is used.</param>
+    /// <returns>A task representing the write.</returns>
+    /// <remarks>
+    /// The synchronous branch is a genuine store on a synchronous-only backend, not a blocking wait on asynchronous
+    /// work: the seam-specific writer cannot serve it, because that writer dereferences the seam.
+    /// </remarks>
+    private async ValueTask StoreResultOnEitherSeamAsync(TimeSpan duration, string fromIsoCode, string toIsoCode, RateLookupResult result, DateTimeOffset now, CancellationToken cancellationToken)
+    {
+        if (_asyncCache is not null)
+            await StoreResultOnAsyncSeamAsync(duration, fromIsoCode, toIsoCode, result, now, cancellationToken).ConfigureAwait(false);
+        else
+            StoreResult(duration, fromIsoCode, toIsoCode, result, now);
+    }
+
+    /// <summary>
+    /// Writes the resolved row through the cache's asynchronous seam with the same per-pair jittered expiry as
+    /// <see cref="StoreResult" />. Valid only when the cache exposes the seam.
     /// </summary>
     /// <param name="duration">The duration the cached row stays fresh.</param>
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
@@ -781,11 +802,11 @@ public abstract partial class CachingRateProviderBase
     /// <param name="now">The instant the row is stamped with.</param>
     /// <param name="cancellationToken">Cancels the write.</param>
     /// <returns>A task representing the write.</returns>
-    private async ValueTask StoreResultAsync(TimeSpan duration, string fromIsoCode, string toIsoCode, RateLookupResult result, DateTimeOffset now, CancellationToken cancellationToken)
+    private ValueTask StoreResultOnAsyncSeamAsync(TimeSpan duration, string fromIsoCode, string toIsoCode, RateLookupResult result, DateTimeOffset now, CancellationToken cancellationToken)
     {
         CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         CachedRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now, result.Rate.FetchedAtUtc) };
-        await _asyncCache!.StoreAsync(pair, rows, EffectiveExpiry(pair, duration), now, cancellationToken).ConfigureAwait(false);
+        return _asyncCache!.StoreAsync(pair, rows, EffectiveExpiry(pair, duration), now, cancellationToken);
     }
 
     /// <summary>
@@ -849,8 +870,8 @@ public abstract partial class CachingRateProviderBase
     /// </param>
     /// <param name="result">The rates within the range, always carrying the requested direction.</param>
     /// <param name="oldestCachedAtUtc">
-    /// The oldest <see cref="CachedRate.CachedAtUtc" /> among the in-window rows, or <see langword="null" />
-    /// when the covered window yields no rows.
+    /// The oldest <see cref="CachedRate.CachedAtUtc" /> among the in-window rows, or <see langword="null" /> when the
+    /// covered window yields no rows.
     /// </param>
     /// <returns>Always <see langword="true" />; the caller has already confirmed the window is covered.</returns>
     private bool BuildRange(CurrencyPair cachedPair, IReadOnlyList<CachedRate> fresh, DateOnly startDate, DateOnly endDate, bool invert, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
@@ -947,8 +968,8 @@ public abstract partial class CachingRateProviderBase
     /// </returns>
     /// <remarks>
     /// Reached only by the same-currency identity serve, which synthesizes its rate without a matched row; a resolved
-    /// serve takes its instants directly from the row the resolver selected. The identity serve's resolved date is
-    /// the requested date, so no candidate row matches it and the oldest candidate instant is reported as a stable,
+    /// serve takes its instants directly from the row the resolver selected. The identity serve's resolved date is the
+    /// requested date, so no candidate row matches it and the oldest candidate instant is reported as a stable,
     /// lower-bound representative of the data backing the serve.
     /// </remarks>
     private static DateTimeOffset? ResolveServedInstant(IReadOnlyList<CachedRate> direct, IReadOnlyList<CachedRate> inverse, DateOnly resolvedDate)
@@ -990,9 +1011,9 @@ public abstract partial class CachingRateProviderBase
     /// present or none carried an upstream fetch instant.
     /// </returns>
     /// <remarks>
-    /// Parallels <see cref="ResolveServedInstant" /> and, like it, is reached only by the same-currency identity
-    /// serve: no candidate row matches the identity serve's resolved date, so the oldest candidate's upstream fetch
-    /// instant is reported, matching the cache-write instant the same serve reports through the provenance.
+    /// Parallels <see cref="ResolveServedInstant" /> and, like it, is reached only by the same-currency identity serve:
+    /// no candidate row matches the identity serve's resolved date, so the oldest candidate's upstream fetch instant is
+    /// reported, matching the cache-write instant the same serve reports through the provenance.
     /// </remarks>
     private static DateTimeOffset? ResolveServedObservedInstant(IReadOnlyList<CachedRate> direct, IReadOnlyList<CachedRate> inverse, DateOnly resolvedDate)
     {

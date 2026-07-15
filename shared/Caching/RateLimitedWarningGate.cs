@@ -45,7 +45,9 @@ internal sealed class RateLimitedWarningGate
     /// <summary>
     /// Initializes a new instance of the <see cref="RateLimitedWarningGate" /> class.
     /// </summary>
-    /// <param name="timeProvider">The clock the cooldown is measured against; <see langword="null" /> selects <see cref="TimeProvider.System" />.</param>
+    /// <param name="timeProvider">
+    /// The clock the cooldown is measured against; <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
     /// <param name="cooldown">The minimum interval between two emitted warnings.</param>
     public RateLimitedWarningGate(TimeProvider? timeProvider, TimeSpan cooldown)
     {

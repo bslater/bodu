@@ -74,17 +74,17 @@ public sealed class CachingNotableDateService
     /// <summary>Guards the version-token derivation when the observed resource reference changes.</summary>
     private readonly object _versionLock = new();
 
-    /// <summary>The immutable pair of the resource observed on the previous version resolution and the token derived for it, swapped atomically on reload so the per-query fast path is a single volatile read with no lock.</summary>
-    private volatile Tuple<NotableDateResource, string>? _version;
-
-    /// <summary>The monotonic reload generation, bumped whenever the observed resource reference changes.</summary>
-    private long _generation;
-
     /// <summary>The in-flight year computations, keyed by normalized territory, year, and version, so concurrent misses for the same cold year coalesce onto one computation instead of stampeding the wrapped service.</summary>
     private readonly ConcurrentDictionary<(string Territory, int Year, string Version), Lazy<IReadOnlyList<NotableDate>>> _inFlight = new();
 
     /// <summary>The pending background refresh-ahead recomputes, keyed like <see cref="_inFlight" />, so concurrent aged hits for the same year join the one pending recompute rather than duplicating it. Entries are removed when their task completes.</summary>
     private readonly ConcurrentDictionary<(string Territory, int Year, string Version), Task> _pendingRefreshAhead = new();
+
+    /// <summary>The immutable pair of the resource observed on the previous version resolution and the token derived for it, swapped atomically on reload so the per-query fast path is a single volatile read with no lock.</summary>
+    private volatile Tuple<NotableDateResource, string>? _version;
+
+    /// <summary>The monotonic reload generation, bumped whenever the observed resource reference changes.</summary>
+    private long _generation;
 
     /// <summary>Guards against double disposal.</summary>
     private bool _disposed;
@@ -99,8 +99,13 @@ public sealed class CachingNotableDateService
     /// The resource provider to observe for reloads, or <see langword="null" /> to use a fixed version token from
     /// <paramref name="options" />.
     /// </param>
-    /// <param name="timeProvider">The clock the computed and lookup instants are measured against, or <see langword="null" /> for <see cref="TimeProvider.System" />.</param>
-    /// <param name="loggerFactory">The factory used to create the diagnostics logger, or <see langword="null" /> to disable logging.</param>
+    /// <param name="timeProvider">
+    /// The clock the computed and lookup instants are measured against, or <see langword="null" /> for
+    /// <see cref="TimeProvider.System" />.
+    /// </param>
+    /// <param name="loggerFactory">
+    /// The factory used to create the diagnostics logger, or <see langword="null" /> to disable logging.
+    /// </param>
     /// <param name="ownsCache">Whether this service disposes <paramref name="cache" /> when it is disposed.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="inner" />, <paramref name="cache" />, or <paramref name="options" /> is
@@ -228,25 +233,29 @@ public sealed class CachingNotableDateService
     }
 
     /// <summary>
-    /// Warms the cache for a set of territories over an inclusive span of civil years, resolving each territory's
-    /// whole span through the normal read-through path so cold years are computed and cached while already cached
-    /// years cost only a cache read.
+    /// Warms the cache for a set of territories over an inclusive span of civil years, resolving each territory's whole
+    /// span through the normal read-through path so cold years are computed and cached while already cached years cost
+    /// only a cache read.
     /// </summary>
     /// <param name="territories">The territory codes to warm.</param>
     /// <param name="firstYear">The inclusive first civil year of the span to warm.</param>
     /// <param name="lastYear">The inclusive last civil year of the span to warm.</param>
     /// <returns>The number of territories warmed successfully.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="territories" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="territories" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="firstYear" /> or <paramref name="lastYear" /> is outside the range representable by
     /// <see cref="DateOnly" />.
     /// </exception>
-    /// <exception cref="ArgumentException"><paramref name="lastYear" /> precedes <paramref name="firstYear" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="lastYear" /> precedes <paramref name="firstYear" />.
+    /// </exception>
     /// <remarks>
     /// Territories are warmed sequentially — year resolution is a synchronous, CPU-bound computation with no I/O to
     /// overlap. A territory whose resolution fails is logged at
-    /// <see cref="Microsoft.Extensions.Logging.LogLevel.Warning" /> and skipped — the remaining territories still
-    /// warm — and is excluded from the returned count. Later queries for any warmed year are cache hits until the
+    /// <see cref="Microsoft.Extensions.Logging.LogLevel.Warning" /> and skipped — the remaining territories still warm
+    /// — and is excluded from the returned count. Later queries for any warmed year are cache hits until the
     /// time-to-live or a resource-version change expires them.
     /// </remarks>
     public int Warm(IEnumerable<string> territories, int firstYear, int lastYear)
@@ -299,7 +308,9 @@ public sealed class CachingNotableDateService
     /// Resolves one civil year, serving it from the cache when a fresh entry exists or otherwise recomputing the whole
     /// year and caching it.
     /// </summary>
-    /// <param name="territory">The requested territory code, passed through unmodified; the cache normalizes it.</param>
+    /// <param name="territory">
+    /// The requested territory code, passed through unmodified; the cache normalizes it.
+    /// </param>
     /// <param name="year">The civil year to resolve.</param>
     /// <param name="version">The resource version token entries are keyed by.</param>
     /// <param name="ttl">The time-to-live freshness is evaluated against.</param>
@@ -323,7 +334,9 @@ public sealed class CachingNotableDateService
     /// Computes one civil year through the wrapped service and writes it to the cache — the shared miss path of the
     /// per-year and batch read branches — coalescing concurrent misses for the same cold year onto one computation.
     /// </summary>
-    /// <param name="territory">The requested territory code, passed through unmodified; the cache normalizes it.</param>
+    /// <param name="territory">
+    /// The requested territory code, passed through unmodified; the cache normalizes it.
+    /// </param>
     /// <param name="year">The civil year to compute.</param>
     /// <param name="version">The resource version token the entry is keyed by.</param>
     /// <param name="ttl">The time-to-live the write prunes against.</param>
@@ -336,12 +349,12 @@ public sealed class CachingNotableDateService
     /// <remarks>
     /// The wrapped service has no coalescing of its own (year resolution is a synchronous, CPU-bound computation), so
     /// without this guard N concurrent misses for the same cold year would run N identical computations. The first
-    /// caller for a key computes and stores; concurrent callers share the same <see cref="Lazy{T}" /> result — including
-    /// its exception when the computation faults. The in-flight entry is removed once the value is realized, so a
-    /// faulted computation never poisons the key and the next caller retries fresh. Background refresh-ahead recomputes
-    /// share this single-flight guard, so a genuine miss that arrives while a refresh is computing joins the refresh
-    /// flight and is served the refreshed value — such a joining caller is counted as neither a hit nor a miss, because
-    /// the creator of the flight determines which diagnostics its computation emits.
+    /// caller for a key computes and stores; concurrent callers share the same <see cref="Lazy{T}" /> result —
+    /// including its exception when the computation faults. The in-flight entry is removed once the value is realized,
+    /// so a faulted computation never poisons the key and the next caller retries fresh. Background refresh-ahead
+    /// recomputes share this single-flight guard, so a genuine miss that arrives while a refresh is computing joins the
+    /// refresh flight and is served the refreshed value — such a joining caller is counted as neither a hit nor a miss,
+    /// because the creator of the flight determines which diagnostics its computation emits.
     /// </remarks>
     private IReadOnlyList<NotableDate> ComputeAndStoreYear(string territory, int year, string version, TimeSpan ttl, DateTimeOffset now, bool refreshAhead = false)
     {
@@ -395,7 +408,9 @@ public sealed class CachingNotableDateService
     /// <param name="territory">The requested territory code, passed through unmodified; the key normalizes it.</param>
     /// <param name="year">The served civil year.</param>
     /// <param name="version">The resource version token in effect at the serving lookup.</param>
-    /// <param name="ttl">The effective (post-jitter) time-to-live the serving lookup evaluated freshness against.</param>
+    /// <param name="ttl">
+    /// The effective (post-jitter) time-to-live the serving lookup evaluated freshness against.
+    /// </param>
     /// <param name="computedAtUtc">The instant the served entry was computed.</param>
     /// <param name="now">The serving lookup's instant.</param>
     /// <remarks>
@@ -403,11 +418,10 @@ public sealed class CachingNotableDateService
     /// under the key first, and only a successful add spawns the worker — so a concurrent aged hit can never slip in
     /// between a worker finishing and its registration appearing. The worker captures the schedule-time version token
     /// (a mid-flight resource reload merely writes an entry under the stale version, which is never read again) but
-    /// takes a fresh computation instant when it runs, and routes through
-    /// <see cref="ComputeAndStoreYear" /> so it shares the single-flight guard with genuine misses. Failures are
-    /// swallowed after logging: the hit that triggered the recompute was already served, and the next aged hit
-    /// schedules a fresh attempt. Disposal is re-checked when the worker starts; pending recomputes are abandoned, not
-    /// drained, by <see cref="Dispose" />.
+    /// takes a fresh computation instant when it runs, and routes through <see cref="ComputeAndStoreYear" /> so it
+    /// shares the single-flight guard with genuine misses. Failures are swallowed after logging: the hit that triggered
+    /// the recompute was already served, and the next aged hit schedules a fresh attempt. Disposal is re-checked when
+    /// the worker starts; pending recomputes are abandoned, not drained, by <see cref="Dispose" />.
     /// </remarks>
     private void MaybeScheduleRefreshAhead(string territory, int year, string version, TimeSpan ttl, DateTimeOffset computedAtUtc, DateTimeOffset now)
     {
@@ -452,9 +466,9 @@ public sealed class CachingNotableDateService
     }
 
     /// <summary>
-    /// Waits for every currently pending background refresh-ahead recompute to complete, so tests can
-    /// deterministically observe refresh-ahead side effects. Recomputes are registered synchronously inside the
-    /// serving call, so a pending recompute scheduled by a completed resolution is always visible here.
+    /// Waits for every currently pending background refresh-ahead recompute to complete, so tests can deterministically
+    /// observe refresh-ahead side effects. Recomputes are registered synchronously inside the serving call, so a
+    /// pending recompute scheduled by a completed resolution is always visible here.
     /// </summary>
     /// <returns>A task that completes when every recompute pending at the call instant has finished.</returns>
     internal Task WaitForRefreshAheadForTestingAsync() =>

@@ -9,23 +9,18 @@ using Bodu.Financial.Currencies;
 
 namespace Bodu.Financial.ExchangeRates.Caching;
 
-/// <content>
-/// The refresh-ahead (stale-while-revalidate) machinery: an aged cache hit is still served immediately, but when the
-/// served data is older than <see cref="CachingRateOptions.RefreshAheadFraction" /> of its effective expiry, at most
-/// one background refresh per pair and window is scheduled so the data is refetched before it expires and no caller
-/// ever absorbs the refetch latency.
-/// </content>
+/// <content> The refresh-ahead (stale-while-revalidate) machinery: an aged cache hit is still served immediately, but
+/// when the served data is older than <see cref="CachingRateOptions.RefreshAheadFraction" /> of its effective expiry,
+/// at most one background refresh per pair and window is scheduled so the data is refetched before it expires and no
+/// caller ever absorbs the refetch latency. </content>
 public abstract partial class CachingRateProviderBase
 {
-    /// <summary>
-    /// The pending background refreshes, keyed by lookup shape, pair, and window, so concurrent aged hits for the same
-    /// key join the one in-flight refresh rather than duplicating it. Entries are removed when their task completes.
-    /// </summary>
+    /// <summary>The pending background refreshes, keyed by lookup shape, pair, and window, so concurrent aged hits for the same key join the one in-flight refresh rather than duplicating it. Entries are removed when their task completes.</summary>
     private readonly ConcurrentDictionary<RefreshKey, Task> _pendingRefreshAhead = new();
 
     /// <summary>
-    /// Schedules a background refresh of a single-date serve when refresh-ahead is enabled and the served data has
-    /// aged past the configured fraction of the pair's effective expiry.
+    /// Schedules a background refresh of a single-date serve when refresh-ahead is enabled and the served data has aged
+    /// past the configured fraction of the pair's effective expiry.
     /// </summary>
     /// <param name="duration">The configured caching duration in effect for the serving lookup.</param>
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
@@ -89,8 +84,8 @@ public abstract partial class CachingRateProviderBase
     }
 
     /// <summary>
-    /// Determines whether served data has aged past the refresh-ahead threshold: the configured fraction of the
-    /// pair's effective (post-jitter) expiry.
+    /// Determines whether served data has aged past the refresh-ahead threshold: the configured fraction of the pair's
+    /// effective (post-jitter) expiry.
     /// </summary>
     /// <param name="pair">The pair whose effective expiry governs the threshold.</param>
     /// <param name="duration">The configured caching duration.</param>
@@ -118,10 +113,10 @@ public abstract partial class CachingRateProviderBase
     /// <remarks>
     /// The pending registration is published <em>before</em> the task starts — a completion source's task is added
     /// under the key first, and only a successful add spawns the worker — so a concurrent aged hit can never slip in
-    /// between a worker finishing and its registration appearing, and the finally-removal can never race a fresh add
-    /// of the same attempt. Failures are swallowed after logging: the hit that triggered the refresh was already
-    /// served, and the next aged hit schedules a fresh attempt. Disposal is re-checked when the worker starts;
-    /// pending refreshes are abandoned, not drained, by <see cref="Dispose()" />.
+    /// between a worker finishing and its registration appearing, and the finally-removal can never race a fresh add of
+    /// the same attempt. Failures are swallowed after logging: the hit that triggered the refresh was already served,
+    /// and the next aged hit schedules a fresh attempt. Disposal is re-checked when the worker starts; pending
+    /// refreshes are abandoned, not drained, by <see cref="Dispose()" />.
     /// </remarks>
     private void ScheduleRefreshAhead(RefreshKey key, string fromIsoCode, string toIsoCode, Func<ValueTask> refresh)
     {
@@ -176,10 +171,7 @@ public abstract partial class CachingRateProviderBase
             return;
 
         RateLookupResult result = await Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, CancellationToken.None).ConfigureAwait(false);
-        if (_asyncCache is not null)
-            await StoreResultAsync(duration, fromIsoCode, toIsoCode, result, now, CancellationToken.None).ConfigureAwait(false);
-        else
-            StoreResult(duration, fromIsoCode, toIsoCode, result, now);
+        await StoreResultOnEitherSeamAsync(duration, fromIsoCode, toIsoCode, result, now, CancellationToken.None).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -212,8 +204,8 @@ public abstract partial class CachingRateProviderBase
 
     /// <summary>
     /// Waits for every currently pending background refresh to complete, so tests can deterministically observe
-    /// refresh-ahead side effects. Refreshes are registered synchronously inside the serving call, so a pending
-    /// refresh scheduled by a completed lookup is always visible here.
+    /// refresh-ahead side effects. Refreshes are registered synchronously inside the serving call, so a pending refresh
+    /// scheduled by a completed lookup is always visible here.
     /// </summary>
     /// <returns>A task that completes when every refresh pending at the call instant has finished.</returns>
     internal Task WaitForRefreshAheadForTestingAsync() =>

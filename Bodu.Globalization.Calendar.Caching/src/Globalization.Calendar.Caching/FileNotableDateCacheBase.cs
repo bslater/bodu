@@ -163,6 +163,8 @@ public abstract class FileNotableDateCacheBase
     /// <inheritdoc />
     protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries)
     {
+        ThrowHelper.ThrowIfNull(entries);
+
         string path = FilePath(territory);
 
         try

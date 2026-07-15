@@ -143,7 +143,7 @@ public static class NotableDateCachingExtensions
     /// <param name="serviceProvider">The service provider supplying ambient services.</param>
     /// <param name="options">The caching options carrying the cache directory.</param>
     /// <returns>A new <see cref="TomlNotableDateCache" />.</returns>
-    private static INotableDateCache CreateDefaultCache(IServiceProvider serviceProvider, NotableDateCachingOptions options) =>
+    private static TomlNotableDateCache CreateDefaultCache(IServiceProvider serviceProvider, NotableDateCachingOptions options) =>
         new TomlNotableDateCache(
             new FileNotableDateCacheOptions { CacheDirectory = options.CacheDirectory },
             serviceProvider.GetService<TimeProvider>(),

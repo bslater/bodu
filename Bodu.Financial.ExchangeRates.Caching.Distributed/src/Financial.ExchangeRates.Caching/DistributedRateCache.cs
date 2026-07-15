@@ -89,6 +89,7 @@ public sealed class DistributedRateCache
         : base(options)
     {
         ThrowHelper.ThrowIfNull(cache);
+        ThrowHelper.ThrowIfNull(options);
 
         _cache = cache;
         _warnGate = new RateLimitedWarningGate(timeProvider, RateLimitedWarningGate.DefaultCooldown);
@@ -157,8 +158,8 @@ public sealed class DistributedRateCache
 
     /// <inheritdoc />
     /// <remarks>
-    /// Reads the blob through the backing store's asynchronous API so a network-backed read never blocks a
-    /// thread-pool thread; policy, degradation, and deserialization are identical to the synchronous read.
+    /// Reads the blob through the backing store's asynchronous API so a network-backed read never blocks a thread-pool
+    /// thread; policy, degradation, and deserialization are identical to the synchronous read.
     /// </remarks>
     internal override async ValueTask<CachePairState> ReadStateAsync(CurrencyPair pair, CancellationToken cancellationToken)
     {
@@ -214,30 +215,29 @@ public sealed class DistributedRateCache
     /// Stamps each written blob with a server-side lifetime of <paramref name="duration" /> plus
     /// <see cref="DistributedRateCacheOptions.EntryExpirationMargin" />, so a key whose pair stops being queried
     /// self-evicts from the backing store; any entry evicted at that point would already be stale on read, so served
-    /// results are unchanged. The lifetime is expressed relative to the store's own clock
-    /// (<see cref="DistributedCacheEntryOptions.AbsoluteExpirationRelativeToNow" />) rather than as an
-    /// application-clock absolute instant, so clock skew between the application and the store — or a test-supplied
-    /// synthetic clock — cannot evict entries prematurely. A <see langword="null" /> margin disables the server-side
-    /// expiration entirely.
+    /// results are unchanged. The lifetime is expressed relative to the store's own clock (<see cref="DistributedCacheEntryOptions.AbsoluteExpirationRelativeToNow" />)
+    /// rather than as an application-clock absolute instant, so clock skew between the application and the store — or a
+    /// test-supplied synthetic clock — cannot evict entries prematurely. A <see langword="null" /> margin disables the
+    /// server-side expiration entirely.
     /// </remarks>
-    internal override bool WriteState(CurrencyPair pair, CachePairState state, TimeSpan duration, DateTimeOffset asOf) =>
-        WriteCore(
-            pair,
-            state,
-            Options.EntryExpirationMargin is { } margin
-                ? new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = duration + margin }
-                : null);
+    internal override bool WriteState(CurrencyPair pair, CachePairState state, TimeSpan duration, DateTimeOffset asOf)
+    {
+        DistributedCacheEntryOptions? entryOptions = Options.EntryExpirationMargin is { } margin
+            ? new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = duration + margin }
+            : null;
+
+        return WriteCore(pair, state, entryOptions);
+    }
 
     /// <summary>
     /// Serializes and writes a pair's whole state as one blob — all-or-nothing, so a reader never observes coverage
-    /// without its rows — or removes the key when the state is empty so the entry self-cleans. A backing-store fault
-    /// or a serialization fault is swallowed and reported as an unpersisted write.
+    /// without its rows — or removes the key when the state is empty so the entry self-cleans. A backing-store fault or
+    /// a serialization fault is swallowed and reported as an unpersisted write.
     /// </summary>
     /// <param name="pair">The currency pair.</param>
     /// <param name="state">The state to persist.</param>
     /// <param name="entryOptions">
-    /// The server-side entry options carrying the absolute expiration, or <see langword="null" /> to write without
-    /// one.
+    /// The server-side entry options carrying the absolute expiration, or <see langword="null" /> to write without one.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the blob was persisted (or the key removed); <see langword="false" /> when a
@@ -402,6 +402,6 @@ public sealed class DistributedRateCache
         CachingDistributedMeter.StorageFailure(Options.Provider, operation);
 
         if (_warnGate.TryClaimWarning(out int suppressed))
-            Log.StorageFailureSwallowed(_logger, Options.Provider, operation, suppressed, exception);
+            CachingDistributedLog.StorageFailureSwallowed(_logger, Options.Provider, operation, suppressed, exception);
     }
 }

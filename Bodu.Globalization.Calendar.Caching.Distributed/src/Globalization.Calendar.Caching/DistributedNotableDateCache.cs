@@ -135,27 +135,33 @@ public sealed class DistributedNotableDateCache
     /// IReadOnlyList{NotableDateCacheEntry}, TimeSpan, DateTimeOffset)" />, which stamps the blob's absolute
     /// expiration.
     /// </remarks>
-    protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries) =>
-        WriteCore(territory, entries, entryOptions: null);
+    protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries)
+    {
+        ThrowHelper.ThrowIfNull(entries);
+
+        return WriteCore(territory, entries, entryOptions: null);
+    }
 
     /// <inheritdoc />
     /// <remarks>
     /// Stamps each written territory blob with a server-side lifetime of <paramref name="ttl" /> plus
     /// <see cref="DistributedNotableDateCacheOptions.EntryExpirationMargin" />, so a key whose territory stops being
     /// queried self-evicts from the backing store; any entry evicted at that point would already be stale on read, so
-    /// served results are unchanged. The lifetime is expressed relative to the store's own clock
-    /// (<see cref="DistributedCacheEntryOptions.AbsoluteExpirationRelativeToNow" />) rather than as an
-    /// application-clock absolute instant, so clock skew between the application and the store — or a test-supplied
-    /// synthetic clock — cannot evict entries prematurely. A <see langword="null" /> margin disables the server-side
-    /// expiration entirely.
+    /// served results are unchanged. The lifetime is expressed relative to the store's own clock (<see cref="DistributedCacheEntryOptions.AbsoluteExpirationRelativeToNow" />)
+    /// rather than as an application-clock absolute instant, so clock skew between the application and the store — or a
+    /// test-supplied synthetic clock — cannot evict entries prematurely. A <see langword="null" /> margin disables the
+    /// server-side expiration entirely.
     /// </remarks>
-    protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries, TimeSpan ttl, DateTimeOffset asOf) =>
-        WriteCore(
-            territory,
-            entries,
-            Options.EntryExpirationMargin is { } margin
-                ? new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = ttl + margin }
-                : null);
+    protected internal override bool WriteEntries(string territory, IReadOnlyList<NotableDateCacheEntry> entries, TimeSpan ttl, DateTimeOffset asOf)
+    {
+        ThrowHelper.ThrowIfNull(entries);
+
+        DistributedCacheEntryOptions? entryOptions = Options.EntryExpirationMargin is { } margin
+            ? new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = ttl + margin }
+            : null;
+
+        return WriteCore(territory, entries, entryOptions);
+    }
 
     /// <summary>
     /// Serializes and writes a territory's entries as one blob, or removes the key when the entry list is empty so the
@@ -165,8 +171,7 @@ public sealed class DistributedNotableDateCache
     /// <param name="territory">The normalized territory key.</param>
     /// <param name="entries">The entries to persist.</param>
     /// <param name="entryOptions">
-    /// The server-side entry options carrying the absolute expiration, or <see langword="null" /> to write without
-    /// one.
+    /// The server-side entry options carrying the absolute expiration, or <see langword="null" /> to write without one.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the blob was persisted (or the key removed); <see langword="false" /> when a
@@ -218,6 +223,6 @@ public sealed class DistributedNotableDateCache
         CalendarCachingDistributedMeter.StorageFailure(operation);
 
         if (_warnGate.TryClaimWarning(out int suppressed))
-            Log.StorageFailureSwallowed(_logger, operation, suppressed, exception);
+            CalendarCachingDistributedLog.StorageFailureSwallowed(_logger, operation, suppressed, exception);
     }
 }

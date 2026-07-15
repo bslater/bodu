@@ -36,8 +36,8 @@ public interface IAggregatedRateBuilder
     /// <typeparam name="TProvider">The concrete provider type to resolve and cache.</typeparam>
     /// <param name="name">The name the child is referenced and cached under.</param>
     /// <param name="cacheFactory">
-    /// An optional factory producing the child's <see cref="IRateCache" /> from the service provider and the
-    /// child name. When <see langword="null" />, the registration's default cache is used.
+    /// An optional factory producing the child's <see cref="IRateCache" /> from the service provider and the child
+    /// name. When <see langword="null" />, the registration's default cache is used.
     /// </param>
     /// <returns>The same builder, for chaining.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is empty or white space.</exception>
@@ -52,8 +52,8 @@ public interface IAggregatedRateBuilder
     /// <param name="name">The name the child is referenced and cached under.</param>
     /// <param name="factory">A factory that resolves the child source from the service provider.</param>
     /// <param name="cacheFactory">
-    /// An optional factory producing the child's <see cref="IRateCache" /> from the service provider and the
-    /// child name. When <see langword="null" />, the registration's default cache is used.
+    /// An optional factory producing the child's <see cref="IRateCache" /> from the service provider and the child
+    /// name. When <see langword="null" />, the registration's default cache is used.
     /// </param>
     /// <returns>The same builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException">

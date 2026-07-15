@@ -48,7 +48,9 @@ internal static class CacheFreshness
     /// <paramref name="asOf" />, allowing the shared clock-skew tolerance.
     /// </summary>
     /// <param name="stampedAtUtc">The caching instant to validate.</param>
-    /// <param name="asOf">The instant against which the caching instant is checked for implausible future stamps.</param>
+    /// <param name="asOf">
+    /// The instant against which the caching instant is checked for implausible future stamps.
+    /// </param>
     /// <returns>
     /// <see langword="false" /> when <paramref name="stampedAtUtc" /> is more than the clock-skew tolerance ahead of
     /// <paramref name="asOf" />; otherwise <see langword="true" />.
@@ -67,8 +69,8 @@ internal static class CacheFreshness
     /// <paramref name="duration" /> unchanged.
     /// </param>
     /// <returns>
-    /// The effective duration: <paramref name="duration" /> reduced by up to <paramref name="fraction" /> of itself,
-    /// by an amount stable for a given <paramref name="key" />.
+    /// The effective duration: <paramref name="duration" /> reduced by up to <paramref name="fraction" /> of itself, by
+    /// an amount stable for a given <paramref name="key" />.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -78,9 +80,9 @@ internal static class CacheFreshness
     /// on when an entry expires.
     /// </para>
     /// <para>
-    /// Jitter only ever shortens the duration, never extends it, so a jittered read can never serve data the
-    /// configured duration would already consider stale, and server-side expirations derived from the configured
-    /// duration remain safe upper bounds.
+    /// Jitter only ever shortens the duration, never extends it, so a jittered read can never serve data the configured
+    /// duration would already consider stale, and server-side expirations derived from the configured duration remain
+    /// safe upper bounds.
     /// </para>
     /// </remarks>
     public static TimeSpan WithJitter(TimeSpan duration, ReadOnlySpan<char> key, double fraction)

@@ -101,14 +101,14 @@ public sealed class SqliteRateCache
     /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />.</summary>
     private readonly StripedLockSet<CurrencyPair> _pairLocks = new();
 
-    /// <summary>Tracks whether the instance has been disposed, as <c>0</c> for live and <c>1</c> for disposed. Stored as an <see cref="int" /> so <see cref="Interlocked.Exchange(ref int, int)" /> can make <see cref="Dispose" /> idempotent: only the first caller observes the transition and releases the keep-alive connection.</summary>
-    private int _disposed;
-
     /// <summary>The logger that receives the rate-limited degradation warnings, or <see cref="NullLogger.Instance" /> when none was supplied.</summary>
     private readonly ILogger _logger;
 
     /// <summary>Rate-limits the degradation warning to at most one emission per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.</summary>
     private readonly RateLimitedWarningGate _warnGate;
+
+    /// <summary>Tracks whether the instance has been disposed, as <c>0</c> for live and <c>1</c> for disposed. Stored as an <see cref="int" /> so <see cref="Interlocked.Exchange(ref int, int)" /> can make <see cref="Dispose" /> idempotent: only the first caller observes the transition and releases the keep-alive connection.</summary>
+    private int _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqliteRateCache" /> class.
@@ -220,7 +220,7 @@ public sealed class SqliteRateCache
         CachingSqliteMeter.StorageFailure(_options.Provider, operation);
 
         if (_warnGate.TryClaimWarning(out int suppressed))
-            Log.StorageFailureSwallowed(_logger, _options.Provider, operation, suppressed, exception);
+            CachingSqliteLog.StorageFailureSwallowed(_logger, _options.Provider, operation, suppressed, exception);
     }
 
     /// <inheritdoc />
@@ -353,8 +353,8 @@ public sealed class SqliteRateCache
     /// <see cref="Interlocked.Exchange(ref int, int)" /> so exactly one caller wins the transition and disposes the
     /// keep-alive connection, preventing a double dispose of the underlying handle. Clearing the pool is required
     /// because <c>Microsoft.Data.Sqlite</c> pools closed connections by default: without it, the pooled handles from
-    /// per-operation connections (and the returned keep-alive) keep the database file open past disposal, which
-    /// blocks deletion on Windows and leaves the write-ahead-log sidecar unpurged everywhere.
+    /// per-operation connections (and the returned keep-alive) keep the database file open past disposal, which blocks
+    /// deletion on Windows and leaves the write-ahead-log sidecar unpurged everywhere.
     /// </remarks>
     public void Dispose()
     {
@@ -496,7 +496,7 @@ public sealed class SqliteRateCache
     /// Storage failures propagate to the caller, which owns the connection and the degradation policy; a malformed row
     /// is still skipped here so a single corrupt value never fails the whole read.
     /// </remarks>
-    private IReadOnlyList<CachedRate> ReadEntries(SqliteConnection connection, SqliteTransaction? transaction, CurrencyPair pair)
+    private List<CachedRate> ReadEntries(SqliteConnection connection, SqliteTransaction? transaction, CurrencyPair pair)
     {
         List<CachedRate> rows = new();
 
@@ -623,7 +623,7 @@ public sealed class SqliteRateCache
     /// Storage failures propagate to the caller, which owns the connection and the degradation policy; a malformed
     /// window is still skipped here so a single corrupt value never fails the whole read.
     /// </remarks>
-    private IReadOnlyList<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> ReadCoverage(SqliteConnection connection, SqliteTransaction? transaction, CurrencyPair pair)
+    private List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> ReadCoverage(SqliteConnection connection, SqliteTransaction? transaction, CurrencyPair pair)
     {
         List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> windows = new();
 
@@ -732,8 +732,8 @@ public sealed class SqliteRateCache
     /// deliberately not re-asserted here: <c>journal_mode = WAL</c> is a persistent database-level property, so it is
     /// applied once to the keep-alive connection at construction (see <see cref="ApplyWriteAheadLogging" />) and every
     /// later per-operation connection inherits it, saving a PRAGMA round-trip per open. The one behaviour change is
-    /// deliberate: an external process that flips the database's journal mode between operations is no longer
-    /// corrected until the next construction — acceptable for a best-effort cache that always treated WAL as advisory.
+    /// deliberate: an external process that flips the database's journal mode between operations is no longer corrected
+    /// until the next construction — acceptable for a best-effort cache that always treated WAL as advisory.
     /// </remarks>
     private void ConfigureConnection(SqliteConnection connection)
     {
