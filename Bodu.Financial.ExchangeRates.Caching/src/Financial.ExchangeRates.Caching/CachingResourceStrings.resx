@@ -85,6 +85,18 @@
   <data name="Arg_Invalid_RefreshAheadFractionOutOfRange" xml:space="preserve">
     <value>The refresh-ahead fraction must be in the range [0, 1), but was {0}.</value>
   </data>
+  <data name="Arg_Invalid_WarmupPairsEmpty" xml:space="preserve">
+    <value>The warm-up pair list must contain at least one currency pair.</value>
+  </data>
+  <data name="Arg_Invalid_WarmupPairMalformed" xml:space="preserve">
+    <value>The warm-up pair '{0}' is not in the 'XXX/YYY' ISO 4217 form.</value>
+  </data>
+  <data name="Arg_Invalid_WarmupLookbackNegative" xml:space="preserve">
+    <value>The warm-up look-back days must not be negative, but was {0}.</value>
+  </data>
+  <data name="Arg_Invalid_WarmupWindowInverted" xml:space="preserve">
+    <value>The warm-up end date must not be earlier than the start date.</value>
+  </data>
   <data name="Arg_Invalid_UnknownAggregationChild" xml:space="preserve">
     <value>The provider name '{0}' referenced by the aggregation configuration was not supplied as a child.</value>
   </data>

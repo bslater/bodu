@@ -67,6 +67,21 @@
   <data name="Arg_Invalid_YearRangeInverted" xml:space="preserve">
     <value>The last year must not be earlier than the first year.</value>
   </data>
+  <data name="Arg_Invalid_WarmupTerritoriesEmpty" xml:space="preserve">
+    <value>The warm-up territory list must contain at least one territory code.</value>
+  </data>
+  <data name="Arg_Invalid_WarmupTerritoryBlank" xml:space="preserve">
+    <value>The warm-up territory list must not contain an empty or white-space territory code.</value>
+  </data>
+  <data name="Arg_Invalid_WarmupYearsNegative" xml:space="preserve">
+    <value>The warm-up relative year span must not be negative, but was {0}.</value>
+  </data>
+  <data name="Arg_Invalid_WarmupYearOutOfRange" xml:space="preserve">
+    <value>The warm-up year {0} is outside the representable calendar range.</value>
+  </data>
+  <data name="Arg_Invalid_WarmupWindowInverted" xml:space="preserve">
+    <value>The warm-up last year must not be earlier than the first year.</value>
+  </data>
   <data name="Arg_Invalid_TtlNotPositive" xml:space="preserve">
     <value>The cache time-to-live must be greater than zero, but was {0}.</value>
   </data>

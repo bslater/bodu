@@ -142,6 +142,42 @@ namespace Bodu.Financial.ExchangeRates.Caching {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The warm-up look-back days must not be negative, but was {0}..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupLookbackNegative {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupLookbackNegative", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up pair '{0}' is not in the 'XXX/YYY' ISO 4217 form..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupPairMalformed {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupPairMalformed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up pair list must contain at least one currency pair..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupPairsEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupPairsEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up end date must not be earlier than the start date..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupWindowInverted {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupWindowInverted", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The provider name '{0}' referenced by the aggregation configuration was not supplied as a child..
         /// </summary>
         internal static string Arg_Invalid_UnknownAggregationChild {

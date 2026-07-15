@@ -79,6 +79,51 @@ namespace Bodu.Globalization.Calendar.Caching {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The warm-up territory list must contain at least one territory code..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupTerritoriesEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupTerritoriesEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up territory list must not contain an empty or white-space territory code..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupTerritoryBlank {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupTerritoryBlank", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up last year must not be earlier than the first year..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupWindowInverted {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupWindowInverted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up year {0} is outside the representable calendar range..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupYearOutOfRange {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupYearOutOfRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up relative year span must not be negative, but was {0}..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupYearsNegative {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupYearsNegative", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The last year must not be earlier than the first year..
         /// </summary>
         internal static string Arg_Invalid_YearRangeInverted {
