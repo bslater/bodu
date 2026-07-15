@@ -160,6 +160,8 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
                     string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_KeySize, value.Length * 8, $"0..{_maximumKeySize}"));
             }
 
+            // Zero the previously held key before replacing it so stale key material does not linger on the heap.
+            CryptographyHelper.ClearAndNullify(ref KeyValue);
             KeyValue = value.Length > 0 ? value.Copy() : null;
             Initialize();
         }
@@ -215,7 +217,15 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     private void InjectKeyBlock()
     {
         Span<byte> keyBlock = stackalloc byte[BlockSize / 8];
-        KeyValue!.AsSpan().CopyTo(keyBlock);
-        HashCore(keyBlock);
+        try
+        {
+            KeyValue!.AsSpan().CopyTo(keyBlock);
+            HashCore(keyBlock);
+        }
+        finally
+        {
+            // Zero the padded key copy so a full copy of the key does not linger on the stack after injection.
+            CryptographyHelper.Clear(keyBlock);
+        }
     }
 }

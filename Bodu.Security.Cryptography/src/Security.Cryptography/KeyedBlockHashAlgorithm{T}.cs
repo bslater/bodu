@@ -157,7 +157,9 @@ public abstract class KeyedBlockHashAlgorithm<T>
                         KeySizeValue));
             }
 
-            // Defensive copy ensures external references cannot mutate the internal key.
+            // Zero the previously held key before replacing it so stale key material does not linger on the heap
+            // until the next GC. Defensive copy ensures external references cannot mutate the internal key.
+            CryptographyHelper.ClearAndNullify(ref KeyValue);
             KeyValue = value.Copy();
 
             // Allow derived classes to rebuild any key-dependent schedule or state.

@@ -203,6 +203,8 @@ public abstract partial class Skein<T>
                         $"0..{MaxKeySize}"));
             }
 
+            // Zero the previously held key before replacing it so stale key material does not linger on the heap.
+            CryptographyHelper.ClearAndNullify(ref KeyValue);
             KeyValue = value.Copy();
             _isChainingValueCached = false;
         }
