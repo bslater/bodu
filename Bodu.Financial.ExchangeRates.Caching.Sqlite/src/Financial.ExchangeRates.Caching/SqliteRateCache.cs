@@ -345,12 +345,16 @@ public sealed class SqliteRateCache
     }
 
     /// <summary>
-    /// Releases the keep-alive connection held for the instance lifetime.
+    /// Releases the keep-alive connection held for the instance lifetime and clears the connection pool, so every
+    /// handle to the database is closed and the file is deletable immediately after disposal.
     /// </summary>
     /// <remarks>
     /// Idempotent: a second or concurrent call is a safe no-op. The disposed flag is flipped with
     /// <see cref="Interlocked.Exchange(ref int, int)" /> so exactly one caller wins the transition and disposes the
-    /// keep-alive connection, preventing a double dispose of the underlying handle.
+    /// keep-alive connection, preventing a double dispose of the underlying handle. Clearing the pool is required
+    /// because <c>Microsoft.Data.Sqlite</c> pools closed connections by default: without it, the pooled handles from
+    /// per-operation connections (and the returned keep-alive) keep the database file open past disposal, which
+    /// blocks deletion on Windows and leaves the write-ahead-log sidecar unpurged everywhere.
     /// </remarks>
     public void Dispose()
     {
@@ -358,6 +362,8 @@ public sealed class SqliteRateCache
             return;
 
         _keepAlive.Dispose();
+        using var poolKey = new SqliteConnection(_connectionString);
+        SqliteConnection.ClearPool(poolKey);
     }
 
     /// <summary>
