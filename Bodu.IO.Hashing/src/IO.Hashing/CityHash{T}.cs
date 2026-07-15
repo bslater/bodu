@@ -372,8 +372,11 @@ public abstract class CityHash<T>
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         // CityHash is a one-shot algorithm; finalization re-runs over the accumulated buffer so that
-        // GetCurrentHash remains non-destructive and may be invoked multiple times.
-        byte[] data = _inputBuffer.ToArray();
+        // GetCurrentHash remains non-destructive and may be invoked multiple times. Hash the stream's backing array
+        // in place (the buffer is publicly visible) rather than duplicating the whole message with ToArray().
+        ReadOnlySpan<byte> data = _inputBuffer.TryGetBuffer(out ArraySegment<byte> segment)
+            ? segment.AsSpan()
+            : _inputBuffer.ToArray();
         byte[] digest = ComputeHashCore(data);
         digest.AsSpan(0, HashLengthInBytes).CopyTo(destination);
     }

@@ -201,7 +201,12 @@ public abstract class MurmurHash3<T>
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        byte[] data = _inputBuffer.ToArray();
+
+        // Hash the stream's backing array in place (the buffer is publicly visible) rather than duplicating the whole
+        // accumulated message with ToArray() on every digest read.
+        ReadOnlySpan<byte> data = _inputBuffer.TryGetBuffer(out ArraySegment<byte> segment)
+            ? segment.AsSpan()
+            : _inputBuffer.ToArray();
         byte[] digest = ComputeHashCore(data);
         digest.AsSpan(0, HashLengthInBytes).CopyTo(destination);
     }
