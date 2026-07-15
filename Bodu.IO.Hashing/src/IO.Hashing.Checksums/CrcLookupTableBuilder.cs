@@ -120,4 +120,41 @@ public static class CrcLookupTableBuilder
 
         return table;
     }
+
+    /// <summary>
+    /// Builds the eight interleaved 256-entry lookup tables that drive the slicing-by-8 inner loop for a
+    /// <strong>reflected</strong> CRC of the given width and polynomial.
+    /// </summary>
+    /// <param name="size">The CRC width, in bits. Must be a byte-aligned reflected width (32 or 64) for the engine's
+    /// slicing path; the tables are still well-formed for other widths but the engine only consumes 32/64.</param>
+    /// <param name="polynomial">The CRC polynomial.</param>
+    /// <returns>
+    /// An array of eight <c>ulong[256]</c> tables. Table 0 is the ordinary byte-wise reflected table; each subsequent
+    /// table <c>T_k</c> is derived from its predecessor by folding one more byte position of latency into the register.
+    /// </returns>
+    /// <remarks>
+    /// Uses the standard reflected recurrence <c>T_k[i] = (T_{k-1}[i] >> 8) ^ T_0[T_{k-1}[i] &amp; 0xFF]</c>. Only valid
+    /// for reflected CRCs; the non-reflected slicing recurrence differs and is intentionally not built because the
+    /// engine falls back to the byte-wise loop for non-reflected standards.
+    /// </remarks>
+    internal static ulong[][] BuildReflectedSlicingTables(int size, ulong polynomial)
+    {
+        ulong[] t0 = BuildLookupTable(size, polynomial, reflectIn: true);
+        ulong mask = size == 64 ? ulong.MaxValue : (ulong.MaxValue >> (64 - size));
+
+        var tables = new ulong[8][];
+        tables[0] = t0;
+
+        for (int k = 1; k < 8; k++)
+        {
+            ulong[] prev = tables[k - 1];
+            ulong[] cur = new ulong[256];
+            for (int i = 0; i < 256; i++)
+                cur[i] = ((prev[i] >> 8) ^ t0[(int)(prev[i] & 0xFF)]) & mask;
+
+            tables[k] = cur;
+        }
+
+        return tables;
+    }
 }
