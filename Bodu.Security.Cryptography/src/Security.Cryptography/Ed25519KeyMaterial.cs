@@ -13,6 +13,15 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal sealed class Ed25519KeyMaterial
 {
+    /// <summary>The public key decoded to a curve point, cached so verification does not re-decode on every call.</summary>
+    private readonly Ed25519Point _publicPoint;
+
+    /// <summary>Indicates whether <see cref="_publicPoint" /> successfully decoded from <see cref="PublicKey" />.</summary>
+    private readonly bool _publicPointDecoded;
+
+    /// <summary>Indicates whether the decoded public point is a small-order point, computed once at construction.</summary>
+    private readonly bool _publicPointIsSmallOrder;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Ed25519KeyMaterial" /> class taking ownership of the supplied
     /// arrays.
@@ -23,6 +32,12 @@ internal sealed class Ed25519KeyMaterial
     {
         PublicKey = publicKey;
         PrivateKey = privateKey;
+
+        // Decode the public key and evaluate its small-order status once here. Verification re-ran both on every call
+        // (~500 field multiplications) even though the point is immutable; decoding eagerly at construction also avoids
+        // a torn read of this multi-word struct under concurrent verification.
+        _publicPointDecoded = Ed25519Point.TryDecode(publicKey, out _publicPoint);
+        _publicPointIsSmallOrder = _publicPointDecoded && _publicPoint.IsSmallOrder();
     }
 
     /// <summary>
@@ -60,6 +75,20 @@ internal sealed class Ed25519KeyMaterial
     /// <returns>The key material owning the public key.</returns>
     internal static Ed25519KeyMaterial ForPublicKey(byte[] publicKey) =>
         new(publicKey, null);
+
+    /// <summary>
+    /// Gets the decoded public curve point cached at construction, together with its small-order status, avoiding a
+    /// per-verification decode and small-order evaluation of the immutable public key.
+    /// </summary>
+    /// <param name="point">When this method returns <see langword="true" />, the decoded public point.</param>
+    /// <param name="isSmallOrder">When this method returns <see langword="true" />, whether the point is small-order.</param>
+    /// <returns><see langword="true" /> if the public key decoded to a valid point; otherwise, <see langword="false" />.</returns>
+    internal bool TryGetPublicPoint(out Ed25519Point point, out bool isSmallOrder)
+    {
+        point = _publicPoint;
+        isSmallOrder = _publicPointIsSmallOrder;
+        return _publicPointDecoded;
+    }
 
     /// <summary>
     /// Zeroizes the held private seed material.

@@ -362,12 +362,14 @@ public sealed partial class Ed25519
         if (!Ed25519Point.TryDecode(rEncoded, out Ed25519Point rPoint))
             return false;
 
-        if (!Ed25519Point.TryDecode(_keyMaterial!.PublicKey, out Ed25519Point publicPoint))
+        // The public point and its small-order status were decoded and evaluated once when the key material was
+        // created; reuse them rather than repeating ~500 field multiplications on every verification.
+        if (!_keyMaterial!.TryGetPublicPoint(out Ed25519Point publicPoint, out bool publicPointIsSmallOrder))
             return false;
 
         // Small-order R or A would let a torsion component be added without changing acceptance under the cofactorless
         // equation; rejecting both keeps the strict policy self-consistent regardless of how the public key arrived.
-        if (rPoint.IsSmallOrder() || publicPoint.IsSmallOrder())
+        if (rPoint.IsSmallOrder() || publicPointIsSmallOrder)
             return false;
 
         // k = SHA-512(R ‖ A ‖ M) mod L; accept when [S]B == R + [k]A (cofactorless).
