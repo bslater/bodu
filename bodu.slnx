@@ -61,6 +61,9 @@
     <Project Path="Bodu.IO.Hashing\test\Bodu.IO.Hashing.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Globalization.Calendar/Caching/">
+    <Project Path="Bodu.Globalization.Calendar.Caching/bench/Bodu.Globalization.Calendar.Caching.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="Bodu.Globalization.Calendar.Caching.Distributed\src\Bodu.Globalization.Calendar.Caching.Distributed.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Caching.Distributed\test\Bodu.Globalization.Calendar.Caching.Distributed.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Caching.Sqlite\src\Bodu.Globalization.Calendar.Caching.Sqlite.csproj" />
@@ -86,6 +89,9 @@
     <Project Path="Bodu.IO.Compound/test/Bodu.IO.Compound.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Financial/Caching/">
+    <Project Path="Bodu.Financial.ExchangeRates.Caching/bench/Bodu.Financial.ExchangeRates.Caching.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed/src/Bodu.Financial.ExchangeRates.Caching.Distributed.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed/test/Bodu.Financial.ExchangeRates.Caching.Distributed.Test.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Bodu.Financial.ExchangeRates.Caching.Sqlite.csproj" />
