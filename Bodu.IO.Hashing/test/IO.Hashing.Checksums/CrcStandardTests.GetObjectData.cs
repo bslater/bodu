@@ -64,4 +64,35 @@ public partial class CrcStandardTests
         Assert.AreEqual(original.GetHashCode(), restored.GetHashCode());
     }
 
+    /// <summary>
+    /// Verifies that the private deserialization constructor validates its parameters — an out-of-range
+    /// <see cref="CrcStandard.Size" /> is rejected with <see cref="ArgumentOutOfRangeException" /> rather than
+    /// smuggled into a supposedly immutable, validated parameter set.
+    /// </summary>
+    [TestMethod]
+    public void DeserializationConstructor_WhenSizeOutOfRange_ShouldThrowArgumentOutOfRangeException()
+    {
+        SerializationInfo info = new(typeof(CrcStandard), new FormatterConverter());
+        info.AddValue(nameof(CrcStandard.Name), "Invalid");
+        info.AddValue(nameof(CrcStandard.Size), 200);
+        info.AddValue(nameof(CrcStandard.Polynomial), 0UL);
+        info.AddValue(nameof(CrcStandard.InitialValue), 0UL);
+        info.AddValue(nameof(CrcStandard.ReflectIn), false);
+        info.AddValue(nameof(CrcStandard.ReflectOut), false);
+        info.AddValue(nameof(CrcStandard.XOrOut), 0UL);
+
+        System.Reflection.ConstructorInfo deserCtor = typeof(CrcStandard).GetConstructor(
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
+            binder: null,
+            types: [typeof(SerializationInfo), typeof(StreamingContext)],
+            modifiers: null)!;
+
+        System.Reflection.TargetInvocationException ex = Assert.ThrowsExactly<System.Reflection.TargetInvocationException>(() =>
+        {
+            _ = deserCtor.Invoke([info, new StreamingContext(StreamingContextStates.All)]);
+        });
+
+        Assert.IsInstanceOfType<ArgumentOutOfRangeException>(ex.InnerException);
+    }
+
 }

@@ -29,6 +29,25 @@ public partial class CrcTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Crc.ComputeHash(System.ReadOnlySpan{byte})" /> resets internal state after
+    /// finalization, so a subsequent <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" />
+    /// hashes only the newly appended data rather than the concatenation with the prior one-shot input. This
+    /// matches the reset-before-and-after semantics of the shared <c>ComputeHash</c> extension.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenFollowedByAppend_ShouldNotRetainPriorInput()
+    {
+        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
+
+        _ = crc.ComputeHash(Encoding.ASCII.GetBytes("prior one-shot input"));
+        crc.Append(s_revEngCheckInput);
+        byte[] appended = crc.GetCurrentHash();
+
+        byte[] reference = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(s_revEngCheckInput);
+        CollectionAssert.AreEqual(reference, appended);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Crc.ComputeHash(System.ReadOnlySpan{byte})" /> produces the same digest as the
     /// streaming <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" />
     /// + <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> pair across every

@@ -114,8 +114,8 @@ public sealed class Crc
     : NonCryptographicHashAlgorithm,
       IResumableHashAlgorithm
 {
-    /// <summary>The lazily initialized, process-wide cache that shares CRC lookup tables across <see cref="Crc" /> instances, exposed through <see cref="GlobalCache" />.</summary>
-    private static Lazy<CrcLookupTableCache> s_globalLookupTableCache =
+    /// <summary>The lazily initialized, process-wide cache that shares CRC lookup tables across <see cref="Crc" /> instances, exposed through <see cref="GlobalCache" />. Declared <see langword="volatile" /> so a replacement assigned on one thread is promptly observed by readers on other threads.</summary>
+    private static volatile Lazy<CrcLookupTableCache> s_globalLookupTableCache =
         new(() => new CrcLookupTableCache());
 
     /// <summary>The width of the CRC, in bits, taken from the configured <see cref="CrcStandard.Size" />.</summary>
@@ -227,10 +227,16 @@ public sealed class Crc
     public override void Append(ReadOnlySpan<byte> source) => ProcessBlocks(source);
 
     /// <summary>
-    /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state first.
+    /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state both
+    /// before and after the computation.
     /// </summary>
     /// <param name="data">The input data to hash.</param>
     /// <returns>A byte array containing the finalized CRC value, sized according to <see cref="Size" />.</returns>
+    /// <remarks>
+    /// State is reset after finalization as well as before, matching the reset-before-and-after semantics of the
+    /// shared <c>ComputeHash</c> extension (<c>GetHashAndReset</c>). This keeps the instance reusable for a
+    /// subsequent <see cref="Append(ReadOnlySpan{byte})" /> without the prior input bleeding into the new digest.
+    /// </remarks>
     public byte[] ComputeHash(ReadOnlySpan<byte> data)
     {
         Reset();
@@ -239,6 +245,8 @@ public sealed class Crc
         byte[] buffer = new byte[HashLengthInBytes];
         ulong folded = FoldOutputState(_workingHash);
         WriteHashBytes(folded, HashLengthInBytes, buffer);
+
+        Reset();
         return buffer;
     }
 
