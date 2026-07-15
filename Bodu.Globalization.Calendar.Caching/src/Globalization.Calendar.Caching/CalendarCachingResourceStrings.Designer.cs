@@ -79,6 +79,15 @@ namespace Bodu.Globalization.Calendar.Caching {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The last year must not be earlier than the first year..
+        /// </summary>
+        internal static string Arg_Invalid_YearRangeInverted {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_YearRangeInverted", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The cache time-to-live must be greater than zero, but was {0}..
         /// </summary>
         internal static string Arg_Invalid_TtlNotPositive {

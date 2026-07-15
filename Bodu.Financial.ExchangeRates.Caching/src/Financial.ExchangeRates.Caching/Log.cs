@@ -159,4 +159,15 @@ internal static partial class Log
     /// <param name="exception">The swallowed refresh exception.</param>
     [LoggerMessage(EventId = 4517, Level = LogLevel.Warning, Message = "Refresh-ahead of {fromIsoCode}->{toIsoCode} {startDate}..{endDate} from source '{source}' failed and was swallowed; the next aged hit will retry")]
     public static partial void RefreshAheadFailed(ILogger logger, string source, string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, Exception exception);
+
+    /// <summary>
+    /// Logs that one pair's fetch failed during a warm-up and was swallowed, so the remaining pairs still warm.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="source">The source name the warm-up targeted.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="exception">The swallowed fetch exception.</param>
+    [LoggerMessage(EventId = 4518, Level = LogLevel.Warning, Message = "Warm-up of {fromIsoCode}->{toIsoCode} from source '{source}' failed and was swallowed; remaining pairs continue")]
+    public static partial void WarmPairFailed(ILogger logger, string source, string fromIsoCode, string toIsoCode, Exception exception);
 }

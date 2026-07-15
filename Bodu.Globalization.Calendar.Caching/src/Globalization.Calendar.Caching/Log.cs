@@ -98,4 +98,17 @@ internal static partial class Log
         Level = LogLevel.Warning,
         Message = "Refresh-ahead recompute of notable-date year {year} for territory '{territory}' failed and was swallowed; the next aged hit will retry")]
     public static partial void RefreshAheadFailed(ILogger logger, string territory, int year, Exception exception);
+
+    /// <summary>
+    /// Logs that one territory's resolution failed during a warm-up and was swallowed, so the remaining territories
+    /// still warm.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="territory">The territory whose warm-up failed.</param>
+    /// <param name="exception">The swallowed resolution exception.</param>
+    [LoggerMessage(
+        EventId = 4607,
+        Level = LogLevel.Warning,
+        Message = "Warm-up of notable dates for territory '{territory}' failed and was swallowed; remaining territories continue")]
+    public static partial void WarmTerritoryFailed(ILogger logger, string territory, Exception exception);
 }

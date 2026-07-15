@@ -227,6 +227,54 @@ public sealed class CachingNotableDateService
         return matched.Count == unfiltered.Count ? unfiltered : matched;
     }
 
+    /// <summary>
+    /// Warms the cache for a set of territories over an inclusive span of civil years, resolving each territory's
+    /// whole span through the normal read-through path so cold years are computed and cached while already cached
+    /// years cost only a cache read.
+    /// </summary>
+    /// <param name="territories">The territory codes to warm.</param>
+    /// <param name="firstYear">The inclusive first civil year of the span to warm.</param>
+    /// <param name="lastYear">The inclusive last civil year of the span to warm.</param>
+    /// <returns>The number of territories warmed successfully.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="territories" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="firstYear" /> or <paramref name="lastYear" /> is outside the range representable by
+    /// <see cref="DateOnly" />.
+    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="lastYear" /> precedes <paramref name="firstYear" />.</exception>
+    /// <remarks>
+    /// Territories are warmed sequentially — year resolution is a synchronous, CPU-bound computation with no I/O to
+    /// overlap. A territory whose resolution fails is logged at
+    /// <see cref="Microsoft.Extensions.Logging.LogLevel.Warning" /> and skipped — the remaining territories still
+    /// warm — and is excluded from the returned count. Later queries for any warmed year are cache hits until the
+    /// time-to-live or a resource-version change expires them.
+    /// </remarks>
+    public int Warm(IEnumerable<string> territories, int firstYear, int lastYear)
+    {
+        ThrowHelper.ThrowIfNull(territories);
+        ThrowHelper.ThrowIfOutOfRange(firstYear, DateOnly.MinValue.Year, DateOnly.MaxValue.Year);
+        ThrowHelper.ThrowIfOutOfRange(lastYear, DateOnly.MinValue.Year, DateOnly.MaxValue.Year);
+        if (lastYear < firstYear) throw new ArgumentException(CalendarCachingResourceStrings.Arg_Invalid_YearRangeInverted, nameof(lastYear));
+
+        var span = new DateRange(new DateOnly(firstYear, 1, 1), new DateOnly(lastYear, 12, 31));
+
+        int warmed = 0;
+        foreach (string territory in territories)
+        {
+            try
+            {
+                _ = Resolve(span, territory);
+                warmed++;
+            }
+            catch (Exception ex)
+            {
+                Log.WarmTerritoryFailed(_logger, territory, ex);
+            }
+        }
+
+        return warmed;
+    }
+
     /// <inheritdoc />
     public IReadOnlyList<string> GetSupportedTerritories() =>
         _inner.GetSupportedTerritories();

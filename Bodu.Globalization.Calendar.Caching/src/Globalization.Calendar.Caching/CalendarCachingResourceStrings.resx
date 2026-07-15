@@ -64,6 +64,9 @@
   <data name="Arg_Invalid_TtlJitterOutOfRange" xml:space="preserve">
     <value>The time-to-live jitter fraction must be in the range [0, 1), but was {0}.</value>
   </data>
+  <data name="Arg_Invalid_YearRangeInverted" xml:space="preserve">
+    <value>The last year must not be earlier than the first year.</value>
+  </data>
   <data name="Arg_Invalid_TtlNotPositive" xml:space="preserve">
     <value>The cache time-to-live must be greater than zero, but was {0}.</value>
   </data>
