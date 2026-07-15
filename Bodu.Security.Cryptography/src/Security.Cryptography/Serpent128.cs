@@ -186,6 +186,23 @@ public sealed class Serpent128
         }
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Also synchronizes <see cref="BlockMode" /> so that encryptor and decryptor creation, which read
+    /// <see cref="BlockMode" />, honour the assigned value. Every <see cref="CipherMode" /> member has a matching
+    /// <see cref="CipherModeKind" /> member, so the synchronization always succeeds.
+    /// </remarks>
+    public override CipherMode Mode
+    {
+        get => base.Mode;
+        set
+        {
+            base.Mode = value;
+            if (Enum.TryParse<CipherModeKind>(value.ToString(), out CipherModeKind bm) && Enum.IsDefined(bm))
+                _blockMode = bm;
+        }
+    }
+
     /// <summary>
     /// Creates a new <see cref="Serpent128" /> instance with default parameters.
     /// </summary>
