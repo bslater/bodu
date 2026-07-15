@@ -38,6 +38,28 @@ public sealed partial class XtsModeTransformTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="XtsModeTransform.Transform" /> throws <see cref="ObjectDisposedException" /> after
+    /// disposal, so a disposed transform cannot silently continue from its zeroed tweak state.
+    /// </summary>
+    [TestMethod]
+    public void Transform_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        var dataCipher = new MonitoringBlockCipher(blockSize: ExpectedBlockSize);
+        var tweakCipher = new MonitoringBlockCipher(blockSize: ExpectedBlockSize, xorMask: 0x55);
+        byte[] tweak = new byte[ExpectedBlockSize];
+        var transform = new XtsModeTransform(dataCipher, tweakCipher, tweak);
+        transform.Dispose();
+
+        byte[] input = new byte[ExpectedBlockSize];
+        byte[] output = new byte[ExpectedBlockSize];
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            transform.Transform(input, output, encrypt: true);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="XtsModeTransform" /> constructor throws <see cref="ArgumentException" /> when the
     /// tweak cipher block size differs from the data cipher block size.
     /// </summary>

@@ -51,4 +51,24 @@ public sealed partial class CbcModeTransformTests
         transform.Dispose();
         transform.Dispose();
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CbcModeTransform.Transform" /> throws <see cref="ObjectDisposedException" /> after
+    /// disposal, so a disposed transform cannot silently continue from its zeroed chaining vector.
+    /// </summary>
+    [TestMethod]
+    public void Transform_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
+        var transform = new CbcModeTransform(cipher, new byte[ExpectedBlockSize]);
+        transform.Dispose();
+
+        byte[] input = new byte[ExpectedBlockSize];
+        byte[] output = new byte[ExpectedBlockSize];
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            transform.Transform(input, output, encrypt: true);
+        });
+    }
 }

@@ -130,6 +130,8 @@ public sealed class CtsModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         int blockSize = _cipher.BlockSize / 8;
 
         if (input.Length < blockSize)

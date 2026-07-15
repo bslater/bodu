@@ -103,6 +103,7 @@ public sealed class CtrModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
         CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 

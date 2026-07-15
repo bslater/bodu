@@ -131,6 +131,8 @@ public sealed class XtsModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         int blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.

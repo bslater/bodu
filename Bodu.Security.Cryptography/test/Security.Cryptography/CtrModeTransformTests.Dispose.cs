@@ -51,4 +51,24 @@ public sealed partial class CtrModeTransformTests
         transform.Dispose();
         transform.Dispose();
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CtrModeTransform.Transform" /> throws <see cref="ObjectDisposedException" /> after
+    /// disposal, so a disposed transform cannot silently produce keystream from its zeroed counter.
+    /// </summary>
+    [TestMethod]
+    public void Transform_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
+        var transform = new CtrModeTransform(cipher, new byte[ExpectedBlockSize]);
+        transform.Dispose();
+
+        byte[] input = new byte[ExpectedBlockSize];
+        byte[] output = new byte[ExpectedBlockSize];
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            transform.Transform(input, output, encrypt: true);
+        });
+    }
 }
