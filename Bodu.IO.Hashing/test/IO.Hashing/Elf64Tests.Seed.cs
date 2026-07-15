@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
 
 namespace Bodu.IO.Hashing;
 
@@ -32,7 +31,7 @@ public partial class Elf64Tests
 
     /// <summary>
     /// Verifies that setting <see cref="Elf64.Seed" /> after input has been consumed throws
-    /// <see cref="CryptographicUnexpectedOperationException" />.
+    /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
     public void Seed_WhenSetAfterHashingStarted_ShouldThrowExactly()
@@ -40,7 +39,7 @@ public partial class Elf64Tests
         Elf64 algorithm = new();
         algorithm.Append(new byte[] { 1, 2, 3 });
 
-        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() => algorithm.Seed = 1234UL);
+        Assert.ThrowsExactly<InvalidOperationException>(() => algorithm.Seed = 1234UL);
     }
 
     /// <summary>
