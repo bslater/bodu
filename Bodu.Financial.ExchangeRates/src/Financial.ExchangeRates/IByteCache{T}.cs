@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IByteCache{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,8 +15,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// A response is keyed by the download unit that produced it. Because a unit that covers the recent past can gain a new
 /// observation over time, a cached entry is treated as stale once it is older than a caller-supplied refresh interval.
-/// Implementations are expected to be resilient: a cache failure should manifest as a miss rather than an exception that
-/// breaks rate retrieval.
+/// Implementations are expected to be resilient: a cache failure should manifest as a miss rather than an exception
+/// that breaks rate retrieval.
 /// </remarks>
 public interface IByteCache<TKey>
 {

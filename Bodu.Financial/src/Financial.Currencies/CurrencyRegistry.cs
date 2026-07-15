@@ -75,8 +75,8 @@ public static class CurrencyRegistry
     /// <exception cref="ArgumentNullException"><paramref name="isoCode" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">No currency is registered under <paramref name="isoCode" />.</exception>
     /// <remarks>
-    /// Resolution is case-sensitive and matches canonical uppercase ISO 4217 codes only; a lower- or mixed-case code
-    /// is treated as unknown and throws <see cref="KeyNotFoundException" />.
+    /// Resolution is case-sensitive and matches canonical uppercase ISO 4217 codes only; a lower- or mixed-case code is
+    /// treated as unknown and throws <see cref="KeyNotFoundException" />.
     /// </remarks>
     public static CurrencyInfo Get(string isoCode)
     {

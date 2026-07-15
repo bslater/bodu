@@ -396,7 +396,9 @@ public static partial class YamlSerializer
     /// </summary>
     /// <param name="type">The member's declared type.</param>
     /// <param name="value">The member's current value.</param>
-    /// <returns><see langword="true" /> when the value is the type default; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the value is the type default; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsTypeDefault(Type type, object? value)
     {
         if (value is null)

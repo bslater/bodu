@@ -14,8 +14,8 @@ namespace Bodu.Text.Bencode.Serialization.Metadata;
 
 /// <summary>
 /// Builds the <see cref="TypeMetadata" /> for a type by reflecting over its public properties, its public fields (when
-/// surfaced by <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="IncludeAttribute" />), and
-/// its constructors, applying the serializer's naming policy, attributes, and converter resolution rules.
+/// surfaced by <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="IncludeAttribute" />), and its
+/// constructors, applying the serializer's naming policy, attributes, and converter resolution rules.
 /// </summary>
 internal static class MetadataResolver
 {

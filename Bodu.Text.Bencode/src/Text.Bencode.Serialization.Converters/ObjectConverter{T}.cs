@@ -215,8 +215,7 @@ internal sealed class ObjectConverter<T>
     /// A <see langword="null" /> value is always skipped because Bencode cannot represent it. For a non-null value, the
     /// effective condition is the member's <see cref="PropertyMetadata.ConditionalIgnore" /> when set, otherwise
     /// <see cref="BencodeSerializerOptions.DefaultIgnoreCondition" />: a value is skipped when the effective condition
-    /// is <see cref="IgnoreCondition.WhenWritingDefault" /> and the value equals the member's default-type
-    /// value.
+    /// is <see cref="IgnoreCondition.WhenWritingDefault" /> and the value equals the member's default-type value.
     /// </remarks>
     private static bool ShouldSkip(PropertyMetadata property, object? value, BencodeSerializerOptions options)
     {
@@ -229,8 +228,8 @@ internal sealed class ObjectConverter<T>
 
     /// <summary>
     /// Constructs the instance using the type's construction plan, invoking the chosen constructor only. Settable
-    /// members are assigned in a separate step so that an <see cref="IOnDeserializing" /> callback can run
-    /// between construction and member population.
+    /// members are assigned in a separate step so that an <see cref="IOnDeserializing" /> callback can run between
+    /// construction and member population.
     /// </summary>
     /// <param name="metadata">The type metadata.</param>
     /// <param name="values">The read member values, used to bind constructor arguments.</param>
@@ -261,8 +260,8 @@ internal sealed class ObjectConverter<T>
 
     /// <summary>
     /// Assigns the read values to the settable members of a constructed instance, honoring each member's effective
-    /// object-creation handling so that a <see cref="ObjectCreationHandling.Populate" /> member merges its read
-    /// entries into the existing collection or dictionary instead of replacing it.
+    /// object-creation handling so that a <see cref="ObjectCreationHandling.Populate" /> member merges its read entries
+    /// into the existing collection or dictionary instead of replacing it.
     /// </summary>
     /// <param name="metadata">The type metadata, used to determine constructor binding and effective handling.</param>
     /// <param name="values">The read member values.</param>
@@ -274,8 +273,8 @@ internal sealed class ObjectConverter<T>
     /// the member's <see cref="PropertyMetadata.CreationHandling" />, then the type's
     /// <see cref="TypeMetadata.CreationHandling" />, then
     /// <see cref="BencodeSerializerOptions.PreferredObjectCreationHandling" />;
-    /// <see cref="ObjectCreationHandling.Populate" /> is applied only when the member already holds a
-    /// populatable collection or dictionary, otherwise the value is set through the member's setter.
+    /// <see cref="ObjectCreationHandling.Populate" /> is applied only when the member already holds a populatable
+    /// collection or dictionary, otherwise the value is set through the member's setter.
     /// </remarks>
     private static void AssignSettableMembers(TypeMetadata metadata, Dictionary<PropertyMetadata, object?> values, object instance, BencodeSerializerOptions options)
     {

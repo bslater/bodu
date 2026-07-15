@@ -56,61 +56,57 @@
     <Project Path="Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
     <Project Path="Bodu.Globalization.Calendar\test\Bodu.Globalization.Calendar.Test.csproj" />
   </Folder>
-  <Folder Name="/Bodu.Globalization.Calendar/Bodu.Globalization.Calendar.Data/">
-    <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Data.Test.Common/Bodu.Globalization.Calendar.Data.Test.Common.csproj" />
+  <Folder Name="/Bodu.IO.Hashing/">
+    <Project Path="Bodu.IO.Hashing\src\Bodu.IO.Hashing.csproj" />
+    <Project Path="Bodu.IO.Hashing\test\Bodu.IO.Hashing.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Globalization.Calendar/Caching/">
+    <Project Path="Bodu.Globalization.Calendar.Caching/bench/Bodu.Globalization.Calendar.Caching.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
+    <Project Path="Bodu.Globalization.Calendar.Caching.Distributed\src\Bodu.Globalization.Calendar.Caching.Distributed.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Caching.Distributed\test\Bodu.Globalization.Calendar.Caching.Distributed.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Caching.Sqlite\src\Bodu.Globalization.Calendar.Caching.Sqlite.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Caching.Sqlite\test\Bodu.Globalization.Calendar.Caching.Sqlite.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Caching\src\Bodu.Globalization.Calendar.Caching.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Caching\test\Bodu.Globalization.Calendar.Caching.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Globalization.Calendar/Data/">
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Africa/src/Bodu.Globalization.Calendar.Africa.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Africa/test/Bodu.Globalization.Calendar.Africa.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Americas/src/Bodu.Globalization.Calendar.Americas.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Americas/test/Bodu.Globalization.Calendar.Americas.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.AsiaPacific/src/Bodu.Globalization.Calendar.AsiaPacific.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.AsiaPacific/test/Bodu.Globalization.Calendar.AsiaPacific.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Data.Test.Common/Bodu.Globalization.Calendar.Data.Test.Common.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Europe/src/Bodu.Globalization.Calendar.Europe.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Europe/test/Bodu.Globalization.Calendar.Europe.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.MiddleEast/src/Bodu.Globalization.Calendar.MiddleEast.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.MiddleEast/test/Bodu.Globalization.Calendar.MiddleEast.Test.csproj" />
   </Folder>
-  <Folder Name="/Bodu.IO.Hashing/">
-    <Project Path="Bodu.IO.Hashing\src\Bodu.IO.Hashing.csproj" />
-    <Project Path="Bodu.IO.Hashing\test\Bodu.IO.Hashing.Test.csproj" />
-  </Folder>
   <Folder Name="/Bodu.IO.Compound/">
     <Project Path="Bodu.IO.Compound/src/Bodu.IO.Compound.csproj" />
     <Project Path="Bodu.IO.Compound/test/Bodu.IO.Compound.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Financial/Caching/">
+    <Project Path="Bodu.Financial.ExchangeRates.Caching/bench/Bodu.Financial.ExchangeRates.Caching.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed/src/Bodu.Financial.ExchangeRates.Caching.Distributed.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed/test/Bodu.Financial.ExchangeRates.Caching.Distributed.Test.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Bodu.Financial.ExchangeRates.Caching.Sqlite.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite/test/Bodu.Financial.ExchangeRates.Caching.Sqlite.Test.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching/src/Bodu.Financial.ExchangeRates.Caching.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Caching/test/Bodu.Financial.ExchangeRates.Caching.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Financial/Providers/" />
-  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates/">
-    <Project Path="Bodu.Financial.ExchangeRates/src/Bodu.Financial.ExchangeRates.csproj" />
-    <Project Path="Bodu.Financial.ExchangeRates/test/Bodu.Financial.ExchangeRates.Test.csproj" />
-  </Folder>
-  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.DependencyInjection/">
-    <Project Path="Bodu.Financial.ExchangeRates.DependencyInjection/src/Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
-  </Folder>
-  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Testing/">
-    <Project Path="Bodu.Financial.ExchangeRates.Testing/src/Bodu.Financial.ExchangeRates.Testing.csproj" />
-  </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Boe/">
     <Project Path="Bodu.Financial.ExchangeRates.Boe/src/Bodu.Financial.ExchangeRates.Boe.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Boe/test/Bodu.Financial.ExchangeRates.Boe.Test.csproj" />
   </Folder>
-  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Caching.Distributed/">
-    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed/src/Bodu.Financial.ExchangeRates.Caching.Distributed.csproj" />
-    <Project Path="Bodu.Financial.ExchangeRates.Caching.Distributed/test/Bodu.Financial.ExchangeRates.Caching.Distributed.Test.csproj" />
-  </Folder>
-  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Caching.Sqlite/">
-    <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Bodu.Financial.ExchangeRates.Caching.Sqlite.csproj" />
-    <Project Path="Bodu.Financial.ExchangeRates.Caching.Sqlite/test/Bodu.Financial.ExchangeRates.Caching.Sqlite.Test.csproj" />
-  </Folder>
-  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Caching/">
-    <Project Path="Bodu.Financial.ExchangeRates.Caching/src/Bodu.Financial.ExchangeRates.Caching.csproj" />
-    <Project Path="Bodu.Financial.ExchangeRates.Caching/test/Bodu.Financial.ExchangeRates.Caching.Test.csproj" />
-  </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Ecb/">
     <Project Path="Bodu.Financial.ExchangeRates.Ecb/src/Bodu.Financial.ExchangeRates.Ecb.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Ecb/test/Bodu.Financial.ExchangeRates.Ecb.Test.csproj" />
-  </Folder>
-  <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.ExchangeRateHost/">
-    <Project Path="Bodu.Financial.ExchangeRates.ExchangeRateHost/src/Bodu.Financial.ExchangeRates.ExchangeRateHost.csproj" />
-    <Project Path="Bodu.Financial.ExchangeRates.ExchangeRateHost/test/Bodu.Financial.ExchangeRates.ExchangeRateHost.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Financial/Providers/Bodu.Financial.ExchangeRates.Fixer/">
     <Project Path="Bodu.Financial.ExchangeRates.Fixer/src/Bodu.Financial.ExchangeRates.Fixer.csproj" />
@@ -160,6 +156,12 @@
     <Project Path="Bodu.Numerics.Serialization.Json\test\Bodu.Numerics.Serialization.Json.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Financial/">
+    <Project Path="Bodu.Financial.ExchangeRates.DependencyInjection/src/Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.ExchangeRateHost/src/Bodu.Financial.ExchangeRates.ExchangeRateHost.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.ExchangeRateHost/test/Bodu.Financial.ExchangeRates.ExchangeRateHost.Test.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.Testing/src/Bodu.Financial.ExchangeRates.Testing.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates/src/Bodu.Financial.ExchangeRates.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates/test/Bodu.Financial.ExchangeRates.Test.csproj" />
     <Project Path="Bodu.Financial\bench\Bodu.Financial.Benchmarks.csproj">
       <Build Solution="Debug|*" Project="false" />
     </Project>
@@ -175,10 +177,10 @@
     <Project Path="Bodu.Financial.Serialization.Json/test/Bodu.Financial.Serialization.Json.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Security.Cryptography/">
+    <Project Path="Bodu.Security.Cryptography.Simd.Test\test\Bodu.Security.Cryptography.Simd.Test.csproj" />
     <Project Path="Bodu.Security.Cryptography\bench\Bodu.Security.Cryptography.Benchmarks.csproj" />
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
     <Project Path="Bodu.Security.Cryptography\test\Bodu.Security.Cryptography.Test.csproj" />
-    <Project Path="Bodu.Security.Cryptography.Simd.Test\test\Bodu.Security.Cryptography.Simd.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Text.Encoding/">
     <Project Path="Bodu.Text.Encoding/bench/Bodu.Text.Encoding.Benchmarks.csproj">
@@ -201,19 +203,20 @@
     <Project Path="Bodu.Extensions.Configuration.Text\src\Bodu.Extensions.Configuration.Text.csproj" />
     <Project Path="Bodu.Extensions.Configuration.Text\test\Bodu.Extensions.Configuration.Text.Test.csproj" />
   </Folder>
+  <Folder Name="/Samples/" />
   <Folder Name="/Samples/Financial/">
     <Project Path="samples/Financial/Bodu.Financial.Samples.AggregatedRates/Bodu.Financial.Samples.AggregatedRates.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CachedRates/Bodu.Financial.Samples.CachedRates.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CurrencyServices/Bodu.Financial.Samples.CurrencyServices.csproj" />
-    <Project Path="samples/Financial/Bodu.Financial.Samples.CustomProvider/Bodu.Financial.Samples.CustomProvider.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CustomProvider.Test/Bodu.Financial.Samples.CustomProvider.Test.csproj" />
+    <Project Path="samples/Financial/Bodu.Financial.Samples.CustomProvider/Bodu.Financial.Samples.CustomProvider.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.LiveRates/Bodu.Financial.Samples.LiveRates.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.MoneyBasics/Bodu.Financial.Samples.MoneyBasics.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.OfflineRates/Bodu.Financial.Samples.OfflineRates.csproj" />
   </Folder>
   <Folder Name="/Samples/Globalization.Calendar/">
-    <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomAlgorithm/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Test/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Test.csproj" />
+    <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomAlgorithm/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomCalendar/Bodu.Globalization.Calendar.Samples.CustomCalendar.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.NotableDatesBasics/Bodu.Globalization.Calendar.Samples.NotableDatesBasics.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.ServiceHosting/Bodu.Globalization.Calendar.Samples.ServiceHosting.csproj" />
@@ -228,8 +231,8 @@
   <Folder Name="/Samples/IO.Hashing/">
     <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.CheckDigits/Bodu.IO.Hashing.Samples.CheckDigits.csproj" />
     <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.ChecksumTour/Bodu.IO.Hashing.Samples.ChecksumTour.csproj" />
-    <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.CustomCheckDigit/Bodu.IO.Hashing.Samples.CustomCheckDigit.csproj" />
     <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.CustomCheckDigit.Test/Bodu.IO.Hashing.Samples.CustomCheckDigit.Test.csproj" />
+    <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.CustomCheckDigit/Bodu.IO.Hashing.Samples.CustomCheckDigit.csproj" />
   </Folder>
   <Folder Name="/Samples/Text.Bencode/">
     <Project Path="samples/Text.Bencode/Bodu.Text.Bencode.Samples.TorrentFile/Bodu.Text.Bencode.Samples.TorrentFile.csproj" />
@@ -239,8 +242,8 @@
     <Project Path="samples/Text.Configuration/Bodu.Text.Configuration.Samples.ConfigCascade/Bodu.Text.Configuration.Samples.ConfigCascade.csproj" />
   </Folder>
   <Folder Name="/Samples/Text.Encoding/">
-    <Project Path="samples/Text.Encoding/Bodu.Text.Encoding.Samples.CustomEncoding/Bodu.Text.Encoding.Samples.CustomEncoding.csproj" />
     <Project Path="samples/Text.Encoding/Bodu.Text.Encoding.Samples.CustomEncoding.Test/Bodu.Text.Encoding.Samples.CustomEncoding.Test.csproj" />
+    <Project Path="samples/Text.Encoding/Bodu.Text.Encoding.Samples.CustomEncoding/Bodu.Text.Encoding.Samples.CustomEncoding.csproj" />
     <Project Path="samples/Text.Encoding/Bodu.Text.Encoding.Samples.EncodingTour/Bodu.Text.Encoding.Samples.EncodingTour.csproj" />
   </Folder>
   <Folder Name="/Samples/Text.Formats/">

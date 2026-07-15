@@ -63,8 +63,8 @@ public abstract class WebRateProviderOptions
     public TimeSpan HttpTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
-    /// Gets or sets the maximum number of response bytes a provider-owned <see cref="HttpClient" /> buffers,
-    /// bounding the memory a single response can consume.
+    /// Gets or sets the maximum number of response bytes a provider-owned <see cref="HttpClient" /> buffers, bounding
+    /// the memory a single response can consume.
     /// </summary>
     /// <value>
     /// The response buffer cap, in bytes; defaults to
@@ -72,8 +72,8 @@ public abstract class WebRateProviderOptions
     /// </value>
     /// <remarks>
     /// This value is applied when the provider creates and owns its own <see cref="HttpClient" />. When a client is
-    /// supplied to the provider directly, bounding its response size is the caller's responsibility and this value
-    /// is not applied.
+    /// supplied to the provider directly, bounding its response size is the caller's responsibility and this value is
+    /// not applied.
     /// </remarks>
     public long MaxResponseContentBufferSize { get; set; } =
         RateProviderHttpClientFactory.DefaultMaxResponseContentBufferSize;
@@ -271,14 +271,14 @@ public abstract class WebRateProviderOptions
     /// </summary>
     /// <param name="value">The alias value to test.</param>
     /// <returns>
-    /// <see langword="true" /> when <paramref name="value" /> is a non-empty run of ASCII letters and digits;
-    /// otherwise <see langword="false" />.
+    /// <see langword="true" /> when <paramref name="value" /> is a non-empty run of ASCII letters and digits; otherwise
+    /// <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// Alias values are substituted verbatim into a source's request path. Constraining them to alphanumerics
-    /// keeps them URL-safe — a value containing a path or query delimiter (<c>/</c>, <c>?</c>, <c>#</c>,
-    /// <c>\</c>, <c>%</c>) or a parent-directory reference cannot inject an extra path or query segment into the
-    /// request. Source symbol components (for example <c>USD</c> or <c>BTC</c>) are already alphanumeric.
+    /// Alias values are substituted verbatim into a source's request path. Constraining them to alphanumerics keeps
+    /// them URL-safe — a value containing a path or query delimiter (<c>/</c>, <c>?</c>, <c>#</c>, <c>\</c>, <c>%</c>)
+    /// or a parent-directory reference cannot inject an extra path or query segment into the request. Source symbol
+    /// components (for example <c>USD</c> or <c>BTC</c>) are already alphanumeric.
     /// </remarks>
     private static bool IsUrlSafeAliasValue(string value)
     {

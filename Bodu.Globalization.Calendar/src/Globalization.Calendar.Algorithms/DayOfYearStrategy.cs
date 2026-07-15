@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DayOfYearStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,9 +12,9 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A positive ordinal counts from 1 January (<c>1</c> is 1 January); a negative ordinal counts from 31 December
-/// (<c>-1</c> is 31 December). A positive ordinal beyond the number of days in the year produces no occurrence, so day
-/// 366 exists only in a leap year.
+/// A positive ordinal counts from 1 January (<c>1</c> is 1 January); a negative ordinal counts from 31 December (<c>-1</c>
+/// is 31 December). A positive ordinal beyond the number of days in the year produces no occurrence, so day 366 exists
+/// only in a leap year.
 /// </para>
 /// <example>
 /// <code language="csharp">

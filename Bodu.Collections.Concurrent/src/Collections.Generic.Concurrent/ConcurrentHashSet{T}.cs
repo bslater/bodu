@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentHashSet{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -47,8 +47,8 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// Performance characteristics differ from lock-based designs: progress is guaranteed without blocking, but every
 /// successful <see cref="Add" /> allocates one list node and every successful <see cref="Remove" /> allocates one
 /// short-lived marker (reclaimed by the garbage collector once unlinked). <see cref="Contains" /> is allocation-free.
-/// Elements that share a hash code form a single linearly scanned run, so — as with any hash set — a comparer with
-/// poor hash distribution degrades lookups toward linear time.
+/// Elements that share a hash code form a single linearly scanned run, so — as with any hash set — a comparer with poor
+/// hash distribution degrades lookups toward linear time.
 /// </para>
 /// <para>
 /// The set implements the full <see cref="ISet{T}" /> contract. The bulk set-algebra operations it adds (

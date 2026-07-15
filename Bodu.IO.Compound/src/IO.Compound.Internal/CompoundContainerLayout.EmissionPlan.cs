@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundContainerLayout.EmissionPlan.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ internal static partial class CompoundContainerLayout
 {
     /// <summary>
     /// The precomputed geometry of a compound-file serialization: the directory entries and every sector count and
-    /// start index the emit phase needs. Computed once by <see cref="PreparePlan" /> with no byte output, then
-    /// consumed by the synchronous and asynchronous emit paths so they can never diverge in layout.
+    /// start index the emit phase needs. Computed once by <see cref="PreparePlan" /> with no byte output, then consumed
+    /// by the synchronous and asynchronous emit paths so they can never diverge in layout.
     /// </summary>
     /// <param name="Entries">The directory entries, in stream-identifier order, with sector indices assigned.</param>
     /// <param name="SectorSize">The regular sector size, in bytes.</param>
@@ -21,7 +21,9 @@ internal static partial class CompoundContainerLayout
     /// <param name="DirectorySectors">The number of directory sectors.</param>
     /// <param name="MiniFatStart">The index of the first mini-FAT sector, or the end-of-chain marker when none.</param>
     /// <param name="MiniFatSectors">The number of mini-FAT sectors.</param>
-    /// <param name="MiniStreamStart">The index of the first mini-stream sector, or the end-of-chain marker when none.</param>
+    /// <param name="MiniStreamStart">
+    /// The index of the first mini-stream sector, or the end-of-chain marker when none.
+    /// </param>
     /// <param name="MiniStreamSectors">The number of mini-stream sectors.</param>
     /// <param name="TotalMiniSectors">The total number of mini sectors.</param>
     /// <param name="DataSectorCount">The number of non-FAT, non-DIFAT sectors.</param>

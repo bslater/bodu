@@ -37,11 +37,17 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// <para>
 /// When <see cref="RateAggregationOptions.RespectHistoryAvailability" /> is enabled (the default), children that
-/// advertise their history depth through <see cref="IHistoricalRateProvider" /> and have declared they cannot serve
-/// any part of the requested date or window are dropped from the candidate set before the strategy runs, so a priority
+/// advertise their history depth through <see cref="IHistoricalRateProvider" /> and have declared they cannot serve any
+/// part of the requested date or window are dropped from the candidate set before the strategy runs, so a priority
 /// fallback does not waste a call on a source that cannot answer. A non-aware child is treated as unbounded and always
 /// kept, and the group's own <see cref="HistoryAvailability" /> composes the most generous declaration across the
 /// children.
+/// </para>
+/// <para>
+/// Routing is frozen at construction: the per-pair routes and default order are resolved to their candidate sets once,
+/// after the constructor validates every referenced name. Mutating the supplied
+/// <see cref="RateAggregationOptions.Routes" /> or <see cref="RateAggregationOptions.DefaultProviderOrder" /> after
+/// construction has no effect on this instance; construct a new provider to change routing.
 /// </para>
 /// </remarks>
 /// <example>
@@ -90,6 +96,12 @@ public sealed class AggregatingRateProvider
 
     /// <summary>The aggregation options carrying the default strategy, default order, and per-pair routes.</summary>
     private readonly RateAggregationOptions _options;
+
+    /// <summary>The per-pair routes resolved to their candidate arrays and strategies once at construction, so a routed lookup probes a dictionary instead of rebuilding the candidate array per call. Routing is frozen at construction; later mutation of the options' routes has no effect.</summary>
+    private readonly Dictionary<CurrencyPair, (NamedDatedRateProvider[] Candidates, IRateAggregationStrategy Strategy)> _routes;
+
+    /// <summary>The default provider order resolved to its candidate array once at construction, or <see langword="null" /> when no default order is configured.</summary>
+    private readonly NamedDatedRateProvider[]? _defaultOrder;
 
     /// <summary>The time source used to resolve the current date for the timeless surface.</summary>
     private readonly TimeProvider _timeProvider;
@@ -159,6 +171,16 @@ public sealed class AggregatingRateProvider
         _children = snapshot;
 
         ValidateReferencedNames(nameof(options));
+
+        // Resolve every route (and the default order) to its candidate array once: the name->provider map and each
+        // route's provider order are immutable after construction, so per-call resolution would rebuild identical
+        // arrays. This also freezes routing at construction — mutating the options' routes afterwards has no effect,
+        // making explicit the contract the constructor-time validation always implied.
+        _routes = new Dictionary<CurrencyPair, (NamedDatedRateProvider[] Candidates, IRateAggregationStrategy Strategy)>(_options.Routes.Count);
+        foreach (KeyValuePair<CurrencyPair, CurrencyPairRoute> entry in _options.Routes)
+            _routes[entry.Key] = (ResolveNames(entry.Value.ProviderOrder), entry.Value.Strategy ?? _options.DefaultStrategy);
+
+        _defaultOrder = _options.DefaultProviderOrder is not null ? ResolveNames(_options.DefaultProviderOrder) : null;
     }
 
     /// <summary>
@@ -173,8 +195,8 @@ public sealed class AggregatingRateProvider
     /// </summary>
     /// <value>
     /// <see cref="RateHistoryAvailability.Unbounded" /> when any child is
-    /// <see cref="RateHistoryAvailability.Unbounded" /> or does not implement <see cref="IHistoricalRateProvider" />
-    /// (a non-aware child declares no floor); otherwise the child availability whose earliest available date, evaluated
+    /// <see cref="RateHistoryAvailability.Unbounded" /> or does not implement <see cref="IHistoricalRateProvider" /> (a
+    /// non-aware child declares no floor); otherwise the child availability whose earliest available date, evaluated
     /// against the current date, reaches furthest back.
     /// </value>
     public RateHistoryAvailability HistoryAvailability
@@ -356,14 +378,14 @@ public sealed class AggregatingRateProvider
     /// <returns>The ordered candidates and the strategy to combine them.</returns>
     private (NamedDatedRateProvider[] Candidates, IRateAggregationStrategy Strategy) ResolveRoute(CurrencyPair pair, bool allowInverse)
     {
-        if (_options.Routes.TryGetValue(pair, out CurrencyPairRoute? route))
-            return (ResolveNames(route.ProviderOrder), route.Strategy ?? _options.DefaultStrategy);
+        if (_routes.TryGetValue(pair, out (NamedDatedRateProvider[] Candidates, IRateAggregationStrategy Strategy) route))
+            return route;
 
-        if (allowInverse && _options.Routes.TryGetValue(pair.Inverse(), out CurrencyPairRoute? inverseRoute))
-            return (ResolveNames(inverseRoute.ProviderOrder), inverseRoute.Strategy ?? _options.DefaultStrategy);
+        if (allowInverse && _routes.TryGetValue(pair.Inverse(), out (NamedDatedRateProvider[] Candidates, IRateAggregationStrategy Strategy) inverseRoute))
+            return inverseRoute;
 
-        if (_options.DefaultProviderOrder is not null)
-            return (ResolveNames(_options.DefaultProviderOrder), _options.DefaultStrategy);
+        if (_defaultOrder is not null)
+            return (_defaultOrder, _options.DefaultStrategy);
 
         return (_children, _options.DefaultStrategy);
     }

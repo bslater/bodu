@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IDateRecurrenceStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,11 +18,12 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// either a single-date strategy or a recurrence strategy.
 /// </para>
 /// <para>
-/// Implementations must be deterministic and independent of <see cref="System.Globalization.CultureInfo.CurrentCulture" />.
-/// The returned dates must be in ascending chronological order, contain no duplicates, and fall entirely within the
-/// supplied <paramref name="range" />. Generation is always bounded by the range; an implementation must never expose
-/// or produce an unbounded sequence, and whether a given date is an occurrence must not depend on the size or start of
-/// the query range (anchor-based patterns are query-window invariant).
+/// Implementations must be deterministic and independent of
+/// <see cref="System.Globalization.CultureInfo.CurrentCulture" />. The returned dates must be in ascending
+/// chronological order, contain no duplicates, and fall entirely within the supplied <paramref name="range" />.
+/// Generation is always bounded by the range; an implementation must never expose or produce an unbounded sequence, and
+/// whether a given date is an occurrence must not depend on the size or start of the query range (anchor-based patterns
+/// are query-window invariant).
 /// </para>
 /// </remarks>
 /// <seealso cref="IDateCalculationStrategy" />

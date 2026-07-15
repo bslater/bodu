@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CfbStreamDataSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ namespace Bodu.IO.Compound.Internal;
 /// </summary>
 /// <remarks>
 /// Reads are serialized by a semaphore because they move the shared stream position, so a streaming compound file
-/// supports concurrent access but not parallel reads. The same gate guards the synchronous and asynchronous read
-/// paths (a monitor lock cannot span an <c>await</c>). The source does not own the stream; the owning
+/// supports concurrent access but not parallel reads. The same gate guards the synchronous and asynchronous read paths
+/// (a monitor lock cannot span an <c>await</c>). The source does not own the stream; the owning
 /// <see cref="CompoundFile" /> disposes it according to its <c>leaveOpen</c> contract.
 /// </remarks>
 internal sealed class CfbStreamDataSource

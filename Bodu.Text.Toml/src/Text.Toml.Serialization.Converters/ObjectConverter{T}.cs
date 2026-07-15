@@ -298,8 +298,8 @@ internal sealed class ObjectConverter<T>
 
     /// <summary>
     /// Assigns the read values to the settable members of a constructed instance, honoring each member's effective
-    /// object-creation handling so that a <see cref="ObjectCreationHandling.Populate" /> member merges its read
-    /// entries into the existing collection or dictionary instead of replacing it.
+    /// object-creation handling so that a <see cref="ObjectCreationHandling.Populate" /> member merges its read entries
+    /// into the existing collection or dictionary instead of replacing it.
     /// </summary>
     /// <param name="metadata">The type metadata, used to determine constructor binding and effective handling.</param>
     /// <param name="values">The read member values.</param>

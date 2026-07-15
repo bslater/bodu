@@ -61,6 +61,15 @@ namespace Bodu.Financial.ExchangeRates.Caching {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The entry expiration margin must not be negative, but was {0}..
+        /// </summary>
+        internal static string Arg_Invalid_EntryExpirationMarginNegative {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_EntryExpirationMarginNegative", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The cache key prefix must be either null or a non-empty, non-white-space value..
         /// </summary>
         internal static string Arg_Invalid_KeyPrefixWhiteSpace {

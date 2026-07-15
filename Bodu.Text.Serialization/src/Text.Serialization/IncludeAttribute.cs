@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IncludeAttribute.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ namespace Bodu.Text.Serialization;
 /// <remarks>
 /// Without this attribute a property is included only when it exposes a public getter, and is assigned only through a
 /// public setter; when the attribute is present the serializer binds through the declared accessors regardless of their
-/// visibility. Public fields participate only when this attribute is applied or the serializer options' <c>IncludeFields</c>
-/// setting is enabled; non-public fields are never surfaced.
+/// visibility. Public fields participate only when this attribute is applied or the serializer options'
+/// <c>IncludeFields</c> setting is enabled; non-public fields are never surfaced.
 /// </remarks>
 /// <example>
 /// <code language="csharp">

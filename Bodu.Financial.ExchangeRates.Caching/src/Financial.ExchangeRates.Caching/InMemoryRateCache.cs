@@ -69,11 +69,11 @@ public sealed class InMemoryRateCache
     }
 
     /// <inheritdoc />
-    private protected override CachePairState ReadState(CurrencyPair pair) =>
+    internal override CachePairState ReadState(CurrencyPair pair) =>
         _store.TryGetValue(pair, out CachePairState? state) ? state : CachePairState.Empty;
 
     /// <inheritdoc />
-    private protected override bool WriteState(CurrencyPair pair, CachePairState state)
+    internal override bool WriteState(CurrencyPair pair, CachePairState state)
     {
         // Drop the pair entirely only when nothing remains to retain, so an empty state does not linger in the map.
         if (state.Entries.Count == 0 && state.Coverage.Count == 0)
@@ -90,7 +90,10 @@ public sealed class InMemoryRateCache
         for (int i = 0; i < state.Coverage.Count; i++)
             coverage[i] = state.Coverage[i];
 
-        _store[pair] = new CachePairState(entries, coverage);
+        // Wrap the snapshot arrays read-only: the all-fresh read fast path serves the stored list by reference, so a
+        // caller must not be able to cast it back to the raw array and mutate cache state. Each write still installs
+        // fresh arrays, so previously returned references never change.
+        _store[pair] = new CachePairState(Array.AsReadOnly(entries), Array.AsReadOnly(coverage));
 
         // An in-memory dictionary write cannot fail, so the write is always durable for the instance lifetime.
         return true;

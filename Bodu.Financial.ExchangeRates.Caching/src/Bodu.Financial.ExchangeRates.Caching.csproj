@@ -27,9 +27,21 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+
+  <!-- Shared caching infrastructure, linked as source (internal, namespace Bodu.Caching). -->
+  <ItemGroup>
+    <Compile Include="..\..\shared\Caching\RateLimitedWarningGate.cs" Link="Caching\RateLimitedWarningGate.cs" />
+    <Compile Include="..\..\shared\Caching\AtomicFileWriter.cs" Link="Caching\AtomicFileWriter.cs" />
+    <Compile Include="..\..\shared\Caching\CacheFreshness.cs" Link="Caching\CacheFreshness.cs" />
+    <Compile Include="..\..\shared\Caching\StripedLockSet.cs" Link="Caching\StripedLockSet.cs" />
+    <Compile Include="..\..\shared\Caching\InvariantCacheText.cs" Link="Caching\InvariantCacheText.cs" />
+    <Compile Include="..\..\shared\Caching\FileParseMemo{T}.cs" Link="Caching\FileParseMemo{T}.cs" />
+    <Compile Include="..\..\shared\Caching\StripedAsyncLockSet{T}.cs" Link="Caching\StripedAsyncLockSet{T}.cs" />
   </ItemGroup>
 
   <!-- Bodu project dependencies. -->

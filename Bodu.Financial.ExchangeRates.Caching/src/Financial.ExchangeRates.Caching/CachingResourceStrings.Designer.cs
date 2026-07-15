@@ -61,6 +61,15 @@ namespace Bodu.Financial.ExchangeRates.Caching {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The expiry jitter fraction must be in the range [0, 1), but was {0}..
+        /// </summary>
+        internal static string Arg_Invalid_ExpiryJitterOutOfRange {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ExpiryJitterOutOfRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The cache expiry must be greater than zero, but was {0}..
         /// </summary>
         internal static string Arg_Invalid_ExpiryNotPositive {
@@ -120,6 +129,51 @@ namespace Bodu.Financial.ExchangeRates.Caching {
         internal static string Arg_Invalid_RangeInverted {
             get {
                 return ResourceManager.GetString("Arg_Invalid_RangeInverted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The refresh-ahead fraction must be in the range [0, 1), but was {0}..
+        /// </summary>
+        internal static string Arg_Invalid_RefreshAheadFractionOutOfRange {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RefreshAheadFractionOutOfRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up look-back days must not be negative, but was {0}..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupLookbackNegative {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupLookbackNegative", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up pair '{0}' is not in the 'XXX/YYY' ISO 4217 form..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupPairMalformed {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupPairMalformed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up pair list must contain at least one currency pair..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupPairsEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupPairsEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The warm-up end date must not be earlier than the start date..
+        /// </summary>
+        internal static string Arg_Invalid_WarmupWindowInverted {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WarmupWindowInverted", resourceCulture);
             }
         }
 

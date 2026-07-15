@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundFile.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -721,7 +721,9 @@ public sealed class CompoundFile
     /// underlying <see cref="SummaryInformation.PropertySet" /> is staged as the <c>\x05SummaryInformation</c> stream
     /// and persisted when <see cref="Commit" /> is called.
     /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="summary" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="summary" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
     public void SetSummaryInformation(SummaryInformation summary)
@@ -742,7 +744,9 @@ public sealed class CompoundFile
     /// record's underlying <see cref="DocumentSummaryInformation.PropertySet" /> is staged as the
     /// <c>\x05DocumentSummaryInformation</c> stream and persisted when <see cref="Commit" /> is called.
     /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="summary" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="summary" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the file is read-only.</exception>
     public void SetDocumentSummaryInformation(DocumentSummaryInformation summary)
@@ -805,7 +809,9 @@ public sealed class CompoundFile
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when the staging tree cannot be represented.
     /// </exception>
-    /// <exception cref="OperationCanceledException">Thrown when <paramref name="cancellationToken" /> is canceled.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is canceled.
+    /// </exception>
     /// <remarks>
     /// The asynchronous counterpart of <see cref="Commit" />, sharing the same layout computation. Cancellation is
     /// observed before any destination mutation and again during the write; a cancellation or failure mid-write leaves

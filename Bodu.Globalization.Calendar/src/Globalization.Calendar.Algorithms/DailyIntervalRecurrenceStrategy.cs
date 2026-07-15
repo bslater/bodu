@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DailyIntervalRecurrenceStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Generates an occurrence every fixed number of calendar days from an anchor date, such as every 14 days from
-/// 1 January 2026.
+/// Generates an occurrence every fixed number of calendar days from an anchor date, such as every 14 days from 1
+/// January 2026.
 /// </summary>
 /// <remarks>
 /// <para>

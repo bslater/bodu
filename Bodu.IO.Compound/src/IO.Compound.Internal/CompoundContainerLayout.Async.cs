@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompoundContainerLayout.Async.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -27,7 +27,9 @@ internal static partial class CompoundContainerLayout
     /// destination partially written.
     /// </remarks>
     /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
-    /// <exception cref="OperationCanceledException">Thrown when <paramref name="cancellationToken" /> is canceled.</exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is canceled.
+    /// </exception>
     internal static async Task WriteToAsync(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options, CancellationToken cancellationToken)
     {
         EmissionPlan plan = PreparePlan(root, options);

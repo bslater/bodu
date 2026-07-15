@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WorkingDayOffsetFromRuleStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -39,9 +39,13 @@ public sealed class WorkingDayOffsetFromRuleStrategy
     /// <param name="ruleRef">
     /// The identifier of the referenced rule, or <see langword="null" /> to use its sole rule.
     /// </param>
-    /// <param name="offsetWorkingDays">The signed number of working days to move from the referenced occurrence.</param>
+    /// <param name="offsetWorkingDays">
+    /// The signed number of working days to move from the referenced occurrence.
+    /// </param>
     /// <param name="referenceYearOffset">The signed year offset applied to the referenced rule.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="notableDateRef" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="notableDateRef" /> is <see langword="null" />.
+    /// </exception>
     public WorkingDayOffsetFromRuleStrategy(string notableDateRef, string? ruleRef, int offsetWorkingDays, int referenceYearOffset = 0)
     {
         ThrowHelper.ThrowIfNull(notableDateRef);

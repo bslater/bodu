@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ResolvedNotableDateSpan.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,9 @@ internal readonly record struct ResolvedNotableDateSpan(DateOnly StartDate, int 
     /// <summary>
     /// Gets the inclusive end date of the span.
     /// </summary>
-    /// <value>The last day the occurrence spans, equal to <c><see cref="StartDate" /> + <see cref="DurationDays" /> - 1</c>.</value>
+    /// <value>
+    /// The last day the occurrence spans, equal to <c><see cref="StartDate" /> + <see cref="DurationDays" /> - 1</c>.
+    /// </value>
     public DateOnly EndDate =>
         StartDate.AddDays(DurationDays - 1);
 }

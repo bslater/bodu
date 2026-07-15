@@ -6,6 +6,7 @@
 
 using System.Collections.Concurrent;
 using System.Globalization;
+using Bodu.Caching;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -97,20 +98,17 @@ public sealed class SqliteRateCache
     /// <summary>The keep-alive connection held open for the instance lifetime so a shared in-memory database is not torn down between operations. Closed on <see cref="Dispose" />.</summary>
     private readonly SqliteConnection _keepAlive;
 
-    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />. One lock object is created per pair on first use and reused thereafter.</summary>
-    private readonly ConcurrentDictionary<CurrencyPair, object> _pairLocks = new();
-
-    /// <summary>Tracks whether the instance has been disposed, as <c>0</c> for live and <c>1</c> for disposed. Stored as an <see cref="int" /> so <see cref="Interlocked.Exchange(ref int, int)" /> can make <see cref="Dispose" /> idempotent: only the first caller observes the transition and releases the keep-alive connection.</summary>
-    private int _disposed;
+    /// <summary>The striped per-pair locks guarding the read-modify-write sequences in <see cref="Store" />, <see cref="RecordCoverage" />, and <see cref="StoreFetchedRange" />.</summary>
+    private readonly StripedLockSet<CurrencyPair> _pairLocks = new();
 
     /// <summary>The logger that receives the rate-limited degradation warnings, or <see cref="NullLogger.Instance" /> when none was supplied.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The minimum interval between two emitted degradation warnings; failures inside the window are suppressed and counted.</summary>
-    private static readonly TimeSpan s_warnCooldown = TimeSpan.FromMinutes(1);
-
-    /// <summary>Rate-limits the degradation warning to at most one emission per <see cref="s_warnCooldown" /> window.</summary>
+    /// <summary>Rate-limits the degradation warning to at most one emission per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.</summary>
     private readonly RateLimitedWarningGate _warnGate;
+
+    /// <summary>Tracks whether the instance has been disposed, as <c>0</c> for live and <c>1</c> for disposed. Stored as an <see cref="int" /> so <see cref="Interlocked.Exchange(ref int, int)" /> can make <see cref="Dispose" /> idempotent: only the first caller observes the transition and releases the keep-alive connection.</summary>
+    private int _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqliteRateCache" /> class.
@@ -144,7 +142,7 @@ public sealed class SqliteRateCache
 
         _options = options;
         _connectionString = options.ResolveConnectionString();
-        _warnGate = new RateLimitedWarningGate(timeProvider, s_warnCooldown);
+        _warnGate = new RateLimitedWarningGate(timeProvider, RateLimitedWarningGate.DefaultCooldown);
         _logger = logger ?? NullLogger.Instance;
 
         // Hold one connection open for the instance lifetime so a shared in-memory database is not destroyed between
@@ -155,6 +153,8 @@ public sealed class SqliteRateCache
         {
             _keepAlive.Open();
             ConfigureConnection(_keepAlive);
+            if (_options.UseWriteAheadLogging)
+                ApplyWriteAheadLogging(_keepAlive);
             EnsureSchema(_keepAlive);
         }
         catch (SqliteException ex) when (!_options.ValidateStorageOnStart && !_options.ThrowOnStorageFailure)
@@ -202,7 +202,7 @@ public sealed class SqliteRateCache
 
     /// <summary>
     /// Reports a swallowed best-effort storage failure to the logger at <see cref="LogLevel.Warning" />, rate-limited
-    /// so at most one warning is emitted per <see cref="s_warnCooldown" /> window.
+    /// so at most one warning is emitted per <see cref="RateLimitedWarningGate.DefaultCooldown" /> window.
     /// </summary>
     /// <param name="operation">The storage operation that failed, such as <c>read</c> or <c>store</c>.</param>
     /// <param name="exception">The swallowed storage exception.</param>
@@ -216,8 +216,11 @@ public sealed class SqliteRateCache
     /// </remarks>
     private void OnStorageFailureSwallowed(string operation, Exception exception)
     {
+        // The counter increments on every swallow; only the log volume is rate-limited by the gate below.
+        CachingSqliteMeter.StorageFailure(_options.Provider, operation);
+
         if (_warnGate.TryClaimWarning(out int suppressed))
-            Log.StorageFailureSwallowed(_logger, _options.Provider, operation, suppressed, exception);
+            CachingSqliteLog.StorageFailureSwallowed(_logger, _options.Provider, operation, suppressed, exception);
     }
 
     /// <inheritdoc />
@@ -227,7 +230,11 @@ public sealed class SqliteRateCache
         if (entries.Count == 0)
             return Array.Empty<CachedRate>();
 
-        return RateCacheRules.SelectFresh(entries, duration, asOf);
+        // The rows are materialized fresh per read, date-ordered by the query, so the all-fresh fast path serves them
+        // without the extra filtered copy SelectFresh would build.
+        return RateCacheRules.IsAllFreshOrdered(entries, duration, asOf)
+            ? entries
+            : RateCacheRules.SelectFresh(entries, duration, asOf);
     }
 
     /// <inheritdoc />
@@ -240,10 +247,25 @@ public sealed class SqliteRateCache
 
         lock (LockFor(pair))
         {
-            List<CachedRate> ordered = RateCacheRules.MergeRows(ReadEntries(pair), rates, duration, asOf);
+            try
+            {
+                // One connection and one transaction span the read-merge-write, so the operation costs a single
+                // pooled open instead of two and the read sees the state the write replaces.
+                using SqliteConnection connection = OpenConnection();
+                using SqliteTransaction transaction = connection.BeginTransaction();
 
-            // Replace only the entries half; the coverage half is left untouched so storing rows never drops coverage.
-            WriteEntries(pair, ordered);
+                List<CachedRate> ordered = RateCacheRules.MergeRows(ReadEntries(connection, transaction, pair), rates, duration, asOf);
+
+                // Replace only the entries half; the coverage half is left untouched so storing rows never drops coverage.
+                ReplaceEntries(connection, transaction, pair, ordered);
+
+                transaction.Commit();
+            }
+            catch (Exception ex) when (ex is SqliteException or IOException && ShouldSwallowStorageFailure)
+            {
+                // Best-effort cache: a failed write must not break rate retrieval.
+                OnStorageFailureSwallowed("store", ex);
+            }
         }
     }
 
@@ -258,11 +280,25 @@ public sealed class SqliteRateCache
 
         lock (LockFor(pair))
         {
-            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
-                RateCacheRules.MergeCoverage(ReadCoverage(pair), start, end, duration, asOf);
+            try
+            {
+                // One connection and one transaction span the read-merge-write; see Store for the rationale.
+                using SqliteConnection connection = OpenConnection();
+                using SqliteTransaction transaction = connection.BeginTransaction();
 
-            // Replace only the coverage half; the entries half is left untouched so recording coverage never drops rows.
-            WriteCoverage(pair, windows);
+                List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
+                    RateCacheRules.MergeCoverage(ReadCoverage(connection, transaction, pair), start, end, duration, asOf);
+
+                // Replace only the coverage half; the entries half is left untouched so recording coverage never drops rows.
+                ReplaceCoverage(connection, transaction, pair, windows);
+
+                transaction.Commit();
+            }
+            catch (Exception ex) when (ex is SqliteException or IOException && ShouldSwallowStorageFailure)
+            {
+                // Best-effort cache: a failed write must not break rate retrieval.
+                OnStorageFailureSwallowed("coverage record", ex);
+            }
         }
     }
 
@@ -280,25 +316,45 @@ public sealed class SqliteRateCache
 
         lock (LockFor(pair))
         {
-            // Merge both halves first, then replace them in one transaction so a reader never observes coverage without
-            // its rows. Both tables are rewritten together: success persists both halves, failure persists neither.
-            List<CachedRate> ordered = RateCacheRules.MergeRows(ReadEntries(pair), rows, duration, asOf);
-            List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
-                RateCacheRules.MergeCoverage(ReadCoverage(pair), start, end, duration, asOf);
+            try
+            {
+                // One connection and one transaction span both reads, both merges, and both replaces, so the whole
+                // range store costs a single pooled open (previously three) and a reader never observes coverage
+                // without its rows: success persists both halves, failure persists neither.
+                using SqliteConnection connection = OpenConnection();
+                using SqliteTransaction transaction = connection.BeginTransaction();
 
-            return WritePairState(pair, ordered, windows)
-                ? RateCacheWriteStatus.Stored
-                : RateCacheWriteStatus.Failed;
+                List<CachedRate> ordered = RateCacheRules.MergeRows(ReadEntries(connection, transaction, pair), rows, duration, asOf);
+                List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows =
+                    RateCacheRules.MergeCoverage(ReadCoverage(connection, transaction, pair), start, end, duration, asOf);
+
+                ReplaceEntries(connection, transaction, pair, ordered);
+                ReplaceCoverage(connection, transaction, pair, windows);
+
+                transaction.Commit();
+                return RateCacheWriteStatus.Stored;
+            }
+            catch (Exception ex) when (ex is SqliteException or IOException && ShouldSwallowStorageFailure)
+            {
+                // Best-effort cache: a failed write must not break rate retrieval. Report the failure so the caller
+                // can refetch rather than trust coverage that was never persisted.
+                OnStorageFailureSwallowed("range store", ex);
+                return RateCacheWriteStatus.Failed;
+            }
         }
     }
 
     /// <summary>
-    /// Releases the keep-alive connection held for the instance lifetime.
+    /// Releases the keep-alive connection held for the instance lifetime and clears the connection pool, so every
+    /// handle to the database is closed and the file is deletable immediately after disposal.
     /// </summary>
     /// <remarks>
     /// Idempotent: a second or concurrent call is a safe no-op. The disposed flag is flipped with
     /// <see cref="Interlocked.Exchange(ref int, int)" /> so exactly one caller wins the transition and disposes the
-    /// keep-alive connection, preventing a double dispose of the underlying handle.
+    /// keep-alive connection, preventing a double dispose of the underlying handle. Clearing the pool is required
+    /// because <c>Microsoft.Data.Sqlite</c> pools closed connections by default: without it, the pooled handles from
+    /// per-operation connections (and the returned keep-alive) keep the database file open past disposal, which blocks
+    /// deletion on Windows and leaves the write-ahead-log sidecar unpurged everywhere.
     /// </remarks>
     public void Dispose()
     {
@@ -306,6 +362,8 @@ public sealed class SqliteRateCache
             return;
 
         _keepAlive.Dispose();
+        using var poolKey = new SqliteConnection(_connectionString);
+        SqliteConnection.ClearPool(poolKey);
     }
 
     /// <summary>
@@ -399,54 +457,6 @@ public sealed class SqliteRateCache
     }
 
     /// <summary>
-    /// Formats a <see cref="DateOnly" /> as invariant <c>yyyy-MM-dd</c> text for storage.
-    /// </summary>
-    /// <param name="value">The date to format.</param>
-    /// <returns>The invariant ISO date text.</returns>
-    private static string FormatDate(DateOnly value) =>
-        value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant <c>yyyy-MM-dd</c> text back into a <see cref="DateOnly" />.
-    /// </summary>
-    /// <param name="text">The stored date text.</param>
-    /// <returns>The parsed date.</returns>
-    private static DateOnly ParseDate(string text) =>
-        DateOnly.ParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Formats a <see cref="DateTimeOffset" /> as invariant round-trip (<c>"O"</c>) text for storage.
-    /// </summary>
-    /// <param name="value">The instant to format.</param>
-    /// <returns>The invariant round-trip text.</returns>
-    private static string FormatInstant(DateTimeOffset value) =>
-        value.ToString("O", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant round-trip (<c>"O"</c>) text back into a <see cref="DateTimeOffset" />.
-    /// </summary>
-    /// <param name="text">The stored instant text.</param>
-    /// <returns>The parsed instant.</returns>
-    private static DateTimeOffset ParseInstant(string text) =>
-        DateTimeOffset.Parse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-
-    /// <summary>
-    /// Formats a decimal rate as invariant text for storage so its scale and precision round-trips losslessly.
-    /// </summary>
-    /// <param name="value">The rate to format.</param>
-    /// <returns>The invariant decimal text.</returns>
-    private static string FormatRate(decimal value) =>
-        value.ToString(CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Parses invariant decimal text back into a rate.
-    /// </summary>
-    /// <param name="text">The stored decimal text.</param>
-    /// <returns>The parsed rate.</returns>
-    private static decimal ParseRate(string text) =>
-        decimal.Parse(text, CultureInfo.InvariantCulture);
-
-    /// <summary>
     /// Reads the persisted rate rows for a pair, returning an empty list when none exist or the read fails.
     /// </summary>
     /// <param name="pair">The currency pair.</param>
@@ -457,37 +467,10 @@ public sealed class SqliteRateCache
     /// </remarks>
     private IReadOnlyList<CachedRate> ReadEntries(CurrencyPair pair)
     {
-        List<CachedRate> rows = new();
-
         try
         {
             using SqliteConnection connection = OpenConnection();
-            using SqliteCommand command = connection.CreateCommand();
-            command.CommandText =
-                "SELECT obs_date, rate, cached_at, observed_at FROM rates WHERE provider = $provider AND from_code = $from AND to_code = $to;";
-            BindPair(command, pair);
-
-            using SqliteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                try
-                {
-                    // A pre-C row, or a row whose source never supplied a fetch instant, stores observed_at as NULL and
-                    // reads back as a null ObservedAtUtc.
-                    DateTimeOffset? observedAt = reader.IsDBNull(3) ? (DateTimeOffset?)null : ParseInstant(reader.GetString(3));
-                    rows.Add(new CachedRate(
-                        ParseDate(reader.GetString(0)),
-                        ParseRate(reader.GetString(1)),
-                        ParseInstant(reader.GetString(2)),
-                        observedAt));
-                }
-                catch (Exception ex) when (ex is FormatException or OverflowException)
-                {
-                    // Skip a single malformed row rather than failing the whole read. An out-of-range decimal rate
-                    // parses as an OverflowException, which must be swallowed alongside FormatException so a poisoned
-                    // value cannot break the documented best-effort read contract.
-                }
-            }
+            return ReadEntries(connection, transaction: null, pair);
         }
         catch (SqliteException ex) when (ShouldSwallowStorageFailure)
         {
@@ -499,41 +482,53 @@ public sealed class SqliteRateCache
             OnStorageFailureSwallowed("read", ex);
             return Array.Empty<CachedRate>();
         }
-
-        return rows;
     }
 
     /// <summary>
-    /// Replaces the persisted rate rows for a pair with <paramref name="entries" />, leaving the coverage half
-    /// untouched.
+    /// Reads the persisted rate rows for a pair on an already open connection, optionally inside a transaction, so a
+    /// write operation's read-merge-write sequence runs on a single connection.
     /// </summary>
+    /// <param name="connection">The open connection to read on.</param>
+    /// <param name="transaction">The transaction the read participates in, or <see langword="null" /> for none.</param>
     /// <param name="pair">The currency pair.</param>
-    /// <param name="entries">The rows to persist.</param>
+    /// <returns>The stored rows, unfiltered.</returns>
     /// <remarks>
-    /// Runs as a single transaction so a reader never observes a half-replaced set. A storage failure is swallowed so a
-    /// failed write does not break rate retrieval.
+    /// Storage failures propagate to the caller, which owns the connection and the degradation policy; a malformed row
+    /// is still skipped here so a single corrupt value never fails the whole read.
     /// </remarks>
-    private void WriteEntries(CurrencyPair pair, List<CachedRate> entries)
+    private List<CachedRate> ReadEntries(SqliteConnection connection, SqliteTransaction? transaction, CurrencyPair pair)
     {
-        try
-        {
-            using SqliteConnection connection = OpenConnection();
-            using SqliteTransaction transaction = connection.BeginTransaction();
+        List<CachedRate> rows = new();
 
-            ReplaceEntries(connection, transaction, pair, entries);
+        using SqliteCommand command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText =
+            "SELECT obs_date, rate, cached_at, observed_at FROM rates WHERE provider = $provider AND from_code = $from AND to_code = $to;";
+        BindPair(command, pair);
 
-            transaction.Commit();
-        }
-        catch (SqliteException ex) when (ShouldSwallowStorageFailure)
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
         {
-            // Best-effort cache: a failed write must not break rate retrieval.
-            OnStorageFailureSwallowed("store", ex);
+            try
+            {
+                // A pre-C row, or a row whose source never supplied a fetch instant, stores observed_at as NULL and
+                // reads back as a null ObservedAtUtc.
+                DateTimeOffset? observedAt = reader.IsDBNull(3) ? (DateTimeOffset?)null : InvariantCacheText.ParseInstant(reader.GetString(3));
+                rows.Add(new CachedRate(
+                    InvariantCacheText.ParseDate(reader.GetString(0)),
+                    InvariantCacheText.ParseDecimal(reader.GetString(1)),
+                    InvariantCacheText.ParseInstant(reader.GetString(2)),
+                    observedAt));
+            }
+            catch (Exception ex) when (ex is FormatException or OverflowException)
+            {
+                // Skip a single malformed row rather than failing the whole read. An out-of-range decimal rate
+                // parses as an OverflowException, which must be swallowed alongside FormatException so a poisoned
+                // value cannot break the documented best-effort read contract.
+            }
         }
-        catch (IOException ex) when (ShouldSwallowStorageFailure)
-        {
-            // Best-effort cache: a failed write must not break rate retrieval.
-            OnStorageFailureSwallowed("store", ex);
-        }
+
+        return rows;
     }
 
     /// <summary>
@@ -545,7 +540,7 @@ public sealed class SqliteRateCache
     /// <param name="pair">The currency pair whose rows are replaced.</param>
     /// <param name="entries">The rows to persist.</param>
     /// <remarks>
-    /// Shared by <see cref="WriteEntries" /> and <see cref="WritePairState" /> so the rate-table statements are
+    /// Shared by <see cref="Store" /> and <see cref="StoreFetchedRange" /> so the rate-table statements are
     /// single-sourced; the caller owns the transaction lifetime and commits or rolls back.
     /// </remarks>
     private void ReplaceEntries(SqliteConnection connection, SqliteTransaction transaction, CurrencyPair pair, List<CachedRate> entries)
@@ -579,10 +574,10 @@ public sealed class SqliteRateCache
 
         foreach (CachedRate entry in entries)
         {
-            date.Value = FormatDate(entry.Date);
-            rate.Value = FormatRate(entry.Rate);
-            cached.Value = FormatInstant(entry.CachedAtUtc);
-            observed.Value = entry.ObservedAtUtc is { } o ? FormatInstant(o) : (object)DBNull.Value;
+            date.Value = InvariantCacheText.FormatDate(entry.Date);
+            rate.Value = InvariantCacheText.FormatDecimal(entry.Rate);
+            cached.Value = InvariantCacheText.FormatInstant(entry.CachedAtUtc);
+            observed.Value = entry.ObservedAtUtc is { } o ? InvariantCacheText.FormatInstant(o) : (object)DBNull.Value;
             insert.ExecuteNonQuery();
         }
     }
@@ -599,31 +594,10 @@ public sealed class SqliteRateCache
     /// </remarks>
     private IReadOnlyList<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> ReadCoverage(CurrencyPair pair)
     {
-        List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> windows = new();
-
         try
         {
             using SqliteConnection connection = OpenConnection();
-            using SqliteCommand command = connection.CreateCommand();
-            command.CommandText =
-                "SELECT start_date, end_date, fetched_at FROM coverage WHERE provider = $provider AND from_code = $from AND to_code = $to;";
-            BindPair(command, pair);
-
-            using SqliteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                try
-                {
-                    windows.Add((
-                        ParseDate(reader.GetString(0)),
-                        ParseDate(reader.GetString(1)),
-                        ParseInstant(reader.GetString(2))));
-                }
-                catch (FormatException)
-                {
-                    // Skip a single malformed window rather than failing the whole read.
-                }
-            }
+            return ReadCoverage(connection, transaction: null, pair);
         }
         catch (SqliteException ex) when (ShouldSwallowStorageFailure)
         {
@@ -635,41 +609,47 @@ public sealed class SqliteRateCache
             OnStorageFailureSwallowed("read", ex);
             return Array.Empty<(DateOnly, DateOnly, DateTimeOffset)>();
         }
-
-        return windows;
     }
 
     /// <summary>
-    /// Replaces the persisted coverage windows for a pair with <paramref name="windows" />, leaving the entries half
-    /// untouched.
+    /// Reads the persisted coverage windows for a pair on an already open connection, optionally inside a transaction,
+    /// so a write operation's read-merge-write sequence runs on a single connection.
     /// </summary>
+    /// <param name="connection">The open connection to read on.</param>
+    /// <param name="transaction">The transaction the read participates in, or <see langword="null" /> for none.</param>
     /// <param name="pair">The currency pair.</param>
-    /// <param name="windows">The windows to persist.</param>
+    /// <returns>The stored windows, unfiltered.</returns>
     /// <remarks>
-    /// Runs as a single transaction so a reader never observes a half-replaced set. A storage failure is swallowed so a
-    /// failed write does not break rate retrieval.
+    /// Storage failures propagate to the caller, which owns the connection and the degradation policy; a malformed
+    /// window is still skipped here so a single corrupt value never fails the whole read.
     /// </remarks>
-    private void WriteCoverage(CurrencyPair pair, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
+    private List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> ReadCoverage(SqliteConnection connection, SqliteTransaction? transaction, CurrencyPair pair)
     {
-        try
-        {
-            using SqliteConnection connection = OpenConnection();
-            using SqliteTransaction transaction = connection.BeginTransaction();
+        List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAt)> windows = new();
 
-            ReplaceCoverage(connection, transaction, pair, windows);
+        using SqliteCommand command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText =
+            "SELECT start_date, end_date, fetched_at FROM coverage WHERE provider = $provider AND from_code = $from AND to_code = $to;";
+        BindPair(command, pair);
 
-            transaction.Commit();
-        }
-        catch (SqliteException ex) when (ShouldSwallowStorageFailure)
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
         {
-            // Best-effort cache: a failed write must not break rate retrieval.
-            OnStorageFailureSwallowed("coverage record", ex);
+            try
+            {
+                windows.Add((
+                    InvariantCacheText.ParseDate(reader.GetString(0)),
+                    InvariantCacheText.ParseDate(reader.GetString(1)),
+                    InvariantCacheText.ParseInstant(reader.GetString(2))));
+            }
+            catch (FormatException)
+            {
+                // Skip a single malformed window rather than failing the whole read.
+            }
         }
-        catch (IOException ex) when (ShouldSwallowStorageFailure)
-        {
-            // Best-effort cache: a failed write must not break rate retrieval.
-            OnStorageFailureSwallowed("coverage record", ex);
-        }
+
+        return windows;
     }
 
     /// <summary>
@@ -681,8 +661,8 @@ public sealed class SqliteRateCache
     /// <param name="pair">The currency pair whose windows are replaced.</param>
     /// <param name="windows">The windows to persist.</param>
     /// <remarks>
-    /// Shared by <see cref="WriteCoverage" /> and <see cref="WritePairState" /> so the coverage-table statements are
-    /// single-sourced; the caller owns the transaction lifetime and commits or rolls back.
+    /// Shared by <see cref="RecordCoverage" /> and <see cref="StoreFetchedRange" /> so the coverage-table statements
+    /// are single-sourced; the caller owns the transaction lifetime and commits or rolls back.
     /// </remarks>
     private void ReplaceCoverage(SqliteConnection connection, SqliteTransaction transaction, CurrencyPair pair, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
     {
@@ -712,53 +692,10 @@ public sealed class SqliteRateCache
 
         foreach ((DateOnly windowStart, DateOnly windowEnd, DateTimeOffset fetchedAt) in windows)
         {
-            start.Value = FormatDate(windowStart);
-            end.Value = FormatDate(windowEnd);
-            fetched.Value = FormatInstant(fetchedAt);
+            start.Value = InvariantCacheText.FormatDate(windowStart);
+            end.Value = InvariantCacheText.FormatDate(windowEnd);
+            fetched.Value = InvariantCacheText.FormatInstant(fetchedAt);
             insert.ExecuteNonQuery();
-        }
-    }
-
-    /// <summary>
-    /// Replaces both the rate rows and the coverage windows for a pair in one transaction, so the two halves are
-    /// persisted together or, on failure, neither is.
-    /// </summary>
-    /// <param name="pair">The currency pair whose state is replaced.</param>
-    /// <param name="entries">The rows to persist.</param>
-    /// <param name="windows">The coverage windows to persist.</param>
-    /// <returns>
-    /// <see langword="true" /> when the transaction committed; <see langword="false" /> when a storage error was
-    /// swallowed and nothing was persisted.
-    /// </returns>
-    /// <remarks>
-    /// Backs <see cref="StoreFetchedRange" />: rewriting both tables in a single transaction is what makes the
-    /// rows-plus-coverage write atomic, closing the window in which coverage could be recorded without its rows.
-    /// </remarks>
-    private bool WritePairState(CurrencyPair pair, List<CachedRate> entries, List<(DateOnly Start, DateOnly End, DateTimeOffset FetchedAtUtc)> windows)
-    {
-        try
-        {
-            using SqliteConnection connection = OpenConnection();
-            using SqliteTransaction transaction = connection.BeginTransaction();
-
-            ReplaceEntries(connection, transaction, pair, entries);
-            ReplaceCoverage(connection, transaction, pair, windows);
-
-            transaction.Commit();
-            return true;
-        }
-        catch (SqliteException ex) when (ShouldSwallowStorageFailure)
-        {
-            // Best-effort cache: a failed write must not break rate retrieval. Report the failure so the caller can
-            // refetch rather than trust coverage that was never persisted.
-            OnStorageFailureSwallowed("range store", ex);
-            return false;
-        }
-        catch (IOException ex) when (ShouldSwallowStorageFailure)
-        {
-            // Best-effort cache: see above.
-            OnStorageFailureSwallowed("range store", ex);
-            return false;
         }
     }
 
@@ -787,15 +724,16 @@ public sealed class SqliteRateCache
     }
 
     /// <summary>
-    /// Applies the connection-level concurrency settings — the <c>busy_timeout</c> wait and, when enabled, write-ahead
-    /// logging — to a freshly opened connection.
+    /// Applies the per-connection concurrency setting — the <c>busy_timeout</c> wait — to a freshly opened connection.
     /// </summary>
     /// <param name="connection">The open connection to configure.</param>
     /// <remarks>
-    /// The <c>busy_timeout</c> pragma is per-connection, so it is set on every open; write-ahead logging is a
-    /// persistent database-level mode that is harmless to re-assert. Setting WAL is best-effort: a database that cannot
-    /// honor it — notably an in-memory database, which reports back its native mode — is left unchanged rather than
-    /// failing. The pragmas run outside any transaction so the journal-mode change is permitted.
+    /// The <c>busy_timeout</c> pragma is per-connection, so it is set on every open. Write-ahead logging is
+    /// deliberately not re-asserted here: <c>journal_mode = WAL</c> is a persistent database-level property, so it is
+    /// applied once to the keep-alive connection at construction (see <see cref="ApplyWriteAheadLogging" />) and every
+    /// later per-operation connection inherits it, saving a PRAGMA round-trip per open. The one behaviour change is
+    /// deliberate: an external process that flips the database's journal mode between operations is no longer corrected
+    /// until the next construction — acceptable for a best-effort cache that always treated WAL as advisory.
     /// </remarks>
     private void ConfigureConnection(SqliteConnection connection)
     {
@@ -806,12 +744,22 @@ public sealed class SqliteRateCache
             "PRAGMA busy_timeout = {0};",
             (long)_options.BusyTimeout.TotalMilliseconds);
         command.ExecuteNonQuery();
+    }
 
-        if (_options.UseWriteAheadLogging)
-        {
-            command.CommandText = "PRAGMA journal_mode = WAL;";
-            command.ExecuteNonQuery();
-        }
+    /// <summary>
+    /// Enables write-ahead logging on the database through an open connection, once at construction.
+    /// </summary>
+    /// <param name="connection">The open keep-alive connection.</param>
+    /// <remarks>
+    /// Best-effort: a database that cannot honor the mode — notably an in-memory database, which reports back its
+    /// native mode — is left unchanged rather than failing. Runs outside any transaction so the journal-mode change is
+    /// permitted.
+    /// </remarks>
+    private static void ApplyWriteAheadLogging(SqliteConnection connection)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = "PRAGMA journal_mode = WAL;";
+        command.ExecuteNonQuery();
     }
 
     /// <summary>
@@ -820,5 +768,5 @@ public sealed class SqliteRateCache
     /// <param name="pair">The currency pair whose write lock is required.</param>
     /// <returns>The per-pair lock object.</returns>
     private object LockFor(CurrencyPair pair) =>
-        _pairLocks.GetOrAdd(pair, static _ => new object());
+        _pairLocks.For(pair);
 }

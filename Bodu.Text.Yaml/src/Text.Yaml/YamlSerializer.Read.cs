@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializer.Read.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -195,7 +195,8 @@ public static partial class YamlSerializer
     }
 
     /// <summary>
-    /// Binds the value at the reader's current position to a loosely-typed graph of dictionaries, lists, and primitives.
+    /// Binds the value at the reader's current position to a loosely-typed graph of dictionaries, lists, and
+    /// primitives.
     /// </summary>
     /// <param name="reader">The reader positioned on the value's first token.</param>
     /// <param name="options">The serializer options.</param>

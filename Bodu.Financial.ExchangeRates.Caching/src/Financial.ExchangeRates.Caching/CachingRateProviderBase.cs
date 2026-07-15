@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Caching;
 using Bodu.Financial.Currencies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -56,9 +57,12 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <see cref="CachingRateOptions.RateProvenanceLogLevel" />.
 /// </para>
 /// <para>
-/// Request coalescing is delegated to the inner provider rather than performed here, so the synchronous and
-/// asynchronous surfaces stay identical: the shipped network providers already single-flight their downloads, so
-/// concurrent misses for the same source collapse onto one fetch at the layer where the cost actually lives.
+/// Request coalescing is deliberately delegated to the inner provider rather than performed here, so the synchronous
+/// and asynchronous surfaces stay identical: both shipped origin bases already single-flight their downloads —
+/// <c>WebRateProvider</c> directly through its <c>SingleFlightCoordinator</c>, and <c>PairWebRateProvider</c> through
+/// the same coordinator via its per-pair-and-window coalescing bridge — so concurrent misses for the same source
+/// collapse onto one fetch at the layer where the cost actually lives, and decorator-level coalescing would be
+/// redundant.
 /// </para>
 /// <para>
 /// The provider is <see cref="IDisposable" />. By default it does not dispose the inner provider it wraps, because the
@@ -68,11 +72,14 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <see cref="System.Net.Http.HttpClient" />) behind the cache by hand.
 /// </para>
 /// </remarks>
-public abstract class CachingRateProviderBase
+public abstract partial class CachingRateProviderBase
     : IDatedRateProvider, IRateProvider, IHistoricalRateProvider, IDisposable
 {
     /// <summary>The single-provider cache that serves fresh rates and stores resolved observations.</summary>
     private readonly IRateCache _cache;
+
+    /// <summary>The cache's asynchronous seam, captured once at construction, or <see langword="null" /> when the cache is synchronous-only; when present the asynchronous surfaces route through it so backend I/O never blocks a thread-pool thread.</summary>
+    private readonly IRateCacheAsync? _asyncCache;
 
     /// <summary>The options carrying the caching durations and the timeless-surface lookup options.</summary>
     private readonly CachingRateOptions _options;
@@ -120,6 +127,7 @@ public abstract class CachingRateProviderBase
         options.Validate();
 
         _cache = cache;
+        _asyncCache = cache as IRateCacheAsync;
         _options = options;
         _timeProvider = timeProvider ?? TimeProvider.System;
         _logger = logger ?? NullLogger.Instance;
@@ -180,6 +188,8 @@ public abstract class CachingRateProviderBase
             result = result with { Provenance = CacheServeProvenance(servedCachedAtUtc, now) };
 
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            CachingMeter.CacheHit(_cache.Provider, "single");
+            MaybeScheduleRefreshAhead(duration, fromIsoCode, toIsoCode, date, options, now, servedCachedAtUtc);
             EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return true;
         }
@@ -196,6 +206,7 @@ public abstract class CachingRateProviderBase
         {
             StoreResult(duration, fromIsoCode, toIsoCode, result, now);
             Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            CachingMeter.CacheMiss(_cache.Provider, "single");
 
             // A miss carries the inner provider's Live provenance through unchanged.
             EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
@@ -232,13 +243,21 @@ public abstract class CachingRateProviderBase
         DateTimeOffset now = _timeProvider.GetUtcNow();
         TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
-        if (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out RateLookupResult result, out DateTimeOffset? servedCachedAtUtc))
+        // Route the cache I/O through the async seam when the backend supports it, so a network-backed cache never
+        // blocks a thread-pool thread; policy, logging, and provenance are identical on both routes.
+        (bool served, RateLookupResult result, DateTimeOffset? servedCachedAtUtc) = _asyncCache is not null
+            ? await TryServeFromCacheAsync(duration, fromIsoCode, toIsoCode, date, options, now, cancellationToken).ConfigureAwait(false)
+            : (TryServeFromCache(duration, fromIsoCode, toIsoCode, date, options, now, out RateLookupResult syncResult, out DateTimeOffset? syncServedAt), syncResult, syncServedAt);
+
+        if (served)
         {
             // Overwrite the snapshot's Live provenance with the cache lineage exactly as the synchronous path does, so a
             // cache hit returns Origin.Cache (with the backend and age) on both surfaces rather than diverging.
             result = result with { Provenance = CacheServeProvenance(servedCachedAtUtc, now) };
 
             Log.CacheHit(_logger, _options.CacheHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+            CachingMeter.CacheHit(_cache.Provider, "single");
+            MaybeScheduleRefreshAhead(duration, fromIsoCode, toIsoCode, date, options, now, servedCachedAtUtc);
             EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
             return result;
         }
@@ -253,8 +272,9 @@ public abstract class CachingRateProviderBase
         }
 
         result = await Inner.GetRateAsync(fromIsoCode, toIsoCode, date, options, cancellationToken).ConfigureAwait(false);
-        StoreResult(duration, fromIsoCode, toIsoCode, result, now);
+        await StoreResultOnEitherSeamAsync(duration, fromIsoCode, toIsoCode, result, now, cancellationToken).ConfigureAwait(false);
         Log.CacheMissStored(_logger, _options.CacheMissLogLevel, _cache.Provider, fromIsoCode, toIsoCode, date);
+        CachingMeter.CacheMiss(_cache.Provider, "single");
 
         // A miss carries the inner provider's Live provenance through unchanged, identically to the synchronous path.
         EmitProvenance(result.Provenance, fromIsoCode, toIsoCode);
@@ -275,6 +295,8 @@ public abstract class CachingRateProviderBase
         if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
+            CachingMeter.CacheHit(_cache.Provider, "range");
+            MaybeScheduleRangeRefreshAhead(duration, pair, fromIsoCode, toIsoCode, startDate, endDate, now, oldestCachedAtUtc);
             EmitProvenance(CacheServeProvenance(oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
             return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
@@ -302,6 +324,7 @@ public abstract class CachingRateProviderBase
         RateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
+        CachingMeter.CacheMiss(_cache.Provider, "range");
         EmitProvenance(RateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
         return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, fetched);
     }
@@ -322,9 +345,17 @@ public abstract class CachingRateProviderBase
         DateTimeOffset now = _timeProvider.GetUtcNow();
         TimeSpan duration = _options.GetExpiry(_cache.Provider);
 
-        if (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> cached, out DateTimeOffset? oldestCachedAtUtc))
+        // Route the cache I/O through the async seam when the backend supports it; policy, logging, and provenance
+        // are identical on both routes.
+        (bool servedFromCache, IReadOnlyList<ExchangeRate> cached, DateTimeOffset? oldestCachedAtUtc) = _asyncCache is not null
+            ? await TryServeRangeFromCacheAsync(duration, pair, startDate, endDate, now, cancellationToken).ConfigureAwait(false)
+            : (TryServeRangeFromCache(duration, pair, startDate, endDate, now, out IReadOnlyList<ExchangeRate> syncCached, out DateTimeOffset? syncOldest), syncCached, syncOldest);
+
+        if (servedFromCache)
         {
             Log.RangeCacheHit(_logger, _options.CacheRangeHitLogLevel, _cache.Provider, fromIsoCode, toIsoCode);
+            CachingMeter.CacheHit(_cache.Provider, "range");
+            MaybeScheduleRangeRefreshAhead(duration, pair, fromIsoCode, toIsoCode, startDate, endDate, now, oldestCachedAtUtc);
             EmitProvenance(CacheServeProvenance(oldestCachedAtUtc, now), fromIsoCode, toIsoCode);
             return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, cached);
         }
@@ -333,7 +364,7 @@ public abstract class CachingRateProviderBase
         {
             // No part of the window is inside the inner's advertised history: skip the doomed fetch and record the
             // whole window as covered-with-no-rows, identically to the synchronous path.
-            RateCacheWriteStatus skipStatus = StoreFetchedRange(duration, pair, [], startDate, endDate, now);
+            RateCacheWriteStatus skipStatus = await StoreFetchedRangeOnEitherSeamAsync(duration, pair, [], startDate, endDate, now, cancellationToken).ConfigureAwait(false);
 
             Log.SkippedRangeOutsideHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, startDate, endDate, earliestAvailable!.Value, skipStatus);
             return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, []);
@@ -342,7 +373,7 @@ public abstract class CachingRateProviderBase
         if (fetchStart != startDate)
             Log.ClampedRangeToHistory(_logger, _options.HistoryClampLogLevel, _cache.Provider, fromIsoCode, toIsoCode, startDate, fetchStart);
 
-        IReadOnlyList<ExchangeRate> fetched =
+        RateRangeResult fetched =
             await Inner.GetRatesAsync(fromIsoCode, toIsoCode, fetchStart, endDate, cancellationToken).ConfigureAwait(false);
 
         // Write the fetched rows and the covered window atomically, regardless of how many rows came back: the request
@@ -350,9 +381,10 @@ public abstract class CachingRateProviderBase
         // would be refetched forever. A single atomic write rules out persisting coverage without its rows. Coverage is
         // recorded over the full requested window even when the fetch start was clamped, so the prefix the source has
         // declared unavailable is not refetched until normal expiry.
-        RateCacheWriteStatus status = StoreFetchedRange(duration, pair, fetched, startDate, endDate, now);
+        RateCacheWriteStatus status = await StoreFetchedRangeOnEitherSeamAsync(duration, pair, fetched, startDate, endDate, now, cancellationToken).ConfigureAwait(false);
 
         Log.RangeRefetched(_logger, _options.CacheRangeRefetchLogLevel, _cache.Provider, fromIsoCode, toIsoCode, fetched.Count, status);
+        CachingMeter.CacheMiss(_cache.Provider, "range");
         EmitProvenance(RateProvenance.Live(_cache.Provider, _backend), fromIsoCode, toIsoCode);
         return new RateRangeResult(fromIsoCode, toIsoCode, startDate, endDate, fetched);
     }
@@ -475,9 +507,9 @@ public abstract class CachingRateProviderBase
     /// <param name="result">When this method returns <see langword="true" />, the resolved result.</param>
     /// <param name="servedCachedAtUtc">
     /// When this method returns <see langword="true" />, the cache instant representing the served data: the
-    /// <see cref="CachedRate.CachedAtUtc" /> of the row whose date matches the resolved result, or the oldest
-    /// instant among the fresh candidate rows when no exact match is found. <see langword="null" /> when this method
-    /// returns <see langword="false" />.
+    /// <see cref="CachedRate.CachedAtUtc" /> of the row whose date matches the resolved result, or the oldest instant
+    /// among the fresh candidate rows when no exact match is found. <see langword="null" /> when this method returns
+    /// <see langword="false" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the request was satisfied from the cache; otherwise <see langword="false" />.
@@ -486,11 +518,11 @@ public abstract class CachingRateProviderBase
     {
         CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
 
-        IReadOnlyList<CachedRate> direct = _cache.GetRates(pair, duration, now);
+        IReadOnlyList<CachedRate> direct = _cache.GetRates(pair, EffectiveExpiry(pair, duration), now);
 
         bool allowInverse = options?.AllowInverse ?? RateLookupOptions.Exact.AllowInverse;
         IReadOnlyList<CachedRate> inverse = allowInverse
-            ? _cache.GetRates(pair.Inverse(), duration, now)
+            ? _cache.GetRates(pair.Inverse(), EffectiveExpiry(pair.Inverse(), duration), now)
             : Array.Empty<CachedRate>();
 
         if (direct.Count == 0 && inverse.Count == 0)
@@ -500,25 +532,31 @@ public abstract class CachingRateProviderBase
             return false;
         }
 
-        string provider = _cache.Provider;
-        List<ExchangeRate> rates = new(direct.Count + inverse.Count);
-        foreach (CachedRate rate in direct)
-            rates.Add(new ExchangeRate(pair.From, pair.To, rate.Date, rate.Rate, provider));
-        foreach (CachedRate rate in inverse)
-            rates.Add(new ExchangeRate(pair.To, pair.From, rate.Date, rate.Rate, provider));
-
-        FixedDatedRateProvider snapshot = new(rates);
-        if (!snapshot.TryGetRate(fromIsoCode, toIsoCode, date, options, out result))
+        // Resolve directly against the date-sorted cached rows rather than materializing a FixedDatedRateProvider
+        // snapshot per lookup; the resolver replicates the snapshot provider's semantics over the rows in hand.
+        if (!CachedRateResolver.TryResolve(pair, direct, inverse, date, options, _cache.Provider, out result, out CachedRate? matched))
         {
             servedCachedAtUtc = null;
             return false;
         }
 
-        servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
+        // A resolved (non-identity) serve carries the row the resolver actually selected, so both instants come
+        // straight from it — no re-scan of the candidate lists. Only the same-currency identity serve, which
+        // synthesizes its rate without a row, falls back to the legacy oldest-candidate scans.
+        DateTimeOffset? servedObservedAt;
+        if (matched is { } row)
+        {
+            servedCachedAtUtc = row.CachedAtUtc;
+            servedObservedAt = row.ObservedAtUtc;
+        }
+        else
+        {
+            servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
+            servedObservedAt = ResolveServedObservedInstant(direct, inverse, result.Rate.Date);
+        }
 
-        // FixedDatedRateProvider flattens the cached rows to (Date, Rate) and drops the fetch instant, so restore
-        // it from the matching cached row onto the rebuilt rate; the cache-write instant stays separate in the provenance.
-        DateTimeOffset? servedObservedAt = ResolveServedObservedInstant(direct, inverse, result.Rate.Date);
+        // The resolved rate is rebuilt from (Date, Rate) and carries no fetch instant, so restore it from the matching
+        // cached row; the cache-write instant stays separate in the provenance.
         result = result with { Rate = result.Rate.WithFetchedAtUtc(servedObservedAt) };
         return true;
     }
@@ -546,9 +584,9 @@ public abstract class CachingRateProviderBase
     /// <param name="now">The instant against which cached rows and coverage are evaluated for freshness.</param>
     /// <param name="result">When this method returns <see langword="true" />, the rates within the range.</param>
     /// <param name="oldestCachedAtUtc">
-    /// When this method returns <see langword="true" />, the oldest <see cref="CachedRate.CachedAtUtc" /> among
-    /// the in-window rows added to <paramref name="result" />, or <see langword="null" /> when the covered window
-    /// yields no rows. <see langword="null" /> when this method returns <see langword="false" />.
+    /// When this method returns <see langword="true" />, the oldest <see cref="CachedRate.CachedAtUtc" /> among the
+    /// in-window rows added to <paramref name="result" />, or <see langword="null" /> when the covered window yields no
+    /// rows. <see langword="null" /> when this method returns <see langword="false" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> when the range was satisfied from the cache; otherwise <see langword="false" />.
@@ -558,16 +596,262 @@ public abstract class CachingRateProviderBase
         // The fresh coverage, not the span of the rate rows, decides whether the whole window was actually fetched. The
         // direct pair is tried first; when inversion is permitted a complete inverse-pair coverage serves the window by
         // inverting each rate, mirroring the single-date serve path.
-        if (_cache.GetCoverage(pair, duration, now).Contains(startDate, endDate))
-            return BuildRange(pair, duration, startDate, endDate, now, invert: false, out result, out oldestCachedAtUtc);
+        //
+        // A backend that stores both halves as one unit exposes the snapshot seam, so coverage and rows come from a
+        // single state read; other backends — including the SQLite cache, whose two tables make a coverage-first probe
+        // cheaper — are consulted through the standard IRateCache calls.
+        TimeSpan directDuration = EffectiveExpiry(pair, duration);
 
-        if (AllowInverseRangeServe && _cache.GetCoverage(pair.Inverse(), duration, now).Contains(startDate, endDate))
-            return BuildRange(pair.Inverse(), duration, startDate, endDate, now, invert: true, out result, out oldestCachedAtUtc);
+        if (_cache is IRateCacheSnapshotReader reader)
+        {
+            RateCacheSnapshot snapshot = reader.ReadSnapshot(pair, directDuration, now);
+            if (snapshot.Coverage.Contains(startDate, endDate))
+                return BuildRange(pair, FreshRows(snapshot, directDuration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
+
+            // When enabled, any fresh direct coverage is evidence the pair is fetched in the direct orientation, so
+            // the inverse probe — a second whole-state backend read — is skipped and the miss refetches instead.
+            if (AllowInverseRangeServe && ShouldProbeInverse(snapshot.Coverage))
+            {
+                TimeSpan inverseDuration = EffectiveExpiry(pair.Inverse(), duration);
+                snapshot = reader.ReadSnapshot(pair.Inverse(), inverseDuration, now);
+                if (snapshot.Coverage.Contains(startDate, endDate))
+                    return BuildRange(pair.Inverse(), FreshRows(snapshot, inverseDuration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
+            }
+
+            result = Array.Empty<ExchangeRate>();
+            oldestCachedAtUtc = null;
+            return false;
+        }
+
+        DateRangeCoverage directCoverage = _cache.GetCoverage(pair, directDuration, now);
+        if (directCoverage.Contains(startDate, endDate))
+            return BuildRange(pair, _cache.GetRates(pair, directDuration, now), startDate, endDate, invert: false, out result, out oldestCachedAtUtc);
+
+        if (AllowInverseRangeServe && ShouldProbeInverse(directCoverage))
+        {
+            TimeSpan inverseDuration = EffectiveExpiry(pair.Inverse(), duration);
+            if (_cache.GetCoverage(pair.Inverse(), inverseDuration, now).Contains(startDate, endDate))
+                return BuildRange(pair.Inverse(), _cache.GetRates(pair.Inverse(), inverseDuration, now), startDate, endDate, invert: true, out result, out oldestCachedAtUtc);
+        }
 
         result = Array.Empty<ExchangeRate>();
         oldestCachedAtUtc = null;
         return false;
     }
+
+    /// <summary>
+    /// Decides whether a direct-coverage miss should still probe the inverse pair: always, unless
+    /// <see cref="CachingRateOptions.SkipInverseRangeProbeWhenDirectCovered" /> is enabled and the direct pair holds
+    /// any fresh coverage at all.
+    /// </summary>
+    /// <param name="directCoverage">The direct pair's fresh coverage.</param>
+    /// <returns><see langword="true" /> when the inverse pair should be probed.</returns>
+    private bool ShouldProbeInverse(DateRangeCoverage directCoverage) =>
+        !_options.SkipInverseRangeProbeWhenDirectCovered || directCoverage.IsEmpty;
+
+    /// <summary>
+    /// Applies the configured deterministic expiry jitter to a caching duration, keyed by the provider and the pair
+    /// whose data is being read or written, so entries warmed together do not all expire at the same instant.
+    /// </summary>
+    /// <param name="pair">The pair whose cached data the duration governs.</param>
+    /// <param name="duration">The configured caching duration.</param>
+    /// <returns>
+    /// The pair's effective duration — shortened by up to <see cref="CachingRateOptions.ExpiryJitter" /> of itself,
+    /// stably per pair — or <paramref name="duration" /> unchanged when jitter is disabled.
+    /// </returns>
+    private TimeSpan EffectiveExpiry(CurrencyPair pair, TimeSpan duration)
+    {
+        if (_options.ExpiryJitter <= 0)
+            return duration;
+
+        return CacheFreshness.WithJitter(duration, $"{_cache.Provider}:{pair.From}{pair.To}", _options.ExpiryJitter);
+    }
+
+    /// <summary>
+    /// The asynchronous twin of <see cref="TryServeFromCache" />, reading the candidate rows through the cache's
+    /// asynchronous seam so a network-backed cache never blocks a thread-pool thread. Resolution semantics, jitter, and
+    /// served-instant selection are identical to the synchronous helper.
+    /// </summary>
+    /// <param name="duration">The duration cached rows stay fresh.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="date">The calendar date for which a rate is required.</param>
+    /// <param name="options">The lookup rules to apply.</param>
+    /// <param name="now">The instant against which cached rows are evaluated for freshness.</param>
+    /// <param name="cancellationToken">Cancels the cache reads.</param>
+    /// <returns>Whether the request was served, the resolved result, and the served cache instant.</returns>
+    private async ValueTask<(bool Served, RateLookupResult Result, DateTimeOffset? ServedCachedAtUtc)> TryServeFromCacheAsync(
+        TimeSpan duration,
+        string fromIsoCode,
+        string toIsoCode,
+        DateOnly date,
+        RateLookupOptions? options,
+        DateTimeOffset now,
+        CancellationToken cancellationToken)
+    {
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+
+        IReadOnlyList<CachedRate> direct = await _asyncCache!.GetRatesAsync(pair, EffectiveExpiry(pair, duration), now, cancellationToken).ConfigureAwait(false);
+
+        bool allowInverse = options?.AllowInverse ?? RateLookupOptions.Exact.AllowInverse;
+        IReadOnlyList<CachedRate> inverse = allowInverse
+            ? await _asyncCache.GetRatesAsync(pair.Inverse(), EffectiveExpiry(pair.Inverse(), duration), now, cancellationToken).ConfigureAwait(false)
+            : Array.Empty<CachedRate>();
+
+        if (direct.Count == 0 && inverse.Count == 0)
+            return (false, default, null);
+
+        if (!CachedRateResolver.TryResolve(pair, direct, inverse, date, options, _cache.Provider, out RateLookupResult result, out CachedRate? matched))
+            return (false, default, null);
+
+        // Identical to the synchronous helper: a resolved serve takes its instants from the matched row; the identity
+        // serve falls back to the legacy oldest-candidate scans.
+        DateTimeOffset? servedCachedAtUtc;
+        DateTimeOffset? servedObservedAt;
+        if (matched is { } row)
+        {
+            servedCachedAtUtc = row.CachedAtUtc;
+            servedObservedAt = row.ObservedAtUtc;
+        }
+        else
+        {
+            servedCachedAtUtc = ResolveServedInstant(direct, inverse, result.Rate.Date);
+            servedObservedAt = ResolveServedObservedInstant(direct, inverse, result.Rate.Date);
+        }
+
+        result = result with { Rate = result.Rate.WithFetchedAtUtc(servedObservedAt) };
+        return (true, result, servedCachedAtUtc);
+    }
+
+    /// <summary>
+    /// The asynchronous twin of <see cref="TryServeRangeFromCache" />, reading each snapshot through the cache's
+    /// asynchronous seam. Coverage semantics, the inverse probe (including the optional skip), and jitter are identical
+    /// to the synchronous helper; the seam always exposes the combined snapshot read, so no coverage-then-rows fallback
+    /// is needed.
+    /// </summary>
+    /// <param name="duration">The duration cached rows and coverage windows stay fresh.</param>
+    /// <param name="pair">The requested currency pair.</param>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    /// <param name="now">The instant against which freshness is evaluated.</param>
+    /// <param name="cancellationToken">Cancels the cache reads.</param>
+    /// <returns>Whether the range was served, the in-window rates, and the oldest served cache instant.</returns>
+    private async ValueTask<(bool Served, IReadOnlyList<ExchangeRate> Result, DateTimeOffset? OldestCachedAtUtc)> TryServeRangeFromCacheAsync(
+        TimeSpan duration,
+        CurrencyPair pair,
+        DateOnly startDate,
+        DateOnly endDate,
+        DateTimeOffset now,
+        CancellationToken cancellationToken)
+    {
+        TimeSpan directDuration = EffectiveExpiry(pair, duration);
+
+        RateCacheSnapshot snapshot = await _asyncCache!.ReadSnapshotAsync(pair, directDuration, now, cancellationToken).ConfigureAwait(false);
+        if (snapshot.Coverage.Contains(startDate, endDate))
+        {
+            bool built = BuildRange(pair, FreshRows(snapshot, directDuration, now), startDate, endDate, invert: false, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldest);
+            return (built, result, oldest);
+        }
+
+        if (AllowInverseRangeServe && ShouldProbeInverse(snapshot.Coverage))
+        {
+            TimeSpan inverseDuration = EffectiveExpiry(pair.Inverse(), duration);
+            snapshot = await _asyncCache.ReadSnapshotAsync(pair.Inverse(), inverseDuration, now, cancellationToken).ConfigureAwait(false);
+            if (snapshot.Coverage.Contains(startDate, endDate))
+            {
+                bool built = BuildRange(pair.Inverse(), FreshRows(snapshot, inverseDuration, now), startDate, endDate, invert: true, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldest);
+                return (built, result, oldest);
+            }
+        }
+
+        return (false, Array.Empty<ExchangeRate>(), null);
+    }
+
+    /// <summary>
+    /// Writes a resolved single-date row through the cache's asynchronous seam when it exposes one, or through the
+    /// synchronous <see cref="StoreResult" /> otherwise, so the asynchronous surfaces have a single store call site
+    /// regardless of the backend.
+    /// </summary>
+    /// <param name="duration">The duration the cached row stays fresh.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="result">The resolved lookup result to cache.</param>
+    /// <param name="now">The instant the row is stamped with.</param>
+    /// <param name="cancellationToken">Cancels the write when the asynchronous seam is used.</param>
+    /// <returns>A task representing the write.</returns>
+    /// <remarks>
+    /// The synchronous branch is a genuine store on a synchronous-only backend, not a blocking wait on asynchronous
+    /// work: the seam-specific writer cannot serve it, because that writer dereferences the seam.
+    /// </remarks>
+    private async ValueTask StoreResultOnEitherSeamAsync(TimeSpan duration, string fromIsoCode, string toIsoCode, RateLookupResult result, DateTimeOffset now, CancellationToken cancellationToken)
+    {
+        if (_asyncCache is not null)
+            await StoreResultOnAsyncSeamAsync(duration, fromIsoCode, toIsoCode, result, now, cancellationToken).ConfigureAwait(false);
+        else
+            StoreResult(duration, fromIsoCode, toIsoCode, result, now);
+    }
+
+    /// <summary>
+    /// Writes the resolved row through the cache's asynchronous seam with the same per-pair jittered expiry as
+    /// <see cref="StoreResult" />. Valid only when the cache exposes the seam.
+    /// </summary>
+    /// <param name="duration">The duration the cached row stays fresh.</param>
+    /// <param name="fromIsoCode">The source-currency ISO code.</param>
+    /// <param name="toIsoCode">The destination-currency ISO code.</param>
+    /// <param name="result">The resolved lookup result to cache.</param>
+    /// <param name="now">The instant the row is stamped with.</param>
+    /// <param name="cancellationToken">Cancels the write.</param>
+    /// <returns>A task representing the write.</returns>
+    private ValueTask StoreResultOnAsyncSeamAsync(TimeSpan duration, string fromIsoCode, string toIsoCode, RateLookupResult result, DateTimeOffset now, CancellationToken cancellationToken)
+    {
+        CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
+        CachedRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now, result.Rate.FetchedAtUtc) };
+        return _asyncCache!.StoreAsync(pair, rows, EffectiveExpiry(pair, duration), now, cancellationToken);
+    }
+
+    /// <summary>
+    /// Writes a fetched range through the cache's asynchronous seam when it exposes one, or through the synchronous
+    /// helper otherwise, so the async surfaces have a single store call site regardless of the backend.
+    /// </summary>
+    /// <param name="duration">The duration rows and the coverage window stay fresh.</param>
+    /// <param name="pair">The requested currency pair.</param>
+    /// <param name="rates">The fetched rates.</param>
+    /// <param name="startDate">The inclusive start of the covered window.</param>
+    /// <param name="endDate">The inclusive end of the covered window.</param>
+    /// <param name="now">The instant the write is stamped with.</param>
+    /// <param name="cancellationToken">Cancels the write.</param>
+    /// <returns>The persistence outcome.</returns>
+    private async ValueTask<RateCacheWriteStatus> StoreFetchedRangeOnEitherSeamAsync(
+        TimeSpan duration,
+        CurrencyPair pair,
+        IReadOnlyList<ExchangeRate> rates,
+        DateOnly startDate,
+        DateOnly endDate,
+        DateTimeOffset now,
+        CancellationToken cancellationToken)
+    {
+        if (_asyncCache is null)
+            return StoreFetchedRange(duration, pair, rates, startDate, endDate, now);
+
+        var rows = new CachedRate[rates.Count];
+        for (int i = 0; i < rates.Count; i++)
+            rows[i] = new CachedRate(rates[i].Date, rates[i].Rate, now, rates[i].FetchedAtUtc);
+
+        return await _asyncCache.StoreFetchedRangeAsync(pair, rows, startDate, endDate, EffectiveExpiry(pair, duration), now, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Returns the snapshot's fresh, date-ordered rows, serving the snapshot's list as-is when every row already
+    /// qualifies so the covered-range hot path performs no filtered copy.
+    /// </summary>
+    /// <param name="snapshot">The snapshot whose rows are filtered.</param>
+    /// <param name="duration">The caching duration freshness is evaluated against.</param>
+    /// <param name="now">The evaluation instant.</param>
+    /// <returns>The fresh rows, ordered ascending by date.</returns>
+    private static IReadOnlyList<CachedRate> FreshRows(RateCacheSnapshot snapshot, TimeSpan duration, DateTimeOffset now) =>
+        RateCacheRules.IsAllFreshOrdered(snapshot.Rows, duration, now)
+            ? snapshot.Rows
+            : RateCacheRules.SelectFresh(snapshot.Rows, duration, now);
 
     /// <summary>
     /// Builds the in-window rates for a range serve from the cached rows of <paramref name="cachedPair" />, optionally
@@ -577,24 +861,22 @@ public abstract class CachingRateProviderBase
     /// The pair whose cached rows back the serve — the requested pair, or its inverse when <paramref name="invert" />
     /// is set.
     /// </param>
-    /// <param name="duration">The duration cached rows stay fresh.</param>
+    /// <param name="fresh">The fresh cached rows of <paramref name="cachedPair" />, ordered ascending by date.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
-    /// <param name="now">The instant against which cached rows are evaluated for freshness.</param>
     /// <param name="invert">
     /// <see langword="true" /> to reciprocate each cached rate and emit the inverse direction; otherwise
     /// <see langword="false" />.
     /// </param>
     /// <param name="result">The rates within the range, always carrying the requested direction.</param>
     /// <param name="oldestCachedAtUtc">
-    /// The oldest <see cref="CachedRate.CachedAtUtc" /> among the in-window rows, or <see langword="null" />
-    /// when the covered window yields no rows.
+    /// The oldest <see cref="CachedRate.CachedAtUtc" /> among the in-window rows, or <see langword="null" /> when the
+    /// covered window yields no rows.
     /// </param>
     /// <returns>Always <see langword="true" />; the caller has already confirmed the window is covered.</returns>
-    private bool BuildRange(CurrencyPair cachedPair, TimeSpan duration, DateOnly startDate, DateOnly endDate, DateTimeOffset now, bool invert, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
+    private bool BuildRange(CurrencyPair cachedPair, IReadOnlyList<CachedRate> fresh, DateOnly startDate, DateOnly endDate, bool invert, out IReadOnlyList<ExchangeRate> result, out DateTimeOffset? oldestCachedAtUtc)
     {
         string provider = _cache.Provider;
-        IReadOnlyList<CachedRate> fresh = _cache.GetRates(cachedPair, duration, now);
 
         // The output always carries the requested direction. When inverting, the cached pair is the requested pair's
         // inverse, so the requested from/to are the cached pair's to/from.
@@ -644,7 +926,7 @@ public abstract class CachingRateProviderBase
     {
         CurrencyPair pair = new(CurrencyInfo.ParseCurrencyCode(fromIsoCode), CurrencyInfo.ParseCurrencyCode(toIsoCode));
         CachedRate[] rows = { new(result.Rate.Date, result.Rate.Rate, now, result.Rate.FetchedAtUtc) };
-        _cache.Store(pair, rows, duration, now);
+        _cache.Store(pair, rows, EffectiveExpiry(pair, duration), now);
     }
 
     /// <summary>
@@ -670,7 +952,7 @@ public abstract class CachingRateProviderBase
         for (int i = 0; i < rates.Count; i++)
             rows[i] = new CachedRate(rates[i].Date, rates[i].Rate, now, rates[i].FetchedAtUtc);
 
-        return _cache.StoreFetchedRange(pair, rows, startDate, endDate, duration, now);
+        return _cache.StoreFetchedRange(pair, rows, startDate, endDate, EffectiveExpiry(pair, duration), now);
     }
 
     /// <summary>
@@ -685,8 +967,10 @@ public abstract class CachingRateProviderBase
     /// instant among the candidate rows, or <see langword="null" /> when no candidate rows are present.
     /// </returns>
     /// <remarks>
-    /// A nearest-date or inverse serve has no row dated exactly <paramref name="resolvedDate" />, so the oldest
-    /// candidate instant is reported as a stable, lower-bound representative of the data backing the serve.
+    /// Reached only by the same-currency identity serve, which synthesizes its rate without a matched row; a resolved
+    /// serve takes its instants directly from the row the resolver selected. The identity serve's resolved date is the
+    /// requested date, so no candidate row matches it and the oldest candidate instant is reported as a stable,
+    /// lower-bound representative of the data backing the serve.
     /// </remarks>
     private static DateTimeOffset? ResolveServedInstant(IReadOnlyList<CachedRate> direct, IReadOnlyList<CachedRate> inverse, DateOnly resolvedDate)
     {
@@ -727,9 +1011,9 @@ public abstract class CachingRateProviderBase
     /// present or none carried an upstream fetch instant.
     /// </returns>
     /// <remarks>
-    /// Parallels <see cref="ResolveServedInstant" />: a nearest-date or inverse serve has no row dated exactly
-    /// <paramref name="resolvedDate" />, so the oldest candidate's upstream fetch instant is reported, matching the
-    /// cache-write instant the same serve reports through the provenance.
+    /// Parallels <see cref="ResolveServedInstant" /> and, like it, is reached only by the same-currency identity serve:
+    /// no candidate row matches the identity serve's resolved date, so the oldest candidate's upstream fetch instant is
+    /// reported, matching the cache-write instant the same serve reports through the provenance.
     /// </remarks>
     private static DateTimeOffset? ResolveServedObservedInstant(IReadOnlyList<CachedRate> direct, IReadOnlyList<CachedRate> inverse, DateOnly resolvedDate)
     {
@@ -791,7 +1075,9 @@ public abstract class CachingRateProviderBase
     /// </summary>
     /// <remarks>
     /// Disposal is idempotent. The cache is not disposed here: the shipped caches hold no unmanaged resources, and a
-    /// caller-supplied cache is owned by its caller.
+    /// caller-supplied cache is owned by its caller. Pending background refresh-ahead work is abandoned, not drained:
+    /// no new refresh is scheduled after disposal, and an already scheduled refresh that observes the disposed state
+    /// completes as a no-op.
     /// </remarks>
     public void Dispose()
     {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Log.Storage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,15 +9,15 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Provides the source-generated, allocation-free logging messages emitted by the file-backed
-/// <see cref="IRateCache" /> implementations when a best-effort storage failure is swallowed.
+/// Provides the source-generated, allocation-free logging messages emitted by the file-backed <see cref="IRateCache" />
+/// implementations when a best-effort storage failure is swallowed.
 /// </summary>
 internal static partial class Log
 {
     /// <summary>
     /// Logs that a file-cache storage operation failed and was swallowed under the cache's best-effort contract,
-    /// surfacing the degradation operators would otherwise not see, with the count of similar failures suppressed
-    /// since the previous warning so a sustained outage does not flood the log.
+    /// surfacing the degradation operators would otherwise not see, with the count of similar failures suppressed since
+    /// the previous warning so a sustained outage does not flood the log.
     /// </summary>
     /// <param name="logger">The logger that receives the message.</param>
     /// <param name="provider">The provider whose cache degraded.</param>

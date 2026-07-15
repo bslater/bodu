@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRule.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,9 +7,9 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Represents one way of calculating a notable-date concept: an applicability scope, exactly one occurrence source
-/// (a single-date calculation strategy or a recurrence strategy), an optional duration, and the adjustment policies
-/// that transform its occurrences.
+/// Represents one way of calculating a notable-date concept: an applicability scope, exactly one occurrence source (a
+/// single-date calculation strategy or a recurrence strategy), an optional duration, and the adjustment policies that
+/// transform its occurrences.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -209,7 +209,8 @@ public sealed class NotableDateRule
     /// Gets the recurrence strategy of the rule.
     /// </summary>
     /// <value>
-    /// The <see cref="IDateRecurrenceStrategy" />, or <see langword="null" /> when the rule uses a single-date strategy.
+    /// The <see cref="IDateRecurrenceStrategy" />, or <see langword="null" /> when the rule uses a single-date
+    /// strategy.
     /// </value>
     public IDateRecurrenceStrategy? Recurrence { get; }
 

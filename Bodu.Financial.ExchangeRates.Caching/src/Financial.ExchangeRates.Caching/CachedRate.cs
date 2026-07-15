@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Caching;
+
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
@@ -28,5 +30,5 @@ public readonly record struct CachedRate(DateOnly Date, decimal Rate, DateTimeOf
     /// <see langword="true" /> when <paramref name="asOf" /> is within <paramref name="duration" /> of
     /// <see cref="CachedAtUtc" />; otherwise <see langword="false" />.
     /// </returns>
-    public bool IsFresh(DateTimeOffset asOf, TimeSpan duration) => asOf - CachedAtUtc < duration;
+    public bool IsFresh(DateTimeOffset asOf, TimeSpan duration) => CacheFreshness.IsFresh(CachedAtUtc, duration, asOf);
 }

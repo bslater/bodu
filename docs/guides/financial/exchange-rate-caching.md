@@ -826,6 +826,113 @@ var rbaOnly = provider.GetRequiredKeyedService<IDatedRateProvider>("RBA");
   range fetch writes its rows and covered window together through `StoreFetchedRange`.
   Coverage windows expire on the same `duration` and are pruned on write.
 
+## Stampede protection: jitter and refresh-ahead
+
+A cache that expires is a cache that occasionally makes one caller pay the full origin
+fetch. Two opt-in options on
+[`CachingRateOptions`](xref:Bodu.Financial.ExchangeRates.Caching.CachingRateOptions)
+smooth that cliff; both default to `0` (off), so existing behaviour is unchanged until
+you opt in:
+
+- **`ExpiryJitter`** deterministically shaves up to that fraction off each pair's
+  effective expiry, keyed by a stable hash of the provider and pair — never randomness —
+  so pairs warmed together do not all expire (and refetch) at the same instant. Jitter
+  only ever *shortens* an expiry; no rate is served longer than the configured duration.
+- **`RefreshAheadFraction`** turns an aged hit into a stale-while-revalidate serve: when
+  a hit's served data is older than this fraction of the pair's effective expiry, the
+  caller is still served instantly from the cache and **one** background refresh of the
+  pair (or range window) is scheduled. Concurrent aged hits join the pending refresh
+  rather than duplicating it, and because the fraction is below `1`, a continuously hot
+  pair is renewed before it can ever miss. A failing refresh is logged (`EventId 4517`)
+  and swallowed — the next aged hit simply retries.
+
+<!-- compile -->
+```csharp
+var options = new CachingRateOptions
+{
+    DefaultExpiry = TimeSpan.FromHours(12),
+    ExpiryJitter = 0.1,           // spread expiries by up to 10% per pair
+    RefreshAheadFraction = 0.75,  // refresh in the background after 75% of the expiry
+};
+options.Validate();
+```
+
+Two more knobs matter at scale:
+
+- **`SkipInverseRangeProbeWhenDirectCovered`** (default `false`): a range miss normally
+  probes the inverse pair as a second whole-state backend read. Workloads that only ever
+  fetch one orientation can enable this to skip the guaranteed-empty probe whenever the
+  direct pair holds any fresh coverage.
+- **`EntryExpirationMargin`** on
+  [`DistributedRateCacheOptions`](xref:Bodu.Financial.ExchangeRates.Caching.DistributedRateCacheOptions)
+  (default one hour): every blob the distributed cache writes is stamped with a
+  server-side lifetime of the caching duration plus this margin, so a pair that stops
+  being queried self-evicts from Redis instead of accumulating forever. The lifetime is
+  relative to the store's own clock, so clock skew cannot evict entries prematurely; set
+  it to `null` to disable server-side expiry entirely.
+
+```csharp
+var distributedOptions = new DistributedRateCacheOptions
+{
+    Provider = "RBA",
+    EntryExpirationMargin = TimeSpan.FromHours(2),
+};
+```
+
+## Warming the cache at startup
+
+A cold cache pays its origin fetches on the first user requests. The decorator's
+`WarmAsync` pre-pays them: each pair's window goes through the normal range
+read-through path — an already covered pair costs only a cache read, a miss populates
+rows and coverage — with up to four pairs fetched concurrently. A failing pair is
+logged (`EventId 4518`) and skipped; only the caller's cancellation aborts the run.
+
+<!-- compile -->
+```csharp
+var provider = new CachingRateProvider(
+    new FixedDatedRateProvider(Array.Empty<ExchangeRate>()),
+    new InMemoryRateCache("RBA"),
+    new CachingRateOptions());
+
+int warmed = await provider.WarmAsync(
+    new[] { ("AUD", "USD"), ("AUD", "EUR") },
+    new DateOnly(2026, 5, 1),
+    new DateOnly(2026, 5, 31));
+```
+
+Under dependency injection, register the warm-up as a hosted service instead and let it
+run when the application starts. It warms every provider registered through
+`AddCachedRateProvider` automatically; aggregation children are keyed services and are
+warmed only when named in `Providers`. The window defaults to a rolling
+`LookbackDays` look-back from the current date (so a daily restart always warms recent
+history), with optional fixed `StartDate`/`EndDate` overrides; the run never blocks or
+crashes the host:
+
+```csharp
+services.AddFinancialService()
+        .AddRbaExchangeRates(configuration)
+        .AddCachedRateProvider<RbaRateProvider>("RBA", configuration)
+        .AddRateCacheWarmup(configure: warmup =>
+        {
+            warmup.Pairs.Add("AUD/USD");
+            warmup.Pairs.Add("AUD/EUR");
+            warmup.LookbackDays = 90;
+        });
+```
+
+Or bind the same options from configuration (section `Financial:RateCacheWarmup`):
+
+```json
+{
+  "Financial": {
+    "RateCacheWarmup": {
+      "Pairs": [ "AUD/USD", "AUD/EUR" ],
+      "LookbackDays": 90
+    }
+  }
+}
+```
+
 ## Observability: seeing hits, misses, and degradation
 
 Two log channels tell you what the cache is doing.
@@ -876,6 +983,59 @@ Surface it with an ordinary logging filter — the category is the cache's full 
 If you would rather a storage failure surface as an exception than degrade, set
 `ThrowOnStorageFailure` (or `ValidateStorageOnStart` to fail fast at startup) on the
 options instead.
+
+### Metrics
+
+Alongside the logs, the caching layer publishes `System.Diagnostics.Metrics` counters
+through the process-wide meter **`Bodu.Financial.ExchangeRates.Caching`** (the SQLite
+and distributed add-ons publish their storage-failure counters through their own meters,
+`…Caching.Sqlite` and `…Caching.Distributed`). With no listener attached a counter add
+is a no-op branch, so the instrumentation costs nothing on the hot path:
+
+| Instrument | Tags | Counts |
+|---|---|---|
+| `bodu.financial.rate_cache.hits` | `provider`, `lookup` (`single`/`range`) | Lookups served from the cache |
+| `bodu.financial.rate_cache.misses` | `provider`, `lookup` | Lookups refetched from the source |
+| `bodu.financial.rate_cache.refresh_ahead` | `provider`, `outcome` (`success`/`failed`) | Background refresh-ahead attempts |
+| `bodu.financial.rate_cache.storage_failures` | `provider`, `operation` | Swallowed best-effort storage failures |
+
+Storage-failure counts increment on **every** swallow — deliberately outside the
+rate-limited warning gate that throttles log volume — so sustained degradation is
+quantifiable even while its logging is suppressed. Subscribe with any OpenTelemetry
+metrics exporter, or with an in-process `MeterListener`:
+
+```csharp
+using var listener = new System.Diagnostics.Metrics.MeterListener
+{
+    InstrumentPublished = (instrument, l) =>
+    {
+        if (instrument.Meter.Name == "Bodu.Financial.ExchangeRates.Caching")
+            l.EnableMeasurementEvents(instrument);
+    },
+};
+listener.SetMeasurementEventCallback<long>((instrument, value, tags, state) =>
+    Console.WriteLine($"{instrument.Name} +{value}"));
+listener.Start();
+```
+
+### Log event reference
+
+Every caching-layer log message carries a stable `EventId`, so filters and alerts can
+target a specific event:
+
+| EventId | Event | Level |
+|---|---|---|
+| 4501 / 4502 | Single-date hit / miss-and-stored | option-set |
+| 4503 / 4504 | Range hit / range refetched | option-set |
+| 4505 | Served-rate provenance | option-set |
+| 4506–4508 | Advertised-history skip / empty-window skip / clamped fetch | option-set |
+| 4510–4512 | Aggregation routing and outcomes | option-set |
+| 4513–4515 | File-cache degradation and corrupt-file warnings | `Warning` |
+| 4516 / 4517 | Refresh-ahead scheduled / refresh-ahead failed | option-set / `Warning` |
+| 4518 | Warm-up pair failed and skipped | `Warning` |
+| 4520 | SQLite storage failure swallowed | `Warning` |
+| 4521–4524 | Startup warm-up started / completed / failed / provider not found | `Information` / `Warning` |
+| 4530 | Distributed storage failure swallowed | `Warning` |
 
 ## Troubleshooting
 

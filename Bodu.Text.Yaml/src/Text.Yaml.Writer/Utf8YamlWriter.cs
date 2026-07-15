@@ -23,8 +23,8 @@ namespace Bodu.Text.Yaml.Writer;
 /// emitted in the flow forms <c>{}</c> and <c>[]</c> so they round-trip as empty collections rather than null.
 /// </para>
 /// <para>
-/// The writer is a <see langword="ref struct" /> and cannot be boxed, stored on the heap, or captured by a lambda.
-/// Its mutable state lives behind a single shared reference, so passing the writer by value hands the callee the same
+/// The writer is a <see langword="ref struct" /> and cannot be boxed, stored on the heap, or captured by a lambda. Its
+/// mutable state lives behind a single shared reference, so passing the writer by value hands the callee the same
 /// in-progress document rather than an independent copy.
 /// </para>
 /// </remarks>
@@ -42,10 +42,7 @@ public ref struct Utf8YamlWriter
     /// <summary>The line-break sequence written at the end of each line.</summary>
     private readonly string _newLine;
 
-    /// <summary>
-    /// The mutable writer state, held behind a single reference so by-value copies of this <see langword="ref" />
-    /// <see langword="struct" /> observe and advance the same document.
-    /// </summary>
+    /// <summary>The mutable writer state, held behind a single reference so by-value copies of this <see langword="ref" /> <see langword="struct" /> observe and advance the same document.</summary>
     private readonly State _state;
 
     /// <summary>

@@ -58,6 +58,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Arg_Invalid_EntryExpirationMarginNegative" xml:space="preserve">
+    <value>The entry expiration margin must not be negative, but was {0}.</value>
+  </data>
   <data name="Arg_Invalid_KeyPrefixWhiteSpace" xml:space="preserve">
     <value>The cache key prefix must be either null or a non-empty, non-white-space value.</value>
   </data>

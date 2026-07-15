@@ -188,14 +188,14 @@ internal sealed class CfbSectorReader
     /// <param name="cycleError">The failure category reported when a sector is revisited.</param>
     /// <returns>The chain's sector identifiers in order, each appearing at most once.</returns>
     /// <exception cref="CompoundFileFormatException">
-    /// Thrown when the chain references an out-of-range sector, or revisits a sector, at a validation level
-    /// stricter than <see cref="CompoundValidationLevel.Minimal" />.
+    /// Thrown when the chain references an out-of-range sector, or revisits a sector, at a validation level stricter
+    /// than <see cref="CompoundValidationLevel.Minimal" />.
     /// </exception>
     /// <remarks>
-    /// A per-chain visited set bounds the walk to the number of distinct real sectors and rejects the first
-    /// revisit as a cycle. This is what prevents a crafted self-loop or back-edge from re-reading sectors and
-    /// amplifying a caller's accumulated allocation far beyond the container size — the amplification is capped
-    /// regardless of validation level, because the visited set is consulted before any sector is yielded.
+    /// A per-chain visited set bounds the walk to the number of distinct real sectors and rejects the first revisit as
+    /// a cycle. This is what prevents a crafted self-loop or back-edge from re-reading sectors and amplifying a
+    /// caller's accumulated allocation far beyond the container size — the amplification is capped regardless of
+    /// validation level, because the visited set is consulted before any sector is yielded.
     /// </remarks>
     private IEnumerable<uint> WalkChain(uint startSector, uint[] fat, CompoundFileError cycleError)
     {

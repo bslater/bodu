@@ -249,17 +249,19 @@ public static class RateCachingExtensions
     /// Builds the default cache for a named source: a <see cref="TomlFileRateCache" /> bound to
     /// <paramref name="name" /> under the options' cache directory.
     /// </summary>
-    /// <param name="serviceProvider">The container the optional <see cref="TimeProvider" /> and logger are resolved from.</param>
+    /// <param name="serviceProvider">
+    /// The container the optional <see cref="TimeProvider" /> and logger are resolved from.
+    /// </param>
     /// <param name="name">The provider name the cache is bound to.</param>
     /// <param name="options">The shared cache options carrying the cache directory.</param>
-    /// <returns>A new default <see cref="IRateCache" />.</returns>
-    private static IRateCache CreateDefaultCache(IServiceProvider serviceProvider, string name, CachingRateOptions options) =>
-        new TomlFileRateCache(
+    /// <returns>A new default <see cref="TomlFileRateCache" />.</returns>
+    private static TomlFileRateCache CreateDefaultCache(IServiceProvider serviceProvider, string name, CachingRateOptions options) =>
+        new(
             new FileRateCacheOptions
             {
-            Provider = name,
-            CacheDirectory = options.CacheDirectory,
-        },
+                Provider = name,
+                CacheDirectory = options.CacheDirectory,
+            },
             serviceProvider.GetService<TimeProvider>(),
             serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<TomlFileRateCache>());
 }

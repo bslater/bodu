@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NodeConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <remarks>
 /// The converter accepts every node type — the object, array, and value nodes as well as the <see cref="FormatNode" />
 /// base — so it must lead the built-in converter list, ahead of the collection and object factories that would
-/// otherwise claim the object node by virtue of its
-/// <see cref="System.Collections.Generic.IDictionary{TKey, TValue}" /> surface.
+/// otherwise claim the object node by virtue of its <see cref="System.Collections.Generic.IDictionary{TKey, TValue}" />
+/// surface.
 /// </remarks>
 internal sealed class NodeConverter
     : SharedConverter<FormatNode>

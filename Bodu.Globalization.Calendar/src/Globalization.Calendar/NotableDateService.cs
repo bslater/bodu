@@ -236,7 +236,9 @@ public sealed class NotableDateService
     /// <param name="definition">The parent concept, supplying the default duration.</param>
     /// <param name="startAnchor">The occurrence's calculated start anchor.</param>
     /// <param name="context">The resolution context for the end strategy.</param>
-    /// <returns>The resolved span, or <see langword="null" /> when a calculated span is invalid for this occurrence.</returns>
+    /// <returns>
+    /// The resolved span, or <see langword="null" /> when a calculated span is invalid for this occurrence.
+    /// </returns>
     private static ResolvedNotableDateSpan? ResolveSpan(NotableDateRule rule, NotableDateDefinition definition, DateOnly startAnchor, StrategyResolutionContext context)
     {
         if (rule.Duration is CalculatedEndDateDurationDefinition calculated)
@@ -322,7 +324,8 @@ public sealed class NotableDateService
     }
 
     /// <summary>
-    /// Enumerates the occurrences of a single-date strategy for a Gregorian year, including a multi-occurrence strategy.
+    /// Enumerates the occurrences of a single-date strategy for a Gregorian year, including a multi-occurrence
+    /// strategy.
     /// </summary>
     /// <param name="strategy">The strategy to evaluate.</param>
     /// <param name="year">The Gregorian year to calculate against.</param>

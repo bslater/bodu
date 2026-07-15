@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MonthlyWeekdayRecurrenceStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,9 +13,9 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <remarks>
 /// <para>
 /// The ordinal weekday in each participating month is calculated with <see cref="WeekdayMath.NthWeekdayInMonth" />, so
-/// <see cref="WeekOrdinal.Last" /> selects the final matching weekday and a month without a fifth matching
-/// weekday simply produces no occurrence for that month rather than invalidating the recurrence. For a monthly interval
-/// an anchor is optional; a multi-month interval requires an anchor whose year and month define month zero.
+/// <see cref="WeekOrdinal.Last" /> selects the final matching weekday and a month without a fifth matching weekday
+/// simply produces no occurrence for that month rather than invalidating the recurrence. For a monthly interval an
+/// anchor is optional; a multi-month interval requires an anchor whose year and month define month zero.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -44,7 +44,8 @@ public sealed class MonthlyWeekdayRecurrenceStrategy
     /// <paramref name="intervalMonths" /> is less than one.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="intervalMonths" /> is greater than one while <paramref name="anchorDate" /> is <see langword="null" />.
+    /// <paramref name="intervalMonths" /> is greater than one while <paramref name="anchorDate" /> is
+    /// <see langword="null" />.
     /// </exception>
     public MonthlyWeekdayRecurrenceStrategy(
         DayOfWeek dayOfWeek,

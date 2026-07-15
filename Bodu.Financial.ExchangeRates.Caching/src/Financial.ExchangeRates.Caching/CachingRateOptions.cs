@@ -84,6 +84,69 @@ public sealed class CachingRateOptions
     public bool RespectHistoryAvailability { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets a value indicating whether a range lookup that misses the direct pair's coverage skips the
+    /// inverse-pair probe when the direct pair holds any fresh coverage at all, probing the inverse only when the
+    /// direct pair's coverage is completely empty.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to skip the inverse probe when the direct pair carries fresh coverage; defaults to
+    /// <see langword="false" />, matching the historical behaviour of always probing the inverse on a direct miss.
+    /// </value>
+    /// <remarks>
+    /// On a direct-coverage miss the provider normally issues a second backend read for the inverse pair. For a
+    /// workload that only ever fetches one orientation — the common case — that probe is a guaranteed-empty read
+    /// doubling backend I/O on every refetch. Enabling this option treats any fresh direct coverage as evidence the
+    /// pair is actively fetched in the direct orientation and goes straight to the refetch, at the cost of a redundant
+    /// refetch in the rare configuration where the inverse pair alone holds complete coverage for the window. The
+    /// option has no effect when <see cref="DefaultLookupOptions" /> disallows inverse serves.
+    /// </remarks>
+    public bool SkipInverseRangeProbeWhenDirectCovered { get; set; }
+
+    /// <summary>
+    /// Gets or sets the maximum fraction of a pair's caching duration that is deterministically shaved off per pair, so
+    /// entries warmed together do not all expire — and refetch — at the same instant.
+    /// </summary>
+    /// <value>
+    /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables jitter and preserves the exact configured
+    /// expiry.
+    /// </value>
+    /// <remarks>
+    /// The reduction is derived from a stable hash of the provider and pair (not from randomness), so a given pair's
+    /// effective expiry is identical across instances and processes and deterministic under test. Jitter only ever
+    /// shortens the duration, never extends it, so no rate is served longer than the configured expiry allows; the
+    /// trade-off is that a pair may refetch up to this fraction of its expiry early. Inverse-pair probes jitter by the
+    /// inverse pair's own key, matching the data actually being read.
+    /// </remarks>
+    public double ExpiryJitter { get; set; }
+
+    /// <summary>
+    /// Gets or sets the fraction of a pair's effective caching duration after which a cache hit, while still served
+    /// immediately, additionally schedules a single background refresh of the served data, so a hot pair is refetched
+    /// before it expires and no caller ever absorbs the refetch latency.
+    /// </summary>
+    /// <value>
+    /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables refresh-ahead entirely and preserves the plain
+    /// serve-until-expiry behaviour.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// Refresh-ahead is access-triggered: no timers run, and only a lookup that is actually served from the cache can
+    /// schedule a refresh. When a hit's served data is older than this fraction of the pair's effective (post-jitter)
+    /// expiry, at most one background refresh per pair and window is started; concurrent aged hits for the same key
+    /// join the pending refresh rather than duplicating it. Because the fraction is below <c>1</c>, the refresh always
+    /// begins before the entry expires, so a continuously hot pair never surfaces a miss.
+    /// </para>
+    /// <para>
+    /// A background refresh that fails is swallowed after logging — the hit it piggybacked on was already served — and
+    /// the next aged hit schedules a fresh attempt. Single-date hits served from the inverse pair's rows evaluate the
+    /// threshold against the requested pair's effective expiry, a deliberate approximation that keeps the trigger
+    /// cheap. Disposing the provider prevents new refreshes from being scheduled and abandons pending ones without
+    /// draining them.
+    /// </para>
+    /// </remarks>
+    public double RefreshAheadFraction { get; set; }
+
+    /// <summary>
     /// Gets the per-provider expiry overrides, keyed by the provider name supplied to the caching provider.
     /// </summary>
     /// <value>
@@ -186,6 +249,20 @@ public sealed class CachingRateOptions
             }
         }
 
+        if (ExpiryJitter is < 0 or >= 1 || double.IsNaN(ExpiryJitter))
+        {
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryJitterOutOfRange, ExpiryJitter),
+                nameof(ExpiryJitter));
+        }
+
+        if (RefreshAheadFraction is < 0 or >= 1 || double.IsNaN(RefreshAheadFraction))
+        {
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_RefreshAheadFractionOutOfRange, RefreshAheadFraction),
+                nameof(RefreshAheadFraction));
+        }
+
         if (DefaultLookupOptions is null)
             throw new ArgumentException(CachingResourceStrings.Arg_Invalid_LookupOptionsNull, nameof(DefaultLookupOptions));
 
@@ -226,6 +303,18 @@ public sealed class CachingRateOptions
                 error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryNotPositive, entry.Value);
                 return false;
             }
+        }
+
+        if (ExpiryJitter is < 0 or >= 1 || double.IsNaN(ExpiryJitter))
+        {
+            error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_ExpiryJitterOutOfRange, ExpiryJitter);
+            return false;
+        }
+
+        if (RefreshAheadFraction is < 0 or >= 1 || double.IsNaN(RefreshAheadFraction))
+        {
+            error = string.Format(CultureInfo.CurrentCulture, CachingResourceStrings.Arg_Invalid_RefreshAheadFractionOutOfRange, RefreshAheadFraction);
+            return false;
         }
 
         if (DefaultLookupOptions is null)

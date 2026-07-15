@@ -379,7 +379,8 @@ internal static class NotableDateDocumentReader
     /// <param name="ruleId">The identifier of the owning rule, used in diagnostics.</param>
     /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
     /// <returns>
-    /// The parsed duration definition, or <see langword="null" /> when the rule inherits the concept's default duration.
+    /// The parsed duration definition, or <see langword="null" /> when the rule inherits the concept's default
+    /// duration.
     /// </returns>
     private static NotableDateDurationDefinition? ReadDuration(IDocumentNode ruleNode, CalendarSystem calendar, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {

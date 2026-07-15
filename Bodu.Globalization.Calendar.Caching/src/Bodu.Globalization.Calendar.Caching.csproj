@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Notable-Date Cache</Title>
+    <Description>Caching layer for Bodu.Globalization.Calendar. Provides CachingNotableDateService, a decorator that wraps any INotableDateService and serves computed notable dates from a per-territory, per-civil-year cache (in-memory or one TOML/JSON file per territory), recording when each year was computed and refreshing on a configurable time-to-live or a resource-version change. Includes the dependency-injection registration (AddCachedNotableDateService) on IServiceCollection.</Description>
+    <PackageTags>$(PackageTags);globalization;calendar;notable-dates;holidays;cache;toml;json;decorator;dependency-injection;options</PackageTags>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project and the durable add-on cache packages access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Globalization.Calendar.Caching.Test</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Globalization.Calendar.Caching.Sqlite</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Globalization.Calendar.Caching.Distributed</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- External package dependencies. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+
+  <!-- Shared caching infrastructure, linked as source (internal, namespace Bodu.Caching). -->
+  <ItemGroup>
+    <Compile Include="..\..\shared\Caching\RateLimitedWarningGate.cs" Link="Caching\RateLimitedWarningGate.cs" />
+    <Compile Include="..\..\shared\Caching\AtomicFileWriter.cs" Link="Caching\AtomicFileWriter.cs" />
+    <Compile Include="..\..\shared\Caching\CacheFreshness.cs" Link="Caching\CacheFreshness.cs" />
+    <Compile Include="..\..\shared\Caching\StripedLockSet.cs" Link="Caching\StripedLockSet.cs" />
+    <Compile Include="..\..\shared\Caching\InvariantCacheText.cs" Link="Caching\InvariantCacheText.cs" />
+    <Compile Include="..\..\shared\Caching\FileParseMemo{T}.cs" Link="Caching\FileParseMemo{T}.cs" />
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+    <ProjectReference Include="..\..\Bodu.Text.Toml\src\Bodu.Text.Toml.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="Globalization.Calendar.Caching\CalendarCachingResourceStrings.resx">
+      <LastGenOutput>CalendarCachingResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="Globalization.Calendar.Caching\CalendarCachingResourceStrings.Designer.cs">
+      <DependentUpon>CalendarCachingResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>

@@ -74,10 +74,10 @@ public abstract class FileSystemByteCache<TKey>
     /// <param name="key">The download unit to resolve.</param>
     /// <returns>The cache file path, always inside <see cref="Directory" />.</returns>
     /// <remarks>
-    /// The name returned by <see cref="GetFileName(TKey)" /> is reduced to a single, sanitized path segment before
-    /// it is combined with the cache directory. A crafted key whose name contains directory separators, a
-    /// parent-directory reference, or a rooted path therefore cannot direct a read or write outside the cache
-    /// directory. Sanitization is silent (it never throws) so the cache stays best-effort.
+    /// The name returned by <see cref="GetFileName(TKey)" /> is reduced to a single, sanitized path segment before it
+    /// is combined with the cache directory. A crafted key whose name contains directory separators, a parent-directory
+    /// reference, or a rooted path therefore cannot direct a read or write outside the cache directory. Sanitization is
+    /// silent (it never throws) so the cache stays best-effort.
     /// </remarks>
     private string ResolveCachePath(TKey key) =>
         Path.Combine(_directory, SanitizeFileName(GetFileName(key)));

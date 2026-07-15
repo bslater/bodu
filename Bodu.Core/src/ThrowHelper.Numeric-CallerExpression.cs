@@ -205,8 +205,8 @@ public static partial class ThrowHelper
     /// Thrown when <c>left + right</c> would overflow or underflow the <see cref="int" /> range.
     /// </exception>
     /// <remarks>
-    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to
-    /// index, slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
+    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to index,
+    /// slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfAddOverflows(
@@ -231,8 +231,8 @@ public static partial class ThrowHelper
     /// Thrown when <c>left + right</c> would overflow or underflow the <see cref="long" /> range.
     /// </exception>
     /// <remarks>
-    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to
-    /// index, slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
+    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to index,
+    /// slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfAddOverflows(
@@ -257,8 +257,8 @@ public static partial class ThrowHelper
     /// Thrown when <c>left * right</c> would overflow or underflow the <see cref="int" /> range.
     /// </exception>
     /// <remarks>
-    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to
-    /// index, slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
+    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to index,
+    /// slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfMultiplyOverflows(
@@ -283,8 +283,8 @@ public static partial class ThrowHelper
     /// Thrown when <c>left * right</c> would overflow or underflow the <see cref="long" /> range.
     /// </exception>
     /// <remarks>
-    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to
-    /// index, slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
+    /// Guards input-controlled size or offset arithmetic against silent wrap-around before the result is used to index,
+    /// slice, or allocate. The check is performed in a wider type so no overflow occurs during validation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfMultiplyOverflows(

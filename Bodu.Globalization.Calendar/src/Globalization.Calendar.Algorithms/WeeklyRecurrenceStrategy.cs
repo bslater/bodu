@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeeklyRecurrenceStrategy.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,8 +41,8 @@ public sealed class WeeklyRecurrenceStrategy
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="daysOfWeek" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="intervalWeeks" /> is less than one, or a member of <paramref name="daysOfWeek" /> is not a defined
-    /// <see cref="DayOfWeek" />.
+    /// <paramref name="intervalWeeks" /> is less than one, or a member of <paramref name="daysOfWeek" /> is not a
+    /// defined <see cref="DayOfWeek" />.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="daysOfWeek" /> is empty or contains duplicates, or <paramref name="intervalWeeks" /> is greater

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SerializationThrowHelper.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,9 +13,9 @@ namespace Bodu.Text.Toml.Serialization;
 /// <summary>
 /// Creates the serialization exceptions thrown by the shared serializer source (see
 /// <c>Bodu.Text.Serialization/shared/</c>). Each Bodu text-format package defines the same factory surface over its own
-/// exception type and resource strings, so shared converters raise failures without naming either — this
-/// implementation carries the message only, matching the TOML diagnostics contract in which the enclosing converter
-/// stamps the source position and member path during unwind.
+/// exception type and resource strings, so shared converters raise failures without naming either — this implementation
+/// carries the message only, matching the TOML diagnostics contract in which the enclosing converter stamps the source
+/// position and member path during unwind.
 /// </summary>
 internal static class SerializationThrowHelper
 {
