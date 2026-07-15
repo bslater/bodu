@@ -144,4 +144,44 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 
         Assert.IsNotNull(transform);
     }
+
+    /// <summary>
+    /// Verifies that a second parameterless <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> under the same
+    /// nonce throws <see cref="CryptographicException" />, since reusing a (key, nonce) pair to encrypt a second
+    /// message reuses the keystream.
+    /// </summary>
+    [TestMethod]
+    public void CreateEncryptor_WhenCalledTwiceUnderSameNonce_ShouldThrowCryptographicException()
+    {
+        using TAlgorithm cipher = CreateAlgorithm();
+        cipher.GenerateKey();
+        cipher.GenerateNonce();
+
+        using ICryptoTransform first = cipher.CreateEncryptor();
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            _ = cipher.CreateEncryptor();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that assigning a fresh <see cref="SymmetricStreamAlgorithm.Nonce" /> re-arms the single-use guard so a
+    /// subsequent parameterless <see cref="SymmetricStreamAlgorithm.CreateEncryptor()" /> succeeds.
+    /// </summary>
+    [TestMethod]
+    public void CreateEncryptor_WhenNonceRegeneratedBetweenCalls_ShouldSucceed()
+    {
+        using TAlgorithm cipher = CreateAlgorithm();
+        cipher.GenerateKey();
+        cipher.GenerateNonce();
+
+        using (ICryptoTransform first = cipher.CreateEncryptor()) { }
+
+        cipher.GenerateNonce();
+
+        using ICryptoTransform second = cipher.CreateEncryptor();
+
+        Assert.IsNotNull(second);
+    }
 }

@@ -54,6 +54,13 @@ public abstract class SymmetricStreamAlgorithm
     /// <summary>The private copy of the nonce, or <see langword="null" /> until generated or assigned.</summary>
     private byte[]? _nonce;
 
+    /// <summary>
+    /// Indicates whether a transform has already been issued for the current nonce via one of the parameterless
+    /// transform-creation methods. Set when such a transform is created and cleared whenever the nonce is (re)assigned
+    /// or regenerated, so a second parameterless creation under the same nonce is rejected as keystream reuse.
+    /// </summary>
+    private bool _nonceConsumed;
+
     /// <summary>Indicates whether this instance has been disposed.</summary>
     private bool _disposed;
 
@@ -232,6 +239,7 @@ public abstract class SymmetricStreamAlgorithm
 
             CryptographyHelper.ClearAndNullify(ref _nonce);
             _nonce = (byte[])value.Clone();
+            _nonceConsumed = false;
         }
     }
 
@@ -263,6 +271,7 @@ public abstract class SymmetricStreamAlgorithm
 
         CryptographyHelper.ClearAndNullify(ref _nonce);
         _nonce = CryptographyHelper.GetRandomBytes(_nonceSizeBits / 8);
+        _nonceConsumed = false;
     }
 
     /// <summary>
@@ -273,9 +282,15 @@ public abstract class SymmetricStreamAlgorithm
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <remarks>
     /// Because an additive stream cipher is self-inverse, this method is identical to <see cref="CreateDecryptor()" />.
+    /// A given nonce may back only one transform created through the parameterless overloads; assign a fresh
+    /// <see cref="Nonce" /> (or call <see cref="GenerateNonce" />) before creating another, or use
+    /// <see cref="CreateEncryptor(byte[], byte[])" /> to supply an explicit nonce.
     /// </remarks>
+    /// <exception cref="CryptographicException">
+    /// A transform has already been created for the current nonce; see the remarks.
+    /// </exception>
     public ICryptoTransform CreateEncryptor() =>
-        CreateTransform(Key, Nonce);
+        CreateTransformFromState();
 
     /// <summary>
     /// Creates a self-inverse <see cref="ICryptoTransform" /> from the supplied key and nonce.
@@ -304,9 +319,15 @@ public abstract class SymmetricStreamAlgorithm
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <remarks>
     /// Because an additive stream cipher is self-inverse, this method is identical to <see cref="CreateEncryptor()" />.
+    /// A given nonce may back only one transform created through the parameterless overloads; assign a fresh
+    /// <see cref="Nonce" /> (or call <see cref="GenerateNonce" />) before creating another, or use
+    /// <see cref="CreateDecryptor(byte[], byte[])" /> to supply an explicit nonce.
     /// </remarks>
+    /// <exception cref="CryptographicException">
+    /// A transform has already been created for the current nonce; see the remarks.
+    /// </exception>
     public ICryptoTransform CreateDecryptor() =>
-        CreateTransform(Key, Nonce);
+        CreateTransformFromState();
 
     /// <summary>
     /// Creates a self-inverse <see cref="ICryptoTransform" /> from the supplied key and nonce.
@@ -333,8 +354,37 @@ public abstract class SymmetricStreamAlgorithm
     /// </summary>
     /// <returns>An <see cref="ICryptoTransform" /> that XORs data with the cipher keystream.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
+    /// <exception cref="CryptographicException">
+    /// A transform has already been created for the current nonce. Assign a fresh <see cref="Nonce" /> (or call
+    /// <see cref="GenerateNonce" />) before creating another, or use <see cref="CreateTransform(byte[], byte[])" />
+    /// to supply an explicit nonce.
+    /// </exception>
     public ICryptoTransform CreateTransform() =>
-        CreateTransform(Key, Nonce);
+        CreateTransformFromState();
+
+    /// <summary>
+    /// Creates a transform from the stored <see cref="Key" /> and <see cref="Nonce" />, enforcing the single-use
+    /// nonce contract: the first parameterless transform issued for a nonce succeeds and latches the nonce as
+    /// consumed; a second, without an intervening nonce change, throws to prevent catastrophic keystream reuse.
+    /// </summary>
+    /// <returns>An <see cref="ICryptoTransform" /> that XORs data with the cipher keystream.</returns>
+    /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
+    /// <exception cref="CryptographicException">A transform has already been created for the current nonce.</exception>
+    private ICryptoTransform CreateTransformFromState()
+    {
+        ThrowIfDisposed();
+
+        // Read Key/Nonce first: the Nonce getter lazily generates on first use (clearing the consumed flag), so the
+        // reuse check below sees the correct state for the nonce that will actually back the transform.
+        byte[] key = Key;
+        byte[] nonce = Nonce;
+
+        if (_nonceConsumed)
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_StreamNonceReuse);
+
+        _nonceConsumed = true;
+        return CreateTransform(key, nonce);
+    }
 
     /// <summary>
     /// Validates the supplied key and nonce, builds the engine, and wraps it in a self-inverse stream transform.

@@ -145,6 +145,9 @@
   <data name="Crypt_Invalid_StreamCounterExhausted" xml:space="preserve">
     <value>The stream cipher block counter has wrapped to its initial value. Continuing would reuse the keystream.</value>
   </data>
+  <data name="Crypt_Invalid_StreamNonceReuse" xml:space="preserve">
+    <value>A transform has already been created for the current nonce. Reusing a (key, nonce) pair to encrypt a second message reuses the keystream and destroys confidentiality. Assign a fresh Nonce (or call GenerateNonce) before creating another transform.</value>
+  </data>
   <data name="Crypt_Invalid_HashAlgorithmDestinationBufferTooSmall" xml:space="preserve">
     <value>The hash algorithm's destination buffer was too small.</value>
   </data>

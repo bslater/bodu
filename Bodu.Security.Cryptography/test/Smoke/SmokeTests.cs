@@ -116,6 +116,9 @@ public sealed class SmokeTests
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
             ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
+        // Re-arm the same nonce so the single-use guard permits the inverse transform for this message.
+        algorithm.Nonce = algorithm.Nonce;
+
         byte[] roundTrip;
         using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
             roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
@@ -139,6 +142,9 @@ public sealed class SmokeTests
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
             ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        // Re-arm the same nonce so the single-use guard permits the inverse transform for this message.
+        algorithm.Nonce = algorithm.Nonce;
 
         byte[] roundTrip;
         using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
@@ -164,6 +170,9 @@ public sealed class SmokeTests
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
             ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
+        // Re-arm the same nonce so the single-use guard permits the inverse transform for this message.
+        algorithm.Nonce = algorithm.Nonce;
+
         byte[] roundTrip;
         using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
             roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
@@ -187,6 +196,9 @@ public sealed class SmokeTests
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
             ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        // Re-arm the same nonce so the single-use guard permits the inverse transform for this message.
+        algorithm.Nonce = algorithm.Nonce;
 
         byte[] roundTrip;
         using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
@@ -212,6 +224,9 @@ public sealed class SmokeTests
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
             ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
 
+        // Re-arm the same nonce so the single-use guard permits the inverse transform for this message.
+        algorithm.Nonce = algorithm.Nonce;
+
         byte[] roundTrip;
         using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
             roundTrip = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
@@ -235,6 +250,9 @@ public sealed class SmokeTests
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
             ciphertext = encryptor.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        // Re-arm the same nonce so the single-use guard permits the inverse transform for this message.
+        algorithm.Nonce = algorithm.Nonce;
 
         byte[] roundTrip;
         using (ICryptoTransform decryptor = algorithm.CreateDecryptor())

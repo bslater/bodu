@@ -797,7 +797,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Crypt_Invalid_StreamCounterExhausted", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to A transform has already been created for the current nonce....
+        /// </summary>
+        internal static string Crypt_Invalid_StreamNonceReuse {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_StreamNonceReuse", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Attempt to transform beyond the end of buffer..
         /// </summary>
