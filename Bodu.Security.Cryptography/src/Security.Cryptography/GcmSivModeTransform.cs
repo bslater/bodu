@@ -353,49 +353,14 @@ public sealed class GcmSivModeTransform
     /// <param name="x">The left operand block (16 bytes).</param>
     /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
     /// <param name="result">The destination block (16 bytes); receives the GF(2<sup>128</sup>) product.</param>
-    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
-    {
-        // Stack-allocate both working buffers. v is a mutable copy of the auth subkey H and must
-        // not escape to the managed heap — stack allocation ensures it is reclaimed with the frame.
-        Span<byte> z = stackalloc byte[16];
-        Span<byte> v = stackalloc byte[16];
-
-        try
-        {
-            h.CopyTo(v);
-
-            // Constant-time bit-serial multiply: every iteration touches z and v unconditionally.
-            // The two secret-dependent decisions — whether bit i of x is set, and whether the bit
-            // shifted out of v is set — are folded in through 0x00/0xFF masks instead of branches,
-            // so neither control flow nor memory-access pattern depends on x, h, or the running state.
-            // Both operands here are secret (reflected POLYVAL state and reflected auth key), so this
-            // mirrors the hardened GCM/GHASH multiply and must stay branchless.
-            for (int i = 0; i < 128; i++)
-            {
-                // bit i of x in big-endian bit order; bitMask is 0xFF when set, 0x00 otherwise.
-                byte bitMask = (byte)(-((x[i >> 3] >> (7 - (i & 7))) & 1));
-                for (int j = 0; j < 16; j++)
-                    z[j] ^= (byte)(v[j] & bitMask);
-
-                // lsbMask is 0xFF when the bit about to be shifted out of v is set, 0x00 otherwise.
-                byte lsbMask = (byte)(-(v[15] & 0x01));
-
-                for (int j = 15; j > 0; j--)
-                    v[j] = (byte)((v[j] >> 1) | ((v[j - 1] & 0x01) << 7));
-                v[0] >>= 1;
-
-                // Reduce by R = 0xE1 || 0…0 (x^128 + x^7 + x^2 + x + 1) when that bit was set.
-                v[0] ^= (byte)(0xE1 & lsbMask);
-            }
-
-            z.CopyTo(result);
-        }
-        finally
-        {
-            CryptographyHelper.Clear(v);
-            CryptographyHelper.Clear(z);
-        }
-    }
+    /// <remarks>
+    /// Delegates to <see cref="GaloisField128.Multiply" />, which dispatches to the carry-less
+    /// <see cref="System.Runtime.Intrinsics.X86.Pclmulqdq" /> multiply when available and falls back to the
+    /// constant-time scalar reference otherwise. Both operands here are secret (reflected POLYVAL state and reflected
+    /// auth key), and both dispatch targets are constant-time.
+    /// </remarks>
+    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result) =>
+        GaloisField128.Multiply(x, h, result);
 
     /// <summary>
     /// Computes POLYVAL(H, X) by reflecting both operands, applying GHASH multiplication, and reflecting the result.

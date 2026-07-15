@@ -487,45 +487,13 @@ public sealed class GcmModeTransform
     /// <param name="x">The left operand block (16 bytes).</param>
     /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
     /// <param name="result">The destination span (16 bytes); receives <c>x · H</c>.</param>
-    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
-    {
-        Span<byte> z = stackalloc byte[BlockSize / 8];
-        Span<byte> v = stackalloc byte[BlockSize / 8];
-
-        try
-        {
-            h.CopyTo(v);
-
-            // Constant-time bit-serial multiply: every iteration touches z and v unconditionally.
-            // The two secret-dependent decisions — whether bit i of x is set, and whether the bit
-            // shifted out of v is set — are folded in through 0x00/0xFF masks instead of branches,
-            // so neither control flow nor memory-access pattern depends on x, h, or the GHASH state.
-            for (int i = 0; i < 128; i++)
-            {
-                // bit i of x in big-endian bit order; bitMask is 0xFF when set, 0x00 otherwise.
-                byte bitMask = (byte)(-((x[i >> 3] >> (7 - (i & 7))) & 1));
-                for (int j = 0; j < BlockSize / 8; j++)
-                    z[j] ^= (byte)(v[j] & bitMask);
-
-                // lsbMask is 0xFF when the bit about to be shifted out of v is set, 0x00 otherwise.
-                byte lsbMask = (byte)(-(v[15] & 0x01));
-
-                for (int j = 15; j > 0; j--)
-                    v[j] = (byte)((v[j] >> 1) | ((v[j - 1] & 0x01) << 7));
-                v[0] >>= 1;
-
-                // Reduce by R = 0xE1 || 0…0 (representing x⁷ + x² + x + 1) when that bit was set.
-                v[0] ^= (byte)(0xE1 & lsbMask);
-            }
-
-            z.CopyTo(result);
-        }
-        finally
-        {
-            CryptographyHelper.Clear(v);
-            CryptographyHelper.Clear(z);
-        }
-    }
+    /// <remarks>
+    /// Delegates to <see cref="GaloisField128.Multiply" />, which dispatches to the carry-less
+    /// <see cref="System.Runtime.Intrinsics.X86.Pclmulqdq" /> multiply when available and falls back to the
+    /// constant-time scalar reference otherwise.
+    /// </remarks>
+    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result) =>
+        GaloisField128.Multiply(x, h, result);
 
     /// <summary>
     /// Feeds <paramref name="data" /> into the GHASH accumulator <paramref name="y" /> block by block.
