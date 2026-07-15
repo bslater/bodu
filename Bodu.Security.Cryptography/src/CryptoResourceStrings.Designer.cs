@@ -304,6 +304,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to XTS requires a 128-bit block cipher; the supplied cipher has a {0}-bit block. The GF(2^128) tweak reduction is only defined for 128-bit blocks..
+        /// </summary>
+        internal static string Arg_Invalid_XtsBlockSize {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_XtsBlockSize", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The tweak cipher block size ({0} bits) must equal the data cipher block size ({1} bits)..
         /// </summary>
         internal static string Arg_Invalid_XtsCipherBlockSizeMismatch {

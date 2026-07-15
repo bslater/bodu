@@ -69,6 +69,7 @@ public static partial class Hotp
     {
         ThrowHelper.ThrowIfOutOfRange(digits, MinDigits, MaxDigits);
         ThrowHelper.ThrowIfNegative(lookAhead);
+        ThrowHelper.ThrowIfGreaterThan(lookAhead, MaxLookAhead);
         ThrowHelper.ThrowIfEnumValueIsUndefined(algorithm);
 
         matchedCounter = -1;

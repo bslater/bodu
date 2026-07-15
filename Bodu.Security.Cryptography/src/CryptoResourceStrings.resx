@@ -280,6 +280,9 @@
   <data name="Arg_Invalid_OcbTagSize" xml:space="preserve">
     <value>Tag size ({0} bits) must be a positive multiple of 8 between 8 and the cipher block size ({1} bits).</value>
   </data>
+  <data name="Arg_Invalid_XtsBlockSize" xml:space="preserve">
+    <value>XTS requires a 128-bit block cipher; the supplied cipher has a {0}-bit block. The GF(2^128) tweak reduction is only defined for 128-bit blocks.</value>
+  </data>
   <data name="Arg_Invalid_XtsCipherBlockSizeMismatch" xml:space="preserve">
     <value>The tweak cipher block size ({0} bits) must equal the data cipher block size ({1} bits).</value>
   </data>

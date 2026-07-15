@@ -85,4 +85,19 @@ public sealed partial class HotpTests
 
         Assert.AreEqual("lookAhead", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that a look-ahead exceeding the resynchronization ceiling throws
+    /// <see cref="ArgumentOutOfRangeException" /> rather than admitting an unbounded HMAC scan.
+    /// </summary>
+    [TestMethod]
+    public void VerifyCode_WhenLookAheadExceedsCeiling_ShouldThrowArgumentOutOfRangeException()
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Hotp.VerifyCode(Rfc4226Secret, "755224", counter: 0, lookAhead: int.MaxValue, out _);
+        });
+
+        Assert.AreEqual("lookAhead", ex.ParamName);
+    }
 }
