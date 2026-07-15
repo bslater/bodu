@@ -36,6 +36,12 @@ internal sealed class HpkeContext : IDisposable
     /// <summary>The running message sequence number.</summary>
     private ulong _seq;
 
+    /// <summary>The AES block cipher, created once on first use so the key schedule is reused across every message. Only populated for the AES-GCM suites.</summary>
+    private AesBlockCipher? _aesCipher;
+
+    /// <summary>The ChaCha20-Poly1305 AEAD, created once on first use so the key schedule is reused across every message. Only populated for the ChaCha20-Poly1305 suite.</summary>
+    private ChaCha20Poly1305? _chachaAead;
+
     /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;
 
@@ -79,8 +85,9 @@ internal sealed class HpkeContext : IDisposable
         {
             case HpkeAead.Aes128Gcm:
             case HpkeAead.Aes256Gcm:
-                using (var cipher = new AesBlockCipher(_key))
-                using (var gcm = new GcmModeTransform(cipher, nonce))
+                // The per-message GcmModeTransform carries the nonce/counter state and is created per call, but it does
+                // not own the cipher, so a single cached AesBlockCipher amortizes the AES key schedule across messages.
+                using (var gcm = new GcmModeTransform(EnsureAesCipher(), nonce))
                 {
                     gcm.ProcessAssociatedData(associatedData);
                     gcm.Encrypt(plaintext, result);
@@ -89,11 +96,7 @@ internal sealed class HpkeContext : IDisposable
                 break;
 
             default: // ChaCha20Poly1305
-                using (var chacha = new ChaCha20Poly1305(_key))
-                {
-                    chacha.Encrypt(nonce, plaintext, result.AsSpan(0, plaintext.Length), result.AsSpan(plaintext.Length), associatedData);
-                }
-
+                EnsureChaChaAead().Encrypt(nonce, plaintext, result.AsSpan(0, plaintext.Length), result.AsSpan(plaintext.Length), associatedData);
                 break;
         }
 
@@ -131,8 +134,8 @@ internal sealed class HpkeContext : IDisposable
         {
             case HpkeAead.Aes128Gcm:
             case HpkeAead.Aes256Gcm:
-                using (var cipher = new AesBlockCipher(_key))
-                using (var gcm = new GcmModeTransform(cipher, nonce))
+                // The cached cipher (see Seal) is reused; the GcmModeTransform holding per-message state is not.
+                using (var gcm = new GcmModeTransform(EnsureAesCipher(), nonce))
                 {
                     gcm.ProcessAssociatedData(associatedData);
                     gcm.Decrypt(ciphertext, result);
@@ -141,18 +144,15 @@ internal sealed class HpkeContext : IDisposable
                 break;
 
             default: // ChaCha20Poly1305
-                using (var chacha = new ChaCha20Poly1305(_key))
+                try
                 {
-                    try
-                    {
-                        chacha.Decrypt(nonce, ciphertext[..plaintextLength], ciphertext[plaintextLength..], result, associatedData);
-                    }
-                    catch (AuthenticationTagMismatchException ex)
-                    {
-                        // Normalize the BCL's specific subtype so authentication failure surfaces as the same
-                        // CryptographicException for every AEAD in the suite, matching the GCM transform's contract.
-                        throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch, ex);
-                    }
+                    EnsureChaChaAead().Decrypt(nonce, ciphertext[..plaintextLength], ciphertext[plaintextLength..], result, associatedData);
+                }
+                catch (AuthenticationTagMismatchException ex)
+                {
+                    // Normalize the BCL's specific subtype so authentication failure surfaces as the same
+                    // CryptographicException for every AEAD in the suite, matching the GCM transform's contract.
+                    throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch, ex);
                 }
 
                 break;
@@ -192,12 +192,31 @@ internal sealed class HpkeContext : IDisposable
         if (_disposed)
             return;
 
+        _aesCipher?.Dispose();
+        _chachaAead?.Dispose();
+
         CryptographyHelper.ClearAndNullify(ref _key!);
         CryptographyHelper.ClearAndNullify(ref _baseNonce!);
         CryptographyHelper.ClearAndNullify(ref _exporterSecret!);
 
         _disposed = true;
     }
+
+    /// <summary>
+    /// Returns the cached AES block cipher, creating it from the AEAD key on first use so the key schedule is derived
+    /// once per context rather than once per message.
+    /// </summary>
+    /// <returns>The shared <see cref="AesBlockCipher" /> for the AES-GCM suites.</returns>
+    private AesBlockCipher EnsureAesCipher() =>
+        _aesCipher ??= new AesBlockCipher(_key);
+
+    /// <summary>
+    /// Returns the cached ChaCha20-Poly1305 AEAD, creating it from the AEAD key on first use so the key schedule is
+    /// derived once per context rather than once per message.
+    /// </summary>
+    /// <returns>The shared <see cref="ChaCha20Poly1305" /> for the ChaCha20-Poly1305 suite.</returns>
+    private ChaCha20Poly1305 EnsureChaChaAead() =>
+        _chachaAead ??= new ChaCha20Poly1305(_key);
 
     /// <summary>
     /// Computes the per-message nonce <c>base_nonce XOR I2OSP(seq, Nn)</c> into <paramref name="nonce" />.
