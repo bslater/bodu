@@ -17,8 +17,9 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// The adapter encrypts and decrypts exactly one 16-byte block per call, in ECB mode with no padding, delegating to the
-/// BCL's hardware-accelerated <see cref="Aes" /> implementation. All key scheduling is performed by the BCL on
-/// construction.
+/// BCL's hardware-accelerated <see cref="Aes" /> implementation. Key scheduling is performed once on construction and
+/// the resulting ECB transforms are cached, so per-block calls reuse the expanded key schedule rather than rebuilding a
+/// cipher context each time.
 /// </para>
 /// <para>
 /// <see cref="AesBlockCipher" /> is not intended for direct encryption of user data. Wrap it in one of the
@@ -50,8 +51,20 @@ public sealed class AesBlockCipher
     /// <summary>Length of the AES block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
 
-    /// <summary>The underlying BCL <see cref="Aes" /> instance that performs the single-block ECB transforms.</summary>
+    /// <summary>The underlying BCL <see cref="Aes" /> instance that owns the expanded key schedule.</summary>
     private readonly Aes _aes;
+
+    /// <summary>The cached ECB encryptor, created once so its key schedule is reused across every single-block call. Nulled on disposal.</summary>
+    private ICryptoTransform? _encryptor;
+
+    /// <summary>The cached ECB decryptor, created once so its key schedule is reused across every single-block call. Nulled on disposal.</summary>
+    private ICryptoTransform? _decryptor;
+
+    /// <summary>Reusable single-block scratch buffer for the byte-array-based <see cref="ICryptoTransform" /> surface.</summary>
+    private readonly byte[] _scratchIn = new byte[BlockSizeBits / 8];
+
+    /// <summary>Reusable single-block scratch buffer for the byte-array-based <see cref="ICryptoTransform" /> surface.</summary>
+    private readonly byte[] _scratchOut = new byte[BlockSizeBits / 8];
 
     /// <summary>Indicates whether the instance has been disposed.</summary>
     private bool _disposed;
@@ -73,6 +86,14 @@ public sealed class AesBlockCipher
         try
         {
             aes.Key = key; // BCL validates length and throws CryptographicException on mismatch.
+            aes.Mode = CipherMode.ECB;
+            aes.Padding = PaddingMode.None;
+
+            // Create the ECB transforms once. ECB is stateless between blocks, so a single cached transform can
+            // process every subsequent single-block call without re-deriving the key schedule per call (the cost the
+            // one-shot EncryptEcb/DecryptEcb API pays on every invocation).
+            _encryptor = aes.CreateEncryptor();
+            _decryptor = aes.CreateDecryptor();
         }
         catch
         {
@@ -98,7 +119,7 @@ public sealed class AesBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
         ThrowIfDisposed();
 
-        _aes.EncryptEcb(input, output, PaddingMode.None);
+        TransformSingleBlock(_encryptor!, input, output);
     }
 
     /// <summary>
@@ -109,7 +130,13 @@ public sealed class AesBlockCipher
     {
         if (!_disposed)
         {
+            _encryptor?.Dispose();
+            _decryptor?.Dispose();
             _aes.Dispose();
+            _encryptor = null;
+            _decryptor = null;
+            CryptographyHelper.Clear(_scratchIn);
+            CryptographyHelper.Clear(_scratchOut);
             _disposed = true;
         }
     }
@@ -125,7 +152,21 @@ public sealed class AesBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
         ThrowIfDisposed();
 
-        _aes.DecryptEcb(input, output, PaddingMode.None);
+        TransformSingleBlock(_decryptor!, input, output);
+    }
+
+    /// <summary>
+    /// Runs a single 16-byte block through the supplied cached ECB transform via reusable scratch buffers, bridging
+    /// the span-based <see cref="IBlockCipher" /> surface to the byte-array-based <see cref="ICryptoTransform" /> API.
+    /// </summary>
+    /// <param name="transform">The cached ECB encryptor or decryptor.</param>
+    /// <param name="input">The single input block.</param>
+    /// <param name="output">The destination for the transformed block.</param>
+    private void TransformSingleBlock(ICryptoTransform transform, ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        input.CopyTo(_scratchIn);
+        transform.TransformBlock(_scratchIn, 0, _scratchIn.Length, _scratchOut, 0);
+        _scratchOut.AsSpan().CopyTo(output);
     }
 
     /// <summary>
