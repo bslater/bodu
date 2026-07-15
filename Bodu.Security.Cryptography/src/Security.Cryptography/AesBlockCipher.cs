@@ -155,6 +155,28 @@ public sealed class AesBlockCipher
         TransformSingleBlock(_decryptor!, input, output);
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Processes the whole run through a single BCL one-shot ECB call, so the key schedule is derived once for the run
+    /// rather than once per block.
+    /// </remarks>
+    public void EncryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        ThrowIfDisposed();
+        _aes.EncryptEcb(input, output[..input.Length], PaddingMode.None);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Processes the whole run through a single BCL one-shot ECB call, so the key schedule is derived once for the run
+    /// rather than once per block.
+    /// </remarks>
+    public void DecryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        ThrowIfDisposed();
+        _aes.DecryptEcb(input, output[..input.Length], PaddingMode.None);
+    }
+
     /// <summary>
     /// Runs a single 16-byte block through the supplied cached ECB transform via reusable scratch buffers, bridging
     /// the span-based <see cref="IBlockCipher" /> surface to the byte-array-based <see cref="ICryptoTransform" /> API.

@@ -83,16 +83,12 @@ public sealed class EcbModeTransform
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
         CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
-        {
-            ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
-            Span<byte> outBlock = output.Slice(offset, blockSize);
-
-            if (encrypt)
-                _cipher.Encrypt(inBlock, outBlock);
-            else
-                _cipher.Decrypt(inBlock, outBlock);
-        }
+        // ECB blocks are independent, so hand the whole aligned run to the cipher; engines with per-call setup cost
+        // (e.g. AesBlockCipher) process it in a single primitive call instead of one per block.
+        if (encrypt)
+            _cipher.EncryptBlocks(input, output);
+        else
+            _cipher.DecryptBlocks(input, output);
 
         return input.Length;
     }

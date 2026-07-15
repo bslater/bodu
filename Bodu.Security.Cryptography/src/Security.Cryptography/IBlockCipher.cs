@@ -106,4 +106,40 @@ public interface IBlockCipher
     /// is supported only when the implementation explicitly permits it; otherwise the spans must not overlap.
     /// </remarks>
     void Encrypt(ReadOnlySpan<byte> input, Span<byte> output);
+
+    /// <summary>
+    /// Encrypts a run of one or more contiguous blocks, each independently (ECB semantics), writing the ciphertext into
+    /// <paramref name="output" />.
+    /// </summary>
+    /// <param name="input">The plaintext blocks. Length must be a positive multiple of <see cref="BlockSize" /> / 8.</param>
+    /// <param name="output">The destination for the ciphertext. Must be at least <paramref name="input" />.Length bytes.</param>
+    /// <remarks>
+    /// The default implementation calls <see cref="Encrypt" /> once per block. Implementations backed by a primitive
+    /// with per-call setup cost (for example a wrapped BCL cipher context) should override this to amortize that cost
+    /// across the whole run. Callers that process independent blocks — ECB and the keystream layer of CTR-based modes —
+    /// should prefer this over a per-block loop.
+    /// </remarks>
+    void EncryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        int blockBytes = BlockSize / 8;
+        for (int offset = 0; offset + blockBytes <= input.Length; offset += blockBytes)
+            Encrypt(input.Slice(offset, blockBytes), output.Slice(offset, blockBytes));
+    }
+
+    /// <summary>
+    /// Decrypts a run of one or more contiguous blocks, each independently (ECB semantics), writing the plaintext into
+    /// <paramref name="output" />.
+    /// </summary>
+    /// <param name="input">The ciphertext blocks. Length must be a positive multiple of <see cref="BlockSize" /> / 8.</param>
+    /// <param name="output">The destination for the plaintext. Must be at least <paramref name="input" />.Length bytes.</param>
+    /// <remarks>
+    /// The default implementation calls <see cref="Decrypt" /> once per block; see <see cref="EncryptBlocks" /> for when
+    /// to override.
+    /// </remarks>
+    void DecryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        int blockBytes = BlockSize / 8;
+        for (int offset = 0; offset + blockBytes <= input.Length; offset += blockBytes)
+            Decrypt(input.Slice(offset, blockBytes), output.Slice(offset, blockBytes));
+    }
 }
