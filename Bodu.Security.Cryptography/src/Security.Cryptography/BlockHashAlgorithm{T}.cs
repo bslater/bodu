@@ -180,13 +180,14 @@ public abstract class BlockHashAlgorithm<T>
     }
 
     /// <summary>
-    /// Pads the final partial block of input data and appends the encoded total message length.This ensures that all
+    /// Pads the final partial block of input data and appends the encoded total message length. This ensures that all
     /// input is padded and aligned to the block size required by the algorithm, often with trailing zeroes and encoded
     /// length information.
     /// </summary>
     /// <param name="block">The final block of unprocessed input, typically containing 0 to BlockSize–1 bytes.</param>
     /// <param name="messageLength">
-    /// The total number of bytes processed by the algorithm before padding, not including this block.
+    /// The total number of message bytes consumed by the algorithm, <strong>including</strong> the bytes in
+    /// <paramref name="block" />. This is the value most Merkle–Damgård length encodings append.
     /// </param>
     /// <returns>
     /// A padded byte array consisting of one or more full blocks that include the input data and message length

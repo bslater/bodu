@@ -21,8 +21,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>What this factory covers and does not cover.</strong> Only the classic confidentiality-only modes (ECB, CBC,
-/// CFB, OFB, CTR) are dispatched here. <see cref="CtsModeTransform" /> and <see cref="XtsModeTransform" /> are not in
-/// the <see cref="CipherModeKind" /> enumeration and must be constructed directly. Authenticated modes have their own
+/// CFB, OFB, CTR) are dispatched here. <see cref="CtsModeTransform" /> and <see cref="XtsModeTransform" /> have members
+/// in the <see cref="CipherModeKind" /> enumeration (<see cref="CipherModeKind.CTS" /> and
+/// <see cref="CipherModeKind.XTS" />) but are not dispatched by this factory — their construction shapes differ (XTS
+/// requires a second cipher), so they must be constructed directly. Authenticated modes have their own
 /// contract and lifecycle — construct an <see cref="IAeadBlockCipherModeTransform" /> implementation directly, or use
 /// the helpers on <see cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />.
 /// </para>

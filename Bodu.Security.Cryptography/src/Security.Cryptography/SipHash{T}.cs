@@ -6,7 +6,6 @@
 
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using Bodu.Extensions;
 
@@ -306,9 +305,10 @@ public abstract class SipHash<T>
 
         byte[] hash = new byte[HashSizeValue / 8];
 
-        // First 64-bit output
+        // First 64-bit output. The SipHash specification serializes the tag little-endian; write it explicitly so the
+        // digest is correct on big-endian hosts too (host-endian MemoryMarshal.Write would produce a byte-swapped tag).
         ulong h0 = _v0 ^ _v1 ^ _v2 ^ _v3;
-        MemoryMarshal.Write(hash.AsSpan(0, 8), in h0);
+        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(0, 8), h0);
 
         // Optional second block for SipHash-128
         if (HashSizeValue == 128)
@@ -317,7 +317,7 @@ public abstract class SipHash<T>
             PerformSipRounds(_finalizationRounds);
 
             ulong h1 = _v0 ^ _v1 ^ _v2 ^ _v3;
-            MemoryMarshal.Write(hash.AsSpan(8, 8), in h1);
+            BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(8, 8), h1);
         }
 
         return hash;

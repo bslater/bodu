@@ -19,7 +19,7 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Output size: 32 bits (4 bytes), little-endian.</description>
+/// <description>Output size: 32 bits (4 bytes), big-endian.</description>
 /// </item>
 /// <item>
 /// <description>Offset basis: <c>0x811C9DC5</c>.</description>

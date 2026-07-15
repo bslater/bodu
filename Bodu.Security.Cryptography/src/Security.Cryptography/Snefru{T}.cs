@@ -221,9 +221,10 @@ public abstract partial class Snefru<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void LoadBlockToBuffer(ReadOnlySpan<byte> block, Span<uint> destination)
     {
-        ReadOnlySpan<uint> inputWords = MemoryMarshal.Cast<byte, uint>(block);
+        // Read each word big-endian directly so the result is correct regardless of host endianness. The previous
+        // MemoryMarshal.Cast + byte-reverse only yielded big-endian words on little-endian hosts.
         for (int i = 0; i < destination.Length; i++)
-            destination[i] = inputWords[i].ReverseBytesUnchecked();
+            destination[i] = BinaryPrimitives.ReadUInt32BigEndian(block.Slice(i * 4, 4));
     }
 
     /// <summary>
@@ -234,10 +235,10 @@ public abstract partial class Snefru<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void WriteStateBigEndian(ReadOnlySpan<uint> source, Span<byte> destination)
     {
-        // Cast the destination to uint words to avoid per-element Slice calls and their associated bounds checks.
-        Span<uint> dest = MemoryMarshal.Cast<byte, uint>(destination);
+        // Write each word big-endian directly so the output is correct regardless of host endianness. The previous
+        // MemoryMarshal.Cast + byte-reverse only produced big-endian bytes on little-endian hosts.
         for (int i = 0; i < source.Length; i++)
-            dest[i] = source[i].ReverseBytesUnchecked();
+            BinaryPrimitives.WriteUInt32BigEndian(destination.Slice(i * 4, 4), source[i]);
     }
 
     /// <summary>

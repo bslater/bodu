@@ -40,7 +40,7 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <para>
 /// <strong>Output size and lifecycle.</strong> The digest length is fixed by the constructor's <c>hashSize</c> argument
-/// (32 or 64 bits) and emitted in little-endian byte order.
+/// (32 or 64 bits) and emitted in big-endian byte order.
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive and may be called
 /// any number of times during a running hash; <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset" />
 /// returns the running state to its initial offset basis.
