@@ -15,11 +15,10 @@ namespace Bodu.IO.Hashing;
 /// </summary>
 /// <remarks>
 /// <para>
-/// MurmurHash3 is a one-shot algorithm. To satisfy the incremental input contract of
-/// <see cref="NonCryptographicHashAlgorithm" />, this base class accumulates all bytes delivered through
-/// <see cref="Append(ReadOnlySpan{byte})" /> into an internal buffer and invokes the derived variant's
-/// <see cref="ComputeHashCore(ReadOnlySpan{byte})" /> from <see cref="GetCurrentHashCore(Span{byte})" /> once all input
-/// is available.
+/// The algorithm is block-streamable: input delivered through <see cref="Append(ReadOnlySpan{byte})" /> is mixed into
+/// the running accumulators one block at a time, with only a partial trailing block buffered between calls. Memory
+/// use is constant regardless of input length, and reading the current hash applies the tail and finalization mix to
+/// a copy of the accumulators, so digest reads are non-destructive.
 /// </para>
 /// <para>
 /// A 32-bit seed can be supplied at construction time to vary the output for the same input, which is useful for
@@ -39,10 +38,7 @@ namespace Bodu.IO.Hashing;
 /// preferable only for very small fixed-length keys.
 /// </para>
 /// <para>
-/// <strong>Buffering caveat.</strong> Because the algorithm needs the whole message before mixing, the base class
-/// buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})" /> is called. Memory consumption
-/// therefore grows linearly with input length between resets — avoid feeding it multi-gigabyte streams. Instances are
-/// not thread-safe; share behind explicit synchronization.
+/// Instances are not thread-safe; share behind explicit synchronization.
 /// </para>
 /// <note type="important"> MurmurHash3 is <b>not</b> cryptographically secure. It must <b>not</b> be used for password
 /// hashing, digital signatures, or any application that requires collision resistance under adversarial conditions.
@@ -71,25 +67,33 @@ public abstract class MurmurHash3
     /// <summary>The set of hash output sizes, in bits, that this algorithm family supports.</summary>
     private static readonly int[] s_validHashSizes = [32, 128];
 
-    /// <summary>The buffer that accumulates all appended input until the one-shot hash is computed.</summary>
-    private readonly MemoryStream _inputBuffer = new();
+    /// <summary>Buffers a partial trailing block between <see cref="Append(ReadOnlySpan{byte})" /> calls. Sized to the variant's block size.</summary>
+    private readonly byte[] _tail;
 
-    /// <summary>Indicates whether this instance has been disposed and its buffered input released.</summary>
+    /// <summary>The number of bytes currently held in <see cref="_tail" />, always less than the block size after each call completes.</summary>
+    private int _tailLength;
+
+    /// <summary>The running total of bytes appended since construction or the last reset, folded into the finalization mix.</summary>
+    private ulong _totalBytes;
+
+    /// <summary>Indicates whether this instance has been disposed and its state cleared.</summary>
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MurmurHash3" /> class with the specified hash output size and
-    /// seed.
+    /// Initializes a new instance of the <see cref="MurmurHash3" /> class with the specified hash output size, block
+    /// size, and seed.
     /// </summary>
     /// <param name="hashSize">The desired hash output size in bits. Must be one of 32 or 128.</param>
+    /// <param name="blockSizeBytes">The variant's block size, in bytes (4 for the 32-bit variant, 16 for the 128-bit variant).</param>
     /// <param name="seed">The 32-bit seed value used to initialize the hash state.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="hashSize" /> is not one of the supported values (32 or 128).
     /// </exception>
-    protected MurmurHash3(int hashSize, uint seed = 0)
+    private protected MurmurHash3(int hashSize, int blockSizeBytes, uint seed = 0)
         : base(ValidateHashSize(hashSize) / 8)
     {
         Seed = seed;
+        _tail = new byte[blockSizeBytes];
     }
 
     /// <summary>
@@ -102,8 +106,36 @@ public abstract class MurmurHash3
     public override void Append(ReadOnlySpan<byte> source)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (source.Length > 0)
-            _inputBuffer.Write(source);
+
+        _totalBytes += (ulong)source.Length;
+        int blockBytes = _tail.Length;
+
+        // Top up a pending partial block first; mix it as soon as it completes.
+        if (_tailLength > 0)
+        {
+            int take = Math.Min(blockBytes - _tailLength, source.Length);
+            source[..take].CopyTo(_tail.AsSpan(_tailLength));
+            _tailLength += take;
+            source = source[take..];
+
+            if (_tailLength == blockBytes)
+            {
+                MixBlocks(_tail);
+                _tailLength = 0;
+            }
+        }
+
+        // Mix the aligned run directly from the caller's buffer.
+        int aligned = source.Length - (source.Length % blockBytes);
+        if (aligned > 0)
+        {
+            MixBlocks(source[..aligned]);
+            source = source[aligned..];
+        }
+
+        // Buffer the remaining partial block for the next call or finalization.
+        source.CopyTo(_tail.AsSpan(_tailLength));
+        _tailLength += source.Length;
     }
 
     /// <summary>
@@ -124,8 +156,10 @@ public abstract class MurmurHash3
     public override void Reset()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        _inputBuffer.SetLength(0);
-        _inputBuffer.Position = 0;
+
+        _tailLength = 0;
+        _totalBytes = 0;
+        ResetCore();
     }
 
     /// <summary>
@@ -161,11 +195,24 @@ public abstract class MurmurHash3
     }
 
     /// <summary>
-    /// Performs the full hash computation over the complete accumulated input in a single pass.
+    /// Resets the variant's running accumulators to the seeded initial state.
     /// </summary>
-    /// <param name="source">The complete input bytes to hash.</param>
-    /// <returns>A byte array containing the final hash output.</returns>
-    protected abstract byte[] ComputeHashCore(ReadOnlySpan<byte> source);
+    private protected abstract void ResetCore();
+
+    /// <summary>
+    /// Mixes a run of one or more complete blocks into the variant's running accumulators.
+    /// </summary>
+    /// <param name="blocks">The block-aligned input; its length is always a positive multiple of the block size.</param>
+    private protected abstract void MixBlocks(ReadOnlySpan<byte> blocks);
+
+    /// <summary>
+    /// Applies the tail bytes and the finalization mix to a copy of the running accumulators and writes the digest,
+    /// leaving the running state untouched so digest reads remain non-destructive.
+    /// </summary>
+    /// <param name="tail">The buffered partial trailing block (possibly empty).</param>
+    /// <param name="totalBytes">The total number of bytes appended so far.</param>
+    /// <param name="destination">The span receiving the digest; exactly the hash length in bytes.</param>
+    private protected abstract void FinalizeCore(ReadOnlySpan<byte> tail, ulong totalBytes, Span<byte> destination);
 
     /// <summary>
     /// Releases the resources used by the current instance, optionally clearing managed state.
@@ -176,7 +223,7 @@ public abstract class MurmurHash3
     /// </param>
     /// <remarks>
     /// Override in a derived class to release additional resources owned by the subclass. Always invoke
-    /// <c>base.Dispose(disposing)</c> from the override so that the buffered input state is released.
+    /// <c>base.Dispose(disposing)</c> from the override so that the buffered state is cleared.
     /// </remarks>
     protected virtual void Dispose(bool disposing)
     {
@@ -185,7 +232,9 @@ public abstract class MurmurHash3
 
         if (disposing)
         {
-            _inputBuffer.Dispose();
+            Array.Clear(_tail);
+            _tailLength = 0;
+            _totalBytes = 0;
         }
 
         _disposed = true;
@@ -196,13 +245,7 @@ public abstract class MurmurHash3
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        // Hash the stream's backing array in place (the buffer is publicly visible) rather than duplicating the whole
-        // accumulated message with ToArray() on every digest read.
-        ReadOnlySpan<byte> data = _inputBuffer.TryGetBuffer(out ArraySegment<byte> segment)
-            ? segment.AsSpan()
-            : _inputBuffer.ToArray();
-        byte[] digest = ComputeHashCore(data);
-        digest.AsSpan(0, HashLengthInBytes).CopyTo(destination);
+        FinalizeCore(_tail.AsSpan(0, _tailLength), _totalBytes, destination[..HashLengthInBytes]);
     }
 
     /// <summary>

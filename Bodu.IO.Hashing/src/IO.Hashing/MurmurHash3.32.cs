@@ -75,6 +75,9 @@ public sealed class MurmurHash3_32
     /// <summary>The second mixing constant applied to each block during the MurmurHash3 32-bit body pass.</summary>
     private const uint C2 = 0x1B873593u;
 
+    /// <summary>The running 32-bit accumulator, seeded at construction and updated as each 4-byte block is mixed in.</summary>
+    private uint _h1;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MurmurHash3_32" /> class with a seed of zero.
     /// </summary>
@@ -88,25 +91,32 @@ public sealed class MurmurHash3_32
     /// </summary>
     /// <param name="seed">The 32-bit seed value used to initialize the hash state.</param>
     public MurmurHash3_32(uint seed)
-        : base(32, seed)
+        : base(32, blockSizeBytes: 4, seed)
     {
+        _h1 = seed;
     }
 
-    /// <summary>
-    /// Computes the 32-bit MurmurHash3 of the provided input span.
-    /// </summary>
-    /// <param name="source">The input bytes to hash.</param>
-    /// <returns>A 4-byte array containing the little-endian encoded 32-bit hash value.</returns>
-    protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source)
-    {
-        uint h1 = Seed;
-        int len = source.Length;
-        int nblocks = len / 4;
+    /// <inheritdoc />
+    private protected override void ResetCore() =>
+        _h1 = Seed;
 
-        // Body: process 4-byte blocks.
-        for (int i = 0; i < nblocks; i++)
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+            _h1 = 0;
+
+        base.Dispose(disposing);
+    }
+
+    /// <inheritdoc />
+    private protected override void MixBlocks(ReadOnlySpan<byte> blocks)
+    {
+        uint h1 = _h1;
+
+        for (int i = 0; i < blocks.Length; i += 4)
         {
-            uint k1 = BinaryPrimitives.ReadUInt32LittleEndian(source.Slice(i * 4, 4));
+            uint k1 = BinaryPrimitives.ReadUInt32LittleEndian(blocks.Slice(i, 4));
 
             k1 = unchecked(k1 * C1);
             k1 = RotateLeft(k1, 15);
@@ -117,10 +127,16 @@ public sealed class MurmurHash3_32
             h1 = unchecked((h1 * 5u) + 0xE6546B64u);
         }
 
-        // Tail: process remaining 1–3 bytes.
-        ReadOnlySpan<byte> tail = source.Slice(nblocks * 4);
+        _h1 = h1;
+    }
+
+    /// <inheritdoc />
+    private protected override void FinalizeCore(ReadOnlySpan<byte> tail, ulong totalBytes, Span<byte> destination)
+    {
+        uint h1 = _h1;
         uint k = 0;
 
+        // Tail: fold in the remaining 1–3 bytes.
         switch (tail.Length)
         {
             case 3: k ^= (uint)tail[2] << 16; goto case 2;
@@ -134,13 +150,11 @@ public sealed class MurmurHash3_32
                 break;
         }
 
-        // Finalization.
-        h1 = unchecked(h1 ^ (uint)len);
+        // Finalization over a local copy — the running accumulator is left untouched.
+        h1 = unchecked(h1 ^ (uint)totalBytes);
         h1 = FMix32(h1);
 
-        byte[] result = new byte[4];
-        BinaryPrimitives.WriteUInt32LittleEndian(result, h1);
-        return result;
+        BinaryPrimitives.WriteUInt32LittleEndian(destination, h1);
     }
 
     /// <summary>
