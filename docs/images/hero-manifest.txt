@@ -35,6 +35,9 @@ Bodu.Globalization.Calendar.DependencyInjection hero-calendar-di.svg
 Bodu.Globalization.Calendar.Europe hero-calendar-europe.svg
 Bodu.Globalization.Calendar.MiddleEast hero-calendar-middleeast.svg
 Bodu.Globalization.Calendar.Plugins hero-calendar-plugins.svg
+Bodu.Globalization.Calendar.Caching hero-calendar-caching.svg
+Bodu.Globalization.Calendar.Caching.Distributed hero-calendar-caching-distributed.svg
+Bodu.Globalization.Calendar.Caching.Sqlite hero-calendar-caching-sqlite.svg
 Bodu.IO.Compound hero-io-compound.svg
 Bodu.IO.Hashing hero-io.svg
 Bodu.Numerics hero-numerics.svg
@@ -46,3 +49,4 @@ Bodu.Text.Encoding hero-text-encoding.svg
 Bodu.Text.Formats hero-formats.svg
 Bodu.Text.Toml hero-toml.svg
 Bodu.Text.Yaml hero-yaml.svg
+Bodu.Text.Serialization hero-text-serialization.svg

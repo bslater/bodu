@@ -44,6 +44,10 @@ Several capabilities ship as independent companion packages so they can release 
 | `Bodu.Globalization.Calendar.Builder` | Stable | Fluent, chainable C# API for authoring notable-date documents in code, with XML / JSON serialization and load/save. | `Bodu.Globalization.Calendar` |
 | `Bodu.Globalization.Calendar.DependencyInjection` | Stable | `IServiceCollection` extensions for registering `INotableDateService` over a loaded `NotableDateResource`. | `Bodu.Globalization.Calendar`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
 | `Bodu.Globalization.Calendar.Plugins` | Stable | Trust-gated loading of external assemblies that contribute custom `INotableDateAlgorithm` implementations. | `Bodu.Globalization.Calendar` |
+| `Bodu.Globalization.Calendar.Caching` | Stable | `CachingNotableDateService`, a decorator that wraps any `INotableDateService` and serves computed notable dates from a per-territory, per-civil-year cache (in-memory, or one TOML/JSON file per territory), refreshing on a configurable time-to-live or a resource-version change. Includes its own DI registration. | `Bodu.Globalization.Calendar`, `Bodu.Text.Toml`, `Bodu.Core` |
+| `Bodu.Globalization.Calendar.Caching.Distributed` | Stable | Distributed (`IDistributedCache` / Redis) storage backend for the notable-date cache: `DistributedNotableDateCache` over any `IDistributedCache`, with the `AddDistributedNotableDateCache` / `AddRedisNotableDateCache` DI registrations. | `Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar`, `Bodu.Core`, `Microsoft.Extensions.Caching.StackExchangeRedis` |
+| `Bodu.Globalization.Calendar.Caching.Sqlite` | Stable | SQLite storage backend for the notable-date cache: `SqliteNotableDateCache` persisting computed years in a SQLite database, with the `AddSqliteNotableDateCache` DI registration. | `Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar`, `Bodu.Core`, `Microsoft.Data.Sqlite` |
+| `Bodu.Text.Serialization` | Stable | Shared, format-agnostic serialization primitives for the Bodu `System.Text.Json`-shaped text serializers (Bencode, TOML): the attribute family, ignore/creation/unmapped-member/naming enums, serialization callback interfaces, and naming policies. Consumed by the per-format serializer packages. | `Bodu.Core` |
 | `Bodu.Financial.DependencyInjection` | Stable | `IServiceCollection` extensions for registering Bodu.Financial currency-lookup and monetary services via `AddFinancialService`. | `Bodu.Financial`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
 | `Bodu.Financial.Serialization.Json` | Stable | `System.Text.Json` converters, the `FinancialJsonPolicy` (`Strict` / `Lenient` / `Compact`), the `AddFinancialJsonConverters()` registration, and the `AddFinancialJson()` DI registration for the `Bodu.Financial` types (`Money`, `Money<TCurrency>`, `MoneyBag`, `ExchangeRate`, `CurrencyPair`), keeping the core financial library serialization-agnostic. | `Bodu.Financial`, `System.Text.Json`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
 | `Bodu.Numerics.Serialization.Json` | Preview | `System.Text.Json` converters, converter factories, and the `AddNumericsJsonConverters()` registration for the `Bodu.Numerics` types (`Fraction<T>`, `BigDecimal`, `Interval<T>`, `DiscreteInterval<T>`, `IntervalSet<T>`), keeping the core numerics library serialization-agnostic. | `Bodu.Numerics`, `System.Text.Json` |
@@ -52,6 +56,10 @@ Several capabilities ship as independent companion packages so they can release 
 <figure><img src="../images/hero-calendar-builder.svg" alt="Bodu.Globalization.Calendar.Builder" /><figcaption><code>Bodu.Globalization.Calendar.Builder</code></figcaption></figure>
 <figure><img src="../images/hero-calendar-di.svg" alt="Bodu.Globalization.Calendar.DependencyInjection" /><figcaption><code>Bodu.Globalization.Calendar.DependencyInjection</code></figcaption></figure>
 <figure><img src="../images/hero-calendar-plugins.svg" alt="Bodu.Globalization.Calendar.Plugins" /><figcaption><code>Bodu.Globalization.Calendar.Plugins</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-caching.svg" alt="Bodu.Globalization.Calendar.Caching" /><figcaption><code>Bodu.Globalization.Calendar.Caching</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-caching-distributed.svg" alt="Bodu.Globalization.Calendar.Caching.Distributed" /><figcaption><code>Bodu.Globalization.Calendar.Caching.Distributed</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-caching-sqlite.svg" alt="Bodu.Globalization.Calendar.Caching.Sqlite" /><figcaption><code>Bodu.Globalization.Calendar.Caching.Sqlite</code></figcaption></figure>
+<figure><img src="../images/hero-text-serialization.svg" alt="Bodu.Text.Serialization" /><figcaption><code>Bodu.Text.Serialization</code></figcaption></figure>
 <figure><img src="../images/hero-financial-di.svg" alt="Bodu.Financial.DependencyInjection" /><figcaption><code>Bodu.Financial.DependencyInjection</code></figcaption></figure>
 <figure><img src="../images/hero-financial-json.svg" alt="Bodu.Financial.Serialization.Json" /><figcaption><code>Bodu.Financial.Serialization.Json</code></figcaption></figure>
 <figure><img src="../images/hero-numerics-json.svg" alt="Bodu.Numerics.Serialization.Json" /><figcaption><code>Bodu.Numerics.Serialization.Json</code></figcaption></figure>
@@ -156,6 +164,10 @@ dotnet add package Bodu.Financial
 dotnet add package Bodu.Globalization.Calendar.Builder
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 dotnet add package Bodu.Globalization.Calendar.Plugins
+dotnet add package Bodu.Globalization.Calendar.Caching
+dotnet add package Bodu.Globalization.Calendar.Caching.Distributed
+dotnet add package Bodu.Globalization.Calendar.Caching.Sqlite
+dotnet add package Bodu.Text.Serialization
 dotnet add package Bodu.Financial.DependencyInjection
 dotnet add package Bodu.Financial.Serialization.Json
 dotnet add package Bodu.Numerics.Serialization.Json
