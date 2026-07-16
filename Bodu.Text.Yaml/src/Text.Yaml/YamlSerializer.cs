@@ -247,7 +247,7 @@ public static partial class YamlSerializer
                 if (state is { HasFailure: true })
                     break;
 
-                state?.PushPath($"[{index++}]");
+                state?.PushPath(index++);
                 WriteValue(writer, item, item?.GetType() ?? typeof(object), options, depth + 1);
                 state?.PopPath();
             }
@@ -279,8 +279,7 @@ public static partial class YamlSerializer
         YamlSerializerOptions options,
         int depth)
     {
-        YamlMemberInfo[] members = YamlMemberInfo.ForType(type, options.IncludeFields);
-        YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
+        YamlTypeBinding binding = options.GetBinding(type);
 
         YamlWriteStack? state = writer.WriteStack;
         if (state is not null && !state.TryEnterReference(value))
@@ -294,11 +293,12 @@ public static partial class YamlSerializer
             (value as IOnSerializing)?.OnSerializing();
 
             writer.WriteStartMapping();
-            foreach (YamlMemberInfo member in OrderMembers(members))
+            foreach (int index in binding.WriteOrder)
             {
                 if (state is { HasFailure: true })
                     break;
 
+                YamlMemberInfo member = binding.Members[index];
                 if (member.IsExtensionData)
                     continue;
 
@@ -306,8 +306,9 @@ public static partial class YamlSerializer
                 if (ShouldOmit(member, memberValue, options))
                     continue;
 
-                state?.PushPath(member.WireName(options));
-                writer.WritePropertyName(member.WireName(options));
+                string wireName = binding.WireNames[index];
+                state?.PushPath(wireName);
+                writer.WritePropertyName(wireName);
                 WriteValue(writer, memberValue, member.Type, options, depth + 1);
                 state?.PopPath();
             }
@@ -315,7 +316,7 @@ public static partial class YamlSerializer
             if (state is { HasFailure: true })
                 return;
 
-            WriteExtensionData(writer, value, members, options, depth);
+            WriteExtensionData(writer, value, binding, options, depth);
 
             if (state is { HasFailure: true })
                 return;
@@ -336,23 +337,22 @@ public static partial class YamlSerializer
     /// </summary>
     /// <param name="writer">The writer to emit into.</param>
     /// <param name="value">The object being written.</param>
-    /// <param name="members">The discovered members of the object's type.</param>
+    /// <param name="binding">The member binding of the object's type.</param>
     /// <param name="options">The serializer options.</param>
     /// <param name="depth">The current recursion depth.</param>
     /// <exception cref="YamlSerializationException">An extension-data key collides with a declared member.</exception>
     [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
-    private static void WriteExtensionData(Utf8YamlWriter writer, object value, YamlMemberInfo[] members, YamlSerializerOptions options, int depth)
+    private static void WriteExtensionData(Utf8YamlWriter writer, object value, YamlTypeBinding binding, YamlSerializerOptions options, int depth)
     {
-        YamlMemberInfo? extension = Array.Find(members, static m => m.IsExtensionData);
-        if (extension?.Get(value) is not IDictionary<string, object?> entries || entries.Count == 0)
+        if (binding.ExtensionData?.Get(value) is not IDictionary<string, object?> entries || entries.Count == 0)
             return;
 
         YamlWriteStack? state = writer.WriteStack;
         var declared = new HashSet<string>(StringComparer.Ordinal);
-        foreach (YamlMemberInfo member in members)
+        for (int i = 0; i < binding.Members.Length; i++)
         {
-            if (!member.IsExtensionData)
-                declared.Add(member.WireName(options));
+            if (!binding.Members[i].IsExtensionData)
+                declared.Add(binding.WireNames[i]);
         }
 
         foreach (KeyValuePair<string, object?> entry in entries)
@@ -411,20 +411,4 @@ public static partial class YamlSerializer
         return value.Equals(defaultValue);
     }
 
-    /// <summary>
-    /// Returns the members in write order, sorting by ascending <see cref="YamlMemberInfo.Order" /> only when at least
-    /// one member declares a non-default order; otherwise the declared order is preserved unchanged.
-    /// </summary>
-    /// <param name="members">The discovered members in declaration order.</param>
-    /// <returns>The members in the order they should be written.</returns>
-    private static IEnumerable<YamlMemberInfo> OrderMembers(YamlMemberInfo[] members)
-    {
-        foreach (YamlMemberInfo member in members)
-        {
-            if (member.Order != 0)
-                return members.OrderBy(static m => m.Order);
-        }
-
-        return members;
-    }
 }

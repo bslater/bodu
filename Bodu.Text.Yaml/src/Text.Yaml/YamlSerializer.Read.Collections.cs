@@ -127,12 +127,12 @@ public static partial class YamlSerializer
     {
         RequireMapping(ref reader);
 
-        YamlMemberInfo[] members = YamlMemberInfo.ForType(type, options.IncludeFields);
-        YamlMemberInfo.EnsureUniqueWireNames(members, options, type);
+        YamlTypeBinding binding = options.GetBinding(type);
+        YamlMemberInfo[] members = binding.Members;
 
         ConstructorInfo? constructor = YamlMemberInfo.GetDeserializationConstructor(type);
         if (constructor is not null && constructor.GetParameters().Length > 0)
-            return BindObjectWithConstructor(ref reader, type, members, constructor, options);
+            return BindObjectWithConstructor(ref reader, type, binding, constructor, options);
 
         object instance = Activator.CreateInstance(type)
             ?? throw new YamlSerializationException(
@@ -140,7 +140,6 @@ public static partial class YamlSerializer
 
         (instance as IOnDeserializing)?.OnDeserializing();
 
-        StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         HashSet<YamlMemberInfo>? seenRequired = Array.Exists(members, static m => m.IsRequired) ? new HashSet<YamlMemberInfo>() : null;
         IDictionary<string, object?>? extensionData = ResolveExtensionData(instance, members);
 
@@ -149,23 +148,13 @@ public static partial class YamlSerializer
             string name = reader.GetString();
             reader.Read();
 
-            YamlMemberInfo? match = null;
-            foreach (YamlMemberInfo member in members)
-            {
-                if (!member.IsExtensionData && string.Equals(member.WireName(options), name, comparison))
-                {
-                    match = member;
-                    break;
-                }
-            }
-
-            if (match is not null)
+            if (binding.TryGetMember(name, out YamlMemberInfo? match, out string? wireName))
             {
                 if (match.IsRequired)
                     seenRequired!.Add(match);
 
                 if (match.Set is not null)
-                    match.Set(instance, BindChild(ref reader, match.Type, options, match.WireName(options)));
+                    match.Set(instance, BindChild(ref reader, match.Type, options, wireName));
                 else if (!TryPopulate(ref reader, match, instance, options))
                     SkipValue(ref reader);
             }
@@ -186,12 +175,12 @@ public static partial class YamlSerializer
 
         if (seenRequired is not null)
         {
-            foreach (YamlMemberInfo member in members)
+            for (int i = 0; i < members.Length; i++)
             {
-                if (member.IsRequired && !seenRequired.Contains(member))
+                if (members[i].IsRequired && !seenRequired.Contains(members[i]))
                 {
                     throw new YamlSerializationException(string.Format(
-                        CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlMissingRequiredMember, member.WireName(options), type));
+                        CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlMissingRequiredMember, binding.WireNames[i], type));
                 }
             }
         }
@@ -208,7 +197,7 @@ public static partial class YamlSerializer
     /// </summary>
     /// <param name="reader">The reader positioned on the mapping's start token.</param>
     /// <param name="type">The target object type.</param>
-    /// <param name="members">The discovered members of the target type.</param>
+    /// <param name="binding">The member binding of the target type.</param>
     /// <param name="constructor">The constructor used to instantiate the type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The bound object.</returns>
@@ -216,13 +205,13 @@ public static partial class YamlSerializer
     private static object BindObjectWithConstructor(
         ref Utf8YamlReader reader,
         Type type,
-        YamlMemberInfo[] members,
+        YamlTypeBinding binding,
         ConstructorInfo constructor,
         YamlSerializerOptions options)
     {
-        StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        YamlMemberInfo[] members = binding.Members;
         var buffered = new Dictionary<YamlMemberInfo, object?>();
-        YamlMemberInfo? extension = Array.Find(members, static m => m.IsExtensionData);
+        YamlMemberInfo? extension = binding.ExtensionData;
         Dictionary<string, object?>? extensionBuffer = extension is not null ? new Dictionary<string, object?>(StringComparer.Ordinal) : null;
         HashSet<YamlMemberInfo>? seenRequired = Array.Exists(members, static m => m.IsRequired) ? new HashSet<YamlMemberInfo>() : null;
 
@@ -231,22 +220,12 @@ public static partial class YamlSerializer
             string name = reader.GetString();
             reader.Read();
 
-            YamlMemberInfo? match = null;
-            foreach (YamlMemberInfo member in members)
-            {
-                if (!member.IsExtensionData && string.Equals(member.WireName(options), name, comparison))
-                {
-                    match = member;
-                    break;
-                }
-            }
-
-            if (match is not null)
+            if (binding.TryGetMember(name, out YamlMemberInfo? match, out string? wireName))
             {
                 if (match.IsRequired)
                     seenRequired!.Add(match);
 
-                buffered[match] = BindChild(ref reader, match.Type, options, match.WireName(options));
+                buffered[match] = BindChild(ref reader, match.Type, options, wireName);
             }
             else if (extensionBuffer is not null)
             {
@@ -313,12 +292,12 @@ public static partial class YamlSerializer
 
         if (seenRequired is not null)
         {
-            foreach (YamlMemberInfo member in members)
+            for (int i = 0; i < members.Length; i++)
             {
-                if (member.IsRequired && !seenRequired.Contains(member))
+                if (members[i].IsRequired && !seenRequired.Contains(members[i]))
                 {
                     throw new YamlSerializationException(string.Format(
-                        CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlMissingRequiredMember, member.WireName(options), type));
+                        CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlMissingRequiredMember, binding.WireNames[i], type));
                 }
             }
         }

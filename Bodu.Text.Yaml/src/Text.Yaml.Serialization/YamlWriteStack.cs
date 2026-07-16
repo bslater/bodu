@@ -28,8 +28,8 @@ namespace Bodu.Text.Yaml.Serialization;
 /// </remarks>
 internal sealed class YamlWriteStack
 {
-    /// <summary>The path segments for every open container level, innermost last. Each entry is a member or mapping key, or a sequence index of the form <c>[i]</c>.</summary>
-    private readonly List<string> _path = [];
+    /// <summary>The path segments for every open container level, innermost last. Each entry is a member or mapping key, or a sequence index formatted only if a failure is recorded.</summary>
+    private readonly List<PathSegment> _path = [];
 
     /// <summary>The reference instances currently being written, used to detect an object cycle by reference identity.</summary>
     private readonly HashSet<object> _references = new(ReferenceEqualityComparer.Instance);
@@ -47,9 +47,18 @@ internal sealed class YamlWriteStack
     /// <summary>
     /// Pushes a path segment for a container the writer is about to descend into.
     /// </summary>
-    /// <param name="segment">The member or mapping key, or a sequence index of the form <c>[i]</c>.</param>
+    /// <param name="segment">The member or mapping key.</param>
     internal void PushPath(string segment) =>
-        _path.Add(segment);
+        _path.Add(new PathSegment(segment));
+
+    /// <summary>
+    /// Pushes a sequence-index path segment for a container the writer is about to descend into. The index is stored
+    /// unformatted, so the success path allocates nothing; the <c>[i]</c> text is produced only when a failure
+    /// captures the path.
+    /// </summary>
+    /// <param name="index">The zero-based sequence index.</param>
+    internal void PushPath(int index) =>
+        _path.Add(new PathSegment(index));
 
     /// <summary>
     /// Pops the most recently pushed path segment after the corresponding value has been written successfully.
@@ -108,8 +117,45 @@ internal sealed class YamlWriteStack
 
         string? path = null;
         for (int i = _path.Count - 1; i >= 0; i--)
-            path = YamlSerializationException.CombinePath(_path[i], path);
+            path = YamlSerializationException.CombinePath(_path[i].Format(), path);
 
         return path;
+    }
+
+    /// <summary>
+    /// A path segment: a member or mapping key, or an unformatted sequence index.
+    /// </summary>
+    private readonly struct PathSegment
+    {
+        /// <summary>The key text, or <see langword="null" /> for an index segment.</summary>
+        private readonly string? _key;
+
+        /// <summary>The sequence index, meaningful only when <see cref="_key" /> is <see langword="null" />.</summary>
+        private readonly int _index;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PathSegment" /> struct for a key segment.
+        /// </summary>
+        /// <param name="key">The member or mapping key.</param>
+        internal PathSegment(string key)
+        {
+            _key = key;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PathSegment" /> struct for a sequence-index segment.
+        /// </summary>
+        /// <param name="index">The zero-based sequence index.</param>
+        internal PathSegment(int index)
+        {
+            _index = index;
+        }
+
+        /// <summary>
+        /// Produces the segment's path text: the key, or the index in its <c>[i]</c> form.
+        /// </summary>
+        /// <returns>The segment text.</returns>
+        internal string Format() =>
+            _key ?? string.Create(System.Globalization.CultureInfo.InvariantCulture, $"[{_index}]");
     }
 }

@@ -4,7 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using Bodu.Text.Serialization;
 using Bodu.Text.Yaml.Serialization;
 
@@ -238,12 +240,48 @@ public sealed class YamlSerializerOptions
     /// </summary>
     public void MakeReadOnly() => _isReadOnly = true;
 
+    /// <summary>The resolved converter per type, cached once the options are frozen; a <see langword="null" /> entry records that no custom converter applies.</summary>
+    private readonly ConcurrentDictionary<Type, YamlConverter?> _converterCache = new();
+
+    /// <summary>The member binding per type, cached once the options are frozen.</summary>
+    private readonly ConcurrentDictionary<Type, YamlTypeBinding> _bindingCache = new();
+
     /// <summary>
     /// Finds a custom converter for the specified type.
     /// </summary>
     /// <param name="type">The type to convert.</param>
     /// <returns>The matching converter, or <see langword="null" /> when none applies.</returns>
-    internal YamlConverter? GetConverter(Type type)
+    /// <remarks>
+    /// Resolution is memoized once the options are frozen, so the linear converter scan runs once per type rather
+    /// than once per value read or written. Before the freeze the scan runs uncached, because the converter list can
+    /// still change.
+    /// </remarks>
+    internal YamlConverter? GetConverter(Type type) =>
+        _isReadOnly
+            ? _converterCache.GetOrAdd(type, static (t, self) => self.ResolveConverter(t), this)
+            : ResolveConverter(type);
+
+    /// <summary>
+    /// Gets the cached member binding describing how the specified type maps to a YAML mapping.
+    /// </summary>
+    /// <param name="type">The type to bind.</param>
+    /// <returns>The binding.</returns>
+    /// <remarks>
+    /// The binding is memoized once the options are frozen, so wire names are computed and validated once per type.
+    /// </remarks>
+    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    internal YamlTypeBinding GetBinding(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type) =>
+        _isReadOnly
+            ? _bindingCache.GetOrAdd(type, static (t, self) => YamlTypeBinding.Create(t, self), this)
+            : YamlTypeBinding.Create(type, this);
+
+    /// <summary>
+    /// Resolves the converter for a type without consulting the cache.
+    /// </summary>
+    /// <param name="type">The type to convert.</param>
+    /// <returns>The matching converter, or <see langword="null" /> when none applies.</returns>
+    private YamlConverter? ResolveConverter(Type type)
     {
         foreach (YamlConverter converter in Converters)
         {

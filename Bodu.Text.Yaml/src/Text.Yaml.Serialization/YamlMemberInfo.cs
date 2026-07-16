@@ -100,7 +100,9 @@ internal sealed class YamlMemberInfo
         ExplicitName ?? options.PropertyNamingPolicy?.ConvertName(MemberName) ?? MemberName;
 
     /// <summary>
-    /// Verifies that no two members resolve to the same YAML key under the given options.
+    /// Verifies that no two members resolve to the same YAML key under the given options. Superseded on the serializer
+    /// paths by <see cref="YamlTypeBinding.Create" />, which performs the same validation while building the cached
+    /// name lookup.
     /// </summary>
     /// <param name="members">The members to validate.</param>
     /// <param name="options">The serializer options.</param>
