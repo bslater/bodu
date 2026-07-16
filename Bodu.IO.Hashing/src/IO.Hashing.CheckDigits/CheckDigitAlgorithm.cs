@@ -24,9 +24,9 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// character to an encoding artifact, so the families are kept distinct by design.
 /// </para>
 /// <para>
-/// The streaming surface — <see cref="Append(ReadOnlySpan{char})" />, <see cref="Reset" />, and
+/// The streaming surface — <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />, <see cref="CheckValueAlgorithm.Reset" />, and
 /// <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar to anyone who has used a hash algorithm:
-/// <see cref="Append(ReadOnlySpan{char})" /> accumulates input, <see cref="Reset" /> restarts the computation, and
+/// <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" /> accumulates input, <see cref="CheckValueAlgorithm.Reset" /> restarts the computation, and
 /// reading the current check digit is non-destructive and idempotent. That resemblance is incidental convenience for
 /// the reader's intuition, not a shared contract. On an empty body every built-in algorithm in this library returns the
 /// digit <c>'0'</c>; concrete implementations document any exception.
@@ -56,6 +56,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <seealso cref="AlphanumericCheckDigitAlgorithm" /> <seealso cref="MultiCharCheckDigitAlgorithm" />
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />
 public abstract class CheckDigitAlgorithm
+    : CheckValueAlgorithm
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CheckDigitAlgorithm" /> class.
@@ -65,36 +66,8 @@ public abstract class CheckDigitAlgorithm
     }
 
     /// <summary>
-    /// Gets the canonical name of the algorithm, suitable for diagnostic output and logging.
-    /// </summary>
-    /// <value>A short, stable identifier such as <c>"Luhn"</c>, <c>"Damm"</c>, or <c>"Verhoeff"</c>.</value>
-    public abstract string AlgorithmName { get; }
-
-    /// <summary>
-    /// Absorbs the supplied decimal digits into the running check-digit state.
-    /// </summary>
-    /// <param name="digits">
-    /// The characters to append. Each element must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>). An empty span
-    /// is a permitted no-op.
-    /// </param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
-    /// </exception>
-    public abstract void Append(ReadOnlySpan<char> digits);
-
-    /// <summary>
-    /// Absorbs a single decimal digit into the running check-digit state.
-    /// </summary>
-    /// <param name="digit">The character to append. Must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="digit" /> is outside the range <c>'0'</c> to <c>'9'</c>.
-    /// </exception>
-    public void Append(char digit) =>
-        Append([digit]);
-
-    /// <summary>
-    /// Returns the check digit computed for the body absorbed since the last <see cref="Reset" /> (or since
-    /// construction).
+    /// Returns the check digit computed for the body absorbed since the last <see cref="CheckValueAlgorithm.Reset" />
+    /// (or since construction).
     /// </summary>
     /// <returns>
     /// The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>. For an empty body all built-in
@@ -106,11 +79,11 @@ public abstract class CheckDigitAlgorithm
     /// </remarks>
     public abstract char GetCurrentCheckDigit();
 
-    /// <summary>
-    /// Resets the algorithm to its initial state, discarding any digits previously absorbed.
-    /// </summary>
+    /// <inheritdoc />
     /// <remarks>
-    /// Equivalent in behavior to constructing a fresh instance of the same concrete type.
+    /// Delegates to <see cref="GetCurrentCheckDigit" />; prefer that member when the single-character result suffices,
+    /// as it avoids the string allocation.
     /// </remarks>
-    public abstract void Reset();
+    public sealed override string GetCurrentCheckValue() =>
+        GetCurrentCheckDigit().ToString();
 }

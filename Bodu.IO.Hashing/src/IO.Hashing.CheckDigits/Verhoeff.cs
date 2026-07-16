@@ -77,21 +77,21 @@ public sealed partial class Verhoeff
     /// Computes the Verhoeff check digit for the supplied body of decimal digits without allocating a streaming
     /// instance.
     /// </summary>
-    /// <param name="digits">
+    /// <param name="body">
     /// The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
     /// </param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// Thrown when <paramref name="body" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
     /// </exception>
-    public static char Compute(ReadOnlySpan<char> digits)
+    public static char Compute(ReadOnlySpan<char> body)
     {
         byte c = 0;
-        for (int i = digits.Length - 1, j = 1; i >= 0; i--, j++)
+        for (int i = body.Length - 1, j = 1; i >= 0; i--, j++)
         {
-            char ch = digits[i];
+            char ch = body[i];
             if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
             c = s_d[c, s_p[j & 7, ch - '0']];
         }
@@ -126,14 +126,14 @@ public sealed partial class Verhoeff
     }
 
     /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> digits)
+    public override void Append(ReadOnlySpan<char> body)
     {
         Span<byte> next = stackalloc byte[8];
-        for (int i = 0; i < digits.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
-            char ch = digits[i];
+            char ch = body[i];
             if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
             int v = ch - '0';
             for (int k = 0; k < 8; k++)

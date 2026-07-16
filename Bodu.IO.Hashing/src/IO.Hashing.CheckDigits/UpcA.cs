@@ -70,20 +70,20 @@ public sealed class UpcA
     /// <summary>
     /// Computes the UPC-A check digit for the supplied body of decimal digits without allocating a streaming instance.
     /// </summary>
-    /// <param name="digits">
+    /// <param name="body">
     /// The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
     /// </param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// Thrown when <paramref name="body" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
     /// </exception>
     /// <remarks>
     /// This helper is length-tolerant to support streaming and partial-body use;
     /// <see cref="IsValid(ReadOnlySpan{char})" /> enforces the strict <see cref="SequenceLength" /> domain contract for
     /// full validation.
     /// </remarks>
-    public static char Compute(ReadOnlySpan<char> digits) =>
-        WeightedMod10.ComputeIsbn13(digits);
+    public static char Compute(ReadOnlySpan<char> body) =>
+        WeightedMod10.ComputeIsbn13(body);
 
     /// <summary>
     /// Determines whether the supplied sequence, comprising an eleven-digit body followed by a trailing UPC-A check
@@ -99,17 +99,17 @@ public sealed class UpcA
         digitsIncludingCheck.Length == SequenceLength && WeightedMod10.IsValidIsbn13(digitsIncludingCheck);
 
     /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> digits)
+    public override void Append(ReadOnlySpan<char> body)
     {
         int sumEven = _sumEvenHypothesis;
         int sumOdd = _sumOddHypothesis;
         int count = _count;
 
-        for (int i = 0; i < digits.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
-            char ch = digits[i];
+            char ch = body[i];
             if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
             int v = ch - '0';
             int tripled = v * 3;

@@ -25,7 +25,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// are kept distinct by design rather than unified under one base type.
 /// </para>
 /// <para>
-/// The streaming surface — <see cref="Append(ReadOnlySpan{char})" />, <see cref="Reset" />, and
+/// The streaming surface — <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />, <see cref="CheckValueAlgorithm.Reset" />, and
 /// <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar to anyone who has used a hash algorithm: input
 /// is accumulated, the computation can be restarted, and reading the current check character is non-destructive and
 /// idempotent. That resemblance is incidental convenience, not a shared contract. Concrete implementations document
@@ -56,6 +56,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <seealso cref="CheckDigitAlgorithm" /> <seealso cref="MultiCharCheckDigitAlgorithm" />
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />
 public abstract class AlphanumericCheckDigitAlgorithm
+    : CheckValueAlgorithm
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AlphanumericCheckDigitAlgorithm" /> class.
@@ -63,12 +64,6 @@ public abstract class AlphanumericCheckDigitAlgorithm
     protected AlphanumericCheckDigitAlgorithm()
     {
     }
-
-    /// <summary>
-    /// Gets the canonical name of the algorithm, suitable for diagnostic output and logging.
-    /// </summary>
-    /// <value>A short, stable identifier such as <c>"ISBN-10"</c>, <c>"ISIN"</c>, or <c>"SEDOL"</c>.</value>
-    public abstract string AlgorithmName { get; }
 
     /// <summary>
     /// Gets the subset of ASCII from which this algorithm accepts body characters.
@@ -83,30 +78,8 @@ public abstract class AlphanumericCheckDigitAlgorithm
     public abstract CheckDigitOutputAlphabet OutputAlphabet { get; }
 
     /// <summary>
-    /// Absorbs the supplied characters into the running check-character state.
-    /// </summary>
-    /// <param name="body">
-    /// The characters to append. Each element must belong to <see cref="InputAlphabet" />. An empty span is a permitted
-    /// no-op.
-    /// </param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="body" /> contains any character outside <see cref="InputAlphabet" />.
-    /// </exception>
-    public abstract void Append(ReadOnlySpan<char> body);
-
-    /// <summary>
-    /// Absorbs a single character into the running check-character state.
-    /// </summary>
-    /// <param name="ch">The character to append. Must belong to <see cref="InputAlphabet" />.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="ch" /> is outside <see cref="InputAlphabet" />.
-    /// </exception>
-    public void Append(char ch) =>
-        Append([ch]);
-
-    /// <summary>
-    /// Returns the check character computed for the body absorbed since the last <see cref="Reset" /> (or since
-    /// construction).
+    /// Returns the check character computed for the body absorbed since the last
+    /// <see cref="CheckValueAlgorithm.Reset" /> (or since construction).
     /// </summary>
     /// <returns>The check character as an ASCII character drawn from <see cref="OutputAlphabet" />.</returns>
     /// <remarks>
@@ -115,11 +88,11 @@ public abstract class AlphanumericCheckDigitAlgorithm
     /// </remarks>
     public abstract char GetCurrentCheckDigit();
 
-    /// <summary>
-    /// Resets the algorithm to its initial state, discarding any characters previously absorbed.
-    /// </summary>
+    /// <inheritdoc />
     /// <remarks>
-    /// Equivalent in behavior to constructing a fresh instance of the same concrete type.
+    /// Delegates to <see cref="GetCurrentCheckDigit" />; prefer that member when the single-character result suffices,
+    /// as it avoids the string allocation.
     /// </remarks>
-    public abstract void Reset();
+    public sealed override string GetCurrentCheckValue() =>
+        GetCurrentCheckDigit().ToString();
 }

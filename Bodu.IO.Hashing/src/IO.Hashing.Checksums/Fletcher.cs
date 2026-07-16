@@ -54,7 +54,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </remarks>
 /// <seealso cref="Fletcher16"/> <seealso cref="Fletcher32"/> <seealso cref="Fletcher64"/> <seealso cref="Crc"/>
 public abstract class Fletcher
-    : BlockNonCryptographicHashAlgorithm
+    : BlockNonCryptographicHashAlgorithm, IResumableHashAlgorithm
 {
     /// <summary>The set of output widths, in bits, that the Fletcher family supports (16, 32, and 64).</summary>
     private static readonly int[] s_validHashSizes = [16, 32, 64];
@@ -216,6 +216,68 @@ public abstract class Fletcher
         for (int i = 0; i < destination.Length; i++)
         {
             destination[i] = (byte)(value >> ((destination.Length - i - 1) << 3));
+        }
+    }
+
+    /// <summary>
+    /// Reads a big-endian unsigned value of up to eight bytes from <paramref name="source" />.
+    /// </summary>
+    /// <param name="source">The big-endian bytes to read.</param>
+    /// <returns>The decoded value.</returns>
+    private static ulong ReadBigEndian(ReadOnlySpan<byte> source)
+    {
+        ulong value = 0;
+        for (int i = 0; i < source.Length; i++)
+            value = (value << 8) | source[i];
+
+        return value;
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Fletcher digests carry the complete accumulator state (the high half is <c>B</c>, the low half <c>A</c>, both
+    /// big-endian), so resuming requires no finalization reversal: the halves seed the accumulators directly. The
+    /// computation runs against saved-and-restored instance state, so any in-progress incremental state on the
+    /// instance survives the call unchanged.
+    /// </remarks>
+    public bool TryComputeHashFrom(
+        ReadOnlySpan<byte> previousHash,
+        ReadOnlySpan<byte> newData,
+        Span<byte> destination,
+        out int bytesWritten)
+    {
+        if (previousHash.Length != HashLengthInBytes)
+        {
+            throw new ArgumentException(
+                HashingResourceStrings.Arg_Invalid_PreviousHashLengthMismatch,
+                nameof(previousHash));
+        }
+
+        if (destination.Length < HashLengthInBytes)
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        ulong savedA = _partA;
+        ulong savedB = _partB;
+        try
+        {
+            int halfLength = HashLengthInBytes / 2;
+            _partB = ReadBigEndian(previousHash[..halfLength]);
+            _partA = ReadBigEndian(previousHash.Slice(halfLength, halfLength));
+
+            Append(newData);
+
+            WriteBigEndian(_partB, destination[..halfLength]);
+            WriteBigEndian(_partA, destination.Slice(halfLength, halfLength));
+            bytesWritten = HashLengthInBytes;
+            return true;
+        }
+        finally
+        {
+            _partA = savedA;
+            _partB = savedB;
         }
     }
 }

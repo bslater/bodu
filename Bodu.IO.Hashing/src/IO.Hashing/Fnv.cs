@@ -65,7 +65,7 @@ namespace Bodu.IO.Hashing;
 /// </remarks>
 /// <seealso cref="Fnv132"/> <seealso cref="Fnv1a32"/> <seealso cref="Fnv164"/> <seealso cref="Fnv1a64"/>
 public abstract class Fnv
-    : NonCryptographicHashAlgorithm
+    : NonCryptographicHashAlgorithm, IResumableHashAlgorithm
 {
     /// <summary>The set of hash sizes, in bits, accepted by the constructor.</summary>
     private static readonly int[] s_validHashSizes = [32, 64];
@@ -141,6 +141,51 @@ public abstract class Fnv
             case 64:
                 buffer.CopyTo(destination);
                 break;
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// FNV applies no finalization — the digest is the big-endian running accumulator — so resuming requires no
+    /// reversal: the digest seeds the accumulator directly. The computation runs against saved-and-restored instance
+    /// state, so any in-progress incremental state on the instance survives the call unchanged.
+    /// </remarks>
+    public bool TryComputeHashFrom(
+        ReadOnlySpan<byte> previousHash,
+        ReadOnlySpan<byte> newData,
+        Span<byte> destination,
+        out int bytesWritten)
+    {
+        if (previousHash.Length != HashLengthInBytes)
+        {
+            throw new ArgumentException(
+                HashingResourceStrings.Arg_Invalid_PreviousHashLengthMismatch,
+                nameof(previousHash));
+        }
+
+        if (destination.Length < HashLengthInBytes)
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        ulong saved = _workingHash;
+        try
+        {
+            // Zero-extend the big-endian digest into the 64-bit accumulator (the 32-bit variants occupy the low word).
+            Span<byte> fullWord = stackalloc byte[sizeof(ulong)];
+            previousHash.CopyTo(fullWord[(sizeof(ulong) - HashLengthInBytes)..]);
+            _workingHash = BinaryPrimitives.ReadUInt64BigEndian(fullWord);
+
+            Append(newData);
+
+            GetCurrentHashCore(destination[..HashLengthInBytes]);
+            bytesWritten = HashLengthInBytes;
+            return true;
+        }
+        finally
+        {
+            _workingHash = saved;
         }
     }
 

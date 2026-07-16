@@ -85,6 +85,16 @@ namespace Bodu.IO.Hashing;
 public interface IResumableHashAlgorithm
 {
     /// <summary>
+    /// Gets the length, in bytes, of the digests this algorithm produces and accepts as <c>previousHash</c>.
+    /// </summary>
+    /// <value>The digest length in bytes.</value>
+    /// <remarks>
+    /// Implementers deriving from <see cref="NonCryptographicHashAlgorithm" /> satisfy this member implicitly through
+    /// the base class's property of the same name.
+    /// </remarks>
+    int HashLengthInBytes { get; }
+
+    /// <summary>
     /// Resumes a hash computation from a previously finalized hash value and processes additional input, returning the
     /// new finalized hash result as a byte array.
     /// </summary>
@@ -95,7 +105,12 @@ public interface IResumableHashAlgorithm
     /// Thrown if the <paramref name="previousHash" /> length does not match
     /// <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />.
     /// </exception>
-    byte[] ComputeHashFrom(ReadOnlySpan<byte> previousHash, ReadOnlySpan<byte> newData);
+    byte[] ComputeHashFrom(ReadOnlySpan<byte> previousHash, ReadOnlySpan<byte> newData)
+    {
+        byte[] buffer = new byte[HashLengthInBytes];
+        TryComputeHashFrom(previousHash, newData, buffer, out _);
+        return buffer;
+    }
 
     /// <summary>
     /// Resumes a hash computation from a previously finalized hash value and processes additional input, returning the
@@ -115,7 +130,13 @@ public interface IResumableHashAlgorithm
     /// Thrown if the <paramref name="previousHash" /> length does not match
     /// <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />.
     /// </exception>
-    byte[] ComputeHashFrom(byte[] previousHash, byte[] newData);
+    byte[] ComputeHashFrom(byte[] previousHash, byte[] newData)
+    {
+        ThrowHelper.ThrowIfNull(previousHash);
+        ThrowHelper.ThrowIfNull(newData);
+
+        return ComputeHashFrom(previousHash.AsSpan(), newData.AsSpan());
+    }
 
     /// <summary>
     /// Resumes a hash computation from a previously finalized hash value and processes a specified range of new data,
@@ -138,7 +159,14 @@ public interface IResumableHashAlgorithm
     /// <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />, or if the offset and length exceed the bounds of
     /// <paramref name="newData" />.
     /// </exception>
-    byte[] ComputeHashFrom(byte[] previousHash, byte[] newData, int offset, int length);
+    byte[] ComputeHashFrom(byte[] previousHash, byte[] newData, int offset, int length)
+    {
+        ThrowHelper.ThrowIfNull(previousHash);
+        ThrowHelper.ThrowIfNull(newData);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(newData, offset, length);
+
+        return ComputeHashFrom(previousHash.AsSpan(), newData.AsSpan(offset, length));
+    }
 
     /// <summary>
     /// Resumes a hash computation from a previously finalized hash value, processes additional input, and writes the

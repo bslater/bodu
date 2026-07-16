@@ -78,26 +78,26 @@ public sealed partial class Gumm
     /// <summary>
     /// Computes the Gumm check digit for the supplied body of decimal digits without allocating a streaming instance.
     /// </summary>
-    /// <param name="digits">
+    /// <param name="body">
     /// The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
     /// </param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// Thrown when <paramref name="body" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
     /// </exception>
-    public static char Compute(ReadOnlySpan<char> digits)
+    public static char Compute(ReadOnlySpan<char> body)
     {
         byte product = 0;
 
         // The body digit at string index i occupies absolute position (length - i) from the right, so the leftmost
         // digit carries the highest position. Folding left to right multiplies the highest-position factor first.
-        for (int i = 0; i < digits.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
-            char ch = digits[i];
+            char ch = body[i];
             if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
-            product = s_d[product, Permute(digits.Length - i, ch - '0')];
+            product = s_d[product, Permute(body.Length - i, ch - '0')];
         }
 
         return (char)('0' + s_inv[product]);
@@ -130,20 +130,20 @@ public sealed partial class Gumm
     }
 
     /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> digits)
+    public override void Append(ReadOnlySpan<char> body)
     {
         byte c0 = _c[0];
         byte c1 = _c[1];
-        for (int i = 0; i < digits.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
-            char ch = digits[i];
+            char ch = body[i];
             if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
             int v = ch - '0';
 
             // The new digit becomes the rightmost body factor. Under the hypothesis that it sits at right-index 0
-            // (odd position, transform T) the earlier digits are demoted to the index-1 product; under right-index 1
+            // (odd position, transform T) the earlier body are demoted to the index-1 product; under right-index 1
             // (even position, identity) they are demoted to the index-0 product.
             byte n0 = s_d[c1, s_t[v]];
             byte n1 = s_d[c0, v];

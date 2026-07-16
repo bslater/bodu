@@ -74,21 +74,21 @@ public sealed class Luhn
     /// <summary>
     /// Computes the Luhn check digit for the supplied body of decimal digits without allocating a streaming instance.
     /// </summary>
-    /// <param name="digits">
+    /// <param name="body">
     /// The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
     /// </param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// Thrown when <paramref name="body" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
     /// </exception>
-    public static char Compute(ReadOnlySpan<char> digits)
+    public static char Compute(ReadOnlySpan<char> body)
     {
         int sum = 0;
-        for (int i = digits.Length - 1, j = 2; i >= 0; i--, j++)
+        for (int i = body.Length - 1, j = 2; i >= 0; i--, j++)
         {
-            char ch = digits[i];
+            char ch = body[i];
             if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
             int v = ch - '0';
             if ((j & 1) == 0)
@@ -137,17 +137,17 @@ public sealed class Luhn
     }
 
     /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> digits)
+    public override void Append(ReadOnlySpan<char> body)
     {
         int sumEven = _sumEvenHypothesis;
         int sumOdd = _sumOddHypothesis;
         int count = _count;
 
-        for (int i = 0; i < digits.Length; i++)
+        for (int i = 0; i < body.Length; i++)
         {
-            char ch = digits[i];
+            char ch = body[i];
             if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
             int v = ch - '0';
             int doubled = v * 2;
