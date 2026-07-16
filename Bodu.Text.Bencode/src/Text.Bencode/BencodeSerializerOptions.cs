@@ -366,7 +366,9 @@ public sealed class BencodeSerializerOptions
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         MakeReadOnly();
-        return _converterCache.GetOrAdd(typeToConvert, ResolveConverter);
+
+        // The state overload avoids allocating a delegate per call on cache hits.
+        return _converterCache.GetOrAdd(typeToConvert, static (type, self) => self.ResolveConverter(type), this);
     }
 
     /// <summary>
@@ -382,7 +384,7 @@ public sealed class BencodeSerializerOptions
     /// <param name="type">The type to describe.</param>
     /// <returns>The type metadata.</returns>
     internal TypeMetadata GetTypeMetadata(Type type) =>
-        _metadataCache.GetOrAdd(type, t => MetadataResolver.Resolve(t, this));
+        _metadataCache.GetOrAdd(type, static (t, self) => MetadataResolver.Resolve(t, self), this);
 
     /// <summary>
     /// Instantiates the converter named by a converter attribute and adapts it to the target type.

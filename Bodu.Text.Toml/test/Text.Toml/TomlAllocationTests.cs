@@ -205,6 +205,92 @@ public sealed class TomlAllocationTests
     }
 
     /// <summary>
+    /// Verifies that deserializing an array of tables into POCO instances — the compiled-accessor metadata path —
+    /// stays within the recorded allocation baseline relative to the input size.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void TomlSerializer_WhenDeserializingObjectRows_ShouldStayWithinAllocationBaseline()
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildItemsDocument(SampleLineCount));
+
+        long allocated = Measure(() => { _ = TomlSerializer.Deserialize<ItemsModel>(bytes); });
+
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 22);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a list of POCO instances — the compiled-accessor metadata path — stays within the
+    /// recorded allocation baseline relative to the produced document size.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void TomlSerializer_WhenSerializingObjectRows_ShouldStayWithinAllocationBaseline()
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(BuildItemsDocument(SampleLineCount));
+        ItemsModel model = TomlSerializer.Deserialize<ItemsModel>(bytes);
+
+        long allocated = Measure(() => { _ = TomlSerializer.Serialize(model); });
+
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 30);
+    }
+
+    /// <summary>
+    /// Builds a TOML document of <paramref name="count" /> array-of-table rows, each binding to one POCO instance.
+    /// </summary>
+    /// <param name="count">The number of rows.</param>
+    /// <returns>The TOML text.</returns>
+    private static string BuildItemsDocument(int count)
+    {
+        var sb = new StringBuilder();
+        for (int i = 0; i < count; i++)
+        {
+            sb.Append("[[Items]]\n");
+            sb.Append("Id = ").Append(i).Append('\n');
+            sb.Append("Name = \"item").Append(i).Append("\"\n");
+            sb.Append("Flag = ").Append(i % 2 == 0 ? "true" : "false").Append('\n');
+        }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// The root model for the POCO allocation baselines.
+    /// </summary>
+    private sealed class ItemsModel
+    {
+        /// <summary>
+        /// Gets or sets the item rows.
+        /// </summary>
+        /// <value>The item rows.</value>
+        public List<ItemModel> Items { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A single POCO row bound from an array-of-tables entry.
+    /// </summary>
+    private sealed class ItemModel
+    {
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        public long Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public string? Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the flag.
+        /// </summary>
+        /// <value>The flag.</value>
+        public bool Flag { get; set; }
+    }
+
+    /// <summary>
     /// Asserts that an operation's allocation stays within <paramref name="multiple" /> times the input size.
     /// </summary>
     /// <param name="allocated">The measured bytes allocated.</param>

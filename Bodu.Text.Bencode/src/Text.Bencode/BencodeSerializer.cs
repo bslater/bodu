@@ -40,6 +40,12 @@ namespace Bodu.Text.Bencode;
 public static class BencodeSerializer
 {
     /// <summary>
+    /// The shared options instance used when a caller passes <see langword="null" />, so resolved converters and type
+    /// metadata are cached across default-options calls instead of being re-resolved per call.
+    /// </summary>
+    private static readonly BencodeSerializerOptions s_defaultOptions = new();
+
+    /// <summary>
     /// Serializes the specified value to a new Bencode byte array.
     /// </summary>
     /// <typeparam name="T">The type of the value to serialize.</typeparam>
@@ -54,7 +60,7 @@ public static class BencodeSerializer
     /// </exception>
     public static byte[] Serialize<T>(T value, BencodeSerializerOptions? options = null)
     {
-        BencodeSerializerOptions effective = options ?? new BencodeSerializerOptions();
+        BencodeSerializerOptions effective = options ?? s_defaultOptions;
 
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { MaxDepth = effective.MaxDepth });
@@ -209,7 +215,7 @@ public static class BencodeSerializer
     /// </exception>
     public static T Deserialize<T>(ReadOnlySpan<byte> data, BencodeSerializerOptions? options = null)
     {
-        BencodeSerializerOptions effective = options ?? new BencodeSerializerOptions();
+        BencodeSerializerOptions effective = options ?? s_defaultOptions;
 
         var reader = new Utf8BencodeReader(data, new BencodeReaderOptions
         {

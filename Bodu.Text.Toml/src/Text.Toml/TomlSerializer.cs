@@ -51,6 +51,12 @@ public static class TomlSerializer
     private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
     /// <summary>
+    /// The shared options instance used when a caller passes <see langword="null" />, so resolved converters and type
+    /// metadata are cached across default-options calls instead of being re-resolved per call.
+    /// </summary>
+    private static readonly TomlSerializerOptions s_defaultOptions = new();
+
+    /// <summary>
     /// Serializes the specified value to normalized TOML text.
     /// </summary>
     /// <typeparam name="T">The type of the value to serialize.</typeparam>
@@ -94,7 +100,7 @@ public static class TomlSerializer
     {
         ThrowHelper.ThrowIfNull(destination);
 
-        TomlSerializerOptions effective = options ?? new TomlSerializerOptions();
+        TomlSerializerOptions effective = options ?? s_defaultOptions;
         RequireRootIsTable(value, effective);
 
         var writer = new Utf8TomlWriter(destination, new TomlWriterOptions { MaxDepth = effective.MaxDepth });
@@ -174,7 +180,7 @@ public static class TomlSerializer
     [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
     public static T Deserialize<T>(ReadOnlySpan<byte> utf8Toml, TomlSerializerOptions? options = null)
     {
-        TomlSerializerOptions effective = options ?? new TomlSerializerOptions();
+        TomlSerializerOptions effective = options ?? s_defaultOptions;
 
         var reader = new TomlDocumentReader(utf8Toml, new TomlReaderOptions { SpecVersion = effective.SpecVersion, MaxDepth = effective.MaxDepth });
         return SerializerEngine.Deserialize<T>(ref reader, effective);

@@ -390,7 +390,9 @@ public sealed partial class TomlSerializerOptions
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         MakeReadOnly();
-        return _converterCache.GetOrAdd(typeToConvert, ResolveConverter);
+
+        // The state overload avoids allocating a delegate per call on cache hits.
+        return _converterCache.GetOrAdd(typeToConvert, static (type, self) => self.ResolveConverter(type), this);
     }
 
     /// <summary>
@@ -406,7 +408,7 @@ public sealed partial class TomlSerializerOptions
     /// <param name="type">The type to describe.</param>
     /// <returns>The type metadata.</returns>
     internal TypeMetadata GetTypeMetadata(Type type) =>
-        _metadataCache.GetOrAdd(type, t => MetadataResolver.Resolve(t, this));
+        _metadataCache.GetOrAdd(type, static (t, self) => MetadataResolver.Resolve(t, self), this);
 
     /// <summary>
     /// Determines whether the specified document root type maps to a TOML table, which a TOML document's root must be.
