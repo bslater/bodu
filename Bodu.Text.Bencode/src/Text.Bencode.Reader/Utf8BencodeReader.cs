@@ -7,6 +7,7 @@
 using System.Buffers;
 using System.Buffers.Text;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Bodu.Text.Bencode.Reader;
@@ -325,14 +326,17 @@ public ref struct Utf8BencodeReader
             return false;
         }
 
-        Frame? top = _frames.Count > 0 ? _frames[^1] : null;
+        bool hasTop = _frames.Count > 0;
+        bool inDictKey = false;
         _tokenStart = _position;
         byte b = _data[_position];
 
         if (b == (byte)'e')
         {
-            if (top is null)
+            if (!hasTop)
                 throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedToken, _position);
+
+            Frame top = _frames[^1];
             if (top.IsDict && !top.ExpectKey)
                 throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnterminatedDictionary, _position);
 
@@ -343,7 +347,11 @@ public ref struct Utf8BencodeReader
             return true;
         }
 
-        bool inDictKey = top is { IsDict: true, ExpectKey: true };
+        if (hasTop)
+        {
+            ref readonly Frame top = ref CollectionsMarshal.AsSpan(_frames)[^1];
+            inDictKey = top.IsDict && top.ExpectKey;
+        }
 
         switch (b)
         {
@@ -372,9 +380,11 @@ public ref struct Utf8BencodeReader
                 ReadByteString();
                 if (inDictKey)
                 {
-                    ValidateDictionaryKey(top!);
+                    // ReadByteString never touches the frame list, so the by-ref frame stays valid across it.
+                    ref Frame top = ref CollectionsMarshal.AsSpan(_frames)[^1];
+                    ValidateDictionaryKey(ref top);
 
-                    top!.PreviousKeyStart = _valueStart;
+                    top.PreviousKeyStart = _valueStart;
                     top.PreviousKeyLength = _valueLength;
                     top.ExpectKey = false;
                     _tokenType = BencodeTokenType.PropertyName;
@@ -593,7 +603,11 @@ public ref struct Utf8BencodeReader
     /// </summary>
     private readonly void AfterValue()
     {
-        if (_frames.Count > 0 && _frames[^1] is { IsDict: true } frame)
+        if (_frames.Count == 0)
+            return;
+
+        ref Frame frame = ref CollectionsMarshal.AsSpan(_frames)[^1];
+        if (frame.IsDict)
             frame.ExpectKey = true;
     }
 
@@ -696,12 +710,12 @@ public ref struct Utf8BencodeReader
     /// <summary>
     /// Validates the dictionary key just read against the ordering and uniqueness rules selected at construction.
     /// </summary>
-    /// <param name="top">The enclosing dictionary's frame.</param>
+    /// <param name="top">The enclosing dictionary's frame, by reference so seen-key tracking persists on the frame.</param>
     /// <exception cref="BencodeFormatException">
     /// Thrown when the key repeats an earlier key and duplicates are not permitted, or precedes the previous key in
     /// bytewise order and unsorted keys are not permitted.
     /// </exception>
-    private readonly void ValidateDictionaryKey(Frame top)
+    private readonly void ValidateDictionaryKey(ref Frame top)
     {
         ReadOnlySpan<byte> key = _data.Slice(_valueStart, _valueLength);
 
@@ -799,12 +813,14 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Tracks the state of an open container during a read.
+    /// Tracks the state of an open container during a read. A mutable struct held in the shared frame list — one
+    /// small copy per nesting level rather than a heap allocation per container entered — and mutated in place
+    /// through <see cref="CollectionsMarshal.AsSpan{T}(List{T})" /> references.
     /// </summary>
-    private sealed class Frame
+    private struct Frame
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Frame" /> class.
+        /// Initializes a new instance of the <see cref="Frame" /> struct.
         /// </summary>
         /// <param name="isDict">Whether the container is a dictionary.</param>
         internal Frame(bool isDict)

@@ -8,6 +8,7 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.Globalization;
 using System.Text;
+using Bodu.Buffers;
 using Bodu.Text.Bencode.Serialization;
 
 namespace Bodu.Text.Bencode.Writer;
@@ -250,34 +251,41 @@ public ref struct Utf8BencodeWriter
             throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterNoOpenContainer);
         if (_frames[^1] is not DictionaryFrame frame)
             throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterEndContainerMismatch);
-        if (frame.PendingKey is not null)
+        if (frame.HasPendingKey)
             throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterPropertyNameWithoutValue);
 
         _frames.RemoveAt(_frames.Count - 1);
-        frame.Entries.Sort(static (left, right) => left.Key.AsSpan().SequenceCompareTo(right.Key));
+        ReadOnlyMemory<byte> buffered = frame.Buffer.WrittenMemory;
+        frame.Entries.Sort((left, right) =>
+            buffered.Span.Slice(left.KeyStart, left.KeyLength).SequenceCompareTo(buffered.Span.Slice(right.KeyStart, right.KeyLength)));
 
         // Validate before emitting: no byte may reach the sink until the dictionary is known to be canonical, so a
         // duplicate-key failure cannot leak a partial document into the caller's destination. Equal keys are
         // adjacent after the canonical sort, so a single neighbour comparison detects duplicates.
-        byte[]? previousKey = null;
-        foreach (DictionaryEntry entry in frame.Entries)
+        ReadOnlySpan<byte> bytes = buffered.Span;
+        for (int i = 1; i < frame.Entries.Count; i++)
         {
-            if (previousKey is not null && previousKey.AsSpan().SequenceEqual(entry.Key))
-                throw new BencodeSerializationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_WriterDuplicateDictionaryKey, Encoding.UTF8.GetString(entry.Key)));
-
-            previousKey = entry.Key;
+            DictionaryEntry previous = frame.Entries[i - 1];
+            DictionaryEntry current = frame.Entries[i];
+            if (bytes.Slice(previous.KeyStart, previous.KeyLength).SequenceEqual(bytes.Slice(current.KeyStart, current.KeyLength)))
+            {
+                throw new BencodeSerializationException(string.Format(
+                    CultureInfo.CurrentCulture,
+                    BencodeResourceStrings.Op_Invalid_WriterDuplicateDictionaryKey,
+                    Encoding.UTF8.GetString(bytes.Slice(current.KeyStart, current.KeyLength))));
+            }
         }
 
         IBufferWriter<byte> sink = frame.Sink;
-        ReadOnlySpan<byte> values = frame.Buffer.WrittenSpan;
         sink.Write("d"u8);
         foreach (DictionaryEntry entry in frame.Entries)
         {
-            WriteByteStringTo(sink, entry.Key);
-            sink.Write(values.Slice(entry.ValueStart, entry.ValueLength));
+            WriteByteStringTo(sink, bytes.Slice(entry.KeyStart, entry.KeyLength));
+            sink.Write(bytes.Slice(entry.ValueStart, entry.ValueLength));
         }
 
         sink.Write("e"u8);
+        frame.Buffer.Dispose();
         CompleteValue();
     }
 
@@ -291,12 +299,12 @@ public ref struct Utf8BencodeWriter
     /// </exception>
     public readonly void WritePropertyName(ReadOnlySpan<byte> name)
     {
-        if (_frames.Count == 0 || _frames[^1] is not DictionaryFrame frame)
-            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterPropertyNameNotAllowed);
-        if (frame.PendingKey is not null)
-            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterPropertyNamePending);
+        DictionaryFrame frame = RequireDictionaryFrameForKey();
 
-        frame.PendingKey = name.ToArray();
+        // The key bytes live in the frame's entry buffer as a recorded range — no per-key array.
+        frame.PendingKeyStart = frame.Buffer.WrittenCount;
+        frame.PendingKeyLength = name.Length;
+        frame.Buffer.AppendRange(name);
         frame.PendingValueStart = frame.Buffer.WrittenCount;
     }
 
@@ -314,7 +322,7 @@ public ref struct Utf8BencodeWriter
     public readonly void WritePropertyName(string name)
     {
         ThrowHelper.ThrowIfNull(name);
-        WritePropertyName(Encoding.UTF8.GetBytes(name));
+        WritePropertyName(name.AsSpan());
     }
 
     /// <summary>
@@ -327,9 +335,34 @@ public ref struct Utf8BencodeWriter
     /// </exception>
     public readonly void WritePropertyName(ReadOnlySpan<char> name)
     {
-        byte[] utf8 = new byte[Encoding.UTF8.GetByteCount(name)];
-        _ = Encoding.UTF8.GetBytes(name, utf8);
-        WritePropertyName((ReadOnlySpan<byte>)utf8);
+        DictionaryFrame frame = RequireDictionaryFrameForKey();
+
+        // Encode the key directly into the frame's entry buffer as a recorded range — no per-key array.
+        int count = Encoding.UTF8.GetByteCount(name);
+        frame.PendingKeyStart = frame.Buffer.WrittenCount;
+        frame.PendingKeyLength = count;
+        Span<byte> destination = frame.Buffer.GetSpan(count);
+        _ = Encoding.UTF8.GetBytes(name, destination);
+        frame.Buffer.Advance(count);
+        frame.PendingValueStart = frame.Buffer.WrittenCount;
+    }
+
+    /// <summary>
+    /// Resolves the open dictionary frame a property name may be written to.
+    /// </summary>
+    /// <returns>The innermost open dictionary frame.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the currently open container is not a dictionary, or when a previously written property name is
+    /// still awaiting its value.
+    /// </exception>
+    private readonly DictionaryFrame RequireDictionaryFrameForKey()
+    {
+        if (_frames.Count == 0 || _frames[^1] is not DictionaryFrame frame)
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterPropertyNameNotAllowed);
+        if (frame.HasPendingKey)
+            throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterPropertyNamePending);
+
+        return frame;
     }
 
     /// <summary>
@@ -751,7 +784,7 @@ public ref struct Utf8BencodeWriter
             return;
         }
 
-        if (_frames[^1] is DictionaryFrame { PendingKey: null })
+        if (_frames[^1] is DictionaryFrame { HasPendingKey: false })
             throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_WriterValueWithoutPropertyName);
     }
 
@@ -761,10 +794,14 @@ public ref struct Utf8BencodeWriter
     /// </summary>
     private readonly void CompleteValue()
     {
-        if (_frames.Count > 0 && _frames[^1] is DictionaryFrame { PendingKey: not null } frame)
+        if (_frames.Count > 0 && _frames[^1] is DictionaryFrame { HasPendingKey: true } frame)
         {
-            frame.Entries.Add(new DictionaryEntry(frame.PendingKey, frame.PendingValueStart, frame.Buffer.WrittenCount - frame.PendingValueStart));
-            frame.PendingKey = null;
+            frame.Entries.Add(new DictionaryEntry(
+                frame.PendingKeyStart,
+                frame.PendingKeyLength,
+                frame.PendingValueStart,
+                frame.Buffer.WrittenCount - frame.PendingValueStart));
+            frame.PendingKeyStart = -1;
         }
     }
 
@@ -841,23 +878,36 @@ public ref struct Utf8BencodeWriter
         internal IBufferWriter<byte> Sink { get; }
 
         /// <summary>
-        /// Gets the buffer holding the encoded bytes of every entry value, in write order.
+        /// Gets the pooled buffer holding the encoded bytes of every entry key and value, in write order; its backing
+        /// array is returned to the pool when the dictionary closes.
         /// </summary>
-        /// <value>The dictionary's value buffer.</value>
-        internal ArrayBufferWriter<byte> Buffer { get; } = new();
+        /// <value>The dictionary's entry buffer.</value>
+        internal PooledBufferBuilder<byte> Buffer { get; } = new();
 
         /// <summary>
-        /// Gets the completed entries, each pairing a raw key with the byte range its value occupies in
-        /// <see cref="Buffer" />.
+        /// Gets the completed entries, each pairing the byte ranges its key and value occupy in <see cref="Buffer" />.
         /// </summary>
         /// <value>The completed entries.</value>
         internal List<DictionaryEntry> Entries { get; } = [];
 
         /// <summary>
-        /// Gets or sets the raw bytes of the key awaiting its value.
+        /// Gets a value indicating whether a key has been written and is awaiting its value.
         /// </summary>
-        /// <value>The pending key, or <see langword="null" /> when none is pending.</value>
-        internal byte[]? PendingKey { get; set; }
+        /// <value><see langword="true" /> when a key is pending.</value>
+        internal bool HasPendingKey => PendingKeyStart >= 0;
+
+        /// <summary>
+        /// Gets or sets the offset within <see cref="Buffer" /> where the pending key begins, or <c>-1</c> when no key
+        /// is pending.
+        /// </summary>
+        /// <value>The pending key's start offset, or <c>-1</c>.</value>
+        internal int PendingKeyStart { get; set; } = -1;
+
+        /// <summary>
+        /// Gets or sets the pending key's byte length.
+        /// </summary>
+        /// <value>The pending key's length.</value>
+        internal int PendingKeyLength { get; set; }
 
         /// <summary>
         /// Gets or sets the offset within <see cref="Buffer" /> where the pending key's value begins.
@@ -867,7 +917,7 @@ public ref struct Utf8BencodeWriter
     }
 
     /// <summary>
-    /// A completed dictionary entry: a raw key and the byte range its encoded value occupies in the owning dictionary
+    /// A completed dictionary entry: the byte ranges its key and its encoded value occupy in the owning dictionary
     /// frame's buffer.
     /// </summary>
     private readonly struct DictionaryEntry
@@ -875,21 +925,29 @@ public ref struct Utf8BencodeWriter
         /// <summary>
         /// Initializes a new instance of the <see cref="DictionaryEntry" /> struct.
         /// </summary>
-        /// <param name="key">The raw key bytes.</param>
+        /// <param name="keyStart">The key's start offset within the dictionary frame's buffer.</param>
+        /// <param name="keyLength">The key's byte length.</param>
         /// <param name="valueStart">The value's start offset within the dictionary frame's buffer.</param>
         /// <param name="valueLength">The value's byte length.</param>
-        internal DictionaryEntry(byte[] key, int valueStart, int valueLength)
+        internal DictionaryEntry(int keyStart, int keyLength, int valueStart, int valueLength)
         {
-            Key = key;
+            KeyStart = keyStart;
+            KeyLength = keyLength;
             ValueStart = valueStart;
             ValueLength = valueLength;
         }
 
         /// <summary>
-        /// Gets the raw key bytes.
+        /// Gets the key's start offset within the dictionary frame's buffer.
         /// </summary>
-        /// <value>The key bytes.</value>
-        internal byte[] Key { get; }
+        /// <value>The key's start offset.</value>
+        internal int KeyStart { get; }
+
+        /// <summary>
+        /// Gets the key's byte length.
+        /// </summary>
+        /// <value>The key's byte length.</value>
+        internal int KeyLength { get; }
 
         /// <summary>
         /// Gets the value's start offset within the dictionary frame's buffer.

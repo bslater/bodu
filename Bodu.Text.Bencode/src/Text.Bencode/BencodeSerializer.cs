@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using Bodu.Buffers;
 using Bodu.Text.Bencode.Document;
 using Bodu.Text.Bencode.Nodes;
 using Bodu.Text.Bencode.Reader;
@@ -60,11 +61,8 @@ public static class BencodeSerializer
     /// </exception>
     public static byte[] Serialize<T>(T value, BencodeSerializerOptions? options = null)
     {
-        BencodeSerializerOptions effective = options ?? s_defaultOptions;
-
-        var buffer = new ArrayBufferWriter<byte>();
-        var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { MaxDepth = effective.MaxDepth });
-        SerializerEngine.Serialize(writer, value, effective);
+        using var buffer = new PooledBufferBuilder<byte>();
+        SerializeCore(buffer, value, options ?? s_defaultOptions);
         return buffer.WrittenSpan.ToArray();
     }
 
@@ -84,11 +82,16 @@ public static class BencodeSerializer
     /// <exception cref="BencodeSerializationException">
     /// Thrown when a value cannot be represented in Bencode.
     /// </exception>
+    /// <remarks>
+    /// The value is written through the buffer writer directly, with no intermediate array. Dictionary content is
+    /// buffered internally until each dictionary closes (canonical key ordering requires it), so a serialization
+    /// failure part-way through a root-level list may leave that list's already-emitted bytes in the destination.
+    /// </remarks>
     public static void Serialize<T>(IBufferWriter<byte> destination, T value, BencodeSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(destination);
 
-        destination.Write(Serialize(value, options));
+        SerializeCore(destination, value, options ?? s_defaultOptions);
     }
 
     /// <summary>
@@ -115,8 +118,9 @@ public static class BencodeSerializer
         ThrowHelper.ThrowIfNull(destination);
         ThrowHelper.ThrowIfStreamNotWritable(destination);
 
-        byte[] bytes = Serialize(value, options);
-        destination.Write(bytes, 0, bytes.Length);
+        using var buffer = new PooledBufferBuilder<byte>();
+        SerializeCore(buffer, value, options ?? s_defaultOptions);
+        destination.Write(buffer.WrittenSpan);
     }
 
     /// <summary>
@@ -132,8 +136,12 @@ public static class BencodeSerializer
     /// <exception cref="BencodeSerializationException">
     /// Thrown when a value cannot be represented in Bencode.
     /// </exception>
-    public static BencodeNode? SerializeToNode<T>(T value, BencodeSerializerOptions? options = null) =>
-        BencodeNode.Parse(Serialize(value, options));
+    public static BencodeNode? SerializeToNode<T>(T value, BencodeSerializerOptions? options = null)
+    {
+        using var buffer = new PooledBufferBuilder<byte>();
+        SerializeCore(buffer, value, options ?? s_defaultOptions);
+        return BencodeNode.Parse(buffer.WrittenSpan);
+    }
 
     /// <summary>
     /// Serializes the specified value into a read-only <see cref="BencodeDocument" />.
@@ -148,8 +156,12 @@ public static class BencodeSerializer
     /// <exception cref="BencodeSerializationException">
     /// Thrown when a value cannot be represented in Bencode.
     /// </exception>
-    public static BencodeDocument SerializeToDocument<T>(T value, BencodeSerializerOptions? options = null) =>
-        BencodeDocument.Parse(Serialize(value, options));
+    public static BencodeDocument SerializeToDocument<T>(T value, BencodeSerializerOptions? options = null)
+    {
+        using var buffer = new PooledBufferBuilder<byte>();
+        SerializeCore(buffer, value, options ?? s_defaultOptions);
+        return BencodeDocument.Parse(buffer.WrittenSpan);
+    }
 
     /// <summary>
     /// Deserializes a value of type <typeparamref name="T" /> from the supplied node tree.
@@ -172,7 +184,10 @@ public static class BencodeSerializer
     {
         ThrowHelper.ThrowIfNull(node);
 
-        return Deserialize<T>(node.ToByteArray(), options);
+        using var buffer = new PooledBufferBuilder<byte>();
+        var writer = new Utf8BencodeWriter(buffer);
+        node.WriteTo(writer);
+        return Deserialize<T>(buffer.WrittenSpan, options);
     }
 
     /// <summary>
@@ -190,13 +205,27 @@ public static class BencodeSerializer
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="destination" /> does not support writing.
     /// </exception>
-    public static ValueTask SerializeAsync<T>(Stream destination, T value, BencodeSerializerOptions? options = null, CancellationToken cancellationToken = default)
+    public static async ValueTask SerializeAsync<T>(Stream destination, T value, BencodeSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(destination);
         ThrowHelper.ThrowIfStreamNotWritable(destination);
 
-        byte[] bytes = Serialize(value, options);
-        return destination.WriteAsync(bytes, cancellationToken);
+        using var buffer = new PooledBufferBuilder<byte>();
+        SerializeCore(buffer, value, options ?? s_defaultOptions);
+        await destination.WriteAsync(buffer.WrittenMemory, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Serializes the specified value as Bencode into the supplied buffer writer using resolved options.
+    /// </summary>
+    /// <typeparam name="T">The type of the value to serialize.</typeparam>
+    /// <param name="destination">The buffer writer that receives the Bencode bytes.</param>
+    /// <param name="value">The value to serialize.</param>
+    /// <param name="effective">The resolved serializer options.</param>
+    private static void SerializeCore<T>(IBufferWriter<byte> destination, T value, BencodeSerializerOptions effective)
+    {
+        var writer = new Utf8BencodeWriter(destination, new BencodeWriterOptions { MaxDepth = effective.MaxDepth });
+        SerializerEngine.Serialize(writer, value, effective);
     }
 
     /// <summary>
