@@ -24,7 +24,7 @@ internal sealed class MemoryByteConverter
         {
             throw new BencodeSerializationException(
                 string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExpectedByteString, reader.TokenType),
-                reader.BytesConsumed);
+                reader.TokenStartIndex);
         }
 
         return new Memory<byte>(reader.GetBytes());

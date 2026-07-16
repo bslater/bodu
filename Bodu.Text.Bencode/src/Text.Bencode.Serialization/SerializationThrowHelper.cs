@@ -27,7 +27,7 @@ internal static class SerializationThrowHelper
     internal static BencodeSerializationException ExpectedString(ref Utf8BencodeReader reader) =>
         new(
             string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExpectedByteString, reader.TokenType),
-            reader.BytesConsumed);
+            reader.TokenStartIndex);
 
     /// <summary>
     /// Creates the exception reporting that the current token is not the integer token a converter requires.
@@ -38,7 +38,7 @@ internal static class SerializationThrowHelper
     internal static BencodeSerializationException ExpectedInteger(ref Utf8BencodeReader reader) =>
         new(
             string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExpectedInteger, reader.TokenType),
-            reader.BytesConsumed);
+            reader.TokenStartIndex);
 
     /// <summary>
     /// Creates the exception reporting that a string does not name a member of the target enumeration.
@@ -51,5 +51,5 @@ internal static class SerializationThrowHelper
     internal static BencodeSerializationException EnumValueNotFound(ref Utf8BencodeReader reader, string text, Type enumType) =>
         new(
             string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_EnumValueNotFound, text, enumType),
-            reader.BytesConsumed);
+            reader.TokenStartIndex);
 }

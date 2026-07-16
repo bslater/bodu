@@ -572,6 +572,18 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// A model with a single <see cref="nuint" /> member.
+    /// </summary>
+    private sealed class NUIntModel
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public nuint Value { get; set; }
+    }
+
+    /// <summary>
     /// A model with a single <see cref="double" /> member, served only by a user converter.
     /// </summary>
     private sealed class RatioModel

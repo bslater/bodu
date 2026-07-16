@@ -36,7 +36,7 @@ internal sealed class ObjectConverter<T>
         {
             throw new BencodeSerializationException(
                 string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExpectedDictionary, reader.TokenType),
-                reader.BytesConsumed);
+                reader.TokenStartIndex);
         }
 
         TypeMetadata metadata = options.GetTypeMetadata(typeof(T));
@@ -63,7 +63,7 @@ internal sealed class ObjectConverter<T>
                 {
                     throw new BencodeSerializationException(
                         string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_DuplicateProperty, name),
-                        reader.BytesConsumed);
+                        reader.TokenStartIndex);
                 }
             }
             else if (metadata.ExtensionData is not null)
@@ -75,7 +75,7 @@ internal sealed class ObjectConverter<T>
             {
                 throw new BencodeSerializationException(
                     string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_UnmappedMember, name, typeof(T)),
-                    reader.BytesConsumed);
+                    reader.TokenStartIndex);
             }
             else
             {
@@ -89,7 +89,7 @@ internal sealed class ObjectConverter<T>
             {
                 throw new BencodeSerializationException(
                     string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_MissingRequiredMember, property.WireName, typeof(T)),
-                    reader.BytesConsumed);
+                    reader.TokenStartIndex);
             }
         }
 

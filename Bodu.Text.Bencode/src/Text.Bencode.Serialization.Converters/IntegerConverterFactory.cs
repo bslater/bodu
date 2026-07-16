@@ -8,8 +8,8 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 
 /// <summary>
 /// Produces an <see cref="IntegerConverter{T}" /> for each of the fixed-width integer types, and the dedicated
-/// <see cref="UInt64Converter" /> and <see cref="UInt128Converter" /> for the unsigned types whose range exceeds the
-/// signed 64-bit surface the shared converter reads and writes through.
+/// <see cref="UInt64Converter" />, <see cref="UIntPtrConverter" />, and <see cref="UInt128Converter" /> for the
+/// unsigned types whose range exceeds the signed 64-bit surface the shared converter reads and writes through.
 /// </summary>
 /// <remarks>
 /// The 128-bit types are included even though this implementation reads and writes integers through the 64-bit
@@ -48,6 +48,9 @@ internal sealed class IntegerConverterFactory
 
         if (typeToConvert == typeof(ulong))
             return new UInt64Converter();
+
+        if (typeToConvert == typeof(nuint))
+            return new UIntPtrConverter();
 
         if (typeToConvert == typeof(UInt128))
             return new UInt128Converter();
