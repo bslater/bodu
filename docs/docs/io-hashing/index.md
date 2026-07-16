@@ -36,7 +36,7 @@ Fast, distribution-quality hash functions for hash-table keys, in-memory cache b
 | <xref:Bodu.IO.Hashing.Bernstein> | 32 bits | Classic djb2; configurable add-vs-XOR variant. |
 | <xref:Bodu.IO.Hashing.BKDR> / <xref:Bodu.IO.Hashing.SDBM> / <xref:Bodu.IO.Hashing.JSHash> / <xref:Bodu.IO.Hashing.Elf64> / <xref:Bodu.IO.Hashing.ApHash> / <xref:Bodu.IO.Hashing.Pjw32> | 32–64 bits | Classic string hashes from compilers and early web servers. |
 | <xref:Bodu.IO.Hashing.SuperFastHash> | 32 bits | Paul Hsieh's hash; designed for short keys. |
-| <xref:Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm`1> | — | Abstract base for buffered block-oriented algorithms; CRTP-style extension point. |
+| <xref:Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm> | — | Abstract base for buffered block-oriented algorithms; the block-hash extension point. |
 | <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> | — | Optional contract: reverse-finalize a stored digest, append more bytes, finalize again. Implemented by `Crc`. |
 
 > **BCL note.** `XxHash32` / `XxHash64` / `XxHash3` / `XxHash128` from `System.IO.Hashing` already cover the xxHash family — Bodu does not duplicate them. Use the BCL types directly when you want xxHash.

@@ -139,7 +139,7 @@ Cryptographic digests in this table provide **integrity only when the digest its
 | <xref:Bodu.Security.Cryptography.AsconHash256> / <xref:Bodu.Security.Cryptography.AsconHashA256> | 256 bits | NIST SP 800-232 sponge digest; 12 / 8 round variants. |
 | <xref:Bodu.Security.Cryptography.AsconXof128> / <xref:Bodu.Security.Cryptography.AsconCxof128> | Variable | NIST SP 800-232 XOF / customizable XOF. |
 | <xref:Bodu.Security.Cryptography.MerkleTreeHash> / <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Configurable | Tree hashing over any inner `HashAlgorithm`. |
-| <xref:Bodu.Security.Cryptography.BlockHashAlgorithm`1>, <xref:Bodu.Security.Cryptography.BufferedBlockHashAlgorithm`1>, <xref:Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm`1>, <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm`1> | — | Abstract bases for block-oriented digests (extension points). |
+| <xref:Bodu.Security.Cryptography.BlockHashAlgorithm>, <xref:Bodu.Security.Cryptography.BufferedBlockHashAlgorithm>, <xref:Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm>, <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> | — | Abstract bases for block-oriented digests (extension points). |
 | <xref:Bodu.Security.Cryptography.HashAlgorithmFactory>, <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> | — | Factory abstraction over `HashAlgorithm` for keyed / Merkle constructions. |
 
 ### Keyed hashes / MACs

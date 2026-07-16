@@ -8,7 +8,7 @@ The Fletcher checksum family maintains two running accumulators, **A** and **B**
 
 ![Fletcher twin-accumulator structure](../../images/diagrams/fletcher-accumulators.svg)
 
-**Bodu.IO.Hashing** provides three widths: <xref:Bodu.IO.Hashing.Checksums.Fletcher16>, <xref:Bodu.IO.Hashing.Checksums.Fletcher32>, and <xref:Bodu.IO.Hashing.Checksums.Fletcher64>. All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, share a CRTP `Fletcher<TSelf>` base, and live in the `Bodu.IO.Hashing.Checksums` namespace.
+**Bodu.IO.Hashing** provides three widths: <xref:Bodu.IO.Hashing.Checksums.Fletcher16>, <xref:Bodu.IO.Hashing.Checksums.Fletcher32>, and <xref:Bodu.IO.Hashing.Checksums.Fletcher64>. All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, share the abstract `Fletcher` base, and live in the `Bodu.IO.Hashing.Checksums` namespace.
 
 > [!NOTE]
 > Bodu's modulus is `2^(N ⁄ 2) − 1`, not a prime. Some descriptions of Fletcher use a prime modulus; this implementation uses the original `2^k − 1` form, which reduces with a fast fold rather than a division. All three widths consume input **one byte at a time** regardless of *N* — there is no word-size blocking.

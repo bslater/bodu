@@ -83,7 +83,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 
 **ASCON family — NIST SP 800-232**
 
-- <xref:Bodu.Security.Cryptography.AsconHash256>, <xref:Bodu.Security.Cryptography.AsconHashA256> — 256-bit sponge digests (12- and 8-round variants), over the shared <xref:Bodu.Security.Cryptography.AsconHash`1> base.
+- <xref:Bodu.Security.Cryptography.AsconHash256>, <xref:Bodu.Security.Cryptography.AsconHashA256> — 256-bit sponge digests (12- and 8-round variants), over the shared <xref:Bodu.Security.Cryptography.AsconHash> base.
 - <xref:Bodu.Security.Cryptography.AsconXof128>, <xref:Bodu.Security.Cryptography.AsconCxof128> — variable-length / customizable XOF.
 - <xref:Bodu.Security.Cryptography.AsconAead128> — sponge-based authenticated encryption (no separate block cipher required).
 
@@ -92,7 +92,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 - <xref:Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions>, <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> — ergonomic one-shot, async, and verify helpers.
 - Secure-zeroization, padding, and cryptographically secure random key/IV/tweak generation helpers ship as internal infrastructure; consumers reach them indirectly through the extension surfaces above (for example `SymmetricAlgorithmExtensions.GenerateNonce`, `HashAlgorithmExtensions.VerifyHash`).
 - <xref:Bodu.Security.Cryptography.HashAlgorithmHelper>, <xref:Bodu.Security.Cryptography.HashAlgorithmFactory>, <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> — helper utilities for `HashAlgorithm` consumers and factory abstractions used by the keyed / Merkle constructions.
-- <xref:Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm`1> — abstract base for keyed hashes that defer the final block (the extension point shared by the keyed-hash constructions).
+- <xref:Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm> — abstract base for keyed hashes that defer the final block (the extension point shared by the keyed-hash constructions).
 
 ## Example
 
