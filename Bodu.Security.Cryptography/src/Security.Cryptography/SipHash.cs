@@ -257,16 +257,18 @@ public abstract class SipHash
     /// </param>
     /// <returns>The padded 8-byte block.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="block" /> is longer than 7 bytes.</exception>
-    protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
+    /// <param name="destination">The span receiving the padded block or blocks; at least two blocks long.</param>
+    protected override int PadBlock(ReadOnlySpan<byte> block, ulong messageLength, Span<byte> destination)
     {
         if ((uint)block.Length > 7)
             throw new ArgumentOutOfRangeException(nameof(block), CryptoResourceStrings.Arg_OutOfRange_SipHashResidualBlock);
 
-        Span<byte> buffer = stackalloc byte[8];
+        Span<byte> buffer = destination[..8];
+        buffer.Clear();
         block.CopyTo(buffer);
         buffer[7] = (byte)messageLength;
 
-        return buffer.ToArray();
+        return 8;
     }
 
     /// <summary>

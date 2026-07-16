@@ -345,7 +345,8 @@ public abstract partial class Skein
     /// Always thrown because Skein performs finalization through UBI rather than
     /// <see cref="BlockHashAlgorithm.PadBlock(ReadOnlySpan{byte}, ulong)" />.
     /// </exception>
-    protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
+    /// <param name="destination">The span receiving the padded block or blocks; at least two blocks long.</param>
+    protected override int PadBlock(ReadOnlySpan<byte> block, ulong messageLength, Span<byte> destination) =>
         throw new InvalidOperationException(
             CryptoResourceStrings.Op_Invalid_SkeinBypassesPadBlock);
 

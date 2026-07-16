@@ -304,74 +304,28 @@ internal static class Poly1305AeadCore
         ReadOnlySpan<byte> ciphertext,
         Span<byte> tag)
     {
-        // Stream the MAC input through Poly1305 in bounded chunks rather than materialising the entire
-        // AAD || pad || ciphertext || pad || lengths buffer. The block-hash base buffers residual bytes across
-        // TransformBlock calls, so the ProcessBlock sequence is identical to a single-shot hash over the same
-        // bytes — but authenticating a large message no longer needs a second message-sized allocation.
-        const int chunkBytes = 4096;
+        // The internal span core feeds the MAC input directly from the caller's buffers: no per-message key copy,
+        // no rented chunk buffer, and no bridging through the byte-array HashAlgorithm transform API. The block-hash
+        // base buffers residual bytes across AppendCore calls, so the ProcessBlock sequence is identical to a
+        // single-shot hash over AAD || pad16 || ciphertext || pad16 || lengths.
+        using var poly1305 = new Poly1305();
+        poly1305.InitializeKeyCore(poly1305Key);
 
-        byte[] keyBuffer = poly1305Key.ToArray();
-        byte[] chunk = ArrayPool<byte>.Shared.Rent(chunkBytes);
+        Span<byte> scratch = stackalloc byte[16];
+        scratch.Clear();
 
-        try
-        {
-            using var poly1305 = new Poly1305 { Key = keyBuffer };
+        poly1305.AppendCore(associatedData);
+        poly1305.AppendCore(scratch[..PaddingTo16(associatedData.Length)]);
+        poly1305.AppendCore(ciphertext);
+        poly1305.AppendCore(scratch[..PaddingTo16(ciphertext.Length)]);
 
-            FeedData(poly1305, associatedData, chunk);
-            FeedZeros(poly1305, PaddingTo16(associatedData.Length), chunk);
-            FeedData(poly1305, ciphertext, chunk);
-            FeedZeros(poly1305, PaddingTo16(ciphertext.Length), chunk);
+        // Final 16-byte little-endian length block completes the 16-aligned MAC input.
+        BinaryPrimitives.WriteUInt64LittleEndian(scratch[..sizeof(ulong)], (ulong)associatedData.Length);
+        BinaryPrimitives.WriteUInt64LittleEndian(scratch[sizeof(ulong)..], (ulong)ciphertext.Length);
+        poly1305.AppendCore(scratch);
 
-            // Final 16-byte little-endian length block completes the 16-aligned MAC input.
-            BinaryPrimitives.WriteUInt64LittleEndian(chunk.AsSpan(0, sizeof(ulong)), (ulong)associatedData.Length);
-            BinaryPrimitives.WriteUInt64LittleEndian(chunk.AsSpan(sizeof(ulong), sizeof(ulong)), (ulong)ciphertext.Length);
-            poly1305.TransformFinalBlock(chunk, 0, sizeof(ulong) * 2);
-
-            byte[] hash = poly1305.Hash
-                ?? throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_HashAlgorithmDidNotProduceValue);
-            hash.CopyTo(tag);
-        }
-        finally
-        {
-            CryptographicOperations.ZeroMemory(chunk.AsSpan(0, chunkBytes));
-            ArrayPool<byte>.Shared.Return(chunk);
-            CryptographicOperations.ZeroMemory(keyBuffer);
-        }
-    }
-
-    /// <summary>
-    /// Feeds <paramref name="data" /> into the running <paramref name="poly1305" /> MAC in chunk-sized segments.
-    /// </summary>
-    /// <param name="poly1305">The MAC accumulating the input.</param>
-    /// <param name="data">The data to authenticate.</param>
-    /// <param name="chunk">A scratch buffer used to bridge spans to the byte-array transform API.</param>
-    private static void FeedData(Poly1305 poly1305, ReadOnlySpan<byte> data, byte[] chunk)
-    {
-        int offset = 0;
-        while (offset < data.Length)
-        {
-            int count = Math.Min(chunk.Length, data.Length - offset);
-            data.Slice(offset, count).CopyTo(chunk);
-            poly1305.TransformBlock(chunk, 0, count, null, 0);
-            offset += count;
-        }
-    }
-
-    /// <summary>
-    /// Feeds <paramref name="count" /> zero bytes (RFC 8439 <c>pad16</c>) into the running MAC.
-    /// </summary>
-    /// <param name="poly1305">The MAC accumulating the input.</param>
-    /// <param name="count">The number of zero bytes to feed; in the range 0–15.</param>
-    /// <param name="chunk">
-    /// A scratch buffer, the first <paramref name="count" /> bytes of which are zeroed and fed.
-    /// </param>
-    private static void FeedZeros(Poly1305 poly1305, int count, byte[] chunk)
-    {
-        if (count == 0)
-            return;
-
-        Array.Clear(chunk, 0, count);
-        poly1305.TransformBlock(chunk, 0, count, null, 0);
+        poly1305.FinalizeTagCore(tag);
+        CryptographicOperations.ZeroMemory(scratch);
     }
 
     /// <summary>
@@ -383,18 +337,11 @@ internal static class Poly1305AeadCore
     /// <exception cref="CryptographicException">The MAC failed to produce a tag.</exception>
     private static void ComputePoly1305(ReadOnlySpan<byte> poly1305Key, ReadOnlySpan<byte> data, Span<byte> tag)
     {
-        byte[] keyBuffer = poly1305Key.ToArray();
-
-        try
-        {
-            using var poly1305 = new Poly1305 { Key = keyBuffer };
-            if (!poly1305.TryComputeHash(data, tag, out _))
-                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_HashAlgorithmDidNotProduceValue);
-        }
-        finally
-        {
-            CryptographicOperations.ZeroMemory(keyBuffer);
-        }
+        // Span core: keys and feeds the MAC directly from the caller's buffers with no per-message key copy.
+        using var poly1305 = new Poly1305();
+        poly1305.InitializeKeyCore(poly1305Key);
+        poly1305.AppendCore(data);
+        poly1305.FinalizeTagCore(tag);
     }
 
     /// <summary>

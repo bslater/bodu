@@ -156,16 +156,18 @@ public abstract partial class AsconHash
     /// An 8-byte array containing the residual bytes followed by <c>0x01</c> at the next position and zero bytes
     /// thereafter, matching the little-endian word representation used throughout the Ascon sponge state.
     /// </returns>
-    protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
+    /// <param name="destination">The span receiving the padded block or blocks; at least two blocks long.</param>
+    protected override int PadBlock(ReadOnlySpan<byte> block, ulong messageLength, Span<byte> destination)
     {
-        Span<byte> padded = stackalloc byte[8];
+        Span<byte> padded = destination[..8];
+        padded.Clear();
         block.CopyTo(padded);
         padded[block.Length] = 0x01;
 
         // Signal ProcessBlock to use 12 rounds for this final padded block, which corresponds
         // to the initial squeeze permutation in the reference implementation.
         _useP12ForFinalPad = true;
-        return padded.ToArray();
+        return 8;
     }
 
     /// <summary>

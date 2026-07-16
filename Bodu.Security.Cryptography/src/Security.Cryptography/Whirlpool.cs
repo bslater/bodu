@@ -203,7 +203,7 @@ public sealed partial class Whirlpool
     }
 
     /// <inheritdoc />
-    protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
+    protected override int PadBlock(ReadOnlySpan<byte> block, ulong messageLength, Span<byte> destination)
     {
         int inputLength = block.Length;
         const int blockBytes = BlockSizeBits / 8;
@@ -215,16 +215,17 @@ public sealed partial class Whirlpool
         bool needsSecondBlock = inputLength + 1 + lengthFieldBytes > blockBytes;
         int totalLength = needsSecondBlock ? blockBytes * 2 : blockBytes;
 
-        byte[] padded = new byte[totalLength];
+        Span<byte> padded = destination[..totalLength];
+        padded.Clear();
         block.CopyTo(padded);
         padded[inputLength] = 0x80;
 
         // Only the low 64 bits of the bit count are populated; the upper 192 bits remain zero. This
         // matches the behavior of every widely deployed Whirlpool implementation.
         ulong bitLength = messageLength * 8;
-        BinaryPrimitives.WriteUInt64BigEndian(padded.AsSpan(totalLength - 8), bitLength);
+        BinaryPrimitives.WriteUInt64BigEndian(padded[(totalLength - 8)..], bitLength);
 
-        return padded;
+        return totalLength;
     }
 
     /// <inheritdoc />

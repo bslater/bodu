@@ -212,7 +212,7 @@ public sealed class Poly1305
     }
 
     /// <inheritdoc />
-    protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
+    protected override int PadBlock(ReadOnlySpan<byte> block, ulong messageLength, Span<byte> destination) =>
         throw new NotSupportedException(CryptoResourceStrings.Op_NotSupported_Poly1305Padding);
 
     /// <inheritdoc />
@@ -361,16 +361,63 @@ public sealed class Poly1305
     /// computation starts from a clean state.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected override void OnKeyChanged()
-    {
-        // Reset accumulator so the next computation starts clean — correct whether this
-        // hook runs in response to an explicit Key assignment, from Initialize, or from
-        // the constructor's default-key setup.
-        CryptographyHelper.Clear(_acc);
-
+    protected override void OnKeyChanged() =>
         // OnKeyChanged is only invoked by the Key setter and Initialize, both of which guarantee
         // KeyValue is non-null and of the expected length before this point.
-        ReadOnlySpan<byte> key = KeyValue!;
+        LoadKey(KeyValue!);
+
+    /// <summary>
+    /// Loads the one-time key directly from a span, deriving the clamped polynomial key <c>r</c>, the precomputed
+    /// <c>5·r</c> multiples, and the final-addition key <c>s</c>, and resetting the accumulator. This is the internal
+    /// span counterpart of assigning <see cref="Key" /> — it takes no defensive array copy, so the AEAD framing can
+    /// key a fresh instance without materializing the per-message key on the heap.
+    /// </summary>
+    /// <param name="key">The 32-byte one-time key.</param>
+    /// <exception cref="ArgumentException"><paramref name="key" /> is not exactly 32 bytes.</exception>
+    /// <remarks>
+    /// Intended for the internal streaming core (<see cref="AppendCore" /> / <see cref="FinalizeTagCore" />) on a
+    /// freshly constructed instance. It deliberately bypasses <see cref="KeyedBlockHashAlgorithm.Key" />, so the
+    /// public <c>Key</c> property does not reflect the loaded key material.
+    /// </remarks>
+    internal void InitializeKeyCore(ReadOnlySpan<byte> key)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, KeySize / 8);
+
+        LoadKey(key);
+    }
+
+    /// <summary>
+    /// Feeds <paramref name="data" /> into the running MAC directly from the caller's span, without bridging through
+    /// the byte-array <see cref="HashAlgorithm" /> transform API.
+    /// </summary>
+    /// <param name="data">The bytes to authenticate.</param>
+    internal void AppendCore(ReadOnlySpan<byte> data) =>
+        HashCore(data);
+
+    /// <summary>
+    /// Finalizes the MAC and writes the 16-byte tag into <paramref name="tag" />, clearing the intermediate digest
+    /// array. The instance is one-time: construct a fresh instance (or re-key via
+    /// <see cref="InitializeKeyCore" />) for the next message.
+    /// </summary>
+    /// <param name="tag">The span receiving the tag. Must be at least 16 bytes.</param>
+    internal void FinalizeTagCore(Span<byte> tag)
+    {
+        byte[] digest = HashFinal();
+        digest.AsSpan().CopyTo(tag);
+        CryptographyHelper.Clear(digest);
+    }
+
+    /// <summary>
+    /// Parses the supplied 32-byte key into the limb representation used by the accumulator loop and resets the
+    /// accumulator so the next computation starts clean.
+    /// </summary>
+    /// <param name="key">The 32-byte one-time key.</param>
+    private void LoadKey(ReadOnlySpan<byte> key)
+    {
+        // Reset accumulator so the next computation starts clean — correct whether this
+        // hook runs in response to an explicit Key assignment, from Initialize, from
+        // the constructor's default-key setup, or from the internal span core.
+        CryptographyHelper.Clear(_acc);
 
         // Load and clamp the first 128 bits of the key as the polynomial 'r' key Clamp 'r' by setting/clearing specific bits to avoid
         // vulnerabilities as per RFC 8439, Section 2.5.1

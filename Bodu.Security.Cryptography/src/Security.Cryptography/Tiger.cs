@@ -261,17 +261,14 @@ public sealed partial class Tiger
     }
 
     /// <inheritdoc />
-    protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
+    protected override int PadBlock(ReadOnlySpan<byte> block, ulong messageLength, Span<byte> destination)
     {
         int inputLength = block.Length;
         int blockBytes = BlockSize / 8;
         bool needsSecondBlock = inputLength >= blockBytes - 8;
         int totalLength = needsSecondBlock ? blockBytes * 2 : blockBytes;
 
-        // Use stackalloc if small enough; fallback to heap if larger
-        Span<byte> padded = totalLength <= 128
-            ? stackalloc byte[totalLength]
-            : new byte[totalLength];
+        Span<byte> padded = destination[..totalLength];
 
         // Copy input to padded buffer
         block.CopyTo(padded);
@@ -286,7 +283,7 @@ public sealed partial class Tiger
         ulong bitLength = messageLength * 8;
         BinaryPrimitives.WriteUInt64LittleEndian(padded[(totalLength - 8)..], bitLength);
 
-        return padded[..totalLength].ToArray();
+        return totalLength;
     }
 
     /// <inheritdoc />

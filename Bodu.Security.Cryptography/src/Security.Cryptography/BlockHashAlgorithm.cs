@@ -156,7 +156,14 @@ public abstract class BlockHashAlgorithm
 
         if (ShouldPadFinalBlock())
         {
-            byte[] finalBlock = PadBlock(_residualBlock.Span[.._residualBytes], _totalBytes);
+            // Padding never exceeds two blocks. Every in-repo block size keeps this on the stack; the heap
+            // fallback covers hypothetical wide-block derivers.
+            int capacity = 2 * (BlockSize / 8);
+            Span<byte> scratch = capacity <= 256 ? stackalloc byte[256] : new byte[capacity];
+            scratch = scratch[..capacity];
+
+            int written = PadBlock(_residualBlock.Span[.._residualBytes], _totalBytes, scratch);
+            ReadOnlySpan<byte> finalBlock = scratch[..written];
 
             if (AllowUnalignedFinalBlock)
             {
@@ -166,8 +173,11 @@ public abstract class BlockHashAlgorithm
             {
                 int blockBytes = BlockSize / 8;
                 for (int i = 0; i < finalBlock.Length; i += blockBytes)
-                    ProcessBlock(finalBlock.AsSpan(i, blockBytes));
+                    ProcessBlock(finalBlock.Slice(i, blockBytes));
             }
+
+            // The scratch may carry message bytes; clear it before the frame is reused.
+            CryptographyHelper.Clear(scratch);
         }
         else if (_residualBytes > 0)
         {
@@ -192,10 +202,54 @@ public abstract class BlockHashAlgorithm
     /// encoding, ready to be passed to <see cref="ProcessBlock(ReadOnlySpan{byte})" />.
     /// </returns>
     /// <remarks>
+    /// <para>
     /// The returned array must be aligned to the algorithm’s block size. Padding schemes often include a leading '1'
     /// bit, followed by zero bytes, and end with a length field (e.g., as in Merkle–Damgård construction).
+    /// </para>
+    /// <para>
+    /// This overload and the span-writing <see cref="PadBlock(ReadOnlySpan{byte}, ulong, Span{byte})" /> overload
+    /// default to delegating to each other, so a derived class must override <strong>exactly one</strong> of them —
+    /// preferably the span-writing form, which avoids a heap allocation per finalization.
+    /// </para>
     /// </remarks>
-    protected abstract byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength);
+    protected virtual byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
+    {
+        byte[] buffer = new byte[2 * (BlockSize / 8)];
+        int written = PadBlock(block, messageLength, buffer);
+        if (written == buffer.Length)
+            return buffer;
+
+        byte[] result = buffer[..written];
+        CryptographyHelper.Clear(buffer);
+        return result;
+    }
+
+    /// <summary>
+    /// Pads the final partial block of input data into <paramref name="destination" /> and appends the encoded total
+    /// message length, without allocating a padded copy on the heap.
+    /// </summary>
+    /// <param name="block">The final block of unprocessed input, typically containing 0 to BlockSize–1 bytes.</param>
+    /// <param name="messageLength">
+    /// The total number of message bytes consumed by the algorithm, <strong>including</strong> the bytes in
+    /// <paramref name="block" />. This is the value most Merkle–Damgård length encodings append.
+    /// </param>
+    /// <param name="destination">
+    /// The span receiving the padded block or blocks; at least two blocks (<c>2 × BlockSize / 8</c> bytes) long. The
+    /// caller clears the span after processing.
+    /// </param>
+    /// <returns>The number of bytes written — one or two whole blocks, ready for <see cref="ProcessBlock" />.</returns>
+    /// <remarks>
+    /// The default implementation delegates to the array-returning
+    /// <see cref="PadBlock(ReadOnlySpan{byte}, ulong)" /> overload and clears the intermediate array; see that
+    /// overload's remarks for the override contract.
+    /// </remarks>
+    protected virtual int PadBlock(ReadOnlySpan<byte> block, ulong messageLength, Span<byte> destination)
+    {
+        byte[] padded = PadBlock(block, messageLength);
+        padded.CopyTo(destination);
+        CryptographyHelper.Clear(padded);
+        return padded.Length;
+    }
 
     /// <summary>
     /// Transforms a complete block of input data and updates the internal hash state.

@@ -157,15 +157,16 @@ public abstract partial class Snefru
     /// The method pads the input block with zeros and appends a 64-bit big-endian integer representing the total
     /// message length (in bits).
     /// </remarks>
-    protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
+    /// <param name="destination">The span receiving the padded block or blocks; at least two blocks long.</param>
+    protected override int PadBlock(ReadOnlySpan<byte> block, ulong messageLength, Span<byte> destination)
     {
-        // paddedLength is always ≤ 96 for Snefru128 (2 × 48) and ≤ 64 for Snefru256 (2 × 32),
-        // so stackalloc is always safe and appropriately sized here.
+        // paddedLength is always ≤ 96 for Snefru128 (2 × 48) and ≤ 64 for Snefru256 (2 × 32).
         int paddedLength = 2 * (BlockSize / 8);
-        Span<byte> padded = stackalloc byte[paddedLength];
+        Span<byte> padded = destination[..paddedLength];
+        padded.Clear();
         block.CopyTo(padded);
         BinaryPrimitives.WriteUInt64BigEndian(padded[(paddedLength - 8)..], messageLength << 3);
-        return padded[..paddedLength].ToArray();
+        return paddedLength;
     }
 
     /// <summary>
