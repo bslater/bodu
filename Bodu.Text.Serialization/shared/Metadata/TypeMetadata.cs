@@ -12,6 +12,8 @@ using System.Reflection;
 namespace Bodu.Text.Bencode.Serialization.Metadata;
 #elif TOML
 namespace Bodu.Text.Toml.Serialization.Metadata;
+#elif YAML
+namespace Bodu.Text.Yaml.Serialization.Metadata;
 #endif
 
 /// <summary>

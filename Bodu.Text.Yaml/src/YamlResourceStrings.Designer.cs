@@ -487,6 +487,30 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to The converter type &apos;{0}&apos; must declare a public parameterless constructor to be referenced by a converter attribute..
+        /// </summary>
+        internal static string Arg_Invalid_ConverterNoParameterlessCtor {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ConverterNoParameterlessCtor", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The converter &apos;{0}&apos; cannot convert type &apos;{1}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_ConverterCannotConvert {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ConverterCannotConvert", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to No converter is configured for type &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_NotSupported_NoConverter {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NoConverter", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The supplied bytes are not valid UTF-8..
         /// </summary>
         internal static string Arg_Invalid_YamlInvalidUtf8 {

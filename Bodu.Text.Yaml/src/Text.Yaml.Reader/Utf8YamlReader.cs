@@ -161,6 +161,30 @@ public ref struct Utf8YamlReader
     }
 
     /// <summary>
+    /// Advances the reader past the value at its current position without materializing it, so an unbound member's
+    /// value is consumed and the enclosing loop resumes on the next token.
+    /// </summary>
+    /// <remarks>
+    /// On a scalar token this is a no-op — the scalar is already fully consumed and the caller's next
+    /// <see cref="Read" /> moves past it. On a container start token the reader advances to the matching end token,
+    /// balancing nested containers along the way.
+    /// </remarks>
+    public void Skip()
+    {
+        if (_tokenType is not (YamlTokenType.StartMapping or YamlTokenType.StartSequence))
+            return;
+
+        int depth = 1;
+        while (depth > 0 && Read())
+        {
+            if (_tokenType is YamlTokenType.StartMapping or YamlTokenType.StartSequence)
+                depth++;
+            else if (_tokenType is YamlTokenType.EndMapping or YamlTokenType.EndSequence)
+                depth--;
+        }
+    }
+
+    /// <summary>
     /// Returns the string value of the current property name or string scalar token.
     /// </summary>
     /// <returns>The decoded string.</returns>

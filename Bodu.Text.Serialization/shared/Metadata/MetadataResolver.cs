@@ -13,6 +13,8 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Text.Bencode.Serialization.Metadata;
 #elif TOML
 namespace Bodu.Text.Toml.Serialization.Metadata;
+#elif YAML
+namespace Bodu.Text.Yaml.Serialization.Metadata;
 #endif
 
 /// <summary>
@@ -58,11 +60,19 @@ internal static class MetadataResolver
 
             if (property.IsDefined(typeof(ExtensionDataAttribute), inherit: true))
             {
+#if YAML
+                if (extensionData is not null)
+                    throw new FormatSerializationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_YamlMultipleExtensionData, type));
+
+                if (!IsSupportedExtensionDataType(property.PropertyType))
+                    throw new FormatSerializationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_YamlExtensionDataType, property.Name, type));
+#else
                 if (extensionData is not null)
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_MultipleExtensionData, type));
 
                 if (!IsSupportedExtensionDataType(property.PropertyType))
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_ExtensionDataType, property.Name, type));
+#endif
 
                 extensionData = new Draft(property, property.Name, converter, conditional, creationHandling, order, requiredByAttribute, included, declarationIndex++).ToMetadata();
                 continue;
@@ -94,11 +104,19 @@ internal static class MetadataResolver
 
             if (field.IsDefined(typeof(ExtensionDataAttribute), inherit: true))
             {
+#if YAML
+                if (extensionData is not null)
+                    throw new FormatSerializationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_YamlMultipleExtensionData, type));
+
+                if (!IsSupportedExtensionDataType(field.FieldType))
+                    throw new FormatSerializationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_YamlExtensionDataType, field.Name, type));
+#else
                 if (extensionData is not null)
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_MultipleExtensionData, type));
 
                 if (!IsSupportedExtensionDataType(field.FieldType))
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_ExtensionDataType, field.Name, type));
+#endif
 
                 extensionData = new Draft(field, field.Name, converter, conditional, creationHandling, order, requiredByAttribute, included, declarationIndex++).ToMetadata();
                 continue;
@@ -146,6 +164,15 @@ internal static class MetadataResolver
 
             byWireName[property.WireName] = property;
         }
+#elif YAML
+        HashSet<string> wireNames = new(StringComparer.Ordinal);
+        foreach (PropertyMetadata property in ordered)
+        {
+            if (!wireNames.Add(property.WireName))
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_DuplicateWireName, type, property.WireName));
+
+            byWireName[property.WireName] = property;
+        }
 #else
         HashSet<string> wireNames = new(StringComparer.Ordinal);
         foreach (PropertyMetadata property in ordered)
@@ -184,6 +211,20 @@ internal static class MetadataResolver
         };
     }
 
+#if YAML
+    /// <summary>
+    /// Determines whether a type is a supported extension-data member type. YAML's extension data captures
+    /// loosely-typed values rather than DOM nodes, so any type assignable from a string-keyed object dictionary
+    /// qualifies.
+    /// </summary>
+    /// <param name="type">The member type to test.</param>
+    /// <returns>
+    /// <see langword="true" /> when the type can hold an <c>IDictionary&lt;string, object?&gt;</c>; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool IsSupportedExtensionDataType(Type type) =>
+        typeof(IDictionary<string, object?>).IsAssignableFrom(type);
+#else
     /// <summary>
     /// Determines whether a type is a supported extension-data member type.
     /// </summary>
@@ -197,6 +238,7 @@ internal static class MetadataResolver
         type == typeof(FormatObject)
             || type == typeof(IDictionary<string, FormatNode?>)
             || type == typeof(Dictionary<string, FormatNode?>);
+#endif
 
     /// <summary>
     /// Resolves the converter for a member, honoring a member-level converter attribute before falling back to the

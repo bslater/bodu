@@ -23,7 +23,7 @@ public partial class Utf8YamlWriterTests
             w.WritePropertyName("items");
             w.WriteStartSequence();
             w.WriteString("a");
-            w.WriteInt64(2);
+            w.WriteInteger(2);
             w.WriteEndSequence();
             w.WriteEndMapping();
         });

@@ -8,6 +8,8 @@
 namespace Bodu.Text.Bencode.Serialization.Converters;
 #elif TOML
 namespace Bodu.Text.Toml.Serialization.Converters;
+#elif YAML
+namespace Bodu.Text.Yaml.Serialization.Converters;
 #endif
 
 /// <summary>

@@ -152,7 +152,7 @@ public ref struct Utf8YamlWriter
     /// Writes an integer scalar value.
     /// </summary>
     /// <param name="value">The integer value.</param>
-    public void WriteInt64(long value) => EmitScalar(value.ToString(CultureInfo.InvariantCulture));
+    public void WriteInteger(long value) => EmitScalar(value.ToString(CultureInfo.InvariantCulture));
 
     /// <summary>
     /// Writes a floating-point scalar value.
