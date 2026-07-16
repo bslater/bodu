@@ -125,15 +125,15 @@ public abstract class BufferedBlockHashAlgorithm
 
     /// <summary>Backing buffer that accumulates input bytes which do not yet form a complete block. Sized at <see cref="BlockSize" /> / 8 bytes at construction. Cleared by <see cref="Initialize" /> and overwritten with zeros during disposal.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived hash algorithm classes can read and write the residual buffer directly on the hot compression path without virtual dispatch.")]
-    protected readonly Memory<byte> _residualBlock;
+    private protected readonly Memory<byte> _residualBlock;
 
     /// <summary>Number of bytes currently held in <see cref="_residualBlock" />. Always in the range <c>[0, <see cref="BlockSize"/> / 8]</c>. Reset to <c>0</c> by <see cref="Initialize" />.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived hash algorithm classes can update the residual byte count directly on the hot compression path without virtual dispatch.")]
-    protected int _residualBytes;
+    private protected int _residualBytes;
 
     /// <summary>Running total of bytes consumed by the algorithm so far. Excludes any bytes still held in <see cref="_residualBlock" /> when used by derived classes that update the total before processing each block. Reset to <c>0</c> by <see cref="Initialize" />.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Exposed as a protected field so derived hash algorithm classes can maintain the running byte total directly on the hot compression path without virtual dispatch.")]
-    protected ulong _totalBytes;
+    private protected ulong _totalBytes;
 
     /// <summary>Indicates whether <see cref="Dispose(bool)" /> has been called. Used to guard <see cref="ThrowIfDisposed" /> and to suppress duplicate disposal work.</summary>
     private bool _disposed;

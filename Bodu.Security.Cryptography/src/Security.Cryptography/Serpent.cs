@@ -75,7 +75,7 @@ public abstract class Serpent
     protected Serpent(int blockSizeBits, int tweakSizeBits)
     {
         BlockSizeValue = KeySizeValue = blockSizeBits;
-        FeedbackSizeValue = 8;
+        FeedbackSizeValue = blockSizeBits;
 
         BlockSizeBytes = KeySizeBytes = blockSizeBits / 8;
         _defaultTweakSizeBytes = tweakSizeBits / 8;

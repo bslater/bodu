@@ -95,7 +95,7 @@ public abstract class Threefish
     protected Threefish(int blockSizeBits, int tweakSizeBits)
     {
         BlockSizeValue = KeySizeValue = blockSizeBits;
-        FeedbackSizeValue = 8;
+        FeedbackSizeValue = blockSizeBits;
 
         LegalBlockSizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
         LegalKeySizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];

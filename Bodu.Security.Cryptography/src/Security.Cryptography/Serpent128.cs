@@ -113,7 +113,7 @@ public sealed class Serpent128
         KeySizeValue = 128;
         LegalKeySizesValue = s_serpentKeySizes;
 
-        FeedbackSizeValue = 8;
+        FeedbackSizeValue = BlockSizeBits;
         ModeValue = CipherMode.CBC;
         PaddingValue = PaddingMode.PKCS7;
     }
