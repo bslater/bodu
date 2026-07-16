@@ -16,7 +16,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// rather than slicing it into block-sized chunks.
     /// </summary>
     private sealed class UnalignedPaddingBlockHasher
-        : BlockNonCryptographicHashAlgorithm<UnalignedPaddingBlockHasher>
+        : BlockNonCryptographicHashAlgorithm
     {
 
         public readonly List<byte[]> Blocks = new();

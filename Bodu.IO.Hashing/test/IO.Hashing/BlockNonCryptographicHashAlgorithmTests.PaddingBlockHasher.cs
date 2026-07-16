@@ -16,7 +16,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// block-sized chunks before forwarding to <c>ProcessBlock</c>.
     /// </summary>
     private sealed class PaddingBlockHasher
-        : BlockNonCryptographicHashAlgorithm<PaddingBlockHasher>
+        : BlockNonCryptographicHashAlgorithm
     {
 
         // Shared across the outer instance and any Clone() snapshots so block invocations performed during

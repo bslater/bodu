@@ -29,7 +29,7 @@ namespace Bodu.IO.Hashing;
 /// Pearson byte is the cheapest way to hash a key into a 256-bucket index — and resource-poor embedded targets where a
 /// 256-byte permutation table is small enough to fit in cache and a 64-bit-sized hash can be assembled from eight
 /// independent 8-bit hashes without ever needing wide-integer arithmetic. For modern hash-table workloads with
-/// realistic key spaces, prefer <see cref="Fnv1a32" /> / <see cref="Fnv1a64" /> or <see cref="MurmurHash3{T}" />;
+/// realistic key spaces, prefer <see cref="Fnv1a32" /> / <see cref="Fnv1a64" /> or <see cref="MurmurHash3" />;
 /// Pearson's per-byte distribution is weaker than those alternatives.
 /// </para>
 /// <para>

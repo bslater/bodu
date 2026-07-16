@@ -17,7 +17,7 @@ namespace Bodu.IO.Hashing;
 /// <para>
 /// <see cref="MurmurHash3_32" /> processes input in 4-byte blocks, applying a pair of multiply-rotate-XOR mixing steps
 /// per block, followed by a tail pass for any remaining 1–3 bytes. The output is finalized using
-/// <see cref="MurmurHash3{T}.FMix32(uint)" /> to ensure strong avalanche properties.
+/// <see cref="MurmurHash3.FMix32(uint)" /> to ensure strong avalanche properties.
 /// </para>
 /// <para>
 /// A 32-bit seed may be supplied at construction time to produce independent hash families for identical input, which
@@ -65,9 +65,9 @@ namespace Bodu.IO.Hashing;
 /// </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="MurmurHash3{T}"/> <seealso cref="MurmurHash3_128"/>
+/// <seealso cref="MurmurHash3"/> <seealso cref="MurmurHash3_128"/>
 public sealed class MurmurHash3_32
-    : MurmurHash3<MurmurHash3_32>
+    : MurmurHash3
 {
     /// <summary>The first mixing constant applied to each block during the MurmurHash3 32-bit body pass.</summary>
     private const uint C1 = 0xCC9E2D51u;

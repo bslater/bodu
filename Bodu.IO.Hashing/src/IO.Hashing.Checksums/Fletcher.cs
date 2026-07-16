@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Fletcher{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Fletcher.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,7 +11,6 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <summary>
 /// Provides a base class for the Fletcher checksum family (Fletcher-16, Fletcher-32, Fletcher-64).
 /// </summary>
-/// <typeparam name="TSelf">The concrete derived type (CRTP) used for block-hash reuse.</typeparam>
 /// <remarks>
 /// <para>
 /// Fletcher is a non-cryptographic position-dependent checksum that maintains two running accumulators (A and B) and
@@ -26,7 +25,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// protocols where 16 bits is enough, <see cref="Fletcher32" /> as the workhorse for general file-integrity work, and
 /// <see cref="Fletcher64" /> when a wider checksum reduces collision pressure on large datasets. For stronger
 /// error-detection guarantees prefer <see cref="Crc" />; for hash-table keying prefer
-/// <see cref="Bodu.IO.Hashing.MurmurHash3{T}" /> or <see cref="Bodu.IO.Hashing.CityHash{T}" />, which give better
+/// <see cref="Bodu.IO.Hashing.MurmurHash3" /> or <see cref="Bodu.IO.Hashing.CityHash" />, which give better
 /// avalanche than any positional-sum scheme.
 /// </para>
 /// <para>
@@ -34,7 +33,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" /> /
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset" /> /
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> shape via
-/// <see cref="BlockNonCryptographicHashAlgorithm{T}" />. Snapshotting is non-destructive — call <c>GetCurrentHash</c>
+/// <see cref="BlockNonCryptographicHashAlgorithm" />. Snapshotting is non-destructive — call <c>GetCurrentHash</c>
 /// as often as needed. Instances are not thread-safe; share behind explicit synchronization, or allocate one per
 /// consumer.
 /// </para>
@@ -54,9 +53,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </example>
 /// </remarks>
 /// <seealso cref="Fletcher16"/> <seealso cref="Fletcher32"/> <seealso cref="Fletcher64"/> <seealso cref="Crc"/>
-public abstract class Fletcher<TSelf>
-    : BlockNonCryptographicHashAlgorithm<TSelf>
-    where TSelf : Fletcher<TSelf>, new()
+public abstract class Fletcher
+    : BlockNonCryptographicHashAlgorithm
 {
     /// <summary>The set of output widths, in bits, that the Fletcher family supports (16, 32, and 64).</summary>
     private static readonly int[] s_validHashSizes = [16, 32, 64];
@@ -83,7 +81,7 @@ public abstract class Fletcher<TSelf>
     private ulong _partB;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Fletcher{TSelf}" /> class with the specified hash size.
+    /// Initializes a new instance of the <see cref="Fletcher" /> class with the specified hash size.
     /// </summary>
     /// <param name="hashSize">The hash size in bits. Valid values are 16, 32, or 64.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="hashSize" /> is not 16, 32, or 64.</exception>
@@ -111,14 +109,19 @@ public abstract class Fletcher<TSelf>
     /// <value>A string such as <c>Fletcher-16</c>, <c>Fletcher-32</c>, or <c>Fletcher-64</c>.</value>
     public string AlgorithmName { get; }
 
+    /// <summary>
+    /// Creates a new, empty instance of the concrete Fletcher variant. Replaces the former <c>new TSelf()</c> CRTP
+    /// construction as the factory the base <see cref="Clone" /> uses to snapshot running state.
+    /// </summary>
+    /// <returns>A fresh instance of the derived variant with default accumulator state.</returns>
+    protected abstract Fletcher CreateEmpty();
+
     /// <inheritdoc />
-    protected override TSelf Clone()
+    protected override BlockNonCryptographicHashAlgorithm Clone()
     {
-        var clone = new TSelf
-        {
-            _partA = _partA,
-            _partB = _partB,
-        };
+        Fletcher clone = CreateEmpty();
+        clone._partA = _partA;
+        clone._partB = _partB;
         clone.CopyResidualStateFrom(this);
         return clone;
     }
@@ -145,7 +148,7 @@ public abstract class Fletcher<TSelf>
     /// </para>
     /// <para>
     /// This overrides the base per-block driver directly: with a one-byte block size the residual buffer is never
-    /// populated, so the base <see cref="BlockNonCryptographicHashAlgorithm{TSelf}.ProcessBlock" /> path is used only
+    /// populated, so the base <see cref="BlockNonCryptographicHashAlgorithm.ProcessBlock" /> path is used only
     /// by the padding branch that <see cref="ShouldPadFinalBlock" /> disables for production Fletcher variants.
     /// </para>
     /// </remarks>

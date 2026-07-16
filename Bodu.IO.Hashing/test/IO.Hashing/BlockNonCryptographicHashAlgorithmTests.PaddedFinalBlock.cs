@@ -49,7 +49,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// at its default of <see langword="false" /> — exercising the guard added by D4.
     /// </summary>
     private sealed class UnalignedPadBlockHasher
-        : BlockNonCryptographicHashAlgorithm<UnalignedPadBlockHasher>
+        : BlockNonCryptographicHashAlgorithm
     {
 
         public UnalignedPadBlockHasher()
@@ -81,7 +81,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// <c>AllowUnalignedFinalBlock</c> — exercising the accept path of the same guard.
     /// </summary>
     private sealed class AllowedUnalignedPadBlockHasher
-        : BlockNonCryptographicHashAlgorithm<AllowedUnalignedPadBlockHasher>
+        : BlockNonCryptographicHashAlgorithm
     {
 
         public AllowedUnalignedPadBlockHasher()

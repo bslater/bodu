@@ -75,7 +75,7 @@ public sealed class MurmurHash3HashSizeValidationTests
     /// is never invoked directly by tests.
     /// </summary>
     private sealed class TestMurmurHash3
-        : MurmurHash3<TestMurmurHash3>
+        : MurmurHash3
     {
 
         public TestMurmurHash3()

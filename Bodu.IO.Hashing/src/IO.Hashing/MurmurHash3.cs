@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MurmurHash3{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MurmurHash3.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,7 +13,6 @@ namespace Bodu.IO.Hashing;
 /// Base class for the <c>MurmurHash3</c> family of non-cryptographic hash algorithms by Austin Appleby. See the
 /// <a href="https://github.com/aappleby/smhasher">SMHasher reference repository</a> for the specification.
 /// </summary>
-/// <typeparam name="T">The concrete MurmurHash3 variant derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// MurmurHash3 is a one-shot algorithm. To satisfy the incremental input contract of
@@ -36,7 +35,7 @@ namespace Bodu.IO.Hashing;
 /// default choice for non-distributed in-memory hash tables, bloom filters, and content-based sharding. Pick
 /// <see cref="MurmurHash3_32" /> when 32 bits is sufficient and the host is 32-bit-friendly; pick
 /// <see cref="MurmurHash3_128" /> when collision pressure (large key spaces, fingerprinting) calls for more bits.
-/// <see cref="CityHash{T}" /> typically edges MurmurHash3 on long inputs on 64-bit CPUs; <see cref="Fnv{TSelf}" /> is
+/// <see cref="CityHash" /> typically edges MurmurHash3 on long inputs on 64-bit CPUs; <see cref="Fnv" /> is
 /// preferable only for very small fixed-length keys.
 /// </para>
 /// <para>
@@ -44,10 +43,6 @@ namespace Bodu.IO.Hashing;
 /// buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})" /> is called. Memory consumption
 /// therefore grows linearly with input length between resets — avoid feeding it multi-gigabyte streams. Instances are
 /// not thread-safe; share behind explicit synchronization.
-/// </para>
-/// <para>
-/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
-/// class's <c>new()</c> constraint.
 /// </para>
 /// <note type="important"> MurmurHash3 is <b>not</b> cryptographically secure. It must <b>not</b> be used for password
 /// hashing, digital signatures, or any application that requires collision resistance under adversarial conditions.
@@ -70,9 +65,8 @@ namespace Bodu.IO.Hashing;
 /// </example>
 /// </remarks>
 /// <seealso cref="MurmurHash3_32"/> <seealso cref="MurmurHash3_128"/>
-public abstract class MurmurHash3<T>
+public abstract class MurmurHash3
     : NonCryptographicHashAlgorithm, IDisposable
-    where T : MurmurHash3<T>, new()
 {
     /// <summary>The set of hash output sizes, in bits, that this algorithm family supports.</summary>
     private static readonly int[] s_validHashSizes = [32, 128];
@@ -84,7 +78,7 @@ public abstract class MurmurHash3<T>
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MurmurHash3{T}" /> class with the specified hash output size and
+    /// Initializes a new instance of the <see cref="MurmurHash3" /> class with the specified hash output size and
     /// seed.
     /// </summary>
     /// <param name="hashSize">The desired hash output size in bits. Must be one of 32 or 128.</param>

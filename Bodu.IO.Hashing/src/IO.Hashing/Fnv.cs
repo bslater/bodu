@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Fnv{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Fnv.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -14,7 +14,6 @@ namespace Bodu.IO.Hashing;
 /// Provides a base class for the Fowler-Noll-Vo (FNV) hash family, supporting both the FNV-1 and FNV-1a variants at
 /// 32-bit and 64-bit widths.
 /// </summary>
-/// <typeparam name="TSelf">The concrete derived type. Must expose a public parameterless constructor.</typeparam>
 /// <remarks>
 /// <para>
 /// FNV maintains a running hash initialized from an <c>offset basis</c> and processes each input byte by combining
@@ -34,8 +33,8 @@ namespace Bodu.IO.Hashing;
 /// <strong>When to choose FNV.</strong> FNV is byte-at-a-time, allocation-free, and trivially fast on small inputs — a
 /// common choice for hashing identifiers, dictionary keys, and cache lookups in hot paths. For most new code prefer
 /// <see cref="Fnv1a32" /> or <see cref="Fnv1a64" />: the FNV-1a ordering has measurably better avalanche than the
-/// original FNV-1. For inputs longer than a few hundred bytes, <see cref="MurmurHash3{T}" /> or
-/// <see cref="CityHash{T}" /> generally distribute better and are faster on modern CPUs; FNV's strength is its
+/// original FNV-1. For inputs longer than a few hundred bytes, <see cref="MurmurHash3" /> or
+/// <see cref="CityHash" /> generally distribute better and are faster on modern CPUs; FNV's strength is its
 /// simplicity and predictable performance on short keys.
 /// </para>
 /// <para>
@@ -65,9 +64,8 @@ namespace Bodu.IO.Hashing;
 /// </example>
 /// </remarks>
 /// <seealso cref="Fnv132"/> <seealso cref="Fnv1a32"/> <seealso cref="Fnv164"/> <seealso cref="Fnv1a64"/>
-public abstract class Fnv<TSelf>
+public abstract class Fnv
     : NonCryptographicHashAlgorithm
-    where TSelf : Fnv<TSelf>, new()
 {
     /// <summary>The set of hash sizes, in bits, accepted by the constructor.</summary>
     private static readonly int[] s_validHashSizes = [32, 64];
@@ -88,7 +86,7 @@ public abstract class Fnv<TSelf>
     private ulong _workingHash;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Fnv{TSelf}" /> class using the specified configuration parameters.
+    /// Initializes a new instance of the <see cref="Fnv" /> class using the specified configuration parameters.
     /// </summary>
     /// <param name="hashSize">The size, in bits, of the resulting hash value. Supported values are 32 and 64.</param>
     /// <param name="prime">The FNV prime multiplier used during hash computation.</param>

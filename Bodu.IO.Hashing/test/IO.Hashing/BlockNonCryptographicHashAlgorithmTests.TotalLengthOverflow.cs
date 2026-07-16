@@ -36,15 +36,15 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// tests can drive it near <see cref="ulong.MaxValue" /> without appending exabytes of input.
     /// </summary>
     private sealed class OverflowableBlockHasher
-        : BlockNonCryptographicHashAlgorithm<OverflowableBlockHasher>
+        : BlockNonCryptographicHashAlgorithm
     {
 
         private static readonly PropertyInfo s_totalLengthProperty =
-            typeof(BlockNonCryptographicHashAlgorithm<OverflowableBlockHasher>)
+            typeof(BlockNonCryptographicHashAlgorithm)
                 .GetProperty(
                     "TotalLength",
                     BindingFlags.NonPublic | BindingFlags.Instance)
-            ?? throw new InvalidOperationException("BlockNonCryptographicHashAlgorithm<T>.TotalLength property is unavailable to reflection.");
+            ?? throw new InvalidOperationException("BlockNonCryptographicHashAlgorithm.TotalLength property is unavailable to reflection.");
 
         public OverflowableBlockHasher()
             : base(hashLengthInBytes: 4, blockSize: 4)

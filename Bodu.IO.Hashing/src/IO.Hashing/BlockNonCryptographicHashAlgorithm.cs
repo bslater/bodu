@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BlockNonCryptographicHashAlgorithm{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BlockNonCryptographicHashAlgorithm.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -14,13 +14,12 @@ namespace Bodu.IO.Hashing;
 /// handles residual buffering, block alignment, total-length tracking, snapshot-based <c>GetCurrentHash</c>, and
 /// optional final-block padding so that derived implementations only need to express the per-block compression step.
 /// </summary>
-/// <typeparam name="T">The concrete hash algorithm type derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// Many non-cryptographic hashes — Murmur, CityHash, Pearson, the FNV variants — define their compression step over a
 /// fixed block size (4, 8, 16, or 32 bytes) and must buffer trailing bytes that do not fill a complete block. Writing
 /// that buffering loop correctly is fiddly: handle straddling input, accumulate the running message length, and pad
-/// once on finalization. <see cref="BlockNonCryptographicHashAlgorithm{T}" /> centralizes that machinery so derived
+/// once on finalization. <see cref="BlockNonCryptographicHashAlgorithm" /> centralizes that machinery so derived
 /// types only express the algorithm-specific behavior.
 /// </para>
 /// <para>
@@ -59,10 +58,6 @@ namespace Bodu.IO.Hashing;
 /// </item>
 /// </list>
 /// <para>
-/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor so the base class can
-/// satisfy its <c>new()</c> constraint when constructing snapshot clones.
-/// </para>
-/// <para>
 /// <strong>Lifecycle.</strong> Input arrives via the standard
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" /> entry point and is
 /// drained block-by-block into the residual buffer.
@@ -75,10 +70,10 @@ namespace Bodu.IO.Hashing;
 /// <para>
 /// <strong>Snapshot helpers for derived <see cref="Clone" /> implementations.</strong> Three protected accessors —
 /// <see cref="ResidualByteCount" />, <see cref="ResidualBytes" />, and <see cref="TotalLength" /> — expose the
-/// base-class state, and <see cref="CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm{T})" /> performs the
+/// base-class state, and <see cref="CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm)" /> performs the
 /// corresponding write-side step. Derived <see cref="Clone" /> implementations typically allocate a new instance, copy
 /// algorithm-specific accumulators field-by-field, and finish with a call to
-/// <see cref="CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm{T})" />.
+/// <see cref="CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm)" />.
 /// </para>
 /// <para>
 /// <strong>Suitability.</strong> Like every other type in <c>Bodu.IO.Hashing</c>, derivations of this class produce
@@ -101,7 +96,7 @@ namespace Bodu.IO.Hashing;
 ///<![CDATA[
 /// // Sketch of a derived block hash. The base class drives buffering and snapshotting; the
 /// // derived type only expresses how a single block mutates the accumulator.
-/// public sealed class MyBlockHash : BlockNonCryptographicHashAlgorithm<MyBlockHash>
+/// public sealed class MyBlockHash : BlockNonCryptographicHashAlgorithm
 /// {
 ///     private uint _state;
 ///
@@ -123,7 +118,7 @@ namespace Bodu.IO.Hashing;
 ///     protected override byte[] ProcessFinalBlock() =>
 ///         BitConverter.GetBytes(_state);
 ///
-///     protected override MyBlockHash Clone()
+///     protected override BlockNonCryptographicHashAlgorithm Clone()
 ///     {
 ///         var copy = new MyBlockHash { _state = _state };
 ///         copy.CopyResidualStateFrom(this);
@@ -135,9 +130,8 @@ namespace Bodu.IO.Hashing;
 /// </example>
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> <seealso cref="IResumableHashAlgorithm"/>
 /// <seealso cref="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm"/>
-public abstract class BlockNonCryptographicHashAlgorithm<T>
+public abstract class BlockNonCryptographicHashAlgorithm
     : NonCryptographicHashAlgorithm
-    where T : BlockNonCryptographicHashAlgorithm<T>, new()
 {
     /// <summary>The fixed size, in bytes, of each block processed by the algorithm.</summary>
     protected readonly int BlockSizeBytes;
@@ -149,7 +143,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     private int _residualBytes;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlockNonCryptographicHashAlgorithm{T}" /> class using the specified
+    /// Initializes a new instance of the <see cref="BlockNonCryptographicHashAlgorithm" /> class using the specified
     /// output size and block size.
     /// </summary>
     /// <param name="hashLengthInBytes">
@@ -219,7 +213,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <see cref="GetCurrentHashCore" /> so that retrieving an intermediate hash does not disturb ongoing computation.
     /// </summary>
     /// <returns>A new instance with the same internal state as the current one.</returns>
-    protected abstract T Clone();
+    protected abstract BlockNonCryptographicHashAlgorithm Clone();
 
     /// <summary>
     /// Copies the caller's residual-buffer state onto this instance. Used by <see cref="Clone" /> implementations in
@@ -227,7 +221,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// </summary>
     /// <param name="source">The algorithm instance whose residual state should be copied.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
-    protected void CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm<T> source)
+    protected void CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm source)
     {
         ArgumentNullException.ThrowIfNull(source);
         source._residualByteBuffer.AsSpan(0, source._residualBytes).CopyTo(_residualByteBuffer);
@@ -240,7 +234,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     {
         // Snapshot current accumulator state so that GetCurrentHash() remains non-destructive:
         // pad/final-block processing is performed on a cloned instance, and its digest is copied to destination.
-        T snapshot = Clone();
+        BlockNonCryptographicHashAlgorithm snapshot = Clone();
 
         if (snapshot.ShouldPadFinalBlock())
         {

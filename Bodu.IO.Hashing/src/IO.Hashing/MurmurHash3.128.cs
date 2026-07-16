@@ -19,7 +19,7 @@ namespace Bodu.IO.Hashing;
 /// the constructor-supplied value. Input is consumed in 16-byte blocks; each block word is mixed through
 /// multiply-rotate-multiply passes before being folded into the appropriate accumulator. Remaining 1–15 bytes are
 /// handled by a tail switch. Both accumulators are cross-mixed and finalized via
-/// <see cref="MurmurHash3{T}.FMix64(ulong)" /> to produce the 128-bit output.
+/// <see cref="MurmurHash3.FMix64(ulong)" /> to produce the 128-bit output.
 /// </para>
 /// <para>
 /// A 32-bit seed may be supplied at construction time. Both accumulators are initialized to the same seed value,
@@ -66,9 +66,9 @@ namespace Bodu.IO.Hashing;
 /// </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="MurmurHash3{T}"/> <seealso cref="MurmurHash3_32"/>
+/// <seealso cref="MurmurHash3"/> <seealso cref="MurmurHash3_32"/>
 public sealed class MurmurHash3_128
-    : MurmurHash3<MurmurHash3_128>
+    : MurmurHash3
 {
     /// <summary>The first mixing constant applied to each block during the MurmurHash3 x64 128-bit body pass.</summary>
     private const ulong C1 = 0x87C37B91114253D5uL;

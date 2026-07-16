@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CityHash{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="CityHash.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -15,7 +15,6 @@ namespace Bodu.IO.Hashing;
 /// Base class for the <c>CityHash</c> family of non-cryptographic hash algorithms developed by Google. See the
 /// <a href="https://github.com/google/cityhash">CityHash reference repository</a> for the specification.
 /// </summary>
-/// <typeparam name="T">The concrete CityHash variant derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// CityHash is a one-shot algorithm. To satisfy the incremental input contract of
@@ -35,11 +34,11 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <para>
 /// <strong>When to choose CityHash.</strong> CityHash was designed for short-to-medium strings on 64-bit CPUs and tends
-/// to outperform <see cref="MurmurHash3{T}" /> on long inputs while matching it on short ones. It is the typical choice
+/// to outperform <see cref="MurmurHash3" /> on long inputs while matching it on short ones. It is the typical choice
 /// for in-memory hash tables, fingerprinting, and content-based sharding when both throughput and distribution quality
 /// matter. Pick <see cref="CityHash32" /> for 32-bit slot indexes, <see cref="CityHash64" /> for general-purpose 64-bit
 /// hashing, and <see cref="CityHash128" /> for low-collision fingerprinting of large key spaces. For very small
-/// fixed-length keys, <see cref="Fnv{TSelf}" /> is simpler and competitive; for adversarial inputs use a member of
+/// fixed-length keys, <see cref="Fnv" /> is simpler and competitive; for adversarial inputs use a member of
 /// <c>Bodu.Security.Cryptography</c> instead.
 /// </para>
 /// <para>
@@ -47,10 +46,6 @@ namespace Bodu.IO.Hashing;
 /// buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})" /> is called. Memory consumption grows
 /// linearly with input length between resets — avoid feeding it multi-gigabyte streams. Instances are not thread-safe;
 /// share behind explicit synchronization.
-/// </para>
-/// <para>
-/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
-/// class's <c>new()</c> constraint.
 /// </para>
 /// <note type="important"> CityHash is <b>not</b> cryptographically secure. It must <b>not</b> be used for password
 /// hashing, digital signatures, or any application that requires collision resistance under adversarial conditions.
@@ -74,9 +69,8 @@ namespace Bodu.IO.Hashing;
 /// </example>
 /// </remarks>
 /// <seealso cref="CityHash32"/> <seealso cref="CityHash64"/> <seealso cref="CityHash128"/>
-public abstract class CityHash<T>
+public abstract class CityHash
     : NonCryptographicHashAlgorithm, IDisposable
-    where T : CityHash<T>, new()
 {
     /// <summary>The first Murmur-style mixing constant used in 32-bit operations.</summary>
     protected const uint C1 = 0xCC9E2D51U;
@@ -112,7 +106,7 @@ public abstract class CityHash<T>
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CityHash{T}" /> class with the specified hash output size.
+    /// Initializes a new instance of the <see cref="CityHash" /> class with the specified hash output size.
     /// </summary>
     /// <param name="hashSize">The desired hash output size in bits. Must be one of 32, 64, or 128.</param>
     /// <exception cref="ArgumentOutOfRangeException">

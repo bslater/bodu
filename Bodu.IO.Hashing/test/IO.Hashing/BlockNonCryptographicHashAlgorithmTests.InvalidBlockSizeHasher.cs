@@ -14,7 +14,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// <see cref="BlockNonCryptographicHashAlgorithm{T}" /> base constructor's non-positive block-size guard.
     /// </summary>
     private sealed class InvalidBlockSizeHasher
-        : BlockNonCryptographicHashAlgorithm<InvalidBlockSizeHasher>
+        : BlockNonCryptographicHashAlgorithm
     {
 
         public InvalidBlockSizeHasher()

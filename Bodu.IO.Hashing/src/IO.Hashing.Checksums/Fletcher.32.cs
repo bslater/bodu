@@ -52,9 +52,9 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="Fletcher{T}"/> <seealso cref="Fletcher16"/> <seealso cref="Fletcher64"/>
+/// <seealso cref="Fletcher"/> <seealso cref="Fletcher16"/> <seealso cref="Fletcher64"/>
 public sealed class Fletcher32
-    : Fletcher<Fletcher32>
+    : Fletcher
 {
     /// <summary>The output width, in bits, of the Fletcher-32 algorithm.</summary>
     private const int FletcherHashSize = 32;
@@ -66,4 +66,8 @@ public sealed class Fletcher32
         : base(FletcherHashSize)
     {
     }
+
+    /// <inheritdoc />
+    protected override Fletcher CreateEmpty() =>
+        new Fletcher32();
 }
