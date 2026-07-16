@@ -74,6 +74,9 @@ internal sealed class TypeMetadata
         _constructorDefaults = constructorDefaults;
         ExtensionData = extensionData;
         _factory = BuildFactory();
+
+        for (int i = 0; i < properties.Length; i++)
+            properties[i].SlotIndex = i;
     }
 
     /// <summary>
@@ -87,6 +90,12 @@ internal sealed class TypeMetadata
     /// </summary>
     /// <value>The ordered members.</value>
     internal IReadOnlyList<PropertyMetadata> Properties => _properties;
+
+    /// <summary>
+    /// Gets the number of serializable members, which is also the length a slot-indexed read buffer requires.
+    /// </summary>
+    /// <value>The member count.</value>
+    internal int PropertyCount => _properties.Length;
 
     /// <summary>
     /// Gets the member that captures entries with no matching property, or <see langword="null" /> when the type

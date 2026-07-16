@@ -216,7 +216,7 @@ public sealed class TomlAllocationTests
 
         long allocated = Measure(() => { _ = TomlSerializer.Deserialize<ItemsModel>(bytes); });
 
-        AssertWithinBaseline(allocated, bytes.Length, multiple: 22);
+        AssertWithinBaseline(allocated, bytes.Length, multiple: 18);
     }
 
     /// <summary>

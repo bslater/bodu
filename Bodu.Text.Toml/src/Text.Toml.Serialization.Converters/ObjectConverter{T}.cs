@@ -42,7 +42,10 @@ internal sealed class ObjectConverter<T>
         if (!metadata.CanConstruct)
             throw new TomlSerializationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_NotSupported_Deserialize, typeof(T)));
 
-        Dictionary<PropertyMetadata, object?> values = [];
+        // Slot-indexed flat buffers replace a per-object Dictionary<PropertyMetadata, object?>: values holds each
+        // member's read value at its metadata slot, and present distinguishes an absent member from a read null.
+        object?[] values = new object?[metadata.PropertyCount];
+        bool[] present = new bool[metadata.PropertyCount];
         Dictionary<string, TomlNode?>? extensionEntries = null;
         while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
         {
@@ -63,11 +66,14 @@ internal sealed class ObjectConverter<T>
                     throw;
                 }
 
-                if (!values.TryAdd(property, converted))
+                if (present[property.SlotIndex])
                 {
                     throw new TomlSerializationException(
                         string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_DuplicateProperty, name));
                 }
+
+                values[property.SlotIndex] = converted;
+                present[property.SlotIndex] = true;
             }
             else if (metadata.ExtensionData is not null)
             {
@@ -87,7 +93,7 @@ internal sealed class ObjectConverter<T>
 
         foreach (PropertyMetadata property in metadata.Properties)
         {
-            if (property.IsRequired && !values.ContainsKey(property))
+            if (property.IsRequired && !present[property.SlotIndex])
             {
                 throw new TomlSerializationException(
                     string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_MissingRequiredMember, property.WireName, typeof(T)));
@@ -98,9 +104,9 @@ internal sealed class ObjectConverter<T>
         // then passing it to the reflection-based assignment helpers re-boxes a throwaway copy, so all settable-member
         // and extension-data writes (and any mutating deserialization callback) would be silently lost. Threading the
         // single box through and unboxing only at the return preserves those writes.
-        object boxed = BareConstruct(metadata, values);
+        object boxed = BareConstruct(metadata, values, present);
         (boxed as IOnDeserializing)?.OnDeserializing();
-        AssignSettableMembers(metadata, values, boxed, options);
+        AssignSettableMembers(metadata, values, present, boxed, options);
         PopulateExtensionData(metadata, boxed, extensionEntries);
         (boxed as IOnDeserialized)?.OnDeserialized();
         return (T)boxed;
@@ -270,14 +276,15 @@ internal sealed class ObjectConverter<T>
     /// construction and member population.
     /// </summary>
     /// <param name="metadata">The type metadata.</param>
-    /// <param name="values">The read member values, used to bind constructor arguments.</param>
+    /// <param name="values">The read member values, indexed by member slot.</param>
+    /// <param name="present">Whether each member slot was read from the input.</param>
     /// <returns>The constructed instance, before any settable member is assigned.</returns>
     /// <remarks>
     /// For a parameterized constructor the bound arguments are gathered from <paramref name="values" /> (falling back
     /// to each parameter's default), so an <see cref="IOnDeserializing" /> callback necessarily observes those
     /// arguments already applied; for a parameterless constructor the instance is created empty.
     /// </remarks>
-    private static object BareConstruct(TypeMetadata metadata, Dictionary<PropertyMetadata, object?> values)
+    private static object BareConstruct(TypeMetadata metadata, object?[] values, bool[] present)
     {
         if (metadata.UsesParameterizedConstructor)
         {
@@ -285,8 +292,8 @@ internal sealed class ObjectConverter<T>
             for (int i = 0; i < arguments.Length; i++)
             {
                 PropertyMetadata? parameter = metadata.GetConstructorParameter(i);
-                arguments[i] = parameter is not null && values.TryGetValue(parameter, out object? value)
-                    ? value
+                arguments[i] = parameter is not null && present[parameter.SlotIndex]
+                    ? values[parameter.SlotIndex]
                     : metadata.GetConstructorDefault(i);
             }
 
@@ -302,7 +309,8 @@ internal sealed class ObjectConverter<T>
     /// into the existing collection or dictionary instead of replacing it.
     /// </summary>
     /// <param name="metadata">The type metadata, used to determine constructor binding and effective handling.</param>
-    /// <param name="values">The read member values.</param>
+    /// <param name="values">The read member values, indexed by member slot.</param>
+    /// <param name="present">Whether each member slot was read from the input.</param>
     /// <param name="instance">The instance to assign on.</param>
     /// <param name="options">The serializer options that supply the default object-creation handling.</param>
     /// <remarks>
@@ -314,21 +322,24 @@ internal sealed class ObjectConverter<T>
     /// <see cref="ObjectCreationHandling.Populate" /> is applied only when the member already holds a populatable
     /// collection or dictionary, otherwise the value is set through the member's setter.
     /// </remarks>
-    private static void AssignSettableMembers(TypeMetadata metadata, Dictionary<PropertyMetadata, object?> values, object instance, TomlSerializerOptions options)
+    private static void AssignSettableMembers(TypeMetadata metadata, object?[] values, bool[] present, object instance, TomlSerializerOptions options)
     {
         bool skipConstructorBound = metadata.UsesParameterizedConstructor;
-        foreach (KeyValuePair<PropertyMetadata, object?> entry in values)
+        foreach (PropertyMetadata property in metadata.Properties)
         {
-            PropertyMetadata property = entry.Key;
+            if (!present[property.SlotIndex])
+                continue;
+
             if (skipConstructorBound && property.ConstructorParameterIndex >= 0)
                 continue;
 
+            object? value = values[property.SlotIndex];
             ObjectCreationHandling handling = property.CreationHandling ?? metadata.CreationHandling ?? options.PreferredObjectCreationHandling;
-            if (handling == ObjectCreationHandling.Populate && TryPopulate(property, instance, entry.Value))
+            if (handling == ObjectCreationHandling.Populate && TryPopulate(property, instance, value))
                 continue;
 
             if (property.CanSet)
-                property.SetValue(instance, entry.Value);
+                property.SetValue(instance, value);
         }
     }
 
