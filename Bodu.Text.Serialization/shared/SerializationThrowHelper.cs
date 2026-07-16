@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SerializationThrowHelper.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -6,15 +6,18 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using Bodu.Text.Bencode.Reader;
 
+#if BENCODE
 namespace Bodu.Text.Bencode.Serialization;
+#elif TOML
+namespace Bodu.Text.Toml.Serialization;
+#endif
 
 /// <summary>
-/// Creates the serialization exceptions thrown by the shared serializer source (see
-/// <c>Bodu.Text.Serialization/shared/</c>). Each Bodu text-format package defines the same factory surface over its own
-/// exception type and resource strings, so shared converters raise failures without naming either — this implementation
-/// stamps the reader's byte offset into every exception, matching the Bencode diagnostics contract.
+/// Creates the serialization exceptions thrown by the shared serializer source. The factory surface is format-neutral;
+/// the format-specific branches preserve each format's pinned diagnostics contract — Bencode stamps the offending
+/// token's start offset into every exception, whereas TOML carries the message only because the enclosing converter
+/// stamps the source position and member path during unwind.
 /// </summary>
 internal static class SerializationThrowHelper
 {
@@ -24,10 +27,14 @@ internal static class SerializationThrowHelper
     /// <param name="reader">The reader positioned on the offending token.</param>
     /// <returns>The exception to throw.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static BencodeSerializationException ExpectedString(ref Utf8BencodeReader reader) =>
+    internal static FormatSerializationException ExpectedString(ref FormatReader reader) =>
+#if BENCODE
         new(
-            string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExpectedByteString, reader.TokenType),
+            string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_ExpectedByteString, reader.TokenType),
             reader.TokenStartIndex);
+#else
+        new(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_ExpectedString, reader.TokenType));
+#endif
 
     /// <summary>
     /// Creates the exception reporting that the current token is not the integer token a converter requires.
@@ -35,10 +42,14 @@ internal static class SerializationThrowHelper
     /// <param name="reader">The reader positioned on the offending token.</param>
     /// <returns>The exception to throw.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static BencodeSerializationException ExpectedInteger(ref Utf8BencodeReader reader) =>
+    internal static FormatSerializationException ExpectedInteger(ref FormatReader reader) =>
+#if BENCODE
         new(
-            string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExpectedInteger, reader.TokenType),
+            string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_ExpectedInteger, reader.TokenType),
             reader.TokenStartIndex);
+#else
+        new(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_ExpectedInteger, reader.TokenType));
+#endif
 
     /// <summary>
     /// Creates the exception reporting that a string does not name a member of the target enumeration.
@@ -48,8 +59,12 @@ internal static class SerializationThrowHelper
     /// <param name="enumType">The target enumeration type.</param>
     /// <returns>The exception to throw.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static BencodeSerializationException EnumValueNotFound(ref Utf8BencodeReader reader, string text, Type enumType) =>
+    internal static FormatSerializationException EnumValueNotFound(ref FormatReader reader, string text, Type enumType) =>
+#if BENCODE
         new(
-            string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_EnumValueNotFound, text, enumType),
+            string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_EnumValueNotFound, text, enumType),
             reader.TokenStartIndex);
+#else
+        new(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_EnumValueNotFound, text, enumType));
+#endif
 }
