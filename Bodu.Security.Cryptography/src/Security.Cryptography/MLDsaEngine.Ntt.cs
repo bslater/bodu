@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsaEngine.Ntt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -112,45 +112,9 @@ internal static partial class MLDsaEngine
     {
         int[] table = new int[256];
         for (int m = 0; m < 256; m++)
-            table[m] = PowMod(Zeta, BitReverse8(m));
+            table[m] = LatticeCommon.PowMod(Zeta, LatticeCommon.BitReverse(m, 8), Q);
 
         return table;
     }
 
-    /// <summary>
-    /// Computes base^exponent mod q by square-and-multiply over public constants.
-    /// </summary>
-    /// <param name="value">The base value.</param>
-    /// <param name="exponent">The non-negative exponent.</param>
-    /// <returns>The modular power in [0, q).</returns>
-    private static int PowMod(int value, int exponent)
-    {
-        long result = 1;
-        long basis = value % Q;
-
-        while (exponent > 0)
-        {
-            if ((exponent & 1) != 0)
-                result = (result * basis) % Q;
-
-            basis = (basis * basis) % Q;
-            exponent >>= 1;
-        }
-
-        return (int)result;
-    }
-
-    /// <summary>
-    /// Reverses the low eight bits of an index.
-    /// </summary>
-    /// <param name="value">The index in [0, 256).</param>
-    /// <returns>The bit-reversed index.</returns>
-    private static int BitReverse8(int value)
-    {
-        int result = 0;
-        for (int bit = 0; bit < 8; bit++)
-            result |= ((value >> bit) & 1) << (7 - bit);
-
-        return result;
-    }
 }

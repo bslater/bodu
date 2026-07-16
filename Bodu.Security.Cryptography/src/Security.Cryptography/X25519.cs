@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="X25519.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -74,7 +74,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 public sealed partial class X25519
-    : AsymmetricAlgorithm
+    : RawKeyAsymmetricAlgorithm
 {
     /// <summary>The size, in bytes, of an X25519 private key and public key (32 bytes each).</summary>
     public const int KeySizeInBytes = 32;
@@ -99,12 +99,6 @@ public sealed partial class X25519
         Convert.FromHexString("edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
         Convert.FromHexString("eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f"),
     ];
-
-    /// <summary>The instance's key material, or <see langword="null" /> when no key is set.</summary>
-    private X25519KeyMaterial? _keyMaterial;
-
-    /// <summary>Indicates whether this instance has been disposed.</summary>
-    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="X25519" /> class with no key material.
@@ -148,7 +142,7 @@ public sealed partial class X25519
         get
         {
             ThrowIfDisposed();
-            return _keyMaterial?.HasPrivateKey ?? false;
+            return KeyMaterial?.HasPrivateKey ?? false;
         }
     }
 
@@ -162,7 +156,7 @@ public sealed partial class X25519
         get
         {
             ThrowIfDisposed();
-            return _keyMaterial is not null;
+            return KeyMaterial is not null;
         }
     }
 
@@ -227,7 +221,7 @@ public sealed partial class X25519
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(publicKey, KeySizeInBytes, "X25519 public");
 
-        ReplaceKeyMaterial(X25519KeyMaterial.ForPublicKey(publicKey.ToArray()));
+        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForPublicKey(publicKey.ToArray()));
     }
 
     /// <summary>
@@ -280,9 +274,9 @@ public sealed partial class X25519
     public byte[] ExportPrivateKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(KeyMaterial?.HasPrivateKey ?? false);
 
-        return (byte[])_keyMaterial!.PrivateKey!.Clone();
+        return (byte[])KeyMaterial!.PrivateKey!.Clone();
     }
 
     /// <summary>
@@ -294,9 +288,9 @@ public sealed partial class X25519
     public byte[] ExportPublicKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_keyMaterial is not null);
+        CryptographyThrowHelper.ThrowIfNoPublicKey(KeyMaterial is not null);
 
-        return (byte[])_keyMaterial!.PublicKey.Clone();
+        return (byte[])KeyMaterial!.PublicKey.Clone();
     }
 
     /// <summary>
@@ -339,9 +333,9 @@ public sealed partial class X25519
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfInvalidRawKeyLength(peerPublicKey, KeySizeInBytes, "X25519 public");
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(destination, SharedSecretSizeInBytes);
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(KeyMaterial?.HasPrivateKey ?? false);
 
-        bool allZero = Curve25519.ScalarMult(_keyMaterial!.PrivateKey!, peerPublicKey, destination);
+        bool allZero = Curve25519.ScalarMult(KeyMaterial!.PrivateKey!, peerPublicKey, destination);
 
         // RFC 7748 §6.1 strict check: a low-order peer point collapses the secret to a value any observer can
         // predict; reject it rather than hand the caller attacker-known key material.
@@ -350,31 +344,6 @@ public sealed partial class X25519
             CryptographyHelper.Clear(destination);
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_X25519AllZeroSharedSecret);
         }
-    }
-
-    /// <summary>
-    /// Releases the resources used by this instance, zeroing all private key material.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
-    /// only unmanaged resources.
-    /// </param>
-    protected override void Dispose(bool disposing)
-    {
-        if (_disposed)
-        {
-            base.Dispose(disposing);
-            return;
-        }
-
-        if (disposing)
-        {
-            _keyMaterial?.Clear();
-            _keyMaterial = null;
-        }
-
-        _disposed = true;
-        base.Dispose(disposing);
     }
 
     /// <summary>
@@ -387,23 +356,7 @@ public sealed partial class X25519
         byte[] publicKey = new byte[KeySizeInBytes];
         Curve25519.ScalarMultBase(privateKey, publicKey);
 
-        ReplaceKeyMaterial(X25519KeyMaterial.ForKeyPair(publicKey, privateKey));
+        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForKeyPair(publicKey, privateKey));
     }
 
-    /// <summary>
-    /// Replaces the instance's key material, zeroizing any previously held private key first.
-    /// </summary>
-    /// <param name="keyMaterial">The new key material to take ownership of.</param>
-    private void ReplaceKeyMaterial(X25519KeyMaterial keyMaterial)
-    {
-        _keyMaterial?.Clear();
-        _keyMaterial = keyMaterial;
-    }
-
-    /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> when the instance has been disposed.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    private void ThrowIfDisposed() =>
-        ObjectDisposedException.ThrowIf(_disposed, this);
 }

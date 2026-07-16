@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -69,7 +69,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 public sealed partial class Ed25519
-    : AsymmetricAlgorithm
+    : RawKeyAsymmetricAlgorithm
 {
     /// <summary>The size, in bytes, of an Ed25519 private key seed.</summary>
     public const int PrivateKeySizeInBytes = 32;
@@ -86,11 +86,14 @@ public sealed partial class Ed25519
     /// <summary>The single legal key size reported through <see cref="AsymmetricAlgorithm.LegalKeySizes" />.</summary>
     private static readonly KeySizes[] s_legalKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
 
-    /// <summary>Indicates whether this instance has been disposed.</summary>
-    private bool _disposed;
-
-    /// <summary>The instance's key material, or <see langword="null" /> when no key is set.</summary>
-    private Ed25519KeyMaterial? _keyMaterial;
+    /// <summary>
+    /// Gets the current key material typed as <see cref="Ed25519KeyMaterial" />, which carries the decoded public
+    /// point cached at construction. Every store goes through Ed25519's own import/generate paths, so the downcast is
+    /// always valid.
+    /// </summary>
+    /// <value>The typed key material, or <see langword="null" /> when no key has been generated or imported.</value>
+    private Ed25519KeyMaterial? TypedKeyMaterial =>
+        (Ed25519KeyMaterial?)KeyMaterial;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Ed25519" /> class with no key material.
@@ -117,7 +120,7 @@ public sealed partial class Ed25519
         get
         {
             ThrowIfDisposed();
-            return _keyMaterial?.HasPrivateKey ?? false;
+            return TypedKeyMaterial?.HasPrivateKey ?? false;
         }
     }
 
@@ -131,7 +134,7 @@ public sealed partial class Ed25519
         get
         {
             ThrowIfDisposed();
-            return _keyMaterial is not null;
+            return TypedKeyMaterial is not null;
         }
     }
 
@@ -161,9 +164,9 @@ public sealed partial class Ed25519
     public byte[] ExportPrivateKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(TypedKeyMaterial?.HasPrivateKey ?? false);
 
-        return (byte[])_keyMaterial!.PrivateKey!.Clone();
+        return (byte[])TypedKeyMaterial!.PrivateKey!.Clone();
     }
 
     /// <summary>
@@ -175,9 +178,9 @@ public sealed partial class Ed25519
     public byte[] ExportPublicKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_keyMaterial is not null);
+        CryptographyThrowHelper.ThrowIfNoPublicKey(TypedKeyMaterial is not null);
 
-        return (byte[])_keyMaterial!.PublicKey.Clone();
+        return (byte[])TypedKeyMaterial!.PublicKey.Clone();
     }
 
     /// <summary>
@@ -274,11 +277,11 @@ public sealed partial class Ed25519
     {
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(destination, SignatureSizeInBytes);
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasPrivateKey ?? false);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(TypedKeyMaterial?.HasPrivateKey ?? false);
 
         // RFC 8032 §5.1.6: expand the seed into the clamped scalar s and the deterministic-nonce prefix.
         Span<byte> expanded = stackalloc byte[64];
-        SHA512.HashData(_keyMaterial!.PrivateKey!, expanded);
+        SHA512.HashData(TypedKeyMaterial!.PrivateKey!, expanded);
 
         Span<byte> s = stackalloc byte[32];
         expanded[..32].CopyTo(s);
@@ -302,7 +305,7 @@ public sealed partial class Ed25519
 
             // S = (r + SHA-512(R ‖ A ‖ M) · s) mod L.
             hash.AppendData(rEncoded);
-            hash.AppendData(_keyMaterial!.PublicKey);
+            hash.AppendData(TypedKeyMaterial!.PublicKey);
             hash.AppendData(data);
             hash.GetHashAndReset(digest);
 
@@ -347,7 +350,7 @@ public sealed partial class Ed25519
     public bool VerifyData(ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature)
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_keyMaterial is not null);
+        CryptographyThrowHelper.ThrowIfNoPublicKey(TypedKeyMaterial is not null);
 
         if (signature.Length != SignatureSizeInBytes)
             return false;
@@ -364,7 +367,7 @@ public sealed partial class Ed25519
 
         // The public point and its small-order status were decoded and evaluated once when the key material was
         // created; reuse them rather than repeating ~500 field multiplications on every verification.
-        if (!_keyMaterial!.TryGetPublicPoint(out Ed25519Point publicPoint, out bool publicPointIsSmallOrder))
+        if (!TypedKeyMaterial!.TryGetPublicPoint(out Ed25519Point publicPoint, out bool publicPointIsSmallOrder))
             return false;
 
         // Small-order R or A would let a torsion component be added without changing acceptance under the cofactorless
@@ -377,7 +380,7 @@ public sealed partial class Ed25519
         using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
         {
             hash.AppendData(rEncoded);
-            hash.AppendData(_keyMaterial!.PublicKey);
+            hash.AppendData(TypedKeyMaterial!.PublicKey);
             hash.AppendData(data);
             hash.GetHashAndReset(digest);
         }
@@ -393,31 +396,6 @@ public sealed partial class Ed25519
         rPoint.Encode(right);
 
         return left.SequenceEqual(right);
-    }
-
-    /// <summary>
-    /// Releases the resources used by this instance, zeroing all private key material.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
-    /// only unmanaged resources.
-    /// </param>
-    protected override void Dispose(bool disposing)
-    {
-        if (_disposed)
-        {
-            base.Dispose(disposing);
-            return;
-        }
-
-        if (disposing)
-        {
-            _keyMaterial?.Clear();
-            _keyMaterial = null;
-        }
-
-        _disposed = true;
-        base.Dispose(disposing);
     }
 
     /// <summary>
@@ -442,20 +420,4 @@ public sealed partial class Ed25519
         ReplaceKeyMaterial(Ed25519KeyMaterial.ForKeyPair(publicKey, privateKey));
     }
 
-    /// <summary>
-    /// Replaces the instance's key material, zeroizing any previously held private key first.
-    /// </summary>
-    /// <param name="keyMaterial">The new key material to take ownership of.</param>
-    private void ReplaceKeyMaterial(Ed25519KeyMaterial keyMaterial)
-    {
-        _keyMaterial?.Clear();
-        _keyMaterial = keyMaterial;
-    }
-
-    /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> when the instance has been disposed.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    private void ThrowIfDisposed() =>
-        ObjectDisposedException.ThrowIf(_disposed, this);
 }

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKem.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 public abstract partial class MLKem
-    : AsymmetricAlgorithm
+    : RawKeyAsymmetricAlgorithm
 {
     /// <summary>The size, in bytes, of the shared secret produced by encapsulation and decapsulation.</summary>
     public const int SharedSecretSizeInBytes = 32;
@@ -69,12 +69,6 @@ public abstract partial class MLKem
 
     /// <summary>The FIPS 203 parameter set implemented by the derived type.</summary>
     private readonly MLKemParameters _parameters;
-
-    /// <summary>The instance's key material, or <see langword="null" /> when no key is set.</summary>
-    private MLKemKeyMaterial? _keyMaterial;
-
-    /// <summary>Indicates whether the instance has been disposed.</summary>
-    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MLKem" /> class for a specific FIPS 203 parameter set.
@@ -157,7 +151,7 @@ public abstract partial class MLKem
         get
         {
             ThrowIfDisposed();
-            return _keyMaterial?.HasDecapsulationKey ?? false;
+            return KeyMaterial?.HasPrivateKey ?? false;
         }
     }
 
@@ -173,7 +167,7 @@ public abstract partial class MLKem
         get
         {
             ThrowIfDisposed();
-            return _keyMaterial is not null;
+            return KeyMaterial is not null;
         }
     }
 
@@ -239,7 +233,7 @@ public abstract partial class MLKem
         }
 
         byte[] encapsulationKey = decapsulationKey.Slice(384 * _parameters.K, _parameters.EncapsulationKeySize).ToArray();
-        ReplaceKeyMaterial(MLKemKeyMaterial.ForKeyPair(encapsulationKey, decapsulationKey.ToArray()));
+        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForKeyPair(encapsulationKey, decapsulationKey.ToArray()));
     }
 
     /// <summary>
@@ -271,7 +265,7 @@ public abstract partial class MLKem
                 nameof(encapsulationKey));
         }
 
-        ReplaceKeyMaterial(MLKemKeyMaterial.ForEncapsulationKey(encapsulationKey.ToArray()));
+        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForPublicKey(encapsulationKey.ToArray()));
     }
 
     /// <summary>
@@ -283,9 +277,9 @@ public abstract partial class MLKem
     public byte[] ExportDecapsulationKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasDecapsulationKey ?? false);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(KeyMaterial?.HasPrivateKey ?? false);
 
-        return (byte[])_keyMaterial!.DecapsulationKey!.Clone();
+        return (byte[])KeyMaterial!.PrivateKey!.Clone();
     }
 
     /// <summary>
@@ -297,9 +291,9 @@ public abstract partial class MLKem
     public byte[] ExportEncapsulationKey()
     {
         ThrowIfDisposed();
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_keyMaterial is not null);
+        CryptographyThrowHelper.ThrowIfNoPublicKey(KeyMaterial is not null);
 
-        return (byte[])_keyMaterial!.EncapsulationKey.Clone();
+        return (byte[])KeyMaterial!.PublicKey.Clone();
     }
 
     /// <summary>
@@ -335,12 +329,12 @@ public abstract partial class MLKem
         ThrowIfDisposed();
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(ciphertext, _parameters.CiphertextSize);
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(sharedSecret, SharedSecretSizeInBytes);
-        CryptographyThrowHelper.ThrowIfNoPublicKey(_keyMaterial is not null);
+        CryptographyThrowHelper.ThrowIfNoPublicKey(KeyMaterial is not null);
 
         Span<byte> m = stackalloc byte[32];
         CryptographyHelper.FillWithRandomBytes(m);
 
-        MLKemEngine.Encapsulate(_parameters, _keyMaterial!.EncapsulationKey, m, ciphertext, sharedSecret);
+        MLKemEngine.Encapsulate(_parameters, KeyMaterial!.PublicKey, m, ciphertext, sharedSecret);
         CryptographyHelper.Clear(m);
     }
 
@@ -393,34 +387,9 @@ public abstract partial class MLKem
         }
 
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(sharedSecret, SharedSecretSizeInBytes);
-        CryptographyThrowHelper.ThrowIfNoPrivateKey(_keyMaterial?.HasDecapsulationKey ?? false);
+        CryptographyThrowHelper.ThrowIfNoPrivateKey(KeyMaterial?.HasPrivateKey ?? false);
 
-        MLKemEngine.Decapsulate(_parameters, _keyMaterial!.DecapsulationKey!, ciphertext, sharedSecret);
-    }
-
-    /// <summary>
-    /// Releases the resources used by this instance, zeroing all decapsulation key material.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
-    /// only unmanaged resources.
-    /// </param>
-    protected override void Dispose(bool disposing)
-    {
-        if (_disposed)
-        {
-            base.Dispose(disposing);
-            return;
-        }
-
-        if (disposing)
-        {
-            _keyMaterial?.Clear();
-            _keyMaterial = null;
-        }
-
-        _disposed = true;
-        base.Dispose(disposing);
+        MLKemEngine.Decapsulate(_parameters, KeyMaterial!.PrivateKey!, ciphertext, sharedSecret);
     }
 
     /// <summary>
@@ -433,23 +402,7 @@ public abstract partial class MLKem
         byte[] decapsulationKey = new byte[_parameters.DecapsulationKeySize];
         MLKemEngine.KeyGen(_parameters, seed[..32], seed[32..], encapsulationKey, decapsulationKey);
 
-        ReplaceKeyMaterial(MLKemKeyMaterial.ForKeyPair(encapsulationKey, decapsulationKey));
+        ReplaceKeyMaterial(AsymmetricKeyMaterial.ForKeyPair(encapsulationKey, decapsulationKey));
     }
 
-    /// <summary>
-    /// Replaces the instance's key material, zeroizing any previously held decapsulation key first.
-    /// </summary>
-    /// <param name="keyMaterial">The new key material to take ownership of.</param>
-    private void ReplaceKeyMaterial(MLKemKeyMaterial keyMaterial)
-    {
-        _keyMaterial?.Clear();
-        _keyMaterial = keyMaterial;
-    }
-
-    /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> when the instance has been disposed.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    private void ThrowIfDisposed() =>
-        ObjectDisposedException.ThrowIf(_disposed, this);
 }
