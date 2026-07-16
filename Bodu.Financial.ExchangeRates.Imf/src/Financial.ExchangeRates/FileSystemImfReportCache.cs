@@ -42,7 +42,11 @@ public sealed class FileSystemImfReportCache
         : base(directory, "bodu-imf", logger) { }
 
     /// <inheritdoc />
-    public bool TryGet(ImfReportMonth month, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
+    /// <remarks>
+    /// Intentionally hides the unguarded base member so calls through this type (and through
+    /// <see cref="IImfReportCache" />) validate their arguments before touching the file system.
+    /// </remarks>
+    public new bool TryGet(ImfReportMonth month, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
     {
         ThrowHelper.ThrowIfNull(month);
 
@@ -50,7 +54,11 @@ public sealed class FileSystemImfReportCache
     }
 
     /// <inheritdoc />
-    public void Store(ImfReportMonth month, byte[] bytes)
+    /// <remarks>
+    /// Intentionally hides the unguarded base member so calls through this type (and through
+    /// <see cref="IImfReportCache" />) validate their arguments before touching the file system.
+    /// </remarks>
+    public new void Store(ImfReportMonth month, byte[] bytes)
     {
         ThrowHelper.ThrowIfNull(month);
         ThrowHelper.ThrowIfNull(bytes);
