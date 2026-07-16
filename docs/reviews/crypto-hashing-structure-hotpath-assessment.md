@@ -101,3 +101,16 @@ De-CRTP both hash ladders (C1); collapse the seven `*Transform` shells + hoist s
 
 ### Verification
 `dotnet build bodu.slnx` + `dotnet test … bvt.runsettings` after every step; full `regression.runsettings` (Wycheproof/ACVP for ML-KEM/ML-DSA, RFC vectors for AEAD/stream ciphers, the CRC catalogue) after hot-path changes; the `Bodu.Security.Cryptography.Simd.Test` assembly re-verifies scalar fallbacks whenever SIMD dispatch changes.
+
+## Remediation outcome
+
+All three phases were implemented on this branch, one green commit per logical step (build + BVT after every commit; the regression/ACVP tiers and the SIMD-disabled assembly after hot-path and dispatch changes). Findings whose remediation was assessed and **deliberately declined** are recorded here so the disposition is auditable:
+
+| Finding | Disposition |
+|---|---|
+| A1–A11 | **Fixed.** A4's branch-free `Power2Round`/`Decompose`/`MakeHint`/`InfinityNorm` verified digest-identical against the ML-DSA ACVP vectors. |
+| B1–B13 | **Fixed**, with three assessed-and-declined subitems: the Poly1305 span core (B6 — the AEAD framing already processes in 4 KB chunks, so the array-API copy is bounded); a full ML-DSA workspace flatten (B10 — the Â matrix reaches ~57 KB for ML-DSA-87, which does not belong on the stack; ML-KEM's ≤ 4 KB workspaces were flattened); CTR keystream batching (B12 — marginal after the AES key-schedule cache landed). |
+| C1 | **Fixed** in both projects. `AsconXof{T}` keeps its type parameter deliberately — it is the one base that genuinely consumes it (static `Create()`/`HashData()` factories). `Adler{T}` is a real numeric generic, not CRTP. |
+| C2, C3, C5, C6, C8 | **Fixed.** C5 resolved as *integrate* (owner decision): detached-tag AEAD extensions (`AuthenticationTag`), a `Nonce`-typed `GcmModeTransform` constructor, and a `SecretBytes`/`Salt` `Scrypt.DeriveKey` overload; `ByteBuffer` and the test-only `CryptographyHelper` pad/depad stack were deleted; `SignatureFormat` turned out to have real consumers and stays. |
+| C4 | **Assessed, declined.** Skein legitimately uses the keyed base's `Key` surface and its UBI one-block lookahead cannot route through the block pipeline; the throwing pipeline markers are deliberate, documented defensive contracts. CubeHash's publicly settable `TransformBlockSize`/rounds parameterization is incompatible with the fixed-block-size pipeline base without breaking public API; its originally reported gaps (missing `AlgorithmName`, missing argument validation) had already been fixed. |
+| C7 | **Resolved as docs-only** (owner decision): the `Serpent`/`Serpent256/512/1024` names stay; their XML docs already state the non-standard, non-interoperable status and point to `Serpent128` for standard Serpent, and `XSalsa20Poly1305Aead` already documents that it is a Bodu-defined construction. |
