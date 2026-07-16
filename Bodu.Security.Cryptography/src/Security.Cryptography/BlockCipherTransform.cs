@@ -41,24 +41,18 @@ namespace Bodu.Security.Cryptography;
 /// restore the mode transform to its initial IV or counter state.
 /// </para>
 /// <para>
-/// Derived classes need only provide a constructor that calls
-/// <see cref="BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingMode, byte[], bool)" /> or
-/// <see cref="BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingModeKind, byte[], bool)" /> with the
-/// appropriate arguments. All transform logic is handled by this base class.
-/// </para>
-/// <para>
 /// <strong>How this fits with the rest of the library.</strong> <see cref="BlockCipherTransform" /> is the glue layer
 /// that turns a low-level <see cref="IBlockCipher" /> into the
 /// <see cref="System.Security.Cryptography.ICryptoTransform" /> contract that
 /// <see cref="System.Security.Cryptography.CryptoStream" />, <c>SymmetricAlgorithm.CreateEncryptor()</c>, and the rest
 /// of the BCL crypto pipeline expect. Every <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> in this
-/// library returns an instance of a derived class from its <c>CreateEncryptor</c> / <c>CreateDecryptor</c> overrides —
-/// for example, <c>BlowfishTransform</c>, <c>CamelliaTransform</c>, <c>SkipjackTransform</c>, <c>TwofishTransform</c>,
-/// <c>SerpentTransform</c>, <c>ThreefishTransform</c>.
+/// library (Blowfish, Camellia, Skipjack, Twofish, Serpent, Threefish, …) returns an instance of this class from its
+/// <c>CreateEncryptor</c> / <c>CreateDecryptor</c> overrides, pairing the family's cipher engine with the configured
+/// mode and padding.
 /// </para>
 /// <para>
-/// Derive from this class only when adding a new symmetric algorithm to the library. Most callers never touch this type
-/// directly — they use <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode" /> and
+/// Most callers never touch this type directly — they use
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode" /> and
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding" /> to configure encryption and let the existing
 /// transform infrastructure handle the wiring.
 /// </para>
@@ -87,7 +81,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso cref="IBlockCipher"/> <seealso cref="IBlockCipherModeTransform"/> <seealso cref="IPaddingStrategy"/>
-public abstract class BlockCipherTransform
+public class BlockCipherTransform
     : ICryptoTransform
 {
     /// <summary>The configured block cipher engine used by the mode transform.</summary>
@@ -131,7 +125,7 @@ public abstract class BlockCipherTransform
     /// <see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
-    protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingMode paddingMode, byte[]? iv, bool encrypt)
+    protected internal BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingMode paddingMode, byte[]? iv, bool encrypt)
     {
         _cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         _encrypt = encrypt;
@@ -156,7 +150,7 @@ public abstract class BlockCipherTransform
     /// <see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
-    protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[]? iv, bool encrypt)
+    protected internal BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[]? iv, bool encrypt)
     {
         _cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         _encrypt = encrypt;

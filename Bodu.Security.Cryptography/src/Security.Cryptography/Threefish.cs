@@ -128,7 +128,7 @@ public abstract class Threefish
         CryptographyThrowHelper.ThrowIfInvalidTweakSize(tweak, TweakSize, LegalTweakSizes);
 
         ThreefishBlockCipher engine = CreateCipher(rgbKey, tweak);
-        return new ThreefishTransform(engine, BlockMode, Padding, rgbIV, false);
+        return new BlockCipherTransform(engine, BlockMode, Padding, rgbIV, false);
     }
 
     /// <inheritdoc />
@@ -140,7 +140,7 @@ public abstract class Threefish
         CryptographyThrowHelper.ThrowIfInvalidTweakSize(tweak, TweakSize, LegalTweakSizes);
 
         ThreefishBlockCipher engine = CreateCipher(rgbKey, tweak);
-        return new ThreefishTransform(engine, BlockMode, Padding, rgbIV, true);
+        return new BlockCipherTransform(engine, BlockMode, Padding, rgbIV, true);
     }
 
     /// <inheritdoc />

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blowfish.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block cipher
-/// modes via the <see cref="BlockMode" /> property. The default mode is <see cref="CipherModeKind.CBC" /> with
+/// modes via the <see cref="ExtendedSymmetricAlgorithm.BlockMode" /> property. The default mode is <see cref="CipherModeKind.CBC" /> with
 /// <see cref="PaddingMode.PKCS7" /> padding.
 /// </para>
 /// <para>
@@ -77,7 +77,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
 public sealed class Blowfish
-    : SymmetricAlgorithm
+    : ExtendedSymmetricAlgorithm
 {
     /// <summary>Length of the Blowfish block is 64 bits (8 bytes).</summary>
     internal const int BlowFishBlockSize = 64;
@@ -96,12 +96,6 @@ public sealed class Blowfish
 
     /// <summary>A value indicating whether this instance has been disposed.</summary>
     private bool _disposed = false;
-
-    /// <summary>The block cipher mode of operation used when creating encryptors and decryptors.</summary>
-    private CipherModeKind _blockMode = CipherModeKind.CBC;
-
-    /// <summary>The padding mode applied when creating encryptors and decryptors.</summary>
-    private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Blowfish" /> class with default parameters.
@@ -131,99 +125,6 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
-    /// </summary>
-    /// <value>
-    /// One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.
-    /// </value>
-    /// <remarks>
-    /// <para>
-    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
-    /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
-    /// <see cref="CipherModeKind.CTR" /> and <see cref="CipherModeKind.OFB" />, which are not available via the
-    /// standard <see cref="CipherMode" /> enumeration.
-    /// </para>
-    /// <para>
-    /// When the assigned value has a matching member in <see cref="CipherMode" /> (for example, CBC, ECB, CFB), the
-    /// inherited <see cref="SymmetricAlgorithm.Mode" /> is kept in sync so that consumers inspecting the base property
-    /// observe a consistent mode. Extended modes with no <see cref="CipherMode" /> equivalent leave the base property
-    /// unchanged.
-    /// </para>
-    /// </remarks>
-    public CipherModeKind BlockMode
-    {
-        get => _blockMode;
-        set
-        {
-            _blockMode = value;
-
-            // Keep the inherited Mode in sync where a direct CipherMode equivalent exists. Extended modes without a
-            // mapping (e.g. CTR, OFB) intentionally leave ModeValue untouched.
-            if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) &&
-                Enum.IsDefined(mode))
-            {
-                ModeValue = mode;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
-    /// </summary>
-    /// <value>
-    /// One of the <see cref="PaddingModeKind" /> values. The default is <see cref="PaddingModeKind.PKCS7" />.
-    /// </value>
-    /// <remarks>
-    /// When the assigned value has a matching member in <see cref="PaddingMode" /> (for example, PKCS7, Zeros, None),
-    /// the inherited <see cref="SymmetricAlgorithm.Padding" /> is kept in sync. Extended modes with no
-    /// <see cref="PaddingMode" /> equivalent (such as <see cref="PaddingModeKind.ISO7816_4" />) leave the base property
-    /// unchanged.
-    /// </remarks>
-    public PaddingModeKind BlockPadding
-    {
-        get => _blockPadding;
-        set
-        {
-            _blockPadding = value;
-            if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
-                PaddingValue = mode;
-        }
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Also synchronizes <see cref="BlockPadding" /> when the assigned value has a matching member in
-    /// <see cref="PaddingModeKind" />.
-    /// </remarks>
-    public override PaddingMode Padding
-    {
-        get => base.Padding;
-        set
-        {
-            base.Padding = value;
-            if (Enum.TryParse<PaddingModeKind>(value.ToString(), out PaddingModeKind bpm) && Enum.IsDefined(bpm))
-                _blockPadding = bpm;
-        }
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Also synchronizes <see cref="BlockMode" /> so that encryptor and decryptor creation, which read
-    /// <see cref="BlockMode" />, honour the assigned value. Every <see cref="CipherMode" /> member has a matching
-    /// <see cref="CipherModeKind" /> member, so the synchronization always succeeds.
-    /// </remarks>
-    public override CipherMode Mode
-    {
-        get => base.Mode;
-        set
-        {
-            base.Mode = value;
-            if (Enum.TryParse<CipherModeKind>(value.ToString(), out CipherModeKind bm) && Enum.IsDefined(bm))
-                _blockMode = bm;
-        }
-    }
-
-    /// <summary>
     /// Creates a new <see cref="Blowfish" /> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Blowfish" /> instance.</returns>
@@ -249,7 +150,7 @@ public sealed class Blowfish
     /// </exception>
     /// <exception cref="CryptographicException">
     /// <paramref name="rgbKey" /> is not within the permitted key size range, or <paramref name="rgbIV" /> has an
-    /// invalid length for the configured <see cref="BlockMode" />.
+    /// invalid length for the configured <see cref="ExtendedSymmetricAlgorithm.BlockMode" />.
     /// </exception>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
@@ -258,7 +159,7 @@ public sealed class Blowfish
         CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSizeValue, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new BlowfishTransform(engine, BlockMode, BlockPadding, rgbIV, false);
+        return new BlockCipherTransform(engine, BlockMode, BlockPadding, rgbIV, false);
     }
 
     /// <summary>
@@ -281,7 +182,7 @@ public sealed class Blowfish
     /// </exception>
     /// <exception cref="CryptographicException">
     /// <paramref name="rgbKey" /> is not within the permitted key size range, or <paramref name="rgbIV" /> has an
-    /// invalid length for the configured <see cref="BlockMode" />.
+    /// invalid length for the configured <see cref="ExtendedSymmetricAlgorithm.BlockMode" />.
     /// </exception>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
@@ -290,7 +191,7 @@ public sealed class Blowfish
         CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSizeValue, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new BlowfishTransform(engine, BlockMode, BlockPadding, rgbIV, true);
+        return new BlockCipherTransform(engine, BlockMode, BlockPadding, rgbIV, true);
     }
 
     /// <summary>

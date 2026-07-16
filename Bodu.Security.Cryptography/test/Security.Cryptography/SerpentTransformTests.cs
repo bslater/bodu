@@ -10,8 +10,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> base tests against the
-/// wide-block tweakable <see cref="SerpentTransform" /> implementation, distinct from the standardised 128-bit
-/// <see cref="Serpent128Transform" /> covered by <see cref="Serpent128TransformTests" />. KAT coverage for the wide-block
+/// wide-block tweakable <see cref="BlockCipherTransform" /> implementation, distinct from the standardised 128-bit
+/// <see cref="BlockCipherTransform" /> covered by <see cref="Serpent128TransformTests" />. KAT coverage for the wide-block
 /// variants is provided at the block-cipher tier by <see cref="Serpent256CipherTests" /> /
 /// <see cref="Serpent512CipherTests" /> / <see cref="Serpent1024CipherTests" />, whose rows are cross-validated against
 /// <c>tools/cipher-vectors/wide_serpent.py</c>; this transform-tier test class therefore only exercises the behavioural
@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 [TestClass]
 internal sealed class SerpentTransformTests
-    : BlockCipherTransformTests<SerpentTransformTests, SerpentTransform>
+    : BlockCipherTransformTests<SerpentTransformTests, BlockCipherTransform>
 {
     private readonly byte[] _key;
     private readonly byte[] _iv;
@@ -41,15 +41,15 @@ internal sealed class SerpentTransformTests
     }
 
     /// <inheritdoc />
-    protected override SerpentTransform CreateAlgorithm() => CreateEncryptor();
+    protected override BlockCipherTransform CreateAlgorithm() => CreateEncryptor();
 
     /// <inheritdoc />
-    protected override SerpentTransform CreateEncryptor() => BuildTransform(forEncryption: true);
+    protected override BlockCipherTransform CreateEncryptor() => BuildTransform(forEncryption: true);
 
     /// <inheritdoc />
-    protected override SerpentTransform CreateDecryptor() => BuildTransform(forEncryption: false);
+    protected override BlockCipherTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
-    private SerpentTransform BuildTransform(bool forEncryption)
+    private BlockCipherTransform BuildTransform(bool forEncryption)
     {
         var algorithm = new Serpent256
         {
@@ -64,6 +64,6 @@ internal sealed class SerpentTransformTests
         ICryptoTransform transform = forEncryption
             ? algorithm.CreateEncryptor()
             : algorithm.CreateDecryptor();
-        return (SerpentTransform)transform;
+        return (BlockCipherTransform)transform;
     }
 }

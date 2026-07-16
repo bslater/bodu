@@ -10,11 +10,11 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> base tests
-/// against the <see cref="BlowfishTransform" /> implementation.
+/// against the <see cref="BlockCipherTransform" /> implementation.
 /// </summary>
 [TestClass]
 internal sealed class BlowfishTransformTests
-    : BlockCipherTransformTests<BlowfishTransformTests, BlowfishTransform>
+    : BlockCipherTransformTests<BlowfishTransformTests, BlockCipherTransform>
 {
     private readonly byte[] _key;
     private readonly byte[] _iv;
@@ -33,15 +33,15 @@ internal sealed class BlowfishTransformTests
     }
 
     /// <inheritdoc />
-    protected override BlowfishTransform CreateAlgorithm() => CreateEncryptor();
+    protected override BlockCipherTransform CreateAlgorithm() => CreateEncryptor();
 
     /// <inheritdoc />
-    protected override BlowfishTransform CreateEncryptor() => BuildTransform(forEncryption: true);
+    protected override BlockCipherTransform CreateEncryptor() => BuildTransform(forEncryption: true);
 
     /// <inheritdoc />
-    protected override BlowfishTransform CreateDecryptor() => BuildTransform(forEncryption: false);
+    protected override BlockCipherTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
-    private BlowfishTransform BuildTransform(bool forEncryption)
+    private BlockCipherTransform BuildTransform(bool forEncryption)
     {
         var algorithm = new Blowfish
         {
@@ -54,6 +54,6 @@ internal sealed class BlowfishTransformTests
         ICryptoTransform transform = forEncryption
             ? algorithm.CreateEncryptor()
             : algorithm.CreateDecryptor();
-        return (BlowfishTransform)transform;
+        return (BlockCipherTransform)transform;
     }
 }
