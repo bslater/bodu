@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// digests and cross-checked against the existing <see cref="Shake" /> implementation.
 /// </summary>
 [TestClass]
-public class KeccakSpongeTests
+public partial class KeccakSpongeTests
 {
     // ── Fixed-output SHA-3 known answers (FIPS 202) ───────────────────────────────────────────
 
