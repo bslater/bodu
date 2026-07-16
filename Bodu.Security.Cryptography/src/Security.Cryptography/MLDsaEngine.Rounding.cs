@@ -23,8 +23,11 @@ internal static partial class MLDsaEngine
     private static void Power2Round(int r, out int r1, out int r0)
     {
         r0 = r & ((1 << D) - 1);
-        if (r0 > 1 << (D - 1))
-            r0 -= 1 << D;
+
+        // r0 > 2^(d-1) ? r0 -= 2^d. Folded through a sign-bit mask so the coefficient (secret key material during
+        // key generation) drives no branch.
+        int mask = ((1 << (D - 1)) - r0) >> 31; // -1 when r0 > 2^(d-1); otherwise 0
+        r0 -= (1 << D) & mask;
 
         r1 = (r - r0) >> D;
     }
@@ -42,18 +45,21 @@ internal static partial class MLDsaEngine
         int alpha = 2 * gamma2;
 
         r0 = r % alpha;
-        if (r0 > gamma2)
-            r0 -= alpha;
 
-        if (r - r0 == Q - 1)
-        {
-            r1 = 0;
-            r0--;
-        }
-        else
-        {
-            r1 = (r - r0) / alpha;
-        }
+        // r0 > gamma2 ? r0 -= alpha. The divisor alpha is a public parameter; only the two comparisons below carried
+        // secret-dependent control flow, so both are folded through sign-bit masks to keep the decomposition of the
+        // secret signing-loop coefficients branch-free.
+        int highMask = (gamma2 - r0) >> 31; // -1 when r0 > gamma2; otherwise 0
+        r0 -= alpha & highMask;
+
+        int hi = r - r0;
+        r1 = hi / alpha;
+
+        // Wrap-around case r − r0 = q − 1 maps onto r1 = 0, r0-- without branching.
+        int diff = hi - (Q - 1);
+        int wrapMask = ~((diff | -diff) >> 31); // -1 when hi == q − 1; otherwise 0
+        r1 &= ~wrapMask;
+        r0 += wrapMask;
     }
 
     /// <summary>
@@ -77,8 +83,18 @@ internal static partial class MLDsaEngine
     /// <param name="z">The perturbation coefficient in [0, q).</param>
     /// <param name="r">The base coefficient in [0, q).</param>
     /// <returns>1 when the high parts differ; otherwise, 0.</returns>
-    private static int MakeHint(int gamma2, int z, int r) =>
-        HighBits(gamma2, r) != HighBits(gamma2, (r + z) % Q) ? 1 : 0;
+    private static int MakeHint(int gamma2, int z, int r)
+    {
+        // (r + z) mod q via a single branch-free conditional subtract (both operands are in [0, q), so the sum is
+        // in [0, 2q)), keeping the perturbed coefficient off any secret-dependent branch.
+        int sum = r + z;
+        sum -= Q & ((Q - 1 - sum) >> 31);
+
+        int diff = HighBits(gamma2, r) - HighBits(gamma2, sum);
+
+        // 1 when the high parts differ, 0 otherwise, without a comparison branch.
+        return (int)((uint)(diff | -diff) >> 31);
+    }
 
     /// <summary>
     /// Recovers the high part of <paramref name="r" /> using a hint bit (FIPS 204 Algorithm 40).
@@ -113,8 +129,11 @@ internal static partial class MLDsaEngine
         for (int i = 0; i < N; i++)
         {
             int centered = poly[i];
-            if (centered > (Q - 1) / 2)
-                centered = Q - centered;
+
+            // centered > (q−1)/2 ? centered = q − centered. Folded through a sign-bit mask so the centering of each
+            // secret coefficient does not branch; Math.Max lowers to a branch-free conditional move.
+            int mask = ((Q - 1) / 2 - centered) >> 31; // -1 when centered > (q−1)/2; otherwise 0
+            centered -= ((2 * centered) - Q) & mask;
 
             maximum = Math.Max(maximum, centered);
         }

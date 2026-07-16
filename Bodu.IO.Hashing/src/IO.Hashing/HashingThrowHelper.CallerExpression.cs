@@ -6,7 +6,6 @@
 
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 
 namespace Bodu.IO.Hashing;
 
@@ -94,17 +93,22 @@ internal static partial class HashingThrowHelper
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicUnexpectedOperationException" /> when <paramref name="started" /> is
+    /// Throws an <see cref="InvalidOperationException" /> when <paramref name="started" /> is
     /// <see langword="true" />, indicating the algorithm has begun consuming input and cannot be reconfigured.
     /// </summary>
     /// <param name="started">A flag indicating whether the algorithm has begun consuming input.</param>
-    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// <exception cref="InvalidOperationException">
     /// Thrown when <paramref name="started" /> is <see langword="true" />.
     /// </exception>
+    /// <remarks>
+    /// This is a non-cryptographic hashing library, so reconfiguration-after-start is reported with the
+    /// general-purpose <see cref="InvalidOperationException" /> (matching the <c>Op_Invalid_*</c> resource-key
+    /// convention) rather than a <c>System.Security.Cryptography</c> exception.
+    /// </remarks>
     internal static void ThrowIfAlgorithmAlreadyStarted(bool started)
     {
         if (started)
-            throw new CryptographicUnexpectedOperationException(
+            throw new InvalidOperationException(
                 HashingResourceStrings.Op_Invalid_AlgorithmAlreadyStarted);
     }
 }

@@ -59,6 +59,50 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     }
 
     /// <summary>
+    /// Verifies that a large multi-batch input produces identical digests whether submitted in one call, in odd-sized
+    /// chunks that straddle the internal batch boundary, or one byte at a time. This pins the deferred-modulo
+    /// accumulation across internal block boundaries so a batched rewrite of the inner loop stays digest-identical.
+    /// </summary>
+    /// <param name="length">The input length under test, in bytes.</param>
+    [TestMethod]
+    [DataRow(4095)]
+    [DataRow(4096)]
+    [DataRow(4097)]
+    [DataRow(8192)]
+    [DataRow(10000)]
+    public void Append_WhenInputSpansManyBatches_ShouldMatchAcrossSubmissionStyles(int length)
+    {
+        byte[] input = new byte[length];
+        for (int i = 0; i < length; i++)
+            input[i] = (byte)((i * 31) + 7);
+
+        TAlgorithm whole = CreateAlgorithm();
+        whole.Append(input);
+
+        TAlgorithm chunked = CreateAlgorithm();
+        int pos = 0;
+        foreach (int chunk in new[] { 1, 63, 4096, 500, 3000 })
+        {
+            if (pos >= length) break;
+            int take = Math.Min(chunk, length - pos);
+            chunked.Append(input.AsSpan(pos, take));
+            pos += take;
+        }
+        if (pos < length)
+            chunked.Append(input.AsSpan(pos));
+
+        TAlgorithm perByte = CreateAlgorithm();
+        foreach (byte b in input)
+            perByte.Append(new[] { b });
+
+        byte[] wholeHash = whole.GetCurrentHash();
+        CollectionAssert.AreEqual(wholeHash, chunked.GetCurrentHash(),
+            $"Chunked append produced a different digest than single-shot for length {length}.");
+        CollectionAssert.AreEqual(wholeHash, perByte.GetCurrentHash(),
+            $"Byte-at-a-time append produced a different digest than single-shot for length {length}.");
+    }
+
+    /// <summary>
     /// Verifies that <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> is
     /// non-destructive: calling it mid-stream, appending additional data, and calling it again must yield the
     /// same digest as the same sequence computed on a fresh instance without any intermediate observation.

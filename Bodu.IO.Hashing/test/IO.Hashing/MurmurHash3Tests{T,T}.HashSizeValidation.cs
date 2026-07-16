@@ -75,26 +75,34 @@ public sealed class MurmurHash3HashSizeValidationTests
     /// is never invoked directly by tests.
     /// </summary>
     private sealed class TestMurmurHash3
-        : MurmurHash3<TestMurmurHash3>
+        : MurmurHash3
     {
 
         public TestMurmurHash3()
-            : base(32)
+            : base(32, blockSizeBytes: 4)
         {
         }
 
         public TestMurmurHash3(int hashSize)
-            : base(hashSize)
+            : base(hashSize, blockSizeBytes: 4)
         {
         }
 
         public TestMurmurHash3(int hashSize, uint seed)
-            : base(hashSize, seed)
+            : base(hashSize, blockSizeBytes: 4, seed)
         {
         }
 
-        protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source) =>
-            new byte[this.HashLengthInBytes];
+        private protected override void ResetCore()
+        {
+        }
+
+        private protected override void MixBlocks(ReadOnlySpan<byte> blocks)
+        {
+        }
+
+        private protected override void FinalizeCore(ReadOnlySpan<byte> tail, ulong totalBytes, Span<byte> destination) =>
+            destination.Clear();
 
     }
 

@@ -6,6 +6,8 @@
 
 using System.Runtime.CompilerServices;
 
+using System.Buffers.Binary;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -215,10 +217,27 @@ internal struct KeccakSponge
         if (_squeezing) throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_XofSqueezeAfterAbsorb);
 
         Span<ulong> state = _state;
-        for (int i = 0; i < data.Length; i++)
+        while (!data.IsEmpty)
         {
-            state[_position >> 3] ^= (ulong)data[i] << (8 * (_position & 7));
-            _position++;
+            // Lane-wise fast path: once the position is 8-aligned, XOR whole little-endian lanes up to the rate
+            // boundary. Every rate in the SHA-3/SHAKE family is a multiple of 8, so alignment persists across runs.
+            if ((_position & 7) == 0 && data.Length >= 8 && _rateBytes - _position >= 8)
+            {
+                int run = Math.Min(data.Length, _rateBytes - _position) & ~7;
+                int lane = _position >> 3;
+                for (int offset = 0; offset < run; offset += 8)
+                    state[lane++] ^= BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(offset, 8));
+
+                _position += run;
+                data = data[run..];
+            }
+            else
+            {
+                // Byte-wise until the next lane boundary (or the input runs out).
+                state[_position >> 3] ^= (ulong)data[0] << (8 * (_position & 7));
+                _position++;
+                data = data[1..];
+            }
 
             if (_position == _rateBytes)
             {
@@ -266,7 +285,7 @@ internal struct KeccakSponge
             _squeezing = true;
         }
 
-        for (int i = 0; i < destination.Length; i++)
+        while (!destination.IsEmpty)
         {
             if (_position == _rateBytes)
             {
@@ -274,8 +293,23 @@ internal struct KeccakSponge
                 _position = 0;
             }
 
-            destination[i] = (byte)(state[_position >> 3] >> (8 * (_position & 7)));
-            _position++;
+            // Lane-wise fast path mirroring Absorb: emit whole little-endian lanes while aligned.
+            if ((_position & 7) == 0 && destination.Length >= 8 && _rateBytes - _position >= 8)
+            {
+                int run = Math.Min(destination.Length, _rateBytes - _position) & ~7;
+                int lane = _position >> 3;
+                for (int offset = 0; offset < run; offset += 8)
+                    BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(offset, 8), state[lane++]);
+
+                _position += run;
+                destination = destination[run..];
+            }
+            else
+            {
+                destination[0] = (byte)(state[_position >> 3] >> (8 * (_position & 7)));
+                _position++;
+                destination = destination[1..];
+            }
         }
     }
 

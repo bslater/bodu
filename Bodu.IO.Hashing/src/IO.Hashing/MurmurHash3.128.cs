@@ -19,7 +19,7 @@ namespace Bodu.IO.Hashing;
 /// the constructor-supplied value. Input is consumed in 16-byte blocks; each block word is mixed through
 /// multiply-rotate-multiply passes before being folded into the appropriate accumulator. Remaining 1–15 bytes are
 /// handled by a tail switch. Both accumulators are cross-mixed and finalized via
-/// <see cref="MurmurHash3{T}.FMix64(ulong)" /> to produce the 128-bit output.
+/// <see cref="MurmurHash3.FMix64(ulong)" /> to produce the 128-bit output.
 /// </para>
 /// <para>
 /// A 32-bit seed may be supplied at construction time. Both accumulators are initialized to the same seed value,
@@ -66,15 +66,21 @@ namespace Bodu.IO.Hashing;
 /// </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="MurmurHash3{T}"/> <seealso cref="MurmurHash3_32"/>
+/// <seealso cref="MurmurHash3"/> <seealso cref="MurmurHash3_32"/>
 public sealed class MurmurHash3_128
-    : MurmurHash3<MurmurHash3_128>
+    : MurmurHash3
 {
     /// <summary>The first mixing constant applied to each block during the MurmurHash3 x64 128-bit body pass.</summary>
     private const ulong C1 = 0x87C37B91114253D5uL;
 
     /// <summary>The second mixing constant applied to each block during the MurmurHash3 x64 128-bit body pass.</summary>
     private const ulong C2 = 0x4CF5AD432745937FuL;
+
+    /// <summary>The first running 64-bit accumulator, seeded at construction and updated as each 16-byte block is mixed in.</summary>
+    private ulong _h1;
+
+    /// <summary>The second running 64-bit accumulator, seeded at construction and updated as each 16-byte block is mixed in.</summary>
+    private ulong _h2;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MurmurHash3_128" /> class with a seed of zero.
@@ -89,30 +95,41 @@ public sealed class MurmurHash3_128
     /// </summary>
     /// <param name="seed">The 32-bit seed value used to initialize both 64-bit accumulators.</param>
     public MurmurHash3_128(uint seed)
-        : base(128, seed)
+        : base(128, blockSizeBytes: 16, seed)
     {
+        _h1 = seed;
+        _h2 = seed;
     }
 
-    /// <summary>
-    /// Computes the 128-bit MurmurHash3 (x64 variant) of the provided input span.
-    /// </summary>
-    /// <param name="source">The input bytes to hash.</param>
-    /// <returns>
-    /// A 16-byte array containing the little-endian encoded 128-bit hash value, with <c>h1</c> in bytes 0–7 and
-    /// <c>h2</c> in bytes 8–15.
-    /// </returns>
-    protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source)
+    /// <inheritdoc />
+    private protected override void ResetCore()
     {
-        ulong h1 = Seed;
-        ulong h2 = Seed;
-        int len = source.Length;
-        int nblocks = len / 16;
+        _h1 = Seed;
+        _h2 = Seed;
+    }
 
-        // Body: process 16-byte blocks as two 64-bit words.
-        for (int i = 0; i < nblocks; i++)
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            ulong k1 = BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(i * 16, 8));
-            ulong k2 = BinaryPrimitives.ReadUInt64LittleEndian(source.Slice((i * 16) + 8, 8));
+            _h1 = 0;
+            _h2 = 0;
+        }
+
+        base.Dispose(disposing);
+    }
+
+    /// <inheritdoc />
+    private protected override void MixBlocks(ReadOnlySpan<byte> blocks)
+    {
+        ulong h1 = _h1;
+        ulong h2 = _h2;
+
+        for (int i = 0; i < blocks.Length; i += 16)
+        {
+            ulong k1 = BinaryPrimitives.ReadUInt64LittleEndian(blocks.Slice(i, 8));
+            ulong k2 = BinaryPrimitives.ReadUInt64LittleEndian(blocks.Slice(i + 8, 8));
 
             k1 = unchecked(k1 * C1);
             k1 = RotateLeft(k1, 31);
@@ -133,10 +150,18 @@ public sealed class MurmurHash3_128
             h2 = unchecked((h2 * 5uL) + 0x38495AB5uL);
         }
 
-        // Tail: process remaining 1–15 bytes.
-        ReadOnlySpan<byte> tail = source.Slice(nblocks * 16);
+        _h1 = h1;
+        _h2 = h2;
+    }
+
+    /// <inheritdoc />
+    private protected override void FinalizeCore(ReadOnlySpan<byte> tail, ulong totalBytes, Span<byte> destination)
+    {
+        ulong h1 = _h1;
+        ulong h2 = _h2;
         ulong t1 = 0, t2 = 0;
 
+        // Tail: fold in the remaining 1–15 bytes.
         switch (tail.Length)
         {
             case 15: t2 ^= (ulong)tail[14] << 48; goto case 14;
@@ -168,9 +193,9 @@ public sealed class MurmurHash3_128
                 break;
         }
 
-        // Finalization: cross-mix accumulators then apply fmix64.
-        h1 = unchecked(h1 ^ (ulong)len);
-        h2 = unchecked(h2 ^ (ulong)len);
+        // Finalization over local copies — the running accumulators are left untouched.
+        h1 = unchecked(h1 ^ totalBytes);
+        h2 = unchecked(h2 ^ totalBytes);
 
         h1 = unchecked(h1 + h2);
         h2 = unchecked(h2 + h1);
@@ -181,10 +206,8 @@ public sealed class MurmurHash3_128
         h1 = unchecked(h1 + h2);
         h2 = unchecked(h2 + h1);
 
-        byte[] result = new byte[16];
-        BinaryPrimitives.WriteUInt64LittleEndian(result.AsSpan(0, 8), h1);
-        BinaryPrimitives.WriteUInt64LittleEndian(result.AsSpan(8, 8), h2);
-        return result;
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[..8], h1);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(8, 8), h2);
     }
 
     /// <summary>

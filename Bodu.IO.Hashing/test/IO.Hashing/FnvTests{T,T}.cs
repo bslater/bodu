@@ -15,7 +15,7 @@ namespace Bodu.IO.Hashing;
 public abstract partial class FnvTests<TTest, TAlgorithm>
     : NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, SingleTestVariant>
     where TTest : FnvTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : Fnv<TAlgorithm>, new()
+    where TAlgorithm : Fnv, new()
 {
 
     /// <inheritdoc />

@@ -93,7 +93,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// <see cref="BlockNonCryptographicHashAlgorithm{T}.TotalLength" />) to tests.
     /// </summary>
     private sealed class StateInspectingBlockHasher
-        : BlockNonCryptographicHashAlgorithm<StateInspectingBlockHasher>
+        : BlockNonCryptographicHashAlgorithm
     {
 
         public StateInspectingBlockHasher()

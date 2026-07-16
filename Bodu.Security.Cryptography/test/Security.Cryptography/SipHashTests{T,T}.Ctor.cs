@@ -39,7 +39,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     }
 
     private class TestSipHash
-    : SipHash<TAlgorithm>
+    : SipHash
     {
         public TestSipHash(int hashSize)
             : base(hashSize)

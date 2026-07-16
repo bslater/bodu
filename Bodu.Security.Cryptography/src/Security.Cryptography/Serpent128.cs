@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent128.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -79,7 +79,7 @@ namespace Bodu.Security.Cryptography;
 /// </seealso> <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
 public sealed class Serpent128
-    : SymmetricAlgorithm
+    : ExtendedSymmetricAlgorithm
 {
     /// <summary>Length of the Serpent block is 128 bits (16 bytes).</summary>
     internal const int BlockSizeBits = 128;
@@ -95,12 +95,6 @@ public sealed class Serpent128
 
     /// <summary>Indicates whether the instance has been disposed and its key material cleared.</summary>
     private bool _disposed;
-
-    /// <summary>The block cipher mode of operation used when creating encryptors and decryptors.</summary>
-    private CipherModeKind _blockMode = CipherModeKind.CBC;
-
-    /// <summary>The padding mode used when creating encryptors and decryptors.</summary>
-    private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Serpent128" /> class with default parameters.
@@ -119,71 +113,9 @@ public sealed class Serpent128
         KeySizeValue = 128;
         LegalKeySizesValue = s_serpentKeySizes;
 
-        FeedbackSizeValue = 8;
+        FeedbackSizeValue = BlockSizeBits;
         ModeValue = CipherMode.CBC;
         PaddingValue = PaddingMode.PKCS7;
-    }
-
-    /// <summary>
-    /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
-    /// </summary>
-    /// <value>
-    /// One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.
-    /// </value>
-    /// <remarks>
-    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
-    /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
-    /// <see cref="CipherModeKind.CTR" /> and <see cref="CipherModeKind.OFB" />.
-    /// </remarks>
-    public CipherModeKind BlockMode
-    {
-        get => _blockMode;
-        set
-        {
-            _blockMode = value;
-
-            if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) && Enum.IsDefined(mode))
-                ModeValue = mode;
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
-    /// </summary>
-    /// <value>
-    /// One of the <see cref="PaddingModeKind" /> values. The default is <see cref="PaddingModeKind.PKCS7" />.
-    /// </value>
-    /// <remarks>
-    /// When the assigned value has a matching member in <see cref="PaddingMode" /> (for example, PKCS7, Zeros, None),
-    /// the inherited <see cref="SymmetricAlgorithm.Padding" /> is kept in sync. Extended modes with no
-    /// <see cref="PaddingMode" /> equivalent (such as <see cref="PaddingModeKind.ISO7816_4" />) leave the base property
-    /// unchanged.
-    /// </remarks>
-    public PaddingModeKind BlockPadding
-    {
-        get => _blockPadding;
-        set
-        {
-            _blockPadding = value;
-            if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
-                PaddingValue = mode;
-        }
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Also synchronizes <see cref="BlockPadding" /> when the assigned value has a matching member in
-    /// <see cref="PaddingModeKind" />.
-    /// </remarks>
-    public override PaddingMode Padding
-    {
-        get => base.Padding;
-        set
-        {
-            base.Padding = value;
-            if (Enum.TryParse<PaddingModeKind>(value.ToString(), out PaddingModeKind bpm) && Enum.IsDefined(bpm))
-                _blockPadding = bpm;
-        }
     }
 
     /// <summary>
@@ -200,7 +132,7 @@ public sealed class Serpent128
         CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = new Serpent128Cipher(rgbKey);
-        return new Serpent128Transform(engine, BlockMode, BlockPadding, rgbIV!, false);
+        return new BlockCipherTransform(engine, BlockMode, BlockPadding, rgbIV!, false);
     }
 
     /// <inheritdoc />
@@ -211,7 +143,7 @@ public sealed class Serpent128
         CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = new Serpent128Cipher(rgbKey);
-        return new Serpent128Transform(engine, BlockMode, BlockPadding, rgbIV!, true);
+        return new BlockCipherTransform(engine, BlockMode, BlockPadding, rgbIV!, true);
     }
 
     /// <inheritdoc />

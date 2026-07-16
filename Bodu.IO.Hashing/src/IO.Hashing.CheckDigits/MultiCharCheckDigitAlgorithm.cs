@@ -24,7 +24,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// The families are kept distinct by design rather than unified under one base type.
 /// </para>
 /// <para>
-/// The streaming surface — <see cref="Append(ReadOnlySpan{char})" />, <see cref="Reset" />, and the two
+/// The streaming surface — <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />, <see cref="CheckValueAlgorithm.Reset" />, and the two
 /// <c>GetCurrentCheckDigits</c> overloads — will nonetheless feel familiar to anyone who has used a hash algorithm:
 /// input is accumulated, the computation can be restarted, and reading the current check code is non-destructive and
 /// idempotent. That resemblance is incidental convenience, not a shared contract. Concrete implementations document
@@ -52,6 +52,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <seealso cref="CheckDigitAlgorithm" /> <seealso cref="AlphanumericCheckDigitAlgorithm" />
 /// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm" />
 public abstract class MultiCharCheckDigitAlgorithm
+    : CheckValueAlgorithm
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MultiCharCheckDigitAlgorithm" /> class.
@@ -61,44 +62,16 @@ public abstract class MultiCharCheckDigitAlgorithm
     }
 
     /// <summary>
-    /// Gets the canonical name of the algorithm, suitable for diagnostic output and logging.
-    /// </summary>
-    /// <value>A short, stable identifier such as <c>"ISO 7064 MOD 97-10"</c>, <c>"IBAN"</c>, or <c>"LEI"</c>.</value>
-    public abstract string AlgorithmName { get; }
-
-    /// <summary>
     /// Gets the fixed number of decimal-digit characters emitted as the trailing check code.
     /// </summary>
     /// <value>A positive integer; for example, <c>2</c> for ISO 7064 MOD 97-10.</value>
-    public abstract int CheckLength { get; }
+    public abstract override int CheckLength { get; }
 
     /// <summary>
     /// Gets the subset of ASCII from which this algorithm accepts body characters.
     /// </summary>
     /// <value>The declared input alphabet.</value>
     public abstract CheckDigitInputAlphabet InputAlphabet { get; }
-
-    /// <summary>
-    /// Absorbs the supplied characters into the running check-code state.
-    /// </summary>
-    /// <param name="body">
-    /// The characters to append. Each element must belong to <see cref="InputAlphabet" />. An empty span is a permitted
-    /// no-op.
-    /// </param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="body" /> contains any character outside <see cref="InputAlphabet" />.
-    /// </exception>
-    public abstract void Append(ReadOnlySpan<char> body);
-
-    /// <summary>
-    /// Absorbs a single character into the running check-code state.
-    /// </summary>
-    /// <param name="ch">The character to append. Must belong to <see cref="InputAlphabet" />.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="ch" /> is outside <see cref="InputAlphabet" />.
-    /// </exception>
-    public void Append(char ch) =>
-        Append([ch]);
 
     /// <summary>
     /// Returns the current check code as a newly allocated <see cref="string" />.
@@ -131,11 +104,11 @@ public abstract class MultiCharCheckDigitAlgorithm
     /// </remarks>
     public abstract int GetCurrentCheckDigits(Span<char> destination);
 
-    /// <summary>
-    /// Resets the algorithm to its initial state, discarding any characters previously absorbed.
-    /// </summary>
+    /// <inheritdoc />
     /// <remarks>
-    /// Equivalent in behavior to constructing a fresh instance of the same concrete type.
+    /// Delegates to <see cref="GetCurrentCheckDigits()" />; prefer the span-writing
+    /// <see cref="GetCurrentCheckDigits(Span{char})" /> overload in hot paths where the allocation is undesirable.
     /// </remarks>
-    public abstract void Reset();
+    public sealed override string GetCurrentCheckValue() =>
+        GetCurrentCheckDigits();
 }

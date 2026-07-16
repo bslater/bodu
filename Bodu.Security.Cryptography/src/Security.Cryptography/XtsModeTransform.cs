@@ -30,7 +30,16 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// </list>
-/// Using the same key for both reduces XTS to a single-key construction and weakens security.
+/// Using the same key for both reduces XTS to a single-key construction and weakens security. Because
+/// <see cref="IBlockCipher" /> exposes no key material, this type cannot detect Key₁ == Key₂; ensuring the two
+/// ciphers are independently keyed is the caller's responsibility.
+/// </para>
+/// <para>
+/// <strong>Implementation scope.</strong> This transform implements the XEX core for whole 128-bit blocks and does
+/// <strong>not</strong> perform ciphertext stealing: input whose length is not a multiple of the block size is
+/// rejected rather than stolen, so it is not interoperable with IEEE 1619 data units that end on a partial block.
+/// The GF(2<sup>128</sup>) tweak reduction is defined only for 128-bit blocks, so both ciphers must have a 128-bit
+/// block size — the constructor rejects any other width.
 /// </para>
 /// <para>
 /// For each 128-bit block j in a sector, the XEX construction is:
@@ -111,6 +120,13 @@ public sealed class XtsModeTransform
         _cipher = dataCipher ?? throw new ArgumentNullException(nameof(dataCipher));
         _tweakCipher = tweakCipher ?? throw new ArgumentNullException(nameof(tweakCipher));
         if (tweak is null) throw new ArgumentNullException(nameof(tweak));
+        if (dataCipher.BlockSize != 128)
+        {
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_XtsBlockSize, dataCipher.BlockSize),
+                nameof(dataCipher));
+        }
+
         if (tweakCipher.BlockSize != dataCipher.BlockSize)
         {
             throw new ArgumentException(
@@ -131,6 +147,8 @@ public sealed class XtsModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         int blockSize = _cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.

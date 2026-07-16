@@ -22,7 +22,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public abstract partial class FletcherTests<TTest, TAlgorithm>
     : NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, SingleTestVariant>
     where TTest : FletcherTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : Fletcher<TAlgorithm>, new()
+    where TAlgorithm : Fletcher, new()
 {
 
 

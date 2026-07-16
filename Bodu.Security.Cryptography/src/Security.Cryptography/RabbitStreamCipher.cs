@@ -109,6 +109,7 @@ internal sealed partial class RabbitStreamCipher
     /// <inheritdoc />
     public void NextKeystreamBlock(Span<byte> destination)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, 0, BlockSizeBytes);
 
         NextState();

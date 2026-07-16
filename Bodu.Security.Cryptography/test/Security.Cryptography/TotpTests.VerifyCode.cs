@@ -69,6 +69,21 @@ public sealed partial class TotpTests
     }
 
     /// <summary>
+    /// Verifies that a window exceeding the verification ceiling throws <see cref="ArgumentOutOfRangeException" />
+    /// rather than admitting an unbounded HMAC scan.
+    /// </summary>
+    [TestMethod]
+    public void VerifyCode_WhenWindowExceedsCeiling_ShouldThrowArgumentOutOfRangeException()
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Totp.VerifyCode(Sha1Seed, "94287082", DateTimeOffset.FromUnixTimeSeconds(59), window: int.MaxValue);
+        });
+
+        Assert.AreEqual("window", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that an undefined <see cref="OtpHashAlgorithm" /> value throws
     /// <see cref="ArgumentOutOfRangeException" /> naming the <c>algorithm</c> parameter.
     /// </summary>

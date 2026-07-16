@@ -81,7 +81,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 public sealed class Shake
-    : BufferedBlockHashAlgorithm<Shake>
+    : BufferedBlockHashAlgorithm
 {
     /// <summary>The number of 64-bit lanes in the Keccak-f[1600] state (5 × 5 = 25 words).</summary>
     private const int StateWords = 25;
@@ -91,40 +91,6 @@ public sealed class Shake
 
     /// <summary>The set of supported SHAKE security levels, in bits.</summary>
     private static readonly int[] s_validSecurityLevels = [128, 256];
-
-    /// <summary>The 24 round constants for the ι (iota) step of the Keccak-f permutation, one per round.</summary>
-    private static readonly ulong[] s_roundConstants =
-    [
-        0x0000000000000001UL, 0x0000000000008082UL, 0x800000000000808AUL, 0x8000000080008000UL,
-        0x000000000000808BUL, 0x0000000080000001UL, 0x8000000080008081UL, 0x8000000000008009UL,
-        0x000000000000008AUL, 0x0000000000000088UL, 0x0000000080008009UL, 0x000000008000000AUL,
-        0x000000008000808BUL, 0x800000000000008BUL, 0x8000000000008089UL, 0x8000000000008003UL,
-        0x8000000000008002UL, 0x8000000000000080UL, 0x000000000000800AUL, 0x800000008000000AUL,
-        0x8000000080008081UL, 0x8000000000008080UL, 0x0000000080000001UL, 0x8000000080008008UL,
-    ];
-
-#pragma warning disable SA1137 // Elements should have the same indentation
-
-    /// <summary>The ρ (rho) rotation offsets for the Keccak-f permutation, indexed as <c>rho[x + 5*y]</c>.</summary>
-    private static readonly int[] s_rho =
-    [
-         0,  1, 62, 28, 27,
-        36, 44,  6, 55, 20,
-         3, 10, 43, 25, 39,
-        41, 45, 15, 21,  8,
-        18,  2, 61, 56, 14,
-    ];
-
-    /// <summary>The π (pi) permutation indices for the Keccak-f permutation, mapping <c>state[i]</c> to <c>B[pi[i]]</c>.</summary>
-    private static readonly int[] s_pi =
-    [
-         0, 10, 20,  5, 15,
-        16,  1, 11, 21,  6,
-         7, 17,  2, 12, 22,
-        23,  8, 18,  3, 13,
-        14, 24,  9, 19,  4,
-    ];
-#pragma warning restore SA1137 // Elements should have the same indentation
 
     /// <summary>The 1600-bit Keccak sponge state, held as 25 little-endian 64-bit lanes.</summary>
     private readonly ulong[] _state = new ulong[StateWords];
@@ -295,7 +261,7 @@ public sealed class Shake
             if (_residualBytes == rateBytes)
             {
                 XorBlockIntoState(rateBuffer, _state, rateBytes);
-                KeccakF(_state);
+                KeccakPermutation.Permute(_state);
                 rateBuffer.Clear();
                 _residualBytes = 0;
             }
@@ -321,7 +287,7 @@ public sealed class Shake
 
         // Absorb the final padded block into the state.
         XorBlockIntoState(rateBuffer, _state, rateBytes);
-        KeccakF(_state);
+        KeccakPermutation.Permute(_state);
 
         // Squeeze output bytes from the state (little-endian lane serialization).
         int outputBytes = HashSizeValue / 8;
@@ -337,53 +303,10 @@ public sealed class Shake
             remaining -= take;
 
             if (remaining > 0)
-                KeccakF(_state);
+                KeccakPermutation.Permute(_state);
         }
 
         return output;
-    }
-
-    /// <summary>
-    /// Applies the full <c>Keccak-f[1600]</c> permutation — 24 rounds of θ, ρ, π, χ, and ι — to the supplied 25-word
-    /// state array in place.
-    /// </summary>
-    /// <param name="state">The 25-element state array to permute. Modified in place.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void KeccakF(ulong[] state)
-    {
-        ulong[] c = new ulong[5];
-        ulong[] b = new ulong[StateWords];
-
-        for (int round = 0; round < 24; round++)
-        {
-            // θ (theta): column parity and mixing.
-            for (int x = 0; x < 5; x++)
-                c[x] = state[x] ^ state[x + 5] ^ state[x + 10] ^ state[x + 15] ^ state[x + 20];
-
-            for (int x = 0; x < 5; x++)
-            {
-                ulong d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
-                for (int y = 0; y < 5; y++)
-                    state[x + (y * 5)] ^= d;
-            }
-
-            // ρ and π combined: rotate each lane and scatter to the π-permuted position.
-            // s_rho[0] is 0; RotateBitsLeftUnchecked delegates to BitOperations.RotateLeft, which
-            // handles a zero shift correctly without the undefined `value >> 64` shift the hand-rolled
-            // form would produce.
-            for (int i = 0; i < StateWords; i++)
-                b[s_pi[i]] = state[i].RotateBitsLeftUnchecked(s_rho[i]);
-
-            // χ (chi): non-linear mixing within each row.
-            for (int y = 0; y < 5; y++)
-            {
-                for (int x = 0; x < 5; x++)
-                    state[x + (y * 5)] = b[x + (y * 5)] ^ ((~b[((x + 1) % 5) + (y * 5)]) & b[((x + 2) % 5) + (y * 5)]);
-            }
-
-            // ι (iota): XOR a round constant into lane (0,0).
-            state[0] ^= s_roundConstants[round];
-        }
     }
 
     /// <summary>

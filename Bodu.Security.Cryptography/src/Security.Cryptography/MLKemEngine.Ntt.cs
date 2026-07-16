@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKemEngine.Ntt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -100,7 +100,7 @@ internal static partial class MLKemEngine
     {
         int[] table = new int[128];
         for (int i = 0; i < 128; i++)
-            table[i] = PowMod(Zeta, BitReverse7(i));
+            table[i] = LatticeCommon.PowMod(Zeta, LatticeCommon.BitReverse(i, 7), Q);
 
         return table;
     }
@@ -113,45 +113,9 @@ internal static partial class MLKemEngine
     {
         int[] table = new int[128];
         for (int i = 0; i < 128; i++)
-            table[i] = PowMod(Zeta, (2 * BitReverse7(i)) + 1);
+            table[i] = LatticeCommon.PowMod(Zeta, (2 * LatticeCommon.BitReverse(i, 7)) + 1, Q);
 
         return table;
     }
 
-    /// <summary>
-    /// Computes base^exponent mod q by square-and-multiply over public constants.
-    /// </summary>
-    /// <param name="value">The base value.</param>
-    /// <param name="exponent">The non-negative exponent.</param>
-    /// <returns>The modular power in [0, q).</returns>
-    private static int PowMod(int value, int exponent)
-    {
-        long result = 1;
-        long basis = value % Q;
-
-        while (exponent > 0)
-        {
-            if ((exponent & 1) != 0)
-                result = (result * basis) % Q;
-
-            basis = (basis * basis) % Q;
-            exponent >>= 1;
-        }
-
-        return (int)result;
-    }
-
-    /// <summary>
-    /// Reverses the low seven bits of an index.
-    /// </summary>
-    /// <param name="value">The index in [0, 128).</param>
-    /// <returns>The bit-reversed index.</returns>
-    private static int BitReverse7(int value)
-    {
-        int result = 0;
-        for (int bit = 0; bit < 7; bit++)
-            result |= ((value >> bit) & 1) << (6 - bit);
-
-        return result;
-    }
 }

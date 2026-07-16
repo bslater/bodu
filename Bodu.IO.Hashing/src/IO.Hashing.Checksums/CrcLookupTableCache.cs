@@ -62,12 +62,16 @@ public class CrcLookupTableCache
     /// <summary>The thread-safe backing store that memoizes lookup tables keyed by width, polynomial, and input reflection.</summary>
     private readonly ConcurrentDictionary<CrcLookupKey, ulong[]> _localCache;
 
+    /// <summary>The thread-safe backing store that memoizes the eight slicing-by-8 tables keyed by width, polynomial, and input reflection.</summary>
+    private readonly ConcurrentDictionary<CrcLookupKey, ulong[][]> _slicingCache;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CrcLookupTableCache" /> class.
     /// </summary>
     public CrcLookupTableCache()
     {
         _localCache = new ConcurrentDictionary<CrcLookupKey, ulong[]>();
+        _slicingCache = new ConcurrentDictionary<CrcLookupKey, ulong[][]>();
     }
 
     /// <summary>
@@ -128,5 +132,23 @@ public class CrcLookupTableCache
         var cacheKey = new CrcLookupKey(size, polynomial, reflectIn);
         return _localCache.GetOrAdd(cacheKey, static (key) =>
             CrcLookupTableBuilder.BuildLookupTable(key.Size, key.Polynomial, key.ReflectIn));
+    }
+
+    /// <summary>
+    /// Returns the cached eight-table slicing-by-8 set for a reflected CRC of the specified width and polynomial,
+    /// building it on first access.
+    /// </summary>
+    /// <param name="size">The CRC width in bits (must be a reflected 32 or 64-bit standard where the engine uses slicing).</param>
+    /// <param name="polynomial">The CRC polynomial.</param>
+    /// <returns>The shared array of eight <c>ulong[256]</c> tables for the supplied parameter set.</returns>
+    /// <remarks>
+    /// Cached under the same <c>(width, polynomial, reflectIn=true)</c> key space as the single byte-wise table but in a
+    /// separate store, so the build cost is paid at most once per reflected CRC standard.
+    /// </remarks>
+    internal ulong[][] GetSlicingTables(int size, ulong polynomial)
+    {
+        var cacheKey = new CrcLookupKey(size, polynomial, ReflectIn: true);
+        return _slicingCache.GetOrAdd(cacheKey, static (key) =>
+            CrcLookupTableBuilder.BuildReflectedSlicingTables(key.Size, key.Polynomial));
     }
 }

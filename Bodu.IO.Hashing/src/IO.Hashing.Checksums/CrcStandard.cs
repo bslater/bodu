@@ -160,17 +160,17 @@ public sealed partial class CrcStandard
     /// <param name="context">The streaming context describing the source of the deserialization.</param>
     /// <exception cref="ArgumentNullException"><paramref name="info" /> is <see langword="null" />.</exception>
     private CrcStandard(SerializationInfo info, StreamingContext context)
+        : this(
+            (info ?? throw new ArgumentNullException(nameof(info))).GetString(nameof(Name))!,
+            info.GetInt32(nameof(Size)),
+            info.GetUInt64(nameof(Polynomial)),
+            info.GetUInt64(nameof(InitialValue)),
+            info.GetBoolean(nameof(ReflectIn)),
+            info.GetBoolean(nameof(ReflectOut)),
+            info.GetUInt64(nameof(XOrOut)))
     {
-        ThrowHelper.ThrowIfNull(info);
-
-        string? serializedName = info.GetString(nameof(Name));
-        Name = serializedName!;
-        Size = info.GetInt32(nameof(Size));
-        Polynomial = info.GetUInt64(nameof(Polynomial));
-        InitialValue = info.GetUInt64(nameof(InitialValue));
-        ReflectIn = info.GetBoolean(nameof(ReflectIn));
-        ReflectOut = info.GetBoolean(nameof(ReflectOut));
-        XOrOut = info.GetUInt64(nameof(XOrOut));
+        // Routes through the validating primary constructor so deserialized parameter sets are subject to the same
+        // range and bit-width checks as directly constructed ones, rather than being trusted verbatim.
     }
 
     /// <summary>
@@ -270,43 +270,43 @@ public sealed partial class CrcStandard
     /// Gets the initial value used in the CRC calculation.
     /// </summary>
     /// <value>The initial value for the CRC calculation.</value>
-    public ulong InitialValue { get; init; }
+    public ulong InitialValue { get; }
 
     /// <summary>
     /// Gets the name of the CRC standard.
     /// </summary>
     /// <value>The name of the CRC algorithm.</value>
-    public string Name { get; init; }
+    public string Name { get; }
 
     /// <summary>
     /// Gets the polynomial used in the CRC calculation.
     /// </summary>
     /// <value>The polynomial value used in the CRC calculation.</value>
-    public ulong Polynomial { get; init; }
+    public ulong Polynomial { get; }
 
     /// <summary>
     /// Gets a value indicating whether the input data is reflected during the CRC calculation.
     /// </summary>
     /// <value><see langword="true" /> if input data is reflected; otherwise, <see langword="false" />.</value>
-    public bool ReflectIn { get; init; }
+    public bool ReflectIn { get; }
 
     /// <summary>
     /// Gets a value indicating whether the CRC result is reflected before XORing with <see cref="XOrOut" />.
     /// </summary>
     /// <value><see langword="true" /> if the result is reflected; otherwise, <see langword="false" />.</value>
-    public bool ReflectOut { get; init; }
+    public bool ReflectOut { get; }
 
     /// <summary>
     /// Gets the size, in bits, of the CRC checksum.
     /// </summary>
     /// <value>The size of the CRC in bits.</value>
-    public int Size { get; init; }
+    public int Size { get; }
 
     /// <summary>
     /// Gets the value to XOR the final CRC result with.
     /// </summary>
     /// <value>The XOR value for the final CRC result.</value>
-    public ulong XOrOut { get; init; }
+    public ulong XOrOut { get; }
 
     /// <inheritdoc />
     void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)

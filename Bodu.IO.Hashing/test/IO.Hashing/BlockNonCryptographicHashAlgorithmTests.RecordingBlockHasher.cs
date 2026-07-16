@@ -15,7 +15,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// so the final residual is passed through verbatim, matching the Fletcher production path.
     /// </summary>
     private sealed class RecordingBlockHasher
-        : BlockNonCryptographicHashAlgorithm<RecordingBlockHasher>
+        : BlockNonCryptographicHashAlgorithm
     {
 
         public readonly List<byte[]> Blocks = new();
@@ -25,7 +25,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         {
         }
 
-        public void CopyFromExposed(BlockNonCryptographicHashAlgorithm<RecordingBlockHasher>? source)
+        public void CopyFromExposed(BlockNonCryptographicHashAlgorithm? source)
             => CopyResidualStateFrom(source!);
 
         protected override RecordingBlockHasher Clone()

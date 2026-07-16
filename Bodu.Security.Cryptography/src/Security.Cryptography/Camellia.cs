@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Camellia.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block cipher
-/// modes via the <see cref="BlockMode" /> property. The default mode is <see cref="CipherModeKind.CBC" /> with
+/// modes via the <see cref="ExtendedSymmetricAlgorithm.BlockMode" /> property. The default mode is <see cref="CipherModeKind.CBC" /> with
 /// <see cref="PaddingMode.PKCS7" /> padding and a default key size of 256 bits.
 /// </para>
 /// <para>
@@ -73,7 +73,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
 public sealed class Camellia
-    : SymmetricAlgorithm
+    : ExtendedSymmetricAlgorithm
 {
     /// <summary>Length of the Camellia block is 128 bits (16 bytes).</summary>
     internal const int BlockSizeBits = 128;
@@ -92,9 +92,6 @@ public sealed class Camellia
 
     /// <summary>Indicates whether this instance has been disposed and its key material cleared.</summary>
     private bool _disposed;
-
-    /// <summary>The extended padding mode applied when creating encryptors and decryptors.</summary>
-    private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Camellia" /> class with a 256-bit default key size, CBC cipher
@@ -123,61 +120,6 @@ public sealed class Camellia
         FeedbackSizeValue = BlockSizeBits;
         ModeValue = CipherMode.CBC;
         PaddingValue = PaddingMode.PKCS7;
-    }
-
-    /// <summary>
-    /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
-    /// </summary>
-    /// <value>
-    /// One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.
-    /// </value>
-    /// <remarks>
-    /// <para>
-    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
-    /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
-    /// <see cref="CipherModeKind.CTR" /> and <see cref="CipherModeKind.OFB" />, which are not available via the
-    /// standard <see cref="CipherMode" /> enumeration.
-    /// </para>
-    /// </remarks>
-    public CipherModeKind BlockMode { get; set; } = CipherModeKind.CBC;
-
-    /// <summary>
-    /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
-    /// </summary>
-    /// <value>
-    /// One of the <see cref="PaddingModeKind" /> values. The default is <see cref="PaddingModeKind.PKCS7" />.
-    /// </value>
-    /// <remarks>
-    /// When the assigned value has a matching member in <see cref="PaddingMode" /> (for example, PKCS7, Zeros, None),
-    /// the inherited <see cref="SymmetricAlgorithm.Padding" /> is kept in sync. Extended modes with no
-    /// <see cref="PaddingMode" /> equivalent (such as <see cref="PaddingModeKind.ISO7816_4" />) leave the base property
-    /// unchanged.
-    /// </remarks>
-    public PaddingModeKind BlockPadding
-    {
-        get => _blockPadding;
-        set
-        {
-            _blockPadding = value;
-            if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
-                PaddingValue = mode;
-        }
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Also synchronizes <see cref="BlockPadding" /> when the assigned value has a matching member in
-    /// <see cref="PaddingModeKind" />.
-    /// </remarks>
-    public override PaddingMode Padding
-    {
-        get => base.Padding;
-        set
-        {
-            base.Padding = value;
-            if (Enum.TryParse<PaddingModeKind>(value.ToString(), out PaddingModeKind bpm) && Enum.IsDefined(bpm))
-                _blockPadding = bpm;
-        }
     }
 
     /// <summary>
@@ -214,7 +156,7 @@ public sealed class Camellia
         CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new CamelliaTransform(engine, BlockMode, BlockPadding, rgbIV, false);
+        return new BlockCipherTransform(engine, BlockMode, BlockPadding, rgbIV, false);
     }
 
     /// <summary>
@@ -245,7 +187,7 @@ public sealed class Camellia
         CryptographyThrowHelper.ThrowIfInvalidIVForMode(rgbIV, BlockMode, BlockSize, LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new CamelliaTransform(engine, BlockMode, BlockPadding, rgbIV, true);
+        return new BlockCipherTransform(engine, BlockMode, BlockPadding, rgbIV, true);
     }
 
     /// <summary>

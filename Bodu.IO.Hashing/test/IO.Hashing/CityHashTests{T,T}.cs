@@ -14,7 +14,7 @@ namespace Bodu.IO.Hashing;
 public abstract partial class CityHashTests<TTest, TAlgorithm>
     : NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, SingleTestVariant>
     where TTest : CityHashTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : CityHash<TAlgorithm>, new()
+    where TAlgorithm : CityHash, new()
 {
 
     /// <inheritdoc />

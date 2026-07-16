@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
 
 namespace Bodu.IO.Hashing;
 
@@ -39,7 +38,7 @@ public partial class BernsteinTests
 
     /// <summary>
     /// Verifies that setting <see cref="Bernstein.InitialValue" /> after input has been consumed throws
-    /// <see cref="CryptographicUnexpectedOperationException" />.
+    /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
     public void InitialValue_WhenSetAfterHashingStarted_ShouldThrowExactly()
@@ -47,7 +46,7 @@ public partial class BernsteinTests
         Bernstein algorithm = new();
         algorithm.Append(new byte[] { 1, 2, 3 });
 
-        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() => algorithm.InitialValue = 42U);
+        Assert.ThrowsExactly<InvalidOperationException>(() => algorithm.InitialValue = 42U);
     }
 
     /// <summary>

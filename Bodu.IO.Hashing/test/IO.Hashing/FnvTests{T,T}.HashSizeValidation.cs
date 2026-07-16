@@ -64,7 +64,7 @@ public sealed class FnvHashSizeValidationTests
     /// invoked directly by tests.
     /// </summary>
     private sealed class TestFnv
-        : Fnv<TestFnv>
+        : Fnv
     {
 
         public TestFnv()

@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Tests that exercise the protected <see cref="BlockCipherTransform" /> constructor overload that accepts a
 /// framework <see cref="PaddingMode" /> value. The existing concrete subclasses
-/// (<see cref="CamelliaTransform" />, <see cref="SerpentTransform" />, etc.) only call the
+/// (<see cref="BlockCipherTransform" />, <see cref="BlockCipherTransform" />, etc.) only call the
 /// <see cref="PaddingModeKind" /> overload, so this gap requires a test-only derivation.
 /// </summary>
 [TestClass]

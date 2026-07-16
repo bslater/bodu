@@ -10,11 +10,11 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> base tests
-/// against the <see cref="SkipjackTransform" /> implementation.
+/// against the <see cref="BlockCipherTransform" /> implementation.
 /// </summary>
 [TestClass]
 internal sealed class SkipjackTransformTests
-    : BlockCipherTransformTests<SkipjackTransformTests, SkipjackTransform>
+    : BlockCipherTransformTests<SkipjackTransformTests, BlockCipherTransform>
 {
     private readonly byte[] _key;
     private readonly byte[] _iv;
@@ -33,15 +33,15 @@ internal sealed class SkipjackTransformTests
     }
 
     /// <inheritdoc />
-    protected override SkipjackTransform CreateAlgorithm() => CreateEncryptor();
+    protected override BlockCipherTransform CreateAlgorithm() => CreateEncryptor();
 
     /// <inheritdoc />
-    protected override SkipjackTransform CreateEncryptor() => BuildTransform(forEncryption: true);
+    protected override BlockCipherTransform CreateEncryptor() => BuildTransform(forEncryption: true);
 
     /// <inheritdoc />
-    protected override SkipjackTransform CreateDecryptor() => BuildTransform(forEncryption: false);
+    protected override BlockCipherTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
-    private SkipjackTransform BuildTransform(bool forEncryption)
+    private BlockCipherTransform BuildTransform(bool forEncryption)
     {
         var algorithm = new Skipjack
         {
@@ -54,6 +54,6 @@ internal sealed class SkipjackTransformTests
         ICryptoTransform transform = forEncryption
             ? algorithm.CreateEncryptor()
             : algorithm.CreateDecryptor();
-        return (SkipjackTransform)transform;
+        return (BlockCipherTransform)transform;
     }
 }

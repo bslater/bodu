@@ -77,6 +77,7 @@ internal sealed class Hc128StreamCipher
     /// <inheritdoc />
     public void NextKeystreamBlock(Span<byte> destination)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, 0, BlockSizeBytes);
 
         for (int offset = 0; offset < BlockSizeBytes; offset += 4)

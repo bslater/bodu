@@ -71,4 +71,23 @@ internal static class SimdCapabilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported && !s_disabled;
     }
+
+    /// <summary>
+    /// Gets a value indicating whether the carry-less-multiply <c>GF(2¹²⁸)</c> code paths (GHASH / POLYVAL) should run.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> if <see cref="System.Runtime.Intrinsics.X86.Pclmulqdq.IsSupported" /> and
+    /// <see cref="Ssse3.IsSupported" /> and the disable switch is off; otherwise, <see langword="false" />.
+    /// </value>
+    /// <remarks>
+    /// The carry-less multiply requires <see cref="System.Runtime.Intrinsics.X86.Pclmulqdq" /> for the field
+    /// multiplication and <see cref="Ssse3" /> for the byte-reversal shuffle that maps the GHASH block layout to the
+    /// reflected polynomial order. Both produce output bit-identical to the scalar reference, so this gate only selects
+    /// which of two equivalent implementations runs.
+    /// </remarks>
+    internal static bool Pclmulqdq
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => System.Runtime.Intrinsics.X86.Pclmulqdq.IsSupported && Ssse3.IsSupported && !s_disabled;
+    }
 }

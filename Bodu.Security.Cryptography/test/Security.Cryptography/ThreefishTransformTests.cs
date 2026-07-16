@@ -10,14 +10,14 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> base tests against the
-/// <see cref="ThreefishTransform" /> implementation. The contract suite runs against <see cref="Threefish256" /> — the smallest
+/// <see cref="BlockCipherTransform" /> implementation. The contract suite runs against <see cref="Threefish256" /> — the smallest
 /// of the three Threefish variants — because every variant shares the same transform type and the contract behaviour is
 /// independent of block size. Crypto-correctness for all three variants is anchored at the block-cipher tier through
 /// <see cref="Threefish256CipherTests" /> / <see cref="Threefish512CipherTests" /> / <see cref="Threefish1024CipherTests" />.
 /// </summary>
 [TestClass]
 internal sealed class ThreefishTransformTests
-    : BlockCipherTransformTests<ThreefishTransformTests, ThreefishTransform>
+    : BlockCipherTransformTests<ThreefishTransformTests, BlockCipherTransform>
 {
     private readonly byte[] _key;
     private readonly byte[] _iv;
@@ -39,15 +39,15 @@ internal sealed class ThreefishTransformTests
     }
 
     /// <inheritdoc />
-    protected override ThreefishTransform CreateAlgorithm() => CreateEncryptor();
+    protected override BlockCipherTransform CreateAlgorithm() => CreateEncryptor();
 
     /// <inheritdoc />
-    protected override ThreefishTransform CreateEncryptor() => BuildTransform(forEncryption: true);
+    protected override BlockCipherTransform CreateEncryptor() => BuildTransform(forEncryption: true);
 
     /// <inheritdoc />
-    protected override ThreefishTransform CreateDecryptor() => BuildTransform(forEncryption: false);
+    protected override BlockCipherTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
-    private ThreefishTransform BuildTransform(bool forEncryption)
+    private BlockCipherTransform BuildTransform(bool forEncryption)
     {
         var algorithm = new Threefish256
         {
@@ -62,6 +62,6 @@ internal sealed class ThreefishTransformTests
         ICryptoTransform transform = forEncryption
             ? algorithm.CreateEncryptor()
             : algorithm.CreateDecryptor();
-        return (ThreefishTransform)transform;
+        return (BlockCipherTransform)transform;
     }
 }

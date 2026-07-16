@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class SnefruTests<TTest, TAlgorithm>
     : Security.Cryptography.BlockHashAlgorithmTests<TTest, TAlgorithm, SingleTestVariant>
     where TTest : SnefruTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : Snefru<TAlgorithm>, new()
+    where TAlgorithm : Snefru, new()
 {
     /// <summary>The single-byte ASCII input <c>"a"</c>, used as a Snefru-specific extension vector.</summary>
     protected static readonly byte[] SnefruLetterAInput = Encoding.UTF8.GetBytes("a");

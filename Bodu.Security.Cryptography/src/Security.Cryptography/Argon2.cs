@@ -104,6 +104,7 @@ public abstract class Argon2
 
         Argon2EncodedHash parsed = Decode(encoded);
 
+        byte[]? secretCopy = secret.IsEmpty ? null : secret.ToArray();
         var parameters = new Argon2Parameters
         {
             MemoryKiB = parsed.Memory,
@@ -111,17 +112,24 @@ public abstract class Argon2
             Parallelism = parsed.Parallelism,
             TagLength = parsed.Hash.Length,
             Version = parsed.Version,
-            Secret = secret.IsEmpty ? null : secret.ToArray(),
+            Secret = secretCopy,
             AssociatedData = parsed.Data.Length == 0 ? null : parsed.Data,
         };
         parameters.Validate();
 
         byte[] computed = new byte[parsed.Hash.Length];
-        Argon2Core.DeriveTag(parsed.Type, parameters, password, parsed.Salt, computed);
-
-        bool match = CryptographicOperations.FixedTimeEquals(computed, parsed.Hash);
-        CryptographyHelper.Clear(computed);
-        return match;
+        try
+        {
+            Argon2Core.DeriveTag(parsed.Type, parameters, password, parsed.Salt, computed);
+            return CryptographicOperations.FixedTimeEquals(computed, parsed.Hash);
+        }
+        finally
+        {
+            // Zero both the derived tag and the transient pepper copy so neither lingers on the heap.
+            CryptographyHelper.Clear(computed);
+            if (secretCopy is not null)
+                CryptographyHelper.Clear(secretCopy);
+        }
     }
 
     /// <summary>

@@ -33,7 +33,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </code>
 /// </example>
 public abstract class Adler32Base
-    : Adler<uint>
+    : Adler<uint>, IResumableHashAlgorithm
 {
     /// <summary>The digest length, in bytes, produced by the 32-bit Adler finalization.</summary>
     private const int HashLength = 4;
@@ -52,5 +52,52 @@ public abstract class Adler32Base
     {
         uint hash = (partB << 16) | partA;
         BinaryPrimitives.WriteUInt32BigEndian(destination, hash);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Adler digests carry the complete accumulator state (<c><![CDATA[(B << 16) | A]]></c>, big-endian), so resuming
+    /// requires no finalization reversal: the halves seed the accumulators directly. The computation runs against
+    /// saved-and-restored instance state, so any in-progress incremental state on the instance survives the call
+    /// unchanged.
+    /// </remarks>
+    public bool TryComputeHashFrom(
+        ReadOnlySpan<byte> previousHash,
+        ReadOnlySpan<byte> newData,
+        Span<byte> destination,
+        out int bytesWritten)
+    {
+        if (previousHash.Length != HashLength)
+        {
+            throw new ArgumentException(
+                HashingResourceStrings.Arg_Invalid_PreviousHashLengthMismatch,
+                nameof(previousHash));
+        }
+
+        if (destination.Length < HashLength)
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        uint savedA = partA;
+        uint savedB = partB;
+        try
+        {
+            uint previous = BinaryPrimitives.ReadUInt32BigEndian(previousHash);
+            partB = previous >> 16;
+            partA = previous & 0xFFFF;
+
+            Append(newData);
+
+            GetCurrentHashCore(destination[..HashLength]);
+            bytesWritten = HashLength;
+            return true;
+        }
+        finally
+        {
+            partA = savedA;
+            partB = savedB;
+        }
     }
 }

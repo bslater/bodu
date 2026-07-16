@@ -158,6 +158,31 @@ public sealed class Scrypt
         new Scrypt(costN, blockSizeR, parallelization).DeriveKey(password, salt, destination);
 
     /// <summary>
+    /// Derives a key in a single call from a pinned, disposable password holder and a typed salt.
+    /// </summary>
+    /// <param name="password">The password material to derive from. Must not be <see langword="null" />.</param>
+    /// <param name="salt">The salt, typically produced by <see cref="Salt.Random(int)" />.</param>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c>.</param>
+    /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
+    /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
+    /// <param name="length">The derived-key length, in bytes.</param>
+    /// <returns>The derived key.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="password" /> is <see langword="null" />.</exception>
+    /// <exception cref="ObjectDisposedException"><paramref name="password" /> has been disposed.</exception>
+    /// <remarks>
+    /// Convenience overload over the span form for callers using the <see cref="SecretBytes" /> and
+    /// <see cref="Salt" /> value types, which keep password material pinned and zeroed on disposal and keep salts
+    /// distinct from keys and nonces in calling code.
+    /// </remarks>
+    public static byte[] DeriveKey(
+        SecretBytes password, Salt salt, int costN, int blockSizeR, int parallelization, int length)
+    {
+        ThrowHelper.ThrowIfNull(password);
+
+        return DeriveKey(password.AsSpan(), salt.AsSpan(), costN, blockSizeR, parallelization, length);
+    }
+
+    /// <summary>
     /// Derives a hash and returns it as a PHC encoded-hash string using the supplied parameters in a single call.
     /// </summary>
     /// <param name="password">The password to hash.</param>

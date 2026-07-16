@@ -53,11 +53,18 @@ internal static class ScryptCore
         uint[] words = new uint[parallelization * unitWords];
         BytesToWordsLE(b, words);
 
+        // The p ROMix units run sequentially and are all the same shape, so their scratch buffers — including the
+        // large V array (128·r·N bytes) — are allocated once here and reused across units instead of being
+        // reallocated and re-zeroed per unit.
+        uint[] x = new uint[unitWords];
+        uint[] y = new uint[unitWords];
+        uint[] v = new uint[costN * unitWords];
+
         try
         {
             // Step 2: B_i = scryptROMix(r, B_i, N) for each of the p independent blocks.
             for (int i = 0; i < parallelization; i++)
-                ROMix(words.AsSpan(i * unitWords, unitWords), costN, blockSizeR);
+                ROMix(words.AsSpan(i * unitWords, unitWords), costN, blockSizeR, x, y, v);
 
             WordsToBytesLE(words, b);
 
@@ -68,6 +75,9 @@ internal static class ScryptCore
         {
             CryptographyHelper.Clear(words);
             CryptographyHelper.Clear(b);
+            CryptographyHelper.Clear(v);
+            CryptographyHelper.Clear(x);
+            CryptographyHelper.Clear(y);
         }
     }
 
@@ -77,43 +87,39 @@ internal static class ScryptCore
     /// <param name="block">The 128·r-byte block, as 32-bit words, processed in place.</param>
     /// <param name="costN">The CPU/memory cost parameter <c>N</c>.</param>
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
-    private static void ROMix(Span<uint> block, int costN, int blockSizeR)
+    /// <param name="x">A caller-owned scratch buffer of <c>unitWords</c> length. Contents on entry are ignored.</param>
+    /// <param name="y">A caller-owned scratch buffer of <c>unitWords</c> length. Contents on entry are ignored.</param>
+    /// <param name="v">A caller-owned scratch buffer of <c>costN · unitWords</c> length. Contents on entry are ignored.</param>
+    /// <remarks>
+    /// The three scratch buffers are supplied by the caller and reused across the <c>p</c> sequential ROMix units;
+    /// zeroization of their sensitive contents is the caller's responsibility (performed once after all units complete).
+    /// </remarks>
+    private static void ROMix(Span<uint> block, int costN, int blockSizeR, uint[] x, uint[] y, uint[] v)
     {
         int unitWords = block.Length;
 
-        // The caller (DeriveKey) has already verified costN * unitWords fits within Array.MaxLength.
-        uint[] x = block.ToArray();
-        uint[] y = new uint[unitWords];
-        uint[] v = new uint[costN * unitWords];
+        // Seed X from the input block; V/Y are fully overwritten below before being read.
+        block.CopyTo(x);
 
-        try
+        for (int i = 0; i < costN; i++)
         {
-            for (int i = 0; i < costN; i++)
-            {
-                x.AsSpan().CopyTo(v.AsSpan(i * unitWords, unitWords));
-                BlockMix(x, y, blockSizeR);
-                (x, y) = (y, x);
-            }
-
-            for (int i = 0; i < costN; i++)
-            {
-                int j = (int)(Integerify(x, blockSizeR) % (ulong)costN);
-                ReadOnlySpan<uint> vj = v.AsSpan(j * unitWords, unitWords);
-                for (int k = 0; k < unitWords; k++)
-                    x[k] ^= vj[k];
-
-                BlockMix(x, y, blockSizeR);
-                (x, y) = (y, x);
-            }
-
-            x.AsSpan().CopyTo(block);
+            x.AsSpan().CopyTo(v.AsSpan(i * unitWords, unitWords));
+            BlockMix(x, y, blockSizeR);
+            (x, y) = (y, x);
         }
-        finally
+
+        for (int i = 0; i < costN; i++)
         {
-            CryptographyHelper.Clear(v);
-            CryptographyHelper.Clear(x);
-            CryptographyHelper.Clear(y);
+            int j = (int)(Integerify(x, blockSizeR) % (ulong)costN);
+            ReadOnlySpan<uint> vj = v.AsSpan(j * unitWords, unitWords);
+            for (int k = 0; k < unitWords; k++)
+                x[k] ^= vj[k];
+
+            BlockMix(x, y, blockSizeR);
+            (x, y) = (y, x);
         }
+
+        x.AsSpan().CopyTo(block);
     }
 
     /// <summary>

@@ -114,8 +114,8 @@ public sealed class Crc
     : NonCryptographicHashAlgorithm,
       IResumableHashAlgorithm
 {
-    /// <summary>The lazily initialized, process-wide cache that shares CRC lookup tables across <see cref="Crc" /> instances, exposed through <see cref="GlobalCache" />.</summary>
-    private static Lazy<CrcLookupTableCache> s_globalLookupTableCache =
+    /// <summary>The lazily initialized, process-wide cache that shares CRC lookup tables across <see cref="Crc" /> instances, exposed through <see cref="GlobalCache" />. Declared <see langword="volatile" /> so a replacement assigned on one thread is promptly observed by readers on other threads.</summary>
+    private static volatile Lazy<CrcLookupTableCache> s_globalLookupTableCache =
         new(() => new CrcLookupTableCache());
 
     /// <summary>The width of the CRC, in bits, taken from the configured <see cref="CrcStandard.Size" />.</summary>
@@ -123,6 +123,12 @@ public sealed class Crc
 
     /// <summary>The shared, precomputed lookup table for the active polynomial and input-reflection setting.</summary>
     private readonly ulong[] _lookupTable;
+
+    /// <summary>
+    /// The eight interleaved slicing-by-8 tables for the active reflected 32/64-bit polynomial, or <see langword="null" />
+    /// when the standard is not a byte-aligned reflected width and the byte-wise loop is used instead.
+    /// </summary>
+    private readonly ulong[][]? _slicingTables;
 
     /// <summary>The CRC parameter set (polynomial, width, reflection, initial value, and final XOR) that configures this instance.</summary>
     private readonly CrcStandard _standard;
@@ -161,6 +167,13 @@ public sealed class Crc
         _standard = crcStandard;
         _hashSizeBits = crcStandard.Size;
         _lookupTable = GlobalCache.GetLookupTableArray(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn);
+
+        // Slicing-by-8 is only wired up for the two byte-aligned reflected widths, which cover the dominant real-world
+        // CRCs (CRC-32/ISO-HDLC, CRC-32C, CRC-64/XZ, ...). Every other standard uses the byte-wise loop.
+        _slicingTables = crcStandard.ReflectIn && (crcStandard.Size == 32 || crcStandard.Size == 64)
+            ? GlobalCache.GetSlicingTables(crcStandard.Size, crcStandard.Polynomial)
+            : null;
+
         _workingHash = ComputeInitialState();
     }
 
@@ -227,10 +240,16 @@ public sealed class Crc
     public override void Append(ReadOnlySpan<byte> source) => ProcessBlocks(source);
 
     /// <summary>
-    /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state first.
+    /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state both
+    /// before and after the computation.
     /// </summary>
     /// <param name="data">The input data to hash.</param>
     /// <returns>A byte array containing the finalized CRC value, sized according to <see cref="Size" />.</returns>
+    /// <remarks>
+    /// State is reset after finalization as well as before, matching the reset-before-and-after semantics of the
+    /// shared <c>ComputeHash</c> extension (<c>GetHashAndReset</c>). This keeps the instance reusable for a
+    /// subsequent <see cref="Append(ReadOnlySpan{byte})" /> without the prior input bleeding into the new digest.
+    /// </remarks>
     public byte[] ComputeHash(ReadOnlySpan<byte> data)
     {
         Reset();
@@ -239,6 +258,8 @@ public sealed class Crc
         byte[] buffer = new byte[HashLengthInBytes];
         ulong folded = FoldOutputState(_workingHash);
         WriteHashBytes(folded, HashLengthInBytes, buffer);
+
+        Reset();
         return buffer;
     }
 
@@ -510,7 +531,57 @@ public sealed class Crc
     /// </summary>
     /// <param name="data">The input bytes to feed into the CRC accumulator.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ProcessBlocks(ReadOnlySpan<byte> data) => _workingHash = RunProcessBlocks(data, _workingHash, _lookupTable, _hashSizeBits, _standard.ReflectIn);
+    private void ProcessBlocks(ReadOnlySpan<byte> data)
+    {
+        _workingHash = _slicingTables is not null
+            ? ProcessReflectedSlicing(data, _workingHash, _slicingTables, _lookupTable, _hashSizeBits)
+            : RunProcessBlocks(data, _workingHash, _lookupTable, _hashSizeBits, _standard.ReflectIn);
+    }
+
+    /// <summary>
+    /// Processes <paramref name="data" /> through the slicing-by-8 inner loop for a reflected 32 or 64-bit CRC,
+    /// consuming eight input bytes per iteration and finishing any trailing bytes through the byte-wise reflected step.
+    /// </summary>
+    /// <param name="data">The input bytes to feed into the CRC accumulator.</param>
+    /// <param name="crc">The CRC accumulator on entry.</param>
+    /// <param name="tables">The eight interleaved slicing tables for the active reflected polynomial.</param>
+    /// <param name="t0">The ordinary byte-wise reflected table (equal to <c>tables[0]</c>), used for the tail.</param>
+    /// <param name="width">The CRC width in bits — either 32 or 64.</param>
+    /// <returns>The CRC accumulator after consuming <paramref name="data" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong ProcessReflectedSlicing(ReadOnlySpan<byte> data, ulong crc, ulong[][] tables, ulong[] t0, int width)
+    {
+        ulong[] t1 = tables[1], t2 = tables[2], t3 = tables[3], t4 = tables[4], t5 = tables[5], t6 = tables[6], t7 = tables[7];
+        int i = 0;
+
+        if (width == 64)
+        {
+            while (i + 8 <= data.Length)
+            {
+                ulong c = crc ^ BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(i, 8));
+                crc = t7[(int)(c & 0xFF)] ^ t6[(int)((c >> 8) & 0xFF)] ^ t5[(int)((c >> 16) & 0xFF)] ^ t4[(int)((c >> 24) & 0xFF)]
+                    ^ t3[(int)((c >> 32) & 0xFF)] ^ t2[(int)((c >> 40) & 0xFF)] ^ t1[(int)((c >> 48) & 0xFF)] ^ t0[(int)((c >> 56) & 0xFF)];
+                i += 8;
+            }
+        }
+        else
+        {
+            // width == 32: only the low four bytes of the 8-byte window are folded into the 32-bit register; the
+            // remaining four are indexed directly into the lower-latency tables.
+            while (i + 8 <= data.Length)
+            {
+                uint c = (uint)crc ^ BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(i, 4));
+                crc = t7[(int)(c & 0xFF)] ^ t6[(int)((c >> 8) & 0xFF)] ^ t5[(int)((c >> 16) & 0xFF)] ^ t4[(int)((c >> 24) & 0xFF)]
+                    ^ t3[data[i + 4]] ^ t2[data[i + 5]] ^ t1[data[i + 6]] ^ t0[data[i + 7]];
+                i += 8;
+            }
+        }
+
+        for (; i < data.Length; i++)
+            crc = (crc >> 8) ^ t0[(byte)(crc ^ data[i])];
+
+        return crc;
+    }
 
     /// <summary>
     /// Runs <paramref name="data" /> through the bytewise or bitwise CRC step appropriate to

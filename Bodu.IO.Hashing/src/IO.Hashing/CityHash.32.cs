@@ -18,7 +18,7 @@ namespace Bodu.IO.Hashing;
 /// <see cref="CityHash32" /> dispatches to one of four internal mixing paths based on input length: a loop over
 /// individual bytes for 0–4 bytes; a four-word path for 5–12 bytes; a six-word path for 13–24 bytes; and a full
 /// iterative path consuming 20-byte blocks with three interleaved accumulators for 25 or more bytes. All paths converge
-/// through the <c>Mur</c> and <c>Mix</c> primitives defined in <see cref="CityHash{T}" />.
+/// through the <c>Mur</c> and <c>Mix</c> primitives defined in <see cref="CityHash" />.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -57,9 +57,9 @@ namespace Bodu.IO.Hashing;
 /// </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="CityHash{T}"/> <seealso cref="CityHash64"/> <seealso cref="CityHash128"/>
+/// <seealso cref="CityHash"/> <seealso cref="CityHash64"/> <seealso cref="CityHash128"/>
 public sealed class CityHash32
-    : CityHash<CityHash32>
+    : CityHash
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash32" /> class with a fixed 32-bit (4-byte) hash output size.

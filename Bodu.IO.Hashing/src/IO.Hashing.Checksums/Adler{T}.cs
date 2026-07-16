@@ -30,7 +30,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// for very large inputs where the Adler-32 collision floor becomes a concern; <see cref="Adler32C" /> swaps the prime
 /// modulus 65521 for the power-of-two 65536 to enable cheaper modular reductions in vectorized paths — its outputs are
 /// <em>not</em> interchangeable with standard Adler-32. For stronger error detection prefer <see cref="Crc" />; for
-/// hash-table keying prefer <see cref="Bodu.IO.Hashing.MurmurHash3{T}" /> or <see cref="Bodu.IO.Hashing.CityHash{T}" />
+/// hash-table keying prefer <see cref="Bodu.IO.Hashing.MurmurHash3" /> or <see cref="Bodu.IO.Hashing.CityHash" />
 /// .
 /// </para>
 /// <para>
@@ -91,56 +91,10 @@ public abstract class Adler<T>
         T pA = partA;
         T pB = partB;
 
-        if (Vector.IsHardwareAccelerated && length >= 512)
-        {
-            int width = Vector<byte>.Count;
-            int half = Vector<ushort>.Count;
-            T widthT = T.CreateTruncating((uint)width);
-
-            while (index < length)
-            {
-                int remaining = Math.Min(length - index, NMAX);
-                int chunkEnd = index + remaining;
-
-                // Per width-byte block [b_1 .. b_V] starting from accumulators (A, B), the
-                // canonical Adler recurrence yields:
-                //     A_new = A + Σ b_i
-                //     B_new = B + V · A + Σ (V - i + 1) · b_i
-                // The positional weighting and the V·A carry term are essential — omitting
-                // either produces a digest that does not match the per-byte definition.
-                while (index + width <= chunkEnd)
-                {
-                    var vec = new Vector<byte>(source.Slice(index, width));
-                    Vector.Widen(vec, out Vector<ushort> lo, out Vector<ushort> hi);
-
-                    T sumBytes = T.Zero;
-                    T sumWeighted = T.Zero;
-                    for (int i = 0; i < half; i++)
-                    {
-                        T loByte = T.CreateTruncating(lo[i]);
-                        T hiByte = T.CreateTruncating(hi[i]);
-                        sumBytes += loByte + hiByte;
-                        sumWeighted += (T.CreateTruncating((uint)(width - i)) * loByte)
-                                     + (T.CreateTruncating((uint)(half - i)) * hiByte);
-                    }
-
-                    pB += (pA * widthT) + sumWeighted;
-                    pA += sumBytes;
-
-                    index += width;
-                }
-
-                while (index < chunkEnd)
-                {
-                    pA += T.CreateTruncating(source[index++]);
-                    pB += pA;
-                }
-
-                pA %= _modulo;
-                pB %= _modulo;
-            }
-        }
-
+        // Canonical zlib-style deferred reduction: NMAX (5552) is the largest run of bytes for which the running
+        // B accumulator provably stays within a 32-bit value, so both accumulators are reduced once per NMAX bytes.
+        // A previous SIMD path here only walked each widened Vector<T> lane with per-element indexing and generic
+        // math — no actual vector arithmetic — which is typically slower than this scalar loop, so it was removed.
         while (index < length)
         {
             pA += T.CreateTruncating(source[index++]);

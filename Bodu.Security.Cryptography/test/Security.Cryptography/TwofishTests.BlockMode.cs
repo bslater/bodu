@@ -47,4 +47,22 @@ public sealed partial class TwofishTests
         algorithm.BlockMode = mode;
         Assert.AreEqual(modeBefore, algorithm.Mode);
     }
+
+    /// <summary>
+    /// Verifies that assigning the inherited <see cref="SymmetricAlgorithm.Mode" /> synchronizes
+    /// <see cref="Twofish.BlockMode" />, so the mode actually used by encryptor / decryptor creation matches the
+    /// assigned value rather than silently remaining the default.
+    /// </summary>
+    /// <param name="mode">The inherited cipher mode to assign.</param>
+    /// <param name="expected">The <see cref="CipherModeKind" /> the assignment should produce.</param>
+    [TestMethod]
+    [DataRow(CipherMode.ECB, CipherModeKind.ECB)]
+    [DataRow(CipherMode.CBC, CipherModeKind.CBC)]
+    [DataRow(CipherMode.CFB, CipherModeKind.CFB)]
+    public void Mode_WhenSet_ShouldSynchronizeBlockMode(CipherMode mode, CipherModeKind expected)
+    {
+        using Twofish algorithm = CreateAlgorithm();
+        algorithm.Mode = mode;
+        Assert.AreEqual(expected, algorithm.BlockMode);
+    }
 }

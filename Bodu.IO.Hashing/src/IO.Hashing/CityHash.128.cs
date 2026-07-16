@@ -64,9 +64,9 @@ namespace Bodu.IO.Hashing;
 /// </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="CityHash{T}"/> <seealso cref="CityHash32"/> <seealso cref="CityHash64"/>
+/// <seealso cref="CityHash"/> <seealso cref="CityHash32"/> <seealso cref="CityHash64"/>
 public sealed class CityHash128
-    : CityHash<CityHash128>
+    : CityHash
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash128" /> class with a fixed 128-bit (16-byte) hash output

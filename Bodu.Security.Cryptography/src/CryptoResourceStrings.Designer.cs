@@ -304,6 +304,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to XTS requires a 128-bit block cipher; the supplied cipher has a {0}-bit block. The GF(2^128) tweak reduction is only defined for 128-bit blocks..
+        /// </summary>
+        internal static string Arg_Invalid_XtsBlockSize {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_XtsBlockSize", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The tweak cipher block size ({0} bits) must equal the data cipher block size ({1} bits)..
         /// </summary>
         internal static string Arg_Invalid_XtsCipherBlockSizeMismatch {
@@ -788,7 +797,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Crypt_Invalid_StreamCounterExhausted", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to A transform has already been created for the current nonce....
+        /// </summary>
+        internal static string Crypt_Invalid_StreamNonceReuse {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_StreamNonceReuse", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Attempt to transform beyond the end of buffer..
         /// </summary>

@@ -23,6 +23,26 @@ public sealed class SimdOptOutTests
     {
         Assert.IsFalse(SimdCapabilities.Avx512F, "Expected the disable switch to force Avx512F off.");
         Assert.IsFalse(SimdCapabilities.Avx512FVL, "Expected the disable switch to force Avx512FVL off.");
+        Assert.IsFalse(SimdCapabilities.Pclmulqdq, "Expected the disable switch to force the carry-less GHASH gate off.");
+    }
+
+    /// <summary>
+    /// Verifies that with SIMD disabled, <see cref="GaloisField128.Multiply" /> falls back to the scalar reference and
+    /// still reproduces the documented GCM Test Case 2 GHASH product <c>C₁ · H</c> (NIST SP 800-38D), confirming the
+    /// carry-less path's scalar fallback is correct.
+    /// </summary>
+    [TestMethod]
+    public void GaloisField128Multiply_WhenSimdDisabled_ShouldReproduceDocumentedGhashProduct()
+    {
+        byte[] c1 = Convert.FromHexString("0388dace60b6a392f328c2b971b2fe78");
+        byte[] h = Convert.FromHexString("66e94bd4ef8a2c3b884cfa59ca342b2e");
+        byte[] expected = Convert.FromHexString("5e2ec746917062882c85b0685353deb7");
+
+        Span<byte> actual = stackalloc byte[16];
+        GaloisField128.Multiply(c1, h, actual);
+
+        CollectionAssert.AreEqual(expected, actual.ToArray(),
+            "Scalar-fallback GHASH multiply did not match the documented product.");
     }
 
     /// <summary>

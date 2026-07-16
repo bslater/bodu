@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes a 128-bit keyed hash using the <see cref="SipHash{T}" /> algorithm by Aumasson and Bernstein. Produces a
+/// Computes a 128-bit keyed hash using the <see cref="SipHash" /> algorithm by Aumasson and Bernstein. Produces a
 /// 16-byte authentication tag from a 128-bit key, offering increased collision resistance over <see cref="SipHash64" />
 /// . This class cannot be inherited.
 /// </summary>
@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// and <c>d</c> is the number of finalization rounds. The default configuration corresponds to <c>SipHash-2-4</c>.
 /// </para>
 /// <para>
-/// See <see cref="SipHash{T}" /> for a description of the round structure.
+/// See <see cref="SipHash" /> for a description of the round structure.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -55,11 +55,11 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="SipHash{T}"/> <seealso cref="SipHash64"/>
+/// <seealso cref="SipHash"/> <seealso cref="SipHash64"/>
 /// <seealso href="../guides/cryptography/hashing.html#pattern-2--a-keyed-hash-siphash">Keyed-hash (SipHash) guide
 /// </seealso>
 public sealed class SipHash128
-    : SipHash<SipHash128>
+    : SipHash
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SipHash128" /> class with a fixed 128-bit output size, the default
@@ -73,19 +73,19 @@ public sealed class SipHash128
     /// <description>Default Value</description>
     /// </listheader>
     /// <item>
-    /// <term><see cref="SipHash{T}.CompressionRounds" /></term>
-    /// <description><see cref="SipHash{T}.MinCompressionRounds" /> (2)</description>
+    /// <term><see cref="SipHash.CompressionRounds" /></term>
+    /// <description><see cref="SipHash.MinCompressionRounds" /> (2)</description>
     /// </item>
     /// <item>
-    /// <term><see cref="SipHash{T}.FinalizationRounds" /></term>
-    /// <description><see cref="SipHash{T}.MinFinalizationRounds" /> (4)</description>
+    /// <term><see cref="SipHash.FinalizationRounds" /></term>
+    /// <description><see cref="SipHash.MinFinalizationRounds" /> (4)</description>
     /// </item>
     /// <item>
     /// <term><see cref="HashAlgorithm.HashSize" /></term>
     /// <description>128</description>
     /// </item>
     /// <item>
-    /// <term><see cref="KeyedBlockHashAlgorithm{T}.Key" /></term>
+    /// <term><see cref="KeyedBlockHashAlgorithm.Key" /></term>
     /// <description>Cryptographically random 16-byte key containing no zero bytes.</description>
     /// </item>
     /// </list>

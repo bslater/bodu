@@ -226,38 +226,40 @@ internal static partial class MLKemEngine
         ReadOnlySpan<byte> rho = rhoSigma[..32];
         ReadOnlySpan<byte> sigma = rhoSigma[32..];
 
-        int[][] sHat = new int[k][];
-        int[][] tHat = new int[k][];
+        // The per-rank secret (ŝ) and public (t̂) vectors are held as flat stack workspaces (k ≤ 4, so k·N ≤ 1024
+        // ints) rather than jagged heap arrays, keeping the secret vector off the managed heap for its whole lifetime.
+        Span<int> sHat = stackalloc int[k * N];
+        Span<int> tHat = stackalloc int[k * N];
 
         // ŝ = NTT(s) with s[i] ← CBD_η₁(PRF(σ, i)).
         for (int i = 0; i < k; i++)
         {
-            sHat[i] = new int[N];
-            SamplePolyCbd(parameters.Eta1, sigma, (byte)i, sHat[i]);
-            Ntt(sHat[i]);
+            Span<int> sHatI = sHat.Slice(i * N, N);
+            SamplePolyCbd(parameters.Eta1, sigma, (byte)i, sHatI);
+            Ntt(sHatI);
         }
 
         // t̂[i] = Σⱼ Â[i][j] ∘ ŝ[j] + NTT(e[i]) with e[i] ← CBD_η₁(PRF(σ, k + i)).
-        int[] aRow = new int[N];
-        int[] product = new int[N];
+        Span<int> aRow = stackalloc int[N];
+        Span<int> product = stackalloc int[N];
         for (int i = 0; i < k; i++)
         {
-            tHat[i] = new int[N];
-            SamplePolyCbd(parameters.Eta1, sigma, (byte)(k + i), tHat[i]);
-            Ntt(tHat[i]);
+            Span<int> tHatI = tHat.Slice(i * N, N);
+            SamplePolyCbd(parameters.Eta1, sigma, (byte)(k + i), tHatI);
+            Ntt(tHatI);
 
             for (int j = 0; j < k; j++)
             {
                 SampleNtt(rho, (byte)j, (byte)i, aRow);
-                MultiplyNtt(aRow, sHat[j], product);
-                AddInto(tHat[i], product);
+                MultiplyNtt(aRow, sHat.Slice(j * N, N), product);
+                AddInto(tHatI, product);
             }
         }
 
         for (int i = 0; i < k; i++)
         {
-            ByteEncode(12, tHat[i], ekPke.Slice(i * 384, 384));
-            ByteEncode(12, sHat[i], dkPke.Slice(i * 384, 384));
+            ByteEncode(12, tHat.Slice(i * N, N), ekPke.Slice(i * 384, 384));
+            ByteEncode(12, sHat.Slice(i * N, N), dkPke.Slice(i * 384, 384));
         }
 
         rho.CopyTo(ekPke[(384 * k)..]);
@@ -267,10 +269,8 @@ internal static partial class MLKemEngine
         CryptographyHelper.Clear(rhoSigma);
         CryptographyHelper.Clear(aRow);
         CryptographyHelper.Clear(product);
-        foreach (int[] poly in sHat)
-            CryptographyHelper.Clear(poly);
-        foreach (int[] poly in tHat)
-            CryptographyHelper.Clear(poly);
+        CryptographyHelper.Clear(sHat);
+        CryptographyHelper.Clear(tHat);
     }
 
     /// <summary>
@@ -292,28 +292,28 @@ internal static partial class MLKemEngine
         int k = parameters.K;
         ReadOnlySpan<byte> rho = ekPke[(384 * k)..];
 
-        // ŷ[i] = NTT(y[i]) with y[i] ← CBD_η₁(PRF(r, i)).
-        int[][] yHat = new int[k][];
+        // ŷ[i] = NTT(y[i]) with y[i] ← CBD_η₁(PRF(r, i)). Held flat on the stack (k·N ≤ 1024 ints).
+        Span<int> yHat = stackalloc int[k * N];
         for (int i = 0; i < k; i++)
         {
-            yHat[i] = new int[N];
-            SamplePolyCbd(parameters.Eta1, r, (byte)i, yHat[i]);
-            Ntt(yHat[i]);
+            Span<int> yHatI = yHat.Slice(i * N, N);
+            SamplePolyCbd(parameters.Eta1, r, (byte)i, yHatI);
+            Ntt(yHatI);
         }
 
-        int[] aColumn = new int[N];
-        int[] product = new int[N];
-        int[] u = new int[N];
-        int[] noise = new int[N];
+        Span<int> aColumn = stackalloc int[N];
+        Span<int> product = stackalloc int[N];
+        Span<int> u = stackalloc int[N];
+        Span<int> noise = stackalloc int[N];
 
         // u[i] = InvNTT(Σⱼ Âᵀ[i][j] ∘ ŷ[j]) + e₁[i]; Âᵀ[i][j] = Â[j][i] is sampled with the indices (i, j).
         for (int i = 0; i < k; i++)
         {
-            Array.Clear(u);
+            u.Clear();
             for (int j = 0; j < k; j++)
             {
                 SampleNtt(rho, (byte)i, (byte)j, aColumn);
-                MultiplyNtt(aColumn, yHat[j], product);
+                MultiplyNtt(aColumn, yHat.Slice(j * N, N), product);
                 AddInto(u, product);
             }
 
@@ -325,12 +325,12 @@ internal static partial class MLKemEngine
         }
 
         // v = InvNTT(t̂ᵀ ∘ ŷ) + e₂ + Decompress₁(ByteDecode₁(m)).
-        int[] v = new int[N];
-        int[] tRow = new int[N];
+        Span<int> v = stackalloc int[N];
+        Span<int> tRow = stackalloc int[N];
         for (int i = 0; i < k; i++)
         {
             ByteDecode(12, ekPke.Slice(i * 384, 384), tRow);
-            MultiplyNtt(tRow, yHat[i], product);
+            MultiplyNtt(tRow, yHat.Slice(i * N, N), product);
             AddInto(v, product);
         }
 
@@ -338,7 +338,7 @@ internal static partial class MLKemEngine
         SamplePolyCbd(parameters.Eta2, r, (byte)(2 * k), noise);
         AddInto(v, noise);
 
-        int[] message = new int[N];
+        Span<int> message = stackalloc int[N];
         ByteDecode(1, m, message);
         for (int i = 0; i < N; i++)
             v[i] = (v[i] + Decompress(1, message[i])) % Q;
@@ -347,8 +347,7 @@ internal static partial class MLKemEngine
 
         // yHat is the ephemeral encryption secret; product, u, and v are derived from it. aColumn and tRow are public
         // but are cleared alongside for a uniform end-of-method rule.
-        foreach (int[] poly in yHat)
-            CryptographyHelper.Clear(poly);
+        CryptographyHelper.Clear(yHat);
         CryptographyHelper.Clear(aColumn);
         CryptographyHelper.Clear(product);
         CryptographyHelper.Clear(u);
@@ -374,10 +373,10 @@ internal static partial class MLKemEngine
         int k = parameters.K;
 
         // w = v' − InvNTT(ŝᵀ ∘ NTT(u')).
-        int[] w = new int[N];
-        int[] u = new int[N];
-        int[] s = new int[N];
-        int[] product = new int[N];
+        Span<int> w = stackalloc int[N];
+        Span<int> u = stackalloc int[N];
+        Span<int> s = stackalloc int[N];
+        Span<int> product = stackalloc int[N];
 
         for (int i = 0; i < k; i++)
         {
@@ -390,10 +389,10 @@ internal static partial class MLKemEngine
 
         InvNtt(w);
 
-        int[] v = new int[N];
+        Span<int> v = stackalloc int[N];
         DecodeDecompress(parameters.Dv, ciphertext[(k * 32 * parameters.Du)..], v);
 
-        int[] message = new int[N];
+        Span<int> message = stackalloc int[N];
         for (int i = 0; i < N; i++)
             message[i] = Compress(1, (v[i] - w[i] + (Q * 2)) % Q);
 

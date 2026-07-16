@@ -14,7 +14,7 @@ namespace Bodu.IO.Hashing;
 public abstract partial class MurmurHash3Tests<TTest, TAlgorithm>
     : NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, SingleTestVariant>
     where TTest : MurmurHash3Tests<TTest, TAlgorithm>, new()
-    where TAlgorithm : MurmurHash3<TAlgorithm>, new()
+    where TAlgorithm : MurmurHash3, new()
 {
 
     /// <inheritdoc />
@@ -23,7 +23,7 @@ public abstract partial class MurmurHash3Tests<TTest, TAlgorithm>
     /// auto-property and intentionally remains readable after disposal.
     /// </remarks>
     protected override IReadOnlyCollection<string> ExcludedReadablePropertyNames =>
-        [nameof(MurmurHash3<TAlgorithm>.Seed)];
+        [nameof(MurmurHash3.Seed)];
 
     /// <inheritdoc />
     protected override TAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();

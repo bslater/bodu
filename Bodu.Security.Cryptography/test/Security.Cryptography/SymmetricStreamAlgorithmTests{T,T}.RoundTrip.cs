@@ -48,11 +48,16 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
         Assert.HasCount(KeyLengthBytes, cipher.Key);
         Assert.HasCount(NonceLengthBytes, cipher.Nonce);
 
+        byte[] nonce = cipher.Nonce;
         byte[] plaintext = CreatePayload(200);
 
         byte[] ciphertext;
         using (ICryptoTransform e = cipher.CreateEncryptor())
             ciphertext = e.TransformFinalBlock(plaintext, 0, plaintext.Length);
+
+        // Re-arm the same nonce to decrypt the message just encrypted: the single-use nonce guard rejects a second
+        // parameterless transform under a consumed nonce, and reassigning it signals this is the same-message inverse.
+        cipher.Nonce = nonce;
 
         byte[] recovered;
         using (ICryptoTransform d = cipher.CreateDecryptor())

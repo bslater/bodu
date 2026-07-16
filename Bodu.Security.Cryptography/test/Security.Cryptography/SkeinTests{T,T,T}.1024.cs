@@ -41,8 +41,8 @@ public partial class Skein1024Tests
             LongInputLength = 512,
             BoundaryLengths = [1, 16, 128, 256, 512],
             MinKeyLength = 16,
-            MaxKeyLength = Skein<Skein1024>.MaxKeySize / 8,
-            ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein1024>.MaxKeySize / 8],
+            MaxKeyLength = Skein.MaxKeySize / 8,
+            ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein.MaxKeySize / 8],
             TestKey = SkeinTestKey,
             KnownAnswers = variant == Skein1024TestVariant.Hash_1024
                 ? [MessageDigestKnownAnswer.Empty(Skein1024_1024_EmptyHash)]

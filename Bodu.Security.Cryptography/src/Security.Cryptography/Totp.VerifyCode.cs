@@ -67,6 +67,7 @@ public static partial class Totp
     {
         ThrowHelper.ThrowIfOutOfRange(digits, Hotp.MinDigits, Hotp.MaxDigits);
         ThrowHelper.ThrowIfNegative(window);
+        ThrowHelper.ThrowIfGreaterThan(window, Hotp.MaxLookAhead);
         ThrowHelper.ThrowIfLessThan(periodSeconds, 1);
         ThrowHelper.ThrowIfEnumValueIsUndefined(algorithm);
 

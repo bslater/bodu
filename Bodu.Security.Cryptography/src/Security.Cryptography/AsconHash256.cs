@@ -58,7 +58,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="AsconHashA256"/> <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)
 /// </seealso>
 public sealed class AsconHash256
-    : AsconHash<AsconHash256>
+    : AsconHash
 {
     /// <summary>The first word of the pre-computed ASCON-HASH256 initial sponge state (NIST SP 800-232).</summary>
     /// <remarks>

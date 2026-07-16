@@ -32,7 +32,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This implementation inherits its 64-byte residual buffer, running byte counter, and defer-on-full-block buffering
-/// loop from <see cref="DeferredFinalBlockHashAlgorithm{T}" />. The final 64-byte block is not compressed until
+/// loop from <see cref="DeferredFinalBlockHashAlgorithm" />. The final 64-byte block is not compressed until
 /// <see cref="HashAlgorithm.HashFinal" /> is called, ensuring that chunk-level and tree-level domain flags can be
 /// applied correctly.
 /// </para>
@@ -78,7 +78,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Blake2b"/> <seealso cref="Blake2s"/>
 public sealed partial class Blake3
-    : DeferredFinalBlockHashAlgorithm<Blake3>
+    : DeferredFinalBlockHashAlgorithm
 {
     /// <summary>Size, in bytes, of a single compression input block.</summary>
     private new const int BlockSize = 64;
@@ -276,8 +276,11 @@ public sealed partial class Blake3
         // merge is deferred to ProcessFinalBlock so that FlagRoot lands on the final parent compression.
         if (isFinal && _cvStackDepth == 0) flags |= FlagRoot;
 
-        uint[] blockWords = ReadBlockWords(block);
-        uint[] state = Compress(_chunkCv, blockWords, chunkIndex, blockLen, flags);
+        Span<uint> blockWords = stackalloc uint[16];
+        ReadBlockWords(block, blockWords);
+
+        Span<uint> state = stackalloc uint[16];
+        Compress(_chunkCv, blockWords, chunkIndex, blockLen, flags, state);
 
         for (int i = 0; i < 8; i++)
             _chunkCv[i] = state[i];
@@ -327,10 +330,10 @@ public sealed partial class Blake3
     /// The bitwise OR of any applicable domain-separation flags (<see cref="FlagChunkStart" />,
     /// <see cref="FlagChunkEnd" />, <see cref="FlagParent" />, <see cref="FlagRoot" />).
     /// </param>
-    /// <returns>
-    /// A 16-element array containing the post-compression state, whose first eight words form the updated chaining
-    /// value.
-    /// </returns>
+    /// <param name="state">
+    /// Receives the 16-word post-compression state, whose first eight words form the updated chaining value. Must
+    /// have a length of at least 16.
+    /// </param>
     /// <remarks>
     /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
     /// reference implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512FVL" />, which
@@ -338,10 +341,13 @@ public sealed partial class Blake3
     /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint[] Compress(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags) =>
-         SimdCapabilities.Avx512FVL
-            ? CompressAvx512(cv, blockWords, counter, blockLen, flags)
-            : CompressScalar(cv, blockWords, counter, blockLen, flags);
+    private static void Compress(ReadOnlySpan<uint> cv, ReadOnlySpan<uint> blockWords, ulong counter, uint blockLen, uint flags, Span<uint> state)
+    {
+        if (SimdCapabilities.Avx512FVL)
+            CompressAvx512(cv, blockWords, counter, blockLen, flags, state);
+        else
+            CompressScalar(cv, blockWords, counter, blockLen, flags, state);
+    }
 
     /// <summary>
     /// Scalar reference implementation of the BLAKE3 compression function used as a fallback on hosts without AVX-512 +
@@ -352,31 +358,29 @@ public sealed partial class Blake3
     /// <param name="counter">The 64-bit chunk counter.</param>
     /// <param name="blockLen">The number of input bytes in the block.</param>
     /// <param name="flags">The BLAKE3 domain-separation flags for the block.</param>
-    /// <returns>The 16-word output state produced by the compression function.</returns>
+    /// <param name="state">Receives the 16-word output state produced by the compression function.</param>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private static uint[] CompressScalar(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
+    private static void CompressScalar(ReadOnlySpan<uint> cv, ReadOnlySpan<uint> blockWords, ulong counter, uint blockLen, uint flags, Span<uint> state)
     {
-        uint[] state =
-        [
-            // Upper half: chaining value.
-            cv[0],
-            cv[1],
-            cv[2],
-            cv[3],
-            cv[4],
-            cv[5],
-            cv[6],
-            cv[7],
-            // Lower half: IV words, counter split into two 32-bit halves, block length, flags.
-            s_iv[0],
-            s_iv[1],
-            s_iv[2],
-            s_iv[3],
-            (uint)counter,
-            (uint)(counter >> 32),
-            blockLen,
-            flags,
-        ];
+        // Upper half: chaining value.
+        state[0] = cv[0];
+        state[1] = cv[1];
+        state[2] = cv[2];
+        state[3] = cv[3];
+        state[4] = cv[4];
+        state[5] = cv[5];
+        state[6] = cv[6];
+        state[7] = cv[7];
+
+        // Lower half: IV words, counter split into two 32-bit halves, block length, flags.
+        state[8] = s_iv[0];
+        state[9] = s_iv[1];
+        state[10] = s_iv[2];
+        state[11] = s_iv[3];
+        state[12] = (uint)counter;
+        state[13] = (uint)(counter >> 32);
+        state[14] = blockLen;
+        state[15] = flags;
 
         // Seven rounds of column then diagonal mixing, each using a permuted view of the message block.
         for (int round = 0; round < 7; round++)
@@ -401,8 +405,6 @@ public sealed partial class Blake3
         // Mix the original chaining value into the high half.
         for (int i = 8; i < 16; i++)
             state[i] ^= cv[i - 8];
-
-        return state;
     }
 
     /// <summary>
@@ -417,7 +419,7 @@ public sealed partial class Blake3
     /// <param name="mx">First message word for this mixing step.</param>
     /// <param name="my">Second message word for this mixing step.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void G(uint[] state, int a, int b, int c, int d, uint mx, uint my)
+    private static void G(Span<uint> state, int a, int b, int c, int d, uint mx, uint my)
     {
         state[a] = state[a] + state[b] + mx;
         state[d] = (state[d] ^ state[a]).RotateBitsRightUnchecked(16);
@@ -434,19 +436,15 @@ public sealed partial class Blake3
     /// zero-padding any bytes beyond the actual block length.
     /// </summary>
     /// <param name="block">The raw block bytes to interpret (0–64 bytes).</param>
-    /// <returns>A 16-element array of little-endian uint32 words representing the block.</returns>
-    private static uint[] ReadBlockWords(ReadOnlySpan<byte> block)
+    /// <param name="words">Receives the 16 little-endian uint32 words representing the block. Must have a length of at least 16.</param>
+    private static void ReadBlockWords(ReadOnlySpan<byte> block, Span<uint> words)
     {
         Span<byte> padded = stackalloc byte[BlockSize];
         padded.Clear();
         block.CopyTo(padded);
 
-        uint[] words = new uint[16];
-
         for (int i = 0; i < 16; i++)
             words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded[(i * 4)..]);
-
-        return words;
     }
 
     /// <summary>
@@ -514,9 +512,10 @@ public sealed partial class Blake3
             flags |= FlagRoot;
 
         // Parent nodes always use the IV as their chaining value input, counter = 0.
-        uint[] outState = Compress(s_iv, _parentBlockWords, 0UL, BlockSize, flags);
+        Span<uint> outState = stackalloc uint[16];
+        Compress(s_iv, _parentBlockWords, 0UL, BlockSize, flags, outState);
 
-        outState.AsSpan(0, 8).CopyTo(output);
+        outState[..8].CopyTo(output);
     }
 
     // ---- tree-merging stack helpers ----

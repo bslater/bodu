@@ -43,7 +43,7 @@ public abstract partial class CityHashTests<TTest, TAlgorithm>
     }
 
     private sealed class TestCityHash
-        : CityHash<TAlgorithm>
+        : CityHash
     {
 
         public TestCityHash(int hashSize)

@@ -218,4 +218,24 @@ public sealed class Serpent128Tests
 
         Assert.HasCount(algorithm.KeySize / 8, algorithm.Key);
     }
+
+    /// <summary>
+    /// Verifies that assigning the inherited <see cref="SymmetricAlgorithm.Mode" /> synchronizes
+    /// <see cref="Serpent128.BlockMode" />, so the mode actually used by encryptor / decryptor creation matches the
+    /// assigned value rather than silently remaining the default.
+    /// </summary>
+    /// <param name="mode">The inherited cipher mode to assign.</param>
+    /// <param name="expected">The <see cref="CipherModeKind" /> the assignment should produce.</param>
+    [TestMethod]
+    [DataRow(CipherMode.ECB, CipherModeKind.ECB)]
+    [DataRow(CipherMode.CBC, CipherModeKind.CBC)]
+    [DataRow(CipherMode.CFB, CipherModeKind.CFB)]
+    public void Mode_WhenSet_ShouldSynchronizeBlockMode(CipherMode mode, CipherModeKind expected)
+    {
+        using var algorithm = new Serpent128();
+
+        algorithm.Mode = mode;
+
+        Assert.AreEqual(expected, algorithm.BlockMode);
+    }
 }

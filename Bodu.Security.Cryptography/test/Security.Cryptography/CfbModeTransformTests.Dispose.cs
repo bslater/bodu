@@ -34,4 +34,25 @@ public sealed partial class CfbModeTransformTests
         transform.Dispose();
         transform.Dispose();
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CfbModeTransform.Transform" /> throws <see cref="ObjectDisposedException" /> after
+    /// disposal, so a disposed transform cannot silently continue from its zeroed feedback state.
+    /// </summary>
+    [TestMethod]
+    public void Transform_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        var cipher = new MonitoringBlockCipher(blockSize: 8);
+        byte[] iv = new byte[cipher.BlockSize / 8];
+        var transform = new CfbModeTransform(cipher, iv);
+        transform.Dispose();
+
+        byte[] input = new byte[cipher.BlockSize / 8];
+        byte[] output = new byte[cipher.BlockSize / 8];
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            transform.Transform(input, output, encrypt: true);
+        });
+    }
 }

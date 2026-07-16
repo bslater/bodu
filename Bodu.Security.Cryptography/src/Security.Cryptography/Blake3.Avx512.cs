@@ -53,12 +53,12 @@ public sealed partial class Blake3
     /// <param name="counter">The 64-bit chunk counter.</param>
     /// <param name="blockLen">The valid byte length of the message block (≤ 64).</param>
     /// <param name="flags">The 32-bit domain-separation flags.</param>
-    /// <returns>A 16-element array holding the post-compression state.</returns>
+    /// <param name="state">Receives the 16-word post-compression state. Must have a length of at least 16.</param>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private static uint[] CompressAvx512(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
+    private static void CompressAvx512(ReadOnlySpan<uint> cv, ReadOnlySpan<uint> blockWords, ulong counter, uint blockLen, uint flags, Span<uint> state)
     {
-        ref uint cvRef = ref MemoryMarshal.GetArrayDataReference(cv);
-        ref uint mRef = ref MemoryMarshal.GetArrayDataReference(blockWords);
+        ref uint cvRef = ref MemoryMarshal.GetReference(cv);
+        ref uint mRef = ref MemoryMarshal.GetReference(blockWords);
 
         // Build the four rows of the working state.
         //   a = cv[0..3], b = cv[4..7] (upper half: chaining value)
@@ -138,8 +138,7 @@ public sealed partial class Blake3
         d ^= cvHi;
 
         // Materialise the 16-word output state in canonical row order.
-        uint[] state = new uint[16];
-        ref uint outRef = ref MemoryMarshal.GetArrayDataReference(state);
+        ref uint outRef = ref MemoryMarshal.GetReference(state);
         Unsafe.Add(ref outRef, 0) = a.GetElement(0);
         Unsafe.Add(ref outRef, 1) = a.GetElement(1);
         Unsafe.Add(ref outRef, 2) = a.GetElement(2);
@@ -156,7 +155,6 @@ public sealed partial class Blake3
         Unsafe.Add(ref outRef, 13) = d.GetElement(1);
         Unsafe.Add(ref outRef, 14) = d.GetElement(2);
         Unsafe.Add(ref outRef, 15) = d.GetElement(3);
-        return state;
     }
 
     /// <summary>

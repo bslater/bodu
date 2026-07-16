@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// flag. Used to verify the deferred-final-block buffering contract in isolation.
 /// </summary>
 public sealed class MonitoringDeferredFinalBlockHashAlgorithm
-    : DeferredFinalBlockHashAlgorithm<MonitoringDeferredFinalBlockHashAlgorithm>
+    : DeferredFinalBlockHashAlgorithm
 {
     /// <summary>
     /// Recorded <see cref="ProcessBlock(ReadOnlySpan{byte}, ulong, bool)" /> invocations in invocation order. Each

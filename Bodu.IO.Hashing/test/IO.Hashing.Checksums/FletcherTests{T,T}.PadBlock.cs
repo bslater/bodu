@@ -51,12 +51,12 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
 
     /// <summary>
     /// Test-only Fletcher subclass that re-enables final-block padding so that
-    /// <see cref="Fletcher{TSelf}.PadBlock(System.ReadOnlySpan{byte}, ulong)" /> is reachable through the standard
+    /// <see cref="Fletcher.PadBlock(System.ReadOnlySpan{byte}, ulong)" /> is reachable through the standard
     /// hash flow. Also exposes <see cref="PadBlockExposed(byte[], ulong)" /> for direct assertion without going via
     /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" />.
     /// </summary>
     private sealed class PaddingFletcher
-        : Fletcher<PaddingFletcher>
+        : Fletcher
     {
 
         public PaddingFletcher()
@@ -68,6 +68,9 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
             this.PadBlock(residual, messageLength);
 
         protected override bool ShouldPadFinalBlock() => true;
+
+        protected override Fletcher CreateEmpty() =>
+            new PaddingFletcher();
 
     }
 

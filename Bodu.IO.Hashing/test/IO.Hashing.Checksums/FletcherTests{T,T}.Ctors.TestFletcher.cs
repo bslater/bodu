@@ -10,12 +10,11 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
 {
 
     /// <summary>
-    /// Test-only <see cref="Fletcher{TSelf}" /> subclass used solely to reach the protected constructor with
-    /// arbitrary hash sizes. The parameterless public constructor satisfies the CRTP <c>new()</c> constraint and
-    /// is never invoked directly by tests.
+    /// Test-only <see cref="Fletcher" /> subclass used solely to reach the protected constructor with arbitrary hash
+    /// sizes. It is never invoked through the snapshot path, so <see cref="CreateEmpty" /> returns a default instance.
     /// </summary>
     private sealed class TestFletcher
-        : Fletcher<TestFletcher>
+        : Fletcher
     {
 
         public TestFletcher()
@@ -27,6 +26,9 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
             : base(hashSize)
         {
         }
+
+        protected override Fletcher CreateEmpty() =>
+            new TestFletcher();
 
     }
 

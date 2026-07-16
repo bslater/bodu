@@ -19,7 +19,7 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Output size: 64 bits (8 bytes), little-endian.</description>
+/// <description>Output size: 64 bits (8 bytes), big-endian.</description>
 /// </item>
 /// <item>
 /// <description>Offset basis: <c>0xCBF29CE484222325</c>.</description>
@@ -51,7 +51,7 @@ namespace Bodu.IO.Hashing;
 /// </example>
 /// </remarks>
 public sealed class Fnv164
-    : Fnv<Fnv164>
+    : Fnv
 {
     /// <summary>The FNV-1 64-bit offset basis used as the initial hash state.</summary>
     private const ulong OffsetBasis = 0xCBF29CE484222325UL;

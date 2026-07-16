@@ -9,12 +9,12 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Exercises the <see cref="CamelliaTransform" /> implementation against the shared
+/// Exercises the <see cref="BlockCipherTransform" /> implementation against the shared
 /// <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> suite.
 /// </summary>
 [TestClass]
 internal sealed class CamelliaTransformTests
-    : BlockCipherTransformTests<CamelliaTransformTests, CamelliaTransform>
+    : BlockCipherTransformTests<CamelliaTransformTests, BlockCipherTransform>
 {
     private readonly byte[] _key;
     private readonly byte[] _iv;
@@ -33,15 +33,15 @@ internal sealed class CamelliaTransformTests
     }
 
     /// <inheritdoc />
-    protected override CamelliaTransform CreateAlgorithm() => CreateEncryptor();
+    protected override BlockCipherTransform CreateAlgorithm() => CreateEncryptor();
 
     /// <inheritdoc />
-    protected override CamelliaTransform CreateEncryptor() => BuildTransform(forEncryption: true);
+    protected override BlockCipherTransform CreateEncryptor() => BuildTransform(forEncryption: true);
 
     /// <inheritdoc />
-    protected override CamelliaTransform CreateDecryptor() => BuildTransform(forEncryption: false);
+    protected override BlockCipherTransform CreateDecryptor() => BuildTransform(forEncryption: false);
 
-    private CamelliaTransform BuildTransform(bool forEncryption)
+    private BlockCipherTransform BuildTransform(bool forEncryption)
     {
         var algorithm = new Camellia
         {
@@ -54,6 +54,6 @@ internal sealed class CamelliaTransformTests
         ICryptoTransform transform = forEncryption
             ? algorithm.CreateEncryptor()
             : algorithm.CreateDecryptor();
-        return (CamelliaTransform)transform;
+        return (BlockCipherTransform)transform;
     }
 }

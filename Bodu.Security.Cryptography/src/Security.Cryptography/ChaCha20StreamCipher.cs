@@ -117,6 +117,7 @@ internal sealed class ChaCha20StreamCipher
     /// <inheritdoc />
     public void NextKeystreamBlock(Span<byte> destination)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, 0, BlockSizeBytes);
 
         if (_counterExhausted)

@@ -75,7 +75,7 @@ public abstract class Serpent
     protected Serpent(int blockSizeBits, int tweakSizeBits)
     {
         BlockSizeValue = KeySizeValue = blockSizeBits;
-        FeedbackSizeValue = 8;
+        FeedbackSizeValue = blockSizeBits;
 
         BlockSizeBytes = KeySizeBytes = blockSizeBits / 8;
         _defaultTweakSizeBytes = tweakSizeBits / 8;
@@ -111,7 +111,7 @@ public abstract class Serpent
         CryptographyThrowHelper.ThrowIfInvalidTweakSize(tweak, TweakSize, LegalTweakSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey, tweak);
-        return new SerpentTransform(engine, BlockMode, Padding, rgbIV, false);
+        return new BlockCipherTransform(engine, BlockMode, Padding, rgbIV, false);
     }
 
     /// <inheritdoc />
@@ -123,7 +123,7 @@ public abstract class Serpent
         CryptographyThrowHelper.ThrowIfInvalidTweakSize(tweak, TweakSize, LegalTweakSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey, tweak);
-        return new SerpentTransform(engine, BlockMode, Padding, rgbIV, true);
+        return new BlockCipherTransform(engine, BlockMode, Padding, rgbIV, true);
     }
 
     /// <inheritdoc />

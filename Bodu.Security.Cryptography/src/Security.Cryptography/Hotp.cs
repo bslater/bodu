@@ -52,6 +52,9 @@ public static partial class Hotp
     /// <summary>The largest number of decimal digits permitted for a generated code. RFC 4226's reference truncation table caps the meaningful width at eight digits, because dynamic truncation yields a 31-bit value.</summary>
     internal const int MaxDigits = 8;
 
+    /// <summary>The largest resynchronization look-ahead permitted by <see cref="VerifyCode(System.ReadOnlySpan{byte}, System.ReadOnlySpan{char}, long, int, out long, int, OtpHashAlgorithm)" />. Each admitted counter costs one HMAC and the window is scanned in full for constant-time behaviour, so an unbounded value is a denial-of-service lever; RFC 4226 §7.4 recommends a small window, and this ceiling stays generous while bounding the work.</summary>
+    internal const int MaxLookAhead = 1024;
+
     /// <summary>
     /// Computes the HOTP code for a single counter value and writes it, zero-padded, into
     /// <paramref name="destination" />.

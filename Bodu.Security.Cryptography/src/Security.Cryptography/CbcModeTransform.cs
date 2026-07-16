@@ -94,6 +94,8 @@ public sealed class CbcModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         int blockSize = _cipher.BlockSize / 8;
 
         CryptographyThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);

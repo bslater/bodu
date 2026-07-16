@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
 
 namespace Bodu.IO.Hashing;
 
@@ -44,7 +43,7 @@ public partial class BKDRTests
 
     /// <summary>
     /// Verifies that setting <see cref="BKDR.Seed" /> after input has been consumed throws
-    /// <see cref="CryptographicUnexpectedOperationException" />.
+    /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
     public void Seed_WhenSetAfterHashingStarted_ShouldThrowExactly()
@@ -52,7 +51,7 @@ public partial class BKDRTests
         BKDR algorithm = new();
         algorithm.Append(new byte[] { 1, 2, 3 });
 
-        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() => algorithm.Seed = 1313U);
+        Assert.ThrowsExactly<InvalidOperationException>(() => algorithm.Seed = 1313U);
     }
 
     /// <summary>

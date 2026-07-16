@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
 
 namespace Bodu.IO.Hashing;
 
@@ -39,7 +38,7 @@ public partial class BernsteinTests
 
     /// <summary>
     /// Verifies that setting <see cref="Bernstein.UseModifiedAlgorithm" /> after input has been consumed
-    /// throws <see cref="CryptographicUnexpectedOperationException" />.
+    /// throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
     public void UseModifiedAlgorithm_WhenSetAfterHashingStarted_ShouldThrowExactly()
@@ -47,7 +46,7 @@ public partial class BernsteinTests
         Bernstein algorithm = new();
         algorithm.Append(new byte[] { 1, 2, 3 });
 
-        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() => algorithm.UseModifiedAlgorithm = true);
+        Assert.ThrowsExactly<InvalidOperationException>(() => algorithm.UseModifiedAlgorithm = true);
     }
     /// <summary>
     /// Verifies that toggling <see cref="Bernstein.UseModifiedAlgorithm" /> before any input has been consumed

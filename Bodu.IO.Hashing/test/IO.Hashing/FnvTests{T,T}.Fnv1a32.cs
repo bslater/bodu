@@ -47,4 +47,21 @@ public sealed partial class Fnv1a32Tests
         },
     };
 
+    /// <summary>
+    /// Verifies that the FNV-1a-32 digest is emitted in big-endian (most-significant-byte-first) order, pinning the
+    /// documented wire contract. The empty-input digest is the offset basis <c>0x811C9DC5</c>.
+    /// </summary>
+    [TestMethod]
+    public void GetCurrentHash_WhenEmptyInput_ShouldEmitDigestInBigEndianByteOrder()
+    {
+        var algorithm = new Fnv1a32();
+
+        byte[] digest = algorithm.GetCurrentHash();
+
+        CollectionAssert.AreEqual(
+            new byte[] { 0x81, 0x1C, 0x9D, 0xC5 },
+            digest,
+            "FNV-1a-32 must emit the digest most-significant byte first (big-endian).");
+    }
+
 }

@@ -124,9 +124,12 @@ internal static class Rfc8410KeyFormat
     /// </exception>
     public static byte[] ReadPkcs8PrivateKey(string expectedOid, ReadOnlySpan<byte> source, out int bytesRead)
     {
+        // Copy the source so the ASN.1 reader has a stable buffer; this copy embeds the private seed, so it is
+        // zeroed in the finally rather than abandoned to the garbage collector.
+        byte[] sourceCopy = source.ToArray();
         try
         {
-            var outer = new AsnReader(source.ToArray(), AsnEncodingRules.DER);
+            var outer = new AsnReader(sourceCopy, AsnEncodingRules.DER);
             ReadOnlyMemory<byte> encoded = outer.PeekEncodedValue();
 
             AsnReader pkcs8 = outer.ReadSequence();
@@ -155,6 +158,10 @@ internal static class Rfc8410KeyFormat
         catch (AsnContentException ex)
         {
             throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_Rfc8410KeyFormat, ex);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(sourceCopy);
         }
     }
 
