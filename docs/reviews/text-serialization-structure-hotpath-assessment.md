@@ -137,7 +137,7 @@ Every phased item above landed in this round, one commit per group, each gated b
 
 | Finding | Outcome |
 |---|---|
-| A1, A2, A8a | **Fixed** — explicit-stack cycle walk; post-merge budget re-check plus a row-growth ceiling during injection; `ResolveAliases` doc corrected. A 100k-anchor chain now fails via the budget instead of crashing the process. |
+| A1, A2, A8a | **Fixed, A1 severity revised down on verification** — explicit-stack cycle walk; post-merge budget re-check plus a row-growth ceiling during injection; `ResolveAliases` doc corrected. Running the new 100k-anchor-chain test against the *pre-fix* code showed the recursive walk never actually went deep: aliases only ever point backward, so document-order visiting memoizes every anchor's subtree before any alias to it is walked, bounding recursion by physical nesting (≤64) rather than chain length. The crash scenario in A1's original wording does not reproduce; the explicit-stack rewrite stands as defense-in-depth consistency with `EnforceExpansionBudget` (and removes the reliance on that ordering argument), not as a crash fix. |
 | A3, A4, A7 | **Fixed** — `WriteDouble(1.0)` emits `1.0` (wire change, tests updated deliberately); escaped continuations gain the fold branch's boundary + indent guards; `ErrorAt` counts lone CR breaks. |
 | A5, C5 | **Fixed** — comparer-preserving `DeepClone` in **both** `TomlObject` and `BencodeObject` (the same bug, found in review of the sibling); `TomlObject.Values` without LINQ. |
 | A6, A8b, A8c | **Fixed** — all Bencode serializer errors report token-start offsets (contract correction on `BytesOffset`); `nuint` gets a dedicated unsigned converter; stream-buffering remarks added. |
