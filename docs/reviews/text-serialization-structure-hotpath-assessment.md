@@ -152,3 +152,15 @@ Every phased item above landed in this round, one commit per group, each gated b
 | C1, C2, C3, deferred B13/B5 halves, converter-seam boxing | **Deferred as planned** — roadmap items unchanged; C2's precondition (the YAML behavioural backbone) landed this round. |
 
 Post-remediation suite sizes (regression tier): Bencode 940, TOML 4,168, YAML 1,429 — up from 935 / 3,311 / 1,371 at the start of the round, with zero failures throughout.
+
+## Roadmap follow-up (2026-07-16, same branch, round 2)
+
+The three deferred structural items landed as a follow-up sequence on the same branch, one commit each:
+
+| Item | Outcome |
+|---|---|
+| C1 | **Done** — `MetadataResolver`, `SerializationThrowHelper`, `IntegerConverterFactory`, and `ObjectConverterFactory` lifted into `Bodu.Text.Serialization/shared/**` behind the alias seam with `#if`-gated format divergences (Bencode's offset stamping, unsigned-width routing, unsupported-scalar guard, and 4-arg duplicate-wire-name diagnostics). The three container converters stay per-package — measurement showed they are not twins (TOML's path/cycle apparatus, divergent token vocabularies), honestly revising the earlier "pure file move" expectation. Net −486 lines. |
+| C2 | **Done** — YAML compiles the shared source under a `YAML` symbol: the metadata trio (compiled accessors, slot buffers, full attribute family) and the structural factories (nullable/dictionary/collection/object), with the non-null `GetConverter` pipeline, `GetTypeMetadata`, `InstantiateConverter`, a freeze-aware `IList<YamlConverter>`, and a new public `YamlConverterFactory`. YAML's scalar converters stay format-local (`Text.Yaml.Serialization.Converters`) because YAML's implicit typing coerces across scalar kinds, which the token-strict shared scalar converters cannot express; null handling and the depth ceiling moved to the single `WriteAsObject` dispatch seam. `YamlTypeBinding`/`YamlMemberInfo` and the `Bind*`/`WriteValue` walkers are retired. One deliberate public rename: `Utf8YamlWriter.WriteInt64` → `WriteInteger` (sibling parity); `Utf8YamlReader` gains `Skip()`. The full 1,429-test suite passed unmodified on first run — the behavioural contract carried over exactly. |
+| C3 | **Done** — YAML ships the sibling stream/async facade (`Serialize<T>(IBufferWriter<byte>)`, `Deserialize<T>(Stream)`, `SerializeAsync`/`DeserializeAsync`, buffered in full with async stream I/O only), with the mirrored async test files. YAML regression: 1,442. |
+
+Still deferred by design: the YAML DOM↔serializer `NodeConverter` bridge (`YamlNode` has no `ReadFrom(ref Utf8YamlReader)`; adding one is new surface, not consolidation), the Bencode/YAML DOM lookup S.T.J-parity, Bencode's per-dictionary value buffering, and the converter-seam boxing inherent to the boxed-converter architecture.
