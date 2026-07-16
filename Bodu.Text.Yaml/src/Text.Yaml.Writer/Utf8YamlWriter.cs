@@ -460,7 +460,10 @@ public ref struct Utf8YamlWriter
         if (double.IsNegativeInfinity(value))
             return "-.inf";
 
-        return value.ToString("R", CultureInfo.InvariantCulture);
+        // A whole-valued double formats without a decimal point ("1"), which the scalar resolver would reclassify
+        // as an integer on read; append ".0" so the scalar round-trips as a float.
+        string text = value.ToString("R", CultureInfo.InvariantCulture);
+        return text.AsSpan().IndexOfAny('.', 'e', 'E') < 0 ? text + ".0" : text;
     }
 
     /// <summary>

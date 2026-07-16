@@ -88,4 +88,44 @@ public partial class YamlDocumentTests
         Assert.AreEqual("007", doc.RootElement.GetProperty("id").GetString());
         Assert.AreEqual("1.2.3", doc.RootElement.GetProperty("version").GetString());
     }
+
+    /// <summary>
+    /// Verifies that a continuation line following an escaped line break must satisfy the same indentation rule as an
+    /// ordinary folded continuation line.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenEscapedLineBreakContinuationUnderIndented_ShouldThrowYamlFormatException()
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var doc = YamlDocument.Parse("text: \"line1 \\\nline2\"\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a continuation line following an escaped line break may not begin a document boundary marker,
+    /// matching the rule applied to ordinary folded continuation lines.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenEscapedLineBreakContinuationAtDocumentBoundary_ShouldThrowYamlFormatException()
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var doc = YamlDocument.Parse("text: \"line1 \\\n--- x\"\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the ordinary folded continuation line rejects under-indentation, pinning the behaviour the
+    /// escaped-line-break branch is required to match.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenFoldedContinuationUnderIndented_ShouldThrowYamlFormatException()
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var doc = YamlDocument.Parse("text: \"line1\nline2\"\n");
+        });
+    }
 }
