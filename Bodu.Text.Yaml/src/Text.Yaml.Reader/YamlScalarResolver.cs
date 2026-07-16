@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlScalarResolver.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,10 +16,14 @@ namespace Bodu.Text.Yaml.Reader;
 /// Only plain scalars are subject to resolution. Single-quoted, double-quoted, and block scalars are always strings and
 /// must not be passed to this resolver. The 1.2 core schema deliberately recognizes only <c>true</c>/<c>false</c> as
 /// booleans; the 1.1 schema additionally recognizes <c>yes</c>/<c>no</c>, <c>on</c>/<c>off</c>, and <c>y</c>/<c>n</c>,
-/// which is the source of the well-known "Norway problem".
+/// which is the source of the well-known "Norway problem". Resolution is allocation-free: the numeric attempts share
+/// one stack transcode of the scalar bytes rather than materializing strings.
 /// </remarks>
 internal static class YamlScalarResolver
 {
+    /// <summary>The scalar length at or below which the numeric transcode uses a stack buffer instead of a heap array.</summary>
+    private const int StackallocCharThreshold = 128;
+
     /// <summary>
     /// Resolves the type of a plain scalar and, for non-string kinds, produces its packed numeric or boolean payload.
     /// </summary>
@@ -34,10 +38,7 @@ internal static class YamlScalarResolver
     {
         bits = 0;
 
-        if (text.Length == 0)
-            return YamlValueKind.Null;
-
-        if (IsNull(text))
+        if (text.Length == 0 || IsNull(text))
             return YamlValueKind.Null;
 
         if (TryResolveBoolean(text, version, out bool boolValue))
@@ -46,13 +47,22 @@ internal static class YamlScalarResolver
             return YamlValueKind.Boolean;
         }
 
-        if (TryResolveInteger(text, version, out long longValue))
+        // The integer and float attempts share one transcode (with 1.1 underscores stripped): a scalar carrying a
+        // non-ASCII byte cannot be numeric, so resolution short-circuits to a string without allocating.
+        Span<char> buffer = text.Length <= StackallocCharThreshold ? stackalloc char[StackallocCharThreshold] : new char[text.Length];
+        int length = TranscodeNumericCandidate(text, version, buffer);
+        if (length < 0)
+            return YamlValueKind.String;
+
+        ReadOnlySpan<char> candidate = buffer[..length];
+
+        if (TryResolveInteger(candidate, version, out long longValue))
         {
             bits = longValue;
             return YamlValueKind.Integer;
         }
 
-        if (TryResolveFloat(text, version, out double doubleValue))
+        if (TryResolveFloat(candidate, out double doubleValue))
         {
             bits = BitConverter.DoubleToInt64Bits(doubleValue);
             return YamlValueKind.Float;
@@ -113,38 +123,56 @@ internal static class YamlScalarResolver
     }
 
     /// <summary>
-    /// Attempts to resolve a plain scalar as a 64-bit integer under the active schema.
+    /// Transcodes a scalar's bytes into the numeric-candidate characters both numeric attempts parse, removing the
+    /// 1.1 schema's underscore digit-group separators.
     /// </summary>
     /// <param name="text">The raw UTF-8 bytes of the scalar.</param>
+    /// <param name="version">The specification version, which controls underscore stripping.</param>
+    /// <param name="destination">The buffer that receives the characters; at least the scalar's length.</param>
+    /// <returns>The number of characters written, or <c>-1</c> when a non-ASCII byte makes the scalar non-numeric.</returns>
+    private static int TranscodeNumericCandidate(ReadOnlySpan<byte> text, YamlSpecVersion version, Span<char> destination)
+    {
+        bool stripUnderscores = version == YamlSpecVersion.V1_1;
+        int n = 0;
+        foreach (byte b in text)
+        {
+            if (b >= 0x80)
+                return -1;
+
+            if (stripUnderscores && b == (byte)'_')
+                continue;
+
+            destination[n++] = (char)b;
+        }
+
+        return n;
+    }
+
+    /// <summary>
+    /// Attempts to resolve a numeric candidate as a 64-bit integer under the active schema.
+    /// </summary>
+    /// <param name="s">The candidate characters, transcoded by <see cref="TranscodeNumericCandidate" />.</param>
     /// <param name="version">The specification version whose integer forms apply.</param>
     /// <param name="value">When the method returns <see langword="true" />, the resolved integer.</param>
     /// <returns>
     /// <see langword="true" /> when the scalar is an integer that fits in a 64-bit signed integer; otherwise
     /// <see langword="false" />.
     /// </returns>
-    private static bool TryResolveInteger(ReadOnlySpan<byte> text, YamlSpecVersion version, out long value)
+    private static bool TryResolveInteger(ReadOnlySpan<char> s, YamlSpecVersion version, out long value)
     {
         value = 0;
-
-        string? s = AsAscii(text);
-        if (s is null)
-            return false;
-
-        bool allowUnderscore = version == YamlSpecVersion.V1_1;
-        if (allowUnderscore)
-            s = StripUnderscores(s);
 
         if (s.Length == 0)
             return false;
 
         bool negative = false;
         bool hasSign = false;
-        string body = s;
-        if (s[0] == '+' || s[0] == '-')
+        ReadOnlySpan<char> body = s;
+        if (s[0] is '+' or '-')
         {
             hasSign = true;
             negative = s[0] == '-';
-            body = s.Substring(1);
+            body = s[1..];
             if (body.Length == 0)
                 return false;
         }
@@ -152,56 +180,45 @@ internal static class YamlScalarResolver
         // Non-decimal radix forms carry no sign in either schema; a signed radix literal is not an integer and falls
         // through to remain a string.
         if (!hasSign && body.StartsWith("0x", StringComparison.Ordinal))
-            return TryParseRadix(body.Substring(2), 16, negative, out value);
+            return TryParseRadix(body[2..], 16, negative, out value);
 
         if (!hasSign && version == YamlSpecVersion.V1_1 && body.StartsWith("0b", StringComparison.Ordinal))
-            return TryParseRadix(body.Substring(2), 2, negative, out value);
+            return TryParseRadix(body[2..], 2, negative, out value);
 
         if (!hasSign && body.StartsWith("0o", StringComparison.Ordinal))
-            return TryParseRadix(body.Substring(2), 8, negative, out value);
+            return TryParseRadix(body[2..], 8, negative, out value);
 
         // YAML 1.1 octal uses a leading zero (0NNN); the 1.2 core schema does not.
         if (!hasSign && version == YamlSpecVersion.V1_1 && body.Length > 1 && body[0] == '0' && IsAllDigits(body, 8))
-            return TryParseRadix(body.Substring(1), 8, negative, out value);
+            return TryParseRadix(body[1..], 8, negative, out value);
 
         if (!IsAllDigits(body, 10))
             return false;
 
-        if (!long.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value))
-            return false;
-
-        return true;
+        return long.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value);
     }
 
     /// <summary>
-    /// Attempts to resolve a plain scalar as a double-precision floating-point value under the active schema.
+    /// Attempts to resolve a numeric candidate as a double-precision floating-point value.
     /// </summary>
-    /// <param name="text">The raw UTF-8 bytes of the scalar.</param>
-    /// <param name="version">The specification version whose floating-point forms apply.</param>
+    /// <param name="s">The candidate characters, transcoded by <see cref="TranscodeNumericCandidate" />.</param>
     /// <param name="value">When the method returns <see langword="true" />, the resolved value.</param>
     /// <returns>
     /// <see langword="true" /> when the scalar is a floating-point value; otherwise <see langword="false" />.
     /// </returns>
-    private static bool TryResolveFloat(ReadOnlySpan<byte> text, YamlSpecVersion version, out double value)
+    private static bool TryResolveFloat(ReadOnlySpan<char> s, out double value)
     {
         value = 0;
-
-        string? s = AsAscii(text);
-        if (s is null)
-            return false;
-
-        if (version == YamlSpecVersion.V1_1)
-            s = StripUnderscores(s);
 
         if (s.Length == 0)
             return false;
 
         double sign = 1.0;
-        string body = s;
-        if (s[0] == '+' || s[0] == '-')
+        ReadOnlySpan<char> body = s;
+        if (s[0] is '+' or '-')
         {
             sign = s[0] == '-' ? -1.0 : 1.0;
-            body = s.Substring(1);
+            body = s[1..];
         }
 
         if (body is ".inf" or ".Inf" or ".INF")
@@ -230,7 +247,7 @@ internal static class YamlScalarResolver
     /// <returns>
     /// <see langword="true" /> when the text contains a decimal point or exponent and only float characters.
     /// </returns>
-    private static bool HasFloatShape(string body)
+    private static bool HasFloatShape(ReadOnlySpan<char> body)
     {
         bool hasDigit = false;
         bool hasMarker = false;
@@ -257,7 +274,7 @@ internal static class YamlScalarResolver
     /// <returns>
     /// <see langword="true" /> when the digits parse without overflow; otherwise <see langword="false" />.
     /// </returns>
-    private static bool TryParseRadix(string digits, int radix, bool negative, out long value)
+    private static bool TryParseRadix(ReadOnlySpan<char> digits, int radix, bool negative, out long value)
     {
         value = 0;
         if (digits.Length == 0)
@@ -307,14 +324,14 @@ internal static class YamlScalarResolver
     };
 
     /// <summary>
-    /// Determines whether every character of a string is a valid digit in the given radix.
+    /// Determines whether every character of a candidate is a valid digit in the given radix.
     /// </summary>
-    /// <param name="s">The string to test.</param>
+    /// <param name="s">The characters to test.</param>
     /// <param name="radix">The numeric base.</param>
     /// <returns>
     /// <see langword="true" /> when all characters are digits in range; otherwise <see langword="false" />.
     /// </returns>
-    private static bool IsAllDigits(string s, int radix)
+    private static bool IsAllDigits(ReadOnlySpan<char> s, int radix)
     {
         foreach (char c in s)
         {
@@ -324,31 +341,6 @@ internal static class YamlScalarResolver
         }
 
         return s.Length > 0;
-    }
-
-    /// <summary>
-    /// Removes underscore digit-group separators from a numeric candidate.
-    /// </summary>
-    /// <param name="s">The candidate text.</param>
-    /// <returns>The text with underscores removed, or the original reference when none were present.</returns>
-    private static string StripUnderscores(string s) =>
-        s.IndexOf('_') < 0 ? s : s.Replace("_", string.Empty);
-
-    /// <summary>
-    /// Converts a UTF-8 span to a string when every byte is printable ASCII, the only bytes that can form a numeric
-    /// token.
-    /// </summary>
-    /// <param name="text">The UTF-8 bytes.</param>
-    /// <returns>The ASCII string, or <see langword="null" /> when a non-ASCII byte is present.</returns>
-    private static string? AsAscii(ReadOnlySpan<byte> text)
-    {
-        foreach (byte b in text)
-        {
-            if (b >= 0x80)
-                return null;
-        }
-
-        return System.Text.Encoding.ASCII.GetString(text);
     }
 
     /// <summary>
@@ -379,7 +371,7 @@ internal static class YamlScalarResolver
     /// <returns>
     /// <see langword="true" /> when the bytes match one of the tokens; otherwise <see langword="false" />.
     /// </returns>
-    private static bool MatchesAny(ReadOnlySpan<byte> text, params string[] tokens)
+    private static bool MatchesAny(ReadOnlySpan<byte> text, params ReadOnlySpan<string> tokens)
     {
         foreach (string token in tokens)
         {

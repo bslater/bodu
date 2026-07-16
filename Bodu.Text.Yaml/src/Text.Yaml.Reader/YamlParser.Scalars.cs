@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Bodu.Text.Yaml.Reader;
@@ -233,7 +234,7 @@ internal sealed partial class YamlParser
             _pos++;
         }
 
-        return Encoding.UTF8.GetString(buf.ToArray());
+        return Encoding.UTF8.GetString(CollectionsMarshal.AsSpan(buf));
     }
 
     /// <summary>
@@ -308,7 +309,7 @@ internal sealed partial class YamlParser
             _pos++;
         }
 
-        return Encoding.UTF8.GetString(buf.ToArray());
+        return Encoding.UTF8.GetString(CollectionsMarshal.AsSpan(buf));
     }
 
     /// <summary>
