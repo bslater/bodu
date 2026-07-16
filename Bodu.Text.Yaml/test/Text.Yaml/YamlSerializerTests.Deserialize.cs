@@ -42,4 +42,35 @@ public partial class YamlSerializerTests
         Assert.AreEqual(30, person.Age);
         Assert.IsTrue(person.Active);
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="Stream" /> overload reads a stream of UTF-8 YAML bytes to its end and binds the
+    /// value.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStreamSource_ShouldReturnValue()
+    {
+        using var source = new MemoryStream(System.Text.Encoding.UTF8.GetBytes("Name: x\nAge: 7\nActive: true\n"));
+
+        Person person = YamlSerializer.Deserialize<Person>(source)!;
+
+        Assert.AreEqual("x", person.Name);
+        Assert.AreEqual(7, person.Age);
+        Assert.IsTrue(person.Active);
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="Stream" /> overload throws <see cref="ArgumentNullException" /> with
+    /// <c>ParamName</c> <c>source</c> when the stream is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStreamSourceIsNull_ShouldThrowArgumentNullException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<Person>((Stream)null!);
+        });
+
+        Assert.AreEqual("source", ex.ParamName);
+    }
 }

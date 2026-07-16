@@ -51,10 +51,74 @@ public static partial class YamlSerializer
     {
         ThrowHelper.ThrowIfNull(inputType);
 
-        YamlSerializerOptions o = options ?? s_defaultOptions;
-        o.MakeReadOnly();
         var buffer = new ArrayBufferWriter<byte>();
-        var writer = new Utf8YamlWriter(buffer);
+        SerializeCore(buffer, value, inputType, options ?? s_defaultOptions);
+        return Encoding.UTF8.GetString(buffer.WrittenSpan);
+    }
+
+    /// <summary>
+    /// Serializes a value as UTF-8 YAML to the supplied buffer writer.
+    /// </summary>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    /// <param name="destination">The buffer writer that receives the UTF-8 YAML bytes.</param>
+    /// <param name="value">The value to serialize.</param>
+    /// <param name="options">The serializer options, or <see langword="null" /> for the defaults.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="destination" /> is <see langword="null" />.
+    /// </exception>
+    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    public static void Serialize<T>(IBufferWriter<byte> destination, T value, YamlSerializerOptions? options = null)
+    {
+        ThrowHelper.ThrowIfNull(destination);
+
+        SerializeCore(destination, value, typeof(T), options ?? s_defaultOptions);
+    }
+
+    /// <summary>
+    /// Asynchronously serializes a value as UTF-8 YAML to the supplied stream.
+    /// </summary>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    /// <param name="destination">The stream that receives the UTF-8 YAML bytes.</param>
+    /// <param name="value">The value to serialize.</param>
+    /// <param name="options">The serializer options, or <see langword="null" /> for the defaults.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the write.</param>
+    /// <returns>A task that completes when the value has been written.</returns>
+    /// <remarks>
+    /// The value is serialized into an in-memory buffer in full and then written to the stream in a single
+    /// asynchronous operation: the method buffers the complete output rather than streaming it, so peak memory
+    /// includes the entire rendered document. Cancellation applies to the final write, not to the serialization that
+    /// precedes it.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="destination" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="destination" /> does not support writing.
+    /// </exception>
+    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    public static ValueTask SerializeAsync<T>(Stream destination, T value, YamlSerializerOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        ThrowHelper.ThrowIfNull(destination);
+        ThrowHelper.ThrowIfStreamNotWritable(destination);
+
+        var buffer = new ArrayBufferWriter<byte>();
+        SerializeCore(buffer, value, typeof(T), options ?? s_defaultOptions);
+        return destination.WriteAsync(buffer.WrittenMemory, cancellationToken);
+    }
+
+    /// <summary>
+    /// Serializes a value as UTF-8 YAML to the supplied buffer writer, resolving the root converter from the declared
+    /// type.
+    /// </summary>
+    /// <param name="destination">The buffer writer that receives the UTF-8 YAML bytes.</param>
+    /// <param name="value">The value to serialize.</param>
+    /// <param name="inputType">The declared type of the value.</param>
+    /// <param name="options">The serializer options.</param>
+    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    private static void SerializeCore(IBufferWriter<byte> destination, object? value, Type inputType, YamlSerializerOptions options)
+    {
+        options.MakeReadOnly();
+        var writer = new Utf8YamlWriter(destination);
 
         // Attach the serializer write state so the converters report a reference cycle cooperatively and unwind
         // through returns; the single recorded failure is thrown once here at the root boundary.
@@ -66,9 +130,8 @@ public static partial class YamlSerializer
         if (value is null)
             writer.WriteNull();
         else
-            o.GetConverter(inputType).WriteAsObject(writer, value, o);
+            options.GetConverter(inputType).WriteAsObject(writer, value, options);
 
         state.ThrowIfFailed();
-        return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 }
