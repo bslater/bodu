@@ -223,6 +223,10 @@ ICONS = {
     "Bodu.Financial.ExchangeRates.Caching": ("fxcache", "#34D399", "CCH", "cylinder"),
     "Bodu.Financial.ExchangeRates.Caching.Distributed": ("fxdist", "#F87171", "DST", "nodes"),
     "Bodu.Financial.ExchangeRates.Caching.Sqlite": ("fxsql", "#60A5FA", "SQL", "cylinder"),
+    "Bodu.Globalization.Calendar.Caching": ("calcache", "#FB923C", "CCH", "cylinder"),
+    "Bodu.Globalization.Calendar.Caching.Distributed": ("caldist", "#F87171", "DST", "nodes"),
+    "Bodu.Globalization.Calendar.Caching.Sqlite": ("calsql", "#60A5FA", "SQL", "cylinder"),
+    "Bodu.Text.Serialization": ("tser", "#A78BFA", "SER", "braces"),
 }
 
 

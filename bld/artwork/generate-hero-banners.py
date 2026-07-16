@@ -336,6 +336,22 @@ add("hero-yaml", "Bodu.Text.Yaml", "Bodu.Text.Yaml — YAML reader and writer ov
           "    name", "    born", '<tspan fill="#60A5FA">  db</tspan>', "    ports[]"], y0=42, dy=16, size=11),
     "block · flow · anchors · 1.2 core", gid="yml")
 
+add("hero-text-serialization", "Bodu.Text.Serialization",
+    "Bodu.Text.Serialization — shared primitives for the System.Text.Json-shaped serializers",
+    "#A78BFA", "shared core",
+    mono(['<tspan fill="#A78BFA">[BoduPropertyName]</tspan>',
+          '<tspan fill="#A78BFA">[BoduIgnore]</tspan>',
+          '<tspan fill="#A78BFA">[BoduRequired]</tspan>', None,
+          'NamingPolicy', 'UnmappedMemberHandling', None,
+          '<tspan fill="#94A3B8" font-size="9">one attribute family,</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">every format</tspan>'], y0=42, dy=15, size=10),
+    "declare", "consume", "Serializers",
+    mono(['<tspan fill="#A78BFA">Bencode</tspan>Serializer',
+          '<tspan fill="#A78BFA">Toml</tspan>Serializer', None,
+          '<tspan fill="#94A3B8">callbacks · creation ·</tspan>',
+          '<tspan fill="#94A3B8">ignore · naming enums</tspan>'], y0=44, dy=17, size=10.5),
+    "format-agnostic seams · consumed per format", gid="tser")
+
 add("hero-serializers", "Bodu serializers — Bencode · TOML · YAML",
     "Bodu serializers — Bencode, TOML, and YAML sharing one System.Text.Json-aligned shape",
     "#A78BFA", "three formats",
@@ -599,6 +615,59 @@ add("hero-calendar-plugins", "Bodu.Globalization.Calendar.Plugins",
         mono(['<tspan fill="#94A3B8" font-size="9">strategies resolve by</tspan>',
               '<tspan fill="#94A3B8" font-size="9">algorithm name</tspan>'], x=12, y0=128, dy=14)]),
     "trust-gated assembly loading", gid="calplg")
+
+add("hero-calendar-caching", "Bodu.Globalization.Calendar.Caching",
+    "Bodu.Globalization.Calendar.Caching — per-territory, per-year caching for notable-date services",
+    "#FB923C", "NotableDateService",
+    mono(['<tspan fill="#FB923C">CachingNotableDateService</tspan>', None,
+          'AU <tspan fill="#94A3B8">2026 ✓ 2027 ✓</tspan>',
+          'GB <tspan fill="#94A3B8">2026 ✓</tspan>',
+          'US <tspan fill="#94A3B8">2026 ✓ 2027 ✓</tspan>', None,
+          '<tspan fill="#94A3B8" font-size="9">in-memory · one TOML/JSON</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">file per territory</tspan>'], y0=44, dy=16, size=10),
+    "resolve", "cache", "Computed years",
+    mono(["GetNotableDates(…)", None,
+          '<tspan fill="#FB923C">hit</tspan> <tspan fill="#94A3B8">→ cached year</tspan>',
+          '<tspan fill="#FB923C">miss</tspan> <tspan fill="#94A3B8">→ inner service</tspan>', None,
+          '<tspan fill="#94A3B8" font-size="9">TTL or resource-version</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">change refreshes a year</tspan>'], y0=44, dy=16, size=10),
+    "compute a territory-year once · serve it cached", gid="calcache")
+
+add("hero-calendar-caching-distributed", "Bodu.Globalization.Calendar.Caching.Distributed",
+    "Bodu.Globalization.Calendar.Caching.Distributed — IDistributedCache / Redis backend for the notable-date cache",
+    "#F87171", "IDistributedCache",
+    mono(['<tspan fill="#F87171">DistributedNotableDateCache</tspan>', None,
+          '<tspan fill="#94A3B8">app-1 ─┐</tspan>',
+          '<tspan fill="#94A3B8">app-2 ─┼→</tspan> Redis',
+          '<tspan fill="#94A3B8">app-3 ─┘</tspan>', None,
+          '<tspan fill="#94A3B8" font-size="9">one notable-date cache</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">for the whole fleet</tspan>'], y0=44, dy=16, size=10),
+    "get", "set", "Notable dates",
+    mono(['<tspan fill="#F87171">AddDistributedNotableDateCache</tspan>',
+          '<tspan fill="#F87171">AddRedisNotableDateCache</tspan>', None,
+          'INotableDateCache', None,
+          '<tspan fill="#94A3B8" font-size="9">shared across instances</tspan>'], y0=44, dy=16, size=9.5),
+    "Redis · SQL Server · any backend", gid="caldist")
+
+add("hero-calendar-caching-sqlite", "Bodu.Globalization.Calendar.Caching.Sqlite",
+    "Bodu.Globalization.Calendar.Caching.Sqlite — durable SQLite backend for the notable-date cache",
+    "#60A5FA", "calendar.db",
+    "\n".join([
+        '''    <g stroke="#60A5FA" stroke-width="1.6" fill="#0F172A">
+      <g transform="translate(47 40)">
+        <ellipse cx="28" cy="8" rx="28" ry="8"/>
+        <path d="M 0 8 L 0 50 A 28 8 0 0 0 56 50 L 56 8" fill="#0F172A"/>
+        <ellipse cx="28" cy="29" rx="28" ry="8" fill="none" stroke-dasharray="3 3" stroke-width="1"/>
+      </g>
+    </g>''',
+        mono(['years <tspan fill="#94A3B8">(territory,year)</tspan>',
+              'dates <tspan fill="#94A3B8">(rule,date,kind)</tspan>'], x=14, y0=122, dy=17, size=9.5)]),
+    "lookup", "persist", "Notable dates",
+    mono(['<tspan fill="#60A5FA">AddSqliteNotableDateCache(…)</tspan>', None, "CachingNotableDate",
+          'Service <tspan fill="#94A3B8">read-through</tspan>', None,
+          '<tspan fill="#94A3B8" font-size="9">survives restarts —</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">compute once per year</tspan>'], y0=44, dy=16, size=9.5),
+    "durable single-file cache · zero server", gid="calsql")
 
 CAL_PACKS = [
     ("africa", "Africa", "#FBBF24", {2, 5, 9}, ["ZA", "NG", "KE", "GH", "ET", "EG", "MA"],
