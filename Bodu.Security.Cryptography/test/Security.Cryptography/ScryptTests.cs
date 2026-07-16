@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// encoded-hash round-trip, parameter validation, and the instance and static surfaces.
 /// </summary>
 [TestClass]
-public class ScryptTests
+public partial class ScryptTests
 {
     /// <summary>
     /// The three lighter RFC 7914, Section 12 test vectors (the fourth, ~1 GiB vector runs in the Stress tier).

@@ -176,6 +176,25 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="GcmModeTransform" /> class with a typed 96-bit GCM nonce.
+    /// </summary>
+    /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
+    /// <param name="nonce">The 96-bit (12-byte) nonce. Must be unique per key.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not exactly
+    /// <see cref="NonceSize" /> bytes.
+    /// </exception>
+    /// <remarks>
+    /// Convenience overload over the span form for callers using the <see cref="Nonce" /> value type — typically
+    /// produced by <see cref="Nonce.Random(int)" /> — which keeps nonces distinct from keys and tags in calling code.
+    /// </remarks>
+    public GcmModeTransform(IBlockCipher cipher, Nonce nonce)
+        : this(cipher, nonce.AsSpan(), nameof(nonce), useInitialCounterBlock: false)
+    {
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="GcmModeTransform" /> class and derives J0 from a 12-byte nonce or
     /// uses a precomputed J0 directly.
     /// </summary>

@@ -93,7 +93,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </remarks>
 /// <seealso href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with full encrypt / decrypt examples)
 /// </seealso>
-public static class AeadBlockCipherModeTransformExtensions
+public static partial class AeadBlockCipherModeTransformExtensions
 {
     /// <summary>
     /// Encrypts <paramref name="plaintext" /> and returns a new byte array containing the ciphertext concatenated with
