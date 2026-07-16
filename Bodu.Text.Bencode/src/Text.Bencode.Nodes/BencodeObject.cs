@@ -66,6 +66,16 @@ public sealed class BencodeObject
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="BencodeObject" /> class that is empty, using the supplied
+    /// property-name comparer.
+    /// </summary>
+    /// <param name="comparer">The property-name comparer.</param>
+    private BencodeObject(IEqualityComparer<string> comparer)
+    {
+        _properties = new Dictionary<string, BencodeNode?>(comparer);
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="BencodeObject" /> class containing the supplied entries.
     /// </summary>
     /// <param name="items">The initial entries.</param>
@@ -236,7 +246,8 @@ public sealed class BencodeObject
     /// <inheritdoc />
     public override BencodeNode DeepClone()
     {
-        var clone = new BencodeObject();
+        // The clone must keep the source's property-name comparer so case-insensitive lookup semantics survive.
+        var clone = new BencodeObject(_properties.Comparer);
         foreach (KeyValuePair<string, BencodeNode?> entry in _properties)
             clone[entry.Key] = entry.Value?.DeepClone();
 
