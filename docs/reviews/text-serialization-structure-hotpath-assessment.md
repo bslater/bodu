@@ -128,3 +128,27 @@ Recorded so the next reviewer does not re-raise them:
 ### Verification
 
 Per-commit: `dotnet build bodu.slnx` + BVT for the affected packages; shared-source commits always run **both** the Bencode and TOML suites (the shared tree compiles into each assembly — there is no separate shared test project). Reader/writer/resolver byte-level changes additionally run the owning package's regression tier (the corpora and malformed sweeps are Regression-tagged). Perf evidence: allocation-multiplier bounds in the `TomlAllocationTests` pattern (`GC.GetAllocatedBytesForCurrentThread`, warm-up then measured run), extended to Bencode and YAML, with before/after multipliers recorded in each perf commit message.
+
+---
+
+## Remediation outcome (2026-07-16, same branch)
+
+Every phased item above landed in this round, one commit per group, each gated by the affected packages' regression tiers. Findings and their dispositions:
+
+| Finding | Outcome |
+|---|---|
+| A1, A2, A8a | **Fixed** — explicit-stack cycle walk; post-merge budget re-check plus a row-growth ceiling during injection; `ResolveAliases` doc corrected. A 100k-anchor chain now fails via the budget instead of crashing the process. |
+| A3, A4, A7 | **Fixed** — `WriteDouble(1.0)` emits `1.0` (wire change, tests updated deliberately); escaped continuations gain the fold branch's boundary + indent guards; `ErrorAt` counts lone CR breaks. |
+| A5, C5 | **Fixed** — comparer-preserving `DeepClone` in **both** `TomlObject` and `BencodeObject` (the same bug, found in review of the sibling); `TomlObject.Values` without LINQ. |
+| A6, A8b, A8c | **Fixed** — all Bencode serializer errors report token-start offsets (contract correction on `BytesOffset`); `nuint` gets a dedicated unsigned converter; stream-buffering remarks added. |
+| B1, B3 | **Fixed, with an honest measurement note** — compiled getter/setter/constructor delegates in the shared metadata (box-mutating `Expression.Unbox` for struct targets; reflection's null-coercion preserved), `GetOrAdd` state overloads, and cached frozen default options on both facades. Measurement showed net8.0's post-warmup reflection stubs already amortize near compiled speed at realistic workloads — the steady-state wall-clock win is small and the row-store parse dominates; **B1's original "dominant cost" severity is revised down accordingly**, and the compiled path is kept as the canonical shape that removes residual invoke overhead as member counts grow. |
+| B2 | **Fixed** — slot-indexed `object?[]` + presence flags replace the per-object dictionary in both `ObjectConverter`s; TOML POCO bind allocation −14% (381,768 → 329,648 bytes / 24 KB input), baseline tightened 22× → 18×. |
+| B4, B5 | **Fixed** — direct `IBufferWriter` serialization, pooled buffers at every facade seam, range-based dictionary keys in a pooled frame buffer, reader frames as in-place-mutated structs. Serialize 102,608 → 46,376 bytes; POCO-row serialize 544,808 → 225,896 bytes (500-entry baseline, new `BencodeAllocationTests`). |
+| B6, B7 | **Fixed** — pooled/stack TOML string decode, underscore strip, and `ValueTextEquals` compare; canonical writer two-pass partition + push/pop path. Byte-locked by the corpus. |
+| B8, B9 | **Fixed** — span-based scalar resolver (shared single transcode); single-copy quoted decode. YAML serialize allocation −53% (241,672 → 113,672 bytes), because the writer's `IsPlainSafe` runs the resolver per scalar. New `YamlAllocationTests` records the parse baselines the C2 migration will be measured against. |
+| B10, B11, B12 | **Fixed** — `YamlTypeBinding` (wire names computed/validated once, options-comparer lookup, precomputed write order) + memoized converter cache on the frozen options; unformatted sequence-index path segments; single-pass `IsPlainSafe`/`WriteRaw`. Serialize baseline further 113,672 → 97,704 bytes. `YamlTypeBinding` is deliberately shaped to map onto the shared-core `TypeMetadata` (C2). |
+| B13 | **Fixed (TOML half)** — the builder's large-table key index is inherited by `TomlDocument`; Bencode/YAML documents stay S.T.J-parity by design (deferred half unchanged). |
+| C4 | **Fixed** — the corpus now runs against `TomlDocument`, the `TomlNode` round-trip, and writer fixed-point (~1050 new rows, all green first run); YAML gains `Utf8YamlReaderTests.Malformed`, `YamlSerializerTests.MaxDepth`, and `YamlSerializerTests.NamingPolicy`. |
+| C1, C2, C3, deferred B13/B5 halves, converter-seam boxing | **Deferred as planned** — roadmap items unchanged; C2's precondition (the YAML behavioural backbone) landed this round. |
+
+Post-remediation suite sizes (regression tier): Bencode 940, TOML 4,168, YAML 1,429 — up from 935 / 3,311 / 1,371 at the start of the round, with zero failures throughout.
