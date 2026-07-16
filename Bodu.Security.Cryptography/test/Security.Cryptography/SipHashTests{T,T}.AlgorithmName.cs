@@ -37,6 +37,6 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
         Assert.AreEqual(expected, algorithm.AlgorithmName);
     }
 
-    private static string GetAlgorithmName(SipHash<TAlgorithm> algorithm) =>
+    private static string GetAlgorithmName(SipHash algorithm) =>
         $"SipHash-{algorithm.CompressionRounds}-{algorithm.FinalizationRounds}-{algorithm.HashSize}";
 }

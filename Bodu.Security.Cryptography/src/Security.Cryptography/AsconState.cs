@@ -39,7 +39,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// This struct is declared <see langword="internal" /> and is shared by <see cref="AsconHash{T}" />,
+/// This struct is declared <see langword="internal" /> and is shared by <see cref="AsconHash" />,
 /// <see cref="AsconAead128" />, <see cref="AsconXof128" />, and <see cref="AsconCxof128" />.
 /// </para>
 /// </remarks>

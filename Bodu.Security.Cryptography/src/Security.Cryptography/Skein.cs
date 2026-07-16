@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Skein{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Skein.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -15,7 +15,6 @@ namespace Bodu.Security.Cryptography;
 /// functions, built by Bruce Schneier and co-authors on top of the <see cref="ThreefishBlockCipher" /> tweakable block
 /// cipher and submitted as a finalist to the NIST SHA-3 competition.
 /// </summary>
-/// <typeparam name="T">The concrete Skein variant derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// Skein hashes a message by repeatedly applying the <c>UBI</c> (Unique Block Iteration) mode of operation. Each UBI
@@ -25,8 +24,8 @@ namespace Bodu.Security.Cryptography;
 /// the classic Matyas-Meyer-Oseas construction.
 /// </para>
 /// <para>
-/// The base inherits from <see cref="KeyedBlockHashAlgorithm{T}" /> so that the keyed <c>Skein-MAC</c> mode integrates
-/// with the shared keyed-hash test infrastructure. Unlike strict keyed-MAC algorithms such as <see cref="SipHash{T}" />
+/// The base inherits from <see cref="KeyedBlockHashAlgorithm" /> so that the keyed <c>Skein-MAC</c> mode integrates
+/// with the shared keyed-hash test infrastructure. Unlike strict keyed-MAC algorithms such as <see cref="SipHash" />
 /// , Skein accepts a <em>variable-length optional</em> key: an empty <see cref="Key" /> selects the canonical
 /// plain-hash profile (no KEY UBI phase), while any non-empty byte sequence enables Skein-MAC with a preliminary KEY
 /// UBI phase.
@@ -58,10 +57,6 @@ namespace Bodu.Security.Cryptography;
 /// potential future extension (see <see cref="SkeinTweakType" />).
 /// </para>
 /// <para>
-/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
-/// class's <c>new()</c> constraint.
-/// </para>
-/// <para>
 /// <strong>When to choose Skein.</strong> Pick the Skein family for interop with code that has standardized on it (the
 /// SHA-3 finalist round attracted a long tail of adopters, and Skein remains common in research code). Skein-512 is the
 /// recommended default; Skein-256 is the narrower variant and Skein-1024 the widest. For new general-purpose
@@ -71,10 +66,9 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <seealso cref="Skein256"/> <seealso cref="Skein512"/> <seealso cref="Skein1024"/> <seealso cref="Threefish"/>
-/// <seealso cref="KeyedBlockHashAlgorithm{T}"/>
-public abstract partial class Skein<T>
-    : KeyedBlockHashAlgorithm<T>
-    where T : Skein<T>, new()
+/// <seealso cref="KeyedBlockHashAlgorithm"/>
+public abstract partial class Skein
+    : KeyedBlockHashAlgorithm
 {
     /// <summary>Maximum accepted length for <see cref="Key" /> across every Skein variant is 8192 bits (1024 bytes). Keys longer than this bound are rejected to prevent unbounded memory usage; this value is far above any practical MAC key.</summary>
     public const int MaxKeySize = 8192;
@@ -119,7 +113,7 @@ public abstract partial class Skein<T>
     private bool _isChainingValueCached;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Skein{T}" /> class using a pre-constructed cipher supplied by a
+    /// Initializes a new instance of the <see cref="Skein" /> class using a pre-constructed cipher supplied by a
     /// derived variant.
     /// </summary>
     /// <param name="cipher">
@@ -163,7 +157,7 @@ public abstract partial class Skein<T>
     /// </value>
     /// <remarks>
     /// <para>
-    /// Unlike <see cref="SipHash{T}" />, Skein does not require a fixed key length: any byte sequence from zero up to
+    /// Unlike <see cref="SipHash" />, Skein does not require a fixed key length: any byte sequence from zero up to
     /// <see cref="MaxKeySize" /> / 8 bytes is valid. Setting the key clears any cached initial chaining value so the
     /// next call to <see cref="Initialize" /> rebuilds the state from the UBI pipeline <c>KEY → CFG</c>.
     /// </para>
@@ -312,7 +306,7 @@ public abstract partial class Skein<T>
     // Pipeline-bypass overrides.
     //
     // Skein inherits the Merkle–Damgård <c>ProcessBlock → PadBlock → ProcessFinalBlock</c> abstracts from
-    // <see cref="KeyedBlockHashAlgorithm{T}"/> for compatibility with the keyed-block test infrastructure,
+    // <see cref="KeyedBlockHashAlgorithm"/> for compatibility with the keyed-block test infrastructure,
     // but the UBI compression mode requires a one-block lookahead that the pipeline does not express. The
     // overrides above (Initialize, HashCore, HashFinal) drive UBI directly, so the inherited pipeline
     // methods are unreachable from any happy-path code path. They remain present as defensive contract
@@ -335,7 +329,7 @@ public abstract partial class Skein<T>
             CryptoResourceStrings.Op_Invalid_SkeinBypassesProcessBlock);
 
     /// <summary>
-    /// Satisfies the <see cref="BlockHashAlgorithm{T}.PadBlock(ReadOnlySpan{byte}, ulong)" /> contract, but is not used
+    /// Satisfies the <see cref="BlockHashAlgorithm.PadBlock(ReadOnlySpan{byte}, ulong)" /> contract, but is not used
     /// by the Skein implementation.
     /// </summary>
     /// <param name="block">
@@ -349,7 +343,7 @@ public abstract partial class Skein<T>
     /// <returns>This method never returns because Skein bypasses the base padding pipeline.</returns>
     /// <exception cref="InvalidOperationException">
     /// Always thrown because Skein performs finalization through UBI rather than
-    /// <see cref="BlockHashAlgorithm{T}.PadBlock(ReadOnlySpan{byte}, ulong)" />.
+    /// <see cref="BlockHashAlgorithm.PadBlock(ReadOnlySpan{byte}, ulong)" />.
     /// </exception>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
         throw new InvalidOperationException(
@@ -362,7 +356,7 @@ public abstract partial class Skein<T>
     /// <returns>This method never returns because Skein bypasses the base final-block pipeline.</returns>
     /// <exception cref="InvalidOperationException">
     /// Always thrown because Skein drives finalization from <see cref="HashFinal" /> rather than
-    /// <see cref="BlockHashAlgorithm{T}.ProcessFinalBlock" />.
+    /// <see cref="BlockHashAlgorithm.ProcessFinalBlock" />.
     /// </exception>
     protected override byte[] ProcessFinalBlock() =>
         throw new InvalidOperationException(

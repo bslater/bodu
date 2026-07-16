@@ -43,7 +43,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// Threefish is the cipher under the UBI mode of <see cref="Skein{T}" /> — the same key-and-tweak primitive that drives
+/// Threefish is the cipher under the UBI mode of <see cref="Skein" /> — the same key-and-tweak primitive that drives
 /// Skein's hash compression. For a non-tweakable, hardware-accelerated default prefer
 /// <see cref="System.Security.Cryptography.Aes" />. For try-pattern transform creation that surfaces bad key/IV/tweak
 /// combinations as a <see langword="false" /> return, see
@@ -70,7 +70,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso cref="Threefish256"/> <seealso cref="Threefish512"/> <seealso cref="Threefish1024"/>
-/// <seealso cref="TweakableSymmetricAlgorithm"/> <seealso cref="Skein{T}"/>
+/// <seealso cref="TweakableSymmetricAlgorithm"/> <seealso cref="Skein"/>
 /// <seealso href="https://www.schneier.com/wp-content/uploads/2016/02/skein.pdf">The Skein Hash Function Family
 /// (Schneier et al., 2010) — specifies Threefish</seealso>
 public abstract class Threefish

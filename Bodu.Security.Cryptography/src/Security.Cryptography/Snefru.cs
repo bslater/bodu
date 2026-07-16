@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Snefru{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Snefru.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -15,10 +15,9 @@ namespace Bodu.Security.Cryptography;
 /// Base class for the <c>Snefru</c> family of unkeyed hash functions designed by Ralph Merkle, implementing the core
 /// compression routine using S-box substitutions and word rotations over 512-bit blocks.
 /// </summary>
-/// <typeparam name="T">The concrete Snefru variant derived from this class.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="Snefru{T}" /> is one of the earliest cryptographic hash functions developed and is now considered broken:
+/// <see cref="Snefru" /> is one of the earliest cryptographic hash functions developed and is now considered broken:
 /// collision attacks against the two- and four-pass variants are known, and it should not be used for any new
 /// security-sensitive application. It remains implemented here for interoperability with legacy data and academic
 /// study.
@@ -40,10 +39,6 @@ namespace Bodu.Security.Cryptography;
 /// the final digest.
 /// </para>
 /// <para>
-/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
-/// class's <c>new()</c> constraint.
-/// </para>
-/// <para>
 /// <strong>When to choose Snefru.</strong> Academic study and legacy interop only — Snefru has practical collision
 /// attacks against both the 2-pass and 4-pass variants and is one of the earliest cryptographic hashes ever published.
 /// Pick <see cref="Snefru128" /> for 128-bit output and <see cref="Snefru256" /> for 256-bit output. For any new
@@ -54,10 +49,9 @@ namespace Bodu.Security.Cryptography;
 /// <b>not</b> be used for password hashing, digital signatures, or integrity validation in security-sensitive
 /// applications.</note>
 /// </remarks>
-/// <seealso cref="Snefru128"/> <seealso cref="Snefru256"/> <seealso cref="BlockHashAlgorithm{T}"/>
-public abstract partial class Snefru<T>
-    : BlockHashAlgorithm<T>
-    where T : Snefru<T>, new()
+/// <seealso cref="Snefru128"/> <seealso cref="Snefru256"/> <seealso cref="BlockHashAlgorithm"/>
+public abstract partial class Snefru
+    : BlockHashAlgorithm
 {
     /// <summary>The number of 32-bit words in the working buffer.</summary>
     private const int TotalWords = 16;
@@ -78,7 +72,7 @@ public abstract partial class Snefru<T>
     private readonly uint[] _state;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.
+    /// Initializes a new instance of the <see cref="Snefru" /> class with the specified output hash size.
     /// </summary>
     /// <param name="hashSize">The size of the output hash, in bits. Must be either 128 or 256.</param>
     /// <exception cref="ArgumentOutOfRangeException">

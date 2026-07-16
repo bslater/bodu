@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Skein{T}.Ubi.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Skein.Ubi.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class Skein<T>
+public abstract partial class Skein
 {
     /// <summary>
     /// Returns the cached initial chaining value derived from the configuration block (and the optional KEY UBI phase
@@ -37,7 +37,7 @@ public abstract partial class Skein<T>
     /// into the chaining state using the supplied tweak fields.
     /// </summary>
     /// <param name="block">
-    /// The block to absorb. Must be exactly <see cref="BufferedBlockHashAlgorithm{T}.BlockSize" /> bytes long.
+    /// The block to absorb. Must be exactly <see cref="BufferedBlockHashAlgorithm.BlockSize" /> bytes long.
     /// </param>
     /// <param name="type">The UBI block type, which occupies bits 120..125 of the tweak.</param>
     /// <param name="first">Whether this is the first UBI call in the current stage. Sets bit 126 of the tweak.</param>
@@ -96,7 +96,7 @@ public abstract partial class Skein<T>
     /// size.
     /// </summary>
     /// <param name="destination">
-    /// A buffer of <see cref="BufferedBlockHashAlgorithm{T}.BlockSize" /> bytes that receives the packed configuration
+    /// A buffer of <see cref="BufferedBlockHashAlgorithm.BlockSize" /> bytes that receives the packed configuration
     /// block.
     /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

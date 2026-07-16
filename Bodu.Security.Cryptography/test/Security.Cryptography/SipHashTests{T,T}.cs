@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class SipHashTests<TTest, TAlgorithm>
     : KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, SipHashVariant>
     where TTest : SipHashTests<TTest, TAlgorithm>, new()
-    where TAlgorithm : SipHash<TAlgorithm>, new()
+    where TAlgorithm : SipHash, new()
 {
     /// <inheritdocs/>
     protected static readonly byte[] SipHashTestKey =

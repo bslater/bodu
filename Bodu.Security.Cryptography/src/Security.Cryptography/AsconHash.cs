@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="AsconHash{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="AsconHash.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,6 @@ namespace Bodu.Security.Cryptography;
 /// Abstract base class for ASCON cryptographic hash algorithms as defined in NIST SP 800-232. Implements the shared
 /// sponge construction, padding, and Ascon-p permutation used by all fixed-output ASCON hash variants.
 /// </summary>
-/// <typeparam name="T">The concrete hash algorithm type derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// All ASCON hash algorithms share a 320-bit internal state comprising five 64-bit words, a 64-bit (8-byte) rate, and a
@@ -27,14 +26,9 @@ namespace Bodu.Security.Cryptography;
 /// Concrete derived types supply the five pre-computed post-initialization state words and the absorption round count
 /// via the protected constructor. No further overrides are required.
 /// </para>
-/// <para>
-/// The concrete type <typeparamref name="T" /> must also expose a public parameterless constructor to satisfy the base
-/// class's <c>new()</c> constraint.
-/// </para>
 /// </remarks>
-public abstract partial class AsconHash<T>
-    : BlockHashAlgorithm<T>
-    where T : AsconHash<T>, new()
+public abstract partial class AsconHash
+    : BlockHashAlgorithm
 {
     /// <summary>The canonical algorithm identifier string supplied by the derived variant.</summary>
     private readonly string _algorithmName;
@@ -64,7 +58,7 @@ public abstract partial class AsconHash<T>
     private AsconState _state;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsconHash{T}" /> class with the specified algorithm parameters.
+    /// Initializes a new instance of the <see cref="AsconHash" /> class with the specified algorithm parameters.
     /// </summary>
     /// <param name="iv0">Pre-computed initial state word 0 (result of applying Ascon-p12 to the raw IV).</param>
     /// <param name="iv1">Pre-computed initial state word 1.</param>

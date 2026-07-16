@@ -66,7 +66,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 public sealed partial class Whirlpool
-    : BlockHashAlgorithm<Whirlpool>
+    : BlockHashAlgorithm
 {
     /// <summary>Length of the Whirlpool compression block is 512 bits (64 bytes).</summary>
     private const int BlockSizeBits = 512;

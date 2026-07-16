@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DeferredFinalBlockHashAlgorithm{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="DeferredFinalBlockHashAlgorithm.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,9 +13,8 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="HashAlgorithm.HashFinal" /> so that a finalization flag may be raised on the last compression call (the
 /// Blake-family shape). Owns the defer-on-full-block buffering loop and the zero-pad-then-finalize orchestration; the
 /// residual buffer, running byte counter, and disposal latch are inherited from
-/// <see cref="BufferedBlockHashAlgorithm{T}" />.
+/// <see cref="BufferedBlockHashAlgorithm" />.
 /// </summary>
-/// <typeparam name="T">The concrete hash algorithm derived from this class.</typeparam>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -45,7 +44,7 @@ namespace Bodu.Security.Cryptography;
 /// which case the pending block is compressed with <c>isFinal: true</c>).
 /// </para>
 /// <para>
-/// The inherited <see cref="BufferedBlockHashAlgorithm{T}._totalBytes" /> field stores the total number of bytes
+/// The inherited <see cref="BufferedBlockHashAlgorithm._totalBytes" /> field stores the total number of bytes
 /// already <em>compressed</em> (i.e. consumed from the residual buffer by previous <see cref="ProcessBlock" /> calls).
 /// Bytes still held in the residual buffer are <em>not</em> included in this total &#8212; they contribute to the
 /// counter only at the moment they are compressed.
@@ -73,26 +72,21 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
-/// class's <c>new()</c> constraint.
-/// </para>
-/// <para>
-/// <strong>When to derive from this class.</strong> Pick <see cref="DeferredFinalBlockHashAlgorithm{T}" /> for the
+/// <strong>When to derive from this class.</strong> Pick <see cref="DeferredFinalBlockHashAlgorithm" /> for the
 /// BLAKE family and any other algorithm whose compression function takes an explicit "is this the final block?" flag
 /// rather than padding the trailing partial block with a length encoding — <see cref="Blake3" /> is the canonical user.
 /// For BLAKE2-style hashes that also accept an optional secret key (<see cref="Blake2b" />, <see cref="Blake2s" />)
-/// derive from <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" />, which adds RFC 7693 key-block handling on top of
-/// this base. For Merkle–Damgård hashes (SHA-2, Tiger, Whirlpool) use <see cref="BlockHashAlgorithm{T}" />.
+/// derive from <see cref="KeyedDeferredFinalBlockHashAlgorithm" />, which adds RFC 7693 key-block handling on top of
+/// this base. For Merkle–Damgård hashes (SHA-2, Tiger, Whirlpool) use <see cref="BlockHashAlgorithm" />.
 /// </para>
 /// </remarks>
-/// <seealso cref="BufferedBlockHashAlgorithm{T}"/> <seealso cref="BlockHashAlgorithm{T}"/>
-/// <seealso cref="KeyedBlockHashAlgorithm{T}"/> <seealso cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>
-public abstract class DeferredFinalBlockHashAlgorithm<T>
-    : BufferedBlockHashAlgorithm<T>
-    where T : DeferredFinalBlockHashAlgorithm<T>, new()
+/// <seealso cref="BufferedBlockHashAlgorithm"/> <seealso cref="BlockHashAlgorithm"/>
+/// <seealso cref="KeyedBlockHashAlgorithm"/> <seealso cref="KeyedDeferredFinalBlockHashAlgorithm"/>
+public abstract class DeferredFinalBlockHashAlgorithm
+    : BufferedBlockHashAlgorithm
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="DeferredFinalBlockHashAlgorithm{T}" /> class with the specified
+    /// Initializes a new instance of the <see cref="DeferredFinalBlockHashAlgorithm" /> class with the specified
     /// input block size.
     /// </summary>
     /// <param name="blockSize">
@@ -167,7 +161,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     /// <summary>
     /// Finalizes the hash computation. Zero-pads the residual buffer (if not already full) up to the block size,
     /// performs the final compression with <c>isFinal: true</c> and a counter equal to the total bytes consumed (
-    /// <see cref="BufferedBlockHashAlgorithm{T}._totalBytes" /> plus the residual byte count), and returns the digest
+    /// <see cref="BufferedBlockHashAlgorithm._totalBytes" /> plus the residual byte count), and returns the digest
     /// produced by <see cref="ProcessFinalBlock" />.
     /// </summary>
     /// <returns>The computed hash bytes as produced by <see cref="ProcessFinalBlock" />.</returns>
@@ -194,12 +188,12 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     /// Compresses a single full block of input using the algorithm's internal compression function.
     /// </summary>
     /// <param name="block">
-    /// The input block to compress. Always exactly <see cref="BufferedBlockHashAlgorithm{T}.BlockSize" /> bytes long,
+    /// The input block to compress. Always exactly <see cref="BufferedBlockHashAlgorithm.BlockSize" /> bytes long,
     /// possibly zero-padded by <see cref="HashFinal" /> when <paramref name="isFinal" /> is <see langword="true" />.
     /// </param>
     /// <param name="totalBytesIncludingThisBlock">
     /// The cumulative byte count <em>including</em> the bytes in <paramref name="block" /> being compressed. For
-    /// mid-stream blocks this equals the previous total plus <see cref="BufferedBlockHashAlgorithm{T}.BlockSize" />;
+    /// mid-stream blocks this equals the previous total plus <see cref="BufferedBlockHashAlgorithm.BlockSize" />;
     /// for the final compression it equals the previous total plus the residual byte count (which may be in the range
     /// <c>[0, BlockSize / 8]</c>).
     /// </param>

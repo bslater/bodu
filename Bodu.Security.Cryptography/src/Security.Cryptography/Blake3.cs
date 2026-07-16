@@ -32,7 +32,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This implementation inherits its 64-byte residual buffer, running byte counter, and defer-on-full-block buffering
-/// loop from <see cref="DeferredFinalBlockHashAlgorithm{T}" />. The final 64-byte block is not compressed until
+/// loop from <see cref="DeferredFinalBlockHashAlgorithm" />. The final 64-byte block is not compressed until
 /// <see cref="HashAlgorithm.HashFinal" /> is called, ensuring that chunk-level and tree-level domain flags can be
 /// applied correctly.
 /// </para>
@@ -78,7 +78,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Blake2b"/> <seealso cref="Blake2s"/>
 public sealed partial class Blake3
-    : DeferredFinalBlockHashAlgorithm<Blake3>
+    : DeferredFinalBlockHashAlgorithm
 {
     /// <summary>Size, in bytes, of a single compression input block.</summary>
     private new const int BlockSize = 64;

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Skein{T}.512.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Skein.512.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -17,9 +17,9 @@ namespace Bodu.Security.Cryptography;
 /// SHA-3 competition. The permitted output sizes are 128, 160, 224, 256, 384, and 512 bits; 512 bits is the default.
 /// </para>
 /// <para>
-/// Supplying a non-empty <see cref="Skein{T}.Key" /> turns the instance into the keyed Skein-MAC-512 variant by
+/// Supplying a non-empty <see cref="Skein.Key" /> turns the instance into the keyed Skein-MAC-512 variant by
 /// prepending a <c>KEY</c> UBI phase to the standard <c>CFG → MSG → OUT</c> pipeline. The key length is not fixed: any
-/// byte sequence from zero up to <see cref="Skein{T}.MaxKeySize" /> / 8 bytes is valid.
+/// byte sequence from zero up to <see cref="Skein.MaxKeySize" /> / 8 bytes is valid.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -37,7 +37,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySize" /> / 8 bytes.</description>
+/// <description>Optional variable-length key: 0–<see cref="Skein.MaxKeySize" /> / 8 bytes.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -58,10 +58,10 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="Threefish512Cipher"/> <seealso cref="Skein{T}"/> <seealso cref="Skein256"/>
+/// <seealso cref="Threefish512Cipher"/> <seealso cref="Skein"/> <seealso cref="Skein256"/>
 /// <seealso cref="Skein1024"/> <seealso cref="Threefish512"/>
 public sealed class Skein512
-    : Skein<Skein512>
+    : Skein
 {
     /// <summary>The set of output sizes, in bits, permitted by <see cref="Skein512" />.</summary>
     private static readonly int[] s_permittedHashSizes = [128, 160, 224, 256, 384, 512];

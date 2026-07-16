@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Skein{T}.1024.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Skein.1024.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The permitted output sizes are 384, 512, and 1024 bits; 1024 bits is the default. Supplying a non-empty
-/// <see cref="Skein{T}.Key" /> turns the instance into the keyed Skein-MAC-1024 variant by prepending a <c>KEY</c> UBI
+/// <see cref="Skein.Key" /> turns the instance into the keyed Skein-MAC-1024 variant by prepending a <c>KEY</c> UBI
 /// phase to the standard <c>CFG → MSG → OUT</c> pipeline.
 /// </para>
 /// <para>
@@ -37,7 +37,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySize" /> / 8 bytes.</description>
+/// <description>Optional variable-length key: 0–<see cref="Skein.MaxKeySize" /> / 8 bytes.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -55,10 +55,10 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="Threefish1024Cipher"/> <seealso cref="Skein{T}"/> <seealso cref="Skein256"/>
+/// <seealso cref="Threefish1024Cipher"/> <seealso cref="Skein"/> <seealso cref="Skein256"/>
 /// <seealso cref="Skein512"/> <seealso cref="Threefish1024"/>
 public sealed class Skein1024
-    : Skein<Skein1024>
+    : Skein
 {
     /// <summary>The set of output sizes, in bits, permitted by <see cref="Skein1024" />.</summary>
     private static readonly int[] s_permittedHashSizes = [384, 512, 1024];

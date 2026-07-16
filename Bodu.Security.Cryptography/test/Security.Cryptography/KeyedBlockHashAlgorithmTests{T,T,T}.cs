@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
     : BlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
     where TTest : KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>, new()
-    where TAlgorithm : KeyedBlockHashAlgorithm<TAlgorithm>, new()
+    where TAlgorithm : KeyedBlockHashAlgorithm, new()
     where TVariant : struct, Enum
 {
     /// <summary>

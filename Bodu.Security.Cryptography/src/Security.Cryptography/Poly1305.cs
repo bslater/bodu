@@ -82,7 +82,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 public sealed class Poly1305
-    : KeyedBlockHashAlgorithm<Poly1305>
+    : KeyedBlockHashAlgorithm
 {
     /// <summary>Length of the Poly1305 key is 256 bits (32 bytes).</summary>
     public const int KeySize = 256;
@@ -120,7 +120,7 @@ public sealed class Poly1305
     /// its constructor. Poly1305 is a one-time authenticator and reusing the same key against multiple messages breaks
     /// its security guarantees; an instance with an unsolicited random key tempts callers to drive
     /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> twice and silently produce a forgeable tag the second time.
-    /// Callers must therefore set <see cref="KeyedBlockHashAlgorithm{T}.Key" /> explicitly before computing a hash;
+    /// Callers must therefore set <see cref="KeyedBlockHashAlgorithm.Key" /> explicitly before computing a hash;
     /// failing to do so causes <see cref="HashAlgorithm.Initialize" /> to raise a <see cref="CryptographicException" />
     /// .
     /// </remarks>

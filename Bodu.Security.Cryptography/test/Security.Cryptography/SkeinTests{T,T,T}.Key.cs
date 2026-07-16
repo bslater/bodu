@@ -19,12 +19,12 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
 
         try
         {
-            skein.Key = new byte[Skein<TAlgorithm>.MaxKeySize / 8];
+            skein.Key = new byte[Skein.MaxKeySize / 8];
         }
         catch (Exception ex)
         {
             Assert.Fail(
-                $"Assigning a {Skein<TAlgorithm>.MaxKeySize / 8}-byte key should be the inclusive upper bound, " +
+                $"Assigning a {Skein.MaxKeySize / 8}-byte key should be the inclusive upper bound, " +
                 $"but threw {ex.GetType().Name}: {ex.Message}");
         }
     }

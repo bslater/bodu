@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     : Security.Cryptography.KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
     where TTest : SkeinTests<TTest, TAlgorithm, TVariant>, new()
-    where TAlgorithm : Skein<TAlgorithm>, new()
+    where TAlgorithm : Skein, new()
     where TVariant : struct, Enum
 {
     /// <inheritdoc />

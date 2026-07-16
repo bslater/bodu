@@ -73,7 +73,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/hashing.html#pattern-3--a-cryptographic-digest">Cryptographic digest guide
 /// </seealso>
 public sealed partial class Tiger
-    : BlockHashAlgorithm<Tiger>
+    : BlockHashAlgorithm
 {
     /// <summary>The number of bits in the full Tiger digest that is always computed internally before truncation.</summary>
     private const int MaxOutputBits = 192;

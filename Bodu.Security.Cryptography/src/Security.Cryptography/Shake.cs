@@ -81,7 +81,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 public sealed class Shake
-    : BufferedBlockHashAlgorithm<Shake>
+    : BufferedBlockHashAlgorithm
 {
     /// <summary>The number of 64-bit lanes in the Keccak-f[1600] state (5 × 5 = 25 words).</summary>
     private const int StateWords = 25;

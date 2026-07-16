@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// contract in isolation without depending on any concrete cryptographic algorithm.
 /// </summary>
 public sealed class MonitoringBufferedBlockHashAlgorithm
-    : BufferedBlockHashAlgorithm<MonitoringBufferedBlockHashAlgorithm>
+    : BufferedBlockHashAlgorithm
 {
     private bool _disposeObserved;
 

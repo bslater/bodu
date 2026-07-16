@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Snefru{T}.SBoxConstants.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Snefru.SBoxConstants.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class Snefru<T>
+public abstract partial class Snefru
 {
     /// <summary>The flat S-box lookup table: 16 tables of 256 <see langword="uint" /> entries, stored contiguously.</summary>
     /// <remarks>

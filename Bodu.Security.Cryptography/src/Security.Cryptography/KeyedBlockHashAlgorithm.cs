@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="KeyedBlockHashAlgorithm{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="KeyedBlockHashAlgorithm.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -15,26 +15,25 @@ namespace Bodu.Security.Cryptography;
 /// Represents the abstract base class for hash algorithms that require a secret key and process data in fixed-size
 /// blocks.
 /// </summary>
-/// <typeparam name="T">The concrete derived algorithm type. Must expose a public parameterless constructor.</typeparam>
 /// <remarks>
 /// <para>
-/// This class extends <see cref="BlockHashAlgorithm{T}" /> with key-handling logic shared by keyed block hashes such as
-/// <see cref="Poly1305" /> and <see cref="SipHash{T}" />. It centralizes defensive copying, key-length validation,
+/// This class extends <see cref="BlockHashAlgorithm" /> with key-handling logic shared by keyed block hashes such as
+/// <see cref="Poly1305" /> and <see cref="SipHash" />. It centralizes defensive copying, key-length validation,
 /// disposal of secret material, and the hook (<see cref="OnKeyChanged" />) used by derived classes to derive any
 /// key-dependent schedule or internal state.
 /// </para>
 /// <para>
-/// Derived classes supply the required key length via the <see cref="KeyedBlockHashAlgorithm{T}(int, int)" />
+/// Derived classes supply the required key length via the <see cref="KeyedBlockHashAlgorithm(int, int)" />
 /// constructor. The <see cref="Key" /> property setter validates the supplied byte array against that length, stores a
 /// defensive copy in <see cref="KeyValue" />, and then invokes <see cref="OnKeyChanged" /> so the derived algorithm can
 /// rebuild any key-dependent state.
 /// </para>
 /// <para>
-/// <strong>When to derive from this class.</strong> Pick <see cref="KeyedBlockHashAlgorithm{T}" /> for keyed hashes
+/// <strong>When to derive from this class.</strong> Pick <see cref="KeyedBlockHashAlgorithm" /> for keyed hashes
 /// that follow the Merkle–Damgård pad-and-finalize pattern and require a fixed-length key — <see cref="Poly1305" />
-/// (32-byte key) and <see cref="SipHash{T}" /> (16-byte key) are the canonical users. For BLAKE-family hashes that
-/// accept an <em>optional</em> variable-length key derive from <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" />
-/// instead. For unkeyed Merkle–Damgård hashes use <see cref="BlockHashAlgorithm{T}" /> directly.
+/// (32-byte key) and <see cref="SipHash" /> (16-byte key) are the canonical users. For BLAKE-family hashes that
+/// accept an <em>optional</em> variable-length key derive from <see cref="KeyedDeferredFinalBlockHashAlgorithm" />
+/// instead. For unkeyed Merkle–Damgård hashes use <see cref="BlockHashAlgorithm" /> directly.
 /// </para>
 /// </remarks>
 /// <example>
@@ -56,10 +55,9 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="BlockHashAlgorithm{T}"/> <seealso cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>
-public abstract class KeyedBlockHashAlgorithm<T>
-    : BlockHashAlgorithm<T>
-    where T : KeyedBlockHashAlgorithm<T>, new()
+/// <seealso cref="BlockHashAlgorithm"/> <seealso cref="KeyedDeferredFinalBlockHashAlgorithm"/>
+public abstract class KeyedBlockHashAlgorithm
+    : BlockHashAlgorithm
 {
     /// <summary>Holds the required key size, in bits, that the derived algorithm accepts. Supplied via the constructor; aligns with the BCL convention used by <see cref="System.Security.Cryptography.SymmetricAlgorithm.KeySize" />. Divide by 8 to obtain the equivalent byte length used when validating <see cref="Key" />.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
@@ -83,7 +81,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
     protected byte[]? KeyValue;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="KeyedBlockHashAlgorithm{T}" /> class with the specified input block
+    /// Initializes a new instance of the <see cref="KeyedBlockHashAlgorithm" /> class with the specified input block
     /// size and required key size.
     /// </summary>
     /// <param name="blockSize">

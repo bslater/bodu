@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SipHash{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SipHash.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -16,10 +16,9 @@ namespace Bodu.Security.Cryptography;
 /// Bernstein for short input messages. See the official <a href="https://131002.net/siphash/">SipHash specification</a>
 /// for details.
 /// </summary>
-/// <typeparam name="T">The concrete SipHash variant derived from this class.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="SipHash{T}" /> is a keyed hash function that requires a 128-bit (16-byte) secret key. It mixes each input
+/// <see cref="SipHash" /> is a keyed hash function that requires a 128-bit (16-byte) secret key. It mixes each input
 /// block into four 64-bit state variables (<c>v0</c> through <c>v3</c>) using Add-Rotate-XOR (ARX) steps, and is
 /// designed to resist hash-flooding attacks against hash tables.
 /// </para>
@@ -44,10 +43,6 @@ namespace Bodu.Security.Cryptography;
 /// digest. The defaults (<c>c = 2</c>, <c>d = 4</c>) correspond to the standard <c>SipHash-2-4</c> parameterization.
 /// </para>
 /// <para>
-/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
-/// class's <c>new()</c> constraint.
-/// </para>
-/// <para>
 /// <strong>When to choose SipHash.</strong> SipHash is the de-facto standard for protecting hash tables and bloom
 /// filters against collision-based denial-of-service attacks — Python, Ruby, Rust, Perl, and OpenBSD's stdlib all use
 /// it for that purpose. Pick <see cref="SipHash64" /> when 64 bits is enough; pick <see cref="SipHash128" /> when
@@ -70,9 +65,8 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso cref="SipHash64"/> <seealso cref="SipHash128"/>
-public abstract class SipHash<T>
-    : KeyedBlockHashAlgorithm<T>
-    where T : SipHash<T>, new()
+public abstract class SipHash
+    : KeyedBlockHashAlgorithm
 {
     /// <summary>Length of the SipHash key is 128 bits (16 bytes).</summary>
     public const int KeySize = 128;
@@ -110,7 +104,7 @@ public abstract class SipHash<T>
 #pragma warning restore SA1132 // Do not combine fields
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SipHash{T}" /> class with a specified hash size.
+    /// Initializes a new instance of the <see cref="SipHash" /> class with a specified hash size.
     /// </summary>
     /// <param name="hashSize">The desired size of the final hash in bits. Supported values are 64 or 128.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="hashSize" /> is not supported.</exception>

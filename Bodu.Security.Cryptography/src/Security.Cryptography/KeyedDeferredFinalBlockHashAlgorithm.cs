@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="KeyedDeferredFinalBlockHashAlgorithm{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="KeyedDeferredFinalBlockHashAlgorithm.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -15,10 +15,9 @@ namespace Bodu.Security.Cryptography;
 /// the final block until <see cref="HashAlgorithm.HashFinal" /> is called, following the BLAKE-family
 /// deferred-finalization pattern.
 /// </summary>
-/// <typeparam name="T">The concrete derived algorithm type. Must expose a public parameterless constructor.</typeparam>
 /// <remarks>
 /// <para>
-/// This class extends <see cref="DeferredFinalBlockHashAlgorithm{T}" /> with optional key-handling logic shared by
+/// This class extends <see cref="DeferredFinalBlockHashAlgorithm" /> with optional key-handling logic shared by
 /// keyed BLAKE-family hashes such as <see cref="Blake2b" /> and <see cref="Blake2s" />. It centralizes defensive
 /// copying, key-length validation, secure disposal of secret material, and the sealed <see cref="Initialize" />
 /// override that orchestrates hash-state reset followed by key-block injection when a key is set.
@@ -32,15 +31,15 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Derived classes must implement <see cref="InitializeHashState" /> to restore their algorithm-specific chaining
 /// variables and encode the key length into the parameter block, and
-/// <see cref="DeferredFinalBlockHashAlgorithm{T}.ProcessBlock" /> /
-/// <see cref="DeferredFinalBlockHashAlgorithm{T}.ProcessFinalBlock" /> as required by the grandparent.
+/// <see cref="DeferredFinalBlockHashAlgorithm.ProcessBlock" /> /
+/// <see cref="DeferredFinalBlockHashAlgorithm.ProcessFinalBlock" /> as required by the grandparent.
 /// </para>
 /// <para>
-/// <strong>When to derive from this class.</strong> Pick <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" /> for
+/// <strong>When to derive from this class.</strong> Pick <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> for
 /// BLAKE-family hashes that accept an optional, variable-length key per RFC 7693 §2.8 — the canonical users are
 /// <see cref="Blake2b" /> and <see cref="Blake2s" />. For BLAKE-family hashes without a key (e.g. <see cref="Blake3" />
-/// ) derive from <see cref="DeferredFinalBlockHashAlgorithm{T}" />. For Merkle–Damgård keyed hashes with a fixed-length
-/// key (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm{T}" />.
+/// ) derive from <see cref="DeferredFinalBlockHashAlgorithm" />. For Merkle–Damgård keyed hashes with a fixed-length
+/// key (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm" />.
 /// </para>
 /// </remarks>
 /// <example>
@@ -59,10 +58,9 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="DeferredFinalBlockHashAlgorithm{T}"/> <seealso cref="KeyedBlockHashAlgorithm{T}"/>
-public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
-    : DeferredFinalBlockHashAlgorithm<T>
-    where T : KeyedDeferredFinalBlockHashAlgorithm<T>, new()
+/// <seealso cref="DeferredFinalBlockHashAlgorithm"/> <seealso cref="KeyedBlockHashAlgorithm"/>
+public abstract class KeyedDeferredFinalBlockHashAlgorithm
+    : DeferredFinalBlockHashAlgorithm
 {
     /// <summary>Internal storage for the optional secret key. <see langword="null" /> when the instance operates in the unkeyed digest profile; otherwise a defensive copy of the caller-supplied key. Always assigned via defensive copy and cleared on disposal.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
@@ -76,7 +74,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     private readonly int _maximumKeySize;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" /> class with the
+    /// Initializes a new instance of the <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> class with the
     /// specified input block size and maximum key size.
     /// </summary>
     /// <param name="blockSize">

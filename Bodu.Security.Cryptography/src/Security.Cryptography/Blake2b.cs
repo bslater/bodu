@@ -25,12 +25,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This implementation inherits its residual buffer, byte-counter and lookahead-buffering loop from
-/// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" />: the final message block is not compressed until
+/// <see cref="KeyedDeferredFinalBlockHashAlgorithm" />: the final message block is not compressed until
 /// <see cref="HashAlgorithm.HashFinal" /> is called, at which point the <c>finalization</c> flag is set and the output
 /// bytes are serialized in little-endian order then truncated to the configured output length.
 /// </para>
 /// <para>
-/// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.Key" /> switches the instance into the
+/// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm.Key" /> switches the instance into the
 /// keyed <c>BLAKE2b-MAC</c> mode defined in RFC 7693 Section 2.8. The key (1–64 bytes) is zero-padded to 128 bytes and
 /// prepended as the first message block, and the key length is encoded into the parameter block so that keyed and
 /// unkeyed digests of the same message are always distinct.
@@ -75,7 +75,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Blake2s"/> <seealso cref="Blake3"/>
 public sealed partial class Blake2b
-    : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
+    : KeyedDeferredFinalBlockHashAlgorithm
 {
     /// <summary>The set of output sizes, in bits, accepted by this algorithm.</summary>
     private static readonly int[] s_permittedHashSizes = [128, 160, 192, 224, 256, 384, 512];
@@ -201,7 +201,7 @@ public sealed partial class Blake2b
     /// <see cref="HashAlgorithm.HashSizeValue" /> when <paramref name="disposing" /> is <see langword="true" />.
     /// </para>
     /// <para>
-    /// Retained key material owned by <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" /> is cleared by the base
+    /// Retained key material owned by <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> is cleared by the base
     /// implementation when this method delegates to <c>base.Dispose(disposing)</c>. The inherited residual buffer is
     /// cleared further down the dispose chain.
     /// </para>
@@ -220,7 +220,7 @@ public sealed partial class Blake2b
 
     /// <summary>
     /// Compresses a single 128-byte block using the BLAKE2b <c>F</c> compression function. Invoked by
-    /// <see cref="DeferredFinalBlockHashAlgorithm{T}" /> with <paramref name="isFinal" /> set to
+    /// <see cref="DeferredFinalBlockHashAlgorithm" /> with <paramref name="isFinal" /> set to
     /// <see langword="true" /> for the last call (which inverts the finalization flag word) and to
     /// <see langword="false" /> otherwise.
     /// </summary>

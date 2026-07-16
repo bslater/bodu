@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
     : HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     where TTest : KeyedDeferredFinalBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>, new()
-    where TAlgorithm : KeyedDeferredFinalBlockHashAlgorithm<TAlgorithm>, new()
+    where TAlgorithm : KeyedDeferredFinalBlockHashAlgorithm, new()
     where TVariant : struct, Enum
 {
     /// <summary>

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BufferedBlockHashAlgorithm{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BufferedBlockHashAlgorithm.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -15,7 +15,6 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> to <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />
 /// delegation.
 /// </summary>
-/// <typeparam name="T">The concrete hash algorithm derived from this class.</typeparam>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -32,7 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This class is the common ancestor for both block-buffered patterns offered by the library:
-/// <see cref="BlockHashAlgorithm{T}" /> (Merkle&#8211;Damg&#229;rd-style; pads the final partial block before
+/// <see cref="BlockHashAlgorithm" /> (Merkle&#8211;Damg&#229;rd-style; pads the final partial block before
 /// processing) and the Blake-family-style sibling that defers the final full block until
 /// <see cref="HashAlgorithm.HashFinal" /> so that a finalization flag may be raised on the last compression call.
 /// </para>
@@ -72,44 +71,39 @@ namespace Bodu.Security.Cryptography;
 /// <item>
 /// <term>Merkle–Damgård, unkeyed</term>
 /// <description>
-/// <see cref="BlockHashAlgorithm{T}" /> — Tiger, Whirlpool, Snefru, the SHA-2 family, classic block-padding hashes that
+/// <see cref="BlockHashAlgorithm" /> — Tiger, Whirlpool, Snefru, the SHA-2 family, classic block-padding hashes that
 /// finalize by padding the last partial block.
 /// </description>
 /// </item>
 /// <item>
 /// <term>Merkle–Damgård, keyed</term>
 /// <description>
-/// <see cref="KeyedBlockHashAlgorithm{T}" /> — Poly1305, SipHash, and any keyed hash whose finalization is "pad then
+/// <see cref="KeyedBlockHashAlgorithm" /> — Poly1305, SipHash, and any keyed hash whose finalization is "pad then
 /// compress".
 /// </description>
 /// </item>
 /// <item>
 /// <term>Blake-style, unkeyed</term>
 /// <description>
-/// <see cref="DeferredFinalBlockHashAlgorithm{T}" /> — BLAKE3 and other algorithms that need to defer the last full
+/// <see cref="DeferredFinalBlockHashAlgorithm" /> — BLAKE3 and other algorithms that need to defer the last full
 /// block so a finalization flag can be set.
 /// </description>
 /// </item>
 /// <item>
 /// <term>Blake-style, optionally keyed</term>
 /// <description>
-/// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" /> — BLAKE2b, BLAKE2s, and the RFC 7693 keyed-MAC variants of
+/// <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> — BLAKE2b, BLAKE2s, and the RFC 7693 keyed-MAC variants of
 /// BLAKE-family hashes.
 /// </description>
 /// </item>
 /// </list>
 /// <para>
-/// The concrete type <typeparamref name="T" /> must expose a public parameterless constructor to satisfy the base
-/// class's <c>new()</c> constraint.
-/// </para>
-/// <para>
-/// Derive from <see cref="BufferedBlockHashAlgorithm{T}" /> directly only when implementing a <em>new</em> buffering
+/// Derive from <see cref="BufferedBlockHashAlgorithm" /> directly only when implementing a <em>new</em> buffering
 /// pattern that doesn't fit either family — e.g. a sponge construction with a non-Merkle–Damgård finalization step.
 /// </para>
 /// </remarks>
-public abstract class BufferedBlockHashAlgorithm<T>
+public abstract class BufferedBlockHashAlgorithm
     : HashAlgorithm
-    where T : BufferedBlockHashAlgorithm<T>, new()
 {
     /// <summary>
     /// Gets the canonical, fully-qualified algorithm name for this instance, including any size or variant qualifiers
@@ -145,7 +139,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BufferedBlockHashAlgorithm{T}" /> class with the specified input
+    /// Initializes a new instance of the <see cref="BufferedBlockHashAlgorithm" /> class with the specified input
     /// block size.
     /// </summary>
     /// <param name="blockSize">

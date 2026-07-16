@@ -38,8 +38,8 @@ public partial class Skein256Tests
             LongInputLength = 200,
             BoundaryLengths = [1, 8, 16, 32, 64, 128],
             MinKeyLength = 16,
-            MaxKeyLength = Skein<Skein256>.MaxKeySize / 8,
-            ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein256>.MaxKeySize / 8],
+            MaxKeyLength = Skein.MaxKeySize / 8,
+            ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein.MaxKeySize / 8],
             TestKey = SkeinTestKey,
             KnownAnswers = variant == Skein256TestVariant.Hash_256
                 ? [MessageDigestKnownAnswer.Empty(Skein256_256_EmptyHash)]

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BlockHashAlgorithm{T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BlockHashAlgorithm.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,13 +12,12 @@ namespace Bodu.Security.Cryptography;
 /// Base class for hash algorithms that consume input in fixed-size blocks and pad the final partial block before
 /// processing it (the Merkle&#8211;Damg&#229;rd shape). Handles block alignment and final-block padding orchestration
 /// on behalf of derived implementations; the residual buffer, running byte total, and disposal latch are inherited from
-/// <see cref="BufferedBlockHashAlgorithm{T}" />.
+/// <see cref="BufferedBlockHashAlgorithm" />.
 /// </summary>
-/// <typeparam name="T">The concrete hash algorithm derived from this class.</typeparam>
 /// <remarks>
 /// <para>
 /// Input data is accumulated into the inherited residual buffer until a complete block of
-/// <see cref="BufferedBlockHashAlgorithm{T}.BlockSize" /> is available, at which point it is passed to
+/// <see cref="BufferedBlockHashAlgorithm.BlockSize" /> is available, at which point it is passed to
 /// <see cref="ProcessBlock" />. Any residual bytes left over at <see cref="HashAlgorithm.HashFinal" /> are padded via
 /// <see cref="PadBlock" /> before a final call to <see cref="ProcessFinalBlock" /> produces the digest.
 /// </para>
@@ -45,11 +44,11 @@ namespace Bodu.Security.Cryptography;
 /// constraint.
 /// </para>
 /// <para>
-/// <strong>When to derive from this class.</strong> Pick <see cref="BlockHashAlgorithm{T}" /> for any classic
+/// <strong>When to derive from this class.</strong> Pick <see cref="BlockHashAlgorithm" /> for any classic
 /// Merkle–Damgård cryptographic hash — the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and similar
 /// designs that finalize by appending a length-encoding pad to the last partial block. For the BLAKE-family pattern
-/// (final-block flag, no length-encoding pad) derive from <see cref="DeferredFinalBlockHashAlgorithm{T}" /> instead.
-/// For a keyed Merkle–Damgård hash (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm{T}" />, which
+/// (final-block flag, no length-encoding pad) derive from <see cref="DeferredFinalBlockHashAlgorithm" /> instead.
+/// For a keyed Merkle–Damgård hash (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm" />, which
 /// adds key handling on top of this base. For non-cryptographic block hashes (Fletcher, CRC) the parallel
 /// <c>BlockNonCryptographicHashAlgorithm&lt;T&gt;</c> base in <c>Bodu.IO.Hashing</c> is the right pick — it integrates
 /// with <c>NonCryptographicHashAlgorithm</c> rather than <see cref="HashAlgorithm" />.
@@ -71,20 +70,19 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="BufferedBlockHashAlgorithm{T}"/> <seealso cref="DeferredFinalBlockHashAlgorithm{T}"/>
-/// <seealso cref="KeyedBlockHashAlgorithm{T}"/> <seealso cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>
-public abstract class BlockHashAlgorithm<T>
-    : BufferedBlockHashAlgorithm<T>
-    where T : BlockHashAlgorithm<T>, new()
+/// <seealso cref="BufferedBlockHashAlgorithm"/> <seealso cref="DeferredFinalBlockHashAlgorithm"/>
+/// <seealso cref="KeyedBlockHashAlgorithm"/> <seealso cref="KeyedDeferredFinalBlockHashAlgorithm"/>
+public abstract class BlockHashAlgorithm
+    : BufferedBlockHashAlgorithm
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlockHashAlgorithm{T}" /> class using the specified input block
+    /// Initializes a new instance of the <see cref="BlockHashAlgorithm" /> class using the specified input block
     /// size.
     /// </summary>
     /// <param name="blockSize">
     /// The block size, in bits, that the algorithm uses to process input data. Must be a positive multiple of 8. This
     /// value determines how data is buffered and segmented during hashing operations; the equivalent byte length is
-    /// available via the inherited <see cref="BufferedBlockHashAlgorithm{T}.BlockSize" /> field.
+    /// available via the inherited <see cref="BufferedBlockHashAlgorithm.BlockSize" /> field.
     /// </param>
     /// <remarks>
     /// <para>
@@ -93,7 +91,7 @@ public abstract class BlockHashAlgorithm<T>
     /// in a residual buffer until enough bytes are accumulated for a full block.
     /// </para>
     /// <para>
-    /// This constructor delegates to <see cref="BufferedBlockHashAlgorithm{T}" />, which allocates the residual buffer
+    /// This constructor delegates to <see cref="BufferedBlockHashAlgorithm" />, which allocates the residual buffer
     /// used to accumulate and align partial input segments across multiple calls to
     /// <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[], int)" /> and
     /// <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" />.
