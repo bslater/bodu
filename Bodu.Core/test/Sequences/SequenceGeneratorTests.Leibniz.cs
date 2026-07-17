@@ -60,6 +60,19 @@ public partial class SequenceGeneratorTests
     }
 
     /// <summary>
+    /// Verifies that a positive lower bound terminates the sequence on its own, without an external
+    /// <c>Take</c>, once term magnitudes fall below the bound.
+    /// </summary>
+    [TestMethod]
+    public void Leibniz_WhenMinIsPositive_ShouldTerminateWithoutTake()
+    {
+        double[] actual = SequenceGenerator.Leibniz(0.05, 2.0).ToArray();
+
+        Assert.HasCount(10, actual); // |F(n)| = 1/(2n+1) >= 0.05 only for n = 0..9
+        Assert.AreEqual(1.0 / 19.0, Math.Abs(actual[9]), 1e-12);
+    }
+
+    /// <summary>
     /// Verifies that approximating π using the Leibniz partial sums converges to the expected approximate value.
     /// </summary>
     [TestMethod]
