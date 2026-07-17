@@ -271,8 +271,12 @@ public sealed partial class AsyncReaderWriterLock
         lock (_gate)
         {
             _readersActive--;
-            if (_readersActive == 0)
-                GrantNextWriter();
+
+            // A queued writer may have canceled while readers were active, leaving readers queued behind it. When the
+            // last reader releases and no writer can be granted, those readers must be admitted here — nothing else
+            // will ever drain the reader queue (mirrors the fallback in ReleaseWriter and CancelWriter).
+            if (_readersActive == 0 && !GrantNextWriter())
+                GrantAllReaders();
         }
     }
 
