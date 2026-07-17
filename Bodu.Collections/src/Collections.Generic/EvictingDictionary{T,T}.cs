@@ -810,12 +810,17 @@ public partial class EvictingDictionary<TKey, TValue>
                 if (_order is null)
                     yield break;
 
-                for (LinkedListNode<TKey>? node = _order.Last; node is not null; node = node.Previous)
+                for (LinkedListNode<TKey>? node = _order.Last; node is not null;)
                 {
                     ThrowIfVersionChanged(version);
 
                     if (_store.TryGetValue(node.Value, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
                         yield return new KeyValuePair<TKey, TValue>(node.Value, item.Value);
+
+                    // Re-check after resuming from the yield: a touch may have detached the current node, whose
+                    // Previous link is then null — advancing first would end the walk silently instead of failing fast.
+                    ThrowIfVersionChanged(version);
+                    node = node.Previous;
                 }
 
                 break;
@@ -951,6 +956,12 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </summary>
     /// <param name="key">The key that was accessed.</param>
     /// <param name="item">The associated cache item for the key.</param>
+    /// <remarks>
+    /// Touches that structurally reposition the entry (LeastRecentlyUsed, MostRecentlyUsed, LeastFrequentlyUsed)
+    /// increment <see cref="_version" /> so in-flight enumerators fail fast via <see cref="ThrowIfVersionChanged" />
+    /// instead of silently observing a reordered — or, for the manually walked MostRecentlyUsed order, truncated —
+    /// sequence. SecondChance only flips the reference flag, which does not disturb enumeration order.
+    /// </remarks>
     private void TouchInternal(TKey key, CacheItem item)
     {
         switch (Policy)
@@ -963,6 +974,7 @@ public partial class EvictingDictionary<TKey, TValue>
                         _order.Remove(item.Node);
 
                     item.Node = _order.AddLast(key);
+                    _version++;
                 }
 
                 break;
@@ -971,6 +983,7 @@ public partial class EvictingDictionary<TKey, TValue>
                 RemoveFromFrequencyList(item);
                 item.Frequency++;
                 item.Node = AddToFrequencyList(item.Frequency, key);
+                _version++;
                 break;
 
             case EvictingDictionaryPolicy.SecondChance:
