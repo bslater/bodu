@@ -13,5 +13,7 @@
 global using FormatConverter = Bodu.Text.Yaml.Serialization.YamlConverter;
 global using FormatConverterFactory = Bodu.Text.Yaml.Serialization.YamlConverterFactory;
 global using FormatOptions = Bodu.Text.Yaml.YamlSerializerOptions;
+global using FormatReader = Bodu.Text.Yaml.Reader.Utf8YamlReader;
 global using FormatResourceStrings = Bodu.YamlResourceStrings;
 global using FormatSerializationException = Bodu.Text.Yaml.YamlSerializationException;
+global using FormatWriter = Bodu.Text.Yaml.Writer.Utf8YamlWriter;
