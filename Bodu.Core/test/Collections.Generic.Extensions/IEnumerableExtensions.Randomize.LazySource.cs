@@ -32,4 +32,42 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
             yield return i;
     }
 
+    /// <summary>
+    /// Verifies that <see cref="RandomizationMode.BufferAll" /> defers source enumeration until the returned sequence
+    /// is enumerated, matching the documented deferred-execution contract.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_BufferAll_WhenSourceThrowsOnEnumeration_ShouldDeferUntilEnumerated()
+    {
+        IEnumerable<int> result = ThrowingSource().Randomize(RandomizationMode.BufferAll, CreateSeededRng());
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = result.ToArray();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RandomizationMode.ReservoirSample" /> defers source enumeration until the returned
+    /// sequence is enumerated, matching the documented deferred-execution contract.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_ReservoirSample_WhenSourceThrowsOnEnumeration_ShouldDeferUntilEnumerated()
+    {
+        IEnumerable<int> result = ThrowingSource().Randomize(RandomizationMode.ReservoirSample, CreateSeededRng(), 1);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = result.ToArray();
+        });
+    }
+
+    private static IEnumerable<int> ThrowingSource()
+    {
+        throw new InvalidOperationException("The source must not be enumerated before the result is.");
+#pragma warning disable CS0162 // Unreachable code: required to make this method an iterator.
+        yield break;
+#pragma warning restore CS0162
+    }
+
 }

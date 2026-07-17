@@ -41,11 +41,19 @@ public static partial class IEnumerableExtensions
     /// (i.e. <see cref="RandomizationMode.ReservoirSample" /> or <see cref="RandomizationMode.LazyShuffle" />).
     /// </exception>
     /// <remarks>
-    /// Execution is deferred until the returned sequence is enumerated. Null checks for <paramref name="source" /> and
-    /// <paramref name="rng" />, validation that <paramref name="count" /> is not negative, and the
-    /// <paramref name="mode" />-dependent requirement for a non-<see langword="null" /> <paramref name="count" /> are
-    /// performed eagerly; validation that <paramref name="count" /> does not exceed the number of available elements is
-    /// performed during enumeration.
+    /// <para>
+    /// Execution is deferred until the returned sequence is enumerated for every mode. Null checks for
+    /// <paramref name="source" /> and <paramref name="rng" />, validation that <paramref name="count" /> is not
+    /// negative, and the <paramref name="mode" />-dependent requirement for a non-<see langword="null" />
+    /// <paramref name="count" /> are performed eagerly; validation that <paramref name="count" /> does not exceed the
+    /// number of available elements is performed during enumeration.
+    /// </para>
+    /// <para>
+    /// Under <see cref="RandomizationMode.StreamWindowed" />, a non-<see langword="null" />
+    /// <paramref name="count" /> limits the randomized stream to that many elements; if the source is exhausted
+    /// first, <see cref="ArgumentOutOfRangeException" /> is thrown during enumeration, consistent with the other
+    /// modes.
+    /// </para>
     /// </remarks>
     public static IEnumerable<T> Randomize<T>(
         this IEnumerable<T> source,
@@ -72,7 +80,9 @@ public static partial class IEnumerableExtensions
                     nameof(count))
                 : ReservoirSample(source, rng, count.Value),
 
-            RandomizationMode.StreamWindowed => StreamWindowedShuffle(source, rng),
+            RandomizationMode.StreamWindowed => count is null
+                ? StreamWindowedShuffle(source, rng)
+                : TakeExactly(StreamWindowedShuffle(source, rng), count.Value),
 
             RandomizationMode.LazyShuffle => count is null
                 ? throw new ArgumentException(
@@ -200,8 +210,10 @@ public static partial class IEnumerableExtensions
         buffer = builder.AsArray()[..availableCount];
 #endif
         int takeCount = count ?? availableCount;
-        ThrowHelper.ThrowIfGreaterThanOther(takeCount, availableCount);
-        return ShuffleHelpers.ShuffleAndYield(buffer, rng, takeCount);
+        ThrowHelper.ThrowIfGreaterThanOther(takeCount, availableCount, nameof(count));
+
+        foreach (T item in ShuffleHelpers.ShuffleAndYield(buffer, rng, takeCount))
+            yield return item;
     }
 
     /// <summary>
@@ -220,7 +232,9 @@ public static partial class IEnumerableExtensions
     {
         using IEnumerator<T> enumerator = source.GetEnumerator();
         T[] reservoir = FillReservoir(enumerator, rng, count);
-        return ShuffleHelpers.ShuffleAndYield(reservoir, rng, count);
+
+        foreach (T item in ShuffleHelpers.ShuffleAndYield(reservoir, rng, count))
+            yield return item;
     }
 
     /// <summary>
@@ -272,5 +286,32 @@ public static partial class IEnumerableExtensions
         // Slice to count to prevent ShuffleAndYield from seeing uninitialized tail elements.
         foreach (T item in ShuffleHelpers.ShuffleAndYield(window[..count], rng, count))
             yield return item;
+    }
+
+    /// <summary>
+    /// Yields exactly <paramref name="count" /> elements from <paramref name="source" />, throwing when the source is
+    /// exhausted first.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to draw from.</param>
+    /// <param name="count">The exact number of elements to yield.</param>
+    /// <returns>The first <paramref name="count" /> elements of <paramref name="source" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown during enumeration if <paramref name="source" /> contains fewer than <paramref name="count" /> elements.
+    /// </exception>
+    private static IEnumerable<T> TakeExactly<T>(IEnumerable<T> source, int count)
+    {
+        if (count == 0)
+            yield break;
+
+        int yielded = 0;
+        foreach (T item in source)
+        {
+            yield return item;
+            if (++yielded == count)
+                yield break;
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(count), ResourceStrings.Arg_OutOfRange_CountGreaterThanSource);
     }
 }
