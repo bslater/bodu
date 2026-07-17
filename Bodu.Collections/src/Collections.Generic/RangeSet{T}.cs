@@ -133,7 +133,7 @@ public sealed partial class RangeSet<T>
         get
         {
             ValidateIndex(index);
-            return new Range<T>(_starts[index], _ends[index]);
+            return new Range<T>(_starts[index], _ends[index], skipValidation: true);
         }
     }
 
@@ -457,7 +457,7 @@ public sealed partial class RangeSet<T>
         var result = new Range<T>[_count];
 
         for (int i = 0; i < _count; i++)
-            result[i] = new Range<T>(_starts[i], _ends[i]);
+            result[i] = new Range<T>(_starts[i], _ends[i], skipValidation: true);
 
         return result;
     }

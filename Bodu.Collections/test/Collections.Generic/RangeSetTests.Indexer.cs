@@ -54,4 +54,20 @@ public partial class RangeSetTests
         Assert.AreEqual(new Range<int>(20, 25), sut[2]);
     }
 
+    /// <summary>
+    /// Verifies that the indexer projects a range whose endpoints are ordered by a custom comparer that disagrees
+    /// with the default comparer, rather than re-validating with the default order and throwing.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenComparerReversesDefaultOrder_ShouldReturnRange()
+    {
+        var sut = new RangeSet<int>(new ReverseComparer<int>());
+        sut.Add(10, 5); // valid under the reverse comparer; inverted under the default order
+
+        Range<int> range = sut[0];
+
+        Assert.AreEqual(10, range.StartInclusive);
+        Assert.AreEqual(5, range.EndExclusive);
+    }
+
 }
