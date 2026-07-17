@@ -183,6 +183,23 @@ public sealed class TrieGenericTests
     }
 
     /// <summary>
+    /// Verifies that enumeration yields the entries in exactly the order produced by the internal snapshot walk,
+    /// pinning the enumeration order of <see cref="Trie{TValue}.GetEnumerator" />.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenIterated_ShouldMatchSnapshotWalkOrder()
+    {
+        var sut = new Trie<int> { [""] = 0, ["car"] = 1, ["card"] = 2, ["care"] = 3, ["cat"] = 4, ["do"] = 5, ["dog"] = 6 };
+
+        KeyValuePair<string, int>[] expected = sut.ToArrayInternal();
+        var actual = new List<KeyValuePair<string, int>>();
+        foreach (KeyValuePair<string, int> item in sut)
+            actual.Add(item);
+
+        CollectionAssert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
     /// Verifies that mutating the trie during enumeration throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]

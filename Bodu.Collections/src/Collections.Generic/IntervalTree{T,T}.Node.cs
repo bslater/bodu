@@ -258,7 +258,8 @@ public sealed partial class IntervalTree<TKey, TValue>
             Node successor = MinimumNode(node.Right);
             node.Low = successor.Low;
             node.High = successor.High;
-            node.Values = successor.Values;
+            node.FirstValue = successor.FirstValue;
+            node.OverflowValues = successor.OverflowValues;
             node = successor;
         }
 
@@ -411,7 +412,7 @@ public sealed partial class IntervalTree<TKey, TValue>
             Low = low;
             High = high;
             Max = high;
-            Values = new List<TValue>(1) { value };
+            FirstValue = value;
         }
 
         /// <summary>
@@ -434,10 +435,53 @@ public sealed partial class IntervalTree<TKey, TValue>
         internal TKey Max { get; set; }
 
         /// <summary>
-        /// Gets or sets the values carried by this exact interval, in insertion order; always non-empty.
+        /// Gets or sets the oldest value carried by this exact interval, stored inline so the dominant
+        /// single-value-per-interval case allocates no list.
         /// </summary>
-        /// <value>The per-interval entry list.</value>
-        internal List<TValue> Values { get; set; }
+        /// <value>The first (oldest) stored value.</value>
+        internal TValue FirstValue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the values carried beyond the first, in insertion order, or <see langword="null" /> until a
+        /// second value is added for the same interval.
+        /// </summary>
+        /// <value>The lazily allocated overflow list.</value>
+        internal List<TValue>? OverflowValues { get; set; }
+
+        /// <summary>
+        /// Gets the total number of values carried by this interval; always at least one.
+        /// </summary>
+        /// <value>The per-interval entry count.</value>
+        internal int ValueCount => 1 + (OverflowValues?.Count ?? 0);
+
+        /// <summary>
+        /// Returns the value at the specified position in insertion order across the inline slot and the overflow list.
+        /// </summary>
+        /// <param name="index">The zero-based entry index; must be less than <see cref="ValueCount" />.</param>
+        /// <returns>The value at <paramref name="index" />.</returns>
+        internal TValue GetValueAt(int index) =>
+            index == 0 ? FirstValue : OverflowValues![index - 1];
+
+        /// <summary>
+        /// Returns the insertion-order index of the first entry equal to <paramref name="value" /> under
+        /// <see cref="EqualityComparer{TValue}.Default" />, or <c>-1</c> when no entry matches.
+        /// </summary>
+        /// <param name="value">The value to locate.</param>
+        /// <returns>The zero-based entry index, or <c>-1</c>.</returns>
+        internal int IndexOfValue(TValue value)
+        {
+            if (EqualityComparer<TValue>.Default.Equals(FirstValue, value))
+                return 0;
+
+            if (OverflowValues != null)
+            {
+                int overflowIndex = OverflowValues.IndexOf(value);
+                if (overflowIndex >= 0)
+                    return overflowIndex + 1;
+            }
+
+            return -1;
+        }
 
         /// <summary>
         /// Gets or sets the left child, or <see langword="null" />.

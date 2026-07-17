@@ -227,7 +227,7 @@ public sealed partial class RadixTrie
     /// <summary>
     /// Returns an enumerator that iterates over the keys of the trie.
     /// </summary>
-    /// <returns>A struct enumerator over a snapshot of the trie's keys.</returns>
+    /// <returns>A struct enumerator that lazily walks the trie's keys and fails fast on modification.</returns>
     public Enumerator GetEnumerator() =>
         new(this);
 
@@ -240,7 +240,7 @@ public sealed partial class RadixTrie
         GetEnumerator();
 
     /// <summary>
-    /// Builds a point-in-time array of the trie's keys, used by the enumerator and debugger proxy.
+    /// Builds a point-in-time array of the trie's keys, used by the debugger proxy.
     /// </summary>
     /// <returns>An array containing every key currently stored.</returns>
     internal string[] ToArrayInternal()

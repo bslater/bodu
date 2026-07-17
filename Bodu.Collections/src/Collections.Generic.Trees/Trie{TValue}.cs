@@ -365,7 +365,7 @@ public sealed partial class Trie<TValue>
     /// <summary>
     /// Returns an enumerator that iterates over the key/value pairs of the trie.
     /// </summary>
-    /// <returns>A struct enumerator over a snapshot of the trie's entries.</returns>
+    /// <returns>A struct enumerator that lazily walks the trie's entries and fails fast on modification.</returns>
     public Enumerator GetEnumerator() =>
         new(this);
 
@@ -378,7 +378,7 @@ public sealed partial class Trie<TValue>
         GetEnumerator();
 
     /// <summary>
-    /// Builds a point-in-time array of the trie's entries, used by the enumerator and debugger proxy.
+    /// Builds a point-in-time array of the trie's entries, used by the debugger proxy.
     /// </summary>
     /// <returns>An array containing every key/value pair currently stored.</returns>
     internal KeyValuePair<string, TValue>[] ToArrayInternal()

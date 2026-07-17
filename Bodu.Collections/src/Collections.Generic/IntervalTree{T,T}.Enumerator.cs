@@ -76,10 +76,10 @@ public sealed partial class IntervalTree<TKey, TValue>
                 throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified);
 
             // Drain the current node's remaining values before stepping to the successor.
-            if (_node != null && _valueIndex + 1 < _node.Values.Count)
+            if (_node != null && _valueIndex + 1 < _node.ValueCount)
             {
                 _valueIndex++;
-                _current = (_node.Low, _node.High, _node.Values[_valueIndex]);
+                _current = (_node.Low, _node.High, _node.GetValueAt(_valueIndex));
                 return true;
             }
 
@@ -91,7 +91,7 @@ public sealed partial class IntervalTree<TKey, TValue>
 
             _node = _next;
             _valueIndex = 0;
-            _current = (_node.Low, _node.High, _node.Values[0]);
+            _current = (_node.Low, _node.High, _node.FirstValue);
             _next = SuccessorNode(_node);
             return true;
         }
