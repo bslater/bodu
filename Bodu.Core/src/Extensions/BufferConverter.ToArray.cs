@@ -37,6 +37,7 @@ public static partial class BufferConverter
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif
+        ThrowHelper.ThrowIfMultiplyOverflows(count, elementSize);
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(sourceArray, sourceIndex, count * elementSize);
 
         var result = new T[count];
@@ -72,6 +73,7 @@ public static partial class BufferConverter
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif
+        ThrowHelper.ThrowIfMultiplyOverflows(count, elementSize);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(sourceSpan, 0, count * elementSize);
 
         var result = new T[count];

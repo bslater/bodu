@@ -44,10 +44,12 @@ public static partial class BufferConverter
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif
+        ThrowHelper.ThrowIfMultiplyOverflows(count, elementSize);
         int byteCount = count * elementSize;
 
+        // The source range is measured in bytes; the target range is measured in T elements.
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(sourceArray, sourceIndex, byteCount);
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(targetArray, targetIndex, byteCount);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(targetArray, targetIndex, count);
 
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
         var sourceSpan = new ReadOnlySpan<byte>(sourceArray, sourceIndex, byteCount);
@@ -102,6 +104,7 @@ public static partial class BufferConverter
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif
+        ThrowHelper.ThrowIfMultiplyOverflows(count, elementSize);
         int byteCount = count * elementSize;
 
         // ThrowHelper will handle range and size checks
