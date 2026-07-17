@@ -275,8 +275,8 @@ public static partial class DateTimeExtensions
     /// </remarks>
     private static DateTime GetLastDateOfWeekInQuarterInternal(int year, int quarter, DayOfWeek dayOfWeek, CalendarQuarterDefinition definition, DateTimeKind kind)
     {
-        long ticks = ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition));
-        ticks += ((dayOfWeek - GetDayOfWeekFromTicks(ticks) + 7) % 7) * TicksPerDay;
+        long ticks = ComputeQuarterEndTicks(year, quarter, GetQuarterDefinition(definition));
+        ticks -= ((GetDayOfWeekFromTicks(ticks) - dayOfWeek + 7) % 7) * TicksPerDay;
         return new DateTime(ticks, kind);
     }
 }

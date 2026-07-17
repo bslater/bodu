@@ -8,30 +8,24 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-    // Note: The current implementation of LastDateOfWeekInQuarter starts from the quarter START
-    // and advances forward using ((target - currentDow + 7) % 7) days, which yields the FIRST
-    // occurrence of the target day-of-week, not the last. The provider overload (which calls
-    // GetTicksToPreviousDayOfWeek from the quarter end) does return the last occurrence.
-    // These tests lock in the observed behaviour per overload so any future correction to
-    // match the documented "last occurrence within the quarter" contract surfaces as a
-    // regression.
+    // The definition-based overloads search backward from the quarter end, matching the documented
+    // "last occurrence within the quarter" contract. (An earlier implementation stepped forward from
+    // the quarter start, returning the FIRST occurrence; these tests pin the corrected behaviour.)
 
     // =========================================================================
     // Instance: LastDateOfWeekInQuarter(this DateTime, DayOfWeek) — calendar default
-    // Implementation advances forward from quarter start, so this returns the FIRST
-    // occurrence of the target day in the quarter.
     // =========================================================================
 
-    public static IEnumerable<object[]> LastDateOfWeekInQuarterCalendarObservedTestData()
+    public static IEnumerable<object[]> LastDateOfWeekInQuarterCalendarTestData()
     {
-        // Q1 2024 starts Mon 1 Jan. Target Sun → (0-1+7)%7 = 6 → 7 Jan.
-        yield return new object[] { new DateTime(2024, 2, 15), DayOfWeek.Sunday, new DateTime(2024, 1, 7) };
-        // Target Friday → 4 → 5 Jan.
-        yield return new object[] { new DateTime(2024, 2, 15), DayOfWeek.Friday, new DateTime(2024, 1, 5) };
-        // Q2 starts Mon 1 Apr. Target Mon → 0 → 1 Apr.
-        yield return new object[] { new DateTime(2024, 5, 10), DayOfWeek.Monday, new DateTime(2024, 4, 1) };
-        // Q4 starts Tue 1 Oct. Target Tue → 0 → 1 Oct.
-        yield return new object[] { new DateTime(2024, 11, 5), DayOfWeek.Tuesday, new DateTime(2024, 10, 1) };
+        // Q1 2024 ends Sun 31 Mar. Target Sun → 31 Mar (quarter end matches target).
+        yield return new object[] { new DateTime(2024, 2, 15), DayOfWeek.Sunday, new DateTime(2024, 3, 31) };
+        // Target Friday → last Friday before 31 Mar = 29 Mar.
+        yield return new object[] { new DateTime(2024, 2, 15), DayOfWeek.Friday, new DateTime(2024, 3, 29) };
+        // Q2 2024 ends Sun 30 Jun. Target Mon → last Monday = 24 Jun.
+        yield return new object[] { new DateTime(2024, 5, 10), DayOfWeek.Monday, new DateTime(2024, 6, 24) };
+        // Q4 2024 ends Tue 31 Dec. Target Tue → 31 Dec.
+        yield return new object[] { new DateTime(2024, 11, 5), DayOfWeek.Tuesday, new DateTime(2024, 12, 31) };
     }
 
     /// <summary>
@@ -90,29 +84,28 @@ public partial class DateTimeExtensionsTests
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the static definition overload returns the expected date under the current forward-from-start behaviour.
+    /// Verifies that the static definition overload returns the last occurrence of the target day within the quarter.
     /// </summary>
     [TestMethod]
     public void GetLastDateOfWeekInQuarter_WhenUsingDefinitionOverload_ShouldReturnExpectedDate()
     {
         DateTime actual = DateTimeExtensions.GetLastDateOfWeekInQuarter(2024, 1, DayOfWeek.Sunday, CalendarQuarterDefinition.JanuaryToDecember);
-        Assert.AreEqual(new DateTime(2024, 1, 7), actual);
+        Assert.AreEqual(new DateTime(2024, 3, 31), actual);
     }
 
     // =========================================================================
     // Static: GetLastDateOfWeekInQuarter(int, int, DayOfWeek)
-    // Same forward-from-start behaviour as instance calendar overload.
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the static year/quarter overload returns the expected date under the current forward-from-start behaviour.
+    /// Verifies that the static year/quarter overload returns the last occurrence of the target day within the quarter.
     /// </summary>
     [TestMethod]
     public void GetLastDateOfWeekInQuarter_WhenUsingYearAndQuarter_ShouldReturnExpectedDate()
     {
-        // Q1 2024 starts Mon 1 Jan. Target Sunday → first Sunday = 7 Jan.
+        // Q1 2024 ends Sun 31 Mar. Target Sunday → 31 Mar.
         DateTime actual = DateTimeExtensions.GetLastDateOfWeekInQuarter(2024, 1, DayOfWeek.Sunday);
-        Assert.AreEqual(new DateTime(2024, 1, 7), actual);
+        Assert.AreEqual(new DateTime(2024, 3, 31), actual);
     }
 
     /// <summary>
@@ -216,10 +209,10 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the instance calendar-default overload locks in the currently observed forward-from-start behaviour (returning the first, not last, occurrence of the target day).
+    /// Verifies that the instance calendar-default overload returns the last occurrence of the target day within the quarter.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfWeekInQuarterCalendarObservedTestData))]
+    [DynamicData(nameof(LastDateOfWeekInQuarterCalendarTestData))]
     public void LastDateOfWeekInQuarter_WhenUsingCalendarDefault_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
     {
         DateTime actual = input.LastDateOfWeekInQuarter(dayOfWeek);
