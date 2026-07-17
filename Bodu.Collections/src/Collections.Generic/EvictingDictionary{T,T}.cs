@@ -577,11 +577,11 @@ public partial class EvictingDictionary<TKey, TValue>
                 when _order?.Last is not null => _order.Last.Value,
 
             EvictingDictionaryPolicy.LeastFrequentlyUsed
-                when _frequencyList?.Count > 0 && _frequencyList.First().Value.First is not null
-                => _frequencyList.First().Value.First!.Value,
+                when PeekLeastFrequentNode() is { } lfuCandidate
+                => lfuCandidate.Value,
 
             EvictingDictionaryPolicy.RandomReplacement
-                when _store.Count > 0 => _store.Keys.First(),
+                when _store.Count > 0 => PeekFirstStoreKey(),
 
             EvictingDictionaryPolicy.SecondChance when _order is not null => PeekSecondChanceCandidate(),
 
@@ -631,6 +631,39 @@ public partial class EvictingDictionary<TKey, TValue>
     {
         if (!Touch(key))
             throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.KeyNotFound_Dictionary, key));
+    }
+
+    /// <summary>
+    /// Returns the head node of the lowest-frequency LeastFrequentlyUsed bucket, or <see langword="null" /> when the
+    /// frequency list is absent, empty, or its first bucket holds no keys.
+    /// </summary>
+    /// <returns>The least-frequently-used key's bucket node, or <see langword="null" /> when there is no candidate.</returns>
+    /// <remarks>
+    /// <see cref="SortedDictionary{TKey, TValue}" /> enumerates in ascending key order, so only the first bucket is
+    /// inspected — a single <c>MoveNext</c> rather than a LINQ <c>First()</c> chain.
+    /// </remarks>
+    private LinkedListNode<TKey>? PeekLeastFrequentNode()
+    {
+        if (_frequencyList is null)
+            return null;
+
+        foreach (KeyValuePair<int, LinkedList<TKey>> bucket in _frequencyList)
+            return bucket.Value?.First;
+
+        return null;
+    }
+
+    /// <summary>
+    /// Returns the first key produced by the store's enumeration order, used as the RandomReplacement peek candidate.
+    /// </summary>
+    /// <returns>The first key in the store's enumeration order.</returns>
+    /// <remarks>Callers must ensure the store is non-empty; the fallback value is never observed.</remarks>
+    private TKey PeekFirstStoreKey()
+    {
+        foreach (TKey key in _store.Keys)
+            return key;
+
+        return default!;
     }
 
     /// <summary>
@@ -688,8 +721,7 @@ public partial class EvictingDictionary<TKey, TValue>
                 break;
 
             case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                if (_frequencyList?.Count > 0
-                    && _frequencyList.First().Value?.First is LinkedListNode<TKey> lfuNode)
+                if (PeekLeastFrequentNode() is LinkedListNode<TKey> lfuNode)
                 {
                     keyToRemove = lfuNode.Value;
                     found = true;
@@ -700,7 +732,19 @@ public partial class EvictingDictionary<TKey, TValue>
             case EvictingDictionaryPolicy.RandomReplacement:
                 if (_store.Count > 0)
                 {
-                    keyToRemove = _store.Keys.ElementAt(Random.Shared.Next(_store.Count));
+                    // Walk the key collection's struct enumerator to the drawn index rather than routing
+                    // through LINQ ElementAt — same O(n) worst case and the same selected element for a
+                    // given draw, but no enumerator boxing or LINQ dispatch layers.
+                    int skip = Random.Shared.Next(_store.Count);
+                    foreach (TKey key in _store.Keys)
+                    {
+                        if (skip-- == 0)
+                        {
+                            keyToRemove = key;
+                            break;
+                        }
+                    }
+
                     found = true;
                 }
 

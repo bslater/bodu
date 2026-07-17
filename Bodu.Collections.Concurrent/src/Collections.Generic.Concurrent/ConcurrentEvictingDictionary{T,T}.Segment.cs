@@ -307,17 +307,23 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         }
 
         /// <summary>
-        /// Appends the segment's live entries to <paramref name="target" /> in policy order, filtering expired entries
-        /// against the supplied clock snapshot without removing them or sliding deadlines. The caller must hold the
-        /// stripe lock.
+        /// Appends a projection of the segment's live entries to <paramref name="target" /> in policy order, filtering
+        /// expired entries against the supplied clock snapshot without removing them or sliding deadlines. The caller
+        /// must hold the stripe lock.
         /// </summary>
-        /// <param name="target">The list receiving the entries.</param>
+        /// <typeparam name="TResult">The projected element type.</typeparam>
+        /// <param name="target">
+        /// The array receiving the projected entries; must have room for the segment's raw count from
+        /// <paramref name="index" />.
+        /// </param>
+        /// <param name="index">The next write position in <paramref name="target" />, advanced per appended entry.</param>
         /// <param name="nowTicks">The clock snapshot used to filter expired entries.</param>
         /// <param name="checkExpiry">
         /// <see langword="true" /> when expiration is configured and filtering applies.
         /// </param>
+        /// <param name="selector">The projection applied to each live key/value pair.</param>
         /// <exception cref="InvalidOperationException">The eviction policy is unrecognized.</exception>
-        internal void AppendSnapshot(List<KeyValuePair<TKey, TValue>> target, long nowTicks, bool checkExpiry)
+        internal void AppendSnapshot<TResult>(TResult[] target, ref int index, long nowTicks, bool checkExpiry, Func<TKey, TValue, TResult> selector)
         {
             switch (_policy)
             {
@@ -327,7 +333,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                     foreach (TKey key in _order)
                     {
                         if (_store.TryGetValue(key, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                            target.Add(new KeyValuePair<TKey, TValue>(key, item.Value));
+                            target[index++] = selector(key, item.Value);
                     }
 
                     break;
@@ -336,7 +342,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                     for (LinkedListNode<TKey>? node = _order.Last; node is not null; node = node.Previous)
                     {
                         if (_store.TryGetValue(node.Value, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                            target.Add(new KeyValuePair<TKey, TValue>(node.Value, item.Value));
+                            target[index++] = selector(node.Value, item.Value);
                     }
 
                     break;
@@ -347,7 +353,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                         foreach (TKey key in freq.Value)
                         {
                             if (_store.TryGetValue(key, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                                target.Add(new KeyValuePair<TKey, TValue>(key, item.Value));
+                                target[index++] = selector(key, item.Value);
                         }
                     }
 
@@ -357,7 +363,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                     foreach ((TKey key, CacheItem item) in _store)
                     {
                         if (!(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                            target.Add(new KeyValuePair<TKey, TValue>(key, item.Value));
+                            target[index++] = selector(key, item.Value);
                     }
 
                     break;
@@ -431,8 +437,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                     break;
 
                 case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                    if (_frequencyList?.Count > 0
-                        && _frequencyList.First().Value?.First is LinkedListNode<TKey> lfuNode)
+                    if (PeekLeastFrequentNode() is LinkedListNode<TKey> lfuNode)
                     {
                         keyToRemove = lfuNode.Value;
                         found = true;
@@ -443,7 +448,19 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                 case EvictingDictionaryPolicy.RandomReplacement:
                     if (_store.Count > 0)
                     {
-                        keyToRemove = _store.Keys.ElementAt(Random.Shared.Next(_store.Count));
+                        // Walk the key collection's struct enumerator to the drawn index rather than routing
+                        // through LINQ ElementAt — same O(n) worst case and the same selected element for a
+                        // given draw, but no enumerator boxing or LINQ dispatch layers.
+                        int skip = Random.Shared.Next(_store.Count);
+                        foreach (TKey key in _store.Keys)
+                        {
+                            if (skip-- == 0)
+                            {
+                                keyToRemove = key;
+                                break;
+                            }
+                        }
+
                         found = true;
                     }
 
@@ -469,6 +486,26 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
             // No candidate was produced. If the store is still at capacity the caller (AddOrReplace) would exceed the
             // limit, so fail loudly rather than silently corrupting the invariant.
             if (_store.Count >= _capacity) throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ConcurrentCollectionsResourceStrings.Op_Invalid_EvictionProducedNoCandidate, _policy));
+        }
+
+        /// <summary>
+        /// Returns the head node of the lowest-frequency LeastFrequentlyUsed bucket, or <see langword="null" /> when
+        /// the frequency list is absent, empty, or its first bucket holds no keys.
+        /// </summary>
+        /// <returns>The least-frequently-used key's bucket node, or <see langword="null" /> when there is no candidate.</returns>
+        /// <remarks>
+        /// <see cref="SortedDictionary{TKey, TValue}" /> enumerates in ascending key order, so only the first bucket is
+        /// inspected — a single <c>MoveNext</c> rather than a LINQ <c>First()</c> chain.
+        /// </remarks>
+        private LinkedListNode<TKey>? PeekLeastFrequentNode()
+        {
+            if (_frequencyList is null)
+                return null;
+
+            foreach (KeyValuePair<int, LinkedList<TKey>> bucket in _frequencyList)
+                return bucket.Value?.First;
+
+            return null;
         }
 
         /// <summary>

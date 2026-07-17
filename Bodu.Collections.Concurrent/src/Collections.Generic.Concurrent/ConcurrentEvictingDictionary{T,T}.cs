@@ -1044,7 +1044,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
             return;
 
         // Each handler is guarded independently so a throwing subscriber cannot prevent subsequent subscribers from
-        // receiving the notification; the eviction is already committed and cannot be undone.
+        // receiving the notification; the eviction is already committed and cannot be undone. The invocation list is
+        // materialized once per batch, outside the per-entry loop.
         Delegate[] handlers = onEvicted.GetInvocationList();
         foreach (KeyValuePair<TKey, TValue> pair in evicted)
         {
@@ -1077,15 +1078,35 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <returns>
     /// The live entries across all segments; expired entries are filtered against a single clock read.
     /// </returns>
-    private KeyValuePair<TKey, TValue>[] SnapshotNoLocks()
+    private KeyValuePair<TKey, TValue>[] SnapshotNoLocks() =>
+        SnapshotNoLocks(static (key, value) => new KeyValuePair<TKey, TValue>(key, value));
+
+    /// <summary>
+    /// Builds a projected snapshot of the dictionary's live entries directly into a single exactly-consumed array. The
+    /// caller must already hold every lock.
+    /// </summary>
+    /// <typeparam name="TResult">The projected element type.</typeparam>
+    /// <param name="selector">The projection applied to each live key/value pair.</param>
+    /// <returns>
+    /// The projected live entries across all segments; expired entries are filtered against a single clock read.
+    /// </returns>
+    /// <remarks>
+    /// The array is sized to the raw per-segment counts and filled in place, so no intermediate list or pair array is
+    /// allocated; it is trimmed only when expired-but-unpurged entries were filtered out of the snapshot.
+    /// </remarks>
+    private TResult[] SnapshotNoLocks<TResult>(Func<TKey, TValue, TResult> selector)
     {
         bool checkExpiry = _timeProvider is not null;
         long nowTicks = checkExpiry ? _timeProvider!.GetUtcNow().UtcTicks : 0L;
 
-        var result = new List<KeyValuePair<TKey, TValue>>(GetRawCountNoLocks());
+        var result = new TResult[GetRawCountNoLocks()];
+        int count = 0;
         foreach (Segment segment in _segments)
-            segment.AppendSnapshot(result, nowTicks, checkExpiry);
+            segment.AppendSnapshot(result, ref count, nowTicks, checkExpiry, selector);
 
-        return result.ToArray();
+        if (count != result.Length)
+            Array.Resize(ref result, count);
+
+        return result;
     }
 }

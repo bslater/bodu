@@ -22,6 +22,11 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
     {
         get
         {
+            // With a single layer there is nothing to deduplicate, so the layer's own count is authoritative
+            // and the seen-key set allocation is skipped entirely.
+            if (_layers.Length == 1)
+                return _layers[0].Count;
+
             var seen = new HashSet<TKey>(_comparer);
             foreach (IDictionary<TKey, TValue> layer in _layers)
             {
@@ -173,10 +178,24 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
     {
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, Count);
 
-        foreach (KeyValuePair<TKey, TValue> kvp in this)
-            array[arrayIndex++] = kvp;
+        // Single pass: write the merged view through while walking the layers, tracking seen keys once
+        // rather than walking every layer twice (once for Count, once for the enumerator). The merged
+        // count is only known when the walk completes, so the length check runs afterwards; when the
+        // array is too short the elements that fit have already been written.
+        var seen = new HashSet<TKey>(_comparer);
+        int index = arrayIndex;
+
+        foreach (IDictionary<TKey, TValue> layer in _layers)
+        {
+            foreach (KeyValuePair<TKey, TValue> kvp in layer)
+            {
+                if (seen.Add(kvp.Key) && index < array.Length)
+                    array[index++] = kvp;
+            }
+        }
+
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, seen.Count);
     }
 
     /// <inheritdoc />

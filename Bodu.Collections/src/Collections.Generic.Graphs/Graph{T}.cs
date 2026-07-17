@@ -167,20 +167,29 @@ public sealed partial class Graph<T>
         if (!_adjacency.TryGetValue(vertex, out Dictionary<T, double>? outgoing))
             return false;
 
-        // Remove the vertex's own edges (and, when undirected, the mirrored back edges).
-        foreach (T? neighbor in outgoing.Keys.ToArray())
-            RemoveEdge(vertex, neighbor);
-
-        // In a directed graph, incoming edges from other vertices remain and must be removed explicitly.
         if (IsDirected)
         {
-            foreach (T? source in _adjacency.Keys.ToArray())
+            // Incoming edges from other vertices must be removed explicitly. Only the inner adjacency maps
+            // are mutated here, so the outer dictionary is enumerated directly without a defensive copy.
+            foreach (KeyValuePair<T, Dictionary<T, double>> entry in _adjacency)
             {
-                if (!Comparer.Equals(source, vertex) && RemoveDirectedEdge(source, vertex))
+                if (!Comparer.Equals(entry.Key, vertex) && entry.Value.Remove(vertex))
                     _edgeCount--;
             }
         }
+        else
+        {
+            // Undirected: drop the mirrored back edge held by each neighbor. The neighbor maps are distinct
+            // from the vertex's own map, so enumerating `outgoing` while removing from them is safe.
+            foreach (T neighbor in outgoing.Keys)
+            {
+                if (!Comparer.Equals(neighbor, vertex))
+                    _adjacency[neighbor].Remove(vertex);
+            }
+        }
 
+        // Removing the vertex's own map drops all outgoing edges (and the undirected self-loop) in one step.
+        _edgeCount -= outgoing.Count;
         _adjacency.Remove(vertex);
         return true;
     }

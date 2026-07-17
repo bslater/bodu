@@ -298,10 +298,15 @@ public sealed class BloomFilter<T>
 
         ProbabilisticHashing.DeriveHashPair(item, _comparer, out var h1, out var h2);
 
+        // Incremental double hashing: g wraps mod 2^64 exactly as h1 + i·h2 does, so the probe sequence is
+        // bit-identical to the multiplicative form (Export/Import compatibility) without a per-probe multiply.
+        // The modulo must stay 64-bit: reducing h1/h2 first would lose the 2^64 wrap and change the sequence.
+        var g = h1;
         for (var i = 0; i < _hashCount; i++)
         {
-            var index = (int)((h1 + ((ulong)i * h2)) % (ulong)_bitCount);
+            var index = (int)(g % (ulong)_bitCount);
             _words[index >> 6] |= 1UL << (index & 63);
+            g += h2;
         }
     }
 
@@ -349,11 +354,15 @@ public sealed class BloomFilter<T>
 
         ProbabilisticHashing.DeriveHashPair(item, _comparer, out var h1, out var h2);
 
+        // Incremental double hashing; see Add for why the sequence matches the multiplicative form exactly.
+        var g = h1;
         for (var i = 0; i < _hashCount; i++)
         {
-            var index = (int)((h1 + ((ulong)i * h2)) % (ulong)_bitCount);
+            var index = (int)(g % (ulong)_bitCount);
             if ((_words[index >> 6] & (1UL << (index & 63))) == 0)
                 return false;
+
+            g += h2;
         }
 
         return true;

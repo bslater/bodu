@@ -307,10 +307,15 @@ public sealed class CountMinSketch<T>
 
         ProbabilisticHashing.DeriveHashPair(item, _comparer, out var h1, out var h2);
 
+        // Incremental double hashing: g wraps mod 2^64 exactly as h1 + i·h2 does, so the probe sequence is
+        // bit-identical to the multiplicative form (Export/Import compatibility) without a per-probe multiply.
+        // The modulo must stay 64-bit: reducing h1/h2 first would lose the 2^64 wrap and change the sequence.
+        var g = h1;
         for (var i = 0; i < _depth; i++)
         {
-            var cell = (i * _width) + (int)((h1 + ((ulong)i * h2)) % (ulong)_width);
+            var cell = (i * _width) + (int)(g % (ulong)_width);
             _cells[cell] = checked(_cells[cell] + count);
+            g += h2;
         }
 
         _totalCount = checked(_totalCount + count);
@@ -346,11 +351,14 @@ public sealed class CountMinSketch<T>
 
         ProbabilisticHashing.DeriveHashPair(item, _comparer, out var h1, out var h2);
 
+        // Incremental double hashing; see Add(T, long) for why the sequence matches the multiplicative form exactly.
+        var g = h1;
         var estimate = long.MaxValue;
         for (var i = 0; i < _depth; i++)
         {
-            var cell = (i * _width) + (int)((h1 + ((ulong)i * h2)) % (ulong)_width);
+            var cell = (i * _width) + (int)(g % (ulong)_width);
             estimate = Math.Min(estimate, _cells[cell]);
+            g += h2;
         }
 
         return estimate;

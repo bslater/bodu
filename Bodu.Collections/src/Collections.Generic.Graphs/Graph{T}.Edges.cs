@@ -76,7 +76,18 @@ public sealed partial class Graph<T>
         if (_adjacency.TryGetValue(from, out Dictionary<T, double>? existing) && existing.ContainsKey(to))
             return false;
 
-        AddEdge(from, to, weight);
+        // Inline the add rather than delegating to AddEdge so the null/weight validation and the existence
+        // probe above are not repeated.
+        AddVertex(from);
+        AddVertex(to);
+
+        bool added = AddDirectedEdge(from, to, weight);
+        if (!IsDirected && !Comparer.Equals(from, to))
+            AddDirectedEdge(to, from, weight);
+
+        if (added)
+            _edgeCount++;
+
         return true;
     }
 

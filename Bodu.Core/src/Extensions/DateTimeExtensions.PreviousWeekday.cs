@@ -31,19 +31,8 @@ public static partial class DateTimeExtensions
     /// Thrown if <paramref name="workingWeek" /> is not a defined value of the <see cref="WorkingDaysOfWeek" />
     /// enumeration.
     /// </exception>
-    public static DateTime PreviousWeekday(this DateTime dateTime, WorkingDaysOfWeek workingWeek)
-    {
-        ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
-
-        long ticks = dateTime.Ticks;
-        do
-        {
-            ticks -= TicksPerDay;
-        }
-        while (IsWeekend(GetDayOfWeekFromTicks(ticks), workingWeek));
-
-        return new DateTime(ticks, dateTime.Kind);
-    }
+    public static DateTime PreviousWeekday(this DateTime dateTime, WorkingDaysOfWeek workingWeek) =>
+        PreviousWeekday(dateTime, workingWeek, provider: null);
 
     /// <summary>
     /// Returns a new <see cref="DateTime" /> representing the previous calendar weekday before the specified
@@ -79,12 +68,27 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
 
+        // Validate and convert the working week once; the per-day loop then tests pattern membership (or the
+        // custom provider) without re-resolving the pattern on every stepped day.
+        WeekPattern? pattern = ResolveWorkingWeekPattern(workingWeek, provider);
+
         long ticks = dateTime.Ticks;
-        do
+        if (pattern is { } workingPattern)
         {
-            ticks -= TicksPerDay;
+            do
+            {
+                ticks -= TicksPerDay;
+            }
+            while (!workingPattern.Contains(GetDayOfWeekFromTicks(ticks)));
         }
-        while (IsWeekend(GetDayOfWeekFromTicks(ticks), workingWeek, provider));
+        else
+        {
+            do
+            {
+                ticks -= TicksPerDay;
+            }
+            while (provider!.IsWeekend(GetDayOfWeekFromTicks(ticks)));
+        }
 
         return new DateTime(ticks, dateTime.Kind);
     }
