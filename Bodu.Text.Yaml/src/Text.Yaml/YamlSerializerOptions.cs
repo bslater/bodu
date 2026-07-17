@@ -63,9 +63,6 @@ public sealed partial class YamlSerializerOptions
     /// <summary>The configured maximum nesting depth; zero or less selects the default.</summary>
     private int _maxDepth;
 
-    /// <summary>The converter list captured when the options became read-only, or <see langword="null" /> while still mutable.</summary>
-    private YamlConverter[]? _frozenConverters;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlSerializerOptions" /> class.
     /// </summary>
@@ -79,14 +76,6 @@ public sealed partial class YamlSerializerOptions
     /// </summary>
     /// <value>The converter collection.</value>
     public IList<YamlConverter> Converters { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether the options instance is read-only.
-    /// </summary>
-    /// <value>
-    /// <see langword="true" /> once the instance has been used or frozen; otherwise <see langword="false" />.
-    /// </value>
-    public bool IsReadOnly => _frozenConverters is not null;
 
     /// <summary>
     /// Gets or sets the policy used to convert member names to YAML keys.
@@ -238,124 +227,4 @@ public sealed partial class YamlSerializerOptions
     internal int EffectiveMaxDepth =>
         _maxDepth <= 0 ? YamlLimits.DefaultMaxDepth : Math.Min(_maxDepth, YamlLimits.AbsoluteMaxDepth);
 
-    /// <summary>
-    /// Marks the options instance as read-only so that its settable properties can no longer be changed, capturing
-    /// the converter list. Called automatically before the first serialization or deserialization.
-    /// </summary>
-    public void MakeReadOnly() =>
-        _frozenConverters ??= [.. Converters];
-
-    /// <summary>The resolved concrete converter per type, cached once the options are frozen.</summary>
-    private readonly ConcurrentDictionary<Type, YamlConverter> _converterCache = new();
-
-    /// <summary>The resolved member metadata per type, cached once the options are frozen.</summary>
-    private readonly ConcurrentDictionary<Type, TypeMetadata> _metadataCache = new();
-
-    /// <summary>
-    /// Resolves the converter that handles the specified type, applying the type-level converter attribute, the
-    /// registered converters, and finally the built-in converters, in that order.
-    /// </summary>
-    /// <param name="typeToConvert">The type to resolve a converter for.</param>
-    /// <returns>The concrete converter for the type.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="NotSupportedException">Thrown when no converter handles the type.</exception>
-    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
-    public YamlConverter GetConverter(Type typeToConvert)
-    {
-        ThrowHelper.ThrowIfNull(typeToConvert);
-
-        MakeReadOnly();
-
-        // The state overload avoids allocating a delegate per call on cache hits.
-        return _converterCache.GetOrAdd(typeToConvert, static (type, self) => self.ResolveConverter(type), this);
-    }
-
-    /// <summary>
-    /// Gets the cached metadata describing how the specified type maps to a YAML mapping.
-    /// </summary>
-    /// <param name="type">The type to describe.</param>
-    /// <returns>The type metadata.</returns>
-    internal TypeMetadata GetTypeMetadata(Type type) =>
-        _metadataCache.GetOrAdd(type, static (t, self) => MetadataResolver.Resolve(t, self), this);
-
-    /// <summary>
-    /// Instantiates the converter named by a converter attribute and adapts it to the target type.
-    /// </summary>
-    /// <param name="converterType">The converter type to instantiate.</param>
-    /// <param name="targetType">The type the converter must handle.</param>
-    /// <returns>The concrete converter.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when <paramref name="converterType" /> is not a <see cref="YamlConverter" />, lacks a public
-    /// parameterless constructor, or cannot convert <paramref name="targetType" />.
-    /// </exception>
-    internal YamlConverter InstantiateConverter(Type converterType, Type targetType)
-    {
-        if (!typeof(YamlConverter).IsAssignableFrom(converterType))
-            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Arg_Invalid_ConverterAttributeType, converterType));
-
-        if (converterType.GetConstructor(Type.EmptyTypes) is null)
-            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Arg_Invalid_ConverterNoParameterlessCtor, converterType));
-
-        var converter = (YamlConverter)Activator.CreateInstance(converterType)!;
-        return Materialize(converter, targetType);
-    }
-
-    /// <summary>
-    /// Resolves the converter for a type without consulting the cache.
-    /// </summary>
-    /// <param name="type">The type to resolve a converter for.</param>
-    /// <returns>The concrete converter.</returns>
-    /// <exception cref="NotSupportedException">Thrown when no converter handles the type.</exception>
-    private YamlConverter ResolveConverter(Type type)
-    {
-        ConverterAttribute? attribute = type.GetCustomAttribute<ConverterAttribute>(inherit: false);
-        if (attribute is not null)
-            return InstantiateConverter(attribute.ConverterType, type);
-
-        foreach (YamlConverter converter in _frozenConverters!)
-        {
-            if (converter.CanConvert(type))
-                return Materialize(converter, type);
-        }
-
-        foreach (YamlConverter converter in DefaultConverters.Converters)
-        {
-            if (converter.CanConvert(type))
-                return Materialize(converter, type);
-        }
-
-        throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_NotSupported_NoConverter, type));
-    }
-
-    /// <summary>
-    /// Resolves a converter to a concrete converter, invoking a factory when necessary.
-    /// </summary>
-    /// <param name="converter">The converter or factory to materialize.</param>
-    /// <param name="type">The type to convert.</param>
-    /// <returns>A concrete (non-factory) converter for the type.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when a factory produces a converter that cannot convert the type.
-    /// </exception>
-    private YamlConverter Materialize(YamlConverter converter, Type type)
-    {
-        if (converter is not YamlConverterFactory factory)
-            return converter;
-
-        YamlConverter created = factory.CreateConverter(type, this);
-        return !created.CanConvert(type)
-            ? throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_ConverterCannotConvert, created.GetType(), type))
-            : created;
-    }
-
-    /// <summary>
-    /// Throws when the options instance has been frozen.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
-    internal void VerifyMutable()
-    {
-        if (IsReadOnly)
-            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_OptionsReadOnly);
-    }
 }
