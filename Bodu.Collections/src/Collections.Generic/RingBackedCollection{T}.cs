@@ -222,7 +222,14 @@ public abstract partial class RingBackedCollection<T>
             ThrowHelper.ThrowIfLessThan(index, 0);
             ThrowHelper.ThrowIfGreaterThanOrEqual(index, _count);
 
-            return _array[(_head + index) % _array.Length];
+            // head + index < 2 * capacity, so one conditional subtraction replaces the modulo division —
+            // this indexer and the mutation primitives below are the hottest code in the ring family.
+            int physicalIndex = _head + index;
+            int capacityLimit = _array.Length;
+            if (physicalIndex >= capacityLimit)
+                physicalIndex -= capacityLimit;
+
+            return _array[physicalIndex];
         }
     }
 
@@ -360,7 +367,8 @@ public abstract partial class RingBackedCollection<T>
         Debug.Assert(_count < _array.Length, "AddTail: caller must ensure Count < Capacity.");
 
         _array[_tail] = item;
-        _tail = (_tail + 1) % _array.Length;
+        int nextTail = _tail + 1;
+        _tail = nextTail == _array.Length ? 0 : nextTail;
         _count++;
         _version++;
     }
@@ -376,7 +384,7 @@ public abstract partial class RingBackedCollection<T>
         Debug.Assert(_count < _array.Length, "AddHead: caller must ensure Count < Capacity.");
 
         int capacity = _array.Length;
-        _head = (_head - 1 + capacity) % capacity;
+        _head = (_head == 0 ? capacity : _head) - 1;
         _array[_head] = item;
         _count++;
         _version++;
@@ -394,7 +402,8 @@ public abstract partial class RingBackedCollection<T>
 
         T item = _array[_head];
         _array[_head] = default!;
-        _head = (_head + 1) % _array.Length;
+        int nextHead = _head + 1;
+        _head = nextHead == _array.Length ? 0 : nextHead;
         _count--;
         _version++;
         return item;
@@ -411,7 +420,7 @@ public abstract partial class RingBackedCollection<T>
         Debug.Assert(_count > 0, "RemoveTail: caller must ensure Count > 0.");
 
         int capacity = _array.Length;
-        _tail = (_tail - 1 + capacity) % capacity;
+        _tail = (_tail == 0 ? capacity : _tail) - 1;
         T item = _array[_tail];
         _array[_tail] = default!;
         _count--;
@@ -439,7 +448,7 @@ public abstract partial class RingBackedCollection<T>
         Debug.Assert(_count > 0, "PeekTail: caller must ensure Count > 0.");
 
         int capacity = _array.Length;
-        int tailIndex = (_tail - 1 + capacity) % capacity;
+        int tailIndex = (_tail == 0 ? capacity : _tail) - 1;
         return _array[tailIndex];
     }
 
@@ -458,7 +467,9 @@ public abstract partial class RingBackedCollection<T>
         Debug.Assert(_count == _array.Length, "OverwriteTail: caller must ensure Count == Capacity.");
 
         _array[_tail] = item;
-        int next = (_tail + 1) % _array.Length;
+        int next = _tail + 1;
+        if (next == _array.Length)
+            next = 0;
         _head = next;
         _tail = next;
         _version++;

@@ -170,7 +170,8 @@ public static partial class IEnumerableExtensions
         using IEnumerator<T> enumerator = source.GetEnumerator();
         T[] reservoir = FillReservoir(enumerator, rng, count);
 
-        foreach (T? item in ShuffleHelpers.ShuffleAndYield(reservoir, rng, count))
+        // The reservoir is a private per-enumeration array, so shuffle it in place without the public overload's copy.
+        foreach (T? item in ShuffleHelpers.ShuffleAndYieldInternal(reservoir, rng, count))
             yield return item;
     }
 
@@ -212,7 +213,9 @@ public static partial class IEnumerableExtensions
         int takeCount = count ?? availableCount;
         ThrowHelper.ThrowIfGreaterThanOther(takeCount, availableCount, nameof(count));
 
-        foreach (T item in ShuffleHelpers.ShuffleAndYield(buffer, rng, takeCount))
+        // The buffer is a private copy created above, so the internal non-copying overload can shuffle it in place —
+        // the public array overload would defensively re-copy it.
+        foreach (T item in ShuffleHelpers.ShuffleAndYieldInternal(buffer, rng, takeCount))
             yield return item;
     }
 
@@ -233,7 +236,8 @@ public static partial class IEnumerableExtensions
         using IEnumerator<T> enumerator = source.GetEnumerator();
         T[] reservoir = FillReservoir(enumerator, rng, count);
 
-        foreach (T item in ShuffleHelpers.ShuffleAndYield(reservoir, rng, count))
+        // The reservoir is a private per-enumeration array, so shuffle it in place without the public overload's copy.
+        foreach (T item in ShuffleHelpers.ShuffleAndYieldInternal(reservoir, rng, count))
             yield return item;
     }
 
@@ -282,9 +286,9 @@ public static partial class IEnumerableExtensions
             window[i] = enumerator.Current;
         }
 
-        // Flush only the occupied portion of the window with a final in-place shuffle.
-        // Slice to count to prevent ShuffleAndYield from seeing uninitialized tail elements.
-        foreach (T item in ShuffleHelpers.ShuffleAndYield(window[..count], rng, count))
+        // Flush only the occupied portion of the window with a final in-place shuffle. The range slice is itself a
+        // fresh copy, so the internal non-copying overload avoids the public overload's second copy.
+        foreach (T item in ShuffleHelpers.ShuffleAndYieldInternal(window[..count], rng, count))
             yield return item;
     }
 

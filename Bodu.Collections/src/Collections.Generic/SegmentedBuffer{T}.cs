@@ -58,6 +58,15 @@ public sealed class SegmentedBuffer<T> :
     /// <summary>Incremented on every mutation; used by enumerators to detect concurrent modification.</summary>
     private int _version;
 
+    /// <summary>The segment currently receiving appended elements, or <see langword="null" /> before the first add.</summary>
+    private T[]? _tailSegment;
+
+    /// <summary>
+    /// The next write position within <see cref="_tailSegment" />. Initialized to <see cref="_segmentSize" /> so the
+    /// first add allocates a segment; keeping the cursor removes the per-add division and modulo on the append path.
+    /// </summary>
+    private int _tailOffset;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="SegmentedBuffer{T}" /> class using the default segment size.
     /// </summary>
@@ -85,6 +94,7 @@ public sealed class SegmentedBuffer<T> :
 
         _segmentSize = segmentSize;
         _segments = new List<T[]>();
+        _tailOffset = segmentSize;
     }
 
     /// <summary>
@@ -141,12 +151,16 @@ public sealed class SegmentedBuffer<T> :
     /// </remarks>
     public void Add(T item)
     {
-        if (Count % _segmentSize == 0)
-            _segments.Add(new T[_segmentSize]);
+        // The write cursor makes the append path arithmetic-free: no division or modulo per add, just a
+        // bounds compare against the current tail segment.
+        if (_tailOffset == _segmentSize)
+        {
+            _tailSegment = new T[_segmentSize];
+            _segments.Add(_tailSegment);
+            _tailOffset = 0;
+        }
 
-        int segmentIndex = Count / _segmentSize;
-        int offset = Count % _segmentSize;
-        _segments[segmentIndex][offset] = item;
+        _tailSegment![_tailOffset++] = item;
 
         Count++;
         _version++;

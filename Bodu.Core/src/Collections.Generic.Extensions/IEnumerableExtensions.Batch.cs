@@ -4,12 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-#if !NETSTANDARD2_0
-
-using Bodu.Buffers;
-
-#endif
-
 namespace Bodu.Collections.Generic.Extensions;
 
 public static partial class IEnumerableExtensions
@@ -139,8 +133,8 @@ public static partial class IEnumerableExtensions
     /// <param name="size">The maximum number of items per batch.</param>
     /// <param name="selector">A projection function that receives the source item and its index.</param>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> of <see cref="ReadOnlyMemory{TResult}" /> batches, backed by a pooled buffer to
-    /// reduce per-batch allocations.
+    /// An <see cref="IEnumerable{T}" /> of <see cref="ReadOnlyMemory{TResult}" /> batches that alias a single pooled
+    /// buffer, so a full enumeration allocates nothing per batch.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> or <paramref name="selector" /> is <see langword="null" />.
@@ -150,12 +144,16 @@ public static partial class IEnumerableExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Each yielded batch is a snapshot copied from the pooled buffer at the point of yield. If you need to retain a
-    /// batch beyond the current iteration step, copy it using <c>.ToArray()</c> before advancing the enumerator.
+    /// Every yielded batch is a window over the <em>same</em> pooled buffer, which is overwritten by the next
+    /// iteration step and returned to the pool when enumeration ends. A batch is therefore valid only until the
+    /// enumerator advances (or is disposed): to retain one, copy it with <c>.ToArray()</c> before advancing.
+    /// Retaining the <see cref="ReadOnlyMemory{T}" /> values themselves — for example via <c>ToList()</c> on the
+    /// returned sequence — observes overwritten or recycled data. For independently owned batches, use
+    /// <see cref="Batch{TSource}(IEnumerable{TSource}, int)" /> instead.
     /// </para>
     /// <para>
-    /// This method should be consumed via <c>foreach</c>. Each call creates a new pooled buffer for the duration of the
-    /// enumeration.
+    /// This method should be consumed via <c>foreach</c>. Each enumeration rents one buffer of
+    /// <paramref name="size" /> elements for its duration.
     /// </para>
     /// </remarks>
     /// <example>
@@ -192,29 +190,32 @@ public static partial class IEnumerableExtensions
 
         IEnumerable<ReadOnlyMemory<TResult>> BatchIterator()
         {
-            using IEnumerator<TSource> enumerator = source.GetEnumerator();
-            var buffer = new PooledBufferBuilder<TResult>(size);
-            int index = 0;
-
+            // One rental for the whole enumeration; every batch is a window over it. Yielding the live window rather
+            // than a snapshot is the point of this operator — the copying variant is plain Batch.
+            TResult[] buffer = System.Buffers.ArrayPool<TResult>.Shared.Rent(size);
             try
             {
-                while (enumerator.MoveNext())
+                int filled = 0;
+                int index = 0;
+                foreach (TSource item in source)
                 {
-                    buffer.Append(selector(enumerator.Current, index++));
+                    buffer[filled++] = selector(item, index++);
 
-                    if (buffer.WrittenCount == size)
+                    if (filled == size)
                     {
-                        yield return buffer.WrittenSpan.ToArray();
-                        buffer.Reset();
+                        yield return buffer.AsMemory(0, filled);
+                        filled = 0;
                     }
                 }
 
-                if (buffer.WrittenCount > 0)
-                    yield return buffer.WrittenSpan.ToArray();
+                if (filled > 0)
+                    yield return buffer.AsMemory(0, filled);
             }
             finally
             {
-                buffer.Dispose();
+                System.Buffers.ArrayPool<TResult>.Shared.Return(
+                    buffer,
+                    clearArray: System.Runtime.CompilerServices.RuntimeHelpers.IsReferenceOrContainsReferences<TResult>());
             }
         }
 
@@ -230,8 +231,8 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The source sequence to batch.</param>
     /// <param name="size">The maximum number of items per batch.</param>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> of <see cref="ReadOnlyMemory{TSource}" /> batches, backed by a pooled buffer to
-    /// reduce per-batch allocations.
+    /// An <see cref="IEnumerable{T}" /> of <see cref="ReadOnlyMemory{TSource}" /> batches that alias a single pooled
+    /// buffer, so a full enumeration allocates nothing per batch.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
@@ -240,9 +241,10 @@ public static partial class IEnumerableExtensions
     /// Thrown when <paramref name="size" /> is less than or equal to 0.
     /// </exception>
     /// <remarks>
-    /// This overload returns untransformed batches of the original element type. See
-    /// <see cref="BatchPooled{TSource,TResult}(IEnumerable{TSource},int,Func{TSource,int,TResult})" /> for a variant
-    /// that applies a projection.
+    /// This overload returns untransformed batches of the original element type. Each batch is valid only until the
+    /// enumerator advances — see
+    /// <see cref="BatchPooled{TSource,TResult}(IEnumerable{TSource},int,Func{TSource,int,TResult})" /> for the full
+    /// lifetime contract and for a variant that applies a projection.
     /// </remarks>
     /// <example>
     /// <code language="csharp">
