@@ -66,6 +66,39 @@ public sealed class TrieSetTests
     }
 
     /// <summary>
+    /// Verifies that mutating the trie while a <see cref="Trie.KeysWithPrefix(string)" /> sequence is being
+    /// enumerated causes the next iteration step to throw <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void KeysWithPrefix_WhenMutatedDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var sut = new Trie(["car", "card", "care", "dog"]);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (string key in sut.KeysWithPrefix("car"))
+                sut.Add("carrot");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that removing a key while a <see cref="Trie.KeysWithPrefix(string)" /> sequence is being enumerated
+    /// causes the next iteration step to throw <see cref="InvalidOperationException" /> rather than silently yielding
+    /// stale results.
+    /// </summary>
+    [TestMethod]
+    public void KeysWithPrefix_WhenKeyRemovedDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var sut = new Trie(["car", "card", "care", "dog"]);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (string key in sut.KeysWithPrefix("car"))
+                sut.Remove("dog");
+        });
+    }
+
+    /// <summary>
     /// Verifies that adding a duplicate key returns <see langword="false" /> and leaves the count unchanged.
     /// </summary>
     [TestMethod]

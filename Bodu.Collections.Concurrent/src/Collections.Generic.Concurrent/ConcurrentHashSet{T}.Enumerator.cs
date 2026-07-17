@@ -19,8 +19,9 @@ public sealed partial class ConcurrentHashSet<T>
     /// <see cref="ConcurrentHashSet{T}.ToArray" />. All iteration runs over that fixed copy and is unaffected by
     /// concurrent additions or removals on the originating set. The snapshot itself is <b>weakly consistent</b> (see
     /// <see cref="ConcurrentHashSet{T}.ToArray" />): it contains every element present for the entire duration of its
-    /// capture and never contains an element twice, but it is not guaranteed to correspond to the set's state at any
-    /// single instant.
+    /// capture, but it is not guaranteed to correspond to the set's state at any single instant. The no-duplicate
+    /// guarantee holds across distinct hash keys; an element concurrently removed and re-added may, in rare
+    /// full-hash-collision interleavings, appear twice.
     /// </para>
     /// <para>
     /// Because the snapshot is taken eagerly, creating the enumerator allocates an array proportional to the number of

@@ -6,6 +6,7 @@
 
 using System.Collections;
 using System.Diagnostics;
+using System.Globalization;
 using Bodu.Collections.Generic.Internal;
 
 namespace Bodu.Collections.Generic.Trees;
@@ -117,7 +118,7 @@ public sealed partial class RadixTrie<TValue>
 
             RadixTrieNode<TValue>? node = RadixTrieCore.Find(_root, key.AsSpan(), Comparer);
             if (node?.IsTerminal != true)
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.KeyNotFound_Dictionary, key));
 
             return node.Value;
         }
@@ -317,7 +318,12 @@ public sealed partial class RadixTrie<TValue>
     /// </summary>
     /// <param name="prefix">The prefix to match.</param>
     /// <returns>A lazily evaluated sequence of matching keys, in unspecified order.</returns>
+    /// <remarks>
+    /// The sequence is fail-fast: it is invalidated by any structural modification of the trie, and continuing to
+    /// iterate after a modification throws <see cref="InvalidOperationException" />.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="prefix" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">The trie was modified after enumeration began.</exception>
     public IEnumerable<string> KeysWithPrefix(string prefix)
     {
         ThrowHelper.ThrowIfNull(prefix);
@@ -325,7 +331,7 @@ public sealed partial class RadixTrie<TValue>
         RadixTrieNode<TValue>? start = RadixTrieCore.FindSubtree(_root, prefix.AsSpan(), Comparer);
         return start is null
             ? []
-            : EnumerateKeys(start);
+            : EnumerateKeys(start, _version);
     }
 
     /// <summary>
@@ -333,7 +339,12 @@ public sealed partial class RadixTrie<TValue>
     /// </summary>
     /// <param name="prefix">The prefix to match.</param>
     /// <returns>A lazily evaluated sequence of matching key/value pairs, in unspecified order.</returns>
+    /// <remarks>
+    /// The sequence is fail-fast: it is invalidated by any structural modification of the trie, and continuing to
+    /// iterate after a modification throws <see cref="InvalidOperationException" />.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="prefix" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">The trie was modified after enumeration began.</exception>
     public IEnumerable<KeyValuePair<string, TValue>> ItemsWithPrefix(string prefix)
     {
         ThrowHelper.ThrowIfNull(prefix);
@@ -341,7 +352,7 @@ public sealed partial class RadixTrie<TValue>
         RadixTrieNode<TValue>? start = RadixTrieCore.FindSubtree(_root, prefix.AsSpan(), Comparer);
         return start is null
             ? []
-            : RadixTrieCore.EnumerateItems(start);
+            : EnumerateItems(start, _version);
     }
 
     /// <summary>
@@ -386,13 +397,34 @@ public sealed partial class RadixTrie<TValue>
     }
 
     /// <summary>
-    /// Projects the key/value enumeration onto its keys.
+    /// Projects the key/value enumeration onto its keys, failing fast when the trie is structurally modified during
+    /// the walk.
     /// </summary>
     /// <param name="start">The subtree root to enumerate.</param>
+    /// <param name="version">The owner's version captured when the query located <paramref name="start" />.</param>
     /// <returns>A lazy sequence of keys.</returns>
-    private static IEnumerable<string> EnumerateKeys(RadixTrieNode<TValue> start)
+    /// <exception cref="InvalidOperationException">The trie was modified after enumeration began.</exception>
+    private IEnumerable<string> EnumerateKeys(RadixTrieNode<TValue> start, int version)
     {
         foreach (KeyValuePair<string, TValue> item in RadixTrieCore.EnumerateItems(start))
-            yield return item.Key;
+        {
+            yield return version != _version ? throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified) : item.Key;
+        }
+    }
+
+    /// <summary>
+    /// Wraps the key/value enumeration of a subtree, failing fast when the trie is structurally modified during the
+    /// walk.
+    /// </summary>
+    /// <param name="start">The subtree root to enumerate.</param>
+    /// <param name="version">The owner's version captured when the query located <paramref name="start" />.</param>
+    /// <returns>A lazy sequence of key/value pairs.</returns>
+    /// <exception cref="InvalidOperationException">The trie was modified after enumeration began.</exception>
+    private IEnumerable<KeyValuePair<string, TValue>> EnumerateItems(RadixTrieNode<TValue> start, int version)
+    {
+        foreach (KeyValuePair<string, TValue> item in RadixTrieCore.EnumerateItems(start))
+        {
+            yield return version != _version ? throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified) : item;
+        }
     }
 }

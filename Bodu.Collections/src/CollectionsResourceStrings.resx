@@ -144,6 +144,9 @@
   <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain duplicate keys.</value>
   </data>
+  <data name="Arg_Invalid_DuplicateElement" xml:space="preserve">
+    <value>An element with the key '{0}' already exists in the queue.</value>
+  </data>
   <data name="Arg_Invalid_DuplicateSetValue" xml:space="preserve">
     <value>The set already contains the specified value.</value>
   </data>
@@ -197,6 +200,9 @@
   </data>
   <data name="KeyNotFound_Dictionary" xml:space="preserve">
     <value>The given key '{0}' was not present in the dictionary.</value>
+  </data>
+  <data name="KeyNotFound_Element" xml:space="preserve">
+    <value>The element '{0}' was not found in the queue.</value>
   </data>
   <data name="KeyNotFound_Range" xml:space="preserve">
     <value>The specified key was not contained in any range.</value>

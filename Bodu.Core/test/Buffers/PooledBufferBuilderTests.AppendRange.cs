@@ -41,6 +41,28 @@ public partial class PooledBufferBuilderTests
         });
     }
     /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlySpan{T})"/> supports appending the
+    /// builder's own <see cref="PooledBufferBuilder{T}.WrittenSpan"/> across a growth boundary: the outgrown array must
+    /// not be returned to the pool (and cleared, for reference types) before the source copy completes, so the result
+    /// equals the original content doubled.
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenSourceIsOwnWrittenSpanAcrossGrowth_ShouldAppendOriginalContentDoubled()
+    {
+        using var builder = new PooledBufferBuilder<string>(initialCapacity: 16);
+
+        // Fill the rented array to capacity so the self-append forces a growth.
+        string[] original = Enumerable.Range(0, builder.Capacity).Select(i => $"item-{i}").ToArray();
+        builder.AppendRange(original.AsSpan());
+        Assert.AreEqual(builder.Capacity, builder.WrittenCount);
+
+        builder.AppendRange(builder.WrittenSpan);
+
+        string[] expected = original.Concat(original).ToArray();
+        CollectionAssert.AreEqual(expected, builder.WrittenSpan.ToArray());
+    }
+
+    /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.Collections.Generic.IEnumerable{T})"/>
     /// with an <see cref="System.Collections.Generic.IEnumerable{T}"/> source appends all items correctly.
     /// </summary>

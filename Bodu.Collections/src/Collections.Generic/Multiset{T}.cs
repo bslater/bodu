@@ -188,6 +188,10 @@ public sealed partial class Multiset<T>
     /// Adds one occurrence of <paramref name="item" /> to the <see cref="Multiset{T}" />.
     /// </summary>
     /// <param name="item">The element to add.</param>
+    /// <exception cref="OverflowException">
+    /// The element's occurrence count or the total <see cref="Count" /> is already <see cref="int.MaxValue" />. The
+    /// multiset is unchanged when this exception is thrown.
+    /// </exception>
     public void Add(T item)
     {
         InsertCore(item, 1);
@@ -201,6 +205,10 @@ public sealed partial class Multiset<T>
     /// <param name="count">The number of occurrences to add. Must be greater than zero.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="count" /> is less than or equal to zero.
+    /// </exception>
+    /// <exception cref="OverflowException">
+    /// Adding <paramref name="count" /> would raise the element's occurrence count or the total <see cref="Count" />
+    /// above <see cref="int.MaxValue" />. The multiset is unchanged when this exception is thrown.
     /// </exception>
     public void Add(T item, int count)
     {
@@ -363,6 +371,9 @@ public sealed partial class Multiset<T>
     /// max(CountOf(x), other.CountOf(x)).
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
+    /// <exception cref="OverflowException">
+    /// The total element count of the union would exceed <see cref="int.MaxValue" />.
+    /// </exception>
     public Multiset<T> Union(Multiset<T> other)
     {
         ThrowHelper.ThrowIfNull(other);
@@ -376,8 +387,8 @@ public sealed partial class Multiset<T>
             result._items.TryGetValue(pair.Key, out int existing);
             if (pair.Value > existing)
             {
+                result._count = checked(result._count + (pair.Value - existing));
                 result._items[pair.Key] = pair.Value;
-                result._count += pair.Value - existing;
             }
         }
 
@@ -446,6 +457,10 @@ public sealed partial class Multiset<T>
     /// CountOf(x) + other.CountOf(x).
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
+    /// <exception cref="OverflowException">
+    /// An element's combined occurrence count, or the total element count of the sum, would exceed
+    /// <see cref="int.MaxValue" />.
+    /// </exception>
     public Multiset<T> Sum(Multiset<T> other)
     {
         ThrowHelper.ThrowIfNull(other);
@@ -467,9 +482,23 @@ public sealed partial class Multiset<T>
     /// </summary>
     /// <param name="item">The element to insert.</param>
     /// <param name="count">The number of occurrences to add.</param>
+    /// <exception cref="OverflowException">
+    /// The element's new occurrence count or the new total <see cref="Count" /> would exceed
+    /// <see cref="int.MaxValue" />.
+    /// </exception>
+    /// <remarks>
+    /// Both additions are performed with checked arithmetic, following the BCL convention of surfacing
+    /// <see cref="OverflowException" /> for counts that exceed <see cref="int.MaxValue" /> — an
+    /// <see cref="ArgumentOutOfRangeException" /> would misattribute the failure to the caller's argument when the
+    /// overflow depends on accumulated state (and set-operation builders have no user-supplied count at all). Both new
+    /// values are computed before either field is mutated, so a failed insert leaves the multiset unchanged.
+    /// </remarks>
     private void InsertCore(T item, int count)
     {
-        _items[item] = _items.TryGetValue(item, out int existing) ? existing + count : count;
-        _count += count;
+        int newItemCount = _items.TryGetValue(item, out int existing) ? checked(existing + count) : count;
+        int newTotalCount = checked(_count + count);
+
+        _items[item] = newItemCount;
+        _count = newTotalCount;
     }
 }

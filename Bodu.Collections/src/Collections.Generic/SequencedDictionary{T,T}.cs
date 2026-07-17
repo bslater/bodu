@@ -283,7 +283,7 @@ public partial class SequencedDictionary<TKey, TValue>
         get
         {
             if (_order.First is not { } node)
-                throw new InvalidOperationException(CollectionsResourceStrings.Arg_Invalid_CollectionIsEmpty);
+                throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionEmpty);
 
             return new KeyValuePair<TKey, TValue>(node.Value, _store[node.Value].Value);
         }
@@ -303,7 +303,7 @@ public partial class SequencedDictionary<TKey, TValue>
         get
         {
             if (_order.Last is not { } node)
-                throw new InvalidOperationException(CollectionsResourceStrings.Arg_Invalid_CollectionIsEmpty);
+                throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionEmpty);
 
             return new KeyValuePair<TKey, TValue>(node.Value, _store[node.Value].Value);
         }

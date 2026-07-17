@@ -142,6 +142,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to An element with the key &apos;{0}&apos; already exists in the queue..
+        /// </summary>
+        internal static string Arg_Invalid_DuplicateElement {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DuplicateElement", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The set already contains the specified value..
         /// </summary>
         internal static string Arg_Invalid_DuplicateSetValue {
@@ -300,6 +309,15 @@ namespace Bodu {
         internal static string KeyNotFound_Dictionary {
             get {
                 return ResourceManager.GetString("KeyNotFound_Dictionary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The element &apos;{0}&apos; was not found in the queue..
+        /// </summary>
+        internal static string KeyNotFound_Element {
+            get {
+                return ResourceManager.GetString("KeyNotFound_Element", resourceCulture);
             }
         }
 

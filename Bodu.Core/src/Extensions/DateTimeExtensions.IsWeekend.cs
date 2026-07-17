@@ -95,7 +95,7 @@ public static partial class DateTimeExtensions
             ? provider is null
                 ? throw new ArgumentOutOfRangeException(
                     nameof(workingWeek),
-                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, workingWeek, nameof(WorkingDaysOfWeek)))
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, nameof(WorkingDaysOfWeek), workingWeek))
                 : provider.IsWeekend(dayOfWeek)
             : !workingWeek.ToWeekPattern().Contains(dayOfWeek);
     }

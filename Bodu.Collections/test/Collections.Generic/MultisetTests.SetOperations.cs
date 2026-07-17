@@ -441,6 +441,42 @@ public partial class MultisetTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Sum"/> throws <see cref="OverflowException"/> when an element's combined
+    /// occurrence count would exceed <see cref="int.MaxValue"/>, rather than wrapping negative.
+    /// </summary>
+    [TestMethod]
+    public void Sum_WhenCombinedCountsWouldExceedIntMaxValue_ShouldThrowOverflowException()
+    {
+        var a = new Multiset<int>();
+        a.Add(1, int.MaxValue);
+        var b = new Multiset<int>();
+        b.Add(1, 1);
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = a.Sum(b);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Union"/> throws <see cref="OverflowException"/> when the union's total
+    /// element count would exceed <see cref="int.MaxValue"/>, rather than wrapping negative.
+    /// </summary>
+    [TestMethod]
+    public void Union_WhenTotalCountWouldExceedIntMaxValue_ShouldThrowOverflowException()
+    {
+        var a = new Multiset<int>();
+        a.Add(1, int.MaxValue);
+        var b = new Multiset<int>();
+        b.Add(2, 1);
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = a.Union(b);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Multiset{T}.Union"/> with itself returns a multiset with the same element counts.
     /// </summary>
     [TestMethod]

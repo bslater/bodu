@@ -73,12 +73,6 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <summary>The default capacity used when the heap is grown from an empty backing array.</summary>
     private const int DefaultGrowCapacity = 4;
 
-    /// <summary>The composite-format string used when reporting a duplicate element key. The single placeholder receives the offending element's <see cref="object.ToString" /> representation.</summary>
-    private const string DuplicateElementMessageFormat = "An element with the key '{0}' already exists in the queue.";
-
-    /// <summary>The composite-format string used when reporting a missing element key. The single placeholder receives the requested element's <see cref="object.ToString" /> representation.</summary>
-    private const string ElementNotFoundMessageFormat = "The element '{0}' was not found in the queue.";
-
     /// <summary>The priority comparer used for heap ordering. Smaller values (per this comparer) are dequeued first.</summary>
     private readonly IComparer<TPriority> _comparer;
 
@@ -216,7 +210,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         {
             ThrowHelper.ThrowIfNull(pair.Key);
             if (!_index.TryAdd(pair.Key, _size))
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, DuplicateElementMessageFormat, pair.Key), nameof(items));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.Arg_Invalid_DuplicateElement, pair.Key), nameof(items));
 
             if (_size == _nodes.Length)
                 Grow(_size + 1);
@@ -309,7 +303,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         ThrowHelper.ThrowIfNull(element);
 
         if (!TryEnqueueCore(element, priority))
-            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, DuplicateElementMessageFormat, element), nameof(element));
+            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.Arg_Invalid_DuplicateElement, element), nameof(element));
     }
 
     /// <summary>
@@ -378,7 +372,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         ThrowHelper.ThrowIfNull(element);
 
         return !_index.TryGetValue(element, out int slot)
-            ? throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, ElementNotFoundMessageFormat, element))
+            ? throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.KeyNotFound_Element, element))
             : _nodes[slot].Priority;
     }
 
@@ -569,7 +563,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         ThrowHelper.ThrowIfNull(element);
 
         if (!_index.TryGetValue(element, out int slot))
-            throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, ElementNotFoundMessageFormat, element));
+            throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.KeyNotFound_Element, element));
 
         UpdateAt(slot, priority);
     }

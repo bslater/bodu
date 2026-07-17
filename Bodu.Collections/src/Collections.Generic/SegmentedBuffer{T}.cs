@@ -55,6 +55,9 @@ public sealed class SegmentedBuffer<T> :
     /// <summary>The fixed number of elements each segment can hold.</summary>
     private readonly int _segmentSize;
 
+    /// <summary>Incremented on every mutation; used by enumerators to detect concurrent modification.</summary>
+    private int _version;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="SegmentedBuffer{T}" /> class using the default segment size.
     /// </summary>
@@ -123,6 +126,8 @@ public sealed class SegmentedBuffer<T> :
             int segmentIndex = index / _segmentSize;
             int offset = index % _segmentSize;
             _segments[segmentIndex][offset] = value;
+
+            _version++;
         }
     }
 
@@ -144,6 +149,7 @@ public sealed class SegmentedBuffer<T> :
         _segments[segmentIndex][offset] = item;
 
         Count++;
+        _version++;
     }
 
     /// <summary>
@@ -151,11 +157,14 @@ public sealed class SegmentedBuffer<T> :
     /// </summary>
     /// <returns>An enumerator that can be used to iterate through the buffer contents in insertion order.</returns>
     /// <remarks>
-    /// Enumeration yields elements in the order they were added. The enumerator reflects the buffer state at the time
-    /// of enumeration and does not account for elements added concurrently in multi-threaded scenarios.
+    /// Enumeration yields elements in the order they were added. The enumerator is fail-fast: if the buffer is
+    /// modified — by <see cref="Add" /> or by assignment through the indexer — after enumeration begins, the next
+    /// iteration step throws <see cref="InvalidOperationException" />.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">The buffer was modified after enumeration began.</exception>
     public IEnumerator<T> GetEnumerator()
     {
+        int version = _version;
         int count = Count;
         int fullSegments = count / _segmentSize;
         int lastSegmentCount = count % _segmentSize;
@@ -164,14 +173,18 @@ public sealed class SegmentedBuffer<T> :
         {
             T[] segment = _segments[i];
             for (int j = 0; j < _segmentSize; j++)
-                yield return segment[j];
+            {
+                yield return version != _version ? throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified) : segment[j];
+            }
         }
 
         if (lastSegmentCount > 0)
         {
             T[] lastSegment = _segments[fullSegments];
             for (int j = 0; j < lastSegmentCount; j++)
-                yield return lastSegment[j];
+            {
+                yield return version != _version ? throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified) : lastSegment[j];
+            }
         }
     }
 

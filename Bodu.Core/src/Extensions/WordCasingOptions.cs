@@ -86,9 +86,17 @@ public sealed class WordCasingOptions
     public CultureInfo Culture { get; init; } = CultureInfo.InvariantCulture;
 
     /// <summary>
-    /// Gets a value indicating whether all-uppercase tokens and known acronyms keep their acronym spelling.
+    /// Gets a value indicating whether all-uppercase tokens and known acronyms keep their acronym spelling in the
+    /// converters that consult this flag.
     /// </summary>
     /// <value>Defaults to <see langword="true" />.</value>
+    /// <remarks>
+    /// Only <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" /> and
+    /// <see cref="StringExtensions.ToSentenceCase(string, WordCasingOptions)" /> read this flag. The tokeniser used by
+    /// the other case converters (camel, Pascal, snake, kebab, train, constant, dot) canonicalises tokens that match a
+    /// <see cref="Acronyms" /> entry unconditionally, so those converters render known acronyms in their catalogue
+    /// spelling regardless of this setting.
+    /// </remarks>
     public bool PreserveAcronyms { get; init; } = true;
 
     /// <summary>

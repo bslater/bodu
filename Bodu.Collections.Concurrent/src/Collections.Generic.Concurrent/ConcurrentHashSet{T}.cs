@@ -39,9 +39,12 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// </para>
 /// <para>
 /// <see cref="ToArray" /> and enumeration are <b>weakly consistent</b> rather than point-in-time snapshots: the
-/// traversal observes every element that is present for the entire duration of the call, never yields the same element
-/// twice, and never throws — but elements added or removed while the traversal is in progress may or may not be
-/// observed, and the result is not guaranteed to correspond to the set's state at any single instant.
+/// traversal observes every element that is present for the entire duration of the call and never throws, but
+/// elements added or removed while the traversal is in progress may or may not be observed, and the result is not
+/// guaranteed to correspond to the set's state at any single instant. The no-duplicate guarantee holds across
+/// distinct hash keys; an element that is concurrently removed and re-added may, in rare interleavings where another
+/// element shares its full hash key, be yielded twice. Consumers that require exact-once semantics should snapshot
+/// while the set is quiescent.
 /// </para>
 /// <para>
 /// Performance characteristics differ from lock-based designs: progress is guaranteed without blocking, but every
@@ -452,11 +455,19 @@ public sealed partial class ConcurrentHashSet<T>
     /// observed. The order of elements is unspecified.
     /// </returns>
     /// <remarks>
+    /// <para>
     /// This method is a pure lock-free traversal of the split-ordered list: it never blocks writers. The result is <b>weakly
-    /// consistent</b> — it contains every element that was present for the entire duration of the call and never
-    /// contains the same element twice (the traversal is monotonic in split-order, so a concurrently re-added element
-    /// cannot be revisited), but elements added or removed while the copy is in progress may or may not appear, and the
-    /// array is not guaranteed to reflect the set's state at any single instant.
+    /// consistent</b> — it contains every element that was present for the entire duration of the call, but elements
+    /// added or removed while the copy is in progress may or may not appear, and the array is not guaranteed to
+    /// reflect the set's state at any single instant.
+    /// </para>
+    /// <para>
+    /// The traversal is monotonic in split-order, so an element whose full hash key is unshared can never be visited
+    /// twice. Within a run of elements sharing the same full hash key, however, a concurrent remove followed by a
+    /// re-add of an element can reinsert its node ahead of the traversal cursor, so in rare full-hash-collision
+    /// interleavings such an element may appear twice in the result. Consumers that require exact-once semantics
+    /// should take the snapshot while the set is quiescent.
+    /// </para>
     /// </remarks>
     public T[] ToArray()
     {

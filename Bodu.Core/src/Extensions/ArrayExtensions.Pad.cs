@@ -27,7 +27,7 @@ public static partial class ArrayExtensions
     public static T[] PadLeft<T>(this T[] array, int totalLength, T padValue)
     {
         ThrowHelper.ThrowIfNull(array);
-        if (totalLength < array.Length) throw new ArgumentOutOfRangeException(nameof(totalLength));
+        ThrowHelper.ThrowIfLessThan(totalLength, array.Length);
 
         var result = new T[totalLength];
         int padCount = totalLength - array.Length;
@@ -58,7 +58,7 @@ public static partial class ArrayExtensions
     public static T[] PadRight<T>(this T[] array, int totalLength, T padValue)
     {
         ThrowHelper.ThrowIfNull(array);
-        if (totalLength < array.Length) throw new ArgumentOutOfRangeException(nameof(totalLength));
+        ThrowHelper.ThrowIfLessThan(totalLength, array.Length);
 
         var result = new T[totalLength];
         Array.Copy(array, 0, result, 0, array.Length);

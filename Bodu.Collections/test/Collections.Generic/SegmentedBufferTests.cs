@@ -96,6 +96,42 @@ public sealed class SegmentedBufferTests
     }
 
     /// <summary>
+    /// Verifies that adding an element while the buffer is being enumerated causes the next iteration step to throw
+    /// <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenBufferModifiedByAddDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var buffer = new SegmentedBuffer<int>(4);
+        for (int i = 0; i < 6; i++)
+            buffer.Add(i);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (int value in buffer)
+                buffer.Add(99);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that assigning an element through the indexer while the buffer is being enumerated causes the next
+    /// iteration step to throw <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenBufferModifiedByIndexerDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var buffer = new SegmentedBuffer<int>(4);
+        for (int i = 0; i < 6; i++)
+            buffer.Add(i);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (int value in buffer)
+                buffer[0] = 42;
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="SegmentedBuffer{T}.GetEnumerator" /> yields no elements for an empty buffer.
     /// </summary>
     [TestMethod]

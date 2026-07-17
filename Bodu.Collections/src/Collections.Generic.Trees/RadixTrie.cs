@@ -197,7 +197,12 @@ public sealed partial class RadixTrie
     /// </summary>
     /// <param name="prefix">The prefix to match.</param>
     /// <returns>A lazily evaluated sequence of matching keys, in unspecified order.</returns>
+    /// <remarks>
+    /// The sequence is fail-fast: it is invalidated by any structural modification of the trie, and continuing to
+    /// iterate after a modification throws <see cref="InvalidOperationException" />.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="prefix" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">The trie was modified after enumeration began.</exception>
     public IEnumerable<string> KeysWithPrefix(string prefix)
     {
         ThrowHelper.ThrowIfNull(prefix);
@@ -205,7 +210,7 @@ public sealed partial class RadixTrie
         RadixTrieNode<bool>? start = RadixTrieCore.FindSubtree(_root, prefix.AsSpan(), Comparer);
         return start is null
             ? []
-            : EnumerateKeys(start);
+            : EnumerateKeys(start, _version);
     }
 
     /// <summary>
@@ -249,13 +254,18 @@ public sealed partial class RadixTrie
     }
 
     /// <summary>
-    /// Projects the key/value enumeration onto its keys.
+    /// Projects the key/value enumeration onto its keys, failing fast when the trie is structurally modified during
+    /// the walk.
     /// </summary>
     /// <param name="start">The subtree root to enumerate.</param>
+    /// <param name="version">The owner's version captured when the query located <paramref name="start" />.</param>
     /// <returns>A lazy sequence of keys.</returns>
-    private static IEnumerable<string> EnumerateKeys(RadixTrieNode<bool> start)
+    /// <exception cref="InvalidOperationException">The trie was modified after enumeration began.</exception>
+    private IEnumerable<string> EnumerateKeys(RadixTrieNode<bool> start, int version)
     {
         foreach (KeyValuePair<string, bool> item in RadixTrieCore.EnumerateItems(start))
-            yield return item.Key;
+        {
+            yield return version != _version ? throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified) : item.Key;
+        }
     }
 }

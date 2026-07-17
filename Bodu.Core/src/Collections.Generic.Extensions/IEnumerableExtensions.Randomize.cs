@@ -100,8 +100,8 @@ public static partial class IEnumerableExtensions
                 string.Format(
                     CultureInfo.CurrentCulture,
                     ResourceStrings.Arg_OutOfRange_EnumValue,
-                    mode,
-                    nameof(RandomizationMode)))
+                    nameof(RandomizationMode),
+                    mode))
         };
     }
 

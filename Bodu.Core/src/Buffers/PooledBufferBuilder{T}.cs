@@ -234,12 +234,24 @@ public sealed class PooledBufferBuilder<T> :
     /// </summary>
     /// <param name="source">The span of elements to append.</param>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    /// <remarks>
+    /// <paramref name="source" /> may alias the builder's own storage (for example a span obtained from
+    /// <see cref="WrittenSpan" /> or <see cref="AsArray" />): when a growth is required, the previous rented array is
+    /// returned to the pool only after the source elements have been copied, so a self-aliasing source remains valid
+    /// throughout the append.
+    /// </remarks>
     public void AppendRange(ReadOnlySpan<T> source)
     {
         ThrowIfDisposed();
-        GrowIfNeeded(checked(_count + source.Length));
+
+        // Defer returning the outgrown array until after the source copy: 'source' may alias the old storage, and
+        // returning it first would let the pool clear (for reference types) or re-rent it mid-copy.
+        T[]? oldBuffer = GrowCore(checked(_count + source.Length));
         source.CopyTo(_internalBuffer.AsSpan(_count));
         _count += source.Length;
+
+        if (oldBuffer is not null)
+            ReturnToPool(oldBuffer);
     }
 
     /// <summary>
@@ -555,20 +567,42 @@ public sealed class PooledBufferBuilder<T> :
 
     /// <summary>
     /// Ensures the internal buffer can accommodate at least <paramref name="minimum" /> elements, renting a larger
-    /// pooled array and copying the existing contents forward when the current capacity is insufficient.
+    /// pooled array and copying the existing contents forward when the current capacity is insufficient. The outgrown
+    /// array is returned to the pool immediately; callers whose source data may alias the old storage must use
+    /// <see cref="GrowCore" /> directly and return the array themselves after copying.
     /// </summary>
     /// <param name="minimum">The minimum total capacity, in elements, the buffer must be able to hold.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void GrowIfNeeded(int minimum)
     {
+        T[]? oldBuffer = GrowCore(minimum);
+        if (oldBuffer is not null)
+            ReturnToPool(oldBuffer);
+    }
+
+    /// <summary>
+    /// Grows the internal buffer to hold at least <paramref name="minimum" /> elements, copying the written contents
+    /// into the new rental, and hands the outgrown array back to the caller instead of returning it to the pool.
+    /// </summary>
+    /// <param name="minimum">The minimum total capacity, in elements, the buffer must be able to hold.</param>
+    /// <returns>
+    /// The previous rented array when a growth occurred — the caller must pass it to <see cref="ReturnToPool" /> once
+    /// any reads that may alias it have completed — or <see langword="null" /> when the current capacity already
+    /// satisfies the request.
+    /// </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private T[]? GrowCore(int minimum)
+    {
         if (minimum <= _internalBuffer.Length)
-            return;
+            return null;
 
         int newCapacity = Math.Max(_internalBuffer.Length * 2, minimum);
         T[] newBuffer = ArrayPool<T>.Shared.Rent(newCapacity);
         Array.Copy(_internalBuffer, 0, newBuffer, 0, _count);
-        ReturnBufferIfNeeded();
+
+        T[] oldBuffer = _internalBuffer;
         _internalBuffer = newBuffer;
+        return oldBuffer;
     }
 
     /// <summary>
@@ -580,6 +614,18 @@ public sealed class PooledBufferBuilder<T> :
     {
         if (_internalBuffer.Length > 0)
             ArrayPool<T>.Shared.Return(_internalBuffer, clearArray: RuntimeHelpers.IsReferenceOrContainsReferences<T>());
+    }
+
+    /// <summary>
+    /// Returns an outgrown rented array to <see cref="ArrayPool{T}.Shared" />, clearing it first when
+    /// <typeparamref name="T" /> is or contains reference types so that pooled memory cannot retain object references.
+    /// </summary>
+    /// <param name="buffer">The rented array to return.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void ReturnToPool(T[] buffer)
+    {
+        if (buffer.Length > 0)
+            ArrayPool<T>.Shared.Return(buffer, clearArray: RuntimeHelpers.IsReferenceOrContainsReferences<T>());
     }
 
     /// <summary>
