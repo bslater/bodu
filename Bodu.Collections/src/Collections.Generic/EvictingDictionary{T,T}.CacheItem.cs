@@ -25,8 +25,9 @@ public partial class EvictingDictionary<TKey, TValue>
         public TValue Value { get; set; }
 
         /// <summary>
-        /// Gets or sets the linked list node that represents the key in the ordering structure. Used by recency- and
-        /// access-order-based eviction policies such as LRU and MRU.
+        /// Gets or sets the linked list node that represents the key in the policy's tracking structure: the access
+        /// order list for recency-based policies (FIFO, LRU, MRU, SecondChance), or the current frequency bucket for
+        /// LeastFrequentlyUsed. Storing the node keeps bucket removal O(1) and independent of the key comparer.
         /// </summary>
         public LinkedListNode<TKey>? Node { get; set; }
 

@@ -636,7 +636,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </summary>
     /// <param name="frequency">The new frequency count.</param>
     /// <param name="key">The key to add.</param>
-    private void AddToFrequencyList(int frequency, TKey key)
+    /// <returns>The bucket node representing the key, stored on the entry for O(1) comparer-agnostic removal.</returns>
+    private LinkedListNode<TKey> AddToFrequencyList(int frequency, TKey key)
     {
         if (!_frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
         {
@@ -644,7 +645,7 @@ public partial class EvictingDictionary<TKey, TValue>
             _frequencyList[frequency] = list;
         }
 
-        list.AddLast(key);
+        return list.AddLast(key);
     }
 
     /// <summary>
@@ -924,19 +925,24 @@ public partial class EvictingDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Removes the specified key from the LeastFrequentlyUsed frequency bucket for the given frequency. Cleans up the
-    /// bucket if it becomes empty.
+    /// Removes the entry's node from its LeastFrequentlyUsed frequency bucket. Cleans up the bucket if it becomes
+    /// empty.
     /// </summary>
-    /// <param name="frequency">The current frequency count of the key.</param>
-    /// <param name="key">The key to remove.</param>
-    private void RemoveFromFrequencyList(int frequency, TKey key)
+    /// <param name="item">The cache entry whose bucket node is being removed.</param>
+    /// <remarks>
+    /// Operates on the stored <see cref="CacheItem.Node" /> rather than searching the bucket by key: a by-key
+    /// <see cref="LinkedList{T}.Remove(T)" /> compares with <see cref="EqualityComparer{T}.Default" /> and misses keys
+    /// stored under a custom comparer, leaving ghost entries that corrupt eviction order and eventually starve
+    /// candidate selection. The node form is also O(1) instead of an O(bucket) scan.
+    /// </remarks>
+    private void RemoveFromFrequencyList(CacheItem item)
     {
-        if (_frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
+        if (item.Node is { List: { } list })
         {
-            list.Remove(key);
+            list.Remove(item.Node);
 
             if (list.Count == 0)
-                _frequencyList.Remove(frequency);
+                _frequencyList.Remove(item.Frequency);
         }
     }
 
@@ -962,9 +968,9 @@ public partial class EvictingDictionary<TKey, TValue>
                 break;
 
             case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                RemoveFromFrequencyList(item.Frequency, key);
+                RemoveFromFrequencyList(item);
                 item.Frequency++;
-                AddToFrequencyList(item.Frequency, key);
+                item.Node = AddToFrequencyList(item.Frequency, key);
                 break;
 
             case EvictingDictionaryPolicy.SecondChance:

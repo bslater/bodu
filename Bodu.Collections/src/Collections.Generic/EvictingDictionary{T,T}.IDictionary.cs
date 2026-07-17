@@ -167,7 +167,7 @@ public partial class EvictingDictionary<TKey, TValue> :
         }
 
         if (Policy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
-            AddToFrequencyList(item.Frequency, key);
+            item.Node = AddToFrequencyList(item.Frequency, key);
 
         _store[key] = item;
         _version++;
@@ -260,7 +260,7 @@ public partial class EvictingDictionary<TKey, TValue> :
                 _order.Remove(item.Node);
 
             if (Policy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
-                RemoveFromFrequencyList(item.Frequency, key);
+                RemoveFromFrequencyList(item);
 
             _store.Remove(key);
             _version++;

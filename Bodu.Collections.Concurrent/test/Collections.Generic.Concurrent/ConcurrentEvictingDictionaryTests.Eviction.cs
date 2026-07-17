@@ -151,4 +151,68 @@ public partial class ConcurrentEvictingDictionaryTests
         Assert.IsTrue(dictionary.Count <= 17, $"Count {dictionary.Count} exceeded the capacity bound.");
         Assert.AreEqual(dictionary.Count, dictionary.ToArray().Length);
     }
+
+    /// <summary>
+    /// Verifies that frequency tracking under LeastFrequentlyUsed honors the dictionary's key comparer, so a key
+    /// touched through an equivalent-but-differently-cased key retains its accumulated frequency and is not evicted
+    /// ahead of colder entries.
+    /// </summary>
+    [TestMethod]
+    public void Eviction_WhenLFUWithCustomComparerAndEquivalentKeyTouched_ShouldEvictColderEntry()
+    {
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(
+            concurrencyLevel: 1, capacity: 2, EvictingDictionaryPolicy.LeastFrequentlyUsed, StringComparer.OrdinalIgnoreCase, null);
+        dictionary.Add("one", 1);
+        dictionary.Add("two", 2);
+
+        Assert.IsTrue(dictionary.TryGetValue("ONE", out _)); // one frequency = 2 via an equivalent key
+
+        dictionary.Add("three", 3); // two (frequency 1) should be evicted
+
+        Assert.IsTrue(dictionary.ContainsKey("one"));
+        Assert.IsFalse(dictionary.ContainsKey("two"));
+        Assert.IsTrue(dictionary.ContainsKey("three"));
+    }
+
+    /// <summary>
+    /// Verifies that repeated capacity-pressured adds under LeastFrequentlyUsed with a custom comparer keep producing
+    /// eviction candidates after entries have been touched through equivalent keys, rather than permanently failing
+    /// with <see cref="InvalidOperationException" /> from a desynchronized frequency bucket.
+    /// </summary>
+    [TestMethod]
+    public void Eviction_WhenLFUWithCustomComparerAndEvictionsRepeat_ShouldKeepEvicting()
+    {
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(
+            concurrencyLevel: 1, capacity: 2, EvictingDictionaryPolicy.LeastFrequentlyUsed, StringComparer.OrdinalIgnoreCase, null);
+        dictionary.Add("one", 1);
+        dictionary.Add("two", 2);
+        Assert.IsTrue(dictionary.TryGetValue("ONE", out _));
+
+        dictionary.Add("three", 3);
+        dictionary.Add("four", 4);
+        dictionary.Add("five", 5);
+
+        Assert.AreEqual(2, dictionary.Count);
+    }
+
+    /// <summary>
+    /// Verifies that removing an entry under LeastFrequentlyUsed through an equivalent key clears its frequency
+    /// tracking, so later capacity-pressured adds do not encounter a stale bucket entry.
+    /// </summary>
+    [TestMethod]
+    public void Eviction_WhenLFUWithCustomComparerAndEquivalentKeyRemoved_ShouldClearFrequencyTracking()
+    {
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(
+            concurrencyLevel: 1, capacity: 2, EvictingDictionaryPolicy.LeastFrequentlyUsed, StringComparer.OrdinalIgnoreCase, null);
+        dictionary.Add("one", 1);
+        dictionary.Add("two", 2);
+
+        Assert.IsTrue(dictionary.TryRemove("ONE", out _));
+
+        dictionary.Add("three", 3);
+        dictionary.Add("four", 4); // capacity pressure: must evict cleanly
+
+        Assert.AreEqual(2, dictionary.Count);
+        Assert.IsFalse(dictionary.ContainsKey("one"));
+    }
 }
