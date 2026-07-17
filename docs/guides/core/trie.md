@@ -134,7 +134,7 @@ Removing a key leaves sibling keys that share its prefix intact — deleting `"c
 
 ## Pattern 4 — Enumeration
 
-Enumerating a trie yields its keys (for <xref:Bodu.Collections.Generic.Trees.Trie>) or its key/value pairs (for <xref:Bodu.Collections.Generic.Trees.Trie`1>), in unspecified order, over a snapshot taken when enumeration begins.
+Enumerating a trie yields its keys (for <xref:Bodu.Collections.Generic.Trees.Trie>) or its key/value pairs (for <xref:Bodu.Collections.Generic.Trees.Trie`1>), in unspecified order. Enumeration is lazy — elements are produced on demand as the trie is walked, with no up-front snapshot — so breaking out of a `foreach` early does no more work than the elements consumed.
 
 ```csharp
 var map = new Trie<int>();

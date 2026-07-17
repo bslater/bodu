@@ -288,11 +288,13 @@ var cache = new EvictingDictionary<string, int>(
 
 ## Thread safety
 
-`EvictingDictionary<TKey, TValue>` is **not thread-safe**. Concurrent reads can mutate eviction metadata (LRU/MRU recency order, LFU access counts, SecondChance reference flags), so concurrent read-read is also not safe without external synchronization. Wrap with a lock or `ReaderWriterLockSlim` when multiple threads access the same instance. For a thread-safe bounded set without eviction policies, see [`ConcurrentHashSet<T>`](concurrent-collections.md); there is no concurrent evicting-dictionary variant in the package.
+`EvictingDictionary<TKey, TValue>` is **not thread-safe**. Concurrent reads can mutate eviction metadata (LRU/MRU recency order, LFU access counts, SecondChance reference flags), so concurrent read-read is also not safe without external synchronization. Wrap with a lock or `ReaderWriterLockSlim` when multiple threads access the same instance, or use the thread-safe variant: [`ConcurrentEvictingDictionary<TKey,TValue>`](concurrent-collections.md) in the companion `Bodu.Collections.Concurrent` package supports all six policies over lock-striped segments, with optional TTL and single-flight `GetOrAdd`.
 
 ## `Keys` / `Values` enumeration order
 
 `Keys` and `Values` are live views, but their enumeration order reflects the **current eviction order**, not insertion order — FIFO/LRU/SecondChance walk the recency list head-to-tail, MRU walks it tail-to-head, LFU walks ascending frequency buckets, and `RandomReplacement` follows the underlying hash-table order. Do not rely on `Keys` to recover insertion order under a recency-based policy.
+
+Because reads reorder those structures, enumerators are invalidated not only by writes but by **successful lookups**: under LRU, MRU, or LFU, a `TryGetValue`, indexer read, or `Touch` between iteration steps causes the next `MoveNext` to throw `InvalidOperationException`. Materialize the view first (`ToArray()` / `ToList()`) when interleaving reads with iteration.
 
 ## API summary
 
