@@ -227,4 +227,19 @@ public partial class DateTimeExtensionsTests
         });
     }
 
+    /// <summary>
+    /// Verifies that the working-week overload normalizes the time component to midnight, matching the documented
+    /// contract and the behaviour of the culture-based overloads.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeek_WhenInputHasTimeComponent_ForWorkingWeekOverload_ShouldReturnMidnight()
+    {
+        var input = new DateTime(2024, 5, 10, 13, 45, 30, DateTimeKind.Utc); // Friday afternoon
+
+        DateTime actual = input.FirstDateOfWeek(WorkingDaysOfWeek.MondayToFriday);
+
+        Assert.AreEqual(new DateTime(2024, 5, 6, 0, 0, 0, DateTimeKind.Utc), actual); // Monday, midnight
+        Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
+    }
+
 }
