@@ -905,10 +905,11 @@ public partial class EvictingDictionary<TKey, TValue>
             if (!item.SecondChance)
                 return key;
 
-            // Clock algorithm: clear the reference bit and cycle the item to the tail, giving it one extra pass before eviction.
+            // Clock algorithm: clear the reference bit and cycle the item to the tail, giving it one extra pass before
+            // eviction. Re-link the existing node rather than allocating a replacement.
             item.SecondChance = false;
             _order.Remove(current);
-            item.Node = _order.AddLast(key);
+            _order.AddLast(current);
         }
 
         return _order.First!.Value;
@@ -929,6 +930,37 @@ public partial class EvictingDictionary<TKey, TValue>
         }
 
         return _order.First is not null ? _order.First.Value : default;
+    }
+
+    /// <summary>
+    /// Increments the entry's access frequency and moves its node from the previous LeastFrequentlyUsed bucket to the
+    /// bucket for the new frequency, re-linking the existing node so a touch allocates nothing.
+    /// </summary>
+    /// <param name="item">The cache entry being touched.</param>
+    /// <param name="key">The key of the entry, used only when the entry has no node yet.</param>
+    private void MoveToNextFrequencyBucket(CacheItem item, TKey key)
+    {
+        LinkedListNode<TKey>? node = item.Node;
+        if (node is { List: { } previousBucket })
+        {
+            previousBucket.Remove(node);
+
+            if (previousBucket.Count == 0)
+                _frequencyList.Remove(item.Frequency);
+        }
+
+        item.Frequency++;
+
+        if (!_frequencyList.TryGetValue(item.Frequency, out LinkedList<TKey>? bucket))
+        {
+            bucket = new LinkedList<TKey>();
+            _frequencyList[item.Frequency] = bucket;
+        }
+
+        if (node is not null)
+            bucket.AddLast(node);
+        else
+            item.Node = bucket.AddLast(key);
     }
 
     /// <summary>
@@ -972,19 +1004,25 @@ public partial class EvictingDictionary<TKey, TValue>
             case EvictingDictionaryPolicy.MostRecentlyUsed:
                 if (_order is not null)
                 {
+                    // Re-link the existing node instead of allocating a fresh one per touch — this is the type's
+                    // hottest path (every read under a recency policy).
                     if (item.Node is not null)
+                    {
                         _order.Remove(item.Node);
+                        _order.AddLast(item.Node);
+                    }
+                    else
+                    {
+                        item.Node = _order.AddLast(key);
+                    }
 
-                    item.Node = _order.AddLast(key);
                     _version++;
                 }
 
                 break;
 
             case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                RemoveFromFrequencyList(item);
-                item.Frequency++;
-                item.Node = AddToFrequencyList(item.Frequency, key);
+                MoveToNextFrequencyBucket(item, key);
                 _version++;
                 break;
 

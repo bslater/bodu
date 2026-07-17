@@ -505,10 +505,11 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                 if (!item.SecondChance)
                     return key;
 
-                // Clock algorithm: clear the reference bit and cycle the item to the tail, giving it one extra pass before eviction.
+                // Clock algorithm: clear the reference bit and cycle the item to the tail, giving it one extra pass
+                // before eviction. Re-link the existing node rather than allocating a replacement.
                 item.SecondChance = false;
                 _order.Remove(current);
-                item.Node = _order.AddLast(key);
+                _order.AddLast(current);
             }
 
             return _order.First!.Value;
@@ -536,6 +537,38 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
 
             _store.Remove(key);
             PublishCount();
+        }
+
+        /// <summary>
+        /// Increments the entry's access frequency and moves its node from the previous LeastFrequentlyUsed bucket to
+        /// the bucket for the new frequency, re-linking the existing node so a touch under the stripe lock allocates
+        /// nothing.
+        /// </summary>
+        /// <param name="item">The cache entry being touched.</param>
+        /// <param name="key">The key of the entry, used only when the entry has no node yet.</param>
+        private void MoveToNextFrequencyBucket(CacheItem item, TKey key)
+        {
+            LinkedListNode<TKey>? node = item.Node;
+            if (node is { List: { } previousBucket })
+            {
+                previousBucket.Remove(node);
+
+                if (previousBucket.Count == 0)
+                    _frequencyList.Remove(item.Frequency);
+            }
+
+            item.Frequency++;
+
+            if (!_frequencyList.TryGetValue(item.Frequency, out LinkedList<TKey>? bucket))
+            {
+                bucket = new LinkedList<TKey>();
+                _frequencyList[item.Frequency] = bucket;
+            }
+
+            if (node is not null)
+                bucket.AddLast(node);
+            else
+                item.Node = bucket.AddLast(key);
         }
 
         /// <summary>
@@ -591,16 +624,22 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
             {
                 case EvictingDictionaryPolicy.LeastRecentlyUsed:
                 case EvictingDictionaryPolicy.MostRecentlyUsed:
+                    // Re-link the existing node instead of allocating a fresh one per touch — this runs under the
+                    // stripe lock on every read, so the allocation would also extend the contention window.
                     if (item.Node is not null)
+                    {
                         _order.Remove(item.Node);
+                        _order.AddLast(item.Node);
+                    }
+                    else
+                    {
+                        item.Node = _order.AddLast(key);
+                    }
 
-                    item.Node = _order.AddLast(key);
                     break;
 
                 case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                    RemoveFromFrequencyList(item);
-                    item.Frequency++;
-                    item.Node = AddToFrequencyList(item.Frequency, key);
+                    MoveToNextFrequencyBucket(item, key);
                     break;
 
                 case EvictingDictionaryPolicy.SecondChance:
