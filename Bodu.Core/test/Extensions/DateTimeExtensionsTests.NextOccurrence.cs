@@ -21,8 +21,8 @@ public partial class DateTimeExtensionsTests
         {
             // Format: start, interval, after, expected actual
 
-            // Exact match: next occurrence is 'start' itself + interval
-            yield return new object[] { new DateTime(2024, 1, 1, 0, 0, 0), TimeSpan.FromDays(1), new DateTime(2024, 1, 2, 0, 0, 0), new DateTime(2024, 1, 2, 0, 0, 0) };
+            // Exact boundary: 'after' lands on an occurrence, which is excluded — the following occurrence is returned
+            yield return new object[] { new DateTime(2024, 1, 1, 0, 0, 0), TimeSpan.FromDays(1), new DateTime(2024, 1, 2, 0, 0, 0), new DateTime(2024, 1, 3, 0, 0, 0) };
             // Just before interval boundary
             yield return new object[] { new DateTime(2024, 1, 1), TimeSpan.FromDays(1), new DateTime(2024, 1, 1, 23, 59, 59), new DateTime(2024, 1, 2) };
             // Multiple intervals
@@ -31,8 +31,8 @@ public partial class DateTimeExtensionsTests
             yield return new object[] { new DateTime(2024, 12, 31, 22, 0, 0), TimeSpan.FromHours(5), new DateTime(2025, 1, 1, 6, 0, 0), new DateTime(2025, 1, 1, 8, 0, 0) };
             // Large interval
             yield return new object[] { new DateTime(2020, 1, 1), TimeSpan.FromDays(365), new DateTime(2024, 5, 1), new DateTime(2024, 12, 30) };
-            // Tiny interval
-            yield return new object[] { new DateTime(2024, 1, 1), TimeSpan.FromMilliseconds(1), new DateTime(2024, 1, 1, 0, 0, 0, 1), new DateTime(2024, 1, 1, 0, 0, 0, 1) };
+            // Tiny interval, exact boundary: the occurrence at 'after' is excluded
+            yield return new object[] { new DateTime(2024, 1, 1), TimeSpan.FromMilliseconds(1), new DateTime(2024, 1, 1, 0, 0, 0, 1), new DateTime(2024, 1, 1, 0, 0, 0, 2) };
             // after equals start (should return start itself as next occurrence)
             yield return new object[] { new DateTime(2024, 1, 1), TimeSpan.FromDays(1), new DateTime(2024, 1, 1), new DateTime(2024, 1, 1) };
             // after is before start (always return start)
@@ -70,6 +70,43 @@ public partial class DateTimeExtensionsTests
         DateTime actual = start.NextOccurrence(interval, after);
 
         Assert.AreEqual(expected, actual, $"Expected next occurrence from {start} every {interval} after {after} to be {expected}");
+    }
+
+    /// <summary>
+    /// Verifies that when <c>after</c> falls exactly on an occurrence boundary, the occurrence at that boundary is
+    /// excluded and the strictly following occurrence is returned.
+    /// </summary>
+    [TestMethod]
+    public void NextOccurrence_WhenAfterIsExactlyOnOccurrence_ShouldReturnFollowingOccurrence()
+    {
+        var start = new DateTime(2025, 7, 7, 9, 0, 0);
+        var interval = TimeSpan.FromHours(1);
+        var after = new DateTime(2025, 7, 7, 11, 0, 0); // exactly two intervals from start
+
+        DateTime actual = start.NextOccurrence(interval, after);
+
+        Assert.AreEqual(new DateTime(2025, 7, 7, 12, 0, 0), actual);
+    }
+
+    /// <summary>
+    /// Verifies that a span exceeding the exact-integer range of <see cref="double" /> (more than ~28.5 years of ticks)
+    /// is computed with full tick precision: one tick past an occurrence boundary yields the next occurrence, where a
+    /// floating-point quotient would round the elapsed ticks down to the boundary and return a result before
+    /// <c>after</c>.
+    /// </summary>
+    [TestMethod]
+    public void NextOccurrence_WhenSpanExceedsDoublePrecision_ShouldComputeWithTickPrecision()
+    {
+        const long occurrenceCount = 1_100_000; // ~125 years of hourly occurrences (> 2^54 ticks elapsed)
+        var start = new DateTime(1850, 1, 1);
+        var interval = TimeSpan.FromHours(1);
+        var after = start.AddTicks((occurrenceCount * TimeSpan.TicksPerHour) + 1);
+        var expected = start.AddTicks((occurrenceCount + 1) * TimeSpan.TicksPerHour);
+
+        DateTime actual = start.NextOccurrence(interval, after);
+
+        Assert.AreEqual(expected, actual);
+        Assert.IsTrue(actual > after, "The next occurrence must fall strictly after 'after'.");
     }
 
 }

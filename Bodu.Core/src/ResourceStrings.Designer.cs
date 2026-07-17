@@ -335,6 +335,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The minimum value &apos;{0}&apos; must not be greater than the maximum value &apos;{1}&apos;..
+        /// </summary>
+        internal static string Arg_Invalid_MinGreaterThanMax {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MinGreaterThanMax", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Object must be of type {0} to be compared..
         /// </summary>
         internal static string Arg_Invalid_MustBeComparableType {

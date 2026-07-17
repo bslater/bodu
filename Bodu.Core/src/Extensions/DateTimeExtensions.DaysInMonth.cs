@@ -44,8 +44,9 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// This overload retrieves the <see cref="Calendar" /> from the culture's
-    /// <see cref="DateTimeFormatInfo.Calendar" /> property and returns the number of days for the month of the supplied
-    /// <paramref name="dateTime" />.
+    /// <see cref="DateTimeFormatInfo.Calendar" /> property and returns the number of days in the month of that
+    /// calendar's own year/month reckoning that contains <paramref name="dateTime" />, i.e.
+    /// <c>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</c>.
     /// </para>
     /// <para>
     /// This is useful when working with cultures that use non-Gregorian calendars such as <see cref="HebrewCalendar" />
@@ -53,7 +54,8 @@ public static partial class DateTimeExtensions
     /// them explicitly. For precise control, use the overload that accepts a <see cref="Calendar" /> directly.
     /// </para>
     /// </remarks>
-    public static int DaysInMonth(this DateTime dateTime, CultureInfo? culture) => (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.Calendar.GetDaysInMonth(dateTime.Year, dateTime.Month);
+    public static int DaysInMonth(this DateTime dateTime, CultureInfo? culture) =>
+        DaysInMonth(dateTime, (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.Calendar);
 
     /// <summary>
     /// Returns the number of days in the calendar month of the specified <see cref="DateTime" />, using the supplied or
@@ -71,14 +73,21 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// This overload supports calendar-aware computations for systems such as <see cref="HebrewCalendar" />,
-    /// <see cref="HijriCalendar" />, <see cref="JapaneseCalendar" />, and others supported by .NET. The result is
-    /// equivalent to <c>calendar.GetDaysInMonth(dateTime.Year, dateTime.Month)</c>, or uses the current culture's
-    /// calendar if <paramref name="calendar" /> is <see langword="null" />.
+    /// <see cref="HijriCalendar" />, <see cref="JapaneseCalendar" />, and others supported by .NET.
+    /// <paramref name="dateTime" /> is first projected into the target calendar, so the result is equivalent to
+    /// <c>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</c> — the length of the
+    /// calendar's own month containing the date, not the Gregorian month. The current culture's calendar is used if
+    /// <paramref name="calendar" /> is <see langword="null" />.
     /// </para>
     /// <para>
     /// This method does not account for leap months. For calendars that support leap months or multiple eras, consider
     /// using <c>GetDaysInMonth(year, month, era)</c> instead.
     /// </para>
     /// </remarks>
-    public static int DaysInMonth(this DateTime dateTime, Calendar? calendar) => (calendar ?? CultureInfo.CurrentCulture.Calendar).GetDaysInMonth(dateTime.Year, dateTime.Month);
+    public static int DaysInMonth(this DateTime dateTime, Calendar? calendar)
+    {
+        Calendar target = calendar ?? CultureInfo.CurrentCulture.Calendar;
+
+        return target.GetDaysInMonth(target.GetYear(dateTime), target.GetMonth(dateTime));
+    }
 }
