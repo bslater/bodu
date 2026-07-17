@@ -130,7 +130,7 @@ public static partial class StringExtensions
         List<string> words = new();
         if (value.Length == 0) return words;
 
-        Dictionary<string, string> canonical = BuildAcronymLookup(options.Acronyms);
+        Dictionary<string, string> canonical = options.AcronymLookup;
 
         StringBuilder chunk = new();
         for (int i = 0; i <= value.Length; i++)
@@ -151,24 +151,6 @@ public static partial class StringExtensions
         }
 
         return words;
-    }
-
-    /// <summary>
-    /// Builds a case-insensitive lookup that maps an upper-cased acronym key to its canonical spelling.
-    /// </summary>
-    /// <param name="acronyms">The acronym catalogue.</param>
-    /// <returns>A dictionary keyed by the invariant upper-case form of each acronym.</returns>
-    private static Dictionary<string, string> BuildAcronymLookup(IReadOnlyCollection<string> acronyms)
-    {
-        Dictionary<string, string> map = new(StringComparer.Ordinal);
-        foreach (string acronym in acronyms)
-        {
-            if (string.IsNullOrEmpty(acronym)) continue;
-            string key = acronym.ToUpperInvariant();
-            map[key] = acronym;
-        }
-
-        return map;
     }
 
     /// <summary>

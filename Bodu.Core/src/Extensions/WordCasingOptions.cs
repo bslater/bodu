@@ -114,4 +114,38 @@ public sealed class WordCasingOptions
     /// <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" />.
     /// </value>
     public bool LowerCaseMinorWords { get; init; }
+
+    /// <summary>The lazily built canonical-acronym lookup, cached per options instance.</summary>
+    private Dictionary<string, string>? _acronymLookup;
+
+    /// <summary>
+    /// Gets a lookup that maps the invariant upper-case form of each <see cref="Acronyms" /> entry to its canonical
+    /// spelling, built once per options instance.
+    /// </summary>
+    /// <value>The cached canonical-acronym lookup.</value>
+    /// <remarks>
+    /// Caching assumes the <see cref="Acronyms" /> collection is not mutated after construction, consistent with the
+    /// type's init-only design. Every casing-converter call previously rebuilt this dictionary (38 entries for
+    /// <c>Default</c>) per invocation; the shared <c>Default</c> instance now builds it exactly once per process.
+    /// </remarks>
+    internal Dictionary<string, string> AcronymLookup
+    {
+        get
+        {
+            if (_acronymLookup is null)
+            {
+                var map = new Dictionary<string, string>(Acronyms.Count, StringComparer.Ordinal);
+                foreach (string acronym in Acronyms)
+                {
+                    if (string.IsNullOrEmpty(acronym)) continue;
+
+                    map[acronym.ToUpperInvariant()] = acronym;
+                }
+
+                _acronymLookup = map;
+            }
+
+            return _acronymLookup;
+        }
+    }
 }
