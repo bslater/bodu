@@ -62,11 +62,13 @@ public partial class EvictingDictionary<TKey, TValue>
         /// <inheritdoc />
         public void CopyTo(TKey[] array, int arrayIndex)
         {
-            // Purge expired entries first so the raw count used for validation matches the elements written.
-            _dictionary.PurgeExpired();
-
+            // Argument-shape validation precedes the purge so a caller error cannot trigger evictions or raise the
+            // eviction events; the purge then runs before the range check so the count validated matches the elements written.
             ThrowHelper.ThrowIfNull(array);
             ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
+
+            _dictionary.PurgeExpired();
+
             ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, arrayIndex, Count);
 
             foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
@@ -86,13 +88,15 @@ public partial class EvictingDictionary<TKey, TValue>
         /// <inheritdoc />
         void ICollection.CopyTo(Array array, int index)
         {
-            // Purge expired entries first so the raw count used for validation matches the elements written.
-            _dictionary.PurgeExpired();
-
+            // Argument-shape validation precedes the purge so a caller error cannot trigger evictions or raise the
+            // eviction events; the purge then runs before the range check so the count validated matches the elements written.
             ThrowHelper.ThrowIfNull(array);
             ThrowHelper.ThrowIfArrayMultidimensional(array);
             ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
             ThrowHelper.ThrowIfLessThan(index, 0);
+
+            _dictionary.PurgeExpired();
+
             ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, index, Count);
 
             foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())

@@ -30,9 +30,11 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <para>
 /// Calling <see cref="EvictingDictionary{TKey, TValue}.Add(TKey, TValue)" /> (or assigning via the indexer) with a key
-/// that already exists replaces the existing entry rather than throwing — this differs from
-/// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" />'s strict <c>Add</c> semantics, and resets the
-/// entry's eviction metadata.
+/// that already exists replaces the existing entry's value rather than throwing — this differs from
+/// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" />'s strict <c>Add</c> semantics. The replacement
+/// counts as a touch against the eviction policy: recency-based policies move the entry to the most-recently-used
+/// position, LeastFrequentlyUsed increments its accumulated frequency, and SecondChance marks it recently referenced.
+/// The entry is not treated as newly inserted, and its accumulated metadata is not reset.
 /// </para>
 /// <para>
 /// Supplying an <see cref="EvictingDictionaryExpiration" /> at construction adds time-based expiry orthogonal to the

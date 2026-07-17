@@ -411,7 +411,12 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <para>
     /// Handlers run on the thread whose operation caused the eviction, <em>after</em> the owning segment's lock has
     /// been released, so a handler can safely call back into the dictionary without deadlocking. The key and value
-    /// provided are no longer present in the dictionary by the time the handler observes them.
+    /// provided are no longer present in the dictionary by the time the handler observes them. One caveat: because
+    /// the segment monitor is reentrant, a <see cref="GetOrAdd(TKey, Func{TKey, TValue})" /> factory that violates its
+    /// documented no-re-entry rule and mutates the dictionary can cause the nested operation's handlers to run while
+    /// the outer call still holds the stripe lock — a handler that then blocks on another thread needing that stripe
+    /// deadlocks. Keeping factories free of dictionary calls (as their contract requires) preserves the
+    /// outside-the-lock guarantee.
     /// </para>
     /// <para>
     /// Each subscriber is invoked independently, and ordinary handler exceptions are caught and suppressed — only
@@ -575,10 +580,11 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <remarks>
     /// <para>
-    /// When an entry for <paramref name="key" /> already exists its value is updated in place without disturbing
-    /// eviction metadata: position in the order list, LFU frequency, and the SecondChance reference flag are all
-    /// preserved. This differs from <see cref="Dictionary{TKey, TValue}.Add(TKey, TValue)" />, which throws on
-    /// duplicate keys.
+    /// When an entry for <paramref name="key" /> already exists its value is updated in place and the write counts as
+    /// a touch against the eviction policy: recency-based policies move the entry to the most-recently-used position,
+    /// LeastFrequentlyUsed increments its accumulated frequency, and SecondChance marks it recently referenced. The
+    /// entry keeps its accumulated metadata rather than being treated as newly inserted. This differs from
+    /// <see cref="Dictionary{TKey, TValue}.Add(TKey, TValue)" />, which throws on duplicate keys.
     /// </para>
     /// <para>
     /// When time-based expiration is configured, each write is a fresh lease: the entry's lifetime restarts using the

@@ -30,13 +30,15 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// <inheritdoc />
     void ICollection.CopyTo(Array array, int index)
     {
-        // Purge expired entries first so the raw count used for validation matches the elements written.
-        PurgeExpired();
-
+        // Argument-shape validation precedes the purge so a caller error cannot trigger evictions or raise the
+        // eviction events; the purge then runs before the length check so the count validated matches the elements written.
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfLessThan(index, 0);
+
+        PurgeExpired();
+
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _store.Count);
 
         foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in GetOrderedItems())

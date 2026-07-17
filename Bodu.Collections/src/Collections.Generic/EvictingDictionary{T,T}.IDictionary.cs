@@ -95,9 +95,10 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </exception>
     /// <remarks>
     /// <para>
-    /// When an entry for <paramref name="key" /> already exists its value is updated in place without disturbing
-    /// eviction metadata: position in the order list, LFU frequency, and the SecondChance reference flag are all
-    /// preserved. This differs from
+    /// When an entry for <paramref name="key" /> already exists its value is updated in place and the write counts as
+    /// a touch against the eviction policy: recency-based policies move the entry to the most-recently-used position,
+    /// LeastFrequentlyUsed increments its accumulated frequency, and SecondChance marks it recently referenced. The
+    /// entry keeps its accumulated metadata rather than being treated as newly inserted. This differs from
     /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}.Add(TKey, TValue)" />, which throws on duplicate
     /// keys.
     /// </para>
@@ -205,8 +206,13 @@ public partial class EvictingDictionary<TKey, TValue> :
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Like <see cref="ContainsKey" />, this is a pure read with respect to the capacity policy: it does not update
+    /// recency or frequency metadata, slide expiration, or count as a touch. (Reads that should influence eviction
+    /// order go through <see cref="TryGetValue" /> or the indexer.)
+    /// </remarks>
     public bool Contains(KeyValuePair<TKey, TValue> item) =>
-        TryGetValue(item.Key, out TValue? val) && EqualityComparer<TValue>.Default.Equals(val, item.Value);
+        TryGetLiveItem(item.Key, slide: false, out CacheItem? cached) && EqualityComparer<TValue>.Default.Equals(cached.Value, item.Value);
 
     /// <inheritdoc />
     /// <remarks>
@@ -226,12 +232,15 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </remarks>
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
-        PurgeExpired();
-
+        // Argument-shape validation precedes the purge so a caller error cannot trigger evictions or raise the
+        // eviction events; the purge then runs before the length check so the count validated matches the elements written.
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
+
+        PurgeExpired();
+
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex + Count);
 
         foreach (KeyValuePair<TKey, TValue> kvp in GetOrderedItems())

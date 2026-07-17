@@ -459,6 +459,10 @@ public sealed class Deque<T>
     /// </exception>
     private bool TryAddInternal(T item, bool atHead, bool throwIfFull)
     {
+        // Guard at the funnel entry: the eviction path below re-raises the events before touching any guarded
+        // primitive, so a handler re-entering here would otherwise recurse without limit.
+        ThrowIfEvicting();
+
         if (Count == Capacity)
         {
             if (AllowGrow)
@@ -468,9 +472,18 @@ public sealed class Deque<T>
             else if (_overflowPolicy == DequeOverflowPolicy.EvictOpposite)
             {
                 // Capture the opposite-end victim before raising ItemEvicting so a handler exception vetoes the
-                // eviction in place — nothing is removed, the new element is not stored.
+                // eviction in place — nothing is removed, the new element is not stored. Dispatch is latched so a
+                // handler attempting to mutate the deque fails fast instead of corrupting mid-eviction state.
                 T evicted = atHead ? PeekTail() : PeekHead();
-                ItemEvicting?.Invoke(evicted);
+                try
+                {
+                    SetEvictionDispatch(true);
+                    ItemEvicting?.Invoke(evicted);
+                }
+                finally
+                {
+                    SetEvictionDispatch(false);
+                }
 
                 if (atHead)
                 {
@@ -483,7 +496,16 @@ public sealed class Deque<T>
                     AddTail(item);
                 }
 
-                ItemEvicted?.Invoke(evicted);
+                try
+                {
+                    SetEvictionDispatch(true);
+                    ItemEvicted?.Invoke(evicted);
+                }
+                finally
+                {
+                    SetEvictionDispatch(false);
+                }
+
                 return true;
             }
             else

@@ -385,4 +385,49 @@ public partial class DequeTests
         Assert.IsFalse(anyEventFired);
     }
 
+    /// <summary>
+    /// Verifies that a handler that attempts to mutate the deque from within <see cref="Deque{T}.ItemEvicting" />
+    /// fails fast with <see cref="InvalidOperationException" /> instead of corrupting the in-flight eviction's state.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicting_WhenHandlerMutatesDeque_ShouldThrowExactly()
+    {
+        var deque = new Deque<int>(2, allowGrow: false)
+        {
+            OverflowPolicy = DequeOverflowPolicy.EvictOpposite,
+        };
+        deque.AddLast(1);
+        deque.AddLast(2);
+        deque.ItemEvicting += _ => deque.AddFirst(99);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            deque.AddLast(3);
+        });
+
+        Assert.AreEqual(2, deque.Count, "A vetoed eviction must leave the deque unchanged.");
+    }
+
+    /// <summary>
+    /// Verifies that a handler that attempts to mutate the deque from within <see cref="Deque{T}.ItemEvicted" />
+    /// fails fast with <see cref="InvalidOperationException" /> instead of corrupting the just-committed eviction's
+    /// state.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicted_WhenHandlerMutatesDeque_ShouldThrowExactly()
+    {
+        var deque = new Deque<int>(2, allowGrow: false)
+        {
+            OverflowPolicy = DequeOverflowPolicy.EvictOpposite,
+        };
+        deque.AddLast(1);
+        deque.AddLast(2);
+        deque.ItemEvicted += _ => _ = deque.RemoveFirst();
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            deque.AddLast(3);
+        });
+    }
+
 }
