@@ -164,3 +164,16 @@ The three deferred structural items landed as a follow-up sequence on the same b
 | C3 | **Done** — YAML ships the sibling stream/async facade (`Serialize<T>(IBufferWriter<byte>)`, `Deserialize<T>(Stream)`, `SerializeAsync`/`DeserializeAsync`, buffered in full with async stream I/O only), with the mirrored async test files. YAML regression: 1,442. |
 
 Still deferred by design: the YAML DOM↔serializer `NodeConverter` bridge (`YamlNode` has no `ReadFrom(ref Utf8YamlReader)`; adding one is new surface, not consolidation), the Bencode/YAML DOM lookup S.T.J-parity, Bencode's per-dictionary value buffering, and the converter-seam boxing inherent to the boxed-converter architecture.
+
+### Residual consolidation (round 3, same branch)
+
+A measured, name-normalized diff sweep after C1–C3 found the remaining cross-package near-duplicates; the mechanical tier plus the options pipeline and the TOML/YAML exception pair were lifted (four commits):
+
+| Item | Outcome |
+|---|---|
+| `{Fmt}ConverterFactory` (×3, 2–4 diff lines/62) + public `{Fmt}NumberEnumConverter<TEnum>` (B/T, doc-only) | **Lifted** — first shared files using the `#if`-switched public-type-name idiom: each branch declares its format's named type and constructor (doc comments must stay contiguous per branch), bodies bind through the `Format*` aliases. |
+| `ConverterList` (T/Y twins, 2 diff lines/179; **absent in Bencode**) | **Lifted + Bencode contract fix** — Bencode exposed a raw `List`, so post-freeze mutation was silently ignored and null entries accepted; it now shares the guarded list (both changes verified red-first, +4 guard tests). |
+| Options resolution pipeline (caches, `IsReadOnly`/`MakeReadOnly`, `GetConverter`→attribute→user→defaults, `GetTypeMetadata`, `InstantiateConverter`, `Materialize`, `VerifyMutable`) | **Lifted** into a shared `#if`-declared partial of the three options classes (~380 duplicated lines removed); per-format residue is the gated trimming attributes and TOML's `RootMapsToTable`, which stays in its own file. |
+| `TomlSerializationException`/`YamlSerializationException` (8 diff lines/103) | **Lifted** — shared `Path`/position/`CombinePath` tail; Bencode's offset-based sibling stays per-package via the Bencode csproj's first shared-source `Exclude`. |
+
+Measured and deliberately left per-package: the T/Y scalar converters (the C2 implicit-typing coercion boundary, 17–71 diff lines per ~40-line file), container-converter full bodies (`ObjectConverter` B/T 150/383, T/Y 328/425), `ByteArrayConverter` (different wire models), facades, `DefaultConverters` orderings, `ObjectTypeConverter`, the three `WriteStack`s (three deliberate maturity levels), and the per-package `FormatToken`/`SharedSourceAliases` binding seams themselves.
