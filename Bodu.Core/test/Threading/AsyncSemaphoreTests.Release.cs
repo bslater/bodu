@@ -108,6 +108,32 @@ public sealed partial class AsyncSemaphoreTests
     }
 
     /// <summary>
+    /// Verifies that a release exceeding the configured maximum is atomic: it throws
+    /// <see cref="InvalidOperationException" /> without granting any queued waiter and without changing
+    /// <see cref="AsyncSemaphore.CurrentCount" />.
+    /// </summary>
+    [TestMethod]
+    public async Task Release_WhenExceedingMaxCountWithWaiterQueued_ShouldThrowWithoutGrantingWaiter()
+    {
+        var sut = new AsyncSemaphore(0, 1);
+        ValueTask waiter = sut.WaitAsync();
+
+        // One waiter absorbs one permit; the remaining three cannot be stored under maxCount = 1.
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            sut.Release(4);
+        });
+
+        Assert.AreEqual(0, sut.CurrentCount);
+        Assert.IsFalse(waiter.IsCompleted);
+
+        // The waiter is still queued and is granted by a subsequent valid release.
+        sut.Release();
+        await waiter;
+        Assert.AreEqual(0, sut.CurrentCount);
+    }
+
+    /// <summary>
     /// Verifies that a non-positive release count throws <see cref="ArgumentOutOfRangeException" /> naming <c>releaseCount</c>.
     /// </summary>
     [TestMethod]

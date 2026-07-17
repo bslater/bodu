@@ -23,6 +23,12 @@ namespace Bodu.Functional;
 /// Arguments are constrained to non-nullable types because they are used as dictionary keys. Memoizing a recursive
 /// function requires the function to call the memoized delegate for its recursive step.
 /// </para>
+/// <para>
+/// The cache is unbounded and never evicts: every distinct argument's result is retained for the lifetime of the
+/// memoized delegate. Memoizing a function over an unbounded argument domain therefore grows memory without limit; for
+/// bounded caching with eviction, use <c>EvictingDictionary&lt;TKey, TValue&gt;</c> from the Bodu.Collections package
+/// instead.
+/// </para>
 /// </remarks>
 public static class Memoizer
 {

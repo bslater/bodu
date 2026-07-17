@@ -111,6 +111,21 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
+    /// Verifies that the non-generic indexer getter throws <see cref="ArgumentNullException" /> for a
+    /// <see langword="null" /> key, matching the <see cref="Dictionary{TKey, TValue}" /> contract.
+    /// </summary>
+    [TestMethod]
+    public void IDictionary_IndexerGet_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    {
+        IDictionary dictionary = new EvictingDictionary<string, int>(3);
+
+        ThrowsExactlyWithParamName<ArgumentNullException>(() =>
+        {
+            _ = dictionary[null!];
+        }, "key");
+    }
+
+    /// <summary>
     /// Verifies that the indexer returns the value when the key exists.
     /// </summary>
     [TestMethod]

@@ -87,9 +87,19 @@ public partial class SequencedDictionary<TKey, TValue> :
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Following the <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> contract for
+    /// <see cref="IDictionary.this" />, the getter throws <see cref="ArgumentNullException" /> for a
+    /// <see langword="null" /> key and returns <see langword="null" /> for a non-null key of an incompatible type.
+    /// </remarks>
     object? IDictionary.this[object key]
     {
-        get => key is TKey typedKey && TryGetValue(typedKey, out TValue? value) ? value : null;
+        get
+        {
+            ThrowHelper.ThrowIfNull(key);
+
+            return key is TKey typedKey && TryGetValue(typedKey, out TValue? value) ? value : null;
+        }
 
         set
         {

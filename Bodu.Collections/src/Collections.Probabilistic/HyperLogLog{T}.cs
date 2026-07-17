@@ -347,10 +347,18 @@ public sealed class HyperLogLog<T>
     /// <paramref name="other" /> is incompatible: its <see cref="Precision" /> or comparer differs from this sketch's.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// Compatibility requires an identical <see cref="Precision" /> and the same or an equal comparer instance — in
     /// practice, sketches constructed with the same parameters. The other sketch is not modified. The merge is lossless
     /// and idempotent: elements observed by both sketches are not double-counted, and merging a sketch with itself
     /// leaves it unchanged.
+    /// </para>
+    /// <para>
+    /// Comparer identity is decided by <see cref="object.Equals(object)" /> (after a reference check). Two distinct
+    /// instances of a custom comparer type that does not override <see cref="object.Equals(object)" /> compare unequal
+    /// even when behaviourally identical, and the merge is rejected. Share a single comparer instance between sketches
+    /// that will be merged, or override <c>Equals</c> (and <c>GetHashCode</c>) on the comparer type.
+    /// </para>
     /// </remarks>
     public void MergeWith(HyperLogLog<T> other)
     {

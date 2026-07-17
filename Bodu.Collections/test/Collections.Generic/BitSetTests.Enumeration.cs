@@ -106,6 +106,96 @@ public partial class BitSetTests
     }
 
     /// <summary>
+    /// Verifies that a beyond-capacity <see cref="BitSet.Clear(int)" /> is a content-preserving no-op that does not
+    /// invalidate an active enumerator.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenClearBeyondCapacityDuringEnumeration_ShouldNotInvalidateEnumerator()
+    {
+        var bits = CreateWithBits(1, 2, 3);
+        var enumerator = bits.GetEnumerator();
+        Assert.IsTrue(enumerator.MoveNext());
+
+        bits.Clear(bits.Capacity + 100);
+
+        Assert.IsTrue(enumerator.MoveNext());
+        Assert.AreEqual(2, enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that setting a bit beyond capacity to <see langword="false" /> is a content-preserving no-op that does
+    /// not invalidate an active enumerator.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenSetFalseBeyondCapacityDuringEnumeration_ShouldNotInvalidateEnumerator()
+    {
+        var bits = CreateWithBits(1, 2, 3);
+        var enumerator = bits.GetEnumerator();
+        Assert.IsTrue(enumerator.MoveNext());
+
+        bits.Set(bits.Capacity + 100, false);
+
+        Assert.IsTrue(enumerator.MoveNext());
+        Assert.AreEqual(2, enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that empty-range <see cref="BitSet.Clear(int, int)" />, <see cref="BitSet.Set(int, int)" />, and
+    /// <see cref="BitSet.Flip(int, int)" /> calls are content-preserving no-ops that do not invalidate an active
+    /// enumerator.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenEmptyRangeOpsDuringEnumeration_ShouldNotInvalidateEnumerator()
+    {
+        var bits = CreateWithBits(1, 2, 3);
+        var enumerator = bits.GetEnumerator();
+        Assert.IsTrue(enumerator.MoveNext());
+
+        bits.Clear(5, 5);
+        bits.Set(5, 5);
+        bits.Flip(5, 5);
+
+        Assert.IsTrue(enumerator.MoveNext());
+        Assert.AreEqual(2, enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="BitSet.Clear(int, int)" /> range entirely beyond capacity is a content-preserving
+    /// no-op that does not invalidate an active enumerator.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenClearRangeBeyondCapacityDuringEnumeration_ShouldNotInvalidateEnumerator()
+    {
+        var bits = CreateWithBits(1, 2, 3);
+        var enumerator = bits.GetEnumerator();
+        Assert.IsTrue(enumerator.MoveNext());
+
+        bits.Clear(bits.Capacity, bits.Capacity + 100);
+
+        Assert.IsTrue(enumerator.MoveNext());
+        Assert.AreEqual(2, enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that a within-capacity <see cref="BitSet.Clear(int)" /> — a real mutation — still invalidates an
+    /// active enumerator, causing <c>MoveNext</c> to throw <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenClearWithinCapacityDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var bits = CreateWithBits(1, 2, 3);
+        var enumerator = bits.GetEnumerator();
+        Assert.IsTrue(enumerator.MoveNext());
+
+        bits.Clear(2);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = enumerator.MoveNext();
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="BitSet.Enumerator.Reset" /> restarts the walk from the first set bit, and throws
     /// <see cref="InvalidOperationException" /> after a mutation.
     /// </summary>

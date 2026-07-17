@@ -402,6 +402,12 @@ public sealed class CountMinSketch<T>
     /// Cell additions are checked; when an <see cref="OverflowException" /> is thrown mid-merge, cells merged before
     /// the failing one retain the added counts and the sketch may subsequently overestimate more than usual.
     /// </para>
+    /// <para>
+    /// Comparer identity is decided by <see cref="object.Equals(object)" /> (after a reference check). Two distinct
+    /// instances of a custom comparer type that does not override <see cref="object.Equals(object)" /> compare unequal
+    /// even when behaviourally identical, and the merge is rejected. Share a single comparer instance between sketches
+    /// that will be merged, or override <c>Equals</c> (and <c>GetHashCode</c>) on the comparer type.
+    /// </para>
     /// </remarks>
     public void MergeWith(CountMinSketch<T> other)
     {

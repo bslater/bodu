@@ -124,6 +124,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Dijkstra&apos;s algorithm requires non-negative edge weights, but an edge with weight {0} was encountered..
+        /// </summary>
+        internal static string Arg_Invalid_DijkstraNegativeWeight {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DijkstraNegativeWeight", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The bidirectional dictionary cannot contain duplicate values; the value is already bound to a different key..
         /// </summary>
         internal static string Arg_Invalid_DuplicateBiDictionaryValue {
@@ -273,6 +282,15 @@ namespace Bodu {
         internal static string Arg_Invalid_VertexNotInGraph {
             get {
                 return ResourceManager.GetString("Arg_Invalid_VertexNotInGraph", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The imported hash count ({0}) exceeds the maximum supported value ({1})..
+        /// </summary>
+        internal static string Arg_OutOfRange_BloomFilterImportHashCount {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_BloomFilterImportHashCount", resourceCulture);
             }
         }
 

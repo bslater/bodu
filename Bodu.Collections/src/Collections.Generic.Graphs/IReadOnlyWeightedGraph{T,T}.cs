@@ -24,6 +24,11 @@ public interface IReadOnlyWeightedGraph<TVertex, TWeight> : IReadOnlyGraph<TVert
     /// </summary>
     /// <param name="vertex">The vertex whose weighted neighbors are requested.</param>
     /// <returns>The neighboring vertices and the weight of each connecting edge.</returns>
+    /// <remarks>
+    /// Weights may be negative in general, but individual algorithms impose their own preconditions: Dijkstra-based
+    /// shortest-path methods in <see cref="GraphAlgorithms" /> require every weight yielded here to be non-negative and
+    /// throw <see cref="ArgumentException" /> when a negative weight is encountered.
+    /// </remarks>
     IEnumerable<(TVertex Neighbor, TWeight Weight)> WeightedNeighbors(TVertex vertex);
 
     /// <summary>

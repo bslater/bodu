@@ -292,7 +292,7 @@ public abstract partial class RingBackedCollection<T>
     {
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfNegative(index, nameof(index));
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, _count);
 
         CopyToInternal(array, index);
     }

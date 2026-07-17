@@ -265,7 +265,7 @@ public sealed partial class Multiset<T>
     {
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfNegative(arrayIndex);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex + _count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, _count);
 
         foreach (KeyValuePair<T, int> pair in _items)
         {

@@ -58,12 +58,18 @@ public static partial class ThrowHelper
     /// </summary>
     /// <param name="disposed">The disposal flag to evaluate.</param>
     /// <param name="objectName">
-    /// The name of the disposed object included in the exception message. Supplied automatically by the compiler via
-    /// <see cref="CallerArgumentExpressionAttribute" />.
+    /// The name of the disposed object included in the exception message. Callers should pass this explicitly —
+    /// typically <c>nameof(TypeName)</c> or <c>GetType().FullName</c>.
     /// </param>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when <paramref name="disposed" /> is <see langword="true" />.
     /// </exception>
+    /// <remarks>
+    /// When <paramref name="objectName" /> is omitted, <see cref="CallerArgumentExpressionAttribute" /> captures the
+    /// text of the <paramref name="disposed" /> argument expression (for example <c>"_disposed"</c>), not the owning
+    /// type's name — producing a misleading <see cref="ObjectDisposedException.ObjectName" />. Always supply
+    /// <paramref name="objectName" /> explicitly at call sites.
+    /// </remarks>
     [SuppressMessage(
         "Microsoft.CodeAnalysis.NetAnalyzers",
         "CA1513:Use ObjectDisposedException throw helper",

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Collections.Generic.Graphs;
 
 public static partial class GraphAlgorithms
@@ -21,7 +23,8 @@ public static partial class GraphAlgorithms
     /// </returns>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="source" /> or <paramref name="target" /> is not in the graph.
+    /// <paramref name="source" /> or <paramref name="target" /> is not in the graph, or a negative edge weight is
+    /// encountered during the search (Dijkstra's algorithm requires non-negative weights).
     /// </exception>
     /// <remarks>
     /// This is a convenience wrapper over <see cref="TryShortestPath{T}(IReadOnlyWeightedGraph{T, double}, T, T)" />;
@@ -58,7 +61,8 @@ public static partial class GraphAlgorithms
     /// </returns>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="source" /> or <paramref name="target" /> is not in the graph.
+    /// <paramref name="source" /> or <paramref name="target" /> is not in the graph, or a negative edge weight is
+    /// encountered during the search (Dijkstra's algorithm requires non-negative weights).
     /// </exception>
     /// <example>
     /// <code language="csharp">
@@ -113,7 +117,10 @@ public static partial class GraphAlgorithms
     /// <exception cref="ArgumentNullException">
     /// <paramref name="graph" /> or <paramref name="source" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException"><paramref name="source" /> is not in the graph.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="source" /> is not in the graph, or a negative edge weight is encountered during the search
+    /// (Dijkstra's algorithm requires non-negative weights).
+    /// </exception>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -145,6 +152,11 @@ public static partial class GraphAlgorithms
     /// <param name="source">The starting vertex.</param>
     /// <param name="predecessors">When this method returns, contains the predecessor of each settled vertex.</param>
     /// <returns>A map from each reachable vertex to its shortest distance from <paramref name="source" />.</returns>
+    /// <exception cref="ArgumentException">
+    /// A negative edge weight is encountered during the search; Dijkstra's greedy settlement is only correct over
+    /// non-negative weights, and a foreign <see cref="IReadOnlyWeightedGraph{TVertex, TWeight}" /> implementation could
+    /// otherwise silently yield wrong distances.
+    /// </exception>
     private static Dictionary<T, double> Dijkstra<T>(IReadOnlyWeightedGraph<T, double> graph, T source, out Dictionary<T, T> predecessors)
         where T : notnull
     {
@@ -161,6 +173,11 @@ public static partial class GraphAlgorithms
 
             foreach ((T? neighbor, double weight) in graph.WeightedNeighbors(current))
             {
+                // Dijkstra's precondition: settled distances are final only when no edge can shorten a path later, so
+                // a negative weight must fail fast rather than silently produce wrong distances.
+                if (weight < 0.0)
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.Arg_Invalid_DijkstraNegativeWeight, weight), nameof(graph));
+
                 double candidate = distance + weight;
                 if (!distances.TryGetValue(neighbor, out double existing) || candidate < existing)
                 {

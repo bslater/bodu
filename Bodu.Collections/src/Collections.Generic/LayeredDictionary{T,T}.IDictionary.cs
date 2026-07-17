@@ -173,7 +173,7 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
     {
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex + Count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, Count);
 
         foreach (KeyValuePair<TKey, TValue> kvp in this)
             array[arrayIndex++] = kvp;
