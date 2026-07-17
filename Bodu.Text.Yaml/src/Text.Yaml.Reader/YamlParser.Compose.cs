@@ -24,7 +24,13 @@ internal sealed partial class YamlParser
         DetectAliasCycles();
         EnforceExpansionBudget();
         CoerceTags();
-        ExpandMergeKeys();
+
+        // Merge expansion appends alias rows, so the budget is re-checked over the post-injection store. Expansion
+        // cannot introduce a cycle — aliases only ever point backward, and a merge source whose subtree contains the
+        // receiving mapping is already rejected above through the merge key's own alias — so cycle detection is not
+        // re-run.
+        if (ExpandMergeKeys())
+            EnforceExpansionBudget();
     }
 
     /// <summary>
@@ -126,45 +132,69 @@ internal sealed partial class YamlParser
             return;
 
         var state = new AliasVisitState[_rows.Count];
-        VisitForCycle(0, state);
+        VisitForCycles(state);
     }
 
     /// <summary>
-    /// Performs a depth-first visit of a node, resolving aliases and flagging a back edge to a node still on the
-    /// traversal stack as a cycle.
+    /// Performs a depth-first visit of the resolved node graph, flagging a back edge to a node still on the traversal
+    /// stack as a cycle.
     /// </summary>
-    /// <param name="index">The row index to visit.</param>
+    /// <remarks>
+    /// The walk is an explicit-stack traversal for the same reason <see cref="EnforceExpansionBudget" /> uses one:
+    /// chained aliases compose resolved depth far beyond the parser's physical nesting clamp, so native recursion
+    /// could exhaust the call stack on a crafted document before the cycle (or its absence) is ever established.
+    /// </remarks>
     /// <param name="state">The per-row visit state.</param>
     /// <exception cref="YamlFormatException">A cycle is detected.</exception>
-    private void VisitForCycle(int index, AliasVisitState[] state)
+    private void VisitForCycles(AliasVisitState[] state)
     {
-        int resolved = Resolve(index);
-        if (state[resolved] == AliasVisitState.Visiting)
+        var nodes = new Stack<int>();
+        var nextChild = new Stack<int>();
+
+        int root = Resolve(0);
+        state[root] = AliasVisitState.Visiting;
+        nodes.Push(root);
+        nextChild.Push(_rows[root].FirstChild);
+
+        while (nodes.Count > 0)
         {
-            string anchor = _rows[resolved].Anchor ?? string.Empty;
-            throw new YamlFormatException(string.Format(
-                CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlCyclicAlias, anchor));
+            int child = nextChild.Pop();
+
+            if (child < 0)
+            {
+                // Every child has been visited: the node leaves the traversal stack fully explored.
+                state[nodes.Pop()] = AliasVisitState.Visited;
+                continue;
+            }
+
+            // Advance the current node to its next sibling before descending into this child.
+            nextChild.Push(_rows[child].NextSibling);
+
+            int resolved = Resolve(child);
+            if (state[resolved] == AliasVisitState.Visiting)
+            {
+                string anchor = _rows[resolved].Anchor ?? string.Empty;
+                throw new YamlFormatException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlCyclicAlias, anchor));
+            }
+
+            if (state[resolved] == AliasVisitState.Visited)
+                continue;
+
+            state[resolved] = AliasVisitState.Visiting;
+            nodes.Push(resolved);
+            nextChild.Push(_rows[resolved].FirstChild);
         }
-
-        if (state[resolved] == AliasVisitState.Visited)
-            return;
-
-        state[resolved] = AliasVisitState.Visiting;
-
-        int child = _rows[resolved].FirstChild;
-        while (child >= 0)
-        {
-            VisitForCycle(child, state);
-            child = _rows[child].NextSibling;
-        }
-
-        state[resolved] = AliasVisitState.Visited;
     }
 
     /// <summary>
-    /// Resolves each alias row to the most recent anchor of the same name defined earlier in the document.
+    /// Resolves each alias row to the anchor of the same name defined earlier in the document. Anchor names must be
+    /// unique within a document: the tree profile rejects redefinition (where the YAML specification would rebind
+    /// later aliases to the most recent definition) so that every alias has a single unambiguous target.
     /// </summary>
-    /// <exception cref="YamlFormatException">An alias refers to an anchor that was never defined.</exception>
+    /// <exception cref="YamlFormatException">
+    /// An alias refers to an anchor that was never defined, or an anchor name is defined more than once.
+    /// </exception>
     private void ResolveAliases()
     {
         var anchors = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -194,10 +224,14 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Expands merge keys by injecting alias rows for keys contributed by the merged mappings.
     /// </summary>
-    private void ExpandMergeKeys()
+    /// <returns><see langword="true" /> when at least one alias row was injected; otherwise <see langword="false" />.</returns>
+    /// <exception cref="YamlFormatException">
+    /// Injection would grow the row store past <see cref="YamlLimits.AbsoluteMaxExpandedNodes" />.
+    /// </exception>
+    private bool ExpandMergeKeys()
     {
         if (_mergeKeyBehavior != YamlMergeKeyBehavior.Expand)
-            return;
+            return false;
 
         int count = _rows.Count;
         for (int i = 0; i < count; i++)
@@ -205,6 +239,8 @@ internal sealed partial class YamlParser
             if (_rows[i].Kind == YamlReaderNodeKind.Mapping)
                 ExpandMappingMerge(i);
         }
+
+        return _rows.Count > count;
     }
 
     /// <summary>
@@ -310,8 +346,20 @@ internal sealed partial class YamlParser
     /// <param name="key">The merged key.</param>
     /// <param name="target">The resolved target row index.</param>
     /// <returns>The row index of the new alias.</returns>
+    /// <exception cref="YamlFormatException">
+    /// The row store has already grown to <see cref="YamlLimits.AbsoluteMaxExpandedNodes" /> rows.
+    /// </exception>
     private int NewMergeAlias(string key, int target)
     {
+        // Chained merges copy earlier mappings' injected aliases forward, so row growth can be quadratic in the
+        // input; bound the store by the same ceiling the expansion budget enforces rather than letting it grow
+        // unchecked before the post-merge budget pass runs.
+        if (_rows.Count >= YamlLimits.AbsoluteMaxExpandedNodes)
+        {
+            throw new YamlFormatException(string.Format(
+                CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlAliasExpansionTooLarge, YamlLimits.AbsoluteMaxExpandedNodes));
+        }
+
         var row = new YamlReaderRow
         {
             Kind = YamlReaderNodeKind.Alias,

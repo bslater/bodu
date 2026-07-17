@@ -41,50 +41,52 @@ internal static class TomlCanonicalWriter
     /// </summary>
     /// <param name="emitter">The destination emitter.</param>
     /// <param name="table">The table to write.</param>
-    /// <param name="path">The dotted header path of the table, empty for the document root.</param>
+    /// <param name="path">
+    /// The dotted header path of the table, empty for the document root. The list is shared through the recursion —
+    /// each section pushes its key before descending and pops it after — so no per-section path copy is made.
+    /// </param>
     /// <remarks>
     /// A member is emitted inline when it is a scalar, or an array that is not an array of tables; it is emitted as a
     /// section when it is a sub-table or an array whose every element is a table. Inline members are written before any
-    /// section so that no key/value line is orphaned beneath a later <c>[header]</c>.
+    /// section so that no key/value line is orphaned beneath a later <c>[header]</c>. The two passes over
+    /// <see cref="TomlTableWriterNode.Items" /> replace partition lists: the first emits inline members, the second the
+    /// sections.
     /// </remarks>
-    internal static void WriteTableBody(ref TomlUtf8Emitter emitter, TomlTableWriterNode table, IReadOnlyList<string> path)
+    internal static void WriteTableBody(ref TomlUtf8Emitter emitter, TomlTableWriterNode table, List<string> path)
     {
-        List<KeyValuePair<string, TomlWriterNode>> inlineEntries = [];
-        List<KeyValuePair<string, TomlWriterNode>> sectionEntries = [];
-
-        foreach (KeyValuePair<string, TomlWriterNode> pair in table.Items)
+        foreach (KeyValuePair<string, TomlWriterNode> entry in table.Items)
         {
-            if (pair.Value is TomlTableWriterNode || IsArrayOfTables(pair.Value))
-                sectionEntries.Add(pair);
-            else
-                inlineEntries.Add(pair);
-        }
+            if (entry.Value is TomlTableWriterNode || IsArrayOfTables(entry.Value))
+                continue;
 
-        foreach (KeyValuePair<string, TomlWriterNode> entry in inlineEntries)
-        {
             WriteKey(ref emitter, entry.Key);
             emitter.Append(" = "u8);
             WriteInlineValue(ref emitter, entry.Value);
             emitter.Append((byte)'\n');
         }
 
-        foreach (KeyValuePair<string, TomlWriterNode> entry in sectionEntries)
+        foreach (KeyValuePair<string, TomlWriterNode> entry in table.Items)
         {
-            List<string> childPath = [.. path, entry.Key];
+            if (entry.Value is not TomlTableWriterNode && !IsArrayOfTables(entry.Value))
+                continue;
+
+            path.Add(entry.Key);
 
             if (entry.Value is TomlTableWriterNode subTable)
             {
-                WriteHeaderLine(ref emitter, childPath, arrayOfTables: false);
-                WriteTableBody(ref emitter, subTable, childPath);
+                WriteHeaderLine(ref emitter, path, arrayOfTables: false);
+                WriteTableBody(ref emitter, subTable, path);
             }
             else
             {
                 foreach (TomlWriterNode element in ((TomlArrayWriterNode)entry.Value).Items)
                 {
-                    WriteHeaderLine(ref emitter, childPath, arrayOfTables: true);
-                    WriteTableBody(ref emitter, (TomlTableWriterNode)element, childPath);
+                    WriteHeaderLine(ref emitter, path, arrayOfTables: true);
+                    WriteTableBody(ref emitter, (TomlTableWriterNode)element, path);
                 }
             }
+
+            path.RemoveAt(path.Count - 1);
         }
     }
 

@@ -23,7 +23,9 @@
   <!-- Shared serializer source, compiled into this assembly with format aliases (net8.0 ref-struct
        converters cannot live in a shared generic assembly). -->
   <ItemGroup>
-    <Compile Include="..\..\Bodu.Text.Serialization\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\..\Bodu.Text.Serialization\shared\**\*.cs"
+             Exclude="..\..\Bodu.Text.Serialization\shared\SerializationException.cs"
+             Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <!-- Grant the companion test project access to internal members. -->

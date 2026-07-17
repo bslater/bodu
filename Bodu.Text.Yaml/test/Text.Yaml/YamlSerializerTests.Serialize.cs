@@ -54,6 +54,37 @@ public partial class YamlSerializerTests
         Assert.AreEqual("HELLO\n", yaml);
     }
 
+    /// <summary>
+    /// Verifies that the <see cref="System.Buffers.IBufferWriter{T}" /> overload writes the same UTF-8 bytes as the
+    /// string overload returns.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenBufferWriterDestination_ShouldWriteSameBytes()
+    {
+        var person = new Person { Name = "x", Age = 7, Active = true };
+        var buffer = new System.Buffers.ArrayBufferWriter<byte>();
+
+        YamlSerializer.Serialize(buffer, person);
+
+        Assert.AreEqual(YamlSerializer.Serialize(person), System.Text.Encoding.UTF8.GetString(buffer.WrittenSpan));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="System.Buffers.IBufferWriter{T}" /> overload throws
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> <c>destination</c> when the destination is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenBufferWriterDestinationIsNull_ShouldThrowArgumentNullException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            YamlSerializer.Serialize((System.Buffers.IBufferWriter<byte>)null!, new Person { Name = "x" });
+        });
+
+        Assert.AreEqual("destination", ex.ParamName);
+    }
+
     /// <summary>A custom converter that reads and writes a value as an uppercase string.</summary>
     private sealed class UpperConverter : YamlConverter<string>
     {

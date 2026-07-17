@@ -251,8 +251,15 @@ internal sealed partial class YamlParser
         int limit = Math.Min(offset, _length);
         for (int i = 0; i < limit; i++)
         {
-            if (_source[i] == (byte)'\n')
+            byte b = _source[i];
+            if (b == (byte)'\n')
             {
+                line++;
+                lineStart = i + 1;
+            }
+            else if (b == (byte)'\r' && (i + 1 >= _length || _source[i + 1] != (byte)'\n'))
+            {
+                // A lone CR is a line break (Advance collapses CRLF, so only count the CR when no LF follows).
                 line++;
                 lineStart = i + 1;
             }

@@ -152,7 +152,7 @@ public ref struct Utf8YamlWriter
     /// Writes an integer scalar value.
     /// </summary>
     /// <param name="value">The integer value.</param>
-    public void WriteInt64(long value) => EmitScalar(value.ToString(CultureInfo.InvariantCulture));
+    public void WriteInteger(long value) => EmitScalar(value.ToString(CultureInfo.InvariantCulture));
 
     /// <summary>
     /// Writes a floating-point scalar value.
@@ -374,7 +374,7 @@ public ref struct Utf8YamlWriter
         if (value.Length == 0)
             return false;
 
-        if (value != value.Trim())
+        if (char.IsWhiteSpace(value[0]) || char.IsWhiteSpace(value[^1]))
             return false;
 
         // A scalar that is, or begins with, a document marker (the marker optionally followed by content after a
@@ -406,9 +406,18 @@ public ref struct Utf8YamlWriter
             return false;
         }
 
-        // A plain scalar that would resolve to a non-string type must be quoted to preserve its string value.
-        byte[] bytes = Encoding.UTF8.GetBytes(value);
-        return YamlScalarResolver.Resolve(bytes, YamlSpecVersion.V1_1, out _) == YamlValueKind.String;
+        // A plain scalar that would resolve to a non-string type must be quoted to preserve its string value; the
+        // resolver check transcodes into a stack or rented buffer instead of allocating a byte array per scalar.
+        int count = Encoding.UTF8.GetByteCount(value);
+        byte[]? rented = count > 256 ? ArrayPool<byte>.Shared.Rent(count) : null;
+        Span<byte> bytes = rented is null ? stackalloc byte[256] : rented;
+        int written = Encoding.UTF8.GetBytes(value, bytes);
+        bool plain = YamlScalarResolver.Resolve(bytes[..written], YamlSpecVersion.V1_1, out _) == YamlValueKind.String;
+
+        if (rented is not null)
+            ArrayPool<byte>.Shared.Return(rented);
+
+        return plain;
     }
 
     /// <summary>
@@ -460,7 +469,10 @@ public ref struct Utf8YamlWriter
         if (double.IsNegativeInfinity(value))
             return "-.inf";
 
-        return value.ToString("R", CultureInfo.InvariantCulture);
+        // A whole-valued double formats without a decimal point ("1"), which the scalar resolver would reclassify
+        // as an integer on read; append ".0" so the scalar round-trips as a float.
+        string text = value.ToString("R", CultureInfo.InvariantCulture);
+        return text.AsSpan().IndexOfAny('.', 'e', 'E') < 0 ? text + ".0" : text;
     }
 
     /// <summary>
@@ -488,8 +500,9 @@ public ref struct Utf8YamlWriter
     /// <param name="text">The text to write.</param>
     private readonly void WriteRaw(string text)
     {
-        int count = Encoding.UTF8.GetByteCount(text);
-        Span<byte> span = _output.GetSpan(count);
+        // Requesting the encoding's worst case makes the transcode a single pass instead of a count pass followed by
+        // an encode pass.
+        Span<byte> span = _output.GetSpan(Encoding.UTF8.GetMaxByteCount(text.Length));
         int written = Encoding.UTF8.GetBytes(text, span);
         _output.Advance(written);
     }

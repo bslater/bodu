@@ -69,6 +69,12 @@ public sealed partial class TomlDocument
     /// <summary>Whether <see cref="_source" /> was rented from <see cref="ArrayPool{T}" /> and must be returned on disposal. A subtree view shares a garbage-collected copy instead, so it does not return the buffer.</summary>
     private readonly bool _pooledSource;
 
+    /// <summary>The hashed key index the structural parser built for large tables, inherited so property lookups over those tables stay O(1); <see langword="null" /> when no table crossed the builder's threshold.</summary>
+    private readonly Dictionary<(int Parent, string Key), int>? _childIndex;
+
+    /// <summary>The parent rows tracked in <see cref="_childIndex" />, or <see langword="null" />.</summary>
+    private readonly HashSet<int>? _indexedParents;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlDocument" /> class over the supplied store and retained source.
     /// </summary>
@@ -78,12 +84,22 @@ public sealed partial class TomlDocument
     /// <param name="pooledSource">
     /// <see langword="true" /> when <paramref name="source" /> is pooled and disposal must return it.
     /// </param>
-    private TomlDocument(List<TomlReaderRow> rows, int rootIndex, byte[] source, bool pooledSource)
+    /// <param name="childIndex">The builder's hashed key index for large tables, or <see langword="null" />.</param>
+    /// <param name="indexedParents">The parent rows tracked in <paramref name="childIndex" />, or <see langword="null" />.</param>
+    private TomlDocument(
+        List<TomlReaderRow> rows,
+        int rootIndex,
+        byte[] source,
+        bool pooledSource,
+        Dictionary<(int Parent, string Key), int>? childIndex = null,
+        HashSet<int>? indexedParents = null)
     {
         _rows = rows;
         _rootIndex = rootIndex;
         _source = source;
         _pooledSource = pooledSource;
+        _childIndex = childIndex;
+        _indexedParents = indexedParents;
     }
 
     /// <summary>
@@ -132,9 +148,12 @@ public sealed partial class TomlDocument
         try
         {
             utf8Toml.CopyTo(source);
-            List<TomlReaderRow> rows = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(source.AsSpan(0, utf8Toml.Length));
+            var builder = new TomlDocumentBuilder(options.SpecVersion, maxDepth);
+            List<TomlReaderRow> rows = builder.Parse(source.AsSpan(0, utf8Toml.Length));
 
-            return new TomlDocument(rows, 0, source, pooledSource: true);
+            // A large table's hashed key index is inherited from the builder rather than discarded, so property
+            // lookups over it stay O(1) instead of degrading to a linear sibling scan.
+            return new TomlDocument(rows, 0, source, pooledSource: true, builder.ChildIndex, builder.IndexedParents);
         }
         catch
         {
@@ -449,6 +468,19 @@ public sealed partial class TomlDocument
         List<TomlReaderRow> rows = EnsureNotDisposed();
         if (rows[tableIndex].Kind != TomlReaderNodeKind.Table)
             throw KindMismatch(TomlValueKind.Table, ToValueKind(rows[tableIndex]));
+
+        // A table the builder indexed resolves the key through the inherited hash index; small tables scan.
+        if (_indexedParents is not null && _indexedParents.Contains(tableIndex))
+        {
+            if (_childIndex!.TryGetValue((tableIndex, name), out int indexed))
+            {
+                valueRow = indexed;
+                return true;
+            }
+
+            valueRow = 0;
+            return false;
+        }
 
         int child = rows[tableIndex].FirstChild;
         while (child >= 0)

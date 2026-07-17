@@ -76,7 +76,7 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
         {
             throw new BencodeSerializationException(
                 string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExpectedDictionary, reader.TokenType),
-                reader.BytesConsumed);
+                reader.TokenStartIndex);
         }
 
         Dictionary<TKey, TValue> entries = [];

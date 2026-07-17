@@ -30,7 +30,7 @@ internal sealed class UInt64Converter
         {
             throw new BencodeSerializationException(
                 string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExpectedInteger, reader.TokenType),
-                reader.BytesConsumed);
+                reader.TokenStartIndex);
         }
 
         if (reader.TryGetUInt64(out ulong value))

@@ -62,7 +62,7 @@ internal sealed class CollectionConverter<TCollection, TElement>
         {
             throw new BencodeSerializationException(
                 string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExpectedList, reader.TokenType),
-                reader.BytesConsumed);
+                reader.TokenStartIndex);
         }
 
         List<TElement> items = [];

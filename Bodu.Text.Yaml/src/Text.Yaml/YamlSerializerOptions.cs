@@ -4,9 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Reflection;
 using Bodu.Text.Serialization;
 using Bodu.Text.Yaml.Serialization;
+using Bodu.Text.Yaml.Serialization.Converters;
+using Bodu.Text.Yaml.Serialization.Metadata;
 
 namespace Bodu.Text.Yaml;
 
@@ -20,7 +25,7 @@ namespace Bodu.Text.Yaml;
 /// <see cref="InvalidOperationException" />, which guarantees deterministic behavior when the same instance is shared
 /// across threads.
 /// </remarks>
-public sealed class YamlSerializerOptions
+public sealed partial class YamlSerializerOptions
 {
     /// <summary>The policy used to convert member names to YAML keys, or <see langword="null" /> for none.</summary>
     private NamingPolicy? _propertyNamingPolicy;
@@ -58,30 +63,19 @@ public sealed class YamlSerializerOptions
     /// <summary>The configured maximum nesting depth; zero or less selects the default.</summary>
     private int _maxDepth;
 
-    /// <summary>Indicates whether the options instance has been used or frozen and can no longer change.</summary>
-    private bool _isReadOnly;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlSerializerOptions" /> class.
     /// </summary>
     public YamlSerializerOptions()
     {
-        Converters = new YamlConverterCollection(this);
+        Converters = new ConverterList(this);
     }
 
     /// <summary>
     /// Gets the list of custom converters consulted before the built-in handling.
     /// </summary>
     /// <value>The converter collection.</value>
-    public Collection<YamlConverter> Converters { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether the options instance is read-only.
-    /// </summary>
-    /// <value>
-    /// <see langword="true" /> once the instance has been used or frozen; otherwise <see langword="false" />.
-    /// </value>
-    public bool IsReadOnly => _isReadOnly;
+    public IList<YamlConverter> Converters { get; }
 
     /// <summary>
     /// Gets or sets the policy used to convert member names to YAML keys.
@@ -233,34 +227,4 @@ public sealed class YamlSerializerOptions
     internal int EffectiveMaxDepth =>
         _maxDepth <= 0 ? YamlLimits.DefaultMaxDepth : Math.Min(_maxDepth, YamlLimits.AbsoluteMaxDepth);
 
-    /// <summary>
-    /// Marks the options instance as read-only so that its settable properties can no longer be changed.
-    /// </summary>
-    public void MakeReadOnly() => _isReadOnly = true;
-
-    /// <summary>
-    /// Finds a custom converter for the specified type.
-    /// </summary>
-    /// <param name="type">The type to convert.</param>
-    /// <returns>The matching converter, or <see langword="null" /> when none applies.</returns>
-    internal YamlConverter? GetConverter(Type type)
-    {
-        foreach (YamlConverter converter in Converters)
-        {
-            if (converter.CanConvert(type))
-                return converter;
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// Throws when the options instance has been frozen.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
-    internal void VerifyMutable()
-    {
-        if (_isReadOnly)
-            throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_OptionsReadOnly);
-    }
 }

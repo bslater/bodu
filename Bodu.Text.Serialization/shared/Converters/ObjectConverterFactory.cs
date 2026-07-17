@@ -1,10 +1,16 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ObjectConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Converters;
+#elif TOML
+namespace Bodu.Text.Toml.Serialization.Converters;
+#elif YAML
+namespace Bodu.Text.Yaml.Serialization.Converters;
+#endif
 
 /// <summary>
 /// Produces an <see cref="ObjectConverter{T}" /> for a plain class or struct that no more specific converter handles.
@@ -12,16 +18,16 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// The factory deliberately declines primitive and special scalar types — <see cref="decimal" />, enumerations,
-/// interfaces, abstract types, and the well-known framework scalar types Bencode cannot natively represent (for example
-/// <see cref="DateTime" />, <see cref="Guid" />, <see cref="TimeSpan" />, and <see cref="Uri" />) — so that an
-/// unsupported type surfaces as a missing-converter error rather than being mapped to a dictionary of its incidental
-/// public properties, which would lose data or recurse on self-referential members. <see cref="object" /> has a
-/// dedicated built-in converter earlier in the resolution order, so its rejection here is unreachable through the
-/// default list and guards only against a reordering.
+/// interfaces, abstract types, and (for a format without native mappings for them) the well-known framework scalar
+/// types — so that an unsupported type surfaces as a missing-converter error rather than being mapped to a keyed
+/// container of its incidental public properties, which would lose data or recurse on self-referential members.
+/// <see cref="object" /> has a dedicated built-in converter earlier in the resolution order, so its rejection here is
+/// unreachable through the default list and guards only against a reordering.
 /// </remarks>
 internal sealed class ObjectConverterFactory
-    : BencodeConverterFactory
+    : FormatConverterFactory
 {
+#if BENCODE
     /// <summary>The well-known framework scalar types that have no native Bencode mapping. They expose public properties the object converter would otherwise treat as dictionary entries, so the factory declines them and lets the serializer report a missing-converter error rather than emitting a lossy dictionary.</summary>
     private static readonly HashSet<Type> s_unsupportedScalars =
     [
@@ -35,6 +41,7 @@ internal sealed class ObjectConverterFactory
         typeof(Version),
         typeof(Half),
     ];
+#endif
 
     /// <inheritdoc />
     public override bool CanConvert(Type typeToConvert)
@@ -47,8 +54,10 @@ internal sealed class ObjectConverterFactory
         if (typeToConvert == typeof(decimal) || typeToConvert == typeof(object) || typeToConvert == typeof(string))
             return false;
 
+#if BENCODE
         if (s_unsupportedScalars.Contains(typeToConvert))
             return false;
+#endif
 
         if (Nullable.GetUnderlyingType(typeToConvert) is not null)
             return false;
@@ -57,11 +66,11 @@ internal sealed class ObjectConverterFactory
     }
 
     /// <inheritdoc />
-    public override BencodeConverter CreateConverter(Type typeToConvert, BencodeSerializerOptions options)
+    public override FormatConverter CreateConverter(Type typeToConvert, FormatOptions options)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type converterType = typeof(ObjectConverter<>).MakeGenericType(typeToConvert);
-        return (BencodeConverter)Activator.CreateInstance(converterType)!;
+        return (FormatConverter)Activator.CreateInstance(converterType)!;
     }
 }

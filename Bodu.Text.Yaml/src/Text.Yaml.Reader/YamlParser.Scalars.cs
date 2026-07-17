@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Bodu.Text.Yaml.Reader;
@@ -233,7 +234,7 @@ internal sealed partial class YamlParser
             _pos++;
         }
 
-        return Encoding.UTF8.GetString(buf.ToArray());
+        return Encoding.UTF8.GetString(CollectionsMarshal.AsSpan(buf));
     }
 
     /// <summary>
@@ -270,11 +271,16 @@ internal sealed partial class YamlParser
                 byte next = PeekAt(1);
                 if (next is (byte)'\n' or (byte)'\r')
                 {
-                    // Escaped line break: line continuation with no folded space.
+                    // Escaped line break: line continuation with no folded space. The continuation line must satisfy
+                    // the same boundary and indentation rules as an ordinary folded line.
                     Advance();
                     Advance();
-                    SkipSpaces();
+                    if (IsBoundaryAt(_pos))
+                        throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
+                    RequireQuotedContinuationIndent(minIndent);
                     pendingBreaks = 0;
+                    SkipSpaces();
                     continue;
                 }
 
@@ -303,7 +309,7 @@ internal sealed partial class YamlParser
             _pos++;
         }
 
-        return Encoding.UTF8.GetString(buf.ToArray());
+        return Encoding.UTF8.GetString(CollectionsMarshal.AsSpan(buf));
     }
 
     /// <summary>

@@ -101,7 +101,7 @@ public sealed class YamlValue : YamlNode
                 writer.WriteString((string)_value!);
                 break;
             case YamlValueKind.Integer:
-                writer.WriteInt64((long)_value!);
+                writer.WriteInteger((long)_value!);
                 break;
             case YamlValueKind.Float:
                 writer.WriteDouble((double)_value!);

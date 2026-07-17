@@ -637,7 +637,22 @@ public ref partial struct Utf8TomlReader
         if (!_hasEscapes)
             return ValueSpan.SequenceEqual(utf8Text);
 
-        return utf8Text.SequenceEqual(Encoding.UTF8.GetBytes(GetString()));
+        // The escaped path must decode, but the comparison re-encodes into a stack or rented buffer instead of
+        // allocating a second byte array for the round-trip.
+        string decoded = GetString();
+        int count = Encoding.UTF8.GetByteCount(decoded);
+        if (count != utf8Text.Length)
+            return false;
+
+        byte[]? rented = count > 256 ? ArrayPool<byte>.Shared.Rent(count) : null;
+        Span<byte> buffer = rented is null ? stackalloc byte[256] : rented;
+        int written = Encoding.UTF8.GetBytes(decoded, buffer);
+        bool equal = utf8Text.SequenceEqual(buffer[..written]);
+
+        if (rented is not null)
+            ArrayPool<byte>.Shared.Return(rented);
+
+        return equal;
     }
 
     /// <summary>

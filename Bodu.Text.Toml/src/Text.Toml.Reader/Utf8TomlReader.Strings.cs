@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Text;
 
 namespace Bodu.Text.Toml.Reader;
@@ -438,18 +439,23 @@ public ref partial struct Utf8TomlReader
     internal static string DecodeEscapedString(ReadOnlySpan<byte> content)
     {
         var sb = new StringBuilder(content.Length);
+
+        // A UTF-8 decode never yields more chars than source bytes, so one rented buffer serves every verbatim run.
+        char[] runBuffer = ArrayPool<char>.Shared.Rent(Math.Max(content.Length, 1));
+
         int i = 0;
         while (i < content.Length)
         {
             if (content[i] != (byte)'\\')
             {
-                // Copy the verbatim run up to the next escape in one transcode.
+                // Copy the verbatim run up to the next escape in one transcode, with no intermediate string.
                 ReadOnlySpan<byte> run = content[i..];
                 int next = run.IndexOf((byte)'\\');
                 if (next < 0)
                     next = run.Length;
 
-                sb.Append(Encoding.UTF8.GetString(run[..next]));
+                int chars = Encoding.UTF8.GetChars(run[..next], runBuffer);
+                sb.Append(runBuffer.AsSpan(0, chars));
                 i += next;
                 continue;
             }
@@ -480,6 +486,7 @@ public ref partial struct Utf8TomlReader
             }
         }
 
+        ArrayPool<char>.Shared.Return(runBuffer);
         return sb.ToString();
     }
 
@@ -510,6 +517,11 @@ public ref partial struct Utf8TomlReader
             value = (value << 4) | HexValue(content[i + d]);
 
         i += digits;
-        sb.Append(char.ConvertFromUtf32(value));
+
+        // The scan has already rejected surrogates and out-of-range scalars, so the rune constructor cannot throw;
+        // encoding into a stack pair avoids the per-escape string that char.ConvertFromUtf32 allocates.
+        Span<char> pair = stackalloc char[2];
+        int written = new Rune(value).EncodeToUtf16(pair);
+        sb.Append(pair[..written]);
     }
 }

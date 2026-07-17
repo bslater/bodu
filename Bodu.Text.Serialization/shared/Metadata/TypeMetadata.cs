@@ -5,12 +5,15 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Serialization;
+using System.Linq.Expressions;
 using System.Reflection;
 
 #if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Metadata;
 #elif TOML
 namespace Bodu.Text.Toml.Serialization.Metadata;
+#elif YAML
+namespace Bodu.Text.Yaml.Serialization.Metadata;
 #endif
 
 /// <summary>
@@ -38,6 +41,9 @@ internal sealed class TypeMetadata
 
     /// <summary>The default value supplied for each constructor parameter when its member is absent.</summary>
     private readonly object?[] _constructorDefaults;
+
+    /// <summary>The compiled construction plan, or <see langword="null" /> when the type cannot be constructed.</summary>
+    private readonly Func<object?[]?, object>? _factory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TypeMetadata" /> class.
@@ -69,6 +75,10 @@ internal sealed class TypeMetadata
         _constructorParameters = constructorParameters;
         _constructorDefaults = constructorDefaults;
         ExtensionData = extensionData;
+        _factory = BuildFactory();
+
+        for (int i = 0; i < properties.Length; i++)
+            properties[i].SlotIndex = i;
     }
 
     /// <summary>
@@ -82,6 +92,12 @@ internal sealed class TypeMetadata
     /// </summary>
     /// <value>The ordered members.</value>
     internal IReadOnlyList<PropertyMetadata> Properties => _properties;
+
+    /// <summary>
+    /// Gets the number of serializable members, which is also the length a slot-indexed read buffer requires.
+    /// </summary>
+    /// <value>The member count.</value>
+    internal int PropertyCount => _properties.Length;
 
     /// <summary>
     /// Gets the member that captures entries with no matching property, or <see langword="null" /> when the type
@@ -160,9 +176,7 @@ internal sealed class TypeMetadata
     /// </param>
     /// <returns>The new instance.</returns>
     internal object Construct(object?[]? arguments) =>
-        _constructor is not null && _constructorParameters.Length > 0
-            ? _constructor.Invoke(arguments)
-            : _constructor?.Invoke(null) ?? Activator.CreateInstance(Type)!;
+        _factory is not null ? _factory(arguments) : Activator.CreateInstance(Type)!;
 
     /// <summary>
     /// Determines whether the type declares a public parameterless constructor.
@@ -172,4 +186,55 @@ internal sealed class TypeMetadata
     /// </returns>
     private bool HasParameterlessConstructor() =>
         Type.GetConstructor(Type.EmptyTypes) is not null;
+
+    /// <summary>
+    /// Compiles the construction plan, replacing per-instance <see cref="ConstructorInfo.Invoke(object?[])" /> and
+    /// <see cref="Activator.CreateInstance(Type)" /> on the deserialization hot path.
+    /// </summary>
+    /// <returns>
+    /// A delegate constructing an instance from a boxed argument array, or <see langword="null" /> when the type has
+    /// no construction plan (the <see cref="CanConstruct" /> guard rejects such types before construction).
+    /// </returns>
+    /// <remarks>
+    /// A <see langword="null" /> argument assigns the parameter type's default for a non-nullable value-type
+    /// parameter, matching the documented coercion of reflection invocation. Compiled expression trees fall back to
+    /// the expression interpreter where runtime code generation is unavailable.
+    /// </remarks>
+    private Func<object?[]?, object>? BuildFactory()
+    {
+        ParameterExpression args = Expression.Parameter(typeof(object?[]), "arguments");
+
+        if (_constructor is not null && _constructorParameters.Length > 0)
+        {
+            ParameterInfo[] parameters = _constructor.GetParameters();
+            var arguments = new Expression[parameters.Length];
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                Expression item = Expression.ArrayIndex(args, Expression.Constant(i));
+                Type parameterType = parameters[i].ParameterType;
+                arguments[i] = parameterType.IsValueType && Nullable.GetUnderlyingType(parameterType) is null
+                    ? Expression.Condition(
+                        Expression.ReferenceEqual(item, Expression.Constant(null)),
+                        Expression.Default(parameterType),
+                        Expression.Convert(item, parameterType))
+                    : Expression.Convert(item, parameterType);
+            }
+
+            return Expression.Lambda<Func<object?[]?, object>>(
+                Expression.Convert(Expression.New(_constructor, arguments), typeof(object)), args).Compile();
+        }
+
+        // Prefer the declared parameterless constructor so a struct that declares one has it invoked (Expression.New
+        // over the bare value type produces default(T) without calling it, unlike Activator.CreateInstance).
+        ConstructorInfo? parameterless = Type.GetConstructor(Type.EmptyTypes);
+        NewExpression? construct = _constructor is not null
+            ? Expression.New(_constructor)
+            : parameterless is not null ? Expression.New(parameterless)
+            : Type.IsValueType ? Expression.New(Type)
+            : null;
+
+        return construct is null
+            ? null
+            : Expression.Lambda<Func<object?[]?, object>>(Expression.Convert(construct, typeof(object)), args).Compile();
+    }
 }

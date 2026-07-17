@@ -148,4 +148,34 @@ public partial class YamlDocumentTests
         using var doc = YamlDocument.Parse("---\nkey: value\n");
         Assert.AreEqual("value", doc.RootElement.GetProperty("key").GetString());
     }
+
+    /// <summary>
+    /// Verifies that an error's reported line number counts lone carriage-return line breaks, matching the lexer's
+    /// line-break handling, so CR-only documents report accurate positions.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenErrorInCarriageReturnOnlyDocument_ShouldReportCorrectLine()
+    {
+        var ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var doc = YamlDocument.Parse("a: 1\rb: 2\rc: !unknown v\r");
+        });
+
+        Assert.AreEqual(3, ex.LineNumber);
+    }
+
+    /// <summary>
+    /// Verifies that the same error on an LF document reports the same line number as its CR-only equivalent.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenErrorInLineFeedDocument_ShouldReportCorrectLine()
+    {
+        var ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var doc = YamlDocument.Parse("a: 1\nb: 2\nc: !unknown v\n");
+        });
+
+        Assert.AreEqual(3, ex.LineNumber);
+    }
 }

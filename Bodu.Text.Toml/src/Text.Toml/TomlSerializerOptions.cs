@@ -53,15 +53,6 @@ public sealed partial class TomlSerializerOptions
     /// <summary>The user-registered converters, consulted before the built-in converters. The list rejects a <see langword="null" /> entry and refuses every mutation once the options have become read-only.</summary>
     private readonly ConverterList _converters;
 
-    /// <summary>The cache of concrete converters resolved per type.</summary>
-    private readonly ConcurrentDictionary<Type, TomlConverter> _converterCache = new();
-
-    /// <summary>The cache of resolved type metadata.</summary>
-    private readonly ConcurrentDictionary<Type, TypeMetadata> _metadataCache = new();
-
-    /// <summary>The frozen snapshot of user converters captured when the options became read-only, or <see langword="null" /> while mutable.</summary>
-    private TomlConverter[]? _frozenConverters;
-
     /// <summary>The configured property naming policy.</summary>
     private NamingPolicy? _namingPolicy;
 
@@ -368,47 +359,6 @@ public sealed partial class TomlSerializerOptions
     }
 
     /// <summary>
-    /// Gets a value indicating whether the options have become read-only.
-    /// </summary>
-    /// <value><see langword="true" /> once the options have been used; otherwise <see langword="false" />.</value>
-    public bool IsReadOnly => _frozenConverters is not null;
-
-    /// <summary>
-    /// Resolves the converter that handles the specified type, applying the type-level converter attribute, the
-    /// registered converters, and finally the built-in converters, in that order.
-    /// </summary>
-    /// <param name="typeToConvert">The type to resolve a converter for.</param>
-    /// <returns>The concrete converter for the type.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="NotSupportedException">Thrown when no converter handles the type.</exception>
-    [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
-    [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
-    public TomlConverter GetConverter(Type typeToConvert)
-    {
-        ThrowHelper.ThrowIfNull(typeToConvert);
-
-        MakeReadOnly();
-        return _converterCache.GetOrAdd(typeToConvert, ResolveConverter);
-    }
-
-    /// <summary>
-    /// Freezes the options so their settings can no longer change, capturing the converter list. Called automatically
-    /// before the first serialization or deserialization.
-    /// </summary>
-    public void MakeReadOnly() =>
-        _frozenConverters ??= [.. _converters];
-
-    /// <summary>
-    /// Gets the cached metadata describing how the specified type maps to a TOML table.
-    /// </summary>
-    /// <param name="type">The type to describe.</param>
-    /// <returns>The type metadata.</returns>
-    internal TypeMetadata GetTypeMetadata(Type type) =>
-        _metadataCache.GetOrAdd(type, t => MetadataResolver.Resolve(t, this));
-
-    /// <summary>
     /// Determines whether the specified document root type maps to a TOML table, which a TOML document's root must be.
     /// </summary>
     /// <param name="type">The candidate document root type.</param>
@@ -441,82 +391,4 @@ public sealed partial class TomlSerializerOptions
         return definition == typeof(ObjectConverter<>) || definition == typeof(DictionaryConverter<,,>);
     }
 
-    /// <summary>
-    /// Instantiates the converter named by a converter attribute and adapts it to the target type.
-    /// </summary>
-    /// <param name="converterType">The converter type to instantiate.</param>
-    /// <param name="targetType">The type the converter must handle.</param>
-    /// <returns>The concrete converter.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when <paramref name="converterType" /> is not a <see cref="TomlConverter" />, lacks a public
-    /// parameterless constructor, or cannot convert <paramref name="targetType" />.
-    /// </exception>
-    internal TomlConverter InstantiateConverter(Type converterType, Type targetType)
-    {
-        if (!typeof(TomlConverter).IsAssignableFrom(converterType))
-            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Arg_Invalid_ConverterAttributeType, converterType));
-
-        if (converterType.GetConstructor(Type.EmptyTypes) is null)
-            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Arg_Invalid_ConverterNoParameterlessCtor, converterType));
-
-        var converter = (TomlConverter)Activator.CreateInstance(converterType)!;
-        return Materialize(converter, targetType);
-    }
-
-    /// <summary>
-    /// Resolves the converter for a type without consulting the cache.
-    /// </summary>
-    /// <param name="type">The type to resolve a converter for.</param>
-    /// <returns>The concrete converter.</returns>
-    /// <exception cref="NotSupportedException">Thrown when no converter handles the type.</exception>
-    private TomlConverter ResolveConverter(Type type)
-    {
-        ConverterAttribute? attribute = type.GetCustomAttribute<ConverterAttribute>(inherit: false);
-        if (attribute is not null)
-            return InstantiateConverter(attribute.ConverterType, type);
-
-        foreach (TomlConverter converter in _frozenConverters!)
-        {
-            if (converter.CanConvert(type))
-                return Materialize(converter, type);
-        }
-
-        foreach (TomlConverter converter in DefaultConverters.Converters)
-        {
-            if (converter.CanConvert(type))
-                return Materialize(converter, type);
-        }
-
-        throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_NotSupported_NoConverter, type));
-    }
-
-    /// <summary>
-    /// Resolves a converter to a concrete converter, invoking a factory when necessary.
-    /// </summary>
-    /// <param name="converter">The converter or factory to materialize.</param>
-    /// <param name="type">The type to convert.</param>
-    /// <returns>A concrete (non-factory) converter for the type.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when a factory produces a converter that cannot convert the type.
-    /// </exception>
-    private TomlConverter Materialize(TomlConverter converter, Type type)
-    {
-        if (converter is not TomlConverterFactory factory)
-            return converter;
-
-        TomlConverter created = factory.CreateConverter(type, this);
-        return !created.CanConvert(type)
-            ? throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ConverterCannotConvert, created.GetType(), type))
-            : created;
-    }
-
-    /// <summary>
-    /// Throws when the options have become read-only.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    private void VerifyMutable()
-    {
-        if (IsReadOnly)
-            throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_OptionsReadOnly);
-    }
 }

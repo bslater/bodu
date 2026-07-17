@@ -24,7 +24,7 @@ internal sealed class ReadOnlyMemoryByteConverter
         {
             throw new BencodeSerializationException(
                 string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExpectedByteString, reader.TokenType),
-                reader.BytesConsumed);
+                reader.TokenStartIndex);
         }
 
         return new ReadOnlyMemory<byte>(reader.GetBytes());

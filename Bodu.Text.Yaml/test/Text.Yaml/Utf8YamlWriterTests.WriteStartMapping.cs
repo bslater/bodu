@@ -23,7 +23,7 @@ public partial class Utf8YamlWriterTests
         {
             w.WriteStartMapping();
             w.WritePropertyName("a");
-            w.WriteInt64(1);
+            w.WriteInteger(1);
             w.WritePropertyName("b");
             w.WriteString("two");
             w.WriteEndMapping();
@@ -84,7 +84,7 @@ public partial class Utf8YamlWriterTests
             w.WritePropertyName("host");
             w.WriteString("a");
             w.WritePropertyName("port");
-            w.WriteInt64(80);
+            w.WriteInteger(80);
             w.WriteEndMapping();
             w.WriteEndSequence();
             w.WriteEndMapping();
@@ -126,7 +126,7 @@ public partial class Utf8YamlWriterTests
         var writer = new Utf8YamlWriter(buffer, new YamlWriterOptions { NewLine = "\r\n" });
         writer.WriteStartMapping();
         writer.WritePropertyName("a");
-        writer.WriteInt64(1);
+        writer.WriteInteger(1);
         writer.WriteEndMapping();
 
         Assert.AreEqual("a: 1\r\n", System.Text.Encoding.UTF8.GetString(buffer.WrittenSpan));

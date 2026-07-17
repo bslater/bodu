@@ -5,12 +5,15 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Serialization;
+using System.Linq.Expressions;
 using System.Reflection;
 
 #if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Metadata;
 #elif TOML
 namespace Bodu.Text.Toml.Serialization.Metadata;
+#elif YAML
+namespace Bodu.Text.Yaml.Serialization.Metadata;
 #endif
 
 /// <summary>
@@ -32,6 +35,12 @@ internal sealed class PropertyMetadata
 
     /// <summary>Whether the member is opted into binding through non-public accessors by <see cref="IncludeAttribute" />.</summary>
     private readonly bool _included;
+
+    /// <summary>The compiled member reader, replacing per-call reflection invoke on the deserialization and serialization hot paths.</summary>
+    private readonly Func<object, object?> _getter;
+
+    /// <summary>The compiled member writer, or <see langword="null" /> when the member cannot be assigned.</summary>
+    private readonly Action<object, object?>? _setter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PropertyMetadata" /> class.
@@ -75,6 +84,8 @@ internal sealed class PropertyMetadata
         IsRequired = isRequired;
         DefaultValue = defaultValue;
         DefaultTypeValue = PropertyType.IsValueType ? Activator.CreateInstance(PropertyType) : null;
+        _getter = BuildGetter();
+        _setter = CanSet ? BuildSetter() : null;
     }
 
     /// <summary>
@@ -94,6 +105,13 @@ internal sealed class PropertyMetadata
     /// </summary>
     /// <value>The wire name.</value>
     internal string WireName { get; }
+
+    /// <summary>
+    /// Gets the member's position within its type's ordered member list, assigned by <see cref="TypeMetadata" />, so
+    /// per-object read buffers can be flat arrays indexed by slot instead of dictionaries keyed by metadata.
+    /// </summary>
+    /// <value>The zero-based slot index.</value>
+    internal int SlotIndex { get; set; } = -1;
 
     /// <summary>
     /// Gets the converter that handles the member value.
@@ -166,18 +184,75 @@ internal sealed class PropertyMetadata
     /// <param name="target">The object to read from.</param>
     /// <returns>The member value.</returns>
     internal object? GetValue(object target) =>
-        _property is not null ? _property.GetValue(target) : _field!.GetValue(target);
+        _getter(target);
 
     /// <summary>
     /// Assigns the member value on the specified target.
     /// </summary>
     /// <param name="target">The object to assign on.</param>
     /// <param name="value">The value to assign.</param>
-    internal void SetValue(object target, object? value)
+    internal void SetValue(object target, object? value) =>
+        _setter!(target, value);
+
+    /// <summary>
+    /// Compiles the member reader.
+    /// </summary>
+    /// <returns>A delegate that reads the member from a boxed target.</returns>
+    /// <remarks>
+    /// Compiled expression trees access non-public accessors (the <see cref="IncludeAttribute" /> opt-in) without
+    /// visibility checks, matching reflection invoke, and fall back to the expression interpreter where runtime code
+    /// generation is unavailable.
+    /// </remarks>
+    private Func<object, object?> BuildGetter()
     {
-        if (_property is not null)
-            _property.SetValue(target, value);
-        else
-            _field!.SetValue(target, value);
+        ParameterExpression target = Expression.Parameter(typeof(object), "target");
+        MemberExpression member = _property is not null
+            ? Expression.Property(TypedTarget(target), _property)
+            : Expression.Field(TypedTarget(target), _field!);
+
+        return Expression.Lambda<Func<object, object?>>(Expression.Convert(member, typeof(object)), target).Compile();
+    }
+
+    /// <summary>
+    /// Compiles the member writer.
+    /// </summary>
+    /// <returns>A delegate that assigns the member on a boxed target.</returns>
+    /// <remarks>
+    /// A <see langword="null" /> value assigns the member type's default when the member is a non-nullable value
+    /// type, matching the documented coercion of <see cref="PropertyInfo.SetValue(object, object)" />.
+    /// </remarks>
+    private Action<object, object?> BuildSetter()
+    {
+        ParameterExpression target = Expression.Parameter(typeof(object), "target");
+        ParameterExpression value = Expression.Parameter(typeof(object), "value");
+        MemberExpression member = _property is not null
+            ? Expression.Property(TypedTarget(target), _property)
+            : Expression.Field(TypedTarget(target), _field!);
+
+        Expression converted = PropertyType.IsValueType && Nullable.GetUnderlyingType(PropertyType) is null
+            ? Expression.Condition(
+                Expression.ReferenceEqual(value, Expression.Constant(null)),
+                Expression.Default(PropertyType),
+                Expression.Convert(value, PropertyType))
+            : Expression.Convert(value, PropertyType);
+
+        return Expression.Lambda<Action<object, object?>>(Expression.Assign(member, converted), target, value).Compile();
+    }
+
+    /// <summary>
+    /// Produces the typed instance expression for the boxed target.
+    /// </summary>
+    /// <param name="target">The boxed-target parameter.</param>
+    /// <returns>The typed instance expression.</returns>
+    /// <remarks>
+    /// A value-type target uses <see cref="Expression.Unbox" /> so member assignment mutates the caller's box in
+    /// place — the invariant the object converter's boxed assignment phase relies on — rather than a copied value.
+    /// </remarks>
+    private Expression TypedTarget(ParameterExpression target)
+    {
+        Type declaringType = (_property?.DeclaringType ?? _field!.DeclaringType)!;
+        return declaringType.IsValueType
+            ? Expression.Unbox(target, declaringType)
+            : Expression.Convert(target, declaringType);
     }
 }

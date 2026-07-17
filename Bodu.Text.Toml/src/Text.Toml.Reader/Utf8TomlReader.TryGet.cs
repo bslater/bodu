@@ -282,7 +282,10 @@ public ref partial struct Utf8TomlReader
             return true;
         }
 
-        value = float.Parse(StripNumberUnderscores(ValueSpan), NumberStyles.Float, CultureInfo.InvariantCulture);
+        ReadOnlySpan<byte> literal = ValueSpan;
+        Span<char> buffer = literal.Length <= StackallocCharThreshold ? stackalloc char[StackallocCharThreshold] : new char[literal.Length];
+        int length = StripNumberUnderscores(literal, buffer);
+        value = float.Parse(buffer[..length], NumberStyles.Float, CultureInfo.InvariantCulture);
         return true;
     }
 
@@ -323,7 +326,10 @@ public ref partial struct Utf8TomlReader
             return false;
         }
 
-        return decimal.TryParse(StripNumberUnderscores(ValueSpan), NumberStyles.Float, CultureInfo.InvariantCulture, out value);
+        ReadOnlySpan<byte> literal = ValueSpan;
+        Span<char> buffer = literal.Length <= StackallocCharThreshold ? stackalloc char[StackallocCharThreshold] : new char[literal.Length];
+        int length = StripNumberUnderscores(literal, buffer);
+        return decimal.TryParse(buffer[..length], NumberStyles.Float, CultureInfo.InvariantCulture, out value);
     }
 
     /// <summary>
@@ -356,21 +362,24 @@ public ref partial struct Utf8TomlReader
         return Guid.TryParseExact(GetString(), "D", out value);
     }
 
+    /// <summary>The literal length at or below which underscore stripping uses a stack buffer instead of a heap array.</summary>
+    private const int StackallocCharThreshold = 128;
+
     /// <summary>
-    /// Removes the underscores from a numeric literal, returning the characters to parse.
+    /// Removes the underscores from a numeric literal, writing the characters to parse into the supplied buffer.
     /// </summary>
     /// <param name="literal">The raw literal bytes, already validated by the scan.</param>
-    /// <returns>The literal characters with underscores removed.</returns>
-    private static ReadOnlySpan<char> StripNumberUnderscores(ReadOnlySpan<byte> literal)
+    /// <param name="destination">The buffer that receives the stripped characters; at least the literal's length.</param>
+    /// <returns>The number of characters written.</returns>
+    private static int StripNumberUnderscores(ReadOnlySpan<byte> literal, Span<char> destination)
     {
-        char[] buffer = new char[literal.Length];
         int n = 0;
         foreach (byte b in literal)
         {
             if (b != (byte)'_')
-                buffer[n++] = (char)b;
+                destination[n++] = (char)b;
         }
 
-        return buffer.AsSpan(0, n);
+        return n;
     }
 }

@@ -330,8 +330,8 @@ public abstract class BencodeNode
 
             default:
                 throw new BencodeFormatException(
-                    string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Format_Invalid_BencodeUnexpectedToken, reader.TokenType, reader.BytesConsumed),
-                    reader.BytesConsumed);
+                    string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Format_Invalid_BencodeUnexpectedToken, reader.TokenType, reader.TokenStartIndex),
+                    reader.TokenStartIndex);
         }
     }
 

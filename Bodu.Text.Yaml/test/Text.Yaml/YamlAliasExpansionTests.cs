@@ -72,6 +72,91 @@ public class YamlAliasExpansionTests
     }
 
     /// <summary>
+    /// Verifies that a long linear alias chain — whose resolved depth far exceeds the physical nesting clamp — is
+    /// rejected with a catchable <see cref="YamlFormatException" /> from the expansion budget rather than crashing
+    /// the process with a <see cref="StackOverflowException" /> inside cycle detection.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenDeepAliasChainExceedsBudget_ShouldThrowYamlFormatException()
+    {
+        string chain = BuildAliasChain(length: 100_000);
+
+        Assert.ThrowsExactly<YamlFormatException>(() => _ = YamlDocument.Parse(chain));
+    }
+
+    /// <summary>
+    /// Verifies that a deep — but within-budget — linear alias chain parses successfully, so the explicit-stack cycle
+    /// and budget walks preserve the recursive traversal's accepting behaviour at depths native recursion also
+    /// handles.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenDeepAliasChainWithinBudget_ShouldParse()
+    {
+        const int Length = 2000;
+        string chain = BuildAliasChain(Length);
+
+        using var document = YamlDocument.Parse(chain);
+
+        Assert.AreEqual(Length + 1, CountMappingEntries(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a chain of mappings, each merging the previous via <c>&lt;&lt;</c>, expands transitively so the
+    /// final mapping observes every earlier key, and that the injected alias rows stay within the expansion budget.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenChainedMerges_ShouldExpandTransitively()
+    {
+        const int Links = 300;
+        var sb = new StringBuilder();
+
+        sb.Append("m0: &m0\n  k0: 0\n");
+        for (int i = 1; i <= Links; i++)
+            sb.Append("m").Append(i).Append(": &m").Append(i).Append("\n  <<: *m").Append(i - 1).Append("\n  k").Append(i).Append(": ").Append(i).Append('\n');
+
+        using var document = YamlDocument.Parse(sb.ToString());
+        YamlElement last = document.RootElement.GetProperty("m" + Links);
+
+        Assert.AreEqual(Links + 1, CountMappingEntries(last));
+        Assert.AreEqual(0L, last.GetProperty("k0").GetInt64());
+        Assert.AreEqual((long)Links, last.GetProperty("k" + Links).GetInt64());
+    }
+
+    /// <summary>
+    /// Counts the entries of a mapping element by enumeration.
+    /// </summary>
+    /// <param name="element">The mapping element.</param>
+    /// <returns>The number of key/value entries.</returns>
+    private static int CountMappingEntries(YamlElement element)
+    {
+        int count = 0;
+        foreach (var _ in element.EnumerateMapping())
+            count++;
+
+        return count;
+    }
+
+    /// <summary>
+    /// Builds a document of chained anchors — <c>k1: &amp;a1 [*a0]</c>, <c>k2: &amp;a2 [*a1]</c>, … — whose resolved
+    /// alias depth equals the chain length while its physical nesting stays constant.
+    /// </summary>
+    /// <param name="length">The number of chained links.</param>
+    /// <returns>The YAML document text.</returns>
+    private static string BuildAliasChain(int length)
+    {
+        var sb = new StringBuilder();
+
+        sb.Append("k0: &a0 [0]\n");
+        for (int i = 1; i <= length; i++)
+            sb.Append('k').Append(i).Append(": &a").Append(i).Append(" [*a").Append(i - 1).Append("]\n");
+
+        return sb.ToString();
+    }
+
+    /// <summary>
     /// Builds a YAML alias-amplification document: level 0 is a sequence of <paramref name="fanOut" /> scalars, and
     /// each subsequent level is a sequence of <paramref name="fanOut" /> aliases to the level below, so the top level
     /// expands to <paramref name="fanOut" /> raised to <paramref name="levels" /> nodes.

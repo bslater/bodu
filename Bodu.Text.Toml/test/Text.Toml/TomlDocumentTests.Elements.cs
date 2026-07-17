@@ -326,4 +326,26 @@ public partial class TomlDocumentTests
         foreach (TomlProperty property in document.RootElement.EnumerateObject())
             Assert.AreEqual("title", property.ToString());
     }
+
+    /// <summary>
+    /// Verifies that property lookups over a table large enough to be hash-indexed by the structural parser resolve
+    /// through the inherited index — every key is found with its pinned value, and a missing key reports absent.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void TryGetProperty_WhenTableExceedsIndexThreshold_ShouldResolveEveryKey()
+    {
+        const int Keys = 2000;
+        var sb = new System.Text.StringBuilder();
+        for (int i = 0; i < Keys; i++)
+            sb.Append("key").Append(i).Append(" = ").Append(i).Append('\n');
+
+        using var document = TomlDocument.Parse(sb.ToString());
+
+        for (int i = 0; i < Keys; i += 97)
+            Assert.AreEqual((long)i, document.RootElement.GetProperty("key" + i).GetInt64());
+
+        Assert.AreEqual((long)(Keys - 1), document.RootElement.GetProperty("key" + (Keys - 1)).GetInt64());
+        Assert.IsFalse(document.RootElement.TryGetProperty("missing", out _));
+    }
 }

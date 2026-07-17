@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MetadataResolver.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -8,13 +8,18 @@ using Bodu.Text.Serialization;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Bodu.Text.Bencode.Nodes;
 
+#if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Metadata;
+#elif TOML
+namespace Bodu.Text.Toml.Serialization.Metadata;
+#elif YAML
+namespace Bodu.Text.Yaml.Serialization.Metadata;
+#endif
 
 /// <summary>
 /// Builds the <see cref="TypeMetadata" /> for a type by reflecting over its public properties, its public fields (when
-/// surfaced by <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="IncludeAttribute" />), and its
+/// surfaced by <see cref="FormatOptions.IncludeFields" /> or <see cref="IncludeAttribute" />), and its
 /// constructors, applying the serializer's naming policy, attributes, and converter resolution rules.
 /// </summary>
 internal static class MetadataResolver
@@ -28,7 +33,7 @@ internal static class MetadataResolver
     /// <param name="type">The type to describe.</param>
     /// <param name="options">The serializer options that govern naming and converter resolution.</param>
     /// <returns>The resolved metadata.</returns>
-    internal static TypeMetadata Resolve(Type type, BencodeSerializerOptions options)
+    internal static TypeMetadata Resolve(Type type, FormatOptions options)
     {
         NamingPolicy? namingPolicy = type.GetCustomAttribute<NamingPolicyAttribute>(inherit: false)?.NamingPolicy
             ?? options.PropertyNamingPolicy;
@@ -46,7 +51,7 @@ internal static class MetadataResolver
             if (ignore is not null && ignore.Condition == IgnoreCondition.Always)
                 continue;
 
-            BencodeConverter converter = ResolveMemberConverter(property, property.PropertyType, options);
+            FormatConverter converter = ResolveMemberConverter(property, property.PropertyType, options);
             int order = property.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0;
             IgnoreCondition? conditional = ignore?.Condition;
             ObjectCreationHandling? creationHandling = property.GetCustomAttribute<ObjectCreationHandlingAttribute>(inherit: true)?.Handling;
@@ -55,11 +60,19 @@ internal static class MetadataResolver
 
             if (property.IsDefined(typeof(ExtensionDataAttribute), inherit: true))
             {
+#if YAML
                 if (extensionData is not null)
-                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_MultipleExtensionData, type));
+                    throw new FormatSerializationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_YamlMultipleExtensionData, type));
 
                 if (!IsSupportedExtensionDataType(property.PropertyType))
-                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExtensionDataType, property.Name, type));
+                    throw new FormatSerializationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_YamlExtensionDataType, property.Name, type));
+#else
+                if (extensionData is not null)
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_MultipleExtensionData, type));
+
+                if (!IsSupportedExtensionDataType(property.PropertyType))
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_ExtensionDataType, property.Name, type));
+#endif
 
                 extensionData = new Draft(property, property.Name, converter, conditional, creationHandling, order, requiredByAttribute, included, declarationIndex++).ToMetadata();
                 continue;
@@ -82,7 +95,7 @@ internal static class MetadataResolver
             if (ignore is not null && ignore.Condition == IgnoreCondition.Always)
                 continue;
 
-            BencodeConverter converter = ResolveMemberConverter(field, field.FieldType, options);
+            FormatConverter converter = ResolveMemberConverter(field, field.FieldType, options);
             int order = field.GetCustomAttribute<PropertyOrderAttribute>(inherit: true)?.Order ?? 0;
             IgnoreCondition? conditional = ignore?.Condition;
             ObjectCreationHandling? creationHandling = field.GetCustomAttribute<ObjectCreationHandlingAttribute>(inherit: true)?.Handling;
@@ -91,11 +104,19 @@ internal static class MetadataResolver
 
             if (field.IsDefined(typeof(ExtensionDataAttribute), inherit: true))
             {
+#if YAML
                 if (extensionData is not null)
-                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_MultipleExtensionData, type));
+                    throw new FormatSerializationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_YamlMultipleExtensionData, type));
 
                 if (!IsSupportedExtensionDataType(field.FieldType))
-                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_ExtensionDataType, field.Name, type));
+                    throw new FormatSerializationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_YamlExtensionDataType, field.Name, type));
+#else
+                if (extensionData is not null)
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_MultipleExtensionData, type));
+
+                if (!IsSupportedExtensionDataType(field.FieldType))
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_ExtensionDataType, field.Name, type));
+#endif
 
                 extensionData = new Draft(field, field.Name, converter, conditional, creationHandling, order, requiredByAttribute, included, declarationIndex++).ToMetadata();
                 continue;
@@ -122,9 +143,11 @@ internal static class MetadataResolver
         Dictionary<string, PropertyMetadata> byWireName = new(comparer);
 
         // Collision detection is always ordinal: two members on the same exact wire key can never be written as a
-        // canonical dictionary, so the type fails fast here at metadata-resolution time.
-        // Members whose wire names differ only by case remain distinct keys on the wire; under a case-insensitive
-        // read comparer the later member shadows the earlier one for lookups, which the indexer assignment preserves.
+        // canonical document, so the type fails fast here at metadata-resolution time. Members whose wire names differ
+        // only by case remain distinct keys on the wire; under a case-insensitive read comparer the later member
+        // shadows the earlier one for lookups, which the indexer assignment preserves. The exception type and message
+        // shape are pinned per format and intentionally preserved by the format-specific branches below.
+#if BENCODE
         Dictionary<string, PropertyMetadata> byOrdinalWireName = new(StringComparer.Ordinal);
         foreach (PropertyMetadata property in ordered)
         {
@@ -132,7 +155,7 @@ internal static class MetadataResolver
             {
                 throw new InvalidOperationException(string.Format(
                     CultureInfo.CurrentCulture,
-                    BencodeResourceStrings.Op_Invalid_DuplicateWireName,
+                    FormatResourceStrings.Op_Invalid_DuplicateWireName,
                     type,
                     byOrdinalWireName[property.WireName].ClrName,
                     property.ClrName,
@@ -141,6 +164,25 @@ internal static class MetadataResolver
 
             byWireName[property.WireName] = property;
         }
+#elif YAML
+        HashSet<string> wireNames = new(StringComparer.Ordinal);
+        foreach (PropertyMetadata property in ordered)
+        {
+            if (!wireNames.Add(property.WireName))
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_DuplicateWireName, type, property.WireName));
+
+            byWireName[property.WireName] = property;
+        }
+#else
+        HashSet<string> wireNames = new(StringComparer.Ordinal);
+        foreach (PropertyMetadata property in ordered)
+        {
+            if (!wireNames.Add(property.WireName))
+                throw new FormatSerializationException(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_DuplicateWireName, type, property.WireName));
+
+            byWireName[property.WireName] = property;
+        }
+#endif
 
         var constructorParameters = new PropertyMetadata?[parameters.Length];
         object?[] constructorDefaults = new object?[parameters.Length];
@@ -169,19 +211,34 @@ internal static class MetadataResolver
         };
     }
 
+#if YAML
+    /// <summary>
+    /// Determines whether a type is a supported extension-data member type. YAML's extension data captures
+    /// loosely-typed values rather than DOM nodes, so any type assignable from a string-keyed object dictionary
+    /// qualifies.
+    /// </summary>
+    /// <param name="type">The member type to test.</param>
+    /// <returns>
+    /// <see langword="true" /> when the type can hold an <c>IDictionary&lt;string, object?&gt;</c>; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool IsSupportedExtensionDataType(Type type) =>
+        typeof(IDictionary<string, object?>).IsAssignableFrom(type);
+#else
     /// <summary>
     /// Determines whether a type is a supported extension-data member type.
     /// </summary>
     /// <param name="type">The member type to test.</param>
     /// <returns>
-    /// <see langword="true" /> when the type is <see cref="BencodeObject" />,
-    /// <c>IDictionary&lt;string, BencodeNode?&gt;</c>, or <c>Dictionary&lt;string, BencodeNode?&gt;</c>; otherwise
+    /// <see langword="true" /> when the type is <see cref="FormatObject" />,
+    /// <c>IDictionary&lt;string, FormatNode?&gt;</c>, or <c>Dictionary&lt;string, FormatNode?&gt;</c>; otherwise
     /// <see langword="false" />.
     /// </returns>
     private static bool IsSupportedExtensionDataType(Type type) =>
-        type == typeof(BencodeObject)
-            || type == typeof(IDictionary<string, BencodeNode?>)
-            || type == typeof(Dictionary<string, BencodeNode?>);
+        type == typeof(FormatObject)
+            || type == typeof(IDictionary<string, FormatNode?>)
+            || type == typeof(Dictionary<string, FormatNode?>);
+#endif
 
     /// <summary>
     /// Resolves the converter for a member, honoring a member-level converter attribute before falling back to the
@@ -191,7 +248,7 @@ internal static class MetadataResolver
     /// <param name="memberType">The declared type of the member.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The converter for the member's value.</returns>
-    private static BencodeConverter ResolveMemberConverter(MemberInfo member, Type memberType, BencodeSerializerOptions options)
+    private static FormatConverter ResolveMemberConverter(MemberInfo member, Type memberType, FormatOptions options)
     {
         ConverterAttribute? attribute = member.GetCustomAttribute<ConverterAttribute>(inherit: true);
         return attribute is not null
@@ -284,7 +341,7 @@ internal static class MetadataResolver
         internal Draft(
             MemberInfo member,
             string wireName,
-            BencodeConverter converter,
+            FormatConverter converter,
             IgnoreCondition? conditionalIgnore,
             ObjectCreationHandling? creationHandling,
             int order,
@@ -320,7 +377,7 @@ internal static class MetadataResolver
         /// Gets the resolved converter.
         /// </summary>
         /// <value>The converter.</value>
-        internal BencodeConverter Converter { get; }
+        internal FormatConverter Converter { get; }
 
         /// <summary>
         /// Gets the conditional-ignore setting, or <see langword="null" />.

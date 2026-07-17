@@ -47,6 +47,21 @@ internal sealed class TomlDocumentBuilder
     /// <summary>The parent rows whose children are tracked in <see cref="_childIndex" />; lazily allocated.</summary>
     private HashSet<int>? _indexedParents;
 
+    /// <summary>
+    /// Gets the hashed key index built for tables that crossed <see cref="ChildIndexThreshold" />, or
+    /// <see langword="null" /> when no table did. Read after <see cref="Parse" /> so the document can inherit the
+    /// index instead of falling back to linear property scans over large tables.
+    /// </summary>
+    /// <value>The child index, or <see langword="null" />.</value>
+    internal Dictionary<(int Parent, string Key), int>? ChildIndex => _childIndex;
+
+    /// <summary>
+    /// Gets the parent rows tracked in <see cref="ChildIndex" />, or <see langword="null" /> when no table crossed the
+    /// threshold.
+    /// </summary>
+    /// <value>The indexed parents, or <see langword="null" />.</value>
+    internal HashSet<int>? IndexedParents => _indexedParents;
+
     /// <summary>Per-depth scratch lists reused to collect the segments of a key path without allocating a list per key. Indexed by the current nesting <see cref="_depth" />, so an outer key path is never overwritten by an inner path read while the outer value is being materialized.</summary>
     private readonly List<List<string>> _pathScratch = [];
 

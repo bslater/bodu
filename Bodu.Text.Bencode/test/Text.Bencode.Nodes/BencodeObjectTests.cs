@@ -427,4 +427,20 @@ public class BencodeObjectTests
         Assert.AreSame(clone, clone["a"]!.Parent);
         Assert.AreNotSame(obj["a"], clone["a"]);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeObject.DeepClone" /> preserves the case-insensitive property-name comparison
+    /// selected through <see cref="BencodeNodeOptions" />, so lookups against the clone behave like the original.
+    /// </summary>
+    [TestMethod]
+    public void DeepClone_WhenCaseInsensitive_ShouldPreserveComparer()
+    {
+        var obj = new BencodeObject(new BencodeNodeOptions { PropertyNameCaseInsensitive = true });
+        obj["Name"] = "x";
+
+        BencodeObject clone = obj.DeepClone().AsObject();
+
+        Assert.IsTrue(clone.ContainsKey("name"));
+        Assert.IsTrue(clone.ContainsKey("NAME"));
+    }
 }

@@ -34,6 +34,75 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that on a 64-bit process a Bencode integer above <see cref="long.MaxValue" /> binds to a
+    /// <see cref="nuint" /> member through the unsigned surface, matching <see cref="ulong" /> rather than the signed
+    /// path's overflow.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerAboveInt64IntoNUInt_ShouldBindThroughUnsignedSurface()
+    {
+        if (!Environment.Is64BitProcess)
+            return;
+
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei18446744073709551615ee");
+
+        NUIntModel result = BencodeSerializer.Deserialize<NUIntModel>(bytes);
+
+        Assert.AreEqual(unchecked((nuint)ulong.MaxValue), result.Value);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing a negative Bencode integer into a <see cref="nuint" /> member throws
+    /// <see cref="BencodeSerializationException" />, matching the overflow contract of the other fixed-width integer
+    /// types.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNegativeIntegerIntoNUInt_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei-1ee");
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<NUIntModel>(bytes);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a serialization error reports the offending token's start offset, matching the offset convention
+    /// of the reader's <see cref="BencodeFormatException" /> diagnostics.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenRootIsNotDictionary_ShouldReportTokenStartOffset()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("le");
+
+        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<LongModel>(bytes);
+        });
+
+        Assert.AreEqual(0, ex.BytesOffset);
+    }
+
+    /// <summary>
+    /// Verifies that a mid-document type mismatch reports the offending value token's start offset rather than the
+    /// position after it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenMemberTokenMismatch_ShouldReportTokenStartOffset()
+    {
+        // The list value for "Value" starts at offset 8: d(0) 5:Value(1-7) l(8) e(9) e(10).
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuelee");
+
+        var ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<LongModel>(bytes);
+        });
+
+        Assert.AreEqual(8, ex.BytesOffset);
+    }
+
+    /// <summary>
     /// Verifies that deserializing a Bencode integer whose value overflows the target integer type throws
     /// <see cref="BencodeSerializationException" />.
     /// </summary>

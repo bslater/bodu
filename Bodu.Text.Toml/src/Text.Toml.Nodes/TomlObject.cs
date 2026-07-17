@@ -76,6 +76,18 @@ public sealed class TomlObject
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="TomlObject" /> class that is empty, using the supplied
+    /// property-name comparer.
+    /// </summary>
+    /// <param name="comparer">The property-name comparer.</param>
+    private TomlObject(StringComparer comparer)
+    {
+        _comparer = comparer;
+        _properties = new Dictionary<string, TomlNode?>(comparer);
+        _order = [];
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="TomlObject" /> class containing the supplied entries.
     /// </summary>
     /// <param name="items">The initial entries.</param>
@@ -107,8 +119,17 @@ public sealed class TomlObject
     /// <remarks>
     /// The collection is a read-only snapshot in insertion order.
     /// </remarks>
-    public ICollection<TomlNode?> Values =>
-        _order.Select(key => _properties[key]).ToList().AsReadOnly();
+    public ICollection<TomlNode?> Values
+    {
+        get
+        {
+            var values = new List<TomlNode?>(_order.Count);
+            foreach (string key in _order)
+                values.Add(_properties[key]);
+
+            return values.AsReadOnly();
+        }
+    }
 
     /// <inheritdoc />
     public int Count =>
@@ -287,7 +308,8 @@ public sealed class TomlObject
     /// <inheritdoc />
     public override TomlNode DeepClone()
     {
-        var clone = new TomlObject();
+        // The clone must keep the source's property-name comparer so case-insensitive lookup semantics survive.
+        var clone = new TomlObject(_comparer);
         foreach (KeyValuePair<string, TomlNode?> entry in this)
             clone[entry.Key] = entry.Value?.DeepClone();
 

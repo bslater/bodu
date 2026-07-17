@@ -72,6 +72,9 @@
   <data name="Arg_Invalid_YamlDuplicateKey" xml:space="preserve"><value>An entry with the same key already exists.</value></data>
   <data name="Op_Invalid_ExtensionDataKeyCollision" xml:space="preserve"><value>The extension-data key '{0}' collides with a key already written for type '{1}'.</value></data>
   <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a YamlConverter.</value></data>
+  <data name="Arg_Invalid_ConverterNoParameterlessCtor" xml:space="preserve"><value>The converter type '{0}' must declare a public parameterless constructor to be referenced by a converter attribute.</value></data>
+  <data name="Op_Invalid_ConverterCannotConvert" xml:space="preserve"><value>The converter '{0}' cannot convert type '{1}'.</value></data>
+  <data name="Op_NotSupported_NoConverter" xml:space="preserve"><value>No converter is configured for type '{0}'.</value></data>
   <data name="Arg_Invalid_YamlInvalidUtf8" xml:space="preserve"><value>The supplied bytes are not valid UTF-8.</value></data>
   <data name="Arg_Invalid_YamlUnpairedSurrogate" xml:space="preserve"><value>The value contains an unpaired surrogate and cannot be encoded as UTF-8 YAML.</value></data>
   <data name="Op_Invalid_YamlDuplicateDictionaryKey" xml:space="preserve"><value>The dictionary maps more than one entry to the YAML key '{0}'.</value></data>

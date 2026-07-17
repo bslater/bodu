@@ -453,6 +453,39 @@ public class TomlObjectTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="TomlObject.DeepClone" /> preserves the case-insensitive property-name comparison
+    /// selected through <see cref="TomlNodeOptions" />, so lookups against the clone behave like the original.
+    /// </summary>
+    [TestMethod]
+    public void DeepClone_WhenCaseInsensitive_ShouldPreserveComparer()
+    {
+        var obj = new TomlObject(new TomlNodeOptions { PropertyNameCaseInsensitive = true });
+        obj["Name"] = "x";
+
+        TomlObject clone = obj.DeepClone().AsObject();
+
+        Assert.IsTrue(clone.ContainsKey("name"));
+        Assert.IsTrue(clone.ContainsKey("NAME"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TomlObject.Values" /> returns a read-only snapshot in insertion order.
+    /// </summary>
+    [TestMethod]
+    public void Values_WhenAccessed_ShouldSnapshotInInsertionOrder()
+    {
+        var obj = new TomlObject();
+        obj["b"] = 2L;
+        obj["a"] = 1L;
+
+        ICollection<TomlNode?> values = obj.Values;
+        obj["c"] = 3L;
+
+        Assert.AreEqual(2, values.Count);
+        CollectionAssert.AreEqual(new[] { 2L, 1L }, values.Select(v => v!.GetValue<long>()).ToArray());
+    }
+
+    /// <summary>
     /// Verifies that a nested table member serializes as a <c>[header]</c> block following the parent's scalar
     /// members.
     /// </summary>
