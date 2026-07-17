@@ -34,6 +34,11 @@ namespace Bodu.Extensions;
 /// inclusivity follows the inclusive convention: <c>IsBetween</c> includes both endpoints, and <c>Clamp</c> returns the
 /// boundary value rather than throwing when the input is outside.
 /// </para>
+/// <para>
+/// The comparer-accepting overloads of the range predicates ( <c>IsBetween</c>, <c>IsOutside</c>) and <c>Clamp</c> are
+/// constrained to value types; for reference-type operands use the default-comparer overloads, or the two-operand
+/// ordering helpers on <see cref="ComparableHelper" />.
+/// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -45,8 +50,9 @@ namespace Bodu.Extensions;
 /// // Inclusive "between" predicate, ideal in guard clauses.
 /// bool inDecimalDigits = '7'.IsBetween('0', '9'); // => true
 ///
-/// // Custom comparer for case-insensitive string ranges.
-/// bool inMidAlphabet = "Mango".IsBetween("apple", "orange", StringComparer.OrdinalIgnoreCase); // => true
+/// // Custom comparer: a reversed ordering legitimately accepts inverted bounds.
+/// var descending = Comparer<int>.Create((x, y) => y.CompareTo(x));
+/// bool inCountdown = 5.IsBetween(10, 1, descending); // => true
 ///]]>
 /// </code>
 /// </example>

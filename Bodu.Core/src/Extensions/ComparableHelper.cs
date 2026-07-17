@@ -7,8 +7,10 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides null-tolerant ordering helpers — <c>Min</c>, <c>Max</c>, and <c>Coalesce</c> — that operate over any pair
-/// of <see cref="IComparable{T}" /> or <see cref="Nullable{T}" /> values.
+/// Provides null-tolerant ordering helpers — <c>Min</c>, <c>Max</c>, and <c>Coalesce</c> — for pairs of operands.
+/// <c>Min</c> and <c>Max</c> require <see cref="IComparable{T}" /> operands (reference types may be
+/// <see langword="null" />); <c>Coalesce</c> is unconstrained and additionally accepts <see cref="Nullable{T}" />
+/// value types.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -33,15 +35,18 @@ namespace Bodu.Extensions;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// int? a = 5;
-/// int? b = null;
+/// string? a = "alpha";
+/// string? b = null;
 ///
-/// int? larger  = ComparableHelper.Max(a, b);       // 5
-/// int? smaller = ComparableHelper.Min(a, b);       // 5 (null is skipped)
-/// int? either  = ComparableHelper.Coalesce(b, a);  // 5
+/// string? larger  = ComparableHelper.Max(a, b);       // "alpha"
+/// string? smaller = ComparableHelper.Min(a, b);       // "alpha" (null is skipped)
+/// string? either  = ComparableHelper.Coalesce(b, a);  // "alpha"
 ///
-/// // Custom comparer for reverse-ordered strings.
-/// string? winner = ComparableHelper.Max("alpha", "beta", StringComparer.OrdinalIgnoreCase); // "beta"
+/// // Coalesce alone is unconstrained, so it also accepts nullable value types.
+/// int? first = ComparableHelper.Coalesce((int?)null, 5); // 5
+///
+/// // Custom comparer for case-insensitive string ordering.
+/// string? winner = ComparableHelper.Max("alpha", "Beta", StringComparer.OrdinalIgnoreCase); // "Beta"
 ///]]>
 /// </code>
 /// </example>

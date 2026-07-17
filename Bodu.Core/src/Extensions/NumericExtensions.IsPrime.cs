@@ -104,7 +104,17 @@ public static partial class NumericExtensions
         if (value == 2) return true;
         if ((value & 1UL) == 0) return false;
 
+        // Math.Sqrt is exact only up to 2^53: for larger values the double result can round below the true
+        // integer square root, which would skip the sole divisor of a prime's square. Adjust the candidate
+        // root to the exact integer square root using overflow-safe division comparisons
+        // (limit * limit > value ⟺ limit > value / limit for positive integers).
         ulong limit = (ulong)Math.Sqrt(value);
+        while (limit > 0 && limit > value / limit)
+            limit--;
+
+        while (limit + 1 <= value / (limit + 1))
+            limit++;
+
         for (ulong divisor = 3; divisor <= limit; divisor += 2)
         {
             if (value % divisor == 0)
