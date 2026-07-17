@@ -13,10 +13,10 @@ namespace Bodu.Text.Bencode;
 /// <summary>
 /// Verifies the parameter-validation contracts of <see cref="BencodeSerializerOptions" />: undefined enumeration
 /// values are rejected with the expected <c>ParamName</c>, converter resolution rejects a <see langword="null" />
-/// type, and the converter list's tolerance of <see langword="null" /> entries is pinned.
+/// type, and the converter list rejects <see langword="null" /> entries.
 /// </summary>
 [TestClass]
-public class BencodeSerializerOptionsTests
+public partial class BencodeSerializerOptionsTests
 {
     /// <summary>
     /// Verifies that setting <see cref="BencodeSerializerOptions.DefaultIgnoreCondition" /> to an undefined
@@ -83,17 +83,16 @@ public class BencodeSerializerOptionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodeSerializerOptions.Converters" /> accepts a <see langword="null" /> entry
-    /// without throwing, pinning the current list-backed behavior.
+    /// Verifies that <see cref="BencodeSerializerOptions.Converters" /> rejects a <see langword="null" /> entry with
+    /// <see cref="ArgumentNullException" />, matching the guarded converter list shared with the sibling formats.
     /// </summary>
     [TestMethod]
-    public void Converters_WhenNullAdded_ShouldAcceptEntry()
+    public void Converters_WhenNullAdded_ShouldThrowArgumentNullException()
     {
         var options = new BencodeSerializerOptions();
 
-        options.Converters.Add(null!);
+        Assert.ThrowsExactly<ArgumentNullException>(() => options.Converters.Add(null!));
 
-        Assert.HasCount(1, options.Converters);
-        Assert.IsNull(options.Converters[0]);
+        Assert.IsEmpty(options.Converters);
     }
 }

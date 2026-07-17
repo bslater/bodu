@@ -516,7 +516,7 @@ public sealed partial class TomlSerializerOptions
     /// Throws when the options have become read-only.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    private void VerifyMutable()
+    internal void VerifyMutable()
     {
         if (IsReadOnly)
             throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_OptionsReadOnly);

@@ -50,7 +50,7 @@ public sealed class BencodeSerializerOptions
     public const int DefaultMaxDepth = 64;
 
     /// <summary>The user-registered converters, consulted before the built-in converters.</summary>
-    private readonly List<BencodeConverter> _converters = [];
+    private readonly ConverterList _converters;
 
     /// <summary>The cache of concrete converters resolved per type.</summary>
     private readonly ConcurrentDictionary<Type, BencodeConverter> _converterCache = new();
@@ -112,6 +112,8 @@ public sealed class BencodeSerializerOptions
     public BencodeSerializerOptions(BencodeSerializerDefaults defaults)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(defaults);
+
+        _converters = new ConverterList(this);
 
         if (defaults == BencodeSerializerDefaults.Web)
         {
@@ -459,7 +461,7 @@ public sealed class BencodeSerializerOptions
     /// Throws when the options have become read-only.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
-    private void VerifyMutable()
+    internal void VerifyMutable()
     {
         if (IsReadOnly)
             throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_OptionsReadOnly);
