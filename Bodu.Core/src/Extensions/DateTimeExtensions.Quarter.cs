@@ -110,25 +110,15 @@ public static partial class DateTimeExtensions
     /// </param>
     /// <returns>The number of ticks representing midnight on the last day of the quarter.</returns>
     /// <remarks>
-    /// This is calculated by subtracting one day from the start of the next quarter.
+    /// Delegates to <see cref="QuarterCalculator.GetEndDayNumber(int, int, ValueTuple{uint, uint})" /> — the shared
+    /// quarter engine — and scales the resulting day number to ticks.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static long ComputeQuarterEndTicks(
         int year,
         int quarter,
-        (uint defMonth, uint defDay) definition)
-    {
-        uint q = (uint)(quarter - 1);
-
-        // Calculate the month where this quarter ends
-        uint endMonth = ((((q + 1U) * 3U) + definition.defMonth - 1U) % 12U) + 1U;
-
-        // If the end month is less than or equal to the anchor month, it also wraps
-        int endYear = (endMonth <= definition.defMonth) ? year + 1 : year;
-
-        // Return ticks
-        return GetDateTicks(endYear, (int)endMonth, (int)definition.defDay) - TicksPerDay;
-    }
+        (uint defMonth, uint defDay) definition) =>
+        QuarterCalculator.GetEndDayNumber(year, quarter, definition) * TicksPerDay;
 
     /// <summary>
     /// Computes the tick value for the start of the specified quarter, based on a month-day anchor definition.
@@ -140,25 +130,15 @@ public static partial class DateTimeExtensions
     /// </param>
     /// <returns>The number of ticks representing midnight on the first day of the quarter.</returns>
     /// <remarks>
-    /// Accounts for wrap-around years when the anchor month begins in the latter part of the year.
+    /// Delegates to <see cref="QuarterCalculator.GetStartDayNumber(int, int, ValueTuple{uint, uint})" /> — the shared
+    /// quarter engine — and scales the resulting day number to ticks.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static long ComputeQuarterStartTicks(
         int year,
         int quarter,
-        (uint defMonth, uint defDay) definition)
-    {
-        uint q = (uint)(quarter - 1);
-
-        // Calculate the month where this quarter starts
-        uint startMonth = (((q * 3U) + definition.defMonth - 1U) % 12U) + 1U;
-
-        // If the start month is before the anchor month, it wraps into the *next calendar year*
-        int startYear = (startMonth < definition.defMonth) ? year + 1 : year;
-
-        // Return ticks
-        return GetDateTicks(startYear, (int)startMonth, (int)definition.defDay);
-    }
+        (uint defMonth, uint defDay) definition) =>
+        QuarterCalculator.GetStartDayNumber(year, quarter, definition) * TicksPerDay;
 
     /// <summary>
     /// Determines the fiscal year and quarter that include the specified <paramref name="referenceDate" />, using the
@@ -170,33 +150,13 @@ public static partial class DateTimeExtensions
     /// <param name="referenceDate">The date to evaluate.</param>
     /// <returns>A tuple containing the resolved year and quarter number (1 – 4).</returns>
     /// <remarks>
-    /// If the calculated start of the resolved quarter is after <paramref name="referenceDate" />, the year is
-    /// decremented to reflect the prior fiscal year.
+    /// Delegates to <see cref="QuarterCalculator.GetYearAndQuarter(CalendarQuarterDefinition, int, int, int, int)" /> —
+    /// the shared quarter engine — passing the date components and day number of <paramref name="referenceDate" />; any
+    /// time-of-day component is discarded by the day-number conversion.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (int Year, int Quarter) GetQuarterAndYearFromDate(CalendarQuarterDefinition definition, DateTime referenceDate)
-    {
-        (uint defMonth, uint defDay) defMonthDay = GetQuarterDefinition(definition);
-
-        // Determine the quarter number (1–4) for the provided reference date
-        int q = GetQuarterForDate(referenceDate, defMonthDay);
-        int y = referenceDate.Year;
-
-        // Compute the actual calendar month when the resolved quarter starts
-        uint startMonth = ((((uint)(q - 1) * 3U) + defMonthDay.defMonth - 1U) % 12U) + 1U;
-
-        // Adjust the start year if the start month falls in the next calendar year
-        int startYear = (startMonth < defMonthDay.defMonth) ? y + 1 : y;
-
-        // Calculate the tick count for the quarter start date
-        long startTicks = GetDateTicks(startYear, (int)startMonth, (int)defMonthDay.defDay);
-
-        // If the start date is after the reference date, back up to the previous fiscal year
-        if (startTicks > referenceDate.Ticks)
-            y--;
-
-        return (y, q);
-    }
+    private static (int Year, int Quarter) GetQuarterAndYearFromDate(CalendarQuarterDefinition definition, DateTime referenceDate) =>
+        QuarterCalculator.GetYearAndQuarter(definition, referenceDate.Year, referenceDate.Month, referenceDate.Day, GetDayNumber(referenceDate));
 
     /// <summary>
     /// Extracts the anchor month and day components from a <see cref="CalendarQuarterDefinition" /> value.
@@ -208,19 +168,12 @@ public static partial class DateTimeExtensions
     /// A tuple <c>(defMonth, defDay)</c> representing the anchor month and day that define the start of Q1.
     /// </returns>
     /// <remarks>
-    /// This helper unpacks the encoded <see cref="CalendarQuarterDefinition" /> value for internal use in modular
-    /// calculations.
+    /// Delegates to <see cref="QuarterCalculator.GetDefinition(CalendarQuarterDefinition)" /> — the shared quarter
+    /// engine.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (uint defMonth, uint defDay) GetQuarterDefinition(CalendarQuarterDefinition definition)
-    {
-        // Unpack MMDD value: e.g., 406 = 4/06
-        uint def = (uint)definition;
-        uint defMonth = def / 100U;
-        uint defDay = def % 100U;
-
-        return new(defMonth, defDay);
-    }
+    private static (uint defMonth, uint defDay) GetQuarterDefinition(CalendarQuarterDefinition definition) =>
+        QuarterCalculator.GetDefinition(definition);
 
     /// <summary>
     /// Determines the quarter number (1 – 4) that includes the specified <see cref="DateTime" />, based on a month-day
@@ -230,27 +183,10 @@ public static partial class DateTimeExtensions
     /// <param name="definition">A tuple representing the start of Q1, encoded as (month, day).</param>
     /// <returns>An integer between 1 and 4 representing the resolved quarter number.</returns>
     /// <remarks>
-    /// If <paramref name="dateTime" /> falls before the anchor day in the quarter's first month, it is considered part
-    /// of the previous quarter.
+    /// Delegates to <see cref="QuarterCalculator.GetQuarter(int, int, ValueTuple{uint, uint})" /> — the shared quarter
+    /// engine — passing the month and day components of <paramref name="dateTime" />.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int GetQuarterForDate(this DateTime dateTime, (uint defMonth, uint defDay) definition)
-    {
-        // Compute quarter number using modular offset from anchor month
-        int quarter = (((dateTime.Month + 12 - (int)definition.defMonth) % 12) / 3) + 1;
-
-        // If anchor day is not the 1st, check if we are in the quarter's start month but still before the anchor day - in that case, we
-        // belong to the previous quarter
-        if (definition.defDay != 1)
-        {
-            // Compute the actual start month for the resolved quarter
-            uint quarterStartMonth = ((((uint)(quarter - 1) * 3U) + definition.defMonth - 1U) % 12U) + 1U;
-
-            // If we're in the quarter's start month but before the anchor day, back up a quarter
-            if ((uint)dateTime.Month == quarterStartMonth && (uint)dateTime.Day < definition.defDay)
-                quarter = quarter == 1 ? 4 : quarter - 1;
-        }
-
-        return quarter;
-    }
+    private static int GetQuarterForDate(this DateTime dateTime, (uint defMonth, uint defDay) definition) =>
+        QuarterCalculator.GetQuarter(dateTime.Month, dateTime.Day, definition);
 }
