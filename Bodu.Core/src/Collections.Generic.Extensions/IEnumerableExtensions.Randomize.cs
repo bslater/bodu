@@ -6,11 +6,7 @@
 
 using System.Globalization;
 
-#if !NETSTANDARD2_0
-
 using Bodu.Buffers;
-
-#endif
 
 namespace Bodu.Collections.Generic.Extensions;
 
@@ -190,11 +186,6 @@ public static partial class IEnumerableExtensions
     {
         int availableCount;
         T[] buffer;
-#if NETSTANDARD2_0
-    var list = source is ICollection<T> col ? new List<T>(col) : new List<T>(source);
-    buffer = list.ToArray();
-    availableCount = buffer.Length;
-#else
         using var builder = new PooledBufferBuilder<T>();
         if (source is IReadOnlyCollection<T> collection && builder.TryCopyFrom(collection))
         {
@@ -209,7 +200,7 @@ public static partial class IEnumerableExtensions
         // Slice to valid elements only — the pooled array is over-allocated
         // and ShuffleAndYield uses buffer.Length to bound the shuffle
         buffer = builder.AsArray()[..availableCount];
-#endif
+
         int takeCount = count ?? availableCount;
         ThrowHelper.ThrowIfGreaterThanOther(takeCount, availableCount, nameof(count));
 

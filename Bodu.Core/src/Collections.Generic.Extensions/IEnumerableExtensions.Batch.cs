@@ -122,8 +122,6 @@ public static partial class IEnumerableExtensions
         }
     }
 
-#if !NETSTANDARD2_0
-
     /// <summary>
     /// Batches and transforms a sequence using a pooled array to reduce allocations.
     /// </summary>
@@ -186,8 +184,6 @@ public static partial class IEnumerableExtensions
 
         return BatchIterator();
 
-#if NET5_0_OR_GREATER || NETSTANDARD2_1
-
         IEnumerable<ReadOnlyMemory<TResult>> BatchIterator()
         {
             // One rental for the whole enumeration; every batch is a window over it. Yielding the live window rather
@@ -218,10 +214,6 @@ public static partial class IEnumerableExtensions
                     clearArray: System.Runtime.CompilerServices.RuntimeHelpers.IsReferenceOrContainsReferences<TResult>());
             }
         }
-
-#else
-#error BatchPooled is only supported on netstandard2.1 or greater.
-#endif
     }
 
     /// <summary>
@@ -269,5 +261,3 @@ public static partial class IEnumerableExtensions
             this IEnumerable<TSource> source,
             int size) => source.BatchPooled(size, static (x, _) => x);
 }
-
-#endif

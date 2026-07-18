@@ -28,30 +28,11 @@ public static partial class BufferConverter
         where T : unmanaged
     {
         ThrowHelper.ThrowIfNull(sourceArray);
-#if NET5_0_OR_GREATER
         int elementSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
-#else
-        int elementSize = Marshal.SizeOf<T>();
-#endif
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(sourceArray, index, elementSize);
 
-#if NETSTANDARD2_0
-        var handle = GCHandle.Alloc(sourceArray, GCHandleType.Pinned);
-        try
-        {
-            IntPtr sourcePtr = handle.AddrOfPinnedObject() + index;
-            return Marshal.PtrToStructure<T>(sourcePtr);
-        }
-        finally
-        {
-            handle.Free();
-        }
-#else
         return System.Runtime.InteropServices.MemoryMarshal.Read<T>(sourceArray.AsSpan(index, elementSize));
-#endif
     }
-
-#if !NETSTANDARD2_0
 
     /// <summary>
     /// Reads a single element of type <typeparamref name="T" /> from a span of bytes.
@@ -71,15 +52,9 @@ public static partial class BufferConverter
     public static T Read<T>(this ReadOnlySpan<byte> sourceSpan)
         where T : unmanaged
     {
-#if NET5_0_OR_GREATER
         int elementSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
-#else
-        int elementSize = Marshal.SizeOf<T>();
-#endif
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(sourceSpan, 0, elementSize);
 
         return MemoryMarshal.Read<T>(sourceSpan[..elementSize]);
     }
-
-#endif
 }

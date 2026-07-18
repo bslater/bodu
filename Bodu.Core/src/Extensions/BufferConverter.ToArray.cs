@@ -32,11 +32,7 @@ public static partial class BufferConverter
         where T : unmanaged
     {
         ThrowHelper.ThrowIfNull(sourceArray);
-#if NET5_0_OR_GREATER
         int elementSize = Unsafe.SizeOf<T>();
-#else
-        int elementSize = Marshal.SizeOf<T>();
-#endif
         ThrowHelper.ThrowIfMultiplyOverflows(count, elementSize);
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(sourceArray, sourceIndex, count * elementSize);
 
@@ -44,8 +40,6 @@ public static partial class BufferConverter
         sourceArray.CopyTo(sourceIndex, result, 0, count);
         return result;
     }
-
-#if !NETSTANDARD2_0
 
     /// <summary>
     /// Converts a specified number of elements of type <typeparamref name="T" /> from a span of bytes into a new array
@@ -68,11 +62,7 @@ public static partial class BufferConverter
     public static T[] ToArray<T>(this ReadOnlySpan<byte> sourceSpan, int count)
         where T : unmanaged
     {
-#if NET5_0_OR_GREATER
         int elementSize = Unsafe.SizeOf<T>();
-#else
-        int elementSize = Marshal.SizeOf<T>();
-#endif
         ThrowHelper.ThrowIfMultiplyOverflows(count, elementSize);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(sourceSpan, 0, count * elementSize);
 
@@ -80,6 +70,4 @@ public static partial class BufferConverter
         sourceSpan.CopyTo(result.AsSpan(), count);
         return result;
     }
-
-#endif
 }

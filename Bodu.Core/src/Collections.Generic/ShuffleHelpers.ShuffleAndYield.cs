@@ -153,8 +153,6 @@ public static partial class ShuffleHelpers
         return ShuffleAndYield(array, rng, array.Length);
     }
 
-#if !NETSTANDARD2_0
-
     /// <summary>
     /// Yields a fully shuffled copy of the span.
     /// </summary>
@@ -202,8 +200,6 @@ public static partial class ShuffleHelpers
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> ShuffleAndYield<T>(Memory<T> memory, IRandomGenerator rng, int count) => ShuffleAndYield(memory.ToArray(), rng, count);
-
-#endif
 
     /// <summary>
     /// Yields a randomized subset of the specified array using an in-place partial Fisher–Yates shuffle.
