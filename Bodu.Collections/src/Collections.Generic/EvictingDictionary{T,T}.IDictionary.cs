@@ -241,12 +241,9 @@ public partial class EvictingDictionary<TKey, TValue> :
 
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, Count);
 
-        foreach (KeyValuePair<TKey, TValue> kvp in GetOrderedItems())
+        foreach (KeyValuePair<TKey, TValue> kvp in this)
             array[arrayIndex++] = kvp;
     }
-
-    /// <inheritdoc />
-    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => GetOrderedItems().GetEnumerator();
 
     /// <inheritdoc />
     /// <exception cref="InvalidOperationException">
@@ -334,9 +331,6 @@ public partial class EvictingDictionary<TKey, TValue> :
 
     /// <inheritdoc />
     IDictionaryEnumerator IDictionary.GetEnumerator() => new DictionaryEnumerator(this);
-
-    /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() => GetOrderedItems().GetEnumerator();
 
     /// <inheritdoc />
     void IDictionary.Remove(object key)

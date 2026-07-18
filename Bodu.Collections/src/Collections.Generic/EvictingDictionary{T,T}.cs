@@ -664,126 +664,6 @@ public partial class EvictingDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Returns an ordered enumeration of key-value pairs based on the current eviction policy and internal tracking
-    /// state.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="IEnumerable{T}" /> of <see cref="KeyValuePair{TKey, TValue}" /> in the order determined by the
-    /// current eviction policy.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// The eviction policy is unrecognized or unsupported for ordering.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This method is used primarily for diagnostics, testing, or enumeration purposes, and reflects the internal
-    /// priority used for eviction, not insertion order.
-    /// </para>
-    /// <para>
-    /// When time-based expiration is configured, the clock is read once when enumeration starts and expired entries are
-    /// filtered out (never removed) against that snapshot, so a single enumeration observes a stable set and never
-    /// refreshes sliding deadlines.
-    /// </para>
-    /// </remarks>
-    private IEnumerable<KeyValuePair<TKey, TValue>> GetOrderedItems()
-    {
-        int version = _version;
-
-        // Snapshot the clock once per enumeration; no clock reads occur when expiration is disabled.
-        bool checkExpiry = _timeProvider is not null;
-        long nowTicks = checkExpiry ? GetNowTicks() : 0L;
-
-        switch (Policy)
-        {
-            case EvictingDictionaryPolicy.FirstInFirstOut:
-            case EvictingDictionaryPolicy.LeastRecentlyUsed:
-            case EvictingDictionaryPolicy.SecondChance:
-                if (_order is null)
-                    yield break;
-
-                foreach (TKey key in _order)
-                {
-                    ThrowIfVersionChanged(version);
-
-                    if (_store.TryGetValue(key, out EvictionEntry<TKey, TValue>? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                        yield return new KeyValuePair<TKey, TValue>(key, item.Value);
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.MostRecentlyUsed:
-                if (_order is null)
-                    yield break;
-
-                for (LinkedListNode<TKey>? node = _order.Last; node is not null;)
-                {
-                    ThrowIfVersionChanged(version);
-
-                    if (_store.TryGetValue(node.Value, out EvictionEntry<TKey, TValue>? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                        yield return new KeyValuePair<TKey, TValue>(node.Value, item.Value);
-
-                    // Re-check after resuming from the yield: a touch may have detached the current node, whose
-                    // Previous link is then null — advancing first would end the walk silently instead of failing fast.
-                    ThrowIfVersionChanged(version);
-                    node = node.Previous;
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                if (_frequencyList is null)
-                    yield break;
-
-                foreach (KeyValuePair<int, LinkedList<TKey>> freq in _frequencyList)
-                {
-                    foreach (TKey key in freq.Value)
-                    {
-                        ThrowIfVersionChanged(version);
-
-                        if (_store.TryGetValue(key, out EvictionEntry<TKey, TValue>? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                            yield return new KeyValuePair<TKey, TValue>(key, item.Value);
-                    }
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.RandomReplacement:
-#if NETSTANDARD2_0
-                foreach (var pair in _store)
-                {
-                    ThrowIfVersionChanged(version);
-
-                    if (!(checkExpiry && pair.Value.ExpiresAtTicks <= nowTicks))
-                        yield return new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value);
-                }
-#else
-                foreach ((TKey key, EvictionEntry<TKey, TValue> item) in _store)
-                {
-                    ThrowIfVersionChanged(version);
-
-                    if (!(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                        yield return new KeyValuePair<TKey, TValue>(key, item.Value);
-                }
-#endif
-                break;
-
-            default:
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.Op_Invalid_UnknownEvictionPolicy, Policy));
-        }
-    }
-
-    /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if <paramref name="capturedVersion" /> no longer matches the
-    /// current <see cref="_version" />, signaling that the dictionary was modified during enumeration.
-    /// </summary>
-    /// <param name="capturedVersion">The version observed at the start of enumeration.</param>
-    private void ThrowIfVersionChanged(int capturedVersion)
-    {
-        if (_version != capturedVersion)
-            throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified);
-    }
-
-    /// <summary>
     /// Handles internal usage tracking logic based on the current eviction policy, delegating the policy bookkeeping to
     /// the shared engine.
     /// </summary>
@@ -791,9 +671,9 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="item">The associated cache item for the key.</param>
     /// <remarks>
     /// Touches that structurally reposition the entry (LeastRecentlyUsed, MostRecentlyUsed, LeastFrequentlyUsed)
-    /// increment <see cref="_version" /> so in-flight enumerators fail fast via <see cref="ThrowIfVersionChanged" />
-    /// instead of silently observing a reordered — or, for the manually walked MostRecentlyUsed order, truncated —
-    /// sequence. SecondChance only flips the reference flag, which does not disturb enumeration order.
+    /// increment <see cref="_version" /> so in-flight enumerators fail fast instead of silently observing a reordered —
+    /// or, for the backwards-walked MostRecentlyUsed order, truncated — sequence. SecondChance only flips the reference
+    /// flag, which does not disturb enumeration order.
     /// </remarks>
     private void TouchInternal(TKey key, EvictionEntry<TKey, TValue> item)
     {

@@ -430,38 +430,4 @@ public partial class SequencedDictionary<TKey, TValue>
         _order.AddLast(node);
         _version++;
     }
-
-    /// <summary>
-    /// Returns the dictionary entries in iteration order, failing fast if the dictionary is modified during
-    /// enumeration.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="IEnumerable{T}" /> of <see cref="KeyValuePair{TKey, TValue}" /> in insertion order, or access
-    /// order when access ordering is enabled.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">The dictionary was modified during enumeration.</exception>
-    private IEnumerable<KeyValuePair<TKey, TValue>> GetOrderedItems()
-    {
-        int version = _version;
-
-        foreach (TKey key in _order)
-        {
-            ThrowIfVersionChanged(version);
-            yield return new KeyValuePair<TKey, TValue>(key, _store[key].Value);
-        }
-    }
-
-    /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if <paramref name="capturedVersion" /> no longer matches the
-    /// current <see cref="_version" />, signaling that the dictionary was modified during enumeration.
-    /// </summary>
-    /// <param name="capturedVersion">The version observed at the start of enumeration.</param>
-    /// <exception cref="InvalidOperationException">
-    /// The dictionary was modified since <paramref name="capturedVersion" /> was captured.
-    /// </exception>
-    private void ThrowIfVersionChanged(int capturedVersion)
-    {
-        if (_version != capturedVersion)
-            throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified);
-    }
 }
