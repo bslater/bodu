@@ -120,3 +120,79 @@ Shared day-number quarter engine + close the deliberate DateOnly surface gaps or
 
 ### Verification
 `dotnet build bodu.slnx` + BVT for the three test projects after every commit; full `regression.runsettings` for the three projects after Phase 2 and at close-out; the concurrent trio's Stress-tagged suites after any change to `Segment`/ring/hashset internals; `bld/check-folder-namespace-alignment.sh` after any file moves.
+
+---
+
+## Remediation outcome
+
+All three phases are complete. Every A/B/C finding is **Fixed** or **Assessed-declined** with a recorded rationale below — nothing was silently dropped. Work landed as one green commit per logical step on `claude/next-package-inspection-nyhvy9`, each gated by a full `dotnet build bodu.slnx` plus BVT for the three test projects, with `regression.runsettings` after the hot-path phase and at close-out.
+
+Final gate at close-out (all passing, zero failures): **BVT** Core 23,608 / Collections 3,552 / Concurrent 788; **regression** Core 23,613 / Collections 3,614 / Concurrent 788; full-solution build 0 errors; folder–namespace alignment clean across all three projects.
+
+### A. Safety / correctness — all Fixed (Phase 1, commits `0921119`..`838c44e`, test-first)
+
+| # | Disposition | Note |
+|---|---|---|
+| A1 | Fixed | LFU bucket node stored on the cache item in both dictionaries (comparer-correct removal); landed with B1. |
+| A2 | Fixed | `ReleaseReader` now falls back to `GrantAllReaders()` when `GrantNextWriter()` returns `false`; stranded-reader test added. |
+| A3 | Fixed | `RangeSet` read-side projection uses the internal skip-validation `Range` ctor; reverse-comparer enumeration/indexing/`ToArray` no longer throw. |
+| A4 | Fixed | Both `LastDateOfWeekInQuarter` twins corrected to genuine backward search from the quarter end; the knowingly-wrong pins were re-pinned to the correct dates. |
+| A5 | Fixed | `GetStartDateOfWeek` week-1 start computed per `CalendarWeekRule` (FirstDay/FirstFullWeek/FirstFourDayWeek) with overflow guard + round-trip validation. |
+| A6 | Fixed | `Leibniz` terminates on the magnitude floor (`|term| < min`). |
+| A7 | Fixed | `BufferConverter` validates the target in elements and guards `count * elementSize` with `ThrowIfMultiplyOverflows`. |
+| A8 | Fixed | MRU touch bumps `_version`; the MRU walk re-checks version after each yield before advancing. |
+| A9 | Fixed | Working-week `First/LastDateOfWeek` overloads truncate to midnight. |
+| A10 | Fixed | Doc corrections: in-place-reversal claims (superseded by the C7 `ToReversed` rename), `Randomize` deferral + `StreamWindowed` count, evicting `Add`-metadata story. |
+| A11 | Fixed | `DaysInMonth`/`DaysInYear` use `calendar.GetYear/GetMonth(date)`; `WeekOfMonth` honours its `CalendarWeekRule`. |
+| A12 | Fixed | (a) `NextOccurrence` integer math + strict-after contract; (b) `GetTicksToPreviousDayOfWeek` same-day fix back-ported; (c) `Multiset` checked counts; (d) `PooledBufferBuilder` self-append ordering; (e) `Clamp` min>max validation. |
+| A13 | Fixed | Validate-before-purge across all copy surfaces; `Contains` no longer touches; ring reentrancy guard (release-safe, not `Debug.Assert`); concurrent `ItemEvicted` reentrancy documented. |
+| A14 | Fixed | Versioned trie prefix walks; `SegmentedBuffer` fail-fast versioning; `ConcurrentHashSet` wording corrected. |
+| A15 | Fixed | The doc/math set: HyperLogLog 2³² effective-space caveat, `WeekPattern.Parse` ambiguity pinned, comparable-doc examples, `RoundToSignificantDigits` pure-decimal, `IsPrime` exact isqrt, acronym-option scope. |
+| A16 | Fixed | resx/convention sweep (message literals → resx, `AsyncSemaphore.Release` validate-before-grant, `ThrowIfDisposed` param name, swapped `Arg_OutOfRange_EnumValue` args). |
+| A17 | Fixed | Deferred/edge set addressed: `ShuffleAndYield` eager-validation + double-enumeration, `CountOrDefault` null guard, ring `CopyTo` overflow-safe form, `Dijkstra` negative-weight guard, `BloomFilter.Import` hash-count cap, and the remaining group. `Cache<T>` dispose re-arm was left as-is (pinned by an existing test — see Deferred below). |
+
+### B. Hot paths — all Fixed
+
+| # | Disposition | Commit |
+|---|---|---|
+| B1 | Fixed — O(1) LFU touch via stored bucket node | with A1 (Phase 1) |
+| B2 | Fixed — node re-linking on LRU/MRU touch | `d25760e` |
+| B3 | Fixed (B3a) — acronym lookup cached on `WordCasingOptions`; B3b span tokeniser deferred (see below) | Phase 2 |
+| B4 | Fixed — compare-and-wrap ring indexing (SegmentedBuffer indexer partially — see Deferred) | `e4b5dfd` |
+| B5 | Fixed — live fail-fast trie enumerators | `a367702` |
+| B6 | Fixed — incremental `OrderedSetStorage` bucket unlink | `a367702` |
+| B7 | Fixed — struct enumerators, delivered with the C4 shared substrate | `9c98880` |
+| B8 | Fixed — merge-walk `NavigableSet` set operations | `a367702` |
+| B9 | Fixed — allocation-free interval queries + inline-first-value | `a367702` |
+| B10 | Fixed — `ShuffleAndYieldInternal` wired, needle-set `ContainsAll`, honest `BatchPooled` | `e4b5dfd` |
+| B11 | Fixed — single fiscal-year resolution | Phase 2 |
+| B12 | Fixed — `SearchValues` file-name scans + lazy `CollapseWhitespace` | Phase 2 |
+| B13 | Fixed — eviction/snapshot micro-costs (LINQ-free peeks, exact-size snapshots, cached invocation lists, single-pass `LayeredDictionary.CopyTo`) | `1daf4c2` |
+| B14 | Fixed — the remaining micro-items; BitSet vectorisation deferred (see below) | `1daf4c2` |
+
+### C. Type design / structure — Fixed or Assessed-declined
+
+| # | Disposition | Commit |
+|---|---|---|
+| C1 | Fixed — shared `QuarterCalculator` day-number engine + DateOnly parity (ISO family, `GetStartDateOfWeek`, `PreviousOccurrence`, the missing overload sets) | `dacac6c` |
+| C2 | Fixed — shared `EvictionPolicyCore`/`EvictionEntry` (net −137 lines) | `6e50dfc` |
+| C3 | Fixed — single-sourced RB-tree (`OrderStatisticTree`, `IntervalTreeCore`, `BinaryTree*`) + `RangeArrayCore` | `5adc903` |
+| C4 | Fixed — `IOrderedDictionaryView` seam + `DictionaryViewCore` (folds in B7) | `9c98880` |
+| C5 | Fixed — `ConcurrentEvictingDictionary` gains `IDictionary<,>`/`ICollection<KVP>` + `TryUpdate`/`AddOrUpdate` (additive; owner decision) | `82c9bdc` |
+| C6 | Fixed — deleted 11 dead `ThrowHelper.*-NetStandard.cs`, the shadowed `TryGetBytes/Chars`, and all dead TFM scaffolding | `3284f25` |
+| C7 | Fixed — `Reverse`→`ToReversed` rename; removed the plain `Batch(size)`/`Repeat`/`Randomize(BufferAll)` BCL duplicates (owner decisions) | `d9378d7` |
+| C8 | Fixed — unified the word tokenisers (ToIdentifier onto the shared splitter) and made `RecursiveSelectControl` a real `[Flags]` type with the `Break`/`Recurse` precedence fixed; B3b span-internals deferred | `a9f71d5` |
+| C9 | Fixed — removed `AsArray`, int-keyed `DisjointSet`, the obsolete `IQuarterDefinitionProvider` members, `ConcurrentHashSet.ApproximateCount`/`IsEmptyApproximate`; collapsed `IReadOnlyWeightedGraph<T,T>`→`<T>` (owner decisions) | `d9378d7` |
+| C10 | Fixed (with two scope corrections) — pruned the divergent seedless-indexed `Aggregate` overload; `SliceInternal` made internal + single-validation; `GetBytes<T>` constrained to `INumberBase<T>`; FiscalWeek month-13 sentinel named; `WeekPattern.Equals(object)` symmetry restored. `Tree<T>.Height`/`Depth` documented rather than converted to methods (no catalogue precedent for the conversion). | `5292f24` |
+| C11 | Fixed (ring item declined) — `SegmentedBuffer` catalogue parity, `RangeSet.Add`→bool, growth-clamp consolidation, `ValueRange<,>` equality, Range debug views. Ring trim-policy declined (see below). | `5292f24` |
+| C12 | Fixed (ValueComparer declined) — `Option.Tap`/`Result.Filter`, non-generic `Result`/`Either` async companions, trie span parity, `LayeredDictionary` read-only views, `ContainsKey` no-longer-slides. `MultiValueDictionary.ValueComparer` declined (see below). | `5292f24` |
+
+### Deferred / declined — recorded dispositions
+
+- **B3b (span tokeniser internals) — deferred as follow-up.** The unified tokeniser (C8) emits acronym *canonical spellings* (e.g. `"oauth"`→`"OAuth"`) and decomposition results that are catalogue strings, not slices of the source, so a `(start, length)` span-range yield cannot represent them without changing output. The allocation-reducing B3a cache landed; the span rewrite would touch every casing consumer for no output change and is left as a separate, lower-value follow-up.
+- **B14 BitSet vectorisation — deferred.** The scalar word loops are correct and the SIMD rewrite is a sizeable, separately-verifiable change (process-wide feature-switch testing, like the crypto SIMD suite) disproportionate to a Low-severity micro-item. Left as follow-up.
+- **B4 `SegmentedBuffer` indexer divisions — partially left.** The append path was made arithmetic-free with a write cursor; the random-access indexer still uses `index / _segmentSize` + `% _segmentSize`, which is intrinsic to the segmented layout (any alternative would trade the division for a per-segment scan). The divisions on the read path are retained by design.
+- **A17 `Cache<T>` dispose re-arm — left as-is.** An existing test pins the current re-arm behaviour; changing it is a behavioural decision outside this round's safety remit. Documented, not changed.
+- **C10 `Aggregate` "byte-identical bodies" — scope corrected.** On inspection the indexed/non-indexed overload pairs have textually similar bodies but dispatch to *different* func arities, so they are distinct capabilities, not redundant duplicates. Only the genuinely divergent seedless-indexed overload (which seeded with `default(TSource)`, unlike LINQ) was removed; the remaining ten are kept.
+- **C11 ring trim-policy — declined (defect not present).** The finding described `Deque` neutralising `CircularBuffer`'s trim policy after construction; in the current code `Deque` pre-computes its capacity and passes it *into* the base constructor, so the base trim path is simply never triggered for `Deque` — there is no post-hoc neutralisation to refactor away, and the five ring partials are already `sealed`/interface-consistent. No change.
+- **C12 `MultiValueDictionary.ValueComparer` — declined (not dead surface).** On inspection the comparer genuinely drives value identity (`IndexOfValue`, `ContainsValue`, `Remove`, novelty filtering) under the `Set` value backing; it is inert only under the default `List` backing, where it is already documented as such. Removing it would break the Set-backing semantics and its tests, so the surface is retained and the List-backing caveat left documented.
