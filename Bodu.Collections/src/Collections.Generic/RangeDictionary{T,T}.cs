@@ -6,6 +6,8 @@
 
 using System.Diagnostics;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 /// <summary>
@@ -339,9 +341,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         ThrowHelper.ThrowIfNull(key);
 
-        int index = UpperBound(key) - 1;
-
-        return index < 0 ? -1 : _comparer.Compare(key, _ends[index]) < 0 ? index : -1;
+        return RangeArrayCore.FindContainingIndex(_starts, _ends, _count, key, _comparer);
     }
 
     /// <summary>
@@ -355,17 +355,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         EnsureCapacity(_count + 1);
 
-        if (index < _count)
-        {
-            Array.Copy(_starts, index, _starts, index + 1, _count - index);
-            Array.Copy(_ends, index, _ends, index + 1, _count - index);
-            Array.Copy(_values, index, _values, index + 1, _count - index);
-        }
-
-        _starts[index] = startInclusive;
-        _ends[index] = endExclusive;
-        _values[index] = value;
-        _count++;
+        RangeArrayCore.InsertAt(_starts, _ends, _values, ref _count, index, startInclusive, endExclusive, value);
         _version++;
     }
 
@@ -375,19 +365,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <param name="index">The index of the entry to remove.</param>
     private void RemoveAt(int index)
     {
-        int moveCount = _count - index - 1;
-
-        if (moveCount > 0)
-        {
-            Array.Copy(_starts, index + 1, _starts, index, moveCount);
-            Array.Copy(_ends, index + 1, _ends, index, moveCount);
-            Array.Copy(_values, index + 1, _values, index, moveCount);
-        }
-
-        _count--;
-        _starts[_count] = default!;
-        _ends[_count] = default!;
-        _values[_count] = default!;
+        RangeArrayCore.RemoveAt(_starts, _ends, _values, ref _count, index);
         _version++;
     }
 
@@ -421,12 +399,8 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// Reallocates the parallel storage arrays to the specified capacity.
     /// </summary>
     /// <param name="capacity">The new capacity.</param>
-    private void ResizeStorage(int capacity)
-    {
-        Array.Resize(ref _starts, capacity);
-        Array.Resize(ref _ends, capacity);
-        Array.Resize(ref _values, capacity);
-    }
+    private void ResizeStorage(int capacity) =>
+        RangeArrayCore.Resize(ref _starts, ref _ends, ref _values, capacity);
 
     /// <summary>
     /// Computes the next capacity by doubling the current size, with a clamp at <see cref="Array.MaxLength" /> and a

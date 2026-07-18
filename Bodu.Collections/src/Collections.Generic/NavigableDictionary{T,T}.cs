@@ -139,7 +139,7 @@ public sealed partial class NavigableDictionary<TKey, TValue>
                 throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_DuplicateDictionaryKey, nameof(source));
         }
 
-        _root = BuildFromSortedArray(entries, 0, entries.Length - 1, null);
+        _root = BuildFromSortedArray(entries, entries.Length);
         _count = entries.Length;
     }
 

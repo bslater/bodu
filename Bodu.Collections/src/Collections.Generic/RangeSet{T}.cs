@@ -6,6 +6,8 @@
 
 using System.Diagnostics;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 /// <summary>
@@ -479,9 +481,7 @@ public sealed partial class RangeSet<T>
     {
         ThrowHelper.ThrowIfNull(value);
 
-        int index = UpperBound(value) - 1;
-
-        return index < 0 ? -1 : _comparer.Compare(value, _ends[index]) < 0 ? index : -1;
+        return RangeArrayCore.FindContainingIndex(_starts, _ends, _count, value, _comparer);
     }
 
     /// <summary>
@@ -494,15 +494,7 @@ public sealed partial class RangeSet<T>
     {
         EnsureCapacity(_count + 1);
 
-        if (index < _count)
-        {
-            Array.Copy(_starts, index, _starts, index + 1, _count - index);
-            Array.Copy(_ends, index, _ends, index + 1, _count - index);
-        }
-
-        _starts[index] = startInclusive;
-        _ends[index] = endExclusive;
-        _count++;
+        RangeArrayCore.InsertAt(_starts, _ends, ref _count, index, startInclusive, endExclusive);
         _version++;
     }
 
@@ -512,17 +504,7 @@ public sealed partial class RangeSet<T>
     /// <param name="index">The index of the range to remove.</param>
     private void RemoveAt(int index)
     {
-        int moveCount = _count - index - 1;
-
-        if (moveCount > 0)
-        {
-            Array.Copy(_starts, index + 1, _starts, index, moveCount);
-            Array.Copy(_ends, index + 1, _ends, index, moveCount);
-        }
-
-        _count--;
-        _starts[_count] = default!;
-        _ends[_count] = default!;
+        RangeArrayCore.RemoveAt(_starts, _ends, ref _count, index);
         _version++;
     }
 
@@ -535,18 +517,7 @@ public sealed partial class RangeSet<T>
     /// <param name="count">The number of ranges to remove. Must be greater than zero.</param>
     private void RemoveRange(int index, int count)
     {
-        int moveCount = _count - index - count;
-
-        if (moveCount > 0)
-        {
-            Array.Copy(_starts, index + count, _starts, index, moveCount);
-            Array.Copy(_ends, index + count, _ends, index, moveCount);
-        }
-
-        Array.Clear(_starts, _count - count, count);
-        Array.Clear(_ends, _count - count, count);
-
-        _count -= count;
+        RangeArrayCore.RemoveRange(_starts, _ends, ref _count, index, count);
         _version++;
     }
 
@@ -598,11 +569,8 @@ public sealed partial class RangeSet<T>
     /// Reallocates the parallel storage arrays to the specified capacity.
     /// </summary>
     /// <param name="capacity">The new capacity.</param>
-    private void ResizeStorage(int capacity)
-    {
-        Array.Resize(ref _starts, capacity);
-        Array.Resize(ref _ends, capacity);
-    }
+    private void ResizeStorage(int capacity) =>
+        RangeArrayCore.Resize(ref _starts, ref _ends, capacity);
 
     /// <summary>
     /// Computes the next capacity by doubling the current size, with a clamp at <see cref="Array.MaxLength" /> and a
