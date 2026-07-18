@@ -30,8 +30,8 @@ namespace Bodu.Security.Cryptography;
 /// bytes are serialized in little-endian order then truncated to the configured output length.
 /// </para>
 /// <para>
-/// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm.Key" /> switches the instance into the
-/// keyed <c>BLAKE2s-MAC</c> mode defined in RFC 7693 Section 2.8. The key (1–32 bytes) is zero-padded to 64 bytes and
+/// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm.Key" /> switches the instance into the keyed
+/// <c>BLAKE2s-MAC</c> mode defined in RFC 7693 Section 2.8. The key (1–32 bytes) is zero-padded to 64 bytes and
 /// prepended as the first message block, and the key length is encoded into the parameter block so that keyed and
 /// unkeyed digests of the same message are always distinct.
 /// </para>
@@ -217,9 +217,8 @@ public sealed partial class Blake2s
 
     /// <summary>
     /// Compresses a single 64-byte block using the BLAKE2s <c>F</c> compression function. Invoked by
-    /// <see cref="DeferredFinalBlockHashAlgorithm" /> with <paramref name="isFinal" /> set to
-    /// <see langword="true" /> for the last call (which inverts the finalization flag word) and to
-    /// <see langword="false" /> otherwise.
+    /// <see cref="DeferredFinalBlockHashAlgorithm" /> with <paramref name="isFinal" /> set to <see langword="true" />
+    /// for the last call (which inverts the finalization flag word) and to <see langword="false" /> otherwise.
     /// </summary>
     /// <param name="block">The 64-byte block to compress.</param>
     /// <param name="totalBytesIncludingThisBlock">

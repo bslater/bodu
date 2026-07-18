@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ObjectTypeConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,9 +10,9 @@ using Bodu.Text.Yaml.Writer;
 namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
-/// Converts a value statically typed as <see cref="object" />: on write the value's runtime type selects the
-/// converter, and on read the value surfaces as a loosely-typed graph of dictionaries, lists, and primitives
-/// (booleans, 64-bit integers, doubles, and strings, with null scalars as <see langword="null" />).
+/// Converts a value statically typed as <see cref="object" />: on write the value's runtime type selects the converter,
+/// and on read the value surfaces as a loosely-typed graph of dictionaries, lists, and primitives (booleans, 64-bit
+/// integers, doubles, and strings, with null scalars as <see langword="null" />).
 /// </summary>
 internal sealed class ObjectTypeConverter
     : YamlConverter<object>

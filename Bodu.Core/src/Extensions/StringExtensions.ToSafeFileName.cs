@@ -10,10 +10,7 @@ namespace Bodu.Extensions;
 
 public static partial class StringExtensions
 {
-    /// <summary>
-    /// The platform's invalid file-name characters as a vectorised search set, computed once per process
-    /// (<see cref="Path.GetInvalidFileNameChars" /> allocates a fresh array on every call).
-    /// </summary>
+    /// <summary>The platform's invalid file-name characters as a vectorised search set, computed once per process (<see cref="Path.GetInvalidFileNameChars" /> allocates a fresh array on every call).</summary>
     private static readonly System.Buffers.SearchValues<char> s_invalidFileNameChars =
         System.Buffers.SearchValues.Create(Path.GetInvalidFileNameChars());
 

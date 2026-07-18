@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsymmetricKeyMaterial.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,15 +7,15 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds an immutable raw-key pair or public-only key for the library's asymmetric algorithms (X25519, Ed25519,
-/// ML-KEM, ML-DSA). Bundling the public key with its optional private key makes "a private key implies a public key"
-/// an invariant of the type and centralizes zeroization of the secret behind a single <see cref="Clear" /> call.
+/// Holds an immutable raw-key pair or public-only key for the library's asymmetric algorithms (X25519, Ed25519, ML-KEM,
+/// ML-DSA). Bundling the public key with its optional private key makes "a private key implies a public key" an
+/// invariant of the type and centralizes zeroization of the secret behind a single <see cref="Clear" /> call.
 /// </summary>
 /// <remarks>
 /// For ML-KEM the public key is the FIPS 203 encapsulation key <c>ek</c> and the private key the decapsulation key
 /// <c>dk</c>; the generic member names are shared across all four algorithm families. Algorithms that cache derived
-/// state alongside the raw keys (for example <see cref="Ed25519KeyMaterial" />'s decoded public point) derive from
-/// this class.
+/// state alongside the raw keys (for example <see cref="Ed25519KeyMaterial" />'s decoded public point) derive from this
+/// class.
 /// </remarks>
 internal class AsymmetricKeyMaterial
 {

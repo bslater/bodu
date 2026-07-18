@@ -112,9 +112,7 @@ public abstract partial class RingBackedCollection<T>
     /// <summary>A monotonic counter incremented on every structural mutation; consumed by enumerators for invalidation.</summary>
     private int _version;
 
-    /// <summary>
-    /// Indicates whether an eviction event is currently being dispatched, used to fail fast on re-entrant mutation.
-    /// </summary>
+    /// <summary>Indicates whether an eviction event is currently being dispatched, used to fail fast on re-entrant mutation.</summary>
     /// <remarks>
     /// The eviction events are raised while the in-flight operation still depends on the ring's pre-mutation state; a
     /// handler that mutated the collection would violate the primitives' caller-ensured preconditions, which are

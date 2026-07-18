@@ -236,9 +236,9 @@ public sealed class PooledBufferBuilder<T> :
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     /// <remarks>
     /// <paramref name="source" /> may alias the builder's own storage (for example a span obtained from
-    /// <see cref="WrittenSpan" /> or <see cref="DangerousGetArray" />): when a growth is required, the previous rented array is
-    /// returned to the pool only after the source elements have been copied, so a self-aliasing source remains valid
-    /// throughout the append.
+    /// <see cref="WrittenSpan" /> or <see cref="DangerousGetArray" />): when a growth is required, the previous rented
+    /// array is returned to the pool only after the source elements have been copied, so a self-aliasing source remains
+    /// valid throughout the append.
     /// </remarks>
     public void AppendRange(ReadOnlySpan<T> source)
     {

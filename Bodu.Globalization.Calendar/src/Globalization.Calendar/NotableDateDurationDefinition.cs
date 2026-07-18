@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDurationDefinition.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,6 +18,5 @@ namespace Bodu.Globalization.Calendar;
 /// exclusive by construction, so a rule can never declare both a fixed day count and a calculated end date.
 /// </para>
 /// </remarks>
-/// <seealso cref="FixedDurationDefinition" />
-/// <seealso cref="CalculatedEndDateDurationDefinition" />
+/// <seealso cref="FixedDurationDefinition" /> <seealso cref="CalculatedEndDateDurationDefinition" />
 public abstract record NotableDateDurationDefinition;

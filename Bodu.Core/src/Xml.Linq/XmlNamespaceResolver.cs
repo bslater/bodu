@@ -54,8 +54,12 @@ public sealed class XmlNamespaceResolver
     /// <summary>
     /// Initializes a new instance of the <see cref="XmlNamespaceResolver" /> class with the specified root element.
     /// </summary>
-    /// <param name="root">The root element from which to extract the default namespace. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="root" /> is <see langword="null" />.</exception>
+    /// <param name="root">
+    /// The root element from which to extract the default namespace. Must not be <see langword="null" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="root" /> is <see langword="null" />.
+    /// </exception>
     /// <remarks>
     /// <see cref="XName.Namespace" /> is never <see langword="null" /> — an element without an explicit namespace
     /// reports <see cref="XNamespace.None" /> — so the captured namespace may be the empty namespace but the

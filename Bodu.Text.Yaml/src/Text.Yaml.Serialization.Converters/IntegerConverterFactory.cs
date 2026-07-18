@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntegerConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
-/// Produces an <see cref="IntegerConverter{T}" /> for each of the fixed-width CLR integer types the serializer maps
-/// to YAML integer scalars.
+/// Produces an <see cref="IntegerConverter{T}" /> for each of the fixed-width CLR integer types the serializer maps to
+/// YAML integer scalars.
 /// </summary>
 internal sealed class IntegerConverterFactory
     : YamlConverterFactory

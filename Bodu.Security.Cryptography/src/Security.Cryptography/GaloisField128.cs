@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GaloisField128.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,11 +17,11 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Two implementations are provided and produce bit-identical results: a hardened, branch-free scalar multiply
-/// (<see cref="MultiplyScalar" />) and a carry-less multiply (<see cref="MultiplyClmul" />) built on the
-/// <see cref="Pclmulqdq" /> instruction. <see cref="Multiply" /> dispatches to the accelerated path when
-/// <see cref="SimdCapabilities.Pclmulqdq" /> reports it available and otherwise falls back to the scalar path, so the
-/// process-wide <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch pins execution to the scalar reference.
+/// Two implementations are provided and produce bit-identical results: a hardened, branch-free scalar multiply (<see cref="MultiplyScalar" />)
+/// and a carry-less multiply (<see cref="MultiplyClmul" />) built on the <see cref="Pclmulqdq" /> instruction.
+/// <see cref="Multiply" /> dispatches to the accelerated path when <see cref="SimdCapabilities.Pclmulqdq" /> reports it
+/// available and otherwise falls back to the scalar path, so the process-wide
+/// <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch pins execution to the scalar reference.
 /// </para>
 /// <para>
 /// Both paths are constant-time with respect to their operands: the scalar path folds every secret-dependent decision

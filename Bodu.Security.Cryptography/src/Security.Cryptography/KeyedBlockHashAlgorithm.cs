@@ -23,17 +23,17 @@ namespace Bodu.Security.Cryptography;
 /// key-dependent schedule or internal state.
 /// </para>
 /// <para>
-/// Derived classes supply the required key length via the <see cref="KeyedBlockHashAlgorithm(int, int)" />
-/// constructor. The <see cref="Key" /> property setter validates the supplied byte array against that length, stores a
-/// defensive copy in <see cref="KeyValue" />, and then invokes <see cref="OnKeyChanged" /> so the derived algorithm can
-/// rebuild any key-dependent state.
+/// Derived classes supply the required key length via the <see cref="KeyedBlockHashAlgorithm(int, int)" /> constructor.
+/// The <see cref="Key" /> property setter validates the supplied byte array against that length, stores a defensive
+/// copy in <see cref="KeyValue" />, and then invokes <see cref="OnKeyChanged" /> so the derived algorithm can rebuild
+/// any key-dependent state.
 /// </para>
 /// <para>
-/// <strong>When to derive from this class.</strong> Pick <see cref="KeyedBlockHashAlgorithm" /> for keyed hashes
-/// that follow the Merkle–Damgård pad-and-finalize pattern and require a fixed-length key — <see cref="Poly1305" />
-/// (32-byte key) and <see cref="SipHash" /> (16-byte key) are the canonical users. For BLAKE-family hashes that
-/// accept an <em>optional</em> variable-length key derive from <see cref="KeyedDeferredFinalBlockHashAlgorithm" />
-/// instead. For unkeyed Merkle–Damgård hashes use <see cref="BlockHashAlgorithm" /> directly.
+/// <strong>When to derive from this class.</strong> Pick <see cref="KeyedBlockHashAlgorithm" /> for keyed hashes that
+/// follow the Merkle–Damgård pad-and-finalize pattern and require a fixed-length key — <see cref="Poly1305" /> (32-byte
+/// key) and <see cref="SipHash" /> (16-byte key) are the canonical users. For BLAKE-family hashes that accept an <em>optional</em>
+/// variable-length key derive from <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> instead. For unkeyed
+/// Merkle–Damgård hashes use <see cref="BlockHashAlgorithm" /> directly.
 /// </para>
 /// </remarks>
 /// <example>

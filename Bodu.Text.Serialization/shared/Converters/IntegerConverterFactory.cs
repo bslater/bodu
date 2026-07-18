@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntegerConverterFactory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,8 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 
 /// <summary>
 /// Produces an <see cref="IntegerConverter{T}" /> for each of the fixed-width integer types. A format whose native
-/// integer surface exceeds the signed 64-bit range the shared converter reads and writes through routes those widths
-/// to its dedicated converters instead.
+/// integer surface exceeds the signed 64-bit range the shared converter reads and writes through routes those widths to
+/// its dedicated converters instead.
 /// </summary>
 /// <remarks>
 /// The 128-bit types are included even though the shared converter is 64-bit signed: its checked conversions confine

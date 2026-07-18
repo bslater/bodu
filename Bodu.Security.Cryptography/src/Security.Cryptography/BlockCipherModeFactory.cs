@@ -24,9 +24,9 @@ namespace Bodu.Security.Cryptography;
 /// CFB, OFB, CTR) are dispatched here. <see cref="CtsModeTransform" /> and <see cref="XtsModeTransform" /> have members
 /// in the <see cref="CipherModeKind" /> enumeration (<see cref="CipherModeKind.CTS" /> and
 /// <see cref="CipherModeKind.XTS" />) but are not dispatched by this factory — their construction shapes differ (XTS
-/// requires a second cipher), so they must be constructed directly. Authenticated modes have their own
-/// contract and lifecycle — construct an <see cref="IAeadBlockCipherModeTransform" /> implementation directly, or use
-/// the helpers on <see cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />.
+/// requires a second cipher), so they must be constructed directly. Authenticated modes have their own contract and
+/// lifecycle — construct an <see cref="IAeadBlockCipherModeTransform" /> implementation directly, or use the helpers on
+/// <see cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />.
 /// </para>
 /// <para>
 /// The following example composes a block cipher, a CBC mode transform, and PKCS#7 padding to encrypt a message.

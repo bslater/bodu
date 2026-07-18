@@ -17,8 +17,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <see cref="SipHash64" /> is parameterized as <c>SipHash-c-d</c>, where <c>c</c> is the number of compression rounds
 /// and <c>d</c> is the number of finalization rounds. The default configuration corresponds to <c>SipHash-2-4</c>;
-/// stronger parameterizations such as <c>SipHash-4-8</c> may be selected via
-/// <see cref="SipHash.CompressionRounds" /> and <see cref="SipHash.FinalizationRounds" />.
+/// stronger parameterizations such as <c>SipHash-4-8</c> may be selected via <see cref="SipHash.CompressionRounds" />
+/// and <see cref="SipHash.FinalizationRounds" />.
 /// </para>
 /// <para>
 /// See <see cref="SipHash" /> for a description of the round structure.

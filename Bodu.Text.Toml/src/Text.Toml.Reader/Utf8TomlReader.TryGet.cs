@@ -369,7 +369,9 @@ public ref partial struct Utf8TomlReader
     /// Removes the underscores from a numeric literal, writing the characters to parse into the supplied buffer.
     /// </summary>
     /// <param name="literal">The raw literal bytes, already validated by the scan.</param>
-    /// <param name="destination">The buffer that receives the stripped characters; at least the literal's length.</param>
+    /// <param name="destination">
+    /// The buffer that receives the stripped characters; at least the literal's length.
+    /// </param>
     /// <returns>The number of characters written.</returns>
     private static int StripNumberUnderscores(ReadOnlySpan<byte> literal, Span<char> destination)
     {

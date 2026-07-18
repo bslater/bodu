@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="UntypedDictionaryConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,14 +12,14 @@ using Bodu.Text.Yaml.Writer;
 namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
-/// Converts a dictionary the generic dictionary factory does not claim — a non-generic <see cref="IDictionary" />
-/// such as <see cref="Hashtable" />, or a generic dictionary whose key type has no round-trippable text form — as a
-/// YAML mapping whose keys are each entry key's invariant text.
+/// Converts a dictionary the generic dictionary factory does not claim — a non-generic <see cref="IDictionary" /> such
+/// as <see cref="Hashtable" />, or a generic dictionary whose key type has no round-trippable text form — as a YAML
+/// mapping whose keys are each entry key's invariant text.
 /// </summary>
 /// <remarks>
 /// Distinct keys whose string forms collide (for example the integer <c>1</c> and the string <c>"1"</c>) are rejected
-/// with <see cref="YamlSerializationException" />, so the serializer never emits a document its own parser would
-/// reject as a duplicate key. Entry values dispatch on their runtime type; a null value writes the null scalar.
+/// with <see cref="YamlSerializationException" />, so the serializer never emits a document its own parser would reject
+/// as a duplicate key. Entry values dispatch on their runtime type; a null value writes the null scalar.
 /// </remarks>
 internal sealed class UntypedDictionaryConverter
     : YamlConverter<IDictionary>

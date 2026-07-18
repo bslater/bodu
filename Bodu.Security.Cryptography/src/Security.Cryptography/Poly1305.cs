@@ -369,15 +369,15 @@ public sealed class Poly1305
     /// <summary>
     /// Loads the one-time key directly from a span, deriving the clamped polynomial key <c>r</c>, the precomputed
     /// <c>5·r</c> multiples, and the final-addition key <c>s</c>, and resetting the accumulator. This is the internal
-    /// span counterpart of assigning <see cref="Key" /> — it takes no defensive array copy, so the AEAD framing can
-    /// key a fresh instance without materializing the per-message key on the heap.
+    /// span counterpart of assigning <see cref="Key" /> — it takes no defensive array copy, so the AEAD framing can key
+    /// a fresh instance without materializing the per-message key on the heap.
     /// </summary>
     /// <param name="key">The 32-byte one-time key.</param>
     /// <exception cref="ArgumentException"><paramref name="key" /> is not exactly 32 bytes.</exception>
     /// <remarks>
     /// Intended for the internal streaming core (<see cref="AppendCore" /> / <see cref="FinalizeTagCore" />) on a
-    /// freshly constructed instance. It deliberately bypasses <see cref="KeyedBlockHashAlgorithm.Key" />, so the
-    /// public <c>Key</c> property does not reflect the loaded key material.
+    /// freshly constructed instance. It deliberately bypasses <see cref="KeyedBlockHashAlgorithm.Key" />, so the public
+    /// <c>Key</c> property does not reflect the loaded key material.
     /// </remarks>
     internal void InitializeKeyCore(ReadOnlySpan<byte> key)
     {
@@ -396,8 +396,8 @@ public sealed class Poly1305
 
     /// <summary>
     /// Finalizes the MAC and writes the 16-byte tag into <paramref name="tag" />, clearing the intermediate digest
-    /// array. The instance is one-time: construct a fresh instance (or re-key via
-    /// <see cref="InitializeKeyCore" />) for the next message.
+    /// array. The instance is one-time: construct a fresh instance (or re-key via <see cref="InitializeKeyCore" />) for
+    /// the next message.
     /// </summary>
     /// <param name="tag">The span receiving the tag. Must be at least 16 bytes.</param>
     internal void FinalizeTagCore(Span<byte> tag)

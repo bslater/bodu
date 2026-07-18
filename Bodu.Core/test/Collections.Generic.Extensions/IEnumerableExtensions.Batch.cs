@@ -75,8 +75,9 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     ];
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.Batch{TSource, TResult}(IEnumerable{TSource}, int, Func{TSource, TResult})" /> defers execution until the
-    /// returned sequence is enumerated.
+    /// Verifies that
+    /// <see cref="IEnumerableExtensions.Batch{TSource, TResult}(IEnumerable{TSource}, int, Func{TSource, TResult})" />
+    /// defers execution until the returned sequence is enumerated.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetBatchTestCases))]

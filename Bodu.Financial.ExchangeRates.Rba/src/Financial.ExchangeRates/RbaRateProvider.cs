@@ -309,7 +309,9 @@ public sealed class RbaRateProvider
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download era files.</param>
     /// <param name="options">The provider options.</param>
-    /// <param name="logger">The provider's logger, forwarded to the on-disk response cache for degradation warnings.</param>
+    /// <param name="logger">
+    /// The provider's logger, forwarded to the on-disk response cache for degradation warnings.
+    /// </param>
     /// <returns>A new table source.</returns>
     private static RbaXlsRateTableSource CreateSource(HttpClient httpClient, RbaRateProviderOptions options, ILogger? logger)
     {

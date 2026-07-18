@@ -39,10 +39,9 @@ public static partial class IEnumerableExtensions
     /// number of available elements is performed during enumeration.
     /// </para>
     /// <para>
-    /// Under <see cref="RandomizationMode.StreamWindowed" />, a non-<see langword="null" />
-    /// <paramref name="count" /> limits the randomized stream to that many elements; if the source is exhausted
-    /// first, <see cref="ArgumentOutOfRangeException" /> is thrown during enumeration, consistent with the other
-    /// modes.
+    /// Under <see cref="RandomizationMode.StreamWindowed" />, a non-<see langword="null" /> <paramref name="count" />
+    /// limits the randomized stream to that many elements; if the source is exhausted first,
+    /// <see cref="ArgumentOutOfRangeException" /> is thrown during enumeration, consistent with the other modes.
     /// </para>
     /// <para>
     /// To shuffle a fully materialized collection in place — the buffer-everything strategy — use the BCL

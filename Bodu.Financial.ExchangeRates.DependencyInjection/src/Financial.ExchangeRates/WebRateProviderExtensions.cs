@@ -119,9 +119,7 @@ public static class WebRateProviderExtensions
     /// Registers a web-based exchange-rate provider with an arbitrary options type, binding options and configuring a
     /// named <see cref="HttpClient" /> with Polly resilience.
     /// </summary>
-    /// <typeparam name="TProvider">
-    /// The concrete provider type, derived from <see cref="WebRateProvider" />.
-    /// </typeparam>
+    /// <typeparam name="TProvider">The concrete provider type, derived from <see cref="WebRateProvider" />.</typeparam>
     /// <typeparam name="TOptions">The options type.</typeparam>
     /// <param name="builder">The financial service builder.</param>
     /// <param name="httpClientName">

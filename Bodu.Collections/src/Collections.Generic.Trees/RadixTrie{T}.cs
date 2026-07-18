@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RadixTrie{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -414,8 +414,8 @@ public sealed partial class RadixTrie<TValue>
     }
 
     /// <summary>
-    /// Projects the key/value enumeration onto its keys, failing fast when the trie is structurally modified during
-    /// the walk.
+    /// Projects the key/value enumeration onto its keys, failing fast when the trie is structurally modified during the
+    /// walk.
     /// </summary>
     /// <param name="start">The subtree root to enumerate.</param>
     /// <param name="version">The owner's version captured when the query located <paramref name="start" />.</param>

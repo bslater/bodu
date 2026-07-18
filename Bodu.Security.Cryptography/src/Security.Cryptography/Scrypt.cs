@@ -170,9 +170,9 @@ public sealed class Scrypt
     /// <exception cref="ArgumentNullException"><paramref name="password" /> is <see langword="null" />.</exception>
     /// <exception cref="ObjectDisposedException"><paramref name="password" /> has been disposed.</exception>
     /// <remarks>
-    /// Convenience overload over the span form for callers using the <see cref="SecretBytes" /> and
-    /// <see cref="Salt" /> value types, which keep password material pinned and zeroed on disposal and keep salts
-    /// distinct from keys and nonces in calling code.
+    /// Convenience overload over the span form for callers using the <see cref="SecretBytes" /> and <see cref="Salt" />
+    /// value types, which keep password material pinned and zeroed on disposal and keep salts distinct from keys and
+    /// nonces in calling code.
     /// </remarks>
     public static byte[] DeriveKey(
         SecretBytes password, Salt salt, int costN, int blockSizeR, int parallelization, int length)

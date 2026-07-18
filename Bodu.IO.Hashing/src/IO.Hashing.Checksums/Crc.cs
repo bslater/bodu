@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Crc.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -124,10 +124,7 @@ public sealed class Crc
     /// <summary>The shared, precomputed lookup table for the active polynomial and input-reflection setting.</summary>
     private readonly ulong[] _lookupTable;
 
-    /// <summary>
-    /// The eight interleaved slicing-by-8 tables for the active reflected 32/64-bit polynomial, or <see langword="null" />
-    /// when the standard is not a byte-aligned reflected width and the byte-wise loop is used instead.
-    /// </summary>
+    /// <summary>The eight interleaved slicing-by-8 tables for the active reflected 32/64-bit polynomial, or <see langword="null" /> when the standard is not a byte-aligned reflected width and the byte-wise loop is used instead.</summary>
     private readonly ulong[][]? _slicingTables;
 
     /// <summary>The CRC parameter set (polynomial, width, reflection, initial value, and final XOR) that configures this instance.</summary>
@@ -240,15 +237,15 @@ public sealed class Crc
     public override void Append(ReadOnlySpan<byte> source) => ProcessBlocks(source);
 
     /// <summary>
-    /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state both
-    /// before and after the computation.
+    /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state both before
+    /// and after the computation.
     /// </summary>
     /// <param name="data">The input data to hash.</param>
     /// <returns>A byte array containing the finalized CRC value, sized according to <see cref="Size" />.</returns>
     /// <remarks>
-    /// State is reset after finalization as well as before, matching the reset-before-and-after semantics of the
-    /// shared <c>ComputeHash</c> extension (<c>GetHashAndReset</c>). This keeps the instance reusable for a
-    /// subsequent <see cref="Append(ReadOnlySpan{byte})" /> without the prior input bleeding into the new digest.
+    /// State is reset after finalization as well as before, matching the reset-before-and-after semantics of the shared
+    /// <c>ComputeHash</c> extension (<c>GetHashAndReset</c>). This keeps the instance reusable for a subsequent
+    /// <see cref="Append(ReadOnlySpan{byte})" /> without the prior input bleeding into the new digest.
     /// </remarks>
     public byte[] ComputeHash(ReadOnlySpan<byte> data)
     {

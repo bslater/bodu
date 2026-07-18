@@ -10,10 +10,7 @@ namespace Bodu.Extensions;
 
 public static partial class StringExtensions
 {
-    /// <summary>
-    /// The platform's invalid file-name characters plus both directory separators as a vectorised search set, computed
-    /// once per process.
-    /// </summary>
+    /// <summary>The platform's invalid file-name characters plus both directory separators as a vectorised search set, computed once per process.</summary>
     private static readonly System.Buffers.SearchValues<char> s_invalidPathSegmentChars =
         System.Buffers.SearchValues.Create([.. Path.GetInvalidFileNameChars(), Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar]);
 

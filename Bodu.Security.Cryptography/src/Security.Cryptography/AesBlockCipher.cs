@@ -178,8 +178,8 @@ public sealed class AesBlockCipher
     }
 
     /// <summary>
-    /// Runs a single 16-byte block through the supplied cached ECB transform via reusable scratch buffers, bridging
-    /// the span-based <see cref="IBlockCipher" /> surface to the byte-array-based <see cref="ICryptoTransform" /> API.
+    /// Runs a single 16-byte block through the supplied cached ECB transform via reusable scratch buffers, bridging the
+    /// span-based <see cref="IBlockCipher" /> surface to the byte-array-based <see cref="ICryptoTransform" /> API.
     /// </summary>
     /// <param name="transform">The cached ECB encryptor or decryptor.</param>
     /// <param name="input">The single input block.</param>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntegerConverter{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,9 +17,9 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <typeparam name="T">The integral type.</typeparam>
 /// <remarks>
 /// A float source is accepted only when it carries an integral value, or unconditionally (with truncation) under
-/// <see cref="YamlNumberHandling.AllowFloatToInteger" />. An unsigned 64-bit value above
-/// <see cref="long.MaxValue" /> writes as its invariant text — the scalar re-reads as a string and converts back
-/// exactly — because the writer's integer surface is signed.
+/// <see cref="YamlNumberHandling.AllowFloatToInteger" />. An unsigned 64-bit value above <see cref="long.MaxValue" />
+/// writes as its invariant text — the scalar re-reads as a string and converts back exactly — because the writer's
+/// integer surface is signed.
 /// </remarks>
 internal sealed class IntegerConverter<T>
     : YamlConverter<T>

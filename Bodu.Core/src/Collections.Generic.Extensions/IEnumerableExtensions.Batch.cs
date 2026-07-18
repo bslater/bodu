@@ -119,17 +119,17 @@ public static partial class IEnumerableExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Every yielded batch is a window over the <em>same</em> pooled buffer, which is overwritten by the next
-    /// iteration step and returned to the pool when enumeration ends. A batch is therefore valid only until the
-    /// enumerator advances (or is disposed): to retain one, copy it with <c>.ToArray()</c> before advancing.
-    /// Retaining the <see cref="ReadOnlyMemory{T}" /> values themselves — for example via <c>ToList()</c> on the
-    /// returned sequence — observes overwritten or recycled data. For independently owned batches, use
+    /// Every yielded batch is a window over the <em>same</em> pooled buffer, which is overwritten by the next iteration
+    /// step and returned to the pool when enumeration ends. A batch is therefore valid only until the enumerator
+    /// advances (or is disposed): to retain one, copy it with <c>.ToArray()</c> before advancing. Retaining the
+    /// <see cref="ReadOnlyMemory{T}" /> values themselves — for example via <c>ToList()</c> on the returned sequence —
+    /// observes overwritten or recycled data. For independently owned batches, use
     /// <see cref="System.Linq.Enumerable.Chunk{TSource}(IEnumerable{TSource}, int)" /> or the projecting
     /// <see cref="Batch{TSource, TResult}(IEnumerable{TSource}, int, Func{TSource, TResult})" /> overload instead.
     /// </para>
     /// <para>
-    /// This method should be consumed via <c>foreach</c>. Each enumeration rents one buffer of
-    /// <paramref name="size" /> elements for its duration.
+    /// This method should be consumed via <c>foreach</c>. Each enumeration rents one buffer of <paramref name="size" />
+    /// elements for its duration.
     /// </para>
     /// </remarks>
     /// <example>

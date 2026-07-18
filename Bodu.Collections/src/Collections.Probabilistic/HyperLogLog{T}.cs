@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HyperLogLog{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -43,13 +43,13 @@ namespace Bodu.Collections.Probabilistic;
 /// </para>
 /// <para>
 /// <see cref="EstimateCardinality" /> applies the standard HyperLogLog small-range correction (linear counting) while
-/// any register is still zero and the raw estimate is at most <c>2.5·m</c>. The classic large-range correction from
-/// the original paper — which compensates for hash collisions as the true cardinality approaches the size of the hash
-/// space — is not applied. Although the register pipeline is 64-bit, all of its entropy derives from the 32-bit
-/// comparer hash expanded through a bijective mixer, so the effective hash space remains <c>2³²</c>: estimates
-/// progressively underestimate the true cardinality from roughly <c>10⁸</c> distinct elements onward, and approach a
-/// hard asymptote near <c>2³²</c> (about 4.3 billion) — beyond that point additional distinct elements produce no
-/// increase in the estimate.
+/// any register is still zero and the raw estimate is at most <c>2.5·m</c>. The classic large-range correction from the
+/// original paper — which compensates for hash collisions as the true cardinality approaches the size of the hash space
+/// — is not applied. Although the register pipeline is 64-bit, all of its entropy derives from the 32-bit comparer hash
+/// expanded through a bijective mixer, so the effective hash space remains <c>2³²</c>: estimates progressively
+/// underestimate the true cardinality from roughly <c>10⁸</c> distinct elements onward, and approach a hard asymptote
+/// near <c>2³²</c> (about 4.3 billion) — beyond that point additional distinct elements produce no increase in the
+/// estimate.
 /// </para>
 /// <para>
 /// <see cref="MergeWith" /> combines two compatible sketches by register-wise maximum, after which this sketch
@@ -284,8 +284,8 @@ public sealed class HyperLogLog<T>
     /// than one — but it converges on the true count as the stream grows.
     /// </para>
     /// <para>
-    /// The original algorithm's large-range correction is not applied. Because the 64-bit ranking pipeline draws all
-    /// of its entropy from the 32-bit comparer hash (expanded through a bijective mixer), the effective hash space is
+    /// The original algorithm's large-range correction is not applied. Because the 64-bit ranking pipeline draws all of
+    /// its entropy from the 32-bit comparer hash (expanded through a bijective mixer), the effective hash space is
     /// <c>2³²</c>: the estimate progressively falls below the true cardinality from roughly <c>10⁸</c> distinct
     /// elements onward and saturates near <c>2³²</c>. See the class remarks for details.
     /// </para>

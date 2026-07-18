@@ -27,8 +27,8 @@ public static partial class GraphAlgorithms
     /// encountered during the search (Dijkstra's algorithm requires non-negative weights).
     /// </exception>
     /// <remarks>
-    /// This is a convenience wrapper over <see cref="TryShortestPath{T}(IReadOnlyWeightedGraph{T}, T, T)" />;
-    /// use that overload when the path distance or a reachability flag is also needed.
+    /// This is a convenience wrapper over <see cref="TryShortestPath{T}(IReadOnlyWeightedGraph{T}, T, T)" />; use that
+    /// overload when the path distance or a reachability flag is also needed.
     /// </remarks>
     /// <example>
     /// <code language="csharp">

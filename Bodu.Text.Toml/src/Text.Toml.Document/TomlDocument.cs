@@ -85,7 +85,9 @@ public sealed partial class TomlDocument
     /// <see langword="true" /> when <paramref name="source" /> is pooled and disposal must return it.
     /// </param>
     /// <param name="childIndex">The builder's hashed key index for large tables, or <see langword="null" />.</param>
-    /// <param name="indexedParents">The parent rows tracked in <paramref name="childIndex" />, or <see langword="null" />.</param>
+    /// <param name="indexedParents">
+    /// The parent rows tracked in <paramref name="childIndex" />, or <see langword="null" />.
+    /// </param>
     private TomlDocument(
         List<TomlReaderRow> rows,
         int rootIndex,

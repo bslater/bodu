@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ScalarCoercion.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,9 +10,9 @@ using Bodu.Text.Yaml.Reader;
 namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
-/// Provides the cross-kind scalar coercion the YAML converters share: YAML's implicit typing resolves a plain scalar
-/// to its most specific kind, so a converter targeting a text-parsed type accepts any scalar kind and re-reads it as
-/// its invariant text.
+/// Provides the cross-kind scalar coercion the YAML converters share: YAML's implicit typing resolves a plain scalar to
+/// its most specific kind, so a converter targeting a text-parsed type accepts any scalar kind and re-reads it as its
+/// invariant text.
 /// </summary>
 internal static class ScalarCoercion
 {

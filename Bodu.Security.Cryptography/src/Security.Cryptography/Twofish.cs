@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Twofish.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -22,8 +22,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block cipher
-/// modes via the <see cref="ExtendedSymmetricAlgorithm.BlockMode" /> property. The default mode is <see cref="CipherModeKind.CBC" /> with
-/// <see cref="PaddingMode.PKCS7" /> padding.
+/// modes via the <see cref="ExtendedSymmetricAlgorithm.BlockMode" /> property. The default mode is
+/// <see cref="CipherModeKind.CBC" /> with <see cref="PaddingMode.PKCS7" /> padding.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>

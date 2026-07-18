@@ -314,7 +314,9 @@ public sealed class EcbRateProvider
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download feed files.</param>
     /// <param name="options">The provider options.</param>
-    /// <param name="logger">The provider's logger, forwarded to the on-disk response cache for degradation warnings.</param>
+    /// <param name="logger">
+    /// The provider's logger, forwarded to the on-disk response cache for degradation warnings.
+    /// </param>
     /// <returns>A new table source.</returns>
     private static EcbXmlRateTableSource CreateSource(HttpClient httpClient, EcbRateProviderOptions options, ILogger? logger)
     {

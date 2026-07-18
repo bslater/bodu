@@ -25,11 +25,11 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// are kept distinct by design rather than unified under one base type.
 /// </para>
 /// <para>
-/// The streaming surface — <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />, <see cref="CheckValueAlgorithm.Reset" />, and
-/// <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar to anyone who has used a hash algorithm: input
-/// is accumulated, the computation can be restarted, and reading the current check character is non-destructive and
-/// idempotent. That resemblance is incidental convenience, not a shared contract. Concrete implementations document
-/// their empty-body behavior.
+/// The streaming surface — <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />,
+/// <see cref="CheckValueAlgorithm.Reset" />, and <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar
+/// to anyone who has used a hash algorithm: input is accumulated, the computation can be restarted, and reading the
+/// current check character is non-destructive and idempotent. That resemblance is incidental convenience, not a shared
+/// contract. Concrete implementations document their empty-body behavior.
 /// </para>
 /// <para>
 /// Instances are <b>not</b> thread-safe. Each thread that needs a running check should construct its own instance.

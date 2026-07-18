@@ -49,8 +49,8 @@ internal sealed class TomlDocumentBuilder
 
     /// <summary>
     /// Gets the hashed key index built for tables that crossed <see cref="ChildIndexThreshold" />, or
-    /// <see langword="null" /> when no table did. Read after <see cref="Parse" /> so the document can inherit the
-    /// index instead of falling back to linear property scans over large tables.
+    /// <see langword="null" /> when no table did. Read after <see cref="Parse" /> so the document can inherit the index
+    /// instead of falling back to linear property scans over large tables.
     /// </summary>
     /// <value>The child index, or <see langword="null" />.</value>
     internal Dictionary<(int Parent, string Key), int>? ChildIndex => _childIndex;

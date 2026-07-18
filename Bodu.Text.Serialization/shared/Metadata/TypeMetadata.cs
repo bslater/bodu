@@ -192,13 +192,13 @@ internal sealed class TypeMetadata
     /// <see cref="Activator.CreateInstance(Type)" /> on the deserialization hot path.
     /// </summary>
     /// <returns>
-    /// A delegate constructing an instance from a boxed argument array, or <see langword="null" /> when the type has
-    /// no construction plan (the <see cref="CanConstruct" /> guard rejects such types before construction).
+    /// A delegate constructing an instance from a boxed argument array, or <see langword="null" /> when the type has no
+    /// construction plan (the <see cref="CanConstruct" /> guard rejects such types before construction).
     /// </returns>
     /// <remarks>
-    /// A <see langword="null" /> argument assigns the parameter type's default for a non-nullable value-type
-    /// parameter, matching the documented coercion of reflection invocation. Compiled expression trees fall back to
-    /// the expression interpreter where runtime code generation is unavailable.
+    /// A <see langword="null" /> argument assigns the parameter type's default for a non-nullable value-type parameter,
+    /// matching the documented coercion of reflection invocation. Compiled expression trees fall back to the expression
+    /// interpreter where runtime code generation is unavailable.
     /// </remarks>
     private Func<object?[]?, object>? BuildFactory()
     {

@@ -89,10 +89,13 @@ internal static class ScryptCore
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
     /// <param name="x">A caller-owned scratch buffer of <c>unitWords</c> length. Contents on entry are ignored.</param>
     /// <param name="y">A caller-owned scratch buffer of <c>unitWords</c> length. Contents on entry are ignored.</param>
-    /// <param name="v">A caller-owned scratch buffer of <c>costN · unitWords</c> length. Contents on entry are ignored.</param>
+    /// <param name="v">
+    /// A caller-owned scratch buffer of <c>costN · unitWords</c> length. Contents on entry are ignored.
+    /// </param>
     /// <remarks>
     /// The three scratch buffers are supplied by the caller and reused across the <c>p</c> sequential ROMix units;
-    /// zeroization of their sensitive contents is the caller's responsibility (performed once after all units complete).
+    /// zeroization of their sensitive contents is the caller's responsibility (performed once after all units
+    /// complete).
     /// </remarks>
     private static void ROMix(Span<uint> block, int costN, int blockSizeR, uint[] x, uint[] y, uint[] v)
     {

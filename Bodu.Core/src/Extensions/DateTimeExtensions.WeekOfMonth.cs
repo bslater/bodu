@@ -95,7 +95,9 @@ public static partial class DateTimeExtensions
     /// <paramref name="weekStart" /> and the leading dates resolve to the previous month's trailing week, as for
     /// <see cref="CalendarWeekRule.FirstFullWeek" />.
     /// </para>
-    /// <para>The result is therefore never less than <c>1</c>, but it is not always the week of the date's own month.</para>
+    /// <para>
+    /// The result is therefore never less than <c>1</c>, but it is not always the week of the date's own month.
+    /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="weekRule" /> is not a defined value of the <see cref="CalendarWeekRule" />
