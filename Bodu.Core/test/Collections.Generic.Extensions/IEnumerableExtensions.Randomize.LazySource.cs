@@ -12,16 +12,15 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// <summary>
     /// Verifies that
     /// <see cref="IEnumerableExtensions.Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator?, int?)" />
-    /// with <see cref="RandomizationMode.BufferAll" /> handles a lazy iterator that does not implement
-    /// <see cref="IReadOnlyCollection{T}" />, forcing the <c>AppendRange</c> fall-back branch in
-    /// <c>RandomizeBuffered</c>.
+    /// with <see cref="RandomizationMode.StreamWindowed" /> handles a lazy iterator that does not implement
+    /// <see cref="IReadOnlyCollection{T}" />, yielding a permutation of every source element.
     /// </summary>
     [TestMethod]
-    public void Randomize_BufferAll_WhenSourceIsLazyIterator_ShouldReturnPermutationOfElements()
+    public void Randomize_StreamWindowed_WhenSourceIsLazyIterator_ShouldReturnPermutationOfElements()
     {
         int[] expected = Enumerable.Range(1, 8).ToArray();
 
-        int[] result = LazyYield(8).Randomize(RandomizationMode.BufferAll, CreateSeededRng()).ToArray();
+        int[] result = LazyYield(8).Randomize(RandomizationMode.StreamWindowed, CreateSeededRng()).ToArray();
 
         CollectionAssert.AreEquivalent(expected, result);
     }
@@ -33,13 +32,13 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that <see cref="RandomizationMode.BufferAll" /> defers source enumeration until the returned sequence
-    /// is enumerated, matching the documented deferred-execution contract.
+    /// Verifies that <see cref="RandomizationMode.StreamWindowed" /> defers source enumeration until the returned
+    /// sequence is enumerated, matching the documented deferred-execution contract.
     /// </summary>
     [TestMethod]
-    public void Randomize_BufferAll_WhenSourceThrowsOnEnumeration_ShouldDeferUntilEnumerated()
+    public void Randomize_StreamWindowed_WhenSourceThrowsOnEnumeration_ShouldDeferUntilEnumerated()
     {
-        IEnumerable<int> result = ThrowingSource().Randomize(RandomizationMode.BufferAll, CreateSeededRng());
+        IEnumerable<int> result = ThrowingSource().Randomize(RandomizationMode.StreamWindowed, CreateSeededRng());
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

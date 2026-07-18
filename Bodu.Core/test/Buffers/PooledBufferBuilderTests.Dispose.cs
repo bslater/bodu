@@ -25,7 +25,6 @@ public partial class PooledBufferBuilderTests
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Append(1); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.AppendRange([1]); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.AppendRange(new[] { 1 }.AsSpan()); });
-        Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.AsArray(); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.WrittenSpan; });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.WrittenMemory; });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.FreeCapacity; });

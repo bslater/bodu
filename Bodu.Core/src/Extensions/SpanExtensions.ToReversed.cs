@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SpanExtensions.Reverse.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SpanExtensions.ToReversed.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,24 +9,31 @@ namespace Bodu.Extensions;
 public static partial class SpanExtensions
 {
     /// <summary>
-    /// Creates a new array containing all elements of <paramref name="source" /> in reverse order.
+    /// Creates a new array containing all elements of <paramref name="source" /> in reverse order, leaving
+    /// <paramref name="source" /> unmodified.
     /// </summary>
     /// <typeparam name="T">The type of elements in the span.</typeparam>
-    /// <param name="source">The span whose elements will be reversed.</param>
+    /// <param name="source">The span whose elements are copied in reverse order.</param>
     /// <returns>
     /// A new <see cref="Span{T}" /> backed by a heap-allocated array containing all elements of
     /// <paramref name="source" /> in reverse order.
     /// </returns>
     /// <remarks>
-    /// Delegates to <see cref="Reverse{T}(ReadOnlySpan{T}, int, int)" /> with <c>start = 0</c> and
+    /// <para>
+    /// Unlike the BCL <see cref="MemoryExtensions.Reverse{T}(Span{T})" />, which reverses a span <em>in place</em>,
+    /// this method never mutates <paramref name="source" /> — the reversal is applied to a fresh heap-allocated copy.
+    /// </para>
+    /// <para>
+    /// Delegates to <see cref="ToReversed{T}(ReadOnlySpan{T}, int, int)" /> with <c>start = 0</c> and
     /// <c>length = source.Length</c>. See that overload for full performance and allocation details.
+    /// </para>
     /// </remarks>
-    public static Span<T> Reverse<T>(this ReadOnlySpan<T> source)
+    public static Span<T> ToReversed<T>(this ReadOnlySpan<T> source)
         => ReverseCore(source, 0, source.Length);
 
     /// <summary>
     /// Creates a new array that is a copy of <paramref name="source" /> with elements in the specified range reversed,
-    /// leaving all other elements in their original positions.
+    /// leaving all other elements in their original positions and <paramref name="source" /> unmodified.
     /// </summary>
     /// <typeparam name="T">The type of elements in the span.</typeparam>
     /// <param name="source">The span to copy and partially reverse.</param>
@@ -50,8 +57,12 @@ public static partial class SpanExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This is the canonical public implementation. The full-span overload (<see cref="Reverse{T}(ReadOnlySpan{T})" />)
-    /// and the <see cref="Range" />-based overload (<see cref="Reverse{T}(ReadOnlySpan{T}, Range)" />) both resolve
+    /// Unlike the BCL <see cref="MemoryExtensions.Reverse{T}(Span{T})" />, which reverses a span <em>in place</em>,
+    /// this method never mutates <paramref name="source" /> — the reversal is applied to a fresh heap-allocated copy.
+    /// </para>
+    /// <para>
+    /// This is the canonical public implementation. The full-span overload (<see cref="ToReversed{T}(ReadOnlySpan{T})" />)
+    /// and the <see cref="Range" />-based overload (<see cref="ToReversed{T}(ReadOnlySpan{T}, Range)" />) both resolve
     /// their arguments and delegate here after validation.
     /// </para>
     /// <para>
@@ -69,11 +80,11 @@ public static partial class SpanExtensions
     /// int[] data = { 1, 2, 3, 4, 5 };
     ///
     /// // Reverse a middle section; first and last elements are untouched.
-    /// Span<int> result = data.AsSpan().Reverse(start: 1, length: 3); // [ 1, 4, 3, 2, 5 ]
+    /// Span<int> result = data.AsSpan().ToReversed(index: 1, count: 3); // [ 1, 4, 3, 2, 5 ]
     ///]]>
     /// </code>
     /// </example>
-    public static Span<T> Reverse<T>(this ReadOnlySpan<T> source, int index, int count)
+    public static Span<T> ToReversed<T>(this ReadOnlySpan<T> source, int index, int count)
     {
         ThrowHelper.ThrowIfSpanOffsetOrCountInvalid(source, index, count);
 
@@ -82,7 +93,8 @@ public static partial class SpanExtensions
 
     /// <summary>
     /// Creates a new array that is a copy of <paramref name="source" /> with elements in the specified
-    /// <see cref="Range" /> reversed, leaving all other elements in their original positions.
+    /// <see cref="Range" /> reversed, leaving all other elements in their original positions and
+    /// <paramref name="source" /> unmodified.
     /// </summary>
     /// <typeparam name="T">The type of elements in the span.</typeparam>
     /// <param name="source">The span to copy and partially reverse.</param>
@@ -100,12 +112,16 @@ public static partial class SpanExtensions
     /// Thrown when <paramref name="range" /> resolves to a start index that is negative or to an end index that exceeds
     /// <see cref="ReadOnlySpan{T}.Length" />. Resolution is performed by <see cref="Range.GetOffsetAndLength" />; the
     /// resulting offset and length are then validated and forwarded to
-    /// <see cref="Reverse{T}(ReadOnlySpan{T}, int, int)" />.
+    /// <see cref="ToReversed{T}(ReadOnlySpan{T}, int, int)" />.
     /// </exception>
     /// <remarks>
     /// <para>
+    /// Unlike the BCL <see cref="MemoryExtensions.Reverse{T}(Span{T})" />, which reverses a span <em>in place</em>,
+    /// this method never mutates <paramref name="source" /> — the reversal is applied to a fresh heap-allocated copy.
+    /// </para>
+    /// <para>
     /// Resolves <paramref name="range" /> to an offset and length via <see cref="Range.GetOffsetAndLength" /> and
-    /// delegates to <see cref="Reverse{T}(ReadOnlySpan{T}, int, int)" />. Prefer that overload when the start and
+    /// delegates to <see cref="ToReversed{T}(ReadOnlySpan{T}, int, int)" />. Prefer that overload when the start and
     /// length are already available as integers to avoid constructing an intermediate <see cref="Range" /> value.
     /// </para>
     /// <para>
@@ -117,12 +133,12 @@ public static partial class SpanExtensions
     /// <code>
     ///<![CDATA[
     /// int[] data = { 1, 2, 3, 4, 5 };
-    /// Span<int> fromStart = data.AsSpan().Reverse(1..4); // [ 1, 4, 3, 2, 5 ]
-    /// Span<int> fromEnd = data.AsSpan().Reverse(^4..^1); // [ 1, 4, 3, 2, 5 ]
+    /// Span<int> fromStart = data.AsSpan().ToReversed(1..4); // [ 1, 4, 3, 2, 5 ]
+    /// Span<int> fromEnd = data.AsSpan().ToReversed(^4..^1); // [ 1, 4, 3, 2, 5 ]
     ///]]>
     /// </code>
     /// </example>
-    public static Span<T> Reverse<T>(this ReadOnlySpan<T> source, Range range)
+    public static Span<T> ToReversed<T>(this ReadOnlySpan<T> source, Range range)
     {
         (int start, int length) = range.GetOffsetAndLength(source.Length);
         return ReverseCore(source, start, length);
@@ -132,29 +148,31 @@ public static partial class SpanExtensions
     // Span<T> — convenience overloads (forward to ReadOnlySpan<T>)
     // -------------------------------------------------------------------------
 
-    /// <inheritdoc cref="Reverse{T}(ReadOnlySpan{T})" />
+    /// <inheritdoc cref="ToReversed{T}(ReadOnlySpan{T})" />
     /// <remarks>
     /// Convenience overload for mutable spans. Implicitly converts <paramref name="source" /> to
-    /// <see cref="ReadOnlySpan{T}" /> and delegates to <see cref="Reverse{T}(ReadOnlySpan{T})" />.
+    /// <see cref="ReadOnlySpan{T}" /> and delegates to <see cref="ToReversed{T}(ReadOnlySpan{T})" />; the source span
+    /// is read, never mutated. To reverse a mutable span in place without allocating, use the BCL
+    /// <see cref="MemoryExtensions.Reverse{T}(Span{T})" /> instead.
     /// </remarks>
-    public static Span<T> Reverse<T>(this Span<T> source)
-        => Reverse((ReadOnlySpan<T>)source);
+    public static Span<T> ToReversed<T>(this Span<T> source)
+        => ToReversed((ReadOnlySpan<T>)source);
 
-    /// <inheritdoc cref="Reverse{T}(ReadOnlySpan{T}, int, int)" />
+    /// <inheritdoc cref="ToReversed{T}(ReadOnlySpan{T}, int, int)" />
     /// <remarks>
     /// Convenience overload for mutable spans. Implicitly converts <paramref name="source" /> to
-    /// <see cref="ReadOnlySpan{T}" /> and delegates to <see cref="Reverse{T}(ReadOnlySpan{T}, int, int)" />.
+    /// <see cref="ReadOnlySpan{T}" /> and delegates to <see cref="ToReversed{T}(ReadOnlySpan{T}, int, int)" />.
     /// </remarks>
-    public static Span<T> Reverse<T>(this Span<T> source, int index, int count)
-        => Reverse((ReadOnlySpan<T>)source, index, count);
+    public static Span<T> ToReversed<T>(this Span<T> source, int index, int count)
+        => ToReversed((ReadOnlySpan<T>)source, index, count);
 
-    /// <inheritdoc cref="Reverse{T}(ReadOnlySpan{T}, Range)" />
+    /// <inheritdoc cref="ToReversed{T}(ReadOnlySpan{T}, Range)" />
     /// <remarks>
     /// Convenience overload for mutable spans. Implicitly converts <paramref name="source" /> to
-    /// <see cref="ReadOnlySpan{T}" /> and delegates to <see cref="Reverse{T}(ReadOnlySpan{T}, Range)" />.
+    /// <see cref="ReadOnlySpan{T}" /> and delegates to <see cref="ToReversed{T}(ReadOnlySpan{T}, Range)" />.
     /// </remarks>
-    public static Span<T> Reverse<T>(this Span<T> source, Range range)
-        => Reverse((ReadOnlySpan<T>)source, range);
+    public static Span<T> ToReversed<T>(this Span<T> source, Range range)
+        => ToReversed((ReadOnlySpan<T>)source, range);
 
     // -------------------------------------------------------------------------
     // Core implementation

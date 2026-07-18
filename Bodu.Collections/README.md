@@ -38,7 +38,7 @@ Targets `net8.0`. Depends on `Bodu.Core`.
 
 ## Graphs
 
-The `Bodu.Collections.Generic.Graphs` namespace provides an adjacency-list `Graph<T>` (directed or undirected, optionally weighted), the static `GraphAlgorithms` catalogue (breadth-/depth-first traversal, Dijkstra shortest path, Kahn topological sort, connected components) over the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<TVertex,TWeight>` interfaces, and the union-find structures `DisjointSet` (integer-indexed) and `DisjointSet<T>` (element-keyed).
+The `Bodu.Collections.Generic.Graphs` namespace provides an adjacency-list `Graph<T>` (directed or undirected, optionally weighted), the static `GraphAlgorithms` catalogue (breadth-/depth-first traversal, Dijkstra shortest path, Kahn topological sort, connected components) over the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<TVertex>` interfaces, and the element-keyed union-find structure `DisjointSet<T>`.
 
 ## Trees and tries
 

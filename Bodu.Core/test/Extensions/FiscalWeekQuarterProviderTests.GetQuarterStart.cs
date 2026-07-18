@@ -10,21 +10,6 @@ public partial class FiscalWeekQuarterProviderTests
 {
 
     // -----------------------------------------------------------------------
-    // GetQuarterStart(int) — obsolete single-arg overload
-    // -----------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that the obsolete single-argument
-    /// <see cref="FiscalWeekQuarterProvider.GetQuarterStart(int)" /> overload throws
-    /// <see cref="NotSupportedException" />, because the provider no longer tracks a single fiscal
-    /// year.
-    /// </summary>
-    [TestMethod]
-#pragma warning disable CS0618 // intentional: we verify the obsolete overload still throws
-    public void GetQuarterStart_ObsoleteSingleArgOverload_ShouldThrowExactly() => Assert.ThrowsExactly<NotSupportedException>(() => s_sunday52.GetQuarterStart(1));
-#pragma warning restore CS0618
-
-    // -----------------------------------------------------------------------
     // GetQuarterStart(int, int)
     // -----------------------------------------------------------------------
 

@@ -27,7 +27,7 @@ public static partial class GraphAlgorithms
     /// encountered during the search (Dijkstra's algorithm requires non-negative weights).
     /// </exception>
     /// <remarks>
-    /// This is a convenience wrapper over <see cref="TryShortestPath{T}(IReadOnlyWeightedGraph{T, double}, T, T)" />;
+    /// This is a convenience wrapper over <see cref="TryShortestPath{T}(IReadOnlyWeightedGraph{T}, T, T)" />;
     /// use that overload when the path distance or a reachability flag is also needed.
     /// </remarks>
     /// <example>
@@ -43,7 +43,7 @@ public static partial class GraphAlgorithms
     ///]]>
     /// </code>
     /// </example>
-    public static IReadOnlyList<T> ShortestPath<T>(IReadOnlyWeightedGraph<T, double> graph, T source, T target)
+    public static IReadOnlyList<T> ShortestPath<T>(IReadOnlyWeightedGraph<T> graph, T source, T target)
         where T : notnull =>
         TryShortestPath(graph, source, target).Path;
 
@@ -76,7 +76,7 @@ public static partial class GraphAlgorithms
     ///]]>
     /// </code>
     /// </example>
-    public static ShortestPathResult<T> TryShortestPath<T>(IReadOnlyWeightedGraph<T, double> graph, T source, T target)
+    public static ShortestPathResult<T> TryShortestPath<T>(IReadOnlyWeightedGraph<T> graph, T source, T target)
         where T : notnull
     {
         ThrowHelper.ThrowIfNull(graph);
@@ -133,7 +133,7 @@ public static partial class GraphAlgorithms
     ///]]>
     /// </code>
     /// </example>
-    public static IReadOnlyDictionary<T, double> ShortestPathLengths<T>(IReadOnlyWeightedGraph<T, double> graph, T source)
+    public static IReadOnlyDictionary<T, double> ShortestPathLengths<T>(IReadOnlyWeightedGraph<T> graph, T source)
         where T : notnull
     {
         ThrowHelper.ThrowIfNull(graph);
@@ -154,10 +154,10 @@ public static partial class GraphAlgorithms
     /// <returns>A map from each reachable vertex to its shortest distance from <paramref name="source" />.</returns>
     /// <exception cref="ArgumentException">
     /// A negative edge weight is encountered during the search; Dijkstra's greedy settlement is only correct over
-    /// non-negative weights, and a foreign <see cref="IReadOnlyWeightedGraph{TVertex, TWeight}" /> implementation could
+    /// non-negative weights, and a foreign <see cref="IReadOnlyWeightedGraph{TVertex}" /> implementation could
     /// otherwise silently yield wrong distances.
     /// </exception>
-    private static Dictionary<T, double> Dijkstra<T>(IReadOnlyWeightedGraph<T, double> graph, T source, out Dictionary<T, T> predecessors)
+    private static Dictionary<T, double> Dijkstra<T>(IReadOnlyWeightedGraph<T> graph, T source, out Dictionary<T, T> predecessors)
         where T : notnull
     {
         var distances = new Dictionary<T, double>(graph.Comparer) { [source] = 0.0 };

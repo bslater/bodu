@@ -118,7 +118,7 @@ public sealed class GraphAlgorithmsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="GraphAlgorithms.TryShortestPath{T}(IReadOnlyWeightedGraph{T, double}, T, T)" /> reports
+    /// Verifies that <see cref="GraphAlgorithms.TryShortestPath{T}(IReadOnlyWeightedGraph{T}, T, T)" /> reports
     /// reachability, distance, and path consistently with the scenario.
     /// </summary>
     /// <param name="kat">The scenario supplying the graph, endpoints, and expected result.</param>
@@ -151,8 +151,8 @@ public sealed class GraphAlgorithmsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="GraphAlgorithms.TryShortestPath{T}(IReadOnlyWeightedGraph{T, double}, T, T)" /> throws
-    /// <see cref="ArgumentException" /> when a foreign <see cref="IReadOnlyWeightedGraph{TVertex, TWeight}" />
+    /// Verifies that <see cref="GraphAlgorithms.TryShortestPath{T}(IReadOnlyWeightedGraph{T}, T, T)" /> throws
+    /// <see cref="ArgumentException" /> when a foreign <see cref="IReadOnlyWeightedGraph{TVertex}" />
     /// implementation yields a negative edge weight, instead of silently returning wrong distances.
     /// </summary>
     [TestMethod]
@@ -169,8 +169,8 @@ public sealed class GraphAlgorithmsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="GraphAlgorithms.ShortestPathLengths{T}(IReadOnlyWeightedGraph{T, double}, T)" /> throws
-    /// <see cref="ArgumentException" /> when a foreign <see cref="IReadOnlyWeightedGraph{TVertex, TWeight}" />
+    /// Verifies that <see cref="GraphAlgorithms.ShortestPathLengths{T}(IReadOnlyWeightedGraph{T}, T)" /> throws
+    /// <see cref="ArgumentException" /> when a foreign <see cref="IReadOnlyWeightedGraph{TVertex}" />
     /// implementation yields a negative edge weight during the search.
     /// </summary>
     [TestMethod]
@@ -299,11 +299,11 @@ public sealed class GraphAlgorithmsTests
     }
 
     /// <summary>
-    /// A minimal foreign <see cref="IReadOnlyWeightedGraph{TVertex, TWeight}" /> implementation (bypassing
+    /// A minimal foreign <see cref="IReadOnlyWeightedGraph{TVertex}" /> implementation (bypassing
     /// <see cref="Graph{T}" />'s constructor-side weight validation) that yields a negative edge weight: A → B has
     /// weight 1 and B → C has weight −5.
     /// </summary>
-    private sealed class NegativeWeightStubGraph : IReadOnlyWeightedGraph<string, double>
+    private sealed class NegativeWeightStubGraph : IReadOnlyWeightedGraph<string>
     {
         /// <summary>The adjacency map backing the stub, keyed by source vertex.</summary>
         private static readonly Dictionary<string, (string Neighbor, double Weight)[]> s_edges = new(StringComparer.Ordinal)

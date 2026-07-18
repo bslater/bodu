@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IReadOnlyWeightedGraph{T,T}.cs" company="Bodu Pty. Ltd.">
+// <copyright file="IReadOnlyWeightedGraph{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,16 +7,15 @@
 namespace Bodu.Collections.Generic.Graphs;
 
 /// <summary>
-/// Defines a read-only view over a graph whose edges carry weights, extending <see cref="IReadOnlyGraph{TVertex}" />
-/// with weight queries.
+/// Defines a read-only view over a graph whose edges carry <see cref="double" /> weights, extending
+/// <see cref="IReadOnlyGraph{TVertex}" /> with weight queries.
 /// </summary>
 /// <typeparam name="TVertex">The vertex type.</typeparam>
-/// <typeparam name="TWeight">The edge-weight type.</typeparam>
 /// <remarks>
 /// Weighted algorithms (for example shortest path) accept this interface so they can run over any weighted graph
-/// representation. The default <see cref="Graph{T}" /> implements this interface with <see cref="double" /> weights.
+/// representation. The default <see cref="Graph{T}" /> implements this interface.
 /// </remarks>
-public interface IReadOnlyWeightedGraph<TVertex, TWeight> : IReadOnlyGraph<TVertex>
+public interface IReadOnlyWeightedGraph<TVertex> : IReadOnlyGraph<TVertex>
     where TVertex : notnull
 {
     /// <summary>
@@ -29,7 +28,7 @@ public interface IReadOnlyWeightedGraph<TVertex, TWeight> : IReadOnlyGraph<TVert
     /// shortest-path methods in <see cref="GraphAlgorithms" /> require every weight yielded here to be non-negative and
     /// throw <see cref="ArgumentException" /> when a negative weight is encountered.
     /// </remarks>
-    IEnumerable<(TVertex Neighbor, TWeight Weight)> WeightedNeighbors(TVertex vertex);
+    IEnumerable<(TVertex Neighbor, double Weight)> WeightedNeighbors(TVertex vertex);
 
     /// <summary>
     /// Determines whether an edge exists between the specified vertices.
@@ -48,5 +47,5 @@ public interface IReadOnlyWeightedGraph<TVertex, TWeight> : IReadOnlyGraph<TVert
     /// When this method returns, contains the edge weight if the edge exists; otherwise, the default value.
     /// </param>
     /// <returns><see langword="true" /> if the edge exists; otherwise, <see langword="false" />.</returns>
-    bool TryGetEdgeWeight(TVertex from, TVertex to, out TWeight weight);
+    bool TryGetEdgeWeight(TVertex from, TVertex to, out double weight);
 }

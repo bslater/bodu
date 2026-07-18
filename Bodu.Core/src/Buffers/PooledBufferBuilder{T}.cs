@@ -236,7 +236,7 @@ public sealed class PooledBufferBuilder<T> :
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     /// <remarks>
     /// <paramref name="source" /> may alias the builder's own storage (for example a span obtained from
-    /// <see cref="WrittenSpan" /> or <see cref="AsArray" />): when a growth is required, the previous rented array is
+    /// <see cref="WrittenSpan" /> or <see cref="DangerousGetArray" />): when a growth is required, the previous rented array is
     /// returned to the pool only after the source elements have been copied, so a self-aliasing source remains valid
     /// throughout the append.
     /// </remarks>
@@ -319,23 +319,6 @@ public sealed class PooledBufferBuilder<T> :
         ThrowHelper.ThrowIfNegative(sizeHint);
         GrowIfNeeded(checked(_count + (sizeHint > 0 ? sizeHint : 1)));
         return _internalBuffer.AsSpan(_count);
-    }
-
-    /// <summary>
-    /// Returns the internal array used by the buffer.
-    /// </summary>
-    /// <returns>
-    /// The underlying rented array. Only the first <see cref="WrittenCount" /> elements are valid; the remainder may
-    /// contain uninitialized or pooled data.
-    /// </returns>
-    /// <remarks>
-    /// The returned array is not a copy. Modifying it directly will corrupt the internal state.
-    /// </remarks>
-    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
-    public T[] AsArray()
-    {
-        ThrowIfDisposed();
-        return _internalBuffer;
     }
 
     /// <summary>

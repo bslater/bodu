@@ -49,7 +49,6 @@ Under concurrency, "how many elements?" has two honest answers, and the API name
 |---|---|---|
 | Buffer `Count` | **Approximate** — head and tail positions are read independently | Two volatile reads; never blocks |
 | Set `Count`, `IsEmpty` | **Exact at quiescence** — an interlocked counter that may transiently lag operations still in flight | One volatile read; lock-free |
-| Set `ApproximateCount`, `IsEmptyApproximate` | Aliases of `Count` / `IsEmpty`, retained for compatibility with the earlier lock-striped design | Same as `Count` |
 | Dictionary `ApproximateCount` | **Approximate** — per-segment counters summed lock-free | Lock-free |
 | Dictionary `Count`, `IsEmpty` | **Coherent** — a true point-in-time value (raw count incl. expired-unpurged) | Acquires every segment lock |
 | Buffer `ToArray` / enumeration | **Coherent snapshot** (seqlock) | Restarts on churn |

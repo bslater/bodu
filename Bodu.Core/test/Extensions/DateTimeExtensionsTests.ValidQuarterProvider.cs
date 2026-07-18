@@ -121,21 +121,7 @@ public partial class DateTimeExtensionsTests
             };
         }
 
-        public DateTime GetQuarterEnd(int quarter)
-        {
-            return quarter switch
-            {
-                1 => new DateTime(2024, 2, DateTime.DaysInMonth(2024, 2)),
-                2 => new DateTime(2024, 5, 31),
-                3 => new DateTime(2024, 8, 31),
-                4 => new DateTime(2024, 11, 30),
-                _ => throw new ArgumentOutOfRangeException(nameof(quarter))
-            };
-        }
-
         public DateOnly GetQuarterEndDate(DateOnly dateOnly) => GetQuarterEnd(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
-
-        public DateOnly GetQuarterEndDate(int quarter) => GetQuarterEndDate(GetQuarterEnd(quarter).ToDateOnly());
 
         public DateTime GetQuarterStart(DateTime dateTime)
         {
@@ -149,7 +135,13 @@ public partial class DateTimeExtensionsTests
             };
         }
 
-        public DateTime GetQuarterStart(int quarter)
+        public DateOnly GetQuarterStartDate(DateOnly dateOnly) => GetQuarterStart(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
+
+        public int GetWeeksInFiscalYear(int fiscalYear) => 52;
+        public bool Is53WeekFiscalYear(int fiscalYear) => false;
+
+        // The fiscal-year overloads use a fixed test-year context regardless of the requested fiscal year.
+        public DateTime GetQuarterStart(int quarter, int fiscalYear)
         {
             return quarter switch
             {
@@ -161,22 +153,21 @@ public partial class DateTimeExtensionsTests
             };
         }
 
-        public DateOnly GetQuarterStartDate(DateOnly dateOnly) => GetQuarterStart(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
+        public DateTime GetQuarterEnd(int quarter, int fiscalYear)
+        {
+            return quarter switch
+            {
+                1 => new DateTime(2024, 2, DateTime.DaysInMonth(2024, 2)),
+                2 => new DateTime(2024, 5, 31),
+                3 => new DateTime(2024, 8, 31),
+                4 => new DateTime(2024, 11, 30),
+                _ => throw new ArgumentOutOfRangeException(nameof(quarter))
+            };
+        }
 
-        public DateOnly GetQuarterStartDate(int quarter) => GetQuarterStartDate(GetQuarterStart(quarter).ToDateOnly());
+        public DateOnly GetQuarterStartDate(int quarter, int fiscalYear) => GetQuarterStart(quarter, fiscalYear).ToDateOnly();
 
-        public int GetWeeksInFiscalYear(int fiscalYear) => 52;
-        public bool Is53WeekFiscalYear(int fiscalYear) => false;
-
-#pragma warning disable CS0618 // intentional: delegate the fiscal-year overloads to the existing fixed-year implementations
-        public DateTime GetQuarterStart(int quarter, int fiscalYear) => GetQuarterStart(quarter);
-
-        public DateTime GetQuarterEnd(int quarter, int fiscalYear) => GetQuarterEnd(quarter);
-
-        public DateOnly GetQuarterStartDate(int quarter, int fiscalYear) => GetQuarterStartDate(quarter);
-
-        public DateOnly GetQuarterEndDate(int quarter, int fiscalYear) => GetQuarterEndDate(quarter);
-#pragma warning restore CS0618
+        public DateOnly GetQuarterEndDate(int quarter, int fiscalYear) => GetQuarterEnd(quarter, fiscalYear).ToDateOnly();
 
 
     }

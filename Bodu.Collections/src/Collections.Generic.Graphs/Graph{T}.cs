@@ -37,7 +37,7 @@ namespace Bodu.Collections.Generic.Graphs;
 /// foreach (int neighbor in graph.Neighbors(1))
 ///     Console.WriteLine(neighbor);   // 2, 3
 ///
-/// // Graph<T> is an IReadOnlyWeightedGraph<T, double>, accepted directly by GraphAlgorithms.
+/// // Graph<T> is an IReadOnlyWeightedGraph<T>, accepted directly by GraphAlgorithms.
 /// var reachable = GraphAlgorithms.BreadthFirstSearch(graph, 1).ToList();
 ///]]>
 /// </code>
@@ -45,7 +45,7 @@ namespace Bodu.Collections.Generic.Graphs;
 [DebuggerDisplay("Vertices = {VertexCount}, Edges = {EdgeCount}, Directed = {IsDirected}")]
 [DebuggerTypeProxy(typeof(GraphDebugView<>))]
 public sealed partial class Graph<T>
-    : IReadOnlyWeightedGraph<T, double>
+    : IReadOnlyWeightedGraph<T>
     where T : notnull
 {
     /// <summary>The adjacency map: each vertex maps to its outgoing neighbors and their edge weights.</summary>

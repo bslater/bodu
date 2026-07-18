@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Windowed.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,8 @@ public static partial class IEnumerableExtensions
     /// modified when the enumerator advances.
     /// </para>
     /// <para>
-    /// This method differs from <see cref="Batch{TSource}(IEnumerable{TSource}, int)" />: batching returns
+    /// This method differs from batching (<see cref="System.Linq.Enumerable.Chunk{TSource}(IEnumerable{TSource}, int)" />
+    /// or <see cref="Batch{TSource, TResult}(IEnumerable{TSource}, int, Func{TSource, TResult})" />): batching returns
     /// non-overlapping groups, whereas this method returns overlapping sliding windows.
     /// </para>
     /// </remarks>

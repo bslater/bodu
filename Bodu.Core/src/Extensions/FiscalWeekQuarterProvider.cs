@@ -186,12 +186,6 @@ public sealed class FiscalWeekQuarterProvider
     }
 
     /// <inheritdoc />
-    [Obsolete("Use GetQuarterEnd(int quarter, int fiscalYear).")]
-    public DateTime GetQuarterEnd(int quarter) =>
-        throw new NotSupportedException(
-            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterEnd(int quarter, int fiscalYear)"));
-
-    /// <inheritdoc />
     public DateTime GetQuarterEnd(int quarter, int fiscalYear)
     {
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
@@ -207,12 +201,6 @@ public sealed class FiscalWeekQuarterProvider
         GetQuarterEnd(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
 
     /// <inheritdoc />
-    [Obsolete("Use GetQuarterEndDate(int quarter, int fiscalYear).")]
-    public DateOnly GetQuarterEndDate(int quarter) =>
-        throw new NotSupportedException(
-            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterEndDate(int quarter, int fiscalYear)"));
-
-    /// <inheritdoc />
     public DateOnly GetQuarterEndDate(int quarter, int fiscalYear) =>
         GetQuarterEnd(quarter, fiscalYear).ToDateOnly();
 
@@ -222,12 +210,6 @@ public sealed class FiscalWeekQuarterProvider
         (_, long startTicks, _) = ResolveFiscalContext(dateTime);
         return GetQuarterStartCore(startTicks, ComputeQuarter(dateTime.Ticks, startTicks));
     }
-
-    /// <inheritdoc />
-    [Obsolete("Use GetQuarterStart(int quarter, int fiscalYear).")]
-    public DateTime GetQuarterStart(int quarter) =>
-        throw new NotSupportedException(
-            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterStart(int quarter, int fiscalYear)"));
 
     /// <inheritdoc />
     public DateTime GetQuarterStart(int quarter, int fiscalYear)
@@ -240,12 +222,6 @@ public sealed class FiscalWeekQuarterProvider
     /// <inheritdoc />
     public DateOnly GetQuarterStartDate(DateOnly dateOnly) =>
         GetQuarterStart(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
-
-    /// <inheritdoc />
-    [Obsolete("Use GetQuarterStartDate(int quarter, int fiscalYear).")]
-    public DateOnly GetQuarterStartDate(int quarter) =>
-        throw new NotSupportedException(
-            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterStartDate(int quarter, int fiscalYear)"));
 
     /// <inheritdoc />
     public DateOnly GetQuarterStartDate(int quarter, int fiscalYear) =>

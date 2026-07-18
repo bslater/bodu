@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SpanExtensionsTests.Reverse.cs" company="Bodu Pty. Ltd.">
+// <copyright file="SpanExtensionsTests.ToReversed.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -14,10 +14,10 @@ public partial class SpanExtensionsTests
     /// underlying source data.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenCalled_ForMutableSpan_ShouldNotModifySource()
+    public void ToReversed_WhenCalled_ForMutableSpan_ShouldNotModifySource()
     {
         int[] original = Ints;
-        _ = ((Span<int>)original).Reverse();
+        _ = ((Span<int>)original).ToReversed();
         AssertIntsSourceIsUnmodified(original);
     }
 
@@ -31,21 +31,21 @@ public partial class SpanExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(FullReverseIntData), typeof(SpanExtensionsTests))]
-    public void Reverse_WhenCalled_ForMutableSpan_ShouldProduceSameResultAsReadOnlySpanOverload(
+    public void ToReversed_WhenCalled_ForMutableSpan_ShouldProduceSameResultAsReadOnlySpanOverload(
         int[] input, int[] expected)
     {
         Span<int> source = input;
-        CollectionAssert.AreEqual(expected, source.Reverse().ToArray());
+        CollectionAssert.AreEqual(expected, source.ToReversed().ToArray());
     }
 
     /// <summary>
     /// Verifies that reversing a span does not mutate the underlying source data.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenCalled_ForReadOnlySpan_ShouldNotModifySource()
+    public void ToReversed_WhenCalled_ForReadOnlySpan_ShouldNotModifySource()
     {
         int[] original = Ints;
-        _ = ((ReadOnlySpan<int>)original).Reverse();
+        _ = ((ReadOnlySpan<int>)original).ToReversed();
         AssertIntsSourceIsUnmodified(original);
     }
 
@@ -54,10 +54,10 @@ public partial class SpanExtensionsTests
     /// confirming the result is an independent heap allocation.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenCalled_ForReadOnlySpan_ShouldReturnIndependentAllocation()
+    public void ToReversed_WhenCalled_ForReadOnlySpan_ShouldReturnIndependentAllocation()
     {
         int[] original = Ints;
-        Span<int> result = ((ReadOnlySpan<int>)original).Reverse();
+        Span<int> result = ((ReadOnlySpan<int>)original).ToReversed();
         result[0] = 99;
         AssertIntsSourceIsUnmodified(original);
     }
@@ -66,20 +66,20 @@ public partial class SpanExtensionsTests
     /// Verifies that the length of the result matches the length of the source span.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenCalled_ForReadOnlySpan_ShouldReturnResultWithSameLengthAsSource()
+    public void ToReversed_WhenCalled_ForReadOnlySpan_ShouldReturnResultWithSameLengthAsSource()
     {
         ReadOnlySpan<int> source = Ints;
-        Assert.AreEqual(source.Length, source.Reverse().Length);
+        Assert.AreEqual(source.Length, source.ToReversed().Length);
     }
 
     /// <summary>
     /// Verifies that a partial reverse does not mutate the underlying source data.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenCalled_ForReadOnlySpanIndexCount_ShouldNotModifySource()
+    public void ToReversed_WhenCalled_ForReadOnlySpanIndexCount_ShouldNotModifySource()
     {
         int[] original = Ints;
-        _ = ((ReadOnlySpan<int>)original).Reverse(1, 3);
+        _ = ((ReadOnlySpan<int>)original).ToReversed(1, 3);
         AssertIntsSourceIsUnmodified(original);
     }
 
@@ -88,12 +88,12 @@ public partial class SpanExtensionsTests
     /// nominated section, exercising the safe allocation path.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenCalled_ForReadOnlySpanIndexCountOfReferenceType_ShouldReverseOnlyNominatedElements()
+    public void ToReversed_WhenCalled_ForReadOnlySpanIndexCountOfReferenceType_ShouldReverseOnlyNominatedElements()
     {
         ReadOnlySpan<string?> source = Strings;
         CollectionAssert.AreEqual(
             new[] { "a", "d", "c", "b", "e" },
-            source.Reverse(1, 3).ToArray());
+            source.ToReversed(1, 3).ToArray());
     }
 
     /// <summary>
@@ -101,10 +101,10 @@ public partial class SpanExtensionsTests
     /// in reverse order, exercising the safe <c>new T[]</c> allocation path.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenCalled_ForReadOnlySpanOfReferenceType_ShouldReturnElementsReversed()
+    public void ToReversed_WhenCalled_ForReadOnlySpanOfReferenceType_ShouldReturnElementsReversed()
     {
         ReadOnlySpan<string?> source = Strings;
-        CollectionAssert.AreEqual(new[] { "e", "d", "c", "b", "a" }, source.Reverse().ToArray());
+        CollectionAssert.AreEqual(new[] { "e", "d", "c", "b", "a" }, source.ToReversed().ToArray());
     }
 
     /// <summary>
@@ -114,12 +114,12 @@ public partial class SpanExtensionsTests
     /// returns <see langword="true"/>.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenCalled_ForReadOnlySpanOfStructWithReferenceField_ShouldReturnElementsReversed()
+    public void ToReversed_WhenCalled_ForReadOnlySpanOfStructWithReferenceField_ShouldReturnElementsReversed()
     {
         ReadOnlySpan<Wrapper> source = Wrappers;
         CollectionAssert.AreEqual(
             new[] { new Wrapper("c"), new Wrapper("b"), new Wrapper("a") },
-            source.Reverse().ToArray());
+            source.ToReversed().ToArray());
     }
 
     /// <summary>
@@ -127,10 +127,10 @@ public partial class SpanExtensionsTests
     /// underlying source data.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenCalled_ForReadOnlySpanRange_ShouldNotModifySource()
+    public void ToReversed_WhenCalled_ForReadOnlySpanRange_ShouldNotModifySource()
     {
         int[] original = Ints;
-        _ = ((ReadOnlySpan<int>)original).Reverse(1..4);
+        _ = ((ReadOnlySpan<int>)original).ToReversed(1..4);
         AssertIntsSourceIsUnmodified(original);
     }
 
@@ -142,13 +142,13 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DataRow(0, -1, "count", DisplayName = "Negative count")]
     [DataRow(0, 10, "count", DisplayName = "Count exceeds span length")]
-    public void Reverse_WhenCountIsInvalid_ForMutableSpanIndexCount_ShouldThrowExactly(
+    public void ToReversed_WhenCountIsInvalid_ForMutableSpanIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         Span<int> source = Ints;
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            Ints.AsSpan().Reverse(index, count);
+            Ints.AsSpan().ToReversed(index, count);
         });
         Assert.AreEqual(expectedParamName, ex.ParamName);
     }
@@ -161,12 +161,12 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DataRow(0, -1, "count", DisplayName = "Negative count")]
     [DataRow(0, 10, "count", DisplayName = "Count exceeds span length")]
-    public void Reverse_WhenCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowExactly(
+    public void ToReversed_WhenCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            Ints.AsSpan().AsReadOnly().Reverse(index, count);
+            Ints.AsSpan().AsReadOnly().ToReversed(index, count);
         });
         Assert.AreEqual(expectedParamName, ex.ParamName);
     }
@@ -177,11 +177,11 @@ public partial class SpanExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(DegenerateCountData), typeof(SpanExtensionsTests))]
-    public void Reverse_WhenCountIsZeroOrOne_ForReadOnlySpanIndexCount_ShouldReturnStraightCopy(
+    public void ToReversed_WhenCountIsZeroOrOne_ForReadOnlySpanIndexCount_ShouldReturnStraightCopy(
         int index, int count)
     {
         ReadOnlySpan<int> source = Ints;
-        CollectionAssert.AreEqual(Ints, source.Reverse(index, count).ToArray());
+        CollectionAssert.AreEqual(Ints, source.ToReversed(index, count).ToArray());
     }
 
     /// <summary>
@@ -190,11 +190,11 @@ public partial class SpanExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(PartialReverseIntData), typeof(SpanExtensionsTests))]
-    public void Reverse_WhenIndexAndCountAreSpecified_ForMutableSpanIndexCount_ShouldProduceSameResultAsReadOnlySpanOverload(
+    public void ToReversed_WhenIndexAndCountAreSpecified_ForMutableSpanIndexCount_ShouldProduceSameResultAsReadOnlySpanOverload(
         int index, int count, int[] expected)
     {
         Span<int> source = Ints;
-        CollectionAssert.AreEqual(expected, source.Reverse(index, count).ToArray());
+        CollectionAssert.AreEqual(expected, source.ToReversed(index, count).ToArray());
     }
 
     /// <summary>
@@ -204,11 +204,11 @@ public partial class SpanExtensionsTests
     /// and values that extend beyond the end.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenIndexAndCountIsInvalid_ForMutableSpanIndexCount_ShouldThrowExactly()
+    public void ToReversed_WhenIndexAndCountIsInvalid_ForMutableSpanIndexCount_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            Ints.AsSpan().Reverse(Ints.Length - 2, 3);
+            Ints.AsSpan().ToReversed(Ints.Length - 2, 3);
         });
     }
 
@@ -220,11 +220,11 @@ public partial class SpanExtensionsTests
     /// and values that extend beyond the end.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenIndexAndCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowExactly()
+    public void ToReversed_WhenIndexAndCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            Ints.AsSpan().AsReadOnly().Reverse(Ints.Length - 2, 3);
+            Ints.AsSpan().AsReadOnly().ToReversed(Ints.Length - 2, 3);
         });
     }
 
@@ -236,12 +236,12 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DataRow(-1, 2, "index", DisplayName = "Negative index")]
     [DataRow(6, 0, "index", DisplayName = "Index exceeds span length")]
-    public void Reverse_WhenIndexIsInvalid_ForMutableSpanIndexCount_ShouldThrowExactly(
+    public void ToReversed_WhenIndexIsInvalid_ForMutableSpanIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            Ints.AsSpan().Reverse(index, count);
+            Ints.AsSpan().ToReversed(index, count);
         });
         Assert.AreEqual(expectedParamName, ex.ParamName);
     }
@@ -254,12 +254,12 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DataRow(-1, 2, "index", DisplayName = "Negative index")]
     [DataRow(6, 0, "index", DisplayName = "Index exceeds span length")]
-    public void Reverse_WhenIndexIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowExactly(
+    public void ToReversed_WhenIndexIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowExactly(
         int index, int count, string expectedParamName)
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            Ints.AsSpan().AsReadOnly().Reverse(index, count);
+            Ints.AsSpan().AsReadOnly().ToReversed(index, count);
         });
         Assert.AreEqual(expectedParamName, ex.ParamName);
     }
@@ -269,12 +269,12 @@ public partial class SpanExtensionsTests
     /// throws <see cref="ArgumentOutOfRangeException"/>.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenRangeExceedsSpanLength_ForReadOnlySpanRange_ShouldThrowExactly()
+    public void ToReversed_WhenRangeExceedsSpanLength_ForReadOnlySpanRange_ShouldThrowExactly()
     {
         ReadOnlySpan<int> source = Ints;
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            Ints.AsSpan().AsReadOnly().Reverse(2..10);
+            Ints.AsSpan().AsReadOnly().ToReversed(2..10);
         });
     }
 
@@ -284,14 +284,14 @@ public partial class SpanExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(ReverseIntRangeData), typeof(SpanExtensionsTests))]
-    public void Reverse_WhenRangeExpressionIsSpecified_ForMutableSpanRange_ShouldProduceSameResultAsReadOnlySpanOverload(
+    public void ToReversed_WhenRangeExpressionIsSpecified_ForMutableSpanRange_ShouldProduceSameResultAsReadOnlySpanOverload(
     int start, int end, bool startFromEnd, bool endFromEnd, int[] expected)
     {
         var range = new Range(
             new Index(start, startFromEnd),
             new Index(end, endFromEnd));
         Span<int> source = Ints;
-        CollectionAssert.AreEqual(expected, source.Reverse(range).ToArray());
+        CollectionAssert.AreEqual(expected, source.ToReversed(range).ToArray());
     }
 
     // =========================================================================
@@ -304,14 +304,14 @@ public partial class SpanExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(ReverseIntRangeData), typeof(SpanExtensionsTests))]
-    public void Reverse_WhenRangeExpressionIsSpecified_ForReadOnlySpanRange_ShouldProduceCorrectResult(
+    public void ToReversed_WhenRangeExpressionIsSpecified_ForReadOnlySpanRange_ShouldProduceCorrectResult(
     int start, int end, bool startFromEnd, bool endFromEnd, int[] expected)
     {
         var range = new Range(
             new Index(start, startFromEnd),
             new Index(end, endFromEnd));
         ReadOnlySpan<int> source = Ints;
-        CollectionAssert.AreEqual(expected, source.Reverse(range).ToArray());
+        CollectionAssert.AreEqual(expected, source.ToReversed(range).ToArray());
     }
 
     /// <summary>
@@ -319,10 +319,10 @@ public partial class SpanExtensionsTests
     /// into the returned result.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenRangeIsMiddleSection_ForReadOnlySpanIndexCount_ShouldLeaveOuterElementsUnchanged()
+    public void ToReversed_WhenRangeIsMiddleSection_ForReadOnlySpanIndexCount_ShouldLeaveOuterElementsUnchanged()
     {
         ReadOnlySpan<int> source = Ints;
-        Span<int> result = source.Reverse(index: 1, count: 3);
+        Span<int> result = source.ToReversed(index: 1, count: 3);
         Assert.AreEqual(Ints[0], result[0]);
         Assert.AreEqual(Ints[4], result[4]);
     }
@@ -337,11 +337,11 @@ public partial class SpanExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(PartialReverseIntData), typeof(SpanExtensionsTests))]
-    public void Reverse_WhenRangeIsValid_ForReadOnlySpanIndexCount_ShouldReverseOnlyNominatedElements(
+    public void ToReversed_WhenRangeIsValid_ForReadOnlySpanIndexCount_ShouldReverseOnlyNominatedElements(
         int index, int count, int[] expected)
     {
         ReadOnlySpan<int> source = Ints;
-        CollectionAssert.AreEqual(expected, source.Reverse(index, count).ToArray());
+        CollectionAssert.AreEqual(expected, source.ToReversed(index, count).ToArray());
     }
     // =========================================================================
     // ReadOnlySpan<T> — full reverse
@@ -353,21 +353,21 @@ public partial class SpanExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(FullReverseIntData), typeof(SpanExtensionsTests))]
-    public void Reverse_WhenSourceHasDifferentLengths_ForReadOnlySpan_ShouldReturnAllElementsReversed(
+    public void ToReversed_WhenSourceHasDifferentLengths_ForReadOnlySpan_ShouldReturnAllElementsReversed(
         int[] input, int[] expected)
     {
         ReadOnlySpan<int> source = input;
-        CollectionAssert.AreEqual(expected, source.Reverse().ToArray());
+        CollectionAssert.AreEqual(expected, source.ToReversed().ToArray());
     }
 
     /// <summary>
     /// Verifies that an empty span with index and count both zero returns an empty result.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenSourceIsEmptyAndCountIsZero_ForReadOnlySpanIndexCount_ShouldReturnEmptyResult()
+    public void ToReversed_WhenSourceIsEmptyAndCountIsZero_ForReadOnlySpanIndexCount_ShouldReturnEmptyResult()
     {
         ReadOnlySpan<int> source = NoInts;
-        Assert.AreEqual(0, source.Reverse(0, 0).Length);
+        Assert.AreEqual(0, source.ToReversed(0, 0).Length);
     }
 
 }

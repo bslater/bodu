@@ -39,25 +39,17 @@ public partial class DateOnlyExtensionsTests
 
         public DateTime GetQuarterEnd(DateTime dateTime) => throw new NotImplementedException();
 
-        public DateTime GetQuarterEnd(int quarter) => throw new NotImplementedException();
-
         public DateTime GetQuarterEnd(int quarter, int fiscalYear) => throw new NotImplementedException();
 
         public DateOnly GetQuarterEndDate(DateOnly dateOnly) => throw new NotImplementedException();
-
-        public DateOnly GetQuarterEndDate(int quarter) => throw new NotImplementedException();
 
         public DateOnly GetQuarterEndDate(int quarter, int fiscalYear) => throw new NotImplementedException();
 
         public DateTime GetQuarterStart(DateTime dateTime) => throw new NotImplementedException();
 
-        public DateTime GetQuarterStart(int quarter) => throw new NotImplementedException();
-
         public DateTime GetQuarterStart(int quarter, int fiscalYear) => throw new NotImplementedException();
 
         public DateOnly GetQuarterStartDate(DateOnly dateOnly) => throw new NotImplementedException();
-
-        public DateOnly GetQuarterStartDate(int quarter) => throw new NotImplementedException();
 
         public DateOnly GetQuarterStartDate(int quarter, int fiscalYear) => throw new NotImplementedException();
 

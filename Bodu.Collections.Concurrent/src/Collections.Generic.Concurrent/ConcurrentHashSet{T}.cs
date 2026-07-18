@@ -192,18 +192,6 @@ public sealed partial class ConcurrentHashSet<T>
     }
 
     /// <summary>
-    /// Gets the element count without any locking. Retained for source compatibility — on this lock-free implementation
-    /// it is identical to <see cref="Count" />.
-    /// </summary>
-    /// <value>The same value as <see cref="Count" />.</value>
-    /// <remarks>
-    /// Earlier lock-striped versions of this type distinguished a cheap approximate count from an exact count that
-    /// blocked writers. Every read is now a single lock-free counter read, so the distinction is vacuous; prefer
-    /// <see cref="Count" /> in new code.
-    /// </remarks>
-    public int ApproximateCount => Count;
-
-    /// <summary>
     /// Gets the equality comparer used to hash and compare elements.
     /// </summary>
     /// <value>The active equality comparer.</value>
@@ -240,18 +228,6 @@ public sealed partial class ConcurrentHashSet<T>
     /// concurrent mutation the answer may be stale by the time the caller inspects it.
     /// </remarks>
     public bool IsEmpty => Count == 0;
-
-    /// <summary>
-    /// Gets a value indicating whether the set is empty, without any locking. Retained for source compatibility — on
-    /// this lock-free implementation it is identical to <see cref="IsEmpty" />.
-    /// </summary>
-    /// <value>The same value as <see cref="IsEmpty" />.</value>
-    /// <remarks>
-    /// Earlier lock-striped versions of this type distinguished a cheap approximate probe from an exact check that
-    /// blocked writers. Every read is now a single lock-free counter read, so the distinction is vacuous; prefer
-    /// <see cref="IsEmpty" /> in new code.
-    /// </remarks>
-    public bool IsEmptyApproximate => IsEmpty;
 
     /// <summary>
     /// Gets the number of buckets in the current shortcut array. Exposed to the test assembly so that table-sizing

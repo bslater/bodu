@@ -9,30 +9,6 @@ namespace Bodu.Collections.Generic.Extensions;
 public static partial class IEnumerableExtensions
 {
     /// <summary>
-    /// Batches the source sequence into subsequences of the specified size.
-    /// </summary>
-    /// <typeparam name="TSource">The type of elements in the source sequence.</typeparam>
-    /// <param name="source">The source sequence to batch.</param>
-    /// <param name="size">The size of each batch. Must be greater than 0.</param>
-    /// <returns>
-    /// An <see cref="IEnumerable{T}" /> where each inner <see cref="IEnumerable{T}" /> contains up to
-    /// <paramref name="size" /> elements from the source sequence. The final batch may contain fewer than
-    /// <paramref name="size" /> elements.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="source" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="size" /> is less than or equal to 0.
-    /// </exception>
-    /// <remarks>
-    /// This method uses deferred execution. Enumeration of the source sequence and batches occurs only when the result
-    /// is enumerated.
-    /// </remarks>
-    public static IEnumerable<IEnumerable<TSource>> Batch<TSource>(this IEnumerable<TSource> source, int size) =>
-        source.Batch(size, static (item, _) => item);
-
-    /// <summary>
     /// Projects each element of a sequence and batches the transformed elements into subsequences of the specified
     /// size.
     /// </summary>
@@ -52,7 +28,8 @@ public static partial class IEnumerableExtensions
     /// Thrown when <paramref name="size" /> is less than or equal to 0.
     /// </exception>
     /// <remarks>
-    /// This method uses deferred execution. The transformation and batching occur only during enumeration.
+    /// This method uses deferred execution. The transformation and batching occur only during enumeration. For plain,
+    /// unprojected batching, use <see cref="System.Linq.Enumerable.Chunk{TSource}(IEnumerable{TSource}, int)" />.
     /// </remarks>
     public static IEnumerable<IEnumerable<TResult>> Batch<TSource, TResult>(this IEnumerable<TSource> source, int size, Func<TSource, TResult> selector)
     {
@@ -147,7 +124,8 @@ public static partial class IEnumerableExtensions
     /// enumerator advances (or is disposed): to retain one, copy it with <c>.ToArray()</c> before advancing.
     /// Retaining the <see cref="ReadOnlyMemory{T}" /> values themselves — for example via <c>ToList()</c> on the
     /// returned sequence — observes overwritten or recycled data. For independently owned batches, use
-    /// <see cref="Batch{TSource}(IEnumerable{TSource}, int)" /> instead.
+    /// <see cref="System.Linq.Enumerable.Chunk{TSource}(IEnumerable{TSource}, int)" /> or the projecting
+    /// <see cref="Batch{TSource, TResult}(IEnumerable{TSource}, int, Func{TSource, TResult})" /> overload instead.
     /// </para>
     /// <para>
     /// This method should be consumed via <c>foreach</c>. Each enumeration rents one buffer of
