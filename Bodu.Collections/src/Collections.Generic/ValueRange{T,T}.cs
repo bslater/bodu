@@ -30,6 +30,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 [DebuggerDisplay("[{StartInclusive}, {EndExclusive}) = {Value}")]
 public readonly struct ValueRange<TKey, TValue>
+    : IEquatable<ValueRange<TKey, TValue>>
     where TKey : IComparable<TKey>
 {
     /// <summary>
@@ -108,7 +109,54 @@ public readonly struct ValueRange<TKey, TValue>
                comparer.Compare(key, EndExclusive) < 0;
     }
 
+    /// <summary>
+    /// Determines whether two entries have identical endpoints and equal values.
+    /// </summary>
+    /// <param name="other">The entry to compare with this instance.</param>
+    /// <returns>
+    /// <see langword="true" /> if the entries share the same start and end and their values compare equal; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Endpoints are compared with <see cref="Comparer{T}.Default" /> and values with
+    /// <see cref="EqualityComparer{T}.Default" />.
+    /// </remarks>
+    public bool Equals(ValueRange<TKey, TValue> other) =>
+        Comparer<TKey>.Default.Compare(StartInclusive, other.StartInclusive) == 0 &&
+        Comparer<TKey>.Default.Compare(EndExclusive, other.EndExclusive) == 0 &&
+        EqualityComparer<TValue>.Default.Equals(Value, other.Value);
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj) =>
+        obj is ValueRange<TKey, TValue> other && Equals(other);
+
+    /// <inheritdoc />
+    public override int GetHashCode() =>
+        HashCode.Combine(StartInclusive, EndExclusive, Value);
+
     /// <inheritdoc />
     public override string ToString() =>
         $"[{StartInclusive}, {EndExclusive}) = {Value}";
+
+    /// <summary>
+    /// Returns a value indicating whether two entries have identical endpoints and equal values.
+    /// </summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns><see langword="true" /> if the operands are equal; otherwise, <see langword="false" />.</returns>
+    public static bool operator ==(ValueRange<TKey, TValue> left, ValueRange<TKey, TValue> right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Returns a value indicating whether two entries differ in endpoints or value.
+    /// </summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns><see langword="true" /> if the operands are not equal; otherwise, <see langword="false" />.</returns>
+    public static bool operator !=(ValueRange<TKey, TValue> left, ValueRange<TKey, TValue> right)
+    {
+        return !left.Equals(right);
+    }
 }

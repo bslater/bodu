@@ -101,4 +101,53 @@ public partial class StringExtensionsTests
             _ = "hello".ToIdentifier((IdentifierCase)999);
         });
     }
+
+    /// <summary>
+    /// Verifies that a single leading upper-case letter that precedes a capitalised word is split at the case boundary,
+    /// matching the tokeniser now shared with the casing converters. The former identifier tokeniser merged the leading
+    /// letter (for example <c>"IParser"</c> yielded <c>"Iparser"</c>); the shared tokeniser splits <c>["I", "Parser"]</c>.
+    /// </summary>
+    /// <param name="value">The input string.</param>
+    /// <param name="identifierCase">The target identifier casing.</param>
+    /// <param name="expected">The expected identifier.</param>
+    [TestMethod]
+    [DataRow("IParser", IdentifierCase.Pascal, "IParser")]
+    [DataRow("IParser", IdentifierCase.Camel, "iParser")]
+    [DataRow("IParser", IdentifierCase.Snake, "i_parser")]
+    public void ToIdentifier_WhenSingleLeadingUppercasePrecedesWord_ShouldSplitAtCaseBoundary(string value, IdentifierCase identifierCase, string expected) =>
+        Assert.AreEqual(expected, value.ToIdentifier(identifierCase));
+
+    /// <summary>
+    /// Verifies that non-separator punctuation that sits between letters is treated as a word boundary, matching the
+    /// tokeniser now shared with the casing converters. The former identifier tokeniser kept such punctuation inside a
+    /// single word and stripped it during filtering (for example <c>"foo!bar"</c> yielded <c>"Foobar"</c>); the shared
+    /// tokeniser splits <c>["foo", "bar"]</c>.
+    /// </summary>
+    /// <param name="value">The input string.</param>
+    /// <param name="identifierCase">The target identifier casing.</param>
+    /// <param name="expected">The expected identifier.</param>
+    [TestMethod]
+    [DataRow("foo!bar", IdentifierCase.Pascal, "FooBar")]
+    [DataRow("foo!bar", IdentifierCase.Camel, "fooBar")]
+    [DataRow("foo@bar#baz", IdentifierCase.Pascal, "FooBarBaz")]
+    public void ToIdentifier_WhenNonSeparatorPunctuationSeparatesLetters_ShouldTreatAsWordBoundary(string value, IdentifierCase identifierCase, string expected) =>
+        Assert.AreEqual(expected, value.ToIdentifier(identifierCase));
+
+    /// <summary>
+    /// Verifies that <see cref="StringExtensions.ToIdentifier(string, IdentifierCase)" /> agrees with the corresponding
+    /// casing converter on inputs that contain no catalogue acronyms, confirming that both now detect word boundaries
+    /// through the single shared tokeniser.
+    /// </summary>
+    /// <param name="value">The input string.</param>
+    [TestMethod]
+    [DataRow("IParser")]
+    [DataRow("foo!bar")]
+    [DataRow("helloWorld")]
+    [DataRow("HTMLParser")]
+    [DataRow("user account id")]
+    public void ToIdentifier_WhenInputHasNoAcronyms_ShouldAgreeWithCasingConverters(string value)
+    {
+        Assert.AreEqual(value.ToPascalCase(), value.ToIdentifier(IdentifierCase.Pascal));
+        Assert.AreEqual(value.ToCamelCase(), value.ToIdentifier(IdentifierCase.Camel));
+    }
 }

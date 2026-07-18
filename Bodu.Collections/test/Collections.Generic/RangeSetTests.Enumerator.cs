@@ -178,4 +178,23 @@ public partial class RangeSetTests
         Assert.AreEqual(new Range<int>(10, 15), seen[1]);
     }
 
+    /// <summary>
+    /// Verifies that enumeration projects ranges whose endpoints are ordered by a custom comparer that disagrees with
+    /// the default comparer, rather than re-validating with the default order and throwing mid-enumeration.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenComparerReversesDefaultOrder_ShouldEnumerateRanges()
+    {
+        var sut = new RangeSet<int>(new ReverseComparer<int>());
+        sut.Add(10, 5); // valid under the reverse comparer; inverted under the default order
+
+        var seen = new List<Range<int>>();
+        foreach (Range<int> range in sut)
+            seen.Add(range);
+
+        Assert.HasCount(1, seen);
+        Assert.AreEqual(10, seen[0].StartInclusive);
+        Assert.AreEqual(5, seen[0].EndExclusive);
+    }
+
 }

@@ -10,6 +10,13 @@ namespace Bodu.Extensions;
 
 public static partial class StringExtensions
 {
+    /// <summary>The tokeniser configuration used when detecting words for identifier generation. Acronym canonicalisation and mixed-case-brand preservation are disabled so that identifier words are detected purely from structural case, digit, and separator boundaries; the detected words are subsequently re-cased by <see cref="ToIdentifier(string, IdentifierCase)" />, which is why acronym spelling is irrelevant here.</summary>
+    private static readonly WordCasingOptions s_identifierWordOptions = new()
+    {
+        Acronyms = Array.Empty<string>(),
+        PreserveMixedCaseWords = false,
+    };
+
     /// <summary>
     /// Converts <paramref name="value" /> into a syntactically valid C# identifier by removing characters that are not
     /// permitted in identifiers and preserving the original casing of the remaining characters.
@@ -46,8 +53,10 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="identifierCase" /> is not a defined <see cref="IdentifierCase" /> value.
     /// </exception>
     /// <remarks>
-    /// Words are detected via the same boundary rules used by the casing converters (
-    /// <see cref="EnumerateWords(string)" />). Non-letter / non-digit / non-underscore characters are treated as
+    /// Words are detected with the same tokeniser and boundary rules the casing converters use (
+    /// <see cref="EnumerateWords(string, WordCasingOptions)" />), configured via <see cref="s_identifierWordOptions" />
+    /// to disable acronym canonicalisation and mixed-case-brand preservation so that only structural case, digit, and
+    /// separator boundaries drive word detection. Non-letter / non-digit / non-underscore characters are treated as
     /// separators and discarded.
     /// </remarks>
     public static string ToIdentifier(this string value, IdentifierCase identifierCase)
@@ -57,7 +66,7 @@ public static partial class StringExtensions
 
         if (identifierCase == IdentifierCase.Preserve) return PreserveAsIdentifier(value);
 
-        List<string> words = EnumerateWords(value);
+        List<string> words = EnumerateWords(value, s_identifierWordOptions);
         FilterIdentifierWords(words);
 
         if (words.Count == 0) return "_";

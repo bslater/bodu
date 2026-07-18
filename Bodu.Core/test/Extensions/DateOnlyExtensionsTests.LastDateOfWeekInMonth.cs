@@ -67,4 +67,68 @@ public partial class DateOnlyExtensionsTests
         Assert.IsTrue(actual >= DateOnly.MinValue && actual <= DateOnly.MinValue.AddMonths(1).AddDays(-1));
     }
 
+    // =========================================================================
+    // GetLastDateOfWeekInMonth(int year, int month, DayOfWeek)
+    // =========================================================================
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetLastDateOfWeekInMonth(int, int, DayOfWeek)" /> returns the last
+    /// occurrence of the requested <see cref="DayOfWeek" /> in the specified month and year.
+    /// </summary>
+    [TestMethod]
+    [DataRow(2024, 4, DayOfWeek.Tuesday, 2024, 4, 30)]   // 30 Apr 2024 is a Tuesday
+    [DataRow(2024, 4, DayOfWeek.Monday, 2024, 4, 29)]
+    [DataRow(2024, 2, DayOfWeek.Thursday, 2024, 2, 29)]  // leap-year February
+    [DataRow(2023, 12, DayOfWeek.Sunday, 2023, 12, 31)]
+    public void GetLastDateOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(
+        int year, int month, DayOfWeek dayOfWeek, int expectedYear, int expectedMonth, int expectedDay)
+    {
+        DateOnly actual = DateOnlyExtensions.GetLastDateOfWeekInMonth(year, month, dayOfWeek);
+        Assert.AreEqual(new DateOnly(expectedYear, expectedMonth, expectedDay), actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetLastDateOfWeekInMonth(int, int, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [DataRow(10_000)]
+    public void GetLastDateOfWeekInMonth_WhenYearIsInvalid_ShouldThrowExactly(int year)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateOnlyExtensions.GetLastDateOfWeekInMonth(year, 1, DayOfWeek.Monday);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetLastDateOfWeekInMonth(int, int, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> for month values outside <c>1..12</c>.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(13)]
+    public void GetLastDateOfWeekInMonth_WhenMonthIsInvalid_ShouldThrowExactly(int month)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateOnlyExtensions.GetLastDateOfWeekInMonth(2024, month, DayOfWeek.Monday);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetLastDateOfWeekInMonth(int, int, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" /> value.
+    /// </summary>
+    [TestMethod]
+    public void GetLastDateOfWeekInMonth_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateOnlyExtensions.GetLastDateOfWeekInMonth(2024, 1, (DayOfWeek)999);
+        });
+    }
+
 }

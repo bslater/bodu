@@ -6,20 +6,10 @@
 
 using System.Globalization;
 
-#if !NETSTANDARD2_0
-
-using Bodu.Buffers;
-
-#endif
-
 namespace Bodu.Collections.Generic.Extensions;
 
 public static partial class IEnumerableExtensions
 {
-    /// <inheritdoc cref="Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator, int?)" />
-    public static IEnumerable<T> Randomize<T>(this IEnumerable<T> source) =>
-        source.Randomize(RandomizationMode.BufferAll, new SystemRandomAdapter(), null);
-
     /// <summary>
     /// Randomizes the source sequence using a specified strategy and random number generator.
     /// </summary>
@@ -41,11 +31,24 @@ public static partial class IEnumerableExtensions
     /// (i.e. <see cref="RandomizationMode.ReservoirSample" /> or <see cref="RandomizationMode.LazyShuffle" />).
     /// </exception>
     /// <remarks>
-    /// Execution is deferred until the returned sequence is enumerated. Null checks for <paramref name="source" /> and
-    /// <paramref name="rng" />, validation that <paramref name="count" /> is not negative, and the
-    /// <paramref name="mode" />-dependent requirement for a non-<see langword="null" /> <paramref name="count" /> are
-    /// performed eagerly; validation that <paramref name="count" /> does not exceed the number of available elements is
-    /// performed during enumeration.
+    /// <para>
+    /// Execution is deferred until the returned sequence is enumerated for every mode. Null checks for
+    /// <paramref name="source" /> and <paramref name="rng" />, validation that <paramref name="count" /> is not
+    /// negative, and the <paramref name="mode" />-dependent requirement for a non-<see langword="null" />
+    /// <paramref name="count" /> are performed eagerly; validation that <paramref name="count" /> does not exceed the
+    /// number of available elements is performed during enumeration.
+    /// </para>
+    /// <para>
+    /// Under <see cref="RandomizationMode.StreamWindowed" />, a non-<see langword="null" />
+    /// <paramref name="count" /> limits the randomized stream to that many elements; if the source is exhausted
+    /// first, <see cref="ArgumentOutOfRangeException" /> is thrown during enumeration, consistent with the other
+    /// modes.
+    /// </para>
+    /// <para>
+    /// To shuffle a fully materialized collection in place — the buffer-everything strategy — use the BCL
+    /// <see cref="Random.Shuffle{T}(Span{T})" /> (or <c>Random.Shared.Shuffle</c>) instead; every
+    /// <see cref="RandomizationMode" /> here bounds memory use below the full source length.
+    /// </para>
     /// </remarks>
     public static IEnumerable<T> Randomize<T>(
         this IEnumerable<T> source,
@@ -59,8 +62,6 @@ public static partial class IEnumerableExtensions
 
         return mode switch
         {
-            RandomizationMode.BufferAll => RandomizeBuffered(source, rng, count),
-
             RandomizationMode.ReservoirSample => count is null
                 ? throw new ArgumentException(
                     string.Format(
@@ -72,7 +73,9 @@ public static partial class IEnumerableExtensions
                     nameof(count))
                 : ReservoirSample(source, rng, count.Value),
 
-            RandomizationMode.StreamWindowed => StreamWindowedShuffle(source, rng),
+            RandomizationMode.StreamWindowed => count is null
+                ? StreamWindowedShuffle(source, rng)
+                : TakeExactly(StreamWindowedShuffle(source, rng), count.Value),
 
             RandomizationMode.LazyShuffle => count is null
                 ? throw new ArgumentException(
@@ -90,8 +93,8 @@ public static partial class IEnumerableExtensions
                 string.Format(
                     CultureInfo.CurrentCulture,
                     ResourceStrings.Arg_OutOfRange_EnumValue,
-                    mode,
-                    nameof(RandomizationMode)))
+                    nameof(RandomizationMode),
+                    mode))
         };
     }
 
@@ -160,48 +163,9 @@ public static partial class IEnumerableExtensions
         using IEnumerator<T> enumerator = source.GetEnumerator();
         T[] reservoir = FillReservoir(enumerator, rng, count);
 
-        foreach (T? item in ShuffleHelpers.ShuffleAndYield(reservoir, rng, count))
+        // The reservoir is a private per-enumeration array, so shuffle it in place without the public overload's copy.
+        foreach (T? item in ShuffleHelpers.ShuffleAndYieldInternal(reservoir, rng, count))
             yield return item;
-    }
-
-    /// <summary>
-    /// Buffers all elements from the source and yields a randomized subset using in-place shuffling.
-    /// </summary>
-    /// <typeparam name="T">The element type.</typeparam>
-    /// <param name="source">The sequence to randomize.</param>
-    /// <param name="rng">The random number generator.</param>
-    /// <param name="count">The number of items to return; all items when <see langword="null" />.</param>
-    /// <returns>A shuffled subset of the source sequence.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="count" /> exceeds the number of available items.
-    /// </exception>
-    private static IEnumerable<T> RandomizeBuffered<T>(IEnumerable<T> source, IRandomGenerator rng, int? count)
-    {
-        int availableCount;
-        T[] buffer;
-#if NETSTANDARD2_0
-    var list = source is ICollection<T> col ? new List<T>(col) : new List<T>(source);
-    buffer = list.ToArray();
-    availableCount = buffer.Length;
-#else
-        using var builder = new PooledBufferBuilder<T>();
-        if (source is IReadOnlyCollection<T> collection && builder.TryCopyFrom(collection))
-        {
-            availableCount = builder.WrittenCount;
-        }
-        else
-        {
-            builder.AppendRange(source);
-            availableCount = builder.WrittenCount;
-        }
-
-        // Slice to valid elements only — the pooled array is over-allocated
-        // and ShuffleAndYield uses buffer.Length to bound the shuffle
-        buffer = builder.AsArray()[..availableCount];
-#endif
-        int takeCount = count ?? availableCount;
-        ThrowHelper.ThrowIfGreaterThanOther(takeCount, availableCount);
-        return ShuffleHelpers.ShuffleAndYield(buffer, rng, takeCount);
     }
 
     /// <summary>
@@ -220,7 +184,10 @@ public static partial class IEnumerableExtensions
     {
         using IEnumerator<T> enumerator = source.GetEnumerator();
         T[] reservoir = FillReservoir(enumerator, rng, count);
-        return ShuffleHelpers.ShuffleAndYield(reservoir, rng, count);
+
+        // The reservoir is a private per-enumeration array, so shuffle it in place without the public overload's copy.
+        foreach (T item in ShuffleHelpers.ShuffleAndYieldInternal(reservoir, rng, count))
+            yield return item;
     }
 
     /// <summary>
@@ -268,9 +235,36 @@ public static partial class IEnumerableExtensions
             window[i] = enumerator.Current;
         }
 
-        // Flush only the occupied portion of the window with a final in-place shuffle.
-        // Slice to count to prevent ShuffleAndYield from seeing uninitialized tail elements.
-        foreach (T item in ShuffleHelpers.ShuffleAndYield(window[..count], rng, count))
+        // Flush only the occupied portion of the window with a final in-place shuffle. The range slice is itself a
+        // fresh copy, so the internal non-copying overload avoids the public overload's second copy.
+        foreach (T item in ShuffleHelpers.ShuffleAndYieldInternal(window[..count], rng, count))
             yield return item;
+    }
+
+    /// <summary>
+    /// Yields exactly <paramref name="count" /> elements from <paramref name="source" />, throwing when the source is
+    /// exhausted first.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to draw from.</param>
+    /// <param name="count">The exact number of elements to yield.</param>
+    /// <returns>The first <paramref name="count" /> elements of <paramref name="source" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown during enumeration if <paramref name="source" /> contains fewer than <paramref name="count" /> elements.
+    /// </exception>
+    private static IEnumerable<T> TakeExactly<T>(IEnumerable<T> source, int count)
+    {
+        if (count == 0)
+            yield break;
+
+        int yielded = 0;
+        foreach (T item in source)
+        {
+            yield return item;
+            if (++yielded == count)
+                yield break;
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(count), ResourceStrings.Arg_OutOfRange_CountGreaterThanSource);
     }
 }

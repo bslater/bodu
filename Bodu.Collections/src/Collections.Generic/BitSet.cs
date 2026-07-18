@@ -265,18 +265,22 @@ public sealed partial class BitSet
     /// <param name="index">The zero-based index of the bit to clear.</param>
     /// <remarks>
     /// An index at or beyond <see cref="Capacity" /> is already conceptually clear, so the call is a no-op — it never
-    /// grows the storage and never throws for large indices (Java <c>BitSet.clear</c> semantics).
+    /// grows the storage and never throws for large indices (Java <c>BitSet.clear</c> semantics). Such a no-op call
+    /// does not invalidate in-flight enumerators.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> &lt; 0.</exception>
     public void Clear(int index)
     {
         ThrowHelper.ThrowIfNegative(index);
 
+        // A bit beyond the allocated storage is already clear; skip the version bump so the provable no-op does not
+        // invalidate in-flight enumerators.
         var wordIndex = index >> WordShift;
         if (wordIndex < _words.Length)
+        {
             _words[wordIndex] &= ~(1UL << index);
-
-        _version++;
+            _version++;
+        }
     }
 
     /// <summary>
@@ -285,9 +289,10 @@ public sealed partial class BitSet
     /// <param name="fromInclusive">The first bit index of the range.</param>
     /// <param name="toExclusive">The exclusive upper bound of the range.</param>
     /// <remarks>
-    /// An empty range (<paramref name="fromInclusive" /> equal to <paramref name="toExclusive" />) is a no-op. The
-    /// portion of the range at or beyond <see cref="Capacity" /> is already conceptually clear, so the operation never
-    /// grows the storage.
+    /// An empty range (<paramref name="fromInclusive" /> equal to <paramref name="toExclusive" />) is a no-op that does
+    /// not invalidate in-flight enumerators. The portion of the range at or beyond <see cref="Capacity" /> is already
+    /// conceptually clear, so the operation never grows the storage; a range entirely beyond <see cref="Capacity" /> is
+    /// likewise an enumerator-preserving no-op.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="fromInclusive" /> &lt; 0, or <paramref name="toExclusive" /> &lt; 0.
@@ -301,12 +306,14 @@ public sealed partial class BitSet
         ThrowHelper.ThrowIfNegative(toExclusive);
         ThrowHelper.ThrowIfGreaterThanOther(fromInclusive, toExclusive);
 
-        // Clamp to the allocated storage; bits beyond it are already clear.
+        // Clamp to the allocated storage; bits beyond it are already clear. An empty (or entirely beyond-capacity)
+        // range changes nothing, so it skips the version bump and preserves in-flight enumerators.
         var to = Math.Min(toExclusive, Capacity);
         if (fromInclusive < to)
+        {
             ClearRangeCore(fromInclusive, to);
-
-        _version++;
+            _version++;
+        }
     }
 
     /// <summary>
@@ -336,8 +343,9 @@ public sealed partial class BitSet
     /// <param name="fromInclusive">The first bit index of the range.</param>
     /// <param name="toExclusive">The exclusive upper bound of the range.</param>
     /// <remarks>
-    /// An empty range (<paramref name="fromInclusive" /> equal to <paramref name="toExclusive" />) is a no-op. The
-    /// storage grows as required so that clear bits beyond the current <see cref="Capacity" /> become set.
+    /// An empty range (<paramref name="fromInclusive" /> equal to <paramref name="toExclusive" />) is a no-op that does
+    /// not invalidate in-flight enumerators. The storage grows as required so that clear bits beyond the current
+    /// <see cref="Capacity" /> become set.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="fromInclusive" /> &lt; 0, <paramref name="toExclusive" /> &lt; 0, or
@@ -353,13 +361,13 @@ public sealed partial class BitSet
         ThrowHelper.ThrowIfGreaterThanOther(fromInclusive, toExclusive);
         ThrowHelper.ThrowIfGreaterThan(toExclusive, MaxBitCount);
 
+        // An empty range changes nothing; skip the version bump so it does not invalidate in-flight enumerators.
         if (fromInclusive < toExclusive)
         {
             EnsureBitCapacity(toExclusive - 1);
             FlipRangeCore(fromInclusive, toExclusive);
+            _version++;
         }
-
-        _version++;
     }
 
     /// <summary>
@@ -400,7 +408,8 @@ public sealed partial class BitSet
     /// <param name="value"><see langword="true" /> to set the bit; <see langword="false" /> to clear it.</param>
     /// <remarks>
     /// Storage grows only when a bit beyond the current <see cref="Capacity" /> is set to <see langword="true" />;
-    /// writing <see langword="false" /> to such a bit is a no-op (it is already conceptually clear).
+    /// writing <see langword="false" /> to such a bit is a no-op (it is already conceptually clear) that does not
+    /// invalidate in-flight enumerators.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> &lt; 0, or <paramref name="index" /> ≥ <see cref="MaxBitCount" />.
@@ -414,15 +423,19 @@ public sealed partial class BitSet
         {
             EnsureBitCapacity(index);
             _words[index >> WordShift] |= 1UL << index;
+            _version++;
         }
         else
         {
+            // Clearing a bit beyond the allocated storage changes nothing; skip the version bump so the provable
+            // no-op does not invalidate in-flight enumerators.
             var wordIndex = index >> WordShift;
             if (wordIndex < _words.Length)
+            {
                 _words[wordIndex] &= ~(1UL << index);
+                _version++;
+            }
         }
-
-        _version++;
     }
 
     /// <summary>
@@ -432,7 +445,8 @@ public sealed partial class BitSet
     /// <param name="fromInclusive">The first bit index of the range.</param>
     /// <param name="toExclusive">The exclusive upper bound of the range.</param>
     /// <remarks>
-    /// An empty range (<paramref name="fromInclusive" /> equal to <paramref name="toExclusive" />) is a no-op.
+    /// An empty range (<paramref name="fromInclusive" /> equal to <paramref name="toExclusive" />) is a no-op that does
+    /// not invalidate in-flight enumerators.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="fromInclusive" /> &lt; 0, <paramref name="toExclusive" /> &lt; 0, or
@@ -448,13 +462,13 @@ public sealed partial class BitSet
         ThrowHelper.ThrowIfGreaterThanOther(fromInclusive, toExclusive);
         ThrowHelper.ThrowIfGreaterThan(toExclusive, MaxBitCount);
 
+        // An empty range changes nothing; skip the version bump so it does not invalidate in-flight enumerators.
         if (fromInclusive < toExclusive)
         {
             EnsureBitCapacity(toExclusive - 1);
             SetRangeCore(fromInclusive, toExclusive);
+            _version++;
         }
-
-        _version++;
     }
 
     /// <summary>

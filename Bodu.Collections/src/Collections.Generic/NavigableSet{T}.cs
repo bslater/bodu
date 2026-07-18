@@ -126,7 +126,7 @@ public sealed partial class NavigableSet<T>
                 items[unique++] = items[i];
         }
 
-        _root = BuildFromSortedArray(items, 0, unique - 1, null);
+        _root = BuildFromSortedArray(items, unique);
         _count = unique;
     }
 

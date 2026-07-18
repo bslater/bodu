@@ -30,19 +30,8 @@ public static partial class DateOnlyExtensions
     /// Thrown if <paramref name="workingWeek" /> is not a defined value of the <see cref="WorkingDaysOfWeek" />
     /// enumeration.
     /// </exception>
-    public static DateOnly PreviousWeekday(this DateOnly date, WorkingDaysOfWeek workingWeek)
-    {
-        ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
-
-        int dayNumber = date.DayNumber;
-        do
-        {
-            dayNumber -= 1;
-        }
-        while (DateTimeExtensions.IsWeekend(DateOnlyExtensions.GetDayOfWeekFromDayNumber(dayNumber), workingWeek));
-
-        return DateOnly.FromDayNumber(dayNumber);
-    }
+    public static DateOnly PreviousWeekday(this DateOnly date, WorkingDaysOfWeek workingWeek) =>
+        PreviousWeekday(date, workingWeek, provider: null);
 
     /// <summary>
     /// Returns a new <see cref="DateOnly" /> representing the previous calendar weekday before the specified
@@ -77,12 +66,27 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
 
+        // Validate and convert the working week once; the per-day loop then tests pattern membership (or the
+        // custom provider) without re-resolving the pattern on every stepped day.
+        WeekPattern? pattern = DateTimeExtensions.ResolveWorkingWeekPattern(workingWeek, provider);
+
         int dayNumber = date.DayNumber;
-        do
+        if (pattern is { } workingPattern)
         {
-            dayNumber -= 1;
+            do
+            {
+                dayNumber -= 1;
+            }
+            while (!workingPattern.Contains(DateOnlyExtensions.GetDayOfWeekFromDayNumber(dayNumber)));
         }
-        while (DateTimeExtensions.IsWeekend(DateOnlyExtensions.GetDayOfWeekFromDayNumber(dayNumber), workingWeek, provider));
+        else
+        {
+            do
+            {
+                dayNumber -= 1;
+            }
+            while (provider!.IsWeekend(DateOnlyExtensions.GetDayOfWeekFromDayNumber(dayNumber)));
+        }
 
         return DateOnly.FromDayNumber(dayNumber);
     }

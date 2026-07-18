@@ -34,4 +34,22 @@ public partial class LayeredDictionaryTests
         Assert.AreEqual(3, keys.Count);
         Assert.IsFalse(keys.Contains("d"));
     }
+
+    /// <summary>
+    /// Verifies that the returned key collection is read-only and is not write-through: mutating members throw
+    /// <see cref="NotSupportedException" />.
+    /// </summary>
+    [TestMethod]
+    public void Keys_WhenMutated_ShouldThrowNotSupportedException()
+    {
+        var view = CreatePopulated(out _, out _);
+
+        ICollection<string> keys = view.Keys;
+
+        Assert.IsTrue(keys.IsReadOnly);
+        Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            keys.Add("z");
+        });
+    }
 }

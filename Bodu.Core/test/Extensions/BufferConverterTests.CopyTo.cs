@@ -329,4 +329,34 @@ public partial class BufferConverterTests
         Assert.AreEqual("targetArray", ex.ParamName);
     }
 
+    /// <summary>
+    /// Verifies that the array-to-array overload copies elements wider than one byte into a target array sized in
+    /// elements, validating the source range in bytes and the target range in elements.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenElementIsInt32_ForArrayTarget_ShouldCopyElements()
+    {
+        byte[] source = [.. BitConverter.GetBytes(0x01020304), .. BitConverter.GetBytes(0x05060708)];
+        int[] target = new int[2];
+
+        source.CopyTo(0, target, 0, 2);
+
+        CollectionAssert.AreEqual(new[] { 0x01020304, 0x05060708 }, target);
+    }
+
+    /// <summary>
+    /// Verifies that the array-to-array overload honors a non-zero target index when copying elements wider than one
+    /// byte.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenElementIsInt32WithTargetIndex_ForArrayTarget_ShouldCopyElements()
+    {
+        byte[] source = BitConverter.GetBytes(0x01020304);
+        int[] target = new int[3];
+
+        source.CopyTo(0, target, 2, 1);
+
+        CollectionAssert.AreEqual(new[] { 0, 0, 0x01020304 }, target);
+    }
+
 }

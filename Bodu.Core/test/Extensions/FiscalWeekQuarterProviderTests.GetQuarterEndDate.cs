@@ -9,20 +9,6 @@ namespace Bodu.Extensions;
 public partial class FiscalWeekQuarterProviderTests
 {
 
-    // -----------------------------------------------------------------------
-    // GetQuarterEndDate(int) — obsolete single-arg overload
-    // -----------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that the obsolete single-argument
-    /// <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(int)" /> overload throws
-    /// <see cref="NotSupportedException" />.
-    /// </summary>
-    [TestMethod]
-#pragma warning disable CS0618 // intentional: we verify the obsolete overload still throws
-    public void GetQuarterEndDate_ObsoleteSingleArgOverload_ShouldThrowExactly() => Assert.ThrowsExactly<NotSupportedException>(() => s_sunday52.GetQuarterEndDate(1));
-#pragma warning restore CS0618
-
 
     /// <summary>
     /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> and

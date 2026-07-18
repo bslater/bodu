@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Numerics;
 
 namespace Bodu.Extensions;
 
@@ -25,7 +26,7 @@ public static partial class NumericExtensions
     /// A byte array containing the binary representation of <paramref name="value" /> in the specified byte order.
     /// </returns>
     /// <exception cref="InvalidOperationException">
-    /// <typeparamref name="T" /> is not a supported numeric type.
+    /// <typeparamref name="T" /> is a numeric type outside the fixed set supported by <see cref="BitConverter" />.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -41,8 +42,15 @@ public static partial class NumericExtensions
     /// <para>
     /// For <see cref="float" /> and <see cref="double" />, the encoding follows the IEEE 754 standard.
     /// </para>
+    /// <para>
+    /// The <see cref="INumberBase{TSelf}" /> constraint rejects non-numeric types (such as reference types) at compile
+    /// time. Numeric types that <see cref="BitConverter" /> does not support — for example <see cref="decimal" />,
+    /// <see cref="System.Int128" />, or <see cref="System.Numerics.BigInteger" /> — still satisfy the constraint and
+    /// fail at run time with <see cref="InvalidOperationException" />.
+    /// </para>
     /// </remarks>
     public static byte[] GetBytes<T>(this T value, bool asBigEndian = false)
+        where T : INumberBase<T>
     {
         byte[] bytes = value switch
         {

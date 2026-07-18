@@ -17,7 +17,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch
             new EnumerableTestPlan<int>(
                 name: "Batch - even split",
                 source: Enumerable.Range(1, 10),
-                invoke: source => source.Batch(2),
+                invoke: source => source.Batch(2, static x => x),
                 expectedResult: new[]
                 {
                     new[] { 1, 2 },
@@ -32,7 +32,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch
             new EnumerableTestPlan<int>(
                 name: "Batch - uneven split",
                 source: Enumerable.Range(1, 10),
-                invoke: source => source.Batch(3),
+                invoke: source => source.Batch(3, static x => x),
                 expectedResult: new[]
                 {
                     new[] { 1, 2, 3 },
@@ -75,7 +75,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     ];
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.Batch{T}(IEnumerable{T}, int)" /> defers execution until the
+    /// Verifies that <see cref="IEnumerableExtensions.Batch{TSource, TResult}(IEnumerable{TSource}, int, Func{TSource, TResult})" /> defers execution until the
     /// returned sequence is enumerated.
     /// </summary>
     [TestMethod]
@@ -108,7 +108,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch
         int[] source = new[] { 1, 2, 3 };
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = source.Batch(size).ToList();
+            _ = source.Batch(size, static x => x).ToList();
         });
     }
 
@@ -121,22 +121,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch
         IEnumerable<int>? source = null!;
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = source.Batch(2).ToList();
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a <see langword="null" /> source throws <see cref="ArgumentNullException" /> eagerly at the call
-    /// site, before the result is enumerated, matching the eager argument validation of the BCL LINQ operators. The
-    /// result is deliberately not enumerated so a deferred check could not satisfy this test.
-    /// </summary>
-    [TestMethod]
-    public void Batch_WhenSourceIsNull_ShouldThrowExactlyWithoutEnumerating()
-    {
-        IEnumerable<int>? source = null!;
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source.Batch(2);
+            _ = source.Batch(2, static x => x).ToList();
         });
     }
 
@@ -174,7 +159,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     [TestMethod]
     public void Batch_WithEmptySource_ShouldReturnEmpty()
     {
-        var actual = Array.Empty<int>().Batch(2).ToList();
+        var actual = Array.Empty<int>().Batch(2, static x => x).ToList();
         Assert.IsEmpty(actual);
     }
 

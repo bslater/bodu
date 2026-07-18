@@ -47,7 +47,7 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 - <xref:Bodu.Buffers> — `PooledBufferBuilder<T>` for `ArrayPool<T>`-backed zero-allocation building.
 - <xref:Bodu.Extensions> — date / numeric / span / array extensions and the calendar-shape enums.
 - <xref:Bodu.Collections.Extensions>, <xref:Bodu.Collections.Generic.Extensions> — sequence-shaping helpers (recursive selection, sliding windows, batched enumeration, pluggable random shuffles).
-- <xref:Bodu.Sequences> — `SequenceGenerator` lazy sequence factories (`Range`, `Repeat`, `NextWhile`, `Factory`) and named mathematical series (Fibonacci, Farey, Leibniz, look-and-say, Thue–Morse).
+- <xref:Bodu.Sequences> — `SequenceGenerator` lazy sequence factories (`Range`, `NextWhile`, `Factory`) and named mathematical series (Fibonacci, Farey, Leibniz, look-and-say, Thue–Morse).
 - <xref:Bodu.Text> — `BaseEncoding` entry points for Base16, Base24, Base32, and Base64.
 
 ## Example

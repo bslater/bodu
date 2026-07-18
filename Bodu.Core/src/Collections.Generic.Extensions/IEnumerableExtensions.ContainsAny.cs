@@ -4,11 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-#if !NETSTANDARD2_0
-
 using Bodu.Collections.Generic.Internal;
-
-#endif
 
 namespace Bodu.Collections.Generic.Extensions;
 

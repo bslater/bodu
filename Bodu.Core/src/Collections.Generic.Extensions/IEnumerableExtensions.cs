@@ -39,12 +39,12 @@ namespace Bodu.Collections.Generic.Extensions;
 ///<![CDATA[
 /// IEnumerable<int> source = Enumerable.Range(1, 9);
 ///
-/// // Chunk into windows of three.
-/// foreach (var window in source.Batch(3))
+/// // Chunk into windows of three, projecting each element.
+/// foreach (var window in source.Batch(3, static x => x * 10))
 ///     Console.WriteLine(string.Join(", ", window));
-/// // => 1, 2, 3
-/// // => 4, 5, 6
-/// // => 7, 8, 9
+/// // => 10, 20, 30
+/// // => 40, 50, 60
+/// // => 70, 80, 90
 ///
 /// // Compute count and sum in a single pass.
 /// var (count, sum) = source.Aggregate(

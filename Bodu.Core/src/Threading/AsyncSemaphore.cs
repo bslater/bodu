@@ -33,7 +33,9 @@ namespace Bodu.Threading;
 /// <para>
 /// <see cref="Release(int)" /> first hands permits directly to queued waiters in FIFO order and only stores the
 /// remainder as available permits. Permits transferred to waiters never appear in <see cref="CurrentCount" />, and the
-/// configured maximum applies only to the stored available count after queued waiters have been satisfied.
+/// configured maximum applies only to the stored available count after queued waiters have been satisfied. The bound
+/// is validated before any permit is granted, so a release that would exceed the maximum throws
+/// <see cref="InvalidOperationException" /> without granting any waiter or changing <see cref="CurrentCount" />.
 /// </para>
 /// </remarks>
 /// <example>
@@ -231,7 +233,8 @@ public sealed partial class AsyncSemaphore
     /// <param name="releaseCount">The number of permits to return.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="releaseCount" /> is less than one.</exception>
     /// <exception cref="InvalidOperationException">
-    /// Releasing would raise the permit count above the configured maximum.
+    /// Releasing would raise the permit count above the configured maximum. The release is atomic: when this exception
+    /// is thrown, no waiter has been granted and <see cref="CurrentCount" /> is unchanged.
     /// </exception>
     public void Release(int releaseCount)
     {
@@ -239,22 +242,25 @@ public sealed partial class AsyncSemaphore
 
         lock (_gate)
         {
+            // Validate the entire release against the bound before granting anything, so a rejected Release has no
+            // partial effect. Under the gate every queued waiter can still accept a permit — cancellation completes a
+            // waiter's task only after removing it from the queue under this same gate — so the stored remainder is
+            // exactly the release count minus the queued waiters it will satisfy. The maximum applies only to that
+            // stored count, per the documented rule.
+            int toStore = releaseCount - Math.Min(releaseCount, _waiters.Count);
+            if (_currentCount + toStore > _maxCount)
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_SemaphoreReleaseExceedsMax);
+
             int remaining = releaseCount;
 
-            // Hand permits to queued waiters in FIFO order. A waiter whose task was already canceled is dropped
-            // without consuming a permit.
+            // Hand permits to queued waiters in FIFO order. A waiter whose task was already completed is dropped
+            // without consuming a permit (defensive; see the invariant above).
             while (remaining > 0 && _waiters.First is { } first)
             {
                 _waiters.RemoveFirst();
                 if (first.Value.TrySetResult(true))
                     remaining--;
             }
-
-            if (remaining == 0)
-                return;
-
-            if (_currentCount + remaining > _maxCount)
-                throw new InvalidOperationException(ResourceStrings.Op_Invalid_SemaphoreReleaseExceedsMax);
 
             _currentCount += remaining;
         }

@@ -215,4 +215,37 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
         CollectionAssert.AreEqual(new[] { 10 }, batches[3]);
     }
 
+    /// <summary>
+    /// Verifies that every yielded batch aliases the same pooled buffer — the documented pooled contract — so a
+    /// <see cref="ReadOnlyMemory{T}" /> retained across an iteration step observes the next batch's contents rather
+    /// than an independent snapshot.
+    /// </summary>
+    [TestMethod]
+    public void BatchPooled_WhenBatchRetainedAcrossIteration_ShouldAliasSharedPooledBuffer()
+    {
+        IEnumerable<int> source = Enumerable.Range(1, 6);
+
+        ReadOnlyMemory<int> first = default;
+        int seen = 0;
+        foreach (ReadOnlyMemory<int> batch in source.BatchPooled(3))
+        {
+            if (seen == 0)
+            {
+                first = batch;
+                CollectionAssert.AreEqual(new[] { 1, 2, 3 }, first.ToArray());
+            }
+            else
+            {
+                // The retained first window aliases the shared buffer, which now holds the second batch's data —
+                // asserted while the buffer is still rented by the in-flight enumeration.
+                CollectionAssert.AreEqual(new[] { 4, 5, 6 }, batch.ToArray());
+                CollectionAssert.AreEqual(new[] { 4, 5, 6 }, first.ToArray());
+            }
+
+            seen++;
+        }
+
+        Assert.AreEqual(2, seen);
+    }
+
 }

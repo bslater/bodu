@@ -663,10 +663,18 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
                 // AFTER removal: fire event; each handler is guarded independently so a throwing
                 // subscriber cannot prevent subsequent subscribers from receiving the notification.
+                // The invocation list is materialized at most once per subscription change: the cache
+                // pairs the delegate instance with its handler array in one immutable object, so a
+                // racing refresh publishes a coherent pair and the steady-state eviction path no longer
+                // allocates a Delegate[] per evicted item inside the producer's enqueue loop.
                 Action<T>? onEvicted = ItemEvicted;
                 if (onEvicted != null)
                 {
-                    foreach (Action<T> handler in onEvicted.GetInvocationList())
+                    EvictionHandlers? cache = _evictionHandlers;
+                    if (cache is null || !ReferenceEquals(cache.Source, onEvicted))
+                        _evictionHandlers = cache = new EvictionHandlers(onEvicted);
+
+                    foreach (Action<T> handler in cache.Handlers)
                     {
                         try
                         {

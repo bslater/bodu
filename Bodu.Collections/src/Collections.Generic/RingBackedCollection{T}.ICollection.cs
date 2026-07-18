@@ -53,7 +53,7 @@ public abstract partial class RingBackedCollection<T>
         ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfNegative(index, nameof(index));
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, _count);
 
         try
         {

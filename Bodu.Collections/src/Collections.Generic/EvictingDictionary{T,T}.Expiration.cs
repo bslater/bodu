@@ -6,6 +6,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionary<TKey, TValue>
@@ -168,19 +170,19 @@ public partial class EvictingDictionary<TKey, TValue>
             return 0;
 
         long nowTicks = GetNowTicks();
-        List<KeyValuePair<TKey, CacheItem>>? expired = null;
+        List<KeyValuePair<TKey, EvictionEntry<TKey, TValue>>>? expired = null;
 
-        foreach (KeyValuePair<TKey, CacheItem> pair in _store)
+        foreach (KeyValuePair<TKey, EvictionEntry<TKey, TValue>> pair in _store)
         {
             if (pair.Value.ExpiresAtTicks <= nowTicks)
-                (expired ??= new List<KeyValuePair<TKey, CacheItem>>()).Add(pair);
+                (expired ??= new List<KeyValuePair<TKey, EvictionEntry<TKey, TValue>>>()).Add(pair);
         }
 
         if (expired is null)
             return 0;
 
         int removed = 0;
-        foreach (KeyValuePair<TKey, CacheItem> pair in expired)
+        foreach (KeyValuePair<TKey, EvictionEntry<TKey, TValue>> pair in expired)
         {
             if (RemoveExpiredEntry(pair.Key, pair.Value))
                 removed++;
@@ -199,7 +201,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <see langword="true" /> if the entry was removed; <see langword="false" /> when called while an eviction event
     /// is being dispatched, in which case the entry is left for a later purge (it remains invisible to reads).
     /// </returns>
-    private bool RemoveExpiredEntry(TKey key, CacheItem item)
+    private bool RemoveExpiredEntry(TKey key, EvictionEntry<TKey, TValue> item)
     {
         // Mid-event reads must not mutate the dictionary; the caller still reports the key absent.
         if (_isEvicting)
@@ -239,7 +241,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="ttlOverride">
     /// The per-entry time-to-live, or <see langword="null" /> to apply the dictionary default.
     /// </param>
-    private void SetExpiration(CacheItem item, TimeSpan? ttlOverride)
+    private void SetExpiration(EvictionEntry<TKey, TValue> item, TimeSpan? ttlOverride)
     {
         if (_timeProvider is null)
             return;
@@ -276,7 +278,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// When expiration is disabled this reduces to a plain store lookup with no clock reads, preserving the
     /// capacity-only hot path.
     /// </remarks>
-    private bool TryGetLiveItem(TKey key, bool slide, [NotNullWhen(true)] out CacheItem? item)
+    private bool TryGetLiveItem(TKey key, bool slide, [NotNullWhen(true)] out EvictionEntry<TKey, TValue>? item)
     {
         if (!_store.TryGetValue(key, out item))
             return false;

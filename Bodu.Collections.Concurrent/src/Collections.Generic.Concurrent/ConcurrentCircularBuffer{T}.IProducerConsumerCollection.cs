@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
-public partial class ConcurrentCircularBuffer<T> :
+public sealed partial class ConcurrentCircularBuffer<T> :
     IProducerConsumerCollection<T>
 {
     /// <summary>

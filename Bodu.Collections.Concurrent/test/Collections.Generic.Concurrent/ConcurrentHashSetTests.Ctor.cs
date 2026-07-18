@@ -206,23 +206,64 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that the capacity constructor rounds the bucket count up to a power of two within the sizing
-    /// envelope, so the split-ordered bucket mask is always valid.
+    /// Verifies that the capacity constructor interprets its argument as the expected number of elements (BCL
+    /// semantics), converting it to <c>ceil(capacity / MaxLoadFactor)</c> buckets — with <c>MaxLoadFactor == 2</c> —
+    /// clamped into the sizing envelope and rounded up to a power of two, so the split-ordered bucket mask is always
+    /// valid and the table can absorb the expected population without an immediate resize.
     /// </summary>
     [TestMethod]
     [DataRow(0, 8)]
     [DataRow(1, 8)]
     [DataRow(7, 8)]
     [DataRow(8, 8)]
-    [DataRow(9, 16)]
-    [DataRow(31, 32)]
-    [DataRow(33, 64)]
-    [DataRow(1000, 1024)]
-    public void Ctor_WhenCapacityProvided_ShouldRoundBucketCountUpToPowerOfTwo(int capacity, int expectedBucketCount)
+    [DataRow(9, 8)]
+    [DataRow(16, 8)]
+    [DataRow(17, 16)]
+    [DataRow(32, 16)]
+    [DataRow(33, 32)]
+    [DataRow(64, 32)]
+    [DataRow(1000, 512)]
+    [DataRow(2048, 1024)]
+    public void Ctor_WhenCapacityProvided_ShouldSizeBucketsForExpectedElementCount(int capacity, int expectedBucketCount)
     {
         var set = new ConcurrentHashSet<int>(capacity);
 
         Assert.AreEqual(expectedBucketCount, set.BucketCount);
         Assert.AreEqual(0, set.BucketCount & (set.BucketCount - 1), "Bucket count must be a power of two.");
+    }
+
+    /// <summary>
+    /// Verifies that a capacity-constructed set, treated as an expected-element-count hint, holds exactly the expected
+    /// elements after that many adds without losing or duplicating any.
+    /// </summary>
+    [TestMethod]
+    [DataRow(10)]
+    [DataRow(100)]
+    [DataRow(1000)]
+    public void Ctor_WhenCapacityProvided_ShouldHoldExpectedElementsAfterAdds(int capacity)
+    {
+        var set = new ConcurrentHashSet<int>(capacity);
+
+        for (int i = 0; i < capacity; i++)
+            Assert.IsTrue(set.Add(i), $"Element {i} must be added exactly once.");
+
+        Assert.AreEqual(capacity, set.Count);
+        for (int i = 0; i < capacity; i++)
+            Assert.IsTrue(set.Contains(i), $"Element {i} must be present.");
+    }
+
+    /// <summary>
+    /// Verifies that the collection constructor, which forwards the source's element count as the expected-element-count
+    /// hint, produces a set containing the source's distinct elements even when the source carries duplicates.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceHasDuplicates_ShouldContainDistinctSourceElements()
+    {
+        var source = new List<int> { 1, 1, 2, 2, 2, 3, 4, 4, 5 };
+
+        var set = new ConcurrentHashSet<int>(source);
+
+        AssertContainsExactly(set, 1, 2, 3, 4, 5);
+        Assert.AreEqual(5, set.Count);
     }
 }

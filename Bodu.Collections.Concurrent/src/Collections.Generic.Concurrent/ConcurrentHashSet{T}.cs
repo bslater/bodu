@@ -39,9 +39,11 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// </para>
 /// <para>
 /// <see cref="ToArray" /> and enumeration are <b>weakly consistent</b> rather than point-in-time snapshots: the
-/// traversal observes every element that is present for the entire duration of the call, never yields the same element
-/// twice, and never throws — but elements added or removed while the traversal is in progress may or may not be
-/// observed, and the result is not guaranteed to correspond to the set's state at any single instant.
+/// traversal observes every element that is present for the entire duration of the call and never throws, but elements
+/// added or removed while the traversal is in progress may or may not be observed, and the result is not guaranteed to
+/// correspond to the set's state at any single instant. The no-duplicate guarantee holds across distinct hash keys; an
+/// element that is concurrently removed and re-added may, in rare interleavings where another element shares its full
+/// hash key, be yielded twice. Consumers that require exact-once semantics should snapshot while the set is quiescent.
 /// </para>
 /// <para>
 /// Performance characteristics differ from lock-based designs: progress is guaranteed without blocking, but every
@@ -124,13 +126,15 @@ public sealed partial class ConcurrentHashSet<T>
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class that is empty and sized for the
-    /// specified initial capacity using the default equality comparer.
+    /// specified expected number of elements using the default equality comparer.
     /// </summary>
-    /// <param name="capacity">The initial number of buckets the set can hold before its first resize.</param>
+    /// <param name="capacity">The estimated number of elements the set will hold before its first resize.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     /// <remarks>
-    /// <paramref name="capacity" /> is a sizing hint only: it is rounded up to a power of two and the set grows
-    /// automatically, so it is not bounded by this value.
+    /// <paramref name="capacity" /> is a sizing hint only, expressed in expected elements (matching
+    /// <see cref="HashSet{T}(int)" /> and
+    /// <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}" />): it is converted internally to
+    /// a bucket count and the set grows automatically, so its size is not bounded by this value.
     /// </remarks>
     public ConcurrentHashSet(int capacity)
         : this(capacity, null)
@@ -148,16 +152,18 @@ public sealed partial class ConcurrentHashSet<T>
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}" /> class that is empty, sized for the
-    /// specified initial capacity, and uses the specified equality comparer.
+    /// specified expected number of elements, and uses the specified equality comparer.
     /// </summary>
-    /// <param name="capacity">The initial number of buckets the set can hold before its first resize.</param>
+    /// <param name="capacity">The estimated number of elements the set will hold before its first resize.</param>
     /// <param name="comparer">
     /// The comparer used to hash and compare elements, or <see langword="null" /> to use the default comparer.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
     /// <remarks>
-    /// <paramref name="capacity" /> is a sizing hint only: it is rounded up to a power of two and the set grows
-    /// automatically, so it is not bounded by this value.
+    /// <paramref name="capacity" /> is a sizing hint only, expressed in expected elements (matching
+    /// <see cref="HashSet{T}(int)" /> and
+    /// <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}" />): it is converted internally to
+    /// a bucket count and the set grows automatically, so its size is not bounded by this value.
     /// </remarks>
     public ConcurrentHashSet(int capacity, IEqualityComparer<T>? comparer)
     {
@@ -187,18 +193,6 @@ public sealed partial class ConcurrentHashSet<T>
         foreach (T item in collection)
             Add(item);
     }
-
-    /// <summary>
-    /// Gets the element count without any locking. Retained for source compatibility — on this lock-free implementation
-    /// it is identical to <see cref="Count" />.
-    /// </summary>
-    /// <value>The same value as <see cref="Count" />.</value>
-    /// <remarks>
-    /// Earlier lock-striped versions of this type distinguished a cheap approximate count from an exact count that
-    /// blocked writers. Every read is now a single lock-free counter read, so the distinction is vacuous; prefer
-    /// <see cref="Count" /> in new code.
-    /// </remarks>
-    public int ApproximateCount => Count;
 
     /// <summary>
     /// Gets the equality comparer used to hash and compare elements.
@@ -237,18 +231,6 @@ public sealed partial class ConcurrentHashSet<T>
     /// concurrent mutation the answer may be stale by the time the caller inspects it.
     /// </remarks>
     public bool IsEmpty => Count == 0;
-
-    /// <summary>
-    /// Gets a value indicating whether the set is empty, without any locking. Retained for source compatibility — on
-    /// this lock-free implementation it is identical to <see cref="IsEmpty" />.
-    /// </summary>
-    /// <value>The same value as <see cref="IsEmpty" />.</value>
-    /// <remarks>
-    /// Earlier lock-striped versions of this type distinguished a cheap approximate probe from an exact check that
-    /// blocked writers. Every read is now a single lock-free counter read, so the distinction is vacuous; prefer
-    /// <see cref="IsEmpty" /> in new code.
-    /// </remarks>
-    public bool IsEmptyApproximate => IsEmpty;
 
     /// <summary>
     /// Gets the number of buckets in the current shortcut array. Exposed to the test assembly so that table-sizing
@@ -452,11 +434,19 @@ public sealed partial class ConcurrentHashSet<T>
     /// observed. The order of elements is unspecified.
     /// </returns>
     /// <remarks>
+    /// <para>
     /// This method is a pure lock-free traversal of the split-ordered list: it never blocks writers. The result is <b>weakly
-    /// consistent</b> — it contains every element that was present for the entire duration of the call and never
-    /// contains the same element twice (the traversal is monotonic in split-order, so a concurrently re-added element
-    /// cannot be revisited), but elements added or removed while the copy is in progress may or may not appear, and the
-    /// array is not guaranteed to reflect the set's state at any single instant.
+    /// consistent</b> — it contains every element that was present for the entire duration of the call, but elements
+    /// added or removed while the copy is in progress may or may not appear, and the array is not guaranteed to reflect
+    /// the set's state at any single instant.
+    /// </para>
+    /// <para>
+    /// The traversal is monotonic in split-order, so an element whose full hash key is unshared can never be visited
+    /// twice. Within a run of elements sharing the same full hash key, however, a concurrent remove followed by a
+    /// re-add of an element can reinsert its node ahead of the traversal cursor, so in rare full-hash-collision
+    /// interleavings such an element may appear twice in the result. Consumers that require exact-once semantics should
+    /// take the snapshot while the set is quiescent.
+    /// </para>
     /// </remarks>
     public T[] ToArray()
     {
@@ -533,21 +523,38 @@ public sealed partial class ConcurrentHashSet<T>
         (ulong)ReverseBits((uint)bucketNo) << 1;
 
     /// <summary>
-    /// Rounds a constructor capacity hint to the bucket-count envelope: a power of two between
+    /// Converts an expected-element-count hint into a bucket-shortcut array length: a power of two between
     /// <see cref="MinBucketCount" /> and <see cref="MaxBucketCount" />.
     /// </summary>
-    /// <param name="capacity">The non-negative capacity hint.</param>
+    /// <param name="capacity">The non-negative expected element count.</param>
     /// <returns>The normalized bucket-shortcut array length.</returns>
-    private static int NormalizeBucketCount(int capacity) =>
-        (int)BitOperations.RoundUpToPowerOf2((uint)Math.Clamp(capacity, MinBucketCount, MaxBucketCount));
+    /// <remarks>
+    /// The hint is expressed in expected elements (BCL semantics), so it is first divided by
+    /// <see cref="MaxLoadFactor" /> — the average elements-per-bucket the table tolerates before <see cref="Add" />
+    /// requests a doubling — using a ceiling division, so <c>buckets * MaxLoadFactor &gt;= capacity</c> and the table
+    /// can absorb the expected population without an immediate resize. The result is clamped into the sizing envelope
+    /// and rounded up to a power of two so the bucket mask stays valid. The <see cref="long" /> arithmetic guards
+    /// against overflow when <paramref name="capacity" /> approaches <see cref="int.MaxValue" />.
+    /// </remarks>
+    private static int NormalizeBucketCount(int capacity)
+    {
+        long buckets = ((long)capacity + (MaxLoadFactor - 1)) / MaxLoadFactor;
+        long clamped = Math.Clamp(buckets, MinBucketCount, MaxBucketCount);
+
+        return (int)BitOperations.RoundUpToPowerOf2((uint)clamped);
+    }
 
     /// <summary>
-    /// Returns a bucket-count hint for sizing the initial table from a source collection.
+    /// Returns an expected-element-count hint for sizing the initial table from a source collection.
     /// </summary>
     /// <param name="collection">The source collection, which may be <see langword="null" />.</param>
     /// <returns>
-    /// The element count when it can be determined cheaply; otherwise <see cref="DefaultBucketCount" />.
+    /// The source element count when it can be determined cheaply; otherwise <see cref="DefaultBucketCount" />.
     /// </returns>
+    /// <remarks>
+    /// The value flows into the capacity constructor as an expected element count, so a counted source is sized to hold
+    /// its distinct elements without an immediate resize.
+    /// </remarks>
     private static int GetCapacityHint(IEnumerable<T>? collection) =>
         collection switch
         {

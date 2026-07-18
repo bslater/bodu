@@ -123,6 +123,9 @@
   <data name="Arg_Invalid_ArrayType" xml:space="preserve">
     <value>Target array type is not compatible with the type of items in the collection.</value>
   </data>
+  <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
+    <value>The dictionary cannot contain duplicate keys.</value>
+  </data>
   <data name="KeyNotFound_Dictionary" xml:space="preserve">
     <value>The given key '{0}' was not present in the dictionary.</value>
   </data>

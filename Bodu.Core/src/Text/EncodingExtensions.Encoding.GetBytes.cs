@@ -9,43 +9,6 @@ namespace Bodu.Text;
 public static partial class EncodingExtensions
 {
     /// <summary>
-    /// Attempts to encode <paramref name="chars" /> into <paramref name="destination" /> using
-    /// <paramref name="encoding" /> without throwing when the destination is too small.
-    /// </summary>
-    /// <param name="encoding">The encoding used to produce the bytes.</param>
-    /// <param name="chars">The character span to encode.</param>
-    /// <param name="destination">The destination buffer.</param>
-    /// <param name="bytesWritten">
-    /// When this method returns <see langword="true" />, contains the number of bytes written; otherwise zero.
-    /// </param>
-    /// <returns>
-    /// <see langword="true" /> if the encoding completed successfully; <see langword="false" /> when
-    /// <paramref name="destination" /> is too small.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="System.Text.EncoderFallbackException">
-    /// Thrown when <paramref name="encoding" /> uses <see cref="System.Text.EncoderExceptionFallback" /> and
-    /// <paramref name="chars" /> contains a code point that cannot be represented.
-    /// </exception>
-    /// <remarks>
-    /// Provided as the encoding-receiver mirror of
-    /// <see cref="TryEncodeTo(ReadOnlySpan{char}, System.Text.Encoding, Span{byte}, out int)" /> so that fluent code
-    /// starting from an <see cref="System.Text.Encoding" /> reference remains symmetrical.
-    /// </remarks>
-    public static bool TryGetBytes(
-        this System.Text.Encoding encoding,
-        ReadOnlySpan<char> chars,
-        Span<byte> destination,
-        out int bytesWritten)
-    {
-        ThrowHelper.ThrowIfNull(encoding);
-
-        return encoding.TryGetBytes(chars, destination, out bytesWritten);
-    }
-
-    /// <summary>
     /// Encodes <paramref name="chars" /> into <paramref name="destination" /> using <paramref name="encoding" /> and
     /// asserts that <paramref name="destination" /> is exactly the size required.
     /// </summary>

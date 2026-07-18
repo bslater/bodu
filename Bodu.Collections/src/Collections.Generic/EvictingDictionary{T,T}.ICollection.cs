@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionary{T,T}.ICollection.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -6,10 +6,13 @@
 
 using System.Collections;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionary<TKey, TValue> :
-    System.Collections.ICollection
+    System.Collections.ICollection,
+    IOrderedDictionaryView<TKey, TValue>
 {
     /// <summary>The lazily allocated object returned by <see cref="ICollection.SyncRoot" />.</summary>
     private object? _syncRoot;
@@ -18,28 +21,25 @@ public partial class EvictingDictionary<TKey, TValue> :
     bool ICollection.IsSynchronized => false;
 
     /// <inheritdoc />
-    object ICollection.SyncRoot
-    {
-        get
-        {
-            // Lazy initialization using a compare-and-swap to avoid allocating under contention.
-            return _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
-        }
-    }
+    object ICollection.SyncRoot =>
+        DictionaryViewCore.GetSyncRoot(ref _syncRoot);
 
     /// <inheritdoc />
-    void ICollection.CopyTo(Array array, int index)
-    {
-        // Purge expired entries first so the raw count used for validation matches the elements written.
+    int IOrderedDictionaryView<TKey, TValue>.ViewCount => _store.Count;
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Purges expired entries (raising the eviction events) so the count validated by the shared copy loop matches the
+    /// elements written. Runs after argument-shape validation, so a caller error cannot trigger evictions.
+    /// </remarks>
+    void IOrderedDictionaryView<TKey, TValue>.PrepareViewCopy() =>
         PurgeExpired();
 
-        ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayMultidimensional(array);
-        ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
-        ThrowHelper.ThrowIfLessThan(index, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _store.Count);
+    /// <inheritdoc />
+    IEnumerator<KeyValuePair<TKey, TValue>> IOrderedDictionaryView<TKey, TValue>.GetViewEnumerator() =>
+        GetEnumerator();
 
-        foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in GetOrderedItems())
-            array.SetValue(new DictionaryEntry(kvp.Key, kvp.Value), index++);
-    }
+    /// <inheritdoc />
+    void ICollection.CopyTo(Array array, int index) =>
+        DictionaryViewCore.CopyEntriesTo(this, array, index);
 }

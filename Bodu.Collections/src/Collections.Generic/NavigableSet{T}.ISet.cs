@@ -44,8 +44,9 @@ public sealed partial class NavigableSet<T>
     /// </summary>
     /// <param name="other">The collection to intersect with. Must not be <see langword="null" />.</param>
     /// <remarks>
-    /// Builds a one-shot projection of <paramref name="other" /> under this set's comparer and removes the non-members
-    /// — O((n + m) log m) overall.
+    /// Sorts <paramref name="other" /> into a scratch array under this set's comparer and merge-walks it against the
+    /// in-order enumeration to find the non-members — O(n + m log m) overall, with no tree nodes allocated for
+    /// <paramref name="other" />.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     public void IntersectWith(IEnumerable<T> other)
@@ -58,12 +59,16 @@ public sealed partial class NavigableSet<T>
         if (ReferenceEquals(other, this))
             return;
 
-        NavigableSet<T> projection = BuildProjection(other);
+        T[] sorted = BuildSortedOperand(other, out int uniqueCount);
         var stale = new List<T>();
 
+        int j = 0;
         foreach (T item in this)
         {
-            if (!projection.Contains(item))
+            while (j < uniqueCount && _comparer.Compare(sorted[j], item) < 0)
+                j++;
+
+            if (j == uniqueCount || _comparer.Compare(sorted[j], item) != 0)
                 stale.Add(item);
         }
 
@@ -104,8 +109,8 @@ public sealed partial class NavigableSet<T>
     /// The collection to apply symmetric difference with. Must not be <see langword="null" />.
     /// </param>
     /// <remarks>
-    /// Builds a one-shot deduplicated projection of <paramref name="other" /> and toggles membership per element — O((n
-    /// + m) log(n + m)) overall.
+    /// Sorts and deduplicates <paramref name="other" /> into a scratch array and toggles membership per distinct
+    /// element — O(m log m + m log n) overall, with no tree nodes allocated for <paramref name="other" />.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
     public void SymmetricExceptWith(IEnumerable<T> other)
@@ -118,12 +123,12 @@ public sealed partial class NavigableSet<T>
             return;
         }
 
-        NavigableSet<T> projection = BuildProjection(other);
+        T[] sorted = BuildSortedOperand(other, out int uniqueCount);
 
-        foreach (T item in projection)
+        for (int i = 0; i < uniqueCount; i++)
         {
-            if (!Add(item))
-                Remove(item);
+            if (!Add(sorted[i]))
+                Remove(sorted[i]);
         }
     }
 
@@ -143,18 +148,12 @@ public sealed partial class NavigableSet<T>
         if (_count == 0)
             return true;
 
-        NavigableSet<T> projection = BuildProjection(other);
+        if (ReferenceEquals(other, this))
+            return true;
 
-        if (_count > projection.Count)
-            return false;
+        T[] sorted = BuildSortedOperand(other, out int uniqueCount);
 
-        foreach (T item in this)
-        {
-            if (!projection.Contains(item))
-                return false;
-        }
-
-        return true;
+        return _count <= uniqueCount && IsMergeSubsetOf(sorted, uniqueCount);
     }
 
     /// <summary>
@@ -192,18 +191,12 @@ public sealed partial class NavigableSet<T>
     {
         ThrowHelper.ThrowIfNull(other);
 
-        NavigableSet<T> projection = BuildProjection(other);
-
-        if (_count >= projection.Count)
+        if (ReferenceEquals(other, this))
             return false;
 
-        foreach (T item in this)
-        {
-            if (!projection.Contains(item))
-                return false;
-        }
+        T[] sorted = BuildSortedOperand(other, out int uniqueCount);
 
-        return true;
+        return _count < uniqueCount && IsMergeSubsetOf(sorted, uniqueCount);
     }
 
     /// <summary>
@@ -219,14 +212,17 @@ public sealed partial class NavigableSet<T>
     {
         ThrowHelper.ThrowIfNull(other);
 
-        NavigableSet<T> projection = BuildProjection(other);
-
-        if (_count <= projection.Count)
+        if (ReferenceEquals(other, this))
             return false;
 
-        foreach (T item in projection)
+        T[] sorted = BuildSortedOperand(other, out int uniqueCount);
+
+        if (_count <= uniqueCount)
+            return false;
+
+        for (int i = 0; i < uniqueCount; i++)
         {
-            if (!Contains(item))
+            if (!Contains(sorted[i]))
                 return false;
         }
 
@@ -270,26 +266,95 @@ public sealed partial class NavigableSet<T>
     {
         ThrowHelper.ThrowIfNull(other);
 
-        NavigableSet<T> projection = BuildProjection(other);
+        if (ReferenceEquals(other, this))
+            return true;
 
-        if (_count != projection.Count)
+        T[] sorted = BuildSortedOperand(other, out int uniqueCount);
+
+        if (_count != uniqueCount)
             return false;
 
+        int index = 0;
         foreach (T item in this)
         {
-            if (!projection.Contains(item))
+            if (_comparer.Compare(sorted[index], item) != 0)
                 return false;
+
+            index++;
         }
 
         return true;
     }
 
     /// <summary>
-    /// Builds a temporary <see cref="NavigableSet{T}" /> projection of <paramref name="other" /> under this set's
-    /// comparer for O(log m) membership tests, deduplicating along the way.
+    /// Materializes <paramref name="other" /> as a sorted, comparer-deduplicated scratch array for merge-based
+    /// membership tests — a single array allocation with no tree nodes built.
     /// </summary>
     /// <param name="other">The source enumerable.</param>
-    /// <returns>A new set containing each comparer-distinct element of <paramref name="other" />.</returns>
-    private NavigableSet<T> BuildProjection(IEnumerable<T> other) =>
-        new(other, _comparer);
+    /// <param name="uniqueCount">
+    /// When this method returns, contains the number of comparer-distinct leading elements of the returned array.
+    /// </param>
+    /// <returns>
+    /// An array whose first <paramref name="uniqueCount" /> elements are the distinct elements of
+    /// <paramref name="other" /> in ascending comparer order.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="other" /> contains a <see langword="null" /> element.
+    /// </exception>
+    private T[] BuildSortedOperand(IEnumerable<T> other, out int uniqueCount)
+    {
+        T[] items = other.ToArray();
+        foreach (T item in items)
+        {
+            // Matches the null policy (and parameter name) of the bulk-load constructor that the previous
+            // projection path funneled every operand through.
+            if (item is null) throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_NullCollectionElement, "source");
+        }
+
+        if (items.Length == 0)
+        {
+            uniqueCount = 0;
+            return items;
+        }
+
+        Array.Sort(items, _comparer);
+
+        // Deduplicate in place, keeping the first occurrence of each comparer-equal run.
+        int unique = 1;
+        for (int i = 1; i < items.Length; i++)
+        {
+            if (_comparer.Compare(items[i], items[unique - 1]) != 0)
+                items[unique++] = items[i];
+        }
+
+        uniqueCount = unique;
+        return items;
+    }
+
+    /// <summary>
+    /// Determines whether every element of this set appears in the sorted, deduplicated operand via a single merge walk
+    /// against the in-order enumeration.
+    /// </summary>
+    /// <param name="sorted">The sorted operand produced by <see cref="BuildSortedOperand" />.</param>
+    /// <param name="uniqueCount">The number of distinct leading elements of <paramref name="sorted" />.</param>
+    /// <returns>
+    /// <see langword="true" /> if every element of the set is present in the operand; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    private bool IsMergeSubsetOf(T[] sorted, int uniqueCount)
+    {
+        int j = 0;
+        foreach (T item in this)
+        {
+            while (j < uniqueCount && _comparer.Compare(sorted[j], item) < 0)
+                j++;
+
+            if (j == uniqueCount || _comparer.Compare(sorted[j], item) != 0)
+                return false;
+
+            j++;
+        }
+
+        return true;
+    }
 }

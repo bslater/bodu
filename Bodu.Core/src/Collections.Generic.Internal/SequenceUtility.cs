@@ -30,14 +30,7 @@ internal static class SequenceUtility
     /// </remarks>
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> EnsureMaterialized<T>(IEnumerable<T> sequence) =>
-#if NET6_0_OR_GREATER
         sequence.TryGetNonEnumeratedCount(out _)
             ? sequence
             : sequence.ToArray();
-
-#else
-        sequence is ICollection<T>
-            ? sequence
-            : sequence.ToArray();
-#endif
 }

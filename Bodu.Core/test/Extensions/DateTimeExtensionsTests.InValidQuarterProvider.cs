@@ -43,13 +43,9 @@ public partial class DateTimeExtensionsTests
         /// <param name="dateTime">The input <see cref="DateTime" />.</param>
         public DateTime GetQuarterEnd(DateTime dateTime) => throw new ArgumentOutOfRangeException(nameof(dateTime), "This provider intentionally returns invalid quarter mappings.");
 
-        public DateTime GetQuarterEnd(int quarter) => throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
-
         public DateTime GetQuarterEnd(int quarter, int fiscalYear) => throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
 
         public DateOnly GetQuarterEndDate(DateOnly dateOnly) => throw new ArgumentOutOfRangeException(nameof(dateOnly), "This provider intentionally returns invalid quarter mappings.");
-
-        public DateOnly GetQuarterEndDate(int quarter) => throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
 
         public DateOnly GetQuarterEndDate(int quarter, int fiscalYear) => throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
 
@@ -59,13 +55,9 @@ public partial class DateTimeExtensionsTests
         /// <param name="dateTime">The input <see cref="DateTime" />.</param>
         public DateTime GetQuarterStart(DateTime dateTime) => throw new ArgumentOutOfRangeException(nameof(dateTime), "This provider intentionally returns invalid quarter mappings.");
 
-        public DateTime GetQuarterStart(int quarter) => throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
-
         public DateTime GetQuarterStart(int quarter, int fiscalYear) => throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
 
         public DateOnly GetQuarterStartDate(DateOnly dateOnly) => throw new ArgumentOutOfRangeException(nameof(dateOnly), "This provider intentionally returns invalid quarter mappings.");
-
-        public DateOnly GetQuarterStartDate(int quarter) => throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
 
         public DateOnly GetQuarterStartDate(int quarter, int fiscalYear) => throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
 

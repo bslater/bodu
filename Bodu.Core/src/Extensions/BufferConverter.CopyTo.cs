@@ -39,32 +39,17 @@ public static partial class BufferConverter
         ThrowHelper.ThrowIfNull(sourceArray);
         ThrowHelper.ThrowIfNull(targetArray);
 
-#if NET5_0_OR_GREATER
         int elementSize = Unsafe.SizeOf<T>();
-#else
-        int elementSize = Marshal.SizeOf<T>();
-#endif
+        ThrowHelper.ThrowIfMultiplyOverflows(count, elementSize);
         int byteCount = count * elementSize;
 
+        // The source range is measured in bytes; the target range is measured in T elements.
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(sourceArray, sourceIndex, byteCount);
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(targetArray, targetIndex, byteCount);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(targetArray, targetIndex, count);
 
-#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
         var sourceSpan = new ReadOnlySpan<byte>(sourceArray, sourceIndex, byteCount);
         var targetSpan = new Span<T>(targetArray, targetIndex, count);
         MemoryMarshal.Cast<byte, T>(sourceSpan).CopyTo(targetSpan);
-#else
-        var handle = GCHandle.Alloc(targetArray, GCHandleType.Pinned);
-        try
-        {
-            IntPtr destPtr = handle.AddrOfPinnedObject() + (targetIndex * elementSize);
-            Marshal.Copy(sourceArray, sourceIndex, destPtr, byteCount);
-        }
-        finally
-        {
-            handle.Free();
-        }
-#endif
     }
 
     /// <summary>
@@ -78,8 +63,6 @@ public static partial class BufferConverter
     /// <param name="count">The number of elements of type <typeparamref name="T" /> to copy.</param>
     public static void CopyTo<T>(this byte[] sourceArray, int sourceIndex, T[] targetArray, int count)
             where T : unmanaged => CopyTo(sourceArray, sourceIndex, targetArray, 0, count);
-
-#if !NETSTANDARD2_0
 
     /// <summary>
     /// Copies a specified number of elements of type <typeparamref name="T" /> from a source span into a target span.
@@ -97,11 +80,8 @@ public static partial class BufferConverter
     public static void CopyTo<T>(this ReadOnlySpan<byte> sourceSpan, Span<T> targetSpan, int count)
         where T : unmanaged
     {
-#if NET5_0_OR_GREATER
         int elementSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
-#else
-        int elementSize = Marshal.SizeOf<T>();
-#endif
+        ThrowHelper.ThrowIfMultiplyOverflows(count, elementSize);
         int byteCount = count * elementSize;
 
         // ThrowHelper will handle range and size checks
@@ -122,8 +102,6 @@ public static partial class BufferConverter
     public static void CopyTo<T>(this Memory<byte> sourceMemory, Memory<T> targetMemory, int count)
         where T : unmanaged => CopyTo(sourceMemory.Span, targetMemory.Span, count);
 
-#endif
-
     /// <summary>
     /// Copies a single value of type <typeparamref name="T" /> into a byte array at the specified index.
     /// </summary>
@@ -140,33 +118,10 @@ public static partial class BufferConverter
     {
         ThrowHelper.ThrowIfNull(targetArray);
 
-#if NET5_0_OR_GREATER
         int elementSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
-#else
-        int elementSize = Marshal.SizeOf<T>();
-#endif
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(targetArray, index, elementSize);
 
-#if NETSTANDARD2_0
-
-        // Use GCHandle to write without Span
-        var handle = GCHandle.Alloc(targetArray, GCHandleType.Pinned);
-        try
-        {
-            IntPtr destPtr = handle.AddrOfPinnedObject() + index;
-            Marshal.StructureToPtr(value, destPtr, false);
-        }
-        finally
-        {
-            handle.Free();
-        }
-#else
         Span<byte> target = targetArray.AsSpan(index, elementSize);
-#if NET8_0_OR_GREATER
-        MemoryMarshal.Write(target, in value); // preferred overload in .NET 8+
-#else
-        MemoryMarshal.Write(target, ref value); // for .NET 5–7
-#endif
-#endif
+        MemoryMarshal.Write(target, in value);
     }
 }

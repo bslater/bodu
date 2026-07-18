@@ -7,7 +7,8 @@
 namespace Bodu.Functional;
 
 /// <summary>
-/// Provides Task-based asynchronous companions to the <see cref="Result{T}" /> railway combinators.
+/// Provides Task-based asynchronous companions to the <see cref="Result{T}" /> and non-generic <see cref="Result" />
+/// railway combinators.
 /// </summary>
 /// <remarks>
 /// <para>

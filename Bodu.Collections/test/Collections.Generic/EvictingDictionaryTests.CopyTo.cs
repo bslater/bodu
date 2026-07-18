@@ -153,4 +153,28 @@ public partial class EvictingDictionaryTests
         Assert.AreEqual(42, array[1].Value);
     }
 
+    /// <summary>
+    /// Verifies that an invalid argument fails <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> before expired
+    /// entries are purged, so a caller error neither mutates the dictionary nor raises the eviction events.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenArrayIsNullAndEntriesExpired_ShouldThrowWithoutPurgingOrRaisingEvents()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(5), EvictingDictionaryExpirationKind.Absolute, time);
+        var dictionary = new EvictingDictionary<string, int>(4, EvictingDictionaryPolicy.LeastRecentlyUsed, null, expiration);
+        var evicted = new List<string>();
+        dictionary.ItemEvicted += (key, _) => evicted.Add(key);
+        dictionary.Add("A", 1);
+        time.Advance(TimeSpan.FromMinutes(10)); // "A" is now expired but not yet purged
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            dictionary.CopyTo(null!, 0);
+        });
+
+        Assert.IsEmpty(evicted, "A caller error must not purge expired entries or raise eviction events.");
+        Assert.AreEqual(1, dictionary.Count, "The expired-but-unpurged entry must remain physically stored.");
+    }
+
 }

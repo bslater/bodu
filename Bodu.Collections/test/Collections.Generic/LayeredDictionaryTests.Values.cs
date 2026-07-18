@@ -33,4 +33,22 @@ public partial class LayeredDictionaryTests
 
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, values.ToList());
     }
+
+    /// <summary>
+    /// Verifies that the returned value collection is read-only and is not write-through: mutating members throw
+    /// <see cref="NotSupportedException" />.
+    /// </summary>
+    [TestMethod]
+    public void Values_WhenMutated_ShouldThrowNotSupportedException()
+    {
+        var view = CreatePopulated(out _, out _);
+
+        ICollection<int> values = view.Values;
+
+        Assert.IsTrue(values.IsReadOnly);
+        Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            values.Add(99);
+        });
+    }
 }

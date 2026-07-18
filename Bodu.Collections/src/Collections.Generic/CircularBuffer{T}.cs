@@ -368,6 +368,10 @@ public sealed class CircularBuffer<T>
     /// </exception>
     private bool TryEnqueueInternal(T item, bool throwIfFull)
     {
+        // Guard at the funnel entry: the eviction path below re-raises the events before touching any guarded
+        // primitive, so a handler re-entering here would otherwise recurse without limit.
+        ThrowIfEvicting();
+
         if (Count == Capacity)
         {
             if (!AllowOverwrite)
@@ -376,13 +380,30 @@ public sealed class CircularBuffer<T>
             }
 
             // When full, head == tail, so PeekHead returns the slot the eviction will overwrite.
-            // Capture before raising ItemEvicting so a handler exception vetoes the eviction in place.
+            // Capture before raising ItemEvicting so a handler exception vetoes the eviction in place. Dispatch is
+            // latched so a handler attempting to mutate the buffer fails fast instead of corrupting mid-eviction state.
             T overwritten = PeekHead();
-            ItemEvicting?.Invoke(overwritten);
+            try
+            {
+                SetEvictionDispatch(true);
+                ItemEvicting?.Invoke(overwritten);
+            }
+            finally
+            {
+                SetEvictionDispatch(false);
+            }
 
             OverwriteTail(item);
 
-            ItemEvicted?.Invoke(overwritten);
+            try
+            {
+                SetEvictionDispatch(true);
+                ItemEvicted?.Invoke(overwritten);
+            }
+            finally
+            {
+                SetEvictionDispatch(false);
+            }
         }
         else
         {

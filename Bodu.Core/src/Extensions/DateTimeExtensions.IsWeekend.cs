@@ -95,8 +95,47 @@ public static partial class DateTimeExtensions
             ? provider is null
                 ? throw new ArgumentOutOfRangeException(
                     nameof(workingWeek),
-                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, workingWeek, nameof(WorkingDaysOfWeek)))
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, nameof(WorkingDaysOfWeek), workingWeek))
                 : provider.IsWeekend(dayOfWeek)
             : !workingWeek.ToWeekPattern().Contains(dayOfWeek);
+    }
+
+    /// <summary>
+    /// Resolves the effective week pattern for a working-week day-stepping walk, or <see langword="null" /> when
+    /// <paramref name="workingWeek" /> is <see cref="WorkingDaysOfWeek.Custom" /> and <paramref name="provider" /> must
+    /// be consulted per day instead.
+    /// </summary>
+    /// <param name="workingWeek">The working-week selector to resolve.</param>
+    /// <param name="provider">
+    /// The custom weekend provider, consulted only when <paramref name="workingWeek" /> is
+    /// <see cref="WorkingDaysOfWeek.Custom" />.
+    /// </param>
+    /// <returns>
+    /// The canonical <see cref="WeekPattern" /> for a named working week; <see langword="null" /> when the caller must
+    /// evaluate <paramref name="provider" /> per day.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="workingWeek" /> is <see cref="WorkingDaysOfWeek.Custom" /> and <paramref name="provider" /> is
+    /// <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// Hoists the working-week validation and pattern conversion that
+    /// <see cref="IsWeekend(DayOfWeek, WorkingDaysOfWeek, IWeekendDefinitionProvider?)" /> would otherwise repeat on
+    /// every stepped day of a <c>NextWeekday</c> / <c>PreviousWeekday</c> walk, preserving that method's exception
+    /// contract for the Custom-without-provider case.
+    /// </remarks>
+    internal static WeekPattern? ResolveWorkingWeekPattern(WorkingDaysOfWeek workingWeek, IWeekendDefinitionProvider? provider)
+    {
+        if (workingWeek != WorkingDaysOfWeek.Custom)
+            return workingWeek.ToWeekPattern();
+
+        if (provider is null)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(workingWeek),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, nameof(WorkingDaysOfWeek), workingWeek));
+        }
+
+        return null;
     }
 }

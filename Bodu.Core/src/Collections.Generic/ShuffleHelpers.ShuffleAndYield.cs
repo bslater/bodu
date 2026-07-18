@@ -49,7 +49,9 @@ public static partial class ShuffleHelpers
 
             int available = buffer.Length;
 
-            while (count-- > 0)
+            // Count down a per-enumeration local: mutating the captured parameter would leave it at zero for any
+            // subsequent enumeration of the same returned sequence.
+            for (int remaining = count; remaining > 0; remaining--)
             {
                 int i = rng.Next(available);
                 yield return buffer[i];
@@ -75,7 +77,8 @@ public static partial class ShuffleHelpers
     /// </exception>
     /// <remarks>
     /// The input array is copied before shuffling to ensure immutability of the original. Use this method when working
-    /// with arrays and requiring source preservation.
+    /// with arrays and requiring source preservation. Argument validation runs eagerly at the call site; copying and
+    /// shuffling are deferred until the result is first iterated.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> ShuffleAndYield<T>(T[] array, IRandomGenerator rng, int count)
@@ -84,14 +87,19 @@ public static partial class ShuffleHelpers
         ThrowHelper.ThrowIfNull(rng);
         ThrowHelper.ThrowIfCountExceedsAvailable(count, array.Length);
 
-        T[] buffer = [.. array]; // Copy the source array to avoid modifying it
-        int available = buffer.Length;
+        return LazyIterator();
 
-        while (count-- > 0)
+        IEnumerable<T> LazyIterator()
         {
-            int i = rng.Next(available);
-            yield return buffer[i];
-            buffer[i] = buffer[--available]; // Replace used item with the last unselected one
+            T[] buffer = [.. array]; // Copy the source array to avoid modifying it
+            int available = buffer.Length;
+
+            for (int remaining = count; remaining > 0; remaining--)
+            {
+                int i = rng.Next(available);
+                yield return buffer[i];
+                buffer[i] = buffer[--available]; // Replace used item with the last unselected one
+            }
         }
     }
 
@@ -103,13 +111,29 @@ public static partial class ShuffleHelpers
     /// <param name="rng">The random number generator.</param>
     /// <returns>A lazily-evaluated, fully shuffled sequence.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="source" /> is <see langword="null" />.
+    /// Thrown when <paramref name="source" /> or <paramref name="rng" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// The source is enumerated exactly once, when the result is first iterated — safe for one-shot sequences and
+    /// sequences with side effects.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> ShuffleAndYield<T>(IEnumerable<T> source, IRandomGenerator rng)
     {
         ThrowHelper.ThrowIfNull(source);
-        return ShuffleAndYield(source, rng, source.CountOrDefault());
+        ThrowHelper.ThrowIfNull(rng);
+
+        return LazyIterator();
+
+        IEnumerable<T> LazyIterator()
+        {
+            // Buffer with a single enumeration; the internal overload shuffles the private copy in place without
+            // re-copying it (the previous implementation pre-counted the source, enumerating it twice).
+            T[] buffer = [.. source];
+
+            foreach (T item in ShuffleAndYieldInternal(buffer, rng, buffer.Length))
+                yield return item;
+        }
     }
 
     /// <summary>
@@ -128,8 +152,6 @@ public static partial class ShuffleHelpers
         ThrowHelper.ThrowIfNull(array);
         return ShuffleAndYield(array, rng, array.Length);
     }
-
-#if !NETSTANDARD2_0
 
     /// <summary>
     /// Yields a fully shuffled copy of the span.
@@ -178,8 +200,6 @@ public static partial class ShuffleHelpers
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> ShuffleAndYield<T>(Memory<T> memory, IRandomGenerator rng, int count) => ShuffleAndYield(memory.ToArray(), rng, count);
-
-#endif
 
     /// <summary>
     /// Yields a randomized subset of the specified array using an in-place partial Fisher–Yates shuffle.

@@ -6,10 +6,13 @@
 
 using System.Collections;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 public partial class SequencedDictionary<TKey, TValue> :
-    System.Collections.ICollection
+    System.Collections.ICollection,
+    IOrderedDictionaryView<TKey, TValue>
 {
     /// <summary>The lazily allocated object returned by <see cref="ICollection.SyncRoot" />.</summary>
     private object? _syncRoot;
@@ -18,25 +21,25 @@ public partial class SequencedDictionary<TKey, TValue> :
     bool ICollection.IsSynchronized => false;
 
     /// <inheritdoc />
-    object ICollection.SyncRoot
+    object ICollection.SyncRoot =>
+        DictionaryViewCore.GetSyncRoot(ref _syncRoot);
+
+    /// <inheritdoc />
+    int IOrderedDictionaryView<TKey, TValue>.ViewCount => _store.Count;
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The sequenced dictionary has no expiry or other pre-copy work; this is a no-op.
+    /// </remarks>
+    void IOrderedDictionaryView<TKey, TValue>.PrepareViewCopy()
     {
-        get
-        {
-            // Lazy initialization using a compare-and-swap to avoid allocating under contention.
-            return _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
-        }
     }
 
     /// <inheritdoc />
-    void ICollection.CopyTo(Array array, int index)
-    {
-        ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayMultidimensional(array);
-        ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
-        ThrowHelper.ThrowIfLessThan(index, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _store.Count);
+    IEnumerator<KeyValuePair<TKey, TValue>> IOrderedDictionaryView<TKey, TValue>.GetViewEnumerator() =>
+        GetEnumerator();
 
-        foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in GetOrderedItems())
-            array.SetValue(new DictionaryEntry(kvp.Key, kvp.Value), index++);
-    }
+    /// <inheritdoc />
+    void ICollection.CopyTo(Array array, int index) =>
+        DictionaryViewCore.CopyEntriesTo(this, array, index);
 }

@@ -8,7 +8,7 @@ namespace Bodu.Sequences;
 
 /// <summary>
 /// Provides static factory methods that produce lazily evaluated <see cref="IEnumerable{T}" /> sequences without
-/// materializing the underlying collection — both general-purpose shapes (<c>Range</c>, <c>Repeat</c>, <c>NextWhile</c>,
+/// materializing the underlying collection — both general-purpose shapes (<c>Range</c>, <c>NextWhile</c>,
 /// <c>Factory</c>) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and
 /// Thue–Morse).
 /// </summary>
@@ -21,8 +21,8 @@ namespace Bodu.Sequences;
 /// <para>
 /// The general-purpose primitives cover numeric and value projections, stateful generation, and enumerator adaptation.
 /// <c>Range</c> overloads accept either an inclusive start / exclusive stop pair (with an inferred step direction) or
-/// an explicit step, and operate over <see cref="int" /> and <see cref="long" /> domains. <c>Repeat</c> produces either
-/// a finite or unbounded sequence of a single value, supporting both reference and value types. <c>NextWhile</c> drives
+/// an explicit step, and operate over <see cref="int" /> and <see cref="long" /> domains. For a fixed-length
+/// single-value feed, use <see cref="System.Linq.Enumerable.Repeat{TResult}(TResult, int)" />. <c>NextWhile</c> drives
 /// a state-machine-style generator from an initial state and a transition delegate, terminating when the supplied
 /// predicate is no longer satisfied. <c>Factory</c> wraps a delegate-returned <see cref="IEnumerator{T}" /> so callers
 /// can adapt non-collection iteration sources to the LINQ pipeline.

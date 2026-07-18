@@ -57,8 +57,8 @@ public static partial class ArrayExtensions
     }
 
     /// <summary>
-    /// Takes a slice of the specified array starting from a given index and extending for a specified number of
-    /// elements.
+    /// Copies a slice of the specified array starting from a given index and extending for a specified number of
+    /// elements, without validating its arguments.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the array.</typeparam>
     /// <param name="array">The one-dimensional array that contains the values to copy.</param>
@@ -69,17 +69,15 @@ public static partial class ArrayExtensions
     /// <paramref name="index" />.
     /// </returns>
     /// <remarks>
-    /// This method is optimized and does not perform validation. Ensure the inputs are valid.
+    /// <para>
+    /// This is an internal fast path that performs no argument validation. Every public <c>Slice</c> entry point
+    /// validates <paramref name="array" />, <paramref name="index" />, and <paramref name="count" /> before delegating
+    /// here, so the guard is not repeated. Callers must guarantee that <paramref name="array" /> is non-<see langword="null" />
+    /// and that <paramref name="index" /> and <paramref name="count" /> describe a valid range within it.
+    /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="array" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when an argument is outside its valid range.</exception>
-    public static T[] SliceInternal<T>(this T[] array, int index, int count)
+    internal static T[] SliceInternal<T>(this T[] array, int index, int count)
     {
-        ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, index, count);
-
         var result = new T[count];
         Array.Copy(array, index, result, 0, count);
         return result;

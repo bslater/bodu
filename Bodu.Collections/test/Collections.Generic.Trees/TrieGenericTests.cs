@@ -183,6 +183,23 @@ public sealed class TrieGenericTests
     }
 
     /// <summary>
+    /// Verifies that enumeration yields the entries in exactly the order produced by the internal snapshot walk,
+    /// pinning the enumeration order of <see cref="Trie{TValue}.GetEnumerator" />.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenIterated_ShouldMatchSnapshotWalkOrder()
+    {
+        var sut = new Trie<int> { [""] = 0, ["car"] = 1, ["card"] = 2, ["care"] = 3, ["cat"] = 4, ["do"] = 5, ["dog"] = 6 };
+
+        KeyValuePair<string, int>[] expected = sut.ToArrayInternal();
+        var actual = new List<KeyValuePair<string, int>>();
+        foreach (KeyValuePair<string, int> item in sut)
+            actual.Add(item);
+
+        CollectionAssert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
     /// Verifies that mutating the trie during enumeration throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
@@ -208,5 +225,40 @@ public sealed class TrieGenericTests
 
         Assert.IsTrue(sut.ContainsKey("key"));
         Assert.AreEqual(1, sut["KEY"]);
+    }
+
+    /// <summary>
+    /// Verifies that the span <see cref="Trie{TValue}.Remove(ReadOnlySpan{char})" /> overload removes a present key
+    /// and reports success, mirroring the string overload.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenSpanKeyPresent_ShouldRemoveAndReturnTrue()
+    {
+        var sut = new Trie<int>();
+        sut.Add("tea", 1);
+        sut.Add("team", 2);
+
+        bool removed = sut.Remove("tea".AsSpan());
+
+        Assert.IsTrue(removed);
+        Assert.IsFalse(sut.ContainsKey("tea"));
+        Assert.IsTrue(sut.ContainsKey("team"));
+        Assert.AreEqual(1, sut.Count);
+    }
+
+    /// <summary>
+    /// Verifies that the span <see cref="Trie{TValue}.Remove(ReadOnlySpan{char})" /> overload returns
+    /// <see langword="false" /> for an absent key.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenSpanKeyAbsent_ShouldReturnFalse()
+    {
+        var sut = new Trie<int>();
+        sut.Add("tea", 1);
+
+        bool removed = sut.Remove("dog".AsSpan());
+
+        Assert.IsFalse(removed);
+        Assert.AreEqual(1, sut.Count);
     }
 }

@@ -133,8 +133,9 @@ public sealed partial class IntervalTree<TKey, TValue>
             comparison = CompareToNode(low, high, current);
             if (comparison == 0)
             {
-                // Existing interval: append the value to the node's entry list.
-                current.Values.Add(value);
+                // Existing interval: append the value to the lazily allocated overflow list — the first value
+                // stays inline, so the list exists only once an interval carries a second value.
+                (current.OverflowValues ??= new List<TValue>(1)).Add(value);
                 _count++;
                 _version++;
                 return;
@@ -235,7 +236,7 @@ public sealed partial class IntervalTree<TKey, TValue>
         if (node == null)
             return false;
 
-        int index = node.Values.IndexOf(value);
+        int index = node.IndexOfValue(value);
         if (index < 0)
             return false;
 
@@ -298,10 +299,26 @@ public sealed partial class IntervalTree<TKey, TValue>
     /// <param name="index">The index of the entry within the node's value list.</param>
     private void RemoveEntryAt(Node node, int index)
     {
-        if (node.Values.Count > 1)
-            node.Values.RemoveAt(index);
+        if (node.OverflowValues is { Count: > 0 } overflow)
+        {
+            if (index == 0)
+            {
+                // FIFO: the second-oldest entry is promoted into the inline slot.
+                node.FirstValue = overflow[0];
+                overflow.RemoveAt(0);
+            }
+            else
+            {
+                overflow.RemoveAt(index - 1);
+            }
+
+            if (overflow.Count == 0)
+                node.OverflowValues = null;
+        }
         else
+        {
             RemoveNode(node);
+        }
 
         _count--;
         _version++;

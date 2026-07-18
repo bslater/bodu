@@ -36,8 +36,6 @@ public static partial class ShuffleHelpers
         }
     }
 
-#if !NETSTANDARD2_0
-
     /// <summary>
     /// Performs an in-place Fisher–Yates shuffle over a span of elements.
     /// </summary>
@@ -82,6 +80,4 @@ public static partial class ShuffleHelpers
         ThrowHelper.ThrowIfNull(rng);
         Shuffle(memory.Span, rng);
     }
-
-#endif
 }

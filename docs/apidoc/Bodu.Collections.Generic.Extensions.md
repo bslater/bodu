@@ -16,7 +16,7 @@ uid: Bodu.Collections.Generic.Extensions
 - <xref:Bodu.Collections.Generic.ShuffleHelpers>, <xref:Bodu.Collections.Generic.Extensions.SystemRandomAdapter>, <xref:Bodu.Collections.Generic.Extensions.RandomizationMode> — pluggable randomness-driven shuffles backed by <xref:Bodu.IRandomGenerator>.
 
 > [!TIP]
-> Looking for sequence *producers* — `Range`, `Repeat`, `NextWhile`, or named series such as `Fibonacci`? Those live on `SequenceGenerator` in the dedicated <xref:Bodu.Sequences> namespace.
+> Looking for sequence *producers* — `Range`, `NextWhile`, or named series such as `Fibonacci`? Those live on `SequenceGenerator` in the dedicated <xref:Bodu.Sequences> namespace.
 
 ## Example
 
@@ -24,7 +24,7 @@ uid: Bodu.Collections.Generic.Extensions
 using Bodu.Collections.Generic.Extensions;
 
 // Batched enumeration over an IEnumerable<T>.
-foreach (IReadOnlyList<int> batch in Enumerable.Range(0, 100).Batch(size: 16))
+foreach (IEnumerable<int> batch in Enumerable.Range(0, 100).Batch(size: 16, selector: static x => x))
     Process(batch);
 
 // Recursive selection.

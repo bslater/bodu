@@ -22,20 +22,41 @@ public partial class WeekPatternTests
     public void EqualsByte_WhenComparing_ShouldReturnExpectedResult(byte first, byte second, bool expected) => Assert.AreEqual(expected, WeekPattern.FromByte(first).Equals(second));
 
     /// <summary>
-    /// Verifies that <see cref="WeekPattern.Equals(object)" /> returns the expected result when the
-    /// argument is a boxed <see cref="byte" />, exercising the byte-dispatch branch added to the
-    /// <c>Equals(object)</c> overload.
+    /// Verifies that <see cref="WeekPattern.Equals(object)" /> returns <see langword="false" /> for a boxed
+    /// <see cref="byte" />, even when its value matches the underlying bitmask, so that object-level equality stays
+    /// symmetric with <see cref="byte.Equals(object)" />.
     /// </summary>
     [TestMethod]
-    [DataRow((byte)0, (byte)0, true)]
-    [DataRow((byte)1, (byte)1, true)]
-    [DataRow((byte)127, (byte)127, true)]
-    [DataRow((byte)7, (byte)5, false)]
-    [DataRow((byte)0, (byte)1, false)]
-    public void EqualsObject_WhenBoxedByte_ShouldReturnExpectedResult(byte patternMask, byte compareMask, bool expected)
+    [DataRow((byte)0, (byte)0)]
+    [DataRow((byte)1, (byte)1)]
+    [DataRow((byte)127, (byte)127)]
+    [DataRow((byte)7, (byte)5)]
+    [DataRow((byte)0, (byte)1)]
+    public void EqualsObject_WhenBoxedByte_ShouldReturnFalse(byte patternMask, byte compareMask)
     {
         var pattern = WeekPattern.FromByte(patternMask);
-        Assert.AreEqual(expected, pattern.Equals((object)compareMask));
+        Assert.IsFalse(pattern.Equals((object)compareMask));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.Equals(object)" /> is symmetric with <see cref="byte.Equals(object)" />:
+    /// comparing a <see cref="WeekPattern" /> to a boxed <see cref="byte" /> yields the same result in both directions
+    /// (always <see langword="false" />), even when their bitmasks match.
+    /// </summary>
+    [TestMethod]
+    [DataRow((byte)0)]
+    [DataRow((byte)1)]
+    [DataRow((byte)42)]
+    [DataRow((byte)127)]
+    public void EqualsObject_WhenComparedWithBoxedByte_ShouldBeSymmetric(byte mask)
+    {
+        var pattern = WeekPattern.FromByte(mask);
+        object boxedByte = mask;
+        object boxedPattern = pattern;
+
+        Assert.AreEqual(boxedByte.Equals(boxedPattern), pattern.Equals(boxedByte));
+        Assert.IsFalse(pattern.Equals(boxedByte));
+        Assert.IsFalse(boxedByte.Equals(boxedPattern));
     }
 
     /// <summary>

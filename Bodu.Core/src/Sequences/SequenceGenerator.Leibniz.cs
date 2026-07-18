@@ -13,16 +13,18 @@ public static partial class SequenceGenerator
     /// within the requested half-open interval.
     /// </summary>
     /// <param name="min">
-    /// The inclusive lower bound on the absolute value of emitted terms. Terms with
-    /// <c>|F(n)| &lt; <paramref name="min" /></c> are skipped rather than terminating iteration. Must be non-negative.
+    /// The inclusive lower bound on the absolute value of emitted terms. Because term magnitudes strictly decrease,
+    /// iteration ends as soon as <c>|F(n)| &lt; <paramref name="min" /></c> — no later term can re-enter the window.
+    /// Must be non-negative; a value of <c>0</c> produces an unbounded sequence (bound consumption with
+    /// <c>Take</c>).
     /// </param>
     /// <param name="max">
     /// The exclusive upper bound on the absolute value of emitted terms. Iteration stops as soon as
     /// <c>|F(n)| ≥ <paramref name="max" /></c>. Must be non-negative and not less than <paramref name="min" />.
     /// </param>
     /// <returns>
-    /// A lazily evaluated, finite sequence of <see cref="double" /> values drawn from the Leibniz series in their
-    /// original (signed) alternating order.
+    /// A lazily evaluated sequence of <see cref="double" /> values drawn from the Leibniz series in their original
+    /// (signed) alternating order. The sequence is finite whenever <paramref name="min" /> is greater than zero.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="min" /> or <paramref name="max" /> is negative.
@@ -37,16 +39,17 @@ public static partial class SequenceGenerator
     /// <c>4</c>, or when demonstrating how slowly such an alternating series converges.
     /// </para>
     /// <para>
-    /// The window is applied to absolute magnitudes so that the alternating sign is preserved in the output. The lower
-    /// bound behaves as a magnitude floor (terms below it are filtered, not terminating), while the upper bound behaves
-    /// as a stop condition: as soon as a term's magnitude reaches <paramref name="max" /> iteration ends. Setting
-    /// <paramref name="min" /> to <c>0</c> emits every term up to <paramref name="max" />.
+    /// The window is applied to absolute magnitudes so that the alternating sign is preserved in the output. Both
+    /// bounds are terminating: as soon as a term's magnitude reaches <paramref name="max" /> or falls below
+    /// <paramref name="min" />, iteration ends. Setting <paramref name="min" /> to <c>0</c> emits every term below
+    /// <paramref name="max" /> without terminating.
     /// </para>
     /// <para>
-    /// Because the magnitude sequence <c>1, 1/3, 1/5, …</c> is monotonically decreasing, a non-zero
-    /// <paramref name="min" /> produces at most a finite leading run before the predicate filters everything else;
-    /// iteration still progresses until the upper bound is reached. The iterator is deferred, deterministic, and
-    /// allocates only its own state.
+    /// Because the magnitude sequence <c>1, 1/3, 1/5, …</c> starts at one and is monotonically decreasing, the upper
+    /// bound only ever gates the first term — a <paramref name="max" /> of <c>1</c> or less terminates immediately
+    /// with an empty sequence — and once a term drops below <paramref name="min" /> no later term can return to the
+    /// window, so ending iteration there is what keeps the sequence finite. The iterator is deferred, deterministic,
+    /// and allocates only its own state.
     /// </para>
     /// </remarks>
     /// <example>
@@ -69,15 +72,14 @@ public static partial class SequenceGenerator
 
         for (int n = 0; ; n++)
         {
-            double term = Math.Pow(-1, n) / ((2 * n) + 1);
+            double magnitude = 1.0 / ((2 * n) + 1);
 
-            if (Math.Abs(term) < min)
-                continue;
-
-            if (Math.Abs(term) >= max)
+            // Magnitudes strictly decrease from 1, so a term at or above the upper bound can only be the first term,
+            // and a term below the lower bound can never be followed by one back inside the window — both end iteration.
+            if (magnitude >= max || magnitude < min)
                 yield break;
 
-            yield return term;
+            yield return (n & 1) == 0 ? magnitude : -magnitude;
         }
     }
 }

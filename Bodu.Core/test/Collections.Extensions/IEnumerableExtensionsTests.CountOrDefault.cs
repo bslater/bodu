@@ -122,4 +122,19 @@ public sealed partial class IEnumerableExtensionsTests_CountOrDefault
 
     }
 
+    /// <summary>
+    /// Verifies that a <see langword="null" /> source throws <see cref="ArgumentNullException" /> from the guard, as
+    /// the class documentation promises.
+    /// </summary>
+    [TestMethod]
+    public void CountOrDefault_WhenSourceIsNull_ShouldThrowExactly()
+    {
+        System.Collections.IEnumerable? source = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source!.CountOrDefault();
+        });
+    }
+
 }

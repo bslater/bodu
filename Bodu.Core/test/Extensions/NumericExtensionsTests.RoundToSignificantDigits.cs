@@ -159,4 +159,43 @@ public partial class NumericExtensionsTests
     public void RoundToSignificantDigits_Double_WhenZero_ShouldReturnZero() =>
         Assert.AreEqual(0.0, 0.0.RoundToSignificantDigits(5));
 
+    /// <summary>
+    /// Verifies that the <see cref="decimal" /> overload rounds small-magnitude values at the full 28-digit precision
+    /// limit without overflowing (the previous double-based scale computation overflowed <see cref="decimal" /> for
+    /// these inputs).
+    /// </summary>
+    [TestMethod]
+    public void RoundToSignificantDigits_Decimal_WhenSmallValueAtFullPrecision_ShouldReturnValueUnchanged()
+    {
+        decimal value = 0.0000001m;
+
+        Assert.AreEqual(value, value.RoundToSignificantDigits(28));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="decimal" /> overload rounds representative values exactly, using pure decimal
+    /// arithmetic with no precision loss from an intermediate <see cref="double" /> round-trip.
+    /// </summary>
+    [TestMethod]
+    public void RoundToSignificantDigits_Decimal_WhenRounded_ShouldReturnExactDecimalResult()
+    {
+        Assert.AreEqual(12300m, 12345.6789m.RoundToSignificantDigits(3));
+        Assert.AreEqual(0.0012m, 0.0012345m.RoundToSignificantDigits(2));
+        Assert.AreEqual(-12350m, (-12345.6789m).RoundToSignificantDigits(4));
+        Assert.AreEqual(1234567890123456789012345680m, 1234567890123456789012345678m.RoundToSignificantDigits(27));
+    }
+
+    /// <summary>
+    /// Verifies that rounding a value within one rounding step of <see cref="decimal.MaxValue" /> to a single
+    /// significant digit throws <see cref="OverflowException" />, per the documented contract.
+    /// </summary>
+    [TestMethod]
+    public void RoundToSignificantDigits_Decimal_WhenRoundingExceedsRange_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = decimal.MaxValue.RoundToSignificantDigits(1);
+        });
+    }
+
 }

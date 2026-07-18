@@ -11,13 +11,21 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
+    /// The platform's invalid file-name characters as a vectorised search set, computed once per process
+    /// (<see cref="Path.GetInvalidFileNameChars" /> allocates a fresh array on every call).
+    /// </summary>
+    private static readonly System.Buffers.SearchValues<char> s_invalidFileNameChars =
+        System.Buffers.SearchValues.Create(Path.GetInvalidFileNameChars());
+
+    /// <summary>
     /// Returns <paramref name="value" /> with every character that <see cref="Path.GetInvalidFileNameChars" /> reports
     /// as invalid for a file name replaced by an underscore.
     /// </summary>
     /// <param name="value">The candidate file name to sanitise.</param>
     /// <returns>
-    /// A new string in which each invalid character has been replaced by <c>'_'</c>. Returns <c>"_"</c> when the input
-    /// is empty so that the result is never itself an empty file name.
+    /// A string in which each invalid character has been replaced by <c>'_'</c> — the original instance when nothing
+    /// required replacement. Returns <c>"_"</c> when the input is empty so that the result is never itself an empty
+    /// file name.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
@@ -33,13 +41,20 @@ public static partial class StringExtensions
 
         if (value.Length == 0) return "_";
 
-        char[] invalid = Path.GetInvalidFileNameChars();
-        StringBuilder builder = new(value.Length);
-        foreach (char c in value)
-        {
-            builder.Append(Array.IndexOf(invalid, c) >= 0 ? '_' : c);
-        }
+        // Vectorised scan: the common all-valid input returns the original instance with no allocation.
+        int firstInvalid = value.AsSpan().IndexOfAny(s_invalidFileNameChars);
+        if (firstInvalid < 0) return value;
 
-        return builder.ToString();
+        return string.Create(value.Length, (value, firstInvalid), static (destination, state) =>
+        {
+            (string source, int first) = state;
+            source.AsSpan(0, first).CopyTo(destination);
+
+            for (int i = first; i < source.Length; i++)
+            {
+                char c = source[i];
+                destination[i] = s_invalidFileNameChars.Contains(c) ? '_' : c;
+            }
+        });
     }
 }

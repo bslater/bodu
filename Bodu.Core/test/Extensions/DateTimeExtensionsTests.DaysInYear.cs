@@ -36,7 +36,7 @@ public partial class DateTimeExtensionsTests
             customCulture.DateTimeFormat.Calendar = new UmAlQuraCalendar(); // Has non-Gregorian year lengths
             CultureInfo.CurrentCulture = customCulture;
 
-            DateTime input = new(1445, 1, 1); // 1445 AH (2023-07-19 Gregorian)
+            DateTime input = new(2023, 7, 19); // Gregorian date falling in 1445 AH
             int expected = customCulture.DateTimeFormat.Calendar.GetDaysInYear(1445);
             int actual = input.DaysInYear(); // Should use current culture calendar
 
@@ -49,15 +49,36 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.DaysInYear" />, when UsingCustomCalendar, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.DaysInYear" />, when UsingCustomCalendar, projects the date into the
+    /// calendar's own year reckoning and returns that year's length.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(DaysInYearTestData), typeof(DateTimeExtensionsTests))]
     public void DaysInYear_WhenUsingCustomCalendar_ShouldMatchExpected(int year, Calendar calendar, int expectedDays)
     {
-        DateTime input = new(year, 1, 1);
+        // Build a DateTime that actually falls in the calendar-native year under test.
+        DateTime input = calendar.ToDateTime(year, 1, 1, 0, 0, 0, 0);
+
         int actual = input.DaysInYear(calendar);
+
         Assert.AreEqual(expectedDays, actual, $"{calendar.GetType().Name} returned {actual} days for year {year}.");
+    }
+
+    /// <summary>
+    /// Verifies that a non-Gregorian calendar receives the date projected into its own year reckoning: for 2024-03-15
+    /// the <see cref="UmAlQuraCalendar" /> year is 1445 AH (354 days), whereas passing the Gregorian year 2024 directly
+    /// would throw <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void DaysInYear_WhenCalendarIsUmAlQura_ShouldReturnThatCalendarsYearLength()
+    {
+        var calendar = new UmAlQuraCalendar();
+        var date = new DateTime(2024, 3, 15); // 1445 AH in the Um Al-Qura calendar
+
+        int actual = date.DaysInYear(calendar);
+
+        Assert.AreEqual(calendar.GetDaysInYear(calendar.GetYear(date)), actual);
+        Assert.AreEqual(354, actual);
     }
 
     /// <summary>

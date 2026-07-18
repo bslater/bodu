@@ -102,6 +102,79 @@ public partial class OrderedSetStorageTests
         Assert.IsFalse(sut.Contains("alpha"));
         Assert.AreEqual(1, sut.Count);
     }
+    /// <summary>
+    /// Verifies that removing a single element by index performs O(1) hash-table maintenance — it must not rehash
+    /// every stored element through <see cref="IEqualityComparer{T}.GetHashCode" />.
+    /// </summary>
+    [TestMethod]
+    public void HashTable_WhenRemoveAtSingleElement_ShouldInvokeGetHashCodeConstantTimes()
+    {
+        var comparer = new CountingIntComparer();
+        var sut = new OrderedSetStorage<int>(512, comparer);
+        for (int i = 0; i < 200; i++)
+            sut.Add(i);
+
+        int before = comparer.GetHashCodeCalls;
+        sut.RemoveAt(100);
+        int calls = comparer.GetHashCodeCalls - before;
+
+        Assert.IsTrue(calls <= 2, $"RemoveAt invoked GetHashCode {calls} times; expected O(1), not O(n).");
+        Assert.AreEqual(199, sut.Count);
+        Assert.IsFalse(sut.Contains(100));
+        for (int i = 0; i < sut.Count; i++)
+            Assert.AreEqual(i, sut.IndexOf(sut.GetAt(i)));
+    }
+
+    /// <summary>
+    /// Verifies that replacing a single element performs a two-node bucket fix-up — it must not rehash every stored
+    /// element through <see cref="IEqualityComparer{T}.GetHashCode" />.
+    /// </summary>
+    [TestMethod]
+    public void HashTable_WhenReplaceAtSingleElement_ShouldInvokeGetHashCodeConstantTimes()
+    {
+        var comparer = new CountingIntComparer();
+        var sut = new OrderedSetStorage<int>(512, comparer);
+        for (int i = 0; i < 200; i++)
+            sut.Add(i);
+
+        int before = comparer.GetHashCodeCalls;
+        sut.ReplaceAt(100, 5000);
+        int calls = comparer.GetHashCodeCalls - before;
+
+        Assert.IsTrue(calls <= 3, $"ReplaceAt invoked GetHashCode {calls} times; expected O(1), not O(n).");
+        Assert.AreEqual(5000, sut.GetAt(100));
+        Assert.IsFalse(sut.Contains(100));
+        Assert.AreEqual(100, sut.IndexOf(5000));
+    }
+
+    /// <summary>
+    /// Verifies that moving and inserting single elements perform O(1) hash-table maintenance — neither operation
+    /// may rehash every stored element through <see cref="IEqualityComparer{T}.GetHashCode" />.
+    /// </summary>
+    [TestMethod]
+    public void HashTable_WhenMoveAndInsertSingleElement_ShouldInvokeGetHashCodeConstantTimes()
+    {
+        var comparer = new CountingIntComparer();
+        var sut = new OrderedSetStorage<int>(512, comparer);
+        for (int i = 0; i < 200; i++)
+            sut.Add(i);
+
+        int before = comparer.GetHashCodeCalls;
+        sut.Move(10, 150);
+        int moveCalls = comparer.GetHashCodeCalls - before;
+
+        before = comparer.GetHashCodeCalls;
+        Assert.IsTrue(sut.TryInsert(50, 9000));
+        int insertCalls = comparer.GetHashCodeCalls - before;
+
+        Assert.IsTrue(moveCalls <= 3, $"Move invoked GetHashCode {moveCalls} times; expected O(1), not O(n).");
+        Assert.IsTrue(insertCalls <= 3, $"TryInsert invoked GetHashCode {insertCalls} times; expected O(1), not O(n).");
+        Assert.AreEqual(151, sut.IndexOf(10)); // moved to 150, then shifted up once by the insert at 50
+        Assert.AreEqual(50, sut.IndexOf(9000));
+        for (int i = 0; i < sut.Count; i++)
+            Assert.AreEqual(i, sut.IndexOf(sut.GetAt(i)));
+    }
+
     // --------------------------------------------------------
     // Rehashing
     // --------------------------------------------------------
@@ -155,6 +228,33 @@ public partial class OrderedSetStorageTests
             Assert.IsTrue(sut.Contains(items[i]));
             Assert.AreEqual(i, sut.IndexOf(items[i]));
         }
+    }
+
+    /// <summary>
+    /// An <see cref="IEqualityComparer{T}" /> for <see cref="int" /> that counts
+    /// <see cref="IEqualityComparer{T}.GetHashCode" /> invocations, allowing tests to assert the hash-table
+    /// maintenance cost of individual operations.
+    /// </summary>
+    private sealed class CountingIntComparer
+        : IEqualityComparer<int>
+    {
+
+        /// <summary>
+        /// Gets the number of <see cref="GetHashCode(int)" /> invocations observed so far.
+        /// </summary>
+        /// <value>The cumulative invocation count.</value>
+        public int GetHashCodeCalls { get; private set; }
+
+        /// <inheritdoc />
+        public bool Equals(int x, int y) => x == y;
+
+        /// <inheritdoc />
+        public int GetHashCode(int obj)
+        {
+            GetHashCodeCalls++;
+            return obj;
+        }
+
     }
 
     /// <summary>

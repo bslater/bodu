@@ -82,18 +82,20 @@ public partial struct WeekPattern
         (char? startDay, char? unselectedChar, bool isBinary) = ParseFormatForToString(format);
         unselectedChar ??= '_';
         bool isMondayStart = startDay == 'M';
-        char[] buffer = new char[7];
 
-        for (int i = 0; i < 7; i++)
+        // string.Create writes the seven characters directly into the string's own buffer, avoiding the
+        // intermediate char[7] plus the copying string constructor.
+        return string.Create(7, (pattern: this, isMondayStart, isBinary, unselected: unselectedChar.Value), static (span, state) =>
         {
-            int dayIndex = isMondayStart ? (i + 1) % 7 : i;
-            bool selected = this[(DayOfWeek)dayIndex];
+            for (int i = 0; i < 7; i++)
+            {
+                int dayIndex = state.isMondayStart ? (i + 1) % 7 : i;
+                bool selected = state.pattern[(DayOfWeek)dayIndex];
 
-            buffer[i] = selected
-                ? (isBinary ? '1' : WeekdaySymbols[dayIndex])
-                : (isBinary ? '0' : unselectedChar.Value);
-        }
-
-        return new string(buffer);
+                span[i] = selected
+                    ? (state.isBinary ? '1' : WeekdaySymbols[dayIndex])
+                    : (state.isBinary ? '0' : state.unselected);
+            }
+        });
     }
 }

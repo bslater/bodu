@@ -67,4 +67,68 @@ public partial class DateOnlyExtensionsTests
         Assert.IsTrue(actual >= DateOnly.MinValue && actual <= DateOnly.MinValue.AddMonths(1).AddDays(-1));
     }
 
+    // =========================================================================
+    // GetFirstDateOfWeekInMonth(int year, int month, DayOfWeek)
+    // =========================================================================
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfWeekInMonth(int, int, DayOfWeek)" /> returns the
+    /// first occurrence of the requested <see cref="DayOfWeek" /> in the specified month and year.
+    /// </summary>
+    [TestMethod]
+    [DataRow(2024, 4, DayOfWeek.Monday, 2024, 4, 1)]   // 1 Apr 2024 is a Monday
+    [DataRow(2024, 4, DayOfWeek.Sunday, 2024, 4, 7)]
+    [DataRow(2024, 12, DayOfWeek.Wednesday, 2024, 12, 4)]
+    [DataRow(2023, 2, DayOfWeek.Tuesday, 2023, 2, 7)]
+    public void GetFirstDateOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(
+        int year, int month, DayOfWeek dayOfWeek, int expectedYear, int expectedMonth, int expectedDay)
+    {
+        DateOnly actual = DateOnlyExtensions.GetFirstDateOfWeekInMonth(year, month, dayOfWeek);
+        Assert.AreEqual(new DateOnly(expectedYear, expectedMonth, expectedDay), actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfWeekInMonth(int, int, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [DataRow(10_000)]
+    public void GetFirstDateOfWeekInMonth_WhenYearIsInvalid_ShouldThrowExactly(int year)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateOnlyExtensions.GetFirstDateOfWeekInMonth(year, 1, DayOfWeek.Monday);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfWeekInMonth(int, int, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> for month values outside <c>1..12</c>.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(13)]
+    public void GetFirstDateOfWeekInMonth_WhenMonthIsInvalid_ShouldThrowExactly(int month)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateOnlyExtensions.GetFirstDateOfWeekInMonth(2024, month, DayOfWeek.Monday);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfWeekInMonth(int, int, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" /> value.
+    /// </summary>
+    [TestMethod]
+    public void GetFirstDateOfWeekInMonth_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateOnlyExtensions.GetFirstDateOfWeekInMonth(2024, 1, (DayOfWeek)999);
+        });
+    }
+
 }

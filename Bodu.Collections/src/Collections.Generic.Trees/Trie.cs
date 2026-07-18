@@ -116,6 +116,24 @@ public sealed partial class Trie
     }
 
     /// <summary>
+    /// Adds the specified key to the trie.
+    /// </summary>
+    /// <param name="key">The key to add.</param>
+    /// <returns><see langword="true" /> if the key was added; <see langword="false" /> if it already existed.</returns>
+    public bool Add(ReadOnlySpan<char> key)
+    {
+        TrieNode<bool> node = TrieCore.GetOrAddNode(_root, key, Comparer);
+        if (node.IsTerminal)
+            return false;
+
+        node.IsTerminal = true;
+        node.Key = new string(key);
+        _count++;
+        _version++;
+        return true;
+    }
+
+    /// <summary>
     /// Determines whether the trie contains the specified key.
     /// </summary>
     /// <param name="key">The key to locate.</param>
@@ -190,11 +208,33 @@ public sealed partial class Trie
     }
 
     /// <summary>
+    /// Removes the specified key from the trie.
+    /// </summary>
+    /// <param name="key">The key to remove.</param>
+    /// <returns>
+    /// <see langword="true" /> if the key was found and removed; otherwise, <see langword="false" />.
+    /// </returns>
+    public bool Remove(ReadOnlySpan<char> key)
+    {
+        if (!TrieCore.Remove(_root, key))
+            return false;
+
+        _count--;
+        _version++;
+        return true;
+    }
+
+    /// <summary>
     /// Returns the keys in the trie that begin with the specified prefix.
     /// </summary>
     /// <param name="prefix">The prefix to match.</param>
     /// <returns>A lazily evaluated sequence of matching keys, in unspecified order.</returns>
+    /// <remarks>
+    /// The sequence is fail-fast: it is invalidated by any structural modification of the trie, and continuing to
+    /// iterate after a modification throws <see cref="InvalidOperationException" />.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="prefix" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">The trie was modified after enumeration began.</exception>
     public IEnumerable<string> KeysWithPrefix(string prefix)
     {
         ThrowHelper.ThrowIfNull(prefix);
@@ -202,7 +242,7 @@ public sealed partial class Trie
         TrieNode<bool>? start = TrieCore.Find(_root, prefix.AsSpan());
         return start is null
             ? []
-            : EnumerateKeys(start);
+            : EnumerateKeys(start, _version);
     }
 
     /// <summary>
@@ -219,7 +259,7 @@ public sealed partial class Trie
     /// <summary>
     /// Returns an enumerator that iterates over the keys of the trie.
     /// </summary>
-    /// <returns>A struct enumerator over a snapshot of the trie's keys.</returns>
+    /// <returns>A struct enumerator that lazily walks the trie's keys and fails fast on modification.</returns>
     public Enumerator GetEnumerator() =>
         new(this);
 
@@ -232,7 +272,7 @@ public sealed partial class Trie
         GetEnumerator();
 
     /// <summary>
-    /// Builds a point-in-time array of the trie's keys, used by the enumerator and debugger proxy.
+    /// Builds a point-in-time array of the trie's keys, used by the debugger proxy.
     /// </summary>
     /// <returns>An array containing every key currently stored.</returns>
     internal string[] ToArrayInternal()
@@ -246,13 +286,18 @@ public sealed partial class Trie
     }
 
     /// <summary>
-    /// Projects the key/value enumeration onto its keys.
+    /// Projects the key/value enumeration onto its keys, failing fast when the trie is structurally modified during
+    /// the walk.
     /// </summary>
     /// <param name="start">The subtree root to enumerate.</param>
+    /// <param name="version">The owner's version captured when the query located <paramref name="start" />.</param>
     /// <returns>A lazy sequence of keys.</returns>
-    private static IEnumerable<string> EnumerateKeys(TrieNode<bool> start)
+    /// <exception cref="InvalidOperationException">The trie was modified after enumeration began.</exception>
+    private IEnumerable<string> EnumerateKeys(TrieNode<bool> start, int version)
     {
         foreach (KeyValuePair<string, bool> item in TrieCore.EnumerateItems(start))
-            yield return item.Key;
+        {
+            yield return version != _version ? throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified) : item.Key;
+        }
     }
 }

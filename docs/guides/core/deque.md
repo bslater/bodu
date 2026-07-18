@@ -73,7 +73,7 @@ recent.AddFirst(0);         // evicts 4 → 0, 2, 3
 bool added = recent.TryAddLast(5);   // true — evicts 0 → 2, 3, 5
 ```
 
-`EvictOpposite` is the deque counterpart of `CircularBuffer<T>.AllowOverwrite` — the same overwrite-on-full idea, generalised to both ends — and mirrors its event pair: `ItemEvicting` fires immediately before each eviction (a handler that throws vetoes the eviction in place, leaving the deque unchanged) and `ItemEvicted` fires immediately after, both carrying the discarded element.
+`EvictOpposite` is the deque counterpart of `CircularBuffer<T>.AllowOverwrite` — the same overwrite-on-full idea, generalised to both ends — and mirrors its event pair: `ItemEvicting` fires immediately before each eviction (a handler that throws vetoes the eviction in place, leaving the deque unchanged) and `ItemEvicted` fires immediately after, both carrying the discarded element. Handlers must not mutate the deque itself — mutating members are guarded against re-entry from inside an eviction handler and throw `InvalidOperationException` if called there.
 
 The policy is consulted only when the deque is full and `AllowGrow` is `false`. While `AllowGrow` is `true`, growth always wins and nothing is ever evicted, regardless of the configured policy. Assigning a value that is not a defined `DequeOverflowPolicy` member throws `ArgumentOutOfRangeException`.
 

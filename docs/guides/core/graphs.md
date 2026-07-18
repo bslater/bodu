@@ -91,7 +91,7 @@ bool reachable = GraphAlgorithms.BreadthFirstSearch(graph, 1).Contains(4);   // 
 
 ## Pattern 3 — Shortest path with Dijkstra
 
-The shortest-path family runs Dijkstra's algorithm over non-negative weights and accepts an `IReadOnlyWeightedGraph<T, double>`. There are three entry points:
+The shortest-path family runs Dijkstra's algorithm over non-negative weights and accepts an `IReadOnlyWeightedGraph<T>`. There are three entry points:
 
 - `ShortestPath` returns just the vertex list (empty when unreachable).
 - `TryShortestPath` returns a `ShortestPathResult<T>` carrying `Found`, `Distance`, and `Path`.
@@ -220,22 +220,7 @@ if (ds.TryFind(2, out int root))
 Console.WriteLine(ds.Contains(99));     // false
 ```
 
-When your elements are already a contiguous block of integers `[0, count)`, the non-generic `DisjointSet` is the allocation-light form — it skips the dictionary and indexes arrays directly:
-
-```csharp
-var ds = new DisjointSet(5);            // elements 0..4, each in its own set
-ds.Union(0, 1);
-ds.Union(2, 3);
-
-Console.WriteLine(ds.AreConnected(0, 1));   // true
-Console.WriteLine(ds.AreConnected(0, 3));   // false
-Console.WriteLine(ds.SetCount);             // 3  -> {0,1} {2,3} {4}
-
-ds.Reset();                                 // back to five singletons
-Console.WriteLine(ds.SetCount);             // 5
-```
-
-Both variants combine path-halving compression with union by size, giving amortized near-constant cost per operation. `ConnectedComponents` (Pattern 5) is itself built on `DisjointSet<T>`.
+`DisjointSet<T>` combines path-halving compression with union by size, giving amortized near-constant cost per operation. `ConnectedComponents` (Pattern 5) is itself built on `DisjointSet<T>`.
 
 ## Where to go next
 

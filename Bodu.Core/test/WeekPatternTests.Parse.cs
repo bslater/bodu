@@ -156,10 +156,29 @@ public partial class WeekPatternTests
     {
         if (input == "______S")
         {
-            TestContext.WriteLine("Skipping ambiguous input '______S'.");
+            // The one genuinely ambiguous symbol form: auto-detect documents the Sunday-first (Saturday-only)
+            // resolution, so the Monday-first expectation does not apply here. Pinned explicitly by
+            // Parse_WhenInputIsAmbiguousTrailingS_ShouldResolveAsSundayFirst below.
+            TestContext.WriteLine("Skipping '______S': auto-detect documents the Sunday-first resolution.");
             return;
         }
+
         Assert.AreEqual(expected, WeekPattern.Parse(input));
+    }
+
+    /// <summary>
+    /// Verifies that the single ambiguous symbol form <c>"______S"</c> resolves under auto-detection to the documented
+    /// Sunday-first reading (Saturday-only), and that <see cref="WeekPattern.ParseExact(string, string)" /> with the
+    /// <c>"M"</c> format recovers the Monday-first (Sunday-only) reading.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenInputIsAmbiguousTrailingS_ShouldResolveAsSundayFirst()
+    {
+        WeekPattern autoDetected = WeekPattern.Parse("______S");
+        WeekPattern mondayFirst = WeekPattern.ParseExact("______S", "M");
+
+        Assert.AreEqual(new WeekPattern(DayOfWeek.Saturday), autoDetected);
+        Assert.AreEqual(new WeekPattern(DayOfWeek.Sunday), mondayFirst);
     }
 
     /// <summary>

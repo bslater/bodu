@@ -197,4 +197,25 @@ public partial class ArrayExtensionsTests
         CollectionAssert.AreEqual(expected, result);
     }
 
+    // =========================================================================
+    // SliceInternal<T>(T[], int, int) — internal fast path (no validation)
+    // =========================================================================
+
+    /// <summary>
+    /// Verifies that the internal <c>SliceInternal</c> fast path copies the requested range into an independent array
+    /// when reached through the assembly's <see cref="System.Runtime.CompilerServices.InternalsVisibleToAttribute" />
+    /// grant.
+    /// </summary>
+    [TestMethod]
+    public void SliceInternal_WhenRangeIsValid_ForTypedArray_ShouldReturnExpectedIndependentCopy()
+    {
+        int[] source = [1, 2, 3, 4, 5];
+
+        int[] result = source.SliceInternal(1, 3);
+        result[0] = 99;
+
+        CollectionAssert.AreEqual(new[] { 2, 3, 4 }, new[] { source[1], source[2], source[3] });
+        Assert.HasCount(3, result);
+    }
+
 }

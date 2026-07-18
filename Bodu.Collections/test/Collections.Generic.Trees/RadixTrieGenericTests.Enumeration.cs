@@ -23,6 +23,23 @@ public sealed partial class RadixTrieGenericTests
     }
 
     /// <summary>
+    /// Verifies that enumeration yields the entries in exactly the order produced by the internal snapshot walk,
+    /// pinning the enumeration order of <see cref="RadixTrie{TValue}.GetEnumerator" />.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenIterated_ShouldMatchSnapshotWalkOrder()
+    {
+        var sut = new RadixTrie<int> { [""] = 0, ["team"] = 1, ["tea"] = 2, ["teapot"] = 3, ["ten"] = 4, ["a"] = 5, ["ab"] = 6 };
+
+        KeyValuePair<string, int>[] expected = sut.ToArrayInternal();
+        var actual = new List<KeyValuePair<string, int>>();
+        foreach (KeyValuePair<string, int> item in sut)
+            actual.Add(item);
+
+        CollectionAssert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
     /// Verifies that mutating the trie during enumeration throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]

@@ -30,7 +30,9 @@ public static partial class DateTimeExtensions
     /// <para>
     /// If <paramref name="after" /> is earlier than or equal to <paramref name="dateTime" />, the method returns
     /// <paramref name="dateTime" />. Otherwise, it computes the smallest multiple of <paramref name="interval" /> added
-    /// to <paramref name="dateTime" /> that occurs after <paramref name="after" />.
+    /// to <paramref name="dateTime" /> that occurs strictly after <paramref name="after" />. When
+    /// <paramref name="after" /> falls exactly on an occurrence boundary, that occurrence is excluded and the following
+    /// one is returned.
     /// </para>
     /// <para>
     /// <b>Example:</b>
@@ -54,9 +56,15 @@ public static partial class DateTimeExtensions
         if (after <= dateTime)
             return dateTime;
 
-        double intervalsPassed = (double)(after - dateTime).Ticks / interval.Ticks;
-        long nextIntervalCount = (long)Math.Ceiling(intervalsPassed);
+        long elapsedTicks = (after - dateTime).Ticks;
+        long intervalTicks = interval.Ticks;
 
-        return dateTime.AddTicks(nextIntervalCount * interval.Ticks);
+        // Use integer arithmetic to avoid floating-point imprecision on long spans (a double mantissa
+        // cannot represent tick counts past ~28.5 years exactly). Stepping to quotient + 1 also honours
+        // the "strictly after" contract: when after lands exactly on an occurrence boundary the
+        // remainder is zero and the following occurrence is returned, never after itself.
+        long nextIntervalCount = (elapsedTicks / intervalTicks) + 1;
+
+        return dateTime.AddTicks(nextIntervalCount * intervalTicks);
     }
 }

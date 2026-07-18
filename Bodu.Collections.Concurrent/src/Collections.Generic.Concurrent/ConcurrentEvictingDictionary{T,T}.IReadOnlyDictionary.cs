@@ -25,10 +25,17 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue> :
     {
         get
         {
-            KeyValuePair<TKey, TValue>[] snapshot = ToArray();
-            var keys = new TKey[snapshot.Length];
-            for (int i = 0; i < snapshot.Length; i++)
-                keys[i] = snapshot[i].Key;
+            int locksAcquired = 0;
+            TKey[] keys;
+            try
+            {
+                AcquireAllLocks(ref locksAcquired);
+                keys = SnapshotNoLocks(static (key, _) => key);
+            }
+            finally
+            {
+                ReleaseLocks(locksAcquired);
+            }
 
             return Array.AsReadOnly(keys);
         }
@@ -48,10 +55,17 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue> :
     {
         get
         {
-            KeyValuePair<TKey, TValue>[] snapshot = ToArray();
-            var values = new TValue[snapshot.Length];
-            for (int i = 0; i < snapshot.Length; i++)
-                values[i] = snapshot[i].Value;
+            int locksAcquired = 0;
+            TValue[] values;
+            try
+            {
+                AcquireAllLocks(ref locksAcquired);
+                values = SnapshotNoLocks(static (_, value) => value);
+            }
+            finally
+            {
+                ReleaseLocks(locksAcquired);
+            }
 
             return Array.AsReadOnly(values);
         }

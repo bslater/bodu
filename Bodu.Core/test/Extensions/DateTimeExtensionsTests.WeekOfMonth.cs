@@ -128,4 +128,57 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(expected, actual);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="CalendarWeekRule.FirstDay" /> and <see cref="CalendarWeekRule.FirstFullWeek" /> produce
+    /// different week numbers for a month whose first day falls mid-week: March 2024 starts on Friday, so under
+    /// <see cref="CalendarWeekRule.FirstFullWeek" /> with a Sunday week start, week 1 begins on Sunday 3 March and
+    /// every date from there on numbers one lower than under <see cref="CalendarWeekRule.FirstDay" />.
+    /// </summary>
+    [TestMethod]
+    public void WeekOfMonth_WhenFirstOfMonthIsMidWeek_ShouldDistinguishFirstDayFromFirstFullWeek()
+    {
+        var date = new DateTime(2024, 3, 8); // Friday in the week beginning Sunday 3 March
+
+        Assert.AreEqual(2, date.WeekOfMonth(CalendarWeekRule.FirstDay, DayOfWeek.Sunday));
+        Assert.AreEqual(1, date.WeekOfMonth(CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday));
+
+        var endOfMonth = new DateTime(2024, 3, 31); // Sunday, the last day of the month
+
+        Assert.AreEqual(6, endOfMonth.WeekOfMonth(CalendarWeekRule.FirstDay, DayOfWeek.Sunday));
+        Assert.AreEqual(5, endOfMonth.WeekOfMonth(CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday));
+    }
+
+    /// <summary>
+    /// Verifies that under <see cref="CalendarWeekRule.FirstFullWeek" /> a date preceding week 1 of its month returns
+    /// the trailing week number of the previous month: 1 March 2024 (Friday) with a Sunday week start belongs to the
+    /// week beginning Sunday 25 February, which is week 4 of February.
+    /// </summary>
+    [TestMethod]
+    public void WeekOfMonth_WhenDatePrecedesWeekOne_ForFirstFullWeek_ShouldReturnPreviousMonthsTrailingWeek()
+    {
+        var date = new DateTime(2024, 3, 1);
+
+        int actual = date.WeekOfMonth(CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday);
+
+        Assert.AreEqual(4, actual);
+        Assert.AreEqual(new DateTime(2024, 2, 25).WeekOfMonth(CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday), actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CalendarWeekRule.FirstFourDayWeek" /> counts the straddling week as week 1 when at
+    /// least four of its days fall in the month (February 2024 with a Monday week start) and defers to the following
+    /// week start when it does not (March 2024 with a Monday week start, where only Friday–Sunday fall in March).
+    /// </summary>
+    [TestMethod]
+    public void WeekOfMonth_WhenUsingFirstFourDayWeek_ShouldHonourFourDayThreshold()
+    {
+        // February 2024 starts on Thursday: Thu-Sun gives four days in-month, so the straddling week is week 1.
+        Assert.AreEqual(1, new DateTime(2024, 2, 1).WeekOfMonth(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday));
+        Assert.AreEqual(2, new DateTime(2024, 2, 8).WeekOfMonth(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday));
+
+        // March 2024 starts on Friday: only Fri-Sun fall in March, so week 1 begins Monday 4 March.
+        Assert.AreEqual(1, new DateTime(2024, 3, 8).WeekOfMonth(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday));
+        Assert.AreEqual(5, new DateTime(2024, 3, 1).WeekOfMonth(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday));
+    }
+
 }

@@ -68,7 +68,7 @@ public sealed partial class RangeSet<T>
             if (_index >= _owner._count)
                 return false;
 
-            _current = new Range<T>(_owner._starts[_index], _owner._ends[_index]);
+            _current = new Range<T>(_owner._starts[_index], _owner._ends[_index], skipValidation: true);
             _index++;
             return true;
         }

@@ -7,6 +7,8 @@
 using System.Diagnostics;
 using System.Globalization;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 /// <summary>
@@ -30,9 +32,11 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <para>
 /// Calling <see cref="EvictingDictionary{TKey, TValue}.Add(TKey, TValue)" /> (or assigning via the indexer) with a key
-/// that already exists replaces the existing entry rather than throwing — this differs from
-/// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" />'s strict <c>Add</c> semantics, and resets the
-/// entry's eviction metadata.
+/// that already exists replaces the existing entry's value rather than throwing — this differs from
+/// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" />'s strict <c>Add</c> semantics. The replacement
+/// counts as a touch against the eviction policy: recency-based policies move the entry to the most-recently-used
+/// position, LeastFrequentlyUsed increments its accumulated frequency, and SecondChance marks it recently referenced.
+/// The entry is not treated as newly inserted, and its accumulated metadata is not reset.
 /// </para>
 /// <para>
 /// Supplying an <see cref="EvictingDictionaryExpiration" /> at construction adds time-based expiry orthogonal to the
@@ -89,14 +93,17 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <summary>The equality comparer used for key identity and hash-table lookup.</summary>
     private readonly IEqualityComparer<TKey> _comparer;
 
-    /// <summary>Maps access frequency to the keys observed at that frequency, used by the least-frequently-used policy.</summary>
-    private readonly SortedDictionary<int, LinkedList<TKey>> _frequencyList = null!;
+    /// <summary>The shared eviction-policy engine that owns the store and policy tracking structures and implements candidate selection, touch re-linking, and frequency-bucket bookkeeping.</summary>
+    private readonly EvictionPolicyCore<TKey, TValue> _core;
 
-    /// <summary>The backing store mapping each key to its cached value and bookkeeping metadata.</summary>
-    private readonly Dictionary<TKey, CacheItem> _store;
+    /// <summary>Maps access frequency to the keys observed at that frequency, used by the least-frequently-used policy. Alias of the engine's structure for direct enumeration access.</summary>
+    private readonly SortedDictionary<int, LinkedList<TKey>> _frequencyList;
 
-    /// <summary>Tracks key recency ordering, used by the least-recently-used policy.</summary>
-    private readonly LinkedList<TKey> _order = null!;
+    /// <summary>The backing store mapping each key to its cached value and bookkeeping metadata. Alias of the engine's store for direct lookup access.</summary>
+    private readonly Dictionary<TKey, EvictionEntry<TKey, TValue>> _store;
+
+    /// <summary>Tracks key recency ordering, used by the least-recently-used policy. Alias of the engine's structure for direct enumeration access.</summary>
+    private readonly LinkedList<TKey> _order;
 
     /// <summary>Indicates whether an eviction is currently in progress, used to suppress re-entrant bookkeeping.</summary>
     private bool _isEvicting;
@@ -291,24 +298,12 @@ public partial class EvictingDictionary<TKey, TValue>
         _timeProvider = expiration?.TimeProvider;
         _slidingExpiration = expiration?.Kind == EvictingDictionaryExpirationKind.Sliding;
 
-        _store = new Dictionary<TKey, CacheItem>(_comparer);
-
-        switch (Policy)
-        {
-            case EvictingDictionaryPolicy.FirstInFirstOut:
-            case EvictingDictionaryPolicy.LeastRecentlyUsed:
-            case EvictingDictionaryPolicy.MostRecentlyUsed:
-            case EvictingDictionaryPolicy.SecondChance:
-                _order = new LinkedList<TKey>();
-                break;
-
-            case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                _frequencyList = new SortedDictionary<int, LinkedList<TKey>>();
-                break;
-
-            case EvictingDictionaryPolicy.RandomReplacement:
-                break;
-        }
+        // The engine creates the tracking structures the policy requires; the aliases below give the
+        // enumeration and lookup paths direct field access to the same objects.
+        _core = new EvictionPolicyCore<TKey, TValue>(policy, _comparer);
+        _store = _core.Store;
+        _order = _core.Order!;
+        _frequencyList = _core.FrequencyList!;
     }
 
     /// <summary>
@@ -564,28 +559,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// expired-but-unpurged key, even though capacity pressure purges expired entries before consulting the policy.
     /// </para>
     /// </remarks>
-    public TKey? PeekEvictionCandidate()
-    {
-        return Policy switch
-        {
-            EvictingDictionaryPolicy.FirstInFirstOut or EvictingDictionaryPolicy.LeastRecentlyUsed
-                when _order?.First is not null => _order.First.Value,
-
-            EvictingDictionaryPolicy.MostRecentlyUsed
-                when _order?.Last is not null => _order.Last.Value,
-
-            EvictingDictionaryPolicy.LeastFrequentlyUsed
-                when _frequencyList?.Count > 0 && _frequencyList.First().Value.First is not null
-                => _frequencyList.First().Value.First!.Value,
-
-            EvictingDictionaryPolicy.RandomReplacement
-                when _store.Count > 0 => _store.Keys.First(),
-
-            EvictingDictionaryPolicy.SecondChance when _order is not null => PeekSecondChanceCandidate(),
-
-            _ => default
-        };
-    }
+    public TKey? PeekEvictionCandidate() =>
+        _core.PeekEvictionCandidate();
 
     /// <summary>
     /// Marks the specified key as recently accessed without retrieving its value. If the eviction policy involves usage
@@ -598,12 +573,12 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <remarks>
     /// When time-based expiration is configured, an expired entry counts as absent: it is lazily removed (raising the
     /// eviction events) and <see langword="false" /> is returned. <see cref="Touch" /> affects only the capacity-policy
-    /// metadata — it does not refresh a sliding expiration deadline; use a read access ( <see cref="TryGetValue" />,
-    /// the indexer getter, or <see cref="ContainsKey" />) to slide.
+    /// metadata — it does not refresh a sliding expiration deadline; use a read access ( <see cref="TryGetValue" /> or
+    /// the indexer getter) to slide. Like <see cref="ContainsKey" />, it is a pure read with respect to the deadline.
     /// </remarks>
     public bool Touch(TKey key)
     {
-        if (TryGetLiveItem(key, slide: false, out CacheItem? item))
+        if (TryGetLiveItem(key, slide: false, out EvictionEntry<TKey, TValue>? item))
         {
             TouchInternal(key, item);
             TotalTouches++;
@@ -632,22 +607,6 @@ public partial class EvictingDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Adds the specified key to the LeastFrequentlyUsed frequency bucket for the given frequency.
-    /// </summary>
-    /// <param name="frequency">The new frequency count.</param>
-    /// <param name="key">The key to add.</param>
-    private void AddToFrequencyList(int frequency, TKey key)
-    {
-        if (!_frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
-        {
-            list = new LinkedList<TKey>();
-            _frequencyList[frequency] = list;
-        }
-
-        list.AddLast(key);
-    }
-
-    /// <summary>
     /// Removes the next item to be evicted based on the current eviction policy. Raises the <see cref="ItemEvicting" />
     /// and <see cref="ItemEvicted" /> events and updates eviction metrics.
     /// </summary>
@@ -658,62 +617,9 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </exception>
     private void EvictOne()
     {
-        // Track success explicitly: relying on `keyToRemove is not null` is unreliable when TKey is a value type
-        // because default(TKey) (e.g. 0) may itself be a valid key.
-        bool found = false;
-        TKey keyToRemove = default!;
-
-        switch (Policy)
-        {
-            case EvictingDictionaryPolicy.FirstInFirstOut:
-            case EvictingDictionaryPolicy.LeastRecentlyUsed:
-                if (_order?.First is { } firstNode)
-                {
-                    keyToRemove = firstNode.Value;
-                    found = true;
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.MostRecentlyUsed:
-                if (_order?.Last is { } lastNode)
-                {
-                    keyToRemove = lastNode.Value;
-                    found = true;
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                if (_frequencyList?.Count > 0
-                    && _frequencyList.First().Value?.First is LinkedListNode<TKey> lfuNode)
-                {
-                    keyToRemove = lfuNode.Value;
-                    found = true;
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.RandomReplacement:
-                if (_store.Count > 0)
-                {
-                    keyToRemove = _store.Keys.ElementAt(Random.Shared.Next(_store.Count));
-                    found = true;
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.SecondChance:
-                if (_order?.Count > 0)
-                {
-                    keyToRemove = GetSecondChanceCandidate();
-                    found = true;
-                }
-
-                break;
-        }
-
-        if (found && _store.TryGetValue(keyToRemove, out CacheItem? item))
+        // The engine reports success explicitly rather than via a null sentinel because default(TKey) may itself be
+        // a valid key when TKey is a value type.
+        if (_core.TrySelectEvictionCandidate(out TKey keyToRemove) && _store.TryGetValue(keyToRemove, out EvictionEntry<TKey, TValue>? item))
         {
             // Mark eviction in progress around each event so a handler attempting to mutate the dictionary
             // fails fast via ThrowIfEvicting rather than corrupting internal state mid-eviction.
@@ -758,218 +664,20 @@ public partial class EvictingDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Returns an ordered enumeration of key-value pairs based on the current eviction policy and internal tracking
-    /// state.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="IEnumerable{T}" /> of <see cref="KeyValuePair{TKey, TValue}" /> in the order determined by the
-    /// current eviction policy.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// The eviction policy is unrecognized or unsupported for ordering.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This method is used primarily for diagnostics, testing, or enumeration purposes, and reflects the internal
-    /// priority used for eviction, not insertion order.
-    /// </para>
-    /// <para>
-    /// When time-based expiration is configured, the clock is read once when enumeration starts and expired entries are
-    /// filtered out (never removed) against that snapshot, so a single enumeration observes a stable set and never
-    /// refreshes sliding deadlines.
-    /// </para>
-    /// </remarks>
-    private IEnumerable<KeyValuePair<TKey, TValue>> GetOrderedItems()
-    {
-        int version = _version;
-
-        // Snapshot the clock once per enumeration; no clock reads occur when expiration is disabled.
-        bool checkExpiry = _timeProvider is not null;
-        long nowTicks = checkExpiry ? GetNowTicks() : 0L;
-
-        switch (Policy)
-        {
-            case EvictingDictionaryPolicy.FirstInFirstOut:
-            case EvictingDictionaryPolicy.LeastRecentlyUsed:
-            case EvictingDictionaryPolicy.SecondChance:
-                if (_order is null)
-                    yield break;
-
-                foreach (TKey key in _order)
-                {
-                    ThrowIfVersionChanged(version);
-
-                    if (_store.TryGetValue(key, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                        yield return new KeyValuePair<TKey, TValue>(key, item.Value);
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.MostRecentlyUsed:
-                if (_order is null)
-                    yield break;
-
-                for (LinkedListNode<TKey>? node = _order.Last; node is not null; node = node.Previous)
-                {
-                    ThrowIfVersionChanged(version);
-
-                    if (_store.TryGetValue(node.Value, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                        yield return new KeyValuePair<TKey, TValue>(node.Value, item.Value);
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                if (_frequencyList is null)
-                    yield break;
-
-                foreach (KeyValuePair<int, LinkedList<TKey>> freq in _frequencyList)
-                {
-                    foreach (TKey key in freq.Value)
-                    {
-                        ThrowIfVersionChanged(version);
-
-                        if (_store.TryGetValue(key, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                            yield return new KeyValuePair<TKey, TValue>(key, item.Value);
-                    }
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.RandomReplacement:
-#if NETSTANDARD2_0
-                foreach (var pair in _store)
-                {
-                    ThrowIfVersionChanged(version);
-
-                    if (!(checkExpiry && pair.Value.ExpiresAtTicks <= nowTicks))
-                        yield return new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value);
-                }
-#else
-                foreach ((TKey key, CacheItem item) in _store)
-                {
-                    ThrowIfVersionChanged(version);
-
-                    if (!(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                        yield return new KeyValuePair<TKey, TValue>(key, item.Value);
-                }
-#endif
-                break;
-
-            default:
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.Op_Invalid_UnknownEvictionPolicy, Policy));
-        }
-    }
-
-    /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if <paramref name="capturedVersion" /> no longer matches the
-    /// current <see cref="_version" />, signaling that the dictionary was modified during enumeration.
-    /// </summary>
-    /// <param name="capturedVersion">The version observed at the start of enumeration.</param>
-    private void ThrowIfVersionChanged(int capturedVersion)
-    {
-        if (_version != capturedVersion)
-            throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified);
-    }
-
-    /// <summary>
-    /// Finds the next candidate for eviction using the Second-Chance algorithm. Items with their second-chance flag set
-    /// are moved to the end of the list and cleared. If no eligible item is found, the oldest item is returned.
-    /// </summary>
-    /// <returns>The key to evict according to the Second-Chance strategy.</returns>
-    /// <remarks>
-    /// Called only from <see cref="EvictOne" /> after that method has already verified the order list is non-empty, so
-    /// no defensive empty-list checks are performed here. The clock sweep preserves the total node count by removing
-    /// and re-appending each cycled item, so <c>_order.First</c> is guaranteed to be non-null after the loop completes.
-    /// </remarks>
-    private TKey GetSecondChanceCandidate()
-    {
-        LinkedListNode<TKey>? node = _order.First;
-        while (node is not null)
-        {
-            TKey key = node.Value;
-            LinkedListNode<TKey> current = node;
-            node = node.Next;
-
-            if (!_store.TryGetValue(key, out CacheItem? item))
-                continue;
-
-            if (!item.SecondChance)
-                return key;
-
-            // Clock algorithm: clear the reference bit and cycle the item to the tail, giving it one extra pass before eviction.
-            item.SecondChance = false;
-            _order.Remove(current);
-            item.Node = _order.AddLast(key);
-        }
-
-        return _order.First!.Value;
-    }
-
-    /// <summary>
-    /// Returns the key that would be selected next by the Second-Chance algorithm, without modifying any state.
-    /// </summary>
-    /// <returns>
-    /// The candidate key for eviction, or the oldest key if all items have their second-chance flag set.
-    /// </returns>
-    private TKey? PeekSecondChanceCandidate()
-    {
-        foreach (TKey key in _order)
-        {
-            if (_store.TryGetValue(key, out CacheItem? item) && !item.SecondChance)
-                return key;
-        }
-
-        return _order.First is not null ? _order.First.Value : default;
-    }
-
-    /// <summary>
-    /// Removes the specified key from the LeastFrequentlyUsed frequency bucket for the given frequency. Cleans up the
-    /// bucket if it becomes empty.
-    /// </summary>
-    /// <param name="frequency">The current frequency count of the key.</param>
-    /// <param name="key">The key to remove.</param>
-    private void RemoveFromFrequencyList(int frequency, TKey key)
-    {
-        if (_frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
-        {
-            list.Remove(key);
-
-            if (list.Count == 0)
-                _frequencyList.Remove(frequency);
-        }
-    }
-
-    /// <summary>
-    /// Handles internal usage tracking logic based on the current eviction policy.
+    /// Handles internal usage tracking logic based on the current eviction policy, delegating the policy bookkeeping to
+    /// the shared engine.
     /// </summary>
     /// <param name="key">The key that was accessed.</param>
     /// <param name="item">The associated cache item for the key.</param>
-    private void TouchInternal(TKey key, CacheItem item)
+    /// <remarks>
+    /// Touches that structurally reposition the entry (LeastRecentlyUsed, MostRecentlyUsed, LeastFrequentlyUsed)
+    /// increment <see cref="_version" /> so in-flight enumerators fail fast instead of silently observing a reordered —
+    /// or, for the backwards-walked MostRecentlyUsed order, truncated — sequence. SecondChance only flips the reference
+    /// flag, which does not disturb enumeration order.
+    /// </remarks>
+    private void TouchInternal(TKey key, EvictionEntry<TKey, TValue> item)
     {
-        switch (Policy)
-        {
-            case EvictingDictionaryPolicy.LeastRecentlyUsed:
-            case EvictingDictionaryPolicy.MostRecentlyUsed:
-                if (_order is not null)
-                {
-                    if (item.Node is not null)
-                        _order.Remove(item.Node);
-
-                    item.Node = _order.AddLast(key);
-                }
-
-                break;
-
-            case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                RemoveFromFrequencyList(item.Frequency, key);
-                item.Frequency++;
-                AddToFrequencyList(item.Frequency, key);
-                break;
-
-            case EvictingDictionaryPolicy.SecondChance:
-                item.SecondChance = true;
-                break;
-        }
+        if (_core.Touch(key, item))
+            _version++;
     }
 }

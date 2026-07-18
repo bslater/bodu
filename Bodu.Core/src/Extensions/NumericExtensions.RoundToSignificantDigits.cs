@@ -62,14 +62,47 @@ public static partial class NumericExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="digits" /> is less than <c>1</c> or greater than <c>28</c>.
     /// </exception>
+    /// <exception cref="OverflowException">
+    /// Rounding away from zero pushes the result beyond <see cref="decimal.MaxValue" /> or
+    /// <see cref="decimal.MinValue" /> (possible only for values within one rounding step of the range limit).
+    /// </exception>
+    /// <remarks>
+    /// The computation is performed entirely in <see cref="decimal" /> arithmetic so the full 28-digit precision is
+    /// preserved; no intermediate <see cref="double" /> conversion occurs.
+    /// </remarks>
     public static decimal RoundToSignificantDigits(this decimal value, int digits)
     {
         ThrowHelper.ThrowIfOutOfRange(digits, 1, 28);
 
         if (value == 0m) return value;
 
-        double magnitudeExponent = digits - Math.Ceiling(Math.Log10((double)Math.Abs(value)));
-        decimal magnitude = (decimal)Math.Pow(10, magnitudeExponent);
-        return Math.Round(value * magnitude, MidpointRounding.AwayFromZero) / magnitude;
+        // Order of magnitude in pure decimal arithmetic: exponent such that 10^(exponent-1) <= |value| < 10^exponent.
+        decimal abs = Math.Abs(value);
+        int exponent = 1;
+        while (abs >= 10m)
+        {
+            abs /= 10m;
+            exponent++;
+        }
+
+        while (abs < 1m)
+        {
+            abs *= 10m;
+            exponent--;
+        }
+
+        int decimalPlaces = digits - exponent;
+        if (decimalPlaces >= 0)
+        {
+            // A decimal carries at most 28 fractional digits, so rounding beyond that is the identity.
+            return Math.Round(value, Math.Min(decimalPlaces, 28), MidpointRounding.AwayFromZero);
+        }
+
+        // Rounding above the units position: scale down, round to an integer, scale back.
+        decimal scale = 1m;
+        for (int i = 0; i < -decimalPlaces; i++)
+            scale *= 10m;
+
+        return Math.Round(value / scale, 0, MidpointRounding.AwayFromZero) * scale;
     }
 }

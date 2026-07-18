@@ -32,17 +32,7 @@ public static partial class DateTimeExtensions
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-#if NETSTANDARD2_0
-
-                // ISO 8601 rule: Week 1 is the week with Jan 4 in it. So we shift the date to Thursday (which is always in the same ISO week)
-                DayOfWeek day = date.DayOfWeek;
-                int delta = DayOfWeek.Thursday - day;
-                DateTime adjusted = date.AddDays(delta);
-
-                return adjusted.Year;
-#else
                 return ISOWeek.GetYear(date);
-#endif
             }
         }
     }
@@ -65,17 +55,7 @@ public static partial class DateTimeExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int IsoYear(this DateTime date)
     {
-#if NETSTANDARD2_0
-
-        // ISO 8601 rule: Week 1 is the week with Jan 4 in it. So we shift the date to Thursday (which is always in the same ISO week)
-        DayOfWeek day = date.DayOfWeek;
-        int delta = DayOfWeek.Thursday - day;
-        DateTime adjusted = date.AddDays(delta);
-
-        return adjusted.Year;
-#else
         return ISOWeek.GetYear(date);
-#endif
     }
 
 #endif

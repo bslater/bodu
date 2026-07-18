@@ -180,11 +180,19 @@ internal sealed class OrderedSetStorage<T>
         EnsureHashCapacity(_count + 1);
 
         if (index < _count)
+        {
             Array.Copy(_items, index, _items, index + 1, _count - index);
+            Array.Copy(_next, index, _next, index + 1, _count - index);
+        }
+
+        // The copy leaves a stale link in the vacated slot; clear it so the reference sweep skips it and the
+        // new item links cleanly afterwards.
+        _next[index] = 0;
+        AdjustHashReferences(index + 1, _count, 1, _count + 1);
 
         _items[index] = item;
+        AddToHashTable(item, index);
         _count++;
-        RebuildHashTable();
         _version++;
 
         return true;
@@ -243,14 +251,25 @@ internal sealed class OrderedSetStorage<T>
             return;
 
         T item = _items[oldIndex];
+        UnlinkFromHashTable(oldIndex);
 
         if (oldIndex < newIndex)
+        {
             Array.Copy(_items, oldIndex + 1, _items, oldIndex, newIndex - oldIndex);
+            Array.Copy(_next, oldIndex + 1, _next, oldIndex, newIndex - oldIndex);
+            _next[newIndex] = 0;
+            AdjustHashReferences(oldIndex + 2, newIndex + 1, -1, _count);
+        }
         else
+        {
             Array.Copy(_items, newIndex, _items, newIndex + 1, oldIndex - newIndex);
+            Array.Copy(_next, newIndex, _next, newIndex + 1, oldIndex - newIndex);
+            _next[newIndex] = 0;
+            AdjustHashReferences(newIndex + 1, oldIndex, 1, _count);
+        }
 
         _items[newIndex] = item;
-        RebuildHashTable();
+        AddToHashTable(item, newIndex);
         _version++;
     }
 
@@ -276,8 +295,10 @@ internal sealed class OrderedSetStorage<T>
         if (existingIndex == index)
             return;
 
+        // Two-node bucket fix-up: detach the old key's chain node, then link the new key in its place.
+        UnlinkFromHashTable(index);
         _items[index] = value;
-        RebuildHashTable();
+        AddToHashTable(value, index);
         _version++;
     }
 
@@ -455,18 +476,97 @@ internal sealed class OrderedSetStorage<T>
     /// Removes the element at the specified index without validating the argument.
     /// </summary>
     /// <param name="index">The zero-based index to remove.</param>
+    /// <remarks>
+    /// The hash table is maintained incrementally: the removed entry's chain node is unlinked and the stored
+    /// references of the shifted entries are adjusted in place, so no user
+    /// <see cref="IEqualityComparer{T}.GetHashCode(T)" /> calls beyond the single unlink lookup and no allocations
+    /// occur.
+    /// </remarks>
     private void RemoveCore(int index)
     {
+        UnlinkFromHashTable(index);
+
         int moveCount = _count - index - 1;
 
         if (moveCount > 0)
+        {
             Array.Copy(_items, index + 1, _items, index, moveCount);
+            Array.Copy(_next, index + 1, _next, index, moveCount);
+        }
 
         _count--;
         _items[_count] = default!;
+        _next[_count] = 0;
 
-        RebuildHashTable();
+        AdjustHashReferences(index + 2, _count + 1, -1, _count);
         _version++;
+    }
+
+    /// <summary>
+    /// Detaches the chain node of the element at <paramref name="index" /> from its hash bucket.
+    /// </summary>
+    /// <param name="index">The zero-based index of the element to unlink.</param>
+    /// <remarks>
+    /// Costs a single <see cref="IEqualityComparer{T}.GetHashCode(T)" /> call plus a walk of the element's bucket
+    /// chain; no other entry is touched.
+    /// </remarks>
+    private void UnlinkFromHashTable(int index)
+    {
+        int bucket = GetBucket(_items[index], _buckets.Length);
+        int current = _buckets[bucket] - 1;
+
+        if (current == index)
+        {
+            _buckets[bucket] = _next[index];
+            return;
+        }
+
+        while (current >= 0)
+        {
+            int following = _next[current] - 1;
+            if (following == index)
+            {
+                _next[current] = _next[index];
+                return;
+            }
+
+            current = following;
+        }
+    }
+
+    /// <summary>
+    /// Shifts every stored one-based hash-table reference within the specified inclusive range by
+    /// <paramref name="delta" />, after an element block has been moved within the contiguous storage.
+    /// </summary>
+    /// <param name="lowInclusive">The smallest one-based reference to adjust.</param>
+    /// <param name="highInclusive">The largest one-based reference to adjust.</param>
+    /// <param name="delta">The signed adjustment to apply.</param>
+    /// <param name="slotCount">The number of live <see cref="_next" /> slots to sweep.</param>
+    /// <remarks>
+    /// This is a pure integer sweep over the bucket and chain arrays — O(buckets + slots) with no user
+    /// <see cref="IEqualityComparer{T}.GetHashCode(T)" /> calls and no allocation, replacing the full rehash the
+    /// shift-based mutators previously performed.
+    /// </remarks>
+    private void AdjustHashReferences(int lowInclusive, int highInclusive, int delta, int slotCount)
+    {
+        if (lowInclusive > highInclusive)
+            return;
+
+        int[] buckets = _buckets;
+        for (int i = 0; i < buckets.Length; i++)
+        {
+            int reference = buckets[i];
+            if (reference >= lowInclusive && reference <= highInclusive)
+                buckets[i] = reference + delta;
+        }
+
+        int[] next = _next;
+        for (int i = 0; i < slotCount; i++)
+        {
+            int reference = next[i];
+            if (reference >= lowInclusive && reference <= highInclusive)
+                next[i] = reference + delta;
+        }
     }
 
     /// <summary>

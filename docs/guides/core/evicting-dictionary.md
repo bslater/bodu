@@ -198,7 +198,7 @@ Without an expiration configuration (`Expiration == null`) the dictionary never 
 
 ### Which members slide
 
-Under `Sliding`, the deadline is refreshed by the members that *return the entry's value or confirm the key*: `TryGetValue`, the indexer getter, and `ContainsKey`. Enumeration does **not** slide, and neither does `Touch` — `Touch` promotes the entry in the capacity policy only.
+Under `Sliding`, the deadline is refreshed by the members that *return the entry's value*: `TryGetValue` and the indexer getter. `ContainsKey` does **not** slide — it is a pure read that confirms presence without touching the deadline (symmetric with `Touch`). Enumeration does **not** slide either, and neither does `Touch` — `Touch` promotes the entry in the capacity policy only.
 
 ### Per-entry TTL overrides
 
@@ -288,11 +288,13 @@ var cache = new EvictingDictionary<string, int>(
 
 ## Thread safety
 
-`EvictingDictionary<TKey, TValue>` is **not thread-safe**. Concurrent reads can mutate eviction metadata (LRU/MRU recency order, LFU access counts, SecondChance reference flags), so concurrent read-read is also not safe without external synchronization. Wrap with a lock or `ReaderWriterLockSlim` when multiple threads access the same instance. For a thread-safe bounded set without eviction policies, see [`ConcurrentHashSet<T>`](concurrent-collections.md); there is no concurrent evicting-dictionary variant in the package.
+`EvictingDictionary<TKey, TValue>` is **not thread-safe**. Concurrent reads can mutate eviction metadata (LRU/MRU recency order, LFU access counts, SecondChance reference flags), so concurrent read-read is also not safe without external synchronization. Wrap with a lock or `ReaderWriterLockSlim` when multiple threads access the same instance, or use the thread-safe variant: [`ConcurrentEvictingDictionary<TKey,TValue>`](concurrent-collections.md) in the companion `Bodu.Collections.Concurrent` package supports all six policies over lock-striped segments, with optional TTL and single-flight `GetOrAdd`.
 
 ## `Keys` / `Values` enumeration order
 
 `Keys` and `Values` are live views, but their enumeration order reflects the **current eviction order**, not insertion order — FIFO/LRU/SecondChance walk the recency list head-to-tail, MRU walks it tail-to-head, LFU walks ascending frequency buckets, and `RandomReplacement` follows the underlying hash-table order. Do not rely on `Keys` to recover insertion order under a recency-based policy.
+
+Because reads reorder those structures, enumerators are invalidated not only by writes but by **successful lookups**: under LRU, MRU, or LFU, a `TryGetValue`, indexer read, or `Touch` between iteration steps causes the next `MoveNext` to throw `InvalidOperationException`. Materialize the view first (`ToArray()` / `ToList()`) when interleaving reads with iteration.
 
 ## API summary
 
@@ -304,7 +306,7 @@ var cache = new EvictingDictionary<string, int>(
 | `Add(TKey, TValue, TimeSpan)` | Add-or-replace with a per-entry TTL override. Requires an expiration configuration. |
 | `TryAdd(TKey, TValue, TimeSpan)` | Adds with a per-entry TTL only if no live entry exists; returns `false` otherwise. Requires an expiration configuration. |
 | `TryGetValue(TKey, out TValue)` | Returns the value without throwing; counts as an access. Slides the deadline under sliding expiry. |
-| `ContainsKey(TKey)` | Returns `true` without counting as an access. Slides the deadline under sliding expiry. |
+| `ContainsKey(TKey)` | Returns `true` without counting as an access. A pure read: it does **not** slide the deadline under sliding expiry (it still treats an expired entry as absent and removes it lazily). |
 | `RemoveExpired()` | Purges all expired entries now; returns the number removed (`0` when expiry is not configured). |
 | `Expiration` | The `EvictingDictionaryExpiration` configuration, or `null` when expiry is disabled (get only). |
 | `Touch(TKey)` | Promotes the key without reading the value; returns `false` if absent. |

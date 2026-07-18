@@ -79,6 +79,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The dictionary cannot contain duplicate keys..
+        /// </summary>
+        internal static string Arg_Invalid_DuplicateDictionaryKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DuplicateDictionaryKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The given key &apos;{0}&apos; was not present in the dictionary..
         /// </summary>
         internal static string KeyNotFound_Dictionary {

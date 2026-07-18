@@ -10,16 +10,17 @@ namespace Bodu.Collections.Generic.Extensions;
 /// Specifies the available strategies for randomizing a sequence.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Use <see cref="RandomizationMode" /> values with <c>Randomize</c> overloads to control how the source sequence is
 /// processed and shuffled.
+/// </para>
+/// <para>
+/// There is no buffer-everything mode: to shuffle a fully materialized collection in place, use the BCL
+/// <see cref="Random.Shuffle{T}(Span{T})" /> (or <c>Random.Shared.Shuffle</c>) instead.
+/// </para>
 /// </remarks>
 public enum RandomizationMode
 {
-    /// <summary>
-    /// Buffers all elements into memory and applies an in-place Fisher-Yates shuffle before yielding.
-    /// </summary>
-    BufferAll,
-
     /// <summary>
     /// Selects a fixed-size random subset using reservoir sampling, without buffering the full sequence.
     /// </summary>

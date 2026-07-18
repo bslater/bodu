@@ -52,9 +52,6 @@ public sealed class XorShiftRandom
     : System.Random,
     IRandomGenerator
 {
-    /// <summary>The delegate that produces the next 32 random bits, allowing the core generator to be overridden.</summary>
-    private readonly Func<uint> _bitsSource;
-
     /// <summary>The fourth of the four 32-bit state words of the xorshift128 generator, and the source of each generated value.</summary>
     private uint _w;
 
@@ -119,9 +116,6 @@ public sealed class XorShiftRandom
         _y = seed ^ 0x6C8E9CF5U;
         _z = seed ^ 0x94D049BBU;
         _w = seed ^ 0x5A17D7F9U;
-
-        // Cache one delegate per instance so bounded-int draws do not allocate per call.
-        _bitsSource = NextUInt32;
     }
 
     /// <inheritdoc />
@@ -142,7 +136,7 @@ public sealed class XorShiftRandom
     public override int Next(int maxValue)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(maxValue, 0);
-        return (int)BoundedNextUInt32((uint)maxValue, _bitsSource);
+        return (int)BoundedNextUInt32((uint)maxValue);
     }
 
     /// <summary>
@@ -180,31 +174,99 @@ public sealed class XorShiftRandom
         uint range = (uint)((long)maxValue - (long)minValue);
         return range == 0
             ? minValue
-            : (int)((long)minValue + BoundedNextUInt32(range, _bitsSource));
+            : (int)((long)minValue + BoundedNextUInt32(range));
     }
 
     /// <inheritdoc />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void NextBytes(byte[] buffer)
     {
         ThrowHelper.ThrowIfNull(buffer);
 
-        for (int i = 0; i < buffer.Length; i++)
+        NextBytes(buffer.AsSpan());
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The span is filled from consecutive 32-bit draws, four bytes per draw in little-endian order, with a trailing
+    /// partial chunk taking the low-order bytes of one final draw. The packing is identical to
+    /// <see cref="NextBytes(byte[])" />, so for the same seed and length both overloads produce the same bytes.
+    /// </remarks>
+    public override void NextBytes(Span<byte> buffer)
+    {
+        int i = 0;
+        while (i < buffer.Length)
         {
-            if ((i & 3) == 0)
-            {
-                uint rnd = NextUInt32();
-                buffer[i++] = (byte)(rnd & 0xFF);
-                if (i < buffer.Length) buffer[i++] = (byte)((rnd >> 8) & 0xFF);
-                if (i < buffer.Length) buffer[i++] = (byte)((rnd >> 16) & 0xFF);
-                if (i < buffer.Length) buffer[i++] = (byte)((rnd >> 24) & 0xFF);
-                i--; // account for loop increment
-            }
+            uint rnd = NextUInt32();
+            buffer[i++] = (byte)rnd;
+            if (i < buffer.Length) buffer[i++] = (byte)(rnd >> 8);
+            if (i < buffer.Length) buffer[i++] = (byte)(rnd >> 16);
+            if (i < buffer.Length) buffer[i++] = (byte)(rnd >> 24);
         }
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The result is derived from a single 32-bit draw, so it has 32-bit granularity: only <c>2^32</c> distinct values
+    /// are possible, spaced <c>2^-32</c> apart, rather than the <c>2^53</c> values a full-precision
+    /// <see cref="double" /> in <c>[0, 1)</c> could represent. This is sufficient for shuffling, sampling, and similar
+    /// non-cryptographic uses; callers needing finer-grained doubles should compose them from two draws.
+    /// </remarks>
     public override double NextDouble() => ScaleToUnitInterval(NextUInt32());
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The result is composed from two consecutive 32-bit draws of the generator stream — the first draw supplies the
+    /// high word, the second the low word — reduced to 63 bits; a draw equal to <see cref="long.MaxValue" /> is
+    /// rejected and redrawn so the contractual range <c>[0, long.MaxValue)</c> is preserved without bias.
+    /// </remarks>
+    public override long NextInt64()
+    {
+        while (true)
+        {
+            ulong value = (((ulong)NextUInt32() << 32) | NextUInt32()) >> 1;
+            if (value != (ulong)long.MaxValue)
+                return (long)value;
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The result takes the high-order 24 bits of a single 32-bit draw of the generator stream and scales them by
+    /// <c>2^-24</c>, yielding a uniformly distributed <see cref="float" /> in <c>[0.0f, 1.0f)</c> whose granularity
+    /// matches the 24-bit <see cref="float" /> significand exactly.
+    /// </remarks>
+    public override float NextSingle() =>
+        (NextUInt32() >> 8) * (1.0f / 16777216.0f);
+
+    /// <summary>
+    /// Returns an unbiased pseudo-random <see cref="uint" /> uniformly distributed in <c>[0, maxExclusive)</c>, drawn
+    /// from this instance's generator state using Lemire's debiased bounded-integer method.
+    /// </summary>
+    /// <param name="maxExclusive">The exclusive upper bound. Must be greater than zero.</param>
+    /// <returns>An unbiased value in the range <c>[0, maxExclusive)</c>.</returns>
+    /// <remarks>
+    /// Mirrors <see cref="BoundedNextUInt32(uint, Func{uint})" /> but calls <see cref="NextUInt32" /> directly, so
+    /// bounded draws involve no delegate indirection; the delegate-based overload remains for callers that supply an
+    /// external bit source (notably deterministic tests).
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private uint BoundedNextUInt32(uint maxExclusive)
+    {
+        ulong product = (ulong)NextUInt32() * maxExclusive;
+        uint lowBits = (uint)product;
+        if (lowBits < maxExclusive)
+        {
+            // threshold = 2^32 mod maxExclusive; lowBits below this are biased and must be redrawn.
+            uint threshold = (0u - maxExclusive) % maxExclusive;
+            while (lowBits < threshold)
+            {
+                product = (ulong)NextUInt32() * maxExclusive;
+                lowBits = (uint)product;
+            }
+        }
+
+        return (uint)(product >> 32);
+    }
 
     /// <summary>
     /// Returns an unbiased pseudo-random <see cref="uint" /> uniformly distributed in <c>[0, maxExclusive)</c> using

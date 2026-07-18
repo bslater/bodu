@@ -10,77 +10,6 @@ namespace Bodu.Extensions;
 
 public static partial class BufferConverter
 {
-#if NETSTANDARD2_0
-
-    /// <summary>
-    /// Swaps the byte order (endianness) of each element of type <typeparamref name="T" /> in the specified array.
-    /// </summary>
-    /// <typeparam name="T">The unmanaged type whose byte order will be swapped.</typeparam>
-    /// <param name="array">The array containing elements to swap in place.</param>
-    /// <remarks>
-    /// Each element in the array is interpreted as a block of bytes and reversed individually. No operation is performed if the type
-    /// has a size of one byte or less.
-    /// </remarks>
-    public static void SwapEndian<T>(this T[] array)
-        where T : unmanaged
-    {
-        if (array == null || array.Length == 0)
-            return;
-
-        int size = Marshal.SizeOf<T>();
-        if (size <= 1)
-            return;
-
-        var handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-        try
-        {
-            IntPtr basePtr = handle.AddrOfPinnedObject();
-            byte[] temp = new byte[size];
-
-            for (int index = 0; index < array.Length; index++)
-            {
-                IntPtr elementPtr = basePtr + (index * size);
-                Marshal.Copy(elementPtr, temp, 0, size);
-                Array.Reverse(temp);
-                Marshal.Copy(temp, 0, elementPtr, size);
-            }
-        }
-        finally
-        {
-            handle.Free();
-        }
-    }
-
-    /// <summary>
-    /// Swaps the byte order (endianness) of each element of size <paramref name="elementSize" /> bytes while copying from a source byte
-    /// array to a destination byte array.
-    /// </summary>
-    /// <param name="source">The source byte array.</param>
-    /// <param name="destination">The destination byte array.</param>
-    /// <param name="elementSize">The size of each element in bytes.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="elementSize" /> is &lt;= 1.</exception>
-    /// <exception cref="ArgumentException">Thrown if array lengths are not multiples of <paramref name="elementSize" />.</exception>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source" /> is <see langword="null" />.</exception>
-    public static void SwapEndian(byte[] source, byte[] destination, int elementSize)
-    {
-        ThrowHelper.ThrowIfNull(source);
-        ThrowHelper.ThrowIfNull(destination);
-        ThrowHelper.ThrowIfLessThanOrEqual(elementSize, 1);
-        ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(source, elementSize);
-        ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(destination, elementSize);
-        if (destination.Length < source.Length)
-            ThrowHelper.ThrowIfCountExceedsAvailable(source.Length, destination.Length);
-
-        for (int i = 0; i < source.Length; i += elementSize)
-        {
-            for (int j = 0; j < elementSize; j++)
-            {
-                destination[i + j] = source[i + elementSize - 1 - j];
-            }
-        }
-    }
-#else
-
     /// <summary>
     /// Swaps the byte order (endianness) of each element of type <typeparamref name="T" /> in the specified span.
     /// </summary>
@@ -95,11 +24,7 @@ public static partial class BufferConverter
     public static void SwapEndian<T>(this Span<T> span)
         where T : unmanaged
     {
-#if NET5_0_OR_GREATER
         int size = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
-#else
-        int size = Marshal.SizeOf<T>();
-#endif
         if (size <= 1)
             return; // No need to swap single-byte types
 
@@ -155,6 +80,4 @@ public static partial class BufferConverter
             }
         }
     }
-
-#endif
 }

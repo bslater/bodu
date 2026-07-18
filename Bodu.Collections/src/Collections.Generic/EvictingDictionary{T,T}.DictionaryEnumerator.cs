@@ -29,8 +29,8 @@ public partial class EvictingDictionary<TKey, TValue>
         /// <summary>The dictionary whose entries this enumerator iterates over.</summary>
         private readonly EvictingDictionary<TKey, TValue> _dictionary;
 
-        /// <summary>The underlying key/value-pair enumerator that supplies the dictionary entries.</summary>
-        private IEnumerator<KeyValuePair<TKey, TValue>> _inner;
+        /// <summary>The underlying key/value-pair struct enumerator that supplies the dictionary entries.</summary>
+        private Enumerator _inner;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DictionaryEnumerator" /> struct.
@@ -58,13 +58,14 @@ public partial class EvictingDictionary<TKey, TValue>
         public readonly object? Value => _inner.Current.Value;
 
         /// <inheritdoc />
-        public readonly bool MoveNext() => _inner.MoveNext();
+        public bool MoveNext() => _inner.MoveNext();
 
         /// <inheritdoc />
-        public void Reset()
-        {
-            _inner.Dispose();
+        /// <remarks>
+        /// Restarts enumeration by taking a fresh enumerator (and therefore a fresh version and clock snapshot) from
+        /// the dictionary.
+        /// </remarks>
+        public void Reset() =>
             _inner = _dictionary.GetEnumerator();
-        }
     }
 }
