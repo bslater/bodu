@@ -6,6 +6,8 @@
 
 using System.Collections;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionary<TKey, TValue> :
@@ -105,8 +107,8 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </exception>
     /// <remarks>
     /// <para>
-    /// When an entry for <paramref name="key" /> already exists its value is updated in place and the write counts as
-    /// a touch against the eviction policy: recency-based policies move the entry to the most-recently-used position,
+    /// When an entry for <paramref name="key" /> already exists its value is updated in place and the write counts as a
+    /// touch against the eviction policy: recency-based policies move the entry to the most-recently-used position,
     /// LeastFrequentlyUsed increments its accumulated frequency, and SecondChance marks it recently referenced. The
     /// entry keeps its accumulated metadata rather than being treated as newly inserted. This differs from
     /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}.Add(TKey, TValue)" />, which throws on duplicate
@@ -138,7 +140,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </param>
     private void AddCore(TKey key, TValue value, TimeSpan? ttlOverride)
     {
-        if (_store.TryGetValue(key, out CacheItem? existing))
+        if (_store.TryGetValue(key, out EvictionEntry<TKey, TValue>? existing))
         {
             if (_timeProvider is not null && existing.ExpiresAtTicks <= GetNowTicks())
             {
@@ -165,22 +167,10 @@ public partial class EvictingDictionary<TKey, TValue> :
                 EvictOne();
         }
 
-        var item = new CacheItem(value);
+        var item = new EvictionEntry<TKey, TValue>(value);
         SetExpiration(item, ttlOverride);
 
-        if (Policy is
-            EvictingDictionaryPolicy.FirstInFirstOut or
-            EvictingDictionaryPolicy.LeastRecentlyUsed or
-            EvictingDictionaryPolicy.MostRecentlyUsed or
-            EvictingDictionaryPolicy.SecondChance)
-        {
-            item.Node = _order.AddLast(key);
-        }
-
-        if (Policy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
-            item.Node = AddToFrequencyList(item.Frequency, key);
-
-        _store[key] = item;
+        _core.AddNewEntry(key, item);
         _version++;
     }
 
@@ -208,9 +198,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     {
         ThrowIfEvicting();
 
-        _store.Clear();
-        _order?.Clear();
-        _frequencyList?.Clear();
+        _core.Clear();
         TotalTouches = EvictionCount = 0;
         _version++;
     }
@@ -222,7 +210,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// order go through <see cref="TryGetValue" /> or the indexer.)
     /// </remarks>
     public bool Contains(KeyValuePair<TKey, TValue> item) =>
-        TryGetLiveItem(item.Key, slide: false, out CacheItem? cached) && EqualityComparer<TValue>.Default.Equals(cached.Value, item.Value);
+        TryGetLiveItem(item.Key, slide: false, out EvictionEntry<TKey, TValue>? cached) && EqualityComparer<TValue>.Default.Equals(cached.Value, item.Value);
 
     /// <inheritdoc />
     /// <remarks>
@@ -273,15 +261,9 @@ public partial class EvictingDictionary<TKey, TValue> :
     {
         ThrowIfEvicting();
 
-        if (_store.TryGetValue(key, out CacheItem? item))
+        if (_store.TryGetValue(key, out EvictionEntry<TKey, TValue>? item))
         {
-            if (_order is not null && item.Node is not null)
-                _order.Remove(item.Node);
-
-            if (Policy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
-                RemoveFromFrequencyList(item);
-
-            _store.Remove(key);
+            _core.RemoveEntry(key, item);
             _version++;
             return true;
         }
@@ -326,7 +308,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </remarks>
     public bool TryGetValue(TKey key, out TValue value)
     {
-        if (TryGetLiveItem(key, slide: true, out CacheItem? item))
+        if (TryGetLiveItem(key, slide: true, out EvictionEntry<TKey, TValue>? item))
         {
             value = item.Value;
             TouchInternal(key, item);

@@ -12,13 +12,19 @@
 
   <!--
     InternalsVisibleTo grants:
-      - Bodu.Collections.Test : test project (OrderedSetStorage, EvictingDictionary internal coverage,
-                                TrieCore, etc.).
+      - Bodu.Collections.Test       : test project (OrderedSetStorage, EvictingDictionary internal coverage,
+                                      TrieCore, etc.).
+      - Bodu.Collections.Concurrent : shares the internal eviction-policy engine (EvictionPolicyCore /
+                                      EvictionEntry in Collections.Generic.Internal) consumed by
+                                      ConcurrentEvictingDictionary's segments.
     Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
   -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Bodu.Collections.Test</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Collections.Concurrent</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
