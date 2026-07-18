@@ -251,6 +251,116 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         }
 
         /// <summary>
+        /// Reads the value of the live entry for the specified key without counting a policy access or sliding the
+        /// expiration deadline, mirroring the pure-read semantics of <see cref="ContainsKey" />. The caller must hold
+        /// the stripe lock.
+        /// </summary>
+        /// <param name="key">The key to look up.</param>
+        /// <param name="evicted">The eviction buffer that receives a lazily removed expired entry.</param>
+        /// <param name="value">When this method returns <see langword="true" />, the live entry's value.</param>
+        /// <returns><see langword="true" /> if a live entry exists; otherwise, <see langword="false" />.</returns>
+        internal bool TryPeek(TKey key, ref List<KeyValuePair<TKey, TValue>>? evicted, out TValue value)
+        {
+            if (TryGetLiveItem(key, slide: false, ref evicted, out EvictionEntry<TKey, TValue>? item))
+            {
+                value = item.Value;
+                return true;
+            }
+
+            value = default!;
+            return false;
+        }
+
+        /// <summary>
+        /// Atomically replaces the value of the live entry for the specified key with <paramref name="newValue" />, but
+        /// only when its current value equals <paramref name="comparisonValue" /> under
+        /// <see cref="EqualityComparer{TValue}.Default" />. A successful update counts as a policy access and starts a
+        /// fresh expiration lease, matching the replace branch of <see cref="AddOrReplace" />. The caller must hold the
+        /// stripe lock.
+        /// </summary>
+        /// <param name="key">The key whose value to update.</param>
+        /// <param name="newValue">The value to store when the comparison succeeds.</param>
+        /// <param name="comparisonValue">The value the current entry must equal for the update to occur.</param>
+        /// <param name="evicted">The eviction buffer that receives a lazily removed expired entry.</param>
+        /// <returns>
+        /// <see langword="true" /> if a live entry existed and its value matched <paramref name="comparisonValue" />;
+        /// otherwise, <see langword="false" />.
+        /// </returns>
+        internal bool TryUpdate(TKey key, TValue newValue, TValue comparisonValue, ref List<KeyValuePair<TKey, TValue>>? evicted)
+        {
+            if (TryGetLiveItem(key, slide: false, ref evicted, out EvictionEntry<TKey, TValue>? item)
+                && EqualityComparer<TValue>.Default.Equals(item.Value, comparisonValue))
+            {
+                item.Value = newValue;
+                SetExpiration(item, null);
+                _core.Touch(key, item);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Atomically updates the value of the live entry for the specified key using
+        /// <paramref name="updateValueFactory" />, or adds a new entry from <paramref name="addValue" /> or
+        /// <paramref name="addValueFactory" /> when no live entry exists. Both factories run under the stripe lock so
+        /// each is invoked at most once. The caller must hold the stripe lock.
+        /// </summary>
+        /// <param name="key">The key of the element to add or update.</param>
+        /// <param name="addValue">
+        /// The value used when <paramref name="addValueFactory" /> is <see langword="null" /> and the key is absent.
+        /// </param>
+        /// <param name="addValueFactory">
+        /// The factory that produces the value to add when the key is absent, or <see langword="null" /> to use
+        /// <paramref name="addValue" />.
+        /// </param>
+        /// <param name="updateValueFactory">
+        /// The factory that produces the replacement value from the existing value when the key is present.
+        /// </param>
+        /// <param name="evicted">
+        /// The eviction buffer that receives entries removed by expiry or capacity pressure.
+        /// </param>
+        /// <returns>The new value stored for <paramref name="key" />.</returns>
+        internal TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue>? addValueFactory, Func<TKey, TValue, TValue> updateValueFactory, ref List<KeyValuePair<TKey, TValue>>? evicted)
+        {
+            if (TryGetLiveItem(key, slide: false, ref evicted, out EvictionEntry<TKey, TValue>? existing))
+            {
+                TValue updated = updateValueFactory(key, existing.Value);
+                existing.Value = updated;
+                SetExpiration(existing, null);
+                _core.Touch(key, existing);
+                return updated;
+            }
+
+            TValue added = addValueFactory is null ? addValue : addValueFactory(key);
+            AddOrReplace(key, added, null, ref evicted);
+            return added;
+        }
+
+        /// <summary>
+        /// Removes the entry for the specified key, but only when it is live and its value equals
+        /// <paramref name="value" /> under <see cref="EqualityComparer{TValue}.Default" />. The removal is not treated
+        /// as an eviction. The caller must hold the stripe lock.
+        /// </summary>
+        /// <param name="key">The key of the entry to remove.</param>
+        /// <param name="value">The value the live entry must equal for the removal to occur.</param>
+        /// <param name="evicted">The eviction buffer that receives a lazily removed expired entry.</param>
+        /// <returns>
+        /// <see langword="true" /> if a matching live entry was removed; otherwise, <see langword="false" />.
+        /// </returns>
+        internal bool TryRemovePair(TKey key, TValue value, ref List<KeyValuePair<TKey, TValue>>? evicted)
+        {
+            if (TryGetLiveItem(key, slide: false, ref evicted, out EvictionEntry<TKey, TValue>? item)
+                && EqualityComparer<TValue>.Default.Equals(item.Value, value))
+            {
+                RemoveEntry(key, item);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Removes every expired entry from the segment, appending each to the eviction buffer, and returns the number
         /// removed. Returns <c>0</c> without reading the clock when expiration is disabled. The caller must hold the
         /// stripe lock.
