@@ -97,6 +97,67 @@ public readonly partial struct Result<T>
     }
 
     /// <summary>
+    /// Demotes a success to a failure carrying the specified error when the carried value does not satisfy the
+    /// specified predicate.
+    /// </summary>
+    /// <param name="predicate">The condition the carried value must satisfy.</param>
+    /// <param name="error">The error carried by the failure produced when the predicate is not satisfied.</param>
+    /// <returns>
+    /// This result when it is already a failure or when a value is present and satisfies <paramref name="predicate" />;
+    /// otherwise a failure carrying <paramref name="error" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="predicate" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// <para>
+    /// The predicate is not invoked when this result is already a failure; the original error is preserved unchanged.
+    /// This is the failure-shaped counterpart of <see cref="Option{T}.Filter(Func{T, bool})" />, which drops a filtered
+    /// value to <c>None</c>: here the caller names the error that the filtered-out value represents.
+    /// </para>
+    /// </remarks>
+    public Result<T> Filter(Func<T, bool> predicate, ResultError error)
+    {
+        ThrowHelper.ThrowIfNull(predicate);
+
+        if (!_isSuccess || predicate(_value))
+            return this;
+
+        return CreateFailure(error);
+    }
+
+    /// <summary>
+    /// Demotes a success to a failure carrying an error produced by the specified factory when the carried value does
+    /// not satisfy the specified predicate.
+    /// </summary>
+    /// <param name="predicate">The condition the carried value must satisfy.</param>
+    /// <param name="errorFactory">
+    /// The factory invoked with the carried value to produce the error when the predicate is not satisfied.
+    /// </param>
+    /// <returns>
+    /// This result when it is already a failure or when a value is present and satisfies <paramref name="predicate" />;
+    /// otherwise a failure carrying <c>errorFactory(value)</c>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="predicate" /> or <paramref name="errorFactory" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Neither the predicate nor the factory is invoked when this result is already a failure; the original error is
+    /// preserved unchanged. The factory is invoked only for a present value that fails the predicate, so the error can
+    /// describe the specific value that was rejected.
+    /// </para>
+    /// </remarks>
+    public Result<T> Filter(Func<T, bool> predicate, Func<T, ResultError> errorFactory)
+    {
+        ThrowHelper.ThrowIfNull(predicate);
+        ThrowHelper.ThrowIfNull(errorFactory);
+
+        if (!_isSuccess || predicate(_value))
+            return this;
+
+        return CreateFailure(errorFactory(_value));
+    }
+
+    /// <summary>
     /// Transforms the error carried by a failed result using the specified selector.
     /// </summary>
     /// <param name="selector">The transformation applied to the carried error.</param>

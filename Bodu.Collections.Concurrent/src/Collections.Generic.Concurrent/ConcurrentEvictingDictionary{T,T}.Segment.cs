@@ -201,14 +201,15 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         }
 
         /// <summary>
-        /// Determines whether a live entry exists for the specified key, sliding the expiration deadline on a hit but
-        /// leaving policy metadata untouched. The caller must hold the stripe lock.
+        /// Determines whether a live entry exists for the specified key, leaving both the expiration deadline and the
+        /// capacity-policy metadata untouched — a genuine pure read. An expired entry it encounters is still lazily
+        /// removed and reported as absent. The caller must hold the stripe lock.
         /// </summary>
         /// <param name="key">The key to locate.</param>
         /// <param name="evicted">The eviction buffer that receives a lazily removed expired entry.</param>
         /// <returns><see langword="true" /> if a live entry exists; otherwise, <see langword="false" />.</returns>
         internal bool Contains(TKey key, ref List<KeyValuePair<TKey, TValue>>? evicted) =>
-            TryGetLiveItem(key, slide: true, ref evicted, out _);
+            TryGetLiveItem(key, slide: false, ref evicted, out _);
 
         /// <summary>
         /// Marks the specified key as recently accessed for the capacity policy without sliding the expiration

@@ -43,8 +43,10 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
 
     /// <inheritdoc />
     /// <remarks>
-    /// Returns a snapshot of the distinct keys across all layers, in first-wins enumeration order, materialized at the
-    /// time of the call. Later mutations of the layers are not reflected in a previously returned collection.
+    /// Returns a read-only snapshot of the distinct keys across all layers, in first-wins enumeration order,
+    /// materialized at the time of the call. The returned collection is not write-through — its mutating members throw
+    /// <see cref="NotSupportedException" /> — and later mutations of the layers are not reflected in a previously
+    /// returned collection.
     /// </remarks>
     public ICollection<TKey> Keys
     {
@@ -54,14 +56,16 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
             foreach (KeyValuePair<TKey, TValue> kvp in this)
                 keys.Add(kvp.Key);
 
-            return keys;
+            return keys.AsReadOnly();
         }
     }
 
     /// <inheritdoc />
     /// <remarks>
-    /// Returns a snapshot of the first-wins values for the distinct keys across all layers, materialized at the time of
-    /// the call. Later mutations of the layers are not reflected in a previously returned collection.
+    /// Returns a read-only snapshot of the first-wins values for the distinct keys across all layers, materialized at
+    /// the time of the call. The returned collection is not write-through — its mutating members throw
+    /// <see cref="NotSupportedException" /> — and later mutations of the layers are not reflected in a previously
+    /// returned collection.
     /// </remarks>
     public ICollection<TValue> Values
     {
@@ -71,7 +75,7 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
             foreach (KeyValuePair<TKey, TValue> kvp in this)
                 values.Add(kvp.Value);
 
-            return values;
+            return values.AsReadOnly();
         }
     }
 

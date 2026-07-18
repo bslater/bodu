@@ -198,7 +198,7 @@ Without an expiration configuration (`Expiration == null`) the dictionary never 
 
 ### Which members slide
 
-Under `Sliding`, the deadline is refreshed by the members that *return the entry's value or confirm the key*: `TryGetValue`, the indexer getter, and `ContainsKey`. Enumeration does **not** slide, and neither does `Touch` — `Touch` promotes the entry in the capacity policy only.
+Under `Sliding`, the deadline is refreshed by the members that *return the entry's value*: `TryGetValue` and the indexer getter. `ContainsKey` does **not** slide — it is a pure read that confirms presence without touching the deadline (symmetric with `Touch`). Enumeration does **not** slide either, and neither does `Touch` — `Touch` promotes the entry in the capacity policy only.
 
 ### Per-entry TTL overrides
 
@@ -306,7 +306,7 @@ Because reads reorder those structures, enumerators are invalidated not only by 
 | `Add(TKey, TValue, TimeSpan)` | Add-or-replace with a per-entry TTL override. Requires an expiration configuration. |
 | `TryAdd(TKey, TValue, TimeSpan)` | Adds with a per-entry TTL only if no live entry exists; returns `false` otherwise. Requires an expiration configuration. |
 | `TryGetValue(TKey, out TValue)` | Returns the value without throwing; counts as an access. Slides the deadline under sliding expiry. |
-| `ContainsKey(TKey)` | Returns `true` without counting as an access. Slides the deadline under sliding expiry. |
+| `ContainsKey(TKey)` | Returns `true` without counting as an access. A pure read: it does **not** slide the deadline under sliding expiry (it still treats an expired entry as absent and removes it lazily). |
 | `RemoveExpired()` | Purges all expired entries now; returns the number removed (`0` when expiry is not configured). |
 | `Expiration` | The `EvictingDictionaryExpiration` configuration, or `null` when expiry is disabled (get only). |
 | `Touch(TKey)` | Promotes the key without reading the value; returns `false` if absent. |

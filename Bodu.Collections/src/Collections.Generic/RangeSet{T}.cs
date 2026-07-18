@@ -43,6 +43,7 @@ namespace Bodu.Collections.Generic;
 /// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}")]
+[DebuggerTypeProxy(typeof(RangeSetDebugView<>))]
 [Serializable]
 public sealed partial class RangeSet<T>
     : IReadOnlyCollection<Range<T>>
@@ -144,20 +145,24 @@ public sealed partial class RangeSet<T>
     /// </summary>
     /// <param name="startInclusive">The inclusive start.</param>
     /// <param name="endExclusive">The exclusive end.</param>
+    /// <returns>
+    /// <see langword="true" /> if the set was changed; <see langword="false" /> if the range was already fully covered
+    /// and the set was left unchanged.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />.
     /// </exception>
-    public void Add(T startInclusive, T endExclusive)
+    public bool Add(T startInclusive, T endExclusive)
     {
         Range<T>.ValidateRange(startInclusive, endExclusive, _comparer);
 
         if (_count == 0)
         {
             InsertAt(0, startInclusive, endExclusive);
-            return;
+            return true;
         }
 
         int index = LowerBound(startInclusive);
@@ -182,8 +187,14 @@ public sealed partial class RangeSet<T>
         if (mergeFrom == mergeTo)
         {
             InsertAt(index, start, end);
-            return;
+            return true;
         }
+
+        // When exactly one existing range participates and its endpoints already span the merged result, the
+        // added range was fully covered by that range and the set is left unchanged.
+        bool changed = mergeTo - mergeFrom != 1
+            || _comparer.Compare(_starts[mergeFrom], start) != 0
+            || _comparer.Compare(_ends[mergeFrom], end) != 0;
 
         _starts[mergeFrom] = start;
         _ends[mergeFrom] = end;
@@ -193,13 +204,19 @@ public sealed partial class RangeSet<T>
             RemoveRange(mergeFrom + 1, removeCount);
 
         _version++;
+
+        return changed;
     }
 
     /// <summary>
     /// Adds the specified range to the set, merging any overlapping or adjacent ranges.
     /// </summary>
     /// <param name="range">The range to add.</param>
-    public void Add(Range<T> range) =>
+    /// <returns>
+    /// <see langword="true" /> if the set was changed; <see langword="false" /> if the range was already fully covered
+    /// and the set was left unchanged.
+    /// </returns>
+    public bool Add(Range<T> range) =>
         Add(range.StartInclusive, range.EndExclusive);
 
     /// <summary>

@@ -49,6 +49,7 @@ namespace Bodu.Collections.Generic;
 /// </code>
 /// </example>
 [DebuggerDisplay("Count = {Count}")]
+[DebuggerTypeProxy(typeof(RangeDictionaryDebugView<,>))]
 [Serializable]
 public sealed partial class RangeDictionary<TKey, TValue>
     : IReadOnlyCollection<ValueRange<TKey, TValue>>

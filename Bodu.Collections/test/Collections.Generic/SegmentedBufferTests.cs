@@ -9,7 +9,7 @@ using System.Collections;
 namespace Bodu.Collections.Generic;
 
 [TestClass]
-public sealed class SegmentedBufferTests
+public sealed partial class SegmentedBufferTests
 {
 
     /// <summary>

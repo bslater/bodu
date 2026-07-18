@@ -159,8 +159,9 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue> :
 
     /// <inheritdoc />
     /// <remarks>
-    /// Follows the add-or-throw contract of <see cref="System.Collections.Generic.IDictionary{TKey, TValue}.Add(TKey, TValue)" />:
-    /// a live entry for <c>item.Key</c> causes an <see cref="ArgumentException" />.
+    /// Follows the add-or-throw contract of
+    /// <see cref="System.Collections.Generic.IDictionary{TKey, TValue}.Add(TKey, TValue)" />: a live entry for
+    /// <c>item.Key</c> causes an <see cref="ArgumentException" />.
     /// </remarks>
     void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item) =>
         ((IDictionary<TKey, TValue>)this).Add(item.Key, item.Value);

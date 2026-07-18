@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -54,7 +55,10 @@ namespace Bodu.Extensions;
 public sealed class FiscalWeekQuarterProvider
     : IQuarterDefinitionProvider
 {
-    /// <summary>The calendar month (1-12) that anchors the fiscal year.</summary>
+    /// <summary>The fiscal anchor-month sentinel (13) that denotes January of the following calendar year.</summary>
+    private const int JanuaryOfNextYearSentinel = 13;
+
+    /// <summary>The calendar month (1-13) that anchors the fiscal year start.</summary>
     private readonly int _anchorMonth;
 
     /// <summary>The day of week on which each fiscal week begins.</summary>
@@ -132,7 +136,15 @@ public sealed class FiscalWeekQuarterProvider
         ThrowHelper.ThrowIfEnumValueIsUndefined(pattern);
 
         _pattern = pattern;
+
+        // When the anchor names the fiscal year's closing month, the year opens the following month. A December end
+        // month therefore yields month 13 (JanuaryOfNextYearSentinel). That is a deliberate sentinel for "January of
+        // the next calendar year": the cumulative day-count tables consumed by GetDateTicks/GetDayNumberUnchecked carry
+        // a thirteenth entry (DaysToMonth365[12] == 365), so GetDateTicks(year, 13, 1) resolves to 1 January of the
+        // following year without a separate year-rollover branch.
         _anchorMonth = month + (isFiscalYearEnd ? 1 : 0);
+        Debug.Assert(_anchorMonth is >= 1 and <= JanuaryOfNextYearSentinel, "The fiscal anchor month must fall within 1-13.");
+
         _anchorDayOfWeek = dayOfWeek;
         _useNearestDayOfWeek = useNearestDayOfWeek;
     }

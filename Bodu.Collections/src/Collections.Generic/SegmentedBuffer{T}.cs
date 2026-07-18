@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
+using System.Diagnostics;
 
 namespace Bodu.Collections.Generic;
 
@@ -43,8 +44,11 @@ namespace Bodu.Collections.Generic;
 ///]]>
 /// </code>
 /// </example>
+[DebuggerDisplay("Count = {Count}")]
+[DebuggerTypeProxy(typeof(SegmentedBufferDebugView<>))]
 public sealed class SegmentedBuffer<T> :
-    System.Collections.Generic.IEnumerable<T>
+    System.Collections.Generic.IEnumerable<T>,
+    System.Collections.Generic.IReadOnlyCollection<T>
 {
     /// <summary>The segment size used when the buffer is constructed without an explicit size.</summary>
     private const int DefaultSegmentSize = 512;
@@ -167,6 +171,73 @@ public sealed class SegmentedBuffer<T> :
     }
 
     /// <summary>
+    /// Removes all elements from the buffer, releasing the allocated segments.
+    /// </summary>
+    /// <remarks>
+    /// The structural version is bumped when the buffer was non-empty, so any in-flight enumerator fails fast on its
+    /// next step. Clearing an already-empty buffer is a no-op and does not invalidate active enumerators.
+    /// </remarks>
+    public void Clear()
+    {
+        if (Count == 0)
+            return;
+
+        _segments.Clear();
+        _tailSegment = null;
+        _tailOffset = _segmentSize;
+        Count = 0;
+        _version++;
+    }
+
+    /// <summary>
+    /// Copies the buffer's elements to <paramref name="array" /> in insertion order, starting at
+    /// <paramref name="arrayIndex" />.
+    /// </summary>
+    /// <param name="array">The destination array. Must not be <see langword="null" />.</param>
+    /// <param name="arrayIndex">The zero-based starting index in <paramref name="array" />.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayIndex" /> is negative.</exception>
+    /// <exception cref="ArgumentException">
+    /// The destination is too small to hold the contents starting at <paramref name="arrayIndex" />.
+    /// </exception>
+    public void CopyTo(T[] array, int arrayIndex)
+    {
+        ThrowHelper.ThrowIfNull(array);
+        ThrowHelper.ThrowIfNegative(arrayIndex, nameof(arrayIndex));
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, Count);
+
+        CopyToInternal(array, arrayIndex);
+    }
+
+    /// <summary>
+    /// Returns a new array containing the buffer's elements in insertion order.
+    /// </summary>
+    /// <returns>A freshly allocated array of length <see cref="Count" />.</returns>
+    public T[] ToArray()
+    {
+        var result = new T[Count];
+        if (Count > 0)
+            CopyToInternal(result, 0);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Reduces the internal segment-list capacity to the number of allocated segments, releasing the spare segment
+    /// references without touching the buffered elements or their segment layout.
+    /// </summary>
+    /// <remarks>
+    /// The append-only segment layout means no data segment is ever over-allocated; this method trims only the spare
+    /// capacity of the list that tracks the segments. The structural version is bumped so any in-flight enumerator
+    /// fails fast on its next step.
+    /// </remarks>
+    public void TrimExcess()
+    {
+        _segments.TrimExcess();
+        _version++;
+    }
+
+    /// <summary>
     /// Returns an enumerator that iterates through the buffer.
     /// </summary>
     /// <returns>An enumerator that can be used to iterate through the buffer contents in insertion order.</returns>
@@ -204,4 +275,27 @@ public sealed class SegmentedBuffer<T> :
 
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    /// <summary>
+    /// Copies the buffered elements into <paramref name="destination" /> starting at
+    /// <paramref name="destinationIndex" />, in insertion order. The caller must ensure the destination has sufficient
+    /// space.
+    /// </summary>
+    /// <param name="destination">The destination array.</param>
+    /// <param name="destinationIndex">The zero-based starting index in <paramref name="destination" />.</param>
+    private void CopyToInternal(T[] destination, int destinationIndex)
+    {
+        int fullSegments = Count / _segmentSize;
+        int lastSegmentCount = Count % _segmentSize;
+        int offset = destinationIndex;
+
+        for (int i = 0; i < fullSegments; i++)
+        {
+            Array.Copy(_segments[i], 0, destination, offset, _segmentSize);
+            offset += _segmentSize;
+        }
+
+        if (lastSegmentCount > 0)
+            Array.Copy(_segments[fullSegments], 0, destination, offset, lastSegmentCount);
+    }
 }

@@ -119,6 +119,24 @@ public sealed partial class RadixTrie
     }
 
     /// <summary>
+    /// Adds the specified key to the trie.
+    /// </summary>
+    /// <param name="key">The key to add.</param>
+    /// <returns><see langword="true" /> if the key was added; <see langword="false" /> if it already existed.</returns>
+    public bool Add(ReadOnlySpan<char> key)
+    {
+        RadixTrieNode<bool> node = RadixTrieCore.GetOrAddNode(_root, key, Comparer);
+        if (node.IsTerminal)
+            return false;
+
+        node.IsTerminal = true;
+        node.Key = new string(key);
+        _count++;
+        _version++;
+        return true;
+    }
+
+    /// <summary>
     /// Determines whether the trie contains the specified key.
     /// </summary>
     /// <param name="key">The key to locate.</param>
@@ -185,6 +203,23 @@ public sealed partial class RadixTrie
         ThrowHelper.ThrowIfNull(key);
 
         if (!RadixTrieCore.Remove(_root, key.AsSpan(), Comparer))
+            return false;
+
+        _count--;
+        _version++;
+        return true;
+    }
+
+    /// <summary>
+    /// Removes the specified key from the trie.
+    /// </summary>
+    /// <param name="key">The key to remove.</param>
+    /// <returns>
+    /// <see langword="true" /> if the key was found and removed; otherwise, <see langword="false" />.
+    /// </returns>
+    public bool Remove(ReadOnlySpan<char> key)
+    {
+        if (!RadixTrieCore.Remove(_root, key, Comparer))
             return false;
 
         _count--;

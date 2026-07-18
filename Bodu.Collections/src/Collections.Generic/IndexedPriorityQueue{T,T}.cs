@@ -594,11 +594,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <param name="minCapacity">The minimum capacity required after the resize.</param>
     private void Grow(int minCapacity)
     {
-        int newCapacity = _nodes.Length == 0 ? DefaultGrowCapacity : _nodes.Length * 2;
-        if ((uint)newCapacity > Array.MaxLength)
-            newCapacity = Array.MaxLength;
-        if (newCapacity < minCapacity)
-            newCapacity = minCapacity;
+        int newCapacity = CollectionCapacity.Grow(_nodes.Length, DefaultGrowCapacity, minCapacity);
 
         var resized = new (TElement, TPriority)[newCapacity];
         if (_size > 0)

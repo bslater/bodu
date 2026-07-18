@@ -110,4 +110,36 @@ public sealed partial class RadixTrieTests
         Assert.IsTrue(sut.Contains("roman"));
         Assert.IsTrue(sut.KeysWithPrefix("roman").ToHashSet().SetEquals(new[] { "roman", "romane", "romanus" }));
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="ReadOnlySpan{Char}" /> <see cref="RadixTrie.Add(ReadOnlySpan{char})" /> overload
+    /// adds a new key and reports the insertion, mirroring the string overload.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenSpanKeyIsNew_ShouldAddAndReturnTrue()
+    {
+        var sut = new RadixTrie();
+
+        bool added = sut.Add("team".AsSpan());
+
+        Assert.IsTrue(added);
+        Assert.AreEqual(1, sut.Count);
+        Assert.IsTrue(sut.Contains("team"));
+    }
+
+    /// <summary>
+    /// Verifies that the span <see cref="RadixTrie.Add(ReadOnlySpan{char})" /> overload returns
+    /// <see langword="false" /> for a duplicate key without changing the count.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenSpanKeyDuplicate_ShouldReturnFalse()
+    {
+        var sut = new RadixTrie();
+        sut.Add("team");
+
+        bool added = sut.Add("team".AsSpan());
+
+        Assert.IsFalse(added);
+        Assert.AreEqual(1, sut.Count);
+    }
 }

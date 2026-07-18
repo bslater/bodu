@@ -573,8 +573,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <remarks>
     /// When time-based expiration is configured, an expired entry counts as absent: it is lazily removed (raising the
     /// eviction events) and <see langword="false" /> is returned. <see cref="Touch" /> affects only the capacity-policy
-    /// metadata — it does not refresh a sliding expiration deadline; use a read access ( <see cref="TryGetValue" />,
-    /// the indexer getter, or <see cref="ContainsKey" />) to slide.
+    /// metadata — it does not refresh a sliding expiration deadline; use a read access ( <see cref="TryGetValue" /> or
+    /// the indexer getter) to slide. Like <see cref="ContainsKey" />, it is a pure read with respect to the deadline.
     /// </remarks>
     public bool Touch(TKey key)
     {

@@ -314,6 +314,23 @@ public sealed partial class RadixTrie<TValue>
     }
 
     /// <summary>
+    /// Removes the specified key from the trie.
+    /// </summary>
+    /// <param name="key">The key to remove.</param>
+    /// <returns>
+    /// <see langword="true" /> if the key was found and removed; otherwise, <see langword="false" />.
+    /// </returns>
+    public bool Remove(ReadOnlySpan<char> key)
+    {
+        if (!RadixTrieCore.Remove(_root, key, Comparer))
+            return false;
+
+        _count--;
+        _version++;
+        return true;
+    }
+
+    /// <summary>
     /// Returns the keys in the trie that begin with the specified prefix.
     /// </summary>
     /// <param name="prefix">The prefix to match.</param>

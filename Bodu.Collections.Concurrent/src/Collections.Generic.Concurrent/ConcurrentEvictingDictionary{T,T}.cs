@@ -411,8 +411,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <para>
     /// Handlers run on the thread whose operation caused the eviction, <em>after</em> the owning segment's lock has
     /// been released, so a handler can safely call back into the dictionary without deadlocking. The key and value
-    /// provided are no longer present in the dictionary by the time the handler observes them. One caveat: because
-    /// the segment monitor is reentrant, a <see cref="GetOrAdd(TKey, Func{TKey, TValue})" /> factory that violates its
+    /// provided are no longer present in the dictionary by the time the handler observes them. One caveat: because the
+    /// segment monitor is reentrant, a <see cref="GetOrAdd(TKey, Func{TKey, TValue})" /> factory that violates its
     /// documented no-re-entry rule and mutates the dictionary can cause the nested operation's handlers to run while
     /// the outer call still holds the stripe lock — a handler that then blocks on another thread needing that stripe
     /// deadlocks. Keeping factories free of dictionary calls (as their contract requires) preserves the
@@ -580,8 +580,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <remarks>
     /// <para>
-    /// When an entry for <paramref name="key" /> already exists its value is updated in place and the write counts as
-    /// a touch against the eviction policy: recency-based policies move the entry to the most-recently-used position,
+    /// When an entry for <paramref name="key" /> already exists its value is updated in place and the write counts as a
+    /// touch against the eviction policy: recency-based policies move the entry to the most-recently-used position,
     /// LeastFrequentlyUsed increments its accumulated frequency, and SecondChance marks it recently referenced. The
     /// entry keeps its accumulated metadata rather than being treated as newly inserted. This differs from
     /// <see cref="Dictionary{TKey, TValue}.Add(TKey, TValue)" />, which throws on duplicate keys.
@@ -678,11 +678,12 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// This is a pure read with respect to the capacity policy — it does not update recency or frequency metadata and
-    /// does not increment <see cref="TotalTouches" />. When time-based expiration is configured, an expired entry
-    /// counts as absent (it is lazily removed as an eviction and <see langword="false" /> is returned), and a hit
-    /// refreshes the deadline under <see cref="EvictingDictionaryExpirationKind.Sliding" />. The operation locks only
-    /// the segment that owns <paramref name="key" />.
+    /// This is a pure read with respect to both the capacity policy and time-based expiration — it does not update
+    /// recency or frequency metadata, does not increment <see cref="TotalTouches" />, and does not refresh a sliding
+    /// expiration deadline (symmetric with <see cref="Touch" />; use <see cref="TryGetValue" /> or the indexer getter
+    /// to slide). When time-based expiration is configured, an expired entry counts as absent: it is lazily removed as
+    /// an eviction and <see langword="false" /> is returned. The operation locks only the segment that owns
+    /// <paramref name="key" />.
     /// </remarks>
     public bool ContainsKey(TKey key)
     {
@@ -801,9 +802,9 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <remarks>
     /// When time-based expiration is configured, an expired entry counts as absent: it is lazily removed as an eviction
     /// and <see langword="false" /> is returned. <see cref="Touch" /> affects only the capacity-policy metadata — it
-    /// does not refresh a sliding expiration deadline; use a read access ( <see cref="TryGetValue" />, the indexer
-    /// getter, or <see cref="ContainsKey" />) to slide. The operation locks only the segment that owns
-    /// <paramref name="key" />.
+    /// does not refresh a sliding expiration deadline; use a value-returning read access ( <see cref="TryGetValue" />
+    /// or the indexer getter) to slide ( <see cref="ContainsKey" />, like <see cref="Touch" />, is a pure read that
+    /// does not slide). The operation locks only the segment that owns <paramref name="key" />.
     /// </remarks>
     public bool Touch(TKey key)
     {

@@ -119,6 +119,50 @@ public partial class ConcurrentEvictingDictionaryTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ConcurrentEvictingDictionary{TKey, TValue}.ContainsKey" /> is a pure read that does not
+    /// slide a sliding expiration deadline, symmetric with <see cref="ConcurrentEvictingDictionary{TKey, TValue}.Touch" />.
+    /// </summary>
+    [TestMethod]
+    public void Expiration_WhenSlidingAndContainsKey_ShouldNotRefreshDeadline()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(2), EvictingDictionaryExpirationKind.Sliding, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
+        dictionary.Add("a", 1);
+
+        time.Advance(TimeSpan.FromMinutes(1));
+        Assert.IsTrue(dictionary.ContainsKey("a"));
+        time.Advance(TimeSpan.FromMinutes(1.5));
+
+        Assert.IsFalse(dictionary.TryGetValue("a", out _), "ContainsKey must not slide the deadline.");
+    }
+
+    /// <summary>
+    /// Verifies that under sliding expiry a <see cref="ConcurrentEvictingDictionary{TKey, TValue}.ContainsKey" /> probe
+    /// leaves the deadline intact while a later <see cref="ConcurrentEvictingDictionary{TKey, TValue}.TryGetValue" /> read
+    /// slides it — the containment probe and the value read are asymmetric with respect to the deadline.
+    /// </summary>
+    [TestMethod]
+    public void Expiration_WhenSlidingAndContainsKeyThenRead_ShouldSlideOnlyOnRead()
+    {
+        var time = new ManualTimeProvider();
+        var expiration = new EvictingDictionaryExpiration(TimeSpan.FromMinutes(2), EvictingDictionaryExpirationKind.Sliding, time);
+        var dictionary = new ConcurrentEvictingDictionary<string, int>(capacity: 128, expiration);
+        dictionary.Add("a", 1);
+
+        // A containment probe at minute 1 must not restart the countdown...
+        time.Advance(TimeSpan.FromMinutes(1));
+        Assert.IsTrue(dictionary.ContainsKey("a"));
+
+        // ...but a value read at minute 1.5 must, keeping the entry alive past its original 2-minute deadline.
+        time.Advance(TimeSpan.FromMinutes(0.5));
+        Assert.IsTrue(dictionary.TryGetValue("a", out _));
+
+        time.Advance(TimeSpan.FromMinutes(1.5));
+        Assert.IsTrue(dictionary.TryGetValue("a", out _), "The read at minute 1.5 must have restarted the countdown.");
+    }
+
+    /// <summary>
     /// Verifies that a per-entry time-to-live override takes precedence over the dictionary default.
     /// </summary>
     [TestMethod]

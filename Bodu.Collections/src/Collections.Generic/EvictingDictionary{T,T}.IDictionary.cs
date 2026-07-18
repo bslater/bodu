@@ -214,12 +214,13 @@ public partial class EvictingDictionary<TKey, TValue> :
 
     /// <inheritdoc />
     /// <remarks>
-    /// This is a pure read with respect to the capacity policy — it does not update recency or frequency metadata. When
-    /// time-based expiration is configured, an expired entry counts as absent (it is lazily removed and
-    /// <see langword="false" /> is returned), and a hit refreshes the deadline under
+    /// This is a pure read: it does not update recency or frequency metadata, count as a touch, or slide the expiration
+    /// deadline. When time-based expiration is configured, an expired entry still counts as absent — it is lazily
+    /// removed and <see langword="false" /> is returned — but a live hit leaves the entry's sliding deadline unchanged.
+    /// Use <see cref="TryGetValue" /> or the indexer getter for a read that slides the deadline under
     /// <see cref="EvictingDictionaryExpirationKind.Sliding" />.
     /// </remarks>
-    public bool ContainsKey(TKey key) => TryGetLiveItem(key, slide: true, out _);
+    public bool ContainsKey(TKey key) => TryGetLiveItem(key, slide: false, out _);
 
     /// <inheritdoc />
     /// <remarks>

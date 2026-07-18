@@ -151,4 +151,46 @@ public partial class FiscalWeekQuarterProviderTests
             s_sunday52.GetQuarterStart(quarter, Sunday52FiscalYear));
     }
 
+    // -----------------------------------------------------------------------
+    // December fiscal-year-end anchor (month == 13 sentinel)
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that a December fiscal-year-end anchor (<c>month = 12</c>, <c>isFiscalYearEnd = true</c>), whose
+    /// internal anchor month is the month-13 sentinel, resolves each quarter's <see cref="DateTime" /> start to the
+    /// same boundary as an equivalent January-start anchor, confirming the sentinel maps to January of the following
+    /// calendar year.
+    /// </summary>
+    [TestMethod]
+    public void GetQuarterStart_WhenDecemberFiscalYearEndAnchor_ShouldMatchEquivalentJanuaryStartAnchor()
+    {
+        // month=12 + isFiscalYearEnd:true yields the month-13 sentinel = January of the next calendar year, so this
+        // provider's fiscal calendar is physically identical to a January-anchored one.
+        var decemberEnd = new FiscalWeekQuarterProvider(12, DayOfWeek.Sunday, isFiscalYearEnd: true, useNearestDayOfWeek: false);
+        var januaryStart = new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, useNearestDayOfWeek: false);
+
+        for (var date = new DateTime(2020, 1, 1); date < new DateTime(2025, 1, 1); date = date.AddDays(29))
+        {
+            Assert.AreEqual(
+                januaryStart.GetQuarterStart(date),
+                decemberEnd.GetQuarterStart(date),
+                $"Quarter start mismatch for {date:yyyy-MM-dd}.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a December fiscal-year-end anchor's fiscal year <c>Y</c> begins on the same date as the
+    /// January-start anchor's fiscal year <c>Y + 1</c>, confirming the month-13 sentinel advances the calendar year.
+    /// </summary>
+    [TestMethod]
+    public void GetQuarterStart_WhenDecemberFiscalYearEndAnchor_ShouldStartOneCalendarYearAheadOfJanuaryAnchor()
+    {
+        var decemberEnd = new FiscalWeekQuarterProvider(12, DayOfWeek.Sunday, isFiscalYearEnd: true, useNearestDayOfWeek: false);
+        var januaryStart = new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, useNearestDayOfWeek: false);
+
+        Assert.AreEqual(
+            januaryStart.GetQuarterStart(1, 2024),
+            decemberEnd.GetQuarterStart(1, 2023));
+    }
+
 }
