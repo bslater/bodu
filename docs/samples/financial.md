@@ -67,6 +67,14 @@ decorator), named <xref:Bodu.Financial.MonetaryContext> registrations, and the
 `AddFinancialService` composition root with `UseCurrencyResolution`. *Packages:
 `Bodu.Financial`, `Bodu.Financial.DependencyInjection`.*
 
+### Bodu.Financial.Samples.JsonSerialization
+
+`System.Text.Json` integration from the `Bodu.Financial.Serialization.Json` companion:
+`AddFinancialJsonConverters()` round-tripping `Money`, `Money<TCurrency>`, and `MoneyBag`;
+`ExchangeRate` and `CurrencyPair` converters; the `FinancialJsonPolicy` Strict/Lenient/Compact
+wire shapes; and the `AddFinancialJson()` DI registration exposing keyed `JsonSerializerOptions`
+(key `"Financial"`). *Packages: `Bodu.Financial`, `Bodu.Financial.Serialization.Json`.*
+
 ### Bodu.Financial.Samples.CustomProvider (+ .Test)
 
 Consumer extensibility: a custom `CsvFileRateProvider` in the recommended shape (builder →

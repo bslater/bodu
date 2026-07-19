@@ -204,12 +204,26 @@
     <Project Path="Bodu.Extensions.Configuration.Text\test\Bodu.Extensions.Configuration.Text.Test.csproj" />
   </Folder>
   <Folder Name="/Samples/" />
+  <Folder Name="/Samples/Core/">
+    <Project Path="samples/Core/Bodu.Core.Samples.CoreToolbox/Bodu.Core.Samples.CoreToolbox.csproj" />
+    <Project Path="samples/Core/Bodu.Core.Samples.FunctionalRailway/Bodu.Core.Samples.FunctionalRailway.csproj" />
+    <Project Path="samples/Core/Bodu.Core.Samples.TextEncoding/Bodu.Core.Samples.TextEncoding.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Collections/">
+    <Project Path="samples/Collections/Bodu.Collections.Samples.CollectionCatalogue/Bodu.Collections.Samples.CollectionCatalogue.csproj" />
+    <Project Path="samples/Collections/Bodu.Collections.Samples.ProbabilisticSketches/Bodu.Collections.Samples.ProbabilisticSketches.csproj" />
+    <Project Path="samples/Collections/Bodu.Collections.Samples.RangesGraphsTrees/Bodu.Collections.Samples.RangesGraphsTrees.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Collections.Concurrent/">
+    <Project Path="samples/Collections.Concurrent/Bodu.Collections.Concurrent.Samples.ThreadSafeCollections/Bodu.Collections.Concurrent.Samples.ThreadSafeCollections.csproj" />
+  </Folder>
   <Folder Name="/Samples/Financial/">
     <Project Path="samples/Financial/Bodu.Financial.Samples.AggregatedRates/Bodu.Financial.Samples.AggregatedRates.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CachedRates/Bodu.Financial.Samples.CachedRates.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CurrencyServices/Bodu.Financial.Samples.CurrencyServices.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CustomProvider.Test/Bodu.Financial.Samples.CustomProvider.Test.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CustomProvider/Bodu.Financial.Samples.CustomProvider.csproj" />
+    <Project Path="samples/Financial/Bodu.Financial.Samples.JsonSerialization/Bodu.Financial.Samples.JsonSerialization.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.LiveRates/Bodu.Financial.Samples.LiveRates.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.MoneyBasics/Bodu.Financial.Samples.MoneyBasics.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.OfflineRates/Bodu.Financial.Samples.OfflineRates.csproj" />
@@ -227,6 +241,19 @@
   </Folder>
   <Folder Name="/Samples/IO.Compound/">
     <Project Path="samples/IO.Compound/Bodu.IO.Compound.Samples.CompoundBasics/Bodu.IO.Compound.Samples.CompoundBasics.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Numerics/">
+    <Project Path="samples/Numerics/Bodu.Numerics.Samples.Fractions/Bodu.Numerics.Samples.Fractions.csproj" />
+    <Project Path="samples/Numerics/Bodu.Numerics.Samples.Intervals/Bodu.Numerics.Samples.Intervals.csproj" />
+    <Project Path="samples/Numerics/Bodu.Numerics.Samples.JsonConverters/Bodu.Numerics.Samples.JsonConverters.csproj" />
+    <Project Path="samples/Numerics/Bodu.Numerics.Samples.StreamingStatistics/Bodu.Numerics.Samples.StreamingStatistics.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Security.Cryptography/">
+    <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.AsymmetricKeys/Bodu.Security.Cryptography.Samples.AsymmetricKeys.csproj" />
+    <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.CustomHash.Test/Bodu.Security.Cryptography.Samples.CustomHash.Test.csproj" />
+    <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.CustomHash/Bodu.Security.Cryptography.Samples.CustomHash.csproj" />
+    <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.HashingMacAndKdf/Bodu.Security.Cryptography.Samples.HashingMacAndKdf.csproj" />
+    <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.SymmetricAndAead/Bodu.Security.Cryptography.Samples.SymmetricAndAead.csproj" />
   </Folder>
   <Folder Name="/Samples/IO.Hashing/">
     <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.CheckDigits/Bodu.IO.Hashing.Samples.CheckDigits.csproj" />
@@ -253,6 +280,10 @@
   <Folder Name="/Samples/Text.Toml/">
     <Project Path="samples/Text.Toml/Bodu.Text.Toml.Samples.TomlBasics/Bodu.Text.Toml.Samples.TomlBasics.csproj" />
     <Project Path="samples/Text.Toml/Bodu.Text.Toml.Samples.TomlDocuments/Bodu.Text.Toml.Samples.TomlDocuments.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Text.Yaml/">
+    <Project Path="samples/Text.Yaml/Bodu.Text.Yaml.Samples.YamlBasics/Bodu.Text.Yaml.Samples.YamlBasics.csproj" />
+    <Project Path="samples/Text.Yaml/Bodu.Text.Yaml.Samples.YamlDocuments/Bodu.Text.Yaml.Samples.YamlDocuments.csproj" />
   </Folder>
   <Project Path="Bodu.Test\test\Bodu.Test.csproj" />
   <Project Path="docs\doc.csproj" />
