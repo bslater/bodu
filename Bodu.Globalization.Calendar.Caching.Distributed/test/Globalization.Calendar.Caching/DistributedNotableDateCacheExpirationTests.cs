@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedNotableDateCacheExpirationTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -101,7 +101,8 @@ public sealed class DistributedNotableDateCacheExpirationTests
     /// <summary>
     /// An in-memory <see cref="IDistributedCache" /> that records the entry options supplied with every set.
     /// </summary>
-    private sealed class RecordingCalendarDistributedCache : IDistributedCache
+    private sealed class RecordingCalendarDistributedCache
+        : IDistributedCache
     {
         /// <summary>The stored payloads, keyed by cache key.</summary>
         private readonly ConcurrentDictionary<string, byte[]> _store = new();

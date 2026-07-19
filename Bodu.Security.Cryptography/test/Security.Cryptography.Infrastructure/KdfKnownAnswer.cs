@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KdfKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <see cref="AssociatedData" />; scrypt vectors populate <see cref="CostN" />, <see cref="BlockSizeR" />, and
 /// <see cref="Parallelism" />.
 /// </remarks>
-public sealed record KdfKnownAnswer : CryptoKnownAnswer
+public sealed record KdfKnownAnswer
+    : CryptoKnownAnswer
 {
     /// <summary>
     /// Gets the Argon2 variant for an Argon2 vector (<c>"d"</c>, <c>"i"</c>, or <c>"id"</c>); ignored for scrypt.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CsvFileRateProvider.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -24,7 +24,8 @@ namespace Bodu.Financial.Samples.CustomProvider;
 /// accompanying test project derives the shipped
 /// <c>DatedRateProviderContractTests&lt;CsvFileRateProvider&gt;</c> base to prove the contract holds.
 /// </remarks>
-public sealed class CsvFileRateProvider : IDatedRateProvider
+public sealed class CsvFileRateProvider
+    : IDatedRateProvider
 {
     private readonly FixedDatedRateProvider _rates;
 

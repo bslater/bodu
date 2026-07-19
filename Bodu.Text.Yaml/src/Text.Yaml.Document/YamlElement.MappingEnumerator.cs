@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlElement.MappingEnumerator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,9 @@ public readonly partial struct YamlElement
     /// <summary>
     /// Provides forward-only enumeration over the key/value pairs of a mapping node.
     /// </summary>
-    public struct MappingEnumerator : IEnumerable<YamlProperty>, IEnumerator<YamlProperty>
+    public struct MappingEnumerator
+        : IEnumerable<YamlProperty>
+        , IEnumerator<YamlProperty>
     {
         /// <summary>The owning document.</summary>
         private readonly YamlDocument _document;

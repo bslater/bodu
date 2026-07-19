@@ -11,7 +11,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// delegating to an in-memory cache while counting synchronous and asynchronous calls separately, so the decorator's
 /// per-surface routing can be asserted.
 /// </summary>
-internal sealed class CountingAsyncRateCache : IRateCache, IRateCacheAsync
+internal sealed class CountingAsyncRateCache
+    : IRateCache
+    , IRateCacheAsync
 {
     /// <summary>The in-memory cache that stores the actual state.</summary>
     private readonly InMemoryRateCache _inner;

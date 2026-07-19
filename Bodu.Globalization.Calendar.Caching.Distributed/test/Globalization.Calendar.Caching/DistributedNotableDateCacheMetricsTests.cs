@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DistributedNotableDateCacheMetricsTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -41,7 +41,8 @@ public sealed class DistributedNotableDateCacheMetricsTests
     /// <summary>
     /// An <see cref="IDistributedCache" /> whose every operation throws, standing in for an unreachable store.
     /// </summary>
-    private sealed class ThrowingCalendarDistributedCache : IDistributedCache
+    private sealed class ThrowingCalendarDistributedCache
+        : IDistributedCache
     {
         /// <inheritdoc />
         public byte[]? Get(string key) => throw new InvalidOperationException("The distributed cache is unavailable.");

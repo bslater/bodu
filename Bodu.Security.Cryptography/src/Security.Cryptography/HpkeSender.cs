@@ -28,7 +28,8 @@ namespace Bodu.Security.Cryptography;
 /// independently audited.
 /// </para>
 /// </remarks>
-public sealed class HpkeSender : IDisposable
+public sealed class HpkeSender
+    : IDisposable
 {
     /// <summary>The derived encryption context backing this sender.</summary>
     private readonly HpkeContext _context;

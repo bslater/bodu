@@ -61,7 +61,8 @@ public partial class YamlSerializerOptionsTests
     }
 
     /// <summary>A converter that does not change behavior; used only to populate the converter collection.</summary>
-    private sealed class PassthroughConverter : YamlConverter<string>
+    private sealed class PassthroughConverter
+        : YamlConverter<string>
     {
         /// <inheritdoc />
         public override string Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) => reader.GetString();

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeSerializerOptionsTests.Converters.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -61,7 +61,8 @@ public partial class BencodeSerializerOptionsTests
     }
 
     /// <summary>A converter that does not change behavior; used only to populate the converter collection.</summary>
-    private sealed class PassthroughConverter : BencodeConverter<string>
+    private sealed class PassthroughConverter
+        : BencodeConverter<string>
     {
         /// <inheritdoc />
         public override string Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options) =>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdditiveDigest.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -32,7 +32,8 @@ namespace Bodu.Security.Cryptography.Samples.CustomHash;
 /// test contract — as the shipped algorithms.
 /// </para>
 /// </remarks>
-public sealed class AdditiveDigest : BlockHashAlgorithm
+public sealed class AdditiveDigest
+    : BlockHashAlgorithm
 {
     /// <summary>The block size in bits (16 bytes) passed to the base class.</summary>
     private const int BlockSizeBits = 128;

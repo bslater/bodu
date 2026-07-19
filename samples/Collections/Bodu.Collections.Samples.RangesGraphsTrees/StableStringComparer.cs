@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StableStringComparer.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.Collections.Samples.RangesGraphsTrees;
 /// string-keyed hash structure (and therefore graph traversal order) vary between runs. Supplying this
 /// comparer forces a deterministic FNV-1a hash so the sample prints identical output every run.
 /// </summary>
-public sealed class StableStringComparer : IEqualityComparer<string>
+public sealed class StableStringComparer
+    : IEqualityComparer<string>
 {
     /// <summary>The 32-bit FNV-1a offset basis.</summary>
     private const uint OffsetBasis = 2166136261u;

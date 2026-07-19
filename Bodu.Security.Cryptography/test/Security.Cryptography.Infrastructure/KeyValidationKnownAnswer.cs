@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyValidationKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// Represents a single key-import validation known-answer test (KAT) vector: a candidate encoded key and whether import
 /// must accept it.
 /// </summary>
-public sealed record KeyValidationKnownAnswer : AsymmetricKnownAnswer
+public sealed record KeyValidationKnownAnswer
+    : AsymmetricKnownAnswer
 {
     /// <summary>
     /// Gets the role of the candidate key — for KEMs, either <c>"encapsulation"</c> or <c>"decapsulation"</c>.

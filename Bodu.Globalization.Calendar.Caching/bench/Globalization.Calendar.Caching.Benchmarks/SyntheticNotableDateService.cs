@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SyntheticNotableDateService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,7 +11,8 @@ namespace Bodu.Globalization.Calendar.Caching.Benchmarks;
 /// year, spread across the year and alternating between two categories, so cache benchmarks control the payload size
 /// without depending on real calendar data.
 /// </summary>
-internal sealed class SyntheticNotableDateService : INotableDateService
+internal sealed class SyntheticNotableDateService
+    : INotableDateService
 {
     /// <summary>The number of occurrences emitted per civil year.</summary>
     private readonly int _occurrencesPerYear;

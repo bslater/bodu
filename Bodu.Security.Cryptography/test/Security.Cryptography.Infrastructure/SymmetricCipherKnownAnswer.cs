@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricCipherKnownAnswer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// Serves as the base for symmetric-cipher known-answer test vectors — a plaintext / ciphertext pair produced under the
 /// inherited key. Block, stream, and AEAD vectors all extend this root.
 /// </summary>
-public abstract record SymmetricCipherKnownAnswer : KeyedKnownAnswer
+public abstract record SymmetricCipherKnownAnswer
+    : KeyedKnownAnswer
 {
     /// <summary>
     /// Gets the plaintext input — the value fed to encryption and the value expected from decrypting

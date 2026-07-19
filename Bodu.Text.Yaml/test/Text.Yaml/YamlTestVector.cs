@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlTestVector.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,7 +17,8 @@ namespace Bodu.Text.Yaml;
 /// JSON expectation when the suite publishes one. The <see cref="Category" /> is derived by
 /// <see cref="YamlTestCorpusReader" /> from the case structure and the profile's by-name classification sets.
 /// </remarks>
-public sealed record YamlTestVector : IKat
+public sealed record YamlTestVector
+    : IKat
 {
     /// <summary>
     /// Gets the vector identifier, the path relative to the corpus root (for example <c>229Q</c> or <c>SM9W/00</c>).

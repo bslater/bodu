@@ -92,7 +92,7 @@ public sealed class Skipjack
     private static readonly KeySizes[] s_skipjackKeySizes = [new KeySizes(SkipjackKeySize, SkipjackKeySize, 0)];
 
     /// <summary>Indicates whether this instance has been disposed.</summary>
-    private bool _disposed = false;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Skipjack" /> class with the fixed 80-bit key size and 64-bit block

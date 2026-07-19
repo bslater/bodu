@@ -95,7 +95,7 @@ public sealed class Blowfish
     private static readonly KeySizes[] s_blowfishKeySizes = [new KeySizes(MinKeySize, MaxKeySize, 8)];
 
     /// <summary>A value indicating whether this instance has been disposed.</summary>
-    private bool _disposed = false;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Blowfish" /> class with default parameters.

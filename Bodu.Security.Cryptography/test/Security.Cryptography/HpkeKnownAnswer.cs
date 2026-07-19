@@ -19,7 +19,8 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="CryptoKnownAnswer.Name" /> and <see cref="CryptoKnownAnswer.Provenance" /> while keeping its own suite,
 /// key, sealed-message, and export fields.
 /// </remarks>
-public sealed record HpkeKnownAnswer : CryptoKnownAnswer
+public sealed record HpkeKnownAnswer
+    : CryptoKnownAnswer
 {
     /// <summary>
     /// Gets the HPKE establishment mode.

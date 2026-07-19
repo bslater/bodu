@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderViolatingNotableDateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// An <see cref="INotableDateCache" /> test double that always serves a year whose occurrences are deliberately out of
 /// date order, violating the ordering contract, so the caching service's sort fallback can be exercised.
 /// </summary>
-internal sealed class OrderViolatingNotableDateCache : INotableDateCache
+internal sealed class OrderViolatingNotableDateCache
+    : INotableDateCache
 {
     /// <inheritdoc />
     public NotableDateCacheEntry? GetYear(string territory, int year, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf) =>

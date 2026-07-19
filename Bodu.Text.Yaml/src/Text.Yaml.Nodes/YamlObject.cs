@@ -12,7 +12,9 @@ namespace Bodu.Text.Yaml.Nodes;
 /// <summary>
 /// Represents a mutable YAML mapping node whose entries preserve insertion order.
 /// </summary>
-public sealed class YamlObject : YamlNode, IEnumerable<KeyValuePair<string, YamlNode?>>
+public sealed class YamlObject
+    : YamlNode
+    , IEnumerable<KeyValuePair<string, YamlNode?>>
 {
     /// <summary>The mapping keys in insertion order.</summary>
     private readonly List<string> _order = [];

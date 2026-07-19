@@ -10,7 +10,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// An <see cref="IDatedRateProvider" /> test double whose lookups block on a gate and count invocations, so a test can
 /// hold a background refresh in flight, pile up further triggers, and assert how many inner fetches actually ran.
 /// </summary>
-internal sealed class GatedDatedRateProvider : IDatedRateProvider
+internal sealed class GatedDatedRateProvider
+    : IDatedRateProvider
 {
     /// <summary>The gate every lookup waits on before resolving.</summary>
     private readonly ManualResetEventSlim _gate = new(initialState: false);

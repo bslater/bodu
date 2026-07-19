@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CountingRateProvider.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -14,7 +14,8 @@ namespace Bodu.Financial.Samples.CachedRates;
 /// were served from the cache and which had to touch the source — with a live web provider, each
 /// recorded call would be an HTTP fetch.
 /// </summary>
-public sealed class CountingRateProvider : IDatedRateProvider
+public sealed class CountingRateProvider
+    : IDatedRateProvider
 {
     private readonly IDatedRateProvider _inner;
     private readonly List<string> _calls = [];

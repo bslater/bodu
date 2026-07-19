@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCacheWarmupService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,7 +32,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// restarts.
 /// </para>
 /// </remarks>
-internal sealed class NotableDateCacheWarmupService : BackgroundService
+internal sealed class NotableDateCacheWarmupService
+    : BackgroundService
 {
     /// <summary>The container the caching service is resolved from when the run starts.</summary>
     private readonly IServiceProvider _serviceProvider;

@@ -16,7 +16,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <see cref="ExpectedPrivateKey" /> are the encapsulation/decapsulation keys for ML-KEM and the public/private keys
 /// for ML-DSA. Vectors are constructed by the per-family ACVP loaders, which map each file's field set onto this shape.
 /// </remarks>
-public sealed record KeyGenKnownAnswer : AsymmetricKnownAnswer
+public sealed record KeyGenKnownAnswer
+    : AsymmetricKnownAnswer
 {
     /// <summary>
     /// Gets the full private seed consumed by key generation (ξ for ML-DSA, <c>d ‖ z</c> for ML-KEM).

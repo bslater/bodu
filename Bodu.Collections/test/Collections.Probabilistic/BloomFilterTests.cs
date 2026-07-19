@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BloomFilterTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,7 +34,8 @@ public sealed partial class BloomFilterTests
     /// instances are never equal — used to drive the <see cref="BloomFilter{T}.UnionWith" /> comparer-compatibility
     /// checks.
     /// </summary>
-    private sealed class ReferenceOnlyIntComparer : IEqualityComparer<int>
+    private sealed class ReferenceOnlyIntComparer
+        : IEqualityComparer<int>
     {
         public bool Equals(int x, int y) => x == y;
 

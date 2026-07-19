@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BigDecimal.GenericMath.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,9 +13,9 @@ namespace Bodu.Numerics;
 // members; the documentation is correctly inherited from the System.Numerics generic-math interfaces.
 #pragma warning disable SA1648 // inheritdoc should be used with inheriting class
 
-public readonly partial struct BigDecimal :
-    INumber<BigDecimal>,
-    ISignedNumber<BigDecimal>
+public readonly partial struct BigDecimal
+    : INumber<BigDecimal>
+    , ISignedNumber<BigDecimal>
 {
     /// <inheritdoc />
     static BigDecimal IAdditiveIdentity<BigDecimal, BigDecimal>.AdditiveIdentity => Zero;

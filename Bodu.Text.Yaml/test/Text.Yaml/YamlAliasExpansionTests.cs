@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlAliasExpansionTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -115,7 +115,7 @@ public class YamlAliasExpansionTests
 
         sb.Append("m0: &m0\n  k0: 0\n");
         for (int i = 1; i <= Links; i++)
-            sb.Append("m").Append(i).Append(": &m").Append(i).Append("\n  <<: *m").Append(i - 1).Append("\n  k").Append(i).Append(": ").Append(i).Append('\n');
+            sb.Append('m').Append(i).Append(": &m").Append(i).Append("\n  <<: *m").Append(i - 1).Append("\n  k").Append(i).Append(": ").Append(i).Append('\n');
 
         using var document = YamlDocument.Parse(sb.ToString());
         YamlElement last = document.RootElement.GetProperty("m" + Links);
@@ -175,7 +175,7 @@ public class YamlAliasExpansionTests
 
         for (int level = 1; level <= levels; level++)
         {
-            sb.Append("l").Append(level).Append(": &l").Append(level).Append(" [");
+            sb.Append('l').Append(level).Append(": &l").Append(level).Append(" [");
             for (int i = 0; i < fanOut; i++)
             {
                 if (i > 0)

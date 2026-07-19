@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="InMemoryNotableDateCacheContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.Globalization.Calendar.Caching.Contracts;
 /// Runs the <see cref="NotableDateCacheContractTests" /> against <see cref="InMemoryNotableDateCache" />.
 /// </summary>
 [TestClass]
-public sealed class InMemoryNotableDateCacheContractTests : NotableDateCacheContractTests
+public sealed class InMemoryNotableDateCacheContractTests
+    : NotableDateCacheContractTests
 {
     /// <inheritdoc />
     protected override INotableDateCache CreateCache() => new InMemoryNotableDateCache();

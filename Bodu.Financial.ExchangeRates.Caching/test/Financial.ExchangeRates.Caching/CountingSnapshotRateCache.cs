@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CountingSnapshotRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,7 +10,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// An <see cref="IRateCache" /> test double that delegates to an in-memory cache and implements the snapshot-read seam,
 /// counting snapshot and standard reads so the decorator's single-read range path can be asserted.
 /// </summary>
-internal sealed class CountingSnapshotRateCache : IRateCache, IRateCacheSnapshotReader
+internal sealed class CountingSnapshotRateCache
+    : IRateCache
+    , IRateCacheSnapshotReader
 {
     /// <summary>The in-memory cache that stores the actual state.</summary>
     private readonly InMemoryRateCache _inner;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base36Encoding.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -22,7 +22,8 @@ namespace Bodu.Samples.Text.Encoding.CustomEncoding;
 /// way the library's own Base58 does — the contract it must satisfy is the same either way,
 /// which is what the accompanying contract-test project verifies.
 /// </remarks>
-public sealed class Base36Encoding : IBinaryEncoding
+public sealed class Base36Encoding
+    : IBinaryEncoding
 {
     private const string Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

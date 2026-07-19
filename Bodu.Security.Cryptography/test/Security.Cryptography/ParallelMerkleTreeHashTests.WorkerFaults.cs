@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ParallelMerkleTreeHashTests.WorkerFaults.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -126,7 +126,8 @@ public partial class ParallelMerkleTreeHashTests
     /// the array-based <c>HashCore(byte[], int, int)</c> path used by internal-node combination — deterministically
     /// faulting internal nodes regardless of worker scheduling. Signals disposal via a supplied callback.
     /// </summary>
-    private sealed class ThrowOnInternalPathHashAlgorithm : HashAlgorithm
+    private sealed class ThrowOnInternalPathHashAlgorithm
+        : HashAlgorithm
     {
         private readonly Action _onDispose;
         private uint _sum;

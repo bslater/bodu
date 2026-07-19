@@ -104,7 +104,7 @@ public sealed class CubeHash
     private static readonly Vector512<uint> s_permXor1 = Vector512.Create(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u, 9u, 8u, 11u, 10u, 13u, 12u, 15u, 14u);
 
     /// <summary>Indicates whether the instance has been disposed.</summary>
-    private bool _disposed = false;
+    private bool _disposed;
 
     /// <summary>The number of finalization rounds applied after all input has been processed.</summary>
     private int _finalizationRounds;
@@ -119,7 +119,7 @@ public sealed class CubeHash
     private int _inputBlockSizeBytes;
 
     /// <summary>Indicates whether the post-initialization state snapshot has been computed and cached.</summary>
-    private bool _isInitializedStateCached = false;
+    private bool _isInitializedStateCached;
 
     /// <summary>The number of bytes accumulated in the current partial block.</summary>
     private int _pendingBytes;

@@ -16,7 +16,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <see cref="SymmetricCipherKnownAnswer.Plaintext" /> is empty. Otherwise the vector is an encryption trial mapping
 /// <see cref="SymmetricCipherKnownAnswer.Plaintext" /> to <see cref="SymmetricCipherKnownAnswer.Ciphertext" />.
 /// </remarks>
-public sealed record StreamCipherKnownAnswer : NoncedCipherKnownAnswer
+public sealed record StreamCipherKnownAnswer
+    : NoncedCipherKnownAnswer
 {
     /// <summary>
     /// Gets the initial block counter applied before generating keystream. Defaults to <c>0</c>.

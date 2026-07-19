@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Table{T,T,T}.Views.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -129,7 +129,8 @@ public sealed partial class Table<TRow, TColumn, TValue>
     /// Provides the live read-only row projection returned by <see cref="Row(TRow)" />, resolving the row's cell
     /// dictionary on every access.
     /// </summary>
-    private sealed class RowView : IReadOnlyDictionary<TColumn, TValue>
+    private sealed class RowView
+        : IReadOnlyDictionary<TColumn, TValue>
     {
         /// <summary>The table whose backing store the view resolves against.</summary>
         private readonly Table<TRow, TColumn, TValue> _table;
@@ -208,7 +209,8 @@ public sealed partial class Table<TRow, TColumn, TValue>
     /// Provides the live read-only column projection returned by <see cref="Column(TColumn)" />, scanning the row-major
     /// backing store on every aggregate access.
     /// </summary>
-    private sealed class ColumnView : IReadOnlyDictionary<TRow, TValue>
+    private sealed class ColumnView
+        : IReadOnlyDictionary<TRow, TValue>
     {
         /// <summary>The table whose backing store the view resolves against.</summary>
         private readonly Table<TRow, TColumn, TValue> _table;

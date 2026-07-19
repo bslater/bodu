@@ -86,7 +86,8 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>A custom converter that reads and writes a value as an uppercase string.</summary>
-    private sealed class UpperConverter : YamlConverter<string>
+    private sealed class UpperConverter
+        : YamlConverter<string>
     {
         public override string Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) =>
             reader.GetString().ToUpperInvariant();

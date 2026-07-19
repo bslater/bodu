@@ -15,7 +15,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// owning specification, an empty array selects the canonical unkeyed mode for algorithms that accept one (Skein,
 /// BLAKE2), and a populated array supplies the per-row key directly.
 /// </remarks>
-public abstract record KeyedKnownAnswer : CryptoKnownAnswer
+public abstract record KeyedKnownAnswer
+    : CryptoKnownAnswer
 {
     /// <summary>
     /// Gets the per-row key, or <see langword="null" /> to defer to the variant default supplied by the specification.

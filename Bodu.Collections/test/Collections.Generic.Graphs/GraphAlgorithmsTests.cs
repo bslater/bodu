@@ -303,7 +303,8 @@ public sealed class GraphAlgorithmsTests
     /// <see cref="Graph{T}" />'s constructor-side weight validation) that yields a negative edge weight: A → B has
     /// weight 1 and B → C has weight −5.
     /// </summary>
-    private sealed class NegativeWeightStubGraph : IReadOnlyWeightedGraph<string>
+    private sealed class NegativeWeightStubGraph
+        : IReadOnlyWeightedGraph<string>
     {
         /// <summary>The adjacency map backing the stub, keyed by source vertex.</summary>
         private static readonly Dictionary<string, (string Neighbor, double Weight)[]> s_edges = new(StringComparer.Ordinal)

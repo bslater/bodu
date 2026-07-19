@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CountingNotableDateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,7 +11,9 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// batch reads. The batch seam can be disabled at construction so the caching service's per-year fallback path can be
 /// exercised against the same stored state.
 /// </summary>
-internal sealed class CountingNotableDateCache : INotableDateCache, INotableDateCacheBatchReader
+internal sealed class CountingNotableDateCache
+    : INotableDateCache
+    , INotableDateCacheBatchReader
 {
     /// <summary>The in-memory cache that stores the actual state.</summary>
     private readonly InMemoryNotableDateCache _inner = new();
@@ -77,7 +79,8 @@ internal sealed class CountingNotableDateCache : INotableDateCache, INotableDate
     /// A wrapper exposing only the per-year <see cref="INotableDateCache" /> surface of a counting double, so the
     /// consumer cannot discover the batch seam.
     /// </summary>
-    private sealed class PerYearOnly : INotableDateCache
+    private sealed class PerYearOnly
+        : INotableDateCache
     {
         /// <summary>The counting double the calls are forwarded to.</summary>
         private readonly CountingNotableDateCache _owner;

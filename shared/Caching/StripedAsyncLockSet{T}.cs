@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StripedAsyncLockSet{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -92,7 +92,8 @@ internal sealed class StripedAsyncLockSet<TKey>
     /// <summary>
     /// Releases a held per-key lock exactly once when disposed.
     /// </summary>
-    public struct Releaser : IDisposable
+    public struct Releaser
+        : IDisposable
     {
         /// <summary>The semaphore to release, or <see langword="null" /> once released.</summary>
         private SemaphoreSlim? _gate;

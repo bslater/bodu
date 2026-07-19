@@ -19,7 +19,8 @@ namespace Bodu.Security.Cryptography;
 /// number that derives the per-message nonce, so the sender's and recipient's calls must remain in lock-step. Key
 /// material is zeroed by <see cref="Dispose" />.
 /// </remarks>
-internal sealed class HpkeContext : IDisposable
+internal sealed class HpkeContext
+    : IDisposable
 {
     /// <summary>The cipher suite that governs the AEAD and the exporter KDF.</summary>
     private readonly HpkeSuite _suite;

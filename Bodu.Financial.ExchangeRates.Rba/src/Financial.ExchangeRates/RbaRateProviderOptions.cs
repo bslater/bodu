@@ -74,7 +74,7 @@ public sealed class RbaRateProviderOptions
     /// <see langword="true" /> to enable the on-disk cache; otherwise <see langword="false" />. Defaults to
     /// <see langword="false" />.
     /// </value>
-    public bool EnableDiskCache { get; set; } = false;
+    public bool EnableDiskCache { get; set; }
 
     /// <summary>
     /// Gets or sets the directory used by the on-disk cache.
