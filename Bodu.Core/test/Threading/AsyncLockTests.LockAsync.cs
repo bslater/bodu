@@ -146,6 +146,35 @@ public sealed partial class AsyncLockTests
     }
 
     /// <summary>
+    /// Verifies that when ownership is granted before the token is canceled, the "success wins" policy returns the
+    /// acquired lock instead of throwing, and leaves the lock consistent for the next caller.
+    /// </summary>
+    [TestMethod]
+    public async Task LockAsync_WhenCanceledAfterGrant_ShouldReturnLockAndNotThrow()
+    {
+        var sut = new AsyncLock();
+        using var cts = new CancellationTokenSource();
+
+        AsyncLock.Releaser held = await sut.LockAsync();
+        ValueTask<AsyncLock.Releaser> pending = sut.LockAsync(cts.Token);
+        Assert.IsFalse(pending.IsCompleted, "The second acquisition must not complete while the lock is held.");
+
+        // Release transfers ownership to the queued waiter before the token is signaled, so the grant wins the race
+        // and the subsequent cancellation is a no-op on the already-completed waiter.
+        held.Dispose();
+        cts.Cancel();
+
+        using (await pending)
+        {
+        }
+
+        // The grant was honored and released cleanly, so the lock is free again for the next caller.
+        ValueTask<AsyncLock.Releaser> next = sut.LockAsync();
+        Assert.IsTrue(next.IsCompletedSuccessfully);
+        next.Result.Dispose();
+    }
+
+    /// <summary>
     /// Verifies that acquiring a disposed lock throws <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
