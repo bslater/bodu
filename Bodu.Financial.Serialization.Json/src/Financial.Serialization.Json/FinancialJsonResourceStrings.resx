@@ -80,6 +80,9 @@
   <data name="Json_Invalid_BalancesMustBeObject" xml:space="preserve">
     <value>The 'balances' property must be a JSON object.</value>
   </data>
+  <data name="Json_Invalid_CompactCalculatedMoneyForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact CalculatedMoney form.</value>
+  </data>
   <data name="Json_Invalid_CompactCurrencyPairForm" xml:space="preserve">
     <value>The JSON string '{0}' is not a valid compact CurrencyPair form.</value>
   </data>
@@ -104,6 +107,9 @@
   <data name="Json_Invalid_DuplicateProperty" xml:space="preserve">
     <value>The JSON object contains a duplicate '{0}' property.</value>
   </data>
+  <data name="Json_Invalid_ExpectedCompactString_CalculatedMoney" xml:space="preserve">
+    <value>Expected a JSON string in compact CalculatedMoney form (e.g. "19.995 USD").</value>
+  </data>
   <data name="Json_Invalid_ExpectedCompactString_CurrencyPair" xml:space="preserve">
     <value>Expected a JSON string in compact CurrencyPair form (e.g. "USD/JPY").</value>
   </data>
@@ -112,6 +118,9 @@
   </data>
   <data name="Json_Invalid_ExpectedCompactString_MoneyOfTCurrency" xml:space="preserve">
     <value>Expected a JSON string in compact Money&lt;{0}&gt; form (e.g. "19.99 USD").</value>
+  </data>
+  <data name="Json_Invalid_ExpectedObject_CalculatedMoney" xml:space="preserve">
+    <value>Expected a JSON object containing a CalculatedMoney.</value>
   </data>
   <data name="Json_Invalid_ExpectedObject_CurrencyPair" xml:space="preserve">
     <value>Expected a JSON object containing an CurrencyPair.</value>
@@ -154,6 +163,9 @@
   </data>
   <data name="Json_Invalid_PropertyMustBeString" xml:space="preserve">
     <value>The '{0}' property must be a string.</value>
+  </data>
+  <data name="Json_Invalid_ScaleOutOfRange" xml:space="preserve">
+    <value>The 'scale' property must be an integer between 0 and 28.</value>
   </data>
   <data name="Json_Invalid_UnexpectedEnd" xml:space="preserve">
     <value>Unexpected end of JSON.</value>

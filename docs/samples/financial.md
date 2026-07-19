@@ -75,6 +75,15 @@ decorator), named <xref:Bodu.Financial.MonetaryContext> registrations, and the
 wire shapes; and the `AddFinancialJson()` DI registration exposing keyed `JsonSerializerOptions`
 (key `"Financial"`). *Packages: `Bodu.Financial`, `Bodu.Financial.Serialization.Json`.*
 
+### Bodu.Financial.Samples.UnitPricing
+
+Higher-than-currency precision for unit prices — a six-decimal-place share price in two-decimal
+USD — and preserving it through serialization: a <xref:Bodu.Financial.Money> carrying an explicit
+scale (settled through a custom-scale <xref:Bodu.Financial.MonetaryContext>) whose Strict JSON shape
+records a `scale` property, unrounded <xref:Bodu.Financial.CalculatedMoney> written verbatim, and
+six-place prices round-tripping inside a POCO price list. *Packages: `Bodu.Financial`,
+`Bodu.Financial.Serialization.Json`.*
+
 ### Bodu.Financial.Samples.CustomProvider (+ .Test)
 
 Consumer extensibility: a custom `CsvFileRateProvider` in the recommended shape (builder →

@@ -227,6 +227,7 @@
     <Project Path="samples/Financial/Bodu.Financial.Samples.LiveRates/Bodu.Financial.Samples.LiveRates.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.MoneyBasics/Bodu.Financial.Samples.MoneyBasics.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.OfflineRates/Bodu.Financial.Samples.OfflineRates.csproj" />
+    <Project Path="samples/Financial/Bodu.Financial.Samples.UnitPricing/Bodu.Financial.Samples.UnitPricing.csproj" />
   </Folder>
   <Folder Name="/Samples/Globalization.Calendar/">
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Test/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Test.csproj" />

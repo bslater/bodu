@@ -106,6 +106,15 @@ namespace Bodu.Financial.Serialization.Json {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The JSON string '{0}' is not a valid compact CalculatedMoney form..
+        /// </summary>
+        internal static string Json_Invalid_CompactCalculatedMoneyForm {
+            get {
+                return ResourceManager.GetString("Json_Invalid_CompactCalculatedMoneyForm", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The JSON string '{0}' is not a valid compact CurrencyPair form..
         /// </summary>
         internal static string Json_Invalid_CompactCurrencyPairForm {
@@ -178,6 +187,15 @@ namespace Bodu.Financial.Serialization.Json {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON string in compact CalculatedMoney form (e.g. &quot;19.995 USD&quot;)..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedCompactString_CalculatedMoney {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_CalculatedMoney", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Expected a JSON string in compact CurrencyPair form (e.g. &quot;USD/JPY&quot;)..
         /// </summary>
         internal static string Json_Invalid_ExpectedCompactString_CurrencyPair {
@@ -201,6 +219,15 @@ namespace Bodu.Financial.Serialization.Json {
         internal static string Json_Invalid_ExpectedCompactString_MoneyOfTCurrency {
             get {
                 return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_MoneyOfTCurrency", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON object containing a CalculatedMoney..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedObject_CalculatedMoney {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedObject_CalculatedMoney", resourceCulture);
             }
         }
 
@@ -327,6 +354,15 @@ namespace Bodu.Financial.Serialization.Json {
         internal static string Json_Invalid_PropertyMustBeString {
             get {
                 return ResourceManager.GetString("Json_Invalid_PropertyMustBeString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The 'scale' property must be an integer between 0 and 28..
+        /// </summary>
+        internal static string Json_Invalid_ScaleOutOfRange {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ScaleOutOfRange", resourceCulture);
             }
         }
 

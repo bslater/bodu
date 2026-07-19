@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MoneyJsonConverter.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CalculatedMoneyJsonConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -12,47 +12,48 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.Serialization.Json;
 
 /// <summary>
-/// Converts a <see cref="Money" /> to and from JSON using the policy supplied at construction. Mirrors the shape
-/// vocabulary of <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> so a single <see cref="FinancialJsonPolicy" />
-/// selection produces a coherent on-the-wire format across the monetary types.
+/// Converts a <see cref="CalculatedMoney" /> to and from JSON using the policy supplied at construction. Because
+/// <see cref="CalculatedMoney" /> is the unrounded, deferred-arithmetic tier, its full <see cref="decimal" /> precision
+/// - including trailing zeros - is written verbatim and read back unchanged, so a high-precision unit price survives a
+/// round-trip without settling to the currency's minor units.
 /// </summary>
-public sealed class MoneyJsonConverter
-    : JsonConverter<Money>
+public sealed class CalculatedMoneyJsonConverter
+    : JsonConverter<CalculatedMoney>
 {
     /// <summary>The policy used by this converter instance.</summary>
     private readonly FinancialJsonPolicy _policy;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyJsonConverter" /> class configured for the
+    /// Initializes a new instance of the <see cref="CalculatedMoneyJsonConverter" /> class configured for the
     /// <see cref="FinancialJsonPolicy.Strict" /> shape.
     /// </summary>
-    public MoneyJsonConverter()
+    public CalculatedMoneyJsonConverter()
         : this(FinancialJsonPolicy.Strict)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoneyJsonConverter" /> class configured for the supplied
+    /// Initializes a new instance of the <see cref="CalculatedMoneyJsonConverter" /> class configured for the supplied
     /// <paramref name="policy" />.
     /// </summary>
     /// <param name="policy">The serialization policy.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="policy" /> is not a defined <see cref="FinancialJsonPolicy" /> value.
     /// </exception>
-    public MoneyJsonConverter(FinancialJsonPolicy policy)
+    public CalculatedMoneyJsonConverter(FinancialJsonPolicy policy)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
         _policy = policy;
     }
 
     /// <inheritdoc />
-    public override Money Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+    public override CalculatedMoney Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         _policy == FinancialJsonPolicy.Compact
             ? ReadCompact(ref reader)
             : ReadObject(ref reader);
 
     /// <inheritdoc />
-    public override void Write(Utf8JsonWriter writer, Money value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, CalculatedMoney value, JsonSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(writer);
 
@@ -63,41 +64,40 @@ public sealed class MoneyJsonConverter
         }
 
         writer.WriteStartObject();
+
+        // Write the amount verbatim: CalculatedMoney is unrounded, so its decimal already carries every significant
+        // digit and any trailing zeros, and System.Text.Json renders a decimal at its stored scale.
         writer.WriteNumber("amount", value.Amount);
         writer.WriteString("currency", value.Code == CurrencyCode.None ? string.Empty : value.Code.ToString());
-
-        // A value materialised at a precision other than its currency's registered minor units - a unit price
-        // carried at, say, six decimal places - reports that explicit scale from Money.MinorUnits. Emit it so the
-        // reader can rebuild the precision, including trailing zeros that decimal.Round drops from the stored amount.
-        // Ordinary money, whose reported minor units already match the registry, keeps the historical two-field shape.
-        if (value.Code != CurrencyCode.None && value.MinorUnits != Money.Zero(value.Code).MinorUnits)
-            writer.WriteNumber("scale", value.MinorUnits);
-
         writer.WriteEndObject();
     }
 
     /// <summary>
-    /// Reads the compact string form (e.g. <c>"19.99 USD"</c>) via
-    /// <see cref="Money.TryParse(ReadOnlySpan{char}, IFormatProvider?, out Money)" />.
+    /// Reads the compact string form (e.g. <c>"19.995 USD"</c>): the amount rendered in the invariant culture, a single
+    /// space, then the ISO code.
     /// </summary>
     /// <param name="reader">The reader positioned at the value to convert.</param>
     /// <returns>The deserialized value.</returns>
     /// <exception cref="JsonException">
-    /// The token is not a string, or the string is not a valid Money representation.
+    /// The token is not a string, or the string is not a valid compact CalculatedMoney representation.
     /// </exception>
-    private static Money ReadCompact(ref Utf8JsonReader reader)
+    private static CalculatedMoney ReadCompact(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.String)
-            throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_ExpectedCompactString_Money);
+            throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_ExpectedCompactString_CalculatedMoney);
 
         string text = reader.GetString()!;
-        return !Money.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money result)
-            ? throw new JsonException(
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    FinancialJsonResourceStrings.Json_Invalid_CompactMoneyForm,
-                    text))
-            : result;
+
+        int split = text.LastIndexOf(' ');
+        if (split > 0
+            && decimal.TryParse(text.AsSpan(0, split), NumberStyles.Number, CultureInfo.InvariantCulture, out decimal amount)
+            && CurrencyInfo.TryGetCurrencyCode(text[(split + 1)..], out CurrencyCode code))
+        {
+            return new CalculatedMoney(amount, code);
+        }
+
+        throw new JsonException(
+            string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Json_Invalid_CompactCalculatedMoneyForm, text));
     }
 
     /// <summary>
@@ -106,17 +106,15 @@ public sealed class MoneyJsonConverter
     /// <param name="reader">The reader positioned at the value to convert.</param>
     /// <returns>The deserialized value.</returns>
     /// <exception cref="JsonException">Thrown when the JSON shape is invalid.</exception>
-    private Money ReadObject(ref Utf8JsonReader reader)
+    private CalculatedMoney ReadObject(ref Utf8JsonReader reader)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
-            throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_ExpectedObject_Money);
+            throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_ExpectedObject_CalculatedMoney);
 
         decimal? amount = null;
         string? currency = null;
-        int? scale = null;
         bool amountSeen = false;
         bool currencySeen = false;
-        bool scaleSeen = false;
 
         while (reader.Read())
         {
@@ -162,18 +160,6 @@ public sealed class MoneyJsonConverter
                     throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_CurrencyMustBeString);
                 currency = reader.GetString();
             }
-            else if (string.Equals(propertyName, "scale", StringComparison.OrdinalIgnoreCase))
-            {
-                if (scaleSeen)
-                    throw new JsonException(
-                        string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Json_Invalid_DuplicateProperty, "scale"));
-                scaleSeen = true;
-
-                if (reader.TokenType != JsonTokenType.Number || !reader.TryGetInt32(out int parsedScale))
-                    throw new JsonException(
-                        string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Json_Invalid_PropertyMustBeNumber, "scale"));
-                scale = parsedScale;
-            }
             else
             {
                 reader.Skip();
@@ -189,8 +175,8 @@ public sealed class MoneyJsonConverter
         if (_policy == FinancialJsonPolicy.Lenient)
             currency = currency.Trim().ToUpperInvariant();
 
-        // Pre-validate the ISO shape so a malformed code surfaces as JsonException rather than the
-        // ArgumentException that the Money constructor would otherwise raise.
+        // Pre-validate the ISO shape so a malformed code surfaces as JsonException rather than the ArgumentException
+        // that the CalculatedMoney constructor would otherwise raise.
         if (currency.Length != 3
             || !char.IsAsciiLetterUpper(currency[0])
             || !char.IsAsciiLetterUpper(currency[1])
@@ -200,35 +186,21 @@ public sealed class MoneyJsonConverter
         }
 
         // Resolve the wire ISO string to its stored CurrencyCode; an unknown code is a deserialization error.
-        if (!CurrencyInfo.TryGetCurrencyCode(currency, out CurrencyCode code))
-            throw new JsonException(
+        return CurrencyInfo.TryGetCurrencyCode(currency, out CurrencyCode code)
+            ? new CalculatedMoney(amount.Value, code)
+            : throw new JsonException(
                 string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Arg_Invalid_UnknownCurrencyRejected, currency));
-
-        // When the wire carries an explicit scale (a unit price at a precision other than the currency's registered
-        // minor units), rebuild the value at that scale so the reported precision round-trips. Otherwise construct
-        // through the ordinary path, which resolves the precision from the currency registry.
-        if (scale is not int explicitScale)
-            return new Money(amount.Value, code);
-
-        if (explicitScale is < 0 or > 28)
-            throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_ScaleOutOfRange);
-
-        return Money.FromExplicitScale(amount.Value, code, explicitScale);
     }
 
     /// <summary>
-    /// Formats a runtime-tagged monetary value for the compact JSON shape: the amount rendered in the invariant
-    /// culture, then a single space, then the ISO code. When the currency is registered, the registered minor-unit
-    /// precision drives the trailing-zero count; otherwise the amount's natural representation is used.
+    /// Formats an unrounded monetary value for the compact JSON shape: the amount rendered verbatim in the invariant
+    /// culture, then a single space, then the ISO code. Trailing zeros carried by the amount are preserved.
     /// </summary>
     /// <param name="value">The value to format.</param>
     /// <returns>The compact textual representation.</returns>
-    private static string FormatCompact(Money value)
-    {
-        string numericFormat = "F" + value.MinorUnits.ToString(CultureInfo.InvariantCulture);
-        return string.Concat(
-            value.Amount.ToString(numericFormat, CultureInfo.InvariantCulture),
+    private static string FormatCompact(CalculatedMoney value) =>
+        string.Concat(
+            value.Amount.ToString(CultureInfo.InvariantCulture),
             " ",
             value.Code == CurrencyCode.None ? string.Empty : value.Code.ToString());
-    }
 }

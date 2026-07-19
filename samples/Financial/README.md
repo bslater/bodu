@@ -12,6 +12,7 @@ dotnet run --project samples/Financial/<SampleName>
 | Sample | Demonstrates | Packages |
 |---|---|---|
 | `Bodu.Financial.Samples.MoneyBasics` | Three-tier rounding (`Money<T>` → `CalculatedMoney` → `Fraction<BigInteger>`), typed↔runtime bridges, largest-remainder allocation, cash rounding, formatting/parsing, `MoneyBag` ledgers with conversion audit, JSON policies | `Bodu.Financial` |
+| `Bodu.Financial.Samples.UnitPricing` | **Higher-than-currency precision for unit prices**: a 6-dp share price as an explicit-scale `Money` (Strict JSON carries a `scale` property), unrounded `CalculatedMoney` on the wire, and 6-dp prices round-tripping inside a POCO price list | `Bodu.Financial`, `Bodu.Financial.Serialization.Json` |
 | `Bodu.Financial.Samples.OfflineRates` | **The offline static-rate-file pattern**: CSV → `RateTableBuilder` → `RateBook` → `FixedDatedRateProvider`; `RateLookupOptions` date-resolution modes; converting money with dated rates | `Bodu.Financial` |
 | `Bodu.Financial.Samples.CachedRates` | Read-through caching (`CachingRateProvider`), coverage-based range serving (incl. negative caching of empty windows), tiered cache stacking (memory over file), history-availability clamping | `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching` |
 | `Bodu.Financial.Samples.AggregatedRates` | Multi-provider aggregation: priority fallback, averaging, per-pair routing, and the `AddAggregatedRateProvider` DI builder | `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial.DependencyInjection` |
