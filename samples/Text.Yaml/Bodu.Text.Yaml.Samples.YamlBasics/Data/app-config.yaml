@@ -1,0 +1,15 @@
+# Contoso order-service configuration (sample data).
+service_name: orders
+max_retries: 3
+enabled: true
+sample_rate: 0.25
+
+database:
+  host: localhost
+  port: 5432
+
+endpoints:
+  - name: public
+    url: https://api.example.com
+  - name: admin
+    url: https://admin.example.com
