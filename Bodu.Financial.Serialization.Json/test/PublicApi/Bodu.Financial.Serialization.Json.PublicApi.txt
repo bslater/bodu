@@ -1,3 +1,8 @@
+class Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Financial.Serialization.Json.FinancialJsonPolicy)
+    method Bodu.Financial.CalculatedMoney Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Financial.CalculatedMoney, System.Text.Json.JsonSerializerOptions)
 class Bodu.Financial.Serialization.Json.CurrencyPairJsonConverter
     constructor Void .ctor()
     constructor Void .ctor(Bodu.Financial.Serialization.Json.FinancialJsonPolicy)
