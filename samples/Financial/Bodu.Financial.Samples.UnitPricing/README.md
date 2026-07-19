@@ -36,17 +36,21 @@ Plain Money JSON              : {"amount":145.68,"currency":"USD"}
 Unit-price JSON               : {"amount":145.678912,"currency":"USD","scale":6}
 Deserialized unit price       : USD 145.678912  (MinorUnits = 6)
 Trailing zeros preserved      : {"amount":12.5,"currency":"USD","scale":6} -> USD 12.500000
+Compact form (scale kept)     : "145.678912 USD" -> USD 145.678912  (MinorUnits = 6)
 ```
 
 The `"scale"` property appears **only** when a value's precision differs from its currency's
 registered minor units — ordinary money keeps the two-field `{"amount","currency"}` shape, so
 existing payloads are unaffected. On read, the reported `MinorUnits` is restored to `6`; the trailing
 zeros are carried by that scale, not by the stored decimal, so `12.5` still formats as
-`12.500000`.
+`12.500000`. The terse Compact string form round-trips the precision too — the amount is printed at
+the value's minor units (`"145.678912 USD"`) and the reader infers the scale from the number of
+fractional digits, so no separate `scale` token is needed.
 
 **APIs demonstrated.** `MonetaryContext` with `ScalePolicy.Custom` / `CustomScale`,
 `CalculatedMoney.RoundToMoney(MonetaryContext)`, `Money.MinorUnits`, `Money.ToString("R")`,
-`AddFinancialJsonConverters(FinancialJsonPolicy.Strict)`, `JsonSerializer.Serialize` / `Deserialize`.
+`AddFinancialJsonConverters(FinancialJsonPolicy.Strict` / `Compact)`, `JsonSerializer.Serialize` /
+`Deserialize`.
 
 ### CalculatedUnitPrice (`Scenarios/CalculatedUnitPrice.cs`)
 

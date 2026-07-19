@@ -59,6 +59,13 @@ public static class ExplicitScaleMoney
         Money halfDollarRestored = JsonSerializer.Deserialize<Money>(JsonSerializer.Serialize(halfDollar, options), options);
         Console.WriteLine($"Trailing zeros preserved      : {JsonSerializer.Serialize(halfDollar, options)} -> {halfDollarRestored.ToString("R")}");
 
+        // The terse Compact string form round-trips the scale too: the amount is written with the value's minor-unit
+        // precision, and the reader infers the scale from the number of fractional digits printed.
+        var compact = new JsonSerializerOptions().AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
+        string compactJson = JsonSerializer.Serialize(unitPrice, compact);
+        Money compactRestored = JsonSerializer.Deserialize<Money>(compactJson, compact);
+        Console.WriteLine($"Compact form (scale kept)     : {compactJson} -> {compactRestored.ToString("R")}  (MinorUnits = {compactRestored.MinorUnits})");
+
         Console.WriteLine();
     }
 }

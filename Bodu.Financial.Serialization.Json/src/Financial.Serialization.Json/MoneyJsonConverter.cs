@@ -19,6 +19,9 @@ namespace Bodu.Financial.Serialization.Json;
 public sealed class MoneyJsonConverter
     : JsonConverter<Money>
 {
+    /// <summary>The maximum minor-unit scale a value may carry, matching <see cref="decimal" />'s scale ceiling.</summary>
+    private const int MaxScale = 28;
+
     /// <summary>The policy used by this converter instance.</summary>
     private readonly FinancialJsonPolicy _policy;
 
@@ -91,13 +94,77 @@ public sealed class MoneyJsonConverter
             throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_ExpectedCompactString_Money);
 
         string text = reader.GetString()!;
-        return !Money.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money result)
-            ? throw new JsonException(
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    FinancialJsonResourceStrings.Json_Invalid_CompactMoneyForm,
-                    text))
-            : result;
+        if (!Money.TryParse(text.AsSpan(), CultureInfo.InvariantCulture, out Money result)
+            || !TryExtractAmountText(text.AsSpan(), out ReadOnlySpan<char> numeric))
+        {
+            throw new JsonException(
+                string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Json_Invalid_CompactMoneyForm, text));
+        }
+
+        // The compact form is a fixed-decimal rendering (the writer pads the amount to the value's minor units), so the
+        // count of fractional digits printed is the value's scale. When it matches the currency's registered minor
+        // units, the ordinary parse already carries the right precision. Otherwise - a unit price written at extra
+        // places - rebuild at the printed scale from the unrounded numeric token, because Money.TryParse has already
+        // rounded its result to the registry precision.
+        int scale = CountFractionalDigits(numeric);
+        if (scale == result.MinorUnits)
+            return result;
+
+        if (scale > MaxScale)
+            throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_ScaleOutOfRange);
+
+        decimal amount = decimal.Parse(numeric, NumberStyles.Number | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture);
+        return Money.FromExplicitScale(amount, result.Code, scale);
+    }
+
+    /// <summary>
+    /// Extracts the numeric token from a compact <c>"amount ISO"</c> (or <c>"ISO amount"</c>) rendering, isolating it
+    /// from the three-letter currency code.
+    /// </summary>
+    /// <param name="text">The compact text, already validated as a parseable Money form.</param>
+    /// <param name="numeric">On success, the numeric portion with surrounding whitespace removed.</param>
+    /// <returns><see langword="true" /> when a numeric token was isolated; otherwise <see langword="false" />.</returns>
+    private static bool TryExtractAmountText(ReadOnlySpan<char> text, out ReadOnlySpan<char> numeric)
+    {
+        ReadOnlySpan<char> trimmed = text.Trim();
+        numeric = default;
+
+        // ISO prefix: "USD 19.99".
+        if (trimmed.Length >= 5 && trimmed[3] == ' '
+            && char.IsAsciiLetterUpper(trimmed[0]) && char.IsAsciiLetterUpper(trimmed[1]) && char.IsAsciiLetterUpper(trimmed[2]))
+        {
+            numeric = trimmed[4..].Trim();
+            return true;
+        }
+
+        // ISO suffix: "19.99 USD".
+        if (trimmed.Length >= 5 && trimmed[^4] == ' '
+            && char.IsAsciiLetterUpper(trimmed[^3]) && char.IsAsciiLetterUpper(trimmed[^2]) && char.IsAsciiLetterUpper(trimmed[^1]))
+        {
+            numeric = trimmed[..^4].Trim();
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Counts the fractional digits in a compact amount token: the run of ASCII digits immediately following the
+    /// invariant-culture decimal point. Returns zero when the token carries no decimal point.
+    /// </summary>
+    /// <param name="numeric">The numeric portion of a compact rendering.</param>
+    /// <returns>The number of fractional digits, used as the value's minor-unit scale.</returns>
+    private static int CountFractionalDigits(ReadOnlySpan<char> numeric)
+    {
+        int dot = numeric.IndexOf('.');
+        if (dot < 0)
+            return 0;
+
+        int count = 0;
+        for (int i = dot + 1; i < numeric.Length && char.IsAsciiDigit(numeric[i]); i++)
+            count++;
+
+        return count;
     }
 
     /// <summary>
@@ -210,7 +277,7 @@ public sealed class MoneyJsonConverter
         if (scale is not int explicitScale)
             return new Money(amount.Value, code);
 
-        if (explicitScale is < 0 or > 28)
+        if (explicitScale is < 0 or > MaxScale)
             throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_ScaleOutOfRange);
 
         return Money.FromExplicitScale(amount.Value, code, explicitScale);
