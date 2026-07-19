@@ -1,7 +1,7 @@
 # Bodu.Financial.Samples.MoneyBasics
 
 The core `Bodu.Financial` value types and policies, demonstrated offline with in-code data only.
-Six scenarios walk the money model from single amounts through multi-currency ledgers to JSON.
+Seven scenarios walk the money model from single amounts through multi-currency ledgers to JSON.
 
 ```bash
 dotnet run --project samples/Financial/Bodu.Financial.Samples.MoneyBasics
@@ -40,6 +40,36 @@ that holds even when it would not.
 **APIs demonstrated.** `Money.Of<T>`, `Money<T>` arithmetic operators, `Money<T>.ToCalculated()`,
 `CalculatedMoney` operators, `CalculatedMoney.RoundToMoney(MidpointRounding)`,
 `Money<T>.MultiplyExact(Fraction<BigInteger>)`.
+
+### CalculatedMoneyScenario (`Scenarios/CalculatedMoneyScenario.cs`)
+
+**Intent.** Zoom in on the deferred tier on its own terms. `RoundingTiers` shows `CalculatedMoney`
+as one of three options; this scenario is the close-up: a full-precision carrier that accumulates
+a multi-step calculation and rounds *exactly once*, at materialization — so the single rounding
+decision, and which way a leftover half-cent falls, is explicit rather than smeared across steps.
+
+**What it does.** Sums three line items as `CalculatedMoney` values (9.99 + 9.99 + 6.95 = 26.93,
+unrounded), splits the bill two ways with the `/` operator (13.465 — a half-cent with no
+representation in USD's two minor units), and materializes that one deferred value twice:
+`RoundToMoney()` (banker's default) and `RoundToMoney(MidpointRounding.AwayFromZero)`.
+
+**What to expect.**
+
+```
+Bill total (unrounded): 26.93 USD
+Split 2 ways (unrounded): 13.465 USD
+Settle (banker's)     : USD 13.46
+Settle (away-from-0)  : USD 13.47
+```
+
+The intermediate 13.465 is carried at full precision — a `Money<USD>` would have rounded it away
+at the division. Because it is a genuine midpoint, the two settlement rules disagree by a cent:
+banker's rounding takes the even neighbour (13.46), away-from-zero rounds up (13.47). One value,
+one rounding, two documented policies — the calculation never rounds until you tell it to.
+
+**APIs demonstrated.** `CalculatedMoney(decimal, CurrencyCode)` constructor, the `+` and `/`
+operators, `CalculatedMoney.Amount`, `CalculatedMoney.RoundToMoney()` /
+`RoundToMoney(MidpointRounding)`.
 
 ### TypedRuntimeBridges (`Scenarios/TypedRuntimeBridges.cs`)
 
@@ -173,6 +203,10 @@ because the target currency's own balance needs no rate (its `Rate` is `null`).
 
 ### JsonPolicies (`Scenarios/JsonPolicies.cs`)
 
+> **See also:** the dedicated **`Bodu.Financial.Samples.JsonSerialization`** sample covers the
+> Financial JSON surface in depth (all three policies, `MoneyBag` and exchange-rate shapes,
+> round-tripping, and DI registration). This section is the brief in-context tour.
+
 **Intent.** One wire shape does not fit ledgers, APIs, and imports alike. The three
 `FinancialJsonPolicy` values pick the trade-off explicitly; this scenario shows each on the same
 values.
@@ -190,6 +224,7 @@ Strict  : {"amount":19.99,"currency":"USD"} -> USD 19.99
 Compact : "19.99 USD"
 Compact : {"EUR":12.34,"USD":19.99}  (MoneyBag)
 Lenient : lowercase "usd" accepted -> USD 12.34
+See also: Bodu.Financial.Samples.JsonSerialization for the full Financial JSON surface.
 ```
 
 Strict is the canonical object shape for persistence and audit (duplicate properties and

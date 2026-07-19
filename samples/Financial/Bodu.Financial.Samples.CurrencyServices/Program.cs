@@ -23,6 +23,7 @@ public static class Program
         Console.WriteLine("=======================================");
         Console.WriteLine();
 
+        CurrencyCatalogue.Run();
         AmbientResolution.Run();
         NamedContexts.Run();
         FinancialServiceHost.Run();

@@ -24,6 +24,7 @@ public static class Program
         Console.WriteLine();
 
         RoundingTiers.Run();
+        CalculatedMoneyScenario.Run();
         TypedRuntimeBridges.Run();
         Allocation.Run();
         FormattingParsing.Run();

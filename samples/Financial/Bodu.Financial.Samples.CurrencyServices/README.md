@@ -10,6 +10,40 @@ dotnet run --project samples/Financial/Bodu.Financial.Samples.CurrencyServices
 
 ## Scenarios
 
+### CurrencyCatalogue (`Scenarios/CurrencyCatalogue.cs`)
+
+**Intent.** Before the resolution seam and host wiring, the raw material: the shipped ISO 4217
+catalogue and the `CurrencyInfo` record every money value resolves against. The headline fact is
+that minor units are *per-currency data*, not a universal "two decimal places" — a money type
+that hard-codes two decimals is already wrong for the yen and the dinar.
+
+**What it does.** Reports the registry size (`CurrencyRegistry.All`), then queries a
+`CurrencyLookupService` (`ICurrencyLookup`) by ISO code for USD, JPY, and BHD — three currencies
+with 2, 0, and 3 minor units respectively — printing each `CurrencyInfo`'s numeric code, English
+name, symbol, and minor-unit count. It closes with the `CurrencyCode` enum bridge
+(`CurrencyInfo.FromCurrencyCode`) resolving the same registry entry from a strongly-typed code.
+
+**What to expect.**
+
+```
+Registry: 184 currencies shipped
+  USD (840) US Dollar  symbol (none)  2 minor unit(s)
+  JPY (392) Yen  symbol (none)  0 minor unit(s)
+  BHD ( 48) Bahraini Dinar  symbol (none)  3 minor unit(s)
+JPY carries 0 minor units (whole yen); BHD carries 3 (thousandths of a dinar).
+Enum bridge: CurrencyCode.USD -> USD #840
+```
+
+JPY settles in whole yen and BHD in thousandths — the same reason `Money` reads its scale from
+the currency rather than a constant. The lookup service is the indexed front door (by ISO code,
+numeric code, symbol, region, or culture); `CurrencyRegistry` is the flat catalogue behind it.
+The symbols read `(none)` because the shipped registry entries carry ISO metadata, not display
+glyphs (symbol/culture presentation is a separate, opt-in concern).
+
+**APIs demonstrated.** `CurrencyRegistry.All`, `CurrencyLookupService` / `ICurrencyLookup.TryByIsoCode`,
+`CurrencyInfo` (`IsoCode` / `NumericCode` / `EnglishName` / `Symbol` / `MinorUnits`),
+`CurrencyInfo.FromCurrencyCode(CurrencyCode)`.
+
 ### AmbientResolution (`Scenarios/AmbientResolution.cs`)
 
 **Intent.** Runtime `Money` resolves currency metadata (minor units, names, parse validation)
