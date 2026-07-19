@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Security.Cryptography.Samples.CustomHash</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Security.Cryptography\test\Bodu.Security.Cryptography.Test.csproj" />
+    <ProjectReference Include="..\Bodu.Security.Cryptography.Samples.CustomHash\Bodu.Security.Cryptography.Samples.CustomHash.csproj" />
+  </ItemGroup>
+
+</Project>

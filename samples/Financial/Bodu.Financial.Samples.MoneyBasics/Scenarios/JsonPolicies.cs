@@ -46,6 +46,7 @@ public static class JsonPolicies
         var lenient = new JsonSerializerOptions().AddFinancialJsonConverters(FinancialJsonPolicy.Lenient);
         Money imported = JsonSerializer.Deserialize<Money>("""{"amount":12.34,"currency":"usd"}""", lenient);
         Console.WriteLine($"Lenient : lowercase \"usd\" accepted -> {imported}");
+        Console.WriteLine("See also: Bodu.Financial.Samples.JsonSerialization for the full Financial JSON surface.");
 
         Console.WriteLine();
     }

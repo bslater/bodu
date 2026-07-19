@@ -47,8 +47,8 @@ and floating rules, a **calculated-duration** year-end shutdown (`UntilDate`), a
 **frequency-based** recurrences (daily-interval, weekly, monthly day, and monthly ordinal-weekday
 schedules) — declarative weekend-roll adjustment policies, importing the shared catalogues through
 <xref:Bodu.Globalization.Calendar.CommonNotableDateResources> (including the offset-anchor
-dependency the validator enforces), and the XML save/load round trip that makes the document a
-distributable artifact. Its `FrequencyBasedSchedules` and `AuthoringCompanyHolidays` scenarios are
+dependency the validator enforces), and the XML and JSON save/load round trips that make the
+document a distributable artifact. Its `FrequencyBasedSchedules` and `AuthoringCompanyHolidays` scenarios are
 the runnable companions to the [Notable-date rule strategies](../guides/calendar/strategy-reference.md)
 guide. *Packages: `Bodu.Globalization.Calendar`, `Bodu.Globalization.Calendar.Builder`.*
 
