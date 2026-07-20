@@ -39,6 +39,9 @@ public partial class Utf8BencodeReaderTests
     [DataRow("integer underflow", "i-99999999999999999999e")]
     [DataRow("integer below Int64 by one", "i-9223372036854775809e")]
     [DataRow("non-digit in integer", "i1a2e")]
+    [DataRow("fractional integer", "i3.5e")]
+    [DataRow("hex-prefixed integer", "i0x1e")]
+    [DataRow("integer prefix only", "i")]
 
     // Byte-string grammar.
     [DataRow("missing string separator", "3abc")]
@@ -75,6 +78,7 @@ public partial class Utf8BencodeReaderTests
     [DataRow("trailing data after list", "le2:xx")]
     [DataRow("trailing data after dictionary", "dei1e")]
     [DataRow("trailing junk byte", "i1ex")]
+    [DataRow("trailing end token after integer", "i3ee")]
 
     // Unknown tokens.
     [DataRow("unknown prefix byte", "x")]
@@ -155,6 +159,61 @@ public partial class Utf8BencodeReaderTests
         }
 
         Assert.AreEqual(4, names);
+    }
+
+    /// <summary>
+    /// Verifies that dictionary keys are ordered by <em>unsigned</em> byte value across the whole 0x00–0xFF range:
+    /// keys beginning with 0x00, 0x7F, 0x80, and 0xFF in that ascending order are accepted. The 0x7F→0x80 step is the
+    /// point at which a signed-byte comparison would invert the order, so this pins the required unsigned compare.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenKeysOrderedByUnsignedHighBytes_ShouldSucceed()
+    {
+        byte[] bytes =
+        [
+            (byte)'d',
+            (byte)'1', (byte)':', 0x00, (byte)'1', (byte)':', (byte)'a',
+            (byte)'1', (byte)':', 0x7F, (byte)'1', (byte)':', (byte)'b',
+            (byte)'1', (byte)':', 0x80, (byte)'1', (byte)':', (byte)'c',
+            (byte)'1', (byte)':', 0xFF, (byte)'1', (byte)':', (byte)'d',
+            (byte)'e',
+        ];
+
+        var reader = new Utf8BencodeReader(bytes);
+        int names = 0;
+        while (reader.Read())
+        {
+            if (reader.TokenType == BencodeTokenType.PropertyName)
+                names++;
+        }
+
+        Assert.AreEqual(4, names);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary whose keys ascend only under a <em>signed</em> byte interpretation — key 0xFF
+    /// (−1 as a signed byte, 255 unsigned) placed before key 0x00 — is rejected as unordered, since BEP 3 requires
+    /// raw-byte order and raw bytes compare unsigned. This is the classic signed-<c>char</c> key-ordering interop bug.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenKeysOrderedBySignedByteInterpretation_ShouldThrowBencodeFormatException()
+    {
+        byte[] bytes =
+        [
+            (byte)'d',
+            (byte)'1', (byte)':', 0xFF, (byte)'1', (byte)':', (byte)'a',
+            (byte)'1', (byte)':', 0x00, (byte)'1', (byte)':', (byte)'b',
+            (byte)'e',
+        ];
+
+        Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            var reader = new Utf8BencodeReader(bytes);
+            while (reader.Read())
+            {
+                // Drive the reader to completion to surface the unordered-keys error.
+            }
+        });
     }
 
     /// <summary>
