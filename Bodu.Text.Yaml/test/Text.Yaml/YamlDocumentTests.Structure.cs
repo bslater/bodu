@@ -150,6 +150,19 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that a leading UTF-8 byte-order mark is consumed rather than treated as document content, so a file
+    /// saved with a BOM parses identically to one without.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenLeadingByteOrderMark_ShouldParseBody()
+    {
+        using var doc = YamlDocument.Parse("\uFEFFkey: value\n");
+        Assert.AreEqual(YamlValueKind.Mapping, doc.RootElement.ValueKind);
+        Assert.AreEqual("value", doc.RootElement.GetProperty("key").GetString());
+    }
+
+    /// <summary>
     /// Verifies that an error's reported line number counts lone carriage-return line breaks, matching the lexer's
     /// line-break handling, so CR-only documents report accurate positions.
     /// </summary>
