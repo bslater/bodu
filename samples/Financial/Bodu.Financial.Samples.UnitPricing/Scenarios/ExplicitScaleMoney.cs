@@ -64,6 +64,12 @@ public static class ExplicitScaleMoney
         Money halfDollarRestored = JsonSerializer.Deserialize<Money>(JsonSerializer.Serialize(halfDollar, options), options);
         Console.WriteLine($"Trailing zeros preserved      : {JsonSerializer.Serialize(halfDollar, options)} -> {halfDollarRestored.ToString("R")}");
 
+        // Scale transforms are explicit instance operations: Rescale re-expresses the value at a new precision
+        // (coarser rounds - a one-value settlement; finer pads losslessly), and TrimScale drops trailing-zero
+        // precision down to - never below - the currency's registered minor units.
+        Console.WriteLine($"Rescale(2) settles            : {unitPrice.Rescale(2).ToString("R")}  (MinorUnits = {unitPrice.Rescale(2).MinorUnits})");
+        Console.WriteLine($"TrimScale() drops zero scale  : {halfDollar.TrimScale().ToString("R")}  (MinorUnits = {halfDollar.TrimScale().MinorUnits})");
+
         // The terse Compact string form round-trips the scale too: the amount is written with the value's minor-unit
         // precision, and the reader infers the scale from the number of fractional digits printed.
         var compact = new JsonSerializerOptions().AddFinancialJsonConverters(FinancialJsonPolicy.Compact);

@@ -39,6 +39,8 @@ Plain Money JSON              : {"amount":145.68,"currency":"USD"}
 Unit-price JSON               : {"amount":145.678912,"currency":"USD","scale":6}
 Deserialized unit price       : USD 145.678912  (MinorUnits = 6)
 Trailing zeros preserved      : {"amount":12.5,"currency":"USD","scale":6} -> USD 12.500000
+Rescale(2) settles            : USD 145.68  (MinorUnits = 2)
+TrimScale() drops zero scale  : USD 12.50  (MinorUnits = 2)
 Compact form (scale kept)     : "145.678912 USD" -> USD 145.678912  (MinorUnits = 6)
 ```
 
@@ -50,10 +52,11 @@ zeros are carried by that scale, not by the stored decimal, so `12.5` still form
 the value's minor units (`"145.678912 USD"`) and the reader infers the scale from the number of
 fractional digits, so no separate `scale` token is needed.
 
-**APIs demonstrated.** `Money.FromExplicitScale`, `MonetaryContext` with `ScalePolicy.Custom` /
-`CustomScale`, `CalculatedMoney.RoundToMoney(MonetaryContext)`, `Money.MinorUnits`,
-`Money.ToString("R")`, `AddFinancialJsonConverters(FinancialJsonPolicy.Strict` / `Compact)`,
-`JsonSerializer.Serialize` / `Deserialize`.
+**APIs demonstrated.** `Money.FromExplicitScale`, `Money.Rescale`, `Money.TrimScale`,
+`MonetaryContext` with `ScalePolicy.Custom` / `CustomScale`,
+`CalculatedMoney.RoundToMoney(MonetaryContext)`, `Money.MinorUnits`, `Money.ToString("R")`,
+`AddFinancialJsonConverters(FinancialJsonPolicy.Strict` / `Compact)`, `JsonSerializer.Serialize` /
+`Deserialize`.
 
 ### CalculatedUnitPrice (`Scenarios/CalculatedUnitPrice.cs`)
 
