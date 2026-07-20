@@ -16,6 +16,22 @@ namespace Bodu.Financial.Serialization.Json;
 /// vocabulary of <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> so a single <see cref="FinancialJsonPolicy" />
 /// selection produces a coherent on-the-wire format across the monetary types.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The <see cref="FinancialJsonPolicy.Strict" /> and <see cref="FinancialJsonPolicy.Lenient" /> policies share the
+/// canonical object shape <c>{"amount":19.99,"currency":"USD"}</c>. A value carrying an explicit minor-unit scale —
+/// a unit price whose precision differs from the currency's registered minor units (see
+/// <see cref="Money.FromExplicitScale(decimal, Currencies.CurrencyCode, int, MidpointRounding)" />) — additionally
+/// emits a <c>scale</c> property, for example <c>{"amount":145.678912,"currency":"USD","scale":6}</c>, and the reader
+/// reconstructs the value at that scale so the precision (including trailing zeros) survives the round-trip. A payload
+/// without <c>scale</c> deserializes at the registry precision, keeping previously written documents valid.
+/// </para>
+/// <para>
+/// The <see cref="FinancialJsonPolicy.Compact" /> policy writes a single string, <c>"19.99 USD"</c>, padding the
+/// amount to the value's minor units. On read, the scale is inferred from the count of fractional digits printed, so
+/// an explicit-scale value round-trips through the compact form without separate scale metadata.
+/// </para>
+/// </remarks>
 public sealed class MoneyJsonConverter
     : JsonConverter<Money>
 {

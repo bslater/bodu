@@ -34,11 +34,16 @@ public static class ExplicitScaleMoney
         Money settled = new Money(quoted, CurrencyCode.USD);
         Console.WriteLine($"Plain Money (settles to 2 dp) : {settled.ToString("R")}  (MinorUnits = {settled.MinorUnits})");
 
-        // To keep six places, defer rounding in a CalculatedMoney and settle through a context that requests a custom
-        // scale. The resulting Money reports six minor units and formats to six places.
-        var priceContext = MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom, CustomScale = 6 };
-        Money unitPrice = new CalculatedMoney(quoted, CurrencyCode.USD).RoundToMoney(priceContext);
+        // To keep six places, construct with an explicit scale. The resulting Money reports six minor units, formats
+        // to six places, and rounds arithmetic at its own precision.
+        Money unitPrice = Money.FromExplicitScale(quoted, CurrencyCode.USD, 6);
         Console.WriteLine($"Unit-price Money (6 dp)       : {unitPrice.ToString("R")}  (MinorUnits = {unitPrice.MinorUnits})");
+
+        // The settlement route produces the same explicit-scale value: defer rounding in a CalculatedMoney and settle
+        // once through a context that requests a custom scale - preferred when the amount is computed, not quoted.
+        var priceContext = MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom, CustomScale = 6 };
+        Money settledPrice = new CalculatedMoney(quoted, CurrencyCode.USD).RoundToMoney(priceContext);
+        Console.WriteLine($"Same via settlement route     : {settledPrice.ToString("R")}  (equal: {unitPrice == settledPrice})");
 
         // Register the converters and serialize. The Strict object shape adds a "scale" property whenever a value's
         // precision differs from its currency's registered minor units, so the six places are recorded on the wire.

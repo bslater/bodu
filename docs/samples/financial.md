@@ -81,8 +81,9 @@ Higher-than-currency precision for unit prices — a six-decimal-place share pri
 USD — and preserving it through serialization: a <xref:Bodu.Financial.Money> carrying an explicit
 scale (settled through a custom-scale <xref:Bodu.Financial.MonetaryContext>) whose Strict JSON shape
 records a `scale` property, unrounded <xref:Bodu.Financial.CalculatedMoney> written verbatim, and
-six-place prices round-tripping inside a POCO price list. *Packages: `Bodu.Financial`,
-`Bodu.Financial.Serialization.Json`.*
+six-place prices round-tripping inside a POCO price list — see
+[Monetary precision &amp; unit pricing](../guides/financial/monetary-precision.md). *Packages:
+`Bodu.Financial`, `Bodu.Financial.Serialization.Json`.*
 
 ### Bodu.Financial.Samples.CustomProvider (+ .Test)
 

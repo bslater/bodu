@@ -789,6 +789,14 @@ ingesting spreadsheets and external feeds, not as a canonical storage
 shape. The same call registers converters for <xref:Bodu.Financial.ExchangeRates.ExchangeRate>
 and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> too.
 
+A `Money` carrying an explicit minor-unit scale — a unit price finer
+than the currency's registered precision — additionally emits a
+`scale` property in the object shape
+(`{ "amount": 145.678912, "currency": "USD", "scale": 6 }`) so the
+precision survives the round-trip; unrounded `CalculatedMoney`
+serialises its full decimal verbatim. See
+[Monetary precision & unit pricing](monetary-precision.md).
+
 ## When not to use `Money<TCurrency>`
 
 - **Calculations that genuinely span unknown currencies.** When you
@@ -803,10 +811,14 @@ and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> too.
   `Fraction<BigInteger>` directly — those values are dimensionless
   and benefit from exact rational arithmetic.
 - **Sub-minor-unit precision.** `Money<TCurrency>` rounds to the
-  currency's minor-unit precision on construction. If you need
-  sub-cent precision (for example, half-pennies in gas pricing),
-  promote to `Fraction<BigInteger>` for the calculation and snap to
-  `Money<TCurrency>` only at the persistence boundary.
+  currency's minor-unit precision on construction. For unit prices at
+  a known finer scale (for example, half-pennies in gas pricing or a
+  six-place share price), use the runtime-tagged `Money` with an
+  explicit scale via `Money.FromExplicitScale`, or carry the
+  calculation in `CalculatedMoney` — see
+  [Monetary precision & unit pricing](monetary-precision.md). For
+  exact multi-step arithmetic, promote to `Fraction<BigInteger>` and
+  snap to `Money<TCurrency>` only at the persistence boundary.
 
 ## See also
 

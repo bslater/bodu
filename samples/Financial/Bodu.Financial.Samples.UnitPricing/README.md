@@ -17,14 +17,16 @@ dotnet run --project samples/Financial/Bodu.Financial.Samples.UnitPricing
 
 **Intent.** A `Money` normally rounds to its currency's minor units (USD = 2) the moment it is
 constructed, so a six-place quote loses its extra places immediately. This scenario keeps the six
-places by settling through a custom-scale `MonetaryContext`, then shows the Strict JSON shape
+places with the explicit-scale factory `Money.FromExplicitScale` (showing the settlement route
+through a custom-scale `MonetaryContext` produces the same value), then shows the Strict JSON shape
 recording that scale on the wire so deserialization rebuilds the same precision.
 
-**What it does.** Builds a plain `Money` from `145.678912` (which settles to `145.68`), then settles
-a `CalculatedMoney` through `MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom,
-CustomScale = 6 }` to obtain a `Money` reporting six minor units. It serializes both under Strict,
-deserializes the six-place value, and finally round-trips a price of exactly `12.5` held at six
-places to show trailing zeros are preserved.
+**What it does.** Builds a plain `Money` from `145.678912` (which settles to `145.68`), then mints
+the six-place price via `Money.FromExplicitScale(quoted, CurrencyCode.USD, 6)` and confirms the
+`CalculatedMoney.RoundToMoney` settlement route with `ScalePolicy.Custom` / `CustomScale = 6`
+yields an equal value. It serializes both shapes under Strict, deserializes the six-place value,
+and finally round-trips a price of exactly `12.5` held at six places to show trailing zeros are
+preserved.
 
 **What to expect.**
 
@@ -32,6 +34,7 @@ places to show trailing zeros are preserved.
 --- Explicit-scale Money: a 6-dp share price ---
 Plain Money (settles to 2 dp) : USD 145.68  (MinorUnits = 2)
 Unit-price Money (6 dp)       : USD 145.678912  (MinorUnits = 6)
+Same via settlement route     : USD 145.678912  (equal: True)
 Plain Money JSON              : {"amount":145.68,"currency":"USD"}
 Unit-price JSON               : {"amount":145.678912,"currency":"USD","scale":6}
 Deserialized unit price       : USD 145.678912  (MinorUnits = 6)
@@ -47,10 +50,10 @@ zeros are carried by that scale, not by the stored decimal, so `12.5` still form
 the value's minor units (`"145.678912 USD"`) and the reader infers the scale from the number of
 fractional digits, so no separate `scale` token is needed.
 
-**APIs demonstrated.** `MonetaryContext` with `ScalePolicy.Custom` / `CustomScale`,
-`CalculatedMoney.RoundToMoney(MonetaryContext)`, `Money.MinorUnits`, `Money.ToString("R")`,
-`AddFinancialJsonConverters(FinancialJsonPolicy.Strict` / `Compact)`, `JsonSerializer.Serialize` /
-`Deserialize`.
+**APIs demonstrated.** `Money.FromExplicitScale`, `MonetaryContext` with `ScalePolicy.Custom` /
+`CustomScale`, `CalculatedMoney.RoundToMoney(MonetaryContext)`, `Money.MinorUnits`,
+`Money.ToString("R")`, `AddFinancialJsonConverters(FinancialJsonPolicy.Strict` / `Compact)`,
+`JsonSerializer.Serialize` / `Deserialize`.
 
 ### CalculatedUnitPrice (`Scenarios/CalculatedUnitPrice.cs`)
 
@@ -119,7 +122,7 @@ form because the source literal already carried them. After deserialization ever
 six minor units, so the position settlement multiplies the exact per-share price before rounding once
 to cents.
 
-**APIs demonstrated.** `Money` as a POCO property, `MonetaryContext` custom scale,
+**APIs demonstrated.** `Money` as a POCO property, `Money.FromExplicitScale`,
 `CalculatedMoney` settlement, `AddFinancialJsonConverters(FinancialJsonPolicy.Strict)` with
 `JsonSerializerOptions { WriteIndented = true }`, `JsonSerializer.Serialize` / `Deserialize<T[]>`.
 

@@ -49,6 +49,12 @@ public static class FinancialJsonSerializerOptionsExtensions
     /// <see cref="FinancialJsonPolicy.Lenient" /> policy for import workflows, and the
     /// <see cref="FinancialJsonPolicy.Compact" /> policy for the compact <c>"19.99 USD"</c> string form.
     /// </para>
+    /// <para>
+    /// All three policies preserve monetary precision on round-trip: a <see cref="Bodu.Financial.Money" /> carrying an
+    /// explicit minor-unit scale (a unit price) persists that scale — via a <c>scale</c> property in the object shapes
+    /// and via the printed fractional digits in the compact form — and a
+    /// <see cref="Bodu.Financial.CalculatedMoney" /> serializes its full unrounded amount verbatim.
+    /// </para>
     /// </remarks>
     public static JsonSerializerOptions AddFinancialJsonConverters(
         this JsonSerializerOptions options,
