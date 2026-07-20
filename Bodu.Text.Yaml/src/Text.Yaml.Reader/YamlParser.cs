@@ -431,6 +431,12 @@ internal sealed partial class YamlParser
             return NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
 
         int col = CurrentColumn();
+
+        // A block sequence value may be indented at the same column as its key (the compact style of spec
+        // Example 8.22, e.g. "a:\n- 1\n- 2"). A more-indented sequence is handled by the block-node parse below.
+        if (col == keyIndent && Peek() == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+            return ParseBlockSequence(col, null, null);
+
         if (col <= keyIndent)
             return NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
 

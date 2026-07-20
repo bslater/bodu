@@ -89,4 +89,13 @@ public partial class YamlDocumentTests
         Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("a").ValueKind);
         Assert.AreEqual("true", doc.RootElement.GetProperty("a").GetString());
     }
+
+    /// <summary>Verifies that the <c>!!null</c> tag forces the null kind onto an otherwise non-null scalar.</summary>
+    [TestMethod]
+    public void Parse_WhenNullTag_ShouldForceNull()
+    {
+        using var doc = YamlDocument.Parse("a: !!null\nb: !!null value\n");
+        Assert.AreEqual(YamlValueKind.Null, doc.RootElement.GetProperty("a").ValueKind);
+        Assert.AreEqual(YamlValueKind.Null, doc.RootElement.GetProperty("b").ValueKind);
+    }
 }
