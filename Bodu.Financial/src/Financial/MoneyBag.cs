@@ -97,7 +97,8 @@ public sealed partial class MoneyBag
             if (code == CurrencyCode.None)
                 throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_BalanceMissingIsoCode, nameof(balances));
 
-            builder[code] = builder.TryGetValue(code, out decimal existing) ? existing + balance.Amount : balance.Amount;
+            decimal value = NormalizeToRegistry(balance);
+            builder[code] = builder.TryGetValue(code, out decimal existing) ? existing + value : value;
         }
 
         // Prune zero balances introduced by mutual cancellation during the sum.
@@ -164,23 +165,43 @@ public sealed partial class MoneyBag
     /// <exception cref="ArgumentException">
     /// <paramref name="amount" /> has no currency (default-initialised).
     /// </exception>
+    /// <remarks>
+    /// The bag is a settlement-precision container: the incoming amount is rounded to its currency's registered
+    /// minor units (banker's rounding) before it is folded into the balance, so an explicit-scale unit price settles
+    /// on entry. Settle high-precision amounts deliberately — via
+    /// <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> — when a different rounding rule is required.
+    /// </remarks>
     public MoneyBag Add(Money amount)
     {
         CurrencyCode code = amount.Code;
         if (code == CurrencyCode.None)
             throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_MoneyMissingIsoCode, nameof(amount));
 
-        if (amount.Amount == 0m)
+        decimal value = NormalizeToRegistry(amount);
+        if (value == 0m)
             return this;
 
         if (_balances.TryGetValue(code, out decimal existing))
         {
-            decimal sum = existing + amount.Amount;
+            decimal sum = existing + value;
             return new MoneyBag(sum == 0m ? _balances.Remove(code) : _balances.SetItem(code, sum));
         }
 
-        return new MoneyBag(_balances.SetItem(code, amount.Amount));
+        return new MoneyBag(_balances.SetItem(code, value));
     }
+
+    /// <summary>
+    /// Normalises an incoming amount to its currency's registered minor-unit precision.
+    /// </summary>
+    /// <param name="amount">The amount entering the bag.</param>
+    /// <returns>The amount rounded to the registered minor units using banker's rounding.</returns>
+    /// <remarks>
+    /// Balances are held at the currency's registered minor units because the JSON wire form carries no per-balance
+    /// scale — rounding on entry keeps the in-memory balances identical to what a serialization round-trip restores,
+    /// instead of letting sub-minor-unit digits mutate silently on the first save/load.
+    /// </remarks>
+    private static decimal NormalizeToRegistry(Money amount) =>
+        MoneyMath.Round(amount.Amount, CurrencyInfo.FromCurrencyCode(amount.Code).MinorUnits, MidpointRounding.ToEven);
 
     /// <summary>
     /// Returns a new bag with the typed <paramref name="amount" /> added to the balance for its currency.

@@ -20,6 +20,13 @@ public readonly partial struct Money
     /// <returns>
     /// <see langword="true" /> when both currency and amount match; otherwise <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// Equality is numeric and follows <see cref="decimal" /> semantics: the reported minor-unit scale is not part of
+    /// the identity, so a settled <c>12.50 USD</c> equals a six-place unit price of <c>12.500000 USD</c> even though
+    /// the two values format and serialize differently. (This is the <see cref="decimal" /> convention rather than
+    /// Java's scale-sensitive <c>BigDecimal.equals</c>.) Compare <see cref="MinorUnits" /> explicitly when the
+    /// precision itself is significant.
+    /// </remarks>
     public bool Equals(Money other) =>
         _amount == other._amount && _code == other._code;
 

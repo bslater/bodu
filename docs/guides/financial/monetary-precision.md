@@ -44,6 +44,38 @@ The scale is a first-class part of the value, not a formatting hint:
   multiplication or division rounds the result at six places, not two.
 - Allocation splits at the value's own precision.
 
+## Scale semantics
+
+The rules for how scales interact follow the established prior art (`decimal` itself, Java's
+`BigDecimal` / Joda-Money's `BigMoney`, dinero.js, SQL `NUMERIC`):
+
+- **Mixed-scale addition and subtraction take the finer (maximum) scale.** A scale-2 settled amount
+  plus a scale-6 unit price yields a scale-6 result, in either operand order — lossless, exact, no
+  rounding. This mirrors `BigDecimal` (`max(scale₁, scale₂)`) and dinero.js's `normalizeScale`.
+
+  ```csharp
+  Money settled = new Money(1.00m, CurrencyCode.USD);                        // scale 2
+  Money price = Money.FromExplicitScale(0.000001m, CurrencyCode.USD, 6);    // scale 6
+
+  (settled + price).MinorUnits;   // → 6, amount 1.000001 — both operand orders agree
+  ```
+
+- **Multiplication and division round at the value's own scale**, each step. For chained
+  sub-minor-unit math, carry the calculation in `CalculatedMoney` and settle once.
+- **Equality is numeric** (`decimal` semantics): `12.50 USD` at scale 2 equals `12.500000 USD` at
+  scale 6; the scale is not part of the identity or hash. Compare `MinorUnits` explicitly when the
+  precision itself matters. (This is the `decimal` convention, deliberately unlike Java's
+  scale-sensitive `BigDecimal.equals`.)
+- **Text round-trip is scale-faithful.** `Money.Parse` reconstructs a finer-than-registry scale from
+  the printed fractional digits, so `Money.Parse(value.ToString("R"))` restores the same amount,
+  currency, *and* scale.
+- **`MoneyBag` and `Money<TCurrency>` are settlement surfaces.** Amounts entering a bag settle to
+  the currency's registered minor units (banker's rounding) on entry — the bag's wire form carries
+  no per-balance scale, so rounding on entry keeps memory and wire identical. `Money<TCurrency>`
+  likewise stays at the registered precision by contract. Settle deliberately (via
+  `CalculatedMoney.RoundToMoney`) before crossing either boundary when you need a different
+  rounding rule.
+
 For amounts that are *computed* rather than quoted, prefer the settlement route: accumulate in
 <xref:Bodu.Financial.CalculatedMoney> (which never rounds) and settle exactly once through a
 <xref:Bodu.Financial.MonetaryContext> whose <xref:Bodu.Financial.ScalePolicy> requests a custom
@@ -96,7 +128,9 @@ The compact string form pads the amount to the value's minor units, so the fract
 ```
 
 Reading `"145.678912 USD"` yields a `Money` reporting `MinorUnits == 6`; reading `"19.99 USD"`
-yields ordinary registry-precision USD.
+yields ordinary registry-precision USD. Inference applies only to scales *finer* than the
+registered precision — a scale coarser than the registry (whole-dollar pricing in a two-decimal
+currency) is preserved by the object shapes' `scale` property, not by the compact form.
 
 ### `CalculatedMoney` — verbatim
 
@@ -143,7 +177,6 @@ Money position = (new CalculatedMoney(restored.UnitPrice.Amount, restored.UnitPr
 | `"scale"` non-integer or a string | `JsonException` |
 | Duplicate `"scale"` (or `"amount"` / `"currency"`) | `JsonException` — last-write-wins on financial payloads is a data-integrity hazard |
 | Unknown or malformed ISO code | `JsonException` |
-| Compact string with more than 28 fractional digits | `JsonException` |
 
 ## See also
 

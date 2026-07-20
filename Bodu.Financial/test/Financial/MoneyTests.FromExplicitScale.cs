@@ -104,6 +104,65 @@ public partial class MoneyTests
     }
 
     /// <summary>
+    /// Verifies that adding values with different minor-unit scales reports the finer (maximum) scale regardless of
+    /// operand order, so the reported precision is commutative.
+    /// </summary>
+    [TestMethod]
+    public void FromExplicitScale_WhenMixedScalesAdded_ShouldReportFinerScaleCommutatively()
+    {
+        Money settled = new Money(1.00m, CurrencyCode.USD);                          // registry scale 2
+        Money unitPrice = Money.FromExplicitScale(0.000001m, CurrencyCode.USD, 6);   // explicit scale 6
+
+        Money leftFine = unitPrice + settled;
+        Money rightFine = settled + unitPrice;
+
+        Assert.AreEqual(6, leftFine.MinorUnits);
+        Assert.AreEqual(6, rightFine.MinorUnits);
+        Assert.AreEqual(leftFine, rightFine);
+    }
+
+    /// <summary>
+    /// Verifies that mixed-scale addition preserves the sub-minor-unit digits exactly — the sum is lossless at the
+    /// finer scale and the stored amount never exceeds the reported precision.
+    /// </summary>
+    [TestMethod]
+    public void FromExplicitScale_WhenMixedScalesAdded_ShouldPreserveSubMinorUnitDigits()
+    {
+        Money sum = new Money(1.00m, CurrencyCode.USD) + Money.FromExplicitScale(0.000001m, CurrencyCode.USD, 6);
+
+        Assert.AreEqual(1.000001m, sum.Amount);
+        Assert.AreEqual("USD 1.000001", sum.ToString("R"));
+    }
+
+    /// <summary>
+    /// Verifies that subtracting values with different minor-unit scales reports the finer (maximum) scale and keeps
+    /// the difference exact at that scale.
+    /// </summary>
+    [TestMethod]
+    public void FromExplicitScale_WhenMixedScalesSubtracted_ShouldReportFinerScale()
+    {
+        Money difference = new Money(1.00m, CurrencyCode.USD) - Money.FromExplicitScale(0.000001m, CurrencyCode.USD, 6);
+
+        Assert.AreEqual(6, difference.MinorUnits);
+        Assert.AreEqual(0.999999m, difference.Amount);
+    }
+
+    /// <summary>
+    /// Verifies that a mixed-scale sum survives a formatting round-trip: the round-trip format prints the finer scale
+    /// and parsing restores the same value at the same precision, so no digits are silently lost downstream.
+    /// </summary>
+    [TestMethod]
+    public void FromExplicitScale_WhenMixedScaleSumRoundTrippedThroughRFormat_ShouldPreservePrecision()
+    {
+        Money sum = new Money(1.00m, CurrencyCode.USD) + Money.FromExplicitScale(0.000001m, CurrencyCode.USD, 6);
+
+        Money restored = Money.Parse(sum.ToString("R"), System.Globalization.CultureInfo.InvariantCulture);
+
+        Assert.AreEqual(sum, restored);
+        Assert.AreEqual(6, restored.MinorUnits);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Money.FromExplicitScale(decimal, CurrencyCode, int, MidpointRounding)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the currency is <see cref="CurrencyCode.None" />.
     /// </summary>
