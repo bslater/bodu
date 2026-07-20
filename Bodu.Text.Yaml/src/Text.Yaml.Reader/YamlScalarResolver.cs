@@ -190,9 +190,12 @@ internal static class YamlScalarResolver
         if (!hasSign && body.StartsWith("0o", StringComparison.Ordinal))
             return TryParseRadix(body[2..], 8, negative, out value);
 
-        // YAML 1.1 octal uses a leading zero (0NNN); the 1.2 core schema does not.
-        if (!hasSign && version == YamlSpecVersion.V1_1 && body.Length > 1 && body[0] == '0' && IsAllDigits(body, 8))
-            return TryParseRadix(body[1..], 8, negative, out value);
+        // YAML 1.1 octal uses a leading zero (0NNN), so a leading-zero token is octal-only: one containing a
+        // non-octal digit (for example 083 or 09) matches no 1.1 integer production and therefore remains a string,
+        // rather than being read as a decimal integer. The 1.2 core schema has no octal-by-leading-zero rule and
+        // reads such tokens as ordinary decimals.
+        if (!hasSign && version == YamlSpecVersion.V1_1 && body.Length > 1 && body[0] == '0')
+            return IsAllDigits(body, 8) && TryParseRadix(body[1..], 8, negative, out value);
 
         if (!IsAllDigits(body, 10))
             return false;

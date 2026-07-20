@@ -231,6 +231,36 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that a leading-zero token containing a non-octal digit stays a string under YAML 1.1. Because a
+    /// leading zero denotes octal in the 1.1 schema, tokens such as <c>083</c> or <c>09</c> match no 1.1 integer
+    /// production and must not be silently read as decimals (the js-yaml#684 class of bug).
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("083")]
+    [DataRow("09")]
+    [DataRow("0899")]
+    public void Parse_WhenLeadingZeroHasNonOctalDigit_ForV11_ShouldStayString(string scalar)
+    {
+        using var doc = YamlDocument.Parse($"v: {scalar}\n", new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 });
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(scalar, doc.RootElement.GetProperty("v").GetString());
+    }
+
+    /// <summary>
+    /// Verifies that the same leading-zero non-octal token is read as a decimal integer under the YAML 1.2 core
+    /// schema, which has no octal-by-leading-zero rule, so <c>083</c> resolves to 83.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenLeadingZeroHasNonOctalDigit_ForV12Core_ShouldResolveAsDecimal()
+    {
+        using var doc = YamlDocument.Parse("v: 083\n");
+        Assert.AreEqual(YamlValueKind.Integer, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(83L, doc.RootElement.GetProperty("v").GetInt64());
+    }
+
+    /// <summary>
     /// Verifies that ISO-8601-like date and timestamp scalars remain strings under the YAML 1.2 core schema, which —
     /// unlike YAML 1.1 — carries no implicit <c>!!timestamp</c> resolution, so a date is never coerced to a number.
     /// </summary>

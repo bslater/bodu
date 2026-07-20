@@ -163,6 +163,72 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that a block sequence indented at the same column as its mapping key is parsed as that key's
+    /// sequence value \u2014 the compact style of spec Example 8.22, ubiquitous in Kubernetes, Ansible, and CI manifests.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenBlockSequenceAtParentColumn_ShouldParseAsSequenceValue()
+    {
+        using var doc = YamlDocument.Parse("one:\n- 2\n- 3\nfour: 5\n");
+        YamlElement root = doc.RootElement;
+
+        Assert.AreEqual(YamlValueKind.Sequence, root.GetProperty("one").ValueKind);
+        Assert.AreEqual(2, root.GetProperty("one").GetSequenceLength());
+        Assert.AreEqual(2L, root.GetProperty("one")[0].GetInt64());
+        Assert.AreEqual(3L, root.GetProperty("one")[1].GetInt64());
+        Assert.AreEqual(5L, root.GetProperty("four").GetInt64());
+    }
+
+    /// <summary>
+    /// Verifies that a compact sequence of mappings \u2014 each entry a block mapping whose keys sit at the sequence's
+    /// own column, with the sequence at its parent key's column \u2014 parses, the most common real-world manifest shape.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenCompactSequenceOfMappings_ShouldParse()
+    {
+        using var doc = YamlDocument.Parse("items:\n- name: a\n  id: 1\n- name: b\n  id: 2\n");
+        YamlElement items = doc.RootElement.GetProperty("items");
+
+        Assert.AreEqual(YamlValueKind.Sequence, items.ValueKind);
+        Assert.AreEqual(2, items.GetSequenceLength());
+        Assert.AreEqual("a", items[0].GetProperty("name").GetString());
+        Assert.AreEqual(2L, items[1].GetProperty("id").GetInt64());
+    }
+
+    /// <summary>
+    /// Verifies that a same-column block sequence nests correctly inside another block mapping value, so the compact
+    /// style composes to arbitrary depth.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenNestedCompactSequence_ShouldParse()
+    {
+        using var doc = YamlDocument.Parse("top:\n  a:\n  - 1\n  - 2\n");
+        YamlElement a = doc.RootElement.GetProperty("top").GetProperty("a");
+
+        Assert.AreEqual(YamlValueKind.Sequence, a.ValueKind);
+        Assert.AreEqual(2, a.GetSequenceLength());
+        Assert.AreEqual(1L, a[0].GetInt64());
+        Assert.AreEqual(2L, a[1].GetInt64());
+    }
+
+    /// <summary>
+    /// Verifies that a key with no value followed by an ordinary mapping entry still resolves to null, confirming
+    /// the compact-sequence detection does not swallow unrelated following lines.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenEmptyValueFollowedByMappingEntry_ShouldResolveToNull()
+    {
+        using var doc = YamlDocument.Parse("a:\nb: 2\n");
+
+        Assert.AreEqual(YamlValueKind.Null, doc.RootElement.GetProperty("a").ValueKind);
+        Assert.AreEqual(2L, doc.RootElement.GetProperty("b").GetInt64());
+    }
+
+    /// <summary>
     /// Verifies that an error's reported line number counts lone carriage-return line breaks, matching the lexer's
     /// line-break handling, so CR-only documents report accurate positions.
     /// </summary>
