@@ -160,7 +160,7 @@ public partial class MoneyTests
 
     /// <summary>
     /// Verifies that trimming a zero amount held at a wide scale collapses cleanly to the registered precision — the
-    /// trim-of-zero edge some scale-normalisation implementations mishandle.
+    /// trim-of-zero edge dinero.js mishandled with an infinite loop (dinerojs/dinero.js#640).
     /// </summary>
     [TestMethod]
     public void PriorArtDefects_WhenTrimmingZeroAtWideScale_ShouldCollapseToRegistryPrecision()
@@ -170,4 +170,207 @@ public partial class MoneyTests
         Assert.AreEqual(2, trimmed.MinorUnits);
         Assert.AreEqual("USD 0.00", trimmed.ToString("R"));
     }
+
+    /// <summary>
+    /// Verifies that the undivided minor unit follows the largest fractional remainder — dinero.js gave the residue to
+    /// the first slot (<c>1003 by [49,51]</c> → 4.92/5.11 instead of 4.91/5.12; dinerojs/dinero.js#144).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenAllocatingResidue_ShouldFollowLargestRemainder()
+    {
+        Money[] shares = new Money(10.03m, CurrencyCode.USD).Allocate([49m, 51m]);
+
+        Assert.AreEqual(4.91m, shares[0].Amount);
+        Assert.AreEqual(5.12m, shares[1].Amount);
+    }
+
+    /// <summary>
+    /// Verifies that residue lands on the slot with the largest remainder rather than positionally — dinero.js
+    /// distributed <c>5 by [100,101,100,100]</c> as [1,1,1,2] instead of [1,2,1,1] (dinerojs/dinero.js#776).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenResidueBelongsToMiddleSlot_ShouldNotAssignPositionally()
+    {
+        Money[] shares = new Money(0.05m, CurrencyCode.USD).Allocate([100m, 101m, 100m, 100m]);
+
+        Assert.AreEqual(0.01m, shares[0].Amount);
+        Assert.AreEqual(0.02m, shares[1].Amount);
+        Assert.AreEqual(0.01m, shares[2].Amount);
+        Assert.AreEqual(0.01m, shares[3].Amount);
+    }
+
+    /// <summary>
+    /// Verifies that allocating an amount far beyond 2^53 terminates and conserves the total — dinero.js's
+    /// distribute loop hangs forever on such amounts (dinerojs/dinero.js#771).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenAllocatingHugeAmount_ShouldTerminateAndConserveTotal()
+    {
+        var money = new Money(337582417582417600000m, CurrencyCode.USD);
+
+        Money[] shares = money.Allocate([3m, 7m]);
+
+        Assert.AreEqual(money.Amount, shares[0].Amount + shares[1].Amount);
+    }
+
+    /// <summary>
+    /// Verifies that multiplying a zero-minor-unit currency by a fractional factor rounds back to whole units —
+    /// dinero.js produced sub-unit amounts for exponent-0 currencies (dinerojs/dinero.js#435).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenMultiplyingZeroMinorUnitCurrency_ShouldStayWholeUnits()
+    {
+        Money result = new Money(1423m, CurrencyCode.JPY) * 0.05m;
+
+        Assert.AreEqual(71m, result.Amount);
+        Assert.AreEqual(0, result.MinorUnits);
+    }
+
+    /// <summary>
+    /// Verifies that rescaling a midpoint from a wider scale rounds half-even correctly — dinero.js's
+    /// <c>convertPrecision</c> turned 0.015000 (scale 6 → 2, HALF_EVEN) into 0.01 instead of 0.02
+    /// (dinerojs/dinero.js#187).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenRescalingMidpointHalfEven_ShouldRoundToEvenNeighbour() =>
+        Assert.AreEqual(0.02m, Money.FromExplicitScale(0.015m, CurrencyCode.USD, 6).Rescale(2).Amount);
+
+    /// <summary>
+    /// Verifies that multiplying a negative amount by one is the identity — dinero.js turned −200 × 1 into −201
+    /// through an off-by-one in negative rounding (dinerojs/dinero.js#713).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenMultiplyingNegativeByOne_ShouldBeIdentity() =>
+        Assert.AreEqual(-2.00m, (new Money(-2.00m, CurrencyCode.USD) * 1m).Amount);
+
+    /// <summary>
+    /// Verifies that rescaling an exact zero from a wide scale yields zero — dinero.js's half-even rounding
+    /// manufactured a minor unit from zero (<c>transformScale</c> 7 → 2 of 0 gave 1; dinerojs/dinero.js#710).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenRescalingZeroFromWideScale_ShouldStayZero() =>
+        Assert.AreEqual(0m, Money.FromExplicitScale(0m, CurrencyCode.USD, 7).Rescale(2).Amount);
+
+    /// <summary>
+    /// Verifies that a negative midpoint rescaled away-from-zero moves away from zero — dinero.js v1 pulled −2.05
+    /// toward zero (−2 instead of −2.1) via <c>Math.round</c> semantics (dinerojs/dinero.js#7).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenRescalingNegativeMidpointAwayFromZero_ShouldMoveAwayFromZero() =>
+        Assert.AreEqual(-2.1m, new Money(-2.05m, CurrencyCode.USD).Rescale(1, MidpointRounding.AwayFromZero).Amount);
+
+    /// <summary>
+    /// Verifies that zero-minor-unit currencies format without fractional digits and without duplicating the whole
+    /// part — dinero.js printed <c>¥500.00</c> (dinerojs/dinero.js#203) and Joda-Money printed <c>"1212"</c> for
+    /// 12 JPY through a substring defect (JodaOrg/joda-money#49).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenFormattingZeroMinorUnitCurrency_ShouldPrintWholeUnitsOnly()
+    {
+        Assert.AreEqual("JPY 500", new Money(500m, CurrencyCode.JPY).ToString("R"));
+        Assert.AreEqual("JPY 12", new Money(12.134m, CurrencyCode.JPY).ToString("R"));
+    }
+
+    /// <summary>
+    /// Verifies grouped formatting renders correctly around the defect corners Joda-Money hit: no trailing group
+    /// separator on a three-decimal currency (JodaOrg/joda-money#43), no separator between the sign and the first
+    /// digit (JodaOrg/joda-money#10), and no grouping inside the fraction (JodaOrg/joda-money#16).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenFormattingGroupedAmounts_ShouldPlaceSeparatorsCorrectly()
+    {
+        Assert.AreEqual("BHD 6,345,345.735", new Money(6345345.735m, CurrencyCode.BHD).ToString("G", CultureInfo.InvariantCulture));
+        Assert.AreEqual("USD -100,000.00", new Money(-100000.00m, CurrencyCode.USD).ToString("G", CultureInfo.InvariantCulture));
+        Assert.AreEqual(
+            "USD 1,234,567.891011",
+            Money.FromExplicitScale(1234567.891011m, CurrencyCode.USD, 6).ToString("G", CultureInfo.InvariantCulture));
+    }
+
+    /// <summary>
+    /// Verifies that formatted output parses back to an equal value — the print/parse asymmetry defect class where a
+    /// formatter emits text its own parser rejects (JodaOrg/joda-money#44).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenReparsingGroupedOutput_ShouldRoundTrip()
+    {
+        Money original = new Money(1234567.89m, CurrencyCode.USD);
+
+        Money reparsed = Money.Parse(original.ToString("G", CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+
+        Assert.AreEqual(original, reparsed);
+    }
+
+    /// <summary>
+    /// Verifies that a non-breaking space separating the code and amount parses — Joda-Money rejects the NBSP that
+    /// localized number formatters commonly emit (JodaOrg/joda-money#53, closed WontFix).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenSeparatorIsNonBreakingSpace_ShouldParse()
+    {
+        Assert.IsTrue(Money.TryParse("USD 1794.19", CultureInfo.InvariantCulture, out Money prefix));
+        Assert.AreEqual(new Money(1794.19m, CurrencyCode.USD), prefix);
+
+        Assert.IsTrue(Money.TryParse("1794.19 USD", CultureInfo.InvariantCulture, out Money suffix));
+        Assert.AreEqual(new Money(1794.19m, CurrencyCode.USD), suffix);
+    }
+
+    /// <summary>
+    /// Verifies that a lowercase ISO code is rejected by the strict parser — the case-clashing currency registration
+    /// defect class where <c>"usd"</c> and <c>"USD"</c> could coexist as distinct currencies
+    /// (JodaOrg/joda-money#36).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenIsoCodeIsLowercase_ShouldNotParse() =>
+        Assert.IsFalse(Money.TryParse("usd 5", CultureInfo.InvariantCulture, out _));
+
+    /// <summary>
+    /// Verifies that cash rounding to a currency's smallest physical denomination is supported — CHF amounts snap to
+    /// the 0.05 increment Joda-Money cannot express (JodaOrg/joda-money#71, open RFE).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenCashRoundingChf_ShouldSnapToFiveCentimeIncrement()
+    {
+        var cashContext = MonetaryContext.Default with { CashRounding = CashRoundingPolicy.CurrencyCashIncrement };
+
+        Assert.AreEqual(2.05m, new CalculatedMoney(2.03m, CurrencyCode.CHF).RoundToMoney(cashContext).Amount);
+        Assert.AreEqual(2.00m, new CalculatedMoney(2.02m, CurrencyCode.CHF).RoundToMoney(cashContext).Amount);
+    }
+
+    /// <summary>
+    /// Verifies that the deferred tier eliminates per-operation rounding drift — Joda-Money's <c>Money</c> rounds
+    /// after every multiply/divide, accumulating cent drift across chains with no complete remedy
+    /// (JodaOrg/joda-money#6). The settled tier documents the drift; <see cref="CalculatedMoney" /> avoids it.
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenChainingDivideMultiply_ShouldOfferDriftFreeDeferredTier()
+    {
+        Money perStep = (new Money(0.10m, CurrencyCode.USD) / 3m) * 3m;
+        Money deferred = (new CalculatedMoney(0.10m, CurrencyCode.USD) / 3m * 3m).RoundToMoney();
+
+        Assert.AreEqual(0.09m, perStep.Amount);
+        Assert.AreEqual(0.10m, deferred.Amount);
+    }
+
+    /// <summary>
+    /// Verifies that pseudo-currencies are rejected loudly rather than silently clamped — Joda-Money reports the
+    /// scale of XAU (stored as −1 decimal places) as 0, indistinguishable from a genuine zero-decimal currency
+    /// (JodaOrg/joda-money CurrencyUnit javadoc).
+    /// </summary>
+    [TestMethod]
+    public void PriorArtDefects_WhenResolvingPseudoCurrency_ShouldRejectRatherThanClamp() =>
+        Assert.IsFalse(CurrencyInfo.TryGetCurrencyCode("XAU", out _));
+
+    /// <summary>
+    /// Verifies that the shipped minor-unit metadata matches ISO 4217 for the currencies Joda-Money serially got
+    /// wrong — CNY (JodaOrg/joda-money#51), COP (#48), ZMW (#57), and LBP (fixed in v0.7).
+    /// </summary>
+    [TestMethod]
+    [DataRow("CNY", 2, DisplayName = "CNY (joda-money#51)")]
+    [DataRow("COP", 2, DisplayName = "COP (joda-money#48)")]
+    [DataRow("ZMW", 2, DisplayName = "ZMW (joda-money#57)")]
+    [DataRow("LBP", 2, DisplayName = "LBP (joda-money v0.7)")]
+    [DataRow("BHD", 3, DisplayName = "BHD (three minor units)")]
+    [DataRow("JPY", 0, DisplayName = "JPY (zero minor units)")]
+    public void PriorArtDefects_WhenReadingRegistryMetadata_ShouldMatchIso4217(string isoCode, int expectedMinorUnits) =>
+        Assert.AreEqual(expectedMinorUnits, CurrencyRegistry.Get(isoCode).MinorUnits);
 }

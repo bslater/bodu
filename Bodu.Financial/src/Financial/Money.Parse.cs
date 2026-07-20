@@ -98,8 +98,9 @@ public readonly partial struct Money
         if (trimmed.IsEmpty)
             return false;
 
-        // ISO prefix: "USD 19.99" — three-letter code, space, amount.
-        if (trimmed.Length >= 5 && trimmed[3] == ' '
+        // ISO prefix: "USD 19.99" — three-letter code, whitespace, amount. Any Unicode whitespace separates the code
+        // from the amount, so localized output using a non-breaking space (as many number formatters emit) parses.
+        if (trimmed.Length >= 5 && char.IsWhiteSpace(trimmed[3])
             && IsUppercaseAscii(trimmed[0]) && IsUppercaseAscii(trimmed[1]) && IsUppercaseAscii(trimmed[2]))
         {
             string iso = trimmed[..3].ToString();
@@ -108,7 +109,7 @@ public readonly partial struct Money
         }
 
         // ISO suffix: "19.99 USD".
-        if (trimmed.Length >= 5 && trimmed[^4] == ' '
+        if (trimmed.Length >= 5 && char.IsWhiteSpace(trimmed[^4])
             && IsUppercaseAscii(trimmed[^3]) && IsUppercaseAscii(trimmed[^2]) && IsUppercaseAscii(trimmed[^1]))
         {
             string iso = trimmed[^3..].ToString();
