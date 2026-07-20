@@ -57,6 +57,11 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 </div>
 
 <div class="bodu-card">
+  <h3><a href="monetary-precision.md">Monetary precision &amp; unit pricing</a></h3>
+  <p>Sub-minor-unit prices — a 6-dp share price in 2-dp USD — via explicit-scale <code>Money</code> and unrounded <code>CalculatedMoney</code>, with the scale preserved through arithmetic and every JSON wire shape.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="exchange-rates.md">Working with exchange rates</a></h3>
   <p>The FX provider stack — timeless vs. dated contracts, the audit-grade <code>RateLookupResult</code>, provider grouping via the aggregator, and the <code>RateSeriesBuilder</code> + <code>RateTableBuilder</code> editing surface.</p>
 </div>
@@ -86,11 +91,12 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 ## Reading path
 
 1. **[Working with `Money<TCurrency>`](money.md)** — the monetary core; everything else builds on it.
-2. **[Working with exchange rates](exchange-rates.md)** — the provider contracts and editing surface for crossing currencies.
-3. **[Exchange-rate types](exchange-types.md)** and **[lookups on a known dataset](exchange-rate-lookups.md)** — reference material; dip in when choosing a type or tuning a lookup policy.
-4. **[Caching exchange rates](exchange-rate-caching.md)** — add a TOML disk cache in front of any provider, with per-provider expiry.
-5. **[Dependency injection](dependency-injection.md)** — last, once you know which services your application composes.
-6. **[Testing your own provider](testing-providers.md)** and **[runnable samples](../../samples/financial.md)** — the contract-test bases for consumer-written providers, and the offline sample projects under `samples/Financial/` that compose everything above end to end.
+2. **[Monetary precision & unit pricing](monetary-precision.md)** — when a price is finer than the currency settles at: explicit scale, deferred rounding, and precision-preserving JSON.
+3. **[Working with exchange rates](exchange-rates.md)** — the provider contracts and editing surface for crossing currencies.
+4. **[Exchange-rate types](exchange-types.md)** and **[lookups on a known dataset](exchange-rate-lookups.md)** — reference material; dip in when choosing a type or tuning a lookup policy.
+5. **[Caching exchange rates](exchange-rate-caching.md)** — add a TOML disk cache in front of any provider, with per-provider expiry.
+6. **[Dependency injection](dependency-injection.md)** — last, once you know which services your application composes.
+7. **[Testing your own provider](testing-providers.md)** and **[runnable samples](../../samples/financial.md)** — the contract-test bases for consumer-written providers, and the offline sample projects under `samples/Financial/` that compose everything above end to end.
 
 ## See also
 
@@ -101,6 +107,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 
 - [`Money<TCurrency>` API reference](xref:Bodu.Financial.Money`1)
 - [`Money` API reference](xref:Bodu.Financial.Money)
+- [`CalculatedMoney` API reference](xref:Bodu.Financial.CalculatedMoney)
 - [`MoneyBag` API reference](xref:Bodu.Financial.MoneyBag)
 - [`CurrencyRegistry`](xref:Bodu.Financial.Currencies.CurrencyRegistry)
 - [`IRateProvider`](xref:Bodu.Financial.ExchangeRates.IRateProvider)

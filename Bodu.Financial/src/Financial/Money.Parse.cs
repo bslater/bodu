@@ -21,6 +21,12 @@ public readonly partial struct Money
     /// <returns>The parsed value.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="s" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">The input is not a valid <see cref="Money" /> representation.</exception>
+    /// <remarks>
+    /// Text carrying more fractional digits than the currency's registered minor units — a unit price such as
+    /// <c>"USD 12.345678"</c> — parses to a value reporting that finer scale from <see cref="MinorUnits" />, making
+    /// this method the inverse of the round-trip (<c>"R"</c>) format. Text at or below the registered precision parses
+    /// at the registry precision, unchanged from earlier behaviour.
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -136,7 +142,14 @@ public readonly partial struct Money
         if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, effective, out decimal amount))
             return false;
 
-        result = new Money(amount, code);
+        // The parsed decimal preserves the printed fractional-digit count as its scale. When the text carries more
+        // fractional digits than the currency's registered minor units - a unit price such as "USD 12.345678" - the
+        // value is constructed at that finer scale so parsing is the inverse of the round-trip ("R") format; the
+        // ordinary registry-precision path would silently round the sub-minor-unit digits away. Text at or below the
+        // registered precision keeps the historical behaviour and reports the registry precision.
+        result = amount.Scale > CurrencyInfo.FromCurrencyCode(code).MinorUnits
+            ? FromExplicitScale(amount, code, amount.Scale)
+            : new Money(amount, code);
         return true;
     }
 

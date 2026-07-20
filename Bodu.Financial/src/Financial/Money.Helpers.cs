@@ -28,11 +28,34 @@ public readonly partial struct Money
     /// 28.
     /// </exception>
     /// <remarks>
-    /// Settlement helper used by <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> when a monetary context
-    /// requests a precision other than the currency's registered minor units. Because the scale is supplied and stored,
-    /// the value reports the resolved precision rather than the registry's default.
+    /// <para>
+    /// This is the direct construction route for values whose precision is known up front and differs from the
+    /// currency's registered minor units — typically unit prices such as a six-decimal-place share price in a
+    /// two-decimal currency. The supplied scale is stored with the value: <see cref="Money.MinorUnits" /> reports it,
+    /// formatting pads to it, arithmetic and allocation round intermediate results to it rather than to the registry
+    /// precision, and the JSON converters persist it so a round-trip restores the same precision.
+    /// </para>
+    /// <para>
+    /// For amounts that are <em>computed</em> rather than quoted, prefer accumulating in
+    /// <see cref="CalculatedMoney" /> and settling once through
+    /// <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> with <see cref="ScalePolicy.Custom" /> — that
+    /// path defers rounding to a single, explicit settlement decision and produces the same explicit-scale value.
+    /// </para>
     /// </remarks>
-    internal static Money FromExplicitScale(decimal amount, CurrencyCode code, int minorUnits, MidpointRounding rounding = MidpointRounding.ToEven)
+    /// <example>
+    /// <code language="csharp">
+    ///<![CDATA[
+    /// using Bodu.Financial;
+    ///
+    /// // A share price quoted to six decimal places in two-decimal USD.
+    /// Money price = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
+    ///
+    /// price.MinorUnits;      // 6
+    /// price.ToString("R");   // "USD 145.678912"
+    ///]]>
+    /// </code>
+    /// </example>
+    public static Money FromExplicitScale(decimal amount, CurrencyCode code, int minorUnits, MidpointRounding rounding = MidpointRounding.ToEven)
     {
         FinancialThrowHelper.ThrowIfNotDefinedCurrencyCode(code);
         FinancialThrowHelper.ThrowIfMinorUnitsOutOfRange(minorUnits, code.ToString());

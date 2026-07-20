@@ -444,6 +444,8 @@
           href: financial/index.md
         - name: Working with Money<TCurrency>
           href: financial/money.md
+        - name: Monetary precision & unit pricing
+          href: financial/monetary-precision.md
         - name: Working with exchange rates
           href: financial/exchange-rates.md
         - name: Built-in exchange-rate providers
