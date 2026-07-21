@@ -11,7 +11,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// requested year and counts how many times each range resolution is invoked, so a decorator's cache hits and misses
 /// can be asserted.
 /// </summary>
-internal sealed class CountingNotableDateService : INotableDateService
+internal sealed class CountingNotableDateService
+    : INotableDateService
 {
     /// <summary>The occurrence factory invoked once per requested range, keyed on the range's start year.</summary>
     private readonly Func<int, IReadOnlyList<NotableDate>> _factory;

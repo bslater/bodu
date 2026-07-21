@@ -17,7 +17,8 @@ namespace Bodu.Text.Yaml.Document;
 /// The document materializes a single YAML document from its source. Element views are lightweight structs that remain
 /// valid until the document is disposed. The type is not thread-safe for concurrent disposal with reads.
 /// </remarks>
-public sealed partial class YamlDocument : IDisposable
+public sealed partial class YamlDocument
+    : IDisposable
 {
     /// <summary>The flat node store, with the root at index zero; <see langword="null" /> once the document is disposed.</summary>
     private List<YamlReaderRow>? _rows;

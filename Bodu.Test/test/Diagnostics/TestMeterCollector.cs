@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TestMeterCollector.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -23,7 +23,8 @@ namespace Bodu.Test.Diagnostics;
 /// supplied, including instruments created before the collector started. Dispose the collector to stop listening.
 /// </para>
 /// </remarks>
-public sealed class TestMeterCollector : IDisposable
+public sealed class TestMeterCollector
+    : IDisposable
 {
     /// <summary>The recorded measurements.</summary>
     private readonly List<(string Instrument, long Value, KeyValuePair<string, object?>[] Tags)> _measurements = new();

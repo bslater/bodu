@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NavigableDictionary{T,T}.Node.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -115,7 +115,8 @@ public sealed partial class NavigableDictionary<TKey, TValue>
     /// key/value pair of fields, with both trees sharing the <see cref="OrderStatisticTree" /> rotation/fixup core.
     /// </remarks>
     [Serializable]
-    private sealed class Node : OrderStatisticNode<Node>
+    private sealed class Node
+        : OrderStatisticNode<Node>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Node" /> class holding the specified entry.

@@ -52,9 +52,9 @@ namespace Bodu.Financial;
 /// </example>
 /// </remarks>
 [DebuggerDisplay("{Count} currencies")]
-public sealed partial class MoneyBag :
-    IEquatable<MoneyBag>,
-    IEnumerable<Money>
+public sealed partial class MoneyBag
+    : IEquatable<MoneyBag>
+    , IEnumerable<Money>
 {
     /// <summary>Orders <see cref="CurrencyCode" /> keys by their ISO 4217 alphabetic code (ordinal) rather than their numeric enum value, so enumeration stays in ISO-code lexicographic order as it was when the bag was keyed by string.</summary>
     /// <remarks>

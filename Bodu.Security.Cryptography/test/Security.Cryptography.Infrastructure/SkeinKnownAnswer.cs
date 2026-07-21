@@ -12,7 +12,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// Represents a single Skein hash known-answer vector parsed from a Skein 1.3 <c>skein_golden_kat</c> reference file:
 /// the Threefish state size, the requested output size, the message, and the expected digest.
 /// </summary>
-public sealed record SkeinKnownAnswer : IKat
+public sealed record SkeinKnownAnswer
+    : IKat
 {
     /// <summary>
     /// Gets the short, human-readable label identifying this row.

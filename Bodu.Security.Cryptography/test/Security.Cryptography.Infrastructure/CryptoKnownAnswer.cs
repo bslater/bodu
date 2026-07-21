@@ -26,7 +26,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <see cref="KatBytes.Hex(string)" /> helper imported via <c>using static</c>.
 /// </para>
 /// </remarks>
-public abstract record CryptoKnownAnswer : IKat
+public abstract record CryptoKnownAnswer
+    : IKat
 {
     /// <summary>
     /// Gets the short, human-readable label that identifies this vector in test output.

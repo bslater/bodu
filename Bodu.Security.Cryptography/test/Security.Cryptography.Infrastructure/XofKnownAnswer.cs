@@ -13,7 +13,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// message, an optional customization string, and the expected variable-length output — as parsed from a NIST
 /// Lightweight Cryptography <c>LWC_XOF_KAT</c> / <c>LWC_CXOF_KAT</c> reference file.
 /// </summary>
-public sealed record XofKnownAnswer : IKat
+public sealed record XofKnownAnswer
+    : IKat
 {
     /// <summary>
     /// Gets the short, human-readable label identifying this row (for example <c>"CXOF Count 45"</c>).

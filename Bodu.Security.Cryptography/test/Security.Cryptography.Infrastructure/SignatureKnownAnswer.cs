@@ -17,7 +17,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <see cref="Deterministic" /> / <see cref="Rnd" /> select deterministic or hedged signing. <see cref="Context" /> is
 /// the ML-DSA context string (empty or <see langword="null" /> for Ed25519).
 /// </remarks>
-public sealed record SignatureKnownAnswer : AsymmetricKnownAnswer
+public sealed record SignatureKnownAnswer
+    : AsymmetricKnownAnswer
 {
     /// <summary>
     /// Gets the signer's public key.

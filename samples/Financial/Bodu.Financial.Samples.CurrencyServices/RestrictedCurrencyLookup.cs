@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RestrictedCurrencyLookup.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -15,7 +15,8 @@ namespace Bodu.Financial.Samples.CurrencyServices;
 /// flowing through the ambient <see cref="CurrencyResolution" /> seam — parsing, formatting,
 /// minor-unit resolution — rejects currencies the system does not support.
 /// </summary>
-public sealed class RestrictedCurrencyLookup : ICurrencyLookup
+public sealed class RestrictedCurrencyLookup
+    : ICurrencyLookup
 {
     private readonly ICurrencyLookup _inner;
     private readonly HashSet<string> _allowed;

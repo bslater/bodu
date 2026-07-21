@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlValue.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.Text.Yaml.Nodes;
 /// <summary>
 /// Represents a scalar node in a mutable YAML document object model.
 /// </summary>
-public sealed class YamlValue : YamlNode
+public sealed class YamlValue
+    : YamlNode
 {
     /// <summary>The boxed scalar value, or <see langword="null" /> for a null scalar.</summary>
     private readonly object? _value;

@@ -353,7 +353,7 @@ public sealed class SkipjackBlockCipher
 #pragma warning restore SA1132 // Do not combine fields
 
     /// <summary>Indicates whether this instance has been disposed.</summary>
-    private bool _disposed = false;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SkipjackBlockCipher" /> class using the supplied 80-bit key.

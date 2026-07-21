@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateCacheBaseLockingTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -116,7 +116,8 @@ public sealed class RateCacheBaseLockingTests
     /// A cache whose writes block on a gate after entering, so a test can observe which writers hold the per-pair
     /// lock.
     /// </summary>
-    private sealed class GatedWriteRateCache : RateCacheBase<RateCacheOptions>
+    private sealed class GatedWriteRateCache
+        : RateCacheBase<RateCacheOptions>
     {
         /// <summary>The stored state per pair.</summary>
         private readonly Dictionary<CurrencyPair, CachePairState> _store = new();
@@ -170,7 +171,8 @@ public sealed class RateCacheBaseLockingTests
     /// <summary>
     /// A minimal in-memory cache derivation with unblocked writes, for the contention sweep.
     /// </summary>
-    private sealed class OpenWriteRateCache : RateCacheBase<RateCacheOptions>
+    private sealed class OpenWriteRateCache
+        : RateCacheBase<RateCacheOptions>
     {
         /// <summary>The stored state per pair.</summary>
         private readonly Dictionary<CurrencyPair, CachePairState> _store = new();

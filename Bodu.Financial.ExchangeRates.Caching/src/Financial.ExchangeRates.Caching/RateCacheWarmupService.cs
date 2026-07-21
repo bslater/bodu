@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RateCacheWarmupService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,7 +31,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// across restarts.
 /// </para>
 /// </remarks>
-internal sealed class RateCacheWarmupService : BackgroundService
+internal sealed class RateCacheWarmupService
+    : BackgroundService
 {
     /// <summary>The container the warm-up targets are resolved from when the run starts.</summary>
     private readonly IServiceProvider _serviceProvider;

@@ -9,7 +9,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <summary>
 /// Represents a single KEM encapsulation or decapsulation known-answer test (KAT) vector.
 /// </summary>
-public sealed record KemKnownAnswer : AsymmetricKnownAnswer
+public sealed record KemKnownAnswer
+    : AsymmetricKnownAnswer
 {
     /// <summary>
     /// Gets the function this vector exercises — either <c>"encapsulation"</c> or <c>"decapsulation"</c>.

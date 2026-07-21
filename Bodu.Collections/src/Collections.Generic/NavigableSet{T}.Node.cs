@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NavigableSet{T}.Node.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -110,7 +110,8 @@ public sealed partial class NavigableSet<T>
     /// links, color bit, and subtree size live on the shared <see cref="OrderStatisticNode{TNode}" /> base.
     /// </summary>
     [Serializable]
-    private sealed class Node : OrderStatisticNode<Node>
+    private sealed class Node
+        : OrderStatisticNode<Node>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Node" /> class holding <paramref name="item" />.

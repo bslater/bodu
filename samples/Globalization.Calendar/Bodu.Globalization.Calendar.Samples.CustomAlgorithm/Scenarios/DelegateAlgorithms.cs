@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelegateAlgorithms.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -55,7 +55,8 @@ public static class DelegateAlgorithms
     /// delegate takes five lines. Prefer a named class (like <c>CompanyFoundingDayAlgorithm</c>)
     /// once the calculation deserves its own tests.
     /// </summary>
-    private sealed class LambdaAlgorithm : INotableDateAlgorithm
+    private sealed class LambdaAlgorithm
+        : INotableDateAlgorithm
     {
         private readonly Func<int, DateOnly?> _calculate;
 

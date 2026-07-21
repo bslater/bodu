@@ -26,7 +26,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// shared-input vectors tersely; construct the record directly for algorithm-specific messages.
 /// </para>
 /// </remarks>
-public sealed record MessageDigestKnownAnswer : KeyedKnownAnswer
+public sealed record MessageDigestKnownAnswer
+    : KeyedKnownAnswer
 {
     /// <summary>
     /// Gets the raw message bytes fed to the algorithm.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IntervalTree{T,T}.Node.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -68,7 +68,8 @@ public sealed partial class IntervalTree<TKey, TValue>
     /// <see cref="IntervalNode{TEndpoint, TNode}" /> base.
     /// </summary>
     [Serializable]
-    private sealed class Node : IntervalNode<TKey, Node>
+    private sealed class Node
+        : IntervalNode<TKey, Node>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Node" /> class storing the interval [<paramref name="low" />,

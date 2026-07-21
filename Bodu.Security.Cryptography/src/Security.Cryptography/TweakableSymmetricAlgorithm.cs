@@ -112,7 +112,7 @@ public abstract class TweakableSymmetricAlgorithm
     protected byte[]? TweakValue = null;
 
     /// <summary>Indicates whether this instance has been disposed.</summary>
-    private bool _disposed = false;
+    private bool _disposed;
 
     /// <summary>
     /// Gets the tweak sizes, in bits, that are supported by the symmetric algorithm.

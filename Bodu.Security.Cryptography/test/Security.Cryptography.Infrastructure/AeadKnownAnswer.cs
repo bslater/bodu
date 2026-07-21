@@ -16,7 +16,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// convention of ciphertext followed by tag. <see cref="Algorithm" /> optionally selects the construction under test
 /// for suites that drive several AEAD algorithms from one vector list.
 /// </remarks>
-public sealed record AeadKnownAnswer : NoncedCipherKnownAnswer
+public sealed record AeadKnownAnswer
+    : NoncedCipherKnownAnswer
 {
     /// <summary>
     /// Gets the associated data authenticated but not encrypted; empty when the trial has no AAD.

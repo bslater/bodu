@@ -14,7 +14,8 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 /// <see cref="DistributedCacheEntryOptions" /> supplied with every set, so the server-side expiration a cache stamps
 /// onto its blobs can be asserted.
 /// </summary>
-internal sealed class RecordingDistributedCache : IDistributedCache
+internal sealed class RecordingDistributedCache
+    : IDistributedCache
 {
     /// <summary>The stored payloads, keyed by cache key.</summary>
     private readonly ConcurrentDictionary<string, byte[]> _store = new();

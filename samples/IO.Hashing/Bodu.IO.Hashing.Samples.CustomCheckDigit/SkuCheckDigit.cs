@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkuCheckDigit.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -22,7 +22,8 @@ namespace Bodu.IO.Hashing.Samples.CustomCheckDigit;
 /// exposes. The companion test project proves the implementation against the library's shared
 /// <c>CheckDigitContractTests&lt;T&gt;</c> base.
 /// </remarks>
-public sealed class SkuCheckDigit : CheckDigitAlgorithm
+public sealed class SkuCheckDigit
+    : CheckDigitAlgorithm
 {
     private static readonly int[] Weights = [7, 3, 1];
 

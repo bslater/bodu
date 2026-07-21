@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompanyFoundingDayAlgorithm.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -15,7 +15,8 @@ namespace Bodu.Globalization.Calendar.Samples.CustomAlgorithm;
 /// for years it does not apply to; everything else (categories, adjustments, territories, emission)
 /// stays declarative in the rule that references it by key.
 /// </summary>
-public sealed class CompanyFoundingDayAlgorithm : INotableDateAlgorithm
+public sealed class CompanyFoundingDayAlgorithm
+    : INotableDateAlgorithm
 {
     /// <summary>The year the company was founded; earlier years have no occurrence.</summary>
     private const int FoundingYear = 1998;

@@ -16,7 +16,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <c>"ML-DSA-65"</c>, and is <see langword="null" /> for fixed-parameter algorithms such as X25519 and Ed25519.
 /// Loaders that read a single file spanning multiple parameter sets filter on this value.
 /// </remarks>
-public abstract record AsymmetricKnownAnswer : CryptoKnownAnswer
+public abstract record AsymmetricKnownAnswer
+    : CryptoKnownAnswer
 {
     /// <summary>
     /// Gets the parameter-set designator this vector belongs to, or <see langword="null" /> for fixed-parameter

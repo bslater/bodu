@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlElement.SequenceEnumerator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,7 +16,9 @@ public readonly partial struct YamlElement
     /// <summary>
     /// Provides forward-only enumeration over the elements of a sequence node.
     /// </summary>
-    public struct SequenceEnumerator : IEnumerable<YamlElement>, IEnumerator<YamlElement>
+    public struct SequenceEnumerator
+        : IEnumerable<YamlElement>
+        , IEnumerator<YamlElement>
     {
         /// <summary>The owning document.</summary>
         private readonly YamlDocument _document;

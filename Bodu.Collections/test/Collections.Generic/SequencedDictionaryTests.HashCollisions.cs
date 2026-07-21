@@ -12,7 +12,8 @@ public partial class SequencedDictionaryTests
     /// An equality comparer that forces every key into the same hash bucket while preserving real equality, used to
     /// exercise hash-collision handling.
     /// </summary>
-    private sealed class ConstantHashComparer : IEqualityComparer<string>
+    private sealed class ConstantHashComparer
+        : IEqualityComparer<string>
     {
         /// <inheritdoc />
         public bool Equals(string? x, string? y) => string.Equals(x, y, StringComparison.Ordinal);

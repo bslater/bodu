@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NavigableDictionary{T,T}.EntryKeyComparer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,7 +13,8 @@ public sealed partial class NavigableDictionary<TKey, TValue>
     /// with <see cref="Array.Sort{T}(T[], IComparer{T})" /> directly instead of routing every comparison through a
     /// <see cref="Comparison{T}" /> delegate wrapper.
     /// </summary>
-    private sealed class EntryKeyComparer : IComparer<KeyValuePair<TKey, TValue>>
+    private sealed class EntryKeyComparer
+        : IComparer<KeyValuePair<TKey, TValue>>
     {
         /// <summary>The key comparer that defines the entry ordering.</summary>
         private readonly IComparer<TKey> _keyComparer;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HpkeReceiver.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -28,7 +28,8 @@ namespace Bodu.Security.Cryptography;
 /// independently audited.
 /// </para>
 /// </remarks>
-public sealed class HpkeReceiver : IDisposable
+public sealed class HpkeReceiver
+    : IDisposable
 {
     /// <summary>The derived encryption context backing this receiver.</summary>
     private readonly HpkeContext _context;

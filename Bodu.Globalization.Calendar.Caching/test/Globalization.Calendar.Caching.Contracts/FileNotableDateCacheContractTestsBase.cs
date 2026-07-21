@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileNotableDateCacheContractTestsBase.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.Globalization.Calendar.Caching.Contracts;
 /// Extends the <see cref="NotableDateCacheContractTests" /> with a per-test temporary directory that the file-backed
 /// contract subclasses store into and that is removed after each test.
 /// </summary>
-public abstract class FileNotableDateCacheContractTestsBase : NotableDateCacheContractTests
+public abstract class FileNotableDateCacheContractTestsBase
+    : NotableDateCacheContractTests
 {
     /// <summary>The temporary directory created for the running test.</summary>
     private string? _directory;

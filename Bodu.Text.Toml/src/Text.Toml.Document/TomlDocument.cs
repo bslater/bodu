@@ -397,7 +397,7 @@ public sealed partial class TomlDocument
             throw KindMismatch(TomlValueKind.Array, ToValueKind(rows[index]));
 
         // Report the public element indexer's parameter name, which is the caller-facing contract for this guard.
-        ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)rows[index].ChildCount, "index");
+        ThrowHelper.ThrowIfGreaterThanOrEqual((uint)elementIndex, (uint)rows[index].ChildCount, nameof(index));
 
         int child = rows[index].FirstChild;
         for (int i = 0; i < elementIndex; i++)

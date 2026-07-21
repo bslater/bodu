@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StableStringComparer.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -13,7 +13,8 @@ namespace Bodu.Collections.Samples.ProbabilisticSketches;
 /// sketch produce process-local bit patterns and non-reproducible estimates. Supplying this FNV-1a comparer
 /// pins the hashing so the sample prints identical output (and the same false positive) every run.
 /// </summary>
-public sealed class StableStringComparer : IEqualityComparer<string>
+public sealed class StableStringComparer
+    : IEqualityComparer<string>
 {
     /// <summary>The 32-bit FNV-1a offset basis.</summary>
     private const uint OffsetBasis = 2166136261u;

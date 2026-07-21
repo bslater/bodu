@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GatedNotableDateService.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,7 +11,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// a test can pile up concurrent callers and assert how many computations actually ran. Optionally throws on the first
 /// invocation to exercise failure paths.
 /// </summary>
-internal sealed class GatedNotableDateService : INotableDateService
+internal sealed class GatedNotableDateService
+    : INotableDateService
 {
     /// <summary>The gate every resolution waits on before returning.</summary>
     private readonly ManualResetEventSlim _gate = new(initialState: false);
