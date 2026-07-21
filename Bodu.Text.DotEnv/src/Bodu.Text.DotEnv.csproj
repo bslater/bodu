@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Title>Bodu — DotEnv</Title>
+    <Description>A self-contained DotEnv library for .NET 8, shaped after System.Text.Json and matching the sibling Bodu.Text.Toml surface: the forward-only ref-struct Utf8DotEnvReader/Utf8DotEnvWriter token surface over UTF-8, a mutable DotEnvNode DOM, a read-only DotEnvDocument DOM, and the DotEnvSerializer POCO mapper. DotEnv models a flat, ordered object of string-valued keys with export prefixes and comment trivia.</Description>
+    <PackageTags>$(PackageTags);text;dotenv;env;configuration;serialization;serializer</PackageTags>
+  </PropertyGroup>
+
+  <!-- Per-framework compilation symbols. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Text.DotEnv.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Include="DotEnvResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DotEnvResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="DotEnvResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DotEnvResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>
