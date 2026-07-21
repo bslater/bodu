@@ -122,5 +122,41 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_DotEnvTokenNotString", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The serializer options are read-only and cannot be modified after first use..
+        /// </summary>
+        internal static string Op_Invalid_DotEnvOptionsReadOnly {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DotEnvOptionsReadOnly", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to DotEnv serialization requires an object or string-keyed dictionary root; the type '{0}' is not supported..
+        /// </summary>
+        internal static string Op_Invalid_DotEnvRootType {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DotEnvRootType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Required DotEnv key '{0}' was not present in the document..
+        /// </summary>
+        internal static string Op_Invalid_DotEnvMissingRequiredKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DotEnvMissingRequiredKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The DotEnv value for key '{0}' could not be converted to type '{1}'..
+        /// </summary>
+        internal static string Format_Invalid_DotEnvValueConversion {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DotEnvValueConversion", resourceCulture);
+            }
+        }
     }
 }
