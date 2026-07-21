@@ -168,4 +168,157 @@ public partial class YamlDocumentTests
         Assert.IsTrue(double.IsPositiveInfinity(doc.RootElement.GetProperty("c").GetDouble()));
         Assert.IsTrue(double.IsNaN(doc.RootElement.GetProperty("d").GetDouble()));
     }
+
+    /// <summary>
+    /// Verifies that colon-separated base-60 ("sexagesimal") scalars remain strings under the YAML 1.2 core schema,
+    /// so tokens such as a time-of-day, a port range, or a git duration are never silently reinterpreted as numbers.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("22:22")]
+    [DataRow("1:2:3")]
+    [DataRow("190:20:30")]
+    [DataRow("22:22:22.5")]
+    public void Parse_WhenSexagesimalUnderV12_ShouldStayString(string scalar)
+    {
+        using var doc = YamlDocument.Parse($"v: {scalar}\n");
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(scalar, doc.RootElement.GetProperty("v").GetString());
+    }
+
+    /// <summary>
+    /// Verifies that colon-separated base-60 ("sexagesimal") scalars remain strings even under the YAML 1.1 schema.
+    /// The historical 1.1 schema resolved <c>base-60</c> integers and floats — a notorious footgun that silently
+    /// turned MAC-address-like or time-like values into large numbers — so this parser deliberately does not honor it.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("22:22")]
+    [DataRow("1:2:3")]
+    [DataRow("190:20:30")]
+    public void Parse_WhenSexagesimalUnderV11_ShouldStayString(string scalar)
+    {
+        using var doc = YamlDocument.Parse($"v: {scalar}\n", new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 });
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(scalar, doc.RootElement.GetProperty("v").GetString());
+    }
+
+    /// <summary>
+    /// Verifies that a leading-zero integer is read as octal under YAML 1.1, where the legacy schema treats
+    /// <c>0NNN</c> as base-8.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenLeadingZeroInteger_ForV11_ShouldResolveAsOctal()
+    {
+        using var doc = YamlDocument.Parse("a: 010\nb: 0777\n", new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 });
+        Assert.AreEqual(8L, doc.RootElement.GetProperty("a").GetInt64());
+        Assert.AreEqual(511L, doc.RootElement.GetProperty("b").GetInt64());
+    }
+
+    /// <summary>
+    /// Verifies that the same leading-zero integer is read as decimal under the YAML 1.2 core schema, whose integer
+    /// production is plain base-10. The identical literal <c>010</c> therefore means 8 under 1.1 but 10 under 1.2 — the
+    /// version-dependent octal ambiguity is pinned on both sides so the divergence stays intentional.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenLeadingZeroInteger_ForV12Core_ShouldResolveAsDecimal()
+    {
+        using var doc = YamlDocument.Parse("a: 010\nb: 0777\n");
+        Assert.AreEqual(10L, doc.RootElement.GetProperty("a").GetInt64());
+        Assert.AreEqual(777L, doc.RootElement.GetProperty("b").GetInt64());
+    }
+
+    /// <summary>
+    /// Verifies that a leading-zero token containing a non-octal digit stays a string under YAML 1.1. Because a
+    /// leading zero denotes octal in the 1.1 schema, tokens such as <c>083</c> or <c>09</c> match no 1.1 integer
+    /// production and must not be silently read as decimals (the js-yaml#684 class of bug).
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("083")]
+    [DataRow("09")]
+    [DataRow("0899")]
+    public void Parse_WhenLeadingZeroHasNonOctalDigit_ForV11_ShouldStayString(string scalar)
+    {
+        using var doc = YamlDocument.Parse($"v: {scalar}\n", new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 });
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(scalar, doc.RootElement.GetProperty("v").GetString());
+    }
+
+    /// <summary>
+    /// Verifies that the same leading-zero non-octal token is read as a decimal integer under the YAML 1.2 core
+    /// schema, which has no octal-by-leading-zero rule, so <c>083</c> resolves to 83.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenLeadingZeroHasNonOctalDigit_ForV12Core_ShouldResolveAsDecimal()
+    {
+        using var doc = YamlDocument.Parse("v: 083\n");
+        Assert.AreEqual(YamlValueKind.Integer, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(83L, doc.RootElement.GetProperty("v").GetInt64());
+    }
+
+    /// <summary>
+    /// Verifies that ISO-8601-like date and timestamp scalars remain strings under the YAML 1.2 core schema, which —
+    /// unlike YAML 1.1 — carries no implicit <c>!!timestamp</c> resolution, so a date is never coerced to a number.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("2002-12-14")]
+    [DataRow("2001-12-14T21:59:43.10-05:00")]
+    [DataRow("2001-12-14t21:59:43.10-05:00")]
+    [DataRow("2001-12-15 2:59:43.10")]
+    public void Parse_WhenTimestampLikeScalar_ForV12Core_ShouldStayString(string scalar)
+    {
+        using var doc = YamlDocument.Parse($"when: {scalar}\n");
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("when").ValueKind);
+        Assert.AreEqual(scalar, doc.RootElement.GetProperty("when").GetString());
+    }
+
+    /// <summary>Verifies that every recognized null spelling and the empty value resolve to the null kind.</summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("~")]
+    [DataRow("null")]
+    [DataRow("Null")]
+    [DataRow("NULL")]
+    public void Parse_WhenNullSpelling_ShouldResolveToNull(string scalar)
+    {
+        using var doc = YamlDocument.Parse($"v: {scalar}\n");
+        Assert.AreEqual(YamlValueKind.Null, doc.RootElement.GetProperty("v").ValueKind);
+    }
+
+    /// <summary>
+    /// Verifies that null spellings borrowed from other languages are not recognized and stay strings, so the null
+    /// set is exactly the three case forms and <c>~</c> rather than an open-ended list.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("None")]
+    [DataRow("nil")]
+    [DataRow("NuLL")]
+    [DataRow("nan")]
+    public void Parse_WhenNonCanonicalNullSpelling_ShouldStayString(string scalar)
+    {
+        using var doc = YamlDocument.Parse($"v: {scalar}\n");
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(scalar, doc.RootElement.GetProperty("v").GetString());
+    }
+
+    /// <summary>
+    /// Verifies that floating-point literals with a bare leading or trailing decimal point resolve to floats, matching
+    /// the YAML 1.2 core float production which permits <c>.5</c> and <c>5.</c>.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Parse_WhenBareDecimalPointFloats_ShouldResolve()
+    {
+        using var doc = YamlDocument.Parse("a: .5\nb: 5.\n");
+        Assert.AreEqual(YamlValueKind.Float, doc.RootElement.GetProperty("a").ValueKind);
+        Assert.AreEqual(0.5, doc.RootElement.GetProperty("a").GetDouble());
+        Assert.AreEqual(YamlValueKind.Float, doc.RootElement.GetProperty("b").ValueKind);
+        Assert.AreEqual(5.0, doc.RootElement.GetProperty("b").GetDouble());
+    }
 }
