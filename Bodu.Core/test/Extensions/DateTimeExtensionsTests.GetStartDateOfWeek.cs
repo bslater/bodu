@@ -27,6 +27,30 @@ public partial class DateTimeExtensionsTests
         new object[] { 2026, 1,  new DateTime(2025, 12, 29) }, // ISO week 1 of 2026 starts in Dec 2025
     };
 
+    public static IEnumerable<object[]> FirstDayWeekTestCases => new[]
+    {
+        new object[] { 2025, 1,  new DateTime(2025, 1, 1) },   // week 1 begins on Jan 1 (Wednesday) — a partial week under FirstDay
+        new object[] { 2025, 2,  new DateTime(2025, 1, 5) },   // week 2 begins at the first Sunday after Jan 1
+        new object[] { 2025, 53, new DateTime(2025, 12, 28) }, // last week of 2025 begins Sun 28 Dec
+        new object[] { 2024, 1,  new DateTime(2024, 1, 1) },   // Jan 1 2024 is a Monday; week 1 still begins on Jan 1
+        new object[] { 2024, 2,  new DateTime(2024, 1, 7) },   // week 2 begins at the first Sunday after Jan 1 2024
+    };
+
+    /// <summary>
+    /// Verifies that under a <see cref="CalendarWeekRule.FirstDay" /> culture (en-US), week 1 starts on January 1
+    /// itself and later weeks align to the culture's week boundaries, including when January 1 is not the culture's
+    /// first day of the week.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstDayWeekTestCases))]
+    public void GetStartDateOfWeek_WithFirstDayRuleCulture_ShouldReturnExpectedDate(int year, int week, DateTime expected)
+    {
+        CultureInfo culture = CultureInfo.GetCultureInfo("en-US"); // FirstDay rule, Sunday week start
+        DateTime actual = DateTimeExtensions.GetStartDateOfWeek(year, week, culture);
+
+        Assert.AreEqual(expected, actual);
+    }
+
     /// <summary>
     /// Verifies that the current culture is used when the culture argument is null.
     /// </summary>

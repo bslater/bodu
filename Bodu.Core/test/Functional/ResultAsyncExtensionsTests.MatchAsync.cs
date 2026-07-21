@@ -170,4 +170,100 @@ public sealed partial class ResultAsyncExtensionsTests
 
         Assert.AreEqual("source", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that MatchAsync over a non-generic task source with synchronous branches invokes the onSuccess branch
+    /// for a successful result.
+    /// </summary>
+    [TestMethod]
+    public async Task MatchAsync_WhenSuccess_ForNonGenericTaskSourceWithSyncBranches_ShouldInvokeOnSuccess()
+    {
+        var source = Task.FromResult(Result.Success());
+
+        var matched = await source.MatchAsync(() => "ok", error => $"failed: {error.Message}");
+
+        Assert.AreEqual("ok", matched);
+    }
+
+    /// <summary>
+    /// Verifies that MatchAsync over a non-generic task source with synchronous branches invokes the onFailure branch
+    /// for a failed result.
+    /// </summary>
+    [TestMethod]
+    public async Task MatchAsync_WhenFailure_ForNonGenericTaskSourceWithSyncBranches_ShouldInvokeOnFailure()
+    {
+        var source = Task.FromResult(Result.Failure(ResultError.FromMessage("boom")));
+
+        var matched = await source.MatchAsync(() => "ok", error => $"failed: {error.Message}");
+
+        Assert.AreEqual("failed: boom", matched);
+    }
+
+    /// <summary>
+    /// Verifies that MatchAsync over a non-generic task source with asynchronous branches awaits the onSuccess branch
+    /// for a successful result, without invoking onFailure.
+    /// </summary>
+    [TestMethod]
+    public async Task MatchAsync_WhenSuccess_ForNonGenericTaskSourceWithAsyncBranches_ShouldInvokeOnSuccessOnly()
+    {
+        var failureInvoked = false;
+        var source = Task.FromResult(Result.Success());
+
+        var matched = await source.MatchAsync(
+            () => Task.FromResult("ok"),
+            error =>
+            {
+                failureInvoked = true;
+                return Task.FromResult($"failed: {error.Message}");
+            });
+
+        Assert.AreEqual("ok", matched);
+        Assert.IsFalse(failureInvoked);
+    }
+
+    /// <summary>
+    /// Verifies that MatchAsync over a non-generic result source with asynchronous branches awaits the onFailure branch
+    /// for a failed result.
+    /// </summary>
+    [TestMethod]
+    public async Task MatchAsync_WhenFailure_ForNonGenericResultSourceWithAsyncBranches_ShouldInvokeOnFailure()
+    {
+        var matched = await Result.Failure(ResultError.FromMessage("boom")).MatchAsync(
+            () => Task.FromResult("ok"),
+            error => Task.FromResult($"failed: {error.Message}"));
+
+        Assert.AreEqual("failed: boom", matched);
+    }
+
+    /// <summary>
+    /// Verifies that MatchAsync over a non-generic result source rejects a <see langword="null" /> onSuccess branch
+    /// synchronously, before any await.
+    /// </summary>
+    [TestMethod]
+    public void MatchAsync_WhenOnSuccessIsNull_ForNonGenericResultSource_ShouldThrowArgumentNullException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Result.Success().MatchAsync((Func<Task<string>>)null!, error => Task.FromResult(error.Message));
+        });
+
+        Assert.AreEqual("onSuccess", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that MatchAsync over a non-generic source rejects a <see langword="null" /> source task synchronously,
+    /// before any await.
+    /// </summary>
+    [TestMethod]
+    public void MatchAsync_WhenSourceTaskIsNull_ForNonGeneric_ShouldThrowArgumentNullException()
+    {
+        Task<Result> source = null!;
+
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.MatchAsync(() => "ok", error => error.Message);
+        });
+
+        Assert.AreEqual("source", ex.ParamName);
+    }
 }

@@ -91,6 +91,9 @@ window.ItemEvicting += line =>
 > [!IMPORTANT]
 > The eviction-event contract differs between the two buffer types. `CircularBuffer<T>` **propagates** handler exceptions and lets `ItemEvicting` veto. `ConcurrentCircularBuffer<T>` exposes only `ItemEvicted`, **swallows** handler exceptions, and has no pre-eviction veto — its lock-free path cannot safely unwind. Do not port veto logic across the two types.
 
+> [!NOTE]
+> Event handlers must not mutate the buffer. Mutating members (`Enqueue`, `Dequeue`, `Clear`, `TrimExcess`, …) are guarded against re-entry from inside an eviction handler and throw `InvalidOperationException` if called there. Keep handlers side-effect-only with respect to the buffer itself.
+
 ## Pattern 5 — peek without removing
 
 ```csharp

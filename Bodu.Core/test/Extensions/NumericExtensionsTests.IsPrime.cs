@@ -160,4 +160,17 @@ public partial class NumericExtensionsTests
     public void IsPrime_UShort_WhenMaxValue_ShouldReturnFalse() =>
         Assert.IsFalse(ushort.MaxValue.IsPrime());
 
+    /// <summary>
+    /// Verifies that the square of a prime whose square exceeds 2^53 — beyond the exact range of
+    /// <see cref="Math.Sqrt(double)" /> — is identified as composite: the trial-division limit must be the exact
+    /// integer square root, since the prime itself is the value's only nontrivial divisor.
+    /// </summary>
+    [TestMethod]
+    public void IsPrime_ULong_WhenValueIsPrimeSquareBeyondDoublePrecision_ShouldReturnFalse()
+    {
+        const ulong Prime = 94906297UL; // smallest prime whose square exceeds 2^53
+
+        Assert.IsFalse((Prime * Prime).IsPrime());
+    }
+
 }

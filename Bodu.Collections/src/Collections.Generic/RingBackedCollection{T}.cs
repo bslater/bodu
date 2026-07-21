@@ -113,6 +113,18 @@ public abstract partial class RingBackedCollection<T>
     private int _version;
 
     /// <summary>
+    /// Indicates whether an eviction event is currently being dispatched, used to fail fast on re-entrant mutation.
+    /// </summary>
+    /// <remarks>
+    /// The eviction events are raised while the in-flight operation still depends on the ring's pre-mutation state; a
+    /// handler that mutated the collection would violate the primitives' caller-ensured preconditions, which are
+    /// asserted only in debug builds. Latching this flag during dispatch turns that corruption into a deterministic
+    /// <see cref="InvalidOperationException" /> in every configuration.
+    /// </remarks>
+    [NonSerialized]
+    private bool _isEvicting;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RingBackedCollection{T}" /> class with a backing array of the
     /// specified capacity.
     /// </summary>
@@ -210,7 +222,14 @@ public abstract partial class RingBackedCollection<T>
             ThrowHelper.ThrowIfLessThan(index, 0);
             ThrowHelper.ThrowIfGreaterThanOrEqual(index, _count);
 
-            return _array[(_head + index) % _array.Length];
+            // head + index < 2 * capacity, so one conditional subtraction replaces the modulo division —
+            // this indexer and the mutation primitives below are the hottest code in the ring family.
+            int physicalIndex = _head + index;
+            int capacityLimit = _array.Length;
+            if (physicalIndex >= capacityLimit)
+                physicalIndex -= capacityLimit;
+
+            return _array[physicalIndex];
         }
     }
 
@@ -218,8 +237,13 @@ public abstract partial class RingBackedCollection<T>
     /// Removes all elements from the collection, clearing the live region of the backing array and resetting head,
     /// tail, and count. Bumps the structural version when something was cleared.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// The method is invoked from within an eviction event handler.
+    /// </exception>
     public void Clear()
     {
+        ThrowIfEvicting();
+
         if (_count > 0)
         {
             int capacity = _array.Length;
@@ -275,7 +299,7 @@ public abstract partial class RingBackedCollection<T>
     {
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfNegative(index, nameof(index));
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, _count);
 
         CopyToInternal(array, index);
     }
@@ -297,13 +321,39 @@ public abstract partial class RingBackedCollection<T>
     /// Reduces the backing-array capacity to match <see cref="Count" />, freeing unused memory. If the collection is
     /// empty, the capacity is reduced to one slot to keep operations valid.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// The method is invoked from within an eviction event handler.
+    /// </exception>
     public void TrimExcess()
     {
+        ThrowIfEvicting();
+
         int newCapacity = Math.Max(_count, 1);
         if (newCapacity == _array.Length)
             return;
 
         Resize(newCapacity);
+    }
+
+    /// <summary>
+    /// Marks the start or end of eviction-event dispatch. While set, every structural mutation primitive throws
+    /// <see cref="InvalidOperationException" />, so an event handler cannot corrupt the ring state the in-flight
+    /// operation is about to mutate. Callers must clear the flag in a <c>finally</c> block.
+    /// </summary>
+    /// <param name="evicting">
+    /// <see langword="true" /> while a handler is executing; otherwise, <see langword="false" />.
+    /// </param>
+    private protected void SetEvictionDispatch(bool evicting) =>
+        _isEvicting = evicting;
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException" /> when invoked while an eviction event is being dispatched,
+    /// preventing a handler from mutating the collection mid-eviction.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">An eviction event handler is currently executing.</exception>
+    private protected void ThrowIfEvicting()
+    {
+        if (_isEvicting) throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_ReentrancyNotAllowed);
     }
 
     /// <summary>
@@ -313,10 +363,12 @@ public abstract partial class RingBackedCollection<T>
     /// <param name="item">The element to append.</param>
     protected void AddTail(T item)
     {
+        ThrowIfEvicting();
         Debug.Assert(_count < _array.Length, "AddTail: caller must ensure Count < Capacity.");
 
         _array[_tail] = item;
-        _tail = (_tail + 1) % _array.Length;
+        int nextTail = _tail + 1;
+        _tail = nextTail == _array.Length ? 0 : nextTail;
         _count++;
         _version++;
     }
@@ -328,10 +380,11 @@ public abstract partial class RingBackedCollection<T>
     /// <param name="item">The element to prepend.</param>
     protected void AddHead(T item)
     {
+        ThrowIfEvicting();
         Debug.Assert(_count < _array.Length, "AddHead: caller must ensure Count < Capacity.");
 
         int capacity = _array.Length;
-        _head = (_head - 1 + capacity) % capacity;
+        _head = (_head == 0 ? capacity : _head) - 1;
         _array[_head] = item;
         _count++;
         _version++;
@@ -344,11 +397,13 @@ public abstract partial class RingBackedCollection<T>
     /// <returns>The element that was at the head.</returns>
     protected T RemoveHead()
     {
+        ThrowIfEvicting();
         Debug.Assert(_count > 0, "RemoveHead: caller must ensure Count > 0.");
 
         T item = _array[_head];
         _array[_head] = default!;
-        _head = (_head + 1) % _array.Length;
+        int nextHead = _head + 1;
+        _head = nextHead == _array.Length ? 0 : nextHead;
         _count--;
         _version++;
         return item;
@@ -361,10 +416,11 @@ public abstract partial class RingBackedCollection<T>
     /// <returns>The element that was at the tail.</returns>
     protected T RemoveTail()
     {
+        ThrowIfEvicting();
         Debug.Assert(_count > 0, "RemoveTail: caller must ensure Count > 0.");
 
         int capacity = _array.Length;
-        _tail = (_tail - 1 + capacity) % capacity;
+        _tail = (_tail == 0 ? capacity : _tail) - 1;
         T item = _array[_tail];
         _array[_tail] = default!;
         _count--;
@@ -392,7 +448,7 @@ public abstract partial class RingBackedCollection<T>
         Debug.Assert(_count > 0, "PeekTail: caller must ensure Count > 0.");
 
         int capacity = _array.Length;
-        int tailIndex = (_tail - 1 + capacity) % capacity;
+        int tailIndex = (_tail == 0 ? capacity : _tail) - 1;
         return _array[tailIndex];
     }
 
@@ -407,10 +463,13 @@ public abstract partial class RingBackedCollection<T>
     /// </remarks>
     protected void OverwriteTail(T item)
     {
+        ThrowIfEvicting();
         Debug.Assert(_count == _array.Length, "OverwriteTail: caller must ensure Count == Capacity.");
 
         _array[_tail] = item;
-        int next = (_tail + 1) % _array.Length;
+        int next = _tail + 1;
+        if (next == _array.Length)
+            next = 0;
         _head = next;
         _tail = next;
         _version++;

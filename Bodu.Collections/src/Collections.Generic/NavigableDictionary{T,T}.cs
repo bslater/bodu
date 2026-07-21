@@ -131,7 +131,7 @@ public sealed partial class NavigableDictionary<TKey, TValue>
         if (entries.Length == 0)
             return;
 
-        Array.Sort(entries, (left, right) => _comparer.Compare(left.Key, right.Key));
+        Array.Sort(entries, new EntryKeyComparer(_comparer));
 
         for (int i = 1; i < entries.Length; i++)
         {
@@ -139,7 +139,7 @@ public sealed partial class NavigableDictionary<TKey, TValue>
                 throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_DuplicateDictionaryKey, nameof(source));
         }
 
-        _root = BuildFromSortedArray(entries, 0, entries.Length - 1, null);
+        _root = BuildFromSortedArray(entries, entries.Length);
         _count = entries.Length;
     }
 

@@ -5,14 +5,15 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
+using Bodu.Collections.Generic.Internal;
 
 namespace Bodu.Collections.Generic.Trees;
 
 public sealed partial class RadixTrie<TValue>
 {
     /// <summary>
-    /// Enumerates the key/value pairs of a <see cref="RadixTrie{TValue}" /> over a snapshot captured when the
-    /// enumerator is created.
+    /// Enumerates the key/value pairs of a <see cref="RadixTrie{TValue}" /> by walking the node graph lazily, without
+    /// materializing the collection.
     /// </summary>
     /// <remarks>
     /// The enumerator is fail-fast: if the trie is modified after the enumerator is created, the next call to
@@ -27,11 +28,8 @@ public sealed partial class RadixTrie<TValue>
         /// <summary>The owner's version captured when the enumerator was created, used for fail-fast checks.</summary>
         private readonly int _version;
 
-        /// <summary>The snapshot of key/value pairs captured when the enumerator was created.</summary>
-        private readonly KeyValuePair<string, TValue>[] _items;
-
-        /// <summary>The index of the current element, or <c>-1</c> before the first move.</summary>
-        private int _index;
+        /// <summary>The lazy node-graph walk over the trie's terminal entries.</summary>
+        private IEnumerator<KeyValuePair<string, TValue>> _walk;
 
         /// <summary>The key/value pair at the current position, or the default value when not on an element.</summary>
         private KeyValuePair<string, TValue> _current;
@@ -44,8 +42,7 @@ public sealed partial class RadixTrie<TValue>
         {
             _owner = owner;
             _version = owner._version;
-            _items = owner.ToArrayInternal();
-            _index = -1;
+            _walk = RadixTrieCore.EnumerateItems(owner._root).GetEnumerator();
             _current = default;
         }
 
@@ -64,10 +61,9 @@ public sealed partial class RadixTrie<TValue>
             if (_version != _owner._version)
                 throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified);
 
-            if (_index + 1 < _items.Length)
+            if (_walk.MoveNext())
             {
-                _index++;
-                _current = _items[_index];
+                _current = _walk.Current;
                 return true;
             }
 
@@ -84,7 +80,7 @@ public sealed partial class RadixTrie<TValue>
             if (_version != _owner._version)
                 throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified);
 
-            _index = -1;
+            _walk = RadixTrieCore.EnumerateItems(_owner._root).GetEnumerator();
             _current = default;
         }
 

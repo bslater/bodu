@@ -160,4 +160,32 @@ public sealed partial class AsyncReaderWriterLockTests
         // With no writer queued, the deferring reader is now admitted.
         (await deferringReader).Dispose();
     }
+
+    /// <summary>
+    /// Verifies that a reader queued behind a writer is admitted when that writer cancels while other readers are
+    /// still active and the last active reader then releases, rather than being stranded until a future writer cycle.
+    /// </summary>
+    [TestMethod]
+    public async Task WriterAsync_WhenCanceledWhileReadersActive_ShouldAdmitQueuedReadersOnLastRelease()
+    {
+        var sut = new AsyncReaderWriterLock();
+        AsyncReaderWriterLock.Releaser activeReader = await sut.ReaderAsync();
+        using var cts = new CancellationTokenSource();
+
+        ValueTask<AsyncReaderWriterLock.Releaser> canceledWriter = sut.WriterAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> deferringReader = sut.ReaderAsync();
+        Assert.IsFalse(canceledWriter.IsCompleted);
+        Assert.IsFalse(deferringReader.IsCompleted);
+
+        cts.Cancel();
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceledWriter);
+
+        // The reader queue cannot drain yet: a reader is still active, so the cancellation path defers the grant.
+        Assert.IsFalse(deferringReader.IsCompleted);
+
+        activeReader.Dispose();
+
+        // Releasing the last active reader must admit the queued reader; a stranded queue would hang here.
+        (await deferringReader.AsTask().WaitAsync(TimeSpan.FromSeconds(10))).Dispose();
+    }
 }

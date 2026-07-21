@@ -6,6 +6,8 @@
 
 using System.Collections;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionary<TKey, TValue> :
@@ -70,9 +72,19 @@ public partial class EvictingDictionary<TKey, TValue> :
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Following the <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> contract for
+    /// <see cref="IDictionary.this" />, the getter throws <see cref="ArgumentNullException" /> for a
+    /// <see langword="null" /> key and returns <see langword="null" /> for a non-null key of an incompatible type.
+    /// </remarks>
     object? IDictionary.this[object key]
     {
-        get => key is TKey typedKey && TryGetValue(typedKey, out TValue? value) ? value : null;
+        get
+        {
+            ThrowHelper.ThrowIfNull(key);
+
+            return key is TKey typedKey && TryGetValue(typedKey, out TValue? value) ? value : null;
+        }
 
         set
         {
@@ -95,9 +107,10 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </exception>
     /// <remarks>
     /// <para>
-    /// When an entry for <paramref name="key" /> already exists its value is updated in place without disturbing
-    /// eviction metadata: position in the order list, LFU frequency, and the SecondChance reference flag are all
-    /// preserved. This differs from
+    /// When an entry for <paramref name="key" /> already exists its value is updated in place and the write counts as a
+    /// touch against the eviction policy: recency-based policies move the entry to the most-recently-used position,
+    /// LeastFrequentlyUsed increments its accumulated frequency, and SecondChance marks it recently referenced. The
+    /// entry keeps its accumulated metadata rather than being treated as newly inserted. This differs from
     /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}.Add(TKey, TValue)" />, which throws on duplicate
     /// keys.
     /// </para>
@@ -127,7 +140,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </param>
     private void AddCore(TKey key, TValue value, TimeSpan? ttlOverride)
     {
-        if (_store.TryGetValue(key, out CacheItem? existing))
+        if (_store.TryGetValue(key, out EvictionEntry<TKey, TValue>? existing))
         {
             if (_timeProvider is not null && existing.ExpiresAtTicks <= GetNowTicks())
             {
@@ -154,22 +167,10 @@ public partial class EvictingDictionary<TKey, TValue> :
                 EvictOne();
         }
 
-        var item = new CacheItem(value);
+        var item = new EvictionEntry<TKey, TValue>(value);
         SetExpiration(item, ttlOverride);
 
-        if (Policy is
-            EvictingDictionaryPolicy.FirstInFirstOut or
-            EvictingDictionaryPolicy.LeastRecentlyUsed or
-            EvictingDictionaryPolicy.MostRecentlyUsed or
-            EvictingDictionaryPolicy.SecondChance)
-        {
-            item.Node = _order.AddLast(key);
-        }
-
-        if (Policy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
-            AddToFrequencyList(item.Frequency, key);
-
-        _store[key] = item;
+        _core.AddNewEntry(key, item);
         _version++;
     }
 
@@ -197,25 +198,29 @@ public partial class EvictingDictionary<TKey, TValue> :
     {
         ThrowIfEvicting();
 
-        _store.Clear();
-        _order?.Clear();
-        _frequencyList?.Clear();
+        _core.Clear();
         TotalTouches = EvictionCount = 0;
         _version++;
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Like <see cref="ContainsKey" />, this is a pure read with respect to the capacity policy: it does not update
+    /// recency or frequency metadata, slide expiration, or count as a touch. (Reads that should influence eviction
+    /// order go through <see cref="TryGetValue" /> or the indexer.)
+    /// </remarks>
     public bool Contains(KeyValuePair<TKey, TValue> item) =>
-        TryGetValue(item.Key, out TValue? val) && EqualityComparer<TValue>.Default.Equals(val, item.Value);
+        TryGetLiveItem(item.Key, slide: false, out EvictionEntry<TKey, TValue>? cached) && EqualityComparer<TValue>.Default.Equals(cached.Value, item.Value);
 
     /// <inheritdoc />
     /// <remarks>
-    /// This is a pure read with respect to the capacity policy — it does not update recency or frequency metadata. When
-    /// time-based expiration is configured, an expired entry counts as absent (it is lazily removed and
-    /// <see langword="false" /> is returned), and a hit refreshes the deadline under
+    /// This is a pure read: it does not update recency or frequency metadata, count as a touch, or slide the expiration
+    /// deadline. When time-based expiration is configured, an expired entry still counts as absent — it is lazily
+    /// removed and <see langword="false" /> is returned — but a live hit leaves the entry's sliding deadline unchanged.
+    /// Use <see cref="TryGetValue" /> or the indexer getter for a read that slides the deadline under
     /// <see cref="EvictingDictionaryExpirationKind.Sliding" />.
     /// </remarks>
-    public bool ContainsKey(TKey key) => TryGetLiveItem(key, slide: true, out _);
+    public bool ContainsKey(TKey key) => TryGetLiveItem(key, slide: false, out _);
 
     /// <inheritdoc />
     /// <remarks>
@@ -226,20 +231,20 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </remarks>
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
-        PurgeExpired();
-
+        // Argument-shape validation precedes the purge so a caller error cannot trigger evictions or raise the
+        // eviction events; the purge then runs before the length check so the count validated matches the elements written.
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex + Count);
 
-        foreach (KeyValuePair<TKey, TValue> kvp in GetOrderedItems())
+        PurgeExpired();
+
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, Count);
+
+        foreach (KeyValuePair<TKey, TValue> kvp in this)
             array[arrayIndex++] = kvp;
     }
-
-    /// <inheritdoc />
-    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => GetOrderedItems().GetEnumerator();
 
     /// <inheritdoc />
     /// <exception cref="InvalidOperationException">
@@ -254,15 +259,9 @@ public partial class EvictingDictionary<TKey, TValue> :
     {
         ThrowIfEvicting();
 
-        if (_store.TryGetValue(key, out CacheItem? item))
+        if (_store.TryGetValue(key, out EvictionEntry<TKey, TValue>? item))
         {
-            if (_order is not null && item.Node is not null)
-                _order.Remove(item.Node);
-
-            if (Policy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
-                RemoveFromFrequencyList(item.Frequency, key);
-
-            _store.Remove(key);
+            _core.RemoveEntry(key, item);
             _version++;
             return true;
         }
@@ -307,7 +306,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </remarks>
     public bool TryGetValue(TKey key, out TValue value)
     {
-        if (TryGetLiveItem(key, slide: true, out CacheItem? item))
+        if (TryGetLiveItem(key, slide: true, out EvictionEntry<TKey, TValue>? item))
         {
             value = item.Value;
             TouchInternal(key, item);
@@ -333,9 +332,6 @@ public partial class EvictingDictionary<TKey, TValue> :
 
     /// <inheritdoc />
     IDictionaryEnumerator IDictionary.GetEnumerator() => new DictionaryEnumerator(this);
-
-    /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() => GetOrderedItems().GetEnumerator();
 
     /// <inheritdoc />
     void IDictionary.Remove(object key)

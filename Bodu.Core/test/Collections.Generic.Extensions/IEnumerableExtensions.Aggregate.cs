@@ -26,24 +26,6 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the default-seed overload throws <see cref="ArgumentNullException" /> when the accumulator
-    /// function is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Aggregate_WhenFuncIsNull_ForDefaultSeedOverload_ShouldThrowExactly()
-    {
-        int[] source = [1, 2, 3];
-        Func<int, int, int, int> func = null!;
-
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source.Aggregate(func);
-        });
-
-        Assert.AreEqual("func", ex.ParamName);
-    }
-
-    /// <summary>
     /// Verifies that the seeded overload throws <see cref="ArgumentNullException" /> when the accumulator function is
     /// <see langword="null" />.
     /// </summary>
@@ -126,22 +108,6 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
             _ = source.Aggregate(0, 0, (a, x, i) => a + x, nullFunc);
         });
         Assert.AreEqual("func2", ex2.ParamName);
-    }
-
-    /// <summary>
-    /// Verifies that the default-seed overload applies the accumulator function starting from
-    /// <see langword="default" /> and uses the first element as the first running value passed to
-    /// <paramref name="func" />.
-    /// </summary>
-    [TestMethod]
-    public void Aggregate_WhenInvoked_ForDefaultSeedOverload_ShouldStartFromDefault()
-    {
-        int[] source = [5, 10, 20];
-
-        int result = source.Aggregate((acc, x, i) => acc + x);
-
-        // default(int) + 5 + 10 + 20 == 35
-        Assert.AreEqual(35, result);
     }
 
     /// <summary>
@@ -450,23 +416,6 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the default-seed overload throws <see cref="InvalidOperationException" /> when the source sequence
-    /// is empty.
-    /// </summary>
-    [TestMethod]
-    public void Aggregate_WhenSourceIsEmpty_ForDefaultSeedOverload_ShouldThrowExactly()
-    {
-        int[] source = [];
-
-        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            _ = source.Aggregate((acc, x, i) => acc + x);
-        });
-
-        Assert.AreEqual(ResourceStrings.Op_Invalid_EmptySequence, ex.Message);
-    }
-
-    /// <summary>
     /// Verifies that the seeded overload returns the seed unchanged when the source sequence is empty and does not
     /// invoke the accumulator.
     /// </summary>
@@ -531,23 +480,6 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         Assert.AreEqual(11, v1);
         Assert.AreEqual(22, v2);
     }
-    /// <summary>
-    /// Verifies that the default-seed overload throws <see cref="ArgumentNullException" /> when the source sequence is
-    /// <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Aggregate_WhenSourceIsNull_ForDefaultSeedOverload_ShouldThrowExactly()
-    {
-        IEnumerable<int> source = null!;
-
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source.Aggregate((acc, x, i) => acc + x);
-        });
-
-        Assert.AreEqual("source", ex.ParamName);
-    }
-
     /// <summary>
     /// Verifies that the seeded overload throws <see cref="ArgumentNullException" /> when the source sequence is
     /// <see langword="null" />.

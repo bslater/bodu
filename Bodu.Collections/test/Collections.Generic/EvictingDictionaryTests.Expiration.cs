@@ -231,11 +231,12 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that under sliding expiration <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> refreshes
-    /// the entry's deadline.
+    /// Verifies that under sliding expiration <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> is a pure
+    /// read that does not refresh the entry's deadline, so the entry still expires on its original schedule — whereas a
+    /// <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> read at the same point does slide it.
     /// </summary>
     [TestMethod]
-    public void ContainsKey_WhenSlidingKindAndKeyConfirmed_ShouldExtendLifetime()
+    public void ContainsKey_WhenSlidingKind_ShouldNotExtendLifetime()
     {
         var time = new ManualTimeProvider();
         var dictionary = new EvictingDictionary<string, int>(
@@ -243,16 +244,28 @@ public partial class EvictingDictionaryTests
         dictionary.Add("A", 1);
 
         time.Advance(TimeSpan.FromMinutes(6));
-        Assert.IsTrue(dictionary.ContainsKey("A"));
+        Assert.IsTrue(dictionary.ContainsKey("A"), "The entry is still live at 6 minutes.");
 
         time.Advance(TimeSpan.FromMinutes(6));
 
-        Assert.IsTrue(dictionary.ContainsKey("A"), "The ContainsKey hit at 6 minutes should have slid the deadline to 16 minutes.");
+        Assert.IsFalse(dictionary.ContainsKey("A"), "ContainsKey must not slide the deadline; the entry expires at 10 minutes.");
+
+        // Contrast: a TryGetValue read at 6 minutes does slide the deadline, keeping the entry alive past 10 minutes.
+        var slidingTime = new ManualTimeProvider();
+        var sliding = new EvictingDictionary<string, int>(
+            4, new EvictingDictionaryExpiration(TimeSpan.FromMinutes(10), EvictingDictionaryExpirationKind.Sliding, slidingTime));
+        sliding.Add("A", 1);
+
+        slidingTime.Advance(TimeSpan.FromMinutes(6));
+        Assert.IsTrue(sliding.TryGetValue("A", out _), "The entry is live at 6 minutes.");
+
+        slidingTime.Advance(TimeSpan.FromMinutes(6));
+        Assert.IsTrue(sliding.ContainsKey("A"), "The TryGetValue hit at 6 minutes should have slid the deadline to 16 minutes.");
     }
 
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> does not count as a policy access
-    /// (TotalTouches is unchanged) even when it slides the expiration deadline.
+    /// (TotalTouches is unchanged).
     /// </summary>
     [TestMethod]
     public void ContainsKey_WhenSlidingKind_ShouldNotIncrementTotalTouches()

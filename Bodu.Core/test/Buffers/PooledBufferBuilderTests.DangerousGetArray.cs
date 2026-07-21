@@ -10,8 +10,9 @@ public partial class PooledBufferBuilderTests
 {
 
     /// <summary>
-    /// Verifies that the array returned by <see cref="PooledBufferBuilder{T}.DangerousGetArray"/> is the same
-    /// reference as the array returned by <see cref="PooledBufferBuilder{T}.AsArray"/>.
+    /// Verifies that the array exposed by <see cref="PooledBufferBuilder{T}.DangerousGetArray"/> aliases the
+    /// builder's internal storage: mutating it is reflected in subsequent reads of
+    /// <see cref="PooledBufferBuilder{T}.WrittenSpan"/>.
     /// </summary>
     [TestMethod]
     public void DangerousGetArray_WhenCalled_ShouldAliasInternalArray()
@@ -20,8 +21,9 @@ public partial class PooledBufferBuilderTests
         builder.Append(1);
 
         System.ArraySegment<int> segment = builder.DangerousGetArray();
+        segment.Array![0] = 99;
 
-        Assert.AreSame(builder.AsArray(), segment.Array);
+        Assert.AreEqual(99, builder.WrittenSpan[0]);
     }
 
     /// <summary>

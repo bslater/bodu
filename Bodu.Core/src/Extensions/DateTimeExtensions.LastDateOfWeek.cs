@@ -116,7 +116,7 @@ public static partial class DateTimeExtensions
         var endOfWeek = (DayOfWeek)(((int)startOfWeek + 6) % 7);
 
         int offsetDays = ((int)endOfWeek - (int)dateTime.DayOfWeek + 7) % 7;
-        long dateTicks = dateTime.Ticks + (offsetDays * TicksPerDay);
+        long dateTicks = TruncateToDateTicks(dateTime) + (offsetDays * TicksPerDay);
 
         return (ulong)dateTicks > (ulong)DateTime.MaxValue.Ticks
             ? throw new ArgumentOutOfRangeException(

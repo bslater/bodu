@@ -30,6 +30,12 @@ public sealed partial class Graph<T>
     /// <paramref name="weight" /> is not a finite, non-negative number (it is <see cref="double.NaN" />, infinite, or
     /// negative).
     /// </exception>
+    /// <remarks>
+    /// On an undirected graph, a self-loop (<paramref name="from" /> equals <paramref name="to" /> under
+    /// <see cref="Graph{T}.Comparer" />) is stored as a single adjacency entry, so it contributes 1 to
+    /// <see cref="Degree" /> — diverging from the classical graph-theory convention, in which an undirected self-loop
+    /// counts twice toward its vertex's degree.
+    /// </remarks>
     public void AddEdge(T from, T to, double weight)
     {
         ThrowHelper.ThrowIfNull(from);
@@ -70,7 +76,18 @@ public sealed partial class Graph<T>
         if (_adjacency.TryGetValue(from, out Dictionary<T, double>? existing) && existing.ContainsKey(to))
             return false;
 
-        AddEdge(from, to, weight);
+        // Inline the add rather than delegating to AddEdge so the null/weight validation and the existence
+        // probe above are not repeated.
+        AddVertex(from);
+        AddVertex(to);
+
+        bool added = AddDirectedEdge(from, to, weight);
+        if (!IsDirected && !Comparer.Equals(from, to))
+            AddDirectedEdge(to, from, weight);
+
+        if (added)
+            _edgeCount++;
+
         return true;
     }
 
@@ -168,6 +185,11 @@ public sealed partial class Graph<T>
     /// <returns>The number of outgoing edges; for an undirected graph this is the vertex's degree.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="vertex" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="vertex" /> is not in the graph.</exception>
+    /// <remarks>
+    /// The value is the out-edge (adjacency-entry) count. Because an undirected self-loop is stored once, it
+    /// contributes 1 — not the 2 that the classical graph-theory degree convention would assign an undirected
+    /// self-loop.
+    /// </remarks>
     public int Degree(T vertex)
     {
         ThrowHelper.ThrowIfNull(vertex);

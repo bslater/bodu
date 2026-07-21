@@ -6,6 +6,8 @@
 
 using System.Collections;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 public partial class SequencedDictionary<TKey, TValue>
@@ -21,9 +23,9 @@ public partial class SequencedDictionary<TKey, TValue>
     /// <see cref="NotSupportedException" />.
     /// </remarks>
     public sealed class KeyCollection
-        : ICollection<TKey>
-        , IReadOnlyCollection<TKey>
-        , ICollection
+        : ICollection<TKey>,
+        IReadOnlyCollection<TKey>,
+        ICollection
     {
         /// <summary>The dictionary whose keys this collection exposes.</summary>
         private readonly SequencedDictionary<TKey, TValue> _dictionary;
@@ -60,20 +62,13 @@ public partial class SequencedDictionary<TKey, TValue>
         public bool Contains(TKey item) => _dictionary.ContainsKey(item);
 
         /// <inheritdoc />
-        public void CopyTo(TKey[] array, int arrayIndex)
-        {
-            ThrowHelper.ThrowIfNull(array);
-            ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
-            ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, arrayIndex, Count);
-
-            foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
-                array[arrayIndex++] = kvp.Key;
-        }
+        public void CopyTo(TKey[] array, int arrayIndex) =>
+            DictionaryViewCore.CopyKeysTo(_dictionary, array, arrayIndex);
 
         /// <inheritdoc />
         public IEnumerator<TKey> GetEnumerator()
         {
-            foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
+            foreach (KeyValuePair<TKey, TValue> kvp in _dictionary)
                 yield return kvp.Key;
         }
 
@@ -81,17 +76,8 @@ public partial class SequencedDictionary<TKey, TValue>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <inheritdoc />
-        void ICollection.CopyTo(Array array, int index)
-        {
-            ThrowHelper.ThrowIfNull(array);
-            ThrowHelper.ThrowIfArrayMultidimensional(array);
-            ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
-            ThrowHelper.ThrowIfLessThan(index, 0);
-            ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, index, Count);
-
-            foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
-                array.SetValue(kvp.Key, index++);
-        }
+        void ICollection.CopyTo(Array array, int index) =>
+            DictionaryViewCore.CopyKeysTo(_dictionary, array, index);
 
         /// <inheritdoc />
         /// <exception cref="NotSupportedException">

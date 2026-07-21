@@ -539,19 +539,23 @@ public static partial class DateTimeExtensions
 
     /// <summary>
     /// Calculates the number of ticks that must be added to the specified <paramref name="dateTime" /> to reach the
-    /// previous occurrence of the specified <paramref name="dayOfWeek" />.
+    /// previous-or-same occurrence of the specified <paramref name="dayOfWeek" />.
     /// </summary>
     /// <param name="dateTime">The <see cref="DateTime" /> instance from which to calculate the backward offset.</param>
     /// <param name="dayOfWeek">A <see cref="DayOfWeek" /> value representing the target day of the week.</param>
     /// <returns>
-    /// A negative <see cref="long" /> value representing the number of ticks between the specified
-    /// <paramref name="dateTime" /> and the previous occurrence of <paramref name="dayOfWeek" />. This value is a
-    /// negative multiple of <see cref="DateTimeExtensions.TicksPerDay" />.
+    /// A non-positive <see cref="long" /> value representing the number of ticks between the specified
+    /// <paramref name="dateTime" /> and the most recent occurrence of <paramref name="dayOfWeek" />, counting the
+    /// current day as a match. This value is a multiple of <see cref="DateTimeExtensions.TicksPerDay" /> in the range
+    /// −6 to 0 days.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// If <paramref name="dateTime" /> already falls on <paramref name="dayOfWeek" />, this method returns a 7-day
-    /// negative tick interval, representing the corresponding day in the previous week.
+    /// If <paramref name="dateTime" /> already falls on <paramref name="dayOfWeek" />, this method returns <c>0</c> —
+    /// the current day is treated as the previous occurrence. Callers that require a strictly earlier day must
+    /// substitute a 7-day negative interval when <c>0</c> is returned. This deliberately diverges from the
+    /// <see cref="DateOnlyExtensions.GetPreviousDayOfWeekFromDayNumber" /> twin, which is strictly-previous and returns
+    /// −7 on a same-day match; existing callers of this helper rely on the previous-or-same semantics.
     /// </para>
     /// <para>
     /// This method performs no validation and assumes that <paramref name="dayOfWeek" /> is a valid
@@ -687,7 +691,7 @@ public static partial class DateTimeExtensions
 
             _ => throw new ArgumentOutOfRangeException(
                     nameof(rule),
-                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, rule, nameof(CalendarWeekRule))),
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, nameof(CalendarWeekRule), rule)),
         };
     }
 

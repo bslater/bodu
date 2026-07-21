@@ -124,4 +124,39 @@ public partial class EvictingDictionaryTests
         Assert.IsFalse(dictionary.Contains(new KeyValuePair<string, int>("alpha", 99)));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> is a pure read that does not update
+    /// recency metadata, so a containment check cannot change which entry the policy evicts next.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenPolicyIsLRU_ShouldNotTouchEvictionMetadata()
+    {
+        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        dictionary.Add("a", 1);
+        dictionary.Add("b", 2);
+
+        Assert.IsTrue(dictionary.Contains(new KeyValuePair<string, int>("a", 1)));
+
+        dictionary.Add("c", 3); // "a" must still be the least recently used and be evicted
+
+        Assert.IsFalse(dictionary.ContainsKey("a"));
+        Assert.IsTrue(dictionary.ContainsKey("b"));
+        Assert.IsTrue(dictionary.ContainsKey("c"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> does not count as a touch in
+    /// <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" />.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenCalled_ShouldNotIncrementTotalTouches()
+    {
+        var dictionary = new EvictingDictionary<string, int>(2);
+        dictionary.Add("a", 1);
+
+        _ = dictionary.Contains(new KeyValuePair<string, int>("a", 1));
+
+        Assert.AreEqual(0, dictionary.TotalTouches);
+    }
+
 }

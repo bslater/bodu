@@ -124,4 +124,36 @@ public sealed partial class RadixTrieTests
         Assert.IsTrue(sut.Contains("a"));
         Assert.AreEqual(1, sut.Count);
     }
+
+    /// <summary>
+    /// Verifies that the span <see cref="RadixTrie.Remove(ReadOnlySpan{char})" /> overload removes a present key and
+    /// reports success, mirroring the string overload.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenSpanKeyPresent_ShouldRemoveAndReturnTrue()
+    {
+        var sut = new RadixTrie(["tea", "team"]);
+
+        bool removed = sut.Remove("tea".AsSpan());
+
+        Assert.IsTrue(removed);
+        Assert.IsFalse(sut.Contains("tea"));
+        Assert.IsTrue(sut.Contains("team"));
+        Assert.AreEqual(1, sut.Count);
+    }
+
+    /// <summary>
+    /// Verifies that the span <see cref="RadixTrie.Remove(ReadOnlySpan{char})" /> overload returns
+    /// <see langword="false" /> for an absent key.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenSpanKeyAbsent_ShouldReturnFalse()
+    {
+        var sut = new RadixTrie(["tea"]);
+
+        bool removed = sut.Remove("dog".AsSpan());
+
+        Assert.IsFalse(removed);
+        Assert.AreEqual(1, sut.Count);
+    }
 }

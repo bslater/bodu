@@ -7,12 +7,20 @@
 namespace Bodu.Collections.Extensions;
 
 /// <summary>
-/// Represents predefined behaviors for how an element is processed during recursive selection.
+/// Represents composable control flags for how an element is processed during recursive selection.
 /// </summary>
 /// <remarks>
 /// This enum defines composable control flags that determine whether an element should be yielded, whether its children
-/// should be traversed, and whether recursion should stop after the current element. These values are intended to be
-/// treated as bitmasks using <see cref="int" /> values (not [Flags]).
+/// should be traversed, and whether traversal should stop after the current element. It is a genuine
+/// <see cref="FlagsAttribute" /> bitmask: the primitive flags <see cref="Yield" />, <see cref="Recurse" />,
+/// <see cref="Skip" />, <see cref="Break" />, and <see cref="Exit" /> may be combined with the bitwise-OR operator, and
+/// the named combinations below are provided for the common cases.
+/// <para>
+/// <see cref="Break" /> and <see cref="Recurse" /> are orthogonal and compose: <see cref="Break" /> stops iteration of
+/// the remaining siblings at the current level, whereas <see cref="Recurse" /> requests descent into the current
+/// element's children. When both are set, the current element's children are visited first and only then are the
+/// remaining siblings skipped.
+/// </para>
 /// <para>
 /// Typical usage includes returning one of these values from a <c>Func&lt;T, RecursiveSelectControl&gt;</c> to control
 /// behavior dynamically within a recursive traversal method.
@@ -170,50 +178,81 @@ namespace Bodu.Collections.Extensions;
 ///]]>
 /// </code>
 /// </example>
+[Flags]
 public enum RecursiveSelectControl
 {
     /// <summary>
+    /// No flags set: the current element is neither yielded nor recursed into.
+    /// </summary>
+    None = 0,
+
+    /// <summary>
+    /// Primitive flag that includes the current element in the output sequence.
+    /// </summary>
+    Yield = 1 << 0,
+
+    /// <summary>
+    /// Primitive flag that requests recursion into the current element's children.
+    /// </summary>
+    Recurse = 1 << 1,
+
+    /// <summary>
+    /// Primitive flag that skips yielding the current element. Overrides <see cref="Yield" /> when both are set.
+    /// </summary>
+    Skip = 1 << 2,
+
+    /// <summary>
+    /// Primitive flag that stops iteration of the remaining siblings at the current recursion level.
+    /// </summary>
+    Break = 1 << 3,
+
+    /// <summary>
+    /// Primitive flag that terminates the entire recursive traversal immediately.
+    /// </summary>
+    Exit = 1 << 4,
+
+    /// <summary>
     /// Yield the current element only, without recursing into children.
     /// </summary>
-    YieldOnly = Generic.Extensions.IEnumerableExtensions.Yield,
+    YieldOnly = Yield,
 
     /// <summary>
     /// Recurse into children without yielding the current element.
     /// </summary>
-    RecurseOnly = Generic.Extensions.IEnumerableExtensions.Recurse,
+    RecurseOnly = Recurse,
 
     /// <summary>
     /// Yield the current element and recurse into its children. This is the default behavior.
     /// </summary>
-    YieldAndRecurse = Generic.Extensions.IEnumerableExtensions.Yield | Generic.Extensions.IEnumerableExtensions.Recurse,
+    YieldAndRecurse = Yield | Recurse,
 
     /// <summary>
     /// Skip yielding the current element and do not recurse.
     /// </summary>
-    SkipOnly = Generic.Extensions.IEnumerableExtensions.Skip,
+    SkipOnly = Skip,
 
     /// <summary>
     /// Skip yielding the current element, but still recurse into its children.
     /// </summary>
-    SkipAndRecurse = Generic.Extensions.IEnumerableExtensions.Skip | Generic.Extensions.IEnumerableExtensions.Recurse,
+    SkipAndRecurse = Skip | Recurse,
 
     /// <summary>
     /// Yield the current element, then stop traversal at the current level (like a break).
     /// </summary>
-    YieldAndBreak = Generic.Extensions.IEnumerableExtensions.Yield | Generic.Extensions.IEnumerableExtensions.Break,
+    YieldAndBreak = Yield | Break,
 
     /// <summary>
     /// Skip yielding the current element and stop traversal at the current level.
     /// </summary>
-    SkipAndBreak = Generic.Extensions.IEnumerableExtensions.Skip | Generic.Extensions.IEnumerableExtensions.Break,
+    SkipAndBreak = Skip | Break,
 
     /// <summary>
     /// Yield the current element, then stop traversal completely across all levels.
     /// </summary>
-    YieldAndExit = Generic.Extensions.IEnumerableExtensions.Yield | Generic.Extensions.IEnumerableExtensions.Exit,
+    YieldAndExit = Yield | Exit,
 
     /// <summary>
     /// Skip yielding the current element and stop traversal completely across all levels.
     /// </summary>
-    SkipAndExit = Generic.Extensions.IEnumerableExtensions.Skip | Generic.Extensions.IEnumerableExtensions.Exit,
+    SkipAndExit = Skip | Exit,
 }

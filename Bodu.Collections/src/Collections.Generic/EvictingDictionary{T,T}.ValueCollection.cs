@@ -6,6 +6,8 @@
 
 using System.Collections;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionary<TKey, TValue>
@@ -57,37 +59,25 @@ public partial class EvictingDictionary<TKey, TValue>
         object ICollection.SyncRoot => ((ICollection)_dictionary).SyncRoot;
 
         /// <inheritdoc />
-        public bool Contains(TValue item)
-        {
-            EqualityComparer<TValue> comparer = EqualityComparer<TValue>.Default;
-
-            foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
-            {
-                if (comparer.Equals(kvp.Value, item))
-                    return true;
-            }
-
-            return false;
-        }
+        /// <remarks>
+        /// Scans the live (non-expired) entries in policy order without purging or sliding deadlines.
+        /// </remarks>
+        public bool Contains(TValue item) =>
+            DictionaryViewCore.ContainsValue(_dictionary, item);
 
         /// <inheritdoc />
-        public void CopyTo(TValue[] array, int arrayIndex)
-        {
-            // Purge expired entries first so the raw count used for validation matches the elements written.
-            _dictionary.PurgeExpired();
-
-            ThrowHelper.ThrowIfNull(array);
-            ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
-            ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, arrayIndex, Count);
-
-            foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
-                array[arrayIndex++] = kvp.Value;
-        }
+        /// <remarks>
+        /// The shared copy loop validates the argument shape before purging expired entries, so a caller error cannot
+        /// trigger evictions or raise the eviction events; the purge then runs before the range check so the count
+        /// validated matches the elements written.
+        /// </remarks>
+        public void CopyTo(TValue[] array, int arrayIndex) =>
+            DictionaryViewCore.CopyValuesTo(_dictionary, array, arrayIndex);
 
         /// <inheritdoc />
         public IEnumerator<TValue> GetEnumerator()
         {
-            foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
+            foreach (KeyValuePair<TKey, TValue> kvp in _dictionary)
                 yield return kvp.Value;
         }
 
@@ -95,20 +85,13 @@ public partial class EvictingDictionary<TKey, TValue>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <inheritdoc />
-        void ICollection.CopyTo(Array array, int index)
-        {
-            // Purge expired entries first so the raw count used for validation matches the elements written.
-            _dictionary.PurgeExpired();
-
-            ThrowHelper.ThrowIfNull(array);
-            ThrowHelper.ThrowIfArrayMultidimensional(array);
-            ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
-            ThrowHelper.ThrowIfLessThan(index, 0);
-            ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, index, Count);
-
-            foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
-                array.SetValue(kvp.Value, index++);
-        }
+        /// <remarks>
+        /// The shared copy loop validates the argument shape before purging expired entries, so a caller error cannot
+        /// trigger evictions or raise the eviction events; the purge then runs before the range check so the count
+        /// validated matches the elements written.
+        /// </remarks>
+        void ICollection.CopyTo(Array array, int index) =>
+            DictionaryViewCore.CopyValuesTo(_dictionary, array, index);
 
         /// <inheritdoc />
         /// <exception cref="NotSupportedException">

@@ -44,8 +44,8 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// <para>
     /// This overload retrieves the <see cref="Calendar" /> from the culture's
-    /// <see cref="DateTimeFormatInfo.Calendar" /> property and returns the number of days for the month of the supplied
-    /// <paramref name="date" />.
+    /// <see cref="DateTimeFormatInfo.Calendar" /> property and returns the number of days in the month of that
+    /// calendar's own year/month reckoning that contains <paramref name="date" />.
     /// </para>
     /// <para>
     /// This is useful when working with cultures that use non-Gregorian calendars such as <see cref="HebrewCalendar" />
@@ -53,7 +53,8 @@ public static partial class DateOnlyExtensions
     /// them explicitly. For precise control, use the overload that accepts a <see cref="Calendar" /> directly.
     /// </para>
     /// </remarks>
-    public static int DaysInMonth(this DateOnly date, CultureInfo? culture) => (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.Calendar.GetDaysInMonth(date.Year, date.Month);
+    public static int DaysInMonth(this DateOnly date, CultureInfo? culture) =>
+        DaysInMonth(date, (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.Calendar);
 
     /// <summary>
     /// Returns the number of days in the calendar month of the specified <see cref="DateOnly" />, using the supplied or
@@ -71,8 +72,11 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// <para>
     /// This overload supports calendar-aware computations for systems such as <see cref="HebrewCalendar" />,
-    /// <see cref="HijriCalendar" />, <see cref="JapaneseCalendar" />, and others supported by .NET. The result is
-    /// equivalent to <c>calendar.GetDaysInMonth(date.Year, date.Month)</c>, or uses the current culture's calendar if
+    /// <see cref="HijriCalendar" />, <see cref="JapaneseCalendar" />, and others supported by .NET.
+    /// <paramref name="date" /> is first projected into the target calendar, so the result is equivalent to
+    /// <c>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</c> for the
+    /// <see cref="DateTime" /> at midnight of <paramref name="date" /> — the length of the calendar's own month
+    /// containing the date, not the Gregorian month. The current culture's calendar is used if
     /// <paramref name="calendar" /> is <see langword="null" />.
     /// </para>
     /// <para>
@@ -80,5 +84,11 @@ public static partial class DateOnlyExtensions
     /// using <c>GetDaysInMonth(year, month, era)</c> instead.
     /// </para>
     /// </remarks>
-    public static int DaysInMonth(this DateOnly date, Calendar? calendar) => (calendar ?? CultureInfo.CurrentCulture.Calendar).GetDaysInMonth(date.Year, date.Month);
+    public static int DaysInMonth(this DateOnly date, Calendar? calendar)
+    {
+        Calendar target = calendar ?? CultureInfo.CurrentCulture.Calendar;
+        var dateTime = date.ToDateTime(TimeOnly.MinValue);
+
+        return target.GetDaysInMonth(target.GetYear(dateTime), target.GetMonth(dateTime));
+    }
 }

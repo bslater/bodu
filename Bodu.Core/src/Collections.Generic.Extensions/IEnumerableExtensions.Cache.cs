@@ -23,8 +23,28 @@ public static partial class IEnumerableExtensions
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     /// <remarks>
+    /// <para>
     /// This method uses deferred execution. The caching begins only when the resulting sequence is enumerated. If the
     /// source is already a collection or an existing cached sequence, no additional wrapping is performed.
+    /// </para>
+    /// <para>
+    /// <b>Source-enumerator lifetime.</b> The wrapper holds the source's enumerator open from the first enumeration
+    /// until the source is fully consumed. Although the wrapper implements <see cref="IDisposable" />, that surface is
+    /// not reachable through the returned <see cref="IEnumerable{T}" /> — disposing an individual enumerator does not
+    /// release the source. A partially consumed cache that is then abandoned therefore pins the source enumerator (and
+    /// whatever it holds) until the wrapper is garbage collected, unless the caller casts the returned sequence to
+    /// <see cref="IDisposable" /> and disposes it explicitly.
+    /// </para>
+    /// <para>
+    /// <b>Initialization faults.</b> If the source's <see cref="IEnumerable{T}.GetEnumerator" /> throws, the captured
+    /// exception poisons the cache: it is rethrown for every later enumeration attempt rather than retrying the
+    /// source. Disposing the wrapper (via the <see cref="IDisposable" /> cast) clears the poisoned state.
+    /// </para>
+    /// <para>
+    /// <b>Disposal re-arms.</b> Disposing the wrapper releases the source enumerator and cached elements and resets the
+    /// wrapper to its uninitialized state: live enumerators observe <see cref="ObjectDisposedException" />, and a
+    /// subsequent enumeration re-enumerates the source from scratch rather than failing.
+    /// </para>
     /// </remarks>
     public static IEnumerable<T> Cache<T>(this IEnumerable<T> source) => source switch
     {

@@ -66,6 +66,39 @@ public sealed class TrieSetTests
     }
 
     /// <summary>
+    /// Verifies that mutating the trie while a <see cref="Trie.KeysWithPrefix(string)" /> sequence is being
+    /// enumerated causes the next iteration step to throw <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void KeysWithPrefix_WhenMutatedDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var sut = new Trie(["car", "card", "care", "dog"]);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (string key in sut.KeysWithPrefix("car"))
+                sut.Add("carrot");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that removing a key while a <see cref="Trie.KeysWithPrefix(string)" /> sequence is being enumerated
+    /// causes the next iteration step to throw <see cref="InvalidOperationException" /> rather than silently yielding
+    /// stale results.
+    /// </summary>
+    [TestMethod]
+    public void KeysWithPrefix_WhenKeyRemovedDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var sut = new Trie(["car", "card", "care", "dog"]);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (string key in sut.KeysWithPrefix("car"))
+                sut.Remove("dog");
+        });
+    }
+
+    /// <summary>
     /// Verifies that adding a duplicate key returns <see langword="false" /> and leaves the count unchanged.
     /// </summary>
     [TestMethod]
@@ -184,6 +217,23 @@ public sealed class TrieSetTests
     }
 
     /// <summary>
+    /// Verifies that enumeration yields the keys in exactly the order produced by the internal snapshot walk,
+    /// pinning the enumeration order of <see cref="Trie.GetEnumerator" />.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenIterated_ShouldMatchSnapshotWalkOrder()
+    {
+        var sut = new Trie(["", "car", "card", "care", "cat", "do", "dog", "done"]);
+
+        string[] expected = sut.ToArrayInternal();
+        var actual = new List<string>();
+        foreach (string key in sut)
+            actual.Add(key);
+
+        CollectionAssert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
     /// Verifies that mutating the trie during enumeration throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
@@ -229,5 +279,69 @@ public sealed class TrieSetTests
         Assert.AreEqual(n, sut.Count);
         Assert.IsTrue(sut.Contains("key-019999"));
         Assert.IsTrue(sut.StartsWith("key-01"));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="ReadOnlySpan{Char}" /> <see cref="Trie.Add(ReadOnlySpan{char})" /> overload adds a
+    /// new key and reports the insertion, mirroring the string overload.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenSpanKeyIsNew_ShouldAddAndReturnTrue()
+    {
+        var sut = new Trie();
+
+        bool added = sut.Add("team".AsSpan());
+
+        Assert.IsTrue(added);
+        Assert.AreEqual(1, sut.Count);
+        Assert.IsTrue(sut.Contains("team"));
+    }
+
+    /// <summary>
+    /// Verifies that the span <see cref="Trie.Add(ReadOnlySpan{char})" /> overload returns <see langword="false" />
+    /// for a duplicate key without changing the count.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenSpanKeyDuplicate_ShouldReturnFalse()
+    {
+        var sut = new Trie();
+        sut.Add("team");
+
+        bool added = sut.Add("team".AsSpan());
+
+        Assert.IsFalse(added);
+        Assert.AreEqual(1, sut.Count);
+    }
+
+    /// <summary>
+    /// Verifies that the span <see cref="Trie.Remove(ReadOnlySpan{char})" /> overload removes a present key and
+    /// reports success, mirroring the string overload.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenSpanKeyPresent_ShouldRemoveAndReturnTrue()
+    {
+        var sut = new Trie(["tea", "team"]);
+
+        bool removed = sut.Remove("tea".AsSpan());
+
+        Assert.IsTrue(removed);
+        Assert.IsFalse(sut.Contains("tea"));
+        Assert.IsTrue(sut.Contains("team"));
+        Assert.AreEqual(1, sut.Count);
+    }
+
+    /// <summary>
+    /// Verifies that the span <see cref="Trie.Remove(ReadOnlySpan{char})" /> overload returns <see langword="false" />
+    /// for an absent key.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenSpanKeyAbsent_ShouldReturnFalse()
+    {
+        var sut = new Trie(["tea"]);
+
+        bool removed = sut.Remove("dog".AsSpan());
+
+        Assert.IsFalse(removed);
+        Assert.AreEqual(1, sut.Count);
     }
 }

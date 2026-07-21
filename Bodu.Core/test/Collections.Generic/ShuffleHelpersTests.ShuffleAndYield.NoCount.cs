@@ -102,4 +102,39 @@ public partial class ShuffleHelpersTests
 
 #endif
 
+    /// <summary>
+    /// Verifies that the count-less enumerable overload enumerates its source exactly once, so one-shot sequences and
+    /// sequences with side effects are safe to shuffle.
+    /// </summary>
+    [TestMethod]
+    public void ShuffleAndYield_WhenSourceIsOneShot_ShouldEnumerateSourceExactlyOnce()
+    {
+        int enumerations = 0;
+        IEnumerable<int> Source()
+        {
+            enumerations++;
+            for (int i = 1; i <= 5; i++)
+                yield return i;
+        }
+
+        int[] actual = ShuffleHelpers.ShuffleAndYield(Source(), new XorShiftRandom(11)).ToArray();
+
+        Assert.AreEqual(1, enumerations);
+        CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 4, 5 }, actual);
+    }
+
+    /// <summary>
+    /// Verifies that re-enumerating the sequence returned by the counted enumerable overload yields the requested
+    /// number of elements again, rather than an empty sequence from a consumed countdown.
+    /// </summary>
+    [TestMethod]
+    public void ShuffleAndYield_WhenResultEnumeratedTwice_ShouldYieldCountElementsBothTimes()
+    {
+        int[] source = Enumerable.Range(1, 6).ToArray();
+        IEnumerable<int> result = ShuffleHelpers.ShuffleAndYield(source.AsEnumerable(), new XorShiftRandom(13), 4);
+
+        Assert.HasCount(4, result.ToArray());
+        Assert.HasCount(4, result.ToArray());
+    }
+
 }

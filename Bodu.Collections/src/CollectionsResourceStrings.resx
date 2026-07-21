@@ -138,11 +138,17 @@
   <data name="Arg_Invalid_CountMinSketchImportVersion" xml:space="preserve">
     <value>The CountMinSketch export format version {0} is not supported.</value>
   </data>
+  <data name="Arg_Invalid_DijkstraNegativeWeight" xml:space="preserve">
+    <value>Dijkstra's algorithm requires non-negative edge weights, but an edge with weight {0} was encountered.</value>
+  </data>
   <data name="Arg_Invalid_DuplicateBiDictionaryValue" xml:space="preserve">
     <value>The bidirectional dictionary cannot contain duplicate values; the value is already bound to a different key.</value>
   </data>
   <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain duplicate keys.</value>
+  </data>
+  <data name="Arg_Invalid_DuplicateElement" xml:space="preserve">
+    <value>An element with the key '{0}' already exists in the queue.</value>
   </data>
   <data name="Arg_Invalid_DuplicateSetValue" xml:space="preserve">
     <value>The set already contains the specified value.</value>
@@ -186,6 +192,9 @@
   <data name="Arg_Invalid_VertexNotInGraph" xml:space="preserve">
     <value>The specified vertex does not exist in the graph.</value>
   </data>
+  <data name="Arg_OutOfRange_BloomFilterImportHashCount" xml:space="preserve">
+    <value>The imported hash count ({0}) exceeds the maximum supported value ({1}).</value>
+  </data>
   <data name="Arg_OutOfRange_BloomFilterTooLarge" xml:space="preserve">
     <value>The combination of expected items and false-positive rate requires more than {0} bits.</value>
   </data>
@@ -197,6 +206,9 @@
   </data>
   <data name="KeyNotFound_Dictionary" xml:space="preserve">
     <value>The given key '{0}' was not present in the dictionary.</value>
+  </data>
+  <data name="KeyNotFound_Element" xml:space="preserve">
+    <value>The element '{0}' was not found in the queue.</value>
   </data>
   <data name="KeyNotFound_Range" xml:space="preserve">
     <value>The specified key was not contained in any range.</value>

@@ -97,4 +97,44 @@ public partial class CircularBufferTests
         CollectionAssert.AreEqual(new[] { "A", "B" }, evictedItems);
     }
 
+    /// <summary>
+    /// Verifies that a handler that attempts to mutate the buffer from within
+    /// <see cref="CircularBuffer{T}.ItemEvicting" /> fails fast with <see cref="InvalidOperationException" /> instead
+    /// of corrupting the in-flight eviction's state.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicting_WhenHandlerMutatesBuffer_ShouldThrowExactly()
+    {
+        var buffer = new CircularBuffer<int>(2, allowOverwrite: true);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.ItemEvicting += _ => buffer.Enqueue(99);
+
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            buffer.Enqueue(3);
+        });
+
+        Assert.AreEqual(2, buffer.Count, "A vetoed eviction must leave the buffer unchanged.");
+    }
+
+    /// <summary>
+    /// Verifies that a handler that attempts to mutate the buffer from within
+    /// <see cref="CircularBuffer{T}.ItemEvicted" /> fails fast with <see cref="InvalidOperationException" /> instead
+    /// of corrupting the just-committed eviction's state.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicted_WhenHandlerMutatesBuffer_ShouldThrowExactly()
+    {
+        var buffer = new CircularBuffer<int>(2, allowOverwrite: true);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.ItemEvicted += _ => _ = buffer.Dequeue();
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            buffer.Enqueue(3);
+        });
+    }
+
 }

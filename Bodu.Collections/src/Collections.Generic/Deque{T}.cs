@@ -459,6 +459,10 @@ public sealed class Deque<T>
     /// </exception>
     private bool TryAddInternal(T item, bool atHead, bool throwIfFull)
     {
+        // Guard at the funnel entry: the eviction path below re-raises the events before touching any guarded
+        // primitive, so a handler re-entering here would otherwise recurse without limit.
+        ThrowIfEvicting();
+
         if (Count == Capacity)
         {
             if (AllowGrow)
@@ -468,9 +472,18 @@ public sealed class Deque<T>
             else if (_overflowPolicy == DequeOverflowPolicy.EvictOpposite)
             {
                 // Capture the opposite-end victim before raising ItemEvicting so a handler exception vetoes the
-                // eviction in place — nothing is removed, the new element is not stored.
+                // eviction in place — nothing is removed, the new element is not stored. Dispatch is latched so a
+                // handler attempting to mutate the deque fails fast instead of corrupting mid-eviction state.
                 T evicted = atHead ? PeekTail() : PeekHead();
-                ItemEvicting?.Invoke(evicted);
+                try
+                {
+                    SetEvictionDispatch(true);
+                    ItemEvicting?.Invoke(evicted);
+                }
+                finally
+                {
+                    SetEvictionDispatch(false);
+                }
 
                 if (atHead)
                 {
@@ -483,7 +496,16 @@ public sealed class Deque<T>
                     AddTail(item);
                 }
 
-                ItemEvicted?.Invoke(evicted);
+                try
+                {
+                    SetEvictionDispatch(true);
+                    ItemEvicted?.Invoke(evicted);
+                }
+                finally
+                {
+                    SetEvictionDispatch(false);
+                }
+
                 return true;
             }
             else
@@ -607,6 +629,9 @@ public sealed class Deque<T>
     /// <param name="capacity">The minimum capacity required. Must be non-negative.</param>
     /// <returns>The new capacity of the backing array (which may exceed <paramref name="capacity" />).</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is negative.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="capacity" /> exceeds <see cref="Array.MaxLength" /> and therefore cannot be satisfied.
+    /// </exception>
     /// <remarks>
     /// This method ignores <see cref="AllowGrow" /> — it is the explicit pre-grow hatch even on fixed-capacity deques.
     /// Use it to reserve space ahead of a known burst of inserts.
@@ -626,8 +651,23 @@ public sealed class Deque<T>
     /// is at least double the current capacity (with a small floor) and is capped at <see cref="Array.MaxLength" />.
     /// </summary>
     /// <param name="minCapacity">The minimum capacity that the new backing array must satisfy.</param>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="minCapacity" /> exceeds <see cref="Array.MaxLength" />, so no backing array can satisfy the
+    /// request.
+    /// </exception>
+    /// <remarks>
+    /// The saturation guard matters at the extreme boundary: when <see cref="RingBackedCollection{T}.Count" /> equals
+    /// <see cref="Array.MaxLength" />, an add would request <c>Count + 1</c>, the clamp would leave the capacity
+    /// unchanged, and control would fall through to a write into a full buffer. Throwing here keeps that unreachable
+    /// state an explicit failure instead of silent corruption.
+    /// </remarks>
     private void Grow(int minCapacity)
     {
+        // minCapacity beyond Array.MaxLength cannot be satisfied by any backing array — fail explicitly rather than
+        // clamping and falling through to an add against a still-full buffer.
+        if ((uint)minCapacity > (uint)Array.MaxLength)
+            throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CapacityExhausted);
+
         int doubled = Math.Max(MinGrowCapacity, Capacity * 2);
         int newCapacity = Math.Max(minCapacity, doubled);
 

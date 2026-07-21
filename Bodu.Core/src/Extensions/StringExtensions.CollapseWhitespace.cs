@@ -34,9 +34,30 @@ public static partial class StringExtensions
 
         if (value.Length == 0) return value;
 
-        var builder = new StringBuilder(value.Length);
+        // Lazy first-mismatch pattern (as RemoveWhitespace and NormalizeLineEndings use): scan without allocating
+        // until the first character that must change — a run of two or more white-space characters or a
+        // non-space white-space character — so the unchanged path is a true zero-allocation return.
+        int firstChange = -1;
         bool prevWasWhite = false;
         for (int i = 0; i < value.Length; i++)
+        {
+            char c = value[i];
+            bool isWhite = char.IsWhiteSpace(c);
+            if (isWhite && (prevWasWhite || c != ' '))
+            {
+                firstChange = i;
+                break;
+            }
+
+            prevWasWhite = isWhite;
+        }
+
+        if (firstChange < 0) return value;
+
+        var builder = new StringBuilder(value.Length);
+        builder.Append(value, 0, firstChange);
+        prevWasWhite = firstChange > 0 && char.IsWhiteSpace(value[firstChange - 1]);
+        for (int i = firstChange; i < value.Length; i++)
         {
             char c = value[i];
             if (char.IsWhiteSpace(c))
@@ -51,7 +72,6 @@ public static partial class StringExtensions
             }
         }
 
-        string result = builder.ToString();
-        return string.Equals(result, value, StringComparison.Ordinal) ? value : result;
+        return builder.ToString();
     }
 }

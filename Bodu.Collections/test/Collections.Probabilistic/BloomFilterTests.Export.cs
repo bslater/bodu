@@ -189,6 +189,45 @@ public partial class BloomFilterTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="BloomFilter{T}.Import" /> throws <see cref="ArgumentOutOfRangeException" /> when the
+    /// header claims a hash count beyond the maximum the sizing constructor can produce, so a hostile snapshot cannot
+    /// inflate the per-operation probe cost.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1076)]
+    [DataRow(1_000_000)]
+    [DataRow(int.MaxValue)]
+    public void Import_WhenHashCountFieldIsAbsurd_ShouldThrowArgumentOutOfRangeException(int hostileHashCount)
+    {
+        var source = new BloomFilter<int>(100, 0.01);
+        var exported = new byte[source.GetExportByteCount()];
+        source.Export(exported);
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(exported.AsSpan(5, 4), hostileHashCount);
+
+        ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(() =>
+        {
+            _ = BloomFilter<int>.Import(exported);
+        }, "source");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BloomFilter{T}.Import" /> accepts a snapshot whose hash count equals the documented
+    /// maximum of 1075 (the value implied by the smallest representable false-positive rate).
+    /// </summary>
+    [TestMethod]
+    public void Import_WhenHashCountFieldIsAtMaximum_ShouldSucceed()
+    {
+        var source = new BloomFilter<int>(100, 0.01);
+        var exported = new byte[source.GetExportByteCount()];
+        source.Export(exported);
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(exported.AsSpan(5, 4), 1075);
+
+        var imported = BloomFilter<int>.Import(exported);
+
+        Assert.AreEqual(1075, imported.HashCount);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="BloomFilter{T}.Import" /> throws <see cref="ArgumentException" /> when the header
     /// describes an invalid filter — a corrupted bit count of zero.
     /// </summary>

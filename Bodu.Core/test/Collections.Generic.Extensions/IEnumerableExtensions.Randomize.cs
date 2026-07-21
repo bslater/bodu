@@ -19,40 +19,6 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
         [RandomizationMode.LazyShuffle],
     ];
 
-    // =========================================================================
-    // Default overload — Randomize<T>(IEnumerable<T>)
-    // =========================================================================
-
-    /// <summary>
-    /// Verifies that the parameterless <c>Randomize</c> overload returns a permutation containing exactly the same
-    /// elements as the source sequence.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenCalled_ForDefaultOverload_ShouldReturnPermutationOfSource()
-    {
-        int[] source = Enumerable.Range(1, 20).ToArray();
-
-        int[] result = source.Randomize().ToArray();
-
-        CollectionAssert.AreEquivalent(source, result);
-    }
-
-    /// <summary>
-    /// Verifies that <c>Randomize</c> with <see cref="RandomizationMode.BufferAll" /> and a count that exceeds the
-    /// number of available elements throws <see cref="ArgumentException" /> via the <c>ThrowIfGreaterThanOther</c>
-    /// validation inside the buffered implementation.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenCountExceedsSourceLength_ForBufferAllMode_ShouldThrowExactly()
-    {
-        int[] source = [1, 2, 3];
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: 10).ToArray();
-        });
-    }
-
     /// <summary>
     /// Verifies that <see cref="RandomizationMode.ReservoirSample" /> throws <see cref="ArgumentOutOfRangeException" />
     /// when <c>count</c> exceeds the number of available elements, confirming the reservoir-fill contract.
@@ -78,7 +44,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: -1);
+            _ = source.Randomize(RandomizationMode.StreamWindowed, CreateSeededRng(), count: -1);
         });
     }
 
@@ -103,36 +69,6 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     // =========================================================================
     // Explicit overload — Randomize<T>(IEnumerable<T>, RandomizationMode, IRandomGenerator, int?)
     // =========================================================================
-
-    /// <summary>
-    /// Verifies that <c>Randomize</c> with <see cref="RandomizationMode.BufferAll" /> and no count returns a
-    /// permutation containing all source elements.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenModeIsBufferAllAndCountIsNull_ShouldReturnPermutationOfSource()
-    {
-        int[] source = Enumerable.Range(1, 10).ToArray();
-
-        int[] result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng()).ToArray();
-
-        CollectionAssert.AreEquivalent(source, result);
-    }
-
-    /// <summary>
-    /// Verifies that <c>Randomize</c> with <see cref="RandomizationMode.BufferAll" /> and a count returns exactly that
-    /// number of elements drawn from the source.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenModeIsBufferAllAndCountIsPositive_ShouldReturnRequestedNumberOfElements()
-    {
-        int[] source = Enumerable.Range(1, 10).ToArray();
-
-        int[] result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: 4).ToArray();
-
-        Assert.HasCount(4, result);
-        foreach (int value in result)
-            CollectionAssert.Contains(source, value);
-    }
 
     /// <summary>
     /// Verifies that <c>Randomize</c> in <see cref="RandomizationMode.StreamWindowed" /> mode defers execution — the
@@ -219,7 +155,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = source.Randomize(RandomizationMode.BufferAll, rng!);
+            _ = source.Randomize(RandomizationMode.StreamWindowed, rng!);
         });
     }
 
@@ -236,7 +172,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = source.Randomize(RandomizationMode.BufferAll, null!);
+            _ = source.Randomize(RandomizationMode.StreamWindowed, null!);
         });
 
         Assert.IsFalse(wasEnumerated, "Eager validation must run before the source is enumerated.");
@@ -249,21 +185,6 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that the parameterless <c>Randomize</c> overload throws <see cref="ArgumentNullException" /> when the
-    /// source is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenSourceIsNull_ForDefaultOverload_ShouldThrowExactly()
-    {
-        IEnumerable<int>? source = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source!.Randomize().ToArray();
-        });
-    }
-
-    /// <summary>
     /// Verifies that <c>Randomize</c> throws <see cref="ArgumentNullException" /> eagerly when the source is null.
     /// </summary>
     [TestMethod]
@@ -273,7 +194,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = source!.Randomize(RandomizationMode.BufferAll, CreateSeededRng());
+            _ = source!.Randomize(RandomizationMode.StreamWindowed, CreateSeededRng());
         });
     }
     /// <summary>

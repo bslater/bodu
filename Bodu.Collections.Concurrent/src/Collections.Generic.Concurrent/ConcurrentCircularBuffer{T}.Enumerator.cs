@@ -8,8 +8,7 @@ using System.Collections;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
-public sealed partial class ConcurrentCircularBuffer<T> :
-    System.Collections.Generic.IReadOnlyCollection<T>
+public sealed partial class ConcurrentCircularBuffer<T>
 {
     /// <summary>
     /// Provides a snapshot-based enumerator for <see cref="ConcurrentCircularBuffer{T}" /> that iterates over a stable

@@ -8,7 +8,7 @@ uid: Bodu.Collections.Generic.Graphs
 
 **Bodu.Collections.Generic.Graphs** is a small, self-contained graph toolkit in the `Bodu.Collections` package (which depends on `Bodu.Core`): a vertex-and-edge container, a static catalogue of classic graph algorithms, and two union-find (disjoint-set) structures. It is built for in-memory adjacency-list graphs of arbitrary vertex types — integers, strings, or your own value/reference types — with optional non-negative edge weights.
 
-The container, <xref:Bodu.Collections.Generic.Graphs.Graph`1>, stores an adjacency map and is fixed as either directed or undirected at construction via <xref:Bodu.Collections.Generic.Graphs.GraphKind>. The algorithms in <xref:Bodu.Collections.Generic.Graphs.GraphAlgorithms> — breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components — are decoupled from the container: they accept the read-only interfaces <xref:Bodu.Collections.Generic.Graphs.IReadOnlyGraph`1> and <xref:Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph`2>, so they run over any conforming representation. The algorithms reuse the library's own primitives — <xref:Bodu.Collections.Generic.Deque`1> for breadth-first frontiers and Kahn's ready queue, and <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> for Dijkstra relaxation — and evaluate iteratively so they do not overflow the stack on deep graphs.
+The container, <xref:Bodu.Collections.Generic.Graphs.Graph`1>, stores an adjacency map and is fixed as either directed or undirected at construction via <xref:Bodu.Collections.Generic.Graphs.GraphKind>. The algorithms in <xref:Bodu.Collections.Generic.Graphs.GraphAlgorithms> — breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components — are decoupled from the container: they accept the read-only interfaces <xref:Bodu.Collections.Generic.Graphs.IReadOnlyGraph`1> and <xref:Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph`1>, so they run over any conforming representation. The algorithms reuse the library's own primitives — <xref:Bodu.Collections.Generic.Deque`1> for breadth-first frontiers and Kahn's ready queue, and <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> for Dijkstra relaxation — and evaluate iteratively so they do not overflow the stack on deep graphs.
 
 ## Static documentation
 
@@ -19,13 +19,13 @@ The container, <xref:Bodu.Collections.Generic.Graphs.Graph`1>, stores an adjacen
 
 **Graph container**
 
-- <xref:Bodu.Collections.Generic.Graphs.Graph`1> — the adjacency-list graph. Construct with a <xref:Bodu.Collections.Generic.Graphs.GraphKind> and an optional vertex comparer; mutate with `AddVertex` / `RemoveVertex` / `AddEdge` (unweighted or weighted) / `TryAddEdge` / `RemoveEdge` / `Clear`; query with `Vertices`, `Neighbors`, `WeightedNeighbors`, `ContainsVertex`, `ContainsEdge`, `TryGetEdgeWeight`, `Degree`, `VertexCount`, `EdgeCount`, and `IsDirected`. Implements <xref:Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph`2> with `double` weights.
+- <xref:Bodu.Collections.Generic.Graphs.Graph`1> — the adjacency-list graph. Construct with a <xref:Bodu.Collections.Generic.Graphs.GraphKind> and an optional vertex comparer; mutate with `AddVertex` / `RemoveVertex` / `AddEdge` (unweighted or weighted) / `TryAddEdge` / `RemoveEdge` / `Clear`; query with `Vertices`, `Neighbors`, `WeightedNeighbors`, `ContainsVertex`, `ContainsEdge`, `TryGetEdgeWeight`, `Degree`, `VertexCount`, `EdgeCount`, and `IsDirected`. Implements <xref:Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph`1> (`double` weights).
 - <xref:Bodu.Collections.Generic.Graphs.GraphKind> — `Undirected` (the default; an edge makes each vertex a neighbor of the other) or `Directed` (an edge does not imply its reverse).
 
 **Read-only views (algorithm inputs)**
 
 - <xref:Bodu.Collections.Generic.Graphs.IReadOnlyGraph`1> — the unweighted topology surface (`IsDirected`, `VertexCount`, `EdgeCount`, `Comparer`, `Vertices`, `ContainsVertex`, `Neighbors`, `Degree`) that traversal, topological sort, and connectivity accept.
-- <xref:Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph`2> — extends the above with `WeightedNeighbors`, `ContainsEdge`, and `TryGetEdgeWeight`; the input to the shortest-path algorithms.
+- <xref:Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph`1> — extends the above with `WeightedNeighbors`, `ContainsEdge`, and `TryGetEdgeWeight`; the input to the shortest-path algorithms.
 
 **Algorithms**
 
@@ -34,8 +34,7 @@ The container, <xref:Bodu.Collections.Generic.Graphs.Graph`1>, stores an adjacen
 
 **Union-find (disjoint set)**
 
-- <xref:Bodu.Collections.Generic.Graphs.DisjointSet> — a fixed-size, integer-indexed union-find over the range `[0, count)`: `Union`, `Find`, `AreConnected`, `SizeOf`, `Reset`, `Count`, `SetCount`. Path-halving compression with union by size, amortized near-constant per operation.
-- <xref:Bodu.Collections.Generic.Graphs.DisjointSet`1> — the element-keyed equivalent for arbitrary non-nullable keys: `MakeSet` / `Add`, `Contains`, `Union`, `Find` / `TryFind`, `AreConnected`, `SizeOf`, `Clear`, with an optional <xref:System.Collections.Generic.IEqualityComparer`1>.
+- <xref:Bodu.Collections.Generic.Graphs.DisjointSet`1> — an element-keyed union-find for arbitrary non-nullable keys: `MakeSet` / `Add`, `Contains`, `Union`, `Find` / `TryFind`, `AreConnected`, `SizeOf`, `Clear`, with an optional <xref:System.Collections.Generic.IEqualityComparer`1>. Path-halving compression with union by size, amortized near-constant per operation.
 
 ## Example
 
@@ -61,7 +60,7 @@ ShortestPathResult<string> result = GraphAlgorithms.TryShortestPath(graph, "A", 
 - **Directedness is fixed at construction.** Choose <xref:Bodu.Collections.Generic.Graphs.GraphKind> when you create the graph. In an undirected graph each edge is stored symmetrically, so one `AddEdge` makes both vertices mutual neighbors and `EdgeCount` counts the connection once.
 - **Weights are finite and non-negative.** Edges default to weight `1.0`; `AddEdge` and `TryAddEdge` reject `NaN`, infinity, and negative weights with <xref:System.ArgumentOutOfRangeException>. Algorithms that ignore weight treat the graph as unweighted. Dijkstra requires non-negative weights — there is no Bellman-Ford for negative edges.
 - **Vertex identity follows the comparer.** Pass an <xref:System.Collections.Generic.IEqualityComparer`1> at construction (for example, `StringComparer.OrdinalIgnoreCase`) to control how vertices are deduplicated; the same comparer flows into the algorithms' internal sets.
-- **Algorithms take the interfaces, not the concrete graph.** Because they accept <xref:Bodu.Collections.Generic.Graphs.IReadOnlyGraph`1> / <xref:Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph`2>, you can run them over a custom graph representation as well as the built-in <xref:Bodu.Collections.Generic.Graphs.Graph`1>.
+- **Algorithms take the interfaces, not the concrete graph.** Because they accept <xref:Bodu.Collections.Generic.Graphs.IReadOnlyGraph`1> / <xref:Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph`1>, you can run them over a custom graph representation as well as the built-in <xref:Bodu.Collections.Generic.Graphs.Graph`1>.
 - **Topological sort is directed-only.** `TopologicalSort` / `TryTopologicalSort` throw <xref:System.InvalidOperationException> on an undirected graph; `TopologicalSort` additionally throws on a cycle, while `TryTopologicalSort` returns `false` and an empty list.
 - **Connected components are weakly connected.** `ConnectedComponents` treats every edge as undirected and partitions with a <xref:Bodu.Collections.Generic.Graphs.DisjointSet`1>; for a directed graph the result is the weakly connected components.
 - **Not thread-safe.** A <xref:Bodu.Collections.Generic.Graphs.Graph`1> is not safe for concurrent mutation; coordinate writes externally.

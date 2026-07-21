@@ -307,10 +307,15 @@ public sealed class CountMinSketch<T>
 
         ProbabilisticHashing.DeriveHashPair(item, _comparer, out var h1, out var h2);
 
+        // Incremental double hashing: g wraps mod 2^64 exactly as h1 + i·h2 does, so the probe sequence is
+        // bit-identical to the multiplicative form (Export/Import compatibility) without a per-probe multiply.
+        // The modulo must stay 64-bit: reducing h1/h2 first would lose the 2^64 wrap and change the sequence.
+        var g = h1;
         for (var i = 0; i < _depth; i++)
         {
-            var cell = (i * _width) + (int)((h1 + ((ulong)i * h2)) % (ulong)_width);
+            var cell = (i * _width) + (int)(g % (ulong)_width);
             _cells[cell] = checked(_cells[cell] + count);
+            g += h2;
         }
 
         _totalCount = checked(_totalCount + count);
@@ -346,11 +351,14 @@ public sealed class CountMinSketch<T>
 
         ProbabilisticHashing.DeriveHashPair(item, _comparer, out var h1, out var h2);
 
+        // Incremental double hashing; see Add(T, long) for why the sequence matches the multiplicative form exactly.
+        var g = h1;
         var estimate = long.MaxValue;
         for (var i = 0; i < _depth; i++)
         {
-            var cell = (i * _width) + (int)((h1 + ((ulong)i * h2)) % (ulong)_width);
+            var cell = (i * _width) + (int)(g % (ulong)_width);
             estimate = Math.Min(estimate, _cells[cell]);
+            g += h2;
         }
 
         return estimate;
@@ -401,6 +409,12 @@ public sealed class CountMinSketch<T>
     /// <para>
     /// Cell additions are checked; when an <see cref="OverflowException" /> is thrown mid-merge, cells merged before
     /// the failing one retain the added counts and the sketch may subsequently overestimate more than usual.
+    /// </para>
+    /// <para>
+    /// Comparer identity is decided by <see cref="object.Equals(object)" /> (after a reference check). Two distinct
+    /// instances of a custom comparer type that does not override <see cref="object.Equals(object)" /> compare unequal
+    /// even when behaviourally identical, and the merge is rejected. Share a single comparer instance between sketches
+    /// that will be merged, or override <c>Equals</c> (and <c>GetHashCode</c>) on the comparer type.
     /// </para>
     /// </remarks>
     public void MergeWith(CountMinSketch<T> other)

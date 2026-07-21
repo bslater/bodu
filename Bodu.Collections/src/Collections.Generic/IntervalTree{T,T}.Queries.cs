@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic;
 
 public sealed partial class IntervalTree<TKey, TValue>
@@ -123,27 +125,12 @@ public sealed partial class IntervalTree<TKey, TValue>
     /// <returns>
     /// <see langword="true" /> when an overlapping interval exists; otherwise, <see langword="false" />.
     /// </returns>
-    private bool IntersectsCore(TKey low, TKey high)
-    {
-        Node? current = _root;
-        while (current != null)
-        {
-            if (_comparer.Compare(current.Low, high) <= 0 && _comparer.Compare(current.High, low) >= 0)
-                return true;
-
-            // If the left subtree's Max reaches the window it is guaranteed to hold any existing overlap on this
-            // path; otherwise no left descendant can match and the search continues right.
-            current = current.Left != null && _comparer.Compare(current.Left.Max, low) >= 0
-                ? current.Left
-                : current.Right;
-        }
-
-        return false;
-    }
+    private bool IntersectsCore(TKey low, TKey high) =>
+        IntervalTreeCore.Intersects(_root, low, high, _comparer);
 
     /// <summary>
-    /// Iterates the entries overlapping [<paramref name="low" />, <paramref name="high" />] via a pruned in-order walk
-    /// with fail-fast version checking.
+    /// Iterates the entries overlapping [<paramref name="low" />, <paramref name="high" />] via a pruned parent-pointer
+    /// in-order walk with fail-fast version checking.
     /// </summary>
     /// <param name="low">The inclusive lower edge of the window.</param>
     /// <param name="high">The inclusive upper edge of the window.</param>
@@ -153,42 +140,44 @@ public sealed partial class IntervalTree<TKey, TValue>
     private IEnumerable<(TKey Low, TKey High, TValue Value)> EnumerateOverlaps(TKey low, TKey high)
     {
         int version = _version;
-        var stack = new Stack<Node>();
-        Node? current = _root;
 
-        while (current != null || stack.Count > 0)
+        for (Node? node = _root == null ? null : PrunedMinimum(_root, low); node != null; node = PrunedSuccessor(node, low))
         {
-            if (current != null)
-            {
-                stack.Push(current);
-
-                // Descend left only while the left subtree's Max can still reach the window's low edge.
-                current = current.Left != null && _comparer.Compare(current.Left.Max, low) >= 0
-                    ? current.Left
-                    : null;
-                continue;
-            }
-
-            Node node = stack.Pop();
-
             // In-order lows are non-decreasing, so once a node starts past the window nothing later can overlap.
             if (_comparer.Compare(node.Low, high) > 0)
                 yield break;
 
             if (_comparer.Compare(node.High, low) >= 0)
             {
-                for (int index = 0; index < node.Values.Count; index++)
+                for (int index = 0; index < node.ValueCount; index++)
                 {
-                    yield return (node.Low, node.High, node.Values[index]);
+                    yield return (node.Low, node.High, node.GetValueAt(index));
 
                     if (version != _version)
                         throw new InvalidOperationException(CollectionsResourceStrings.Op_Invalid_CollectionModified);
                 }
             }
-
-            current = node.Right;
-            if (current != null && _comparer.Compare(current.Max, low) < 0)
-                current = null;
         }
     }
+
+    /// <summary>
+    /// Descends to the leftmost node of the subtree rooted at <paramref name="node" /> whose left branches can still
+    /// reach the window's low edge, skipping left subtrees whose <see cref="IntervalNode{TEndpoint, TNode}.Max" />
+    /// falls short.
+    /// </summary>
+    /// <param name="node">The subtree root. Must not be <see langword="null" />.</param>
+    /// <param name="low">The inclusive lower edge of the query window.</param>
+    /// <returns>The first node of the pruned in-order walk of the subtree.</returns>
+    private Node PrunedMinimum(Node node, TKey low) =>
+        IntervalTreeCore.PrunedMinimum(node, low, _comparer);
+
+    /// <summary>
+    /// Advances the pruned in-order walk from <paramref name="node" /> via parent pointers, entering a right subtree
+    /// only when its <see cref="IntervalNode{TEndpoint, TNode}.Max" /> can still reach the window's low edge.
+    /// </summary>
+    /// <param name="node">The current node. Must not be <see langword="null" />.</param>
+    /// <param name="low">The inclusive lower edge of the query window.</param>
+    /// <returns>The next node of the pruned walk, or <see langword="null" /> when the walk is exhausted.</returns>
+    private Node? PrunedSuccessor(Node node, TKey low) =>
+        IntervalTreeCore.PrunedSuccessor(node, low, _comparer);
 }

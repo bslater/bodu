@@ -127,6 +127,71 @@ public partial class NavigableSetTests
     }
 
     /// <summary>
+    /// Verifies that the six set-relation predicates report the reflexive answers when the argument is the set
+    /// itself.
+    /// </summary>
+    [TestMethod]
+    public void SetRelations_WhenOtherIsSelf_ShouldReportReflexiveRelations()
+    {
+        var sut = CreateSet(1, 2, 3);
+
+        Assert.IsTrue(sut.SetEquals(sut));
+        Assert.IsTrue(sut.IsSubsetOf(sut));
+        Assert.IsTrue(sut.IsSupersetOf(sut));
+        Assert.IsFalse(sut.IsProperSubsetOf(sut));
+        Assert.IsFalse(sut.IsProperSupersetOf(sut));
+        Assert.IsTrue(sut.Overlaps(sut));
+    }
+
+    /// <summary>
+    /// Verifies that comparer-equal duplicates in the argument are ignored by the set-relation predicates, matching
+    /// <see cref="HashSet{T}" /> semantics.
+    /// </summary>
+    [TestMethod]
+    public void SetRelations_WhenOtherContainsDuplicates_ShouldIgnoreDuplicates()
+    {
+        var sut = CreateSet(1, 2, 3);
+
+        Assert.IsTrue(sut.SetEquals(new[] { 3, 1, 2, 2, 1, 3 }));
+        Assert.IsTrue(sut.IsSubsetOf(new[] { 1, 1, 2, 2, 3, 3 }));
+        Assert.IsFalse(sut.IsProperSubsetOf(new[] { 1, 1, 2, 2, 3, 3 }));
+        Assert.IsTrue(sut.IsProperSubsetOf(new[] { 1, 1, 2, 2, 3, 3, 4, 4 }));
+        Assert.IsTrue(sut.IsProperSupersetOf(new[] { 1, 1, 2, 2 }));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NavigableSet{T}.SymmetricExceptWith" /> toggles membership once per distinct element
+    /// of the argument, ignoring duplicates.
+    /// </summary>
+    [TestMethod]
+    public void SymmetricExceptWith_WhenOtherContainsDuplicates_ShouldToggleOncePerDistinctElement()
+    {
+        var sut = CreateSet(1, 2, 3);
+
+        sut.SymmetricExceptWith(new[] { 2, 2, 4, 4 });
+
+        CollectionAssert.AreEqual(new[] { 1, 3, 4 }, sut.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that the projection-based set operations reject an argument containing a <see langword="null" />
+    /// element with <see cref="ArgumentException" />, matching the bulk-load constructor's null policy.
+    /// </summary>
+    [TestMethod]
+    public void SetOperations_WhenOtherContainsNullElement_ShouldThrowArgumentException()
+    {
+        var sut = new NavigableSet<string>();
+        sut.Add("a");
+
+        Assert.ThrowsExactly<ArgumentException>(() => { _ = sut.SetEquals(new[] { "a", null! }); });
+        Assert.ThrowsExactly<ArgumentException>(() => { _ = sut.IsSubsetOf(new[] { "a", null! }); });
+        Assert.ThrowsExactly<ArgumentException>(() => { _ = sut.IsProperSubsetOf(new[] { "a", null! }); });
+        Assert.ThrowsExactly<ArgumentException>(() => { _ = sut.IsProperSupersetOf(new[] { "a", null! }); });
+        Assert.ThrowsExactly<ArgumentException>(() => { sut.IntersectWith(new[] { "a", null! }); });
+        Assert.ThrowsExactly<ArgumentException>(() => { sut.SymmetricExceptWith(new[] { "a", null! }); });
+    }
+
+    /// <summary>
     /// Verifies that the set algebra follows the receiver's comparer when the argument carries comparer-equal
     /// spellings.
     /// </summary>

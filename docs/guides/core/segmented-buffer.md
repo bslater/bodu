@@ -57,6 +57,8 @@ foreach (int value in buffer)
     Process(value);   // yields elements in insertion order
 ```
 
+The enumerator is fail-fast: modifying the buffer after enumeration begins — by `Add` or by assignment through the indexer — throws `InvalidOperationException` on the next iteration step.
+
 ## Worked example — buffer a stream once, read it many times
 
 A common shape: data arrives in chunks of unpredictable size, and the consumer needs both random access and a second full pass — without re-reading the source. Buffering into a `SegmentedBuffer<T>` pays no resize-copy as the total grows:
@@ -116,7 +118,7 @@ Ten appends into a `segmentSize: 4` buffer triggered exactly three segment alloc
 - If you know the final length up front, a pre-sized `List<T>` or array is simpler and equally fast.
 - If you need removal, insertion at arbitrary positions, search, or set semantics, choose a different type — `SegmentedBuffer<T>` only appends and overwrites by index.
 - For `ArrayPool<T>`-backed building of a single contiguous result (for example, to hand a `byte[]` to an API), prefer <xref:Bodu.Buffers.PooledBufferBuilder`1>.
-- For concurrent producers, add external synchronization — the type is not thread-safe, and enumeration does not observe elements added concurrently.
+- For concurrent producers, add external synchronization — the type is not thread-safe, and the fail-fast enumerator throws if elements are added while it is iterating.
 
 ## API summary
 
@@ -127,7 +129,7 @@ Ten appends into a `segmentSize: 4` buffer triggered exactly three segment alloc
 | `Add(T)` | Appends an element, allocating a new segment when the current one fills. |
 | `this[int]` | O(1) read / write of an element at an existing index. |
 | `Count` | The number of elements appended. |
-| `GetEnumerator()` | Enumerates elements in insertion order. |
+| `GetEnumerator()` | Enumerates elements in insertion order. Fail-fast: throws `InvalidOperationException` if the buffer is modified during enumeration. |
 
 ## See also
 

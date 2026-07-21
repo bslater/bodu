@@ -7,6 +7,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
+using Bodu.Collections.Generic.Internal;
+
 namespace Bodu.Collections.Generic.Concurrent;
 
 public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
@@ -37,14 +39,17 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// <summary>The eviction policy shared by every segment of the parent dictionary.</summary>
         private readonly EvictingDictionaryPolicy _policy;
 
-        /// <summary>Maps access frequency to the keys observed at that frequency, used by the least-frequently-used policy.</summary>
-        private readonly SortedDictionary<int, LinkedList<TKey>> _frequencyList = null!;
+        /// <summary>The shared eviction-policy engine that owns the store and policy tracking structures and implements candidate selection, touch re-linking, and frequency-bucket bookkeeping.</summary>
+        private readonly EvictionPolicyCore<TKey, TValue> _core;
 
-        /// <summary>Tracks key ordering, used by the FIFO, LRU, MRU, and SecondChance policies.</summary>
-        private readonly LinkedList<TKey> _order = null!;
+        /// <summary>Maps access frequency to the keys observed at that frequency, used by the least-frequently-used policy. Alias of the engine's structure for direct enumeration access.</summary>
+        private readonly SortedDictionary<int, LinkedList<TKey>> _frequencyList;
 
-        /// <summary>The backing store mapping each key to its cached value and bookkeeping metadata.</summary>
-        private readonly Dictionary<TKey, CacheItem> _store;
+        /// <summary>Tracks key ordering, used by the FIFO, LRU, MRU, and SecondChance policies. Alias of the engine's structure for direct enumeration access.</summary>
+        private readonly LinkedList<TKey> _order;
+
+        /// <summary>The backing store mapping each key to its cached value and bookkeeping metadata. Alias of the engine's store for direct lookup access.</summary>
+        private readonly Dictionary<TKey, EvictionEntry<TKey, TValue>> _store;
 
         /// <summary>Indicates whether the configured expiration kind is sliding. <see langword="false" /> when expiration is disabled or absolute.</summary>
         private readonly bool _slidingExpiration;
@@ -72,28 +77,17 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         {
             _capacity = capacity;
             _policy = policy;
-            _store = new Dictionary<TKey, CacheItem>(comparer);
 
             _timeProvider = expiration?.TimeProvider;
             _slidingExpiration = expiration?.Kind == EvictingDictionaryExpirationKind.Sliding;
             _defaultTtlTicks = expiration?.TimeToLive?.Ticks ?? 0L;
 
-            switch (policy)
-            {
-                case EvictingDictionaryPolicy.FirstInFirstOut:
-                case EvictingDictionaryPolicy.LeastRecentlyUsed:
-                case EvictingDictionaryPolicy.MostRecentlyUsed:
-                case EvictingDictionaryPolicy.SecondChance:
-                    _order = new LinkedList<TKey>();
-                    break;
-
-                case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                    _frequencyList = new SortedDictionary<int, LinkedList<TKey>>();
-                    break;
-
-                case EvictingDictionaryPolicy.RandomReplacement:
-                    break;
-            }
+            // The engine creates the tracking structures the policy requires; the aliases below give the
+            // snapshot and lookup paths direct field access to the same objects.
+            _core = new EvictionPolicyCore<TKey, TValue>(policy, comparer);
+            _store = _core.Store;
+            _order = _core.Order!;
+            _frequencyList = _core.FrequencyList!;
         }
 
         /// <summary>
@@ -127,7 +121,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// </param>
         internal void AddOrReplace(TKey key, TValue value, TimeSpan? ttlOverride, ref List<KeyValuePair<TKey, TValue>>? evicted)
         {
-            if (_store.TryGetValue(key, out CacheItem? existing))
+            if (_store.TryGetValue(key, out EvictionEntry<TKey, TValue>? existing))
             {
                 if (_timeProvider is not null && existing.ExpiresAtTicks <= GetNowTicks())
                 {
@@ -140,7 +134,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                 {
                     existing.Value = value;
                     SetExpiration(existing, ttlOverride);
-                    TouchItem(key, existing);
+                    _core.Touch(key, existing);
                     return;
                 }
             }
@@ -154,16 +148,10 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                     EvictOne(ref evicted);
             }
 
-            var item = new CacheItem(value);
+            var item = new EvictionEntry<TKey, TValue>(value);
             SetExpiration(item, ttlOverride);
 
-            if (_order is not null)
-                item.Node = _order.AddLast(key);
-
-            if (_policy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
-                AddToFrequencyList(item.Frequency, key);
-
-            _store[key] = item;
+            _core.AddNewEntry(key, item);
             PublishCount();
         }
 
@@ -201,10 +189,10 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// <returns><see langword="true" /> if a live entry exists; otherwise, <see langword="false" />.</returns>
         internal bool TryGet(TKey key, ref List<KeyValuePair<TKey, TValue>>? evicted, out TValue value)
         {
-            if (TryGetLiveItem(key, slide: true, ref evicted, out CacheItem? item))
+            if (TryGetLiveItem(key, slide: true, ref evicted, out EvictionEntry<TKey, TValue>? item))
             {
                 value = item.Value;
-                TouchItem(key, item);
+                _core.Touch(key, item);
                 return true;
             }
 
@@ -213,14 +201,15 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         }
 
         /// <summary>
-        /// Determines whether a live entry exists for the specified key, sliding the expiration deadline on a hit but
-        /// leaving policy metadata untouched. The caller must hold the stripe lock.
+        /// Determines whether a live entry exists for the specified key, leaving both the expiration deadline and the
+        /// capacity-policy metadata untouched — a genuine pure read. An expired entry it encounters is still lazily
+        /// removed and reported as absent. The caller must hold the stripe lock.
         /// </summary>
         /// <param name="key">The key to locate.</param>
         /// <param name="evicted">The eviction buffer that receives a lazily removed expired entry.</param>
         /// <returns><see langword="true" /> if a live entry exists; otherwise, <see langword="false" />.</returns>
         internal bool Contains(TKey key, ref List<KeyValuePair<TKey, TValue>>? evicted) =>
-            TryGetLiveItem(key, slide: true, ref evicted, out _);
+            TryGetLiveItem(key, slide: false, ref evicted, out _);
 
         /// <summary>
         /// Marks the specified key as recently accessed for the capacity policy without sliding the expiration
@@ -233,9 +222,9 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// </returns>
         internal bool Touch(TKey key, ref List<KeyValuePair<TKey, TValue>>? evicted)
         {
-            if (TryGetLiveItem(key, slide: false, ref evicted, out CacheItem? item))
+            if (TryGetLiveItem(key, slide: false, ref evicted, out EvictionEntry<TKey, TValue>? item))
             {
-                TouchItem(key, item);
+                _core.Touch(key, item);
                 return true;
             }
 
@@ -251,7 +240,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// <returns><see langword="true" /> if an entry was removed; otherwise, <see langword="false" />.</returns>
         internal bool TryRemove(TKey key, out TValue value)
         {
-            if (_store.TryGetValue(key, out CacheItem? item))
+            if (_store.TryGetValue(key, out EvictionEntry<TKey, TValue>? item))
             {
                 RemoveEntry(key, item);
                 value = item.Value;
@@ -259,6 +248,116 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
             }
 
             value = default!;
+            return false;
+        }
+
+        /// <summary>
+        /// Reads the value of the live entry for the specified key without counting a policy access or sliding the
+        /// expiration deadline, mirroring the pure-read semantics of <see cref="ContainsKey" />. The caller must hold
+        /// the stripe lock.
+        /// </summary>
+        /// <param name="key">The key to look up.</param>
+        /// <param name="evicted">The eviction buffer that receives a lazily removed expired entry.</param>
+        /// <param name="value">When this method returns <see langword="true" />, the live entry's value.</param>
+        /// <returns><see langword="true" /> if a live entry exists; otherwise, <see langword="false" />.</returns>
+        internal bool TryPeek(TKey key, ref List<KeyValuePair<TKey, TValue>>? evicted, out TValue value)
+        {
+            if (TryGetLiveItem(key, slide: false, ref evicted, out EvictionEntry<TKey, TValue>? item))
+            {
+                value = item.Value;
+                return true;
+            }
+
+            value = default!;
+            return false;
+        }
+
+        /// <summary>
+        /// Atomically replaces the value of the live entry for the specified key with <paramref name="newValue" />, but
+        /// only when its current value equals <paramref name="comparisonValue" /> under
+        /// <see cref="EqualityComparer{TValue}.Default" />. A successful update counts as a policy access and starts a
+        /// fresh expiration lease, matching the replace branch of <see cref="AddOrReplace" />. The caller must hold the
+        /// stripe lock.
+        /// </summary>
+        /// <param name="key">The key whose value to update.</param>
+        /// <param name="newValue">The value to store when the comparison succeeds.</param>
+        /// <param name="comparisonValue">The value the current entry must equal for the update to occur.</param>
+        /// <param name="evicted">The eviction buffer that receives a lazily removed expired entry.</param>
+        /// <returns>
+        /// <see langword="true" /> if a live entry existed and its value matched <paramref name="comparisonValue" />;
+        /// otherwise, <see langword="false" />.
+        /// </returns>
+        internal bool TryUpdate(TKey key, TValue newValue, TValue comparisonValue, ref List<KeyValuePair<TKey, TValue>>? evicted)
+        {
+            if (TryGetLiveItem(key, slide: false, ref evicted, out EvictionEntry<TKey, TValue>? item)
+                && EqualityComparer<TValue>.Default.Equals(item.Value, comparisonValue))
+            {
+                item.Value = newValue;
+                SetExpiration(item, null);
+                _core.Touch(key, item);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Atomically updates the value of the live entry for the specified key using
+        /// <paramref name="updateValueFactory" />, or adds a new entry from <paramref name="addValue" /> or
+        /// <paramref name="addValueFactory" /> when no live entry exists. Both factories run under the stripe lock so
+        /// each is invoked at most once. The caller must hold the stripe lock.
+        /// </summary>
+        /// <param name="key">The key of the element to add or update.</param>
+        /// <param name="addValue">
+        /// The value used when <paramref name="addValueFactory" /> is <see langword="null" /> and the key is absent.
+        /// </param>
+        /// <param name="addValueFactory">
+        /// The factory that produces the value to add when the key is absent, or <see langword="null" /> to use
+        /// <paramref name="addValue" />.
+        /// </param>
+        /// <param name="updateValueFactory">
+        /// The factory that produces the replacement value from the existing value when the key is present.
+        /// </param>
+        /// <param name="evicted">
+        /// The eviction buffer that receives entries removed by expiry or capacity pressure.
+        /// </param>
+        /// <returns>The new value stored for <paramref name="key" />.</returns>
+        internal TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue>? addValueFactory, Func<TKey, TValue, TValue> updateValueFactory, ref List<KeyValuePair<TKey, TValue>>? evicted)
+        {
+            if (TryGetLiveItem(key, slide: false, ref evicted, out EvictionEntry<TKey, TValue>? existing))
+            {
+                TValue updated = updateValueFactory(key, existing.Value);
+                existing.Value = updated;
+                SetExpiration(existing, null);
+                _core.Touch(key, existing);
+                return updated;
+            }
+
+            TValue added = addValueFactory is null ? addValue : addValueFactory(key);
+            AddOrReplace(key, added, null, ref evicted);
+            return added;
+        }
+
+        /// <summary>
+        /// Removes the entry for the specified key, but only when it is live and its value equals
+        /// <paramref name="value" /> under <see cref="EqualityComparer{TValue}.Default" />. The removal is not treated
+        /// as an eviction. The caller must hold the stripe lock.
+        /// </summary>
+        /// <param name="key">The key of the entry to remove.</param>
+        /// <param name="value">The value the live entry must equal for the removal to occur.</param>
+        /// <param name="evicted">The eviction buffer that receives a lazily removed expired entry.</param>
+        /// <returns>
+        /// <see langword="true" /> if a matching live entry was removed; otherwise, <see langword="false" />.
+        /// </returns>
+        internal bool TryRemovePair(TKey key, TValue value, ref List<KeyValuePair<TKey, TValue>>? evicted)
+        {
+            if (TryGetLiveItem(key, slide: false, ref evicted, out EvictionEntry<TKey, TValue>? item)
+                && EqualityComparer<TValue>.Default.Equals(item.Value, value))
+            {
+                RemoveEntry(key, item);
+                return true;
+            }
+
             return false;
         }
 
@@ -275,18 +374,18 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                 return 0;
 
             long nowTicks = GetNowTicks();
-            List<KeyValuePair<TKey, CacheItem>>? expired = null;
+            List<KeyValuePair<TKey, EvictionEntry<TKey, TValue>>>? expired = null;
 
-            foreach (KeyValuePair<TKey, CacheItem> pair in _store)
+            foreach (KeyValuePair<TKey, EvictionEntry<TKey, TValue>> pair in _store)
             {
                 if (pair.Value.ExpiresAtTicks <= nowTicks)
-                    (expired ??= new List<KeyValuePair<TKey, CacheItem>>()).Add(pair);
+                    (expired ??= new List<KeyValuePair<TKey, EvictionEntry<TKey, TValue>>>()).Add(pair);
             }
 
             if (expired is null)
                 return 0;
 
-            foreach (KeyValuePair<TKey, CacheItem> pair in expired)
+            foreach (KeyValuePair<TKey, EvictionEntry<TKey, TValue>> pair in expired)
             {
                 RemoveEntry(pair.Key, pair.Value);
                 (evicted ??= new List<KeyValuePair<TKey, TValue>>()).Add(new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value));
@@ -300,24 +399,30 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// </summary>
         internal void Clear()
         {
-            _store.Clear();
-            _order?.Clear();
-            _frequencyList?.Clear();
+            _core.Clear();
             PublishCount();
         }
 
         /// <summary>
-        /// Appends the segment's live entries to <paramref name="target" /> in policy order, filtering expired entries
-        /// against the supplied clock snapshot without removing them or sliding deadlines. The caller must hold the
-        /// stripe lock.
+        /// Appends a projection of the segment's live entries to <paramref name="target" /> in policy order, filtering
+        /// expired entries against the supplied clock snapshot without removing them or sliding deadlines. The caller
+        /// must hold the stripe lock.
         /// </summary>
-        /// <param name="target">The list receiving the entries.</param>
+        /// <typeparam name="TResult">The projected element type.</typeparam>
+        /// <param name="target">
+        /// The array receiving the projected entries; must have room for the segment's raw count from
+        /// <paramref name="index" />.
+        /// </param>
+        /// <param name="index">
+        /// The next write position in <paramref name="target" />, advanced per appended entry.
+        /// </param>
         /// <param name="nowTicks">The clock snapshot used to filter expired entries.</param>
         /// <param name="checkExpiry">
         /// <see langword="true" /> when expiration is configured and filtering applies.
         /// </param>
+        /// <param name="selector">The projection applied to each live key/value pair.</param>
         /// <exception cref="InvalidOperationException">The eviction policy is unrecognized.</exception>
-        internal void AppendSnapshot(List<KeyValuePair<TKey, TValue>> target, long nowTicks, bool checkExpiry)
+        internal void AppendSnapshot<TResult>(TResult[] target, ref int index, long nowTicks, bool checkExpiry, Func<TKey, TValue, TResult> selector)
         {
             switch (_policy)
             {
@@ -326,8 +431,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                 case EvictingDictionaryPolicy.SecondChance:
                     foreach (TKey key in _order)
                     {
-                        if (_store.TryGetValue(key, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                            target.Add(new KeyValuePair<TKey, TValue>(key, item.Value));
+                        if (_store.TryGetValue(key, out EvictionEntry<TKey, TValue>? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
+                            target[index++] = selector(key, item.Value);
                     }
 
                     break;
@@ -335,8 +440,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                 case EvictingDictionaryPolicy.MostRecentlyUsed:
                     for (LinkedListNode<TKey>? node = _order.Last; node is not null; node = node.Previous)
                     {
-                        if (_store.TryGetValue(node.Value, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                            target.Add(new KeyValuePair<TKey, TValue>(node.Value, item.Value));
+                        if (_store.TryGetValue(node.Value, out EvictionEntry<TKey, TValue>? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
+                            target[index++] = selector(node.Value, item.Value);
                     }
 
                     break;
@@ -346,18 +451,18 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
                     {
                         foreach (TKey key in freq.Value)
                         {
-                            if (_store.TryGetValue(key, out CacheItem? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                                target.Add(new KeyValuePair<TKey, TValue>(key, item.Value));
+                            if (_store.TryGetValue(key, out EvictionEntry<TKey, TValue>? item) && !(checkExpiry && item.ExpiresAtTicks <= nowTicks))
+                                target[index++] = selector(key, item.Value);
                         }
                     }
 
                     break;
 
                 case EvictingDictionaryPolicy.RandomReplacement:
-                    foreach ((TKey key, CacheItem item) in _store)
+                    foreach ((TKey key, EvictionEntry<TKey, TValue> item) in _store)
                     {
                         if (!(checkExpiry && item.ExpiresAtTicks <= nowTicks))
-                            target.Add(new KeyValuePair<TKey, TValue>(key, item.Value));
+                            target[index++] = selector(key, item.Value);
                     }
 
                     break;
@@ -378,22 +483,6 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
             nowTicks > long.MaxValue - ttlTicks ? long.MaxValue : nowTicks + ttlTicks;
 
         /// <summary>
-        /// Adds the specified key to the LeastFrequentlyUsed frequency bucket for the given frequency.
-        /// </summary>
-        /// <param name="frequency">The new frequency count.</param>
-        /// <param name="key">The key to add.</param>
-        private void AddToFrequencyList(int frequency, TKey key)
-        {
-            if (!_frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
-            {
-                list = new LinkedList<TKey>();
-                _frequencyList[frequency] = list;
-            }
-
-            list.AddLast(key);
-        }
-
-        /// <summary>
         /// Removes the next entry to be evicted based on the segment's policy, appending it to the eviction buffer.
         /// </summary>
         /// <param name="evicted">The eviction buffer that receives the removed entry.</param>
@@ -403,62 +492,9 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// </exception>
         private void EvictOne(ref List<KeyValuePair<TKey, TValue>>? evicted)
         {
-            // Track success explicitly: relying on `keyToRemove is not null` is unreliable when TKey is a value type
-            // because default(TKey) (e.g. 0) may itself be a valid key.
-            bool found = false;
-            TKey keyToRemove = default!;
-
-            switch (_policy)
-            {
-                case EvictingDictionaryPolicy.FirstInFirstOut:
-                case EvictingDictionaryPolicy.LeastRecentlyUsed:
-                    if (_order?.First is { } firstNode)
-                    {
-                        keyToRemove = firstNode.Value;
-                        found = true;
-                    }
-
-                    break;
-
-                case EvictingDictionaryPolicy.MostRecentlyUsed:
-                    if (_order?.Last is { } lastNode)
-                    {
-                        keyToRemove = lastNode.Value;
-                        found = true;
-                    }
-
-                    break;
-
-                case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                    if (_frequencyList?.Count > 0
-                        && _frequencyList.First().Value?.First is LinkedListNode<TKey> lfuNode)
-                    {
-                        keyToRemove = lfuNode.Value;
-                        found = true;
-                    }
-
-                    break;
-
-                case EvictingDictionaryPolicy.RandomReplacement:
-                    if (_store.Count > 0)
-                    {
-                        keyToRemove = _store.Keys.ElementAt(Random.Shared.Next(_store.Count));
-                        found = true;
-                    }
-
-                    break;
-
-                case EvictingDictionaryPolicy.SecondChance:
-                    if (_order?.Count > 0)
-                    {
-                        keyToRemove = GetSecondChanceCandidate();
-                        found = true;
-                    }
-
-                    break;
-            }
-
-            if (found && _store.TryGetValue(keyToRemove, out CacheItem? item))
+            // The engine reports success explicitly rather than via a null sentinel because default(TKey) may itself
+            // be a valid key when TKey is a value type.
+            if (_core.TrySelectEvictionCandidate(out TKey keyToRemove) && _store.TryGetValue(keyToRemove, out EvictionEntry<TKey, TValue>? item))
             {
                 RemoveEntry(keyToRemove, item);
                 (evicted ??= new List<KeyValuePair<TKey, TValue>>()).Add(new KeyValuePair<TKey, TValue>(keyToRemove, item.Value));
@@ -479,41 +515,6 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
             _timeProvider!.GetUtcNow().UtcTicks;
 
         /// <summary>
-        /// Finds the next candidate for eviction using the Second-Chance algorithm. Items with their second-chance flag
-        /// set are moved to the end of the list and cleared. If no eligible item is found, the oldest item is returned.
-        /// </summary>
-        /// <returns>The key to evict according to the Second-Chance strategy.</returns>
-        /// <remarks>
-        /// Called only from <see cref="EvictOne" /> after that method has already verified the order list is non-empty,
-        /// so no defensive empty-list checks are performed here. The clock sweep preserves the total node count by
-        /// removing and re-appending each cycled item, so <c>_order.First</c> is guaranteed to be non-null after the
-        /// loop completes.
-        /// </remarks>
-        private TKey GetSecondChanceCandidate()
-        {
-            LinkedListNode<TKey>? node = _order.First;
-            while (node is not null)
-            {
-                TKey key = node.Value;
-                LinkedListNode<TKey> current = node;
-                node = node.Next;
-
-                if (!_store.TryGetValue(key, out CacheItem? item))
-                    continue;
-
-                if (!item.SecondChance)
-                    return key;
-
-                // Clock algorithm: clear the reference bit and cycle the item to the tail, giving it one extra pass before eviction.
-                item.SecondChance = false;
-                _order.Remove(current);
-                item.Node = _order.AddLast(key);
-            }
-
-            return _order.First!.Value;
-        }
-
-        /// <summary>
         /// Publishes the store's current count with volatile semantics for the parent's lock-free
         /// <see cref="CountApproximate" /> reads.
         /// </summary>
@@ -525,33 +526,10 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// </summary>
         /// <param name="key">The key of the entry to remove.</param>
         /// <param name="item">The entry's cache item.</param>
-        private void RemoveEntry(TKey key, CacheItem item)
+        private void RemoveEntry(TKey key, EvictionEntry<TKey, TValue> item)
         {
-            if (_order is not null && item.Node is not null)
-                _order.Remove(item.Node);
-
-            if (_policy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
-                RemoveFromFrequencyList(item.Frequency, key);
-
-            _store.Remove(key);
+            _core.RemoveEntry(key, item);
             PublishCount();
-        }
-
-        /// <summary>
-        /// Removes the specified key from the LeastFrequentlyUsed frequency bucket for the given frequency. Cleans up
-        /// the bucket if it becomes empty.
-        /// </summary>
-        /// <param name="frequency">The current frequency count of the key.</param>
-        /// <param name="key">The key to remove.</param>
-        private void RemoveFromFrequencyList(int frequency, TKey key)
-        {
-            if (_frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
-            {
-                list.Remove(key);
-
-                if (list.Count == 0)
-                    _frequencyList.Remove(frequency);
-            }
         }
 
         /// <summary>
@@ -562,7 +540,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// <param name="ttlOverride">
         /// The per-entry time-to-live, or <see langword="null" /> to apply the dictionary default.
         /// </param>
-        private void SetExpiration(CacheItem item, TimeSpan? ttlOverride)
+        private void SetExpiration(EvictionEntry<TKey, TValue> item, TimeSpan? ttlOverride)
         {
             if (_timeProvider is null)
                 return;
@@ -571,35 +549,6 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
 
             item.TtlTicks = ttlTicks;
             item.ExpiresAtTicks = ttlTicks > 0 ? ComputeDeadline(GetNowTicks(), ttlTicks) : long.MaxValue;
-        }
-
-        /// <summary>
-        /// Handles internal usage tracking logic based on the segment's eviction policy.
-        /// </summary>
-        /// <param name="key">The key that was accessed.</param>
-        /// <param name="item">The associated cache item for the key.</param>
-        private void TouchItem(TKey key, CacheItem item)
-        {
-            switch (_policy)
-            {
-                case EvictingDictionaryPolicy.LeastRecentlyUsed:
-                case EvictingDictionaryPolicy.MostRecentlyUsed:
-                    if (item.Node is not null)
-                        _order.Remove(item.Node);
-
-                    item.Node = _order.AddLast(key);
-                    break;
-
-                case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                    RemoveFromFrequencyList(item.Frequency, key);
-                    item.Frequency++;
-                    AddToFrequencyList(item.Frequency, key);
-                    break;
-
-                case EvictingDictionaryPolicy.SecondChance:
-                    item.SecondChance = true;
-                    break;
-            }
         }
 
         /// <summary>
@@ -621,7 +570,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// When expiration is disabled this reduces to a plain store lookup with no clock reads, preserving the
         /// capacity-only hot path.
         /// </remarks>
-        private bool TryGetLiveItem(TKey key, bool slide, ref List<KeyValuePair<TKey, TValue>>? evicted, [NotNullWhen(true)] out CacheItem? item)
+        private bool TryGetLiveItem(TKey key, bool slide, ref List<KeyValuePair<TKey, TValue>>? evicted, [NotNullWhen(true)] out EvictionEntry<TKey, TValue>? item)
         {
             if (!_store.TryGetValue(key, out item))
                 return false;

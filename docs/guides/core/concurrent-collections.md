@@ -134,11 +134,9 @@ string[] snap = set.ToArray();
 ```csharp
 int count = set.Count;                 // Lock-free interlocked counter read; exact at quiescence
 bool empty = set.IsEmpty;
-int alias = set.ApproximateCount;      // Alias of Count, retained for compatibility
-bool aliasEmpty = set.IsEmptyApproximate;
 ```
 
-`Count` is a single lock-free counter read — exact whenever no mutation is in flight, and never off by more than the operations currently executing. `ApproximateCount` and `IsEmptyApproximate` are retained as aliases from the earlier lock-striped design; prefer `Count` and `IsEmpty` in new code.
+`Count` is a single lock-free counter read — exact whenever no mutation is in flight, and never off by more than the operations currently executing. `IsEmpty` is the equivalent lock-free emptiness probe.
 
 ### Bulk set operations
 

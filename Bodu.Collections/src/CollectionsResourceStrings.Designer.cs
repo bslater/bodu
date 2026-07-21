@@ -124,6 +124,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Dijkstra&apos;s algorithm requires non-negative edge weights, but an edge with weight {0} was encountered..
+        /// </summary>
+        internal static string Arg_Invalid_DijkstraNegativeWeight {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DijkstraNegativeWeight", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The bidirectional dictionary cannot contain duplicate values; the value is already bound to a different key..
         /// </summary>
         internal static string Arg_Invalid_DuplicateBiDictionaryValue {
@@ -138,6 +147,15 @@ namespace Bodu {
         internal static string Arg_Invalid_DuplicateDictionaryKey {
             get {
                 return ResourceManager.GetString("Arg_Invalid_DuplicateDictionaryKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An element with the key &apos;{0}&apos; already exists in the queue..
+        /// </summary>
+        internal static string Arg_Invalid_DuplicateElement {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DuplicateElement", resourceCulture);
             }
         }
 
@@ -268,6 +286,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The imported hash count ({0}) exceeds the maximum supported value ({1})..
+        /// </summary>
+        internal static string Arg_OutOfRange_BloomFilterImportHashCount {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_BloomFilterImportHashCount", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The combination of expected items and false-positive rate requires more than {0} bits..
         /// </summary>
         internal static string Arg_OutOfRange_BloomFilterTooLarge {
@@ -300,6 +327,15 @@ namespace Bodu {
         internal static string KeyNotFound_Dictionary {
             get {
                 return ResourceManager.GetString("KeyNotFound_Dictionary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The element &apos;{0}&apos; was not found in the queue..
+        /// </summary>
+        internal static string KeyNotFound_Element {
+            get {
+                return ResourceManager.GetString("KeyNotFound_Element", resourceCulture);
             }
         }
 

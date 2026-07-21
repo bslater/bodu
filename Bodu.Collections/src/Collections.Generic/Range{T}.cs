@@ -57,6 +57,25 @@ public readonly struct Range<T>
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="Range{T}" /> struct without validating endpoints.
+    /// </summary>
+    /// <param name="startInclusive">The inclusive start of the range.</param>
+    /// <param name="endExclusive">The exclusive end of the range.</param>
+    /// <param name="skipValidation">Always <see langword="true" />; selects the unchecked overload.</param>
+    /// <remarks>
+    /// Used by <see cref="RangeSet{T}" /> when projecting stored endpoints that were already validated against the
+    /// owning collection's comparer. The public constructor validates with <see cref="Comparer{T}.Default" />, which
+    /// would wrongly reject endpoints ordered by a custom comparer that disagrees with the default order.
+    /// </remarks>
+    internal Range(T startInclusive, T endExclusive, bool skipValidation)
+    {
+        _ = skipValidation;
+
+        StartInclusive = startInclusive;
+        EndExclusive = endExclusive;
+    }
+
+    /// <summary>
     /// Gets the inclusive start of the range.
     /// </summary>
     /// <value>The inclusive lower bound of the range.</value>

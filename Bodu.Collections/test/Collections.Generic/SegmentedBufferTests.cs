@@ -9,7 +9,7 @@ using System.Collections;
 namespace Bodu.Collections.Generic;
 
 [TestClass]
-public sealed class SegmentedBufferTests
+public sealed partial class SegmentedBufferTests
 {
 
     /// <summary>
@@ -93,6 +93,42 @@ public sealed class SegmentedBufferTests
 
         int[] actual = buffer.ToArray();
         CollectionAssert.AreEqual(new[] { 0, 1, 2, 3, 4, 5 }, actual);
+    }
+
+    /// <summary>
+    /// Verifies that adding an element while the buffer is being enumerated causes the next iteration step to throw
+    /// <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenBufferModifiedByAddDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var buffer = new SegmentedBuffer<int>(4);
+        for (int i = 0; i < 6; i++)
+            buffer.Add(i);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (int value in buffer)
+                buffer.Add(99);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that assigning an element through the indexer while the buffer is being enumerated causes the next
+    /// iteration step to throw <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenBufferModifiedByIndexerDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var buffer = new SegmentedBuffer<int>(4);
+        for (int i = 0; i < 6; i++)
+            buffer.Add(i);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (int value in buffer)
+                buffer[0] = 42;
+        });
     }
 
     /// <summary>

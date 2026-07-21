@@ -80,6 +80,14 @@ public sealed class BloomFilter<T>
     /// <summary>The largest supported bit count; keeps word-count arithmetic within <see cref="int" /> range.</summary>
     private const int MaxBitCount = int.MaxValue - 63;
 
+    /// <summary>
+    /// The largest hash count the sizing constructor can derive. The constructor computes
+    /// <c>k = max(1, round(m/n·ln 2)) ≈ round(log₂(1/p))</c>, which peaks at the smallest representable positive rate
+    /// (<see cref="double.Epsilon" /> = 2⁻¹⁰⁷⁴): <c>round(1074 + ln 2) = 1075</c>. <see cref="Import" /> rejects any
+    /// snapshot claiming more, bounding the per-operation probe cost for hostile snapshots.
+    /// </summary>
+    private const int MaxHashCount = 1075;
+
     /// <summary>The equality comparer supplying element hash codes.</summary>
     private readonly IEqualityComparer<T> _comparer;
 
@@ -233,10 +241,20 @@ public sealed class BloomFilter<T>
     /// <paramref name="source" /> is truncated, carries an unsupported format version, or does not describe a valid
     /// filter.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The snapshot's hash count exceeds the largest value the sizing constructor can produce (1075, the value implied
+    /// by the smallest representable false-positive rate).
+    /// </exception>
     /// <remarks>
+    /// <para>
     /// The comparer is not part of the exported state; the caller must re-supply it. For element types with
     /// process-randomized hash codes (notably <see cref="string" /> under the default comparer), an export is only
     /// meaningful within the process that produced it.
+    /// </para>
+    /// <para>
+    /// The snapshot's hash count is bounded at import so a hostile or corrupted snapshot cannot inflate the
+    /// per-operation cost of <see cref="Add" /> and <see cref="MightContain" /> (both are O(<see cref="HashCount" />)).
+    /// </para>
     /// </remarks>
     public static BloomFilter<T> Import(ReadOnlySpan<byte> source, IEqualityComparer<T>? comparer = null)
     {
@@ -250,6 +268,8 @@ public sealed class BloomFilter<T>
 
         if (bitCount <= 0 || bitCount > MaxBitCount || hashCount <= 0 || expectedItems <= 0 || !(designRate > 0.0 && designRate < 1.0))
             throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_BloomFilterImportData, nameof(source));
+        if (hashCount > MaxHashCount)
+            throw new ArgumentOutOfRangeException(nameof(source), string.Format(CultureInfo.CurrentCulture, CollectionsResourceStrings.Arg_OutOfRange_BloomFilterImportHashCount, hashCount, MaxHashCount));
 
         var wordCount = (bitCount + 63) >> 6;
         if (source.Length != ExportHeaderByteCount + ((long)wordCount * 8))
@@ -278,10 +298,15 @@ public sealed class BloomFilter<T>
 
         ProbabilisticHashing.DeriveHashPair(item, _comparer, out var h1, out var h2);
 
+        // Incremental double hashing: g wraps mod 2^64 exactly as h1 + i·h2 does, so the probe sequence is
+        // bit-identical to the multiplicative form (Export/Import compatibility) without a per-probe multiply.
+        // The modulo must stay 64-bit: reducing h1/h2 first would lose the 2^64 wrap and change the sequence.
+        var g = h1;
         for (var i = 0; i < _hashCount; i++)
         {
-            var index = (int)((h1 + ((ulong)i * h2)) % (ulong)_bitCount);
+            var index = (int)(g % (ulong)_bitCount);
             _words[index >> 6] |= 1UL << (index & 63);
+            g += h2;
         }
     }
 
@@ -329,11 +354,15 @@ public sealed class BloomFilter<T>
 
         ProbabilisticHashing.DeriveHashPair(item, _comparer, out var h1, out var h2);
 
+        // Incremental double hashing; see Add for why the sequence matches the multiplicative form exactly.
+        var g = h1;
         for (var i = 0; i < _hashCount; i++)
         {
-            var index = (int)((h1 + ((ulong)i * h2)) % (ulong)_bitCount);
+            var index = (int)(g % (ulong)_bitCount);
             if ((_words[index >> 6] & (1UL << (index & 63))) == 0)
                 return false;
+
+            g += h2;
         }
 
         return true;
@@ -376,9 +405,17 @@ public sealed class BloomFilter<T>
     /// differs from this filter's.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// Compatibility requires identical <see cref="BitCount" /> and <see cref="HashCount" /> and the same or an equal
     /// comparer instance — in practice, filters constructed with the same parameters. The other filter is not modified.
     /// Merging raises this filter's bit density and therefore its <see cref="EstimatedFalsePositiveRate" />.
+    /// </para>
+    /// <para>
+    /// Comparer identity is decided by <see cref="object.Equals(object)" /> (after a reference check). Two distinct
+    /// instances of a custom comparer type that does not override <see cref="object.Equals(object)" /> compare unequal
+    /// even when behaviourally identical, and the merge is rejected. Share a single comparer instance between filters
+    /// that will be merged, or override <c>Equals</c> (and <c>GetHashCode</c>) on the comparer type.
+    /// </para>
     /// </remarks>
     public void UnionWith(BloomFilter<T> other)
     {

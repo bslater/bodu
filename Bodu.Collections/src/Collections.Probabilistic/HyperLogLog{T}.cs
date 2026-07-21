@@ -43,10 +43,13 @@ namespace Bodu.Collections.Probabilistic;
 /// </para>
 /// <para>
 /// <see cref="EstimateCardinality" /> applies the standard HyperLogLog small-range correction (linear counting) while
-/// any register is still zero and the raw estimate is at most <c>2.5·m</c>. The classic large-range correction from the
-/// original paper compensates for hash collisions in a <em>32-bit</em> hash space and is deliberately omitted: the
-/// register pipeline here is 64-bit, where that correction does not apply. (The practical accuracy ceiling is instead
-/// the 32-bit comparer entropy described above.)
+/// any register is still zero and the raw estimate is at most <c>2.5·m</c>. The classic large-range correction from
+/// the original paper — which compensates for hash collisions as the true cardinality approaches the size of the hash
+/// space — is not applied. Although the register pipeline is 64-bit, all of its entropy derives from the 32-bit
+/// comparer hash expanded through a bijective mixer, so the effective hash space remains <c>2³²</c>: estimates
+/// progressively underestimate the true cardinality from roughly <c>10⁸</c> distinct elements onward, and approach a
+/// hard asymptote near <c>2³²</c> (about 4.3 billion) — beyond that point additional distinct elements produce no
+/// increase in the estimate.
 /// </para>
 /// <para>
 /// <see cref="MergeWith" /> combines two compatible sketches by register-wise maximum, after which this sketch
@@ -281,9 +284,10 @@ public sealed class HyperLogLog<T>
     /// than one — but it converges on the true count as the stream grows.
     /// </para>
     /// <para>
-    /// The original algorithm's large-range correction is deliberately omitted: it compensates for collisions in a
-    /// 32-bit hash space, whereas this implementation ranks a 64-bit hash. See the class remarks for the practical
-    /// accuracy bound imposed by the 32-bit comparer hash.
+    /// The original algorithm's large-range correction is not applied. Because the 64-bit ranking pipeline draws all
+    /// of its entropy from the 32-bit comparer hash (expanded through a bijective mixer), the effective hash space is
+    /// <c>2³²</c>: the estimate progressively falls below the true cardinality from roughly <c>10⁸</c> distinct
+    /// elements onward and saturates near <c>2³²</c>. See the class remarks for details.
     /// </para>
     /// </remarks>
     public double EstimateCardinality()
@@ -343,10 +347,18 @@ public sealed class HyperLogLog<T>
     /// <paramref name="other" /> is incompatible: its <see cref="Precision" /> or comparer differs from this sketch's.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// Compatibility requires an identical <see cref="Precision" /> and the same or an equal comparer instance — in
     /// practice, sketches constructed with the same parameters. The other sketch is not modified. The merge is lossless
     /// and idempotent: elements observed by both sketches are not double-counted, and merging a sketch with itself
     /// leaves it unchanged.
+    /// </para>
+    /// <para>
+    /// Comparer identity is decided by <see cref="object.Equals(object)" /> (after a reference check). Two distinct
+    /// instances of a custom comparer type that does not override <see cref="object.Equals(object)" /> compare unequal
+    /// even when behaviourally identical, and the merge is rejected. Share a single comparer instance between sketches
+    /// that will be merged, or override <c>Equals</c> (and <c>GetHashCode</c>) on the comparer type.
+    /// </para>
     /// </remarks>
     public void MergeWith(HyperLogLog<T> other)
     {

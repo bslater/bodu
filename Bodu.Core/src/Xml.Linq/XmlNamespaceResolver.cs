@@ -26,10 +26,9 @@ namespace Bodu.Xml.Linq;
 /// namespaces in the same document should construct a separate resolver per namespace.
 /// </para>
 /// <para>
-/// The constructor throws <see cref="InvalidOperationException" /> when the supplied root element exposes no namespace
-/// at all (an unusual but legal state for hand-built <see cref="XElement" /> trees). Documents loaded from a stream or
-/// string source always carry the empty namespace at minimum, so the typical load-from-source flow does not encounter
-/// this condition.
+/// An element without an explicit namespace carries <see cref="XNamespace.None" /> (the empty namespace) — never
+/// <see langword="null" /> — so the resolver simply captures whatever namespace the root exposes, including the empty
+/// one. Lookups then resolve against that captured namespace.
 /// </para>
 /// </remarks>
 /// <example>
@@ -55,15 +54,18 @@ public sealed class XmlNamespaceResolver
     /// <summary>
     /// Initializes a new instance of the <see cref="XmlNamespaceResolver" /> class with the specified root element.
     /// </summary>
-    /// <param name="root">The root element from which to extract the default namespace.</param>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if the root element is <see langword="null" /> or has no namespace.
-    /// </exception>
+    /// <param name="root">The root element from which to extract the default namespace. Must not be <see langword="null" />.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="root" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// <see cref="XName.Namespace" /> is never <see langword="null" /> — an element without an explicit namespace
+    /// reports <see cref="XNamespace.None" /> — so the captured namespace may be the empty namespace but the
+    /// construction itself cannot fail for a non-null root.
+    /// </remarks>
     public XmlNamespaceResolver(XElement root)
     {
         ThrowHelper.ThrowIfNull(root);
 
-        _xNamespace = root.Name.Namespace ?? throw new InvalidOperationException(ResourceStrings.Op_Invalid_XmlMissingNamespace);
+        _xNamespace = root.Name.Namespace;
     }
 
     /// <summary>

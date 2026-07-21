@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
-public partial class ConcurrentCircularBuffer<T> :
+public sealed partial class ConcurrentCircularBuffer<T> :
     System.Collections.Generic.IEnumerable<T>
 {
     /// <summary>

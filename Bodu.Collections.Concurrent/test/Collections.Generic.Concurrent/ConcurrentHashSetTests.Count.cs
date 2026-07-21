@@ -60,4 +60,47 @@ public partial class ConcurrentHashSetTests
         Assert.AreEqual(set.ToArray().Length, set.Count);
         Assert.AreEqual(2000, set.Count);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentHashSet{T}.Count" /> stays within the inclusive range <c>[0, expected]</c>
+    /// under concurrent writers, and settles on the exact total once the writers finish. Intermediate exact agreement
+    /// is not asserted because the lock-free counter read may transiently lag in-flight mutations.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Stress")]
+    public void Count_WhenAccessedDuringConcurrentAdds_ShouldStayWithinSeenRange()
+    {
+        var set = new ConcurrentHashSet<int>();
+        const int writers = 4;
+        const int perWriter = 5000;
+
+        var observed = new List<int>();
+        bool done = false;
+
+        var reader = Task.Run(() =>
+        {
+            while (!Volatile.Read(ref done))
+            {
+                observed.Add(set.Count);
+            }
+        });
+
+        Parallel.For(0, writers, w =>
+        {
+            for (int i = 0; i < perWriter; i++)
+                set.Add((w * perWriter) + i);
+        });
+
+        Volatile.Write(ref done, true);
+        reader.Wait();
+
+        int max = writers * perWriter;
+
+        foreach (int value in observed)
+        {
+            Assert.IsTrue(value >= 0 && value <= max, $"Count {value} outside expected range [0, {max}].");
+        }
+
+        Assert.AreEqual(max, set.Count);
+    }
 }

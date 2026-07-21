@@ -126,6 +126,69 @@ public partial class MultisetTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Add(T)"/> throws <see cref="OverflowException"/> when the element's
+    /// occurrence count is already <see cref="int.MaxValue"/>, and leaves both the per-item count and the total count
+    /// unchanged (never negative).
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenItemCountIsIntMaxValue_ShouldThrowOverflowException()
+    {
+        var mvd = new Multiset<int>();
+        mvd.Add(1, int.MaxValue);
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            mvd.Add(1);
+        });
+
+        Assert.AreEqual(int.MaxValue, mvd.CountOf(1));
+        Assert.AreEqual(int.MaxValue, mvd.Count);
+        Assert.IsTrue(mvd.Count >= 0);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Add(T, int)"/> throws <see cref="OverflowException"/> when repeated
+    /// large additions would wrap the element's occurrence count, and never leaves <see cref="Multiset{T}.Count"/>
+    /// negative.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenCountAddedTwiceAtIntMaxValue_ShouldThrowOverflowException()
+    {
+        var mvd = new Multiset<int>();
+        mvd.Add(1, int.MaxValue);
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            mvd.Add(1, int.MaxValue);
+        });
+
+        Assert.AreEqual(int.MaxValue, mvd.CountOf(1));
+        Assert.AreEqual(int.MaxValue, mvd.Count);
+        Assert.IsTrue(mvd.Count >= 0);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Add(T)"/> throws <see cref="OverflowException"/> when the total count
+    /// would exceed <see cref="int.MaxValue"/> even though the added element itself is new, and leaves the multiset
+    /// unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenTotalCountWouldExceedIntMaxValue_ShouldThrowOverflowException()
+    {
+        var mvd = new Multiset<int>();
+        mvd.Add(1, int.MaxValue);
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            mvd.Add(2);
+        });
+
+        Assert.AreEqual(0, mvd.CountOf(2));
+        Assert.AreEqual(1, mvd.DistinctCount);
+        Assert.AreEqual(int.MaxValue, mvd.Count);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Multiset{T}.Add(T)"/> increments the multiplicity of an existing element.
     /// </summary>
     [TestMethod]

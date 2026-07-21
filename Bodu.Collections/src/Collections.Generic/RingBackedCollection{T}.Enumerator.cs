@@ -81,7 +81,13 @@ public abstract partial class RingBackedCollection<T>
                 return false;
             }
 
-            _currentIndex = (_collection._head + _iteratedCount) % _collection._array.Length;
+            // head + iterated < 2 * capacity, so one conditional subtraction replaces the per-step modulo division.
+            int physicalIndex = _collection._head + _iteratedCount;
+            int capacity = _collection._array.Length;
+            if (physicalIndex >= capacity)
+                physicalIndex -= capacity;
+
+            _currentIndex = physicalIndex;
             _current = _collection._array[_currentIndex];
             _iteratedCount++;
 

@@ -84,4 +84,49 @@ public partial class ComparableExtensionsTests
         Assert.AreEqual(5, 5.Clamp(10, 1, comparer));
     }
 
+    /// <summary>
+    /// Verifies that swapped bounds (min greater than max) throw <see cref="ArgumentException" />, matching the
+    /// behaviour of <see cref="Math.Clamp(int, int, int)" />.
+    /// </summary>
+    [TestMethod]
+    public void Clamp_WhenMinGreaterThanMax_ShouldThrowExactly()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = 5.Clamp(10, 1);
+        });
+
+        Assert.AreEqual("min", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that the comparer overload throws <see cref="ArgumentException" /> when the bounds are swapped
+    /// according to the supplied comparer's ordering.
+    /// </summary>
+    [TestMethod]
+    public void Clamp_WhenMinGreaterThanMax_ForComparerOverload_ShouldThrowExactly()
+    {
+        IComparer<int> comparer = Comparer<int>.Default;
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = 5.Clamp(10, 1, comparer);
+        });
+
+        Assert.AreEqual("min", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> bound suppresses the bound-ordering validation for that side, so a lone
+    /// bound can never be reported as swapped.
+    /// </summary>
+    [TestMethod]
+    public void Clamp_WhenOneBoundIsNull_ShouldNotValidateBoundOrdering()
+    {
+        Assert.AreEqual(10, 5.Clamp(10, null));
+        Assert.AreEqual(1, 5.Clamp(null, 1));
+        Assert.AreEqual(10, 5.Clamp(10, null, Comparer<int>.Default));
+        Assert.AreEqual(1, 5.Clamp(null, 1, Comparer<int>.Default));
+    }
+
 }

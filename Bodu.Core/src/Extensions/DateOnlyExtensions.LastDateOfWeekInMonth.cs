@@ -36,4 +36,40 @@ public static partial class DateOnlyExtensions
         int dayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
         return DateOnly.FromDayNumber(dayNumber - (((int)GetDayOfWeekFromDayNumber(dayNumber) - (int)dayOfWeek + 7) % 7));
     }
+
+    /// <summary>
+    /// Returns a new <see cref="DateOnly" /> representing the last occurrence of the specified <see cref="DayOfWeek" />
+    /// in the given <paramref name="month" /> and <paramref name="year" />.
+    /// </summary>
+    /// <param name="year">
+    /// The calendar year of the result. Must be between the <c>Year</c> property values of
+    /// <see cref="DateOnly.MinValue" /> and <see cref="DateOnly.MaxValue" />, inclusive.
+    /// </param>
+    /// <param name="month">The calendar month of the result, from 1 through 12.</param>
+    /// <param name="dayOfWeek">
+    /// The <see cref="DayOfWeek" /> to locate within the month. For example, <see cref="DayOfWeek.Monday" /> returns
+    /// the last Monday.
+    /// </param>
+    /// <returns>
+    /// A <see cref="DateOnly" /> value set to the last occurrence of <paramref name="dayOfWeek" /> within the specified
+    /// month and year.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// The search begins on the last day of the month and proceeds backward to locate the last matching weekday.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="year" /> is less than the <c>Year</c> of <see cref="DateOnly.MinValue" /> or greater
+    /// than that of <see cref="DateOnly.MaxValue" />, -or- <paramref name="month" /> is less than 1 or greater than 12,
+    /// -or- <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration.
+    /// </exception>
+    public static DateOnly GetLastDateOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek)
+    {
+        ThrowHelper.ThrowIfOutOfRange(year, DateTimeExtensions.MinYear, DateTimeExtensions.MaxYear);
+        ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
+
+        return DateOnly.FromDayNumber(GetLastDateOfWeekInMonthDayNumber(year, month, dayOfWeek));
+    }
 }

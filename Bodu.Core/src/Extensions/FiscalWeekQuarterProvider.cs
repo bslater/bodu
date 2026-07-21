@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -54,7 +55,10 @@ namespace Bodu.Extensions;
 public sealed class FiscalWeekQuarterProvider
     : IQuarterDefinitionProvider
 {
-    /// <summary>The calendar month (1-12) that anchors the fiscal year.</summary>
+    /// <summary>The fiscal anchor-month sentinel (13) that denotes January of the following calendar year.</summary>
+    private const int JanuaryOfNextYearSentinel = 13;
+
+    /// <summary>The calendar month (1-13) that anchors the fiscal year start.</summary>
     private readonly int _anchorMonth;
 
     /// <summary>The day of week on which each fiscal week begins.</summary>
@@ -132,7 +136,15 @@ public sealed class FiscalWeekQuarterProvider
         ThrowHelper.ThrowIfEnumValueIsUndefined(pattern);
 
         _pattern = pattern;
+
+        // When the anchor names the fiscal year's closing month, the year opens the following month. A December end
+        // month therefore yields month 13 (JanuaryOfNextYearSentinel). That is a deliberate sentinel for "January of
+        // the next calendar year": the cumulative day-count tables consumed by GetDateTicks/GetDayNumberUnchecked carry
+        // a thirteenth entry (DaysToMonth365[12] == 365), so GetDateTicks(year, 13, 1) resolves to 1 January of the
+        // following year without a separate year-rollover branch.
         _anchorMonth = month + (isFiscalYearEnd ? 1 : 0);
+        Debug.Assert(_anchorMonth is >= 1 and <= JanuaryOfNextYearSentinel, "The fiscal anchor month must fall within 1-13.");
+
         _anchorDayOfWeek = dayOfWeek;
         _useNearestDayOfWeek = useNearestDayOfWeek;
     }
@@ -168,12 +180,8 @@ public sealed class FiscalWeekQuarterProvider
     /// <inheritdoc />
     public int GetQuarter(DateTime dateTime)
     {
-        int fiscalYear = GetFiscalYearFor(dateTime);
-        long fiscalYearStartTicks = GetFiscalYearStartTicks(fiscalYear);
-        int weeksFromStart = (int)((dateTime.Ticks - fiscalYearStartTicks) / DateTimeExtensions.TicksPerWeek);
-
-        // In a 53-week year the final week computes as quarter 5; clamp it back to Q4.
-        return Math.Min((weeksFromStart / 13) + 1, 4);
+        (_, long startTicks, _) = ResolveFiscalContext(dateTime);
+        return ComputeQuarter(dateTime.Ticks, startTicks);
     }
 
     /// <inheritdoc />
@@ -181,27 +189,23 @@ public sealed class FiscalWeekQuarterProvider
         GetQuarter(dateOnly.ToDateTime(TimeOnly.MinValue));
 
     /// <inheritdoc />
-    public DateTime GetQuarterEnd(DateTime dateTime) =>
-        GetQuarterEnd(GetQuarter(dateTime), GetFiscalYearFor(dateTime));
-
-    /// <inheritdoc />
-    [Obsolete("Use GetQuarterEnd(int quarter, int fiscalYear).")]
-    public DateTime GetQuarterEnd(int quarter) =>
-        throw new NotSupportedException(
-            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterEnd(int quarter, int fiscalYear)"));
+    public DateTime GetQuarterEnd(DateTime dateTime)
+    {
+        // Resolve the fiscal year once and derive quarter, start, and 53-week length from the same context — the
+        // delegating form re-ran the three-candidate year search and week alignments up to four times per call.
+        (_, long startTicks, bool is53Week) = ResolveFiscalContext(dateTime);
+        return GetQuarterEndCore(startTicks, ComputeQuarter(dateTime.Ticks, startTicks), is53Week);
+    }
 
     /// <inheritdoc />
     public DateTime GetQuarterEnd(int quarter, int fiscalYear)
     {
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
 
-        DateTime start = GetQuarterStart(quarter, fiscalYear);
+        long startTicks = GetFiscalYearStartTicks(fiscalYear);
+        bool is53Week = ComputeIs53WeekYear(startTicks, fiscalYear, _anchorMonth, _anchorDayOfWeek, _useNearestDayOfWeek);
 
-        // Q4 absorbs the additional week in a 53-week fiscal year; all other quarters are exactly 13 weeks.
-        int weeks = (quarter == 4 && Is53WeekFiscalYear(fiscalYear)) ? 14 : 13;
-        long endTicks = start.Ticks + ((long)weeks * DateTimeExtensions.TicksPerWeek) - DateTimeExtensions.TicksPerDay;
-
-        return new DateTime(DateTimeExtensions.GetDateAsTicks(endTicks), DateTimeKind.Unspecified);
+        return GetQuarterEndCore(startTicks, quarter, is53Week);
     }
 
     /// <inheritdoc />
@@ -209,45 +213,27 @@ public sealed class FiscalWeekQuarterProvider
         GetQuarterEnd(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
 
     /// <inheritdoc />
-    [Obsolete("Use GetQuarterEndDate(int quarter, int fiscalYear).")]
-    public DateOnly GetQuarterEndDate(int quarter) =>
-        throw new NotSupportedException(
-            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterEndDate(int quarter, int fiscalYear)"));
-
-    /// <inheritdoc />
     public DateOnly GetQuarterEndDate(int quarter, int fiscalYear) =>
         GetQuarterEnd(quarter, fiscalYear).ToDateOnly();
 
     /// <inheritdoc />
-    public DateTime GetQuarterStart(DateTime dateTime) =>
-        GetQuarterStart(GetQuarter(dateTime), GetFiscalYearFor(dateTime));
-
-    /// <inheritdoc />
-    [Obsolete("Use GetQuarterStart(int quarter, int fiscalYear).")]
-    public DateTime GetQuarterStart(int quarter) =>
-        throw new NotSupportedException(
-            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterStart(int quarter, int fiscalYear)"));
+    public DateTime GetQuarterStart(DateTime dateTime)
+    {
+        (_, long startTicks, _) = ResolveFiscalContext(dateTime);
+        return GetQuarterStartCore(startTicks, ComputeQuarter(dateTime.Ticks, startTicks));
+    }
 
     /// <inheritdoc />
     public DateTime GetQuarterStart(int quarter, int fiscalYear)
     {
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
 
-        long offsetTicks = (long)(quarter - 1) * 13L * DateTimeExtensions.TicksPerWeek;
-        long startTicks = GetFiscalYearStartTicks(fiscalYear) + offsetTicks;
-
-        return new DateTime(DateTimeExtensions.GetDateAsTicks(startTicks), DateTimeKind.Unspecified);
+        return GetQuarterStartCore(GetFiscalYearStartTicks(fiscalYear), quarter);
     }
 
     /// <inheritdoc />
     public DateOnly GetQuarterStartDate(DateOnly dateOnly) =>
         GetQuarterStart(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
-
-    /// <inheritdoc />
-    [Obsolete("Use GetQuarterStartDate(int quarter, int fiscalYear).")]
-    public DateOnly GetQuarterStartDate(int quarter) =>
-        throw new NotSupportedException(
-            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Op_NotSupported_FiscalYearRequired, "GetQuarterStartDate(int quarter, int fiscalYear)"));
 
     /// <inheritdoc />
     public DateOnly GetQuarterStartDate(int quarter, int fiscalYear) =>
@@ -347,7 +333,19 @@ public sealed class FiscalWeekQuarterProvider
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when no candidate fiscal year contains <paramref name="dateTime" />.
     /// </exception>
-    private int GetFiscalYearFor(DateTime dateTime)
+    private int GetFiscalYearFor(DateTime dateTime) =>
+        ResolveFiscalContext(dateTime).FiscalYear;
+
+    /// <summary>
+    /// Resolves the fiscal year containing <paramref name="dateTime" /> together with the year's start tick value and
+    /// 53-week flag, so date-based members pay the three-candidate search and week alignments exactly once per call.
+    /// </summary>
+    /// <param name="dateTime">The date to map to a fiscal year.</param>
+    /// <returns>The containing fiscal year, its start tick value, and whether it spans 53 weeks.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when no candidate fiscal year contains <paramref name="dateTime" />.
+    /// </exception>
+    private (int FiscalYear, long StartTicks, bool Is53Week) ResolveFiscalContext(DateTime dateTime)
     {
         long weekStartTicks = dateTime.Ticks
             - DateTimeExtensions.GetTicksSincePreviousOrSameDayOfWeek(dateTime.Ticks, _anchorDayOfWeek);
@@ -361,11 +359,55 @@ public sealed class FiscalWeekQuarterProvider
 
             long deltaDays = (weekStartTicks - start) / DateTimeExtensions.TicksPerDay;
             if (deltaDays >= 0 && deltaDays < lengthDays)
-                return candidate;
+                return (candidate, start, is53);
         }
 
         throw new ArgumentOutOfRangeException(
             nameof(dateTime),
             string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_FiscalYearUndeterminable, dateTime));
+    }
+
+    /// <summary>
+    /// Computes the 1-based fiscal quarter for a date from the containing fiscal year's start tick value.
+    /// </summary>
+    /// <param name="dateTicks">The tick value of the date being classified.</param>
+    /// <param name="fiscalYearStartTicks">The tick value of the first day of the containing fiscal year.</param>
+    /// <returns>The quarter number, from 1 through 4.</returns>
+    private static int ComputeQuarter(long dateTicks, long fiscalYearStartTicks)
+    {
+        int weeksFromStart = (int)((dateTicks - fiscalYearStartTicks) / DateTimeExtensions.TicksPerWeek);
+
+        // In a 53-week year the final week computes as quarter 5; clamp it back to Q4.
+        return Math.Min((weeksFromStart / 13) + 1, 4);
+    }
+
+    /// <summary>
+    /// Computes the first day of the specified quarter from the fiscal year's start tick value.
+    /// </summary>
+    /// <param name="fiscalYearStartTicks">The tick value of the first day of the fiscal year.</param>
+    /// <param name="quarter">The quarter number, from 1 through 4.</param>
+    /// <returns>Midnight on the first day of the quarter, with <see cref="DateTimeKind.Unspecified" />.</returns>
+    private static DateTime GetQuarterStartCore(long fiscalYearStartTicks, int quarter)
+    {
+        long startTicks = fiscalYearStartTicks + ((long)(quarter - 1) * 13L * DateTimeExtensions.TicksPerWeek);
+        return new DateTime(DateTimeExtensions.GetDateAsTicks(startTicks), DateTimeKind.Unspecified);
+    }
+
+    /// <summary>
+    /// Computes the last day of the specified quarter from the fiscal year's start tick value and 53-week flag.
+    /// </summary>
+    /// <param name="fiscalYearStartTicks">The tick value of the first day of the fiscal year.</param>
+    /// <param name="quarter">The quarter number, from 1 through 4.</param>
+    /// <param name="is53WeekYear">Whether the fiscal year spans 53 weeks.</param>
+    /// <returns>Midnight on the last day of the quarter, with <see cref="DateTimeKind.Unspecified" />.</returns>
+    private static DateTime GetQuarterEndCore(long fiscalYearStartTicks, int quarter, bool is53WeekYear)
+    {
+        long startTicks = fiscalYearStartTicks + ((long)(quarter - 1) * 13L * DateTimeExtensions.TicksPerWeek);
+
+        // Q4 absorbs the additional week in a 53-week fiscal year; all other quarters are exactly 13 weeks.
+        int weeks = (quarter == 4 && is53WeekYear) ? 14 : 13;
+        long endTicks = startTicks + ((long)weeks * DateTimeExtensions.TicksPerWeek) - DateTimeExtensions.TicksPerDay;
+
+        return new DateTime(DateTimeExtensions.GetDateAsTicks(endTicks), DateTimeKind.Unspecified);
     }
 }

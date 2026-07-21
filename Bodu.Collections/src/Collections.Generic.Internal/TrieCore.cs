@@ -96,15 +96,34 @@ internal static class TrieCore
     /// <returns><see langword="true" /> if a terminal key was removed; otherwise, <see langword="false" />.</returns>
     public static bool Remove<TValue>(TrieNode<TValue> root, ReadOnlySpan<char> key)
     {
-        (TrieNode<TValue> Parent, char Ch)[] path = key.Length == 0 ? Array.Empty<(TrieNode<TValue> Parent, char Ch)>() : new (TrieNode<TValue> Parent, char Ch)[key.Length];
+        // Track the deepest prune point during the forward walk instead of recording the full (node, char)
+        // path: pruneParent is the shallowest ancestor whose link to the path can be severed to detach every
+        // node the removal leaves dangling, so no O(key.Length) backtrack array is allocated.
         TrieNode<TValue> node = root;
+        TrieNode<TValue>? pruneParent = null;
+        char pruneChar = default;
+
         for (int i = 0; i < key.Length; i++)
         {
             char ch = key[i];
             if (node.Children is null || !node.Children.TryGetValue(ch, out TrieNode<TValue>? next))
                 return false;
 
-            path[i] = (node, ch);
+            if (pruneParent is null)
+            {
+                pruneParent = node;
+                pruneChar = ch;
+            }
+
+            // A child that must survive the removal (terminal elsewhere on the path, or carrying siblings /
+            // any subtree below the final node) breaks the prunable chain: pruning can only start below it.
+            bool childSurvives = i == key.Length - 1
+                ? next.Children is { Count: > 0 }
+                : next.IsTerminal || next.Children is not { Count: 1 };
+
+            if (childSurvives)
+                pruneParent = null;
+
             node = next;
         }
 
@@ -115,17 +134,12 @@ internal static class TrieCore
         node.Key = null;
         node.Value = default!;
 
-        // Prune leaf-ward: drop any node that is no longer terminal and has no children.
-        for (int i = key.Length - 1; i >= 0; i--)
+        // Severing the single link at the prune point detaches the entire dangling suffix chain.
+        if (pruneParent is not null)
         {
-            (TrieNode<TValue>? parent, char ch) = path[i];
-            TrieNode<TValue> child = parent.Children![ch];
-            if (child.IsTerminal || child.Children is { Count: > 0 })
-                break;
-
-            parent.Children.Remove(ch);
-            if (parent.Children.Count == 0)
-                parent.Children = null;
+            pruneParent.Children!.Remove(pruneChar);
+            if (pruneParent.Children.Count == 0)
+                pruneParent.Children = null;
         }
 
         return true;

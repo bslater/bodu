@@ -83,4 +83,40 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
         Assert.IsEmpty(result);
     }
 
+    /// <summary>
+    /// Verifies that a supplied count limits the <see cref="RandomizationMode.StreamWindowed" /> stream to exactly
+    /// that many elements rather than being silently ignored.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_StreamWindowed_WhenCountProvided_ShouldReturnExactlyCountElements()
+    {
+        int[] source = Enumerable.Range(1, 10).ToArray();
+
+        int[] result = source
+            .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng(), 4)
+            .ToArray();
+
+        Assert.HasCount(4, result);
+        foreach (int item in result)
+            CollectionAssert.Contains(source, item);
+    }
+
+    /// <summary>
+    /// Verifies that a count exceeding the number of available elements under
+    /// <see cref="RandomizationMode.StreamWindowed" /> throws <see cref="ArgumentOutOfRangeException" /> during
+    /// enumeration, consistent with the other modes.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_StreamWindowed_WhenCountExceedsSource_ShouldThrowDuringEnumeration()
+    {
+        int[] source = [1, 2, 3];
+
+        IEnumerable<int> result = source.Randomize(RandomizationMode.StreamWindowed, CreateSeededRng(), 5);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = result.ToArray();
+        });
+    }
+
 }

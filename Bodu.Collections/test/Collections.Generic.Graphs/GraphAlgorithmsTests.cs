@@ -118,7 +118,7 @@ public sealed class GraphAlgorithmsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="GraphAlgorithms.TryShortestPath{T}(IReadOnlyWeightedGraph{T, double}, T, T)" /> reports
+    /// Verifies that <see cref="GraphAlgorithms.TryShortestPath{T}(IReadOnlyWeightedGraph{T}, T, T)" /> reports
     /// reachability, distance, and path consistently with the scenario.
     /// </summary>
     /// <param name="kat">The scenario supplying the graph, endpoints, and expected result.</param>
@@ -148,6 +148,42 @@ public sealed class GraphAlgorithmsTests
             Assert.AreEqual(kat.ExpectedDistance, result.Distance);
             CollectionAssert.AreEqual(kat.ExpectedPath, result.Path.ToArray());
         }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="GraphAlgorithms.TryShortestPath{T}(IReadOnlyWeightedGraph{T}, T, T)" /> throws
+    /// <see cref="ArgumentException" /> when a foreign <see cref="IReadOnlyWeightedGraph{TVertex}" />
+    /// implementation yields a negative edge weight, instead of silently returning wrong distances.
+    /// </summary>
+    [TestMethod]
+    public void TryShortestPath_WhenForeignGraphYieldsNegativeWeight_ShouldThrowArgumentException()
+    {
+        var graph = new NegativeWeightStubGraph();
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = GraphAlgorithms.TryShortestPath(graph, "A", "C");
+        });
+
+        Assert.AreEqual("graph", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="GraphAlgorithms.ShortestPathLengths{T}(IReadOnlyWeightedGraph{T}, T)" /> throws
+    /// <see cref="ArgumentException" /> when a foreign <see cref="IReadOnlyWeightedGraph{TVertex}" />
+    /// implementation yields a negative edge weight during the search.
+    /// </summary>
+    [TestMethod]
+    public void ShortestPathLengths_WhenForeignGraphYieldsNegativeWeight_ShouldThrowArgumentException()
+    {
+        var graph = new NegativeWeightStubGraph();
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = GraphAlgorithms.ShortestPathLengths(graph, "A");
+        });
+
+        Assert.AreEqual("graph", ex.ParamName);
     }
 
     /// <summary>
@@ -260,5 +296,70 @@ public sealed class GraphAlgorithmsTests
             graph.AddEdge(i - 1, i);
 
         Assert.HasCount(n, GraphAlgorithms.DepthFirstSearch(graph, 0));
+    }
+
+    /// <summary>
+    /// A minimal foreign <see cref="IReadOnlyWeightedGraph{TVertex}" /> implementation (bypassing
+    /// <see cref="Graph{T}" />'s constructor-side weight validation) that yields a negative edge weight: A → B has
+    /// weight 1 and B → C has weight −5.
+    /// </summary>
+    private sealed class NegativeWeightStubGraph : IReadOnlyWeightedGraph<string>
+    {
+        /// <summary>The adjacency map backing the stub, keyed by source vertex.</summary>
+        private static readonly Dictionary<string, (string Neighbor, double Weight)[]> s_edges = new(StringComparer.Ordinal)
+        {
+            ["A"] = [("B", 1.0)],
+            ["B"] = [("C", -5.0)],
+            ["C"] = [],
+        };
+
+        /// <inheritdoc />
+        public bool IsDirected => true;
+
+        /// <inheritdoc />
+        public int VertexCount => s_edges.Count;
+
+        /// <inheritdoc />
+        public int EdgeCount => 2;
+
+        /// <inheritdoc />
+        public IEqualityComparer<string> Comparer => StringComparer.Ordinal;
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<string> Vertices => s_edges.Keys;
+
+        /// <inheritdoc />
+        public bool ContainsVertex(string vertex) => s_edges.ContainsKey(vertex);
+
+        /// <inheritdoc />
+        public IEnumerable<string> Neighbors(string vertex) => s_edges[vertex].Select(e => e.Neighbor);
+
+        /// <inheritdoc />
+        public int Degree(string vertex) => s_edges[vertex].Length;
+
+        /// <inheritdoc />
+        public IEnumerable<(string Neighbor, double Weight)> WeightedNeighbors(string vertex) => s_edges[vertex];
+
+        /// <inheritdoc />
+        public bool ContainsEdge(string from, string to) => s_edges.TryGetValue(from, out var edges) && edges.Any(e => e.Neighbor == to);
+
+        /// <inheritdoc />
+        public bool TryGetEdgeWeight(string from, string to, out double weight)
+        {
+            if (s_edges.TryGetValue(from, out var edges))
+            {
+                foreach ((string neighbor, double edgeWeight) in edges)
+                {
+                    if (neighbor == to)
+                    {
+                        weight = edgeWeight;
+                        return true;
+                    }
+                }
+            }
+
+            weight = 0.0;
+            return false;
+        }
     }
 }

@@ -129,9 +129,13 @@ public sealed partial class AsyncDebouncer
         _policy;
 
     /// <summary>
-    /// Gets the most recently started callback task, if one has been started.
+    /// Gets the most recently started callback task, if one is currently active.
     /// </summary>
-    /// <value>The latest callback <see cref="Task" />, or <see langword="null" /> when none has started.</value>
+    /// <value>
+    /// The latest in-flight callback <see cref="Task" />, or <see langword="null" /> when no run is currently active —
+    /// either because none has started yet or because every started run has already completed and been removed from the
+    /// active set.
+    /// </value>
     public Task? CurrentExecution
     {
         get
@@ -224,6 +228,12 @@ public sealed partial class AsyncDebouncer
     /// <exception cref="OperationCanceledException">
     /// <paramref name="cancellationToken" /> was canceled before the work drained.
     /// </exception>
+    /// <remarks>
+    /// Once the debouncer has been disposed this method returns immediately — it does not throw
+    /// <see cref="ObjectDisposedException" /> — even when cooperatively-cancelled callbacks are still running their
+    /// final iterations. Callers that must observe the end of that residual work should await the task obtained from
+    /// <see cref="CurrentExecution" /> before disposal instead.
+    /// </remarks>
     public async ValueTask DrainAsync(CancellationToken cancellationToken = default)
     {
         while (true)

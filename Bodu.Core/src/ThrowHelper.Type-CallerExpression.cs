@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-#if !NETSTANDARD2_0_OR_GREATER
 #pragma warning disable SA1117 // Parameters should be on same line or separate lines
 #pragma warning disable IDE0011 // Add braces
 
@@ -90,5 +89,3 @@ public static partial class ThrowHelper
         }
     }
 }
-
-#endif

@@ -11,94 +11,6 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Splits <paramref name="value" /> into a sequence of word tokens using CamelCase / PascalCase boundaries and
-    /// common identifier separators (whitespace, <c>-</c>, <c>_</c>, <c>.</c>, <c>:</c>, <c>;</c>, <c>/</c>).
-    /// </summary>
-    /// <param name="value">The string to tokenise.</param>
-    /// <returns>The detected words in source order, with separators discarded.</returns>
-    /// <remarks>
-    /// <para>
-    /// Boundaries are detected as: separator characters; lowercase-to-uppercase transitions (<c>"helloWorld"</c> →
-    /// <c>["hello", "World"]</c>); uppercase-run-to-lowercase transitions to preserve acronyms (<c>"HTMLParser"</c> →
-    /// <c>["HTML", "Parser"]</c>); and digit-to-letter transitions (<c>"42hello"</c> → <c>["42", "hello"]</c>).
-    /// </para>
-    /// <para>
-    /// A letter-to-digit transition is intentionally <em>not</em> a boundary, so a trailing version or count stays
-    /// attached to its word (<c>"user42"</c> → <c>["user42"]</c>, <c>"v1"</c> → <c>["v1"]</c>).
-    /// </para>
-    /// <para>
-    /// Used internally by every casing converter (<see cref="ToCamelCase(string)" />,
-    /// <see cref="ToPascalCase(string)" />, <see cref="ToSnakeCase(string)" />, <see cref="ToKebabCase(string)" />,
-    /// <see cref="ToTrainCase(string)" />, <see cref="ToConstantCase(string)" />, <see cref="ToDotCase(string)" />).
-    /// </para>
-    /// </remarks>
-    internal static List<string> EnumerateWords(string value)
-    {
-        List<string> words = new();
-        if (value.Length == 0) return words;
-
-        StringBuilder current = new();
-        for (int i = 0; i < value.Length; i++)
-        {
-            char c = value[i];
-            if (IsSeparator(c))
-            {
-                FlushWord(words, current);
-                continue;
-            }
-
-            if (current.Length == 0)
-            {
-                current.Append(c);
-                continue;
-            }
-
-            char prev = current[^1];
-            bool isUpper = char.IsUpper(c);
-            bool prevWasLower = char.IsLower(prev);
-            bool prevWasDigit = char.IsDigit(prev);
-            bool isLetter = char.IsLetter(c);
-
-            bool boundary = false;
-            if (isUpper && prevWasLower)
-            {
-                boundary = true;
-            }
-            else if (isLetter && prevWasDigit)
-            {
-                boundary = true;
-            }
-            else if (isUpper && current.Length >= 2 && char.IsUpper(prev) && i + 1 < value.Length && char.IsLower(value[i + 1]))
-            {
-                // Acronym to word transition: last upper char joins the next word.
-                FlushWord(words, current);
-                current.Append(c);
-                continue;
-            }
-
-            if (boundary)
-            {
-                FlushWord(words, current);
-            }
-
-            current.Append(c);
-        }
-
-        FlushWord(words, current);
-        return words;
-
-        static bool IsSeparator(char c) =>
-            char.IsWhiteSpace(c) || c is '-' or '_' or '.' or ':' or ';' or '/' or '\\';
-
-        static void FlushWord(List<string> sink, StringBuilder buffer)
-        {
-            if (buffer.Length == 0) return;
-            sink.Add(buffer.ToString());
-            buffer.Clear();
-        }
-    }
-
-    /// <summary>
     /// Splits <paramref name="value" /> into word tokens using acronym-aware tokenisation driven by
     /// <paramref name="options" />.
     /// </summary>
@@ -130,7 +42,7 @@ public static partial class StringExtensions
         List<string> words = new();
         if (value.Length == 0) return words;
 
-        Dictionary<string, string> canonical = BuildAcronymLookup(options.Acronyms);
+        Dictionary<string, string> canonical = options.AcronymLookup;
 
         StringBuilder chunk = new();
         for (int i = 0; i <= value.Length; i++)
@@ -151,24 +63,6 @@ public static partial class StringExtensions
         }
 
         return words;
-    }
-
-    /// <summary>
-    /// Builds a case-insensitive lookup that maps an upper-cased acronym key to its canonical spelling.
-    /// </summary>
-    /// <param name="acronyms">The acronym catalogue.</param>
-    /// <returns>A dictionary keyed by the invariant upper-case form of each acronym.</returns>
-    private static Dictionary<string, string> BuildAcronymLookup(IReadOnlyCollection<string> acronyms)
-    {
-        Dictionary<string, string> map = new(StringComparer.Ordinal);
-        foreach (string acronym in acronyms)
-        {
-            if (string.IsNullOrEmpty(acronym)) continue;
-            string key = acronym.ToUpperInvariant();
-            map[key] = acronym;
-        }
-
-        return map;
     }
 
     /// <summary>

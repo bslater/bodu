@@ -98,7 +98,7 @@ public static partial class StringExtensions
     /// <returns>The sentence-case rendering of <paramref name="value" />.</returns>
     private static string SentenceCasePhrase(string value, WordCasingOptions options)
     {
-        Dictionary<string, string> canonical = BuildAcronymLookup(options.Acronyms);
+        Dictionary<string, string> canonical = options.AcronymLookup;
         CultureInfo culture = options.Culture;
 
         StringBuilder builder = new(value.Length);
@@ -140,7 +140,7 @@ public static partial class StringExtensions
         List<string> words = EnumerateWords(value, options);
         if (words.Count == 0) return string.Empty;
 
-        Dictionary<string, string> canonical = BuildAcronymLookup(options.Acronyms);
+        Dictionary<string, string> canonical = options.AcronymLookup;
         CultureInfo culture = options.Culture;
 
         StringBuilder builder = new(value.Length);

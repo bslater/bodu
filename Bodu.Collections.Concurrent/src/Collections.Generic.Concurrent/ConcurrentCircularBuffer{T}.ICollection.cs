@@ -8,8 +8,8 @@ using System.Collections;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
-public partial class ConcurrentCircularBuffer<T>
-    : System.Collections.ICollection
+public sealed partial class ConcurrentCircularBuffer<T> :
+    System.Collections.ICollection
 {
     /// <summary>
     /// Gets an approximate count of elements currently contained in the buffer.

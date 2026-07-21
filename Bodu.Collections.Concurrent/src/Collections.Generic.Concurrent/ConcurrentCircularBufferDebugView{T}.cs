@@ -41,5 +41,5 @@ internal sealed class ConcurrentCircularBufferDebugView<T>
     /// The display root is hidden so the debugger expands directly into the item list.
     /// </remarks>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-    public T[] Items => [.. _buffer];
+    public T[] Items => _buffer.ToArray();
 }

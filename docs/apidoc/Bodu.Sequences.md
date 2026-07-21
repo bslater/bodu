@@ -13,7 +13,7 @@ Unlike the `Bodu.Collections.*` namespaces — which hold container data structu
 ## Key types
 
 - <xref:Bodu.Sequences.SequenceGenerator> — the single static factory class.
-  - **General-purpose primitives** — `Range` (inclusive start/stop with inferred or explicit step over `int`, plus a count-bounded `long` overload), `Repeat` (finite or unbounded single-value feed), `NextWhile` (a state-machine generator driven by a seed, a predicate, and a successor function — value, indexed, and custom-state overloads), and `Factory` (adapts a delegate-returned `IEnumerator<T>` into a re-enumerable `IEnumerable<T>`).
+  - **General-purpose primitives** — `Range` (inclusive start/stop with inferred or explicit step over `int`, plus a count-bounded `long` overload), `NextWhile` (a state-machine generator driven by a seed, a predicate, and a successor function — value, indexed, and custom-state overloads), and `Factory` (adapts a delegate-returned `IEnumerator<T>` into a re-enumerable `IEnumerable<T>`).
   - **Named mathematical series** — `Fibonacci`, `Farey`, `Leibniz`, `LookAndSay`, `ThueMorse`.
 
 ## Example
@@ -39,6 +39,6 @@ IEnumerable<int> powers = SequenceGenerator.NextWhile(
 
 - **Deferred and allocation-light.** Every member returns a deferred sequence; nothing is produced until the consumer iterates, and allocation is limited to the iterator state.
 - **Single-pass side effects.** Re-enumerating a returned sequence re-invokes the supplied delegates. Materialise with `ToArray()` / `ToList()` for a stable snapshot.
-- **Unbounded shapes exist.** `Repeat(value)`, `Range(start, stop, step: 0)`, and a never-failing `NextWhile` predicate produce infinite sequences — bound them with `Take` / `TakeWhile`.
+- **Unbounded shapes exist.** `Range(start, stop, step: 0)` and a never-failing `NextWhile` predicate produce infinite sequences — bound them with `Take` / `TakeWhile`. For a fixed-length single-value feed, use the BCL `Enumerable.Repeat`.
 - **Argument validation.** Public factories validate their arguments via <xref:Bodu.ThrowHelper>.
 - **See also:** the [Bodu.Core introduction](~/docs/core/index.md), the <xref:Bodu.Collections.Generic> container types, and the <xref:Bodu.Collections.Generic.Extensions> sequence-shaping extension methods.

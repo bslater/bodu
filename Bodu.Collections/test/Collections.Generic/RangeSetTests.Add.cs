@@ -10,6 +10,50 @@ public partial class RangeSetTests
 {
 
     /// <summary>
+    /// Verifies that <see cref="RangeSet{T}.Add(int, int)" /> returns <see langword="true" /> when the added range
+    /// changes the set.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenRangeChangesSet_ShouldReturnTrue()
+    {
+        var sut = new RangeSet<int>();
+
+        bool firstChanged = sut.Add(0, 10);
+        bool secondChanged = sut.Add(20, 30);
+
+        Assert.IsTrue(firstChanged, "The first insert into an empty set must report a change.");
+        Assert.IsTrue(secondChanged, "Inserting a disjoint range must report a change.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeSet{T}.Add(int, int)" /> returns <see langword="false" /> when the added range is
+    /// already fully covered and the set is left unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenRangeAlreadyFullyCovered_ShouldReturnFalse()
+    {
+        RangeSet<int> sut = CreateSet((0, 30));
+
+        bool changed = sut.Add(5, 25);
+
+        Assert.IsFalse(changed, "Re-adding a range already covered by an existing range must report no change.");
+        Assert.AreEqual(1, sut.Count);
+        AssertContents(sut, (0, 30));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeSet{T}.Add(Range{T})" /> returns the same change flag as the endpoint overload.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenRangeOverload_ShouldReturnChangeFlag()
+    {
+        RangeSet<int> sut = CreateSet((0, 30));
+
+        Assert.IsTrue(sut.Add(new Range<int>(40, 50)), "A disjoint range must report a change.");
+        Assert.IsFalse(sut.Add(new Range<int>(10, 20)), "A fully covered range must report no change.");
+    }
+
+    /// <summary>
     /// Verifies that adding a range with a <see langword="null" /> end is rejected.
     /// </summary>
     [TestMethod]

@@ -14,17 +14,24 @@ public partial struct WeekPattern
     /// Determines whether the specified object is equal to the current <see cref="WeekPattern" />.
     /// </summary>
     /// <param name="obj">
-    /// The object to compare. Accepted types are <see cref="WeekPattern" /> and <see cref="byte" />; all other types,
-    /// including <see langword="null" />, return <see langword="false" />.
+    /// The object to compare. Only another boxed <see cref="WeekPattern" /> can be equal; all other types, including a
+    /// boxed <see cref="byte" /> and <see langword="null" />, return <see langword="false" />.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="WeekPattern" /> or <see cref="byte" /> with
-    /// the same selected-day bitmask; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="WeekPattern" /> with the same selected-day
+    /// bitmask; otherwise, <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// <para>
+    /// A boxed <see cref="byte" /> is intentionally not considered equal here so that <see cref="object" />-level
+    /// equality stays symmetric: <see cref="byte.Equals(object)" /> can never recognize a boxed
+    /// <see cref="WeekPattern" />, so treating the reverse comparison as equal would violate the reflexive-symmetric
+    /// contract of <see cref="object.Equals(object)" /> and corrupt hash-based collections. Use the strongly typed
+    /// <see cref="Equals(byte)" /> overload to compare against a raw bitmask.
+    /// </para>
+    /// </remarks>
     public override bool Equals(object? obj) =>
-         obj is WeekPattern pattern
-            ? Equals(pattern)
-            : obj is byte b && Equals(b);
+        obj is WeekPattern pattern && Equals(pattern);
 
     /// <summary>
     /// Determines whether the specified <see cref="WeekPattern" /> is equal to the current instance.

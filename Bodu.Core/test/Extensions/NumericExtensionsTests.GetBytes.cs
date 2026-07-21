@@ -45,6 +45,18 @@ public partial class NumericExtensionsTests
             1.0m.GetBytes();
         });
 
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.GetBytes{T}" /> throws <see cref="InvalidOperationException" /> for a
+    /// numeric type that satisfies the <see cref="System.Numerics.INumberBase{TSelf}" /> constraint but is not one of
+    /// the fixed set supported by <see cref="BitConverter" />.
+    /// </summary>
+    [TestMethod]
+    public void GetBytes_WhenTypeIsNumericButUnsupported_ForInt128_ShouldThrowExactly() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            ((System.Int128)1).GetBytes();
+        });
+
     // --------------------------------------------------
     // byte / sbyte — single-byte types are endianness-neutral
     // --------------------------------------------------

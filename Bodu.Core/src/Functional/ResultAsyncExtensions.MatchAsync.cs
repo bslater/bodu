@@ -126,4 +126,110 @@ public static partial class ResultAsyncExtensions
                 ? await onSuccess(value).ConfigureAwait(false)
                 : await onFailure(source.Error).ConfigureAwait(false);
     }
+
+    /// <summary>
+    /// Asynchronously collapses the awaited valueless result to a single value by invoking the matching branch.
+    /// </summary>
+    /// <typeparam name="TResult">The type produced by both branches.</typeparam>
+    /// <param name="source">The task producing the result to collapse. Must not be <see langword="null" />.</param>
+    /// <param name="onSuccess">The factory invoked when the result represents success.</param>
+    /// <param name="onFailure">
+    /// The projection invoked with the carried error when the result represents failure.
+    /// </param>
+    /// <returns>A task that completes with the value produced by the invoked branch.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="source" />, <paramref name="onSuccess" />, or <paramref name="onFailure" /> is
+    /// <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Exactly one branch is invoked. Argument validation runs synchronously, so a <see langword="null" /> argument
+    /// faults at the call site rather than on the returned task.
+    /// </para>
+    /// </remarks>
+    public static Task<TResult> MatchAsync<TResult>(this Task<Result> source, Func<TResult> onSuccess, Func<ResultError, TResult> onFailure)
+    {
+        ThrowHelper.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(onSuccess);
+        ThrowHelper.ThrowIfNull(onFailure);
+
+        return MatchCoreAsync(source, onSuccess, onFailure);
+
+        static async Task<TResult> MatchCoreAsync(Task<Result> source, Func<TResult> onSuccess, Func<ResultError, TResult> onFailure)
+        {
+            var result = await source.ConfigureAwait(false);
+            return result.Match(onSuccess, onFailure);
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously collapses the awaited valueless result to a single value by invoking and awaiting the matching
+    /// asynchronous branch.
+    /// </summary>
+    /// <typeparam name="TResult">The type produced by both branches.</typeparam>
+    /// <param name="source">The task producing the result to collapse. Must not be <see langword="null" />.</param>
+    /// <param name="onSuccess">The asynchronous factory invoked when the result represents success.</param>
+    /// <param name="onFailure">
+    /// The asynchronous projection invoked with the carried error when the result represents failure.
+    /// </param>
+    /// <returns>A task that completes with the value produced by the awaited branch.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="source" />, <paramref name="onSuccess" />, or <paramref name="onFailure" /> is
+    /// <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Exactly one branch is invoked. Argument validation runs synchronously, so a <see langword="null" /> argument
+    /// faults at the call site rather than on the returned task.
+    /// </para>
+    /// </remarks>
+    public static Task<TResult> MatchAsync<TResult>(this Task<Result> source, Func<Task<TResult>> onSuccess, Func<ResultError, Task<TResult>> onFailure)
+    {
+        ThrowHelper.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(onSuccess);
+        ThrowHelper.ThrowIfNull(onFailure);
+
+        return MatchCoreAsync(source, onSuccess, onFailure);
+
+        static async Task<TResult> MatchCoreAsync(Task<Result> source, Func<Task<TResult>> onSuccess, Func<ResultError, Task<TResult>> onFailure)
+        {
+            var result = await source.ConfigureAwait(false);
+            return result.IsSuccess
+                ? await onSuccess().ConfigureAwait(false)
+                : await onFailure(result.Error).ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously collapses the valueless result to a single value by invoking and awaiting the matching
+    /// asynchronous branch.
+    /// </summary>
+    /// <typeparam name="TResult">The type produced by both branches.</typeparam>
+    /// <param name="source">The result to collapse.</param>
+    /// <param name="onSuccess">The asynchronous factory invoked when the result represents success.</param>
+    /// <param name="onFailure">
+    /// The asynchronous projection invoked with the carried error when the result represents failure.
+    /// </param>
+    /// <returns>A task that completes with the value produced by the awaited branch.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="onSuccess" /> or <paramref name="onFailure" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Exactly one branch is invoked. Argument validation runs synchronously, so a <see langword="null" /> argument
+    /// faults at the call site rather than on the returned task.
+    /// </para>
+    /// </remarks>
+    public static Task<TResult> MatchAsync<TResult>(this Result source, Func<Task<TResult>> onSuccess, Func<ResultError, Task<TResult>> onFailure)
+    {
+        ThrowHelper.ThrowIfNull(onSuccess);
+        ThrowHelper.ThrowIfNull(onFailure);
+
+        return MatchCoreAsync(source, onSuccess, onFailure);
+
+        static async Task<TResult> MatchCoreAsync(Result source, Func<Task<TResult>> onSuccess, Func<ResultError, Task<TResult>> onFailure) =>
+            source.IsSuccess
+                ? await onSuccess().ConfigureAwait(false)
+                : await onFailure(source.Error).ConfigureAwait(false);
+    }
 }

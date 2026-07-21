@@ -185,7 +185,7 @@ public static partial class StringExtensions
     /// </returns>
     private static List<string> EnumeratePhraseWords(string value, WordCasingOptions options)
     {
-        Dictionary<string, string> canonical = BuildAcronymLookup(options.Acronyms);
+        Dictionary<string, string> canonical = options.AcronymLookup;
         List<string> tokens = new();
 
         int i = 0;

@@ -113,6 +113,10 @@ public sealed partial class Tree<T>
     /// Gets the depth of this node, measured as the number of edges from the root.
     /// </summary>
     /// <value>Zero for a root node, increasing by one per level.</value>
+    /// <remarks>
+    /// This property is computed on each access by walking the parent chain to the root; it is <c>O(d)</c> in the depth
+    /// of this node rather than a constant-time field read. Cache the result when reading it repeatedly in a hot path.
+    /// </remarks>
     public int Depth
     {
         get
@@ -130,6 +134,11 @@ public sealed partial class Tree<T>
     /// descendant leaf.
     /// </summary>
     /// <value>Zero for a leaf node.</value>
+    /// <remarks>
+    /// This property is computed on each access by traversing the entire subtree rooted at this node; it is <c>O(n)</c>
+    /// in the number of descendants rather than a constant-time field read. Cache the result when reading it repeatedly
+    /// in a hot path.
+    /// </remarks>
     public int Height
     {
         get

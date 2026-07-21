@@ -45,6 +45,16 @@ public static partial class DateOnlyExtensions
     /// <see cref="GregorianCalendar" />, <see cref="HebrewCalendar" />). If <paramref name="calendar" /> is
     /// <see langword="null" />, the calendar of <see cref="CultureInfo.CurrentCulture" /> is used.
     /// </para>
+    /// <para>
+    /// <paramref name="date" /> is first projected into the target calendar, so the result is equivalent to
+    /// <c>calendar.GetDaysInYear(calendar.GetYear(dateTime))</c> for the <see cref="DateTime" /> at midnight of
+    /// <paramref name="date" /> — the length of the calendar's own year containing the date, not the Gregorian year.
+    /// </para>
     /// </remarks>
-    public static int DaysInYear(this DateOnly date, Calendar? calendar) => (calendar ?? CultureInfo.CurrentCulture.Calendar).GetDaysInYear(date.Year);
+    public static int DaysInYear(this DateOnly date, Calendar? calendar)
+    {
+        Calendar target = calendar ?? CultureInfo.CurrentCulture.Calendar;
+
+        return target.GetDaysInYear(target.GetYear(date.ToDateTime(TimeOnly.MinValue)));
+    }
 }

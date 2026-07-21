@@ -32,9 +32,13 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method uses the culture-defined week numbering system. It begins by identifying the first occurrence of the
-    /// culture's <see cref="DateTimeFormatInfo.FirstDayOfWeek" /> on or before January 1 of the supplied year, then
-    /// advances in 7-day intervals to calculate the start of the supplied week.
+    /// This method uses the culture-defined week numbering system. The start of week 1 depends on the culture's
+    /// <see cref="CalendarWeekRule" />: under <see cref="CalendarWeekRule.FirstDay" /> the (possibly partial) first
+    /// week begins on January 1 itself; under <see cref="CalendarWeekRule.FirstFullWeek" /> it begins at the first
+    /// occurrence of the culture's <see cref="DateTimeFormatInfo.FirstDayOfWeek" /> on or after January 1; and under
+    /// <see cref="CalendarWeekRule.FirstFourDayWeek" /> it begins at the week boundary of the week containing January 1
+    /// when at least four days of that week fall in the new year (which may place the start in the previous December),
+    /// otherwise one week later. Subsequent weeks advance in 7-day intervals from the week-boundary alignment.
     /// </para>
     /// <para>
     /// The result is validated by recalculating the week number for the computed date using the internal week-of-year
@@ -56,19 +60,38 @@ public static partial class DateTimeExtensions
 
         DateTimeFormatInfo dfi = (culture ?? CultureInfo.CurrentCulture).DateTimeFormat;
 
-        // Compute ticks for the first day of the year
-        long ticks = GetDateTicks(year, 1, 1);
+        long jan1 = GetDateTicks(year, 1, 1);
 
-        // Compute the ticks from the first week start
-        ticks -= GetTicksSincePreviousOrSameDayOfWeek(ticks, dfi.FirstDayOfWeek);
-        ticks += (week - 1) * 7L * TimeSpan.TicksPerDay;
+        // Days from the week boundary back to January 1 (0 when January 1 is itself the week start).
+        long offsetTicks = GetTicksSincePreviousOrSameDayOfWeek(jan1, dfi.FirstDayOfWeek);
 
-        // Validate week number
-        int resultWeek = GetWeekOfYear(ticks, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
-        return resultWeek != week
-            ? throw new ArgumentOutOfRangeException(
+        // Start of week 1 under the culture's rule. FirstDay: the (possibly partial) first week begins on January 1;
+        // weeks 2+ are aligned to the week boundary of the week containing January 1. FirstFullWeek: week 1 begins at
+        // the first week boundary on or after January 1. FirstFourDayWeek: week 1 begins at the boundary of the week
+        // containing January 1 when that week keeps at least four days in the new year (possibly in the previous
+        // December), otherwise one week later.
+        long ticks = dfi.CalendarWeekRule switch
+        {
+            CalendarWeekRule.FirstDay =>
+                week == 1 ? jan1 : jan1 - offsetTicks + ((week - 1) * 7L * TimeSpan.TicksPerDay),
+            CalendarWeekRule.FirstFullWeek =>
+                (offsetTicks == 0 ? jan1 : jan1 + ((7L * TimeSpan.TicksPerDay) - offsetTicks)) + ((week - 1) * 7L * TimeSpan.TicksPerDay),
+            CalendarWeekRule.FirstFourDayWeek =>
+                (offsetTicks <= 3L * TimeSpan.TicksPerDay ? jan1 - offsetTicks : jan1 + ((7L * TimeSpan.TicksPerDay) - offsetTicks)) + ((week - 1) * 7L * TimeSpan.TicksPerDay),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(culture),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, nameof(CalendarWeekRule), dfi.CalendarWeekRule)),
+        };
+
+        // Validate week number: an out-of-range or nonexistent week lands on a date whose recomputed week differs.
+        if ((ulong)ticks > (ulong)DateTime.MaxValue.Ticks
+            || GetWeekOfYear(ticks, dfi.CalendarWeekRule, dfi.FirstDayOfWeek) != week)
+        {
+            throw new ArgumentOutOfRangeException(
                 nameof(week),
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_WeekNotValidForYearAndCulture, week, year, (culture ?? CultureInfo.CurrentCulture).Name))
-            : new DateTime(ticks, DateTimeKind.Unspecified);
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_WeekNotValidForYearAndCulture, week, year, (culture ?? CultureInfo.CurrentCulture).Name));
+        }
+
+        return new DateTime(ticks, DateTimeKind.Unspecified);
     }
 }

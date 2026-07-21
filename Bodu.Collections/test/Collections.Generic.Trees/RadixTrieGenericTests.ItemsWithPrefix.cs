@@ -66,4 +66,46 @@ public sealed partial class RadixTrieGenericTests
         Assert.IsTrue(sut.KeysWithPrefix("tea").ToHashSet().SetEquals(new[] { "tea", "team" }));
         Assert.IsTrue(sut.KeysWithPrefix("te").ToHashSet().SetEquals(new[] { "tea", "team", "ten" }));
     }
+
+    /// <summary>
+    /// Verifies that mutating the trie while a <see cref="RadixTrie{TValue}.KeysWithPrefix(string)" /> sequence is
+    /// being enumerated causes the next iteration step to throw <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void KeysWithPrefix_WhenMutatedDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var sut = new RadixTrie<int>
+        {
+            ["tea"] = 1,
+            ["team"] = 2,
+            ["ten"] = 3,
+        };
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (string key in sut.KeysWithPrefix("te"))
+                sut.Remove("ten");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that mutating the trie while a <see cref="RadixTrie{TValue}.ItemsWithPrefix(string)" /> sequence is
+    /// being enumerated causes the next iteration step to throw <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void ItemsWithPrefix_WhenMutatedDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        var sut = new RadixTrie<int>
+        {
+            ["tea"] = 1,
+            ["team"] = 2,
+            ["ten"] = 3,
+        };
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (KeyValuePair<string, int> item in sut.ItemsWithPrefix("te"))
+                sut["teal"] = 4;
+        });
+    }
 }

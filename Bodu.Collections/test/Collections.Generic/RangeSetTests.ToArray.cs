@@ -53,4 +53,21 @@ public partial class RangeSetTests
         Assert.AreEqual(new Range<int>(20, 25), array[2]);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="RangeSet{T}.ToArray" /> projects ranges whose endpoints are ordered by a custom
+    /// comparer that disagrees with the default comparer, rather than re-validating with the default order and throwing.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenComparerReversesDefaultOrder_ShouldReturnRanges()
+    {
+        var sut = new RangeSet<int>(new ReverseComparer<int>());
+        sut.Add(10, 5); // valid under the reverse comparer; inverted under the default order
+
+        Range<int>[] array = sut.ToArray();
+
+        Assert.HasCount(1, array);
+        Assert.AreEqual(10, array[0].StartInclusive);
+        Assert.AreEqual(5, array[0].EndExclusive);
+    }
+
 }

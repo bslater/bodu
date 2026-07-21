@@ -207,6 +207,9 @@
   <data name="Arg_Invalid_MaxIsLessThanSuffixLength" xml:space="preserve">
     <value>The maximum length of the string is less than the length of the suffix.</value>
   </data>
+  <data name="Arg_Invalid_MinGreaterThanMax" xml:space="preserve">
+    <value>The minimum value '{0}' must not be greater than the maximum value '{1}'.</value>
+  </data>
   <data name="Arg_Invalid_MustBeComparableType" xml:space="preserve">
     <value>Object must be of type {0} to be compared.</value>
   </data>

@@ -21,12 +21,10 @@ public static partial class DateOnlyExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// The result is calculated by comparing the week-of-year for <paramref name="date" /> against the week-of-year for
-    /// the first day of its month, plus one.
-    /// </para>
-    /// <para>
     /// Week numbering is determined by <see cref="CultureInfo.CurrentCulture" />, specifically its
-    /// <see cref="DateTimeFormatInfo.CalendarWeekRule" /> and <see cref="DateTimeFormatInfo.FirstDayOfWeek" />.
+    /// <see cref="DateTimeFormatInfo.CalendarWeekRule" /> and <see cref="DateTimeFormatInfo.FirstDayOfWeek" />. See
+    /// <see cref="WeekOfMonth(DateOnly, CalendarWeekRule, DayOfWeek)" /> for the precise semantics of each rule,
+    /// including the treatment of dates that precede week 1 of their month.
     /// </para>
     /// </remarks>
     public static int WeekOfMonth(this DateOnly date)
@@ -51,7 +49,9 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// <para>
     /// This overload uses the supplied culture's <see cref="DateTimeFormatInfo.CalendarWeekRule" /> and
-    /// <see cref="DateTimeFormatInfo.FirstDayOfWeek" /> to compute the result.
+    /// <see cref="DateTimeFormatInfo.FirstDayOfWeek" /> to compute the result. See
+    /// <see cref="WeekOfMonth(DateOnly, CalendarWeekRule, DayOfWeek)" /> for the precise semantics of each rule,
+    /// including the treatment of dates that precede week 1 of their month.
     /// </para>
     /// </remarks>
     public static int WeekOfMonth(this DateOnly date, CultureInfo? culture)
@@ -71,12 +71,31 @@ public static partial class DateOnlyExtensions
     /// <param name="weekStart">The <see cref="DayOfWeek" /> on which each week begins.</param>
     /// <returns>
     /// An integer indicating the week of the month in which <paramref name="date" /> falls, starting at <c>1</c>.
+    /// Under <see cref="CalendarWeekRule.FirstFullWeek" /> and <see cref="CalendarWeekRule.FirstFourDayWeek" />, dates
+    /// that precede week 1 of their month return the week number they carry in the previous month (see remarks).
     /// </returns>
     /// <remarks>
     /// <para>
-    /// The result is calculated by comparing the week-of-year for <paramref name="date" /> against the week-of-year for
-    /// the first day of its month, using the supplied rule and start day.
+    /// The supplied <paramref name="weekRule" /> determines where week 1 of the month begins, mirroring the semantics
+    /// the <see cref="System.Globalization.Calendar.GetWeekOfYear" /> family applies to years:
     /// </para>
+    /// <para>
+    /// <see cref="CalendarWeekRule.FirstDay" /> — week 1 begins on the first day of the month, however short that
+    /// partial week is; each subsequent week begins on the next <paramref name="weekStart" />.
+    /// </para>
+    /// <para>
+    /// <see cref="CalendarWeekRule.FirstFullWeek" /> — week 1 begins on the first <paramref name="weekStart" /> on or
+    /// after the first day of the month. Dates before that boundary belong to the trailing week of the previous month
+    /// and return that week's number (for example, 1 March 2024 with a Sunday week start returns <c>4</c>, the week
+    /// number of the week beginning Sunday 25 February).
+    /// </para>
+    /// <para>
+    /// <see cref="CalendarWeekRule.FirstFourDayWeek" /> — the week containing the first day of the month is week 1 when
+    /// at least four of its days fall in that month; otherwise week 1 begins on the following
+    /// <paramref name="weekStart" /> and the leading dates resolve to the previous month's trailing week, as for
+    /// <see cref="CalendarWeekRule.FirstFullWeek" />.
+    /// </para>
+    /// <para>The result is therefore never less than <c>1</c>, but it is not always the week of the date's own month.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="weekRule" /> is not a defined value of the <see cref="CalendarWeekRule" />
@@ -87,8 +106,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekRule);
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekStart);
-        var firstOfMonth = new DateOnly(date.Year, date.Month, 1);
-        int offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
-        return ((date.Day + offsetDays - 1) / 7) + 1;
+
+        return DateTimeExtensions.GetWeekOfMonthCore(date.Year, date.Month, date.Day, date.DayOfWeek, weekRule, weekStart);
     }
 }

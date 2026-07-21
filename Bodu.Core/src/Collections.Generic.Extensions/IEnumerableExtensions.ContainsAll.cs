@@ -4,12 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-#if !NETSTANDARD2_0
-
-using Bodu.Collections.Generic.Internal;
-
-#endif
-
 namespace Bodu.Collections.Generic.Extensions;
 
 public static partial class IEnumerableExtensions
@@ -29,6 +23,11 @@ public static partial class IEnumerableExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown if either <paramref name="source" /> or <paramref name="items" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// Memory use scales with the number of <paramref name="items" />, not the size of <paramref name="source" />:
+    /// the items are collected into a pending set and <paramref name="source" /> is streamed with a single
+    /// enumeration, stopping as soon as every item has been seen.
+    /// </remarks>
     public static bool ContainsAll<T>(
         this IEnumerable<T> source,
         IEnumerable<T> items,
@@ -37,32 +36,19 @@ public static partial class IEnumerableExtensions
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(items);
 
-        items = SequenceUtility.EnsureMaterialized(items);
-
-        // Fast empty check without allocating an enumerator.
-        // EnsureMaterialized returns ICollection<T> where possible, making this O(1).
-        if (items is ICollection<T> itemsCollection && itemsCollection.Count == 0)
+        // Build the pending-needle set — O(|items|) memory — rather than materializing the haystack, whose size the
+        // caller cannot bound (its sibling ContainsAny applies the same smaller-side discipline).
+        var pending = new HashSet<T>(items, comparer);
+        if (pending.Count == 0)
             return true;
 
-        // Materialize the source into a HashSet for O(1) membership lookups.
-        var sourceSet = new HashSet<T>(source, comparer);
-        if (sourceSet.Count == 0)
-            return false;
-
-#pragma warning disable S3267 // Loops should be simplified with "LINQ" expressions
-
-        // Using a foreach loop instead of LINQ to:
-        // - Avoid delegate allocation from predicate-based .Any(...)
-        // - Ensure optimal short-circuit performance
-        // - Preserve debuggability and allow future extensions with minimal cost
-        foreach (T? item in items)
+        // Stream the source once, retiring needles as they are seen; short-circuit when none remain.
+        foreach (T item in source)
         {
-            if (!sourceSet.Contains(item))
-                return false;
+            if (pending.Remove(item) && pending.Count == 0)
+                return true;
         }
 
-#pragma warning restore S3267 // Loops should be simplified with "LINQ" expressions
-
-        return true;
+        return false;
     }
 }

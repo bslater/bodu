@@ -192,4 +192,32 @@ public partial class BufferConverterTests
         });
     }
 
+    /// <summary>
+    /// Verifies that the array-based overload converts a byte array into elements wider than one byte, sizing the
+    /// requested range in bytes for the source and in elements for the result.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenElementIsInt32_ForByteArray_ShouldConvertElements()
+    {
+        byte[] source = [.. BitConverter.GetBytes(0x01020304), .. BitConverter.GetBytes(0x05060708)];
+
+        int[] actual = source.ToArray<int>(0, 2);
+
+        CollectionAssert.AreEqual(new[] { 0x01020304, 0x05060708 }, actual);
+    }
+
+    /// <summary>
+    /// Verifies that the array-based overload honors a non-zero source index when converting elements wider than one
+    /// byte.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenElementIsInt64WithOffset_ForByteArray_ShouldConvertElements()
+    {
+        byte[] source = [0xFF, 0xFF, .. BitConverter.GetBytes(0x0102030405060708L)];
+
+        long[] actual = source.ToArray<long>(2, 1);
+
+        CollectionAssert.AreEqual(new[] { 0x0102030405060708L }, actual);
+    }
+
 }

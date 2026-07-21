@@ -94,6 +94,27 @@ public readonly partial struct Option<T>
     }
 
     /// <summary>
+    /// Invokes the specified action with the contained value when a value is present.
+    /// </summary>
+    /// <param name="action">The side effect invoked with the contained value.</param>
+    /// <returns>This option, unchanged, so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="action" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// <para>
+    /// The action is not invoked when this option is <c>None</c>; the option itself is always returned.
+    /// </para>
+    /// </remarks>
+    public Option<T> Tap(Action<T> action)
+    {
+        ThrowHelper.ThrowIfNull(action);
+
+        if (_hasValue)
+            action(_value);
+
+        return this;
+    }
+
+    /// <summary>
     /// Collapses the option to a single value by invoking the matching branch.
     /// </summary>
     /// <typeparam name="TResult">The type produced by both branches.</typeparam>

@@ -1,0 +1,57 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="DateOnlyExtensions.IsoYear.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Globalization;
+using System.Runtime.CompilerServices;
+
+namespace Bodu.Extensions;
+
+public static partial class DateOnlyExtensions
+{
+#if BODU_EXTENSION_MEMBERS
+
+    extension(DateOnly date)
+    {
+        /// <summary>
+        /// Gets the ISO 8601 year associated with this date.
+        /// </summary>
+        /// <value>The ISO 8601 calendar year that contains the ISO week of this date.</value>
+        /// <remarks>
+        /// <para>
+        /// The ISO 8601 year may differ from the calendar year of this date. A date near the start or end of a calendar
+        /// year may belong to the ISO year of the adjacent calendar year, depending on which ISO week it falls into.
+        /// For example, January 1 may belong to the last week of the previous ISO year, and December 31 may belong to
+        /// week 1 of the following ISO year.
+        /// </para>
+        /// </remarks>
+        public int IsoYear
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ISOWeek.GetYear(date.ToDateTime(TimeOnly.MinValue));
+        }
+    }
+
+#else
+
+    /// <summary>
+    /// Returns the ISO 8601 year associated with the specified <paramref name="date" />.
+    /// </summary>
+    /// <param name="date">The date value to evaluate.</param>
+    /// <returns>The ISO 8601 calendar year that contains the ISO week of <paramref name="date" />.</returns>
+    /// <remarks>
+    /// <para>
+    /// The ISO 8601 year may differ from the calendar year of <paramref name="date" />. A date near the start or end of
+    /// a calendar year may belong to the ISO year of the adjacent calendar year, depending on which ISO week it falls
+    /// into. For example, January 1 may belong to the last week of the previous ISO year, and December 31 may belong to
+    /// week 1 of the following ISO year.
+    /// </para>
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int IsoYear(this DateOnly date) =>
+        ISOWeek.GetYear(date.ToDateTime(TimeOnly.MinValue));
+
+#endif
+}
