@@ -124,6 +124,29 @@ public readonly partial struct Money
         new(amount, _code, _explicitScalePlusOne);
 
     /// <summary>
+    /// Returns the additive result of this value and <paramref name="other" />, reporting the finer (maximum) of the
+    /// two operands' minor-unit scales.
+    /// </summary>
+    /// <param name="other">The other operand, already verified to share this value's currency.</param>
+    /// <param name="amount">The pre-computed sum or difference of the two amounts.</param>
+    /// <returns>The combined <see cref="Money" />.</returns>
+    /// <remarks>
+    /// Mirrors <see cref="decimal" /> addition semantics (and the max-scale rule of <c>BigDecimal</c> and SQL
+    /// <c>NUMERIC</c>): the sum of two decimals carries the maximum of the operand scales, so taking that maximum as
+    /// the result's reported scale is lossless and needs no rounding, and the reported precision is commutative even
+    /// when the operands' scales differ. When both operands share a scale representation the result keeps it
+    /// unchanged, preserving the registry-derived encoding for ordinary money.
+    /// </remarks>
+    private Money WithAdditiveAmount(Money other, decimal amount)
+    {
+        byte scalePlusOne = _explicitScalePlusOne == other._explicitScalePlusOne
+            ? _explicitScalePlusOne
+            : (byte)(Math.Max(MinorUnits, other.MinorUnits) + 1);
+
+        return new Money(amount, _code, scalePlusOne);
+    }
+
+    /// <summary>
     /// Returns a copy of this value with <paramref name="amount" /> rounded to this value's minor-unit precision,
     /// preserving the ISO code and any explicit scale.
     /// </summary>

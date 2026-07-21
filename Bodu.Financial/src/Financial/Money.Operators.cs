@@ -19,10 +19,16 @@ public readonly partial struct Money
     /// <returns>The sum of <paramref name="left" /> and <paramref name="right" />.</returns>
     /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
     /// <exception cref="OverflowException">The sum falls outside the range of <see cref="decimal" />.</exception>
+    /// <remarks>
+    /// When the operands report different minor-unit scales — for example a two-decimal settled amount and a
+    /// six-decimal unit price — the result carries the finer (maximum) of the two scales, mirroring
+    /// <see cref="decimal" /> addition semantics. The sum is exact at that scale, so no rounding occurs and the
+    /// reported precision is the same regardless of operand order.
+    /// </remarks>
     public static Money operator +(Money left, Money right)
     {
         EnsureSameCurrency(left, right);
-        return left.WithAmount(left._amount + right._amount);
+        return left.WithAdditiveAmount(right, left._amount + right._amount);
     }
 
     /// <summary>
@@ -35,10 +41,15 @@ public readonly partial struct Money
     /// <exception cref="OverflowException">
     /// The difference falls outside the range of <see cref="decimal" />.
     /// </exception>
+    /// <remarks>
+    /// When the operands report different minor-unit scales, the result carries the finer (maximum) of the two
+    /// scales, mirroring <see cref="decimal" /> subtraction semantics; the difference is exact at that scale and the
+    /// reported precision does not depend on operand order.
+    /// </remarks>
     public static Money operator -(Money left, Money right)
     {
         EnsureSameCurrency(left, right);
-        return left.WithAmount(left._amount - right._amount);
+        return left.WithAdditiveAmount(right, left._amount - right._amount);
     }
 
     /// <summary>

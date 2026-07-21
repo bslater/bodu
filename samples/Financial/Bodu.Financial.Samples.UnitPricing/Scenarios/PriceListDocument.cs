@@ -32,8 +32,8 @@ public static class PriceListDocument
     {
         Console.WriteLine("--- Price-list document: 6-dp prices inside a POCO ---");
 
-        var priceContext = MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom, CustomScale = 6 };
-        Money Price(decimal quoted) => new CalculatedMoney(quoted, CurrencyCode.USD).RoundToMoney(priceContext);
+        // Each quoted price is minted directly at six places via the explicit-scale factory.
+        Money Price(decimal quoted) => Money.FromExplicitScale(quoted, CurrencyCode.USD, 6);
 
         var portfolio = new[]
         {
