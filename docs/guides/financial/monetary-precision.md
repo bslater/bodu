@@ -69,6 +69,17 @@ The rules for how scales interact follow the established prior art (`decimal` it
 - **Text round-trip is scale-faithful.** `Money.Parse` reconstructs a finer-than-registry scale from
   the printed fractional digits, so `Money.Parse(value.ToString("R"))` restores the same amount,
   currency, *and* scale.
+- **Changing a value's scale is explicit.** `Rescale(minorUnits, rounding)` re-expresses a value at
+  a new scale — coarser rounds (a one-value settlement), finer pads losslessly — and `TrimScale()`
+  drops trailing-zero precision down to (never below) the registered minor units. These are the
+  counterparts of dinero.js's `transformScale`/`trimScale` and Joda `BigMoney.withScale`.
+
+  ```csharp
+  Money price = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
+
+  price.Rescale(2);                                              // USD 145.68  (scale 2)
+  Money.FromExplicitScale(12.5m, CurrencyCode.USD, 6).TrimScale(); // USD 12.50 (scale 2, zeros trimmed)
+  ```
 - **`MoneyBag` and `Money<TCurrency>` are settlement surfaces.** Amounts entering a bag settle to
   the currency's registered minor units (banker's rounding) on entry — the bag's wire form carries
   no per-balance scale, so rounding on entry keeps memory and wire identical. `Money<TCurrency>`
