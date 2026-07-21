@@ -29,6 +29,7 @@ public static class Program
         AdjustmentsAndPolicies.Run();
         ImportingCatalogues.Run();
         XmlRoundTrip.Run();
+        JsonRoundTrip.Run();
 
         Console.WriteLine("Done.");
     }

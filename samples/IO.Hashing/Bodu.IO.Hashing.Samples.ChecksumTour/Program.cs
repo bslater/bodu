@@ -28,6 +28,7 @@ public static class Program
         CrcCatalogue.Run();
         ChecksumFamilies.Run();
         StreamingResumable.Run();
+        FnvAndAdlerVariants.Run();
         NonCryptoHashes.Run();
 
         Console.WriteLine("Done.");

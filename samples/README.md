@@ -26,9 +26,11 @@ API drift breaks the build immediately.
 
 ## Layout
 
-Domain folders under `samples/` are named by namespace segment — `Financial/`,
-`Formats.Excel/`, `Globalization.Calendar/`, `IO.Compound/`, `IO.Hashing/`, `Text.Toml/`,
-`Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/` — mirroring how
+Domain folders under `samples/` are named by namespace segment — `Core/`, `Collections/`,
+`Collections.Concurrent/`, `Financial/`, `Formats.Excel/`, `Globalization.Calendar/`,
+`IO.Compound/`, `IO.Hashing/`, `Numerics/`, `Security.Cryptography/`, `Text.Toml/`,
+`Text.Yaml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/` —
+mirroring how
 folders map to namespaces in the library source trees. The `samples/` root itself stays lowercase, like `src`/`test`/`bench`, because it is
 not a namespace component. Each sample project is a flat folder named after the project.
 
@@ -69,13 +71,19 @@ change to the libraries alters it, the README review catches the drift alongside
 
 | Domain | Samples |
 |---|---|
-| Financial | [`samples/Financial/`](Financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers, the live-provider exception |
+| Core | [`samples/Core/`](Core/README.md) — the functional railway (Option/Result/Either/Memoizer), the utility toolbox (sequences, pooled buffers, enumerable/string/numeric extensions, WeekPattern, async primitives), and text-encoding detection/transcoding |
+| Collections | [`samples/Collections/`](Collections/README.md) — the specialized collection catalogue, ranges/graphs/trees/Aho-Corasick, and the probabilistic sketches (Bloom, count-min, HyperLogLog) |
+| Collections.Concurrent | [`samples/Collections.Concurrent/`](Collections.Concurrent/README.md) — the thread-safe variants with single-flight GetOrAdd and a deterministic parallel-safety demo |
+| Financial | [`samples/Financial/`](Financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers, JSON serialization, the live-provider exception |
 | Formats.Excel | [`samples/Formats.Excel/`](Formats.Excel/README.md) — the read-only BIFF8 `.xls` reader: sheet directory, forward-only streaming, materialized worksheets, serial-date decoding |
 | Globalization.Calendar | [`samples/Globalization.Calendar/`](Globalization.Calendar/README.md) — holiday queries and subdivisions, working-day arithmetic, authored calendars, DI + reload, custom algorithms |
 | IO.Compound | [`samples/IO.Compound/`](IO.Compound/README.md) — OLE2 structured storage: builder authoring + read-back, OLE property sets, detection and the v3/v4 knob, a real `.doc`'s tree |
 | IO.Hashing | [`samples/IO.Hashing/`](IO.Hashing/README.md) — the CRC catalogue, checksum families, streaming/resumable digests, identifier check digits, and a custom scheme with contract tests |
+| Numerics | [`samples/Numerics/`](Numerics/README.md) — Fraction rational arithmetic and continued fractions, the interval algebra, streaming statistics, and the JSON converters |
+| Security.Cryptography | [`samples/Security.Cryptography/`](Security.Cryptography/README.md) — hashes/MAC/XOF/KDF/OTP, block/stream ciphers and AEAD, asymmetric key agreement/signatures/KEM, and a custom hash with contract tests |
 | Text.Bencode | [`samples/Text.Bencode/`](Text.Bencode/README.md) — a real torrent file end to end: DOM inspection, canonical byte-exact round trips, the raw-slice info-hash, typed POCO mapping |
 | Text.Configuration | [`samples/Text.Configuration/`](Text.Configuration/README.md) — the parse/resolve/save cascade with diagnostics and `unset` dialects, plus the Microsoft.Extensions.Configuration bridge into `IOptions<T>` |
 | Text.Encoding | [`samples/Text.Encoding/`](Text.Encoding/README.md) — the base-encoding catalogue and variants, formatting/style knobs, checksummed schemes, the runtime registry, and a custom Base36 codec with contract tests |
 | Text.Formats | [`samples/Text.Formats/`](Text.Formats/README.md) — CSV/TSV with typed getters and dirty-input policies, streaming pipelines, comment-preserving INI edits, DotEnv's literal contract |
 | Text.Toml | [`samples/Text.Toml/`](Text.Toml/README.md) — the TomlSerializer POCO surface with native temporal kinds, plus both DOMs, the token layer, and resumable streaming reads |
+| Text.Yaml | [`samples/Text.Yaml/`](Text.Yaml/README.md) — the YamlSerializer POCO surface with implicit scalar typing, plus the mutable and read-only DOMs, the token layer, and the stream/async facade |

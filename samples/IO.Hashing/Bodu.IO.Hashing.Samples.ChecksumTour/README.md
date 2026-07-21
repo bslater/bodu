@@ -95,7 +95,41 @@ resumable       : stored+day2 7F945ED5 == full replay 7F945ED5 -> True
 `HashingStream(Stream, NonCryptographicHashAlgorithm)` + `.Algorithm.GetCurrentHash()`,
 `IResumableHashAlgorithm.ComputeHashFrom`.
 
-## Scenario 4 — NonCryptoHashes
+## Scenario 4 — FnvAndAdlerVariants
+
+**Intent.** Two families demonstrated so far each ship in more than one width. Put the FNV-1a
+hash and the Adler checksum side by side across their variants — FNV-1a in 32 and 64 bits, and
+Adler in its RFC 1950 32-bit, SIMD-friendly power-of-two-modulus (`Adler32C`), and 64-bit forms —
+so the shared `NonCryptographicHashAlgorithm` surface is visible while only the digest width and
+mixing change.
+
+**What it does.** Hashes one fixed in-code input (the 43-byte
+`"The quick brown fox jumps over the lazy dog"`) with `Fnv1a32`, `Fnv1a64`, `Adler32`,
+`Adler32C`, and `Adler64` through the identical `Append`/`GetHashAndReset` calls, printing each
+digest as hex. FNV lives in `Bodu.IO.Hashing`; the Adler variants in `Bodu.IO.Hashing.Checksums`.
+
+**What to expect.**
+
+```text
+input: 43 bytes
+  FNV-1a/32 : 048FFF90
+  FNV-1a/64 : F3F9B7F5E7E47110
+  Adler-32  : 5BDC0FDA
+  Adler-32C : 5BCD0FDA
+  Adler-64  : 00015BCD00000FDA
+wider digests spread the same input over more state - fewer accidental collisions.
+```
+
+The two Adler-32 forms differ only in their combining modulus — `Adler32` uses the RFC 1950
+prime 65521, `Adler32C` the power-of-two 65536 for cheaper vectorized reduction — so their
+digests are close but not interchangeable (`Adler32C` is an internal-only variant; anything
+touching zlib/PNG must use `Adler32`). The wider 64-bit forms of each family spread the same
+input over more state — the trade of a longer digest for fewer accidental collisions.
+
+**APIs demonstrated.** `Fnv1a32`, `Fnv1a64`, `Adler32`, `Adler32C`, `Adler64`, the shared
+`NonCryptographicHashAlgorithm` streaming surface.
+
+## Scenario 5 — NonCryptoHashes
 
 **Intent.** Show the classic hash functions doing the job they're built for — fast,
 well-distributed, *deterministic* bucket assignment for sharding and routing — while stating
@@ -128,6 +162,7 @@ Bodu.IO.Hashing.Samples.ChecksumTour/
   Scenarios/CrcCatalogue.cs
   Scenarios/ChecksumFamilies.cs
   Scenarios/StreamingResumable.cs
+  Scenarios/FnvAndAdlerVariants.cs
   Scenarios/NonCryptoHashes.cs
 ```
 

@@ -1,5 +1,11 @@
 - name: Overview
   href: index.md
+- name: Core
+  href: core.md
+- name: Collections
+  href: collections.md
+- name: Collections.Concurrent
+  href: collections-concurrent.md
 - name: Financial
   href: financial.md
 - name: Formats.Excel
@@ -10,6 +16,10 @@
   href: io-compound.md
 - name: IO.Hashing
   href: io-hashing.md
+- name: Numerics
+  href: numerics.md
+- name: Security.Cryptography
+  href: cryptography.md
 - name: Text.Bencode
   href: bencode.md
 - name: Text.Configuration
@@ -20,3 +30,5 @@
   href: formats.md
 - name: Text.Toml
   href: toml.md
+- name: Text.Yaml
+  href: yaml.md

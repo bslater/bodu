@@ -2,8 +2,9 @@
 
 Authoring your own calendar — company holidays, shutdowns, celebrations — with the fluent
 `NotableDateDocumentBuilder`, then treating it exactly like a shipped data pack: adjustment
-policies, catalogue imports, and the XML round trip that makes the document a distributable
-artifact. Fully offline; the round-trip file is written to the sample's own output directory.
+policies, catalogue imports, and the XML and JSON round trips that make the document a
+distributable artifact. Fully offline; the round-trip files are written to the sample's own
+output directory.
 
 ```bash
 dotnet run --project samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomCalendar
@@ -147,6 +148,35 @@ documented JSON subset.
 
 **APIs demonstrated.** `Save(path)`, `NotableDateDocumentBuilder.Load`,
 `NotableDateResourceLoader.Load(string)`, `NotableDateResource.ResourceId`.
+
+### JsonRoundTrip (`Scenarios/JsonRoundTrip.cs`)
+
+**Intent.** The same round trip against the documented JSON subset: XML and JSON are two
+encodings of one document model, so an authored calendar persists, distributes, and reloads
+identically through either — the builder for further editing, or the plain loader for a consumer
+without the Builder package.
+
+**What it does.** Saves the same authored calendar to `contoso-holidays.json` (the `.json`
+extension selects the JSON subset in the `Save` path), reloads it via both
+`NotableDateDocumentBuilder.Load(path)` and the JSON-specific
+`NotableDateResourceLoader.LoadJson(json)`, serves the loader's copy, and compares the two
+resources' ids.
+
+**What to expect.**
+
+```
+Saved: contoso-holidays.json (500 bytes)
+Reloaded and resolved: 2024-03-12 Contoso Founding Day
+Builder and loader agree: True
+```
+
+The JSON form is 500 bytes to the XML form's 576 — the same distributable calendar, resolving to
+the identical Founding Day. `LoadJson` is the JSON counterpart to the XML-accepting `Load`; the
+builder's own `Load` infers the format from the file extension.
+
+**APIs demonstrated.** `Save(path)` (JSON format inferred from extension),
+`NotableDateDocumentBuilder.Load`, `NotableDateResourceLoader.LoadJson(string)`,
+`NotableDateResource.ResourceId`.
 
 ## NuGet equivalent
 
