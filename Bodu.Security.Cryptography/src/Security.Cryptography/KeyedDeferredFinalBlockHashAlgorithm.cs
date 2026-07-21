@@ -17,10 +17,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This class extends <see cref="DeferredFinalBlockHashAlgorithm" /> with optional key-handling logic shared by
-/// keyed BLAKE-family hashes such as <see cref="Blake2b" /> and <see cref="Blake2s" />. It centralizes defensive
-/// copying, key-length validation, secure disposal of secret material, and the sealed <see cref="Initialize" />
-/// override that orchestrates hash-state reset followed by key-block injection when a key is set.
+/// This class extends <see cref="DeferredFinalBlockHashAlgorithm" /> with optional key-handling logic shared by keyed
+/// BLAKE-family hashes such as <see cref="Blake2b" /> and <see cref="Blake2s" />. It centralizes defensive copying,
+/// key-length validation, secure disposal of secret material, and the sealed <see cref="Initialize" /> override that
+/// orchestrates hash-state reset followed by key-block injection when a key is set.
 /// </para>
 /// <para>
 /// The key is optional: assigning an empty array (or never assigning a key) places the instance in the standard unkeyed
@@ -74,8 +74,8 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm
     private readonly int _maximumKeySize;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> class with the
-    /// specified input block size and maximum key size.
+    /// Initializes a new instance of the <see cref="KeyedDeferredFinalBlockHashAlgorithm" /> class with the specified
+    /// input block size and maximum key size.
     /// </summary>
     /// <param name="blockSize">
     /// The fixed size, in bits, of each block consumed by the algorithm. Must be a positive multiple of 8.

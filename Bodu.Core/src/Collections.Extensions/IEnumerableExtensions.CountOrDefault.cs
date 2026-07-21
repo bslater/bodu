@@ -19,8 +19,8 @@ public static partial class IEnumerableExtensions
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     /// <remarks>
     /// When <paramref name="source" /> implements neither <see cref="ICollection" /> nor
-    /// <see cref="IReadOnlyCollection{T}" />, the sequence is fully enumerated to produce the count — a one-shot
-    /// source is consumed by the call.
+    /// <see cref="IReadOnlyCollection{T}" />, the sequence is fully enumerated to produce the count — a one-shot source
+    /// is consumed by the call.
     /// </remarks>
     public static int CountOrDefault(this IEnumerable source)
     {

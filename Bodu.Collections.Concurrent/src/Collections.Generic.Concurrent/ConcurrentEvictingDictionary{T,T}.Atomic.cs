@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentEvictingDictionary{T,T}.Atomic.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -6,11 +6,9 @@
 
 namespace Bodu.Collections.Generic.Concurrent;
 
-/// <content>
-/// Declares the <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}" />-style atomic
+/// <content> Declares the <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}" />-style atomic
 /// compare-and-update primitives. Each member observes and mutates the owning segment under a single stripe lock,
-/// preserving the type's single-flight and post-commit eviction discipline.
-/// </content>
+/// preserving the type's single-flight and post-commit eviction discipline. </content>
 public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
 {
     /// <summary>
@@ -64,8 +62,10 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// The function that produces the new value from the key and its existing value when <paramref name="key" /> is
     /// present.
     /// </param>
-    /// <returns>The new value stored for <paramref name="key" />: <paramref name="addValue" /> on the add path, or the
-    /// value produced by <paramref name="updateValueFactory" /> on the update path.</returns>
+    /// <returns>
+    /// The new value stored for <paramref name="key" />: <paramref name="addValue" /> on the add path, or the value
+    /// produced by <paramref name="updateValueFactory" /> on the update path.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="key" /> or <paramref name="updateValueFactory" /> is <see langword="null" />.
     /// </exception>
@@ -103,9 +103,10 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// The function that produces the new value from the key and its existing value when <paramref name="key" /> is
     /// present.
     /// </param>
-    /// <returns>The new value stored for <paramref name="key" />: the value produced by
-    /// <paramref name="addValueFactory" /> on the add path, or the value produced by
-    /// <paramref name="updateValueFactory" /> on the update path.</returns>
+    /// <returns>
+    /// The new value stored for <paramref name="key" />: the value produced by <paramref name="addValueFactory" /> on
+    /// the add path, or the value produced by <paramref name="updateValueFactory" /> on the update path.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="key" />, <paramref name="addValueFactory" />, or <paramref name="updateValueFactory" /> is
     /// <see langword="null" />.
@@ -133,8 +134,9 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Implements the shared add-or-update path for the <see cref="AddOrUpdate(TKey, TValue, Func{TKey, TValue, TValue})" />
-    /// overloads. The applicable factory runs inside the owning segment's lock so it is invoked at most once.
+    /// Implements the shared add-or-update path for the
+    /// <see cref="AddOrUpdate(TKey, TValue, Func{TKey, TValue, TValue})" /> overloads. The applicable factory runs
+    /// inside the owning segment's lock so it is invoked at most once.
     /// </summary>
     /// <param name="key">The key of the element to add or update.</param>
     /// <param name="addValue">

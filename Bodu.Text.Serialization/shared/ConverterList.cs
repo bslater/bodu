@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConverterList.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,9 +15,9 @@ namespace Bodu.Text.Yaml.Serialization;
 #endif
 
 /// <summary>
-/// A guarded converter collection backing <see cref="FormatOptions.Converters" />: it rejects a
-/// <see langword="null" /> entry and refuses every mutating operation once the owning options have become read-only,
-/// while leaving read access available.
+/// A guarded converter collection backing <see cref="FormatOptions.Converters" />: it rejects a <see langword="null" />
+/// entry and refuses every mutating operation once the owning options have become read-only, while leaving read access
+/// available.
 /// </summary>
 internal sealed class ConverterList
     : IList<FormatConverter>
@@ -54,9 +54,7 @@ internal sealed class ConverterList
     /// </summary>
     /// <param name="index">The zero-based index of the converter.</param>
     /// <returns>The converter at <paramref name="index" />.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when the assigned value is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException">Thrown when the assigned value is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the owning options are read-only.</exception>
     public FormatConverter this[int index]
     {
@@ -101,9 +99,7 @@ internal sealed class ConverterList
     /// Determines whether the list contains the specified converter.
     /// </summary>
     /// <param name="item">The converter to locate.</param>
-    /// <returns>
-    /// <see langword="true" /> when the converter is present; otherwise <see langword="false" />.
-    /// </returns>
+    /// <returns><see langword="true" /> when the converter is present; otherwise <see langword="false" />.</returns>
     public bool Contains(FormatConverter item) =>
         _items.Contains(item);
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NumberEnumConverter{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ using Bodu.Text.Serialization;
 namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
-/// Produces a converter that serializes the enumeration <typeparamref name="TEnum" /> as a Bencode integer carrying
-/// its underlying numeric value.
+/// Produces a converter that serializes the enumeration <typeparamref name="TEnum" /> as a Bencode integer carrying its
+/// underlying numeric value.
 /// </summary>
 /// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
 /// <remarks>

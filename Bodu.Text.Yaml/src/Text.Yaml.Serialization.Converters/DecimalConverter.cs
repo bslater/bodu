@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DecimalConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
 /// Converts a <see cref="decimal" /> to and from a YAML scalar. A decimal carries more precision than a double, so it
-/// writes as its exact invariant text (quoted, because that text resolves as a float) and round-trips without
-/// precision loss; a null scalar reads as the type default.
+/// writes as its exact invariant text (quoted, because that text resolves as a float) and round-trips without precision
+/// loss; a null scalar reads as the type default.
 /// </summary>
 internal sealed class DecimalConverter
     : YamlConverter<decimal>

@@ -19,8 +19,8 @@ namespace Bodu.IO.Hashing;
 /// Many non-cryptographic hashes — Murmur, CityHash, Pearson, the FNV variants — define their compression step over a
 /// fixed block size (4, 8, 16, or 32 bytes) and must buffer trailing bytes that do not fill a complete block. Writing
 /// that buffering loop correctly is fiddly: handle straddling input, accumulate the running message length, and pad
-/// once on finalization. <see cref="BlockNonCryptographicHashAlgorithm" /> centralizes that machinery so derived
-/// types only express the algorithm-specific behavior.
+/// once on finalization. <see cref="BlockNonCryptographicHashAlgorithm" /> centralizes that machinery so derived types
+/// only express the algorithm-specific behavior.
 /// </para>
 /// <para>
 /// <strong>Inheritance contract.</strong> Derived classes implement four members and may override two more:

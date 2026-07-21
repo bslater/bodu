@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fnv.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -33,9 +33,9 @@ namespace Bodu.IO.Hashing;
 /// <strong>When to choose FNV.</strong> FNV is byte-at-a-time, allocation-free, and trivially fast on small inputs — a
 /// common choice for hashing identifiers, dictionary keys, and cache lookups in hot paths. For most new code prefer
 /// <see cref="Fnv1a32" /> or <see cref="Fnv1a64" />: the FNV-1a ordering has measurably better avalanche than the
-/// original FNV-1. For inputs longer than a few hundred bytes, <see cref="MurmurHash3" /> or
-/// <see cref="CityHash" /> generally distribute better and are faster on modern CPUs; FNV's strength is its
-/// simplicity and predictable performance on short keys.
+/// original FNV-1. For inputs longer than a few hundred bytes, <see cref="MurmurHash3" /> or <see cref="CityHash" />
+/// generally distribute better and are faster on modern CPUs; FNV's strength is its simplicity and predictable
+/// performance on short keys.
 /// </para>
 /// <para>
 /// <strong>Output size and lifecycle.</strong> The digest length is fixed by the constructor's <c>hashSize</c> argument

@@ -31,9 +31,9 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This class is the common ancestor for both block-buffered patterns offered by the library:
-/// <see cref="BlockHashAlgorithm" /> (Merkle&#8211;Damg&#229;rd-style; pads the final partial block before
-/// processing) and the Blake-family-style sibling that defers the final full block until
-/// <see cref="HashAlgorithm.HashFinal" /> so that a finalization flag may be raised on the last compression call.
+/// <see cref="BlockHashAlgorithm" /> (Merkle&#8211;Damg&#229;rd-style; pads the final partial block before processing)
+/// and the Blake-family-style sibling that defers the final full block until <see cref="HashAlgorithm.HashFinal" /> so
+/// that a finalization flag may be raised on the last compression call.
 /// </para>
 /// <para>
 /// The grandparent intentionally does <em>not</em> implement <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />
@@ -85,8 +85,8 @@ namespace Bodu.Security.Cryptography;
 /// <item>
 /// <term>Blake-style, unkeyed</term>
 /// <description>
-/// <see cref="DeferredFinalBlockHashAlgorithm" /> — BLAKE3 and other algorithms that need to defer the last full
-/// block so a finalization flag can be set.
+/// <see cref="DeferredFinalBlockHashAlgorithm" /> — BLAKE3 and other algorithms that need to defer the last full block
+/// so a finalization flag can be set.
 /// </description>
 /// </item>
 /// <item>
@@ -139,8 +139,8 @@ public abstract class BufferedBlockHashAlgorithm
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BufferedBlockHashAlgorithm" /> class with the specified input
-    /// block size.
+    /// Initializes a new instance of the <see cref="BufferedBlockHashAlgorithm" /> class with the specified input block
+    /// size.
     /// </summary>
     /// <param name="blockSize">
     /// The fixed size, in bits, of each block consumed by the algorithm. Must be greater than zero and a positive

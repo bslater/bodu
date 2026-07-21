@@ -33,8 +33,8 @@ namespace Bodu.Threading;
 /// <para>
 /// <see cref="Release(int)" /> first hands permits directly to queued waiters in FIFO order and only stores the
 /// remainder as available permits. Permits transferred to waiters never appear in <see cref="CurrentCount" />, and the
-/// configured maximum applies only to the stored available count after queued waiters have been satisfied. The bound
-/// is validated before any permit is granted, so a release that would exceed the maximum throws
+/// configured maximum applies only to the stored available count after queued waiters have been satisfied. The bound is
+/// validated before any permit is granted, so a release that would exceed the maximum throws
 /// <see cref="InvalidOperationException" /> without granting any waiter or changing <see cref="CurrentCount" />.
 /// </para>
 /// </remarks>

@@ -65,10 +65,7 @@ public sealed class SegmentedBuffer<T> :
     /// <summary>The segment currently receiving appended elements, or <see langword="null" /> before the first add.</summary>
     private T[]? _tailSegment;
 
-    /// <summary>
-    /// The next write position within <see cref="_tailSegment" />. Initialized to <see cref="_segmentSize" /> so the
-    /// first add allocates a segment; keeping the cursor removes the per-add division and modulo on the append path.
-    /// </summary>
+    /// <summary>The next write position within <see cref="_tailSegment" />. Initialized to <see cref="_segmentSize" /> so the first add allocates a segment; keeping the cursor removes the per-add division and modulo on the append path.</summary>
     private int _tailOffset;
 
     /// <summary>
@@ -242,9 +239,9 @@ public sealed class SegmentedBuffer<T> :
     /// </summary>
     /// <returns>An enumerator that can be used to iterate through the buffer contents in insertion order.</returns>
     /// <remarks>
-    /// Enumeration yields elements in the order they were added. The enumerator is fail-fast: if the buffer is
-    /// modified — by <see cref="Add" /> or by assignment through the indexer — after enumeration begins, the next
-    /// iteration step throws <see cref="InvalidOperationException" />.
+    /// Enumeration yields elements in the order they were added. The enumerator is fail-fast: if the buffer is modified
+    /// — by <see cref="Add" /> or by assignment through the indexer — after enumeration begins, the next iteration step
+    /// throws <see cref="InvalidOperationException" />.
     /// </remarks>
     /// <exception cref="InvalidOperationException">The buffer was modified after enumeration began.</exception>
     public IEnumerator<T> GetEnumerator()

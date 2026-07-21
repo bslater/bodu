@@ -16,9 +16,9 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// The algorithm is block-streamable: input delivered through <see cref="Append(ReadOnlySpan{byte})" /> is mixed into
-/// the running accumulators one block at a time, with only a partial trailing block buffered between calls. Memory
-/// use is constant regardless of input length, and reading the current hash applies the tail and finalization mix to
-/// a copy of the accumulators, so digest reads are non-destructive.
+/// the running accumulators one block at a time, with only a partial trailing block buffered between calls. Memory use
+/// is constant regardless of input length, and reading the current hash applies the tail and finalization mix to a copy
+/// of the accumulators, so digest reads are non-destructive.
 /// </para>
 /// <para>
 /// A 32-bit seed can be supplied at construction time to vary the output for the same input, which is useful for
@@ -34,8 +34,8 @@ namespace Bodu.IO.Hashing;
 /// default choice for non-distributed in-memory hash tables, bloom filters, and content-based sharding. Pick
 /// <see cref="MurmurHash3_32" /> when 32 bits is sufficient and the host is 32-bit-friendly; pick
 /// <see cref="MurmurHash3_128" /> when collision pressure (large key spaces, fingerprinting) calls for more bits.
-/// <see cref="CityHash" /> typically edges MurmurHash3 on long inputs on 64-bit CPUs; <see cref="Fnv" /> is
-/// preferable only for very small fixed-length keys.
+/// <see cref="CityHash" /> typically edges MurmurHash3 on long inputs on 64-bit CPUs; <see cref="Fnv" /> is preferable
+/// only for very small fixed-length keys.
 /// </para>
 /// <para>
 /// Instances are not thread-safe; share behind explicit synchronization.
@@ -84,7 +84,9 @@ public abstract class MurmurHash3
     /// size, and seed.
     /// </summary>
     /// <param name="hashSize">The desired hash output size in bits. Must be one of 32 or 128.</param>
-    /// <param name="blockSizeBytes">The variant's block size, in bytes (4 for the 32-bit variant, 16 for the 128-bit variant).</param>
+    /// <param name="blockSizeBytes">
+    /// The variant's block size, in bytes (4 for the 32-bit variant, 16 for the 128-bit variant).
+    /// </param>
     /// <param name="seed">The 32-bit seed value used to initialize the hash state.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="hashSize" /> is not one of the supported values (32 or 128).
@@ -202,7 +204,9 @@ public abstract class MurmurHash3
     /// <summary>
     /// Mixes a run of one or more complete blocks into the variant's running accumulators.
     /// </summary>
-    /// <param name="blocks">The block-aligned input; its length is always a positive multiple of the block size.</param>
+    /// <param name="blocks">
+    /// The block-aligned input; its length is always a positive multiple of the block size.
+    /// </param>
     private protected abstract void MixBlocks(ReadOnlySpan<byte> blocks);
 
     /// <summary>

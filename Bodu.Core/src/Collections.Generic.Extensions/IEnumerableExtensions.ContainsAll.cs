@@ -24,9 +24,9 @@ public static partial class IEnumerableExtensions
     /// Thrown if either <paramref name="source" /> or <paramref name="items" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// Memory use scales with the number of <paramref name="items" />, not the size of <paramref name="source" />:
-    /// the items are collected into a pending set and <paramref name="source" /> is streamed with a single
-    /// enumeration, stopping as soon as every item has been seen.
+    /// Memory use scales with the number of <paramref name="items" />, not the size of <paramref name="source" />: the
+    /// items are collected into a pending set and <paramref name="source" /> is streamed with a single enumeration,
+    /// stopping as soon as every item has been seen.
     /// </remarks>
     public static bool ContainsAll<T>(
         this IEnumerable<T> source,

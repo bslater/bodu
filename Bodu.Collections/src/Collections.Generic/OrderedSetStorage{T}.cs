@@ -477,10 +477,9 @@ internal sealed class OrderedSetStorage<T>
     /// </summary>
     /// <param name="index">The zero-based index to remove.</param>
     /// <remarks>
-    /// The hash table is maintained incrementally: the removed entry's chain node is unlinked and the stored
-    /// references of the shifted entries are adjusted in place, so no user
-    /// <see cref="IEqualityComparer{T}.GetHashCode(T)" /> calls beyond the single unlink lookup and no allocations
-    /// occur.
+    /// The hash table is maintained incrementally: the removed entry's chain node is unlinked and the stored references
+    /// of the shifted entries are adjusted in place, so no user <see cref="IEqualityComparer{T}.GetHashCode(T)" />
+    /// calls beyond the single unlink lookup and no allocations occur.
     /// </remarks>
     private void RemoveCore(int index)
     {

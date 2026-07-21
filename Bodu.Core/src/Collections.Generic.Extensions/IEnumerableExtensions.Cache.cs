@@ -37,8 +37,8 @@ public static partial class IEnumerableExtensions
     /// </para>
     /// <para>
     /// <b>Initialization faults.</b> If the source's <see cref="IEnumerable{T}.GetEnumerator" /> throws, the captured
-    /// exception poisons the cache: it is rethrown for every later enumeration attempt rather than retrying the
-    /// source. Disposing the wrapper (via the <see cref="IDisposable" /> cast) clears the poisoned state.
+    /// exception poisons the cache: it is rethrown for every later enumeration attempt rather than retrying the source.
+    /// Disposing the wrapper (via the <see cref="IDisposable" /> cast) clears the poisoned state.
     /// </para>
     /// <para>
     /// <b>Disposal re-arms.</b> Disposing the wrapper releases the source enumerator and cached elements and resets the

@@ -44,10 +44,10 @@ namespace Bodu.Security.Cryptography;
 /// which case the pending block is compressed with <c>isFinal: true</c>).
 /// </para>
 /// <para>
-/// The inherited <see cref="BufferedBlockHashAlgorithm._totalBytes" /> field stores the total number of bytes
-/// already <em>compressed</em> (i.e. consumed from the residual buffer by previous <see cref="ProcessBlock" /> calls).
-/// Bytes still held in the residual buffer are <em>not</em> included in this total &#8212; they contribute to the
-/// counter only at the moment they are compressed.
+/// The inherited <see cref="BufferedBlockHashAlgorithm._totalBytes" /> field stores the total number of bytes already
+/// <em>compressed</em> (i.e. consumed from the residual buffer by previous <see cref="ProcessBlock" /> calls). Bytes
+/// still held in the residual buffer are <em>not</em> included in this total &#8212; they contribute to the counter
+/// only at the moment they are compressed.
 /// </para>
 /// <para>
 /// Derived classes must implement the following:
@@ -72,12 +72,12 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to derive from this class.</strong> Pick <see cref="DeferredFinalBlockHashAlgorithm" /> for the
-/// BLAKE family and any other algorithm whose compression function takes an explicit "is this the final block?" flag
-/// rather than padding the trailing partial block with a length encoding — <see cref="Blake3" /> is the canonical user.
-/// For BLAKE2-style hashes that also accept an optional secret key (<see cref="Blake2b" />, <see cref="Blake2s" />)
-/// derive from <see cref="KeyedDeferredFinalBlockHashAlgorithm" />, which adds RFC 7693 key-block handling on top of
-/// this base. For Merkle–Damgård hashes (SHA-2, Tiger, Whirlpool) use <see cref="BlockHashAlgorithm" />.
+/// <strong>When to derive from this class.</strong> Pick <see cref="DeferredFinalBlockHashAlgorithm" /> for the BLAKE
+/// family and any other algorithm whose compression function takes an explicit "is this the final block?" flag rather
+/// than padding the trailing partial block with a length encoding — <see cref="Blake3" /> is the canonical user. For
+/// BLAKE2-style hashes that also accept an optional secret key (<see cref="Blake2b" />, <see cref="Blake2s" />) derive
+/// from <see cref="KeyedDeferredFinalBlockHashAlgorithm" />, which adds RFC 7693 key-block handling on top of this
+/// base. For Merkle–Damgård hashes (SHA-2, Tiger, Whirlpool) use <see cref="BlockHashAlgorithm" />.
 /// </para>
 /// </remarks>
 /// <seealso cref="BufferedBlockHashAlgorithm"/> <seealso cref="BlockHashAlgorithm"/>
@@ -86,8 +86,8 @@ public abstract class DeferredFinalBlockHashAlgorithm
     : BufferedBlockHashAlgorithm
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="DeferredFinalBlockHashAlgorithm" /> class with the specified
-    /// input block size.
+    /// Initializes a new instance of the <see cref="DeferredFinalBlockHashAlgorithm" /> class with the specified input
+    /// block size.
     /// </summary>
     /// <param name="blockSize">
     /// The fixed size, in bits, of each block consumed by the algorithm. Must be a positive multiple of 8.
@@ -193,8 +193,8 @@ public abstract class DeferredFinalBlockHashAlgorithm
     /// </param>
     /// <param name="totalBytesIncludingThisBlock">
     /// The cumulative byte count <em>including</em> the bytes in <paramref name="block" /> being compressed. For
-    /// mid-stream blocks this equals the previous total plus <see cref="BufferedBlockHashAlgorithm.BlockSize" />;
-    /// for the final compression it equals the previous total plus the residual byte count (which may be in the range
+    /// mid-stream blocks this equals the previous total plus <see cref="BufferedBlockHashAlgorithm.BlockSize" />; for
+    /// the final compression it equals the previous total plus the residual byte count (which may be in the range
     /// <c>[0, BlockSize / 8]</c>).
     /// </param>
     /// <param name="isFinal">

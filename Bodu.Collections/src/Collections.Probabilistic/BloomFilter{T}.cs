@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BloomFilter{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -80,12 +80,7 @@ public sealed class BloomFilter<T>
     /// <summary>The largest supported bit count; keeps word-count arithmetic within <see cref="int" /> range.</summary>
     private const int MaxBitCount = int.MaxValue - 63;
 
-    /// <summary>
-    /// The largest hash count the sizing constructor can derive. The constructor computes
-    /// <c>k = max(1, round(m/n·ln 2)) ≈ round(log₂(1/p))</c>, which peaks at the smallest representable positive rate
-    /// (<see cref="double.Epsilon" /> = 2⁻¹⁰⁷⁴): <c>round(1074 + ln 2) = 1075</c>. <see cref="Import" /> rejects any
-    /// snapshot claiming more, bounding the per-operation probe cost for hostile snapshots.
-    /// </summary>
+    /// <summary>The largest hash count the sizing constructor can derive. The constructor computes <c>k = max(1, round(m/n·ln 2)) ≈ round(log₂(1/p))</c>, which peaks at the smallest representable positive rate (<see cref="double.Epsilon" /> = 2⁻¹⁰⁷⁴): <c>round(1074 + ln 2) = 1075</c>. <see cref="Import" /> rejects any snapshot claiming more, bounding the per-operation probe cost for hostile snapshots.</summary>
     private const int MaxHashCount = 1075;
 
     /// <summary>The equality comparer supplying element hash codes.</summary>

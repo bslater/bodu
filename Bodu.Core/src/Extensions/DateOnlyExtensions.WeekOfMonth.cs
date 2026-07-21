@@ -70,9 +70,9 @@ public static partial class DateOnlyExtensions
     /// </param>
     /// <param name="weekStart">The <see cref="DayOfWeek" /> on which each week begins.</param>
     /// <returns>
-    /// An integer indicating the week of the month in which <paramref name="date" /> falls, starting at <c>1</c>.
-    /// Under <see cref="CalendarWeekRule.FirstFullWeek" /> and <see cref="CalendarWeekRule.FirstFourDayWeek" />, dates
-    /// that precede week 1 of their month return the week number they carry in the previous month (see remarks).
+    /// An integer indicating the week of the month in which <paramref name="date" /> falls, starting at <c>1</c>. Under
+    /// <see cref="CalendarWeekRule.FirstFullWeek" /> and <see cref="CalendarWeekRule.FirstFourDayWeek" />, dates that
+    /// precede week 1 of their month return the week number they carry in the previous month (see remarks).
     /// </returns>
     /// <remarks>
     /// <para>
@@ -95,7 +95,9 @@ public static partial class DateOnlyExtensions
     /// <paramref name="weekStart" /> and the leading dates resolve to the previous month's trailing week, as for
     /// <see cref="CalendarWeekRule.FirstFullWeek" />.
     /// </para>
-    /// <para>The result is therefore never less than <c>1</c>, but it is not always the week of the date's own month.</para>
+    /// <para>
+    /// The result is therefore never less than <c>1</c>, but it is not always the week of the date's own month.
+    /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="weekRule" /> is not a defined value of the <see cref="CalendarWeekRule" />

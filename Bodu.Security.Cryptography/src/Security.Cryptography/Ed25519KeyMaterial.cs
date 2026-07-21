@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519KeyMaterial.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -61,8 +61,12 @@ internal sealed class Ed25519KeyMaterial
     /// per-verification decode and small-order evaluation of the immutable public key.
     /// </summary>
     /// <param name="point">When this method returns <see langword="true" />, the decoded public point.</param>
-    /// <param name="isSmallOrder">When this method returns <see langword="true" />, whether the point is small-order.</param>
-    /// <returns><see langword="true" /> if the public key decoded to a valid point; otherwise, <see langword="false" />.</returns>
+    /// <param name="isSmallOrder">
+    /// When this method returns <see langword="true" />, whether the point is small-order.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> if the public key decoded to a valid point; otherwise, <see langword="false" />.
+    /// </returns>
     internal bool TryGetPublicPoint(out Ed25519Point point, out bool isSmallOrder)
     {
         point = _publicPoint;

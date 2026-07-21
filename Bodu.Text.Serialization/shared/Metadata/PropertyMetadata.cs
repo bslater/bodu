@@ -218,8 +218,8 @@ internal sealed class PropertyMetadata
     /// </summary>
     /// <returns>A delegate that assigns the member on a boxed target.</returns>
     /// <remarks>
-    /// A <see langword="null" /> value assigns the member type's default when the member is a non-nullable value
-    /// type, matching the documented coercion of <see cref="PropertyInfo.SetValue(object, object)" />.
+    /// A <see langword="null" /> value assigns the member type's default when the member is a non-nullable value type,
+    /// matching the documented coercion of <see cref="PropertyInfo.SetValue(object, object)" />.
     /// </remarks>
     private Action<object, object?> BuildSetter()
     {
@@ -245,8 +245,8 @@ internal sealed class PropertyMetadata
     /// <param name="target">The boxed-target parameter.</param>
     /// <returns>The typed instance expression.</returns>
     /// <remarks>
-    /// A value-type target uses <see cref="Expression.Unbox" /> so member assignment mutates the caller's box in
-    /// place — the invariant the object converter's boxed assignment phase relies on — rather than a copied value.
+    /// A value-type target uses <see cref="Expression.Unbox" /> so member assignment mutates the caller's box in place
+    /// — the invariant the object converter's boxed assignment phase relies on — rather than a copied value.
     /// </remarks>
     private Expression TypedTarget(ParameterExpression target)
     {

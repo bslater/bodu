@@ -24,12 +24,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// character to an encoding artifact, so the families are kept distinct by design.
 /// </para>
 /// <para>
-/// The streaming surface — <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />, <see cref="CheckValueAlgorithm.Reset" />, and
-/// <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar to anyone who has used a hash algorithm:
-/// <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" /> accumulates input, <see cref="CheckValueAlgorithm.Reset" /> restarts the computation, and
-/// reading the current check digit is non-destructive and idempotent. That resemblance is incidental convenience for
-/// the reader's intuition, not a shared contract. On an empty body every built-in algorithm in this library returns the
-/// digit <c>'0'</c>; concrete implementations document any exception.
+/// The streaming surface — <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" />,
+/// <see cref="CheckValueAlgorithm.Reset" />, and <see cref="GetCurrentCheckDigit" /> — will nonetheless feel familiar
+/// to anyone who has used a hash algorithm: <see cref="CheckValueAlgorithm.Append(ReadOnlySpan{char})" /> accumulates
+/// input, <see cref="CheckValueAlgorithm.Reset" /> restarts the computation, and reading the current check digit is
+/// non-destructive and idempotent. That resemblance is incidental convenience for the reader's intuition, not a shared
+/// contract. On an empty body every built-in algorithm in this library returns the digit <c>'0'</c>; concrete
+/// implementations document any exception.
 /// </para>
 /// <para>
 /// Instances are <b>not</b> thread-safe. Each thread that needs a running check should construct its own instance.

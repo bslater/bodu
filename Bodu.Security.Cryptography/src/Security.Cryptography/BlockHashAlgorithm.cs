@@ -47,9 +47,9 @@ namespace Bodu.Security.Cryptography;
 /// <strong>When to derive from this class.</strong> Pick <see cref="BlockHashAlgorithm" /> for any classic
 /// Merkle–Damgård cryptographic hash — the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and similar
 /// designs that finalize by appending a length-encoding pad to the last partial block. For the BLAKE-family pattern
-/// (final-block flag, no length-encoding pad) derive from <see cref="DeferredFinalBlockHashAlgorithm" /> instead.
-/// For a keyed Merkle–Damgård hash (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm" />, which
-/// adds key handling on top of this base. For non-cryptographic block hashes (Fletcher, CRC) the parallel
+/// (final-block flag, no length-encoding pad) derive from <see cref="DeferredFinalBlockHashAlgorithm" /> instead. For a
+/// keyed Merkle–Damgård hash (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm" />, which adds key
+/// handling on top of this base. For non-cryptographic block hashes (Fletcher, CRC) the parallel
 /// <c>BlockNonCryptographicHashAlgorithm&lt;T&gt;</c> base in <c>Bodu.IO.Hashing</c> is the right pick — it integrates
 /// with <c>NonCryptographicHashAlgorithm</c> rather than <see cref="HashAlgorithm" />.
 /// </para>
@@ -76,8 +76,7 @@ public abstract class BlockHashAlgorithm
     : BufferedBlockHashAlgorithm
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlockHashAlgorithm" /> class using the specified input block
-    /// size.
+    /// Initializes a new instance of the <see cref="BlockHashAlgorithm" /> class using the specified input block size.
     /// </summary>
     /// <param name="blockSize">
     /// The block size, in bits, that the algorithm uses to process input data. Must be a positive multiple of 8. This
@@ -239,9 +238,8 @@ public abstract class BlockHashAlgorithm
     /// </param>
     /// <returns>The number of bytes written — one or two whole blocks, ready for <see cref="ProcessBlock" />.</returns>
     /// <remarks>
-    /// The default implementation delegates to the array-returning
-    /// <see cref="PadBlock(ReadOnlySpan{byte}, ulong)" /> overload and clears the intermediate array; see that
-    /// overload's remarks for the override contract.
+    /// The default implementation delegates to the array-returning <see cref="PadBlock(ReadOnlySpan{byte}, ulong)" />
+    /// overload and clears the intermediate array; see that overload's remarks for the override contract.
     /// </remarks>
     protected virtual int PadBlock(ReadOnlySpan<byte> block, ulong messageLength, Span<byte> destination)
     {

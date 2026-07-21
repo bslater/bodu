@@ -75,10 +75,10 @@ public static class EncodingDetection
     /// <see cref="System.IO.StreamReader" /> behaviour.
     /// </para>
     /// <para>
-    /// The UTF-16 little-endian BOM (<c>FF FE</c>) is a strict prefix of the UTF-32 little-endian BOM
-    /// (<c>FF FE 00 00</c>), so the two are inherently ambiguous: a UTF-16 little-endian document whose first character
-    /// is U+0000 begins with the same four bytes. This method resolves the ambiguity in favour of UTF-32 little-endian
-    /// whenever all four bytes match, again matching <see cref="System.IO.StreamReader" />.
+    /// The UTF-16 little-endian BOM (<c>FF FE</c>) is a strict prefix of the UTF-32 little-endian BOM (<c>FF FE 00 00</c>),
+    /// so the two are inherently ambiguous: a UTF-16 little-endian document whose first character is U+0000 begins with
+    /// the same four bytes. This method resolves the ambiguity in favour of UTF-32 little-endian whenever all four
+    /// bytes match, again matching <see cref="System.IO.StreamReader" />.
     /// </para>
     /// </remarks>
     public static bool TryDetectByPreamble(

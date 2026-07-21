@@ -30,8 +30,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// for very large inputs where the Adler-32 collision floor becomes a concern; <see cref="Adler32C" /> swaps the prime
 /// modulus 65521 for the power-of-two 65536 to enable cheaper modular reductions in vectorized paths — its outputs are
 /// <em>not</em> interchangeable with standard Adler-32. For stronger error detection prefer <see cref="Crc" />; for
-/// hash-table keying prefer <see cref="Bodu.IO.Hashing.MurmurHash3" /> or <see cref="Bodu.IO.Hashing.CityHash" />
-/// .
+/// hash-table keying prefer <see cref="Bodu.IO.Hashing.MurmurHash3" /> or <see cref="Bodu.IO.Hashing.CityHash" /> .
 /// </para>
 /// <para>
 /// <strong>Lifecycle and threading.</strong> Inherits the standard

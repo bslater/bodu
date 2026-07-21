@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NullableConverter{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,10 +10,10 @@ using Bodu.Text.Yaml.Writer;
 namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
-/// Converts a <see cref="Nullable{T}" /> by delegating to the underlying type's converter. YAML has a real null
-/// scalar, so — unlike the shared-source twin the sibling formats compile — this converter maps a null token to
-/// <see langword="null" /> before the inner converter (whose null reading would produce the underlying type's
-/// default) is consulted.
+/// Converts a <see cref="Nullable{T}" /> by delegating to the underlying type's converter. YAML has a real null scalar,
+/// so — unlike the shared-source twin the sibling formats compile — this converter maps a null token to
+/// <see langword="null" /> before the inner converter (whose null reading would produce the underlying type's default)
+/// is consulted.
 /// </summary>
 /// <typeparam name="T">The underlying value type.</typeparam>
 internal sealed class NullableConverter<T>

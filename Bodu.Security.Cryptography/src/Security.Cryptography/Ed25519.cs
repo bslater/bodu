@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ed25519.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -87,9 +87,9 @@ public sealed partial class Ed25519
     private static readonly KeySizes[] s_legalKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
 
     /// <summary>
-    /// Gets the current key material typed as <see cref="Ed25519KeyMaterial" />, which carries the decoded public
-    /// point cached at construction. Every store goes through Ed25519's own import/generate paths, so the downcast is
-    /// always valid.
+    /// Gets the current key material typed as <see cref="Ed25519KeyMaterial" />, which carries the decoded public point
+    /// cached at construction. Every store goes through Ed25519's own import/generate paths, so the downcast is always
+    /// valid.
     /// </summary>
     /// <value>The typed key material, or <see langword="null" /> when no key has been generated or imported.</value>
     private Ed25519KeyMaterial? TypedKeyMaterial =>

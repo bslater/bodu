@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlWriteStack.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -53,8 +53,8 @@ internal sealed class YamlWriteStack
 
     /// <summary>
     /// Pushes a sequence-index path segment for a container the writer is about to descend into. The index is stored
-    /// unformatted, so the success path allocates nothing; the <c>[i]</c> text is produced only when a failure
-    /// captures the path.
+    /// unformatted, so the success path allocates nothing; the <c>[i]</c> text is produced only when a failure captures
+    /// the path.
     /// </summary>
     /// <param name="index">The zero-based sequence index.</param>
     internal void PushPath(int index) =>

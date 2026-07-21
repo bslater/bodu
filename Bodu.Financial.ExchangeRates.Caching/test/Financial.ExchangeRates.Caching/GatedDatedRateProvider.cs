@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GatedDatedRateProvider.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -31,15 +31,21 @@ internal sealed class GatedDatedRateProvider : IDatedRateProvider
     public GatedDatedRateProvider(IEnumerable<ExchangeRate> rates) =>
         _inner = new FixedDatedRateProvider(rates);
 
-    /// <summary>Gets the number of single-date lookups started.</summary>
+    /// <summary>
+    /// Gets the number of single-date lookups started.
+    /// </summary>
     /// <value>The invocation count.</value>
     public int SingleDateCalls => Volatile.Read(ref _singleDateCalls);
 
-    /// <summary>Gets the number of range lookups started.</summary>
+    /// <summary>
+    /// Gets the number of range lookups started.
+    /// </summary>
     /// <value>The invocation count.</value>
     public int RangeCalls => Volatile.Read(ref _rangeCalls);
 
-    /// <summary>Releases every caller waiting on the gate.</summary>
+    /// <summary>
+    /// Releases every caller waiting on the gate.
+    /// </summary>
     public void Open() => _gate.Set();
 
     /// <inheritdoc />
@@ -91,14 +97,18 @@ internal sealed class GatedDatedRateProvider : IDatedRateProvider
         return _inner.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken);
     }
 
-    /// <summary>Counts a single-date lookup and blocks on the gate.</summary>
+    /// <summary>
+    /// Counts a single-date lookup and blocks on the gate.
+    /// </summary>
     private void EnterSingleDate()
     {
         Interlocked.Increment(ref _singleDateCalls);
         _gate.Wait(TimeSpan.FromSeconds(30));
     }
 
-    /// <summary>Counts a range lookup and blocks on the gate.</summary>
+    /// <summary>
+    /// Counts a range lookup and blocks on the gate.
+    /// </summary>
     private void EnterRange()
     {
         Interlocked.Increment(ref _rangeCalls);

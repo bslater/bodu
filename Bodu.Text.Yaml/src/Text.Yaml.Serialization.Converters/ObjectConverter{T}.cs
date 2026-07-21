@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ObjectConverter{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,8 +13,8 @@ using Bodu.Text.Yaml.Writer;
 namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
-/// Converts an object of type <typeparamref name="T" /> to and from a YAML mapping, mapping each serializable member
-/// to a key/value pair. Members are read into a buffer and then bound either through a parameterless constructor and
+/// Converts an object of type <typeparamref name="T" /> to and from a YAML mapping, mapping each serializable member to
+/// a key/value pair. Members are read into a buffer and then bound either through a parameterless constructor and
 /// setters or through a parameterized constructor, according to the type's resolved metadata.
 /// </summary>
 /// <typeparam name="T">The object type.</typeparam>
@@ -163,8 +163,8 @@ internal sealed class ObjectConverter<T>
     }
 
     /// <summary>
-    /// Writes the entries held by the type's extension-data member after its declared members, rejecting an entry
-    /// whose key collides with a declared member's wire name.
+    /// Writes the entries held by the type's extension-data member after its declared members, rejecting an entry whose
+    /// key collides with a declared member's wire name.
     /// </summary>
     /// <param name="writer">The destination writer, positioned inside the open mapping.</param>
     /// <param name="metadata">The type metadata.</param>
@@ -241,8 +241,8 @@ internal sealed class ObjectConverter<T>
     }
 
     /// <summary>
-    /// Determines whether a member is omitted from the output for the supplied value, honoring the member's
-    /// per-member <see cref="IgnoreCondition" /> and, in its absence, the serializer-wide null handling.
+    /// Determines whether a member is omitted from the output for the supplied value, honoring the member's per-member
+    /// <see cref="IgnoreCondition" /> and, in its absence, the serializer-wide null handling.
     /// </summary>
     /// <param name="property">The member metadata.</param>
     /// <param name="value">The member value.</param>
@@ -322,8 +322,8 @@ internal sealed class ObjectConverter<T>
     }
 
     /// <summary>
-    /// Merges a freshly read sequence into the list instance a get-only member already holds, so a get-only
-    /// collection property round-trips under <see cref="ObjectCreationHandling.Populate" />.
+    /// Merges a freshly read sequence into the list instance a get-only member already holds, so a get-only collection
+    /// property round-trips under <see cref="ObjectCreationHandling.Populate" />.
     /// </summary>
     /// <param name="property">The member whose existing value is populated.</param>
     /// <param name="instance">The instance that owns the member.</param>

@@ -17,9 +17,9 @@ namespace Bodu.Security.Cryptography;
 /// SHA-3 competition. The permitted output sizes are 128, 160, 224, 256, 384, and 512 bits; 512 bits is the default.
 /// </para>
 /// <para>
-/// Supplying a non-empty <see cref="Skein.Key" /> turns the instance into the keyed Skein-MAC-512 variant by
-/// prepending a <c>KEY</c> UBI phase to the standard <c>CFG → MSG → OUT</c> pipeline. The key length is not fixed: any
-/// byte sequence from zero up to <see cref="Skein.MaxKeySize" /> / 8 bytes is valid.
+/// Supplying a non-empty <see cref="Skein.Key" /> turns the instance into the keyed Skein-MAC-512 variant by prepending
+/// a <c>KEY</c> UBI phase to the standard <c>CFG → MSG → OUT</c> pipeline. The key length is not fixed: any byte
+/// sequence from zero up to <see cref="Skein.MaxKeySize" /> / 8 bytes is valid.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -58,8 +58,8 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="Threefish512Cipher"/> <seealso cref="Skein"/> <seealso cref="Skein256"/>
-/// <seealso cref="Skein1024"/> <seealso cref="Threefish512"/>
+/// <seealso cref="Threefish512Cipher"/> <seealso cref="Skein"/> <seealso cref="Skein256"/> <seealso cref="Skein1024"/>
+/// <seealso cref="Threefish512"/>
 public sealed class Skein512
     : Skein
 {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CountingAsyncRateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,15 +29,21 @@ internal sealed class CountingAsyncRateCache : IRateCache, IRateCacheAsync
         _innerAsync = _inner;
     }
 
-    /// <summary>Gets the number of synchronous read or write calls observed.</summary>
+    /// <summary>
+    /// Gets the number of synchronous read or write calls observed.
+    /// </summary>
     /// <value>The synchronous call count.</value>
     public int SyncCalls { get; private set; }
 
-    /// <summary>Gets the number of asynchronous seam calls observed.</summary>
+    /// <summary>
+    /// Gets the number of asynchronous seam calls observed.
+    /// </summary>
     /// <value>The asynchronous call count.</value>
     public int AsyncCalls { get; private set; }
 
-    /// <summary>Gets the last cancellation token passed through the asynchronous seam.</summary>
+    /// <summary>
+    /// Gets the last cancellation token passed through the asynchronous seam.
+    /// </summary>
     /// <value>The last token observed.</value>
     public CancellationToken LastToken { get; private set; }
 

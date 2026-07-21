@@ -32,7 +32,9 @@ internal sealed class PatchRuleOverride
     /// <param name="applicability">
     /// The replacement applicability, or <see langword="null" /> to leave unchanged.
     /// </param>
-    /// <param name="strategy">The replacement single-date strategy, or <see langword="null" /> to leave unchanged.</param>
+    /// <param name="strategy">
+    /// The replacement single-date strategy, or <see langword="null" /> to leave unchanged.
+    /// </param>
     /// <param name="recurrence">The replacement recurrence, or <see langword="null" /> to leave unchanged.</param>
     /// <param name="adjustmentPolicyRefs">
     /// The replacement adjustment references, or <see langword="null" /> to leave unchanged.

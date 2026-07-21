@@ -117,7 +117,9 @@ public sealed class StrategyResolutionContext
     /// reference.
     /// </summary>
     /// <param name="notableDateRef">The identifier of the referenced notable-date concept.</param>
-    /// <param name="ruleRef">The identifier of the referenced rule, or <see langword="null" /> to use its sole rule.</param>
+    /// <param name="ruleRef">
+    /// The identifier of the referenced rule, or <see langword="null" /> to use its sole rule.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> when the reference resolves to a rule whose occurrence source is a recurrence; otherwise
     /// <see langword="false" />.
@@ -161,7 +163,9 @@ public sealed class StrategyResolutionContext
     /// Moves a date by a signed number of working days for a territory, skipping non-working days.
     /// </summary>
     /// <param name="origin">The origin date, which is not counted as one of the offset working days.</param>
-    /// <param name="workingDays">The signed number of working days to move; positive forward, negative backward.</param>
+    /// <param name="workingDays">
+    /// The signed number of working days to move; positive forward, negative backward.
+    /// </param>
     /// <param name="territory">The territory whose non-working days apply.</param>
     /// <returns>
     /// The resulting date, or <see langword="null" /> when the move would run past the representable date range.

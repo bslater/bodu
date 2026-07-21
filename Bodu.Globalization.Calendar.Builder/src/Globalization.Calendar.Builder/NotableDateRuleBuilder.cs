@@ -917,14 +917,18 @@ public sealed class NotableDateRuleBuilder
     /// <summary>
     /// Replaces the rule's recurrence directly when reconstructing a builder from a parsed document.
     /// </summary>
-    /// <param name="recurrence">The <c>Recurrence</c> element in the document namespace, or <see langword="null" />.</param>
+    /// <param name="recurrence">
+    /// The <c>Recurrence</c> element in the document namespace, or <see langword="null" />.
+    /// </param>
     internal void SetParsedRecurrence(XElement? recurrence) =>
         Recurrence = recurrence;
 
     /// <summary>
     /// Replaces the rule's calculated end-date duration directly when reconstructing a builder from a parsed document.
     /// </summary>
-    /// <param name="endStrategy">The end strategy element, or <see langword="null" /> when there is no calculated duration.</param>
+    /// <param name="endStrategy">
+    /// The end strategy element, or <see langword="null" /> when there is no calculated duration.
+    /// </param>
     /// <param name="startBoundary">The start boundary.</param>
     /// <param name="endBoundary">The end boundary.</param>
     /// <param name="selection">The end-date selection rule.</param>

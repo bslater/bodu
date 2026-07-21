@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MetadataResolver.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -19,8 +19,8 @@ namespace Bodu.Text.Yaml.Serialization.Metadata;
 
 /// <summary>
 /// Builds the <see cref="TypeMetadata" /> for a type by reflecting over its public properties, its public fields (when
-/// surfaced by <see cref="FormatOptions.IncludeFields" /> or <see cref="IncludeAttribute" />), and its
-/// constructors, applying the serializer's naming policy, attributes, and converter resolution rules.
+/// surfaced by <see cref="FormatOptions.IncludeFields" /> or <see cref="IncludeAttribute" />), and its constructors,
+/// applying the serializer's naming policy, attributes, and converter resolution rules.
 /// </summary>
 internal static class MetadataResolver
 {
@@ -334,8 +334,7 @@ internal static class MetadataResolver
         /// <param name="order">The write order.</param>
         /// <param name="requiredByAttribute">Whether the member is marked <see langword="required" />.</param>
         /// <param name="included">
-        /// Whether the member is opted into binding through non-public accessors by
-        /// <see cref="IncludeAttribute" />.
+        /// Whether the member is opted into binding through non-public accessors by <see cref="IncludeAttribute" />.
         /// </param>
         /// <param name="declarationIndex">The declaration order index.</param>
         internal Draft(

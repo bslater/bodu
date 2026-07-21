@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SerializationException.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -141,8 +141,8 @@ public sealed class YamlSerializationException
     public string? Path { get; internal set; }
 
     /// <summary>
-    /// Prepends a path segment to an existing member path, joining a key segment with a dot and an index segment
-    /// (which already begins with <c>[</c>) directly.
+    /// Prepends a path segment to an existing member path, joining a key segment with a dot and an index segment (which
+    /// already begins with <c>[</c>) directly.
     /// </summary>
     /// <param name="segment">
     /// The parent segment to prepend, a member or container key, or an index of the form <c>[i]</c>.

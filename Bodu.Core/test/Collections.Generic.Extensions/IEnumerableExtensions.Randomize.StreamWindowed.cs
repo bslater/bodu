@@ -84,8 +84,8 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that a supplied count limits the <see cref="RandomizationMode.StreamWindowed" /> stream to exactly
-    /// that many elements rather than being silently ignored.
+    /// Verifies that a supplied count limits the <see cref="RandomizationMode.StreamWindowed" /> stream to exactly that
+    /// many elements rather than being silently ignored.
     /// </summary>
     [TestMethod]
     public void Randomize_StreamWindowed_WhenCountProvided_ShouldReturnExactlyCountElements()

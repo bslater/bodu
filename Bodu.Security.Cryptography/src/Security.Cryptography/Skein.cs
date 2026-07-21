@@ -25,10 +25,9 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The base inherits from <see cref="KeyedBlockHashAlgorithm" /> so that the keyed <c>Skein-MAC</c> mode integrates
-/// with the shared keyed-hash test infrastructure. Unlike strict keyed-MAC algorithms such as <see cref="SipHash" />
-/// , Skein accepts a <em>variable-length optional</em> key: an empty <see cref="Key" /> selects the canonical
-/// plain-hash profile (no KEY UBI phase), while any non-empty byte sequence enables Skein-MAC with a preliminary KEY
-/// UBI phase.
+/// with the shared keyed-hash test infrastructure. Unlike strict keyed-MAC algorithms such as <see cref="SipHash" /> ,
+/// Skein accepts a <em>variable-length optional</em> key: an empty <see cref="Key" /> selects the canonical plain-hash
+/// profile (no KEY UBI phase), while any non-empty byte sequence enables Skein-MAC with a preliminary KEY UBI phase.
 /// </para>
 /// <para>
 /// Three fixed state sizes are supported, each implemented by a sealed derived class that wires up the corresponding
@@ -329,8 +328,8 @@ public abstract partial class Skein
             CryptoResourceStrings.Op_Invalid_SkeinBypassesProcessBlock);
 
     /// <summary>
-    /// Satisfies the <see cref="BlockHashAlgorithm.PadBlock(ReadOnlySpan{byte}, ulong)" /> contract, but is not used
-    /// by the Skein implementation.
+    /// Satisfies the <see cref="BlockHashAlgorithm.PadBlock(ReadOnlySpan{byte}, ulong)" /> contract, but is not used by
+    /// the Skein implementation.
     /// </summary>
     /// <param name="block">
     /// The final partial block supplied by the base pipeline. Skein does not consume this value here because final

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AeadBlockCipherModeTransformExtensions.Detached.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -8,11 +8,9 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography.Extensions;
 
-/// <content>
-/// Detached-tag convenience overloads: the ciphertext and the <see cref="AuthenticationTag" /> travel as separate
-/// values instead of the combined <c>ciphertext ‖ tag</c> layout, matching protocols that store or transmit the tag
-/// out of band.
-/// </content>
+/// <content> Detached-tag convenience overloads: the ciphertext and the <see cref="AuthenticationTag" /> travel as
+/// separate values instead of the combined <c>ciphertext ‖ tag</c> layout, matching protocols that store or transmit
+/// the tag out of band. </content>
 public static partial class AeadBlockCipherModeTransformExtensions
 {
     /// <summary>

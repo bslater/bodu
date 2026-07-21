@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBuffer{T}.EvictionHandlers.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -8,10 +8,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public sealed partial class ConcurrentCircularBuffer<T>
 {
-    /// <summary>
-    /// Caches the materialized invocation list for the most recently observed <see cref="ItemEvicted" /> delegate, so
-    /// the overwrite eviction path does not allocate a fresh <see cref="Delegate" /> array per evicted item.
-    /// </summary>
+    /// <summary>Caches the materialized invocation list for the most recently observed <see cref="ItemEvicted" /> delegate, so the overwrite eviction path does not allocate a fresh <see cref="Delegate" /> array per evicted item.</summary>
     /// <remarks>
     /// The reference is read and replaced with plain (non-volatile) accesses: a stale read merely re-materializes the
     /// list, and because the source delegate and its handler array travel in one immutable object, a racing refresh can
@@ -34,7 +31,9 @@ public sealed partial class ConcurrentCircularBuffer<T>
         /// <summary>
         /// Initializes a new instance of the <see cref="EvictionHandlers" /> class.
         /// </summary>
-        /// <param name="source">The delegate whose invocation list is materialized. Must not be <see langword="null" />.</param>
+        /// <param name="source">
+        /// The delegate whose invocation list is materialized. Must not be <see langword="null" />.
+        /// </param>
         internal EvictionHandlers(Action<T> source)
         {
             Source = source;

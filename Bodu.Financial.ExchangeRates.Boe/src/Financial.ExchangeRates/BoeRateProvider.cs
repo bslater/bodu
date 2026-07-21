@@ -252,7 +252,9 @@ public sealed class BoeRateProvider
     /// </summary>
     /// <param name="httpClient">The HTTP client used to download range responses.</param>
     /// <param name="options">The provider options.</param>
-    /// <param name="logger">The provider's logger, forwarded to the on-disk response cache for degradation warnings.</param>
+    /// <param name="logger">
+    /// The provider's logger, forwarded to the on-disk response cache for degradation warnings.
+    /// </param>
     /// <returns>A new table source.</returns>
     private static BoeCsvRateTableSource CreateSource(HttpClient httpClient, BoeRateProviderOptions options, ILogger? logger)
     {

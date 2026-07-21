@@ -331,8 +331,8 @@ public sealed partial class Blake3
     /// <see cref="FlagChunkEnd" />, <see cref="FlagParent" />, <see cref="FlagRoot" />).
     /// </param>
     /// <param name="state">
-    /// Receives the 16-word post-compression state, whose first eight words form the updated chaining value. Must
-    /// have a length of at least 16.
+    /// Receives the 16-word post-compression state, whose first eight words form the updated chaining value. Must have
+    /// a length of at least 16.
     /// </param>
     /// <remarks>
     /// Dispatches to an AVX-512 vectorised implementation when supported by the host, falling back to a scalar
@@ -436,7 +436,9 @@ public sealed partial class Blake3
     /// zero-padding any bytes beyond the actual block length.
     /// </summary>
     /// <param name="block">The raw block bytes to interpret (0–64 bytes).</param>
-    /// <param name="words">Receives the 16 little-endian uint32 words representing the block. Must have a length of at least 16.</param>
+    /// <param name="words">
+    /// Receives the 16 little-endian uint32 words representing the block. Must have a length of at least 16.
+    /// </param>
     private static void ReadBlockWords(ReadOnlySpan<byte> block, Span<uint> words)
     {
         Span<byte> padded = stackalloc byte[BlockSize];

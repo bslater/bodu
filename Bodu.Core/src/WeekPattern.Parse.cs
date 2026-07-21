@@ -26,12 +26,12 @@ public partial struct WeekPattern
     /// is resolved from the first position whose letter is valid in only one layout.
     /// </para>
     /// <para>
-    /// One symbol form is genuinely ambiguous: a string whose only day letter is an <c>'S'</c> in the final position
-    /// (<c>"______S"</c>) is a valid Saturday-only pattern in Sunday-first order and a valid Sunday-only pattern in
-    /// Monday-first order. Auto-detection resolves it as the <b>Sunday-first</b> reading (Saturday-only), matching the
-    /// ordering produced by the default <see cref="WeekPattern.ToString()" />. Strings produced with the explicit
-    /// Monday-first format should be parsed with <see cref="ParseExact(string, string)" /> and the <c>"M"</c> format,
-    /// which is the unambiguous round-trip partner of <c>ToString("M")</c>.
+    /// One symbol form is genuinely ambiguous: a string whose only day letter is an <c>'S'</c> in the final position (<c>"______S"</c>)
+    /// is a valid Saturday-only pattern in Sunday-first order and a valid Sunday-only pattern in Monday-first order.
+    /// Auto-detection resolves it as the <b>Sunday-first</b> reading (Saturday-only), matching the ordering produced by
+    /// the default <see cref="WeekPattern.ToString()" />. Strings produced with the explicit Monday-first format should
+    /// be parsed with <see cref="ParseExact(string, string)" /> and the <c>"M"</c> format, which is the unambiguous
+    /// round-trip partner of <c>ToString("M")</c>.
     /// </para>
     /// </remarks>
     public static WeekPattern Parse(string input)

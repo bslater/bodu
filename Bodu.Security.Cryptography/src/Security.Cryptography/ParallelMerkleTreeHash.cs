@@ -58,8 +58,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// A short tail block is hashed at its actual length — <strong>not</strong> zero-padded to a full <c>blockSize</c>,
-/// which would let a shorter input collide with a zero-extended longer one — matching <see cref="MerkleTreeHash" />
-/// so the two produce identical roots. The Dispatcher's <c>L₆</c> event in the diagram above is the tail case. A short
+/// which would let a shorter input collide with a zero-extended longer one — matching <see cref="MerkleTreeHash" /> so
+/// the two produce identical roots. The Dispatcher's <c>L₆</c> event in the diagram above is the tail case. A short
 /// final group at any internal level is promoted with its surviving children only; the Level 1 <c>hash(M₁, N₃)</c>
 /// event at <c>t₄</c> is exactly this case (two children, one of which was itself promoted from a short group).
 /// </para>

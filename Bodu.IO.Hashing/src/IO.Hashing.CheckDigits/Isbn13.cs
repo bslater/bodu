@@ -69,9 +69,7 @@ public sealed class Isbn13
     /// Computes the ISBN-13 check digit for the supplied body of decimal digits without allocating a streaming
     /// instance.
     /// </summary>
-    /// <param name="body">
-    /// The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
-    /// </param>
+    /// <param name="body">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="body" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.

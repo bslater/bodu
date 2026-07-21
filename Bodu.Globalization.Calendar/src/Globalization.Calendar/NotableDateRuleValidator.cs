@@ -271,7 +271,9 @@ internal static class NotableDateRuleValidator
     /// <param name="strategy">The strategy to validate.</param>
     /// <param name="isEndStrategy">Whether the strategy is a calculated duration's end strategy.</param>
     /// <param name="diagnostics">The collection that receives diagnostics.</param>
-    /// <param name="algorithms">The custom algorithm registry whose keys are accepted, or <see langword="null" />.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys are accepted, or <see langword="null" />.
+    /// </param>
     private static void ValidateStrategy(
         NotableDateResource resource,
         NotableDateDefinition definition,

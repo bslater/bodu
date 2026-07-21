@@ -50,10 +50,7 @@ public static class TomlSerializer
     /// <summary>The strict UTF-8 encoding used for text and stream input and output; it omits a byte-order mark.</summary>
     private static readonly UTF8Encoding s_utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
-    /// <summary>
-    /// The shared options instance used when a caller passes <see langword="null" />, so resolved converters and type
-    /// metadata are cached across default-options calls instead of being re-resolved per call.
-    /// </summary>
+    /// <summary>The shared options instance used when a caller passes <see langword="null" />, so resolved converters and type metadata are cached across default-options calls instead of being re-resolved per call.</summary>
     private static readonly TomlSerializerOptions s_defaultOptions = new();
 
     /// <summary>

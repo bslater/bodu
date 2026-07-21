@@ -108,12 +108,18 @@ public sealed class NotableDateRule
     /// </summary>
     /// <param name="id">The stable identifier of the rule within its notable-date concept.</param>
     /// <param name="priority">The selection priority of the rule.</param>
-    /// <param name="category">The category override, or <see langword="null" /> to inherit the concept's category.</param>
-    /// <param name="nonWorking">The non-working-day override, or <see langword="null" /> to inherit the default.</param>
+    /// <param name="category">
+    /// The category override, or <see langword="null" /> to inherit the concept's category.
+    /// </param>
+    /// <param name="nonWorking">
+    /// The non-working-day override, or <see langword="null" /> to inherit the default.
+    /// </param>
     /// <param name="duration">The duration override, or <see langword="null" /> to inherit the default.</param>
     /// <param name="applicability">The territory, calendar, and year applicability of the rule.</param>
     /// <param name="strategy">The single-date strategy, or <see langword="null" /> when a recurrence is used.</param>
-    /// <param name="recurrence">The recurrence strategy, or <see langword="null" /> when a single-date strategy is used.</param>
+    /// <param name="recurrence">
+    /// The recurrence strategy, or <see langword="null" /> when a single-date strategy is used.
+    /// </param>
     /// <param name="adjustmentPolicyRefs">The identifiers of the adjustment policies applied to the rule.</param>
     /// <param name="tags">The rule-specific tags.</param>
     /// <exception cref="ArgumentNullException">

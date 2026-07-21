@@ -141,8 +141,8 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <remarks>
     /// The walk is an explicit-stack traversal for the same reason <see cref="EnforceExpansionBudget" /> uses one:
-    /// chained aliases compose resolved depth far beyond the parser's physical nesting clamp, so native recursion
-    /// could exhaust the call stack on a crafted document before the cycle (or its absence) is ever established.
+    /// chained aliases compose resolved depth far beyond the parser's physical nesting clamp, so native recursion could
+    /// exhaust the call stack on a crafted document before the cycle (or its absence) is ever established.
     /// </remarks>
     /// <param name="state">The per-row visit state.</param>
     /// <exception cref="YamlFormatException">A cycle is detected.</exception>
@@ -189,8 +189,8 @@ internal sealed partial class YamlParser
 
     /// <summary>
     /// Resolves each alias row to the anchor of the same name defined earlier in the document. Anchor names must be
-    /// unique within a document: the tree profile rejects redefinition (where the YAML specification would rebind
-    /// later aliases to the most recent definition) so that every alias has a single unambiguous target.
+    /// unique within a document: the tree profile rejects redefinition (where the YAML specification would rebind later
+    /// aliases to the most recent definition) so that every alias has a single unambiguous target.
     /// </summary>
     /// <exception cref="YamlFormatException">
     /// An alias refers to an anchor that was never defined, or an anchor name is defined more than once.
@@ -224,7 +224,9 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Expands merge keys by injecting alias rows for keys contributed by the merged mappings.
     /// </summary>
-    /// <returns><see langword="true" /> when at least one alias row was injected; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when at least one alias row was injected; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="YamlFormatException">
     /// Injection would grow the row store past <see cref="YamlLimits.AbsoluteMaxExpandedNodes" />.
     /// </exception>

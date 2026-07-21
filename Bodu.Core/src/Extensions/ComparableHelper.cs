@@ -9,8 +9,8 @@ namespace Bodu.Extensions;
 /// <summary>
 /// Provides null-tolerant ordering helpers — <c>Min</c>, <c>Max</c>, and <c>Coalesce</c> — for pairs of operands.
 /// <c>Min</c> and <c>Max</c> require <see cref="IComparable{T}" /> operands (reference types may be
-/// <see langword="null" />); <c>Coalesce</c> is unconstrained and additionally accepts <see cref="Nullable{T}" />
-/// value types.
+/// <see langword="null" />); <c>Coalesce</c> is unconstrained and additionally accepts <see cref="Nullable{T}" /> value
+/// types.
 /// </summary>
 /// <remarks>
 /// <para>

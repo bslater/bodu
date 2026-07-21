@@ -710,7 +710,9 @@ public ref struct Utf8BencodeReader
     /// <summary>
     /// Validates the dictionary key just read against the ordering and uniqueness rules selected at construction.
     /// </summary>
-    /// <param name="top">The enclosing dictionary's frame, by reference so seen-key tracking persists on the frame.</param>
+    /// <param name="top">
+    /// The enclosing dictionary's frame, by reference so seen-key tracking persists on the frame.
+    /// </param>
     /// <exception cref="BencodeFormatException">
     /// Thrown when the key repeats an earlier key and duplicates are not permitted, or precedes the previous key in
     /// bytewise order and unsorted keys are not permitted.
@@ -813,9 +815,9 @@ public ref struct Utf8BencodeReader
     }
 
     /// <summary>
-    /// Tracks the state of an open container during a read. A mutable struct held in the shared frame list — one
-    /// small copy per nesting level rather than a heap allocation per container entered — and mutated in place
-    /// through <see cref="CollectionsMarshal.AsSpan{T}(List{T})" /> references.
+    /// Tracks the state of an open container during a read. A mutable struct held in the shared frame list — one small
+    /// copy per nesting level rather than a heap allocation per container entered — and mutated in place through
+    /// <see cref="CollectionsMarshal.AsSpan{T}(List{T})" /> references.
     /// </summary>
     private struct Frame
     {

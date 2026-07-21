@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializer.Read.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -112,8 +112,8 @@ public static partial class YamlSerializer
     }
 
     /// <summary>
-    /// Asynchronously deserializes a value of type <typeparamref name="T" /> by reading a stream of UTF-8 YAML bytes
-    /// to its end.
+    /// Asynchronously deserializes a value of type <typeparamref name="T" /> by reading a stream of UTF-8 YAML bytes to
+    /// its end.
     /// </summary>
     /// <typeparam name="T">The target type.</typeparam>
     /// <param name="source">The readable stream containing the UTF-8 YAML bytes.</param>
@@ -121,9 +121,9 @@ public static partial class YamlSerializer
     /// <param name="cancellationToken">A token that can be used to cancel the read.</param>
     /// <returns>A task that yields the deserialized value.</returns>
     /// <remarks>
-    /// The stream is copied to an in-memory buffer in full before parsing begins: the method buffers the complete
-    /// input rather than parsing incrementally, so peak memory includes the entire document. Cancellation applies to
-    /// reading the stream, not to the parse and bind that follow.
+    /// The stream is copied to an in-memory buffer in full before parsing begins: the method buffers the complete input
+    /// rather than parsing incrementally, so peak memory includes the entire document. Cancellation applies to reading
+    /// the stream, not to the parse and bind that follow.
     /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.

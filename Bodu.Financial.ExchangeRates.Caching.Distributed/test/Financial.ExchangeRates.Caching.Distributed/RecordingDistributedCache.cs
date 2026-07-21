@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RecordingDistributedCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -36,19 +36,27 @@ internal sealed class RecordingDistributedCache : IDistributedCache
         }
     }
 
-    /// <summary>Gets the number of synchronous <see cref="Get" /> calls observed.</summary>
+    /// <summary>
+    /// Gets the number of synchronous <see cref="Get" /> calls observed.
+    /// </summary>
     /// <value>The synchronous read count.</value>
     public int GetCalls { get; private set; }
 
-    /// <summary>Gets the number of <see cref="GetAsync" /> calls observed.</summary>
+    /// <summary>
+    /// Gets the number of <see cref="GetAsync" /> calls observed.
+    /// </summary>
     /// <value>The asynchronous read count.</value>
     public int GetAsyncCalls { get; private set; }
 
-    /// <summary>Gets the number of synchronous <see cref="Set" /> calls observed.</summary>
+    /// <summary>
+    /// Gets the number of synchronous <see cref="Set" /> calls observed.
+    /// </summary>
     /// <value>The synchronous write count.</value>
     public int SetCalls { get; private set; }
 
-    /// <summary>Gets the number of <see cref="SetAsync" /> calls observed.</summary>
+    /// <summary>
+    /// Gets the number of <see cref="SetAsync" /> calls observed.
+    /// </summary>
     /// <value>The asynchronous write count.</value>
     public int SetAsyncCalls { get; private set; }
 

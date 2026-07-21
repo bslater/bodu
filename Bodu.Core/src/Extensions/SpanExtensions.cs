@@ -20,18 +20,18 @@ namespace Bodu.Extensions;
 /// array.
 /// </para>
 /// <para>
-/// The API surface is intentionally narrow: <c>AsReadOnly</c> for capability-narrowing, and overloaded <c>ToReversed</c>
-/// methods on both <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> for whole-span and windowed reversal.
-/// Unlike the in-place <see cref="MemoryExtensions.Reverse{T}(Span{T})" />, every <c>ToReversed</c> overload copies the
-/// full source into a newly heap-allocated array and reverses the nominated window on that copy; the returned
-/// <see cref="Span{T}" /> wraps the fresh allocation, and the source memory is never modified. This is also why the
-/// <see cref="ReadOnlySpan{T}" /> overloads can return a writeable <see cref="Span{T}" /> — it aliases the copy, not
-/// the read-only source.
+/// The API surface is intentionally narrow: <c>AsReadOnly</c> for capability-narrowing, and overloaded
+/// <c>ToReversed</c> methods on both <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> for whole-span and
+/// windowed reversal. Unlike the in-place <see cref="MemoryExtensions.Reverse{T}(Span{T})" />, every <c>ToReversed</c>
+/// overload copies the full source into a newly heap-allocated array and reverses the nominated window on that copy;
+/// the returned <see cref="Span{T}" /> wraps the fresh allocation, and the source memory is never modified. This is
+/// also why the <see cref="ReadOnlySpan{T}" /> overloads can return a writeable <see cref="Span{T}" /> — it aliases the
+/// copy, not the read-only source.
 /// </para>
 /// <para>
-/// <c>AsReadOnly</c> is allocation-free; the <c>ToReversed</c> overloads allocate one array per call. Reversing a partial
-/// window copies all elements and reverses only those inside the window. The methods are not thread-safe — concurrent
-/// access to the underlying buffer must be synchronized externally.
+/// <c>AsReadOnly</c> is allocation-free; the <c>ToReversed</c> overloads allocate one array per call. Reversing a
+/// partial window copies all elements and reverses only those inside the window. The methods are not thread-safe —
+/// concurrent access to the underlying buffer must be synchronized externally.
 /// </para>
 /// <example>
 /// <code language="csharp">

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DictionaryConverter{T,T,T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ using Bodu.Text.Yaml.Writer;
 namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
-/// Converts a dictionary of <typeparamref name="TKey" /> to <typeparamref name="TValue" /> to and from a YAML
-/// mapping, where each entry becomes a key/value pair whose mapping key is the entry key's invariant text.
+/// Converts a dictionary of <typeparamref name="TKey" /> to <typeparamref name="TValue" /> to and from a YAML mapping,
+/// where each entry becomes a key/value pair whose mapping key is the entry key's invariant text.
 /// </summary>
 /// <typeparam name="TDictionary">
 /// The declared dictionary type (a concrete dictionary or a dictionary interface).
@@ -23,8 +23,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <para>
 /// YAML mapping keys are strings, so a non-string key is converted to its round-trippable invariant-culture text on
 /// write and parsed back on read. Distinct keys whose string forms collide are rejected with
-/// <see cref="YamlSerializationException" />, so the serializer never emits a document its own parser would reject as
-/// a duplicate key. An entry whose value is <see langword="null" /> writes the YAML null scalar — YAML, unlike its
+/// <see cref="YamlSerializationException" />, so the serializer never emits a document its own parser would reject as a
+/// duplicate key. An entry whose value is <see langword="null" /> writes the YAML null scalar — YAML, unlike its
 /// sibling formats, has a native null form.
 /// </para>
 /// </remarks>
@@ -128,9 +128,9 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     }
 
     /// <summary>
-    /// Parses a mapping key back to <typeparamref name="TKey" />, mirroring the coercions of the former binding
-    /// walker: strings pass through, enumeration names match case-insensitively, and every other supported kind
-    /// converts from its invariant text.
+    /// Parses a mapping key back to <typeparamref name="TKey" />, mirroring the coercions of the former binding walker:
+    /// strings pass through, enumeration names match case-insensitively, and every other supported kind converts from
+    /// its invariant text.
     /// </summary>
     /// <param name="text">The key text read from the document.</param>
     /// <returns>The parsed key.</returns>

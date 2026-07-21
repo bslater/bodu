@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SerializerOptions.Resolution.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -38,7 +38,9 @@ public sealed partial class YamlSerializerOptions
     /// <summary>
     /// Gets a value indicating whether the options have become read-only.
     /// </summary>
-    /// <value><see langword="true" /> once the options have been used or frozen; otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> once the options have been used or frozen; otherwise <see langword="false" />.
+    /// </value>
     public bool IsReadOnly => _frozenConverters is not null;
 
     /// <summary>
@@ -89,8 +91,8 @@ public sealed partial class YamlSerializerOptions
     /// <param name="targetType">The type the converter must handle.</param>
     /// <returns>The concrete converter.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <paramref name="converterType" /> is not a converter type, lacks a public parameterless
-    /// constructor, or cannot convert <paramref name="targetType" />.
+    /// Thrown when <paramref name="converterType" /> is not a converter type, lacks a public parameterless constructor,
+    /// or cannot convert <paramref name="targetType" />.
     /// </exception>
     internal FormatConverter InstantiateConverter(Type converterType, Type targetType)
     {

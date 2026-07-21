@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlScalarResolver.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -123,13 +123,15 @@ internal static class YamlScalarResolver
     }
 
     /// <summary>
-    /// Transcodes a scalar's bytes into the numeric-candidate characters both numeric attempts parse, removing the
-    /// 1.1 schema's underscore digit-group separators.
+    /// Transcodes a scalar's bytes into the numeric-candidate characters both numeric attempts parse, removing the 1.1
+    /// schema's underscore digit-group separators.
     /// </summary>
     /// <param name="text">The raw UTF-8 bytes of the scalar.</param>
     /// <param name="version">The specification version, which controls underscore stripping.</param>
     /// <param name="destination">The buffer that receives the characters; at least the scalar's length.</param>
-    /// <returns>The number of characters written, or <c>-1</c> when a non-ASCII byte makes the scalar non-numeric.</returns>
+    /// <returns>
+    /// The number of characters written, or <c>-1</c> when a non-ASCII byte makes the scalar non-numeric.
+    /// </returns>
     private static int TranscodeNumericCandidate(ReadOnlySpan<byte> text, YamlSpecVersion version, Span<char> destination)
     {
         bool stripUnderscores = version == YamlSpecVersion.V1_1;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSerializer.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -84,10 +84,9 @@ public static partial class YamlSerializer
     /// <param name="cancellationToken">A token that can be used to cancel the write.</param>
     /// <returns>A task that completes when the value has been written.</returns>
     /// <remarks>
-    /// The value is serialized into an in-memory buffer in full and then written to the stream in a single
-    /// asynchronous operation: the method buffers the complete output rather than streaming it, so peak memory
-    /// includes the entire rendered document. Cancellation applies to the final write, not to the serialization that
-    /// precedes it.
+    /// The value is serialized into an in-memory buffer in full and then written to the stream in a single asynchronous
+    /// operation: the method buffers the complete output rather than streaming it, so peak memory includes the entire
+    /// rendered document. Cancellation applies to the final write, not to the serialization that precedes it.
     /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.

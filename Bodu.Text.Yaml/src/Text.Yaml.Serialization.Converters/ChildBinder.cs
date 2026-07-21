@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ChildBinder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ using Bodu.Text.Yaml.Reader;
 namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
-/// Reads a child value on behalf of a container converter, attaching the child's path segment to any binding failure
-/// so the reported <see cref="YamlSerializationException.Path" /> identifies the offending member, index, or key.
+/// Reads a child value on behalf of a container converter, attaching the child's path segment to any binding failure so
+/// the reported <see cref="YamlSerializationException.Path" /> identifies the offending member, index, or key.
 /// </summary>
 internal static class ChildBinder
 {

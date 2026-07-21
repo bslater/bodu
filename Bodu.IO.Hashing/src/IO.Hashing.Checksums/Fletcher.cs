@@ -25,17 +25,16 @@ namespace Bodu.IO.Hashing.Checksums;
 /// protocols where 16 bits is enough, <see cref="Fletcher32" /> as the workhorse for general file-integrity work, and
 /// <see cref="Fletcher64" /> when a wider checksum reduces collision pressure on large datasets. For stronger
 /// error-detection guarantees prefer <see cref="Crc" />; for hash-table keying prefer
-/// <see cref="Bodu.IO.Hashing.MurmurHash3" /> or <see cref="Bodu.IO.Hashing.CityHash" />, which give better
-/// avalanche than any positional-sum scheme.
+/// <see cref="Bodu.IO.Hashing.MurmurHash3" /> or <see cref="Bodu.IO.Hashing.CityHash" />, which give better avalanche
+/// than any positional-sum scheme.
 /// </para>
 /// <para>
 /// <strong>Lifecycle and threading.</strong> Inherits the standard
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" /> /
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset" /> /
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> shape via
-/// <see cref="BlockNonCryptographicHashAlgorithm" />. Snapshotting is non-destructive — call <c>GetCurrentHash</c>
-/// as often as needed. Instances are not thread-safe; share behind explicit synchronization, or allocate one per
-/// consumer.
+/// <see cref="BlockNonCryptographicHashAlgorithm" />. Snapshotting is non-destructive — call <c>GetCurrentHash</c> as
+/// often as needed. Instances are not thread-safe; share behind explicit synchronization, or allocate one per consumer.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -59,13 +58,7 @@ public abstract class Fletcher
     /// <summary>The set of output widths, in bits, that the Fletcher family supports (16, 32, and 64).</summary>
     private static readonly int[] s_validHashSizes = [16, 32, 64];
 
-    /// <summary>
-    /// The number of input bytes accumulated in <see cref="Append" /> before the two accumulators are reduced modulo
-    /// <see cref="_modulus" />. Chosen well below the point at which the running <c>B</c> accumulator could overflow a
-    /// 64-bit value for the widest variant (Fletcher-64, modulus 2^32−1: <c>B</c> grows by at most <c>N·2^32</c>, so any
-    /// <c>N</c> below ~2^27 is safe), while amortizing the two modulo operations over a whole cache-friendly run
-    /// instead of paying them per byte.
-    /// </summary>
+    /// <summary>The number of input bytes accumulated in <see cref="Append" /> before the two accumulators are reduced modulo <see cref="_modulus" />. Chosen well below the point at which the running <c>B</c> accumulator could overflow a 64-bit value for the widest variant (Fletcher-64, modulus 2^32−1: <c>B</c> grows by at most <c>N·2^32</c>, so any <c>N</c> below ~2^27 is safe), while amortizing the two modulo operations over a whole cache-friendly run instead of paying them per byte.</summary>
     private const int ReductionBatch = 4096;
 
     /// <summary>The configured output width, in bits, of this instance.</summary>
@@ -148,8 +141,8 @@ public abstract class Fletcher
     /// </para>
     /// <para>
     /// This overrides the base per-block driver directly: with a one-byte block size the residual buffer is never
-    /// populated, so the base <see cref="BlockNonCryptographicHashAlgorithm.ProcessBlock" /> path is used only
-    /// by the padding branch that <see cref="ShouldPadFinalBlock" /> disables for production Fletcher variants.
+    /// populated, so the base <see cref="BlockNonCryptographicHashAlgorithm.ProcessBlock" /> path is used only by the
+    /// padding branch that <see cref="ShouldPadFinalBlock" /> disables for production Fletcher variants.
     /// </para>
     /// </remarks>
     public override void Append(ReadOnlySpan<byte> source)
@@ -237,8 +230,8 @@ public abstract class Fletcher
     /// <remarks>
     /// Fletcher digests carry the complete accumulator state (the high half is <c>B</c>, the low half <c>A</c>, both
     /// big-endian), so resuming requires no finalization reversal: the halves seed the accumulators directly. The
-    /// computation runs against saved-and-restored instance state, so any in-progress incremental state on the
-    /// instance survives the call unchanged.
+    /// computation runs against saved-and-restored instance state, so any in-progress incremental state on the instance
+    /// survives the call unchanged.
     /// </remarks>
     public bool TryComputeHashFrom(
         ReadOnlySpan<byte> previousHash,
