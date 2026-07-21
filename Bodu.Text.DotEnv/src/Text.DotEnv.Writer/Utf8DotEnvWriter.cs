@@ -145,11 +145,26 @@ public ref struct Utf8DotEnvWriter
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
-    public void WritePropertyName(string name)
+    /// <remarks>
+    /// The <c>export</c> prefix is emitted when <see cref="DotEnvWriterOptions.WriteExportPrefix" /> is set.
+    /// </remarks>
+    public void WritePropertyName(string name) =>
+        WritePropertyName(name, _options.WriteExportPrefix);
+
+    /// <summary>
+    /// Writes a key name with an explicit <c>export</c> decision, followed by the <c>=</c> assignment. Call
+    /// <see cref="WriteString(string)" /> next to write the value.
+    /// </summary>
+    /// <param name="name">The key name.</param>
+    /// <param name="export"><see langword="true" /> to prefix the key with the <c>export</c> keyword.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />.
+    /// </exception>
+    public void WritePropertyName(string name, bool export)
     {
         ThrowHelper.ThrowIfNull(name);
 
-        if (_options.WriteExportPrefix)
+        if (export)
             WriteRaw("export "u8);
 
         WriteText(name);
