@@ -69,7 +69,7 @@ The package names and root namespaces line up one-to-one, with the formats and s
 | "I need canonical, byte-identical output" — infohash-style hashing over the serialized form | `Bodu.Text.Bencode` | The spec mandates ascending bytewise dictionary-key order, and the serializer always emits it. |
 | "Malformed input is expected; I don't want exceptions on the hot path" | Any of the above | `Try*` overloads on the codecs and formats; `IsValid` predicates on the codecs. |
 | "I need BOM detection or `System.Text.Encoding` helpers" | The `Bodu.Text` namespace in `Bodu.Core` | Character encodings, not binary-to-text codecs — see [Bodu.Text](../text/index.md) and the [Core Foundations topic](core-foundations.md). |
-| "I need EditorConfig-style configuration layering over INI" | `Bodu.Text.Configuration` | Builds on the INI model from `Bodu.Text.Formats` — see the [Configuration topic](configuration.md). |
+| "I need EditorConfig-style configuration layering over INI" | `Bodu.Text.Configuration` | Carries its own trivia-preserving INI model — see the [Configuration topic](configuration.md). |
 
 ## Install
 

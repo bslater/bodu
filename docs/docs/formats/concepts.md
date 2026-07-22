@@ -24,7 +24,11 @@ Each `*Serializer` is a static facade shaped after `JsonSerializer`: `Serialize`
 
 Because the wire is string-only, scalar conversion is serializer-local: values parse and format with `InvariantCulture` over the common scalar set (strings, numbers, booleans, enums, `Guid`, `DateTime` / `DateTimeOffset` / `TimeSpan`, `Uri`, and their nullables).
 
-`DelimitedSerializer` additionally exposes a record-streaming surface: `DeserializeAsyncEnumerableAsync<TRecord>(Stream)` yields typed records as an `IAsyncEnumerable<TRecord>`, and `SerializeAsync(Stream, IAsyncEnumerable<TRecord>)` accepts one.
+`DelimitedSerializer` additionally exposes a record-streaming surface: `DeserializeAsyncEnumerableAsync<TRecord>(Stream)` yields typed records as an `IAsyncEnumerable<TRecord>`, and `SerializeAsync(Stream, IAsyncEnumerable<TRecord>)` accepts one. Both directions are truly incremental — records parse and yield as stream segments arrive, and writes flush in bounded batches — so memory use is bounded by the longest record, not the document.
+
+## Reflection-free binding
+
+The serializer binders use reflection by default. For trimming and ahead-of-time compilation, `DelimitedSerializer` and `IniSerializer` also accept compile-time factories — `IDelimitedRecordFactory<TRecord>` and `IIniSectionFactory<TSection>` — through dedicated overloads that carry no reflection annotations. Annotate a partial POCO with `[DelimitedRecord]` or `[IniSection]` and reference the `Bodu.Text.Formats.Generators` source generator, and the factory is emitted at build time as a static `DelimitedFactory` / `IniFactory` property; the interfaces can also be implemented by hand.
 
 ## The two DOMs
 

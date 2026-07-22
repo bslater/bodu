@@ -15,9 +15,9 @@ For the high-level shape of the library and the pipeline diagram, start with the
 
 A **document** is the parsed-but-not-yet-resolved representation of the source text.
 <xref:Bodu.Text.Configuration.ConfigurationDocument> is a `sealed` type that *inherits* the read-only
-<xref:Bodu.Text.Ini.IniDocumentBase> model from the `Bodu.Text.Formats` package — the same structure the INI codec
-produces — with a preamble (the <xref:Bodu.Text.Ini.IniDocumentBase.GlobalSection>) and zero or more named
-<xref:Bodu.Text.Ini.IniDocumentBase.Sections> in source order. The document preserves comments, ordering, and
+<xref:Bodu.Text.Configuration.IniDocumentBase> model — the library's own trivia-preserving INI structure, which the reader
+produces — with a preamble (the <xref:Bodu.Text.Configuration.IniDocumentBase.GlobalSection>) and zero or more named
+<xref:Bodu.Text.Configuration.IniDocumentBase.Sections> in source order. The document preserves comments, ordering, and
 duplicate-policy decisions, so it can be re-emitted byte-for-byte.
 
 Because it derives from `IniDocumentBase`, every read member of the INI model is available directly on the document:
@@ -72,8 +72,8 @@ Each option type controls one stage of the pipeline.
 |---|---|
 | `Profile` | The profile this bag represents. Default `Bodu`. |
 | `InlineCommentMode` | Disabled / WhitespaceIntroduced (default) / Always. |
-| `DuplicateKeyMode` | LastWins (default) / FirstWins / Disallowed (from <xref:Bodu.Text.DuplicateKeyPolicy>). |
-| `DuplicateSectionMode` | Preserve (default) / Merge / MergeAdjacent / Disallowed (from <xref:Bodu.Text.Ini.IniDuplicateSectionBehavior>). |
+| `DuplicateKeyMode` | LastWins (default) / FirstWins / Disallowed (from <xref:Bodu.Text.Configuration.DuplicateKeyPolicy>). |
+| `DuplicateSectionMode` | Preserve (default) / Merge / MergeAdjacent / Disallowed (from <xref:Bodu.Text.Configuration.IniDuplicateSectionBehavior>). |
 | `SectionHeaderMode` | Lenient (default) / Strict / AllowTrailingInlineComment — how trailing content after `]` is treated. |
 | `DiagnosticMode` | Throw (default) / Collect / Ignore. |
 | `MaxLineLength` / `MaxKeyLength` | DoS-resistant caps; defaults 8192 / 1024 characters. Over-length input emits `LineTooLong` / `KeyTooLong`. |
@@ -195,7 +195,7 @@ match timeout so an untrusted section-name glob cannot become a ReDoS vector.
 ## Preamble
 
 The **preamble** is the EditorConfig name for the file's global section — properties that appear before any `[...]`
-section header. Bodu exposes it as <xref:Bodu.Text.Ini.IniDocumentBase.GlobalSection>.
+section header. Bodu exposes it as <xref:Bodu.Text.Configuration.IniDocumentBase.GlobalSection>.
 
 Under the default `Bodu` profile, the resolver layers the preamble first and then each matching section in source
 order, so preamble properties act as defaults that any matching section can override. Under
@@ -306,7 +306,7 @@ Only the `SourceLocation.LineNumber` is reliably populated; line position and le
 
 ## Saving (round-trip)
 
-<xref:Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Ini.IniDocumentBase,System.String,Bodu.Text.Configuration.ConfigurationWriteOptions)>
+<xref:Bodu.Text.Configuration.ConfigurationDocument.Save(Bodu.Text.Configuration.IniDocumentBase,System.String,Bodu.Text.Configuration.ConfigurationWriteOptions)>
 emits the document back to text. The writer preserves comment lines, section ordering, and the original property
 ordering within each section, so a parse-then-save round-trip is byte-stable for any document the library produced.
 <xref:Bodu.Text.Configuration.ConfigurationWriteOptions> controls encoding (default UTF-8 *without* BOM), newline style

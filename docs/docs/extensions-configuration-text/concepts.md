@@ -194,7 +194,7 @@ discarded metadata.
 ## Pre-parsed document source
 
 <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationDocument*> takes an
-already-parsed <xref:Bodu.Text.Ini.IniDocumentBase> — such as a <xref:Bodu.Text.Configuration.ConfigurationDocument> —
+already-parsed <xref:Bodu.Text.Configuration.IniDocumentBase> — such as a <xref:Bodu.Text.Configuration.ConfigurationDocument> —
 resolves it once against `targetPath`, and adds the flattened pairs via the in-memory provider. It is a **one-shot
 snapshot**: the document is captured by value when the method is called, so later edits to the document (or its backing
 file) are not reflected. Use it to share a single parse across several builders, or to feed a document built or mutated

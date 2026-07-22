@@ -29,6 +29,16 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A record POCO with a <see cref="Uri" /> column, validating the common scalar set.
+    /// </summary>
+    public sealed class LinkRecord
+    {
+        /// <summary>Gets or sets the site address.</summary>
+        /// <value>The site address.</value>
+        public Uri? Site { get; set; }
+    }
+
+    /// <summary>
     /// A hand-written <see cref="IDelimitedRecordFactory{TRecord}" /> for <see cref="Person" />, standing in for the
     /// generated factory in the reflection-free serializer overload tests.
     /// </summary>

@@ -16,7 +16,7 @@ Configuration flows through five stages; every stage past the parse is opt-in.
 
 | Stage | Performed by | Produces |
 |---|---|---|
-| **Document model** | The INI codec in [`Bodu.Text.Formats`](../formats/index.md) | An immutable <xref:Bodu.Text.Ini.IniDocument> — sections, entries, comments, ordering preserved. |
+| **Document model** | The library's own trivia-preserving INI model | An immutable <xref:Bodu.Text.Configuration.IniDocument> — sections, entries, comments, ordering preserved. |
 | **Profile-validated parse** | <xref:Bodu.Text.Configuration.ConfigurationDocument> with <xref:Bodu.Text.Configuration.ConfigurationParseOptions> | A `ConfigurationDocument`, optionally paired with diagnostics via `ParseWithDiagnostics`. |
 | **Layered resolution** | `Resolve(targetPath)` with <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> | A <xref:Bodu.Text.Configuration.ConfigurationView> — preamble plus matching glob-anchored sections, layered last-wins. |
 | **Typed access** | The view's getter family | `GetString`, `GetInt32`, `GetBoolean`, `GetEnum<T>`, and `GetValue<T>` for any `ISpanParsable<T>`. |
@@ -77,12 +77,12 @@ Dotted keys (`logging.level.default`) project to the canonical colon-delimited f
 
 | Package | Status | What it provides | Docs |
 |---|---|---|---|
-| `Bodu.Text.Configuration` | Stable | The parser, profiles, layered resolver, typed `ConfigurationView`, key model, diagnostics, and round-trip `Save`. Built on the INI document model from `Bodu.Text.Formats`; no `Microsoft.Extensions` dependency. | [Intro](../text-configuration/index.md) · [Concepts](../text-configuration/concepts.md) · [Get started](../text-configuration/getting-started.md) |
+| `Bodu.Text.Configuration` | Stable | The parser, profiles, layered resolver, typed `ConfigurationView`, key model, diagnostics, and round-trip `Save`. Built on its own trivia-preserving INI document model; no format-library or `Microsoft.Extensions` dependency. | [Intro](../text-configuration/index.md) · [Concepts](../text-configuration/concepts.md) · [Get started](../text-configuration/getting-started.md) |
 | `Bodu.Extensions.Configuration.Text` | Stable | The `Microsoft.Extensions.Configuration` bridge: `AddTextConfigurationFile` / `AddTextConfigurationStream`, the conventional `.boduconfig` → `bodu.config` probe, reload-on-change, and `AddConfigurationOptions<T>` binding. | [Intro](../extensions-configuration-text/index.md) · [Concepts](../extensions-configuration-text/concepts.md) · [Get started](../extensions-configuration-text/getting-started.md) |
 
 ### Boundaries
 
-- **Use raw `Ini` from [`Bodu.Text.Formats`](../formats/index.md) instead** when you just need to read or edit an INI file with no layering, no profiles, and no glob resolution. `ConfigurationDocument` inherits the same <xref:Bodu.Text.Ini.IniDocumentBase> model, so promoting an `IniDocument` workflow to the configuration layer later is incremental, not a rewrite.
+- **Use [`Bodu.Text.Ini`](../formats/index.md) instead** when you just need to read or edit an INI file with no layering, no profiles, and no glob resolution — its comment-preserving mutable DOM and `IniSerializer` cover plain INI end to end. `ConfigurationDocument` keeps its own <xref:Bodu.Text.Configuration.IniDocumentBase> model, so the two libraries are independent; promote to the configuration layer when you need its resolution semantics.
 - **Skip the bridge when you don't host in `Microsoft.Extensions`.** `Bodu.Text.Configuration` is self-sufficient — `Parse`, `Resolve`, and the typed getters cover the full read path without an `IConfigurationBuilder` in sight.
 - **The bridge is not a general INI provider.** It exists specifically to surface profile-parsed, target-resolved Bodu configuration documents; for plain key-value INI in `IConfiguration`, the stock `Microsoft.Extensions.Configuration.Ini` provider may be all you need.
 

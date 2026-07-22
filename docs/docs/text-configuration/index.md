@@ -22,7 +22,7 @@ and read typed values back out. No reflection, no `dynamic`, no schema, no globa
 
 Configuration runs as a four-stage pipeline: the **reader** tokenises the source text and produces an immutable
 <xref:Bodu.Text.Configuration.ConfigurationDocument> — a `sealed` type that inherits the read-only
-<xref:Bodu.Text.Ini.IniDocumentBase> model from `Bodu.Text.Formats`; the **resolver** layers the document's preamble
+<xref:Bodu.Text.Configuration.IniDocumentBase> model; the **resolver** layers the document's preamble
 and matching glob-anchored sections in source order to produce a `ConfigurationView` for one target path; the **getter
 API** on the view returns typed values (`GetString`, `GetInt32`, `GetInt64`, `GetBoolean`, `GetEnum<T>`, and
 `GetValue<T>` for any `ISpanParsable<T>`). Every stage is opt-in: parse without resolving when you just want the
@@ -42,7 +42,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Configuration.ConfigurationDocument> | First-class document type returned by `Parse`, `ParseWithDiagnostics`, `Load`; also hosts `Save` over strings, streams, paths, and text readers. Inherits the read-only <xref:Bodu.Text.Ini.IniDocumentBase> model. |
+| <xref:Bodu.Text.Configuration.ConfigurationDocument> | First-class document type returned by `Parse`, `ParseWithDiagnostics`, `Load`; also hosts `Save` over strings, streams, paths, and text readers. Inherits the read-only <xref:Bodu.Text.Configuration.IniDocumentBase> model. |
 | <xref:Bodu.Text.Configuration.ConfigurationView> | Resolved, flattened snapshot for one target path; implements `IEnumerable<KeyValuePair<string, string?>>`. |
 | <xref:Bodu.Text.Configuration.ConfigurationExtensions> | Extension methods on `IniDocumentBase` and `IniEntry` — including the `Resolve(targetPath)` projection and `ConfigurationPath`. |
 | <xref:Bodu.Text.Configuration.ConfigurationResolvedEntry> | Per-key provenance in a resolved view: winning `SectionPattern`, `SourceLocation`, canonical `Key` and `Value`. |
@@ -158,5 +158,5 @@ The grammar matches **EditorConfig** verbatim with two Bodu-specific extensions:
 - **[Bodu.Text.Configuration guides](../../guides/text-configuration/index.md)** — worked patterns: [parsing and profiles](../../guides/text-configuration/parsing-and-profiles.md), [views and resolution](../../guides/text-configuration/views-and-resolution.md), and [diagnostics](../../guides/text-configuration/diagnostics.md).
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — `IConfigurationBuilder` integration, options binding, file probing.
 - **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
-- **[Bodu.Text.Formats](../formats/index.md)** — the underlying `IniDocumentBase` model that `ConfigurationDocument` inherits.
+- **[Bodu.Text.Ini](../formats/index.md)** — the standalone INI library, for codec-only INI reading and editing.
 - **[Configuration topic](../topics/configuration.md)** — this package and its sibling Bodu.Extensions.Configuration.Text side by side.

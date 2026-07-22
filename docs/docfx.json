@@ -5,7 +5,7 @@
         {
           "src": "../",
           "files": [ "**/src/*.csproj" ],
-          "exclude": [ "Bodu.CodeStyle/**", "archive/**" ]
+          "exclude": [ "Bodu.CodeStyle/**", "Bodu.Text.Formats.Generators/**", "archive/**" ]
         }
       ],
       "dest": "api",

@@ -160,6 +160,8 @@ public static partial class DelimitedSerializer
                 return DateTimeOffset.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
             if (underlying == typeof(TimeSpan))
                 return TimeSpan.Parse(raw, CultureInfo.InvariantCulture);
+            if (underlying == typeof(Uri))
+                return new Uri(raw, UriKind.RelativeOrAbsolute);
 
             return Convert.ChangeType(raw, underlying, CultureInfo.InvariantCulture);
         }

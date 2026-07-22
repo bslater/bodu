@@ -17,7 +17,7 @@ vocabulary (document, view, profile, target path, preamble, glob pattern, key ma
 
 A configuration document is parsed once and then projected — through a target path — into a flat
 <xref:Bodu.Text.Configuration.ConfigurationView>. The reader produces an immutable
-<xref:Bodu.Text.Ini.IniDocument>; the resolver layers the preamble plus matching glob-anchored sections in source
+<xref:Bodu.Text.Configuration.IniDocument>; the resolver layers the preamble plus matching glob-anchored sections in source
 order; the view exposes typed accessors that return the effective value for each colon-delimited key.
 
 ## Guides
@@ -65,4 +65,4 @@ Hosting the resolved view inside `Microsoft.Extensions.Configuration` (ASP.NET C
 - **[Configuration topic overview](../../docs/topics/configuration.md)** — the pipeline and package boundaries across both packages.
 - **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — the `Microsoft.Extensions.Configuration` bridge.
-- **[Bodu.Text.Formats](../formats/index.md)** — the underlying `IniDocument` model.
+- **[Bodu.Text.Ini](../formats/index.md)** — the standalone INI library, for codec-only INI reading and editing.

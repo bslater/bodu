@@ -385,7 +385,7 @@ process lifetime.
 
 ## When *not* to use the bridge
 
-- **You only need the codec.** Reach for [`Bodu.Text.Formats.Ini`](../formats/ini.md) for codec-only access without the bridge or the resolve layer.
+- **You only need the codec.** Reach for [`Bodu.Text.Ini`](../formats/ini.md) for codec-only access without the bridge or the resolve layer.
 - **You only need the resolved view.** Reach for [`Bodu.Text.Configuration`](../text-configuration/index.md) directly — call `Resolve()` and consume `ConfigurationView` without the `IConfiguration` surface.
 - **You need JSON, environment-variable, or command-line configuration.** Use the standard Microsoft sources — `AddJsonFile`, `AddEnvironmentVariables`, `AddCommandLine`. The Bodu bridge composes with them; sources earlier in the builder chain are overridden by later sources, per the standard `IConfiguration` rules.
 

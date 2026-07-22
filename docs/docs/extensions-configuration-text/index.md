@@ -59,7 +59,7 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> | Static class. The `AddTextConfiguration*` overload family: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed <xref:Bodu.Text.Ini.IniDocumentBase>. |
+| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> | Static class. The `AddTextConfiguration*` overload family: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed <xref:Bodu.Text.Configuration.IniDocumentBase>. |
 | <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions> | Static class. The read-only TOML bridge: `AddTomlFile(path, optional)` and `AddTomlStream(stream)`. Read-once, read-only, no reload-on-change. |
 
 ### Sources and providers

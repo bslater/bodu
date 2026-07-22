@@ -67,6 +67,19 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a <see cref="Uri" /> column binds through the common scalar set, matching the DotEnv and INI
+    /// binders.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenUriColumn_ShouldBindUri()
+    {
+        List<LinkRecord> records = DelimitedSerializer.Deserialize<LinkRecord>("Site\nhttps://example.com/docs\n");
+
+        Assert.AreEqual(1, records.Count);
+        Assert.AreEqual(new Uri("https://example.com/docs"), records[0].Site);
+    }
+
+    /// <summary>
     /// Verifies that the reflection-free factory overload binds records through the factory, including reordered
     /// columns mapped by header name.
     /// </summary>

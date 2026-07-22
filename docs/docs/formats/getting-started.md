@@ -10,7 +10,9 @@ First steps with `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`.
 
 ```shell
 dotnet add package Bodu.Text.Formats      # umbrella: all three formats
-dotnet add package Bodu.Text.Delimited    # or a single format
+dotnet add package Bodu.Text.Delimited    # or a single format:
+dotnet add package Bodu.Text.DotEnv
+dotnet add package Bodu.Text.Ini
 ```
 
 All packages target `net8.0`.
