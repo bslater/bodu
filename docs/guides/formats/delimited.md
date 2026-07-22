@@ -53,7 +53,11 @@ await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsyn
 }
 ```
 
-The write direction accepts a stream of records too: `SerializeAsync(stream, records)` where `records` is an `IAsyncEnumerable<Trade>`.
+Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction — `SerializeAsync(stream, records)` where `records` is an `IAsyncEnumerable<Trade>` — encodes each record as it is produced, flushing in bounded batches.
+
+### Reflection-free binding
+
+Annotate a partial record type with `[DelimitedRecord]` and reference the `Bodu.Text.Formats.Generators` source generator, and a static `DelimitedFactory` property (`IDelimitedRecordFactory<Trade>`) is emitted at compile time. Passing it to the factory overloads — `Serialize(records, Trade.DelimitedFactory)` / `Deserialize(csvText, Trade.DelimitedFactory)` — avoids the reflection binder entirely, making the path trimming- and AOT-safe. The interface can also be implemented by hand.
 
 ## Pattern 4 — TSV and other dialects
 

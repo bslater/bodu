@@ -114,7 +114,7 @@ The DotEnv and INI writers are line-oriented (`WritePropertyName` + `WriteString
 
 ## Async facades
 
-The `*Serializer` stream overloads (`SerializeAsync` / `DeserializeAsync`) buffer the document in full — only the stream copy is asynchronous. The one genuinely incremental async surface today is Delimited's record streaming (Pattern 2).
+The `*Serializer` stream overloads (`SerializeAsync` / `DeserializeAsync`) buffer the document in full — only the stream copy is asynchronous. The exception is Delimited's record streaming (Pattern 2), which is genuinely incremental in both directions: `DeserializeAsyncEnumerableAsync` reads the stream in segments and yields each record as soon as its terminating line ending is observed (memory is bounded by the longest record, not the document — a record split across segments, even inside a quoted field, is retried as more data arrives), and the `IAsyncEnumerable` `SerializeAsync` overload encodes each record as it is produced and flushes to the destination in bounded batches.
 
 ## Mid-stream errors
 

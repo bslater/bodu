@@ -62,6 +62,10 @@ var all = IniSerializer.Deserialize<Dictionary<string, Dictionary<string, string
 string env = all["global"]["environment"];
 ```
 
+### Reflection-free binding
+
+Annotate a partial section type with `[IniSection]` and reference the `Bodu.Text.Formats.Generators` source generator, and a static `IniFactory` property (`IIniSectionFactory<ServerSection>`) is emitted at compile time. The section overloads — `IniSerializer.SerializeSection("server", section, ServerSection.IniFactory)` / `DeserializeSection(iniText, "server", ServerSection.IniFactory)` — bind one section through the factory instead of the reflection binder, making the path trimming- and AOT-safe. An empty section name addresses the document's global keys; duplicate-section merge still applies before binding.
+
 ## Pattern 3 — comment-preserving edits with the mutable DOM
 
 ```csharp
