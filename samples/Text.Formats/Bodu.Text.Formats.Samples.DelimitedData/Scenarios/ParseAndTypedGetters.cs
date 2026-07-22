@@ -5,49 +5,64 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Delimited;
+using Bodu.Text.Delimited.Document;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Samples.Text.Formats.DelimitedData.Scenarios;
 
 /// <summary>
-/// Demonstrates the document surface: parse a CSV file once, then read fields by header name
-/// with culture-safe typed getters — <c>GetValue&lt;T&gt;</c> parses any
-/// <see cref="ISpanParsable{TSelf}" /> with <c>InvariantCulture</c>, so numbers and timestamps
-/// never depend on the machine's locale.
+/// Demonstrates the read surfaces: <see cref="DelimitedDocument" /> gives JsonDocument-style access to a parsed CSV
+/// (records as objects keyed by header), and <see cref="DelimitedSerializer" /> binds the same file straight onto a
+/// typed record class — numbers and timestamps parsed with <c>InvariantCulture</c>, so nothing depends on the
+/// machine's locale.
 /// </summary>
 public static class ParseAndTypedGetters
 {
     /// <summary>
-    /// Parses <c>Data/trades.csv</c> and aggregates it with typed field access.
+    /// Parses <c>Data/trades.csv</c> and aggregates it with typed record binding.
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Parse + typed getters over Data/trades.csv ---");
+        Console.WriteLine("--- Parse + typed records over Data/trades.csv ---");
 
-        var csv = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Data", "trades.csv"));
-        var document = Delimited.Parse(csv);
+        var path = Path.Combine(AppContext.BaseDirectory, "Data", "trades.csv");
+        var csvBytes = File.ReadAllBytes(path);
 
-        Console.WriteLine($"headers: {string.Join(", ", document.Headers)} ({document.Rows.Count} rows)");
+        // Document surface: headers + records as objects keyed by header name.
+        using var document = DelimitedDocument.Parse(csvBytes);
+        var root = document.RootElement;
+        Console.WriteLine($"headers: {string.Join(", ", document.Headers)} ({root.GetArrayLength()} rows)");
 
         // Quoted fields arrive unwrapped: "F, ordinary" is one field despite its comma.
-        var lastSymbol = document.Rows[^1]["symbol"];
+        var lastSymbol = root[root.GetArrayLength() - 1].GetProperty("symbol").GetString();
         Console.WriteLine($"quoted field: '{lastSymbol}'");
 
-        // Typed access by header name - int, decimal, DateTimeOffset all via ISpanParsable.
-        decimal notional = 0;
-        foreach (var row in document.Rows)
-        {
-            notional += row.GetValue<int>("quantity") * row.GetValue<decimal>("price");
-        }
+        // Serializer surface: the whole file as typed records via the snake_case naming policy.
+        var options = new DelimitedSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
+        var trades = DelimitedSerializer.Deserialize<Trade>(File.ReadAllText(path), options);
 
-        var first = document.Rows[0].GetValue<DateTimeOffset>("executed_at");
-        var last = document.Rows[^1].GetValue<DateTimeOffset>("executed_at");
-
-        Console.WriteLine($"total notional: {notional:N2} across {(last - first).TotalMinutes:F0} minutes of trading");
-
-        // TryGetValue for fields that may not parse - no exception on bad input.
-        var ok = document.Rows[0].TryGetValue<int>("symbol", out _);
-        Console.WriteLine($"TryGetValue<int>(\"symbol\") on 'AAPL' -> {ok}");
+        var notional = trades.Sum(t => t.Quantity * t.Price);
+        var span = trades[^1].ExecutedAt - trades[0].ExecutedAt;
+        Console.WriteLine($"total notional: {notional:N2} across {span.TotalMinutes:F0} minutes of trading");
 
         Console.WriteLine();
+    }
+
+    /// <summary>
+    /// A trade record; the snake_case naming policy maps the CSV headers onto these properties.
+    /// </summary>
+    private sealed class Trade
+    {
+        public int TradeId { get; set; }
+
+        public string? Symbol { get; set; }
+
+        public string? Side { get; set; }
+
+        public int Quantity { get; set; }
+
+        public decimal Price { get; set; }
+
+        public DateTimeOffset ExecutedAt { get; set; }
     }
 }

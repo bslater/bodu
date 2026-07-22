@@ -5,13 +5,14 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.DotEnv;
+using Bodu.Text.DotEnv.Reader;
 
 namespace Bodu.Samples.Text.Formats.ConfigFiles.Scenarios;
 
 /// <summary>
-/// Demonstrates the forward-only <see cref="DotEnvReader" />: one entry in memory at a time,
-/// with the line number attached — the surface for scanning env files without materializing a
-/// document, e.g. a linter that flags suspicious keys as it streams.
+/// Demonstrates the forward-only <see cref="Utf8DotEnvReader" />: one token in memory at a time, with the line number
+/// attached — the surface for scanning env files without materializing a document, e.g. a linter that flags
+/// suspicious keys as it streams.
 /// </summary>
 public static class DotEnvStreamingReader
 {
@@ -22,14 +23,30 @@ public static class DotEnvStreamingReader
     {
         Console.WriteLine("--- DotEnv: streaming reader with line numbers ---");
 
-        using var input = File.OpenText(Path.Combine(AppContext.BaseDirectory, "Data", "env.sample"));
-        using var reader = new DotEnvReader(input);
+        var envBytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Data", "env.sample"));
+        var reader = new Utf8DotEnvReader(envBytes);
+
+        string? key = null;
+        var line = 0;
 
         while (reader.Read())
         {
-            // A tiny lint pass: flag keys that look like they carry secrets.
-            var flag = reader.Key.Contains("URL", StringComparison.Ordinal) ? "  <- check for embedded credentials" : string.Empty;
-            Console.WriteLine($"  line {reader.LineNumber,2}: {reader.Key} = '{reader.Value}'{flag}");
+            switch (reader.TokenType)
+            {
+                case DotEnvTokenType.PropertyName:
+                    key = reader.GetString();
+                    line = reader.LineNumber;
+                    break;
+
+                case DotEnvTokenType.String:
+                    // A tiny lint pass: flag keys that look like they carry secrets.
+                    var flag = key!.Contains("URL", StringComparison.Ordinal) ? "  <- check for embedded credentials" : string.Empty;
+                    Console.WriteLine($"  line {line,2}: {key} = '{reader.GetString()}'{flag}");
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         Console.WriteLine();

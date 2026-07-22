@@ -1,69 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
+  <!--
+    Umbrella meta-package: Bodu.Text.Formats carries no code of its own. It references the three
+    standalone line-format libraries so existing package references keep working; the formats
+    themselves live in Bodu.Text.Delimited, Bodu.Text.DotEnv, and Bodu.Text.Ini.
+  -->
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
-    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <Title>Bodu — Text Formats</Title>
-    <Description>Parsers and serializers for common text document formats on .NET 8 — delimited text (RFC 4180 CSV/TSV), DotEnv, and INI. Each format offers a static Parse/Format/TryParse entry point, a low-level Reader/Writer pair, an immutable document model, and an options struct controlling parse behaviour and round-trip fidelity, preserving comments and layout so that parse-then-serialize round-trips faithfully.</Description>
+    <Description>Umbrella package for the Bodu line-oriented text formats on .NET 8 — delimited text (RFC 4180 CSV/TSV), DotEnv, and INI. References Bodu.Text.Delimited, Bodu.Text.DotEnv, and Bodu.Text.Ini, each a System.Text.Json-shaped library with a ref-struct Utf8 reader/writer pair, a serializer, a mutable node DOM, and a read-only document DOM.</Description>
     <PackageTags>$(PackageTags);text;formats;csv;tsv;delimited;rfc4180;dotenv;ini</PackageTags>
+    <NoWarn>$(NoWarn);CA1014</NoWarn>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <!-- Per-framework compilation symbols. -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-  </PropertyGroup>
-
-  <!--
-    TextThrowHelper is split into a CallerArgumentExpression variant and a NetStandard variant:
-      - TextThrowHelper.*NetStandard.cs       : compiled for netstandard2.0 / netstandard2.1,
-                                                where CallerArgumentExpressionAttribute is unavailable.
-      - TextThrowHelper.*CallerExpression.cs  : compiled for all other targets (net5.0+),
-                                                where CallerArgumentExpressionAttribute is supported.
-  -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <Compile Remove="Text\TextThrowHelper.*CallerExpression.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
-    <Compile Remove="Text\TextThrowHelper.*NetStandard.cs" />
-  </ItemGroup>
-
-  <!-- Grant internals to the companion test project and the sibling configuration/bridge libraries. -->
+  <!-- The three line-format libraries this umbrella re-exports. -->
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Text.Formats.Test</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Text.Configuration</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Text.Configuration.Test</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Extensions.Configuration.Text</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Extensions.Configuration.Text.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-  </ItemGroup>
-
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Include="FormatsResourceStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>FormatsResourceStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Compile Update="FormatsResourceStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>FormatsResourceStrings.resx</DependentUpon>
-    </Compile>
+    <ProjectReference Include="..\..\Bodu.Text.Delimited\src\Bodu.Text.Delimited.csproj" />
+    <ProjectReference Include="..\..\Bodu.Text.DotEnv\src\Bodu.Text.DotEnv.csproj" />
+    <ProjectReference Include="..\..\Bodu.Text.Ini\src\Bodu.Text.Ini.csproj" />
   </ItemGroup>
 
 </Project>

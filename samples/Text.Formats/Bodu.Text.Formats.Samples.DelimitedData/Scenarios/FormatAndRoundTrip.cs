@@ -4,14 +4,18 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Delimited;
+using System.Buffers;
+using System.Text;
+using Bodu.Text.Delimited.Document;
+using Bodu.Text.Delimited.Nodes;
+using Bodu.Text.Delimited.Writer;
 
 namespace Bodu.Samples.Text.Formats.DelimitedData.Scenarios;
 
 /// <summary>
-/// Demonstrates the write direction: <c>Delimited.Format</c> turns a document back into RFC 4180
-/// text — re-quoting exactly the fields that need it — and the same options type retargets the
-/// output to another dialect, so CSV-in / TSV-out conversion is a parse and a format.
+/// Demonstrates the write direction: the mutable <see cref="DelimitedNode" /> DOM parses a CSV, writes it back out —
+/// re-quoting exactly the fields that need it — and the writer options retarget the same tree to another dialect, so
+/// CSV-in / TSV-out conversion is a parse and a write.
 /// </summary>
 public static class FormatAndRoundTrip
 {
@@ -20,25 +24,35 @@ public static class FormatAndRoundTrip
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Format: document -> text (and CSV -> TSV) ---");
+        Console.WriteLine("--- Nodes DOM: document -> text (and CSV -> TSV) ---");
 
-        var csv = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Data", "trades.csv"));
-        var document = Delimited.Parse(csv);
+        var csvBytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Data", "trades.csv"));
+        var records = DelimitedNode.Parse(csvBytes);
 
-        // Format re-emits RFC 4180 text; a re-parse yields the same shape and values.
-        var formatted = Delimited.Format(document);
-        var reparsed = Delimited.Parse(formatted);
+        // WriteTo re-emits RFC 4180 text; a re-parse yields the same shape and values.
+        var formatted = records.ToString();
+        var reparsed = DelimitedNode.Parse(Encoding.UTF8.GetBytes(formatted));
 
-        var sameShape = reparsed.Rows.Count == document.Rows.Count && reparsed.Headers.SequenceEqual(document.Headers);
-        var sameQuoted = reparsed.Rows[^1]["symbol"] == document.Rows[^1]["symbol"];
+        using var original = DelimitedDocument.Parse(csvBytes);
+        using var roundTripped = DelimitedDocument.Parse(Encoding.UTF8.GetBytes(formatted));
+
+        var sameShape = reparsed.Count == records.Count && roundTripped.Headers.SequenceEqual(original.Headers);
+        var lastIndex = original.RootElement.GetArrayLength() - 1;
+        var sameQuoted = roundTripped.RootElement[lastIndex].GetProperty("symbol").GetString()
+            == original.RootElement[lastIndex].GetProperty("symbol").GetString();
         Console.WriteLine($"round trip: shape preserved -> {sameShape}, quoted comma field preserved -> {sameQuoted}");
 
         // Only fields that need quoting get quotes - here the one containing a comma.
         var lastLine = formatted.TrimEnd().Split('\n')[^1].TrimEnd();
         Console.WriteLine($"last row re-emitted: {lastLine}");
 
-        // Dialect conversion: format the same document with a tab delimiter.
-        var tsv = Delimited.Format(document, new DelimitedParseOptions { Delimiter = '\t' });
+        // Dialect conversion: write the same tree with a tab delimiter.
+        var buffer = new ArrayBufferWriter<byte>();
+        var writer = new Utf8DelimitedWriter(buffer, new DelimitedWriterOptions { Delimiter = '\t' });
+        records.WriteTo(ref writer);
+        writer.Flush();
+
+        var tsv = Encoding.UTF8.GetString(buffer.WrittenSpan);
         var tsvFirstRow = tsv.TrimEnd().Split('\n')[1].TrimEnd();
         Console.WriteLine($"as TSV: {tsvFirstRow.Replace("\t", " <TAB> ")}");
 

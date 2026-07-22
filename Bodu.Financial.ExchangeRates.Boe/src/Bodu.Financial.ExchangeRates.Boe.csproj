@@ -35,7 +35,7 @@
     <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates\src\Bodu.Financial.ExchangeRates.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\Bodu.Text.Formats\src\Bodu.Text.Formats.csproj" />
+    <ProjectReference Include="..\..\Bodu.Text.Delimited\src\Bodu.Text.Delimited.csproj" />
   </ItemGroup>
 
   <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->

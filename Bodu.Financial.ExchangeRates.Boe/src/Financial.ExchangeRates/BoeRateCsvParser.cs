@@ -1,11 +1,14 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeRateCsvParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Text;
 using Bodu.Text.Delimited;
+using Bodu.Text.Delimited.Document;
+using Bodu.Text.Delimited.Reader;
 
 namespace Bodu.Financial.ExchangeRates;
 
@@ -15,11 +18,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// CSV tokenization is delegated to <see cref="Delimited" /> (the RFC 4180 reader in <c>Bodu.Text.Formats</c>); this
-/// type adds the IADB-specific interpretation. The column response is a small grid: the first row is a header whose
-/// first cell is <c>DATE</c> and whose remaining cells are the requested series codes; each subsequent row carries a
-/// <c>dd MMM yyyy</c> date followed by the rate for each series. Each rate gives the number of units of the column's
-/// currency per one pound sterling.
+/// CSV tokenization is delegated to <see cref="DelimitedDocument" /> (the RFC 4180 reader in
+/// <c>Bodu.Text.Delimited</c>); this type adds the IADB-specific interpretation. The column response is a small grid:
+/// the first row is a header whose first cell is <c>DATE</c> and whose remaining cells are the requested series codes;
+/// each subsequent row carries a <c>dd MMM yyyy</c> date followed by the rate for each series. Each rate gives the
+/// number of units of the column's currency per one pound sterling.
 /// </para>
 /// <para>
 /// Columns whose series code is not in the configured catalogue are ignored, and cells that are empty, non-numeric, or
@@ -30,10 +33,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// </remarks>
 internal static class BoeRateCsvParser
 {
-    /// <summary>The delimited-parse options used to read the IADB CSV: an RFC 4180 grid with a header row, trimmed fields, and a tolerant reaction to ragged or malformed rows.</summary>
-    private static readonly DelimitedParseOptions s_csvOptions = new()
+    /// <summary>The delimited-reader options used to read the IADB CSV as a positional grid: RFC 4180 quoting, trimmed fields, and a tolerant reaction to ragged or malformed rows. The header row is interpreted by this parser, so the reader runs headerless.</summary>
+    private static readonly DelimitedReaderOptions s_csvOptions = new()
     {
-        HasHeader = true,
+        NoHeader = true,
         TrimFields = true,
         FieldCountBehavior = DelimitedFieldCountBehavior.Ragged,
         MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord,
@@ -77,43 +80,73 @@ internal static class BoeRateCsvParser
         ThrowHelper.ThrowIfNull(content);
         ThrowHelper.ThrowIfNull(options);
 
-        DelimitedDocument document;
+        DelimitedDocument? document = null;
         try
         {
-            document = Delimited.Parse(content, s_csvOptions);
-        }
-        catch (DelimitedFormatException ex)
-        {
-            throw new ExchangeRateFormatException(BoeResourceStrings.Format_Invalid_BoeHeaderMissing, ex);
-        }
-
-        if (document.Headers.Count == 0 ||
-            !string.Equals(document.Headers[0], "DATE", StringComparison.OrdinalIgnoreCase))
-        {
-            throw new ExchangeRateFormatException(BoeResourceStrings.Format_Invalid_BoeHeaderMissing);
-        }
-
-        Dictionary<string, BoeSeries> byCode = BuildSeriesIndex(options);
-        BoeSeries?[] columns = MapColumns(document.Headers, byCode, out Dictionary<string, BoeSeries> present);
-
-        var observations = new List<BoeRateObservation>();
-        foreach (DelimitedRow row in document.Rows)
-        {
-            if (row.Count == 0 || !TryParseDate(row[0], out DateOnly date))
-                continue;
-
-            for (int column = 1; column < columns.Length && column < row.Count; column++)
+            try
             {
-                BoeSeries? series = columns[column];
-                if (series is null)
+                document = DelimitedDocument.Parse(Encoding.UTF8.GetBytes(content), s_csvOptions);
+            }
+            catch (DelimitedFormatException ex)
+            {
+                throw new ExchangeRateFormatException(BoeResourceStrings.Format_Invalid_BoeHeaderMissing, ex);
+            }
+
+            DelimitedElement root = document.RootElement;
+            int rowCount = root.GetArrayLength();
+            if (rowCount == 0)
+                throw new ExchangeRateFormatException(BoeResourceStrings.Format_Invalid_BoeHeaderMissing);
+
+            List<string> headers = ReadFields(root[0]);
+            if (headers.Count == 0 ||
+                !string.Equals(headers[0], "DATE", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ExchangeRateFormatException(BoeResourceStrings.Format_Invalid_BoeHeaderMissing);
+            }
+
+            Dictionary<string, BoeSeries> byCode = BuildSeriesIndex(options);
+            BoeSeries?[] columns = MapColumns(headers, byCode, out Dictionary<string, BoeSeries> present);
+
+            var observations = new List<BoeRateObservation>();
+            for (int index = 1; index < rowCount; index++)
+            {
+                DelimitedElement row = root[index];
+                int fieldCount = row.GetArrayLength();
+                if (fieldCount == 0 || !TryParseDate(row[0].GetString(), out DateOnly date))
                     continue;
 
-                if (TryParseRate(row[column], out decimal rate))
-                    observations.Add(new BoeRateObservation(date, series.QuoteIsoCode, rate));
-            }
-        }
+                for (int column = 1; column < columns.Length && column < fieldCount; column++)
+                {
+                    BoeSeries? series = columns[column];
+                    if (series is null)
+                        continue;
 
-        return new BoeRateTable(observations, present);
+                    if (TryParseRate(row[column].GetString(), out decimal rate))
+                        observations.Add(new BoeRateObservation(date, series.QuoteIsoCode, rate));
+                }
+            }
+
+            return new BoeRateTable(observations, present);
+        }
+        finally
+        {
+            document?.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Materializes the fields of a positional record.
+    /// </summary>
+    /// <param name="row">The record element.</param>
+    /// <returns>The field values in column order.</returns>
+    private static List<string> ReadFields(DelimitedElement row)
+    {
+        int count = row.GetArrayLength();
+        var fields = new List<string>(count);
+        for (int i = 0; i < count; i++)
+            fields.Add(row[i].GetString());
+
+        return fields;
     }
 
     /// <summary>

@@ -1,10 +1,6 @@
 <Solution>
   <Folder Name="/Bodu.Text.Formats/">
-    <Project Path="Bodu.Text.Formats/bench/Bodu.Text.Formats.Benchmarks.csproj">
-      <Build Solution="Debug|*" Project="false" />
-    </Project>
     <Project Path="Bodu.Text.Formats/src/Bodu.Text.Formats.csproj" />
-    <Project Path="Bodu.Text.Formats/test/Bodu.Text.Formats.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Text.Serialization/">
     <Project Path="Bodu.Text.Serialization/src/Bodu.Text.Serialization.csproj" />

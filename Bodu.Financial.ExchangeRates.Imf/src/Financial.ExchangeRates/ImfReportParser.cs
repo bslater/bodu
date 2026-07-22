@@ -1,12 +1,15 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ImfReportParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Text;
 using Bodu.Financial.Currencies;
 using Bodu.Text.Delimited;
+using Bodu.Text.Delimited.Document;
+using Bodu.Text.Delimited.Reader;
 
 namespace Bodu.Financial.ExchangeRates;
 
@@ -16,11 +19,12 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Tokenization is delegated to <see cref="Delimited" /> (the reader in <c>Bodu.Text.Formats</c>); this type adds the
-/// report-specific interpretation. The report is a sequence of blocks: a title line, a <c>Currency</c> header row whose
-/// remaining cells are business-day dates in <c>MMMM dd, yyyy</c> form, and one data row per currency. When a month has
-/// more business days than fit in one block the report continues in a second block with its own <c>Currency</c> header
-/// redefining the current date columns. A trailing <c>Notes:</c> section closes the report.
+/// Tokenization is delegated to <see cref="DelimitedDocument" /> (the RFC 4180 reader in <c>Bodu.Text.Delimited</c>);
+/// this type adds the report-specific interpretation. The report is a sequence of blocks: a title line, a
+/// <c>Currency</c> header row whose remaining cells are business-day dates in <c>MMMM dd, yyyy</c> form, and one data
+/// row per currency. When a month has more business days than fit in one block the report continues in a second block
+/// with its own <c>Currency</c> header redefining the current date columns. A trailing <c>Notes:</c> section closes the
+/// report.
 /// </para>
 /// <para>
 /// A currency label ending in <c>(1)</c> is quoted in US dollars per currency unit; every other label is quoted in
@@ -37,11 +41,11 @@ internal static class ImfReportParser
     /// <summary>The token marking a missing observation.</summary>
     private const string NotAvailable = "NA";
 
-    /// <summary>The delimited-parse options used to read the report: a tab-separated grid with no header row, trimmed fields, and a tolerant reaction to ragged or malformed rows.</summary>
-    private static readonly DelimitedParseOptions s_tsvOptions = new()
+    /// <summary>The delimited-reader options used to read the report: a tab-separated positional grid with no header row, trimmed fields, and a tolerant reaction to ragged or malformed rows.</summary>
+    private static readonly DelimitedReaderOptions s_tsvOptions = new()
     {
         Delimiter = '\t',
-        HasHeader = false,
+        NoHeader = true,
         TrimFields = true,
         FieldCountBehavior = DelimitedFieldCountBehavior.Ragged,
         MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord,
@@ -85,63 +89,73 @@ internal static class ImfReportParser
         ThrowHelper.ThrowIfNull(content);
         ThrowHelper.ThrowIfNull(options);
 
-        DelimitedDocument document;
+        DelimitedDocument? document = null;
         try
         {
-            document = Delimited.Parse(content, s_tsvOptions);
-        }
-        catch (DelimitedFormatException ex)
-        {
-            throw new ExchangeRateFormatException(ImfResourceStrings.Format_Invalid_ImfReportHeader, ex);
-        }
-
-        var observations = new List<ImfRateObservation>();
-        DateOnly?[]? currentDates = null;
-        bool sawHeader = false;
-
-        foreach (DelimitedRow row in document.Rows)
-        {
-            if (row.Count == 0)
-                continue;
-
-            string first = row[0];
-            if (first.Length == 0)
-                continue;
-
-            if (string.Equals(first, "Currency", StringComparison.Ordinal))
+            try
             {
-                currentDates = ParseHeaderDates(row);
-                sawHeader = true;
-                continue;
+                document = DelimitedDocument.Parse(Encoding.UTF8.GetBytes(content), s_tsvOptions);
+            }
+            catch (DelimitedFormatException ex)
+            {
+                throw new ExchangeRateFormatException(ImfResourceStrings.Format_Invalid_ImfReportHeader, ex);
             }
 
-            if (first.StartsWith("Representative Exchange Rates", StringComparison.Ordinal))
-                continue;
+            var observations = new List<ImfRateObservation>();
+            DateOnly?[]? currentDates = null;
+            bool sawHeader = false;
 
-            if (first.StartsWith("Notes", StringComparison.Ordinal) ||
-                first.StartsWith('(') ||
-                first.StartsWith("These ", StringComparison.Ordinal))
+            DelimitedElement root = document.RootElement;
+            int rowCount = root.GetArrayLength();
+            for (int index = 0; index < rowCount; index++)
             {
-                currentDates = null;
-                continue;
+                DelimitedElement row = root[index];
+                if (row.GetArrayLength() == 0)
+                    continue;
+
+                string first = row[0].GetString();
+                if (first.Length == 0)
+                    continue;
+
+                if (string.Equals(first, "Currency", StringComparison.Ordinal))
+                {
+                    currentDates = ParseHeaderDates(row);
+                    sawHeader = true;
+                    continue;
+                }
+
+                if (first.StartsWith("Representative Exchange Rates", StringComparison.Ordinal))
+                    continue;
+
+                if (first.StartsWith("Notes", StringComparison.Ordinal) ||
+                    first.StartsWith('(') ||
+                    first.StartsWith("These ", StringComparison.Ordinal))
+                {
+                    currentDates = null;
+                    continue;
+                }
+
+                if (currentDates is null)
+                    continue;
+
+                AppendDataRow(row, currentDates, options, observations);
             }
 
-            if (currentDates is null)
-                continue;
+            if (!sawHeader)
+                throw new ExchangeRateFormatException(ImfResourceStrings.Format_Invalid_ImfReportHeader);
 
-            AppendDataRow(row, currentDates, options, observations);
+            if (observations.Count == 0)
+            {
+                throw new ExchangeRateFormatException(
+                    string.Format(CultureInfo.CurrentCulture, ImfResourceStrings.Format_Invalid_ImfReportNoRows, string.Empty));
+            }
+
+            return new ImfRateTable(observations);
         }
-
-        if (!sawHeader)
-            throw new ExchangeRateFormatException(ImfResourceStrings.Format_Invalid_ImfReportHeader);
-
-        if (observations.Count == 0)
+        finally
         {
-            throw new ExchangeRateFormatException(
-                string.Format(CultureInfo.CurrentCulture, ImfResourceStrings.Format_Invalid_ImfReportNoRows, string.Empty));
+            document?.Dispose();
         }
-
-        return new ImfRateTable(observations);
     }
 
     /// <summary>
@@ -152,12 +166,12 @@ internal static class ImfReportParser
     /// A per-column array of dates; index 0 (the <c>Currency</c> cell) and any unparsable column is
     /// <see langword="null" />.
     /// </returns>
-    private static DateOnly?[] ParseHeaderDates(DelimitedRow row)
+    private static DateOnly?[] ParseHeaderDates(DelimitedElement row)
     {
-        var dates = new DateOnly?[row.Count];
-        for (int i = 1; i < row.Count; i++)
+        var dates = new DateOnly?[row.GetArrayLength()];
+        for (int i = 1; i < dates.Length; i++)
         {
-            dates[i] = DateOnly.TryParseExact(row[i], "MMMM dd, yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly date)
+            dates[i] = DateOnly.TryParseExact(row[i].GetString(), "MMMM dd, yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly date)
                 ? date
                 : null;
         }
@@ -174,12 +188,12 @@ internal static class ImfReportParser
     /// <param name="options">The provider options supplying the currency-name map.</param>
     /// <param name="observations">The accumulator to append parsed observations to.</param>
     private static void AppendDataRow(
-        DelimitedRow row,
+        DelimitedElement row,
         DateOnly?[] currentDates,
         ImfRateProviderOptions options,
         List<ImfRateObservation> observations)
     {
-        string name = NormalizeLabel(row[0], out bool usdPerUnit);
+        string name = NormalizeLabel(row[0].GetString(), out bool usdPerUnit);
         if (string.Equals(name, UsDollarLabel, StringComparison.Ordinal))
             return;
 
@@ -187,13 +201,13 @@ internal static class ImfReportParser
             return;
 
         string isoCode = code.ToString();
-        int limit = Math.Min(row.Count, currentDates.Length);
+        int limit = Math.Min(row.GetArrayLength(), currentDates.Length);
         for (int i = 1; i < limit; i++)
         {
             if (currentDates[i] is not { } date)
                 continue;
 
-            string cell = row[i];
+            string cell = row[i].GetString();
             if (cell.Length == 0 || string.Equals(cell, NotAvailable, StringComparison.Ordinal))
                 continue;
 
