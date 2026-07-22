@@ -8,7 +8,6 @@ using System.Buffers;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 using Bodu.Text.Delimited.Reader;
@@ -30,8 +29,8 @@ namespace Bodu.Text.Delimited;
 /// <para>
 /// The buffered stream overloads mirror the sibling quartet libraries. The
 /// <see cref="DeserializeAsyncEnumerableAsync{TRecord}(Stream, DelimitedSerializerOptions?, CancellationToken)" /> and
-/// the <see cref="IAsyncEnumerable{T}" /> serialize overload provide a record-at-a-time projection; they buffer the
-/// source document before yielding, with true per-segment incremental reads deferred to the resumable reader.
+/// the <see cref="IAsyncEnumerable{T}" /> serialize overload are truly incremental: records are parsed and yielded as
+/// stream chunks arrive, and written and flushed in bounded batches, so neither surface materializes the document.
 /// </para>
 /// </remarks>
 public static partial class DelimitedSerializer
@@ -134,36 +133,6 @@ public static partial class DelimitedSerializer
     }
 
     /// <summary>
-    /// Asynchronously serializes an asynchronous sequence of records as delimited text to the supplied stream.
-    /// </summary>
-    /// <typeparam name="TRecord">The record type.</typeparam>
-    /// <param name="destination">The destination stream.</param>
-    /// <param name="records">The asynchronous record sequence.</param>
-    /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
-    /// <param name="cancellationToken">A token that cancels the operation.</param>
-    /// <returns>A task that completes when all records have been written.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="destination" /> or <paramref name="records" /> is <see langword="null" />.
-    /// </exception>
-    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    [RequiresDynamicCode(RequiresDynamicCodeMessage)]
-    public static async ValueTask SerializeAsync<TRecord>(Stream destination, IAsyncEnumerable<TRecord> records, DelimitedSerializerOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        ThrowHelper.ThrowIfNull(destination);
-        ThrowHelper.ThrowIfNull(records);
-
-        // Materialize the asynchronous sequence first: the ref-struct writer cannot be held across an await boundary,
-        // so the write itself runs synchronously once every record is drained.
-        var materialized = new List<TRecord>();
-        await foreach (TRecord record in records.WithCancellation(cancellationToken).ConfigureAwait(false))
-            materialized.Add(record);
-
-        var buffer = new ArrayBufferWriter<byte>();
-        Serialize(buffer, materialized, options);
-        await destination.WriteAsync(buffer.WrittenMemory, cancellationToken).ConfigureAwait(false);
-    }
-
-    /// <summary>
     /// Deserializes the specified delimited text into a list of records.
     /// </summary>
     /// <typeparam name="TRecord">The record type.</typeparam>
@@ -240,45 +209,6 @@ public static partial class DelimitedSerializer
         source.CopyTo(memory);
 
         return Deserialize<TRecord>(memory.GetBuffer().AsSpan(0, (int)memory.Length), options);
-    }
-
-    /// <summary>
-    /// Asynchronously deserializes the delimited content of the supplied stream, yielding one record at a time.
-    /// </summary>
-    /// <typeparam name="TRecord">The record type.</typeparam>
-    /// <param name="source">The source stream.</param>
-    /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
-    /// <param name="cancellationToken">A token that cancels the operation.</param>
-    /// <returns>An asynchronous sequence of records.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="source" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
-    /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
-    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    [RequiresDynamicCode(RequiresDynamicCodeMessage)]
-    public static async IAsyncEnumerable<TRecord> DeserializeAsyncEnumerableAsync<TRecord>(Stream source, DelimitedSerializerOptions? options = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        ThrowHelper.ThrowIfNull(source);
-
-        DelimitedSerializerOptions effective = options ?? DelimitedSerializerOptions.Default;
-        effective.MakeReadOnly();
-
-        using var memory = new MemoryStream();
-        await source.CopyToAsync(memory, cancellationToken).ConfigureAwait(false);
-
-        ReadRows(memory.GetBuffer().AsSpan(0, (int)memory.Length), effective.ToReaderOptions(), out List<string> headers, out List<string[]> rows);
-
-        bool isStringArray = typeof(TRecord) == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetMembers(typeof(TRecord), effective);
-
-        foreach (string[] row in rows)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            yield return isStringArray
-                ? (TRecord)(object)row
-                : (TRecord)BindRecord(row, headers, members, typeof(TRecord), effective);
-        }
     }
 
     /// <summary>
