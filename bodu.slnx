@@ -2,6 +2,10 @@
   <Folder Name="/Bodu.Text.Formats/">
     <Project Path="Bodu.Text.Formats/src/Bodu.Text.Formats.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Text.Formats.Generators/">
+    <Project Path="Bodu.Text.Formats.Generators/src/Bodu.Text.Formats.Generators.csproj" />
+    <Project Path="Bodu.Text.Formats.Generators/test/Bodu.Text.Formats.Generators.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Text.Serialization/">
     <Project Path="Bodu.Text.Serialization/src/Bodu.Text.Serialization.csproj" />
   </Folder>
