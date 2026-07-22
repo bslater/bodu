@@ -14,10 +14,9 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Use
-/// <see cref="ConfigurationExtensions.Resolve(Bodu.Text.Ini.IniDocumentBase, string?, ConfigurationResolveOptions?)" />
-/// to obtain a view for a target path. The view is a one-shot snapshot — subsequent mutation of the originating
-/// document does not retroactively update the view.
+/// Use <see cref="ConfigurationExtensions.Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)" /> to obtain
+/// a view for a target path. The view is a one-shot snapshot — subsequent mutation of the originating document does not
+/// retroactively update the view.
 /// </para>
 /// <para>
 /// Values are <see langword="string" />? to match <c>Microsoft.Extensions.Configuration</c>'s

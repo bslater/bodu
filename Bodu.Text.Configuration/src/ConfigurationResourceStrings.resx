@@ -183,4 +183,25 @@
   <data name="Op_Invalid_ResolveWithoutPathRoot" xml:space="preserve">
     <value>Cannot resolve a configuration document that was parsed from a string without a path root supplied via ConfigurationResolveOptions.PathRoot.</value>
   </data>
+  <data name="Arg_Invalid_IniCommentPrefix" xml:space="preserve">
+    <value>Comment prefix must be '#' or ';'.</value>
+  </data>
+  <data name="Arg_Invalid_IniEntriesContainsNull" xml:space="preserve">
+    <value>Entries sequence contains a null entry.</value>
+  </data>
+  <data name="Arg_Invalid_IniGlobalSectionNotEmpty" xml:space="preserve">
+    <value>Global section must have an empty Name.</value>
+  </data>
+  <data name="Arg_Invalid_IniSectionCannotAddGlobal" xml:space="preserve">
+    <value>Cannot add a section with an empty name; the global section is preallocated.</value>
+  </data>
+  <data name="Arg_Invalid_IniSectionNameEmpty" xml:space="preserve">
+    <value>Section name cannot be empty; the global section is accessed via GlobalSection.</value>
+  </data>
+  <data name="Arg_Invalid_IniSectionsContainsNull" xml:space="preserve">
+    <value>Sections sequence contains a null section.</value>
+  </data>
+  <data name="Op_Invalid_IniSectionKeyNotFound" xml:space="preserve">
+    <value>The key '{0}' was not found in the section.</value>
+  </data>
 </root>

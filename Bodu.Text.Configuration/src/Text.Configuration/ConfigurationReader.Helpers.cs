@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Ini;
-
 namespace Bodu.Text.Configuration;
 
 internal sealed partial class ConfigurationReader
@@ -179,7 +177,7 @@ internal sealed partial class ConfigurationReader
             if (!isInlineComment)
                 continue;
 
-            string commentText = value[(i + 1)..];
+            string commentText = value[(i + 1) ..];
             string remaining = value[..i].TrimEnd();
             value = remaining;
             return new IniComment(c, commentText, lineNumber);

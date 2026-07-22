@@ -6,7 +6,6 @@
 
 using System.Collections.Immutable;
 using System.Text;
-using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 

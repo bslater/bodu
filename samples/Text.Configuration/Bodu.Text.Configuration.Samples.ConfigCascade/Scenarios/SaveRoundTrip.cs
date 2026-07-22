@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Configuration;
-using Bodu.Text.Ini;
 
 namespace Bodu.Samples.Text.Configuration.ConfigCascade.Scenarios;
 

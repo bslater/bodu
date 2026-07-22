@@ -135,7 +135,6 @@ public sealed class DocumentationSnippetCompileTests
             "using System.Threading.Tasks;" +
             "using System.Text;" +
             "using Bodu.Text.Configuration;" +
-            "using Bodu.Text.Ini;" +
             "namespace Bodu.DocSnippets { internal static class Snippet { internal static async Task RunAsync() {" +
             Environment.NewLine + snippet + Environment.NewLine +
             "} } }";

@@ -5,14 +5,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Configuration.Infrastructure;
-using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 
 /// <summary>
 /// Parse / emit / re-parse coverage exercised through the static
-/// <see cref="ConfigurationDocument" /> facade. The underlying storage is <see cref="IniDocument" /> from
-/// <c>Bodu.Text.Ini</c>.
+/// <see cref="ConfigurationDocument" /> facade over the library's own INI document model.
 /// </summary>
 [TestClass]
 public partial class ConfigurationDocumentTests

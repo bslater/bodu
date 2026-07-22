@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 
@@ -14,10 +13,10 @@ namespace Bodu.Text.Configuration;
 /// with any diagnostics gathered under the rules of <see cref="ConfigurationParseOptions" />.
 /// </summary>
 /// <remarks>
-/// This reader honors the Configuration-specific features that the underlying <c>Ini.Parser</c> does not: inline
-/// comment modes (<see cref="ConfigurationInlineCommentMode" />), diagnostic mode routing (
-/// <see cref="ConfigurationDiagnosticMode" />), and source location tracking. The resulting document inherits the read
-/// surface of <see cref="IniDocumentBase" /> so it composes naturally with everything else in <c>Bodu.Text.Ini</c>.
+/// This reader honors the Configuration-specific features that a plain INI parser does not: inline comment modes (<see cref="ConfigurationInlineCommentMode" />),
+/// diagnostic mode routing ( <see cref="ConfigurationDiagnosticMode" />), and source location tracking. The resulting
+/// document inherits the read surface of <see cref="IniDocumentBase" /> so it composes naturally with the rest of the
+/// configuration model.
 /// </remarks>
 internal sealed partial class ConfigurationReader
 {
@@ -110,7 +109,7 @@ internal sealed partial class ConfigurationReader
         // Full-line comment: capture and defer until we see the next section or property.
         if (first is '#' or ';')
         {
-            string commentText = line[(firstNonWs + 1)..];
+            string commentText = line[(firstNonWs + 1) ..];
             _pendingLeadingComments.Add(new IniComment(first, commentText, lineNumber));
             return currentSection;
         }
@@ -255,15 +254,13 @@ internal sealed partial class ConfigurationReader
                 break;
 
             case IniDuplicateSectionBehavior.MergeAdjacent:
-            {
-                IEqualityComparer<string> comparer = _options.KeyOptions.CaseSensitive
+                StringComparer comparer = _options.KeyOptions.CaseSensitive
                     ? StringComparer.Ordinal
                     : StringComparer.OrdinalIgnoreCase;
                 if (document.Sections.Count > 0 && comparer.Equals(document.Sections[^1].Name, name))
                     return document.Sections[^1];
-            }
 
-            break;
+                break;
         }
 
         IniSection created = new(name, [], _options.KeyOptions.CaseSensitive);
@@ -309,7 +306,7 @@ internal sealed partial class ConfigurationReader
         }
 
         string keyText = line[firstNonWs..equalsIndex];
-        string valueText = line[(equalsIndex + 1)..];
+        string valueText = line[(equalsIndex + 1) ..];
 
         if (_options.TrimKeysAndValues)
         {
