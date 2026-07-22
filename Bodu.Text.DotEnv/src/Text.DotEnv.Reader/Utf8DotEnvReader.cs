@@ -110,11 +110,18 @@ public ref struct Utf8DotEnvReader
     {
         _data = data;
         _options = options;
-        _position = 0;
+
+        // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first key.
+        _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
         _line = 1;
         _phase = Phase.Start;
         _tokenType = DotEnvTokenType.None;
     }
+
+    /// <summary>
+    /// Gets the UTF-8 byte-order mark.
+    /// </summary>
+    private static ReadOnlySpan<byte> Utf8Bom => [0xEF, 0xBB, 0xBF];
 
     /// <summary>
     /// Gets the number of bytes consumed so far.
@@ -391,10 +398,14 @@ public ref struct Utf8DotEnvReader
 
         int keyLength = _position - keyStart;
 
+        // Tolerate optional whitespace around the assignment (KEY = value), matching common .env loaders.
+        SkipSpacesAndTabs();
+
         if (_position >= _data.Length || _data[_position] != (byte)'=')
             throw MalformedError(entryLine);
 
         _position++; // consume '='
+        SkipSpacesAndTabs();
 
         ReadValue(entryLine, out int rawStart, out int rawLength, out string? decoded);
 
@@ -509,8 +520,7 @@ public ref struct Utf8DotEnvReader
             if (c == (byte)'\n')
                 _line++;
 
-            AppendByte(sb, c);
-            _position++;
+            _position += AppendByte(sb, c);
         }
     }
 
@@ -605,12 +615,13 @@ public ref struct Utf8DotEnvReader
     /// </summary>
     /// <param name="sb">The decode buffer.</param>
     /// <param name="lead">The leading byte already at the cursor.</param>
-    private readonly void AppendByte(StringBuilder sb, byte lead)
+    /// <returns>The number of source bytes consumed (one for ASCII, two to four for a multibyte sequence).</returns>
+    private readonly int AppendByte(StringBuilder sb, byte lead)
     {
         if (lead < 0x80)
         {
             sb.Append((char)lead);
-            return;
+            return 1;
         }
 
         // Decode the whole UTF-8 sequence for a non-ASCII lead byte.
@@ -623,6 +634,7 @@ public ref struct Utf8DotEnvReader
 
         length = Math.Min(length, _data.Length - _position);
         sb.Append(Encoding.UTF8.GetString(_data.Slice(_position, length)));
+        return length;
     }
 
     /// <summary>

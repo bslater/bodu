@@ -95,4 +95,15 @@ public partial class DotEnvSerializerTests
 
         Assert.IsTrue(config.DeserializedCalled);
     }
+
+    /// <summary>
+    /// Verifies that a duplicated key resolves to the last occurrence, matching the near-universal .env last-wins rule.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenDuplicateKey_ShouldTakeLastValue()
+    {
+        Dictionary<string, string> map = DotEnvSerializer.Deserialize<Dictionary<string, string>>("A=1\nA=2\nA=3\n");
+
+        Assert.AreEqual("3", map["A"]);
+    }
 }

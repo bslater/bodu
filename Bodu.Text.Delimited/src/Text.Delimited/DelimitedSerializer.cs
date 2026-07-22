@@ -29,9 +29,9 @@ namespace Bodu.Text.Delimited;
 /// </para>
 /// <para>
 /// The buffered stream overloads mirror the sibling quartet libraries. The
-/// <see cref="DeserializeAsyncEnumerableAsync{TRecord}(Stream, DelimitedSerializerOptions?, CancellationToken)" /> and the
-/// <see cref="IAsyncEnumerable{T}" /> serialize overload provide a record-at-a-time projection; they buffer the source
-/// document before yielding, with true per-segment incremental reads deferred to the resumable reader.
+/// <see cref="DeserializeAsyncEnumerableAsync{TRecord}(Stream, DelimitedSerializerOptions?, CancellationToken)" /> and
+/// the <see cref="IAsyncEnumerable{T}" /> serialize overload provide a record-at-a-time projection; they buffer the
+/// source document before yielding, with true per-segment incremental reads deferred to the resumable reader.
 /// </para>
 /// </remarks>
 public static partial class DelimitedSerializer

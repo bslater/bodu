@@ -89,11 +89,18 @@ public ref struct Utf8DelimitedReader
         _headers = [];
         _fields = [];
         _fieldRanges = [];
-        _position = 0;
+
+        // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first header column.
+        _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
         _line = 1;
         _stage = Stage.Start;
         _tokenType = DelimitedTokenType.None;
     }
+
+    /// <summary>
+    /// Gets the UTF-8 byte-order mark.
+    /// </summary>
+    private static ReadOnlySpan<byte> Utf8Bom => [0xEF, 0xBB, 0xBF];
 
     /// <summary>
     /// Gets the number of bytes consumed so far.
@@ -430,8 +437,7 @@ public ref struct Utf8DelimitedReader
             if (b == (byte)'\n')
                 _line++;
 
-            AppendByte(sb, b);
-            _position++;
+            _position += AppendByte(sb, b);
         }
     }
 
@@ -467,12 +473,13 @@ public ref struct Utf8DelimitedReader
     /// </summary>
     /// <param name="sb">The decode buffer.</param>
     /// <param name="lead">The leading byte already at the cursor.</param>
-    private readonly void AppendByte(StringBuilder sb, byte lead)
+    /// <returns>The number of source bytes consumed (one for ASCII, two to four for a multibyte sequence).</returns>
+    private readonly int AppendByte(StringBuilder sb, byte lead)
     {
         if (lead < 0x80)
         {
             sb.Append((char)lead);
-            return;
+            return 1;
         }
 
         int length = lead switch
@@ -484,6 +491,7 @@ public ref struct Utf8DelimitedReader
 
         length = Math.Min(length, _data.Length - _position);
         sb.Append(Encoding.UTF8.GetString(_data.Slice(_position, length)));
+        return length;
     }
 
     /// <summary>
