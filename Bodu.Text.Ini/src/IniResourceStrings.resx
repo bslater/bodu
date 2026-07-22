@@ -91,4 +91,10 @@
   <data name="Format_Invalid_IniValueConversion" xml:space="preserve">
     <value>The INI value for key '{0}' could not be converted to type '{1}'.</value>
   </data>
+  <data name="Op_Invalid_IniMissingRequiredKey" xml:space="preserve">
+    <value>The INI document does not contain the required key '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_IniGlobalWithoutSectionName" xml:space="preserve">
+    <value>The INI document contains global keys that cannot map to '{0}'; set IniSerializerOptions.GlobalSectionName to bind them.</value>
+  </data>
 </root>

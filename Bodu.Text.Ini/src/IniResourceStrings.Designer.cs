@@ -154,5 +154,23 @@ namespace Bodu {
                 return ResourceManager.GetString("Format_Invalid_IniValueConversion", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI document does not contain the required key '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_IniMissingRequiredKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniMissingRequiredKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI document contains global keys that cannot map to '{0}'; set IniSerializerOptions.GlobalSectionName to bind them..
+        /// </summary>
+        internal static string Op_Invalid_IniGlobalWithoutSectionName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniGlobalWithoutSectionName", resourceCulture);
+            }
+        }
     }
 }
