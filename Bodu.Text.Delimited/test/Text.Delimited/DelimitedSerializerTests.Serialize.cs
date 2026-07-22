@@ -67,4 +67,55 @@ public partial class DelimitedSerializerTests
 
         Assert.IsTrue(text.StartsWith("name,age\r\n", StringComparison.Ordinal));
     }
+
+    /// <summary>
+    /// Verifies that the reflection-free factory overload produces byte-identical output to the reflection binder,
+    /// including the header row and quoting.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenFactory_ShouldMatchReflectionOutput()
+    {
+        var people = new List<Person>
+        {
+            new() { Name = "Ada, the \"pioneer\"", Age = 36 },
+            new() { Name = "Grace", Age = 45 },
+        };
+
+        string reflection = DelimitedSerializer.Serialize(people);
+        string viaFactory = DelimitedSerializer.Serialize(people, new PersonFactory());
+
+        Assert.AreEqual(reflection, viaFactory);
+    }
+
+    /// <summary>
+    /// Verifies that the factory overload suppresses the header row in headerless mode.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenFactoryWithNoHeader_ShouldWritePositionalRows()
+    {
+        var people = new List<Person> { new() { Name = "Ada", Age = 36 } };
+        var options = new DelimitedSerializerOptions { NoHeader = true };
+
+        string text = DelimitedSerializer.Serialize(people, new PersonFactory(), options);
+
+        Assert.AreEqual("Ada,36\r\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that the factory overload throws <see cref="ArgumentNullException" /> for a
+    /// <see langword="null" /> record sequence or factory.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenFactoryArgumentsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize((IEnumerable<Person>)null!, new PersonFactory());
+        });
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize(new List<Person>(), (IDelimitedRecordFactory<Person>)null!);
+        });
+    }
 }

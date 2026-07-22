@@ -65,4 +65,49 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual("Ada", people[0].Name);
         Assert.AreEqual(36, people[0].Age);
     }
+
+    /// <summary>
+    /// Verifies that the reflection-free factory overload binds records through the factory, including reordered
+    /// columns mapped by header name.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenFactory_ShouldBindRecords()
+    {
+        List<Person> people = DelimitedSerializer.Deserialize("Age,Name\n36,Ada\n45,Grace\n", new PersonFactory());
+
+        Assert.AreEqual(2, people.Count);
+        Assert.AreEqual("Ada", people[0].Name);
+        Assert.AreEqual(36, people[0].Age);
+        Assert.AreEqual("Grace", people[1].Name);
+        Assert.AreEqual(45, people[1].Age);
+    }
+
+    /// <summary>
+    /// Verifies that the factory overload binds a headerless document positionally in the factory's declared field
+    /// order.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenFactoryWithoutHeader_ShouldBindPositionally()
+    {
+        var options = new DelimitedSerializerOptions { NoHeader = true };
+
+        List<Person> people = DelimitedSerializer.Deserialize("Ada,36\n", new PersonFactory(), options);
+
+        Assert.AreEqual(1, people.Count);
+        Assert.AreEqual("Ada", people[0].Name);
+        Assert.AreEqual(36, people[0].Age);
+    }
+
+    /// <summary>
+    /// Verifies that the factory overload throws <see cref="ArgumentNullException" /> for a <see langword="null" />
+    /// factory.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenFactoryNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize("Name,Age\nAda,36\n", (IDelimitedRecordFactory<Person>)null!);
+        });
+    }
 }
