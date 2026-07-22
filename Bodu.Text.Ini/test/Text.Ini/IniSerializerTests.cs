@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Ini;
@@ -72,5 +74,37 @@ public partial class IniSerializerTests
     {
         /// <summary>Gets or sets the nested section, which INI cannot represent.</summary>
         public DatabaseSection? Inner { get; set; }
+    }
+
+    /// <summary>
+    /// A hand-written <see cref="IIniSectionFactory{TSection}" /> for <see cref="DatabaseSection" />, standing in for
+    /// the generated factory in the reflection-free section-overload tests.
+    /// </summary>
+    private sealed class DatabaseSectionFactory : IIniSectionFactory<DatabaseSection>
+    {
+        /// <inheritdoc />
+        public IReadOnlyList<string> Keys { get; } = new[] { "Host", "Port" };
+
+        /// <inheritdoc />
+        public IEnumerable<KeyValuePair<string, string>> GetEntries(DatabaseSection section)
+        {
+            yield return new KeyValuePair<string, string>("Host", section.Host ?? string.Empty);
+            yield return new KeyValuePair<string, string>("Port", section.Port.ToString(CultureInfo.InvariantCulture));
+        }
+
+        /// <inheritdoc />
+        public DatabaseSection Create(IEnumerable<KeyValuePair<string, string>> entries)
+        {
+            var section = new DatabaseSection();
+            foreach (KeyValuePair<string, string> entry in entries)
+            {
+                if (string.Equals(entry.Key, "Host", StringComparison.Ordinal))
+                    section.Host = entry.Value;
+                else if (string.Equals(entry.Key, "Port", StringComparison.Ordinal))
+                    section.Port = int.Parse(entry.Value, CultureInfo.InvariantCulture);
+            }
+
+            return section;
+        }
     }
 }

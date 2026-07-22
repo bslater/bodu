@@ -172,5 +172,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_IniGlobalWithoutSectionName", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI document does not contain a section named '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_IniSectionNotFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniSectionNotFound", resourceCulture);
+            }
+        }
     }
 }

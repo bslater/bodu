@@ -97,4 +97,7 @@
   <data name="Op_Invalid_IniGlobalWithoutSectionName" xml:space="preserve">
     <value>The INI document contains global keys that cannot map to '{0}'; set IniSerializerOptions.GlobalSectionName to bind them.</value>
   </data>
+  <data name="Op_Invalid_IniSectionNotFound" xml:space="preserve">
+    <value>The INI document does not contain a section named '{0}'.</value>
+  </data>
 </root>
