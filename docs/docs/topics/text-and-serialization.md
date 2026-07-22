@@ -24,7 +24,7 @@ The codec package fills the gaps `System.Convert` and `System.Buffers.Text.Base6
 
 ### Document formats: Bodu.Text.Formats
 
-The formats package decodes and encodes **self-framing** documents — formats whose structure is described inline by the bytes themselves. Each of the three families (Delimited, DotEnv, INI) pairs a strongly-typed value model with a static codec (`Parse` / `Format`, `Try*` variants, and `CreateReader` / `CreateWriter` streaming factories), and each raises a typed `*FormatException` deriving from a common `TextFormatException` so parse failures can be caught uniformly.
+The line-format libraries decode and encode **self-framing** documents — formats whose structure is described inline by the bytes themselves. Each of the three families (Delimited, DotEnv, INI) is a standalone `System.Text.Json`-shaped library: a forward-only `Utf8*Reader` / `Utf8*Writer` token pair, a `*Serializer` for typed binding, a mutable node DOM, and a read-only document DOM, each raising its own typed `*FormatException` with the source position attached.
 
 ### Serializers: Bodu.Text.Bencode and Bodu.Text.Toml
 
@@ -54,7 +54,7 @@ The package names and root namespaces line up one-to-one, with the formats and s
 | Package | Namespaces |
 |---|---|
 | `Bodu.Text.Encoding` | `Bodu.Text.Encoding` — the per-encoding static classes, the option types, and the `IBinaryEncoding` registry. |
-| `Bodu.Text.Formats` | `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, `Bodu.Text.Ini` — one sibling namespace per format family, plus the shared `TextFormatException` in `Bodu.Text`. |
+| `Bodu.Text.Delimited` / `Bodu.Text.DotEnv` / `Bodu.Text.Ini` | The standalone line-format libraries (one package per format; `Bodu.Text.Formats` is the umbrella meta-package over the three). |
 | `Bodu.Text.Bencode` | `Bodu.Text.Bencode` plus `.Reader`, `.Writer`, `.Document`, `.Nodes`, and `.Serialization` — mirroring the `System.Text.Json` source layout. |
 | `Bodu.Text.Toml` | `Bodu.Text.Toml` with the same `.Reader` / `.Writer` / `.Document` / `.Nodes` / `.Serialization` subdivision. |
 
@@ -102,9 +102,9 @@ string hex   = Base16.Encode(hash);
 byte[] token = Base64.Decode(segment, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
 
 // 2. Document format — parse, edit, round-trip with comments preserved:
-IniDocument config = Ini.Parse(source);
-config.GetOrAddSection("database").SetEntry("port", "5433");
-string updated = Ini.Format(config);
+IniObject config = IniNode.Parse(utf8Source);
+config["database"].AsObject()["port"].AsValue().Value = "5433";
+string updated = config.ToString();
 
 // 3. Serializer — POCO to wire format and back:
 string toml = TomlSerializer.Serialize(new AppSettings { Name = "demo", Retries = 3 });

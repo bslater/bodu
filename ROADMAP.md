@@ -164,8 +164,12 @@ exercised on the smallest self-contained units first.
 | `Bodu.Text.Bencode` | Standalone STJ-shaped Bencode library (reader/writer/serializer/DOM quartet). |
 | `Bodu.Text.Toml` | Standalone STJ-shaped TOML v1.0.0 / v1.1.0 library; corpus-backed. |
 | `Bodu.Text.Yaml` | Standalone YAML 1.2 core-profile library (read-focused serializer). |
-| `Bodu.Text.Formats` | Delimited (RFC 4180), DotEnv, INI. |
-| `Bodu.Text.Configuration` | INI-compatible profile, resolver, view getters. |
+| `Bodu.Text.Serialization` | The shared serialization primitives (attribute family, naming policies, callbacks) the per-format serializers build on. |
+| `Bodu.Text.Delimited` | Standalone STJ-shaped Delimited (RFC 4180 CSV/TSV) library; corpus-backed. |
+| `Bodu.Text.DotEnv` | Standalone STJ-shaped DotEnv library. |
+| `Bodu.Text.Ini` | Standalone STJ-shaped INI library (comment-preserving mutable DOM). |
+| `Bodu.Text.Formats` | Umbrella meta-package over `Bodu.Text.Delimited` / `.DotEnv` / `.Ini`. |
+| `Bodu.Text.Configuration` | INI-compatible profile, resolver, view getters (self-contained document model). |
 | `Bodu.IO.Compound` | OLE2 / CFB container read + edit + authoring. |
 | `Bodu.Formats.Excel.Binary` | Read-only BIFF8 `.xls` reader (depends on `Bodu.IO.Compound`). |
 
@@ -356,12 +360,21 @@ is now:
    The remaining action is the release itself: tag `v1.0.0` per
    `bld/RELEASING.md`, then set `BoduPackageValidationBaseline` so
    ApiCompat begins guarding the published surface.
-4. **Consolidate the two text-format tiers.** The repository has two
-   parallel shapes: the modern `Utf8*` ref-struct quartet
-   (Bencode/Toml/Yaml) and the older `*Reader`/`*Writer`/`*Document`
-   trio (Delimited/DotEnv/INI). Decide and document whether the older
-   trio is retrofitted onto the quartet or the two tiers are an explicit
-   API-design choice (see *Architectural patterns*).
+4. **Consolidate the two text-format tiers — done.** ✅ The older
+   line-oriented trio was redesigned from the ground up onto the
+   `System.Text.Json`-shaped quartet: **`Bodu.Text.Delimited`**,
+   **`Bodu.Text.DotEnv`**, and **`Bodu.Text.Ini`** are now standalone
+   libraries (ref-struct `Utf8*Reader`/`Utf8*Writer`, `*Serializer` with
+   the shared attribute/naming/callback layer, mutable `*Node` DOM,
+   read-only `*Document` DOM), `Bodu.Text.Formats` became a thin umbrella
+   meta-package over the three, `Bodu.Text.Configuration` was decoupled
+   onto its own INI document model, and the Imf/Boe FX parsers and
+   samples migrated. Two deliberate deviations are documented in the
+   design notes under `Bodu.Text.Formats/docs/`: the mutable DotEnv/INI
+   DOMs bear comment trivia (faithful round-trips of human-owned files),
+   and the string-only wire keeps scalar conversion serializer-local
+   rather than adopting the shared recursive converter engine. The
+   quartet is now the single structured-text template across the tree.
 
 ## Per-project roadmap
 
@@ -687,29 +700,35 @@ DOMs. Validated against the vendored `yaml-test-suite` (353 cases).
   YAML 1.1/1.2 features are in vs out (tag resolution, complex keys,
   directives) so consumers know when to reach for a full YAML engine.
 
-### `Bodu.Text.Formats`
+### `Bodu.Text.Delimited` / `Bodu.Text.DotEnv` / `Bodu.Text.Ini` (and the `Bodu.Text.Formats` umbrella)
 
-Current state: mature; ~41 src / ~76 test files. **Bencode and TOML are
-fully extracted** to their own libraries; this project is now the
-line-oriented formats only — Delimited (RFC 4180 CSV/TSV), DotEnv, and INI,
-each with a `*Reader` / `*Writer` / `*Document` trio and `ValueTask` async
-streaming.
+Current state: new — the ground-up quartet redesign of the retired
+line-oriented trio (see *Active focus* #4). Each is a standalone
+`System.Text.Json`-shaped library: a ref-struct `Utf8*Reader` /
+`Utf8*Writer` token surface over UTF-8, a `*Serializer` reflection binder
+over the shared `Bodu.Text.Serialization` attribute/naming/callback layer,
+a mutable `*Node` DOM, and a read-only `*Document` DOM. Delimited adds the
+RFC 4180 dialect policies (field-count / malformed-record /
+duplicate-header) and an `IAsyncEnumerable<TRecord>` streaming surface;
+INI adds the two-reader model (source-order `Utf8IniReader` + normalized
+`IniDocumentReader` applying duplicate-section merge), a
+comment-preserving mutable DOM, and the `GlobalSectionName` mapping; the
+Delimited Regression tier carries a csv-spectrum-derived RFC 4180 corpus.
+`Bodu.Text.Formats` is a thin umbrella meta-package over the three.
 
-- **Resolve the two-tier shape (see *Active focus* #2).** Either retrofit
-  Delimited/DotEnv/INI onto the modern `Utf8*` ref-struct quartet used by
-  the standalone libraries, or document the tiering as an explicit
-  design choice for line-oriented vs structured formats.
 - **Add a source generator that binds `[DelimitedRecord]` and
   `[IniSection]` POCOs** so consumers can avoid runtime reflection — a
-  clear AOT win.
-- **Layer an `IAsyncEnumerable<T>` projection** over the existing
-  `ReadAsync` loops.
+  clear AOT win over the reflection binders.
+- **Resumable reader states** (`*ReaderState`) so the serializers'
+  streaming surfaces can read true per-segment rather than buffering the
+  source before yielding.
 
 ### `Bodu.Text.Configuration`
 
 Current state: mature; 37 src / ~74 test files. A layered
 config-resolution engine (profile, resolver, view getters, diagnostics)
-over the format readers.
+over its own trivia-preserving INI document model (self-contained since
+the *Active focus* #4 decouple — no format-library dependency).
 
 - **Stabilise `ConfigurationPattern.Compile`** — the expression-
   compilation surface needs an API-stability pass before consumers build
@@ -1259,10 +1278,12 @@ rather than inventing a fourth shape.
    `Utf8*Reader` / `Utf8*Writer` token surface, a `*Serializer` POCO
    mapper (converters + attribute family + naming policies + callbacks),
    a mutable `*Node` DOM, and a read-only `*Document` DOM. Proven by
-   `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml`. **This is
-   the template for every new structured-text format** and the shape the
-   older `Bodu.Text.Formats` trio should either be retrofitted onto or be
-   explicitly documented as tiered against (see *Active focus* #2).
+   `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml`, and — via
+   the *Active focus* #4 redesign — by `Bodu.Text.Delimited`,
+   `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`. **This is the template for
+   every new structured-text format**; the line formats deviate only
+   where documented (trivia-bearing mutable DOMs for DotEnv/INI, and
+   serializer-local scalar conversion for the string-only wire).
 2. **The container + format-reader split** — a low-level container
    (`Bodu.IO.Compound` for CFB; a proposed `Bodu.IO.Packaging` for OPC)
    with format readers layered on top that share a *flattened* value
@@ -1304,9 +1325,10 @@ Target state:
   The companion `Bodu.Numerics.Serialization.Json` uses the standard
   reflection-based `JsonConverterFactory` pattern (annotated), so its
   consumers pair it with a source-generated `JsonSerializerContext` for AOT.
-- **AOT-clean with work:** `Bodu.Text.Formats` and the `*Serializer`
-  reflection paths (need the source-generator binding), `Bodu.Financial`
-  and `Bodu.Formats.Excel.Binary` (audit the property-mapping paths).
+- **AOT-clean with work:** the `Bodu.Text.Delimited` / `.DotEnv` / `.Ini`
+  `*Serializer` reflection binders (need the source-generator binding),
+  `Bodu.Financial` and `Bodu.Formats.Excel.Binary` (audit the
+  property-mapping paths).
 - **AOT-blocked by design:** the `Bodu.Globalization.Calendar.Plugins`
   loader — needs the binary-rule-pack format from the Builder roadmap
   before this changes.
@@ -1363,7 +1385,8 @@ The forward direction is to introduce true Roslyn generators where they
 buy AOT/trim readiness or remove runtime reflection:
 
 - Calendar rule packs (Builder roadmap — binary output for trim/AOT).
-- Delimited / INI POCO binding (Text.Formats roadmap).
+- Delimited / INI POCO binding (the `Bodu.Text.Delimited` / `.Ini`
+  roadmap).
 
 New generators should live under `<Project>.Builder/` mirroring the
 Calendar.Builder layout.

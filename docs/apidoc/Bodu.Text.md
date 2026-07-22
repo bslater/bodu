@@ -11,7 +11,7 @@ uid: Bodu.Text
 The **Bodu.Text** namespace serves two complementary roles:
 
 - It is the home of the **`Bodu.Text` library** — allocation-conscious helpers for the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, pooled / owned-memory surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. (These are distinct from the binary-to-text *radix* encodings, which live in [`Bodu.Text.Encoding`](Bodu.Text.Encoding.md).)
-- It also holds the **shared base exception** for the document-format codecs in [`Bodu.Text.Formats`](~/docs/formats/index.md), so callers can catch any format-level parse failure — delimited (CSV/TSV), DotEnv, or INI — through a single common type while each codec still throws its own precise subtype.
+- It sits alongside the **line-format libraries** ([`Bodu.Text.Delimited`](Bodu.Text.Delimited.md), [`Bodu.Text.DotEnv`](Bodu.Text.DotEnv.md), [`Bodu.Text.Ini`](Bodu.Text.Ini.md) — see the [line-formats introduction](~/docs/formats/index.md)), each of which throws its own precise `*FormatException` derived from <xref:System.FormatException>.
 
 ## Static documentation
 
@@ -26,28 +26,24 @@ The **Bodu.Text** namespace serves two complementary roles:
 - <xref:Bodu.Text.EncodingExtensions> — extension methods on `System.Text.Encoding`, `Encoder`, and `Decoder` (BOM handling, classification, fallback configuration, chunked transcoding).
 - <xref:Bodu.Text.EncodingDetection> — static BOM-sniffing.
 
-**Document-format exceptions**
-
-- <xref:Bodu.Text.TextFormatException> — the abstract base for every format-specific parse exception in the formats library. Concrete subtypes are <xref:Bodu.Text.Delimited.DelimitedFormatException>, <xref:Bodu.Text.DotEnv.DotEnvFormatException>, and <xref:Bodu.Text.Ini.IniFormatException>.
-
 ## Example
 
 ```csharp
-using Bodu.Text;
 using Bodu.Text.Ini;
+using Bodu.Text.Ini.Document;
 
 try
 {
-    IniDocument doc = Ini.Parse(text);
+    using IniDocument doc = IniDocument.Parse(bytes);
 }
-catch (TextFormatException ex)
+catch (IniFormatException ex)
 {
-    // Catches IniFormatException — and any other Bodu.Text.Formats parse failure.
+    // Each line-format library throws its own FormatException subtype with line/offset attached.
     Console.Error.WriteLine(ex.Message);
 }
 ```
 
 ## Notes
 
-- **Catch broad or narrow.** Catch <xref:Bodu.Text.TextFormatException> to handle any document-format failure uniformly, or the concrete subtype when you need format-specific detail.
+- **Catch per format.** Each line-format library throws its own `*FormatException` (all derive from <xref:System.FormatException>) carrying the source position.
 - **See also:** the per-format guides — [delimited](~/guides/formats/delimited.md), [DotEnv](~/guides/formats/dotenv.md), [INI](~/guides/formats/ini.md).

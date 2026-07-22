@@ -87,10 +87,10 @@ default) trailing words after the closing `]` are accepted silently; under `Stri
 default) they raise the `TrailingContentAfterSectionHeader` diagnostic; under `AllowTrailingInlineComment` a `#`/`;`
 after `]` is consumed as a comment while any other trailing content still errors.
 
-`ToIniParseOptions()` projects the subset of these options that maps cleanly onto a raw
-<xref:Bodu.Text.Ini.IniParseOptions> (duplicate handling and case sensitivity) — useful when delegating bare INI
-parsing to <xref:Bodu.Text.Ini.Ini> while layering Configuration features on top. Configuration-only concerns
-(inline comments, diagnostics, the preamble distinction) are not part of that projection.
+The configuration engine parses with its own reader over its own INI document model (the
+`IniDocumentBase` / `IniSection` / `IniEntry` family in the `Bodu.Text.Configuration` namespace) — it does not
+depend on the standalone `Bodu.Text.Ini` format library, so its inline-comment modes, diagnostics, and preamble
+handling are free to diverge from the raw-INI dialect.
 
 **<xref:Bodu.Text.Configuration.ConfigurationResolveOptions>** controls the resolver:
 

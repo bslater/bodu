@@ -411,11 +411,11 @@ runtime-pluggable encoding choice.
 
 </div>
 
-### Bodu.Text.Formats
+### Bodu.Text.Formats (Delimited · DotEnv · INI)
 
-Self-framing text document formats with a strongly-typed value model and a span- and stream-friendly codec.
-The package ships three sibling namespaces — Delimited (CSV / TSV), DotEnv, and Ini — each with strict
-invariant enforcement and `Try*` overloads.
+The line-oriented text formats — `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`, each a
+standalone `System.Text.Json`-shaped library (token reader/writer, serializer, mutable and read-only DOMs)
+reachable through the `Bodu.Text.Formats` umbrella package.
 
 <div class="bodu-cards">
 
@@ -426,22 +426,22 @@ invariant enforcement and `Try*` overloads.
 
 <div class="bodu-card">
   <h3><a href="formats/delimited.md">Using delimited (CSV / TSV)</a></h3>
-  <p>RFC 4180 quoting, delimiter selection, header handling, the streaming <code>DelimitedReader</code> / <code>DelimitedWriter</code>, and the strictness policies on <code>DelimitedParseOptions</code>.</p>
+  <p>RFC 4180 quoting, delimiter selection, header handling, the streaming <code>Utf8DelimitedReader</code> / <code>Utf8DelimitedWriter</code>, typed records via <code>DelimitedSerializer</code>, and the dialect policies on <code>DelimitedReaderOptions</code>.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="formats/dotenv.md">Using DotEnv</a></h3>
-  <p><code>KEY=VALUE</code> parsing, quoting and escape rules, comment preservation, and duplicate-key policies on <code>DotEnvParseOptions</code>.</p>
+  <p><code>KEY=VALUE</code> parsing, quoting and escape rules, the <code>export</code> prefix, and typed settings via <code>DotEnvSerializer</code>.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="formats/ini.md">Using INI</a></h3>
-  <p>Section / entry model, comment trivia, duplicate-section and duplicate-key policies, and programmatic mutation of the round-trippable <code>IniDocument</code>.</p>
+  <p>Hoisted globals and section objects, typed binding via <code>IniSerializer</code>, duplicate-section and duplicate-key policies, and comment-preserving mutation through the <code>IniNode</code> DOM.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="formats/streaming.md">Streams and async I/O</a></h3>
-  <p>The forward-only <code>CreateReader</code> / <code>CreateWriter</code> streaming surface — sync and async reads and writes, cancellation, lifetime contracts, and input-size limits.</p>
+  <p>The forward-only <code>Utf8*Reader</code> / <code>Utf8*Writer</code> token surfaces, the typed record-streaming serializer overloads, and the lifetime and mid-stream error contracts.</p>
 </div>
 
 </div>

@@ -6,52 +6,32 @@ uid: Bodu.Text.Ini
 
 ## Purpose
 
-**Bodu.Text.Ini** parses and emits **INI**-style configuration documents — section-organised `key = value` lines with optional comments. It is one of five format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Bencode>, <xref:Bodu.Text.Delimited>, <xref:Bodu.Text.DotEnv>, and <xref:Bodu.Text.Toml>.
-
-INI is exposed through the same shape used across the format family: a strongly-typed value tree, a static codec with `Parse` / `Format` / `Load` / `Save` over `ReadOnlySpan<char>` / `string` / `Stream` / `TextReader` / `TextWriter`, and parser invariants the writer always honours and the parser always enforces. The model preserves comments, key order, and section order so round-tripping is byte-faithful under default options.
-
-For EditorConfig-style configuration layering over <xref:Bodu.Text.Ini.IniDocument> with profile-driven parse and resolve options, see <xref:Bodu.Text.Configuration>. For the Microsoft.Extensions.Configuration bridge, see <xref:Bodu.Extensions.Configuration.Text>.
-
-## Static documentation
-
-- **[Bodu.Text.Formats introduction](~/docs/formats/index.md)** — namespaces, headline types, scenarios.
-- **[Bodu.Text.Formats core concepts](~/docs/formats/concepts.md)** — vocabulary: format vs codec, value vs document, framing tokens, canonical encoding, byte string vs text, format exception.
-- **[Bodu.Text.Formats getting started](~/docs/formats/getting-started.md)** — install and minimal samples.
+**Bodu.Text.Ini** parses and emits **INI** documents — global keys plus `[section]` blocks of `key=value` entries — as a standalone `System.Text.Json`-shaped library: a typed serializer, a two-reader token surface, a **comment-preserving** mutable node DOM, and a read-only document DOM. It ships as its own package (also available through the `Bodu.Text.Formats` umbrella); see also <xref:Bodu.Text.Delimited> and <xref:Bodu.Text.DotEnv>. For EditorConfig-style layered configuration, use `Bodu.Text.Configuration` instead — it carries its own INI model.
 
 ## Key types
 
-- <xref:Bodu.Text.Ini.IniDocument> — root model: a preamble (global section) and zero or more named sections in source order. Mutable; supports round-trip parse + save.
-- <xref:Bodu.Text.Ini.IniSection> — a named section with an ordered list of <xref:Bodu.Text.Ini.IniEntry> values, plus comment lines preserved verbatim.
-- <xref:Bodu.Text.Ini.IniEntry> — a single `key = value` line with optional trailing comment.
-- <xref:Bodu.Text.Ini.IniComment> — a preserved comment line, with prefix character (`;` or `#`) and trimmed text.
-- <xref:Bodu.Text.Ini.Ini> — static codec for INI files: `Parse(text, options?)`, `Load(path | Stream)`, `Save(document, path | Stream | TextWriter, options?)`.
-- <xref:Bodu.Text.Ini.IniParseOptions> — duplicate-key, duplicate-section, comment-preservation, case-sensitivity options for the INI parser.
-- <xref:Bodu.Text.DuplicateKeyPolicy> — `LastWins`, `FirstWins`, `Disallowed`, `Merge`.
-- <xref:Bodu.Text.Ini.IniDuplicateSectionBehavior> — `Preserve`, `Merge`, `Disallowed`.
-- <xref:Bodu.Text.Ini.IniFormatException> — derives from <xref:System.FormatException>; thrown when the parser cannot reconcile a structural invariant.
+- <xref:Bodu.Text.Ini.IniSerializer> — static serializer: section POCOs / nested dictionaries ↔ INI text, with the `GlobalSectionName` mapping and the depth-2 gate.
+- <xref:Bodu.Text.Ini.IniSerializerOptions> / <xref:Bodu.Text.Ini.IniSerializerDefaults> — naming policy, duplicate policies, and presets (`Strict` = configparser strict mode).
+- <xref:Bodu.Text.Ini.IniDocumentOptions> with <xref:Bodu.Text.Ini.IniDuplicateSectionBehavior> / <xref:Bodu.Text.Ini.IniDuplicateKeyBehavior> — how repeated sections and keys resolve when the document materializes.
+- <xref:Bodu.Text.Ini.Reader.Utf8IniReader> — forward-only `ref struct` reader over the file as authored (source order, comments included).
+- <xref:Bodu.Text.Ini.Reader.IniDocumentReader> — normalized cursor over the logical object-of-objects shape (globals hoisted, duplicate sections merged).
+- <xref:Bodu.Text.Ini.Writer.Utf8IniWriter> — forward-only `ref struct` writer (section headers, entries, comment lines).
+- <xref:Bodu.Text.Ini.Document.IniDocument> / <xref:Bodu.Text.Ini.Document.IniElement> — read-only, trivia-free, disposable document model.
+- <xref:Bodu.Text.Ini.Nodes.IniNode> / <xref:Bodu.Text.Ini.Nodes.IniObject> / <xref:Bodu.Text.Ini.Nodes.IniValue> — mutable, comment-preserving DOM for faithful rewrites of human-owned files.
+- <xref:Bodu.Text.Ini.IniFormatException> / <xref:Bodu.Text.Ini.IniSerializationException> — malformed input / policy violations vs. binding failures.
 
 ## Example
 
 ```csharp
-using Bodu.Text.Ini;
+using Bodu.Text.Ini.Nodes;
 
-IniDocument iniDoc = Ini.Parse("""
-[server]
-host = localhost
-port = 8080
-""");
-
-string host = iniDoc.Sections[0]["host"]!;     // "localhost"
-int port = iniDoc.Sections[0].GetValue<int>("port");
-
-using StringWriter sw = new();
-Ini.Save(iniDoc, sw);   // re-emits the canonical form
+IniObject root = IniNode.Parse("[server]\nhost=localhost\nport=8080\n"u8);
+root["server"].AsObject()["port"].AsValue().Value = "9090";
+byte[] back = root.ToUtf8Bytes();   // comments (had there been any) survive
 ```
 
 ## Notes
 
-- **Comment preservation.** Leading and trailing comments are stored on the section or entry they precede or follow, so `Parse` followed by `Save` round-trips an unchanged document byte-for-byte under default options.
-- **Case sensitivity.** Default key comparison is ordinal-ignore-case to match common INI dialects; set <xref:Bodu.Text.Ini.IniParseOptions> to opt into case-sensitive comparison.
-- **Duplicate handling.** Both keys within a section and sections within a document have configurable duplicate behaviour via <xref:Bodu.Text.DuplicateKeyPolicy> and <xref:Bodu.Text.Ini.IniDuplicateSectionBehavior>.
-- **No dotted-key splitting.** Unlike configuration overlays, the INI primitive does not split `a.b.c = value` into segments. Use <xref:Bodu.Text.Configuration> when colon- or dot-delimited hierarchical keys are required.
-- **See also:** [Bodu.Text.Configuration](~/docs/text-configuration/index.md) for the EditorConfig-style layering on top of `IniDocument`.
+- **Conservative dialect.** `=` only; values run literally to end of line (an inline `;` is content); `;` and `#` start full-line comments.
+- **Duplicate handling is a document-model policy.** The source-order reader reports the file verbatim; `Merge` / `LastWins` (the defaults) apply when the document materializes.
+- **See also:** the [line-formats introduction](~/docs/formats/index.md) and the [INI guide](~/guides/formats/ini.md).

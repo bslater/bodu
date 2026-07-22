@@ -1,124 +1,125 @@
 ---
-title: Bodu.Text.Formats — Getting started
+title: Line formats — Getting started
 ---
 
-# Bodu.Text.Formats — Getting started
+# Line formats — Getting started
 
-Unfamiliar with terms like *self-framing format*, *value model*, *codec*, or *round-trip rules*? Read [Core concepts](concepts.md) first.
-
-> Looking for **TOML**, **Bencode**, or a POCO serializer? Those live in the standalone <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode> packages — see the [Bodu serializers introduction](../serialization/index.md).
+First steps with `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`.
 
 ## Install
 
-```bash
-dotnet add package Bodu.Text.Formats
+```shell
+dotnet add package Bodu.Text.Formats      # umbrella: all three formats
+dotnet add package Bodu.Text.Delimited    # or a single format
 ```
 
-Targets `net8.0`. The only package dependency is `Bodu.Core` (for the shared `ThrowHelper` argument validators). No reflection, no `dynamic`, and no third-party NuGet references.
+All packages target `net8.0`.
 
 ## Read and write delimited (CSV / TSV)
 
 ```csharp
 using Bodu.Text.Delimited;
+using Bodu.Text.Delimited.Document;
 
-DelimitedDocument doc = Delimited.Parse("name,score\nAda,99\nGrace,100");
-foreach (DelimitedRow row in doc.Rows)
-    Console.WriteLine($"{row.Fields[0]} = {row.Fields[1]}");
+byte[] csv = File.ReadAllBytes("trades.csv");
+using DelimitedDocument document = DelimitedDocument.Parse(csv);
 
-string csv = Delimited.Format(doc);
+string firstSymbol = document.RootElement[0].GetProperty("symbol").GetString();
 ```
 
-For large files, stream one row at a time with `Delimited.CreateReader` / `CreateWriter` (see [Streaming](../../guides/formats/streaming.md)).
+Typed records go through the serializer:
+
+```csharp
+using Bodu.Text.Serialization;
+
+sealed class Trade
+{
+    public string? Symbol { get; set; }
+    public int Quantity { get; set; }
+    public decimal Price { get; set; }
+}
+
+var options = new DelimitedSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
+List<Trade> trades = DelimitedSerializer.Deserialize<Trade>(File.ReadAllText("trades.csv"), options);
+string back = DelimitedSerializer.Serialize(trades, options);
+```
 
 ## Parse a `.env` file
 
 ```csharp
 using Bodu.Text.DotEnv;
+using Bodu.Text.DotEnv.Document;
 
-DotEnvDocument env = DotEnv.Parse("""
-    # API key for production
-    API_KEY=secret
-    PORT=8080
-    """);
-
-string key = env["API_KEY"];
+using DotEnvDocument env = DotEnvDocument.Parse(File.ReadAllBytes(".env"));
+string connection = env.RootElement.GetProperty("DATABASE_URL").GetString();
 ```
 
-`DotEnv` preserves leading comments by default, so a `Parse` → `Format` round trip is lossless for them.
+Or bind it straight onto a settings class with the SCREAMING_SNAKE_CASE preset:
+
+```csharp
+sealed class Settings
+{
+    public string? AppEnv { get; set; }   // binds APP_ENV
+    public int AppPort { get; set; }      // binds APP_PORT
+}
+
+Settings settings = DotEnvSerializer.Deserialize<Settings>(
+    File.ReadAllText(".env"),
+    new DotEnvSerializerOptions(DotEnvSerializerDefaults.Web));
+```
 
 ## Round-trip an INI document, preserving comments
 
-```csharp
-using Bodu.Text.Ini;
-
-IniDocument ini = Ini.Parse("""
-    ; connection settings
-    [database]
-    host = localhost
-    port = 5432
-    """);
-
-ini.GetOrAddSection("database").SetEntry("port", "5433");
-string text = Ini.Format(ini);   // comments and section/entry ordering preserved
-```
-
-`IniDocument` is the one mutable model — `GetOrAddSection` / `SetEntry` edit it in place. `DelimitedDocument` and `DotEnvDocument` are read-only; produce edited output through their writers instead. Note that `Format` re-emits authored structure (keys, values, comments, ordering) but normalises incidental whitespace — keys and values are trimmed, and entries are written as `key = value`.
-
-## Read a typed value
+The mutable INI DOM keeps every comment line:
 
 ```csharp
-using Bodu.Text.Ini;
+using Bodu.Text.Ini.Nodes;
 
-IniDocument cfg = Ini.Parse(source);
-IniSection db = cfg.GetOrAddSection("database");
+IniObject root = IniNode.Parse(File.ReadAllBytes("app.ini"));
 
-int port = db.GetValue<int>("port");                 // ISpanParsable<int>, invariant culture
-if (db.TryGetValue<TimeSpan>("timeout", out var t))  // false on missing key or bad value
-    Configure(t);
+root["server"].AsObject()["port"].AsValue().Value = "9090";
+
+var metrics = new IniObject();
+metrics["enabled"] = new IniValue("true");
+root["metrics"] = metrics;
+
+File.WriteAllBytes("app.ini", root.ToUtf8Bytes());   // original comments intact
 ```
 
-`GetValue<T>` / `TryGetValue<T>` are available on `DelimitedRow` (by ordinal or column), `DotEnvDocument` / `DotEnvEntry`, and `IniSection` / `IniEntry`. They are constrained to `where T : ISpanParsable<T>` and always parse under `CultureInfo.InvariantCulture` — there are no per-type `GetInt32`-style helpers.
-
-## Decode without throwing
-
-Each format offers a `Try…` overload that swaps the exception for a `bool`:
+## Read typed INI values
 
 ```csharp
 using Bodu.Text.Ini;
+using Bodu.Text.Serialization;
 
-if (Ini.TryParse(userInput, out IniDocument? parsed))
+sealed class AppConfig
 {
-    Use(parsed);
+    public string? Environment { get; set; }              // global key
+    public Dictionary<string, string>? Logging { get; set; } // [logging] section
 }
-else
-{
-    // input was malformed — show an error
-}
+
+AppConfig config = IniSerializer.Deserialize<AppConfig>(
+    File.ReadAllText("app.ini"),
+    new IniSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower });
 ```
 
-## Validate a payload before processing
+## Handle malformed input
+
+Malformed input throws the format's `*FormatException` with the source position; lenient dialect knobs live on the reader options:
 
 ```csharp
-using Bodu.Text.Ini;
+using Bodu.Text.Delimited.Reader;
 
-try
+var lenient = new DelimitedReaderOptions
 {
-    IniDocument config = Ini.Parse(source);
-    Process(config);
-}
-catch (TextFormatException ex)
-{
-    log.Warn("Malformed config at line {Line}, column {Column}: {Message}",
-        ex.LineNumber, ex.ColumnNumber, ex.Message);
-}
+    FieldCountBehavior = DelimitedFieldCountBehavior.Ragged,
+    MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord,
+};
+using DelimitedDocument dirty = DelimitedDocument.Parse(bytes, lenient);
 ```
-
-Every format's exception derives from <xref:Bodu.Text.TextFormatException>, so a single `catch (TextFormatException)` handles parse failures uniformly. See [parser policies](parser-policies.md) for the per-format diagnostics and strictness options.
 
 ## Where to go next
 
-- **[Bodu.Text.Formats guides](../../guides/formats/index.md)** — per-API deep dives.
-- **[Core concepts](concepts.md)** — vocabulary refresher.
-- **[Parser policies](parser-policies.md)** — strictness options and diagnostics.
-- **[Introduction](index.md)** — type map and scenario index.
-- **API reference** — per-namespace pages: [Delimited](xref:Bodu.Text.Delimited), [DotEnv](xref:Bodu.Text.DotEnv), [Ini](xref:Bodu.Text.Ini).
+- [Core concepts](concepts.md) — the quartet vocabulary.
+- [Parser policies](parser-policies.md) — every strictness knob.
+- The [format guides](../../guides/formats/index.md) — deeper recipes per format.

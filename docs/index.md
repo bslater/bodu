@@ -155,7 +155,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 <div class="bodu-card">
   <img src="images/hero-formats.svg" alt="Bodu.Text.Formats" />
   <h3>Bodu.Text.Formats</h3>
-  <p>Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. Ships <strong>Delimited</strong> (RFC 4180 CSV/TSV with a row-oriented parser), <strong>DotEnv</strong> (<code>.env</code> key/value), and <strong>INI</strong> (round-trippable section/comment-preserving documents). Every format exposes the same modern shape: static <code>Parse</code> / <code>Format</code> / <code>Try*</code> entry points, typed value models, sync and async <code>Stream</code> overloads, and explicit canonicality enforcement.</p>
+  <p>The line-oriented text formats, each a standalone <code>System.Text.Json</code>-shaped library reachable through the <code>Bodu.Text.Formats</code> umbrella package: <strong>Delimited</strong> (RFC 4180 CSV/TSV with real-world dialect policies and typed record streaming), <strong>DotEnv</strong> (<code>.env</code> key/value with <code>export</code>, quoting, and literal no-interpolation values), and <strong>INI</strong> (a comment-preserving mutable document model over sections and global keys). Every format exposes the same quartet: a forward-only <code>Utf8*Reader</code>/<code>Utf8*Writer</code> pair, a serializer, a mutable node DOM, and a read-only document DOM.</p>
   <div class="bodu-card-links">
     <a href="docs/formats/index.md">Introduction</a>
     <a href="guides/formats/index.md">Guides</a>

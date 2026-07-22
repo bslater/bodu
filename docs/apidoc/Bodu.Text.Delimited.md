@@ -6,34 +6,31 @@ uid: Bodu.Text.Delimited
 
 ## Purpose
 
-**Bodu.Text.Delimited** parses and emits **delimited** records — CSV, TSV, and other character-separated value documents — using a strongly-typed row model and a static codec with `Parse` / `Format` / `Try*` overloads over `ReadOnlySpan<char>` / `string` / `Stream` / `TextReader` / `TextWriter`. It is one of five format namespaces shipped by the **Bodu.Text.Formats** package; see also <xref:Bodu.Text.Bencode>, <xref:Bodu.Text.DotEnv>, <xref:Bodu.Text.Ini>, and <xref:Bodu.Text.Toml>.
+**Bodu.Text.Delimited** parses and emits **delimited** records — CSV, TSV, and other character-separated value documents — as a standalone `System.Text.Json`-shaped library: a typed record serializer, a forward-only UTF-8 token reader/writer pair, a mutable node DOM, and a read-only document DOM. It ships as its own package (also available through the `Bodu.Text.Formats` umbrella); see also <xref:Bodu.Text.DotEnv>, <xref:Bodu.Text.Ini>, <xref:Bodu.Text.Bencode>, and <xref:Bodu.Text.Toml>.
 
 ## Key types
 
-- <xref:Bodu.Text.Delimited.Delimited> — static codec exposing `Parse`, `Format`, `TryParse`, and the streaming variants.
-- <xref:Bodu.Text.Delimited.DelimitedDocument> — parsed document: ordered <xref:Bodu.Text.Delimited.DelimitedRow> entries with header-keyed and index-keyed lookups.
-- <xref:Bodu.Text.Delimited.DelimitedRow> — a single record with field values addressable by column name or index.
-- <xref:Bodu.Text.Delimited.DelimitedReader> — forward-only streaming reader over a `TextReader` source.
-- <xref:Bodu.Text.Delimited.DelimitedWriter> — append-only streaming writer over a `TextWriter` sink.
-- <xref:Bodu.Text.Delimited.DelimitedParseOptions> — delimiter, quote, escape, header-presence, trim, and newline options for the parser and writer.
-- <xref:Bodu.Text.Delimited.DelimitedFormatException> — derives from <xref:System.FormatException>; thrown on malformed input (unterminated quote, header / column count mismatch, etc.).
+- <xref:Bodu.Text.Delimited.DelimitedSerializer> — static serializer: typed records ↔ delimited text, including the `IAsyncEnumerable` record-streaming overloads.
+- <xref:Bodu.Text.Delimited.DelimitedSerializerOptions> — naming policy, case sensitivity, dialect characters, and header mode for binding.
+- <xref:Bodu.Text.Delimited.Reader.Utf8DelimitedReader> / <xref:Bodu.Text.Delimited.Writer.Utf8DelimitedWriter> — forward-only `ref struct` token surfaces over UTF-8, with <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions> carrying the dialect policies.
+- <xref:Bodu.Text.Delimited.DelimitedFieldCountBehavior> / <xref:Bodu.Text.Delimited.DelimitedMalformedRecordBehavior> / <xref:Bodu.Text.Delimited.DelimitedDuplicateHeaderBehavior> — the strictness knobs for real-world files.
+- <xref:Bodu.Text.Delimited.Document.DelimitedDocument> / <xref:Bodu.Text.Delimited.Document.DelimitedElement> — read-only, disposable document model (records as header-keyed objects or positional arrays).
+- <xref:Bodu.Text.Delimited.Nodes.DelimitedNode> — mutable DOM root for parse → edit → write scenarios.
+- <xref:Bodu.Text.Delimited.DelimitedFormatException> / <xref:Bodu.Text.Delimited.DelimitedSerializationException> — malformed input vs. binding failures.
 
 ## Example
 
 ```csharp
 using Bodu.Text.Delimited;
+using Bodu.Text.Serialization;
 
-DelimitedDocument doc = Delimited.Parse(
-    "name,age,city\nAlice,30,Paris\nBob,25,London");
-
-Assert.AreEqual(2, doc.Rows.Count);
-Assert.AreEqual("Alice", doc.Rows[0]["name"]);
-
-string csv = Delimited.Format(doc);
+var options = new DelimitedSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
+List<Trade> trades = DelimitedSerializer.Deserialize<Trade>("trade_id,symbol\n1,AAPL\n", options);
+string csv = DelimitedSerializer.Serialize(trades, options);
 ```
 
 ## Notes
 
-- **Streaming preferred for large inputs.** Use <xref:Bodu.Text.Delimited.DelimitedReader> / <xref:Bodu.Text.Delimited.DelimitedWriter> instead of materialising a full `DelimitedDocument` when the input is large or unbounded.
-- **Round-trip determinism.** Under default options, parse then format reproduces the canonical form (quoting only where required by the configured delimiter / quote characters).
-- **See also:** the [Bodu.Text.Formats introduction](~/docs/formats/index.md) and [getting-started](~/docs/formats/getting-started.md) pages.
+- **Streaming preferred for large inputs.** Use `DeserializeAsyncEnumerableAsync<TRecord>` for typed rows, or the `Utf8DelimitedReader` token loop for full control.
+- **Round-trip determinism.** Writing quotes only the fields that require it under the configured delimiter/quote characters.
+- **See also:** the [line-formats introduction](~/docs/formats/index.md) and the [delimited guide](~/guides/formats/delimited.md).

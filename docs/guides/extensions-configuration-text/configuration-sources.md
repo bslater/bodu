@@ -77,7 +77,6 @@ IConfiguration configuration = new ConfigurationBuilder()
 ```csharp
 using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
-using Bodu.Text.Ini;
 
 // Already-parsed document, shared across builders.
 ConfigurationDocument doc = ConfigurationDocument.Parse(iniText);
@@ -87,17 +86,17 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-`AddTextConfigurationDocument` accepts any <xref:Bodu.Text.Ini.IniDocumentBase> — including a
+`AddTextConfigurationDocument` accepts any <xref:Bodu.Text.Configuration.IniDocumentBase> — including a
 <xref:Bodu.Text.Configuration.ConfigurationDocument>. The bridge resolves the document once and flattens the view into an
 in-memory collection before handing it to the configuration root, so the source is captured **by value**: later mutations to the document do not flow into the configuration, and there is no reload-on-change.
 
-To author or mutate a document in code rather than parsing one, build an <xref:Bodu.Text.Ini.IniDocument> through its public surface (`GetOrAddSection`, `AddEntry`) and pass it the same way:
+To author or mutate a document in code rather than parsing one, build an <xref:Bodu.Text.Configuration.IniDocument> (the configuration library's own INI model) through its public surface (`GetOrAddSection`, `AddEntry`) and pass it the same way:
 
 ```csharp
 using Bodu.Extensions.Configuration.Text;
-using Bodu.Text.Ini;
+using Bodu.Text.Configuration;
 
-IniDocument doc = Ini.Parse(iniText);
+var doc = new IniDocument();
 doc.GetOrAddSection("logging").AddEntry(new IniEntry("level", "Debug"));
 
 IConfiguration configuration = new ConfigurationBuilder()

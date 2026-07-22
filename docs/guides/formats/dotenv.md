@@ -4,161 +4,76 @@ title: Using DotEnv
 
 # Using DotEnv
 
-`DotEnv` is the static codec for the de-facto `.env` file format — `KEY=VALUE` lines with optional `export` prefix, single-quoted or double-quoted values, and full-line comments. The dialect matches what dotenv libraries, Foreman, Docker Compose, and similar tools accept on the wire.
+`Bodu.Text.DotEnv` reads and writes `.env` files — a flat object of `KEY=value` entries with `export` prefixes, quoting, and comments. Values are deliberately **literal**: no `${VAR}` interpolation happens at parse time.
 
-It exposes the package's common codec shape: `Parse` / `TryParse` / `Format` over spans and the document model. Unlike Delimited, there is no streaming reader / writer — `.env` files are not large enough to warrant one.
-
-For the vocabulary used below (document, entry, comment, parse options) see [Core concepts](../../docs/formats/concepts.md).
-
-## Pattern 1 — parse a `.env` file
-
-<!-- compile -->
-```csharp
-using Bodu.Text.DotEnv;
-
-string envText = """
-# Database connection
-DB_HOST=localhost
-DB_PORT=5432
-DB_PASSWORD="s3cr3t password with spaces"
-
-# Optional knobs
-export FEATURE_FLAGS=alpha,beta
-""";
-
-DotEnvDocument document = DotEnv.Parse(envText);
-
-string? host = document["DB_HOST"];     // "localhost"
-int     port = document.GetValue<int>("DB_PORT");
-```
-
-`Parse(ReadOnlySpan<char>)` produces a `DotEnvDocument` with an immutable `Entries` list (one per `KEY=VALUE` line, in source order) and a string-keyed indexer for O(1) lookup. Quotes are stripped, double-quoted escape sequences are resolved, and the `export ` prefix is removed before the key is parsed.
-
-## Pattern 2 — typed lookup
+## Pattern 1 — query a document
 
 ```csharp
-using Bodu.Text.DotEnv;
+using Bodu.Text.DotEnv.Document;
 
-int port    = document.GetValue<int>("DB_PORT");
-bool isDev  = document.TryGetValue("FEATURE_FLAGS", out string? flags)
-              && flags!.Contains("alpha");
+using DotEnvDocument env = DotEnvDocument.Parse(File.ReadAllBytes(".env"));
+DotEnvElement root = env.RootElement;
 
-if (document.TryGetValue<TimeSpan>("REQUEST_TIMEOUT", out TimeSpan timeout))
-    Configure(timeout);
-```
+string url = root.GetProperty("DATABASE_URL").GetString();
+bool hasOptional = root.TryGetProperty("OPTIONAL_KEY", out DotEnvElement value);
 
-`GetValue<T>(string key)` throws `KeyNotFoundException` if the key is absent. `TryGetValue<T>` returns `false` on missing key or parse failure. Parsing uses `ISpanParsable<T>` under `CultureInfo.InvariantCulture` — `int`, `double`, `decimal`, `TimeSpan`, `DateTime`, `Guid`, and any consumer-defined `T` that implements the interface are supported.
-
-## Pattern 3 — non-throwing parse
-
-```csharp
-using Bodu.Text.DotEnv;
-
-if (DotEnv.TryParse(source, out DotEnvDocument? document))
+foreach (DotEnvProperty property in root.EnumerateObject())
 {
-    Configure(document);
-}
-else
-{
-    log.Warn("Malformed .env input");
+    Console.WriteLine($"{property.Name} = {property.Value.GetString()}");
 }
 ```
 
-`TryParse` returns `false` and sets `document` to `null` on the first parse error rather than raising `DotEnvFormatException`. Use this pattern when reading from an untrusted source.
+## Pattern 2 — typed settings via the serializer
 
-## Pattern 4 — preserved comments
+The `Web` defaults apply the SCREAMING_SNAKE_CASE naming policy with case-insensitive matching, so conventional env keys bind onto PascalCase members:
 
 ```csharp
 using Bodu.Text.DotEnv;
 
-foreach (DotEnvEntry entry in document.Entries)
+sealed class Settings
 {
-    foreach (DotEnvComment comment in entry.LeadingComments)
-        Console.WriteLine($"# {comment.Text}");
-
-    Console.WriteLine($"{entry.Key}={entry.Value}");
+    public string? AppEnv { get; set; }       // APP_ENV
+    public int AppPort { get; set; }          // APP_PORT
+    public string? DatabaseUrl { get; set; }  // DATABASE_URL
 }
+
+Settings settings = DotEnvSerializer.Deserialize<Settings>(
+    envText, new DotEnvSerializerOptions(DotEnvSerializerDefaults.Web));
 ```
 
-By default (`PreserveComments: true`), each full-line comment is attached as a leading-comment trivia entry on the next `DotEnvEntry`. The `DotEnvComment` value struct carries the prefix (`'#'`), the text, and the 1-based `LineNumber`. Inline comments — a `#` preceded by a space or tab inside an *unquoted* value — truncate the value when `AllowInlineComments: true` (the default); the discarded tail is **not** retained as trivia. A `#` inside a quoted value, or one not preceded by whitespace (for example `KEY=a#b`), is part of the value.
+`Deserialize<Dictionary<string, string>>` binds the whole file as a dictionary. The write direction (`Serialize`) emits `KEY=value` lines; `DotEnvSerializerOptions.WriteExportPrefix` adds the `export` keyword.
 
-## Pattern 5 — round-trip through `Format`
+## Pattern 3 — author and round-trip with the mutable DOM
 
 ```csharp
-using Bodu.Text.DotEnv;
+using Bodu.Text.DotEnv.Nodes;
 
-DotEnvDocument document = DotEnv.Parse(input);
-string roundTrip = DotEnv.Format(document);
-File.WriteAllText("app.env", roundTrip);
+DotEnvObject root = DotEnvNode.Parse(File.ReadAllBytes(".env"));
+root["APP_PORT"] = new DotEnvValue("9090");
+root.SetExport("APP_PORT", true);              // emit "export APP_PORT=9090"
+File.WriteAllBytes(".env", root.ToUtf8Bytes());
 ```
 
-`Format` writes the document back to text. Quoting follows a conservative rule: empty values render as `KEY=` (unquoted), values containing only "safe ASCII" (`[A-Za-z0-9_.,:/@+\-]`) render unquoted, and everything else is double-quoted with `"`, `\`, `$`, newline, tab, and carriage return escaped (`\"`, `\\`, `\$`, `\n`, `\t`, `\r`). Each line is terminated with the platform `Environment.NewLine`. Round-tripping preserves keys, values, and comment attachment, but bare blank lines from the source — and the original single-quoted form — are not retained.
-
-## Behaviour options
-
-The `DotEnvParseOptions` fields control the format dialect:
-
-| Field | Default | Controls |
-|---|---|---|
-| `DuplicateKeyBehavior` | `LastWins` | How duplicate keys are resolved. |
-| `AllowExportPrefix` | `true` | Strip a leading `export ` before parsing the key. |
-| `AllowInlineComments` | `true` | Treat `#` preceded by whitespace in an unquoted value as a comment. |
-| `PreserveComments` | `true` | Retain full-line comments as `LeadingComments` on the next entry. |
-
-### Duplicate key behaviour
-
-`DuplicateKeyPolicy`:
-
-| Member | Effect |
-|---|---|
-| `LastWins` *(default)* | Last occurrence wins; earlier values discarded. |
-| `FirstWins` | First occurrence wins; subsequent occurrences ignored. |
-| `Disallowed` | Duplicate key raises `DotEnvFormatException`. |
+The mutable DOM preserves each entry's `export` flag through the round trip.
 
 ## Quoting rules
 
-Three forms of quoting are recognised on input:
+- **Double quotes** delimit values, resolve escape sequences, and may span lines.
+- **Single quotes** delimit literal values.
+- **Unquoted** values are trimmed and end at an inline `#` comment.
+- An empty value (`KEY=`) is a real value, distinct from an absent key.
 
-- **Unquoted** — `KEY=value`. The value runs to the first inline-comment boundary, end-of-line, or end-of-input. Leading and trailing whitespace are trimmed.
-- **Single-quoted** — `KEY='value'`. The value is literal; no escape sequences are processed, and the value cannot span lines.
-- **Double-quoted** — `KEY="value"`. The value supports the escape sequences `\"`, `\\`, `\n`, `\t`, `\r`, and `\$`, plus a `\`-at-end-of-line **line continuation** (the backslash and the following newline are both discarded). Literal embedded newlines are preserved, so a double-quoted value may span multiple source lines.
-
-> [!NOTE]
-> The escape set is exactly those six sequences plus the line continuation. There is **no** `\xHH` or `\uHHHH` numeric escape, and an unrecognised escape such as `\q` is preserved verbatim as `\q` — the backslash is not stripped. A double quote left open at end-of-line or end-of-input raises `DotEnvFormatException`.
-
-`Format` always uses unquoted form for safe values and double-quoted form otherwise — single-quoted output is not emitted. If you need byte-stable round trips with single-quoted input, hold on to the original bytes.
-
-## Key syntax
-
-Keys must match the regular expression `[A-Za-z_][A-Za-z0-9_]*` — strict identifier syntax, no spaces, no dots. A `KEY=` line with an empty key, an invalid character, or no `=` separator raises `DotEnvFormatException` with the offending line number.
+`DotEnvReaderOptions` can disable the `export` prefix or inline comments (`DisallowExportPrefix`, `DisallowInlineComments`).
 
 ## Exceptions
 
-`DotEnvFormatException` derives from `TextFormatException` and carries a `LineNumber` property (1-based; 0 when the source line is unknown). Thrown for malformed `KEY=VALUE` lines, invalid key syntax, unterminated quoted values, and duplicate keys under `Disallowed`.
+`DotEnvFormatException` for malformed input (unterminated quote, missing `=`), with line/offset. `DotEnvSerializationException` for binding failures.
 
-## Extension methods
+## When *not* to use it
 
-The `DotEnvExtensions` helpers add fluent overloads:
-
-```csharp
-using Bodu.Text.DotEnv;
-
-DotEnvDocument doc = envText.ParseDotEnv();
-string output      = doc.FormatDotEnv();
-```
-
-`ParseDotEnv`, `TryParseDotEnv`, and `FormatDotEnv` mirror the static-class entry points.
-
-## When *not* to use `DotEnv`
-
-- **Hierarchical configuration.** `.env` is flat — there are no sections, no nested keys, and no array values. Use [INI](ini.md) or [`Bodu.Text.Configuration`](../text-configuration/index.md) for structured configuration with sections and dotted paths.
-- **Tabular data.** Reach for [Delimited](delimited.md) instead.
-- **Secrets in production.** `.env` files are convenient for local development, but secrets in plain text on disk are not a substitute for a managed secret store. The codec doesn't address the threat model — it just reads and writes the file.
-- **Strict environment-variable injection.** The codec produces a `DotEnvDocument`; it does not modify `Environment.GetEnvironmentVariable`. Apply the values yourself via `Environment.SetEnvironmentVariable` or the configuration system of your choice.
+Anything with sections or nesting (INI or TOML), and layered configuration (`Bodu.Text.Configuration`).
 
 ## See also
 
-- [Delimited](delimited.md), [INI](ini.md) — the other formats in the package.
-- [`Bodu.Text.DotEnv` API reference](xref:Bodu.Text.DotEnv)
-- [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — for hierarchical key / value configuration with sections.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- [Streams and token-level I/O](streaming.md) for the `Utf8DotEnvReader` token loop.
+- [Using INI](ini.md) for sectioned configuration.

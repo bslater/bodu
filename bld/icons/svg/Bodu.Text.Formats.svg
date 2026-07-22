@@ -26,5 +26,5 @@
 
   <!-- monogram chip -->
   <rect x="41" y="94" width="46" height="22" rx="11" fill="#34D399"/>
-  <text x="64" y="110" fill="#06281F" text-anchor="middle" font-family="'Consolas','Menlo',monospace" font-weight="700" font-size="14">CSV</text>
+  <text x="64" y="110" fill="#06281F" text-anchor="middle" font-family="'Consolas','Menlo',monospace" font-weight="700" font-size="14">FMT</text>
 </svg>
