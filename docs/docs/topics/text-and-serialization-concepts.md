@@ -54,7 +54,7 @@ Each job comes with its own round-trip promise, and knowing which one you are ow
 Every package in the topic treats strictness as an explicit, opt-in policy rather than a global mood:
 
 - **Codecs** parse strictly by default and loosen per call via `BaseFormatStyles` flags — `IgnoreWhitespace`, `AllowPrefix`, `AllowMissingPadding`.
-- **Formats** centralize policy on their options types (`DelimitedParseOptions`, `DotEnvParseOptions`, `IniParseOptions`) — quoting strictness, duplicate-key and duplicate-section handling, escape rules — and offer `Try*` overloads that swap exceptions for `bool` results.
+- **Line formats** centralize policy on their options types (`DelimitedReaderOptions`, `DotEnvReaderOptions`, `IniReaderOptions` / `IniDocumentOptions`) — quoting strictness, field-count and malformed-record handling, duplicate-key and duplicate-section policies.
 - **Serializers** reject malformed documents with a format-specific parse exception (`BencodeFormatException`, `TomlFormatException`) and binding failures with a serialization exception; tolerance for unmapped members, missing values, and type shapes is configured on `…SerializerOptions` and the attribute family, never silently assumed.
 
 The shared rule across the family: the default path validates, and every relaxation is visible at the call site.

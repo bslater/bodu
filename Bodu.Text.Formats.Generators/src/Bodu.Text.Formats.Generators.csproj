@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Bodu</RootNamespace>
+    <AssemblyName>Bodu.Text.Formats.Generators</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <!--
+      The generator ships inside a consumer's build, not as a runtime dependency. Packaging (analyzer
+      nupkg layout, icon, hero banner, release-manifest entry) follows when the Wave-2 release wave
+      picks the package up; until then the project builds and tests as a Roslyn component only.
+    -->
+    <IsPackable>false</IsPackable>
+    <DevelopmentDependency>true</DevelopmentDependency>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Pinned below the centrally managed 5.3.0: a source generator can only load into compilers at least as new as
+      the Roslyn it references, and the current SDK's compiler is 5.0. 4.8.0 keeps the generator loadable while
+      still providing ForAttributeWithMetadataName.
+    -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="4.8.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+    <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+  </ItemGroup>
+
+</Project>

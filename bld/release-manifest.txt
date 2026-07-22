@@ -15,9 +15,13 @@ Bodu.Text.Encoding
 Bodu.Security.Cryptography
 
 # Wave 2 — self-contained format & text libraries
+Bodu.Text.Serialization
 Bodu.Text.Bencode
 Bodu.Text.Toml
 Bodu.Text.Yaml
+Bodu.Text.Delimited
+Bodu.Text.DotEnv
+Bodu.Text.Ini
 Bodu.Text.Formats
 Bodu.Text.Configuration
 Bodu.IO.Compound

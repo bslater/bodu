@@ -1,10 +1,10 @@
 <Solution>
   <Folder Name="/Bodu.Text.Formats/">
-    <Project Path="Bodu.Text.Formats/bench/Bodu.Text.Formats.Benchmarks.csproj">
-      <Build Solution="Debug|*" Project="false" />
-    </Project>
     <Project Path="Bodu.Text.Formats/src/Bodu.Text.Formats.csproj" />
-    <Project Path="Bodu.Text.Formats/test/Bodu.Text.Formats.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Text.Formats.Generators/">
+    <Project Path="Bodu.Text.Formats.Generators/src/Bodu.Text.Formats.Generators.csproj" />
+    <Project Path="Bodu.Text.Formats.Generators/test/Bodu.Text.Formats.Generators.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Text.Serialization/">
     <Project Path="Bodu.Text.Serialization/src/Bodu.Text.Serialization.csproj" />
@@ -12,6 +12,18 @@
   <Folder Name="/Bodu.Text.Bencode/">
     <Project Path="Bodu.Text.Bencode/src/Bodu.Text.Bencode.csproj" />
     <Project Path="Bodu.Text.Bencode/test/Bodu.Text.Bencode.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Text.Delimited/">
+    <Project Path="Bodu.Text.Delimited/src/Bodu.Text.Delimited.csproj" />
+    <Project Path="Bodu.Text.Delimited/test/Bodu.Text.Delimited.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Text.DotEnv/">
+    <Project Path="Bodu.Text.DotEnv/src/Bodu.Text.DotEnv.csproj" />
+    <Project Path="Bodu.Text.DotEnv/test/Bodu.Text.DotEnv.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Text.Ini/">
+    <Project Path="Bodu.Text.Ini/src/Bodu.Text.Ini.csproj" />
+    <Project Path="Bodu.Text.Ini/test/Bodu.Text.Ini.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Text.Toml/">
     <Project Path="Bodu.Text.Toml/src/Bodu.Text.Toml.csproj" />

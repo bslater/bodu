@@ -257,5 +257,68 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_ResolveWithoutPathRoot", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Comment prefix must be '#' or ';'..
+        /// </summary>
+        internal static string Arg_Invalid_IniCommentPrefix {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniCommentPrefix", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Entries sequence contains a null entry..
+        /// </summary>
+        internal static string Arg_Invalid_IniEntriesContainsNull {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniEntriesContainsNull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Global section must have an empty Name..
+        /// </summary>
+        internal static string Arg_Invalid_IniGlobalSectionNotEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniGlobalSectionNotEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot add a section with an empty name; the global section is preallocated..
+        /// </summary>
+        internal static string Arg_Invalid_IniSectionCannotAddGlobal {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniSectionCannotAddGlobal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Section name cannot be empty; the global section is accessed via GlobalSection..
+        /// </summary>
+        internal static string Arg_Invalid_IniSectionNameEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniSectionNameEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sections sequence contains a null section..
+        /// </summary>
+        internal static string Arg_Invalid_IniSectionsContainsNull {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniSectionsContainsNull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The key '{0}' was not found in the section..
+        /// </summary>
+        internal static string Op_Invalid_IniSectionKeyNotFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniSectionKeyNotFound", resourceCulture);
+            }
+        }
     }
 }

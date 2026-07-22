@@ -4,7 +4,7 @@ title: Parsing and profiles
 
 # Parsing and profiles
 
-`Bodu.Text.Configuration` is the parser / view layer that sits on top of [`Bodu.Text.Formats.Ini`](../formats/ini.md). The codec parses INI faithfully; this layer adds parse-time profiles (Bodu, EditorConfig-compatible, Strict, Relaxed), structured diagnostics, and a flattened view-projecting surface that resolves dotted paths and EditorConfig-style glob sections.
+`Bodu.Text.Configuration` is a self-contained parser / view layer over its own trivia-preserving INI document model. The parser reads INI faithfully; the layer adds parse-time profiles (Bodu, EditorConfig-compatible, Strict, Relaxed), structured diagnostics, and a flattened view-projecting surface that resolves dotted paths and EditorConfig-style glob sections.
 
 This guide covers the *parsing* half — `ConfigurationDocument.Parse`, `ConfigurationParseOptions`, and the four profiles. For the *resolve* half — `Resolve` → `ConfigurationView`, key projection, typed lookup, glob matching — see [Views and resolution](views-and-resolution.md). For the diagnostic catalogue — every `ConfigurationDiagnosticCode` value, what triggers it — see [Diagnostics](diagnostics.md).
 
@@ -12,7 +12,6 @@ This guide covers the *parsing* half — `ConfigurationDocument.Parse`, `Configu
 
 ```csharp
 using Bodu.Text.Configuration;
-using Bodu.Text.Ini;
 
 string source = """
 appName = MyApp
@@ -25,7 +24,7 @@ Level.Microsoft = Warning
 ConfigurationDocument document = ConfigurationDocument.Parse(source);
 ```
 
-`Parse(string)` returns a `ConfigurationDocument` — a first-class type that inherits the read-only `IniDocumentBase` document model from `Bodu.Text.Formats.Ini`. Use the document directly when you only need read access to sections and entries; use [`Resolve`](views-and-resolution.md) when you want path projection and typed lookup.
+`Parse(string)` returns a `ConfigurationDocument` — a first-class type that inherits the library's own read-only `IniDocumentBase` document model. Use the document directly when you only need read access to sections and entries; use [`Resolve`](views-and-resolution.md) when you want path projection and typed lookup.
 
 The default profile is `Bodu` — inline comments only after whitespace, lenient section headers, last-wins on duplicates, throw on the first error. Override the profile per call via `ConfigurationParseOptions`:
 
@@ -92,7 +91,7 @@ ConfigurationDocument.Save(document, stream, leaveOpen: false);
 ConfigurationDocument.Save(document, new StreamWriter(path), options: writeOptions);
 ```
 
-`Save` writes the document through `Bodu.Text.Formats.Ini` with configurable `ConfigurationWriteOptions`. Comment trivia is preserved when the input parse retained it (`PreserveComments: true`, the default).
+`Save` writes the document through the library's own INI writer with configurable `ConfigurationWriteOptions`. Comment trivia is preserved when the input parse retained it (`PreserveComments: true`, the default).
 
 ## The four profiles
 
@@ -142,8 +141,8 @@ Construct a custom option set when none of the four profiles fits. `Configuratio
 
 ### Duplicate handling
 
-- `DuplicateKeyMode` (<xref:Bodu.Text.DuplicateKeyPolicy>, default per profile) — `LastWins`, `FirstWins`, or `Disallowed`. See [INI duplicate-key policies](../formats/ini.md#pattern-5--duplicate-section-policies).
-- `DuplicateSectionMode` (<xref:Bodu.Text.Ini.IniDuplicateSectionBehavior>, default per profile) — `Preserve`, `Merge`, `MergeAdjacent`, or `Disallowed` (`MergeAll` is an alias for `Merge`).
+- `DuplicateKeyMode` (<xref:Bodu.Text.Configuration.DuplicateKeyPolicy>, default per profile) — `LastWins`, `FirstWins`, or `Disallowed`. See [INI duplicate-key policies](../formats/ini.md#pattern-4--duplicate-policies).
+- `DuplicateSectionMode` (<xref:Bodu.Text.Configuration.IniDuplicateSectionBehavior>, default per profile) — `Preserve`, `Merge`, `MergeAdjacent`, or `Disallowed` (`MergeAll` is an alias for `Merge`).
 
 ### Diagnostic handling
 
@@ -181,7 +180,6 @@ The static properties are cached; reach for them rather than constructing fresh 
 
 ```csharp
 using Bodu.Text.Configuration;
-using Bodu.Text.Ini;
 
 string editorConfig = """
 root = true
@@ -291,13 +289,13 @@ instead (see the field-by-field section above).
 - **Tabular data.** Reach for [`Delimited`](../formats/delimited.md).
 - **`.env` files.** Reach for [`DotEnv`](../formats/dotenv.md).
 - **Strict round-trip fidelity at the byte level.** The codec normalises whitespace; if you need to round-trip a file byte-for-byte, hold on to the original bytes.
-- **A codec only, with no view layer.** Use [`Bodu.Text.Formats.Ini`](../formats/ini.md) directly — `ConfigurationDocument` wraps the codec to add profiles and the resolve / view layer; you do not need this surface if you are only reading or writing INI.
+- **A codec only, with no view layer.** Use [`Bodu.Text.Ini`](../formats/ini.md) directly — the standalone INI library covers plain reading and writing; `Bodu.Text.Configuration` exists for profiles and the resolve / view layer.
 
 ## See also
 
 - [Views and resolution](views-and-resolution.md) — `ConfigurationView`, key projection, typed lookup, glob matching.
 - [Diagnostics](diagnostics.md) — the full diagnostic-code catalogue.
 - [`Bodu.Text.Configuration` API reference](xref:Bodu.Text.Configuration).
-- [`Bodu.Text.Formats.Ini`](../formats/ini.md) — the underlying codec.
+- [`Bodu.Text.Ini`](../formats/ini.md) — the standalone INI library.
 - [`Bodu.Extensions.Configuration.Text`](../extensions-configuration-text/index.md) — bridge to `Microsoft.Extensions.Configuration`.
 - **[Configuration guides](../topics/configuration.md)** — every guide in this topic, across Bodu.Text.Configuration and Bodu.Extensions.Configuration.Text.

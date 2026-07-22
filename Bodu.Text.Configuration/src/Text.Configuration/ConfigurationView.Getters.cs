@@ -13,7 +13,7 @@ public sealed partial class ConfigurationView
 {
     /// <summary>
     /// Gets the value for <paramref name="key" /> parsed as <typeparamref name="T" /> using
-    /// <see cref="CultureInfo.InvariantCulture" />. Mirrors <c>Bodu.Text.Ini.IniSection.GetValue&lt;T&gt;(key)</c>.
+    /// <see cref="CultureInfo.InvariantCulture" />. Mirrors <c>IniSection.GetValue&lt;T&gt;(key)</c>.
     /// </summary>
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
     /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>

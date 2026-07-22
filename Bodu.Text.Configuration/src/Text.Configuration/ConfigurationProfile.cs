@@ -30,11 +30,11 @@ namespace Bodu.Text.Configuration;
 /// <description>WhitespaceIntroduced | Disabled | Disabled | WhitespaceIntroduced</description>
 /// </item>
 /// <item>
-/// <term>Duplicate keys (<see cref="Bodu.Text.DuplicateKeyPolicy" />)</term>
+/// <term>Duplicate keys (<see cref="DuplicateKeyPolicy" />)</term>
 /// <description>LastWins | LastWins | Disallowed | LastWins</description>
 /// </item>
 /// <item>
-/// <term>Duplicate sections (<see cref="Bodu.Text.Ini.IniDuplicateSectionBehavior" />)</term>
+/// <term>Duplicate sections (<see cref="IniDuplicateSectionBehavior" />)</term>
 /// <description>Preserve | Preserve | Disallowed | Preserve</description>
 /// </item>
 /// <item>

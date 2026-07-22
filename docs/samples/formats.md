@@ -27,35 +27,30 @@ dotnet run --project samples/Text.Formats/<SampleName>
 ### Bodu.Text.Formats.Samples.DelimitedData
 
 RFC 4180 CSV/TSV via `Bodu.Text.Delimited`: parse a committed trades file into a
-<xref:Bodu.Text.Delimited.DelimitedDocument> and read fields by header name with the
-culture-safe `ISpanParsable` getters (`GetValue<int>` / `<decimal>` / `<DateTimeOffset>`);
-the policy knobs for dirty input — <xref:Bodu.Text.Delimited.DelimitedFieldCountBehavior>
-(`Strict` throws, `Ragged` admits short/long rows) and
-<xref:Bodu.Text.Delimited.DelimitedMalformedRecordBehavior> (`SkipRecord` truncates the
-malformed record, which is why lenient ingestion pairs it with `Ragged`); `Delimited.Format`
-round trips with selective quoting plus one-argument CSV→TSV dialect conversion; and a
-constant-memory <xref:Bodu.Text.Delimited.DelimitedReader> →
-<xref:Bodu.Text.Delimited.DelimitedWriter> filter pipeline that never materializes a
-document. *Package: `Bodu.Text.Formats`.*
+<xref:Bodu.Text.Delimited.Document.DelimitedDocument> and read fields by header name, bind
+the whole file onto typed records with <xref:Bodu.Text.Delimited.DelimitedSerializer> and the
+snake_case naming policy; the policy knobs for dirty input —
+<xref:Bodu.Text.Delimited.DelimitedFieldCountBehavior> (`Strict` throws, `Ragged` admits
+short/long rows) and <xref:Bodu.Text.Delimited.DelimitedMalformedRecordBehavior>
+(`SkipRecord` truncates the malformed record, which is why lenient ingestion pairs it with
+`Ragged`); the mutable <xref:Bodu.Text.Delimited.Nodes.DelimitedNode> DOM round-tripping with
+selective quoting plus writer-options CSV→TSV dialect conversion; and a constant-memory
+<xref:Bodu.Text.Delimited.Reader.Utf8DelimitedReader> →
+<xref:Bodu.Text.Delimited.Writer.Utf8DelimitedWriter> token filter pipeline that never
+materializes a document. *Package: `Bodu.Text.Formats` (umbrella).*
 
 ### Bodu.Text.Formats.Samples.ConfigFiles
 
-The two config-file formats: INI (`Bodu.Text.Ini`) — the global section, named sections,
-typed getters, comment lines preserved on the entries they precede, and the mutate + `Format`
-edit loop where every original comment survives (with `IniEntry.InlineComment` as the
-write-side inline-comment surface); and DotEnv (`Bodu.Text.DotEnv`) — `export` prefixes,
-quoting, inline comments, empty-vs-absent values, the deliberate *no-interpolation* contract
-(values are literal; `${VAR}` expansion is the consumer's explicit decision), and the
-streaming <xref:Bodu.Text.DotEnv.DotEnvReader> with per-entry line numbers, composed into a
-miniature secrets lint pass. *Package: `Bodu.Text.Formats`.*
-
-## Guarded documentation
-
-The formats guides under [`docs/guides/formats/`](../guides/formats/index.md) carry
-compile-guarded snippets: examples marked with a `<!-- compile -->` sentinel — including the
-INI and DotEnv quick starts and the delimited `Ragged` example — are compiled against the
-current public API by `DocumentationSnippetCompileTests` in the library's test project
-(Regression tier).
+The two config-file formats: INI (`Bodu.Text.Ini`) — global keys hoisted onto the root and
+sections as nested objects via the read-only <xref:Bodu.Text.Ini.Document.IniDocument>, typed
+binding through <xref:Bodu.Text.Ini.IniSerializer>, and the mutate + write edit loop on the
+comment-preserving <xref:Bodu.Text.Ini.Nodes.IniNode> DOM where every original comment
+survives; and DotEnv (`Bodu.Text.DotEnv`) — `export` prefixes, quoting, inline comments,
+empty-vs-absent values, the deliberate *no-interpolation* contract (values are literal;
+`${VAR}` expansion is the consumer's explicit decision), typed settings via
+<xref:Bodu.Text.DotEnv.DotEnvSerializer>, and the streaming
+<xref:Bodu.Text.DotEnv.Reader.Utf8DotEnvReader> with per-entry line numbers, composed into a
+miniature secrets lint pass. *Package: `Bodu.Text.Formats` (umbrella).*
 
 ## Related
 

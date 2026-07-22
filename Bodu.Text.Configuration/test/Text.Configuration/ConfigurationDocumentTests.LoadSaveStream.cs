@@ -23,7 +23,7 @@ public partial class ConfigurationDocumentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ConfigurationDocument.Save(Bodu.Text.Ini.IniDocumentBase, Stream,
+    /// Verifies that <see cref="ConfigurationDocument.Save(IniDocumentBase, Stream,
     /// ConfigurationWriteOptions, bool)" /> writes the document to a stream and honors <c>leaveOpen</c>.
     /// </summary>
     [TestMethod]

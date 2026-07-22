@@ -1,8 +1,14 @@
 # Bodu.Text.Formats
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **Umbrella meta-package.** This package carries no code of its own — it references the three standalone line-format libraries so a single package reference brings in all of them.
 
-Parsers and serializers for common text document formats on .NET 8 — delimited text (RFC 4180 CSV / TSV), DotEnv, and INI. Each format follows the same shape: a static convenience entry point (`Parse` / `Format` / `TryParse`), a low-level `Reader` / `Writer` pair, an immutable document model, and an options struct that controls parsing behaviour and round-trip fidelity.
+The Bodu line-oriented text formats on .NET 8, each a self-contained library shaped after `System.Text.Json`:
+
+| Format | Package | Token surface | Serializer | DOMs |
+|---|---|---|---|---|
+| Delimited (RFC 4180 CSV / TSV) | `Bodu.Text.Delimited` | `Utf8DelimitedReader` / `Utf8DelimitedWriter` | `DelimitedSerializer` | `DelimitedNode` (mutable) / `DelimitedDocument` (read-only) |
+| DotEnv | `Bodu.Text.DotEnv` | `Utf8DotEnvReader` / `Utf8DotEnvWriter` | `DotEnvSerializer` | `DotEnvNode` (mutable) / `DotEnvDocument` (read-only) |
+| INI | `Bodu.Text.Ini` | `Utf8IniReader` / `Utf8IniWriter` (+ normalized `IniDocumentReader`) | `IniSerializer` | `IniNode` (mutable, comment-preserving) / `IniDocument` (read-only) |
 
 ## Installation
 
@@ -10,55 +16,25 @@ Parsers and serializers for common text document formats on .NET 8 — delimited
 dotnet add package Bodu.Text.Formats
 ```
 
-Targets `net8.0`.
-
-## Formats
-
-| Format | Namespace | Entry point | Document model | Options |
-|---|---|---|---|---|
-| Delimited (RFC 4180) | `Bodu.Text.Delimited` | `Delimited` | `DelimitedDocument` / `DelimitedRow` | `DelimitedParseOptions` |
-| DotEnv | `Bodu.Text.DotEnv` | `DotEnv` | `DotEnvDocument` / `DotEnvEntry` | `DotEnvParseOptions` |
-| INI | `Bodu.Text.Ini` | `Ini` | `IniDocument` / `IniSection` / `IniEntry` | `IniParseOptions` |
+Targets `net8.0`. To depend on a single format, reference its package directly instead — for example `dotnet add package Bodu.Text.Delimited`.
 
 ## API shape
 
+Every format follows the same quartet:
+
 ```csharp
 using Bodu.Text.Delimited;
+using Bodu.Text.Delimited.Document;
 
-DelimitedDocument doc = Delimited.Parse(csv, new DelimitedParseOptions { HasHeader = true });
-string name = doc.Rows[0]["Name"];
-string back = Delimited.Format(doc);
+// Read-only document (JsonDocument-shaped).
+using DelimitedDocument doc = DelimitedDocument.Parse(csvBytes);
+string symbol = doc.RootElement[0].GetProperty("symbol").GetString();
 
-// Streaming
-await using DelimitedReader reader = ...;
-DelimitedDocument loaded = Delimited.Load(stream);
+// Typed records via the serializer (JsonSerializer-shaped).
+List<Trade> trades = DelimitedSerializer.Deserialize<Trade>(csvText);
+string back = DelimitedSerializer.Serialize(trades);
 ```
 
-- Static `Parse(ReadOnlySpan<char>, options)` / `Format(document)` with `TryParse` companions.
-- Stream `Load` / `Save` with async variants where applicable.
-- Comments and layout are preserved in the document model (`IniComment`, `DotEnvComment`) so parse → serialize round-trips faithfully.
-- Each format reports failures through a dedicated exception (`DelimitedFormatException`, `DotEnvFormatException`, `IniFormatException`) derived from `TextFormatException`.
+The forward-only `Utf8*Reader` / `Utf8*Writer` pairs cover token-level streaming, and the mutable `*Node` DOMs cover authoring — the INI node tree additionally preserves comment trivia for faithful round trips of human-owned files.
 
-Parse options expose the behavioural knobs each format needs — delimiter / quote / comment characters and duplicate-header and malformed-record policies for delimited text; case sensitivity and duplicate-section/key policies for INI; and export-prefix, inline-comment, and interpolation toggles for DotEnv.
-
-## Runnable samples
-
-The repository ships offline, `dotnet run`-able sample projects for this package — delimited
-parsing with typed getters and dirty-input policies, streaming reader/writer pipelines, and
-the INI and DotEnv document formats — under
-[`samples/Text.Formats/`](https://github.com/bslater/bodu/tree/master/samples/Text.Formats).
-
-## Testing
-
-Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Text.Formats/test/Bodu.Text.Formats.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Text.Formats/test/Bodu.Text.Formats.Test.csproj --settings regression.runsettings
-```
-
-Formats are validated through the shared `TextDocumentFormatContractTests<,>` base, driven by per-format known-answer vectors (`DelimitedKnownAnswerVector`, `DotEnvKnownAnswerVector`, `IniKnownAnswerVector`).
-
-## License
-
-MIT. © Bodu Pty. Ltd.
+See the per-package READMEs and the samples under `samples/Text.Formats/` for full walkthroughs.

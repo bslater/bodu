@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Ini;
-
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -15,8 +13,8 @@ namespace Bodu.Text.Configuration;
 /// overloads.
 /// </summary>
 /// <remarks>
-/// Unlike <see cref="Bodu.Text.Ini.Ini.Format(IniDocument)" /> — which always emits trivia using the INI defaults —
-/// this writer honors the Bodu-specific formatting options exposed by <see cref="ConfigurationWriteOptions" />.
+/// The writer honors the Bodu-specific formatting options exposed by <see cref="ConfigurationWriteOptions" />,
+/// including trivia preservation and layout controls.
 /// </remarks>
 internal static class ConfigurationDocumentWriter
 {

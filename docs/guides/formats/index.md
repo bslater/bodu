@@ -1,82 +1,42 @@
 ---
-title: Bodu.Text.Formats guides
+title: Line-format guides
 ---
 
-# Bodu.Text.Formats guides
+# Line-format guides
 
-Recipe-style walk-throughs for **Bodu.Text.Formats**, organized by namespace and concern.
+Recipe-style walk-throughs for the Bodu line formats — **`Bodu.Text.Delimited`**, **`Bodu.Text.DotEnv`**, and **`Bodu.Text.Ini`** (available together through the `Bodu.Text.Formats` umbrella package).
 
-If you are new to the library, start with the [introduction](../../docs/formats/index.md), the [Core concepts](../../docs/formats/concepts.md) glossary, and the [getting-started page](../../docs/formats/getting-started.md). The guides below assume you know the vocabulary (self-framing format, value model, codec, round-trip rules).
+If you are new to the family, start with the [introduction](../../docs/formats/index.md), the [Core concepts](../../docs/formats/concepts.md) glossary, and the [getting-started page](../../docs/formats/getting-started.md). The guides below assume you know the quartet vocabulary (token reader/writer, serializer, mutable node DOM, read-only document DOM).
 
-## How the library works
+## How the libraries work
 
-Each format pairs a typed value model with a codec: parse turns a span of text into the model, format writes the model back out. Every format — Delimited, DotEnv, and INI — also exposes forward-only readers and writers for processing one logical unit at a time.
+Each format is a self-contained `System.Text.Json`-shaped library: a forward-only `Utf8*Reader` / `Utf8*Writer` pair over UTF-8 bytes, a `*Serializer` that binds POCOs and dictionaries with the shared attribute/naming-policy/callback layer, a mutable `*Node` DOM for authoring, and a disposable read-only `*Document` DOM for querying.
 
-> **TOML** and **Bencode** object-mapping serializers (POCO ↔ format) are documented in the standalone <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode> packages — see the [Bodu serializer guides](../serialization/index.md).
+> The serializer infrastructure (attributes, naming policies, callbacks) is shared with the **TOML**, **Bencode**, and **YAML** libraries — see the [Bodu serializer guides](../serialization/index.md).
 
 ## Namespace map
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| <xref:Bodu.Text.Delimited> | The `Delimited` codec, `DelimitedDocument` / `DelimitedRow`, the streaming reader / writer, and `DelimitedParseOptions`. | [Using delimited](delimited.md) |
-| <xref:Bodu.Text.DotEnv> | The `DotEnv` codec, `DotEnvDocument` / `DotEnvEntry`, and `DotEnvParseOptions`. | [Using DotEnv](dotenv.md) |
-| <xref:Bodu.Text.Ini> | The `Ini` codec, `IniDocument` / `IniSection` / `IniEntry`, and `IniParseOptions`. | [Using INI](ini.md) |
+| <xref:Bodu.Text.Delimited> | `DelimitedSerializer`, the dialect-policy enums, and the exceptions; readers/writers and DOMs in the `.Reader` / `.Writer` / `.Nodes` / `.Document` child namespaces. | [Using delimited](delimited.md) |
+| <xref:Bodu.Text.DotEnv> | `DotEnvSerializer` and companions, with the same child-namespace layout. | [Using DotEnv](dotenv.md) |
+| <xref:Bodu.Text.Ini> | `IniSerializer`, the duplicate-policy enums, and companions; the two readers live in `Bodu.Text.Ini.Reader`. | [Using INI](ini.md) |
 
 ## Guides
 
-### `Bodu.Text.Formats` — Codec
-
-<div class="bodu-cards">
-
-<div class="bodu-card">
-  <h3><a href="choosing-a-format.md">Choosing a text format</a></h3>
-  <p>Delimited vs. DotEnv vs. INI — the shape of data each format suits, their round-trip and structural trade-offs, and how to pick between them.</p>
-</div>
-
-<div class="bodu-card">
-  <h3><a href="delimited.md">Using delimited (CSV / TSV)</a></h3>
-  <p>The <code>Delimited</code> codec — RFC 4180 quoting, delimiter selection, header handling, the streaming <code>DelimitedReader</code> / <code>DelimitedWriter</code>, and the strictness policies on <code>DelimitedParseOptions</code>.</p>
-</div>
-
-<div class="bodu-card">
-  <h3><a href="dotenv.md">Using DotEnv</a></h3>
-  <p>The <code>DotEnv</code> codec — <code>KEY=VALUE</code> parsing, quoting and escape rules, comment preservation, and duplicate-key policies on <code>DotEnvParseOptions</code>.</p>
-</div>
-
-<div class="bodu-card">
-  <h3><a href="ini.md">Using INI</a></h3>
-  <p>The <code>Ini</code> codec — section / entry model, comment trivia, duplicate-section and duplicate-key policies, and programmatic mutation of the round-trippable <code>IniDocument</code>.</p>
-</div>
-
-</div>
-
-### `Bodu.Text.Formats` — I/O and policies
-
-<div class="bodu-cards">
-
-<div class="bodu-card">
-  <h3><a href="streaming.md">Streams and async I/O</a></h3>
-  <p>The forward-only <code>CreateReader</code> / <code>CreateWriter</code> streaming surface — sync and async reads and writes, cancellation, lifetime contracts, mid-stream errors, and input-size limits.</p>
-</div>
-
-<div class="bodu-card">
-  <h3><a href="../../docs/formats/parser-policies.md">Parser policies</a></h3>
-  <p>The strictness and conflict-resolution options across all three formats — duplicate headers and keys, malformed records, lenient opt-ins, and the shared <code>TextFormatException</code> diagnostic surface.</p>
-</div>
-
-</div>
+- [Choosing a text format](choosing-a-format.md) — which format fits which job, round-trip fidelity, error recovery.
+- [Using delimited (CSV / TSV)](delimited.md) — documents, typed records, dialect policies, CSV↔TSV conversion.
+- [Using DotEnv](dotenv.md) — literal values, quoting, export prefixes, typed settings.
+- [Using INI](ini.md) — global keys and sections, comment-preserving edits, duplicate policies.
+- [Streams and token-level I/O](streaming.md) — the forward-only readers/writers and the record-streaming serializer surface.
 
 ## Suggested reading path
 
-1. **[Introduction](../../docs/formats/index.md)** and **[core concepts](../../docs/formats/concepts.md)** — the codec mental model and vocabulary.
-2. The walk-through for your format — **[Delimited](delimited.md)**, **[DotEnv](dotenv.md)**, or **[INI](ini.md)**.
-3. **[Parser policies](../../docs/formats/parser-policies.md)** — when the defaults are too strict or too lenient for your input.
-4. **[Streams and async I/O](streaming.md)** — when the document no longer fits in memory.
+1. [Choosing a text format](choosing-a-format.md)
+2. The guide for your format
+3. [Streams and token-level I/O](streaming.md) for large inputs
 
 ## Where to go next
 
-- [Runnable samples](../../samples/formats.md) — offline sample projects under `samples/Text.Formats/` covering delimited typed getters, dirty-input policies, streaming pipelines, and the INI/DotEnv formats.
-- [Bodu.Text.Formats introduction](../../docs/formats/index.md) — mental model, headline types, scenarios.
-- [Core concepts](../../docs/formats/concepts.md) — vocabulary used throughout these guides.
-- [Bodu.Text.Formats getting started](../../docs/formats/getting-started.md) — install and minimal samples.
-- [Text & Serialization guides](../topics/text-and-serialization.md) — how the formats sit alongside the encodings and the object serializers.
+- The [serializer guides](../serialization/index.md) for the shared attribute family, naming policies, and callbacks.
+- `Bodu.Text.Configuration` when you need EditorConfig-style layered configuration rather than raw INI.

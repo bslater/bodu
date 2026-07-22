@@ -6,8 +6,6 @@
 
 using System.Text;
 
-using Bodu.Text.Ini;
-
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -140,24 +138,4 @@ public sealed partial class ConfigurationParseOptions
     /// </summary>
     /// <value>The default encoding.</value>
     public Encoding DefaultEncoding { get; init; } = Encoding.UTF8;
-
-    /// <summary>
-    /// Returns the subset of these options that maps onto an <see cref="Bodu.Text.Ini.IniParseOptions" />. Useful when
-    /// callers want to delegate basic INI parsing to <see cref="Bodu.Text.Ini.Ini" /> and layer Configuration-specific
-    /// features (globs, resolution, trivia) on top.
-    /// </summary>
-    /// <returns>
-    /// A projection that preserves duplicate-key handling and case sensitivity. Configuration features without an INI
-    /// equivalent — inline comments, diagnostics, preamble — are not exposed by the projection.
-    /// </returns>
-    public IniParseOptions ToIniParseOptions() =>
-        new()
-        {
-            AllowGlobalSection = true,
-            CaseSensitiveKeys = KeyOptions.CaseSensitive,
-            CaseSensitiveSections = KeyOptions.CaseSensitive,
-            DuplicateKeyBehavior = DuplicateKeyMode,
-            DuplicateSectionBehavior = DuplicateSectionMode,
-            PreserveComments = true,
-        };
 }

@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Text Serialization Core</Title>
-    <Description>Shared, format-agnostic serialization primitives for the Bodu System.Text.Json-shaped text serializers (Bencode, TOML): the attribute family, ignore/creation/unmapped-member/naming enums, serialization callback interfaces, and naming policies. Consumed by the per-format serializer packages.</Description>
+    <Description>Shared, format-agnostic serialization primitives for the Bodu System.Text.Json-shaped text serializers (Bencode, TOML, YAML, Delimited, DotEnv, INI): the attribute family, ignore/creation/unmapped-member/naming enums, serialization callback interfaces, and naming policies. Consumed by the per-format serializer packages.</Description>
     <PackageTags>$(PackageTags);text;serialization;serializer</PackageTags>
   </PropertyGroup>
 

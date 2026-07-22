@@ -332,7 +332,7 @@
       items:
         - name: Overview
           href: formats/index.md
-        - name: Bodu.Text.Formats — Codec
+        - name: Line formats — Using each format
           items:
             - name: Choosing a text format
               href: formats/choosing-a-format.md
@@ -342,7 +342,7 @@
               href: formats/dotenv.md
             - name: Using INI
               href: formats/ini.md
-        - name: Bodu.Text.Formats — I/O
+        - name: Line formats — I/O
           items:
             - name: Streams and async I/O
               href: formats/streaming.md

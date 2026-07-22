@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\..\Bodu.Text.Delimited\src\Bodu.Text.Delimited.csproj" />
+    <ProjectReference Include="..\..\Bodu.Text.Ini\src\Bodu.Text.Ini.csproj" />
+    <!-- The generator participates in this project's own compilation (so the annotated model types get their
+         factories emitted at build time) and is also referenced at runtime so the driver-based diagnostic tests can
+         instantiate it. -->
+    <ProjectReference Include="..\src\Bodu.Text.Formats.Generators.csproj" OutputItemType="Analyzer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Driver-based tests compile snippets in-memory to assert the generator's diagnostics. -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
+</Project>

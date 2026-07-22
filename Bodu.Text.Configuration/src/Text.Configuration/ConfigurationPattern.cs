@@ -72,7 +72,7 @@ public sealed partial class ConfigurationPattern
     private const int CompileCacheCapacity = 512;
 
     /// <summary>The process-wide cache of compiled patterns keyed by source pattern and comparison mode, used to amortize regular-expression compilation across repeated resolve calls.</summary>
-    private static readonly ConcurrentDictionary<(string Pattern, StringComparison Comparison), ConfigurationPattern> CompileCache = new();
+    private static readonly ConcurrentDictionary<(string Pattern, StringComparison Comparison), ConfigurationPattern> s_compileCache = new();
 
     /// <summary>The compiled regular expression that backs the pattern's match operations.</summary>
     private readonly Regex _regex;
@@ -145,7 +145,7 @@ public sealed partial class ConfigurationPattern
         }
 
         (string pattern, StringComparison comparison) key = (pattern, comparison);
-        if (CompileCache.TryGetValue(key, out ConfigurationPattern? cached))
+        if (s_compileCache.TryGetValue(key, out ConfigurationPattern? cached))
             return cached;
 
         // Build outside the cache so that a throwing TranslateToRegex (e.g. UnbalancedBrace) does not poison
@@ -161,10 +161,10 @@ public sealed partial class ConfigurationPattern
         Regex regex = new(TranslateToRegex(pattern), options, s_matchTimeout);
         ConfigurationPattern compiled = new(pattern, regex);
 
-        if (CompileCache.Count > CompileCacheCapacity)
-            CompileCache.Clear();
+        if (s_compileCache.Count > CompileCacheCapacity)
+            s_compileCache.Clear();
 
-        CompileCache.TryAdd(key, compiled);
+        s_compileCache.TryAdd(key, compiled);
         return compiled;
     }
 

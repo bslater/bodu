@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration;
 
@@ -13,7 +12,7 @@ public partial class ConfigurationViewTests
     /// <summary>
     /// Verifies that <see cref="ConfigurationView.GetValue{T}(string)" /> parses any
     /// <see cref="System.ISpanParsable{TSelf}" /> type using invariant culture, mirroring the
-    /// <c>IniSection.GetValue&lt;T&gt;</c> API from <c>Bodu.Text.Ini</c>.
+    /// <see cref="IniSection.GetValue{T}(string)" /> API.
     /// </summary>
     [TestMethod]
     public void GetValueGeneric_WhenKeyExistsForIntegerType_ShouldReturnParsedValue()

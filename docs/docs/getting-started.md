@@ -247,16 +247,16 @@ For lenient parsing (whitespace, `0x` prefix, missing padding), `OperationStatus
 ```csharp
 using Bodu.Text.Ini;
 
-IniDocument config = Ini.Parse("""
+IniObject config = IniNode.Parse("""
     ; connection settings
     [database]
     host = localhost
     port = 5432
-    """);
+    """u8);
 
-config.GetOrAddSection("database").SetEntry("port", "5433");
+config["database"].AsObject()["port"].AsValue().Value = "5433";
 
-string text = Ini.Format(config);   // comments, ordering, and whitespace preserved
+string text = config.ToString();   // comments and ordering preserved
 ```
 
 The parsed model retains comments, ordering, and whitespace, so a `Parse` → mutate → `Format` cycle round-trips the source. The Delimited and DotEnv namespaces follow the same `Parse` / `Format` shape.

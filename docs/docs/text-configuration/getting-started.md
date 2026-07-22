@@ -13,7 +13,7 @@ Read [Core concepts](concepts.md) first.
 dotnet add package Bodu.Text.Configuration
 ```
 
-Targets `net8.0`. Depends on `Bodu.Core` (throw helpers) and `Bodu.Text.Formats` (the underlying `IniDocument`). No
+Targets `net8.0`. Depends only on `Bodu.Core` (throw helpers); the INI document model is the library's own. No
 external NuGet references.
 
 For `Microsoft.Extensions.Configuration` integration — `AddTextConfiguration*`, options binding, file-provider
@@ -256,4 +256,4 @@ Debug.Assert(reparsed.GlobalSection["root"] == doc.GlobalSection["root"]);
 - **[Introduction](index.md)** — type map, scenario index.
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — plug into `IConfigurationBuilder`, bind to `IOptions<T>`.
 - **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
-- **[Bodu.Text.Formats](../formats/index.md)** — the underlying `IniDocument` model.
+- **[Bodu.Text.Ini](../formats/index.md)** — the standalone INI library, for codec-only INI reading and editing.

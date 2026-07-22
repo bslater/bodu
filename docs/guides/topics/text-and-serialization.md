@@ -69,7 +69,7 @@ Parse, edit, and write structured documents — typed value models with streamin
 
 <div class="bodu-card">
   <h3><a href="../formats/streaming.md">Streams and async I/O</a></h3>
-  <p>The forward-only <code>CreateReader</code> / <code>CreateWriter</code> surface — sync and async, cancellation, and input-size limits.</p>
+  <p>The forward-only <code>Utf8*Reader</code> / <code>Utf8*Writer</code> token surfaces and the typed record-streaming serializer overloads.</p>
 </div>
 
 <div class="bodu-card">

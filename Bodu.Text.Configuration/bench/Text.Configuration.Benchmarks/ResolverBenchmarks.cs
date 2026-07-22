@@ -6,7 +6,6 @@
 
 using System.Text;
 using BenchmarkDotNet.Attributes;
-using Bodu.Text.Ini;
 
 namespace Bodu.Text.Configuration.Benchmarks;
 
