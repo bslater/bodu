@@ -122,27 +122,27 @@ namespace Bodu {
         /// <summary>
         ///   Looks up a localized string similar to The INI document defines the section '{0}' more than once..
         /// </summary>
-        internal static string Op_Invalid_IniDuplicateSection {
+        internal static string Format_Invalid_IniDuplicateSection {
             get {
-                return ResourceManager.GetString("Op_Invalid_IniDuplicateSection", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_IniDuplicateSection", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The INI section '{0}' defines the key '{1}' more than once..
         /// </summary>
-        internal static string Op_Invalid_IniDuplicateKey {
+        internal static string Format_Invalid_IniDuplicateKey {
             get {
-                return ResourceManager.GetString("Op_Invalid_IniDuplicateKey", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_IniDuplicateKey", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The global INI key '{0}' collides with a section of the same name..
         /// </summary>
-        internal static string Op_Invalid_IniGlobalKeyCollision {
+        internal static string Format_Invalid_IniGlobalKeyCollision {
             get {
-                return ResourceManager.GetString("Op_Invalid_IniGlobalKeyCollision", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_IniGlobalKeyCollision", resourceCulture);
             }
         }
 

@@ -79,13 +79,13 @@
   <data name="Op_Invalid_IniDepthExceeded" xml:space="preserve">
     <value>INI supports only two levels (section then key); the member '{0}' nests deeper.</value>
   </data>
-  <data name="Op_Invalid_IniDuplicateSection" xml:space="preserve">
+  <data name="Format_Invalid_IniDuplicateSection" xml:space="preserve">
     <value>The INI document defines the section '{0}' more than once.</value>
   </data>
-  <data name="Op_Invalid_IniDuplicateKey" xml:space="preserve">
+  <data name="Format_Invalid_IniDuplicateKey" xml:space="preserve">
     <value>The INI section '{0}' defines the key '{1}' more than once.</value>
   </data>
-  <data name="Op_Invalid_IniGlobalKeyCollision" xml:space="preserve">
+  <data name="Format_Invalid_IniGlobalKeyCollision" xml:space="preserve">
     <value>The global INI key '{0}' collides with a section of the same name.</value>
   </data>
   <data name="Format_Invalid_IniValueConversion" xml:space="preserve">
