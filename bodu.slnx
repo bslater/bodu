@@ -21,6 +21,10 @@
     <Project Path="Bodu.Text.DotEnv/src/Bodu.Text.DotEnv.csproj" />
     <Project Path="Bodu.Text.DotEnv/test/Bodu.Text.DotEnv.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Text.Ini/">
+    <Project Path="Bodu.Text.Ini/src/Bodu.Text.Ini.csproj" />
+    <Project Path="Bodu.Text.Ini/test/Bodu.Text.Ini.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Text.Toml/">
     <Project Path="Bodu.Text.Toml/src/Bodu.Text.Toml.csproj" />
     <Project Path="Bodu.Text.Toml/test/Bodu.Text.Toml.Test.csproj" />
