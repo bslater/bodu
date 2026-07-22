@@ -13,6 +13,10 @@
     <Project Path="Bodu.Text.Bencode/src/Bodu.Text.Bencode.csproj" />
     <Project Path="Bodu.Text.Bencode/test/Bodu.Text.Bencode.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Text.Delimited/">
+    <Project Path="Bodu.Text.Delimited/src/Bodu.Text.Delimited.csproj" />
+    <Project Path="Bodu.Text.Delimited/test/Bodu.Text.Delimited.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Text.DotEnv/">
     <Project Path="Bodu.Text.DotEnv/src/Bodu.Text.DotEnv.csproj" />
     <Project Path="Bodu.Text.DotEnv/test/Bodu.Text.DotEnv.Test.csproj" />
