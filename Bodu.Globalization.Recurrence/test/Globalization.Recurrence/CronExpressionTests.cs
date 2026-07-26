@@ -26,6 +26,20 @@ public sealed class CronExpressionTests
     }
 
     /// <summary>
+    /// Verifies that a daily expression returns the next matching instant.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void GetNextOccurrence_WhenDailyNineAm_ShouldReturnNextNineAm()
+    {
+        CronExpression cron = CronExpression.Parse("0 9 * * *");
+
+        DateTime? next = cron.GetNextOccurrence(new DateTime(2026, 1, 1, 10, 0, 0));
+
+        Assert.AreEqual(new DateTime(2026, 1, 2, 9, 0, 0), next);
+    }
+
+    /// <summary>
     /// Verifies that a step expression advances to the next aligned minute.
     /// </summary>
     [TestMethod]

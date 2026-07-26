@@ -38,6 +38,22 @@ public sealed class RecurrenceSetTests
     }
 
     /// <summary>
+    /// Verifies that a single-rule set enumerates the rule's occurrences from the start.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void GetOccurrences_WhenSingleRule_ShouldYieldRuleOccurrences()
+    {
+        var set = new RecurrenceSet(new DateTime(2026, 1, 1), [RecurrenceRule.Parse("FREQ=DAILY;COUNT=3")]);
+
+        DateTime[] actual = set.GetOccurrences().Take(10).ToArray();
+
+        CollectionAssert.AreEqual(
+            new[] { new DateTime(2026, 1, 1), new DateTime(2026, 1, 2), new DateTime(2026, 1, 3) },
+            actual);
+    }
+
+    /// <summary>
     /// Verifies that overlapping rule streams are merged into an ascending, duplicate-free sequence.
     /// </summary>
     [TestMethod]

@@ -1191,16 +1191,24 @@ filter were added to *Non-goals* instead.
   consumers currently pull FuzzySharp or Fastenshtein. Span-based,
   allocation-free, KAT-driven — the same profile as the check-digit
   family it conceptually neighbours.
-- **`Bodu.Globalization.Recurrence`** — recurrence-rule evaluation:
-  RFC 5545 `RRULE` parse + occurrence enumeration, and cron-expression
-  parsing with next / previous-occurrence queries. Java: ical4j and
-  Quartz's cron; Python: `dateutil.rrule` and `croniter`; .NET reaches
-  for Ical.Net, Cronos, or NCrontab. A natural sibling of the calendar
-  rule engine — the date-calculation strategy seam and working-day
-  extensions already exist, and `NotableDateService` consumers ask
-  "when is the next occurrence" in exactly this shape. Recurrence
-  evaluation only; a read-only `.ics` (iCalendar) reader reusing the
-  STJ-quartet pattern is a possible follow-on, not initial scope.
+- **`Bodu.Globalization.Recurrence` has landed.** ✅ Recurrence-rule
+  evaluation shipped as its own Core-only package: `RecurrenceRule`
+  (RFC 5545 `RRULE` parse/format over `IParsable`/`ISpanParsable`/
+  `IFormattable`, the full `FREQ`/`INTERVAL`/`COUNT`/`UNTIL`/`WKST` and
+  `BY*` model, and occurrence enumeration for `DAILY`..`YEARLY` with
+  `BYSETPOS` over `DateTime`/`DateTimeOffset`), the fluent
+  `RecurrenceRuleBuilder`, `RecurrenceSet` (compose rules with
+  `RDATE`/`EXDATE` and parse an iCalendar property block), and
+  `CronExpression` (Vixie five-field and optional-seconds six-field
+  layouts, ranges/steps/lists/names, the `@yearly`…`@hourly` macros, and
+  `GetNextOccurrence`/`GetPreviousOccurrence`). Conforms to the existing
+  calendar `IDateRecurrenceStrategy` contract shape (ascending,
+  deduplicated, window-invariant) and reuses `Bodu.Core`'s `NextOccurrence`
+  primitives rather than taking a `Bodu.Globalization.Calendar` dependency.
+  Validated against an RFC 5545 §3.8.5.3 worked-example corpus. Deferred
+  follow-ons: sub-daily RRULE frequencies (`HOURLY`/`MINUTELY`/`SECONDLY`
+  parse and round-trip but do not yet enumerate), Quartz cron extensions
+  (`L`/`W`/`#`/`?`), and a read-only `.ics` (iCalendar) reader.
 - **`Bodu.Identifiers`** — ULID, Snowflake, NanoID, KSUID generation and
   parsing. Ubiquitous independently-built functionality with no BCL home,
   and a natural consumer of the existing Crockford Base32 support (in
