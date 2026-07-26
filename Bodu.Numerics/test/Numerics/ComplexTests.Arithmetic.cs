@@ -139,4 +139,19 @@ public partial class ComplexTests
     {
         Assert.AreEqual(double.Epsilon, Complex<double>.Abs(new Complex<double>(double.Epsilon, 0.0)));
     }
+
+    /// <summary>
+    /// Verifies that dividing by zero yields NaN components rather than an infinity, matching
+    /// <see cref="System.Numerics.Complex" /> — the <c>0/0</c> that Smith's algorithm forms for a zero divisor.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Division_WhenDivisorIsZero_ShouldMatchBclNaN()
+    {
+        Complex<double> result = new Complex<double>(1.0, 2.0) / Complex<double>.Zero;
+        System.Numerics.Complex bcl = new System.Numerics.Complex(1.0, 2.0) / System.Numerics.Complex.Zero;
+
+        Assert.IsTrue(double.IsNaN(result.Real) && double.IsNaN(result.Imaginary), $"result was {result}");
+        AssertBitExact(result, bcl, "(1+2i)/0");
+    }
 }

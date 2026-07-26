@@ -85,6 +85,30 @@ public partial class ComplexTests
     }
 
     /// <summary>
+    /// Verifies that the exponential of a value with a non-finite component matches <see cref="System.Numerics.Complex" />,
+    /// pinning the non-finite Exp special cases (e.g. <c>Exp(∞, 0)</c> yields an infinite real part and a NaN imaginary
+    /// part from <c>∞·sin(0)</c>) that the edge oracle otherwise covers only in bulk.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Exp_WhenInputIsNonFinite_ShouldMatchBcl()
+    {
+        foreach ((double re, double im) in new[]
+        {
+            (double.PositiveInfinity, 0.0),
+            (0.0, double.PositiveInfinity),
+            (double.NegativeInfinity, 1.0),
+        })
+        {
+            AssertClose(
+                Complex<double>.Exp(new Complex<double>(re, im)),
+                System.Numerics.Complex.Exp(new System.Numerics.Complex(re, im)),
+                $"exp({re},{im})",
+                1e-12);
+        }
+    }
+
+    /// <summary>
     /// Verifies that the tangent of a value with a large imaginary component saturates to the imaginary unit instead of
     /// overflowing to NaN — the numpy #3010 / #5518 defect that a naive <c>sin/cos</c> quotient exhibits.
     /// </summary>
