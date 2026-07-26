@@ -44,10 +44,12 @@ public readonly partial struct Complex<T>
         T two = T.One + T.One;
         T half = T.One / two;
 
-        // If the magnitude would overflow to infinity for finite inputs, rescale by an exact power of two, compute,
-        // and scale the result back.
+        // The core formula evaluates sqrt((Hypot(a, b) ± a) / 2), so it overflows once Hypot(a, b) + |a| exceeds the
+        // finite range even when the true root is representable. Detect that (for finite inputs) and rescale by an exact
+        // power of two, compute, and scale the result back — matching the magnitude-threshold rescale that
+        // System.Numerics.Complex uses. One quartering suffices because 0.25 · MaxValue keeps Hypot + |a| finite.
         bool rescale = false;
-        if (T.IsInfinity(Hypot(a, b)) && T.IsFinite(a) && T.IsFinite(b))
+        if (T.IsFinite(a) && T.IsFinite(b) && !T.IsFinite(Hypot(a, b) + T.Abs(a)))
         {
             T quarter = half * half;
             a *= quarter;
