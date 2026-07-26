@@ -23,6 +23,13 @@ public partial class ComplexTests
     private static readonly double[] FunctionParts = [-2.0, -0.5, 0.0, 0.5, 1.0, 2.5];
 
     /// <summary>
+    /// Component values for the inverse-trigonometric parity sweep, spanning the interior, the unit-boundary and
+    /// beyond-unit branch-cut region, and both signed zeros.
+    /// </summary>
+    private static readonly double[] InverseTrigParts =
+        [-3.0, -2.0, -1.5, -1.0, -0.5, -0.0, 0.0, 0.5, 1.0, 1.5, 2.0, 3.0];
+
+    /// <summary>
     /// Component values used for the transcendental edge sweep: signed zeros, the non-finite specials, values that
     /// straddle the <c>Tan</c>/<c>Tanh</c> large-argument threshold, and very large / very small magnitudes.
     /// </summary>
@@ -215,6 +222,31 @@ public partial class ComplexTests
             AssertClose(Complex<double>.Sin(Complex<double>.Asin(m)), ToBcl(m), $"sin(asin({m}))", 1e-7);
             AssertClose(Complex<double>.Cos(Complex<double>.Acos(m)), ToBcl(m), $"cos(acos({m}))", 1e-7);
             AssertClose(Complex<double>.Tan(Complex<double>.Atan(m)), ToBcl(m), $"tan(atan({m}))", 1e-7);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Complex{T}.Asin" />, <see cref="Complex{T}.Acos" />, and <see cref="Complex{T}.Atan" />
+    /// agree with <see cref="System.Numerics.Complex" /> across the interior, the branch cuts (the real axis outside
+    /// <c>[-1, 1]</c> for asin / acos, the imaginary axis outside <c>[-i, i]</c> for atan), the branch-cut signed-zero
+    /// sides, and the <c>atan(±i)</c> singularities — so the branch-cut placement is pinned against the framework, not
+    /// merely a self-consistent closed form.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    public void InverseTrigFunctions_AgainstBclOracle_ShouldMatchWithinTolerance()
+    {
+        foreach (double re in InverseTrigParts)
+        {
+            foreach (double im in InverseTrigParts)
+            {
+                var m = new Complex<double>(re, im);
+                Bcl b = ToBcl(m);
+
+                AssertClose(Complex<double>.Asin(m), Bcl.Asin(b), $"asin({m})", 1e-12);
+                AssertClose(Complex<double>.Acos(m), Bcl.Acos(b), $"acos({m})", 1e-12);
+                AssertClose(Complex<double>.Atan(m), Bcl.Atan(b), $"atan({m})", 1e-12);
+            }
         }
     }
 
