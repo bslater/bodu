@@ -178,6 +178,15 @@ namespace Bodu.Globalization.Recurrence {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A value supplied for the &apos;{0}&apos; recurrence rule part is outside its permitted range..
+        /// </summary>
+        internal static string Arg_OutOfRange_RecurrenceRulePart {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_RecurrenceRulePart", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The recurrence frequency &apos;{0}&apos; is not supported; sub-daily frequencies are a planned follow-on..
         /// </summary>
         internal static string Op_NotSupported_SubDailyFrequency {

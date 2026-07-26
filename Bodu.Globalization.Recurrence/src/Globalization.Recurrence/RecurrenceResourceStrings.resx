@@ -102,6 +102,9 @@
   <data name="Arg_OutOfRange_RecurrenceCount" xml:space="preserve">
     <value>The recurrence count must be a positive integer.</value>
   </data>
+  <data name="Arg_OutOfRange_RecurrenceRulePart" xml:space="preserve">
+    <value>A value supplied for the '{0}' recurrence rule part is outside its permitted range.</value>
+  </data>
   <data name="Op_NotSupported_SubDailyFrequency" xml:space="preserve">
     <value>The recurrence frequency '{0}' is not supported; sub-daily frequencies are a planned follow-on.</value>
   </data>
