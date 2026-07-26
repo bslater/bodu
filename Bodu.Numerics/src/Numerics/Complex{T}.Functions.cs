@@ -5,11 +5,18 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace Bodu.Numerics;
 
 public readonly partial struct Complex<T>
 {
+    /// <summary>The magnitude above which <see cref="AsinInternal" /> switches to its overflow-avoiding branch, <c>sqrt(MaxValue) / 2</c> for the backing type.</summary>
+    private static readonly T s_asinOverflowThreshold = ComputeAsinOverflowThreshold();
+
+    /// <summary>The natural logarithm of two, cached for the <see cref="AsinInternal" /> overflow branch.</summary>
+    private static readonly T s_log2 = T.Log(T.One + T.One);
+
     /// <summary>
     /// Returns the principal square root of a complex value.
     /// </summary>
@@ -193,12 +200,23 @@ public readonly partial struct Complex<T>
     /// <c>[-1, 1]</c>.
     /// </returns>
     /// <remarks>
-    /// Evaluated from the principal complex logarithm as <c>-i · log(i·value + sqrt(1 − value²))</c>. Results agree
-    /// with <see cref="System.Numerics.Complex.Asin(System.Numerics.Complex)" /> to within floating-point tolerance
-    /// rather than bit for bit.
+    /// Evaluated with the overflow- and cancellation-avoiding algorithm of Hull, Fairgrieve, and Tang — the same scheme
+    /// <see cref="System.Numerics.Complex.Asin(System.Numerics.Complex)" /> uses — so the result, including the
+    /// placement of the branch cut, matches the framework value.
     /// </remarks>
-    public static Complex<T> Asin(Complex<T> value) =>
-        -ImaginaryOne * Log((ImaginaryOne * value) + Sqrt(One - (value * value)));
+    public static Complex<T> Asin(Complex<T> value)
+    {
+        AsinInternal(T.Abs(value.Real), T.Abs(value.Imaginary), out T b, out T bPrime, out T v);
+
+        T u = bPrime < T.Zero ? T.Asin(b) : T.Atan(bPrime);
+
+        if (value.Real < T.Zero)
+            u = -u;
+        if (value.Imaginary < T.Zero)
+            v = -v;
+
+        return new Complex<T>(u, v);
+    }
 
     /// <summary>
     /// Returns the cosine of a complex value.
@@ -232,12 +250,23 @@ public readonly partial struct Complex<T>
     /// <c>[-1, 1]</c>.
     /// </returns>
     /// <remarks>
-    /// Evaluated as <c>π/2 − asin(value)</c>. Results agree with
-    /// <see cref="System.Numerics.Complex.Acos(System.Numerics.Complex)" /> to within floating-point tolerance rather
-    /// than bit for bit.
+    /// Evaluated with the Hull–Fairgrieve–Tang algorithm shared with
+    /// <see cref="System.Numerics.Complex.Acos(System.Numerics.Complex)" />, so the result, including the placement of
+    /// the branch cut, matches the framework value.
     /// </remarks>
-    public static Complex<T> Acos(Complex<T> value) =>
-        new Complex<T>(T.Pi / (T.One + T.One), T.Zero) - Asin(value);
+    public static Complex<T> Acos(Complex<T> value)
+    {
+        AsinInternal(T.Abs(value.Real), T.Abs(value.Imaginary), out T b, out T bPrime, out T v);
+
+        T u = bPrime < T.Zero ? T.Acos(b) : T.Atan(T.One / bPrime);
+
+        if (value.Real < T.Zero)
+            u = T.Pi - u;
+        if (value.Imaginary > T.Zero)
+            v = -v;
+
+        return new Complex<T>(u, v);
+    }
 
     /// <summary>
     /// Returns the tangent of a complex value.
@@ -293,13 +322,138 @@ public readonly partial struct Complex<T>
     /// <c>[-i, i]</c>.
     /// </returns>
     /// <remarks>
-    /// Evaluated as <c>(i/2) · (log(1 − i·value) − log(1 + i·value))</c>. Results agree with
-    /// <see cref="System.Numerics.Complex.Atan(System.Numerics.Complex)" /> to within floating-point tolerance rather
-    /// than bit for bit.
+    /// Evaluated as <c>(i/2) · (log(1 − i·value) − log(1 + i·value))</c>, the same closed form
+    /// <see cref="System.Numerics.Complex.Atan(System.Numerics.Complex)" /> uses, so the result agrees with the
+    /// framework value to within floating-point tolerance.
     /// </remarks>
     public static Complex<T> Atan(Complex<T> value)
     {
         Complex<T> two = new(T.One + T.One, T.Zero);
         return ImaginaryOne / two * (Log(One - (ImaginaryOne * value)) - Log(One + (ImaginaryOne * value)));
+    }
+
+    /// <summary>
+    /// Computes the shared intermediate quantities of the inverse sine and cosine using the overflow- and
+    /// cancellation-avoiding algorithm of Hull, Fairgrieve, and Tang, matching the private helper behind
+    /// <see cref="System.Numerics.Complex" />.
+    /// </summary>
+    /// <param name="x">The absolute value of the real component.</param>
+    /// <param name="y">The absolute value of the imaginary component.</param>
+    /// <param name="b">
+    /// On return, the sine of the result's real part, or a sentinel when the atan branch is selected.
+    /// </param>
+    /// <param name="bPrime">
+    /// On return, the branch selector: a non-negative value routes the real part through atan.
+    /// </param>
+    /// <param name="v">On return, the magnitude of the result's imaginary part.</param>
+    private static void AsinInternal(T x, T y, out T b, out T bPrime, out T v)
+    {
+        T one = T.One;
+        T half = one / (one + one);
+
+        if (x > s_asinOverflowThreshold || y > s_asinOverflowThreshold)
+        {
+            b = -one;
+            bPrime = x / y;
+
+            T small;
+            T big;
+            if (x < y)
+            {
+                small = x;
+                big = y;
+            }
+            else
+            {
+                small = y;
+                big = x;
+            }
+
+            T ratio = small / big;
+            v = s_log2 + T.Log(big) + (half * Log1P(ratio * ratio));
+        }
+        else
+        {
+            T r = Hypot(x + one, y);
+            T s = Hypot(x - one, y);
+
+            T a = (r + s) * half;
+            b = x / a;
+
+            if (b > T.CreateChecked(0.75))
+            {
+                if (x <= one)
+                {
+                    T amx = (((y * y) / (r + (x + one))) + (s + (one - x))) * half;
+                    bPrime = x / T.Sqrt((a + x) * amx);
+                }
+                else
+                {
+                    T t = ((one / (r + (x + one))) + (one / (s + (x - one)))) * half;
+                    bPrime = x / y / T.Sqrt((a + x) * t);
+                }
+            }
+            else
+            {
+                bPrime = -one;
+            }
+
+            if (a < T.CreateChecked(1.5))
+            {
+                if (x < one)
+                {
+                    T t = ((one / (r + (x + one))) + (one / (s + (one - x)))) * half;
+                    T am1 = y * y * t;
+                    v = Log1P(am1 + (y * T.Sqrt(t * (a + one))));
+                }
+                else
+                {
+                    T am1 = (((y * y) / (r + (x + one))) + (s + (x - one))) * half;
+                    v = Log1P(am1 + T.Sqrt(am1 * (a + one)));
+                }
+            }
+            else
+            {
+                v = T.Log(a + T.Sqrt((a - one) * (a + one)));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Computes <c>log(1 + x)</c> without loss of accuracy for small <paramref name="x" />, matching the private helper
+    /// behind <see cref="System.Numerics.Complex" />.
+    /// </summary>
+    /// <param name="x">A non-negative value, or NaN.</param>
+    /// <returns>The natural logarithm of <c>1 + x</c>.</returns>
+    private static T Log1P(T x)
+    {
+        T xp1 = T.One + x;
+        if (xp1 == T.One)
+            return x;
+
+        if (x < T.CreateChecked(0.75))
+            return x * T.Log(xp1) / (xp1 - T.One);
+
+        return T.Log(xp1);
+    }
+
+    /// <summary>
+    /// Computes the inverse-sine overflow threshold <c>sqrt(MaxValue) / 2</c> for the backing type without requiring a
+    /// generic <see cref="IMinMaxValue{TSelf}" /> constraint, resolving the maximum value from a fixed matrix of the
+    /// built-in IEEE-754 types so the probe stays reflection-free and NativeAOT-safe.
+    /// </summary>
+    /// <returns>The magnitude above which <see cref="AsinInternal" /> takes its overflow-avoiding branch.</returns>
+    private static T ComputeAsinOverflowThreshold()
+    {
+        if (typeof(T) == typeof(double))
+            return T.CreateChecked(Math.Sqrt(double.MaxValue) / 2.0);
+        if (typeof(T) == typeof(float))
+            return T.CreateChecked(MathF.Sqrt(float.MaxValue) / 2.0f);
+        if (typeof(T) == typeof(Half))
+            return T.CreateChecked(Math.Sqrt((double)Half.MaxValue) / 2.0);
+        if (typeof(T) == typeof(NFloat))
+            return T.CreateChecked(Math.Sqrt((double)NFloat.MaxValue) / 2.0);
+
+        return T.CreateChecked(Math.Sqrt(double.MaxValue) / 2.0);
     }
 }
