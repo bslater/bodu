@@ -129,6 +129,9 @@
   <data name="Format_Invalid_BigDecimalText" xml:space="preserve">
     <value>The input string '{0}' was not in a correct decimal format.</value>
   </data>
+  <data name="Format_Invalid_ComplexText" xml:space="preserve">
+    <value>The input string '{0}' was not in a correct complex-number format.</value>
+  </data>
   <data name="Op_Invalid_IntervalUnboundedLength" xml:space="preserve">
     <value>The length of an unbounded interval is infinite and cannot be represented.</value>
   </data>

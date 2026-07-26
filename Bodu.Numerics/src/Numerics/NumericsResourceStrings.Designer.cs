@@ -259,6 +259,15 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The input string &apos;{0}&apos; was not in a correct complex-number format..
+        /// </summary>
+        internal static string Format_Invalid_ComplexText {
+            get {
+                return ResourceManager.GetString("Format_Invalid_ComplexText", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The length of an unbounded interval is infinite and cannot be represented..
         /// </summary>
         internal static string Op_Invalid_IntervalUnboundedLength {

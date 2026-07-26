@@ -177,4 +177,13 @@
   <data name="Json_Invalid_PropertyMustBeNumber" xml:space="preserve">
     <value>The '{0}' property must be a number or a numeric string.</value>
   </data>
+  <data name="Json_Invalid_ExpectedObject_Complex" xml:space="preserve">
+    <value>Expected a JSON object containing a Complex value.</value>
+  </data>
+  <data name="Json_Invalid_ExpectedCompactString_Complex" xml:space="preserve">
+    <value>Expected a JSON string in compact Complex form (e.g. "&lt;3; 4&gt;").</value>
+  </data>
+  <data name="Json_Invalid_CompactComplexForm" xml:space="preserve">
+    <value>The JSON string '{0}' is not a valid compact Complex form.</value>
+  </data>
 </root>

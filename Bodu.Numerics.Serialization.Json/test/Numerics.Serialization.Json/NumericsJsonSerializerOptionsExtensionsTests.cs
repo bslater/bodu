@@ -25,12 +25,13 @@ public class NumericsJsonSerializerOptionsExtensionsTests
 
         options.AddNumericsJsonConverters();
 
-        Assert.HasCount(5, options.Converters);
+        Assert.HasCount(6, options.Converters);
         Assert.Contains(c => c is FractionJsonConverterFactory, options.Converters);
         Assert.Contains(c => c is IntervalJsonConverterFactory, options.Converters);
         Assert.Contains(c => c is DiscreteIntervalJsonConverterFactory, options.Converters);
         Assert.Contains(c => c is IntervalSetJsonConverterFactory, options.Converters);
         Assert.Contains(c => c is BigDecimalJsonConverter, options.Converters);
+        Assert.Contains(c => c is ComplexJsonConverterFactory, options.Converters);
     }
 
     /// <summary>
