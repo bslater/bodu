@@ -328,8 +328,9 @@ is now:
      mean / variance (Welford, with the Chan et al. parallel `Combine`),
      exact min / max / count, and a streaming quantile (P²) as mutable
      struct accumulators, plus the rolling-window `MovingSum<T>` /
-     `MovingMinMax<T>` companions. (`Complex<T>` is a later follow-on,
-     not part of this wave.)
+     `MovingMinMax<T>` companions. (`Complex<T>` — the generic follow-on
+     to this wave — has since **landed** as well; see the `Bodu.Numerics`
+     section.)
 2. **Advertise history windows uniformly across FX providers — done.** ✅
    All seven providers now declare `HistoryAvailability`: ECB computes it
    from the configured feeds (full-history feed → since the 1999-01-04
@@ -818,9 +819,21 @@ sequenced steps have shipped:
    anywhere: the overwrite-mode `CircularBuffer<T>` in `Bodu.Collections`
    already is one; the gap was the aggregates, and they live here.
 
-A generic **`Complex<T>`** (the BCL `Complex` is `double`-only) is the
-natural follow-on after this wave, not part of it. See also *New library
-candidates*.
+A generic **`Complex<T>`** has since **landed** ✅ — the natural follow-on
+after this wave. It generalizes the `double`-only `System.Numerics.Complex`
+to any `IFloatingPointIeee754<T>` (`float` / `double` / `Half` / `NFloat`),
+mirroring the framework type's surface: the operators and named arithmetic,
+`Magnitude` / `Phase` / `Conjugate` / `Reciprocal`, the transcendental
+functions (`Sqrt` / `Exp` / `Log` / `Pow` / the trig-hyperbolic family), the
+`<real; imaginary>` format / parse round-trip, and the full
+`INumberBase<Complex<T>>` / `ISignedNumber<Complex<T>>` generic-math surface
+(no total order, so not `INumber`). It reproduces the framework's behaviour
+including its documented quirks (Smith's-algorithm division, naive
+multiplication without infinity recovery, `Reciprocal(0) == 0`), validated by
+a differential oracle against `System.Numerics.Complex` for `Complex<double>`.
+A `ComplexJsonConverter<T>` ships in `Bodu.Numerics.Serialization.Json`
+(registered by `AddNumericsJsonConverters`), writing non-finite components as
+the named literals `"NaN"` / `"Infinity"` / `"-Infinity"`.
 
 ### `Bodu.Financial`
 
@@ -1260,12 +1273,12 @@ filter were added to *Non-goals* instead.
   invariant-English core with per-culture packs (the data-pack pattern
   again) is the only shape worth shipping; without that discipline this
   stays a candidate, not a commitment.
-- **Numeric value types in `Bodu.Numerics`** — a generic `Complex<T>`
-  (the BCL `Complex` is `double`-only). This extends the existing
-  generic-math project rather than needing a new one; **`BigDecimal` and
-  the running-statistics aggregates have both shipped**, completing the
-  Numerics wave (see *Active focus*), leaving `Complex<T>` as the
-  follow-on candidate.
+- ~~**Numeric value types in `Bodu.Numerics`** — a generic `Complex<T>`
+  (the BCL `Complex` is `double`-only)~~ — **shipped.** `Complex<T>` over
+  `IFloatingPointIeee754<T>` landed inside the existing `Bodu.Numerics`
+  project (no new package), with a companion `ComplexJsonConverter<T>` in
+  `Bodu.Numerics.Serialization.Json`. `BigDecimal` and the
+  running-statistics aggregates shipped earlier in the same wave.
 - ~~**One-time-password codes (TOTP/HOTP)**~~ — **shipped.** `Hotp` /
   `Totp` landed inside `Bodu.Security.Cryptography` (flat namespace, no new
   package or dependency), not the `Bodu.Security.Otp` sibling that was

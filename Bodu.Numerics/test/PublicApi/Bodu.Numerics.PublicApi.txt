@@ -76,6 +76,69 @@ struct Bodu.Numerics.BigDecimal
     property Int32 Scale
     property Int32 Sign
     property System.Numerics.BigInteger UnscaledValue
+struct Bodu.Numerics.Complex`1
+    constructor Void .ctor(T, T)
+    method Bodu.Numerics.Complex`1[T] Acos(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Add(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Asin(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Atan(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Conjugate(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Cos(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Cosh(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Create(T, T)
+    method Bodu.Numerics.Complex`1[T] Divide(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Exp(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] FromPolarCoordinates(T, T)
+    method Bodu.Numerics.Complex`1[T] Log(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Log(Bodu.Numerics.Complex`1[T], T)
+    method Bodu.Numerics.Complex`1[T] Log10(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Multiply(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Negate(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Parse(System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Bodu.Numerics.Complex`1[T] Parse(System.String)
+    method Bodu.Numerics.Complex`1[T] Parse(System.String, System.IFormatProvider)
+    method Bodu.Numerics.Complex`1[T] Pow(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Pow(Bodu.Numerics.Complex`1[T], T)
+    method Bodu.Numerics.Complex`1[T] Reciprocal(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Sin(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Sinh(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Sqrt(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Subtract(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Tan(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] Tanh(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] op_Addition(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] op_Decrement(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] op_Division(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] op_Implicit(T)
+    method Bodu.Numerics.Complex`1[T] op_Increment(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] op_Multiply(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] op_Subtraction(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] op_UnaryNegation(Bodu.Numerics.Complex`1[T])
+    method Bodu.Numerics.Complex`1[T] op_UnaryPlus(Bodu.Numerics.Complex`1[T])
+    method Boolean Equals(Bodu.Numerics.Complex`1[T])
+    method Boolean Equals(System.Object)
+    method Boolean TryFormat(System.Span`1[System.Byte], Int32 ByRef, System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Boolean TryFormat(System.Span`1[System.Char], Int32 ByRef, System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Boolean TryParse(System.ReadOnlySpan`1[System.Char], System.IFormatProvider, Bodu.Numerics.Complex`1[T] ByRef)
+    method Boolean TryParse(System.String, Bodu.Numerics.Complex`1[T] ByRef)
+    method Boolean TryParse(System.String, System.IFormatProvider, Bodu.Numerics.Complex`1[T] ByRef)
+    method Boolean op_Equality(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Boolean op_Inequality(Bodu.Numerics.Complex`1[T], Bodu.Numerics.Complex`1[T])
+    method Int32 GetHashCode()
+    method System.String ToString()
+    method System.String ToString(System.String)
+    method System.String ToString(System.String, System.IFormatProvider)
+    method T Abs(Bodu.Numerics.Complex`1[T])
+    method Void Deconstruct(T ByRef, T ByRef)
+    property Bodu.Numerics.Complex`1[T] ImaginaryOne
+    property Bodu.Numerics.Complex`1[T] Infinity
+    property Bodu.Numerics.Complex`1[T] NaN
+    property Bodu.Numerics.Complex`1[T] One
+    property Bodu.Numerics.Complex`1[T] Zero
+    property T Imaginary
+    property T Magnitude
+    property T Phase
+    property T Real
 class Bodu.Numerics.DiscreteInterval
     method Bodu.Numerics.DiscreteInterval`1[T] AtLeast[T](T)
     method Bodu.Numerics.DiscreteInterval`1[T] AtMost[T](T)

@@ -3,6 +3,16 @@ class Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter
     constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
     method Bodu.Numerics.BigDecimal Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
     method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Numerics.BigDecimal, System.Text.Json.JsonSerializerOptions)
+class Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Boolean CanConvert(System.Type)
+    method System.Text.Json.Serialization.JsonConverter CreateConverter(System.Type, System.Text.Json.JsonSerializerOptions)
+class Bodu.Numerics.Serialization.Json.ComplexJsonConverter`1
+    constructor Void .ctor()
+    constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)
+    method Bodu.Numerics.Complex`1[T] Read(System.Text.Json.Utf8JsonReader ByRef, System.Type, System.Text.Json.JsonSerializerOptions)
+    method Void Write(System.Text.Json.Utf8JsonWriter, Bodu.Numerics.Complex`1[T], System.Text.Json.JsonSerializerOptions)
 class Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverterFactory
     constructor Void .ctor()
     constructor Void .ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)

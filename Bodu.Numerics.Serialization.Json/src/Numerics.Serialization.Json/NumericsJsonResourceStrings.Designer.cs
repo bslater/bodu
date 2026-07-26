@@ -401,5 +401,32 @@ namespace Bodu.Numerics.Serialization.Json {
                 return ResourceManager.GetString("Json_Invalid_PropertyMustBeNumber", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON object containing a Complex value..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedObject_Complex {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedObject_Complex", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a JSON string in compact Complex form (e.g. &quot;&lt;3; 4&gt;&quot;)..
+        /// </summary>
+        internal static string Json_Invalid_ExpectedCompactString_Complex {
+            get {
+                return ResourceManager.GetString("Json_Invalid_ExpectedCompactString_Complex", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The JSON string '{0}' is not a valid compact Complex form..
+        /// </summary>
+        internal static string Json_Invalid_CompactComplexForm {
+            get {
+                return ResourceManager.GetString("Json_Invalid_CompactComplexForm", resourceCulture);
+            }
+        }
     }
 }
