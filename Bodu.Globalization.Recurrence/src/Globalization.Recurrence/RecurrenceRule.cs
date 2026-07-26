@@ -25,7 +25,7 @@ namespace Bodu.Globalization.Recurrence;
 /// round-trips, but enumerating it throws <see cref="NotSupportedException" /> until that follow-on lands.
 /// </para>
 /// </remarks>
-/// <seealso cref="RecurrenceRuleBuilder" />
+/// <seealso cref="RecurrenceRuleBuilder" /> <seealso cref="RecurrenceSet" />
 public sealed partial class RecurrenceRule : IEquatable<RecurrenceRule>
 {
     /// <summary>The shared empty integer array used for absent rule parts.</summary>

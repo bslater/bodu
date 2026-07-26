@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Recurrence;
 
 /// <summary>
 /// Provides parsing and formatting of the RFC 5545 <c>DATE</c> / <c>DATE-TIME</c> value forms and the two-letter
-/// weekday tokens shared by <see cref="RecurrenceRule" /> and <c>RecurrenceSet</c>.
+/// weekday tokens shared by <see cref="RecurrenceRule" /> and <see cref="RecurrenceSet" />.
 /// </summary>
 internal static class IcalValue
 {
