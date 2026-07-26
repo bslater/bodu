@@ -53,3 +53,4 @@ Bodu.Text.Ini hero-ini.svg
 Bodu.Text.Toml hero-toml.svg
 Bodu.Text.Yaml hero-yaml.svg
 Bodu.Text.Serialization hero-text-serialization.svg
+Bodu.Globalization.Recurrence hero-recurrence.svg
