@@ -254,7 +254,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     {
         restricted = !field.Equals("*", StringComparison.Ordinal);
 
-        if (field.AsSpan().IndexOfAny("LW#?") >= 0)
+        if (ContainsQuartzToken(field))
         {
             unsupported = true;
             return false;
@@ -269,6 +269,40 @@ public sealed partial class CronExpression : IParsable<CronExpression>
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Determines whether a field contains a Quartz extension token (<c>?</c>, <c>#</c>, <c>L</c>, or <c>W</c>).
+    /// </summary>
+    /// <param name="field">The field text.</param>
+    /// <returns><see langword="true" /> when a Quartz token is present; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// The letters <c>L</c> and <c>W</c> also occur inside valid month and weekday names (for example <c>JUL</c> and
+    /// <c>WED</c>), so they count as Quartz tokens only when they stand alone or are adjacent to a digit rather than
+    /// embedded in a name; <c>?</c> and <c>#</c> never appear in a name and are always Quartz.
+    /// </remarks>
+    private static bool ContainsQuartzToken(string field)
+    {
+        for (int i = 0; i < field.Length; i++)
+        {
+            char c = char.ToUpperInvariant(field[i]);
+            if (c is '?' or '#')
+            {
+                return true;
+            }
+
+            if (c is 'L' or 'W')
+            {
+                bool leftLetter = i > 0 && char.IsAsciiLetter(field[i - 1]);
+                bool rightLetter = i + 1 < field.Length && char.IsAsciiLetter(field[i + 1]);
+                if (!leftLetter && !rightLetter)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /// <summary>

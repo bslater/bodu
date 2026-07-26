@@ -143,6 +143,198 @@ public partial class CronExpressionTests
     }
 
     /// <summary>
+    /// Verifies that the numeric weekday <c>7</c> is treated as Sunday.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenWeekdaySeven_ShouldMatchSunday()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 * * 7");
+
+        Assert.AreEqual(new DateTime(2020, 1, 5, 0, 0, 0), cron.GetNextOccurrence(new DateTime(2020, 1, 1, 0, 0, 0)));
+    }
+
+    /// <summary>
+    /// Verifies that named weekday and month ranges resolve to the correct numeric fields.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenNamedRanges_ShouldResolveFields()
+    {
+        Assert.AreEqual(
+            new DateTime(2020, 1, 6, 9, 0, 0),
+            CronExpression.Parse("0 9 * * MON-FRI").GetNextOccurrence(new DateTime(2020, 1, 4, 0, 0, 0)));
+        Assert.AreEqual(
+            new DateTime(2021, 1, 1, 0, 0, 0),
+            CronExpression.Parse("0 0 1 JAN-MAR *").GetNextOccurrence(new DateTime(2020, 4, 1, 0, 0, 0)));
+    }
+
+    /// <summary>
+    /// Verifies that a day-of-month range step selects the stepped days within the range.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenDayOfMonthRangeStep_ShouldSelectSteppedDays()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 1-31/10 * *");
+
+        Assert.AreEqual(new DateTime(2020, 1, 21, 0, 0, 0), cron.GetNextOccurrence(new DateTime(2020, 1, 15, 0, 0, 0)));
+    }
+
+    /// <summary>
+    /// Verifies that the previous-occurrence search crosses a year boundary.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenAcrossYearBoundary_ShouldReturnPriorYear()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 1 1 *");
+
+        Assert.AreEqual(new DateTime(2020, 1, 1, 0, 0, 0), cron.GetPreviousOccurrence(new DateTime(2020, 6, 1, 0, 0, 0)));
+        Assert.AreEqual(new DateTime(2019, 1, 1, 0, 0, 0), cron.GetPreviousOccurrence(new DateTime(2020, 1, 1, 0, 0, 0)));
+    }
+
+    /// <summary>
+    /// Verifies that a six-field seconds step matches at the stepped second.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenSecondsStep_ShouldMatchSteppedSecond()
+    {
+        CronExpression cron = CronExpression.Parse("*/20 * * * * *", CronFormat.WithSeconds);
+
+        Assert.AreEqual(new DateTime(2020, 1, 1, 0, 0, 20), cron.GetNextOccurrence(new DateTime(2020, 1, 1, 0, 0, 5)));
+    }
+
+    /// <summary>
+    /// Verifies that a February 29th expression crosses a non-leap century year (2100), which yields an eight-year
+    /// gap, rather than falling short of the next occurrence.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenLeapDayAcrossNonLeapCentury_ShouldSpanEightYears()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 29 2 *");
+
+        DateTime? next = cron.GetNextOccurrence(new DateTime(2096, 3, 1, 0, 0, 0));
+
+        // 2100 is not a leap year, so the next February 29th after 2096 is 2104.
+        Assert.AreEqual(new DateTime(2104, 2, 29, 0, 0, 0), next);
+    }
+
+    /// <summary>
+    /// Verifies that comma-list field values are treated as a set, so their written order does not affect the result.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenListOutOfOrder_ShouldTreatAsSortedSet()
+    {
+        CronExpression cron = CronExpression.Parse("0 20,10 * * *");
+
+        Assert.AreEqual(new DateTime(2020, 1, 1, 10, 0, 0), cron.GetNextOccurrence(new DateTime(2020, 1, 1, 9, 0, 0)));
+        Assert.AreEqual(new DateTime(2020, 1, 1, 20, 0, 0), cron.GetNextOccurrence(new DateTime(2020, 1, 1, 10, 30, 0)));
+    }
+
+    /// <summary>
+    /// Verifies that a range step includes both the range lower bound and the last stepped value.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenRangeStepIncludesBounds_ShouldMatchZeroAndFiftyNine()
+    {
+        CronExpression cron = CronExpression.Parse("0-59/59 * * * *");
+
+        Assert.AreEqual(new DateTime(2020, 1, 1, 0, 59, 0), cron.GetNextOccurrence(new DateTime(2020, 1, 1, 0, 30, 0)));
+        Assert.AreEqual(new DateTime(2020, 1, 1, 1, 0, 0), cron.GetNextOccurrence(new DateTime(2020, 1, 1, 0, 59, 0)));
+    }
+
+    /// <summary>
+    /// Verifies that a step larger than the field range collapses to the field minimum.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenStepExceedsFieldRange_ShouldCollapseToMinimum()
+    {
+        CronExpression cron = CronExpression.Parse("*/90 * * * *");
+
+        Assert.AreEqual(new DateTime(2020, 1, 1, 1, 0, 0), cron.GetNextOccurrence(new DateTime(2020, 1, 1, 0, 5, 0)));
+    }
+
+    /// <summary>
+    /// Verifies that a day-of-week range whose upper bound is seven includes Sunday.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenWeekdayRangeToSeven_ShouldIncludeSunday()
+    {
+        Assert.AreEqual(CronExpression.Parse("0 0 * * 0,3,4,5,6"), CronExpression.Parse("0 0 * * 3-7"));
+    }
+
+    /// <summary>
+    /// Verifies that mixed-case month and weekday names combine with the day union rule.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenMixedCaseNames_ShouldResolveAndUnion()
+    {
+        CronExpression cron = CronExpression.Parse("0 1 15 JUL mon,Wed,FRi");
+
+        // July only; day-of-month 15 OR a Mon/Wed/Fri. 2020-07-01 is a Wednesday, matching via the union earlier than the 15th.
+        Assert.AreEqual(new DateTime(2020, 7, 1, 1, 0, 0), cron.GetNextOccurrence(new DateTime(2019, 11, 14, 0, 0, 0)));
+    }
+
+    /// <summary>
+    /// Verifies that month and weekday names containing the letters <c>L</c> or <c>W</c> (for example <c>JUL</c> and
+    /// <c>WED</c>) are not mistaken for Quartz extension tokens.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenNameContainsQuartzLetter_ShouldNotBeRejected()
+    {
+        Assert.AreEqual(CronExpression.Parse("0 0 1 7 *"), CronExpression.Parse("0 0 1 JUL *"));
+        Assert.AreEqual(CronExpression.Parse("0 0 * * 3"), CronExpression.Parse("0 0 * * WED"));
+    }
+
+    /// <summary>
+    /// Verifies that a day-of-month expression pinned to a month lacking that day never matches.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenImpossibleDayPinnedToMonth_ShouldReturnNull()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 31 11 *");
+
+        Assert.IsNull(cron.GetNextOccurrence(new DateTime(2020, 1, 1, 0, 0, 0)));
+    }
+
+    /// <summary>
+    /// Verifies that the previous-occurrence search skips backward over a month lacking the target day.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenDayThirtyOneBackwardOverFebruary_ShouldReturnJanuary()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 31 * *");
+
+        Assert.AreEqual(new DateTime(2024, 1, 31, 0, 0, 0), cron.GetPreviousOccurrence(new DateTime(2024, 3, 15, 0, 0, 0)));
+    }
+
+    /// <summary>
+    /// Verifies that surrounding whitespace and tab separators are tolerated.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenWhitespaceAndTabs_ShouldParseIdentically()
+    {
+        CronExpression expected = CronExpression.Parse("0 0 * * 1");
+
+        Assert.AreEqual(expected, CronExpression.Parse("  0 0 * * 1  "));
+        Assert.AreEqual(expected, CronExpression.Parse("0\t0\t*\t*\t1"));
+    }
+
+    /// <summary>
+    /// Verifies that zero is rejected in the one-based day-of-month and month fields, and that a reversed weekday range
+    /// (including one whose upper bound is seven) is rejected.
+    /// </summary>
+    /// <param name="expression">The invalid cron expression.</param>
+    [TestMethod]
+    [DataRow("0 0 0 1 *", DisplayName = "day-of-month zero")]
+    [DataRow("0 0 1 0 *", DisplayName = "month zero")]
+    [DataRow("0 0 * * 7-3", DisplayName = "reversed weekday range with seven")]
+    public void TryParse_WhenFieldOutOfRange_ShouldReturnFalse(string expression)
+    {
+        bool parsed = CronExpression.TryParse(expression, out CronExpression? result);
+
+        Assert.IsFalse(parsed);
+        Assert.IsNull(result);
+    }
+
+    /// <summary>
     /// Verifies that a reversed range is rejected, matching Vixie/cronie behavior.
     /// </summary>
     [TestMethod]

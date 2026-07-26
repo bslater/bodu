@@ -134,6 +134,20 @@ public partial class RecurrenceRuleTests
     }
 
     /// <summary>
+    /// Verifies that <c>COUNT</c> is anchored at the start, so a window beginning after the counted occurrences yields
+    /// nothing rather than re-seeding the count at the window.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_WhenCountAnchoredAtStartAndWindowAfter_ShouldBeEmpty()
+    {
+        DateTime[] actual = RecurrenceRule.Parse("FREQ=DAILY;COUNT=1")
+            .GetOccurrences(new DateTime(2019, 7, 15), new DateTime(2019, 7, 22), new DateTime(2019, 7, 28))
+            .ToArray();
+
+        Assert.AreEqual(0, actual.Length);
+    }
+
+    /// <summary>
     /// Verifies that a rule which can never match terminates with an empty sequence rather than looping forever.
     /// </summary>
     [TestMethod]
@@ -143,5 +157,73 @@ public partial class RecurrenceRuleTests
             .GetOccurrences(new DateTime(2020, 1, 1, 9, 0, 0)).Take(1).ToArray();
 
         Assert.AreEqual(0, actual.Length);
+    }
+
+    /// <summary>
+    /// Gets the second-wave corpus covering time-of-day expansion, ordinal skipping, interval-with-ordinal, month
+    /// filters, and multi-position set selection, cross-checked against python-dateutil.
+    /// </summary>
+    /// <value>The corpus rows.</value>
+    public static IEnumerable<object[]> RecurrenceTimeAndSelectionCorpus
+    {
+        get
+        {
+            DateTime T(int y, int mo, int d, int h, int mi) => new DateTime(y, mo, d, h, mi, 0);
+
+            var rows = new List<RRuleExpansionKat>
+            {
+                new("BYHOUR expands to multiple times per day", "FREQ=DAILY;BYHOUR=9,17;COUNT=4", T(2020, 1, 1, 0, 0), 4,
+                    [T(2020, 1, 1, 9, 0), T(2020, 1, 1, 17, 0), T(2020, 1, 2, 9, 0), T(2020, 1, 2, 17, 0)]),
+                new("BYHOUR and BYMINUTE expand together", "FREQ=DAILY;BYHOUR=9;BYMINUTE=0,30;COUNT=4", T(2020, 1, 1, 0, 0), 4,
+                    [T(2020, 1, 1, 9, 0), T(2020, 1, 1, 9, 30), T(2020, 1, 2, 9, 0), T(2020, 1, 2, 9, 30)]),
+                new("fifth Friday skips months with only four", "FREQ=MONTHLY;BYDAY=5FR;COUNT=3", T(2020, 1, 1, 9, 0), 3,
+                    [T(2020, 1, 31, 9, 0), T(2020, 5, 29, 9, 0), T(2020, 7, 31, 9, 0)]),
+                new("every other month, first Monday", "FREQ=MONTHLY;INTERVAL=2;BYDAY=1MO;COUNT=3", T(2020, 1, 6, 9, 0), 3,
+                    [T(2020, 1, 6, 9, 0), T(2020, 3, 2, 9, 0), T(2020, 5, 4, 9, 0)]),
+                new("BYMONTH filters a weekly rule", "FREQ=WEEKLY;BYMONTH=1;BYDAY=MO;COUNT=6", T(2020, 1, 1, 9, 0), 6,
+                    [T(2020, 1, 6, 9, 0), T(2020, 1, 13, 9, 0), T(2020, 1, 20, 9, 0), T(2020, 1, 27, 9, 0), T(2021, 1, 4, 9, 0), T(2021, 1, 11, 9, 0)]),
+                new("yearly first Monday of two months", "FREQ=YEARLY;BYMONTH=6,7;BYDAY=1MO;COUNT=4", T(2020, 6, 1, 9, 0), 4,
+                    [T(2020, 6, 1, 9, 0), T(2020, 7, 6, 9, 0), T(2021, 6, 7, 9, 0), T(2021, 7, 5, 9, 0)]),
+                new("first and last weekday via multi BYSETPOS", "FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=1,-1;COUNT=6", T(2020, 1, 1, 9, 0), 6,
+                    [T(2020, 1, 1, 9, 0), T(2020, 1, 31, 9, 0), T(2020, 2, 3, 9, 0), T(2020, 2, 28, 9, 0), T(2020, 3, 2, 9, 0), T(2020, 3, 31, 9, 0)]),
+                new("BYSETPOS selects the latest time-of-day", "FREQ=DAILY;BYHOUR=8,12,18;BYSETPOS=-1;COUNT=3", T(2020, 1, 1, 0, 0), 3,
+                    [T(2020, 1, 1, 18, 0), T(2020, 1, 2, 18, 0), T(2020, 1, 3, 18, 0)]),
+                new("monthly on the 29th resolves February in a leap year", "FREQ=MONTHLY;BYMONTHDAY=29;COUNT=4", T(2020, 1, 1, 9, 0), 4,
+                    [T(2020, 1, 29, 9, 0), T(2020, 2, 29, 9, 0), T(2020, 3, 29, 9, 0), T(2020, 4, 29, 9, 0)]),
+
+                new("daily interval filters weekdays, not every third weekday", "FREQ=DAILY;INTERVAL=3;BYDAY=MO,TU,WE,TH,FR;COUNT=6", T(2017, 3, 6, 10, 0), 6,
+                    [T(2017, 3, 6, 10, 0), T(2017, 3, 9, 10, 0), T(2017, 3, 15, 10, 0), T(2017, 3, 21, 10, 0), T(2017, 3, 24, 10, 0), T(2017, 3, 27, 10, 0)]),
+                new("yearly BYSETPOS spans multiple months (last)", "FREQ=YEARLY;BYMONTH=1,2,3;BYDAY=MO;BYSETPOS=-1;COUNT=2", T(2023, 1, 1, 9, 0), 2,
+                    [T(2023, 3, 27, 9, 0), T(2024, 3, 25, 9, 0)]),
+                new("yearly BYSETPOS spans multiple months (first)", "FREQ=YEARLY;BYMONTH=1,2,3;BYDAY=MO;BYSETPOS=1;COUNT=2", T(2023, 1, 1, 9, 0), 2,
+                    [T(2023, 1, 2, 9, 0), T(2024, 1, 1, 9, 0)]),
+                new("UNTIL cuts between intra-day expanded instants", "FREQ=DAILY;BYHOUR=8,12,18;UNTIL=20230102T120000", T(2023, 1, 1, 0, 0), 20,
+                    [T(2023, 1, 1, 8, 0), T(2023, 1, 1, 12, 0), T(2023, 1, 1, 18, 0), T(2023, 1, 2, 8, 0), T(2023, 1, 2, 12, 0)]),
+                new("first weekday emits a matching start", "FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=1;COUNT=7", T(2024, 1, 1, 9, 0), 7,
+                    [T(2024, 1, 1, 9, 0), T(2024, 2, 1, 9, 0), T(2024, 3, 1, 9, 0), T(2024, 4, 1, 9, 0), T(2024, 5, 1, 9, 0), T(2024, 6, 3, 9, 0), T(2024, 7, 1, 9, 0)]),
+            };
+
+            foreach (RRuleExpansionKat row in rows)
+            {
+                yield return [row];
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies the time-expansion and selection edge cases against their python-dateutil reference occurrences.
+    /// </summary>
+    /// <param name="kat">The corpus row under test.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(RecurrenceTimeAndSelectionCorpus),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void GetOccurrences_WhenTimeOrSelectionEdgeCase_ShouldMatchReference(RRuleExpansionKat kat)
+    {
+        DateTime[] actual = RecurrenceRule.Parse(kat.Rule).GetOccurrences(kat.Start).Take(kat.Take).ToArray();
+
+        CollectionAssert.AreEqual(kat.Expected, actual);
     }
 }

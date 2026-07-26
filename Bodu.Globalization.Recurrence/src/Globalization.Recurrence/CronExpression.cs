@@ -26,6 +26,9 @@ namespace Bodu.Globalization.Recurrence;
 /// </remarks>
 public sealed partial class CronExpression : IEquatable<CronExpression>
 {
+    /// <summary>The number of years the occurrence search scans before giving up. The largest gap between two consecutive occurrences of any satisfiable expression is eight years — a February 29th expression crossing a non-leap century year such as 2100 (2096 → 2104) — so twelve years covers every real schedule with margin while still bounding the search for an expression that can never match (for example February 30th).</summary>
+    private const int SearchHorizonYears = 12;
+
     /// <summary>The set of matching seconds, indexed 0–59 (all set for the five-field layout).</summary>
     private readonly bool[] _seconds;
 
@@ -100,7 +103,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </param>
     /// <returns>
     /// The next matching instant preserving the <see cref="DateTime.Kind" /> of <paramref name="after" />, or
-    /// <see langword="null" /> when none occurs within five years.
+    /// <see langword="null" /> when none occurs within the search horizon.
     /// </returns>
     public DateTime? GetNextOccurrence(DateTime after, bool inclusive = false)
     {
@@ -111,7 +114,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
             candidate = candidate.Add(Unit);
         }
 
-        int guardYear = after.Year + 5;
+        int guardYear = after.Year + SearchHorizonYears;
         while (candidate.Year <= guardYear)
         {
             if (!_months[candidate.Month])
@@ -160,7 +163,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </param>
     /// <returns>
     /// The previous matching instant preserving the <see cref="DateTime.Kind" /> of <paramref name="before" />, or
-    /// <see langword="null" /> when none occurs within five years.
+    /// <see langword="null" /> when none occurs within the search horizon.
     /// </returns>
     public DateTime? GetPreviousOccurrence(DateTime before, bool inclusive = false)
     {
@@ -170,7 +173,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
             candidate = candidate.Subtract(Unit);
         }
 
-        int guardYear = before.Year - 5;
+        int guardYear = before.Year - SearchHorizonYears;
         while (candidate.Year >= guardYear)
         {
             if (!_months[candidate.Month])
