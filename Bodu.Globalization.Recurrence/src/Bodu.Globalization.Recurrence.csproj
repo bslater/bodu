@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+    <Title>Bodu — Globalization Recurrence</Title>
+    <Description>Recurrence-rule evaluation for .NET. Provides RecurrenceRule, an RFC 5545 iCalendar RRULE parser and occurrence enumerator (FREQ DAILY/WEEKLY/MONTHLY/YEARLY with INTERVAL, COUNT, UNTIL, WKST, and the BYMONTH/BYWEEKNO/BYYEARDAY/BYMONTHDAY/BYDAY/BYHOUR/BYMINUTE/BYSECOND/BYSETPOS parts); RecurrenceSet, which composes one or more rules with explicit RDATE additions and EXDATE exclusions; and CronExpression, a Vixie-style cron parser (five-field, optional-seconds six-field, and the @yearly/@monthly/@weekly/@daily/@hourly macros) with next- and previous-occurrence queries. Occurrence surfaces are built on DateTime and DateTimeOffset. A natural sibling of the Bodu.Globalization.Calendar notable-date engine; depends only on Bodu.Core.</Description>
+    <PackageTags>$(PackageTags);recurrence;rrule;rfc5545;ical;icalendar;cron;crontab;schedule;occurrence;calendar</PackageTags>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Globalization.Recurrence.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="Globalization.Recurrence\RecurrenceResourceStrings.resx">
+      <LastGenOutput>RecurrenceResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="Globalization.Recurrence\RecurrenceResourceStrings.Designer.cs">
+      <DependentUpon>RecurrenceResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>
