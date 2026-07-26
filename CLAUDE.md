@@ -115,6 +115,7 @@ Local developer machines are untouched (the hook short-circuits when `CLAUDE_COD
 
 - **One branch per session, by default.** Use the branch the harness designates at session start (typically `claude/<topic>-<id>`) and make multiple commits to it as the session progresses. Do not spin up additional branches for each edit, fix, or intermediate step within the same session.
 - **Commit incrementally.** Prefer a fresh commit per logical step over batching unrelated changes into one large commit. The branch should accumulate work across the session, not be replaced.
+- **Test before fix.** For a defect-driven change, the failing-regression-test commit precedes the fix commit — do not bundle them (see *Test-First for Fixes (Red-Green)* under Test Conventions).
 - **Exceptions that justify additional branches:**
   - Resolving conflicts on multiple existing PR branches — each PR has its own remote head that must be checked out and pushed back to.
   - Work that must land on a specific pre-existing branch other than the session branch.
@@ -126,6 +127,18 @@ Local developer machines are untouched (the hook short-circuits when `CLAUDE_COD
 - Framework: **MSTest** (`Microsoft.VisualStudio.TestTools.UnitTesting`, `[TestClass]` / `[TestMethod]`). Do **not** introduce xUnit or NUnit.
 - Tests live in `<Project>/test/` and are organised as **partial classes** that mirror the source layout — e.g. `CircularBuffer{T}.cs` → `CircularBufferTests.Enqueue.cs`, `CircularBufferTests.Dequeue.cs`. Extend the existing partial class when adding tests for an existing type.
 - No shared test base classes; each test is self-contained.
+
+### Test-First for Fixes (Red-Green)
+
+When fixing a bug — or changing behaviour in response to a defect — **write the test before the fix**:
+
+1. **Red.** Add a regression test that reproduces the defect, and run it to confirm it **fails** against the current (buggy) code. A test that has never been seen to fail does not prove it guards anything.
+2. **Green.** Only then apply the fix, and confirm the test now **passes** along with the rest of the suite.
+3. **Separate commits, test first.** Commit the failing test and the fix as two commits, the test commit preceding the fix commit, so the history documents the reproduction. A red intermediate commit on a feature branch is expected — that is the point; the branch head (the fix commit) is green.
+
+The regression test follows every other convention below (member-named partial file, `<MethodOrProperty>_When…_Should…` naming, the `Verifies that …` summary, `Assert.ThrowsExactly<T>` for exceptions, the correct tier). Where a reference oracle exists — for example `System.Numerics.Complex` for `Complex<T>` — pin the corrected behaviour against it rather than a hand-guessed expected value, so the test cannot bake in the same mistake as the fix.
+
+This rule governs **defect-driven changes**. Net-new features follow the conventions below without the red-first step (there is no pre-existing behaviour to reproduce), though writing tests alongside the implementation is still expected.
 
 ### Test File Organisation
 
