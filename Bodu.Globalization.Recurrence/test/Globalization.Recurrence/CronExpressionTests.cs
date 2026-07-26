@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Recurrence;
 /// Contains unit tests for the <see cref="CronExpression" /> type.
 /// </summary>
 [TestClass]
-public sealed class CronExpressionTests
+public sealed partial class CronExpressionTests
 {
     /// <summary>
     /// Verifies that a weekday-morning expression returns the next matching nine-o'clock instant.

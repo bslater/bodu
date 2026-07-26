@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Recurrence;
 /// Contains unit tests for the <see cref="RecurrenceSet" /> type.
 /// </summary>
 [TestClass]
-public sealed class RecurrenceSetTests
+public sealed partial class RecurrenceSetTests
 {
     /// <summary>
     /// Verifies that parsing a property block merges the rule, adds the recurrence date, and removes the exception date.

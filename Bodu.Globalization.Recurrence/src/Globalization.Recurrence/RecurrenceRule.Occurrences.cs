@@ -408,7 +408,7 @@ public sealed partial class RecurrenceRule
         }
         else if (_byWeekNo.Length > 0)
         {
-            AddWeekNumberDays(year, result);
+            AddWeekNumberDays(year, startDate.DayOfWeek, result);
         }
         else if (_byMonthDay.Length > 0)
         {
@@ -643,15 +643,17 @@ public sealed partial class RecurrenceRule
     /// Adds the days of the ISO-8601 week numbers named by <c>BYWEEKNO</c> that match the <c>BYDAY</c> weekdays.
     /// </summary>
     /// <param name="year">The period year.</param>
+    /// <param name="defaultWeekday">The weekday used when <c>BYDAY</c> is absent (the start's weekday).</param>
     /// <param name="result">The list the matches are appended to.</param>
     /// <remarks>
-    /// Week numbering follows ISO 8601 (Monday-based); the <c>WKST</c> rule part is not applied to it.
+    /// Week numbering follows ISO 8601 (Monday-based); the <c>WKST</c> rule part is not applied to it. When
+    /// <c>BYDAY</c> is absent, the weekday is inherited from the series start rather than defaulting to Monday.
     /// </remarks>
-    private void AddWeekNumberDays(int year, List<DateOnly> result)
+    private void AddWeekNumberDays(int year, DayOfWeek defaultWeekday, List<DateOnly> result)
     {
         DayOfWeek[] weekdays = _byDay.Length > 0
             ? Array.ConvertAll(_byDay, entry => entry.Day)
-            : [DayOfWeek.Monday];
+            : [defaultWeekday];
 
         int weeksInYear = ISOWeek.GetWeeksInYear(year);
         foreach (int weekNo in _byWeekNo)
