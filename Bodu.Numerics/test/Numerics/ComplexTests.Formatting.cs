@@ -74,4 +74,19 @@ public partial class ComplexTests
         Assert.IsTrue(success);
         Assert.AreEqual("<3; -4>", System.Text.Encoding.UTF8.GetString(destination[..written]));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Complex{T}.TryFormat(Span{char}, out int, ReadOnlySpan{char}, IFormatProvider?)" />
+    /// returns <see langword="false" /> and writes nothing when the destination span is too small.
+    /// </summary>
+    [TestMethod]
+    public void TryFormat_WhenDestinationTooSmall_ShouldReturnFalse()
+    {
+        Span<char> destination = stackalloc char[3];
+
+        bool success = new Complex<double>(3.0, -4.0).TryFormat(destination, out int written, default, CultureInfo.InvariantCulture);
+
+        Assert.IsFalse(success);
+        Assert.AreEqual(0, written);
+    }
 }

@@ -80,4 +80,63 @@ public partial class ComplexTests
 
         Assert.AreEqual(5e200, result, 1e188);
     }
+
+    /// <summary>
+    /// Verifies that dividing by a divisor with very large components stays finite, because division uses Smith's
+    /// algorithm rather than forming the divisor's sum of squares (which would overflow to infinity, yielding NaN).
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Division_WhenDivisorComponentsAreLarge_ShouldStayFinite()
+    {
+        // c² + d² = 2e400 overflows, but Smith's evaluates c + d·(c/d) = 2e200, which is finite.
+        Complex<double> result = new Complex<double>(1.0, 1.0) / new Complex<double>(1e200, 1e200);
+
+        Assert.IsTrue(double.IsFinite(result.Real) && double.IsFinite(result.Imaginary), $"result was {result}");
+        Assert.AreEqual(1e-200, result.Real, 1e-212);
+        Assert.AreEqual(0.0, result.Imaginary, 1e-212);
+    }
+
+    /// <summary>
+    /// Verifies that the reciprocal of an infinite value matches <see cref="System.Numerics.Complex.Reciprocal" />
+    /// (which is <c>NaN</c>, since <c>1 / ∞</c> under Smith's algorithm forms <c>∞/∞</c>) — pinning the actual .NET
+    /// behaviour rather than the intuitive zero.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Reciprocal_WhenValueIsInfinite_ShouldMatchBcl()
+    {
+        AssertBitExact(
+            Complex<double>.Reciprocal(Complex<double>.Infinity),
+            System.Numerics.Complex.Reciprocal(new System.Numerics.Complex(double.PositiveInfinity, double.PositiveInfinity)),
+            "reciprocal(inf,inf)");
+    }
+
+    /// <summary>
+    /// Verifies that multiplication uses the direct four-multiply form without C99 Annex-G infinity recovery, matching
+    /// <see cref="System.Numerics.Complex" /> exactly rather than the recovered infinities that numpy / C99 produce.
+    /// This pins the deliberate specification choice so a "correcting" change is caught.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Multiply_WhenOperandsAreInfinite_ShouldMatchBclNaiveResult()
+    {
+        var left = new Complex<double>(1.0, 1.0);
+        var right = new Complex<double>(double.PositiveInfinity, double.PositiveInfinity);
+
+        AssertBitExact(
+            left * right,
+            new System.Numerics.Complex(1.0, 1.0) * new System.Numerics.Complex(double.PositiveInfinity, double.PositiveInfinity),
+            "(1+i)*(inf+inf i)");
+    }
+
+    /// <summary>
+    /// Verifies that the magnitude of a subnormal component is preserved rather than flushed to zero.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Abs_WhenComponentIsSubnormal_ShouldNotFlushToZero()
+    {
+        Assert.AreEqual(double.Epsilon, Complex<double>.Abs(new Complex<double>(double.Epsilon, 0.0)));
+    }
 }

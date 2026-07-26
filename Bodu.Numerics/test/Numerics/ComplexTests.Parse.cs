@@ -95,4 +95,46 @@ public partial class ComplexTests
             _ = Complex<double>.Parse("<1; 2", CultureInfo.InvariantCulture);
         });
     }
+
+    /// <summary>
+    /// Verifies that a value with non-finite components round-trips through <see cref="Complex{T}.ToString()" /> and the
+    /// parser, since each component formats to and parses from its named literal.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Parse_WhenComponentsAreNonFinite_ShouldRoundTrip()
+    {
+        foreach (var original in new[]
+        {
+            new Complex<double>(double.NaN, double.PositiveInfinity),
+            new Complex<double>(double.PositiveInfinity, double.NegativeInfinity),
+        })
+        {
+            Complex<double> parsed = Complex<double>.Parse(original.ToString(null, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+
+            Assert.AreEqual(
+                BitConverter.DoubleToInt64Bits(original.Real),
+                BitConverter.DoubleToInt64Bits(parsed.Real),
+                $"real of {original}");
+            Assert.AreEqual(
+                BitConverter.DoubleToInt64Bits(original.Imaginary),
+                BitConverter.DoubleToInt64Bits(parsed.Imaginary),
+                $"imaginary of {original}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a value requiring full round-trip precision reparses to the identical value, confirming the default
+    /// format is shortest-round-trippable.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Parse_WhenValueNeedsFullPrecision_ShouldRoundTripExactly()
+    {
+        var original = new Complex<double>(Math.PI, 0.1 + 0.2);
+
+        Complex<double> parsed = Complex<double>.Parse(original.ToString(null, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+
+        Assert.AreEqual(original, parsed);
+    }
 }

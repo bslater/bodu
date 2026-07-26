@@ -71,4 +71,23 @@ public partial class ComplexTests
     {
         Assert.IsFalse(new Complex<double>(1.0, 2.0).Equals("not a complex"));
     }
+
+    /// <summary>
+    /// Verifies that a value can be located in a <see cref="HashSet{T}" /> by an <see cref="Complex{T}.Equals(Complex{T})" />
+    /// -equal key even when the components are NaN or differ only in the sign of zero — the practical consequence of the
+    /// reflexive <see cref="Complex{T}.Equals(Complex{T})" /> / <see cref="Complex{T}.GetHashCode" /> contract.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void GetHashCode_WhenUsedAsHashSetKey_ShouldFindNaNAndSignedZeroKeys()
+    {
+        var set = new HashSet<Complex<double>>
+        {
+            new(double.NaN, 1.0),
+            new(0.0, 0.0),
+        };
+
+        Assert.IsTrue(set.Contains(new Complex<double>(double.NaN, 1.0)), "NaN-bearing key not found.");
+        Assert.IsTrue(set.Contains(new Complex<double>(-0.0, -0.0)), "signed-zero key not found.");
+    }
 }

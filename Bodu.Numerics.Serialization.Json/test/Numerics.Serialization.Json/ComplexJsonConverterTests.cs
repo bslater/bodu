@@ -92,6 +92,22 @@ public class ComplexJsonConverterTests
     }
 
     /// <summary>
+    /// Verifies that a non-finite component round-trips through the Compact string form, where each component is
+    /// rendered by the bracketed <c>ToString</c>.
+    /// </summary>
+    [TestMethod]
+    public void CompactPolicy_WhenComponentIsNonFinite_ShouldRoundTrip()
+    {
+        var value = new Complex<double>(double.NegativeInfinity, double.NaN);
+
+        string json = JsonSerializer.Serialize(value, Options(NumericsJsonPolicy.Compact));
+        Complex<double> result = JsonSerializer.Deserialize<Complex<double>>(json, Options(NumericsJsonPolicy.Compact));
+
+        Assert.IsTrue(double.IsNegativeInfinity(result.Real));
+        Assert.IsTrue(double.IsNaN(result.Imaginary));
+    }
+
+    /// <summary>
     /// Verifies that the object form accepts numeric-string component values.
     /// </summary>
     [TestMethod]

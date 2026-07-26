@@ -63,4 +63,25 @@ public partial class ComplexTests
         Assert.AreEqual(original.Real, rebuilt.Real, 1e-12);
         Assert.AreEqual(original.Imaginary, rebuilt.Imaginary, 1e-12);
     }
+
+    /// <summary>
+    /// Verifies that the phase on the negative real axis honors the sign of the imaginary zero — <c>+π</c> for
+    /// <c>+0</c> and <c>-π</c> for <c>-0</c> — and that the phase of a signed zero carries the imaginary zero's sign,
+    /// matching <see cref="System.Numerics.Complex.Phase" />.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Phase_WhenOnNegativeRealAxisOrSignedZero_ShouldMatchBclSignedZero()
+    {
+        foreach ((double re, double im) in new[] { (-1.0, 0.0), (-1.0, -0.0), (0.0, 0.0), (0.0, -0.0) })
+        {
+            double mine = new Complex<double>(re, im).Phase;
+            double bcl = new System.Numerics.Complex(re, im).Phase;
+
+            Assert.AreEqual(
+                BitConverter.DoubleToInt64Bits(bcl),
+                BitConverter.DoubleToInt64Bits(mine),
+                $"phase({re},{im}): mine={mine} bcl={bcl}");
+        }
+    }
 }

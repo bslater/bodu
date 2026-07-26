@@ -80,6 +80,111 @@ public partial class ComplexTests
         Assert.AreEqual(narrowReal, MinMagnitude(narrowReal, wideReal));
     }
 
+    /// <summary>
+    /// Verifies that the checked, saturating, and truncating creation contracts embed a real source value on the real
+    /// axis and read it back out through the reverse conversion.
+    /// </summary>
+    [TestMethod]
+    public void CreationContracts_WhenConvertingRealValue_ShouldRoundTrip()
+    {
+        Assert.AreEqual(new Complex<double>(7.0, 0.0), ConvertChecked<int, Complex<double>>(7));
+        Assert.AreEqual(new Complex<double>(7.0, 0.0), ConvertSaturating<int, Complex<double>>(7));
+        Assert.AreEqual(new Complex<double>(7.0, 0.0), ConvertTruncating<int, Complex<double>>(7));
+
+        Assert.AreEqual(7.0, ConvertChecked<Complex<double>, double>(new Complex<double>(7.0, 0.0)));
+        Assert.AreEqual(7.0, ConvertSaturating<Complex<double>, double>(new Complex<double>(7.0, 0.0)));
+        Assert.AreEqual(7.0, ConvertTruncating<Complex<double>, double>(new Complex<double>(7.0, 0.0)));
+    }
+
+    /// <summary>
+    /// Verifies that converting <em>from</em> an unsupported numeric type throws <see cref="NotSupportedException" />
+    /// through all three creation contracts, exercising the defensive handling in the from-conversion members.
+    /// </summary>
+    [TestMethod]
+    public void CreationContracts_WhenConvertingFromUnsupportedType_ShouldThrowNotSupported()
+    {
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => { _ = ConvertChecked<UnsupportedNumber, Complex<double>>(default); });
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => { _ = ConvertSaturating<UnsupportedNumber, Complex<double>>(default); });
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => { _ = ConvertTruncating<UnsupportedNumber, Complex<double>>(default); });
+    }
+
+    /// <summary>
+    /// Verifies that converting a real-valued complex <em>to</em> an unsupported numeric type throws
+    /// <see cref="NotSupportedException" /> through all three creation contracts, exercising the defensive handling in
+    /// the to-conversion members.
+    /// </summary>
+    [TestMethod]
+    public void CreationContracts_WhenConvertingToUnsupportedType_ShouldThrowNotSupported()
+    {
+        var real = new Complex<double>(3.0, 0.0);
+
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => { _ = ConvertChecked<Complex<double>, UnsupportedNumber>(real); });
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => { _ = ConvertSaturating<Complex<double>, UnsupportedNumber>(real); });
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => { _ = ConvertTruncating<Complex<double>, UnsupportedNumber>(real); });
+    }
+
+    /// <summary>
+    /// Verifies that the static <see cref="System.Numerics.INumberBase{TSelf}" /> parse entry points round-trip the
+    /// bracketed form on both the string and span overloads.
+    /// </summary>
+    [TestMethod]
+    public void ParsingThroughNumberBase_ShouldRoundTripBracketedForm()
+    {
+        var expected = new Complex<double>(3.0, -4.0);
+
+        Assert.AreEqual(expected, ParseNumberBase<Complex<double>>("<3; -4>"));
+        Assert.IsTrue(TryParseNumberBase<Complex<double>>("<3; -4>", out Complex<double> parsed));
+        Assert.AreEqual(expected, parsed);
+        Assert.IsFalse(TryParseNumberBase<Complex<double>>("not a complex", out _));
+    }
+
+    /// <summary>Invokes the generic-math checked conversion between two number types.</summary>
+    /// <typeparam name="TSource">The source number type.</typeparam>
+    /// <typeparam name="TTarget">The destination number type.</typeparam>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>The converted value.</returns>
+    private static TTarget ConvertChecked<TSource, TTarget>(TSource value)
+        where TSource : INumberBase<TSource>
+        where TTarget : INumberBase<TTarget> =>
+        TTarget.CreateChecked(value);
+
+    /// <summary>Invokes the generic-math saturating conversion between two number types.</summary>
+    /// <typeparam name="TSource">The source number type.</typeparam>
+    /// <typeparam name="TTarget">The destination number type.</typeparam>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>The converted value.</returns>
+    private static TTarget ConvertSaturating<TSource, TTarget>(TSource value)
+        where TSource : INumberBase<TSource>
+        where TTarget : INumberBase<TTarget> =>
+        TTarget.CreateSaturating(value);
+
+    /// <summary>Invokes the generic-math truncating conversion between two number types.</summary>
+    /// <typeparam name="TSource">The source number type.</typeparam>
+    /// <typeparam name="TTarget">The destination number type.</typeparam>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>The converted value.</returns>
+    private static TTarget ConvertTruncating<TSource, TTarget>(TSource value)
+        where TSource : INumberBase<TSource>
+        where TTarget : INumberBase<TTarget> =>
+        TTarget.CreateTruncating(value);
+
+    /// <summary>Invokes the static <see cref="System.Numerics.INumberBase{TSelf}" /> string parse.</summary>
+    /// <typeparam name="TC">The number type.</typeparam>
+    /// <param name="text">The text to parse.</param>
+    /// <returns>The parsed value.</returns>
+    private static TC ParseNumberBase<TC>(string text)
+        where TC : INumberBase<TC> =>
+        TC.Parse(text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+
+    /// <summary>Invokes the static <see cref="System.Numerics.INumberBase{TSelf}" /> span try-parse.</summary>
+    /// <typeparam name="TC">The number type.</typeparam>
+    /// <param name="text">The text to parse.</param>
+    /// <param name="value">Receives the parsed value on success.</param>
+    /// <returns><see langword="true" /> when parsing succeeded.</returns>
+    private static bool TryParseNumberBase<TC>(string text, out TC value)
+        where TC : INumberBase<TC> =>
+        TC.TryParse(text.AsSpan(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out value);
+
     /// <summary>Returns the additive or multiplicative identity through the generic-math interface.</summary>
     /// <typeparam name="TC">The number type.</typeparam>
     /// <param name="additive">Whether to return the additive identity rather than the multiplicative identity.</param>

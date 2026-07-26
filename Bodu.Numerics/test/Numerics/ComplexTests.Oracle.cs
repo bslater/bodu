@@ -23,6 +23,16 @@ public partial class ComplexTests
     private static readonly double[] FunctionParts = [-2.0, -0.5, 0.0, 0.5, 1.0, 2.5];
 
     /// <summary>
+    /// Component values used for the transcendental edge sweep: signed zeros, the non-finite specials, values that
+    /// straddle the <c>Tan</c>/<c>Tanh</c> large-argument threshold, and very large / very small magnitudes.
+    /// </summary>
+    private static readonly double[] EdgeFunctionParts =
+    [
+        double.NegativeInfinity, -1000.0, -1.5, -0.0, 0.0, 1.5, 1000.0, double.PositiveInfinity, double.NaN,
+        1e300, 1e-300,
+    ];
+
+    /// <summary>
     /// Verifies that the arithmetic operators agree bit for bit with <see cref="System.Numerics.Complex" /> across a
     /// component sweep that includes signed zeros and the non-finite specials.
     /// </summary>
@@ -150,6 +160,42 @@ public partial class ComplexTests
     }
 
     /// <summary>
+    /// Verifies that the transcendental functions agree with <see cref="System.Numerics.Complex" /> across the edge
+    /// domain — signed zeros, the non-finite specials, and very large and very small magnitudes — that the moderate
+    /// sweep does not reach. This exercises the <c>Tan</c>/<c>Tanh</c> large-argument branch, the <c>Sqrt</c>
+    /// overflow-rescale and infinity branches, and every function's non-finite handling. The comparison tolerates a
+    /// non-finite result (an infinity is matched exactly, a NaN is skipped) so only a genuine finite divergence fails.
+    /// A NaN <em>input</em> component is excluded, since a transcendental of a NaN-bearing argument has no well-defined
+    /// value and its exact NaN/infinity arrangement is implementation-defined rather than part of the contract.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    public void FunctionsEdge_AgainstBclOracle_ShouldMatchWithinTolerance()
+    {
+        var square = new Complex<double>(2.0, 0.0);
+
+        foreach (Complex<double> m in EdgeFunctionValues())
+        {
+            if (double.IsNaN(m.Real) || double.IsNaN(m.Imaginary))
+                continue;
+
+            Bcl b = ToBcl(m);
+
+            AssertClose(Complex<double>.Sqrt(m), Bcl.Sqrt(b), $"sqrt({m})", 1e-9);
+            AssertClose(Complex<double>.Exp(m), Bcl.Exp(b), $"exp({m})", 1e-9);
+            AssertClose(Complex<double>.Log(m), Bcl.Log(b), $"log({m})", 1e-9);
+            AssertClose(Complex<double>.Log10(m), Bcl.Log10(b), $"log10({m})", 1e-9);
+            AssertClose(Complex<double>.Pow(m, square), Bcl.Pow(b, ToBcl(square)), $"pow({m},2)", 1e-9);
+            AssertClose(Complex<double>.Sin(m), Bcl.Sin(b), $"sin({m})", 1e-9);
+            AssertClose(Complex<double>.Cos(m), Bcl.Cos(b), $"cos({m})", 1e-9);
+            AssertClose(Complex<double>.Tan(m), Bcl.Tan(b), $"tan({m})", 1e-9);
+            AssertClose(Complex<double>.Sinh(m), Bcl.Sinh(b), $"sinh({m})", 1e-9);
+            AssertClose(Complex<double>.Cosh(m), Bcl.Cosh(b), $"cosh({m})", 1e-9);
+            AssertClose(Complex<double>.Tanh(m), Bcl.Tanh(b), $"tanh({m})", 1e-9);
+        }
+    }
+
+    /// <summary>
     /// Verifies that the inverse trigonometric functions satisfy their defining identities to within tolerance, since
     /// they are evaluated from closed forms rather than in lock-step with <see cref="System.Numerics.Complex" />.
     /// </summary>
@@ -202,6 +248,15 @@ public partial class ComplexTests
     {
         foreach (double re in FunctionParts)
             foreach (double im in FunctionParts)
+                yield return new Complex<double>(re, im);
+    }
+
+    /// <summary>Enumerates the edge-domain complex values used for the transcendental edge sweep.</summary>
+    /// <returns>The edge function sweep values.</returns>
+    private static IEnumerable<Complex<double>> EdgeFunctionValues()
+    {
+        foreach (double re in EdgeFunctionParts)
+            foreach (double im in EdgeFunctionParts)
                 yield return new Complex<double>(re, im);
     }
 
