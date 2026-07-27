@@ -206,6 +206,7 @@ ICONS = {
     "Bodu.Financial.DependencyInjection": ("findi", "#34D399", "FDI", "plug"),
     "Bodu.Financial.Serialization.Json": ("finjson", "#34D399", "JSON", "braces"),
     "Bodu.Globalization.Calendar":       ("cal", "#FBBF24", "CAL", "grid"),
+    "Bodu.Globalization.Recurrence":      ("recur", "#2DD4BF", "REC", "grid"),
     "Bodu.Globalization.Calendar.Builder": ("calb", "#FBBF24", "BLD", "pills"),
     "Bodu.Globalization.Calendar.DependencyInjection": ("caldi", "#60A5FA", "CDI", "plug"),
     "Bodu.Globalization.Calendar.Plugins": ("calplg", "#2DD4BF", "PLG", "shield"),

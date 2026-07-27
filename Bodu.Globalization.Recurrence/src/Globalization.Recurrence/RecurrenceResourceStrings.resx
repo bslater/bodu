@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Format_Invalid_RecurrenceRuleText" xml:space="preserve">
+    <value>The input string '{0}' was not in a correct recurrence-rule (RRULE) format.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceRulePart" xml:space="preserve">
+    <value>The recurrence-rule component '{0}' is not valid.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceRuleDuplicatePart" xml:space="preserve">
+    <value>The recurrence-rule component '{0}' appears more than once.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceRuleFormat" xml:space="preserve">
+    <value>The format string '{0}' is not supported.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceSetText" xml:space="preserve">
+    <value>The input was not a valid recurrence-set property block.</value>
+  </data>
+  <data name="Format_Invalid_DateTimeValue" xml:space="preserve">
+    <value>The date-time value '{0}' is not in a supported iCalendar DATE or DATE-TIME format.</value>
+  </data>
+  <data name="Format_Invalid_CronText" xml:space="preserve">
+    <value>The input string '{0}' was not in a correct cron-expression format.</value>
+  </data>
+  <data name="Format_Invalid_CronField" xml:space="preserve">
+    <value>The cron field '{0}' is not valid.</value>
+  </data>
+  <data name="Format_Invalid_CronFieldCount" xml:space="preserve">
+    <value>A cron expression must contain the number of fields required by the specified format.</value>
+  </data>
+  <data name="Arg_Invalid_RecurrenceFrequencyRequired" xml:space="preserve">
+    <value>A recurrence rule requires a frequency (FREQ) component.</value>
+  </data>
+  <data name="Arg_Invalid_RecurrenceSetEmpty" xml:space="preserve">
+    <value>A recurrence set requires at least one rule or explicit recurrence date.</value>
+  </data>
+  <data name="Arg_OutOfRange_RecurrenceInterval" xml:space="preserve">
+    <value>The recurrence interval must be a positive integer.</value>
+  </data>
+  <data name="Arg_OutOfRange_RecurrenceCount" xml:space="preserve">
+    <value>The recurrence count must be a positive integer.</value>
+  </data>
+  <data name="Arg_OutOfRange_RecurrenceRulePart" xml:space="preserve">
+    <value>A value supplied for the '{0}' recurrence rule part is outside its permitted range.</value>
+  </data>
+  <data name="Op_NotSupported_SubDailyFrequency" xml:space="preserve">
+    <value>The recurrence frequency '{0}' is not supported; sub-daily frequencies are a planned follow-on.</value>
+  </data>
+  <data name="Op_NotSupported_CronExtensionToken" xml:space="preserve">
+    <value>The cron token '{0}' is not supported; the Quartz L, W, and # extensions are a planned follow-on.</value>
+  </data>
+</root>

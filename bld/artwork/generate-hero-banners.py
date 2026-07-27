@@ -543,6 +543,19 @@ add("hero-calendar", "Bodu.Globalization.Calendar", "Bodu.Globalization.Calendar
          y0=44, dy=16, size=10),
     "rule-driven notable dates · range resolution", gid="cal")
 
+add("hero-recurrence", "Bodu.Globalization.Recurrence",
+    "Bodu.Globalization.Recurrence — RFC 5545 RRULE and cron recurrence evaluation",
+    "#2DD4BF", "RRULE",
+    "\n".join([
+        calendar_grid("#2DD4BF", {1, 8, 15}),
+        note("weekly · monthly · yearly · cron", y=148)]),
+    "parse", "expand", "Occurrences",
+    mono(["RecurrenceRule.Parse(\"FREQ=WEEKLY\")", "GetOccurrences(start)", None,
+          "CronExpression.Parse(\"0 9 * * 1-5\")", "GetNextOccurrence(after)", None,
+          '<tspan fill="#94A3B8" font-size="9">RDATE · EXDATE · BYSETPOS</tspan>'],
+         y0=44, dy=16, size=10),
+    "RRULE occurrence enumeration · cron next/previous", gid="recur")
+
 add("hero-calendar-builder", "Bodu.Globalization.Calendar.Builder",
     "Bodu.Globalization.Calendar.Builder — fluent authoring for notable-date documents",
     "#FBBF24", "DocumentBuilder",

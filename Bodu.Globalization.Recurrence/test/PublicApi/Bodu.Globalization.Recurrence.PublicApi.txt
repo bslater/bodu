@@ -1,0 +1,105 @@
+class Bodu.Globalization.Recurrence.CronExpression
+    method Bodu.Globalization.Recurrence.CronExpression Parse(System.String)
+    method Bodu.Globalization.Recurrence.CronExpression Parse(System.String, Bodu.Globalization.Recurrence.CronFormat)
+    method Bodu.Globalization.Recurrence.CronExpression Parse(System.String, System.IFormatProvider)
+    method Boolean Equals(Bodu.Globalization.Recurrence.CronExpression)
+    method Boolean Equals(System.Object)
+    method Boolean TryParse(System.String, Bodu.Globalization.Recurrence.CronExpression ByRef)
+    method Boolean TryParse(System.String, Bodu.Globalization.Recurrence.CronFormat, Bodu.Globalization.Recurrence.CronExpression ByRef)
+    method Boolean TryParse(System.String, System.IFormatProvider, Bodu.Globalization.Recurrence.CronExpression ByRef)
+    method Int32 GetHashCode()
+    method System.Nullable`1[System.DateTimeOffset] GetNextOccurrence(System.DateTimeOffset, Boolean)
+    method System.Nullable`1[System.DateTimeOffset] GetPreviousOccurrence(System.DateTimeOffset, Boolean)
+    method System.Nullable`1[System.DateTime] GetNextOccurrence(System.DateTime, Boolean)
+    method System.Nullable`1[System.DateTime] GetPreviousOccurrence(System.DateTime, Boolean)
+    method System.String ToString()
+    method System.String ToString(System.String, System.IFormatProvider)
+    property Bodu.Globalization.Recurrence.CronFormat Format
+enum Bodu.Globalization.Recurrence.CronFormat
+    field Bodu.Globalization.Recurrence.CronFormat Standard
+    field Bodu.Globalization.Recurrence.CronFormat WithSeconds
+    field Int32 value__
+enum Bodu.Globalization.Recurrence.RecurrenceFrequency
+    field Bodu.Globalization.Recurrence.RecurrenceFrequency Daily
+    field Bodu.Globalization.Recurrence.RecurrenceFrequency Hourly
+    field Bodu.Globalization.Recurrence.RecurrenceFrequency Minutely
+    field Bodu.Globalization.Recurrence.RecurrenceFrequency Monthly
+    field Bodu.Globalization.Recurrence.RecurrenceFrequency Secondly
+    field Bodu.Globalization.Recurrence.RecurrenceFrequency Weekly
+    field Bodu.Globalization.Recurrence.RecurrenceFrequency Yearly
+    field Int32 value__
+class Bodu.Globalization.Recurrence.RecurrenceRule
+    method Bodu.Globalization.Recurrence.RecurrenceRule Parse(System.ReadOnlySpan`1[System.Char], System.IFormatProvider)
+    method Bodu.Globalization.Recurrence.RecurrenceRule Parse(System.String)
+    method Bodu.Globalization.Recurrence.RecurrenceRule Parse(System.String, System.IFormatProvider)
+    method Boolean Equals(Bodu.Globalization.Recurrence.RecurrenceRule)
+    method Boolean Equals(System.Object)
+    method Boolean TryParse(System.ReadOnlySpan`1[System.Char], System.IFormatProvider, Bodu.Globalization.Recurrence.RecurrenceRule ByRef)
+    method Boolean TryParse(System.String, Bodu.Globalization.Recurrence.RecurrenceRule ByRef)
+    method Boolean TryParse(System.String, System.IFormatProvider, Bodu.Globalization.Recurrence.RecurrenceRule ByRef)
+    method Int32 GetHashCode()
+    method System.Collections.Generic.IEnumerable`1[System.DateTimeOffset] GetOccurrences(System.DateTimeOffset)
+    method System.Collections.Generic.IEnumerable`1[System.DateTimeOffset] GetOccurrences(System.DateTimeOffset, System.DateTimeOffset, System.DateTimeOffset)
+    method System.Collections.Generic.IEnumerable`1[System.DateTime] GetOccurrences(System.DateTime)
+    method System.Collections.Generic.IEnumerable`1[System.DateTime] GetOccurrences(System.DateTime, System.DateTime, System.DateTime)
+    method System.Nullable`1[System.DateTimeOffset] GetNextOccurrence(System.DateTimeOffset, System.DateTimeOffset, Boolean)
+    method System.Nullable`1[System.DateTime] GetNextOccurrence(System.DateTime, System.DateTime, Boolean)
+    method System.String ToString()
+    method System.String ToString(System.String)
+    method System.String ToString(System.String, System.IFormatProvider)
+    property Bodu.Globalization.Recurrence.RecurrenceFrequency Frequency
+    property Int32 Interval
+    property System.Collections.Generic.IReadOnlyList`1[Bodu.Globalization.Recurrence.WeekDayNum] ByDay
+    property System.Collections.Generic.IReadOnlyList`1[System.Int32] ByHour
+    property System.Collections.Generic.IReadOnlyList`1[System.Int32] ByMinute
+    property System.Collections.Generic.IReadOnlyList`1[System.Int32] ByMonth
+    property System.Collections.Generic.IReadOnlyList`1[System.Int32] ByMonthDay
+    property System.Collections.Generic.IReadOnlyList`1[System.Int32] BySecond
+    property System.Collections.Generic.IReadOnlyList`1[System.Int32] BySetPos
+    property System.Collections.Generic.IReadOnlyList`1[System.Int32] ByWeekNo
+    property System.Collections.Generic.IReadOnlyList`1[System.Int32] ByYearDay
+    property System.DayOfWeek WeekStart
+    property System.Nullable`1[System.DateTime] Until
+    property System.Nullable`1[System.Int32] Count
+class Bodu.Globalization.Recurrence.RecurrenceRuleBuilder
+    constructor Void .ctor(Bodu.Globalization.Recurrence.RecurrenceFrequency)
+    method Bodu.Globalization.Recurrence.RecurrenceRule Build()
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder ByDay(Bodu.Globalization.Recurrence.WeekDayNum[])
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder ByDay(System.DayOfWeek[])
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder ByHour(Int32[])
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder ByMinute(Int32[])
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder ByMonth(Int32[])
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder ByMonthDay(Int32[])
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder BySecond(Int32[])
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder BySetPos(Int32[])
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder ByWeekNo(Int32[])
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder ByYearDay(Int32[])
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder WithCount(Int32)
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder WithInterval(Int32)
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder WithUntil(System.DateTime)
+    method Bodu.Globalization.Recurrence.RecurrenceRuleBuilder WithWeekStart(System.DayOfWeek)
+class Bodu.Globalization.Recurrence.RecurrenceSet
+    constructor Void .ctor(System.DateTime, System.Collections.Generic.IEnumerable`1[Bodu.Globalization.Recurrence.RecurrenceRule], System.Collections.Generic.IEnumerable`1[System.DateTime], System.Collections.Generic.IEnumerable`1[System.DateTime])
+    method Bodu.Globalization.Recurrence.RecurrenceSet Parse(System.String)
+    method Bodu.Globalization.Recurrence.RecurrenceSet Parse(System.String, System.IFormatProvider)
+    method Boolean TryParse(System.String, Bodu.Globalization.Recurrence.RecurrenceSet ByRef)
+    method Boolean TryParse(System.String, System.IFormatProvider, Bodu.Globalization.Recurrence.RecurrenceSet ByRef)
+    method System.Collections.Generic.IEnumerable`1[System.DateTime] GetOccurrences()
+    method System.Collections.Generic.IEnumerable`1[System.DateTime] GetOccurrences(System.DateTime, System.DateTime)
+    method System.Nullable`1[System.DateTime] GetNextOccurrence(System.DateTime, Boolean)
+    property System.Collections.Generic.IReadOnlyList`1[Bodu.Globalization.Recurrence.RecurrenceRule] Rules
+    property System.Collections.Generic.IReadOnlyList`1[System.DateTime] Dates
+    property System.Collections.Generic.IReadOnlyList`1[System.DateTime] ExceptionDates
+    property System.DateTime Start
+struct Bodu.Globalization.Recurrence.WeekDayNum
+    constructor Void .ctor(Int32, System.DayOfWeek)
+    method Boolean Equals(Bodu.Globalization.Recurrence.WeekDayNum)
+    method Boolean Equals(System.Object)
+    method Boolean op_Equality(Bodu.Globalization.Recurrence.WeekDayNum, Bodu.Globalization.Recurrence.WeekDayNum)
+    method Boolean op_Inequality(Bodu.Globalization.Recurrence.WeekDayNum, Bodu.Globalization.Recurrence.WeekDayNum)
+    method Int32 GetHashCode()
+    method System.String ToString()
+    method Void Deconstruct(Int32 ByRef, System.DayOfWeek ByRef)
+    property Boolean IsEveryOccurrence
+    property Int32 Ordinal
+    property System.DayOfWeek Day
