@@ -141,6 +141,28 @@ public partial class ComplexTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Complex{T}.Abs" /> of an infinite component paired with a <c>NaN</c> component returns
+    /// <c>NaN</c>, matching <see cref="System.Numerics.Complex.Abs" /> — whose scaled hypotenuse suppresses the
+    /// infinity fast path when the other component is <c>NaN</c>, rather than the intuitive infinity.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Abs_WhenOneComponentIsInfiniteAndOtherIsNaN_ShouldMatchBclNaN()
+    {
+        double infThenNaN = Complex<double>.Abs(new Complex<double>(double.NegativeInfinity, double.NaN));
+        double nanThenInf = Complex<double>.Abs(new Complex<double>(double.NaN, double.PositiveInfinity));
+
+        Assert.AreEqual(
+            System.Numerics.Complex.Abs(new System.Numerics.Complex(double.NegativeInfinity, double.NaN)),
+            infThenNaN);
+        Assert.AreEqual(
+            System.Numerics.Complex.Abs(new System.Numerics.Complex(double.NaN, double.PositiveInfinity)),
+            nanThenInf);
+        Assert.IsTrue(double.IsNaN(infThenNaN), $"abs(-inf, NaN) was {infThenNaN}");
+        Assert.IsTrue(double.IsNaN(nanThenInf), $"abs(NaN, +inf) was {nanThenInf}");
+    }
+
+    /// <summary>
     /// Verifies that dividing by zero yields NaN components rather than an infinity, matching
     /// <see cref="System.Numerics.Complex" /> — the <c>0/0</c> that Smith's algorithm forms for a zero divisor.
     /// </summary>
