@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 
   <!--
     Shared, lock-step package-version baseline. Every Bodu library ships at BoduBaseVersion by
@@ -13,7 +13,7 @@
     intent is obvious.
   -->
   <PropertyGroup>
-    <BoduBaseVersion>0.1.0</BoduBaseVersion>
+    <BoduBaseVersion>0.1.1</BoduBaseVersion>
     <VersionPrefix>$(BoduBaseVersion)</VersionPrefix>
 
     <!--
