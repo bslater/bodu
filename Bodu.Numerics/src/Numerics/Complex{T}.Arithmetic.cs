@@ -106,11 +106,6 @@ public readonly partial struct Complex<T>
         a = T.Abs(a);
         b = T.Abs(b);
 
-        // Any infinite component makes the magnitude infinite, even when the other component is NaN — this matches
-        // IEEE 754 hypot and the behaviour of System.Numerics.Complex.
-        if (T.IsPositiveInfinity(a) || T.IsPositiveInfinity(b))
-            return T.PositiveInfinity;
-
         T small;
         T large;
         if (a < b)
@@ -126,6 +121,12 @@ public readonly partial struct Complex<T>
 
         if (T.IsZero(small))
             return large;
+
+        // An infinite larger operand yields an infinite magnitude, but only when the smaller operand is not NaN: a NaN
+        // component must poison the result to NaN. This mirrors the guarded fast path in System.Numerics.Complex, so
+        // Abs(±∞, NaN) returns NaN rather than infinity.
+        if (T.IsPositiveInfinity(large) && !T.IsNaN(small))
+            return T.PositiveInfinity;
 
         T ratio = small / large;
         return large * T.Sqrt(T.One + (ratio * ratio));
