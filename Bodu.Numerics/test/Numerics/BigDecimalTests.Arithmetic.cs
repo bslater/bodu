@@ -160,6 +160,20 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
+    /// Verifies that multiplying two values whose scales sum past <see cref="int.MaxValue" /> throws
+    /// <see cref="OverflowException" /> instead of wrapping the scale in unchecked <see cref="int" /> addition: two
+    /// scales of <see cref="int.MaxValue" /> wrap to −2, which normalization silently folds into the mantissa,
+    /// producing an astronomically wrong value (100 instead of 10^−4294967294).
+    /// </summary>
+    [TestMethod]
+    public void Multiply_WhenScaleSumOverflowsInt_ShouldThrowOverflowException()
+    {
+        var value = new BigDecimal(System.Numerics.BigInteger.One, int.MaxValue);
+
+        Assert.ThrowsExactly<OverflowException>(() => _ = value * value);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="BigDecimal.Pow(BigDecimal, int)" /> throws <see cref="OverflowException" /> for an
     /// exponent of <see cref="int.MinValue" /> instead of recursing indefinitely: the negative-exponent path negates
     /// the exponent, and <c>-int.MinValue</c> wraps back to <see cref="int.MinValue" /> in unchecked arithmetic.
