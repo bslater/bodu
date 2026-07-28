@@ -178,6 +178,15 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The fixed-point precision &apos;{0}&apos; exceeds the supported maximum of {1} decimal places..
+        /// </summary>
+        internal static string Format_Invalid_BigDecimalPrecision {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BigDecimalPrecision", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The backing type &apos;{0}&apos; is unbounded and has no minimum value..
         /// </summary>
         internal static string Op_NotSupported_UnboundedMinValue {

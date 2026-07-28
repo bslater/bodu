@@ -19,10 +19,14 @@ public readonly partial struct BigDecimal
     /// <returns>
     /// The rounded value; if <paramref name="value" /> already has fewer decimal places it is returned unchanged.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="scale" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="scale" /> is negative, or <paramref name="mode" /> is not a defined
+    /// <see cref="MidpointRounding" /> value.
+    /// </exception>
     public static BigDecimal Round(BigDecimal value, int scale, MidpointRounding mode)
     {
         ThrowHelper.ThrowIfNegative(scale);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(mode);
 
         if (value._scale <= scale)
             return value;

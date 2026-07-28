@@ -102,6 +102,9 @@
   <data name="Overflow_BigDecimalScale" xml:space="preserve">
     <value>The resulting decimal scale is outside the supported range.</value>
   </data>
+  <data name="Format_Invalid_BigDecimalPrecision" xml:space="preserve">
+    <value>The fixed-point precision '{0}' exceeds the supported maximum of {1} decimal places.</value>
+  </data>
   <data name="Op_NotSupported_UnboundedMinValue" xml:space="preserve">
     <value>The backing type '{0}' is unbounded and has no minimum value.</value>
   </data>

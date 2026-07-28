@@ -100,7 +100,9 @@ public readonly partial struct BigDecimal
         int exponentIndex = s.IndexOfAny('e', 'E');
         if (exponentIndex >= 0)
         {
-            if (!int.TryParse(s[(exponentIndex + 1)..], NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out exponent))
+            // The exponent honors the same culture symbols as the mantissa so cultures with a non-ASCII negative sign
+            // can round-trip their own scientific notation.
+            if (!int.TryParse(s[(exponentIndex + 1)..], NumberStyles.AllowLeadingSign, format, out exponent))
                 return false;
 
             s = s[..exponentIndex];
