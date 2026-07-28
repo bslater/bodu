@@ -169,6 +169,15 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The resulting decimal scale is outside the supported range..
+        /// </summary>
+        internal static string Overflow_BigDecimalScale {
+            get {
+                return ResourceManager.GetString("Overflow_BigDecimalScale", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The backing type &apos;{0}&apos; is unbounded and has no minimum value..
         /// </summary>
         internal static string Op_NotSupported_UnboundedMinValue {
