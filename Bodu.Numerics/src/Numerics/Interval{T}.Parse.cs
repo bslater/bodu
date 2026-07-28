@@ -179,7 +179,9 @@ public readonly partial struct Interval<T> :
         }
         else
         {
-            if (!T.TryParse(lowerText, NumberStyles.Any, effectiveProvider, out T? parsedLower))
+            // NaN is rejected to mirror the public constructor's endpoint guard: parsing must not construct an
+            // interval the constructor would refuse.
+            if (!T.TryParse(lowerText, NumberStyles.Any, effectiveProvider, out T? parsedLower) || T.IsNaN(parsedLower))
             {
                 result = default;
                 return false;
@@ -202,7 +204,7 @@ public readonly partial struct Interval<T> :
         }
         else
         {
-            if (!T.TryParse(upperText, NumberStyles.Any, effectiveProvider, out T? parsedUpper))
+            if (!T.TryParse(upperText, NumberStyles.Any, effectiveProvider, out T? parsedUpper) || T.IsNaN(parsedUpper))
             {
                 result = default;
                 return false;
