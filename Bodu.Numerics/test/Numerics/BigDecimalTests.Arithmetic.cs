@@ -158,4 +158,17 @@ public partial class BigDecimalTests
 
         Assert.ThrowsExactly<OverflowException>(() => _ = BigDecimal.Pow(value, int.MaxValue));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="BigDecimal.Pow(BigDecimal, int)" /> throws <see cref="OverflowException" /> for an
+    /// exponent of <see cref="int.MinValue" /> instead of recursing indefinitely: the negative-exponent path negates
+    /// the exponent, and <c>-int.MinValue</c> wraps back to <see cref="int.MinValue" /> in unchecked arithmetic.
+    /// </summary>
+    [TestMethod]
+    public void Pow_WhenExponentIsIntMinValue_ShouldThrowOverflowException()
+    {
+        BigDecimal value = BD(2, 0);
+
+        Assert.ThrowsExactly<OverflowException>(() => _ = BigDecimal.Pow(value, int.MinValue));
+    }
 }
