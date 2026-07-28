@@ -148,6 +148,11 @@ public readonly partial struct BigDecimal
             return new BigDecimal(BigInteger.Pow(value._mantissa, exponent), (int)scale);
         }
 
+        // -int.MinValue wraps back to int.MinValue in unchecked arithmetic, which would recurse indefinitely; the
+        // magnitude 2^31 is also beyond what BigInteger.Pow's int exponent can represent, so reject it outright.
+        if (exponent == int.MinValue)
+            throw new OverflowException(NumericsResourceStrings.Overflow_ExponentMagnitude);
+
         return Divide(One, Pow(value, -exponent));
     }
 
