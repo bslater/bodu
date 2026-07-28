@@ -141,6 +141,25 @@ public partial class ComplexTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Complex{T}.Abs" /> of an infinite component paired with a <c>NaN</c> component returns
+    /// positive infinity — the IEEE 754 <c>hypot</c> value (and the value of <see cref="double.Hypot(double, double)" /> on every
+    /// runtime). The result is asserted as a fixed constant rather than against <see cref="System.Numerics.Complex.Abs" />
+    /// because that oracle is runtime-dependent for this input: .NET 8 returned <c>NaN</c> from a since-corrected guard,
+    /// while .NET 9 and later return positive infinity. Pinning the stable IEEE value keeps the magnitude identical
+    /// across every framework the library targets.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void Abs_WhenOneComponentIsInfiniteAndOtherIsNaN_ShouldReturnPositiveInfinity()
+    {
+        double infThenNaN = Complex<double>.Abs(new Complex<double>(double.NegativeInfinity, double.NaN));
+        double nanThenInf = Complex<double>.Abs(new Complex<double>(double.NaN, double.PositiveInfinity));
+
+        Assert.IsTrue(double.IsPositiveInfinity(infThenNaN), $"abs(-inf, NaN) was {infThenNaN}");
+        Assert.IsTrue(double.IsPositiveInfinity(nanThenInf), $"abs(NaN, +inf) was {nanThenInf}");
+    }
+
+    /// <summary>
     /// Verifies that dividing by zero yields NaN components rather than an infinity, matching
     /// <see cref="System.Numerics.Complex" /> — the <c>0/0</c> that Smith's algorithm forms for a zero divisor.
     /// </summary>

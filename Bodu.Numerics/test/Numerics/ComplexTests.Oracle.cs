@@ -78,9 +78,7 @@ public partial class ComplexTests
             AssertBitExact(Complex<double>.Conjugate(m), Bcl.Conjugate(b), $"conj({m})");
             AssertBitExact(Complex<double>.Reciprocal(m), Bcl.Reciprocal(b), $"recip({m})");
 
-            // Abs/Magnitude agrees to within a small tolerance rather than bit for bit: the scaled hypotenuse can
-            // round differently from the framework's private helper by up to one ULP.
-            AssertComponentClose(Complex<double>.Abs(m), Bcl.Abs(b), $"abs({m})", 1e-15);
+            AssertMagnitudeMatchesBcl(m, b, $"abs({m})");
         }
     }
 
@@ -376,6 +374,46 @@ public partial class ComplexTests
         AssertComponentClose(mine.Real, bcl.Real, $"{label}.Real", tolerance);
         AssertComponentClose(mine.Imaginary, bcl.Imaginary, $"{label}.Imaginary", tolerance);
     }
+
+    /// <summary>
+    /// Asserts that the magnitude of a value agrees with <see cref="System.Numerics.Complex.Abs" />, tolerating the one
+    /// documented cross-runtime divergence.
+    /// </summary>
+    /// <param name="m">The value produced by <see cref="Complex{T}" />.</param>
+    /// <param name="b">The equivalent framework value.</param>
+    /// <param name="label">A label identifying the case on failure.</param>
+    /// <remarks>
+    /// The magnitude of an argument with one infinite and one <c>NaN</c> component is positive infinity per IEEE 754
+    /// <c>hypot</c> (and per <see cref="double.Hypot(double, double)" /> on every runtime). <see cref="System.Numerics.Complex" />
+    /// adopted that convention in .NET 9; .NET 8 returned <c>NaN</c> from a since-corrected guard. For that single input
+    /// shape the stable IEEE result is accepted against either framework value, so the sweep passes on both the net8.0
+    /// target and later runtimes; every other component is compared within a one-ULP tolerance.
+    /// </remarks>
+    private static void AssertMagnitudeMatchesBcl(Complex<double> m, Bcl b, string label)
+    {
+        double mine = Complex<double>.Abs(m);
+        double bcl = Bcl.Abs(b);
+
+        if (IsInfiniteAndNaN(m))
+        {
+            Assert.IsTrue(double.IsPositiveInfinity(mine), $"{label}: expected +infinity, mine={mine}");
+            Assert.IsTrue(
+                double.IsPositiveInfinity(bcl) || double.IsNaN(bcl),
+                $"{label}: unexpected framework magnitude bcl={bcl}");
+            return;
+        }
+
+        // Abs/Magnitude agrees to within a small tolerance rather than bit for bit: the scaled hypotenuse can round
+        // differently from the framework's private helper by up to one ULP.
+        AssertComponentClose(mine, bcl, label, 1e-15);
+    }
+
+    /// <summary>Determines whether exactly one component is infinite and the other is <c>NaN</c>.</summary>
+    /// <param name="value">The value to inspect.</param>
+    /// <returns><see langword="true" /> if one component is infinite and the other is <c>NaN</c>; otherwise <see langword="false" />.</returns>
+    private static bool IsInfiniteAndNaN(Complex<double> value) =>
+        (double.IsInfinity(value.Real) && double.IsNaN(value.Imaginary))
+        || (double.IsNaN(value.Real) && double.IsInfinity(value.Imaginary));
 
     /// <summary>Asserts that two components agree within relative tolerance.</summary>
     /// <param name="mine">The computed component.</param>

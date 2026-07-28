@@ -106,8 +106,10 @@ public readonly partial struct Complex<T>
         a = T.Abs(a);
         b = T.Abs(b);
 
-        // Any infinite component makes the magnitude infinite, even when the other component is NaN — this matches
-        // IEEE 754 hypot and the behaviour of System.Numerics.Complex.
+        // Any infinite component makes the magnitude infinite, even when the other component is NaN. This is the IEEE
+        // 754 hypot convention (and matches T.Hypot / double.Hypot on every runtime, and System.Numerics.Complex.Abs
+        // from .NET 9 onward; .NET 8's Complex.Abs returned NaN here from a since-corrected guard). Holding the stable
+        // IEEE value keeps the magnitude runtime-independent across the frameworks the library targets.
         if (T.IsPositiveInfinity(a) || T.IsPositiveInfinity(b))
             return T.PositiveInfinity;
 
