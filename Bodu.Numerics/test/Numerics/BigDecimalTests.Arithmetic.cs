@@ -21,6 +21,32 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
+    /// Verifies that the increment and decrement operators change the value by exactly one.
+    /// </summary>
+    [TestMethod]
+    public void IncrementAndDecrementOperators_WhenApplied_ShouldChangeValueByOne()
+    {
+        BigDecimal value = BD(15, 1);   // 1.5
+
+        value++;
+        Assert.AreEqual(BD(25, 1), value);
+
+        value--;
+        Assert.AreEqual(BD(15, 1), value);
+    }
+
+    /// <summary>
+    /// Verifies that the unary plus operator returns the operand unchanged.
+    /// </summary>
+    [TestMethod]
+    public void UnaryPlusOperator_WhenApplied_ShouldReturnValueUnchanged()
+    {
+        BigDecimal value = BD(-314, 2);
+
+        Assert.AreEqual(value, +value);
+    }
+
+    /// <summary>
     /// Verifies that subtraction is exact and canonicalizes the result.
     /// </summary>
     [TestMethod]

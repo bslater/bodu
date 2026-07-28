@@ -27,6 +27,22 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
+    /// Verifies that parsing texts that differ only in trailing zeros yields equal values in canonical form, so the
+    /// canonicalization invariant holds across the parse construction path as well as the constructor path.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenParsedValuesDifferOnlyInTrailingZeros_ShouldBeEqual()
+    {
+        BigDecimal parsed = BigDecimal.Parse("1.00");
+        BigDecimal plain = BigDecimal.Parse("1");
+
+        Assert.AreEqual(plain, parsed);
+        Assert.AreEqual(plain.GetHashCode(), parsed.GetHashCode());
+        Assert.AreEqual(0, parsed.Scale);
+        Assert.AreEqual(System.Numerics.BigInteger.One, parsed.UnscaledValue);
+    }
+
+    /// <summary>
     /// Verifies that an integer keeps its digits (scale zero) and is distinct from a same-digit fractional value.
     /// </summary>
     [TestMethod]

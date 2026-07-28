@@ -22,6 +22,18 @@ public partial class ComplexTests
     }
 
     /// <summary>
+    /// Verifies that the single-argument <see cref="Complex{T}.Parse(string)" /> overload delegates to the
+    /// provider-based parser and terminates with the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenGivenStringOnly_ShouldDelegateToProviderOverload()
+    {
+        Complex<double> value = Complex<double>.Parse("<3; -4>");
+
+        Assert.AreEqual(new Complex<double>(3.0, -4.0), value);
+    }
+
+    /// <summary>
     /// Verifies that a bare real value parses onto the real axis.
     /// </summary>
     [TestMethod]
