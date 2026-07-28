@@ -43,7 +43,9 @@ public readonly partial struct DiscreteInterval<T>
     /// <param name="upper">The exclusive upper bound.</param>
     /// <returns>The canonicalized interval.</returns>
     public static DiscreteInterval<T> Open(T lower, T upper) =>
-        FromInclusive(lower + T.One, upper - T.One);
+        TrySuccessor(lower, out T first) && TryPredecessor(upper, out T last)
+            ? FromInclusive(first, last)
+            : Empty;
 
     /// <summary>
     /// Creates the closed-open interval <c>[lower, upper)</c> — every integer from <paramref name="lower" /> inclusive
@@ -53,7 +55,9 @@ public readonly partial struct DiscreteInterval<T>
     /// <param name="upper">The exclusive upper bound.</param>
     /// <returns>The canonicalized interval.</returns>
     public static DiscreteInterval<T> ClosedOpen(T lower, T upper) =>
-        FromInclusive(lower, upper - T.One);
+        TryPredecessor(upper, out T last)
+            ? FromInclusive(lower, last)
+            : Empty;
 
     /// <summary>
     /// Creates the open-closed interval <c>(lower, upper]</c> — every integer above <paramref name="lower" /> up to and
@@ -63,7 +67,9 @@ public readonly partial struct DiscreteInterval<T>
     /// <param name="upper">The inclusive upper bound.</param>
     /// <returns>The canonicalized interval.</returns>
     public static DiscreteInterval<T> OpenClosed(T lower, T upper) =>
-        FromInclusive(lower + T.One, upper);
+        TrySuccessor(lower, out T first)
+            ? FromInclusive(first, upper)
+            : Empty;
 
     /// <summary>
     /// Creates the single-integer interval <c>[value, value]</c>.
@@ -87,9 +93,14 @@ public readonly partial struct DiscreteInterval<T>
     /// <paramref name="lower" />.
     /// </summary>
     /// <param name="lower">The exclusive lower bound.</param>
-    /// <returns>An upper-unbounded interval.</returns>
+    /// <returns>
+    /// An upper-unbounded interval, or <see cref="Empty" /> when <paramref name="lower" /> is the domain maximum and
+    /// no integer lies above it.
+    /// </returns>
     public static DiscreteInterval<T> GreaterThan(T lower) =>
-        new(lower + T.One, T.Zero, UpperUnboundedFlag);
+        TrySuccessor(lower, out T first)
+            ? new DiscreteInterval<T>(first, T.Zero, UpperUnboundedFlag)
+            : Empty;
 
     /// <summary>
     /// Creates the upper-bounded interval <c>(-&#x221E;, upper]</c> — every integer less than or equal to
@@ -104,7 +115,12 @@ public readonly partial struct DiscreteInterval<T>
     /// Creates the upper-bounded interval <c>(-&#x221E;, upper)</c> — every integer less than <paramref name="upper" />.
     /// </summary>
     /// <param name="upper">The exclusive upper bound.</param>
-    /// <returns>A lower-unbounded interval.</returns>
+    /// <returns>
+    /// A lower-unbounded interval, or <see cref="Empty" /> when <paramref name="upper" /> is the domain minimum and no
+    /// integer lies below it.
+    /// </returns>
     public static DiscreteInterval<T> LessThan(T upper) =>
-        new(T.Zero, upper - T.One, LowerUnboundedFlag);
+        TryPredecessor(upper, out T last)
+            ? new DiscreteInterval<T>(T.Zero, last, LowerUnboundedFlag)
+            : Empty;
 }

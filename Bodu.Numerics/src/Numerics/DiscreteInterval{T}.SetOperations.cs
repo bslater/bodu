@@ -139,8 +139,8 @@ public readonly partial struct DiscreteInterval<T>
     /// <see langword="true" /> when the intervals are successor-adjacent; otherwise <see langword="false" />.
     /// </returns>
     private bool IsSuccessorAdjacent(DiscreteInterval<T> other) =>
-        (!UpperUnbounded && !other.LowerUnbounded && _last + T.One == other._first)
-        || (!other.UpperUnbounded && !LowerUnbounded && other._last + T.One == _first);
+        (!UpperUnbounded && !other.LowerUnbounded && TrySuccessor(_last, out T thisSuccessor) && thisSuccessor == other._first)
+        || (!other.UpperUnbounded && !LowerUnbounded && TrySuccessor(other._last, out T otherSuccessor) && otherSuccessor == _first);
 
     /// <summary>
     /// Returns the greater of two integers.

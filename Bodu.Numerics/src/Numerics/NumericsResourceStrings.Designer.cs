@@ -160,6 +160,15 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The number of integers in the interval does not fit in the endpoint type..
+        /// </summary>
+        internal static string Overflow_DiscreteIntervalCount {
+            get {
+                return ResourceManager.GetString("Overflow_DiscreteIntervalCount", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The backing type &apos;{0}&apos; is unbounded and has no minimum value..
         /// </summary>
         internal static string Op_NotSupported_UnboundedMinValue {

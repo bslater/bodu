@@ -57,8 +57,27 @@ public readonly partial struct DiscreteInterval<T>
     /// </summary>
     /// <value>The inclusive count <c>Last - First + 1</c>, or zero when empty.</value>
     /// <exception cref="InvalidOperationException">The interval is unbounded, so its count is infinite.</exception>
-    public T Count =>
-        IsEmpty ? T.Zero
-        : IsBounded ? _last - _first + T.One
-        : throw new InvalidOperationException(NumericsResourceStrings.Op_Invalid_DiscreteIntervalUnboundedCount);
+    /// <exception cref="OverflowException">
+    /// The count does not fit in <typeparamref name="T" /> — a full-domain interval has one more member than the type
+    /// can represent.
+    /// </exception>
+    public T Count
+    {
+        get
+        {
+            if (IsEmpty)
+                return T.Zero;
+            if (!IsBounded)
+                throw new InvalidOperationException(NumericsResourceStrings.Op_Invalid_DiscreteIntervalUnboundedCount);
+
+            // The true count Last - First + 1 lies in [1, 2^N] for an N-bit fixed-width type; every unrepresentable
+            // value wraps to a result <= 0, so a non-positive count is a reliable overflow signal. Arbitrary-precision
+            // types never wrap and always take the return path.
+            T count = _last - _first + T.One;
+            if (count <= T.Zero)
+                throw new OverflowException(NumericsResourceStrings.Overflow_DiscreteIntervalCount);
+
+            return count;
+        }
+    }
 }

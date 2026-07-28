@@ -29,22 +29,25 @@ public readonly partial struct DiscreteInterval<T>
         if (other.IsEmpty || !Overlaps(other))
             return DiscreteIntervalPair<T>.Create(this, Empty);
 
-        // Left remainder: the integers of this interval below other's first integer (which is finite here). The cut sits
-        // one integer below other's first.
+        // Left remainder: the integers of this interval below other's first integer (which is finite here). The cut
+        // sits one integer below other's first; when other starts at the domain minimum there is no such integer, so
+        // the remainder is empty rather than a wrapped half-line. The bounded branch cannot wrap because
+        // ExtendsLeftOf guarantees _first < other._first, so other._first has a representable predecessor.
         DiscreteInterval<T> left = Empty;
         if (ExtendsLeftOf(other))
         {
             left = LowerUnbounded
-                ? AtMost(other._first - T.One)
+                ? TryPredecessor(other._first, out T cutBelow) ? AtMost(cutBelow) : Empty
                 : FromInclusive(_first, other._first - T.One);
         }
 
-        // Right remainder: the integers of this interval above other's last integer.
+        // Right remainder: the integers of this interval above other's last integer, with the symmetric wrap guard
+        // when other ends at the domain maximum.
         DiscreteInterval<T> right = Empty;
         if (ExtendsRightOf(other))
         {
             right = UpperUnbounded
-                ? AtLeast(other._last + T.One)
+                ? TrySuccessor(other._last, out T cutAbove) ? AtLeast(cutAbove) : Empty
                 : FromInclusive(other._last + T.One, _last);
         }
 
