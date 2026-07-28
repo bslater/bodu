@@ -300,7 +300,7 @@ The conversion surface divides cleanly into *exact* and *approximate* directions
 | `FromDecimal` / `(Fraction<T>)decimal` | in | exact (mantissa × 10⁻ˢᶜᵃˡᵉ) | `OverflowException` if the canonical components exceed `T` |
 | `FromDouble` / `(Fraction<T>)double` | in | exact in the IEEE-754 sense (mantissa × 2ᵉˣᵖ) | `ArgumentException` on non-finite input; `OverflowException` on narrowing |
 | `ToDecimal` / `(decimal)` | out | rounded to `decimal` precision | `OverflowException` outside `decimal` range |
-| `ToDouble` / `ToSingle` | out | rounded to `double` / `float` | never throws — `TryToDouble` / `TryToSingle` always return `true` |
+| `ToDouble` / `ToSingle` | out | rounded to `double` / `float` | never throws — saturates to `±Infinity` outside the finite range; `TryToDouble` / `TryToSingle` return `false` in that case |
 | `ToInteger` / `ToBigInteger` / `GetWholePart` | out | truncated **toward zero** | `ToInteger` / `GetWholePart` may overflow `T` for an out-of-range integer part |
 | `As<TOther>` | re-backing | exact (same canonical value) | `OverflowException` if a component does not fit `TOther` |
 

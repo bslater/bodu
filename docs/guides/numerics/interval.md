@@ -262,10 +262,11 @@ for allocation-free formatting into character or UTF-8 byte buffers.
 
 ## Parsing
 
-`Interval<T>` implements `IParsable<Interval<T>>` and
-`ISpanParsable<Interval<T>>`, so the static `Parse` and `TryParse`
-methods accept any ISO 31-11 bracket-notation text and the empty-set
-glyph:
+`Interval<T>` implements `IParsable<Interval<T>>`,
+`ISpanParsable<Interval<T>>`, and `IUtf8SpanParsable<Interval<T>>`, so
+the static `Parse` and `TryParse` methods accept any ISO 31-11
+bracket-notation text — as a `string`, a character span, or UTF-8
+bytes — and the empty-set glyph:
 
 ```csharp
 Interval<int>.Parse("[1, 5)", CultureInfo.InvariantCulture);

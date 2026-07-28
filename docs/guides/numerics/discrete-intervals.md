@@ -49,14 +49,19 @@ DiscreteInterval<int>.Closed(1, 2)
 ## The surface
 
 `DiscreteInterval<T>` offers `First` / `Last` / `IsBounded` / `IsEmpty` /
-`Count` (which throws for an unbounded interval), `Contains`, `Overlaps`,
+`Count` (which throws `InvalidOperationException` for an unbounded interval,
+and `OverflowException` when the member count does not fit in `T` — a
+full-domain interval has one more member than the type can represent),
+`Contains`, `Overlaps`,
 `Intersect`, `TryUnion`, `Difference`, and `SymmetricDifference` (the last two
 returning a <xref:Bodu.Numerics.DiscreteIntervalPair`1> of up to two runs); the
 `Closed` / `Open` / `ClosedOpen` / `OpenClosed` / `Singleton` / `Empty`
 factories and the unbounded `All` / `AtLeast` / `GreaterThan` / `AtMost` /
 `LessThan` family (with type-inferring `DiscreteInterval.*` helpers); equality;
 and `ToInterval()` / `FromInterval(...)` conversions to and from the continuous
-type.
+type. Formatting mirrors <xref:Bodu.Numerics.Interval`1>: the type implements
+`IFormattable`, `ISpanFormattable`, and `IUtf8SpanFormattable`, delegating to
+the equivalent continuous interval's canonical closed form.
 
 ```csharp
 DiscreteInterval<int>.Closed(0, 10).Difference(DiscreteInterval<int>.Closed(3, 5));   // [0, 2] ∪ [6, 10]

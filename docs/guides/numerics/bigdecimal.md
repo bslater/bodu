@@ -205,8 +205,8 @@ types. `Radix` is `10`.
 | To | How | Notes |
 |---|---|---|
 | `BigInteger` | `(BigInteger)value` / `value.ToBigInteger()` | Truncates toward zero. |
-| `decimal` | `(decimal)value` / `value.ToDecimal()` | Throws `OverflowException` when the value exceeds `decimal`'s range. |
-| `double` | `(double)value` / `value.ToDouble()` | Nearest `double`; may lose precision. |
+| `decimal` | `(decimal)value` / `value.ToDecimal()` | Throws `OverflowException` when the value exceeds `decimal`'s range; `value.TryToDecimal(out var d)` reports `false` instead of throwing. |
+| `double` | `(double)value` / `value.ToDouble()` | Nearest `double`; may lose precision, and saturates to `±Infinity` outside the finite range — `value.TryToDouble(out var d)` reports `false` in that case. |
 | from `double` | `(BigDecimal)d` / `BigDecimal.FromDouble(d)` | Non-finite input throws. |
 | from `decimal` | implicit / `BigDecimal.FromDecimal(d)` | Exact. |
 
