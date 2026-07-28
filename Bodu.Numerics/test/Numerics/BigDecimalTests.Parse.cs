@@ -83,6 +83,21 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
+    /// Verifies that the single-argument <see cref="BigDecimal.TryParse(string, out BigDecimal)" /> overload delegates
+    /// to the provider-based parser, succeeding on valid text and failing (including <see langword="null" />) without
+    /// throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenGivenStringOnly_ShouldDelegateToProviderOverload()
+    {
+        Assert.IsTrue(BigDecimal.TryParse("3.14", out BigDecimal value));
+        Assert.AreEqual(new BigDecimal(new System.Numerics.BigInteger(314), 2), value);
+
+        Assert.IsFalse(BigDecimal.TryParse("not a number", out _));
+        Assert.IsFalse(BigDecimal.TryParse(null, out _));
+    }
+
+    /// <summary>
     /// Verifies that the exponent honors the supplied culture's negative-sign symbol, consistent with the mantissa
     /// sign: a culture whose negative sign is U+2212 must be able to round-trip its own scientific notation.
     /// </summary>

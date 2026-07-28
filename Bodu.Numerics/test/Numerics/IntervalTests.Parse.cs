@@ -99,7 +99,7 @@ public partial class IntervalTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = Interval<int>.Parse(null!, CultureInfo.InvariantCulture);
+            _ = Interval<int>.Parse((string)null!, CultureInfo.InvariantCulture);
         });
     }
 
@@ -170,4 +170,39 @@ public partial class IntervalTests
     [DataRow("(NaN, NaN)")]
     public void TryParse_WhenEndpointIsNaN_ShouldReturnFalse(string text) =>
         Assert.IsFalse(Interval<double>.TryParse(text, CultureInfo.InvariantCulture, out _));
+
+    /// <summary>
+    /// Verifies that the single-argument <see cref="Interval{T}.Parse(string)" /> and
+    /// <see cref="Interval{T}.TryParse(string?, out Interval{T})" /> overloads delegate to the provider-based parsers.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenGivenStringOnly_ShouldDelegateToProviderOverload()
+    {
+        Assert.AreEqual(Interval<int>.ClosedOpen(1, 5), Interval<int>.Parse("[1, 5)"));
+
+        Assert.IsTrue(Interval<int>.TryParse("[2, 4]", out Interval<int> parsed));
+        Assert.AreEqual(Interval<int>.Closed(2, 4), parsed);
+
+        Assert.IsFalse(Interval<int>.TryParse("nope", out _));
+    }
+
+    /// <summary>
+    /// Verifies that an <see cref="Interval{T}" /> parses from a UTF-8 byte span and round-trips through the UTF-8
+    /// format and parse pair, closing the loop the type could previously only format.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenGivenUtf8Bytes_ShouldReturnExpectedValue()
+    {
+        Assert.AreEqual(Interval<int>.ClosedOpen(1, 5), Interval<int>.Parse("[1, 5)"u8, CultureInfo.InvariantCulture));
+
+        Assert.IsTrue(Interval<double>.TryParse("(0.5, 2.5]"u8, CultureInfo.InvariantCulture, out Interval<double> parsed));
+        Assert.AreEqual(Interval<double>.OpenClosed(0.5, 2.5), parsed);
+
+        Assert.IsFalse(Interval<int>.TryParse("bad"u8, CultureInfo.InvariantCulture, out _));
+
+        Interval<int> value = Interval<int>.Closed(-3, 9);
+        Span<byte> buffer = stackalloc byte[32];
+        Assert.IsTrue(value.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture));
+        Assert.AreEqual(value, Interval<int>.Parse(buffer[..written], CultureInfo.InvariantCulture));
+    }
 }

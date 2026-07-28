@@ -58,6 +58,17 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
+    /// Verifies that the format-only <see cref="BigDecimal.ToString(string)" /> overload formats with the invariant
+    /// culture, consistent with the parameterless <see cref="BigDecimal.ToString()" />.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenGivenFormatOnly_ShouldUseInvariantCulture()
+    {
+        Assert.AreEqual("3.14", BD(314, 2).ToString("G"));
+        Assert.AreEqual("3.140", BD(314, 2).ToString("F3"));
+    }
+
+    /// <summary>
     /// Verifies that a fixed-point precision beyond the supported magnitude throws <see cref="FormatException" />
     /// instead of driving an unbounded <see cref="System.Numerics.BigInteger.Pow(System.Numerics.BigInteger, int)" />
     /// widening — the same denial-of-service shape the parse path already rejects for extreme exponents.

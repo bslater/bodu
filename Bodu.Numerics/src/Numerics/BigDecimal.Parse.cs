@@ -70,6 +70,15 @@ public readonly partial struct BigDecimal
     }
 
     /// <summary>
+    /// Attempts to parse the decimal text representation of a value using the current culture.
+    /// </summary>
+    /// <param name="s">The text to parse.</param>
+    /// <param name="result">When this method returns, contains the parsed value, or zero on failure.</param>
+    /// <returns><see langword="true" /> if parsing succeeded; otherwise, <see langword="false" />.</returns>
+    public static bool TryParse(string? s, out BigDecimal result) =>
+        TryParse(s, null, out result);
+
+    /// <summary>
     /// Attempts to parse the decimal text representation of a value from a character span.
     /// </summary>
     /// <param name="s">The text to parse.</param>

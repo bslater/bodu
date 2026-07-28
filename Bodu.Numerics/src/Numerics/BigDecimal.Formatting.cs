@@ -21,6 +21,19 @@ public readonly partial struct BigDecimal
         ToString(null, CultureInfo.InvariantCulture);
 
     /// <summary>
+    /// Formats the value using the specified format specifier and the invariant culture, consistent with the
+    /// parameterless <see cref="ToString()" />.
+    /// </summary>
+    /// <param name="format">
+    /// The format specifier: <c>"G"</c> (or <see langword="null" />) for the plain canonical form, or <c>"F"</c>
+    /// optionally followed by a digit count for a fixed number of decimal places.
+    /// </param>
+    /// <returns>The formatted text.</returns>
+    /// <exception cref="FormatException"><paramref name="format" /> is not a supported specifier.</exception>
+    public string ToString(string? format) =>
+        ToString(format, CultureInfo.InvariantCulture);
+
+    /// <summary>
     /// Formats the value using the specified format specifier and format provider.
     /// </summary>
     /// <param name="format">
