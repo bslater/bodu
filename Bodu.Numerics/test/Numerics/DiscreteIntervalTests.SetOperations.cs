@@ -99,6 +99,21 @@ public partial class DiscreteIntervalTests
     }
 
     /// <summary>
+    /// Verifies that two intervals meeting the opposite ends of the integer domain are not treated as
+    /// successor-adjacent: the successor computation of <c>T.MaxValue</c> must not wrap to <c>T.MinValue</c> and merge
+    /// two runs that are separated by a real gap.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenRunsTouchOppositeDomainExtremes_ShouldNotWrapIntoAdjacency()
+    {
+        DiscreteInterval<int> high = DiscreteInterval<int>.Closed(5, int.MaxValue);
+        DiscreteInterval<int> low = DiscreteInterval<int>.Closed(int.MinValue, 3);
+
+        Assert.IsFalse(high.TryUnion(low, out _));
+        Assert.IsFalse(low.TryUnion(high, out _));
+    }
+
+    /// <summary>
     /// Verifies, exhaustively over an integer universe, that intersection membership equals the pointwise integer
     /// predicate and that a contiguous union covers exactly the union of members.
     /// </summary>

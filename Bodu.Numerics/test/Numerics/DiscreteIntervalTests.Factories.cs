@@ -34,6 +34,35 @@ public partial class DiscreteIntervalTests
     }
 
     /// <summary>
+    /// Verifies that open-bound factories collapse to the empty interval when the excluded bound sits at the domain
+    /// extreme, instead of letting the successor/predecessor computation wrap around the integer domain and produce a
+    /// large incorrect interval.
+    /// </summary>
+    [TestMethod]
+    public void Factories_WhenOpenBoundAtDomainExtreme_ShouldReturnEmpty()
+    {
+        Assert.IsTrue(DiscreteInterval<byte>.Open(byte.MaxValue, 10).IsEmpty);
+        Assert.IsTrue(DiscreteInterval<byte>.Open(5, byte.MinValue).IsEmpty);
+        Assert.IsTrue(DiscreteInterval<int>.Open(int.MaxValue, 0).IsEmpty);
+        Assert.IsTrue(DiscreteInterval<int>.OpenClosed(int.MaxValue, 10).IsEmpty);
+        Assert.IsTrue(DiscreteInterval<int>.ClosedOpen(5, int.MinValue).IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DiscreteInterval{T}.GreaterThan(T)" /> of the domain maximum and
+    /// <see cref="DiscreteInterval{T}.LessThan(T)" /> of the domain minimum are empty — no integer lies beyond the
+    /// domain extremes — rather than wrapping to an interval that contains almost every integer.
+    /// </summary>
+    [TestMethod]
+    public void GreaterThanAndLessThan_WhenBoundAtDomainExtreme_ShouldReturnEmpty()
+    {
+        Assert.IsTrue(DiscreteInterval<int>.GreaterThan(int.MaxValue).IsEmpty);
+        Assert.IsTrue(DiscreteInterval<int>.LessThan(int.MinValue).IsEmpty);
+        Assert.IsTrue(DiscreteInterval<byte>.GreaterThan(byte.MaxValue).IsEmpty);
+        Assert.IsTrue(DiscreteInterval<byte>.LessThan(byte.MinValue).IsEmpty);
+    }
+
+    /// <summary>
     /// Verifies that the non-generic helper infers the endpoint type from its arguments.
     /// </summary>
     [TestMethod]
