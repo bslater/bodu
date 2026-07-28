@@ -83,6 +83,20 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
+    /// Verifies that the exponent honors the supplied culture's negative-sign symbol, consistent with the mantissa
+    /// sign: a culture whose negative sign is U+2212 must be able to round-trip its own scientific notation.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenCultureUsesNonAsciiNegativeSign_ShouldParseExponentSign()
+    {
+        var format = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+        format.NegativeSign = "−";
+
+        Assert.IsTrue(BigDecimal.TryParse("1e−5", format, out BigDecimal value));
+        Assert.AreEqual(new BigDecimal(System.Numerics.BigInteger.One, 5), value);
+    }
+
+    /// <summary>
     /// Verifies that constructing a <see cref="BigDecimal" /> with a negative scale of excessive magnitude throws
     /// <see cref="ArgumentOutOfRangeException" /> rather than driving an unbounded widening.
     /// </summary>

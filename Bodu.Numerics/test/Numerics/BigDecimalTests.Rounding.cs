@@ -44,6 +44,25 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
+    /// Verifies that an undefined <see cref="MidpointRounding" /> value throws
+    /// <see cref="ArgumentOutOfRangeException" /> for every input — including a value whose scale already satisfies
+    /// the target, where the previous early return skipped mode validation entirely.
+    /// </summary>
+    [TestMethod]
+    public void Round_WhenModeIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = BigDecimal.Round(BD(5, 0), 2, (MidpointRounding)99);
+        });
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = BigDecimal.Round(BD(123, 2), 0, (MidpointRounding)99);
+        });
+    }
+
+    /// <summary>
     /// Verifies that a negative rounding scale throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]

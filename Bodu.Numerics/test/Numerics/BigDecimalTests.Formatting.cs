@@ -58,6 +58,20 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
+    /// Verifies that a fixed-point precision beyond the supported magnitude throws <see cref="FormatException" />
+    /// instead of driving an unbounded <see cref="System.Numerics.BigInteger.Pow(System.Numerics.BigInteger, int)" />
+    /// widening — the same denial-of-service shape the parse path already rejects for extreme exponents.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenFixedPrecisionExceedsSupportedRange_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = BD(1, 0).ToString("F2000000", CultureInfo.InvariantCulture);
+        });
+    }
+
+    /// <summary>
     /// Verifies that a value round-trips through its own text representation.
     /// </summary>
     [TestMethod]
