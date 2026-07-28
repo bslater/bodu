@@ -158,4 +158,16 @@ public partial class IntervalTests
             _ = Interval<int>.Parse("not-an-interval".AsSpan(), CultureInfo.InvariantCulture);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Interval{T}.TryParse(string?, IFormatProvider?, out Interval{T})" /> rejects NaN
+    /// endpoint text, matching the constructor's NaN-endpoint guard: parsing must not be a back door that constructs
+    /// an interval the public constructor would refuse.
+    /// </summary>
+    [TestMethod]
+    [DataRow("[NaN, 5]")]
+    [DataRow("[0, NaN]")]
+    [DataRow("(NaN, NaN)")]
+    public void TryParse_WhenEndpointIsNaN_ShouldReturnFalse(string text) =>
+        Assert.IsFalse(Interval<double>.TryParse(text, CultureInfo.InvariantCulture, out _));
 }
