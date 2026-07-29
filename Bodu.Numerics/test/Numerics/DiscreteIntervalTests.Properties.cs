@@ -76,4 +76,43 @@ public partial class DiscreteIntervalTests
             _ = DiscreteInterval<int>.AtLeast(5).Count;
         });
     }
+
+    /// <summary>
+    /// Verifies that reading <see cref="DiscreteInterval{T}.Count" /> throws <see cref="OverflowException" /> when the
+    /// integer count does not fit in <typeparamref name="T" /> — the full-domain interval has 2^N members, one more
+    /// than the type can represent — instead of silently wrapping to zero or a negative value.
+    /// </summary>
+    [TestMethod]
+    public void Count_WhenCountExceedsTypeRange_ShouldThrowOverflowException()
+    {
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = DiscreteInterval<byte>.Closed(byte.MinValue, byte.MaxValue).Count;
+        });
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = DiscreteInterval<int>.Closed(int.MinValue, int.MaxValue).Count;
+        });
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = DiscreteInterval<int>.Closed(0, int.MaxValue).Count;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DiscreteInterval{T}.Count" /> still returns the exact count for the widest
+    /// representable window — one short of the full domain — and for arbitrary-precision integers, where the count can
+    /// never overflow.
+    /// </summary>
+    [TestMethod]
+    public void Count_WhenWidestRepresentableWindow_ShouldReturnExactCount()
+    {
+        Assert.AreEqual(byte.MaxValue, DiscreteInterval<byte>.Closed(0, (byte)(byte.MaxValue - 1)).Count);
+        Assert.AreEqual(int.MaxValue, DiscreteInterval<int>.Closed(int.MinValue, -2).Count);
+
+        var big = DiscreteInterval<System.Numerics.BigInteger>.Closed(System.Numerics.BigInteger.Zero, System.Numerics.BigInteger.Pow(10, 40));
+        Assert.AreEqual(System.Numerics.BigInteger.Pow(10, 40) + System.Numerics.BigInteger.One, big.Count);
+    }
 }

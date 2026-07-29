@@ -160,6 +160,33 @@ namespace Bodu.Numerics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The number of integers in the interval does not fit in the endpoint type..
+        /// </summary>
+        internal static string Overflow_DiscreteIntervalCount {
+            get {
+                return ResourceManager.GetString("Overflow_DiscreteIntervalCount", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The resulting decimal scale is outside the supported range..
+        /// </summary>
+        internal static string Overflow_BigDecimalScale {
+            get {
+                return ResourceManager.GetString("Overflow_BigDecimalScale", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The fixed-point precision &apos;{0}&apos; exceeds the supported maximum of {1} decimal places..
+        /// </summary>
+        internal static string Format_Invalid_BigDecimalPrecision {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BigDecimalPrecision", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The backing type &apos;{0}&apos; is unbounded and has no minimum value..
         /// </summary>
         internal static string Op_NotSupported_UnboundedMinValue {

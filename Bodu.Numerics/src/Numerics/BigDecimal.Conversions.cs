@@ -120,7 +120,52 @@ public readonly partial struct BigDecimal
     /// <summary>
     /// Converts the value to the nearest <see cref="double" />.
     /// </summary>
-    /// <returns>The nearest <see cref="double" />.</returns>
+    /// <returns>
+    /// The nearest <see cref="double" />, or <see cref="double.PositiveInfinity" /> /
+    /// <see cref="double.NegativeInfinity" /> when the value lies outside the finite <see cref="double" /> range.
+    /// </returns>
     public double ToDouble() =>
         double.Parse(ToString(null, CultureInfo.InvariantCulture), NumberStyles.Float, CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Attempts to convert the value to a <see cref="decimal" />.
+    /// </summary>
+    /// <param name="result">When this method returns, contains the converted value, or zero on failure.</param>
+    /// <returns>
+    /// <see langword="true" /> if the value fits the <see cref="decimal" /> range; otherwise, <see langword="false" />.
+    /// </returns>
+    public bool TryToDecimal(out decimal result)
+    {
+        try
+        {
+            result = ToDecimal();
+            return true;
+        }
+        catch (OverflowException)
+        {
+            result = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Attempts to convert the value to the nearest <see cref="double" />.
+    /// </summary>
+    /// <param name="result">When this method returns, contains the converted value, or zero on failure.</param>
+    /// <returns>
+    /// <see langword="true" /> if the value has a finite double-precision approximation; <see langword="false" /> when
+    /// it lies outside the finite <see cref="double" /> range.
+    /// </returns>
+    public bool TryToDouble(out double result)
+    {
+        double value = ToDouble();
+        if (double.IsFinite(value))
+        {
+            result = value;
+            return true;
+        }
+
+        result = default;
+        return false;
+    }
 }

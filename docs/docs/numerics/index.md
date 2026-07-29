@@ -52,7 +52,7 @@ Both value types are wide `readonly struct`s that opt into the relevant BCL cont
 | <xref:System.IEquatable`1> | ✓ | ✓ | Structural value equality; safe hash-set / dictionary keys. |
 | <xref:System.IComparable`1> / <xref:System.IComparable> | ✓ | — | Ordering, `OrderBy`, `SortedSet`. (`Interval<T>` is a set, not a scalar — it does not order.) |
 | <xref:System.IParsable`1> / <xref:System.ISpanParsable`1> | ✓ | ✓ | `Parse` / `TryParse` over `string` and `ReadOnlySpan<char>`. |
-| <xref:System.IUtf8SpanParsable`1> | ✓ | — | `Parse` directly from a UTF-8 byte span. |
+| <xref:System.IUtf8SpanParsable`1> | ✓ | ✓ | `Parse` directly from a UTF-8 byte span. |
 | <xref:System.IFormattable> / <xref:System.ISpanFormattable> / <xref:System.IUtf8SpanFormattable> | ✓ | ✓ | `ToString(format, provider)` plus allocation-free `TryFormat` into char and UTF-8 buffers. |
 
 ## Formatting and parsing

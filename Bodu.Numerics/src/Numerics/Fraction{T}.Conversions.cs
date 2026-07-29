@@ -186,16 +186,67 @@ public readonly partial struct Fraction<T>
     /// <summary>
     /// Converts this rational value to the nearest <see cref="double" />.
     /// </summary>
-    /// <returns>The double-precision approximation of this value.</returns>
-    public double ToDouble() =>
-        (double)BigNumerator / (double)BigDenominator;
+    /// <returns>
+    /// The double-precision approximation of this value, or <see cref="double.PositiveInfinity" /> /
+    /// <see cref="double.NegativeInfinity" /> when the value lies outside the finite <see cref="double" /> range.
+    /// </returns>
+    public double ToDouble()
+    {
+        BigInteger numerator = BigNumerator;
+        BigInteger denominator = BigDenominator;
+
+        double numeratorValue = (double)numerator;
+        double denominatorValue = (double)denominator;
+
+        // The per-component fast path is valid only while both components are individually representable; once either
+        // saturates to infinity the quotient degenerates (Inf/Inf = NaN, Inf/finite = Inf, finite/Inf = 0) even when
+        // the true quotient is an ordinary finite value, so the ratio is scaled instead.
+        return double.IsFinite(numeratorValue) && double.IsFinite(denominatorValue)
+            ? numeratorValue / denominatorValue
+            : ToDoubleScaled(numerator, denominator);
+    }
 
     /// <summary>
     /// Converts this rational value to the nearest <see cref="float" />.
     /// </summary>
-    /// <returns>The single-precision approximation of this value.</returns>
+    /// <returns>
+    /// The single-precision approximation of this value, or <see cref="float.PositiveInfinity" /> /
+    /// <see cref="float.NegativeInfinity" /> when the value lies outside the finite <see cref="float" /> range.
+    /// </returns>
     public float ToSingle() =>
-        (float)BigNumerator / (float)BigDenominator;
+        (float)ToDouble();
+
+    /// <summary>
+    /// Computes the quotient of two arbitrary-magnitude integers as a <see cref="double" /> by scaling the ratio with
+    /// a common power of two, used when a component is individually unrepresentable as a finite double.
+    /// </summary>
+    /// <param name="numerator">The (signed) numerator.</param>
+    /// <param name="denominator">The strictly positive denominator.</param>
+    /// <returns>The quotient approximation, saturating to an infinity or zero beyond the double range.</returns>
+    private static double ToDoubleScaled(BigInteger numerator, BigInteger denominator)
+    {
+        bool negative = numerator.Sign < 0;
+        BigInteger magnitude = BigInteger.Abs(numerator);
+
+        // The quotient's binary magnitude is within one bit of the bit-length difference; far outside the double
+        // exponent range the result saturates without any division work.
+        long quotientBits = magnitude.GetBitLength() - denominator.GetBitLength();
+        if (quotientBits > 1026)
+            return negative ? double.NegativeInfinity : double.PositiveInfinity;
+        if (quotientBits < -1080)
+            return negative ? -0.0 : 0.0;
+
+        // Shift the numerator so the truncated integer quotient carries ~108 significant bits — twice the double
+        // mantissa — making the division's truncation error vanish below the final rounding, then undo the shift with
+        // an exact power-of-two scale (ScaleB handles overflow to infinity and gradual underflow).
+        int shift = 108 - (int)quotientBits;
+        BigInteger quotient = shift >= 0
+            ? (magnitude << shift) / denominator
+            : magnitude / (denominator << -shift);
+
+        double result = Math.ScaleB((double)quotient, -shift);
+        return negative ? -result : result;
+    }
 
     /// <summary>
     /// Converts this rational value to a <see cref="BigInteger" />, truncating any fractional component.
@@ -231,25 +282,45 @@ public readonly partial struct Fraction<T>
     }
 
     /// <summary>
-    /// Converts this rational value to the nearest <see cref="double" />.
+    /// Attempts to convert this rational value to the nearest <see cref="double" />.
     /// </summary>
-    /// <param name="result">When this method returns, contains the converted value.</param>
-    /// <returns><see langword="true" />, because every rational value has a double-precision approximation.</returns>
+    /// <param name="result">When this method returns, contains the converted value, or zero on failure.</param>
+    /// <returns>
+    /// <see langword="true" /> if the value has a finite double-precision approximation; <see langword="false" /> when
+    /// it lies outside the finite <see cref="double" /> range.
+    /// </returns>
     public bool TryToDouble(out double result)
     {
-        result = ToDouble();
-        return true;
+        double value = ToDouble();
+        if (double.IsFinite(value))
+        {
+            result = value;
+            return true;
+        }
+
+        result = default;
+        return false;
     }
 
     /// <summary>
-    /// Converts this rational value to the nearest <see cref="float" />.
+    /// Attempts to convert this rational value to the nearest <see cref="float" />.
     /// </summary>
-    /// <param name="result">When this method returns, contains the converted value.</param>
-    /// <returns><see langword="true" />, because every rational value has a single-precision approximation.</returns>
+    /// <param name="result">When this method returns, contains the converted value, or zero on failure.</param>
+    /// <returns>
+    /// <see langword="true" /> if the value has a finite single-precision approximation; <see langword="false" /> when
+    /// it lies outside the finite <see cref="float" /> range.
+    /// </returns>
     public bool TryToSingle(out float result)
     {
-        result = ToSingle();
-        return true;
+        float value = ToSingle();
+        if (float.IsFinite(value))
+        {
+            result = value;
+            return true;
+        }
+
+        result = default;
+        return false;
     }
 
     /// <summary>

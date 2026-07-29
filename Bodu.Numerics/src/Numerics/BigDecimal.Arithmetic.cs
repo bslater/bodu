@@ -40,8 +40,20 @@ public readonly partial struct BigDecimal
     /// <param name="left">The first value.</param>
     /// <param name="right">The second value.</param>
     /// <returns>The exact product.</returns>
-    public static BigDecimal Multiply(BigDecimal left, BigDecimal right) =>
-        new(left._mantissa * right._mantissa, left._scale + right._scale);
+    /// <exception cref="OverflowException">
+    /// The resulting scale (<c><paramref name="left" />.Scale + <paramref name="right" />.Scale</c>) does not fit in an
+    /// <see cref="int" />.
+    /// </exception>
+    public static BigDecimal Multiply(BigDecimal left, BigDecimal right)
+    {
+        // The product's scale is the scale sum; computed in 64-bit and rejected when out of int range so extreme
+        // operand scales cannot wrap the sum and silently fold into the mantissa as a wrong value.
+        long scale = (long)left._scale + right._scale;
+        if (scale > int.MaxValue || scale < int.MinValue)
+            throw new OverflowException(NumericsResourceStrings.Overflow_BigDecimalScale);
+
+        return new BigDecimal(left._mantissa * right._mantissa, (int)scale);
+    }
 
     /// <summary>
     /// Divides one value by another, rounding to <see cref="DefaultDivisionScale" /> decimal places using
@@ -147,6 +159,11 @@ public readonly partial struct BigDecimal
 
             return new BigDecimal(BigInteger.Pow(value._mantissa, exponent), (int)scale);
         }
+
+        // -int.MinValue wraps back to int.MinValue in unchecked arithmetic, which would recurse indefinitely; the
+        // magnitude 2^31 is also beyond what BigInteger.Pow's int exponent can represent, so reject it outright.
+        if (exponent == int.MinValue)
+            throw new OverflowException(NumericsResourceStrings.Overflow_ExponentMagnitude);
 
         return Divide(One, Pow(value, -exponent));
     }

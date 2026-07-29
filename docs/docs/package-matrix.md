@@ -50,6 +50,7 @@ Several capabilities ship as independent companion packages so they can release 
 | `Bodu.Globalization.Calendar.Caching` | Stable | `CachingNotableDateService`, a decorator that wraps any `INotableDateService` and serves computed notable dates from a per-territory, per-civil-year cache (in-memory, or one TOML/JSON file per territory), refreshing on a configurable time-to-live or a resource-version change. Includes its own DI registration. | `Bodu.Globalization.Calendar`, `Bodu.Text.Toml`, `Bodu.Core` |
 | `Bodu.Globalization.Calendar.Caching.Distributed` | Stable | Distributed (`IDistributedCache` / Redis) storage backend for the notable-date cache: `DistributedNotableDateCache` over any `IDistributedCache`, with the `AddDistributedNotableDateCache` / `AddRedisNotableDateCache` DI registrations. | `Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar`, `Bodu.Core`, `Microsoft.Extensions.Caching.StackExchangeRedis` |
 | `Bodu.Globalization.Calendar.Caching.Sqlite` | Stable | SQLite storage backend for the notable-date cache: `SqliteNotableDateCache` persisting computed years in a SQLite database, with the `AddSqliteNotableDateCache` DI registration. | `Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar`, `Bodu.Core`, `Microsoft.Data.Sqlite` |
+| `Bodu.Globalization.Recurrence` | Preview | RFC 5545 (iCalendar) recurrence rules — `RecurrenceRule` / `RecurrenceRuleBuilder` / `RecurrenceSet` parsing, formatting, and occurrence enumeration — plus `CronExpression` cron-schedule parsing with next/previous occurrence computation. | `Bodu.Core` |
 | `Bodu.Text.Serialization` | Stable | Shared, format-agnostic serialization primitives for the Bodu `System.Text.Json`-shaped text serializers (Bencode, TOML): the attribute family, ignore/creation/unmapped-member/naming enums, serialization callback interfaces, and naming policies. Consumed by the per-format serializer packages. | `Bodu.Core` |
 | `Bodu.Financial.DependencyInjection` | Stable | `IServiceCollection` extensions for registering Bodu.Financial currency-lookup and monetary services via `AddFinancialService`. | `Bodu.Financial`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
 | `Bodu.Financial.Serialization.Json` | Stable | `System.Text.Json` converters, the `FinancialJsonPolicy` (`Strict` / `Lenient` / `Compact`), the `AddFinancialJsonConverters()` registration, and the `AddFinancialJson()` DI registration for the `Bodu.Financial` types (`Money`, `Money<TCurrency>`, `MoneyBag`, `ExchangeRate`, `CurrencyPair`), keeping the core financial library serialization-agnostic. | `Bodu.Financial`, `System.Text.Json`, `Microsoft.Extensions.DependencyInjection.Abstractions` |
@@ -173,6 +174,7 @@ dotnet add package Bodu.Globalization.Calendar.Plugins
 dotnet add package Bodu.Globalization.Calendar.Caching
 dotnet add package Bodu.Globalization.Calendar.Caching.Distributed
 dotnet add package Bodu.Globalization.Calendar.Caching.Sqlite
+dotnet add package Bodu.Globalization.Recurrence
 dotnet add package Bodu.Text.Serialization
 dotnet add package Bodu.Financial.DependencyInjection
 dotnet add package Bodu.Financial.Serialization.Json

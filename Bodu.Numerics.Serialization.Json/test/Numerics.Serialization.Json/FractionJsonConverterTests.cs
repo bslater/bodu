@@ -112,4 +112,21 @@ public class FractionJsonConverterTests
             _ = JsonSerializer.Deserialize<Fraction<int>>(json, options);
         });
     }
+
+    /// <summary>
+    /// Verifies that components which parse but whose canonical form overflows the backing integer type surface as
+    /// <see cref="JsonException" />, honoring the deserialization contract, instead of leaking
+    /// <see cref="OverflowException" /> from the fraction constructor — a denominator of <see cref="int.MinValue" />
+    /// cannot be negated into canonical positive form.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenCanonicalFormOverflowsBackingType_ShouldThrowJsonException()
+    {
+        JsonSerializerOptions options = Options();
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<Fraction<int>>("{\"numerator\":1,\"denominator\":-2147483648}", options);
+        });
+    }
 }

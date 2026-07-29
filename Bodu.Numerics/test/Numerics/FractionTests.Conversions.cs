@@ -301,4 +301,53 @@ public partial class FractionTests
         Assert.IsFalse(Fraction<int>.TryFromDouble(1e18, out Fraction<int> result));
         Assert.AreEqual(Fraction<int>.Zero, result);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.ToDouble" /> returns the correct quotient approximation when one or both
+    /// components individually exceed the <see cref="double" /> range: the conversion must scale the ratio rather than
+    /// converting numerator and denominator separately, which produced NaN (∞/∞), a spurious infinity (∞/finite for a
+    /// finite quotient), or a spurious zero (finite/∞ for a nonzero quotient).
+    /// </summary>
+    [TestMethod]
+    public void ToDouble_WhenComponentsExceedDoubleRange_ShouldReturnQuotientApproximation()
+    {
+        // 10^400 + 1 is coprime with 10^400, so canonical reduction cannot shrink the components and the conversion
+        // itself must cope with values beyond double range.
+        BigInteger huge = BigInteger.Pow(10, 400);
+
+        Assert.AreEqual(1.0, new Fraction<BigInteger>(huge + 1, huge).ToDouble());
+        Assert.AreEqual(3.0, new Fraction<BigInteger>((huge * 3) + 1, huge).ToDouble());
+        Assert.AreEqual(-1.0, new Fraction<BigInteger>(-(huge + 1), huge).ToDouble());
+        Assert.AreEqual((double)BigInteger.Pow(10, 100), new Fraction<BigInteger>(huge + 1, BigInteger.Pow(10, 300)).ToDouble());
+        Assert.AreEqual(1e-100, new Fraction<BigInteger>(BigInteger.Pow(10, 300) + 1, huge).ToDouble(), 1e-114);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.ToSingle" /> returns the correct quotient approximation when the
+    /// components individually exceed the <see cref="float" /> range.
+    /// </summary>
+    [TestMethod]
+    public void ToSingle_WhenComponentsExceedSingleRange_ShouldReturnQuotientApproximation()
+    {
+        BigInteger huge = BigInteger.Pow(10, 400);
+
+        Assert.AreEqual(2.0f, new Fraction<BigInteger>((huge * 2) + 1, huge).ToSingle());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.TryToDouble(out double)" /> reports failure when the exact value lies
+    /// outside the finite <see cref="double" /> range, instead of returning <see langword="true" /> alongside a
+    /// non-finite result.
+    /// </summary>
+    [TestMethod]
+    public void TryToDouble_WhenValueExceedsDoubleRange_ShouldReturnFalse()
+    {
+        var tooLarge = new Fraction<BigInteger>(BigInteger.Pow(10, 400), BigInteger.One);
+
+        Assert.IsFalse(tooLarge.TryToDouble(out double result));
+        Assert.AreEqual(0.0, result);
+
+        Assert.IsTrue(new Fraction<BigInteger>(BigInteger.Pow(10, 400), BigInteger.Pow(10, 400)).TryToDouble(out double one));
+        Assert.AreEqual(1.0, one);
+    }
 }

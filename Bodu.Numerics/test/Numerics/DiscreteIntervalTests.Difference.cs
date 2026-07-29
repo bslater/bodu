@@ -78,6 +78,32 @@ public partial class DiscreteIntervalTests
     }
 
     /// <summary>
+    /// Verifies that subtracting an interval anchored at the domain minimum from the whole line yields only the upper
+    /// remainder: the cut below <c>T.MinValue</c> must not wrap to <c>T.MaxValue</c> and produce a bogus left piece.
+    /// </summary>
+    [TestMethod]
+    public void Difference_WhenOtherStartsAtDomainMinimum_ShouldReturnOnlyUpperRemainder()
+    {
+        DiscreteIntervalPair<int> result = DiscreteInterval<int>.All.Difference(DiscreteInterval<int>.Closed(int.MinValue, 10));
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual(DiscreteInterval<int>.AtLeast(11), result[0]);
+    }
+
+    /// <summary>
+    /// Verifies that subtracting an interval anchored at the domain maximum from the whole line yields only the lower
+    /// remainder: the cut above <c>T.MaxValue</c> must not wrap to <c>T.MinValue</c> and produce a bogus right piece.
+    /// </summary>
+    [TestMethod]
+    public void Difference_WhenOtherEndsAtDomainMaximum_ShouldReturnOnlyLowerRemainder()
+    {
+        DiscreteIntervalPair<int> result = DiscreteInterval<int>.All.Difference(DiscreteInterval<int>.Closed(-10, int.MaxValue));
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual(DiscreteInterval<int>.AtMost(-11), result[0]);
+    }
+
+    /// <summary>
     /// Verifies the symmetric difference of two partially overlapping integer intervals.
     /// </summary>
     [TestMethod]

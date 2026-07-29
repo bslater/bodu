@@ -45,24 +45,38 @@ public readonly partial struct Complex<T> :
     static bool INumberBase<Complex<T>>.IsEvenInteger(Complex<T> value) =>
         T.IsZero(value.Imaginary) && T.IsEvenInteger(value.Real);
 
-    /// <inheritdoc />
-    static bool INumberBase<Complex<T>>.IsFinite(Complex<T> value) =>
+    /// <summary>
+    /// Determines whether the specified complex number is finite — both its real and imaginary components are finite.
+    /// </summary>
+    /// <param name="value">The complex number to test.</param>
+    /// <returns><see langword="true" /> when both components are finite; otherwise <see langword="false" />.</returns>
+    public static bool IsFinite(Complex<T> value) =>
         IsFiniteCore(value);
 
     /// <inheritdoc />
     static bool INumberBase<Complex<T>>.IsImaginaryNumber(Complex<T> value) =>
         T.IsZero(value.Real) && T.IsRealNumber(value.Imaginary);
 
-    /// <inheritdoc />
-    static bool INumberBase<Complex<T>>.IsInfinity(Complex<T> value) =>
+    /// <summary>
+    /// Determines whether the specified complex number is infinite — either component is an infinity, regardless of
+    /// the other component's value (including NaN), matching <see cref="System.Numerics.Complex.IsInfinity" />.
+    /// </summary>
+    /// <param name="value">The complex number to test.</param>
+    /// <returns><see langword="true" /> when either component is infinite; otherwise <see langword="false" />.</returns>
+    public static bool IsInfinity(Complex<T> value) =>
         IsInfinityCore(value);
 
     /// <inheritdoc />
     static bool INumberBase<Complex<T>>.IsInteger(Complex<T> value) =>
         T.IsZero(value.Imaginary) && T.IsInteger(value.Real);
 
-    /// <inheritdoc />
-    static bool INumberBase<Complex<T>>.IsNaN(Complex<T> value) =>
+    /// <summary>
+    /// Determines whether the specified complex number is NaN — at least one component is NaN and neither component is
+    /// an infinity, matching <see cref="System.Numerics.Complex.IsNaN" /> (an infinite component dominates NaN).
+    /// </summary>
+    /// <param name="value">The complex number to test.</param>
+    /// <returns><see langword="true" /> when the value is NaN; otherwise <see langword="false" />.</returns>
+    public static bool IsNaN(Complex<T> value) =>
         !IsInfinityCore(value) && !IsFiniteCore(value);
 
     /// <inheritdoc />

@@ -205,7 +205,7 @@ Interval<int> parsed = Interval<int>.Parse("(0, 100]", CultureInfo.InvariantCult
 Interval<int>.TryParse("∅", CultureInfo.InvariantCulture, out var none);  // none = Empty
 ```
 
-`Interval<T>` implements `ISpanFormattable` and `IUtf8SpanFormattable`, so the same text round-trips through character and UTF-8 byte buffers without allocation.
+`Interval<T>` implements `ISpanFormattable` and `IUtf8SpanFormattable`, plus `ISpanParsable<Interval<T>>` and `IUtf8SpanParsable<Interval<T>>`, so the same text round-trips through character and UTF-8 byte buffers without allocation in both directions.
 
 #### JSON
 

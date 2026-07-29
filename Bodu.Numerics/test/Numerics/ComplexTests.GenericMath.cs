@@ -254,4 +254,38 @@ public partial class ComplexTests
     private static bool IsPositive<TC>(TC value)
         where TC : INumberBase<TC> =>
         TC.IsPositive(value);
+
+    /// <summary>
+    /// Verifies that the public static classification methods <see cref="Complex{T}.IsNaN" />,
+    /// <see cref="Complex{T}.IsInfinity" />, and <see cref="Complex{T}.IsFinite" /> agree with the
+    /// <see cref="System.Numerics.Complex" /> oracle across finite, infinite, NaN, and mixed component shapes —
+    /// including the infinite-plus-NaN case, where an infinite component dominates NaN.
+    /// </summary>
+    [TestMethod]
+    public void IsNaNIsInfinityIsFinite_WhenClassifyingComponentShapes_ShouldMatchBclOracle()
+    {
+        (double Real, double Imaginary)[] shapes =
+        [
+            (1.0, 2.0),
+            (0.0, 0.0),
+            (double.PositiveInfinity, 1.0),
+            (1.0, double.NegativeInfinity),
+            (double.NaN, 1.0),
+            (1.0, double.NaN),
+            (double.NaN, double.NaN),
+            (double.PositiveInfinity, double.NaN),
+            (double.NaN, double.NegativeInfinity),
+            (double.PositiveInfinity, double.NegativeInfinity),
+        ];
+
+        foreach ((double real, double imaginary) in shapes)
+        {
+            var value = new Complex<double>(real, imaginary);
+            var oracle = new System.Numerics.Complex(real, imaginary);
+
+            Assert.AreEqual(System.Numerics.Complex.IsNaN(oracle), Complex<double>.IsNaN(value), $"IsNaN({real}, {imaginary})");
+            Assert.AreEqual(System.Numerics.Complex.IsInfinity(oracle), Complex<double>.IsInfinity(value), $"IsInfinity({real}, {imaginary})");
+            Assert.AreEqual(System.Numerics.Complex.IsFinite(oracle), Complex<double>.IsFinite(value), $"IsFinite({real}, {imaginary})");
+        }
+    }
 }

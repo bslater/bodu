@@ -193,9 +193,15 @@ public sealed class FractionJsonConverter<T>
         if (!denominatorSeen)
             throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_MissingDenominator);
 
-        return T.IsZero(denominator!)
-            ? throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DenominatorZero)
-            : new Fraction<T>(numerator!, denominator!);
+        if (T.IsZero(denominator!))
+            throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_DenominatorZero);
+
+        // TryCreate reports components whose canonical form is unrepresentable (for example a denominator of
+        // T.MinValue, which has no positive negation) so the failure surfaces as JsonException per the
+        // deserialization contract rather than leaking OverflowException from the constructor.
+        return Fraction<T>.TryCreate(numerator!, denominator!, out Fraction<T> fraction)
+            ? fraction
+            : throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_FractionCanonicalOverflow);
     }
 
     /// <summary>

@@ -97,6 +97,15 @@ namespace Bodu.Numerics.Serialization.Json {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The fraction&apos;s canonical form cannot be represented by the target integer type..
+        /// </summary>
+        internal static string Json_Invalid_FractionCanonicalOverflow {
+            get {
+                return ResourceManager.GetString("Json_Invalid_FractionCanonicalOverflow", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The JSON object contains a duplicate 'denominator' property..
         /// </summary>
         internal static string Json_Invalid_DuplicateDenominator {

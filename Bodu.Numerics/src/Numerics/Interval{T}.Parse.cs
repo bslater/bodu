@@ -49,6 +49,20 @@ public readonly partial struct Interval<T> :
     }
 
     /// <summary>
+    /// Parses an interval from its ISO 31-11 bracket-notation string representation using the current culture.
+    /// </summary>
+    /// <param name="s">The text to parse — for example <c>"[1, 5)"</c>, <c>"(0, 1)"</c>, or <c>"∅"</c>.</param>
+    /// <returns>The parsed interval.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="s" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is not a valid interval representation.
+    /// </exception>
+    public static Interval<T> Parse(string s) =>
+        Parse(s, null);
+
+    /// <summary>
     /// Parses an interval from its ISO 31-11 bracket-notation span representation.
     /// </summary>
     /// <param name="s">The text to parse — for example <c>"[1, 5)"</c>, <c>"(0, 1)"</c>, or <c>"∅"</c>.</param>
@@ -84,6 +98,18 @@ public readonly partial struct Interval<T> :
 
         return TryParse(s.AsSpan(), provider, out result);
     }
+
+    /// <summary>
+    /// Attempts to parse an interval from its ISO 31-11 bracket-notation string representation using the current
+    /// culture.
+    /// </summary>
+    /// <param name="s">The text to parse.</param>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the parsed interval; otherwise the default value.
+    /// </param>
+    /// <returns><see langword="true" /> when parsing succeeded; otherwise <see langword="false" />.</returns>
+    public static bool TryParse(string? s, out Interval<T> result) =>
+        TryParse(s, null, out result);
 
     /// <summary>
     /// Attempts to parse an interval from its ISO 31-11 bracket-notation span representation.
@@ -179,7 +205,9 @@ public readonly partial struct Interval<T> :
         }
         else
         {
-            if (!T.TryParse(lowerText, NumberStyles.Any, effectiveProvider, out T? parsedLower))
+            // NaN is rejected to mirror the public constructor's endpoint guard: parsing must not construct an
+            // interval the constructor would refuse.
+            if (!T.TryParse(lowerText, NumberStyles.Any, effectiveProvider, out T? parsedLower) || T.IsNaN(parsedLower))
             {
                 result = default;
                 return false;
@@ -202,7 +230,7 @@ public readonly partial struct Interval<T> :
         }
         else
         {
-            if (!T.TryParse(upperText, NumberStyles.Any, effectiveProvider, out T? parsedUpper))
+            if (!T.TryParse(upperText, NumberStyles.Any, effectiveProvider, out T? parsedUpper) || T.IsNaN(parsedUpper))
             {
                 result = default;
                 return false;

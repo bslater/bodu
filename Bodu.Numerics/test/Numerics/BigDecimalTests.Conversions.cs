@@ -82,4 +82,35 @@ public partial class BigDecimalTests
         Assert.AreEqual(3.14m, (decimal)BD(314, 2));
         Assert.AreEqual(0.5, (double)BD(5, 1));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="BigDecimal.TryToDecimal(out decimal)" /> converts representable values and reports
+    /// failure for values beyond the <see cref="decimal" /> range instead of throwing — the non-throwing counterpart
+    /// <see cref="Fraction{T}" /> already offers.
+    /// </summary>
+    [TestMethod]
+    public void TryToDecimal_WhenValueExceedsDecimalRange_ShouldReturnFalse()
+    {
+        Assert.IsTrue(BD(314, 2).TryToDecimal(out decimal small));
+        Assert.AreEqual(3.14m, small);
+
+        var huge = new BigDecimal(BigInteger.Pow(10, 40));
+        Assert.IsFalse(huge.TryToDecimal(out decimal result));
+        Assert.AreEqual(0m, result);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BigDecimal.TryToDouble(out double)" /> converts representable values and reports
+    /// failure for values beyond the finite <see cref="double" /> range instead of returning an infinity.
+    /// </summary>
+    [TestMethod]
+    public void TryToDouble_WhenValueExceedsDoubleRange_ShouldReturnFalse()
+    {
+        Assert.IsTrue(BD(314, 2).TryToDouble(out double small));
+        Assert.AreEqual(3.14, small);
+
+        var huge = new BigDecimal(BigInteger.Pow(10, 400));
+        Assert.IsFalse(huge.TryToDouble(out double result));
+        Assert.AreEqual(0.0, result);
+    }
 }

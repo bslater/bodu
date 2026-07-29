@@ -75,6 +75,9 @@
   <data name="Json_Invalid_DenominatorZero" xml:space="preserve">
     <value>The 'denominator' property must not be zero.</value>
   </data>
+  <data name="Json_Invalid_FractionCanonicalOverflow" xml:space="preserve">
+    <value>The fraction's canonical form cannot be represented by the target integer type.</value>
+  </data>
   <data name="Json_Invalid_DuplicateDenominator" xml:space="preserve">
     <value>The JSON object contains a duplicate 'denominator' property.</value>
   </data>
