@@ -1,0 +1,58 @@
+{
+  "source": "Microsoft pstsdk test corpus via the emk/pstsdk mirror (Apache-2.0)",
+  "generatedBy": "libpst lspst (pst-utils, Ubuntu 24.04) + seed script",
+  "generatedAtUtc": "2026-07-31T10:45:00Z",
+  "purpose": "Independent-oracle seed expectations for the future Bodu.IO.Pst P0 spike.",
+  "fixtures": [
+    {
+      "file": "unicode/sample1.pst",
+      "format": "unicode",
+      "wVer": 23,
+      "sha256": "9e77f0f7937768506f85eb33b7c114e23ddf3bc7fd5d85226fce56586a8e3618",
+      "sizeBytes": 271360,
+      "folderCount": 1,
+      "messageCount": 1,
+      "lspstListing": [
+        "Folder \"Sample1\"",
+        "Email\tFrom: Terry Mahaffey\tSubject: Here is a sample message"
+      ]
+    },
+    {
+      "file": "ansi/sample2.pst",
+      "format": "ansi",
+      "wVer": 14,
+      "sha256": "587a1ae2785eb218d7d42a98d43ded546aa72670908269d7b3ab25a711a91871",
+      "sizeBytes": 271360,
+      "folderCount": 1,
+      "messageCount": 1,
+      "lspstListing": [
+        "Folder \"Sample2\"",
+        "Email\tFrom: Terry Mahaffey\tSubject: Here is a sample message"
+      ]
+    },
+    {
+      "file": "ansi/test_ansi.pst",
+      "format": "ansi",
+      "wVer": 14,
+      "sha256": "f1ff591b7441f8fcf78cc6c65a78c5d168763338f2fcdf3df5745e742bd66d04",
+      "sizeBytes": 271360,
+      "folderCount": 1,
+      "messageCount": 0,
+      "lspstListing": [
+        "Folder \"Folder\""
+      ]
+    },
+    {
+      "file": "unicode/test_unicode.pst",
+      "format": "unicode",
+      "wVer": 23,
+      "sha256": "3f2b8ebf011ca754b9c2017d264423e173ef1407f460bd4cefde4a6ccc041f8b",
+      "sizeBytes": 271360,
+      "folderCount": 1,
+      "messageCount": 0,
+      "lspstListing": [
+        "Folder \"Folder\""
+      ]
+    }
+  ]
+}
