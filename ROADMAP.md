@@ -1024,6 +1024,30 @@ model** — the same convention as `Bodu.Financial.ExchangeRates`.
   (currently BIFF8-only; older versions raise
   `ExcelBinaryUnsupportedException`).
 
+### `Bodu.Formats.Outlook` / `Bodu.Formats.Outlook.Msg`
+
+Current state: **in flight** (kickoff 2026-07-31; scaffolded and building).
+Two Preview-tier packages executing the kickoff plan
+([`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md)):
+the container-free shared MAPI value model (`Bodu.Formats.Outlook`) and the
+read-only `.msg` reader over `Bodu.IO.Compound`
+(`Bodu.Formats.Outlook.Msg`), both in the flattened
+`Bodu.Formats.Outlook` namespace so the future `.pst` reader shares the
+model.
+
+- **Deliver tranches M1–M4 of the kickoff plan** — the shared MAPI model,
+  the core property decode, recipients/attachments/nested messages and
+  named properties, then bodies (incl. the MS-OXRTFCP compressed-RTF
+  decoder) and the DocFX guide.
+- **Assemble a real-world `.msg` reference corpus.** Regression currently
+  runs entirely on synthetic fixtures authored through
+  `Bodu.IO.Compound`; a licensed third-party corpus with a provenance
+  `NOTICE.md` (the `Bodu.IO.Compound` pattern) is owed before Stable.
+- **Package icons** — `bld/icons/Bodu.Formats.Outlook{,.Msg}.png` are
+  owed for CI icon coverage.
+- **`.msg` authoring** and **TNEF** remain demand-driven candidates; see
+  the kickoff plan's out-of-scope list.
+
 ### `Bodu.Globalization.Calendar`
 
 Current state: mature; ~150 src / ~219 test files. Easter (Western and
@@ -1161,9 +1185,9 @@ filter were added to *Non-goals* instead.
   property tags / types, named-property resolution, the recipient and
   attachment tables, and the message / folder value types — is shared
   with the `.pst` candidate below rather than owned by either package.
-  **Kickoff plan authored 2026-07-31** — package split, API sketch,
-  fixture strategy, and tranches M0–M4, incorporating the executed
-  `Bodu.IO.Compound` T5 substrate review:
+  **In flight** — kickoff plan authored and scaffolding landed
+  2026-07-31; tracked in the per-project section
+  *`Bodu.Formats.Outlook` / `Bodu.Formats.Outlook.Msg`* above, executing
   [`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md).
 - **`Bodu.Formats.Outlook.Pst`** (over a new low-level **`Bodu.IO.Pst`**
   container) — a read-only `.pst` / `.ost` mailbox-archive reader:
