@@ -996,10 +996,13 @@ The forward items below are sequenced and scoped in
   writable cursors keep synchronous completion.
 - **This project is the substrate for new office-format readers** — see
   `Bodu.Formats.Excel.Binary` (already built on it) and the `.msg` /
-  `.doc` candidates under *New library candidates*. Before the `.msg`
-  reader starts, a substrate-readiness review walks MS-OXMSG against
-  the current surface (plan T5; analysis only, expected to need no new
-  container API).
+  `.doc` candidates under *New library candidates*. The `.msg`
+  substrate-readiness review (plan T5) **executed 2026-07-31**: MS-OXMSG
+  maps entirely onto the shipped surface and no new container API is
+  required — findings recorded in the `Bodu.Formats.Outlook` kickoff
+  plan
+  ([`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md),
+  §1), which un-gates the `.msg` reader.
 
 ### `Bodu.Formats.Excel.Binary`
 
@@ -1158,6 +1161,10 @@ filter were added to *Non-goals* instead.
   property tags / types, named-property resolution, the recipient and
   attachment tables, and the message / folder value types — is shared
   with the `.pst` candidate below rather than owned by either package.
+  **Kickoff plan authored 2026-07-31** — package split, API sketch,
+  fixture strategy, and tranches M0–M4, incorporating the executed
+  `Bodu.IO.Compound` T5 substrate review:
+  [`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md).
 - **`Bodu.Formats.Outlook.Pst`** (over a new low-level **`Bodu.IO.Pst`**
   container) — a read-only `.pst` / `.ost` mailbox-archive reader:
   folder hierarchy, message enumeration, recipients, and attachments
@@ -1175,6 +1182,10 @@ filter were added to *Non-goals* instead.
   least-served document formats in the ecosystem. Initial scope:
   Unicode-format PST (the post-2003 default), with the legacy ANSI
   variant and OST deltas as demand-driven follow-ons.
+  **Exploration authored 2026-07-31** — format anatomy, the NDB+LTP
+  vs messaging layering split, API sketch, the fixture-acquisition
+  blocker, and sequencing P0–P3:
+  [`Bodu.IO.Pst/docs/pst-container-exploration.md`](Bodu.IO.Pst/docs/pst-container-exploration.md).
 - **`Bodu.Formats.Excel.OpenXml`** — a read-only `.xlsx` value reader over
   an OPC/ZIP container, **sharing the flattened `Bodu.Formats.Excel`
   value model** (`ExcelCell` / `ExcelWorksheet` / `ExcelWorkbookProperties`).
