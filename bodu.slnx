@@ -65,6 +65,8 @@
     <Project Path="Bodu.Globalization.Calendar.DependencyInjection\test\Bodu.Globalization.Calendar.DependencyInjection.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Plugins\src\Bodu.Globalization.Calendar.Plugins.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Plugins\test\Bodu.Globalization.Calendar.Plugins.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Tool\src\Bodu.Globalization.Calendar.Tool.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Tool\test\Bodu.Globalization.Calendar.Tool.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
     <Project Path="Bodu.Globalization.Calendar\test\Bodu.Globalization.Calendar.Test.csproj" />
   </Folder>

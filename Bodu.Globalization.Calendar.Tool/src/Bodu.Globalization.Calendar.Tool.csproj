@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Bodu.Globalization.Calendar.Tool</RootNamespace>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>bodu-calendar</ToolCommandName>
+    <Description>Command-line compiler and lint for Bodu notable-date rule packs: validates XML/JSON documents with stable BODU-CAL-* diagnostics and compiles them to sealed .bcal binary packs.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="ToolResourceStrings.resx">
+      <LastGenOutput>ToolResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="ToolResourceStrings.Designer.cs">
+      <DependentUpon>ToolResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>
