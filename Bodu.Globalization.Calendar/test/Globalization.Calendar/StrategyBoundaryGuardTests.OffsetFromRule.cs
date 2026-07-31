@@ -25,6 +25,42 @@ public sealed partial class StrategyBoundaryGuardTests
     }
 
     /// <summary>
+    /// Verifies that an offset from a non-Gregorian anchor keeps every occurrence when the anchor's short lunar date
+    /// lands twice in one Gregorian year, including the projection that crosses into the following Gregorian year
+    /// (1 Ramadan fell on both 10 January and 30 December 1997 in the Umm al-Qura calendar, so the 26-day offset must
+    /// produce 5 February 1997 and 25 January 1998).
+    /// </summary>
+    [TestMethod]
+    public void OffsetFromRule_WhenAnchorOccursTwiceInYear_ShouldProjectBothOccurrences()
+    {
+        const string xml = """
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.offset-double-anchor">
+          <ResolutionPolicy duplicatePolicy="Error" priorityDirection="HigherWins" />
+          <NotableDates>
+            <NotableDate id="anchor" displayName="Anchor" category="Observance">
+              <Rules><Rule id="x"><Applicability calendar="UmmAlQura" /><Strategy><Fixed month="9" day="1" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+            </NotableDate>
+            <NotableDate id="dependent" displayName="Dependent" category="Observance">
+              <Rules><Rule id="x"><Strategy><OffsetFromRule notableDateRef="anchor" offsetDays="26" /></Strategy></Rule></Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """;
+
+        List<DateOnly> dependents = Build(xml)
+            .Resolve(new DateRange(new DateOnly(1997, 1, 1), new DateOnly(1998, 12, 31)), Territory)
+            .Where(r => r.NotableDateId == "dependent")
+            .Select(r => r.Date)
+            .OrderBy(d => d)
+            .ToList();
+
+        CollectionAssert.AreEqual(
+            new List<DateOnly> { new(1997, 2, 5), new(1998, 1, 25) },
+            dependents,
+            $"resolved [{string.Join(", ", dependents)}]");
+    }
+
+    /// <summary>
     /// Verifies that an offset projecting before <see cref="DateOnly.MinValue" /> yields no dependent occurrence without
     /// throwing.
     /// </summary>
