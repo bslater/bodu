@@ -1064,7 +1064,12 @@ with XML + JSON-subset serialization and a loader that materializes a
   unchanged. Remaining nicety: source locations on diagnostics.
 - **Ship an MSBuild task and `dotnet` tool** that compiles JSON rule
   packs to a sealed binary format — critical for trim/AOT scenarios (see
-  the AOT theme).
+  the AOT theme). *The format itself is delivered*: the sealed `.bcal`
+  encoding (`NotableDateBinaryResource.Write`/`Read`,
+  `NotableDateResourceLoader.LoadBinary`, `SaveBinary` on the builder,
+  documented in the binary-rule-packs guide) round-trips every bundled
+  catalogue byte-stably with integrity digests. The `dotnet` tool and
+  MSBuild task remain.
 - **Document round-trip guarantees** between builder output and the JSON
   resource rule provider.
 

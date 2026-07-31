@@ -231,6 +231,8 @@
               href: calendar/notable-date-builder.md
             - name: Builder round-trip guarantees
               href: calendar/round-trip-guarantees.md
+            - name: Binary rule packs
+              href: calendar/binary-rule-packs.md
         - name: Bodu.Globalization.Calendar — Reference
           items:
             - name: Validation diagnostics

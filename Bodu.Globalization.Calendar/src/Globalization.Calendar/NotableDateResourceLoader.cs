@@ -249,6 +249,26 @@ public static class NotableDateResourceLoader
         LoadJson(ReadToEnd(stream), NoResolver, logger);
 
     /// <summary>
+    /// Loads a notable-date resource from a sealed binary rule pack.
+    /// </summary>
+    /// <param name="stream">The readable stream positioned at the start of a <c>.bcal</c> pack.</param>
+    /// <returns>The loaded <see cref="NotableDateResource" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="NotableDateBinaryFormatException">
+    /// The stream is not a notable-date binary rule pack, declares an unsupported format version, is truncated or
+    /// corrupted, or carries a value outside the sealed format's tables.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// A binary pack is written from an already-validated resource (see <see cref="NotableDateBinaryResource" />), so
+    /// loading skips parsing and semantic validation entirely — the trim- and AOT-friendly load path. Integrity is
+    /// still enforced: the payload digest and every structural bound are verified.
+    /// </para>
+    /// </remarks>
+    public static NotableDateResource LoadBinary(Stream stream) =>
+        NotableDateBinaryResource.Read(stream);
+
+    /// <summary>
     /// Attempts to load and validate a notable-date document from XML content, collecting every diagnostic — including
     /// warnings and informational messages — instead of throwing on validation failure.
     /// </summary>

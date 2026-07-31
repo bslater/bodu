@@ -198,4 +198,19 @@
   <data name="Validation_ReferenceIsRecurring" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': referenced rule '{2}' is a recurrence and cannot be used as a singular reference.</value>
   </data>
+  <data name="Format_Invalid_BinaryMagic" xml:space="preserve">
+    <value>The input is not a notable-date binary rule pack: the BCAL signature is missing.</value>
+  </data>
+  <data name="Format_Invalid_BinaryVersion" xml:space="preserve">
+    <value>The binary rule pack declares format version {0}; this reader supports version {1} only.</value>
+  </data>
+  <data name="Format_Invalid_BinaryTruncated" xml:space="preserve">
+    <value>The binary rule pack is truncated.</value>
+  </data>
+  <data name="Format_Invalid_BinaryHashMismatch" xml:space="preserve">
+    <value>The binary rule pack payload does not match its integrity digest; the pack is corrupted or was modified.</value>
+  </data>
+  <data name="Format_Invalid_BinaryValue" xml:space="preserve">
+    <value>The binary rule pack carries an invalid value: {0}.</value>
+  </data>
 </root>
