@@ -119,6 +119,39 @@ known-good date.
 **APIs demonstrated.** `NotableDate.IsObserved` / `ActualDate` / `AdjustmentReason`, the
 adjustment/emission behaviour of the pack's rules over a `DateRange` resolve.
 
+### ExpandedTimeline (`Scenarios/ExpandedTimeline.cs`)
+
+**Intent.** The AU pack emits each substituted holiday once, on its observed day — the nominal
+day survives only as `ActualDate`. Show `WithActualOccurrences()` reconstructing the full
+sequential story: every affected day as its own occurrence, actual and observed alike.
+
+**What it does.** Resolves the same 2021 Christmas window, prints the raw observed-only result
+(two occurrences, dated 27 and 28 December), then expands it — 25 and 26 December reappear as
+actual occurrences — and demonstrates that expanding again is a no-op.
+
+**What to expect.**
+
+```
+  Raw observed-only result:
+    2021-12-27 (Monday   ) Christmas Day      actual 2021-12-25
+    2021-12-28 (Tuesday  ) Boxing Day         actual 2021-12-26
+  Expanded timeline:
+    2021-12-25 (Saturday ) Christmas Day      actual
+    2021-12-26 (Sunday   ) Boxing Day         actual
+    2021-12-27 (Monday   ) Christmas Day      observed (in lieu of 2021-12-25)
+    2021-12-28 (Tuesday  ) Boxing Day         observed (in lieu of 2021-12-26)
+  Expanding again adds nothing: 4 occurrences either way.
+```
+
+The synthesized occurrences match the shape the engine emits when a policy declares
+`ActualAndObserved`: `IsObserved` is `false`, no adjustment policy or reason, and every other
+field — including `DisplayName` — carries over. The expansion skips occurrences whose actual day
+is already present, which is what makes the second call a no-op.
+
+**APIs demonstrated.** `NotableDateSequenceExtensions.WithActualOccurrences`, the
+`ObservedOnly` vs `ActualAndObserved` emission distinction, `NotableDate.IsObserved` /
+`ActualDate`.
+
 ## NuGet equivalent
 
 ```bash

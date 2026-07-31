@@ -239,6 +239,28 @@ foreach (NotableDate date in service.Resolve(2026, "AU"))
 }
 ```
 
+### Expanding observed-only results into a full timeline
+
+Data packs whose adjustment policies emit `ObservedOnly` return a single occurrence per adjusted date, anchored on the observed (substitute) day — the nominal day survives only in `ActualDate`. When you want the full sequential story, `WithActualOccurrences()` on <xref:Bodu.Globalization.Calendar.NotableDateSequenceExtensions> synthesizes the missing actual occurrences and re-sorts by the standard `Resolve` ordering — the consumer-side equivalent of an `ActualAndObserved` emission:
+
+<!-- compile -->
+```csharp
+NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
+
+// 2021: Christmas (Sat 25th) and Boxing Day (Sun 26th) were both observed on the following
+// working days, so the observed-only pack returns occurrences dated 27 and 28 December.
+IReadOnlyList<NotableDate> resolved = service.Resolve(
+    new DateRange(new DateOnly(2021, 12, 24), new DateOnly(2021, 12, 29)), "AU");
+
+// Expand: 25 and 26 December reappear as actual occurrences → 24, 25, 26, 27, 28.
+IReadOnlyList<NotableDate> timeline = resolved.WithActualOccurrences();
+
+foreach (NotableDate date in timeline)
+    Console.WriteLine($"{date.Date:d}  {date.DisplayName}  {(date.IsObserved ? "(observed)" : "(actual)")}");
+```
+
+Synthesized occurrences match the shape the engine emits for the actual half of `ActualAndObserved` (`IsObserved` is `false`, no adjustment policy or reason, all other fields — including `DisplayName` — unchanged), and expansion skips occurrences whose actual day is already present, so the method is idempotent and a no-op for packs that already emit both. A synthesized date can precede the range you originally queried; apply `NotableDateFilter.InDateRange` afterwards if strict containment matters.
+
 ## Composing filters
 
 ![NotableDateFilter composition](../../images/diagrams/calendar-filter-gates.svg)
