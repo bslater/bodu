@@ -1100,8 +1100,12 @@ contributing custom `INotableDateAlgorithm` implementations.
   the loader's public surface now carries `[RequiresUnreferencedCode]` /
   `[RequiresDynamicCode]` so trimmed and AOT consumers get an analyzer
   signal instead of a runtime surprise.
-- **Document the trust-gate contract** — how assemblies are validated and
-  what the security boundary guarantees.
+- ~~**Document the trust-gate contract**~~ — delivered: the calendar
+  plugin-trust guide states what each policy validates, the
+  admission-check-not-sandbox boundary, entry-point strength
+  (path overloads vs the weak already-loaded overload), registration
+  collision policy, and unloading; the README and apidoc now position
+  `StrongNamePluginTrustPolicy` as an identity label, not integrity.
 
 ### `Bodu.Globalization.Calendar.Data.*` *(regional packs)*
 

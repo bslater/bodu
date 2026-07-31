@@ -257,6 +257,8 @@
               href: calendar/working-days.md
             - name: Building and extending the service
               href: calendar/building-the-service.md
+            - name: Plugin trust
+              href: calendar/plugin-trust.md
             - name: Dependency injection
               href: calendar/dependency-injection.md
             - name: Caching notable dates
