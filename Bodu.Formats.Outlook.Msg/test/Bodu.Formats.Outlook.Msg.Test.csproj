@@ -14,6 +14,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Fixtures\Reference\valid\*.msg">
+      <LogicalName>Bodu.Formats.Outlook.Msg.Fixtures.Reference.valid.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Fixtures\Reference\invalid\*.msg">
+      <LogicalName>Bodu.Formats.Outlook.Msg.Fixtures.Reference.invalid.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Fixtures\Reference\manifest.json">
+      <LogicalName>Bodu.Formats.Outlook.Msg.Fixtures.Reference.manifest.json</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
   </ItemGroup>
 
