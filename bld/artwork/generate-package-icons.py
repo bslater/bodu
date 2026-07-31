@@ -200,6 +200,8 @@ ICONS = {
     "Bodu.Security.Cryptography":        ("crypto", "#F87171", "AEAD", "lock"),
     "Bodu.IO.Compound":                  ("iocmp", "#60A5FA", "CFB", "doclines"),
     "Bodu.Formats.Excel.Binary":         ("xls", "#34D399", "XLS", "grid"),
+    "Bodu.Formats.Outlook":              ("olk", "#60A5FA", "MAPI", "eq"),
+    "Bodu.Formats.Outlook.Msg":          ("olkmsg", "#2DD4BF", "MSG", "doclines"),
     "Bodu.Numerics":                     ("num", "#A78BFA", "NUM", "fraction"),
     "Bodu.Numerics.Serialization.Json":  ("numjson", "#A78BFA", "JSON", "braces"),
     "Bodu.Financial":                    ("fin", "#34D399", "FIN", "coin"),

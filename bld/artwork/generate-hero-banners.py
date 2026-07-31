@@ -926,6 +926,32 @@ add("hero-excel", "Bodu.Formats.Excel.Binary",
         mono(['<tspan fill="#94A3B8" font-size="9">cached formula results</tspan>'], x=14, y0=128, dy=14)]),
     "read-only BIFF8 · shared strings · used range", gid="xls")
 
+add("hero-outlook", "Bodu.Formats.Outlook",
+    "Bodu.Formats.Outlook — the shared MAPI value model for the Outlook format readers",
+    "#60A5FA", "MapiPropertyTag",
+    mono(['<tspan fill="#94A3B8">0x0037</tspan> 001F Subject', '<tspan fill="#94A3B8">0x0C1A</tspan> 001F SenderName',
+          '<tspan fill="#94A3B8">0x3701</tspan> 0102 AttachData', '<tspan fill="#94A3B8">0x8000</tspan>+ named range', None,
+          '<tspan fill="#94A3B8" font-size="9">id · type · multi-valued flag</tspan>'], y0=44, dy=17, size=10),
+    "decode", "address", "Value model",
+    mono(["MapiProperty", "MapiPropertyCollection", "MapiNamedProperty", "MapiPropertyIds",
+          '<tspan fill="#2DD4BF">recipient · attachment</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">container-free · shared by</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">the .msg and .pst readers</tspan>'], y0=44, dy=17, size=10),
+    "property tags · typed values · named identities", gid="olk")
+
+add("hero-outlook-msg", "Bodu.Formats.Outlook.Msg",
+    "Bodu.Formats.Outlook.Msg — the read-only .msg reader over the OLE2 container",
+    "#2DD4BF", "MS-OXMSG streams",
+    mono(["__properties_version1.0", "__substg1.0_0037001F", "__recip_version1.0_#…", "__attach_version1.0_#…",
+          "__nameid_version1.0", None,
+          '<tspan fill="#94A3B8" font-size="9">over Bodu.IO.Compound</tspan>'], y0=44, dy=17, size=9.5),
+    "open", "decode", "OutlookMessage",
+    mono(["Properties · Recipients", "Attachments · nested msgs", "named-property lookup",
+          '<tspan fill="#60A5FA">BodyText · Html · Rtf</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">MS-OXRTFCP decompression</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">Compatible / Strict levels</tspan>'], y0=44, dy=17, size=10),
+    "MAPI properties · recipients · attachments · bodies", gid="olkmsg")
+
 
 def main():
     for name, s in sorted(B.items()):
