@@ -56,4 +56,33 @@ public sealed partial class Bep3CorpusTests
         Assert.AreEqual(bytes.Length, reader.BytesConsumed, "bytes consumed");
         Assert.AreEqual(BencodeTokenType.None, reader.TokenType);
     }
+
+    /// <summary>
+    /// Verifies that each malformed corpus document throws <see cref="BencodeFormatException" /> while the reader
+    /// is driven to completion.
+    /// </summary>
+    /// <param name="kat">The corpus row.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(Bep3CorpusMalformedData),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Read_WhenBep3CorpusDocumentMalformed_ShouldThrowBencodeFormatException(InvalidKat<string> kat)
+    {
+        ArgumentNullException.ThrowIfNull(kat);
+
+        byte[] bytes = Bytes(kat.Input);
+
+        var exception = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            var reader = new Utf8BencodeReader(bytes);
+            while (reader.Read())
+            {
+                // Drive the reader to completion to surface the malformed-input error.
+            }
+        });
+
+        Assert.IsInstanceOfType(exception, kat.ExceptionType);
+    }
 }
