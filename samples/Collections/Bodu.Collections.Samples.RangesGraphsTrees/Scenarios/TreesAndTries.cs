@@ -64,6 +64,9 @@ public static class TreesAndTries
         var httpKeys = ports.KeysWithPrefix("http").OrderBy(k => k, StringComparer.Ordinal);
         Console.WriteLine($"  keys under 'http' : {string.Join(", ", httpKeys)}");
         Console.WriteLine($"  https -> port     : {ports["https"]}");
+
+        // StartsWith only tests whether any stored key begins with the prefix - cheaper than
+        // KeysWithPrefix when the matches themselves are not needed.
         Console.WriteLine($"  any key 'ft*'?    : {ports.StartsWith("ft")}");
     }
 
@@ -77,6 +80,8 @@ public static class TreesAndTries
 
         var teaWords = words.KeysWithPrefix("tea").OrderBy(k => k, StringComparer.Ordinal);
         Console.WriteLine($"  radix keys 'tea*' : {string.Join(", ", teaWords)}");
+        // Membership is exact: "te" is a prefix of several stored keys but was never added itself, so
+        // Contains reports false for it even though prefix queries would find keys beneath it.
         Console.WriteLine($"  contains 'ten'    : {words.Contains("ten")}");
         Console.WriteLine($"  contains 'te'     : {words.Contains("te")}");
     }

@@ -38,7 +38,7 @@ public static class ContinuedFractions
         var piApprox = Fraction<int>.Approximate(Math.PI, 100);
         Console.WriteLine($"Approximate(Pi, <=100)  : {piApprox} = {piApprox.ToDouble().ToString("F6", CultureInfo.InvariantCulture)}");
 
-        // A tighter bound of 1000 gives the sharper convergent 355/113.
+        // Raising the bound to 1000 admits more denominators and lands on the sharper convergent 355/113.
         var piSharper = Fraction<int>.Approximate(Math.PI, 1000);
         Console.WriteLine($"Approximate(Pi, <=1000) : {piSharper} = {piSharper.ToDouble().ToString("F6", CultureInfo.InvariantCulture)}");
 

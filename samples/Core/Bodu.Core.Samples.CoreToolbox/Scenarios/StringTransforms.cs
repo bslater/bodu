@@ -48,6 +48,9 @@ public static class StringTransforms
         Console.WriteLine($"18 IsPrime       : {18.IsPrime()}");
         Console.WriteLine($"GCD(48, 36)      : {48.GreatestCommonDivisor(36)}");
         Console.WriteLine($"LCM(4, 6)        : {4.LeastCommonMultiple(6)}");
+
+        // RoundToSignificantDigits counts significant figures, not decimal places: 3.14159... -> 3.14,
+        // but 12345.6789 at three figures would round to 12300.
         Console.WriteLine($"RoundToSig(3)    : {3.14159265.RoundToSignificantDigits(3)}");
 
         Console.WriteLine();

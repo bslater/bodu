@@ -44,6 +44,8 @@ public static class RangesAndIntervalTree
         // Iterate by index to print the coalesced ranges in ascending order.
         var ranges = Enumerable.Range(0, set.Count).Select(i => $"[{set[i].StartInclusive},{set[i].EndExclusive})");
         Console.WriteLine($"  coalesced ranges : {string.Join(", ", ranges)}");
+
+        // 15 falls inside the coalesced [0,20); 25 sits in the uncovered gap before [30,40).
         Console.WriteLine($"  contains 15 / 25 : {set.Contains(15)} / {set.Contains(25)}");
     }
 
@@ -61,6 +63,9 @@ public static class RangesAndIntervalTree
 
         Console.WriteLine($"  score 60 -> {grades[60]}");
         Console.WriteLine($"  score 90 -> {grades[90]}");
+
+        // TryGetValue is the non-throwing lookup for keys that may not be covered by any range; the
+        // indexer above would throw for an uncovered key.
         Console.WriteLine($"  score 47 -> {(grades.TryGetValue(47, out var g) ? g : "(none)")}");
     }
 

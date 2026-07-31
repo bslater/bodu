@@ -12,7 +12,8 @@ namespace Bodu.Core.Samples.CoreToolbox.Scenarios;
 /// Demonstrates three of the <c>Bodu.Threading</c> async coordination primitives in a single deterministic flow:
 /// <see cref="AsyncLazy{T}" /> (run an initializer at most once and await its result), <see cref="AsyncManualResetEvent" />
 /// (an awaitable gate that stays open once set), and <see cref="AsyncLock" /> (a mutual-exclusion guard released by
-/// <c>await using</c>). The sample is single-threaded so the output is stable on every run.
+/// disposing the token returned from <c>await mutex.LockAsync()</c>). The sample is single-threaded so the output is
+/// stable on every run.
 /// </summary>
 public static class AsyncPrimitives
 {

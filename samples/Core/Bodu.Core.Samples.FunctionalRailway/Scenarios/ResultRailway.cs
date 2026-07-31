@@ -38,8 +38,10 @@ public static class ResultRailway
     /// <returns>The doubled, validated integer or the first error encountered.</returns>
     private static Result<int> Process(string raw) =>
         Validate(raw)
+            // Bind chains a step that can itself fail; once any step fails, later steps are skipped entirely.
             .Bind(Parse)
             .Tap(n => { /* side effect on success only - e.g. logging */ })
+            // Map applies an infallible transform to the success value; an error flows past it unchanged.
             .Map(n => n * 2);
 
     /// <summary>
