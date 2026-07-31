@@ -101,13 +101,15 @@ public sealed class Base36Encoding
 
     /// <inheritdoc />
     public int GetMaxEncodedLength(int byteCount) =>
-        // log(256) / log(36) = 1.5494... characters per byte, rounded up.
-        checked((int)Math.Ceiling(byteCount * 1.5495)) + 1;
+        // log(256) / log(36) = 1.5474... characters per byte; the multiplier rounds the ratio up so
+        // the estimate can never undershoot, whatever the payload length.
+        checked((int)Math.Ceiling(byteCount * 1.5475)) + 1;
 
     /// <inheritdoc />
     public int GetMaxDecodedLength(int charCount) =>
-        // log(36) / log(256) = 0.6454... bytes per character, rounded up.
-        checked((int)Math.Ceiling(charCount * 0.6455)) + 1;
+        // log(36) / log(256) = 0.6462... bytes per character; the multiplier rounds the ratio up so
+        // the estimate can never undershoot, whatever the input length.
+        checked((int)Math.Ceiling(charCount * 0.6463)) + 1;
 
     /// <inheritdoc />
     public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten)
