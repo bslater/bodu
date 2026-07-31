@@ -17,13 +17,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// </summary>
     /// <returns>The collected diagnostics; empty when the document is valid.</returns>
     /// <remarks>
-    /// <para>
     /// Validation runs the same pipeline as <see cref="Build()" /> — the document is serialized to XML and passed
     /// through <see cref="NotableDateResourceLoader" /> — so a clean result guarantees <see cref="Build()" /> succeeds
     /// for the same document. A document too incomplete to serialize (a missing resource identifier, a concept with no
-    /// rules, a rule with no strategy) is reported as a <c>BODU-CAL-BUILDER-INCOMPLETE</c> error diagnostic rather
-    /// than an exception.
-    /// </para>
+    /// rules, a rule with no strategy) is reported as a <c>BODU-CAL-BUILDER-INCOMPLETE</c> error diagnostic rather than
+    /// an exception.
     /// </remarks>
     public IReadOnlyList<NotableDateValidationDiagnostic> Validate() =>
         Validate(null);
@@ -46,7 +44,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// Attempts to materialize the document into a validated <see cref="NotableDateResource" />, collecting every
     /// diagnostic instead of throwing on an invalid document.
     /// </summary>
-    /// <param name="resource">The built resource, or <see langword="null" /> when the document does not validate.</param>
+    /// <param name="resource">
+    /// The built resource, or <see langword="null" /> when the document does not validate.
+    /// </param>
     /// <param name="diagnostics">Every diagnostic serialization and validation produced.</param>
     /// <returns>
     /// <see langword="true" /> when the document built without error-severity diagnostics; otherwise
@@ -62,7 +62,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="importResolver">
     /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> to resolve no imports.
     /// </param>
-    /// <param name="resource">The built resource, or <see langword="null" /> when the document does not validate.</param>
+    /// <param name="resource">
+    /// The built resource, or <see langword="null" /> when the document does not validate.
+    /// </param>
     /// <param name="diagnostics">Every diagnostic serialization and validation produced.</param>
     /// <returns>
     /// <see langword="true" /> when the document built without error-severity diagnostics; otherwise

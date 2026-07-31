@@ -4,14 +4,15 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar.Samples.ServiceHosting.Scenarios;
+using Bodu.Globalization.Calendar.Samples.ValidationLint.Scenarios;
 
-namespace Bodu.Globalization.Calendar.Samples.ServiceHosting;
+namespace Bodu.Globalization.Calendar.Samples.ValidationLint;
 
 /// <summary>
-/// Entry point for the service-hosting sample: registering the notable-date service in a dependency
-/// injection container — the simple singleton form and the reloadable form whose data can be swapped
-/// at run time without restarting the host.
+/// Entry point for the validation-lint sample: linting authored documents with
+/// <c>NotableDateDocumentBuilder.Validate()</c> / <c>TryBuild(...)</c>, and linting arbitrary rule-pack
+/// text with <c>NotableDateResourceLoader.TryLoad</c> — collecting stable <c>BODU-CAL-*</c> diagnostics
+/// instead of catching exceptions.
 /// </summary>
 public static class Program
 {
@@ -20,13 +21,12 @@ public static class Program
     /// </summary>
     public static void Main()
     {
-        Console.WriteLine("Bodu.Globalization.Calendar.Samples.ServiceHosting");
+        Console.WriteLine("Bodu.Globalization.Calendar.Samples.ValidationLint");
         Console.WriteLine("==================================================");
         Console.WriteLine();
 
-        BasicRegistration.Run();
-        KeyedRegistration.Run();
-        ReloadableResource.Run();
+        LintingAuthoredDocuments.Run();
+        LintingRulePackText.Run();
 
         Console.WriteLine("Done.");
     }

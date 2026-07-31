@@ -27,6 +27,7 @@ public static class Program
 
         RegistryRegistration.Run();
         DelegateAlgorithms.Run();
+        ObservationBasedVariant.Run();
 
         Console.WriteLine("Done.");
     }

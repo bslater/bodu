@@ -28,6 +28,7 @@ public static class Program
         SubdivisionShadowing.Run();
         FilteringAndCategories.Run();
         ObservedDates.Run();
+        StreamingQueries.Run();
 
         Console.WriteLine("Done.");
     }
