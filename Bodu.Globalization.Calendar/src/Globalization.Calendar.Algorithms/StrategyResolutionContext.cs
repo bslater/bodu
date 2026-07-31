@@ -113,6 +113,57 @@ public sealed class StrategyResolutionContext
     }
 
     /// <summary>
+    /// Resolves every occurrence of a referenced rule for the supplied Gregorian year.
+    /// </summary>
+    /// <param name="notableDateRef">The identifier of the referenced notable-date concept.</param>
+    /// <param name="ruleRef">
+    /// The identifier of the referenced rule, or <see langword="null" /> to use its sole rule.
+    /// </param>
+    /// <param name="year">The Gregorian year to resolve.</param>
+    /// <returns>
+    /// The referenced occurrences in ascending chronological order; empty when the reference cannot be resolved
+    /// (missing, ambiguous, circular, or producing no occurrence).
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// A non-Gregorian anchor's short lunar month and day can recur twice in one Gregorian year, so a referential
+    /// strategy that projects each anchor occurrence must resolve through this member rather than
+    /// <see cref="ResolveReference" />, which yields only the year's first occurrence.
+    /// </para>
+    /// </remarks>
+    public IReadOnlyList<DateOnly> ResolveReferenceAll(string notableDateRef, string? ruleRef, int year)
+    {
+        NotableDateDefinition? definition = _resource.FindDefinition(notableDateRef);
+        if (definition is null)
+            return [];
+
+        NotableDateRule? rule = SelectRule(definition, ruleRef);
+        if (rule is null)
+            return [];
+
+        // A recurrence rule has no single occurrence, so it cannot serve as a singular reference; the validator reports
+        // such a reference as an error.
+        if (rule.Strategy is not IDateCalculationStrategy strategy)
+            return [];
+
+        NotableDateRuleIdentity identity = _resource.GetIdentity(definition, rule);
+        if (!_inProgress.Add(identity))
+            return [];
+
+        try
+        {
+            if (strategy is IMultiOccurrenceCalculation multi)
+                return multi.CalculateAll(year, this);
+
+            return strategy.Calculate(year, this) is DateOnly date ? new[] { date } : [];
+        }
+        finally
+        {
+            _inProgress.Remove(identity);
+        }
+    }
+
+    /// <summary>
     /// Determines whether a rule referenced by id resolves to a recurrence source, which cannot be used as a singular
     /// reference.
     /// </summary>

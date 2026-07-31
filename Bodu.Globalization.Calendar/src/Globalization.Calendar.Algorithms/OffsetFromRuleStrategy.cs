@@ -33,7 +33,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <seealso cref="IDateCalculationStrategy" /> <seealso href="../guides/calendar/rule-authoring.html">Authoring notable
 /// date rules (guide)</seealso>
 public sealed class OffsetFromRuleStrategy
-    : IDateCalculationStrategy
+    : IDateCalculationStrategy, IMultiOccurrenceCalculation
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="OffsetFromRuleStrategy" /> class.
@@ -81,6 +81,40 @@ public sealed class OffsetFromRuleStrategy
         if (context.ResolveReference(NotableDateRef, RuleRef, year) is not DateOnly reference)
             return null;
 
+        return Project(reference);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// A non-Gregorian anchor's short lunar month and day can recur twice in one Gregorian year, so each anchor
+    /// occurrence projects independently; the offset can carry a projection into an adjacent Gregorian year.
+    /// </remarks>
+    IReadOnlyList<DateOnly> IMultiOccurrenceCalculation.CalculateAll(int year, StrategyResolutionContext context)
+    {
+        ThrowHelper.ThrowIfNull(context);
+
+        IReadOnlyList<DateOnly> references = context.ResolveReferenceAll(NotableDateRef, RuleRef, year);
+        if (references.Count == 0)
+            return [];
+
+        List<DateOnly> occurrences = new(references.Count);
+        foreach (DateOnly reference in references)
+        {
+            if (Project(reference) is DateOnly occurrence)
+                occurrences.Add(occurrence);
+        }
+
+        occurrences.Sort();
+        return occurrences;
+    }
+
+    /// <summary>
+    /// Projects a referenced occurrence by the configured day offset.
+    /// </summary>
+    /// <param name="reference">The referenced occurrence to project from.</param>
+    /// <returns>The offset date, or <see langword="null" /> when the projection leaves the representable range.</returns>
+    private DateOnly? Project(DateOnly reference)
+    {
         // Guard the projection against rolling past the representable date range at the year extremes; the engine
         // treats an out-of-range offset as "no occurrence" rather than failing the query.
         long target = (long)reference.DayNumber + OffsetDays;
