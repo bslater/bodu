@@ -19,6 +19,12 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// then pass it to <see cref="NotableDateResourceLoader" /> (so a document may reference the keys during validation)
 /// and to the <see cref="NotableDateService" /> (so they resolve at query time).
 /// </para>
+/// <para>
+/// <strong>Thread safety.</strong> Lookups are lock-free and safe to run concurrently with registrations: each
+/// <see cref="Register" /> publishes a new immutable snapshot atomically, so a reader observes either the state before
+/// or after a registration, never a torn intermediate. Prefer populating the registry before sharing it with a live
+/// service; registrations performed afterwards become visible to in-flight resolutions at snapshot granularity.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -37,8 +43,14 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 public sealed class NotableDateAlgorithmRegistry
     : INotableDateAlgorithmRegistry
 {
-    /// <summary>The registered algorithms keyed by algorithm key.</summary>
-    private readonly Dictionary<string, INotableDateAlgorithm> _algorithms = new(StringComparer.Ordinal);
+    /// <summary>Serializes writers so each registration builds its snapshot from the latest published state.</summary>
+    private readonly object _gate = new();
+
+    /// <summary>
+    /// The current immutable snapshot of registered algorithms, replaced atomically on each registration so lookups
+    /// never observe a partially mutated state.
+    /// </summary>
+    private volatile Dictionary<string, INotableDateAlgorithm> _algorithms = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Registers an algorithm under a key, replacing any existing registration.
@@ -54,7 +66,16 @@ public sealed class NotableDateAlgorithmRegistry
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(algorithm);
 
-        _algorithms[key] = algorithm;
+        lock (_gate)
+        {
+            // Copy-on-write: registration is rare and the map is small, so cloning keeps every lookup lock-free.
+            Dictionary<string, INotableDateAlgorithm> next = new(_algorithms, StringComparer.Ordinal)
+            {
+                [key] = algorithm,
+            };
+            _algorithms = next;
+        }
+
         return this;
     }
 

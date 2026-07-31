@@ -121,14 +121,23 @@ public static class NotableDatePluginLoader
     /// <exception cref="ArgumentNullException">
     /// <paramref name="assemblyPath" /> or <paramref name="trustPolicy" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="assemblyPath" /> is empty.</exception>
+    /// <exception cref="FileNotFoundException">No file exists at <paramref name="assemblyPath" />.</exception>
+    /// <exception cref="DirectoryNotFoundException">
+    /// A directory component of <paramref name="assemblyPath" /> does not exist.
+    /// </exception>
+    /// <exception cref="UnauthorizedAccessException">The file cannot be read.</exception>
+    /// <exception cref="NotableDatePluginException">
+    /// The file is not a valid managed assembly image.
+    /// </exception>
     /// <exception cref="PluginNotTrustedException">The trust policy rejected the assembly.</exception>
     /// <exception cref="PluginMissingAttributeException">The assembly does not declare a plugin attribute.</exception>
     /// <exception cref="PluginActivationException">
-    /// The plugin type could not be activated or is not a plugin.
+    /// The plugin type could not be loaded or activated, or is not a plugin.
     /// </exception>
     public static INotableDatePlugin LoadFrom(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger? logger = null)
     {
-        ThrowHelper.ThrowIfNull(assemblyPath);
+        ThrowHelper.ThrowIfNullOrEmpty(assemblyPath);
         ThrowHelper.ThrowIfNull(trustPolicy);
 
         ILogger log = logger ?? NullLogger.Instance;
@@ -145,10 +154,31 @@ public static class NotableDatePluginLoader
         // of the process. Mapping the image into the context does not run plugin code; activation, which does, happens
         // only after the trust check below passes.
         AssemblyLoadContext context = new($"NotableDatePlugin:{Path.GetFileNameWithoutExtension(fullPath)}", isCollectible: true);
+
+        // Resolve the plugin's own dependencies from its directory (via its .deps.json) into the plugin context.
+        // Shared contracts still unify on the default context because the fallback probe runs before this handler:
+        // the handler only fires for assemblies the default context cannot supply.
+        AssemblyDependencyResolver resolver = new(fullPath);
+        context.Resolving += (loadContext, assemblyName) =>
+        {
+            string? resolvedPath = resolver.ResolveAssemblyToPath(assemblyName);
+            return resolvedPath is null ? null : loadContext.LoadFromAssemblyPath(resolvedPath);
+        };
+
         try
         {
-            using MemoryStream stream = new(image, writable: false);
-            Assembly assembly = context.LoadFromStream(stream);
+            Assembly assembly;
+            try
+            {
+                using MemoryStream stream = new(image, writable: false);
+                assembly = context.LoadFromStream(stream);
+            }
+            catch (BadImageFormatException ex)
+            {
+                throw new NotableDatePluginException(
+                    string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginImage, fullPath),
+                    ex);
+            }
 
             AssemblyName assemblyName = assembly.GetName();
             string name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
@@ -164,7 +194,8 @@ public static class NotableDatePluginLoader
     }
 
     /// <summary>
-    /// Registers the algorithms contributed by a plugin with a registry.
+    /// Registers the algorithms contributed by a plugin with a registry, rejecting keys that collide with built-in
+    /// algorithms or existing registrations.
     /// </summary>
     /// <param name="plugin">The plugin whose algorithms are registered.</param>
     /// <param name="registry">The registry to populate.</param>
@@ -176,24 +207,119 @@ public static class NotableDatePluginLoader
     /// <exception cref="ArgumentNullException">
     /// <paramref name="plugin" /> or <paramref name="registry" /> is <see langword="null" />.
     /// </exception>
-    public static int RegisterAlgorithms(INotableDatePlugin plugin, NotableDateAlgorithmRegistry registry, ILogger? logger = null)
+    /// <exception cref="NotableDatePluginException">
+    /// The plugin's contribution is malformed or faults, or a contributed key collides with a built-in algorithm or an
+    /// existing registration. The registry is left unchanged.
+    /// </exception>
+    public static int RegisterAlgorithms(INotableDatePlugin plugin, NotableDateAlgorithmRegistry registry, ILogger? logger = null) =>
+        RegisterAlgorithms(plugin, registry, PluginAlgorithmRegistrationOptions.Default, logger);
+
+    /// <summary>
+    /// Registers the algorithms contributed by a plugin with a registry under the supplied collision policy.
+    /// </summary>
+    /// <param name="plugin">The plugin whose algorithms are registered.</param>
+    /// <param name="registry">The registry to populate.</param>
+    /// <param name="options">The options controlling how colliding keys are treated.</param>
+    /// <param name="logger">
+    /// The logger that receives diagnostics for the registration. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
+    /// <returns>The number of algorithms registered.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="plugin" />, <paramref name="registry" />, or <paramref name="options" /> is
+    /// <see langword="null" />.
+    /// </exception>
+    /// <exception cref="NotableDatePluginException">
+    /// The plugin's contribution is malformed or faults, or a contributed key collides with a built-in algorithm or an
+    /// existing registration while <see cref="PluginAlgorithmRegistrationOptions.AllowOverride" /> is
+    /// <see langword="false" />. The registry is left unchanged.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Registration is atomic: the plugin's contribution is fully staged and validated before the registry is touched,
+    /// so a faulting or malformed plugin never leaves the registry partially mutated. With
+    /// <see cref="PluginAlgorithmRegistrationOptions.AllowOverride" /> enabled, each replacement of a built-in or
+    /// existing key is logged at <see cref="LogLevel.Warning" />.
+    /// </para>
+    /// </remarks>
+    public static int RegisterAlgorithms(
+        INotableDatePlugin plugin,
+        NotableDateAlgorithmRegistry registry,
+        PluginAlgorithmRegistrationOptions options,
+        ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(plugin);
         ThrowHelper.ThrowIfNull(registry);
+        ThrowHelper.ThrowIfNull(options);
+
+        ILogger log = logger ?? NullLogger.Instance;
+        string pluginTypeName = plugin.GetType().FullName ?? plugin.GetType().Name;
 
         if (plugin is not INotableDateAlgorithmPlugin algorithmPlugin)
-            return 0;
-
-        int count = 0;
-        foreach (KeyValuePair<string, INotableDateAlgorithm> pair in algorithmPlugin.GetAlgorithms())
         {
-            registry.Register(pair.Key, pair.Value);
-            count++;
+            Log.PluginContributesNoAlgorithms(log, pluginTypeName);
+            return 0;
         }
 
-        Log.PluginAlgorithmsRegistered(logger ?? NullLogger.Instance, count, plugin.GetType().FullName ?? plugin.GetType().Name);
+        // Stage the whole contribution before touching the shared registry: the plugin's enumeration is untrusted code
+        // and may fault or produce malformed entries, and a partial commit would leave the registry inconsistent.
+        Dictionary<string, INotableDateAlgorithm> staged = new(StringComparer.Ordinal);
+        try
+        {
+            IEnumerable<KeyValuePair<string, INotableDateAlgorithm>>? pairs = algorithmPlugin.GetAlgorithms()
+                ?? throw new NotableDatePluginException(
+                    string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginAlgorithmsNull, pluginTypeName));
 
-        return count;
+            foreach (KeyValuePair<string, INotableDateAlgorithm> pair in pairs)
+            {
+                if (pair.Key is null || pair.Value is null)
+                {
+                    throw new NotableDatePluginException(
+                        string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginAlgorithmEntry, pluginTypeName));
+                }
+
+                if (staged.ContainsKey(pair.Key))
+                {
+                    throw new NotableDatePluginException(
+                        string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginAlgorithmKeyCollision, pluginTypeName, pair.Key));
+                }
+
+                staged.Add(pair.Key, pair.Value);
+            }
+        }
+        catch (Exception ex) when (ex is not NotableDatePluginException)
+        {
+            throw new NotableDatePluginException(
+                string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginAlgorithmsFaulted, pluginTypeName),
+                ex);
+        }
+
+        // Validate every key against the built-ins and the target registry before committing anything, keeping the
+        // reject path side-effect free.
+        List<string> overridden = new();
+        foreach (string key in staged.Keys)
+        {
+            if (!registry.Contains(key) && !AlgorithmDateStrategy.IsKnownKey(key))
+                continue;
+
+            if (!options.AllowOverride)
+            {
+                throw new NotableDatePluginException(
+                    string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginAlgorithmKeyCollision, pluginTypeName, key));
+            }
+
+            overridden.Add(key);
+        }
+
+        foreach (KeyValuePair<string, INotableDateAlgorithm> pair in staged)
+            registry.Register(pair.Key, pair.Value);
+
+        foreach (string key in overridden)
+            Log.PluginAlgorithmOverridesKey(log, key, pluginTypeName);
+
+        Log.PluginAlgorithmsRegistered(log, staged.Count, pluginTypeName);
+
+        return staged.Count;
     }
 
     /// <summary>
@@ -251,7 +377,15 @@ public static class NotableDatePluginLoader
         {
             instance = Activator.CreateInstance(pluginType);
         }
-        catch (Exception ex) when (ex is MissingMethodException or TargetInvocationException or MemberAccessException)
+        catch (Exception ex) when (ex
+            is MissingMethodException
+            or TargetInvocationException
+            or MemberAccessException
+            or TypeInitializationException
+            or TypeLoadException
+            or FileNotFoundException
+            or FileLoadException
+            or BadImageFormatException)
         {
             throw new PluginActivationException(
                 string.Format(CultureInfo.CurrentCulture, PluginsResourceStrings.Op_Invalid_PluginActivation, pluginType.FullName ?? pluginType.Name),

@@ -66,8 +66,8 @@ public sealed partial class NotableDatePluginLoaderTests
     }
 
     /// <summary>
-    /// Verifies that a plugin whose type initializer throws surfaces <see cref="PluginActivationException" /> carrying
-    /// the <see cref="TypeInitializationException" />, rather than letting the raw failure escape.
+    /// Verifies that a plugin whose type initializer throws surfaces <see cref="PluginActivationException" /> whose
+    /// inner chain carries the <see cref="TypeInitializationException" />, rather than letting the raw failure escape.
     /// </summary>
     [TestMethod]
     public void LoadFrom_WhenFixturePluginTypeInitializerThrows_ShouldThrowPluginActivationException()
@@ -79,8 +79,11 @@ public sealed partial class NotableDatePluginLoaderTests
                 new AllowAllPluginTrustPolicy());
         });
 
-        Assert.IsNotNull(ex.InnerException);
-        Assert.IsInstanceOfType<TypeInitializationException>(ex.InnerException);
+        Exception? cause = ex.InnerException;
+        while (cause is not null and not TypeInitializationException)
+            cause = cause.InnerException;
+
+        Assert.IsInstanceOfType<TypeInitializationException>(cause, "The type-initializer failure must be preserved in the inner chain.");
     }
 
     /// <summary>
@@ -227,5 +230,52 @@ public sealed partial class NotableDatePluginLoaderTests
         {
             _ = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
         });
+    }
+
+    /// <summary>
+    /// Verifies that enabling <see cref="PluginAlgorithmRegistrationOptions.AllowOverride" /> permits a contributed key
+    /// to replace an existing registration.
+    /// </summary>
+    [TestMethod]
+    public void RegisterAlgorithms_WhenOverrideAllowed_ShouldReplaceExistingRegistration()
+    {
+        NotableDateAlgorithmRegistry registry = new();
+        registry.Register("stub-day", new StubAlgorithm());
+        StubAlgorithm replacement = new();
+        StubAlgorithmPlugin plugin = new(() =>
+        [
+            new KeyValuePair<string, INotableDateAlgorithm>("stub-day", replacement),
+        ]);
+
+        int registered = NotableDatePluginLoader.RegisterAlgorithms(
+            plugin,
+            registry,
+            new PluginAlgorithmRegistrationOptions { AllowOverride = true });
+
+        Assert.AreEqual(1, registered);
+        Assert.IsTrue(registry.TryGet("stub-day", out INotableDateAlgorithm? resolved));
+        Assert.AreSame(replacement, resolved);
+    }
+
+    /// <summary>
+    /// Verifies that enabling <see cref="PluginAlgorithmRegistrationOptions.AllowOverride" /> permits a contributed key
+    /// to shadow a built-in algorithm key.
+    /// </summary>
+    [TestMethod]
+    public void RegisterAlgorithms_WhenOverrideAllowed_ShouldPermitBuiltInKeyShadowing()
+    {
+        NotableDateAlgorithmRegistry registry = new();
+        StubAlgorithmPlugin plugin = new(() =>
+        [
+            new KeyValuePair<string, INotableDateAlgorithm>("western-easter", new StubAlgorithm()),
+        ]);
+
+        int registered = NotableDatePluginLoader.RegisterAlgorithms(
+            plugin,
+            registry,
+            new PluginAlgorithmRegistrationOptions { AllowOverride = true });
+
+        Assert.AreEqual(1, registered);
+        Assert.IsTrue(registry.Contains("western-easter"));
     }
 }

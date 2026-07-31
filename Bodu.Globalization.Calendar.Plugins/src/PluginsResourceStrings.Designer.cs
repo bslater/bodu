@@ -149,5 +149,50 @@ namespace Bodu.Globalization.Calendar.Plugins {
                 return ResourceManager.GetString("Op_NotTrusted_PluginTokenNotAllowed", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The file '{0}' is not a valid managed plugin assembly image..
+        /// </summary>
+        internal static string Op_Invalid_PluginImage {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The plugin '{0}' returned a null algorithm sequence..
+        /// </summary>
+        internal static string Op_Invalid_PluginAlgorithmsNull {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginAlgorithmsNull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The plugin '{0}' failed while enumerating its contributed algorithms..
+        /// </summary>
+        internal static string Op_Invalid_PluginAlgorithmsFaulted {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginAlgorithmsFaulted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The plugin '{0}' contributed an algorithm entry with a null key or null algorithm..
+        /// </summary>
+        internal static string Op_Invalid_PluginAlgorithmEntry {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginAlgorithmEntry", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The plugin '{0}' attempted to register algorithm key '{1}', which is already registered. Enable PluginAlgorithmRegistrationOptions.AllowOverride to permit replacement..
+        /// </summary>
+        internal static string Op_Invalid_PluginAlgorithmKeyCollision {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PluginAlgorithmKeyCollision", resourceCulture);
+            }
+        }
     }
 }

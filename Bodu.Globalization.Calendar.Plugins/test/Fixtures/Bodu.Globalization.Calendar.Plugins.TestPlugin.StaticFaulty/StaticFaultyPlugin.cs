@@ -15,21 +15,18 @@ namespace Bodu.Globalization.Calendar.Plugins.TestPlugin.StaticFaulty;
 public sealed class StaticFaultyPlugin
     : INotableDatePlugin
 {
-    /// <summary>The value whose initializer faults the type.</summary>
-    private static readonly int s_faulted = Fault();
+    /// <summary>
+    /// Initializes static members of the <see cref="StaticFaultyPlugin" /> class. Always throws; the explicit static
+    /// constructor removes <c>beforefieldinit</c> semantics so the failure surfaces at activation time.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Always thrown; the fixture simulates a broken plugin.</exception>
+    static StaticFaultyPlugin() =>
+        throw new InvalidOperationException("The fixture plugin type initializer always fails.");
 
     /// <inheritdoc />
     public string Name =>
-        $"Static Faulty Fixture Plugin {s_faulted}";
+        "Static Faulty Fixture Plugin";
 
     /// <inheritdoc />
     public Version Version { get; } = new(1, 0, 0);
-
-    /// <summary>
-    /// Always throws, faulting the type initializer.
-    /// </summary>
-    /// <returns>Never returns.</returns>
-    /// <exception cref="InvalidOperationException">Always thrown; the fixture simulates a broken plugin.</exception>
-    private static int Fault() =>
-        throw new InvalidOperationException("The fixture plugin type initializer always fails.");
 }
