@@ -58,4 +58,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Format_Invalid_MsgNotCompound" xml:space="preserve">
+    <value>The source is not an OLE2 compound file and cannot be an Outlook message.</value>
+  </data>
+  <data name="Format_Invalid_MsgContainer" xml:space="preserve">
+    <value>The storage does not contain the '__properties_version1.0' property stream required by the Outlook message format.</value>
+  </data>
+  <data name="Format_Invalid_MsgPropertyStream" xml:space="preserve">
+    <value>The property stream is malformed; its {0} byte(s) do not form a valid header followed by whole 16-byte records.</value>
+  </data>
+  <data name="Format_Invalid_MsgPropertyEntry" xml:space="preserve">
+    <value>The property entry {0} is malformed or uses an unsupported property type.</value>
+  </data>
+  <data name="Format_Invalid_MsgMultiValueLength" xml:space="preserve">
+    <value>The multi-valued property {0} has inconsistent length or element streams.</value>
+  </data>
+  <data name="Format_Invalid_MsgStringPayload" xml:space="preserve">
+    <value>The string property {0} has an odd-length UTF-16 payload.</value>
+  </data>
+  <data name="IO_KeyNotFound_MsgSubstgStream" xml:space="preserve">
+    <value>The property entry {0} references a value stream '{1}' that does not exist.</value>
+  </data>
 </root>

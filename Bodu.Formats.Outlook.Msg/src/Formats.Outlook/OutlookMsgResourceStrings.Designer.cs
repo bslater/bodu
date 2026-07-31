@@ -59,5 +59,68 @@ namespace Bodu.Formats.Outlook {
                 resourceCulture = value;
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The multi-valued property {0} has inconsistent length or element streams..
+        /// </summary>
+        internal static string Format_Invalid_MsgMultiValueLength {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgMultiValueLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The storage does not contain the &apos;__properties_version1.0&apos; property stream required by the Outlook message format..
+        /// </summary>
+        internal static string Format_Invalid_MsgContainer {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgContainer", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The source is not an OLE2 compound file and cannot be an Outlook message..
+        /// </summary>
+        internal static string Format_Invalid_MsgNotCompound {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgNotCompound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The property entry {0} is malformed or uses an unsupported property type..
+        /// </summary>
+        internal static string Format_Invalid_MsgPropertyEntry {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgPropertyEntry", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The property stream is malformed; its {0} byte(s) do not form a valid header followed by whole 16-byte records..
+        /// </summary>
+        internal static string Format_Invalid_MsgPropertyStream {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgPropertyStream", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The string property {0} has an odd-length UTF-16 payload..
+        /// </summary>
+        internal static string Format_Invalid_MsgStringPayload {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgStringPayload", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The property entry {0} references a value stream &apos;{1}&apos; that does not exist..
+        /// </summary>
+        internal static string IO_KeyNotFound_MsgSubstgStream {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_MsgSubstgStream", resourceCulture);
+            }
+        }
     }
 }
