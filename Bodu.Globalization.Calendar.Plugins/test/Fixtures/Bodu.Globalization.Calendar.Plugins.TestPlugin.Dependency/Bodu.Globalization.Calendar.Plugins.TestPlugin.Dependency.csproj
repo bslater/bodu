@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <BoduEnablePackageValidation>false</BoduEnablePackageValidation>
+  </PropertyGroup>
+
+</Project>

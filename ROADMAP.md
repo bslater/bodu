@@ -248,8 +248,10 @@ proposals can be closed quickly.
   `Bodu.Formats.Excel.Binary` is a narrow read-only value reader over
   cached results; EPPlus / ClosedXML / NPOI cover the full-fidelity
   authoring space.
-- **Shipping the `Plugin*.TestAssembly` projects as packages.** Those
-  exist purely to exercise the calendar plugin loader in tests.
+- **Shipping the plugin fixture projects as packages.** The
+  `Bodu.Globalization.Calendar.Plugins.TestPlugin*` fixture assemblies
+  (under the Plugins test project's `Fixtures/`) exist purely to
+  exercise the calendar plugin loader in tests.
 - **Duplicating algorithms already shipped in the .NET BCL or
   Microsoft's first-party `System.*` NuGet packages.** Where the
   framework ships a stable equivalent, consumers should use it directly.
