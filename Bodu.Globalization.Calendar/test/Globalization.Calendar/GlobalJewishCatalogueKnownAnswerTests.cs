@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -18,12 +20,36 @@ namespace Bodu.Globalization.Calendar;
 [TestClass]
 public sealed class GlobalJewishCatalogueKnownAnswerTests
 {
+    /// <summary>The shared sweep service, built once for the fifty-year vector rows.</summary>
+    private static readonly Lazy<NotableDateService> s_sweepService = new(CreateService);
+
     /// <summary>
     /// Builds a service over the bundled <c>global-jewish</c> catalogue.
     /// </summary>
     /// <returns>A service for the catalogue.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-jewish");
+
+    /// <summary>
+    /// Verifies that each Hebrew observance resolves to the independently computed vector date across the full fifty-year
+    /// sweep (Gregorian 1990-2039), pinning every catalogue anchor and offset against the Dershowitz-Reingold arithmetic
+    /// recorded in the embedded vector table.
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (year, observance) input and the expected date.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(HebrewObservanceVectors.Rows),
+        typeof(HebrewObservanceVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossVectorRange_ShouldMatchIndependentVector(ValidKat<(int Year, string ObservanceId), DateOnly> kat)
+    {
+        List<NotableDate> matches = CommonCatalogues.ResolveForYear(s_sweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+
+        Assert.HasCount(1, matches, $"expected exactly one '{kat.Input.ObservanceId}' in {kat.Input.Year}");
+        Assert.AreEqual(kat.Expected, matches[0].Date, kat.Name);
+    }
 
     /// <summary>
     /// Verifies that every observance declared in <c>global-jewish</c> resolves for a representative Gregorian year.

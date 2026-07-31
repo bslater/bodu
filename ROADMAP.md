@@ -1034,11 +1034,19 @@ resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
   from the announced civil date by a day (Saudi crescent sighting, Tehran
   vernal-equinox boundaries). Opt-in alternatives to the tabular
   resources, not replacements.
-- **Extend the Hebcal-aligned regression catalogue** from the six-year
-  starter set to a full 50-year sweep, and owe the same to the Umm
-  al-Qura and Persian tables.
-- **Add `IAsyncEnumerable<NotableDate>` projections** for streaming
-  large multi-year date-range queries.
+- **Extend the Hebcal-aligned regression catalogue** — the Hebrew sweep
+  is delivered: all 13 `global-jewish` observances are pinned across
+  Gregorian 1990–2039 by an embedded vector table generated from an
+  independent Dershowitz–Reingold implementation
+  (`tools/generate-hebrew-observance-vectors.py`), cross-verified
+  against the Hebcal-verified starter rows and the BCL projection. The
+  Umm al-Qura and Persian 50-year tables remain owed (their
+  authoritative sources — ummulqura.org.sa, time.ir — need a
+  network-enabled verification pass).
+- ~~**Add `IAsyncEnumerable<NotableDate>` projections**~~ — delivered:
+  `NotableDateServiceAsyncExtensions.ResolveAsync` streams a range's
+  occurrences one civil year at a time with cooperative cancellation,
+  element-for-element identical to the synchronous overloads.
 
 ### `Bodu.Globalization.Calendar.Builder`
 
