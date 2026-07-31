@@ -27,10 +27,12 @@ The front door: <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> facto
 embedded packs, year/day/range queries through
 <xref:Bodu.Globalization.Calendar.INotableDateService>, ISO 3166-2 subdivision shadowing (AU vs
 AU-VIC/AU-NSW Labour Day, pinned to published dates), composable
-<xref:Bodu.Globalization.Calendar.NotableDateFilter> predicates, and observed-date substitution
+<xref:Bodu.Globalization.Calendar.NotableDateFilter> predicates, observed-date substitution
 with full lineage (`IsObserved` / `ActualDate` / `AdjustmentReason` — the AU 2021 Christmas
-double-substitution). *Packages: `Bodu.Globalization.Calendar`,
-`Bodu.Globalization.Calendar.AsiaPacific`.*
+double-substitution), and expanding an observed-only result into the full actual + observed
+timeline with `WithActualOccurrences()` on
+<xref:Bodu.Globalization.Calendar.NotableDateSequenceExtensions>. *Packages:
+`Bodu.Globalization.Calendar`, `Bodu.Globalization.Calendar.AsiaPacific`.*
 
 ### Bodu.Globalization.Calendar.Samples.WorkingDays
 
