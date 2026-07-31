@@ -164,6 +164,7 @@ The two Easter keys are also exposed as constants on <xref:Bodu.Globalization.Ca
 | `jp-vernal-equinox` | Japan's gazetted Vernal Equinox Day (Shunbun no Hi). |
 | `jp-autumnal-equinox` | Japan's gazetted Autumnal Equinox Day (Shūbun no Hi). |
 | `qingming` | Qingming (Tomb-Sweeping Day) — the solar term 15° after the March equinox, typically 4–5 April. |
+| `tehran-nowruz` | Nowruz (Farvardin 1, the Solar Hijri new year) from the true vernal-equinox instant at the Tehran standard meridian. |
 | `vesak` | Vesak (Buddha's birthday) — the full-moon observance in the Theravāda tradition. |
 | `asalha-puja` | Asalha Puja (Dhamma Day) — the full moon of the eighth lunar month. |
 | `losar` | Losar (Tibetan New Year) — the Tibetan lunisolar new year. |
@@ -182,6 +183,8 @@ The two Easter keys are also exposed as constants on <xref:Bodu.Globalization.Ca
 | `maun-agiyaras` | Maun Agiyaras — the Jain observance on Margashirsha shukla 11. |
 
 The equinox and Qingming keys are computed astronomically and resolved in a specific time zone: `vernal-equinox` / `autumnal-equinox` use UTC, `jp-vernal-equinox` / `jp-autumnal-equinox` use Japan Standard Time (UTC+9), and `qingming` uses China Standard Time (UTC+8). The Hindu-festival keys are computed against the Hindu lunisolar *panchanga* by the engine's internal `HinduLunarCalculator`; `vesak` and `asalha-puja` resolve full-moon dates; `losar` and `matariki` come from gazetted-date tables.
+
+`tehran-nowruz` is an **observation-based variant**: it applies the official Iranian rule — Farvardin 1 falls on the day of the true vernal equinox when the equinox instant occurs before apparent solar noon at the 52.5°E Tehran standard meridian (UTC+03:30), otherwise on the following day — and is supported for the years 1800–2200 (outside that window it yields no occurrence). It is opt-in: the bundled tabular resources remain the default, and a rule chooses the astronomical variant by referencing the key.
 
 `AlgorithmDateStrategy.IsKnownKey(key)` reports whether a key is built in:
 

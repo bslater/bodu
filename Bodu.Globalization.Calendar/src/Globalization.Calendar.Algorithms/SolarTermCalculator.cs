@@ -68,6 +68,20 @@ internal static class SolarTermCalculator
         JulianDayToLocalDate(ComputeEquinoxJulianDay(year, vernal: true) + QingmingDegreeDays, utcOffsetHours);
 
     /// <summary>
+    /// Returns the dynamical-time (Terrestrial Time) instant of the March (vernal) equinox for the supplied year.
+    /// </summary>
+    /// <param name="year">The Gregorian year.</param>
+    /// <returns>The equinox instant in dynamical time, with an unspecified <see cref="DateTime.Kind" />.</returns>
+    /// <remarks>
+    /// <para>
+    /// The Meeus series yields a Julian <em>Ephemeris</em> Day, so the returned instant is in dynamical time; callers
+    /// needing Universal Time must subtract their own ΔT estimate before applying a time-zone offset.
+    /// </para>
+    /// </remarks>
+    public static DateTime VernalEquinoxDynamicalInstant(int year) =>
+        s_j2000Epoch.AddDays(ComputeEquinoxJulianDay(year, vernal: true) - J2000JulianDay);
+
+    /// <summary>
     /// Returns the sun's apparent tropical ecliptic longitude at midnight Universal Time on the supplied date, using
     /// the low-precision solar series from Jean Meeus, <em>Astronomical Algorithms</em> (chapter 25).
     /// </summary>
