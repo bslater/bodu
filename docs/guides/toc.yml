@@ -233,6 +233,8 @@
               href: calendar/round-trip-guarantees.md
         - name: Bodu.Globalization.Calendar — Reference
           items:
+            - name: Validation diagnostics
+              href: calendar/validation-diagnostics.md
             - name: Notable-date rule strategies
               href: calendar/strategy-reference.md
             - name: NotableDateRule and adjustment-policy reference

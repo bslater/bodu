@@ -1056,9 +1056,12 @@ Current state: thin; fluent `NotableDateDocumentBuilder` authoring API
 with XML + JSON-subset serialization and a loader that materializes a
 `NotableDateResource`.
 
-- **Add fluent rule-validation lint** with diagnostic codes mirroring
-  `Bodu.Text.Configuration`'s diagnostic surface, for build-time feedback
-  on rule-pack errors.
+- ~~**Add fluent rule-validation lint**~~ — delivered:
+  `NotableDateDocumentBuilder.Validate()` / `TryBuild(...)` and
+  `NotableDateResourceLoader.TryLoad` / `TryLoadJson` collect every
+  diagnostic (stable `BODU-CAL-*` codes) without throwing, documented in
+  the validation-diagnostics guide; the throwing overloads are
+  unchanged. Remaining nicety: source locations on diagnostics.
 - **Ship an MSBuild task and `dotnet` tool** that compiles JSON rule
   packs to a sealed binary format — critical for trim/AOT scenarios (see
   the AOT theme).
