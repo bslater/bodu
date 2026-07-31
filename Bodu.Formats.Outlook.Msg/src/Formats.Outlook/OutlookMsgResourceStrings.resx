@@ -97,4 +97,13 @@
   <data name="Op_NotSupported_MsgEmbeddedMessage" xml:space="preserve">
     <value>The attachment is not an embedded message; its method is {0}.</value>
   </data>
+  <data name="Format_Invalid_RtfCompressedHeader" xml:space="preserve">
+    <value>The compressed RTF payload does not begin with a valid MS-OXRTFCP header.</value>
+  </data>
+  <data name="Format_Invalid_RtfCompressedData" xml:space="preserve">
+    <value>The compressed RTF payload's declared sizes are inconsistent with its length.</value>
+  </data>
+  <data name="Format_Invalid_RtfCompressedCrc" xml:space="preserve">
+    <value>The compressed RTF payload failed its checksum; the content is corrupt.</value>
+  </data>
 </root>

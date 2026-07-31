@@ -176,5 +176,32 @@ namespace Bodu.Formats.Outlook {
                 return ResourceManager.GetString("Op_NotSupported_MsgEmbeddedMessage", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compressed RTF payload does not begin with a valid MS-OXRTFCP header..
+        /// </summary>
+        internal static string Format_Invalid_RtfCompressedHeader {
+            get {
+                return ResourceManager.GetString("Format_Invalid_RtfCompressedHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compressed RTF payload&apos;s declared sizes are inconsistent with its length..
+        /// </summary>
+        internal static string Format_Invalid_RtfCompressedData {
+            get {
+                return ResourceManager.GetString("Format_Invalid_RtfCompressedData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compressed RTF payload failed its checksum; the content is corrupt..
+        /// </summary>
+        internal static string Format_Invalid_RtfCompressedCrc {
+            get {
+                return ResourceManager.GetString("Format_Invalid_RtfCompressedCrc", resourceCulture);
+            }
+        }
     }
 }

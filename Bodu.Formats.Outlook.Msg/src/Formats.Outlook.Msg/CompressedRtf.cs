@@ -1,0 +1,185 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CompressedRtf.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Buffers.Binary;
+
+namespace Bodu.Formats.Outlook.Msg;
+
+/// <summary>
+/// Decompresses the LZFu compressed-RTF format (MS-OXRTFCP) carried by <c>PidTagRtfCompressed</c>.
+/// </summary>
+/// <remarks>
+/// <para>
+/// The payload starts with a 16-byte header: the compressed size (excluding its own field), the uncompressed size,
+/// the format magic (<c>LZFu</c> compressed, <c>MELA</c> raw), and a CRC over the bytes that follow the header. The
+/// compressed body is an LZ77 variant over a 4096-byte circular dictionary preseeded with a 207-byte RTF prologue:
+/// control bytes are consumed bit by bit from the least significant bit, a clear bit copies a literal, and a set bit
+/// reads a big-endian 16-bit reference — a 12-bit dictionary offset and a 4-bit length stored as length − 2. A
+/// reference whose offset equals the current write position terminates the stream.
+/// </para>
+/// <para>
+/// The CRC is table-driven CRC-32 (reflected polynomial <c>0xEDB88320</c>) with a zero initial value and no final
+/// exclusive-or — deliberately implemented locally rather than through <c>Bodu.IO.Hashing</c>, whose catalogued
+/// CRC-32 applies the standard pre/post conditioning this format omits.
+/// </para>
+/// </remarks>
+internal static class CompressedRtf
+{
+    /// <summary>The magic identifying a compressed body (<c>LZFu</c> read little-endian).</summary>
+    private const uint CompressedMagic = 0x75465A4C;
+
+    /// <summary>The magic identifying a raw body (<c>MELA</c> read little-endian).</summary>
+    private const uint UncompressedMagic = 0x414C454D;
+
+    /// <summary>The circular dictionary size.</summary>
+    private const int DictionarySize = 4096;
+
+    /// <summary>
+    /// The 207-byte prologue the dictionary is preseeded with (MS-OXRTFCP §2.1.2.3); the remainder is spaces.
+    /// </summary>
+    private const string InitialDictionaryText =
+        "{\\rtf1\\ansi\\mac\\deff0\\deftab720{\\fonttbl;}{\\f0\\fnil \\froman \\fswiss "
+        + "\\fmodern \\fscript \\fdecor MS Sans SerifSymbolArialTimes New RomanCourier"
+        + "{\\colortbl\\red0\\green0\\blue0\r\n\\par \\pard\\plain\\f0\\fs20\\b\\i\\u\\tab\\tx";
+
+    /// <summary>The CRC-32 lookup table for the format's checksum.</summary>
+    private static readonly uint[] s_crcTable = BuildCrcTable();
+
+    /// <summary>
+    /// Decompresses a compressed-RTF payload to the raw RTF bytes.
+    /// </summary>
+    /// <param name="data">The complete <c>PidTagRtfCompressed</c> payload, including the 16-byte header.</param>
+    /// <returns>The RTF text bytes.</returns>
+    /// <exception cref="OutlookMsgFormatException">
+    /// The header is truncated or carries an unknown magic, the declared sizes escape the payload, or the checksum
+    /// does not match.
+    /// </exception>
+    internal static byte[] Decompress(ReadOnlySpan<byte> data)
+    {
+        if (data.Length < 16)
+            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedHeader);
+
+        uint compressedSize = BinaryPrimitives.ReadUInt32LittleEndian(data);
+        uint rawSize = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(4));
+        uint magic = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(8));
+        uint crc = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(12));
+
+        if (magic is not (CompressedMagic or UncompressedMagic))
+            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedHeader);
+
+        if (compressedSize < 12 || compressedSize - 12 > (uint)(data.Length - 16))
+            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedData);
+
+        ReadOnlySpan<byte> payload = data.Slice(16, (int)(compressedSize - 12));
+
+        if (magic == UncompressedMagic)
+        {
+            if (crc != 0)
+                throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedCrc);
+            if (rawSize > (uint)payload.Length)
+                throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedData);
+
+            return payload.Slice(0, (int)rawSize).ToArray();
+        }
+
+        if (ComputeCrc(payload) != crc)
+            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedCrc);
+
+        return DecodeCompressed(payload, (int)Math.Min(rawSize, int.MaxValue));
+    }
+
+    /// <summary>
+    /// Computes the format's CRC over a byte span: zero initial value, table-driven, no final exclusive-or.
+    /// </summary>
+    /// <param name="data">The bytes to sum.</param>
+    /// <returns>The checksum.</returns>
+    internal static uint ComputeCrc(ReadOnlySpan<byte> data)
+    {
+        uint crc = 0;
+        foreach (byte value in data)
+            crc = s_crcTable[(crc ^ value) & 0xFF] ^ (crc >> 8);
+
+        return crc;
+    }
+
+    /// <summary>
+    /// Decodes the LZ token stream against the preseeded circular dictionary.
+    /// </summary>
+    /// <param name="payload">The compressed body after the header.</param>
+    /// <param name="expectedSize">The declared uncompressed size, used as the output capacity hint.</param>
+    /// <returns>The decoded bytes.</returns>
+    private static byte[] DecodeCompressed(ReadOnlySpan<byte> payload, int expectedSize)
+    {
+        var dictionary = new byte[DictionarySize];
+        int seeded = System.Text.Encoding.ASCII.GetBytes(InitialDictionaryText, dictionary);
+        dictionary.AsSpan(seeded).Fill((byte)' ');
+
+        var output = new MemoryStream(expectedSize);
+        int writePosition = seeded;
+        int position = 0;
+
+        while (position < payload.Length)
+        {
+            byte control = payload[position++];
+            for (int bit = 0; bit < 8; bit++)
+            {
+                if ((control & (1 << bit)) != 0)
+                {
+                    // Dictionary reference: big-endian 16 bits — 12-bit offset, 4-bit (length - 2).
+                    if (position + 2 > payload.Length)
+                        return output.ToArray();
+
+                    int token = (payload[position] << 8) | payload[position + 1];
+                    position += 2;
+                    int offset = token >> 4;
+                    int length = (token & 0xF) + 2;
+                    if (offset == writePosition)
+                        return output.ToArray();
+
+                    for (int step = 0; step < length; step++)
+                    {
+                        byte value = dictionary[(offset + step) % DictionarySize];
+                        output.WriteByte(value);
+                        dictionary[writePosition] = value;
+                        writePosition = (writePosition + 1) % DictionarySize;
+                    }
+                }
+                else
+                {
+                    // Literal byte.
+                    if (position >= payload.Length)
+                        return output.ToArray();
+
+                    byte value = payload[position++];
+                    output.WriteByte(value);
+                    dictionary[writePosition] = value;
+                    writePosition = (writePosition + 1) % DictionarySize;
+                }
+            }
+        }
+
+        return output.ToArray();
+    }
+
+    /// <summary>
+    /// Builds the reflected CRC-32 lookup table.
+    /// </summary>
+    /// <returns>The 256-entry table for polynomial <c>0xEDB88320</c>.</returns>
+    private static uint[] BuildCrcTable()
+    {
+        var table = new uint[256];
+        for (uint i = 0; i < 256; i++)
+        {
+            uint entry = i;
+            for (int bit = 0; bit < 8; bit++)
+                entry = (entry & 1) != 0 ? 0xEDB88320 ^ (entry >> 1) : entry >> 1;
+
+            table[i] = entry;
+        }
+
+        return table;
+    }
+}
