@@ -27,6 +27,7 @@ public static class TextConfigurationFileSource
         // The file cascades: [*] defaults, [production/**] overrides logging.level.
         foreach (var target in new[] { "dev/web", "production/web" })
         {
+            // The cascade is fixed when the source loads, so each targetPath needs its own build.
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddTextConfigurationFile("Data/settings.boduconfig", targetPath: target)

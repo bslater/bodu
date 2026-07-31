@@ -64,6 +64,7 @@ public sealed class Base36Encoding
         if (chars.IsEmpty)
             return [];
 
+        // Mirror of the encode side: each leading '0' character restores one leading zero byte.
         var leadingZeros = 0;
         while (leadingZeros < chars.Length && chars[leadingZeros] == '0')
             leadingZeros++;
@@ -78,6 +79,7 @@ public sealed class Base36Encoding
             value = (value * 36) + digit;
         }
 
+        // Rebuild the payload: the preserved zero bytes first, then the integer's big-endian magnitude.
         var magnitude = value.IsZero ? [] : value.ToByteArray(isUnsigned: true, isBigEndian: true);
 
         var result = new byte[leadingZeros + magnitude.Length];
@@ -110,6 +112,8 @@ public sealed class Base36Encoding
     /// <inheritdoc />
     public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten)
     {
+        // The Try surface reports an undersized destination with false instead of throwing, so callers
+        // can budget with GetMaxEncodedLength and retry.
         var text = Encode(source);
         if (text.Length > destination.Length)
         {
@@ -125,6 +129,7 @@ public sealed class Base36Encoding
     /// <inheritdoc />
     public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten)
     {
+        // Validate up front so malformed text yields false here rather than the FormatException Decode throws.
         if (!IsValid(source))
         {
             bytesWritten = 0;
