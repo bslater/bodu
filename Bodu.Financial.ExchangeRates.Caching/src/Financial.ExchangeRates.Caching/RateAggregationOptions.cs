@@ -74,14 +74,14 @@ public sealed class RateAggregationOptions
     /// <summary>
     /// Gets or sets the level at which the selected route is logged.
     /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
-    public LogLevel RouteSelectedLogLevel { get; set; } = LogLevel.Trace;
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel RouteSelectedLogLevel { get; set; } = LogLevel.Information;
 
     /// <summary>
     /// Gets or sets the level at which a successfully aggregated lookup is logged.
     /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
-    public LogLevel ResolvedLogLevel { get; set; } = LogLevel.Trace;
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel ResolvedLogLevel { get; set; } = LogLevel.Information;
 
     /// <summary>
     /// Gets or sets the level at which a lookup that no candidate could satisfy is logged.

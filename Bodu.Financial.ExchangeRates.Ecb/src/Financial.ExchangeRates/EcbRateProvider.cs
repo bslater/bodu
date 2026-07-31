@@ -34,7 +34,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
 /// package) the provider records: the start of a feed download (<see cref="LogLevel.Debug" />), a completed download
 /// with its observation count (<see cref="LogLevel.Information" />), each ingested observation (
-/// <see cref="LogLevel.Trace" />), a failed download (<see cref="LogLevel.Warning" />, then re-thrown), and a
+/// <see cref="LogLevel.Information" />), a failed download (<see cref="LogLevel.Warning" />, then re-thrown), and a
 /// synchronous on-demand network fetch (<see cref="LogLevel.Warning" />). Every level is configurable through the
 /// corresponding <c>*LogLevel</c> property on <see cref="EcbRateProviderOptions" />; omitting the logger selects
 /// <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.

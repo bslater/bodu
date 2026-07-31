@@ -21,7 +21,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <para>
 /// The <c>Cache*LogLevel</c> members set the <see cref="LogLevel" /> at which each cache diagnostic is logged, so
 /// consumers can re-tune verbosity per concern without category-wide log filters. The per-lookup hit and miss events
-/// default to <see cref="LogLevel.Trace" /> because they run on the read hot path; the range events default to
+/// default to <see cref="LogLevel.Information" /> because they run on the read hot path; the range events default to
 /// <see cref="LogLevel.Debug" />. The per-serve <see cref="RateProvenanceLogLevel" /> records the lineage of every
 /// served rate — live versus cache hit, the backend identity, and the served data's age — and also defaults to
 /// <see cref="LogLevel.Debug" />. Set any member to <see cref="LogLevel.None" /> to suppress that event entirely.
@@ -158,14 +158,14 @@ public sealed class CachingRateOptions
     /// <summary>
     /// Gets or sets the level at which a single-date lookup served from the cache is logged.
     /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
-    public LogLevel CacheHitLogLevel { get; set; } = LogLevel.Trace;
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel CacheHitLogLevel { get; set; } = LogLevel.Information;
 
     /// <summary>
     /// Gets or sets the level at which a single-date cache miss resolved from a source and then cached is logged.
     /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
-    public LogLevel CacheMissLogLevel { get; set; } = LogLevel.Trace;
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel CacheMissLogLevel { get; set; } = LogLevel.Information;
 
     /// <summary>
     /// Gets or sets the level at which a range lookup served entirely from the cache is logged.

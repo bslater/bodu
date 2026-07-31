@@ -125,6 +125,6 @@ public sealed partial class CachingRateProviderTests
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
         Assert.DoesNotContain(e => e.EventId.Id == ProvenanceEventId, logger.Entries);
-        Assert.Contains(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501, logger.Entries);
+        Assert.Contains(e => e.Level == LogLevel.Information && e.EventId.Id == 4501, logger.Entries);
     }
 }
