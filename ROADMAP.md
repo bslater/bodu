@@ -1092,7 +1092,11 @@ namespace).
   territory/year window). Remaining first-request cost for non-caching
   setups is the uncached document parse in the core loader — tracked as
   a core-package item, not a DI one.
-- **Add `IOptionsMonitor<NotableDateOptions>` rebuild support**.
+- ~~**Add `IOptionsMonitor<NotableDateOptions>` rebuild support**~~ —
+  delivered: `AddReloadableNotableDateService<TOptions>` binds the
+  reloadable service to `IOptionsMonitor<TOptions>`, rebuilding the
+  resource through the registration's factory on every options change;
+  a factory failure is logged and keeps the previous resource serving.
 
 ### `Bodu.Globalization.Calendar.Plugins`
 

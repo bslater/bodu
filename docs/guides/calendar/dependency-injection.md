@@ -31,6 +31,7 @@ Every extension method lives on <xref:Bodu.Globalization.Calendar.NotableDateSer
 | `AddReloadableNotableDateService(IServiceCollection, NotableDateResource)` | A singleton `INotableDateService` (a `ReloadableNotableDateService`) **and** a singleton `MutableNotableDateResourceProvider` you inject to call `Reload(...)`. |
 | `AddReloadableNotableDateService(IServiceCollection, NotableDateResource, NotableDateServiceOptions?)` | The reloadable registration with collaborators propagated to each rebuilt inner service. |
 | `AddReloadableNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>, NotableDateServiceOptions?)` | The reloadable registration with the initial resource produced from the container. |
+| `AddReloadableNotableDateService<TOptions>(IServiceCollection, Func<IServiceProvider, TOptions, NotableDateResource>, NotableDateServiceOptions?)` | The reloadable registration driven by `IOptionsMonitor<TOptions>`: every options change rebuilds the resource through the factory and swaps it into the live service. |
 
 `INotableDateService` is always registered as a singleton, and every registration is idempotent (`TryAdd` semantics): a second registration for the same service — or the same key — leaves the first in place rather than replacing it.
 
@@ -116,6 +117,18 @@ public sealed class CalendarReloader
 ```
 
 The provider is also registered as <xref:Bodu.Globalization.Calendar.INotableDateResourceProvider>, so a component that only needs to read the current resource can inject the interface instead of the concrete provider.
+
+### Configuration-driven reloads
+
+When the rule set is derived from configuration, bind an options type and use the monitored overload instead of calling `Reload` by hand — every change the options infrastructure observes (for example an edited `appsettings.json` with `reloadOnChange`) rebuilds the resource through your factory and swaps it into the live service:
+
+```csharp
+builder.Services.AddOptions<CalendarOptions>().Bind(builder.Configuration.GetSection("Calendar"));
+builder.Services.AddReloadableNotableDateService<CalendarOptions>((sp, options) =>
+    AsiaPacificCalendarData.LoadResource(options.Territory));
+```
+
+A factory failure during a change is logged and leaves the previously loaded resource in effect, so a broken configuration edit never takes the calendar offline.
 
 ## Registering a service with custom collaborators
 

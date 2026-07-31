@@ -338,6 +338,124 @@ public sealed class NotableDateServiceCollectionExtensionsTests
         Assert.AreSame(services, services.AddReloadableNotableDateService(resource));
     }
 
+    /// <summary>The options type driving the monitored reloadable registration in these tests.</summary>
+    public sealed class TestCalendarOptions
+    {
+        /// <summary>Gets or sets the notable-date document XML the resource is built from.</summary>
+        public string Document { get; set; } = Xml;
+    }
+
+    /// <summary>A hand-triggered options monitor so tests control change notifications synchronously.</summary>
+    private sealed class TestOptionsMonitor : Microsoft.Extensions.Options.IOptionsMonitor<TestCalendarOptions>
+    {
+        private readonly List<Action<TestCalendarOptions, string?>> _listeners = new();
+
+        /// <inheritdoc />
+        public TestCalendarOptions CurrentValue { get; private set; } = new();
+
+        /// <inheritdoc />
+        public TestCalendarOptions Get(string? name) =>
+            CurrentValue;
+
+        /// <inheritdoc />
+        public IDisposable? OnChange(Action<TestCalendarOptions, string?> listener)
+        {
+            _listeners.Add(listener);
+            return null;
+        }
+
+        /// <summary>Publishes a new options value to every subscriber.</summary>
+        /// <param name="value">The new options value.</param>
+        public void Change(TestCalendarOptions value)
+        {
+            CurrentValue = value;
+            foreach (Action<TestCalendarOptions, string?> listener in _listeners)
+                listener(value, null);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the options-monitored reloadable registration builds the initial resource from the monitor's
+    /// current value.
+    /// </summary>
+    [TestMethod]
+    public void AddReloadableNotableDateService_WithOptionsMonitor_ResolvesInitialResource()
+    {
+        TestOptionsMonitor monitor = new();
+        ServiceProvider provider = new ServiceCollection()
+            .AddSingleton<Microsoft.Extensions.Options.IOptionsMonitor<TestCalendarOptions>>(monitor)
+            .AddReloadableNotableDateService<TestCalendarOptions>((_, options) => NotableDateResourceLoader.Load(options.Document))
+            .BuildServiceProvider();
+
+        INotableDateService service = provider.GetRequiredService<INotableDateService>();
+
+        Assert.AreEqual(new DateOnly(2026, 1, 1), service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
+    }
+
+    /// <summary>
+    /// Verifies that an options change rebuilds the resource through the factory and the live service reflects it on
+    /// its next query.
+    /// </summary>
+    [TestMethod]
+    public void AddReloadableNotableDateService_WhenOptionsChange_ReflectsRebuiltResource()
+    {
+        const string februaryXml = """
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.di">
+          <NotableDates>
+            <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+              <Rules><Rule id="x"><Strategy><Fixed month="February" day="1" /></Strategy></Rule></Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """;
+
+        TestOptionsMonitor monitor = new();
+        ServiceProvider provider = new ServiceCollection()
+            .AddSingleton<Microsoft.Extensions.Options.IOptionsMonitor<TestCalendarOptions>>(monitor)
+            .AddReloadableNotableDateService<TestCalendarOptions>((_, options) => NotableDateResourceLoader.Load(options.Document))
+            .BuildServiceProvider();
+
+        INotableDateService service = provider.GetRequiredService<INotableDateService>();
+        Assert.AreEqual(new DateOnly(2026, 1, 1), service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
+
+        monitor.Change(new TestCalendarOptions { Document = februaryXml });
+
+        Assert.AreEqual(new DateOnly(2026, 2, 1), service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
+    }
+
+    /// <summary>
+    /// Verifies that a factory failure during an options change is contained: no exception escapes the notification
+    /// and the previously loaded resource stays in effect.
+    /// </summary>
+    [TestMethod]
+    public void AddReloadableNotableDateService_WhenRebuildFails_KeepsPreviousResource()
+    {
+        TestOptionsMonitor monitor = new();
+        ServiceProvider provider = new ServiceCollection()
+            .AddSingleton<Microsoft.Extensions.Options.IOptionsMonitor<TestCalendarOptions>>(monitor)
+            .AddReloadableNotableDateService<TestCalendarOptions>((_, options) => NotableDateResourceLoader.Load(options.Document))
+            .BuildServiceProvider();
+
+        INotableDateService service = provider.GetRequiredService<INotableDateService>();
+        _ = service.Resolve(new DateOnly(2026, 1, 1), "XX");
+
+        monitor.Change(new TestCalendarOptions { Document = "<not-a-valid-document" });
+
+        Assert.AreEqual(new DateOnly(2026, 1, 1), service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
+    }
+
+    /// <summary>
+    /// Verifies that the options-monitored overload rejects null arguments.
+    /// </summary>
+    [TestMethod]
+    public void AddReloadableNotableDateService_WhenMonitoredOverloadArgumentsAreNull_Throws()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new ServiceCollection().AddReloadableNotableDateService<TestCalendarOptions>(null!);
+        });
+    }
+
     /// <summary>
     /// Verifies that a null factory, key, or services argument is rejected by the new overloads.
     /// </summary>
