@@ -121,7 +121,7 @@ builder.Services.AddSingleton<INotableDateService>(sp =>
         CommonNotableDateResources.Resolver,
         registry);
 
-    return new NotableDateService(resource, registry);
+    return new NotableDateService(resource, new NotableDateServiceOptions { Algorithms = registry });
 });
 ```
 

@@ -229,6 +229,8 @@
               href: calendar/rule-authoring.md
             - name: Authoring with the notable-date builder
               href: calendar/notable-date-builder.md
+            - name: Builder round-trip guarantees
+              href: calendar/round-trip-guarantees.md
         - name: Bodu.Globalization.Calendar — Reference
           items:
             - name: Notable-date rule strategies

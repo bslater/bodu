@@ -144,8 +144,11 @@ edited.Save("holidays.xml");
 NotableDateDocumentBuilder copy = edited.Clone();   // deep, independent copy
 ```
 
+Round-tripping carries precise guarantees — builder-canonical XML is byte-stable, JSON is identity within its subset, and both formats resolve the same occurrences. [Builder round-trip guarantees](round-trip-guarantees.md) states the full contract, including the XML → JSON lossiness boundary.
+
 ## Where to go next
 
+- [Builder round-trip guarantees](round-trip-guarantees.md) — exactly what `FromXml` / `ToXml`, `FromJson` / `ToJson`, and `Save` / `Load` guarantee.
 - [Authoring notable date rules](rule-authoring.md) — the XML / JSON document model the builder produces.
 - [NotableDateRule and adjustment-policy reference](rule-reference.md) — the per-element field reference.
 - [Date calculation algorithms](algorithms.md) — the six strategies and the `<Algorithm>` keys.

@@ -50,7 +50,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 ///
 /// // Wire the registry into the load and resolve pipeline so rules can reference the plugin keys.
 /// NotableDateResource resource = NotableDateResourceLoader.Load(documentXml, _ => null, registry);
-/// NotableDateService service = new(resource, registry);
+/// NotableDateService service = new(resource, new NotableDateServiceOptions { Algorithms = registry });
 ///]]>
 /// </code>
 /// </example>

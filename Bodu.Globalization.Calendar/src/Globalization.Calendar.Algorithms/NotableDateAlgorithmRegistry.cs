@@ -28,7 +28,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 ///     .Register("contoso.harvest-moon", new HarvestMoonAlgorithm());
 ///
 /// NotableDateResource resource = NotableDateResourceLoader.Load(documentXml, _ => null, registry);
-/// NotableDateService service = new(resource, registry);
+/// NotableDateService service = new(resource, new NotableDateServiceOptions { Algorithms = registry });
 ///]]>
 /// </code>
 /// </example>

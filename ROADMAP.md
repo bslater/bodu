@@ -1063,8 +1063,14 @@ namespace).
 
 - **Add key-aware `AddNotableDateService("AU")`** for multi-tenant
   processes serving multiple jurisdictions.
-- **Add `IHostedService` cache warm-up** so the first post-start request
-  does not pay the rule-load cost.
+- ~~**Add `IHostedService` cache warm-up**~~ — delivered by the
+  `Bodu.Globalization.Calendar.Caching` package
+  (`AddNotableDateCacheWarmup` registers the hosted
+  `NotableDateCacheWarmupService`, which drives
+  `CachingNotableDateService.Warm` over a configurable rolling
+  territory/year window). Remaining first-request cost for non-caching
+  setups is the uncached document parse in the core loader — tracked as
+  a core-package item, not a DI one.
 - **Add `IOptionsMonitor<NotableDateOptions>` rebuild support**.
 
 ### `Bodu.Globalization.Calendar.Plugins`
