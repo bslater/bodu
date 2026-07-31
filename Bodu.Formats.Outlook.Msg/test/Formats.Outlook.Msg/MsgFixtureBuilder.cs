@@ -230,6 +230,110 @@ internal sealed class MsgFixtureBuilder
     }
 
     /// <summary>
+    /// Adds the next recipient storage, indexed after the recipients already added.
+    /// </summary>
+    /// <param name="configure">Configures the recipient's properties on a nested builder.</param>
+    /// <returns>This builder.</returns>
+    internal MsgFixtureBuilder AddRecipient(Action<MsgFixtureBuilder> configure)
+    {
+        var child = new MsgFixtureBuilder(MsgPropertyStreamKind.RecipientOrAttachment);
+        configure(child);
+        return AddStorage(MsgStreamNames.GetRecipientStorageName(CountStorages(MsgStreamNames.RecipientStoragePrefix)), child);
+    }
+
+    /// <summary>
+    /// Adds the next attachment storage, indexed after the attachments already added.
+    /// </summary>
+    /// <param name="configure">Configures the attachment's properties and streams on a nested builder.</param>
+    /// <returns>This builder.</returns>
+    internal MsgFixtureBuilder AddAttachment(Action<MsgFixtureBuilder> configure)
+    {
+        var child = new MsgFixtureBuilder(MsgPropertyStreamKind.RecipientOrAttachment);
+        configure(child);
+        return AddStorage(MsgStreamNames.GetAttachmentStorageName(CountStorages(MsgStreamNames.AttachmentStoragePrefix)), child);
+    }
+
+    /// <summary>
+    /// Adds an embedded-message storage to this (attachment) builder, together with the attach-method and
+    /// <c>PT_OBJECT</c> marker entries the format records for it.
+    /// </summary>
+    /// <param name="configure">Configures the embedded message on a nested builder.</param>
+    /// <returns>This builder.</returns>
+    internal MsgFixtureBuilder AddEmbeddedMessage(Action<MsgFixtureBuilder> configure)
+    {
+        var child = new MsgFixtureBuilder(MsgPropertyStreamKind.EmbeddedMessage);
+        configure(child);
+        AddFixedEntry(0x37050003, 5);           // PidTagAttachMethod = afEmbeddedMessage
+        AddEntryWithoutStream(0x3701000D, 0);   // PidTagAttachDataObject marker
+        return AddStorage(MsgStreamNames.EmbeddedMessageStorageName, child);
+    }
+
+    /// <summary>
+    /// Adds the named-property mapping storage with raw stream payloads.
+    /// </summary>
+    /// <param name="guidStream">The GUID stream payload (16 bytes per GUID).</param>
+    /// <param name="entryStream">The entry stream payload (8 bytes per entry).</param>
+    /// <param name="stringStream">The string stream payload (length-prefixed UTF-16LE names).</param>
+    /// <returns>This builder.</returns>
+    internal MsgFixtureBuilder WithNameId(byte[] guidStream, byte[] entryStream, byte[] stringStream)
+    {
+        var child = new MsgFixtureBuilder(MsgPropertyStreamKind.RecipientOrAttachment);
+        child._omitPropertiesStream = true;
+        child._streams.Add((MsgStreamNames.GetSubstgStreamName(0x00020102), guidStream));
+        child._streams.Add((MsgStreamNames.GetSubstgStreamName(0x00030102), entryStream));
+        child._streams.Add((MsgStreamNames.GetSubstgStreamName(0x00040102), stringStream));
+        return AddStorage(MsgStreamNames.NameIdStorageName, child);
+    }
+
+    /// <summary>
+    /// Composes one 8-byte entry of the named-property entry stream.
+    /// </summary>
+    /// <param name="idOrOffset">The name identifier (numeric kind) or string-stream offset (string kind).</param>
+    /// <param name="guidIndex">The GUID index: 1 for PS_MAPI, 2 for PS_PUBLIC_STRINGS, 3+ for the GUID stream.</param>
+    /// <param name="isString">Whether the entry names a string property.</param>
+    /// <param name="propertyIndex">The property index; the mapped identifier is <c>0x8000 + propertyIndex</c>.</param>
+    /// <returns>The entry bytes.</returns>
+    internal static byte[] NameIdEntry(uint idOrOffset, int guidIndex, bool isString, ushort propertyIndex)
+    {
+        var entry = new byte[8];
+        BinaryPrimitives.WriteUInt32LittleEndian(entry, idOrOffset);
+        BinaryPrimitives.WriteUInt16LittleEndian(entry.AsSpan(4), (ushort)((guidIndex << 1) | (isString ? 1 : 0)));
+        BinaryPrimitives.WriteUInt16LittleEndian(entry.AsSpan(6), propertyIndex);
+        return entry;
+    }
+
+    /// <summary>
+    /// Composes a string-stream payload holding one length-prefixed UTF-16LE name at offset zero.
+    /// </summary>
+    /// <param name="name">The property name.</param>
+    /// <returns>The string-stream bytes.</returns>
+    internal static byte[] NameIdString(string name)
+    {
+        byte[] text = System.Text.Encoding.Unicode.GetBytes(name);
+        var payload = new byte[4 + text.Length];
+        BinaryPrimitives.WriteUInt32LittleEndian(payload, (uint)text.Length);
+        text.CopyTo(payload.AsSpan(4));
+        return payload;
+    }
+
+    /// <summary>
+    /// Counts the child storages already added with a name prefix.
+    /// </summary>
+    /// <param name="prefix">The storage-name prefix.</param>
+    /// <returns>The number of matching storages.</returns>
+    private int CountStorages(string prefix)
+    {
+        int count = 0;
+        foreach ((string name, _) in _storages)
+        {
+            if (name.StartsWith(prefix, StringComparison.Ordinal))
+                count++;
+        }
+
+        return count;
+    }
+
+    /// <summary>
     /// Suppresses the property stream, producing a compound file that is not a valid message.
     /// </summary>
     /// <returns>This builder.</returns>
