@@ -1,10 +1,11 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceCollectionExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace Bodu.Globalization.Calendar;
@@ -15,11 +16,16 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// The service is registered as a singleton because a <see cref="NotableDateResource" /> is immutable and the resolver
-/// holds no shared mutable state, so a single instance can be shared across the application safely.
+/// holds no shared mutable state, so a single instance can be shared across the application safely. Registrations are
+/// idempotent (<c>TryAdd</c> semantics): when an <see cref="INotableDateService" /> — or, for the keyed overloads, a
+/// service under the same key — is already registered, the call leaves the existing registration in place.
 /// </para>
 /// <para>
 /// <strong>When to use.</strong> Use <see cref="AddNotableDateService(IServiceCollection, NotableDateResource)" /> when
-/// the resource is available at startup, the factory overload when it must be built from other registered services, and
+/// the resource is available at startup, the factory overloads when it must be built from other registered services,
+/// the overloads accepting a <see cref="NotableDateServiceOptions" /> when the service needs collaborators (a custom
+/// algorithm registry, collision resolver, adjustment handlers, or code-first providers), the keyed overloads when a
+/// multi-tenant process serves several jurisdictions side by side, and
 /// <see cref="AddReloadableNotableDateService(IServiceCollection, NotableDateResource)" /> when the data must be
 /// swapped at runtime without restarting the host.
 /// </para>
@@ -30,8 +36,11 @@ namespace Bodu.Globalization.Calendar;
 /// // Register a service over a bundled data pack at application startup.
 /// builder.Services.AddNotableDateService(AmericasCalendarData.LoadResource("US"));
 ///
-/// // Consume it anywhere through constructor injection.
-/// public sealed class PayrollCalendar(INotableDateService notableDates)
+/// // Or register one service per jurisdiction and resolve by key.
+/// builder.Services.AddNotableDateService("US", AmericasCalendarData.LoadResource("US"));
+/// builder.Services.AddNotableDateService("AU", AsiaPacificCalendarData.LoadResource("AU"));
+///
+/// public sealed class PayrollCalendar([FromKeyedServices("US")] INotableDateService notableDates)
 /// {
 ///     public bool IsBankHoliday(DateOnly date) =>
 ///         notableDates.Resolve(date, "US").Any(n => n.Category == NotableDateCategory.BankHoliday);
@@ -40,6 +49,7 @@ namespace Bodu.Globalization.Calendar;
 /// </code>
 /// </example>
 /// <seealso cref="INotableDateService" /> <seealso cref="NotableDateResource" />
+/// <seealso cref="NotableDateServiceOptions" />
 /// <seealso href="../guides/calendar/dependency-injection.html">Calendar dependency injection (guide)</seealso>
 public static class NotableDateServiceCollectionExtensions
 {
@@ -57,7 +67,30 @@ public static class NotableDateServiceCollectionExtensions
         ThrowHelper.ThrowIfNull(services);
         ThrowHelper.ThrowIfNull(resource);
 
-        services.AddSingleton<INotableDateService>(new NotableDateService(resource));
+        services.TryAddSingleton<INotableDateService>(_ => new NotableDateService(resource));
+        return services;
+    }
+
+    /// <summary>
+    /// Registers an <see cref="INotableDateService" /> resolving against the supplied resource with the supplied
+    /// collaborators.
+    /// </summary>
+    /// <param name="services">The service collection to add the registration to.</param>
+    /// <param name="resource">The loaded resource the service resolves against.</param>
+    /// <param name="options">
+    /// The collaborators composed into the service — for example a custom algorithm registry — or
+    /// <see langword="null" /> for built-ins only.
+    /// </param>
+    /// <returns>The same service collection, to allow chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="services" /> or <paramref name="resource" /> is <see langword="null" />.
+    /// </exception>
+    public static IServiceCollection AddNotableDateService(this IServiceCollection services, NotableDateResource resource, NotableDateServiceOptions? options)
+    {
+        ThrowHelper.ThrowIfNull(services);
+        ThrowHelper.ThrowIfNull(resource);
+
+        services.TryAddSingleton<INotableDateService>(_ => new NotableDateService(resource, options));
         return services;
     }
 
@@ -75,7 +108,100 @@ public static class NotableDateServiceCollectionExtensions
         ThrowHelper.ThrowIfNull(services);
         ThrowHelper.ThrowIfNull(resourceFactory);
 
-        services.AddSingleton<INotableDateService>(provider => new NotableDateService(resourceFactory(provider)));
+        services.TryAddSingleton<INotableDateService>(provider => new NotableDateService(resourceFactory(provider)));
+        return services;
+    }
+
+    /// <summary>
+    /// Registers an <see cref="INotableDateService" /> resolving against a resource produced by a factory, composed
+    /// with collaborators produced by a second factory.
+    /// </summary>
+    /// <param name="services">The service collection to add the registration to.</param>
+    /// <param name="resourceFactory">A factory that produces the resource from the service provider.</param>
+    /// <param name="optionsFactory">
+    /// A factory that produces the collaborators composed into the service, or <see langword="null" /> for built-ins
+    /// only. The factory itself may also return <see langword="null" />.
+    /// </param>
+    /// <returns>The same service collection, to allow chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="services" /> or <paramref name="resourceFactory" /> is <see langword="null" />.
+    /// </exception>
+    public static IServiceCollection AddNotableDateService(
+        this IServiceCollection services,
+        Func<IServiceProvider, NotableDateResource> resourceFactory,
+        Func<IServiceProvider, NotableDateServiceOptions?>? optionsFactory)
+    {
+        ThrowHelper.ThrowIfNull(services);
+        ThrowHelper.ThrowIfNull(resourceFactory);
+
+        services.TryAddSingleton<INotableDateService>(provider =>
+            new NotableDateService(resourceFactory(provider), optionsFactory?.Invoke(provider)));
+        return services;
+    }
+
+    /// <summary>
+    /// Registers a keyed <see cref="INotableDateService" /> resolving against the supplied resource, so a multi-tenant
+    /// process can register one service per jurisdiction and resolve them by key.
+    /// </summary>
+    /// <param name="services">The service collection to add the registration to.</param>
+    /// <param name="serviceKey">The key the service is registered and resolved under.</param>
+    /// <param name="resource">The loaded resource the service resolves against.</param>
+    /// <param name="options">
+    /// The collaborators composed into the service, or <see langword="null" /> for built-ins only.
+    /// </param>
+    /// <returns>The same service collection, to allow chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="services" />, <paramref name="serviceKey" />, or <paramref name="resource" /> is
+    /// <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Consumers resolve the keyed service with <c>GetRequiredKeyedService&lt;INotableDateService&gt;(serviceKey)</c>
+    /// or a <c>[FromKeyedServices(serviceKey)]</c> constructor parameter. Keyed registrations are independent of the
+    /// unkeyed registration — registering both is supported.
+    /// </para>
+    /// </remarks>
+    public static IServiceCollection AddNotableDateService(
+        this IServiceCollection services,
+        string serviceKey,
+        NotableDateResource resource,
+        NotableDateServiceOptions? options = null)
+    {
+        ThrowHelper.ThrowIfNull(services);
+        ThrowHelper.ThrowIfNull(serviceKey);
+        ThrowHelper.ThrowIfNull(resource);
+
+        services.TryAddKeyedSingleton<INotableDateService>(serviceKey, (_, _) => new NotableDateService(resource, options));
+        return services;
+    }
+
+    /// <summary>
+    /// Registers a keyed <see cref="INotableDateService" /> resolving against a resource produced by a factory.
+    /// </summary>
+    /// <param name="services">The service collection to add the registration to.</param>
+    /// <param name="serviceKey">The key the service is registered and resolved under.</param>
+    /// <param name="resourceFactory">A factory that produces the resource from the service provider.</param>
+    /// <param name="optionsFactory">
+    /// A factory that produces the collaborators composed into the service, or <see langword="null" /> for built-ins
+    /// only. The factory itself may also return <see langword="null" />.
+    /// </param>
+    /// <returns>The same service collection, to allow chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="services" />, <paramref name="serviceKey" />, or <paramref name="resourceFactory" /> is
+    /// <see langword="null" />.
+    /// </exception>
+    public static IServiceCollection AddNotableDateService(
+        this IServiceCollection services,
+        string serviceKey,
+        Func<IServiceProvider, NotableDateResource> resourceFactory,
+        Func<IServiceProvider, NotableDateServiceOptions?>? optionsFactory = null)
+    {
+        ThrowHelper.ThrowIfNull(services);
+        ThrowHelper.ThrowIfNull(serviceKey);
+        ThrowHelper.ThrowIfNull(resourceFactory);
+
+        services.TryAddKeyedSingleton<INotableDateService>(serviceKey, (provider, _) =>
+            new NotableDateService(resourceFactory(provider), optionsFactory?.Invoke(provider)));
         return services;
     }
 
@@ -114,12 +240,60 @@ public static class NotableDateServiceCollectionExtensions
         ThrowHelper.ThrowIfNull(services);
         ThrowHelper.ThrowIfNull(initialResource);
 
-        services.AddSingleton(sp => new MutableNotableDateResourceProvider(
-            initialResource,
+        return services.AddReloadableNotableDateService(_ => initialResource, options: null);
+    }
+
+    /// <summary>
+    /// Registers a reloadable <see cref="INotableDateService" /> with the supplied collaborators propagated to each
+    /// rebuilt inner service.
+    /// </summary>
+    /// <param name="services">The service collection to add the registration to.</param>
+    /// <param name="initialResource">The resource the service resolves against until it is reloaded.</param>
+    /// <param name="options">
+    /// The collaborators propagated to each rebuilt inner service, or <see langword="null" /> for built-ins only.
+    /// </param>
+    /// <returns>The same service collection, to allow chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="services" /> or <paramref name="initialResource" /> is <see langword="null" />.
+    /// </exception>
+    public static IServiceCollection AddReloadableNotableDateService(
+        this IServiceCollection services,
+        NotableDateResource initialResource,
+        NotableDateServiceOptions? options)
+    {
+        ThrowHelper.ThrowIfNull(services);
+        ThrowHelper.ThrowIfNull(initialResource);
+
+        return services.AddReloadableNotableDateService(_ => initialResource, options);
+    }
+
+    /// <summary>
+    /// Registers a reloadable <see cref="INotableDateService" /> whose initial resource is produced by a factory.
+    /// </summary>
+    /// <param name="services">The service collection to add the registration to.</param>
+    /// <param name="initialResourceFactory">A factory that produces the initial resource from the service provider.</param>
+    /// <param name="options">
+    /// The collaborators propagated to each rebuilt inner service, or <see langword="null" /> for built-ins only.
+    /// </param>
+    /// <returns>The same service collection, to allow chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="services" /> or <paramref name="initialResourceFactory" /> is <see langword="null" />.
+    /// </exception>
+    public static IServiceCollection AddReloadableNotableDateService(
+        this IServiceCollection services,
+        Func<IServiceProvider, NotableDateResource> initialResourceFactory,
+        NotableDateServiceOptions? options = null)
+    {
+        ThrowHelper.ThrowIfNull(services);
+        ThrowHelper.ThrowIfNull(initialResourceFactory);
+
+        services.TryAddSingleton(sp => new MutableNotableDateResourceProvider(
+            initialResourceFactory(sp),
             sp.GetService<ILoggerFactory>()?.CreateLogger<MutableNotableDateResourceProvider>()));
-        services.AddSingleton<INotableDateResourceProvider>(sp => sp.GetRequiredService<MutableNotableDateResourceProvider>());
-        services.AddSingleton<INotableDateService>(sp => new ReloadableNotableDateService(
+        services.TryAddSingleton<INotableDateResourceProvider>(sp => sp.GetRequiredService<MutableNotableDateResourceProvider>());
+        services.TryAddSingleton<INotableDateService>(sp => new ReloadableNotableDateService(
             sp.GetRequiredService<MutableNotableDateResourceProvider>(),
+            options,
             sp.GetService<ILoggerFactory>()?.CreateLogger<ReloadableNotableDateService>()));
         return services;
     }

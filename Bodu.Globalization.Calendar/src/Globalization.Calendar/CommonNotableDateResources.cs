@@ -53,6 +53,12 @@ public static class CommonNotableDateResources
     private static readonly ConcurrentDictionary<string, string?> s_cache = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
+    /// The cache of materialized catalogue resources, single-flighted per catalogue so concurrent first loads parse and
+    /// validate the document once.
+    /// </summary>
+    private static readonly ConcurrentDictionary<CommonNotableDateCatalog, Lazy<NotableDateResource>> s_resourceCache = new();
+
+    /// <summary>
     /// Gets a resolver delegate that maps a common-catalogue name to its embedded XML content, suitable for passing to
     /// the import-aware <see cref="NotableDateResourceLoader" /> overloads.
     /// </summary>
@@ -113,14 +119,36 @@ public static class CommonNotableDateResources
     /// The catalogue's content is not bundled with this assembly.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// This is the direct path from a strongly-typed name to a usable resource — for example
     /// <c>CommonNotableDateResources.Load(CommonNotableDateCatalog.GlobalAll)</c> materializes the entire bundled
     /// <c>global-all</c> catalogue ready to hand to a <see cref="NotableDateService" />.
+    /// </para>
+    /// <para>
+    /// The materialized resource is cached per catalogue: a <see cref="NotableDateResource" /> is immutable, so
+    /// repeated loads of the same catalogue return the same instance and the parse-and-validate cost is paid once per
+    /// process rather than once per call.
+    /// </para>
     /// </remarks>
     public static NotableDateResource Load(CommonNotableDateCatalog catalog)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(catalog);
 
+        return s_resourceCache
+            .GetOrAdd(catalog, static c => new Lazy<NotableDateResource>(() => LoadCore(c)))
+            .Value;
+    }
+
+    /// <summary>
+    /// Parses and validates a bundled catalogue into a fresh <see cref="NotableDateResource" />.
+    /// </summary>
+    /// <param name="catalog">The catalogue to load.</param>
+    /// <returns>The materialized resource.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// The catalogue's content is not bundled with this assembly.
+    /// </exception>
+    private static NotableDateResource LoadCore(CommonNotableDateCatalog catalog)
+    {
         string name = GetResourceName(catalog);
         string? content = Resolve(name);
         if (content is null)

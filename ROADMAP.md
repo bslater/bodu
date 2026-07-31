@@ -1061,8 +1061,11 @@ Current state: bridge; `AddNotableDateService` /
 `AddReloadableNotableDateService` (declared in the `Bodu.Globalization.Calendar`
 namespace).
 
-- **Add key-aware `AddNotableDateService("AU")`** for multi-tenant
-  processes serving multiple jurisdictions.
+- ~~**Add key-aware `AddNotableDateService("AU")`**~~ — delivered:
+  keyed overloads (`AddNotableDateService(serviceKey, resource | factory)`)
+  register per-jurisdiction singletons resolvable through the .NET 8
+  keyed-service surface, alongside `NotableDateServiceOptions` overloads
+  and `TryAdd` idempotent registration.
 - ~~**Add `IHostedService` cache warm-up**~~ — delivered by the
   `Bodu.Globalization.Calendar.Caching` package
   (`AddNotableDateCacheWarmup` registers the hosted
