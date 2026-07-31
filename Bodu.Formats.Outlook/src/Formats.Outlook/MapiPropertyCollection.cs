@@ -167,7 +167,7 @@ public sealed class MapiPropertyCollection
     /// <param name="id">The 16-bit property identifier.</param>
     /// <returns>The payload bytes, or <see langword="null" /> when absent or not binary.</returns>
     public ReadOnlyMemory<byte>? GetBinary(ushort id) =>
-        GetValue(id, MapiPropertyType.Binary) is byte[] bytes ? bytes : null;
+        GetValue(id, MapiPropertyType.Binary) is byte[] bytes ? (ReadOnlyMemory<byte>?)bytes : null;
 
     /// <summary>
     /// Returns the multi-valued string value of a property, probing the Unicode and then the code-page string type.
