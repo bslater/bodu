@@ -671,9 +671,10 @@ the four serialization callbacks), the read-only `BencodeDocument` /
   Bencode has no canonical upstream corpus repository (nothing like
   `toml-test`), so the cases are inline KAT rows with per-group
   attribution rather than a vendored file corpus.
-- **Ship the read-only configuration source** (`AddBencodeStream`) in
-  `Bodu.Extensions.Configuration.Text` — the one format bridge still
-  owed there.
+- **The read-only configuration source has landed.** ✅ `AddBencodeFile`
+  / `AddBencodeStream` in `Bodu.Extensions.Configuration.Text`, mirroring
+  the TOML provider shape — strict-canonical parse, dictionary-rooted
+  documents, colon-delimited flattening with list-index segments.
 
 ### `Bodu.Text.Toml`
 
@@ -758,11 +759,10 @@ the *Active focus* #4 decouple — no format-library dependency).
 ### `Bodu.Extensions.Configuration.Text`
 
 Current state: bridge layer connecting `Microsoft.Extensions.Configuration`
-to the Bodu text stack. The read-only **TOML source has landed**
-(`AddTomlFile` / `AddTomlStream`).
+to the Bodu text stack. The read-only **TOML and Bencode sources have
+landed** (`AddTomlFile` / `AddTomlStream`, `AddBencodeFile` /
+`AddBencodeStream`).
 
-- **Add the Bencode configuration source** — the one remaining format
-  bridge, mirroring the TOML provider shape.
 - **Document precedence semantics** when stacked with the `Json` and
   `EnvironmentVariables` providers.
 
