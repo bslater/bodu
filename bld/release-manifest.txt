@@ -26,3 +26,5 @@ Bodu.Text.Formats
 Bodu.Text.Configuration
 Bodu.IO.Compound
 Bodu.Formats.Excel.Binary
+Bodu.Formats.Outlook
+Bodu.Formats.Outlook.Msg

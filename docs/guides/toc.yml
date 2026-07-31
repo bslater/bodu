@@ -487,3 +487,11 @@
           href: excel/cell-values-and-dates.md
         - name: Streaming vs materialized
           href: excel/worksheets-and-rows.md
+    - name: Bodu.Formats.Outlook
+      items:
+        - name: Overview
+          href: outlook/index.md
+        - name: Reading .msg files
+          href: outlook/reading-msg-files.md
+        - name: Properties and named properties
+          href: outlook/properties-and-named-properties.md

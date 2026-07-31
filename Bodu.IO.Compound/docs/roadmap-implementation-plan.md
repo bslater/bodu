@@ -1,9 +1,12 @@
 # Bodu.IO.Compound roadmap — implementation plan
 
 **Date:** 2026-07-11
-**Status:** T0 done (roadmap truth-up); **T1–T4 executed 2026-07-11**; T5
-(the `.msg` substrate review) remains open and gates the `.msg` project,
-not this package.
+**Status:** T0 done (roadmap truth-up); **T1–T4 executed 2026-07-11**;
+**T5 executed 2026-07-31** — the substrate-readiness review found no new
+container API is required; its findings are recorded in the
+`Bodu.Formats.Outlook` kickoff
+([`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](../../Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md),
+§1), per §8's deliverable note. The plan is complete.
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *Per-project roadmap →
 `Bodu.IO.Compound`*
 
