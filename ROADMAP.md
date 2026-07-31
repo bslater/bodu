@@ -662,10 +662,15 @@ full attribute family, naming policies, the string/number enum converters,
 the four serialization callbacks), the read-only `BencodeDocument` /
 `BencodeElement` DOM, and the mutable `BencodeNode` tree.
 
-- **Add a conformance corpus.** Unlike TOML and YAML, Bencode has no
-  vendored spec corpus — the test project is fixtures + unit tests. A
-  BEP-3 malformed-input sweep in the Regression tier would raise it to
-  the same maturity bar as its siblings.
+- **The conformance corpus has landed.** ✅ A Regression-tier BEP-3
+  sweep (`Bep3CorpusTests`) of ~100 valid and ~115 malformed KAT rows
+  adapted from the BEP 3 grammar and the BEP 5/9/10/12/23 wire shapes,
+  and from the test suites of libtorrent, Transmission, bencodepy,
+  bencode-go, and bendy/serde_bencode — pinned reader token sequences,
+  fanned across the read-only document and mutable node surfaces.
+  Bencode has no canonical upstream corpus repository (nothing like
+  `toml-test`), so the cases are inline KAT rows with per-group
+  attribution rather than a vendored file corpus.
 - **Ship the read-only configuration source** (`AddBencodeStream`) in
   `Bodu.Extensions.Configuration.Text` — the one format bridge still
   owed there.
