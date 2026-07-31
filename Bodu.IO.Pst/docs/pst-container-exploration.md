@@ -278,7 +278,7 @@ start independently:
 
 | Tranche | Item | Notes |
 | --- | --- | --- |
-| **P0** | Spike: header + NBT/BBT walk + block read with permute/cyclic + CRC, against the reference corpus | Proves the fixtures and the §5.3 CRC question (R3). Ends with `PstFile.OpenRead` + `EnumerateNodes` + `OpenDataStream` working. |
+| **P0** | Spike: header + NBT/BBT walk + block read with permute/cyclic + CRC, against the reference corpus | ✅ **Executed 2026-07-31.** `PstFile.OpenRead` / `EnumerateNodes` / `GetNode` and `PstNode.ReadAllBytes` / `OpenDataStream` / subnode access landed, with the data and subnode trees, tiered validation, and the `IO.Pst.Internal` §5.3 CRC; the corpus opens clean under `Strict` and the node census, heap-node signatures, and header CRCs are pinned by the test suite. R2 and R3 resolved (below). |
 | **P1** | LTP: HN, BTH, PC, TC surfaces | The bulk of the package. |
 | **P2** | Hardening: validation levels, malformed-file sweeps, large-file streaming Regression, docs | Ships `Bodu.IO.Pst` (Preview). |
 | **P3** | `Bodu.Formats.Outlook.Pst` (separate plan) | Folders / messages / recipients / attachments / named properties over P1's surfaces, in the shared value model. |
@@ -290,14 +290,16 @@ start independently:
   reference counts, and allocation metadata. Mitigation: the
   Compatible validation default + a corpus that includes third-party
   writers' output.
-- **R2 — Fixture provenance.** No fixtures, no project (§6). This is
-  resolved before P0 is declared done.
-- **R3 — The §5.3 CRC.** MS-PST specifies its own table-driven 32-bit
-  CRC. Whether it reduces to an existing `CrcStandard` catalogue entry
-  in `Bodu.IO.Hashing` (initial value / finalization differ from
-  CRC-32/ISO-HDLC) is checked in P0; if not, a small internal
-  implementation ships in `IO.Pst.Internal` — it is not worth a
-  public catalogue entry unless it maps cleanly.
+- **R2 — Fixture provenance.** ✅ *Resolved* — the pstsdk reference
+  corpus (2 Unicode + 2 ANSI files, Apache-2.0, `lspst` seed manifest)
+  ships under `test/Fixtures/Reference/` with provenance and SHA-256
+  pins (§6).
+- **R3 — The §5.3 CRC.** ✅ *Resolved in P0* — the checksum is a
+  reflected CRC-32 (polynomial `0xEDB88320`) with a **zero** initial
+  value and **no** final complement, so it does not reduce to the
+  catalogued CRC-32/ISO-HDLC; the small internal implementation ships
+  as `IO.Pst.Internal.PstCrc`, pinned against every corpus header's
+  `dwCRCPartial` by the test suite.
 - **R4 — Memory discipline.** B-tree pages and TC row matrices invite
   accidental materialization. The streaming-first rule (§4) is a
   design invariant, enforced by a Regression test that reads a

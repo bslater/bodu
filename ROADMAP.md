@@ -1053,10 +1053,33 @@ DocFX guide section and compile-guarded snippets.
   PSTs, Apache-2.0, `lspst`-generated oracle) landed under
   `Bodu.IO.Pst/test/Fixtures/Reference/`, resolving the `.pst`
   exploration's fixture-acquisition risk (R2).
-- **Package icons** — `bld/icons/Bodu.Formats.Outlook{,.Msg}.png` are
-  owed for CI icon coverage.
+- **Package icons — done.** ✅ (2026-07-31)
+  `bld/icons/Bodu.Formats.Outlook{,.Msg}.png` plus the hero banners.
 - **`.msg` authoring** and **TNEF** remain demand-driven candidates; see
   the kickoff plan's out-of-scope list.
+
+### `Bodu.IO.Pst`
+
+Current state: new (P0 spike landed 2026-07-31); the NDB (node database)
+read layer of MS-PST for the Unicode format — header parse with the §5.3
+CRC, NBT/BBT B-tree walks, block reads with trailer validation and the
+permute/cyclic content encodings decoded, XBLOCK/XXBLOCK data trees, and
+SLBLOCK/SIBLOCK subnode trees — behind the `PstFile` / `PstNode` session
+surface with tiered validation (`Compatible` / `Strict` / `Minimal`),
+validated against the pstsdk reference corpus and the `lspst` seed
+manifest. Ships at **Preview**; ANSI and OST variants are recognized and
+rejected.
+
+- **P1 — LTP layer**: heap-on-node (`bSig 0xEC`), BTH, property context,
+  and table context readers over `PstNode`, per the exploration doc's
+  sequencing.
+- **P2 — `Bodu.Formats.Outlook.Pst`**: the messaging layer (folders,
+  messages, recipients, attachments) over the shared
+  `Bodu.Formats.Outlook` MAPI value model.
+- **ANSI format** (`wVer` 14/15) as a demand-driven follow-on; the
+  corpus already carries two ANSI fixtures for it.
+- **Scale-tier corpus**: the EDRM Enron PSTs (CC-BY) remain the
+  multi-megabyte stress option recorded in the fixture NOTICE.
 
 ### `Bodu.Globalization.Calendar`
 
@@ -1220,6 +1243,10 @@ filter were added to *Non-goals* instead.
   vs messaging layering split, API sketch, the fixture-acquisition
   blocker, and sequencing P0–P3:
   [`Bodu.IO.Pst/docs/pst-container-exploration.md`](Bodu.IO.Pst/docs/pst-container-exploration.md).
+  **P0 executed same day** — `Bodu.IO.Pst` landed with the full NDB
+  read layer at Preview; tracked in the per-project *`Bodu.IO.Pst`*
+  section above. The LTP layer (P1) and the `Bodu.Formats.Outlook.Pst`
+  messaging reader (P2) are the remaining stages.
 - **`Bodu.Formats.Excel.OpenXml`** — a read-only `.xlsx` value reader over
   an OPC/ZIP container, **sharing the flattened `Bodu.Formats.Excel`
   value model** (`ExcelCell` / `ExcelWorksheet` / `ExcelWorkbookProperties`).
