@@ -35,6 +35,8 @@ public static class MaterializedWorksheet
         }
 
         // LINQ over the cell collection: aggregate every numeric cell.
+        // Date cells are Number cells too (their value is a date serial), so exclude the
+        // date-formatted ones to keep the aggregate meaningful.
         var numbers = sheet.Cells.Where(c => c.Kind == ExcelCellKind.Number && !c.IsDateFormatted).ToList();
         if (numbers.Count > 0)
         {

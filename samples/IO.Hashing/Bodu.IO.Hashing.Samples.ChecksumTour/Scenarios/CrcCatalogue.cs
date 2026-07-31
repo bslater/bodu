@@ -29,6 +29,8 @@ public static class CrcCatalogue
         // "123456789" is the input every RevEng catalogue entry publishes its check value for.
         var checkInput = "123456789"u8;
 
+        // Each CrcStandard carries the full CRC parameterization - width, polynomial, initial value,
+        // input/output reflection, and final XOR - so the one engine reproduces any catalogue entry.
         foreach (var standard in new[]
         {
             CrcStandard.CRC8_SMBUS,
@@ -39,7 +41,7 @@ public static class CrcCatalogue
         })
         {
             var crc = new Crc(standard);
-            var digest = crc.ComputeHash(checkInput);
+            var digest = crc.ComputeHash(checkInput); // one-shot convenience over Append + GetHashAndReset
 
             Console.WriteLine(
                 $"  {standard.Name,-18} width {standard.Size,2}, poly 0x{standard.Polynomial:X}, " +

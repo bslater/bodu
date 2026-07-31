@@ -27,6 +27,8 @@ public static class CellKindsAndDates
         using var workbook = ExcelBinaryWorkbook.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample-biff8.xls"));
 
         // Survey every sheet for the kinds it contains.
+        // There is no "formula" kind: a formula cell surfaces as the kind of its cached result
+        // (no evaluation is performed).
         foreach (var info in workbook.Worksheets)
         {
             var sheet = workbook.ReadWorksheet(info.Index);
@@ -46,6 +48,8 @@ public static class CellKindsAndDates
             Console.WriteLine($"date decoding ({workbook.DateSystem}):");
             foreach (var cell in dates)
             {
+                // ExcelSerialDate.ToDateTime is the manual path; workbook.GetDateTime(cell) is the
+                // convenience that applies the workbook's declared date system for you.
                 var decoded = ExcelSerialDate.ToDateTime(cell.NumberValue!.Value, workbook.DateSystem);
                 Console.WriteLine($"  {ExcelCellReference.ToA1(cell.RowIndex, cell.ColumnIndex)}: serial {cell.NumberValue} -> {decoded:yyyy-MM-dd HH:mm} (via workbook.GetDateTime: {workbook.GetDateTime(cell):yyyy-MM-dd})");
             }

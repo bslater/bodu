@@ -55,6 +55,8 @@ public sealed class SkuCheckDigit
         if (digitsIncludingCheck.Length < 2)
             return false;
 
+        // Validation is a query: a non-digit character makes the value invalid rather than throwing
+        // (Append, the issuing direction, is where malformed input is a programming error).
         foreach (var ch in digitsIncludingCheck)
         {
             if ((uint)(ch - '0') > 9u)
@@ -72,6 +74,8 @@ public sealed class SkuCheckDigit
             if ((uint)(ch - '0') > 9u)
                 throw new ArgumentException($"'{ch}' is not an ASCII decimal digit.", nameof(digits));
 
+            // _position persists across Append calls, so payloads fed in fragments weight exactly
+            // as a one-shot payload would - the contract the streaming surface depends on.
             _sum += (ch - '0') * Weights[_position % Weights.Length];
             _position++;
         }
@@ -79,7 +83,7 @@ public sealed class SkuCheckDigit
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit() =>
-        (char)('0' + ((10 - (_sum % 10)) % 10));
+        (char)('0' + ((10 - (_sum % 10)) % 10)); // outer % 10 maps a sum already at a multiple of ten to check digit 0
 
     /// <inheritdoc />
     public override void Reset()
