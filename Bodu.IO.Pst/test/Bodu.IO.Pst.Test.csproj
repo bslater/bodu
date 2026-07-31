@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\src\Bodu.IO.Pst.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fixtures\Reference\unicode\*.pst">
+      <LogicalName>Bodu.IO.Pst.Fixtures.Reference.unicode.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Fixtures\Reference\ansi\*.pst">
+      <LogicalName>Bodu.IO.Pst.Fixtures.Reference.ansi.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Fixtures\Reference\manifest.seed.json">
+      <LogicalName>Bodu.IO.Pst.Fixtures.Reference.manifest.seed.json</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
