@@ -64,6 +64,7 @@ public sealed class Base36Encoding
         if (chars.IsEmpty)
             return [];
 
+        // Mirror of the encode side: each leading '0' character restores one leading zero byte.
         var leadingZeros = 0;
         while (leadingZeros < chars.Length && chars[leadingZeros] == '0')
             leadingZeros++;
@@ -78,6 +79,7 @@ public sealed class Base36Encoding
             value = (value * 36) + digit;
         }
 
+        // Rebuild the payload: the preserved zero bytes first, then the integer's big-endian magnitude.
         var magnitude = value.IsZero ? [] : value.ToByteArray(isUnsigned: true, isBigEndian: true);
 
         var result = new byte[leadingZeros + magnitude.Length];
@@ -99,17 +101,21 @@ public sealed class Base36Encoding
 
     /// <inheritdoc />
     public int GetMaxEncodedLength(int byteCount) =>
-        // log(256) / log(36) = 1.5494... characters per byte, rounded up.
-        checked((int)Math.Ceiling(byteCount * 1.5495)) + 1;
+        // log(256) / log(36) = 1.5474... characters per byte; the multiplier rounds the ratio up so
+        // the estimate can never undershoot, whatever the payload length.
+        checked((int)Math.Ceiling(byteCount * 1.5475)) + 1;
 
     /// <inheritdoc />
     public int GetMaxDecodedLength(int charCount) =>
-        // log(36) / log(256) = 0.6454... bytes per character, rounded up.
-        checked((int)Math.Ceiling(charCount * 0.6455)) + 1;
+        // log(36) / log(256) = 0.6462... bytes per character; the multiplier rounds the ratio up so
+        // the estimate can never undershoot, whatever the input length.
+        checked((int)Math.Ceiling(charCount * 0.6463)) + 1;
 
     /// <inheritdoc />
     public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten)
     {
+        // The Try surface reports an undersized destination with false instead of throwing, so callers
+        // can budget with GetMaxEncodedLength and retry.
         var text = Encode(source);
         if (text.Length > destination.Length)
         {
@@ -125,6 +131,7 @@ public sealed class Base36Encoding
     /// <inheritdoc />
     public bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten)
     {
+        // Validate up front so malformed text yields false here rather than the FormatException Decode throws.
         if (!IsValid(source))
         {
             bytesWritten = 0;

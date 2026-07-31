@@ -25,10 +25,14 @@ public static class WorkbookAndSheets
 
         using var workbook = ExcelBinaryWorkbook.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample-biff8.xls"));
 
+        // The workbook declares its serial-date epoch (1900 vs the legacy Mac 1904 system); every
+        // date-formatted number in the file must be decoded against this system.
         Console.WriteLine($"date system : {workbook.DateSystem}");
         Console.WriteLine($"properties  : title='{workbook.Properties.Title}', author='{workbook.Properties.Author}', app='{workbook.Properties.ApplicationName}'");
         Console.WriteLine($"worksheets  : {workbook.Worksheets.Count}");
 
+        // Dimensions come from each sheet's DIMENSIONS record - the used range as declared by the
+        // writing application, available without reading any cells.
         foreach (var sheet in workbook.Worksheets)
         {
             var d = sheet.Dimensions;

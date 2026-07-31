@@ -38,6 +38,8 @@ public static class PooledStringEncoding
 
         // TryEncodeUtf8To writes straight into a caller-owned span - here one on the stack - with no allocation.
         Span<byte> stackBuffer = stackalloc byte[utf8Count];
+
+        // The Try form reports a too-small destination by returning false instead of throwing.
         var ok = Phrase.TryEncodeUtf8To(stackBuffer, out var bytesWritten);
         Console.WriteLine($"TryEncodeUtf8To  : ok={ok}, bytesWritten={bytesWritten}");
 

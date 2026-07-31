@@ -51,6 +51,7 @@ public static class BesideTheBuiltIns
         using var streaming = new AdditiveDigest();
         streaming.AppendData(Message.AsSpan(0, 19)); // "The quick brown fox"
         streaming.AppendData(Message.AsSpan(19));    // " jumps over the lazy dog"
+        // An empty TransformFinalBlock call finalizes the computation; the digest becomes available via Hash.
         streaming.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
         var streamed = streaming.Hash!;
 

@@ -130,7 +130,10 @@ opening, and then rejecting a tampered ciphertext for each.
       sealed: 793f2b75ac4ba8c036a5379505ed69173e208118f519f1f420a04f2d22997ca4bd5f682d02572378
 ```
 
-GCM mandates a 12-byte nonce; EAX and OCB accept the block-sized 16-byte nonce used here. All three share
+Nonce sizing differs per mode: this GCM implementation — like the BCL's `AesGcm` and every TLS/IPsec
+deployment — accepts only the 96-bit (12-byte) nonce; EAX authenticates the full block-sized 16-byte nonce;
+OCB takes a block-sized IV but uses only its first 12 bytes as the nonce (the trailing four bytes are
+padding — vary the leading bytes, never a trailing counter). All three share
 the `IAeadBlockCipherModeTransform` surface, so one helper drives them; the sealed output is 25 ciphertext
 bytes plus a 16-byte tag. The byte[]-returning `Encrypt` / `Decrypt` are called through
 `AeadBlockCipherModeTransformExtensions` so the compiler does not bind to the span-writing instance overloads.

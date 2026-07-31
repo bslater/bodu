@@ -26,6 +26,7 @@ public static class EnumerableOperators
         var numbers = new[] { 1, 2, 3, 4, 5, 6, 7 };
 
         // Batch splits the source into consecutive fixed-size groups (the final group may be short).
+        // The second argument is a per-element selector applied while batching; the identity lambda keeps values as-is.
         var batches = numbers.Batch(3, x => x).Select(b => $"[{string.Join(' ', b)}]");
         Console.WriteLine($"Batch(3)         : {string.Join(' ', batches)}");
 

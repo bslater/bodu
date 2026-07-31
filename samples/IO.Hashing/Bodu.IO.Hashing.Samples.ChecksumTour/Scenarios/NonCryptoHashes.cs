@@ -38,6 +38,9 @@ public static class NonCryptoHashes
             {
                 var algorithm = factory();
                 algorithm.Append(System.Text.Encoding.UTF8.GetBytes(key));
+
+                // Digest bytes follow the System.IO.Hashing little-endian convention, so read them
+                // back as a little-endian integer before taking the shard modulus.
                 var hash = BinaryPrimitives.ReadUInt32LittleEndian(algorithm.GetHashAndReset());
                 return $"{key}->{hash % shards}";
             });

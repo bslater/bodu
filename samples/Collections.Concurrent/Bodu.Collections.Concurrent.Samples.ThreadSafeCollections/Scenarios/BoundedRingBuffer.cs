@@ -55,6 +55,9 @@ public static class BoundedRingBuffer
             ring.Enqueue(item);   // A and B are pushed out as D and E arrive
 
         Console.WriteLine($"overwrite evicted: [{string.Join(", ", evicted)}]");
+
+        // ToArray materializes a point-in-time snapshot in FIFO order - under concurrency this is the
+        // safe way to observe the contents rather than enumerating live state.
         Console.WriteLine($"survivors (FIFO) : [{string.Join(", ", ring.ToArray())}]");
 
         Console.WriteLine();

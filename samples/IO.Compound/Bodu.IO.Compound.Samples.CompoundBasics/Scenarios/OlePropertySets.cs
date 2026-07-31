@@ -45,6 +45,9 @@ public static class OlePropertySets
             writable.SetSummaryInformation(new SummaryInformation(summary.ToPropertySet()));
             writable.RootStorage.ClassId = WordDocumentClassId;
             writable.RootStorage.CreateStream("Body", "..."u8.ToArray());
+
+            // Writes are staged in memory until committed; disposing without Commit discards them
+            // (the transactional Commit/Revert model).
             await writable.CommitAsync();
         }
 

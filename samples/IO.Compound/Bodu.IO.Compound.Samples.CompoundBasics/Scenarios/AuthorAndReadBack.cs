@@ -42,6 +42,8 @@ public static class AuthorAndReadBack
         container.Position = 0;
         using var file = CompoundFile.Open(container, leaveOpen: true);
 
+        // EnumerateEntries lists children of both kinds: storages (directory-like containers) and
+        // streams (the leaves that carry bytes); EnumerateStreams/EnumerateStorages filter to one kind.
         foreach (var entry in file.RootStorage.EnumerateEntries())
         {
             Console.WriteLine($"  /{entry.Name} ({entry.EntryType}, {entry.Length} bytes)");

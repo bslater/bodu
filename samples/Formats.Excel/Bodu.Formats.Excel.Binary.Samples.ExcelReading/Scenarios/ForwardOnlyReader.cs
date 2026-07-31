@@ -43,6 +43,7 @@ public static class ForwardOnlyReader
         Console.WriteLine($"kinds       : {string.Join(", ", counts.OrderBy(kv => kv.Key).Select(kv => $"{kv.Key}={kv.Value}"))}");
 
         // ReadRows groups the same forward-only stream into rows - here the first three.
+        // A fresh reader is required: the first one is exhausted, and forward-only readers cannot rewind.
         using var rowReader = workbook.OpenWorksheet(0);
         foreach (var row in rowReader.ReadRows().Take(3))
         {

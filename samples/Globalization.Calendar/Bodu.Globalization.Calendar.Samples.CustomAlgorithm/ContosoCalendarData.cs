@@ -31,6 +31,7 @@ public static class ContosoCalendarData
     /// <returns>The validated resource.</returns>
     public static NotableDateResource LoadResource(string territory)
     {
+        // Accept subdivision codes (e.g. AU-VIC) by validating the country prefix, as the regional packs do.
         if (!SupportedCountries.Contains(territory.Split('-')[0]))
             throw new ArgumentException($"Territory '{territory}' is not supported by the Contoso calendar.", nameof(territory));
 
@@ -44,6 +45,8 @@ public static class ContosoCalendarData
                 .AddRule("fixed", r => r.Fixed(1, 1)))
             .ToXml();
 
+        // The middle argument is the catalogue-import resolver; this document declares no imports, so it returns
+        // null. Passing the registry lets the loader validate that every referenced algorithm key is registered.
         return NotableDateResourceLoader.Load(xml, _ => null, Algorithms);
     }
 
@@ -53,6 +56,7 @@ public static class ContosoCalendarData
     /// <param name="territory">The territory to serve.</param>
     /// <returns>An immutable, thread-safe service.</returns>
     public static NotableDateService CreateService(string territory) =>
+        // The service takes the same registry so it can dispatch the custom algorithm at resolve time.
         new(LoadResource(territory), new NotableDateServiceOptions { Algorithms = Algorithms });
 
     /// <summary>

@@ -41,6 +41,8 @@ public static class FrequencySketch
             exact[page] = exact.GetValueOrDefault(page) + 1;
         }
 
+        // The sketch sizes itself from the accuracy parameters: epsilon determines the width (counters per
+        // row), delta the depth (independent hash rows) - tighter bounds cost more fixed memory.
         Console.WriteLine($"  width x depth : {sketch.Width} x {sketch.Depth} counters");
         Console.WriteLine($"  total added   : {sketch.TotalCount}");
 

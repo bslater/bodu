@@ -29,6 +29,8 @@ public sealed class SkuCheckDigitContractTests
     /// <inheritdoc />
     protected override IReadOnlyList<CheckDigitKat> KnownAnswers { get; } =
     [
+        // Row shape: display name, payload, expected check digit, full value (payload + check digit)
+        // that IsValid must accept. The base class derives the corruption cases from these rows.
         new("nine-digit payload", "123456789", "3", "1234567893"),
         new("leading zeros preserved", "000451", "6", "0004516"),
         new("repeated high digits", "998877", "8", "9988778"),

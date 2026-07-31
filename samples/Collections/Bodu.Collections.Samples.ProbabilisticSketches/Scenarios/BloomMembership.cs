@@ -28,6 +28,8 @@ public static class BloomMembership
         var members = new[] { "alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel" };
         var filter = new BloomFilter<string>(expectedItems: members.Length, falsePositiveRate: 0.10, new StableStringComparer());
 
+        // Add sets HashCount bit positions derived from each element's hash; the elements themselves are never
+        // stored, which is why the filter is compact and why membership can only be answered probabilistically.
         foreach (var word in members)
             filter.Add(word);
 
