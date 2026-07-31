@@ -59,5 +59,14 @@ namespace Bodu.Formats.Outlook {
                 resourceCulture = value;
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A string named property requires a non-empty name..
+        /// </summary>
+        internal static string Arg_Invalid_MapiNamedPropertyIdentity {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MapiNamedPropertyIdentity", resourceCulture);
+            }
+        }
     }
 }
