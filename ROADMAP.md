@@ -1093,7 +1093,10 @@ contributing custom `INotableDateAlgorithm` implementations.
 
 - **This is the AOT-blocking component** (reflective assembly load). Its
   path to AOT-compatibility is the binary-rule-pack format from the
-  Builder roadmap; until then it is correctly marked AOT-incompatible.
+  Builder roadmap; until then it is correctly marked AOT-incompatible —
+  the loader's public surface now carries `[RequiresUnreferencedCode]` /
+  `[RequiresDynamicCode]` so trimmed and AOT consumers get an analyzer
+  signal instead of a runtime surprise.
 - **Document the trust-gate contract** — how assemblies are validated and
   what the security boundary guarantees.
 

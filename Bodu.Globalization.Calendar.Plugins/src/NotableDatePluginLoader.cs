@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -92,6 +93,8 @@ public static class NotableDatePluginLoader
     /// For untrusted assemblies, load through the path-based overload instead.
     /// </para>
     /// </remarks>
+    [RequiresUnreferencedCode("Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.")]
+    [RequiresDynamicCode("Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).")]
     public static INotableDatePlugin LoadFrom(Assembly assembly, IPluginTrustPolicy trustPolicy, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(assembly);
@@ -135,13 +138,75 @@ public static class NotableDatePluginLoader
     /// <exception cref="PluginActivationException">
     /// The plugin type could not be loaded or activated, or is not a plugin.
     /// </exception>
+    [RequiresUnreferencedCode("Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.")]
+    [RequiresDynamicCode("Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).")]
     public static INotableDatePlugin LoadFrom(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNullOrEmpty(assemblyPath);
         ThrowHelper.ThrowIfNull(trustPolicy);
 
-        ILogger log = logger ?? NullLogger.Instance;
+        return LoadFromPathCore(assemblyPath, trustPolicy, logger ?? NullLogger.Instance).Plugin;
+    }
 
+    /// <summary>
+    /// Loads the plugin declared by an assembly at a file path, into a dedicated load context, after a trust check,
+    /// returning a handle that owns the context so the plugin can later be unloaded.
+    /// </summary>
+    /// <param name="assemblyPath">The file path of the plugin assembly.</param>
+    /// <param name="trustPolicy">The policy that must trust the assembly before its plugin is activated.</param>
+    /// <param name="logger">
+    /// The logger that receives diagnostics for the load. <see langword="null" /> selects
+    /// <see cref="NullLogger.Instance" />.
+    /// </param>
+    /// <returns>A disposable handle owning the activated plugin and its load context.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="assemblyPath" /> or <paramref name="trustPolicy" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="assemblyPath" /> is empty.</exception>
+    /// <exception cref="FileNotFoundException">No file exists at <paramref name="assemblyPath" />.</exception>
+    /// <exception cref="DirectoryNotFoundException">
+    /// A directory component of <paramref name="assemblyPath" /> does not exist.
+    /// </exception>
+    /// <exception cref="UnauthorizedAccessException">The file cannot be read.</exception>
+    /// <exception cref="NotableDatePluginException">
+    /// The file is not a valid managed assembly image.
+    /// </exception>
+    /// <exception cref="PluginNotTrustedException">The trust policy rejected the assembly.</exception>
+    /// <exception cref="PluginMissingAttributeException">The assembly does not declare a plugin attribute.</exception>
+    /// <exception cref="PluginActivationException">
+    /// The plugin type could not be loaded or activated, or is not a plugin.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// This overload behaves like <see cref="LoadFrom(string, IPluginTrustPolicy, ILogger?)" /> but additionally hands
+    /// ownership of the plugin's collectible <see cref="AssemblyLoadContext" /> to the caller: disposing the returned
+    /// handle initiates the unload. Unloading completes only once nothing references the plugin's types — a registry
+    /// still holding the plugin's algorithms (or a service over that registry) keeps the context alive.
+    /// </para>
+    /// </remarks>
+    [RequiresUnreferencedCode("Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.")]
+    [RequiresDynamicCode("Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).")]
+    public static NotableDatePluginHandle LoadFromFile(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger? logger = null)
+    {
+        ThrowHelper.ThrowIfNullOrEmpty(assemblyPath);
+        ThrowHelper.ThrowIfNull(trustPolicy);
+
+        (INotableDatePlugin plugin, AssemblyLoadContext context) = LoadFromPathCore(assemblyPath, trustPolicy, logger ?? NullLogger.Instance);
+
+        return new NotableDatePluginHandle(plugin, context);
+    }
+
+    /// <summary>
+    /// Loads and activates the plugin at a file path into a dedicated collectible load context.
+    /// </summary>
+    /// <param name="assemblyPath">The validated file path of the plugin assembly.</param>
+    /// <param name="trustPolicy">The policy that must trust the assembly before its plugin is activated.</param>
+    /// <param name="log">The logger that receives diagnostics for the load.</param>
+    /// <returns>The activated plugin and the context it was loaded into.</returns>
+    [RequiresUnreferencedCode("Plugin loading inspects assemblies via reflection.")]
+    [RequiresDynamicCode("Plugin loading executes assemblies discovered at run time.")]
+    private static (INotableDatePlugin Plugin, AssemblyLoadContext Context) LoadFromPathCore(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger log)
+    {
         string fullPath = Path.GetFullPath(assemblyPath);
 
         // Read the image exactly once and hash those same bytes, so the digest the trust policy verifies is the digest
@@ -184,7 +249,9 @@ public static class NotableDatePluginLoader
             string name = assemblyName.Name ?? assembly.FullName ?? "<unknown>";
             string? token = FormatPublicKeyToken(assemblyName.GetPublicKeyToken());
 
-            return EvaluateTrustAndActivate(assembly, new PluginTrustContext(name, fullPath, hash, token), trustPolicy, log);
+            INotableDatePlugin plugin = EvaluateTrustAndActivate(assembly, new PluginTrustContext(name, fullPath, hash, token), trustPolicy, log);
+
+            return (plugin, context);
         }
         catch
         {
