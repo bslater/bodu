@@ -41,6 +41,7 @@ Bodu.Globalization.Calendar.Caching hero-calendar-caching.svg
 Bodu.Globalization.Calendar.Caching.Distributed hero-calendar-caching-distributed.svg
 Bodu.Globalization.Calendar.Caching.Sqlite hero-calendar-caching-sqlite.svg
 Bodu.IO.Compound hero-io-compound.svg
+Bodu.IO.Pst hero-io-pst.svg
 Bodu.IO.Hashing hero-io.svg
 Bodu.Numerics hero-numerics.svg
 Bodu.Numerics.Serialization.Json hero-numerics-json.svg

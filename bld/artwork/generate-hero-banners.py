@@ -898,6 +898,21 @@ add("hero-io-compound", "Bodu.IO.Compound",
              x=14, y0=128, dy=16, size=10)]),
     "OLE2 / CFB structured storage · staged builder", gid="iocmp")
 
+add("hero-io-pst", "Bodu.IO.Pst",
+    "Bodu.IO.Pst — read-only node-database reader for the Outlook PST container",
+    "#A78BFA", "MS-PST NDB",
+    mono(['<tspan fill="#94A3B8">!BDN</tspan> header · CRC',
+          '<tspan fill="#94A3B8">NBT</tspan> node B-tree',
+          '<tspan fill="#94A3B8">BBT</tspan> block B-tree',
+          'permute · cyclic decode', 'XBLOCK data trees', None,
+          '<tspan fill="#94A3B8" font-size="9">Unicode format (wVer 23)</tspan>'], y0=44, dy=17, size=10),
+    "walk", "decode", "PstFile",
+    mono(["EnumerateNodes()", "GetNode(nid)", "ReadAllBytes()",
+          '<tspan fill="#60A5FA">subnode trees</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">Compatible / Strict / Minimal</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">no MAPI semantics · no writing</tspan>'], y0=44, dy=17, size=10),
+    "node database · checksums verified · raw payloads", gid="iopst")
+
 add("hero-excel", "Bodu.Formats.Excel.Binary",
     "Bodu.Formats.Excel.Binary — BIFF8 records decoded into worksheet cells",
     "#34D399", "BIFF8 records",

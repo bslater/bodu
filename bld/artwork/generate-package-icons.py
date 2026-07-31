@@ -199,6 +199,7 @@ ICONS = {
     "Bodu.IO.Hashing":                   ("iohash", "#FB923C", "CRC", "hash"),
     "Bodu.Security.Cryptography":        ("crypto", "#F87171", "AEAD", "lock"),
     "Bodu.IO.Compound":                  ("iocmp", "#60A5FA", "CFB", "doclines"),
+    "Bodu.IO.Pst":                       ("iopst", "#A78BFA", "PST", "doclines"),
     "Bodu.Formats.Excel.Binary":         ("xls", "#34D399", "XLS", "grid"),
     "Bodu.Formats.Outlook":              ("olk", "#60A5FA", "MAPI", "eq"),
     "Bodu.Formats.Outlook.Msg":          ("olkmsg", "#2DD4BF", "MSG", "doclines"),
