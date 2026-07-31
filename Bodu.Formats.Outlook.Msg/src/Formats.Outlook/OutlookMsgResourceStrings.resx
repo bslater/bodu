@@ -79,4 +79,22 @@
   <data name="IO_KeyNotFound_MsgSubstgStream" xml:space="preserve">
     <value>The property entry {0} references a value stream '{1}' that does not exist.</value>
   </data>
+  <data name="Format_Invalid_MsgStorageIndex" xml:space="preserve">
+    <value>The child storage '{0}' has a malformed or conflicting index suffix.</value>
+  </data>
+  <data name="Format_Invalid_MsgStorageCount" xml:space="preserve">
+    <value>The message declares {1} '{0}' storage(s) but {2} were found.</value>
+  </data>
+  <data name="Format_Invalid_MsgNameId" xml:space="preserve">
+    <value>The named-property mapping storage is malformed.</value>
+  </data>
+  <data name="IO_KeyNotFound_MsgAttachmentContent" xml:space="preserve">
+    <value>The attachment does not contain the expected content '{0}'.</value>
+  </data>
+  <data name="Op_NotSupported_MsgAttachmentContent" xml:space="preserve">
+    <value>The attachment's content is not a by-value payload; its method is {0}.</value>
+  </data>
+  <data name="Op_NotSupported_MsgEmbeddedMessage" xml:space="preserve">
+    <value>The attachment is not an embedded message; its method is {0}.</value>
+  </data>
 </root>

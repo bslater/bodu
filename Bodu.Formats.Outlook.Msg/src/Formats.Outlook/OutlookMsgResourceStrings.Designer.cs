@@ -122,5 +122,59 @@ namespace Bodu.Formats.Outlook {
                 return ResourceManager.GetString("IO_KeyNotFound_MsgSubstgStream", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The child storage &apos;{0}&apos; has a malformed or conflicting index suffix..
+        /// </summary>
+        internal static string Format_Invalid_MsgStorageIndex {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgStorageIndex", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The message declares {1} &apos;{0}&apos; storage(s) but {2} were found..
+        /// </summary>
+        internal static string Format_Invalid_MsgStorageCount {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgStorageCount", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The named-property mapping storage is malformed..
+        /// </summary>
+        internal static string Format_Invalid_MsgNameId {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgNameId", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The attachment does not contain the expected content &apos;{0}&apos;..
+        /// </summary>
+        internal static string IO_KeyNotFound_MsgAttachmentContent {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_MsgAttachmentContent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The attachment&apos;s content is not a by-value payload; its method is {0}..
+        /// </summary>
+        internal static string Op_NotSupported_MsgAttachmentContent {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_MsgAttachmentContent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The attachment is not an embedded message; its method is {0}..
+        /// </summary>
+        internal static string Op_NotSupported_MsgEmbeddedMessage {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_MsgEmbeddedMessage", resourceCulture);
+            }
+        }
     }
 }

@@ -59,6 +59,12 @@ public sealed partial class OutlookMessage
     /// <summary>Whether this instance owns the container and disposes it.</summary>
     private readonly bool _ownsContainer;
 
+    /// <summary>The encoding used to decode this message's code-page strings.</summary>
+    private readonly System.Text.Encoding _stringEncoding;
+
+    /// <summary>The root session, or <see langword="null" /> when this instance is the root.</summary>
+    private readonly OutlookMessage? _root;
+
     /// <summary>Whether this message has been disposed.</summary>
     private bool _disposed;
 
@@ -71,13 +77,17 @@ public sealed partial class OutlookMessage
     /// <param name="properties">The decoded property collection.</param>
     /// <param name="header">The decoded property-stream header.</param>
     /// <param name="ownsContainer">Whether this instance owns and disposes the container.</param>
+    /// <param name="stringEncoding">The encoding this message's code-page strings were decoded with.</param>
+    /// <param name="root">The root session for a nested message, or <see langword="null" /> for the root itself.</param>
     internal OutlookMessage(
         CompoundFile compound,
         CompoundStorage storage,
         OutlookMessageReaderOptions options,
         MapiPropertyCollection properties,
         MsgPropertyStreamHeader header,
-        bool ownsContainer)
+        bool ownsContainer,
+        System.Text.Encoding stringEncoding,
+        OutlookMessage? root)
     {
         _compound = compound;
         _storage = storage;
@@ -85,6 +95,8 @@ public sealed partial class OutlookMessage
         _properties = properties;
         _header = header;
         _ownsContainer = ownsContainer;
+        _stringEncoding = stringEncoding;
+        _root = root;
     }
 
     /// <summary>
@@ -224,7 +236,8 @@ public sealed partial class OutlookMessage
             MapiPropertyCollection properties = MsgPropertyDecoder.Decode(
                 compound.RootStorage, MsgPropertyStreamKind.Root, options.ValidationLevel, inheritedEncoding: null, out MsgPropertyStreamHeader header);
 
-            return new OutlookMessage(compound, compound.RootStorage, options, properties, header, ownsContainer: true);
+            System.Text.Encoding encoding = MsgEncodingResolver.Resolve(properties, inherited: null);
+            return new OutlookMessage(compound, compound.RootStorage, options, properties, header, ownsContainer: true, encoding, root: null);
         }
         catch
         {
@@ -282,15 +295,15 @@ public sealed partial class OutlookMessage
 
     /// <summary>
     /// Releases the container and, unless it was left open, the source stream. Disposing a nested message obtained from
-    /// an attachment is a no-op; the root session owns the container.
+    /// an attachment is a no-op — the root session owns the container, and the nested session's decoded properties stay
+    /// readable until the root is disposed.
     /// </summary>
     public void Dispose()
     {
-        if (_disposed)
+        if (_disposed || !_ownsContainer)
             return;
 
         _disposed = true;
-        if (_ownsContainer)
-            _compound.Dispose();
+        _compound.Dispose();
     }
 }

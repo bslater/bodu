@@ -46,6 +46,24 @@ internal static class MsgEncodingResolver
             ?? Encoding.GetEncoding(FallbackCodePage);
 
     /// <summary>
+    /// Resolves the string encoding for a decoded property collection, honoring the inheritance rule: a storage that
+    /// declares no code page of its own uses its parent's encoding.
+    /// </summary>
+    /// <param name="properties">The storage's decoded properties.</param>
+    /// <param name="inherited">The parent's encoding, or <see langword="null" /> at the root.</param>
+    /// <returns>The encoding for the storage's code-page strings.</returns>
+    internal static Encoding Resolve(MapiPropertyCollection properties, Encoding? inherited)
+    {
+        int? messageCodePage = properties.GetInt32(MapiPropertyIds.MessageCodepage);
+        int? internetCodePage = properties.GetInt32(MapiPropertyIds.InternetCodepage);
+
+        if (messageCodePage is null && internetCodePage is null && inherited is not null)
+            return inherited;
+
+        return GetEncoding(messageCodePage, internetCodePage);
+    }
+
+    /// <summary>
     /// Attempts to resolve a code page to an encoding.
     /// </summary>
     /// <param name="codePage">The code page, when declared.</param>
