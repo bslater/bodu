@@ -1,10 +1,23 @@
 # Bodu.Formats.Outlook — `.msg` reader kickoff and implementation plan
 
 **Date:** 2026-07-31
-**Status:** Kickoff. Section 1 executes tranche **T5** of the
-`Bodu.IO.Compound` plan (the MS-OXMSG substrate-readiness review) — its
-verdict is recorded here, per that plan's deliverable note. No code
-exists yet; tranches M0–M4 sequence the implementation.
+**Status:** **Executed — M0–M4 delivered 2026-07-31.** Section 1
+executed tranche **T5** of the `Bodu.IO.Compound` plan (the MS-OXMSG
+substrate-readiness review); the implementation then landed per the
+tranche plan below. Deliberate deviations from the sketches, each
+recorded at its landing commit: *(1)* the shared model's `MapiProperty`
+/ `MapiPropertyCollection` gained public constructors so the format
+packages (and the future `.pst` reader) can construct them without
+cross-package `InternalsVisibleTo`; *(2)* named-property resolution
+ships as `TryGetNamedPropertyId(name, out ushort id)` +
+`TryGetPropertyName(tag, out name)` rather than the sketched
+`TryGetNamedPropertyTag` — the MS-OXMSG mapping is identifier-level,
+not type-level, so returning a typed tag would have invented a type;
+*(3)* scalar conveniences landed in M2 with the property surface (they
+are one-line accessors), leaving M4 the body trio + `CompressedRtf`;
+*(4)* Regression runs entirely on synthetic fixtures authored through
+`Bodu.IO.Compound` — the real-world corpus with a provenance
+`NOTICE.md` is a recorded roadmap follow-up.
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *New library
 candidates → `Bodu.Formats.Outlook.Msg`*;
 [`Bodu.IO.Compound/docs/roadmap-implementation-plan.md`](../../Bodu.IO.Compound/docs/roadmap-implementation-plan.md)

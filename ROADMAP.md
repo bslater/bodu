@@ -1026,19 +1026,21 @@ model** — the same convention as `Bodu.Financial.ExchangeRates`.
 
 ### `Bodu.Formats.Outlook` / `Bodu.Formats.Outlook.Msg`
 
-Current state: **in flight** (kickoff 2026-07-31; scaffolded and building).
-Two Preview-tier packages executing the kickoff plan
-([`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md)):
-the container-free shared MAPI value model (`Bodu.Formats.Outlook`) and the
-read-only `.msg` reader over `Bodu.IO.Compound`
-(`Bodu.Formats.Outlook.Msg`), both in the flattened
-`Bodu.Formats.Outlook` namespace so the future `.pst` reader shares the
-model.
+Current state: **shipped at Preview** (kickoff and full delivery
+2026-07-31; ~30 src / ~55 test files). Two packages executing the kickoff
+plan
+([`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md),
+now marked executed with its recorded deviations): the container-free
+shared MAPI value model (`Bodu.Formats.Outlook`) and the read-only
+`.msg` reader over `Bodu.IO.Compound` (`Bodu.Formats.Outlook.Msg`),
+both in the flattened `Bodu.Formats.Outlook` namespace so the future
+`.pst` reader shares the model. The reader covers the full property
+surface (fixed/variable/multi-valued, Unicode + code-page strings with
+two-pass resolution), recipients/attachments/nested messages,
+named-property resolution, and the text/HTML/compressed-RTF bodies
+(MS-OXRTFCP decoder pinned to the specification example vector), with a
+DocFX guide section and compile-guarded snippets.
 
-- **Deliver tranches M1–M4 of the kickoff plan** — the shared MAPI model,
-  the core property decode, recipients/attachments/nested messages and
-  named properties, then bodies (incl. the MS-OXRTFCP compressed-RTF
-  decoder) and the DocFX guide.
 - **Assemble a real-world `.msg` reference corpus.** Regression currently
   runs entirely on synthetic fixtures authored through
   `Bodu.IO.Compound`; a licensed third-party corpus with a provenance

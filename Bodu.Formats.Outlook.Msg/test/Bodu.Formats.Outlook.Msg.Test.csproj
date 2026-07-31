@@ -13,4 +13,8 @@
     <ProjectReference Include="..\src\Bodu.Formats.Outlook.Msg.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
 </Project>
