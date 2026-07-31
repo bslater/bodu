@@ -662,13 +662,19 @@ full attribute family, naming policies, the string/number enum converters,
 the four serialization callbacks), the read-only `BencodeDocument` /
 `BencodeElement` DOM, and the mutable `BencodeNode` tree.
 
-- **Add a conformance corpus.** Unlike TOML and YAML, Bencode has no
-  vendored spec corpus — the test project is fixtures + unit tests. A
-  BEP-3 malformed-input sweep in the Regression tier would raise it to
-  the same maturity bar as its siblings.
-- **Ship the read-only configuration source** (`AddBencodeStream`) in
-  `Bodu.Extensions.Configuration.Text` — the one format bridge still
-  owed there.
+- **The conformance corpus has landed.** ✅ A Regression-tier BEP-3
+  sweep (`Bep3CorpusTests`) of ~100 valid and ~115 malformed KAT rows
+  adapted from the BEP 3 grammar and the BEP 5/9/10/12/23 wire shapes,
+  and from the test suites of libtorrent, Transmission, bencodepy,
+  bencode-go, and bendy/serde_bencode — pinned reader token sequences,
+  fanned across the read-only document and mutable node surfaces.
+  Bencode has no canonical upstream corpus repository (nothing like
+  `toml-test`), so the cases are inline KAT rows with per-group
+  attribution rather than a vendored file corpus.
+- **The read-only configuration source has landed.** ✅ `AddBencodeFile`
+  / `AddBencodeStream` in `Bodu.Extensions.Configuration.Text`, mirroring
+  the TOML provider shape — strict-canonical parse, dictionary-rooted
+  documents, colon-delimited flattening with list-index segments.
 
 ### `Bodu.Text.Toml`
 
@@ -753,11 +759,10 @@ the *Active focus* #4 decouple — no format-library dependency).
 ### `Bodu.Extensions.Configuration.Text`
 
 Current state: bridge layer connecting `Microsoft.Extensions.Configuration`
-to the Bodu text stack. The read-only **TOML source has landed**
-(`AddTomlFile` / `AddTomlStream`).
+to the Bodu text stack. The read-only **TOML and Bencode sources have
+landed** (`AddTomlFile` / `AddTomlStream`, `AddBencodeFile` /
+`AddBencodeStream`).
 
-- **Add the Bencode configuration source** — the one remaining format
-  bridge, mirroring the TOML provider shape.
 - **Document precedence semantics** when stacked with the `Json` and
   `EnvironmentVariables` providers.
 

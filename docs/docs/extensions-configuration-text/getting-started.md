@@ -129,6 +129,23 @@ The TOML bridge flattens the table hierarchy into the same colon-delimited key s
 `includeScopes = true` surfaces as `configuration["logging:console:includeScopes"]`. It is read-once and read-only, so
 there is no `reloadOnChange` parameter; for stream input use `AddTomlStream(stream)`.
 
+### Add a Bencode file or stream
+
+```csharp
+using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddBencodeFile("appsettings.bencode", optional: true)
+    .Build();
+
+string? level = configuration["logging:level"];   // from d7:loggingd5:level5:Debugee
+```
+
+The Bencode bridge has the same read-once, read-only shape as the TOML bridge; for stream input use
+`AddBencodeStream(stream)`. The document root must be a Bencode dictionary — nested dictionaries flatten to one
+colon-delimited segment per level and list elements to zero-based index segments.
+
 ### Add a pre-parsed document
 
 ```csharp
