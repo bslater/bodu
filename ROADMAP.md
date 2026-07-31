@@ -1062,14 +1062,17 @@ with XML + JSON-subset serialization and a loader that materializes a
   diagnostic (stable `BODU-CAL-*` codes) without throwing, documented in
   the validation-diagnostics guide; the throwing overloads are
   unchanged. Remaining nicety: source locations on diagnostics.
-- **Ship an MSBuild task and `dotnet` tool** that compiles JSON rule
-  packs to a sealed binary format — critical for trim/AOT scenarios (see
-  the AOT theme). *The format itself is delivered*: the sealed `.bcal`
-  encoding (`NotableDateBinaryResource.Write`/`Read`,
+- ~~**Ship an MSBuild task and `dotnet` tool**~~ — delivered end to end:
+  the sealed `.bcal` format (`NotableDateBinaryResource.Write`/`Read`,
   `NotableDateResourceLoader.LoadBinary`, `SaveBinary` on the builder,
   documented in the binary-rule-packs guide) round-trips every bundled
-  catalogue byte-stably with integrity digests. The `dotnet` tool and
-  MSBuild task remain.
+  catalogue byte-stably with integrity digests; the
+  `Bodu.Globalization.Calendar.Tool` package ships the `bodu-calendar`
+  tool (`lint` / `compile` / `info` over the stable `BODU-CAL-*`
+  diagnostics); and `Bodu.Globalization.Calendar.Build` wires
+  `NotableDatePack` items to incremental build-time compilation via a
+  `ToolTask` over the same tool. Neither package is in a shipping wave
+  yet — they join `bld/release-manifest.txt` with the calendar wave.
 - **Document round-trip guarantees** between builder output and the JSON
   resource rule provider.
 

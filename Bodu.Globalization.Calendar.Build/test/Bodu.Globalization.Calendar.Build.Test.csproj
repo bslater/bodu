@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Globalization.Calendar.Build</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+    <ProjectReference Include="..\src\Bodu.Globalization.Calendar.Build.csproj" ReferenceOutputAssembly="false" Private="false" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Tool\src\Bodu.Globalization.Calendar.Tool.csproj" ReferenceOutputAssembly="false" Private="false" />
+  </ItemGroup>
+
+</Project>

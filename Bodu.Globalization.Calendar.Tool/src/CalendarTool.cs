@@ -270,6 +270,10 @@ public static class CalendarTool
         }
 
         string packPath = outputPath ?? Path.ChangeExtension(input, ".bcal");
+        string? packDirectory = Path.GetDirectoryName(Path.GetFullPath(packPath));
+        if (!string.IsNullOrEmpty(packDirectory))
+            _ = Directory.CreateDirectory(packDirectory);
+
         using (FileStream stream = File.Create(packPath))
         {
             NotableDateBinaryResource.Write(resource, stream);
