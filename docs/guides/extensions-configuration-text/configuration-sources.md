@@ -175,7 +175,56 @@ logging:console:includeScopes = true
 
 Keys are matched case-insensitively, exactly as the BCL JSON and INI providers behave, so `configuration["Logging:Level"]` and `configuration["logging:level"]` resolve to the same value. Because the TOML bridge surfaces the same colon-delimited key space, it layers and binds to `IOptions<T>` exactly like the INI sources described below; the only difference is that, being read-only, it never participates in reload-on-change.
 
-## Pattern 8 — binding to `IOptions<T>`
+## Pattern 8 — Bencode file or stream source
+
+The package also ships a read-only Bencode bridge that surfaces [`Bodu.Text.Bencode`](../serialization/bencode/index.md) through the same `IConfiguration` pipeline, with the same shape as the TOML bridge:
+
+<!-- compile -->
+```csharp
+using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddBencodeFile("appsettings.bencode", optional: true)
+    .Build();
+
+string? level = configuration["logging:level"];
+```
+
+`AddBencodeFile(path, optional)` registers a `BencodeConfigurationSource`. Like the TOML bridge, the source is **read once** when the configuration is built — it is read-only and attaches no reload-on-change watcher. With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
+
+For configuration that arrives as a stream, use the stream overload — the Bencode document is consumed once during `Build()`:
+
+<!-- compile -->
+```csharp
+using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+using var ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes("d7:loggingd5:level5:Debugee"));
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddBencodeStream(ms)
+    .Build();
+```
+
+### How Bencode values map to configuration keys
+
+The document root must be a Bencode **dictionary** — an integer, byte-string, or list root is rejected with `FormatException`, because it cannot contribute named configuration keys. Nested dictionaries contribute one colon-delimited segment per level, and list elements contribute their zero-based index as a segment, mirroring the framework JSON provider:
+
+```
+d7:loggingd6:levelsl4:info4:warneee
+```
+
+flattens to:
+
+```
+logging:levels:0 = info
+logging:levels:1 = warn
+```
+
+The document is parsed with the library's strict canonical defaults, so unsorted or duplicate dictionary keys are rejected. Integers render invariant across the full unsigned 64-bit range the format supports; byte strings decode as UTF-8, with content that is not valid UTF-8 decoded via U+FFFD replacement rather than rejected. Keys are matched case-insensitively, so two Bencode keys that differ only in case collide and are rejected as duplicates.
+
+## Pattern 9 — binding to `IOptions<T>`
 
 Because the bridge surfaces standard colon-delimited keys, the values bind to typed options classes through the ordinary `Microsoft.Extensions.Options` pipeline. `ConfigurationOptionsExtensions.AddConfigurationOptions<TOptions>` is a discoverable shim over `services.Configure<TOptions>(section)` — either call produces the same registration:
 
