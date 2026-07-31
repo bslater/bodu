@@ -12,8 +12,11 @@
 # Externally reconciled against the KFUPM Research Institute Comparison Calendar 1356-1411 AH
 #   (King Fahd University of Petroleum & Minerals) print: all 24 month starts of 1410-1411 AH
 #   and all 17 vector rows they determine (Gregorian 1990 and pre-July-1991) match exactly.
-#   A reconciliation pass against ummulqura.org.sa for 1412 AH onward remains a nicety
-#   requiring network access.
+# Externally reconciled against ummulqura.org.sa year exports sampled across the range
+#   (1420, 1430, 1446, 1448 AH): 48/48 month starts, 1418/1418 day rows, and all 40 vector
+#   rows they determine match exactly. For 1410 AH the site's retrospective table runs one
+#   day later than both the KFUPM print and the KACST table for 11 of 12 months; the vectors
+#   follow the calendar contemporaneously printed in the Kingdom.
 # Regenerate: dotnet run --project tools/IslamicObservanceVectorGenerator > <this file>
 # Verify:     python3 tools/verify-islamic-observance-vectors.py <this file>
 # Columns: gregorianYear,observanceId,date

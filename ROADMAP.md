@@ -1050,14 +1050,18 @@ resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
   multi-occurrence defect); and the 3 `global-persian` observances by an
   independent Meeus equinox implementation of the official Solar Hijri
   new-year rule (`tools/generate-persian-observance-vectors.py`,
-  150/150 against the BCL projection). The oldest end of the Umm
-  al-Qura table is externally reconciled against the KFUPM Research
+  150/150 against the BCL projection). The Umm al-Qura table is
+  externally reconciled twice over: against the KFUPM Research
   Institute *Comparison Calendar 1356–1411 AH* print (24/24 month
-  starts, 17/17 derivable vector rows for 1990 / early 1991).
-  Provenance and cross-check counts live in
-  `NotableDateCatalogueVerification.md`. Residual nicety: a
-  reconciliation pass against ummulqura.org.sa (1412 AH onward) /
-  time.ir when network access allows.
+  starts, 17/17 derivable vector rows for 1990 / early 1991) and
+  against ummulqura.org.sa full-year exports sampled across the range
+  (1420/1430/1446/1448 AH: 48/48 month starts, 1,418/1,418 day rows,
+  40/40 derivable vector rows; the site's retrospective 1410 table
+  diverges from the contemporaneous print by a day — the vectors
+  follow the print). Provenance and cross-check counts live in
+  `NotableDateCatalogueVerification.md`. Residual nicety: a time.ir
+  reconciliation pass for the Persian table when network access
+  allows.
 - ~~**Add `IAsyncEnumerable<NotableDate>` projections**~~ — delivered:
   `NotableDateServiceAsyncExtensions.ResolveAsync` streams a range's
   occurrences one civil year at a time with cooperative cancellation,
