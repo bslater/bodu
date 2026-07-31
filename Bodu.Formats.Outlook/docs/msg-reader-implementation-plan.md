@@ -15,9 +15,12 @@ ships as `TryGetNamedPropertyId(name, out ushort id)` +
 not type-level, so returning a typed tag would have invented a type;
 *(3)* scalar conveniences landed in M2 with the property surface (they
 are one-line accessors), leaving M4 the body trio + `CompressedRtf`;
-*(4)* Regression runs entirely on synthetic fixtures authored through
-`Bodu.IO.Compound` — the real-world corpus with a provenance
-`NOTICE.md` is a recorded roadmap follow-up.
+*(4)* Regression initially ran entirely on synthetic fixtures authored
+through `Bodu.IO.Compound`; the real-world corpus followed on
+2026-07-31 — 41 Apache POI `test-data/hsmf` files with a provenance
+`NOTICE.md` and an independently generated expectations manifest under
+`Bodu.Formats.Outlook.Msg/test/Fixtures/Reference/`, closing this
+deviation.
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *New library
 candidates → `Bodu.Formats.Outlook.Msg`*;
 [`Bodu.IO.Compound/docs/roadmap-implementation-plan.md`](../../Bodu.IO.Compound/docs/roadmap-implementation-plan.md)
