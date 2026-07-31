@@ -50,8 +50,12 @@ Console.WriteLine("# Cross-verified at generation time: every row's underlying H
 Console.WriteLine("#   after the geocentric lunar conjunction computed by the independent Meeus ch. 49 series in");
 Console.WriteLine("#   tools/verify-islamic-observance-vectors.py, and the table agrees with the hand-pinned");
 Console.WriteLine("#   published 2023-2025 rows in GlobalIslamicCatalogueKnownAnswerTests; see");
-Console.WriteLine("#   NotableDateCatalogueVerification.md. A reconciliation pass against ummulqura.org.sa remains");
-Console.WriteLine("#   a nicety requiring network access.");
+Console.WriteLine("#   NotableDateCatalogueVerification.md.");
+Console.WriteLine("# Externally reconciled against the KFUPM Research Institute Comparison Calendar 1356-1411 AH");
+Console.WriteLine("#   (King Fahd University of Petroleum & Minerals) print: all 24 month starts of 1410-1411 AH");
+Console.WriteLine("#   and all 17 vector rows they determine (Gregorian 1990 and pre-July-1991) match exactly.");
+Console.WriteLine("#   A reconciliation pass against ummulqura.org.sa for 1412 AH onward remains a nicety");
+Console.WriteLine("#   requiring network access.");
 Console.WriteLine("# Regenerate: dotnet run --project tools/IslamicObservanceVectorGenerator > <this file>");
 Console.WriteLine("# Verify:     python3 tools/verify-islamic-observance-vectors.py <this file>");
 Console.WriteLine("# Columns: gregorianYear,observanceId,date");

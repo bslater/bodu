@@ -8,8 +8,12 @@
 #   after the geocentric lunar conjunction computed by the independent Meeus ch. 49 series in
 #   tools/verify-islamic-observance-vectors.py, and the table agrees with the hand-pinned
 #   published 2023-2025 rows in GlobalIslamicCatalogueKnownAnswerTests; see
-#   NotableDateCatalogueVerification.md. A reconciliation pass against ummulqura.org.sa remains
-#   a nicety requiring network access.
+#   NotableDateCatalogueVerification.md.
+# Externally reconciled against the KFUPM Research Institute Comparison Calendar 1356-1411 AH
+#   (King Fahd University of Petroleum & Minerals) print: all 24 month starts of 1410-1411 AH
+#   and all 17 vector rows they determine (Gregorian 1990 and pre-July-1991) match exactly.
+#   A reconciliation pass against ummulqura.org.sa for 1412 AH onward remains a nicety
+#   requiring network access.
 # Regenerate: dotnet run --project tools/IslamicObservanceVectorGenerator > <this file>
 # Verify:     python3 tools/verify-islamic-observance-vectors.py <this file>
 # Columns: gregorianYear,observanceId,date
