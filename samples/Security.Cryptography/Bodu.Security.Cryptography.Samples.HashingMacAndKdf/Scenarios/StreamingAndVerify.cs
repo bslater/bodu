@@ -31,6 +31,7 @@ public static class StreamingAndVerify
         streaming.AppendData(Message.AsSpan(0, 10));
         streaming.AppendData(Message.AsSpan(10, 15));
         streaming.AppendData(Message.AsSpan(25));
+        // Finalizing with an empty TransformFinalBlock completes the digest, exposed through the Hash property.
         streaming.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
         var streamedHex = Hex.ToHex(streaming.Hash!);
 

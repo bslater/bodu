@@ -28,7 +28,7 @@ public static class RangeCounting
 
         // April 2024: 30 days, 8 weekend days, 2 public holidays that fall on weekdays
         // (Easter Monday 04-01 and Anzac Day 04-25).
-        var count = start.WorkingDaysBetween(end, service, "AU");
+        var count = start.WorkingDaysBetween(end, service, "AU");   // both endpoints inclusive
         Console.WriteLine($"Working days in April 2024 (AU): {count}");
 
         // Enumerate lazily - here, the working days of Anzac week only.

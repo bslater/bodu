@@ -51,6 +51,8 @@ public static class FrequencyBasedSchedules
                     // If the 15th falls on a non-working day, move the payroll run to the previous working day.
                     .WithAdjustment("payroll-roll-back")))
             .AddNotableDate("month-end-close", "Month-End Close", NotableDateCategory.Other, c => c
+                // Day 31 does not exist in short months, and the default behavior (Skip) would emit nothing there;
+                // UseLastDayOfMonth clamps instead, so February closes on the 28th/29th and April on the 30th.
                 .AddRule("r", r => r.MonthlyDay(31, invalidDayBehavior: InvalidDayOfMonthBehavior.UseLastDayOfMonth)))
             .AddNotableDate("board-report", "Board Report", NotableDateCategory.Other, c => c
                 .AddRule("r", r => r.MonthlyWeekday(DayOfWeek.Friday, WeekOrdinal.Last)))
@@ -60,6 +62,9 @@ public static class FrequencyBasedSchedules
 
         // Resolve the first quarter of 2026: every recurrence occurrence within the window, in date order.
         DateRange quarter = new(new DateOnly(2026, 1, 1), new DateOnly(2026, 3, 31));
+
+        // None of these rules declare territory applicability, so they are global: any territory code resolves
+        // them - "XX" is arbitrary.
         foreach (NotableDate date in service.Resolve(quarter, "XX"))
         {
             // Observed rows carry their lineage back to the actual (unadjusted) date - here, the payroll runs that

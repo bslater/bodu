@@ -30,6 +30,7 @@ public static class AeadModes
         Console.WriteLine();
 
         // GCM mandates a 12-byte nonce; EAX and OCB accept the block-sized 16-byte nonce used here.
+        // The nonces are fixed only for reproducibility — reusing a nonce under one key breaks these modes.
         RunMode("AES-GCM", Hex.Fill(12, 0x50), nonce => new GcmModeTransform(new AesBlockCipher(Key), nonce));
         RunMode("AES-EAX", Hex.Fill(16, 0x50), nonce => new EaxModeTransform(new AesBlockCipher(Key), nonce));
         RunMode("AES-OCB", Hex.Fill(16, 0x50), nonce => new OcbModeTransform(new AesBlockCipher(Key), nonce));

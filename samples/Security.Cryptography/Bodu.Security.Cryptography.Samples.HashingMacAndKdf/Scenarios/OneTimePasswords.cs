@@ -47,6 +47,8 @@ public static class OneTimePasswords
 
         // A code checked against a different instant (one step later) should not verify.
         var laterInstant = FixedInstant.AddSeconds(30);
+
+        // window widens acceptance to n adjacent time-steps to absorb clock skew; 0 demands the exact step.
         var staleVerified = Totp.VerifyCode(Secret, totp, laterInstant, window: 0);
         Console.WriteLine($"  same code at t=+89s (window 0) -> verify: {staleVerified}");
 
