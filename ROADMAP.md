@@ -1036,15 +1036,24 @@ resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
   from the announced civil date by a day (Saudi crescent sighting, Tehran
   vernal-equinox boundaries). Opt-in alternatives to the tabular
   resources, not replacements.
-- **Extend the Hebcal-aligned regression catalogue** — the Hebrew sweep
-  is delivered: all 13 `global-jewish` observances are pinned across
-  Gregorian 1990–2039 by an embedded vector table generated from an
-  independent Dershowitz–Reingold implementation
-  (`tools/generate-hebrew-observance-vectors.py`), cross-verified
-  against the Hebcal-verified starter rows and the BCL projection. The
-  Umm al-Qura and Persian 50-year tables remain owed (their
-  authoritative sources — ummulqura.org.sa, time.ir — need a
-  network-enabled verification pass).
+- ~~**Extend the Hebcal-aligned regression catalogue**~~ — delivered
+  across all three families: the 13 `global-jewish` observances are
+  pinned across Gregorian 1990–2039 by an embedded vector table
+  generated from an independent Dershowitz–Reingold implementation
+  (`tools/generate-hebrew-observance-vectors.py`); the 10
+  `global-islamic-umm-al-qura` observances by a KACST-table projection
+  whose every underlying month start is astronomically cross-checked
+  against an independent Meeus lunar-conjunction implementation
+  (`tools/verify-islamic-observance-vectors.py`, 517/517 within the
+  expected +1..+2-day window, double-occurrence years asserted as full
+  lists — a sweep that surfaced and fixed the `OffsetFromRule`
+  multi-occurrence defect); and the 3 `global-persian` observances by an
+  independent Meeus equinox implementation of the official Solar Hijri
+  new-year rule (`tools/generate-persian-observance-vectors.py`,
+  150/150 against the BCL projection). Provenance and cross-check
+  counts live in `NotableDateCatalogueVerification.md`. Residual
+  nicety: a reconciliation pass against ummulqura.org.sa / time.ir when
+  network access allows.
 - ~~**Add `IAsyncEnumerable<NotableDate>` projections**~~ — delivered:
   `NotableDateServiceAsyncExtensions.ResolveAsync` streams a range's
   occurrences one civil year at a time with cooperative cancellation,
