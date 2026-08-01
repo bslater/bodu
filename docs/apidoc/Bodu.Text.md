@@ -10,7 +10,7 @@ uid: Bodu.Text
 
 The **Bodu.Text** namespace serves two complementary roles:
 
-- It is the home of the **`Bodu.Text` library** — allocation-conscious helpers for the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, pooled / owned-memory surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. (These are distinct from the binary-to-text *radix* encodings, which live in [`Bodu.Text.Encoding`](Bodu.Text.Encoding.md).)
+- It is the home of the **`Bodu.Text` library** — allocation-conscious helpers for the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, pooled / owned-memory surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. (These are distinct from the binary-to-text *radix* encodings, which live in [`Bodu.Text.Encoding`](Bodu.Text.Encoding.md), and from the include/exclude pattern filtering in [`Bodu.Text.Filtering`](Bodu.Text.Filtering.md).)
 - It sits alongside the **line-format libraries** ([`Bodu.Text.Delimited`](Bodu.Text.Delimited.md), [`Bodu.Text.DotEnv`](Bodu.Text.DotEnv.md), [`Bodu.Text.Ini`](Bodu.Text.Ini.md) — see the [line-formats introduction](~/docs/formats/index.md)), each of which throws its own precise `*FormatException` derived from <xref:System.FormatException>.
 
 ## Static documentation

@@ -153,6 +153,17 @@ A family of focused primary libraries organized into **seven topics** — alongs
 </div>
 
 <div class="bodu-card">
+  <img src="images/hero-text-filtering.svg" alt="Bodu.Text.Filtering" />
+  <h3>Bodu.Text.Filtering</h3>
+  <p>A high-performance <strong>include/exclude filtering engine</strong> for lists of text values. Glob (wildcard, character-class, <code>{a,b}</code> alternation) and regex patterns compile once into an immutable <code>TextFilter</code> that classifies every pattern by evaluation cost and runs the cheapest strategies first — built for 100k+ values against tens to hundreds of patterns. Choose <strong>AnyMatch</strong> include/exclude sets (the Ant / MSBuild model) or <strong>LastMatchWins</strong> ordered rules (the gitignore model, with <code>!</code> re-inclusion and gitignore-convention parsing), and observe everything through built-in statistics, per-pattern hit counts, and a per-decision observer hook.</p>
+  <div class="bodu-card-links">
+    <a href="docs/text-filtering/index.md">Introduction</a>
+    <a href="guides/text-filtering/index.md">Guides</a>
+    <a href="xref:Bodu.Text.Filtering">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
   <img src="images/hero-formats.svg" alt="Bodu.Text.Formats" />
   <h3>Bodu.Text.Formats</h3>
   <p>The line-oriented text formats, each a standalone <code>System.Text.Json</code>-shaped library reachable through the <code>Bodu.Text.Formats</code> umbrella package: <strong>Delimited</strong> (RFC 4180 CSV/TSV with real-world dialect policies and typed record streaming), <strong>DotEnv</strong> (<code>.env</code> key/value with <code>export</code>, quoting, and literal no-interpolation values), and <strong>INI</strong> (a comment-preserving mutable document model over sections and global keys). Every format exposes the same quartet: a forward-only <code>Utf8*Reader</code>/<code>Utf8*Writer</code> pair, a serializer, a mutable node DOM, and a read-only document DOM.</p>
@@ -287,6 +298,7 @@ dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
 dotnet add package Bodu.Text.Encoding
+dotnet add package Bodu.Text.Filtering
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Toml
 dotnet add package Bodu.Text.Bencode

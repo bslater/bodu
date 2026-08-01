@@ -4,7 +4,7 @@ title: Text & Serialization — Guides
 
 # Text & Serialization — Guides
 
-Recipe-style walk-throughs for the text family — the `Bodu.Text.Encoding` binary-to-text codecs, the `Bodu.Text.Formats` document formats, and the `Bodu.Text.Bencode` / `Bodu.Text.Toml` object serializers. Three different jobs, three guide sections; this page is the topic-level map.
+Recipe-style walk-throughs for the text family — the `Bodu.Text.Encoding` binary-to-text codecs, the `Bodu.Text.Filtering` include/exclude filtering engine, the `Bodu.Text.Formats` document formats, and the `Bodu.Text.Bencode` / `Bodu.Text.Toml` object serializers. Four different jobs, four guide sections; this page is the topic-level map.
 
 If you are unsure which package does the job you have, start with the [topic overview](../../docs/topics/text-and-serialization.md) — it leads with the codec / format / serializer disambiguation — and the [topic concepts](../../docs/topics/text-and-serialization-concepts.md) for the shared vocabulary.
 
@@ -37,6 +37,34 @@ Bytes ⇄ printable text. Base16 through Base85 with every common variant, plus 
 <div class="bodu-card">
   <h3><a href="../text-encoding/binary-encodings-interface.md">The IBinaryEncoding interface</a></h3>
   <p>Runtime-selected encoding choice via <code>BinaryEncodings.Get(name)</code> and the unified <code>IBinaryEncoding</code> contract.</p>
+</div>
+
+</div>
+
+## Bodu.Text.Filtering — include/exclude filtering
+
+Selecting values by pattern. Glob and regex patterns compiled into one cost-tiered matcher, with set or ordered-rule semantics and built-in telemetry.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="../text-filtering/index.md">Overview</a></h3>
+  <p>How the engine works — compile-once filters, cost-tier classification, and the guide map.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../text-filtering/patterns-and-globs.md">Patterns and globs</a></h3>
+  <p>The full glob grammar — classes, <code>{a,b}</code> alternation, escapes — and when to reach for regex.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../text-filtering/evaluation-modes.md">Evaluation modes</a></h3>
+  <p><code>AnyMatch</code> sets vs <code>LastMatchWins</code> ordered rules, allowlists, and gitignore-convention parsing.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../text-filtering/telemetry-and-tuning.md">Telemetry and tuning</a></h3>
+  <p>Statistics, per-pattern hit counts, the observer hook, cost tiers, and fail-safe regex timeouts.</p>
 </div>
 
 </div>
@@ -118,4 +146,4 @@ POCO ⇄ wire format, `System.Text.Json`-shaped. The three libraries share an ar
 
 - [Text & Serialization topic overview](../../docs/topics/text-and-serialization.md) — the disambiguation triangle, package table, and decision table.
 - [Topic concepts](../../docs/topics/text-and-serialization-concepts.md) — codec vs. format vs. serializer, the tier model, framing, canonical output, strictness.
-- Package introductions — [Bodu.Text.Encoding](../../docs/text-encoding/index.md), [Bodu.Text.Formats](../../docs/formats/index.md), [Bodu serializers](../../docs/serialization/index.md).
+- Package introductions — [Bodu.Text.Encoding](../../docs/text-encoding/index.md), [Bodu.Text.Filtering](../../docs/text-filtering/index.md), [Bodu.Text.Formats](../../docs/formats/index.md), [Bodu serializers](../../docs/serialization/index.md).

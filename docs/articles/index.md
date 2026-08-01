@@ -20,6 +20,9 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.Globalization.Calendar — notable-date resolution](xref:Bodu.Globalization.Calendar)**
   Rule-driven notable-date resolution with fixed, day-of-week-in-month, offset, and algorithm strategies — including Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming — driven from pluggable XML or JSON rule sources, an observance-adjustment pipeline, and a trust-policy-driven plugin host.
 
+- **[Bodu.Text.Filtering — include/exclude text filtering](xref:Bodu.Text.Filtering)**
+  A high-performance filtering engine for lists of text values: glob (wildcard, character-class, `{a,b}` alternation) and regex patterns compiled once into a cost-tiered `TextFilter` that runs the cheapest strategies first. Ant / MSBuild-style `AnyMatch` sets or gitignore-style `LastMatchWins` ordered rules with `!` re-inclusion, gitignore-convention line parsing, and built-in telemetry — decision counters, per-pattern hit counts, and a per-decision observer hook.
+
 - **[Bodu.Text.Formats — self-framing text document formats](../docs/formats/index.md)**
   Strongly-typed value models and span- and stream-friendly codecs for self-framing document formats. Ships **Delimited** (RFC 4180 CSV / TSV), **DotEnv** (`.env` key/value), and **INI** (round-trippable, section- and comment-preserving) — each exposing the same modern shape: `Parse` / `Format` and `Try*` over spans, a typed value model, forward-only streaming readers and writers, and strict invariant enforcement.
 

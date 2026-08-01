@@ -26,6 +26,7 @@ For the high-level shape of each library, follow the **Intro** link in the table
 | **Cryptography** | `Bodu.Security.Cryptography` | Stable | `Bodu.Core`, `System.Security.Cryptography` | [Bodu.Security.Cryptography](cryptography/index.md) | [Get started](cryptography/getting-started.md) |
 | **Calendar runtime** | `Bodu.Globalization.Calendar` | Stable | `Bodu.Core` | [Bodu.Globalization.Calendar](calendar/index.md) | [Get started](calendar/getting-started.md) |
 | **Text encoding** | `Bodu.Text.Encoding` | Stable | `Bodu.Core` | [Bodu.Text.Encoding](text-encoding/index.md) | [Get started](text-encoding/getting-started.md) |
+| **Text filtering** | `Bodu.Text.Filtering` | Preview | `Bodu.Core` | [Bodu.Text.Filtering](text-filtering/index.md) | [Get started](text-filtering/getting-started.md) |
 | **Text formats (umbrella)** | `Bodu.Text.Formats` | Preview | `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, `Bodu.Text.Ini` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
 | **Delimited (CSV / TSV)** | `Bodu.Text.Delimited` | Preview | `Bodu.Text.Serialization`, `Bodu.Core` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
 | **DotEnv** | `Bodu.Text.DotEnv` | Preview | `Bodu.Text.Serialization`, `Bodu.Core` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
@@ -155,6 +156,7 @@ dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
 dotnet add package Bodu.Text.Encoding
+dotnet add package Bodu.Text.Filtering
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Delimited
 dotnet add package Bodu.Text.DotEnv
