@@ -309,6 +309,9 @@
     <Project Path="samples/Text.Encoding/Bodu.Text.Encoding.Samples.CustomEncoding/Bodu.Text.Encoding.Samples.CustomEncoding.csproj" />
     <Project Path="samples/Text.Encoding/Bodu.Text.Encoding.Samples.EncodingTour/Bodu.Text.Encoding.Samples.EncodingTour.csproj" />
   </Folder>
+  <Folder Name="/Samples/Text.Filtering/">
+    <Project Path="samples/Text.Filtering/Bodu.Text.Filtering.Samples.FilteringTour/Bodu.Text.Filtering.Samples.FilteringTour.csproj" />
+  </Folder>
   <Folder Name="/Samples/Text.Formats/">
     <Project Path="samples/Text.Formats/Bodu.Text.Formats.Samples.ConfigFiles/Bodu.Text.Formats.Samples.ConfigFiles.csproj" />
     <Project Path="samples/Text.Formats/Bodu.Text.Formats.Samples.DelimitedData/Bodu.Text.Formats.Samples.DelimitedData.csproj" />
