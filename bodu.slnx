@@ -22,6 +22,9 @@
     <Project Path="Bodu.Text.DotEnv/test/Bodu.Text.DotEnv.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Text.Filtering/">
+    <Project Path="Bodu.Text.Filtering/bench/Bodu.Text.Filtering.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="Bodu.Text.Filtering/src/Bodu.Text.Filtering.csproj" />
     <Project Path="Bodu.Text.Filtering/test/Bodu.Text.Filtering.Test.csproj" />
   </Folder>

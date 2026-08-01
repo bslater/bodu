@@ -72,6 +72,24 @@ At build time each glob is classified so evaluation runs cheapest-first (the `gl
 `MatchAll` → `Literal` → `Prefix` / `Suffix` / `PrefixAndSuffix` → `Contains` → general
 wildcard (iterative two-pointer matcher) → `Regex`.
 
+## Indicative performance
+
+BenchmarkDotNet (short job) on the development container, filtering a 100,000-value synthetic
+corpus per invocation; the baseline evaluates one compiled `Regex` per pattern per value:
+
+| Pattern count | Mixed-tier `TextFilter` | Per-pattern compiled regex | Speed-up |
+|---:|---:|---:|---:|
+| 10 | ~15 ms | ~36 ms | ~2.4× |
+| 50 | ~73 ms | ~170 ms | ~2.3× |
+| 100 | ~132 ms | ~443 ms | ~3.4× |
+
+All `TextFilter` passes allocate nothing per value, and attaching a no-op
+`ITextFilterObserver` was within measurement noise. Reproduce with:
+
+```bash
+dotnet run -c Release --project Bodu.Text.Filtering/bench/Bodu.Text.Filtering.Benchmarks.csproj -- --filter '*TextFilter*'
+```
+
 ## Telemetry
 
 `TextFilter` keeps always-on counters (items evaluated / accepted / excluded / not-included,
