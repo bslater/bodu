@@ -109,12 +109,16 @@ public sealed partial class TextFilter
         TextFilterPattern? deciding = null;
         if (decidingIndex >= 0)
         {
+            // The compiled entry carries only the declaration index; resolve it to the declared pattern once, and
+            // credit the hit to that slot — brace-expanded alternatives share their pattern's slot by design.
             deciding = _patterns[decidingIndex];
             _hitCounts[decidingIndex]++;
         }
 
         RecordDecision(decision, timeoutCount, start);
 
+        // Snapshot the observer property once so a concurrent detach cannot null-ref between check and call; when no
+        // observer is attached this whole hook costs one field read and a predictable branch.
         var observer = Observer;
         observer?.OnEvaluated(value, decision, deciding);
 
@@ -131,6 +135,11 @@ public sealed partial class TextFilter
     /// <returns>The decision.</returns>
     private TextFilterDecision EvaluateAnyMatch(ReadOnlySpan<char> value, ref int decidingIndex, ref int timeoutCount)
     {
+        // Includes run before excludes deliberately: with a non-empty include group the (usually large) fraction of
+        // values matching no include exits here without ever touching the excludes, and with an empty include group
+        // the _includeAll flag skips the loop entirely — so this order is never worse than excludes-first. Both
+        // groups are pre-sorted cheapest-strategy-first, which is safe because set matching is an
+        // order-independent OR.
         var includeIndex = -1;
         if (!_includeAll)
         {
@@ -159,6 +168,8 @@ public sealed partial class TextFilter
             }
         }
 
+        // No exclude vetoed: the earlier include hit (if any) is the deciding pattern; otherwise the value passed
+        // purely because the include set is empty and no pattern gets the credit.
         if (includeIndex >= 0)
         {
             decidingIndex = _includes[includeIndex].SourceIndex;
@@ -178,6 +189,9 @@ public sealed partial class TextFilter
     /// <returns>The decision.</returns>
     private TextFilterDecision EvaluateLastMatchWins(ReadOnlySpan<char> value, ref int decidingIndex, ref int timeoutCount)
     {
+        // "Last matching rule wins" evaluated directly: scan from the last rule toward the first and stop at the
+        // first hit — the same trick git uses for .gitignore. Rule order is semantic here, so unlike AnyMatch these
+        // entries are stored in declaration order and never cost-sorted.
         var ordered = _ordered;
         for (var i = ordered.Length - 1; i >= 0; i--)
         {

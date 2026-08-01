@@ -25,6 +25,9 @@ public static class Program
         Console.WriteLine("=========================================");
         Console.WriteLine();
 
+        // The scenarios build on one another: set semantics first, then ordered rules, then the grammar and
+        // diagnostics, and finally the telemetry surfaces. Each scenario is self-contained and prints its
+        // own sub-banner, so they can also be read (and run) independently.
         IncludeExcludeBasics.Run();
         ParseAndOrderedRules.Run();
         GlobsAndCostTiers.Run();

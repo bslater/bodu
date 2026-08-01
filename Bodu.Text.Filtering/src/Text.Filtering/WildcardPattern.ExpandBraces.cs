@@ -49,9 +49,15 @@ internal static partial class WildcardPattern
     /// <param name="results">The accumulator receiving fully expanded alternatives.</param>
     private static void ExpandInto(string pattern, string candidate, List<string> results)
     {
+        // Each recursion level rewrites exactly ONE brace group (the leftmost) into its alternatives and recurses on
+        // the results; nested groups and later groups are handled by deeper levels. Termination follows because every
+        // level removes one '{...}' pair, and total work is bounded by the expansion cap below.
         var open = FindFirstBrace(candidate);
         if (open < 0)
         {
+            // Fully expanded. The cap is enforced here — at the moment a finished alternative would be added — so
+            // multiplicative blow-ups ({a,b} repeated N times = 2^N alternatives) fail fast part-way through instead
+            // of materializing the whole cross product first.
             if (results.Count >= MaxBraceExpansion) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, FilteringResourceStrings.Arg_Invalid_BraceExpansionTooLarge, pattern, MaxBraceExpansion), nameof(pattern));
 
             results.Add(candidate);
@@ -63,7 +69,8 @@ internal static partial class WildcardPattern
         var prefix = candidate[..open];
         var suffix = candidate[suffixStart..];
 
-        // Alternative segments are delimited by the group's top-level commas; a comma-free group is one alternative.
+        // Alternative segments are delimited by the group's top-level commas; a comma-free group is one alternative
+        // (so '{abc}' expands to 'abc'), and adjacent commas yield legal empty alternatives ('a{b,}' -> 'ab', 'a').
         var segmentStart = open + 1;
         for (var i = 0; i <= commas.Count; i++)
         {
@@ -167,6 +174,8 @@ internal static partial class WildcardPattern
         while (i < candidate.Length && candidate[i] != ']')
             i += candidate[i] == '\\' ? 2 : 1;
 
+        // An unterminated class swallows the rest of the text here without erroring — the expansion scanner only
+        // needs to know braces inside it are literal; the tokenizer owns reporting the unterminated-class error.
         return i < candidate.Length ? i : candidate.Length - 1;
     }
 }

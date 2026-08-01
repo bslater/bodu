@@ -184,6 +184,8 @@ public sealed partial class TextFilter
         }
         else
         {
+            // LastMatchWins keeps declaration order verbatim — order IS the semantics there, so no cost sorting.
+            // Brace-expanded alternatives stay adjacent to their siblings, preserving each rule's position.
             ordered = [.. compiled];
         }
 

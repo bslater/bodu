@@ -35,6 +35,10 @@ public sealed partial class TextFilter
             Comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             IsExclude = isExclude;
             SourceIndex = sourceIndex;
+
+            // The tier ranks strategies by per-value work: constant-time answers first (match-all, length-checked
+            // equality), then bounded edge comparisons, then the vectorized substring scan, then the O(n·m) general
+            // matcher, with regex last. Build sorts each AnyMatch group by this number.
             CostTier = wildcard is null
                 ? RegexCostTier
                 : wildcard.Kind switch
@@ -108,6 +112,10 @@ public sealed partial class TextFilter
             catch (RegexMatchTimeoutException)
             {
                 timeoutCount++;
+
+                // Fail safe by action, folded into one expression: an include reports false (a timeout must not
+                // admit the value) while an exclude reports true (a timeout must still veto it) — the filter can
+                // never leak a value through because its exclude timed out.
                 return IsExclude;
             }
         }

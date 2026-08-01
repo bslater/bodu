@@ -22,28 +22,44 @@ public static class ParseAndOrderedRules
     {
         Console.WriteLine("--- Parse + gitignore-style ordered rules (LastMatchWins) ---");
 
-        // Parse understands the gitignore file conventions: bare line = include, '!' = exclude,
-        // '#' = comment, blank lines skipped. In LastMatchWins mode the LAST matching rule decides.
+        // TextFilterOptions selects the evaluation mode at build time. LastMatchWins is the gitignore model:
+        // the rules form ONE ordered list and the LAST rule that matches a value decides its fate.
         var ordered = new TextFilterOptions { Mode = TextFilterEvaluationMode.LastMatchWins };
+
+        // TextFilter.Parse reads raw lines exactly like a .gitignore file:
+        //   - a line starting with '#' is a comment and is skipped,
+        //   - a bare line becomes an INCLUDE pattern,
+        //   - a leading '!' flips the line into an EXCLUDE pattern,
+        //   - blank lines are skipped, and surrounding whitespace is trimmed.
         var filter = TextFilter.Parse(
         [
-            "# keep everything except logs...",
-            "!*.log",
-            "# ...but this one matters",
-            "important.log",
+            "# keep everything except logs...",  // comment - ignored by the parser
+            "!*.log",                            // exclude rule: veto anything ending in ".log"
+            "# ...but this one matters",         // comment - ignored by the parser
+            "important.log",                     // include rule DECLARED LATER: re-admits this exact name
         ],
         ordered);
 
+        // "app.log" matches only "!*.log"            -> the last (only) match is an exclude -> rejected.
         Console.WriteLine($"app.log       -> {filter.IsMatch("app.log")}");
+
+        // "important.log" matches BOTH rules; the include is declared later, so it wins -> re-included.
+        // This is the gitignore re-inclusion idiom that AnyMatch sets cannot express.
         Console.WriteLine($"important.log -> {filter.IsMatch("important.log")} (re-included by the later rule)");
+
+        // "readme.txt" matches no rule at all; in LastMatchWins unmatched values are INCLUDED,
+        // exactly as gitignore treats files no pattern ignores.
         Console.WriteLine($"readme.txt    -> {filter.IsMatch("readme.txt")} (unmatched values are included)");
         Console.WriteLine();
 
-        // Allowlists are expressed with a leading exclude-everything rule - the iptables-style shape.
+        // The allowlist idiom: because unmatched values pass, an allowlist starts by excluding EVERYTHING
+        // ("!*"), then re-admits what is wanted, then carves exceptions back out — reading top to bottom
+        // like firewall rules, with later lines overriding earlier ones.
         var allowlist = TextFilter.Parse(["!*", "error*", "!*debug*"], ordered);
-        Console.WriteLine($"error1      -> {allowlist.IsMatch("error1")}");
-        Console.WriteLine($"error-debug -> {allowlist.IsMatch("error-debug")}");
-        Console.WriteLine($"info        -> {allowlist.IsMatch("info")}");
+
+        Console.WriteLine($"error1      -> {allowlist.IsMatch("error1")}");        // last match "error*"   -> included
+        Console.WriteLine($"error-debug -> {allowlist.IsMatch("error-debug")}");   // last match "!*debug*" -> excluded
+        Console.WriteLine($"info        -> {allowlist.IsMatch("info")}");          // last match "!*"       -> excluded
 
         Console.WriteLine();
     }

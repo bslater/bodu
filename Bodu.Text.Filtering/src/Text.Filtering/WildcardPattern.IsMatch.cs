@@ -26,6 +26,10 @@ internal static partial class WildcardPattern
     /// </remarks>
     public static bool IsMatch(ReadOnlySpan<char> value, WildcardUnit[] units, bool ignoreCase)
     {
+        // Invariant: value[..t] is matched by units[..u] under some assignment of the stars seen so far, with the
+        // most recent star (units[starU]) currently consuming value[starT'..starT] for its tentative width. Only the
+        // MOST recent star needs remembering: widening an earlier star can never succeed where widening the latest
+        // one fails, because anything an earlier star absorbs the later star could absorb instead.
         var t = 0;
         var u = 0;
         var starU = -1;
@@ -46,19 +50,24 @@ internal static partial class WildcardPattern
             }
             else if (starU >= 0)
             {
-                // Mismatch after a star: widen that star by one consumed character and retry from it.
+                // Mismatch after a star: widen that star by one consumed character and retry the units after it.
+                // starT only ever advances, so each (starT, u) pair is visited at most once — with consecutive stars
+                // collapsed at compile time this bounds the whole match at O(n·m) instead of exponential.
                 u = starU + 1;
                 t = ++starT;
             }
             else
             {
+                // Mismatch with no star to widen: nothing can absorb the difference.
                 return false;
             }
         }
 
+        // The value is exhausted; any remaining stars may legally consume nothing.
         while (u < units.Length && units[u].Type == WildcardUnitType.Star)
             u++;
 
+        // A full match requires the pattern to be exhausted too — leftover non-star units mean the value was too short.
         return u == units.Length;
     }
 
@@ -100,6 +109,9 @@ internal static partial class WildcardPattern
 
         if (!inSet && ignoreCase)
         {
+            // Fold the CHARACTER rather than the stored ranges: testing both simple case foldings against the raw
+            // pairs makes [a-z] admit 'A' and [A-Z] admit 'a' without rewriting range bounds at compile time (which
+            // cannot be done faithfully for ranges that straddle case regions, e.g. [X-c]).
             var upper = char.ToUpperInvariant(c);
             if (upper != c)
                 inSet = PairsContain(pairs, upper);
@@ -112,6 +124,7 @@ internal static partial class WildcardPattern
             }
         }
 
+        // Negation applies AFTER folding, so [!a] rejects 'A' case-insensitively instead of accepting it.
         return inSet ^ unit.Negated;
     }
 

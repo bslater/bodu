@@ -111,6 +111,9 @@ internal static partial class WildcardPattern
         {
             var lo = ReadClassCharacter(pattern, ref j);
 
+            // A '-' forms a range only when it sits BETWEEN two members: the member just read and a following
+            // character that is not the closing ']'. This one lookahead rule gives '-' its three glob meanings for
+            // free — leading ('[-a]') and trailing ('[a-]') dashes fall through to the single-member branch.
             if (j < pattern.Length - 1 && pattern[j] == '-' && pattern[j + 1] != ']')
             {
                 j++;
@@ -119,6 +122,7 @@ internal static partial class WildcardPattern
             }
             else
             {
+                // Single members are stored as degenerate ranges (lo == hi) so matching needs only one code path.
                 pairs.Append(lo).Append(lo);
             }
         }
@@ -161,6 +165,9 @@ internal static partial class WildcardPattern
     /// <returns>The compiled program.</returns>
     private static WildcardProgram Classify(List<WildcardUnit> units)
     {
+        // The cheap strategies below are only valid for patterns made purely of literal characters and stars: a '?'
+        // or a class anywhere means the literal fragments are not fixed text, so those shapes go to the general
+        // matcher regardless of their star layout.
         var stars = 0;
         var complex = false;
         foreach (var unit in units)
@@ -173,6 +180,10 @@ internal static partial class WildcardPattern
 
         if (!complex)
         {
+            // With stars collapsed at tokenization, the star COUNT plus the star POSITIONS fully determine the
+            // shape: 0 stars = literal; 1 star at an edge = prefix/suffix; 1 star inside = prefix-and-suffix;
+            // 2 stars hugging both edges = contains. Everything else (3+ stars, or 2 stars not at both edges)
+            // has an unanchored middle segment and needs the general matcher.
             if (stars == 0)
                 return new WildcardProgram(WildcardMatchKind.Literal, LiteralRun(units, 0, units.Count), string.Empty, string.Empty, string.Empty, []);
 
