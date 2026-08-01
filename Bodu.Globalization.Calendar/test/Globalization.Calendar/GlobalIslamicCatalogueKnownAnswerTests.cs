@@ -50,6 +50,32 @@ public sealed class GlobalIslamicCatalogueKnownAnswerTests
     }
 
     /// <summary>
+    /// Verifies that each Umm al-Qura observance resolves within one day of the date the High Judiciary Council of
+    /// Saudi Arabia actually announced (Hijri 1422-1448), pinning the computed catalogue against the gazetted civil
+    /// dates. One day is the empirically maximal computed-versus-announced divergence across the range - the
+    /// announcements moved seventeen month starts by a single day (in both directions) and never more.
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (year, observance) input and the announced date.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(SaudiAnnouncedObservanceVectors.Rows),
+        typeof(SaudiAnnouncedObservanceVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossAnnouncedDates_ShouldBeWithinOneDayOfGazettedDate(ValidKat<(int Year, string ObservanceId), DateOnly> kat)
+    {
+        List<NotableDate> matches = CommonCatalogues.ResolveForYear(s_ummAlQuraSweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+
+        Assert.IsNotEmpty(matches, $"expected at least one '{kat.Input.ObservanceId}' in {kat.Input.Year}");
+
+        int distance = matches.Min(m => Math.Abs(m.Date.DayNumber - kat.Expected.DayNumber));
+        Assert.IsTrue(
+            distance <= 1,
+            $"{kat.Name}: resolved [{string.Join(", ", matches.Select(m => m.Date))}] is {distance} days from the announced date");
+    }
+
+    /// <summary>
     /// Verifies that each tabular-Hijri observance resolves to its base class library date across 2023-2025.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>
