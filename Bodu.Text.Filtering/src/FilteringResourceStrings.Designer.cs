@@ -120,7 +120,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The wildcard pattern &apos;{0}&apos; contains an unterminated brace alternation; expected &apos;}&apos;..
+        ///   Looks up a localized string similar to The wildcard pattern &apos;{0}&apos; contains an unterminated brace alternation; expected &apos;}}&apos;..
         /// </summary>
         internal static string Arg_Invalid_UnterminatedBrace {
             get {

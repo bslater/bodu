@@ -80,7 +80,7 @@
     <value>The wildcard pattern '{0}' contains an empty character class.</value>
   </data>
   <data name="Arg_Invalid_UnterminatedBrace" xml:space="preserve">
-    <value>The wildcard pattern '{0}' contains an unterminated brace alternation; expected '}'.</value>
+    <value>The wildcard pattern '{0}' contains an unterminated brace alternation; expected '}}'.</value>
   </data>
   <data name="Arg_Invalid_DanglingEscape" xml:space="preserve">
     <value>The wildcard pattern '{0}' ends with a dangling escape character.</value>
