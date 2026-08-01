@@ -49,6 +49,7 @@ Bodu.Security.Cryptography hero-crypto.svg
 Bodu.Text.Bencode hero-bencode.svg
 Bodu.Text.Configuration hero-configuration.svg
 Bodu.Text.Encoding hero-text-encoding.svg
+Bodu.Text.Filtering hero-text-filtering.svg
 Bodu.Text.Delimited hero-delimited.svg
 Bodu.Text.DotEnv hero-dotenv.svg
 Bodu.Text.Formats hero-formats.svg
