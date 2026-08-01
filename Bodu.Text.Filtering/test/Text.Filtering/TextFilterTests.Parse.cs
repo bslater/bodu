@@ -57,6 +57,20 @@ public partial class TextFilterTests
     }
 
     /// <summary>
+    /// Verifies that trailing whitespace on a rule line does not become part of the pattern — the gitignore behavior
+    /// (git strips unescaped trailing spaces), whose omission is a classic ignore-file bug.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenLineHasTrailingSpaces_ShouldMatchAsIfTrimmed()
+    {
+        var filter = TextFilter.Parse(["error*   ", "!*debug*  "]);
+
+        Assert.IsTrue(filter.IsMatch("error-1"));
+        Assert.IsFalse(filter.IsMatch("error-debug"));
+        Assert.AreEqual("error*", filter.Patterns[0].Pattern);
+    }
+
+    /// <summary>
     /// Verifies that every parsed pattern is a wildcard — regular expressions cannot be expressed in line form.
     /// </summary>
     [TestMethod]
