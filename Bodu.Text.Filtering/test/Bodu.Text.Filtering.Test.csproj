@@ -12,4 +12,9 @@
     <ProjectReference Include="..\src\Bodu.Text.Filtering.csproj" />
   </ItemGroup>
 
+  <!-- Declarative filtering-scenario corpus driven by TextFilterCorpusTests. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Text.Filtering\Fixtures\**\*.corpus" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,17 @@
+# The include-all default: with no include patterns, everything passes unless an exclude vetoes.
+
+scenario: Empty pattern set accepts everything
+match: anything
+match: 42
+match:
+
+scenario: Excludes only - everything else passes
+exclude: *.tmp
+match: report.txt
+match: notes.md
+skip: scratch.tmp
+
+scenario: Exclude everything with a lone star
+exclude: *
+skip: anything
+skip:

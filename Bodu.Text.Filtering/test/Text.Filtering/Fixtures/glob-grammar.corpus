@@ -1,0 +1,53 @@
+# The glob grammar through the full engine: literals, prefix/suffix/contains shapes,
+# '?' and character classes, brace alternation, and escapes.
+
+scenario: Literal equality is whole-string
+include: abc
+match: abc
+skip: xabcx
+skip: ab
+
+scenario: Prefix suffix and contains shapes
+include: err*
+include: *.log
+include: *core*
+match: error
+match: app.log
+match: .log
+match: has-core-inside
+skip: warning.txt
+
+scenario: Interior star requires non-overlapping prefix and suffix
+include: abc*bcd
+match: abcbcd
+match: abcXbcd
+skip: abcd
+
+scenario: Question mark is exactly one character
+include: job-?
+match: job-7
+skip: job-42
+skip: job-
+
+scenario: Character classes with ranges and negation
+include: job-[0-9][0-9]
+include: t[!a-g]n
+match: job-42
+skip: job-7x
+match: ton
+skip: ten
+
+scenario: Brace alternation expands into alternatives
+include: {error,warn,fatal}*
+match: error1
+match: warn2
+match: fatal3
+skip: info4
+
+scenario: Escapes make metacharacters literal
+include: a\*b
+include: \?
+match: a*b
+skip: axb
+match: ?
+skip: x

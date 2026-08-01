@@ -1,0 +1,31 @@
+# Edge-shaped values: empty strings, single characters, metacharacter-looking values,
+# and values that resemble patterns.
+
+scenario: Star matches the empty value
+include: *
+match:
+match: x
+
+scenario: Question mark rejects the empty value
+include: ?
+skip:
+match: x
+skip: xy
+
+scenario: Values containing metacharacters are plain text
+include: a\*b
+exclude: *literal-star*
+match: a*b
+skip: has-literal-star-inside
+
+scenario: Pattern-looking values do not self-interpret
+include: x*
+skip: *
+skip: ?
+match: x*
+match: xanything
+
+scenario: Whitespace inside values is significant
+include: two words*
+match: two words here
+skip: two  words here

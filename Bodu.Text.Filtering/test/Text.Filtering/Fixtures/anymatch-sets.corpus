@@ -1,0 +1,39 @@
+# AnyMatch include/exclude set semantics — the Ant / MSBuild model.
+# Format: 'scenario:' starts a scenario; 'mode:' / 'ignore-case:' set options;
+# 'include:' / 'exclude:' add wildcard patterns, 'include-regex:' / 'exclude-regex:' add regexes;
+# 'match:' expects the value to be accepted, 'skip:' expects it to be rejected.
+
+scenario: Includes admit and excludes veto
+include: error*
+include: warn*
+exclude: *debug*
+match: error: disk full
+match: warn: retrying
+skip: error-debug-trace
+skip: info: started
+
+scenario: Include set declared means allowlist behavior
+include: error*
+match: error-1
+skip: warning
+skip: err
+
+scenario: Exclude wins when both include and exclude match
+include: error*
+exclude: *x
+match: error1
+skip: errorx
+
+scenario: Multiple excludes each veto independently
+exclude: *.tmp
+exclude: *.bak
+match: report.txt
+skip: scratch.tmp
+skip: old.bak
+
+scenario: Declaration order is irrelevant in sets
+exclude: *x
+include: error*
+match: error1
+skip: errorx
+skip: info

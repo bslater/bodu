@@ -1,0 +1,40 @@
+# Case-sensitivity control and Unicode simple case folding.
+
+scenario: Ordinal case-insensitive by default
+include: exact
+include: pre*
+include: *core*
+include: g?neral
+match: EXACT
+match: PREFIXED
+match: has-CORE-inside
+match: GENERAL
+
+scenario: Case-sensitive when ignore-case is off
+ignore-case: false
+include: error*
+match: error1
+skip: ERROR1
+skip: Error1
+
+scenario: Case default applies to regexes too
+ignore-case: false
+include-regex: ^error$
+match: error
+skip: ERROR
+
+scenario: Unicode simple case folding
+include: über*
+match: ÜBER-X
+match: über-y
+
+scenario: Class ranges fold case when insensitive
+include: [a-z]*
+match: QUUX
+match: quux
+
+scenario: Class ranges are strict when sensitive
+ignore-case: false
+include: [a-z]*
+match: quux
+skip: QUUX
