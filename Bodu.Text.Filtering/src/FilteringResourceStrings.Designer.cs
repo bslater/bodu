@@ -66,6 +66,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The pattern collection must not contain null entries..
+        /// </summary>
+        internal static string Arg_Invalid_PatternsContainsNull {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_PatternsContainsNull", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The filter pattern exceeds the maximum supported length of {0} characters..
         /// </summary>
         internal static string Arg_OutOfRange_PatternTooLong {

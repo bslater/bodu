@@ -61,6 +61,9 @@
   <data name="Arg_Invalid_PatternEmpty" xml:space="preserve">
     <value>The filter pattern must not be empty or whitespace.</value>
   </data>
+  <data name="Arg_Invalid_PatternsContainsNull" xml:space="preserve">
+    <value>The pattern collection must not contain null entries.</value>
+  </data>
   <data name="Arg_OutOfRange_PatternTooLong" xml:space="preserve">
     <value>The filter pattern exceeds the maximum supported length of {0} characters.</value>
   </data>
