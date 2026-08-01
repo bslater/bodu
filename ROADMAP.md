@@ -1035,7 +1035,13 @@ resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
   solar-Hijri families where the BCL's tabular calculation can diverge
   from the announced civil date by a day (Saudi crescent sighting, Tehran
   vernal-equinox boundaries). Opt-in alternatives to the tabular
-  resources, not replacements.
+  resources, not replacements. The Tehran side is delivered
+  (`tehran-nowruz`); for the Saudi side the acceptance baseline now
+  exists in-repo: the embedded gazetted-announcements table
+  (`SaudiAnnouncedObservances-1422-1448.csv`) shows the announcements
+  moved seventeen month starts by exactly one day in both directions
+  across 1422–1448 AH, so a sighting variant must reproduce those
+  seventeen ±1 shifts against the KACST table.
 - ~~**Extend the Hebcal-aligned regression catalogue**~~ — delivered
   across all three families: the 13 `global-jewish` observances are
   pinned across Gregorian 1990–2039 by an embedded vector table
@@ -1051,14 +1057,18 @@ resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
   independent Meeus equinox implementation of the official Solar Hijri
   new-year rule (`tools/generate-persian-observance-vectors.py`,
   150/150 against the BCL projection). The Umm al-Qura table is
-  externally reconciled twice over: against the KFUPM Research
+  externally reconciled three ways: against the KFUPM Research
   Institute *Comparison Calendar 1356–1411 AH* print (24/24 month
-  starts, 17/17 derivable vector rows for 1990 / early 1991) and
-  against ummulqura.org.sa full-year exports sampled across the range
+  starts, 17/17 derivable vector rows for 1990 / early 1991), against
+  ummulqura.org.sa full-year exports sampled across the range
   (1420/1430/1446/1448 AH: 48/48 month starts, 1,418/1,418 day rows,
   40/40 derivable vector rows; the site's retrospective 1410 table
   diverges from the contemporaneous print by a day — the vectors
-  follow the print). Provenance and cross-check counts live in
+  follow the print), and against van Gent's computed comparison table
+  for 1422–1448 AH (216/216 derivable vector rows). The same table's
+  **announced** column — the High Judiciary Council's gazetted dates —
+  is embedded as its own 171-row sweep asserting the measured one-day
+  bound. Provenance and cross-check counts live in
   `NotableDateCatalogueVerification.md`. Residual nicety: a time.ir
   reconciliation pass for the Persian table when network access
   allows.

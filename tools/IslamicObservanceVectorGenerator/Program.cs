@@ -59,6 +59,11 @@ Console.WriteLine("#   (1420, 1430, 1446, 1448 AH): 48/48 month starts, 1418/141
 Console.WriteLine("#   rows they determine match exactly. For 1410 AH the site's retrospective table runs one");
 Console.WriteLine("#   day later than both the KFUPM print and the KACST table for 11 of 12 months; the vectors");
 Console.WriteLine("#   follow the calendar contemporaneously printed in the Kingdom.");
+Console.WriteLine("# Externally reconciled against the computed columns of R.H. van Gent's Umm al-Qura");
+Console.WriteLine("#   comparison table (Utrecht University) for 1422-1448 AH: all 216 vector rows determined by");
+Console.WriteLine("#   the tabulated 1 Muharram / 1 Ramadan / 1 Shawwal / 1 and 10 Dhu al-Hijjah dates match");
+Console.WriteLine("#   exactly. The announced (gazetted) column of the same table is embedded separately as");
+Console.WriteLine("#   SaudiAnnouncedObservances-1422-1448.csv with its own one-day-bound sweep.");
 Console.WriteLine("# Regenerate: dotnet run --project tools/IslamicObservanceVectorGenerator > <this file>");
 Console.WriteLine("# Verify:     python3 tools/verify-islamic-observance-vectors.py <this file>");
 Console.WriteLine("# Columns: gregorianYear,observanceId,date");
