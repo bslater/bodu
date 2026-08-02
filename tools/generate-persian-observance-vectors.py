@@ -1,25 +1,30 @@
 #!/usr/bin/env python3
-"""Generates the Persian-calendar observance regression vectors for the global-persian catalogue.
+"""Generates the Persian-calendar observance regression vectors for the global-persian catalogue
+(default) or the global-zoroastrian catalogue (argument ``zoroastrian``).
 
 The Solar Hijri year begins on the civil day of the true vernal equinox at the Iranian standard
 meridian (52.5 deg E, UTC+03:30) when the equinox instant falls before apparent solar noon there,
 and on the following day otherwise. The chain below - the Meeus chapter 27 equinox series in
 dynamical time, the Espenak-Meeus delta-T reduction to Universal Time, and the Spencer harmonic
 equation of time for apparent noon - is implemented here independently in Python, so the emitted
-vectors do not derive from the code under test. The catalogue's observances are exact day offsets
-from Nowruz: Sizdah Bedar is Farvardin 13 (+12 days) and Yalda Night is the last day of Azar
-(+275 days; months 1-6 have 31 days and months 7-9 have 30, so the offset is fixed for every
-year regardless of the year's leap status).
+vectors do not derive from the code under test. Every observance in both catalogues is a fixed
+Solar Hijri date within months 1-11, hence an exact day offset from Nowruz (months 1-6 have 31
+days and months 7-11 have 30, so each offset is fixed regardless of the year's leap status).
+Zartosht No-Diso (Dey 11, Nowruz +286) straddles the Gregorian new year, so it can land zero or
+two times in one Gregorian year; rows are keyed by the resulting Gregorian year.
 
 Usage:
     python3 tools/generate-persian-observance-vectors.py > \
         Bodu.Globalization.Calendar/test/Globalization.Calendar/Fixtures/Vectors/PersianObservances-1990-2039.csv
+    python3 tools/generate-persian-observance-vectors.py zoroastrian > \
+        Bodu.Globalization.Calendar/test/Globalization.Calendar/Fixtures/Vectors/ZoroastrianObservances-1990-2039.csv
 """
 
 from __future__ import annotations
 
 import datetime
 import math
+import sys
 
 FIRST_GREGORIAN_YEAR = 1990
 LAST_GREGORIAN_YEAR = 2039
@@ -94,32 +99,69 @@ def nowruz(year: int) -> datetime.date:
 
 
 def main() -> None:
-    # (observanceId, day offset from Nowruz) mirroring the global-persian catalogue: Sizdah Bedar is
-    # Farvardin 13; Yalda Night is Azar 30, the 276th day of the Solar Hijri year (6 * 31 + 3 * 30).
-    observances = [
-        ("nowruz", 0),
-        ("sizdah-bedar", 12),
-        ("yalda-night", 275),
-    ]
+    zoroastrian = len(sys.argv) > 1 and sys.argv[1] == "zoroastrian"
 
-    print("# Persian-calendar observance vectors for the bundled global-persian catalogue.")
-    print(f"# Range: Gregorian years {FIRST_GREGORIAN_YEAR}-{LAST_GREGORIAN_YEAR}, one occurrence per observance per year.")
-    print("# Source: independent implementation of the official Solar Hijri new-year rule in")
-    print("#   tools/generate-persian-observance-vectors.py - Meeus ch. 27 vernal-equinox series in")
-    print("#   dynamical time, Espenak-Meeus delta-T, apparent solar noon at the 52.5E standard meridian")
-    print("#   (UTC+03:30) via the Spencer equation of time (no dependency on the code under test).")
-    print("# Cross-verified at generation time against the System.Globalization.PersianCalendar")
-    print("#   projection across the full range and the hand-pinned 2022-2026 rows in")
-    print("#   PersianCalendarKnownAnswerTests; see NotableDateCatalogueVerification.md.")
-    print("# Regenerate: python3 tools/generate-persian-observance-vectors.py > <this file>")
+    if zoroastrian:
+        # (observanceId, day offset from Nowruz) mirroring the global-zoroastrian catalogue's fixed
+        # Solar Hijri dates: Khordad Sal 1/6, Tirgan 4/13, Mehregan 7/16, Zartosht No-Diso 10/11,
+        # Sadeh 11/10 (offsets computed from the 31/30-day month lengths).
+        observances = [
+            ("zoroastrian-nowruz", 0),
+            ("khordad-sal", 5),
+            ("tirgan", 105),
+            ("mehregan", 201),
+            ("zartosht-no-diso", 286),
+            ("sadeh", 315),
+        ]
+        print("# Persian-calendar observance vectors for the bundled global-zoroastrian catalogue.")
+        print(f"# Range: Gregorian years {FIRST_GREGORIAN_YEAR}-{LAST_GREGORIAN_YEAR}. Zartosht No-Diso (Dey 11) straddles the")
+        print("#   Gregorian new year, so a Gregorian year can carry zero or two of its occurrences; rows are")
+        print("#   keyed by the Gregorian year the date falls in (chronological order).")
+        print("# Source: independent implementation of the official Solar Hijri new-year rule in")
+        print("#   tools/generate-persian-observance-vectors.py - Meeus ch. 27 vernal-equinox series in")
+        print("#   dynamical time, Espenak-Meeus delta-T, apparent solar noon at the 52.5E standard meridian")
+        print("#   (UTC+03:30) via the Spencer equation of time (no dependency on the code under test).")
+        print("# Cross-verified at generation time against the System.Globalization.PersianCalendar")
+        print("#   projection across the full range and the hand-pinned rows in")
+        print("#   ZoroastrianCalendarKnownAnswerTests; see NotableDateCatalogueVerification.md.")
+        print("# Regenerate: python3 tools/generate-persian-observance-vectors.py zoroastrian > <this file>")
+    else:
+        # (observanceId, day offset from Nowruz) mirroring the global-persian catalogue: Sizdah Bedar is
+        # Farvardin 13; Yalda Night is Azar 30, the 276th day of the Solar Hijri year (6 * 31 + 3 * 30).
+        observances = [
+            ("nowruz", 0),
+            ("sizdah-bedar", 12),
+            ("yalda-night", 275),
+        ]
+        print("# Persian-calendar observance vectors for the bundled global-persian catalogue.")
+        print(f"# Range: Gregorian years {FIRST_GREGORIAN_YEAR}-{LAST_GREGORIAN_YEAR}, one occurrence per observance per year.")
+        print("# Source: independent implementation of the official Solar Hijri new-year rule in")
+        print("#   tools/generate-persian-observance-vectors.py - Meeus ch. 27 vernal-equinox series in")
+        print("#   dynamical time, Espenak-Meeus delta-T, apparent solar noon at the 52.5E standard meridian")
+        print("#   (UTC+03:30) via the Spencer equation of time (no dependency on the code under test).")
+        print("# Cross-verified at generation time against the System.Globalization.PersianCalendar")
+        print("#   projection across the full range and the hand-pinned 2022-2026 rows in")
+        print("#   PersianCalendarKnownAnswerTests; see NotableDateCatalogueVerification.md.")
+        print("# Regenerate: python3 tools/generate-persian-observance-vectors.py > <this file>")
+
     print("# Columns: gregorianYear,observanceId,date")
+
+    # Precompute Nowruz for the surrounding years so boundary-straddling offsets key correctly.
+    farvardin1 = {}
+    for year in range(FIRST_GREGORIAN_YEAR - 1, LAST_GREGORIAN_YEAR + 2):
+        farvardin1[year] = nowruz(year)
+        if not (datetime.date(year, 3, 19) <= farvardin1[year] <= datetime.date(year, 3, 22)):
+            raise AssertionError(f"Nowruz {year} = {farvardin1[year]} outside the plausible March window")
+
     for year in range(FIRST_GREGORIAN_YEAR, LAST_GREGORIAN_YEAR + 1):
-        farvardin1 = nowruz(year)
-        if not (datetime.date(year, 3, 19) <= farvardin1 <= datetime.date(year, 3, 22)):
-            raise AssertionError(f"Nowruz {year} = {farvardin1} outside the plausible March window")
         for observance_id, offset in observances:
-            date = farvardin1 + datetime.timedelta(days=offset)
-            print(f"{year},{observance_id},{date.isoformat()}")
+            dates = sorted(
+                date
+                for anchor_year in (year - 1, year, year + 1)
+                if (date := farvardin1[anchor_year] + datetime.timedelta(days=offset)).year == year
+            )
+            for date in dates:
+                print(f"{year},{observance_id},{date.isoformat()}")
 
 
 if __name__ == "__main__":
