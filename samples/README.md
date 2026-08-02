@@ -29,7 +29,7 @@ API drift breaks the build immediately.
 Domain folders under `samples/` are named by namespace segment — `Core/`, `Collections/`,
 `Collections.Concurrent/`, `Financial/`, `Formats.Excel/`, `Globalization.Calendar/`,
 `IO.Compound/`, `IO.Hashing/`, `Numerics/`, `Security.Cryptography/`, `Text.Toml/`,
-`Text.Yaml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/` —
+`Text.Yaml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`, `Text.Filtering/` —
 mirroring how
 folders map to namespaces in the library source trees. The `samples/` root itself stays lowercase, like `src`/`test`/`bench`, because it is
 not a namespace component. Each sample project is a flat folder named after the project.
@@ -84,6 +84,7 @@ change to the libraries alters it, the README review catches the drift alongside
 | Text.Bencode | [`samples/Text.Bencode/`](Text.Bencode/README.md) — a real torrent file end to end: DOM inspection, canonical byte-exact round trips, the raw-slice info-hash, typed POCO mapping |
 | Text.Configuration | [`samples/Text.Configuration/`](Text.Configuration/README.md) — the parse/resolve/save cascade with diagnostics and `unset` dialects, plus the Microsoft.Extensions.Configuration bridge into `IOptions<T>` |
 | Text.Encoding | [`samples/Text.Encoding/`](Text.Encoding/README.md) — the base-encoding catalogue and variants, formatting/style knobs, checksummed schemes, the runtime registry, and a custom Base36 codec with contract tests |
+| Text.Filtering | [`samples/Text.Filtering/`](Text.Filtering/README.md) — the include/exclude filtering engine: AnyMatch sets and gitignore-style ordered rules, the glob grammar with cost-tier classification, deciding-pattern diagnostics, and the statistics/observer telemetry |
 | Text.Formats | [`samples/Text.Formats/`](Text.Formats/README.md) — CSV/TSV with typed getters and dirty-input policies, streaming pipelines, comment-preserving INI edits, DotEnv's literal contract |
 | Text.Toml | [`samples/Text.Toml/`](Text.Toml/README.md) — the TomlSerializer POCO surface with native temporal kinds, plus both DOMs, the token layer, and resumable streaming reads |
 | Text.Yaml | [`samples/Text.Yaml/`](Text.Yaml/README.md) — the YamlSerializer POCO surface with implicit scalar typing, plus the mutable and read-only DOMs, the token layer, and the stream/async facade |

@@ -26,6 +26,7 @@ For the high-level shape of each library, follow the **Intro** link in the table
 | **Cryptography** | `Bodu.Security.Cryptography` | Stable | `Bodu.Core`, `System.Security.Cryptography` | [Bodu.Security.Cryptography](cryptography/index.md) | [Get started](cryptography/getting-started.md) |
 | **Calendar runtime** | `Bodu.Globalization.Calendar` | Stable | `Bodu.Core` | [Bodu.Globalization.Calendar](calendar/index.md) | [Get started](calendar/getting-started.md) |
 | **Text encoding** | `Bodu.Text.Encoding` | Stable | `Bodu.Core` | [Bodu.Text.Encoding](text-encoding/index.md) | [Get started](text-encoding/getting-started.md) |
+| **Text filtering** | `Bodu.Text.Filtering` | Preview | `Bodu.Core` | [Bodu.Text.Filtering](text-filtering/index.md) | [Get started](text-filtering/getting-started.md) |
 | **Text formats (umbrella)** | `Bodu.Text.Formats` | Preview | `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, `Bodu.Text.Ini` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
 | **Delimited (CSV / TSV)** | `Bodu.Text.Delimited` | Preview | `Bodu.Text.Serialization`, `Bodu.Core` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
 | **DotEnv** | `Bodu.Text.DotEnv` | Preview | `Bodu.Text.Serialization`, `Bodu.Core` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
@@ -77,6 +78,9 @@ Several exchange-rate providers ship as independent packages over a shared `IDat
 |---|---|---|---|
 | `Bodu.IO.Compound` | Stable | Reader and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage envelope used by legacy Office files. Opens existing containers (exposing the embedded named streams) and authors new ones via `CompoundFile.Create` and the builder API, with no application-format knowledge. | `Bodu.Core` |
 | `Bodu.Formats.Excel.Binary` | Stable | Narrow, read-only BIFF8 (`.xls`) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `Bodu.IO.Compound`, `Bodu.Core` |
+| `Bodu.IO.Pst` | Preview | Low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST). Reads the Unicode-format node database — header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — as the substrate a message-level reader builds on. No MAPI semantics and no writing. | `Bodu.Core` |
+| `Bodu.Formats.Outlook` | Preview | The shared MAPI value model for the Outlook format readers: property tags and types, decoded property values with a tag-addressed collection, named-property identities, recipient and attachment enumerations, and the shared exception hierarchy. Container-free — the `.msg` and future `.pst` readers build on it rather than owning the model. | `Bodu.Core` |
+| `Bodu.Formats.Outlook.Msg` | Preview | Read-only reader for the Outlook message format (`.msg` / MS-OXMSG) over the `Bodu.IO.Compound` OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies — with no MAPI session emulation or message authoring. | `Bodu.IO.Compound`, `Bodu.Formats.Outlook`, `Bodu.Core` |
 | `Bodu.Financial.ExchangeRates` | Preview | Web exchange-rate provider infrastructure: the abstract `WebRateProvider` and `PairWebRateProvider<TSeries>` bases every per-source provider package builds on, plus the shared fetch machinery — `WebRateProviderOptions`, single-flight request coalescing (`SingleFlightCoordinator<TKey>`), on-disk raw-response caching (`FileSystemByteCache<TKey>`), `HttpClient` construction (`RateProviderHttpClientFactory`), and the pair-load contracts (`IPairRateLoader`, `IPairRateSource<TSeries>`). Keeps the HTTP machinery out of the core `Bodu.Financial` package. | `Bodu.Financial`, `Bodu.Core`, `Microsoft.Extensions.Logging.Abstractions` |
 | `Bodu.Financial.ExchangeRates.DependencyInjection` | Stable | Shared dependency-injection machinery for the web-based exchange-rate providers. Exposes `AddWebRateProvider` on `IFinancialServiceBuilder` (declared in the `Bodu.Financial.ExchangeRates` namespace), handling `HttpClient` configuration with Polly resilience, options binding, and singleton registration so each provider package's own DI registration delegates its plumbing here. | `Bodu.Financial.ExchangeRates`, `Bodu.Financial.DependencyInjection`, `Bodu.Core`, `Microsoft.Extensions.Http.Resilience` |
 | `Bodu.Financial.ExchangeRates.Rba` | Stable | Downloads and parses the RBA's published daily exchange-rate `.xls` files, serving them as `ExchangeRate` values through `IDatedRateProvider` / `IRateProvider`, with an async range API and in-memory plus on-disk caching. Includes its own `AddRbaExchangeRates` DI registration (in the `Bodu.Financial.ExchangeRates` namespace), binding `RbaRateProviderOptions` and backing the provider with a configured `HttpClient`. | `Bodu.Formats.Excel.Binary`, `Bodu.Financial.ExchangeRates`, `Bodu.Financial.ExchangeRates`, `Bodu.Financial`, `Bodu.Financial.ExchangeRates.DependencyInjection`, `Bodu.Core` |
@@ -95,6 +99,9 @@ Several exchange-rate providers ship as independent packages over a shared `IDat
 | `Bodu.Financial.ExchangeRates.Caching.Sqlite` | Stable | `SqliteRateCache`, an `IRateCache` over a SQLite database (via `Microsoft.Data.Sqlite`), persisting a provider's dated rates and fetch-coverage windows in `rates` and `coverage` tables; behaviourally identical to the in-memory and TOML caches and validated against the same `RateCacheContractTests`. Includes its own `AddSqliteRateCache` DI registration (in the `Bodu.Financial.ExchangeRates` namespace), binding `SqliteRateCacheOptions`. | `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial`, `Bodu.Financial.DependencyInjection`, `Bodu.Core`, `Microsoft.Data.Sqlite` |
 
 <div class="bodu-matrix-gallery">
+<figure><img src="../images/hero-io-pst.svg" alt="Bodu.IO.Pst" /><figcaption><code>Bodu.IO.Pst</code></figcaption></figure>
+<figure><img src="../images/hero-outlook.svg" alt="Bodu.Formats.Outlook" /><figcaption><code>Bodu.Formats.Outlook</code></figcaption></figure>
+<figure><img src="../images/hero-outlook-msg.svg" alt="Bodu.Formats.Outlook.Msg" /><figcaption><code>Bodu.Formats.Outlook.Msg</code></figcaption></figure>
 <figure><img src="../images/hero-fx.svg" alt="Bodu.Financial.ExchangeRates" /><figcaption><code>Bodu.Financial.ExchangeRates</code></figcaption></figure>
 <figure><img src="../images/hero-fx-di.svg" alt="Bodu.Financial.ExchangeRates.DependencyInjection" /><figcaption><code>Bodu.Financial.ExchangeRates.DependencyInjection</code></figcaption></figure>
 <figure><img src="../images/hero-fx-rba.svg" alt="Bodu.Financial.ExchangeRates.Rba" /><figcaption><code>Bodu.Financial.ExchangeRates.Rba</code></figcaption></figure>
@@ -155,6 +162,7 @@ dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
 dotnet add package Bodu.Text.Encoding
+dotnet add package Bodu.Text.Filtering
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Delimited
 dotnet add package Bodu.Text.DotEnv
@@ -183,6 +191,9 @@ dotnet add package Bodu.Numerics.Serialization.Json
 # File formats and exchange-rate data
 dotnet add package Bodu.IO.Compound
 dotnet add package Bodu.Formats.Excel.Binary
+dotnet add package Bodu.IO.Pst
+dotnet add package Bodu.Formats.Outlook
+dotnet add package Bodu.Formats.Outlook.Msg
 dotnet add package Bodu.Financial.ExchangeRates
 dotnet add package Bodu.Financial.ExchangeRates.DependencyInjection
 dotnet add package Bodu.Financial.ExchangeRates.Rba

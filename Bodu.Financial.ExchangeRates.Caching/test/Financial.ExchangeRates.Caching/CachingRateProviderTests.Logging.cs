@@ -53,13 +53,13 @@ public sealed partial class CachingRateProviderTests
     public void GetRate_WhenCacheHitLogLevelConfigured_ShouldLogAtConfiguredLevel()
     {
         CapturingLogger logger = new();
-        _options.CacheHitLogLevel = LogLevel.Information;
+        _options.CacheHitLogLevel = LogLevel.Debug;
         SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = new(InnerWith(), _cache, _options, _clock, logger);
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        Assert.Contains(e => e.Level == LogLevel.Information && e.EventId.Id == 4501, logger.Entries);
+        Assert.Contains(e => e.Level == LogLevel.Debug && e.EventId.Id == 4501, logger.Entries);
         Assert.DoesNotContain(e => e.Level == LogLevel.Information && e.EventId.Id == 4501, logger.Entries);
     }
 

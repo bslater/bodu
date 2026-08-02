@@ -45,6 +45,7 @@ Three different jobs that all sound like "text": binary-to-text codecs, document
 | Package | What it provides | Target framework |
 |---|---|---|
 | **[Bodu.Text.Encoding](text-encoding/index.md)** | Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin/Flickr / Ripple, Ascii85 / Z85). Each encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus` streaming, length-prediction helpers, validation predicates, plus a unified `IBinaryEncoding` interface for runtime-pluggable encoding choice. | `net8.0` |
+| **[Bodu.Text.Filtering](text-filtering/index.md)** | A high-performance include/exclude filtering engine for lists of text values. Glob (wildcard, character-class, `{a,b}` alternation) and regex patterns compile once into an immutable `TextFilter` that runs the cheapest matching strategies first; choose Ant / MSBuild-style `AnyMatch` sets or gitignore-style `LastMatchWins` ordered rules, parse raw lines with the gitignore conventions, and observe decisions through built-in statistics and a per-decision observer. | `net8.0` |
 | **[Bodu.Text.Formats](formats/index.md)** | Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. Ships three sibling namespaces — **Delimited** (CSV / TSV), **DotEnv**, and **Ini** — each with `Parse` / `Format` and `Try*` overloads, a typed value model, and strict invariant enforcement. | `net8.0` |
 | **[Bodu.Text.Bencode](serialization/bencode/index.md)** · **[Bodu.Text.Toml](serialization/toml/index.md)** · **[Bodu.Text.Yaml](serialization/yaml/index.md)** | Three self-contained serializers that map your own types to and from a format — a shared architecture and `System.Text.Json`-aligned shape, each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, and a low-level `Utf8…Reader` / `Utf8…Writer` pair. **Bencode** covers BitTorrent BEP 3; **TOML** covers v1.0.0 / v1.1.0; **YAML** the 1.2 core schema with block / flow collections, anchors, and multi-document streams. See the [shared family introduction](serialization/index.md). | `net8.0` |
 
@@ -189,6 +190,16 @@ Each library has a dedicated introduction page that explains its namespaces, the
 </div>
 
 <div class="bodu-card">
+  <h3><a href="text-filtering/index.md">Bodu.Text.Filtering</a></h3>
+  <p>Include/exclude text filtering: glob and regex patterns compiled into a cost-tiered <code>TextFilter</code>, with Ant / MSBuild set semantics or gitignore-style ordered rules, gitignore-convention parsing, and built-in match telemetry.</p>
+  <div class="bodu-card-links">
+    <a href="text-filtering/index.md">Introduction</a>
+    <a href="text-filtering/getting-started.md">Getting started</a>
+    <a href="../guides/text-filtering/index.md">Guides</a>
+  </div>
+</div>
+
+<div class="bodu-card">
   <h3><a href="formats/index.md">Bodu.Text.Formats</a></h3>
   <p>Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. Ships Delimited (CSV / TSV), DotEnv, and Ini as sibling namespaces, each with strict invariant enforcement.</p>
   <div class="bodu-card-links">
@@ -314,5 +325,5 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md).
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
 - **[Package matrix](package-matrix.md)** — the authoritative package list with status, dependencies, and install commands.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md).
 - **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel).

@@ -1,0 +1,42 @@
+# LastMatchWins ordered-rule semantics — the gitignore model: the last matching rule decides,
+# unmatched values are included, later rules override earlier ones.
+
+scenario: Later include re-admits an earlier exclusion
+mode: LastMatchWins
+exclude: *.log
+include: important.log
+skip: app.log
+match: important.log
+match: readme.txt
+
+scenario: Unmatched values are included
+mode: LastMatchWins
+exclude: *.tmp
+match: report.txt
+skip: scratch.tmp
+
+scenario: Allowlist via leading exclude-everything
+mode: LastMatchWins
+exclude: *
+include: error*
+exclude: *debug*
+match: error1
+skip: error-debug
+skip: info
+
+scenario: Later exclude overrides earlier include
+mode: LastMatchWins
+include: a*
+exclude: ab*
+include: abc*
+match: ax
+skip: abx
+match: abcd
+
+scenario: Order reversed changes the ordered outcome
+mode: LastMatchWins
+include: important.log
+exclude: *.log
+skip: important.log
+skip: other.log
+match: readme.txt

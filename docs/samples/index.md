@@ -9,7 +9,7 @@ The repository ships runnable, self-contained sample projects under
 named after the namespace segment they demonstrate (`Core/`, `Collections/`,
 `Collections.Concurrent/`, `Financial/`, `Formats.Excel/`, `Globalization.Calendar/`,
 `IO.Compound/`, `IO.Hashing/`, `Numerics/`, `Security.Cryptography/`, `Text.Toml/`,
-`Text.Yaml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`).
+`Text.Yaml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`, `Text.Filtering/`).
 This section catalogues them; each domain page walks its samples individually.
 
 Every sample:
@@ -51,6 +51,7 @@ dotnet run --project samples/<Domain>/<SampleName>
 | [Text.Bencode](bencode.md) | 1 project | A real BitTorrent metainfo file end to end: DOM inspection, canonical byte-exact round trips, the info-hash from the raw `info` slice, and typed POCO mapping with keys containing spaces |
 | [Text.Configuration](text-configuration.md) | 2 projects | The parse/resolve/save pipeline with diagnostics and the EditorConfig-style path cascade, `unset` dialect handling, and the `Microsoft.Extensions.Configuration` bridge into `IOptions<T>` |
 | [Text.Encoding](text-encoding.md) | 2 projects + 1 test project | The base-encoding catalogue and variants, formatting/parse-style knobs, checksummed Base58Check/Bech32 corruption detection, the runtime registry, and a custom Base36 codec proven by the library's contract-test base |
+| [Text.Filtering](text-filtering.md) | 1 project | The include/exclude filtering engine: AnyMatch sets and gitignore-style ordered rules, the glob grammar with deciding-pattern diagnostics, and the statistics/observer telemetry |
 | [Text.Formats](formats.md) | 2 projects | RFC 4180 CSV/TSV with typed getters and dirty-input policies, streaming reader/writer pipelines, INI comment-preserving edit loops, and DotEnv's literal no-interpolation contract |
 | [Text.Toml](toml.md) | 2 projects | The `TomlSerializer` POCO surface with TOML's four native temporal kinds and naming/attribute layering, plus the mutable and read-only DOMs, the UTF-8 token layer, and resumable streaming reads |
 | [Text.Yaml](yaml.md) | 2 projects | The `YamlSerializer` POCO surface with YAML's implicit scalar typing and naming/attribute layering, plus the mutable `YamlNode` and read-only `YamlDocument` DOMs, the UTF-8 token layer, and the stream/async facade |
