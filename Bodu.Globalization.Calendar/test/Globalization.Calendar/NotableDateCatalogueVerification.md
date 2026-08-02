@@ -30,11 +30,11 @@ Two reference classes are used:
 | `christian-protestant` | Transfiguration Sunday, Reformation Sunday/Day, All Saints' Sunday, Aldersgate Day | ✅ exact |
 | `christian-anglican` | Baptism of Christ + 21 fixed feasts | ✅ exact (BCP calendar — see notes) |
 | `christian-oriental-orthodox` | Pascha cluster + 5 fixed observances | ✅ exact (see Coptic leap-year note) |
-| `global-jewish` | 13 Hebrew observances | ✅ exact (Hebcal) |
-| `global-islamic` | 10 tabular-Hijri observances | ✅ exact (BCL tabular; ≤2 d from observed) |
-| `global-islamic-umm-al-qura` | 10 Umm al-Qura observances | ✅ exact (BCL UAQ) |
-| `global-zoroastrian` | 6 Persian-calendar observances | ✅ exact (BCL Persian; see Nowruz note) |
-| `global-hindu` | Makar Sankranti, Pongal, Saraswati Puja + lunar set | ✅ within ±2 |
+| `global-jewish` | 13 Hebrew observances | ✅ exact (Hebcal); 50-year sweep |
+| `global-islamic` | 10 tabular-Hijri observances | ✅ exact (BCL tabular; ≤2 d from observed); 50-year sweep |
+| `global-islamic-umm-al-qura` | 10 Umm al-Qura observances | ✅ exact (BCL UAQ); 50-year sweep, 5 external sources |
+| `global-zoroastrian` | 6 Persian-calendar observances | ✅ exact (BCL Persian; see Nowruz note); 50-year sweep |
+| `global-hindu` | Makar Sankranti, Pongal, Saraswati Puja + lunar set | ✅ within ±2; 50-year engine-pinned sweep |
 | `global-bahai` | Naw-Ruz + 8 solar holy days | ✅ within ±2; matches official 2025 Badí |
 | `global-sikh` | 4 fixed + 3 lunar-derived | ✅ within ±2 (see Guru Arjan Dev note) |
 | `global-jain` | lunar-derived set | ✅ within ±2 (**Maun Agiyaras fixed**) |
@@ -43,11 +43,12 @@ Two reference classes are used:
 
 ## Defects found and fixed
 
-Verification uncovered three lunation-selection defects, all from fixed-window lunar
-heuristics that selected the wrong lunation (off by ~30 days) in some years. None of the
-three keys is referenced by any shipping `Data.<Region>` pack — they live only in these
-common catalogues — so the fixes are contained. All three are now corrected and pinned to
-published dates by the known-answer tests.
+Verification uncovered four lunation-selection defects: three from fixed-window lunar
+heuristics that selected the wrong lunation (off by ~30 days) in some years, and one
+ingress-day boundary error that lost a month entirely (found by the fifty-year Hindu
+sweep). None of the affected keys is referenced by any shipping `Data.<Region>` pack —
+they live only in these common catalogues — so the fixes are contained. All four are now
+corrected and pinned to published dates by the known-answer tests.
 
 ### 1. Tibetan Losar — `global-buddhist`
 
@@ -88,6 +89,19 @@ Ekadashi) through the sidereal calculator: 2024 = 11 Dec, 2025 = 30 Nov, 2026 = 
 2027 = 8 Dec. The festival falls in late November–December and can land on 1 January of the
 following year, so — like other near-boundary swept dates (e.g. Zartosht No-Diso) — a given
 Gregorian year may contain no occurrence (2028 within the validated range).
+
+### 4. Lost Magha month of 2029 — `HinduLunarCalculator` (found by the 50-year sweep)
+
+*Was:* each new moon was classified by the sun's sidereal sign at the **start of the new
+moon's civil date**. The Magha-defining conjunction of 14 Jan 2029 (~17:25 UT) falls hours
+*after* the sun's sidereal Capricorn ingress on that same day, so the midnight evaluation
+read Sagittarius, no Magha lunation was found, and Vasant Panchami / Maha Shivaratri 2029
+did not resolve at all.
+
+*Fix:* when the primary sign match finds nothing, boundary days are re-evaluated at the
+following midnight before giving up, recovering the lost month without touching any year
+that already resolved. 2029 now resolves Vasant Panchami 18 Jan (published 19 Jan) and
+Maha Shivaratri 11 Feb (exact).
 
 ## Convention notes (defensible authoring choices, not defects)
 
@@ -178,6 +192,31 @@ Gregorian year may contain no occurrence (2028 within the validated range).
   time the table matched the BCL `PersianCalendar` projection 150/150 and the hand-pinned
   2022–2026 rows in `PersianCalendarKnownAnswerTests`; the engine sweep passes 150/150.
   A reconciliation pass against time.ir remains a nicety requiring network access.
+- **Tabular-Hijri 50-year sweep** — all 10 `global-islamic` observances are pinned across
+  Gregorian 1990–2039 by `Fixtures/Vectors/TabularHijriObservances-1990-2039.csv` (517
+  rows; double-occurrence years asserted as full ordered lists), projected from the BCL's
+  arithmetic `HijriCalendar` at `HijriAdjustment = 0` by the same generator as the Umm
+  al-Qura table (`hijri` argument). An arithmetic convention has no external gazette, so
+  the brace is astronomical: every underlying month start falls 0–2 days after the
+  independent Meeus conjunction (517/517: 101 at +0, 358 at +1, 58 at +2).
+- **Zoroastrian 50-year sweep** — all 6 `global-zoroastrian` observances are pinned across
+  Gregorian 1990–2039 by `Fixtures/Vectors/ZoroastrianObservances-1990-2039.csv` (300
+  rows), derived from the same independent Meeus Solar Hijri implementation
+  (`zoroastrian` argument) and cross-verified 300/300 against the BCL `PersianCalendar`
+  projection. Zartosht No-Diso (Dey 11) straddles the Gregorian new year, so the sweep
+  asserts full ordered occurrence lists (zero or two occurrences in some years).
+- **Hindu 50-year sweep** — all 14 `global-hindu` observances are pinned across Gregorian
+  1990–2039 by `Fixtures/Vectors/HinduObservances-1990-2039.csv` (700 rows). Unlike the
+  tables above these rows are **engine-pinned**: the in-repo `HinduLunarCalculator` is the
+  model (no offline independent full-range panchanga exists, and regional panchanga
+  reckonings themselves differ by a day), so the table is an explicit regression freeze
+  braced by two independent checks — every lunar row verifies within 1.5 days of its
+  defining tithi position over the standalone Meeus new/full-moon series in
+  `tools/verify-hindu-observance-vectors.py` (600/600, worst 0.93 d) inside its seasonal
+  window, and the solar rows are exactly 14 January (100/100) — plus the published
+  2023–2029 rows above as external anchors. Exactness relative to a specific published
+  panchanga is deliberately not claimed beyond the documented ±1–2 day tolerance.
+  Generating the sweep surfaced and fixed the lost-Magha-month defect (see below).
 - **Oriental Orthodox Pascha** — anchor matches published Orthodox Pascha 2023–2027
   (16 Apr, 5 May, 20 Apr, 12 Apr, 2 May); every derived feast lands on its exact offset.
 - **Baha'i** — the equinox-plus-offset model reproduces the **official 2025 Badí dates**

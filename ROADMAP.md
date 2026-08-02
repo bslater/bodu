@@ -1068,7 +1068,13 @@ resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
   for 1422–1448 AH (216/216 derivable vector rows). The same table's
   **announced** column — the High Judiciary Council's gazetted dates —
   is embedded as its own 171-row sweep asserting the measured one-day
-  bound. Provenance and cross-check counts live in
+  bound. Three further fifty-year tables complete the deep corpus:
+  `global-islamic` (tabular Hijri, astronomically braced 517/517),
+  `global-zoroastrian` (independent Meeus derivation, 300/300 vs the
+  BCL), and `global-hindu` (engine-pinned regression freeze braced by
+  an independent tithi-proximity check, 700 rows — whose generation
+  surfaced and fixed the lost-Magha-month ingress-day defect).
+  Provenance and cross-check counts live in
   `NotableDateCatalogueVerification.md`. Residual nicety: a time.ir
   reconciliation pass for the Persian table when network access
   allows.
