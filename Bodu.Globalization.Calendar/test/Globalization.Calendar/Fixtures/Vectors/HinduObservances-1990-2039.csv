@@ -5,11 +5,11 @@
 #   reckonings themselves differ by a day). Two independent checks brace the table: every lunar
 #   row's tithi proximity to the geocentric conjunction computed by the standalone Meeus ch. 49
 #   series in tools/verify-hindu-observance-vectors.py, each within its expected seasonal window,
-#   and the published-panchanga 2023-2027 rows in GlobalHinduCatalogueKnownAnswerTests as modern
+#   and the published-panchanga 2023-2029 rows in GlobalHinduCatalogueKnownAnswerTests as modern
 #   anchors; see NotableDateCatalogueVerification.md for the measured distributions.
 # Exactness relative to a specific published panchanga is NOT claimed beyond the documented
 #   one-to-two-day tolerance; the sweep guards against regression, not against panchanga variance.
-# Regenerate: dotnet run --project tools/HinduObservanceVectorGenerator > <this file>
+# Regenerate: dotnet run tools/generate-hindu-observance-vectors.cs -- <this file>
 # Verify:     python3 tools/verify-hindu-observance-vectors.py <this file>
 # Columns: gregorianYear,observanceId,date
 1990,makar-sankranti,1990-01-14
