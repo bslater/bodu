@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -20,12 +22,38 @@ public sealed class GlobalHinduCatalogueKnownAnswerTests
     /// </summary>
     private const int ToleranceDays = 2;
 
+    /// <summary>The shared sweep service, built once for the fifty-year vector rows.</summary>
+    private static readonly Lazy<NotableDateService> s_sweepService = new(CreateService);
+
     /// <summary>
     /// Builds a service over the bundled <c>global-hindu</c> catalogue.
     /// </summary>
     /// <returns>A service for the catalogue.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-hindu");
+
+    /// <summary>
+    /// Verifies that each Hindu observance resolves to the engine-pinned vector date across the full fifty-year sweep
+    /// (Gregorian 1990-2039). The vectors freeze the catalogue's current output as a regression baseline — braced by
+    /// the independent tithi-proximity and seasonal-window checks recorded in the vector file's provenance header and
+    /// by the published-panchanga rows in this class — so an unintended change to the lunisolar model surfaces as a
+    /// diff rather than passing silently.
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (year, observance) input and the expected date.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(HinduObservanceVectors.Rows),
+        typeof(HinduObservanceVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossVectorRange_ShouldMatchPinnedVector(ValidKat<(int Year, string ObservanceId), DateOnly> kat)
+    {
+        List<NotableDate> matches = CommonCatalogues.ResolveForYear(s_sweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+
+        Assert.HasCount(1, matches, $"expected exactly one '{kat.Input.ObservanceId}' in {kat.Input.Year}");
+        Assert.AreEqual(kat.Expected, matches[0].Date, kat.Name);
+    }
 
     /// <summary>
     /// Verifies that the solar harvest festivals Makar Sankranti and Pongal resolve to their fixed 14 January date.
