@@ -81,7 +81,7 @@ public sealed class GlobalHinduCatalogueKnownAnswerTests
 
     // 2029's Magha-defining new moon (14 Jan 2029, ~17:25 UT) falls hours after the sun's sidereal Capricorn
     // ingress on the same civil day, so a midnight-of-date sign evaluation misses the month entirely.
-    [DataRow(2029, "vasant-panchami", 1, 22)]
+    [DataRow(2029, "vasant-panchami", 1, 19)]
     [DataRow(2029, "maha-shivaratri", 2, 11)]
     [DataRow(2024, "holi", 3, 25)]
     [DataRow(2025, "holi", 3, 14)]

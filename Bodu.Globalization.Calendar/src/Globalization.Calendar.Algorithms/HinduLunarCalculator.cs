@@ -99,6 +99,33 @@ internal static class HinduLunarCalculator
 
         List<(DateOnly NewMoon, int Sign)> newMoons = GatherNewMoons(year);
 
+        if (SelectFestival(newMoons, targetSign, offsetTithis, purnima, year) is DateOnly festival)
+            return festival;
+
+        // A new moon falling on the civil day of the solar ingress can read the previous sign when evaluated at the
+        // start of its date even though the conjunction instant follows the ingress, making the month appear to
+        // vanish (Magha 2029). Re-evaluate such boundary days at the following midnight before giving up.
+        List<(DateOnly NewMoon, int Sign)> shifted = new(newMoons.Count);
+        foreach ((DateOnly newMoon, int sign) in newMoons)
+        {
+            int nextDaySign = SiderealSunSign(newMoon.AddDays(1));
+            shifted.Add((newMoon, sign == targetSign || nextDaySign == targetSign ? targetSign : sign));
+        }
+
+        return SelectFestival(shifted, targetSign, offsetTithis, purnima, year);
+    }
+
+    /// <summary>
+    /// Selects the festival date from the sign-classified new moons, skipping an intercalary occurrence.
+    /// </summary>
+    /// <param name="newMoons">The chronological new moons paired with their solar signs.</param>
+    /// <param name="targetSign">The sidereal sign identifying the amanta month's new moon.</param>
+    /// <param name="offsetTithis">The offset in tithis from the month's new moon.</param>
+    /// <param name="purnima">Whether the festival is the full moon of the month.</param>
+    /// <param name="year">The Gregorian year the festival should fall in.</param>
+    /// <returns>The festival date, or <see langword="null" /> when no matching lunation lands in the year.</returns>
+    private static DateOnly? SelectFestival(List<(DateOnly NewMoon, int Sign)> newMoons, int targetSign, int offsetTithis, bool purnima, int year)
+    {
         for (int i = 0; i < newMoons.Count; i++)
         {
             if (newMoons[i].Sign != targetSign)
