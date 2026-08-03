@@ -1171,7 +1171,16 @@ self-contained embedded pack importing the shared catalogues through a
   subdivisions, Spanish autonomous communities, Swiss cantons) is
   subdivision-specific.
 - **Document holiday-source citations** per country so consumers can
-  audit each rule pack against authoritative sources.
+  audit each rule pack against authoritative sources. The first
+  territory-layer official sweeps now exist as the pattern to extend:
+  the US pack carries the 210-row OPM federal-holiday vector table
+  (2011–2030, `UsFederalHolidays-2011-2030.csv` — statutory Sat→Fri /
+  Sun→Mon substitution, three cross-year 31 December in-lieu New Year's
+  Days, Juneteenth from 2021), and the NZ pack pins the Employment New
+  Zealand 2026–2027 dates including the conflict-aware Boxing Day 2027
+  Tuesday-28-December substitution chain. The outstanding flagship is a
+  GB sweep over the GOV.UK `bank-holidays.json` feed (awaiting the
+  artifact; see the corpus checklist).
 - **Targeted country additions**: Iran (IR) via `global-persian.xml` in
   MiddleEast (in the original v1 set, not yet shipped); Switzerland (CH)
   in Europe alongside its canton data. **Verify Ethiopia's Ge'ez-calendar

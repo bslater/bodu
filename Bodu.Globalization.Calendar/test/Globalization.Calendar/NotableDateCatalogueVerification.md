@@ -232,12 +232,46 @@ Maha Shivaratri 11 Feb (exact).
   (16 Apr, 5 May, 20 Apr, 12 Apr, 2 May); every derived feast lands on its exact offset.
 - **Baha'i** — the equinox-plus-offset model reproduces the **official 2025 Badí dates**
   exactly: First Day of Ridván 20 Apr, Declaration of the Báb 23 May, Ascension of
-  Bahá'u'lláh 28 May.
+  Bahá'u'lláh 28 May. The **official 183 B.E. (2026) calendar** anchors all nine mappable
+  holy days at a measured one-day bound
+  (`Resolve_BahaiHolyDay_WhenComparedWith183BEOfficialDate_ShouldBeWithinOneDay`): 2026 is
+  a Tehran-sunset boundary year (equinox ≈ 14:46 UT on 20 March, after Tehran sunset), so
+  the engine's Universal-Time equinox model runs uniformly one day early against the
+  official dates (Naw-Rúz 21 Mar, Riḍván 21/29 Apr & 2 May, Declaration 24 May, Ascension
+  of Bahá'u'lláh 29 May, Martyrdom 10 Jul, Covenant 26 Nov, Ascension of 'Abdu'l-Bahá
+  28 Nov). The official table's Twin Birthdays (Birth of the Báb 10 Nov, Birth of
+  Bahá'u'lláh 11 Nov 2026) are recorded here but deliberately not asserted — the catalogue
+  omits those concepts until the eighth-new-moon-after-Naw-Rúz algorithm exists.
 - **Hindu** — the lunar set resolves within ±2 of published panchanga dates; the new solar
   harvest festivals are fixed at 14 January as authored.
 - **Vesak / East Asian Buddha's Birthday** — within ±2 across 2023–2027 (Vesak 2026 = 1 May
   is correct: that year's leap month follows Vaishakha, so Buddha Purnima is early-May while
   the Asadha full moon is pushed to 29 July).
+
+## Territory packs
+
+The first multi-year official sweeps at the territory-pack layer (the catalogue
+cross-checks above validate the shared concept catalogues; these validate a national
+pack's substitution and gazetted rules end to end):
+
+- **United States federal holidays 2011–2030 (OPM)** — every federal holiday across the
+  twenty schedule years is pinned to the observed date published by the U.S. Office of
+  Personnel Management in `…Americas/test/Globalization.Calendar/Fixtures/Vectors/`
+  `UsFederalHolidays-2011-2030.csv` (210 rows) and swept by
+  `Resolve_WhenSweptAcrossOpmSchedule_ShouldMatchObservedFederalDate`. The sweep proves
+  the statutory 5 U.S.C. 6103 substitution (25 rows shifted Saturday→Friday or
+  Sunday→Monday, with `ActualDate` asserted equal to the statutory nominal date), the
+  three cross-year in-lieu New Year's Days observed on 31 December (2010, 2021, 2027),
+  and Juneteenth's 2021 introduction. `isObserved` was re-derived from the nominal dates
+  with weekday guards on transcription; OPM's 2011 Christmas row carries a typographical
+  weekday and the table uses the statutory observed date 2011-12-26.
+- **New Zealand national holidays 2026–2027** — twenty-two known-answer rows in the
+  AsiaPacific pack tests pin the Employment New Zealand published dates, covering
+  Mondayisation (`weekend-roll` on Waitangi and Anzac Days), the conflict-aware
+  `working-day-substitute` chains of the New Year and Christmas pairs — including
+  Boxing Day 2027 observed **Tuesday 28 December**, stepping past Christmas Day's own
+  Monday 27 December in-lieu day — and the gazetted Matariki dates (10 Jul 2026,
+  25 Jun 2027).
 
 ## Sources
 
@@ -256,6 +290,11 @@ ICU/Node `Intl` platform calendar tables (`islamic-umalqura` for AH 1410–1462,
 for SH 1369–1418; committed under `corpus/islamic/` and `corpus/persian/` as
 independent-reconciliation data, delivered 3 Aug 2026);
 Iranian civil calendar (time.ir); the Baha'i World Centre / national Baha'i community holy-day
-listings; drikpanchang / published panchanga for Hindu, Sikh and Jain festivals; Tibetan Nuns
+listings, and the official Baha'i calendar for 183 B.E. (2026) used for the nine-anchor
+sweep; drikpanchang / published panchanga for Hindu, Sikh and Jain festivals; Tibetan Nuns
 Project, qppstudio and publicholidays.asia for Gyalpo Losar; timeanddate and publicholidays.asia
-for Asalha Puja / Khao Phansa.
+for Asalha Puja / Khao Phansa; the U.S. Office of Personnel Management federal-holiday
+schedules (opm.gov/policy-data-oversight/pay-leave/federal-holidays/) for the 2011–2030
+territory sweep; Employment New Zealand public-holiday dates
+(employment.govt.nz/leave-and-holidays/public-holidays/public-holidays-and-anniversary-dates)
+for the 2026–2027 New Zealand rows.
