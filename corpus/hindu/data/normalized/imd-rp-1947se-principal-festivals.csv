@@ -10,6 +10,8 @@
 #   and printedWeekday are verbatim. Verification: all 102 printed weekdays match the
 #   derived dates except row 52, a printer's erratum ('30 Oct.' printed for 30 Sep.; the
 #   printed weekday (Tue) and the adjacent rows fix 2025-09-30) - see its notes field.
+#   The Bengali edition (imd-rp-2025-2026-bn, which has a text layer) prints the same row
+#   as 30 September, Tuesday - confirming the misprint is English-edition-only.
 #   With that single correction the 102 dates are strictly increasing 2025-03-22 through
 #   2026-04-20.
 # Saka/Kali dates are the printed luni-solar reckonings ('(ni)' = nija, a regular - not
@@ -66,7 +68,7 @@ row,gregorianDate,printedDate,printedWeekday,sakaDate,sakaYear,kaliDate,kaliYear
 49,2025-09-21,21 Sep.,Sun,30 Bhadra,1947,(ni) 06 Asvina,5126,Samadhi Day of Narayana Guru (Kerala); Mahalaya Amavasya; Tarpana Layba (Manipur),
 50,2025-09-23,23 Sep.,Tue,01 Asvina,1947,(ni) 08 Asvina,5126,Jewish New Year (Rosh Hashnah),
 51,2025-09-29,29 Sep.,Mon,07 Asvina,1947,(ni) 14 Asvina,5126,Oli Begins (Jain); Durga Puja Begins (Saptami),
-52,2025-10-30,30 Oct.,Tue,08 Asvina,1947,(ni) 15 Asvina,5126,Durga Puja (Mahashtami),"printer's erratum: the printed '30 Oct.' contradicts the printed weekday (Tue) and the adjacent rows (29 Sep./01 Oct.); the intended date is 30 Sep. 2025, a Tuesday. Transcribed verbatim."
+52,2025-10-30,30 Oct.,Tue,08 Asvina,1947,(ni) 15 Asvina,5126,Durga Puja (Mahashtami),"printer's erratum: the printed '30 Oct.' contradicts the printed weekday (Tue) and the adjacent rows (29 Sep./01 Oct.); the intended date is 30 Sep. 2025, a Tuesday. Transcribed verbatim. Cross-checked against the Bengali edition (imd-rp-2025-2026-bn), whose row 52 prints 30 September, Tuesday - the misprint is English-edition-only."
 53,2025-10-01,01 Oct.,Wed,09 Asvina,1947,(ni) 16 Asvina,5126,Durga Puja (Mahanavami); Ayudha Puja,
 54,2025-10-02,02 Oct.,Thu,10 Asvina,1947,(ni) 17 Asvina,5126,Mahatma Gandhi's Birthday; Vijaya Dasami (Dussehara or Dasahara); Vijaya Dasami (Bengal & Kerala),
 55,2025-10-04,04 Oct.,Sat,12 Asvina,1947,(ni) 19 Asvina,5126,Fateha Yazdaham (Giarhween Sharif),

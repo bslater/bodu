@@ -265,7 +265,9 @@ Maha Shivaratri 11 Feb (exact).
   Panchami 23 Jan 2026 (engine 22 Jan), Rama Navami 26 Mar 2026 (engine 27 Mar). The
   widest gap is Vijaya Dasami 2 Oct 2025 (engine `dussehra` 30 Sep, two days inside the
   documented ±1–2 engine-pin tolerance; IMD reaches 2 Oct via Mahanavami 1 Oct, and its
-  Mahashtami row is the verbatim-preserved 30-Sep printer's erratum). All nine Islamic
+  Mahashtami row is the verbatim-preserved 30-Sep printer's erratum — cross-checked
+  against the Bengali edition's text layer, which prints 30 September, so the misprint is
+  English-edition-only). All nine Islamic
   rows in the overlap run **exactly one day after the Umm al-Qura table with no
   exception** — Sab-e-Qadr 28 Mar, Id-ul-Fitr 31 Mar, Id-uz-Zuha 7 Jun, Hejira New Year
   27 Jun, Muharram/Ashura 6 Jul, Milad-un-Nabi 5 Sep 2025; first day of Ramadan 19 Feb,

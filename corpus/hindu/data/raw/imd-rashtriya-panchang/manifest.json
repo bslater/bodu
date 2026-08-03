@@ -39,7 +39,8 @@
       "redistributionStatus": "link-and-hash-until-confirmed",
       "notes": [
         "User-side download handed back 2026-08-03; sha256 is the ZIP as downloaded.",
-        "Inner file: 'Bengali RP 1947 SE.pdf' (2068383 bytes, 223 pages), SHA-256 a652ff4b796da7787764c0dab6ed26041c2664b4640791bb89855e1e99fb5bc5; has an extractable text layer."
+        "Inner file: 'Bengali RP 1947 SE.pdf' (2068383 bytes, 223 pages), SHA-256 a652ff4b796da7787764c0dab6ed26041c2664b4640791bb89855e1e99fb5bc5; has an extractable text layer (legacy STM-Arjun glyph encoding - Western digits and month tokens extract reliably, Bengali script does not round-trip to Unicode).",
+        "Used to cross-check the English edition's row-52 printer's erratum: this edition's principal-festivals row 52 (Durga Puja Mahashtami, 08 Asvina) prints 30 September, Tuesday - the '30 Oct.' misprint is English-edition-only."
       ]
     },
     {
