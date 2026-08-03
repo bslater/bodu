@@ -18,6 +18,24 @@ Record the package archive SHA-256 alongside the lock (CRAN archive
 `calcal_1.0.4.tar.gz`), or the exact Git commit if installed from GitHub — a version
 number alone is not a sufficient pin.
 
+## Recorded pin (first generation, 2026-08-03)
+
+The committed corpus was generated in the Claude Code build container (CRAN is
+unreachable there, so the environment was assembled without `renv::install`):
+
+- **R 4.3.3** (`r-base-core` 4.3.3-2build2, Ubuntu apt) with **vctrs 0.6.5**
+  (`r-cran-vctrs`, Ubuntu apt).
+- **calcal 1.0.4** installed with `R CMD INSTALL` from the CRAN source archive
+  `calcal_1.0.4.tar.gz`, SHA-256
+  `e429f2dd436673021e1e37a74d97a089e9e47aa11ab2016dbfd4bcc1138cd3d6`
+  (`Packaged: 2026-02-27 23:26:40 UTC`, `Repository: CRAN`), supplied user-side.
+- `renv.lock` records the resulting versions; because the packages were installed
+  outside renv, the lock was authored to match the verified environment rather than
+  produced by `renv::snapshot()`.
+- The adapter in `generate_corpus.R` was confirmed against this release on first run and
+  rewritten from the specification's illustrative Lisp-style names to calcal 1.0.4's
+  vectorized vctrs API (see the ADAPTER NOTE in the script).
+
 ## Generation
 
 ```bash

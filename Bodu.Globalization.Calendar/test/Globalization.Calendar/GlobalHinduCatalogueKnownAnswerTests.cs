@@ -117,6 +117,14 @@ public sealed class GlobalHinduCatalogueKnownAnswerTests
     [DataRow(2024, "dussehra", 10, 12)]
     [DataRow(2024, "diwali", 11, 1)]
     [DataRow(2025, "diwali", 10, 21)]
+
+    // Ingress-day lunation anchors: in each of these years a new moon falls on a sidereal ingress day, so a
+    // start-of-day sun-sign read misclassifies it and fabricates a phantom adhika month one lunation early —
+    // 1991 and 2010 push Ram Navami into adhika Vaishakha (engine read 22 April), 2009 pushes Diwali a lunation
+    // late (engine read 16 November). Published dates per panchanga, confirmed by the calcal reference corpus.
+    [DataRow(1991, "ram-navami", 3, 24)]
+    [DataRow(2010, "ram-navami", 3, 24)]
+    [DataRow(2009, "diwali", 10, 17)]
     public void Resolve_HinduLunarFestival_IsWithinToleranceOfPublishedDate(int year, string notableDateId, int month, int day)
     {
         NotableDate festival = CommonCatalogues.ResolveSingle(CreateService(), notableDateId, year);

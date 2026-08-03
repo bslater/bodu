@@ -6,11 +6,13 @@
 # (an R translation of Calendrica 4.0, Apache-2.0). Output rows are reference-generated data - an independent
 # executable implementation of the Reingold-Dershowitz algorithms - NOT official data.
 #
-# ADAPTER NOTE (per the corpus specification): the calcal API calls below (gregorian_date, fixed_from_gregorian,
-# hindu_solar_from_fixed, hindu_lunar_from_fixed, old_hindu_solar_from_fixed, old_hindu_lunar_from_fixed) must be
-# confirmed against the pinned calcal 1.0.4 release on first run and corrected if the exported names or return
-# shapes differ. The embedded smoke checks exist to catch exactly that class of drift; do not commit a generated
-# corpus whose smoke checks did not pass.
+# ADAPTER NOTE (per the corpus specification): the adapter below was confirmed against the pinned calcal 1.0.4
+# release on first run (2026-08-03) and corrected from the specification's illustrative Lisp-style names to the
+# release's vectorized vctrs API: as_gregorian / as_hindu_lunar / as_hindu_solar / as_old_hindu_lunar /
+# as_old_hindu_solar over Date vectors, with field access via granularity(x, name) and the RD fixed day via
+# as.numeric(). The modern lunar year is the Vikrama era and the old lunar/solar years the Kali era, as printed
+# by the package's formatters. The embedded smoke checks protect exactly that adapter shape; do not commit a
+# generated corpus whose smoke checks did not pass.
 #
 # Usage:
 #   Rscript generate_corpus.R \
@@ -57,81 +59,92 @@ generator_sha256 <- tryCatch(
 
 dates <- seq.Date(start_date, end_date, by = "day")
 
-convert_one <- function(date, calendar_model) {
-  g <- gregorian_date(
-    as.integer(format(date, "%Y")),
-    as.integer(format(date, "%m")),
-    as.integer(format(date, "%d"))
-  )
-  fixed <- fixed_from_gregorian(g)
-
-  row <- list(
-    gregorian_date = format(date, "%Y-%m-%d"),
-    fixed_date = as.numeric(fixed),
-    calendar_model = calendar_model,
-    month_system = if (grepl("lunar", calendar_model)) "amanta" else "solar",
+# Converts the full date vector for one calendar model in a single vectorized pass (the calcal API is
+# vctrs-based and vectorized; per-date loops would re-run the astronomy thousands of times for nothing).
+convert_model <- function(dates, calendar_model) {
+  n <- length(dates)
+  frame <- data.frame(
+    gregorian_date = format(dates, "%Y-%m-%d"),
+    fixed_date = as.numeric(as_gregorian(dates)),
+    calendar_model = rep(calendar_model, n),
+    month_system = rep(if (grepl("lunar", calendar_model)) "amanta" else "solar", n),
     lunar_year = NA_integer_, lunar_month = NA_integer_, lunar_day = NA_integer_,
     is_leap_month = NA, is_leap_day = NA,
     solar_year = NA_integer_, solar_month = NA_integer_, solar_day = NA_integer_,
-    source_class = "reference-generated",
-    source_id = paste0("calcal-", calendar_model),
-    source_version = package_version_string,
-    location_id = "calcal-builtin-ujjain",
-    timezone = "Asia/Kolkata",
-    utc_offset = "+05:30",
-    transcription_method = "generated",
-    quality_status = "verified"
+    source_class = rep("reference-generated", n),
+    source_id = rep(paste0("calcal-", calendar_model), n),
+    source_version = rep(package_version_string, n),
+    location_id = rep("calcal-builtin-ujjain", n),
+    timezone = rep("Asia/Kolkata", n),
+    utc_offset = rep("+05:30", n),
+    transcription_method = rep("generated", n),
+    quality_status = rep("verified", n),
+    stringsAsFactors = FALSE
   )
 
   if (calendar_model == "modern-hindu-lunar") {
-    l <- hindu_lunar_from_fixed(fixed)
-    row$lunar_year <- l$year; row$lunar_month <- l$month; row$lunar_day <- l$day
-    row$is_leap_month <- l$leap_month; row$is_leap_day <- l$leap_day
+    l <- as_hindu_lunar(dates)
+    frame$lunar_year <- as.integer(granularity(l, "year"))
+    frame$lunar_month <- as.integer(granularity(l, "month"))
+    frame$lunar_day <- as.integer(granularity(l, "day"))
+    frame$is_leap_month <- as.logical(granularity(l, "leap_month"))
+    frame$is_leap_day <- as.logical(granularity(l, "leap_day"))
   } else if (calendar_model == "modern-hindu-solar") {
-    s <- hindu_solar_from_fixed(fixed)
-    row$solar_year <- s$year; row$solar_month <- s$month; row$solar_day <- s$day
+    s <- as_hindu_solar(dates)
+    frame$solar_year <- as.integer(granularity(s, "year"))
+    frame$solar_month <- as.integer(granularity(s, "month"))
+    frame$solar_day <- as.integer(granularity(s, "day"))
   } else if (calendar_model == "old-hindu-lunar") {
-    l <- old_hindu_lunar_from_fixed(fixed)
-    row$lunar_year <- l$year; row$lunar_month <- l$month; row$lunar_day <- l$day
-    row$is_leap_month <- l$leap
+    l <- as_old_hindu_lunar(dates)
+    frame$lunar_year <- as.integer(granularity(l, "year"))
+    frame$lunar_month <- as.integer(granularity(l, "month"))
+    frame$lunar_day <- as.integer(granularity(l, "day"))
+    frame$is_leap_month <- as.logical(granularity(l, "leap_month"))
   } else if (calendar_model == "old-hindu-solar") {
-    s <- old_hindu_solar_from_fixed(fixed)
-    row$solar_year <- s$year; row$solar_month <- s$month; row$solar_day <- s$day
+    s <- as_old_hindu_solar(dates)
+    frame$solar_year <- as.integer(granularity(s, "year"))
+    frame$solar_month <- as.integer(granularity(s, "month"))
+    frame$solar_day <- as.integer(granularity(s, "day"))
+  } else {
+    stop(sprintf("Unknown calendar model '%s'", calendar_model))
   }
 
-  as.data.frame(row, stringsAsFactors = FALSE)
+  frame
 }
 
 # ---- Smoke checks (spec section 10.3/10.4): protect the adapter before bulk generation. -----------------------
 
 smoke <- function() {
   probe <- as.Date("2024-11-01") # Diwali 2024: Kartika new-moon vicinity under the amanta convention.
-  g <- gregorian_date(2024L, 11L, 1L)
-  fixed <- fixed_from_gregorian(g)
+  g <- gregorian_date(2024, 11, 1)
 
-  # Metamorphic: gregorian -> fixed -> gregorian is the identity.
-  gg <- gregorian_from_fixed(fixed)
-  stopifnot(gg$year == 2024L, gg$month == 11L, gg$day == 1L)
+  # Metamorphic: the constructor, the Date conversion, and a fixed -> gregorian round trip agree.
+  stopifnot(as.numeric(g) == as.numeric(as_gregorian(probe)))
+  gg <- as_gregorian(as_hindu_lunar(g))
+  stopifnot(
+    granularity(gg, "year") == 2024L,
+    granularity(gg, "month") == 11L,
+    granularity(gg, "day") == 1L
+  )
 
   # Metamorphic: consecutive fixed dates differ by exactly one.
-  fixed_next <- fixed_from_gregorian(gregorian_date(2024L, 11L, 2L))
-  stopifnot(as.numeric(fixed_next) - as.numeric(fixed) == 1)
+  stopifnot(as.numeric(as_gregorian(probe + 1L)) - as.numeric(g) == 1)
 
-  # Era-free anchor: 1 Nov 2024 falls at the very end of amanta Kartika's dark fortnight (Diwali):
+  # Era-free anchor: 1 Nov 2024 falls at the very end of amanta Asvina's dark fortnight (Diwali):
   # the lunar day must be 30 (amavasya) or 1 (first day of the following month) within adapter tolerance,
   # and the leap flag must be FALSE.
-  l <- hindu_lunar_from_fixed(fixed)
-  stopifnot(l$day %in% c(29L, 30L, 1L))
-  stopifnot(identical(as.logical(l$leap_month), FALSE))
+  l <- as_hindu_lunar(probe)
+  stopifnot(granularity(l, "day") %in% c(29L, 30L, 1L))
+  stopifnot(identical(as.logical(granularity(l, "leap_month")), FALSE))
 
   # Metamorphic: a leap-month flag may change only at a lunar month boundary - scan one synodic month.
-  previous <- hindu_lunar_from_fixed(fixed)
-  for (offset in 1:30) {
-    current <- hindu_lunar_from_fixed(fixed + offset)
-    if (!identical(current$leap_month, previous$leap_month)) {
-      stopifnot(current$month != previous$month || current$year != previous$year)
-    }
-    previous <- current
+  window <- as_hindu_lunar(probe + 0:30)
+  leap <- as.logical(granularity(window, "leap_month"))
+  month <- as.integer(granularity(window, "month"))
+  year <- as.integer(granularity(window, "year"))
+  changed <- which(leap[-1] != leap[-length(leap)])
+  for (i in changed) {
+    stopifnot(month[i + 1] != month[i] || year[i + 1] != year[i])
   }
 
   invisible(TRUE)
@@ -143,7 +156,7 @@ smoke()
 
 frames <- list()
 for (m in models) {
-  frames[[m]] <- do.call(rbind, lapply(dates, convert_one, calendar_model = m))
+  frames[[m]] <- convert_model(dates, m)
 }
 result <- do.call(rbind, frames)
 
