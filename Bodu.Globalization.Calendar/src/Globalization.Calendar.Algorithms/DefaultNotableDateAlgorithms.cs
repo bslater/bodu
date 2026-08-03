@@ -50,6 +50,8 @@ internal static class DefaultNotableDateAlgorithms
         registry.Register("jp-autumnal-equinox", new DelegateNotableDateAlgorithm(year => SolarTermCalculator.AutumnalEquinox(year, JapanStandardTimeOffset)));
         registry.Register("qingming", new DelegateNotableDateAlgorithm(year => SolarTermCalculator.Qingming(year, ChinaStandardTimeOffset)));
 
+        registry.Register("tehran-nowruz", new DelegateNotableDateAlgorithm(TehranEquinoxCalculator.Nowruz));
+
         registry.Register("vesak", new DelegateNotableDateAlgorithm(year => LunarPhaseCalculator.FullMoonOnOrAfter(new DateOnly(year, 5, 1))));
         registry.Register("losar", new DelegateNotableDateAlgorithm(TibetanLosarCalculator.Losar));
         registry.Register("matariki", new DelegateNotableDateAlgorithm(MatarikiCalendar.Resolve));

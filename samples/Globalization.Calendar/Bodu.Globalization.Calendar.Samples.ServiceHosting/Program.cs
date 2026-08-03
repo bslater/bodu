@@ -25,6 +25,7 @@ public static class Program
         Console.WriteLine();
 
         BasicRegistration.Run();
+        KeyedRegistration.Run();
         ReloadableResource.Run();
 
         Console.WriteLine("Done.");

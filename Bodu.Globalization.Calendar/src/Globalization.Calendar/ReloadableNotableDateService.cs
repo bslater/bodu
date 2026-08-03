@@ -49,17 +49,17 @@ public sealed class ReloadableNotableDateService
     /// <summary>The optional collaborators passed to each rebuilt inner service, or <see langword="null" /> for built-ins only.</summary>
     private readonly NotableDateServiceOptions? _options;
 
-    /// <summary>Guards the paired update of <see cref="_inner" /> and <see cref="_builtFrom" />.</summary>
+    /// <summary>Serializes rebuilds so a reload constructs the inner service once, not once per racing query.</summary>
     private readonly object _gate = new();
 
     /// <summary>The logger that records resolution-state rebuilds after a reload.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The inner service resolving against <see cref="_builtFrom" />.</summary>
-    private NotableDateService _inner;
-
-    /// <summary>The resource <see cref="_inner" /> was built from, used to detect a reload.</summary>
-    private NotableDateResource _builtFrom;
+    /// <summary>
+    /// The immutable (source resource, inner service) pair currently in effect, swapped atomically on rebuild so the
+    /// steady-state read path needs no lock.
+    /// </summary>
+    private volatile Tuple<NotableDateResource, NotableDateService> _snapshot;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReloadableNotableDateService" /> class.
@@ -97,8 +97,8 @@ public sealed class ReloadableNotableDateService
         _options = options;
         _logger = logger ?? NullLogger.Instance;
 
-        _builtFrom = provider.Current;
-        _inner = new NotableDateService(_builtFrom, options);
+        NotableDateResource initial = provider.Current;
+        _snapshot = Tuple.Create(initial, new NotableDateService(initial, options));
     }
 
     /// <inheritdoc />
@@ -132,17 +132,27 @@ public sealed class ReloadableNotableDateService
     private NotableDateService Current()
     {
         NotableDateResource current = _provider.Current;
+        Tuple<NotableDateResource, NotableDateService> snapshot = _snapshot;
+
+        // Steady state: the provider still supplies the resource the snapshot was built from, so the query proceeds
+        // without taking the gate — reloads are rare and queries are hot.
+        if (ReferenceEquals(current, snapshot.Item1))
+            return snapshot.Item2;
 
         lock (_gate)
         {
-            if (!ReferenceEquals(current, _builtFrom))
+            // A racing query may have rebuilt while this one waited; only build when still stale for the resource this
+            // query observed.
+            snapshot = _snapshot;
+
+            if (!ReferenceEquals(current, snapshot.Item1))
             {
-                _inner = new NotableDateService(current, _options);
-                _builtFrom = current;
+                snapshot = Tuple.Create(current, new NotableDateService(current, _options));
+                _snapshot = snapshot;
                 Log.ResolutionStateRebuilt(_logger, current.ResourceId);
             }
 
-            return _inner;
+            return snapshot.Item2;
         }
     }
 }

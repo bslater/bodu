@@ -248,8 +248,10 @@ proposals can be closed quickly.
   `Bodu.Formats.Excel.Binary` is a narrow read-only value reader over
   cached results; EPPlus / ClosedXML / NPOI cover the full-fidelity
   authoring space.
-- **Shipping the `Plugin*.TestAssembly` projects as packages.** Those
-  exist purely to exercise the calendar plugin loader in tests.
+- **Shipping the plugin fixture projects as packages.** The
+  `Bodu.Globalization.Calendar.Plugins.TestPlugin*` fixture assemblies
+  (under the Plugins test project's `Fixtures/`) exist purely to
+  exercise the calendar plugin loader in tests.
 - **Duplicating algorithms already shipped in the .NET BCL or
   Microsoft's first-party `System.*` NuGet packages.** Where the
   framework ships a stable equivalent, consumers should use it directly.
@@ -1098,12 +1100,74 @@ resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
   solar-Hijri families where the BCL's tabular calculation can diverge
   from the announced civil date by a day (Saudi crescent sighting, Tehran
   vernal-equinox boundaries). Opt-in alternatives to the tabular
-  resources, not replacements.
-- **Extend the Hebcal-aligned regression catalogue** from the six-year
-  starter set to a full 50-year sweep, and owe the same to the Umm
-  al-Qura and Persian tables.
-- **Add `IAsyncEnumerable<NotableDate>` projections** for streaming
-  large multi-year date-range queries.
+  resources, not replacements. The Tehran side is delivered
+  (`tehran-nowruz`); for the Saudi side the acceptance baseline now
+  exists in-repo: the embedded gazetted-announcements table
+  (`SaudiAnnouncedObservances-1422-1448.csv`) shows the announcements
+  moved seventeen month starts by exactly one day in both directions
+  across 1422–1448 AH, so a sighting variant must reproduce those
+  seventeen ±1 shifts against the KACST table. The Bahá'í acceptance
+  data is also now in-repo (`corpus/bahai/uhj-holy-days-172-221-be.csv`,
+  the official UHJ 50-year table): a Tehran-sunset equinox variant for
+  Naw-Rúz must flip exactly the twenty official-21-March boundary years
+  the current UT model runs one day early on, and the Twin Birthday
+  columns are the verification set for the pending
+  eighth-new-moon-after-Naw-Rúz algorithm (whose counting convention —
+  after the *day* of Naw-Rúz, Tehran sunset epoch — is pinned by the
+  2023/2034 boundary years and documented in
+  `tools/verify-bahai-poya-vectors.py`).
+- ~~**Extend the Hebcal-aligned regression catalogue**~~ — delivered
+  across all three families: the 13 `global-jewish` observances are
+  pinned across Gregorian 1990–2039 by an embedded vector table
+  generated from an independent Dershowitz–Reingold implementation
+  (`tools/generate-hebrew-observance-vectors.py`); the 10
+  `global-islamic-umm-al-qura` observances by a KACST-table projection
+  whose every underlying month start is astronomically cross-checked
+  against an independent Meeus lunar-conjunction implementation
+  (`tools/verify-islamic-observance-vectors.py`, 517/517 within the
+  expected +1..+2-day window, double-occurrence years asserted as full
+  lists — a sweep that surfaced and fixed the `OffsetFromRule`
+  multi-occurrence defect); and the 3 `global-persian` observances by an
+  independent Meeus equinox implementation of the official Solar Hijri
+  new-year rule (`tools/generate-persian-observance-vectors.py`,
+  150/150 against the BCL projection). The Umm al-Qura table is
+  externally reconciled three ways: against the KFUPM Research
+  Institute *Comparison Calendar 1356–1411 AH* print (24/24 month
+  starts, 17/17 derivable vector rows for 1990 / early 1991), against
+  ummulqura.org.sa full-year exports sampled across the range
+  (1420/1430/1446/1448 AH: 48/48 month starts, 1,418/1,418 day rows,
+  40/40 derivable vector rows; the site's retrospective 1410 table
+  diverges from the contemporaneous print by a day — the vectors
+  follow the print), and against van Gent's computed comparison table
+  for 1422–1448 AH (216/216 derivable vector rows). The same table's
+  **announced** column — the High Judiciary Council's gazetted dates —
+  is embedded as its own 171-row sweep asserting the measured one-day
+  bound. Three further fifty-year tables complete the deep corpus:
+  `global-islamic` (tabular Hijri, astronomically braced 517/517),
+  `global-zoroastrian` (independent Meeus derivation, 300/300 vs the
+  BCL), and `global-hindu` (engine-pinned regression freeze braced by
+  an independent tithi-proximity check, 700 rows — whose generation
+  surfaced and fixed the lost-Magha-month ingress-day defect).
+  ICU cross-vendor tables (committed under `corpus/`) reconcile every
+  month of UAQ 1410–1462 (1420–1450 exact 372/372; the pre-1420
+  retrospective-table and post-1450 vendor-extension divergences are
+  classified and documented) and confirm all 50 Persian Nowruz dates
+  and leap flags, closing the Persian civil-confirmation residual.
+  Provenance and cross-check counts live in
+  `NotableDateCatalogueVerification.md`. Remaining residual: reconcile
+  future official KACST publications for 1451 AH onward as they
+  appear — a targeted check (Aug 2026) confirmed none exists yet: the
+  relaunched official ummulqura.org.sa is an interactive service with
+  no fixed post-1450 publication table, so this stays a periodic
+  recheck, not an open action. An eighth fifty-year table is now also
+  in place: the Universal House of Justice Badí table 172–221 B.E.
+  (2015–2064) sweeps all nine catalogue-modelled Bahá'í holy days at
+  the measured signed bound (exact in every official-20-March year,
+  one day early in every official-21-March boundary year).
+- ~~**Add `IAsyncEnumerable<NotableDate>` projections**~~ — delivered:
+  `NotableDateServiceAsyncExtensions.ResolveAsync` streams a range's
+  occurrences one civil year at a time with cooperative cancellation,
+  element-for-element identical to the synchronous overloads.
 
 ### `Bodu.Globalization.Calendar.Builder`
 
@@ -1111,12 +1175,23 @@ Current state: thin; fluent `NotableDateDocumentBuilder` authoring API
 with XML + JSON-subset serialization and a loader that materializes a
 `NotableDateResource`.
 
-- **Add fluent rule-validation lint** with diagnostic codes mirroring
-  `Bodu.Text.Configuration`'s diagnostic surface, for build-time feedback
-  on rule-pack errors.
-- **Ship an MSBuild task and `dotnet` tool** that compiles JSON rule
-  packs to a sealed binary format — critical for trim/AOT scenarios (see
-  the AOT theme).
+- ~~**Add fluent rule-validation lint**~~ — delivered:
+  `NotableDateDocumentBuilder.Validate()` / `TryBuild(...)` and
+  `NotableDateResourceLoader.TryLoad` / `TryLoadJson` collect every
+  diagnostic (stable `BODU-CAL-*` codes) without throwing, documented in
+  the validation-diagnostics guide; the throwing overloads are
+  unchanged. Remaining nicety: source locations on diagnostics.
+- ~~**Ship an MSBuild task and `dotnet` tool**~~ — delivered end to end:
+  the sealed `.bcal` format (`NotableDateBinaryResource.Write`/`Read`,
+  `NotableDateResourceLoader.LoadBinary`, `SaveBinary` on the builder,
+  documented in the binary-rule-packs guide) round-trips every bundled
+  catalogue byte-stably with integrity digests; the
+  `Bodu.Globalization.Calendar.Tool` package ships the `bodu-calendar`
+  tool (`lint` / `compile` / `info` over the stable `BODU-CAL-*`
+  diagnostics); and `Bodu.Globalization.Calendar.Build` wires
+  `NotableDatePack` items to incremental build-time compilation via a
+  `ToolTask` over the same tool. Neither package is in a shipping wave
+  yet — they join `bld/release-manifest.txt` with the calendar wave.
 - **Document round-trip guarantees** between builder output and the JSON
   resource rule provider.
 
@@ -1126,11 +1201,24 @@ Current state: bridge; `AddNotableDateService` /
 `AddReloadableNotableDateService` (declared in the `Bodu.Globalization.Calendar`
 namespace).
 
-- **Add key-aware `AddNotableDateService("AU")`** for multi-tenant
-  processes serving multiple jurisdictions.
-- **Add `IHostedService` cache warm-up** so the first post-start request
-  does not pay the rule-load cost.
-- **Add `IOptionsMonitor<NotableDateOptions>` rebuild support**.
+- ~~**Add key-aware `AddNotableDateService("AU")`**~~ — delivered:
+  keyed overloads (`AddNotableDateService(serviceKey, resource | factory)`)
+  register per-jurisdiction singletons resolvable through the .NET 8
+  keyed-service surface, alongside `NotableDateServiceOptions` overloads
+  and `TryAdd` idempotent registration.
+- ~~**Add `IHostedService` cache warm-up**~~ — delivered by the
+  `Bodu.Globalization.Calendar.Caching` package
+  (`AddNotableDateCacheWarmup` registers the hosted
+  `NotableDateCacheWarmupService`, which drives
+  `CachingNotableDateService.Warm` over a configurable rolling
+  territory/year window). Remaining first-request cost for non-caching
+  setups is the uncached document parse in the core loader — tracked as
+  a core-package item, not a DI one.
+- ~~**Add `IOptionsMonitor<NotableDateOptions>` rebuild support**~~ —
+  delivered: `AddReloadableNotableDateService<TOptions>` binds the
+  reloadable service to `IOptionsMonitor<TOptions>`, rebuilding the
+  resource through the registration's factory on every options change;
+  a factory failure is logged and keeps the previous resource serving.
 
 ### `Bodu.Globalization.Calendar.Plugins`
 
@@ -1139,9 +1227,16 @@ contributing custom `INotableDateAlgorithm` implementations.
 
 - **This is the AOT-blocking component** (reflective assembly load). Its
   path to AOT-compatibility is the binary-rule-pack format from the
-  Builder roadmap; until then it is correctly marked AOT-incompatible.
-- **Document the trust-gate contract** — how assemblies are validated and
-  what the security boundary guarantees.
+  Builder roadmap; until then it is correctly marked AOT-incompatible —
+  the loader's public surface now carries `[RequiresUnreferencedCode]` /
+  `[RequiresDynamicCode]` so trimmed and AOT consumers get an analyzer
+  signal instead of a runtime surprise.
+- ~~**Document the trust-gate contract**~~ — delivered: the calendar
+  plugin-trust guide states what each policy validates, the
+  admission-check-not-sandbox boundary, entry-point strength
+  (path overloads vs the weak already-loaded overload), registration
+  collision policy, and unloading; the README and apidoc now position
+  `StrongNamePluginTrustPolicy` as an identity label, not integrity.
 
 ### `Bodu.Globalization.Calendar.Data.*` *(regional packs)*
 
@@ -1157,7 +1252,20 @@ self-contained embedded pack importing the shared catalogues through a
   subdivisions, Spanish autonomous communities, Swiss cantons) is
   subdivision-specific.
 - **Document holiday-source citations** per country so consumers can
-  audit each rule pack against authoritative sources.
+  audit each rule pack against authoritative sources. The first
+  territory-layer official sweeps now exist as the pattern to extend:
+  the US pack carries the 210-row OPM federal-holiday vector table
+  (2011–2030, `UsFederalHolidays-2011-2030.csv` — statutory Sat→Fri /
+  Sun→Mon substitution, three cross-year 31 December in-lieu New Year's
+  Days, Juneteenth from 2021), and the NZ pack pins the Employment New
+  Zealand 2026–2027 dates including the conflict-aware Boxing Day 2027
+  Tuesday-28-December substitution chain, and the GB pack is swept
+  against the official GOV.UK `bank-holidays.json` feed (264 rows,
+  2019–2028, exact dates and substitute flags per home nation —
+  delivered 2026-08 and archived at `corpus/uk/`; the sweep surfaced
+  and fixed the Scottish 2 January chained-substitution defect). Next
+  candidates: TH from the Bank of Thailand corpus table, and LK once
+  the pack-existence decision is made.
 - **Targeted country additions**: Iran (IR) via `global-persian.xml` in
   MiddleEast (in the original v1 set, not yet shipped); Switzerland (CH)
   in Europe alongside its canton data. **Verify Ethiopia's Ge'ez-calendar

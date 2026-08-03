@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Bodu.Globalization.Calendar.Build</RootNamespace>
+    <Description>MSBuild integration for Bodu notable-date rule packs: the CompileNotableDatePack task and NotableDatePack items compile XML/JSON documents to sealed .bcal binary packs during build, incrementally, via the bodu-calendar tool.</Description>
+
+    <!--
+      Task-package layout: the assembly ships under tasks/ (not lib/), the .targets under build/, and the
+      bodu-calendar tool binaries under tools/ - consumers get build-time behavior, no compile-time reference.
+    -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <BoduEnablePackageValidation>false</BoduEnablePackageValidation>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" PrivateAssets="all" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+  <!-- Build ordering only: the packaged tool binaries are collected at pack time below. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Tool\src\Bodu.Globalization.Calendar.Tool.csproj" ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true" />
+  </ItemGroup>
+
+  <!-- Inject the task assembly, the .targets, and the tool's framework-dependent binaries into the package. -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddBuildPayloadToPack</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <Target Name="_AddBuildPayloadToPack">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(TargetPath)" PackagePath="tasks/netstandard2.0" />
+      <TfmSpecificPackageFile Include="..\build\Bodu.Globalization.Calendar.Build.targets" PackagePath="build" />
+      <TfmSpecificPackageFile Include="..\..\Bodu.Globalization.Calendar.Tool\src\bin\$(Configuration)\net8.0\**\*.*" PackagePath="tools" />
+    </ItemGroup>
+  </Target>
+
+</Project>

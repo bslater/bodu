@@ -99,6 +99,33 @@ internal static class HinduLunarCalculator
 
         List<(DateOnly NewMoon, int Sign)> newMoons = GatherNewMoons(year);
 
+        if (SelectFestival(newMoons, targetSign, offsetTithis, purnima, year) is DateOnly festival)
+            return festival;
+
+        // A new moon falling on the civil day of the solar ingress can read the previous sign when evaluated at the
+        // start of its date even though the conjunction instant follows the ingress, making the month appear to
+        // vanish (Magha 2029). Re-evaluate such boundary days at the following midnight before giving up.
+        List<(DateOnly NewMoon, int Sign)> shifted = new(newMoons.Count);
+        foreach ((DateOnly newMoon, int sign) in newMoons)
+        {
+            int nextDaySign = SiderealSunSign(newMoon.AddDays(1));
+            shifted.Add((newMoon, sign == targetSign || nextDaySign == targetSign ? targetSign : sign));
+        }
+
+        return SelectFestival(shifted, targetSign, offsetTithis, purnima, year);
+    }
+
+    /// <summary>
+    /// Selects the festival date from the sign-classified new moons, skipping an intercalary occurrence.
+    /// </summary>
+    /// <param name="newMoons">The chronological new moons paired with their solar signs.</param>
+    /// <param name="targetSign">The sidereal sign identifying the amanta month's new moon.</param>
+    /// <param name="offsetTithis">The offset in tithis from the month's new moon.</param>
+    /// <param name="purnima">Whether the festival is the full moon of the month.</param>
+    /// <param name="year">The Gregorian year the festival should fall in.</param>
+    /// <returns>The festival date, or <see langword="null" /> when no matching lunation lands in the year.</returns>
+    private static DateOnly? SelectFestival(List<(DateOnly NewMoon, int Sign)> newMoons, int targetSign, int offsetTithis, bool purnima, int year)
+    {
         for (int i = 0; i < newMoons.Count; i++)
         {
             if (newMoons[i].Sign != targetSign)
@@ -128,6 +155,11 @@ internal static class HinduLunarCalculator
     /// The Gregorian year, scanned with a margin either side to cover festivals near the boundaries.
     /// </param>
     /// <returns>The chronological new moons and their solar signs.</returns>
+    /// <remarks>
+    /// The sign is evaluated at the conjunction instant, not at the start of the civil day: a new moon falling on a
+    /// sidereal ingress day otherwise reads the pre-ingress sign, which pairs it with its neighbouring month and
+    /// fabricates a phantom adhika month one lunation early (Chaitra 1991/2010, Kartika 2009).
+    /// </remarks>
     private static List<(DateOnly NewMoon, int Sign)> GatherNewMoons(int year)
     {
         List<(DateOnly NewMoon, int Sign)> newMoons = new();
@@ -137,10 +169,11 @@ internal static class HinduLunarCalculator
 
         while (cursor < limit)
         {
-            if (LunarPhaseCalculator.NewMoonOnOrAfter(cursor) is not DateOnly newMoon)
+            if (LunarPhaseCalculator.NewMoonJulianDayOnOrAfter(cursor) is not double julianDay)
                 break;
 
-            newMoons.Add((newMoon, SiderealSunSign(newMoon)));
+            DateOnly newMoon = LunarPhaseCalculator.DateOfJulianDay(julianDay);
+            newMoons.Add((newMoon, SiderealSunSign(newMoon, julianDay)));
             cursor = newMoon.AddDays(1);
         }
 
@@ -153,10 +186,29 @@ internal static class HinduLunarCalculator
     /// </summary>
     /// <param name="date">The date to evaluate.</param>
     /// <returns>The zero-based sidereal sign, 0 (Aries) to 11 (Pisces).</returns>
-    private static int SiderealSunSign(DateOnly date)
+    private static int SiderealSunSign(DateOnly date) =>
+        SiderealSign(SolarTermCalculator.SunTropicalLongitude(date), date.Year);
+
+    /// <summary>
+    /// Returns the sidereal zodiac sign of the sun at the supplied Julian Day instant, applying the Lahiri ayanamsa
+    /// to the tropical longitude.
+    /// </summary>
+    /// <param name="date">The calendar date containing the instant, used for the ayanamsa epoch.</param>
+    /// <param name="julianDay">The Julian Day to evaluate, including the fractional time of day.</param>
+    /// <returns>The zero-based sidereal sign, 0 (Aries) to 11 (Pisces).</returns>
+    private static int SiderealSunSign(DateOnly date, double julianDay) =>
+        SiderealSign(SolarTermCalculator.SunTropicalLongitude(julianDay), date.Year);
+
+    /// <summary>
+    /// Converts a tropical solar longitude to its sidereal sign under the Lahiri ayanamsa for the supplied epoch year.
+    /// </summary>
+    /// <param name="tropicalLongitude">The tropical ecliptic longitude in degrees.</param>
+    /// <param name="year">The Gregorian year fixing the ayanamsa value.</param>
+    /// <returns>The zero-based sidereal sign, 0 (Aries) to 11 (Pisces).</returns>
+    private static int SiderealSign(double tropicalLongitude, int year)
     {
-        double ayanamsa = 23.85 + (0.0139666 * (date.Year - 2000));
-        double sidereal = (((SolarTermCalculator.SunTropicalLongitude(date) - ayanamsa) % 360.0) + 360.0) % 360.0;
+        double ayanamsa = 23.85 + (0.0139666 * (year - 2000));
+        double sidereal = (((tropicalLongitude - ayanamsa) % 360.0) + 360.0) % 360.0;
 
         return (int)(sidereal / 30.0) % 12;
     }

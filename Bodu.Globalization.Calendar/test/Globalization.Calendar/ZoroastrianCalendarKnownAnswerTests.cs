@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -23,12 +25,39 @@ namespace Bodu.Globalization.Calendar;
 [TestClass]
 public sealed class ZoroastrianCalendarKnownAnswerTests
 {
+    /// <summary>The shared sweep service, built once for the fifty-year vector rows.</summary>
+    private static readonly Lazy<NotableDateService> s_sweepService = new(CreateService);
+
     /// <summary>
     /// Builds a service over the bundled <c>global-zoroastrian</c> catalogue.
     /// </summary>
     /// <returns>A service for the catalogue.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-zoroastrian");
+
+    /// <summary>
+    /// Verifies that each Zoroastrian observance resolves to the independently computed vector list across the full
+    /// fifty-year sweep (Gregorian 1990-2039), pinning the Solar Hijri projection — including the years where Zartosht
+    /// No-Diso straddles the Gregorian new year and lands zero or two times — against the Meeus-derived arithmetic
+    /// recorded in the embedded vector table.
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (year, observance) input and the expected occurrence list.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(ZoroastrianObservanceVectors.Rows),
+        typeof(ZoroastrianObservanceVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossVectorRange_ShouldMatchIndependentVector(ValidKat<(int Year, string ObservanceId), IReadOnlyList<DateOnly>> kat)
+    {
+        List<NotableDate> matches = CommonCatalogues.ResolveForYear(s_sweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+
+        CollectionAssert.AreEqual(
+            kat.Expected.ToList(),
+            matches.Select(m => m.Date).ToList(),
+            $"{kat.Name}: expected [{string.Join(", ", kat.Expected)}], resolved [{string.Join(", ", matches.Select(m => m.Date))}]");
+    }
 
     /// <summary>
     /// Verifies that each equinox-anchored Zoroastrian observance resolves to its base class library Persian-calendar

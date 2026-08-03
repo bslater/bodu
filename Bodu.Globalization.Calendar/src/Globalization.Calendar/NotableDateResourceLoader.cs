@@ -249,6 +249,150 @@ public static class NotableDateResourceLoader
         LoadJson(ReadToEnd(stream), NoResolver, logger);
 
     /// <summary>
+    /// Loads a notable-date resource from a sealed binary rule pack.
+    /// </summary>
+    /// <param name="stream">The readable stream positioned at the start of a <c>.bcal</c> pack.</param>
+    /// <returns>The loaded <see cref="NotableDateResource" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="NotableDateBinaryFormatException">
+    /// The stream is not a notable-date binary rule pack, declares an unsupported format version, is truncated or
+    /// corrupted, or carries a value outside the sealed format's tables.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// A binary pack is written from an already-validated resource (see <see cref="NotableDateBinaryResource" />), so
+    /// loading skips parsing and semantic validation entirely — the trim- and AOT-friendly load path. Integrity is
+    /// still enforced: the payload digest and every structural bound are verified.
+    /// </para>
+    /// </remarks>
+    public static NotableDateResource LoadBinary(Stream stream) =>
+        NotableDateBinaryResource.Read(stream);
+
+    /// <summary>
+    /// Attempts to load and validate a notable-date document from XML content, collecting every diagnostic — including
+    /// warnings and informational messages — instead of throwing on validation failure.
+    /// </summary>
+    /// <param name="xml">The notable-date document XML content.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="resource">The loaded resource, or <see langword="null" /> when the document does not validate.</param>
+    /// <param name="diagnostics">Every diagnostic the parse, import resolution, and validation produced.</param>
+    /// <returns>
+    /// <see langword="true" /> when the document loaded without error-severity diagnostics; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="xml" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Unlike the throwing <c>Load</c> overloads, malformed XML is reported as a <c>BODU-CAL-SYNTAX</c> error
+    /// diagnostic rather than a <see cref="FormatException" />, so a caller can lint arbitrary input without exception
+    /// handling. Argument errors still throw — the <c>Try</c> contract covers data, not usage.
+    /// </para>
+    /// </remarks>
+    public static bool TryLoad(string xml, Func<string, string?> resourceResolver, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics) =>
+        TryLoad(xml, resourceResolver, null, out resource, out diagnostics);
+
+    /// <summary>
+    /// Attempts to load and validate a notable-date document from XML content against a custom algorithm registry,
+    /// collecting every diagnostic instead of throwing on validation failure.
+    /// </summary>
+    /// <param name="xml">The notable-date document XML content.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry consulted when validating <c>Algorithm</c> strategy keys, or
+    /// <see langword="null" /> for built-ins only.
+    /// </param>
+    /// <param name="resource">The loaded resource, or <see langword="null" /> when the document does not validate.</param>
+    /// <param name="diagnostics">Every diagnostic the parse, import resolution, and validation produced.</param>
+    /// <returns>
+    /// <see langword="true" /> when the document loaded without error-severity diagnostics; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="xml" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
+    /// </exception>
+    public static bool TryLoad(string xml, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics)
+    {
+        ThrowHelper.ThrowIfNull(xml);
+        ThrowHelper.ThrowIfNull(resourceResolver);
+
+        List<NotableDateValidationDiagnostic> collected = new();
+        resource = null;
+        diagnostics = collected;
+
+        ParsedNotableDateDocument document;
+        try
+        {
+            document = NotableDateDocumentParser.Parse(xml, collected);
+        }
+        catch (FormatException ex)
+        {
+            collected.Add(new NotableDateValidationDiagnostic(NotableDateValidationSeverity.Error, "BODU-CAL-SYNTAX", ex.Message));
+            return false;
+        }
+
+        resource = BuildCore(document, resourceResolver, algorithms, collected, null);
+        return resource is not null;
+    }
+
+    /// <summary>
+    /// Attempts to load and validate a notable-date document from JSON content, collecting every diagnostic instead of
+    /// throwing on validation failure.
+    /// </summary>
+    /// <param name="json">The notable-date document JSON content.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="resource">The loaded resource, or <see langword="null" /> when the document does not validate.</param>
+    /// <param name="diagnostics">Every diagnostic the parse, import resolution, and validation produced.</param>
+    /// <returns>
+    /// <see langword="true" /> when the document loaded without error-severity diagnostics; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="json" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Malformed or empty JSON is reported as a <c>BODU-CAL-SYNTAX</c> error diagnostic rather than an exception.
+    /// </para>
+    /// </remarks>
+    public static bool TryLoadJson(string json, Func<string, string?> resourceResolver, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics)
+    {
+        ThrowHelper.ThrowIfNull(json);
+        ThrowHelper.ThrowIfNull(resourceResolver);
+
+        List<NotableDateValidationDiagnostic> collected = new();
+        resource = null;
+        diagnostics = collected;
+
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            collected.Add(new NotableDateValidationDiagnostic(NotableDateValidationSeverity.Error, "BODU-CAL-SYNTAX", CalendarResourceStrings.Arg_Invalid_DocumentContentEmpty));
+            return false;
+        }
+
+        ParsedNotableDateDocument document;
+        try
+        {
+            document = NotableDateJsonDocumentParser.Parse(json, collected);
+        }
+        catch (FormatException ex)
+        {
+            collected.Add(new NotableDateValidationDiagnostic(NotableDateValidationSeverity.Error, "BODU-CAL-SYNTAX", ex.Message));
+            return false;
+        }
+
+        resource = BuildCore(document, resourceResolver, null, collected, null);
+        return resource is not null;
+    }
+
+    /// <summary>
     /// Resolves imports, applies overrides, assembles the resource, runs semantic validation, and fails when any error
     /// diagnostic is produced.
     /// </summary>
@@ -268,6 +412,39 @@ public static class NotableDateResourceLoader
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
     private static NotableDateResource Build(ParsedNotableDateDocument document, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, List<NotableDateValidationDiagnostic> diagnostics, ILogger? logger)
+    {
+        NotableDateResource? resource = BuildCore(document, resourceResolver, algorithms, diagnostics, logger);
+        if (resource is null)
+        {
+            throw new NotableDateValidationException(
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    CalendarResourceStrings.Op_Invalid_DocumentValidationFailed,
+                    diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error)),
+                diagnostics);
+        }
+
+        return resource;
+    }
+
+    /// <summary>
+    /// Resolves imports, applies overrides, assembles, and validates the resource, collecting every diagnostic without
+    /// throwing.
+    /// </summary>
+    /// <param name="document">The parsed document.</param>
+    /// <param name="resourceResolver">The resolver used to fetch imported resources.</param>
+    /// <param name="algorithms">The optional custom algorithm registry consulted during validation.</param>
+    /// <param name="diagnostics">
+    /// The diagnostics accumulated during parsing, extended by import resolution and validation.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics, or <see langword="null" /> for <see cref="NullLogger.Instance" />.
+    /// </param>
+    /// <returns>
+    /// The assembled resource, or <see langword="null" /> when validation produced one or more error-severity
+    /// diagnostics.
+    /// </returns>
+    private static NotableDateResource? BuildCore(ParsedNotableDateDocument document, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, List<NotableDateValidationDiagnostic> diagnostics, ILogger? logger)
     {
         ILogger log = logger ?? NullLogger.Instance;
 
@@ -289,9 +466,7 @@ public static class NotableDateResourceLoader
         if (errorCount > 0)
         {
             Log.ResourceValidationFailed(log, errorCount);
-            throw new NotableDateValidationException(
-                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Op_Invalid_DocumentValidationFailed, errorCount),
-                diagnostics);
+            return null;
         }
 
         Log.ResourceLoaded(log, resource.ResourceId, resource.NotableDates.Count, resource.AdjustmentPolicies.Count);

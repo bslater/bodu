@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -12,17 +14,43 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="CalendarSystem.Persian" /> calendar with a calendar-year sweep, projected onto the Gregorian year
 /// through the service. Expected dates are sourced from the Iranian civil calendar (time.ir) and reproduced by the
 /// base class library's <see cref="System.Globalization.PersianCalendar" />, ported from the v1 <c>global-persian.xml</c>
-/// resource tests.
+/// resource tests. The fifty-year sweep additionally pins the bundled <c>global-persian</c> catalogue against the
+/// independently computed vector table.
 /// </summary>
 [TestClass]
 public sealed class PersianCalendarKnownAnswerTests
 {
+    /// <summary>The shared sweep service over the bundled catalogue, built once for the fifty-year vector rows.</summary>
+    private static readonly Lazy<NotableDateService> s_sweepService = new(() => CommonCatalogues.Service("global-persian"));
+
     /// <summary>
     /// Builds a service over the Persian fixture.
     /// </summary>
     /// <returns>A service for the Persian fixture.</returns>
     private static NotableDateService CreateService() =>
         NotableDateFixtures.Resolver("persian.xml");
+
+    /// <summary>
+    /// Verifies that each Persian observance in the bundled <c>global-persian</c> catalogue resolves to the
+    /// independently computed vector date across the full fifty-year sweep (Gregorian 1990-2039), pinning the
+    /// equinox-anchored Solar Hijri projection against the Meeus-derived arithmetic recorded in the embedded vector
+    /// table.
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (year, observance) input and the expected date.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(PersianObservanceVectors.Rows),
+        typeof(PersianObservanceVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossVectorRange_ShouldMatchIndependentVector(ValidKat<(int Year, string ObservanceId), DateOnly> kat)
+    {
+        List<NotableDate> matches = CommonCatalogues.ResolveForYear(s_sweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+
+        Assert.HasCount(1, matches, $"expected exactly one '{kat.Input.ObservanceId}' in {kat.Input.Year}");
+        Assert.AreEqual(kat.Expected, matches[0].Date, kat.Name);
+    }
 
     /// <summary>
     /// Resolves the occurrences of a named observance whose anchor falls in the supplied Gregorian year.

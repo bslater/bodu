@@ -124,6 +124,7 @@ public sealed class DocumentationSnippetCompileTests
         string source =
             "using System;" +
             "using System.Collections.Generic;" +
+            "using System.IO;" +
             "using System.Linq;" +
             "using System.Threading;" +
             "using System.Threading.Tasks;" +

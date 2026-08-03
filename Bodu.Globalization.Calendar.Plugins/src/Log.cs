@@ -53,4 +53,23 @@ internal static partial class Log
     /// <param name="pluginType">The plugin that contributed the algorithms.</param>
     [LoggerMessage(EventId = 2004, Level = LogLevel.Information, Message = "Registered {count} algorithm(s) contributed by plugin '{pluginType}'")]
     public static partial void PluginAlgorithmsRegistered(ILogger logger, int count, string pluginType);
+
+    /// <summary>
+    /// Logs that a plugin was passed to algorithm registration but does not contribute algorithms, so nothing was
+    /// registered.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="pluginType">The plugin that contributed nothing.</param>
+    [LoggerMessage(EventId = 2005, Level = LogLevel.Information, Message = "Plugin '{pluginType}' does not implement INotableDateAlgorithmPlugin; no algorithms registered")]
+    public static partial void PluginContributesNoAlgorithms(ILogger logger, string pluginType);
+
+    /// <summary>
+    /// Logs that a plugin's contributed key replaced a built-in algorithm or an existing registration because
+    /// overriding was explicitly permitted.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="key">The overridden algorithm key.</param>
+    /// <param name="pluginType">The plugin whose contribution replaced the registration.</param>
+    [LoggerMessage(EventId = 2006, Level = LogLevel.Warning, Message = "Plugin '{pluginType}' overrides existing algorithm key '{key}'")]
+    public static partial void PluginAlgorithmOverridesKey(ILogger logger, string key, string pluginType);
 }

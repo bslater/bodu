@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bslater/bodu/corpus/hindu/data/schemas/provenance.schema.json",
+  "title": "Corpus source acquisition record",
+  "description": "One record per downloaded or manually acquired source edition. Source PDFs are not committed until redistribution rights are confirmed; the URL, hash, and this record are committed independently.",
+  "type": "object",
+  "required": [
+    "sourceId",
+    "publisher",
+    "title",
+    "sourceClass",
+    "acquiredAtUtc",
+    "sourceUrl",
+    "sha256",
+    "licenceStatus",
+    "redistributionStatus"
+  ],
+  "properties": {
+    "sourceId": { "type": "string", "minLength": 1 },
+    "publisher": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "sourceClass": {
+      "enum": [
+        "official-published",
+        "official-astronomy-derived",
+        "reference-generated",
+        "third-party-comparison"
+      ]
+    },
+    "acquiredAtUtc": { "type": "string", "format": "date-time" },
+    "sourceUrl": { "type": "string", "format": "uri" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "bornDigital": { "type": ["boolean", "null"] },
+    "editionCoverage": {
+      "type": "object",
+      "required": ["startDate", "endDate"],
+      "properties": {
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" }
+      }
+    },
+    "licenceStatus": { "type": "string", "minLength": 1 },
+    "redistributionStatus": { "type": "string", "minLength": 1 },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  }
+}

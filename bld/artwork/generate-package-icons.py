@@ -213,6 +213,8 @@ ICONS = {
     "Bodu.Globalization.Calendar.Builder": ("calb", "#FBBF24", "BLD", "pills"),
     "Bodu.Globalization.Calendar.DependencyInjection": ("caldi", "#60A5FA", "CDI", "plug"),
     "Bodu.Globalization.Calendar.Plugins": ("calplg", "#2DD4BF", "PLG", "shield"),
+    "Bodu.Globalization.Calendar.Tool": ("caltool", "#60A5FA", "CLI", "doclines"),
+    "Bodu.Globalization.Calendar.Build": ("calbld", "#A78BFA", "MSB", "lanes"),
     "Bodu.Globalization.Calendar.Africa": ("calaf", "#FBBF24", "AF", "grid"),
     "Bodu.Globalization.Calendar.Americas": ("calam", "#34D399", "AM", "grid"),
     "Bodu.Globalization.Calendar.AsiaPacific": ("calap", "#F87171", "AP", "grid"),

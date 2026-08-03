@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Usage" xml:space="preserve">
+    <value>bodu-calendar — compile and lint Bodu notable-date rule packs
+
+Usage:
+  bodu-calendar lint &lt;file.xml|file.json&gt; [--resolver-dir &lt;dir&gt;]
+  bodu-calendar compile &lt;file.xml|file.json&gt; [-o &lt;out.bcal&gt;] [--resolver-dir &lt;dir&gt;]
+  bodu-calendar info &lt;file.bcal&gt;
+
+Commands:
+  lint      Validate a document and print every BODU-CAL-* diagnostic without compiling.
+  compile   Validate a document and compile it to a sealed .bcal binary pack.
+  info      Print the header and content summary of a compiled pack.
+
+Options:
+  -o, --output &lt;file&gt;     The pack path compile writes; defaults to the input with a .bcal extension.
+  --resolver-dir &lt;dir&gt;    A directory whose &lt;name&gt;.xml / &lt;name&gt;.json files satisfy document imports,
+                          consulted before the bundled common catalogues.
+
+Exit codes: 0 success, 1 validation or input failure, 2 usage error.</value>
+  </data>
+  <data name="Error_UnknownCommand" xml:space="preserve">
+    <value>Unknown command '{0}'.</value>
+  </data>
+  <data name="Error_MissingArgument" xml:space="preserve">
+    <value>Missing required argument for '{0}'.</value>
+  </data>
+  <data name="Error_UnknownOption" xml:space="preserve">
+    <value>Unknown option '{0}'.</value>
+  </data>
+  <data name="Error_FileNotFound" xml:space="preserve">
+    <value>File not found: {0}</value>
+  </data>
+  <data name="Error_UnsupportedExtension" xml:space="preserve">
+    <value>Unsupported document extension '{0}': expected .xml or .json.</value>
+  </data>
+  <data name="Lint_Clean" xml:space="preserve">
+    <value>{0}: OK — resource '{1}' is valid ({2} diagnostic(s)).</value>
+  </data>
+  <data name="Lint_Failed" xml:space="preserve">
+    <value>{0}: FAILED — {1} error(s), {2} total diagnostic(s).</value>
+  </data>
+  <data name="Compile_Succeeded" xml:space="preserve">
+    <value>Compiled '{0}' -&gt; {1} ({2} bytes, sha256 {3}).</value>
+  </data>
+  <data name="Info_Summary" xml:space="preserve">
+    <value>{0}: format v{1}, resource '{2}' (schema {3}), {4} notable date(s), {5} adjustment policy(ies), payload sha256 {6}.</value>
+  </data>
+</root>

@@ -44,6 +44,28 @@ internal static class LunarPhaseCalculator
         PhaseOnOrAfter(notBefore, fullMoon: false);
 
     /// <summary>
+    /// Returns the Julian Day, including the fractional time of day, of the first new-moon conjunction falling on or
+    /// after the supplied date.
+    /// </summary>
+    /// <param name="notBefore">The earliest acceptable date.</param>
+    /// <returns>The conjunction's Julian Day, or <see langword="null" /> when none is found within the search window.</returns>
+    /// <remarks>
+    /// The instant matters when a caller must evaluate another body's position at the conjunction itself — for
+    /// example classifying a Hindu amanta month by the sun's sidereal sign — because a conjunction near a sign
+    /// ingress can sit on the other side of the boundary from the start of its civil day.
+    /// </remarks>
+    public static double? NewMoonJulianDayOnOrAfter(DateOnly notBefore) =>
+        PhaseJulianDayOnOrAfter(notBefore, fullMoon: false);
+
+    /// <summary>
+    /// Converts a Julian Day to the calendar date containing that instant.
+    /// </summary>
+    /// <param name="julianDay">The Julian Day, including any fractional time of day.</param>
+    /// <returns>The calendar date.</returns>
+    public static DateOnly DateOfJulianDay(double julianDay) =>
+        JulianDayToDate(julianDay);
+
+    /// <summary>
     /// Advances the lunation index from an initial estimate until the computed phase falls on or after the search date.
     /// </summary>
     /// <param name="notBefore">The earliest acceptable date.</param>
@@ -51,15 +73,27 @@ internal static class LunarPhaseCalculator
     /// <see langword="true" /> to find a full moon; <see langword="false" /> for a new moon.
     /// </param>
     /// <returns>The phase date, or <see langword="null" /> when none is found within the search window.</returns>
-    private static DateOnly? PhaseOnOrAfter(DateOnly notBefore, bool fullMoon)
+    private static DateOnly? PhaseOnOrAfter(DateOnly notBefore, bool fullMoon) =>
+        PhaseJulianDayOnOrAfter(notBefore, fullMoon) is double julianDay ? JulianDayToDate(julianDay) : null;
+
+    /// <summary>
+    /// Advances the lunation index from an initial estimate until the computed phase falls on or after the search
+    /// date, returning the phase instant as a Julian Day.
+    /// </summary>
+    /// <param name="notBefore">The earliest acceptable date.</param>
+    /// <param name="fullMoon">
+    /// <see langword="true" /> to find a full moon; <see langword="false" /> for a new moon.
+    /// </param>
+    /// <returns>The phase's Julian Day, or <see langword="null" /> when none is found within the search window.</returns>
+    private static double? PhaseJulianDayOnOrAfter(DateOnly notBefore, bool fullMoon)
     {
         double k = EstimateK(notBefore.Year, notBefore.Month, fullMoon);
 
         for (int attempts = 0; attempts < 3; attempts++, k += 1.0)
         {
-            DateOnly candidate = JulianDayToDate(ComputeLunarPhaseJulianDay(k, fullMoon));
-            if (candidate >= notBefore)
-                return candidate;
+            double julianDay = ComputeLunarPhaseJulianDay(k, fullMoon);
+            if (JulianDayToDate(julianDay) >= notBefore)
+                return julianDay;
         }
 
         return null;

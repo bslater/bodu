@@ -107,4 +107,7 @@
   <data name="Format_Invalid_XmlNotWellFormed" xml:space="preserve">
     <value>The XML content is not well-formed: {0}</value>
   </data>
+  <data name="Op_NotSupported_LoadBinaryPack" xml:space="preserve">
+    <value>A binary rule pack is compiled output and cannot be re-opened for editing. Load it with NotableDateResourceLoader.LoadBinary, or keep the source XML/JSON document for authoring.</value>
+  </data>
 </root>

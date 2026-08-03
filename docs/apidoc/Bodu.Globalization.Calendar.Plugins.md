@@ -14,6 +14,7 @@ A plugin assembly advertises itself with an assembly-level <xref:Bodu.Globalizat
 
 ## Static documentation
 
+- **[Calendar plugin trust](~/guides/calendar/plugin-trust.md)** — the trust-gate contract: what each policy guarantees, entry-point strength, registration collision policy, and unloading.
 - **[Building and extending the service](~/guides/calendar/building-the-service.md)** — the plugin model, trust policies, and end-to-end loading.
 
 ## Key types
@@ -40,15 +41,18 @@ A plugin assembly advertises itself with an assembly-level <xref:Bodu.Globalizat
 ## Minimal sample
 
 ```csharp
-using System.Reflection;
 using Bodu.Globalization.Calendar.Algorithms;
 using Bodu.Globalization.Calendar.Plugins;
 
-// Trust only assemblies whose strong-name public-key token is on the allow-list.
-IPluginTrustPolicy trust = new StrongNamePluginTrustPolicy(allowedPublicKeyTokens);
+// Pin the exact reviewed bytes: the file-hash policy is the strongest bundled guarantee.
+IPluginTrustPolicy trust = new FileHashPluginTrustPolicy(new Dictionary<string, byte[]>
+{
+    ["Contoso.Holidays"] = reviewedSha256Digest,
+});
 
-Assembly pluginAssembly = Assembly.LoadFrom("Contoso.Holidays.dll");
-INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom(pluginAssembly, trust); // throws if untrusted
+// The path overload hashes the same bytes it loads (no swap window) and isolates the plugin
+// in a dedicated collectible AssemblyLoadContext; throws if untrusted.
+INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom("plugins/Contoso.Holidays.dll", trust);
 
 var registry = new NotableDateAlgorithmRegistry();
 int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
@@ -56,4 +60,4 @@ int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
 ```
 
 > [!WARNING]
-> <xref:Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy> trusts every assembly and is intended for development and tests only. Use a strong-name, file-hash, or composite policy in production.
+> The trust gate is an admission check, not a sandbox — an admitted plugin runs with the full trust of the process. <xref:Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy> is for development and tests only, and <xref:Bodu.Globalization.Calendar.Plugins.StrongNamePluginTrustPolicy> validates a copyable manifest token rather than a verified signature — for untrusted input, always combine it with the file-hash policy. The `LoadFrom(Assembly, …)` overload evaluates trust *after* the assembly is already loaded and must not be used for untrusted input; prefer the path overloads, and `LoadFromFile` when the plugin should be unloadable. See the [plugin trust guide](~/guides/calendar/plugin-trust.md).

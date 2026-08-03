@@ -15,6 +15,7 @@ Reach for it when rule sets are produced programmatically — exporting curated 
 ## Static documentation
 
 - **[Authoring with the notable-date builder](~/guides/calendar/notable-date-builder.md)** — the end-to-end fluent walkthrough.
+- **[Builder round-trip guarantees](~/guides/calendar/round-trip-guarantees.md)** — the precise `FromXml` / `ToXml`, `FromJson` / `ToJson`, and `Save` / `Load` contract, including the XML → JSON lossiness boundary.
 - **[Authoring notable date rules](~/guides/calendar/rule-authoring.md)** — the equivalent XML / JSON authoring path and the document model it produces.
 
 ## Key types

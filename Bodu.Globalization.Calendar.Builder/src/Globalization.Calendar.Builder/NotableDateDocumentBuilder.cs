@@ -361,9 +361,18 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="NotSupportedException">
     /// A JSON target is requested but the document uses a feature the JSON subset cannot represent.
     /// </exception>
+    /// <exception cref="NotableDateValidationException">
+    /// A binary target is requested and the document produced one or more error diagnostics.
+    /// </exception>
     public void Save(string path, NotableDateDocumentFormat format)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
+
+        if (format == NotableDateDocumentFormat.Binary)
+        {
+            SaveBinary(path);
+            return;
+        }
 
         string content = format == NotableDateDocumentFormat.Json ? ToJson() : ToXml();
         File.WriteAllText(path, content);
@@ -413,6 +422,9 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
 
+        if (InferFormat(path) == NotableDateDocumentFormat.Binary)
+            throw new NotSupportedException(BuilderResourceStrings.Op_NotSupported_LoadBinaryPack);
+
         string content = File.ReadAllText(path);
         return InferFormat(path) == NotableDateDocumentFormat.Json ? FromJson(content) : FromXml(content);
     }
@@ -442,6 +454,9 @@ public sealed partial class NotableDateDocumentBuilder
 
         if (string.Equals(extension, ".json", StringComparison.OrdinalIgnoreCase))
             return NotableDateDocumentFormat.Json;
+
+        if (string.Equals(extension, ".bcal", StringComparison.OrdinalIgnoreCase))
+            return NotableDateDocumentFormat.Binary;
 
         throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Arg_Invalid_UnknownFileExtension, path), nameof(path));
     }

@@ -176,5 +176,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_NotSupported_JsonFeature", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A binary rule pack is compiled output and cannot be re-opened for editing..
+        /// </summary>
+        internal static string Op_NotSupported_LoadBinaryPack {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_LoadBinaryPack", resourceCulture);
+            }
+        }
     }
 }

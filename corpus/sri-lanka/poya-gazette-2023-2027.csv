@@ -1,0 +1,71 @@
+# source: Public and Bank Holidays for the years 2023–2027
+# publisher: Government of Sri Lanka — Ministry of Public Administration / Department of Government Printing
+# url: https://documents.gov.lk/
+# accessed: 2026-08-03
+# license: redistribution rights unclear — transcribed facts only
+# notes: 62 Poya rows from the annual gazettes. Source spelling is retained, including Nawam/Navam variation. 2025-05-12 matches the supplied control date.
+# verification: bodu 2026-08-03 — 62 rows; consecutive Poya spacing all 29/30 days; every date within 1.5 days of the Meeus full moon at Sri Lanka +5:30 (tools/verify-bahai-poya-vectors.py); Vesak 2025-05-12 matches the independently supplied control date; 2025/2026 rows agree with the 3 Aug 2026 data pack.
+# columns: year,poya_name_as_printed,gregorian_date,gazette_reference,source_url
+year,poya_name_as_printed,gregorian_date,gazette_reference,source_url
+2023,Duruthu Full Moon Poya Day,2023-01-06,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Nawam Full Moon Poya Day,2023-02-05,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Medin Full Moon Poya Day,2023-03-06,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Bak Full Moon Poya Day,2023-04-05,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Vesak Full Moon Poya Day,2023-05-05,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Poson Full Moon Poya Day,2023-06-03,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Adhi Esala Full Moon Poya Day,2023-07-03,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Esala Full Moon Poya Day,2023-08-01,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Nikini Full Moon Poya Day,2023-08-30,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Binara Full Moon Poya Day,2023-09-29,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Vap Full Moon Poya Day,2023-10-28,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Il Full Moon Poya Day,2023-11-26,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2023,Unduvap Full Moon Poya Day,2023-12-26,No. 2287/04 — 2022-07-04,https://documents.gov.lk/view/egz/2022/7/2287-04_E.pdf
+2024,Duruthu Full Moon Poya Day,2024-01-25,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Nawam Full Moon Poya Day,2024-02-23,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Medin Full Moon Poya Day,2024-03-24,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Bak Full Moon Poya Day,2024-04-23,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Vesak Full Moon Poya Day,2024-05-23,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Poson Full Moon Poya Day,2024-06-21,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Esala Full Moon Poya Day,2024-07-20,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Nikini Full Moon Poya Day,2024-08-19,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Binara Full Moon Poya Day,2024-09-17,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Vap Full Moon Poya Day,2024-10-17,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Il Full Moon Poya Day,2024-11-15,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2024,Unduvap Full Moon Poya Day,2024-12-14,No. 2341/46 — 2023-07-19,https://documents.gov.lk/view/egz/2023/7/2341-46_E.pdf
+2025,Duruthu Full Moon Poya Day,2025-01-13,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Nawam Full Moon Poya Day,2025-02-12,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Medin Full Moon Poya Day,2025-03-13,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Bak Full Moon Poya Day,2025-04-12,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Vesak Full Moon Poya Day,2025-05-12,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Poson Full Moon Poya Day,2025-06-10,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Esala Full Moon Poya Day,2025-07-10,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Nikini Full Moon Poya Day,2025-08-08,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Binara Full Moon Poya Day,2025-09-07,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Vap Full Moon Poya Day,2025-10-06,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Il Full Moon Poya Day,2025-11-05,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2025,Unduvap Full Moon Poya Day,2025-12-04,No. 2395/33 — 2024-07-31,https://documents.gov.lk/view/egz/2024/7/2395-33_E.pdf
+2026,Duruthu Full Moon Poya Day,2026-01-03,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Navam Full Moon Poya Day,2026-02-01,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Medin Full Moon Poya Day,2026-03-02,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Bak Full Moon Poya Day,2026-04-01,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Vesak Full Moon Poya Day,2026-05-01,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Adhi Poson Full Moon Poya Day,2026-05-30,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Poson Full Moon Poya Day,2026-06-29,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Esala Full Moon Poya Day,2026-07-29,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Nikini Full Moon Poya Day,2026-08-27,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Binara Full Moon Poya Day,2026-09-26,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Vap Full Moon Poya Day,2026-10-25,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Il Full Moon Poya Day,2026-11-24,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2026,Unduvap Full Moon Poya Day,2026-12-23,No. 2438/22 — 2025-05-27,https://documents.gov.lk/view/extra-gazettes/2025/5/2438-22_E.pdf
+2027,Duruthu Full Moon Poya Day,2027-01-22,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Navam Full Moon Poya Day,2027-02-20,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Medin Full Moon Poya Day,2027-03-22,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Bak Full Moon Poya Day,2027-04-20,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Vesak Full Moon Poya Day,2027-05-19,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Poson Full Moon Poya Day,2027-06-18,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Esala Full Moon Poya Day,2027-07-18,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Nikini Full Moon Poya Day,2027-08-16,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Binara Full Moon Poya Day,2027-09-15,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Vap Full Moon Poya Day,2027-10-15,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Il Full Moon Poya Day,2027-11-13,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf
+2027,Unduvap Full Moon Poya Day,2027-12-13,No. 2493/05 — 2026-06-16,https://documents.gov.lk/view/egz/2026/6/2493-05_E.pdf

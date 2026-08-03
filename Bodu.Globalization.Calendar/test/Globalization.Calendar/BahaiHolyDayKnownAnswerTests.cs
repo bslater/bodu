@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -27,6 +29,9 @@ public sealed class BahaiHolyDayKnownAnswerTests
     /// The maximum tolerated difference, in days, between a resolved Baha'i holy day and its published reference date.
     /// </summary>
     private const int ToleranceDays = 2;
+
+    /// <summary>The shared catalogue service, built once for the fifty-year vector sweep.</summary>
+    private static readonly Lazy<NotableDateService> s_sweepService = new(CreateService);
 
     /// <summary>
     /// Builds a service over the bundled <c>global-bahai</c> catalogue.
@@ -88,6 +93,78 @@ public sealed class BahaiHolyDayKnownAnswerTests
         NotableDate observance = CommonCatalogues.ResolveSingle(CreateService(), notableDateId, 2025);
 
         Assert.AreEqual(new DateOnly(2025, month, day), observance.Date, $"{notableDateId} 2025");
+    }
+
+    /// <summary>
+    /// Verifies that each Baha'i holy day resolves to within one day of the official 183 B.E. (2026) Gregorian date
+    /// published in the Baha'i calendar for that year.
+    /// </summary>
+    /// <param name="notableDateId">The notable-date id to resolve.</param>
+    /// <param name="month">The official Gregorian month.</param>
+    /// <param name="day">The official Gregorian day.</param>
+    /// <remarks>
+    /// <para>
+    /// 2026 is a Tehran-sunset boundary year: the March equinox falls at roughly 14:46 UT on 20 March, which is after
+    /// sunset in Tehran, so the official Badi year begins on 21 March while the engine's Universal-Time equinox model
+    /// anchors it to 20 March. The engine therefore resolves every offset holy day uniformly one day before the
+    /// official date, which this anchor pins at a one-day tolerance (tighter than the general two-day window above).
+    /// The official table's two Twin Birthday dates (Birth of the Bab 10 November, Birth of Baha'u'llah
+    /// 11 November 2026) are intentionally not asserted: the catalogue omits those concepts until the dedicated
+    /// eighth-new-moon-after-Naw-Ruz algorithm exists.
+    /// </para>
+    /// </remarks>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow("naw-ruz", 3, 21)]
+    [DataRow("first-day-of-ridvan", 4, 21)]
+    [DataRow("ninth-day-of-ridvan", 4, 29)]
+    [DataRow("twelfth-day-of-ridvan", 5, 2)]
+    [DataRow("declaration-of-the-bab", 5, 24)]
+    [DataRow("ascension-of-bahaullah", 5, 29)]
+    [DataRow("martyrdom-of-the-bab", 7, 10)]
+    [DataRow("day-of-the-covenant", 11, 26)]
+    [DataRow("ascension-of-abdul-baha", 11, 28)]
+    public void Resolve_BahaiHolyDay_WhenComparedWith183BEOfficialDate_ShouldBeWithinOneDay(string notableDateId, int month, int day)
+    {
+        NotableDate observance = CommonCatalogues.ResolveSingle(CreateService(), notableDateId, 2026);
+        var official = new DateOnly(2026, month, day);
+        int deltaDays = Math.Abs(observance.Date.DayNumber - official.DayNumber);
+
+        Assert.IsLessThanOrEqualTo(
+            1,
+            deltaDays,
+            $"{notableDateId} 183 B.E.: resolved {observance.Date:yyyy-MM-dd}, official {official:yyyy-MM-dd}");
+    }
+
+    /// <summary>
+    /// Verifies that every holy day resolves to the official Universal House of Justice date, or exactly one day
+    /// before it, across the full fifty-year Badi table 172-221 B.E. (2015-2064).
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (Gregorian year, holy day) input and the official date.</param>
+    /// <remarks>
+    /// <para>
+    /// The measured relationship between the engine's Universal-Time equinox model and the official Tehran-anchored
+    /// reckoning is asymmetric and year-uniform: the engine is exact in the thirty years whose official Naw-Ruz is
+    /// 20 March and exactly one day early in the twenty Tehran-sunset boundary years whose official Naw-Ruz is
+    /// 21 March — never late and never mixed within a year. The sweep therefore asserts the signed bound
+    /// (official minus one day, or official) rather than a symmetric tolerance.
+    /// </para>
+    /// </remarks>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(BahaiHolyDayVectors.Rows),
+        typeof(BahaiHolyDayVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossOfficialBadiTable_ShouldMatchOfficialDateOrRunOneDayEarly(ValidKat<(int Year, string ObservanceId), DateOnly> kat)
+    {
+        NotableDate observance = CommonCatalogues.ResolveSingle(s_sweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+        int deltaDays = observance.Date.DayNumber - kat.Expected.DayNumber;
+
+        Assert.IsTrue(
+            deltaDays is 0 or -1,
+            $"{kat.Name}: resolved {observance.Date:yyyy-MM-dd}, official {kat.Expected:yyyy-MM-dd} (delta {deltaDays:+0;-0;0}d)");
     }
 
     /// <summary>

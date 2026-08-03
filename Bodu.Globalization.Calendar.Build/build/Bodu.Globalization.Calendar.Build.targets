@@ -1,0 +1,73 @@
+<!--
+  Bodu.Globalization.Calendar.Build - compiles NotableDatePack items (notable-date XML/JSON documents)
+  to sealed .bcal binary packs during build, incrementally, via the bodu-calendar tool.
+
+  Usage in a consuming project:
+
+    <ItemGroup>
+      <NotableDatePack Include="rules\holidays.xml" />
+      <NotableDatePack Include="rules\corporate.json" ResolverDir="rules\shared" />
+    </ItemGroup>
+
+  Each item compiles to $(NotableDatePackOutputPath)<Filename>.bcal (defaulting under the intermediate
+  output path) and is copied to the project output directory. Override points:
+
+    BoduCalendarTaskAssembly - the task assembly path (defaults into the package's tasks/ folder).
+    BoduCalendarToolDll      - the bodu-calendar tool assembly path (defaults into the package's tools/ folder).
+    NotableDatePackOutputPath- the directory receiving compiled packs.
+    NotableDatePackCopyToOutput - set false to keep packs out of the project output directory.
+-->
+<Project>
+
+  <PropertyGroup>
+    <BoduCalendarTaskAssembly Condition="'$(BoduCalendarTaskAssembly)' == ''">$(MSBuildThisFileDirectory)..\tasks\netstandard2.0\Bodu.Globalization.Calendar.Build.dll</BoduCalendarTaskAssembly>
+    <BoduCalendarToolDll Condition="'$(BoduCalendarToolDll)' == ''">$(MSBuildThisFileDirectory)..\tools\Bodu.Globalization.Calendar.Tool.dll</BoduCalendarToolDll>
+    <NotableDatePackCopyToOutput Condition="'$(NotableDatePackCopyToOutput)' == ''">true</NotableDatePackCopyToOutput>
+  </PropertyGroup>
+
+  <UsingTask TaskName="Bodu.Globalization.Calendar.Build.CompileNotableDatePack" AssemblyFile="$(BoduCalendarTaskAssembly)" />
+
+  <!--
+    The output-path default derives from IntermediateOutputPath, which the SDK's common targets define after this
+    file is imported - so the default is computed at target time, when the property carries its final value.
+  -->
+  <Target Name="_InitNotableDatePackProperties">
+    <PropertyGroup>
+      <NotableDatePackOutputPath Condition="'$(NotableDatePackOutputPath)' == ''">$(MSBuildProjectDirectory)\$(IntermediateOutputPath)bcal\</NotableDatePackOutputPath>
+    </PropertyGroup>
+  </Target>
+
+  <!--
+    Incremental compilation: MSBuild skips up-to-date (input, output) pairs, and the format's byte-stable
+    output keeps downstream up-to-date checks sound. Runs before content assignment so compiled packs can
+    join the output-directory copy below.
+  -->
+  <Target Name="CompileNotableDatePacks"
+          BeforeTargets="AssignTargetPaths"
+          DependsOnTargets="_InitNotableDatePackProperties"
+          Condition="'@(NotableDatePack)' != ''"
+          Inputs="@(NotableDatePack)"
+          Outputs="@(NotableDatePack->'$(NotableDatePackOutputPath)%(Filename).bcal')">
+
+    <CompileNotableDatePack
+        Input="%(NotableDatePack.Identity)"
+        Output="$(NotableDatePackOutputPath)%(NotableDatePack.Filename).bcal"
+        ToolDll="$(BoduCalendarToolDll)"
+        ResolverDir="%(NotableDatePack.ResolverDir)" />
+  </Target>
+
+  <!-- Surface the compiled packs as copy-to-output content so consumers find them beside the app. -->
+  <Target Name="_IncludeNotableDatePackOutputs"
+          AfterTargets="CompileNotableDatePacks"
+          BeforeTargets="AssignTargetPaths"
+          DependsOnTargets="_InitNotableDatePackProperties"
+          Condition="'@(NotableDatePack)' != '' and '$(NotableDatePackCopyToOutput)' == 'true'">
+    <ItemGroup>
+      <None Include="@(NotableDatePack->'$(NotableDatePackOutputPath)%(Filename).bcal')">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <Link>%(NotableDatePack.Filename).bcal</Link>
+      </None>
+    </ItemGroup>
+  </Target>
+
+</Project>

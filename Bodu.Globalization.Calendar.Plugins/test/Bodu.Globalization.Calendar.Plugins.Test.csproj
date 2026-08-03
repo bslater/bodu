@@ -7,10 +7,44 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <!-- The fixture plugin projects live under Fixtures\ and are separate assemblies; keep their sources out of this project. -->
+  <ItemGroup>
+    <Compile Remove="Fixtures\**" />
+    <None Remove="Fixtures\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
     <ProjectReference Include="..\src\Bodu.Globalization.Calendar.Plugins.csproj" />
   </ItemGroup>
+
+  <!--
+    Fixture plugin assemblies: built before the tests (ReferenceOutputAssembly=false keeps them out of the
+    compilation and out of this project's output directory), then copied below into an isolated per-fixture
+    folder so the loader tests exercise genuinely foreign assemblies whose dependencies are NOT resolvable
+    from the test application base.
+  -->
+  <ItemGroup>
+    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin\Bodu.Globalization.Calendar.Plugins.TestPlugin.csproj" />
+    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency\Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency.csproj" />
+    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.WithDependency\Bodu.Globalization.Calendar.Plugins.TestPlugin.WithDependency.csproj" />
+    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.Faulty\Bodu.Globalization.Calendar.Plugins.TestPlugin.Faulty.csproj" />
+    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.StaticFaulty\Bodu.Globalization.Calendar.Plugins.TestPlugin.StaticFaulty.csproj" />
+    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.NotPlugin\Bodu.Globalization.Calendar.Plugins.TestPlugin.NotPlugin.csproj" />
+    <ProjectReference Include="@(PluginFixture)" ReferenceOutputAssembly="false" Private="false" />
+  </ItemGroup>
+
+  <Target Name="CopyPluginFixtures" AfterTargets="Build">
+    <ItemGroup>
+      <_PluginFixtureFile Include="Fixtures\%(PluginFixture.Filename)\bin\$(Configuration)\$(TargetFramework)\**\*.*">
+        <FixtureName>%(PluginFixture.Filename)</FixtureName>
+      </_PluginFixtureFile>
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(_PluginFixtureFile)"
+      DestinationFiles="@(_PluginFixtureFile->'$(OutDir)PluginFixtures\%(FixtureName)\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true" />
+  </Target>
 
   <!-- Shared test infrastructure namespaces from Bodu.Test, imported project-wide. -->
   <ItemGroup>

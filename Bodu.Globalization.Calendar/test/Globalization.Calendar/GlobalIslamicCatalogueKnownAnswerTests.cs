@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -14,11 +16,92 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="OffsetFromRuleStrategy" /> offset from Ramadan. Expected dates are produced by the base class library's
 /// <see cref="System.Globalization.HijriCalendar" /> (at the default <c>HijriAdjustment = 0</c>) and
 /// <see cref="System.Globalization.UmAlQuraCalendar" />; both follow arithmetic reckoning and can differ from a
-/// locally moon-sighted observance by up to two days.
+/// locally moon-sighted observance by up to two days. The fifty-year sweep additionally pins the Umm al-Qura
+/// catalogue against the astronomically cross-checked vector table.
 /// </summary>
 [TestClass]
 public sealed class GlobalIslamicCatalogueKnownAnswerTests
 {
+    /// <summary>The shared sweep service over the Umm al-Qura catalogue, built once for the fifty-year vector rows.</summary>
+    private static readonly Lazy<NotableDateService> s_ummAlQuraSweepService =
+        new(() => CommonCatalogues.Service("global-islamic-umm-al-qura"));
+
+    /// <summary>The shared sweep service over the tabular catalogue, built once for the fifty-year vector rows.</summary>
+    private static readonly Lazy<NotableDateService> s_tabularSweepService =
+        new(() => CommonCatalogues.Service("global-islamic"));
+
+    /// <summary>
+    /// Verifies that each tabular-Hijri observance resolves to the vector table's ordered occurrence list across the
+    /// full fifty-year sweep (Gregorian 1990-2039), pinning the arithmetic Hijri projection — including the years
+    /// where a short lunar date lands twice in one Gregorian year — against the astronomically cross-checked vectors.
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (year, observance) input and the expected occurrence list.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(TabularHijriObservanceVectors.Rows),
+        typeof(TabularHijriObservanceVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossVectorRange_ShouldMatchTabularHijriVector(ValidKat<(int Year, string ObservanceId), IReadOnlyList<DateOnly>> kat)
+    {
+        List<NotableDate> matches = CommonCatalogues.ResolveForYear(s_tabularSweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+
+        CollectionAssert.AreEqual(
+            kat.Expected.ToList(),
+            matches.Select(m => m.Date).ToList(),
+            $"{kat.Name}: expected [{string.Join(", ", kat.Expected)}], resolved [{string.Join(", ", matches.Select(m => m.Date))}]");
+    }
+
+    /// <summary>
+    /// Verifies that each Umm al-Qura observance resolves to the vector table's ordered occurrence list across the
+    /// full fifty-year sweep (Gregorian 1990-2039), pinning the KACST month-table projection — including the years
+    /// where a short lunar date lands twice in one Gregorian year — against the astronomically cross-checked vectors.
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (year, observance) input and the expected occurrence list.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(UmmAlQuraObservanceVectors.Rows),
+        typeof(UmmAlQuraObservanceVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossVectorRange_ShouldMatchUmmAlQuraVector(ValidKat<(int Year, string ObservanceId), IReadOnlyList<DateOnly>> kat)
+    {
+        List<NotableDate> matches = CommonCatalogues.ResolveForYear(s_ummAlQuraSweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+
+        CollectionAssert.AreEqual(
+            kat.Expected.ToList(),
+            matches.Select(m => m.Date).ToList(),
+            $"{kat.Name}: expected [{string.Join(", ", kat.Expected)}], resolved [{string.Join(", ", matches.Select(m => m.Date))}]");
+    }
+
+    /// <summary>
+    /// Verifies that each Umm al-Qura observance resolves within one day of the date the High Judiciary Council of
+    /// Saudi Arabia actually announced (Hijri 1422-1448), pinning the computed catalogue against the gazetted civil
+    /// dates. One day is the empirically maximal computed-versus-announced divergence across the range - the
+    /// announcements moved seventeen month starts by a single day (in both directions) and never more.
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (year, observance) input and the announced date.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(SaudiAnnouncedObservanceVectors.Rows),
+        typeof(SaudiAnnouncedObservanceVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossAnnouncedDates_ShouldBeWithinOneDayOfGazettedDate(ValidKat<(int Year, string ObservanceId), DateOnly> kat)
+    {
+        List<NotableDate> matches = CommonCatalogues.ResolveForYear(s_ummAlQuraSweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+
+        Assert.IsNotEmpty(matches, $"expected at least one '{kat.Input.ObservanceId}' in {kat.Input.Year}");
+
+        int distance = matches.Min(m => Math.Abs(m.Date.DayNumber - kat.Expected.DayNumber));
+        Assert.IsTrue(
+            distance <= 1,
+            $"{kat.Name}: resolved [{string.Join(", ", matches.Select(m => m.Date))}] is {distance} days from the announced date");
+    }
+
     /// <summary>
     /// Verifies that each tabular-Hijri observance resolves to its base class library date across 2023-2025.
     /// </summary>

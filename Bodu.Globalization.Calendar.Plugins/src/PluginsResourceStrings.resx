@@ -91,4 +91,19 @@
   <data name="Op_NotTrusted_PluginTokenNotAllowed" xml:space="preserve">
     <value>The plugin assembly public-key token '{0}' is not in the allowlist.</value>
   </data>
+  <data name="Op_Invalid_PluginImage" xml:space="preserve">
+    <value>The file '{0}' is not a valid managed plugin assembly image.</value>
+  </data>
+  <data name="Op_Invalid_PluginAlgorithmsNull" xml:space="preserve">
+    <value>The plugin '{0}' returned a null algorithm sequence.</value>
+  </data>
+  <data name="Op_Invalid_PluginAlgorithmsFaulted" xml:space="preserve">
+    <value>The plugin '{0}' failed while enumerating its contributed algorithms.</value>
+  </data>
+  <data name="Op_Invalid_PluginAlgorithmEntry" xml:space="preserve">
+    <value>The plugin '{0}' contributed an algorithm entry with a null key or null algorithm.</value>
+  </data>
+  <data name="Op_Invalid_PluginAlgorithmKeyCollision" xml:space="preserve">
+    <value>The plugin '{0}' attempted to register algorithm key '{1}', which is already registered. Enable PluginAlgorithmRegistrationOptions.AllowOverride to permit replacement.</value>
+  </data>
 </root>

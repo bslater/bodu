@@ -45,7 +45,7 @@ The fluent entry points — `WithResourceId`, `WithSchemaVersion`, `WithMetadata
 dotnet test Bodu.Globalization.Calendar.Builder/test/Bodu.Globalization.Calendar.Builder.Test.csproj --settings bvt.runsettings
 ```
 
-Tests build documents end-to-end, serialize to XML/JSON, and assert against the real `NotableDateResourceLoader` / `NotableDateService` to confirm round-trip fidelity.
+Tests build documents end-to-end, serialize to XML/JSON, and assert against the real `NotableDateResourceLoader` / `NotableDateService` to confirm round-trip fidelity. The precise contract — byte-stable canonical XML, identity within the JSON subset, semantic parity across formats, and the XML → JSON lossiness boundary — is documented in the [builder round-trip guarantees guide](../docs/guides/calendar/round-trip-guarantees.md).
 
 ## License
 

@@ -5,11 +5,19 @@
     <RootNamespace>Bodu</RootNamespace>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\src\Bodu.Globalization.Calendar.Europe.csproj" />
     <ProjectReference Include="..\..\Bodu.Globalization.Calendar.Data.Test.Common\Bodu.Globalization.Calendar.Data.Test.Common.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Test\test\Bodu.Test.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\Vectors\*.csv">
+      <LogicalName>Bodu.Globalization.Calendar.Europe.Fixtures.Vectors.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

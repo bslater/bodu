@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar;
 /// conflict-aware Christmas/Boxing Day substitution.
 /// </summary>
 [TestClass]
-public sealed class AmericasCalendarDataTests
+public sealed partial class AmericasCalendarDataTests
     : CalendarDataTestsBase
 {
     /// <inheritdoc />

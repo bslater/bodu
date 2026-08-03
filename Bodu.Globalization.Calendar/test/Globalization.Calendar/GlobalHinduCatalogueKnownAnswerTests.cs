@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -20,12 +22,38 @@ public sealed class GlobalHinduCatalogueKnownAnswerTests
     /// </summary>
     private const int ToleranceDays = 2;
 
+    /// <summary>The shared sweep service, built once for the fifty-year vector rows.</summary>
+    private static readonly Lazy<NotableDateService> s_sweepService = new(CreateService);
+
     /// <summary>
     /// Builds a service over the bundled <c>global-hindu</c> catalogue.
     /// </summary>
     /// <returns>A service for the catalogue.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-hindu");
+
+    /// <summary>
+    /// Verifies that each Hindu observance resolves to the engine-pinned vector date across the full fifty-year sweep
+    /// (Gregorian 1990-2039). The vectors freeze the catalogue's current output as a regression baseline — braced by
+    /// the independent tithi-proximity and seasonal-window checks recorded in the vector file's provenance header and
+    /// by the published-panchanga rows in this class — so an unintended change to the lunisolar model surfaces as a
+    /// diff rather than passing silently.
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (year, observance) input and the expected date.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(HinduObservanceVectors.Rows),
+        typeof(HinduObservanceVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossVectorRange_ShouldMatchPinnedVector(ValidKat<(int Year, string ObservanceId), DateOnly> kat)
+    {
+        List<NotableDate> matches = CommonCatalogues.ResolveForYear(s_sweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+
+        Assert.HasCount(1, matches, $"expected exactly one '{kat.Input.ObservanceId}' in {kat.Input.Year}");
+        Assert.AreEqual(kat.Expected, matches[0].Date, kat.Name);
+    }
 
     /// <summary>
     /// Verifies that the solar harvest festivals Makar Sankranti and Pongal resolve to their fixed 14 January date.
@@ -78,12 +106,25 @@ public sealed class GlobalHinduCatalogueKnownAnswerTests
     [TestCategory("Regression")]
     [DataRow(2024, "vasant-panchami", 2, 14)]
     [DataRow(2025, "vasant-panchami", 2, 2)]
+
+    // 2029's Magha-defining new moon (14 Jan 2029, ~17:25 UT) falls hours after the sun's sidereal Capricorn
+    // ingress on the same civil day, so a midnight-of-date sign evaluation misses the month entirely.
+    [DataRow(2029, "vasant-panchami", 1, 19)]
+    [DataRow(2029, "maha-shivaratri", 2, 11)]
     [DataRow(2024, "holi", 3, 25)]
     [DataRow(2025, "holi", 3, 14)]
     [DataRow(2024, "ganesh-chaturthi", 9, 7)]
     [DataRow(2024, "dussehra", 10, 12)]
     [DataRow(2024, "diwali", 11, 1)]
     [DataRow(2025, "diwali", 10, 21)]
+
+    // Ingress-day lunation anchors: in each of these years a new moon falls on a sidereal ingress day, so a
+    // start-of-day sun-sign read misclassifies it and fabricates a phantom adhika month one lunation early —
+    // 1991 and 2010 push Ram Navami into adhika Vaishakha (engine read 22 April), 2009 pushes Diwali a lunation
+    // late (engine read 16 November). Published dates per panchanga, confirmed by the calcal reference corpus.
+    [DataRow(1991, "ram-navami", 3, 24)]
+    [DataRow(2010, "ram-navami", 3, 24)]
+    [DataRow(2009, "diwali", 10, 17)]
     public void Resolve_HinduLunarFestival_IsWithinToleranceOfPublishedDate(int year, string notableDateId, int month, int day)
     {
         NotableDate festival = CommonCatalogues.ResolveSingle(CreateService(), notableDateId, year);

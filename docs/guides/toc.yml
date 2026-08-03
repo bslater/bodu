@@ -229,8 +229,14 @@
               href: calendar/rule-authoring.md
             - name: Authoring with the notable-date builder
               href: calendar/notable-date-builder.md
+            - name: Builder round-trip guarantees
+              href: calendar/round-trip-guarantees.md
+            - name: Binary rule packs
+              href: calendar/binary-rule-packs.md
         - name: Bodu.Globalization.Calendar — Reference
           items:
+            - name: Validation diagnostics
+              href: calendar/validation-diagnostics.md
             - name: Notable-date rule strategies
               href: calendar/strategy-reference.md
             - name: NotableDateRule and adjustment-policy reference
@@ -253,6 +259,8 @@
               href: calendar/working-days.md
             - name: Building and extending the service
               href: calendar/building-the-service.md
+            - name: Plugin trust
+              href: calendar/plugin-trust.md
             - name: Dependency injection
               href: calendar/dependency-injection.md
             - name: Caching notable dates

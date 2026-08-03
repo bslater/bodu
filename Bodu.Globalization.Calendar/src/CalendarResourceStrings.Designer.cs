@@ -464,5 +464,50 @@ namespace Bodu {
                 return ResourceManager.GetString("Validation_ReferenceIsRecurring", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The input is not a notable-date binary rule pack: the BCAL signature is missing..
+        /// </summary>
+        internal static string Format_Invalid_BinaryMagic {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BinaryMagic", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The binary rule pack declares format version {0}; this reader supports version {1} only..
+        /// </summary>
+        internal static string Format_Invalid_BinaryVersion {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BinaryVersion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The binary rule pack is truncated..
+        /// </summary>
+        internal static string Format_Invalid_BinaryTruncated {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BinaryTruncated", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The binary rule pack payload does not match its integrity digest; the pack is corrupted or was modified..
+        /// </summary>
+        internal static string Format_Invalid_BinaryHashMismatch {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BinaryHashMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The binary rule pack carries an invalid value: {0}..
+        /// </summary>
+        internal static string Format_Invalid_BinaryValue {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BinaryValue", resourceCulture);
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@ title: Calendar dependency injection
 
 The optional `Bodu.Globalization.Calendar.DependencyInjection` companion package wires <xref:Bodu.Globalization.Calendar.INotableDateService> into a `Microsoft.Extensions.DependencyInjection` container, so ASP.NET Core, generic-host, or any `IServiceCollection`-based application can resolve the calendar service like any other framework-registered dependency.
 
-The package is intentionally thin. A resource is an immutable, already-validated value, so registration takes the resource (or a factory for it) directly — there is no options object and no fluent builder. The service's behaviour is carried by the resource's `<ResolutionPolicy>` and by the optional collaborators supplied when the resource or service is built (see [Building and extending the service](building-the-service.md)). If you are constructing the service by hand — in a console app or a test — keep using `new NotableDateService(...)`; this page is only relevant when you want the host to compose the service for you.
+The package is intentionally thin. A resource is an immutable, already-validated value, so registration takes the resource (or a factory for it) directly — there is no fluent builder. The service's behaviour is carried by the resource's `<ResolutionPolicy>` and, when the service needs collaborators (a custom algorithm registry, collision resolver, adjustment handlers, or code-first providers), by a <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> passed to the matching overload (see [Building and extending the service](building-the-service.md)). If you are constructing the service by hand — in a console app or a test — keep using `new NotableDateService(...)`; this page is only relevant when you want the host to compose the service for you.
 
 ## Install
 
@@ -23,10 +23,26 @@ Every extension method lives on <xref:Bodu.Globalization.Calendar.NotableDateSer
 | Method | Registers |
 |---|---|
 | `AddNotableDateService(IServiceCollection, NotableDateResource)` | A singleton `INotableDateService` over an already-loaded resource. |
+| `AddNotableDateService(IServiceCollection, NotableDateResource, NotableDateServiceOptions?)` | The same, composed with collaborators — a custom algorithm registry, collision resolver, adjustment handlers, or code-first providers. |
 | `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>)` | The same, but the resource is produced from the container — e.g. loaded from configuration or a data pack resolved through DI. |
+| `AddNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>, Func<IServiceProvider, NotableDateServiceOptions?>?)` | Factory registration with collaborators also produced from the container. |
+| `AddNotableDateService(IServiceCollection, string, NotableDateResource, NotableDateServiceOptions?)` | A **keyed** singleton `INotableDateService`, so a multi-tenant process registers one service per jurisdiction and resolves them by key. |
+| `AddNotableDateService(IServiceCollection, string, Func<IServiceProvider, NotableDateResource>, Func<IServiceProvider, NotableDateServiceOptions?>?)` | The keyed registration with factory-produced resource and collaborators. |
 | `AddReloadableNotableDateService(IServiceCollection, NotableDateResource)` | A singleton `INotableDateService` (a `ReloadableNotableDateService`) **and** a singleton `MutableNotableDateResourceProvider` you inject to call `Reload(...)`. |
+| `AddReloadableNotableDateService(IServiceCollection, NotableDateResource, NotableDateServiceOptions?)` | The reloadable registration with collaborators propagated to each rebuilt inner service. |
+| `AddReloadableNotableDateService(IServiceCollection, Func<IServiceProvider, NotableDateResource>, NotableDateServiceOptions?)` | The reloadable registration with the initial resource produced from the container. |
+| `AddReloadableNotableDateService<TOptions>(IServiceCollection, Func<IServiceProvider, TOptions, NotableDateResource>, NotableDateServiceOptions?)` | The reloadable registration driven by `IOptionsMonitor<TOptions>`: every options change rebuilds the resource through the factory and swaps it into the live service. |
 
-`INotableDateService` is always registered as a singleton. The fixed registration (`AddNotableDateService`) offers both a resource and a `Func<IServiceProvider, NotableDateResource>` factory overload; the reloadable registration takes the initial resource only — load it eagerly (typically from a data pack) and swap it later through the provider.
+`INotableDateService` is always registered as a singleton, and every registration is idempotent (`TryAdd` semantics): a second registration for the same service — or the same key — leaves the first in place rather than replacing it.
+
+Keyed services resolve through the standard .NET 8 keyed-service surface:
+
+```csharp
+builder.Services.AddNotableDateService("US", AmericasCalendarData.LoadResource("US"));
+builder.Services.AddNotableDateService("AU", AsiaPacificCalendarData.LoadResource("AU"));
+
+public sealed class PayrollCalendar([FromKeyedServices("AU")] INotableDateService calendar);
+```
 
 ## Register a resource
 
@@ -102,30 +118,39 @@ public sealed class CalendarReloader
 
 The provider is also registered as <xref:Bodu.Globalization.Calendar.INotableDateResourceProvider>, so a component that only needs to read the current resource can inject the interface instead of the concrete provider.
 
+### Configuration-driven reloads
+
+When the rule set is derived from configuration, bind an options type and use the monitored overload instead of calling `Reload` by hand — every change the options infrastructure observes (for example an edited `appsettings.json` with `reloadOnChange`) rebuilds the resource through your factory and swaps it into the live service:
+
+```csharp
+builder.Services.AddOptions<CalendarOptions>().Bind(builder.Configuration.GetSection("Calendar"));
+builder.Services.AddReloadableNotableDateService<CalendarOptions>((sp, options) =>
+    AsiaPacificCalendarData.LoadResource(options.Territory));
+```
+
+A factory failure during a change is logged and leaves the previously loaded resource in effect, so a broken configuration edit never takes the calendar offline.
+
 ## Registering a service with custom collaborators
 
-`AddNotableDateService` builds a plain `NotableDateService` over the resource — it does not take an algorithm registry, collision resolver, or adjustment handlers. When the service needs those collaborators (see [Building and extending the service](building-the-service.md)), construct the service yourself in the factory overload and register the instance as the interface:
+When the service needs collaborators — a custom algorithm registry, collision resolver, adjustment handlers, or code-first providers (see [Building and extending the service](building-the-service.md)) — pass a `NotableDateServiceOptions` to the matching overload. The factory pair defers both the resource and the options to container-build time:
 
 ```csharp
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Algorithms;
 using Microsoft.Extensions.DependencyInjection;
 
-builder.Services.AddSingleton<INotableDateService>(sp =>
-{
-    var registry = new NotableDateAlgorithmRegistry()
-        .Register("pi-day", new PiDayAlgorithm());
+var registry = new NotableDateAlgorithmRegistry()
+    .Register("pi-day", new PiDayAlgorithm());
 
-    NotableDateResource resource = NotableDateResourceLoader.Load(
+builder.Services.AddNotableDateService(
+    sp => NotableDateResourceLoader.Load(
         sp.GetRequiredService<IConfiguration>()["Calendar:Document"]!,
         CommonNotableDateResources.Resolver,
-        registry);
-
-    return new NotableDateService(resource, registry);
-});
+        registry),
+    _ => new NotableDateServiceOptions { Algorithms = registry });
 ```
 
-This is the standard escape hatch: anything `AddNotableDateService` cannot express is just a hand-built `NotableDateService` registered as a singleton `INotableDateService`.
+Anything the registration surface still cannot express remains expressible as a hand-built `NotableDateService` registered as a singleton `INotableDateService`.
 
 ## Service lifetime
 

@@ -44,6 +44,9 @@
     <EmbeddedResource Include="Globalization.Calendar\Fixtures\*.xml">
       <LogicalName>Bodu.Globalization.Calendar.Fixtures.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\Vectors\*.csv">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.Vectors.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <!-- Shared test infrastructure namespaces from Bodu.Test, imported project-wide. -->
