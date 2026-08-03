@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar;
 /// the continental no-substitution convention.
 /// </summary>
 [TestClass]
-public sealed class EuropeCalendarDataTests
+public sealed partial class EuropeCalendarDataTests
     : CalendarDataTestsBase
 {
     /// <inheritdoc />

@@ -71,7 +71,8 @@ corpus/
 ├── persian/                     independent reconciliation tables (ICU-derived)
 ├── sikh/                        SGPC Nanakshahi document inventory (acquisition records only)
 ├── sri-lanka/                   gazetted Poya days (official-published)
-└── thailand/                    Bank of Thailand financial-institution holidays (official-published)
+├── thailand/                    Bank of Thailand financial-institution holidays (official-published)
+└── uk/                          GOV.UK bank-holiday feed 2019-2028, archived verbatim (official-published)
 ```
 
 ## Source register (research pass, 2026-08-03)
@@ -88,6 +89,15 @@ Datasets delivered by the external research pass, each verified before commit
 | `india/dopt-holidays-2026.csv` | 51 | `official-published` | DoPT Office Memorandum F.No.12/2/2023-JCA (2026) |
 | `sikh/sgpc-nanakshahi-inventory.csv` | 4 | acquisition records | SGPC Nanakshahi calendar/Jantri PDFs (Gurmukhi image-layout; no OCR transcription) |
 
+## Hand-back deliveries (2026-08-03)
+
+Sources the build environment could not reach (proxy-blocked hosts), fetched user-side
+and handed back:
+
+| File | Source class | Source |
+|---|---|---|
+| `uk/bank-holidays-2019-2028.json` | `official-published` (OGL v3.0; raw feed committed verbatim) | GOV.UK bank-holiday dataset — see `uk/README.md`; drives the 264-row GB pack sweep |
+
 Findings recorded by the same pass:
 
 - **Umm al-Qura post-1450 AH**: the official KACST site (ummulqura.org.sa, relaunched
@@ -103,8 +113,6 @@ Findings recorded by the same pass:
 - **calcal run** — `hindu/reference/calcal/generate_corpus.R` with the pinned R
   environment; commit `hindu-reference-daily.csv` + `renv.lock` (activates the
   reconciliation tests).
-- **GOV.UK `bank-holidays.json`** — proxy-blocked in the build environment; fetch and
-  supply the raw bytes (archive with SHA-256) to unlock the GB territory sweep.
 - **IMD Rashtriya Panchang English ZIP** — `packolkata.imd.gov.in` is proxy-blocked here;
   see `hindu/data/raw/imd-rashtriya-panchang/manifest.json` (`surveyedEditions`) for the
   direct URL pattern and next action.
