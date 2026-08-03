@@ -91,6 +91,14 @@ jobs:
             done | sort -u)"
         echo "Discovered $(printf '%s\n' "$ids" | grep -c . ) packable packages."
 
+        # Dotnet-tool packages (<PackAsTool>true</PackAsTool>) are installed with
+        # 'dotnet tool install', never 'dotnet add package' - require the correct command.
+        tool_ids="$(find . -path ./archive -prune -o -path ./Bodu.CodeStyle -prune -o \
+          -name '*.csproj' -print | grep -E '/src/[^/]+\.csproj$' \
+          | while read -r proj; do \
+              if grep -qi '<PackAsTool>true</PackAsTool>' "$proj"; then basename "$proj" .csproj; fi; \
+            done | sort -u)"
+
         # 1. Every packable package must appear in the matrix AND have an install command in docs/.
         for id in $ids; do
           re="$(printf '%s' "$id" | sed 's/\./\\./g')"
@@ -98,7 +106,12 @@ jobs:
             echo "::error::Package '${id}' is packable but is not listed in ${MATRIX}."
             fail=1
           fi
-          if ! grep -rqE "dotnet add package ${re}( |\$)" docs/ --include='*.md'; then
+          if printf '%s\n' $tool_ids | grep -qxF "$id"; then
+            if ! grep -rqE "dotnet tool install (--global |-g )?${re}( |\$)" docs/ --include='*.md'; then
+              echo "::error::Package '${id}' is a dotnet tool but has no 'dotnet tool install ${id}' command anywhere under docs/."
+              fail=1
+            fi
+          elif ! grep -rqE "dotnet add package ${re}( |\$)" docs/ --include='*.md'; then
             echo "::error::Package '${id}' has no 'dotnet add package ${id}' command anywhere under docs/."
             fail=1
           fi

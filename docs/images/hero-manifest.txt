@@ -37,6 +37,8 @@ Bodu.Globalization.Calendar.DependencyInjection hero-calendar-di.svg
 Bodu.Globalization.Calendar.Europe hero-calendar-europe.svg
 Bodu.Globalization.Calendar.MiddleEast hero-calendar-middleeast.svg
 Bodu.Globalization.Calendar.Plugins hero-calendar-plugins.svg
+Bodu.Globalization.Calendar.Tool hero-calendar-tool.svg
+Bodu.Globalization.Calendar.Build hero-calendar-build.svg
 Bodu.Globalization.Calendar.Caching hero-calendar-caching.svg
 Bodu.Globalization.Calendar.Caching.Distributed hero-calendar-caching-distributed.svg
 Bodu.Globalization.Calendar.Caching.Sqlite hero-calendar-caching-sqlite.svg

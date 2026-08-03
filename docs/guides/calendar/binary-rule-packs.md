@@ -60,6 +60,37 @@ body     := resourceId schemaVersion resolution-policy
 
 Rules encode nullable fields as presence bytes and their occurrence source as a marker byte (`1` = calculation strategy, `2` = recurrence) followed by a discriminator byte and that type's fields. The discriminator tables enumerate the engine's 13 calculation strategies, 4 recurrence strategies, and 2 duration definitions exhaustively; additions require a new format version, which this reader rejects.
 
+## Compiling packs from the command line
+
+The `bodu-calendar` dotnet tool wraps the same compile pipeline for scripts and CI — it validates a notable-date document with the stable `BODU-CAL-*` diagnostics and compiles it to a sealed pack without writing any C#:
+
+```bash
+dotnet tool install --global Bodu.Globalization.Calendar.Tool
+
+bodu-calendar lint holidays.xml
+bodu-calendar compile holidays.xml -o holidays.bcal
+bodu-calendar info holidays.bcal
+```
+
+`lint` reports every diagnostic in collect mode, `compile` refuses to write a pack from a document that fails validation, and `info` prints a compiled pack's header, counts, and integrity digest.
+
+## Compiling packs during build
+
+The `Bodu.Globalization.Calendar.Build` package adds MSBuild integration — a development dependency that compiles `NotableDatePack` items to `.bcal` incrementally on every build via the bundled `bodu-calendar` tool, with no runtime reference added to the consuming project:
+
+```bash
+dotnet add package Bodu.Globalization.Calendar.Build
+```
+
+```xml
+<ItemGroup>
+  <NotableDatePack Include="rules\holidays.xml" />
+  <NotableDatePack Include="rules\corporate.json" ResolverDir="rules\shared" />
+</ItemGroup>
+```
+
+Each item compiles to `$(NotableDatePackOutputPath)<Filename>.bcal` (defaulting under the intermediate output path) and is copied to the project output directory; set `NotableDatePackCopyToOutput` to `false` to keep packs out of the output folder.
+
 ## Where to go next
 
 - [Builder round-trip guarantees](round-trip-guarantees.md) — the XML/JSON serialization contract the pack compiler builds on.
