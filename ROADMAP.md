@@ -1041,7 +1041,16 @@ resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
   (`SaudiAnnouncedObservances-1422-1448.csv`) shows the announcements
   moved seventeen month starts by exactly one day in both directions
   across 1422–1448 AH, so a sighting variant must reproduce those
-  seventeen ±1 shifts against the KACST table.
+  seventeen ±1 shifts against the KACST table. The Bahá'í acceptance
+  data is also now in-repo (`corpus/bahai/uhj-holy-days-172-221-be.csv`,
+  the official UHJ 50-year table): a Tehran-sunset equinox variant for
+  Naw-Rúz must flip exactly the twenty official-21-March boundary years
+  the current UT model runs one day early on, and the Twin Birthday
+  columns are the verification set for the pending
+  eighth-new-moon-after-Naw-Rúz algorithm (whose counting convention —
+  after the *day* of Naw-Rúz, Tehran sunset epoch — is pinned by the
+  2023/2034 boundary years and documented in
+  `tools/verify-bahai-poya-vectors.py`).
 - ~~**Extend the Hebcal-aligned regression catalogue**~~ — delivered
   across all three families: the 13 `global-jewish` observances are
   pinned across Gregorian 1990–2039 by an embedded vector table
@@ -1082,7 +1091,14 @@ resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
   Provenance and cross-check counts live in
   `NotableDateCatalogueVerification.md`. Remaining residual: reconcile
   future official KACST publications for 1451 AH onward as they
-  appear.
+  appear — a targeted check (Aug 2026) confirmed none exists yet: the
+  relaunched official ummulqura.org.sa is an interactive service with
+  no fixed post-1450 publication table, so this stays a periodic
+  recheck, not an open action. An eighth fifty-year table is now also
+  in place: the Universal House of Justice Badí table 172–221 B.E.
+  (2015–2064) sweeps all nine catalogue-modelled Bahá'í holy days at
+  the measured signed bound (exact in every official-20-March year,
+  one day early in every official-21-March boundary year).
 - ~~**Add `IAsyncEnumerable<NotableDate>` projections**~~ — delivered:
   `NotableDateServiceAsyncExtensions.ResolveAsync` streams a range's
   occurrences one civil year at a time with cooperative cancellation,

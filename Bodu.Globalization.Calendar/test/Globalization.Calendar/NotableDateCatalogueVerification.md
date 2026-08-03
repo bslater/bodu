@@ -174,7 +174,12 @@ Maha Shivaratri 11 Feb (exact).
   horizon**, where vendor extensions legitimately differ (+1 day in 47/144 months, always
   ICU later). The vectors' 1451–1462 rows therefore rest on the BCL's extension, braced by
   the astronomical conjunction bound rather than cross-vendor agreement — future official
-  KACST publications for those years should be reconciled as they appear.
+  KACST publications for those years should be reconciled as they appear. A targeted check
+  (Aug 2026) found none exists yet: the relaunched official ummulqura.org.sa is an
+  **interactive** calendar/converter service with no fixed, versioned month-start
+  publication for 1451 AH onward, so there is currently nothing official to reconcile —
+  interactive outputs, if ever sampled, are a distinct source class
+  (`official-interactive-output`), not a published table.
 - **Saudi gazetted announcements (1422–1448)** — the same van Gent table records the dates
   the **High Judiciary Council of Saudi Arabia actually announced** (via Fatwa-Online) for
   the sighting-sensitive month starts. These are embedded as
@@ -257,6 +262,24 @@ Maha Shivaratri 11 Feb (exact).
   28 Nov). The official table's Twin Birthdays (Birth of the Báb 10 Nov, Birth of
   Bahá'u'lláh 11 Nov 2026) are recorded here but deliberately not asserted — the catalogue
   omits those concepts until the eighth-new-moon-after-Naw-Rúz algorithm exists.
+- **Baha'i 50-year official sweep** — the full Universal House of Justice Badí table for
+  172–221 B.E. (2015–2064) is transcribed at `corpus/bahai/uhj-holy-days-172-221-be.csv`
+  (550 rows, all 11 holy days; via the NZ national Bahá'í institution's reproduction of
+  the UHJ table) and its nine catalogue-modelled ids are embedded as
+  `Fixtures/Vectors/BahaiHolyDays-172-221BE.csv` (450 rows). Pre-commit verification
+  (`tools/verify-bahai-poya-vectors.py`): the eight fixed holy days sit at uniform Badí
+  offsets from Naw-Rúz (+31/+39/+42/+64/+69/+111/+250/+252), Naw-Rúz is always 20/21
+  March, and every Twin Birthday pair falls within one day of the independent Meeus
+  eighth-new-moon computation at Tehran — which also pinned the UHJ counting convention
+  ("after the *day* of Naw-Rúz": the 2034 midday new moon on Naw-Rúz does not count, the
+  2023 after-sunset one does). The sweep
+  (`Resolve_WhenSweptAcrossOfficialBadiTable_ShouldMatchOfficialDateOrRunOneDayEarly`)
+  asserts the measured signed bound: the engine's UT-equinox model is **exact in all 30
+  years whose official Naw-Rúz is 20 March and exactly one day early in all 20 boundary
+  years whose official Naw-Rúz is 21 March** — never late, never mixed within a year
+  (270 exact / 180 one-early of 450). The corpus Twin Birthday columns are the acceptance
+  dataset for the future eighth-new-moon algorithm, and the Naw-Rúz column for a
+  Tehran-sunset equinox variant.
 - **Hindu** — the lunar set resolves within ±2 of published panchanga dates; the new solar
   harvest festivals are fixed at 14 January as authored.
 - **Vesak / East Asian Buddha's Birthday** — within ±2 across 2023–2027 (Vesak 2026 = 1 May
@@ -305,8 +328,17 @@ ICU/Node `Intl` platform calendar tables (`islamic-umalqura` for AH 1410–1462,
 for SH 1369–1418; committed under `corpus/islamic/` and `corpus/persian/` as
 independent-reconciliation data, delivered 3 Aug 2026);
 Iranian civil calendar (time.ir); the Baha'i World Centre / national Baha'i community holy-day
-listings, and the official Baha'i calendar for 183 B.E. (2026) used for the nine-anchor
-sweep; drikpanchang / published panchanga for Hindu, Sikh and Jain festivals; Tibetan Nuns
+listings, the official Baha'i calendar for 183 B.E. (2026) used for the nine-anchor
+sweep, and the Universal House of Justice 50-year Badí table 172–221 B.E. (10 July 2014
+message; transcribed via the NZ national Bahá'í institution's Holy Days PDF,
+guidelines.bahai.org.nz) driving the 450-row official sweep;
+Sri Lankan government holiday gazettes 2287/04, 2341/46, 2395/33, 2438/22, and 2493/05
+(documents.gov.lk; gazetted Poya days 2023–2027, `corpus/sri-lanka/`);
+Bank of Thailand financial-institution holiday notices 2020–2026 (bot.or.th; unofficial
+English translations, Thai text prevails, `corpus/thailand/`);
+the Government of India DoPT Office Memorandum F.No.12/2/2023-JCA for 2026
+(dopt.gov.in, `corpus/india/`);
+drikpanchang / published panchanga for Hindu, Sikh and Jain festivals; Tibetan Nuns
 Project, qppstudio and publicholidays.asia for Gyalpo Losar; timeanddate and publicholidays.asia
 for Asalha Puja / Khao Phansa; the U.S. Office of Personnel Management federal-holiday
 schedules (opm.gov/policy-data-oversight/pay-leave/federal-holidays/) for the 2011–2030
