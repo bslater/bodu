@@ -97,6 +97,8 @@ and handed back:
 | File | Source class | Source |
 |---|---|---|
 | `uk/bank-holidays-2019-2028.json` | `official-published` (OGL v3.0; raw feed committed verbatim) | GOV.UK bank-holiday dataset — see `uk/README.md`; drives the 264-row GB pack sweep |
+| `hindu/data/raw/imd-rashtriya-panchang/manifest.json` (`editions[]`) | acquisition records (link-and-hash; PDFs not committed) | IMD Rashtriya Panchang 1947 S.E. (2025-26) ZIPs: English, Bengali, Gujarati, Malayalam, Sanskrit |
+| `hindu/data/normalized/imd-rp-1947se-principal-festivals.csv` | `official-published` | The English edition's Principal Festivals and Anniversaries table (102 rows), transcribed from page renders and verified by `tools/verify-imd-festival-vectors.py` (one documented printer's erratum, row 52) |
 
 Findings recorded by the same pass:
 
@@ -113,9 +115,10 @@ Findings recorded by the same pass:
 - **calcal run** — `hindu/reference/calcal/generate_corpus.R` with the pinned R
   environment; commit `hindu-reference-daily.csv` + `renv.lock` (activates the
   reconciliation tests).
-- **IMD Rashtriya Panchang English ZIP** — `packolkata.imd.gov.in` is proxy-blocked here;
-  see `hindu/data/raw/imd-rashtriya-panchang/manifest.json` (`surveyedEditions`) for the
-  direct URL pattern and next action.
+- **IMD Rashtriya Panchang back/forward editions** — the 2025-26 edition (five
+  languages) was delivered 2026-08-03; the 2022-23, 2023-24, 2024-25, and 2026-27
+  editions indexed in `hindu/data/raw/imd-rashtriya-panchang/manifest.json` remain
+  user-side fetches (`packolkata.imd.gov.in` is proxy-blocked here).
 - **SGPC Gurmukhi transcription** — dual-person controlled transcription of the four
   indexed PDFs; no OCR shortcut.
 - **DoPT 2015–2025 backfill** — official PDFs located by the research pass but not

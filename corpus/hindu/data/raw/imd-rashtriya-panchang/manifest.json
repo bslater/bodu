@@ -5,7 +5,95 @@
   "otherLanguageIndex": "https://www.packolkata.gov.in/rashtriya-panchang-others.php",
   "ephemerisLandingPage": "https://mausam.imd.gov.in/responsive/indianAstronomicalEphemeris.php",
   "targetCoverage": { "startDate": "1990-01-01", "endDate": "2039-12-31" },
-  "editions": [],
+  "editions": [
+    {
+      "sourceId": "imd-rp-2025-2026-en",
+      "publisher": "India Meteorological Department, Positional Astronomy Centre",
+      "title": "Rashtriya Panchang 1947 Saka Era (2025-2026), English",
+      "sourceClass": "official-published",
+      "acquiredAtUtc": "2026-08-03T03:41:00Z",
+      "sourceUrl": "https://packolkata.imd.gov.in/download/EnglishRP2526.zip",
+      "sha256": "b67440c7c59a68aed6b20e5cadc171da83579fa7a568e0e3dc9d2b8f3e842c02",
+      "bornDigital": true,
+      "editionCoverage": { "startDate": "2025-03-22", "endDate": "2026-03-21" },
+      "licenceStatus": "government-publication-review-required",
+      "redistributionStatus": "link-and-hash-until-confirmed",
+      "notes": [
+        "User-side download handed back 2026-08-03 (host proxy-blocked in the build environment); sha256 is the ZIP as downloaded.",
+        "Inner file: 'RP 1947 SE English Final.pdf' (20071342 bytes, 197 pages), SHA-256 8f0f6fd2e56f42f5660aaf1382de417623d89038521af4bb9681191326872ee4.",
+        "Born-digital, but all text is drawn as vector outlines - no extractable text layer - so transcription works from page renders.",
+        "Page map: pp. 6-8 'Principal Festivals and Anniversaries' (102 rows, transcribed to ../../normalized/imd-rp-1947se-principal-festivals.csv); daily Panchang tables follow (not transcribed)."
+      ]
+    },
+    {
+      "sourceId": "imd-rp-2025-2026-bn",
+      "publisher": "India Meteorological Department, Positional Astronomy Centre",
+      "title": "Rashtriya Panchang 1947 Saka Era (2025-2026), Bengali",
+      "sourceClass": "official-published",
+      "acquiredAtUtc": "2026-08-03T03:41:00Z",
+      "sourceUrl": "https://packolkata.imd.gov.in/download/BengaliRP2526.zip",
+      "sha256": "73282a7975a8f2e92f1577c5a797740eaa0ae99d8e11c647627b2037d1f431f9",
+      "bornDigital": true,
+      "editionCoverage": { "startDate": "2025-03-22", "endDate": "2026-03-21" },
+      "licenceStatus": "government-publication-review-required",
+      "redistributionStatus": "link-and-hash-until-confirmed",
+      "notes": [
+        "User-side download handed back 2026-08-03; sha256 is the ZIP as downloaded.",
+        "Inner file: 'Bengali RP 1947 SE.pdf' (2068383 bytes, 223 pages), SHA-256 a652ff4b796da7787764c0dab6ed26041c2664b4640791bb89855e1e99fb5bc5; has an extractable text layer."
+      ]
+    },
+    {
+      "sourceId": "imd-rp-2025-2026-gu",
+      "publisher": "India Meteorological Department, Positional Astronomy Centre",
+      "title": "Rashtriya Panchang 1947 Saka Era (2025-2026), Gujarati",
+      "sourceClass": "official-published",
+      "acquiredAtUtc": "2026-08-03T03:41:00Z",
+      "sourceUrl": "https://packolkata.imd.gov.in/download/GujaratiRP2526.zip",
+      "sha256": "b58de68ab029ad05e37cdc6d3d2abb0da9882ff1a110ead9463527ca12b7d15f",
+      "bornDigital": true,
+      "editionCoverage": { "startDate": "2025-03-22", "endDate": "2026-03-21" },
+      "licenceStatus": "government-publication-review-required",
+      "redistributionStatus": "link-and-hash-until-confirmed",
+      "notes": [
+        "User-side download handed back 2026-08-03; sha256 is the ZIP as downloaded.",
+        "Inner file: 'Gujarati 1947 SE RP.pdf' (19884167 bytes, 212 pages), SHA-256 4b02814e25e74a64e3621ba0aab3ed0d03678b910d915d7e591f22299594e774; has an extractable text layer."
+      ]
+    },
+    {
+      "sourceId": "imd-rp-2025-2026-ml",
+      "publisher": "India Meteorological Department, Positional Astronomy Centre",
+      "title": "Rashtriya Panchang 1947 Saka Era (2025-2026), Malayalam",
+      "sourceClass": "official-published",
+      "acquiredAtUtc": "2026-08-03T03:41:00Z",
+      "sourceUrl": "https://packolkata.imd.gov.in/download/MalayalamRP2526.zip",
+      "sha256": "fc5b21637824831141f367f51efc47c2f25de3472f039932943a89c67ca397c2",
+      "bornDigital": true,
+      "editionCoverage": { "startDate": "2025-03-22", "endDate": "2026-03-21" },
+      "licenceStatus": "government-publication-review-required",
+      "redistributionStatus": "link-and-hash-until-confirmed",
+      "notes": [
+        "User-side download handed back 2026-08-03; sha256 is the ZIP as downloaded.",
+        "Inner file: 'Malayalam RP 1947.pdf' (11891431 bytes, 197 pages), SHA-256 ce26a1d0dd06587413cac14002a7f000390e8e70151273eaecf80f35e8c81d87; has an extractable text layer."
+      ]
+    },
+    {
+      "sourceId": "imd-rp-2025-2026-sa",
+      "publisher": "India Meteorological Department, Positional Astronomy Centre",
+      "title": "Rashtriya Panchang 1947 Saka Era (2025-2026), Sanskrit",
+      "sourceClass": "official-published",
+      "acquiredAtUtc": "2026-08-03T03:41:00Z",
+      "sourceUrl": "https://packolkata.imd.gov.in/download/SanskritRP2526.zip",
+      "sha256": "54b0596dbdb8f717b7ee2b57d15d4908241c4e80092b04e691231e8fd047af37",
+      "bornDigital": true,
+      "editionCoverage": { "startDate": "2025-03-22", "endDate": "2026-03-21" },
+      "licenceStatus": "government-publication-review-required",
+      "redistributionStatus": "link-and-hash-until-confirmed",
+      "notes": [
+        "User-side download handed back 2026-08-03; sha256 is the ZIP as downloaded.",
+        "Inner file: 'Sanskrit RP 1947 SE.pdf' (10780904 bytes, 210 pages), SHA-256 1660cebf3d3486e55b1030d5e4ea5dae589254d464fa6892dc286840f0983987; has an extractable text layer."
+      ]
+    }
+  ],
   "surveyedEditions": [
     {
       "surveyedAtUtc": "2026-08-03T00:00:00Z",
@@ -16,12 +104,12 @@
         { "edition": "2022-23", "indexUrl": "https://www.packolkata.gov.in/rashtriya-panchang-english.php", "status": "indexed; binary not retrieved" },
         { "edition": "2023-24", "indexUrl": "https://www.packolkata.gov.in/rashtriya-panchang-english.php", "status": "indexed (14 languages); binary not retrieved" },
         { "edition": "2024-25", "indexUrl": "https://www.packolkata.gov.in/rashtriya-panchang-english.php", "status": "indexed (14 languages); binary not retrieved" },
-        { "edition": "2025-26", "indexUrl": "https://mausam.imd.gov.in/responsive/rashtriyPanchang.php", "status": "language ZIP links exposed; downloads timed out" },
+        { "edition": "2025-26", "indexUrl": "https://mausam.imd.gov.in/responsive/rashtriyPanchang.php", "status": "acquired 2026-08-03 (user-side hand-back): English, Bengali, Gujarati, Malayalam, Sanskrit - see editions[]" },
         { "edition": "2026-27", "indexUrl": "https://www.packolkata.gov.in/rashtriya-panchang-english.php", "status": "current edition indexed; binary not retrieved" }
       ],
       "printAvailability": "IMD Mausam Bhavan (New Delhi) and Positional Astronomy Centre (Kolkata); PAC lists a purchase price of INR 225 for the current publication (https://www.packolkata.gov.in/rp.php)",
       "licenceFinding": "IMD copyright notice; no GODL-India or explicit PDF redistribution statement found - do not redistribute PDFs, record URL + SHA-256 and transcribe facts only",
-      "nextAction": "user-side download of the English 2025-26 ZIP (host proxy-blocked in the build environment); record an acquisition entry per acquisition.template.json, then assess text readability before any transcription"
+      "nextAction": "2025-26 acquired and the English principal-festivals table transcribed (../../normalized/imd-rp-1947se-principal-festivals.csv); remaining: the 2022-23/2023-24/2024-25/2026-27 editions and the other nine 2025-26 languages stay user-side fetches, and the daily Panchang tables are untranscribed"
     }
   ]
 }
