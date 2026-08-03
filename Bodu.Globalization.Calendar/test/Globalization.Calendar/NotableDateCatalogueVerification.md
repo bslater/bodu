@@ -248,6 +248,29 @@ Maha Shivaratri 11 Feb (exact).
   UAQ 20 Mar, Muharram/Ashura 26 Jun vs 25 Jun, Milad-un-Nabi 26 Aug vs 25 Aug) —
   Indian moon-sighting. Documented as reckoning differences, not asserted; no engine
   defect surfaced.
+- **IMD Rashtriya Panchang 1947 S.E. (2025–26)** — the Government of India's official
+  almanac (English edition; acquisition records and the 102-row Principal Festivals
+  transcription under `corpus/hindu/data/`, verified by
+  `tools/verify-imd-festival-vectors.py`) gives a second official Indian reckoning
+  spanning 22 Mar 2025 – 20 Apr 2026, and its divergence pattern reproduces the DoPT
+  2026 findings across a different window. Exact agreements: Rama Navami 6 Apr and
+  Raksha Bandhan 9 Aug 2025, Janmashtami 15 Aug 2025 (IMD's Smarta row; its Vaishnava
+  row is the next day, the same split DoPT resolved the other way for 2026), Makara
+  Samkranti/Pongal 14 Jan, Maha Shivaratri 15 Feb, and Holika Dahan 3 Mar 2026 (IMD
+  `Holikadahana`; its `Holi` 4 Mar is the Dhulandi day, as with DoPT), plus Buddha
+  Purnima 12 May 2025 coinciding with the gazetted Vesak Poya. One-day
+  udaya-tithi/day-selection divergences, each matching the DoPT-documented direction
+  where the windows overlap: Ganesh Chaturthi 27 Aug 2025 (engine 26 Aug), Karaka
+  Chaturthi 10 Oct 2025 (engine 9 Oct), Dipavali 20 Oct 2025 (engine 21 Oct), Vasanta
+  Panchami 23 Jan 2026 (engine 22 Jan), Rama Navami 26 Mar 2026 (engine 27 Mar). The
+  widest gap is Vijaya Dasami 2 Oct 2025 (engine `dussehra` 30 Sep, two days inside the
+  documented ±1–2 engine-pin tolerance; IMD reaches 2 Oct via Mahanavami 1 Oct, and its
+  Mahashtami row is the verbatim-preserved 30-Sep printer's erratum). All nine Islamic
+  rows in the overlap run **exactly one day after the Umm al-Qura table with no
+  exception** — Sab-e-Qadr 28 Mar, Id-ul-Fitr 31 Mar, Id-uz-Zuha 7 Jun, Hejira New Year
+  27 Jun, Muharram/Ashura 6 Jul, Milad-un-Nabi 5 Sep 2025; first day of Ramadan 19 Feb,
+  Sab-e-Qadr 17 Mar, Id-ul-Fitr 21 Mar 2026 — the Indian moon-sighting convention
+  observed uniformly. Documented, not asserted; no engine defect surfaced.
 - **Oriental Orthodox Pascha** — anchor matches published Orthodox Pascha 2023–2027
   (16 Apr, 5 May, 20 Apr, 12 Apr, 2 May); every derived feast lands on its exact offset.
 - **Baha'i** — the equinox-plus-offset model reproduces the **official 2025 Badí dates**
