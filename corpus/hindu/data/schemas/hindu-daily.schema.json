@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bslater/bodu/corpus/hindu/data/schemas/hindu-daily.schema.json",
+  "title": "Hindu calendar daily corpus row",
+  "description": "One Gregorian civil date at one location under one convention profile. Columns marked officialOnly are populated only for rows transcribed from an official edition; the reference generator emits explicit nulls for fields the pinned oracle does not expose.",
+  "type": "object",
+  "required": [
+    "corpus_id",
+    "source_class",
+    "source_id",
+    "source_version",
+    "gregorian_date",
+    "location_id",
+    "timezone",
+    "utc_offset",
+    "calendar_model",
+    "transcription_method",
+    "quality_status"
+  ],
+  "properties": {
+    "corpus_id": { "type": "string", "minLength": 1 },
+    "source_class": {
+      "enum": [
+        "official-published",
+        "official-astronomy-derived",
+        "reference-generated",
+        "third-party-comparison"
+      ]
+    },
+    "source_id": { "type": "string", "minLength": 1 },
+    "source_version": { "type": "string", "minLength": 1 },
+    "gregorian_date": { "type": "string", "format": "date" },
+    "location_id": { "type": "string", "minLength": 1 },
+    "timezone": { "type": "string", "minLength": 1 },
+    "utc_offset": { "type": "string", "pattern": "^[+-][0-9]{2}:[0-9]{2}$" },
+    "calendar_model": {
+      "enum": ["modern-hindu-lunar", "modern-hindu-solar", "old-hindu-lunar", "old-hindu-solar"]
+    },
+    "month_system": { "enum": ["amanta", "purnimanta", "solar", "not-applicable"] },
+    "ayanamsa": { "type": ["string", "null"] },
+    "sunrise_local": { "type": ["string", "null"], "officialOnly": true },
+    "sunset_local": { "type": ["string", "null"], "officialOnly": true },
+    "moonrise_local": { "type": ["string", "null"], "officialOnly": true },
+    "moonset_local": { "type": ["string", "null"], "officialOnly": true },
+    "lunar_year": { "type": ["integer", "null"] },
+    "solar_year": { "type": ["integer", "null"] },
+    "lunar_month": { "type": ["integer", "null"], "minimum": 1, "maximum": 12 },
+    "lunar_month_name": { "type": ["string", "null"] },
+    "is_leap_month": { "type": ["boolean", "null"] },
+    "is_skipped_month_context": { "type": ["boolean", "null"] },
+    "lunar_day": { "type": ["integer", "null"], "minimum": 1, "maximum": 30 },
+    "is_leap_day": { "type": ["boolean", "null"] },
+    "solar_month": { "type": ["integer", "null"], "minimum": 1, "maximum": 12 },
+    "solar_day": { "type": ["integer", "null"], "minimum": 1, "maximum": 32 },
+    "paksha": { "enum": ["shukla", "krishna", null] },
+    "tithi": { "type": ["integer", "null"], "minimum": 1, "maximum": 30 },
+    "tithi_in_paksha": { "type": ["integer", "null"], "minimum": 1, "maximum": 15 },
+    "tithi_end_local": { "type": ["string", "null"], "officialOnly": true },
+    "tithi_status": { "enum": ["normal", "kshaya", "vriddhi", "unknown", null] },
+    "nakshatra": { "type": ["integer", "null"], "minimum": 1, "maximum": 27, "officialOnly": true },
+    "nakshatra_name": { "type": ["string", "null"], "officialOnly": true },
+    "nakshatra_end_local": { "type": ["string", "null"], "officialOnly": true },
+    "yoga": { "type": ["integer", "null"], "minimum": 1, "maximum": 27, "officialOnly": true },
+    "yoga_name": { "type": ["string", "null"], "officialOnly": true },
+    "yoga_end_local": { "type": ["string", "null"], "officialOnly": true },
+    "karana": { "type": ["string", "null"], "officialOnly": true },
+    "solar_rasi": { "type": ["integer", "null"], "minimum": 1, "maximum": 12 },
+    "solar_longitude_deg": { "type": ["number", "null"], "minimum": 0, "exclusiveMaximum": 360 },
+    "lunar_longitude_deg": { "type": ["number", "null"], "minimum": 0, "exclusiveMaximum": 360 },
+    "julian_day": { "type": ["number", "null"] },
+    "fixed_date": { "type": ["number", "null"] },
+    "kali_ahargana": { "type": ["number", "null"], "officialOnly": true },
+    "moon_age_days": { "type": ["number", "null"], "officialOnly": true },
+    "source_page": { "type": ["string", "null"], "officialOnly": true },
+    "source_table": { "type": ["string", "null"], "officialOnly": true },
+    "transcription_method": {
+      "enum": ["manual-double-entry", "parser", "ocr-reviewed", "generated"]
+    },
+    "quality_status": { "enum": ["verified", "review-required", "disputed", "unavailable"] },
+    "notes": { "type": ["string", "null"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "source_class": { "const": "official-published" } } },
+      "then": { "required": ["source_page"] }
+    },
+    {
+      "if": { "properties": { "calendar_model": { "enum": ["modern-hindu-lunar", "old-hindu-lunar"] } } },
+      "then": { "required": ["month_system"] }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "sourceId": "imd-rp-<start-year>-<end-year>-en",
+  "publisher": "India Meteorological Department, Positional Astronomy Centre",
+  "title": "Rashtriya Panchang <start-year>-<end-year>, English",
+  "sourceClass": "official-published",
+  "acquiredAtUtc": "<RFC3339 timestamp>",
+  "sourceUrl": "https://packolkata.imd.gov.in/<edition path>",
+  "sha256": "<lowercase-hex SHA-256 of the unmodified downloaded bytes>",
+  "bornDigital": true,
+  "editionCoverage": {
+    "startDate": "<edition start, typically 14 April>",
+    "endDate": "<edition end, typically 13 April>"
+  },
+  "licenceStatus": "government-publication-review-required",
+  "redistributionStatus": "link-and-hash-until-confirmed",
+  "notes": [
+    "Record whether the file is born-digital or scanned.",
+    "Inventory page ranges and identify the daily Panchang tables before transcription (page map)."
+  ]
+}

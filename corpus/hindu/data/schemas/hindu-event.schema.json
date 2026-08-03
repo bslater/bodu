@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bslater/bodu/corpus/hindu/data/schemas/hindu-event.schema.json",
+  "title": "Hindu calendar event corpus row",
+  "description": "One instantaneous transition (which may not align with sunrise or a civil-date boundary).",
+  "type": "object",
+  "required": ["event_id", "source_id", "location_id", "event_type", "event_time_utc", "quality_status"],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1 },
+    "source_id": { "type": "string", "minLength": 1 },
+    "location_id": { "type": "string", "minLength": 1 },
+    "event_type": {
+      "enum": [
+        "tithi-end",
+        "nakshatra-end",
+        "yoga-end",
+        "sankranti",
+        "new-moon",
+        "full-moon",
+        "sunrise",
+        "sunset",
+        "month-start",
+        "festival-rule-result"
+      ]
+    },
+    "event_time_utc": { "type": "string", "format": "date-time" },
+    "event_time_local": { "type": ["string", "null"] },
+    "value_before": { "type": ["string", "null"] },
+    "value_after": { "type": ["string", "null"] },
+    "precision_seconds": { "type": ["number", "null"], "minimum": 0 },
+    "source_page": { "type": ["string", "null"] },
+    "quality_status": { "enum": ["verified", "review-required", "disputed", "unavailable"] },
+    "notes": { "type": ["string", "null"] }
+  }
+}

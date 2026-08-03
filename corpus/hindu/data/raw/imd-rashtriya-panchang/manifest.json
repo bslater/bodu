@@ -1,0 +1,8 @@
+{
+  "description": "Edition inventory for the IMD Rashtriya Panchang Corpus. One entry per acquired edition, each with an acquisition record conforming to ../../schemas/provenance.schema.json. Source PDFs are not committed until redistribution rights are confirmed - commit the acquisition record (URL + SHA-256) instead.",
+  "officialLandingPage": "https://mausam.imd.gov.in/responsive/rashtriyPanchang.php",
+  "englishDownloadIndex": "https://packolkata.imd.gov.in/rashtriya-panchang-english.php",
+  "ephemerisLandingPage": "https://mausam.imd.gov.in/responsive/indianAstronomicalEphemeris.php",
+  "targetCoverage": { "startDate": "1990-01-01", "endDate": "2039-12-31" },
+  "editions": []
+}
