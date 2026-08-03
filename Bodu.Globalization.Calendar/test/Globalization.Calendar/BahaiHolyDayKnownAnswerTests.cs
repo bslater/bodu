@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -27,6 +29,9 @@ public sealed class BahaiHolyDayKnownAnswerTests
     /// The maximum tolerated difference, in days, between a resolved Baha'i holy day and its published reference date.
     /// </summary>
     private const int ToleranceDays = 2;
+
+    /// <summary>The shared catalogue service, built once for the fifty-year vector sweep.</summary>
+    private static readonly Lazy<NotableDateService> s_sweepService = new(CreateService);
 
     /// <summary>
     /// Builds a service over the bundled <c>global-bahai</c> catalogue.
@@ -129,6 +134,37 @@ public sealed class BahaiHolyDayKnownAnswerTests
             1,
             deltaDays,
             $"{notableDateId} 183 B.E.: resolved {observance.Date:yyyy-MM-dd}, official {official:yyyy-MM-dd}");
+    }
+
+    /// <summary>
+    /// Verifies that every holy day resolves to the official Universal House of Justice date, or exactly one day
+    /// before it, across the full fifty-year Badi table 172-221 B.E. (2015-2064).
+    /// </summary>
+    /// <param name="kat">The vector row carrying the (Gregorian year, holy day) input and the official date.</param>
+    /// <remarks>
+    /// <para>
+    /// The measured relationship between the engine's Universal-Time equinox model and the official Tehran-anchored
+    /// reckoning is asymmetric and year-uniform: the engine is exact in the thirty years whose official Naw-Ruz is
+    /// 20 March and exactly one day early in the twenty Tehran-sunset boundary years whose official Naw-Ruz is
+    /// 21 March — never late and never mixed within a year. The sweep therefore asserts the signed bound
+    /// (official minus one day, or official) rather than a symmetric tolerance.
+    /// </para>
+    /// </remarks>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(BahaiHolyDayVectors.Rows),
+        typeof(BahaiHolyDayVectors),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Resolve_WhenSweptAcrossOfficialBadiTable_ShouldMatchOfficialDateOrRunOneDayEarly(ValidKat<(int Year, string ObservanceId), DateOnly> kat)
+    {
+        NotableDate observance = CommonCatalogues.ResolveSingle(s_sweepService.Value, kat.Input.ObservanceId, kat.Input.Year);
+        int deltaDays = observance.Date.DayNumber - kat.Expected.DayNumber;
+
+        Assert.IsTrue(
+            deltaDays is 0 or -1,
+            $"{kat.Name}: resolved {observance.Date:yyyy-MM-dd}, official {kat.Expected:yyyy-MM-dd} (delta {deltaDays:+0;-0;0}d)");
     }
 
     /// <summary>
