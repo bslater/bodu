@@ -30,8 +30,9 @@ public sealed class HinduReferenceCorpusReconciliationTests
 
     /// <summary>
     /// The lunar festival coordinates in reference-corpus terms: the amanta month and the lunar day (tithi ordinal
-    /// 1-30; shukla T = day T, krishna T = day 15 + T, purnima = day 15). Diwali is the Kartika-boundary new moon,
-    /// modelled as month 8 day 1 with the one-day band absorbing the amavasya-side assignment.
+    /// 1-30; shukla T = day T, krishna T = day 15 + T, purnima = day 15). Diwali is the Ashvina amavasya (month 7
+    /// day 30): expressing it as the following month's first day breaks in an adhika-Kartika year (2028), where the
+    /// festival stays with the Ashvina-ending new moon while the corpus defers non-leap Kartika a full lunation.
     /// </summary>
     private static readonly (string Id, int Month, int Day)[] s_lunarFestivals =
     [
@@ -42,7 +43,7 @@ public sealed class HinduReferenceCorpusReconciliationTests
         ("navaratri", 7, 1),
         ("dussehra", 7, 10),
         ("karva-chauth", 7, 19),
-        ("diwali", 8, 1),
+        ("diwali", 7, 30),
         ("vasant-panchami", 11, 5),
         ("saraswati-puja", 11, 5),
         ("maha-shivaratri", 11, 29),
@@ -76,10 +77,20 @@ public sealed class HinduReferenceCorpusReconciliationTests
     }
 
     /// <summary>
-    /// Verifies that every engine-resolved lunar festival lies within one day (the convention-equivalent band) of
-    /// the date the reference corpus implies for the festival's amanta month and lunar day, across every year both
-    /// sources cover, reporting the comparison-class distribution.
+    /// Verifies that every engine-resolved lunar festival lies within two days of the date the reference corpus
+    /// implies for the festival's amanta month and lunar day, across every year both sources cover, reporting the
+    /// comparison-class distribution.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The classes follow the corpus policy (<c>corpus/README.md</c>, lineage warning): <c>exact</c>;
+    /// <c>convention-equivalent</c> (one day — panchanga day-assignment); and <c>model-induced</c> (two days — the
+    /// documented bound of the engine's Meeus/Lahiri approximations against the Reingold-Dershowitz family, the same
+    /// ±1–2 day band the engine-pinned vector table has carried since inception). Anything beyond two days, or a
+    /// festival whose target month cannot be found near the engine date at all (a wrong-lunation selection), fails
+    /// the sweep — that is the class the corpus caught in 1991/2009/2010 before the ingress-instant fix.
+    /// </para>
+    /// </remarks>
     [TestMethod]
     [TestCategory("Regression")]
     public void Resolve_WhenComparedWithReferenceCorpus_ShouldStayWithinConventionBand()
@@ -95,7 +106,7 @@ public sealed class HinduReferenceCorpusReconciliationTests
         int firstYear = Math.Max(1990, corpus.Keys.Min().Year + 1);
         int lastYear = Math.Min(2039, corpus.Keys.Max().Year - 1);
 
-        int exact = 0, conventionEquivalent = 0;
+        int exact = 0, conventionEquivalent = 0, modelInduced = 0;
         List<string> beyondBand = new();
 
         for (int year = firstYear; year <= lastYear; year++)
@@ -113,6 +124,8 @@ public sealed class HinduReferenceCorpusReconciliationTests
                     exact++;
                 else if (distance == 1)
                     conventionEquivalent++;
+                else if (distance == 2)
+                    modelInduced++;
                 else
                     beyondBand.Add($"{id} {year}: engine {resolved[0].Date:yyyy-MM-dd} vs corpus {implied:yyyy-MM-dd} ({distance} d)");
             }
@@ -120,7 +133,8 @@ public sealed class HinduReferenceCorpusReconciliationTests
 
         Assert.IsEmpty(
             beyondBand,
-            $"comparisons beyond the one-day band (exact {exact}, convention-equivalent {conventionEquivalent}):{Environment.NewLine}"
+            $"comparisons beyond the two-day band (exact {exact}, convention-equivalent {conventionEquivalent}, "
+            + $"model-induced {modelInduced}):{Environment.NewLine}"
             + string.Join(Environment.NewLine, beyondBand));
     }
 

@@ -87,9 +87,18 @@ internal static class SolarTermCalculator
     /// </summary>
     /// <param name="date">The date to evaluate the sun's position for.</param>
     /// <returns>The tropical ecliptic longitude in degrees, normalized to the range <c>[0, 360)</c>.</returns>
-    public static double SunTropicalLongitude(DateOnly date)
+    public static double SunTropicalLongitude(DateOnly date) =>
+        SunTropicalLongitude(1721425.5 + date.DayNumber);
+
+    /// <summary>
+    /// Returns the sun's apparent tropical ecliptic longitude at the supplied Julian Day instant, using the
+    /// low-precision solar series from Jean Meeus, <em>Astronomical Algorithms</em> (chapter 25).
+    /// </summary>
+    /// <param name="julianDay">The Julian Day to evaluate the sun's position at, including any fractional time of day.</param>
+    /// <returns>The tropical ecliptic longitude in degrees, normalized to the range <c>[0, 360)</c>.</returns>
+    public static double SunTropicalLongitude(double julianDay)
     {
-        double t = (1721425.5 + date.DayNumber - J2000JulianDay) / 36525.0;
+        double t = (julianDay - J2000JulianDay) / 36525.0;
         double meanLongitude = 280.46646 + (36000.76983 * t) + (0.0003032 * t * t);
         double meanAnomaly = DegreesToRadians(357.52911 + (35999.05029 * t) - (0.0001537 * t * t));
 
