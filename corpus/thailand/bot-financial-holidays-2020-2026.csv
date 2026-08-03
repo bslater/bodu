@@ -1,0 +1,135 @@
+# source: Annual holidays of financial institutions and subsequent amendment/additional-holiday notifications, 2020–2026
+# publisher: Bank of Thailand
+# url: https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2562/EngPDF/25620179.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2563/EngPDF/25630233.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2563/EngPDF/25630208.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2564/EngPDF/25640124.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2564/EngPDF/25640207.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2565/EngPDF/25650128.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2566/EngPDF/25660133.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2566/EngPDF/25660204.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2567/EngPDF/25670152.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2567/EngPDF/25670209.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2568/EngPDF/25680162.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2569/EngPDF/25690116.pdf
+# accessed: 2026-08-03
+# license: redistribution rights unclear — transcribed facts only; BOT site states copyright / all rights reserved
+# notes: 126 final-effective rows. Weekdays computed from Gregorian dates. 2020 removes the suspended April Songkran rows and includes the September replacement holidays. 2023-12-29 replaces the initially announced 2024-01-02 special holiday. 2026-10-16 is scoped to financial institutions in Bangkok only.
+# verification: bodu 2026-08-03 — 126 rows, years contiguous 2020-2026; caveat: the weekday column was computed from the date by the transcriber, not transcribed from the notices, so it is not an independent check; English notices are unofficial translations (Thai text prevails).
+# columns: year,name_en_as_published,gregorian_date,weekday,notes
+year,name_en_as_published,gregorian_date,weekday,notes
+2020,New Year’s Day,2020-01-01,Wednesday,
+2020,Substitution for Makha Bucha Day (Saturday 8th February 2020),2020-02-10,Monday,substitution day
+2020,Chakri Memorial Day,2020-04-06,Monday,
+2020,National Labour Day,2020-05-01,Friday,
+2020,Coronation Day,2020-05-04,Monday,
+2020,Visakha Bucha Day,2020-05-06,Wednesday,
+2020,H.M. Queen Suthida Bajrasudhabimalalakshana’s Birthday,2020-06-03,Wednesday,
+2020,Substitution for Asarnha Bucha Day (Sunday 5th July 2020),2020-07-06,Monday,substitution day
+2020,H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday,2020-07-28,Tuesday,
+2020,H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day,2020-08-12,Wednesday,
+2020,Substituted holiday for Songkran Festival,2020-09-04,Friday,substitution holiday under FPG. 18/2563
+2020,Substituted holiday for Songkran Festival,2020-09-07,Monday,substitution holiday under FPG. 18/2563
+2020,H.M. King Bhumibol Adulyadej The Great Memorial Day,2020-10-13,Tuesday,
+2020,Chulalongkorn Day,2020-10-23,Friday,
+2020,Substitution for H.M. King Bhumibol Adulyadej The Great’s Birthday / National Day / Father’s Day (Saturday 5th December 2020),2020-12-07,Monday,substitution day
+2020,Constitution Day,2020-12-10,Thursday,
+2020,New Year’s Eve,2020-12-31,Thursday,
+2021,New Year’s Day,2021-01-01,Friday,
+2021,Makha Bucha Day,2021-02-26,Friday,
+2021,Chakri Memorial Day,2021-04-06,Tuesday,
+2021,Songkran Festival,2021-04-13,Tuesday,
+2021,Songkran Festival,2021-04-14,Wednesday,
+2021,Songkran Festival,2021-04-15,Thursday,
+2021,Substitution for National Labour Day (Saturday 1st May 2021),2021-05-03,Monday,substitution day
+2021,Coronation Day,2021-05-04,Tuesday,
+2021,Visakha Bucha Day,2021-05-26,Wednesday,
+2021,H.M. Queen Suthida Bajrasudhabimalalakshana’s Birthday,2021-06-03,Thursday,
+2021,Substitution for Asarnha Bucha Day (Saturday 24th July 2021),2021-07-26,Monday,substitution day
+2021,H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday,2021-07-28,Wednesday,
+2021,H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day,2021-08-12,Thursday,
+2021,H.M. King Bhumibol Adulyadej The Great Memorial Day,2021-10-13,Wednesday,
+2021,Substitution for Chulalongkorn Day (Saturday 23rd October 2021),2021-10-25,Monday,substitution day
+2021,Substitution for H.M. King Bhumibol Adulyadej The Great’s Birthday / National Day / Father’s Day (Sunday 5th December 2021),2021-12-06,Monday,substitution day
+2021,Constitution Day,2021-12-10,Friday,
+2021,New Year’s Eve,2021-12-31,Friday,
+2022,Substitution for New Year’s Day (Saturday 1st January 2022),2022-01-03,Monday,substitution day
+2022,Makha Bucha Day,2022-02-16,Wednesday,
+2022,Chakri Memorial Day,2022-04-06,Wednesday,
+2022,Songkran Festival,2022-04-13,Wednesday,
+2022,Songkran Festival,2022-04-14,Thursday,
+2022,Songkran Festival,2022-04-15,Friday,
+2022,Substitution for National Labour Day (Sunday 1st May 2022),2022-05-02,Monday,substitution day
+2022,Coronation Day,2022-05-04,Wednesday,
+2022,Substitution for Visakha Bucha Day (Sunday 15th May 2022),2022-05-16,Monday,substitution day
+2022,H.M. Queen Suthida Bajrasudhabimalalakshana’s Birthday,2022-06-03,Friday,
+2022,Asarnha Bucha Day,2022-07-13,Wednesday,
+2022,H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday,2022-07-28,Thursday,
+2022,Additional Special Holiday,2022-07-29,Friday,special one-off addition
+2022,H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day,2022-08-12,Friday,
+2022,H.M. King Bhumibol Adulyadej The Great Memorial Day,2022-10-13,Thursday,
+2022,Additional Special Holiday,2022-10-14,Friday,special one-off addition
+2022,Substitution for Chulalongkorn Day (Sunday 23rd October 2022),2022-10-24,Monday,substitution day
+2022,H.M. King Bhumibol Adulyadej The Great’s Birthday / National Day / Father’s Day,2022-12-05,Monday,
+2022,Substitution for Constitution Day (Saturday 10th December 2022),2022-12-12,Monday,substitution day
+2023,Substitution for New Year’s Eve and New Year’s Day (Saturday 31st December 2022 and Sunday 1st January 2023),2023-01-02,Monday,substitution day
+2023,Makha Bucha Day,2023-03-06,Monday,
+2023,Chakri Memorial Day,2023-04-06,Thursday,
+2023,Songkran Festival,2023-04-13,Thursday,
+2023,Songkran Festival,2023-04-14,Friday,
+2023,National Labour Day,2023-05-01,Monday,
+2023,Coronation Day,2023-05-04,Thursday,
+2023,Substitution for H.M. Queen Suthida Bajrasudhabimalalakshana’s Birthday and Visakha Bucha Day (Saturday 3rd June 2023),2023-06-05,Monday,substitution day
+2023,H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday,2023-07-28,Friday,
+2023,Asarnha Bucha Day,2023-08-01,Tuesday,
+2023,Substitution for H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day (Saturday 12th August 2023),2023-08-14,Monday,substitution day
+2023,H.M. King Bhumibol Adulyadej The Great Memorial Day,2023-10-13,Friday,
+2023,Chulalongkorn Day,2023-10-23,Monday,
+2023,H.M. King Bhumibol Adulyadej The Great’s Birthday / National Day / Father’s Day,2023-12-05,Tuesday,
+2023,Substitution for Constitution Day (Sunday 10th December 2023),2023-12-11,Monday,substitution day
+2023,Additional Special Holiday,2023-12-29,Friday,added by FPG 12/2566; replaces previously announced 2024-01-02 holiday
+2024,New Year’s Day,2024-01-01,Monday,
+2024,Substitution for Makha Bucha Day (Saturday 24th February 2024),2024-02-26,Monday,substitution day
+2024,Substitution for Chakri Memorial Day (Saturday 6th April 2024),2024-04-08,Monday,substitution day
+2024,Songkran Festival,2024-04-15,Monday,
+2024,Substitution for Songkran Festival (Saturday 13th and Sunday 14th April 2024),2024-04-16,Tuesday,substitution day
+2024,National Labour Day,2024-05-01,Wednesday,
+2024,Substitution for Coronation Day (Saturday 4th May 2024),2024-05-06,Monday,substitution day
+2024,Visakha Bucha Day,2024-05-22,Wednesday,
+2024,H.M. Queen Suthida Bajrasudhabimalalakshana’s Birthday,2024-06-03,Monday,
+2024,Substitution for Asarnha Bucha Day (Saturday 20th July 2024),2024-07-22,Monday,substitution day
+2024,Substitution for H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday (Sunday 28th July 2024),2024-07-29,Monday,substitution day
+2024,H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day,2024-08-12,Monday,
+2024,Substitution for H.M. King Bhumibol Adulyadej The Great Memorial Day (Sunday 13th October 2024),2024-10-14,Monday,substitution day
+2024,Chulalongkorn Day,2024-10-23,Wednesday,
+2024,H.M. King Bhumibol Adulyadej The Great’s Birthday / National Day / Father’s Day,2024-12-05,Thursday,
+2024,Constitution Day,2024-12-10,Tuesday,
+2024,New Year’s Eve,2024-12-31,Tuesday,
+2025,New Year’s Day,2025-01-01,Wednesday,
+2025,Makha Bucha Day,2025-02-12,Wednesday,
+2025,Substitution for Chakri Memorial Day (Sunday 6th April 2025),2025-04-07,Monday,substitution day
+2025,Songkran Festival,2025-04-14,Monday,
+2025,Songkran Festival,2025-04-15,Tuesday,
+2025,National Labour Day,2025-05-01,Thursday,
+2025,Substitution for Coronation Day (Sunday 4th May 2025),2025-05-05,Monday,substitution day
+2025,Substitution for Visakha Bucha Day (Sunday 11th May 2025),2025-05-12,Monday,substitution day
+2025,Additional Special Holiday,2025-06-02,Monday,special one-off addition
+2025,H.M. Queen Suthida Bajrasudhabimalalakshana’s Birthday,2025-06-03,Tuesday,
+2025,Asarnha Bucha Day,2025-07-10,Thursday,
+2025,H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday,2025-07-28,Monday,
+2025,Additional Special Holiday,2025-08-11,Monday,special one-off addition
+2025,H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day,2025-08-12,Tuesday,
+2025,H.M. King Bhumibol Adulyadej The Great Memorial Day,2025-10-13,Monday,
+2025,Chulalongkorn Day,2025-10-23,Thursday,
+2025,H.M. King Bhumibol Adulyadej The Great’s Birthday / National Day / Father’s Day,2025-12-05,Friday,
+2025,Constitution Day,2025-12-10,Wednesday,
+2025,New Year’s Eve,2025-12-31,Wednesday,
+2026,New Year’s Day,2026-01-01,Thursday,
+2026,Additional Special Holiday,2026-01-02,Friday,special one-off addition
+2026,Makha Bucha Day,2026-03-03,Tuesday,
+2026,Chakri Memorial Day,2026-04-06,Monday,
+2026,Songkran Festival,2026-04-13,Monday,
+2026,Songkran Festival,2026-04-14,Tuesday,
+2026,Songkran Festival,2026-04-15,Wednesday,
+2026,National Labour Day,2026-05-01,Friday,
+2026,Coronation Day,2026-05-04,Monday,
+2026,Substitution for Visakha Bucha Day (Sunday 31st May 2026),2026-06-01,Monday,substitution day
+2026,H.M. Queen Suthida Bajrasudhabimalalakshana’s Birthday,2026-06-03,Wednesday,
+2026,H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday,2026-07-28,Tuesday,
+2026,Asarnha Bucha Day,2026-07-29,Wednesday,
+2026,H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day,2026-08-12,Wednesday,
+2026,H.M. King Bhumibol Adulyadej The Great Memorial Day,2026-10-13,Tuesday,
+2026,Additional Special Holiday,2026-10-16,Friday,applies to financial institutions in Bangkok only
+2026,Chulalongkorn Day,2026-10-23,Friday,
+2026,Substitution for H.M. King Bhumibol Adulyadej The Great’s Birthday / National Day / Father’s Day (Saturday 5th December 2026),2026-12-07,Monday,substitution day
+2026,Constitution Day,2026-12-10,Thursday,
+2026,New Year’s Eve,2026-12-31,Thursday,

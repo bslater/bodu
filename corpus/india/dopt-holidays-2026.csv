@@ -1,0 +1,60 @@
+# source: Holidays to be observed in Central Government Offices during the year 2026
+# publisher: Government of India — Department of Personnel and Training, Establishment (JCA) Section
+# url: https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+# accessed: 2026-08-03
+# license: redistribution rights unclear — transcribed facts only
+# notes: 51 rows: 17 gazetted/closed holidays and 34 restricted holidays for Delhi/New Delhi. Memo dated 2025-07-03. Printed weekday was independently recomputed for every row.
+# verification: bodu 2026-08-03 — 51 rows (17 gazetted + 34 restricted, Delhi/New Delhi); transcriber recomputed every printed weekday with 0 mismatches; lunar Islamic dates remain subject to the memorandum's own moon-sighting change provisions.
+# columns: year,holiday_type,name_as_printed,gregorian_date,weekday_as_printed,memo_number,memo_url
+year,holiday_type,name_as_printed,gregorian_date,weekday_as_printed,memo_number,memo_url
+2026,gazetted,Republic Day,2026-01-26,Monday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Holi,2026-03-04,Wednesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Id-ul-Fitr,2026-03-21,Saturday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Ram Navami,2026-03-26,Thursday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Mahavir Jayanti,2026-03-31,Tuesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Good Friday,2026-04-03,Friday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Budha Purnima,2026-05-01,Friday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Id-ul-Zuha (Bakrid),2026-05-27,Wednesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Muharram,2026-06-26,Friday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Independence Day,2026-08-15,Saturday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Milad-un-Nabi or Id-e-Milad (Birthday of Prophet Mohammad),2026-08-26,Wednesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Janmashtami (Vaishnva),2026-09-04,Friday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Mahatma Gandhi’s Birthday,2026-10-02,Friday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Dussehra,2026-10-20,Tuesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Diwali (Deepavali),2026-11-08,Sunday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Guru Nanak’s Birthday,2026-11-24,Tuesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,gazetted,Christmas Day,2026-12-25,Friday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,New Year’s Day,2026-01-01,Thursday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Hazarat Ali’s Birthday,2026-01-03,Saturday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Makar Sankranti,2026-01-14,Wednesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Magha Bihu / Pongal,2026-01-14,Wednesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,"Sri Panchami, Basant Panchami",2026-01-23,Friday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Guru Ravi Das’s Birthday,2026-02-01,Sunday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Birthday of Swami Dayananda Saraswati,2026-02-12,Thursday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Maha Shivratri,2026-02-15,Sunday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Shiva ji Jayanti,2026-02-19,Thursday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Holika dahan,2026-03-03,Tuesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Dolyatra,2026-03-03,Tuesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Chaitra Sukladi / Gudi Padava / Ugadi / Cheti Chand,2026-03-19,Thursday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Jamat-Ul-Vida,2026-03-20,Friday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Easter Sunday,2026-04-05,Sunday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Vaisakhi / Visu / Meshadi (Tamil New Year’s Day),2026-04-14,Tuesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Vaisakhadi (Bengal) / Bahag Bihu (Assam),2026-04-15,Wednesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Birthday of Guru Rabindranath Tagore,2026-05-09,Saturday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Rath Yatra,2026-07-16,Thursday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Parsi New Year’s day / Nauraj,2026-08-15,Saturday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Onam or Thiru Onam Day,2026-08-26,Wednesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Raksha Bandhan,2026-08-28,Friday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Ganesh Chaturthi / Vinayak Chaturthi,2026-09-14,Monday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Dusshera (Saptami),2026-10-18,Sunday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Dussehra (Mahastami),2026-10-19,Monday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Dussehra (Mahanavmi),2026-10-20,Tuesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Maharishi Valmiki’s Birthday,2026-10-26,Monday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Karaka Chaturthi (Karwa Chouth),2026-10-29,Thursday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Naraka Chaturdasi,2026-11-08,Sunday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Govardhan Puja,2026-11-09,Monday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Bhai Duj,2026-11-11,Wednesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Pratihar Shashthi or Surya Shashthi (Chhat Puja),2026-11-15,Sunday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Guru Teg Bahadur’s Martyrdom Day,2026-11-24,Tuesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Hazarat Ali’s Birthday,2026-12-23,Wednesday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
+2026,restricted,Christmas Eve,2026-12-24,Thursday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf

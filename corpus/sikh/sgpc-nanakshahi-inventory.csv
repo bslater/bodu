@@ -1,0 +1,13 @@
+# source: Nanakshahi calendar and Jantri download page
+# publisher: Shiromani Gurdwara Parbandhak Committee (SGPC)
+# url: https://sgpc.net/nanakshahi-calendar-3/
+# accessed: 2026-08-03
+# license: SGPC copyright notice; redistribution rights unclear — transcribed facts only
+# notes: Four official documents identified. Calendar PDFs are image/layout-heavy and the event names are in Gurmukhi. No OCR-derived event dates are admitted because exact event_name_as_printed values could not be quality-controlled.
+# verification: bodu 2026-08-03 — acquisition inventory only (4 official SGPC documents, image-layout Gurmukhi PDFs); no event dates transcribed; dual-person transcription queued as a user-side hand-back.
+# columns: nanakshahi_year,gregorian_edition,document_type,official_url,status
+nanakshahi_year,gregorian_edition,document_type,official_url,status
+556,2024-25,calendar,https://sgpc.net/wp-content/uploads/2024/02/Calendar-Nanakshahi-2024-2025.pdf,obtained/indexed; image-layout PDF; no controlled Gurmukhi transcription performed
+557,2025-26,calendar,https://sgpc.net/storage/2025/03/Calender-Nanakshahi-557.pdf,obtained/indexed; image-layout PDF; no controlled Gurmukhi transcription performed
+557,2025-26,jantri,https://sgpc.net/storage/2025/03/Jantri-Nanakshahi-557.pdf,official 16-page Jantri indexed; not transcribed
+558,2026-27,calendar,https://sgpc.net/wp-content/uploads/2026/03/Calender_2026.pdf,official current calendar located; 14.7 MB image-layout PDF; no controlled Gurmukhi transcription performed

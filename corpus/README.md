@@ -59,12 +59,56 @@ reconciliation tests in the calendar test project.
 ```text
 corpus/
 ├── README.md                    this file
+├── bahai/                       UHJ 50-year Badi table 172-221 B.E. (official-published)
 ├── hindu/
 │   ├── data/
 │   │   ├── raw/imd-rashtriya-panchang/   edition manifest + acquisition records (no PDFs)
 │   │   ├── normalized/                    generated/transcribed CSVs land here
 │   │   └── schemas/                       JSON Schemas for the daily/event/provenance shapes
 │   └── reference/calcal/                  pinned R generator + environment verification
+├── india/                       DoPT central-government holiday memoranda (official-published)
 ├── islamic/                     independent reconciliation tables (ICU-derived, KFUPM/van Gent evidence notes)
-└── persian/                     independent reconciliation tables (ICU-derived)
+├── persian/                     independent reconciliation tables (ICU-derived)
+├── sikh/                        SGPC Nanakshahi document inventory (acquisition records only)
+├── sri-lanka/                   gazetted Poya days (official-published)
+└── thailand/                    Bank of Thailand financial-institution holidays (official-published)
 ```
+
+## Source register (research pass, 2026-08-03)
+
+Datasets delivered by the external research pass, each verified before commit
+(`tools/verify-bahai-poya-vectors.py` for the astronomical braces; per-file
+`# verification:` header lines record the result):
+
+| File | Rows | Source class | Source |
+|---|---:|---|---|
+| `bahai/uhj-holy-days-172-221-be.csv` | 550 | `official-published` (secondary reproduction of the UHJ primary) | Universal House of Justice 50-year Badi table, via the NZ national Baha'i institution's Holy Days PDF |
+| `sri-lanka/poya-gazette-2023-2027.csv` | 62 | `official-published` | Sri Lanka government gazettes 2287/04, 2341/46, 2395/33, 2438/22, 2493/05 |
+| `thailand/bot-financial-holidays-2020-2026.csv` | 126 | `official-published` (unofficial English translations; Thai text prevails) | Bank of Thailand annual + amendment notices |
+| `india/dopt-holidays-2026.csv` | 51 | `official-published` | DoPT Office Memorandum F.No.12/2/2023-JCA (2026) |
+| `sikh/sgpc-nanakshahi-inventory.csv` | 4 | acquisition records | SGPC Nanakshahi calendar/Jantri PDFs (Gurmukhi image-layout; no OCR transcription) |
+
+Findings recorded by the same pass:
+
+- **Umm al-Qura post-1450 AH**: the official KACST site (ummulqura.org.sa, relaunched
+  2026) is an *interactive* calendar/converter service; **no fixed, versioned month-start
+  publication for 1451 AH onward exists**. The vector tables' 1451+ residual is therefore
+  "nothing published to reconcile yet" — interactive outputs, if ever sampled, are a
+  separate source class (`official-interactive-output`), not `official-published`.
+- **Drik Panchang**: transcription skipped — its terms assert copyright over data and no
+  permission basis was established. Not used, not committed.
+
+## Outstanding hand-backs (user-side)
+
+- **calcal run** — `hindu/reference/calcal/generate_corpus.R` with the pinned R
+  environment; commit `hindu-reference-daily.csv` + `renv.lock` (activates the
+  reconciliation tests).
+- **GOV.UK `bank-holidays.json`** — proxy-blocked in the build environment; fetch and
+  supply the raw bytes (archive with SHA-256) to unlock the GB territory sweep.
+- **IMD Rashtriya Panchang English ZIP** — `packolkata.imd.gov.in` is proxy-blocked here;
+  see `hindu/data/raw/imd-rashtriya-panchang/manifest.json` (`surveyedEditions`) for the
+  direct URL pattern and next action.
+- **SGPC Gurmukhi transcription** — dual-person controlled transcription of the four
+  indexed PDFs; no OCR shortcut.
+- **DoPT 2015–2025 backfill** — official PDFs located by the research pass but not
+  retrieved; per-year memoranda still wanted.

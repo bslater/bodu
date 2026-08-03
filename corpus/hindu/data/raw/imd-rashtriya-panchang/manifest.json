@@ -2,7 +2,26 @@
   "description": "Edition inventory for the IMD Rashtriya Panchang Corpus. One entry per acquired edition, each with an acquisition record conforming to ../../schemas/provenance.schema.json. Source PDFs are not committed until redistribution rights are confirmed - commit the acquisition record (URL + SHA-256) instead.",
   "officialLandingPage": "https://mausam.imd.gov.in/responsive/rashtriyPanchang.php",
   "englishDownloadIndex": "https://packolkata.imd.gov.in/rashtriya-panchang-english.php",
+  "otherLanguageIndex": "https://www.packolkata.gov.in/rashtriya-panchang-others.php",
   "ephemerisLandingPage": "https://mausam.imd.gov.in/responsive/indianAstronomicalEphemeris.php",
   "targetCoverage": { "startDate": "1990-01-01", "endDate": "2039-12-31" },
-  "editions": []
+  "editions": [],
+  "surveyedEditions": [
+    {
+      "surveyedAtUtc": "2026-08-03T00:00:00Z",
+      "surveySource": "external research pass (report committed 2026-08; binaries not retrieved - official servers timed out and the host is unreachable from this build environment)",
+      "directDownloadUrlPattern": "https://packolkata.imd.gov.in/download/<Language>RP<yy><yy>.zip (observed example: AssameseRP2526.zip)",
+      "languagesListed": ["English", "Hindi", "Assamese", "Bengali", "Gujarati", "Kannada", "Malayalam", "Marathi", "Odia", "Punjabi", "Sanskrit", "Tamil", "Telugu", "Urdu"],
+      "editionGroups": [
+        { "edition": "2022-23", "indexUrl": "https://www.packolkata.gov.in/rashtriya-panchang-english.php", "status": "indexed; binary not retrieved" },
+        { "edition": "2023-24", "indexUrl": "https://www.packolkata.gov.in/rashtriya-panchang-english.php", "status": "indexed (14 languages); binary not retrieved" },
+        { "edition": "2024-25", "indexUrl": "https://www.packolkata.gov.in/rashtriya-panchang-english.php", "status": "indexed (14 languages); binary not retrieved" },
+        { "edition": "2025-26", "indexUrl": "https://mausam.imd.gov.in/responsive/rashtriyPanchang.php", "status": "language ZIP links exposed; downloads timed out" },
+        { "edition": "2026-27", "indexUrl": "https://www.packolkata.gov.in/rashtriya-panchang-english.php", "status": "current edition indexed; binary not retrieved" }
+      ],
+      "printAvailability": "IMD Mausam Bhavan (New Delhi) and Positional Astronomy Centre (Kolkata); PAC lists a purchase price of INR 225 for the current publication (https://www.packolkata.gov.in/rp.php)",
+      "licenceFinding": "IMD copyright notice; no GODL-India or explicit PDF redistribution statement found - do not redistribute PDFs, record URL + SHA-256 and transcribe facts only",
+      "nextAction": "user-side download of the English 2025-26 ZIP (host proxy-blocked in the build environment); record an acquisition entry per acquisition.template.json, then assess text readability before any transcription"
+    }
+  ]
 }
