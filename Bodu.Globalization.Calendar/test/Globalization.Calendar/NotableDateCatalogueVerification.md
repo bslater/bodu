@@ -248,12 +248,25 @@ Maha Shivaratri 11 Feb (exact).
   UAQ 20 Mar, Muharram/Ashura 26 Jun vs 25 Jun, Milad-un-Nabi 26 Aug vs 25 Aug) —
   Indian moon-sighting. Documented as reckoning differences, not asserted; no engine
   defect surfaced.
-- **IMD Rashtriya Panchang 1947 S.E. (2025–26)** — the Government of India's official
-  almanac (English edition; acquisition records and the 102-row Principal Festivals
-  transcription under `corpus/hindu/data/`, verified by
-  `tools/verify-imd-festival-vectors.py`) gives a second official Indian reckoning
-  spanning 22 Mar 2025 – 20 Apr 2026, and its divergence pattern reproduces the DoPT
-  2026 findings across a different window. Exact agreements: Rama Navami 6 Apr and
+- **IMD Rashtriya Panchang 1944–1948 S.E. (2022–27, five English editions)** — the
+  Government of India's official almanac (acquisition records and the five Principal
+  Festivals tables — 501 rows, contiguous 22 Mar 2022 – 19 Apr 2027 — under
+  `corpus/hindu/data/`, verified by `tools/verify-imd-festival-vectors.py`; the
+  1944/1945/1946/1948 tables machine-extracted from their PDFs' text layers, the 1947
+  table transcribed from renders) gives a second official Indian reckoning across five
+  years. The multi-year matrix confirms the per-year findings as systematic conventions,
+  not noise: Makar Sankranti/Pongal and Maha Shivaratri are **exact in every comparable
+  year**; the Islamic ids run **one day after the Umm al-Qura table in 29 of 30
+  comparable cells** — the single +0 being Eid al-Adha 2026, exactly the agreement the
+  DoPT memorandum showed — pinning the Indian moon-sighting convention as a stable +1;
+  Dipavali is uniformly one day before the engine's `diwali` and Vijaya Dasami uniformly
+  one day after the engine's `dussehra` (+2 in 2025) in all five years — fixed
+  day-selection conventions, not drift; and the remaining lunar ids (Vasant Panchami,
+  Ram Navami, Raksha Bandhan, Janmashtami, Ganesh Chaturthi, Karaka Chaturthi) oscillate
+  within ±1 of the engine day, the udaya-tithi class. Extraction also surfaced a second
+  printer's erratum: the 1948 edition's row 82 prints the Kali month 'Chaitra' for
+  'Phalguna' (transcribed verbatim, annotated). The 1947-specific detail below stands.
+  Its divergence pattern reproduces the DoPT 2026 findings across a different window. Exact agreements: Rama Navami 6 Apr and
   Raksha Bandhan 9 Aug 2025, Janmashtami 15 Aug 2025 (IMD's Smarta row; its Vaishnava
   row is the next day, the same split DoPT resolved the other way for 2026), Makara
   Samkranti/Pongal 14 Jan, Maha Shivaratri 15 Feb, and Holika Dahan 3 Mar 2026 (IMD
@@ -378,10 +391,11 @@ Bank of Thailand financial-institution holiday notices 2020–2026 (bot.or.th; u
 English translations, Thai text prevails, `corpus/thailand/`);
 the Government of India DoPT Office Memorandum F.No.12/2/2023-JCA for 2026
 (dopt.gov.in, `corpus/india/`);
-the IMD Rashtriya Panchang 1947 Saka Era (2025–26), India Meteorological Department
-Positional Astronomy Centre (packolkata.imd.gov.in; five language editions acquired
-2026-08, link-and-hash records in `corpus/hindu/data/raw/imd-rashtriya-panchang/`, the
-English Principal Festivals table transcribed at `corpus/hindu/data/normalized/`);
+the IMD Rashtriya Panchang, India Meteorological Department Positional Astronomy Centre
+(packolkata.imd.gov.in; acquired 2026-08: the 1947 S.E. (2025–26) edition in 13 of its 14
+languages plus the English 1944–1946 and 1948 S.E. editions — link-and-hash records in
+`corpus/hindu/data/raw/imd-rashtriya-panchang/`, the five English Principal Festivals
+tables at `corpus/hindu/data/normalized/` spanning 2022–2027);
 the GOV.UK bank-holiday dataset (gov.uk/bank-holidays.json, OGL v3.0; archived at
 `corpus/uk/`, driving the 264-row GB pack sweep);
 drikpanchang / published panchanga for Hindu, Sikh and Jain festivals; Tibetan Nuns

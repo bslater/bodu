@@ -97,8 +97,8 @@ and handed back:
 | File | Source class | Source |
 |---|---|---|
 | `uk/bank-holidays-2019-2028.json` | `official-published` (OGL v3.0; raw feed committed verbatim) | GOV.UK bank-holiday dataset — see `uk/README.md`; drives the 264-row GB pack sweep |
-| `hindu/data/raw/imd-rashtriya-panchang/manifest.json` (`editions[]`) | acquisition records (link-and-hash; PDFs not committed) | IMD Rashtriya Panchang 1947 S.E. (2025-26) in 13 of the 14 listed languages (Hindi outstanding); delivered as ZIPs and, for the second batch, extracted PDFs via a transient GitHub release |
-| `hindu/data/normalized/imd-rp-1947se-principal-festivals.csv` | `official-published` | The English edition's Principal Festivals and Anniversaries table (102 rows), transcribed from page renders and verified by `tools/verify-imd-festival-vectors.py` (one documented printer's erratum, row 52) |
+| `hindu/data/raw/imd-rashtriya-panchang/manifest.json` (`editions[]`) | acquisition records (link-and-hash; PDFs not committed) | IMD Rashtriya Panchang: the 1947 S.E. (2025-26) edition in 13 of the 14 listed languages (Hindi outstanding) plus the English 1944-1946 and 1948 S.E. editions; delivered via a transient GitHub release |
+| `hindu/data/normalized/imd-rp-<saka>se-principal-festivals.csv` (×5) | `official-published` | The five English editions' Principal Festivals tables (501 rows, contiguous 2022-03-22 – 2027-04-19; 1947 transcribed from renders, the rest machine-extracted from text layers), verified by `tools/verify-imd-festival-vectors.py` (two documented printer's errata: 1947 row 52, 1948 row 82) |
 
 Findings recorded by the same pass:
 
@@ -115,10 +115,9 @@ Findings recorded by the same pass:
 - **calcal run** — `hindu/reference/calcal/generate_corpus.R` with the pinned R
   environment; commit `hindu-reference-daily.csv` + `renv.lock` (activates the
   reconciliation tests).
-- **IMD Rashtriya Panchang back/forward editions** — the 2025-26 edition was delivered
-  2026-08-03 in 13 of the 14 listed languages (Hindi outstanding); the 2022-23, 2023-24,
-  2024-25, and 2026-27 editions indexed in
-  `hindu/data/raw/imd-rashtriya-panchang/manifest.json` remain user-side fetches
+- **IMD Rashtriya Panchang Hindi 2025-26 edition** — the only language of the 1947 S.E.
+  edition not yet delivered; every surveyed edition group (2022-23 through 2026-27) now
+  holds an acquired English edition, so this is provenance completeness only
   (`packolkata.imd.gov.in` is proxy-blocked here).
 - **SGPC Gurmukhi transcription** — dual-person controlled transcription of the four
   indexed PDFs; no OCR shortcut.
