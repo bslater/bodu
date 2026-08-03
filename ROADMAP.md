@@ -1194,9 +1194,13 @@ self-contained embedded pack importing the shared catalogues through a
   Sun→Mon substitution, three cross-year 31 December in-lieu New Year's
   Days, Juneteenth from 2021), and the NZ pack pins the Employment New
   Zealand 2026–2027 dates including the conflict-aware Boxing Day 2027
-  Tuesday-28-December substitution chain. The outstanding flagship is a
-  GB sweep over the GOV.UK `bank-holidays.json` feed (awaiting the
-  artifact; see the corpus checklist).
+  Tuesday-28-December substitution chain, and the GB pack is swept
+  against the official GOV.UK `bank-holidays.json` feed (264 rows,
+  2019–2028, exact dates and substitute flags per home nation —
+  delivered 2026-08 and archived at `corpus/uk/`; the sweep surfaced
+  and fixed the Scottish 2 January chained-substitution defect). Next
+  candidates: TH from the Bank of Thailand corpus table, and LK once
+  the pack-existence decision is made.
 - **Targeted country additions**: Iran (IR) via `global-persian.xml` in
   MiddleEast (in the original v1 set, not yet shipped); Switzerland (CH)
   in Europe alongside its canton data. **Verify Ethiopia's Ge'ez-calendar

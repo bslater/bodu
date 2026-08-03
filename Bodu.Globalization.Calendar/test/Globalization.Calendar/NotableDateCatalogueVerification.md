@@ -333,6 +333,21 @@ pack's substitution and gazetted rules end to end):
   Boxing Day 2027 observed **Tuesday 28 December**, stepping past Christmas Day's own
   Monday 27 December in-lieu day — and the gazetted Matariki dates (10 Jul 2026,
   25 Jun 2027).
+- **United Kingdom bank holidays 2019–2028 (GOV.UK)** — every regular rule-derived bank
+  holiday per home nation (GB-ENG, GB-SCT, GB-NIR) is pinned to the official GOV.UK feed
+  (archived verbatim at `corpus/uk/bank-holidays-2019-2028.json`, OGL v3.0) in
+  `…Europe/test/Globalization.Calendar/Fixtures/Vectors/GbBankHolidays-2019-2028.csv`
+  (264 rows) and swept by
+  `Resolve_WhenSweptAcrossGovUkBankHolidayFeed_ShouldMatchOfficialDateAndObservedFlag`,
+  asserting the **exact** official date and substitute-day flag on every row. The feed's
+  sixteen royal/proclamation one-offs (jubilees, the state funeral, the coronation, the
+  Scottish World Cup day, the proclamation-moved 2020/2022 holidays) are outside the rule
+  model and documented as excluded. The initial 264-row measurement found one divergence
+  — the GOV.UK 2023 Scottish 2 January chained substitution (1 January on a Sunday puts
+  New Year's Day's in-lieu day on 2 January's own Monday, pushing 2 January to Tuesday
+  3 January) — fixed red-green with a Saturday/Sunday/Monday `IfDayOfWeek` trigger on the
+  conflict-aware substitute (2 January falls on a Monday exactly when 1 January is a
+  Sunday); the pack now matches all 264 rows exactly.
 
 ## Sources
 
@@ -361,6 +376,12 @@ Bank of Thailand financial-institution holiday notices 2020–2026 (bot.or.th; u
 English translations, Thai text prevails, `corpus/thailand/`);
 the Government of India DoPT Office Memorandum F.No.12/2/2023-JCA for 2026
 (dopt.gov.in, `corpus/india/`);
+the IMD Rashtriya Panchang 1947 Saka Era (2025–26), India Meteorological Department
+Positional Astronomy Centre (packolkata.imd.gov.in; five language editions acquired
+2026-08, link-and-hash records in `corpus/hindu/data/raw/imd-rashtriya-panchang/`, the
+English Principal Festivals table transcribed at `corpus/hindu/data/normalized/`);
+the GOV.UK bank-holiday dataset (gov.uk/bank-holidays.json, OGL v3.0; archived at
+`corpus/uk/`, driving the 264-row GB pack sweep);
 drikpanchang / published panchanga for Hindu, Sikh and Jain festivals; Tibetan Nuns
 Project, qppstudio and publicholidays.asia for Gyalpo Losar; timeanddate and publicholidays.asia
 for Asalha Puja / Khao Phansa; the U.S. Office of Personnel Management federal-holiday
