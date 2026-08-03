@@ -2,12 +2,12 @@
 # publisher: Shiromani Gurdwara Parbandhak Committee (SGPC)
 # url: https://sgpc.net/nanakshahi-calendar-3/
 # accessed: 2026-08-03
-# license: SGPC copyright notice; redistribution rights unclear — transcribed facts only
-# notes: Four official documents identified. Calendar PDFs are image/layout-heavy and the event names are in Gurmukhi. No OCR-derived event dates are admitted because exact event_name_as_printed values could not be quality-controlled.
-# verification: bodu 2026-08-03 — acquisition inventory only (4 official SGPC documents, image-layout Gurmukhi PDFs); no event dates transcribed; dual-person transcription queued as a user-side hand-back.
-# columns: nanakshahi_year,gregorian_edition,document_type,official_url,status
-nanakshahi_year,gregorian_edition,document_type,official_url,status
-556,2024-25,calendar,https://sgpc.net/wp-content/uploads/2024/02/Calendar-Nanakshahi-2024-2025.pdf,obtained/indexed; image-layout PDF; no controlled Gurmukhi transcription performed
-557,2025-26,calendar,https://sgpc.net/storage/2025/03/Calender-Nanakshahi-557.pdf,obtained/indexed; image-layout PDF; no controlled Gurmukhi transcription performed
-557,2025-26,jantri,https://sgpc.net/storage/2025/03/Jantri-Nanakshahi-557.pdf,official 16-page Jantri indexed; not transcribed
-558,2026-27,calendar,https://sgpc.net/wp-content/uploads/2026/03/Calender_2026.pdf,official current calendar located; 14.7 MB image-layout PDF; no controlled Gurmukhi transcription performed
+# license: SGPC copyright notice; redistribution rights unclear — transcribed facts only; the PDFs are not committed (link-and-hash)
+# notes: Four official documents identified and now acquired (user-side download handed back 2026-08-03; the sha256/bytes/pages recorded below pin the exact documents any future transcription must use). The calendars are CorelDRAW-produced poster pages: the 556 and 557 calendars and the 557 Jantri carry no usable text layer (raster or outline content), and the 558 calendar carries a text layer in a legacy ASCII-mapped Gurmukhi font (AnmolLipi-style codes with tripled overprint glyphs), which is not admissible as a transcription source without controlled conversion. Event names are in Gurmukhi throughout. No OCR-derived event dates are admitted because exact event_name_as_printed values could not be quality-controlled.
+# verification: bodu 2026-08-03 — acquisition complete (4/4 documents hash-pinned); no event dates transcribed; dual-person controlled Gurmukhi transcription remains the user-side hand-back, per the no-OCR policy.
+# columns: nanakshahi_year,gregorian_edition,document_type,official_url,sha256,bytes,pages,status
+nanakshahi_year,gregorian_edition,document_type,official_url,sha256,bytes,pages,status
+556,2024-25,calendar,https://sgpc.net/wp-content/uploads/2024/02/Calendar-Nanakshahi-2024-2025.pdf,727505b89cb366de46d2f7b0d3d23653e01bd20b3154446a185e42dd5527c3ba,4564567,1,acquired 2026-08-03; single poster page; image content only; awaiting controlled transcription
+557,2025-26,calendar,https://sgpc.net/storage/2025/03/Calender-Nanakshahi-557.pdf,3ff7374abc5759ffb2b68332343b371c40a0c243f1e7e2b349909bfb4f33659b,6747744,3,acquired 2026-08-03; image content only; awaiting controlled transcription
+557,2025-26,jantri,https://sgpc.net/storage/2025/03/Jantri-Nanakshahi-557.pdf,623e3b1fe6219c58ba84589837345c126a46b5c56be0f0aa99a5da89728b34fb,13723576,20,acquired 2026-08-03; official 16-page Jantri (20 PDF pages); no usable text layer; awaiting controlled transcription
+558,2026-27,calendar,https://sgpc.net/wp-content/uploads/2026/03/Calender_2026.pdf,c3ec827828714d416ed5d9f33a1d5cd3c1c0f706bc692e90122571be55438e06,14740816,3,acquired 2026-08-03; legacy ASCII-mapped Gurmukhi text layer (not admissible without controlled conversion); awaiting controlled transcription

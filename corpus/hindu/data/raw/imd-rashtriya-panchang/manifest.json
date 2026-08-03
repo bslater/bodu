@@ -137,6 +137,26 @@
       ]
     },
     {
+      "sourceId": "imd-rp-2025-2026-hi",
+      "publisher": "India Meteorological Department, Positional Astronomy Centre",
+      "title": "Rashtriya Panchang 1947 Saka Era (2025-2026), Hindi",
+      "sourceClass": "official-published",
+      "acquiredAtUtc": "2026-08-03T06:10:00Z",
+      "sourceUrl": "https://packolkata.imd.gov.in/download/HindiRP2526.zip",
+      "sha256": "cdd63b880fa38abcdf5db3bba0735983ab64474424e2ad72eb188fd3b94d2bd3",
+      "bornDigital": true,
+      "editionCoverage": {
+        "startDate": "2025-03-22",
+        "endDate": "2026-03-21"
+      },
+      "licenceStatus": "government-publication-review-required",
+      "redistributionStatus": "link-and-hash-until-confirmed",
+      "notes": [
+        "User-side download handed back 2026-08-03; sha256 is the ZIP as downloaded. Completes the 14-language 1947 S.E. edition set.",
+        "Inner file: 'Hindi RP 1947 SE.pdf' (3044322 bytes, 221 pages), SHA-256 7cf409ba8f3afcd89bbc38c5cf50f608ae05ea0fd873b6bbc2e0190d69b0d186; has an extractable text layer."
+      ]
+    },
+    {
       "sourceId": "imd-rp-2025-2026-gu",
       "publisher": "India Meteorological Department, Positional Astronomy Centre",
       "title": "Rashtriya Panchang 1947 Saka Era (2025-2026), Gujarati",
@@ -397,7 +417,7 @@
         {
           "edition": "2025-26",
           "indexUrl": "https://mausam.imd.gov.in/responsive/rashtriyPanchang.php",
-          "status": "acquired 2026-08-03 (user-side hand-backs): 13 of the 14 listed languages - see editions[]; Hindi outstanding"
+          "status": "acquired 2026-08-03 (user-side hand-backs): all 14 listed languages - see editions[]"
         },
         {
           "edition": "2026-27",
@@ -407,7 +427,7 @@
       ],
       "printAvailability": "IMD Mausam Bhavan (New Delhi) and Positional Astronomy Centre (Kolkata); PAC lists a purchase price of INR 225 for the current publication (https://www.packolkata.gov.in/rp.php)",
       "licenceFinding": "IMD copyright notice; no GODL-India or explicit PDF redistribution statement found - do not redistribute PDFs, record URL + SHA-256 and transcribe facts only",
-      "nextAction": "all five surveyed edition groups now hold acquired English editions and their principal-festivals tables are transcribed under ../../normalized/ (1944-1948 S.E., contiguous 2022-03-22 through 2027-04-19); remaining: the Hindi 2025-26 edition, non-English languages of the other editions if ever wanted, and the daily Panchang tables (untranscribed)"
+      "nextAction": "acquisition complete for all five surveyed edition groups (the 2025-26 edition in all 14 languages; the other groups in English) and the five English principal-festivals tables are transcribed under ../../normalized/ (1944-1948 S.E., contiguous 2022-03-22 through 2027-04-19); remaining: the daily Panchang tables (untranscribed) and non-English languages of the non-2025-26 editions if ever wanted"
     }
   ]
 }
