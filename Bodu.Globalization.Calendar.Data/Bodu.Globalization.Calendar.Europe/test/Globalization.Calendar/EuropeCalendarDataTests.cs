@@ -45,6 +45,16 @@ public sealed class EuropeCalendarDataTests
     [DataRow("GB", 2021, "christmas-day", "2021-12-27", true)]
     [DataRow("GB", 2021, "boxing-day", "2021-12-28", true)]
 
+    // Scotland: the New Year pair's chained substitution (GOV.UK official dates). 2022: 1 Jan Saturday rolls New
+    // Year's Day to Monday 3rd, so 2 January (Sunday) steps over it to Tuesday 4th. 2023: 1 Jan Sunday rolls New
+    // Year's Day onto Monday 2 January — 2 January's own nominal weekday — so 2 January chains to Tuesday 3rd.
+    // 2027: 2 January Saturday takes the plain weekend roll to Monday 4th (1 Jan Friday needs no substitute).
+    [DataRow("GB-SCT", 2022, "new-years-day", "2022-01-03", true)]
+    [DataRow("GB-SCT", 2022, "day-after-new-years-day", "2022-01-04", true)]
+    [DataRow("GB-SCT", 2023, "new-years-day", "2023-01-02", true)]
+    [DataRow("GB-SCT", 2023, "day-after-new-years-day", "2023-01-03", true)]
+    [DataRow("GB-SCT", 2027, "day-after-new-years-day", "2027-01-04", true)]
+
     // United Kingdom: entries restored by the entry-level migration audit — Christmas Eve and Father's Day come via
     // the europe-common hub; April Fool's Day and Remembrance Day (11 November) come via the global-all aggregate.
     [DataRow("GB", 2024, "christmas-eve", "2024-12-24", false)]
