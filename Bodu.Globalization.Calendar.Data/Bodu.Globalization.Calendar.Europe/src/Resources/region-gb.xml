@@ -51,6 +51,17 @@
       <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="true" maxSearchDays="7" />
       <Emission mode="ObservedOnly" reason="Substitute bank holiday" />
     </AdjustmentPolicy>
+    <!--
+      2 January's chained substitute (Scotland). The weekend days take the ordinary conflict-aware roll; Monday is
+      included because 2 January falls on a Monday exactly when 1 January is a Sunday - the year New Year's Day's
+      own substitute claims that Monday - so the in-lieu day must continue to the next clear working day (GOV.UK
+      2023: New Year's Day observed Monday 2 January, 2 January observed Tuesday 3 January).
+    -->
+    <AdjustmentPolicy id="second-january-chained-substitute" priority="100">
+      <Trigger type="IfDayOfWeek"><Weekday value="Saturday" /><Weekday value="Sunday" /><Weekday value="Monday" /></Trigger>
+      <Action type="MoveToNextWorkingDay" skipWeekends="true" skipNonWorkingDates="true" maxSearchDays="7" />
+      <Emission mode="ObservedOnly" reason="Substitute bank holiday" />
+    </AdjustmentPolicy>
   </AdjustmentPolicies>
 
   <Imports>
@@ -98,11 +109,11 @@
       only and a plain "GB" national query returns none of them.
     -->
 
-    <!-- 2 January — a Scotland-only bank holiday extending the New Year; conflict-aware substitute keeps its in-lieu day clear of New Year's Day's own substitute. -->
+    <!-- 2 January — a Scotland-only bank holiday extending the New Year; the chained substitute keeps its in-lieu day clear of New Year's Day's own substitute, including the 1-January-on-Sunday year when that substitute claims 2 January's own Monday. -->
     <NotableDate id="day-after-new-years-day" displayName="2 January" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sct"><Applicability><Territory code="GB-SCT" /></Applicability>
         <Strategy><Fixed month="January" day="2" /></Strategy>
-        <Adjustments><Adjustment policyRef="working-day-substitute" /></Adjustments></Rule></Rules>
+        <Adjustments><Adjustment policyRef="second-january-chained-substitute" /></Adjustments></Rule></Rules>
     </NotableDate>
 
     <!-- Burns Night — 25 January, Scottish cultural celebration of the poet Robert Burns; not a public holiday. -->
