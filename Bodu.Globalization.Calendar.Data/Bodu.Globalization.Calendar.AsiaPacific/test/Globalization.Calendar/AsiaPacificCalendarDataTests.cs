@@ -86,6 +86,33 @@ public sealed class AsiaPacificCalendarDataTests
     [DataRow("NZ", 2021, "christmas-day", "2021-12-27", true)]
     [DataRow("NZ", 2021, "boxing-day", "2021-12-28", true)]
 
+    // Employment New Zealand published national dates for 2026 and 2027 (delivered 3 Aug 2026):
+    // 2027 exercises the full Mondayisation surface - the New Year pair, Waitangi Day, ANZAC Day,
+    // and the conflict-aware Christmas/Boxing chain where Boxing Day's in-lieu day (Tue 28 Dec)
+    // steps past Christmas Day's (Mon 27 Dec).
+    [DataRow("NZ", 2026, "new-years-day", "2026-01-01", false)]
+    [DataRow("NZ", 2026, "day-after-new-years-day", "2026-01-02", false)]
+    [DataRow("NZ", 2026, "waitangi-day", "2026-02-06", false)]
+    [DataRow("NZ", 2026, "good-friday", "2026-04-03", false)]
+    [DataRow("NZ", 2026, "easter-monday", "2026-04-06", false)]
+    [DataRow("NZ", 2026, "anzac-day", "2026-04-27", true)]
+    [DataRow("NZ", 2026, "kings-birthday", "2026-06-01", false)]
+    [DataRow("NZ", 2026, "matariki", "2026-07-10", false)]
+    [DataRow("NZ", 2026, "labour-day", "2026-10-26", false)]
+    [DataRow("NZ", 2026, "christmas-day", "2026-12-25", false)]
+    [DataRow("NZ", 2026, "boxing-day", "2026-12-28", true)]
+    [DataRow("NZ", 2027, "new-years-day", "2027-01-01", false)]
+    [DataRow("NZ", 2027, "day-after-new-years-day", "2027-01-04", true)]
+    [DataRow("NZ", 2027, "waitangi-day", "2027-02-08", true)]
+    [DataRow("NZ", 2027, "good-friday", "2027-03-26", false)]
+    [DataRow("NZ", 2027, "easter-monday", "2027-03-29", false)]
+    [DataRow("NZ", 2027, "anzac-day", "2027-04-26", true)]
+    [DataRow("NZ", 2027, "kings-birthday", "2027-06-07", false)]
+    [DataRow("NZ", 2027, "matariki", "2027-06-25", false)]
+    [DataRow("NZ", 2027, "labour-day", "2027-10-25", false)]
+    [DataRow("NZ", 2027, "christmas-day", "2027-12-27", true)]
+    [DataRow("NZ", 2027, "boxing-day", "2027-12-28", true)]
+
     // South Korea: Chinese lunisolar Seollal and Chuseok, plus fixed nationals.
     [DataRow("KR", 2024, "seollal", "2024-02-10", false)]
     [DataRow("KR", 2024, "chuseok", "2024-09-17", false)]
