@@ -44,12 +44,14 @@ reconciliation tests in the calendar test project.
 ## What runs where
 
 - **This repository / CI**: schema validation, corpus loading, and the exhaustive
-  reconciliation tests (`HinduReferenceCorpusReconciliationTests` — Inconclusive until a
-  generated corpus is committed). No R required.
-- **User-side (or a dedicated CI job)**: reference-corpus generation with the pinned R
-  environment under `hindu/reference/calcal/` — this container has no R runtime and no
-  CRAN access. The generated `hindu-reference-daily.csv` and the `renv.lock` produced by
-  the first pinned run are committed back here.
+  reconciliation tests (`HinduReferenceCorpusReconciliationTests` — **active** since the
+  generated corpus was committed 2026-08-03). No R required.
+- **Regeneration (user-side or a dedicated CI job)**: reference-corpus generation with
+  the pinned R environment under `hindu/reference/calcal/`. The committed
+  `hindu-reference-daily.csv` was generated 2026-08-03 from the user-supplied CRAN
+  archive `calcal_1.0.4.tar.gz` (SHA-256 recorded in the reference README alongside
+  `renv.lock`); its first activation caught — and led to the fix of — the engine's
+  phantom-adhika lunation defect (see the verification report).
 - **Acquisition**: official PDFs are *not* committed until redistribution rights are
   confirmed — commit their URL, SHA-256, and acquisition metadata instead (see
   `hindu/data/raw/imd-rashtriya-panchang/`).
@@ -99,6 +101,7 @@ and handed back:
 | `uk/bank-holidays-2019-2028.json` | `official-published` (OGL v3.0; raw feed committed verbatim) | GOV.UK bank-holiday dataset — see `uk/README.md`; drives the 264-row GB pack sweep |
 | `hindu/data/raw/imd-rashtriya-panchang/manifest.json` (`editions[]`) | acquisition records (link-and-hash; PDFs not committed) | IMD Rashtriya Panchang: the 1947 S.E. (2025-26) edition in all 14 listed languages plus the English 1944-1946 and 1948 S.E. editions; delivered via a transient GitHub release and chat uploads |
 | `sikh/sgpc-nanakshahi-inventory.csv` (hash columns) | acquisition records (link-and-hash; PDFs not committed) | All four SGPC Nanakshahi documents (556-558 calendars + 557 Jantri) delivered and hash-pinned; controlled Gurmukhi transcription still outstanding |
+| `hindu/data/normalized/hindu-reference-daily.csv` | `reference-generated` | 73,048 rows (1990-2039, four Hindu models) from the pinned calcal 1.0.4 oracle, generated in-container from the user-supplied CRAN archive; activates the reconciliation tests |
 | `hindu/data/normalized/imd-rp-<saka>se-principal-festivals.csv` (×5) | `official-published` | The five English editions' Principal Festivals tables (501 rows, contiguous 2022-03-22 – 2027-04-19; 1947 transcribed from renders, the rest machine-extracted from text layers), verified by `tools/verify-imd-festival-vectors.py` (two documented printer's errata: 1947 row 52, 1948 row 82) |
 
 Findings recorded by the same pass:
@@ -113,9 +116,6 @@ Findings recorded by the same pass:
 
 ## Outstanding hand-backs (user-side)
 
-- **calcal run** — `hindu/reference/calcal/generate_corpus.R` with the pinned R
-  environment; commit `hindu-reference-daily.csv` + `renv.lock` (activates the
-  reconciliation tests).
 - **SGPC Gurmukhi transcription** — dual-person controlled transcription of the four
   acquired, hash-pinned PDFs (see `sikh/sgpc-nanakshahi-inventory.csv`); no OCR
   shortcut, and the 558 calendar's legacy ASCII-mapped Gurmukhi text layer is not

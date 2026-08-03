@@ -34,7 +34,7 @@ Two reference classes are used:
 | `global-islamic` | 10 tabular-Hijri observances | ✅ exact (BCL tabular; ≤2 d from observed); 50-year sweep |
 | `global-islamic-umm-al-qura` | 10 Umm al-Qura observances | ✅ exact (BCL UAQ); 50-year sweep, 5 external sources |
 | `global-zoroastrian` | 6 Persian-calendar observances | ✅ exact (BCL Persian; see Nowruz note); 50-year sweep |
-| `global-hindu` | Makar Sankranti, Pongal, Saraswati Puja + lunar set | ✅ within ±2; 50-year engine-pinned sweep |
+| `global-hindu` | Makar Sankranti, Pongal, Saraswati Puja + lunar set | ✅ within ±2; 50-year engine-pinned sweep; calcal corpus reconciliation (576 comparisons, none beyond ±2) |
 | `global-bahai` | Naw-Ruz + 8 solar holy days | ✅ within ±2; matches official 2025 Badí |
 | `global-sikh` | 4 fixed + 3 lunar-derived | ✅ within ±2 (see Guru Arjan Dev note) |
 | `global-jain` | lunar-derived set | ✅ within ±2 (**Maun Agiyaras fixed**) |
@@ -43,12 +43,14 @@ Two reference classes are used:
 
 ## Defects found and fixed
 
-Verification uncovered four lunation-selection defects: three from fixed-window lunar
-heuristics that selected the wrong lunation (off by ~30 days) in some years, and one
-ingress-day boundary error that lost a month entirely (found by the fifty-year Hindu
-sweep). None of the affected keys is referenced by any shipping `Data.<Region>` pack —
-they live only in these common catalogues — so the fixes are contained. All four are now
-corrected and pinned to published dates by the known-answer tests.
+Verification uncovered five lunation-selection defects: three from fixed-window lunar
+heuristics that selected the wrong lunation (off by ~30 days) in some years, and two
+ingress-day boundary errors — one that lost a month entirely (found by the fifty-year
+Hindu sweep) and one that fabricated phantom adhika months (found by the calcal reference
+corpus on its first activation). None of the affected keys is referenced by any shipping
+`Data.<Region>` pack — they live only in these common catalogues — so the fixes are
+contained. All five are now corrected and pinned to published dates by the known-answer
+tests.
 
 ### 1. Tibetan Losar — `global-buddhist`
 
@@ -102,6 +104,24 @@ did not resolve at all.
 following midnight before giving up, recovering the lost month without touching any year
 that already resolved. 2029 now resolves Vasant Panchami 18 Jan (published 19 Jan) and
 Maha Shivaratri 11 Feb (exact).
+
+### 5. Phantom adhika months on ingress days — `HinduLunarCalculator` (found by the calcal reference corpus)
+
+*Was:* the same start-of-day sign evaluation as defect 4, in the opposite direction: a
+conjunction falling *after* its civil day's sign ingress kept the pre-ingress sign, so it
+paired with the preceding month's new moon as an apparent adhika pair and the skip-adhika
+rule pushed the festival a full lunation away. Ram Navami 1991 and 2010 resolved into
+adhika Vaiśākha (22 April; published 24 March), and Diwali 2009 and 2028 resolved a
+lunation late (16 November; published 17 October). The defect survived the fifty-year
+sweep because the engine-pinned rows froze the wrong lunation and the tithi brace only
+verifies tithi proximity within a wide seasonal window.
+
+*Fix:* `LunarPhaseCalculator` exposes each conjunction's Julian Day instant and the
+amanta-month sign is now evaluated at that instant (`SunTropicalLongitude` gained an
+instant overload), eliminating both directions of the boundary error at the source; the
+defect-4 fallback is retained for genuinely degenerate years. Exactly four engine-pinned
+vector rows moved, each landing within a day of its published date, and the four dates
+are pinned as published-panchanga anchors.
 
 ## Convention notes (defensible authoring choices, not defects)
 
@@ -233,6 +253,18 @@ Maha Shivaratri 11 Feb (exact).
   2023–2029 rows above as external anchors. Exactness relative to a specific published
   panchanga is deliberately not claimed beyond the documented ±1–2 day tolerance.
   Generating the sweep surfaced and fixed the lost-Magha-month defect (see below).
+- **calcal Modern Hindu Reference corpus** — the pinned R oracle (calcal 1.0.4, an
+  independent Reingold–Dershowitz implementation; environment pin in
+  `corpus/hindu/reference/calcal/`) generated the 73,048-row daily corpus
+  `corpus/hindu/data/normalized/hindu-reference-daily.csv` (1990–2039, four models),
+  activating `HinduReferenceCorpusReconciliationTests`. First activation caught the
+  phantom-adhika defect (below): after the fix, all 576 festival-year comparisons
+  classify as **249 exact, 301 convention-equivalent (one day), 26 model-induced (two
+  days — the documented Meeus-vs-R-D band), none beyond**. Diwali reconciles as the
+  Āśvina amavasya (month 7 day 30), the coordinate that stays with the festival in the
+  adhika-Kārtika year 2028. The two model families remain independent at both the
+  algorithm-design and implementation level, so agreement here is a cross-check, not an
+  oracle claim.
 - **Indian gazetted 2026 (DoPT)** — the Government of India's official holiday memorandum
   for 2026 (`corpus/india/dopt-holidays-2026.csv`, 51 rows) cross-checks the Hindu,
   Islamic, and Buddhist catalogues against a second national reckoning. Exact agreements:
