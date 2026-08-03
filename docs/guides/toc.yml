@@ -336,6 +336,16 @@
               href: text-encoding/binary-encodings-interface.md
             - name: Encoding helpers and BOM detection
               href: text-encoding/encoding-helpers.md
+    - name: Bodu.Text.Filtering
+      items:
+        - name: Overview
+          href: text-filtering/index.md
+        - name: Patterns and globs
+          href: text-filtering/patterns-and-globs.md
+        - name: Evaluation modes
+          href: text-filtering/evaluation-modes.md
+        - name: Telemetry and tuning
+          href: text-filtering/telemetry-and-tuning.md
     - name: Bodu.Text.Formats
       items:
         - name: Overview
@@ -495,3 +505,11 @@
           href: excel/cell-values-and-dates.md
         - name: Streaming vs materialized
           href: excel/worksheets-and-rows.md
+    - name: Bodu.Formats.Outlook
+      items:
+        - name: Overview
+          href: outlook/index.md
+        - name: Reading .msg files
+          href: outlook/reading-msg-files.md
+        - name: Properties and named properties
+          href: outlook/properties-and-named-properties.md

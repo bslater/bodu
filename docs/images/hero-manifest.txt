@@ -26,6 +26,8 @@ Bodu.Financial.ExchangeRates.Rba hero-fx-rba.svg
 Bodu.Financial.ExchangeRates.Xe hero-fx-xe.svg
 Bodu.Financial.ExchangeRates.Yahoo hero-fx-yahoo.svg
 Bodu.Formats.Excel.Binary hero-excel.svg
+Bodu.Formats.Outlook hero-outlook.svg
+Bodu.Formats.Outlook.Msg hero-outlook-msg.svg
 Bodu.Globalization.Calendar hero-calendar.svg
 Bodu.Globalization.Calendar.Africa hero-calendar-africa.svg
 Bodu.Globalization.Calendar.Americas hero-calendar-americas.svg
@@ -39,6 +41,7 @@ Bodu.Globalization.Calendar.Caching hero-calendar-caching.svg
 Bodu.Globalization.Calendar.Caching.Distributed hero-calendar-caching-distributed.svg
 Bodu.Globalization.Calendar.Caching.Sqlite hero-calendar-caching-sqlite.svg
 Bodu.IO.Compound hero-io-compound.svg
+Bodu.IO.Pst hero-io-pst.svg
 Bodu.IO.Hashing hero-io.svg
 Bodu.Numerics hero-numerics.svg
 Bodu.Numerics.Serialization.Json hero-numerics-json.svg
@@ -46,6 +49,7 @@ Bodu.Security.Cryptography hero-crypto.svg
 Bodu.Text.Bencode hero-bencode.svg
 Bodu.Text.Configuration hero-configuration.svg
 Bodu.Text.Encoding hero-text-encoding.svg
+Bodu.Text.Filtering hero-text-filtering.svg
 Bodu.Text.Delimited hero-delimited.svg
 Bodu.Text.DotEnv hero-dotenv.svg
 Bodu.Text.Formats hero-formats.svg

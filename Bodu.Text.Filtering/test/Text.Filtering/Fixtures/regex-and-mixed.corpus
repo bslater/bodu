@@ -1,0 +1,30 @@
+# Regex patterns alone and cooperating with wildcards in one filter.
+
+scenario: Regex include is anchored as written
+include-regex: ^\d{3}$
+match: 123
+skip: 12
+skip: 1234
+skip: 12a
+
+scenario: Wildcards and regexes combine in one set
+include: error*
+include-regex: ^\d{3}$
+exclude: *7
+match: error!
+match: 123
+skip: 127
+skip: 12
+
+scenario: Regex exclude vetoes
+include-regex: ^job-\d+$
+exclude-regex: 0$
+match: job-42
+skip: job-40
+skip: task-42
+
+scenario: Backreference falls back to the backtracking engine
+include-regex: ^(a+)\1$
+match: aa
+match: aaaa
+skip: a

@@ -32,6 +32,8 @@ public static class IniMutateAndFormat
 
         var metrics = new IniObject();
         var enabled = new IniValue("true");
+
+        // LeadingComments is the comment-trivia surface: this text emits as a ';' line above the entry.
         enabled.LeadingComments.Add(" scrape target");
         metrics["enabled"] = enabled;
         metrics["endpoint"] = new IniValue("/metrics");

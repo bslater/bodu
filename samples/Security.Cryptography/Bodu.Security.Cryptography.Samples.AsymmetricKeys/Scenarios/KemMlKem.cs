@@ -45,6 +45,7 @@ public static class KemMlKem
         using var receiver = factory();
         receiver.GenerateKey();
 
+        // The sender needs only the public encapsulation key — importing it here models receiving it over the wire.
         using var sender = factory();
         sender.ImportEncapsulationKey(receiver.ExportEncapsulationKey());
 

@@ -21,6 +21,13 @@
     <Project Path="Bodu.Text.DotEnv/src/Bodu.Text.DotEnv.csproj" />
     <Project Path="Bodu.Text.DotEnv/test/Bodu.Text.DotEnv.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Text.Filtering/">
+    <Project Path="Bodu.Text.Filtering/bench/Bodu.Text.Filtering.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
+    <Project Path="Bodu.Text.Filtering/src/Bodu.Text.Filtering.csproj" />
+    <Project Path="Bodu.Text.Filtering/test/Bodu.Text.Filtering.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Text.Ini/">
     <Project Path="Bodu.Text.Ini/src/Bodu.Text.Ini.csproj" />
     <Project Path="Bodu.Text.Ini/test/Bodu.Text.Ini.Test.csproj" />
@@ -164,6 +171,18 @@
     <Project Path="Bodu.Formats.Excel.Binary/src/Bodu.Formats.Excel.Binary.csproj" />
     <Project Path="Bodu.Formats.Excel.Binary/test/Bodu.Formats.Excel.Binary.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Formats.Outlook/">
+    <Project Path="Bodu.Formats.Outlook/src/Bodu.Formats.Outlook.csproj" />
+    <Project Path="Bodu.Formats.Outlook/test/Bodu.Formats.Outlook.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.Formats.Outlook.Msg/">
+    <Project Path="Bodu.Formats.Outlook.Msg/src/Bodu.Formats.Outlook.Msg.csproj" />
+    <Project Path="Bodu.Formats.Outlook.Msg/test/Bodu.Formats.Outlook.Msg.Test.csproj" />
+  </Folder>
+  <Folder Name="/Bodu.IO.Pst/">
+    <Project Path="Bodu.IO.Pst/src/Bodu.IO.Pst.csproj" />
+    <Project Path="Bodu.IO.Pst/test/Bodu.IO.Pst.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Numerics/">
     <Project Path="Bodu.Numerics\aot\Bodu.Numerics.AotSmoke.csproj">
       <Build Solution="Debug|*" Project="false" />
@@ -295,6 +314,9 @@
     <Project Path="samples/Text.Encoding/Bodu.Text.Encoding.Samples.CustomEncoding.Test/Bodu.Text.Encoding.Samples.CustomEncoding.Test.csproj" />
     <Project Path="samples/Text.Encoding/Bodu.Text.Encoding.Samples.CustomEncoding/Bodu.Text.Encoding.Samples.CustomEncoding.csproj" />
     <Project Path="samples/Text.Encoding/Bodu.Text.Encoding.Samples.EncodingTour/Bodu.Text.Encoding.Samples.EncodingTour.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Text.Filtering/">
+    <Project Path="samples/Text.Filtering/Bodu.Text.Filtering.Samples.FilteringTour/Bodu.Text.Filtering.Samples.FilteringTour.csproj" />
   </Folder>
   <Folder Name="/Samples/Text.Formats/">
     <Project Path="samples/Text.Formats/Bodu.Text.Formats.Samples.ConfigFiles/Bodu.Text.Formats.Samples.ConfigFiles.csproj" />

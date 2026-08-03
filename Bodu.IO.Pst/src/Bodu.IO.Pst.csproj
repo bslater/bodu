@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — PST</Title>
+    <Description>A low-level, read-only container library for the Outlook personal-folders format (PST / MS-PST). Reads the Unicode-format node database: the header, the node and block B-trees, block data with the format's permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — the substrate a message-level reader builds on. No MAPI semantics and no writing.</Description>
+    <PackageTags>$(PackageTags);pst;outlook;mailbox;ndb;container;reader</PackageTags>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.IO.Pst.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="IO.Pst\PstResourceStrings.resx">
+      <LastGenOutput>PstResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="IO.Pst\PstResourceStrings.Designer.cs">
+      <DependentUpon>PstResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>

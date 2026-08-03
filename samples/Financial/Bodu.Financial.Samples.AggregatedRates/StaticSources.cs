@@ -60,6 +60,8 @@ public static class StaticSources
                 decimal.Parse(fields[3], CultureInfo.InvariantCulture));
         }
 
+        // ToBook() freezes the accumulated observations into an immutable RateBook; the provider wrapper
+        // adds the full dated-lookup surface (date resolution, inverse fallback) with no further I/O.
         return new FixedDatedRateProvider(builder.ToBook());
     }
 }

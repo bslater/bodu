@@ -17,6 +17,8 @@ namespace Bodu.Security.Cryptography.Samples.SymmetricAndAead.Scenarios;
 public static class CipherModes
 {
     private static readonly byte[] Key = Hex.Fill(16, 0x10);
+    // Fixed only for reproducibility; in real use CBC needs a fresh unpredictable IV per message, and the
+    // CTR counter stream seeded from the IV must likewise never repeat under the same key.
     private static readonly byte[] Iv = Hex.Fill(16, 0x20);
 
     /// <summary>

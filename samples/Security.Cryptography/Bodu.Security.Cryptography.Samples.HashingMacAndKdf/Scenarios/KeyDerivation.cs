@@ -18,6 +18,7 @@ public static class KeyDerivation
 {
     private static readonly byte[] Password = Encoding.ASCII.GetBytes("correct horse battery staple");
     private static readonly byte[] Salt = Encoding.ASCII.GetBytes("fixed-sample-salt");
+    // The HKDF info parameter binds the derived key to a purpose, so one secret can yield distinct keys per use.
     private static readonly byte[] Info = Encoding.ASCII.GetBytes("bodu-sample|v1|encryption-key");
 
     /// <summary>

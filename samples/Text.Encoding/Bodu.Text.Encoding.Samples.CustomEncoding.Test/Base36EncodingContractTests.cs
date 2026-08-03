@@ -36,6 +36,26 @@ public sealed class Base36EncodingContractTests
     protected override bool TryDecode(string text, Span<byte> destination, out int bytesWritten) =>
         Encoding.TryDecode(text.AsSpan(), destination, out bytesWritten);
 
+    /// <summary>
+    /// Verifies that a destination sized by <see cref="Base36Encoding.GetMaxDecodedLength" /> is large
+    /// enough for <see cref="Base36Encoding.TryDecode" /> even on long inputs, where an underestimated
+    /// bytes-per-character ratio would no longer be absorbed by the estimate's fixed cushion.
+    /// </summary>
+    [TestMethod]
+    public void GetMaxDecodedLength_WhenInputIsLong_ShouldBudgetEnoughBytesForTryDecode()
+    {
+        // 2,000 non-zero bytes encode to roughly 3,100 characters - long enough that a per-character
+        // ratio below the true log(36) / log(256) underestimates the payload by more than one byte.
+        var payload = new byte[2000];
+        Array.Fill(payload, (byte)0xFF);
+        var text = Encoding.Encode(payload);
+
+        var destination = new byte[Encoding.GetMaxDecodedLength(text.Length)];
+
+        Assert.IsTrue(Encoding.TryDecode(text.AsSpan(), destination, out var bytesWritten));
+        Assert.AreEqual(payload.Length, bytesWritten);
+    }
+
     /// <inheritdoc />
     protected override IReadOnlyList<BinaryEncodingKat> KnownAnswers { get; } =
     [

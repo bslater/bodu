@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.Samples.ChecksumTour.Scenarios;
 /// <summary>
 /// Demonstrates the width variants within two non-cryptographic families over one fixed input: the
 /// FNV-1a hash in its 32- and 64-bit widths, and the Adler checksum in its 32-bit (RFC 1950),
-/// CRC32C-polynomial (<c>Adler32C</c>), and 64-bit widths. Each is the same
+/// SIMD-friendly power-of-two-modulus (<c>Adler32C</c>), and 64-bit widths. Each is the same
 /// <c>NonCryptographicHashAlgorithm</c> surface; only the digest width and mixing differ.
 /// </summary>
 public static class FnvAndAdlerVariants

@@ -110,8 +110,8 @@ public sealed class EcbRateProviderOptions
     /// <summary>
     /// Gets or sets the level at which each individual ingested rate observation is logged.
     /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
-    public LogLevel ObservationIngestedLogLevel { get; set; } = LogLevel.Trace;
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel ObservationIngestedLogLevel { get; set; } = LogLevel.Information;
 
     /// <summary>
     /// Gets or sets the level at which a synchronous, blocking on-demand network fetch is logged.

@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <Title>Bodu — Text Filtering</Title>
+    <Description>A high-performance include/exclude text filtering engine for .NET 8. Glob (wildcard, character-class, brace-alternation) and regex patterns compile into a cost-tiered matcher that runs the cheapest strategies first, with Ant/MSBuild-style include/exclude set semantics or gitignore-style last-match-wins ordered rules, gitignore-convention list parsing, and built-in match telemetry with an optional per-decision observer.</Description>
+    <PackageTags>$(PackageTags);text;filtering;filter;glob;wildcard;regex;include;exclude;matching</PackageTags>
+  </PropertyGroup>
+
+  <!-- Per-framework compilation symbols. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Text.Filtering.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Include="FilteringResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FilteringResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="FilteringResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FilteringResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

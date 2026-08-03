@@ -87,6 +87,14 @@
           href: text-encoding/concepts.md
         - name: Getting started
           href: text-encoding/getting-started.md
+    - name: Bodu.Text.Filtering
+      items:
+        - name: Introduction
+          href: text-filtering/index.md
+        - name: Core concepts
+          href: text-filtering/concepts.md
+        - name: Getting started
+          href: text-filtering/getting-started.md
     - name: Bodu.Text.Formats
       items:
         - name: Introduction

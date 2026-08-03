@@ -27,7 +27,7 @@ public static class ExtendableOutput
         Console.WriteLine();
 
         // SHAKE128 is a HashAlgorithm whose output length is chosen at construction (in bits).
-        using (var shake16 = new Shake(outputBits: 16 * 8, securityLevel: 128))
+        using (var shake16 = new Shake(outputBits: 16 * 8, securityLevel: 128)) // securityLevel selects the SHAKE variant.
             Console.WriteLine($"  SHAKE128 (16 bytes)  : {Hex.ToHex(shake16.ComputeHash(Message))}");
 
         using (var shake32 = new Shake(outputBits: 32 * 8, securityLevel: 128))

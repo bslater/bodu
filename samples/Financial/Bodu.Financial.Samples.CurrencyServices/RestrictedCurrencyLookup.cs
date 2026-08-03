@@ -55,6 +55,8 @@ public sealed class RestrictedCurrencyLookup
     /// <inheritdoc />
     public bool TryByNumericCode(int numericCode, out CurrencyInfo currency)
     {
+        // The allow-list is keyed by ISO code, so the numeric code must resolve through the inner
+        // lookup first to learn which currency it names - the reverse order of the other guards.
         if (_inner.TryByNumericCode(numericCode, out currency) && _allowed.Contains(currency.IsoCode))
             return true;
 
@@ -67,6 +69,7 @@ public sealed class RestrictedCurrencyLookup
     {
         if (_inner.TryBySymbol(symbol, out IReadOnlyList<CurrencyInfo> all))
         {
+            // Multi-match surfaces filter to the allow-list; a fully filtered-out set counts as a miss.
             matches = all.Where(c => _allowed.Contains(c.IsoCode)).ToArray();
             return matches.Count > 0;
         }

@@ -16,6 +16,8 @@ namespace Bodu.Security.Cryptography.Samples.SymmetricAndAead.Scenarios;
 /// </summary>
 public static class StreamCiphers
 {
+    // Fixed key and nonces keep the output reproducible; a (key, nonce) pair must never encrypt two different
+    // messages in practice, because both would be XORed with the identical keystream.
     private static readonly byte[] Key = Hex.Fill(32, 0x00);
     private static readonly byte[] Plaintext = Encoding.ASCII.GetBytes("stream cipher keystream XOR demo");
 

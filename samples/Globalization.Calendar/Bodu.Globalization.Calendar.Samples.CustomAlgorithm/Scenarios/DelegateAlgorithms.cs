@@ -38,6 +38,8 @@ public static class DelegateAlgorithms
                 .AddRule("algorithm", r => r.Algorithm("eofy-party")))
             .ToXml();
 
+        // As in the registry scenario: no catalogue imports (_ => null), and the registry goes to both the loader
+        // (which validates the "eofy-party" reference) and the service (which dispatches it per resolved year).
         NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ => null, algorithms);
         var service = new NotableDateService(resource, new NotableDateServiceOptions { Algorithms = algorithms });
 

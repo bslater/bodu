@@ -22,6 +22,9 @@ namespace Bodu.Financial.Samples.CustomProvider;
 public sealed class CsvFileRateProviderTests
     : DatedRateProviderContractTests<CsvFileRateProvider>
 {
+    // The overrides below describe the committed Data/custom-feed.csv fixture: the contract base derives
+    // every probe (hits, misses, inverse lookups, the range sweep) from these seed values.
+
     /// <inheritdoc />
     protected override CurrencyPair CanonicalPair => new(CurrencyCode.AUD, CurrencyCode.USD);
 

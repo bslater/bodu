@@ -6,7 +6,10 @@ The EditorConfig-compatible `Microsoft.Extensions.Configuration` provider. This 
 [`Bodu.Text.Configuration`](../Bodu.Text.Configuration) into the standard
 [`Microsoft.Extensions.Configuration`](https://learn.microsoft.com/dotnet/core/extensions/configuration)
 pipeline so consumers can register a `.boduconfig` or `bodu.config` file with the same shape they already
-use for JSON, INI, or XML providers.
+use for JSON, INI, or XML providers. It also ships read-only TOML (`AddTomlFile` / `AddTomlStream`) and
+Bencode (`AddBencodeFile` / `AddBencodeStream`) sources that flatten
+[`Bodu.Text.Toml`](../Bodu.Text.Toml) and [`Bodu.Text.Bencode`](../Bodu.Text.Bencode) documents into the
+same colon-delimited key space.
 
 ## Where to start
 

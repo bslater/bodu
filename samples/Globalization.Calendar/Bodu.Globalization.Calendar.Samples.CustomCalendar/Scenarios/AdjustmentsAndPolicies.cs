@@ -29,7 +29,7 @@ public static class AdjustmentsAndPolicies
             .AddAdjustmentPolicy("weekend-roll", p => p
                 .When(AdjustmentTrigger.IfWeekend)
                 .Then(AdjustmentAction.MoveToNextWorkingDay)
-                .Emit(EmissionMode.ObservedOnly)
+                .Emit(EmissionMode.ObservedOnly)   // only the moved day is emitted; ActualAndObserved would keep both
                 .WithReason("In-lieu day (weekend substitution)"))
             .AddNotableDate("founding-day", "Contoso Founding Day", NotableDateCategory.Other, c => c
                 .AsNonWorkingByDefault()

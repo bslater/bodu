@@ -16,8 +16,9 @@ environment variables.
 The overload set deliberately mirrors `Microsoft.Extensions.Configuration.Json`'s `AddJsonFile` / `AddJsonStream`
 shape, so consumers familiar with the JSON provider can swap in this provider without learning a new API. A second,
 read-only TOML bridge (`AddTomlFile` / `AddTomlStream`) layers [`Bodu.Text.Toml`](../serialization/toml/index.md)
-through the same pipeline. Once added, keys are exposed in the canonical colon-delimited form that `IConfiguration`
-consumes:
+through the same pipeline, and a third, read-only Bencode bridge (`AddBencodeFile` / `AddBencodeStream`) does the
+same for [`Bodu.Text.Bencode`](../serialization/bencode/index.md). Once added, keys are exposed in the canonical
+colon-delimited form that `IConfiguration` consumes:
 
 ```csharp
 configuration["logging:level:default"]   // "Warning"
@@ -61,6 +62,7 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 |---|---|
 | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions> | Static class. The `AddTextConfiguration*` overload family: file path, file path + file provider, configure callback, conventional probe (`.boduconfig` → `bodu.config`), stream, and pre-parsed <xref:Bodu.Text.Configuration.IniDocumentBase>. |
 | <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions> | Static class. The read-only TOML bridge: `AddTomlFile(path, optional)` and `AddTomlStream(stream)`. Read-once, read-only, no reload-on-change. |
+| <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationExtensions> | Static class. The read-only Bencode bridge: `AddBencodeFile(path, optional)` and `AddBencodeStream(stream)`. Read-once, read-only, dictionary-rooted documents only. |
 
 ### Sources and providers
 
@@ -100,6 +102,8 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 | Pre-parsed document (already loaded elsewhere) | `builder.AddTextConfigurationDocument(document, targetPath: …)` |
 | Add a read-only TOML file | `builder.AddTomlFile("appsettings.toml", optional: true)` |
 | Add a read-only TOML stream | `builder.AddTomlStream(stream)` |
+| Add a read-only Bencode file | `builder.AddBencodeFile("appsettings.bencode", optional: true)` |
+| Add a read-only Bencode stream | `builder.AddBencodeStream(stream)` |
 
 ## Conventional file probe
 
@@ -123,8 +127,9 @@ a reparse + reload, and any reload tokens issued through `IConfiguration` fire.
 `TextStreamConfigurationSource` does **not** support reload-on-change — it parses the stream once when `Build` is
 called, and the stream lifetime ends with that parse. For dynamic stream-backed inputs, rebuild the configuration.
 
-The TOML bridge (`AddTomlFile` / `AddTomlStream`) is read-once and read-only by design — it attaches no file watcher
-even for the file overload, so there is no `reloadOnChange` parameter on either method.
+The TOML and Bencode bridges (`AddTomlFile` / `AddTomlStream`, `AddBencodeFile` / `AddBencodeStream`) are read-once
+and read-only by design — they attach no file watcher even for the file overloads, so there is no `reloadOnChange`
+parameter on any of the four methods.
 
 ## How keys are projected
 

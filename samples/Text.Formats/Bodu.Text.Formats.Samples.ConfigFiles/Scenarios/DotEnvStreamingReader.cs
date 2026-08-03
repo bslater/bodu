@@ -33,6 +33,7 @@ public static class DotEnvStreamingReader
         {
             switch (reader.TokenType)
             {
+                // Key and value arrive as separate tokens: hold the key (and its line) until the value follows.
                 case DotEnvTokenType.PropertyName:
                     key = reader.GetString();
                     line = reader.LineNumber;

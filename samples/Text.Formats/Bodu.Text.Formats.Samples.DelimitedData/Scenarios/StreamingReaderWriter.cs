@@ -31,6 +31,7 @@ public static class StreamingReaderWriter
         var csvBytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Data", "trades.csv"));
         var reader = new Utf8DelimitedReader(csvBytes);
 
+        // The writer shares the reader's token model: a document is one array of record objects.
         var buffer = new ArrayBufferWriter<byte>();
         var writer = new Utf8DelimitedWriter(buffer);
         writer.WriteStartArray();

@@ -54,8 +54,9 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Primitives" Version="8.0.0" />
-    <!-- BCL out-of-band package. -->
+    <!-- BCL out-of-band packages. -->
     <PackageVersion Include="System.IO.Hashing" Version="10.0.7" />
+    <PackageVersion Include="System.Text.Encoding.CodePages" Version="8.0.0" />
   </ItemGroup>
   <!--
     ============================================================================================

@@ -29,7 +29,11 @@ public static class AeadModes
         Console.WriteLine("--- AEAD modes over AES (fixed key + nonce + AD) ---");
         Console.WriteLine();
 
-        // GCM mandates a 12-byte nonce; EAX and OCB accept the block-sized 16-byte nonce used here.
+        // Nonce sizing differs per mode: this GCM implementation — like the BCL's AesGcm and every TLS/IPsec
+        // deployment — accepts only the 96-bit (12-byte) nonce; EAX authenticates the full block-sized 16-byte
+        // nonce; OCB takes a block-sized IV but uses only its first 12 bytes as the nonce (the tail is padding —
+        // vary the leading bytes, never a trailing counter). The values are fixed only for reproducibility:
+        // reusing a nonce under one key breaks these modes.
         RunMode("AES-GCM", Hex.Fill(12, 0x50), nonce => new GcmModeTransform(new AesBlockCipher(Key), nonce));
         RunMode("AES-EAX", Hex.Fill(16, 0x50), nonce => new EaxModeTransform(new AesBlockCipher(Key), nonce));
         RunMode("AES-OCB", Hex.Fill(16, 0x50), nonce => new OcbModeTransform(new AesBlockCipher(Key), nonce));

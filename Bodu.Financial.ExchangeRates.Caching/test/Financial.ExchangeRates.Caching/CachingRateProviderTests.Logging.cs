@@ -27,7 +27,7 @@ public sealed partial class CachingRateProviderTests
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        Assert.Contains(e => e.Level == LogLevel.Trace && e.EventId.Id == 4502, logger.Entries);
+        Assert.Contains(e => e.Level == LogLevel.Information && e.EventId.Id == 4502, logger.Entries);
     }
 
     /// <summary>
@@ -42,25 +42,25 @@ public sealed partial class CachingRateProviderTests
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        Assert.Contains(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501, logger.Entries);
+        Assert.Contains(e => e.Level == LogLevel.Information && e.EventId.Id == 4501, logger.Entries);
     }
 
     /// <summary>
     /// Verifies that a configured non-default <see cref="CachingRateOptions.CacheHitLogLevel" /> is honoured, so a
-    /// cache hit is emitted at the configured level rather than the <see cref="LogLevel.Trace" /> default.
+    /// cache hit is emitted at the configured level rather than the <see cref="LogLevel.Information" /> default.
     /// </summary>
     [TestMethod]
     public void GetRate_WhenCacheHitLogLevelConfigured_ShouldLogAtConfiguredLevel()
     {
         CapturingLogger logger = new();
-        _options.CacheHitLogLevel = LogLevel.Information;
+        _options.CacheHitLogLevel = LogLevel.Debug;
         SeedCache(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), (new DateOnly(2023, 1, 3), 0.5m));
         CachingRateProvider sut = new(InnerWith(), _cache, _options, _clock, logger);
 
         _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
 
-        Assert.Contains(e => e.Level == LogLevel.Information && e.EventId.Id == 4501, logger.Entries);
-        Assert.DoesNotContain(e => e.Level == LogLevel.Trace && e.EventId.Id == 4501, logger.Entries);
+        Assert.Contains(e => e.Level == LogLevel.Debug && e.EventId.Id == 4501, logger.Entries);
+        Assert.DoesNotContain(e => e.Level == LogLevel.Information && e.EventId.Id == 4501, logger.Entries);
     }
 
     /// <summary>

@@ -36,7 +36,7 @@ public static class KeyAgreementX25519
         using var bob = X25519.Create();
         bob.ImportPrivateKey(Hex.FromHex(BobPrivateHex));
 
-        // The public keys are the clamped scalar-multiplications of the base point; they match the RFC.
+        // Each public key is the base point multiplied by the clamped private scalar; both match the RFC vectors.
         var alicePublic = alice.ExportPublicKey();
         var bobPublic = bob.ExportPublicKey();
         Console.WriteLine($"  Alice public : {Hex.ToHex(alicePublic)}  (matches RFC: {Hex.ToHex(alicePublic) == ExpectedAlicePublicHex})");

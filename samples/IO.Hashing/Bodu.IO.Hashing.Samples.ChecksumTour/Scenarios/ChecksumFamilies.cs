@@ -35,6 +35,8 @@ public static class ChecksumFamilies
             ("Fletcher-64    ", new Fletcher64()),
         })
         {
+            // Append accumulates; GetHashAndReset finalizes the digest and clears state so the
+            // instance could be reused for another input.
             algorithm.Append(bytes);
             Console.WriteLine($"  {name}: {Convert.ToHexString(algorithm.GetHashAndReset())}");
         }

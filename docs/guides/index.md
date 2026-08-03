@@ -411,6 +411,36 @@ runtime-pluggable encoding choice.
 
 </div>
 
+### Bodu.Text.Filtering
+
+Include/exclude filtering for lists of text values — glob and regex patterns compiled once into a
+cost-tiered `TextFilter`, with Ant / MSBuild set semantics or gitignore-style ordered rules and
+built-in match telemetry.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="text-filtering/index.md">Overview</a></h3>
+  <p>How the engine works — compile-once filters, cost-tier classification, and the guide map.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-filtering/patterns-and-globs.md">Patterns and globs</a></h3>
+  <p>The full glob grammar — classes, <code>{a,b}</code> alternation, escapes — and when to reach for regex.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-filtering/evaluation-modes.md">Evaluation modes</a></h3>
+  <p><code>AnyMatch</code> sets vs <code>LastMatchWins</code> ordered rules, allowlists, gitignore-convention parsing.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-filtering/telemetry-and-tuning.md">Telemetry and tuning</a></h3>
+  <p>Statistics, per-pattern hit counts, the observer hook, cost tiers, fail-safe regex timeouts.</p>
+</div>
+
+</div>
+
 ### Bodu.Text.Formats (Delimited · DotEnv · INI)
 
 The line-oriented text formats — `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`, each a

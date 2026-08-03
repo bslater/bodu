@@ -10,7 +10,8 @@ namespace Bodu.Globalization.Calendar.Samples.NotableDatesBasics;
 
 /// <summary>
 /// Entry point for the notable-dates basics sample: querying public holidays from an embedded data
-/// pack, subdivision (state-level) rule shadowing, composable filters, and observed-date substitution.
+/// pack, subdivision (state-level) rule shadowing, composable filters, observed-date substitution,
+/// and expanding observed-only results into a full actual + observed timeline.
 /// Everything is offline — the rule data ships as embedded XML resources in the data-pack assembly.
 /// </summary>
 public static class Program
@@ -29,6 +30,7 @@ public static class Program
         FilteringAndCategories.Run();
         ObservedDates.Run();
         StreamingQueries.Run();
+        ExpandedTimeline.Run();
 
         Console.WriteLine("Done.");
     }

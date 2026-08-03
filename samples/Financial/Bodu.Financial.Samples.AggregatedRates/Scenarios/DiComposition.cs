@@ -36,8 +36,11 @@ public static class DiComposition
             .AddAggregatedRateProvider(agg => agg
                 .AddCachedChild(StaticSources.BankA, _ => StaticSources.LoadBankA(), (_, name) => new InMemoryRateCache(name))
                 .AddCachedChild(StaticSources.BankB, _ => StaticSources.LoadBankB(), (_, name) => new InMemoryRateCache(name))
+                // Unrouted pairs consult the children in registration order; the first success wins.
                 .UseDefaultStrategy(PriorityFallbackStrategy.Instance)
+                // Per-pair route: AUD/USD prefers Bank B, overriding the default child order for that pair only.
                 .MapPair(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), StaticSources.BankB, StaticSources.BankA)
+                // A route can also carry its own strategy: AUD/EUR averages over Bank A's contribution alone.
                 .MapPair(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.EUR), new AverageStrategy(), StaticSources.BankA));
 
         using ServiceProvider provider = services.BuildServiceProvider();

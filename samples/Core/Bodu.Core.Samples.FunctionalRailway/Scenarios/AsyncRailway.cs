@@ -42,7 +42,10 @@ public static class AsyncRailway
     /// <returns>A task yielding the scaled value or the first error.</returns>
     private static Task<Result<int>> Pipeline(string key) =>
         FetchAsync(key)
+            // BindAsync awaits the prior task and lifts the synchronous fallible step into the chain, so no
+            // intermediate 'await' is needed between steps.
             .BindAsync(Parse)
+            // MapAsync transforms the success value; a failure from any earlier step short-circuits past it.
             .MapAsync(n => n * 2);
 
     /// <summary>

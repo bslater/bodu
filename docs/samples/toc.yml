@@ -26,6 +26,8 @@
   href: text-configuration.md
 - name: Text.Encoding
   href: text-encoding.md
+- name: Text.Filtering
+  href: text-filtering.md
 - name: Text.Formats
   href: formats.md
 - name: Text.Toml

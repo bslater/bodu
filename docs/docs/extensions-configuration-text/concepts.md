@@ -38,7 +38,9 @@ fixtures where the configuration data does not live on disk.
 
 A third source, <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource>, backs the read-only TOML bridge
 (`AddTomlFile` / `AddTomlStream`). It carries `Path`, `Optional`, and `Stream` but no `TargetPath`, `ParseOptions`,
-`ResolveOptions`, or `ReloadOnChange` — TOML has no glob-anchored resolution layer and the bridge is read-once.
+`ResolveOptions`, or `ReloadOnChange` — TOML has no glob-anchored resolution layer and the bridge is read-once. A
+fourth, <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationSource>, backs the read-only Bencode bridge
+(`AddBencodeFile` / `AddBencodeStream`) with the same three-property shape; its documents must be dictionary-rooted.
 
 ## Target path
 

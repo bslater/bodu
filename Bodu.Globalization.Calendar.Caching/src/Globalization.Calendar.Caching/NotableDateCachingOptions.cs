@@ -112,14 +112,14 @@ public sealed class NotableDateCachingOptions
     /// <summary>
     /// Gets or sets the level at which a year served from the cache is logged.
     /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
-    public LogLevel CacheHitLogLevel { get; set; } = LogLevel.Trace;
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel CacheHitLogLevel { get; set; } = LogLevel.Information;
 
     /// <summary>
     /// Gets or sets the level at which a year recomputed on a cache miss and cached is logged.
     /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
-    public LogLevel CacheMissLogLevel { get; set; } = LogLevel.Trace;
+    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
+    public LogLevel CacheMissLogLevel { get; set; } = LogLevel.Information;
 
     /// <summary>
     /// Validates the option values, throwing when a rule is violated.

@@ -27,6 +27,8 @@ public static class Averaging
         var bankA = StaticSources.LoadBankA();
         var bankB = StaticSources.LoadBankB();
 
+        // Same two children as the priority scenario, but DefaultStrategy swaps first-success-wins for
+        // the mean of every contributor's quote - the strategy applies to any pair without its own route.
         var aggregate = new AggregatingRateProvider(
             [
                 new NamedDatedRateProvider(StaticSources.BankA, bankA),

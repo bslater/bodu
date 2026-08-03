@@ -37,6 +37,8 @@ public static class ReadThroughCache
             CacheDirectory = cacheDirectory,
         });
 
+        // The decorator serves lookups cache-first. DefaultExpiry bounds how long a stored row stays
+        // fresh (per-provider overrides exist on ProviderExpiry); once stale, the source is consulted again.
         using var cached = new CachingRateProvider(source, cache, new CachingRateOptions
         {
             DefaultExpiry = TimeSpan.FromHours(24),

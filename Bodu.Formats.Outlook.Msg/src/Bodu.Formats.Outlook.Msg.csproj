@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Outlook Msg</Title>
+    <Description>A read-only reader for the Outlook message format (.msg / MS-OXMSG) over the Bodu.IO.Compound OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies — without any MAPI session emulation or message authoring. Shares the Bodu.Formats.Outlook MAPI value model.</Description>
+    <PackageTags>$(PackageTags);outlook;msg;mapi;email;message;reader</PackageTags>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Formats.Outlook.Msg.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.IO.Compound\src\Bodu.IO.Compound.csproj" />
+    <ProjectReference Include="..\..\Bodu.Formats.Outlook\src\Bodu.Formats.Outlook.csproj" />
+  </ItemGroup>
+
+  <!-- External package dependencies. -->
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="Formats.Outlook\OutlookMsgResourceStrings.resx">
+      <LastGenOutput>OutlookMsgResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="Formats.Outlook\OutlookMsgResourceStrings.Designer.cs">
+      <DependentUpon>OutlookMsgResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>

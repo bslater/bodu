@@ -27,6 +27,7 @@ public static class RunningStats
         var stream = new[] { 2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0 };
 
         // Add folds each value in with O(1) work and O(1) memory - the stream is never retained.
+        // The struct's default value is the valid empty accumulator, so no constructor call is needed.
         var stats = default(RunningStatistics<double>);
         foreach (var value in stream)
         {

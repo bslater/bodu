@@ -42,6 +42,7 @@ dotnet add package Bodu.Globalization.Calendar.MiddleEast
 
 # Text & Serialization
 dotnet add package Bodu.Text.Encoding
+dotnet add package Bodu.Text.Filtering
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Toml
 dotnet add package Bodu.Text.Bencode
@@ -240,6 +241,26 @@ For lenient parsing (whitespace, `0x` prefix, missing padding), `OperationStatus
 
 → **[Introduction](text-encoding/index.md)** · **[Getting started](text-encoding/getting-started.md)** · **[Guides](../guides/text-encoding/index.md)**
 
+### Bodu.Text.Filtering
+
+**Bodu.Text.Filtering** filters lists of text values through include/exclude pattern sets — glob and regex patterns compiled once into a cost-tiered `TextFilter`, with Ant / MSBuild set semantics or gitignore-style ordered rules, and built-in telemetry reporting what matched and why.
+
+```csharp
+using Bodu.Text.Filtering;
+
+var filter = TextFilter.Parse(
+[
+    "error*",       // include everything starting with "error"
+    "{warn,fatal}*",
+    "!*debug*",     // '!' flips the pattern to an exclude
+]);
+
+var kept = filter.FilterToList(lines);       // bulk filtering, source order preserved
+var why  = filter.Evaluate("error-debug");   // → Excluded, decided by "!*debug*"
+```
+
+→ **[Introduction](text-filtering/index.md)** · **[Getting started](text-filtering/getting-started.md)** · **[Guides](../guides/text-filtering/index.md)**
+
 ### Bodu.Text.Formats
 
 **Bodu.Text.Formats** parses and emits self-framing serialization formats — Delimited (CSV / TSV), DotEnv, and Ini — each through a strongly-typed value model and a span- and stream-friendly codec with `Try*` overloads.
@@ -413,5 +434,5 @@ Open with `buffered: false` to read sectors on demand for large files; `OpenStre
 
 - **[Introduction](introduction.md)** — what each library is for and how they fit together.
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md).
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
 - **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial).
