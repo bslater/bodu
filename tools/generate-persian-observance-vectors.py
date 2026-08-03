@@ -142,6 +142,9 @@ def main() -> None:
         print("# Cross-verified at generation time against the System.Globalization.PersianCalendar")
         print("#   projection across the full range and the hand-pinned 2022-2026 rows in")
         print("#   PersianCalendarKnownAnswerTests; see NotableDateCatalogueVerification.md.")
+        print("# Cross-vendor checked against the ICU Persian calendar for SH 1369-1418")
+        print("#   (corpus/persian/icu-nowruz-leap-1369-1418.csv): all 50 Nowruz dates and all 49")
+        print("#   internally checkable leap-year flags agree.")
         print("# Regenerate: python3 tools/generate-persian-observance-vectors.py > <this file>")
 
     print("# Columns: gregorianYear,observanceId,date")

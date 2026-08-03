@@ -1,0 +1,57 @@
+# Solar Hijri Nowruz dates and leap-year flags, SH 1369-1418 (50 rows), ICU Persian calendar
+#   data generated through Node.js Intl and delivered in the 3 Aug 2026 data-acquisition pack.
+# status=independent-reconciliation. A year is leap when the following Nowruz is 366 days later
+#   (flags verified internally consistent with the dates on transcription).
+# Primary official authority for reconciliation: University of Tehran Calendar Center
+#   (https://calendar.ut.ac.ir/, the 1206-1498 ordinary/leap-year table); secondary: time.ir.
+# Columns: shYear,farvardin1,isLeapYear
+1369,1990-03-21,false
+1370,1991-03-21,true
+1371,1992-03-21,false
+1372,1993-03-21,false
+1373,1994-03-21,false
+1374,1995-03-21,false
+1375,1996-03-20,true
+1376,1997-03-21,false
+1377,1998-03-21,false
+1378,1999-03-21,false
+1379,2000-03-20,true
+1380,2001-03-21,false
+1381,2002-03-21,false
+1382,2003-03-21,false
+1383,2004-03-20,true
+1384,2005-03-21,false
+1385,2006-03-21,false
+1386,2007-03-21,false
+1387,2008-03-20,true
+1388,2009-03-21,false
+1389,2010-03-21,false
+1390,2011-03-21,false
+1391,2012-03-20,true
+1392,2013-03-21,false
+1393,2014-03-21,false
+1394,2015-03-21,false
+1395,2016-03-20,true
+1396,2017-03-21,false
+1397,2018-03-21,false
+1398,2019-03-21,false
+1399,2020-03-20,true
+1400,2021-03-21,false
+1401,2022-03-21,false
+1402,2023-03-21,false
+1403,2024-03-20,true
+1404,2025-03-21,false
+1405,2026-03-21,false
+1406,2027-03-21,false
+1407,2028-03-20,false
+1408,2029-03-20,true
+1409,2030-03-21,false
+1410,2031-03-21,false
+1411,2032-03-20,false
+1412,2033-03-20,true
+1413,2034-03-21,false
+1414,2035-03-21,false
+1415,2036-03-20,false
+1416,2037-03-20,true
+1417,2038-03-21,false
+1418,2039-03-21,false

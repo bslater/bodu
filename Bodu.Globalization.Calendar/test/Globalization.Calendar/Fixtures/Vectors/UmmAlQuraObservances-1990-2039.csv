@@ -22,6 +22,12 @@
 #   the tabulated 1 Muharram / 1 Ramadan / 1 Shawwal / 1 and 10 Dhu al-Hijjah dates match
 #   exactly. The announced (gazetted) column of the same table is embedded separately as
 #   SaudiAnnouncedObservances-1422-1448.csv with its own one-day-bound sweep.
+# Cross-vendor checked against the ICU islamic-umalqura table for every month of 1410-1462 AH
+#   (corpus/islamic/uaq-icu-month-starts-1410-1462.csv): 1420-1450 agree 372/372; 1410-1419
+#   ICU follows the retrospective table (+1 day in 104/120 months - the KFUPM print arbitrates
+#   for the contemporaneous calendar the KACST/BCL table follows); 1451-1462 lie beyond the
+#   commonly published KACST horizon, where vendor extensions differ (+1 day in 47/144 months)
+#   - those vector rows follow the BCL extension, braced by the astronomical conjunction bound.
 # Regenerate: dotnet run --project tools/IslamicObservanceVectorGenerator > <this file>
 # Verify:     python3 tools/verify-islamic-observance-vectors.py <this file>
 # Columns: gregorianYear,observanceId,date

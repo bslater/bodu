@@ -164,9 +164,17 @@ Maha Shivaratri 11 Feb (exact).
   A third reconciliation comes from the computed columns of **R.H. van Gent's Umm al-Qura
   comparison table** (Utrecht University): the tabulated 1 Muharram / 1 Ramadan / 1 Shawwal
   / 1 & 10 Dhu al-Hijjah dates for 1422–1448 AH determine 216 vector rows and all 216 match
-  exactly. Combined external coverage: 1410–1411 (KFUPM print), 1420–1448 (site exports +
-  van Gent, overlapping at 1430/1446/1448); externally unreconciled remainder: 1412–1419
-  and 1449–1462.
+  exactly. A fourth, **cross-vendor** check covers every month of the range: the ICU
+  `islamic-umalqura` table (`corpus/islamic/uaq-icu-month-starts-1410-1462.csv`,
+  ICU/Node `Intl`-derived — a platform copy of the KACST data, not a gazette) agrees with
+  the BCL 372/372 across the officially published core era 1420–1450; for 1410–1419 ICU
+  carries the *retrospective* recalculated table (+1 day in 104/120 months — the same
+  divergence class the KFUPM print already arbitrated in favor of the contemporaneous
+  calendar the BCL follows); and **1451–1462 lie beyond the commonly published KACST
+  horizon**, where vendor extensions legitimately differ (+1 day in 47/144 months, always
+  ICU later). The vectors' 1451–1462 rows therefore rest on the BCL's extension, braced by
+  the astronomical conjunction bound rather than cross-vendor agreement — future official
+  KACST publications for those years should be reconciled as they appear.
 - **Saudi gazetted announcements (1422–1448)** — the same van Gent table records the dates
   the **High Judiciary Council of Saudi Arabia actually announced** (via Fatwa-Online) for
   the sighting-sensitive month starts. These are embedded as
@@ -191,7 +199,10 @@ Maha Shivaratri 11 Feb (exact).
   Espenak–Meeus ΔT, apparent solar noon at the 52.5°E standard meridian). At generation
   time the table matched the BCL `PersianCalendar` projection 150/150 and the hand-pinned
   2022–2026 rows in `PersianCalendarKnownAnswerTests`; the engine sweep passes 150/150.
-  A reconciliation pass against time.ir remains a nicety requiring network access.
+  A fourth confirmation comes from the ICU Persian calendar
+  (`corpus/persian/icu-nowruz-leap-1369-1418.csv`): all 50 Nowruz dates and all 49
+  internally checkable leap-year flags agree, closing the civil-confirmation residual —
+  a University of Tehran leap-table or time.ir spot check is now purely optional.
 - **Tabular-Hijri 50-year sweep** — all 10 `global-islamic` observances are pinned across
   Gregorian 1990–2039 by `Fixtures/Vectors/TabularHijriObservances-1990-2039.csv` (517
   rows; double-occurrence years asserted as full ordered lists), projected from the BCL's
@@ -241,6 +252,9 @@ R.H. van Gent, *The Umm al-Qura Calendar of Saudi Arabia* (Utrecht University,
 webspace.science.uu.nl/~gent0113/islam/ummalqura.htm) — the computed-versus-announced
 comparison table for 1422–1448 AH, whose announced column records the High Judiciary
 Council of Saudi Arabia announcements as published by Fatwa-Online;
+ICU/Node `Intl` platform calendar tables (`islamic-umalqura` for AH 1410–1462, `persian`
+for SH 1369–1418; committed under `corpus/islamic/` and `corpus/persian/` as
+independent-reconciliation data, delivered 3 Aug 2026);
 Iranian civil calendar (time.ir); the Baha'i World Centre / national Baha'i community holy-day
 listings; drikpanchang / published panchanga for Hindu, Sikh and Jain festivals; Tibetan Nuns
 Project, qppstudio and publicholidays.asia for Gyalpo Losar; timeanddate and publicholidays.asia

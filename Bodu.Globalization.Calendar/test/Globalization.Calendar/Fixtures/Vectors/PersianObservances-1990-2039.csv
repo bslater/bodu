@@ -7,6 +7,9 @@
 # Cross-verified at generation time against the System.Globalization.PersianCalendar
 #   projection across the full range and the hand-pinned 2022-2026 rows in
 #   PersianCalendarKnownAnswerTests; see NotableDateCatalogueVerification.md.
+# Cross-vendor checked against the ICU Persian calendar for SH 1369-1418
+#   (corpus/persian/icu-nowruz-leap-1369-1418.csv): all 50 Nowruz dates and all 49
+#   internally checkable leap-year flags agree.
 # Regenerate: python3 tools/generate-persian-observance-vectors.py > <this file>
 # Columns: gregorianYear,observanceId,date
 1990,nowruz,1990-03-21

@@ -90,6 +90,12 @@ else
     Console.WriteLine("#   the tabulated 1 Muharram / 1 Ramadan / 1 Shawwal / 1 and 10 Dhu al-Hijjah dates match");
     Console.WriteLine("#   exactly. The announced (gazetted) column of the same table is embedded separately as");
     Console.WriteLine("#   SaudiAnnouncedObservances-1422-1448.csv with its own one-day-bound sweep.");
+    Console.WriteLine("# Cross-vendor checked against the ICU islamic-umalqura table for every month of 1410-1462 AH");
+    Console.WriteLine("#   (corpus/islamic/uaq-icu-month-starts-1410-1462.csv): 1420-1450 agree 372/372; 1410-1419");
+    Console.WriteLine("#   ICU follows the retrospective table (+1 day in 104/120 months - the KFUPM print arbitrates");
+    Console.WriteLine("#   for the contemporaneous calendar the KACST/BCL table follows); 1451-1462 lie beyond the");
+    Console.WriteLine("#   commonly published KACST horizon, where vendor extensions differ (+1 day in 47/144 months)");
+    Console.WriteLine("#   - those vector rows follow the BCL extension, braced by the astronomical conjunction bound.");
     Console.WriteLine("# Regenerate: dotnet run --project tools/IslamicObservanceVectorGenerator > <this file>");
     Console.WriteLine("# Verify:     python3 tools/verify-islamic-observance-vectors.py <this file>");
     Console.WriteLine("# Columns: gregorianYear,observanceId,date");

@@ -1074,10 +1074,15 @@ resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
   BCL), and `global-hindu` (engine-pinned regression freeze braced by
   an independent tithi-proximity check, 700 rows — whose generation
   surfaced and fixed the lost-Magha-month ingress-day defect).
+  ICU cross-vendor tables (committed under `corpus/`) reconcile every
+  month of UAQ 1410–1462 (1420–1450 exact 372/372; the pre-1420
+  retrospective-table and post-1450 vendor-extension divergences are
+  classified and documented) and confirm all 50 Persian Nowruz dates
+  and leap flags, closing the Persian civil-confirmation residual.
   Provenance and cross-check counts live in
-  `NotableDateCatalogueVerification.md`. Residual nicety: a time.ir
-  reconciliation pass for the Persian table when network access
-  allows.
+  `NotableDateCatalogueVerification.md`. Remaining residual: reconcile
+  future official KACST publications for 1451 AH onward as they
+  appear.
 - ~~**Add `IAsyncEnumerable<NotableDate>` projections**~~ — delivered:
   `NotableDateServiceAsyncExtensions.ResolveAsync` streams a range's
   occurrences one civil year at a time with cooperative cancellation,
