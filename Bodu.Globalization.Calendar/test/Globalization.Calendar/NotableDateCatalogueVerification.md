@@ -228,6 +228,21 @@ Maha Shivaratri 11 Feb (exact).
   2023–2029 rows above as external anchors. Exactness relative to a specific published
   panchanga is deliberately not claimed beyond the documented ±1–2 day tolerance.
   Generating the sweep surfaced and fixed the lost-Magha-month defect (see below).
+- **Indian gazetted 2026 (DoPT)** — the Government of India's official holiday memorandum
+  for 2026 (`corpus/india/dopt-holidays-2026.csv`, 51 rows) cross-checks the Hindu,
+  Islamic, and Buddhist catalogues against a second national reckoning. Exact agreements:
+  Makar Sankranti 14 Jan, Maha Shivaratri 15 Feb, Holika Dahan 3 Mar (the catalogue's
+  `holi` purnima day), Raksha Bandhan 28 Aug, Ganesh Chaturthi 14 Sep, Eid al-Adha
+  27 May (vs Umm al-Qura), and Buddha Purnima 1 May — independently confirming the
+  early-May Vesak 2026 note below. Every divergence is ±1 day with a known convention
+  behind it: DoPT's Holi 4 Mar is the Dhulandi day after the purnima; Janmashtami 4 Sep
+  is the Vaishnava reckoning (engine 3 Sep, Smarta); Vasant Panchami 23 Jan, Ram Navami
+  26 Mar, Dussehra 20 Oct, Karwa Chauth 29 Oct, and Diwali 8 Nov differ by one day of
+  udaya-tithi/regional day-selection (engine 22 Jan / 27 Mar / 19 Oct / 28 Oct / 9 Nov);
+  and the Islamic dates run one day after the Saudi/tabular tables (Eid al-Fitr 21 Mar vs
+  UAQ 20 Mar, Muharram/Ashura 26 Jun vs 25 Jun, Milad-un-Nabi 26 Aug vs 25 Aug) —
+  Indian moon-sighting. Documented as reckoning differences, not asserted; no engine
+  defect surfaced.
 - **Oriental Orthodox Pascha** — anchor matches published Orthodox Pascha 2023–2027
   (16 Apr, 5 May, 20 Apr, 12 Apr, 2 May); every derived feast lands on its exact offset.
 - **Baha'i** — the equinox-plus-offset model reproduces the **official 2025 Badí dates**
