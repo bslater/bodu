@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
@@ -36,6 +34,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// <para>
 /// The method is pure, deterministic, and allocation-bounded by the table size; results are safe to cache and share.
+/// The implementation lives in the shared <see cref="CrcCore" /> source (compiled here and into the format readers that
+/// verify vendor CRC variants); this type is the public facade over it.
 /// </para>
 /// </remarks>
 /// <example>
@@ -78,48 +78,8 @@ public static class CrcLookupTableBuilder
     /// reflection setting determines whether the bits of the input byte are reversed prior to processing, which is
     /// common in some CRC variants.
     /// </remarks>
-    public static ulong[] BuildLookupTable(int size, ulong polynomial, bool reflectIn)
-    {
-        ThrowHelper.ThrowIfOutOfRange(size, 1, 64);
-
-        // Determine number of bits to process per lookup (typically 8 for byte-wise processing)
-        int bitsPerTableEntry = size < 8 ? 1 : 8;
-        int tableSize = 1 << bitsPerTableEntry;
-
-        ulong[] table = new ulong[tableSize];
-        ulong significantBitMask = 1UL << (size - 1);
-
-        for (uint i = 0; i < tableSize; i++)
-        {
-            // Start with the input byte value
-            ulong value = i;
-
-            // Optionally reflect the bits of the input value
-            if (reflectIn)
-                value = NumericExtensions.ReverseBitsUnchecked(value, bitsPerTableEntry);
-
-            // Left-align the value to match the CRC size
-            value <<= size - bitsPerTableEntry;
-
-            // Apply the polynomial for each bit in the byte
-            for (int bit = 0; bit < bitsPerTableEntry; bit++)
-            {
-                bool msbSet = (value & significantBitMask) != 0;
-                value = msbSet ? (value << 1) ^ polynomial : value << 1;
-            }
-
-            // Optionally reflect the result and truncate to the desired CRC size
-            if (reflectIn)
-                value = NumericExtensions.ReverseBitsUnchecked(value, size);
-
-            // Mask off any bits beyond the desired CRC size
-            value &= ulong.MaxValue >> (64 - size);
-
-            table[i] = value;
-        }
-
-        return table;
-    }
+    public static ulong[] BuildLookupTable(int size, ulong polynomial, bool reflectIn) =>
+        CrcCore.BuildLookupTable(size, polynomial, reflectIn);
 
     /// <summary>
     /// Builds the eight interleaved 256-entry lookup tables that drive the slicing-by-8 inner loop for a <strong>reflected</strong>
@@ -139,24 +99,6 @@ public static class CrcLookupTableBuilder
     /// valid for reflected CRCs; the non-reflected slicing recurrence differs and is intentionally not built because
     /// the engine falls back to the byte-wise loop for non-reflected standards.
     /// </remarks>
-    internal static ulong[][] BuildReflectedSlicingTables(int size, ulong polynomial)
-    {
-        ulong[] t0 = BuildLookupTable(size, polynomial, reflectIn: true);
-        ulong mask = size == 64 ? ulong.MaxValue : (ulong.MaxValue >> (64 - size));
-
-        var tables = new ulong[8][];
-        tables[0] = t0;
-
-        for (int k = 1; k < 8; k++)
-        {
-            ulong[] prev = tables[k - 1];
-            ulong[] cur = new ulong[256];
-            for (int i = 0; i < 256; i++)
-                cur[i] = ((prev[i] >> 8) ^ t0[(int)(prev[i] & 0xFF)]) & mask;
-
-            tables[k] = cur;
-        }
-
-        return tables;
-    }
+    internal static ulong[][] BuildReflectedSlicingTables(int size, ulong polynomial) =>
+        CrcCore.BuildReflectedSlicingTables(size, polynomial);
 }
