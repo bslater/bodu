@@ -23,6 +23,11 @@
     <PackageReference Include="System.IO.Hashing" />
   </ItemGroup>
 
+  <!-- Shared CRC core (outside the src/ glob), also source-compiled into Bodu.IO.Pst and Bodu.Formats.Outlook.Msg. -->
+  <ItemGroup>
+    <Compile Include="..\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />

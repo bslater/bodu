@@ -461,15 +461,8 @@ public sealed class Crc
     /// <param name="table">The 256-entry byte-wise lookup table for the active polynomial.</param>
     /// <returns>The updated CRC accumulator.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong ProcessBytewiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
-    {
-        foreach (byte b in data)
-        {
-            crc = (crc >> 8) ^ table[(byte)(crc ^ b)];
-        }
-
-        return crc;
-    }
+    private static ulong ProcessBytewiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table) =>
+        CrcCore.UpdateReflected(data, crc, table);
 
     /// <summary>
     /// Writes the low <paramref name="byteCount" /> bytes of <paramref name="value" /> to
@@ -546,39 +539,8 @@ public sealed class Crc
     /// <param name="width">The CRC width in bits — either 32 or 64.</param>
     /// <returns>The CRC accumulator after consuming <paramref name="data" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong ProcessReflectedSlicing(ReadOnlySpan<byte> data, ulong crc, ulong[][] tables, ulong[] t0, int width)
-    {
-        ulong[] t1 = tables[1], t2 = tables[2], t3 = tables[3], t4 = tables[4], t5 = tables[5], t6 = tables[6], t7 = tables[7];
-        int i = 0;
-
-        if (width == 64)
-        {
-            while (i + 8 <= data.Length)
-            {
-                ulong c = crc ^ BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(i, 8));
-                crc = t7[(int)(c & 0xFF)] ^ t6[(int)((c >> 8) & 0xFF)] ^ t5[(int)((c >> 16) & 0xFF)] ^ t4[(int)((c >> 24) & 0xFF)]
-                    ^ t3[(int)((c >> 32) & 0xFF)] ^ t2[(int)((c >> 40) & 0xFF)] ^ t1[(int)((c >> 48) & 0xFF)] ^ t0[(int)((c >> 56) & 0xFF)];
-                i += 8;
-            }
-        }
-        else
-        {
-            // width == 32: only the low four bytes of the 8-byte window are folded into the 32-bit register; the
-            // remaining four are indexed directly into the lower-latency tables.
-            while (i + 8 <= data.Length)
-            {
-                uint c = (uint)crc ^ BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(i, 4));
-                crc = t7[(int)(c & 0xFF)] ^ t6[(int)((c >> 8) & 0xFF)] ^ t5[(int)((c >> 16) & 0xFF)] ^ t4[(int)((c >> 24) & 0xFF)]
-                    ^ t3[data[i + 4]] ^ t2[data[i + 5]] ^ t1[data[i + 6]] ^ t0[data[i + 7]];
-                i += 8;
-            }
-        }
-
-        for (; i < data.Length; i++)
-            crc = (crc >> 8) ^ t0[(byte)(crc ^ data[i])];
-
-        return crc;
-    }
+    private static ulong ProcessReflectedSlicing(ReadOnlySpan<byte> data, ulong crc, ulong[][] tables, ulong[] t0, int width) =>
+        CrcCore.UpdateReflectedSlicing(data, crc, tables, t0, width);
 
     /// <summary>
     /// Runs <paramref name="data" /> through the bytewise or bitwise CRC step appropriate to
