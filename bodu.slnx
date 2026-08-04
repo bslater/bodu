@@ -66,16 +66,24 @@
     <Project Path="Bodu.Core\test\Bodu.Core.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Globalization.Calendar/">
+    <Project Path="Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
+    <Project Path="Bodu.Globalization.Calendar.Build/test/Bodu.Globalization.Calendar.Build.Test.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="Bodu.Globalization.Calendar.Builder\src\Bodu.Globalization.Calendar.Builder.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Builder\test\Bodu.Globalization.Calendar.Builder.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar.DependencyInjection\src\Bodu.Globalization.Calendar.DependencyInjection.csproj" />
     <Project Path="Bodu.Globalization.Calendar.DependencyInjection\test\Bodu.Globalization.Calendar.DependencyInjection.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Plugins\src\Bodu.Globalization.Calendar.Plugins.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Plugins\test\Bodu.Globalization.Calendar.Plugins.Test.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Build\src\Bodu.Globalization.Calendar.Build.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Build\test\Bodu.Globalization.Calendar.Build.Test.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Tool\src\Bodu.Globalization.Calendar.Tool.csproj" />
-    <Project Path="Bodu.Globalization.Calendar.Tool\test\Bodu.Globalization.Calendar.Tool.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Tool/src/Bodu.Globalization.Calendar.Tool.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
+    <Project Path="Bodu.Globalization.Calendar.Tool/test/Bodu.Globalization.Calendar.Tool.Test.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
     <Project Path="Bodu.Globalization.Calendar\test\Bodu.Globalization.Calendar.Test.csproj" />
   </Folder>
@@ -269,13 +277,17 @@
     <Project Path="samples/Financial/Bodu.Financial.Samples.UnitPricing/Bodu.Financial.Samples.UnitPricing.csproj" />
   </Folder>
   <Folder Name="/Samples/Globalization.Calendar/">
-    <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.Caching/Bodu.Globalization.Calendar.Samples.Caching.csproj" />
+    <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.Caching/Bodu.Globalization.Calendar.Samples.Caching.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Test/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Test.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomAlgorithm/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomCalendar/Bodu.Globalization.Calendar.Samples.CustomCalendar.csproj" />
-    <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.ValidationLint/Bodu.Globalization.Calendar.Samples.ValidationLint.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.NotableDatesBasics/Bodu.Globalization.Calendar.Samples.NotableDatesBasics.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.ServiceHosting/Bodu.Globalization.Calendar.Samples.ServiceHosting.csproj" />
+    <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.ValidationLint/Bodu.Globalization.Calendar.Samples.ValidationLint.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.WorkingDays/Bodu.Globalization.Calendar.Samples.WorkingDays.csproj" />
   </Folder>
   <Folder Name="/Samples/Formats.Excel/">
