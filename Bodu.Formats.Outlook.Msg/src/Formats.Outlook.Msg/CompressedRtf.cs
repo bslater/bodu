@@ -13,8 +13,8 @@ namespace Bodu.Formats.Outlook.Msg;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The payload starts with a 16-byte header: the compressed size (excluding its own field), the uncompressed size,
-/// the format magic (<c>LZFu</c> compressed, <c>MELA</c> raw), and a CRC over the bytes that follow the header. The
+/// The payload starts with a 16-byte header: the compressed size (excluding its own field), the uncompressed size, the
+/// format magic (<c>LZFu</c> compressed, <c>MELA</c> raw), and a CRC over the bytes that follow the header. The
 /// compressed body is an LZ77 variant over a 4096-byte circular dictionary preseeded with a 207-byte RTF prologue:
 /// control bytes are consumed bit by bit from the least significant bit, a clear bit copies a literal, and a set bit
 /// reads a big-endian 16-bit reference — a 12-bit dictionary offset and a 4-bit length stored as length − 2. A
@@ -22,8 +22,9 @@ namespace Bodu.Formats.Outlook.Msg;
 /// </para>
 /// <para>
 /// The CRC is table-driven CRC-32 (reflected polynomial <c>0xEDB88320</c>) with a zero initial value and no final
-/// exclusive-or — deliberately implemented locally rather than through <c>Bodu.IO.Hashing</c>, whose catalogued
-/// CRC-32 applies the standard pre/post conditioning this format omits.
+/// exclusive-or — the catalogued CRC-32 in <c>Bodu.IO.Hashing</c> applies the standard pre/post conditioning this
+/// format omits, so the checksum runs the format's parameters over the shared <see cref="CrcCore" /> engine
+/// source-compiled from <c>Bodu.IO.Hashing/shared</c> (no package dependency).
 /// </para>
 /// </remarks>
 internal static class CompressedRtf
@@ -37,16 +38,14 @@ internal static class CompressedRtf
     /// <summary>The circular dictionary size.</summary>
     private const int DictionarySize = 4096;
 
-    /// <summary>
-    /// The 207-byte prologue the dictionary is preseeded with (MS-OXRTFCP §2.1.2.3); the remainder is spaces.
-    /// </summary>
+    /// <summary>The 207-byte prologue the dictionary is preseeded with (MS-OXRTFCP §2.1.2.3); the remainder is spaces.</summary>
     private const string InitialDictionaryText =
         "{\\rtf1\\ansi\\mac\\deff0\\deftab720{\\fonttbl;}{\\f0\\fnil \\froman \\fswiss "
         + "\\fmodern \\fscript \\fdecor MS Sans SerifSymbolArialTimes New RomanCourier"
         + "{\\colortbl\\red0\\green0\\blue0\r\n\\par \\pard\\plain\\f0\\fs20\\b\\i\\u\\tab\\tx";
 
-    /// <summary>The CRC-32 lookup table for the format's checksum.</summary>
-    private static readonly uint[] s_crcTable = BuildCrcTable();
+    /// <summary>The eight interleaved slicing-by-8 lookup tables for the reflected CRC-32 polynomial (<c>0x04C11DB7</c> in normal form, equivalent to the format's pre-reflected <c>0xEDB88320</c>).</summary>
+    private static readonly ulong[][] s_crcTables = CrcCore.BuildReflectedSlicingTables(32, 0x04C11DB7);
 
     /// <summary>
     /// Decompresses a compressed-RTF payload to the raw RTF bytes.
@@ -54,8 +53,8 @@ internal static class CompressedRtf
     /// <param name="data">The complete <c>PidTagRtfCompressed</c> payload, including the 16-byte header.</param>
     /// <returns>The RTF text bytes.</returns>
     /// <exception cref="OutlookMsgFormatException">
-    /// The header is truncated or carries an unknown magic, the declared sizes escape the payload, or the checksum
-    /// does not match.
+    /// The header is truncated or carries an unknown magic, the declared sizes escape the payload, or the checksum does
+    /// not match.
     /// </exception>
     internal static byte[] Decompress(ReadOnlySpan<byte> data)
     {
@@ -96,14 +95,8 @@ internal static class CompressedRtf
     /// </summary>
     /// <param name="data">The bytes to sum.</param>
     /// <returns>The checksum.</returns>
-    internal static uint ComputeCrc(ReadOnlySpan<byte> data)
-    {
-        uint crc = 0;
-        foreach (byte value in data)
-            crc = s_crcTable[(crc ^ value) & 0xFF] ^ (crc >> 8);
-
-        return crc;
-    }
+    internal static uint ComputeCrc(ReadOnlySpan<byte> data) =>
+        (uint)CrcCore.UpdateReflectedSlicing(data, 0, s_crcTables, s_crcTables[0], 32);
 
     /// <summary>
     /// Decodes the LZ token stream against the preseeded circular dictionary.
@@ -162,24 +155,5 @@ internal static class CompressedRtf
         }
 
         return output.ToArray();
-    }
-
-    /// <summary>
-    /// Builds the reflected CRC-32 lookup table.
-    /// </summary>
-    /// <returns>The 256-entry table for polynomial <c>0xEDB88320</c>.</returns>
-    private static uint[] BuildCrcTable()
-    {
-        var table = new uint[256];
-        for (uint i = 0; i < 256; i++)
-        {
-            uint entry = i;
-            for (int bit = 0; bit < 8; bit++)
-                entry = (entry & 1) != 0 ? 0xEDB88320 ^ (entry >> 1) : entry >> 1;
-
-            table[i] = entry;
-        }
-
-        return table;
     }
 }
