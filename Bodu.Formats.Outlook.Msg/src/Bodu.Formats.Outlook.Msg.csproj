@@ -16,6 +16,16 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- Namespace selector for the shared CRC core source. -->
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);MSG</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Shared CRC core, source-compiled from Bodu.IO.Hashing (no package dependency). -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.IO.Hashing\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
