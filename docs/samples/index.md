@@ -8,8 +8,8 @@ The repository ships runnable, self-contained sample projects under
 [`samples/`](https://github.com/bslater/bodu/tree/master/samples), organised by domain folder
 named after the namespace segment they demonstrate (`Core/`, `Collections/`,
 `Collections.Concurrent/`, `Financial/`, `Formats.Excel/`, `Globalization.Calendar/`,
-`IO.Compound/`, `IO.Hashing/`, `Numerics/`, `Security.Cryptography/`, `Text.Toml/`,
-`Text.Yaml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`, `Text.Filtering/`).
+`Globalization.Recurrence/`, `IO.Compound/`, `IO.Hashing/`, `Numerics/`,
+`Security.Cryptography/`, `Text.Toml/`, `Text.Yaml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`, `Text.Filtering/`).
 This section catalogues them; each domain page walks its samples individually.
 
 Every sample:
@@ -44,6 +44,7 @@ dotnet run --project samples/<Domain>/<SampleName>
 | [Financial](financial.md) | 8 projects + 1 test project | Money arithmetic and the three-tier rounding model, the offline static-rate-file pattern, read-through caching and tiered stacking, multi-provider aggregation and routing, DI hosting, a consumer-written provider proven by the shipped contract-test base, and the live-provider exception |
 | [Formats.Excel](excel.md) | 1 project | The read-only BIFF8 `.xls` reader over a real ~18,000-cell workbook: the session/sheet-directory surface, constant-memory forward-only streaming, the materialized worksheet, and format-classified serial-date decoding |
 | [Globalization.Calendar](calendar.md) | 5 projects + 1 test project | Holiday queries with ISO 3166-2 subdivision shadowing, working-day and fiscal arithmetic with `WeekPattern` overrides, fluent calendar authoring with catalogue imports and the XML round trip, DI with live data reload, and custom date algorithms proven by the shared data-pack test base |
+| [Globalization.Recurrence](recurrence.md) | 5 projects | The RFC 5545 `RRULE` form with the `BY*` semantics implementations disagree on and `WKST` week numbering, the Vixie cron dialect with its day-field union rule and oversized-step handling, the calendar-free anchored interval with the duration grammar's exact boundary, `RDATE`/`EXDATE` set composition and the iCalendar property-block round trip, and an integrating host that puts all four behind one adapter with a reproducible catch-up loop |
 | [IO.Compound](io-compound.md) | 1 project | The OLE2 structured-storage container: builder-based authoring and byte-exact read-back, typed OLE property sets on authored and real Word files, signature detection with the v3/v4 sector knob, and walking a real `.doc`'s storage tree |
 | [IO.Hashing](io-hashing.md) | 3 projects + 1 test project | The 112-standard parametric CRC catalogue, checksum families with corruption detection, streaming/resumable digests, non-cryptographic bucket routing, identifier check digits across domains with error-class comparisons, and a custom scheme proven by the shared contract-test base |
 | [Numerics](numerics.md) | 4 projects | `Fraction<T>` exact rational arithmetic, parse/format, generic math and continued fractions; the `Interval`/`DiscreteInterval`/`IntervalSet` algebra; the single-pass streaming statistics (`RunningStatistics`, `MovingSum`/`MovingMinMax`, `RunningQuantile`, `BigDecimal`); and the `System.Text.Json` converter registration and policy shapes |

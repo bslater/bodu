@@ -12,6 +12,8 @@
   href: excel.md
 - name: Globalization.Calendar
   href: calendar.md
+- name: Globalization.Recurrence
+  href: recurrence.md
 - name: IO.Compound
   href: io-compound.md
 - name: IO.Hashing

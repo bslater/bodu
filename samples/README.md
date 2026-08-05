@@ -28,7 +28,7 @@ API drift breaks the build immediately.
 
 Domain folders under `samples/` are named by namespace segment — `Core/`, `Collections/`,
 `Collections.Concurrent/`, `Financial/`, `Formats.Excel/`, `Globalization.Calendar/`,
-`IO.Compound/`, `IO.Hashing/`, `Numerics/`, `Security.Cryptography/`, `Text.Toml/`,
+`Globalization.Recurrence/`, `IO.Compound/`, `IO.Hashing/`, `Numerics/`, `Security.Cryptography/`, `Text.Toml/`,
 `Text.Yaml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`, `Text.Filtering/` —
 mirroring how
 folders map to namespaces in the library source trees. The `samples/` root itself stays lowercase, like `src`/`test`/`bench`, because it is
@@ -77,6 +77,7 @@ change to the libraries alters it, the README review catches the drift alongside
 | Financial | [`samples/Financial/`](Financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers, JSON serialization, the live-provider exception |
 | Formats.Excel | [`samples/Formats.Excel/`](Formats.Excel/README.md) — the read-only BIFF8 `.xls` reader: sheet directory, forward-only streaming, materialized worksheets, serial-date decoding |
 | Globalization.Calendar | [`samples/Globalization.Calendar/`](Globalization.Calendar/README.md) — holiday queries and subdivisions, working-day arithmetic, authored calendars, DI + reload, custom algorithms |
+| Globalization.Recurrence | [`samples/Globalization.Recurrence/`](Globalization.Recurrence/README.md) — the RFC 5545 `RRULE` form, the Vixie cron dialect, calendar-free anchored intervals, `RDATE`/`EXDATE` set composition, and an integrating scheduling host |
 | IO.Compound | [`samples/IO.Compound/`](IO.Compound/README.md) — OLE2 structured storage: builder authoring + read-back, OLE property sets, detection and the v3/v4 knob, a real `.doc`'s tree |
 | IO.Hashing | [`samples/IO.Hashing/`](IO.Hashing/README.md) — the CRC catalogue, checksum families, streaming/resumable digests, identifier check digits, and a custom scheme with contract tests |
 | Numerics | [`samples/Numerics/`](Numerics/README.md) — Fraction rational arithmetic and continued fractions, the interval algebra, streaming statistics, and the JSON converters |

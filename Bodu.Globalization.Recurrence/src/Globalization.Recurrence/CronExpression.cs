@@ -291,15 +291,21 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// Returns a hash code for the expression.
     /// </summary>
     /// <returns>A hash code consistent with <see cref="Equals(CronExpression)" />.</returns>
+    /// <remarks>
+    /// Every field mask contributes its contents, matching the fields <see cref="Equals(CronExpression)" /> compares.
+    /// Mixing only each mask's cardinality would satisfy the equality contract but collapse the common case — a
+    /// schedule selecting one value per field, such as <c>0 2 * * *</c> — onto a single bucket.
+    /// </remarks>
     public override int GetHashCode()
     {
         var hash = default(HashCode);
         hash.Add(Format);
-        hash.Add(CountSet(_minutes));
-        hash.Add(CountSet(_hours));
-        hash.Add(CountSet(_daysOfMonth));
-        hash.Add(CountSet(_months));
-        hash.Add(CountSet(_daysOfWeek));
+        AddMask(ref hash, _seconds);
+        AddMask(ref hash, _minutes);
+        AddMask(ref hash, _hours);
+        AddMask(ref hash, _daysOfMonth);
+        AddMask(ref hash, _months);
+        AddMask(ref hash, _daysOfWeek);
         return hash.ToHashCode();
     }
 
@@ -311,22 +317,27 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         Format == CronFormat.WithSeconds ? TimeSpan.FromSeconds(1) : TimeSpan.FromMinutes(1);
 
     /// <summary>
-    /// Counts the set members of a field mask.
+    /// Mixes a field mask's contents into a hash code.
     /// </summary>
+    /// <param name="hash">The hash code being accumulated.</param>
     /// <param name="mask">The field mask.</param>
-    /// <returns>The number of set entries.</returns>
-    private static int CountSet(bool[] mask)
+    /// <remarks>
+    /// The set indices are mixed rather than the raw mask, so the contribution is proportional to how many values the
+    /// field selects rather than to the field's range.
+    /// </remarks>
+    private static void AddMask(ref HashCode hash, bool[] mask)
     {
-        int count = 0;
-        foreach (bool bit in mask)
+        for (int index = 0; index < mask.Length; index++)
         {
-            if (bit)
+            if (mask[index])
             {
-                count++;
+                hash.Add(index);
             }
         }
 
-        return count;
+        // A trailing sentinel keeps field boundaries distinct, so "minute 1, hour 2" cannot hash like
+        // "minute 1 and 2, hour (none)".
+        hash.Add(-1);
     }
 
     /// <summary>

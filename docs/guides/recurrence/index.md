@@ -103,3 +103,15 @@ if (!AnchoredInterval.TryParse(text, out AnchoredInterval? interval, out string?
 ```
 
 The message names the offending token — "The duration component '4X' is not valid; each component is an unsigned integer followed by a unit, and the unit must be W, D, H, M, or S." beats "invalid format" — and the same overload shape exists on all four forms.
+
+## Runnable samples
+
+Five sample projects under
+[`samples/Globalization.Recurrence/`](https://github.com/bslater/bodu/tree/master/samples/Globalization.Recurrence)
+demonstrate every surface described here, one form per project plus an integrating scheduling host.
+They are offline, deterministic, and executed by CI, so the code they show cannot drift from the
+current API — see the [samples catalogue](~/samples/recurrence.md) for what each one covers.
+
+```bash
+dotnet run --project samples/Globalization.Recurrence/Bodu.Globalization.Recurrence.Samples.SchedulingHost
+```
