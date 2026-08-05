@@ -207,4 +207,81 @@ public partial class RecurrenceRuleTests
             _ = rule.GetOccurrences(new DateTime(1997, 9, 2, 9, 0, 0)).ToArray();
         });
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="DateTimeOffset" /> overload produces the same wall-clock series as its
+    /// <see cref="DateTime" /> counterpart, with the start's offset carried onto every occurrence.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_ForDateTimeOffset_ShouldPreserveOffset()
+    {
+        RecurrenceRule rule = RecurrenceRule.Parse("FREQ=DAILY;COUNT=3");
+        var offset = TimeSpan.FromHours(10);
+        var start = new DateTimeOffset(2026, 1, 1, 9, 0, 0, offset);
+
+        DateTimeOffset[] actual = [.. rule.GetOccurrences(start)];
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new DateTimeOffset(2026, 1, 1, 9, 0, 0, offset),
+                new DateTimeOffset(2026, 1, 2, 9, 0, 0, offset),
+                new DateTimeOffset(2026, 1, 3, 9, 0, 0, offset),
+            },
+            actual);
+    }
+
+    /// <summary>
+    /// Verifies that the windowed <see cref="DateTimeOffset" /> overload yields only the occurrences inside its
+    /// inclusive bounds.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_ForDateTimeOffset_WhenWindowed_ShouldYieldOnlyOccurrencesInsideTheWindow()
+    {
+        RecurrenceRule rule = RecurrenceRule.Parse("FREQ=DAILY");
+        var offset = TimeSpan.FromHours(-5);
+        var start = new DateTimeOffset(2026, 1, 1, 9, 0, 0, offset);
+
+        DateTimeOffset[] actual =
+        [
+            .. rule.GetOccurrences(
+                start,
+                new DateTimeOffset(2026, 1, 3, 0, 0, 0, offset),
+                new DateTimeOffset(2026, 1, 5, 23, 59, 59, offset))
+        ];
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new DateTimeOffset(2026, 1, 3, 9, 0, 0, offset),
+                new DateTimeOffset(2026, 1, 4, 9, 0, 0, offset),
+                new DateTimeOffset(2026, 1, 5, 9, 0, 0, offset),
+            },
+            actual);
+    }
+
+    /// <summary>
+    /// Verifies that the wall-clock series is identical whatever offset the start carries, so the offset selects no
+    /// different dates.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_ForDateTimeOffset_WhenOffsetsDiffer_ShouldSelectTheSameWallClock()
+    {
+        RecurrenceRule rule = RecurrenceRule.Parse("FREQ=MONTHLY;BYDAY=-1FR;COUNT=3");
+
+        foreach (TimeSpan offset in new[] { TimeSpan.Zero, TimeSpan.FromHours(13), TimeSpan.FromHours(-8) })
+        {
+            DateTimeOffset[] actual = [.. rule.GetOccurrences(new DateTimeOffset(2026, 1, 1, 9, 0, 0, offset))];
+
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    new DateTimeOffset(2026, 1, 30, 9, 0, 0, offset),
+                    new DateTimeOffset(2026, 2, 27, 9, 0, 0, offset),
+                    new DateTimeOffset(2026, 3, 27, 9, 0, 0, offset),
+                },
+                actual,
+                $"offset {offset}");
+        }
+    }
 }
