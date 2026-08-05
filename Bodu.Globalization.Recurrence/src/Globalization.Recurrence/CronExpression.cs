@@ -23,6 +23,12 @@ namespace Bodu.Globalization.Recurrence;
 /// following the traditional Vixie cron rule. The Quartz extensions <c>L</c>, <c>W</c>, <c>#</c>, and <c>?</c> are not
 /// yet supported.
 /// </para>
+/// <para>
+/// Every occurrence answer is a pure function of the arguments: no API reads the wall clock or consults the machine
+/// time zone. The <see cref="DateTimeOffset" /> overloads interpret the wall-clock time in the argument's own offset
+/// and return occurrences carrying that offset; daylight-saving transitions are the caller's concern — a host that
+/// wants a local-time schedule across a transition re-derives the offset on each evaluation.
+/// </para>
 /// </remarks>
 public sealed partial class CronExpression : IEquatable<CronExpression>
 {
