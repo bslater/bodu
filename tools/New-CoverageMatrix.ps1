@@ -220,8 +220,13 @@ foreach ($relative in @($files.Keys)) {
 # process, so when it is part of the collection the scalar fallbacks are covered regardless.
 # ---------------------------------------------------------------------------------------------------------------
 $hardwareGated = @()
-if ($avx512 -ne 'true') {
+if ($avx512 -eq 'false') {
     $hardwareGated = @($files.Keys | Where-Object { $_ -like '*.Avx512.cs' })
+}
+elseif ($avx512 -ne 'true') {
+    # Gate only on positive evidence that the host could not execute these paths. Excluding code
+    # from the denominator because the probe did not run would quietly inflate the figure.
+    Write-Warning 'AVX-512 support could not be determined from the collection manifests; the intrinsic implementations are reported as measured rather than excluded.'
 }
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -259,7 +264,14 @@ function Get-Rate([int]$covered, [int]$total) {
     return [math]::Round(100.0 * $covered / $total, 1)
 }
 
-$rows = foreach ($name in ($aggregate.Keys + $packableNames | Sort-Object -Unique)) {
+# This is a matrix of shipped packages. The collection also picks up assemblies that are not
+# packages - the samples under samples/, the shared test-support libraries, and the source generator
+# - because they are all named Bodu.*. Reporting them would put sample code, which exists to be read
+# rather than exercised, into the same table and the same solution total as the libraries.
+$reportable = @($packableNames + $SharedSourceUnit | Sort-Object -Unique)
+$notPackages = @($aggregate.Keys | Where-Object { $reportable -notcontains $_ } | Sort-Object)
+
+$rows = foreach ($name in $reportable) {
     if ($name -eq 'Bodu.Text.Formats') { continue }   # meta-package: no source, no coverage to report
 
     $bucket = $aggregate[$name]
@@ -406,6 +418,7 @@ $rows |
 Write-Host "Wrote coverage matrix: $OutputPath"
 Write-Host "  machine-readable  : $rowsPath"
 Write-Host "  packages reported : $($rows.Count) ($(@($rows | Where-Object Collected).Count) collected)"
+Write-Host "  non-package asms  : $($notPackages.Count) excluded (samples, test support, generators)"
 Write-Host "  overall line rate : $overall%"
 Write-Host "  phantom discarded : $($phantom.Count)"
 Write-Host "  hardware-gated    : $($hardwareGated.Count)"

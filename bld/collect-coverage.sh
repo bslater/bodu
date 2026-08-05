@@ -257,22 +257,32 @@ done <<< "$projects"
 # ---------------------------------------------------------------------------------------------------------------
 # Run manifest
 # ---------------------------------------------------------------------------------------------------------------
-avx512="skipped"
-if [ "$run_probe" = true ]; then
-    echo "Probing AVX-512 support..."
-    avx512="$(probe_avx512)"
-    echo "  Avx512F.IsSupported = $avx512"
-fi
-
-# Each shard runs in its own job and uploads its own artifact, which the aggregate job downloads into
-# a single directory. A fixed filename would let the shards overwrite one another and lose the
-# per-shard projectsCollected counts, so the manifest name carries the shard identity.
 if [ -n "$shard_spec" ]; then
     manifest="$report_dir/environment.shard-${shard_spec//\//-of-}.json"
 else
     manifest="$report_dir/environment.json"
 fi
 
+if [ "$run_probe" = true ]; then
+    echo "Probing AVX-512 support..."
+    avx512="$(probe_avx512)"
+    echo "  Avx512F.IsSupported = $avx512"
+else
+    # A single-project top-up must not erase the capability record the full run established: the
+    # matrix classifies the hardware-gated files from it, and losing it silently changes whether
+    # those files are excluded from the denominator. Carry the previous answer forward.
+    avx512="$(sed -n 's/.*"avx512Supported": "\([^"]*\)".*/\1/p' "$manifest" 2>/dev/null | head -1)"
+    avx512="${avx512:-skipped}"
+
+    if [ "$avx512" != "skipped" ]; then
+        echo "AVX-512 probe skipped; carrying forward '$avx512' from $manifest"
+    fi
+fi
+
+# Each shard runs in its own job and uploads its own artifact, which the aggregate job downloads into
+# a single directory. A fixed filename would let the shards overwrite one another and lose the
+# per-shard projectsCollected counts, so the manifest name carries the shard identity (resolved
+# above, before the probe reads the previous value back).
 cat > "$manifest" <<JSON
 {
   "commit": "$(git rev-parse HEAD 2>/dev/null || echo unknown)",
