@@ -187,6 +187,105 @@ namespace Bodu.Globalization.Recurrence {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The duration text is empty or contains only white space..
+        /// </summary>
+        internal static string Format_Invalid_DurationEmpty {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DurationEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An iCalendar duration must begin with the &apos;P&apos; designator..
+        /// </summary>
+        internal static string Format_Invalid_DurationMissingPrefix {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DurationMissingPrefix", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The duration must be greater than zero; signed and zero durations are not valid intervals..
+        /// </summary>
+        internal static string Format_Invalid_DurationNotPositive {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DurationNotPositive", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The duration component &apos;{0}&apos; is not valid; each component is an unsigned integer followed by a unit, and the unit must be W, D, H, M, or S..
+        /// </summary>
+        internal static string Format_Invalid_DurationComponent {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DurationComponent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The duration unit &apos;{0}&apos; is repeated or out of order; components must appear as weeks, or days then &apos;T&apos; then hours, minutes, seconds, each at most once..
+        /// </summary>
+        internal static string Format_Invalid_DurationUnitOrder {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DurationUnitOrder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The weeks unit &apos;W&apos; cannot be combined with any other duration component..
+        /// </summary>
+        internal static string Format_Invalid_DurationWeeksCombined {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DurationWeeksCombined", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The time units &apos;H&apos;, &apos;M&apos;, and &apos;S&apos; must be preceded by the &apos;T&apos; designator..
+        /// </summary>
+        internal static string Format_Invalid_DurationMissingTimeDesignator {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DurationMissingTimeDesignator", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An iCalendar duration must contain at least one component..
+        /// </summary>
+        internal static string Format_Invalid_DurationNoComponents {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DurationNoComponents", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The duration is too large to represent..
+        /// </summary>
+        internal static string Format_Invalid_DurationTooLarge {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DurationTooLarge", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The interval must be greater than zero..
+        /// </summary>
+        internal static string Arg_OutOfRange_AnchoredIntervalNotPositive {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_AnchoredIntervalNotPositive", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The interval must be a whole number of seconds; iCalendar durations carry no sub-second precision..
+        /// </summary>
+        internal static string Arg_Invalid_AnchoredIntervalSubSecond {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_AnchoredIntervalSubSecond", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The recurrence frequency &apos;{0}&apos; is not supported; sub-daily frequencies are a planned follow-on..
         /// </summary>
         internal static string Op_NotSupported_SubDailyFrequency {
