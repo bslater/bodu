@@ -64,6 +64,10 @@ public sealed partial class RecurrenceRule
     /// </param>
     /// <returns>The next occurrence, or <see langword="null" /> when the rule produces none.</returns>
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// The search is bounded by the end of the representable calendar (year 9999): a rule that can never match, such as
+    /// 30 February yearly, answers <see langword="null" /> rather than scanning unboundedly.
+    /// </remarks>
     public DateTime? GetNextOccurrence(DateTime start, DateTime after, bool inclusive = false)
     {
         foreach (DateTime occurrence in Enumerate(start))
@@ -75,6 +79,40 @@ public sealed partial class RecurrenceRule
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Returns the last occurrence of the rule that falls before the specified instant.
+    /// </summary>
+    /// <param name="start">The series start (<c>DTSTART</c>) the rule is anchored to.</param>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="before" />; otherwise the
+    /// occurrence must be strictly earlier.
+    /// </param>
+    /// <returns>
+    /// The previous occurrence, or <see langword="null" /> when none precedes <paramref name="before" />.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Due-ness evaluation is a previous-occurrence comparison — typically
+    /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c> — so missed occurrences coalesce
+    /// structurally: the answer is a single instant, never a backlog.
+    /// </remarks>
+    public DateTime? GetPreviousOccurrence(DateTime start, DateTime before, bool inclusive = false)
+    {
+        DateTime? previous = null;
+        foreach (DateTime occurrence in Enumerate(start))
+        {
+            if (occurrence > before || (!inclusive && occurrence == before))
+            {
+                break;
+            }
+
+            previous = occurrence;
+        }
+
+        return previous;
     }
 
     /// <summary>
@@ -147,6 +185,35 @@ public sealed partial class RecurrenceRule
     }
 
     /// <summary>
+    /// Returns the last occurrence of the rule that falls before the specified instant, preserving the start's offset.
+    /// </summary>
+    /// <param name="start">The series start (<c>DTSTART</c>) the rule is anchored to.</param>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="before" />; otherwise the
+    /// occurrence must be strictly earlier.
+    /// </param>
+    /// <returns>
+    /// The previous occurrence, or <see langword="null" /> when none precedes <paramref name="before" />.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset start, DateTimeOffset before, bool inclusive = false)
+    {
+        DateTimeOffset? previous = null;
+        foreach (DateTimeOffset occurrence in GetOccurrences(start))
+        {
+            if (occurrence > before || (!inclusive && occurrence == before))
+            {
+                break;
+            }
+
+            previous = occurrence;
+        }
+
+        return previous;
+    }
+
+    /// <summary>
     /// Produces the ordered occurrence stream, applying the per-period <c>BY</c> expansion, <c>BYSETPOS</c> selection,
     /// and the <c>COUNT</c> / <c>UNTIL</c> bounds.
     /// </summary>
@@ -197,6 +264,12 @@ public sealed partial class RecurrenceRule
             }
 
             instants.Sort();
+
+            // Two BY values can resolve to the same instant — BYMONTHDAY=1,-31 in a 31-day month, or BYDAY=1MO,-4MO
+            // in a month with exactly four Mondays. The candidate set is a set, so duplicates are removed before
+            // BYSETPOS indexes into it and before COUNT counts it.
+            RemoveAdjacentDuplicates(instants);
+
             IReadOnlyList<DateTime> selected = _bySetPos.Length == 0 ? instants : ApplySetPos(instants);
 
             foreach (DateTime instant in selected)
@@ -304,7 +377,7 @@ public sealed partial class RecurrenceRule
         if (!MonthAllowed(anchor.Month)
             || !MonthDayAllowed(anchor)
             || !YearDayAllowed(anchor)
-            || !WeekDayAllowed(anchor))
+            || !WeekDayAllowed(anchor, honorOrdinal: false))
         {
             return [];
         }
@@ -327,7 +400,10 @@ public sealed partial class RecurrenceRule
             ? Array.ConvertAll(_byDay, entry => entry.Day)
             : [startDate.DayOfWeek];
 
-        for (int offset = 0; offset < 7; offset++)
+        // The final week of the representable calendar is truncated, so the offset loop must stop at the last
+        // representable day rather than stepping past it.
+        int lastOffset = Math.Min(6, DateOnly.MaxValue.DayNumber - weekStart.DayNumber);
+        for (int offset = 0; offset <= lastOffset; offset++)
         {
             DateOnly day = weekStart.AddDays(offset);
             if (Array.IndexOf(weekdays, day.DayOfWeek) >= 0 && MonthAllowed(day.Month))
@@ -362,7 +438,7 @@ public sealed partial class RecurrenceRule
         {
             foreach (int monthDay in _byMonthDay)
             {
-                if (TryResolveMonthDay(year, month, monthDay, out DateOnly day) && (!hasDay || WeekDayAllowed(day)))
+                if (TryResolveMonthDay(year, month, monthDay, out DateOnly day) && (!hasDay || WeekDayAllowed(day, honorOrdinal: true)))
                 {
                     result.Add(day);
                 }
@@ -400,7 +476,7 @@ public sealed partial class RecurrenceRule
             {
                 if (TryResolveYearDay(year, yearDay, out DateOnly day)
                     && MonthAllowed(day.Month)
-                    && WeekDayAllowed(day))
+                    && WeekDayAllowed(day, honorOrdinal: true))
                 {
                     result.Add(day);
                 }
@@ -408,7 +484,7 @@ public sealed partial class RecurrenceRule
         }
         else if (_byWeekNo.Length > 0)
         {
-            AddWeekNumberDays(year, startDate.DayOfWeek, result);
+            AddWeekNumberDays(year, result);
         }
         else if (_byMonthDay.Length > 0)
         {
@@ -416,7 +492,7 @@ public sealed partial class RecurrenceRule
             {
                 foreach (int monthDay in _byMonthDay)
                 {
-                    if (TryResolveMonthDay(year, month, monthDay, out DateOnly day) && WeekDayAllowed(day))
+                    if (TryResolveMonthDay(year, month, monthDay, out DateOnly day) && WeekDayAllowed(day, honorOrdinal: true))
                     {
                         result.Add(day);
                     }
@@ -456,6 +532,24 @@ public sealed partial class RecurrenceRule
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Removes duplicate entries from a sorted list in place.
+    /// </summary>
+    /// <param name="sorted">The ascending list to deduplicate.</param>
+    private static void RemoveAdjacentDuplicates(List<DateTime> sorted)
+    {
+        int write = 0;
+        for (int read = 0; read < sorted.Count; read++)
+        {
+            if (read == 0 || sorted[read] != sorted[write - 1])
+            {
+                sorted[write++] = sorted[read];
+            }
+        }
+
+        sorted.RemoveRange(write, sorted.Count - write);
     }
 
     /// <summary>
@@ -549,11 +643,21 @@ public sealed partial class RecurrenceRule
     }
 
     /// <summary>
-    /// Determines whether the date's weekday satisfies the <c>BYDAY</c> limit, ignoring positional ordinals.
+    /// Determines whether the date's weekday satisfies the <c>BYDAY</c> limit.
     /// </summary>
     /// <param name="date">The date to test.</param>
+    /// <param name="honorOrdinal">
+    /// <see langword="true" /> to require an ordinal-qualified entry to select this specific occurrence of the weekday;
+    /// <see langword="false" /> to match on the weekday alone.
+    /// </param>
     /// <returns><see langword="true" /> when the weekday is allowed; otherwise <see langword="false" />.</returns>
-    private bool WeekDayAllowed(DateOnly date)
+    /// <remarks>
+    /// When <c>BYDAY</c> acts as a limit rather than an expansion — RFC 5545 §3.3.10 Notes 1 and 2, which apply once
+    /// <c>BYMONTHDAY</c> or <c>BYYEARDAY</c> is present — an ordinal prefix still selects a single occurrence of the
+    /// weekday, so <c>BYDAY=1MO</c> admits only the first Monday. Ordinals are meaningless at the daily frequency and
+    /// are ignored there.
+    /// </remarks>
+    private bool WeekDayAllowed(DateOnly date, bool honorOrdinal)
     {
         if (_byDay.Length == 0)
         {
@@ -562,13 +666,52 @@ public sealed partial class RecurrenceRule
 
         foreach (WeekDayNum entry in _byDay)
         {
-            if (entry.Day == date.DayOfWeek)
+            if (entry.Day != date.DayOfWeek)
+            {
+                continue;
+            }
+
+            if (!honorOrdinal || entry.IsEveryOccurrence || OrdinalMatches(date, entry.Ordinal))
             {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Determines whether the date is the ordinal-th occurrence of its own weekday within the scope the rule implies.
+    /// </summary>
+    /// <param name="date">The date to test.</param>
+    /// <param name="ordinal">
+    /// The signed ordinal; positive counts from the start of the scope, negative from its end.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the date occupies that position; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The scope is the year for a yearly rule with no <c>BYMONTH</c>, and the month otherwise, matching the
+    /// distinction RFC 5545 draws for the <c>BYDAY</c> ordinal prefix.
+    /// </remarks>
+    private bool OrdinalMatches(DateOnly date, int ordinal)
+    {
+        bool yearScope = Frequency == RecurrenceFrequency.Yearly && _byMonth.Length == 0;
+        DateOnly scopeStart = yearScope ? new DateOnly(date.Year, 1, 1) : new DateOnly(date.Year, date.Month, 1);
+        DateOnly scopeEnd = yearScope
+            ? new DateOnly(date.Year, 12, 31)
+            : new DateOnly(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
+
+        DateOnly firstMatch = scopeStart.AddDays((((int)date.DayOfWeek - (int)scopeStart.DayOfWeek) + 7) % 7);
+        int index = ((date.DayNumber - firstMatch.DayNumber) / 7) + 1;
+
+        if (ordinal > 0)
+        {
+            return index == ordinal;
+        }
+
+        int total = ((scopeEnd.DayNumber - firstMatch.DayNumber) / 7) + 1;
+        return index == total + ordinal + 1;
     }
 
     /// <summary>
@@ -640,22 +783,27 @@ public sealed partial class RecurrenceRule
     }
 
     /// <summary>
-    /// Adds the days of the ISO-8601 week numbers named by <c>BYWEEKNO</c> that match the <c>BYDAY</c> weekdays.
+    /// Adds the days of the week numbers named by <c>BYWEEKNO</c> that match the <c>BYDAY</c> weekdays.
     /// </summary>
     /// <param name="year">The period year.</param>
-    /// <param name="defaultWeekday">The weekday used when <c>BYDAY</c> is absent (the start's weekday).</param>
     /// <param name="result">The list the matches are appended to.</param>
     /// <remarks>
-    /// Week numbering follows ISO 8601 (Monday-based); the <c>WKST</c> rule part is not applied to it. When
-    /// <c>BYDAY</c> is absent, the weekday is inherited from the series start rather than defaulting to Monday.
+    /// <para>
+    /// Week numbering follows the ISO 8601 rule generalized to <see cref="WeekStart" />: weeks begin on the <c>WKST</c>
+    /// day, and week one of a year is the first such week containing at least four days of that year. Changing
+    /// <c>WKST</c> therefore shifts both the dates a week number resolves to and which years have a fifty-third week.
+    /// </para>
+    /// <para>
+    /// A numbered week can straddle the calendar year — week one may begin in the preceding December and the final week
+    /// may end in the following January — so a resolved day is kept regardless of the calendar year it falls in. When
+    /// <c>BYDAY</c> is absent the week expands to all seven of its days.
+    /// </para>
     /// </remarks>
-    private void AddWeekNumberDays(int year, DayOfWeek defaultWeekday, List<DateOnly> result)
+    private void AddWeekNumberDays(int year, List<DateOnly> result)
     {
-        DayOfWeek[] weekdays = _byDay.Length > 0
-            ? Array.ConvertAll(_byDay, entry => entry.Day)
-            : [defaultWeekday];
+        DateOnly weekOneStart = StartOfWeekOne(year);
+        int weeksInYear = (StartOfWeekOne(year + 1).DayNumber - weekOneStart.DayNumber) / 7;
 
-        int weeksInYear = ISOWeek.GetWeeksInYear(year);
         foreach (int weekNo in _byWeekNo)
         {
             int resolved = weekNo > 0 ? weekNo : weeksInYear + weekNo + 1;
@@ -664,15 +812,47 @@ public sealed partial class RecurrenceRule
                 continue;
             }
 
-            foreach (DayOfWeek weekday in weekdays)
+            int weekStartDayNumber = weekOneStart.DayNumber + ((resolved - 1) * 7);
+            for (int offset = 0; offset < 7; offset++)
             {
-                DateTime day = ISOWeek.ToDateTime(year, resolved, weekday);
-                if (day.Year == year && MonthAllowed(day.Month))
+                int dayNumber = weekStartDayNumber + offset;
+                if (dayNumber < DateOnly.MinValue.DayNumber || dayNumber > DateOnly.MaxValue.DayNumber)
                 {
-                    result.Add(DateOnly.FromDateTime(day));
+                    continue;
+                }
+
+                // The remaining BY parts limit the expanded week rather than expanding independently of it, so a day
+                // must satisfy every one of them.
+                DateOnly day = DateOnly.FromDayNumber(dayNumber);
+                if (WeekDayAllowed(day, honorOrdinal: false)
+                    && MonthAllowed(day.Month)
+                    && MonthDayAllowed(day)
+                    && YearDayAllowed(day))
+                {
+                    result.Add(day);
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Returns the first day of week one of the specified year under the rule's <see cref="WeekStart" />.
+    /// </summary>
+    /// <param name="year">The year whose week one is required.</param>
+    /// <returns>The date on which week one begins, which may fall in the preceding calendar year.</returns>
+    /// <remarks>
+    /// Week one is the first <see cref="WeekStart" />-aligned week containing at least four days of
+    /// <paramref name="year" />, the ISO 8601 rule stated independently of Monday.
+    /// </remarks>
+    private DateOnly StartOfWeekOne(int year)
+    {
+        var firstOfYear = new DateOnly(Math.Clamp(year, DateOnly.MinValue.Year, DateOnly.MaxValue.Year), 1, 1);
+        int intoWeek = (((int)firstOfYear.DayOfWeek - (int)WeekStart) + 7) % 7;
+        DateOnly weekContainingFirst = firstOfYear.AddDays(-intoWeek);
+
+        // The week containing 1 January contributes (7 - intoWeek) days to the year; fewer than four makes it the
+        // last week of the preceding year, so week one begins seven days later.
+        return intoWeek <= 3 ? weekContainingFirst : weekContainingFirst.AddDays(7);
     }
 
     /// <summary>

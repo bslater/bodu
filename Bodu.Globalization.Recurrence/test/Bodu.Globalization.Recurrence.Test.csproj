@@ -17,4 +17,9 @@
     <None Include="PublicApi\**\*.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <!-- Reconciliation corpora derived from corpus/recurrence/; see that tree's README for provenance. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Fixtures\Vectors\*.csv" />
+  </ItemGroup>
+
 </Project>

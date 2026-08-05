@@ -22,7 +22,7 @@ namespace Bodu.Globalization.Recurrence;
 /// </para>
 /// </remarks>
 /// <seealso cref="RecurrenceRule" />
-public sealed partial class RecurrenceSet
+public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
 {
     /// <summary>The rules whose expansions contribute occurrences.</summary>
     private readonly RecurrenceRule[] _rules;
@@ -63,6 +63,7 @@ public sealed partial class RecurrenceSet
         }
 
         Array.Sort(_dates);
+        Array.Sort(_exceptionDates);
     }
 
     /// <summary>
@@ -86,8 +87,67 @@ public sealed partial class RecurrenceSet
     /// <summary>
     /// Gets the exception dates removed from the occurrence set.
     /// </summary>
-    /// <value>The exception dates, in the order supplied.</value>
+    /// <value>The exception dates in ascending order.</value>
     public IReadOnlyList<DateTime> ExceptionDates => _exceptionDates;
+
+    /// <summary>
+    /// Determines whether this set is equal to another set by comparing the start, rules, dates, and exception dates.
+    /// </summary>
+    /// <param name="other">The set to compare with this instance.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="other" /> is non-null with an equal start, equal rules in the same
+    /// order, and equal date and exception-date lists; otherwise <see langword="false" />.
+    /// </returns>
+    public bool Equals(RecurrenceSet? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (Start != other.Start
+            || _rules.Length != other._rules.Length
+            || !_dates.AsSpan().SequenceEqual(other._dates)
+            || !_exceptionDates.AsSpan().SequenceEqual(other._exceptionDates))
+        {
+            return false;
+        }
+
+        for (int i = 0; i < _rules.Length; i++)
+        {
+            if (!_rules[i].Equals(other._rules[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Determines whether this set is equal to another object.
+    /// </summary>
+    /// <param name="obj">The object to compare with this instance.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="obj" /> is a <see cref="RecurrenceSet" /> equal to this instance;
+    /// otherwise <see langword="false" />.
+    /// </returns>
+    public override bool Equals(object? obj) =>
+        Equals(obj as RecurrenceSet);
+
+    /// <summary>
+    /// Returns a hash code derived from the set's start and component counts.
+    /// </summary>
+    /// <returns>A hash code consistent with <see cref="Equals(RecurrenceSet)" />.</returns>
+    public override int GetHashCode()
+    {
+        var hash = default(HashCode);
+        hash.Add(Start);
+        hash.Add(_rules.Length);
+        hash.Add(_dates.Length);
+        hash.Add(_exceptionDates.Length);
+        return hash.ToHashCode();
+    }
 
     /// <summary>
     /// Enumerates the occurrences of the set in ascending chronological order.
@@ -192,6 +252,85 @@ public sealed partial class RecurrenceSet
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Returns the last occurrence of the set that falls before the specified instant.
+    /// </summary>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="before" />; otherwise the
+    /// occurrence must be strictly earlier.
+    /// </param>
+    /// <returns>
+    /// The previous occurrence, or <see langword="null" /> when none precedes <paramref name="before" />.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Due-ness evaluation is a previous-occurrence comparison — typically
+    /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c> — so missed occurrences coalesce
+    /// structurally: the answer is a single instant, never a backlog.
+    /// </remarks>
+    public DateTime? GetPreviousOccurrence(DateTime before, bool inclusive = false)
+    {
+        DateTime? previous = null;
+        foreach (DateTime occurrence in GetOccurrences())
+        {
+            if (occurrence > before || (!inclusive && occurrence == before))
+            {
+                break;
+            }
+
+            previous = occurrence;
+        }
+
+        return previous;
+    }
+
+    /// <summary>
+    /// Returns the first occurrence of the set that falls after the specified instant, preserving its offset.
+    /// </summary>
+    /// <param name="after">The instant the returned occurrence must follow.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="after" />; otherwise the
+    /// occurrence must be strictly later.
+    /// </param>
+    /// <returns>
+    /// The next occurrence carrying the offset of <paramref name="after" />, or <see langword="null" /> when the set
+    /// produces none.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// The set's start and dates are wall-clock values; the query interprets them in the offset of
+    /// <paramref name="after" /> and performs no other offset conversion.
+    /// </remarks>
+    public DateTimeOffset? GetNextOccurrence(DateTimeOffset after, bool inclusive = false)
+    {
+        DateTime? next = GetNextOccurrence(DateTime.SpecifyKind(after.DateTime, DateTimeKind.Unspecified), inclusive);
+        return next is null ? null : new DateTimeOffset(next.Value, after.Offset);
+    }
+
+    /// <summary>
+    /// Returns the last occurrence of the set that falls before the specified instant, preserving its offset.
+    /// </summary>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="before" />; otherwise the
+    /// occurrence must be strictly earlier.
+    /// </param>
+    /// <returns>
+    /// The previous occurrence carrying the offset of <paramref name="before" />, or <see langword="null" /> when none
+    /// precedes it.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// The set's start and dates are wall-clock values; the query interprets them in the offset of
+    /// <paramref name="before" /> and performs no other offset conversion.
+    /// </remarks>
+    public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset before, bool inclusive = false)
+    {
+        DateTime? previous = GetPreviousOccurrence(DateTime.SpecifyKind(before.DateTime, DateTimeKind.Unspecified), inclusive);
+        return previous is null ? null : new DateTimeOffset(previous.Value, before.Offset);
     }
 
     /// <summary>

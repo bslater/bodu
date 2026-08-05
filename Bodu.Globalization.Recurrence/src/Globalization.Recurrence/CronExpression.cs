@@ -23,6 +23,18 @@ namespace Bodu.Globalization.Recurrence;
 /// following the traditional Vixie cron rule. The Quartz extensions <c>L</c>, <c>W</c>, <c>#</c>, and <c>?</c> are not
 /// yet supported.
 /// </para>
+/// <para>
+/// Every occurrence answer is a pure function of the arguments: no API reads the wall clock or consults the machine
+/// time zone. The <see cref="DateTimeOffset" /> overloads interpret the wall-clock time in the argument's own offset
+/// and return occurrences carrying that offset; daylight-saving transitions are the caller's concern — a host that
+/// wants a local-time schedule across a transition re-derives the offset on each evaluation.
+/// </para>
+/// <para>
+/// Occurrence searches are bounded by a twelve-year horizon in each direction, which covers the largest possible gap
+/// between occurrences of any satisfiable expression (a February 29th schedule crossing a non-leap century year); an
+/// expression that can never match, such as February 30th, answers <see langword="null" /> at the horizon rather than
+/// scanning unboundedly.
+/// </para>
 /// </remarks>
 public sealed partial class CronExpression : IEquatable<CronExpression>
 {
@@ -328,22 +340,12 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         bool domMatch = _daysOfMonth[candidate.Day];
         bool dowMatch = _daysOfWeek[(int)candidate.DayOfWeek];
 
-        if (_domRestricted && _dowRestricted)
-        {
-            return domMatch || dowMatch;
-        }
-
-        if (_domRestricted)
-        {
-            return domMatch;
-        }
-
-        if (_dowRestricted)
-        {
-            return dowMatch;
-        }
-
-        return true;
+        // Both field masks always apply; the restriction flags select only how they combine. Vixie takes the union
+        // when neither day field begins with '*', and the intersection otherwise — so a stepped star such as "*/2"
+        // still narrows the days it matches even though it does not make the field "restricted".
+        return _domRestricted && _dowRestricted
+            ? domMatch || dowMatch
+            : domMatch && dowMatch;
     }
 
     /// <summary>

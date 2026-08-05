@@ -299,6 +299,10 @@
               href: calendar/catalogue/region-africa.md
             - name: Cross-region comparison matrix
               href: calendar/catalogue/comparison-matrix.md
+    - name: Bodu.Globalization.Recurrence
+      items:
+        - name: Recurrence and scheduling
+          href: recurrence/index.md
 - name: Text & Serialization
   href: topics/text-and-serialization.md
   items:

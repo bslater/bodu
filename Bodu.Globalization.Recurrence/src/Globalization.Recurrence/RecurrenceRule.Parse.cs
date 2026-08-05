@@ -133,7 +133,7 @@ public sealed partial class RecurrenceRule :
     /// <returns>The parsed rule.</returns>
     /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid recurrence rule.</exception>
     public static RecurrenceRule Parse(ReadOnlySpan<char> s, IFormatProvider? provider) =>
-        TryParseCore(s, out RecurrenceRule? result)
+        TryParseCore(s, out RecurrenceRule? result, out _)
             ? result
             : throw new FormatException(
                 string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_RecurrenceRuleText, s.ToString()));
@@ -162,7 +162,7 @@ public sealed partial class RecurrenceRule :
             return false;
         }
 
-        return TryParseCore(s.AsSpan(), out result);
+        return TryParseCore(s.AsSpan(), out result, out _);
     }
 
     /// <summary>
@@ -173,17 +173,55 @@ public sealed partial class RecurrenceRule :
     /// <param name="result">The parsed rule, or <see langword="null" /> on failure.</param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise <see langword="false" />.</returns>
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out RecurrenceRule result) =>
-        TryParseCore(s, out result);
+        TryParseCore(s, out result, out _);
+
+    /// <summary>
+    /// Attempts to parse the textual form of a recurrence rule, reporting the parse defect on failure.
+    /// </summary>
+    /// <param name="s">The rule text to parse.</param>
+    /// <param name="result">The parsed rule, or <see langword="null" /> on failure.</param>
+    /// <param name="failureMessage">
+    /// <see langword="null" /> on success; otherwise a message naming the specific defect, suitable for surfacing to
+    /// the user verbatim.
+    /// </param>
+    /// <returns><see langword="true" /> if parsing succeeded; otherwise <see langword="false" />.</returns>
+    public static bool TryParse(
+        string? s,
+        [MaybeNullWhen(false)] out RecurrenceRule result,
+        [NotNullWhen(false)] out string? failureMessage)
+    {
+        if (s is null)
+        {
+            result = null;
+            failureMessage = RecurrenceResourceStrings.Format_Invalid_RecurrenceRuleEmpty;
+            return false;
+        }
+
+        bool parsed = TryParseCore(s.AsSpan(), out result, out failureMessage);
+        if (!parsed)
+        {
+            failureMessage ??= string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_RecurrenceRuleText, s);
+        }
+
+        return parsed;
+    }
 
     /// <summary>
     /// Parses and validates every rule part, producing a rule when the text is a well-formed <c>RRULE</c>.
     /// </summary>
     /// <param name="s">The rule text to parse.</param>
     /// <param name="result">The parsed rule, or <see langword="null" /> on failure.</param>
+    /// <param name="failureMessage">
+    /// <see langword="null" /> on success; otherwise a message naming the specific defect.
+    /// </param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise <see langword="false" />.</returns>
-    private static bool TryParseCore(ReadOnlySpan<char> s, [MaybeNullWhen(false)] out RecurrenceRule result)
+    private static bool TryParseCore(
+        ReadOnlySpan<char> s,
+        [MaybeNullWhen(false)] out RecurrenceRule result,
+        out string? failureMessage)
     {
         result = null;
+        failureMessage = null;
 
         s = s.Trim();
         if (s.StartsWith("RRULE:", StringComparison.OrdinalIgnoreCase))
@@ -193,6 +231,7 @@ public sealed partial class RecurrenceRule :
 
         if (s.IsEmpty)
         {
+            failureMessage = RecurrenceResourceStrings.Format_Invalid_RecurrenceRuleEmpty;
             return false;
         }
 
@@ -218,12 +257,14 @@ public sealed partial class RecurrenceRule :
             ReadOnlySpan<char> part = s[partRange].Trim();
             if (part.IsEmpty)
             {
+                failureMessage = FormatDefect(RecurrenceResourceStrings.Format_Invalid_RecurrenceRulePart, part);
                 return false;
             }
 
             int eq = part.IndexOf('=');
             if (eq <= 0)
             {
+                failureMessage = FormatDefect(RecurrenceResourceStrings.Format_Invalid_RecurrenceRulePart, part);
                 return false;
             }
 
@@ -231,130 +272,124 @@ public sealed partial class RecurrenceRule :
             ReadOnlySpan<char> value = part[(eq + 1) ..].Trim();
             if (value.IsEmpty)
             {
+                failureMessage = FormatDefect(RecurrenceResourceStrings.Format_Invalid_RecurrenceRulePart, part);
                 return false;
             }
 
+            bool valid;
             if (name.Equals("FREQ", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.Freq) || !TryParseFrequency(value, out frequency))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.Freq, name, ref failureMessage)
+                    && TryParseFrequency(value, out frequency);
             }
             else if (name.Equals("INTERVAL", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.Interval)
-                    || !int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out interval)
-                    || interval < 1)
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.Interval, name, ref failureMessage)
+                    && int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out interval)
+                    && interval >= 1;
             }
             else if (name.Equals("COUNT", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.Count)
-                    || !int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int parsedCount)
-                    || parsedCount < 1)
+                if (!Seen(ref seen, RulePart.Count, name, ref failureMessage))
                 {
                     return false;
                 }
 
-                count = parsedCount;
+                valid = int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int parsedCount)
+                    && parsedCount >= 1;
+                if (valid)
+                {
+                    count = parsedCount;
+                }
             }
             else if (name.Equals("UNTIL", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.Until) || !IcalValue.TryParseDateTime(value, out DateTime parsedUntil))
+                if (!Seen(ref seen, RulePart.Until, name, ref failureMessage))
                 {
                     return false;
                 }
 
-                until = parsedUntil;
+                valid = IcalValue.TryParseDateTime(value, out DateTime parsedUntil);
+                if (valid)
+                {
+                    until = parsedUntil;
+                }
             }
             else if (name.Equals("WKST", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.WeekStart) || !IcalValue.TryParseWeekDay(value, out weekStart))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.WeekStart, name, ref failureMessage)
+                    && IcalValue.TryParseWeekDay(value, out weekStart);
             }
             else if (name.Equals("BYSECOND", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.BySecond) || !TryParseUIntList(value, 0, 60, out bySecond))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.BySecond, name, ref failureMessage)
+                    && TryParseUIntList(value, 0, 60, out bySecond);
             }
             else if (name.Equals("BYMINUTE", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.ByMinute) || !TryParseUIntList(value, 0, 59, out byMinute))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.ByMinute, name, ref failureMessage)
+                    && TryParseUIntList(value, 0, 59, out byMinute);
             }
             else if (name.Equals("BYHOUR", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.ByHour) || !TryParseUIntList(value, 0, 23, out byHour))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.ByHour, name, ref failureMessage)
+                    && TryParseUIntList(value, 0, 23, out byHour);
             }
             else if (name.Equals("BYDAY", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.ByDay) || !TryParseWeekDayList(value, out byDay))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.ByDay, name, ref failureMessage)
+                    && TryParseWeekDayList(value, out byDay);
             }
             else if (name.Equals("BYMONTHDAY", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.ByMonthDay) || !TryParseSignedList(value, 1, 31, out byMonthDay))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.ByMonthDay, name, ref failureMessage)
+                    && TryParseSignedList(value, 1, 31, out byMonthDay);
             }
             else if (name.Equals("BYYEARDAY", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.ByYearDay) || !TryParseSignedList(value, 1, 366, out byYearDay))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.ByYearDay, name, ref failureMessage)
+                    && TryParseSignedList(value, 1, 366, out byYearDay);
             }
             else if (name.Equals("BYWEEKNO", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.ByWeekNo) || !TryParseSignedList(value, 1, 53, out byWeekNo))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.ByWeekNo, name, ref failureMessage)
+                    && TryParseSignedList(value, 1, 53, out byWeekNo);
             }
             else if (name.Equals("BYMONTH", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.ByMonth) || !TryParseUIntList(value, 1, 12, out byMonth))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.ByMonth, name, ref failureMessage)
+                    && TryParseUIntList(value, 1, 12, out byMonth);
             }
             else if (name.Equals("BYSETPOS", StringComparison.OrdinalIgnoreCase))
             {
-                if (!Once(ref seen, RulePart.BySetPos) || !TryParseSignedList(value, 1, 366, out bySetPos))
-                {
-                    return false;
-                }
+                valid = Seen(ref seen, RulePart.BySetPos, name, ref failureMessage)
+                    && TryParseSignedList(value, 1, 366, out bySetPos);
             }
             else
             {
                 // Unknown rule part (including RFC 7529 RSCALE/SKIP and X-* extensions) — outside the supported grammar.
+                failureMessage = FormatDefect(RecurrenceResourceStrings.Format_Invalid_RecurrenceRuleUnknownPart, name);
+                return false;
+            }
+
+            if (!valid)
+            {
+                // A duplicate part has already recorded its defect; otherwise the component's value is at fault.
+                failureMessage ??= FormatDefect(RecurrenceResourceStrings.Format_Invalid_RecurrenceRulePart, part);
                 return false;
             }
         }
 
         if (!seen.HasFlag(RulePart.Freq))
         {
+            failureMessage = RecurrenceResourceStrings.Arg_Invalid_RecurrenceFrequencyRequired;
             return false;
         }
 
         // RFC 5545 §3.3.10: COUNT and UNTIL must not both appear in the same rule.
         if (count is not null && until is not null)
         {
+            failureMessage = RecurrenceResourceStrings.Format_Invalid_RecurrenceRuleCountAndUntil;
             return false;
         }
 
@@ -377,23 +412,35 @@ public sealed partial class RecurrenceRule :
     }
 
     /// <summary>
-    /// Records that a rule part has been seen, failing when it was already present.
+    /// Records that a rule part has been seen, reporting a duplicate-part defect when it was already present.
     /// </summary>
     /// <param name="seen">The accumulated set of seen rule parts.</param>
     /// <param name="part">The rule part being recorded.</param>
+    /// <param name="name">The rule-part name, used in the duplicate defect message.</param>
+    /// <param name="failureMessage">Set to the duplicate-part defect message when the part was already seen.</param>
     /// <returns>
     /// <see langword="true" /> if <paramref name="part" /> had not been seen; otherwise <see langword="false" />.
     /// </returns>
-    private static bool Once(ref RulePart seen, RulePart part)
+    private static bool Seen(ref RulePart seen, RulePart part, ReadOnlySpan<char> name, ref string? failureMessage)
     {
         if (seen.HasFlag(part))
         {
+            failureMessage = FormatDefect(RecurrenceResourceStrings.Format_Invalid_RecurrenceRuleDuplicatePart, name);
             return false;
         }
 
         seen |= part;
         return true;
     }
+
+    /// <summary>
+    /// Formats a defect message that carries the offending token.
+    /// </summary>
+    /// <param name="format">The resource format string.</param>
+    /// <param name="token">The offending token.</param>
+    /// <returns>The formatted defect message.</returns>
+    private static string FormatDefect(string format, ReadOnlySpan<char> token) =>
+        string.Format(CultureInfo.CurrentCulture, format, token.ToString());
 
     /// <summary>
     /// Maps a <c>FREQ</c> token to a <see cref="RecurrenceFrequency" />.

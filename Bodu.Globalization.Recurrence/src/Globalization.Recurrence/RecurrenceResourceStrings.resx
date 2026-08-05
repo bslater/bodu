@@ -105,6 +105,60 @@
   <data name="Arg_OutOfRange_RecurrenceRulePart" xml:space="preserve">
     <value>A value supplied for the '{0}' recurrence rule part is outside its permitted range.</value>
   </data>
+  <data name="Format_Invalid_RecurrenceRuleEmpty" xml:space="preserve">
+    <value>The recurrence-rule text is empty or contains only white space.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceRuleUnknownPart" xml:space="preserve">
+    <value>The recurrence-rule part '{0}' is not recognized.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceRuleCountAndUntil" xml:space="preserve">
+    <value>The COUNT and UNTIL rule parts cannot both appear in the same rule.</value>
+  </data>
+  <data name="Format_Invalid_CronEmpty" xml:space="preserve">
+    <value>The cron-expression text is empty or contains only white space.</value>
+  </data>
+  <data name="Format_Invalid_CronMacro" xml:space="preserve">
+    <value>The cron macro '{0}' is not recognized, or a macro was supplied where the six-field layout was required.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceSetStartRequired" xml:space="preserve">
+    <value>A recurrence set requires a DTSTART property line.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceSetDuplicateStart" xml:space="preserve">
+    <value>The DTSTART property appears more than once.</value>
+  </data>
+  <data name="Format_Invalid_DurationEmpty" xml:space="preserve">
+    <value>The duration text is empty or contains only white space.</value>
+  </data>
+  <data name="Format_Invalid_DurationMissingPrefix" xml:space="preserve">
+    <value>An iCalendar duration must begin with the 'P' designator.</value>
+  </data>
+  <data name="Format_Invalid_DurationNotPositive" xml:space="preserve">
+    <value>The duration must be greater than zero; signed and zero durations are not valid intervals.</value>
+  </data>
+  <data name="Format_Invalid_DurationComponent" xml:space="preserve">
+    <value>The duration component '{0}' is not valid; each component is an unsigned integer followed by a unit, and the unit must be W, D, H, M, or S.</value>
+  </data>
+  <data name="Format_Invalid_DurationUnitOrder" xml:space="preserve">
+    <value>The duration unit '{0}' is repeated or out of order; components must appear as weeks, or days then 'T' then hours, minutes, seconds, each at most once.</value>
+  </data>
+  <data name="Format_Invalid_DurationWeeksCombined" xml:space="preserve">
+    <value>The weeks unit 'W' cannot be combined with any other duration component.</value>
+  </data>
+  <data name="Format_Invalid_DurationMissingTimeDesignator" xml:space="preserve">
+    <value>The time units 'H', 'M', and 'S' must be preceded by the 'T' designator.</value>
+  </data>
+  <data name="Format_Invalid_DurationNoComponents" xml:space="preserve">
+    <value>An iCalendar duration must contain at least one component.</value>
+  </data>
+  <data name="Format_Invalid_DurationTooLarge" xml:space="preserve">
+    <value>The duration is too large to represent.</value>
+  </data>
+  <data name="Arg_OutOfRange_AnchoredIntervalNotPositive" xml:space="preserve">
+    <value>The interval must be greater than zero.</value>
+  </data>
+  <data name="Arg_Invalid_AnchoredIntervalSubSecond" xml:space="preserve">
+    <value>The interval must be a whole number of seconds; iCalendar durations carry no sub-second precision.</value>
+  </data>
   <data name="Op_NotSupported_SubDailyFrequency" xml:space="preserve">
     <value>The recurrence frequency '{0}' is not supported; sub-daily frequencies are a planned follow-on.</value>
   </data>
