@@ -105,7 +105,15 @@ The DOM/DOW rule is the one worth dwelling on, because it is the divergence most
 as a Bodu bug. Vixie decides whether a day field is "restricted" from its **leading character**, so
 `*/2` is unrestricted (leading `*`) while the set-equivalent `1-31/2` is restricted — and the two
 therefore select different days when a day-of-week field is also present. That is not a rationalizable
-rule; it is what `src/entry.c` does, and cronie, croniter, and Bodu all reproduce it.
+rule; it is what `src/entry.c` does.
+
+There is no table for it here, because the one implementation that models both readings — croniter,
+whose `implement_cron_bug` flag switches between them — **defaults to the reading cronie does not
+have**, so a bulk derivation from croniter would disagree with us on exactly the rows we would want
+it for. Its `test_dom_dow_vixie_cron_bug` is used directly instead: both of its four-occurrence
+sequences are asserted verbatim in `CronExpressionTests`, the intersection against
+`implement_cron_bug=True` and the union against croniter's default. Sequences rather than single
+points, since a first occurrence can agree by accident where the stride does not.
 
 The oversized-step case is the only divergence where Bodu accepts what Cronos rejects, so it is
 flagged on the rejection rows too. cronie prints `Warning: Step size %i higher than possible maximum

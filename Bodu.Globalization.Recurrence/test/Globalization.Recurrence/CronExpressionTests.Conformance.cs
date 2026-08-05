@@ -31,20 +31,50 @@ public partial class CronExpressionTests
     /// <remarks>
     /// The distinction is the one cronie encodes in <c>src/entry.c</c> (<c>if (ch == '*') e-&gt;flags |= DOM_STAR;</c>)
     /// and is observable only when both day fields are present. croniter carries the same pair as
-    /// <c>test_dom_dow_vixie_cron_bug</c>.
+    /// <c>test_dom_dow_vixie_cron_bug</c>, and the two sequences asserted here are its two modes verbatim: the
+    /// intersection is what croniter emits under <c>implement_cron_bug=True</c>, the union what it emits by default.
+    /// Both are asserted as sequences rather than single points, because a first occurrence can agree by accident
+    /// where the stride does not.
     /// </remarks>
     [TestMethod]
     public void GetNextOccurrence_WhenDayFieldIsSteppedStar_ShouldTreatFieldAsUnrestricted()
     {
-        CronExpression stepped = CronExpression.Parse("0 16 */2 * sat");
-        CronExpression explicitRange = CronExpression.Parse("0 16 1-31/2 * sat");
-        var from = new DateTime(2023, 5, 2, 0, 0, 0);
+        // "*/2" leads with '*' → unrestricted → intersection → only odd-numbered Saturdays.
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new DateTime(2023, 5, 13, 16, 0, 0),
+                new DateTime(2023, 5, 27, 16, 0, 0),
+                new DateTime(2023, 6, 3, 16, 0, 0),
+                new DateTime(2023, 6, 17, 16, 0, 0),
+            },
+            Take4("0 16 */2 * sat"));
 
-        // "*/2" leads with '*' → unrestricted → intersection → the first odd-numbered Saturday.
-        Assert.AreEqual(new DateTime(2023, 5, 13, 16, 0, 0), stepped.GetNextOccurrence(from));
+        // "1-31/2" leads with a digit → restricted → union → every odd-numbered day and every Saturday.
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new DateTime(2023, 5, 3, 16, 0, 0),
+                new DateTime(2023, 5, 5, 16, 0, 0),
+                new DateTime(2023, 5, 6, 16, 0, 0),
+                new DateTime(2023, 5, 7, 16, 0, 0),
+            },
+            Take4("0 16 1-31/2 * sat"));
 
-        // "1-31/2" leads with a digit → restricted → union → the next odd-numbered day.
-        Assert.AreEqual(new DateTime(2023, 5, 3, 16, 0, 0), explicitRange.GetNextOccurrence(from));
+        static DateTime[] Take4(string expression)
+        {
+            CronExpression cron = CronExpression.Parse(expression);
+            var occurrences = new List<DateTime>();
+            var cursor = new DateTime(2023, 5, 2, 0, 0, 0);
+
+            while (occurrences.Count < 4 && cron.GetNextOccurrence(cursor) is DateTime next)
+            {
+                occurrences.Add(next);
+                cursor = next;
+            }
+
+            return [.. occurrences];
+        }
     }
 
     /// <summary>
