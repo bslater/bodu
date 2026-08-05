@@ -340,22 +340,12 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         bool domMatch = _daysOfMonth[candidate.Day];
         bool dowMatch = _daysOfWeek[(int)candidate.DayOfWeek];
 
-        if (_domRestricted && _dowRestricted)
-        {
-            return domMatch || dowMatch;
-        }
-
-        if (_domRestricted)
-        {
-            return domMatch;
-        }
-
-        if (_dowRestricted)
-        {
-            return dowMatch;
-        }
-
-        return true;
+        // Both field masks always apply; the restriction flags select only how they combine. Vixie takes the union
+        // when neither day field begins with '*', and the intersection otherwise — so a stepped star such as "*/2"
+        // still narrows the days it matches even though it does not make the field "restricted".
+        return _domRestricted && _dowRestricted
+            ? domMatch || dowMatch
+            : domMatch && dowMatch;
     }
 
     /// <summary>

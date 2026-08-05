@@ -182,10 +182,22 @@ public sealed partial class AnchoredInterval :
             return false;
         }
 
-        if (s[0] is '+' or '-')
+        // RFC 5545 dur-value permits a leading sign. A negative duration is a valid duration but not a valid
+        // interval, so it is rejected on meaning rather than on syntax; an explicit '+' is simply the positive form.
+        if (s[0] == '-')
         {
             failureMessage = RecurrenceResourceStrings.Format_Invalid_DurationNotPositive;
             return false;
+        }
+
+        if (s[0] == '+')
+        {
+            s = s[1..];
+            if (s.IsEmpty)
+            {
+                failureMessage = RecurrenceResourceStrings.Format_Invalid_DurationEmpty;
+                return false;
+            }
         }
 
         if (char.ToUpperInvariant(s[0]) != 'P')
@@ -195,6 +207,7 @@ public sealed partial class AnchoredInterval :
         }
 
         bool inTime = false;
+        bool anyTimeComponent = false;
         DurationUnit lastUnit = DurationUnit.None;
         long weeks = 0, days = 0, hours = 0, minutes = 0, seconds = 0;
         int componentCount = 0;
@@ -292,10 +305,13 @@ public sealed partial class AnchoredInterval :
 
             lastUnit = unit;
             componentCount++;
+            anyTimeComponent |= unit >= DurationUnit.Hours;
             index++;
         }
 
-        if (componentCount == 0)
+        // dur-value requires at least one component overall, and dur-time = "T" (dur-hour / dur-minute / dur-second)
+        // requires at least one component after a time designator that is present.
+        if (componentCount == 0 || (inTime && !anyTimeComponent))
         {
             failureMessage = RecurrenceResourceStrings.Format_Invalid_DurationNoComponents;
             return false;

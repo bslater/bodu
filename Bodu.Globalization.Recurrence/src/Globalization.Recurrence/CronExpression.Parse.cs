@@ -338,7 +338,11 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <returns><see langword="true" /> if the field parsed; otherwise <see langword="false" />.</returns>
     private static bool TryParseField(string field, int min, int max, Func<string, int?>? names, bool weekday, bool[] mask, out bool restricted, ref bool unsupported, ref string? failureMessage)
     {
-        restricted = !field.Equals("*", StringComparison.Ordinal);
+        // Vixie decides whether a day field is restricted from its leading character alone — cronie sets DOM_STAR /
+        // DOW_STAR when the field begins with '*', before the field's values are parsed. A stepped star such as
+        // "*/2" is therefore unrestricted while the equivalent explicit range "1-31/2" is restricted, even though
+        // both denote the same days; the difference selects the union or intersection branch in DayMatches.
+        restricted = field.Length > 0 && field[0] != '*';
 
         if (ContainsQuartzToken(field))
         {
