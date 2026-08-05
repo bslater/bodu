@@ -77,6 +77,17 @@ Occurrence enumeration over a window is lazy and terminates for every input, inc
 - A `CronExpression` search scans a twelve-year horizon in each direction — enough to cover the largest gap of any satisfiable expression (a 29 February schedule crossing a non-leap century year) — and answers `null` past it.
 - An `AnchoredInterval` needs no scanning at all: its queries are O(1) arithmetic, and the sequence ends at the last representable occurrence.
 
+## Conformance
+
+Occurrence semantics are pinned against the defining documents — RFC 5545 §3.3.10 and §3.8.5.3 for recurrence rules, RFC 5545 §3.3.6 for interval durations, and Vixie/cronie behaviour for cron — and additionally against a corpus distilled from defects reported to other implementations (python-dateutil, rrule.js, ical4j, ical.net, ical.js, libical, lib-recur, ice_cube, Cronos, NCrontab, croniter, robfig/cron, Quartz). A few behaviours in that corpus are worth stating outright, because implementations disagree on them:
+
+- **Invalid generated dates are skipped, never clamped.** `FREQ=MONTHLY` from a 31st yields 31 March, 31 May, 31 July — April and June are omitted rather than rolled back to the 30th. RFC 5545 requires this, and it is the single most common false bug report against recurrence libraries.
+- **The occurrence set is a set.** Two `BY` values that resolve to the same date contribute one occurrence: `BYMONTHDAY=1,-31` yields one occurrence in a 31-day month, and deduplication happens before `BYSETPOS` indexes the candidates and before `COUNT` counts them.
+- **`BYSETPOS` indexes the whole frequency period**, including candidates that precede the series start; those are dropped only afterwards. A rule anchored mid-week therefore selects the same positions as one anchored on the week start.
+- **A `BY` filter never re-anchors an interval.** `FREQ=DAILY;INTERVAL=14;BYMONTH=10,12` counts every fourteenth day from the start unconditionally and drops the ones falling outside October and December.
+- **`WKST` reparameterises week numbering**, not just weekly intervals: it changes which dates `BYWEEKNO` resolves to *and* which years have a fifty-third week. Numbered weeks straddle the calendar year, so week 1 may begin in the preceding December.
+- **The day-of-month and day-of-week cron fields combine by union only when both are restricted**, and Vixie decides "restricted" from the field's leading character — so `*/2` and `1-31/2` denote the same days but select different branches.
+
 ## Parse defects are named
 
 Hosts surface configuration errors verbatim, without exception-driven control flow:

@@ -1398,7 +1398,18 @@ filter were added to *Non-goals* instead.
   `RecurrenceSet` canonical formatting and value equality, defect-naming
   `TryParse(s, out result, out failureMessage)` overloads on all four
   forms, and a metadata-scan purity guard banning wall-clock and
-  machine-time-zone APIs from the assembly. Deferred
+  machine-time-zone APIs from the assembly. A third pass compared the
+  engine against defects reported to python-dateutil, rrule.js, ical4j,
+  ical.net, ical.js, libical, lib-recur, ice_cube, Cronos, NCrontab,
+  cronie, croniter, robfig/cron and Quartz, adding that corpus as
+  regression tests and fixing what it found: Vixie's leading-character
+  rule for cron day-field restriction (and the day-mask combination that
+  depends on it), candidate-set deduplication before `BYSETPOS`/`COUNT`,
+  the `BYDAY` ordinal when `BYDAY` limits alongside `BYMONTHDAY`, a
+  calendar overflow while scanning never-matching weekly rules, and
+  `BYWEEKNO` week numbering (now the ISO rule generalized to `WKST`,
+  keeping year-straddling weeks and expanding the whole week when
+  `BYDAY` is absent). Deferred
   follow-ons: sub-daily RRULE frequencies (`HOURLY`/`MINUTELY`/`SECONDLY`
   parse and round-trip but do not yet enumerate), Quartz cron extensions
   (`L`/`W`/`#`/`?`), a read-only `.ics` (iCalendar) reader, and a
