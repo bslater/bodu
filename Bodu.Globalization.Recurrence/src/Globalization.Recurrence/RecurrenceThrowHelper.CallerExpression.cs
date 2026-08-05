@@ -53,6 +53,35 @@ internal static partial class RecurrenceThrowHelper
     }
 
     /// <summary>
+    /// Throws when <paramref name="interval" /> is not a positive whole number of seconds.
+    /// </summary>
+    /// <param name="interval">The candidate anchored interval to validate.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="interval" /> is zero or negative.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="interval" /> carries sub-second ticks, which the canonical iCalendar duration text
+    /// cannot represent.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfInvalidAnchoredInterval(
+        TimeSpan interval,
+        [CallerArgumentExpression(nameof(interval))] string? paramName = null)
+    {
+        if (interval <= TimeSpan.Zero)
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                interval,
+                RecurrenceResourceStrings.Arg_OutOfRange_AnchoredIntervalNotPositive);
+
+        if (interval.Ticks % TimeSpan.TicksPerSecond != 0)
+            throw new ArgumentException(
+                RecurrenceResourceStrings.Arg_Invalid_AnchoredIntervalSubSecond,
+                paramName);
+    }
+
+    /// <summary>
     /// Throws a <see cref="FormatException" /> reporting that <paramref name="format" /> is not a supported specifier.
     /// </summary>
     /// <param name="format">The unsupported format specifier supplied by the caller.</param>

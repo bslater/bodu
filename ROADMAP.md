@@ -1390,10 +1390,31 @@ filter were added to *Non-goals* instead.
   calendar `IDateRecurrenceStrategy` contract shape (ascending,
   deduplicated, window-invariant) and reuses `Bodu.Core`'s `NextOccurrence`
   primitives rather than taking a `Bodu.Globalization.Calendar` dependency.
-  Validated against an RFC 5545 §3.8.5.3 worked-example corpus. Deferred
+  Validated against an RFC 5545 §3.8.5.3 worked-example corpus. A second
+  wave (driven by the FallbackPlan shared-scheduling requirements) added
+  `AnchoredInterval` (instant-anchored interval recurrence in the RFC 5545
+  §3.3.6 duration grammar, `anchor + k·interval` for `k ≥ 1` with the
+  anchor passed per query), previous-occurrence queries on every form,
+  `RecurrenceSet` canonical formatting and value equality, defect-naming
+  `TryParse(s, out result, out failureMessage)` overloads on all four
+  forms, and a metadata-scan purity guard banning wall-clock and
+  machine-time-zone APIs from the assembly. A third pass compared the
+  engine against defects reported to python-dateutil, rrule.js, ical4j,
+  ical.net, ical.js, libical, lib-recur, ice_cube, Cronos, NCrontab,
+  cronie, croniter, robfig/cron and Quartz, adding that corpus as
+  regression tests and fixing what it found: Vixie's leading-character
+  rule for cron day-field restriction (and the day-mask combination that
+  depends on it), candidate-set deduplication before `BYSETPOS`/`COUNT`,
+  the `BYDAY` ordinal when `BYDAY` limits alongside `BYMONTHDAY`, a
+  calendar overflow while scanning never-matching weekly rules, and
+  `BYWEEKNO` week numbering (now the ISO rule generalized to `WKST`,
+  keeping year-straddling weeks and expanding the whole week when
+  `BYDAY` is absent). Deferred
   follow-ons: sub-daily RRULE frequencies (`HOURLY`/`MINUTELY`/`SECONDLY`
   parse and round-trip but do not yet enumerate), Quartz cron extensions
-  (`L`/`W`/`#`/`?`), and a read-only `.ics` (iCalendar) reader.
+  (`L`/`W`/`#`/`?`), a read-only `.ics` (iCalendar) reader, and a
+  period fast-forward for `RecurrenceRule` point queries with distant
+  anchors (they currently enumerate from `DTSTART`).
 - **`Bodu.Identifiers`** — ULID, Snowflake, NanoID, KSUID generation and
   parsing. Ubiquitous independently-built functionality with no BCL home,
   and a natural consumer of the existing Crockford Base32 support (in

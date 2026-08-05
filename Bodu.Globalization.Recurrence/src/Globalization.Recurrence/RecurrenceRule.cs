@@ -24,6 +24,12 @@ namespace Bodu.Globalization.Recurrence;
 /// <see cref="RecurrenceFrequency.Yearly" /> frequencies. A rule with a sub-daily frequency still parses and
 /// round-trips, but enumerating it throws <see cref="NotSupportedException" /> until that follow-on lands.
 /// </para>
+/// <para>
+/// Every occurrence answer is a pure function of the arguments: no API reads the wall clock or consults the machine
+/// time zone. The <see cref="DateTimeOffset" /> overloads expand the rule on the wall-clock time of the series start
+/// and return occurrences carrying the start's offset; daylight-saving transitions are the caller's concern — a host
+/// that wants a local-time schedule across a transition re-derives the offset on each evaluation.
+/// </para>
 /// </remarks>
 /// <seealso cref="RecurrenceRuleBuilder" /> <seealso cref="RecurrenceSet" />
 public sealed partial class RecurrenceRule : IEquatable<RecurrenceRule>

@@ -39,7 +39,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     {
         ThrowHelper.ThrowIfNull(s);
 
-        if (TryParseCore(s, null, out CronExpression? result, out bool unsupported))
+        if (TryParseCore(s, null, out CronExpression? result, out bool unsupported, out _))
         {
             return result;
         }
@@ -66,7 +66,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     {
         ThrowHelper.ThrowIfNull(s);
 
-        if (TryParseCore(s, format, out CronExpression? result, out bool unsupported))
+        if (TryParseCore(s, format, out CronExpression? result, out bool unsupported, out _))
         {
             return result;
         }
@@ -102,7 +102,71 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             return false;
         }
 
-        return TryParseCore(s, null, out result, out _);
+        return TryParseCore(s, null, out result, out _, out _);
+    }
+
+    /// <summary>
+    /// Attempts to parse a cron expression, reporting the parse defect on failure.
+    /// </summary>
+    /// <param name="s">The cron expression text.</param>
+    /// <param name="result">The parsed expression, or <see langword="null" /> on failure.</param>
+    /// <param name="failureMessage">
+    /// <see langword="null" /> on success; otherwise a message naming the specific defect, suitable for surfacing to
+    /// the user verbatim.
+    /// </param>
+    /// <returns><see langword="true" /> if parsing succeeded; otherwise <see langword="false" />.</returns>
+    public static bool TryParse(
+        string? s,
+        [MaybeNullWhen(false)] out CronExpression result,
+        [NotNullWhen(false)] out string? failureMessage)
+    {
+        if (s is null)
+        {
+            result = null;
+            failureMessage = RecurrenceResourceStrings.Format_Invalid_CronEmpty;
+            return false;
+        }
+
+        bool parsed = TryParseCore(s, null, out result, out _, out failureMessage);
+        if (!parsed)
+        {
+            failureMessage ??= string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s);
+        }
+
+        return parsed;
+    }
+
+    /// <summary>
+    /// Attempts to parse a cron expression using the specified field layout, reporting the parse defect on failure.
+    /// </summary>
+    /// <param name="s">The cron expression text.</param>
+    /// <param name="format">The expected field layout.</param>
+    /// <param name="result">The parsed expression, or <see langword="null" /> on failure.</param>
+    /// <param name="failureMessage">
+    /// <see langword="null" /> on success; otherwise a message naming the specific defect, suitable for surfacing to
+    /// the user verbatim.
+    /// </param>
+    /// <returns><see langword="true" /> if parsing succeeded; otherwise <see langword="false" />.</returns>
+    public static bool TryParse(
+        string? s,
+        CronFormat format,
+        [MaybeNullWhen(false)] out CronExpression result,
+        [NotNullWhen(false)] out string? failureMessage)
+    {
+        if (s is null)
+        {
+            result = null;
+            failureMessage = RecurrenceResourceStrings.Format_Invalid_CronEmpty;
+            return false;
+        }
+
+        bool parsed = TryParseCore(s, format, out result, out _, out failureMessage);
+        if (!parsed)
+        {
+            failureMessage ??= string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s);
+        }
+
+        return parsed;
     }
 
     /// <summary>
@@ -120,7 +184,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             return false;
         }
 
-        return TryParseCore(s, format, out result, out _);
+        return TryParseCore(s, format, out result, out _, out _);
     }
 
     /// <summary>
@@ -130,21 +194,31 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <param name="requestedFormat">The required layout, or <see langword="null" /> to infer it.</param>
     /// <param name="result">The parsed expression, or <see langword="null" /> on failure.</param>
     /// <param name="unsupported">Set to <see langword="true" /> when a Quartz extension token is present.</param>
+    /// <param name="failureMessage">
+    /// <see langword="null" /> on success; otherwise a message naming the specific defect.
+    /// </param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise <see langword="false" />.</returns>
-    private static bool TryParseCore(string text, CronFormat? requestedFormat, [MaybeNullWhen(false)] out CronExpression result, out bool unsupported)
+    private static bool TryParseCore(
+        string text,
+        CronFormat? requestedFormat,
+        [MaybeNullWhen(false)] out CronExpression result,
+        out bool unsupported,
+        out string? failureMessage)
     {
         result = null;
         unsupported = false;
+        failureMessage = null;
 
         string trimmed = text.Trim();
         if (trimmed.Length == 0)
         {
+            failureMessage = RecurrenceResourceStrings.Format_Invalid_CronEmpty;
             return false;
         }
 
         if (trimmed[0] == '@')
         {
-            return TryParseMacro(trimmed, requestedFormat, out result);
+            return TryParseMacro(trimmed, requestedFormat, out result, out failureMessage);
         }
 
         string[] fields = trimmed.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
@@ -160,6 +234,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
                 };
                 if (format == (CronFormat)(-1))
                 {
+                    failureMessage = RecurrenceResourceStrings.Format_Invalid_CronFieldCount;
                     return false;
                 }
 
@@ -174,12 +249,13 @@ public sealed partial class CronExpression : IParsable<CronExpression>
                 break;
 
             default:
+                failureMessage = RecurrenceResourceStrings.Format_Invalid_CronFieldCount;
                 return false;
         }
 
         int index = 0;
         bool[] seconds = FullMask(60);
-        if (format == CronFormat.WithSeconds && !TryParseField(fields[index++], 0, 59, null, false, seconds = new bool[60], out _, ref unsupported))
+        if (format == CronFormat.WithSeconds && !TryParseField(fields[index++], 0, 59, null, false, seconds = new bool[60], out _, ref unsupported, ref failureMessage))
         {
             return false;
         }
@@ -190,11 +266,11 @@ public sealed partial class CronExpression : IParsable<CronExpression>
         var months = new bool[13];
         var daysOfWeek = new bool[7];
 
-        if (!TryParseField(fields[index++], 0, 59, null, false, minutes, out _, ref unsupported)
-            || !TryParseField(fields[index++], 0, 23, null, false, hours, out _, ref unsupported)
-            || !TryParseField(fields[index++], 1, 31, null, false, daysOfMonth, out bool domRestricted, ref unsupported)
-            || !TryParseField(fields[index++], 1, 12, ResolveMonth, false, months, out _, ref unsupported)
-            || !TryParseField(fields[index], 0, 7, ResolveWeekday, true, daysOfWeek, out bool dowRestricted, ref unsupported))
+        if (!TryParseField(fields[index++], 0, 59, null, false, minutes, out _, ref unsupported, ref failureMessage)
+            || !TryParseField(fields[index++], 0, 23, null, false, hours, out _, ref unsupported, ref failureMessage)
+            || !TryParseField(fields[index++], 1, 31, null, false, daysOfMonth, out bool domRestricted, ref unsupported, ref failureMessage)
+            || !TryParseField(fields[index++], 1, 12, ResolveMonth, false, months, out _, ref unsupported, ref failureMessage)
+            || !TryParseField(fields[index], 0, 7, ResolveWeekday, true, daysOfWeek, out bool dowRestricted, ref unsupported, ref failureMessage))
         {
             return false;
         }
@@ -209,14 +285,22 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <param name="token">The macro token, including the leading <c>@</c>.</param>
     /// <param name="requestedFormat">The required layout, or <see langword="null" /> to infer it.</param>
     /// <param name="result">The parsed expression, or <see langword="null" /> on failure.</param>
+    /// <param name="failureMessage">
+    /// <see langword="null" /> on success; otherwise a message naming the specific defect.
+    /// </param>
     /// <returns><see langword="true" /> if the macro was recognized; otherwise <see langword="false" />.</returns>
-    private static bool TryParseMacro(string token, CronFormat? requestedFormat, [MaybeNullWhen(false)] out CronExpression result)
+    private static bool TryParseMacro(
+        string token,
+        CronFormat? requestedFormat,
+        [MaybeNullWhen(false)] out CronExpression result,
+        out string? failureMessage)
     {
         result = null;
 
         // Macros always expand to the five-field standard layout.
         if (requestedFormat == CronFormat.WithSeconds)
         {
+            failureMessage = string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronMacro, token);
             return false;
         }
 
@@ -232,10 +316,11 @@ public sealed partial class CronExpression : IParsable<CronExpression>
 
         if (expanded is null)
         {
+            failureMessage = string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronMacro, token);
             return false;
         }
 
-        return TryParseCore(expanded, CronFormat.Standard, out result, out _);
+        return TryParseCore(expanded, CronFormat.Standard, out result, out _, out failureMessage);
     }
 
     /// <summary>
@@ -249,14 +334,20 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <param name="mask">The mask to populate.</param>
     /// <param name="restricted">Set to <see langword="true" /> when the field is not <c>*</c>.</param>
     /// <param name="unsupported">Set to <see langword="true" /> when a Quartz extension token is present.</param>
+    /// <param name="failureMessage">Set to a message naming the failing field when the field does not parse.</param>
     /// <returns><see langword="true" /> if the field parsed; otherwise <see langword="false" />.</returns>
-    private static bool TryParseField(string field, int min, int max, Func<string, int?>? names, bool weekday, bool[] mask, out bool restricted, ref bool unsupported)
+    private static bool TryParseField(string field, int min, int max, Func<string, int?>? names, bool weekday, bool[] mask, out bool restricted, ref bool unsupported, ref string? failureMessage)
     {
-        restricted = !field.Equals("*", StringComparison.Ordinal);
+        // Vixie decides whether a day field is restricted from its leading character alone — cronie sets DOM_STAR /
+        // DOW_STAR when the field begins with '*', before the field's values are parsed. A stepped star such as
+        // "*/2" is therefore unrestricted while the equivalent explicit range "1-31/2" is restricted, even though
+        // both denote the same days; the difference selects the union or intersection branch in DayMatches.
+        restricted = field.Length > 0 && field[0] != '*';
 
         if (ContainsQuartzToken(field))
         {
             unsupported = true;
+            failureMessage = string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Op_NotSupported_CronExtensionToken, field);
             return false;
         }
 
@@ -264,6 +355,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
         {
             if (part.Length == 0 || !TryParsePart(part, min, max, names, weekday, mask))
             {
+                failureMessage = string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronField, field);
                 return false;
             }
         }

@@ -1,0 +1,73 @@
+# libical recurrence expectations, derived from test-data/recur.txt
+# source-class: third-party-comparison (reference-implementation test corpus, not an authority)
+# source: libical -- https://github.com/libical/libical -- test-data/recur.txt, read by
+#         src/test/regression-recur.c. Assertions are occurrence COUNTS (X-EXPECT-NUMEVENTS).
+# acquired: 2026-08-05 (test-data/ delivered user-side as a zip; host unreachable from the build env)
+# acquired-zip-sha256: d0dabf163e004721101b32517404bf2ed6be0f03df1e8c9cbc961d4a10bb3e16
+# recur-txt-sha256: c1b0b4c42c4861baa5c13d2eda92e60bb55a7a23e06542f1c31360451c9f23c8
+# licence: libical is dual MPL-2.0 / LGPL-2.1. The upstream file is NOT committed verbatim; this is a
+#          derived table (rule text plus its asserted count) recorded link-and-hash, per the corpus
+#          policy of not committing third-party sources until redistribution rights are confirmed.
+# flags: sub-daily        = FREQ is HOURLY/MINUTELY/SECONDLY (not enumerated by this library)
+#        exrule           = the block uses EXRULE (not modelled; RecurrenceSet supports EXDATE only)
+#        exdate           = the block uses EXDATE (evaluated through RecurrenceSet)
+#        tzid             = DTSTART carries a TZID; counts are offset-invariant so the rule still runs
+#        utc-until-zoned  = UNTIL is UTC-valued against a zoned DTSTART
+id,description,dtstart,tzid,rrule,expectedCount,exdate,flags
+1,Repeat every tuesday and wednesday starting Tue 2nd April 2002,20020402T114500,,"FREQ=WEEKLY;INTERVAL=1;COUNT=6;BYDAY=TU,WE",6,,
+2,Repeat every thursday starting Tue 2nd April 2002,20020402T114500,,FREQ=WEEKLY;INTERVAL=1;COUNT=6;BYDAY=TH,6,,
+3,"Every other year on the same day, for 11 years",20010205T090000,America/Los_Angeles,FREQ=YEARLY;INTERVAL=2;COUNT=11,11,,tzid
+4,"Monday of week number 20 (where the default start of the week is Monday),forever:",19970512T090000,America/Los_Angeles,FREQ=YEARLY;INTERVAL=1;COUNT=10;BYDAY=MO;BYWEEKNO=20,10,,tzid
+5,"Once a Year, for 10 years",20010205T090000,America/Los_Angeles,FREQ=YEARLY;INTERVAL=1;COUNT=10,10,,tzid
+6,Recur every sunday and tuesday,20011216T192500,,"FREQ=WEEKLY;COUNT=10;INTERVAL=1;BYDAY=SU,TU",10,,
+7,Every first tuesday of the month,20011204T153500,,FREQ=MONTHLY;INTERVAL=1;COUNT=3;BYDAY=1TU,3,,
+8,Daily for 10 occurrences:,19970902T090000,America/Los_Angeles,FREQ=DAILY;COUNT=10;INTERVAL=1,10,,tzid
+9,"Daily until December 24, 1997:",19971215T090000,America/Los_Angeles,FREQ=DAILY;UNTIL=19971224T000000Z;INTERVAL=1,9,,utc-until-zoned tzid
+10,Every other day - forever:,19970902T090000,America/Los_Angeles,FREQ=DAILY;COUNT=10;INTERVAL=2,10,,tzid
+11,"Every 10 days, 5 occurrences:",19970902T090000,America/Los_Angeles,FREQ=DAILY;COUNT=5;INTERVAL=10,5,,tzid
+12,Daily for 10 occurrences:,19970902T090000,America/Los_Angeles,FREQ=DAILY;COUNT=10;INTERVAL=1,10,,tzid
+13,"Every day in January, for 3 years",19980101T090000,America/Los_Angeles,"FREQ=YEARLY;UNTIL=20000131T090000;INTERVAL=1;BYDAY=SU,MO,TU,WE,TH,FR,SA;BYMONTH=1",93,,tzid
+14,"Everyday in January, for 3 years:",19980101T090000,America/Los_Angeles,FREQ=DAILY;UNTIL=20000131T090000;INTERVAL=1;BYMONTH=1,93,,tzid
+15,Repeat every tuesday and wednesday starting Tue 2nd April 2002,20020402T114500,,"FREQ=WEEKLY;INTERVAL=1;COUNT=6;BYDAY=TU,WE",6,,
+16,"Every Day start the first day in January, except saturday and sunday. This should be up to March.",20020101T090000Z,,"FREQ=DAILY;COUNT=50;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR",50,,
+17,"Every Day in January, but only in Tuesday, Wednesday and Thursday",20020101T090000Z,,"FREQ=DAILY;UNTIL=20020120T090000Z;INTERVAL=1;BYDAY=TU,WE,TH",9,,
+18,"Every Day in January, except saturday and sunday. This is MS Outlook every weekday case.",20020101T090000Z,,"FREQ=DAILY;UNTIL=20020120T090000Z;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR;WKST=SU",14,,
+19,Weekly for 10 occurrences,19970902T090000,America/Los_Angeles,FREQ=WEEKLY;COUNT=10;INTERVAL=1,10,,tzid
+20,"Weekly until December 24, 1997",19970902T090000,America/Los_Angeles,FREQ=WEEKLY;UNTIL=19971224T000000Z;INTERVAL=1,17,,utc-until-zoned tzid
+21,Every other week - 10 times:,19970902T090000,America/Los_Angeles,FREQ=WEEKLY;INTERVAL=2;COUNT=10,10,,tzid
+22,Weekly on Tuesday and Thursday for 5 weeks:,19970902T090000,America/Los_Angeles,"FREQ=WEEKLY;UNTIL=19971007T000000Z;INTERVAL=1;BYDAY=TU,TH",10,,utc-until-zoned tzid
+23,Weekly on Tuesday and Thursday for 5 weeks:,19970902T090000,America/Los_Angeles,"FREQ=WEEKLY;COUNT=10;INTERVAL=1;BYDAY=TU,TH",10,,tzid
+24,"Every other week on Monday, Wednesday and Friday until December24,1997, but starting on Tuesday, September 2, 1997:",19970902T090000,America/Los_Angeles,"FREQ=WEEKLY;INTERVAL=2;UNTIL=19971224T000000Z;BYDAY=MO,WE,FR;WKST=SU",24,,utc-until-zoned tzid
+25,"Every other week on Tuesday and Thursday, for 8 occurrences:",19970902T090000,America/Los_Angeles,"FREQ=WEEKLY;COUNT=8;INTERVAL=2;BYDAY=TU,TH",8,,tzid
+26,Monthly on the 1st Friday for ten occurrences:,19970905T090000,America/Los_Angeles,FREQ=MONTHLY;COUNT=10;INTERVAL=1;BYDAY=FR,10,,tzid
+27,"Monthly on the 1st Friday until December 24, 1997:",19970905T090000,America/Los_Angeles,FREQ=MONTHLY;UNTIL=19971224T000000Z;INTERVAL=1;BYDAY=1FR,4,,utc-until-zoned tzid
+28,Every other month on the 1st and last Sunday of the month for 10 occurrences:,19970907T090000,America/Los_Angeles,"FREQ=MONTHLY;INTERVAL=2;COUNT=10;BYDAY=1SU,-1SU",10,,tzid
+29,Monthly on the second to last Monday of the month for 6 months:,19970922T090000,America/Los_Angeles,FREQ=MONTHLY;COUNT=6;INTERVAL=1;BYDAY=-2MO,6,,tzid
+30,"Monthly on the third to the last day of the month, forever:",19970928T090000,America/Los_Angeles,FREQ=MONTHLY;INTERVAL=1;COUNT=10;BYMONTHDAY=-3,10,,tzid
+31,Monthly on the 2nd and 15th of the month for 10 occurrences:,19970902T090000,America/Los_Angeles,"FREQ=MONTHLY;COUNT=10;INTERVAL=1;BYMONTHDAY=2,15",10,,tzid
+32,Monthly on the first and last day of the month for 10 occurrences:\n,19970930T090000,America/Los_Angeles,"FREQ=MONTHLY;COUNT=10;INTERVAL=1;BYMONTHDAY=1,-1",10,,tzid
+33,Every 18 months on the 10th thru 15th of the month for 10 occurrences:,19970910T090000,America/Los_Angeles,"FREQ=MONTHLY;COUNT=10;INTERVAL=18;BYMONTHDAY=10,11,12,13,14,15",10,,tzid
+34,"Every Tuesday, every other month:",19970902T090000,America/Los_Angeles,FREQ=MONTHLY;INTERVAL=2;COUNT=10;BYDAY=TU,10,,tzid
+35,Yearly in June and July for 10 occurrences:,19970610T090000,America/Los_Angeles,"FREQ=YEARLY;COUNT=10;INTERVAL=1;BYMONTH=6,7",10,,tzid
+36,"Every other year on January, February, and March for 10 occurrences:",19970310T090000,America/Los_Angeles,"FREQ=YEARLY;COUNT=10;INTERVAL=2;BYMONTH=1,2,3",10,,tzid
+37,"Every 3rd year on the 1st, 100th and 200th day for 10 occurrences:",19970101T090000,America/Los_Angeles,"FREQ=YEARLY;COUNT=10;INTERVAL=3;BYYEARDAY=1,100,200",10,,tzid
+38,"Every 20th Monday of the year, forever:",19970519T090000,America/Los_Angeles,FREQ=YEARLY;INTERVAL=1;COUNT=10;BYDAY=20MO,10,,tzid
+39,"Monday of week number 20 (where the default start of the week is Monday),forever:",19970512T090000,America/Los_Angeles,FREQ=YEARLY;INTERVAL=1;COUNT=10;BYDAY=MO;BYWEEKNO=20,10,,tzid
+40,"Every Thursday in March, forever:",19970313T090000,America/Los_Angeles,FREQ=YEARLY;INTERVAL=1;COUNT=10;BYDAY=TH;BYMONTH=3,10,,tzid
+41,"Every Thursday, but only during June, July, and August, forever:",19970605T090000,America/Los_Angeles,"FREQ=YEARLY;INTERVAL=1;COUNT=10;BYDAY=TH;BYMONTH=6,7,8",10,,tzid
+42,"Every Friday the 13th, forever:",19970902T090000,America/Los_Angeles,FREQ=MONTHLY;INTERVAL=1;COUNT=10;BYDAY=FR;BYMONTHDAY=13,10,,tzid
+43,"The first Saturday that follows the first Sunday of the month,",19970913T090000,America/Los_Angeles,"FREQ=MONTHLY;INTERVAL=1;COUNT=10;BYDAY=SA;BYMONTHDAY=7,8,9,10,11,12,13",10,,tzid
+44,"Every four years, the first Tuesday after a Monday in November,forever (U.S. Presidential Election day):",19961105T090000,America/Los_Angeles,"FREQ=YEARLY;INTERVAL=4;COUNT=10;BYDAY=TU;BYMONTHDAY=1,2,3,4,5,6,7,8,9;BYMONTH=11",10,,tzid
+45,"The 3rd instance into the month of one of Tuesday, Wednesday orThursday, for the next 3 months:",19970904T090000,America/Los_Angeles,"FREQ=MONTHLY;COUNT=3;INTERVAL=1;BYDAY=TU,WE,TH;BYSETPOS=3",3,,tzid
+46,The 2nd to last weekday of the month:,19970929T090000,America/Los_Angeles,"FREQ=MONTHLY;INTERVAL=1;COUNT=10;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-2",10,,tzid
+47,Every 3 hours from 9:00 AM to 5:00 PM on a specific day:,19970902T090000,America/Los_Angeles,FREQ=HOURLY;UNTIL=19970902T170000;INTERVAL=3,3,,sub-daily tzid
+48,Every 15 minutes for 6 occurrences:,19970902T090000,America/Los_Angeles,FREQ=MINUTELY;COUNT=6;INTERVAL=15,6,,sub-daily tzid
+49,Every hour and a half for 4 occurrences:,19970902T090000,America/Los_Angeles,FREQ=MINUTELY;COUNT=4;INTERVAL=90,4,,sub-daily tzid
+50,Every 20 minutes from 9:00 AM to 4:40 PM every day:,19970902T090000,America/Los_Angeles,"FREQ=DAILY;COUNT=20;INTERVAL=1;BYMINUTE=0,20,40;BYHOUR=9,10,11,12,13,14,15,16",20,,tzid
+51,Every 20 minutes from 9:00 AM to 4:40 PM every day:,19970902T090000,America/Los_Angeles,"FREQ=MINUTELY;COUNT=20;INTERVAL=20;BYHOUR=9,10,11,12,13,14,15,16",20,,sub-daily tzid
+52,An example where the days generated makes a difference because ofWKST:,19970805T090000,America/Los_Angeles,"FREQ=WEEKLY;COUNT=4;INTERVAL=2;BYDAY=TU,SU",4,,tzid
+53,An example where the days generated makes a difference because ofWKST. Changing only WKST from MO to SU yields different results...,19970805T090000,America/Los_Angeles,"FREQ=WEEKLY;COUNT=4;INTERVAL=2;BYDAY=TU,SU",4,,tzid
+54,Repeat every tuesday and wednesday starting 2 April 2002,20020402T114500,,"FREQ=WEEKLY;INTERVAL=1;COUNT=6;BYDAY=TU,WE",6,,
+55,Use count=1 to repeat zero times.,20020402T114500,,FREQ=DAILY;COUNT=1,1,,
+56,Use EXDATE to eliminate the base event,20020402T114500Z,,FREQ=DAILY;COUNT=1,0,20020402T114500Z,exdate
+57,"Every Day in January, except saturday and sunday, using 2 EXRULEs. (NOT IMPLEMENTED)",20020101T090000Z,,FREQ=DAILY;INTERVAL=1;UNTIL=20020201T000000Z,23,,exrule

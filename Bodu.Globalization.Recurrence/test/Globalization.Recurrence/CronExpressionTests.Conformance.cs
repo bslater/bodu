@@ -24,6 +24,74 @@ public partial class CronExpressionTests
     }
 
     /// <summary>
+    /// Verifies that Vixie decides whether a day field is "restricted" from its leading character alone, so a stepped
+    /// star (<c>*/2</c>) selects the intersection branch while the equivalent explicit range (<c>1-31/2</c>) selects
+    /// the union branch, even though both denote the same set of days.
+    /// </summary>
+    /// <remarks>
+    /// The distinction is the one cronie encodes in <c>src/entry.c</c> (<c>if (ch == '*') e-&gt;flags |= DOM_STAR;</c>)
+    /// and is observable only when both day fields are present. croniter carries the same pair as
+    /// <c>test_dom_dow_vixie_cron_bug</c>, and the two sequences asserted here are its two modes verbatim: the
+    /// intersection is what croniter emits under <c>implement_cron_bug=True</c>, the union what it emits by default.
+    /// Both are asserted as sequences rather than single points, because a first occurrence can agree by accident
+    /// where the stride does not.
+    /// </remarks>
+    [TestMethod]
+    public void GetNextOccurrence_WhenDayFieldIsSteppedStar_ShouldTreatFieldAsUnrestricted()
+    {
+        // "*/2" leads with '*' → unrestricted → intersection → only odd-numbered Saturdays.
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new DateTime(2023, 5, 13, 16, 0, 0),
+                new DateTime(2023, 5, 27, 16, 0, 0),
+                new DateTime(2023, 6, 3, 16, 0, 0),
+                new DateTime(2023, 6, 17, 16, 0, 0),
+            },
+            Take4("0 16 */2 * sat"));
+
+        // "1-31/2" leads with a digit → restricted → union → every odd-numbered day and every Saturday.
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new DateTime(2023, 5, 3, 16, 0, 0),
+                new DateTime(2023, 5, 5, 16, 0, 0),
+                new DateTime(2023, 5, 6, 16, 0, 0),
+                new DateTime(2023, 5, 7, 16, 0, 0),
+            },
+            Take4("0 16 1-31/2 * sat"));
+
+        static DateTime[] Take4(string expression)
+        {
+            CronExpression cron = CronExpression.Parse(expression);
+            var occurrences = new List<DateTime>();
+            var cursor = new DateTime(2023, 5, 2, 0, 0, 0);
+
+            while (occurrences.Count < 4 && cron.GetNextOccurrence(cursor) is DateTime next)
+            {
+                occurrences.Add(next);
+                cursor = next;
+            }
+
+            return [.. occurrences];
+        }
+    }
+
+    /// <summary>
+    /// Verifies that an unrestricted-by-step day-of-week field also selects the intersection branch, so a
+    /// day-of-month schedule is not widened to every weekday.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenWeekdayFieldIsSteppedStar_ShouldTreatFieldAsUnrestricted()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 13 * */1");
+
+        DateTime? next = cron.GetNextOccurrence(new DateTime(2026, 1, 1, 0, 0, 0));
+
+        Assert.AreEqual(new DateTime(2026, 1, 13, 0, 0, 0), next);
+    }
+
+    /// <summary>
     /// Verifies that a day-of-month expression skips months that lack that day rather than clamping.
     /// </summary>
     [TestMethod]
@@ -73,6 +141,20 @@ public partial class CronExpressionTests
         DateTime? next = cron.GetNextOccurrence(new DateTime(2020, 1, 1, 0, 0, 0));
 
         Assert.IsNull(next);
+    }
+
+    /// <summary>
+    /// Verifies that the previous-occurrence search is equally bounded: an expression that can never match answers
+    /// <see langword="null" /> backward as well as forward.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenImpossibleDate_ShouldReturnNull()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 30 2 *");
+
+        DateTime? previous = cron.GetPreviousOccurrence(new DateTime(2020, 1, 1, 0, 0, 0));
+
+        Assert.IsNull(previous);
     }
 
     /// <summary>
@@ -363,5 +445,29 @@ public partial class CronExpressionTests
     public void Parse_WhenMacro_ShouldEqualCanonicalExpression(string macro, string equivalent)
     {
         Assert.AreEqual(CronExpression.Parse(equivalent), CronExpression.Parse(macro));
+    }
+
+    /// <summary>
+    /// Verifies that a step wider than the range it applies to is accepted and selects only the range's first value,
+    /// rather than being rejected as malformed.
+    /// </summary>
+    /// <param name="expression">The expression carrying the oversized step.</param>
+    /// <param name="canonical">The equivalent expression naming the single value the field selects.</param>
+    /// <remarks>
+    /// cronie treats this as a warning rather than an error (<c>entry.c</c>: "Step size %i higher than possible
+    /// maximum of %i") and then runs <c>for (i = low; i &lt;= high; i += step)</c>, which sets exactly one bit. Cronos
+    /// rejects the same input, so its corpus rows for these expressions are excluded and the Vixie reading is pinned
+    /// here instead.
+    /// </remarks>
+    [TestMethod]
+    [DataRow("*/60 * * * *", "0 * * * *", DisplayName = "minute step past the whole field")]
+    [DataRow("1/60 * * * *", "1 * * * *", DisplayName = "minute step past the remaining range")]
+    [DataRow("* 1/24 * * *", "* 1 * * *", DisplayName = "hour step past the remaining range")]
+    [DataRow("* * 1/32 * *", "* * 1 * *", DisplayName = "day-of-month step past the remaining range")]
+    [DataRow("* * * 1/13 *", "* * * 1 *", DisplayName = "month step past the remaining range")]
+    [DataRow("* * * * 1/8", "* * * * 1", DisplayName = "weekday step past the remaining range")]
+    public void Parse_WhenStepExceedsItsRange_ShouldSelectOnlyTheRangeStart(string expression, string canonical)
+    {
+        Assert.AreEqual(CronExpression.Parse(canonical), CronExpression.Parse(expression));
     }
 }
