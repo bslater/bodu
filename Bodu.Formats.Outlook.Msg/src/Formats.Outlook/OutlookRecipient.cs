@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OutlookRecipient.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,9 +34,7 @@ public sealed class OutlookRecipient
     /// <summary>
     /// Gets how the recipient participates in the message.
     /// </summary>
-    /// <value>
-    /// The <c>PidTagRecipientType</c> value when present and defined; otherwise <see langword="null" />.
-    /// </value>
+    /// <value>The <c>PidTagRecipientType</c> value when present and defined; otherwise <see langword="null" />.</value>
     public OutlookRecipientType? RecipientType =>
         Properties.GetInt32(MapiPropertyIds.RecipientType) is int value
             && value is >= (int)OutlookRecipientType.Originator and <= (int)OutlookRecipientType.Bcc

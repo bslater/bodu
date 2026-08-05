@@ -55,10 +55,7 @@ public sealed class ReloadableNotableDateService
     /// <summary>The logger that records resolution-state rebuilds after a reload.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The immutable (source resource, inner service) pair currently in effect, swapped atomically on rebuild so the
-    /// steady-state read path needs no lock.
-    /// </summary>
+    /// <summary>The immutable (source resource, inner service) pair currently in effect, swapped atomically on rebuild so the steady-state read path needs no lock.</summary>
     private volatile Tuple<NotableDateResource, NotableDateService> _snapshot;
 
     /// <summary>

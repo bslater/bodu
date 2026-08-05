@@ -190,8 +190,8 @@ internal static class HinduLunarCalculator
         SiderealSign(SolarTermCalculator.SunTropicalLongitude(date), date.Year);
 
     /// <summary>
-    /// Returns the sidereal zodiac sign of the sun at the supplied Julian Day instant, applying the Lahiri ayanamsa
-    /// to the tropical longitude.
+    /// Returns the sidereal zodiac sign of the sun at the supplied Julian Day instant, applying the Lahiri ayanamsa to
+    /// the tropical longitude.
     /// </summary>
     /// <param name="date">The calendar date containing the instant, used for the ayanamsa epoch.</param>
     /// <param name="julianDay">The Julian Day to evaluate, including the fractional time of day.</param>

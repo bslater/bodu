@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Complex{T}.Utf8.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,7 +29,9 @@ public readonly partial struct Complex<T> :
     /// </summary>
     /// <param name="utf8Text">The UTF-8 encoded text to parse.</param>
     /// <param name="provider">The culture used to interpret the numeric components.</param>
-    /// <param name="result">When this method returns, contains the parsed value, or the default value on failure.</param>
+    /// <param name="result">
+    /// When this method returns, contains the parsed value, or the default value on failure.
+    /// </param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise, <see langword="false" />.</returns>
     public static bool TryParse(ReadOnlySpan<byte> utf8Text, IFormatProvider? provider, out Complex<T> result) =>
         TryParse(Encoding.UTF8.GetString(utf8Text).AsSpan(), provider, out result);

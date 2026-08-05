@@ -130,9 +130,7 @@ public static class NotableDatePluginLoader
     /// A directory component of <paramref name="assemblyPath" /> does not exist.
     /// </exception>
     /// <exception cref="UnauthorizedAccessException">The file cannot be read.</exception>
-    /// <exception cref="NotableDatePluginException">
-    /// The file is not a valid managed assembly image.
-    /// </exception>
+    /// <exception cref="NotableDatePluginException">The file is not a valid managed assembly image.</exception>
     /// <exception cref="PluginNotTrustedException">The trust policy rejected the assembly.</exception>
     /// <exception cref="PluginMissingAttributeException">The assembly does not declare a plugin attribute.</exception>
     /// <exception cref="PluginActivationException">
@@ -168,9 +166,7 @@ public static class NotableDatePluginLoader
     /// A directory component of <paramref name="assemblyPath" /> does not exist.
     /// </exception>
     /// <exception cref="UnauthorizedAccessException">The file cannot be read.</exception>
-    /// <exception cref="NotableDatePluginException">
-    /// The file is not a valid managed assembly image.
-    /// </exception>
+    /// <exception cref="NotableDatePluginException">The file is not a valid managed assembly image.</exception>
     /// <exception cref="PluginNotTrustedException">The trust policy rejected the assembly.</exception>
     /// <exception cref="PluginMissingAttributeException">The assembly does not declare a plugin attribute.</exception>
     /// <exception cref="PluginActivationException">

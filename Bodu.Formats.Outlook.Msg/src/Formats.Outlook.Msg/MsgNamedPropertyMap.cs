@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MsgNamedPropertyMap.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,11 +13,10 @@ namespace Bodu.Formats.Outlook.Msg;
 /// Provides the bidirectional named-property mapping parsed from a message's <c>__nameid_version1.0</c> storage.
 /// </summary>
 /// <remarks>
-/// The mapping is file-specific: entry <c>i</c> of the entry stream defines the property identifier
-/// <c>0x8000 + i</c>. Each 8-byte entry carries a name identifier or string-stream offset, a kind bit, and a GUID
-/// index — <c>1</c> for <c>PS_MAPI</c>, <c>2</c> for <c>PS_PUBLIC_STRINGS</c>, and <c>3 + n</c> for the
-/// <c>n</c>-th GUID of the GUID stream. The per-bucket hash streams the format also stores are write-time
-/// acceleration and are ignored on read.
+/// The mapping is file-specific: entry <c>i</c> of the entry stream defines the property identifier <c>0x8000 + i</c>.
+/// Each 8-byte entry carries a name identifier or string-stream offset, a kind bit, and a GUID index — <c>1</c> for
+/// <c>PS_MAPI</c>, <c>2</c> for <c>PS_PUBLIC_STRINGS</c>, and <c>3 + n</c> for the <c>n</c>-th GUID of the GUID stream.
+/// The per-bucket hash streams the format also stores are write-time acceleration and are ignored on read.
 /// </remarks>
 internal sealed class MsgNamedPropertyMap
 {

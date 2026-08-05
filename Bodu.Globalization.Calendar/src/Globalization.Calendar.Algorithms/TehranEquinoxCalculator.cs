@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TehranEquinoxCalculator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,9 +18,9 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// eight minutes later in late March.
 /// </para>
 /// <para>
-/// The equinox instant comes from the Meeus chapter 27 series in dynamical time and is reduced to Universal Time with
-/// a ΔT estimate (Espenak–Meeus polynomial expressions), so the result tracks the observationally anchored civil
-/// calendar rather than an arithmetic intercalation cycle. This is the opt-in astronomical variant behind the
+/// The equinox instant comes from the Meeus chapter 27 series in dynamical time and is reduced to Universal Time with a
+/// ΔT estimate (Espenak–Meeus polynomial expressions), so the result tracks the observationally anchored civil calendar
+/// rather than an arithmetic intercalation cycle. This is the opt-in astronomical variant behind the
 /// <c>tehran-nowruz</c> algorithm key; the tabular resources remain the default.
 /// </para>
 /// </remarks>

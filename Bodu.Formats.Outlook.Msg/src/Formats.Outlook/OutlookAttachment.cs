@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OutlookAttachment.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ namespace Bodu.Formats.Outlook;
 /// <remarks>
 /// The conveniences return <see langword="null" /> when the underlying property is absent; every attachment property
 /// remains reachable through <see cref="Properties" />. Content access is method-specific:
-/// <see cref="OpenContentStream" /> serves a by-value payload and <see cref="OpenMessage" /> serves an embedded
-/// message — each throws <see cref="NotSupportedException" /> for the other method kinds.
+/// <see cref="OpenContentStream" /> serves a by-value payload and <see cref="OpenMessage" /> serves an embedded message
+/// — each throws <see cref="NotSupportedException" /> for the other method kinds.
 /// </remarks>
 public sealed class OutlookAttachment
 {
@@ -46,7 +46,9 @@ public sealed class OutlookAttachment
         content?.Dispose();
     }
 
-    /// <summary>Gets the name of the by-value content stream (<c>PidTagAttachDataBinary</c>).</summary>
+    /// <summary>
+    /// Gets the name of the by-value content stream (<c>PidTagAttachDataBinary</c>).
+    /// </summary>
     private static string ContentStreamName =>
         MsgStreamNames.GetSubstgStreamName(((uint)MapiPropertyIds.AttachData << 16) | (ushort)MapiPropertyType.Binary);
 

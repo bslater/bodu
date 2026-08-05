@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MsgReferenceFixtures.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -81,8 +81,8 @@ internal sealed record MsgReferenceManifest(
     [property: JsonPropertyName("fixtures")] IReadOnlyList<MsgReferenceFixture> Fixtures);
 
 /// <summary>
-/// Represents one corpus file's expectations. Implements <see cref="IKat" /> so data-driven rows display the file
-/// name in failure diagnostics.
+/// Represents one corpus file's expectations. Implements <see cref="IKat" /> so data-driven rows display the file name
+/// in failure diagnostics.
 /// </summary>
 /// <param name="File">The fixture file name.</param>
 /// <param name="Expected">The classification: <c>valid</c> or <c>invalid</c>.</param>

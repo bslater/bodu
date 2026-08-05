@@ -94,7 +94,9 @@ internal static class SolarTermCalculator
     /// Returns the sun's apparent tropical ecliptic longitude at the supplied Julian Day instant, using the
     /// low-precision solar series from Jean Meeus, <em>Astronomical Algorithms</em> (chapter 25).
     /// </summary>
-    /// <param name="julianDay">The Julian Day to evaluate the sun's position at, including any fractional time of day.</param>
+    /// <param name="julianDay">
+    /// The Julian Day to evaluate the sun's position at, including any fractional time of day.
+    /// </param>
     /// <returns>The tropical ecliptic longitude in degrees, normalized to the range <c>[0, 360)</c>.</returns>
     public static double SunTropicalLongitude(double julianDay)
     {

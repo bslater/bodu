@@ -46,10 +46,7 @@ public sealed class NotableDateAlgorithmRegistry
     /// <summary>Serializes writers so each registration builds its snapshot from the latest published state.</summary>
     private readonly object _gate = new();
 
-    /// <summary>
-    /// The current immutable snapshot of registered algorithms, replaced atomically on each registration so lookups
-    /// never observe a partially mutated state.
-    /// </summary>
+    /// <summary>The current immutable snapshot of registered algorithms, replaced atomically on each registration so lookups never observe a partially mutated state.</summary>
     private volatile Dictionary<string, INotableDateAlgorithm> _algorithms = new(StringComparer.Ordinal);
 
     /// <summary>

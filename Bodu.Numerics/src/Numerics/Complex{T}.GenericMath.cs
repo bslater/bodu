@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Complex{T}.GenericMath.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -58,11 +58,13 @@ public readonly partial struct Complex<T> :
         T.IsZero(value.Real) && T.IsRealNumber(value.Imaginary);
 
     /// <summary>
-    /// Determines whether the specified complex number is infinite — either component is an infinity, regardless of
-    /// the other component's value (including NaN), matching <see cref="System.Numerics.Complex.IsInfinity" />.
+    /// Determines whether the specified complex number is infinite — either component is an infinity, regardless of the
+    /// other component's value (including NaN), matching <see cref="System.Numerics.Complex.IsInfinity" />.
     /// </summary>
     /// <param name="value">The complex number to test.</param>
-    /// <returns><see langword="true" /> when either component is infinite; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when either component is infinite; otherwise <see langword="false" />.
+    /// </returns>
     public static bool IsInfinity(Complex<T> value) =>
         IsInfinityCore(value);
 

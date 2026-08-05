@@ -347,6 +347,6 @@ public sealed partial class CrcStandard
         => obj is CrcStandard other && Equals(other);
 
     /// <inheritdoc />
-    public override int GetHashCode()
-        => HashCode.Combine(Size, Polynomial, InitialValue, ReflectIn, ReflectOut, XOrOut);
+    public override int GetHashCode() =>
+        HashCode.Combine(Size, Polynomial, InitialValue, ReflectIn, ReflectOut, XOrOut);
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceAsyncExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -50,7 +50,9 @@ public static class NotableDateServiceAsyncExtensions
     /// <param name="service">The service used to resolve notable dates.</param>
     /// <param name="range">The inclusive date range to resolve.</param>
     /// <param name="territory">The requested territory code.</param>
-    /// <param name="filter">The filter that emitted occurrences must satisfy, or <see langword="null" /> for all.</param>
+    /// <param name="filter">
+    /// The filter that emitted occurrences must satisfy, or <see langword="null" /> for all.
+    /// </param>
     /// <param name="cancellationToken">The token observed between resolved years to cancel the stream.</param>
     /// <returns>
     /// An asynchronous sequence of the occurrences emitted in the range, ordered by date then identity — the same
@@ -63,8 +65,8 @@ public static class NotableDateServiceAsyncExtensions
     /// <paramref name="range" /> has a start date later than its end date.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// <paramref name="cancellationToken" /> (or a token supplied via
-    /// <c>WithCancellation</c>) is cancelled while the stream is being enumerated.
+    /// <paramref name="cancellationToken" /> (or a token supplied via <c>WithCancellation</c>) is cancelled while the
+    /// stream is being enumerated.
     /// </exception>
     /// <remarks>
     /// <para>

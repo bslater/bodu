@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeConfigurationExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -52,8 +52,8 @@ public static class BencodeConfigurationExtensions
     }
 
     /// <summary>
-    /// Adds a read-only Bencode configuration source backed by the supplied <see cref="Stream" />. The stream is
-    /// read once when the configuration is built.
+    /// Adds a read-only Bencode configuration source backed by the supplied <see cref="Stream" />. The stream is read
+    /// once when the configuration is built.
     /// </summary>
     /// <param name="builder">The configuration builder.</param>
     /// <param name="stream">The stream containing a Bencode document.</param>

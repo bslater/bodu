@@ -166,9 +166,9 @@ public sealed partial class MoneyBag
     /// <paramref name="amount" /> has no currency (default-initialised).
     /// </exception>
     /// <remarks>
-    /// The bag is a settlement-precision container: the incoming amount is rounded to its currency's registered
-    /// minor units (banker's rounding) before it is folded into the balance, so an explicit-scale unit price settles
-    /// on entry. Settle high-precision amounts deliberately — via
+    /// The bag is a settlement-precision container: the incoming amount is rounded to its currency's registered minor
+    /// units (banker's rounding) before it is folded into the balance, so an explicit-scale unit price settles on
+    /// entry. Settle high-precision amounts deliberately — via
     /// <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> — when a different rounding rule is required.
     /// </remarks>
     public MoneyBag Add(Money amount)

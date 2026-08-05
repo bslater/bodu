@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OutlookMessage.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -78,7 +78,9 @@ public sealed partial class OutlookMessage
     /// <param name="header">The decoded property-stream header.</param>
     /// <param name="ownsContainer">Whether this instance owns and disposes the container.</param>
     /// <param name="stringEncoding">The encoding this message's code-page strings were decoded with.</param>
-    /// <param name="root">The root session for a nested message, or <see langword="null" /> for the root itself.</param>
+    /// <param name="root">
+    /// The root session for a nested message, or <see langword="null" /> for the root itself.
+    /// </param>
     internal OutlookMessage(
         CompoundFile compound,
         CompoundStorage storage,

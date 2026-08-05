@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OutlookMessage.NamedProperties.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,8 +29,7 @@ public sealed partial class OutlookMessage
     /// <param name="name">The named-property identity.</param>
     /// <param name="id">
     /// When this method returns <see langword="true" />, the file-specific identifier (at or above <c>0x8000</c>) the
-    /// name maps to; combine it with the expected <see cref="MapiPropertyType" /> to address
-    /// <see cref="Properties" />.
+    /// name maps to; combine it with the expected <see cref="MapiPropertyType" /> to address <see cref="Properties" />.
     /// </param>
     /// <returns><see langword="true" /> when the message maps the name.</returns>
     /// <exception cref="ObjectDisposedException">The message has been disposed.</exception>

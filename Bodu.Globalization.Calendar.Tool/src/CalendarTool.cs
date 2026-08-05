@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarTool.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,9 +16,8 @@ namespace Bodu.Globalization.Calendar.Tool;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Exit codes: <c>0</c> success, <c>1</c> validation or input failure, <c>2</c> usage error. Diagnostics print one
-/// per line as <c>[Severity] CODE: message</c>, so build logs and editors can match on the stable
-/// <c>BODU-CAL-*</c> codes.
+/// Exit codes: <c>0</c> success, <c>1</c> validation or input failure, <c>2</c> usage error. Diagnostics print one per
+/// line as <c>[Severity] CODE: message</c>, so build logs and editors can match on the stable <c>BODU-CAL-*</c> codes.
 /// </para>
 /// </remarks>
 public static class CalendarTool

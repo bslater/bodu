@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PluginAlgorithmRegistrationOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,13 +7,14 @@
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
-/// Controls how <see cref="NotableDatePluginLoader.RegisterAlgorithms(INotableDatePlugin, Algorithms.NotableDateAlgorithmRegistry, PluginAlgorithmRegistrationOptions, Microsoft.Extensions.Logging.ILogger?)" />
+/// Controls how
+/// <see cref="NotableDatePluginLoader.RegisterAlgorithms(INotableDatePlugin, Algorithms.NotableDateAlgorithmRegistry, PluginAlgorithmRegistrationOptions, Microsoft.Extensions.Logging.ILogger?)" />
 /// treats a plugin's contributed algorithm keys.
 /// </summary>
 /// <remarks>
 /// <para>
-/// By default a contributed key that collides with a built-in algorithm key or with a key already present in the
-/// target registry is rejected, so a plugin cannot silently take over an existing resolution path. Opting in to
+/// By default a contributed key that collides with a built-in algorithm key or with a key already present in the target
+/// registry is rejected, so a plugin cannot silently take over an existing resolution path. Opting in to
 /// <see cref="AllowOverride" /> permits the replacement; each override is logged at warning level so the takeover is
 /// observable.
 /// </para>

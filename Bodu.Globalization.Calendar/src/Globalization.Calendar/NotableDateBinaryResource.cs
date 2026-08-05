@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateBinaryResource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,8 +24,8 @@ namespace Bodu.Globalization.Calendar;
 /// with <see cref="NotableDateBinaryFormatException" />.
 /// </para>
 /// <para>
-/// Writing is byte-stable: the same resource always produces the same bytes, so build systems can use pack outputs
-/// for up-to-date checks.
+/// Writing is byte-stable: the same resource always produces the same bytes, so build systems can use pack outputs for
+/// up-to-date checks.
 /// </para>
 /// </remarks>
 /// <seealso cref="NotableDateResourceLoader" /> <seealso cref="NotableDateBinaryFormatException" />

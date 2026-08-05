@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoeRateCsvParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,11 +18,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// CSV tokenization is delegated to <see cref="DelimitedDocument" /> (the RFC 4180 reader in
-/// <c>Bodu.Text.Delimited</c>); this type adds the IADB-specific interpretation. The column response is a small grid:
-/// the first row is a header whose first cell is <c>DATE</c> and whose remaining cells are the requested series codes;
-/// each subsequent row carries a <c>dd MMM yyyy</c> date followed by the rate for each series. Each rate gives the
-/// number of units of the column's currency per one pound sterling.
+/// CSV tokenization is delegated to <see cref="DelimitedDocument" /> (the RFC 4180 reader in <c>Bodu.Text.Delimited</c>);
+/// this type adds the IADB-specific interpretation. The column response is a small grid: the first row is a header
+/// whose first cell is <c>DATE</c> and whose remaining cells are the requested series codes; each subsequent row
+/// carries a <c>dd MMM yyyy</c> date followed by the rate for each series. Each rate gives the number of units of the
+/// column's currency per one pound sterling.
 /// </para>
 /// <para>
 /// Columns whose series code is not in the configured catalogue are ignored, and cells that are empty, non-numeric, or

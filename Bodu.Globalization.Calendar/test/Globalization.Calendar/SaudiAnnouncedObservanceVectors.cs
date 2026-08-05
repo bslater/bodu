@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SaudiAnnouncedObservanceVectors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -16,9 +16,9 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The announcements can precede or follow the computed Umm al-Qura calendar by one day (never more across the
-/// range), so consumers assert a one-day distance bound rather than equality; the file's provenance header records
-/// the source and the divergence profile.
+/// The announcements can precede or follow the computed Umm al-Qura calendar by one day (never more across the range),
+/// so consumers assert a one-day distance bound rather than equality; the file's provenance header records the source
+/// and the divergence profile.
 /// </para>
 /// </remarks>
 internal static class SaudiAnnouncedObservanceVectors

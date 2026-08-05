@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateBinaryFormat.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,7 +18,9 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal static class NotableDateBinaryFormat
 {
-    /// <summary>The four magic bytes opening every pack: <c>BCAL</c> in ASCII.</summary>
+    /// <summary>
+    /// The four magic bytes opening every pack: <c>BCAL</c> in ASCII.
+    /// </summary>
     public static ReadOnlySpan<byte> Magic =>
         "BCAL"u8;
 

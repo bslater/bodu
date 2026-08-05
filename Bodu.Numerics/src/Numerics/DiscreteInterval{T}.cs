@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DiscreteInterval{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -117,8 +117,12 @@ public readonly partial struct DiscreteInterval<T>
     /// Attempts to compute the successor of <paramref name="value" />, detecting wrap-around at the domain maximum.
     /// </summary>
     /// <param name="value">The integer whose successor is computed.</param>
-    /// <param name="successor">When this method returns <see langword="true" />, the value one above <paramref name="value" />.</param>
-    /// <returns><see langword="false" /> when <paramref name="value" /> is the domain maximum and has no successor.</returns>
+    /// <param name="successor">
+    /// When this method returns <see langword="true" />, the value one above <paramref name="value" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="false" /> when <paramref name="value" /> is the domain maximum and has no successor.
+    /// </returns>
     /// <remarks>
     /// Fixed-width integer addition wraps silently, so <c>T.MaxValue + 1</c> lands on <c>T.MinValue</c>; the wrap is
     /// detected by ordering (<c>successor &lt; value</c>). Arbitrary-precision types never wrap, so this always
@@ -134,8 +138,12 @@ public readonly partial struct DiscreteInterval<T>
     /// Attempts to compute the predecessor of <paramref name="value" />, detecting wrap-around at the domain minimum.
     /// </summary>
     /// <param name="value">The integer whose predecessor is computed.</param>
-    /// <param name="predecessor">When this method returns <see langword="true" />, the value one below <paramref name="value" />.</param>
-    /// <returns><see langword="false" /> when <paramref name="value" /> is the domain minimum and has no predecessor.</returns>
+    /// <param name="predecessor">
+    /// When this method returns <see langword="true" />, the value one below <paramref name="value" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="false" /> when <paramref name="value" /> is the domain minimum and has no predecessor.
+    /// </returns>
     private static bool TryPredecessor(T value, out T predecessor)
     {
         predecessor = value - T.One;

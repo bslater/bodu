@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="YamlSpecVersion.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,12 +18,12 @@ namespace Bodu.Text.Yaml;
 /// </para>
 /// <para>
 /// Selecting <see cref="V1_1" /> opts in to the broader YAML 1.1 implicit typing rules, including the additional
-/// boolean spellings (<c>yes</c>/<c>no</c>, <c>on</c>/<c>off</c>, <c>y</c>/<c>n</c>), leading-zero octal integers
-/// (<c>0NNN</c>), binary integers (<c>0bNNN</c>), and underscore digit grouping. The base-60 ("sexagesimal") numeric
-/// form of the historical 1.1 schema is deliberately not resolved under either version: a colon-separated plain
-/// scalar such as <c>22:22</c> remains a string, avoiding the well-known footgun in which time-, port-, or
-/// address-like values were silently reinterpreted as large numbers. The version affects only how plain scalars are
-/// typed; structural parsing of anchors, aliases, tags, and collections is identical for both versions.
+/// boolean spellings (<c>yes</c>/<c>no</c>, <c>on</c>/<c>off</c>, <c>y</c>/<c>n</c>), leading-zero octal integers (<c>0NNN</c>),
+/// binary integers (<c>0bNNN</c>), and underscore digit grouping. The base-60 ("sexagesimal") numeric form of the
+/// historical 1.1 schema is deliberately not resolved under either version: a colon-separated plain scalar such as
+/// <c>22:22</c> remains a string, avoiding the well-known footgun in which time-, port-, or address-like values were
+/// silently reinterpreted as large numbers. The version affects only how plain scalars are typed; structural parsing of
+/// anchors, aliases, tags, and collections is identical for both versions.
 /// </para>
 /// </remarks>
 public enum YamlSpecVersion

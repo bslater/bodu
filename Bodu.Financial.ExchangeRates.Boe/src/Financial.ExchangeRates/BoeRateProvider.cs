@@ -33,8 +33,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
 /// package) the provider records: the start of a range download (<see cref="LogLevel.Debug" />), a completed download
 /// with its observation count (<see cref="LogLevel.Information" />), each ingested observation (
-/// <see cref="LogLevel.Information" />), and a failed download (<see cref="LogLevel.Warning" />, then re-thrown). Every level
-/// is configurable through the corresponding <c>*LogLevel</c> property on <see cref="BoeRateProviderOptions" />;
+/// <see cref="LogLevel.Information" />), and a failed download (<see cref="LogLevel.Warning" />, then re-thrown). Every
+/// level is configurable through the corresponding <c>*LogLevel</c> property on <see cref="BoeRateProviderOptions" />;
 /// omitting the logger selects <see cref="NullLogger.Instance" />, so logging is opt-in and free when unused.
 /// </para>
 /// </remarks>

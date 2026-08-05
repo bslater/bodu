@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResourceReloadListener{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,8 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Bridges <see cref="IOptionsMonitor{TOptions}" /> change notifications to
-/// <see cref="MutableNotableDateResourceProvider.Reload" />, rebuilding the resource through the registration's
-/// factory whenever the monitored options change.
+/// <see cref="MutableNotableDateResourceProvider.Reload" />, rebuilding the resource through the registration's factory
+/// whenever the monitored options change.
 /// </summary>
 /// <typeparam name="TOptions">The monitored options type.</typeparam>
 /// <remarks>

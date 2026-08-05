@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeConfigurationSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Represents a Bencode configuration source — either a one-shot <see cref="System.IO.Stream" /> or a file path —
-/// that produces a read-only <see cref="BencodeConfigurationProvider" />.
+/// Represents a Bencode configuration source — either a one-shot <see cref="System.IO.Stream" /> or a file path — that
+/// produces a read-only <see cref="BencodeConfigurationProvider" />.
 /// </summary>
 /// <remarks>
 /// The source is read once when the configuration is built; it attaches no reload-on-change machinery. Exactly one of
@@ -33,8 +33,8 @@ public sealed class BencodeConfigurationSource
     : IConfigurationSource
 {
     /// <summary>
-    /// Gets or sets the stream containing a Bencode document. Takes precedence over <see cref="Path" /> when both
-    /// are set.
+    /// Gets or sets the stream containing a Bencode document. Takes precedence over <see cref="Path" /> when both are
+    /// set.
     /// </summary>
     /// <value>The configured stream, or <see langword="null" /> when the source is file-backed.</value>
     public Stream? Stream { get; set; }

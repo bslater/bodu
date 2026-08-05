@@ -217,8 +217,8 @@ public readonly partial struct Fraction<T>
         (float)ToDouble();
 
     /// <summary>
-    /// Computes the quotient of two arbitrary-magnitude integers as a <see cref="double" /> by scaling the ratio with
-    /// a common power of two, used when a component is individually unrepresentable as a finite double.
+    /// Computes the quotient of two arbitrary-magnitude integers as a <see cref="double" /> by scaling the ratio with a
+    /// common power of two, used when a component is individually unrepresentable as a finite double.
     /// </summary>
     /// <param name="numerator">The (signed) numerator.</param>
     /// <param name="denominator">The strictly positive denominator.</param>

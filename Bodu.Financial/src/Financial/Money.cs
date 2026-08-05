@@ -134,8 +134,8 @@ public readonly partial struct Money
     /// Mirrors <see cref="decimal" /> addition semantics (and the max-scale rule of <c>BigDecimal</c> and SQL
     /// <c>NUMERIC</c>): the sum of two decimals carries the maximum of the operand scales, so taking that maximum as
     /// the result's reported scale is lossless and needs no rounding, and the reported precision is commutative even
-    /// when the operands' scales differ. When both operands share a scale representation the result keeps it
-    /// unchanged, preserving the registry-derived encoding for ordinary money.
+    /// when the operands' scales differ. When both operands share a scale representation the result keeps it unchanged,
+    /// preserving the registry-derived encoding for ordinary money.
     /// </remarks>
     private Money WithAdditiveAmount(Money other, decimal amount)
     {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OutlookMessage.Bodies.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -21,8 +21,8 @@ public sealed partial class OutlookMessage
     /// Gets the HTML body.
     /// </summary>
     /// <value>
-    /// The <c>PidTagHtml</c> payload decoded through the message's internet code page (falling back to the message
-    /// code page), or the value verbatim when the writer stored it as a string; <see langword="null" /> when absent.
+    /// The <c>PidTagHtml</c> payload decoded through the message's internet code page (falling back to the message code
+    /// page), or the value verbatim when the writer stored it as a string; <see langword="null" /> when absent.
     /// </value>
     public string? BodyHtml
     {
@@ -49,7 +49,9 @@ public sealed partial class OutlookMessage
     /// <see cref="OutlookMessageReaderOptions.DecompressRtf" /> is disabled (the raw payload stays available through
     /// <see cref="Properties" />).
     /// </value>
-    /// <exception cref="OutlookMsgFormatException">The compressed payload is malformed or fails its checksum.</exception>
+    /// <exception cref="OutlookMsgFormatException">
+    /// The compressed payload is malformed or fails its checksum.
+    /// </exception>
     public string? BodyRtf
     {
         get

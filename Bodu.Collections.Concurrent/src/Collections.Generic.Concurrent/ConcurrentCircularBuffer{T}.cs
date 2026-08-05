@@ -428,8 +428,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </summary>
     /// <returns>The oldest element in the buffer.</returns>
     /// <exception cref="InvalidOperationException">The buffer is empty.</exception>
-    public T Dequeue()
-        => TryDequeue(out T? item)
+    public T Dequeue() =>
+        TryDequeue(out T? item)
             ? item!
             : throw new InvalidOperationException(ConcurrentCollectionsResourceStrings.Op_Invalid_CollectionEmpty);
 
@@ -440,15 +440,16 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <exception cref="InvalidOperationException">
     /// The buffer is full and <see cref="AllowOverwrite" /> is <see langword="false" />.
     /// </exception>
-    public void Enqueue(T item) => InternalEnqueue(item, throwIfFull: true);
+    public void Enqueue(T item) =>
+        InternalEnqueue(item, throwIfFull: true);
 
     /// <summary>
     /// Returns the oldest element without removing it.
     /// </summary>
     /// <returns>The oldest element in the buffer.</returns>
     /// <exception cref="InvalidOperationException">The buffer is empty.</exception>
-    public T Peek()
-        => TryPeek(out T? item)
+    public T Peek() =>
+        TryPeek(out T? item)
             ? item!
             : throw new InvalidOperationException(ConcurrentCollectionsResourceStrings.Op_Invalid_CollectionEmpty);
 
@@ -526,7 +527,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <see langword="true" /> if an element was successfully removed; <see langword="false" /> if the buffer was
     /// empty.
     /// </returns>
-    public bool TryDequeue(out T? item) => InternalDequeue(out item, throwIfEmpty: false);
+    public bool TryDequeue(out T? item) =>
+        InternalDequeue(out item, throwIfEmpty: false);
 
     /// <summary>
     /// Attempts to add an element to the end of the buffer without throwing when full.
@@ -536,7 +538,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <see langword="true" /> if the element was enqueued; <see langword="false" /> if the buffer is full and
     /// <see cref="AllowOverwrite" /> is <see langword="false" />.
     /// </returns>
-    public bool TryEnqueue(T item) => InternalEnqueue(item, throwIfFull: false);
+    public bool TryEnqueue(T item) =>
+        InternalEnqueue(item, throwIfFull: false);
 
     /// <summary>
     /// Attempts to return the oldest element without removing it.

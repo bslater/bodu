@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="UsFederalHolidayVectors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,13 +10,13 @@ using Bodu.Test.Kat;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads the embedded United States federal holiday vector table — twenty schedule years of observed dates as
-/// published by the U.S. Office of Personnel Management — as KAT rows for <c>[DynamicData]</c> binding.
+/// Loads the embedded United States federal holiday vector table — twenty schedule years of observed dates as published
+/// by the U.S. Office of Personnel Management — as KAT rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The observed dates follow the statutory substitution rule (a Saturday holiday is observed the preceding Friday,
-/// a Sunday holiday the following Monday), so an observed New Year's Day can fall on 31 December of the previous
+/// The observed dates follow the statutory substitution rule (a Saturday holiday is observed the preceding Friday, a
+/// Sunday holiday the following Monday), so an observed New Year's Day can fall on 31 December of the previous
 /// Gregorian year; the file's provenance header records the details and the derivation of the observed flag.
 /// </para>
 /// </remarks>

@@ -10,6 +10,6 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class CcmModeTransformTests
     : AeadBlockCipherModeTests<CcmModeTransformTests, CcmModeTransform>
 {
-    protected override CcmModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new(cipher, iv);
+    protected override CcmModeTransform CreateTransform(IBlockCipher cipher, byte[] iv) =>
+        new(cipher, iv);
 }

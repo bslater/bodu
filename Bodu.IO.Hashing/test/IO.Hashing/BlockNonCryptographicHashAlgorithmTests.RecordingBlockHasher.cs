@@ -25,8 +25,8 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         {
         }
 
-        public void CopyFromExposed(BlockNonCryptographicHashAlgorithm? source)
-            => CopyResidualStateFrom(source!);
+        public void CopyFromExposed(BlockNonCryptographicHashAlgorithm? source) =>
+            CopyResidualStateFrom(source!);
 
         protected override RecordingBlockHasher Clone()
         {
@@ -36,8 +36,8 @@ public partial class BlockNonCryptographicHashAlgorithmTests
             return clone;
         }
 
-        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
-            => throw new InvalidOperationException("PadBlock should not be reached: ShouldPadFinalBlock is false.");
+        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
+            throw new InvalidOperationException("PadBlock should not be reached: ShouldPadFinalBlock is false.");
 
         protected override void ProcessBlock(ReadOnlySpan<byte> block) => Blocks.Add(block.ToArray());
 

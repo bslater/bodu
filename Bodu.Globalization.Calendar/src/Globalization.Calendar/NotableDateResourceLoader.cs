@@ -276,7 +276,9 @@ public static class NotableDateResourceLoader
     /// <param name="resourceResolver">
     /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
     /// </param>
-    /// <param name="resource">The loaded resource, or <see langword="null" /> when the document does not validate.</param>
+    /// <param name="resource">
+    /// The loaded resource, or <see langword="null" /> when the document does not validate.
+    /// </param>
     /// <param name="diagnostics">Every diagnostic the parse, import resolution, and validation produced.</param>
     /// <returns>
     /// <see langword="true" /> when the document loaded without error-severity diagnostics; otherwise
@@ -307,7 +309,9 @@ public static class NotableDateResourceLoader
     /// The custom algorithm registry consulted when validating <c>Algorithm</c> strategy keys, or
     /// <see langword="null" /> for built-ins only.
     /// </param>
-    /// <param name="resource">The loaded resource, or <see langword="null" /> when the document does not validate.</param>
+    /// <param name="resource">
+    /// The loaded resource, or <see langword="null" /> when the document does not validate.
+    /// </param>
     /// <param name="diagnostics">Every diagnostic the parse, import resolution, and validation produced.</param>
     /// <returns>
     /// <see langword="true" /> when the document loaded without error-severity diagnostics; otherwise
@@ -348,7 +352,9 @@ public static class NotableDateResourceLoader
     /// <param name="resourceResolver">
     /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
     /// </param>
-    /// <param name="resource">The loaded resource, or <see langword="null" /> when the document does not validate.</param>
+    /// <param name="resource">
+    /// The loaded resource, or <see langword="null" /> when the document does not validate.
+    /// </param>
     /// <param name="diagnostics">Every diagnostic the parse, import resolution, and validation produced.</param>
     /// <returns>
     /// <see langword="true" /> when the document loaded without error-severity diagnostics; otherwise

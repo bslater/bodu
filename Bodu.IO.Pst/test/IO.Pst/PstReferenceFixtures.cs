@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PstReferenceFixtures.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -91,8 +91,8 @@ internal sealed record PstReferenceManifest(
     [property: JsonPropertyName("fixtures")] IReadOnlyList<PstReferenceFixture> Fixtures);
 
 /// <summary>
-/// Represents one corpus file's seed expectations. Implements <see cref="IKat" /> so data-driven rows display the
-/// file path in failure diagnostics.
+/// Represents one corpus file's seed expectations. Implements <see cref="IKat" /> so data-driven rows display the file
+/// path in failure diagnostics.
 /// </summary>
 /// <param name="File">The manifest-relative fixture path.</param>
 /// <param name="Format">The format variant: <c>unicode</c> or <c>ansi</c>.</param>

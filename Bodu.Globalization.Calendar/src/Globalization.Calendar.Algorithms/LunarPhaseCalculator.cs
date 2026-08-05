@@ -48,11 +48,13 @@ internal static class LunarPhaseCalculator
     /// after the supplied date.
     /// </summary>
     /// <param name="notBefore">The earliest acceptable date.</param>
-    /// <returns>The conjunction's Julian Day, or <see langword="null" /> when none is found within the search window.</returns>
+    /// <returns>
+    /// The conjunction's Julian Day, or <see langword="null" /> when none is found within the search window.
+    /// </returns>
     /// <remarks>
-    /// The instant matters when a caller must evaluate another body's position at the conjunction itself — for
-    /// example classifying a Hindu amanta month by the sun's sidereal sign — because a conjunction near a sign
-    /// ingress can sit on the other side of the boundary from the start of its civil day.
+    /// The instant matters when a caller must evaluate another body's position at the conjunction itself — for example
+    /// classifying a Hindu amanta month by the sun's sidereal sign — because a conjunction near a sign ingress can sit
+    /// on the other side of the boundary from the start of its civil day.
     /// </remarks>
     public static double? NewMoonJulianDayOnOrAfter(DateOnly notBefore) =>
         PhaseJulianDayOnOrAfter(notBefore, fullMoon: false);
@@ -77,14 +79,16 @@ internal static class LunarPhaseCalculator
         PhaseJulianDayOnOrAfter(notBefore, fullMoon) is double julianDay ? JulianDayToDate(julianDay) : null;
 
     /// <summary>
-    /// Advances the lunation index from an initial estimate until the computed phase falls on or after the search
-    /// date, returning the phase instant as a Julian Day.
+    /// Advances the lunation index from an initial estimate until the computed phase falls on or after the search date,
+    /// returning the phase instant as a Julian Day.
     /// </summary>
     /// <param name="notBefore">The earliest acceptable date.</param>
     /// <param name="fullMoon">
     /// <see langword="true" /> to find a full moon; <see langword="false" /> for a new moon.
     /// </param>
-    /// <returns>The phase's Julian Day, or <see langword="null" /> when none is found within the search window.</returns>
+    /// <returns>
+    /// The phase's Julian Day, or <see langword="null" /> when none is found within the search window.
+    /// </returns>
     private static double? PhaseJulianDayOnOrAfter(DateOnly notBefore, bool fullMoon)
     {
         double k = EstimateK(notBefore.Year, notBefore.Month, fullMoon);

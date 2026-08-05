@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MsgFixtureBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,16 +10,16 @@ using Bodu.IO.Compound;
 namespace Bodu.Formats.Outlook.Msg;
 
 /// <summary>
-/// Builds synthetic <c>.msg</c> compound files for tests, composing MS-OXMSG property streams, value streams, and
-/// child storages with byte-exact control over every structure the reader decodes.
+/// Builds synthetic <c>.msg</c> compound files for tests, composing MS-OXMSG property streams, value streams, and child
+/// storages with byte-exact control over every structure the reader decodes.
 /// </summary>
 /// <remarks>
 /// The byte layouts follow MS-OXMSG: the property stream carries a kind-specific header (root 32 bytes, embedded
 /// message 24, recipient/attachment 8) followed by 16-byte records; a variable-length value lives in its
 /// <c>__substg1.0_</c> stream with the record's size field including the string terminator; a multi-valued
 /// variable-length property stores a length stream (4-byte entries for the string types, 8-byte for binary) plus one
-/// <c>-XXXXXXXX</c> element stream per value; a multi-valued fixed-length property packs its elements contiguously in
-/// a single stream.
+/// <c>-XXXXXXXX</c> element stream per value; a multi-valued fixed-length property packs its elements contiguously in a
+/// single stream.
 /// </remarks>
 internal sealed class MsgFixtureBuilder
 {
@@ -131,8 +131,8 @@ internal sealed class MsgFixtureBuilder
     }
 
     /// <summary>
-    /// Adds a multi-valued Unicode string property: the record, the 4-byte-entry length stream, and one element
-    /// stream per value.
+    /// Adds a multi-valued Unicode string property: the record, the 4-byte-entry length stream, and one element stream
+    /// per value.
     /// </summary>
     /// <param name="id">The property identifier.</param>
     /// <param name="values">The string values.</param>

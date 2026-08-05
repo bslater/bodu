@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceCollectionExtensions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -50,8 +50,8 @@ namespace Bodu.Globalization.Calendar;
 /// </code>
 /// </example>
 /// <seealso cref="INotableDateService" /> <seealso cref="NotableDateResource" />
-/// <seealso cref="NotableDateServiceOptions" />
-/// <seealso href="../guides/calendar/dependency-injection.html">Calendar dependency injection (guide)</seealso>
+/// <seealso cref="NotableDateServiceOptions" /> <seealso href="../guides/calendar/dependency-injection.html">Calendar
+/// dependency injection (guide)</seealso>
 public static class NotableDateServiceCollectionExtensions
 {
     /// <summary>
@@ -272,7 +272,9 @@ public static class NotableDateServiceCollectionExtensions
     /// Registers a reloadable <see cref="INotableDateService" /> whose initial resource is produced by a factory.
     /// </summary>
     /// <param name="services">The service collection to add the registration to.</param>
-    /// <param name="initialResourceFactory">A factory that produces the initial resource from the service provider.</param>
+    /// <param name="initialResourceFactory">
+    /// A factory that produces the initial resource from the service provider.
+    /// </param>
     /// <param name="options">
     /// The collaborators propagated to each rebuilt inner service, or <see langword="null" /> for built-ins only.
     /// </param>
@@ -303,7 +305,9 @@ public static class NotableDateServiceCollectionExtensions
     /// Registers a reloadable <see cref="INotableDateService" /> whose resource is rebuilt automatically whenever the
     /// monitored options change.
     /// </summary>
-    /// <typeparam name="TOptions">The options type driving the resource; monitored via <see cref="IOptionsMonitor{TOptions}" />.</typeparam>
+    /// <typeparam name="TOptions">
+    /// The options type driving the resource; monitored via <see cref="IOptionsMonitor{TOptions}" />.
+    /// </typeparam>
     /// <param name="services">The service collection to add the registration to.</param>
     /// <param name="resourceFactory">
     /// The factory producing the resource from the current options; invoked once for the initial load and again on
@@ -322,8 +326,8 @@ public static class NotableDateServiceCollectionExtensions
     /// <typeparamref name="TOptions" /> through the standard <c>AddOptions&lt;TOptions&gt;()</c> surface (for example
     /// bound to a configuration section), and every change notification rebuilds the resource through
     /// <paramref name="resourceFactory" /> and swaps it into the live service. A factory failure during a change is
-    /// logged and leaves the previously loaded resource in effect — a broken configuration edit never faults the
-    /// reload thread or takes the calendar offline.
+    /// logged and leaves the previously loaded resource in effect — a broken configuration edit never faults the reload
+    /// thread or takes the calendar offline.
     /// </para>
     /// </remarks>
     /// <example>
@@ -332,7 +336,7 @@ public static class NotableDateServiceCollectionExtensions
     /// builder.Services.AddOptions<CalendarOptions>().Bind(builder.Configuration.GetSection("Calendar"));
     /// builder.Services.AddReloadableNotableDateService<CalendarOptions>((sp, options) =>
     ///     AsiaPacificCalendarData.LoadResource(options.Territory));
-    /// ]]>
+    ///]]>
     /// </code>
     /// </example>
     public static IServiceCollection AddReloadableNotableDateService<TOptions>(

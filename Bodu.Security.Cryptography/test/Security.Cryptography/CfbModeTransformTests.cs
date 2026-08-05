@@ -11,6 +11,6 @@ public sealed partial class CfbModeTransformTests
     : BlockCipherModeTests<CfbModeTransform>
 {
     /// <inheritdoc />
-    protected override CfbModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new(cipher, iv);
+    protected override CfbModeTransform CreateTransform(IBlockCipher cipher, byte[] iv) =>
+        new(cipher, iv);
 }

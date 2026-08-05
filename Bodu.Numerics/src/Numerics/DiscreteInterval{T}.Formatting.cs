@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DiscreteInterval{T}.Formatting.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,8 +20,8 @@ public readonly partial struct DiscreteInterval<T> :
     /// <c>"(-&#x221E;, +&#x221E;)"</c> for unbounded shapes, or <c>"&#x2205;"</c> when empty.
     /// </returns>
     /// <remarks>
-    /// All formatting delegates to the equivalent continuous <see cref="Interval{T}" /> (via
-    /// <see cref="ToInterval" />), whose canonical closed form over the same endpoints renders identically.
+    /// All formatting delegates to the equivalent continuous <see cref="Interval{T}" /> (via <see cref="ToInterval" />),
+    /// whose canonical closed form over the same endpoints renders identically.
     /// </remarks>
     public override string ToString() =>
         ToInterval().ToString();

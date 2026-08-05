@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ZoroastrianObservanceVectors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -10,8 +10,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads the embedded Zoroastrian observance vector table — fifty Gregorian years of independently computed dates
-/// for every <c>global-zoroastrian</c> catalogue observance — as KAT rows for <c>[DynamicData]</c> binding.
+/// Loads the embedded Zoroastrian observance vector table — fifty Gregorian years of independently computed dates for
+/// every <c>global-zoroastrian</c> catalogue observance — as KAT rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -21,8 +21,8 @@ namespace Bodu.Globalization.Calendar;
 /// header records the details.
 /// </para>
 /// <para>
-/// Zartosht No-Diso (Dey 11) straddles the Gregorian new year and can land zero or two times in one Gregorian year,
-/// so each KAT row carries the full ordered occurrence list for its (year, observance) pair.
+/// Zartosht No-Diso (Dey 11) straddles the Gregorian new year and can land zero or two times in one Gregorian year, so
+/// each KAT row carries the full ordered occurrence list for its (year, observance) pair.
 /// </para>
 /// </remarks>
 internal static class ZoroastrianObservanceVectors

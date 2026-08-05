@@ -52,10 +52,7 @@ public static class CommonNotableDateResources
     /// <summary>The cache of resolved catalogue content, keyed by case-insensitive resource name.</summary>
     private static readonly ConcurrentDictionary<string, string?> s_cache = new(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>
-    /// The cache of materialized catalogue resources, single-flighted per catalogue so concurrent first loads parse and
-    /// validate the document once.
-    /// </summary>
+    /// <summary>The cache of materialized catalogue resources, single-flighted per catalogue so concurrent first loads parse and validate the document once.</summary>
     private static readonly ConcurrentDictionary<CommonNotableDateCatalog, Lazy<NotableDateResource>> s_resourceCache = new();
 
     /// <summary>

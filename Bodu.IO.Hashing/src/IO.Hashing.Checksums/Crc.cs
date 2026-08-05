@@ -490,8 +490,8 @@ public sealed class Crc
     /// set.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private ulong ComputeInitialState()
-        => _standard.ReflectIn
+    private ulong ComputeInitialState() =>
+        _standard.ReflectIn
             ? NumericExtensions.ReverseBitsUnchecked(_standard.InitialValue, _hashSizeBits)
             : _standard.InitialValue;
 

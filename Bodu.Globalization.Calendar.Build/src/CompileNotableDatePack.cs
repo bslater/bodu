@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CompileNotableDatePack.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,8 +18,8 @@ namespace Bodu.Globalization.Calendar.Build;
 /// <para>
 /// The task is a thin <see cref="ToolTask" /> over <c>bodu-calendar compile</c>, so the build-time compiler and the
 /// command-line tool share one code path. Validation failures surface as build errors carrying the tool's stable
-/// <c>BODU-CAL-*</c> diagnostic lines; the accompanying <c>.targets</c> file wires <c>NotableDatePack</c> items to
-/// this task with input/output incrementality.
+/// <c>BODU-CAL-*</c> diagnostic lines; the accompanying <c>.targets</c> file wires <c>NotableDatePack</c> items to this
+/// task with input/output incrementality.
 /// </para>
 /// </remarks>
 public sealed class CompileNotableDatePack
@@ -55,15 +55,15 @@ public sealed class CompileNotableDatePack
         "dotnet";
 
     /// <summary>
-    /// Gets the importance of the tool's standard output: high, so the compile summary and diagnostics surface even
-    /// at minimal build verbosity.
+    /// Gets the importance of the tool's standard output: high, so the compile summary and diagnostics surface even at
+    /// minimal build verbosity.
     /// </summary>
     protected override MessageImportance StandardOutputLoggingImportance =>
         MessageImportance.High;
 
     /// <summary>
-    /// Gets the importance of the tool's standard error: high, so the stable <c>BODU-CAL-*</c> diagnostic lines
-    /// surface in the build log alongside the failure.
+    /// Gets the importance of the tool's standard error: high, so the stable <c>BODU-CAL-*</c> diagnostic lines surface
+    /// in the build log alongside the failure.
     /// </summary>
     protected override MessageImportance StandardErrorLoggingImportance =>
         MessageImportance.High;

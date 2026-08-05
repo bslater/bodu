@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentFormat.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -26,8 +26,8 @@ public enum NotableDateDocumentFormat
 
     /// <summary>
     /// The sealed binary rule-pack form (<c>.bcal</c>): the document is built through the canonical loader and the
-    /// validated resource is encoded by <see cref="Bodu.Globalization.Calendar.NotableDateBinaryResource" />. A pack
-    /// is compiled output — it loads through
+    /// validated resource is encoded by <see cref="Bodu.Globalization.Calendar.NotableDateBinaryResource" />. A pack is
+    /// compiled output — it loads through
     /// <see cref="Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadBinary(System.IO.Stream)" /> and cannot be
     /// re-opened for editing with <see cref="NotableDateDocumentBuilder.Load(string)" />.
     /// </summary>

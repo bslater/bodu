@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeConfigurationParser.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,11 +20,10 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <remarks>
 /// <para>
 /// The document root must be a dictionary; an integer, byte-string, or list root is rejected because it cannot
-/// contribute named configuration keys. Nested dictionaries contribute a
-/// <see cref="ConfigurationPath.KeyDelimiter" /> segment per level; list elements contribute their zero-based index
-/// as a segment, mirroring the behaviour of the framework JSON configuration provider. Keys are compared
-/// case-insensitively, so two Bencode keys that differ only in case map to the same configuration key and are
-/// rejected as a duplicate.
+/// contribute named configuration keys. Nested dictionaries contribute a <see cref="ConfigurationPath.KeyDelimiter" />
+/// segment per level; list elements contribute their zero-based index as a segment, mirroring the behaviour of the
+/// framework JSON configuration provider. Keys are compared case-insensitively, so two Bencode keys that differ only in
+/// case map to the same configuration key and are rejected as a duplicate.
 /// </para>
 /// <para>
 /// The document is read through the read-only <see cref="BencodeDocument" /> object model from the
@@ -44,7 +43,9 @@ internal static class BencodeConfigurationParser
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="BencodeFormatException">Thrown when the stream contents are not a valid Bencode document.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the stream contents are not a valid Bencode document.
+    /// </exception>
     /// <exception cref="FormatException">
     /// Thrown when the document root is not a dictionary, or when two keys collide after case-insensitive flattening.
     /// </exception>

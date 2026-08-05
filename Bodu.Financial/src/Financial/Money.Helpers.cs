@@ -36,10 +36,10 @@ public readonly partial struct Money
     /// precision, and the JSON converters persist it so a round-trip restores the same precision.
     /// </para>
     /// <para>
-    /// For amounts that are <em>computed</em> rather than quoted, prefer accumulating in
-    /// <see cref="CalculatedMoney" /> and settling once through
-    /// <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> with <see cref="ScalePolicy.Custom" /> — that
-    /// path defers rounding to a single, explicit settlement decision and produces the same explicit-scale value.
+    /// For amounts that are <em>computed</em> rather than quoted, prefer accumulating in <see cref="CalculatedMoney" />
+    /// and settling once through <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> with
+    /// <see cref="ScalePolicy.Custom" /> — that path defers rounding to a single, explicit settlement decision and
+    /// produces the same explicit-scale value.
     /// </para>
     /// </remarks>
     /// <example>
@@ -72,7 +72,9 @@ public readonly partial struct Money
     /// The midpoint-rounding rule applied when normalising to <paramref name="minorUnits" />.
     /// </param>
     /// <returns>The re-scaled monetary value.</returns>
-    /// <exception cref="InvalidOperationException">This value is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="minorUnits" /> is outside the range 0 to 28.
     /// </exception>
@@ -113,8 +115,12 @@ public readonly partial struct Money
     /// Returns this value with trailing-zero precision removed: the reported scale is reduced to the smallest scale
     /// that still represents the amount exactly, but never below the currency's registered minor units.
     /// </summary>
-    /// <returns>The trimmed monetary value, or this value unchanged when no trailing-zero scale can be removed.</returns>
-    /// <exception cref="InvalidOperationException">This value is a default-initialised, currency-less <see cref="Money" />.</exception>
+    /// <returns>
+    /// The trimmed monetary value, or this value unchanged when no trailing-zero scale can be removed.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     /// <remarks>
     /// Trimming never changes the numeric amount — only the reported precision. A six-place <c>12.500000 USD</c> trims
     /// to the registered two places (<c>12.50</c>), a six-place <c>12.340010</c> trims to five, and a value whose

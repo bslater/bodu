@@ -11,8 +11,8 @@ public sealed partial class CtrModeTransformTests
     : BlockCipherModeTests<CtrModeTransform>
 {
     /// <inheritdoc />
-    protected override CtrModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-        => new(cipher, iv);
+    protected override CtrModeTransform CreateTransform(IBlockCipher cipher, byte[] iv) =>
+        new(cipher, iv);
 
     /// <inheritdoc />
     /// <remarks>
