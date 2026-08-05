@@ -7,26 +7,36 @@ target is misleading — most importantly the SIMD/scalar split in
 
 ## Measuring coverage
 
-The test projects reference `coverlet.collector`, and `Microsoft.NET.Test.Sdk`
-brings the Microsoft **Code Coverage** collector. Either works; they differ in
-how they attribute braces and partially-covered lines (see
-[Reading the numbers](#reading-the-numbers)).
+**coverlet is the authoritative basis.** The test projects reference
+`coverlet.collector` (supplied centrally by `Directory.Build.targets`, gated on
+`IsTestProject`), and its `line-rate` already uses the line basis this document
+defines — see [Reading the numbers](#reading-the-numbers) — so the tool's number
+and the project's working definition are the same number. `Microsoft.NET.Test.Sdk`
+also brings the Microsoft **Code Coverage** collector; it remains available as a
+secondary diagnostic, but reported figures come from coverlet.
 
 Coverage must be collected against the **full** suite — the `regression`
 tier — because the default `bvt` run deliberately excludes the exhaustive
-vector tables and large sweeps that exercise many branches:
+vector tables and large sweeps that exercise many branches. `coverage.runsettings`
+pairs that tier filter with a fully configured collector, so the ordinary
+`regression.runsettings` run stays uninstrumented and fast:
 
 ```bash
-# coverlet (Cobertura XML) — fast inner loop, per project
-dotnet test <Project>/test/<Project>.Test.csproj \
-  --settings regression.runsettings \
-  --collect:"XPlat Code Coverage"
+# Collect (per project, into artifacts/coverage/raw/)
+bld/collect-coverage.sh                          # every test project in bodu.slnx
+bld/collect-coverage.sh --project <Project>/test/<Project>.Test.csproj
+bld/collect-coverage.sh --shard 3/8              # one balanced slice, for CI
 
-# Microsoft Code Coverage (.coverage) — matches the CI/report basis
-dotnet test bodu.slnx --settings regression.runsettings \
-  --collect:"Code Coverage"
-dotnet-coverage merge *.coverage -o coverage.xml -f xml
+# Merge and publish
+bld/merge-coverage.sh                            # -> artifacts/coverage/report/
+pwsh tools/New-CoverageMatrix.ps1                # -> docs/articles/coverage-baseline.md
 ```
+
+Pass the settings file, and **do not** also pass a `--collect` switch: a
+command-line collector is a second, unconfigured instance whose exclusion lists
+are empty, which silently readmits generated sources to the denominator.
+
+The current measured figures live in [Coverage baseline](coverage-baseline.md).
 
 `tools/Filter-CoverageXml.ps1` extracts a single assembly's results from a
 Microsoft Code Coverage XML export for focused review.
@@ -121,6 +131,38 @@ catches and `TryGet` read-fault catches are left uncovered by design per
 [Reading the numbers](#reading-the-numbers) — the test process runs as root, so
 permission denial cannot be forced, and a mid-read I/O fault is not reproducible
 cross-platform.
+
+## Source compiled into more than one assembly
+
+`Bodu.Text.Serialization/shared/**` is not only shipped as its own assembly — it
+is also `Compile Include`d directly into `Bodu.Text.Toml`, `Bodu.Text.Bencode`
+and `Bodu.Text.Yaml`, each under its own format symbol. The `Link=` metadata
+affects only IDE display, so the PDB document path — and therefore the Cobertura
+`filename` — is the real on-disk path under `Bodu.Text.Serialization/shared/`.
+
+Those lines consequently appear **once per host assembly**. ReportGenerator will
+not collapse them, and it is right not to: they genuinely belong to three
+different assemblies. Measured on a Toml + Bencode collection, the shared
+`ConverterFactory.cs` appears twice, and summing the shared files across hosts
+inflates them from 624 distinct lines to 2,360.
+
+`tools/New-CoverageMatrix.ps1` therefore does two things no report filter can
+express:
+
+- reports the shared source once, as the synthetic unit
+  **`Bodu.Text.Serialization (shared source)`**, whose coverage is the *union*
+  across the hosts (a line counts as covered when any host covers it); and
+- **subtracts** those files from the `Toml` / `Bencode` / `Yaml` rows, so the
+  solution total does not count them once per host.
+
+The same keying — by source path and line number rather than by class — also
+collapses the duplicate rows a file containing several classes would otherwise
+contribute.
+
+Read a per-package figure from the generated matrix, never from a single
+project's Cobertura file: that file reports every assembly the test project
+touched transitively, most of them at a near-zero rate that says nothing about
+the package.
 
 ## Generated catalogues
 

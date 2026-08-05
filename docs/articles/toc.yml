@@ -2,3 +2,5 @@
   href: index.md
 - name: Code coverage strategy
   href: code-coverage.md
+- name: Coverage baseline
+  href: coverage-baseline.md
