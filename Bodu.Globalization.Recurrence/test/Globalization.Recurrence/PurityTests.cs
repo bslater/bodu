@@ -48,6 +48,33 @@ public sealed class PurityTests
     ];
 
     /// <summary>
+    /// The namespace prefix of the tracker type a coverage collector injects into the assembly it instruments.
+    /// </summary>
+    private const string InstrumentationNamespacePrefix = "Coverlet.Core.Instrumentation";
+
+    /// <summary>
+    /// Determines whether the scanned module is an instrumented copy rather than the compiled product assembly.
+    /// </summary>
+    /// <param name="metadata">The metadata reader positioned over the assembly on disk.</param>
+    /// <returns>
+    /// <see langword="true" /> when a coverage collector has rewritten the assembly; otherwise, <see langword="false" />.
+    /// </returns>
+    private static bool IsInstrumented(MetadataReader metadata)
+    {
+        foreach (TypeDefinitionHandle handle in metadata.TypeDefinitions)
+        {
+            TypeDefinition type = metadata.GetTypeDefinition(handle);
+
+            if (metadata.GetString(type.Namespace).StartsWith(InstrumentationNamespacePrefix, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Verifies that the assembly references no wall-clock, timing, or machine-time-zone API, keeping every
     /// occurrence answer a pure function of its arguments.
     /// </summary>
@@ -59,6 +86,18 @@ public sealed class PurityTests
         using FileStream stream = File.OpenRead(typeof(RecurrenceRule).Assembly.Location);
         using var reader = new PEReader(stream);
         MetadataReader metadata = reader.GetMetadataReader();
+
+        // The scan reads the assembly from disk, and under a coverage run that file is the instrumented copy rather
+        // than the compiled product. The injected tracker references System.DateTime.get_UtcNow to timestamp hit
+        // records, so scanning it reports a violation the product code does not contain. Report the scan as
+        // inconclusive instead: the ban is still enforced on every ordinary build and test run, which is the
+        // configuration the guard was written for.
+        if (IsInstrumented(metadata))
+        {
+            Assert.Inconclusive(
+                "The assembly on disk has been rewritten by a coverage collector, so its member references are not "
+                + "those of the product assembly. Run without coverage instrumentation to enforce the purity ban.");
+        }
 
         // An empty member-reference table would mean the scan is not looking at real metadata; fail loudly instead
         // of passing vacuously.
