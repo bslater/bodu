@@ -76,6 +76,20 @@ public partial class CronExpressionTests
     }
 
     /// <summary>
+    /// Verifies that the previous-occurrence search is equally bounded: an expression that can never match answers
+    /// <see langword="null" /> backward as well as forward.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenImpossibleDate_ShouldReturnNull()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 30 2 *");
+
+        DateTime? previous = cron.GetPreviousOccurrence(new DateTime(2020, 1, 1, 0, 0, 0));
+
+        Assert.IsNull(previous);
+    }
+
+    /// <summary>
     /// Verifies that a non-divisor step stops at the range end and rolls to the next unit rather than wrapping.
     /// </summary>
     [TestMethod]

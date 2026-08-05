@@ -64,6 +64,10 @@ public sealed partial class RecurrenceRule
     /// </param>
     /// <returns>The next occurrence, or <see langword="null" /> when the rule produces none.</returns>
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// The search is bounded by the end of the representable calendar (year 9999): a rule that can never match, such as
+    /// 30 February yearly, answers <see langword="null" /> rather than scanning unboundedly.
+    /// </remarks>
     public DateTime? GetNextOccurrence(DateTime start, DateTime after, bool inclusive = false)
     {
         foreach (DateTime occurrence in Enumerate(start))

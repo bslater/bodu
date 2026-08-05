@@ -29,6 +29,12 @@ namespace Bodu.Globalization.Recurrence;
 /// and return occurrences carrying that offset; daylight-saving transitions are the caller's concern — a host that
 /// wants a local-time schedule across a transition re-derives the offset on each evaluation.
 /// </para>
+/// <para>
+/// Occurrence searches are bounded by a twelve-year horizon in each direction, which covers the largest possible gap
+/// between occurrences of any satisfiable expression (a February 29th schedule crossing a non-leap century year); an
+/// expression that can never match, such as February 30th, answers <see langword="null" /> at the horizon rather than
+/// scanning unboundedly.
+/// </para>
 /// </remarks>
 public sealed partial class CronExpression : IEquatable<CronExpression>
 {
