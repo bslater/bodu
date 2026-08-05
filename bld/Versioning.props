@@ -13,7 +13,7 @@
     intent is obvious.
   -->
   <PropertyGroup>
-    <BoduBaseVersion>0.1.1</BoduBaseVersion>
+    <BoduBaseVersion>0.2.0</BoduBaseVersion>
     <VersionPrefix>$(BoduBaseVersion)</VersionPrefix>
 
     <!--
