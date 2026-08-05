@@ -87,7 +87,7 @@ public partial class AnchoredIntervalTests
         bool parsed = AnchoredInterval.TryParse(kat.Input, out AnchoredInterval? result);
 
         Assert.IsTrue(parsed);
-        Assert.AreEqual(kat.Expected, result.Interval);
+        Assert.AreEqual(kat.Expected, result!.Interval);
     }
 
     /// <summary>

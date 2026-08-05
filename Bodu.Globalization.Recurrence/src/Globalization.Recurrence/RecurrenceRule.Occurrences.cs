@@ -78,6 +78,40 @@ public sealed partial class RecurrenceRule
     }
 
     /// <summary>
+    /// Returns the last occurrence of the rule that falls before the specified instant.
+    /// </summary>
+    /// <param name="start">The series start (<c>DTSTART</c>) the rule is anchored to.</param>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="before" />; otherwise the
+    /// occurrence must be strictly earlier.
+    /// </param>
+    /// <returns>
+    /// The previous occurrence, or <see langword="null" /> when none precedes <paramref name="before" />.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Due-ness evaluation is a previous-occurrence comparison — typically
+    /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c> — so missed occurrences coalesce
+    /// structurally: the answer is a single instant, never a backlog.
+    /// </remarks>
+    public DateTime? GetPreviousOccurrence(DateTime start, DateTime before, bool inclusive = false)
+    {
+        DateTime? previous = null;
+        foreach (DateTime occurrence in Enumerate(start))
+        {
+            if (occurrence > before || (!inclusive && occurrence == before))
+            {
+                break;
+            }
+
+            previous = occurrence;
+        }
+
+        return previous;
+    }
+
+    /// <summary>
     /// Enumerates the occurrences of the rule anchored at the specified start, preserving its UTC offset.
     /// </summary>
     /// <param name="start">The series start (<c>DTSTART</c>) the rule is anchored to.</param>
@@ -144,6 +178,35 @@ public sealed partial class RecurrenceRule
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Returns the last occurrence of the rule that falls before the specified instant, preserving the start's offset.
+    /// </summary>
+    /// <param name="start">The series start (<c>DTSTART</c>) the rule is anchored to.</param>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="before" />; otherwise the
+    /// occurrence must be strictly earlier.
+    /// </param>
+    /// <returns>
+    /// The previous occurrence, or <see langword="null" /> when none precedes <paramref name="before" />.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset start, DateTimeOffset before, bool inclusive = false)
+    {
+        DateTimeOffset? previous = null;
+        foreach (DateTimeOffset occurrence in GetOccurrences(start))
+        {
+            if (occurrence > before || (!inclusive && occurrence == before))
+            {
+                break;
+            }
+
+            previous = occurrence;
+        }
+
+        return previous;
     }
 
     /// <summary>

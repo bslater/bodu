@@ -195,6 +195,85 @@ public sealed partial class RecurrenceSet
     }
 
     /// <summary>
+    /// Returns the last occurrence of the set that falls before the specified instant.
+    /// </summary>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="before" />; otherwise the
+    /// occurrence must be strictly earlier.
+    /// </param>
+    /// <returns>
+    /// The previous occurrence, or <see langword="null" /> when none precedes <paramref name="before" />.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Due-ness evaluation is a previous-occurrence comparison — typically
+    /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c> — so missed occurrences coalesce
+    /// structurally: the answer is a single instant, never a backlog.
+    /// </remarks>
+    public DateTime? GetPreviousOccurrence(DateTime before, bool inclusive = false)
+    {
+        DateTime? previous = null;
+        foreach (DateTime occurrence in GetOccurrences())
+        {
+            if (occurrence > before || (!inclusive && occurrence == before))
+            {
+                break;
+            }
+
+            previous = occurrence;
+        }
+
+        return previous;
+    }
+
+    /// <summary>
+    /// Returns the first occurrence of the set that falls after the specified instant, preserving its offset.
+    /// </summary>
+    /// <param name="after">The instant the returned occurrence must follow.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="after" />; otherwise the
+    /// occurrence must be strictly later.
+    /// </param>
+    /// <returns>
+    /// The next occurrence carrying the offset of <paramref name="after" />, or <see langword="null" /> when the set
+    /// produces none.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// The set's start and dates are wall-clock values; the query interprets them in the offset of
+    /// <paramref name="after" /> and performs no other offset conversion.
+    /// </remarks>
+    public DateTimeOffset? GetNextOccurrence(DateTimeOffset after, bool inclusive = false)
+    {
+        DateTime? next = GetNextOccurrence(DateTime.SpecifyKind(after.DateTime, DateTimeKind.Unspecified), inclusive);
+        return next is null ? null : new DateTimeOffset(next.Value, after.Offset);
+    }
+
+    /// <summary>
+    /// Returns the last occurrence of the set that falls before the specified instant, preserving its offset.
+    /// </summary>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="before" />; otherwise the
+    /// occurrence must be strictly earlier.
+    /// </param>
+    /// <returns>
+    /// The previous occurrence carrying the offset of <paramref name="before" />, or <see langword="null" /> when none
+    /// precedes it.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// The set's start and dates are wall-clock values; the query interprets them in the offset of
+    /// <paramref name="before" /> and performs no other offset conversion.
+    /// </remarks>
+    public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset before, bool inclusive = false)
+    {
+        DateTime? previous = GetPreviousOccurrence(DateTime.SpecifyKind(before.DateTime, DateTimeKind.Unspecified), inclusive);
+        return previous is null ? null : new DateTimeOffset(previous.Value, before.Offset);
+    }
+
+    /// <summary>
     /// Advances the enumerator and, when it has a first element, enqueues it keyed on that element.
     /// </summary>
     /// <param name="queue">The merge priority queue.</param>
