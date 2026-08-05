@@ -1,0 +1,230 @@
+{
+  "Bodu.Collections": {
+    "line": 95.9,
+    "branch": 94.2
+  },
+  "Bodu.Collections.Concurrent": {
+    "line": 94.4,
+    "branch": 91.2
+  },
+  "Bodu.Core": {
+    "line": 98.1,
+    "branch": 95.9
+  },
+  "Bodu.Extensions.Configuration.Text": {
+    "line": 96.8,
+    "branch": 87.0
+  },
+  "Bodu.Financial": {
+    "line": 96.8,
+    "branch": 86.4
+  },
+  "Bodu.Financial.DependencyInjection": {
+    "line": 99.5,
+    "branch": 99.5
+  },
+  "Bodu.Financial.ExchangeRates": {
+    "line": 88.3,
+    "branch": 80.6
+  },
+  "Bodu.Financial.ExchangeRates.Boe": {
+    "line": 90.6,
+    "branch": 84.8
+  },
+  "Bodu.Financial.ExchangeRates.Caching": {
+    "line": 90.8,
+    "branch": 88.1
+  },
+  "Bodu.Financial.ExchangeRates.Caching.Distributed": {
+    "line": 93.0,
+    "branch": 91.4
+  },
+  "Bodu.Financial.ExchangeRates.Caching.Sqlite": {
+    "line": 94.3,
+    "branch": 94.3
+  },
+  "Bodu.Financial.ExchangeRates.DependencyInjection": {
+    "line": 99.5,
+    "branch": 99.5
+  },
+  "Bodu.Financial.ExchangeRates.Ecb": {
+    "line": 86.9,
+    "branch": 78.9
+  },
+  "Bodu.Financial.ExchangeRates.ExchangeRateHost": {
+    "line": 72.8,
+    "branch": 67.9
+  },
+  "Bodu.Financial.ExchangeRates.Fixer": {
+    "line": 71.9,
+    "branch": 68.9
+  },
+  "Bodu.Financial.ExchangeRates.Fred": {
+    "line": 78.9,
+    "branch": 82.1
+  },
+  "Bodu.Financial.ExchangeRates.Imf": {
+    "line": 82.2,
+    "branch": 82.2
+  },
+  "Bodu.Financial.ExchangeRates.Oanda": {
+    "line": 96.5,
+    "branch": 88.7
+  },
+  "Bodu.Financial.ExchangeRates.Ofx": {
+    "line": 97.1,
+    "branch": 88.4
+  },
+  "Bodu.Financial.ExchangeRates.Rba": {
+    "line": 93.9,
+    "branch": 89.0
+  },
+  "Bodu.Financial.ExchangeRates.Xe": {
+    "line": 94.9,
+    "branch": 86.1
+  },
+  "Bodu.Financial.ExchangeRates.Yahoo": {
+    "line": 95.5,
+    "branch": 72.6
+  },
+  "Bodu.Financial.Serialization.Json": {
+    "line": 94.5,
+    "branch": 88.9
+  },
+  "Bodu.Formats.Excel.Binary": {
+    "line": 89.2,
+    "branch": 81.2
+  },
+  "Bodu.Formats.Outlook": {
+    "line": 95.4,
+    "branch": 88.4
+  },
+  "Bodu.Formats.Outlook.Msg": {
+    "line": 86.6,
+    "branch": 80.6
+  },
+  "Bodu.Globalization.Calendar": {
+    "line": 96.4,
+    "branch": 89.1
+  },
+  "Bodu.Globalization.Calendar.Africa": {
+    "line": 99.5,
+    "branch": 66.2
+  },
+  "Bodu.Globalization.Calendar.Americas": {
+    "line": 99.5,
+    "branch": 82.8
+  },
+  "Bodu.Globalization.Calendar.AsiaPacific": {
+    "line": 99.5,
+    "branch": 74.5
+  },
+  "Bodu.Globalization.Calendar.Builder": {
+    "line": 95.2,
+    "branch": 87.5
+  },
+  "Bodu.Globalization.Calendar.Caching": {
+    "line": 88.6,
+    "branch": 83.7
+  },
+  "Bodu.Globalization.Calendar.Caching.Distributed": {
+    "line": 54.3,
+    "branch": 70.0
+  },
+  "Bodu.Globalization.Calendar.Caching.Sqlite": {
+    "line": 72.4,
+    "branch": 66.2
+  },
+  "Bodu.Globalization.Calendar.DependencyInjection": {
+    "line": 95.2,
+    "branch": 66.2
+  },
+  "Bodu.Globalization.Calendar.Europe": {
+    "line": 99.5,
+    "branch": 82.8
+  },
+  "Bodu.Globalization.Calendar.MiddleEast": {
+    "line": 99.5,
+    "branch": 66.2
+  },
+  "Bodu.Globalization.Calendar.Plugins": {
+    "line": 91.5,
+    "branch": 82.2
+  },
+  "Bodu.Globalization.Calendar.Tool": {
+    "line": 86.6,
+    "branch": 81.8
+  },
+  "Bodu.Globalization.Recurrence": {
+    "line": 88.3,
+    "branch": 87.4
+  },
+  "Bodu.IO.Compound": {
+    "line": 89.2,
+    "branch": 77.3
+  },
+  "Bodu.IO.Hashing": {
+    "line": 98.2,
+    "branch": 95.5
+  },
+  "Bodu.IO.Pst": {
+    "line": 79.4,
+    "branch": 64.2
+  },
+  "Bodu.Numerics": {
+    "line": 93.7,
+    "branch": 90.5
+  },
+  "Bodu.Numerics.Serialization.Json": {
+    "line": 92.0,
+    "branch": 83.1
+  },
+  "Bodu.Security.Cryptography": {
+    "line": 92.9,
+    "branch": 92.0
+  },
+  "Bodu.Text.Bencode": {
+    "line": 92.6,
+    "branch": 91.2
+  },
+  "Bodu.Text.Configuration": {
+    "line": 87.8,
+    "branch": 86.0
+  },
+  "Bodu.Text.Delimited": {
+    "line": 82.7,
+    "branch": 82.5
+  },
+  "Bodu.Text.DotEnv": {
+    "line": 77.9,
+    "branch": 78.0
+  },
+  "Bodu.Text.Encoding": {
+    "line": 95.0,
+    "branch": 93.3
+  },
+  "Bodu.Text.Filtering": {
+    "line": 97.8,
+    "branch": 97.2
+  },
+  "Bodu.Text.Ini": {
+    "line": 85.0,
+    "branch": 82.0
+  },
+  "Bodu.Text.Serialization": {
+    "line": 88.4,
+    "branch": 76.4
+  },
+  "Bodu.Text.Serialization (shared source)": {
+    "line": 92.9,
+    "branch": 88.5
+  },
+  "Bodu.Text.Toml": {
+    "line": 95.0,
+    "branch": 92.3
+  },
+  "Bodu.Text.Yaml": {
+    "line": 86.6,
+    "branch": 86.4
+  }
+}
