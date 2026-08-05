@@ -393,7 +393,18 @@ if ($outputDirectory -and -not (Test-Path -LiteralPath $outputDirectory)) {
 
 Set-Content -LiteralPath $OutputPath -Value $sb.ToString() -NoNewline
 
+# Machine-readable companion. tools/Update-CoverageThresholds.ps1 consumes this rather than
+# re-parsing the Cobertura report, so the phantom / shared-source / hardware-gated corrections are
+# applied in exactly one place and the ratchet can never be computed from a different denominator
+# than the published matrix.
+$rowsPath = Join-Path $ReportDirectory 'packages.json'
+$rows |
+    Select-Object Package, Status, Collected, LineRate, BranchRate, CoveredLines, TotalLines |
+    ConvertTo-Json -Depth 3 |
+    Set-Content -LiteralPath $rowsPath
+
 Write-Host "Wrote coverage matrix: $OutputPath"
+Write-Host "  machine-readable  : $rowsPath"
 Write-Host "  packages reported : $($rows.Count) ($(@($rows | Where-Object Collected).Count) collected)"
 Write-Host "  overall line rate : $overall%"
 Write-Host "  phantom discarded : $($phantom.Count)"
