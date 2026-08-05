@@ -67,6 +67,11 @@ coverage*.json
 coverage*.xml
 coverage*.info
 
+# ... but the per-package ratchet floors are committed source, not a coverage report. The three
+# patterns above are unanchored, so 'coverage*.json' would otherwise match bld/coverage-thresholds.json
+# at any depth and silently leave it untracked.
+!bld/coverage-thresholds.json
+
 # Visual Studio coverage
 *.coverage
 *.coveragexml
