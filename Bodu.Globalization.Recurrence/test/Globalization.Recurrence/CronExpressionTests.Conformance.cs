@@ -24,6 +24,44 @@ public partial class CronExpressionTests
     }
 
     /// <summary>
+    /// Verifies that Vixie decides whether a day field is "restricted" from its leading character alone, so a stepped
+    /// star (<c>*/2</c>) selects the intersection branch while the equivalent explicit range (<c>1-31/2</c>) selects
+    /// the union branch, even though both denote the same set of days.
+    /// </summary>
+    /// <remarks>
+    /// The distinction is the one cronie encodes in <c>src/entry.c</c> (<c>if (ch == '*') e-&gt;flags |= DOM_STAR;</c>)
+    /// and is observable only when both day fields are present. croniter carries the same pair as
+    /// <c>test_dom_dow_vixie_cron_bug</c>.
+    /// </remarks>
+    [TestMethod]
+    public void GetNextOccurrence_WhenDayFieldIsSteppedStar_ShouldTreatFieldAsUnrestricted()
+    {
+        CronExpression stepped = CronExpression.Parse("0 16 */2 * sat");
+        CronExpression explicitRange = CronExpression.Parse("0 16 1-31/2 * sat");
+        var from = new DateTime(2023, 5, 2, 0, 0, 0);
+
+        // "*/2" leads with '*' → unrestricted → intersection → the first odd-numbered Saturday.
+        Assert.AreEqual(new DateTime(2023, 5, 13, 16, 0, 0), stepped.GetNextOccurrence(from));
+
+        // "1-31/2" leads with a digit → restricted → union → the next odd-numbered day.
+        Assert.AreEqual(new DateTime(2023, 5, 3, 16, 0, 0), explicitRange.GetNextOccurrence(from));
+    }
+
+    /// <summary>
+    /// Verifies that an unrestricted-by-step day-of-week field also selects the intersection branch, so a
+    /// day-of-month schedule is not widened to every weekday.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenWeekdayFieldIsSteppedStar_ShouldTreatFieldAsUnrestricted()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 13 * */1");
+
+        DateTime? next = cron.GetNextOccurrence(new DateTime(2026, 1, 1, 0, 0, 0));
+
+        Assert.AreEqual(new DateTime(2026, 1, 13, 0, 0, 0), next);
+    }
+
+    /// <summary>
     /// Verifies that a day-of-month expression skips months that lack that day rather than clamping.
     /// </summary>
     [TestMethod]

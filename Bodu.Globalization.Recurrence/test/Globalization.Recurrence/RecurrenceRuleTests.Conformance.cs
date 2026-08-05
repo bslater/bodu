@@ -226,4 +226,143 @@ public partial class RecurrenceRuleTests
 
         CollectionAssert.AreEqual(kat.Expected, actual);
     }
+
+    /// <summary>
+    /// Gets the corpus distilled from defects reported against other RFC 5545 implementations — python-dateutil,
+    /// rrule.js, ical4j, ical.net, ical.js, libical, lib-recur, and ice_cube — with the reference occurrences
+    /// confirmed against python-dateutil 2.9.0.
+    /// </summary>
+    /// <value>The corpus rows.</value>
+    public static IEnumerable<object[]> RecurrenceCrossLibraryDefectCorpus
+    {
+        get
+        {
+            DateTime D(int y, int mo, int d) => new(y, mo, d);
+            DateTime T(int y, int mo, int d, int h, int mi) => new(y, mo, d, h, mi, 0);
+
+            var rows = new List<RRuleExpansionKat>
+            {
+                // The occurrence set must be de-duplicated: two BY values that resolve to the same date contribute
+                // one occurrence, not two. ical4j produced ~52x duplication on a BYWEEKNO rule (#576).
+                new("BYMONTHDAY 1 and -31 collide in 31-day months", "FREQ=MONTHLY;BYMONTHDAY=1,-31;COUNT=6", D(2024, 1, 1), 6,
+                    [D(2024, 1, 1), D(2024, 2, 1), D(2024, 3, 1), D(2024, 4, 1), D(2024, 5, 1), D(2024, 6, 1)]),
+                new("ordinal BYDAY collide in a 4-Monday month", "FREQ=MONTHLY;BYDAY=1MO,-4MO;COUNT=4", D(2027, 2, 1), 4,
+                    [D(2027, 2, 1), D(2027, 3, 1), D(2027, 3, 8), D(2027, 4, 5)]),
+                new("ordinal BYDAY distinct in a 5-Monday month", "FREQ=MONTHLY;BYDAY=1MO,-4MO;COUNT=6", D(2025, 9, 1), 6,
+                    [D(2025, 9, 1), D(2025, 9, 8), D(2025, 10, 6), D(2025, 11, 3), D(2025, 12, 1), D(2025, 12, 8)]),
+
+                // RFC 5545 Note 1: BYDAY limits rather than expands when BYMONTHDAY is present — and the ordinal
+                // must still be honoured while limiting (ical.net#782).
+                new("ordinal BYDAY limits alongside BYMONTHDAY", "FREQ=MONTHLY;BYMONTHDAY=1,8;BYDAY=1MO,2TU;COUNT=3", D(2026, 6, 1), 3,
+                    [D(2026, 6, 1), D(2026, 9, 8), D(2026, 12, 8)]),
+                new("ordinal BYDAY limits at yearly scope", "FREQ=YEARLY;BYMONTH=6,7,8,9,10,11,12;BYMONTHDAY=1,8;BYDAY=1MO,2TU;COUNT=3", D(2026, 6, 1), 3,
+                    [D(2026, 6, 1), D(2026, 9, 8), D(2026, 12, 8)]),
+
+                // BYWEEKNO weeks straddle the calendar year: week 1 of a year can start in the previous December and
+                // week 52 can end in the following January (ical.net#751 dropped the final occurrence).
+                new("BYWEEKNO=1 starts in the previous December", "FREQ=YEARLY;BYWEEKNO=1;BYDAY=MO", T(1997, 9, 2, 9, 0), 3,
+                    [T(1997, 12, 29, 9, 0), T(1999, 1, 4, 9, 0), T(2000, 1, 3, 9, 0)]),
+                new("BYWEEKNO=52 ends in the following January", "FREQ=YEARLY;COUNT=3;BYWEEKNO=52;BYDAY=SU", T(1997, 9, 2, 9, 0), 3,
+                    [T(1997, 12, 28, 9, 0), T(1998, 12, 27, 9, 0), T(2000, 1, 2, 9, 0)]),
+                new("BYWEEKNO=-1 resolves the last ISO week", "FREQ=YEARLY;COUNT=3;BYWEEKNO=-1;BYDAY=SU", T(1997, 9, 2, 9, 0), 3,
+                    [T(1997, 12, 28, 9, 0), T(1999, 1, 3, 9, 0), T(2000, 1, 2, 9, 0)]),
+
+                // BYWEEKNO without BYDAY expands to every day of the named week.
+                new("BYWEEKNO without BYDAY expands the whole week", "FREQ=YEARLY;COUNT=3;BYWEEKNO=20", T(1997, 9, 2, 9, 0), 3,
+                    [T(1998, 5, 11, 9, 0), T(1998, 5, 12, 9, 0), T(1998, 5, 13, 9, 0)]),
+
+                // WKST reparameterises week numbering, changing both the dates and which years have a week 53.
+                new("BYWEEKNO=1 under WKST=SU", "FREQ=YEARLY;BYWEEKNO=1;BYDAY=MO;WKST=SU", T(1997, 9, 2, 9, 0), 4,
+                    [T(1998, 1, 5, 9, 0), T(1999, 1, 4, 9, 0), T(2000, 1, 3, 9, 0), T(2001, 1, 1, 9, 0)]),
+                new("BYWEEKNO=53 under WKST=MO", "FREQ=YEARLY;BYWEEKNO=53;BYDAY=MO", T(1997, 9, 2, 9, 0), 3,
+                    [T(1998, 12, 28, 9, 0), T(2004, 12, 27, 9, 0), T(2009, 12, 28, 9, 0)]),
+                new("BYWEEKNO=53 under WKST=SU shifts the long years", "FREQ=YEARLY;BYWEEKNO=53;BYDAY=MO;WKST=SU", T(1997, 9, 2, 9, 0), 3,
+                    [T(1997, 12, 29, 9, 0), T(2003, 12, 29, 9, 0), T(2008, 12, 29, 9, 0)]),
+
+                // BYWEEKNO composes with the other BY parts as a conjunction (ical.net#729/#791/#924).
+                new("BYWEEKNO conjoins BYMONTH and BYMONTHDAY", "FREQ=YEARLY;BYMONTH=12;BYMONTHDAY=30;BYWEEKNO=1;UNTIL=20320101", D(2024, 12, 30), 6,
+                    [D(2024, 12, 30), D(2025, 12, 30), D(2030, 12, 30), D(2031, 12, 30)]),
+
+                // Ordinal BYDAY scope: a year offset at YEARLY, a month offset once BYMONTH is present.
+                new("ordinal BYDAY at year scope", "FREQ=YEARLY;COUNT=3;BYDAY=1TU,-1TH", T(1997, 9, 2, 9, 0), 3,
+                    [T(1997, 12, 25, 9, 0), T(1998, 1, 6, 9, 0), T(1998, 12, 31, 9, 0)]),
+                new("ordinal BYDAY at month scope via BYMONTH", "FREQ=YEARLY;COUNT=3;BYMONTH=1,3;BYDAY=1TU,-1TH", T(1997, 9, 2, 9, 0), 3,
+                    [T(1998, 1, 6, 9, 0), T(1998, 1, 29, 9, 0), T(1998, 3, 3, 9, 0)]),
+                new("large ordinals order by date, not by rule order", "FREQ=YEARLY;COUNT=3;BYMONTH=1,3;BYDAY=3TU,-3TH", T(1997, 9, 2, 9, 0), 3,
+                    [T(1998, 1, 15, 9, 0), T(1998, 1, 20, 9, 0), T(1998, 3, 12, 9, 0)]),
+
+                // An interval must count unconditionally from the start; a BY filter drops candidates without
+                // re-anchoring the counter (ical4j#265).
+                new("BYMONTH filter does not reset a daily interval", "FREQ=DAILY;INTERVAL=14;WKST=MO;BYMONTH=10,12", D(2018, 10, 10), 6,
+                    [D(2018, 10, 10), D(2018, 10, 24), D(2018, 12, 5), D(2018, 12, 19), D(2019, 10, 9), D(2019, 10, 23)]),
+
+                // A WEEKLY interval anchors on the week containing the start, not on the first matching instance
+                // (lib-recur#141, ical4j#295).
+                new("weekly interval anchors on the start's week", "FREQ=WEEKLY;INTERVAL=5;BYDAY=WE", D(2024, 10, 3), 3,
+                    [D(2024, 11, 6), D(2024, 12, 11), D(2025, 1, 15)]),
+                new("weekly interval anchor is stable across weekdays", "FREQ=WEEKLY;INTERVAL=2;BYDAY=SA", D(2018, 11, 28), 3,
+                    [D(2018, 12, 1), D(2018, 12, 15), D(2018, 12, 29)]),
+
+                // BYSETPOS indexes the whole frequency period, including candidates before the start, which are only
+                // dropped afterwards (libical#795, dateutil#1398).
+                new("BYSETPOS spans the whole first week", "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=1,3;COUNT=3", D(2024, 10, 23), 3,
+                    [D(2024, 10, 23), D(2024, 10, 28), D(2024, 10, 30)]),
+                new("BYSETPOS with a non-default week start", "FREQ=WEEKLY;WKST=WE;BYSETPOS=1;BYDAY=MO,TU,WE;COUNT=3", D(2024, 11, 10), 3,
+                    [D(2024, 11, 13), D(2024, 11, 20), D(2024, 11, 27)]),
+
+                // Invalid generated dates are skipped, never clamped or rolled forward (RFC 5545 §3.3.10).
+                new("invalid dates are skipped, not clamped", "FREQ=MONTHLY;BYMONTHDAY=15,30;COUNT=5", T(2007, 1, 15, 9, 0), 5,
+                    [T(2007, 1, 15, 9, 0), T(2007, 1, 30, 9, 0), T(2007, 2, 15, 9, 0), T(2007, 3, 15, 9, 0), T(2007, 3, 30, 9, 0)]),
+                new("monthly from a 31st skips short months", "FREQ=MONTHLY;INTERVAL=1", D(2025, 3, 31), 4,
+                    [D(2025, 3, 31), D(2025, 5, 31), D(2025, 7, 31), D(2025, 8, 31)]),
+
+                // BYYEARDAY 366 / -366 exist only in leap years (ical.net#618).
+                new("BYYEARDAY=-366 lands only in leap years", "FREQ=YEARLY;BYYEARDAY=-366;COUNT=3", T(2012, 1, 1, 12, 0), 3,
+                    [T(2012, 1, 1, 12, 0), T(2016, 1, 1, 12, 0), T(2020, 1, 1, 12, 0)]),
+                new("BYYEARDAY=366 lands only in leap years", "FREQ=YEARLY;BYYEARDAY=366;COUNT=3", T(2012, 12, 31, 12, 0), 3,
+                    [T(2012, 12, 31, 12, 0), T(2016, 12, 31, 12, 0), T(2020, 12, 31, 12, 0)]),
+
+                // BYMONTHDAY negatives interleave with positives in date order across the whole set.
+                new("BYMONTHDAY 1 and -1 interleave in date order", "FREQ=MONTHLY;COUNT=10;BYMONTHDAY=1,-1", T(1997, 9, 30, 9, 0), 10,
+                    [T(1997, 9, 30, 9, 0), T(1997, 10, 1, 9, 0), T(1997, 10, 31, 9, 0), T(1997, 11, 1, 9, 0), T(1997, 11, 30, 9, 0), T(1997, 12, 1, 9, 0), T(1997, 12, 31, 9, 0), T(1998, 1, 1, 9, 0), T(1998, 1, 31, 9, 0), T(1998, 2, 1, 9, 0)]),
+                new("BYMONTHDAY=-31 skips months shorter than 31 days", "FREQ=MONTHLY;BYMONTHDAY=-31;COUNT=5", D(2024, 1, 1), 5,
+                    [D(2024, 1, 1), D(2024, 3, 1), D(2024, 5, 1), D(2024, 7, 1), D(2024, 8, 1)]),
+            };
+
+            foreach (RRuleExpansionKat row in rows)
+            {
+                yield return [row];
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that each rule distilled from a defect reported against another RFC 5545 implementation expands to
+    /// the reference occurrences.
+    /// </summary>
+    /// <param name="kat">The corpus row under test.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(RecurrenceCrossLibraryDefectCorpus),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void GetOccurrences_WhenCrossLibraryDefectVector_ShouldMatchReference(RRuleExpansionKat kat)
+    {
+        DateTime[] actual = RecurrenceRule.Parse(kat.Rule).GetOccurrences(kat.Start).Take(kat.Take).ToArray();
+
+        CollectionAssert.AreEqual(kat.Expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that the occurrence stream never emits the same instant twice, whichever <c>BY</c> parts collide.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_WhenByPartsCollide_ShouldNotEmitDuplicates()
+    {
+        DateTime[] actual = RecurrenceRule.Parse("FREQ=MONTHLY;BYMONTHDAY=1,-31;COUNT=6")
+            .GetOccurrences(new DateTime(2024, 1, 1)).ToArray();
+
+        CollectionAssert.AllItemsAreUnique(actual);
+    }
 }

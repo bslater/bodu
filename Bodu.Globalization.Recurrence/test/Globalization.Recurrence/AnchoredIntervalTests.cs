@@ -34,6 +34,12 @@ public sealed partial class AnchoredIntervalTests
                 new("lowercase designators", "pt4h", TimeSpan.FromHours(4)),
                 new("surrounding white space", " PT4H ", TimeSpan.FromHours(4)),
                 new("full date-time form", "P3DT4H5M6S", new TimeSpan(3, 4, 5, 6)),
+
+                // RFC 5545 dur-value permits a leading sign; the positive form must be accepted, not rejected
+                // alongside the negative one (luxon, sosodev, NodaTime and XmlConvert all reject it).
+                new("explicit leading plus", "+PT4H", TimeSpan.FromHours(4)),
+                new("RFC 3.3.6 example P15DT5H0M20S", "P15DT5H0M20S", new TimeSpan(15, 5, 0, 20)),
+                new("RFC 3.3.6 example P7W", "P7W", TimeSpan.FromDays(49)),
             };
 
             foreach (ValidKat<string, TimeSpan> row in rows)
@@ -57,7 +63,6 @@ public sealed partial class AnchoredIntervalTests
                 new("white space only", "   ", typeof(FormatException), MessageContains: "empty"),
                 new("missing P designator", "4H", typeof(FormatException), MessageContains: "begin with"),
                 new("negative duration", "-PT4H", typeof(FormatException), MessageContains: "greater than zero"),
-                new("signed duration", "+PT4H", typeof(FormatException), MessageContains: "greater than zero"),
                 new("bare designator", "P", typeof(FormatException), MessageContains: "at least one component"),
                 new("bare time designator", "PT", typeof(FormatException), MessageContains: "at least one component"),
                 new("zero days", "P0D", typeof(FormatException), MessageContains: "greater than zero"),
@@ -74,6 +79,31 @@ public sealed partial class AnchoredIntervalTests
                 new("days after time designator", "PT1D", typeof(FormatException), MessageContains: "repeated or out of order"),
                 new("component digits overflow", "P99999999999999999999D", typeof(FormatException), MessageContains: "too large"),
                 new("total exceeds the representable range", "P10675200D", typeof(FormatException), MessageContains: "too large"),
+
+                // dur-time = "T" (dur-hour / dur-minute / dur-second) — the designator requires a component after it.
+                // Accepted by luxon, NodaTime, rickb777, sosodev, python icalendar and isodate; rejected by
+                // java.time, Temporal and XmlConvert.
+                new("trailing time designator", "P1DT", typeof(FormatException), MessageContains: "at least one component"),
+                new("bare trailing designator after weeks", "P1WT", typeof(FormatException), MessageContains: "at least one component"),
+
+                // RFC 5545 excludes the year and month designators because they are not fixed-length. "P1M" is the
+                // headline interop hazard: ical.js reads it as one minute, everything else as one month.
+                new("month designator", "P1M", typeof(FormatException), MessageContains: "'T' designator"),
+                new("year designator", "P1Y", typeof(FormatException), MessageContains: "not valid"),
+                new("month designator seen in the wild", "P90M", typeof(FormatException), MessageContains: "'T' designator"),
+
+                // A sign is legal only in the leading position.
+                new("sign before a component", "PT-4H", typeof(FormatException), MessageContains: "not valid"),
+                new("sign between components", "PT4H-30M", typeof(FormatException), MessageContains: "not valid"),
+                new("double sign", "-PT-4H", typeof(FormatException), MessageContains: "greater than zero"),
+
+                // The P designator is mandatory even when a time designator is present.
+                new("time designator without P", "T4H", typeof(FormatException), MessageContains: "begin with"),
+
+                // Overflow must be a deterministic parse error, never a silently wrapped or negative duration.
+                new("seconds overflow to negative", "PT9223372036854775807S", typeof(FormatException), MessageContains: "too large"),
+                new("hours overflow to negative", "PT2147483648H", typeof(FormatException), MessageContains: "too large"),
+                new("weeks overflow", "P2147483647W", typeof(FormatException), MessageContains: "too large"),
             };
 
             foreach (InvalidKat<string> row in rows)

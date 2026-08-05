@@ -37,6 +37,53 @@ public partial class RecurrenceRuleTests
     }
 
     /// <summary>
+    /// Verifies that a weekly rule whose <c>BYSETPOS</c> selects a position the candidate set never reaches
+    /// enumerates empty, rather than overflowing the calendar while scanning to the representable bound.
+    /// </summary>
+    /// <remarks>
+    /// The equivalent rules crashed or hung in ical.net (#856), ical4j (#851), and lib-recur (#137): the search runs
+    /// to the end of the representable calendar and the final week expansion must not step past
+    /// <see cref="DateTime.MaxValue" />.
+    /// </remarks>
+    [TestMethod]
+    public void GetOccurrences_WhenSetPosNeverSelects_ShouldEnumerateEmptyWithoutOverflowing()
+    {
+        RecurrenceRule rule = RecurrenceRule.Parse("FREQ=WEEKLY;BYDAY=MO,TU,WE;BYSETPOS=4");
+
+        DateTime[] actual = rule.GetOccurrences(new DateTime(2026, 1, 1)).ToArray();
+
+        Assert.AreEqual(0, actual.Length);
+    }
+
+    /// <summary>
+    /// Verifies that a yearly rule whose per-period candidate set is always empty enumerates empty rather than
+    /// scanning without bound.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_WhenYearlySetPosNeverSelects_ShouldEnumerateEmpty()
+    {
+        RecurrenceRule rule = RecurrenceRule.Parse("FREQ=YEARLY;BYMONTH=11;BYDAY=4TH;BYSETPOS=4");
+
+        DateTime[] actual = rule.GetOccurrences(new DateTime(2024, 11, 28, 8, 0, 0)).ToArray();
+
+        Assert.AreEqual(0, actual.Length);
+    }
+
+    /// <summary>
+    /// Verifies that a monthly rule whose day rules can never intersect enumerates empty; the second Sunday always
+    /// falls between the 8th and the 14th, so it is never the 1st.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_WhenDayRulesCannotIntersect_ShouldEnumerateEmpty()
+    {
+        RecurrenceRule rule = RecurrenceRule.Parse("FREQ=MONTHLY;BYMONTHDAY=1;BYDAY=2SU");
+
+        DateTime[] actual = rule.GetOccurrences(new DateTime(2022, 1, 1)).ToArray();
+
+        Assert.AreEqual(0, actual.Length);
+    }
+
+    /// <summary>
     /// Verifies that a rule whose occurrences all precede the window enumerates the window empty, and that a window
     /// preceding the series start is empty.
     /// </summary>
