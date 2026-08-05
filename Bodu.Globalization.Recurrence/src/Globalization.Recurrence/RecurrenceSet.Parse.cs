@@ -42,7 +42,7 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
     {
         ThrowHelper.ThrowIfNull(s);
 
-        return TryParseCore(s, out RecurrenceSet? result)
+        return TryParseCore(s, out RecurrenceSet? result, out _)
             ? result
             : throw new FormatException(RecurrenceResourceStrings.Format_Invalid_RecurrenceSetText);
     }
@@ -71,7 +71,38 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
             return false;
         }
 
-        return TryParseCore(s, out result);
+        return TryParseCore(s, out result, out _);
+    }
+
+    /// <summary>
+    /// Attempts to parse an iCalendar property block, reporting the parse defect on failure.
+    /// </summary>
+    /// <param name="s">The property-block text.</param>
+    /// <param name="result">The parsed set, or <see langword="null" /> on failure.</param>
+    /// <param name="failureMessage">
+    /// <see langword="null" /> on success; otherwise a message naming the specific defect, suitable for surfacing to
+    /// the user verbatim.
+    /// </param>
+    /// <returns><see langword="true" /> if parsing succeeded; otherwise <see langword="false" />.</returns>
+    public static bool TryParse(
+        string? s,
+        [MaybeNullWhen(false)] out RecurrenceSet result,
+        [NotNullWhen(false)] out string? failureMessage)
+    {
+        if (s is null)
+        {
+            result = null;
+            failureMessage = RecurrenceResourceStrings.Format_Invalid_RecurrenceSetText;
+            return false;
+        }
+
+        bool parsed = TryParseCore(s, out result, out failureMessage);
+        if (!parsed)
+        {
+            failureMessage ??= RecurrenceResourceStrings.Format_Invalid_RecurrenceSetText;
+        }
+
+        return parsed;
     }
 
     /// <summary>
@@ -79,10 +110,17 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
     /// </summary>
     /// <param name="s">The property-block text.</param>
     /// <param name="result">The parsed set, or <see langword="null" /> on failure.</param>
+    /// <param name="failureMessage">
+    /// <see langword="null" /> on success; otherwise a message naming the specific defect.
+    /// </param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise <see langword="false" />.</returns>
-    private static bool TryParseCore(string s, [MaybeNullWhen(false)] out RecurrenceSet result)
+    private static bool TryParseCore(
+        string s,
+        [MaybeNullWhen(false)] out RecurrenceSet result,
+        out string? failureMessage)
     {
         result = null;
+        failureMessage = null;
 
         DateTime? start = null;
         var rules = new List<RecurrenceRule>();
@@ -115,8 +153,15 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
 
             if (name.Equals("DTSTART", StringComparison.OrdinalIgnoreCase))
             {
-                if (start is not null || !IcalValue.TryParseDateTime(value, out DateTime parsedStart))
+                if (start is not null)
                 {
+                    failureMessage = RecurrenceResourceStrings.Format_Invalid_RecurrenceSetDuplicateStart;
+                    return false;
+                }
+
+                if (!IcalValue.TryParseDateTime(value, out DateTime parsedStart))
+                {
+                    failureMessage = string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_DateTimeValue, value);
                     return false;
                 }
 
@@ -124,7 +169,7 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
             }
             else if (name.Equals("RRULE", StringComparison.OrdinalIgnoreCase))
             {
-                if (!RecurrenceRule.TryParse(value, out RecurrenceRule? rule))
+                if (!RecurrenceRule.TryParse(value, out RecurrenceRule? rule, out failureMessage))
                 {
                     return false;
                 }
@@ -133,22 +178,29 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
             }
             else if (name.Equals("RDATE", StringComparison.OrdinalIgnoreCase))
             {
-                if (!TryParseDateList(value, dates))
+                if (!TryParseDateList(value, dates, ref failureMessage))
                 {
                     return false;
                 }
             }
             else if (name.Equals("EXDATE", StringComparison.OrdinalIgnoreCase))
             {
-                if (!TryParseDateList(value, exceptionDates))
+                if (!TryParseDateList(value, exceptionDates, ref failureMessage))
                 {
                     return false;
                 }
             }
         }
 
-        if (start is null || (rules.Count == 0 && dates.Count == 0))
+        if (start is null)
         {
+            failureMessage = RecurrenceResourceStrings.Format_Invalid_RecurrenceSetStartRequired;
+            return false;
+        }
+
+        if (rules.Count == 0 && dates.Count == 0)
+        {
+            failureMessage = RecurrenceResourceStrings.Arg_Invalid_RecurrenceSetEmpty;
             return false;
         }
 
@@ -161,14 +213,16 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
     /// </summary>
     /// <param name="value">The comma-separated value text.</param>
     /// <param name="target">The list the parsed instants are appended to.</param>
+    /// <param name="failureMessage">Set to a message naming the failing value when the list does not parse.</param>
     /// <returns>
     /// <see langword="true" /> if the list was non-empty and every value parsed; otherwise <see langword="false" />.
     /// </returns>
-    private static bool TryParseDateList(string value, List<DateTime> target)
+    private static bool TryParseDateList(string value, List<DateTime> target, ref string? failureMessage)
     {
         string[] tokens = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         if (tokens.Length == 0)
         {
+            failureMessage = string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_DateTimeValue, value);
             return false;
         }
 
@@ -176,6 +230,7 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
         {
             if (!IcalValue.TryParseDateTime(token, out DateTime parsed))
             {
+                failureMessage = string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_DateTimeValue, token);
                 return false;
             }
 

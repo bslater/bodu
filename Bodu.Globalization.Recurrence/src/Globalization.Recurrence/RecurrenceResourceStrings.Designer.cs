@@ -187,6 +187,69 @@ namespace Bodu.Globalization.Recurrence {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The recurrence-rule text is empty or contains only white space..
+        /// </summary>
+        internal static string Format_Invalid_RecurrenceRuleEmpty {
+            get {
+                return ResourceManager.GetString("Format_Invalid_RecurrenceRuleEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The recurrence-rule part &apos;{0}&apos; is not recognized..
+        /// </summary>
+        internal static string Format_Invalid_RecurrenceRuleUnknownPart {
+            get {
+                return ResourceManager.GetString("Format_Invalid_RecurrenceRuleUnknownPart", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The COUNT and UNTIL rule parts cannot both appear in the same rule..
+        /// </summary>
+        internal static string Format_Invalid_RecurrenceRuleCountAndUntil {
+            get {
+                return ResourceManager.GetString("Format_Invalid_RecurrenceRuleCountAndUntil", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The cron-expression text is empty or contains only white space..
+        /// </summary>
+        internal static string Format_Invalid_CronEmpty {
+            get {
+                return ResourceManager.GetString("Format_Invalid_CronEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The cron macro &apos;{0}&apos; is not recognized, or a macro was supplied where the six-field layout was required..
+        /// </summary>
+        internal static string Format_Invalid_CronMacro {
+            get {
+                return ResourceManager.GetString("Format_Invalid_CronMacro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A recurrence set requires a DTSTART property line..
+        /// </summary>
+        internal static string Format_Invalid_RecurrenceSetStartRequired {
+            get {
+                return ResourceManager.GetString("Format_Invalid_RecurrenceSetStartRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The DTSTART property appears more than once..
+        /// </summary>
+        internal static string Format_Invalid_RecurrenceSetDuplicateStart {
+            get {
+                return ResourceManager.GetString("Format_Invalid_RecurrenceSetDuplicateStart", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The duration text is empty or contains only white space..
         /// </summary>
         internal static string Format_Invalid_DurationEmpty {

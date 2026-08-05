@@ -22,7 +22,7 @@ namespace Bodu.Globalization.Recurrence;
 /// </para>
 /// </remarks>
 /// <seealso cref="RecurrenceRule" />
-public sealed partial class RecurrenceSet
+public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
 {
     /// <summary>The rules whose expansions contribute occurrences.</summary>
     private readonly RecurrenceRule[] _rules;
@@ -63,6 +63,7 @@ public sealed partial class RecurrenceSet
         }
 
         Array.Sort(_dates);
+        Array.Sort(_exceptionDates);
     }
 
     /// <summary>
@@ -86,8 +87,67 @@ public sealed partial class RecurrenceSet
     /// <summary>
     /// Gets the exception dates removed from the occurrence set.
     /// </summary>
-    /// <value>The exception dates, in the order supplied.</value>
+    /// <value>The exception dates in ascending order.</value>
     public IReadOnlyList<DateTime> ExceptionDates => _exceptionDates;
+
+    /// <summary>
+    /// Determines whether this set is equal to another set by comparing the start, rules, dates, and exception dates.
+    /// </summary>
+    /// <param name="other">The set to compare with this instance.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="other" /> is non-null with an equal start, equal rules in the same
+    /// order, and equal date and exception-date lists; otherwise <see langword="false" />.
+    /// </returns>
+    public bool Equals(RecurrenceSet? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (Start != other.Start
+            || _rules.Length != other._rules.Length
+            || !_dates.AsSpan().SequenceEqual(other._dates)
+            || !_exceptionDates.AsSpan().SequenceEqual(other._exceptionDates))
+        {
+            return false;
+        }
+
+        for (int i = 0; i < _rules.Length; i++)
+        {
+            if (!_rules[i].Equals(other._rules[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Determines whether this set is equal to another object.
+    /// </summary>
+    /// <param name="obj">The object to compare with this instance.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="obj" /> is a <see cref="RecurrenceSet" /> equal to this instance;
+    /// otherwise <see langword="false" />.
+    /// </returns>
+    public override bool Equals(object? obj) =>
+        Equals(obj as RecurrenceSet);
+
+    /// <summary>
+    /// Returns a hash code derived from the set's start and component counts.
+    /// </summary>
+    /// <returns>A hash code consistent with <see cref="Equals(RecurrenceSet)" />.</returns>
+    public override int GetHashCode()
+    {
+        var hash = default(HashCode);
+        hash.Add(Start);
+        hash.Add(_rules.Length);
+        hash.Add(_dates.Length);
+        hash.Add(_exceptionDates.Length);
+        return hash.ToHashCode();
+    }
 
     /// <summary>
     /// Enumerates the occurrences of the set in ascending chronological order.

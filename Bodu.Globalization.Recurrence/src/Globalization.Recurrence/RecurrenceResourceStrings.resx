@@ -105,6 +105,27 @@
   <data name="Arg_OutOfRange_RecurrenceRulePart" xml:space="preserve">
     <value>A value supplied for the '{0}' recurrence rule part is outside its permitted range.</value>
   </data>
+  <data name="Format_Invalid_RecurrenceRuleEmpty" xml:space="preserve">
+    <value>The recurrence-rule text is empty or contains only white space.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceRuleUnknownPart" xml:space="preserve">
+    <value>The recurrence-rule part '{0}' is not recognized.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceRuleCountAndUntil" xml:space="preserve">
+    <value>The COUNT and UNTIL rule parts cannot both appear in the same rule.</value>
+  </data>
+  <data name="Format_Invalid_CronEmpty" xml:space="preserve">
+    <value>The cron-expression text is empty or contains only white space.</value>
+  </data>
+  <data name="Format_Invalid_CronMacro" xml:space="preserve">
+    <value>The cron macro '{0}' is not recognized, or a macro was supplied where the six-field layout was required.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceSetStartRequired" xml:space="preserve">
+    <value>A recurrence set requires a DTSTART property line.</value>
+  </data>
+  <data name="Format_Invalid_RecurrenceSetDuplicateStart" xml:space="preserve">
+    <value>The DTSTART property appears more than once.</value>
+  </data>
   <data name="Format_Invalid_DurationEmpty" xml:space="preserve">
     <value>The duration text is empty or contains only white space.</value>
   </data>
