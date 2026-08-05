@@ -17,6 +17,12 @@ classes accordingly:
 |---|---|---|
 | `rfc5545/` | `official-published` | The standard's own §3.8.5.3 examples, transcribed from the normative text |
 | `libical/` | `third-party-comparison` | The reference C implementation's test corpus — evidence, not authority |
+| `cronos/` | `third-party-comparison` | A widely used .NET cron implementation's test suite — evidence, not authority |
+
+Cron is worse off than recurrence rules here. There is no cron RFC at all: the closest thing to a
+specification is the `crontab(5)` man page shipped with Vixie cron and its cronie descendant, and
+the authority of last resort is `entry.c` itself. Where Cronos and cronie disagree, this corpus
+follows cronie and records the disagreement.
 
 ## Lineage warning (no majority voting)
 
@@ -68,11 +74,57 @@ redistribution rights are confirmed, this directory holds a **derived** table pl
 SHA-256, the same link-and-hash pattern used for the IMD and SGPC material. If the maintainer
 decides the MPL file may be vendored, the derived table can be replaced by the original.
 
+## `cronos/` — the cron vector table
+
+`cronos-cron-vectors.csv` — 1,354 rows derived from Cronos's `CronExpressionFacts`, the densest
+public collection of cron vectors we could find. Unlike the two recurrence tables it asserts several
+different things, recorded in a `kind` column: `next` (the next occurrence, inclusive),
+`unreachable` (an expression that can never fire), `invalid` (must be rejected), `equal` /
+`notEqual` (two spellings of the same or different schedules), and `toString` (canonical text).
+
+Cronos is MIT (Copyright (c) 2017 Hangfire OÜ), so deriving this table and redistributing it with
+attribution is permitted; the upstream file is still not committed, and the header records its
+SHA-256 so the derivation is reproducible.
+
+### Where Cronos and Bodu deliberately differ
+
+Cronos implements *Quartz*-flavoured cron. Bodu implements *Vixie*. That is a real difference of
+dialect, not a defect on either side, and it accounts for most of the excluded rows. Each divergence
+below was established by running the rows rather than assumed:
+
+| Divergence | Cronos | Bodu (Vixie) |
+|---|---|---|
+| `L`, `W`, `#`, `?` tokens | Accepted | Rejected — a planned follow-on, not silently ignored |
+| Reversed ranges (`55-5`, `FRI-TUE`) | Wrap around the field | Rejected |
+| Both day fields restricted | Intersection | **Union**, per `entry.c`'s `DOM_STAR`/`DOW_STAR` flags |
+| Step wider than its range (`*/60`) | Rejected | Accepted, selecting the range start — cronie only *warns* |
+| `@every_second`, `@every_minute` | Accepted | Rejected — not in `crontab(5)`'s macro set |
+| `ToString` of a zero seconds field | Elided | Rendered, like every other field of the declared format |
+
+The DOM/DOW rule is the one worth dwelling on, because it is the divergence most likely to be read
+as a Bodu bug. Vixie decides whether a day field is "restricted" from its **leading character**, so
+`*/2` is unrestricted (leading `*`) while the set-equivalent `1-31/2` is restricted — and the two
+therefore select different days when a day-of-week field is also present. That is not a rationalizable
+rule; it is what `src/entry.c` does, and cronie, croniter, and Bodu all reproduce it.
+
+The oversized-step case is the only divergence where Bodu accepts what Cronos rejects, so it is
+flagged on the rejection rows too. cronie prints `Warning: Step size %i higher than possible maximum
+of %i` and then runs `for (i = low; i <= high; i += step)`, which sets exactly one bit. Bodu matches
+that, pinned by `CronExpressionTests.Parse_WhenStepExceedsItsRange_ShouldSelectOnlyTheRangeStart`
+rather than left to the corpus to imply.
+
+Regenerate with:
+
+```shell
+python3 corpus/recurrence/cronos/extract-cronos-vectors.py <CronExpressionFacts.cs>
+```
+
 ## Scope exclusions (recorded, never silently skipped)
 
-Both tables carry a `flags` column, and the reconciliation tests **report every excluded row by
-name and reason** rather than quietly passing over it. The exclusions are deliberate scope
-boundaries of the library, not gaps in the corpus:
+Every table carries a `flags` column, and the reconciliation tests **report every excluded row**
+rather than quietly passing over it — by name for the two recurrence corpora, and as a per-flag
+tally for the much larger Cronos table. The exclusions are deliberate scope boundaries of the
+library, not gaps in the corpus:
 
 | Flag | Why it is excluded |
 |---|---|
@@ -80,6 +132,14 @@ boundaries of the library, not gaps in the corpus:
 | `time-expansion` | `BYHOUR`/`BYMINUTE`/`BYSECOND` expansion within the day; the corpus records dates only |
 | `elided` | The RFC abbreviates the occurrence list with `...`, so it is not fully enumerable |
 | `exrule` | `EXRULE` is not modelled; `RecurrenceSet` composes `RDATE`/`EXDATE` only |
+| `quartz-ext` | The Quartz `L` / `W` / `#` / `?` cron tokens (a planned follow-on) |
+| `hash` | The Jenkins `H` jitter token, which is not a cron dialect this library models |
+| `cronos-macro` | `@every_second` / `@every_minute`, macros Cronos adds beyond `crontab(5)` |
+| `wrap-range` | A reversed cron range; Cronos wraps, Bodu rejects |
+| `oversized-step` | A step wider than its range; Cronos rejects, cronie and Bodu accept |
+| `dom-dow-intersect` | Both cron day fields restricted; Cronos intersects, Vixie and Bodu union |
+| `seconds-elision` | Cronos drops a zero seconds field from `ToString`; Bodu renders every field |
+| `dst` | The Cronos row sits within a day of a US Eastern DST transition, where a zone-free reading of its fixture is not offset-invariant |
 
 `tzid` and `utc-until` are **not** exclusions. The library is offset-based and resolves no timezone identifiers,
 but the RFC and libical examples state their occurrences in the `DTSTART` zone's own wall clock,
@@ -100,7 +160,8 @@ exclusion.
 |---|---:|---:|---|
 | RFC 5545 §3.8.5.3 | 39 | 23 | 23 exact date-list matches, 0 differences |
 | libical `recur.txt` | 57 | 52 | 52 count matches, 0 differences (the `EXDATE` row runs through `RecurrenceSet`) |
+| Cronos `CronExpressionFacts` | 1,354 | 755 | 755 matches, 0 differences |
 
-Cron and duration vectors are not held here: neither Vixie cron nor RFC 5545 §3.3.6 durations
-publish a machine-readable corpus, so those forms are pinned by vectors transcribed into the test
-project with their upstream issue citations.
+`AnchoredInterval` durations are still not covered by a corpus: RFC 5545 §3.3.6 states its duration
+grammar as ABNF and publishes no vector table, so that form stays pinned by tests transcribed into
+the test project with their upstream issue citations.

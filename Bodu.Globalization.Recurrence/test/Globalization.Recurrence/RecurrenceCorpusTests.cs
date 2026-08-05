@@ -12,7 +12,8 @@ namespace Bodu.Globalization.Recurrence;
 
 /// <summary>
 /// Reconciles the recurrence engine against the committed validation corpora: the normative RFC 5545 §3.8.5.3
-/// worked examples, and the occurrence counts libical's reference implementation asserts in its own test data.
+/// worked examples, the occurrence counts libical's reference implementation asserts in its own test data, and the
+/// cron vectors derived from Cronos's test suite.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -27,7 +28,7 @@ namespace Bodu.Globalization.Recurrence;
 /// </para>
 /// </remarks>
 [TestClass]
-public sealed class RecurrenceCorpusTests
+public sealed partial class RecurrenceCorpusTests
 {
     /// <summary>The flags that place a corpus row outside the modelled surface.</summary>
     /// <remarks>
@@ -165,11 +166,14 @@ public sealed class RecurrenceCorpusTests
     {
         Rfc5545ExampleKat[] rfc = LoadRfc5545().ToArray();
         LibicalRuleKat[] libical = LoadLibical().ToArray();
+        CronosVectorKat[] cronos = LoadCronos().ToArray();
 
         Assert.AreEqual(39, rfc.Length, "RFC 5545 corpus row count changed.");
         Assert.AreEqual(57, libical.Length, "libical corpus row count changed.");
+        Assert.AreEqual(1354, cronos.Length, "Cronos corpus row count changed.");
         Assert.AreEqual(23, rfc.Count(r => r.IsInScope), "RFC 5545 in-scope row count changed.");
         Assert.AreEqual(52, libical.Count(r => r.IsInScope), "libical in-scope row count changed.");
+        Assert.AreEqual(755, cronos.Count(r => r.IsInScope), "Cronos in-scope row count changed.");
 
         var report = new StringBuilder();
         report.AppendLine(CultureInfo.InvariantCulture, $"RFC 5545: {rfc.Count(r => r.IsInScope)}/{rfc.Length} in scope");
@@ -178,6 +182,18 @@ public sealed class RecurrenceCorpusTests
         report.AppendLine(CultureInfo.InvariantCulture, $"libical: {libical.Count(r => r.IsInScope)}/{libical.Length} in scope");
         foreach (LibicalRuleKat row in libical.Where(r => !r.IsInScope))
             report.AppendLine(CultureInfo.InvariantCulture, $"  excluded [{row.Flags}] {row.Name}");
+
+        // The Cronos table is large enough that naming every excluded row would bury the summary, so its
+        // exclusions are reported as a per-flag tally instead.
+        report.AppendLine(CultureInfo.InvariantCulture, $"Cronos: {cronos.Count(r => r.IsInScope)}/{cronos.Length} in scope");
+        foreach (IGrouping<string, CronosVectorKat> group in cronos
+            .Where(r => !r.IsInScope)
+            .SelectMany(r => r.Flags.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(f => (Flag: f, Row: r)))
+            .GroupBy(p => p.Flag, p => p.Row)
+            .OrderBy(g => g.Key, StringComparer.Ordinal))
+        {
+            report.AppendLine(CultureInfo.InvariantCulture, $"  excluded [{group.Key}] {group.Count()} rows");
+        }
 
         Console.WriteLine(report.ToString());
     }

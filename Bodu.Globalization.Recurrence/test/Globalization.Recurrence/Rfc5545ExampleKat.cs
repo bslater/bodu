@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Recurrence;
 
 /// <summary>
-/// Represents one worked recurrence example transcribed from RFC 5545 §3.8.5.3, pairing the rule with the
-/// occurrence dates the standard lists for it.
+/// Represents one worked recurrence example transcribed from RFC 5545 §3.8.5.3, pairing the rule with the occurrence
+/// dates the standard lists for it.
 /// </summary>
 /// <param name="Name">The short label that identifies the row in failure diagnostics.</param>
 /// <param name="Start">The series start (<c>DTSTART</c>) read as a wall-clock instant.</param>

@@ -87,6 +87,9 @@ Occurrence semantics are pinned against the defining documents — RFC 5545 §3.
 - **A `BY` filter never re-anchors an interval.** `FREQ=DAILY;INTERVAL=14;BYMONTH=10,12` counts every fourteenth day from the start unconditionally and drops the ones falling outside October and December.
 - **`WKST` reparameterises week numbering**, not just weekly intervals: it changes which dates `BYWEEKNO` resolves to *and* which years have a fifty-third week. Numbered weeks straddle the calendar year, so week 1 may begin in the preceding December.
 - **The day-of-month and day-of-week cron fields combine by union only when both are restricted**, and Vixie decides "restricted" from the field's leading character — so `*/2` and `1-31/2` denote the same days but select different branches.
+- **A cron step wider than its range selects the range start**, rather than being rejected: `*/60` in the minute field means minute 0. cronie only warns about it, and some libraries throw.
+
+Those semantics are reconciled row by row against three committed corpora — the RFC's own worked examples, libical's occurrence counts, and a cron vector table derived from Cronos's test suite — currently 830 in-scope rows with zero differences. Where a corpus row exercises a dialect this library does not model (Quartz's `L`/`W`/`#` cron tokens, `EXRULE`, sub-daily frequencies), the row is flagged and reported by the test run rather than silently skipped. `corpus/recurrence/README.md` records the provenance of each table and every deliberate divergence.
 
 ## Parse defects are named
 

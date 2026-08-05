@@ -416,4 +416,28 @@ public partial class CronExpressionTests
     {
         Assert.AreEqual(CronExpression.Parse(equivalent), CronExpression.Parse(macro));
     }
+
+    /// <summary>
+    /// Verifies that a step wider than the range it applies to is accepted and selects only the range's first value,
+    /// rather than being rejected as malformed.
+    /// </summary>
+    /// <param name="expression">The expression carrying the oversized step.</param>
+    /// <param name="canonical">The equivalent expression naming the single value the field selects.</param>
+    /// <remarks>
+    /// cronie treats this as a warning rather than an error (<c>entry.c</c>: "Step size %i higher than possible
+    /// maximum of %i") and then runs <c>for (i = low; i &lt;= high; i += step)</c>, which sets exactly one bit. Cronos
+    /// rejects the same input, so its corpus rows for these expressions are excluded and the Vixie reading is pinned
+    /// here instead.
+    /// </remarks>
+    [TestMethod]
+    [DataRow("*/60 * * * *", "0 * * * *", DisplayName = "minute step past the whole field")]
+    [DataRow("1/60 * * * *", "1 * * * *", DisplayName = "minute step past the remaining range")]
+    [DataRow("* 1/24 * * *", "* 1 * * *", DisplayName = "hour step past the remaining range")]
+    [DataRow("* * 1/32 * *", "* * 1 * *", DisplayName = "day-of-month step past the remaining range")]
+    [DataRow("* * * 1/13 *", "* * * 1 *", DisplayName = "month step past the remaining range")]
+    [DataRow("* * * * 1/8", "* * * * 1", DisplayName = "weekday step past the remaining range")]
+    public void Parse_WhenStepExceedsItsRange_ShouldSelectOnlyTheRangeStart(string expression, string canonical)
+    {
+        Assert.AreEqual(CronExpression.Parse(canonical), CronExpression.Parse(expression));
+    }
 }

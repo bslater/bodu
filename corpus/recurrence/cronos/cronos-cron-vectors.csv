@@ -1,0 +1,1374 @@
+# Cron vectors derived from Cronos's CronExpressionFacts test suite
+# source-class: third-party-comparison (implementation test suite, not an authority)
+# source: Cronos -- https://github.com/HangfireIO/Cronos -- tests/Cronos.Tests/CronExpressionFacts.cs
+# acquired: 2026-08-05 (delivered user-side; host unreachable from the build env)
+# facts-sha256: 2d27080589fc183a1f647468b24053587713e3af52dd346640d98adde1e60bb5
+# licence: Cronos is MIT (Copyright (c) 2017 Hangfire OU). Deriving this table and redistributing it
+#          with attribution is permitted; the upstream file itself is not committed.
+# note: Cronos implements Quartz-flavoured cron. Where it deliberately differs from Vixie, the row is
+#       flagged and excluded rather than reconciled -- see corpus/recurrence/README.md.
+# flags: quartz-ext        = uses the Quartz L / W / # / ? tokens (Bodu rejects them; planned follow-on)
+#        hash              = uses the H jitter token (a Jenkins extension Bodu does not model)
+#        cronos-macro      = @every_second / @every_minute, macros Cronos adds beyond crontab(5)
+#        wrap-range        = a reversed range such as 55-5 (Cronos wraps; Bodu rejects)
+#        oversized-step    = a step wider than its range, e.g. */60 (Cronos throws; cronie warns and
+#                            keeps the range start, which is what Bodu does)
+#        dom-dow-intersect = both day fields restricted (Cronos intersects; Vixie and Bodu union)
+#        seconds-elision   = Cronos drops a zero seconds field from ToString; Bodu renders every field
+#        dst               = the row sits within a day of a US Eastern DST transition, where a
+#                            zone-free reading of the Cronos fixture is not offset-invariant
+name,kind,format,expression,from,expected,flags
+next-001,next,withSeconds,* * * * * *,2016-12-09T17:35:00,2016-12-09T17:35:00,
+next-002,next,withSeconds,20 * * * * *,2016-12-09T17:35:00,2016-12-09T17:35:20,
+next-003,next,withSeconds,20 * * * * *,2016-12-09T17:35:20,2016-12-09T17:35:20,
+next-004,next,withSeconds,20 * * * * *,2016-12-09T17:35:40,2016-12-09T17:36:20,
+next-005,next,withSeconds,10-30 * * * * *,2016-12-09T17:35:09,2016-12-09T17:35:10,
+next-006,next,withSeconds,10-30 * * * * *,2016-12-09T17:35:10,2016-12-09T17:35:10,
+next-007,next,withSeconds,10-30 * * * * *,2016-12-09T17:35:20,2016-12-09T17:35:20,
+next-008,next,withSeconds,10-30 * * * * *,2016-12-09T17:35:30,2016-12-09T17:35:30,
+next-009,next,withSeconds,10-30 * * * * *,2016-12-09T17:35:31,2016-12-09T17:36:10,
+next-010,next,withSeconds,*/20 * * * * *,2016-12-09T17:35:00,2016-12-09T17:35:00,
+next-011,next,withSeconds,*/20 * * * * *,2016-12-09T17:35:11,2016-12-09T17:35:20,
+next-012,next,withSeconds,*/20 * * * * *,2016-12-09T17:35:20,2016-12-09T17:35:20,
+next-013,next,withSeconds,*/20 * * * * *,2016-12-09T17:35:25,2016-12-09T17:35:40,
+next-014,next,withSeconds,*/20 * * * * *,2016-12-09T17:35:59,2016-12-09T17:36:00,
+next-015,next,withSeconds,10/5 * * * * *,2016-12-09T17:35:00,2016-12-09T17:35:10,
+next-016,next,withSeconds,10/5 * * * * *,2016-12-09T17:35:12,2016-12-09T17:35:15,
+next-017,next,withSeconds,10/5 * * * * *,2016-12-09T17:35:59,2016-12-09T17:36:10,
+next-018,next,withSeconds,0 * * * * *,2016-12-09T17:35:59,2016-12-09T17:36:00,
+next-019,next,withSeconds,0 * * * * *,2016-12-09T17:59:59,2016-12-09T18:00:00,
+next-020,next,withSeconds,"5-8,19,20,35-41 * * * * *",2016-12-09T17:35:01,2016-12-09T17:35:05,
+next-021,next,withSeconds,"5-8,19,20,35-41 * * * * *",2016-12-09T17:35:06,2016-12-09T17:35:06,
+next-022,next,withSeconds,"5-8,19,20,35-41 * * * * *",2016-12-09T17:35:18,2016-12-09T17:35:19,
+next-023,next,withSeconds,"5-8,19,20,35-41 * * * * *",2016-12-09T17:35:19,2016-12-09T17:35:19,
+next-024,next,withSeconds,"5-8,19,20,35-41 * * * * *",2016-12-09T17:35:20,2016-12-09T17:35:20,
+next-025,next,withSeconds,"5-8,19,20,35-41 * * * * *",2016-12-09T17:35:21,2016-12-09T17:35:35,
+next-026,next,withSeconds,"5-8,19,20,35-41 * * * * *",2016-12-09T17:35:36,2016-12-09T17:35:36,
+next-027,next,withSeconds,"5-8,19,20,35-41 * * * * *",2016-12-09T17:35:42,2016-12-09T17:36:05,
+next-028,next,withSeconds,55-5 * * * * ?,2016-12-09T17:35:42,2016-12-09T17:35:55,quartz-ext wrap-range
+next-029,next,withSeconds,55-5 * * * * ?,2016-12-09T17:35:57,2016-12-09T17:35:57,quartz-ext wrap-range
+next-030,next,withSeconds,55-5 * * * * ?,2016-12-09T17:35:59,2016-12-09T17:35:59,quartz-ext wrap-range
+next-031,next,withSeconds,55-5 * * * * ?,2016-12-09T17:36:00,2016-12-09T17:36:00,quartz-ext wrap-range
+next-032,next,withSeconds,55-5 * * * * ?,2016-12-09T17:36:05,2016-12-09T17:36:05,quartz-ext wrap-range
+next-033,next,withSeconds,55-5 * * * * ?,2016-12-09T17:36:06,2016-12-09T17:36:55,quartz-ext wrap-range
+next-034,next,withSeconds,57-5/3 * * * * ?,2016-12-09T17:36:06,2016-12-09T17:36:57,quartz-ext wrap-range oversized-step
+next-035,next,withSeconds,57-5/3 * * * * ?,2016-12-09T17:36:58,2016-12-09T17:37:00,quartz-ext wrap-range oversized-step
+next-036,next,withSeconds,57-5/3 * * * * ?,2016-12-09T17:37:01,2016-12-09T17:37:03,quartz-ext wrap-range oversized-step
+next-037,next,withSeconds,57-5/3 * * * * ?,2016-12-09T17:37:04,2016-12-09T17:37:57,quartz-ext wrap-range oversized-step
+next-038,next,withSeconds,59-58 * * * * ?,2016-12-09T17:37:04,2016-12-09T17:37:04,quartz-ext wrap-range
+next-039,next,withSeconds,59-58 * * * * ?,2016-12-09T17:37:58,2016-12-09T17:37:58,quartz-ext wrap-range
+next-040,next,withSeconds,59-58 * * * * ?,2016-12-09T17:37:59,2016-12-09T17:37:59,quartz-ext wrap-range
+next-041,next,withSeconds,59-58 * * * * ?,2016-12-09T17:38:00,2016-12-09T17:38:00,quartz-ext wrap-range
+next-042,next,withSeconds,* 12 * * * *,2016-12-09T15:05:00,2016-12-09T15:12:00,
+next-043,next,withSeconds,* 12 * * * *,2016-12-09T15:12:00,2016-12-09T15:12:00,
+next-044,next,withSeconds,* 12 * * * *,2016-12-09T15:59:00,2016-12-09T16:12:00,
+next-045,next,withSeconds,* 31-39 * * * *,2016-12-09T15:00:00,2016-12-09T15:31:00,
+next-046,next,withSeconds,* 31-39 * * * *,2016-12-09T15:30:00,2016-12-09T15:31:00,
+next-047,next,withSeconds,* 31-39 * * * *,2016-12-09T15:31:00,2016-12-09T15:31:00,
+next-048,next,withSeconds,* 31-39 * * * *,2016-12-09T15:39:00,2016-12-09T15:39:00,
+next-049,next,withSeconds,* 31-39 * * * *,2016-12-09T15:59:00,2016-12-09T16:31:00,
+next-050,next,withSeconds,* */20 * * * *,2016-12-09T15:00:00,2016-12-09T15:00:00,
+next-051,next,withSeconds,* */20 * * * *,2016-12-09T15:10:00,2016-12-09T15:20:00,
+next-052,next,withSeconds,* */20 * * * *,2016-12-09T15:59:00,2016-12-09T16:00:00,
+next-053,next,withSeconds,* 10/5 * * * *,2016-12-09T15:00:00,2016-12-09T15:10:00,
+next-054,next,withSeconds,* 10/5 * * * *,2016-12-09T15:14:00,2016-12-09T15:15:00,
+next-055,next,withSeconds,* 10/5 * * * *,2016-12-09T15:59:00,2016-12-09T16:10:00,
+next-056,next,withSeconds,* 0 * * * *,2016-12-09T15:59:00,2016-12-09T16:00:00,
+next-057,next,withSeconds,"* 5-8,19,20,35-41 * * * *",2016-12-09T15:01:00,2016-12-09T15:05:00,
+next-058,next,withSeconds,"* 5-8,19,20,35-41 * * * *",2016-12-09T15:06:00,2016-12-09T15:06:00,
+next-059,next,withSeconds,"* 5-8,19,20,35-41 * * * *",2016-12-09T15:18:00,2016-12-09T15:19:00,
+next-060,next,withSeconds,"* 5-8,19,20,35-41 * * * *",2016-12-09T15:19:00,2016-12-09T15:19:00,
+next-061,next,withSeconds,"* 5-8,19,20,35-41 * * * *",2016-12-09T15:20:00,2016-12-09T15:20:00,
+next-062,next,withSeconds,"* 5-8,19,20,35-41 * * * *",2016-12-09T15:21:00,2016-12-09T15:35:00,
+next-063,next,withSeconds,"* 5-8,19,20,35-41 * * * *",2016-12-09T15:36:00,2016-12-09T15:36:00,
+next-064,next,withSeconds,"* 5-8,19,20,35-41 * * * *",2016-12-09T15:42:00,2016-12-09T16:05:00,
+next-065,next,withSeconds,* 51-4 * * * *,2016-12-09T17:35:00,2016-12-09T17:51:00,wrap-range
+next-066,next,withSeconds,* 51-4 * * * *,2016-12-09T17:51:00,2016-12-09T17:51:00,wrap-range
+next-067,next,withSeconds,* 51-4 * * * *,2016-12-09T17:55:00,2016-12-09T17:55:00,wrap-range
+next-068,next,withSeconds,* 51-4 * * * *,2016-12-09T17:59:00,2016-12-09T17:59:00,wrap-range
+next-069,next,withSeconds,* 51-4 * * * *,2016-12-09T18:00:00,2016-12-09T18:00:00,wrap-range
+next-070,next,withSeconds,* 51-4 * * * *,2016-12-09T18:04:00,2016-12-09T18:04:00,wrap-range
+next-071,next,withSeconds,* 51-4 * * * *,2016-12-09T18:05:00,2016-12-09T18:51:00,wrap-range
+next-072,next,withSeconds,* 56-4/4 * * * *,2016-12-09T17:55:00,2016-12-09T17:56:00,wrap-range oversized-step
+next-073,next,withSeconds,* 56-4/4 * * * *,2016-12-09T17:57:00,2016-12-09T18:00:00,wrap-range oversized-step
+next-074,next,withSeconds,* 56-4/4 * * * *,2016-12-09T18:01:00,2016-12-09T18:04:00,wrap-range oversized-step
+next-075,next,withSeconds,* 56-4/4 * * * *,2016-12-09T18:05:00,2016-12-09T18:56:00,wrap-range oversized-step
+next-076,next,withSeconds,* 45-44 * * * *,2016-12-09T18:45:00,2016-12-09T18:45:00,wrap-range
+next-077,next,withSeconds,* 45-44 * * * *,2016-12-09T18:55:00,2016-12-09T18:55:00,wrap-range
+next-078,next,withSeconds,* 45-44 * * * *,2016-12-09T18:59:00,2016-12-09T18:59:00,wrap-range
+next-079,next,withSeconds,* 45-44 * * * *,2016-12-09T19:00:00,2016-12-09T19:00:00,wrap-range
+next-080,next,withSeconds,* 45-44 * * * *,2016-12-09T19:44:00,2016-12-09T19:44:00,wrap-range
+next-081,next,withSeconds,* * 11 * * *,2016-12-09T10:59:00,2016-12-09T11:00:00,
+next-082,next,withSeconds,* * 11 * * *,2016-12-09T11:30:00,2016-12-09T11:30:00,
+next-083,next,withSeconds,* * 3-22 * * *,2016-12-09T01:40:00,2016-12-09T03:00:00,
+next-084,next,withSeconds,* * 3-22 * * *,2016-12-09T11:40:00,2016-12-09T11:40:00,
+next-085,next,withSeconds,* * */2 * * *,2016-12-09T00:00:00,2016-12-09T00:00:00,
+next-086,next,withSeconds,* * */2 * * *,2016-12-09T01:00:00,2016-12-09T02:00:00,
+next-087,next,withSeconds,* * 4/5 * * *,2016-12-09T00:45:00,2016-12-09T04:00:00,
+next-088,next,withSeconds,* * 4/5 * * *,2016-12-09T04:14:00,2016-12-09T04:14:00,
+next-089,next,withSeconds,* * 4/5 * * *,2016-12-09T05:00:00,2016-12-09T09:00:00,
+next-090,next,withSeconds,"* * 3-5,10,11,13-17 * * *",2016-12-09T01:55:00,2016-12-09T03:00:00,
+next-091,next,withSeconds,"* * 3-5,10,11,13-17 * * *",2016-12-09T04:55:00,2016-12-09T04:55:00,
+next-092,next,withSeconds,"* * 3-5,10,11,13-17 * * *",2016-12-09T06:10:00,2016-12-09T10:00:00,
+next-093,next,withSeconds,"* * 3-5,10,11,13-17 * * *",2016-12-09T10:55:00,2016-12-09T10:55:00,
+next-094,next,withSeconds,"* * 3-5,10,11,13-17 * * *",2016-12-09T11:25:00,2016-12-09T11:25:00,
+next-095,next,withSeconds,"* * 3-5,10,11,13-17 * * *",2016-12-09T12:30:00,2016-12-09T13:00:00,
+next-096,next,withSeconds,"* * 3-5,10,11,13-17 * * *",2016-12-09T17:30:00,2016-12-09T17:30:00,
+next-097,next,withSeconds,* * 23-3/2 * * *,2016-12-09T17:30:00,2016-12-09T23:00:00,wrap-range oversized-step
+next-098,next,withSeconds,* * 23-3/2 * * *,2016-12-09T00:30:00,2016-12-09T01:00:00,wrap-range oversized-step
+next-099,next,withSeconds,* * 23-3/2 * * *,2016-12-09T02:00:00,2016-12-09T03:00:00,wrap-range oversized-step
+next-100,next,withSeconds,* * 23-3/2 * * *,2016-12-09T04:00:00,2016-12-09T23:00:00,wrap-range oversized-step
+next-101,next,withSeconds,* * 23-22 * * *,2016-12-09T22:10:00,2016-12-09T22:10:00,wrap-range
+next-102,next,withSeconds,* * 23-22 * * *,2016-12-09T23:10:00,2016-12-09T23:10:00,wrap-range
+next-103,next,withSeconds,* * 23-22 * * *,2016-12-09T00:10:00,2016-12-09T00:10:00,wrap-range
+next-104,next,withSeconds,* * 23-22 * * *,2016-12-09T07:10:00,2016-12-09T07:10:00,wrap-range
+next-105,next,withSeconds,* * * 9 * *,2016-11-01T00:00:00,2016-11-09T00:00:00,
+next-106,next,withSeconds,* * * 9 * *,2016-11-09T00:00:00,2016-11-09T00:00:00,
+next-107,next,withSeconds,* * * 09 * *,2016-11-10T00:00:00,2016-12-09T00:00:00,
+next-108,next,withSeconds,* * * */4 * *,2016-12-01T00:00:00,2016-12-01T00:00:00,
+next-109,next,withSeconds,* * * */4 * *,2016-12-02T00:00:00,2016-12-05T00:00:00,
+next-110,next,withSeconds,* * * */4 * *,2016-12-06T00:00:00,2016-12-09T00:00:00,
+next-111,next,withSeconds,* * * */3 * *,2016-12-02T00:00:00,2016-12-04T00:00:00,
+next-112,next,withSeconds,"* * * 10,20 * *",2016-12-09T00:00:00,2016-12-10T00:00:00,
+next-113,next,withSeconds,"* * * 10,20 * *",2016-12-12T00:00:00,2016-12-20T00:00:00,
+next-114,next,withSeconds,* * * 16-23 * *,2016-12-01T00:00:00,2016-12-16T00:00:00,
+next-115,next,withSeconds,* * * 16-23 * *,2016-12-16T00:00:00,2016-12-16T00:00:00,
+next-116,next,withSeconds,* * * 16-23 * *,2016-12-18T00:00:00,2016-12-18T00:00:00,
+next-117,next,withSeconds,* * * 16-23 * *,2016-12-23T00:00:00,2016-12-23T00:00:00,
+next-118,next,withSeconds,* * * 16-23 * *,2016-12-24T00:00:00,2017-01-16T00:00:00,
+next-119,next,withSeconds,"* * * 5-8,19,20,28-29 * *",2016-12-01T00:00:00,2016-12-05T00:00:00,
+next-120,next,withSeconds,"* * * 5-8,19,20,28-29 * *",2016-12-05T00:00:00,2016-12-05T00:00:00,
+next-121,next,withSeconds,"* * * 5-8,19,20,28-29 * *",2016-12-06T00:00:00,2016-12-06T00:00:00,
+next-122,next,withSeconds,"* * * 5-8,19,20,28-29 * *",2016-12-08T00:00:00,2016-12-08T00:00:00,
+next-123,next,withSeconds,"* * * 5-8,19,20,28-29 * *",2016-12-09T00:00:00,2016-12-19T00:00:00,
+next-124,next,withSeconds,"* * * 5-8,19,20,28-29 * *",2016-12-20T00:00:00,2016-12-20T00:00:00,
+next-125,next,withSeconds,"* * * 5-8,19,20,28-29 * *",2016-12-21T00:00:00,2016-12-28T00:00:00,
+next-126,next,withSeconds,"* * * 5-8,19,20,28-29 * *",2016-12-30T00:00:00,2017-01-05T00:00:00,
+next-127,next,withSeconds,"* * * 5-8,19,20,29-30 * *",2017-02-27T00:00:00,2017-03-05T00:00:00,
+next-128,next,withSeconds,* * * 30-31 * *,2016-02-27T00:00:00,2016-03-30T00:00:00,
+next-129,next,withSeconds,* * * 30-31 * *,2017-02-27T00:00:00,2017-03-30T00:00:00,
+next-130,next,withSeconds,* * * 31 * *,2017-04-27T00:00:00,2017-05-31T00:00:00,
+next-131,next,withSeconds,* * * 20-5/5 * *,2017-05-19T00:00:00,2017-05-20T00:00:00,wrap-range oversized-step
+next-132,next,withSeconds,* * * 20-5/5 * *,2017-05-21T00:00:00,2017-05-25T00:00:00,wrap-range oversized-step
+next-133,next,withSeconds,* * * 20-5/5 * *,2017-05-26T00:00:00,2017-05-30T00:00:00,wrap-range oversized-step
+next-134,next,withSeconds,* * * 20-5/5 * *,2017-06-01T00:00:00,2017-06-04T00:00:00,wrap-range oversized-step
+next-135,next,withSeconds,* * * 20-5/5 * *,2017-06-05T00:00:00,2017-06-20T00:00:00,wrap-range oversized-step
+next-136,next,withSeconds,* * * 20-5/5 * *,2017-07-01T00:00:00,2017-07-04T00:00:00,wrap-range oversized-step
+next-137,next,withSeconds,* * * 20-5/5 * *,2018-02-26T00:00:00,2018-03-04T00:00:00,wrap-range oversized-step
+next-138,next,withSeconds,* * * * 11 *,2016-10-09T00:00:00,2016-11-01T00:00:00,
+next-139,next,withSeconds,* * * * 11 *,2016-11-02T00:00:00,2016-11-02T00:00:00,
+next-140,next,withSeconds,* * * * 11 *,2016-12-02T00:00:00,2017-11-01T00:00:00,
+next-141,next,withSeconds,"* * * * 3,9 *",2016-01-09T00:00:00,2016-03-01T00:00:00,
+next-142,next,withSeconds,"* * * * 3,9 *",2016-06-09T00:00:00,2016-09-01T00:00:00,
+next-143,next,withSeconds,"* * * * 3,9 *",2016-10-09T00:00:00,2017-03-01T00:00:00,
+next-144,next,withSeconds,* * * * 5-11 *,2016-01-01T00:00:00,2016-05-01T00:00:00,
+next-145,next,withSeconds,* * * * 5-11 *,2016-05-07T00:00:00,2016-05-07T00:00:00,
+next-146,next,withSeconds,* * * * 5-11 *,2016-07-12T00:00:00,2016-07-12T00:00:00,
+next-147,next,withSeconds,* * * * 05-11 *,2016-12-13T00:00:00,2017-05-01T00:00:00,
+next-148,next,withSeconds,* * * * DEC *,2016-08-09T00:00:00,2016-12-01T00:00:00,
+next-149,next,withSeconds,* * * * mar-dec *,2016-02-09T00:00:00,2016-03-01T00:00:00,
+next-150,next,withSeconds,* * * * mar-dec *,2016-04-09T00:00:00,2016-04-09T00:00:00,
+next-151,next,withSeconds,* * * * mar-dec *,2016-12-09T00:00:00,2016-12-09T00:00:00,
+next-152,next,withSeconds,* * * * */4 *,2016-01-09T00:00:00,2016-01-09T00:00:00,
+next-153,next,withSeconds,* * * * */4 *,2016-02-09T00:00:00,2016-05-01T00:00:00,
+next-154,next,withSeconds,* * * * */3 *,2016-12-09T00:00:00,2017-01-01T00:00:00,
+next-155,next,withSeconds,* * * * */5 *,2016-12-09T00:00:00,2017-01-01T00:00:00,
+next-156,next,withSeconds,* * * * APR-NOV *,2016-12-09T00:00:00,2017-04-01T00:00:00,
+next-157,next,withSeconds,"* * * * 2-4,JUN,7,SEP-nov *",2016-01-01T00:00:00,2016-02-01T00:00:00,
+next-158,next,withSeconds,"* * * * 2-4,JUN,7,SEP-nov *",2016-02-10T00:00:00,2016-02-10T00:00:00,
+next-159,next,withSeconds,"* * * * 2-4,JUN,7,SEP-nov *",2016-03-01T00:00:00,2016-03-01T00:00:00,
+next-160,next,withSeconds,"* * * * 2-4,JUN,7,SEP-nov *",2016-05-20T00:00:00,2016-06-01T00:00:00,
+next-161,next,withSeconds,"* * * * 2-4,JUN,7,SEP-nov *",2016-06-10T00:00:00,2016-06-10T00:00:00,
+next-162,next,withSeconds,"* * * * 2-4,JUN,7,SEP-nov *",2016-07-05T00:00:00,2016-07-05T00:00:00,
+next-163,next,withSeconds,"* * * * 2-4,JUN,7,SEP-nov *",2016-08-15T00:00:00,2016-09-01T00:00:00,
+next-164,next,withSeconds,"* * * * 2-4,JUN,7,SEP-nov *",2016-11-25T00:00:00,2016-11-25T00:00:00,
+next-165,next,withSeconds,"* * * * 2-4,JUN,7,SEP-nov *",2016-12-01T00:00:00,2017-02-01T00:00:00,
+next-166,next,withSeconds,* * * * 12-2 *,2016-05-19T00:00:00,2016-12-01T00:00:00,wrap-range
+next-167,next,withSeconds,* * * * 12-2 *,2017-01-19T00:00:00,2017-01-19T00:00:00,wrap-range
+next-168,next,withSeconds,* * * * 12-2 *,2017-02-19T00:00:00,2017-02-19T00:00:00,wrap-range
+next-169,next,withSeconds,* * * * 12-2 *,2017-03-19T00:00:00,2017-12-01T00:00:00,wrap-range
+next-170,next,withSeconds,* * * * 9-8/3 *,2016-07-19T00:00:00,2016-09-01T00:00:00,wrap-range oversized-step
+next-171,next,withSeconds,* * * * 9-8/3 *,2016-10-19T00:00:00,2016-12-01T00:00:00,wrap-range oversized-step
+next-172,next,withSeconds,* * * * 9-8/3 *,2017-01-19T00:00:00,2017-03-01T00:00:00,wrap-range oversized-step
+next-173,next,withSeconds,* * * * 9-8/3 *,2017-04-19T00:00:00,2017-06-01T00:00:00,wrap-range oversized-step
+next-174,next,withSeconds,* * * * * 5,2016-12-07T00:00:00,2016-12-09T00:00:00,
+next-175,next,withSeconds,* * * * * 5,2016-12-09T00:00:00,2016-12-09T00:00:00,
+next-176,next,withSeconds,* * * * * 05,2016-12-10T00:00:00,2016-12-16T00:00:00,
+next-177,next,withSeconds,"* * * * * 3,5,7",2016-12-09T00:00:00,2016-12-09T00:00:00,
+next-178,next,withSeconds,"* * * * * 3,5,7",2016-12-10T00:00:00,2016-12-11T00:00:00,
+next-179,next,withSeconds,"* * * * * 3,5,7",2016-12-12T00:00:00,2016-12-14T00:00:00,
+next-180,next,withSeconds,* * * * * 4-7,2016-12-08T00:00:00,2016-12-08T00:00:00,
+next-181,next,withSeconds,* * * * * 4-7,2016-12-10T00:00:00,2016-12-10T00:00:00,
+next-182,next,withSeconds,* * * * * 4-7,2016-12-11T00:00:00,2016-12-11T00:00:00,
+next-183,next,withSeconds,* * * * * 4-07,2016-12-12T00:00:00,2016-12-15T00:00:00,
+next-184,next,withSeconds,* * * * * FRI,2016-12-08T00:00:00,2016-12-09T00:00:00,
+next-185,next,withSeconds,* * * * * tue/2,2016-12-09T00:00:00,2016-12-10T00:00:00,
+next-186,next,withSeconds,* * * * * tue/2,2016-12-11T00:00:00,2016-12-13T00:00:00,
+next-187,next,withSeconds,* * * * * FRI/3,2016-12-03T00:00:00,2016-12-09T00:00:00,oversized-step
+next-188,next,withSeconds,* * * * * thu-sat,2016-12-04T00:00:00,2016-12-08T00:00:00,
+next-189,next,withSeconds,* * * * * thu-sat,2016-12-09T00:00:00,2016-12-09T00:00:00,
+next-190,next,withSeconds,* * * * * thu-sat,2016-12-10T00:00:00,2016-12-10T00:00:00,
+next-191,next,withSeconds,* * * * * thu-sat,2016-12-12T00:00:00,2016-12-15T00:00:00,
+next-192,next,withSeconds,* * * * * */5,2016-12-08T00:00:00,2016-12-09T00:00:00,
+next-193,next,withSeconds,* * * * * */5,2016-12-10T00:00:00,2016-12-11T00:00:00,
+next-194,next,withSeconds,* * * * * */5,2016-12-12T00:00:00,2016-12-16T00:00:00,
+next-195,next,withSeconds,* * * ? * thu-sun,2016-12-09T00:00:00,2016-12-09T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-196,next,withSeconds,* * * ? * sat-tue,2016-12-10T00:00:00,2016-12-10T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-197,next,withSeconds,* * * ? * sat-tue,2016-12-11T00:00:00,2016-12-11T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-198,next,withSeconds,* * * ? * sat-tue,2016-12-12T00:00:00,2016-12-12T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-199,next,withSeconds,* * * ? * sat-tue,2016-12-13T00:00:00,2016-12-13T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-200,next,withSeconds,* * * ? * sat-tue,2016-12-14T00:00:00,2016-12-17T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-201,next,withSeconds,* * * ? * sat-tue/2,2016-12-10T00:00:00,2016-12-10T00:00:00,quartz-ext wrap-range oversized-step dom-dow-intersect
+next-202,next,withSeconds,* * * ? * sat-tue/2,2016-12-11T00:00:00,2016-12-12T00:00:00,quartz-ext wrap-range oversized-step dom-dow-intersect
+next-203,next,withSeconds,* * * ? * sat-tue/2,2016-12-12T00:00:00,2016-12-12T00:00:00,quartz-ext wrap-range oversized-step dom-dow-intersect
+next-204,next,withSeconds,* * * ? * sat-tue/2,2016-12-13T00:00:00,2016-12-17T00:00:00,quartz-ext wrap-range oversized-step dom-dow-intersect
+next-205,next,withSeconds,00 00 00 11 12 0,2016-12-07T00:00:00,2016-12-11T00:00:00,dom-dow-intersect
+next-206,next,withSeconds,00 00 00 11 12 7,2016-12-09T00:00:00,2016-12-11T00:00:00,dom-dow-intersect
+next-207,next,withSeconds,00 00 00 11 12 SUN,2016-12-10T00:00:00,2016-12-11T00:00:00,dom-dow-intersect
+next-208,next,withSeconds,00 00 00 11 12 sun,2016-12-09T00:00:00,2016-12-11T00:00:00,dom-dow-intersect
+next-209,next,withSeconds,54 47 17 09 12 5,2016-10-01T00:00:00,2016-12-09T17:47:54,dom-dow-intersect
+next-210,next,withSeconds,54 47 17 09 DEC FRI,2016-07-05T00:00:00,2016-12-09T17:47:54,dom-dow-intersect
+next-211,next,withSeconds,"50-56 40-50 15-20 5-10 11,12 5,6,7",2016-12-01T00:00:00,2016-12-09T15:40:50,dom-dow-intersect
+next-212,next,withSeconds,"50-56 40-50 15-20 5-10 11,12 5,6,7",2016-12-09T15:40:53,2016-12-09T15:40:53,dom-dow-intersect
+next-213,next,withSeconds,"50-56 40-50 15-20 5-10 11,12 5,6,7",2016-12-09T15:40:57,2016-12-09T15:41:50,dom-dow-intersect
+next-214,next,withSeconds,"50-56 40-50 15-20 5-10 11,12 5,6,7",2016-12-09T15:45:56,2016-12-09T15:45:56,dom-dow-intersect
+next-215,next,withSeconds,"50-56 40-50 15-20 5-10 11,12 5,6,7",2016-12-09T15:51:56,2016-12-09T16:40:50,dom-dow-intersect
+next-216,next,withSeconds,"50-56 40-50 15-20 5-10 11,12 5,6,7",2016-12-09T21:50:56,2016-12-10T15:40:50,dom-dow-intersect
+next-217,next,withSeconds,"50-56 40-50 15-20 5-10 11,12 5,6,7",2016-12-11T21:50:56,2017-11-05T15:40:50,dom-dow-intersect dst
+next-218,next,withSeconds,00 05 18 13 01 05,2016-01-01T00:00:00,2017-01-13T18:05:00,dom-dow-intersect
+next-219,next,withSeconds,00 05 18 13 * 05,2016-01-01T00:00:00,2016-05-13T18:05:00,dom-dow-intersect
+next-220,next,withSeconds,00 05 18 13 * 05,2016-09-01T00:00:00,2017-01-13T18:05:00,dom-dow-intersect
+next-221,next,withSeconds,00 05 18 13 * 05,2017-02-01T00:00:00,2017-10-13T18:05:00,dom-dow-intersect
+next-222,next,withSeconds,0 * * * * *,2017-01-14T12:58:59,2017-01-14T12:59:00,
+next-223,next,withSeconds,0 0 * * * *,2017-01-14T12:59:00,2017-01-14T13:00:00,
+next-224,next,withSeconds,0 0 0 * * *,2017-01-14T23:00:00,2017-01-15T00:00:00,
+next-225,next,withSeconds,0 0 0 1 * *,2016-02-10T00:00:00,2016-03-01T00:00:00,
+next-226,next,withSeconds,0 0 0 1 * *,2017-02-10T00:00:00,2017-03-01T00:00:00,
+next-227,next,withSeconds,0 0 0 1 * *,2017-04-10T00:00:00,2017-05-01T00:00:00,
+next-228,next,withSeconds,0 0 0 1 * *,2017-01-30T00:00:00,2017-02-01T00:00:00,
+next-229,next,withSeconds,0 0 0 * * *,2017-12-31T23:59:00,2018-01-01T00:00:00,
+next-230,next,withSeconds,0 0 0 30 * *,2017-02-25T00:00:00,2017-03-30T00:00:00,
+next-231,next,withSeconds,0 0 0 31 * *,2017-02-25T00:00:00,2017-03-31T00:00:00,
+next-232,next,withSeconds,0 0 0 31 * *,2017-04-01T00:00:00,2017-05-31T00:00:00,
+next-233,next,withSeconds,0 0 0 29 2 *,2016-03-10T00:00:00,2020-02-29T00:00:00,
+next-234,next,withSeconds,* * * L * *,2016-01-05T00:00:00,2016-01-31T00:00:00,quartz-ext
+next-235,next,withSeconds,* * * L * *,2016-01-31T00:00:00,2016-01-31T00:00:00,quartz-ext
+next-236,next,withSeconds,* * * L * *,2016-02-05T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-237,next,withSeconds,* * * L * *,2016-02-29T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-238,next,withSeconds,* * * L 2 *,2016-02-29T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-239,next,withSeconds,* * * L * *,2017-02-28T00:00:00,2017-02-28T00:00:00,quartz-ext
+next-240,next,withSeconds,* * * L * *,2016-03-05T00:00:00,2016-03-31T00:00:00,quartz-ext
+next-241,next,withSeconds,* * * L * *,2016-03-31T00:00:00,2016-03-31T00:00:00,quartz-ext
+next-242,next,withSeconds,* * * L * *,2016-04-05T00:00:00,2016-04-30T00:00:00,quartz-ext
+next-243,next,withSeconds,* * * L * *,2016-04-30T00:00:00,2016-04-30T00:00:00,quartz-ext
+next-244,next,withSeconds,* * * L * *,2016-05-05T00:00:00,2016-05-31T00:00:00,quartz-ext
+next-245,next,withSeconds,* * * L * *,2016-05-31T00:00:00,2016-05-31T00:00:00,quartz-ext
+next-246,next,withSeconds,* * * L * *,2016-06-05T00:00:00,2016-06-30T00:00:00,quartz-ext
+next-247,next,withSeconds,* * * L * *,2016-06-30T00:00:00,2016-06-30T00:00:00,quartz-ext
+next-248,next,withSeconds,* * * L * *,2016-07-05T00:00:00,2016-07-31T00:00:00,quartz-ext
+next-249,next,withSeconds,* * * L * *,2016-07-31T00:00:00,2016-07-31T00:00:00,quartz-ext
+next-250,next,withSeconds,* * * L * *,2016-08-05T00:00:00,2016-08-31T00:00:00,quartz-ext
+next-251,next,withSeconds,* * * L * *,2016-08-31T00:00:00,2016-08-31T00:00:00,quartz-ext
+next-252,next,withSeconds,* * * L * *,2016-09-05T00:00:00,2016-09-30T00:00:00,quartz-ext
+next-253,next,withSeconds,* * * L * *,2016-09-30T00:00:00,2016-09-30T00:00:00,quartz-ext
+next-254,next,withSeconds,* * * L * *,2016-10-05T00:00:00,2016-10-31T00:00:00,quartz-ext
+next-255,next,withSeconds,* * * L * *,2016-10-31T00:00:00,2016-10-31T00:00:00,quartz-ext
+next-256,next,withSeconds,* * * L * *,2016-11-05T00:00:00,2016-11-30T00:00:00,quartz-ext dst
+next-257,next,withSeconds,* * * L * *,2016-12-05T00:00:00,2016-12-31T00:00:00,quartz-ext
+next-258,next,withSeconds,* * * L * *,2016-12-31T00:00:00,2016-12-31T00:00:00,quartz-ext
+next-259,next,withSeconds,* * * L * *,2099-12-05T00:00:00,2099-12-31T00:00:00,quartz-ext
+next-260,next,withSeconds,* * * L * *,2099-12-31T00:00:00,2099-12-31T00:00:00,quartz-ext
+next-261,next,withSeconds,* * * L-1 * *,2016-01-01T00:00:00,2016-01-30T00:00:00,quartz-ext
+next-262,next,withSeconds,* * * L-1 * *,2016-01-29T00:00:00,2016-01-30T00:00:00,quartz-ext
+next-263,next,withSeconds,* * * L-1 * *,2016-01-30T00:00:00,2016-01-30T00:00:00,quartz-ext
+next-264,next,withSeconds,* * * L-1 * *,2016-01-31T00:00:00,2016-02-28T00:00:00,quartz-ext
+next-265,next,withSeconds,* * * L-1 * *,2016-02-01T00:00:00,2016-02-28T00:00:00,quartz-ext
+next-266,next,withSeconds,* * * L-1 * *,2016-02-28T00:00:00,2016-02-28T00:00:00,quartz-ext
+next-267,next,withSeconds,* * * L-1 * *,2017-02-01T00:00:00,2017-02-27T00:00:00,quartz-ext
+next-268,next,withSeconds,* * * L-1 * *,2017-02-27T00:00:00,2017-02-27T00:00:00,quartz-ext
+next-269,next,withSeconds,* * * L-1 * *,2016-04-01T00:00:00,2016-04-29T00:00:00,quartz-ext
+next-270,next,withSeconds,* * * L-1 * *,2016-04-29T00:00:00,2016-04-29T00:00:00,quartz-ext
+next-271,next,withSeconds,* * * L-1 * *,2016-12-01T00:00:00,2016-12-30T00:00:00,quartz-ext
+next-272,next,withSeconds,* * * L-2 * *,2016-01-05T00:00:00,2016-01-29T00:00:00,quartz-ext
+next-273,next,withSeconds,* * * L-2 * *,2016-01-30T00:00:00,2016-02-27T00:00:00,quartz-ext
+next-274,next,withSeconds,* * * L-2 * *,2016-02-01T00:00:00,2016-02-27T00:00:00,quartz-ext
+next-275,next,withSeconds,* * * L-2 * *,2017-02-01T00:00:00,2017-02-26T00:00:00,quartz-ext
+next-276,next,withSeconds,* * * L-2 * *,2016-04-01T00:00:00,2016-04-28T00:00:00,quartz-ext
+next-277,next,withSeconds,* * * L-2 * *,2016-12-01T00:00:00,2016-12-29T00:00:00,quartz-ext
+next-278,next,withSeconds,* * * L-2 * *,2016-12-29T00:00:00,2016-12-29T00:00:00,quartz-ext
+next-279,next,withSeconds,* * * L-2 * *,2016-12-30T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-280,next,withSeconds,* * * L-28 * *,2016-01-01T00:00:00,2016-01-03T00:00:00,quartz-ext
+next-281,next,withSeconds,* * * L-28 * *,2016-04-01T00:00:00,2016-04-02T00:00:00,quartz-ext
+next-282,next,withSeconds,* * * L-28 * *,2016-02-01T00:00:00,2016-02-01T00:00:00,quartz-ext
+next-283,next,withSeconds,* * * L-28 * *,2017-02-01T00:00:00,2017-03-03T00:00:00,quartz-ext
+next-284,next,withSeconds,* * * L-29 * *,2016-01-01T00:00:00,2016-01-02T00:00:00,quartz-ext
+next-285,next,withSeconds,* * * L-29 * *,2016-04-01T00:00:00,2016-04-01T00:00:00,quartz-ext
+next-286,next,withSeconds,* * * L-29 * *,2016-02-01T00:00:00,2016-03-02T00:00:00,quartz-ext
+next-287,next,withSeconds,* * * L-29 * *,2017-02-01T00:00:00,2017-03-02T00:00:00,quartz-ext
+next-288,next,withSeconds,* * * L-30 * *,2016-01-01T00:00:00,2016-01-01T00:00:00,quartz-ext
+next-289,next,withSeconds,* * * L-30 * *,2016-04-01T00:00:00,2016-05-01T00:00:00,quartz-ext
+next-290,next,withSeconds,* * * L-30 * *,2016-02-01T00:00:00,2016-03-01T00:00:00,quartz-ext
+next-291,next,withSeconds,* * * L-30 * *,2017-02-01T00:00:00,2017-03-01T00:00:00,quartz-ext
+next-292,next,withSeconds,* * * * * 0L,2017-01-29T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-293,next,withSeconds,* * * * * 0L,2017-01-01T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-294,next,withSeconds,* * * * * SUNL,2017-01-01T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-295,next,withSeconds,* * * * * 1L,2017-01-30T00:00:00,2017-01-30T00:00:00,quartz-ext
+next-296,next,withSeconds,* * * * * 1L,2017-01-01T00:00:00,2017-01-30T00:00:00,quartz-ext
+next-297,next,withSeconds,* * * * * MONL,2017-01-01T00:00:00,2017-01-30T00:00:00,quartz-ext
+next-298,next,withSeconds,* * * * * 2L,2017-01-31T00:00:00,2017-01-31T00:00:00,quartz-ext
+next-299,next,withSeconds,* * * * * 2L,2017-01-01T00:00:00,2017-01-31T00:00:00,quartz-ext
+next-300,next,withSeconds,* * * * * TUEL,2017-01-01T00:00:00,2017-01-31T00:00:00,quartz-ext
+next-301,next,withSeconds,* * * * * 3L,2017-01-25T00:00:00,2017-01-25T00:00:00,quartz-ext
+next-302,next,withSeconds,* * * * * 3L,2017-01-01T00:00:00,2017-01-25T00:00:00,quartz-ext
+next-303,next,withSeconds,* * * * * WEDL,2017-01-01T00:00:00,2017-01-25T00:00:00,quartz-ext
+next-304,next,withSeconds,* * * * * 4L,2017-01-26T00:00:00,2017-01-26T00:00:00,quartz-ext
+next-305,next,withSeconds,* * * * * 4L,2017-01-01T00:00:00,2017-01-26T00:00:00,quartz-ext
+next-306,next,withSeconds,* * * * * THUL,2017-01-01T00:00:00,2017-01-26T00:00:00,quartz-ext
+next-307,next,withSeconds,* * * * * 5L,2017-01-27T00:00:00,2017-01-27T00:00:00,quartz-ext
+next-308,next,withSeconds,* * * * * 5L,2017-01-01T00:00:00,2017-01-27T00:00:00,quartz-ext
+next-309,next,withSeconds,* * * * * FRIL,2017-01-01T00:00:00,2017-01-27T00:00:00,quartz-ext
+next-310,next,withSeconds,* * * * * 6L,2017-01-28T00:00:00,2017-01-28T00:00:00,quartz-ext
+next-311,next,withSeconds,* * * * * 6L,2017-01-01T00:00:00,2017-01-28T00:00:00,quartz-ext
+next-312,next,withSeconds,* * * * * SATL,2017-01-01T00:00:00,2017-01-28T00:00:00,quartz-ext
+next-313,next,withSeconds,* * * * * 7L,2017-01-29T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-314,next,withSeconds,* * * * * 7L,2016-12-31T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-315,next,withSeconds,* * * * * SUN#1,2017-01-01T00:00:00,2017-01-01T00:00:00,quartz-ext
+next-316,next,withSeconds,* * * * * 0#1,2017-01-01T00:00:00,2017-01-01T00:00:00,quartz-ext
+next-317,next,withSeconds,* * * * * 0#1,2016-12-10T00:00:00,2017-01-01T00:00:00,quartz-ext
+next-318,next,withSeconds,* * * * * 0#1,2017-02-01T00:00:00,2017-02-05T00:00:00,quartz-ext
+next-319,next,withSeconds,* * * * * 0#2,2017-01-01T00:00:00,2017-01-08T00:00:00,quartz-ext
+next-320,next,withSeconds,* * * * * 0#2,2017-01-08T00:00:00,2017-01-08T00:00:00,quartz-ext
+next-321,next,withSeconds,* * * * * 5#3,2017-01-01T00:00:00,2017-01-20T00:00:00,quartz-ext
+next-322,next,withSeconds,* * * * * 5#3,2017-01-21T00:00:00,2017-02-17T00:00:00,quartz-ext
+next-323,next,withSeconds,* * * * * 3#2,2017-01-01T00:00:00,2017-01-11T00:00:00,quartz-ext
+next-324,next,withSeconds,* * * * * 2#5,2017-02-01T00:00:00,2017-05-30T00:00:00,quartz-ext
+next-325,next,withSeconds,* * * 1W * *,2017-01-01T00:00:00,2017-01-02T00:00:00,quartz-ext
+next-326,next,withSeconds,* * * 2W * *,2017-01-02T00:00:00,2017-01-02T00:00:00,quartz-ext
+next-327,next,withSeconds,* * * 6W * *,2017-01-02T00:00:00,2017-01-06T00:00:00,quartz-ext
+next-328,next,withSeconds,* * * 7W * *,2017-01-02T00:00:00,2017-01-06T00:00:00,quartz-ext
+next-329,next,withSeconds,* * * 7W * *,2017-01-07T00:00:00,2017-02-07T00:00:00,quartz-ext
+next-330,next,withSeconds,* * * 8W * *,2017-01-02T00:00:00,2017-01-09T00:00:00,quartz-ext
+next-331,next,withSeconds,* * * 30W * *,2017-04-27T00:00:00,2017-04-28T00:00:00,quartz-ext
+next-332,next,withSeconds,* * * 30W * *,2017-04-28T00:00:00,2017-04-28T00:00:00,quartz-ext
+next-333,next,withSeconds,* * * 30W * *,2017-04-29T00:00:00,2017-05-30T00:00:00,quartz-ext
+next-334,next,withSeconds,* * * 1W * *,2017-04-01T00:00:00,2017-04-03T00:00:00,quartz-ext
+next-335,next,withSeconds,0 30 10 1W * *,2017-04-01T00:00:00,2017-04-03T10:30:00,quartz-ext
+next-336,next,withSeconds,0 30 10 1W * *,2017-04-01T12:00:00,2017-04-03T10:30:00,quartz-ext
+next-337,next,withSeconds,0 30 10 1W * *,2017-04-02T00:00:00,2017-04-03T10:30:00,quartz-ext
+next-338,next,withSeconds,0 30 10 1W * *,2017-04-02T12:00:00,2017-04-03T10:30:00,quartz-ext
+next-339,next,withSeconds,0 30 10 1W * *,2017-04-03T00:00:00,2017-04-03T10:30:00,quartz-ext
+next-340,next,withSeconds,0 30 10 1W * *,2017-04-03T12:00:00,2017-05-01T10:30:00,quartz-ext
+next-341,next,withSeconds,0 30 10 2W * *,2017-04-01T00:00:00,2017-04-03T10:30:00,quartz-ext
+next-342,next,withSeconds,0 30 10 2W * *,2017-04-01T12:00:00,2017-04-03T10:30:00,quartz-ext
+next-343,next,withSeconds,0 30 10 2W * *,2017-04-02T00:00:00,2017-04-03T10:30:00,quartz-ext
+next-344,next,withSeconds,0 30 10 2W * *,2017-04-02T12:00:00,2017-04-03T10:30:00,quartz-ext
+next-345,next,withSeconds,0 30 10 2W * *,2017-04-03T00:00:00,2017-04-03T10:30:00,quartz-ext
+next-346,next,withSeconds,0 30 10 2W * *,2017-04-03T12:00:00,2017-05-02T10:30:00,quartz-ext
+next-347,next,withSeconds,0 30 17 7W * *,2017-01-06T17:45:00,2017-02-07T17:30:00,quartz-ext
+next-348,next,withSeconds,"0 30,45 17 7W * *",2017-01-06T17:45:00,2017-01-06T17:45:00,quartz-ext
+next-349,next,withSeconds,"0 30,55 17 7W * *",2017-01-06T17:45:00,2017-01-06T17:55:00,quartz-ext
+next-350,next,withSeconds,0 30 17 8W * *,2017-01-08T19:45:00,2017-01-09T17:30:00,quartz-ext
+next-351,next,withSeconds,0 30 17 30W * *,2017-04-28T17:45:00,2017-05-30T17:30:00,quartz-ext
+next-352,next,withSeconds,"0 30,45 17 30W * *",2017-04-28T17:45:00,2017-04-28T17:45:00,quartz-ext
+next-353,next,withSeconds,"0 30,55 17 30W * *",2017-04-28T17:45:00,2017-04-28T17:55:00,quartz-ext
+next-354,next,withSeconds,0 30 17 30W * *,2017-02-06T00:00:00,2017-03-30T17:30:00,quartz-ext
+next-355,next,withSeconds,0 30 17 31W * *,2018-03-30T17:45:00,2018-05-31T17:30:00,quartz-ext
+next-356,next,withSeconds,0 30 17 15W * *,2016-12-30T17:45:00,2017-01-16T17:30:00,quartz-ext
+next-357,next,withSeconds,0 30 17 27W * 1L,2017-03-10T17:45:00,2017-03-27T17:30:00,quartz-ext dom-dow-intersect
+next-358,next,withSeconds,0 30 17 27W * 1#4,2017-03-10T17:45:00,2017-03-27T17:30:00,quartz-ext dom-dow-intersect
+next-359,next,withSeconds,* * * LW * *,2017-01-01T00:00:00,2017-01-31T00:00:00,quartz-ext
+next-360,next,withSeconds,* * * LW * *,2017-09-01T00:00:00,2017-09-29T00:00:00,quartz-ext
+next-361,next,withSeconds,* * * LW * *,2017-09-29T00:00:00,2017-09-29T00:00:00,quartz-ext
+next-362,next,withSeconds,* * * LW * *,2017-09-30T00:00:00,2017-10-31T00:00:00,quartz-ext
+next-363,next,withSeconds,* * * LW * *,2017-04-01T00:00:00,2017-04-28T00:00:00,quartz-ext
+next-364,next,withSeconds,* * * LW * *,2017-04-28T00:00:00,2017-04-28T00:00:00,quartz-ext
+next-365,next,withSeconds,* * * LW * *,2017-04-29T00:00:00,2017-05-31T00:00:00,quartz-ext
+next-366,next,withSeconds,* * * LW * *,2017-05-30T00:00:00,2017-05-31T00:00:00,quartz-ext
+next-367,next,withSeconds,0 30 17 LW * *,2017-09-29T17:45:00,2017-10-31T17:30:00,quartz-ext
+next-368,next,withSeconds,* * * L-1W * *,2017-01-01T00:00:00,2017-01-30T00:00:00,quartz-ext
+next-369,next,withSeconds,* * * L-2W * *,2017-01-01T00:00:00,2017-01-30T00:00:00,quartz-ext
+next-370,next,withSeconds,* * * L-3W * *,2017-01-01T00:00:00,2017-01-27T00:00:00,quartz-ext
+next-371,next,withSeconds,* * * L-4W * *,2017-01-01T00:00:00,2017-01-27T00:00:00,quartz-ext
+next-372,next,withSeconds,* * * L-0W * *,2016-02-01T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-373,next,withSeconds,* * * L-0W * *,2017-02-01T00:00:00,2017-02-28T00:00:00,quartz-ext
+next-374,next,withSeconds,* * * L-1W * *,2016-02-01T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-375,next,withSeconds,* * * L-1W * *,2017-02-01T00:00:00,2017-02-27T00:00:00,quartz-ext
+next-376,next,withSeconds,* * * L-2W * *,2016-02-01T00:00:00,2016-02-26T00:00:00,quartz-ext
+next-377,next,withSeconds,* * * L-2W * *,2017-02-01T00:00:00,2017-02-27T00:00:00,quartz-ext
+next-378,next,withSeconds,* * * L-3W * *,2016-02-01T00:00:00,2016-02-26T00:00:00,quartz-ext
+next-379,next,withSeconds,* * * L-3W * *,2017-02-01T00:00:00,2017-02-24T00:00:00,quartz-ext
+next-380,next,withSeconds,* * * ? 11 *,2016-10-09T00:00:00,2016-11-01T00:00:00,quartz-ext
+next-381,next,withSeconds,? ? ? ? ? ?,2016-12-09T16:46:00,2016-12-09T16:46:00,quartz-ext dom-dow-intersect
+next-382,next,withSeconds,* * * * * ?,2016-12-09T16:46:00,2016-12-09T16:46:00,quartz-ext
+next-383,next,withSeconds,* * * ? * *,2016-03-09T16:46:00,2016-03-09T16:46:00,quartz-ext
+next-384,next,withSeconds,* * * * * ?,2016-12-30T16:46:00,2016-12-30T16:46:00,quartz-ext
+next-385,next,withSeconds,* * * ? * *,2016-12-09T02:46:00,2016-12-09T02:46:00,quartz-ext
+next-386,next,withSeconds,* * * * * ?,2016-12-09T16:09:00,2016-12-09T16:09:00,quartz-ext
+next-387,next,withSeconds,* * * ? * *,2099-12-09T16:46:00,2099-12-09T16:46:00,quartz-ext
+next-388,next,withSeconds,* * * * * *,1900-02-20T16:46:00,1900-02-20T16:46:00,
+next-389,next,withSeconds,* * * * * *,2000-02-28T16:46:00,2000-02-28T16:46:00,
+next-390,next,withSeconds,* * * * * *,2000-12-31T16:46:00,2000-12-31T16:46:00,
+next-391,next,withSeconds,* * * lw * *,2017-05-30T00:00:00,2017-05-31T00:00:00,quartz-ext
+next-392,next,withSeconds,* * * l-0w * *,2016-02-01T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-393,next,withSeconds,0 30 17 27w * 1l,2017-03-10T17:45:00,2017-03-27T17:30:00,quartz-ext dom-dow-intersect
+next-394,next,withSeconds,0 30 17 27w * mOnL,2017-03-10T17:45:00,2017-03-27T17:30:00,quartz-ext dom-dow-intersect
+next-395,next,withSeconds,"0 57,20/20,30/20,32-34/2,58 * * * *",2017-04-17T17:00:00,2017-04-17T17:20:00,
+next-396,next,withSeconds,"0 57,20/20,30/20,32-34/2,58 * * * *",2017-04-17T17:21:00,2017-04-17T17:30:00,
+next-397,next,withSeconds,"0 57,20/20,30/20,32-34/2,58 * * * *",2017-04-17T17:31:00,2017-04-17T17:32:00,
+next-398,next,withSeconds,"0 57,20/20,30/20,32-34/2,58 * * * *",2017-04-17T17:33:00,2017-04-17T17:34:00,
+next-399,next,withSeconds,"0 57,20/20,30/20,32-34/2,58 * * * *",2017-04-17T17:35:00,2017-04-17T17:40:00,
+next-400,next,withSeconds,"0 57,20/20,30/20,32-34/2,58 * * * *",2017-04-17T17:41:00,2017-04-17T17:50:00,
+next-401,next,withSeconds,"0 57,20/20,30/20,32-34/2,58 * * * *",2017-04-17T17:51:00,2017-04-17T17:57:00,
+next-402,next,withSeconds,"0 57,20/20,30/20,32-34/2,58 * * * *",2017-04-17T17:58:00,2017-04-17T17:58:00,
+next-403,next,withSeconds,"0 57,20/20,30/20,32-34/2,58 * * * *",2017-04-17T17:59:00,2017-04-17T18:20:00,
+next-404,next,standard,* * * * *,2016-12-09T17:35:00,2016-12-09T17:35:00,
+next-405,next,standard,* * * * *,2016-12-09T17:35:01,2016-12-09T17:36:00,
+next-406,next,standard,* * * * *,2016-12-09T17:35:59,2016-12-09T17:36:00,
+next-407,next,standard,* * * * *,2016-12-09T17:36:00,2016-12-09T17:36:00,
+next-408,next,standard,12 * * * *,2016-12-09T15:05:00,2016-12-09T15:12:00,
+next-409,next,standard,12 * * * *,2016-12-09T15:12:00,2016-12-09T15:12:00,
+next-410,next,standard,12 * * * *,2016-12-09T15:59:00,2016-12-09T16:12:00,
+next-411,next,standard,31-39 * * * *,2016-12-09T15:00:00,2016-12-09T15:31:00,
+next-412,next,standard,31-39 * * * *,2016-12-09T15:30:00,2016-12-09T15:31:00,
+next-413,next,standard,31-39 * * * *,2016-12-09T15:31:00,2016-12-09T15:31:00,
+next-414,next,standard,31-39 * * * *,2016-12-09T15:39:00,2016-12-09T15:39:00,
+next-415,next,standard,31-39 * * * *,2016-12-09T15:59:00,2016-12-09T16:31:00,
+next-416,next,standard,*/20 * * * *,2016-12-09T15:00:00,2016-12-09T15:00:00,
+next-417,next,standard,*/20 * * * *,2016-12-09T15:10:00,2016-12-09T15:20:00,
+next-418,next,standard,*/20 * * * *,2016-12-09T15:59:00,2016-12-09T16:00:00,
+next-419,next,standard,10/5 * * * *,2016-12-09T15:00:00,2016-12-09T15:10:00,
+next-420,next,standard,10/5 * * * *,2016-12-09T15:14:00,2016-12-09T15:15:00,
+next-421,next,standard,10/5 * * * *,2016-12-09T15:59:00,2016-12-09T16:10:00,
+next-422,next,standard,0 * * * *,2016-12-09T15:59:00,2016-12-09T16:00:00,
+next-423,next,standard,44 * * * *,2016-12-09T19:44:01,2016-12-09T20:44:00,
+next-424,next,standard,44 * * * *,2016-12-09T19:44:30,2016-12-09T20:44:00,
+next-425,next,standard,44 * * * *,2016-12-09T19:44:59,2016-12-09T20:44:00,
+next-426,next,standard,44 * * * *,2016-12-09T19:45:00,2016-12-09T20:44:00,
+next-427,next,standard,"5-8,19,20,35-41 * * * *",2016-12-09T15:01:00,2016-12-09T15:05:00,
+next-428,next,standard,"5-8,19,20,35-41 * * * *",2016-12-09T15:06:00,2016-12-09T15:06:00,
+next-429,next,standard,"5-8,19,20,35-41 * * * *",2016-12-09T15:18:00,2016-12-09T15:19:00,
+next-430,next,standard,"5-8,19,20,35-41 * * * *",2016-12-09T15:19:00,2016-12-09T15:19:00,
+next-431,next,standard,"5-8,19,20,35-41 * * * *",2016-12-09T15:20:00,2016-12-09T15:20:00,
+next-432,next,standard,"5-8,19,20,35-41 * * * *",2016-12-09T15:21:00,2016-12-09T15:35:00,
+next-433,next,standard,"5-8,19,20,35-41 * * * *",2016-12-09T15:36:00,2016-12-09T15:36:00,
+next-434,next,standard,"5-8,19,20,35-41 * * * *",2016-12-09T15:42:00,2016-12-09T16:05:00,
+next-435,next,standard,51-4 * * * *,2016-12-09T17:35:00,2016-12-09T17:51:00,wrap-range
+next-436,next,standard,51-4 * * * *,2016-12-09T17:51:00,2016-12-09T17:51:00,wrap-range
+next-437,next,standard,51-4 * * * *,2016-12-09T17:55:00,2016-12-09T17:55:00,wrap-range
+next-438,next,standard,51-4 * * * *,2016-12-09T17:59:00,2016-12-09T17:59:00,wrap-range
+next-439,next,standard,51-4 * * * *,2016-12-09T18:00:00,2016-12-09T18:00:00,wrap-range
+next-440,next,standard,51-4 * * * *,2016-12-09T18:04:00,2016-12-09T18:04:00,wrap-range
+next-441,next,standard,51-4 * * * *,2016-12-09T18:05:00,2016-12-09T18:51:00,wrap-range
+next-442,next,standard,56-4/4 * * * *,2016-12-09T17:55:00,2016-12-09T17:56:00,wrap-range oversized-step
+next-443,next,standard,56-4/4 * * * *,2016-12-09T17:57:00,2016-12-09T18:00:00,wrap-range oversized-step
+next-444,next,standard,56-4/4 * * * *,2016-12-09T18:01:00,2016-12-09T18:04:00,wrap-range oversized-step
+next-445,next,standard,56-4/4 * * * *,2016-12-09T18:05:00,2016-12-09T18:56:00,wrap-range oversized-step
+next-446,next,standard,45-44 * * * *,2016-12-09T18:45:00,2016-12-09T18:45:00,wrap-range
+next-447,next,standard,45-44 * * * *,2016-12-09T18:55:00,2016-12-09T18:55:00,wrap-range
+next-448,next,standard,45-44 * * * *,2016-12-09T18:59:00,2016-12-09T18:59:00,wrap-range
+next-449,next,standard,45-44 * * * *,2016-12-09T19:00:00,2016-12-09T19:00:00,wrap-range
+next-450,next,standard,45-44 * * * *,2016-12-09T19:44:00,2016-12-09T19:44:00,wrap-range
+next-451,next,standard,* 11 * * *,2016-12-09T10:59:00,2016-12-09T11:00:00,
+next-452,next,standard,* 11 * * *,2016-12-09T11:30:00,2016-12-09T11:30:00,
+next-453,next,standard,* 3-22 * * *,2016-12-09T01:40:00,2016-12-09T03:00:00,
+next-454,next,standard,* 3-22 * * *,2016-12-09T11:40:00,2016-12-09T11:40:00,
+next-455,next,standard,* */2 * * *,2016-12-09T00:00:00,2016-12-09T00:00:00,
+next-456,next,standard,* */2 * * *,2016-12-09T01:00:00,2016-12-09T02:00:00,
+next-457,next,standard,* 4/5 * * *,2016-12-09T00:45:00,2016-12-09T04:00:00,
+next-458,next,standard,* 4/5 * * *,2016-12-09T04:14:00,2016-12-09T04:14:00,
+next-459,next,standard,* 4/5 * * *,2016-12-09T05:00:00,2016-12-09T09:00:00,
+next-460,next,standard,"* 3-5,10,11,13-17 * * *",2016-12-09T01:55:00,2016-12-09T03:00:00,
+next-461,next,standard,"* 3-5,10,11,13-17 * * *",2016-12-09T04:55:00,2016-12-09T04:55:00,
+next-462,next,standard,"* 3-5,10,11,13-17 * * *",2016-12-09T06:10:00,2016-12-09T10:00:00,
+next-463,next,standard,"* 3-5,10,11,13-17 * * *",2016-12-09T10:55:00,2016-12-09T10:55:00,
+next-464,next,standard,"* 3-5,10,11,13-17 * * *",2016-12-09T11:25:00,2016-12-09T11:25:00,
+next-465,next,standard,"* 3-5,10,11,13-17 * * *",2016-12-09T12:30:00,2016-12-09T13:00:00,
+next-466,next,standard,"* 3-5,10,11,13-17 * * *",2016-12-09T17:30:00,2016-12-09T17:30:00,
+next-467,next,standard,* 23-3/2 * * *,2016-12-09T17:30:00,2016-12-09T23:00:00,wrap-range oversized-step
+next-468,next,standard,* 23-3/2 * * *,2016-12-09T00:30:00,2016-12-09T01:00:00,wrap-range oversized-step
+next-469,next,standard,* 23-3/2 * * *,2016-12-09T02:00:00,2016-12-09T03:00:00,wrap-range oversized-step
+next-470,next,standard,* 23-3/2 * * *,2016-12-09T04:00:00,2016-12-09T23:00:00,wrap-range oversized-step
+next-471,next,standard,* 23-22 * * *,2016-12-09T22:10:00,2016-12-09T22:10:00,wrap-range
+next-472,next,standard,* 23-22 * * *,2016-12-09T23:10:00,2016-12-09T23:10:00,wrap-range
+next-473,next,standard,* 23-22 * * *,2016-12-09T00:10:00,2016-12-09T00:10:00,wrap-range
+next-474,next,standard,* 23-22 * * *,2016-12-09T07:10:00,2016-12-09T07:10:00,wrap-range
+next-475,next,standard,* * 9 * *,2016-11-01T00:00:00,2016-11-09T00:00:00,
+next-476,next,standard,* * 9 * *,2016-11-09T00:00:00,2016-11-09T00:00:00,
+next-477,next,standard,* * 09 * *,2016-11-10T00:00:00,2016-12-09T00:00:00,
+next-478,next,standard,* * */4 * *,2016-12-01T00:00:00,2016-12-01T00:00:00,
+next-479,next,standard,* * */4 * *,2016-12-02T00:00:00,2016-12-05T00:00:00,
+next-480,next,standard,* * */4 * *,2016-12-06T00:00:00,2016-12-09T00:00:00,
+next-481,next,standard,* * */3 * *,2016-12-02T00:00:00,2016-12-04T00:00:00,
+next-482,next,standard,"* * 10,20 * *",2016-12-09T00:00:00,2016-12-10T00:00:00,
+next-483,next,standard,"* * 10,20 * *",2016-12-12T00:00:00,2016-12-20T00:00:00,
+next-484,next,standard,* * 16-23 * *,2016-12-01T00:00:00,2016-12-16T00:00:00,
+next-485,next,standard,* * 16-23 * *,2016-12-16T00:00:00,2016-12-16T00:00:00,
+next-486,next,standard,* * 16-23 * *,2016-12-18T00:00:00,2016-12-18T00:00:00,
+next-487,next,standard,* * 16-23 * *,2016-12-23T00:00:00,2016-12-23T00:00:00,
+next-488,next,standard,* * 16-23 * *,2016-12-24T00:00:00,2017-01-16T00:00:00,
+next-489,next,standard,"* * 5-8,19,20,28-29 * *",2016-12-01T00:00:00,2016-12-05T00:00:00,
+next-490,next,standard,"* * 5-8,19,20,28-29 * *",2016-12-05T00:00:00,2016-12-05T00:00:00,
+next-491,next,standard,"* * 5-8,19,20,28-29 * *",2016-12-06T00:00:00,2016-12-06T00:00:00,
+next-492,next,standard,"* * 5-8,19,20,28-29 * *",2016-12-08T00:00:00,2016-12-08T00:00:00,
+next-493,next,standard,"* * 5-8,19,20,28-29 * *",2016-12-09T00:00:00,2016-12-19T00:00:00,
+next-494,next,standard,"* * 5-8,19,20,28-29 * *",2016-12-20T00:00:00,2016-12-20T00:00:00,
+next-495,next,standard,"* * 5-8,19,20,28-29 * *",2016-12-21T00:00:00,2016-12-28T00:00:00,
+next-496,next,standard,"* * 5-8,19,20,28-29 * *",2016-12-30T00:00:00,2017-01-05T00:00:00,
+next-497,next,standard,"* * 5-8,19,20,29-30 * *",2017-02-27T00:00:00,2017-03-05T00:00:00,
+next-498,next,standard,* * 30-31 * *,2016-02-27T00:00:00,2016-03-30T00:00:00,
+next-499,next,standard,* * 30-31 * *,2017-02-27T00:00:00,2017-03-30T00:00:00,
+next-500,next,standard,* * 31 * *,2017-04-27T00:00:00,2017-05-31T00:00:00,
+next-501,next,standard,* * 20-5/5 * *,2017-05-19T00:00:00,2017-05-20T00:00:00,wrap-range oversized-step
+next-502,next,standard,* * 20-5/5 * *,2017-05-21T00:00:00,2017-05-25T00:00:00,wrap-range oversized-step
+next-503,next,standard,* * 20-5/5 * *,2017-05-26T00:00:00,2017-05-30T00:00:00,wrap-range oversized-step
+next-504,next,standard,* * 20-5/5 * *,2017-06-01T00:00:00,2017-06-04T00:00:00,wrap-range oversized-step
+next-505,next,standard,* * 20-5/5 * *,2017-06-05T00:00:00,2017-06-20T00:00:00,wrap-range oversized-step
+next-506,next,standard,* * 20-5/5 * *,2017-07-01T00:00:00,2017-07-04T00:00:00,wrap-range oversized-step
+next-507,next,standard,* * 20-5/5 * *,2018-02-26T00:00:00,2018-03-04T00:00:00,wrap-range oversized-step
+next-508,next,standard,* * * 11 *,2016-10-09T00:00:00,2016-11-01T00:00:00,
+next-509,next,standard,* * * 11 *,2016-11-02T00:00:00,2016-11-02T00:00:00,
+next-510,next,standard,* * * 11 *,2016-12-02T00:00:00,2017-11-01T00:00:00,
+next-511,next,standard,"* * * 3,9 *",2016-01-09T00:00:00,2016-03-01T00:00:00,
+next-512,next,standard,"* * * 3,9 *",2016-06-09T00:00:00,2016-09-01T00:00:00,
+next-513,next,standard,"* * * 3,9 *",2016-10-09T00:00:00,2017-03-01T00:00:00,
+next-514,next,standard,* * * 5-11 *,2016-01-01T00:00:00,2016-05-01T00:00:00,
+next-515,next,standard,* * * 5-11 *,2016-05-07T00:00:00,2016-05-07T00:00:00,
+next-516,next,standard,* * * 5-11 *,2016-07-12T00:00:00,2016-07-12T00:00:00,
+next-517,next,standard,* * * 05-11 *,2016-12-13T00:00:00,2017-05-01T00:00:00,
+next-518,next,standard,* * * DEC *,2016-08-09T00:00:00,2016-12-01T00:00:00,
+next-519,next,standard,* * * mar-dec *,2016-02-09T00:00:00,2016-03-01T00:00:00,
+next-520,next,standard,* * * mar-dec *,2016-04-09T00:00:00,2016-04-09T00:00:00,
+next-521,next,standard,* * * mar-dec *,2016-12-09T00:00:00,2016-12-09T00:00:00,
+next-522,next,standard,* * * */4 *,2016-01-09T00:00:00,2016-01-09T00:00:00,
+next-523,next,standard,* * * */4 *,2016-02-09T00:00:00,2016-05-01T00:00:00,
+next-524,next,standard,* * * */3 *,2016-12-09T00:00:00,2017-01-01T00:00:00,
+next-525,next,standard,* * * */5 *,2016-12-09T00:00:00,2017-01-01T00:00:00,
+next-526,next,standard,* * * APR-NOV *,2016-12-09T00:00:00,2017-04-01T00:00:00,
+next-527,next,standard,"* * * 2-4,JUN,7,SEP-nov *",2016-01-01T00:00:00,2016-02-01T00:00:00,
+next-528,next,standard,"* * * 2-4,JUN,7,SEP-nov *",2016-02-10T00:00:00,2016-02-10T00:00:00,
+next-529,next,standard,"* * * 2-4,JUN,7,SEP-nov *",2016-03-01T00:00:00,2016-03-01T00:00:00,
+next-530,next,standard,"* * * 2-4,JUN,7,SEP-nov *",2016-05-20T00:00:00,2016-06-01T00:00:00,
+next-531,next,standard,"* * * 2-4,JUN,7,SEP-nov *",2016-06-10T00:00:00,2016-06-10T00:00:00,
+next-532,next,standard,"* * * 2-4,JUN,7,SEP-nov *",2016-07-05T00:00:00,2016-07-05T00:00:00,
+next-533,next,standard,"* * * 2-4,JUN,7,SEP-nov *",2016-08-15T00:00:00,2016-09-01T00:00:00,
+next-534,next,standard,"* * * 2-4,JUN,7,SEP-nov *",2016-11-25T00:00:00,2016-11-25T00:00:00,
+next-535,next,standard,"* * * 2-4,JUN,7,SEP-nov *",2016-12-01T00:00:00,2017-02-01T00:00:00,
+next-536,next,standard,* * * 12-2 *,2016-05-19T00:00:00,2016-12-01T00:00:00,wrap-range
+next-537,next,standard,* * * 12-2 *,2017-01-19T00:00:00,2017-01-19T00:00:00,wrap-range
+next-538,next,standard,* * * 12-2 *,2017-02-19T00:00:00,2017-02-19T00:00:00,wrap-range
+next-539,next,standard,* * * 12-2 *,2017-03-19T00:00:00,2017-12-01T00:00:00,wrap-range
+next-540,next,standard,* * * 9-8/3 *,2016-07-19T00:00:00,2016-09-01T00:00:00,wrap-range oversized-step
+next-541,next,standard,* * * 9-8/3 *,2016-10-19T00:00:00,2016-12-01T00:00:00,wrap-range oversized-step
+next-542,next,standard,* * * 9-8/3 *,2017-01-19T00:00:00,2017-03-01T00:00:00,wrap-range oversized-step
+next-543,next,standard,* * * 9-8/3 *,2017-04-19T00:00:00,2017-06-01T00:00:00,wrap-range oversized-step
+next-544,next,standard,* * * * 5,2016-12-07T00:00:00,2016-12-09T00:00:00,
+next-545,next,standard,* * * * 5,2016-12-09T00:00:00,2016-12-09T00:00:00,
+next-546,next,standard,* * * * 05,2016-12-10T00:00:00,2016-12-16T00:00:00,
+next-547,next,standard,"* * * * 3,5,7",2016-12-09T00:00:00,2016-12-09T00:00:00,
+next-548,next,standard,"* * * * 3,5,7",2016-12-10T00:00:00,2016-12-11T00:00:00,
+next-549,next,standard,"* * * * 3,5,7",2016-12-12T00:00:00,2016-12-14T00:00:00,
+next-550,next,standard,* * * * 4-7,2016-12-08T00:00:00,2016-12-08T00:00:00,
+next-551,next,standard,* * * * 4-7,2016-12-10T00:00:00,2016-12-10T00:00:00,
+next-552,next,standard,* * * * 4-7,2016-12-11T00:00:00,2016-12-11T00:00:00,
+next-553,next,standard,* * * * 4-07,2016-12-12T00:00:00,2016-12-15T00:00:00,
+next-554,next,standard,* * * * FRI,2016-12-08T00:00:00,2016-12-09T00:00:00,
+next-555,next,standard,* * * * tue/2,2016-12-09T00:00:00,2016-12-10T00:00:00,
+next-556,next,standard,* * * * tue/2,2016-12-11T00:00:00,2016-12-13T00:00:00,
+next-557,next,standard,* * * * FRI/3,2016-12-03T00:00:00,2016-12-09T00:00:00,oversized-step
+next-558,next,standard,* * * * thu-sat,2016-12-04T00:00:00,2016-12-08T00:00:00,
+next-559,next,standard,* * * * thu-sat,2016-12-09T00:00:00,2016-12-09T00:00:00,
+next-560,next,standard,* * * * thu-sat,2016-12-10T00:00:00,2016-12-10T00:00:00,
+next-561,next,standard,* * * * thu-sat,2016-12-12T00:00:00,2016-12-15T00:00:00,
+next-562,next,standard,* * * * */5,2016-12-08T00:00:00,2016-12-09T00:00:00,
+next-563,next,standard,* * * * */5,2016-12-10T00:00:00,2016-12-11T00:00:00,
+next-564,next,standard,* * * * */5,2016-12-12T00:00:00,2016-12-16T00:00:00,
+next-565,next,standard,* * ? * thu-sun,2016-12-09T00:00:00,2016-12-09T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-566,next,standard,* * ? * sat-tue,2016-12-10T00:00:00,2016-12-10T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-567,next,standard,* * ? * sat-tue,2016-12-11T00:00:00,2016-12-11T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-568,next,standard,* * ? * sat-tue,2016-12-12T00:00:00,2016-12-12T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-569,next,standard,* * ? * sat-tue,2016-12-13T00:00:00,2016-12-13T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-570,next,standard,* * ? * sat-tue,2016-12-14T00:00:00,2016-12-17T00:00:00,quartz-ext wrap-range dom-dow-intersect
+next-571,next,standard,* * ? * sat-tue/2,2016-12-10T00:00:00,2016-12-10T00:00:00,quartz-ext wrap-range oversized-step dom-dow-intersect
+next-572,next,standard,* * ? * sat-tue/2,2016-12-11T00:00:00,2016-12-12T00:00:00,quartz-ext wrap-range oversized-step dom-dow-intersect
+next-573,next,standard,* * ? * sat-tue/2,2016-12-12T00:00:00,2016-12-12T00:00:00,quartz-ext wrap-range oversized-step dom-dow-intersect
+next-574,next,standard,* * ? * sat-tue/2,2016-12-13T00:00:00,2016-12-17T00:00:00,quartz-ext wrap-range oversized-step dom-dow-intersect
+next-575,next,standard,00 00 11 12 0,2016-12-07T00:00:00,2016-12-11T00:00:00,dom-dow-intersect
+next-576,next,standard,00 00 11 12 7,2016-12-09T00:00:00,2016-12-11T00:00:00,dom-dow-intersect
+next-577,next,standard,00 00 11 12 SUN,2016-12-10T00:00:00,2016-12-11T00:00:00,dom-dow-intersect
+next-578,next,standard,00 00 11 12 sun,2016-12-09T00:00:00,2016-12-11T00:00:00,dom-dow-intersect
+next-579,next,standard,47 17 09 12 5,2016-10-01T00:00:00,2016-12-09T17:47:00,dom-dow-intersect
+next-580,next,standard,47 17 09 DEC FRI,2016-07-05T00:00:00,2016-12-09T17:47:00,dom-dow-intersect
+next-581,next,standard,"40-50 15-20 5-10 11,12 5,6,7",2016-12-01T00:00:00,2016-12-09T15:40:00,dom-dow-intersect
+next-582,next,standard,"40-50 15-20 5-10 11,12 5,6,7",2016-12-09T15:40:00,2016-12-09T15:40:00,dom-dow-intersect
+next-583,next,standard,"40-50 15-20 5-10 11,12 5,6,7",2016-12-09T15:45:00,2016-12-09T15:45:00,dom-dow-intersect
+next-584,next,standard,"40-50 15-20 5-10 11,12 5,6,7",2016-12-09T15:51:00,2016-12-09T16:40:00,dom-dow-intersect
+next-585,next,standard,"40-50 15-20 5-10 11,12 5,6,7",2016-12-09T21:50:00,2016-12-10T15:40:00,dom-dow-intersect
+next-586,next,standard,"40-50 15-20 5-10 11,12 5,6,7",2016-12-11T21:50:00,2017-11-05T15:40:00,dom-dow-intersect dst
+next-587,next,standard,05 18 13 01 05,2016-01-01T00:00:00,2017-01-13T18:05:00,dom-dow-intersect
+next-588,next,standard,05 18 13 * 05,2016-01-01T00:00:00,2016-05-13T18:05:00,dom-dow-intersect
+next-589,next,standard,05 18 13 * 05,2016-09-01T00:00:00,2017-01-13T18:05:00,dom-dow-intersect
+next-590,next,standard,05 18 13 * 05,2017-02-01T00:00:00,2017-10-13T18:05:00,dom-dow-intersect
+next-591,next,standard,0 * * * *,2017-01-14T12:59:00,2017-01-14T13:00:00,
+next-592,next,standard,0 0 * * *,2017-01-14T23:00:00,2017-01-15T00:00:00,
+next-593,next,standard,0 0 1 * *,2016-02-10T00:00:00,2016-03-01T00:00:00,
+next-594,next,standard,0 0 1 * *,2017-02-10T00:00:00,2017-03-01T00:00:00,
+next-595,next,standard,0 0 1 * *,2017-04-10T00:00:00,2017-05-01T00:00:00,
+next-596,next,standard,0 0 1 * *,2017-01-30T00:00:00,2017-02-01T00:00:00,
+next-597,next,standard,0 0 * * *,2017-12-31T23:59:00,2018-01-01T00:00:00,
+next-598,next,standard,0 0 30 * *,2017-02-25T00:00:00,2017-03-30T00:00:00,
+next-599,next,standard,0 0 31 * *,2017-02-25T00:00:00,2017-03-31T00:00:00,
+next-600,next,standard,0 0 31 * *,2017-04-01T00:00:00,2017-05-31T00:00:00,
+next-601,next,standard,0 0 29 2 *,2016-03-10T00:00:00,2020-02-29T00:00:00,
+next-602,next,standard,* * L * *,2016-01-05T00:00:00,2016-01-31T00:00:00,quartz-ext
+next-603,next,standard,* * L * *,2016-01-31T00:00:00,2016-01-31T00:00:00,quartz-ext
+next-604,next,standard,* * L * *,2016-02-05T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-605,next,standard,* * L * *,2016-02-29T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-606,next,standard,* * L 2 *,2016-02-29T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-607,next,standard,* * L * *,2017-02-28T00:00:00,2017-02-28T00:00:00,quartz-ext
+next-608,next,standard,* * L * *,2016-03-05T00:00:00,2016-03-31T00:00:00,quartz-ext
+next-609,next,standard,* * L * *,2016-03-31T00:00:00,2016-03-31T00:00:00,quartz-ext
+next-610,next,standard,* * L * *,2016-04-05T00:00:00,2016-04-30T00:00:00,quartz-ext
+next-611,next,standard,* * L * *,2016-04-30T00:00:00,2016-04-30T00:00:00,quartz-ext
+next-612,next,standard,* * L * *,2016-05-05T00:00:00,2016-05-31T00:00:00,quartz-ext
+next-613,next,standard,* * L * *,2016-05-31T00:00:00,2016-05-31T00:00:00,quartz-ext
+next-614,next,standard,* * L * *,2016-06-05T00:00:00,2016-06-30T00:00:00,quartz-ext
+next-615,next,standard,* * L * *,2016-06-30T00:00:00,2016-06-30T00:00:00,quartz-ext
+next-616,next,standard,* * L * *,2016-07-05T00:00:00,2016-07-31T00:00:00,quartz-ext
+next-617,next,standard,* * L * *,2016-07-31T00:00:00,2016-07-31T00:00:00,quartz-ext
+next-618,next,standard,* * L * *,2016-08-05T00:00:00,2016-08-31T00:00:00,quartz-ext
+next-619,next,standard,* * L * *,2016-08-31T00:00:00,2016-08-31T00:00:00,quartz-ext
+next-620,next,standard,* * L * *,2016-09-05T00:00:00,2016-09-30T00:00:00,quartz-ext
+next-621,next,standard,* * L * *,2016-09-30T00:00:00,2016-09-30T00:00:00,quartz-ext
+next-622,next,standard,* * L * *,2016-10-05T00:00:00,2016-10-31T00:00:00,quartz-ext
+next-623,next,standard,* * L * *,2016-10-31T00:00:00,2016-10-31T00:00:00,quartz-ext
+next-624,next,standard,* * L * *,2016-11-05T00:00:00,2016-11-30T00:00:00,quartz-ext dst
+next-625,next,standard,* * L * *,2016-12-05T00:00:00,2016-12-31T00:00:00,quartz-ext
+next-626,next,standard,* * L * *,2016-12-31T00:00:00,2016-12-31T00:00:00,quartz-ext
+next-627,next,standard,* * L * *,2099-12-05T00:00:00,2099-12-31T00:00:00,quartz-ext
+next-628,next,standard,* * L * *,2099-12-31T00:00:00,2099-12-31T00:00:00,quartz-ext
+next-629,next,standard,* * L-1 * *,2016-01-01T00:00:00,2016-01-30T00:00:00,quartz-ext
+next-630,next,standard,* * L-1 * *,2016-01-29T00:00:00,2016-01-30T00:00:00,quartz-ext
+next-631,next,standard,* * L-1 * *,2016-01-30T00:00:00,2016-01-30T00:00:00,quartz-ext
+next-632,next,standard,* * L-1 * *,2016-01-31T00:00:00,2016-02-28T00:00:00,quartz-ext
+next-633,next,standard,* * L-1 * *,2016-02-01T00:00:00,2016-02-28T00:00:00,quartz-ext
+next-634,next,standard,* * L-1 * *,2016-02-28T00:00:00,2016-02-28T00:00:00,quartz-ext
+next-635,next,standard,* * L-1 * *,2017-02-01T00:00:00,2017-02-27T00:00:00,quartz-ext
+next-636,next,standard,* * L-1 * *,2017-02-27T00:00:00,2017-02-27T00:00:00,quartz-ext
+next-637,next,standard,* * L-1 * *,2016-04-01T00:00:00,2016-04-29T00:00:00,quartz-ext
+next-638,next,standard,* * L-1 * *,2016-04-29T00:00:00,2016-04-29T00:00:00,quartz-ext
+next-639,next,standard,* * L-1 * *,2016-12-01T00:00:00,2016-12-30T00:00:00,quartz-ext
+next-640,next,standard,* * L-2 * *,2016-01-05T00:00:00,2016-01-29T00:00:00,quartz-ext
+next-641,next,standard,* * L-2 * *,2016-01-30T00:00:00,2016-02-27T00:00:00,quartz-ext
+next-642,next,standard,* * L-2 * *,2016-02-01T00:00:00,2016-02-27T00:00:00,quartz-ext
+next-643,next,standard,* * L-2 * *,2017-02-01T00:00:00,2017-02-26T00:00:00,quartz-ext
+next-644,next,standard,* * L-2 * *,2016-04-01T00:00:00,2016-04-28T00:00:00,quartz-ext
+next-645,next,standard,* * L-2 * *,2016-12-01T00:00:00,2016-12-29T00:00:00,quartz-ext
+next-646,next,standard,* * L-2 * *,2016-12-29T00:00:00,2016-12-29T00:00:00,quartz-ext
+next-647,next,standard,* * L-2 * *,2016-12-30T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-648,next,standard,* * L-28 * *,2016-01-01T00:00:00,2016-01-03T00:00:00,quartz-ext
+next-649,next,standard,* * L-28 * *,2016-04-01T00:00:00,2016-04-02T00:00:00,quartz-ext
+next-650,next,standard,* * L-28 * *,2016-02-01T00:00:00,2016-02-01T00:00:00,quartz-ext
+next-651,next,standard,* * L-28 * *,2017-02-01T00:00:00,2017-03-03T00:00:00,quartz-ext
+next-652,next,standard,* * L-29 * *,2016-01-01T00:00:00,2016-01-02T00:00:00,quartz-ext
+next-653,next,standard,* * L-29 * *,2016-04-01T00:00:00,2016-04-01T00:00:00,quartz-ext
+next-654,next,standard,* * L-29 * *,2016-02-01T00:00:00,2016-03-02T00:00:00,quartz-ext
+next-655,next,standard,* * L-29 * *,2017-02-01T00:00:00,2017-03-02T00:00:00,quartz-ext
+next-656,next,standard,* * L-30 * *,2016-01-01T00:00:00,2016-01-01T00:00:00,quartz-ext
+next-657,next,standard,* * L-30 * *,2016-04-01T00:00:00,2016-05-01T00:00:00,quartz-ext
+next-658,next,standard,* * L-30 * *,2016-02-01T00:00:00,2016-03-01T00:00:00,quartz-ext
+next-659,next,standard,* * L-30 * *,2017-02-01T00:00:00,2017-03-01T00:00:00,quartz-ext
+next-660,next,standard,* * * * 0L,2017-01-29T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-661,next,standard,* * * * 0L,2017-01-01T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-662,next,standard,* * * * 1L,2017-01-30T00:00:00,2017-01-30T00:00:00,quartz-ext
+next-663,next,standard,* * * * 1L,2017-01-01T00:00:00,2017-01-30T00:00:00,quartz-ext
+next-664,next,standard,* * * * 2L,2017-01-31T00:00:00,2017-01-31T00:00:00,quartz-ext
+next-665,next,standard,* * * * 2L,2017-01-01T00:00:00,2017-01-31T00:00:00,quartz-ext
+next-666,next,standard,* * * * 3L,2017-01-25T00:00:00,2017-01-25T00:00:00,quartz-ext
+next-667,next,standard,* * * * 3L,2017-01-01T00:00:00,2017-01-25T00:00:00,quartz-ext
+next-668,next,standard,* * * * 4L,2017-01-26T00:00:00,2017-01-26T00:00:00,quartz-ext
+next-669,next,standard,* * * * 4L,2017-01-01T00:00:00,2017-01-26T00:00:00,quartz-ext
+next-670,next,standard,* * * * 5L,2017-01-27T00:00:00,2017-01-27T00:00:00,quartz-ext
+next-671,next,standard,* * * * 5L,2017-01-01T00:00:00,2017-01-27T00:00:00,quartz-ext
+next-672,next,standard,* * * * 6L,2017-01-28T00:00:00,2017-01-28T00:00:00,quartz-ext
+next-673,next,standard,* * * * 6L,2017-01-01T00:00:00,2017-01-28T00:00:00,quartz-ext
+next-674,next,standard,* * * * 7L,2017-01-29T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-675,next,standard,* * * * 7L,2016-12-31T00:00:00,2017-01-29T00:00:00,quartz-ext
+next-676,next,standard,* * * * SUN#1,2017-01-01T00:00:00,2017-01-01T00:00:00,quartz-ext
+next-677,next,standard,* * * * 0#1,2017-01-01T00:00:00,2017-01-01T00:00:00,quartz-ext
+next-678,next,standard,* * * * 0#1,2016-12-10T00:00:00,2017-01-01T00:00:00,quartz-ext
+next-679,next,standard,* * * * 0#1,2017-02-01T00:00:00,2017-02-05T00:00:00,quartz-ext
+next-680,next,standard,* * * * 0#2,2017-01-01T00:00:00,2017-01-08T00:00:00,quartz-ext
+next-681,next,standard,* * * * 0#2,2017-01-08T00:00:00,2017-01-08T00:00:00,quartz-ext
+next-682,next,standard,* * * * 5#3,2017-01-01T00:00:00,2017-01-20T00:00:00,quartz-ext
+next-683,next,standard,* * * * 5#3,2017-01-21T00:00:00,2017-02-17T00:00:00,quartz-ext
+next-684,next,standard,* * * * 3#2,2017-01-01T00:00:00,2017-01-11T00:00:00,quartz-ext
+next-685,next,standard,* * * * 2#5,2017-02-01T00:00:00,2017-05-30T00:00:00,quartz-ext
+next-686,next,standard,* * 1W * *,2017-01-01T00:00:00,2017-01-02T00:00:00,quartz-ext
+next-687,next,standard,* * 2W * *,2017-01-02T00:00:00,2017-01-02T00:00:00,quartz-ext
+next-688,next,standard,* * 6W * *,2017-01-02T00:00:00,2017-01-06T00:00:00,quartz-ext
+next-689,next,standard,* * 7W * *,2017-01-02T00:00:00,2017-01-06T00:00:00,quartz-ext
+next-690,next,standard,* * 7W * *,2017-01-07T00:00:00,2017-02-07T00:00:00,quartz-ext
+next-691,next,standard,* * 8W * *,2017-01-02T00:00:00,2017-01-09T00:00:00,quartz-ext
+next-692,next,standard,* * 30W * *,2017-04-27T00:00:00,2017-04-28T00:00:00,quartz-ext
+next-693,next,standard,* * 30W * *,2017-04-28T00:00:00,2017-04-28T00:00:00,quartz-ext
+next-694,next,standard,* * 30W * *,2017-04-29T00:00:00,2017-05-30T00:00:00,quartz-ext
+next-695,next,standard,* * 1W * *,2017-04-01T00:00:00,2017-04-03T00:00:00,quartz-ext
+next-696,next,standard,30 17 7W * *,2017-01-06T17:45:00,2017-02-07T17:30:00,quartz-ext
+next-697,next,standard,"30,45 17 7W * *",2017-01-06T17:45:00,2017-01-06T17:45:00,quartz-ext
+next-698,next,standard,"30,55 17 7W * *",2017-01-06T17:45:00,2017-01-06T17:55:00,quartz-ext
+next-699,next,standard,30 17 30W * *,2017-04-28T17:45:00,2017-05-30T17:30:00,quartz-ext
+next-700,next,standard,"30,45 17 30W * *",2017-04-28T17:45:00,2017-04-28T17:45:00,quartz-ext
+next-701,next,standard,"30,55 17 30W * *",2017-04-28T17:45:00,2017-04-28T17:55:00,quartz-ext
+next-702,next,standard,30 17 30W * *,2017-02-06T00:00:00,2017-03-30T17:30:00,quartz-ext
+next-703,next,standard,30 17 31W * *,2018-03-30T17:45:00,2018-05-31T17:30:00,quartz-ext
+next-704,next,standard,30 17 15W * *,2016-12-30T17:45:00,2017-01-16T17:30:00,quartz-ext
+next-705,next,standard,* * LW * *,2017-01-01T00:00:00,2017-01-31T00:00:00,quartz-ext
+next-706,next,standard,* * LW * *,2017-09-01T00:00:00,2017-09-29T00:00:00,quartz-ext
+next-707,next,standard,* * LW * *,2017-09-29T00:00:00,2017-09-29T00:00:00,quartz-ext
+next-708,next,standard,* * LW * *,2017-09-30T00:00:00,2017-10-31T00:00:00,quartz-ext
+next-709,next,standard,* * LW * *,2017-04-01T00:00:00,2017-04-28T00:00:00,quartz-ext
+next-710,next,standard,* * LW * *,2017-04-28T00:00:00,2017-04-28T00:00:00,quartz-ext
+next-711,next,standard,* * LW * *,2017-04-29T00:00:00,2017-05-31T00:00:00,quartz-ext
+next-712,next,standard,* * LW * *,2017-05-30T00:00:00,2017-05-31T00:00:00,quartz-ext
+next-713,next,standard,30 17 LW * *,2017-09-29T17:45:00,2017-10-31T17:30:00,quartz-ext
+next-714,next,standard,* * L-1W * *,2017-01-01T00:00:00,2017-01-30T00:00:00,quartz-ext
+next-715,next,standard,* * L-2W * *,2017-01-01T00:00:00,2017-01-30T00:00:00,quartz-ext
+next-716,next,standard,* * L-3W * *,2017-01-01T00:00:00,2017-01-27T00:00:00,quartz-ext
+next-717,next,standard,* * L-4W * *,2017-01-01T00:00:00,2017-01-27T00:00:00,quartz-ext
+next-718,next,standard,* * L-0W * *,2016-02-01T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-719,next,standard,* * L-0W * *,2017-02-01T00:00:00,2017-02-28T00:00:00,quartz-ext
+next-720,next,standard,* * L-1W * *,2016-02-01T00:00:00,2016-02-29T00:00:00,quartz-ext
+next-721,next,standard,* * L-1W * *,2017-02-01T00:00:00,2017-02-27T00:00:00,quartz-ext
+next-722,next,standard,* * L-2W * *,2016-02-01T00:00:00,2016-02-26T00:00:00,quartz-ext
+next-723,next,standard,* * L-2W * *,2017-02-01T00:00:00,2017-02-27T00:00:00,quartz-ext
+next-724,next,standard,* * L-3W * *,2016-02-01T00:00:00,2016-02-26T00:00:00,quartz-ext
+next-725,next,standard,* * L-3W * *,2017-02-01T00:00:00,2017-02-24T00:00:00,quartz-ext
+next-726,next,standard,* * ? 11 *,2016-10-09T00:00:00,2016-11-01T00:00:00,quartz-ext
+next-727,next,standard,? ? ? ? ?,2016-12-09T16:46:00,2016-12-09T16:46:00,quartz-ext dom-dow-intersect
+next-728,next,standard,* * * * ?,2016-12-09T16:46:00,2016-12-09T16:46:00,quartz-ext
+next-729,next,standard,* * ? * *,2016-03-09T16:46:00,2016-03-09T16:46:00,quartz-ext
+next-730,next,standard,* * * * ?,2016-12-30T16:46:00,2016-12-30T16:46:00,quartz-ext
+next-731,next,standard,* * ? * *,2016-12-09T02:46:00,2016-12-09T02:46:00,quartz-ext
+next-732,next,standard,* * * * ?,2016-12-09T16:09:00,2016-12-09T16:09:00,quartz-ext
+next-733,next,standard,* * ? * *,2099-12-09T16:46:00,2099-12-09T16:46:00,quartz-ext
+next-734,next,standard,@every_second,2017-03-23T16:46:05,2017-03-23T16:46:05,cronos-macro
+next-735,next,standard,@every_minute,2017-03-23T16:46:00,2017-03-23T16:46:00,cronos-macro
+next-736,next,standard,@hourly,2017-03-23T16:46:00,2017-03-23T17:00:00,
+next-737,next,standard,@daily,2017-03-23T16:46:00,2017-03-24T00:00:00,
+next-738,next,standard,@midnight,2017-03-23T16:46:00,2017-03-24T00:00:00,
+next-739,next,standard,@monthly,2017-03-23T16:46:00,2017-04-01T00:00:00,
+next-740,next,standard,@yearly,2017-03-23T16:46:00,2018-01-01T00:00:00,
+next-741,next,standard,@annually,2017-03-23T16:46:00,2018-01-01T00:00:00,
+next-742,next,standard,@EVERY_SECOND,2017-03-23T16:46:05,2017-03-23T16:46:05,cronos-macro
+next-743,next,standard,@EVERY_MINUTE,2017-03-23T16:46:00,2017-03-23T16:46:00,cronos-macro
+next-744,next,standard,@HOURLY,2017-03-23T16:46:00,2017-03-23T17:00:00,
+next-745,next,standard,@DAILY,2017-03-23T16:46:00,2017-03-24T00:00:00,
+next-746,next,standard,@MIDNIGHT,2017-03-23T16:46:00,2017-03-24T00:00:00,
+next-747,next,standard,@MONTHLY,2017-03-23T16:46:00,2017-04-01T00:00:00,
+next-748,next,standard,@YEARLY,2017-03-23T16:46:00,2018-01-01T00:00:00,
+next-749,next,standard,@ANNUALLY,2017-03-23T16:46:00,2018-01-01T00:00:00,
+unreachable-001,unreachable,standard,* * 30 2 *,1970-01-01T00:00:00,,
+unreachable-002,unreachable,standard,* * 30-31 2 *,1970-01-01T00:00:00,,
+unreachable-003,unreachable,standard,* * 31 2 *,1970-01-01T00:00:00,,
+unreachable-004,unreachable,standard,* * 31 4 *,1970-01-01T00:00:00,,
+unreachable-005,unreachable,standard,* * 31 6 *,1970-01-01T00:00:00,,
+unreachable-006,unreachable,standard,* * 31 9 *,1970-01-01T00:00:00,,
+unreachable-007,unreachable,standard,* * 31 11 *,1970-01-01T00:00:00,,
+unreachable-008,unreachable,standard,* * L-30 11 *,1970-01-01T00:00:00,,quartz-ext
+unreachable-009,unreachable,standard,* * L-29 2 *,1970-01-01T00:00:00,,quartz-ext
+unreachable-010,unreachable,standard,* * L-30 2 *,1970-01-01T00:00:00,,quartz-ext
+unreachable-011,unreachable,standard,* * 1 * SUN#2,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-012,unreachable,standard,* * 7 * SUN#2,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-013,unreachable,standard,* * 1 * SUN#3,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-014,unreachable,standard,* * 14 * SUN#3,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-015,unreachable,standard,* * 1 * SUN#4,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-016,unreachable,standard,* * 21 * SUN#4,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-017,unreachable,standard,* * 1 * SUN#5,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-018,unreachable,standard,* * 28 * SUN#5,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-019,unreachable,standard,* * 1-28 * SUN#5,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-020,unreachable,standard,* * 8 * MON#1,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-021,unreachable,standard,* * 31 * MON#1,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-022,unreachable,standard,* * 15 * TUE#2,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-023,unreachable,standard,* * 31 * TUE#2,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-024,unreachable,standard,* * 22 * WED#3,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-025,unreachable,standard,* * 31 * WED#3,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-026,unreachable,standard,* * 29 * THU#4,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-027,unreachable,standard,* * 31 * THU#4,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-028,unreachable,standard,* * 21 * 7L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-029,unreachable,standard,* * 21 * 0L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-030,unreachable,standard,* * 11 * 0L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-031,unreachable,standard,* * 1 * 0L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-032,unreachable,standard,* * L * SUN#1,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-033,unreachable,standard,* * L * SUN#2,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-034,unreachable,standard,* * L * SUN#3,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-035,unreachable,standard,* * L 1 SUN#4,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-036,unreachable,standard,* * L 3-12 SUN#4,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-037,unreachable,standard,* * L-1 2 SUN#5,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-038,unreachable,standard,* * L-2 4 SUN#5,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-039,unreachable,standard,* * L-3 * SUN#5,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-040,unreachable,standard,* * L-10 * SUN#4,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-041,unreachable,standard,* * 1W * SUN,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-042,unreachable,standard,* * 4W * 0,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-043,unreachable,standard,* * 7W * 7,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-044,unreachable,standard,* * 5W * SAT,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-045,unreachable,standard,* * 14W * 6#2,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-046,unreachable,standard,* * 7W * FRI#2,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-047,unreachable,standard,* * 14W * TUE#3,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-048,unreachable,standard,* * 11W * MON#3,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-049,unreachable,standard,* * 21W * TUE#4,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-050,unreachable,standard,* * 28W * SAT#5,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-051,unreachable,standard,* * 21W * 0L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-052,unreachable,standard,* * 19W * 1L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-053,unreachable,standard,* * 1W * 1L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-054,unreachable,standard,* * 21W * 2L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-055,unreachable,standard,* * 2W * 2L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-056,unreachable,standard,* * 21W * 3L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-057,unreachable,standard,* * 3W * 3L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-058,unreachable,standard,* * 21W * 4L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-059,unreachable,standard,* * 4W * 4L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-060,unreachable,standard,* * 21W * 5L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-061,unreachable,standard,* * 5W * 5L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-062,unreachable,standard,* * 21W * 6L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-063,unreachable,standard,* * 21W * 7L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-064,unreachable,standard,* * LW * SUN,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-065,unreachable,standard,* * LW * 0,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-066,unreachable,standard,* * LW * 0L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-067,unreachable,standard,* * LW * SAT,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-068,unreachable,standard,* * LW * 6,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-069,unreachable,standard,* * LW * 6L,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-070,unreachable,standard,* * LW * 1#1,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-071,unreachable,standard,* * LW * 2#2,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-072,unreachable,standard,* * LW * 3#3,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-073,unreachable,standard,* * LW 1 4#4,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-074,unreachable,standard,* * LW 3-12 4#4,1970-01-01T00:00:00,,quartz-ext dom-dow-intersect
+unreachable-075,unreachable,standard,* * 30 2 *,2080-01-01T00:00:00,,
+unreachable-076,unreachable,standard,* * L-30 11 *,2080-01-01T00:00:00,,quartz-ext
+invalid-001,invalid,withSeconds,-1 * * * * *,,Seconds,
+invalid-002,invalid,withSeconds,- * * * * *,,Seconds,
+invalid-003,invalid,withSeconds,5- * * * * *,,Seconds,
+invalid-004,invalid,withSeconds,", * * * * *",,Seconds,
+invalid-005,invalid,withSeconds,",1 * * * * *",,Seconds,
+invalid-006,invalid,withSeconds,/ * * * * *,,Seconds,
+invalid-007,invalid,withSeconds,*/ * * * * *,,Seconds,
+invalid-008,invalid,withSeconds,1/ * * * * *,,Seconds,
+invalid-009,invalid,withSeconds,1/0 * * * * *,,Seconds,
+invalid-010,invalid,withSeconds,1/60 * * * * *,,Seconds,oversized-step
+invalid-011,invalid,withSeconds,1/k * * * * *,,Seconds,
+invalid-012,invalid,withSeconds,1k * * * * *,,Seconds,
+invalid-013,invalid,withSeconds,# * * * * *,,Seconds,
+invalid-014,invalid,withSeconds,*#1 * * * * *,,Seconds,
+invalid-015,invalid,withSeconds,0#2 * * * * *,,Seconds,
+invalid-016,invalid,withSeconds,L * * * * *,,Seconds,
+invalid-017,invalid,withSeconds,l * * * * *,,Seconds,
+invalid-018,invalid,withSeconds,W * * * * *,,Seconds,
+invalid-019,invalid,withSeconds,w * * * * *,,Seconds,
+invalid-020,invalid,withSeconds,LW * * * * *,,Seconds,
+invalid-021,invalid,withSeconds,lw * * * * *,,Seconds,
+invalid-022,invalid,withSeconds,1/2147483648 * * * * *,,Seconds,oversized-step
+invalid-023,invalid,standard,60 * * * *,,Minutes,
+invalid-024,invalid,standard,-1 * * * *,,Minutes,
+invalid-025,invalid,standard,- * * * *,,Minutes,
+invalid-026,invalid,standard,7- * * * *,,Minutes,
+invalid-027,invalid,standard,", * * * *",,Minutes,
+invalid-028,invalid,standard,",1 * * * *",,Minutes,
+invalid-029,invalid,standard,*/ * * * *,,Minutes,
+invalid-030,invalid,standard,/ * * * *,,Minutes,
+invalid-031,invalid,standard,1/ * * * *,,Minutes,
+invalid-032,invalid,standard,1/0 * * * *,,Minutes,
+invalid-033,invalid,standard,1/60 * * * *,,Minutes,oversized-step
+invalid-034,invalid,standard,1/k * * * *,,Minutes,
+invalid-035,invalid,standard,1k * * * *,,Minutes,
+invalid-036,invalid,standard,# * * * *,,Minutes,
+invalid-037,invalid,standard,*#1 * * * *,,Minutes,
+invalid-038,invalid,standard,5#3 * * * *,,Minutes,
+invalid-039,invalid,standard,L * * * *,,Minutes,
+invalid-040,invalid,standard,l * * * *,,Minutes,
+invalid-041,invalid,standard,W * * * *,,Minutes,
+invalid-042,invalid,standard,w * * * *,,Minutes,
+invalid-043,invalid,standard,lw * * * *,,Minutes,
+invalid-044,invalid,withSeconds,* 60 * * * *,,Minutes,
+invalid-045,invalid,withSeconds,* -1 * * * *,,Minutes,
+invalid-046,invalid,withSeconds,* - * * * *,,Minutes,
+invalid-047,invalid,withSeconds,* 7- * * * *,,Minutes,
+invalid-048,invalid,withSeconds,"* , * * * *",,Minutes,
+invalid-049,invalid,withSeconds,"* ,1 * * * *",,Minutes,
+invalid-050,invalid,withSeconds,* */ * * * *,,Minutes,
+invalid-051,invalid,withSeconds,* / * * * *,,Minutes,
+invalid-052,invalid,withSeconds,* 1/ * * * *,,Minutes,
+invalid-053,invalid,withSeconds,* 1/0 * * * *,,Minutes,
+invalid-054,invalid,withSeconds,* 1/60 * * * *,,Minutes,oversized-step
+invalid-055,invalid,withSeconds,* 1/k * * * *,,Minutes,
+invalid-056,invalid,withSeconds,* 1k * * * *,,Minutes,
+invalid-057,invalid,withSeconds,* # * * * *,,Minutes,
+invalid-058,invalid,withSeconds,* *#1 * * * *,,Minutes,
+invalid-059,invalid,withSeconds,* 5#3 * * * *,,Minutes,
+invalid-060,invalid,withSeconds,* L * * * *,,Minutes,
+invalid-061,invalid,withSeconds,* l * * * *,,Minutes,
+invalid-062,invalid,withSeconds,* W * * * *,,Minutes,
+invalid-063,invalid,withSeconds,* w * * * *,,Minutes,
+invalid-064,invalid,withSeconds,* LW * * * *,,Minutes,
+invalid-065,invalid,withSeconds,* lw * * * *,,Minutes,
+invalid-066,invalid,standard,* 25 * * *,,Hours,
+invalid-067,invalid,standard,* -1 * * *,,Hours,
+invalid-068,invalid,standard,* - * * *,,Hours,
+invalid-069,invalid,standard,* 0- * * *,,Hours,
+invalid-070,invalid,standard,"* , * * *",,Hours,
+invalid-071,invalid,standard,"* ,1 * * *",,Hours,
+invalid-072,invalid,standard,* / * * *,,Hours,
+invalid-073,invalid,standard,* 1/ * * *,,Hours,
+invalid-074,invalid,standard,* 1/0 * * *,,Hours,
+invalid-075,invalid,standard,* 1/24 * * *,,Hours,oversized-step
+invalid-076,invalid,standard,* 1/k * * *,,Hours,
+invalid-077,invalid,standard,* 1k * * *,,Hours,
+invalid-078,invalid,standard,* # * * *,,Hours,
+invalid-079,invalid,standard,* *#2 * * *,,Hours,
+invalid-080,invalid,standard,* 10#1 * * *,,Hours,
+invalid-081,invalid,standard,* L * * *,,Hours,
+invalid-082,invalid,standard,* l * * *,,Hours,
+invalid-083,invalid,standard,* W * * *,,Hours,
+invalid-084,invalid,standard,* w * * *,,Hours,
+invalid-085,invalid,standard,* LW * * *,,Hours,
+invalid-086,invalid,standard,* lw * * *,,Hours,
+invalid-087,invalid,withSeconds,* * 25 * * *,,Hours,
+invalid-088,invalid,withSeconds,* * -1 * * *,,Hours,
+invalid-089,invalid,withSeconds,* * - * * *,,Hours,
+invalid-090,invalid,withSeconds,* * 0- * * *,,Hours,
+invalid-091,invalid,withSeconds,"* * , * * *",,Hours,
+invalid-092,invalid,withSeconds,"* * ,1 * * *",,Hours,
+invalid-093,invalid,withSeconds,* * / * * *,,Hours,
+invalid-094,invalid,withSeconds,* * 1/ * * *,,Hours,
+invalid-095,invalid,withSeconds,* * 1/0 * * *,,Hours,
+invalid-096,invalid,withSeconds,* * 1/24 * * *,,Hours,oversized-step
+invalid-097,invalid,withSeconds,* * 1/k * * *,,Hours,
+invalid-098,invalid,withSeconds,* * 1k * * *,,Hours,
+invalid-099,invalid,withSeconds,* * # * * *,,Hours,
+invalid-100,invalid,withSeconds,* * *#2 * * *,,Hours,
+invalid-101,invalid,withSeconds,* * 10#1 * * *,,Hours,
+invalid-102,invalid,withSeconds,* * L * * *,,Hours,
+invalid-103,invalid,withSeconds,* * l * * *,,Hours,
+invalid-104,invalid,withSeconds,* * W * * *,,Hours,
+invalid-105,invalid,withSeconds,* * w * * *,,Hours,
+invalid-106,invalid,withSeconds,* * LW * * *,,Hours,
+invalid-107,invalid,withSeconds,* * lw * * *,,Hours,
+invalid-108,invalid,standard,* * 32 * *,,Days of month,
+invalid-109,invalid,standard,* * 10-32 * *,,Days of month,
+invalid-110,invalid,standard,* * 31-32 * *,,Days of month,
+invalid-111,invalid,standard,* * -1 * *,,Days of month,
+invalid-112,invalid,standard,* * - * *,,Days of month,
+invalid-113,invalid,standard,* * 8- * *,,Days of month,
+invalid-114,invalid,standard,"* * , * *",,Days of month,
+invalid-115,invalid,standard,"* * ,1 * *",,Days of month,
+invalid-116,invalid,standard,* * / * *,,Days of month,
+invalid-117,invalid,standard,* * 1/ * *,,Days of month,
+invalid-118,invalid,standard,* * 1/0 * *,,Days of month,
+invalid-119,invalid,standard,* * 1/32 * *,,Days of month,oversized-step
+invalid-120,invalid,standard,* * 1/k * *,,Days of month,
+invalid-121,invalid,standard,* * 1m * *,,Days of month,
+invalid-122,invalid,standard,* * T * *,,Days of month,
+invalid-123,invalid,standard,* * MON * *,,Days of month,
+invalid-124,invalid,standard,* * mon * *,,Days of month,
+invalid-125,invalid,standard,* * # * *,,Days of month,
+invalid-126,invalid,standard,* * *#3 * *,,Days of month,
+invalid-127,invalid,standard,* * 4#1 * *,,Days of month,
+invalid-128,invalid,standard,* * W * *,,Days of month,
+invalid-129,invalid,standard,* * w * *,,Days of month,
+invalid-130,invalid,standard,* * 1-2W * *,,Days of month,
+invalid-131,invalid,standard,* * 1-2w * *,,Days of month,
+invalid-132,invalid,standard,"* * 1,2W * *",,Days of month,
+invalid-133,invalid,standard,"* * 1,2w * *",,Days of month,
+invalid-134,invalid,standard,* * 1/2W * *,,Days of month,
+invalid-135,invalid,standard,* * 1/2w * *,,Days of month,
+invalid-136,invalid,standard,* * 1-2/2W * *,,Days of month,
+invalid-137,invalid,standard,* * 1-2/2w * *,,Days of month,
+invalid-138,invalid,standard,* * 1LW * *,,Days of month,
+invalid-139,invalid,standard,* * 1lw * *,,Days of month,
+invalid-140,invalid,standard,* * L-31 * *,,Days of month,
+invalid-141,invalid,standard,* * l-31 * *,,Days of month,
+invalid-142,invalid,withSeconds,* * * 32 * *,,Days of month,
+invalid-143,invalid,withSeconds,* * * 10-32 * *,,Days of month,
+invalid-144,invalid,withSeconds,* * * 31-32 * *,,Days of month,
+invalid-145,invalid,withSeconds,* * * -1 * *,,Days of month,
+invalid-146,invalid,withSeconds,* * * - * *,,Days of month,
+invalid-147,invalid,withSeconds,* * * 8- * *,,Days of month,
+invalid-148,invalid,withSeconds,"* * * , * *",,Days of month,
+invalid-149,invalid,withSeconds,"* * * ,1 * *",,Days of month,
+invalid-150,invalid,withSeconds,* * * / * *,,Days of month,
+invalid-151,invalid,withSeconds,* * * 1/ * *,,Days of month,
+invalid-152,invalid,withSeconds,* * * 1/0 * *,,Days of month,
+invalid-153,invalid,withSeconds,* * * 1/32 * *,,Days of month,oversized-step
+invalid-154,invalid,withSeconds,* * * 1/k * *,,Days of month,
+invalid-155,invalid,withSeconds,* * * 1m * *,,Days of month,
+invalid-156,invalid,withSeconds,* * * T * *,,Days of month,
+invalid-157,invalid,withSeconds,* * * MON * *,,Days of month,
+invalid-158,invalid,withSeconds,* * * mon * *,,Days of month,
+invalid-159,invalid,withSeconds,* * * # * *,,Days of month,
+invalid-160,invalid,withSeconds,* * * *#3 * *,,Days of month,
+invalid-161,invalid,withSeconds,* * * 4#1 * *,,Days of month,
+invalid-162,invalid,withSeconds,* * * W * *,,Days of month,
+invalid-163,invalid,withSeconds,* * * w * *,,Days of month,
+invalid-164,invalid,withSeconds,* * * 1-2W * *,,Days of month,
+invalid-165,invalid,withSeconds,* * * 1-2w * *,,Days of month,
+invalid-166,invalid,withSeconds,"* * * 1,2W * *",,Days of month,
+invalid-167,invalid,withSeconds,"* * * 1,2w * *",,Days of month,
+invalid-168,invalid,withSeconds,* * * 1/2W * *,,Days of month,
+invalid-169,invalid,withSeconds,* * * 1/2w * *,,Days of month,
+invalid-170,invalid,withSeconds,* * * 1-2/2W * *,,Days of month,
+invalid-171,invalid,withSeconds,* * * 1-2/2w * *,,Days of month,
+invalid-172,invalid,withSeconds,* * * 1LW * *,,Days of month,
+invalid-173,invalid,withSeconds,* * * 1lw * *,,Days of month,
+invalid-174,invalid,withSeconds,* * * L-31 * *,,Days of month,
+invalid-175,invalid,withSeconds,* * * l-31 * *,,Days of month,
+invalid-176,invalid,standard,* * * 13 *,,Months,
+invalid-177,invalid,standard,* * * -1 *,,Months,
+invalid-178,invalid,standard,* * * - *,,Months,
+invalid-179,invalid,standard,* * * 2- *,,Months,
+invalid-180,invalid,standard,"* * * , *",,Months,
+invalid-181,invalid,standard,"* * * ,1 *",,Months,
+invalid-182,invalid,standard,* * * / *,,Months,
+invalid-183,invalid,standard,* * * */ *,,Months,
+invalid-184,invalid,standard,* * * 1/ *,,Months,
+invalid-185,invalid,standard,* * * 1/0 *,,Months,
+invalid-186,invalid,standard,* * * 1/13 *,,Months,oversized-step
+invalid-187,invalid,standard,* * * 1/k *,,Months,
+invalid-188,invalid,standard,* * * 1k *,,Months,
+invalid-189,invalid,standard,* * * # *,,Months,
+invalid-190,invalid,standard,* * * *#1 *,,Months,
+invalid-191,invalid,standard,* * * */2# *,,Months,
+invalid-192,invalid,standard,* * * 2#2 *,,Months,
+invalid-193,invalid,standard,* * * L *,,Months,
+invalid-194,invalid,standard,* * * l *,,Months,
+invalid-195,invalid,standard,* * * W *,,Months,
+invalid-196,invalid,standard,* * * w *,,Months,
+invalid-197,invalid,standard,* * * LW *,,Months,
+invalid-198,invalid,standard,* * * lw *,,Months,
+invalid-199,invalid,withSeconds,* * * * 13 *,,Months,
+invalid-200,invalid,withSeconds,* * * * -1 *,,Months,
+invalid-201,invalid,withSeconds,* * * * - *,,Months,
+invalid-202,invalid,withSeconds,* * * * 2- *,,Months,
+invalid-203,invalid,withSeconds,"* * * * , *",,Months,
+invalid-204,invalid,withSeconds,"* * * * ,1 *",,Months,
+invalid-205,invalid,withSeconds,* * * * / *,,Months,
+invalid-206,invalid,withSeconds,* * * * */ *,,Months,
+invalid-207,invalid,withSeconds,* * * * 1/ *,,Months,
+invalid-208,invalid,withSeconds,* * * * 1/0 *,,Months,
+invalid-209,invalid,withSeconds,* * * * 1/13 *,,Months,oversized-step
+invalid-210,invalid,withSeconds,* * * * 1/k *,,Months,
+invalid-211,invalid,withSeconds,* * * * 1k *,,Months,
+invalid-212,invalid,withSeconds,* * * * # *,,Months,
+invalid-213,invalid,withSeconds,* * * * *#1 *,,Months,
+invalid-214,invalid,withSeconds,* * * * */2# *,,Months,
+invalid-215,invalid,withSeconds,* * * * 2#2 *,,Months,
+invalid-216,invalid,withSeconds,* * * * L *,,Months,
+invalid-217,invalid,withSeconds,* * * * l *,,Months,
+invalid-218,invalid,withSeconds,* * * * W *,,Months,
+invalid-219,invalid,withSeconds,* * * * w *,,Months,
+invalid-220,invalid,withSeconds,* * * * LW *,,Months,
+invalid-221,invalid,withSeconds,* * * * lw *,,Months,
+invalid-222,invalid,standard,* * * * 8,,Days of week,
+invalid-223,invalid,standard,* * * * -1,,Days of week,
+invalid-224,invalid,standard,* * * * -,,Days of week,
+invalid-225,invalid,standard,* * * * 3-,,Days of week,
+invalid-226,invalid,standard,"* * * * ,",,Days of week,
+invalid-227,invalid,standard,"* * * * ,1",,Days of week,
+invalid-228,invalid,standard,* * * * /,,Days of week,
+invalid-229,invalid,standard,* * * * */,,Days of week,
+invalid-230,invalid,standard,* * * * 1/,,Days of week,
+invalid-231,invalid,standard,* * * * 1/0,,Days of week,
+invalid-232,invalid,standard,* * * * 1/8,,Days of week,oversized-step
+invalid-233,invalid,standard,* * * * #,,Days of week,
+invalid-234,invalid,standard,* * * * 0#,,Days of week,
+invalid-235,invalid,standard,* * * * 5#6,,Days of week,
+invalid-236,invalid,standard,* * * * SUN#6,,Days of week,
+invalid-237,invalid,standard,* * * * sun#6,,Days of week,
+invalid-238,invalid,standard,* * * * SUN#050,,Days of week,
+invalid-239,invalid,standard,* * * * sun#050,,Days of week,
+invalid-240,invalid,standard,* * * * 0#0,,Days of week,
+invalid-241,invalid,standard,* * * * SUT,,Days of week,
+invalid-242,invalid,standard,* * * * sut,,Days of week,
+invalid-243,invalid,standard,* * * * SU0,,Days of week,
+invalid-244,invalid,standard,* * * * SUNDAY,,Days of week,
+invalid-245,invalid,standard,* * * * L,,Days of week,
+invalid-246,invalid,standard,* * * * l,,Days of week,
+invalid-247,invalid,standard,* * * * W,,Days of week,
+invalid-248,invalid,standard,* * * * w,,Days of week,
+invalid-249,invalid,standard,* * * * LW,,Days of week,
+invalid-250,invalid,standard,* * * * lw,,Days of week,
+invalid-251,invalid,withSeconds,* * * * * 8,,Days of week,
+invalid-252,invalid,withSeconds,* * * * * -1,,Days of week,
+invalid-253,invalid,withSeconds,* * * * * -,,Days of week,
+invalid-254,invalid,withSeconds,* * * * * 3-,,Days of week,
+invalid-255,invalid,withSeconds,"* * * * * ,",,Days of week,
+invalid-256,invalid,withSeconds,"* * * * * ,1",,Days of week,
+invalid-257,invalid,withSeconds,* * * * * /,,Days of week,
+invalid-258,invalid,withSeconds,* * * * * */,,Days of week,
+invalid-259,invalid,withSeconds,* * * * * 1/,,Days of week,
+invalid-260,invalid,withSeconds,* * * * * 1/0,,Days of week,
+invalid-261,invalid,withSeconds,* * * * * 1/8,,Days of week,oversized-step
+invalid-262,invalid,withSeconds,* * * * * #,,Days of week,
+invalid-263,invalid,withSeconds,* * * * * 0#,,Days of week,
+invalid-264,invalid,withSeconds,* * * * * 5#6,,Days of week,
+invalid-265,invalid,withSeconds,* * * * * SUN#6,,Days of week,
+invalid-266,invalid,withSeconds,* * * * * sun#6,,Days of week,
+invalid-267,invalid,withSeconds,* * * * * SUN#050,,Days of week,
+invalid-268,invalid,withSeconds,* * * * * sun#050,,Days of week,
+invalid-269,invalid,withSeconds,* * * * * 0#0,,Days of week,
+invalid-270,invalid,withSeconds,* * * * * SUT,,Days of week,
+invalid-271,invalid,withSeconds,* * * * * sut,,Days of week,
+invalid-272,invalid,withSeconds,* * * * * SU0,,Days of week,
+invalid-273,invalid,withSeconds,* * * * * SUNDAY,,Days of week,
+invalid-274,invalid,withSeconds,* * * * * L,,Days of week,
+invalid-275,invalid,withSeconds,* * * * * l,,Days of week,
+invalid-276,invalid,withSeconds,* * * * * W,,Days of week,
+invalid-277,invalid,withSeconds,* * * * * w,,Days of week,
+invalid-278,invalid,withSeconds,* * * * * LW,,Days of week,
+invalid-279,invalid,withSeconds,* * * * * lw,,Days of week,
+invalid-280,invalid,standard,* * *,,Months,
+invalid-281,invalid,standard,* * * * * * *,,,
+invalid-282,invalid,standard,* * * *,,Days of month,
+invalid-283,invalid,standard,* * * * * * *,,,
+invalid-284,invalid,standard,@,,,
+invalid-285,invalid,standard,@invalid,,,
+invalid-286,invalid,standard,@yearl,,,
+invalid-287,invalid,standard,@yearl,,,
+invalid-288,invalid,standard,@yearly !,,,
+invalid-289,invalid,standard,@every_hour,,,
+invalid-290,invalid,standard,@@daily,,,
+invalid-291,invalid,standard,@yeannually,,,
+invalid-292,invalid,standard,@yweekly,,,
+invalid-293,invalid,standard,@ymonthly,,,
+invalid-294,invalid,standard,@ydaily,,,
+invalid-295,invalid,standard,@ymidnight,,,
+invalid-296,invalid,standard,@yhourly,,,
+invalid-297,invalid,standard,@yevery_second,,,
+invalid-298,invalid,standard,@yevery_minute,,,
+invalid-299,invalid,standard,@every_minsecond,,,
+invalid-300,invalid,standard,@annuall,,,
+invalid-301,invalid,standard,@dail,,,
+invalid-302,invalid,standard,@hour,,,
+invalid-303,invalid,standard,@midn,,,
+invalid-304,invalid,standard,@week,,,
+invalid-305,invalid,standard,@,,,
+invalid-306,invalid,standard,@invalid,,,
+invalid-307,invalid,standard,@yearl,,,
+invalid-308,invalid,standard,@yearl,,,
+invalid-309,invalid,standard,@yearly !,,,
+invalid-310,invalid,standard,@dai,,,
+invalid-311,invalid,standard,@a,,,
+invalid-312,invalid,standard,@every_hour,,,
+invalid-313,invalid,standard,@everysecond,,,
+invalid-314,invalid,standard,@@daily,,,
+invalid-315,invalid,standard,@yeannually,,,
+invalid-316,invalid,standard,@yweekly,,,
+invalid-317,invalid,standard,@ymonthly,,,
+invalid-318,invalid,standard,@ydaily,,,
+invalid-319,invalid,standard,@ymidnight,,,
+invalid-320,invalid,standard,@yhourly,,,
+invalid-321,invalid,standard,@yevery_second,,,
+invalid-322,invalid,standard,@yevery_minute,,,
+invalid-323,invalid,standard,@every_minsecond,,,
+invalid-324,invalid,standard,@annuall,,,
+invalid-325,invalid,standard,@dail,,,
+invalid-326,invalid,standard,@hour,,,
+invalid-327,invalid,standard,@midn,,,
+invalid-328,invalid,standard,@week,,,
+invalid-329,invalid,standard,60 * * * *,,between 0 and 59,
+invalid-330,invalid,standard,*/60 * * * *,,between 1 and 59,oversized-step
+equal-001,equal,standard,* * * * *,,* * * * *,
+equal-002,equal,standard,* * * * *,,"0/2,1/2 * * * *",
+equal-003,equal,standard,* * * * *,,"1/2,0-59/2 * * * *",
+equal-004,equal,standard,* * * * *,,0-59 * * * *,
+equal-005,equal,standard,* * * * *,,"0,1,2-59 * * * *",
+equal-006,equal,standard,* * * * *,,0-59/1 * * * *,
+equal-007,equal,standard,* * * * *,,50-49 * * * *,wrap-range
+equal-008,equal,standard,* * * * *,,"* 0/3,2/3,1/3 * * *",
+equal-009,equal,standard,* * * * *,,"* 0-23/2,1/2 * * *",
+equal-010,equal,standard,* * * * *,,* 0-23 * * *,
+equal-011,equal,standard,* * * * *,,* 0-23/1 * * *,
+equal-012,equal,standard,* * * * *,,* 12-11 * * *,wrap-range
+equal-013,equal,standard,* * * * *,,"* * 1/2,2/2 * *",
+equal-014,equal,standard,* * * * *,,"* * 1-31/2,2/2 * *",
+equal-015,equal,standard,* * * * *,,* * 1-31 * *,
+equal-016,equal,standard,* * * * *,,* * 1-31/1 * *,
+equal-017,equal,standard,* * * * *,,* * 5-4 * *,wrap-range
+equal-018,equal,standard,* * * * *,,"* * * 1/2,2/2 *",
+equal-019,equal,standard,* * * * *,,"* * * 1-12/2,2/2 *",
+equal-020,equal,standard,* * * * *,,* * * 1-12 *,
+equal-021,equal,standard,* * * * *,,* * * 1-12/1 *,
+equal-022,equal,standard,* * * * *,,* * * 12-11 *,wrap-range
+equal-023,equal,standard,* * * * *,,"* * * * 0/2,1/2",
+equal-024,equal,standard,* * * * *,,"* * * * SUN/2,MON/2",
+equal-025,equal,standard,* * * * *,,"* * * * 0-6/2,1/2",
+equal-026,equal,standard,* * * * *,,"* * * * 0-7/2,1/2",
+equal-027,equal,standard,* * * * *,,"* * * * 0-7/2,MON/2",
+equal-028,equal,standard,* * * * *,,* * * * 0-6,
+equal-029,equal,standard,* * * * *,,* * * * 0-7,
+equal-030,equal,standard,* * * * *,,* * * * SUN-SAT,
+equal-031,equal,standard,* * * * *,,* * * * 0-6/1,
+equal-032,equal,standard,* * * * *,,* * * * 0-7/1,
+equal-033,equal,standard,* * * * *,,* * * * SUN-SAT/1,
+equal-034,equal,standard,* * * * *,,* * * * MON-SUN,wrap-range
+equal-035,equal,standard,* * * * 0,,* * * * 7,
+equal-036,equal,standard,* * * * 0,,* * * * SUN,
+equal-037,equal,standard,* * LW * *,,* * LW * *,quartz-ext
+equal-038,equal,standard,* * L-20W * 2,,* * L-20W * 2,quartz-ext
+equal-039,equal,standard,* * * * 0#1,,* * * * 0#1,quartz-ext
+equal-040,equal,standard,* * * * 0L,,* * * * 7L,quartz-ext
+equal-041,equal,standard,* * L-3W * 0L,,* * L-3W * 0L,quartz-ext
+equal-042,equal,standard,1 1 1 1 1,,1 1 1 1 1,
+equal-043,equal,standard,* * * * *,,* * ? * *,quartz-ext
+equal-044,equal,standard,* * * * *,,* * * * ?,quartz-ext
+equal-045,equal,standard,1-5 * * * *,,1-5 * * * *,
+equal-046,equal,standard,1-5 * * * *,,1-5/1 * * * *,
+equal-047,equal,standard,* * * * *,,0/1 * * * *,
+equal-048,equal,standard,1 * * * *,,1-1 * * * *,
+equal-049,equal,standard,*/4 * * * *,,0-59/4 * * * *,
+equal-050,equal,standard,1-5 1-5 1-5 1-5 1-5,,1-5 1-5 1-5 1-5 1-5,
+equal-051,equal,standard,50-15 * * * *,,50-15 * * * *,wrap-range
+equal-052,equal,standard,50-15 * * * *,,"0-15,50-59 * * * *",wrap-range
+equal-053,equal,standard,* 20-15 * * *,,* 20-15 * * *,wrap-range
+equal-054,equal,standard,* 20-15 * * *,,"* 0-15,20-23 * * *",wrap-range
+equal-055,equal,standard,* * 20-15 * *,,* * 20-15 * *,wrap-range
+equal-056,equal,standard,* * 20-15 * *,,"* * 1-15,20-31 * *",wrap-range
+equal-057,equal,standard,* * * 10-3 *,,* * * 10-3 *,wrap-range
+equal-058,equal,standard,* * * 10-3 *,,"* * * 1-3,10-12 *",wrap-range
+equal-059,equal,standard,* * * * 5-2,,* * * * 5-2,wrap-range
+equal-060,equal,standard,* * * * 5-2,,"* * * * 0-2,5-7",wrap-range
+equal-061,equal,standard,* * * * 5-2,,"* * * * 0-2,5-6",wrap-range
+equal-062,equal,standard,* * * * 5-2,,"* * * * 1-2,5-7",wrap-range
+equal-063,equal,standard,* * * * FRI-TUE,,* * * * FRI-TUE,wrap-range
+equal-064,equal,standard,* * * * FRI-TUE,,"* * * * SUN-TUE,FRI-SUN",wrap-range
+equal-065,equal,standard,* * * * FRI-TUE,,"* * * * SUN-TUE,FRI-SAT",wrap-range
+equal-066,equal,standard,* * * * FRI-TUE,,"* * * * MON-TUE,FRI-SUN",wrap-range
+notEqual-001,notEqual,standard,1 1 1 1 1,,2 1 1 1 1,
+notEqual-002,notEqual,standard,1 1 1 1 1,,1 2 1 1 1,
+notEqual-003,notEqual,standard,1 1 1 1 1,,1 1 2 1 1,
+notEqual-004,notEqual,standard,1 1 1 1 1,,1 1 1 2 1,
+notEqual-005,notEqual,standard,1 1 1 1 1,,1 1 1 1 2,
+notEqual-006,notEqual,standard,* * * * *,,1 1 1 1 1,
+notEqual-007,notEqual,standard,* * 31 1 *,,* * L 1 *,quartz-ext
+notEqual-008,notEqual,standard,* * L * *,,* * LW * *,quartz-ext
+notEqual-009,notEqual,standard,* * LW * *,,* * L-1W * *,quartz-ext
+notEqual-010,notEqual,standard,* * * * 0,,* * L-1W * 0#1,quartz-ext
+toString-001,toString,withSeconds,* * * * * *,,* * * * * *,
+toString-002,toString,withSeconds,0 * * * * *,,* * * * *,seconds-elision
+toString-003,toString,withSeconds,"1,2 * * * * *",,"1,2 * * * * *",
+toString-004,toString,withSeconds,1-3 * * * * *,,"1,2,3 * * * * *",
+toString-005,toString,withSeconds,57-3 * * * * *,,"0,1,2,3,57,58,59 * * * * *",wrap-range
+toString-006,toString,withSeconds,*/10 * * * * *,,"0,10,20,30,40,50 * * * * *",
+toString-007,toString,withSeconds,0/10 * * * * *,,"0,10,20,30,40,50 * * * * *",
+toString-008,toString,withSeconds,0-20/5 * * * * *,,"0,5,10,15,20 * * * * *",
+toString-009,toString,withSeconds,"10,56-3/2 * * * * *",,"0,2,10,56,58 * * * * *",wrap-range oversized-step
+toString-010,toString,standard,* * * * *,,* * * * *,
+toString-011,toString,standard,0 * * * *,,0 * * * *,
+toString-012,toString,standard,"1,2 * * * *",,"1,2 * * * *",
+toString-013,toString,standard,1-3 * * * *,,"1,2,3 * * * *",
+toString-014,toString,standard,57-3 * * * *,,"0,1,2,3,57,58,59 * * * *",wrap-range
+toString-015,toString,standard,*/10 * * * *,,"0,10,20,30,40,50 * * * *",
+toString-016,toString,standard,0/10 * * * *,,"0,10,20,30,40,50 * * * *",
+toString-017,toString,standard,0-20/5 * * * *,,"0,5,10,15,20 * * * *",
+toString-018,toString,standard,"10,56-3/2 * * * *",,"0,2,10,56,58 * * * *",wrap-range oversized-step
+toString-019,toString,withSeconds,* * * * * *,,* * * * * *,
+toString-020,toString,withSeconds,* 0 * * * *,,* 0 * * * *,
+toString-021,toString,withSeconds,"* 1,2 * * * *",,"* 1,2 * * * *",
+toString-022,toString,withSeconds,* 1-3 * * * *,,"* 1,2,3 * * * *",
+toString-023,toString,withSeconds,* 57-3 * * * *,,"* 0,1,2,3,57,58,59 * * * *",wrap-range
+toString-024,toString,withSeconds,* */10 * * * *,,"* 0,10,20,30,40,50 * * * *",
+toString-025,toString,withSeconds,* 0/10 * * * *,,"* 0,10,20,30,40,50 * * * *",
+toString-026,toString,withSeconds,* 0-20/5 * * * *,,"* 0,5,10,15,20 * * * *",
+toString-027,toString,withSeconds,"* 10,56-3/2 * * * *",,"* 0,2,10,56,58 * * * *",wrap-range oversized-step
+toString-028,toString,standard,* * * * *,,* * * * *,
+toString-029,toString,standard,* 0 * * *,,* 0 * * *,
+toString-030,toString,standard,"* 1,2 * * *",,"* 1,2 * * *",
+toString-031,toString,standard,* 1-3 * * *,,"* 1,2,3 * * *",
+toString-032,toString,standard,* 22-3 * * *,,"* 0,1,2,3,22,23 * * *",wrap-range
+toString-033,toString,standard,* */10 * * *,,"* 0,10,20 * * *",
+toString-034,toString,standard,* 0/10 * * *,,"* 0,10,20 * * *",
+toString-035,toString,standard,* 0-20/5 * * *,,"* 0,5,10,15,20 * * *",
+toString-036,toString,standard,"* 10,22-3/2 * * *",,"* 0,2,10,22 * * *",wrap-range oversized-step
+toString-037,toString,withSeconds,* * * * * *,,* * * * * *,
+toString-038,toString,withSeconds,* * 0 * * *,,* * 0 * * *,
+toString-039,toString,withSeconds,"* * 1,2 * * *",,"* * 1,2 * * *",
+toString-040,toString,withSeconds,* * 1-3 * * *,,"* * 1,2,3 * * *",
+toString-041,toString,withSeconds,* * 22-3 * * *,,"* * 0,1,2,3,22,23 * * *",wrap-range
+toString-042,toString,withSeconds,* * */10 * * *,,"* * 0,10,20 * * *",
+toString-043,toString,withSeconds,* * 0/10 * * *,,"* * 0,10,20 * * *",
+toString-044,toString,withSeconds,* * 0-20/5 * * *,,"* * 0,5,10,15,20 * * *",
+toString-045,toString,withSeconds,"* * 10,22-3/2 * * *",,"* * 0,2,10,22 * * *",wrap-range oversized-step
+toString-046,toString,standard,* * * * *,,* * * * *,
+toString-047,toString,standard,* * 1 * *,,* * 1 * *,
+toString-048,toString,standard,"* * 1,2 * *",,"* * 1,2 * *",
+toString-049,toString,standard,* * 1-3 * *,,"* * 1,2,3 * *",
+toString-050,toString,standard,* * 30-3 * *,,"* * 1,2,3,30,31 * *",wrap-range
+toString-051,toString,standard,* * */10 * *,,"* * 1,11,21,31 * *",
+toString-052,toString,standard,* * 1/10 * *,,"* * 1,11,21,31 * *",
+toString-053,toString,standard,* * 1-20/5 * *,,"* * 1,6,11,16 * *",
+toString-054,toString,standard,* * L * *,,* * L * *,quartz-ext
+toString-055,toString,standard,* * L-0 * *,,* * L * *,quartz-ext
+toString-056,toString,standard,* * L-10 * *,,* * L-10 * *,quartz-ext
+toString-057,toString,standard,* * LW * *,,* * LW * *,quartz-ext
+toString-058,toString,standard,* * L-0W * *,,* * LW * *,quartz-ext
+toString-059,toString,standard,* * L-10W * *,,* * L-10W * *,quartz-ext
+toString-060,toString,standard,* * 10W * *,,* * 10W * *,quartz-ext
+toString-061,toString,standard,"* * 10,29-3/2 * *",,"* * 2,10,29,31 * *",wrap-range oversized-step
+toString-062,toString,withSeconds,* * * * * *,,* * * * * *,
+toString-063,toString,withSeconds,* * * 1 * *,,* * * 1 * *,
+toString-064,toString,withSeconds,"* * * 1,2 * *",,"* * * 1,2 * *",
+toString-065,toString,withSeconds,* * * 1-3 * *,,"* * * 1,2,3 * *",
+toString-066,toString,withSeconds,* * * 30-3 * *,,"* * * 1,2,3,30,31 * *",wrap-range
+toString-067,toString,withSeconds,* * * */10 * *,,"* * * 1,11,21,31 * *",
+toString-068,toString,withSeconds,* * * 1/10 * *,,"* * * 1,11,21,31 * *",
+toString-069,toString,withSeconds,* * * 1-20/5 * *,,"* * * 1,6,11,16 * *",
+toString-070,toString,withSeconds,* * * L * *,,* * * L * *,quartz-ext
+toString-071,toString,withSeconds,* * * L-0 * *,,* * * L * *,quartz-ext
+toString-072,toString,withSeconds,* * * L-10 * *,,* * * L-10 * *,quartz-ext
+toString-073,toString,withSeconds,* * * LW * *,,* * * LW * *,quartz-ext
+toString-074,toString,withSeconds,* * * L-0W * *,,* * * LW * *,quartz-ext
+toString-075,toString,withSeconds,* * * L-10W * *,,* * * L-10W * *,quartz-ext
+toString-076,toString,withSeconds,* * * 10W * *,,* * * 10W * *,quartz-ext
+toString-077,toString,withSeconds,"* * * 10,29-3/2 * *",,"* * * 2,10,29,31 * *",wrap-range oversized-step
+toString-078,toString,standard,* * * * *,,* * * * *,
+toString-079,toString,standard,* * * 1 *,,* * * 1 *,
+toString-080,toString,standard,"* * * 1,2 *",,"* * * 1,2 *",
+toString-081,toString,standard,* * * 1-3 *,,"* * * 1,2,3 *",
+toString-082,toString,standard,* * * 11-3 *,,"* * * 1,2,3,11,12 *",wrap-range
+toString-083,toString,standard,* * * */10 *,,"* * * 1,11 *",
+toString-084,toString,standard,* * * 1/10 *,,"* * * 1,11 *",
+toString-085,toString,standard,* * * 1-12/5 *,,"* * * 1,6,11 *",
+toString-086,toString,standard,"* * * 10,11-3/2 *",,"* * * 1,3,10,11 *",wrap-range oversized-step
+toString-087,toString,withSeconds,* * * * * *,,* * * * * *,
+toString-088,toString,withSeconds,* * * * 1 *,,* * * * 1 *,
+toString-089,toString,withSeconds,"* * * * 1,2 *",,"* * * * 1,2 *",
+toString-090,toString,withSeconds,* * * * 1-3 *,,"* * * * 1,2,3 *",
+toString-091,toString,withSeconds,* * * * 11-3 *,,"* * * * 1,2,3,11,12 *",wrap-range
+toString-092,toString,withSeconds,* * * * */10 *,,"* * * * 1,11 *",
+toString-093,toString,withSeconds,* * * * 1/10 *,,"* * * * 1,11 *",
+toString-094,toString,withSeconds,* * * * 1-12/5 *,,"* * * * 1,6,11 *",
+toString-095,toString,withSeconds,"* * * * 10,11-3/2 *",,"* * * * 1,3,10,11 *",wrap-range oversized-step
+toString-096,toString,standard,* * * * *,,* * * * *,
+toString-097,toString,standard,* * * * MON,,* * * * 1,
+toString-098,toString,standard,* * * * 1,,* * * * 1,
+toString-099,toString,standard,"* * * * 1,2",,"* * * * 1,2",
+toString-100,toString,standard,* * * * 1-3,,"* * * * 1,2,3",
+toString-101,toString,standard,* * * * 6-1,,"* * * * 0,1,6",wrap-range
+toString-102,toString,standard,* * * * */2,,"* * * * 0,2,4,6",
+toString-103,toString,standard,* * * * 0/2,,"* * * * 0,2,4,6",
+toString-104,toString,standard,* * * * 1-6/5,,"* * * * 1,6",
+toString-105,toString,standard,* * * * 0L,,* * * * 0L,quartz-ext
+toString-106,toString,standard,* * * * 5#1,,* * * * 5#1,quartz-ext
+toString-107,toString,standard,* * * * SUNL,,* * * * 0L,quartz-ext
+toString-108,toString,standard,* * * * FRI#1,,* * * * 5#1,quartz-ext
+toString-109,toString,standard,"* * * * 3,6-2/3",,"* * * * 2,3,6",wrap-range oversized-step
+toString-110,toString,withSeconds,* * * * * *,,* * * * * *,
+toString-111,toString,withSeconds,* * * * * MON,,* * * * * 1,
+toString-112,toString,withSeconds,* * * * * 1,,* * * * * 1,
+toString-113,toString,withSeconds,"* * * * * 1,2",,"* * * * * 1,2",
+toString-114,toString,withSeconds,* * * * * 1-3,,"* * * * * 1,2,3",
+toString-115,toString,withSeconds,* * * * * 6-1,,"* * * * * 0,1,6",wrap-range
+toString-116,toString,withSeconds,* * * * * */2,,"* * * * * 0,2,4,6",
+toString-117,toString,withSeconds,* * * * * 0/2,,"* * * * * 0,2,4,6",
+toString-118,toString,withSeconds,* * * * * 1-6/5,,"* * * * * 1,6",
+toString-119,toString,withSeconds,* * * * * 0L,,* * * * * 0L,quartz-ext
+toString-120,toString,withSeconds,* * * * * 5#1,,* * * * * 5#1,quartz-ext
+toString-121,toString,withSeconds,* * * * * SUNL,,* * * * * 0L,quartz-ext
+toString-122,toString,withSeconds,* * * * * FRI#1,,* * * * * 5#1,quartz-ext
+toString-123,toString,withSeconds,"* * * * * 3,6-2/3",,"* * * * * 2,3,6",wrap-range oversized-step
