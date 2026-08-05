@@ -27,6 +27,7 @@ public static class Program
 
         UnifiedSchedules.Run();
         ConfigurationValidation.Run();
+        OffsetAwareQueries.Run();
         CatchUpAndPurity.Run();
 
         Console.WriteLine("Done.");

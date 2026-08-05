@@ -23,8 +23,9 @@ or share.
 **What it does.** Parses `FREQ=MONTHLY;BYDAY=1FR;COUNT=5`, reads every part back as a typed property
 (including the defaults `INTERVAL=1` and `WKST=MO` that the text never stated), enumerates the
 bounded stream, and shows the occurrence time of day riding along from the start instant. It then
-round-trips a verbosely written rule through `ToString` and compares a terse spelling of the same
-rule for equality.
+reads every `BY` part off an elaborate rule, compares two `WeekDayNum` values with the equality
+operators, round-trips a verbosely written rule through `ToString`, and compares a terse spelling of
+the same rule for equality.
 
 **What to expect.** `COUNT=5` bounds the stream so no `Take` is needed; occurrences carry the start's
 09:30; and the canonical text drops the redundant `INTERVAL=1` and `WKST=MO`, so the verbose and
@@ -43,6 +44,23 @@ start      : 2026-01-01 09:30
 occurrences: 2026-01-02, 2026-02-06, 2026-03-06, 2026-04-03, 2026-05-01
 first      : 2026-01-02 09:30
 
+--- Every BY part is readable back ---
+rule        : FREQ=YEARLY;BYSECOND=0;BYMINUTE=30;BYHOUR=9;BYDAY=MO,3TH;BYMONTHDAY=15,-1;BYYEARDAY=100;BYWEEKNO=10;BYMONTH=3,9;BYSETPOS=1
+ByMonth     : [3, 9]
+ByWeekNo    : [10]
+ByYearDay   : [100]
+ByMonthDay  : [15, -1]
+ByDay       : [0:Monday, 3:Thursday]
+ByHour      : [9]
+ByMinute    : [30]
+BySecond    : [0]
+BySetPos    : [1]
+unstated part on the first rule: ByMonthDay.Count = 0
+
+--- WeekDayNum compares by value ---
+ByDay[0] == WeekDayNum(1, Friday) : True
+ByDay[0] != WeekDayNum(2, Friday) : True
+
 --- RecurrenceRule: canonical text round trip ---
 input      : INTERVAL=1;FREQ=WEEKLY;BYDAY=MO,WE,FR;WKST=MO
 canonical  : FREQ=WEEKLY;BYDAY=MO,WE,FR
@@ -50,9 +68,14 @@ round trip : True
 terse == verbose : True
 ```
 
+A part the rule did not state reads as an **empty list**, never `null`, so inspection code needs no
+guard.
+
 **APIs demonstrated.** `RecurrenceRule.Parse`, `.Frequency` / `.Interval` / `.Count` / `.Until` /
-`.WeekStart` / `.ByDay`, `WeekDayNum.Ordinal` / `.Day` / `.IsEveryOccurrence`,
-`RecurrenceRule.GetOccurrences(DateTime)`, `.ToString()`, `.Equals`.
+`.WeekStart`, all nine `By*` properties (`.ByMonth` / `.ByWeekNo` / `.ByYearDay` / `.ByMonthDay` /
+`.ByDay` / `.ByHour` / `.ByMinute` / `.BySecond` / `.BySetPos`), `WeekDayNum.Ordinal` / `.Day` /
+`.IsEveryOccurrence` and its `==` / `!=` operators, `RecurrenceRule.GetOccurrences(DateTime)`,
+`.ToString()`, `.Equals`.
 
 ## Scenario 2 — ByPartSemantics
 
@@ -141,8 +164,11 @@ BYWEEKNO=-1;BYDAY=MO     : 2026-12-28, 2027-12-27, 2028-12-25
 
 **What it does.** Builds a fortnightly Monday/Wednesday/Friday rule and asserts it equals the parsed
 text form; builds "third Thursday" and "last Friday" rules with ordinal and negative-ordinal
-`WeekDayNum` values; shows the `IsEveryOccurrence` flag and deconstruction; and closes with two
-realistic bounded rules — US Thanksgiving via `UNTIL`, and quarter-end via `BySetPos(-1)`.
+`WeekDayNum` values; shows the `IsEveryOccurrence` flag and deconstruction; builds two realistic
+bounded rules — US Thanksgiving via `UNTIL`, and quarter-end via `BySetPos(-1)`; contrasts two
+week starts through `WithWeekStart`; covers the remaining date-selecting parts (`ByMonthDay`,
+`ByYearDay`, `ByWeekNo`); and closes with the time-of-day parts, which build and round-trip but do
+not enumerate.
 
 **What to expect.** The builder is a spelling of the same grammar, so the built rule equals the
 parsed one — the property that makes it safe in configuration code. Ordinals render as `3TH` and
@@ -169,15 +195,44 @@ rule       : FREQ=YEARLY;UNTIL=20301231T000000;BYDAY=4TH;BYMONTH=11
 occurrences: 2026-11-26, 2027-11-25, 2028-11-23, 2029-11-22, 2030-11-28
 quarter end: FREQ=MONTHLY;INTERVAL=3;COUNT=4;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1
 occurrences: 2026-03-31, 2026-06-30, 2026-09-30, 2026-12-31
+
+--- WithWeekStart: the builder reaches WKST too ---
+  WKST=Monday    FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU
+                  1997-08-05, 1997-08-10, 1997-08-19, 1997-08-24
+  WKST=Sunday    FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=SU
+                  1997-08-05, 1997-08-17, 1997-08-19, 1997-08-31
+
+--- The remaining BY parts ---
+  ByMonthDay(15, -1) : FREQ=MONTHLY;COUNT=4;BYMONTHDAY=15,-1
+                       2026-01-15, 2026-01-31, 2026-02-15, 2026-02-28
+  ByYearDay(100, -100): FREQ=YEARLY;COUNT=4;BYYEARDAY=100,-100
+                       2026-04-10, 2026-09-23, 2027-04-10, 2027-09-23
+  ByWeekNo(20)+Monday : FREQ=YEARLY;COUNT=3;BYDAY=MO;BYWEEKNO=20
+                       2026-05-11, 2027-05-17, 2028-05-15
+
+--- Time-of-day parts build, but do not enumerate ---
+  built   : FREQ=DAILY;COUNT=4;BYSECOND=0;BYMINUTE=30;BYHOUR=9,17
+  parts   : ByHour=[9, 17], ByMinute=[30], BySecond=[0]
+  re-parses equal : True
 ```
+
+`WithWeekStart` is the one worth pausing on. Monday is the default, and a default is omitted from
+canonical text — so the two fortnightly rules print almost identically while selecting different
+dates, and only the second carries a visible `WKST`. That is exactly the failure mode a builder
+makes easy: the call is in the chain, but invisible in the result.
+
+`ByHour`/`ByMinute`/`BySecond` build and round-trip, but this library enumerates **dates** — so a
+rule relying on them to place several occurrences inside one day is outside what `GetOccurrences`
+models, as is any sub-daily `FREQ`.
 
 > The canonical token for a `WeekDayNum` is read from the rule that carries it, because
 > `WeekDayNum.ToString()` currently emits the compiler-generated record form rather than its
 > iCalendar token — see the *Known wrinkle* note in the domain README.
 
-**APIs demonstrated.** `RecurrenceRuleBuilder` (`.WithInterval` / `.WithCount` / `.WithUntil` /
-`.ByDay` / `.ByMonth` / `.BySetPos` / `.Build`), `WeekDayNum` construction and `Deconstruct`,
-`RecurrenceFrequency`.
+**APIs demonstrated.** `RecurrenceRuleBuilder` — every member: `.WithInterval` / `.WithCount` /
+`.WithUntil` / `.WithWeekStart` / `.ByDay` (both overloads) / `.ByMonth` / `.ByMonthDay` /
+`.ByYearDay` / `.ByWeekNo` / `.ByHour` / `.ByMinute` / `.BySecond` / `.BySetPos` / `.Build` —
+plus `WeekDayNum` construction and `Deconstruct`, and `RecurrenceFrequency`.
 
 ## Scenario 5 — BoundedEnumeration
 

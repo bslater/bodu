@@ -21,7 +21,7 @@ its samples double as CI smoke tests.
 | `Bodu.Globalization.Recurrence.Samples.CronExpressions` | The Vixie cron form: the five-field layout and `@` macros, the optional-seconds six-field layout with format inference versus enforcement, canonical text and schedule equality, the day-field union rule and oversized-step handling that separate Vixie from Quartz, and both failure surfaces (unreachable schedules, defect-named rejections) | `Bodu.Globalization.Recurrence` |
 | `Bodu.Globalization.Recurrence.Samples.AnchoredIntervals` | The calendar-free form: the RFC 5545 §3.3.6 duration grammar and its canonical normalization, the anchor-per-query design that lets one instance serve many series, arithmetic positioning for distant queries, and the grammar's exact boundary with a defect message per rejection | `Bodu.Globalization.Recurrence` |
 | `Bodu.Globalization.Recurrence.Samples.RecurrenceSets` | The composition layer: rules unioned with `RDATE` additions minus `EXDATE` removals, collision handling across rules, the iCalendar property-block round trip as a storage format, and windowed and point queries across the whole composition | `Bodu.Globalization.Recurrence` |
-| `Bodu.Globalization.Recurrence.Samples.SchedulingHost` | The integrating view: all four forms behind one host-written adapter, mixed-form configuration validated with actionable defect messages plus a reachability probe, and a reproducible missed-run catch-up loop that shows what the purity contract buys | `Bodu.Globalization.Recurrence` |
+| `Bodu.Globalization.Recurrence.Samples.SchedulingHost` | The integrating view: all four forms behind one host-written adapter, mixed-form configuration validated with actionable defect messages plus a reachability probe, the offset-bearing query surface every form carries, and a reproducible missed-run catch-up loop that shows what the purity contract buys | `Bodu.Globalization.Recurrence` |
 
 Each sample project has its own README with the four-part per-scenario breakdown (Intent / What it
 does / What to expect / APIs demonstrated).
@@ -39,6 +39,20 @@ counts, and a cron vector table derived from Cronos's test suite — currently 8
 zero differences. `corpus/recurrence/README.md` records each table's provenance and every deliberate
 divergence, including the ones these samples call out (the Vixie day-field union rule and
 oversized-step handling).
+
+## API coverage
+
+The samples exercise every public type and, with two deliberate exceptions, every member that has
+observable behaviour worth showing. Not demonstrated, on purpose:
+
+- **`RecurrenceFrequency.Hourly` / `.Minutely` / `.Secondly`** — these parse and round-trip but do
+  not enumerate, because this library expands dates rather than intra-day times. The
+  `RecurrenceRules` sample states that scope limit rather than exercising the values.
+- **The `IParsable<T>` / `ISpanParsable<T>` / `IFormattable` overloads** — `Parse`/`TryParse` taking
+  an `IFormatProvider` or a `ReadOnlySpan<char>`, `ToString(format[, provider])`, and
+  `Equals(object)`. They exist to satisfy the BCL interface contracts; cron and `RRULE` text is
+  culture-invariant by definition, which is precisely why the provider is ignored, so a sample
+  passing `CultureInfo.InvariantCulture` would demonstrate nothing.
 
 ## Known wrinkle
 

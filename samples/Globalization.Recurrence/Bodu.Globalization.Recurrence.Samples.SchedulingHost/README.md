@@ -1,9 +1,10 @@
 # Bodu.Globalization.Recurrence.Samples.SchedulingHost
 
-The integrating sample: how a host actually consumes `Bodu.Globalization.Recurrence`. Three
+The integrating sample: how a host actually consumes `Bodu.Globalization.Recurrence`. Four
 scenarios cover putting all four schedule forms behind one adapter, validating a configuration block
-with defect messages an operator can act on, and the consequence of the package's purity contract —
-a missed-run catch-up loop that is exactly reproducible because the host owns time.
+with defect messages an operator can act on, the offset-bearing query surface every form carries,
+and the consequence of the package's purity contract — a missed-run catch-up loop that is exactly
+reproducible because the host owns time.
 
 Everything runs offline with fixed inputs, formatted with the invariant culture — deterministic
 output every run.
@@ -129,7 +130,66 @@ rejected : 8
 **APIs demonstrated.** The four `TryParse(…, out …, out string)` defect-reporting overloads, and
 `GetNextOccurrence` returning `null` as a reachability probe.
 
-## Scenario 3 — CatchUpAndPurity
+## Scenario 3 — OffsetAwareQueries
+
+**Intent.** Show the `DateTimeOffset` query surface. A host normally holds offset-bearing instants
+rather than bare `DateTime` values, and every form carries a parallel set of overloads for them —
+including the enumeration overloads, not just the point queries.
+
+**What it does.** Queries one schedule of each form through its offset overloads, in both
+directions; enumerates unbounded and windowed offset streams; runs the same rule under three
+different offsets; and closes with the case where the offset genuinely changes the answer — two
+anchors recorded in different offsets that name the same instant.
+
+**What to expect.** The offset **rides along and is never converted**, because the library resolves
+no time zone and so has nothing to convert with. Running one rule under three offsets selects the
+same wall clock every time — the offset picks no different dates:
+
+```text
+--- Every form has a DateTimeOffset surface ---
+origin : 2026-01-05 09:00 +10:00
+query  : 2026-03-10 14:32 +10:00
+
+form       previous                   next                      
+---------- -------------------------- --------------------------
+rrule      2026-03-09 09:00 +10:00    2026-03-16 09:00 +10:00   
+cron       2026-03-10 02:00 +10:00    2026-03-11 02:00 +10:00   
+interval   2026-03-10 09:00 +10:00    2026-03-10 15:00 +10:00   
+set        2026-03-09 09:00 +10:00    2026-03-23 09:00 +10:00   
+
+--- Enumeration carries the offset too ---
+rule, next 3        : 01-05 09:00 +10:00, 01-12 09:00 +10:00, 01-19 09:00 +10:00
+interval, next 3    : 01-05 15:00 +10:00, 01-05 21:00 +10:00, 01-06 03:00 +10:00
+rule, February      : 02-02 09:00 +10:00, 02-09 09:00 +10:00, 02-16 09:00 +10:00, 02-23 09:00 +10:00
+interval, 6 Jan     : 01-06 03:00 +10:00, 01-06 09:00 +10:00, 01-06 15:00 +10:00, 01-06 21:00 +10:00
+
+--- The offset rides along; it is never converted ---
+  start 2026-01-05 09:00 +00:00 -> next 2026-01-12 09:00 +00:00
+  start 2026-01-05 09:00 +10:00 -> next 2026-01-12 09:00 +10:00
+  start 2026-01-05 09:00 -08:00 -> next 2026-01-12 09:00 -08:00
+  (the same wall clock in each case -- the offset selects no different dates)
+
+--- Where the offset does matter: comparing across offsets ---
+  anchor A : 2026-04-01 00:00 +00:00
+  anchor B : 2026-04-01 10:00 +10:00
+  same instant : True
+  PT6H from A, query 2026-04-01 13:00 +00:00 -> 2026-04-01 18:00 +00:00
+  PT6H from B, query 2026-04-01 13:00 +00:00 -> 2026-04-01 18:00 +00:00
+  (the two anchors name one moment, so the grids coincide and both answers are the
+   same instant, rendered in the query's offset)
+```
+
+The last block is the distinction that matters. An offset is not decoration: two `DateTimeOffset`
+values compare as absolute instants, so an anchor persisted in UTC composes correctly with a query
+instant in +10:00 — they name one moment, the grids coincide, and both answers are the same instant
+rendered in the query's offset.
+
+**APIs demonstrated.** The offset overloads across all four forms —
+`RecurrenceRule.GetOccurrences(DateTimeOffset)` and its windowed form,
+`RecurrenceRule`/`AnchoredInterval` `GetNextOccurrence`/`GetPreviousOccurrence(DateTimeOffset, …)`,
+`CronExpression` and `RecurrenceSet` `GetNextOccurrence`/`GetPreviousOccurrence(DateTimeOffset, bool)`.
+
+## Scenario 4 — CatchUpAndPurity
 
 **Intent.** Show what the purity contract buys a host. Because no type in the package reads a wall
 clock or resolves a time zone, the host supplies both ends of every window — which is what makes a
@@ -203,6 +263,7 @@ Bodu.Globalization.Recurrence.Samples.SchedulingHost/
   Schedule.cs                         # the host-side adapter over all four forms
   Scenarios/UnifiedSchedules.cs
   Scenarios/ConfigurationValidation.cs
+  Scenarios/OffsetAwareQueries.cs
   Scenarios/CatchUpAndPurity.cs
 ```
 

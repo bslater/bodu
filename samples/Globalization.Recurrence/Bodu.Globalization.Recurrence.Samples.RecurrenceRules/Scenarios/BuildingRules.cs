@@ -100,6 +100,71 @@ public static class BuildingRules
         Console.WriteLine($"occurrences: {Join(quarterEnd.GetOccurrences(new DateTime(2026, 3, 1)))}");
 
         Console.WriteLine();
+        Console.WriteLine("--- WithWeekStart: the builder reaches WKST too ---");
+
+        // WKST is the part most easily missed, because Monday is the default and a default is omitted
+        // from canonical text -- so the two rules below print almost identically while selecting
+        // different dates. Only the second carries a visible WKST.
+        var wkstStart = new DateTime(1997, 8, 5);   // a Tuesday
+
+        foreach (DayOfWeek weekStart in new[] { DayOfWeek.Monday, DayOfWeek.Sunday })
+        {
+            RecurrenceRule fortnightly = new RecurrenceRuleBuilder(RecurrenceFrequency.Weekly)
+                .WithInterval(2)
+                .ByDay(DayOfWeek.Tuesday, DayOfWeek.Sunday)
+                .WithWeekStart(weekStart)
+                .WithCount(4)
+                .Build();
+
+            Console.WriteLine($"  WKST={weekStart,-9} {fortnightly}");
+            Console.WriteLine($"                  {Join(fortnightly.GetOccurrences(wkstStart))}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("--- The remaining BY parts ---");
+
+        // ByMonthDay, ByYearDay and ByWeekNo complete the date-selecting set.
+        RecurrenceRule paydays = new RecurrenceRuleBuilder(RecurrenceFrequency.Monthly)
+            .ByMonthDay(15, -1)          // the 15th and the last day of the month
+            .WithCount(4)
+            .Build();
+        Console.WriteLine($"  ByMonthDay(15, -1) : {paydays}");
+        Console.WriteLine($"                       {Join(paydays.GetOccurrences(new DateTime(2026, 1, 1)))}");
+
+        RecurrenceRule hundredth = new RecurrenceRuleBuilder(RecurrenceFrequency.Yearly)
+            .ByYearDay(100, -100)        // the 100th day, and the 100th from the end
+            .WithCount(4)
+            .Build();
+        Console.WriteLine($"  ByYearDay(100, -100): {hundredth}");
+        Console.WriteLine($"                       {Join(hundredth.GetOccurrences(new DateTime(2026, 1, 1)))}");
+
+        RecurrenceRule weekTwenty = new RecurrenceRuleBuilder(RecurrenceFrequency.Yearly)
+            .ByWeekNo(20)
+            .ByDay(DayOfWeek.Monday)
+            .WithCount(3)
+            .Build();
+        Console.WriteLine($"  ByWeekNo(20)+Monday : {weekTwenty}");
+        Console.WriteLine($"                       {Join(weekTwenty.GetOccurrences(new DateTime(2026, 1, 1)))}");
+
+        Console.WriteLine();
+        Console.WriteLine("--- Time-of-day parts build, but do not enumerate ---");
+
+        // ByHour, ByMinute and BySecond are part of the RFC 5545 grammar, so the builder accepts them
+        // and the rule round-trips through text. Intra-day expansion is not modelled, though: this
+        // library enumerates dates, so a rule whose frequency is sub-daily -- or which relies on
+        // BYHOUR to place several occurrences inside one day -- is out of scope for enumeration.
+        RecurrenceRule intraDay = new RecurrenceRuleBuilder(RecurrenceFrequency.Daily)
+            .ByHour(9, 17)
+            .ByMinute(30)
+            .BySecond(0)
+            .WithCount(4)
+            .Build();
+
+        Console.WriteLine($"  built   : {intraDay}");
+        Console.WriteLine($"  parts   : ByHour=[{string.Join(", ", intraDay.ByHour)}], ByMinute=[{string.Join(", ", intraDay.ByMinute)}], BySecond=[{string.Join(", ", intraDay.BySecond)}]");
+        Console.WriteLine($"  re-parses equal : {intraDay.Equals(RecurrenceRule.Parse(intraDay.ToString()))}");
+
+        Console.WriteLine();
     }
 
     /// <summary>

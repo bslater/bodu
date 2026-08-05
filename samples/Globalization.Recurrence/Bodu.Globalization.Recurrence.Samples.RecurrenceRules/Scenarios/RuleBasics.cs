@@ -51,6 +51,36 @@ public static class RuleBasics
         Console.WriteLine($"first      : {Format(rule.GetOccurrences(start).First())}");
 
         Console.WriteLine();
+        Console.WriteLine("--- Every BY part is readable back ---");
+
+        // The BY parts are exposed as read-only lists, empty where the rule did not state them --
+        // so inspecting a parsed rule never needs the source text.
+        RecurrenceRule elaborate = RecurrenceRule.Parse(
+            "FREQ=YEARLY;BYMONTH=3,9;BYWEEKNO=10;BYYEARDAY=100;BYMONTHDAY=15,-1;BYDAY=MO,3TH;BYHOUR=9;BYMINUTE=30;BYSECOND=0;BYSETPOS=1");
+
+        Console.WriteLine($"rule        : {elaborate}");
+        Console.WriteLine($"ByMonth     : [{string.Join(", ", elaborate.ByMonth)}]");
+        Console.WriteLine($"ByWeekNo    : [{string.Join(", ", elaborate.ByWeekNo)}]");
+        Console.WriteLine($"ByYearDay   : [{string.Join(", ", elaborate.ByYearDay)}]");
+        Console.WriteLine($"ByMonthDay  : [{string.Join(", ", elaborate.ByMonthDay)}]");
+        Console.WriteLine($"ByDay       : [{string.Join(", ", elaborate.ByDay.Select(d => $"{d.Ordinal}:{d.Day}"))}]");
+        Console.WriteLine($"ByHour      : [{string.Join(", ", elaborate.ByHour)}]");
+        Console.WriteLine($"ByMinute    : [{string.Join(", ", elaborate.ByMinute)}]");
+        Console.WriteLine($"BySecond    : [{string.Join(", ", elaborate.BySecond)}]");
+        Console.WriteLine($"BySetPos    : [{string.Join(", ", elaborate.BySetPos)}]");
+
+        // A part the rule did not state reads as an empty list rather than null.
+        Console.WriteLine($"unstated part on the first rule: ByMonthDay.Count = {rule.ByMonthDay.Count}");
+
+        Console.WriteLine();
+        Console.WriteLine("--- WeekDayNum compares by value ---");
+
+        // The struct carries equality operators, so BYDAY entries can be compared directly.
+        var firstFriday = new WeekDayNum(1, DayOfWeek.Friday);
+        Console.WriteLine($"ByDay[0] == WeekDayNum(1, Friday) : {rule.ByDay[0] == firstFriday}");
+        Console.WriteLine($"ByDay[0] != WeekDayNum(2, Friday) : {rule.ByDay[0] != new WeekDayNum(2, DayOfWeek.Friday)}");
+
+        Console.WriteLine();
         Console.WriteLine("--- RecurrenceRule: canonical text round trip ---");
 
         // ToString emits canonical text: parts in RFC order, defaults omitted. Re-parsing it
