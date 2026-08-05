@@ -19,6 +19,13 @@ Reach for this library when you need to answer "when does this schedule fire nex
 - <xref:Bodu.Globalization.Recurrence.AnchoredInterval> — a recurrence whose occurrences repeat at a fixed interval from a caller-supplied anchor instant ("every 4 hours after the last completed run"), with the RFC 5545 §3.3.6 duration grammar (`PT4H`, `P1DT2H30M`) as its canonical text.
 - <xref:Bodu.Globalization.Recurrence.RecurrenceFrequency> and <xref:Bodu.Globalization.Recurrence.WeekDayNum> — the frequency scale (secondly through yearly) and the ordinal-qualified weekday (`BYDAY`) building block.
 
+## Samples
+
+Five runnable sample projects live under `samples/Globalization.Recurrence/` — one per schedule form
+(`RecurrenceRules`, `CronExpressions`, `AnchoredIntervals`, `RecurrenceSets`) plus `SchedulingHost`,
+which puts all four behind a single adapter and shows configuration validation and missed-run
+catch-up. See the [samples catalogue](~/samples/recurrence.md).
+
 ## Notes
 
 - **Preview.** The package is published for early evaluation; the public API surface is still taking shape and may change between releases without a major-version bump.
