@@ -349,7 +349,10 @@ def main(argv: list[str]) -> int:
 
     with open(destination, 'w', encoding='utf-8', newline='') as handle:
         handle.write(HEADER.format(digest=digest))
-        writer = csv.DictWriter(handle, fieldnames=['name', 'kind', 'format', 'expression', 'from', 'expected', 'flags'])
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=['name', 'kind', 'format', 'expression', 'from', 'expected', 'flags'],
+            lineterminator='\n')
         writer.writeheader()
         writer.writerows(records)
 
