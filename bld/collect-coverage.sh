@@ -23,6 +23,8 @@
 #   --configuration <c> Build configuration. Default: Release.
 #   --output <dir>      Artifact root. Default: artifacts/coverage.
 #   --no-probe          Skip the AVX-512 capability probe.
+#   --scalar            Re-run with hardware intrinsics disabled, into a parallel '<Name>.scalar'
+#                       directory, so the merge unions the scalar and intrinsic paths.
 #   --list              Print the selected test projects and exit without collecting.
 #   -h | --help         Show this help.
 #
@@ -45,9 +47,10 @@ filter=""
 shard_spec=""
 run_probe=true
 list_only=false
+scalar_pass=false
 
 usage() {
-    sed -n '2,31p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,32p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ $# -gt 0 ]; do
@@ -58,6 +61,7 @@ while [ $# -gt 0 ]; do
         --configuration) configuration="${2:?--configuration requires a value}"; shift 2 ;;
         --output)        output_dir="${2:?--output requires a path}"; shift 2 ;;
         --no-probe)      run_probe=false; shift ;;
+        --scalar)        scalar_pass=true; shift ;;
         --list)          list_only=true; shift ;;
         -h|--help)       usage; exit 0 ;;
         *) echo "error: unknown option '$1' (try --help)" >&2; exit 2 ;;
@@ -199,6 +203,7 @@ while read -r proj; do
     [ -n "$proj" ] || continue
 
     name="$(basename "$proj" .csproj)"
+    [ "$scalar_pass" = true ] && name="$name.scalar"
     echo "::group::Collect $name"
 
     # Clear any output from a previous run of this project. vstest writes each run into a fresh GUID
@@ -221,8 +226,18 @@ while read -r proj; do
         continue
     fi
 
+    # The JIT selects exactly one of the SIMD or scalar implementations per process, so a single run
+    # can never cover both. Disabling hardware intrinsics forces the scalar reference paths; merged
+    # with a native run it yields the union. Measured on Bodu.Security.Cryptography, this moves
+    # ThreefishBlockCipher.{256,512,1024}.cs from 19.0/12.8/8.3% to 90.5/93.1/94.9%.
+    scalar_env=()
+    if [ "$scalar_pass" = true ]; then
+        scalar_env=(DOTNET_EnableAVX512F=0 DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0)
+        echo "Hardware intrinsics disabled for this pass."
+    fi
+
     # No --collect here: the collector and every exclusion are configured in coverage.runsettings.
-    if dotnet test "$proj" \
+    if env ${scalar_env[@]+"${scalar_env[@]}"} dotnet test "$proj" \
         --configuration "$configuration" \
         --no-build \
         --settings coverage.runsettings \
@@ -261,6 +276,15 @@ if [ -n "$shard_spec" ]; then
     manifest="$report_dir/environment.shard-${shard_spec//\//-of-}.json"
 else
     manifest="$report_dir/environment.json"
+fi
+
+if [ "$scalar_pass" = true ]; then
+    # A scalar pass is a supplementary run over a project the run of record already collected. Writing
+    # a manifest here would either clobber that run's capability record or add a second, less
+    # informative one for the matrix to reconcile.
+    echo
+    echo "Collected $collected scalar project(s) into $raw_dir"
+    exit $status
 fi
 
 if [ "$run_probe" = true ]; then

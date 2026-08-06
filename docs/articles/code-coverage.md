@@ -100,25 +100,43 @@ why those files appeared at 0%.
 > Closing it means running the existing known-answer suites under the switch, not
 > authoring new vectors.
 
-To account for both paths, collect coverage twice and merge:
+### The dual pass — now automated
+
+The two-run merge this section prescribes is wired into the tooling:
 
 ```bash
-# 1) Native run — covers whichever intrinsic path the CPU supports
-dotnet test Bodu.Security.Cryptography/test/*.csproj \
-  --settings regression.runsettings --collect:"Code Coverage"
-
-# 2) Scalar run — disable the intrinsics so the fallback path executes
-DOTNET_EnableAVX512F=0 DOTNET_EnableAVX2=0 DOTNET_EnableHWIntrinsic=0 \
-  dotnet test Bodu.Security.Cryptography/test/*.csproj \
-  --settings regression.runsettings --collect:"Code Coverage"
-
-dotnet-coverage merge run1.coverage run2.coverage -o merged.xml -f xml
+bld/collect-coverage.sh --project Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj
+bld/collect-coverage.sh --project Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj --scalar
+bld/merge-coverage.sh
 ```
 
-The merged result reflects both the SIMD and scalar implementations. CI that
-needs a single authoritative number should run the scalar pass on its build
-agents (which are typically not AVX512) and an intrinsic pass on capable
-hardware, then merge.
+`--scalar` re-runs the suite with `DOTNET_EnableAVX512F=0 DOTNET_EnableAVX2=0
+DOTNET_EnableHWIntrinsic=0` into a parallel `<Name>.scalar` directory.
+ReportGenerator takes the maximum hit count per line, so merging the two yields
+the union rather than either half. `.github/workflows/coverage.yml` runs the
+scalar pass automatically in whichever job collected the crypto suite.
+
+Measured effect of adding the second pass — no test code was written:
+
+| | Intrinsic paths | Scalar paths | Package |
+|---|--:|--:|--:|
+| Native run only | 99.4% | 32.9% | 93.4% |
+| Both passes merged | 99.4% | **99.0%** | **98.4%** |
+
+`Bodu.Security.Cryptography` is the only package with hardware-gated dispatch, so
+it is the only one that needs this; disabling intrinsics elsewhere would cost
+wall clock for nothing.
+
+**This does not retire the `n/a (hardware-gated)` classification** in
+`tools/New-CoverageMatrix.ps1`. A single-pass local run on a machine without
+AVX-512 still cannot execute the intrinsic files, and reporting them as 0% there
+would be wrong. The classification stays for that case; after a dual pass it
+simply never triggers, because neither path is unreachable any more.
+
+Expanding `Bodu.Security.Cryptography.Simd.Test` remains worthwhile, but for a
+different reason: it validates the shipped `DisableSimd` **feature**, which is a
+product contract rather than a coverage figure. The dual pass closes the numbers;
+it does not exercise the switch.
 
 ## Stale paths across a folder or namespace refactor
 
