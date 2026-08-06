@@ -17,6 +17,44 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
+    <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
+  </ItemGroup>
+
+  <!--
+    The known-answer suites for the SIMD-accelerated primitives are compiled into this assembly rather
+    than duplicated, so the scalar fallbacks are held to the same published vectors as the accelerated
+    paths. Linking (rather than referencing the main test assembly) keeps the two projects independent:
+    nothing in Bodu.Security.Cryptography.Test has to be unsealed or made visible for this to work.
+
+    KatCensus is deliberately excluded - KatCensusTests rewrites the committed kat-census.txt artifact,
+    and a second writer in a second assembly would corrupt it.
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography.Infrastructure\**\*.cs"
+             Exclude="..\..\Bodu.Security.Cryptography\test\Security.Cryptography.Infrastructure\KatCensus*.cs"
+             Link="Security.Cryptography.Infrastructure\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\BlockCipherKnownAnswer.cs"
+             Link="Security.Cryptography\BlockCipherKnownAnswer.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Blake2Tests.ReferenceKat.cs"
+             Link="Security.Cryptography\Blake2Tests.ReferenceKat.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Blake3Tests.ReferenceKat.cs"
+             Link="Security.Cryptography\Blake3Tests.ReferenceKat.cs" />
+    <Compile Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\SkeinGoldenKatTests.cs"
+             Link="Security.Cryptography\SkeinGoldenKatTests.cs" />
+  </ItemGroup>
+
+  <!--
+    The linked readers resolve their vectors through typeof(<TestClass>).Assembly, which is this
+    assembly once the source is compiled here, so the same fixture files must be embedded again under
+    the same logical names. The LogicalName indirection is why no reader code changes.
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\Blake2\Official\blake2-kat.json"
+                      LogicalName="Bodu.Security.Cryptography.Blake2.blake2-kat.json" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\Blake3\Official\test_vectors.json"
+                      LogicalName="Bodu.Security.Cryptography.Blake3.test_vectors.json" />
+    <EmbeddedResource Include="..\..\Bodu.Security.Cryptography\test\Security.Cryptography\Fixtures\Skein\Skein1_3\skein_golden_kat_short.txt"
+                      LogicalName="Bodu.Security.Cryptography.Skein.skein_golden_kat_short.txt" />
   </ItemGroup>
 
 </Project>

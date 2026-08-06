@@ -133,10 +133,29 @@ AVX-512 still cannot execute the intrinsic files, and reporting them as 0% there
 would be wrong. The classification stays for that case; after a dual pass it
 simply never triggers, because neither path is unreachable any more.
 
-Expanding `Bodu.Security.Cryptography.Simd.Test` remains worthwhile, but for a
-different reason: it validates the shipped `DisableSimd` **feature**, which is a
-product contract rather than a coverage figure. The dual pass closes the numbers;
-it does not exercise the switch.
+### The switch itself
+
+The dual pass closes the numbers but does not exercise the shipped `DisableSimd`
+feature, which is a product contract rather than a coverage figure.
+`Bodu.Security.Cryptography.Simd.Test` covers that separately: it sets the switch
+through `runtimeconfig.template.json` and compiles in the published known-answer
+suites for every SIMD-gated primitive, so the scalar fallbacks are held to the
+same vectors as the accelerated paths.
+
+The suites are **linked**, not duplicated, and not reached by referencing the main
+test assembly — nothing there has to be unsealed or made visible. `KatCensus` is
+deliberately excluded: `KatCensusTests` rewrites the committed `kat-census.txt`,
+and a second writer in a second assembly would corrupt it.
+
+Run on its own, that assembly executes the scalar implementations at 87–95% and
+every Threefish `*.Avx512.cs` file at **0%** — measured proof that the switch is
+engaged and the intrinsic path is not running. The BLAKE intrinsic files show
+four lines of their static constructor, which initialize the rotation constants
+whenever the type is touched; no intrinsic compute code executes.
+
+Adding it changed the package figure not at all, which is the point: it buys
+confidence in the feature, and a second independent source of scalar coverage
+should the environment-variable pass ever be removed.
 
 ## Stale paths across a folder or namespace refactor
 
