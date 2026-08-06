@@ -15,7 +15,7 @@ namespace Bodu.Text.Delimited.Writer;
 /// Contains tests for <see cref="Utf8DelimitedWriter" />, verifying the emitted CSV bytes and RFC 4180 quoting.
 /// </summary>
 [TestClass]
-public class Utf8DelimitedWriterTests
+public partial class Utf8DelimitedWriterTests
 {
     /// <summary>
     /// Verifies that object records emit a single header row followed by one value row per record.

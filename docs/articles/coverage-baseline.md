@@ -57,7 +57,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Security.Cryptography` | Stable | 98.4% | 94.1% | 13684 / 13912 |
 | `Bodu.Text.Bencode` | Stable | 93.1% | 91.7% | 1525 / 1638 |
 | `Bodu.Text.Configuration` | Stable | 88.3% | 86.5% | 1048 / 1187 |
-| `Bodu.Text.Delimited` | Preview | 89.7% | 84.6% | 806 / 899 |
+| `Bodu.Text.Delimited` | Preview | 91.7% | 85.9% | 824 / 899 |
 | `Bodu.Text.DotEnv` | Preview | 82% | 79.5% | 592 / 722 |
 | `Bodu.Text.Encoding` | Stable | 95.5% | 93.8% | 3036 / 3178 |
 | `Bodu.Text.Filtering` | Preview | 98.3% | 97.7% | 458 / 466 |
@@ -66,7 +66,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.Serialization` | Stable | 100% | 100% | 72 / 72 |
 | `Bodu.Text.Serialization (shared source)` | Stable | 93.4% | 89% | 606 / 649 |
 | `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
-| `Bodu.Text.Yaml` | Preview | 89.8% | 88.5% | 2410 / 2685 |
+| `Bodu.Text.Yaml` | Preview | 90.7% | 88.9% | 2435 / 2685 |
 | `Caching (shared source)` | Stable | 92.7% | 93.8% | 102 / 110 |
 
 ### Excluded by design
@@ -74,7 +74,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 - `Bodu.Globalization.Calendar.Build` — MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.
 - `Bodu.Text.Formats` — Umbrella meta-package: references the three format libraries and ships no source of its own.
 
-**Overall:** 95.5% (66449 / 69560 lines across 59 collected package(s)).
+**Overall:** 95.6% (66492 / 69560 lines across 59 collected package(s)).
 
 ## Baseline evidence
 
@@ -84,7 +84,7 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `a0f7a7ccc426c44787b326ad3e73f87ee29ad606`
+- Commit: `a459fbdfd57b304a753c4e85294ca704a2db98e7`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0
 - Files with stale line numbering: 0

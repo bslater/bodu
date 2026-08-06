@@ -196,8 +196,8 @@
     "branch": 86.0
   },
   "Bodu.Text.Delimited": {
-    "line": 89.2,
-    "branch": 84.1
+    "line": 91.2,
+    "branch": 85.4
   },
   "Bodu.Text.DotEnv": {
     "line": 81.5,
@@ -228,8 +228,8 @@
     "branch": 92.3
   },
   "Bodu.Text.Yaml": {
-    "line": 89.3,
-    "branch": 88.0
+    "line": 90.2,
+    "branch": 88.4
   },
   "Caching (shared source)": {
     "line": 92.2,
