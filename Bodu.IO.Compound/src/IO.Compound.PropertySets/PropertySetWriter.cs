@@ -319,10 +319,10 @@ internal static class PropertySetWriter
     /// <returns>The encoded bytes.</returns>
     /// <remarks>
     /// The terminator is encoded with the string rather than appended as a single byte, because it must be one code
-    /// unit of the section's encoding. A UTF-16 code page (1200 or 1201) encodes two bytes per unit, so a lone
-    /// trailing zero byte would declare an odd length and leave the reader an odd byte count to decode - yielding a
-    /// trailing replacement character its terminator trim cannot remove. For a single-byte code page this produces
-    /// byte-for-byte the same output as appending one zero.
+    /// unit of the section's encoding. A UTF-16 code page (1200 or 1201) encodes two bytes per unit, so a lone trailing
+    /// zero byte would declare an odd length and leave the reader an odd byte count to decode - yielding a trailing
+    /// replacement character its terminator trim cannot remove. For a single-byte code page this produces byte-for-byte
+    /// the same output as appending one zero.
     /// </remarks>
     private static byte[] EncodeCodePageString(string value, Encoding encoding)
     {

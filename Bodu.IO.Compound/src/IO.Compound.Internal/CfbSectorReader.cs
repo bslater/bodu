@@ -100,12 +100,6 @@ internal sealed class CfbSectorReader
     }
 
     /// <summary>
-    /// Gets the regular sector size, in bytes.
-    /// </summary>
-    /// <value>The sector size.</value>
-    internal int SectorSize => _header.SectorSize;
-
-    /// <summary>
     /// Reads the contiguous payload of a regular-sector chain.
     /// </summary>
     /// <param name="startSector">The first sector of the chain.</param>
@@ -117,6 +111,11 @@ internal sealed class CfbSectorReader
     /// Thrown when the chain is circular, references an out-of-range sector, or is shorter than
     /// <paramref name="size" />.
     /// </exception>
+    /// <remarks>
+    /// A chain shorter than <paramref name="size" /> is a defect: a tolerant level zero-pads it to the declared length
+    /// rather than returning the short payload, so the return is always exactly <paramref name="size" /> bytes long
+    /// whichever level is in force.
+    /// </remarks>
     internal byte[] ReadChain(uint startSector, long size)
     {
         if (size <= 0 || startSector == CfbHeader.EndOfChain)
@@ -125,13 +124,12 @@ internal sealed class CfbSectorReader
         size = BoundPaddedSize(size);
 
         byte[] chain = ReadChainToEnd(startSector);
-        if (chain.Length < size && !StopOrThrow(true, CompoundFileError.StreamChainTooShort))
-            return chain;
+        if (chain.Length < size)
+            _ = StopOrThrow(true, CompoundFileError.StreamChainTooShort);
 
         if (chain.Length == size)
             return chain;
 
-        // Under a tolerant level a short chain is padded with zeros to the declared length.
         byte[] result = new byte[size];
         Array.Copy(chain, result, Math.Min(chain.Length, size));
         return result;
@@ -199,9 +197,7 @@ internal sealed class CfbSectorReader
     /// </remarks>
     private IEnumerable<uint> WalkChain(uint startSector, uint[] fat, CompoundFileError cycleError)
     {
-        if (startSector == CfbHeader.EndOfChain)
-            yield break;
-
+        // An empty chain needs no guard: the loop below tests the same sentinel before its first iteration.
         HashSet<uint> visited = new();
         uint sector = startSector;
 
