@@ -50,12 +50,18 @@ public partial class CompoundStorageBuilderTests
     /// <summary>
     /// Verifies that enumerating the storage yields one key/value pair per child, keyed by the child's name.
     /// </summary>
+    /// <remarks>
+    /// Enumerated with an explicit <c>foreach</c> rather than <c>ToList</c>: LINQ takes an
+    /// <see cref="ICollection{T}" /> fast path that copies through <c>CopyTo</c> and never calls the enumerator.
+    /// </remarks>
     [TestMethod]
     public void GetEnumerator_WhenStorageHasChildren_ShouldYieldEachChildKeyedByName()
     {
         IDictionary<string, CompoundEntryBuilder> view = CreatePopulated(out CompoundStorageBuilder root);
 
-        var pairs = view.ToList();
+        var pairs = new List<KeyValuePair<string, CompoundEntryBuilder>>();
+        foreach (KeyValuePair<string, CompoundEntryBuilder> pair in view)
+            pairs.Add(pair);
 
         Assert.HasCount(2, pairs);
         foreach (KeyValuePair<string, CompoundEntryBuilder> pair in pairs)
@@ -97,6 +103,126 @@ public partial class CompoundStorageBuilderTests
         Assert.AreEqual(1, root.Count);
         Assert.AreSame(root, child.Parent);
         Assert.AreEqual("Storage 1", child.Name);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IDictionary{TKey, TValue}.Keys" /> and
+    /// <see cref="IDictionary{TKey, TValue}.Values" /> project the same children, so the two views line up.
+    /// </summary>
+    [TestMethod]
+    public void KeysAndValues_WhenStorageHasChildren_ShouldProjectTheSameChildren()
+    {
+        IDictionary<string, CompoundEntryBuilder> view = CreatePopulated(out _);
+
+        CollectionAssert.AreEquivalent(new[] { "Storage 1", "Stream 1" }, view.Keys.ToList());
+        CollectionAssert.AreEquivalent(
+            new[] { "Storage 1", "Stream 1" },
+            view.Values.Select(v => v.Name).ToList());
+    }
+
+    /// <summary>
+    /// Verifies that the indexer getter resolves a child by name and throws for one that is absent, matching
+    /// <see cref="Dictionary{TKey, TValue}" />'s contract rather than returning <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenReadingByName_ShouldResolveChildOrThrow()
+    {
+        IDictionary<string, CompoundEntryBuilder> view = CreatePopulated(out _);
+
+        Assert.AreEqual("Stream 1", view["Stream 1"].Name);
+        Assert.AreEqual("Stream 1", view["STREAM 1"].Name);
+
+        _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
+        {
+            _ = view["Missing"];
+        });
+    }
+
+    /// <summary>
+    /// Verifies that assigning through the indexer parents the node and names it after the key, so a node added this
+    /// way is indistinguishable from one added through <c>Add</c>.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenAssigningANewName_ShouldParentAndRenameTheNode()
+    {
+        var root = CompoundStorageBuilder.CreateRoot();
+        IDictionary<string, CompoundEntryBuilder> view = root;
+        var child = new CompoundStorageBuilder();
+
+        view["Storage 1"] = child;
+
+        Assert.AreEqual(1, root.Count);
+        Assert.AreSame(root, child.Parent);
+        Assert.AreEqual("Storage 1", child.Name);
+    }
+
+    /// <summary>
+    /// Verifies that assigning over an occupied name detaches the displaced node, so it does not keep claiming a
+    /// parent it is no longer a child of.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenReplacingAnExistingChild_ShouldDetachTheDisplacedNode()
+    {
+        var root = CompoundStorageBuilder.CreateRoot();
+        CompoundStreamBuilder displaced = root.AddStream("Entry", new byte[] { 1 });
+        var replacement = new CompoundStorageBuilder();
+
+        ((IDictionary<string, CompoundEntryBuilder>)root)["Entry"] = replacement;
+
+        Assert.AreEqual(1, root.Count);
+        Assert.IsNull(displaced.Parent);
+        Assert.AreSame(root, replacement.Parent);
+        Assert.IsTrue(root.TryGetStorage("Entry", out _));
+    }
+
+    /// <summary>
+    /// Verifies that assigning a node onto the name it already occupies is a no-op, rather than detaching and
+    /// re-attaching it - which would briefly leave the child parentless for no reason.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenAssigningTheSameNodeToItsOwnName_ShouldLeaveItAttached()
+    {
+        var root = CompoundStorageBuilder.CreateRoot();
+        CompoundStreamBuilder child = root.AddStream("Entry", new byte[] { 1 });
+
+        ((IDictionary<string, CompoundEntryBuilder>)root)["Entry"] = child;
+
+        Assert.AreEqual(1, root.Count);
+        Assert.AreSame(root, child.Parent);
+    }
+
+    /// <summary>
+    /// Verifies that assigning <see langword="null" /> through the indexer is rejected, since a storage cannot hold
+    /// an absent child.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenAssigningNull_ShouldThrowArgumentNullException()
+    {
+        IDictionary<string, CompoundEntryBuilder> view = CompoundStorageBuilder.CreateRoot();
+
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            view["Entry"] = null!;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IDictionary{TKey, TValue}.TryGetValue(TKey, out TValue)" /> resolves a child of
+    /// either kind by name and reports <see langword="false" /> for an absent one.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValue_WhenNamePresent_ShouldResolveEitherEntryKind()
+    {
+        IDictionary<string, CompoundEntryBuilder> view = CreatePopulated(out _);
+
+        Assert.IsTrue(view.TryGetValue("Storage 1", out CompoundEntryBuilder? storage));
+        Assert.IsInstanceOfType<CompoundStorageBuilder>(storage);
+
+        Assert.IsTrue(view.TryGetValue("Stream 1", out CompoundEntryBuilder? stream));
+        Assert.IsInstanceOfType<CompoundStreamBuilder>(stream);
+
+        Assert.IsFalse(view.TryGetValue("Missing", out CompoundEntryBuilder? missing));
+        Assert.IsNull(missing);
     }
 
     /// <summary>

@@ -10,7 +10,7 @@ namespace Bodu.IO.Compound.PropertySets;
 /// Verifies the behavior of <see cref="OlePropertySet" /> against real property-set streams and malformed input.
 /// </summary>
 [TestClass]
-public class OlePropertySetTests
+public partial class OlePropertySetTests
 {
     /// <summary>The published format identifier of the summary-information property set.</summary>
     private static readonly Guid SummaryInformationFormatId = new("F29F85E0-4FF9-1068-AB91-08002B27B3D9");

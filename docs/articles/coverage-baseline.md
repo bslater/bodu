@@ -48,7 +48,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Globalization.Calendar.Plugins` | Stable | 92% | 82.7% | 208 / 226 |
 | `Bodu.Globalization.Calendar.Tool` | Preview | 87.1% | 82.3% | 115 / 132 |
 | `Bodu.Globalization.Recurrence` | Preview | 88.8% | 87.9% | 1278 / 1439 |
-| `Bodu.IO.Compound` | Stable | 92.3% | 84.7% | 2065 / 2238 |
+| `Bodu.IO.Compound` | Stable | 98.7% | 93.9% | 2208 / 2238 |
 | `Bodu.IO.Hashing` | Stable | 98.7% | 96% | 2518 / 2551 |
 | `Bodu.IO.Hashing (shared source)` | Stable | 100% | 100% | 48 / 48 |
 | `Bodu.IO.Pst` | Preview | 79.9% | 64.7% | 326 / 408 |
@@ -68,7 +68,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.Yaml` | Preview | 89.8% | 88.5% | 2410 / 2685 |
 | `Caching (shared source)` | Stable | 86.4% | 87.5% | 95 / 110 |
 
-**Overall:** 95.2% (66217 / 69552 lines across 59 collected package(s)).
+**Overall:** 95.4% (66360 / 69552 lines across 59 collected package(s)).
 
 ## Baseline evidence
 
@@ -78,7 +78,7 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `34132eb11bdca088131fef3abe3fcc5f1c281ca5`
+- Commit: `13dccb0a4dc3999e31f9841150ae68be1f3018e3`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0
 - Files with stale line numbering: 0
