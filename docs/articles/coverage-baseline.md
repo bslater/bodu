@@ -40,8 +40,8 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Globalization.Calendar.Build` | Preview | — | — | — |
 | `Bodu.Globalization.Calendar.Builder` | Stable | 95.7% | 88% | 1692 / 1768 |
 | `Bodu.Globalization.Calendar.Caching` | Stable | 89.1% | 84.2% | 608 / 682 |
-| `Bodu.Globalization.Calendar.Caching.Distributed` | Stable | 54.8% | 70.5% | 68 / 124 |
-| `Bodu.Globalization.Calendar.Caching.Sqlite` | Stable | 72.9% | 66.7% | 151 / 207 |
+| `Bodu.Globalization.Calendar.Caching.Distributed` | Stable | 89.5% | 93.2% | 111 / 124 |
+| `Bodu.Globalization.Calendar.Caching.Sqlite` | Stable | 93.2% | 95.8% | 193 / 207 |
 | `Bodu.Globalization.Calendar.DependencyInjection` | Stable | 95.7% | 66.7% | 90 / 94 |
 | `Bodu.Globalization.Calendar.Europe` | Stable | 100% | 83.3% | 30 / 30 |
 | `Bodu.Globalization.Calendar.MiddleEast` | Stable | 100% | 66.7% | 26 / 26 |
@@ -66,7 +66,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
 | `Bodu.Text.Yaml` | Preview | 87.1% | 86.9% | 2338 / 2685 |
 
-**Overall:** 94.6% (65807 / 69555 lines across 57 collected package(s)).
+**Overall:** 94.7% (65892 / 69555 lines across 57 collected package(s)).
 
 ## Baseline evidence
 
@@ -76,6 +76,6 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `fed14cc52610eebdb5422dda0a8f082244dcc45b`
+- Commit: `a3d2bedfdc6e8eb36ae52db9b9984e9b3a4a5cbc`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0

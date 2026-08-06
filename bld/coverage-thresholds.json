@@ -128,12 +128,12 @@
     "branch": 83.7
   },
   "Bodu.Globalization.Calendar.Caching.Distributed": {
-    "line": 54.3,
-    "branch": 70.0
+    "line": 89.0,
+    "branch": 92.7
   },
   "Bodu.Globalization.Calendar.Caching.Sqlite": {
-    "line": 72.4,
-    "branch": 66.2
+    "line": 92.7,
+    "branch": 95.3
   },
   "Bodu.Globalization.Calendar.DependencyInjection": {
     "line": 95.2,
