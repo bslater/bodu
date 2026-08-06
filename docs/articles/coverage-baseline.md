@@ -64,9 +64,9 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.Serialization` | Stable | 88.9% | 76.9% | 64 / 72 |
 | `Bodu.Text.Serialization (shared source)` | Stable | 93.4% | 89% | 606 / 649 |
 | `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
-| `Bodu.Text.Yaml` | Preview | 87.1% | 86.9% | 2338 / 2685 |
+| `Bodu.Text.Yaml` | Preview | 89.8% | 88.5% | 2410 / 2685 |
 
-**Overall:** 95% (66090 / 69555 lines across 57 collected package(s)).
+**Overall:** 95.1% (66162 / 69555 lines across 57 collected package(s)).
 
 ## Baseline evidence
 
@@ -76,6 +76,6 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `8f10999705eb1ab57cbd846cac6aa634cc489e03`
+- Commit: `5ca1f18554d27159ddc82b9bc513bd066bcf2f64`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0
