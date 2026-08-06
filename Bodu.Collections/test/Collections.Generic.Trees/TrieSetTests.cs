@@ -12,7 +12,7 @@ namespace Bodu.Collections.Generic.Trees;
 /// Contains unit tests for the <see cref="Trie" /> (string set) type.
 /// </summary>
 [TestClass]
-public sealed class TrieSetTests
+public sealed partial class TrieSetTests
 {
     /// <summary>
     /// Provides known-answer prefix-query scenarios.

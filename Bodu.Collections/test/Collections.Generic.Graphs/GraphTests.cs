@@ -10,7 +10,7 @@ namespace Bodu.Collections.Generic.Graphs;
 /// Contains unit tests for the <see cref="Graph{T}" /> structural surface.
 /// </summary>
 [TestClass]
-public sealed class GraphTests
+public sealed partial class GraphTests
 {
     /// <summary>
     /// Verifies that adding an edge connects two vertices and records them as neighbors.

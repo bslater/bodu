@@ -10,7 +10,7 @@ namespace Bodu.Collections.Generic.Trees;
 /// Contains unit tests for the <see cref="Tree{T}" /> type.
 /// </summary>
 [TestClass]
-public sealed class TreeTests
+public sealed partial class TreeTests
 {
     /// <summary>
     /// Builds the canonical sample tree used by traversal tests:

@@ -10,7 +10,7 @@ namespace Bodu.Collections.Generic.Graphs;
 /// Contains unit tests for the element-keyed <see cref="DisjointSet{T}" /> type.
 /// </summary>
 [TestClass]
-public sealed class DisjointSetGenericTests
+public sealed partial class DisjointSetGenericTests
 {
     /// <summary>
     /// Verifies that unioning two elements connects them and reduces the set count.

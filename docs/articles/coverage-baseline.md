@@ -7,7 +7,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 
 | Package | Status | Line % | Branch % | Covered / total lines |
 |---|---|--:|--:|--:|
-| `Bodu.Collections` | Stable | 96.4% | 94.7% | 5946 / 6171 |
+| `Bodu.Collections` | Stable | 97.7% | 95.9% | 6028 / 6171 |
 | `Bodu.Collections.Concurrent` | Stable | 94.9% | 91.7% | 1009 / 1063 |
 | `Bodu.Core` | Stable | 98.6% | 96.4% | 5631 / 5711 |
 | `Bodu.Extensions.Configuration.Text` | Stable | 97.3% | 87.5% | 256 / 263 |
@@ -66,7 +66,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
 | `Bodu.Text.Yaml` | Preview | 87.1% | 86.9% | 2338 / 2685 |
 
-**Overall:** 94.5% (65725 / 69555 lines across 57 collected package(s)).
+**Overall:** 94.6% (65807 / 69555 lines across 57 collected package(s)).
 
 ## Baseline evidence
 
@@ -76,6 +76,6 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `5c1004d1c286311cba52199a2fb7d1c2cdff9233`
+- Commit: `fed14cc52610eebdb5422dda0a8f082244dcc45b`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0
