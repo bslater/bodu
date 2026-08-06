@@ -128,7 +128,7 @@
     "branch": 83.7
   },
   "Bodu.Globalization.Calendar.Caching.Distributed": {
-    "line": 89.0,
+    "line": 94.7,
     "branch": 92.7
   },
   "Bodu.Globalization.Calendar.Caching.Sqlite": {
@@ -216,8 +216,8 @@
     "branch": 82.1
   },
   "Bodu.Text.Serialization": {
-    "line": 88.4,
-    "branch": 76.4
+    "line": 99.5,
+    "branch": 99.5
   },
   "Bodu.Text.Serialization (shared source)": {
     "line": 92.9,
