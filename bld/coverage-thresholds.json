@@ -104,7 +104,7 @@
     "branch": 79
   },
   "Bodu.Globalization.Calendar": {
-    "line": 96.4,
+    "line": 96.5,
     "branch": 89.1
   },
   "Bodu.Globalization.Calendar.Africa": {
@@ -152,8 +152,8 @@
     "branch": 82.2
   },
   "Bodu.Globalization.Calendar.Tool": {
-    "line": 86.6,
-    "branch": 81.8
+    "line": 98.7,
+    "branch": 97.9
   },
   "Bodu.Globalization.Recurrence": {
     "line": 88.3,

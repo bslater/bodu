@@ -33,7 +33,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Formats.Excel.Binary` | Stable | 89.7% | 81.7% | 708 / 789 |
 | `Bodu.Formats.Outlook` | Preview | 95.9% | 88.9% | 71 / 74 |
 | `Bodu.Formats.Outlook.Msg` | Preview | 86% | 79.5% | 478 / 556 |
-| `Bodu.Globalization.Calendar` | Stable | 96.9% | 89.6% | 3367 / 3474 |
+| `Bodu.Globalization.Calendar` | Stable | 97% | 89.6% | 3370 / 3474 |
 | `Bodu.Globalization.Calendar.Africa` | Stable | 100% | 66.7% | 26 / 26 |
 | `Bodu.Globalization.Calendar.Americas` | Stable | 100% | 83.3% | 29 / 29 |
 | `Bodu.Globalization.Calendar.AsiaPacific` | Stable | 100% | 75% | 16 / 16 |
@@ -46,7 +46,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Globalization.Calendar.Europe` | Stable | 100% | 83.3% | 30 / 30 |
 | `Bodu.Globalization.Calendar.MiddleEast` | Stable | 100% | 66.7% | 26 / 26 |
 | `Bodu.Globalization.Calendar.Plugins` | Stable | 92% | 82.7% | 208 / 226 |
-| `Bodu.Globalization.Calendar.Tool` | Preview | 87.1% | 82.3% | 115 / 132 |
+| `Bodu.Globalization.Calendar.Tool` | Preview | 99.2% | 98.4% | 130 / 131 |
 | `Bodu.Globalization.Recurrence` | Preview | 88.8% | 87.9% | 1278 / 1439 |
 | `Bodu.IO.Compound` | Stable | 98.8% | 94.1% | 2220 / 2247 |
 | `Bodu.IO.Hashing` | Stable | 98.7% | 96% | 2518 / 2551 |
@@ -68,7 +68,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.Yaml` | Preview | 89.8% | 88.5% | 2410 / 2685 |
 | `Caching (shared source)` | Stable | 86.4% | 87.5% | 95 / 110 |
 
-**Overall:** 95.4% (66372 / 69561 lines across 59 collected package(s)).
+**Overall:** 95.4% (66390 / 69560 lines across 59 collected package(s)).
 
 ## Baseline evidence
 
@@ -78,7 +78,7 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `de07d1dbf69e27d3215bae9295e5b366f6d00a4f`
+- Commit: `b4c9ce28b2a0317b55e77b352225cef8c8fd6b3b`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0
 - Files with stale line numbering: 0
