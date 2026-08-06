@@ -124,8 +124,8 @@
     "branch": 87.5
   },
   "Bodu.Globalization.Calendar.Caching": {
-    "line": 88.6,
-    "branch": 83.7
+    "line": 90.7,
+    "branch": 86.0
   },
   "Bodu.Globalization.Calendar.Caching.Distributed": {
     "line": 94.7,
@@ -232,7 +232,7 @@
     "branch": 88.0
   },
   "Caching (shared source)": {
-    "line": 85.9,
-    "branch": 87.0
+    "line": 92.2,
+    "branch": 93.3
   }
 }

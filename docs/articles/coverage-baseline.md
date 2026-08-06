@@ -39,7 +39,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Globalization.Calendar.AsiaPacific` | Stable | 100% | 75% | 16 / 16 |
 | `Bodu.Globalization.Calendar.Build` | Preview | n/a | n/a | n/a |
 | `Bodu.Globalization.Calendar.Builder` | Stable | 95.7% | 88% | 1692 / 1768 |
-| `Bodu.Globalization.Calendar.Caching` | Stable | 89.1% | 84.2% | 608 / 682 |
+| `Bodu.Globalization.Calendar.Caching` | Stable | 91.2% | 86.5% | 622 / 682 |
 | `Bodu.Globalization.Calendar.Caching.Distributed` | Stable | 95.2% | 93.2% | 118 / 124 |
 | `Bodu.Globalization.Calendar.Caching.Sqlite` | Stable | 93.2% | 95.8% | 193 / 207 |
 | `Bodu.Globalization.Calendar.DependencyInjection` | Stable | 95.7% | 66.7% | 90 / 94 |
@@ -67,14 +67,14 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.Serialization (shared source)` | Stable | 93.4% | 89% | 606 / 649 |
 | `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
 | `Bodu.Text.Yaml` | Preview | 89.8% | 88.5% | 2410 / 2685 |
-| `Caching (shared source)` | Stable | 86.4% | 87.5% | 95 / 110 |
+| `Caching (shared source)` | Stable | 92.7% | 93.8% | 102 / 110 |
 
 ### Excluded by design
 
 - `Bodu.Globalization.Calendar.Build` — MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.
 - `Bodu.Text.Formats` — Umbrella meta-package: references the three format libraries and ships no source of its own.
 
-**Overall:** 95.5% (66428 / 69560 lines across 59 collected package(s)).
+**Overall:** 95.5% (66449 / 69560 lines across 59 collected package(s)).
 
 ## Baseline evidence
 
@@ -84,7 +84,7 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `aabed93ff4132f02bf31b8b0ffc9861067300c4d`
+- Commit: `a0f7a7ccc426c44787b326ad3e73f87ee29ad606`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0
 - Files with stale line numbering: 0
