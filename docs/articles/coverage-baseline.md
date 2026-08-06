@@ -56,8 +56,8 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Security.Cryptography` | Stable | 98.4% | 94.1% | 13684 / 13912 |
 | `Bodu.Text.Bencode` | Stable | 93.1% | 91.7% | 1525 / 1638 |
 | `Bodu.Text.Configuration` | Stable | 88.3% | 86.5% | 1048 / 1187 |
-| `Bodu.Text.Delimited` | Preview | 85.7% | 83.4% | 770 / 899 |
-| `Bodu.Text.DotEnv` | Preview | 80.5% | 78.7% | 581 / 722 |
+| `Bodu.Text.Delimited` | Preview | 89.7% | 84.6% | 806 / 899 |
+| `Bodu.Text.DotEnv` | Preview | 82% | 79.5% | 592 / 722 |
 | `Bodu.Text.Encoding` | Stable | 95.5% | 93.8% | 3036 / 3178 |
 | `Bodu.Text.Filtering` | Preview | 98.3% | 97.7% | 458 / 466 |
 | `Bodu.Text.Ini` | Preview | 87.3% | 82.6% | 799 / 915 |
@@ -66,7 +66,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
 | `Bodu.Text.Yaml` | Preview | 87.1% | 86.9% | 2338 / 2685 |
 
-**Overall:** 95% (66043 / 69555 lines across 57 collected package(s)).
+**Overall:** 95% (66090 / 69555 lines across 57 collected package(s)).
 
 ## Baseline evidence
 
@@ -76,6 +76,6 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `4500b4618ec3b75fddd0b00168e271021e9c42d1`
+- Commit: `8f10999705eb1ab57cbd846cac6aa634cc489e03`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0

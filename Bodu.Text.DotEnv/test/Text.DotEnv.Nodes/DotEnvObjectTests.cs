@@ -14,7 +14,7 @@ namespace Bodu.Text.DotEnv.Nodes;
 /// Contains tests for the mutable <see cref="DotEnvObject" /> / <see cref="DotEnvValue" /> DOM.
 /// </summary>
 [TestClass]
-public class DotEnvObjectTests
+public partial class DotEnvObjectTests
 {
     /// <summary>
     /// Verifies that parsing populates the object with the keys and values in source order.
