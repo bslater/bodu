@@ -13,13 +13,13 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Extensions.Configuration.Text` | Stable | 97.3% | 87.5% | 256 / 263 |
 | `Bodu.Financial` | Stable | 97.3% | 86.9% | 3600 / 3700 |
 | `Bodu.Financial.DependencyInjection` | Stable | 100% | 100% | 43 / 43 |
-| `Bodu.Financial.ExchangeRates` | Preview | 88.8% | 81.1% | 324 / 365 |
+| `Bodu.Financial.ExchangeRates` | Preview | 91% | 84.8% | 332 / 365 |
 | `Bodu.Financial.ExchangeRates.Boe` | Stable | 91.1% | 85.3% | 267 / 293 |
 | `Bodu.Financial.ExchangeRates.Caching` | Stable | 91.6% | 88.6% | 1368 / 1493 |
 | `Bodu.Financial.ExchangeRates.Caching.Distributed` | Stable | 93.5% | 91.9% | 172 / 184 |
 | `Bodu.Financial.ExchangeRates.Caching.Sqlite` | Stable | 94.8% | 94.8% | 308 / 325 |
 | `Bodu.Financial.ExchangeRates.DependencyInjection` | Stable | 100% | 100% | 70 / 70 |
-| `Bodu.Financial.ExchangeRates.Ecb` | Stable | 87.4% | 79.4% | 242 / 277 |
+| `Bodu.Financial.ExchangeRates.Ecb` | Stable | 91.7% | 81% | 254 / 277 |
 | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | Preview | 95.3% | 73.7% | 143 / 150 |
 | `Bodu.Financial.ExchangeRates.Fixer` | Preview | 96.7% | 75% | 147 / 152 |
 | `Bodu.Financial.ExchangeRates.Fred` | Preview | 99.3% | 93.5% | 135 / 136 |
@@ -74,7 +74,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 - `Bodu.Globalization.Calendar.Build` — MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.
 - `Bodu.Text.Formats` — Umbrella meta-package: references the three format libraries and ships no source of its own.
 
-**Overall:** 95.6% (66492 / 69560 lines across 59 collected package(s)).
+**Overall:** 95.6% (66512 / 69560 lines across 59 collected package(s)).
 
 ## Baseline evidence
 
@@ -84,7 +84,7 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `a459fbdfd57b304a753c4e85294ca704a2db98e7`
+- Commit: `d139af6c544f52c502c593cf71fffc6a5f541632`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0
 - Files with stale line numbering: 0

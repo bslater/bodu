@@ -24,8 +24,8 @@
     "branch": 99.5
   },
   "Bodu.Financial.ExchangeRates": {
-    "line": 88.3,
-    "branch": 80.6
+    "line": 90.5,
+    "branch": 84.3
   },
   "Bodu.Financial.ExchangeRates.Boe": {
     "line": 90.6,
@@ -48,8 +48,8 @@
     "branch": 99.5
   },
   "Bodu.Financial.ExchangeRates.Ecb": {
-    "line": 86.9,
-    "branch": 78.9
+    "line": 91.2,
+    "branch": 80.5
   },
   "Bodu.Financial.ExchangeRates.ExchangeRateHost": {
     "line": 94.8,
