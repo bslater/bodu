@@ -15,11 +15,10 @@
          dragging every aggregate down. Any row whose file does not resolve on disk is discarded and
          counted.
 
-      2. Shared-source attribution. Bodu.Text.Serialization/shared/** is compiled directly into
-         Bodu.Text.Toml, Bodu.Text.Bencode and Bodu.Text.Yaml, so those lines appear three times
-         under three assemblies. They are reported once as a synthetic unit whose coverage is the
-         union across the three hosts, and subtracted from the three host packages so the solution
-         total does not count them three times.
+      2. Shared-source attribution. Three source sets are compiled directly into more than one
+         assembly, so their lines appear under several package names at once. Each set is reported
+         once as a synthetic unit whose coverage is the union across its hosts, and is removed from
+         the host packages so the solution total counts it exactly once. See $SharedSourceSets.
 
       3. Hardware-gated paths. The JIT selects exactly one of the AVX-512 or scalar implementations
          per process, so a single run cannot cover both. Files that the collecting host could not
@@ -75,11 +74,51 @@ if (-not (Test-Path -LiteralPath $ReportPath)) {
     throw "Merged report not found at '$ReportPath'. Run bld/collect-coverage.sh then bld/merge-coverage.sh first."
 }
 
-# The synthetic unit for source compiled into more than one assembly, and the assemblies it is
-# compiled into. Keep these in step with the Compile Include globs in the three host csproj files.
-$SharedSourcePrefix   = 'Bodu.Text.Serialization/shared/'
-$SharedSourceUnit     = 'Bodu.Text.Serialization (shared source)'
-$SharedSourceHosts    = @('Bodu.Text.Toml', 'Bodu.Text.Bencode', 'Bodu.Text.Yaml')
+# ---------------------------------------------------------------------------------------------------------------
+# Source compiled into more than one assembly
+#
+# A file pulled into several projects by a Compile Include glob belongs to no single package. The merged
+# report names it once per host, and attributing it to whichever host the merge happened to emit first
+# credits one package with lines it only shares and hides the file entirely from the others - so closing a
+# line in it moves a row that does not own it. Each set is lifted into a synthetic reporting unit instead,
+# counted exactly once.
+#
+# Keep this table in step with the Compile Include globs in the host csproj files.
+#
+#   Prefix                - repo-relative path prefix, forward slashes, trailing slash.
+#   Unit                  - the synthetic package name the files are reported under.
+#   Hosts                 - the assemblies that compile it. Documentation, and the re-collect list when one
+#                           of these files is edited.
+#   ConditionallyCompiled - the hosts instrument genuinely different subsets of the file's lines because it
+#                           is guarded by per-host preprocessor symbols, so the stale-numbering check must
+#                           not read that disagreement as stale data.
+# ---------------------------------------------------------------------------------------------------------------
+$SharedSourceSets = @(
+    @{
+        Prefix                = 'Bodu.Text.Serialization/shared/'
+        Unit                  = 'Bodu.Text.Serialization (shared source)'
+        Hosts                 = @('Bodu.Text.Toml', 'Bodu.Text.Bencode', 'Bodu.Text.Yaml')
+
+        # TOML / BENCODE / YAML select whole members, so each host compiles a different line set.
+        ConditionallyCompiled = $true
+    }
+    @{
+        Prefix                = 'Bodu.IO.Hashing/shared/'
+        Unit                  = 'Bodu.IO.Hashing (shared source)'
+        Hosts                 = @('Bodu.IO.Hashing', 'Bodu.IO.Pst', 'Bodu.Formats.Outlook.Msg')
+
+        # PST / MSG select only the namespace declaration, which carries no sequence points.
+        ConditionallyCompiled = $false
+    }
+    @{
+        Prefix                = 'shared/Caching/'
+        Unit                  = 'Caching (shared source)'
+        Hosts                 = @('Bodu.Financial.ExchangeRates.Caching', 'Bodu.Globalization.Calendar.Caching')
+        ConditionallyCompiled = $false
+    }
+)
+
+$SharedSourceUnits = @($SharedSourceSets | ForEach-Object { $_.Unit })
 
 # ---------------------------------------------------------------------------------------------------------------
 # Collection manifests
@@ -166,12 +205,17 @@ function Get-StaleNumberedFiles([string]$rawRoot) {
         }
     }
 
+    $conditionalPrefixes = @($SharedSourceSets | Where-Object { $_.ConditionallyCompiled } | ForEach-Object { $_.Prefix })
+
     $stale = [System.Collections.Generic.List[string]]::new()
     foreach ($filename in $byFile.Keys) {
         # Conditionally compiled shared source is exempt: Bodu.Text.Serialization/shared/** is compiled into
         # Toml, Bencode and Yaml under different format symbols, so each host legitimately instruments a
         # different subset of its lines. That is a real difference in the compiled code, not stale data.
-        if ($filename.Replace('\', '/').Contains($SharedSourcePrefix)) { continue }
+        # The other shared sets are NOT exempt - their symbols select only a namespace declaration, so a
+        # line-set disagreement between their hosts really is stale data.
+        $normalized = $filename.Replace('\', '/')
+        if ($conditionalPrefixes | Where-Object { $normalized.Contains($_) }) { continue }
 
         $sets = @($byFile[$filename].Values)
         if ($sets.Count -lt 2) { continue }
@@ -276,8 +320,11 @@ foreach ($package in $report.coverage.packages.package) {
 # Reassign shared source to its synthetic unit
 # ---------------------------------------------------------------------------------------------------------------
 foreach ($relative in @($files.Keys)) {
-    if ($relative.StartsWith($SharedSourcePrefix, [StringComparison]::Ordinal)) {
-        $files[$relative].Package = $SharedSourceUnit
+    foreach ($set in $SharedSourceSets) {
+        if ($relative.StartsWith($set.Prefix, [StringComparison]::Ordinal)) {
+            $files[$relative].Package = $set.Unit
+            break
+        }
     }
 }
 
@@ -337,7 +384,7 @@ function Get-Rate([int]$covered, [int]$total) {
 # packages - the samples under samples/, the shared test-support libraries, and the source generator
 # - because they are all named Bodu.*. Reporting them would put sample code, which exists to be read
 # rather than exercised, into the same table and the same solution total as the libraries.
-$reportable = @($packableNames + $SharedSourceUnit | Sort-Object -Unique)
+$reportable = @($packableNames + $SharedSourceUnits | Sort-Object -Unique)
 $notPackages = @($aggregate.Keys | Where-Object { $reportable -notcontains $_ } | Sort-Object)
 
 $rows = foreach ($name in $reportable) {
@@ -347,7 +394,7 @@ $rows = foreach ($name in $reportable) {
 
     [pscustomobject]@{
         Package      = $name
-        Status       = if ($status.ContainsKey($name)) { $status[$name] } elseif ($name -eq $SharedSourceUnit) { 'Stable' } else { '' }
+        Status       = if ($status.ContainsKey($name)) { $status[$name] } elseif ($SharedSourceUnits -contains $name) { 'Stable' } else { '' }
         Collected    = [bool]$bucket
         CoveredLines = if ($bucket) { $bucket.CoveredLines } else { 0 }
         TotalLines   = if ($bucket) { $bucket.TotalLines } else { 0 }

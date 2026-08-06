@@ -217,6 +217,37 @@ express:
 - **subtracts** those files from the `Toml` / `Bencode` / `Yaml` rows, so the
   solution total does not count them once per host.
 
+### There are three such sets, not one
+
+The serializer core is the largest, but two more source sets are `Compile
+Include`d across projects, and each gets its own synthetic unit. The table lives
+at `$SharedSourceSets` in `tools/New-CoverageMatrix.ps1`; keep it in step with
+the host csproj globs.
+
+| Shared set | Synthetic unit | Compiled into |
+|---|---|---|
+| `Bodu.Text.Serialization/shared/**` | `Bodu.Text.Serialization (shared source)` | `Toml`, `Bencode`, `Yaml` |
+| `Bodu.IO.Hashing/shared/**` (`CrcCore.cs`) | `Bodu.IO.Hashing (shared source)` | `IO.Hashing`, `IO.Pst`, `Formats.Outlook.Msg` |
+| `shared/Caching/**` | `Caching (shared source)` | `Financial.ExchangeRates.Caching`, `Globalization.Calendar.Caching` |
+
+Attribution matters even where the totals do not move. The file map is keyed by
+repo-relative path, so a shared file is never *double-counted* — but before this
+table existed, the two smaller sets were attributed wholesale to whichever host
+the merge happened to emit first. `Bodu.Formats.Outlook.Msg` carried all 48 lines
+of `CrcCore.cs` and `Bodu.IO.Pst` showed none of it; closing a line in that file
+would have moved a row that does not own it. Splitting the sets out cost
+`Outlook.Msg` 1.1pp and gained `ExchangeRates.Caching` 0.3pp, with the solution
+figure unchanged — a correction, not a regression, so the two `Outlook.Msg`
+ratchet floors were lowered by hand to match. That is the only circumstance in
+which a floor comes down.
+
+The three sets are not alike in one respect that the stale-numbering check cares
+about. `Bodu.Text.Serialization/shared/**` selects **whole members** by format
+symbol, so its hosts legitimately instrument different line sets and it is exempt
+from that check. The other two select only a namespace declaration, which carries
+no sequence points — so if their hosts ever disagree about which lines are
+instrumentable, that really is stale data and should be reported.
+
 The same keying — by source path and line number rather than by class — also
 collapses the duplicate rows a file containing several classes would otherwise
 contribute.

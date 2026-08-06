@@ -32,7 +32,7 @@
     "branch": 84.8
   },
   "Bodu.Financial.ExchangeRates.Caching": {
-    "line": 90.8,
+    "line": 91.1,
     "branch": 88.1
   },
   "Bodu.Financial.ExchangeRates.Caching.Distributed": {
@@ -100,8 +100,8 @@
     "branch": 88.4
   },
   "Bodu.Formats.Outlook.Msg": {
-    "line": 86.6,
-    "branch": 80.6
+    "line": 85.5,
+    "branch": 79
   },
   "Bodu.Globalization.Calendar": {
     "line": 96.4,
@@ -160,12 +160,16 @@
     "branch": 87.4
   },
   "Bodu.IO.Compound": {
-    "line": 90.8,
-    "branch": 83.2
+    "line": 91.6,
+    "branch": 84.1
   },
   "Bodu.IO.Hashing": {
     "line": 98.2,
     "branch": 95.5
+  },
+  "Bodu.IO.Hashing (shared source)": {
+    "line": 99.5,
+    "branch": 99.5
   },
   "Bodu.IO.Pst": {
     "line": 79.4,
@@ -226,5 +230,9 @@
   "Bodu.Text.Yaml": {
     "line": 89.3,
     "branch": 88.0
+  },
+  "Caching (shared source)": {
+    "line": 85.9,
+    "branch": 87.0
   }
 }

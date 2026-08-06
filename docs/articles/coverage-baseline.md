@@ -15,7 +15,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Financial.DependencyInjection` | Stable | 100% | 100% | 43 / 43 |
 | `Bodu.Financial.ExchangeRates` | Preview | 88.8% | 81.1% | 324 / 365 |
 | `Bodu.Financial.ExchangeRates.Boe` | Stable | 91.1% | 85.3% | 267 / 293 |
-| `Bodu.Financial.ExchangeRates.Caching` | Stable | 91.3% | 88.6% | 1463 / 1603 |
+| `Bodu.Financial.ExchangeRates.Caching` | Stable | 91.6% | 88.6% | 1368 / 1493 |
 | `Bodu.Financial.ExchangeRates.Caching.Distributed` | Stable | 93.5% | 91.9% | 172 / 184 |
 | `Bodu.Financial.ExchangeRates.Caching.Sqlite` | Stable | 94.8% | 94.8% | 308 / 325 |
 | `Bodu.Financial.ExchangeRates.DependencyInjection` | Stable | 100% | 100% | 70 / 70 |
@@ -32,7 +32,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Financial.Serialization.Json` | Stable | 95% | 89.4% | 551 / 580 |
 | `Bodu.Formats.Excel.Binary` | Stable | 89.7% | 81.7% | 708 / 789 |
 | `Bodu.Formats.Outlook` | Preview | 95.9% | 88.9% | 71 / 74 |
-| `Bodu.Formats.Outlook.Msg` | Preview | 87.1% | 81.1% | 526 / 604 |
+| `Bodu.Formats.Outlook.Msg` | Preview | 86% | 79.5% | 478 / 556 |
 | `Bodu.Globalization.Calendar` | Stable | 96.9% | 89.6% | 3367 / 3474 |
 | `Bodu.Globalization.Calendar.Africa` | Stable | 100% | 66.7% | 26 / 26 |
 | `Bodu.Globalization.Calendar.Americas` | Stable | 100% | 83.3% | 29 / 29 |
@@ -50,6 +50,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Globalization.Recurrence` | Preview | 88.8% | 87.9% | 1278 / 1439 |
 | `Bodu.IO.Compound` | Stable | 92.1% | 84.6% | 2065 / 2241 |
 | `Bodu.IO.Hashing` | Stable | 98.7% | 96% | 2518 / 2551 |
+| `Bodu.IO.Hashing (shared source)` | Stable | 100% | 100% | 48 / 48 |
 | `Bodu.IO.Pst` | Preview | 79.9% | 64.7% | 326 / 408 |
 | `Bodu.Numerics` | Stable | 94.2% | 91% | 2090 / 2219 |
 | `Bodu.Numerics.Serialization.Json` | Preview | 92.5% | 83.6% | 494 / 534 |
@@ -65,8 +66,9 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.Serialization (shared source)` | Stable | 93.4% | 89% | 606 / 649 |
 | `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
 | `Bodu.Text.Yaml` | Preview | 89.8% | 88.5% | 2410 / 2685 |
+| `Caching (shared source)` | Stable | 86.4% | 87.5% | 95 / 110 |
 
-**Overall:** 95.2% (66217 / 69555 lines across 57 collected package(s)).
+**Overall:** 95.2% (66217 / 69555 lines across 59 collected package(s)).
 
 ## Baseline evidence
 
