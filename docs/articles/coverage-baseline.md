@@ -30,7 +30,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Financial.ExchangeRates.Xe` | Stable | 95.4% | 86.6% | 228 / 239 |
 | `Bodu.Financial.ExchangeRates.Yahoo` | Stable | 96% | 73.1% | 143 / 149 |
 | `Bodu.Financial.Serialization.Json` | Stable | 95% | 89.4% | 551 / 580 |
-| `Bodu.Formats.Excel.Binary` | Stable | 89.7% | 81.7% | 708 / 789 |
+| `Bodu.Formats.Excel.Binary` | Stable | 92.6% | 85.4% | 731 / 789 |
 | `Bodu.Formats.Outlook` | Preview | 95.9% | 88.9% | 71 / 74 |
 | `Bodu.Formats.Outlook.Msg` | Preview | 86% | 79.5% | 478 / 556 |
 | `Bodu.Globalization.Calendar` | Stable | 97% | 89.6% | 3370 / 3474 |
@@ -74,7 +74,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 - `Bodu.Globalization.Calendar.Build` — MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.
 - `Bodu.Text.Formats` — Umbrella meta-package: references the three format libraries and ships no source of its own.
 
-**Overall:** 95.5% (66405 / 69560 lines across 59 collected package(s)).
+**Overall:** 95.5% (66428 / 69560 lines across 59 collected package(s)).
 
 ## Baseline evidence
 
@@ -84,7 +84,7 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `f0aec568a4c81f40ab86f3836ef1f0e11306d94a`
+- Commit: `aabed93ff4132f02bf31b8b0ffc9861067300c4d`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0
 - Files with stale line numbering: 0
