@@ -11,7 +11,7 @@ namespace Bodu.IO.Compound.PropertySets;
 /// including user-defined custom properties.
 /// </summary>
 [TestClass]
-public class DocumentSummaryInformationTests
+public partial class DocumentSummaryInformationTests
 {
     /// <summary>
     /// Reads the document summary information from a reference fixture.
