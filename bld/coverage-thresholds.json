@@ -192,12 +192,12 @@
     "branch": 86.0
   },
   "Bodu.Text.Delimited": {
-    "line": 82.7,
-    "branch": 82.5
+    "line": 85.2,
+    "branch": 82.9
   },
   "Bodu.Text.DotEnv": {
-    "line": 77.9,
-    "branch": 78.0
+    "line": 80.0,
+    "branch": 78.2
   },
   "Bodu.Text.Encoding": {
     "line": 95.0,
@@ -208,8 +208,8 @@
     "branch": 97.2
   },
   "Bodu.Text.Ini": {
-    "line": 85.0,
-    "branch": 82.0
+    "line": 86.8,
+    "branch": 82.1
   },
   "Bodu.Text.Serialization": {
     "line": 88.4,
