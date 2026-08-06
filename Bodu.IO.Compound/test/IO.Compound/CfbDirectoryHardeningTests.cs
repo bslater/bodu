@@ -44,6 +44,84 @@ public class CfbDirectoryHardeningTests
     }
 
     /// <summary>
+    /// Verifies that a directory in which a storage appears inside its own child tree terminates at every validation
+    /// level rather than looping forever.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The hierarchy walk processes a queue of storages, marking each stream identifier it collects so a link cannot
+    /// be followed twice. The mark guards <em>collection</em>, though - not <em>enqueueing</em>. A storage that lists
+    /// itself as one of its own children is therefore re-enqueued every time it is dequeued: the second collection
+    /// finds the identifier already marked and adds nothing, but the child list still names the storage, so the
+    /// queue refills itself indefinitely.
+    /// </para>
+    /// <para>
+    /// A stricter level never reaches that state because the repeat collection is rejected as a directory cycle. At
+    /// <see cref="CompoundValidationLevel.Minimal" /> the repeat is pruned silently, which is precisely what lets the
+    /// loop run - so the defect is reachable only on the tolerant path this corpus exists to exercise.
+    /// </para>
+    /// </remarks>
+    /// <param name="level">The validation level under test.</param>
+    [TestMethod]
+    [Timeout(30_000)]
+    [DataRow(CompoundValidationLevel.Compatible)]
+    [DataRow(CompoundValidationLevel.Strict)]
+    [DataRow(CompoundValidationLevel.Minimal)]
+    public void Constructor_WhenStorageIsItsOwnChild_ShouldTerminate(CompoundValidationLevel level)
+    {
+        byte[] directory = new byte[2 * DirectoryEntrySize];
+
+        // The root's child tree consists of the root itself, so walking its children re-visits the root forever.
+        WriteEntry(directory, sid: 0, name: "Root", type: CompoundEntryType.RootStorage, left: NoStream, right: NoStream, child: 0u);
+        WriteEntry(directory, sid: 1, name: "Stream 1", type: CompoundEntryType.Stream, left: NoStream, right: NoStream, child: NoStream);
+
+        CfbHeader header = ParseReferenceHeader();
+
+        try
+        {
+            var parsed = new CfbDirectory(directory, header, level);
+
+            // Terminating is the contract. A tolerant level may surface the pruned tree; it must not hang.
+            Assert.IsNotNull(parsed.Root);
+        }
+        catch (CompoundFileFormatException ex)
+        {
+            Assert.AreEqual(CompoundFileError.DirectoryCycle, ex.Category);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a cycle spanning two storages - each reachable from the other's child tree - also terminates,
+    /// so the guard is not merely a self-reference special case.
+    /// </summary>
+    /// <param name="level">The validation level under test.</param>
+    [TestMethod]
+    [Timeout(30_000)]
+    [DataRow(CompoundValidationLevel.Compatible)]
+    [DataRow(CompoundValidationLevel.Minimal)]
+    public void Constructor_WhenTwoStoragesShareAChildCycle_ShouldTerminate(CompoundValidationLevel level)
+    {
+        byte[] directory = new byte[3 * DirectoryEntrySize];
+
+        WriteEntry(directory, sid: 0, name: "Root", type: CompoundEntryType.RootStorage, left: NoStream, right: NoStream, child: 1u);
+        WriteEntry(directory, sid: 1, name: "A", type: CompoundEntryType.Storage, left: NoStream, right: NoStream, child: 2u);
+        WriteEntry(directory, sid: 2, name: "B", type: CompoundEntryType.Storage, left: NoStream, right: NoStream, child: 1u);
+
+        CfbHeader header = ParseReferenceHeader();
+
+        try
+        {
+            var parsed = new CfbDirectory(directory, header, level);
+
+            Assert.IsNotNull(parsed.Root);
+        }
+        catch (CompoundFileFormatException ex)
+        {
+            Assert.AreEqual(CompoundFileError.DirectoryCycle, ex.Category);
+        }
+    }
+
+    /// <summary>
     /// Builds directory bytes with a root storage whose child tree is a left spine of <paramref name="depth" />
     /// stream entries (SID 1 → 2 → … via the left-sibling link).
     /// </summary>
