@@ -56,6 +56,7 @@ param(
     [string]$ReportDirectory,
     [string]$OutputPath,
     [string]$ThresholdPath,
+    [string]$RawDirectory,
     [double]$Grace = 0.5,
     [switch]$Check
 )
@@ -68,6 +69,7 @@ if (-not $ReportPath)      { $ReportPath = Join-Path $repoRoot 'artifacts/covera
 if (-not $ReportDirectory) { $ReportDirectory = Split-Path -Parent $ReportPath }
 if (-not $OutputPath)      { $OutputPath = Join-Path $repoRoot 'docs/articles/coverage-baseline.md' }
 if (-not $ThresholdPath)   { $ThresholdPath = Join-Path $repoRoot 'bld/coverage-thresholds.json' }
+if (-not $RawDirectory)    { $RawDirectory = Join-Path $repoRoot 'artifacts/coverage/raw' }
 
 if (-not (Test-Path -LiteralPath $ReportPath)) {
     throw "Merged report not found at '$ReportPath'. Run bld/collect-coverage.sh then bld/merge-coverage.sh first."
@@ -122,6 +124,73 @@ if (Test-Path -LiteralPath $packageMatrixPath) {
             }
         }
     }
+}
+
+# ---------------------------------------------------------------------------------------------------------------
+# Stale-numbering detection
+#
+# Coverage is keyed by source path AND line number. Editing a production file shifts the line numbers of
+# everything below the edit, which invalidates the raw results of every OTHER test project that touched
+# that file - collect-coverage.sh only clears the directory of the project it is re-collecting. Merging a
+# stale input with a fresh one unions two different line-number sets for the same file, inflating its
+# total and understating its percentage.
+#
+# The phantom-row check cannot see this: the path still resolves, only the numbering moved. The tell is
+# that two raw inputs disagree about which lines of a file are instrumentable - they were built from the
+# same source, so any disagreement means one of them predates an edit.
+# ---------------------------------------------------------------------------------------------------------------
+function Get-StaleNumberedFiles([string]$rawRoot) {
+    $byFile = @{}
+
+    foreach ($report in Get-ChildItem -Path $rawRoot -Filter 'coverage.cobertura.xml' -Recurse -ErrorAction SilentlyContinue) {
+        $source = Split-Path -Leaf (Split-Path -Parent $report.FullName)
+        $reader = [System.Xml.XmlReader]::Create($report.FullName)
+
+        try {
+            $filename = $null
+            while ($reader.Read()) {
+                if ($reader.NodeType -ne [System.Xml.XmlNodeType]::Element) { continue }
+
+                if ($reader.Name -eq 'class') {
+                    $filename = $reader.GetAttribute('filename')
+                }
+                elseif ($reader.Name -eq 'line' -and $filename) {
+                    if (-not $byFile.ContainsKey($filename)) { $byFile[$filename] = @{} }
+                    if (-not $byFile[$filename].ContainsKey($source)) { $byFile[$filename][$source] = [System.Collections.Generic.HashSet[int]]::new() }
+                    [void]$byFile[$filename][$source].Add([int]$reader.GetAttribute('number'))
+                }
+            }
+        }
+        finally {
+            $reader.Dispose()
+        }
+    }
+
+    $stale = [System.Collections.Generic.List[string]]::new()
+    foreach ($filename in $byFile.Keys) {
+        # Conditionally compiled shared source is exempt: Bodu.Text.Serialization/shared/** is compiled into
+        # Toml, Bencode and Yaml under different format symbols, so each host legitimately instruments a
+        # different subset of its lines. That is a real difference in the compiled code, not stale data.
+        if ($filename.Replace('\', '/').Contains($SharedSourcePrefix)) { continue }
+
+        $sets = @($byFile[$filename].Values)
+        if ($sets.Count -lt 2) { continue }
+
+        for ($i = 1; $i -lt $sets.Count; $i++) {
+            if (-not $sets[0].SetEquals($sets[$i])) {
+                $contributors = ($byFile[$filename].Keys | Sort-Object) -join ', '
+                $stale.Add("$filename  (reported by: $contributors)")
+                break
+            }
+        }
+    }
+
+    return $stale
+}
+
+$staleNumbered = @()
+if (Test-Path -LiteralPath $RawDirectory) {
+    $staleNumbered = @(Get-StaleNumberedFiles $RawDirectory)
 }
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -326,6 +395,13 @@ if ($Check) {
         foreach ($p in $phantom) { Write-Warning "  $p" }
     }
 
+    if ($staleNumbered.Count -gt 0) {
+        Write-Host "Stale line numbering in $($staleNumbered.Count) file(s) - the merge spans a source edit, so totals are inflated:" -ForegroundColor Red
+        foreach ($s in $staleNumbered) { Write-Host "  $s" -ForegroundColor Red }
+        Write-Host "Re-collect the listed contributors before trusting this report." -ForegroundColor Red
+        exit 1
+    }
+
     if ($failures.Count -gt 0) {
         Write-Host "Coverage regression detected:" -ForegroundColor Red
         foreach ($f in $failures) { Write-Host "  $f" -ForegroundColor Red }
@@ -376,6 +452,7 @@ foreach ($row in $rows) {
 [void]$sb.AppendLine("- Commit: ``$commit``")
 [void]$sb.AppendLine("- ``Avx512F.IsSupported`` on the collecting host: ``$avx512``")
 [void]$sb.AppendLine("- Phantom rows discarded: $($phantom.Count)")
+[void]$sb.AppendLine("- Files with stale line numbering: $($staleNumbered.Count)")
 
 if ($hardwareGated.Count -gt 0) {
     [void]$sb.AppendLine()
@@ -421,4 +498,10 @@ Write-Host "  packages reported : $($rows.Count) ($(@($rows | Where-Object Colle
 Write-Host "  non-package asms  : $($notPackages.Count) excluded (samples, test support, generators)"
 Write-Host "  overall line rate : $overall%"
 Write-Host "  phantom discarded : $($phantom.Count)"
+Write-Host "  stale numbering   : $($staleNumbered.Count)"
+
+if ($staleNumbered.Count -gt 0) {
+    Write-Warning "Stale line numbering detected - the merge spans a source edit and totals are inflated. Re-collect these contributors:"
+    foreach ($s in $staleNumbered) { Write-Warning "  $s" }
+}
 Write-Host "  hardware-gated    : $($hardwareGated.Count)"
