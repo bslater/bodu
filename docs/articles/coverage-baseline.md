@@ -37,7 +37,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Globalization.Calendar.Africa` | Stable | 100% | 66.7% | 26 / 26 |
 | `Bodu.Globalization.Calendar.Americas` | Stable | 100% | 83.3% | 29 / 29 |
 | `Bodu.Globalization.Calendar.AsiaPacific` | Stable | 100% | 75% | 16 / 16 |
-| `Bodu.Globalization.Calendar.Build` | Preview | — | — | — |
+| `Bodu.Globalization.Calendar.Build` | Preview | n/a | n/a | n/a |
 | `Bodu.Globalization.Calendar.Builder` | Stable | 95.7% | 88% | 1692 / 1768 |
 | `Bodu.Globalization.Calendar.Caching` | Stable | 89.1% | 84.2% | 608 / 682 |
 | `Bodu.Globalization.Calendar.Caching.Distributed` | Stable | 89.5% | 93.2% | 111 / 124 |
@@ -61,12 +61,18 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.DotEnv` | Preview | 82% | 79.5% | 592 / 722 |
 | `Bodu.Text.Encoding` | Stable | 95.5% | 93.8% | 3036 / 3178 |
 | `Bodu.Text.Filtering` | Preview | 98.3% | 97.7% | 458 / 466 |
+| `Bodu.Text.Formats` | Preview | n/a | n/a | n/a |
 | `Bodu.Text.Ini` | Preview | 87.3% | 82.6% | 799 / 915 |
 | `Bodu.Text.Serialization` | Stable | 88.9% | 76.9% | 64 / 72 |
 | `Bodu.Text.Serialization (shared source)` | Stable | 93.4% | 89% | 606 / 649 |
 | `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
 | `Bodu.Text.Yaml` | Preview | 89.8% | 88.5% | 2410 / 2685 |
 | `Caching (shared source)` | Stable | 86.4% | 87.5% | 95 / 110 |
+
+### Excluded by design
+
+- `Bodu.Globalization.Calendar.Build` — MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.
+- `Bodu.Text.Formats` — Umbrella meta-package: references the three format libraries and ships no source of its own.
 
 **Overall:** 95.4% (66390 / 69560 lines across 59 collected package(s)).
 

@@ -387,19 +387,28 @@ function Get-Rate([int]$covered, [int]$total) {
 $reportable = @($packableNames + $SharedSourceUnits | Sort-Object -Unique)
 $notPackages = @($aggregate.Keys | Where-Object { $reportable -notcontains $_ } | Sort-Object)
 
-$rows = foreach ($name in $reportable) {
-    if ($name -eq 'Bodu.Text.Formats') { continue }   # meta-package: no source, no coverage to report
+# Packages with no coverage to report, and why. Reported as n/a rather than left blank, so a package that
+# genuinely was not collected still stands out as an omission to investigate.
+$notMeasurable = @{
+    'Bodu.Text.Formats' =
+        'Umbrella meta-package: references the three format libraries and ships no source of its own.'
+    'Bodu.Globalization.Calendar.Build' =
+        'MSBuild task package. The task runs only inside a child dotnet build process, so the collector attached to the test host never sees it; the package ships to tasks/netstandard2.0 and is never referenced at runtime. Its integration tests cover what actually breaks - targets wiring, incrementality and diagnostic propagation - which no in-process unit test can reach.'
+}
 
+$rows = foreach ($name in $reportable) {
     $bucket = $aggregate[$name]
+    $excluded = $notMeasurable.ContainsKey($name)
 
     [pscustomobject]@{
         Package      = $name
         Status       = if ($status.ContainsKey($name)) { $status[$name] } elseif ($SharedSourceUnits -contains $name) { 'Stable' } else { '' }
-        Collected    = [bool]$bucket
-        CoveredLines = if ($bucket) { $bucket.CoveredLines } else { 0 }
-        TotalLines   = if ($bucket) { $bucket.TotalLines } else { 0 }
-        LineRate     = if ($bucket) { Get-Rate $bucket.CoveredLines $bucket.TotalLines } else { $null }
-        BranchRate   = if ($bucket) { Get-Rate $bucket.CoveredBranches $bucket.TotalBranches } else { $null }
+        Collected    = [bool]$bucket -and -not $excluded
+        Excluded     = $excluded
+        CoveredLines = if ($bucket -and -not $excluded) { $bucket.CoveredLines } else { 0 }
+        TotalLines   = if ($bucket -and -not $excluded) { $bucket.TotalLines } else { 0 }
+        LineRate     = if ($bucket -and -not $excluded) { Get-Rate $bucket.CoveredLines $bucket.TotalLines } else { $null }
+        BranchRate   = if ($bucket -and -not $excluded) { Get-Rate $bucket.CoveredBranches $bucket.TotalBranches } else { $null }
     }
 }
 
@@ -479,10 +488,21 @@ $sb = [System.Text.StringBuilder]::new()
 [void]$sb.AppendLine('|---|---|--:|--:|--:|')
 
 foreach ($row in $rows) {
-    $line = if ($null -ne $row.LineRate) { "$($row.LineRate)%" } else { '—' }
-    $branch = if ($null -ne $row.BranchRate) { "$($row.BranchRate)%" } else { '—' }
-    $lines = if ($row.Collected) { "$($row.CoveredLines) / $($row.TotalLines)" } else { '—' }
+    $absent = if ($row.Excluded) { 'n/a' } else { '—' }
+    $line = if ($null -ne $row.LineRate) { "$($row.LineRate)%" } else { $absent }
+    $branch = if ($null -ne $row.BranchRate) { "$($row.BranchRate)%" } else { $absent }
+    $lines = if ($row.Collected) { "$($row.CoveredLines) / $($row.TotalLines)" } else { $absent }
     [void]$sb.AppendLine("| ``$($row.Package)`` | $($row.Status) | $line | $branch | $lines |")
+}
+
+if ($rows | Where-Object Excluded) {
+    [void]$sb.AppendLine()
+    [void]$sb.AppendLine('### Excluded by design')
+    [void]$sb.AppendLine()
+
+    foreach ($row in $rows | Where-Object Excluded) {
+        [void]$sb.AppendLine("- ``$($row.Package)`` — $($notMeasurable[$row.Package])")
+    }
 }
 
 [void]$sb.AppendLine()

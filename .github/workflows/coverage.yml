@@ -200,9 +200,17 @@ jobs:
         run: pwsh tools/New-CoverageMatrix.ps1
 
       - name: Enforce ratchet
-        # Report-only until the floors have proven stable across a couple of weekly runs. Flipping a
-        # ratchet to hard-fail on the day it is written turns every pull request red and gets it
-        # switched off within a week.
+        # Report-only for now. Flipping a ratchet to hard-fail on the day it is written turns every
+        # pull request red and gets it switched off within a week, so the floors need to prove stable
+        # first - and they cannot start proving anything until this workflow runs somewhere other than
+        # the branch that introduced it.
+        #
+        # Flip to hard-fail (delete this line) once BOTH hold:
+        #   1. this workflow has merged to the default branch, and
+        #   2. the weekly scheduled run has completed green there twice in a row.
+        #
+        # Until (1) the schedule never fires, because GitHub only runs scheduled workflows from the
+        # default branch - so a green run on a feature branch is not evidence of anything.
         continue-on-error: true
         run: pwsh tools/New-CoverageMatrix.ps1 -Check
 
