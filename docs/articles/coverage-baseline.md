@@ -20,9 +20,9 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Financial.ExchangeRates.Caching.Sqlite` | Stable | 94.8% | 94.8% | 308 / 325 |
 | `Bodu.Financial.ExchangeRates.DependencyInjection` | Stable | 100% | 100% | 70 / 70 |
 | `Bodu.Financial.ExchangeRates.Ecb` | Stable | 87.4% | 79.4% | 242 / 277 |
-| `Bodu.Financial.ExchangeRates.ExchangeRateHost` | Preview | 73.3% | 68.4% | 110 / 150 |
-| `Bodu.Financial.ExchangeRates.Fixer` | Preview | 72.4% | 69.4% | 110 / 152 |
-| `Bodu.Financial.ExchangeRates.Fred` | Preview | 79.4% | 82.6% | 108 / 136 |
+| `Bodu.Financial.ExchangeRates.ExchangeRateHost` | Preview | 95.3% | 73.7% | 143 / 150 |
+| `Bodu.Financial.ExchangeRates.Fixer` | Preview | 96.7% | 75% | 147 / 152 |
+| `Bodu.Financial.ExchangeRates.Fred` | Preview | 99.3% | 93.5% | 135 / 136 |
 | `Bodu.Financial.ExchangeRates.Imf` | Preview | 82.7% | 82.7% | 263 / 318 |
 | `Bodu.Financial.ExchangeRates.Oanda` | Stable | 97% | 89.2% | 164 / 169 |
 | `Bodu.Financial.ExchangeRates.Ofx` | Stable | 97.6% | 88.9% | 124 / 127 |
@@ -66,7 +66,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
 | `Bodu.Text.Yaml` | Preview | 87.1% | 86.9% | 2338 / 2685 |
 
-**Overall:** 94.7% (65892 / 69555 lines across 57 collected package(s)).
+**Overall:** 94.9% (65989 / 69555 lines across 57 collected package(s)).
 
 ## Baseline evidence
 
@@ -76,6 +76,6 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `a3d2bedfdc6e8eb36ae52db9b9984e9b3a4a5cbc`
+- Commit: `fc4178fd9c6bf3b7f7fc419ca363e7d441567d31`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0

@@ -52,16 +52,16 @@
     "branch": 78.9
   },
   "Bodu.Financial.ExchangeRates.ExchangeRateHost": {
-    "line": 72.8,
-    "branch": 67.9
+    "line": 94.8,
+    "branch": 73.2
   },
   "Bodu.Financial.ExchangeRates.Fixer": {
-    "line": 71.9,
-    "branch": 68.9
+    "line": 96.2,
+    "branch": 74.5
   },
   "Bodu.Financial.ExchangeRates.Fred": {
-    "line": 78.9,
-    "branch": 82.1
+    "line": 98.8,
+    "branch": 93.0
   },
   "Bodu.Financial.ExchangeRates.Imf": {
     "line": 82.2,
