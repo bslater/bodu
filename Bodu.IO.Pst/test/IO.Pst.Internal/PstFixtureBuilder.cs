@@ -108,6 +108,49 @@ internal sealed class PstFixtureBuilder
     internal bool WriteValidHeaderCrc { get; set; } = true;
 
     /// <summary>
+    /// Gets the absolute offset at which each block was written, keyed by identifier.
+    /// </summary>
+    /// <value>The block offsets, populated as blocks are added.</value>
+    internal IReadOnlyDictionary<ulong, long> BlockOffsets =>
+        _blocks.ToDictionary(static b => b.BlockId, static b => (long)b.Offset);
+
+    /// <summary>
+    /// Computes the on-disk length of a block, including its padding and trailer.
+    /// </summary>
+    /// <param name="payloadLength">The payload length.</param>
+    /// <returns>The on-disk length.</returns>
+    internal static int BlockDiskLength(int payloadLength) =>
+        (payloadLength + BlockTrailerSize + BlockAlignment - 1) & ~(BlockAlignment - 1);
+
+    /// <summary>
+    /// Reads the absolute offset of the block B-tree root page from an assembled container.
+    /// </summary>
+    /// <param name="file">The container bytes.</param>
+    /// <returns>The root page offset.</returns>
+    internal static long ReadBlockTreeRootOffset(byte[] file) =>
+        BinaryPrimitives.ReadInt64LittleEndian(file.AsSpan(240));
+
+    /// <summary>
+    /// Reads the absolute offset of the node B-tree root page from an assembled container.
+    /// </summary>
+    /// <param name="file">The container bytes.</param>
+    /// <returns>The root page offset.</returns>
+    internal static long ReadNodeTreeRootOffset(byte[] file) =>
+        BinaryPrimitives.ReadInt64LittleEndian(file.AsSpan(224));
+
+    /// <summary>
+    /// Recomputes the header's partial checksum over an assembled container.
+    /// </summary>
+    /// <param name="file">The container bytes, modified in place.</param>
+    /// <remarks>
+    /// The checksum covers the 471 bytes from the client magic, which includes both B-tree root references. A test
+    /// that patches one of those must repair the checksum, or the header is refused before the patched reference is
+    /// ever followed and the test proves nothing about the guard it was aimed at.
+    /// </remarks>
+    internal static void RepairHeaderChecksum(byte[] file) =>
+        BinaryPrimitives.WriteUInt32LittleEndian(file.AsSpan(4), PstCrc.Compute(file.AsSpan(8, 471)));
+
+    /// <summary>
     /// Adds an external data block holding the supplied payload.
     /// </summary>
     /// <param name="payload">The block payload, before encoding.</param>
