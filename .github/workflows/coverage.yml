@@ -1,0 +1,295 @@
+name: Coverage
+
+# Deliberately separate from build-test.yml. That workflow is the fast red/green signal and its
+# 30-minute budget is worth protecting; instrumented collection across every test project on the
+# regression tier is an order of magnitude slower and belongs on its own schedule.
+on:
+  schedule:
+    # Weekly full baseline, Sunday 15:00 UTC.
+    - cron: '0 15 * * 0'
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      shards:
+        description: 'Number of collection shards'
+        required: false
+        default: '8'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  SHARD_COUNT: ${{ github.event.inputs.shards || '8' }}
+
+jobs:
+  # ---------------------------------------------------------------------------------------------
+  # Decide what to collect. A full run on schedule/dispatch; on a pull request, only the test
+  # projects whose production sources the diff actually touched.
+  # ---------------------------------------------------------------------------------------------
+  scope:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    outputs:
+      mode: ${{ steps.decide.outputs.mode }}
+      projects: ${{ steps.decide.outputs.projects }}
+      shards: ${{ steps.decide.outputs.shards }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Decide collection scope
+        id: decide
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+            echo "projects=" >> "$GITHUB_OUTPUT"
+            echo "shards=$(seq -s, 1 "$SHARD_COUNT")" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+
+          # A change to shared build configuration or to Bodu.Core fans out to effectively every
+          # project, so a "diff-scoped" run would be a full run wearing a disguise. Defer to the
+          # scheduled baseline instead of pretending to be quick.
+          if echo "$changed" | grep -qE '^(Directory\.Build\.(props|targets)|Directory\.Packages\.props|bld/|coverage\.runsettings|Bodu\.Core/src/)'; then
+            echo "Diff touches shared build configuration or Bodu.Core; deferring to the scheduled full run."
+            echo "mode=skip" >> "$GITHUB_OUTPUT"
+            echo "projects=" >> "$GITHUB_OUTPUT"
+            echo "shards=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Map each changed <Project>/src/** path to that project's test project.
+          projects=""
+          for dir in $(echo "$changed" | grep -E '/src/' | sed -E 's|/src/.*||' | sort -u); do
+            for candidate in "$dir"/test/*.Test.csproj; do
+              [ -f "$candidate" ] && projects="$projects $candidate"
+            done
+          done
+
+          projects=$(echo "$projects" | tr ' ' '\n' | grep -v '^$' | sort -u | tr '\n' ' ')
+
+          if [ -z "$projects" ]; then
+            echo "No production source changed; nothing to collect."
+            echo "mode=skip" >> "$GITHUB_OUTPUT"
+          else
+            echo "Collecting: $projects"
+            echo "mode=diff" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "projects=$projects" >> "$GITHUB_OUTPUT"
+          echo "shards=1" >> "$GITHUB_OUTPUT"
+
+  # ---------------------------------------------------------------------------------------------
+  # Collect. Shards are balanced inside collect-coverage.sh by test-project size, so the matrix
+  # only has to supply the index.
+  # ---------------------------------------------------------------------------------------------
+  collect:
+    needs: scope
+    if: needs.scope.outputs.mode != 'skip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJson(format('[{0}]', needs.scope.outputs.shards)) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # The Bodu.Text.Yaml Regression tier reads the yaml/yaml-test-suite conformance corpus,
+          # linked as the 'yaml-test-suite' git submodule; check it out so those tests have vectors.
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+            8.0.x
+            10.0.x
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props', '**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
+        working-directory: Bodu.CodeStyle
+        run: |
+          dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
+            --configuration Release \
+            --output "${{ github.workspace }}/local-packages"
+
+      - name: Collect coverage
+        run: |
+          if [ "${{ needs.scope.outputs.mode }}" = "diff" ]; then
+            # The probe still runs: without it the manifest records AVX-512 as unknown, and the
+            # matrix would then classify the *.Avx512.cs files as hardware-gated on a runner that
+            # may in fact support them.
+            for proj in ${{ needs.scope.outputs.projects }}; do
+              bld/collect-coverage.sh --project "$proj"
+            done
+          else
+            bld/collect-coverage.sh --shard ${{ matrix.shard }}/${{ env.SHARD_COUNT }}
+          fi
+
+      - name: Collect scalar (SIMD-disabled) pass
+        # Bodu.Security.Cryptography is the only package with hardware-gated dispatch: the JIT picks
+        # one of the AVX-512 or scalar implementations per process, so a single run cannot cover
+        # both. Re-run just that suite with intrinsics disabled; the merge unions the two. Keyed off
+        # the raw directory rather than the shard index so it works in diff-scoped runs too, and so
+        # it does not silently stop firing if sharding changes.
+        if: always()
+        run: |
+          if [ -d artifacts/coverage/raw/Bodu.Security.Cryptography.Test ]; then
+            bld/collect-coverage.sh --scalar --no-probe \
+              --project Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj
+          else
+            echo "Crypto suite not collected in this job; no scalar pass needed."
+          fi
+
+      - name: Upload shard results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-cobertura-shard-${{ matrix.shard }}
+          path: |
+            artifacts/coverage/raw/**/coverage.cobertura.xml
+            artifacts/coverage/report/environment*.json
+          retention-days: 14
+          if-no-files-found: warn
+
+  # ---------------------------------------------------------------------------------------------
+  # Merge, publish, and enforce.
+  # ---------------------------------------------------------------------------------------------
+  aggregate:
+    needs: [scope, collect]
+    if: always() && needs.scope.outputs.mode != 'skip'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Download shard results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-cobertura-shard-*
+          merge-multiple: true
+          path: artifacts/coverage
+
+      - name: Merge
+        run: bld/merge-coverage.sh
+
+      - name: Build matrix
+        run: pwsh tools/New-CoverageMatrix.ps1
+
+      - name: Enforce ratchet
+        # Report-only for now. Flipping a ratchet to hard-fail on the day it is written turns every
+        # pull request red and gets it switched off within a week, so the floors need to prove stable
+        # first - and they cannot start proving anything until this workflow runs somewhere other than
+        # the branch that introduced it.
+        #
+        # Flip to hard-fail (delete this line) once BOTH hold:
+        #   1. this workflow has merged to the default branch, and
+        #   2. the weekly scheduled run has completed green there twice in a row.
+        #
+        # Until (1) the schedule never fires, because GitHub only runs scheduled workflows from the
+        # default branch - so a green run on a feature branch is not evidence of anything.
+        continue-on-error: true
+        run: pwsh tools/New-CoverageMatrix.ps1 -Check
+
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ -f artifacts/coverage/report/SummaryGithub.md ]; then
+            cat artifacts/coverage/report/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: artifacts/coverage/report/**
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Comment coverage summary on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            const summaryPath = 'artifacts/coverage/report/SummaryGithub.md';
+            const marker = '<!-- bodu-ci-coverage-summary -->';
+
+            if (!fs.existsSync(summaryPath)) {
+              return;
+            }
+
+            const summary = fs.readFileSync(summaryPath, 'utf8');
+
+            const maxBodyLength = 60000;
+            let body = [
+              marker,
+              '## Coverage',
+              '',
+              '_Diff-scoped: only the test projects for the production sources this PR touched were collected, so packages absent below were not measured in this run._',
+              '',
+              summary
+            ].join('\n');
+
+            if (body.length > maxBodyLength) {
+              body = body.substring(0, maxBodyLength) + '\n\n_Comment truncated because the report was too large. See the uploaded coverage-report artifact for the full output._';
+            }
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+
+            const existing = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body &&
+              comment.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body
+              });
+
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body
+            });

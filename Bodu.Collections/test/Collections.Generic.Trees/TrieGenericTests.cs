@@ -10,7 +10,7 @@ namespace Bodu.Collections.Generic.Trees;
 /// Contains unit tests for the <see cref="Trie{TValue}" /> (string-keyed map) type.
 /// </summary>
 [TestClass]
-public sealed class TrieGenericTests
+public sealed partial class TrieGenericTests
 {
     /// <summary>
     /// Verifies that an added key/value pair can be retrieved.

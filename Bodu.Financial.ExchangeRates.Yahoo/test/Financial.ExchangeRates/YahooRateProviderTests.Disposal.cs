@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Financial.ExchangeRates.Testing;
+
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>

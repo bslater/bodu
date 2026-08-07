@@ -12,7 +12,7 @@ namespace Bodu.IO.Compound.PropertySets;
 /// Verifies that <see cref="SummaryInformation" /> exposes the standard summary metadata of real Office documents.
 /// </summary>
 [TestClass]
-public class SummaryInformationTests
+public partial class SummaryInformationTests
 {
     /// <summary>
     /// Reads the summary information from a reference fixture.

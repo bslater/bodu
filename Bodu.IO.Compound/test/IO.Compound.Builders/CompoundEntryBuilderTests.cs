@@ -12,7 +12,7 @@ namespace Bodu.IO.Compound.Builders;
 /// Verifies the shared behavior of the mutable compound-file node model.
 /// </summary>
 [TestClass]
-public class CompoundEntryBuilderTests
+public partial class CompoundEntryBuilderTests
 {
     /// <summary>
     /// Verifies that a small tree can be authored and reports the expected entry types and parent links.

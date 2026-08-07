@@ -15,7 +15,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// Verifies the distributed-specific persistence and option behaviour of <see cref="DistributedNotableDateCache" />.
 /// </summary>
 [TestClass]
-public sealed class DistributedNotableDateCacheTests
+public sealed partial class DistributedNotableDateCacheTests
 {
     /// <summary>The fixed evaluation instant.</summary>
     private static readonly DateTimeOffset Now = new(2026, 6, 1, 0, 0, 0, TimeSpan.Zero);

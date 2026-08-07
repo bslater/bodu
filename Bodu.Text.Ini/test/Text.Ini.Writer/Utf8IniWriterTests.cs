@@ -17,7 +17,7 @@ namespace Bodu.Text.Ini.Writer;
 /// <see cref="Utf8IniReader" />.
 /// </summary>
 [TestClass]
-public class Utf8IniWriterTests
+public partial class Utf8IniWriterTests
 {
     /// <summary>
     /// Verifies that a global key, a section header, and section entries are emitted in order.

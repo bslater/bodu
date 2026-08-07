@@ -50,6 +50,34 @@ public partial class PstFileTests
     }
 
     /// <summary>
+    /// Verifies that a path whose contents are not a PST file is rejected, and that the file handle the overload
+    /// opened is released rather than left to the finalizer - a caller that catches the exception and retries, or
+    /// deletes the file, must not be blocked by a handle this method still holds.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenPathIsNotPstData_ShouldThrowAndReleaseTheFileHandle()
+    {
+        string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pst");
+        File.WriteAllBytes(path, new byte[1024]);
+
+        try
+        {
+            _ = Assert.ThrowsExactly<PstFileFormatException>(() =>
+            {
+                _ = PstFile.OpenRead(path);
+            });
+
+            // Opening for exclusive write succeeds only if no handle from the failed open survives.
+            using FileStream exclusive = File.Open(path, FileMode.Open, FileAccess.Write, FileShare.None);
+            Assert.IsTrue(exclusive.CanWrite);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    /// <summary>
     /// Verifies that <c>leaveOpen</c> governs whether disposing the session disposes the caller's stream.
     /// </summary>
     [TestMethod]

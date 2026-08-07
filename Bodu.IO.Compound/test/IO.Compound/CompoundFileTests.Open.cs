@@ -228,4 +228,127 @@ public partial class CompoundFileTests
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
             CompoundFile.Open((string)null!, FileMode.Open, FileAccess.Read));
     }
+
+    /// <summary>
+    /// Verifies that a path overload that opened the file but then failed to parse it closes the handle before
+    /// propagating, so the file can be deleted immediately afterwards.
+    /// </summary>
+    /// <remarks>
+    /// Each path overload opens a <see cref="FileStream" /> and hands it to a core that may throw. The stream is the
+    /// overload's to own until the core takes it, so the failure path has to dispose it - a leak here would surface
+    /// much later as a locked file, far from the malformed input that caused it. Deleting the file inside the test is
+    /// the assertion: on Windows it fails outright while a handle is open.
+    /// </remarks>
+    /// <param name="overload">The path overload under test.</param>
+    [TestMethod]
+    [DataRow("OpenRead")]
+    [DataRow("OpenReadWithOptions")]
+    [DataRow("OpenModeAccess")]
+    public void PathOverloads_WhenContentIsNotACompoundFile_ShouldCloseTheFileBeforeThrowing(string overload)
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-cfb-{Guid.NewGuid():N}.cfb");
+        File.WriteAllBytes(path, "not a compound file"u8.ToArray());
+
+        try
+        {
+            _ = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+            {
+                using CompoundFile _ = overload switch
+                {
+                    "OpenRead" => CompoundFile.OpenRead(path),
+                    "OpenReadWithOptions" => CompoundFile.OpenRead(path, new CompoundFileOptions()),
+                    _ => CompoundFile.Open(path, FileMode.Open, FileAccess.Read),
+                };
+            });
+
+            File.Delete(path);
+            Assert.IsFalse(File.Exists(path));
+        }
+        finally
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.Create(string, CompoundBuildOptions)" /> creates the file and stages
+    /// into it, writing the container only on commit.
+    /// </summary>
+    [TestMethod]
+    public void Create_WhenPath_ShouldCreateFileAndCommitContainer()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-cfb-{Guid.NewGuid():N}.cfb");
+
+        try
+        {
+            using (var file = CompoundFile.Create(path))
+            {
+                file.RootStorage.CreateStream("Data", new byte[] { 1, 2, 3 });
+                file.Commit();
+            }
+
+            using var reopened = CompoundFile.OpenRead(path);
+            Assert.IsTrue(reopened.RootStorage.TryOpenStream("Data", out _));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="FileMode.OpenOrCreate" /> with write access starts an empty staging tree when the
+    /// destination has no existing content, rather than trying to parse zero bytes as a container.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenOpenOrCreateOverEmptyStream_ShouldStartEmpty()
+    {
+        using var destination = new MemoryStream();
+
+        using var file = CompoundFile.Open(destination, FileMode.OpenOrCreate, FileAccess.ReadWrite, leaveOpen: true);
+
+        Assert.AreEqual(FileAccess.ReadWrite, file.Access);
+        Assert.IsEmpty(file.RootStorage.EnumerateEntries());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="FileMode.OpenOrCreate" /> with read-write access over existing content loads that
+    /// content for update, so a previously committed stream is still present.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenOpenOrCreateOverExistingContent_ShouldLoadForUpdate()
+    {
+        using var destination = new MemoryStream();
+        using (var seed = CompoundFile.Create(destination, leaveOpen: true))
+        {
+            seed.RootStorage.CreateStream("Original", new byte[] { 7 });
+            seed.Commit();
+        }
+
+        destination.Position = 0;
+        using var file = CompoundFile.Open(destination, FileMode.OpenOrCreate, FileAccess.ReadWrite, leaveOpen: true);
+
+        Assert.IsTrue(file.RootStorage.TryOpenStream("Original", out _));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="FileMode.CreateNew" /> with write access starts an empty staging tree, discarding any
+    /// existing content in the destination.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenCreateNewOverExistingContent_ShouldStartEmpty()
+    {
+        using var destination = new MemoryStream();
+        using (var seed = CompoundFile.Create(destination, leaveOpen: true))
+        {
+            seed.RootStorage.CreateStream("Original", new byte[] { 7 });
+            seed.Commit();
+        }
+
+        destination.Position = 0;
+        using var file = CompoundFile.Open(destination, FileMode.CreateNew, FileAccess.Write, leaveOpen: true);
+
+        Assert.IsEmpty(file.RootStorage.EnumerateEntries());
+    }
 }

@@ -12,7 +12,7 @@ namespace Bodu.Text.DotEnv.Document;
 /// Contains tests for the read-only <see cref="DotEnvDocument" /> / <see cref="DotEnvElement" /> DOM.
 /// </summary>
 [TestClass]
-public class DotEnvDocumentTests
+public partial class DotEnvDocumentTests
 {
     /// <summary>
     /// Verifies that the root element is an object whose properties enumerate in source order.

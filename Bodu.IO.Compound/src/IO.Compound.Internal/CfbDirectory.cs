@@ -154,10 +154,28 @@ internal sealed class CfbDirectory
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the tree contains a cyclic, duplicated, or out-of-range link.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Two guards are needed and they bound different walks. <c>visited</c> bounds the sibling trees: a stream
+    /// identifier cannot be collected into a second child list. <c>queued</c> bounds the hierarchy: a storage cannot be
+    /// processed twice.
+    /// </para>
+    /// <para>
+    /// A storage reachable from its own child tree defeats <c>visited</c> alone. The repeat collection adds nothing
+    /// because the identifier is already marked, but the child list still names the storage - so the queue refills
+    /// itself and the walk never ends. Suppressing the repeat is not sufficient on its own either: the resulting
+    /// hierarchy is still cyclic, and a caller that recurses through it would not terminate. The offending link is
+    /// therefore rejected as a cycle at a strict level, and removed from the parent's child list at
+    /// <see cref="CompoundValidationLevel.Minimal" /> so the recovered hierarchy is genuinely a tree.
+    /// </para>
+    /// </remarks>
     private void BuildChildren()
     {
         bool[] visited = new bool[_entries.Length];
+        bool[] queued = new bool[_entries.Length];
         Queue<CfbDirectoryEntry> storages = new();
+
+        queued[RootSid] = true;
         storages.Enqueue(Root);
 
         while (storages.Count > 0)
@@ -168,11 +186,28 @@ internal sealed class CfbDirectory
             if (_level == CompoundValidationLevel.Strict)
                 ValidateSiblingOrder(storage.Children);
 
-            foreach (int childSid in storage.Children)
+            // Walk backwards so a pruned entry does not shift the indices still to be examined.
+            for (int i = storage.Children.Count - 1; i >= 0; i--)
             {
+                int childSid = storage.Children[i];
                 CfbDirectoryEntry child = _entries[childSid]!;
-                if (child.Type is CompoundEntryType.Storage or CompoundEntryType.RootStorage)
-                    storages.Enqueue(child);
+                if (child.Type is not(CompoundEntryType.Storage or CompoundEntryType.RootStorage))
+                    continue;
+
+                if (queued[childSid])
+                {
+                    // The storage is already part of the hierarchy, so this link closes a cycle.
+                    if (_level == CompoundValidationLevel.Minimal)
+                    {
+                        storage.Children.RemoveAt(i);
+                        continue;
+                    }
+
+                    CompoundThrowHelper.ThrowFormat(CompoundResourceStrings.Format_Invalid_CompoundDirectoryTree, CompoundFileError.DirectoryCycle);
+                }
+
+                queued[childSid] = true;
+                storages.Enqueue(child);
             }
         }
     }

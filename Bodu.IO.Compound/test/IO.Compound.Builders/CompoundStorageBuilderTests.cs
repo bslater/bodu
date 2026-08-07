@@ -10,7 +10,7 @@ namespace Bodu.IO.Compound.Builders;
 /// Verifies the behavior of <see cref="CompoundStorageBuilder" />.
 /// </summary>
 [TestClass]
-public class CompoundStorageBuilderTests
+public partial class CompoundStorageBuilderTests
 {
     /// <summary>
     /// Verifies that adding a node that already belongs to a storage throws <see cref="InvalidOperationException" />.

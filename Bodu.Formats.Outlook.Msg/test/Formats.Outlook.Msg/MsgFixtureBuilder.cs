@@ -194,6 +194,27 @@ internal sealed class MsgFixtureBuilder
     }
 
     /// <summary>
+    /// Adds a multi-valued fixed-length property from already-packed element bytes.
+    /// </summary>
+    /// <param name="id">The property identifier.</param>
+    /// <param name="type">The element type; the multi-value flag is applied here.</param>
+    /// <param name="packed">The concatenated little-endian elements.</param>
+    /// <returns>This builder.</returns>
+    /// <remarks>
+    /// Every fixed-length multi-value type shares one layout - a single stream of packed elements, with the element
+    /// width implied by the type - so one entry point covers them all. It also accepts a deliberately mis-sized
+    /// payload, which is how the decoder's alignment guard is reached.
+    /// </remarks>
+    internal MsgFixtureBuilder AddPackedMultiValue(ushort id, MapiPropertyType type, byte[] packed)
+    {
+        uint tag = ComposeTag(id, type) | 0x1000;
+
+        _entries.Add(new MsgPropertyEntry(tag, DefaultFlags, (uint)packed.Length));
+        _streams.Add((MsgStreamNames.GetSubstgStreamName(tag), packed));
+        return this;
+    }
+
+    /// <summary>
     /// Adds a raw stream verbatim, for malformed-structure scenarios.
     /// </summary>
     /// <param name="name">The stream name.</param>

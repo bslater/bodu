@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <!-- Use all available logical processors -->
+    <MaxCpuCount>0</MaxCpuCount>
+
+    <!-- Optional: Disable app domain creation to improve test performance -->
+    <DisableAppDomain>true</DisableAppDomain>
+
+    <!--
+      30 minutes per assembly, not the usual 10. Instrumentation roughly doubles wall clock on the
+      vector-table assemblies (Bodu.Security.Cryptography, the Bodu.Globalization.Calendar.<Region>
+      data packs), which would otherwise trip the standard guard once the collector is attached.
+    -->
+    <TestSessionTimeout>1800000</TestSessionTimeout>
+
+    <!--
+      Coverage is collected on the REGRESSION tier — the same filter as regression.runsettings. The
+      default bvt tier deliberately excludes the exhaustive vector tables, full algorithm catalogues,
+      and large parameter sweeps, so a bvt-based coverage number understates every data-driven suite.
+      See docs/articles/code-coverage.md.
+    -->
+    <TestCaseFilter>TestCategory!=Stress&amp;TestCategory!=Census</TestCaseFilter>
+  </RunConfiguration>
+
+  <!--
+    The coverlet collector is supplied to every test project centrally by Directory.Build.targets
+    (gated on IsTestProject), so no csproj carries a coverage reference of its own.
+
+    Configuring the collector HERE — rather than passing the "XPlat Code Coverage" collector on the
+    command line — is deliberate: a command-line collector is a SECOND, unconfigured instance whose
+    exclusion lists are empty, which silently readmits generated files to the denominator. Collect by
+    passing this file to the dotnet test settings switch, and do not add a collect switch as well.
+  -->
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+
+          <!--
+            Generated sources. *.Designer.cs resource accessors are mechanical, and
+            CrcStandard.Catalog.cs is a generated catalogue validated wholesale by a reflective
+            sweep rather than per-entry tests (docs/articles/code-coverage.md).
+          -->
+          <ExcludeByFile>**/*.Designer.cs,**/CrcStandard.Catalog.cs,**/obj/**/*.cs</ExcludeByFile>
+          <ExcludeByAttribute>GeneratedCodeAttribute,CompilerGeneratedAttribute,ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
+
+          <!--
+            Production assemblies only. Bodu.Test and the per-project *.Test assemblies are test
+            infrastructure. Bodu.Financial.ExchangeRates.Testing ships the shared provider contract
+            bases from a conventional src/ layout, so it is NOT flagged IsTestProject and would
+            otherwise be counted as production code.
+          -->
+          <Include>[Bodu.*]*</Include>
+          <Exclude>[Bodu.Test]*,[*.Test]*,[Bodu.Financial.ExchangeRates.Testing]*</Exclude>
+          <IncludeTestAssembly>false</IncludeTestAssembly>
+
+          <SingleHit>false</SingleHit>
+
+          <!--
+            SourceLink is enabled repo-wide (bld/SourceLink.props). Letting the collector apply it
+            rewrites each Cobertura `filename` to a raw.githubusercontent URL, which defeats the
+            phantom-row check in tools/New-CoverageMatrix.ps1 — that check discards rows whose source
+            path no longer resolves ON DISK, and is the guard against the stale-path double-counting
+            documented in docs/articles/code-coverage.md.
+          -->
+          <UseSourceLink>false</UseSourceLink>
+          <DeterministicReport>false</DeterministicReport>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

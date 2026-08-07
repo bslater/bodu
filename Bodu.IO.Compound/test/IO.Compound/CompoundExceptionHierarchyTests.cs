@@ -10,7 +10,7 @@ namespace Bodu.IO.Compound;
 /// Verifies that every compound-file exception derives from the shared <see cref="CompoundFileException" /> base.
 /// </summary>
 [TestClass]
-public class CompoundExceptionHierarchyTests
+public partial class CompoundExceptionHierarchyTests
 {
     /// <summary>
     /// Verifies that <see cref="CompoundFileFormatException" /> derives from <see cref="CompoundFileException" />.

@@ -13,7 +13,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// degradation logging emitted when a swallowed failure occurs.
 /// </summary>
 [TestClass]
-public sealed class FileSystemByteCacheTests
+public sealed partial class FileSystemByteCacheTests
 {
     /// <summary>The per-test cache root, removed on cleanup.</summary>
     private string _directory = null!;

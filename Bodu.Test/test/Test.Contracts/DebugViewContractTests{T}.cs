@@ -75,6 +75,51 @@ public abstract class DebugViewContractTests<TCollection>
         Assert.IsNotNull(proxy);
     }
 
+    /// <summary>
+    /// Verifies that every public property the debugger type proxy exposes can be read without throwing.
+    /// </summary>
+    /// <remarks>
+    /// The debugger evaluates these getters eagerly when a collection is expanded in a watch window, and it
+    /// swallows whatever they throw — a getter that faults shows up as an unhelpful placeholder rather than an
+    /// error, so nothing else in the suite would notice. Reading them here is what makes the proxy's surface,
+    /// rather than merely its constructor, part of the contract.
+    /// </remarks>
+    [TestMethod]
+    public void DebuggerTypeProxy_WhenPropertiesRead_ShouldNotThrow()
+    {
+        DebuggerTypeProxyAttribute proxyAttribute = typeof(TCollection).GetCustomAttribute<DebuggerTypeProxyAttribute>()
+            ?? throw new AssertFailedException("DebuggerTypeProxyAttribute is required for this contract.");
+
+        Type proxyType = ResolveProxyType(proxyAttribute, typeof(TCollection));
+        TCollection collection = Create();
+
+        object? proxy = Activator.CreateInstance(proxyType, [collection]);
+        Assert.IsNotNull(proxy);
+
+        PropertyInfo[] properties = proxyType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        Assert.AreNotEqual(0, properties.Length);
+
+        foreach (PropertyInfo property in properties)
+        {
+            if (property.GetIndexParameters().Length != 0)
+            {
+                continue;
+            }
+
+            // Unwrap the reflection wrapper so a failing getter surfaces its own exception and message.
+            try
+            {
+                _ = property.GetValue(proxy);
+            }
+            catch (TargetInvocationException ex) when (ex.InnerException is not null)
+            {
+                throw new AssertFailedException(
+                    $"Debugger proxy property '{proxyType.Name}.{property.Name}' threw {ex.InnerException.GetType().Name}: {ex.InnerException.Message}",
+                    ex.InnerException);
+            }
+        }
+    }
+
     private static Type ResolveProxyType(DebuggerTypeProxyAttribute attribute, Type ownerType)
     {
         if (attribute.Target is not null)

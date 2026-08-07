@@ -10,7 +10,7 @@ namespace Bodu.IO.Compound.PropertySets;
 /// Verifies the typed accessors of <see cref="OlePropertyValue" />.
 /// </summary>
 [TestClass]
-public class OlePropertyValueTests
+public partial class OlePropertyValueTests
 {
     /// <summary>
     /// Verifies that an integral value is returned by the integer accessors and rejected by the string accessor.
