@@ -84,7 +84,7 @@ bld/merge-coverage.sh
 pwsh tools/New-CoverageMatrix.ps1
 ```
 
-- Commit: `877f9a752415dbdb984ead1abe94a7eda0f58799`
+- Commit: `f629e0beea64b7650a5ff9485b5edcaf71a76c8d`
 - `Avx512F.IsSupported` on the collecting host: `true`
 - Phantom rows discarded: 0
 - Files with stale line numbering: 0

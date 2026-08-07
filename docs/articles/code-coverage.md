@@ -58,6 +58,31 @@ Microsoft Code Coverage XML export for focused review.
   and coverlet's closing-brace artifacts will never reach 100% and are left
   uncovered by design.
 
+## The 90% floor
+
+Every collected package sits at or above **90% line coverage**, and
+`bld/coverage-thresholds.json` holds a per-package floor at roughly its measured
+rate. The floor is a gate, not a target: a package well above it is not
+"finished", and a package at it is not in trouble. What the invariant buys is
+that a new gap has to be introduced deliberately — the ratchet fails the build
+before an untested subsystem can arrive quietly inside an otherwise healthy
+package total.
+
+Two consequences worth stating, because both were live questions while the floor
+was being established:
+
+- **A package total can hide an entire dead subsystem.** `Bodu.IO.Pst` read 79.9%
+  overall while `PstDataTree.cs` — the `XBLOCK`/`XXBLOCK` layout every node payload
+  above roughly 8&#160;KB uses — was 30 of 37 lines uncovered, because the whole
+  reference corpus is small files whose nodes each fit one block. The number to
+  interrogate is the shape of the gap, not the percentage.
+- **Reaching the floor with unrelated lines is the failure mode the floor exists
+  to prevent.** The honest fix for that package was a synthetic-container builder
+  (`PstFixtureBuilder`), which authors a structurally valid PST in memory so the
+  multi-block trees, the cyclic content encoding, the subnode index block and every
+  validation guard can be reached at all. Where a corpus cannot produce a shape,
+  author the shape; do not bank easier lines from elsewhere in the same package.
+
 ## Hardware-gated SIMD paths (the AVX512 split)
 
 `Bodu.Security.Cryptography` ships hardware-accelerated implementations

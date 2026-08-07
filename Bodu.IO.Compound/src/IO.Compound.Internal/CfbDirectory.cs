@@ -157,8 +157,8 @@ internal sealed class CfbDirectory
     /// <remarks>
     /// <para>
     /// Two guards are needed and they bound different walks. <c>visited</c> bounds the sibling trees: a stream
-    /// identifier cannot be collected into a second child list. <c>queued</c> bounds the hierarchy: a storage cannot
-    /// be processed twice.
+    /// identifier cannot be collected into a second child list. <c>queued</c> bounds the hierarchy: a storage cannot be
+    /// processed twice.
     /// </para>
     /// <para>
     /// A storage reachable from its own child tree defeats <c>visited</c> alone. The repeat collection adds nothing
@@ -191,7 +191,7 @@ internal sealed class CfbDirectory
             {
                 int childSid = storage.Children[i];
                 CfbDirectoryEntry child = _entries[childSid]!;
-                if (child.Type is not (CompoundEntryType.Storage or CompoundEntryType.RootStorage))
+                if (child.Type is not(CompoundEntryType.Storage or CompoundEntryType.RootStorage))
                     continue;
 
                 if (queued[childSid])
