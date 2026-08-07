@@ -407,7 +407,7 @@ internal static class MsgPropertyDecoder
             default:
                 var guids = new Guid[count];
                 for (int i = 0; i < count; i++)
-                    guids[i] = new Guid(span.Slice(i * 16));
+                    guids[i] = new Guid(span.Slice(i * 16, 16));
                 value = guids;
                 return true;
         }
