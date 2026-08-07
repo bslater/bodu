@@ -17,7 +17,7 @@ namespace Bodu.Text.DotEnv.Writer;
 /// <see cref="Utf8DotEnvReader" />.
 /// </summary>
 [TestClass]
-public class Utf8DotEnvWriterTests
+public partial class Utf8DotEnvWriterTests
 {
     /// <summary>
     /// Writes the supplied entries to a buffer and returns the emitted text.
