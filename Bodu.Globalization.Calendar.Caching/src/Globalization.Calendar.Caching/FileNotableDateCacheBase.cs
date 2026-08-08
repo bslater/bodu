@@ -62,6 +62,15 @@ public abstract class FileNotableDateCacheBase
     /// Thrown when <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="options" /> fails validation.</exception>
+    /// <exception cref="IOException">
+    /// Thrown when <see cref="NotableDateCacheOptions.ValidateStorageOnStart" /> is set and the cache directory cannot
+    /// be created. A path whose parent is a file reports the <see cref="DirectoryNotFoundException" /> specialization
+    /// on some platforms and the base type on others, so catch <see cref="IOException" />.
+    /// </exception>
+    /// <exception cref="UnauthorizedAccessException">
+    /// Thrown when <see cref="NotableDateCacheOptions.ValidateStorageOnStart" /> is set and the process lacks
+    /// permission to create the cache directory.
+    /// </exception>
     protected FileNotableDateCacheBase(FileNotableDateCacheOptions options, TimeProvider? timeProvider = null, ILogger? logger = null)
         : base(options)
     {

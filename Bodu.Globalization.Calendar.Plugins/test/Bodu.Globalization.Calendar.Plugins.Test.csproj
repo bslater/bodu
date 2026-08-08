@@ -35,11 +35,30 @@
   </ItemGroup>
 
   <Target Name="CopyPluginFixtures" AfterTargets="Build">
+    <!--
+      Ask each fixture project where it actually built to rather than assuming bin\$(Configuration)\$(TargetFramework).
+      A hard-coded guess that stops matching copies nothing and still reports success, which then surfaces far away as
+      a "Fixture assembly not found" assertion in every loader test.
+    -->
+    <MSBuild Projects="@(PluginFixture)" Targets="GetTargetPath">
+      <Output TaskParameter="TargetOutputs" ItemName="_PluginFixtureTarget" />
+    </MSBuild>
+
+    <!--
+      Fail here, naming the fixture, when a fixture was not built. Visual Studio does not build a ProjectReference to a
+      project that is absent from the solution, so the fixtures are listed in bodu.slnx; this guard is what catches it
+      if that listing is ever lost again.
+    -->
+    <Error
+      Condition="!Exists('%(_PluginFixtureTarget.FullPath)')"
+      Text="Plugin fixture '%(_PluginFixtureTarget.Filename)' produced no build output at '%(_PluginFixtureTarget.FullPath)'. The fixture projects must build before this test project; confirm they are listed in bodu.slnx." />
+
     <ItemGroup>
-      <_PluginFixtureFile Include="Fixtures\%(PluginFixture.Filename)\bin\$(Configuration)\$(TargetFramework)\**\*.*">
-        <FixtureName>%(PluginFixture.Filename)</FixtureName>
+      <_PluginFixtureFile Include="%(_PluginFixtureTarget.RootDir)%(_PluginFixtureTarget.Directory)**\*.*">
+        <FixtureName>%(_PluginFixtureTarget.Filename)</FixtureName>
       </_PluginFixtureFile>
     </ItemGroup>
+
     <Copy
       SourceFiles="@(_PluginFixtureFile)"
       DestinationFiles="@(_PluginFixtureFile->'$(OutDir)PluginFixtures\%(FixtureName)\%(RecursiveDir)%(Filename)%(Extension)')"

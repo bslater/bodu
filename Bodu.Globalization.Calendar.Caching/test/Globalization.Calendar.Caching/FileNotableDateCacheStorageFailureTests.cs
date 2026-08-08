@@ -101,6 +101,13 @@ public sealed class FileNotableDateCacheStorageFailureTests
     /// <summary>
     /// Verifies that the same write failure is surfaced when the operator has opted into strict storage failures.
     /// </summary>
+    /// <remarks>
+    /// The option rethrows the underlying storage failure rather than translating it, so the exact type is the
+    /// operating system's and differs by platform: blocking the cache file with a directory fails the atomic move
+    /// with <see cref="IOException" /> on Unix and <see cref="UnauthorizedAccessException" /> on Windows. Both are
+    /// what the cache classifies as a storage failure, so the contract is the pair rather than either member, and
+    /// pinning one would make this test pass only on the platform it was written on.
+    /// </remarks>
     [TestMethod]
     public void StoreYear_WhenTheCacheFileCannotBeWritten_ForThrowOnStorageFailure_ShouldThrow()
     {
@@ -112,10 +119,14 @@ public sealed class FileNotableDateCacheStorageFailureTests
 
         var cache = new JsonNotableDateCache(options);
 
-        _ = Assert.ThrowsExactly<IOException>(() =>
+        Exception exception = Assert.Throws<Exception>(() =>
         {
             _ = cache.StoreYear(Entry("US"), TimeSpan.FromDays(30), Now);
         });
+
+        Assert.IsTrue(
+            exception is IOException or UnauthorizedAccessException,
+            $"Expected the underlying storage failure (IOException or UnauthorizedAccessException), but got {exception.GetType()}.");
     }
 
     /// <summary>
@@ -220,14 +231,18 @@ public sealed class FileNotableDateCacheStorageFailureTests
     /// Verifies that a cache directory that cannot be created is reported at construction when storage validation is
     /// requested, rather than being discovered later by a silently failing write.
     /// </summary>
+    /// <remarks>
+    /// A path whose parent is a file is refused as <see cref="IOException" /> itself on Windows and as the
+    /// <see cref="DirectoryNotFoundException" /> specialization on Unix, so the assignable assertion is the
+    /// cross-platform contract; this matches how the sibling exchange-rate file cache asserts the same probe.
+    /// </remarks>
     [TestMethod]
     public void Ctor_WhenValidateStorageOnStartAndDirectoryIsBlocked_ShouldThrow()
     {
         string blocker = Path.Combine(Scratch, Guid.NewGuid().ToString("N"));
         File.WriteAllText(blocker, "not a directory");
 
-        // A path whose parent is a file surfaces as DirectoryNotFoundException, an IOException specialization.
-        _ = Assert.ThrowsExactly<DirectoryNotFoundException>(() =>
+        _ = Assert.Throws<IOException>(() =>
         {
             _ = new JsonNotableDateCache(new FileNotableDateCacheOptions
             {

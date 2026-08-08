@@ -25,9 +25,18 @@ public class NotableDateCacheOptions
     /// keep the best-effort behaviour the <see cref="INotableDateCache" /> contract describes.
     /// </value>
     /// <remarks>
+    /// <para>
     /// The default keeps a cache fault from breaking notable-date resolution, which suits most consumers. Set it for a
     /// deployment that must not run with a silently broken cache. Argument validation always throws regardless of this
     /// setting.
+    /// </para>
+    /// <para>
+    /// The failure is rethrown as the store produced it rather than being translated, so a caller handles the pair the
+    /// cache treats as a storage failure: <see cref="IOException" /> and <see cref="UnauthorizedAccessException" />.
+    /// Which of the two a given fault yields is the storage layer's choice and varies by platform - a blocked file
+    /// write surfaces as <see cref="IOException" /> on Unix and <see cref="UnauthorizedAccessException" /> on Windows -
+    /// so code that catches only one will miss the other.
+    /// </para>
     /// </remarks>
     public bool ThrowOnStorageFailure { get; set; }
 

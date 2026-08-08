@@ -106,6 +106,14 @@
     <Project Path="Bodu.Globalization.Calendar.Caching\src\Bodu.Globalization.Calendar.Caching.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Caching\test\Bodu.Globalization.Calendar.Caching.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Globalization.Calendar/Plugins.Fixtures/">
+    <Project Path="Bodu.Globalization.Calendar.Plugins\test\Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency\Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Plugins\test\Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.Faulty\Bodu.Globalization.Calendar.Plugins.TestPlugin.Faulty.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Plugins\test\Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.NotPlugin\Bodu.Globalization.Calendar.Plugins.TestPlugin.NotPlugin.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Plugins\test\Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.StaticFaulty\Bodu.Globalization.Calendar.Plugins.TestPlugin.StaticFaulty.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Plugins\test\Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.WithDependency\Bodu.Globalization.Calendar.Plugins.TestPlugin.WithDependency.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Plugins\test\Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin\Bodu.Globalization.Calendar.Plugins.TestPlugin.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Globalization.Calendar/Data/">
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Africa/src/Bodu.Globalization.Calendar.Africa.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Africa/test/Bodu.Globalization.Calendar.Africa.Test.csproj" />
