@@ -4,6 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Bodu.Globalization.Calendar.Plugins.TestPlugin</RootNamespace>
     <IsPackable>false</IsPackable>
+    <!-- A loader fixture, not a test assembly: it is listed in bodu.slnx so Visual Studio builds it,
+         and IsTestProject=false keeps a solution-wide `dotnet test` from probing it for tests. -->
+    <IsTestProject>false</IsTestProject>
     <BoduEnablePackageValidation>false</BoduEnablePackageValidation>
   </PropertyGroup>
 
