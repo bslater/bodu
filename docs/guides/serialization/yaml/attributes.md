@@ -73,7 +73,7 @@ public sealed class Account
 Name: svc
 ```
 
-There is no conditional form of `[YamlIgnore]`. To omit members whose value happens to be `null` across the whole document, set <xref:Bodu.Text.Yaml.YamlSerializerOptions.IgnoreNullValues> on the options instead (Pattern 4).
+There is no conditional form of `[YamlIgnore]`. To omit members whose value happens to be `null` (or the type default) across the whole document, set <xref:Bodu.Text.Yaml.YamlSerializerOptions.DefaultIgnoreCondition> on the options instead (Pattern 4).
 
 ## Pattern 4 — Options flags
 
@@ -81,7 +81,7 @@ The remaining shaping is on <xref:Bodu.Text.Yaml.YamlSerializerOptions>:
 
 | Flag | Effect |
 |---|---|
-| `IgnoreNullValues` | Omits any member whose value is `null` on write. |
+| `DefaultIgnoreCondition` | <xref:Bodu.Text.Serialization.IgnoreCondition> — `Never` (default) writes every member; `WhenWritingNull` omits null members; `WhenWritingDefault` also omits type-default values. |
 | `WriteEnumsAsStrings` | `true` (default) writes enums as member-name strings; `false` writes the underlying integer. |
 | `PropertyNameCaseInsensitive` | Matches mapping keys to members case-insensitively on read. |
 | `IncludeFields` | Includes public fields alongside properties. |
@@ -90,7 +90,7 @@ The remaining shaping is on <xref:Bodu.Text.Yaml.YamlSerializerOptions>:
 ```csharp
 var options = new YamlSerializerOptions
 {
-    IgnoreNullValues = true,
+    DefaultIgnoreCondition = IgnoreCondition.WhenWritingNull,
     WriteEnumsAsStrings = false,         // enums as integers
     IncludeFields = true,                // public fields participate
     PropertyNameCaseInsensitive = true,  // case-insensitive key matching
@@ -119,7 +119,7 @@ YAML does **not** carry the wider attribute family the siblings expose. There is
 When several settings could govern the same member, the closest one wins:
 
 1. a member-level `[YamlPropertyName]` (name) or `[YamlIgnore]` (exclusion);
-2. the serializer options (`PropertyNamingPolicy`, `IgnoreNullValues`, `IncludeFields`, `UnmappedMemberHandling`, …).
+2. the serializer options (`PropertyNamingPolicy`, `DefaultIgnoreCondition`, `IncludeFields`, `UnmappedMemberHandling`, …).
 
 ## Where to go next
 

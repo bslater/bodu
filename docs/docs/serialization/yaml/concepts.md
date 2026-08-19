@@ -32,7 +32,7 @@ ServerConfig config = YamlSerializer.Deserialize<ServerConfig>(yaml)!;
 |---|---|
 | `PropertyNamingPolicy` | The <xref:Bodu.Text.Serialization.NamingPolicy> applied to member names (`null` keeps the declared name). |
 | `IncludeFields` | When `true`, public fields participate alongside properties. |
-| `IgnoreNullValues` | When `true`, members whose value is `null` are omitted on write. |
+| `DefaultIgnoreCondition` | The serializer-wide <xref:Bodu.Text.Serialization.IgnoreCondition> applied on write: `Never` (default), `WhenWritingNull`, or `WhenWritingDefault`. |
 | `WriteEnumsAsStrings` | When `true` (the default), enums write as member-name strings; when `false`, as integers. |
 | `PropertyNameCaseInsensitive` | When `true`, mapping keys match members case-insensitively on read. |
 | `SpecVersion` | <xref:Bodu.Text.Yaml.YamlSpecVersion> — `V1_2` (default) or `V1_1`. |

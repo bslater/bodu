@@ -25,7 +25,7 @@ YAML carries the JSON-compatible core scalar kinds — string, integer, float, B
 | `DateTime` | string, round-trip (`"o"`) ISO-8601 | string | Read with `DateTimeStyles.RoundtripKind`. There is no native YAML timestamp type; the value travels as a string scalar. |
 | `DateTimeOffset` | string, round-trip (`"o"`) ISO-8601 | string | As `DateTime`, preserving the offset. |
 | `TimeSpan` | string, the invariant `TimeSpan` form | string | |
-| `null` | the null scalar (`null`) | `null`, `~`, or the empty scalar | A null member is omitted instead when `IgnoreNullValues` is set. |
+| `null` | the null scalar (`null`) | `null`, `~`, or the empty scalar | A null member is omitted instead when `DefaultIgnoreCondition` requests it. |
 | `enum` (any) | string, the member name | string (case-insensitive) or integer | Integers instead of names when `WriteEnumsAsStrings = false`. |
 
 > [!NOTE]

@@ -26,7 +26,7 @@ Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-s
 **Serializer (`Bodu.Text.Yaml`)**
 
 - <xref:Bodu.Text.Yaml.YamlSerializer> — static façade. `Serialize` to a `string` (from a typed value or an `object` + `Type`) and `Deserialize<T>` from a `string` or `ReadOnlySpan<byte>` (UTF-8).
-- <xref:Bodu.Text.Yaml.YamlSerializerOptions> — naming policy, converters, `IncludeFields`, `IgnoreNullValues`, `WriteEnumsAsStrings`, `PropertyNameCaseInsensitive`, `SpecVersion`, `NumberHandling`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `UnmappedMemberHandling`, and `MaxDepth`; cached and frozen on first use.
+- <xref:Bodu.Text.Yaml.YamlSerializerOptions> — naming policy, converters, `IncludeFields`, `DefaultIgnoreCondition`, `WriteEnumsAsStrings`, `PropertyNameCaseInsensitive`, `SpecVersion`, `NumberHandling`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `UnmappedMemberHandling`, and `MaxDepth`; cached and frozen on first use.
 - <xref:Bodu.Text.Serialization.NamingPolicy> — camel, lower-snake, and lower-kebab casing policies.
 - <xref:Bodu.Text.Yaml.YamlTokenType>, <xref:Bodu.Text.Yaml.YamlValueKind> — the token and value-kind enumerations.
 - <xref:Bodu.Text.Yaml.YamlSpecVersion> — the spec selector: `V1_2` (default core schema) or `V1_1` (adds `yes`/`no`/`on`/`off` booleans and sexagesimal numbers). <xref:Bodu.Text.Yaml.YamlNumberHandling> — float-to-integer coercion. <xref:Bodu.Text.Yaml.YamlScalarStyle> — the plain / quoted / literal / folded scalar styles. <xref:Bodu.Text.Yaml.YamlBlockChomping> — block-scalar trailing-newline handling. <xref:Bodu.Text.Yaml.YamlDuplicateKeyBehavior>, <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior>, <xref:Bodu.Text.Serialization.UnmappedMemberHandling> — mapping-key policies.

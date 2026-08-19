@@ -84,7 +84,7 @@ One options object holds every setting. Configure it once and reuse it — it fr
 var options = new YamlSerializerOptions
 {
     PropertyNamingPolicy = YamlNamingPolicy.SnakeCaseLower,
-    IgnoreNullValues = true,
+    DefaultIgnoreCondition = IgnoreCondition.WhenWritingNull,
     WriteEnumsAsStrings = true,
     PropertyNameCaseInsensitive = true,
 };
