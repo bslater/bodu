@@ -551,6 +551,14 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to IgnoreCondition.Always is not a valid value for DefaultIgnoreCondition..
+        /// </summary>
+        internal static string Arg_OutOfRange_DefaultIgnoreConditionAlways {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_DefaultIgnoreConditionAlways", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The writer indentation size must be between 1 and 16..
         /// </summary>
         internal static string Arg_OutOfRange_YamlWriterIndentSize {

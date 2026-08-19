@@ -56,6 +56,7 @@
   <data name="Op_Invalid_YamlFloatNotIntegral" xml:space="preserve"><value>The floating-point value '{0}' cannot be deserialized into an integer target without loss of precision.</value></data>
   <data name="Op_Invalid_YamlNumberOutOfRange" xml:space="preserve"><value>The numeric value '{0}' is outside the range of the target type '{1}'.</value></data>
   <data name="Op_Invalid_YamlCharLength" xml:space="preserve"><value>The value '{0}' cannot be converted to a single character because it is not exactly one Unicode scalar value.</value></data>
+  <data name="Arg_OutOfRange_DefaultIgnoreConditionAlways" xml:space="preserve"><value>IgnoreCondition.Always is not a valid value for DefaultIgnoreCondition.</value></data>
   <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The type '{0}' maps more than one member to the YAML key '{1}'.</value></data>
   <data name="Op_Invalid_EnumValueNotFound" xml:space="preserve"><value>'{0}' is not a defined value of enumeration '{1}'.</value></data>
   <data name="Op_Invalid_ExpectedInteger" xml:space="preserve"><value>Expected an integer but found '{0}'.</value></data>

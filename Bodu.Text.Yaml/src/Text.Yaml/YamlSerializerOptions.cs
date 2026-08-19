@@ -33,8 +33,8 @@ public sealed partial class YamlSerializerOptions
     /// <summary>Indicates whether public fields are serialized in addition to properties.</summary>
     private bool _includeFields;
 
-    /// <summary>Indicates whether members with <see langword="null" /> values are omitted when serializing.</summary>
-    private bool _ignoreNullValues;
+    /// <summary>The serializer-wide default condition under which a member is omitted on write.</summary>
+    private IgnoreCondition _defaultIgnoreCondition = IgnoreCondition.Never;
 
     /// <summary>Indicates whether enumeration values are written as their names rather than numbers.</summary>
     private bool _writeEnumsAsStrings = true;
@@ -67,8 +67,33 @@ public sealed partial class YamlSerializerOptions
     /// Initializes a new instance of the <see cref="YamlSerializerOptions" /> class.
     /// </summary>
     public YamlSerializerOptions()
+        : this(YamlSerializerDefaults.General)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="YamlSerializerOptions" /> class with a base set of defaults
+    /// appropriate for the specified usage scenario.
+    /// </summary>
+    /// <param name="defaults">The base defaults to apply.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="defaults" /> is not a defined <see cref="YamlSerializerDefaults" /> value.
+    /// </exception>
+    /// <remarks>
+    /// <see cref="YamlSerializerDefaults.Web" /> selects camel-case property naming and case-insensitive property-name
+    /// matching; <see cref="YamlSerializerDefaults.General" /> leaves the defaults unchanged.
+    /// </remarks>
+    public YamlSerializerOptions(YamlSerializerDefaults defaults)
+    {
+        ThrowHelper.ThrowIfEnumValueIsUndefined(defaults);
+
         Converters = new ConverterList(this);
+
+        if (defaults == YamlSerializerDefaults.Web)
+        {
+            _propertyNamingPolicy = NamingPolicy.CamelCase;
+            _propertyNameCaseInsensitive = true;
+        }
     }
 
     /// <summary>
@@ -100,14 +125,27 @@ public sealed partial class YamlSerializerOptions
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether members with a null value are omitted when writing.
+    /// Gets or sets the serializer-wide default condition under which a member is omitted when writing, applied to
+    /// every member that does not carry its own <see cref="IgnoreCondition" /> through an attribute.
     /// </summary>
-    /// <value><see langword="true" /> to omit null members; otherwise <see langword="false" />.</value>
+    /// <value>The default ignore condition; <see cref="IgnoreCondition.Never" /> by default.</value>
     /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
-    public bool IgnoreNullValues
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the value is undefined, or when it is <see cref="IgnoreCondition.Always" />, which is not a valid
+    /// serializer-wide default.
+    /// </exception>
+    public IgnoreCondition DefaultIgnoreCondition
     {
-        get => _ignoreNullValues;
-        set { VerifyMutable(); _ignoreNullValues = value; }
+        get => _defaultIgnoreCondition;
+        set
+        {
+            VerifyMutable();
+            ThrowHelper.ThrowIfEnumValueIsUndefined(value);
+            if (value == IgnoreCondition.Always)
+                throw new ArgumentOutOfRangeException(nameof(value), YamlResourceStrings.Arg_OutOfRange_DefaultIgnoreConditionAlways);
+
+            _defaultIgnoreCondition = value;
+        }
     }
 
     /// <summary>
