@@ -28,36 +28,66 @@ internal static class PstDataTree
     /// <exception cref="PstFileFormatException">A referenced block is missing or a tree block is malformed.</exception>
     internal static byte[] Resolve(PstSource source, ulong blockId)
     {
-        if (blockId == 0)
+        List<byte[]> segments = ResolveSegments(source, blockId);
+        if (segments.Count == 0)
             return Array.Empty<byte>();
 
-        byte[] block = ReadBlock(source, blockId);
-        if ((blockId & 0x2) == 0)
-            return block;
+        if (segments.Count == 1)
+            return segments[0];
 
-        // Internal data blocks are trees: btype 0x01, cLevel 1 (XBLOCK over data blocks) or 2 (XXBLOCK over XBLOCKs).
-        (byte level, int count) = ParseTreeBlock(block, blockId);
         using var payload = new MemoryStream();
-        for (int i = 0; i < count; i++)
-        {
-            ulong childId = BinaryPrimitives.ReadUInt64LittleEndian(block.AsSpan(8 + (i * 8)));
-            byte[] child = level == 1
-                ? ReadBlock(source, childId)
-                : ResolveXBlock(source, childId);
-            payload.Write(child);
-        }
+        foreach (byte[] segment in segments)
+            payload.Write(segment);
 
         return payload.ToArray();
     }
 
     /// <summary>
-    /// Resolves one <c>XBLOCK</c> child of an <c>XXBLOCK</c> to its concatenated data.
+    /// Resolves a data-block identifier to the payload's leaf data blocks, in order.
+    /// </summary>
+    /// <param name="source">The open source.</param>
+    /// <param name="blockId">The data-block identifier from the node entry; <c>0</c> yields an empty list.</param>
+    /// <returns>The ordered leaf data blocks whose concatenation is the payload.</returns>
+    /// <exception cref="PstFileFormatException">A referenced block is missing or a tree block is malformed.</exception>
+    /// <remarks>
+    /// The LTP heap-on-node addresses individual data blocks by index, so the segment boundaries are significant to
+    /// its readers; <see cref="Resolve" /> flattens the same segments for callers that only need the payload bytes.
+    /// </remarks>
+    internal static List<byte[]> ResolveSegments(PstSource source, ulong blockId)
+    {
+        var segments = new List<byte[]>();
+        if (blockId == 0)
+            return segments;
+
+        byte[] block = ReadBlock(source, blockId);
+        if ((blockId & 0x2) == 0)
+        {
+            segments.Add(block);
+            return segments;
+        }
+
+        // Internal data blocks are trees: btype 0x01, cLevel 1 (XBLOCK over data blocks) or 2 (XXBLOCK over XBLOCKs).
+        (byte level, int count) = ParseTreeBlock(block, blockId);
+        for (int i = 0; i < count; i++)
+        {
+            ulong childId = BinaryPrimitives.ReadUInt64LittleEndian(block.AsSpan(8 + (i * 8)));
+            if (level == 1)
+                segments.Add(ReadBlock(source, childId));
+            else
+                AppendXBlockSegments(source, childId, segments);
+        }
+
+        return segments;
+    }
+
+    /// <summary>
+    /// Appends one <c>XBLOCK</c> child of an <c>XXBLOCK</c> as its ordered leaf data blocks.
     /// </summary>
     /// <param name="source">The open source.</param>
     /// <param name="blockId">The <c>XBLOCK</c> identifier.</param>
-    /// <returns>The concatenated data of the block's children.</returns>
+    /// <param name="segments">The segment list to append to.</param>
     /// <exception cref="PstFileFormatException">The block is not an <c>XBLOCK</c>.</exception>
-    private static byte[] ResolveXBlock(PstSource source, ulong blockId)
+    private static void AppendXBlockSegments(PstSource source, ulong blockId, List<byte[]> segments)
     {
         byte[] block = ReadBlock(source, blockId);
         (byte level, int count) = ParseTreeBlock(block, blockId);
@@ -67,11 +97,8 @@ internal static class PstDataTree
                 CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId));
         }
 
-        using var payload = new MemoryStream();
         for (int i = 0; i < count; i++)
-            payload.Write(ReadBlock(source, BinaryPrimitives.ReadUInt64LittleEndian(block.AsSpan(8 + (i * 8)))));
-
-        return payload.ToArray();
+            segments.Add(ReadBlock(source, BinaryPrimitives.ReadUInt64LittleEndian(block.AsSpan(8 + (i * 8)))));
     }
 
     /// <summary>
