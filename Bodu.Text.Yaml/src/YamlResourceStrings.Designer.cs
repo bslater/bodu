@@ -343,6 +343,22 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to '{0}' is not a defined value of enumeration '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_EnumValueNotFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EnumValueNotFound", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Expected an integer but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedInteger {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedInteger", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to Serializer options cannot be changed after the options instance has been used to serialize or deserialize..
         /// </summary>
         internal static string Op_Invalid_OptionsReadOnly {
