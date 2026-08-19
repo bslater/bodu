@@ -148,6 +148,14 @@ namespace Bodu.IO.Pst {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to Node {0} does not carry a well-formed table context..
+        /// </summary>
+        internal static string Format_Invalid_PstTableContext {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstTableContext", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to Property 0x{0:X4} of node {1} declares the unknown wire type 0x{2:X4}..
         /// </summary>
         internal static string Format_Invalid_PstPropertyWireType {

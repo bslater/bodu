@@ -91,6 +91,9 @@
   <data name="Format_Invalid_PstPropertyContext" xml:space="preserve">
     <value>Node {0} does not carry a well-formed property context.</value>
   </data>
+  <data name="Format_Invalid_PstTableContext" xml:space="preserve">
+    <value>Node {0} does not carry a well-formed table context.</value>
+  </data>
   <data name="Format_Invalid_PstPropertyWireType" xml:space="preserve">
     <value>Property 0x{0:X4} of node {1} declares the unknown wire type 0x{2:X4}.</value>
   </data>

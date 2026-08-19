@@ -129,6 +129,25 @@ public sealed class PstNode
     }
 
     /// <summary>
+    /// Reads the node's LTP table context: the table of typed columns over identifier-keyed rows.
+    /// </summary>
+    /// <returns>The table context.</returns>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
+    /// <exception cref="PstFileFormatException">
+    /// The node's heap does not carry a table context, or the context is malformed.
+    /// </exception>
+    /// <remarks>
+    /// Each call re-reads the context from the source; retain the returned instance to read many rows. Row
+    /// enumeration streams the row matrix one block at a time.
+    /// </remarks>
+    public PstTableContext ReadTableContext()
+    {
+        (PstHeapNode heap, PstTcInfo info, PstBthHeader rowIndex) = PstTableContextReader.Read(_file.GetSource(), _entry);
+
+        return new PstTableContext(heap, new PstLtpContext(_file.GetSource(), _entry), info, rowIndex, _file.GetSource().ValidationLevel);
+    }
+
+    /// <summary>
     /// Returns a textual form of the node for diagnostics.
     /// </summary>
     /// <returns>The identifier and its type.</returns>

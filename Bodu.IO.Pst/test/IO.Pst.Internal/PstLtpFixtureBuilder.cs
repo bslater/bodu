@@ -197,6 +197,61 @@ internal sealed class PstLtpFixtureBuilder
     }
 
     /// <summary>
+    /// Adds a table context: the row-index tree over the supplied index rows, then the <c>TCINFO</c> item as the
+    /// heap's client root under the table-context signature.
+    /// </summary>
+    /// <param name="columns">The column descriptors: tag, cell offset, cell width, and existence bit.</param>
+    /// <param name="endOffset4">The ending offset of the 8- and 4-byte cell region.</param>
+    /// <param name="endOffset2">The ending offset of the 2-byte cell region.</param>
+    /// <param name="endOffset1">The ending offset of the 1-byte cell region.</param>
+    /// <param name="rowWidth">The full row width including the existence bitmap.</param>
+    /// <param name="rowsHnid">The row matrix's <c>HNID</c>: an item added earlier, a subnode identifier, or zero.</param>
+    /// <param name="indexRows">The row-index records: row identifier and matrix row number.</param>
+    /// <returns>The <c>HID</c> of the <c>TCINFO</c> item.</returns>
+    internal uint AddTableContext(
+        (uint Tag, ushort DataOffset, byte DataSize, byte ExistenceBit)[] columns,
+        ushort endOffset4,
+        ushort endOffset2,
+        ushort endOffset1,
+        ushort rowWidth,
+        uint rowsHnid,
+        params (ulong RowId, uint RowNumber)[] indexRows)
+    {
+        uint rowIndexHid = AddBTreeOnHeap(
+            4,
+            4,
+            [.. indexRows.Select(static r =>
+            {
+                var data = new byte[4];
+                BinaryPrimitives.WriteUInt32LittleEndian(data, r.RowNumber);
+                return (r.RowId, data);
+            })]);
+
+        var info = new byte[22 + (columns.Length * 8)];
+        info[0] = 0x7C;
+        info[1] = (byte)columns.Length;
+        BinaryPrimitives.WriteUInt16LittleEndian(info.AsSpan(2), endOffset4);
+        BinaryPrimitives.WriteUInt16LittleEndian(info.AsSpan(4), endOffset2);
+        BinaryPrimitives.WriteUInt16LittleEndian(info.AsSpan(6), endOffset1);
+        BinaryPrimitives.WriteUInt16LittleEndian(info.AsSpan(8), rowWidth);
+        BinaryPrimitives.WriteUInt32LittleEndian(info.AsSpan(10), rowIndexHid);
+        BinaryPrimitives.WriteUInt32LittleEndian(info.AsSpan(14), rowsHnid);
+
+        for (int i = 0; i < columns.Length; i++)
+        {
+            Span<byte> descriptor = info.AsSpan(22 + (i * 8), 8);
+            BinaryPrimitives.WriteUInt32LittleEndian(descriptor, columns[i].Tag);
+            BinaryPrimitives.WriteUInt16LittleEndian(descriptor.Slice(4), columns[i].DataOffset);
+            descriptor[6] = columns[i].DataSize;
+            descriptor[7] = columns[i].ExistenceBit;
+        }
+
+        ClientSignature = 0x7C;
+        UserRootHid = AddItem(info);
+        return UserRootHid;
+    }
+
+    /// <summary>
     /// Builds a <c>BTHHEADER</c> item's bytes.
     /// </summary>
     /// <param name="keySize">The key width in bytes.</param>
