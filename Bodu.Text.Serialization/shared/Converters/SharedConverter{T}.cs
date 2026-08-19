@@ -8,6 +8,8 @@
 namespace Bodu.Text.Bencode.Serialization.Converters;
 #elif TOML
 namespace Bodu.Text.Toml.Serialization.Converters;
+#elif YAML
+namespace Bodu.Text.Yaml.Serialization.Converters;
 #endif
 
 /// <summary>
@@ -21,6 +23,8 @@ internal abstract class SharedConverter<T>
     : Bodu.Text.Bencode.Serialization.BencodeConverter<T>
 #elif TOML
     : Bodu.Text.Toml.Serialization.TomlConverter<T>
+#elif YAML
+    : Bodu.Text.Yaml.Serialization.YamlConverter<T>
 #endif
 {
     /// <summary>

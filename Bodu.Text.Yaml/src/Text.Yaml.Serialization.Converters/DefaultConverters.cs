@@ -12,7 +12,9 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Order is significant: the scalar converters precede the structural factories so a scalar type is never claimed by
+/// Order is significant: the node bridge leads so a <see cref="Bodu.Text.Yaml.Nodes.YamlNode" />-typed target is never
+/// claimed structurally by the dictionary, collection, or polymorphic converters (a <c>YamlObject</c> carries a
+/// dictionary surface); the scalar converters precede the structural factories so a scalar type is never claimed by
 /// the object factory; the generic dictionary factory precedes the untyped dictionary fallback so a string-keyed
 /// dictionary maps through its typed converter; the dictionary converters precede the collection factory so a
 /// dictionary becomes a mapping rather than a sequence of pairs; the <see cref="object" /> converter precedes the
@@ -34,6 +36,7 @@ internal static class DefaultConverters
     /// <summary>The built-in converters, in resolution order.</summary>
     private static readonly YamlConverter[] s_builtIn =
     [
+        new NodeConverter(),
         new StringConverter(),
         new BooleanConverter(),
         new CharConverter(),

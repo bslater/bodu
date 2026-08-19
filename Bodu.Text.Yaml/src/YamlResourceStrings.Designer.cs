@@ -343,6 +343,14 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A null node cannot be written to YAML..
+        /// </summary>
+        internal static string Op_NotSupported_NullNode {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullNode", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to '{0}' is not a defined value of enumeration '{1}'..
         /// </summary>
         internal static string Op_Invalid_EnumValueNotFound {
