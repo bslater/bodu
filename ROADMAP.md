@@ -3,7 +3,11 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-07-10. Since the previous revision,
+*Last updated: 2026-08-19. Since the previous revision,
+**`Bodu.Text.Filtering` was registered** — the include/exclude text
+filtering engine landed complete on 2026-08-02 (#648) but had never been
+entered here or in the shipping manifest; it now has a per-project
+section below and a Wave-2 manifest entry — and, earlier,
 **`Bodu.Financial` was restructured**: the currency surface now lives in
 `Bodu.Financial.Currencies`, the FX core in
 `Bodu.Financial.ExchangeRates`, the `Exchange`-stuttered type names were
@@ -170,8 +174,11 @@ exercised on the smallest self-contained units first.
 | `Bodu.Text.Ini` | Standalone STJ-shaped INI library (comment-preserving mutable DOM). |
 | `Bodu.Text.Formats` | Umbrella meta-package over `Bodu.Text.Delimited` / `.DotEnv` / `.Ini`. |
 | `Bodu.Text.Configuration` | INI-compatible profile, resolver, view getters (self-contained document model). |
+| `Bodu.Text.Filtering` | Include/exclude text filtering engine — glob + regex patterns compiled into a cost-tiered matcher (Core-only). |
 | `Bodu.IO.Compound` | OLE2 / CFB container read + edit + authoring. |
 | `Bodu.Formats.Excel.Binary` | Read-only BIFF8 `.xls` reader (depends on `Bodu.IO.Compound`). |
+| `Bodu.Formats.Outlook` | The shared, container-free MAPI value model. |
+| `Bodu.Formats.Outlook.Msg` | Read-only `.msg` (MS-OXMSG) reader over `Bodu.IO.Compound`. |
 
 **Wave 3 — financial core + calendar (coordinated breaking change):**
 
@@ -354,7 +361,7 @@ is now:
    Preview→Stable promotion for the FX family now waits only on
    live-endpoint soak per the stability-tier policy.
 3. **Cut Wave 1–2 packages — release-readiness landed; tag to publish.**
-   The shipping manifest (`bld/release-manifest.txt`, the 15 Wave 1–2
+   The shipping manifest (`bld/release-manifest.txt`, the Wave 1–2
    package ids) now scopes what the release workflow publishes (pack
    stays full-solution; only the manifest set is pushed), the missing
    `Bodu.Numerics.Serialization.Json` README landed, the package
@@ -757,6 +764,27 @@ the *Active focus* #4 decouple — no format-library dependency).
 - **Add JSON-pointer / JMESPath-style resolvers** alongside the existing
   `ConfigurationResolver` to broaden applicability beyond the
   Bodu-specific query syntax.
+
+### `Bodu.Text.Filtering`
+
+Current state: landed complete 2026-08-02 (#648) — ~25 src / ~24 test
+files, a benchmark project, and a runnable sample. An include/exclude
+filtering engine for lists of text values: glob (wildcard,
+character-class, `{a,b}` brace-alternation) and regex patterns compile
+once into a cost-tiered `TextFilter` that runs the cheapest strategies
+first (MatchAll → Literal → Prefix/Suffix → Contains → general wildcard
+→ Regex — the `globset` idea), with Ant/MSBuild-style include/exclude
+set semantics (`AnyMatch`) or gitignore-style last-match-wins ordered
+rules (`LastMatchWins`), gitignore-convention list parsing, always-on
+match statistics, and an optional per-decision `ITextFilterObserver`.
+Regexes prefer the linear-time non-backtracking engine and always carry
+a match timeout that fails safe on both include and exclude. Core-only
+dependency; ships in Wave 2 (`bld/release-manifest.txt`).
+
+- **No open items.** The one demand-driven follow-on candidate recorded
+  for completeness: a path-segment (`**`) mode in the
+  `Microsoft.Extensions.FileSystemGlobbing` style (single-value spans
+  are already served by `IsMatch(ReadOnlySpan<char>)`).
 
 ### `Bodu.Extensions.Configuration.Text`
 
