@@ -132,6 +132,14 @@ namespace Bodu.IO.Pst {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to The B-tree-on-heap of node {0} is malformed..
+        /// </summary>
+        internal static string Format_Invalid_PstBTreeOnHeap {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstBTreeOnHeap", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The file uses the {0} PST format; only the Unicode format is supported..
         /// </summary>
         internal static string Op_NotSupported_PstFormat {

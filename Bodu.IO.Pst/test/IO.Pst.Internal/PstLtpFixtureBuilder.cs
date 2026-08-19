@@ -96,6 +96,113 @@ internal sealed class PstLtpFixtureBuilder
     }
 
     /// <summary>
+    /// Adds a leaf-only BTree-on-heap over the supplied records and returns the header item's <c>HID</c>.
+    /// </summary>
+    /// <param name="keySize">The key width in bytes.</param>
+    /// <param name="dataSize">The leaf-record data width in bytes.</param>
+    /// <param name="records">The records in key order: the key's little-endian unsigned value and its data bytes.</param>
+    /// <returns>The <c>HID</c> of the <c>BTHHEADER</c> item.</returns>
+    internal uint AddBTreeOnHeap(byte keySize, byte dataSize, params (ulong Key, byte[] Data)[] records)
+    {
+        uint rootHid = 0;
+        if (records.Length > 0)
+        {
+            var leaf = new byte[(keySize + dataSize) * records.Length];
+            for (int i = 0; i < records.Length; i++)
+            {
+                int offset = i * (keySize + dataSize);
+                WriteKey(leaf.AsSpan(offset, keySize), records[i].Key);
+                records[i].Data.CopyTo(leaf, offset + keySize);
+            }
+
+            rootHid = AddItem(leaf);
+        }
+
+        return AddItem(BuildBthHeader(keySize, dataSize, indexLevels: 0, rootHid));
+    }
+
+    /// <summary>
+    /// Adds a <c>BTHHEADER</c> item verbatim, for trees whose index items the test lays out itself.
+    /// </summary>
+    /// <param name="keySize">The key width in bytes.</param>
+    /// <param name="dataSize">The leaf-record data width in bytes.</param>
+    /// <param name="indexLevels">The number of index levels above the leaves.</param>
+    /// <param name="rootHid">The root item's <c>HID</c>.</param>
+    /// <returns>The <c>HID</c> of the header item.</returns>
+    internal uint AddBthHeaderItem(byte keySize, byte dataSize, byte indexLevels, uint rootHid) =>
+        AddItem(BuildBthHeader(keySize, dataSize, indexLevels, rootHid));
+
+    /// <summary>
+    /// Adds one BTH index item over child items.
+    /// </summary>
+    /// <param name="keySize">The key width in bytes.</param>
+    /// <param name="entries">The index records: each child's first key and the child item's <c>HID</c>.</param>
+    /// <returns>The <c>HID</c> of the index item.</returns>
+    internal uint AddBthIndexItem(byte keySize, params (ulong Key, uint ChildHid)[] entries)
+    {
+        var item = new byte[(keySize + 4) * entries.Length];
+        for (int i = 0; i < entries.Length; i++)
+        {
+            int offset = i * (keySize + 4);
+            WriteKey(item.AsSpan(offset, keySize), entries[i].Key);
+            BinaryPrimitives.WriteUInt32LittleEndian(item.AsSpan(offset + keySize), entries[i].ChildHid);
+        }
+
+        return AddItem(item);
+    }
+
+    /// <summary>
+    /// Adds one BTH leaf item over records, for trees whose index items the test lays out itself.
+    /// </summary>
+    /// <param name="keySize">The key width in bytes.</param>
+    /// <param name="dataSize">The leaf-record data width in bytes.</param>
+    /// <param name="records">The records in key order.</param>
+    /// <returns>The <c>HID</c> of the leaf item.</returns>
+    internal uint AddBthLeafItem(byte keySize, byte dataSize, params (ulong Key, byte[] Data)[] records)
+    {
+        var leaf = new byte[(keySize + dataSize) * records.Length];
+        for (int i = 0; i < records.Length; i++)
+        {
+            int offset = i * (keySize + dataSize);
+            WriteKey(leaf.AsSpan(offset, keySize), records[i].Key);
+            records[i].Data.CopyTo(leaf, offset + keySize);
+        }
+
+        return AddItem(leaf);
+    }
+
+    /// <summary>
+    /// Builds a <c>BTHHEADER</c> item's bytes.
+    /// </summary>
+    /// <param name="keySize">The key width in bytes.</param>
+    /// <param name="dataSize">The leaf-record data width in bytes.</param>
+    /// <param name="indexLevels">The number of index levels above the leaves.</param>
+    /// <param name="rootHid">The root item's <c>HID</c>.</param>
+    /// <returns>The header bytes.</returns>
+    private static byte[] BuildBthHeader(byte keySize, byte dataSize, byte indexLevels, uint rootHid)
+    {
+        var header = new byte[8];
+        header[0] = 0xB5;
+        header[1] = keySize;
+        header[2] = dataSize;
+        header[3] = indexLevels;
+        BinaryPrimitives.WriteUInt32LittleEndian(header.AsSpan(4), rootHid);
+        return header;
+    }
+
+    /// <summary>
+    /// Writes a key of up to eight bytes as its little-endian value.
+    /// </summary>
+    /// <param name="destination">The key bytes.</param>
+    /// <param name="key">The key value.</param>
+    private static void WriteKey(Span<byte> destination, ulong key)
+    {
+        Span<byte> full = stackalloc byte[8];
+        BinaryPrimitives.WriteUInt64LittleEndian(full, key);
+        full.Slice(0, destination.Length).CopyTo(destination);
+    }
+
+    /// <summary>
     /// Adds the heap's blocks to a container and declares a node whose data carries them.
     /// </summary>
     /// <param name="file">The container builder.</param>

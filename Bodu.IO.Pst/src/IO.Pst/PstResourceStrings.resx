@@ -85,6 +85,9 @@
   <data name="Format_Invalid_PstHeapId" xml:space="preserve">
     <value>Heap id 0x{0:X8} does not resolve within the heap of node {1}.</value>
   </data>
+  <data name="Format_Invalid_PstBTreeOnHeap" xml:space="preserve">
+    <value>The B-tree-on-heap of node {0} is malformed.</value>
+  </data>
   <data name="Op_NotSupported_PstFormat" xml:space="preserve">
     <value>The file uses the {0} PST format; only the Unicode format is supported.</value>
   </data>
