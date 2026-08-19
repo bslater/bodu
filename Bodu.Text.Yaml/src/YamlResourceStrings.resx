@@ -77,6 +77,8 @@
   <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a YamlConverter.</value></data>
   <data name="Arg_Invalid_ConverterNoParameterlessCtor" xml:space="preserve"><value>The converter type '{0}' must declare a public parameterless constructor to be referenced by a converter attribute.</value></data>
   <data name="Op_Invalid_ConverterCannotConvert" xml:space="preserve"><value>The converter '{0}' cannot convert type '{1}'.</value></data>
+  <data name="Op_Invalid_DefaultElement" xml:space="preserve"><value>The element is the default value and belongs to no document.</value></data>
+  <data name="Op_NotSupported_NullDocument" xml:space="preserve"><value>A null document cannot be written to YAML.</value></data>
   <data name="Op_NotSupported_NullNode" xml:space="preserve"><value>A null node cannot be written to YAML.</value></data>
   <data name="Op_NotSupported_NoConverter" xml:space="preserve"><value>No converter is configured for type '{0}'.</value></data>
   <data name="Arg_Invalid_YamlInvalidUtf8" xml:space="preserve"><value>The supplied bytes are not valid UTF-8.</value></data>

@@ -37,6 +37,8 @@ internal static class DefaultConverters
     private static readonly YamlConverter[] s_builtIn =
     [
         new NodeConverter(),
+        new YamlElementConverter(),
+        new YamlDocumentConverter(),
         new StringConverter(),
         new BooleanConverter(),
         new CharConverter(),

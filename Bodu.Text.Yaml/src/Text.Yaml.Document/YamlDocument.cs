@@ -26,22 +26,46 @@ public sealed partial class YamlDocument
     /// <summary>The decoded-string side table referenced by string scalar rows.</summary>
     private string[] _strings;
 
+    /// <summary>The row index this document's root element views; zero for a parsed document, a subtree row for a document produced by <see cref="ParseValue" />.</summary>
+    private readonly int _root;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="YamlDocument" /> class over a parsed row store.
     /// </summary>
-    /// <param name="rows">The flat node store, with the root at index zero.</param>
+    /// <param name="rows">The flat node store, with the document root at index zero.</param>
     /// <param name="strings">The decoded-string side table referenced by string scalar rows.</param>
-    private YamlDocument(List<YamlReaderRow> rows, string[] strings)
+    /// <param name="root">The row index this document's root element views.</param>
+    private YamlDocument(List<YamlReaderRow> rows, string[] strings, int root = 0)
     {
         _rows = rows;
         _strings = strings;
+        _root = root;
     }
 
     /// <summary>
     /// Gets the root element of the document.
     /// </summary>
     /// <value>The element view onto the document root.</value>
-    public YamlElement RootElement => new(this, 0);
+    public YamlElement RootElement => new(this, _root);
+
+    /// <summary>
+    /// Creates a document view over the value at the reader's current position and advances the reader past it.
+    /// </summary>
+    /// <param name="reader">The reader positioned on the value's first token.</param>
+    /// <returns>A document whose root element views the value's subtree.</returns>
+    /// <remarks>
+    /// The document shares the reader's immutable row store rather than copying the subtree, so it holds no pooled
+    /// resources and never requires disposal; it is reclaimed by garbage collection together with its elements. On
+    /// return the reader is positioned on the value's last token (the scalar itself, or the container's end token),
+    /// matching the read-positioning contract the serializer's converters observe.
+    /// </remarks>
+    internal static YamlDocument ParseValue(ref Utf8YamlReader reader)
+    {
+        var document = new YamlDocument(reader.Rows, reader.Strings, reader.CurrentRow);
+        reader.Skip();
+
+        return document;
+    }
 
     /// <summary>
     /// Parses a YAML document from UTF-8 source.

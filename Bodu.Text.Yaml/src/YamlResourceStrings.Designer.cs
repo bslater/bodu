@@ -343,6 +343,22 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to The element is the default value and belongs to no document..
+        /// </summary>
+        internal static string Op_Invalid_DefaultElement {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DefaultElement", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to A null document cannot be written to YAML..
+        /// </summary>
+        internal static string Op_NotSupported_NullDocument {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullDocument", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to A null node cannot be written to YAML..
         /// </summary>
         internal static string Op_NotSupported_NullNode {
