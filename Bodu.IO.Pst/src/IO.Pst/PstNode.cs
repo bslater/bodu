@@ -110,6 +110,25 @@ public sealed class PstNode
     }
 
     /// <summary>
+    /// Reads the node's LTP property context: the property bag of 16-bit property identifiers with wire-typed values.
+    /// </summary>
+    /// <returns>The property context.</returns>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
+    /// <exception cref="PstFileFormatException">
+    /// The node's heap does not carry a property context, or the context is malformed.
+    /// </exception>
+    /// <remarks>
+    /// Each call re-reads the context from the source; retain the returned instance to read many properties. Value
+    /// payloads resolve on access, so large subnode-resident values cost their read only when retrieved.
+    /// </remarks>
+    public PstPropertyContext ReadPropertyContext()
+    {
+        (PstHeapNode heap, List<PstPcEntry> entries) = PstPropertyContextReader.Read(_file.GetSource(), _entry);
+
+        return new PstPropertyContext(heap, new PstLtpContext(_file.GetSource(), _entry), entries);
+    }
+
+    /// <summary>
     /// Returns a textual form of the node for diagnostics.
     /// </summary>
     /// <returns>The identifier and its type.</returns>

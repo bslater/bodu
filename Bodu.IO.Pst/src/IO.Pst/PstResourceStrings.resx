@@ -88,6 +88,18 @@
   <data name="Format_Invalid_PstBTreeOnHeap" xml:space="preserve">
     <value>The B-tree-on-heap of node {0} is malformed.</value>
   </data>
+  <data name="Format_Invalid_PstPropertyContext" xml:space="preserve">
+    <value>Node {0} does not carry a well-formed property context.</value>
+  </data>
+  <data name="Format_Invalid_PstPropertyWireType" xml:space="preserve">
+    <value>Property 0x{0:X4} of node {1} declares the unknown wire type 0x{2:X4}.</value>
+  </data>
+  <data name="Op_Invalid_PstPropertyValueType" xml:space="preserve">
+    <value>The property value has wire type 0x{0:X4} and cannot be read as {1}.</value>
+  </data>
+  <data name="IO_KeyNotFound_PstProperty" xml:space="preserve">
+    <value>No property 0x{0:X4} exists in the property context of node {1}.</value>
+  </data>
   <data name="Op_NotSupported_PstFormat" xml:space="preserve">
     <value>The file uses the {0} PST format; only the Unicode format is supported.</value>
   </data>

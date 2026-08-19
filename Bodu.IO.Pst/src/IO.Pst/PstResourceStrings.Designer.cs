@@ -140,6 +140,38 @@ namespace Bodu.IO.Pst {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to Node {0} does not carry a well-formed property context..
+        /// </summary>
+        internal static string Format_Invalid_PstPropertyContext {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstPropertyContext", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Property 0x{0:X4} of node {1} declares the unknown wire type 0x{2:X4}..
+        /// </summary>
+        internal static string Format_Invalid_PstPropertyWireType {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstPropertyWireType", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The property value has wire type 0x{0:X4} and cannot be read as {1}..
+        /// </summary>
+        internal static string Op_Invalid_PstPropertyValueType {
+            get {
+                return ResourceManager.GetString("Op_Invalid_PstPropertyValueType", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to No property 0x{0:X4} exists in the property context of node {1}..
+        /// </summary>
+        internal static string IO_KeyNotFound_PstProperty {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_PstProperty", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The file uses the {0} PST format; only the Unicode format is supported..
         /// </summary>
         internal static string Op_NotSupported_PstFormat {

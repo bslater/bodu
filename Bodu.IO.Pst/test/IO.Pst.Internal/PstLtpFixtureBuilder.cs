@@ -172,6 +172,31 @@ internal sealed class PstLtpFixtureBuilder
     }
 
     /// <summary>
+    /// Adds a property context over the supplied records: the records' tree becomes the heap's client root and the
+    /// heap declares the property-context signature.
+    /// </summary>
+    /// <param name="records">The property records: identifier, wire type, and raw value dword.</param>
+    /// <returns>The <c>HID</c> of the context's <c>BTHHEADER</c> item.</returns>
+    internal uint AddPropertyContext(params (ushort PropertyId, ushort WireType, uint RawValue)[] records)
+    {
+        var rows = records
+            .OrderBy(static r => r.PropertyId)
+            .Select(static r =>
+            {
+                var data = new byte[6];
+                BinaryPrimitives.WriteUInt16LittleEndian(data, r.WireType);
+                BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(2), r.RawValue);
+                return ((ulong)r.PropertyId, data);
+            })
+            .ToArray();
+
+        uint headerHid = AddBTreeOnHeap(2, 6, rows);
+        ClientSignature = 0xBC;
+        UserRootHid = headerHid;
+        return headerHid;
+    }
+
+    /// <summary>
     /// Builds a <c>BTHHEADER</c> item's bytes.
     /// </summary>
     /// <param name="keySize">The key width in bytes.</param>
