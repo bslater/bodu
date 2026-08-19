@@ -20,10 +20,12 @@
     <DefineConstants>$(DefineConstants);YAML</DefineConstants>
   </PropertyGroup>
 
-  <!-- Shared serializer source (engine-neutral metadata and structural converter factories), compiled into this
-       assembly under the YAML symbol. The excluded files are the token-strict scalar/enum/node converters and the
-       engine seam, which YAML replaces with format-local converters that preserve its implicit-typing coercions
-       (see Text.Yaml.Serialization.Converters). -->
+  <!-- Shared serializer source (engine-neutral metadata, the structural converter factories, and the DOM node
+       bridge), compiled into this assembly under the YAML symbol. The excluded files are the token-strict
+       scalar/enum/nullable converters and their throw helper, which YAML replaces with format-local coercing
+       converters that preserve its implicit typing (see Text.Yaml.Serialization.Converters), and the
+       SerializerEngine seam, kept local because YAML's null-root write and empty-document read semantics differ
+       from the token-strict formats. -->
   <ItemGroup>
     <Compile Include="..\..\Bodu.Text.Serialization\shared\**\*.cs"
              Exclude="..\..\Bodu.Text.Serialization\shared\SerializerEngine.cs;..\..\Bodu.Text.Serialization\shared\SerializationThrowHelper.cs;..\..\Bodu.Text.Serialization\shared\Converters\StringConverter.cs;..\..\Bodu.Text.Serialization\shared\Converters\IntegerConverter{T}.cs;..\..\Bodu.Text.Serialization\shared\Converters\IntegerConverterFactory.cs;..\..\Bodu.Text.Serialization\shared\Converters\EnumConverter{T}.cs;..\..\Bodu.Text.Serialization\shared\Converters\EnumNumberConverter{T}.cs;..\..\Bodu.Text.Serialization\shared\Converters\EnumConverterFactory.cs;..\..\Bodu.Text.Serialization\shared\Converters\NullableConverter{T}.cs"

@@ -700,21 +700,34 @@ conformance corpus** (532 valid + 505 invalid cases) in both profiles.
 
 ### `Bodu.Text.Yaml`
 
-Current state: new; ~48 src / ~53 test files. The YAML 1.2 core-schema
+Current state: new; ~55 src / ~60 test files. The YAML 1.2 core-schema
 quartet — the `Utf8YamlReader` (over the multi-partial `YamlParser`
 handling anchors/aliases/tags/merge-keys and multi-document streams via
-`YamlDocument.ParseAllDocuments`), the `Utf8YamlWriter`, the
-**read-focused** `YamlSerializer`, and the `YamlDocument` / `YamlNode`
-DOMs. Validated against the vendored `yaml-test-suite` (353 cases).
+`YamlDocument.ParseAllDocuments`), the `Utf8YamlWriter`, the symmetric
+read+write `YamlSerializer`, and the `YamlDocument` / `YamlNode` DOMs.
+Validated against the vendored `yaml-test-suite` (353 cases).
 
-- **Bring the serializer to parity with Bencode/Toml.** The writer and
-  serializer are the thinnest of the three — a minimal converter model,
-  no rich attribute/metadata/callback suite. Round out the *write* path
-  (attribute family, naming policies, callbacks) so `YamlSerializer` is a
-  symmetric read+write mapper rather than a read-first one.
-- **Document the supported-schema boundary.** Be explicit about which
-  YAML 1.1/1.2 features are in vs out (tag resolution, complex keys,
-  directives) so consumers know when to reach for a full YAML engine.
+- **Serializer parity with Bencode/Toml has landed.** ✅ The enum tier
+  (wire-name maps honoring `StringEnumMemberNameAttribute` and naming
+  policies; the public `YamlStringEnumConverter` (+ generic) and
+  `YamlNumberEnumConverter<TEnum>` factories), the options surface
+  (`DefaultIgnoreCondition` replacing the pre-release `IgnoreNullValues`;
+  the `YamlSerializerDefaults` General/Web presets), the full fixed-width
+  integer set (`nint`/`nuint`/`Int128`/`UInt128` with invariant-text
+  fallback outside the signed 64-bit writer surface), and the
+  DOM↔serializer bridges (`NodeConverter` adopted under an `#elif YAML`
+  branch, plus `YamlElement`/`YamlDocument` converters over a
+  shared-row-store `ParseValue`). The scalar converter tier deliberately
+  stays format-local — YAML's implicit typing coerces across scalar kinds
+  the token-strict shared converters cannot express — as does the
+  `SerializerEngine` seam (null-root write and empty-document read
+  semantics differ).
+- **The supported-schema boundary is documented.** ✅ The README's *Bodu
+  YAML Core Tree Profile* section and compliance matrix carry the
+  explicit in/out list (tag resolution, complex keys, directives,
+  anchors) so consumers know when to reach for a full YAML engine.
+- Remaining polish: raise the `bld/coverage-thresholds.json` floor toward
+  Toml's 95.0/92.3 after the next coverage collection run.
 
 ### `Bodu.Text.Delimited` / `Bodu.Text.DotEnv` / `Bodu.Text.Ini` (and the `Bodu.Text.Formats` umbrella)
 
