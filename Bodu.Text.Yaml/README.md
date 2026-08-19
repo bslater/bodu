@@ -70,14 +70,14 @@ The Regression test tier reads each upstream case through `YamlTestCorpusReader`
 
 | Type(s) | Namespace | Role |
 |---|---|---|
-| `YamlSerializer` / `YamlSerializerOptions` | `Bodu.Text.Yaml` | Static serializer entry point and its configuration. |
-| `YamlNamingPolicy`, `YamlTokenType`, `YamlValueKind`, `YamlSpecVersion` | `Bodu.Text.Yaml` | Naming policies, token/value classification, and the spec-version selector. |
+| `YamlSerializer` / `YamlSerializerOptions` / `YamlSerializerDefaults` | `Bodu.Text.Yaml` | Static serializer entry point, its configuration, and scenario presets (for example `Web`). |
+| `YamlTokenType`, `YamlValueKind`, `YamlSpecVersion` | `Bodu.Text.Yaml` | Token/value classification and the spec-version selector (naming policies are the shared `Bodu.Text.Serialization.NamingPolicy`). |
 | `YamlFormatException` / `YamlSerializationException` | `Bodu.Text.Yaml` | Failures split by cause: malformed input vs. values that cannot be mapped. |
 | `Utf8YamlReader` (+ `YamlReaderOptions`) | `Bodu.Text.Yaml.Reader` | Buffered forward-only `ref struct` token reader. |
 | `Utf8YamlWriter` (+ `YamlWriterOptions`) | `Bodu.Text.Yaml.Writer` | Forward-only `ref struct` token writer. |
 | `YamlDocument` / `YamlElement` / `YamlProperty` | `Bodu.Text.Yaml.Document` | Read-only, low-allocation document object model. |
 | `YamlNode` / `YamlObject` / `YamlArray` / `YamlValue` | `Bodu.Text.Yaml.Nodes` | Mutable document object model: parse, edit, write back. |
-| `YamlConverter<T>`, `[YamlPropertyName]` / `[YamlIgnore]` / … | `Bodu.Text.Yaml.Serialization` | Custom converters and the per-member attribute family. |
+| `YamlConverter<T>` / `YamlConverterFactory`, `YamlStringEnumConverter` (+ generic) / `YamlNumberEnumConverter<TEnum>` | `Bodu.Text.Yaml.Serialization` | Custom converters, converter factories, and the public enum converters; the per-member attribute family is the shared `Bodu.Text.Serialization` set (`[PropertyName]` / `[Ignore]` / `[Converter]` / …). |
 
 ```csharp
 using Bodu.Text.Yaml;
@@ -92,6 +92,7 @@ node["server"]!["port"] = 9090;
 byte[] back = node.ToUtf8Bytes();
 ```
 
+- The full serializer feature surface is present: converters and factories, the shared attribute family (`PropertyName`/`Ignore`/`Converter`/`PropertyOrder`/`Constructor`/`Required`/`Include`/`ExtensionData`/`NamingPolicy`/`UnmappedMemberHandling`/`ObjectCreationHandling`/`StringEnumMemberName`), the serialization callbacks, naming policies and `YamlSerializerDefaults.Web`, the string/number enum converters, and the DOM bridges (`Deserialize<YamlNode>` / `<YamlElement>` / `<YamlDocument>`).
 - Failures surface through `YamlFormatException` (malformed input, with line/column/offset) and `YamlSerializationException` (binding failures, with the member path).
 
 ## Testing

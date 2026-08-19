@@ -54,7 +54,7 @@ Reach for the **serializer** for object mapping, a **DOM** to inspect or edit a 
 The architecture is shared, but the serializer surfaces differ where the format warrants it:
 
 - **Bencode and TOML** expose the full `System.Text.Json`-style surface — converters and converter factories, the complete attribute family, serialization callbacks, naming policies, and the string/number enum converters.
-- **YAML** keeps the serializer, both DOMs, and the reader/writer pair, and shapes members through naming policies, the `[YamlPropertyName]` / `[YamlIgnore]` attributes, options flags, and custom `YamlConverter<T>` converters. It adds YAML-specific richness instead — anchors and aliases, block and flow collections, block scalars, opt-in 1.1 merge keys, and multi-document streams.
+- **YAML** keeps the serializer, both DOMs, the reader/writer pair, and the shared attribute/naming/callback layer, shaping members exactly like its siblings. It adds YAML-specific richness on top — anchors and aliases, block and flow collections, block scalars, opt-in 1.1 merge keys, and multi-document streams.
 
 Each library's own pages document its exact surface.
 

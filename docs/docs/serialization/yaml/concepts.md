@@ -40,8 +40,11 @@ ServerConfig config = YamlSerializer.Deserialize<ServerConfig>(yaml)!;
 | `DuplicateKeyBehavior` | <xref:Bodu.Text.Yaml.YamlDuplicateKeyBehavior> — `Throw` (default), `UseFirst`, or `UseLast`. |
 | `MergeKeyBehavior` | <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior> — `Expand` (default), `Disabled`, or `PreserveAsNormalKey`. |
 | `UnmappedMemberHandling` | <xref:Bodu.Text.Serialization.UnmappedMemberHandling> — `Skip` (default) or `Disallow`. |
+| `PreferredObjectCreationHandling` | <xref:Bodu.Text.Serialization.ObjectCreationHandling> — `Replace` (default) or `Populate`. |
 | `MaxDepth` | Maximum nesting depth; default 64. |
 | `Converters` | The ordered list of custom <xref:Bodu.Text.Yaml.Serialization.YamlConverter> instances. |
+
+Options can also be constructed from a <xref:Bodu.Text.Yaml.YamlSerializerDefaults> scenario preset: `General` (the plain defaults) or `Web` (camel-case naming with case-insensitive matching).
 
 An options instance becomes read-only the first time it is used — or eagerly via `MakeReadOnly()` (`IsReadOnly` reports the state) — and then caches its resolved converters and type metadata. **Configure one options object and reuse it** across many operations; constructing fresh options per call discards the caches.
 
@@ -49,16 +52,16 @@ An options instance becomes read-only the first time it is used — or eagerly v
 
 ![YAML node model](../../../images/diagrams/yaml-node-model.svg)
 
-A <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> converts one type. It reads from a <xref:Bodu.Text.Yaml.Document.YamlElement> (the already-parsed value) and writes through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>:
+A <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> converts one type. It reads through the <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader> token cursor (aliases and merge keys already resolved) and writes through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>:
 
 ```csharp
-public abstract T? Read(YamlElement element, YamlSerializerOptions options);
-public abstract void Write(ref Utf8YamlWriter writer, T value, YamlSerializerOptions options);
+public abstract T Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options);
+public abstract void Write(Utf8YamlWriter writer, T value, YamlSerializerOptions options);
 ```
 
-For a given type the serializer resolves a converter by scanning `options.Converters` for the first whose `CanConvert` returns `true`, falling back to the built-in handling when none matches. On the write path it looks up the value's **runtime** type first and then the declared type, so a converter registered for a concrete type still fires for a value held in an `object` or interface member. `CanConvert` on a <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> defaults to an **exact** type match (`typeof(T) == typeToConvert`), so a converter does not apply to subclasses unless you override `CanConvert`.
+For a given type the serializer resolves a converter by checking, in order: a member-level `[Converter(...)]` attribute, a type-level one, the first matching converter in `options.Converters`, and finally the built-ins. On the write path it looks up the value's **runtime** type first and then the declared type, so a converter registered for a concrete type still fires for a value held in an `object` or interface member. `CanConvert` on a <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> defaults to an **exact** type match (`typeof(T) == typeToConvert`), so a converter does not apply to subclasses unless you override `CanConvert` — or derive <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory> to serve a family of types, the pattern the built-in nullable/enum/collection/dictionary converters and the public <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> use.
 
-**There is no member-level or type-level converter attribute, and no converter factory** — those exist on the TOML and Bencode siblings but not here. The non-generic <xref:Bodu.Text.Yaml.Serialization.YamlConverter> base exists only so the collection can hold mixed converters; you always derive from the generic `YamlConverter<T>`. Register every converter on `options.Converters` before first use — the collection is guarded and throws once the options freeze. To shape members without a custom converter, use the naming policy, the `[YamlPropertyName]` / `[YamlIgnore]` attributes, and the options flags.
+The non-generic <xref:Bodu.Text.Yaml.Serialization.YamlConverter> base exists only so the collection can hold mixed converters; you always derive from the generic `YamlConverter<T>` or the factory. Register every options-level converter before first use — the collection is guarded and throws once the options freeze. To shape members without a custom converter, use the naming policy, the shared attribute family (`[PropertyName]`, `[Ignore]`, `[Converter]`, …), and the options flags.
 
 ## The document object models
 

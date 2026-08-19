@@ -26,8 +26,8 @@ Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-s
 **Serializer (`Bodu.Text.Yaml`)**
 
 - <xref:Bodu.Text.Yaml.YamlSerializer> — static façade. `Serialize` to a `string` (from a typed value or an `object` + `Type`) and `Deserialize<T>` from a `string` or `ReadOnlySpan<byte>` (UTF-8).
-- <xref:Bodu.Text.Yaml.YamlSerializerOptions> — naming policy, converters, `IncludeFields`, `DefaultIgnoreCondition`, `WriteEnumsAsStrings`, `PropertyNameCaseInsensitive`, `SpecVersion`, `NumberHandling`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `UnmappedMemberHandling`, and `MaxDepth`; cached and frozen on first use.
-- <xref:Bodu.Text.Serialization.NamingPolicy> — camel, lower-snake, and lower-kebab casing policies.
+- <xref:Bodu.Text.Yaml.YamlSerializerOptions> — naming policy, converters, `IncludeFields`, `DefaultIgnoreCondition`, `WriteEnumsAsStrings`, `PropertyNameCaseInsensitive`, `SpecVersion`, `NumberHandling`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, and `MaxDepth`; constructed plain or from a <xref:Bodu.Text.Yaml.YamlSerializerDefaults> preset (`General` / `Web`); cached and frozen on first use.
+- <xref:Bodu.Text.Serialization.NamingPolicy> — camel, snake (lower/upper), and kebab (lower/upper) casing policies.
 - <xref:Bodu.Text.Yaml.YamlTokenType>, <xref:Bodu.Text.Yaml.YamlValueKind> — the token and value-kind enumerations.
 - <xref:Bodu.Text.Yaml.YamlSpecVersion> — the spec selector: `V1_2` (default core schema) or `V1_1` (adds `yes`/`no`/`on`/`off` booleans and sexagesimal numbers). <xref:Bodu.Text.Yaml.YamlNumberHandling> — float-to-integer coercion. <xref:Bodu.Text.Yaml.YamlScalarStyle> — the plain / quoted / literal / folded scalar styles. <xref:Bodu.Text.Yaml.YamlBlockChomping> — block-scalar trailing-newline handling. <xref:Bodu.Text.Yaml.YamlDuplicateKeyBehavior>, <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior>, <xref:Bodu.Text.Serialization.UnmappedMemberHandling> — mapping-key policies.
 - <xref:Bodu.Text.Yaml.YamlFormatException> — malformed input (with line / column / offset). <xref:Bodu.Text.Yaml.YamlSerializationException> — binding failures (with offset and member path).
@@ -44,8 +44,9 @@ Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-s
 
 **Converters and attributes (`Bodu.Text.Yaml.Serialization`)**
 
-- <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> / <xref:Bodu.Text.Yaml.Serialization.YamlConverter> — base types for custom per-type converters; a converter reads a <xref:Bodu.Text.Yaml.Document.YamlElement> and writes through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>.
-- <xref:Bodu.Text.Serialization.PropertyNameAttribute>, <xref:Bodu.Text.Serialization.IgnoreAttribute> — the declarative member-shaping attributes.
+- <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> / <xref:Bodu.Text.Yaml.Serialization.YamlConverter> / <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory> — base types for custom per-type converters and converter factories; a converter reads through the <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader> and writes through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>.
+- <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> (+ `YamlStringEnumConverter<TEnum>`) and `YamlNumberEnumConverter<TEnum>` — the public enum converters: member-name strings (with optional naming policy) or the underlying numeric value.
+- <xref:Bodu.Text.Serialization.PropertyNameAttribute>, <xref:Bodu.Text.Serialization.IgnoreAttribute>, <xref:Bodu.Text.Serialization.ConverterAttribute>, and the wider shared attribute family (`[PropertyOrder]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[Constructor]`, `[ObjectCreationHandling]`, `[NamingPolicy]`, `[StringEnumMemberName]`) — the declarative member-shaping layer.
 
 ## Example
 
@@ -71,8 +72,8 @@ string back = node.ToYamlString();
 ## Notes
 
 - **Self-contained.** The library has no shared engine dependency — everything the serializer needs lives in this assembly, mirroring its siblings <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode>.
-- **Tuned serializer surface.** Member shaping is covered by the naming policies, the `[YamlPropertyName]` / `[YamlIgnore]` attributes, the options flags, and custom `YamlConverter<T>` converters. There is no converter-attribute, callback-interface, or converter-factory surface — those features have no equivalent here.
-- **Value mapping.** `string` / `char` / `Guid` / `Uri` and the integer family → string or integer scalars, `double` / `float` → float scalars, `bool` → boolean, `null` → the null scalar; enums → member-name strings (or integers when `WriteEnumsAsStrings` is `false`). Collections map to sequences; dictionaries and objects map to mappings in insertion order. An `object`-typed member reads back as a <xref:Bodu.Text.Yaml.Document.YamlElement>. Public fields participate via `IncludeFields`.
+- **Full family serializer surface.** Member shaping is covered by the naming policies, the shared `Bodu.Text.Serialization` attribute family, the serialization callback interfaces, the options flags, and custom `YamlConverter<T>` converters and `YamlConverterFactory` factories — the same surface as the TOML and Bencode siblings. YAML's scalar converters remain format-local so implicit typing coerces across scalar kinds.
+- **Value mapping.** `string` / `char` / `Guid` / `Uri` and the integer family → string or integer scalars, `double` / `float` → float scalars, `bool` → boolean, `null` → the null scalar; enums → member-name strings (or integers when `WriteEnumsAsStrings` is `false`). Collections map to sequences; dictionaries and objects map to mappings in insertion order. An `object`-typed member reads back as a loosely-typed graph (`Dictionary<string, object?>` / `List<object?>` / scalars); members typed <xref:Bodu.Text.Yaml.Nodes.YamlNode> or <xref:Bodu.Text.Yaml.Document.YamlElement> bind through the DOM bridges. Public fields participate via `IncludeFields`.
 - **Presentation is resolved, not stored.** Scalar style (plain / quoted / literal / folded), block vs. flow layout, and anchors and aliases are handled by the reader and chosen by the writer rather than surfaced as distinct value kinds; <xref:Bodu.Text.Yaml.Document.YamlElement.ScalarStyle> records the original scalar style.
 - **Spec-version selection.** Parsing defaults to the strict **1.2 core schema** (only `true`/`false` are booleans); setting `SpecVersion` to `V1_1` additionally accepts `yes`/`no`/`on`/`off` booleans and sexagesimal numbers, and the `%YAML` directive overrides typing per document.
 - **Multi-document streams.** `YamlDocument.ParseAllDocuments` returns every document delimited by `---` / `...`; the single-document methods read the first.

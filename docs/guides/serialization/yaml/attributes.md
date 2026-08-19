@@ -4,18 +4,18 @@ title: Mapping attributes
 
 # Mapping attributes
 
-**Bodu.Text.Yaml** shapes how a type maps to the wire with a small, deliberate surface: two attributes, the naming policies, and a handful of options flags. This is narrower than the [TOML](../toml/index.md) and [Bencode](../bencode/index.md) siblings, which carry a larger attribute family — YAML provides **only** `[YamlPropertyName]` and `[YamlIgnore]`, and routes anything beyond renaming and ignoring to a [custom converter](converters.md). The two attributes live in the `Bodu.Text.Yaml.Serialization` namespace.
+**Bodu.Text.Yaml** shapes how a type maps to the wire with the same shared attribute family as its [TOML](../toml/index.md) and [Bencode](../bencode/index.md) siblings: every attribute lives in the `Bodu.Text.Serialization` namespace and derives <xref:Bodu.Text.Serialization.SerializationAttribute>. The patterns below show the most common members; the wider family — `[Converter]`, `[PropertyOrder]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[Constructor]`, `[ObjectCreationHandling]`, `[NamingPolicy]`, and `[StringEnumMemberName]` — works exactly as it does in the siblings.
 
 ## Pattern 1 — Rename a member
 
 <xref:Bodu.Text.Serialization.PropertyNameAttribute> pins the serialized key for one member, beating any naming policy:
 
 ```csharp
-using Bodu.Text.Yaml.Serialization;
+using Bodu.Text.Serialization;
 
 public sealed class Profile
 {
-    [YamlPropertyName("display-name")]
+    [PropertyName("display-name")]
     public string DisplayName { get; set; } = "Ada";
 }
 ```
@@ -28,12 +28,12 @@ The explicit name always wins over the options-level naming policy.
 
 ## Pattern 2 — Apply a naming policy
 
-The options-level <xref:Bodu.Text.Yaml.YamlSerializerOptions.PropertyNamingPolicy> renames every member that does not carry an explicit `[YamlPropertyName]`. The policies are `CamelCase`, `SnakeCaseLower`, and `KebabCaseLower` — lower-cased snake and kebab plus camel; there are no upper-case variants and no scenario preset:
+The options-level <xref:Bodu.Text.Yaml.YamlSerializerOptions.PropertyNamingPolicy> renames every member that does not carry an explicit `[PropertyName]`. The shared <xref:Bodu.Text.Serialization.NamingPolicy> set applies — `CamelCase`, `SnakeCaseLower`/`SnakeCaseUpper`, and `KebabCaseLower`/`KebabCaseUpper` — a type can pin its own policy with `[NamingPolicy(KnownNamingPolicy…)]`, and the <xref:Bodu.Text.Yaml.YamlSerializerDefaults> scenario presets configure it for you (`Web` selects camel-case naming with case-insensitive matching):
 
 ```csharp
 var options = new YamlSerializerOptions
 {
-    PropertyNamingPolicy = YamlNamingPolicy.SnakeCaseLower,
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
 };
 
 public sealed class RetryPolicy
@@ -51,21 +51,24 @@ max_retry_count: 5
 On the read path, <xref:Bodu.Text.Yaml.YamlSerializerOptions.PropertyNameCaseInsensitive> lets mapping keys match members regardless of case.
 
 > [!NOTE]
-> If two members resolve to the same wire key under the active policy and attributes — for example a `[YamlPropertyName("name")]` that collides with another member's policy-derived `name` — serialization throws `InvalidOperationException` rather than silently emitting a duplicate key. Choose keys that stay unique after the policy is applied.
+> If two members resolve to the same wire key under the active policy and attributes — for example a `[PropertyName("name")]` that collides with another member's policy-derived `name` — serialization throws `InvalidOperationException` rather than silently emitting a duplicate key. Choose keys that stay unique after the policy is applied.
 
 ## Pattern 3 — Exclude a member
 
-<xref:Bodu.Text.Serialization.IgnoreAttribute> drops a member unconditionally — it is never written and never read:
+<xref:Bodu.Text.Serialization.IgnoreAttribute> drops a member unconditionally, or under a per-member condition:
 
 ```csharp
-using Bodu.Text.Yaml.Serialization;
+using Bodu.Text.Serialization;
 
 public sealed class Account
 {
     public string Name { get; set; } = "svc";
 
-    [YamlIgnore]
+    [Ignore]
     public string? Secret { get; set; }
+
+    [Ignore(Condition = IgnoreCondition.WhenWritingNull)]
+    public string? Comment { get; set; }
 }
 ```
 
@@ -73,7 +76,7 @@ public sealed class Account
 Name: svc
 ```
 
-There is no conditional form of `[YamlIgnore]`. To omit members whose value happens to be `null` (or the type default) across the whole document, set <xref:Bodu.Text.Yaml.YamlSerializerOptions.DefaultIgnoreCondition> on the options instead (Pattern 4).
+To omit members whose value happens to be `null` (or the type default) across the whole document, set the serializer-wide <xref:Bodu.Text.Yaml.YamlSerializerOptions.DefaultIgnoreCondition> instead (Pattern 4); a member-level `[Ignore(Condition = …)]` overrides it.
 
 ## Pattern 4 — Options flags
 
@@ -94,11 +97,11 @@ var options = new YamlSerializerOptions
     WriteEnumsAsStrings = false,         // enums as integers
     IncludeFields = true,                // public fields participate
     PropertyNameCaseInsensitive = true,  // case-insensitive key matching
-    UnmappedMemberHandling = YamlUnmappedMemberHandling.Disallow,
+    UnmappedMemberHandling = UnmappedMemberHandling.Disallow,
 };
 ```
 
-With `IncludeFields` set, a public field maps exactly like a property — it honours the naming policy and `[YamlPropertyName]` / `[YamlIgnore]`:
+With `IncludeFields` set, a public field maps exactly like a property — it honours the naming policy and `[PropertyName]` / `[Ignore]`:
 
 ```csharp
 public sealed class Counter
@@ -110,16 +113,31 @@ public sealed class Counter
 
 A property is **written** whenever it has a public getter, but it is only **read back** when it also has a public setter — a get-only property serialises out and is silently skipped on deserialisation. Members are emitted properties-first (in reflection order) and then fields, so a field never interleaves with the properties even when `IncludeFields` is set.
 
-## What YAML deliberately leaves out
+## The wider attribute family
 
-YAML does **not** carry the wider attribute family the siblings expose. There is no `[YamlConverter]`, no `[YamlPropertyOrder]`, no `[YamlRequired]`, no `[YamlInclude]`, no `[YamlExtensionData]`, no `[YamlConstructor]`, no `[YamlObjectCreationHandling]`, and no `[YamlStringEnumMemberName]`. For anything beyond renaming, ignoring, and the options flags — a custom wire form, a value type rendered as a single scalar, or a type the defaults reject — write a [custom converter](converters.md) and register it on `options.Converters`.
+The remaining shared attributes work in YAML exactly as in the siblings:
+
+| Attribute | Effect |
+|---|---|
+| `[Converter(typeof(…))]` | Binds a converter or converter factory to a member, property, or type — for example `[Converter(typeof(YamlStringEnumConverter<Status>))]`. |
+| `[PropertyOrder(n)]` | Orders members on write (lower first; unattributed members keep reflection order at order `0`). |
+| `[Required]` | A missing key on read raises <xref:Bodu.Text.Yaml.YamlSerializationException> (the C# `required` keyword is honored too). |
+| `[Include]` | Surfaces a member with a non-public setter, or a field without `IncludeFields`. |
+| `[ExtensionData]` | Captures unmapped keys into a `Dictionary<string, object?>` member and writes them back out. |
+| `[Constructor]` | Selects the deserialization constructor for parameterized/immutable types. |
+| `[ObjectCreationHandling(…)]` | Per-member replace-vs-populate on read, overriding <xref:Bodu.Text.Yaml.YamlSerializerOptions.PreferredObjectCreationHandling>. |
+| `[NamingPolicy(…)]` | Pins a naming policy for one type. |
+| `[StringEnumMemberName("…")]` | Renames one enum member on the wire (honored by the default enum handling and the [enum converters](converters.md)). |
+
+For a custom wire form the attributes cannot express — a value type rendered as a single scalar, or a type the defaults reject — write a [custom converter](converters.md) and register it on `options.Converters`.
 
 ## Precedence at a glance
 
 When several settings could govern the same member, the closest one wins:
 
-1. a member-level `[YamlPropertyName]` (name) or `[YamlIgnore]` (exclusion);
-2. the serializer options (`PropertyNamingPolicy`, `DefaultIgnoreCondition`, `IncludeFields`, `UnmappedMemberHandling`, …).
+1. a member-level `[PropertyName]` (name), `[Ignore]` (exclusion), or `[Converter]` (wire form);
+2. a type-level `[NamingPolicy]` or `[Converter]`;
+3. the serializer options (`PropertyNamingPolicy`, `DefaultIgnoreCondition`, `IncludeFields`, `UnmappedMemberHandling`, …).
 
 ## Where to go next
 

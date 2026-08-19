@@ -4,7 +4,7 @@ title: YAML guides
 
 # YAML guides
 
-Recipe-style walk-throughs for **Bodu.Text.Yaml** (<xref:Bodu.Text.Yaml.YamlSerializer>) — the indentation-structured format member of the [Bodu serializer family](../index.md). YAML keeps the family architecture but tunes its serializer surface: member shaping is naming policies, the `[YamlPropertyName]` / `[YamlIgnore]` attributes, options flags, and custom `YamlConverter<T>` converters. Each guide below is written against the real surface.
+Recipe-style walk-throughs for **Bodu.Text.Yaml** (<xref:Bodu.Text.Yaml.YamlSerializer>) — the indentation-structured format member of the [Bodu serializer family](../index.md). YAML keeps the family architecture and the shared attribute family: member shaping is naming policies, the `[PropertyName]` / `[Ignore]` attributes (and the wider `Bodu.Text.Serialization` set), options flags, and custom `YamlConverter<T>` converters. Each guide below is written against the real surface.
 
 If you are new to the family, start with the [introduction](../../../docs/serialization/yaml/index.md) for the format specifics and the [core concepts](../../../docs/serialization/yaml/concepts.md) for the three-tier mental model, then work through the guides in order.
 
@@ -19,7 +19,7 @@ If you are new to the family, start with the [introduction](../../../docs/serial
 
 <div class="bodu-card">
   <h3><a href="attributes.md">Mapping attributes</a></h3>
-  <p>Shaping members with <code>[YamlPropertyName]</code> and <code>[YamlIgnore]</code>, the naming policies, and the options flags — and what YAML deliberately leaves to a converter.</p>
+  <p>Shaping members with <code>[PropertyName]</code>, <code>[Ignore]</code>, and the wider shared attribute family, the naming policies, and the options flags.</p>
 </div>
 
 <div class="bodu-card">
