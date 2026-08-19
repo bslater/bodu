@@ -1,8 +1,16 @@
 # Bodu.IO.Pst — P1 LTP layer (HN / BTH / PC / TC) implementation plan
 
 **Date:** 2026-08-19
-**Status:** Proposed — executes tranche **P1** of
-[`pst-container-exploration.md`](pst-container-exploration.md) §7.
+**Status:** **Executed 2026-08-19** — tranche **P1** of
+[`pst-container-exploration.md`](pst-container-exploration.md) §7,
+landed per the commit sequencing in §8. One deliberate deviation: the
+exact PC BTH shape (`cbKey`&#160;2 / `cbEnt`&#160;6) is enforced at
+every validation level rather than Strict-only, because the record
+layout slices fixed offsets and a different shape cannot be decoded at
+all. One corpus finding recorded in the Regression suite: stored
+subjects carry the MS-PST two-character subject-prefix marker
+(U+0001 + length indicator), and `lspst`'s message counts are a floor —
+one fixture carries message nodes the oracle did not classify as Email.
 **Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *New library
 candidates → `Bodu.Formats.Outlook.Pst`* and the per-project
 *`Bodu.IO.Pst`* section.

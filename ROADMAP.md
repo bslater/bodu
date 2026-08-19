@@ -1108,22 +1108,30 @@ DocFX guide section and compile-guarded snippets.
 
 ### `Bodu.IO.Pst`
 
-Current state: new (P0 spike landed 2026-07-31); the NDB (node database)
-read layer of MS-PST for the Unicode format — header parse with the §5.3
-CRC, NBT/BBT B-tree walks, block reads with trailer validation and the
-permute/cyclic content encodings decoded, XBLOCK/XXBLOCK data trees, and
-SLBLOCK/SIBLOCK subnode trees — behind the `PstFile` / `PstNode` session
-surface with tiered validation (`Compatible` / `Strict` / `Minimal`),
-validated against the pstsdk reference corpus and the `lspst` seed
-manifest. Ships at **Preview**; ANSI and OST variants are recognized and
-rejected.
+Current state: new (P0 spike landed 2026-07-31; **P1 — the LTP layer —
+landed 2026-08-19** per
+[`docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md)).
+The NDB (node database) read layer of MS-PST for the Unicode format —
+header parse with the §5.3 CRC, NBT/BBT B-tree walks, block reads with
+trailer validation and the permute/cyclic content encodings decoded,
+XBLOCK/XXBLOCK data trees, and SLBLOCK/SIBLOCK subnode trees — plus the
+LTP layer over it: the heap-on-node (`bSig 0xEC`) over ordered block
+segments, BTree-on-heap, and the public `PstNode.ReadPropertyContext()`
+/ `ReadTableContext()` surfaces (`PstPropertyContext` /
+`PstPropertyValue` / `PstTableContext` / `PstTableRow`, wire-typed and
+MAPI-free, values resolved on access, row matrices streamed
+block-at-a-time), behind the `PstFile` / `PstNode` session surface with
+tiered validation (`Compatible` / `Strict` / `Minimal`), validated
+against the pstsdk reference corpus and the `lspst` oracle (folder
+names, subjects, senders, contents-table rows, and a no-dangling-HNID
+every-node sweep). Ships at **Preview**; ANSI and OST variants are
+recognized and rejected.
 
-- **P1 — LTP layer**: heap-on-node (`bSig 0xEC`), BTH, property context,
-  and table context readers over `PstNode`, per the exploration doc's
-  sequencing.
 - **P2 — `Bodu.Formats.Outlook.Pst`**: the messaging layer (folders,
-  messages, recipients, attachments) over the shared
-  `Bodu.Formats.Outlook` MAPI value model.
+  messages, recipients, attachments, named properties) over the shared
+  `Bodu.Formats.Outlook` MAPI value model, plus the hardening pass
+  (decoded-block LRU, malformed-file sweeps, large-file streaming
+  Regression).
 - **ANSI format** (`wVer` 14/15) as a demand-driven follow-on; the
   corpus already carries two ANSI fixtures for it.
 - **Scale-tier corpus**: the EDRM Enron PSTs (CC-BY) remain the
