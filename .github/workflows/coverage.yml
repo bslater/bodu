@@ -74,7 +74,9 @@ jobs:
             done
           done
 
-          projects=$(echo "$projects" | tr ' ' '\n' | grep -v '^$' | sort -u | tr '\n' ' ')
+          # `|| true` keeps pipefail from killing the script when the diff touched no production
+          # source: grep exits 1 on zero matches, and the skip branch below is the intended path.
+          projects=$(echo "$projects" | tr ' ' '\n' | grep -v '^$' | sort -u | tr '\n' ' ' || true)
 
           if [ -z "$projects" ]; then
             echo "No production source changed; nothing to collect."
