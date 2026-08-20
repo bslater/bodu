@@ -107,6 +107,62 @@ public abstract class YamlNode
     public abstract void WriteTo(Utf8YamlWriter writer);
 
     /// <summary>
+    /// Reads a node from the reader, which must be positioned on the first token of the value to read.
+    /// </summary>
+    /// <param name="reader">The reader positioned on the value's first token.</param>
+    /// <returns>The node read from the reader, or a null reference for a null scalar.</returns>
+    /// <remarks>
+    /// On return the reader is positioned on the value's last token (the scalar token itself, or the container's end
+    /// token), matching the read-positioning contract the serializer's converters observe. Aliases and merge keys are
+    /// already resolved by the reader, so the produced tree is fully composed.
+    /// </remarks>
+    internal static YamlNode ReadFrom(ref Reader.Utf8YamlReader reader)
+    {
+        switch (reader.TokenType)
+        {
+            case YamlTokenType.Null:
+                return null!;
+
+            case YamlTokenType.Boolean:
+                return YamlValue.Create(reader.GetBoolean());
+
+            case YamlTokenType.Integer:
+                return YamlValue.Create(reader.GetInt64());
+
+            case YamlTokenType.Float:
+                return YamlValue.Create(reader.GetDouble());
+
+            case YamlTokenType.String:
+                return YamlValue.Create(reader.GetString());
+
+            case YamlTokenType.StartSequence:
+            {
+                var array = new YamlArray();
+                while (reader.Read() && reader.TokenType != YamlTokenType.EndSequence)
+                    array.Add(ReadFrom(ref reader));
+
+                return array;
+            }
+
+            case YamlTokenType.StartMapping:
+            {
+                var obj = new YamlObject();
+                while (reader.Read() && reader.TokenType != YamlTokenType.EndMapping)
+                {
+                    string name = reader.GetString();
+                    reader.Read();
+                    obj[name] = ReadFrom(ref reader);
+                }
+
+                return obj;
+            }
+
+            default:
+                throw new YamlSerializationException(YamlResourceStrings.Op_Invalid_YamlExpectedScalar);
+        }
+    }
+
+    /// <summary>
     /// Builds a mutable node from a read-only document element.
     /// </summary>
     /// <param name="element">The element to convert.</param>

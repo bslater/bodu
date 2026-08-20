@@ -83,8 +83,8 @@ One options object holds every setting. Configure it once and reuse it — it fr
 ```csharp
 var options = new YamlSerializerOptions
 {
-    PropertyNamingPolicy = YamlNamingPolicy.SnakeCaseLower,
-    IgnoreNullValues = true,
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+    DefaultIgnoreCondition = IgnoreCondition.WhenWritingNull,
     WriteEnumsAsStrings = true,
     PropertyNameCaseInsensitive = true,
 };
@@ -92,7 +92,7 @@ var options = new YamlSerializerOptions
 string yaml = YamlSerializer.Serialize(app, options);
 ```
 
-Member shaping — naming policies, `[YamlPropertyName]`, `[YamlIgnore]`, and the options flags — is covered in [Mapping attributes](attributes.md).
+Start from a scenario preset by constructing the options from <xref:Bodu.Text.Yaml.YamlSerializerDefaults> (for example `YamlSerializerDefaults.Web`, which selects camel-case naming and case-insensitive matching). Member shaping — naming policies, `[PropertyName]`, `[Ignore]`, the wider attribute family, and the options flags — is covered in [Mapping attributes](attributes.md).
 
 ## Pattern 4 — Edit a document with the mutable DOM
 
@@ -277,7 +277,7 @@ catch (YamlSerializationException ex)
 
 ## Where to go next
 
-- [Mapping attributes](attributes.md) — declarative shaping with `[YamlPropertyName]`, `[YamlIgnore]`, and the naming policies.
+- [Mapping attributes](attributes.md) — declarative shaping with `[PropertyName]`, `[Ignore]`, the wider attribute family, and the naming policies.
 - [Writing converters](converters.md) and the [built-in converter catalog](builtin-converters.md) — custom and provisioned type handling.
 - [Bodu.Text.Yaml introduction](../../../docs/serialization/yaml/index.md) and [core concepts](../../../docs/serialization/yaml/concepts.md) — the format specifics and family vocabulary.
 - [Bodu serializer guides](../index.md) and the [Text & Serialization guides](../../topics/text-and-serialization.md).

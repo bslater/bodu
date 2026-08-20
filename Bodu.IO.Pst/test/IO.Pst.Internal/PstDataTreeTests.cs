@@ -255,6 +255,101 @@ public class PstDataTreeTests
     }
 
     /// <summary>
+    /// Verifies that segment resolution of a single-block node yields exactly one segment carrying the block's payload,
+    /// so the heap-on-node reader sees the same boundary a one-block heap declares.
+    /// </summary>
+    [TestMethod]
+    public void ResolveSegments_WhenNodeHasASingleBlock_ShouldReturnOneSegment()
+    {
+        var builder = new PstFixtureBuilder();
+        byte[] expected = Payload(200, 1);
+        builder.AddNode(NodeId, builder.AddDataBlock(expected));
+
+        using PstFile file = PstFile.Open(builder.BuildStream(), PstFileOptions.Default);
+        PstNbtEntry entry = GetEntry(file, NodeId);
+
+        List<byte[]> segments = PstDataTree.ResolveSegments(file.GetSource(), entry.DataBlockId);
+
+        Assert.AreEqual(1, segments.Count);
+        CollectionAssert.AreEqual(expected, segments[0]);
+    }
+
+    /// <summary>
+    /// Verifies that segment resolution of an <c>XBLOCK</c>-backed node preserves each data block as its own segment,
+    /// in list order — the boundary information the flattened payload discards and the heap-on-node requires.
+    /// </summary>
+    [TestMethod]
+    public void ResolveSegments_WhenNodeHasAnXBlock_ShouldPreserveBlockBoundaries()
+    {
+        var builder = new PstFixtureBuilder();
+        byte[][] leaves = [Payload(1000, 1), Payload(1000, 2), Payload(500, 3)];
+
+        ulong tree = builder.AddXBlock(2500, [.. leaves.Select(builder.AddDataBlock)]);
+        builder.AddNode(NodeId, tree);
+
+        using PstFile file = PstFile.Open(builder.BuildStream(), PstFileOptions.Default);
+        PstNbtEntry entry = GetEntry(file, NodeId);
+
+        List<byte[]> segments = PstDataTree.ResolveSegments(file.GetSource(), entry.DataBlockId);
+
+        Assert.AreEqual(3, segments.Count);
+        for (int i = 0; i < leaves.Length; i++)
+            CollectionAssert.AreEqual(leaves[i], segments[i]);
+    }
+
+    /// <summary>
+    /// Verifies that segment resolution of an <c>XXBLOCK</c>-backed node yields every leaf data block beneath each
+    /// <c>XBLOCK</c> as its own segment, in order.
+    /// </summary>
+    [TestMethod]
+    public void ResolveSegments_WhenNodeHasAnXXBlock_ShouldYieldEveryLeafInOrder()
+    {
+        var builder = new PstFixtureBuilder();
+        byte[][] leaves = [.. Enumerable.Range(1, 6).Select(i => Payload(700, i))];
+
+        ulong firstX = builder.AddXBlock(2100, builder.AddDataBlock(leaves[0]), builder.AddDataBlock(leaves[1]), builder.AddDataBlock(leaves[2]));
+        ulong secondX = builder.AddXBlock(2100, builder.AddDataBlock(leaves[3]), builder.AddDataBlock(leaves[4]), builder.AddDataBlock(leaves[5]));
+        builder.AddNode(NodeId, builder.AddXXBlock(4200, firstX, secondX));
+
+        using PstFile file = PstFile.Open(builder.BuildStream(), PstFileOptions.Default);
+        PstNbtEntry entry = GetEntry(file, NodeId);
+
+        List<byte[]> segments = PstDataTree.ResolveSegments(file.GetSource(), entry.DataBlockId);
+
+        Assert.AreEqual(6, segments.Count);
+        for (int i = 0; i < leaves.Length; i++)
+            CollectionAssert.AreEqual(leaves[i], segments[i]);
+    }
+
+    /// <summary>
+    /// Verifies that segment resolution of an empty data-block identifier yields no segments, matching the empty
+    /// payload the flattened accessor reports.
+    /// </summary>
+    [TestMethod]
+    public void ResolveSegments_WhenNodeHasNoDataBlock_ShouldReturnEmptyList()
+    {
+        var builder = new PstFixtureBuilder();
+        builder.AddNode(NodeId, dataBlockId: 0);
+
+        using PstFile file = PstFile.Open(builder.BuildStream(), PstFileOptions.Default);
+        PstNbtEntry entry = GetEntry(file, NodeId);
+
+        Assert.AreEqual(0, PstDataTree.ResolveSegments(file.GetSource(), entry.DataBlockId).Count);
+    }
+
+    /// <summary>
+    /// Finds the node B-tree entry for the given node identifier.
+    /// </summary>
+    /// <param name="file">The open file.</param>
+    /// <param name="nodeId">The node identifier.</param>
+    /// <returns>The node's B-tree entry.</returns>
+    private static PstNbtEntry GetEntry(PstFile file, uint nodeId)
+    {
+        Assert.IsTrue(PstBTree.TryFindNode(file.GetSource(), nodeId, out PstNbtEntry entry));
+        return entry;
+    }
+
+    /// <summary>
     /// Verifies that the data stream exposes the same bytes the array accessor returns for a tree-backed node, so a
     /// caller streaming a large payload sees no difference from one materializing it.
     /// </summary>

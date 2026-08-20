@@ -35,11 +35,11 @@ public partial class YamlSerializerTests
         Assert.AreEqual("server_host: h\nport: 8080\n", yaml);
     }
 
-    /// <summary>Verifies that null members are omitted when the corresponding option is enabled.</summary>
+    /// <summary>Verifies that null members are omitted when the serializer-wide default ignore condition requests it.</summary>
     [TestMethod]
-    public void Serialize_WhenIgnoreNullValues_ShouldOmit()
+    public void Serialize_WhenDefaultIgnoreConditionWhenWritingNull_ShouldOmit()
     {
-        var options = new YamlSerializerOptions { IgnoreNullValues = true };
+        var options = new YamlSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingNull };
         string yaml = YamlSerializer.Serialize(new Person { Name = null, Age = 5, Active = true }, options);
         Assert.AreEqual("Age: 5\nActive: true\n", yaml);
     }

@@ -343,6 +343,46 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to The element is the default value and belongs to no document..
+        /// </summary>
+        internal static string Op_Invalid_DefaultElement {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DefaultElement", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to A null document cannot be written to YAML..
+        /// </summary>
+        internal static string Op_NotSupported_NullDocument {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullDocument", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to A null node cannot be written to YAML..
+        /// </summary>
+        internal static string Op_NotSupported_NullNode {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullNode", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to '{0}' is not a defined value of enumeration '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_EnumValueNotFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EnumValueNotFound", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Expected an integer but found '{0}'..
+        /// </summary>
+        internal static string Op_Invalid_ExpectedInteger {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExpectedInteger", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to Serializer options cannot be changed after the options instance has been used to serialize or deserialize..
         /// </summary>
         internal static string Op_Invalid_OptionsReadOnly {
@@ -532,6 +572,14 @@ namespace Bodu {
         internal static string Op_Invalid_YamlDuplicateDictionaryKey {
             get {
                 return ResourceManager.GetString("Op_Invalid_YamlDuplicateDictionaryKey", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to IgnoreCondition.Always is not a valid value for DefaultIgnoreCondition..
+        /// </summary>
+        internal static string Arg_OutOfRange_DefaultIgnoreConditionAlways {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_DefaultIgnoreConditionAlways", resourceCulture);
             }
         }
         /// <summary>

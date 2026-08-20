@@ -51,12 +51,12 @@ There are no `Stream` or async overloads — read a stream into a `string` or a 
 A naming policy renames every member; <xref:Bodu.Text.Serialization.PropertyNameAttribute> pins a single one and always wins over the policy:
 
 ```csharp
+using Bodu.Text.Serialization;
 using Bodu.Text.Yaml;
-using Bodu.Text.Yaml.Serialization;
 
 public sealed class Endpoint
 {
-    [YamlPropertyName("display-name")]
+    [PropertyName("display-name")]
     public string DisplayName { get; set; } = "Health check";
 
     public int MaxRetryCount { get; set; } = 5;
@@ -64,7 +64,7 @@ public sealed class Endpoint
 
 var options = new YamlSerializerOptions
 {
-    PropertyNamingPolicy = YamlNamingPolicy.SnakeCaseLower,
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
 };
 
 string yaml = YamlSerializer.Serialize(new Endpoint(), options);
@@ -72,7 +72,7 @@ string yaml = YamlSerializer.Serialize(new Endpoint(), options);
 // max_retry_count: 5
 ```
 
-The naming policies are `CamelCase`, `SnakeCaseLower`, and `KebabCaseLower`. Member shaping beyond renaming and ignoring is covered in [Mapping attributes](../../../guides/serialization/yaml/attributes.md).
+The naming policies are `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, and `KebabCaseLower` / `KebabCaseUpper`; the `YamlSerializerDefaults.Web` preset selects camel-case with case-insensitive matching. Member shaping beyond renaming and ignoring is covered in [Mapping attributes](../../../guides/serialization/yaml/attributes.md).
 
 ## Edit a document without a model
 
@@ -101,7 +101,7 @@ string updated = root.ToYamlString();
 ## Where to go next
 
 - **[Using YAML](../../../guides/serialization/yaml/using.md)** — the full set of worked patterns, including both DOMs and multi-document streams.
-- **[Mapping attributes](../../../guides/serialization/yaml/attributes.md)** — naming policies, `[YamlPropertyName]`, `[YamlIgnore]`, and the options flags.
+- **[Mapping attributes](../../../guides/serialization/yaml/attributes.md)** — naming policies, `[PropertyName]`, `[Ignore]`, the wider attribute family, and the options flags.
 - **[Writing converters](../../../guides/serialization/yaml/converters.md)** — custom shapes with `YamlConverter<T>`.
 - **[Core concepts](concepts.md)** and the **[introduction](index.md)** — the family vocabulary and the YAML format specifics.
 - **[Bodu serializers introduction](../index.md)** — the family parent.

@@ -78,6 +78,43 @@ public sealed class TomlNumberEnumConverter<TEnum>
     public TomlNumberEnumConverter()
     {
     }
+#elif YAML
+namespace Bodu.Text.Yaml.Serialization;
+
+/// <summary>
+/// Produces a converter that serializes the enumeration <typeparamref name="TEnum" /> as a YAML integer scalar carrying
+/// its underlying numeric value.
+/// </summary>
+/// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
+/// <remarks>
+/// Reference the factory from a <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, or
+/// register it on <see cref="Bodu.Text.Yaml.YamlSerializerOptions.Converters" />. It exposes a public parameterless
+/// constructor so it can be used through the converter attribute. The produced converter writes the numeric value
+/// regardless of <see cref="Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings" />.
+/// </remarks>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// public sealed class WorkItem
+/// {
+///     [Converter(typeof(YamlNumberEnumConverter<Priority>))]
+///     public Priority Priority { get; set; }
+/// }
+///
+/// // Priority.High (underlying value 2) serializes as: Priority: 2
+///]]>
+/// </code>
+/// </example>
+public sealed class YamlNumberEnumConverter<TEnum>
+    : YamlConverterFactory
+    where TEnum : struct, Enum
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="YamlNumberEnumConverter{TEnum}" /> class.
+    /// </summary>
+    public YamlNumberEnumConverter()
+    {
+    }
 #endif
 
     /// <inheritdoc />

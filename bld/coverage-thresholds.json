@@ -172,8 +172,8 @@
     "branch": 99.5
   },
   "Bodu.IO.Pst": {
-    "line": 99.5,
-    "branch": 99.5
+    "line": 96.6,
+    "branch": 93.3
   },
   "Bodu.Numerics": {
     "line": 93.7,
@@ -228,8 +228,8 @@
     "branch": 92.3
   },
   "Bodu.Text.Yaml": {
-    "line": 90.2,
-    "branch": 88.4
+    "line": 90.7,
+    "branch": 89.3
   },
   "Caching (shared source)": {
     "line": 92.2,

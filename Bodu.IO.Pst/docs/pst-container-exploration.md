@@ -279,7 +279,7 @@ start independently:
 | Tranche | Item | Notes |
 | --- | --- | --- |
 | **P0** | Spike: header + NBT/BBT walk + block read with permute/cyclic + CRC, against the reference corpus | ✅ **Executed 2026-07-31.** `PstFile.OpenRead` / `EnumerateNodes` / `GetNode` and `PstNode.ReadAllBytes` / `OpenDataStream` / subnode access landed, with the data and subnode trees, tiered validation, and the `IO.Pst.Internal` §5.3 CRC; the corpus opens clean under `Strict` and the node census, heap-node signatures, and header CRCs are pinned by the test suite. R2 and R3 resolved (below). |
-| **P1** | LTP: HN, BTH, PC, TC surfaces | The bulk of the package. |
+| **P1** | LTP: HN, BTH, PC, TC surfaces | ✅ **Executed 2026-08-19** per [`ltp-implementation-plan.md`](ltp-implementation-plan.md): the heap-on-node over ordered block segments, the BTree-on-heap, and the public `PstNode.ReadPropertyContext` / `ReadTableContext` views (`PstPropertyContext` / `PstPropertyValue` / `PstTableContext` / `PstTableRow`), validated against the `lspst` oracle (folder names, subjects, senders, contents-table rows) and an every-node no-dangling-HNID sweep. |
 | **P2** | Hardening: validation levels, malformed-file sweeps, large-file streaming Regression, docs | Ships `Bodu.IO.Pst` (Preview). |
 | **P3** | `Bodu.Formats.Outlook.Pst` (separate plan) | Folders / messages / recipients / attachments / named properties over P1's surfaces, in the shared value model. |
 

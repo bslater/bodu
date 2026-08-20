@@ -56,7 +56,10 @@
   <data name="Op_Invalid_YamlFloatNotIntegral" xml:space="preserve"><value>The floating-point value '{0}' cannot be deserialized into an integer target without loss of precision.</value></data>
   <data name="Op_Invalid_YamlNumberOutOfRange" xml:space="preserve"><value>The numeric value '{0}' is outside the range of the target type '{1}'.</value></data>
   <data name="Op_Invalid_YamlCharLength" xml:space="preserve"><value>The value '{0}' cannot be converted to a single character because it is not exactly one Unicode scalar value.</value></data>
+  <data name="Arg_OutOfRange_DefaultIgnoreConditionAlways" xml:space="preserve"><value>IgnoreCondition.Always is not a valid value for DefaultIgnoreCondition.</value></data>
   <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The type '{0}' maps more than one member to the YAML key '{1}'.</value></data>
+  <data name="Op_Invalid_EnumValueNotFound" xml:space="preserve"><value>'{0}' is not a defined value of enumeration '{1}'.</value></data>
+  <data name="Op_Invalid_ExpectedInteger" xml:space="preserve"><value>Expected an integer but found '{0}'.</value></data>
   <data name="Op_Invalid_OptionsReadOnly" xml:space="preserve"><value>Serializer options cannot be changed after the options instance has been used to serialize or deserialize.</value></data>
   <data name="Op_Invalid_YamlCycleDetected" xml:space="preserve"><value>A reference cycle was detected while serializing an instance of type '{0}'; YAML cannot represent an object cycle.</value></data>
   <data name="Op_Invalid_YamlExtensionDataType" xml:space="preserve"><value>The extension-data member '{0}' of type '{1}' must be a Dictionary&lt;string, object&gt; or an IDictionary&lt;string, object&gt;.</value></data>
@@ -74,6 +77,9 @@
   <data name="Arg_Invalid_ConverterAttributeType" xml:space="preserve"><value>The type '{0}' specified by a converter attribute is not a YamlConverter.</value></data>
   <data name="Arg_Invalid_ConverterNoParameterlessCtor" xml:space="preserve"><value>The converter type '{0}' must declare a public parameterless constructor to be referenced by a converter attribute.</value></data>
   <data name="Op_Invalid_ConverterCannotConvert" xml:space="preserve"><value>The converter '{0}' cannot convert type '{1}'.</value></data>
+  <data name="Op_Invalid_DefaultElement" xml:space="preserve"><value>The element is the default value and belongs to no document.</value></data>
+  <data name="Op_NotSupported_NullDocument" xml:space="preserve"><value>A null document cannot be written to YAML.</value></data>
+  <data name="Op_NotSupported_NullNode" xml:space="preserve"><value>A null node cannot be written to YAML.</value></data>
   <data name="Op_NotSupported_NoConverter" xml:space="preserve"><value>No converter is configured for type '{0}'.</value></data>
   <data name="Arg_Invalid_YamlInvalidUtf8" xml:space="preserve"><value>The supplied bytes are not valid UTF-8.</value></data>
   <data name="Arg_Invalid_YamlUnpairedSurrogate" xml:space="preserve"><value>The value contains an unpaired surrogate and cannot be encoded as UTF-8 YAML.</value></data>

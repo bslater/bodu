@@ -100,6 +100,24 @@ public ref struct Utf8YamlReader
     public readonly int CurrentDepth => _depth;
 
     /// <summary>
+    /// Gets the parsed row store backing this reader, shared with any subtree document view created over it.
+    /// </summary>
+    /// <value>The flat node store, with the document root at index zero.</value>
+    internal readonly List<YamlReaderRow> Rows => _rows;
+
+    /// <summary>
+    /// Gets the decoded-string side table referenced by string scalar rows.
+    /// </summary>
+    /// <value>The string side table.</value>
+    internal readonly string[] Strings => _strings;
+
+    /// <summary>
+    /// Gets the row index of the node the cursor is positioned on.
+    /// </summary>
+    /// <value>The current row index, or <c>-1</c> when the reader has not produced a token.</value>
+    internal readonly int CurrentRow => _currentRow;
+
+    /// <summary>
     /// Advances the reader to the next token.
     /// </summary>
     /// <returns>

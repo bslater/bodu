@@ -6,7 +6,7 @@ title: Bodu.Text.Yaml — Introduction
 
 ![Bodu.Text.Yaml](../../../images/hero-yaml.svg)
 
-**Bodu.Text.Yaml** is a self-contained library for [YAML](https://yaml.org/), the indentation-structured document format. It is the third member of the [Bodu serializer family](../index.md), alongside [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Bencode](../bencode/index.md). It keeps the family architecture — a static serializer façade, a mutable DOM, a read-only DOM, and a low-level reader/writer pair — but **tunes the serializer surface to YAML**: there is no converter-attribute, converter-factory, callback, or wider attribute family here. Member shaping is the naming policies, the `[YamlPropertyName]` / `[YamlIgnore]` attributes, the options flags, and custom `YamlConverter<T>` converters. In their place YAML adds its own presentation richness. This page covers what is *specific* to YAML.
+**Bodu.Text.Yaml** is a self-contained library for [YAML](https://yaml.org/), the indentation-structured document format. It is the third member of the [Bodu serializer family](../index.md), alongside [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Bencode](../bencode/index.md). It keeps the family architecture — a static serializer façade, a mutable DOM, a read-only DOM, and a low-level reader/writer pair — and the shared `Bodu.Text.Serialization` attribute family, naming policies, serialization callbacks, converter attributes, and converter factories. On top of that, YAML adds its own presentation richness. This page covers what is *specific* to YAML.
 
 ## The format in one paragraph
 
@@ -53,9 +53,10 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Text.Yaml.YamlSerializer> | `Serialize` to a `string` (from a typed value or an `object` + `Type`); `Deserialize<T>` from a `string` or `ReadOnlySpan<byte>` (UTF-8). |
-| <xref:Bodu.Text.Yaml.YamlSerializerOptions> | Naming policy, converters, `IncludeFields`, `IgnoreNullValues`, `WriteEnumsAsStrings`, `PropertyNameCaseInsensitive`, `SpecVersion`, `NumberHandling`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `UnmappedMemberHandling`, `MaxDepth`. Frozen on first use. |
-| <xref:Bodu.Text.Serialization.NamingPolicy> | `CamelCase`, `SnakeCaseLower`, `KebabCaseLower`. |
-| <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> | Base class for a custom per-type converter, reading a <xref:Bodu.Text.Yaml.Document.YamlElement> and writing through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>. |
+| <xref:Bodu.Text.Yaml.YamlSerializerOptions> | Naming policy, converters, `IncludeFields`, `DefaultIgnoreCondition`, `WriteEnumsAsStrings`, `PropertyNameCaseInsensitive`, `SpecVersion`, `NumberHandling`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, `MaxDepth`. Constructed plain or from a <xref:Bodu.Text.Yaml.YamlSerializerDefaults> preset (`General` / `Web`). Frozen on first use. |
+| <xref:Bodu.Text.Serialization.NamingPolicy> | `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, `KebabCaseLower` / `KebabCaseUpper`. |
+| <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> / <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory> | Base classes for a custom per-type converter (reading through the <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader>, writing through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>) and for a factory serving a family of types. |
+| <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / `YamlStringEnumConverter<TEnum>` / `YamlNumberEnumConverter<TEnum>` | Public enum converters: member-name strings with an optional naming policy, or the underlying numeric value. |
 | <xref:Bodu.Text.Yaml.Nodes.YamlNode> | Mutable DOM — `Parse`, index, mutate, write back with `ToYamlString()`. |
 | <xref:Bodu.Text.Yaml.Document.YamlDocument> | Read-only, low-allocation DOM walked through `RootElement`; `ParseAllDocuments` for multi-document streams. |
 | <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader> / <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter> | Forward-only `ref struct` token machines. The reader is **buffered** (it parses into an in-memory node store, then `Read()` walks it; `ValueTextEquals` compares keys allocation-free); the writer emits block-style YAML and enforces a well-formed call sequence. |
@@ -68,9 +69,10 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 | Round-trip an object through YAML | `YamlSerializer.Serialize` / `Deserialize<T>` |
 | Read every document in a multi-document stream | <xref:Bodu.Text.Yaml.Document.YamlDocument.ParseAllDocuments*> |
 | Accept YAML 1.1 Booleans and merge keys | `SpecVersion = YamlSpecVersion.V1_1` on the options |
-| Rename members on the wire | a naming policy or `[YamlPropertyName]` |
+| Rename members on the wire | a naming policy or `[PropertyName]` |
 | Control how a tricky type is written | a custom <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> |
 | Edit a document in place without a model | the mutable <xref:Bodu.Text.Yaml.Nodes.YamlNode> DOM |
+| Bind part of a document loosely inside a typed model | a member typed <xref:Bodu.Text.Yaml.Nodes.YamlNode> or <xref:Bodu.Text.Yaml.Document.YamlElement> (`Deserialize<YamlNode>` works standalone too) |
 | Inspect a document with minimal allocation | the read-only <xref:Bodu.Text.Yaml.Document.YamlDocument> / <xref:Bodu.Text.Yaml.Document.YamlElement> DOM |
 
 ## Where to go next

@@ -110,6 +110,44 @@ public sealed class PstNode
     }
 
     /// <summary>
+    /// Reads the node's LTP property context: the property bag of 16-bit property identifiers with wire-typed values.
+    /// </summary>
+    /// <returns>The property context.</returns>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
+    /// <exception cref="PstFileFormatException">
+    /// The node's heap does not carry a property context, or the context is malformed.
+    /// </exception>
+    /// <remarks>
+    /// Each call re-reads the context from the source; retain the returned instance to read many properties. Value
+    /// payloads resolve on access, so large subnode-resident values cost their read only when retrieved.
+    /// </remarks>
+    public PstPropertyContext ReadPropertyContext()
+    {
+        (PstHeapNode heap, List<PstPcEntry> entries) = PstPropertyContextReader.Read(_file.GetSource(), _entry);
+
+        return new PstPropertyContext(heap, new PstLtpContext(_file.GetSource(), _entry), entries);
+    }
+
+    /// <summary>
+    /// Reads the node's LTP table context: the table of typed columns over identifier-keyed rows.
+    /// </summary>
+    /// <returns>The table context.</returns>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
+    /// <exception cref="PstFileFormatException">
+    /// The node's heap does not carry a table context, or the context is malformed.
+    /// </exception>
+    /// <remarks>
+    /// Each call re-reads the context from the source; retain the returned instance to read many rows. Row
+    /// enumeration streams the row matrix one block at a time.
+    /// </remarks>
+    public PstTableContext ReadTableContext()
+    {
+        (PstHeapNode heap, PstTcInfo info, PstBthHeader rowIndex) = PstTableContextReader.Read(_file.GetSource(), _entry);
+
+        return new PstTableContext(heap, new PstLtpContext(_file.GetSource(), _entry), info, rowIndex, _file.GetSource().ValidationLevel);
+    }
+
+    /// <summary>
     /// Returns a textual form of the node for diagnostics.
     /// </summary>
     /// <returns>The identifier and its type.</returns>

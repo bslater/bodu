@@ -3,7 +3,20 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-07-10. Since the previous revision,
+*Last updated: 2026-08-19. Since the previous revision, the
+**`Bodu.IO.Pst` LTP layer (P1) landed** — heap-on-node, BTree-on-heap,
+and the public property-context and table-context views on `PstNode`,
+pinned to the `lspst` oracle corpus (see the per-project section) — the
+**`Bodu.Text.Yaml` serializer reached parity with Bencode/Toml** (the
+wire-name enum tier with the public string/number enum converters,
+`DefaultIgnoreCondition` replacing the pre-release `IgnoreNullValues`,
+the `YamlSerializerDefaults` presets, the native-sized and 128-bit
+integer widths, and the `NodeConverter`/`YamlElement`/`YamlDocument`
+serializer bridges), the lock-step baseline was revved to **0.3.0**, and
+**`Bodu.Text.Filtering` was registered** — the include/exclude text
+filtering engine landed complete on 2026-08-02 (#648) but had never been
+entered here or in the shipping manifest; it now has a per-project
+section below and a Wave-2 manifest entry — and, earlier,
 **`Bodu.Financial` was restructured**: the currency surface now lives in
 `Bodu.Financial.Currencies`, the FX core in
 `Bodu.Financial.ExchangeRates`, the `Exchange`-stuttered type names were
@@ -163,15 +176,18 @@ exercised on the smallest self-contained units first.
 | --- | --- |
 | `Bodu.Text.Bencode` | Standalone STJ-shaped Bencode library (reader/writer/serializer/DOM quartet). |
 | `Bodu.Text.Toml` | Standalone STJ-shaped TOML v1.0.0 / v1.1.0 library; corpus-backed. |
-| `Bodu.Text.Yaml` | Standalone YAML 1.2 core-profile library (read-focused serializer). |
+| `Bodu.Text.Yaml` | Standalone YAML 1.2 core-profile library (symmetric read+write serializer at family parity). |
 | `Bodu.Text.Serialization` | The shared serialization primitives (attribute family, naming policies, callbacks) the per-format serializers build on. |
 | `Bodu.Text.Delimited` | Standalone STJ-shaped Delimited (RFC 4180 CSV/TSV) library; corpus-backed. |
 | `Bodu.Text.DotEnv` | Standalone STJ-shaped DotEnv library. |
 | `Bodu.Text.Ini` | Standalone STJ-shaped INI library (comment-preserving mutable DOM). |
 | `Bodu.Text.Formats` | Umbrella meta-package over `Bodu.Text.Delimited` / `.DotEnv` / `.Ini`. |
 | `Bodu.Text.Configuration` | INI-compatible profile, resolver, view getters (self-contained document model). |
+| `Bodu.Text.Filtering` | Include/exclude text filtering engine — glob + regex patterns compiled into a cost-tiered matcher (Core-only). |
 | `Bodu.IO.Compound` | OLE2 / CFB container read + edit + authoring. |
 | `Bodu.Formats.Excel.Binary` | Read-only BIFF8 `.xls` reader (depends on `Bodu.IO.Compound`). |
+| `Bodu.Formats.Outlook` | The shared, container-free MAPI value model. |
+| `Bodu.Formats.Outlook.Msg` | Read-only `.msg` (MS-OXMSG) reader over `Bodu.IO.Compound`. |
 
 **Wave 3 — financial core + calendar (coordinated breaking change):**
 
@@ -354,7 +370,7 @@ is now:
    Preview→Stable promotion for the FX family now waits only on
    live-endpoint soak per the stability-tier policy.
 3. **Cut Wave 1–2 packages — release-readiness landed; tag to publish.**
-   The shipping manifest (`bld/release-manifest.txt`, the 15 Wave 1–2
+   The shipping manifest (`bld/release-manifest.txt`, the Wave 1–2
    package ids) now scopes what the release workflow publishes (pack
    stays full-solution; only the manifest set is pushed), the missing
    `Bodu.Numerics.Serialization.Json` README landed, the package
@@ -693,21 +709,34 @@ conformance corpus** (532 valid + 505 invalid cases) in both profiles.
 
 ### `Bodu.Text.Yaml`
 
-Current state: new; ~48 src / ~53 test files. The YAML 1.2 core-schema
+Current state: new; ~55 src / ~60 test files. The YAML 1.2 core-schema
 quartet — the `Utf8YamlReader` (over the multi-partial `YamlParser`
 handling anchors/aliases/tags/merge-keys and multi-document streams via
-`YamlDocument.ParseAllDocuments`), the `Utf8YamlWriter`, the
-**read-focused** `YamlSerializer`, and the `YamlDocument` / `YamlNode`
-DOMs. Validated against the vendored `yaml-test-suite` (353 cases).
+`YamlDocument.ParseAllDocuments`), the `Utf8YamlWriter`, the symmetric
+read+write `YamlSerializer`, and the `YamlDocument` / `YamlNode` DOMs.
+Validated against the vendored `yaml-test-suite` (353 cases).
 
-- **Bring the serializer to parity with Bencode/Toml.** The writer and
-  serializer are the thinnest of the three — a minimal converter model,
-  no rich attribute/metadata/callback suite. Round out the *write* path
-  (attribute family, naming policies, callbacks) so `YamlSerializer` is a
-  symmetric read+write mapper rather than a read-first one.
-- **Document the supported-schema boundary.** Be explicit about which
-  YAML 1.1/1.2 features are in vs out (tag resolution, complex keys,
-  directives) so consumers know when to reach for a full YAML engine.
+- **Serializer parity with Bencode/Toml has landed.** ✅ The enum tier
+  (wire-name maps honoring `StringEnumMemberNameAttribute` and naming
+  policies; the public `YamlStringEnumConverter` (+ generic) and
+  `YamlNumberEnumConverter<TEnum>` factories), the options surface
+  (`DefaultIgnoreCondition` replacing the pre-release `IgnoreNullValues`;
+  the `YamlSerializerDefaults` General/Web presets), the full fixed-width
+  integer set (`nint`/`nuint`/`Int128`/`UInt128` with invariant-text
+  fallback outside the signed 64-bit writer surface), and the
+  DOM↔serializer bridges (`NodeConverter` adopted under an `#elif YAML`
+  branch, plus `YamlElement`/`YamlDocument` converters over a
+  shared-row-store `ParseValue`). The scalar converter tier deliberately
+  stays format-local — YAML's implicit typing coerces across scalar kinds
+  the token-strict shared converters cannot express — as does the
+  `SerializerEngine` seam (null-root write and empty-document read
+  semantics differ).
+- **The supported-schema boundary is documented.** ✅ The README's *Bodu
+  YAML Core Tree Profile* section and compliance matrix carry the
+  explicit in/out list (tag resolution, complex keys, directives,
+  anchors) so consumers know when to reach for a full YAML engine.
+- Remaining polish: raise the `bld/coverage-thresholds.json` floor toward
+  Toml's 95.0/92.3 after the next coverage collection run.
 
 ### `Bodu.Text.Delimited` / `Bodu.Text.DotEnv` / `Bodu.Text.Ini` (and the `Bodu.Text.Formats` umbrella)
 
@@ -757,6 +786,27 @@ the *Active focus* #4 decouple — no format-library dependency).
 - **Add JSON-pointer / JMESPath-style resolvers** alongside the existing
   `ConfigurationResolver` to broaden applicability beyond the
   Bodu-specific query syntax.
+
+### `Bodu.Text.Filtering`
+
+Current state: landed complete 2026-08-02 (#648) — ~25 src / ~24 test
+files, a benchmark project, and a runnable sample. An include/exclude
+filtering engine for lists of text values: glob (wildcard,
+character-class, `{a,b}` brace-alternation) and regex patterns compile
+once into a cost-tiered `TextFilter` that runs the cheapest strategies
+first (MatchAll → Literal → Prefix/Suffix → Contains → general wildcard
+→ Regex — the `globset` idea), with Ant/MSBuild-style include/exclude
+set semantics (`AnyMatch`) or gitignore-style last-match-wins ordered
+rules (`LastMatchWins`), gitignore-convention list parsing, always-on
+match statistics, and an optional per-decision `ITextFilterObserver`.
+Regexes prefer the linear-time non-backtracking engine and always carry
+a match timeout that fails safe on both include and exclude. Core-only
+dependency; ships in Wave 2 (`bld/release-manifest.txt`).
+
+- **No open items.** The one demand-driven follow-on candidate recorded
+  for completeness: a path-segment (`**`) mode in the
+  `Microsoft.Extensions.FileSystemGlobbing` style (single-value spans
+  are already served by `IsMatch(ReadOnlySpan<char>)`).
 
 ### `Bodu.Extensions.Configuration.Text`
 
@@ -1067,22 +1117,34 @@ DocFX guide section and compile-guarded snippets.
 
 ### `Bodu.IO.Pst`
 
-Current state: new (P0 spike landed 2026-07-31); the NDB (node database)
-read layer of MS-PST for the Unicode format — header parse with the §5.3
-CRC, NBT/BBT B-tree walks, block reads with trailer validation and the
-permute/cyclic content encodings decoded, XBLOCK/XXBLOCK data trees, and
-SLBLOCK/SIBLOCK subnode trees — behind the `PstFile` / `PstNode` session
-surface with tiered validation (`Compatible` / `Strict` / `Minimal`),
-validated against the pstsdk reference corpus and the `lspst` seed
-manifest. Ships at **Preview**; ANSI and OST variants are recognized and
-rejected.
+Current state: new (P0 spike landed 2026-07-31; **P1 — the LTP layer —
+landed 2026-08-19** per
+[`docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md)).
+The NDB (node database) read layer of MS-PST for the Unicode format —
+header parse with the §5.3 CRC, NBT/BBT B-tree walks, block reads with
+trailer validation and the permute/cyclic content encodings decoded,
+XBLOCK/XXBLOCK data trees, and SLBLOCK/SIBLOCK subnode trees — plus the
+LTP layer over it: the heap-on-node (`bSig 0xEC`) over ordered block
+segments, BTree-on-heap, and the public `PstNode.ReadPropertyContext()`
+/ `ReadTableContext()` surfaces (`PstPropertyContext` /
+`PstPropertyValue` / `PstTableContext` / `PstTableRow`, wire-typed and
+MAPI-free, values resolved on access, row matrices streamed
+block-at-a-time), behind the `PstFile` / `PstNode` session surface with
+tiered validation (`Compatible` / `Strict` / `Minimal`), validated
+against the pstsdk reference corpus and the `lspst` oracle (folder
+names, subjects, senders, contents-table rows, and a no-dangling-HNID
+every-node sweep). Ships at **Preview**; ANSI and OST variants are
+recognized and rejected.
 
-- **P1 — LTP layer**: heap-on-node (`bSig 0xEC`), BTH, property context,
-  and table context readers over `PstNode`, per the exploration doc's
-  sequencing.
 - **P2 — `Bodu.Formats.Outlook.Pst`**: the messaging layer (folders,
-  messages, recipients, attachments) over the shared
-  `Bodu.Formats.Outlook` MAPI value model.
+  messages, recipients, attachments, named properties) over the shared
+  `Bodu.Formats.Outlook` MAPI value model, plus the hardening pass
+  (decoded-block LRU, malformed-file sweeps, large-file streaming
+  Regression). P2 is also the shipping gate: `Bodu.IO.Pst` joins the
+  release manifest then — deliberately not at P1 — together with its
+  docs-site debut (a `docs/docs/io-pst/` section, the
+  `docs/apidoc/Bodu.IO.Pst.md` overview, and a `samples/IO.Pst/`
+  scenario project modeled on `samples/IO.Compound/`).
 - **ANSI format** (`wVer` 14/15) as a demand-driven follow-on; the
   corpus already carries two ANSI fixtures for it.
 - **Scale-tier corpus**: the EDRM Enron PSTs (CC-BY) remain the
@@ -1357,9 +1419,11 @@ filter were added to *Non-goals* instead.
   blocker, and sequencing P0–P3:
   [`Bodu.IO.Pst/docs/pst-container-exploration.md`](Bodu.IO.Pst/docs/pst-container-exploration.md).
   **P0 executed same day** — `Bodu.IO.Pst` landed with the full NDB
-  read layer at Preview; tracked in the per-project *`Bodu.IO.Pst`*
-  section above. The LTP layer (P1) and the `Bodu.Formats.Outlook.Pst`
-  messaging reader (P2) are the remaining stages.
+  read layer at Preview; **P1 (the LTP layer) executed 2026-08-19** per
+  [`Bodu.IO.Pst/docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md);
+  both tracked in the per-project *`Bodu.IO.Pst`* section above. The
+  `Bodu.Formats.Outlook.Pst` messaging reader with the hardening pass
+  (P2) is the remaining stage.
 - **`Bodu.Formats.Excel.OpenXml`** — a read-only `.xlsx` value reader over
   an OPC/ZIP container, **sharing the flattened `Bodu.Formats.Excel`
   value model** (`ExcelCell` / `ExcelWorksheet` / `ExcelWorkbookProperties`).
@@ -1599,8 +1663,9 @@ blockquote directly under its README title. The assignment:
   candidate) and its companion
   `Bodu.Numerics.Serialization.Json` (the JSON contract is new — the core
   types are now serialization-agnostic and support is opt-in via
-  `AddNumericsJsonConverters`), `Bodu.Text.Yaml` (the serializer is read-first and its
-  write surface is still being rounded out) and the network-dependent
+  `AddNumericsJsonConverters`), `Bodu.Text.Yaml` (the serializer reached
+  family parity in 0.3.0 — enum converters, presets, the DOM bridges —
+  and the new surface has not yet shipped) and the network-dependent
   exchange-rate family: the web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda,Fixer,ExchangeRateHost,Fred,Imf}`
   and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.
   These are held at Preview until they have shipped and been exercised

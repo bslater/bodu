@@ -17,15 +17,15 @@ YAML carries the JSON-compatible core scalar kinds — string, integer, float, B
 | `Guid` | string, canonical 36-character form | any `Guid.Parse`-accepted form | |
 | `Uri` | string, the original URI text | string | Relative and absolute URIs round-trip. |
 | `bool` | Boolean (`true` / `false`) | Boolean | Under `SpecVersion = V1_1`, the read path also accepts `yes` / `no` / `on` / `off` and `y` / `n`. |
-| `sbyte` `byte` `short` `ushort` `int` `uint` `long` `nint` `nuint` | integer scalar | integer | Checked conversions; a value outside the target type raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
-| `ulong` | integer scalar, or a quoted string above `long.MaxValue` | integer | A value beyond `long.MaxValue` is emitted as a quoted decimal string so it round-trips without overflow. |
+| `sbyte` `byte` `short` `ushort` `int` `uint` `long` `nint` | integer scalar | integer | Checked conversions; a value outside the target type raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
+| `ulong` `nuint` `Int128` `UInt128` | integer scalar, or the invariant decimal text outside the signed 64-bit range | integer or string | A value the writer's signed 64-bit integer surface cannot hold is emitted as its exact decimal text (quoted only when a leading sign would otherwise resolve it numerically) and converts back exactly on read. |
 | `double` | float scalar | float | `NaN`, `+∞`, and `−∞` write as `.nan`, `.inf`, and `-.inf`. |
 | `float` | float scalar | float | Widens to `double` on write; narrows on read. |
 | `decimal` | quoted string of the exact invariant text | float scalar or string | Quoted because the exact text would otherwise resolve as a `double`; the quoting preserves the full `decimal` precision. |
 | `DateTime` | string, round-trip (`"o"`) ISO-8601 | string | Read with `DateTimeStyles.RoundtripKind`. There is no native YAML timestamp type; the value travels as a string scalar. |
 | `DateTimeOffset` | string, round-trip (`"o"`) ISO-8601 | string | As `DateTime`, preserving the offset. |
 | `TimeSpan` | string, the invariant `TimeSpan` form | string | |
-| `null` | the null scalar (`null`) | `null`, `~`, or the empty scalar | A null member is omitted instead when `IgnoreNullValues` is set. |
+| `null` | the null scalar (`null`) | `null`, `~`, or the empty scalar | A null member is omitted instead when `DefaultIgnoreCondition` requests it. |
 | `enum` (any) | string, the member name | string (case-insensitive) or integer | Integers instead of names when `WriteEnumsAsStrings = false`. |
 
 > [!NOTE]
@@ -42,11 +42,13 @@ The <xref:Bodu.Text.Yaml.YamlNumberHandling> option governs the integer/float bo
 | plain classes and structs | mapping | The catch-all object converter, consulted last; properties first (reflection order), then public fields when `IncludeFields` is set. Read requires a public parameterless constructor and sets each writable member. |
 | `object`-typed members | the runtime type's form on write | On **read**, an `object` target binds to a loosely-typed graph: a `Dictionary<string, object?>` for a mapping, a `List<object?>` for a sequence, and `bool` / `long` / `double` / `string` / `null` for scalars — **not** a <xref:Bodu.Text.Yaml.Document.YamlElement>. |
 | `Nullable<T>` | the underlying value, or the null scalar | A null scalar binds to `null`; otherwise the value binds as `T`. |
-| <xref:Bodu.Text.Yaml.Nodes.YamlNode> (and `YamlObject` / `YamlArray` / `YamlValue`) | the node's own kind | On write the node is an `IEnumerable` / `IDictionary` and is emitted structurally. To round-trip a document without a model, prefer `YamlNode.Parse` / `ToYamlString` directly (see [Using YAML](using.md)). |
+| <xref:Bodu.Text.Yaml.Nodes.YamlNode> (and `YamlObject` / `YamlArray` / `YamlValue`) | the node's own kind | Mutable DOM bridge: `Deserialize<YamlNode>` materializes the value as a node tree (aliases and merge keys already resolved), and a node — standalone or as a member — writes its own kind. |
+| <xref:Bodu.Text.Yaml.Document.YamlElement> | the element's own kind | Read produces an element view backed by an internal document that shares the reader's row store — no disposal needed. |
+| <xref:Bodu.Text.Yaml.Document.YamlDocument> | the document's root | A deserialized document shares the reader's immutable row store; disposal is optional. |
 
 ## Fields
 
-Properties map by default. Public **fields** participate when <xref:Bodu.Text.Yaml.YamlSerializerOptions.IncludeFields> is `true`, following the same naming-policy, `[YamlPropertyName]`, and `[YamlIgnore]` rules as properties:
+Properties map by default. Public **fields** participate when <xref:Bodu.Text.Yaml.YamlSerializerOptions.IncludeFields> is `true`, following the same naming-policy, `[PropertyName]`, and `[Ignore]` rules as properties:
 
 ```csharp
 public sealed class Counter
@@ -79,11 +81,21 @@ string asInteger = YamlSerializer.Serialize(new { State = Status.OnHold }, asInt
 // State: 1
 ```
 
-On read an enum binds from a name (case-insensitively, through `Enum.Parse`) or from an integer scalar (through `Enum.ToObject`), regardless of `WriteEnumsAsStrings` — the flag affects only the write side. There is no per-member rename attribute (no `[YamlStringEnumMemberName]`) and no string/number enum converter type — the single `WriteEnumsAsStrings` flag is the whole enum surface. To rename individual enum members on the wire, write a [custom converter](converters.md).
+On read an enum binds from a wire name (case-insensitively), or from an integer scalar (through `Enum.ToObject`), regardless of `WriteEnumsAsStrings` — the flag affects only the write side. Individual members rename on the wire with the shared <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute>, honored by the default handling and by the public enum converters:
+
+- <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / `YamlStringEnumConverter<TEnum>` — member-name strings with an optional naming policy and an integers-on-read flag; register on the options for every enum, or reference the generic form from a `[Converter(...)]` attribute.
+- `YamlNumberEnumConverter<TEnum>` — the underlying numeric value as a YAML integer, regardless of `WriteEnumsAsStrings`.
+
+```csharp
+var options = new YamlSerializerOptions();
+options.Converters.Add(new YamlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+
+// Status.OnHold now serializes as on_hold everywhere.
+```
 
 ## What YAML does not need a decision for
 
-Unlike TOML, YAML has no `decimal`-handling or `byte[]`-handling option: `decimal` always travels as quoted exact text (above), and a `byte[]` is treated as an ordinary sequence of `byte` elements rather than a single encoded scalar. The only enum decision is the single `WriteEnumsAsStrings` flag. Anything outside the provisioned set — a value type rendered as one scalar, a type with a bespoke mapping shape, a base64 `byte[]`, or a per-member enum rename — is the job of a [custom converter](converters.md).
+Unlike TOML, YAML has no `decimal`-handling or `byte[]`-handling option: `decimal` always travels as quoted exact text (above), and a `byte[]` is treated as an ordinary sequence of `byte` elements rather than a single encoded scalar. Anything outside the provisioned set — a value type rendered as one scalar, a type with a bespoke mapping shape, or a base64 `byte[]` — is the job of a [custom converter](converters.md).
 
 ## Where to go next
 

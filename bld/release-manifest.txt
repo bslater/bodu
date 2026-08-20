@@ -24,6 +24,7 @@ Bodu.Text.DotEnv
 Bodu.Text.Ini
 Bodu.Text.Formats
 Bodu.Text.Configuration
+Bodu.Text.Filtering
 Bodu.IO.Compound
 Bodu.Formats.Excel.Binary
 Bodu.Formats.Outlook

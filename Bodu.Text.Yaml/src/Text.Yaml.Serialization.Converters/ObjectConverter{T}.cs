@@ -22,7 +22,7 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// Writing dispatches on the value's runtime type: a value whose runtime type differs from <typeparamref name="T" />
 /// re-enters converter resolution so a polymorphic member serializes exactly as its concrete instance would. A member
 /// whose value is <see langword="null" /> writes the YAML null scalar unless the member's ignore condition — or the
-/// serializer-wide <see cref="YamlSerializerOptions.IgnoreNullValues" /> — omits it.
+/// serializer-wide <see cref="YamlSerializerOptions.DefaultIgnoreCondition" /> — omits it.
 /// </remarks>
 internal sealed class ObjectConverter<T>
     : YamlConverter<T>
@@ -241,23 +241,27 @@ internal sealed class ObjectConverter<T>
     }
 
     /// <summary>
-    /// Determines whether a member is omitted from the output for the supplied value, honoring the member's per-member
-    /// <see cref="IgnoreCondition" /> and, in its absence, the serializer-wide null handling.
+    /// Determines whether a member is omitted from the output for the supplied value, applying the member's own ignore
+    /// condition when present and otherwise the serializer-wide
+    /// <see cref="YamlSerializerOptions.DefaultIgnoreCondition" />.
     /// </summary>
     /// <param name="property">The member metadata.</param>
     /// <param name="value">The member value.</param>
-    /// <param name="options">The serializer options.</param>
+    /// <param name="options">The serializer options that supply the default ignore condition.</param>
     /// <returns>
     /// <see langword="true" /> when the member should be skipped; otherwise <see langword="false" />.
     /// </returns>
-    private static bool ShouldOmit(PropertyMetadata property, object? value, YamlSerializerOptions options) =>
-        property.ConditionalIgnore switch
+    private static bool ShouldOmit(PropertyMetadata property, object? value, YamlSerializerOptions options)
+    {
+        IgnoreCondition effective = property.ConditionalIgnore ?? options.DefaultIgnoreCondition;
+
+        return effective switch
         {
             IgnoreCondition.WhenWritingNull => value is null,
             IgnoreCondition.WhenWritingDefault => value is null || Equals(value, property.DefaultTypeValue),
-            IgnoreCondition.Never => false,
-            _ => options.IgnoreNullValues && value is null,
+            _ => false,
         };
+    }
 
     /// <summary>
     /// Constructs the instance using the type's construction plan, invoking the chosen constructor only. Settable
