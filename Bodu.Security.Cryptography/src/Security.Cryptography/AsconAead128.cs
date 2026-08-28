@@ -255,8 +255,9 @@ public sealed class AsconAead128
     /// <paramref name="output" /> as it processes the ciphertext because the duplex sponge derives the tag from the
     /// final state; the tag is then compared in constant time, and on mismatch
     /// <see cref="CryptographicOperations.ZeroMemory" /> clears the plaintext-length region of
-    /// <paramref name="output" /> before <see cref="CryptographicException" /> is thrown — no plaintext is observable
-    /// to the caller.
+    /// <paramref name="output" /> and the keyed sponge state is reset before <see cref="CryptographicException" /> is
+    /// thrown — no plaintext is observable to the caller, and the rejected message's permutation state does not
+    /// outlive the call.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
@@ -273,6 +274,12 @@ public sealed class AsconAead128
 
         int ptLen = ciphertextWithTag.Length - TagBytes;
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, ptLen);
+
+        // Stack-allocated scratch: rate-block snapshots of the sponge words, the saved final ciphertext bytes, and
+        // the recomputed tag. All three carry key- or plaintext-derived material, so they are zeroed in the finally.
+        Span<byte> stateBytes = stackalloc byte[Rate];
+        Span<byte> lastCt = stackalloc byte[Rate];
+        Span<byte> expectedTag = stackalloc byte[TagBytes];
 
         try
         {
@@ -300,31 +307,33 @@ public sealed class AsconAead128
 
             int lastLen = ciphertext.Length - cOff;
 
-            Span<byte> stateBytes = stackalloc byte[Rate];
             BinaryPrimitives.WriteUInt64LittleEndian(stateBytes, _state.S0);
             BinaryPrimitives.WriteUInt64LittleEndian(stateBytes[8..], _state.S1);
 
             // Capture original ciphertext bytes before writing plaintext to output.
             // output and ciphertextWithTag may alias the same buffer, so ciphertext[cOff..]
             // would be overwritten by the XOR loop if we don't save it first.
-            Span<byte> lastCt = stackalloc byte[lastLen == 0 ? 1 : lastLen];
             ciphertext.Slice(cOff, lastLen).CopyTo(lastCt);
 
             for (int i = 0; i < lastLen; i++)
                 output[pOff + i] = (byte)(lastCt[i] ^ stateBytes[i]);
 
-            lastCt[..lastLen].CopyTo(stateBytes);
+            lastCt[..lastLen].CopyTo(stateBytes[..lastLen]);
             stateBytes[lastLen] ^= 0x01;
 
             _state.S0 = BinaryPrimitives.ReadUInt64LittleEndian(stateBytes);
             _state.S1 = BinaryPrimitives.ReadUInt64LittleEndian(stateBytes[8..]);
 
-            Span<byte> expectedTag = stackalloc byte[TagBytes];
             Finalize(expectedTag);
 
             if (!CryptographicOperations.FixedTimeEquals(inTag, expectedTag))
             {
                 CryptographicOperations.ZeroMemory(output[..ptLen]);
+
+                // The rejected message leaves the full keyed permutation state behind; the transform is completed and
+                // single-use, so reset it now rather than letting it live until Dispose.
+                _state = default;
+
                 throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
 
@@ -332,6 +341,9 @@ public sealed class AsconAead128
         }
         finally
         {
+            CryptographyHelper.Clear(expectedTag);
+            CryptographyHelper.Clear(lastCt);
+            CryptographyHelper.Clear(stateBytes);
             _completed = true;
         }
     }
@@ -368,6 +380,11 @@ public sealed class AsconAead128
         int required = plaintext.Length + TagBytes;
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
 
+        // Stack-allocated scratch: the padded final plaintext block and the final ciphertext rate block. Both carry
+        // plaintext- or keystream-derived material, so they are zeroed in the finally.
+        Span<byte> padded = stackalloc byte[Rate];
+        Span<byte> cOut = stackalloc byte[Rate];
+
         try
         {
             int inOff = 0;
@@ -391,14 +408,12 @@ public sealed class AsconAead128
 
             int lastLen = plaintext.Length - inOff;
 
-            Span<byte> padded = stackalloc byte[Rate];
             plaintext.Slice(inOff, lastLen).CopyTo(padded);
             padded[lastLen] ^= 0x01;
 
             ulong fp0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
             ulong fp1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
 
-            Span<byte> cOut = stackalloc byte[Rate];
             BinaryPrimitives.WriteUInt64LittleEndian(cOut, _state.S0 ^ fp0);
             BinaryPrimitives.WriteUInt64LittleEndian(cOut[8..], _state.S1 ^ fp1);
 
@@ -413,6 +428,8 @@ public sealed class AsconAead128
         }
         finally
         {
+            CryptographyHelper.Clear(cOut);
+            CryptographyHelper.Clear(padded);
             _completed = true;
         }
     }
@@ -445,13 +462,21 @@ public sealed class AsconAead128
                 offset += Rate;
             }
 
-            // Final partial block: Ascon padding — 0x01 at the first unused byte position.
+            // Final partial block: Ascon padding — 0x01 at the first unused byte position. The padded copy of the
+            // caller's associated data is zeroed before it goes out of scope.
             Span<byte> pad = stackalloc byte[Rate];
-            int rem = associatedData.Length - offset;
-            associatedData.Slice(offset, rem).CopyTo(pad);
-            pad[rem] ^= 0x01;
-            _state.AbsorbRate128(pad);
-            _state.Permute(Pb);
+            try
+            {
+                int rem = associatedData.Length - offset;
+                associatedData.Slice(offset, rem).CopyTo(pad);
+                pad[rem] ^= 0x01;
+                _state.AbsorbRate128(pad);
+                _state.Permute(Pb);
+            }
+            finally
+            {
+                CryptographyHelper.Clear(pad);
+            }
         }
 
         // Domain separation: always applied after AD, even when AD is empty.
