@@ -278,44 +278,51 @@ public sealed class Serpent128Cipher
     private static void BuildRoundKeys(ReadOnlySpan<byte> key, uint[] roundKeys)
     {
         // Build the 256-bit padded key buffer. A 256-bit key is used unchanged; 128- and 192-bit keys receive the Serpent
-        // 1-bit terminator followed by zeros.
+        // 1-bit terminator followed by zeros. All three scratch spans hold raw or expanded key material and are zeroed
+        // in the finally so a fault mid-expansion cannot leave them live on the stack (matching SerpentBlockCipher).
         Span<byte> paddedKey = stackalloc byte[32];
-        paddedKey.Clear();
-        key.CopyTo(paddedKey);
-
-        if (key.Length < 32)
-            paddedKey[key.Length] = 0x01;
-
-        // Interpret the padded key as eight little-endian 32-bit seed words w[-8]..w[-1].
         Span<uint> seed = stackalloc uint[8];
-        for (int i = 0; i < 8; i++)
-            seed[i] = BinaryReadUInt32LE(paddedKey, i * 4);
-
-        // Prekey layout: w[-8..-1] followed by w[0..131], laid out contiguously as 140 words.
-        // ExpandPrekeys copies the seed and fills the generated tail using the Serpent recurrence.
         Span<uint> prekeys = stackalloc uint[8 + RoundKeyWordCount];
-        ExpandPrekeys(seed, prekeys, 8);
 
-        // Apply the rotating S-box schedule to successive 4-word groups of the generated prekey tail, producing K_0..K_32.
-        for (int r = 0; r <= RoundCount; r++)
+        try
         {
-            int src = 8 + (r * 4);
-            uint x0 = prekeys[src];
-            uint x1 = prekeys[src + 1];
-            uint x2 = prekeys[src + 2];
-            uint x3 = prekeys[src + 3];
+            paddedKey.Clear();
+            key.CopyTo(paddedKey);
 
-            ApplySBox(KeyScheduleSBoxIndex(r), ref x0, ref x1, ref x2, ref x3);
+            if (key.Length < 32)
+                paddedKey[key.Length] = 0x01;
 
-            int dst = r * 4;
-            roundKeys[dst] = x0;
-            roundKeys[dst + 1] = x1;
-            roundKeys[dst + 2] = x2;
-            roundKeys[dst + 3] = x3;
+            // Interpret the padded key as eight little-endian 32-bit seed words w[-8]..w[-1].
+            for (int i = 0; i < 8; i++)
+                seed[i] = BinaryReadUInt32LE(paddedKey, i * 4);
+
+            // Prekey layout: w[-8..-1] followed by w[0..131], laid out contiguously as 140 words.
+            // ExpandPrekeys copies the seed and fills the generated tail using the Serpent recurrence.
+            ExpandPrekeys(seed, prekeys, 8);
+
+            // Apply the rotating S-box schedule to successive 4-word groups of the generated prekey tail, producing K_0..K_32.
+            for (int r = 0; r <= RoundCount; r++)
+            {
+                int src = 8 + (r * 4);
+                uint x0 = prekeys[src];
+                uint x1 = prekeys[src + 1];
+                uint x2 = prekeys[src + 2];
+                uint x3 = prekeys[src + 3];
+
+                ApplySBox(KeyScheduleSBoxIndex(r), ref x0, ref x1, ref x2, ref x3);
+
+                int dst = r * 4;
+                roundKeys[dst] = x0;
+                roundKeys[dst + 1] = x1;
+                roundKeys[dst + 2] = x2;
+                roundKeys[dst + 3] = x3;
+            }
         }
-
-        CryptographyHelper.Clear(prekeys);
-        CryptographyHelper.Clear(seed);
-        CryptographyHelper.Clear(paddedKey);
+        finally
+        {
+            CryptographyHelper.Clear(prekeys);
+            CryptographyHelper.Clear(seed);
+            CryptographyHelper.Clear(paddedKey);
+        }
     }
 }

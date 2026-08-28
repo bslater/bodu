@@ -128,8 +128,8 @@ internal sealed partial class RabbitStreamCipher
         if (_disposed)
             return;
 
-        Array.Clear(_x, 0, _x.Length);
-        Array.Clear(_c, 0, _c.Length);
+        CryptographyHelper.Clear(_x);
+        CryptographyHelper.Clear(_c);
         _carry = 0;
         _disposed = true;
     }

@@ -234,7 +234,7 @@ internal sealed class ChaCha20StreamCipher
         if (_disposed)
             return;
 
-        Array.Clear(_key, 0, _key.Length);
+        CryptographyHelper.Clear(_key);
         _disposed = true;
     }
 

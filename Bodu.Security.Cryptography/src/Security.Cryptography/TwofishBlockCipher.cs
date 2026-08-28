@@ -297,60 +297,71 @@ public sealed class TwofishBlockCipher
         // k is the number of 64-bit key words in the specification: 2, 3, or 4 for 128-, 192-, or 256-bit keys.
         int keyWords = key.Length / 8;
 
+        // The even/odd key words and the RS-derived S-box vector are raw key material; all three scratch spans are
+        // zeroed in the finally so a fault mid-schedule cannot leave them live on the stack.
         Span<uint> me = stackalloc uint[4];
         Span<uint> mo = stackalloc uint[4];
         Span<uint> s = stackalloc uint[4];
 
-        // Split each 64-bit key word Mi into even and odd 32-bit words Me[i] and Mo[i].
-        for (int i = 0; i < keyWords; i++)
+        try
         {
-            me[i] = BinaryPrimitives.ReadUInt32LittleEndian(key[(8 * i)..]);
-            mo[i] = BinaryPrimitives.ReadUInt32LittleEndian(key[((8 * i) + 4)..]);
-        }
-
-        // Apply the RS matrix to each 64-bit key word to produce the S-box key words.
-        // The resulting S vector is stored in reverse order, as required by h(x, L) in the Twofish key schedule.
-        for (int i = 0; i < keyWords; i++)
-        {
-            uint word = 0;
-
-            for (int row = 0; row < 4; row++)
+            // Split each 64-bit key word Mi into even and odd 32-bit words Me[i] and Mo[i].
+            for (int i = 0; i < keyWords; i++)
             {
-                uint value = 0;
-
-                for (int column = 0; column < 8; column++)
-                {
-                    value ^= GfMul(s_rs[row, column], key[(8 * i) + column], 0x4D);
-                }
-
-                word |= value << (8 * row);
+                me[i] = BinaryPrimitives.ReadUInt32LittleEndian(key[(8 * i)..]);
+                mo[i] = BinaryPrimitives.ReadUInt32LittleEndian(key[((8 * i) + 4)..]);
             }
 
-            s[keyWords - i - 1] = word;
+            // Apply the RS matrix to each 64-bit key word to produce the S-box key words.
+            // The resulting S vector is stored in reverse order, as required by h(x, L) in the Twofish key schedule.
+            for (int i = 0; i < keyWords; i++)
+            {
+                uint word = 0;
+
+                for (int row = 0; row < 4; row++)
+                {
+                    uint value = 0;
+
+                    for (int column = 0; column < 8; column++)
+                    {
+                        value ^= GfMul(s_rs[row, column], key[(8 * i) + column], 0x4D);
+                    }
+
+                    word |= value << (8 * row);
+                }
+
+                s[keyWords - i - 1] = word;
+            }
+
+            // Precompute each byte-lane's q/S/MDS contribution. These tables encode the key-dependent S-boxes
+            // and the fixed MDS multiplication used by g().
+            for (int i = 0; i < SBoxLength; i++)
+            {
+                _s1[i] = HSub((byte)i, s, keyWords, 0);
+                _s2[i] = HSub((byte)i, s, keyWords, 1);
+                _s3[i] = HSub((byte)i, s, keyWords, 2);
+                _s4[i] = HSub((byte)i, s, keyWords, 3);
+            }
+
+            // Generate two expanded key words per iteration. A = h(2i, Me), B = ROL(h(2i+1, Mo), 8),
+            // K[2i] = A+B, and K[2i+1] = ROL(A+2B, 9).
+            for (int i = 0; i < ExpandedKeyWords / 2; i++)
+            {
+                uint a = H((byte)(2 * i), me, keyWords);
+                uint b = RotateLeft(H((byte)((2 * i) + 1), mo, keyWords), 8);
+
+                a += b;
+                _k[2 * i] = a;
+
+                a += b;
+                _k[(2 * i) + 1] = RotateLeft(a, 9);
+            }
         }
-
-        // Precompute each byte-lane's q/S/MDS contribution. These tables encode the key-dependent S-boxes
-        // and the fixed MDS multiplication used by g().
-        for (int i = 0; i < SBoxLength; i++)
+        finally
         {
-            _s1[i] = HSub((byte)i, s, keyWords, 0);
-            _s2[i] = HSub((byte)i, s, keyWords, 1);
-            _s3[i] = HSub((byte)i, s, keyWords, 2);
-            _s4[i] = HSub((byte)i, s, keyWords, 3);
-        }
-
-        // Generate two expanded key words per iteration. A = h(2i, Me), B = ROL(h(2i+1, Mo), 8),
-        // K[2i] = A+B, and K[2i+1] = ROL(A+2B, 9).
-        for (int i = 0; i < ExpandedKeyWords / 2; i++)
-        {
-            uint a = H((byte)(2 * i), me, keyWords);
-            uint b = RotateLeft(H((byte)((2 * i) + 1), mo, keyWords), 8);
-
-            a += b;
-            _k[2 * i] = a;
-
-            a += b;
-            _k[(2 * i) + 1] = RotateLeft(a, 9);
+            CryptographyHelper.Clear(s);
+            CryptographyHelper.Clear(mo);
+            CryptographyHelper.Clear(me);
         }
     }
 

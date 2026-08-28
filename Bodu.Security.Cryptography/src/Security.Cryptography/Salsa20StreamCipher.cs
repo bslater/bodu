@@ -198,7 +198,7 @@ internal sealed class Salsa20StreamCipher
         if (_disposed)
             return;
 
-        Array.Clear(_state, 0, _state.Length);
+        CryptographyHelper.Clear(_state);
         _disposed = true;
     }
 
