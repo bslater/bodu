@@ -94,6 +94,34 @@ public partial class AsconAead128Tests
         });
     }
 
+    /// <summary>
+    /// Verifies that <see cref="AsconAead128.Decrypt" /> clears the keyed sponge state when authentication fails, so
+    /// a rejected message does not leave the full 320-bit permutation state — key- and plaintext-derived — live in the
+    /// transform instance until disposal.
+    /// </summary>
+    [TestMethod]
+    public void Decrypt_WhenAuthenticationFails_ShouldClearSpongeState()
+    {
+        byte[] ciphertext = (byte[])s_tamperBaseCiphertext.Clone();
+        ciphertext[0] ^= 0x01;
+        byte[] ctWithTag = ConcatTag(ciphertext, s_tamperBaseTag);
+        using AsconAead128 aead = new(s_tamperReferenceKey, s_tamperReferenceNonce);
+        aead.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            aead.Decrypt(ctWithTag, new byte[s_tamperBasePlaintext.Length]);
+        });
+
+        System.Reflection.FieldInfo stateField = typeof(AsconAead128).GetField(
+            "_state", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
+        var state = (AsconState)stateField.GetValue(aead)!;
+
+        Assert.AreEqual(default, state,
+            "AsconAead128 must reset the sponge state on authentication failure so key-derived permutation " +
+            "state does not outlive the rejected message.");
+    }
+
     private static byte[] ConcatTag(byte[] ciphertext, byte[] tag)
     {
         byte[] result = new byte[ciphertext.Length + tag.Length];
