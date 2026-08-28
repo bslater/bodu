@@ -123,11 +123,17 @@ public sealed class Scrypt
         ThrowIfInvalidLength(length);
 
         byte[] hash = new byte[length];
-        ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, hash);
 
-        string encoded = Encode(Parameters, salt, hash);
-        CryptographyHelper.Clear(hash);
-        return encoded;
+        try
+        {
+            ScryptCore.DeriveKey(password, salt, Parameters.CostN, Parameters.BlockSizeR, Parameters.Parallelization, hash);
+
+            return Encode(Parameters, salt, hash);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(hash);
+        }
     }
 
     /// <summary>
@@ -216,16 +222,25 @@ public sealed class Scrypt
 
         (int costN, int blockSizeR, int parallelization, byte[]? salt, byte[]? hash) = Decode(encoded);
 
-        // Validate the decoded cost parameters before deriving, so an untrusted encoded hash cannot drive an
-        // unbounded (multi-gigabyte) allocation through the memory-hard core.
-        new ScryptParameters { CostN = costN, BlockSizeR = blockSizeR, Parallelization = parallelization }.Validate();
+        byte[]? computed = null;
 
-        byte[] computed = new byte[hash.Length];
-        ScryptCore.DeriveKey(password, salt, costN, blockSizeR, parallelization, computed);
+        try
+        {
+            // Validate the decoded cost parameters before deriving, so an untrusted encoded hash cannot drive an
+            // unbounded (multi-gigabyte) allocation through the memory-hard core.
+            new ScryptParameters { CostN = costN, BlockSizeR = blockSizeR, Parallelization = parallelization }.Validate();
 
-        bool match = CryptographicOperations.FixedTimeEquals(computed, hash);
-        CryptographyHelper.Clear(computed);
-        return match;
+            computed = new byte[hash.Length];
+            ScryptCore.DeriveKey(password, salt, costN, blockSizeR, parallelization, computed);
+
+            return CryptographicOperations.FixedTimeEquals(computed, hash);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(computed);
+            CryptographyHelper.Clear(hash);
+            CryptographyHelper.Clear(salt);
+        }
     }
 
     /// <summary>

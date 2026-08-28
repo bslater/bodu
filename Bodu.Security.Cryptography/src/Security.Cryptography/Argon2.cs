@@ -198,11 +198,17 @@ public abstract class Argon2
         ThrowIfSaltTooShort(salt);
 
         byte[] tag = new byte[Parameters.TagLength];
-        Argon2Core.DeriveTag(Type, Parameters, password, salt, tag);
 
-        string encoded = Encode(Type, Parameters, salt, tag);
-        CryptographyHelper.Clear(tag);
-        return encoded;
+        try
+        {
+            Argon2Core.DeriveTag(Type, Parameters, password, salt, tag);
+
+            return Encode(Type, Parameters, salt, tag);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(tag);
+        }
     }
 
     /// <summary>

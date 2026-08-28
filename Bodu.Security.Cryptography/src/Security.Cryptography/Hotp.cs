@@ -124,21 +124,30 @@ public static partial class Hotp
         if (code.Length != digits)
             return false;
 
+        // The expected code and both widened copies are OTP secrets for the lifetime of the counter window; all
+        // three are zeroed in the finally.
         Span<char> expected = stackalloc char[digits];
-        GenerateInto(secret, counter, digits, algorithm, expected);
-
         Span<byte> expectedBytes = stackalloc byte[digits];
         Span<byte> actualBytes = stackalloc byte[digits];
-        for (int i = 0; i < digits; i++)
+
+        try
         {
-            expectedBytes[i] = (byte)expected[i];
-            actualBytes[i] = (byte)code[i];
+            GenerateInto(secret, counter, digits, algorithm, expected);
+
+            for (int i = 0; i < digits; i++)
+            {
+                expectedBytes[i] = (byte)expected[i];
+                actualBytes[i] = (byte)code[i];
+            }
+
+            return CryptographicOperations.FixedTimeEquals(expectedBytes, actualBytes);
         }
-
-        bool equal = CryptographicOperations.FixedTimeEquals(expectedBytes, actualBytes);
-
-        CryptographicOperations.ZeroMemory(expectedBytes);
-        return equal;
+        finally
+        {
+            CryptographyHelper.Clear(actualBytes);
+            CryptographicOperations.ZeroMemory(expectedBytes);
+            CryptographyHelper.Clear(expected);
+        }
     }
 
     /// <summary>
