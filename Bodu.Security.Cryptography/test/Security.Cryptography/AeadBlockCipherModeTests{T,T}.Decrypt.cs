@@ -330,4 +330,72 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
             $"{typeof(TTransform).Name} must zero the output buffer on authentication failure " +
             "(CryptographicOperations.ZeroMemory) so unverified plaintext cannot leak.");
     }
+
+    /// <summary>
+    /// Verifies that <see cref="IAeadBlockCipherModeTransform.Decrypt" /> zeroes the plaintext region of the output
+    /// buffer before propagating an exception thrown by the underlying block cipher mid-transform, so a faulting
+    /// cipher engine cannot leave unverified (or partially written) plaintext in the caller's buffer.
+    /// </summary>
+    /// <remarks>
+    /// The sweep first counts how many block operations a clean decrypt performs (transform construction included),
+    /// then re-runs the decrypt once per call index with a fault injected at exactly that call. A fault that lands in
+    /// construction-time key derivation is skipped — no decrypt ran and the output was never handed over. For every
+    /// fault that escapes <see cref="IAeadBlockCipherModeTransform.Decrypt" /> itself, the sentinel-filled output must
+    /// come back all-zero, mirroring the tag-mismatch clearing contract of
+    /// <see cref="Decrypt_OnAuthenticationFailure_ShouldZeroOutputBuffer" />.
+    /// </remarks>
+    [TestMethod]
+    public void Decrypt_WhenCipherFaultsMidTransform_ShouldZeroOutputBuffer()
+    {
+        byte[] key = new byte[16];
+        byte[] iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize * 2];
+        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
+
+        using var encCipher = new AesBlockCipherFixture(key);
+        TTransform encTransform = CreateTransform(encCipher, (byte[])iv.Clone());
+        byte[] buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
+        encTransform.Encrypt(plaintext, buf);
+
+        // Count the block-cipher calls a clean decrypt makes, construction-time key derivation included.
+        using var countingInner = new AesBlockCipherFixture(key);
+        using var countingCipher = new FaultingBlockCipher(countingInner, faultAfterCalls: 0);
+        TTransform countingTransform = CreateTransform(countingCipher, (byte[])iv.Clone());
+        byte[] recovered = new byte[plaintext.Length];
+        countingTransform.Decrypt(buf, recovered);
+        CollectionAssert.AreEqual(plaintext, recovered,
+            "Clean decrypt through the counting cipher must recover the original plaintext.");
+        int totalCalls = countingCipher.CallCount;
+
+        for (int faultAt = 1; faultAt <= totalCalls; faultAt++)
+        {
+            using var inner = new AesBlockCipherFixture(key);
+            using var faultingCipher = new FaultingBlockCipher(inner, faultAt);
+
+            TTransform decTransform;
+            try
+            {
+                decTransform = CreateTransform(faultingCipher, (byte[])iv.Clone());
+            }
+            catch (InvalidOperationException)
+            {
+                continue; // the fault landed in construction-time key derivation — Decrypt never ran
+            }
+
+            byte[] output = new byte[plaintext.Length];
+            Array.Fill(output, (byte)0xCC); // sentinel — any non-zero value
+
+            try
+            {
+                decTransform.Decrypt(buf, output);
+            }
+            catch (InvalidOperationException)
+            {
+                CollectionAssert.AreEqual(
+                    new byte[plaintext.Length], output,
+                    $"{typeof(TTransform).Name} must zero the output buffer when the underlying cipher " +
+                    $"faults on call {faultAt} of {totalCalls} so no plaintext or keystream bytes leak.");
+            }
+        }
+    }
 }
