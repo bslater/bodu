@@ -461,21 +461,12 @@ public sealed class EaxModeTransform
 
     /// <summary>
     /// Doubles <paramref name="x" /> in-place in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
-    /// x + 1.
+    /// x + 1, via the shared branch-free <see cref="GaloisField128.Double" /> so the key-derived CMAC subkeys do not
+    /// influence control flow.
     /// </summary>
     /// <param name="x">The block doubled in place.</param>
-    private static void Dbl(byte[] x)
-    {
-        bool msb = (x[0] & 0x80) != 0;
-
-        for (int i = 0; i < x.Length - 1; i++)
-            x[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
-
-        x[^1] <<= 1;
-
-        if (msb)
-            x[^1] ^= 0x87;
-    }
+    private static void Dbl(byte[] x) =>
+        GaloisField128.Double(x, x);
 
     /// <summary>
     /// XORs two equally-sized input spans into <paramref name="result" />.

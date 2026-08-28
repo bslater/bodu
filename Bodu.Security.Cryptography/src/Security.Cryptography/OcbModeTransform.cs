@@ -635,22 +635,15 @@ public sealed class OcbModeTransform
 
     /// <summary>
     /// Multiplies <paramref name="x" /> by α in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
-    /// x + 1.
+    /// x + 1, via the shared branch-free <see cref="GaloisField128.Double" /> so the key-derived offset ladder does not
+    /// influence control flow.
     /// </summary>
     /// <param name="x">The 16-byte input block.</param>
     /// <returns>The GF(2<sup>128</sup>) doubling of <paramref name="x" />.</returns>
     private static byte[] GfDouble(byte[] x)
     {
         byte[] result = new byte[x.Length];
-        bool msb = (x[0] & 0x80) != 0;
-
-        for (int i = 0; i < x.Length - 1; i++)
-            result[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
-
-        result[x.Length - 1] = (byte)(x[^1] << 1);
-
-        if (msb)
-            result[x.Length - 1] ^= 0x87;
+        GaloisField128.Double(x, result);
 
         return result;
     }
