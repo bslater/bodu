@@ -631,8 +631,21 @@ Forward-looking:
   Appendix D and RFC 6238 Appendix B vectors.
 - **A side-channel / fault-hardening review pass is in flight.** The first
   batches replaced the GCM-SIV GF(2^128) multiply with a constant-time
-  implementation and zero the EAX CMAC state on transform fault; further
-  review batches continue on the same cadence.
+  implementation and zero the EAX CMAC state on transform fault. Batch 3
+  (2026-08-28) removed the last branch-on-secret from the GF(2^128)
+  doubling paths (the EAX/SIV/OCB `dbl()` now routes through a shared
+  branch-free `GaloisField128.Double`), completed the zero-on-fault
+  contract across all six block-cipher AEADs (any exception escaping
+  `Decrypt` leaves the output's plaintext region zeroed — pinned by a
+  fault-injection sweep over a new `FaultingBlockCipher` test double —
+  with CCM retrofitted from no clearing at all), reset the Ascon sponge
+  state on authentication failure, fault-protected the
+  Twofish/HC-128/Serpent-128 key-schedule scratch and the
+  Ed25519/X25519/Scrypt/Argon2/HOTP secret clears, added the missing
+  `ConstantTimeDifference`/`ConstantTimeSelect` tests, and documented the
+  cache-timing stance on every table-driven cipher and hash (correcting
+  the CCM/OCB remarks that wrongly claimed verify-before-release).
+  Further review batches continue on the same cadence.
 
 ### `Bodu.IO.Hashing`
 
