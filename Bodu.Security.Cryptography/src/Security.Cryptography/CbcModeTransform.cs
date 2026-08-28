@@ -31,7 +31,8 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="Pkcs7Padding" />. For new designs prefer <see cref="GcmModeTransform" /> or
 /// <see cref="EaxModeTransform" />, both of which authenticate as well as encrypt; CBC plus a separate MAC is fragile
 /// and easy to misuse. Decryption with strippable padding is vulnerable to padding-oracle attacks. The pad-byte
-/// comparison here is constant-time (see <see cref="CryptographyHelper" />'s depad path), but that alone is not a
+/// validation is constant-time (each padding strategy's <c>Unpad</c> — see <see cref="Pkcs7Padding" /> — walks the
+/// full final block with branchless masks), but that alone is not a
 /// complete defence — the depadded length still varies with the pad count and an invalid block throws. Callers must
 /// authenticate the ciphertext (a MAC verified with
 /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />,

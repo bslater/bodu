@@ -50,6 +50,11 @@ namespace Bodu.Security.Cryptography;
 /// <description><b>Rounds:</b> 18 (128-bit key) or 24 (192/256-bit key)</description>
 /// </item>
 /// </list>
+/// <para>
+/// This implementation is constant-time in its control flow, but the fixed S-box lookup tables are read at
+/// data-dependent indices. As such, this implementation is <b>not</b> hardened against timing or cache-based
+/// side-channel attacks.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

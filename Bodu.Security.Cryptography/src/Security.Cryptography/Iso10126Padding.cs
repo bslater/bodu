@@ -92,6 +92,13 @@ public sealed class Iso10126Padding
     /// Thrown if <paramref name="input" /> is empty or not aligned to the block size.
     /// </exception>
     /// <exception cref="CryptographicException">Thrown if the trailing length byte is out of range.</exception>
+    /// <remarks>
+    /// Unlike its siblings, ISO 10126 validation is deliberately <em>not</em> masked into a constant-time walk of the
+    /// final block: the interior pad bytes are random by construction, so the trailing length byte is the only byte
+    /// that can be checked at all. Masking that single range check would buy nothing — the resulting exception is
+    /// observable to an attacker either way, which is exactly the padding-oracle surface. As with every strippable
+    /// padding, authenticate the ciphertext before depadding.
+    /// </remarks>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);

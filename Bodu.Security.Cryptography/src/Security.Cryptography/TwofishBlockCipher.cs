@@ -22,6 +22,11 @@ namespace Bodu.Security.Cryptography;
 /// Most callers should prefer the higher-level <see cref="Twofish" /> class, which exposes the standard
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract.
 /// </para>
+/// <para>
+/// This implementation is constant-time in its control flow, but the precomputed key-dependent S-box/MDS tables are
+/// read at data-dependent indices on every round. As such, this implementation is <b>not</b> hardened against timing
+/// or cache-based side-channel attacks.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

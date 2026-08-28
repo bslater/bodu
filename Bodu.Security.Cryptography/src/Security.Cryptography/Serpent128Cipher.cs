@@ -30,6 +30,12 @@ namespace Bodu.Security.Cryptography;
 /// directly only when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> or
 /// <see cref="IPaddingStrategy" />.
 /// </para>
+/// <para>
+/// This implementation is constant-time in its control flow, and each 4-bit S-box substitution reads a 16-byte table
+/// at a data-dependent index. The table spans a single cache line, which limits — but does not formally eliminate —
+/// cache-timing exposure; this implementation is <b>not</b> hardened against timing or cache-based side-channel
+/// attacks.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

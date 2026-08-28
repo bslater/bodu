@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// A full block of padding is always added when the input length is already a multiple of the block size, so that
 /// <see cref="Unpad" /> can unambiguously recover the original plaintext length. Valid values of <c>N</c> lie in the
-/// range <c>1..blockSize</c>.
+/// range <c>1..blockSize</c>. <see cref="Unpad" /> validates in constant time to resist padding-oracle side channels.
 /// </para>
 /// <para>
 /// <strong>When to choose PKCS7.</strong> The default for confidentiality-only block-cipher modes (CBC, ECB) — PKCS#7

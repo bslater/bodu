@@ -23,9 +23,11 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="FromBytes(ReadOnlySpan{byte})" /> over an empty span.
 /// </para>
 /// <para>
-/// <see cref="Equals(HashValue)" /> performs an ordinary, short-circuiting comparison suitable for collections and
-/// general-purpose code. When the comparison itself is security-relevant — for example validating a received digest
-/// against a locally computed one — use <see cref="FixedTimeEquals(HashValue)" />.
+/// <see cref="Equals(HashValue)" /> compares content in constant time via
+/// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />,
+/// so even the ordinary equality operators are safe when the comparison is security-relevant — for example validating
+/// a received digest against a locally computed one. <see cref="FixedTimeEquals(HashValue)" /> remains available and
+/// behaves identically, making the intent explicit at the call site.
 /// </para>
 /// </remarks>
 /// <example>

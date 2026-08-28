@@ -54,6 +54,11 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <note type="important"> For new general-purpose application encryption, prefer <see cref="Aes" /> unless Twofish
 /// compatibility is specifically required. </note>
+/// <para>
+/// The underlying block-cipher implementation is constant-time in its control flow, but the precomputed key-dependent
+/// S-box/MDS tables are read at data-dependent indices on every round. As such, it is <b>not</b> hardened against
+/// timing or cache-based side-channel attacks.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
