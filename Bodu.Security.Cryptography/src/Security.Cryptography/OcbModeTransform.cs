@@ -311,9 +311,11 @@ public sealed class OcbModeTransform
 
     /// <inheritdoc />
     /// <remarks>
-    /// <strong>Authentication pattern: verify-before-release.</strong> The OCB3 tag is recomputed from the offsets,
-    /// checksum, and AAD hash, then compared in constant time before the per-block decryption is applied to
-    /// <paramref name="output" />; no plaintext byte is ever written when authentication fails. See
+    /// <strong>Authentication pattern: write-then-clear.</strong> OCB3 recomputes its checksum over the decrypted
+    /// plaintext, so the per-block decryption is written into <paramref name="output" /> first and the tag is compared
+    /// in constant time afterwards. On any failure — an authentication mismatch or an exception from the underlying
+    /// cipher mid-transform — the plaintext region of <paramref name="output" /> is zeroed before the exception
+    /// propagates, so unverified plaintext never escapes. See
     /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
@@ -422,6 +424,14 @@ public sealed class OcbModeTransform
             }
 
             return plaintextLength;
+        }
+        catch
+        {
+            // Zero the plaintext region on any failure — a tag mismatch or a fault from the underlying
+            // cipher mid-transform — so the unverified plaintext this write-then-clear mode has already
+            // written never leaks.
+            CryptographyHelper.Clear(output[..plaintextLength]);
+            throw;
         }
         finally
         {

@@ -196,6 +196,14 @@ public sealed class SivModeTransform
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// <strong>Authentication pattern: write-then-clear.</strong> The synthetic IV is recomputed by S2V over the
+    /// decrypted plaintext, so the CTR decryption is written into <paramref name="output" /> first and the SIV is
+    /// compared in constant time afterwards. On any failure — an authentication mismatch or an exception from either
+    /// underlying cipher mid-transform — the plaintext region of <paramref name="output" /> is zeroed before the
+    /// exception propagates, so unverified plaintext never escapes. See
+    /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
+    /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         ThrowIfDisposed();
@@ -232,6 +240,14 @@ public sealed class SivModeTransform
             }
 
             return plaintextLength;
+        }
+        catch
+        {
+            // Zero the plaintext region on any failure — a SIV mismatch or a fault from either underlying
+            // cipher mid-transform — so the unverified plaintext this write-then-clear mode has already
+            // written never leaks.
+            CryptographyHelper.Clear(output[..plaintextLength]);
+            throw;
         }
         finally
         {
