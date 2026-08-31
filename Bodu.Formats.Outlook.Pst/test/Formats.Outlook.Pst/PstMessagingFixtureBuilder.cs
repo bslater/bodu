@@ -85,6 +85,30 @@ internal sealed class PstMessagingFixtureBuilder
     /// <summary>The plain message's stored subject, with no prefix marker.</summary>
     internal const string PlainSubject = "Plain status note";
 
+    /// <summary>The full message's HTML body text, stored as code-page bytes under <c>PidTagHtml</c>.</summary>
+    internal const string HtmlBodyText = "<html><body>Квартальный отчёт</body></html>";
+
+    /// <summary>The full message's RTF body text, stored MELA-wrapped under <c>PidTagRtfCompressed</c>.</summary>
+    internal const string RtfBodyText = "{\\rtf1\\ansi Synthetic quarterly report}";
+
+    /// <summary>The numeric name identifier the synthetic name-to-id map's first entry carries.</summary>
+    internal const uint NamedNumericId = 0x00008888;
+
+    /// <summary>The string name the synthetic name-to-id map's second entry carries.</summary>
+    internal const string NamedStringName = "Keywords";
+
+    /// <summary>The property identifier the numeric named entry maps to.</summary>
+    internal const ushort NamedNumericPropertyId = 0x8000;
+
+    /// <summary>The property identifier the string named entry maps to.</summary>
+    internal const ushort NamedStringPropertyId = 0x8001;
+
+    /// <summary>The <c>PS_PUBLIC_STRINGS</c> property-set identifier the string named entry is scoped by.</summary>
+    internal static readonly Guid PublicStringsPropertySetId = new("00020329-0000-0000-C000-000000000046");
+
+    /// <summary>The property-set identifier the numeric named entry is scoped by, stored in the GUID stream.</summary>
+    internal static readonly Guid NamedPropertySetId = new("20000000-1111-2222-3333-444444444444");
+
     /// <summary>The property identifier the multi-valued Unicode fixture value uses.</summary>
     internal const ushort MvUnicodePropertyId = 0x6000;
 
@@ -200,6 +224,26 @@ internal sealed class PstMessagingFixtureBuilder
     internal bool IncludeDanglingAttachmentRow { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the store carries the name-to-id map node.
+    /// </summary>
+    /// <value><see langword="true" /> by default.</value>
+    internal bool IncludeNameToIdMap { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the name-to-id map's entry stream is truncated to a length that is not
+    /// a multiple of the eight-byte record size.
+    /// </summary>
+    /// <value><see langword="false" /> by default.</value>
+    internal bool TruncateNameMapEntryStream { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the full message's compressed-RTF payload is truncated below the
+    /// 16-byte MS-OXRTFCP header.
+    /// </summary>
+    /// <value><see langword="false" /> by default.</value>
+    internal bool TruncateRtfPayload { get; set; }
+
+    /// <summary>
     /// Assembles the synthetic mail store and returns it as a seekable stream positioned at its start.
     /// </summary>
     /// <returns>The container stream.</returns>
@@ -208,6 +252,9 @@ internal sealed class PstMessagingFixtureBuilder
         var file = new PstFixtureBuilder();
 
         AddStoreObject(file);
+        if (IncludeNameToIdMap)
+            AddNameToIdMap(file);
+
         AddRootFolder(file);
         AddInbox(file);
         AddFullMessage(file);
@@ -227,6 +274,63 @@ internal sealed class PstMessagingFixtureBuilder
 
         _ = ltp.AddPropertyContext((MapiPropertyIds.DisplayName, UnicodeType, nameHid));
         _ = ltp.AddHeapNode(file, 0x21);
+    }
+
+    /// <summary>
+    /// Adds the name-to-id map node: a numeric entry scoped by the GUID-stream identifier mapping to
+    /// <see cref="NamedNumericPropertyId" />, and a string entry scoped by <c>PS_PUBLIC_STRINGS</c> mapping to
+    /// <see cref="NamedStringPropertyId" />.
+    /// </summary>
+    /// <param name="file">The container builder.</param>
+    private void AddNameToIdMap(PstFixtureBuilder file)
+    {
+        var ltp = new PstLtpFixtureBuilder();
+
+        // Entry 0: numeric name, GUID index 3 (the GUID stream's first identifier). Entry 1: string name at string
+        // stream offset 0, GUID index 2 (PS_PUBLIC_STRINGS). The property index is the entry's position.
+        var entries = new byte[16];
+        BinaryPrimitives.WriteUInt32LittleEndian(entries, NamedNumericId);
+        BinaryPrimitives.WriteUInt16LittleEndian(entries.AsSpan(4), 3 << 1);
+        BinaryPrimitives.WriteUInt16LittleEndian(entries.AsSpan(6), 0);
+        BinaryPrimitives.WriteUInt32LittleEndian(entries.AsSpan(8), 0);
+        BinaryPrimitives.WriteUInt16LittleEndian(entries.AsSpan(12), (2 << 1) | 1);
+        BinaryPrimitives.WriteUInt16LittleEndian(entries.AsSpan(14), 1);
+        if (TruncateNameMapEntryStream)
+            entries = entries[..12];
+
+        byte[] nameBytes = Encoding.Unicode.GetBytes(NamedStringName);
+        var strings = new byte[4 + nameBytes.Length];
+        BinaryPrimitives.WriteInt32LittleEndian(strings, nameBytes.Length);
+        nameBytes.CopyTo(strings, 4);
+
+        uint guidsHid = ltp.AddItem(NamedPropertySetId.ToByteArray());
+        uint entriesHid = ltp.AddItem(entries);
+        uint stringsHid = ltp.AddItem(strings);
+
+        _ = ltp.AddPropertyContext(
+            (0x0001, Int32Type, 251),
+            (0x0002, BinaryType, guidsHid),
+            (0x0003, BinaryType, entriesHid),
+            (0x0004, BinaryType, stringsHid));
+        _ = ltp.AddHeapNode(file, 0x61);
+    }
+
+    /// <summary>
+    /// Builds the <c>PidTagRtfCompressed</c> payload: the raw RTF text behind a <c>MELA</c> (uncompressed) header,
+    /// or a truncated header when the knob is set.
+    /// </summary>
+    /// <returns>The payload bytes.</returns>
+    private byte[] BuildRtfPayload()
+    {
+        byte[] rtf = Encoding.ASCII.GetBytes(RtfBodyText);
+        var payload = new byte[16 + rtf.Length];
+        BinaryPrimitives.WriteUInt32LittleEndian(payload, (uint)(rtf.Length + 12));
+        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(4), (uint)rtf.Length);
+        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(8), 0x414C454D);
+        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(12), 0);
+        rtf.CopyTo(payload, 16);
+
+        return TruncateRtfPayload ? payload[..8] : payload;
     }
 
     /// <summary>
@@ -301,6 +405,8 @@ internal sealed class PstMessagingFixtureBuilder
         uint emailHid = ltp.AddItem(Encoding.Unicode.GetBytes(SenderEmailAddress));
         uint classHid = ltp.AddItem(Encoding.Unicode.GetBytes("IPM.Note"));
         uint bodyHid = ltp.AddItem(GetCodePageBytes(BodyText));
+        uint htmlHid = ltp.AddItem(GetCodePageBytes(HtmlBodyText));
+        uint rtfHid = ltp.AddItem(BuildRtfPayload());
         uint mvUnicodeHid = ltp.AddItem(BuildMvUnicodePayload(MvUnicodeValues));
         uint mvInt32Hid = ltp.AddItem(BuildMvInt32Payload(MvInt32Values));
 
@@ -311,6 +417,8 @@ internal sealed class PstMessagingFixtureBuilder
             (MapiPropertyIds.MessageClass, UnicodeType, classHid),
             (MapiPropertyIds.MessageCodepage, Int32Type, MessageCodePage),
             (MapiPropertyIds.Body, String8Type, bodyHid),
+            (MapiPropertyIds.Html, BinaryType, htmlHid),
+            (MapiPropertyIds.RtfCompressed, BinaryType, rtfHid),
             (MapiPropertyIds.HasAttachments, BooleanType, 1),
             (MvUnicodePropertyId, MvUnicodeType, mvUnicodeHid),
             (MvInt32PropertyId, MvInt32Type, mvInt32Hid));

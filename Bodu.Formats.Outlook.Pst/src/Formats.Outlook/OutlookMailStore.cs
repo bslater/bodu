@@ -44,7 +44,7 @@ namespace Bodu.Formats.Outlook;
 /// </code>
 /// </example>
 /// </remarks>
-public sealed class OutlookMailStore
+public sealed partial class OutlookMailStore
     : IDisposable
 {
     /// <summary>The owned container session.</summary>
