@@ -194,7 +194,7 @@ internal sealed class PstNamedPropertyMap
     /// <param name="strings">The string-stream payload.</param>
     /// <param name="offset">The byte offset of the length-prefixed UTF-16LE name.</param>
     /// <param name="name">When this method returns <see langword="true" />, the name text.</param>
-    /// <returns><see langword="true" /> when the offset and length are within the stream.</returns>
+    /// <returns><see langword="true" /> when the offset and length are within the stream and the text names a property.</returns>
     private static bool TryReadName(byte[] strings, uint offset, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out string name)
     {
         name = null;
@@ -205,7 +205,14 @@ internal sealed class PstNamedPropertyMap
         if (length == 0 || (length & 1) != 0 || offset + 4 + length > (uint)strings.Length)
             return false;
 
-        name = System.Text.Encoding.Unicode.GetString(strings, (int)offset + 4, (int)length);
+        string text = System.Text.Encoding.Unicode.GetString(strings, (int)offset + 4, (int)length);
+
+        // A whitespace-only name cannot identify a property; treat it as malformed content rather than letting the
+        // identity constructor's argument validation escape the reader's exception discipline.
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        name = text;
         return true;
     }
 
