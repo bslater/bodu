@@ -15,4 +15,9 @@
     <ProjectReference Include="..\src\Bodu.Formats.Outlook.Pst.csproj" />
   </ItemGroup>
 
+  <!-- Compiles the opted-in documentation snippets (DocumentationSnippetCompileTests). -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
 </Project>

@@ -1130,9 +1130,12 @@ DocFX guide section and compile-guarded snippets.
 
 ### `Bodu.IO.Pst`
 
-Current state: new (P0 spike landed 2026-07-31; **P1 — the LTP layer —
-landed 2026-08-19** per
-[`docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md)).
+Current state: shipping (P0 spike landed 2026-07-31; **P1 — the LTP
+layer — landed 2026-08-19** per
+[`docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md);
+**P2 — the `Bodu.Formats.Outlook.Pst` messaging reader and the
+container hardening pass — landed 2026-08-31** per
+[`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md)).
 The NDB (node database) read layer of MS-PST for the Unicode format —
 header parse with the §5.3 CRC, NBT/BBT B-tree walks, block reads with
 trailer validation and the permute/cyclic content encodings decoded,
@@ -1149,15 +1152,22 @@ names, subjects, senders, contents-table rows, and a no-dangling-HNID
 every-node sweep). Ships at **Preview**; ANSI and OST variants are
 recognized and rejected.
 
-- **P2 — `Bodu.Formats.Outlook.Pst`**: the messaging layer (folders,
-  messages, recipients, attachments, named properties) over the shared
-  `Bodu.Formats.Outlook` MAPI value model, plus the hardening pass
-  (decoded-block LRU, malformed-file sweeps, large-file streaming
-  Regression). P2 is also the shipping gate: `Bodu.IO.Pst` joins the
-  release manifest then — deliberately not at P1 — together with its
-  docs-site debut (a `docs/docs/io-pst/` section, the
-  `docs/apidoc/Bodu.IO.Pst.md` overview, and a `samples/IO.Pst/`
-  scenario project modeled on `samples/IO.Compound/`).
+- **P2 — `Bodu.Formats.Outlook.Pst` — landed** ✅ (2026-08-31, per
+  [`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md)):
+  the messaging layer — `OutlookMailStore` / `OutlookMailFolder` /
+  `OutlookMailMessage` / `OutlookMailAttachment` over the shared
+  `Bodu.Formats.Outlook` MAPI value model (recipients via the shared
+  `OutlookRecipient`, embedded messages, store-wide named-property
+  resolution from the name-to-id map node, and the text/HTML/
+  compressed-RTF bodies via the new `Bodu.Formats.Outlook/shared/**`
+  decode layer) — plus the container hardening pass (`BlockCacheSize`
+  decoded-block LRU, streaming `OpenDataStream` with a memory-ceiling
+  Regression, `PstNode.DataLength`, the `PstFileError` /
+  `PstNodeNotFoundException` exception taxonomy, and bit-flip/truncation
+  malformed sweeps at both the container and messaging levels).
+  `Bodu.IO.Pst` and `Bodu.Formats.Outlook.Pst` joined the release
+  manifest as wave 3 at `BoduBaseVersion` 0.4.0, with the docs-site
+  debut and `samples/IO.Pst/` scenario project.
 - **ANSI format** (`wVer` 14/15) as a demand-driven follow-on; the
   corpus already carries two ANSI fixtures for it.
 - **Scale-tier corpus**: the EDRM Enron PSTs (CC-BY) remain the
@@ -1434,9 +1444,12 @@ filter were added to *Non-goals* instead.
   **P0 executed same day** — `Bodu.IO.Pst` landed with the full NDB
   read layer at Preview; **P1 (the LTP layer) executed 2026-08-19** per
   [`Bodu.IO.Pst/docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md);
-  both tracked in the per-project *`Bodu.IO.Pst`* section above. The
-  `Bodu.Formats.Outlook.Pst` messaging reader with the hardening pass
-  (P2) is the remaining stage.
+  **P2 (the `Bodu.Formats.Outlook.Pst` messaging reader plus the
+  container hardening pass) executed 2026-08-31** per
+  [`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md)
+  — all tracked in the per-project *`Bodu.IO.Pst`* section above. Both
+  packages ship in release wave 3; the ANSI variant and OST deltas
+  remain the demand-driven follow-ons.
 - **`Bodu.Formats.Excel.OpenXml`** — a read-only `.xlsx` value reader over
   an OPC/ZIP container, **sharing the flattened `Bodu.Formats.Excel`
   value model** (`ExcelCell` / `ExcelWorksheet` / `ExcelWorkbookProperties`).

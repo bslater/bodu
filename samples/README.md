@@ -28,7 +28,7 @@ API drift breaks the build immediately.
 
 Domain folders under `samples/` are named by namespace segment — `Core/`, `Collections/`,
 `Collections.Concurrent/`, `Financial/`, `Formats.Excel/`, `Globalization.Calendar/`,
-`Globalization.Recurrence/`, `IO.Compound/`, `IO.Hashing/`, `Numerics/`, `Security.Cryptography/`, `Text.Toml/`,
+`Globalization.Recurrence/`, `IO.Compound/`, `IO.Hashing/`, `IO.Pst/`, `Numerics/`, `Security.Cryptography/`, `Text.Toml/`,
 `Text.Yaml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`, `Text.Filtering/` —
 mirroring how
 folders map to namespaces in the library source trees. The `samples/` root itself stays lowercase, like `src`/`test`/`bench`, because it is
@@ -79,6 +79,7 @@ change to the libraries alters it, the README review catches the drift alongside
 | Globalization.Calendar | [`samples/Globalization.Calendar/`](Globalization.Calendar/README.md) — holiday queries and subdivisions, working-day arithmetic, authored calendars, DI + reload, custom algorithms |
 | Globalization.Recurrence | [`samples/Globalization.Recurrence/`](Globalization.Recurrence/README.md) — the RFC 5545 `RRULE` form, the Vixie cron dialect, calendar-free anchored intervals, `RDATE`/`EXDATE` set composition, and an integrating scheduling host |
 | IO.Compound | [`samples/IO.Compound/`](IO.Compound/README.md) — OLE2 structured storage: builder authoring + read-back, OLE property sets, detection and the v3/v4 knob, a real `.doc`'s tree |
+| IO.Pst | [`samples/IO.Pst/`](IO.Pst/README.md) — the PST node database: detection, raw property/table contexts, streaming under strict validation, and the `OutlookMailStore` folder/message/attachment walk |
 | IO.Hashing | [`samples/IO.Hashing/`](IO.Hashing/README.md) — the CRC catalogue, checksum families, streaming/resumable digests, identifier check digits, and a custom scheme with contract tests |
 | Numerics | [`samples/Numerics/`](Numerics/README.md) — Fraction rational arithmetic and continued fractions, the interval algebra, streaming statistics, and the JSON converters |
 | Security.Cryptography | [`samples/Security.Cryptography/`](Security.Cryptography/README.md) — hashes/MAC/XOF/KDF/OTP, block/stream ciphers and AEAD, asymmetric key agreement/signatures/KEM, and a custom hash with contract tests |

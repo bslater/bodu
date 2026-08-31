@@ -315,6 +315,9 @@
   <Folder Name="/Samples/IO.Compound/">
     <Project Path="samples/IO.Compound/Bodu.IO.Compound.Samples.CompoundBasics/Bodu.IO.Compound.Samples.CompoundBasics.csproj" />
   </Folder>
+  <Folder Name="/Samples/IO.Pst/">
+    <Project Path="samples/IO.Pst/Bodu.IO.Pst.Samples.PstBasics/Bodu.IO.Pst.Samples.PstBasics.csproj" />
+  </Folder>
   <Folder Name="/Samples/Numerics/">
     <Project Path="samples/Numerics/Bodu.Numerics.Samples.Fractions/Bodu.Numerics.Samples.Fractions.csproj" />
     <Project Path="samples/Numerics/Bodu.Numerics.Samples.Intervals/Bodu.Numerics.Samples.Intervals.csproj" />

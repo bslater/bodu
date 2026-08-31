@@ -203,6 +203,7 @@ ICONS = {
     "Bodu.Formats.Excel.Binary":         ("xls", "#34D399", "XLS", "grid"),
     "Bodu.Formats.Outlook":              ("olk", "#60A5FA", "MAPI", "eq"),
     "Bodu.Formats.Outlook.Msg":          ("olkmsg", "#2DD4BF", "MSG", "doclines"),
+    "Bodu.Formats.Outlook.Pst":          ("olkpst", "#A78BFA", "PST", "eq"),
     "Bodu.Numerics":                     ("num", "#A78BFA", "NUM", "fraction"),
     "Bodu.Numerics.Serialization.Json":  ("numjson", "#A78BFA", "JSON", "braces"),
     "Bodu.Financial":                    ("fin", "#34D399", "FIN", "coin"),
