@@ -26,6 +26,11 @@
     <Compile Include="..\..\Bodu.IO.Hashing\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
+  <!-- Shared Outlook decode layer (value decoder, encoding resolver, compressed RTF), source-compiled from the value-model package. -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.Formats.Outlook\shared\**\*.cs" Link="shared\Formats.Outlook\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <!-- Bodu project dependencies. -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />

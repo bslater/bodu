@@ -6,7 +6,11 @@
 
 using System.Buffers.Binary;
 
+#if MSG
 namespace Bodu.Formats.Outlook.Msg;
+#elif OUTLOOK_PST
+namespace Bodu.Formats.Outlook.Pst;
+#endif
 
 /// <summary>
 /// Decompresses the LZFu compressed-RTF format (MS-OXRTFCP) carried by <c>PidTagRtfCompressed</c>.
@@ -25,6 +29,12 @@ namespace Bodu.Formats.Outlook.Msg;
 /// exclusive-or — the catalogued CRC-32 in <c>Bodu.IO.Hashing</c> applies the standard pre/post conditioning this
 /// format omits, so the checksum runs the format's parameters over the shared <see cref="CrcCore" /> engine
 /// source-compiled from <c>Bodu.IO.Hashing/shared</c> (no package dependency).
+/// </para>
+/// <para>
+/// This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader —
+/// <c>PidTagRtfCompressed</c> carries the same MS-OXRTFCP payload in a <c>.msg</c> substream and a PST property
+/// context. The consuming project selects the namespace and the format-specific exception/resource pair via its
+/// <c>DefineConstants</c> (<c>MSG</c> or <c>OUTLOOK_PST</c>).
 /// </para>
 /// </remarks>
 internal static class CompressedRtf
@@ -52,14 +62,15 @@ internal static class CompressedRtf
     /// </summary>
     /// <param name="data">The complete <c>PidTagRtfCompressed</c> payload, including the 16-byte header.</param>
     /// <returns>The RTF text bytes.</returns>
-    /// <exception cref="OutlookMsgFormatException">
+    /// <exception cref="OutlookFormatException">
     /// The header is truncated or carries an unknown magic, the declared sizes escape the payload, or the checksum does
-    /// not match.
+    /// not match. The concrete type is the consuming format's exception (<c>OutlookMsgFormatException</c> or
+    /// <c>OutlookPstFormatException</c>).
     /// </exception>
     internal static byte[] Decompress(ReadOnlySpan<byte> data)
     {
         if (data.Length < 16)
-            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedHeader);
+            throw MalformedHeader();
 
         uint compressedSize = BinaryPrimitives.ReadUInt32LittleEndian(data);
         uint rawSize = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(4));
@@ -67,25 +78,25 @@ internal static class CompressedRtf
         uint crc = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(12));
 
         if (magic is not (CompressedMagic or UncompressedMagic))
-            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedHeader);
+            throw MalformedHeader();
 
         if (compressedSize < 12 || compressedSize - 12 > (uint)(data.Length - 16))
-            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedData);
+            throw MalformedData();
 
         ReadOnlySpan<byte> payload = data.Slice(16, (int)(compressedSize - 12));
 
         if (magic == UncompressedMagic)
         {
             if (crc != 0)
-                throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedCrc);
+                throw ChecksumMismatch();
             if (rawSize > (uint)payload.Length)
-                throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedData);
+                throw MalformedData();
 
             return payload.Slice(0, (int)rawSize).ToArray();
         }
 
         if (ComputeCrc(payload) != crc)
-            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedCrc);
+            throw ChecksumMismatch();
 
         return DecodeCompressed(payload, (int)Math.Min(rawSize, int.MaxValue));
     }
@@ -156,4 +167,37 @@ internal static class CompressedRtf
 
         return output.ToArray();
     }
+
+    /// <summary>
+    /// Creates the truncated-or-unknown-header exception for the consuming format.
+    /// </summary>
+    /// <returns>The exception to throw.</returns>
+    private static Exception MalformedHeader() =>
+#if MSG
+        new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedHeader);
+#elif OUTLOOK_PST
+        new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_RtfCompressedHeader);
+#endif
+
+    /// <summary>
+    /// Creates the declared-sizes-escape-the-payload exception for the consuming format.
+    /// </summary>
+    /// <returns>The exception to throw.</returns>
+    private static Exception MalformedData() =>
+#if MSG
+        new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedData);
+#elif OUTLOOK_PST
+        new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_RtfCompressedData);
+#endif
+
+    /// <summary>
+    /// Creates the checksum-mismatch exception for the consuming format.
+    /// </summary>
+    /// <returns>The exception to throw.</returns>
+    private static Exception ChecksumMismatch() =>
+#if MSG
+        new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedCrc);
+#elif OUTLOOK_PST
+        new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_RtfCompressedCrc);
+#endif
 }

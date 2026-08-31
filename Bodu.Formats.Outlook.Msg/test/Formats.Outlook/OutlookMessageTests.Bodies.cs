@@ -30,7 +30,7 @@ public partial class OutlookMessageTests
     public void BodyHtml_WhenBinaryWithCodePage_ShouldDecodeThroughDeclaredEncoding()
     {
         const string Html = "<html><body>こんにちは</body></html>";
-        byte[] bytes = MsgEncodingResolver.GetEncoding(932, null).GetBytes(Html);
+        byte[] bytes = MapiEncodingResolver.GetEncoding(932, null).GetBytes(Html);
         using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
             .AddBinary(MapiPropertyIds.Html, bytes)
             .AddFixedEntry(0x3FDE0003, 932)

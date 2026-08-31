@@ -238,7 +238,7 @@ public sealed partial class OutlookMessage
             MapiPropertyCollection properties = MsgPropertyDecoder.Decode(
                 compound.RootStorage, MsgPropertyStreamKind.Root, options.ValidationLevel, inheritedEncoding: null, out MsgPropertyStreamHeader header);
 
-            System.Text.Encoding encoding = MsgEncodingResolver.Resolve(properties, inherited: null);
+            System.Text.Encoding encoding = MapiEncodingResolver.Resolve(properties, inherited: null);
             return new OutlookMessage(compound, compound.RootStorage, options, properties, header, ownsContainer: true, encoding, root: null);
         }
         catch

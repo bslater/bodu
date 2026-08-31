@@ -1,12 +1,16 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MsgEncodingResolver.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MapiEncodingResolver.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
 
+#if MSG
 namespace Bodu.Formats.Outlook.Msg;
+#elif OUTLOOK_PST
+namespace Bodu.Formats.Outlook.Pst;
+#endif
 
 /// <summary>
 /// Resolves the <see cref="Encoding" /> used to decode code-page (<c>PT_STRING8</c>) string properties.
@@ -15,20 +19,22 @@ namespace Bodu.Formats.Outlook.Msg;
 /// The type constructor registers <see cref="CodePagesEncodingProvider" /> so the Windows code pages that dominate
 /// real-world messages (Windows-1252, Shift-JIS, and the rest) resolve on all platforms. Resolution prefers the message
 /// code page, then the internet code page, then falls back to Windows-1252 — the historical default for messages that
-/// declare nothing.
+/// declare nothing. This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook
+/// format reader — the same code-page properties govern <c>PT_STRING8</c> decoding in a <c>.msg</c> container and a
+/// PST property context; the consuming project selects the namespace via its <c>DefineConstants</c>.
 /// </remarks>
-internal static class MsgEncodingResolver
+internal static class MapiEncodingResolver
 {
     /// <summary>The Windows-1252 code page used when a message declares no usable code page.</summary>
     private const int FallbackCodePage = 1252;
 
     /// <summary>
-    /// Initializes static members of the <see cref="MsgEncodingResolver" /> class.
+    /// Initializes static members of the <see cref="MapiEncodingResolver" /> class.
     /// </summary>
     /// <remarks>
     /// Registers <see cref="CodePagesEncodingProvider" /> exactly once per process; registration is idempotent.
     /// </remarks>
-    static MsgEncodingResolver() =>
+    static MapiEncodingResolver() =>
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
     /// <summary>

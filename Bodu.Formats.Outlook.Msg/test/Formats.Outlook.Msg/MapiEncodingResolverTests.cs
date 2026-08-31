@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MsgEncodingResolverTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MapiEncodingResolverTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,10 +7,10 @@
 namespace Bodu.Formats.Outlook.Msg;
 
 /// <summary>
-/// Verifies the behavior of <see cref="MsgEncodingResolver" />, the code-page resolver.
+/// Verifies the behavior of <see cref="MapiEncodingResolver" />, the code-page resolver.
 /// </summary>
 [TestClass]
-public class MsgEncodingResolverTests
+public class MapiEncodingResolverTests
 {
     /// <summary>
     /// Verifies that a declared Windows code page resolves — proving the code-pages provider registration — and that
@@ -19,8 +19,8 @@ public class MsgEncodingResolverTests
     [TestMethod]
     public void GetEncoding_WhenMessageCodePageDeclared_ShouldResolveAndPreferIt()
     {
-        Assert.AreEqual(932, MsgEncodingResolver.GetEncoding(932, 1251).CodePage);
-        Assert.AreEqual(1251, MsgEncodingResolver.GetEncoding(null, 1251).CodePage);
+        Assert.AreEqual(932, MapiEncodingResolver.GetEncoding(932, 1251).CodePage);
+        Assert.AreEqual(1251, MapiEncodingResolver.GetEncoding(null, 1251).CodePage);
     }
 
     /// <summary>
@@ -29,7 +29,7 @@ public class MsgEncodingResolverTests
     [TestMethod]
     public void GetEncoding_WhenNothingDeclared_ShouldFallBackToWindows1252()
     {
-        Assert.AreEqual(1252, MsgEncodingResolver.GetEncoding(null, null).CodePage);
+        Assert.AreEqual(1252, MapiEncodingResolver.GetEncoding(null, null).CodePage);
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class MsgEncodingResolverTests
     {
         _ = testName;
 
-        Assert.AreEqual(1252, MsgEncodingResolver.GetEncoding(messageCodePage, null).CodePage);
-        Assert.AreEqual(932, MsgEncodingResolver.GetEncoding(messageCodePage, 932).CodePage);
+        Assert.AreEqual(1252, MapiEncodingResolver.GetEncoding(messageCodePage, null).CodePage);
+        Assert.AreEqual(932, MapiEncodingResolver.GetEncoding(messageCodePage, 932).CodePage);
     }
 }

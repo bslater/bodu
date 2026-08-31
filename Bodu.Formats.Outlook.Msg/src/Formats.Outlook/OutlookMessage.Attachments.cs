@@ -60,11 +60,11 @@ public sealed partial class OutlookMessage
     /// <returns>The nested message session, sharing this session's container and named-property mapping.</returns>
     internal OutlookMessage OpenNestedMessage(CompoundStorage messageStorage, MapiPropertyCollection attachmentProperties)
     {
-        System.Text.Encoding inherited = MsgEncodingResolver.Resolve(attachmentProperties, _stringEncoding);
+        System.Text.Encoding inherited = MapiEncodingResolver.Resolve(attachmentProperties, _stringEncoding);
         MapiPropertyCollection properties = MsgPropertyDecoder.Decode(
             messageStorage, MsgPropertyStreamKind.EmbeddedMessage, _options.ValidationLevel, inherited, out MsgPropertyStreamHeader header);
 
-        System.Text.Encoding encoding = MsgEncodingResolver.Resolve(properties, inherited);
+        System.Text.Encoding encoding = MapiEncodingResolver.Resolve(properties, inherited);
         return new OutlookMessage(_compound, messageStorage, _options, properties, header, ownsContainer: false, encoding, _root ?? this);
     }
 }

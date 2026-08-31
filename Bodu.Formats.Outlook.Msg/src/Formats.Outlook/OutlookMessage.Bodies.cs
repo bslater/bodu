@@ -31,7 +31,7 @@ public sealed partial class OutlookMessage
             ReadOnlyMemory<byte>? bytes = Properties.GetBinary(MapiPropertyIds.Html);
             if (bytes is ReadOnlyMemory<byte> payload)
             {
-                System.Text.Encoding encoding = MsgEncodingResolver.GetEncoding(
+                System.Text.Encoding encoding = MapiEncodingResolver.GetEncoding(
                     Properties.GetInt32(MapiPropertyIds.InternetCodepage),
                     Properties.GetInt32(MapiPropertyIds.MessageCodepage));
                 return encoding.GetString(payload.Span);
