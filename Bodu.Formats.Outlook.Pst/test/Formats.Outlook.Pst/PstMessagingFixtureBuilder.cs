@@ -237,6 +237,12 @@ internal sealed class PstMessagingFixtureBuilder
     internal bool TruncateNameMapEntryStream { get; set; }
 
     /// <summary>
+    /// Gets or sets a replacement for the name-to-id map's string stream, for malformed-content tests.
+    /// </summary>
+    /// <value><see langword="null" /> to emit the well-formed stream.</value>
+    internal byte[]? NameMapStringStreamOverride { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether the full message's compressed-RTF payload is truncated below the
     /// 16-byte MS-OXRTFCP header.
     /// </summary>
@@ -302,6 +308,8 @@ internal sealed class PstMessagingFixtureBuilder
         var strings = new byte[4 + nameBytes.Length];
         BinaryPrimitives.WriteInt32LittleEndian(strings, nameBytes.Length);
         nameBytes.CopyTo(strings, 4);
+        if (NameMapStringStreamOverride is not null)
+            strings = NameMapStringStreamOverride;
 
         uint guidsHid = ltp.AddItem(NamedPropertySetId.ToByteArray());
         uint entriesHid = ltp.AddItem(entries);

@@ -110,6 +110,51 @@ public partial class OutlookMailStoreTests
     }
 
     /// <summary>
+    /// Verifies that a string stream naming a whitespace-only property is treated as malformed content: skipped under
+    /// the tolerant levels rather than escaping as an argument exception.
+    /// </summary>
+    [TestMethod]
+    public void TryGetPropertyName_WhenStringNameIsWhitespace_ShouldReturnFalse()
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(
+            static b => b.NameMapStringStreamOverride = BuildWhitespaceNameStream());
+
+        Assert.IsFalse(store.TryGetPropertyName(
+            new MapiPropertyTag(PstMessagingFixtureBuilder.NamedStringPropertyId, MapiPropertyType.Unicode), out _));
+    }
+
+    /// <summary>
+    /// Verifies that a string stream naming a whitespace-only property throws the format exception under strict
+    /// validation, never <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void TryGetPropertyName_WhenStringNameIsWhitespace_ForStrictValidation_ShouldThrowOutlookPstFormatException()
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(
+            static b => b.NameMapStringStreamOverride = BuildWhitespaceNameStream(),
+            PstValidationLevel.Strict);
+
+        _ = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = store.TryGetPropertyName(
+                new MapiPropertyTag(PstMessagingFixtureBuilder.NamedStringPropertyId, MapiPropertyType.Unicode), out _);
+        });
+    }
+
+    /// <summary>
+    /// Builds a name-map string stream whose only entry is two spaces.
+    /// </summary>
+    /// <returns>The stream bytes.</returns>
+    private static byte[] BuildWhitespaceNameStream()
+    {
+        byte[] name = System.Text.Encoding.Unicode.GetBytes("  ");
+        var stream = new byte[4 + name.Length];
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(stream, name.Length);
+        name.CopyTo(stream, 4);
+        return stream;
+    }
+
+    /// <summary>
     /// Verifies that the reference fixture's name-to-id map parses under strict validation: its first entry is the
     /// numeric name <c>0x8205</c> mapped to identifier <c>0x8000</c>, the mapping round-trips, and the map carries at
     /// least one string named entry.
