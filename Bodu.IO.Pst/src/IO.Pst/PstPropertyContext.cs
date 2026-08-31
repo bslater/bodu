@@ -84,14 +84,14 @@ public sealed class PstPropertyContext
     /// </summary>
     /// <param name="propertyId">The 16-bit property identifier.</param>
     /// <returns>The property value.</returns>
-    /// <exception cref="PstFileException">The property is not present.</exception>
+    /// <exception cref="PstFileException">The property is not present (<see cref="PstFileException.Error" /> is <see cref="PstFileError.PropertyNotFound" />).</exception>
     /// <exception cref="PstFileFormatException">The property's value reference does not resolve.</exception>
     public PstPropertyValue GetValue(ushort propertyId)
     {
         if (!TryGetValue(propertyId, out PstPropertyValue value))
         {
             throw new PstFileException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.IO_KeyNotFound_PstProperty, propertyId, new PstNodeId(_context.NodeId)));
+                CultureInfo.CurrentCulture, PstResourceStrings.IO_KeyNotFound_PstProperty, propertyId, new PstNodeId(_context.NodeId)), PstFileError.PropertyNotFound);
         }
 
         return value;
@@ -161,7 +161,7 @@ public sealed class PstPropertyContext
             if (payload.Length < fixedSize)
             {
                 throw new PstFileFormatException(string.Format(
-                    CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPropertyContext, new PstNodeId(_context.NodeId)));
+                    CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPropertyContext, new PstNodeId(_context.NodeId)), PstFileError.InvalidPropertyContext);
             }
 
             return new PstPropertyValue(entry.PropertyId, entry.WireType, payload.AsMemory(0, fixedSize));

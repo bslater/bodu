@@ -59,7 +59,7 @@ internal static class PstPropertyContextReader
                     PstResourceStrings.Format_Invalid_PstPropertyWireType,
                     propertyId,
                     new PstNodeId(entry.NodeId),
-                    wireType));
+                    wireType), PstFileError.InvalidPropertyValue);
             }
 
             entries.Add(new PstPcEntry(propertyId, wireType, rawValue));
@@ -74,5 +74,5 @@ internal static class PstPropertyContextReader
     /// <param name="nodeId">The owning node identifier.</param>
     /// <returns>The exception to throw.</returns>
     private static PstFileFormatException Malformed(uint nodeId) =>
-        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPropertyContext, new PstNodeId(nodeId)));
+        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPropertyContext, new PstNodeId(nodeId)), PstFileError.InvalidPropertyContext);
 }

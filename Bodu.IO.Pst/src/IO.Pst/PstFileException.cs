@@ -37,4 +37,35 @@ public class PstFileException
         : base(message, innerException)
     {
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PstFileException" /> class with a message and an error category.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="error">The error category.</param>
+    public PstFileException(string? message, PstFileError error)
+        : base(message)
+    {
+        Error = error;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PstFileException" /> class with a message, an inner exception,
+    /// and an error category.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="innerException">The exception that caused this error.</param>
+    /// <param name="error">The error category.</param>
+    public PstFileException(string? message, Exception? innerException, PstFileError error)
+        : base(message, innerException)
+    {
+        Error = error;
+    }
+
+    /// <summary>
+    /// Gets the category of the failure, so callers can distinguish a missing object from structural corruption
+    /// without parsing messages.
+    /// </summary>
+    /// <value>The error category; <see cref="PstFileError.None" /> when the throw site recorded none.</value>
+    public PstFileError Error { get; }
 }

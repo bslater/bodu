@@ -39,6 +39,7 @@ public partial class PstPropertyContextTests
             });
 
             Assert.IsTrue(ex.Message.Contains("0x7FFF", StringComparison.Ordinal));
+            Assert.AreEqual(PstFileError.PropertyNotFound, ex.Error);
         }
     }
 }

@@ -17,6 +17,7 @@ public sealed class PstUnsupportedFormatException
     /// Initializes a new instance of the <see cref="PstUnsupportedFormatException" /> class.
     /// </summary>
     public PstUnsupportedFormatException()
+        : base(null, PstFileError.UnsupportedFormat)
     {
     }
 
@@ -25,7 +26,7 @@ public sealed class PstUnsupportedFormatException
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
     public PstUnsupportedFormatException(string? message)
-        : base(message)
+        : base(message, PstFileError.UnsupportedFormat)
     {
     }
 
@@ -36,7 +37,7 @@ public sealed class PstUnsupportedFormatException
     /// <param name="message">The message that describes the error.</param>
     /// <param name="innerException">The exception that caused this error.</param>
     public PstUnsupportedFormatException(string? message, Exception? innerException)
-        : base(message, innerException)
+        : base(message, innerException, PstFileError.UnsupportedFormat)
     {
     }
 }

@@ -28,17 +28,18 @@ public partial class PstFileTests
     /// Verifies that an absent identifier raises the library's key-not-found error carrying the identifier.
     /// </summary>
     [TestMethod]
-    public void GetNode_WhenIdentifierAbsent_ShouldThrowPstFileException()
+    public void GetNode_WhenIdentifierAbsent_ShouldThrowPstNodeNotFoundException()
     {
         using PstFile file = OpenSample1();
         var missing = new PstNodeId(PstNodeType.NormalMessage, 0x7FFFFFF);
 
-        var ex = Assert.ThrowsExactly<PstFileException>(() =>
+        var ex = Assert.ThrowsExactly<PstNodeNotFoundException>(() =>
         {
             _ = file.GetNode(missing);
         });
 
         Assert.IsTrue(ex.Message.Contains(missing.ToString(), StringComparison.Ordinal));
+        Assert.AreEqual(PstFileError.NodeNotFound, ex.Error);
     }
 
     /// <summary>

@@ -96,7 +96,7 @@ internal sealed class PstHeader
     internal static PstHeader Parse(ReadOnlySpan<byte> data, PstValidationLevel validationLevel)
     {
         if (!IsPstHeader(data) || data.Length < UnicodeHeaderSize)
-            throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader);
+            throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
 
         ushort version = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(10));
         switch (version)
@@ -108,7 +108,7 @@ internal sealed class PstHeader
                 throw new PstUnsupportedFormatException(string.Format(
                     CultureInfo.CurrentCulture, PstResourceStrings.Op_NotSupported_PstFormat, PstFileFormat.Ost4K));
             case not 23:
-                throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader);
+                throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
         }
 
         // dwCRCPartial covers the 471 bytes from wMagicClient; verified except under Minimal validation.
@@ -116,11 +116,11 @@ internal sealed class PstHeader
         {
             uint recordedCrc = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(4));
             if (PstCrc.Compute(data.Slice(8, 471)) != recordedCrc)
-                throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeaderCrc);
+                throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeaderCrc, PstFileError.InvalidHeader);
         }
 
         if (data[512] != 0x80)
-            throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader);
+            throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
 
         byte cryptMethod = data[513];
         if (cryptMethod is not(0x00 or 0x01 or 0x02))

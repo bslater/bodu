@@ -176,7 +176,7 @@ internal static class PstBTree
         if (stride < 16 || count * stride > 488)
         {
             throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPage, bref.Offset));
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPage, bref.Offset), PstFileError.InvalidPage);
         }
 
         return (count, stride, level);

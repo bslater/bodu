@@ -96,7 +96,7 @@ internal static class PstDataTree
         if (level != 1)
         {
             throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId));
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId), PstFileError.InvalidDataTree);
         }
 
         for (int i = 0; i < count; i++)
@@ -115,14 +115,14 @@ internal static class PstDataTree
         if (block.Length < 8 || block[0] != DataTreeBlockType || block[1] is not(1 or 2))
         {
             throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId));
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId), PstFileError.InvalidDataTree);
         }
 
         int count = BinaryPrimitives.ReadUInt16LittleEndian(block.AsSpan(2));
         if (8 + (count * 8) > block.Length)
         {
             throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId));
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId), PstFileError.InvalidDataTree);
         }
 
         return (block[1], count);
@@ -168,7 +168,7 @@ internal static class PstDataTree
                 if (childLevel != 1)
                 {
                     throw new PstFileFormatException(string.Format(
-                        CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, childId));
+                        CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, childId), PstFileError.InvalidDataTree);
                 }
 
                 for (int j = 0; j < childCount; j++)
@@ -191,7 +191,7 @@ internal static class PstDataTree
         if (!PstBTree.TryFindBlock(source, blockId, out PstBbtEntry entry))
         {
             throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId));
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId), PstFileError.InvalidDataTree);
         }
 
         return entry;
@@ -209,7 +209,7 @@ internal static class PstDataTree
         if (!PstBTree.TryFindBlock(source, blockId, out PstBbtEntry entry))
         {
             throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId));
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId), PstFileError.InvalidDataTree);
         }
 
         return source.ReadBlock(entry);

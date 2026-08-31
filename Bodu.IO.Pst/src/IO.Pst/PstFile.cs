@@ -209,13 +209,13 @@ public sealed class PstFile
     /// <param name="id">The node identifier.</param>
     /// <returns>The node.</returns>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
-    /// <exception cref="PstFileException">No node with the identifier exists.</exception>
+    /// <exception cref="PstNodeNotFoundException">No node with the identifier exists.</exception>
     public PstNode GetNode(PstNodeId id)
     {
         if (TryGetNode(id, out PstNode? node))
             return node;
 
-        throw new PstFileException(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.IO_KeyNotFound_PstNode, id));
+        throw new PstNodeNotFoundException(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.IO_KeyNotFound_PstNode, id));
     }
 
     /// <summary>

@@ -38,4 +38,15 @@ public sealed class PstFileFormatException
         : base(message, innerException)
     {
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PstFileFormatException" /> class with a message and an error
+    /// category.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="error">The error category.</param>
+    public PstFileFormatException(string? message, PstFileError error)
+        : base(message, error)
+    {
+    }
 }

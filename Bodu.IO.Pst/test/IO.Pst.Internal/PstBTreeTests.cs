@@ -103,7 +103,7 @@ public class PstBTreeTests
     {
         using PstFile file = PstFile.Open(new MemoryStream(BuildMultiPageTree(), writable: false), PstFileOptions.Default);
 
-        _ = Assert.ThrowsExactly<PstFileException>(() => _ = file.GetNode(new PstNodeId(0xFFFF)));
+        _ = Assert.ThrowsExactly<PstNodeNotFoundException>(() => _ = file.GetNode(new PstNodeId(0xFFFF)));
     }
 
     /// <summary>
