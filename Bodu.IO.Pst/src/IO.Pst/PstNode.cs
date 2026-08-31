@@ -24,6 +24,12 @@ public sealed class PstNode
     /// <summary>The node's directory entry.</summary>
     private readonly PstNbtEntry _entry;
 
+    /// <summary>The lazily resolved ordered leaf entries of the node's data tree.</summary>
+    private List<PstBbtEntry>? _dataLeaves;
+
+    /// <summary>The lazily materialized subnode directory, in stored order.</summary>
+    private List<PstNbtEntry>? _subnodeEntries;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PstNode" /> class.
     /// </summary>
@@ -57,6 +63,28 @@ public sealed class PstNode
         _entry.SubnodeBlockId != 0;
 
     /// <summary>
+    /// Gets the logical length of the node's data payload, in bytes.
+    /// </summary>
+    /// <value>The payload length; <c>0</c> when the node carries no data.</value>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
+    /// <exception cref="PstFileFormatException">The data tree is malformed or fails validation.</exception>
+    /// <remarks>
+    /// Resolving the length reads only the data tree's internal blocks — never the leaf payloads — so it is cheap
+    /// even for very large nodes.
+    /// </remarks>
+    public long DataLength
+    {
+        get
+        {
+            long total = 0;
+            foreach (PstBbtEntry leaf in ResolveDataLeaves())
+                total += leaf.Length;
+
+            return total;
+        }
+    }
+
+    /// <summary>
     /// Reads the node's complete data payload.
     /// </summary>
     /// <returns>The payload bytes; empty when the node carries no data.</returns>
@@ -68,11 +96,15 @@ public sealed class PstNode
     /// <summary>
     /// Opens the node's data payload as a read-only stream.
     /// </summary>
-    /// <returns>A seekable stream over the assembled payload.</returns>
+    /// <returns>A seekable stream over the payload.</returns>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="PstFileFormatException">The data tree is malformed or fails validation.</exception>
+    /// <remarks>
+    /// The stream reads one leaf block at a time through the session's decoded-block cache, so an arbitrarily large
+    /// payload is never materialized; use <see cref="ReadAllBytes" /> for the buffered convenience.
+    /// </remarks>
     public Stream OpenDataStream() =>
-        new MemoryStream(ReadAllBytes(), writable: false);
+        new PstDataStream(_file.GetSource(), ResolveDataLeaves());
 
     /// <summary>
     /// Enumerates the node's subnodes, in stored order.
@@ -82,7 +114,7 @@ public sealed class PstNode
     /// <exception cref="PstFileFormatException">The subnode tree is malformed or fails validation.</exception>
     public IEnumerable<PstNodeInfo> EnumerateSubnodes()
     {
-        foreach (PstNbtEntry entry in PstSubnodeTree.Read(_file.GetSource(), _entry.SubnodeBlockId))
+        foreach (PstNbtEntry entry in ReadSubnodeEntries())
             yield return _file.ToInfo(entry with { ParentNodeId = _entry.NodeId });
     }
 
@@ -96,7 +128,7 @@ public sealed class PstNode
     /// <exception cref="PstFileFormatException">The subnode tree is malformed or fails validation.</exception>
     public bool TryGetSubnode(PstNodeId id, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out PstNode subnode)
     {
-        foreach (PstNbtEntry entry in PstSubnodeTree.Read(_file.GetSource(), _entry.SubnodeBlockId))
+        foreach (PstNbtEntry entry in ReadSubnodeEntries())
         {
             if (entry.NodeId == id.Value)
             {
@@ -153,4 +185,19 @@ public sealed class PstNode
     /// <returns>The identifier and its type.</returns>
     public override string ToString() =>
         $"{Id} ({Id.Type})";
+
+    /// <summary>
+    /// Resolves the node's ordered data-tree leaf entries, caching them for the instance's lifetime.
+    /// </summary>
+    /// <returns>The leaf entries; empty when the node carries no data.</returns>
+    private List<PstBbtEntry> ResolveDataLeaves() =>
+        _dataLeaves ??= PstDataTree.ResolveLeafEntries(_file.GetSource(), _entry.DataBlockId);
+
+    /// <summary>
+    /// Reads the node's subnode directory, caching the parsed rows for the instance's lifetime so repeated table and
+    /// attachment lookups do not re-walk the subnode tree.
+    /// </summary>
+    /// <returns>The subnode entries, in stored order; empty when the node carries no subnode tree.</returns>
+    private List<PstNbtEntry> ReadSubnodeEntries() =>
+        _subnodeEntries ??= [.. PstSubnodeTree.Read(_file.GetSource(), _entry.SubnodeBlockId)];
 }

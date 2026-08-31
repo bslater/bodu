@@ -158,7 +158,7 @@ public sealed class PstFile
         int read = stream.ReadAtLeast(headerBytes, headerBytes.Length, throwOnEndOfStream: false);
         PstHeader header = PstHeader.Parse(headerBytes.AsSpan(0, read), options.ValidationLevel);
 
-        return new PstFile(new PstSource(stream, header, options.ValidationLevel), stream, leaveOpen);
+        return new PstFile(new PstSource(stream, header, options.ValidationLevel, options.BlockCacheSize), stream, leaveOpen);
     }
 
     /// <summary>

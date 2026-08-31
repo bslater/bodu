@@ -7,6 +7,8 @@
 using System.Buffers.Binary;
 using System.Globalization;
 
+using Bodu.Collections.Generic;
+
 namespace Bodu.IO.Pst.Internal;
 
 /// <summary>
@@ -28,8 +30,23 @@ internal sealed class PstSource
     /// <summary>The maximum on-disk block size, including padding and trailer.</summary>
     private const int MaxBlockSize = 8192;
 
+    /// <summary>
+    /// The key-space flag distinguishing cached pages from cached block payloads. Real block identifiers never carry
+    /// the top bit, so pages and blocks cannot collide in the shared cache.
+    /// </summary>
+    private const ulong PageKeyFlag = 1UL << 63;
+
     /// <summary>The source stream.</summary>
     private readonly Stream _stream;
+
+    /// <summary>
+    /// The least-recently-used cache of validated, decoded content — raw 512-byte pages (keyed with
+    /// <see cref="PageKeyFlag" />) and decoded block payloads (keyed by block identifier) — or <see langword="null" />
+    /// when caching is disabled. Cached arrays are shared across reads: by internal contract no caller mutates an
+    /// array returned by <see cref="ReadPage" /> or <see cref="ReadBlock" />, and the public surface only ever hands
+    /// out copies or read-only views.
+    /// </summary>
+    private readonly EvictingDictionary<ulong, byte[]>? _cache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PstSource" /> class.
@@ -37,11 +54,17 @@ internal sealed class PstSource
     /// <param name="stream">The readable, seekable source stream.</param>
     /// <param name="header">The parsed file header.</param>
     /// <param name="validationLevel">The validation level governing checksum and signature verification.</param>
-    internal PstSource(Stream stream, PstHeader header, PstValidationLevel validationLevel)
+    /// <param name="blockCacheSize">
+    /// The decoded page/block cache budget, in entries; <c>0</c> disables caching.
+    /// </param>
+    internal PstSource(Stream stream, PstHeader header, PstValidationLevel validationLevel, int blockCacheSize = 0)
     {
         _stream = stream;
         Header = header;
         ValidationLevel = validationLevel;
+        _cache = blockCacheSize > 0
+            ? new EvictingDictionary<ulong, byte[]>(blockCacheSize, EvictingDictionaryPolicy.LeastRecentlyUsed)
+            : null;
     }
 
     /// <summary>
@@ -87,6 +110,16 @@ internal sealed class PstSource
     /// </exception>
     internal byte[] ReadPage(PstBref bref, byte expectedType)
     {
+        // A cached page was fully validated when it was filled; only the (cheap) expected-type check depends on the
+        // caller, so it is re-run on every hit. A shape mismatch falls through to a fresh, fully validated read.
+        if (_cache is not null
+            && _cache.TryGetValue(bref.BlockId | PageKeyFlag, out byte[] cachedPage)
+            && cachedPage.Length == PageSize
+            && cachedPage[496] == expectedType)
+        {
+            return cachedPage;
+        }
+
         var page = new byte[PageSize];
         ReadAt((long)bref.Offset, page);
 
@@ -112,6 +145,8 @@ internal sealed class PstSource
             }
         }
 
+        if (_cache is not null)
+            _cache[bref.BlockId | PageKeyFlag] = page;
         return page;
     }
 
@@ -123,6 +158,9 @@ internal sealed class PstSource
     /// <exception cref="PstFileFormatException">The block geometry or trailer is invalid.</exception>
     internal byte[] ReadBlock(PstBbtEntry entry)
     {
+        if (_cache is not null && _cache.TryGetValue(entry.Bref.BlockId, out byte[] cachedPayload))
+            return cachedPayload;
+
         int payloadLength = entry.Length;
         int diskLength = (payloadLength + BlockTrailerSize + 63) & ~63;
         if (payloadLength == 0 || diskLength > MaxBlockSize)
@@ -168,6 +206,8 @@ internal sealed class PstSource
             }
         }
 
+        if (_cache is not null)
+            _cache[entry.Bref.BlockId] = payload;
         return payload;
     }
 

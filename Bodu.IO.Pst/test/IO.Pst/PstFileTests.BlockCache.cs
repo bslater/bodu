@@ -37,4 +37,25 @@ public partial class PstFileTests
             "A repeated property-context read over the same node must be served entirely from the decoded-block " +
             "cache — no additional reads against the source stream.");
     }
+
+    /// <summary>
+    /// Verifies that a <see cref="PstFileOptions.BlockCacheSize" /> of zero disables caching: a repeated
+    /// property-context read over the same node goes back to the source stream.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenBlockCacheDisabled_ShouldRereadSourceForRepeatedPropertyContextReads()
+    {
+        using MemoryStream fixture = PstReferenceFixtures.OpenStream(Sample1);
+        using var counting = new CountingStream(fixture);
+        using PstFile file = PstFile.Open(counting, new PstFileOptions { BlockCacheSize = 0 });
+
+        PstNode node = file.GetNode(PstNodeId.MessageStore);
+        _ = node.ReadPropertyContext().Count;
+        int readsAfterFirst = counting.ReadCount;
+
+        _ = node.ReadPropertyContext().Count;
+
+        Assert.IsTrue(counting.ReadCount > readsAfterFirst,
+            "With the cache disabled, a repeated property-context read must go back to the source stream.");
+    }
 }

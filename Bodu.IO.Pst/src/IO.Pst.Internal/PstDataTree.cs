@@ -32,8 +32,10 @@ internal static class PstDataTree
         if (segments.Count == 0)
             return Array.Empty<byte>();
 
+        // A single segment is returned as a copy: the block array may be held by the session's decoded-block cache,
+        // and this payload can escape to public callers (PstNode.ReadAllBytes) as a mutable byte[].
         if (segments.Count == 1)
-            return segments[0];
+            return (byte[])segments[0].Clone();
 
         using var payload = new MemoryStream();
         foreach (byte[] segment in segments)
@@ -124,6 +126,75 @@ internal static class PstDataTree
         }
 
         return (block[1], count);
+    }
+
+    /// <summary>
+    /// Resolves a data-block identifier to the payload's ordered leaf block-tree entries without reading any leaf
+    /// payload.
+    /// </summary>
+    /// <param name="source">The open source.</param>
+    /// <param name="blockId">The data-block identifier from the node entry; <c>0</c> yields an empty list.</param>
+    /// <returns>The ordered leaf entries whose payloads concatenate to the node's data.</returns>
+    /// <exception cref="PstFileFormatException">A referenced block is missing or a tree block is malformed.</exception>
+    /// <remarks>
+    /// Only the internal tree blocks (<c>XBLOCK</c> / <c>XXBLOCK</c>) are read; leaf data blocks are looked up in the
+    /// block B-tree but never loaded, so a caller can stream an arbitrarily large logical payload block by block.
+    /// </remarks>
+    internal static List<PstBbtEntry> ResolveLeafEntries(PstSource source, ulong blockId)
+    {
+        var leaves = new List<PstBbtEntry>();
+        if (blockId == 0)
+            return leaves;
+
+        if ((blockId & 0x2) == 0)
+        {
+            leaves.Add(FindEntry(source, blockId));
+            return leaves;
+        }
+
+        byte[] block = ReadBlock(source, blockId);
+        (byte level, int count) = ParseTreeBlock(block, blockId);
+        for (int i = 0; i < count; i++)
+        {
+            ulong childId = BinaryPrimitives.ReadUInt64LittleEndian(block.AsSpan(8 + (i * 8)));
+            if (level == 1)
+            {
+                leaves.Add(FindEntry(source, childId));
+            }
+            else
+            {
+                byte[] child = ReadBlock(source, childId);
+                (byte childLevel, int childCount) = ParseTreeBlock(child, childId);
+                if (childLevel != 1)
+                {
+                    throw new PstFileFormatException(string.Format(
+                        CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, childId));
+                }
+
+                for (int j = 0; j < childCount; j++)
+                    leaves.Add(FindEntry(source, BinaryPrimitives.ReadUInt64LittleEndian(child.AsSpan(8 + (j * 8)))));
+            }
+        }
+
+        return leaves;
+    }
+
+    /// <summary>
+    /// Looks a block up in the block B-tree.
+    /// </summary>
+    /// <param name="source">The open source.</param>
+    /// <param name="blockId">The block identifier.</param>
+    /// <returns>The block's B-tree entry.</returns>
+    /// <exception cref="PstFileFormatException">The identifier is not in the block B-tree.</exception>
+    private static PstBbtEntry FindEntry(PstSource source, ulong blockId)
+    {
+        if (!PstBTree.TryFindBlock(source, blockId, out PstBbtEntry entry))
+        {
+            throw new PstFileFormatException(string.Format(
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId));
+        }
+
+        return entry;
     }
 
     /// <summary>

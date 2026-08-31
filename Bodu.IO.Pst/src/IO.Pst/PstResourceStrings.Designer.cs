@@ -212,5 +212,14 @@ namespace Bodu.IO.Pst {
                 return ResourceManager.GetString("Arg_Invalid_PstStreamNotReadableSeekable", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The seek origin is not a valid SeekOrigin value..
+        /// </summary>
+        internal static string Arg_Invalid_PstSeekOrigin {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_PstSeekOrigin", resourceCulture);
+            }
+        }
     }
 }

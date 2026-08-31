@@ -115,4 +115,7 @@
   <data name="Arg_Invalid_PstStreamNotReadableSeekable" xml:space="preserve">
     <value>The stream must be readable and seekable.</value>
   </data>
+  <data name="Arg_Invalid_PstSeekOrigin" xml:space="preserve">
+    <value>The seek origin is not a valid SeekOrigin value.</value>
+  </data>
 </root>
