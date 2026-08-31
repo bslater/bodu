@@ -8,6 +8,13 @@
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
 
+  <!-- Grant the PST messaging-reader test project access to the fixture builders and reference-corpus loader. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Formats.Outlook.Pst.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
     <ProjectReference Include="..\src\Bodu.IO.Pst.csproj" />
