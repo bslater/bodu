@@ -82,6 +82,12 @@
   <data name="Format_Invalid_PstEmbeddedMessage" xml:space="preserve">
     <value>The attachment does not carry an embedded message object.</value>
   </data>
+  <data name="Format_Invalid_PstAttachmentContent" xml:space="preserve">
+    <value>The attachment does not carry its by-value content payload.</value>
+  </data>
+  <data name="Op_NotSupported_PstEmbeddedMessage" xml:space="preserve">
+    <value>The attachment's method ({0}) does not carry an embedded message.</value>
+  </data>
   <data name="Op_NotSupported_PstAttachmentContent" xml:space="preserve">
     <value>The attachment's method ({0}) does not expose a binary content stream.</value>
   </data>

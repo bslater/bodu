@@ -61,6 +61,27 @@ internal static class PstMapiPropertyReader
     }
 
     /// <summary>
+    /// Decodes a table row's present cells into the shared value model — the shape of recipient rows, whose
+    /// properties are row-resident rather than held in a property context.
+    /// </summary>
+    /// <param name="row">The container's table row.</param>
+    /// <param name="encoding">The owning message's string encoding, which the row's code-page strings decode under.</param>
+    /// <param name="strict">Whether undecodable values throw instead of being skipped.</param>
+    /// <returns>The decoded property collection.</returns>
+    /// <exception cref="OutlookPstFormatException">A cell is undecodable and <paramref name="strict" /> is set.</exception>
+    internal static MapiPropertyCollection ReadRow(PstTableRow row, Encoding encoding, bool strict)
+    {
+        var properties = new List<MapiProperty>();
+        foreach (PstPropertyValue value in row.EnumerateCells())
+        {
+            if (TryDecodeValue(value, encoding, strict, out MapiProperty? property))
+                properties.Add(property);
+        }
+
+        return new MapiPropertyCollection(properties);
+    }
+
+    /// <summary>
     /// Decodes one wire-typed value into a <see cref="MapiProperty" />.
     /// </summary>
     /// <param name="value">The container value.</param>

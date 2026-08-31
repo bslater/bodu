@@ -142,6 +142,24 @@ namespace Bodu.Formats.Outlook {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The attachment does not carry its by-value content payload..
+        /// </summary>
+        internal static string Format_Invalid_PstAttachmentContent {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstAttachmentContent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The attachment&apos;s method ({0}) does not carry an embedded message..
+        /// </summary>
+        internal static string Op_NotSupported_PstEmbeddedMessage {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_PstEmbeddedMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The name-to-id map is malformed..
         /// </summary>
         internal static string Format_Invalid_PstNamedPropertyMap {

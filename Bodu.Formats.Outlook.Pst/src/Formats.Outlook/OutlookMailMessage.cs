@@ -27,6 +27,9 @@ public sealed partial class OutlookMailMessage
     /// <summary>The message node.</summary>
     private readonly PstNode _node;
 
+    /// <summary>The encoding inherited from the owning object for a nested message, or <see langword="null" />.</summary>
+    private readonly Encoding? _inheritedEncoding;
+
     /// <summary>The lazily decoded message properties.</summary>
     private MapiPropertyCollection? _properties;
 
@@ -38,10 +41,15 @@ public sealed partial class OutlookMailMessage
     /// </summary>
     /// <param name="store">The owning session.</param>
     /// <param name="node">The message node.</param>
-    internal OutlookMailMessage(OutlookMailStore store, PstNode node)
+    /// <param name="inheritedEncoding">
+    /// The encoding a nested message inherits from its owning attachment; <see langword="null" /> for a folder-level
+    /// message, which inherits the store encoding.
+    /// </param>
+    internal OutlookMailMessage(OutlookMailStore store, PstNode node, Encoding? inheritedEncoding = null)
     {
         _store = store;
         _node = node;
+        _inheritedEncoding = inheritedEncoding;
     }
 
     /// <summary>
@@ -57,7 +65,7 @@ public sealed partial class OutlookMailMessage
             if (_properties is null)
             {
                 _properties = PstMapiPropertyReader.Read(
-                    _node.ReadPropertyContext(), _store.StoreEncoding, _store.Strict, out Encoding encoding);
+                    _node.ReadPropertyContext(), _inheritedEncoding ?? _store.StoreEncoding, _store.Strict, out Encoding encoding);
                 _encoding = encoding;
             }
 
@@ -147,5 +155,24 @@ public sealed partial class OutlookMailMessage
 
             return _encoding!;
         }
+    }
+
+    /// <summary>
+    /// Attempts to retrieve the first subnode of a given type from the message's subnode tree.
+    /// </summary>
+    /// <param name="type">The node type sought.</param>
+    /// <param name="subnode">When this method returns <see langword="true" />, the subnode.</param>
+    /// <returns><see langword="true" /> when the message carries a subnode of the type.</returns>
+    /// <exception cref="PstFileException">The subnode tree is malformed.</exception>
+    private bool TryGetSubnodeOfType(PstNodeType type, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out PstNode subnode)
+    {
+        foreach (PstNodeInfo info in _node.EnumerateSubnodes())
+        {
+            if (info.NodeId.Type == type)
+                return _node.TryGetSubnode(info.NodeId, out subnode);
+        }
+
+        subnode = null;
+        return false;
     }
 }
