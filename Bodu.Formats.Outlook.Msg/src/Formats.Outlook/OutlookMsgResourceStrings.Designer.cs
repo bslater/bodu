@@ -203,5 +203,23 @@ namespace Bodu.Formats.Outlook {
                 return ResourceManager.GetString("Format_Invalid_RtfCompressedCrc", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compressed RTF payload declares or produces a decompressed size above the configured limit..
+        /// </summary>
+        internal static string Format_Invalid_RtfCompressedTooLarge {
+            get {
+                return ResourceManager.GetString("Format_Invalid_RtfCompressedTooLarge", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Embedded messages nest deeper than the configured limit of {0}..
+        /// </summary>
+        internal static string Format_Invalid_MsgEmbeddedMessageDepth {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgEmbeddedMessageDepth", resourceCulture);
+            }
+        }
     }
 }

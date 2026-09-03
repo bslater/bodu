@@ -30,6 +30,9 @@ public sealed partial class OutlookMailMessage
     /// <summary>The encoding inherited from the owning object for a nested message, or <see langword="null" />.</summary>
     private readonly Encoding? _inheritedEncoding;
 
+    /// <summary>The embedded-message nesting depth: zero for a folder-level message.</summary>
+    private readonly int _depth;
+
     /// <summary>The lazily decoded message properties.</summary>
     private MapiPropertyCollection? _properties;
 
@@ -45,12 +48,22 @@ public sealed partial class OutlookMailMessage
     /// The encoding a nested message inherits from its owning attachment; <see langword="null" /> for a folder-level
     /// message, which inherits the store encoding.
     /// </param>
-    internal OutlookMailMessage(OutlookMailStore store, PstNode node, Encoding? inheritedEncoding = null)
+    /// <param name="depth">The embedded-message nesting depth; zero for a folder-level message.</param>
+    internal OutlookMailMessage(OutlookMailStore store, PstNode node, Encoding? inheritedEncoding = null, int depth = 0)
     {
         _store = store;
         _node = node;
         _inheritedEncoding = inheritedEncoding;
+        _depth = depth;
     }
+
+    /// <summary>
+    /// Gets the embedded-message nesting depth of this view: zero for a message enumerated from a folder, one more
+    /// for each level opened through <see cref="OutlookMailAttachment.OpenMessage" />.
+    /// </summary>
+    /// <value>The nesting depth.</value>
+    public int EmbeddedDepth =>
+        _depth;
 
     /// <summary>
     /// Gets every decoded property of the message.

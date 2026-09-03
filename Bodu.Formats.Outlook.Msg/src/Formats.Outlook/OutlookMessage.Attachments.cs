@@ -58,13 +58,22 @@ public sealed partial class OutlookMessage
     /// <param name="messageStorage">The embedded-message storage inside an attachment.</param>
     /// <param name="attachmentProperties">The owning attachment's properties, for encoding inheritance.</param>
     /// <returns>The nested message session, sharing this session's container and named-property mapping.</returns>
+    /// <exception cref="OutlookMsgFormatException">
+    /// The nested message would sit deeper than <see cref="OutlookMessageReaderOptions.MaxEmbeddedMessageDepth" />.
+    /// </exception>
     internal OutlookMessage OpenNestedMessage(CompoundStorage messageStorage, MapiPropertyCollection attachmentProperties)
     {
+        if (_depth >= _options.MaxEmbeddedMessageDepth)
+        {
+            throw new OutlookMsgFormatException(string.Format(
+                System.Globalization.CultureInfo.CurrentCulture, OutlookMsgResourceStrings.Format_Invalid_MsgEmbeddedMessageDepth, _options.MaxEmbeddedMessageDepth));
+        }
+
         System.Text.Encoding inherited = MapiEncodingResolver.Resolve(attachmentProperties, _stringEncoding);
         MapiPropertyCollection properties = MsgPropertyDecoder.Decode(
             messageStorage, MsgPropertyStreamKind.EmbeddedMessage, _options.ValidationLevel, inherited, out MsgPropertyStreamHeader header);
 
         System.Text.Encoding encoding = MapiEncodingResolver.Resolve(properties, inherited);
-        return new OutlookMessage(_compound, messageStorage, _options, properties, header, ownsContainer: false, encoding, _root ?? this);
+        return new OutlookMessage(_compound, messageStorage, _options, properties, header, ownsContainer: false, encoding, _root ?? this, _depth + 1);
     }
 }

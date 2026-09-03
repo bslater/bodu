@@ -156,7 +156,8 @@ public sealed class OutlookMailAttachment
     /// The attachment's <see cref="Method" /> is not <see cref="OutlookAttachmentMethod.EmbeddedMessage" />.
     /// </exception>
     /// <exception cref="OutlookPstFormatException">
-    /// The attachment carries no nested message subnode.
+    /// The attachment carries no nested message subnode, or the nested message would sit deeper than
+    /// <see cref="OutlookMailStoreReaderOptions.MaxEmbeddedMessageDepth" />.
     /// </exception>
     /// <remarks>
     /// The nested message is the message-typed subnode of the attachment object (MS-PST §2.4.6.3); its code-page
@@ -170,11 +171,14 @@ public sealed class OutlookMailAttachment
                 CultureInfo.CurrentCulture, OutlookPstResourceStrings.Op_NotSupported_PstEmbeddedMessage, Method));
         }
 
-        foreach (PstNodeInfo info in _node.EnumerateSubnodes())
+        if (_owner.EmbeddedDepth >= _store.MaxEmbeddedMessageDepth)
         {
-            if (info.NodeId.Type == PstNodeType.NormalMessage && _node.TryGetSubnode(info.NodeId, out PstNode? messageNode))
-                return new OutlookMailMessage(_store, messageNode, AttachmentEncoding);
+            throw new OutlookPstFormatException(string.Format(
+                CultureInfo.CurrentCulture, OutlookPstResourceStrings.Format_Invalid_PstEmbeddedMessageDepth, _store.MaxEmbeddedMessageDepth));
         }
+
+        if (_node.TryGetSubnodeOfType(PstNodeType.NormalMessage, out PstNode? messageNode))
+            return new OutlookMailMessage(_store, messageNode, AttachmentEncoding, _owner.EmbeddedDepth + 1);
 
         throw new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_PstEmbeddedMessage);
     }

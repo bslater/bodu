@@ -53,19 +53,30 @@ internal sealed class PstSource
     /// </summary>
     /// <param name="stream">The readable, seekable source stream.</param>
     /// <param name="header">The parsed file header.</param>
-    /// <param name="validationLevel">The validation level governing checksum and signature verification.</param>
-    /// <param name="blockCacheSize">
-    /// The decoded page/block cache budget, in entries; <c>0</c> disables caching.
-    /// </param>
-    internal PstSource(Stream stream, PstHeader header, PstValidationLevel validationLevel, int blockCacheSize = 0)
+    /// <param name="options">The session options: validation level, cache budget, and resource limits.</param>
+    internal PstSource(Stream stream, PstHeader header, PstFileOptions options)
     {
         _stream = stream;
         Header = header;
-        ValidationLevel = validationLevel;
-        _cache = blockCacheSize > 0
-            ? new EvictingDictionary<ulong, byte[]>(blockCacheSize, EvictingDictionaryPolicy.LeastRecentlyUsed)
+        ValidationLevel = options.ValidationLevel;
+        MaxNodeDataLength = options.MaxNodeDataLength;
+        MaxDataTreeLeaves = options.MaxDataTreeLeaves;
+        _cache = options.BlockCacheSize > 0
+            ? new EvictingDictionary<ulong, byte[]>(options.BlockCacheSize, EvictingDictionaryPolicy.LeastRecentlyUsed)
             : null;
     }
+
+    /// <summary>
+    /// Gets the largest node payload, in bytes, a buffered read may materialize.
+    /// </summary>
+    /// <value>The configured <see cref="PstFileOptions.MaxNodeDataLength" />.</value>
+    internal long MaxNodeDataLength { get; }
+
+    /// <summary>
+    /// Gets the largest number of leaf blocks a data tree may reference.
+    /// </summary>
+    /// <value>The configured <see cref="PstFileOptions.MaxDataTreeLeaves" />.</value>
+    internal int MaxDataTreeLeaves { get; }
 
     /// <summary>
     /// Gets the parsed file header.

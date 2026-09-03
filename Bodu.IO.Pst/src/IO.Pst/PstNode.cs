@@ -150,7 +150,7 @@ public sealed class PstNode
     /// <returns><see langword="true" /> when the node carries a subnode of the type.</returns>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="PstFileFormatException">The subnode tree is malformed or fails validation.</exception>
-    internal bool TryGetSubnodeOfType(PstNodeType type, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out PstNode subnode)
+    public bool TryGetSubnodeOfType(PstNodeType type, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out PstNode subnode)
     {
         foreach (PstNbtEntry entry in ReadSubnodeEntries())
         {

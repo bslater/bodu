@@ -21,6 +21,12 @@ namespace Bodu.IO.Pst.Internal;
 internal static class PstBTreeOnHeap
 {
     /// <summary>
+    /// The deepest index a BTree-on-heap may declare. A tree over an 8 KiB-block heap needs a handful of levels at
+    /// most; the cap keeps a crafted level count from multiplying the descent.
+    /// </summary>
+    private const int MaxIndexLevels = 8;
+
+    /// <summary>
     /// Reads and validates the <c>BTHHEADER</c> the supplied heap item carries.
     /// </summary>
     /// <param name="heap">The heap holding the tree.</param>
@@ -41,7 +47,13 @@ internal static class PstBTreeOnHeap
         if (dataSize == 0)
             throw Malformed(heap);
 
-        return new PstBthHeader(keySize, dataSize, item[3], BinaryPrimitives.ReadUInt32LittleEndian(item.Slice(4)));
+        // A BTH over an 8 KiB-block heap is at most a few levels deep; a declared depth beyond the cap is a crafted
+        // multiplier for the descent below, not a real tree.
+        byte indexLevels = item[3];
+        if (indexLevels > MaxIndexLevels)
+            throw Malformed(heap);
+
+        return new PstBthHeader(keySize, dataSize, indexLevels, BinaryPrimitives.ReadUInt32LittleEndian(item.Slice(4)));
     }
 
     /// <summary>
@@ -65,8 +77,16 @@ internal static class PstBTreeOnHeap
         ulong previousKey = 0;
         bool first = true;
 
-        foreach ((ReadOnlyMemory<byte> key, ReadOnlyMemory<byte> data) in EnumerateLevel(heap, header, header.RootHid, header.IndexLevels))
+        // Every record occupies distinct heap bytes, so the heap size bounds the record count; an index that reaches
+        // the same leaf through several entries would otherwise multiply the enumeration without bound.
+        long remaining = (heap.TotalLength / (header.KeySize + header.DataSize)) + 1;
+        var path = new HashSet<uint>();
+
+        foreach ((ReadOnlyMemory<byte> key, ReadOnlyMemory<byte> data) in EnumerateLevel(heap, header, header.RootHid, header.IndexLevels, path))
         {
+            if (--remaining < 0)
+                throw Malformed(heap);
+
             if (enforceOrder)
             {
                 ulong keyValue = ReadKey(key.Span, header.KeySize);
@@ -154,23 +174,29 @@ internal static class PstBTreeOnHeap
     /// <param name="header">The tree's parsed header.</param>
     /// <param name="hid">The item's heap identifier.</param>
     /// <param name="level">The item's level: zero for a leaf, otherwise an index.</param>
+    /// <param name="path">The identifiers of the items on the current descent, which a child may not repeat.</param>
     /// <returns>The leaf records beneath the item, in order.</returns>
+    /// <exception cref="PstFileFormatException">An index item names itself or an ancestor as a child.</exception>
     private static IEnumerable<(ReadOnlyMemory<byte> Key, ReadOnlyMemory<byte> Data)> EnumerateLevel(
-        PstHeapNode heap, PstBthHeader header, uint hid, int level)
+        PstHeapNode heap, PstBthHeader header, uint hid, int level, HashSet<uint> path)
     {
         ReadOnlyMemory<byte> item = heap.GetItem(hid);
 
         if (level > 0)
         {
+            if (!path.Add(hid))
+                throw Malformed(heap);
+
             int stride = header.KeySize + 4;
             int count = RecordCount(heap, item.Length, stride);
             for (int i = 0; i < count; i++)
             {
                 uint childHid = BinaryPrimitives.ReadUInt32LittleEndian(item.Span.Slice((i * stride) + header.KeySize, 4));
-                foreach ((ReadOnlyMemory<byte> Key, ReadOnlyMemory<byte> Data) record in EnumerateLevel(heap, header, childHid, level - 1))
+                foreach ((ReadOnlyMemory<byte> Key, ReadOnlyMemory<byte> Data) record in EnumerateLevel(heap, header, childHid, level - 1, path))
                     yield return record;
             }
 
+            path.Remove(hid);
             yield break;
         }
 
@@ -219,5 +245,5 @@ internal static class PstBTreeOnHeap
     /// <param name="heap">The heap holding the tree.</param>
     /// <returns>The exception to throw.</returns>
     private static PstFileFormatException Malformed(PstHeapNode heap) =>
-        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBTreeOnHeap, new PstNodeId(heap.NodeId)));
+        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBTreeOnHeap, new PstNodeId(heap.NodeId)), PstFileError.InvalidHeap);
 }

@@ -63,7 +63,7 @@ public sealed partial class OutlookMailMessage
             if (payload is not ReadOnlyMemory<byte> bytes)
                 return null;
 
-            byte[] rtf = CompressedRtf.Decompress(bytes.Span);
+            byte[] rtf = CompressedRtf.Decompress(bytes.Span, _store.MaxDecompressedRtfBytes);
             return System.Text.Encoding.Latin1.GetString(rtf);
         }
     }

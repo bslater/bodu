@@ -214,6 +214,15 @@ namespace Bodu.IO.Pst {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The data behind block {0} exceeds the session&apos;s configured resource limits..
+        /// </summary>
+        internal static string Format_Invalid_PstLimitExceeded {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstLimitExceeded", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The seek origin is not a valid SeekOrigin value..
         /// </summary>
         internal static string Arg_Invalid_PstSeekOrigin {

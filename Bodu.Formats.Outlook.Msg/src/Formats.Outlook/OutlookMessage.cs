@@ -65,6 +65,9 @@ public sealed partial class OutlookMessage
     /// <summary>The root session, or <see langword="null" /> when this instance is the root.</summary>
     private readonly OutlookMessage? _root;
 
+    /// <summary>The embedded-message nesting depth: zero for the root, one more per level opened from an attachment.</summary>
+    private readonly int _depth;
+
     /// <summary>Whether this message has been disposed.</summary>
     private bool _disposed;
 
@@ -81,6 +84,7 @@ public sealed partial class OutlookMessage
     /// <param name="root">
     /// The root session for a nested message, or <see langword="null" /> for the root itself.
     /// </param>
+    /// <param name="depth">The embedded-message nesting depth; zero for the root.</param>
     internal OutlookMessage(
         CompoundFile compound,
         CompoundStorage storage,
@@ -89,7 +93,8 @@ public sealed partial class OutlookMessage
         MsgPropertyStreamHeader header,
         bool ownsContainer,
         System.Text.Encoding stringEncoding,
-        OutlookMessage? root)
+        OutlookMessage? root,
+        int depth = 0)
     {
         _compound = compound;
         _storage = storage;
@@ -99,7 +104,16 @@ public sealed partial class OutlookMessage
         _ownsContainer = ownsContainer;
         _stringEncoding = stringEncoding;
         _root = root;
+        _depth = depth;
     }
+
+    /// <summary>
+    /// Gets the embedded-message nesting depth of this session: zero for a message opened from a file or stream, one
+    /// more for each level opened through <see cref="OutlookAttachment.OpenMessage" />.
+    /// </summary>
+    /// <value>The nesting depth.</value>
+    public int EmbeddedDepth =>
+        _depth;
 
     /// <summary>
     /// Gets every decoded MAPI property of the message.

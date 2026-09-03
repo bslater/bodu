@@ -74,17 +74,6 @@ internal static class CompressedRtf
     internal static byte[] Decompress(ReadOnlySpan<byte> data, int maxOutputBytes)
     {
         ThrowHelper.ThrowIfZeroOrNegative(maxOutputBytes);
-
-        return Decompress(data);
-    }
-
-    /// <summary>
-    /// Decompresses a <c>PidTagRtfCompressed</c> payload without a caller-imposed output ceiling.
-    /// </summary>
-    /// <param name="data">The complete payload, including the 16-byte header.</param>
-    /// <returns>The decompressed RTF bytes.</returns>
-    internal static byte[] Decompress(ReadOnlySpan<byte> data)
-    {
         if (data.Length < 16)
             throw MalformedHeader();
 
@@ -107,6 +96,8 @@ internal static class CompressedRtf
                 throw ChecksumMismatch();
             if (rawSize > (uint)payload.Length)
                 throw MalformedData();
+            if (rawSize > (uint)maxOutputBytes)
+                throw TooLarge();
 
             return payload.Slice(0, (int)rawSize).ToArray();
         }
@@ -114,8 +105,26 @@ internal static class CompressedRtf
         if (ComputeCrc(payload) != crc)
             throw ChecksumMismatch();
 
-        return DecodeCompressed(payload, (int)Math.Min(rawSize, int.MaxValue));
+        // The declared size sits outside the checksum, so it is bounded rather than trusted: a control byte governs
+        // eight tokens and a two-byte reference yields at most seventeen bytes, so seventeen input bytes expand to at
+        // most 136 output bytes — eight to one — plus the dictionary the first references may replay.
+        long ceiling = ((long)payload.Length * 8) + DictionarySize;
+        if (rawSize > ceiling)
+            throw MalformedData();
+        if (rawSize > (uint)maxOutputBytes)
+            throw TooLarge();
+
+        return DecodeCompressed(payload, (int)rawSize);
     }
+
+    /// <summary>
+    /// Decompresses a <c>PidTagRtfCompressed</c> payload without a caller-imposed output ceiling; the declared size
+    /// is still bounded by what the body can physically expand to.
+    /// </summary>
+    /// <param name="data">The complete payload, including the 16-byte header.</param>
+    /// <returns>The decompressed RTF bytes.</returns>
+    internal static byte[] Decompress(ReadOnlySpan<byte> data) =>
+        Decompress(data, int.MaxValue);
 
     /// <summary>
     /// Computes the format's CRC over a byte span: zero initial value, table-driven, no final exclusive-or.
@@ -126,18 +135,25 @@ internal static class CompressedRtf
         (uint)CrcCore.UpdateReflectedSlicing(data, 0, s_crcTables, s_crcTables[0], 32);
 
     /// <summary>
-    /// Decodes the LZ token stream against the preseeded circular dictionary.
+    /// Decodes the LZ token stream against the preseeded circular dictionary into an exactly sized output buffer.
     /// </summary>
     /// <param name="payload">The compressed body after the header.</param>
-    /// <param name="expectedSize">The declared uncompressed size, used as the output capacity hint.</param>
-    /// <returns>The decoded bytes.</returns>
-    private static byte[] DecodeCompressed(ReadOnlySpan<byte> payload, int expectedSize)
+    /// <param name="rawSize">The declared uncompressed size, which is also the output ceiling.</param>
+    /// <returns>The decoded bytes: the whole buffer when the stream fills it, otherwise a copy of the bytes produced.</returns>
+    /// <exception cref="OutlookFormatException">A token is cut short by the end of the body.</exception>
+    /// <remarks>
+    /// Decoding stops when the declared size is reached or the terminator reference (an offset equal to the current
+    /// write position) is met; a body that ends early at a token boundary yields the bytes produced so far, while a
+    /// body that ends inside a token is malformed.
+    /// </remarks>
+    private static byte[] DecodeCompressed(ReadOnlySpan<byte> payload, int rawSize)
     {
         var dictionary = new byte[DictionarySize];
         int seeded = System.Text.Encoding.ASCII.GetBytes(InitialDictionaryText, dictionary);
         dictionary.AsSpan(seeded).Fill((byte)' ');
 
-        var output = new MemoryStream(expectedSize);
+        var output = new byte[rawSize];
+        int written = 0;
         int writePosition = seeded;
         int position = 0;
 
@@ -146,23 +162,26 @@ internal static class CompressedRtf
             byte control = payload[position++];
             for (int bit = 0; bit < 8; bit++)
             {
+                if (written == rawSize)
+                    return output;
+
                 if ((control & (1 << bit)) != 0)
                 {
                     // Dictionary reference: big-endian 16 bits — 12-bit offset, 4-bit (length - 2).
                     if (position + 2 > payload.Length)
-                        return output.ToArray();
+                        throw MalformedData();
 
                     int token = (payload[position] << 8) | payload[position + 1];
                     position += 2;
                     int offset = token >> 4;
                     int length = (token & 0xF) + 2;
                     if (offset == writePosition)
-                        return output.ToArray();
+                        return Trim(output, written);
 
-                    for (int step = 0; step < length; step++)
+                    for (int step = 0; step < length && written < rawSize; step++)
                     {
                         byte value = dictionary[(offset + step) % DictionarySize];
-                        output.WriteByte(value);
+                        output[written++] = value;
                         dictionary[writePosition] = value;
                         writePosition = (writePosition + 1) % DictionarySize;
                     }
@@ -171,18 +190,27 @@ internal static class CompressedRtf
                 {
                     // Literal byte.
                     if (position >= payload.Length)
-                        return output.ToArray();
+                        throw MalformedData();
 
                     byte value = payload[position++];
-                    output.WriteByte(value);
+                    output[written++] = value;
                     dictionary[writePosition] = value;
                     writePosition = (writePosition + 1) % DictionarySize;
                 }
             }
         }
 
-        return output.ToArray();
+        return Trim(output, written);
     }
+
+    /// <summary>
+    /// Returns the produced prefix of an output buffer, avoiding a copy when the buffer was filled exactly.
+    /// </summary>
+    /// <param name="output">The output buffer.</param>
+    /// <param name="written">The number of bytes produced.</param>
+    /// <returns>The produced bytes.</returns>
+    private static byte[] Trim(byte[] output, int written) =>
+        written == output.Length ? output : output.AsSpan(0, written).ToArray();
 
     /// <summary>
     /// Creates the truncated-or-unknown-header exception for the consuming format.
@@ -204,6 +232,17 @@ internal static class CompressedRtf
         new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedData);
 #elif OUTLOOK_PST
         new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_RtfCompressedData);
+#endif
+
+    /// <summary>
+    /// Creates the format's over-limit exception for a declared or produced size above the caller's ceiling.
+    /// </summary>
+    /// <returns>The exception to throw.</returns>
+    private static Exception TooLarge() =>
+#if MSG
+        new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_RtfCompressedTooLarge);
+#elif OUTLOOK_PST
+        new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_RtfCompressedTooLarge);
 #endif
 
     /// <summary>

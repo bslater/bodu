@@ -145,6 +145,20 @@ public sealed partial class OutlookMailStore
         _options.DecompressRtf;
 
     /// <summary>
+    /// Gets the deepest embedded-message nesting the session opens.
+    /// </summary>
+    /// <value>The configured <see cref="OutlookMailStoreReaderOptions.MaxEmbeddedMessageDepth" /> value.</value>
+    internal int MaxEmbeddedMessageDepth =>
+        _options.MaxEmbeddedMessageDepth;
+
+    /// <summary>
+    /// Gets the largest decompressed RTF body the session produces.
+    /// </summary>
+    /// <value>The configured <see cref="OutlookMailStoreReaderOptions.MaxDecompressedRtfBytes" /> value.</value>
+    internal int MaxDecompressedRtfBytes =>
+        _options.MaxDecompressedRtfBytes;
+
+    /// <summary>
     /// Gets the encoding the store's code-page strings decoded with, forcing the store properties to decode first.
     /// </summary>
     /// <value>The store-level encoding child objects inherit when they declare no code page of their own.</value>

@@ -76,6 +76,9 @@
   <data name="Format_Invalid_PstDataTree" xml:space="preserve">
     <value>The data tree of block {0} is malformed.</value>
   </data>
+  <data name="Format_Invalid_PstLimitExceeded" xml:space="preserve">
+    <value>The data behind block {0} exceeds the session's configured resource limits.</value>
+  </data>
   <data name="Format_Invalid_PstSubnodeTree" xml:space="preserve">
     <value>The subnode tree of node {0} is malformed.</value>
   </data>
