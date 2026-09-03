@@ -10,6 +10,18 @@ namespace Bodu.Formats.Outlook;
 
 public sealed partial class OutlookMailMessage
 {
+    /// <summary>The decoded HTML body, valid once <see cref="_bodyHtmlDecoded" /> is set.</summary>
+    private string? _bodyHtml;
+
+    /// <summary>Whether <see cref="_bodyHtml" /> has been decoded.</summary>
+    private bool _bodyHtmlDecoded;
+
+    /// <summary>The decoded RTF body, valid once <see cref="_bodyRtfDecoded" /> is set.</summary>
+    private string? _bodyRtf;
+
+    /// <summary>Whether <see cref="_bodyRtf" /> has been decoded.</summary>
+    private bool _bodyRtfDecoded;
+
     /// <summary>
     /// Gets the plain-text body.
     /// </summary>
@@ -21,23 +33,23 @@ public sealed partial class OutlookMailMessage
     /// Gets the HTML body.
     /// </summary>
     /// <value>
-    /// The <c>PidTagHtml</c> payload decoded through the message's internet code page (falling back to the message
-    /// code page), or the value verbatim when the writer stored it as a string; <see langword="null" /> when absent.
+    /// The <c>PidTagHtml</c> payload decoded through the message's internet code page (falling back to the message code
+    /// page), or the value verbatim when the writer stored it as a string; <see langword="null" /> when absent. The
+    /// body is decoded once and the same instance returned thereafter.
     /// </value>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     public string? BodyHtml
     {
         get
         {
-            ReadOnlyMemory<byte>? bytes = Properties.GetBinary(MapiPropertyIds.Html);
-            if (bytes is ReadOnlyMemory<byte> payload)
+            MapiPropertyCollection properties = Properties;
+            if (!_bodyHtmlDecoded)
             {
-                System.Text.Encoding encoding = MapiEncodingResolver.GetEncoding(
-                    Properties.GetInt32(MapiPropertyIds.InternetCodepage),
-                    Properties.GetInt32(MapiPropertyIds.MessageCodepage));
-                return encoding.GetString(payload.Span);
+                _bodyHtml = MapiBodies.DecodeHtml(properties);
+                _bodyHtmlDecoded = true;
             }
 
-            return Properties.GetString(MapiPropertyIds.Html);
+            return _bodyHtml;
         }
     }
 
@@ -46,25 +58,29 @@ public sealed partial class OutlookMailMessage
     /// </summary>
     /// <value>
     /// The RTF text, or <see langword="null" /> when the property is absent or
-    /// <see cref="OutlookMailStoreReaderOptions.DecompressRtf" /> is disabled (the raw payload stays available
-    /// through <see cref="Properties" />).
+    /// <see cref="OutlookMailStoreReaderOptions.DecompressRtf" /> is disabled (the raw payload stays available through
+    /// <see cref="Properties" />). The body is decompressed once and the same instance returned thereafter.
     /// </value>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// The compressed payload is malformed or fails its checksum.
+    /// The compressed payload is malformed, fails its checksum, or decompresses beyond
+    /// <see cref="OutlookMailStoreReaderOptions.MaxDecompressedRtfBytes" />.
     /// </exception>
     public string? BodyRtf
     {
         get
         {
+            MapiPropertyCollection properties = Properties;
             if (!_store.DecompressRtf)
                 return null;
 
-            ReadOnlyMemory<byte>? payload = Properties.GetBinary(MapiPropertyIds.RtfCompressed);
-            if (payload is not ReadOnlyMemory<byte> bytes)
-                return null;
+            if (!_bodyRtfDecoded)
+            {
+                _bodyRtf = MapiBodies.DecodeRtf(properties, _store.MaxDecompressedRtfBytes);
+                _bodyRtfDecoded = true;
+            }
 
-            byte[] rtf = CompressedRtf.Decompress(bytes.Span, _store.MaxDecompressedRtfBytes);
-            return System.Text.Encoding.Latin1.GetString(rtf);
+            return _bodyRtf;
         }
     }
 }

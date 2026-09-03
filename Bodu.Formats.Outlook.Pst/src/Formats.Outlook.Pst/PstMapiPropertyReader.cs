@@ -113,7 +113,7 @@ internal static class PstMapiPropertyReader
         }
         else if (MapiValueDecoder.IsVariableLength(tag.Type))
         {
-            if (!MapiValueDecoder.TryDecodeVariableValue(tag.Type, value.RawData.ToArray(), encoding, strict, out decoded))
+            if (!MapiValueDecoder.TryDecodeVariableValue(tag.Type, value.RawData.Span, encoding, strict, out decoded))
                 return SkipOrThrowValue(tag, strict);
         }
         else
@@ -277,7 +277,7 @@ internal static class PstMapiPropertyReader
                 return false;
 
             previousOffset = start;
-            if (!MapiValueDecoder.TryDecodeVariableValue(type, payload[start..end].ToArray(), encoding, strict, out object? element)
+            if (!MapiValueDecoder.TryDecodeVariableValue(type, payload[start..end], encoding, strict, out object? element)
                 || element is null)
             {
                 return false;
@@ -286,14 +286,36 @@ internal static class PstMapiPropertyReader
             elements[i] = element;
         }
 
-        value = type == MapiPropertyType.Binary
-            ? elements.Cast<byte[]>().ToArray()
-            : elements.Cast<string>().ToArray();
+        value = ToTypedArray(type, elements);
         return true;
     }
 
     /// <summary>
-    /// Skips an undecodable multi-valued property, or throws under strict validation.
+    /// Copies decoded multi-value elements into the typed array the property model documents.
+    /// </summary>
+    /// <param name="type">The base element type.</param>
+    /// <param name="elements">The decoded elements: strings, or byte arrays for the binary type.</param>
+    /// <returns>A <c>string[]</c> or <c>byte[][]</c>.</returns>
+    private static Array ToTypedArray(MapiPropertyType type, object[] elements)
+    {
+        if (type == MapiPropertyType.Binary)
+        {
+            var arrays = new byte[elements.Length][];
+            for (int i = 0; i < elements.Length; i++)
+                arrays[i] = (byte[])elements[i];
+
+            return arrays;
+        }
+
+        var strings = new string[elements.Length];
+        for (int i = 0; i < elements.Length; i++)
+            strings[i] = (string)elements[i];
+
+        return strings;
+    }
+
+    /// <summary>
+    /// Skips a malformed multi-valued property, or throws under strict validation.
     /// </summary>
     /// <param name="tag">The property tag.</param>
     /// <param name="strict">Whether to throw.</param>

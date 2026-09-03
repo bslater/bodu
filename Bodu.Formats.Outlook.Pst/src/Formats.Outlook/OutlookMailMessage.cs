@@ -171,23 +171,4 @@ public sealed partial class OutlookMailMessage
             return _encoding!;
         }
     }
-
-    /// <summary>
-    /// Attempts to retrieve the first subnode of a given type from the message's subnode tree.
-    /// </summary>
-    /// <param name="type">The node type sought.</param>
-    /// <param name="subnode">When this method returns <see langword="true" />, the subnode.</param>
-    /// <returns><see langword="true" /> when the message carries a subnode of the type.</returns>
-    /// <exception cref="PstFileException">The subnode tree is malformed.</exception>
-    private bool TryGetSubnodeOfType(PstNodeType type, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out PstNode subnode)
-    {
-        foreach (PstNodeInfo info in _node.EnumerateSubnodes())
-        {
-            if (info.NodeId.Type == type)
-                return _node.TryGetSubnode(info.NodeId, out subnode);
-        }
-
-        subnode = null;
-        return false;
-    }
 }

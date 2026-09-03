@@ -87,7 +87,7 @@ public sealed class PstTableContext
     {
         int remaining = _rowCount;
         long available = 0;
-        foreach (byte[] block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
+        foreach (ReadOnlyMemory<byte> block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
         {
             int rows = block.Length / _info.RowWidth;
             available += rows;
@@ -121,8 +121,26 @@ public sealed class PstTableContext
     /// </remarks>
     public IEnumerable<uint> EnumerateRowIds()
     {
-        foreach (PstTableRow row in EnumerateRows())
-            yield return row.RowId;
+        // Mirrors EnumerateRows without materializing a row per identifier: the identifier is the first four bytes
+        // of each row slot, read in place from the row-matrix blocks.
+        int remaining = _rowCount;
+        long available = 0;
+        foreach (ReadOnlyMemory<byte> block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
+        {
+            int rows = block.Length / _info.RowWidth;
+            available += rows;
+            for (int i = 0; i < rows && remaining > 0; i++, remaining--)
+                yield return BinaryPrimitives.ReadUInt32LittleEndian(block.Span.Slice(i * _info.RowWidth));
+
+            if (remaining == 0 && !_strict)
+                yield break;
+        }
+
+        if (_strict && available > _rowCount)
+            throw PstTableContextReader.Malformed(_context.NodeId);
+
+        if (remaining > 0)
+            throw PstTableContextReader.Malformed(_context.NodeId);
     }
 
     /// <summary>
@@ -148,7 +166,7 @@ public sealed class PstTableContext
         int positionInBlock = rowNumber % rowsPerBlock;
 
         int blockIndex = 0;
-        foreach (byte[] block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
+        foreach (ReadOnlyMemory<byte> block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
         {
             if (blockIndex == targetBlock)
             {
@@ -171,10 +189,10 @@ public sealed class PstTableContext
     /// <param name="block">The matrix block.</param>
     /// <param name="positionInBlock">The row's position within the block.</param>
     /// <returns>The row.</returns>
-    private PstTableRow CreateRow(byte[] block, int positionInBlock)
+    private PstTableRow CreateRow(ReadOnlyMemory<byte> block, int positionInBlock)
     {
         var bytes = new byte[_info.RowWidth];
-        block.AsSpan(positionInBlock * _info.RowWidth, _info.RowWidth).CopyTo(bytes);
+        block.Span.Slice(positionInBlock * _info.RowWidth, _info.RowWidth).CopyTo(bytes);
         return new PstTableRow(bytes, _heap, _context, _info);
     }
 }

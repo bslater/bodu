@@ -115,7 +115,7 @@ internal static class MapiValueDecoder
     }
 
     /// <summary>
-    /// Decodes a variable-length payload.
+    /// Decodes a variable-length payload held in an owned array.
     /// </summary>
     /// <param name="type">The base property type.</param>
     /// <param name="bytes">The payload bytes. Binary payloads are surfaced as this array without copying.</param>
@@ -130,13 +130,46 @@ internal static class MapiValueDecoder
     /// wrong-length GUID, a <see langword="null" /> payload or encoding, or — under <paramref name="strict" /> — an
     /// odd-length Unicode payload.
     /// </returns>
-    /// <remarks>
-    /// A UTF-8 code-page payload that begins with a byte order mark has the mark removed; it is an encoding artifact,
-    /// not part of the property text.
-    /// </remarks>
     internal static bool TryDecodeVariableValue(MapiPropertyType type, byte[] bytes, Encoding encoding, bool strict, out object? value)
     {
         if (bytes is null || encoding is null)
+        {
+            value = null;
+            return false;
+        }
+
+        if (type == MapiPropertyType.Binary)
+        {
+            value = bytes;
+            return true;
+        }
+
+        return TryDecodeVariableValue(type, bytes.AsSpan(), encoding, strict, out value);
+    }
+
+    /// <summary>
+    /// Decodes a variable-length payload in place.
+    /// </summary>
+    /// <param name="type">The base property type.</param>
+    /// <param name="bytes">The payload bytes. Binary payloads are copied into a new array.</param>
+    /// <param name="encoding">The code-page encoding used for <see cref="MapiPropertyType.String8" /> payloads.</param>
+    /// <param name="strict">
+    /// Whether a structurally odd Unicode payload is rejected (<see langword="true" />) or decoded tolerantly with the
+    /// trailing byte dropped (<see langword="false" />).
+    /// </param>
+    /// <param name="value">When this method returns <see langword="true" />, the decoded value.</param>
+    /// <returns>
+    /// <see langword="true" /> when the payload decodes; <see langword="false" /> for an unsupported type, a
+    /// wrong-length GUID, a <see langword="null" /> encoding, or — under <paramref name="strict" /> — an odd-length
+    /// Unicode payload.
+    /// </returns>
+    /// <remarks>
+    /// Trailing NUL terminators are trimmed at the byte level before the string is materialized, and a UTF-8 code-page
+    /// payload that begins with a byte order mark has the mark removed; both are encoding artifacts, not property text.
+    /// </remarks>
+    internal static bool TryDecodeVariableValue(MapiPropertyType type, ReadOnlySpan<byte> bytes, Encoding encoding, bool strict, out object? value)
+    {
+        if (encoding is null)
         {
             value = null;
             return false;
@@ -153,18 +186,25 @@ internal static class MapiValueDecoder
                         return false;
                     }
 
-                    value = Encoding.Unicode.GetString(bytes, 0, bytes.Length - 1).TrimEnd('\0');
-                    return true;
+                    bytes = bytes.Slice(0, bytes.Length - 1);
                 }
 
-                value = Encoding.Unicode.GetString(bytes).TrimEnd('\0');
+                while (bytes.Length >= 2 && bytes[^1] == 0 && bytes[^2] == 0)
+                    bytes = bytes.Slice(0, bytes.Length - 2);
+
+                value = Encoding.Unicode.GetString(bytes);
                 return true;
             case MapiPropertyType.String8:
-                int start = encoding.CodePage == Utf8CodePage && bytes.AsSpan().StartsWith(Utf8ByteOrderMark) ? Utf8ByteOrderMark.Length : 0;
-                value = encoding.GetString(bytes, start, bytes.Length - start).TrimEnd('\0');
+                if (encoding.CodePage == Utf8CodePage && bytes.StartsWith(Utf8ByteOrderMark))
+                    bytes = bytes.Slice(Utf8ByteOrderMark.Length);
+
+                while (bytes.Length >= 1 && bytes[^1] == 0)
+                    bytes = bytes.Slice(0, bytes.Length - 1);
+
+                value = encoding.GetString(bytes);
                 return true;
             case MapiPropertyType.Binary:
-                value = bytes;
+                value = bytes.ToArray();
                 return true;
             case MapiPropertyType.Guid:
                 if (bytes.Length != 16)

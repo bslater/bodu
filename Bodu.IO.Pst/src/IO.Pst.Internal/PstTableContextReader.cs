@@ -105,14 +105,14 @@ internal static class PstTableContextReader
     /// <param name="info">The table geometry.</param>
     /// <returns>The matrix blocks; empty when the table has no rows.</returns>
     /// <exception cref="PstFileFormatException">The row-matrix reference does not resolve.</exception>
-    internal static IEnumerable<byte[]> EnumerateRowBlocks(PstHeapNode heap, PstLtpContext context, PstTcInfo info)
+    internal static IEnumerable<ReadOnlyMemory<byte>> EnumerateRowBlocks(PstHeapNode heap, PstLtpContext context, PstTcInfo info)
     {
         if (PstHnid.IsNull(info.RowsHnid))
             yield break;
 
         if (PstHnid.IsHeapId(info.RowsHnid))
         {
-            yield return heap.GetItem(info.RowsHnid).ToArray();
+            yield return heap.GetItem(info.RowsHnid);
             yield break;
         }
 

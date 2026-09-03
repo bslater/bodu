@@ -275,13 +275,35 @@ internal static class MsgPropertyDecoder
                     elements[i] = element;
                 }
 
-                value = tag.Type == MapiPropertyType.Binary
-                    ? elements.Cast<byte[]>().ToArray()
-                    : elements.Cast<string>().ToArray();
+                value = ToTypedArray(tag.Type, elements);
                 return true;
             default:
                 return TryDecodePackedMultiValue(tag, baseBytes, strict, out value);
         }
+    }
+
+    /// <summary>
+    /// Copies decoded multi-value elements into the typed array the property model documents.
+    /// </summary>
+    /// <param name="type">The base element type.</param>
+    /// <param name="elements">The decoded elements: strings, or byte arrays for the binary type.</param>
+    /// <returns>A <c>string[]</c> or <c>byte[][]</c>.</returns>
+    private static Array ToTypedArray(MapiPropertyType type, object[] elements)
+    {
+        if (type == MapiPropertyType.Binary)
+        {
+            var arrays = new byte[elements.Length][];
+            for (int i = 0; i < elements.Length; i++)
+                arrays[i] = (byte[])elements[i];
+
+            return arrays;
+        }
+
+        var strings = new string[elements.Length];
+        for (int i = 0; i < elements.Length; i++)
+            strings[i] = (string)elements[i];
+
+        return strings;
     }
 
     /// <summary>

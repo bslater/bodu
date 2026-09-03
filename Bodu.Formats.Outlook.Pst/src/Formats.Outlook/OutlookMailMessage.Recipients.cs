@@ -43,7 +43,7 @@ public sealed partial class OutlookMailMessage
     /// <returns>The recipients in table order; empty when the message carries no recipient table.</returns>
     private OutlookRecipient[] BuildRecipients()
     {
-        if (!TryGetSubnodeOfType(PstNodeType.RecipientTable, out PstNode? tableNode))
+        if (!_node.TryGetSubnodeOfType(PstNodeType.RecipientTable, out PstNode? tableNode))
             return [];
 
         var recipients = new List<OutlookRecipient>();

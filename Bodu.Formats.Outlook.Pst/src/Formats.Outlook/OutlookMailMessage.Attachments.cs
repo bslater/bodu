@@ -44,7 +44,7 @@ public sealed partial class OutlookMailMessage
     /// <returns>The attachments in table order; empty when the message carries no attachment table.</returns>
     private OutlookMailAttachment[] BuildAttachments()
     {
-        if (!TryGetSubnodeOfType(PstNodeType.AttachmentTable, out PstNode? tableNode))
+        if (!_node.TryGetSubnodeOfType(PstNodeType.AttachmentTable, out PstNode? tableNode))
             return [];
 
         var attachments = new List<OutlookMailAttachment>();

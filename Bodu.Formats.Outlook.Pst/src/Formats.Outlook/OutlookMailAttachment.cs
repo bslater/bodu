@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 using Bodu.Formats.Outlook.Pst;
 using Bodu.IO.Pst;
@@ -150,7 +151,7 @@ public sealed class OutlookMailAttachment
     /// <exception cref="OutlookPstFormatException">The by-value content payload is missing.</exception>
     /// <remarks>
     /// The payload is the attachment object's <c>PidTagAttachData</c> value, buffered when the properties decode; the
-    /// returned stream reads from that buffer.
+    /// returned stream reads from that buffer without copying it.
     /// </remarks>
     public Stream OpenContentStream()
     {
@@ -163,7 +164,12 @@ public sealed class OutlookMailAttachment
         if (Properties.GetBinary(MapiPropertyIds.AttachData) is not ReadOnlyMemory<byte> content)
             throw new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_PstAttachmentContent);
 
-        return new MemoryStream(content.ToArray(), writable: false);
+        // The decoded payload is an owned array the collection never mutates; wrap it read-only rather than copying
+        // a payload that can run to tens of megabytes.
+        if (!MemoryMarshal.TryGetArray(content, out ArraySegment<byte> segment))
+            segment = new ArraySegment<byte>(content.ToArray());
+
+        return new MemoryStream(segment.Array!, segment.Offset, segment.Count, writable: false);
     }
 
     /// <summary>
