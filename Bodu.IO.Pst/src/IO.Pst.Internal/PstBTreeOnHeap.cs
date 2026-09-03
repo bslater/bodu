@@ -14,9 +14,11 @@ namespace Bodu.IO.Pst.Internal;
 /// property context (keyed by property id) and the table context's row index (keyed by row id).
 /// </summary>
 /// <remarks>
-/// Keys are little-endian unsigned integers of the header's declared width. Descent is bounded by the header's index
-/// level count, so a crafted file cannot induce unbounded recursion. Under <see cref="PstValidationLevel.Strict" />,
-/// leaf keys must be strictly increasing.
+/// Keys are little-endian unsigned integers of the header's declared width. Descent is bounded three ways: the
+/// header's index level count is capped at <see cref="MaxIndexLevels" />, an index item that names itself or an
+/// ancestor as a child is rejected, and the record count is bounded by the heap size — so a crafted file can neither
+/// recurse without bound nor multiply the enumeration. Under <see cref="PstValidationLevel.Strict" />, leaf keys must
+/// be strictly increasing.
 /// </remarks>
 internal static class PstBTreeOnHeap
 {

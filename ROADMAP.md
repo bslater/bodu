@@ -1168,6 +1168,28 @@ recognized and rejected.
   `Bodu.IO.Pst` and `Bodu.Formats.Outlook.Pst` joined the release
   manifest as wave 3 at `BoduBaseVersion` 0.4.0, with the docs-site
   debut and `samples/IO.Pst/` scenario project.
+- **Outlook hardening pass — landed** ✅ (2026-09-03, per
+  [`Bodu.Formats.Outlook/docs/outlook-hardening-plan.md`](Bodu.Formats.Outlook/docs/outlook-hardening-plan.md)):
+  a tests-first (68 red tests committed before any fix) security,
+  exception-contract, and performance sweep of `Bodu.IO.Pst`,
+  `Bodu.Formats.Outlook`, `.Msg`, and `.Pst`. Bounded every hostile-input
+  hole (NBT/BBT descent depth and level checks, BTH index-level cap and
+  descent-path check, data-tree materialization and fan-out limits via
+  the new `PstFileOptions.MaxNodeDataLength` / `MaxDataTreeLeaves`,
+  `CompressedRtf` expansion bounds, and `MaxEmbeddedMessageDepth` /
+  `MaxDecompressedRtfBytes` on both reader option types — a limit
+  violation is a format failure at every validation level, reported as
+  `PstFileError.LimitExceeded` at the container); closed the exception
+  leaks (`.msg` container faults translate to `OutlookMsgFormatException`
+  via `MsgContainer`, the shared `MapiNamedPropertyRecords` parser, the
+  page/block cache split, UTC-anchored FILETIME decoding, nested-session
+  and view disposal guards, strict size cross-checks); removed the
+  silent wrong answers (unordered property contexts, narrow inline cells,
+  1200/1201 code pages, `PT_NULL` / zero-FILETIME as present-with-null,
+  folder code-page inheritance, missing store object); and cut the
+  copies (`CompoundStorage` child index — the one `Bodu.IO.Compound`
+  change — cached bodies, zero-copy attachment streams, in-place row-id
+  enumeration, span-based variable-value decoding).
 - **ANSI format** (`wVer` 14/15) as a demand-driven follow-on; the
   corpus already carries two ANSI fixtures for it.
 - **Scale-tier corpus**: the EDRM Enron PSTs (CC-BY) remain the

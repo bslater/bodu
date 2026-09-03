@@ -36,6 +36,12 @@ namespace Bodu.Formats.Outlook.Pst;
 /// context. The consuming project selects the namespace and the format-specific exception/resource pair via its
 /// <c>DefineConstants</c> (<c>MSG</c> or <c>OUTLOOK_PST</c>).
 /// </para>
+/// <para>
+/// The declared uncompressed size sits outside the checksum, so it is bounded rather than trusted: a value above what
+/// the body can physically expand to (eight times the payload plus the dictionary) is malformed, a value above the
+/// caller's ceiling is rejected before any allocation, decoding writes into a pre-sized buffer and stops at the
+/// declared size, and a token cut short by the end of the body is malformed rather than a silent partial result.
+/// </para>
 /// </remarks>
 internal static class CompressedRtf
 {

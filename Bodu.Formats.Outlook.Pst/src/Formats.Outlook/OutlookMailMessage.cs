@@ -93,7 +93,7 @@ public sealed partial class OutlookMailMessage
     /// </summary>
     /// <value>The normalized <c>PidTagSubject</c> value, or <see langword="null" /> when absent.</value>
     public string? Subject =>
-        PstStoreLayout.NormalizeSubject(Properties.GetString(MapiPropertyIds.Subject));
+        MapiSubject.Normalize(Properties.GetString(MapiPropertyIds.Subject));
 
     /// <summary>
     /// Gets the sender display name.

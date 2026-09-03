@@ -4,7 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if OUTLOOK_PST
+namespace Bodu.Formats.Outlook.Pst;
+#else
 namespace Bodu.Formats.Outlook.Msg;
+#endif
 
 /// <summary>
 /// Verifies the behavior of <see cref="MapiEncodingResolver" />, the code-page resolver.

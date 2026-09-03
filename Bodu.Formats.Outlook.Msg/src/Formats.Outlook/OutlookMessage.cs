@@ -131,11 +131,14 @@ public sealed partial class OutlookMessage
     }
 
     /// <summary>
-    /// Gets the message subject.
+    /// Gets the message subject, with the MAPI subject-prefix marker removed when a writer stored one.
     /// </summary>
-    /// <value>The <c>PidTagSubject</c> value, or <see langword="null" /> when absent.</value>
+    /// <value>
+    /// The normalized <c>PidTagSubject</c> value, or <see langword="null" /> when absent; the stored value remains
+    /// available through <see cref="Properties" />.
+    /// </value>
     public string? Subject =>
-        Properties.GetString(MapiPropertyIds.Subject);
+        MapiSubject.Normalize(Properties.GetString(MapiPropertyIds.Subject));
 
     /// <summary>
     /// Gets the sender display name.

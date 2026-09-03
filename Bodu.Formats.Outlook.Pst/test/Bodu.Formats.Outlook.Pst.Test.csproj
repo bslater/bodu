@@ -5,7 +5,18 @@
     <RootNamespace>Bodu</RootNamespace>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <!-- Namespace selector for the shared decode-layer tests linked from the .msg test project (below). -->
+    <DefineConstants>$(DefineConstants);OUTLOOK_PST</DefineConstants>
   </PropertyGroup>
+
+  <!-- The shared decode layer (Bodu.Formats.Outlook/shared/**) is source-compiled into this reader under OUTLOOK_PST;
+       its container-free unit tests are linked from the .msg test project so the PST copy is unit-tested too. -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\MapiEncodingResolverTests.cs" Link="Formats.Outlook.Pst\Shared\MapiEncodingResolverTests.cs" />
+    <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\MapiValueDecoderTests.cs" Link="Formats.Outlook.Pst\Shared\MapiValueDecoderTests.cs" />
+    <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\MapiValueDecoderTests.TryConvertFileTime.cs" Link="Formats.Outlook.Pst\Shared\MapiValueDecoderTests.TryConvertFileTime.cs" />
+    <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\MapiValueDecoderTests.TryDecodeVariableValue.cs" Link="Formats.Outlook.Pst\Shared\MapiValueDecoderTests.TryDecodeVariableValue.cs" />
+  </ItemGroup>
 
   <!-- The container test project is referenced for its fixture builders and embedded reference corpus
        (granted via InternalsVisibleTo from Bodu.IO.Pst.Test). -->

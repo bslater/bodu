@@ -37,13 +37,4 @@ internal static class PstStoreLayout
     /// <returns>The identifier of the folder's associated-contents table.</returns>
     internal static PstNodeId AssociatedContentsTableOf(PstNodeId folderId) =>
         new(PstNodeType.AssociatedContentsTable, folderId.Index);
-
-    /// <summary>
-    /// Strips the MS-PST subject-prefix marker: a stored subject may begin with U+0001 followed by a one-character
-    /// prefix-length indicator, which consumers do not display.
-    /// </summary>
-    /// <param name="subject">The stored subject text.</param>
-    /// <returns>The subject without the marker, or <see langword="null" /> when absent.</returns>
-    internal static string? NormalizeSubject(string? subject) =>
-        subject is { Length: >= 2 } && subject[0] == '\u0001' ? subject[2..] : subject;
 }

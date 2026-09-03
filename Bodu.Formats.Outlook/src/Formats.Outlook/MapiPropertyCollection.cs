@@ -264,5 +264,5 @@ public sealed class MapiPropertyCollection
     /// <param name="elementType">The base element type to probe; the multi-valued flag is applied to it.</param>
     /// <returns>The stored value, or <see langword="null" /> when the tag is absent.</returns>
     private object? GetMultiValue(ushort id, MapiPropertyType elementType) =>
-        TryGetValue(new MapiPropertyTag(((uint)id << 16) | (ushort)elementType | 0x1000u), out MapiProperty? property) ? property.Value : null;
+        TryGetValue(MapiPropertyTag.ForMultiValue(id, elementType), out MapiProperty? property) ? property.Value : null;
 }

@@ -4,7 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if OUTLOOK_PST
+namespace Bodu.Formats.Outlook.Pst;
+#else
 namespace Bodu.Formats.Outlook.Msg;
+#endif
 
 public partial class MapiValueDecoderTests
 {
