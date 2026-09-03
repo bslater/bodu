@@ -34,6 +34,12 @@ namespace Bodu.Formats.Outlook.Pst;
 /// </remarks>
 internal static class MapiValueDecoder
 {
+    /// <summary>The UTF-8 code page, whose payloads may carry a byte order mark.</summary>
+    private const int Utf8CodePage = 65001;
+
+    /// <summary>The UTF-8 byte order mark.</summary>
+    private static ReadOnlySpan<byte> Utf8ByteOrderMark => [0xEF, 0xBB, 0xBF];
+
     /// <summary>
     /// Determines whether a base type stores its payload out of line (in a value stream or heap allocation) rather
     /// than inline in the fixed record.
@@ -57,6 +63,12 @@ internal static class MapiValueDecoder
     {
         switch (type)
         {
+            case MapiPropertyType.Unspecified:
+            case MapiPropertyType.Null:
+                // PT_UNSPECIFIED and PT_NULL are legal wire types with no payload: the property is present and its
+                // value is null, which is not a decoding failure.
+                value = null;
+                return true;
             case MapiPropertyType.Int16:
                 value = (short)(ushort)raw;
                 return true;
@@ -81,6 +93,13 @@ internal static class MapiValueDecoder
                 value = (long)raw;
                 return true;
             case MapiPropertyType.SystemTime:
+                if (raw == 0)
+                {
+                    // Writers store a zero FILETIME for "no time"; the property is present with a null value.
+                    value = null;
+                    return true;
+                }
+
                 if (TryConvertFileTime(raw, out DateTimeOffset timestamp))
                 {
                     value = timestamp;
@@ -108,10 +127,21 @@ internal static class MapiValueDecoder
     /// <param name="value">When this method returns <see langword="true" />, the decoded value.</param>
     /// <returns>
     /// <see langword="true" /> when the payload decodes; <see langword="false" /> for an unsupported type, a
-    /// wrong-length GUID, or — under <paramref name="strict" /> — an odd-length Unicode payload.
+    /// wrong-length GUID, a <see langword="null" /> payload or encoding, or — under <paramref name="strict" /> — an
+    /// odd-length Unicode payload.
     /// </returns>
+    /// <remarks>
+    /// A UTF-8 code-page payload that begins with a byte order mark has the mark removed; it is an encoding artifact,
+    /// not part of the property text.
+    /// </remarks>
     internal static bool TryDecodeVariableValue(MapiPropertyType type, byte[] bytes, Encoding encoding, bool strict, out object? value)
     {
+        if (bytes is null || encoding is null)
+        {
+            value = null;
+            return false;
+        }
+
         switch (type)
         {
             case MapiPropertyType.Unicode:
@@ -130,7 +160,8 @@ internal static class MapiValueDecoder
                 value = Encoding.Unicode.GetString(bytes).TrimEnd('\0');
                 return true;
             case MapiPropertyType.String8:
-                value = encoding.GetString(bytes).TrimEnd('\0');
+                int start = encoding.CodePage == Utf8CodePage && bytes.AsSpan().StartsWith(Utf8ByteOrderMark) ? Utf8ByteOrderMark.Length : 0;
+                value = encoding.GetString(bytes, start, bytes.Length - start).TrimEnd('\0');
                 return true;
             case MapiPropertyType.Binary:
                 value = bytes;
@@ -228,21 +259,28 @@ internal static class MapiValueDecoder
 
                 value = timestamps;
                 return true;
-            default:
+            case MapiPropertyType.Guid:
                 var guids = new Guid[count];
                 for (int i = 0; i < count; i++)
                     guids[i] = new Guid(bytes.Slice(i * 16, 16));
                 value = guids;
                 return true;
+            default:
+                return false;
         }
     }
 
     /// <summary>
-    /// Converts a FILETIME value, rejecting zero and out-of-range values.
+    /// Converts a FILETIME value to a UTC time stamp, rejecting zero and out-of-range values.
     /// </summary>
     /// <param name="raw">The raw FILETIME.</param>
-    /// <param name="value">When this method returns <see langword="true" />, the converted time stamp.</param>
+    /// <param name="value">When this method returns <see langword="true" />, the converted time stamp with a zero offset.</param>
     /// <returns><see langword="true" /> when the value is representable.</returns>
+    /// <remarks>
+    /// A FILETIME is defined in UTC, so the result carries <see cref="TimeSpan.Zero" /> regardless of the machine's
+    /// time zone; converting through local time would both shift the offset and reject values near the range limits
+    /// in zones ahead of UTC.
+    /// </remarks>
     internal static bool TryConvertFileTime(ulong raw, out DateTimeOffset value)
     {
         value = default;
@@ -251,7 +289,7 @@ internal static class MapiValueDecoder
 
         try
         {
-            value = DateTimeOffset.FromFileTime((long)raw);
+            value = new DateTimeOffset(DateTime.FromFileTimeUtc((long)raw).Ticks, TimeSpan.Zero);
             return true;
         }
         catch (ArgumentOutOfRangeException)

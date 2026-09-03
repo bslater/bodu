@@ -248,12 +248,23 @@ internal static class PstBTree
     /// <param name="page">The page bytes.</param>
     /// <param name="offset">The entry offset.</param>
     /// <returns>The node entry.</returns>
-    private static PstNbtEntry ReadNbtEntry(byte[] page, int offset) =>
-        new(
-            (uint)BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset)),
+    private static PstNbtEntry ReadNbtEntry(byte[] page, int offset)
+    {
+        // The nid field is eight bytes wide but a node identifier is 32 bits; a set high dword is not a truncation
+        // to tolerate but a page that does not hold what its type claims.
+        ulong nodeId = BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset));
+        if (nodeId > uint.MaxValue)
+        {
+            throw new PstFileFormatException(string.Format(
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstNodeIdentifier, nodeId), PstFileError.InvalidPage);
+        }
+
+        return new PstNbtEntry(
+            (uint)nodeId,
             BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset + 8)),
             BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset + 16)),
             BinaryPrimitives.ReadUInt32LittleEndian(page.AsSpan(offset + 24)));
+    }
 
     /// <summary>
     /// Reads a leaf <c>BBTENTRY</c>.

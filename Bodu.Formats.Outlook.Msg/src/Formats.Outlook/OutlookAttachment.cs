@@ -18,7 +18,7 @@ namespace Bodu.Formats.Outlook;
 /// The conveniences return <see langword="null" /> when the underlying property is absent; every attachment property
 /// remains reachable through <see cref="Properties" />. Content access is method-specific:
 /// <see cref="OpenContentStream" /> serves a by-value payload and <see cref="OpenMessage" /> serves an embedded message
-/// — each throws <see cref="NotSupportedException" /> for the other method kinds.
+/// — each throws <see cref="NotSupportedException" /> for every other method kind.
 /// </remarks>
 public sealed class OutlookAttachment
 {
@@ -42,7 +42,7 @@ public sealed class OutlookAttachment
         _owner = owner;
         _storage = storage;
         Properties = properties;
-        _hasContentStream = storage.TryOpenStream(ContentStreamName, out CompoundStream? content);
+        _hasContentStream = MsgContainer.TryOpenStream(storage, ContentStreamName, out CompoundStream? content);
         content?.Dispose();
     }
 
@@ -107,26 +107,35 @@ public sealed class OutlookAttachment
     /// Opens the by-value content payload as a read-only stream.
     /// </summary>
     /// <returns>The content stream; dispose it when reading is complete.</returns>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="NotSupportedException">
-    /// The attachment's <see cref="Method" /> is <see cref="OutlookAttachmentMethod.EmbeddedMessage" /> or
-    /// <see cref="OutlookAttachmentMethod.Ole" /> — the payload is a storage, not a stream.
+    /// The attachment's <see cref="Method" /> is not <see cref="OutlookAttachmentMethod.ByValue" /> — a referenced,
+    /// embedded, or OLE attachment carries no byte payload in the message.
     /// </exception>
-    /// <exception cref="OutlookMsgFormatException">The by-value content stream is missing.</exception>
+    /// <exception cref="OutlookMsgFormatException">
+    /// The by-value content stream is missing, or the container is malformed.
+    /// </exception>
+    /// <remarks>
+    /// The payload is read from the container in full when the stream is opened, so a container fault surfaces here
+    /// rather than part-way through a later read.
+    /// </remarks>
     public Stream OpenContentStream()
     {
-        if (Method is OutlookAttachmentMethod.EmbeddedMessage or OutlookAttachmentMethod.Ole)
+        _owner.ThrowIfDisposed();
+
+        if (Method != OutlookAttachmentMethod.ByValue)
         {
             throw new NotSupportedException(string.Format(
                 CultureInfo.CurrentCulture, OutlookMsgResourceStrings.Op_NotSupported_MsgAttachmentContent, Method));
         }
 
-        if (!_storage.TryOpenStream(ContentStreamName, out CompoundStream? content))
+        if (!MsgContainer.TryReadStream(_storage, ContentStreamName, out byte[]? content))
         {
             throw new OutlookMsgFormatException(string.Format(
                 CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgAttachmentContent, ContentStreamName));
         }
 
-        return content;
+        return new MemoryStream(content, writable: false);
     }
 
     /// <summary>
@@ -136,19 +145,25 @@ public sealed class OutlookAttachment
     /// The nested message session. It shares the root session's container and named-property mapping; disposing it is
     /// a no-op, and it becomes unusable when the root session is disposed.
     /// </returns>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="NotSupportedException">
     /// The attachment's <see cref="Method" /> is not <see cref="OutlookAttachmentMethod.EmbeddedMessage" />.
     /// </exception>
-    /// <exception cref="OutlookMsgFormatException">The embedded-message storage is missing or malformed.</exception>
+    /// <exception cref="OutlookMsgFormatException">
+    /// The embedded-message storage is missing or malformed, or the nested message would sit deeper than
+    /// <see cref="OutlookMessageReaderOptions.MaxEmbeddedMessageDepth" />.
+    /// </exception>
     public OutlookMessage OpenMessage()
     {
+        _owner.ThrowIfDisposed();
+
         if (Method != OutlookAttachmentMethod.EmbeddedMessage)
         {
             throw new NotSupportedException(string.Format(
                 CultureInfo.CurrentCulture, OutlookMsgResourceStrings.Op_NotSupported_MsgEmbeddedMessage, Method));
         }
 
-        if (!_storage.TryOpenStorage(MsgStreamNames.EmbeddedMessageStorageName, out CompoundStorage? messageStorage))
+        if (!MsgContainer.TryOpenStorage(_storage, MsgStreamNames.EmbeddedMessageStorageName, out CompoundStorage? messageStorage))
         {
             throw new OutlookMsgFormatException(string.Format(
                 CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgAttachmentContent, MsgStreamNames.EmbeddedMessageStorageName));

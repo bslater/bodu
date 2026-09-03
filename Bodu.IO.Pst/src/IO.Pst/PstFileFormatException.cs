@@ -49,4 +49,16 @@ public sealed class PstFileFormatException
         : base(message, error)
     {
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PstFileFormatException" /> class with a message, an error category, and the
+    /// exception that caused it.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="error">The category of container defect the exception reports.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception.</param>
+    public PstFileFormatException(string? message, PstFileError error, Exception? innerException)
+        : base(message, error, innerException)
+    {
+    }
 }

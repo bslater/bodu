@@ -230,5 +230,33 @@ namespace Bodu.IO.Pst {
                 return ResourceManager.GetString("Arg_Invalid_PstSeekOrigin", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The header declares a file length beyond the end of the stream..
+        /// </summary>
+        internal static string Format_Invalid_PstHeaderFileLength {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstHeaderFileLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The node identifier 0x{0:X16} exceeds the 32-bit identifier space..
+        /// </summary>
+        internal static string Format_Invalid_PstNodeIdentifier {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstNodeIdentifier", resourceCulture);
+            }
+        }
+
+
+        /// <summary>
+        ///   Looks up a localized string similar to The subnode block {0} is malformed..
+        /// </summary>
+        internal static string Format_Invalid_PstSubnodeBlock {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstSubnodeBlock", resourceCulture);
+            }
+        }
     }
 }

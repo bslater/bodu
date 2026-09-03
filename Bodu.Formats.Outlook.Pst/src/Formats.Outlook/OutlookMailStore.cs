@@ -86,7 +86,7 @@ public sealed partial class OutlookMailStore
     {
         get
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
+            ThrowIfDisposed();
 
             if (_properties is null)
             {
@@ -124,7 +124,7 @@ public sealed partial class OutlookMailStore
     {
         get
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
+            ThrowIfDisposed();
 
             return _rootFolder ??= new OutlookMailFolder(this, _file.GetNode(PstNodeId.RootFolder));
         }
@@ -247,9 +247,19 @@ public sealed partial class OutlookMailStore
         if (_disposed)
             return;
 
-        _file.Dispose();
+        // The flag is set first so a view that observes a partially disposed session fails with the disposal
+        // exception rather than a container error.
         _disposed = true;
+        _file.Dispose();
     }
+
+    /// <summary>
+    /// Throws when the session has been disposed; every view bound to the session calls this before touching the
+    /// container.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
+    internal void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(_disposed, this);
 
     /// <summary>
     /// Retrieves a node from the owned container, guarding against a disposed session.
@@ -260,7 +270,7 @@ public sealed partial class OutlookMailStore
     /// <exception cref="PstNodeNotFoundException">No node with the identifier exists.</exception>
     internal PstNode GetNode(PstNodeId id)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
 
         return _file.GetNode(id);
     }
@@ -274,7 +284,7 @@ public sealed partial class OutlookMailStore
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
     internal bool TryGetNode(PstNodeId id, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out PstNode node)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
 
         return _file.TryGetNode(id, out node);
     }

@@ -23,6 +23,9 @@ public readonly struct PstNodeId
     /// <summary>The mask selecting the five type bits.</summary>
     private const uint TypeMask = 0x1F;
 
+    /// <summary>The largest index the 27-bit index field can hold.</summary>
+    private const uint MaxIndex = 0x07FF_FFFF;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PstNodeId" /> struct from a raw 32-bit identifier.
     /// </summary>
@@ -35,8 +38,12 @@ public readonly struct PstNodeId
     /// </summary>
     /// <param name="type">The node type (the five low bits).</param>
     /// <param name="index">The 27-bit index.</param>
-    public PstNodeId(PstNodeType type, uint index) =>
+    public PstNodeId(PstNodeType type, uint index)
+    {
+        ThrowHelper.ThrowIfGreaterThan(index, MaxIndex);
+
         Value = ((uint)type & TypeMask) | (index << 5);
+    }
 
     /// <summary>
     /// Gets the message-store node identifier (<c>NID_MESSAGE_STORE</c>, <c>0x21</c>).

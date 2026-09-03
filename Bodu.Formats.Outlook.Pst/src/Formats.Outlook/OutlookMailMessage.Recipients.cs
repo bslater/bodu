@@ -27,8 +27,15 @@ public sealed partial class OutlookMailMessage
     /// Recipients are row-resident: each recipient-table row's cells decode directly into the recipient's property
     /// collection, with code-page strings decoded under the message's encoding.
     /// </remarks>
-    public IReadOnlyList<OutlookRecipient> Recipients =>
-        _recipients ??= BuildRecipients();
+    public IReadOnlyList<OutlookRecipient> Recipients
+    {
+        get
+        {
+            _store.ThrowIfDisposed();
+
+            return _recipients ??= BuildRecipients();
+        }
+    }
 
     /// <summary>
     /// Decodes the recipient table's rows into recipient views.

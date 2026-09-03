@@ -65,13 +65,34 @@ internal static class PstPropertyContextReader
             entries.Add(new PstPcEntry(propertyId, wireType, rawValue));
         }
 
+        // Lookups binary-search by property identifier. Strict reads have already rejected an unordered tree; the
+        // tolerant levels accept it, so restore the order here (a stable sort keeps the first of any duplicates).
+        if (source.ValidationLevel != PstValidationLevel.Strict && !IsOrdered(entries))
+            entries = [.. entries.OrderBy(static e => e.PropertyId)];
+
         return (heap, entries);
     }
 
     /// <summary>
-    /// Creates the malformed-property-context exception for a node identifier.
+    /// Determines whether a record list is already in ascending property-identifier order.
     /// </summary>
-    /// <param name="nodeId">The owning node identifier.</param>
+    /// <param name="entries">The records in stored order.</param>
+    /// <returns><see langword="true" /> when no record precedes a smaller identifier.</returns>
+    private static bool IsOrdered(List<PstPcEntry> entries)
+    {
+        for (int i = 1; i < entries.Count; i++)
+        {
+            if (entries[i - 1].PropertyId > entries[i].PropertyId)
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Creates the malformed-context exception for a node.
+    /// </summary>
+    /// <param name="nodeId">The node identifier.</param>
     /// <returns>The exception to throw.</returns>
     private static PstFileFormatException Malformed(uint nodeId) =>
         new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPropertyContext, new PstNodeId(nodeId)), PstFileError.InvalidPropertyContext);

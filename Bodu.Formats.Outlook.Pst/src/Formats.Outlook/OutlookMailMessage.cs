@@ -75,6 +75,8 @@ public sealed partial class OutlookMailMessage
     {
         get
         {
+            _store.ThrowIfDisposed();
+
             if (_properties is null)
             {
                 _properties = PstMapiPropertyReader.Read(

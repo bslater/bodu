@@ -154,11 +154,16 @@ public sealed class PstFile
         ThrowHelper.ThrowIfNull(options);
         if (!stream.CanRead || !stream.CanSeek) throw new ArgumentException(PstResourceStrings.Arg_Invalid_PstStreamNotReadableSeekable, nameof(stream));
 
+        // The container starts wherever the stream is positioned; every offset the file records is relative to it.
+        long baseOffset = stream.Position;
         var headerBytes = new byte[PstHeader.UnicodeHeaderSize];
         int read = stream.ReadAtLeast(headerBytes, headerBytes.Length, throwOnEndOfStream: false);
         PstHeader header = PstHeader.Parse(headerBytes.AsSpan(0, read), options.ValidationLevel);
 
-        return new PstFile(new PstSource(stream, header, options), stream, leaveOpen);
+        if (options.ValidationLevel == PstValidationLevel.Strict && header.FileLength > stream.Length - baseOffset)
+            throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeaderFileLength, PstFileError.InvalidHeader);
+
+        return new PstFile(new PstSource(stream, header, options, baseOffset), stream, leaveOpen);
     }
 
     /// <summary>

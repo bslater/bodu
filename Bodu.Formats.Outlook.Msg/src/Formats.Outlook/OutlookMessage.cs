@@ -124,7 +124,7 @@ public sealed partial class OutlookMessage
     {
         get
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
+            ThrowIfDisposed();
 
             return _properties;
         }
@@ -237,7 +237,7 @@ public sealed partial class OutlookMessage
     /// Thrown if <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="OutlookMsgFormatException">
-    /// The stream is not a compound file or not a valid message.
+    /// The stream is not a compound file, the container is malformed, or the message is not valid.
     /// </exception>
     public static OutlookMessage Open(Stream stream, OutlookMessageReaderOptions options, bool leaveOpen = false)
     {
@@ -249,7 +249,7 @@ public sealed partial class OutlookMessage
         {
             compound = CompoundFile.Open(stream, options.ToCompoundFileOptions(), leaveOpen);
         }
-        catch (CompoundFileFormatException ex)
+        catch (CompoundFileException ex)
         {
             throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_MsgNotCompound, ex);
         }
@@ -319,7 +319,8 @@ public sealed partial class OutlookMessage
     /// <summary>
     /// Releases the container and, unless it was left open, the source stream. Disposing a nested message obtained from
     /// an attachment is a no-op — the root session owns the container, and the nested session's decoded properties stay
-    /// readable until the root is disposed.
+    /// readable until the root is disposed, after which every nested session throws
+    /// <see cref="ObjectDisposedException" /> as well.
     /// </summary>
     public void Dispose()
     {
@@ -329,4 +330,11 @@ public sealed partial class OutlookMessage
         _disposed = true;
         _compound.Dispose();
     }
+
+    /// <summary>
+    /// Throws when this session, or the root session a nested message belongs to, has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
+    internal void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(_root?._disposed ?? _disposed, this);
 }

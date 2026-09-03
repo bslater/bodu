@@ -203,5 +203,14 @@ namespace Bodu.Formats.Outlook {
                 return ResourceManager.GetString("Format_Invalid_PstEmbeddedMessageDepth", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The attachment declares an undefined method ({0})..
+        /// </summary>
+        internal static string Format_Invalid_PstAttachmentMethod {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstAttachmentMethod", resourceCulture);
+            }
+        }
     }
 }

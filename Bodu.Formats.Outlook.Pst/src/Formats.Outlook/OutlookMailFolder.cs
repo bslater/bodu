@@ -52,9 +52,16 @@ public sealed class OutlookMailFolder
     /// <value>The tag-addressed property collection, decoded once on first access.</value>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="PstFileException">The container is malformed.</exception>
-    public MapiPropertyCollection Properties =>
-        _properties ??= PstMapiPropertyReader.Read(
-            _node.ReadPropertyContext(), _store.StoreEncoding, _store.Strict, out _);
+    public MapiPropertyCollection Properties
+    {
+        get
+        {
+            _store.ThrowIfDisposed();
+
+            return _properties ??= PstMapiPropertyReader.Read(
+                _node.ReadPropertyContext(), _store.StoreEncoding, _store.Strict, out _);
+        }
+    }
 
     /// <summary>
     /// Gets the folder display name.

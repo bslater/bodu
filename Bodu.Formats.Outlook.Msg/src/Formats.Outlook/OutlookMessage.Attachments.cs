@@ -26,7 +26,7 @@ public sealed partial class OutlookMessage
     {
         get
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
+            ThrowIfDisposed();
 
             return _attachments ??= BuildAttachments();
         }

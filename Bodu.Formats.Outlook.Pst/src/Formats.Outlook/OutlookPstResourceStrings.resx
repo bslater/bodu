@@ -106,4 +106,7 @@
   <data name="Format_Invalid_PstPropertyValue" xml:space="preserve">
     <value>The property 0x{0:X4} carries an undecodable value.</value>
   </data>
+  <data name="Format_Invalid_PstAttachmentMethod" xml:space="preserve">
+    <value>The attachment declares an undefined method ({0}).</value>
+  </data>
 </root>

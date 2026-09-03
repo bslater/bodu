@@ -38,6 +38,9 @@ public sealed class PstTableContext
     /// <summary>The row count the row index records.</summary>
     private readonly int _rowCount;
 
+    /// <summary>Whether a row matrix holding more rows than the index declares is rejected.</summary>
+    private readonly bool _strict;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PstTableContext" /> class.
     /// </summary>
@@ -58,6 +61,7 @@ public sealed class PstTableContext
             _columns[i] = new PstTableColumn(info.Columns[i].PropertyId, info.Columns[i].WireType, info.Columns[i].DataSize);
 
         _rowCount = PstBTreeOnHeap.EnumerateRecords(heap, rowIndex, validationLevel).Count();
+        _strict = validationLevel == PstValidationLevel.Strict;
     }
 
     /// <summary>
@@ -82,15 +86,22 @@ public sealed class PstTableContext
     public IEnumerable<PstTableRow> EnumerateRows()
     {
         int remaining = _rowCount;
+        long available = 0;
         foreach (byte[] block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
         {
-            int available = block.Length / _info.RowWidth;
-            for (int i = 0; i < available && remaining > 0; i++, remaining--)
+            int rows = block.Length / _info.RowWidth;
+            available += rows;
+            for (int i = 0; i < rows && remaining > 0; i++, remaining--)
                 yield return CreateRow(block, i);
 
-            if (remaining == 0)
+            // The index is authoritative for the row count. Tolerant reads stop once it is satisfied; strict reads
+            // keep counting so a matrix carrying whole rows the index does not know about is rejected below.
+            if (remaining == 0 && !_strict)
                 yield break;
         }
+
+        if (_strict && available > _rowCount)
+            throw PstTableContextReader.Malformed(_context.NodeId);
 
         if (remaining > 0)
             throw PstTableContextReader.Malformed(_context.NodeId);

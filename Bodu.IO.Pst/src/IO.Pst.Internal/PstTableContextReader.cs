@@ -46,7 +46,7 @@ internal static class PstTableContextReader
     internal static (PstHeapNode Heap, PstTcInfo Info, PstBthHeader RowIndex) Read(PstSource source, PstNbtEntry entry)
     {
         PstHeapNode heap = PstHeapNode.Parse(source, entry);
-        if (heap.ClientSignature != PstHeapNode.TableContextSignature)
+        if (heap.ClientSignature != PstHeapNode.TableContextSignature || heap.UserRootHid == 0)
             throw Malformed(entry.NodeId);
 
         ReadOnlySpan<byte> info = heap.GetItem(heap.UserRootHid).Span;
@@ -137,5 +137,5 @@ internal static class PstTableContextReader
     /// <param name="nodeId">The owning node identifier.</param>
     /// <returns>The exception to throw.</returns>
     internal static PstFileFormatException Malformed(uint nodeId) =>
-        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstTableContext, new PstNodeId(nodeId)));
+        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstTableContext, new PstNodeId(nodeId)), PstFileError.InvalidTableContext);
 }

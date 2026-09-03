@@ -42,8 +42,9 @@ internal static class MsgPropertyDecoder
     /// <param name="header">When this method returns, the decoded property-stream header.</param>
     /// <returns>The decoded property collection.</returns>
     /// <exception cref="OutlookMsgFormatException">
-    /// The storage has no property stream, the stream is malformed, or — under
-    /// <see cref="CompoundValidationLevel.Strict" /> — a property entry or value stream is invalid.
+    /// The storage has no property stream, the stream is malformed, the container is corrupt, or — under
+    /// <see cref="CompoundValidationLevel.Strict" /> — a property entry or value stream is invalid (including a
+    /// declared size that disagrees with the value stream).
     /// </exception>
     internal static MapiPropertyCollection Decode(
         CompoundStorage storage,
@@ -52,12 +53,8 @@ internal static class MsgPropertyDecoder
         Encoding? inheritedEncoding,
         out MsgPropertyStreamHeader header)
     {
-        if (!storage.TryOpenStream(MsgStreamNames.PropertiesStreamName, out CompoundStream? propertiesStream))
+        if (!MsgContainer.TryReadStream(storage, MsgStreamNames.PropertiesStreamName, out byte[]? payload))
             throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_MsgContainer);
-
-        byte[] payload;
-        using (propertiesStream)
-            payload = propertiesStream.ReadAllBytes();
 
         MsgPropertyEntry[] entries = MsgPropertyStreamReader.Read(payload, kind, out header);
         Encoding encoding = ResolveEncoding(entries, inheritedEncoding);
@@ -141,8 +138,15 @@ internal static class MsgPropertyDecoder
         }
         else if (IsVariableLength(tag.Type))
         {
-            if (!TryReadSubstg(storage, tag.Value, strict, out byte[]? bytes)
-                || !TryDecodeVariableValue(tag, bytes, encoding, strict, out value))
+            if (!TryReadSubstg(storage, tag.Value, strict, out byte[]? bytes))
+                return false;
+
+            // The record's size field is the stream length (string sizes count their terminator, which the stream
+            // omits); a disagreement is a structural fault under strict validation and ignored otherwise.
+            if (strict && !DeclaredSizeMatches(tag.Type, entry.Size, bytes.Length))
+                throw MalformedEntry(tag);
+
+            if (!TryDecodeVariableValue(tag, bytes, encoding, strict, out value))
                 return false;
         }
         else
@@ -154,6 +158,21 @@ internal static class MsgPropertyDecoder
         property = new MapiProperty(tag, value);
         return true;
     }
+
+    /// <summary>
+    /// Determines whether a variable-length record's declared size agrees with its value stream.
+    /// </summary>
+    /// <param name="type">The base property type.</param>
+    /// <param name="declared">The size the property record declares.</param>
+    /// <param name="actual">The value stream's length.</param>
+    /// <returns>
+    /// <see langword="true" /> when the sizes match exactly, or differ by the string terminator (two bytes for a
+    /// Unicode string, one for a code-page string) that the size counts and the stream omits.
+    /// </returns>
+    private static bool DeclaredSizeMatches(MapiPropertyType type, uint declared, int actual) =>
+        declared == (uint)actual
+            || (type == MapiPropertyType.Unicode && declared == (uint)actual + 2)
+            || (type == MapiPropertyType.String8 && declared == (uint)actual + 1);
 
     /// <summary>
     /// Determines whether a base type stores its payload in a value stream.
@@ -298,18 +317,13 @@ internal static class MsgPropertyDecoder
         [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out byte[] bytes)
     {
         string name = MsgStreamNames.GetSubstgStreamName(tagValue);
-        if (!storage.TryOpenStream(name, out CompoundStream? stream))
-        {
-            bytes = null;
-            return !strict
-                ? false
-                : throw new OutlookMsgFormatException(string.Format(
-                    CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgSubstgStream, new MapiPropertyTag(tagValue), name));
-        }
+        if (MsgContainer.TryReadStream(storage, name, out bytes))
+            return true;
 
-        using (stream)
-            bytes = stream.ReadAllBytes();
-        return true;
+        return !strict
+            ? false
+            : throw new OutlookMsgFormatException(string.Format(
+                CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgSubstgStream, new MapiPropertyTag(tagValue), name));
     }
 
     /// <summary>
@@ -329,18 +343,13 @@ internal static class MsgPropertyDecoder
         [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out byte[] bytes)
     {
         string name = MsgStreamNames.GetMultiValueElementStreamName(tagValue, index);
-        if (!storage.TryOpenStream(name, out CompoundStream? stream))
-        {
-            bytes = null;
-            return !strict
-                ? false
-                : throw new OutlookMsgFormatException(string.Format(
-                    CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgSubstgStream, new MapiPropertyTag(tagValue), name));
-        }
+        if (MsgContainer.TryReadStream(storage, name, out bytes))
+            return true;
 
-        using (stream)
-            bytes = stream.ReadAllBytes();
-        return true;
+        return !strict
+            ? false
+            : throw new OutlookMsgFormatException(string.Format(
+                CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgSubstgStream, new MapiPropertyTag(tagValue), name));
     }
 
     /// <summary>

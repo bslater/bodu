@@ -121,4 +121,13 @@
   <data name="Arg_Invalid_PstSeekOrigin" xml:space="preserve">
     <value>The seek origin is not a valid SeekOrigin value.</value>
   </data>
+  <data name="Format_Invalid_PstHeaderFileLength" xml:space="preserve">
+    <value>The header declares a file length beyond the end of the stream.</value>
+  </data>
+  <data name="Format_Invalid_PstNodeIdentifier" xml:space="preserve">
+    <value>The node identifier 0x{0:X16} exceeds the 32-bit identifier space.</value>
+  </data>
+  <data name="Format_Invalid_PstSubnodeBlock" xml:space="preserve">
+    <value>The subnode block {0} is malformed.</value>
+  </data>
 </root>

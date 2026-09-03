@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Concurrent;
 using System.Text;
 
 #if MSG
@@ -19,7 +20,9 @@ namespace Bodu.Formats.Outlook.Pst;
 /// The type constructor registers <see cref="CodePagesEncodingProvider" /> so the Windows code pages that dominate
 /// real-world messages (Windows-1252, Shift-JIS, and the rest) resolve on all platforms. Resolution prefers the message
 /// code page, then the internet code page, then falls back to Windows-1252 — the historical default for messages that
-/// declare nothing. This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook
+/// declare nothing (Latin-1 when the code-page provider is unavailable). The UTF-16 code pages (1200 and 1201) are not
+/// usable for <c>PT_STRING8</c> payloads and fall through to the next candidate; resolved encodings are cached per
+/// code page. Every method always returns an encoding and never throws. This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook
 /// format reader — the same code-page properties govern <c>PT_STRING8</c> decoding in a <c>.msg</c> container and a
 /// PST property context; the consuming project selects the namespace via its <c>DefineConstants</c>.
 /// </remarks>
@@ -28,14 +31,36 @@ internal static class MapiEncodingResolver
     /// <summary>The Windows-1252 code page used when a message declares no usable code page.</summary>
     private const int FallbackCodePage = 1252;
 
+    /// <summary>The UTF-8 code page, served by a preamble-free instance.</summary>
+    private const int Utf8CodePage = 65001;
+
+    /// <summary>The UTF-16 little-endian code page, which cannot describe a code-page string.</summary>
+    private const int Utf16CodePage = 1200;
+
+    /// <summary>The UTF-16 big-endian code page, which cannot describe a code-page string.</summary>
+    private const int Utf16BigEndianCodePage = 1201;
+
+    /// <summary>The resolved encoding per code page, or <see langword="null" /> for a code page that does not resolve.</summary>
+    private static readonly ConcurrentDictionary<int, Encoding?> s_cache = new();
+
+    /// <summary>The UTF-8 encoding without a preamble.</summary>
+    private static readonly Encoding s_utf8 = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+
+    /// <summary>The encoding served when nothing declared resolves.</summary>
+    private static readonly Encoding s_fallback;
+
     /// <summary>
     /// Initializes static members of the <see cref="MapiEncodingResolver" /> class.
     /// </summary>
     /// <remarks>
-    /// Registers <see cref="CodePagesEncodingProvider" /> exactly once per process; registration is idempotent.
+    /// Registers <see cref="CodePagesEncodingProvider" /> exactly once per process (registration is idempotent) and
+    /// resolves the fallback encoding once, backstopped by Latin-1 should the provider be unavailable.
     /// </remarks>
-    static MapiEncodingResolver() =>
+    static MapiEncodingResolver()
+    {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        s_fallback = TryGetEncoding(FallbackCodePage) ?? Encoding.Latin1;
+    }
 
     /// <summary>
     /// Resolves the string encoding for a message.
@@ -49,7 +74,7 @@ internal static class MapiEncodingResolver
     internal static Encoding GetEncoding(int? messageCodePage, int? internetCodePage) =>
         TryGetEncoding(messageCodePage)
             ?? TryGetEncoding(internetCodePage)
-            ?? Encoding.GetEncoding(FallbackCodePage);
+            ?? s_fallback;
 
     /// <summary>
     /// Resolves the encoding of an HTML body stored as bytes: the internet code page is authoritative for HTML, so it
@@ -86,23 +111,31 @@ internal static class MapiEncodingResolver
     /// Attempts to resolve a code page to an encoding.
     /// </summary>
     /// <param name="codePage">The code page, when declared.</param>
-    /// <returns>The encoding, or <see langword="null" /> when undeclared, out of range, or unknown.</returns>
+    /// <returns>
+    /// The encoding, or <see langword="null" /> when undeclared, out of range, unknown, or a UTF-16 code page.
+    /// </returns>
     private static Encoding? TryGetEncoding(int? codePage)
     {
-        if (codePage is not int value || value <= 0 || value > 65535)
+        if (codePage is not int value || value <= 0 || value > 65535 || value is Utf16CodePage or Utf16BigEndianCodePage)
             return null;
 
-        try
+        if (value == Utf8CodePage)
+            return s_utf8;
+
+        return s_cache.GetOrAdd(value, static key =>
         {
-            return Encoding.GetEncoding(value);
-        }
-        catch (NotSupportedException)
-        {
-            return null;
-        }
-        catch (ArgumentException)
-        {
-            return null;
-        }
+            try
+            {
+                return Encoding.GetEncoding(key);
+            }
+            catch (NotSupportedException)
+            {
+                return null;
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
+        });
     }
 }

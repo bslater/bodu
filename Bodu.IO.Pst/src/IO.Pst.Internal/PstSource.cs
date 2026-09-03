@@ -30,23 +30,18 @@ internal sealed class PstSource
     /// <summary>The maximum on-disk block size, including padding and trailer.</summary>
     private const int MaxBlockSize = 8192;
 
-    /// <summary>
-    /// The key-space flag distinguishing cached pages from cached block payloads. Real block identifiers never carry
-    /// the top bit, so pages and blocks cannot collide in the shared cache.
-    /// </summary>
-    private const ulong PageKeyFlag = 1UL << 63;
 
     /// <summary>The source stream.</summary>
     private readonly Stream _stream;
 
-    /// <summary>
-    /// The least-recently-used cache of validated, decoded content — raw 512-byte pages (keyed with
-    /// <see cref="PageKeyFlag" />) and decoded block payloads (keyed by block identifier) — or <see langword="null" />
-    /// when caching is disabled. Cached arrays are shared across reads: by internal contract no caller mutates an
-    /// array returned by <see cref="ReadPage" /> or <see cref="ReadBlock" />, and the public surface only ever hands
-    /// out copies or read-only views.
-    /// </summary>
-    private readonly EvictingDictionary<ulong, byte[]>? _cache;
+    /// <summary>The position of the container's first byte within the stream.</summary>
+    private readonly long _baseOffset;
+
+    /// <summary>The optional LRU cache of validated pages, keyed by page block identifier; <see langword="null" /> when caching is disabled.</summary>
+    private readonly EvictingDictionary<ulong, byte[]>? _pageCache;
+
+    /// <summary>The optional LRU cache of decoded block payloads, keyed by block identifier; <see langword="null" /> when caching is disabled.</summary>
+    private readonly EvictingDictionary<ulong, byte[]>? _blockCache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PstSource" /> class.
@@ -54,16 +49,22 @@ internal sealed class PstSource
     /// <param name="stream">The readable, seekable source stream.</param>
     /// <param name="header">The parsed file header.</param>
     /// <param name="options">The session options: validation level, cache budget, and resource limits.</param>
-    internal PstSource(Stream stream, PstHeader header, PstFileOptions options)
+    /// <param name="baseOffset">The position of the container's first byte within the stream.</param>
+    internal PstSource(Stream stream, PstHeader header, PstFileOptions options, long baseOffset)
     {
         _stream = stream;
+        _baseOffset = baseOffset;
         Header = header;
         ValidationLevel = options.ValidationLevel;
         MaxNodeDataLength = options.MaxNodeDataLength;
         MaxDataTreeLeaves = options.MaxDataTreeLeaves;
-        _cache = options.BlockCacheSize > 0
-            ? new EvictingDictionary<ulong, byte[]>(options.BlockCacheSize, EvictingDictionaryPolicy.LeastRecentlyUsed)
-            : null;
+        if (options.BlockCacheSize > 0)
+        {
+            // Pages and blocks live in separate caches: a block identifier can carry any bit pattern, so no key
+            // transformation keeps the two identifier spaces apart.
+            _pageCache = new EvictingDictionary<ulong, byte[]>(options.BlockCacheSize, EvictingDictionaryPolicy.LeastRecentlyUsed);
+            _blockCache = new EvictingDictionary<ulong, byte[]>(options.BlockCacheSize, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        }
     }
 
     /// <summary>
@@ -98,14 +99,23 @@ internal sealed class PstSource
     /// <exception cref="PstFileFormatException">The range escapes the stream.</exception>
     internal void ReadAt(long offset, Span<byte> buffer)
     {
-        if (offset < 0 || offset + buffer.Length > _stream.Length)
-        {
-            throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBlock, offset), PstFileError.InvalidBlock);
-        }
+        // Subtract rather than add: an offset near the top of the range would wrap a sum negative and slip past.
+        if (offset < 0 || buffer.Length > _stream.Length - _baseOffset - offset)
+            throw InvalidRead(offset);
 
-        _stream.Position = offset;
-        _stream.ReadExactly(buffer);
+        try
+        {
+            _stream.Position = _baseOffset + offset;
+            _stream.ReadExactly(buffer);
+        }
+        catch (EndOfStreamException ex)
+        {
+            throw InvalidRead(offset, ex);
+        }
+        catch (IOException ex)
+        {
+            throw InvalidRead(offset, ex);
+        }
     }
 
     /// <summary>
@@ -123,8 +133,8 @@ internal sealed class PstSource
     {
         // A cached page was fully validated when it was filled; only the (cheap) expected-type check depends on the
         // caller, so it is re-run on every hit. A shape mismatch falls through to a fresh, fully validated read.
-        if (_cache is not null
-            && _cache.TryGetValue(bref.BlockId | PageKeyFlag, out byte[] cachedPage)
+        if (_pageCache is not null
+            && _pageCache.TryGetValue(bref.BlockId, out byte[] cachedPage)
             && cachedPage.Length == PageSize
             && cachedPage[496] == expectedType)
         {
@@ -156,8 +166,8 @@ internal sealed class PstSource
             }
         }
 
-        if (_cache is not null)
-            _cache[bref.BlockId | PageKeyFlag] = page;
+        if (_pageCache is not null)
+            _pageCache[bref.BlockId] = page;
         return page;
     }
 
@@ -169,7 +179,7 @@ internal sealed class PstSource
     /// <exception cref="PstFileFormatException">The block geometry or trailer is invalid.</exception>
     internal byte[] ReadBlock(PstBbtEntry entry)
     {
-        if (_cache is not null && _cache.TryGetValue(entry.Bref.BlockId, out byte[] cachedPayload))
+        if (_blockCache is not null && _blockCache.TryGetValue(entry.Bref.BlockId, out byte[] cachedPayload))
             return cachedPayload;
 
         int payloadLength = entry.Length;
@@ -217,10 +227,19 @@ internal sealed class PstSource
             }
         }
 
-        if (_cache is not null)
-            _cache[entry.Bref.BlockId] = payload;
+        if (_blockCache is not null)
+            _blockCache[entry.Bref.BlockId] = payload;
         return payload;
     }
+
+    /// <summary>
+    /// Creates the exception for a read that falls outside the stream or fails at the I/O layer.
+    /// </summary>
+    /// <param name="offset">The container-relative offset of the read.</param>
+    /// <param name="inner">The I/O failure, when one occurred.</param>
+    /// <returns>The exception to throw.</returns>
+    private static PstFileFormatException InvalidRead(long offset, Exception? inner = null) =>
+        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBlock, offset), PstFileError.InvalidBlock, inner);
 
     /// <summary>
     /// Computes the MS-PST §5.5 block/page signature of an offset and identifier.

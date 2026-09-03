@@ -118,8 +118,11 @@ internal static class PstMapiPropertyReader
         }
         else
         {
-            if (!MapiValueDecoder.TryDecodeFixedValue(tag.Type, WidenInline(value.RawData.Span), out decoded))
+            if (!TryWidenInline(tag.Type, value.RawData.Span, out ulong raw)
+                || !MapiValueDecoder.TryDecodeFixedValue(tag.Type, raw, out decoded))
+            {
                 return SkipOrThrowValue(tag, strict);
+            }
         }
 
         property = new MapiProperty(tag, decoded);
@@ -158,22 +161,44 @@ internal static class PstMapiPropertyReader
             : null;
 
     /// <summary>
-    /// Widens an inline little-endian payload of at most eight bytes into the 8-byte slot the shared fixed-value
-    /// decoder consumes.
+    /// Attempts to widen an inline fixed-length payload to the 8-byte little-endian slot the shared decoder reads.
     /// </summary>
-    /// <param name="raw">The payload bytes, in their natural width.</param>
-    /// <returns>The widened value, or <c>0</c> when the payload exceeds eight bytes.</returns>
-    private static ulong WidenInline(ReadOnlySpan<byte> raw)
+    /// <param name="type">The base property type, which fixes the payload width the value needs.</param>
+    /// <param name="raw">The inline payload bytes.</param>
+    /// <param name="value">When this method returns <see langword="true" />, the widened value.</param>
+    /// <returns>
+    /// <see langword="true" /> when the payload is at least as wide as the type needs and at most eight bytes.
+    /// </returns>
+    private static bool TryWidenInline(MapiPropertyType type, ReadOnlySpan<byte> raw, out ulong value)
     {
-        if (raw.Length > 8)
-            return 0;
+        value = 0;
 
-        ulong value = 0;
+        // A cell or inline slot narrower than the type it claims cannot hold the value; widening it silently would
+        // fabricate leading zero bytes. Wider payloads carry the value in their leading bytes.
+        if (raw.Length > 8 || raw.Length < ExpectedWidth(type))
+            return false;
+
         for (int i = 0; i < raw.Length; i++)
             value |= (ulong)raw[i] << (8 * i);
 
-        return value;
+        return true;
     }
+
+    /// <summary>
+    /// Gets the number of bytes a fixed-length wire type needs.
+    /// </summary>
+    /// <param name="type">The base property type.</param>
+    /// <returns>The minimum payload width; zero for types with no payload or no fixed width.</returns>
+    private static int ExpectedWidth(MapiPropertyType type) =>
+        type switch
+        {
+            MapiPropertyType.Boolean => 1,
+            MapiPropertyType.Int16 => 2,
+            MapiPropertyType.Int32 or MapiPropertyType.ErrorCode or MapiPropertyType.Float => 4,
+            MapiPropertyType.Int64 or MapiPropertyType.Double or MapiPropertyType.AppTime
+                or MapiPropertyType.Currency or MapiPropertyType.SystemTime => 8,
+            _ => 0,
+        };
 
     /// <summary>
     /// Decodes a multi-valued payload: packed elements for the fixed-width types, and the MS-PST §2.3.3.4.2

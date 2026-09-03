@@ -61,6 +61,8 @@ public sealed class OutlookMailAttachment
     {
         get
         {
+            _store.ThrowIfDisposed();
+
             if (_properties is null)
             {
                 _properties = PstMapiPropertyReader.Read(
@@ -76,17 +78,35 @@ public sealed class OutlookMailAttachment
     /// Gets how the attachment's content is stored.
     /// </summary>
     /// <value>
-    /// The <c>PidTagAttachMethod</c> value when present and defined. When the property is absent, an attachment that
-    /// carries a by-value payload reports <see cref="OutlookAttachmentMethod.ByValue" /> (real-world writers
-    /// frequently omit the method); otherwise <see cref="OutlookAttachmentMethod.None" />.
+    /// The <c>PidTagAttachMethod</c> value when present and defined. When the property is absent — or, under the
+    /// tolerant validation levels, carries an undefined value — an attachment that carries a by-value payload reports
+    /// <see cref="OutlookAttachmentMethod.ByValue" /> (real-world writers frequently omit the method); otherwise
+    /// <see cref="OutlookAttachmentMethod.None" />.
     /// </value>
-    public OutlookAttachmentMethod Method =>
-        Properties.GetInt32(MapiPropertyIds.AttachMethod) is int value
-            && value is >= (int)OutlookAttachmentMethod.None and <= (int)OutlookAttachmentMethod.Ole
-            ? (OutlookAttachmentMethod)value
-            : Properties.GetBinary(MapiPropertyIds.AttachData) is not null
+    /// <exception cref="OutlookPstFormatException">
+    /// The declared method is not a defined value and the session validates strictly.
+    /// </exception>
+    public OutlookAttachmentMethod Method
+    {
+        get
+        {
+            if (Properties.GetInt32(MapiPropertyIds.AttachMethod) is int value)
+            {
+                if (value is >= (int)OutlookAttachmentMethod.None and <= (int)OutlookAttachmentMethod.Ole)
+                    return (OutlookAttachmentMethod)value;
+
+                if (_store.Strict)
+                {
+                    throw new OutlookPstFormatException(string.Format(
+                        CultureInfo.CurrentCulture, OutlookPstResourceStrings.Format_Invalid_PstAttachmentMethod, value));
+                }
+            }
+
+            return Properties.GetBinary(MapiPropertyIds.AttachData) is not null
                 ? OutlookAttachmentMethod.ByValue
                 : OutlookAttachmentMethod.None;
+        }
+    }
 
     /// <summary>
     /// Gets the attachment file name, preferring the long form.

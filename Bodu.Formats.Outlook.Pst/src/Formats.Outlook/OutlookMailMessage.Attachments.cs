@@ -28,8 +28,15 @@ public sealed partial class OutlookMailMessage
     /// Each attachment-table row's identifier is the attachment object's subnode identifier; a row that references no
     /// attachment subnode is skipped under the tolerant levels.
     /// </remarks>
-    public IReadOnlyList<OutlookMailAttachment> Attachments =>
-        _attachments ??= BuildAttachments();
+    public IReadOnlyList<OutlookMailAttachment> Attachments
+    {
+        get
+        {
+            _store.ThrowIfDisposed();
+
+            return _attachments ??= BuildAttachments();
+        }
+    }
 
     /// <summary>
     /// Resolves the attachment table's rows into attachment views over their object subnodes.
