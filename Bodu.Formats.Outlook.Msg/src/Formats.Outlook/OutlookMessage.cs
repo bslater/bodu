@@ -138,6 +138,13 @@ public sealed partial class OutlookMessage
         Properties.GetString(MapiPropertyIds.SenderEmailAddress);
 
     /// <summary>
+    /// Gets the message class (for example, <c>IPM.Note</c>).
+    /// </summary>
+    /// <value>The <c>PidTagMessageClass</c> value, or <see langword="null" /> when absent.</value>
+    public string? MessageClass =>
+        Properties.GetString(MapiPropertyIds.MessageClass);
+
+    /// <summary>
     /// Gets the internet message identifier.
     /// </summary>
     /// <value>The <c>PidTagInternetMessageId</c> value, or <see langword="null" /> when absent.</value>

@@ -48,10 +48,56 @@ public partial class PstDataTreeTests
         using PstFile file = PstFile.Open(builder.BuildStream(), PstFileOptions.Default);
         PstNode node = file.GetNode(new PstNodeId(NodeId));
 
-        _ = Assert.ThrowsExactly<PstFileFormatException>(() =>
+        var ex = Assert.ThrowsExactly<PstFileFormatException>(() =>
         {
             _ = node.ReadAllBytes();
         });
+
+        Assert.AreEqual(PstFileError.LimitExceeded, ex.Error);
+    }
+
+    /// <summary>
+    /// Verifies that a caller-supplied materialization limit is honoured: a node above it is refused, one below it
+    /// reads normally.
+    /// </summary>
+    [TestMethod]
+    public void ReadAllBytes_WhenCallerLowersMaterializationLimit_ShouldHonourIt()
+    {
+        var builder = new PstFixtureBuilder();
+        builder.AddNode(NodeId, builder.AddXBlock(2000, builder.AddDataBlock(Payload(1000, 1)), builder.AddDataBlock(Payload(1000, 2))));
+
+        using (PstFile permissive = PstFile.Open(builder.BuildStream(), new PstFileOptions { MaxNodeDataLength = 2000 }))
+        {
+            Assert.AreEqual(2000, permissive.GetNode(new PstNodeId(NodeId)).ReadAllBytes().Length);
+        }
+
+        using PstFile strict = PstFile.Open(builder.BuildStream(), new PstFileOptions { MaxNodeDataLength = 1999 });
+        PstNode node = strict.GetNode(new PstNodeId(NodeId));
+
+        var ex = Assert.ThrowsExactly<PstFileFormatException>(() => _ = node.ReadAllBytes());
+
+        Assert.AreEqual(PstFileError.LimitExceeded, ex.Error);
+    }
+
+    /// <summary>
+    /// Verifies that a data tree referencing more leaf blocks than the fan-out limit allows is refused before any
+    /// leaf payload is read, for the streaming and buffered paths alike.
+    /// </summary>
+    [TestMethod]
+    public void OpenDataStream_WhenLeafCountExceedsLimit_ShouldThrowBeforeReadingLeaves()
+    {
+        var builder = new PstFixtureBuilder();
+        ulong leaf = builder.AddDataBlock(Payload(64, 1));
+        builder.AddNode(NodeId, builder.AddXBlock(64 * 200, [.. Enumerable.Repeat(leaf, 200)]));
+
+        using PstFile file = PstFile.Open(builder.BuildStream(), new PstFileOptions { MaxDataTreeLeaves = 100 });
+        PstNode node = file.GetNode(new PstNodeId(NodeId));
+
+        var streaming = Assert.ThrowsExactly<PstFileFormatException>(() => _ = node.OpenDataStream());
+        Assert.AreEqual(PstFileError.LimitExceeded, streaming.Error);
+
+        var buffered = Assert.ThrowsExactly<PstFileFormatException>(() => _ = node.ReadAllBytes());
+        Assert.AreEqual(PstFileError.LimitExceeded, buffered.Error);
     }
 
     /// <summary>

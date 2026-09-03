@@ -50,4 +50,10 @@ public enum PstFileError
 
     /// <summary>The requested property does not exist.</summary>
     PropertyNotFound,
+
+    /// <summary>
+    /// A structure's declared size or fan-out exceeds a resource limit the session was opened with (see
+    /// <see cref="PstFileOptions.MaxNodeDataLength" /> and <see cref="PstFileOptions.MaxDataTreeLeaves" />).
+    /// </summary>
+    LimitExceeded,
 }

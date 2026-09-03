@@ -104,4 +104,25 @@ public partial class OutlookMessageTests
         Assert.AreSame(message.BodyRtf, message.BodyRtf, "The RTF body must decode once and be cached.");
         Assert.AreSame(message.BodyHtml, message.BodyHtml, "The HTML body must decode once and be cached.");
     }
+
+    /// <summary>
+    /// Verifies that a compressed RTF body whose decompressed size exceeds
+    /// <see cref="OutlookMessageReaderOptions.MaxDecompressedRtfBytes" /> is rejected with the reader's format
+    /// exception rather than decompressed.
+    /// </summary>
+    [TestMethod]
+    public void BodyRtf_WhenDecompressedSizeExceedsOption_ShouldThrowOutlookMsgFormatException()
+    {
+        byte[] payload = Convert.FromHexString(CompressedRtfTests.SpecExample1Hex);
+        using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
+            .AddBinary(MapiPropertyIds.RtfCompressed, payload)
+            .Build();
+
+        using var message = OutlookMessage.Open(container, new OutlookMessageReaderOptions { MaxDecompressedRtfBytes = 16 });
+
+        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        {
+            _ = message.BodyRtf;
+        });
+    }
 }

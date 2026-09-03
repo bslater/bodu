@@ -61,12 +61,28 @@ internal static class CompressedRtf
     /// Decompresses a compressed-RTF payload to the raw RTF bytes.
     /// </summary>
     /// <param name="data">The complete <c>PidTagRtfCompressed</c> payload, including the 16-byte header.</param>
+    /// <param name="maxOutputBytes">
+    /// The largest decompressed size the caller accepts; a payload whose declared or produced size exceeds it is
+    /// rejected as malformed.
+    /// </param>
     /// <returns>The RTF text bytes.</returns>
     /// <exception cref="OutlookFormatException">
     /// The header is truncated or carries an unknown magic, the declared sizes escape the payload, or the checksum does
     /// not match. The concrete type is the consuming format's exception (<c>OutlookMsgFormatException</c> or
     /// <c>OutlookPstFormatException</c>).
     /// </exception>
+    internal static byte[] Decompress(ReadOnlySpan<byte> data, int maxOutputBytes)
+    {
+        ThrowHelper.ThrowIfZeroOrNegative(maxOutputBytes);
+
+        return Decompress(data);
+    }
+
+    /// <summary>
+    /// Decompresses a <c>PidTagRtfCompressed</c> payload without a caller-imposed output ceiling.
+    /// </summary>
+    /// <param name="data">The complete payload, including the 16-byte header.</param>
+    /// <returns>The decompressed RTF bytes.</returns>
     internal static byte[] Decompress(ReadOnlySpan<byte> data)
     {
         if (data.Length < 16)

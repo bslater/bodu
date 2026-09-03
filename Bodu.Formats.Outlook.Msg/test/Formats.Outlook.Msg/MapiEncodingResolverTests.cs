@@ -63,4 +63,16 @@ public partial class MapiEncodingResolverTests
         Assert.AreEqual(1251, MapiEncodingResolver.GetEncoding(messageCodePage, 1251).CodePage);
         Assert.AreEqual(1252, MapiEncodingResolver.GetEncoding(messageCodePage, null).CodePage);
     }
+
+    /// <summary>
+    /// Verifies that the HTML-body resolution prefers the internet code page over the message code page — the
+    /// reverse of the precedence code-page strings use — and falls back the same way.
+    /// </summary>
+    [TestMethod]
+    public void GetHtmlEncoding_WhenBothDeclared_ShouldPreferInternetCodePage()
+    {
+        Assert.AreEqual(932, MapiEncodingResolver.GetHtmlEncoding(932, 1251).CodePage);
+        Assert.AreEqual(1251, MapiEncodingResolver.GetHtmlEncoding(null, 1251).CodePage);
+        Assert.AreEqual(1252, MapiEncodingResolver.GetHtmlEncoding(null, null).CodePage);
+    }
 }

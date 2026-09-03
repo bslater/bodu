@@ -52,6 +52,19 @@ internal static class MapiEncodingResolver
             ?? Encoding.GetEncoding(FallbackCodePage);
 
     /// <summary>
+    /// Resolves the encoding of an HTML body stored as bytes: the internet code page is authoritative for HTML, so it
+    /// is tried before the message code page — the reverse of the precedence code-page strings use.
+    /// </summary>
+    /// <param name="internetCodePage">The declared internet code page, when present.</param>
+    /// <param name="messageCodePage">The declared message code page, when present.</param>
+    /// <returns>
+    /// The encoding for the first declared code page that resolves, internet first; Windows-1252 when neither is
+    /// declared or neither resolves.
+    /// </returns>
+    internal static Encoding GetHtmlEncoding(int? internetCodePage, int? messageCodePage) =>
+        GetEncoding(internetCodePage, messageCodePage);
+
+    /// <summary>
     /// Resolves the string encoding for a decoded property collection, honoring the inheritance rule: a storage that
     /// declares no code page of its own uses its parent's encoding.
     /// </summary>

@@ -90,6 +90,13 @@ public sealed class OutlookAttachment
         Properties.GetString(MapiPropertyIds.AttachContentId);
 
     /// <summary>
+    /// Gets the attachment MIME type.
+    /// </summary>
+    /// <value>The <c>PidTagAttachMimeTag</c> value, or <see langword="null" /> when absent.</value>
+    public string? MimeTag =>
+        Properties.GetString(MapiPropertyIds.AttachMimeTag);
+
+    /// <summary>
     /// Gets the attachment size the writer recorded.
     /// </summary>
     /// <value>The <c>PidTagAttachSize</c> value, or <see langword="null" /> when absent.</value>

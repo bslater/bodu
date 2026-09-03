@@ -142,6 +142,30 @@ public sealed class PstNode
     }
 
     /// <summary>
+    /// Attempts to retrieve the first subnode of a given type, in stored order, in a single pass over the subnode
+    /// directory.
+    /// </summary>
+    /// <param name="type">The node type sought.</param>
+    /// <param name="subnode">When this method returns <see langword="true" />, the subnode.</param>
+    /// <returns><see langword="true" /> when the node carries a subnode of the type.</returns>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
+    /// <exception cref="PstFileFormatException">The subnode tree is malformed or fails validation.</exception>
+    internal bool TryGetSubnodeOfType(PstNodeType type, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out PstNode subnode)
+    {
+        foreach (PstNbtEntry entry in ReadSubnodeEntries())
+        {
+            if (new PstNodeId(entry.NodeId).Type == type)
+            {
+                subnode = new PstNode(_file, entry with { ParentNodeId = _entry.NodeId });
+                return true;
+            }
+        }
+
+        subnode = null;
+        return false;
+    }
+
+    /// <summary>
     /// Reads the node's LTP property context: the property bag of 16-bit property identifiers with wire-typed values.
     /// </summary>
     /// <returns>The property context.</returns>

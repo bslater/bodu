@@ -33,6 +33,9 @@ public sealed class MapiPropertyCollection
     /// <summary>Maps a raw tag value to its index in <see cref="_properties" />.</summary>
     private readonly Dictionary<uint, int> _indexByTag;
 
+    /// <summary>Maps a 16-bit identifier to the index of its first property in <see cref="_properties" />.</summary>
+    private readonly Dictionary<ushort, int> _firstIndexById;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MapiPropertyCollection" /> class.
     /// </summary>
@@ -46,6 +49,7 @@ public sealed class MapiPropertyCollection
 
         _properties = new List<MapiProperty>();
         _indexByTag = new Dictionary<uint, int>();
+        _firstIndexById = new Dictionary<ushort, int>();
         foreach (MapiProperty property in properties)
         {
             ThrowHelper.ThrowIfNull(property, nameof(properties));
@@ -57,6 +61,7 @@ public sealed class MapiPropertyCollection
             else
             {
                 _indexByTag.Add(property.Tag.Value, _properties.Count);
+                _firstIndexById.TryAdd(property.Tag.Id, _properties.Count);
                 _properties.Add(property);
             }
         }
@@ -99,6 +104,43 @@ public sealed class MapiPropertyCollection
 
         property = null;
         return false;
+    }
+
+    /// <summary>
+    /// Attempts to retrieve the first property carrying a 16-bit identifier, whatever its type — the lookup for
+    /// callers that know which property they want but not which wire type the writer chose for it.
+    /// </summary>
+    /// <param name="id">The 16-bit property identifier.</param>
+    /// <param name="property">When this method returns, the first matching property when one is present.</param>
+    /// <returns><see langword="true" /> when a property with the identifier is present.</returns>
+    public bool TryGetValue(ushort id, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out MapiProperty property)
+    {
+        if (_firstIndexById.TryGetValue(id, out int index))
+        {
+            property = _properties[index];
+            return true;
+        }
+
+        property = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Enumerates every property carrying a 16-bit identifier, in first-occurrence order — one per distinct type the
+    /// writer stored it under.
+    /// </summary>
+    /// <param name="id">The 16-bit property identifier.</param>
+    /// <returns>The matching properties; empty when none is present.</returns>
+    public IEnumerable<MapiProperty> GetAll(ushort id)
+    {
+        if (!_firstIndexById.TryGetValue(id, out int first))
+            yield break;
+
+        for (int i = first; i < _properties.Count; i++)
+        {
+            if (_properties[i].Tag.Id == id)
+                yield return _properties[i];
+        }
     }
 
     /// <summary>

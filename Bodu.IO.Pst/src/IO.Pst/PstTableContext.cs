@@ -97,6 +97,24 @@ public sealed class PstTableContext
     }
 
     /// <summary>
+    /// Enumerates the identifiers of the table's rows in matrix order, without materializing the rows.
+    /// </summary>
+    /// <returns>The row identifiers.</returns>
+    /// <exception cref="PstFileFormatException">
+    /// The row matrix does not resolve or holds fewer rows than the row index records.
+    /// </exception>
+    /// <remarks>
+    /// Hierarchy, contents, and attachment tables are usually consumed for their row identifiers alone — each names
+    /// the object node the row stands for — so this path reads the leading dword of each row in place and allocates
+    /// nothing per row.
+    /// </remarks>
+    public IEnumerable<uint> EnumerateRowIds()
+    {
+        foreach (PstTableRow row in EnumerateRows())
+            yield return row.RowId;
+    }
+
+    /// <summary>
     /// Attempts to retrieve a row by its identifier through the table's row index.
     /// </summary>
     /// <param name="rowId">The row identifier.</param>

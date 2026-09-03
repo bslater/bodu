@@ -265,6 +265,14 @@ internal sealed class PstMessagingFixtureBuilder
         (long)LargeAttachmentXBlocks * 1021 * PstFixtureBuilder.MaxBlockPayload;
 
     /// <summary>
+    /// Gets or sets how many embedded-message levels hang beneath the full message: <c>1</c> is the single embedded
+    /// message; each further level gives the innermost embedded message its own attachment table and embedded
+    /// attachment.
+    /// </summary>
+    /// <value><c>1</c> by default.</value>
+    internal int EmbeddedMessageNestingDepth { get; set; } = 1;
+
+    /// <summary>
     /// Gets or sets a value indicating whether the store carries the name-to-id map node.
     /// </summary>
     /// <value><see langword="true" /> by default.</value>
@@ -447,7 +455,7 @@ internal sealed class PstMessagingFixtureBuilder
             subnodes.Add((ByValueAttachmentNodeId, attachmentData, attachmentSubnodes));
 
             ulong embeddedSubnodeBlockId = IncludeEmbeddedMessageSubnode
-                ? file.AddSubnodeLeafBlock((EmbeddedMessageNodeId, AddEmbeddedMessage(file), 0))
+                ? file.AddSubnodeLeafBlock(AddEmbeddedMessageChain(file, EmbeddedMessageNestingDepth))
                 : 0;
             subnodes.Add((EmbeddedAttachmentNodeId, AddEmbeddedAttachment(file), embeddedSubnodeBlockId));
         }
@@ -646,6 +654,55 @@ internal sealed class PstMessagingFixtureBuilder
         _ = ltp.AddPropertyContext(
             (MapiPropertyIds.AttachMethod, Int32Type, (uint)OutlookAttachmentMethod.EmbeddedMessage),
             (MapiPropertyIds.AttachData, ObjectType, objectHid));
+
+        return AddHeapBlocks(file, ltp);
+    }
+
+    /// <summary>
+    /// Builds the subnode row of an embedded message that itself nests further embedded messages, to the requested
+    /// depth: below the innermost level each embedded message carries an attachment table with one embedded
+    /// attachment whose subnode tree holds the next message.
+    /// </summary>
+    /// <param name="file">The container builder.</param>
+    /// <param name="depth">The number of embedded levels to produce, at least one.</param>
+    /// <returns>The subnode row (node identifier, data block, nested subnode block) of the outermost embedded message.</returns>
+    private (uint NodeId, ulong DataBlockId, ulong SubnodeBlockId) AddEmbeddedMessageChain(PstFixtureBuilder file, int depth)
+    {
+        ulong nestedSubnodes = 0;
+        if (depth > 1)
+        {
+            (uint innerId, ulong innerData, ulong innerSubnodes) = AddEmbeddedMessageChain(file, depth - 1);
+            ulong attachmentSubnodes = file.AddSubnodeLeafBlock((innerId, innerData, innerSubnodes));
+            nestedSubnodes = file.AddSubnodeLeafBlock(
+                (AttachmentTableNodeId, AddSingleAttachmentTable(file, EmbeddedAttachmentNodeId), 0),
+                (EmbeddedAttachmentNodeId, AddEmbeddedAttachment(file), attachmentSubnodes));
+        }
+
+        return (EmbeddedMessageNodeId, AddEmbeddedMessage(file), nestedSubnodes);
+    }
+
+    /// <summary>
+    /// Builds an attachment table with a single row referencing one attachment object.
+    /// </summary>
+    /// <param name="file">The container builder.</param>
+    /// <param name="attachmentNodeId">The attachment object's subnode identifier.</param>
+    /// <returns>The heap's data-block identifier, for the subnode row.</returns>
+    private static ulong AddSingleAttachmentTable(PstFixtureBuilder file, uint attachmentNodeId)
+    {
+        var ltp = new PstLtpFixtureBuilder();
+        uint matrixHid = ltp.AddItem(AttachmentRow(attachmentNodeId, 0));
+
+        _ = ltp.AddTableContext(
+            [
+                (ComposeTag(MapiPropertyIds.LtpRowId, Int32Type), 0, 4, 0),
+                (ComposeTag(MapiPropertyIds.AttachNumber, Int32Type), 4, 4, 1),
+            ],
+            endOffset4: 8,
+            endOffset2: 8,
+            endOffset1: 8,
+            rowWidth: 9,
+            rowsHnid: matrixHid,
+            (attachmentNodeId, 0));
 
         return AddHeapBlocks(file, ltp);
     }

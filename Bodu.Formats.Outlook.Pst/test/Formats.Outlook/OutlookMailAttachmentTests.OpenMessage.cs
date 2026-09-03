@@ -76,4 +76,47 @@ public partial class OutlookMailAttachmentTests
             _ = attachment.OpenMessage();
         });
     }
+
+    /// <summary>
+    /// Verifies that opening an embedded message deeper than
+    /// <see cref="OutlookMailStoreReaderOptions.MaxEmbeddedMessageDepth" /> throws <see cref="OutlookPstFormatException" />
+    /// at the boundary, while every level within the limit opens.
+    /// </summary>
+    [TestMethod]
+    public void OpenMessage_WhenNestingExceedsMaxEmbeddedMessageDepth_ShouldThrowOutlookPstFormatException()
+    {
+        var builder = new PstMessagingFixtureBuilder { EmbeddedMessageNestingDepth = 3 };
+        using OutlookMailStore store = OutlookMailStore.Open(
+            builder.BuildStream(),
+            new OutlookMailStoreReaderOptions { MaxEmbeddedMessageDepth = 2 });
+
+        OutlookMailMessage first = GetAttachments(store)[1].OpenMessage();
+        OutlookMailMessage second = first.Attachments[0].OpenMessage();
+        Assert.AreEqual(PstMessagingFixtureBuilder.EmbeddedSubject, second.Subject);
+
+        OutlookMailAttachment third = second.Attachments[0];
+        _ = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = third.OpenMessage();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the default nesting limit admits a realistically deep chain.
+    /// </summary>
+    [TestMethod]
+    public void OpenMessage_WhenNestingWithinDefaultLimit_ShouldOpenEveryLevel()
+    {
+        var builder = new PstMessagingFixtureBuilder { EmbeddedMessageNestingDepth = 4 };
+        using OutlookMailStore store = OutlookMailStore.Open(builder.BuildStream(), new OutlookMailStoreReaderOptions());
+
+        OutlookMailMessage current = GetAttachments(store)[1].OpenMessage();
+        for (int level = 1; level < 4; level++)
+        {
+            current = current.Attachments[0].OpenMessage();
+            Assert.AreEqual(PstMessagingFixtureBuilder.EmbeddedSubject, current.Subject);
+        }
+
+        Assert.AreEqual(0, current.Attachments.Count, "The innermost message carries no further attachments.");
+    }
 }

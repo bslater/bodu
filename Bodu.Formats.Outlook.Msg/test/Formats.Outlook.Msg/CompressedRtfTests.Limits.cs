@@ -78,4 +78,34 @@ public partial class CompressedRtfTests
             _ = CompressedRtf.Decompress(payload);
         });
     }
+
+    /// <summary>
+    /// Verifies that a caller-supplied output ceiling below the declared size rejects the payload before decoding.
+    /// </summary>
+    [TestMethod]
+    public void Decompress_WhenMaxOutputBytesBelowDeclaredSize_ShouldThrowOutlookMsgFormatException()
+    {
+        byte[] payload = BuildPayload(BuildLiteralBody(100), 100);
+
+        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        {
+            _ = CompressedRtf.Decompress(payload, maxOutputBytes: 50);
+        });
+
+        Assert.AreEqual(100, CompressedRtf.Decompress(payload, maxOutputBytes: 100).Length);
+    }
+
+    /// <summary>
+    /// Verifies that a zero or negative output ceiling is rejected as an argument error.
+    /// </summary>
+    [TestMethod]
+    public void Decompress_WhenMaxOutputBytesNotPositive_ShouldThrowArgumentOutOfRangeException()
+    {
+        byte[] payload = BuildPayload(BuildLiteralBody(8), 8);
+
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = CompressedRtf.Decompress(payload, maxOutputBytes: 0);
+        });
+    }
 }
